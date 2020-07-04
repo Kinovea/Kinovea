@@ -142,8 +142,7 @@
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>نسبت ابعاد پیش‌فرض:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>زبان:</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>و</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>ناحیه کاری کمتر از {0} مگابایت حافظه است.</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>ناحیه کاری کمتر از {0} ثانیه است.</value></data>
+   
    <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>به طور پیش فرض، طرح‌ها برای {0} تصاویر اطراف تصویر کلیدی قابل مشاهده است.</value></data>
    <data name="dlgPreferences_Player_tabUnits" xml:space="preserve"><value>واحدها</value></data>
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>متر بر ثانیه ({0})</value></data>

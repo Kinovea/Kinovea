@@ -142,8 +142,7 @@
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Default aspect ratio:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Language:</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>And</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>Working Zone will take less than {0} MB of Memory.</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>Working Zone is less than {0} seconds.</value></data>
+   <data name="dlgPreferences_Player_lblMemory" xml:space="preserve"><value>Cache memory allocated to each playback screen: {0} MB.</value></data>
    <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>By default, drawings will stay visible for {0} images around the Key Image.</value></data>
    <data name="dlgPreferences_Player_tabUnits" xml:space="preserve"><value>Units</value></data>
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Meters per second ({0})</value></data>

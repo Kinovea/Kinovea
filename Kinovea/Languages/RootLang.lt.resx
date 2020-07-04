@@ -142,8 +142,7 @@
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Numatytasis paveikslėlio formatas:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Kalba:</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>Ir</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>Darbo zona užims mažiau nei {0} Mb atminties.</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>Darbo zona yra mažiau nei {0} sekundės.</value></data>
+   
    <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Pagal nutylėjimą, brėžiniai liks matomi {0} kadruose.</value></data>
    
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Metrai per sekunde ({0})</value></data>

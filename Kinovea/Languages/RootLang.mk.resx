@@ -142,8 +142,7 @@
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Стандарден формат на сликата:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Јазик</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>И</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>Работната зона е помала од {0} MB од меморијата.</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>Работната зона е помала од {0} секунди.</value></data>
+   
    <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Стандардно, цртежите ќе останат видливи {0} слики околу клучната слика.</value></data>
    
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Метри во секунда</value></data>

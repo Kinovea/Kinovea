@@ -142,8 +142,7 @@
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Προκαθορισμένη μορφή εικόνας:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Γλώσσα:</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>Και</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>Το Πεδίο Εργασίας θα χρησιμοποιήσει λιγότερα από {0} MB Μνήμης.</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>Το Πεδίο Εργασίας είναι λιγότερο από {0} δευτερόλεπτα.</value></data>
+   
    <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Προκαθορισμένα, τα σχέδια παραμένουν ορατά για {0} εικόνες γύρω από την Βασική εικόνα.</value></data>
    
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Μέτρα ανά δευτερόλεπτο ({0})</value></data>

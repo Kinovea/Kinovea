@@ -142,8 +142,7 @@
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>デフォルト画像フォーマット:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>言語:</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>&amp;</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>作業範囲はメモリ中 {0} MB以下</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>作業範囲は {0} 秒以下</value></data>
+   
    <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>デフォルトでは、ドローイングはキーイメージの周囲で {0} イメージが表示される</value></data>
    
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>秒速/m ({0})</value></data>

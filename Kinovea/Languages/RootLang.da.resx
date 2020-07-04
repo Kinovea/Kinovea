@@ -142,8 +142,7 @@
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Standard billedformat:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Sprog:</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>Og</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>Arbejdszone tager mindre end {0} MB hukommelse.</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>Arbejdszone er mindre end {0} sekunder</value></data>
+   
    <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Som standard, tegning vil være synlig i {0} billeder omkring nøglebilledet.</value></data>
    
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Meter pr. sek. ({0})</value></data>

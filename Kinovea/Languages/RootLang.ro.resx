@@ -142,8 +142,7 @@
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Formatul de imagine implicit</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Limba :</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>Şi</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>Zona de lucru va accesa mai puţin de {0} MB de memorie.</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>Zona de lucru este mai mică de {0} seconds.</value></data>
+   
    <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Implicit, desenele vor sta vizibile pentru {0} imagini în jurul Imaginii Principale.</value></data>
    
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Metri pe secondă ({0})</value></data>

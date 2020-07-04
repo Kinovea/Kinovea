@@ -142,8 +142,7 @@
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Format d'image par défault :</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Langue :</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>Et</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>La Zone de Travail prend moins de {0} Mo de mémoire.</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>La Zone de Travail fait moins de {0} secondes.</value></data>
+   <data name="dlgPreferences_Player_lblMemory" xml:space="preserve"><value>Mémoire cache allouée à chaque écran de lecture : {0} Mo.</value></data>
    <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Par défaut, les dessins resteront visibles pendant {0} images autour de leur Image Clé.</value></data>
    <data name="dlgPreferences_Player_tabUnits" xml:space="preserve"><value>Unités</value></data>
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Mètres / seconde ({0})</value></data>

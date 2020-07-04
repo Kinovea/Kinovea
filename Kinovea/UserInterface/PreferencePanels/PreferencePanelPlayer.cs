@@ -307,8 +307,7 @@ namespace Kinovea.Root
             nfi.NumberGroupSeparator = " ";
             string formatted = memoryBuffer.ToString("#,0", nfi);
 
-            lblWorkingZoneMemory.Text = string.Format("Buffer memory allocated for each playback screen: {0} MB.", formatted);
-            //lblWorkingZoneMemory.Text = String.Format(RootLang.dlgPreferences_Player_lblWorkingZoneMemory, memoryBuffer);
+            lblWorkingZoneMemory.Text = string.Format(RootLang.dlgPreferences_Player_lblMemory, formatted);
         }
         private void tbCustomLengthUnit_TextChanged(object sender, EventArgs e)
         {

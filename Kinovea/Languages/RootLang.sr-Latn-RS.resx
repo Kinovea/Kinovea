@@ -142,8 +142,7 @@
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Podrazumevani format slika:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Jezik:</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>I</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>Radna zona će zauzeti manje od {0} MB memorije.</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>Radna zona je manje od {0} sekundi .</value></data>
+   
    <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Podrazumevano, crteži će ostati vidljivi za {0} slika oko ključne slike.</value></data>
    
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Metara u sekundi ({0})</value></data>

@@ -142,8 +142,7 @@
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Format d'imatge per defecte</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Idioma</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>I</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>La zona de treball ocuparà enys de {0} MB de memòria</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>La zona de treball és de menys de {0} segons</value></data>
+   
    <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Per defecte els dibuixos seran visibles durant {0} fotogrames al voltant dl fotograma clau.</value></data>
    <data name="dlgPreferences_Player_tabUnits" xml:space="preserve"><value>Unitats</value></data>
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Metres per segon ({0})</value></data>

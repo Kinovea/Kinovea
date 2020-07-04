@@ -142,8 +142,7 @@
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Формат на изображението по подразбиране</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Език</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>И</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>Обработеният фрагмент ще бъде по-малък {0} MB памет</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>Обработеният фрагмент ще бъде по-малък {0} секунди</value></data>
+   
    <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>По подразбиране обработените изображения ще останат видими. {0} кадри</value></data>
    <data name="dlgPreferences_Player_tabUnits" xml:space="preserve"><value>Единици</value></data>
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Метри в секунда ({0})</value></data>

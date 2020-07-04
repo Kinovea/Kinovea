@@ -142,8 +142,7 @@
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Формат изображения по умолчанию</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Язык</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>И</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>Обрабатываемый фрагмент будет менее {0} MB памяти</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>Обрабатываемый фрагмент менее {0} секунд</value></data>
+   
    <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>По умолчанию обрабатываемые рисунки будут оставаться видимыми {0} кадров</value></data>
    <data name="dlgPreferences_Player_tabUnits" xml:space="preserve"><value>Единицы</value></data>
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Метров в секунду ({0})</value></data>

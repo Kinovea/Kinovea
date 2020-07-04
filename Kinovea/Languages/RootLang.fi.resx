@@ -142,8 +142,7 @@
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Kuvien oletusformaatti:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Kieli:</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>Ja</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>Työstettävä jakso käyttää alle {0} MB muistia.</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>Työstettävä jakso on kestoltaan alle {0} sekuntia.</value></data>
+   
    <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Oletuksena piirrokset pysyvät näkyvissä {0} kuvaa ennen ja jälkeen avainkuvan.</value></data>
    
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Metriä sekunnissa ({0})</value></data>

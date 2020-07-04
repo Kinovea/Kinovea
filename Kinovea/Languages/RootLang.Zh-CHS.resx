@@ -142,8 +142,7 @@
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>默认图像显示格式:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>语言:</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>和</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>工作区文件占用内存少于 {0} MB.</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>工作区视频文件小于 {0} 秒.</value></data>
+   
    <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>默认情况下，从关键图像开始绘制信息将被保持 {0} 次.</value></data>
    
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>米/秒 ({0})</value></data>

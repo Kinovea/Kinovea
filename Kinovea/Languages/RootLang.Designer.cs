@@ -718,20 +718,11 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Working Zone will take less than {0} MB of Memory..
+        ///   Looks up a localized string similar to Cache memory allocated to each playback screen: {0} MB..
         /// </summary>
-        public static string dlgPreferences_Player_lblWorkingZoneMemory {
+        public static string dlgPreferences_Player_lblMemory {
             get {
-                return ResourceManager.GetString("dlgPreferences_Player_lblWorkingZoneMemory", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Working Zone is less than {0} seconds..
-        /// </summary>
-        public static string dlgPreferences_Player_lblWorkingZoneSeconds {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Player_lblWorkingZoneSeconds", resourceCulture);
+                return ResourceManager.GetString("dlgPreferences_Player_lblMemory", resourceCulture);
             }
         }
         

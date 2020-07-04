@@ -142,8 +142,7 @@
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Standaard beeldformaat:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Taal:</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>En</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>Werkgebied zal minder dan {0} MB van het geheugen innemen.</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>Werkgebied is minder dan {0} seconden.</value></data>
+   
    <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Standaard zullen tekeningen zichtbaar zijn gedurende {0} beelden vanaf het Kernbeeld.</value></data>
    <data name="dlgPreferences_Player_tabUnits" xml:space="preserve"><value>Eenheden</value></data>
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Meter per seconde ({0})</value></data>

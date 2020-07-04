@@ -142,8 +142,7 @@
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Standard bildeformat:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Språk:</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>Og</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>Arbeidsfelt vil benytte seg av mindre enn {0} MB minne.</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>Arbeidsfelt er mindre enn {0} sekunder.</value></data>
+   
    <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Tegninger vil være synlige I {0} enkeltbilder rundt nøkkelbildet.</value></data>
    
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Meter per sekund ({0})</value></data>

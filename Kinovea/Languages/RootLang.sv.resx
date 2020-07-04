@@ -142,8 +142,7 @@
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Original bildformat:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Språk:</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>Och</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>Arbetszonen upptar mindre än {0} av minnet</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>Arbetszonen är mindre än {0} sekunder</value></data>
+   
    <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Som standard, ritningar kommer att vara  synliga i {0} bilder runt nyckelbild.</value></data>
    
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Meter/sekund ({0})</value></data>

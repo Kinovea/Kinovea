@@ -142,8 +142,7 @@
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>기본 이미지 형식:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>언어:</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>그리고</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>작업 영역은 {0}MB보다 작은 메모리를 차지함.</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>작업 영역은 {0}초 보다 짧음.</value></data>
+   
    <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>그림들은 '키 이미지' 주변의 {0}이미지에 걸처 남아있는 것이 기본.</value></data>
    
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>초당 미터({0})</value></data>

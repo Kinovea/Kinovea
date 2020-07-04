@@ -142,8 +142,7 @@
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Öntanımlı imaj formatı:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Dil:</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>Ve</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>Çalışma Alanı Hafızanın {0} MB'ından daha azını kullanacaktır.</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>Çalışma Alanı {0} saniyeden daha az.</value></data>
+   
    <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Öntanımlı değer olarak, çizimler Anahtar İmajın etrafındaki {0} imaj boyunca görülebilir kalacaktır.</value></data>
    
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Metre bölü saniye ({0})</value></data>

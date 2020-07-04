@@ -142,8 +142,7 @@
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Přednastavený formát obrazu:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Jazyk</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>a</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>Pracovní oblast zabere méně než {0} MB paměti.</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>Pracovní oblast trvá méně než {0} sekund.</value></data>
+   
    <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Nákresy budou viditelné na {0} obrazech kolem klíčové pozice.</value></data>
    
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Metry za sekundu ({0})</value></data>

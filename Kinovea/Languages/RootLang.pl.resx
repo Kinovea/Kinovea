@@ -142,8 +142,7 @@
    
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Język :</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>I</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>Strefa obróbki zajmie mniej niż {0} MB pamięci.</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>Strefa obróbki jest mniejsza niż {0} sekund.</value></data>
+   
    
    
    

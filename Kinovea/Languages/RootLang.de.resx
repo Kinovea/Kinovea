@@ -142,8 +142,7 @@
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Standard Bildformat</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Sprache :</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>Und</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>Der Arbeitsbereich nimmt weniger als {0} MB Speicher in Anspruch.</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>Der Arbeitsbereich ist kürzer als {0} Sekunden.</value></data>
+   
    <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Standardmäßig bleiben Zeichenelemente für {0} Einzelbilder um ein Schlüsselbild sichtbar.</value></data>
    
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Meter pro Sekunde ({0})</value></data>
