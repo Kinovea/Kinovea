@@ -1,5 +1,5 @@
 
-Kinovea 0.9.2 - 2020-06.
+Kinovea 0.9.3 - 2020-07.
 
 Kinovea is an open source solution for capturing, studying and annotating videos.
 Use it for sport coaching, performance analysis, podiatrics, animation commenting, ergonomics engineering and more...
@@ -37,6 +37,12 @@ Communication channels:
 
 Changelog:
 ----------
+
+0.9.3 - July 2020.
+    Improved - Playback: more memory can be allocated for cache memory.
+    Improved - Annotations: the angle tool now supports font size change.
+    Fixed - Custom tools with identical names could cause a crash which prevented the installed version to launch.
+
 
 0.9.2 - June 2020.
     Added - Bulgarian locale.
