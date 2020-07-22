@@ -139,11 +139,7 @@ namespace Kinovea.ScreenManager
         #region Constructor
         public CalibrationHelper()
         {
-            speedUnit = PreferencesManager.PlayerPreferences.SpeedUnit;
-            accelerationUnit = PreferencesManager.PlayerPreferences.AccelerationUnit;
-            angleUnit = PreferencesManager.PlayerPreferences.AngleUnit;
-            angularVelocityUnit = PreferencesManager.PlayerPreferences.AngularVelocityUnit;
-            angularAccelerationUnit = PreferencesManager.PlayerPreferences.AngularAccelerationUnit;
+            RefreshUnits();
             calibrator = calibrationPlane;
         }
         #endregion
@@ -167,16 +163,22 @@ namespace Kinovea.ScreenManager
             PointF center = imageSize.Center();
             calibrationPlane.Initialize(100, center, new PointF(center.X + 100, center.Y));
 
-            //SetOrigin(imageSize.Center());
             calibrator = calibrationPlane;
 
             distortionHelper = new DistortionHelper();
 
             lengthUnit = LengthUnit.Pixels;
-            speedUnit = SpeedUnit.PixelsPerSecond;
-            accelerationUnit = AccelerationUnit.PixelsPerSecondSquared;
-
+            
             ComputeCoordinateSystemGrid();
+        }
+        
+        public void RefreshUnits()
+        {
+            speedUnit = PreferencesManager.PlayerPreferences.SpeedUnit;
+            accelerationUnit = PreferencesManager.PlayerPreferences.AccelerationUnit;
+            angleUnit = PreferencesManager.PlayerPreferences.AngleUnit;
+            angularVelocityUnit = PreferencesManager.PlayerPreferences.AngularVelocityUnit;
+            angularAccelerationUnit = PreferencesManager.PlayerPreferences.AngularAccelerationUnit;
         }
         
         /// <summary>

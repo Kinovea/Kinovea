@@ -836,12 +836,7 @@ namespace Kinovea.ScreenManager
                 EnableDisableKeyframes();
             }
 
-            m_FrameServer.Metadata.CalibrationHelper.SpeedUnit = PreferencesManager.PlayerPreferences.SpeedUnit;
-            m_FrameServer.Metadata.CalibrationHelper.AccelerationUnit = PreferencesManager.PlayerPreferences.AccelerationUnit;
-            m_FrameServer.Metadata.CalibrationHelper.AngleUnit = PreferencesManager.PlayerPreferences.AngleUnit;
-            m_FrameServer.Metadata.CalibrationHelper.AngularVelocityUnit = PreferencesManager.PlayerPreferences.AngularVelocityUnit;
-            m_FrameServer.Metadata.CalibrationHelper.AngularAccelerationUnit = PreferencesManager.PlayerPreferences.AngularAccelerationUnit;
-
+            m_FrameServer.Metadata.CalibrationHelper.RefreshUnits();
             m_FrameServer.Metadata.UpdateTrajectoriesForKeyframes();
 
             // Refresh image to update timecode in chronos, grids colors, default fading, etc.
