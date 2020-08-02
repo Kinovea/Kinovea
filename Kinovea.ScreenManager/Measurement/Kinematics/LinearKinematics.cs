@@ -84,8 +84,12 @@ namespace Kinovea.ScreenManager
             {
                 PointF a = getCoord(i - 1);
                 PointF b = getCoord(i);
-
                 tsc[Kinematics.LinearDistance][i] = tsc[Kinematics.LinearDistance][i-1] + GetDistance(a, b, Component.Magnitude);
+                
+                // FIXME.
+                // Linear component displacement: X or Y offset but relative to the trajectory origin.
+                // First we need to recompute the trajectory origin at the current time.
+
                 tsc[Kinematics.LinearHorizontalDisplacement][i] = GetDistance(o, b, Component.Horizontal);
                 tsc[Kinematics.LinearVerticalDisplacement][i] = GetDistance(o, b, Component.Vertical);
             }

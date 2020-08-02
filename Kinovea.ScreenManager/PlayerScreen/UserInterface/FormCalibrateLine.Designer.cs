@@ -56,6 +56,8 @@ namespace Kinovea.ScreenManager
       this.nudMeasure = new System.Windows.Forms.NumericUpDown();
       this.cbUnit = new System.Windows.Forms.ComboBox();
       this.lblRealSize = new System.Windows.Forms.Label();
+      this.cbAxis = new System.Windows.Forms.ComboBox();
+      this.lblAxis = new System.Windows.Forms.Label();
       this.grpConfig.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudMeasure)).BeginInit();
       this.SuspendLayout();
@@ -64,7 +66,7 @@ namespace Kinovea.ScreenManager
       // 
       this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.btnOK.Location = new System.Drawing.Point(71, 115);
+      this.btnOK.Location = new System.Drawing.Point(64, 203);
       this.btnOK.Name = "btnOK";
       this.btnOK.Size = new System.Drawing.Size(99, 24);
       this.btnOK.TabIndex = 25;
@@ -76,7 +78,7 @@ namespace Kinovea.ScreenManager
       // 
       this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.btnCancel.Location = new System.Drawing.Point(176, 115);
+      this.btnCancel.Location = new System.Drawing.Point(169, 203);
       this.btnCancel.Name = "btnCancel";
       this.btnCancel.Size = new System.Drawing.Size(99, 24);
       this.btnCancel.TabIndex = 30;
@@ -89,12 +91,14 @@ namespace Kinovea.ScreenManager
       this.grpConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.grpConfig.Controls.Add(this.lblAxis);
+      this.grpConfig.Controls.Add(this.cbAxis);
       this.grpConfig.Controls.Add(this.nudMeasure);
       this.grpConfig.Controls.Add(this.cbUnit);
       this.grpConfig.Controls.Add(this.lblRealSize);
       this.grpConfig.Location = new System.Drawing.Point(12, 12);
       this.grpConfig.Name = "grpConfig";
-      this.grpConfig.Size = new System.Drawing.Size(263, 95);
+      this.grpConfig.Size = new System.Drawing.Size(256, 183);
       this.grpConfig.TabIndex = 29;
       this.grpConfig.TabStop = false;
       this.grpConfig.Text = "Configuration";
@@ -132,17 +136,37 @@ namespace Kinovea.ScreenManager
             | System.Windows.Forms.AnchorStyles.Right)));
       this.lblRealSize.Location = new System.Drawing.Point(20, 22);
       this.lblRealSize.Name = "lblRealSize";
-      this.lblRealSize.Size = new System.Drawing.Size(226, 20);
+      this.lblRealSize.Size = new System.Drawing.Size(219, 20);
       this.lblRealSize.TabIndex = 21;
       this.lblRealSize.Text = "dlgConfigureMeasure_lblRealSize";
       this.lblRealSize.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+      // 
+      // cbAxis
+      // 
+      this.cbAxis.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cbAxis.FormattingEnabled = true;
+      this.cbAxis.Location = new System.Drawing.Point(23, 134);
+      this.cbAxis.Name = "cbAxis";
+      this.cbAxis.Size = new System.Drawing.Size(209, 21);
+      this.cbAxis.TabIndex = 27;
+      // 
+      // lblAxis
+      // 
+      this.lblAxis.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.lblAxis.Location = new System.Drawing.Point(20, 101);
+      this.lblAxis.Name = "lblAxis";
+      this.lblAxis.Size = new System.Drawing.Size(219, 20);
+      this.lblAxis.TabIndex = 28;
+      this.lblAxis.Text = "Axis alignment";
+      this.lblAxis.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
       // 
       // FormCalibrateLine
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.Color.White;
-      this.ClientSize = new System.Drawing.Size(285, 147);
+      this.ClientSize = new System.Drawing.Size(278, 235);
       this.Controls.Add(this.grpConfig);
       this.Controls.Add(this.btnOK);
       this.Controls.Add(this.btnCancel);
@@ -168,5 +192,7 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.GroupBox grpConfig;
         private NumericUpDown nudMeasure;
+        private Label lblAxis;
+        private ComboBox cbAxis;
     }
 }

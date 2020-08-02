@@ -94,6 +94,15 @@ namespace Kinovea.ScreenManager
             get { return calibratorType;}
         }
 
+        /// <summary>
+        /// The method used to map the calibration line to coordinate system axes.
+        /// Only used when calibration is of type line.
+        /// </summary>
+        public CalibrationAxis CalibrationAxis
+        {
+            get { return calibrationPlane.CalibrationAxis; }
+        }
+
         public DistortionHelper DistortionHelper
         {
             get { return distortionHelper; }
@@ -161,7 +170,7 @@ namespace Kinovea.ScreenManager
             calibrationPlane = new CalibrationPlane();
 
             PointF center = imageSize.Center();
-            calibrationPlane.Initialize(100, center, new PointF(center.X + 100, center.Y));
+            calibrationPlane.Initialize(100, center, new PointF(center.X + 100, center.Y), CalibrationAxis.LineHorizontal);
 
             calibrator = calibrationPlane;
 
@@ -217,12 +226,12 @@ namespace Kinovea.ScreenManager
         }
 
         #region Methods specific to a calibration technique
-        public void CalibrationByLine_Initialize(Guid id, float length, PointF a, PointF b)
+        public void CalibrationByLine_Initialize(Guid id, float length, PointF a, PointF b, CalibrationAxis calibrationAxis)
         {
             calibrationDrawingId = id;
             PointF aRectif = distortionHelper.Undistort(a);
             PointF bRectif = distortionHelper.Undistort(b);
-            calibrationPlane.Initialize(length, aRectif, bRectif);
+            calibrationPlane.Initialize(length, aRectif, bRectif, calibrationAxis);
             AfterCalibrationChanged();
         }
 

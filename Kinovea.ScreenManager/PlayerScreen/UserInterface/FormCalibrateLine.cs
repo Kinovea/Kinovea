@@ -78,6 +78,13 @@ namespace Kinovea.ScreenManager
             }
             
             cbUnit.Items.Add(customLengthUnit + " (" + customLengthAbbreviation + ")");
+
+            lblAxis.Text = "Coordinate system alignment:";
+
+            // Combo axis.
+            cbAxis.Items.Add("The line defines the horizontal axis");
+            cbAxis.Items.Add("The line defines the vertical axis");
+            cbAxis.Items.Add("Align to image axes");
         }
         private void InitializeValues()
         {
@@ -91,6 +98,7 @@ namespace Kinovea.ScreenManager
                 {
                     nudMeasure.Value = (decimal)value;
                     cbUnit.SelectedIndex = (int)calibrationHelper.LengthUnit;
+                    cbAxis.SelectedIndex = (int)calibrationHelper.CalibrationAxis;
                     calibrated = true;
                 }
             }
@@ -99,6 +107,7 @@ namespace Kinovea.ScreenManager
             {
                 nudMeasure.Value = 100;
                 cbUnit.SelectedIndex = (int)LengthUnit.Centimeters;
+                cbAxis.SelectedIndex = (int)CalibrationAxis.LineHorizontal;
             }
         }
         #endregion
@@ -114,7 +123,7 @@ namespace Kinovea.ScreenManager
                 
                 calibrationHelper.SetCalibratorFromType(CalibratorType.Line);
                 calibrationHelper.LengthUnit = (LengthUnit)cbUnit.SelectedIndex;
-                calibrationHelper.CalibrationByLine_Initialize(line.Id, length, line.A, line.B);
+                calibrationHelper.CalibrationByLine_Initialize(line.Id, length, line.A, line.B, (CalibrationAxis)cbAxis.SelectedIndex);
             }
             catch
             {

@@ -69,6 +69,11 @@ namespace Kinovea.ScreenManager
         {
             get { return perspective; }
         }
+
+        public CalibrationAxis CalibrationAxis
+        {
+            get { return calibrationAxis; }
+        }
         
         private bool initialized;
         private SizeF size;         // Real-world reference rectangle size.
@@ -77,6 +82,7 @@ namespace Kinovea.ScreenManager
         private bool perspective;
         private ProjectiveMapping mapping = new ProjectiveMapping();
         private PointF origin;      // User-defined origin, in calibrated plane coordinate system.
+        private CalibrationAxis calibrationAxis = CalibrationAxis.LineHorizontal;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         #region ICalibrator
@@ -179,9 +185,10 @@ namespace Kinovea.ScreenManager
         /// length: Real world length of the line.
         /// a, b: Image coordinates of the line vertices.
         /// </summary>
-        public void Initialize(float lengthWorld, PointF startImage, PointF endImage)
+        public void Initialize(float lengthWorld, PointF startImage, PointF endImage, CalibrationAxis calibrationAxis)
         {
-            QuadrilateralF quadImage = MakeQuad(startImage, endImage);
+            this.calibrationAxis = calibrationAxis;
+            QuadrilateralF quadImage = MakeQuad(startImage, endImage, calibrationAxis);
             SizeF sizeWorld = new SizeF(lengthWorld, lengthWorld);
 
             Initialize(sizeWorld, quadImage);
@@ -211,7 +218,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void Update(PointF startImage, PointF endImage)
         {
-            Update(MakeQuad(startImage, endImage));
+            Update(MakeQuad(startImage, endImage, calibrationAxis));
         }
 
         private PointF CalibratedToWorld(PointF p, PointF origin)
@@ -228,16 +235,46 @@ namespace Kinovea.ScreenManager
         /// Build a quadrilateral from a single line.
         /// The quadrilateral will be a square with the original line at the bottom edge.
         /// </summary>
-        private QuadrilateralF MakeQuad(PointF start, PointF end)
+        private QuadrilateralF MakeQuad(PointF start, PointF end, CalibrationAxis calibrationAxis)
         {
-            // Rebuild a quadrilateral as a square, assuming the passed line is the bottom edge, left to right.
-            // The base quadrilateral is defined as ABCD going CW from top-left, 
-            // the line is making up the DC vector which will map to the +X axis.
-            PointF d = start;
-            PointF c = end;
-            PointF a = new PointF(d.X + (c.Y - d.Y), d.Y - (c.X - d.X));
-            PointF b = new PointF(a.X + (c.X - d.X), a.Y + (c.Y - d.Y));
-            return new QuadrilateralF(a, b, c, d);
+            switch (calibrationAxis)
+            {
+                case CalibrationAxis.LineHorizontal:
+                {
+                    // Rebuild a quadrilateral as a square, assuming the passed line is the bottom edge, left to right.
+                    // The base quadrilateral is defined as ABCD going CW from top-left, 
+                    // the line is making up the DC vector which will map to the +X axis.
+                    PointF d = start;
+                    PointF c = end;
+                    PointF a = new PointF(d.X + (c.Y - d.Y), d.Y - (c.X - d.X));
+                    PointF b = new PointF(a.X + (c.X - d.X), a.Y + (c.Y - d.Y));
+                    return new QuadrilateralF(a, b, c, d);
+                }
+                case CalibrationAxis.LineVertical:
+                {
+                    // Rebuild a quadrilateral as a square, assuming the passed line is the left edge, bottom to top.
+                    // The base quadrilateral is defined as ABCD going CW from top-left, 
+                    // the line is making up the DA vector which will map to the +Y axis.
+                    PointF d = start;
+                    PointF a = end;
+                    PointF c = new PointF(d.X + (d.Y - a.Y), d.Y + (a.X - d.X));
+                    PointF b = new PointF(a.X + (c.X - d.X), a.Y + (c.Y - d.Y));
+                    return new QuadrilateralF(a, b, c, d);
+                }
+                case CalibrationAxis.ImageAxes:
+                default:
+                {
+                    // Rebuild a quadrilateral as a square aligned to the normal image axes (except Y goes up).
+                    // The base quadrilateral is defined as ABCD going CW from top-left, 
+                    // the line length is giving the length of the DC edge of the square.
+                    float length = GeometryHelper.GetDistance(start, end);
+                    PointF d = start;
+                    PointF c = new PointF(d.X + length, d.Y);
+                    PointF a = new PointF(d.X + (c.Y - d.Y), d.Y - (c.X - d.X));
+                    PointF b = new PointF(a.X + (c.X - d.X), a.Y + (c.Y - d.Y));
+                    return new QuadrilateralF(a, b, c, d);
+                }
+            }
         }
 
         #region Serialization
@@ -265,6 +302,7 @@ namespace Kinovea.ScreenManager
             w.WriteEndElement();
 
             WritePointF(w, "Origin", origin);
+            w.WriteElementString("Axis", calibrationAxis.ToString());
         }
 
         private void WritePointF(XmlWriter w, string name, PointF p)
@@ -307,6 +345,7 @@ namespace Kinovea.ScreenManager
             r.ReadStartElement();
             float length = 0;
             SegmentF line = SegmentF.Empty;
+            calibrationAxis = CalibrationAxis.LineHorizontal;
 
             while (r.NodeType == XmlNodeType.Element)
             {
@@ -326,6 +365,10 @@ namespace Kinovea.ScreenManager
 
                         origin = origin.Scale(scaling.X, scaling.Y);
                         break;
+                    case "Axis":
+                        calibrationAxis = (CalibrationAxis)Enum.Parse(typeof(CalibrationAxis), r.ReadElementContentAsString());
+                        break;
+
                     case "Scale":
                         // Import and convert from older format.
                         // Create a fake line of 100 px horizontal at the origin.
@@ -350,7 +393,7 @@ namespace Kinovea.ScreenManager
 
             // Update mapping.
             size = new SizeF(length, length);
-            quadImage = MakeQuad(line.Start, line.End);
+            quadImage = MakeQuad(line.Start, line.End, calibrationAxis);
 
             mapping.Update(new QuadrilateralF(size.Width, size.Height), quadImage);
             valid = quadImage.IsConvex;

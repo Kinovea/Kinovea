@@ -13,8 +13,8 @@ namespace Kinovea.ScreenManager
         YRaw,
 
         LinearDistance,                 // Total distance covered since starting point of trajectory.
-        LinearHorizontalDisplacement,   // Total displacement with regards to starting point of trajectory.
-        LinearVerticalDisplacement,     // Total displacement with regards to starting point of trajectory.
+        LinearHorizontalDisplacement,   // Total displacement with regards to starting point of trajectory. The x coordinate but in the system of the trajectory.
+        LinearVerticalDisplacement,     // Displacement with regards to starting point of trajectory. The y coordinate but in the system of the trajectory.
         LinearSpeed,
         LinearHorizontalVelocity,
         LinearVerticalVelocity,
