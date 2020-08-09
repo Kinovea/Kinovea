@@ -56,6 +56,7 @@ namespace Kinovea.ScreenManager
         private CapturedFilesView capturedFilesView;
         private bool recording;
         private bool grabbing;
+        private bool armed = true;
         private DelayCompositeType delayCompositeType = DelayCompositeType.Basic;
         private bool delayUpdating;
         #endregion
@@ -160,6 +161,23 @@ namespace Kinovea.ScreenManager
                 toolTips.SetToolTip(btnGrab, ScreenManagerLang.ToolTip_StartCamera);
             }
         }
+
+        public void UpdateArmedStatus(bool armed)
+        {
+            this.armed = armed;
+
+            if (armed)
+            {
+                btnArm.Image = Properties.Capture.speaker;
+                toolTips.SetToolTip(btnArm, "Disarm the audio trigger. Current status: armed.");
+            }
+            else
+            {
+                btnArm.Image = Properties.Capture.speaker_mute;
+                toolTips.SetToolTip(btnArm, "Arm the audio trigger. Current status: disarmed.");
+            }
+        }
+
         public void UpdateRecordingStatus(bool recording)
         {
             this.recording = recording;
@@ -209,10 +227,7 @@ namespace Kinovea.ScreenManager
             fnbVideo.Filename = filename;
             fnbVideo.Editable = true;
         }
-        public void Toast(string message, int duration)
-        {
-            
-        }
+        
         public void ShowThumbnails()
         {
             if(!pnlCapturedVideos.Visible)
@@ -327,8 +342,12 @@ namespace Kinovea.ScreenManager
         {
             presenter.View_ToggleRecording();
         }
+        private void btnArm_Click(object sender, EventArgs e)
+        {
+            presenter.View_ToggleArmingTrigger();
+        }
         #endregion
-        
+
         #region Private methods (pure Form logic)
         private void ToggleCapturedVideosPanel()
         {
@@ -364,6 +383,11 @@ namespace Kinovea.ScreenManager
                 toolTips.SetToolTip(btnGrab, ScreenManagerLang.ToolTip_PauseCamera);
             else
                 toolTips.SetToolTip(btnGrab, ScreenManagerLang.ToolTip_StartCamera);
+
+            if (armed)
+                toolTips.SetToolTip(btnArm, "Disarm audio trigger. Current status: armed.");
+            else
+                toolTips.SetToolTip(btnArm, "Arm audio trigger. Current status: disarmed.");
         }
         #endregion
 
@@ -438,6 +462,9 @@ namespace Kinovea.ScreenManager
                     {
                         sldrDelay.Force(sldrDelay.Value - 1);
                     }
+                    break;
+                case CaptureScreenCommands.ToggleArmingTrigger:
+                    presenter.View_ToggleArmingTrigger();
                     break;
                 case CaptureScreenCommands.Close:
                     presenter.View_Close();

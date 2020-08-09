@@ -26,7 +26,6 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-
 using Kinovea.Camera;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
@@ -181,7 +180,8 @@ namespace Kinovea.ScreenManager
         private CaptureRecordingMode recordingMode;
         private VideoFileWriter videoFileWriter = new VideoFileWriter();
         private Stopwatch stopwatchRecording = new Stopwatch();
-        
+        private bool triggerArmed = true;
+
         private Delayer delayer = new Delayer();
         private int delay; // The current image age in number of frames.
 
@@ -286,7 +286,7 @@ namespace Kinovea.ScreenManager
 
         public void AudioInputThresholdPassed()
         {
-            if (cameraConnected && !recording)
+            if (cameraConnected && triggerArmed && !recording)
                 ToggleRecording();
         }
 
@@ -449,6 +449,10 @@ namespace Kinovea.ScreenManager
         public void View_DeselectTool()
         {
             metadataManipulator.DeselectTool();
+        }
+        public void View_ToggleArmingTrigger()
+        {
+            ToggleArmingTrigger();
         }
         #endregion
         #endregion
@@ -757,7 +761,7 @@ namespace Kinovea.ScreenManager
             if (cameraConnected)
             {
                 Disconnect();
-                view.Toast(ScreenManagerLang.Toast_Pause, 750);
+                viewportController.ToastMessage(ScreenManagerLang.Toast_Pause, 750);
             }
             else
             {
@@ -1082,7 +1086,7 @@ namespace Kinovea.ScreenManager
             }
 
             ImageHelper.Save(path, bitmap);
-            view.Toast(ScreenManagerLang.Toast_ImageSaved, 750);
+            viewportController.ToastMessage(ScreenManagerLang.Toast_ImageSaved, 750);
 
             // After save routines.
             AddCapturedFile(path, bitmap, false);
@@ -1177,6 +1181,17 @@ namespace Kinovea.ScreenManager
 
             DialogResult result = MessageBox.Show(msgText, msgTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
             return result == DialogResult.Yes;
+        }
+
+        private void ToggleArmingTrigger()
+        {
+            triggerArmed = !triggerArmed;
+
+            view.UpdateArmedStatus(triggerArmed);
+            if (triggerArmed)
+                viewportController.ToastMessage("Audio trigger armed", 1000);
+            else
+                viewportController.ToastMessage("Audio trigger disarmed", 1000);
         }
         
         private void ToggleRecording()
@@ -1284,7 +1299,7 @@ namespace Kinovea.ScreenManager
                     stopwatchRecording.Restart();
                 
                     view.UpdateRecordingStatus(recording);
-                    view.Toast(ScreenManagerLang.Toast_StartRecord, 1000);
+                    viewportController.ToastMessage(ScreenManagerLang.Toast_StartRecord, 1000);
 
                     if (RecordingStarted != null)
                         RecordingStarted(this, EventArgs.Empty);
@@ -1333,7 +1348,7 @@ namespace Kinovea.ScreenManager
                 else
                     log.Debug(dropMessage);
 
-                view.Toast(ScreenManagerLang.Toast_StopRecord, 750);
+                viewportController.ToastMessage(ScreenManagerLang.Toast_StopRecord, 750);
 
                 AfterStopRecording(finalFilename);
             }
@@ -1350,7 +1365,7 @@ namespace Kinovea.ScreenManager
 
                 string dropMessage = string.Format("Dropped frames: {0}.", pipelineManager.Drops);
                 log.Debug(dropMessage);
-                view.Toast(ScreenManagerLang.Toast_StopRecord, 750);
+                viewportController.ToastMessage(ScreenManagerLang.Toast_StopRecord, 750);
             }
         }
 

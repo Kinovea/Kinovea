@@ -147,6 +147,11 @@ namespace Kinovea.ScreenManager
             if(DisplayRectangleUpdated != null)
                 DisplayRectangleUpdated(this, EventArgs.Empty);
         }
+
+        public void ToastMessage(string message, int duration)
+        {
+            view.ToastMessage(message, duration);
+        }
         
         public void DrawKVA(Graphics canvas, Point location, float zoom)
         {

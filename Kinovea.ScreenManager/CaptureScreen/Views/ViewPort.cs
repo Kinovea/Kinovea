@@ -101,6 +101,12 @@ namespace Kinovea.ScreenManager
         {
             this.ContextMenuStrip = menuStrip;
         }
+
+        public void ToastMessage(string message, int duration)
+        {
+            toaster.SetDuration(duration);
+            toaster.Show(message);
+        }
         
         #region Drawing
         protected override void OnPaint(PaintEventArgs e)
@@ -270,17 +276,17 @@ namespace Kinovea.ScreenManager
         
         private void ToastZoom()
         {
-            toaster.SetDuration(750);
             string message = "";
-            if(zoomHelper.Value <= 1.0f)
+            if (zoomHelper.Value <= 1.0f)
                 message = string.Format("{0:0}%", Math.Round(zoomHelper.Value * 100));
-            else if(zoomHelper.Value < 10.0f)
+            else if (zoomHelper.Value < 10.0f)
                 message = string.Format("{0:0.0}x", Math.Round(zoomHelper.Value, 1));
             else
                 message = string.Format("{0:0}x", Math.Round(zoomHelper.Value));
-            
+
             message = string.Format("Zoom:{0}", message);
-            toaster.Show(message);
+
+            ToastMessage(message, 750);
         }
         
         private void ForceZoomValue()

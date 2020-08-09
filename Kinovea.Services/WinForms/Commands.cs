@@ -117,6 +117,7 @@ namespace Kinovea.Services
         ResetZoom,
         IncreaseDelay,
         DecreaseDelay,
+        ToggleArmingTrigger,
         Close
     }
 
