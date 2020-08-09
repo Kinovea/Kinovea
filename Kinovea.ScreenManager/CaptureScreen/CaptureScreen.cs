@@ -38,6 +38,7 @@ using System.Diagnostics;
 using Kinovea.Video.FFMpeg;
 using System.Text;
 using System.Runtime.InteropServices;
+using Microsoft.Win32;
 
 namespace Kinovea.ScreenManager
 {
@@ -243,10 +244,19 @@ namespace Kinovea.ScreenManager
             pipelineManager.FrameSignaled += pipelineManager_FrameSignaled;
 
             shortId = this.id.ToString().Substring(0, 4);
+
+            SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
+        }
+
+        private void SystemEvents_PowerModeChanged(object sender, PowerModeChangedEventArgs e)
+        {
+            // The computer is about to be suspended, disconnect from the cameras.
+            if (e.Mode == PowerModes.Suspend)
+                ForceGrabbingStatus(false);
         }
 
         #region Public methods
-        
+
         public void SetShared(bool shared)
         {
             this.shared = shared;
@@ -337,6 +347,8 @@ namespace Kinovea.ScreenManager
             }
 
             metadata.Close();
+
+            SystemEvents.PowerModeChanged -= SystemEvents_PowerModeChanged;
         }
         public override void AfterClose()
         {
