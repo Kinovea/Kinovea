@@ -66,7 +66,7 @@ namespace Kinovea.Root
                 CommandLineArgumentManager.Instance.ParseArguments(args);
 
             Software.ConfigureInstance();
-            if (!string.IsNullOrEmpty(LaunchSettingsManager.Name) && PreferencesManager.GeneralPreferences.InstancesOwnPreferences)
+            if (!string.IsNullOrEmpty(Software.InstanceName) && PreferencesManager.GeneralPreferences.InstancesOwnPreferences)
                 PreferencesManager.Initialize();
 
             log.Debug("Application level initialisations.");
