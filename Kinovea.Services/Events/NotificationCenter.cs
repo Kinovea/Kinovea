@@ -108,5 +108,12 @@ namespace Kinovea.Services
             if (PreferencesOpened != null)
                 PreferencesOpened(sender, EventArgs.Empty);
         }
+
+        public static EventHandler CaptureTriggered;
+        public static void RaiseCaptureTriggered(object sender)
+        {
+            if (CaptureTriggered != null)
+                CaptureTriggered(sender, EventArgs.Empty);
+        }
     }
 }

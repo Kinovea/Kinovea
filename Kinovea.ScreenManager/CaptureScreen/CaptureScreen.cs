@@ -284,7 +284,10 @@ namespace Kinovea.ScreenManager
             MakeSnapshot();
         }
 
-        public void AudioInputThresholdPassed()
+        /// <summary>
+        /// Start capture if armed.
+        /// </summary>
+        public void TriggerCapture()
         {
             if (cameraConnected && triggerArmed && !recording)
                 ToggleRecording();
@@ -1189,9 +1192,9 @@ namespace Kinovea.ScreenManager
 
             view.UpdateArmedStatus(triggerArmed);
             if (triggerArmed)
-                viewportController.ToastMessage("Audio trigger armed", 1000);
+                viewportController.ToastMessage("Capture trigger armed", 1000);
             else
-                viewportController.ToastMessage("Audio trigger disarmed", 1000);
+                viewportController.ToastMessage("Capture trigger disarmed", 1000);
         }
         
         private void ToggleRecording()

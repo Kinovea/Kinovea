@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Kinovea.Services;
 
@@ -45,6 +46,7 @@ namespace Kinovea.Root
         private bool fullScreen;
         private Rectangle memoBounds;
         private FormWindowState memoWindowState;
+        private const string COMMAND_TRIGGERCAPTURE = "2b0576a5-43fb-4b92-8e55-a13aea656ee5";
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -65,6 +67,8 @@ namespace Kinovea.Root
             this.Controls.Add(supervisorView);
             supervisorView.Dock = DockStyle.Fill;
             supervisorView.BringToFront();
+
+            EnableCopyData();
         }
         #endregion
 
@@ -113,6 +117,52 @@ namespace Kinovea.Root
         private void UserInterface_FormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = rootKernel.CloseSubModules();
+        }
+
+        private void EnableCopyData()
+        {
+            NativeMethods.CHANGEFILTERSTRUCT changeFilter = new NativeMethods.CHANGEFILTERSTRUCT();
+            changeFilter.size = (uint)Marshal.SizeOf(changeFilter);
+            changeFilter.info = 0;
+            if (!NativeMethods.ChangeWindowMessageFilterEx(this.Handle, NativeMethods.WM_COPYDATA, NativeMethods.ChangeWindowMessageFilterExAction.Allow, ref changeFilter))
+            {
+                int error = Marshal.GetLastWin32Error();
+                log.ErrorFormat("Error while trying to enable WM_COPYDATA: {0}", error);
+            }
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg != NativeMethods.WM_COPYDATA)
+            {
+                base.WndProc(ref m);
+                return;
+            }
+
+            //-------------------------------
+            // Handle WM_COPYDATA.
+            // Supported commands: 
+            // - Trigger capture.
+            //-------------------------------
+            log.DebugFormat("Received WM_COPYDATA.");
+                
+            NativeMethods.COPYDATASTRUCT copyData = (NativeMethods.COPYDATASTRUCT)Marshal.PtrToStructure(m.LParam, typeof(NativeMethods.COPYDATASTRUCT));
+            int dataType = (int)copyData.dwData;
+            if (dataType != 0)
+                return;
+                
+            string commandId = Marshal.PtrToStringUni(copyData.lpData);
+            if (commandId == COMMAND_TRIGGERCAPTURE)
+            {
+                log.DebugFormat("Received capture trigger command.");
+                NotificationCenter.RaiseCaptureTriggered(this);
+            }
+            else
+            {
+                log.ErrorFormat("Unrecognized command.");
+            }
+    
+            return;
         }
         #endregion
     }

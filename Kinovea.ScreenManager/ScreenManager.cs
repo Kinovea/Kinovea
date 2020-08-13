@@ -167,13 +167,14 @@ namespace Kinovea.ScreenManager
 
             audioInputLevelMonitor.Enabled = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger;
             audioInputLevelMonitor.Threshold = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioTriggerThreshold;
-            audioInputLevelMonitor.ThresholdPassed += AudioLevelMonitor_ThresholdPassed;
+            audioInputLevelMonitor.ThresholdPassed += (s, e) => TriggerCapture();
 
             InitializeVideoFilters();
             InitializeGuideWatcher();
 
             NotificationCenter.StopPlayback += (s, e) => DoStopPlaying();
             NotificationCenter.PreferencesOpened += NotificationCenter_PreferencesOpened;
+            NotificationCenter.CaptureTriggered += (s, e) => TriggerCapture();
 
             playerScreens = screenList.Where(s => s is PlayerScreen).Select(s => s as PlayerScreen);
             captureScreens = screenList.Where(s => s is CaptureScreen).Select(s => s as CaptureScreen);
@@ -2020,6 +2021,7 @@ namespace Kinovea.ScreenManager
         private void mnuToggleCommonCtrlsOnClick(object sender, EventArgs e)
         {
             view.ToggleCommonControls();
+           
         }
         #endregion
 
@@ -2341,10 +2343,10 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        private void AudioLevelMonitor_ThresholdPassed(object source, EventArgs e)
+        private void TriggerCapture()
         {
             foreach (CaptureScreen screen in captureScreens)
-                screen.AudioInputThresholdPassed();
+                screen.TriggerCapture();
         }
         private void NotificationCenter_PreferencesOpened(object source, EventArgs e)
         {
