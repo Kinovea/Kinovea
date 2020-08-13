@@ -141,14 +141,27 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void StepJump(double relativeTarget)
         {
+            if (relativeTarget == 0)
+                return;
+
             double stepSize = (max - min) * Math.Abs(relativeTarget);
-            double current = (val - min) / stepSize;
-            double target = val;
+            double currentStep = (val - min) / stepSize;
+            double memoValue = val;
+            double minIncrement = 1.0;
+            double target;
 
             if (relativeTarget > 0)
-                target = min + ((Math.Floor(current) + 1) * stepSize);
+            {
+                target = min + ((Math.Floor(currentStep) + 1) * stepSize);
+                if (target - val <= minIncrement)
+                    target = min + ((Math.Floor(currentStep) + 2) * stepSize);
+            }
             else
-                target = min + ((Math.Ceiling(current) - 1) * stepSize);
+            {
+                target = min + ((Math.Ceiling(currentStep) - 1) * stepSize);
+                if (val - target <= minIncrement)
+                    target = min + ((Math.Ceiling(currentStep) - 2) * stepSize);
+            }
 
             val = Math.Max(Math.Min(target, max), min);
             valPix = ValueToPixel(val);
