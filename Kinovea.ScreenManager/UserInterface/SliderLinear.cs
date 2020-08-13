@@ -146,7 +146,6 @@ namespace Kinovea.ScreenManager
 
             double stepSize = (max - min) * Math.Abs(relativeTarget);
             double currentStep = (val - min) / stepSize;
-            double memoValue = val;
             double minIncrement = 1.0;
             double target;
 

@@ -169,12 +169,12 @@ namespace Kinovea.ScreenManager
             if (armed)
             {
                 btnArm.Image = Properties.Capture.speaker;
-                toolTips.SetToolTip(btnArm, "Disarm the audio trigger. Current status: armed.");
+                toolTips.SetToolTip(btnArm, "Disarm capture trigger. Current status: armed.");
             }
             else
             {
                 btnArm.Image = Properties.Capture.speaker_mute;
-                toolTips.SetToolTip(btnArm, "Arm the audio trigger. Current status: disarmed.");
+                toolTips.SetToolTip(btnArm, "Arm capture trigger. Current status: disarmed.");
             }
         }
 
@@ -385,9 +385,9 @@ namespace Kinovea.ScreenManager
                 toolTips.SetToolTip(btnGrab, ScreenManagerLang.ToolTip_StartCamera);
 
             if (armed)
-                toolTips.SetToolTip(btnArm, "Disarm audio trigger. Current status: armed.");
+                toolTips.SetToolTip(btnArm, "Disarm capture trigger. Current status: armed.");
             else
-                toolTips.SetToolTip(btnArm, "Arm audio trigger. Current status: disarmed.");
+                toolTips.SetToolTip(btnArm, "Arm capture trigger. Current status: disarmed.");
         }
         #endregion
 
@@ -451,18 +451,65 @@ namespace Kinovea.ScreenManager
                 case CaptureScreenCommands.OpenConfiguration:
                     presenter.View_Configure();
                     break;
-                case CaptureScreenCommands.IncreaseDelay:
-                    if (delayCompositeType == DelayCompositeType.Basic)
-                    {
-                        sldrDelay.Force(sldrDelay.Value + 1);
-                    }
+
+                case CaptureScreenCommands.GotoPreviousImage:
+                    sldrDelay.Force(sldrDelay.Value - 1);
                     break;
-                case CaptureScreenCommands.DecreaseDelay:
-                    if (delayCompositeType == DelayCompositeType.Basic)
-                    {
-                        sldrDelay.Force(sldrDelay.Value - 1);
-                    }
+                case CaptureScreenCommands.GotoFirstImage:
+                    sldrDelay.Force(sldrDelay.Minimum);
                     break;
+                case CaptureScreenCommands.BackwardRound10Percent:
+                        sldrDelay.StepJump(-0.1);
+                        break;
+                case CaptureScreenCommands.BackwardRound1Percent:
+                    sldrDelay.StepJump(-0.01);
+                    break;
+                case CaptureScreenCommands.GotoNextImage:
+                    sldrDelay.Force(sldrDelay.Value + 1);
+                    break;
+                case CaptureScreenCommands.GotoLastImage:
+                    sldrDelay.Force(sldrDelay.Maximum);
+                    break;
+                case CaptureScreenCommands.ForwardRound10Percent:
+                    sldrDelay.StepJump(0.1);
+                    break;
+                case CaptureScreenCommands.ForwardRound1Percent:
+                    sldrDelay.StepJump(0.01);
+                    break;
+                case CaptureScreenCommands.IncreaseDelayOneFrame:
+                    sldrDelay.Force(sldrDelay.Value + 1);
+                    break;
+                case CaptureScreenCommands.IncreaseDelayHalfSecond:
+                    {
+                        double framerate = sldrDelay.Maximum / (double)nudDelay.Maximum;
+                        double target = framerate / 2.0;
+                        sldrDelay.StepJump(target / sldrDelay.Maximum);
+                        break;
+                    }
+                case CaptureScreenCommands.IncreaseDelayOneSecond:
+                    {
+                        double framerate = sldrDelay.Maximum / (double)nudDelay.Maximum;
+                        double target = framerate;
+                        sldrDelay.StepJump(target / sldrDelay.Maximum);
+                        break;
+                    }
+                case CaptureScreenCommands.DecreaseDelayOneFrame:
+                    sldrDelay.Force(sldrDelay.Value - 1);
+                    break;
+                case CaptureScreenCommands.DecreaseDelayHalfSecond:
+                    {
+                        double framerate = sldrDelay.Maximum / (double)nudDelay.Maximum;
+                        double target = framerate / 2.0;
+                        sldrDelay.StepJump( - target / sldrDelay.Maximum);
+                        break;
+                    }
+                case CaptureScreenCommands.DecreaseDelayOneSecond:
+                    {
+                        double framerate = sldrDelay.Maximum / (double)nudDelay.Maximum;
+                        double target = framerate;
+                        sldrDelay.StepJump( - target / sldrDelay.Maximum);
+                        break;
+                    }
                 case CaptureScreenCommands.ToggleArmingTrigger:
                     presenter.View_ToggleArmingTrigger();
                     break;

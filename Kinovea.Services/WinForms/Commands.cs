@@ -115,8 +115,22 @@ namespace Kinovea.Services
         IncreaseZoom,
         DecreaseZoom,
         ResetZoom,
-        IncreaseDelay,
-        DecreaseDelay,
+
+        GotoPreviousImage,
+        GotoFirstImage,
+        BackwardRound10Percent,
+        BackwardRound1Percent,
+        GotoNextImage,
+        GotoLastImage,
+        ForwardRound10Percent,
+        ForwardRound1Percent,
+
+        IncreaseDelayOneSecond,
+        IncreaseDelayHalfSecond,
+        IncreaseDelayOneFrame,
+        DecreaseDelayOneSecond,
+        DecreaseDelayHalfSecond,
+        DecreaseDelayOneFrame,
         ToggleArmingTrigger,
         Close
     }

@@ -226,8 +226,20 @@ namespace Kinovea.Services
                     //hk(CaptureScreenCommands.IncreaseZoom, Keys.Control | Keys.Add), 
                     //hk(CaptureScreenCommands.DecreaseZoom, Keys.Control | Keys.Subtract), 
                     //hk(CaptureScreenCommands.ResetZoom, Keys.Control | Keys.NumPad0), 
-                    hk(CaptureScreenCommands.IncreaseDelay, Keys.Up),
-                    hk(CaptureScreenCommands.DecreaseDelay, Keys.Down), 
+                    hk(CaptureScreenCommands.GotoPreviousImage, Keys.Left),
+                    hk(CaptureScreenCommands.GotoFirstImage, Keys.Home),
+                    hk(CaptureScreenCommands.BackwardRound10Percent, Keys.PageUp),
+                    hk(CaptureScreenCommands.BackwardRound1Percent, Keys.Shift | Keys.PageUp),
+                    hk(CaptureScreenCommands.GotoNextImage, Keys.Right),
+                    hk(CaptureScreenCommands.GotoLastImage, Keys.End),
+                    hk(CaptureScreenCommands.ForwardRound10Percent, Keys.PageDown),
+                    hk(CaptureScreenCommands.ForwardRound1Percent, Keys.Shift | Keys.PageDown),
+                    hk(CaptureScreenCommands.IncreaseDelayOneFrame, Keys.Control | Keys.Up),
+                    hk(CaptureScreenCommands.IncreaseDelayHalfSecond, Keys.Shift | Keys.Up),
+                    hk(CaptureScreenCommands.IncreaseDelayOneSecond, Keys.Up),
+                    hk(CaptureScreenCommands.DecreaseDelayOneFrame, Keys.Control | Keys.Down), 
+                    hk(CaptureScreenCommands.DecreaseDelayHalfSecond, Keys.Shift | Keys.Down), 
+                    hk(CaptureScreenCommands.DecreaseDelayOneSecond, Keys.Down), 
                     hk(CaptureScreenCommands.Close, Keys.Control | Keys.F4)
                     }
                 }
