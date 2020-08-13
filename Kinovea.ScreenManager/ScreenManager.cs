@@ -703,7 +703,7 @@ namespace Kinovea.ScreenManager
         }
         private void Player_SelectionChanged(object sender, EventArgs<bool> e)
         {
-            PrepareSync();
+            ResetSync();
 
             dualLaunchSettingsPendingCountdown--;
 
@@ -715,7 +715,7 @@ namespace Kinovea.ScreenManager
         {
             // A screen was reset. (ex: a video was reloded in place).
             // We need to also reset all the sync states.
-            PrepareSync();
+            ResetSync();
         }
         #endregion
 
@@ -2021,7 +2021,10 @@ namespace Kinovea.ScreenManager
         private void mnuToggleCommonCtrlsOnClick(object sender, EventArgs e)
         {
             view.ToggleCommonControls();
-           
+
+            // Reset synchronization. 
+            // This will allow the shortcuts to only be routed to the active screen if the dual controls aren't visible.
+            ResetSync();
         }
         #endregion
 
@@ -2355,14 +2358,17 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Screen organization
-        private void PrepareSync()
+        /// <summary>
+        /// Disable synchronization or reset it to the screens' time origins.
+        /// This should be called any time the screen list change, working zones change, dual controls visiblity changes.
+        /// </summary>
+        private void ResetSync()
         {
-            // Called each time the screen list change or when a screen changed selection.
-
             foreach (PlayerScreen p in playerScreens)
                 p.Synched = false;
 
-            dualPlayer.ResetSync();
+            if (view.CommonControlsVisible)
+                dualPlayer.ResetSync();
         }
         public void AddPlayerScreen()
         {
