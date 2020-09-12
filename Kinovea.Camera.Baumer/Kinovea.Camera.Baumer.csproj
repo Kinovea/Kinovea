@@ -77,6 +77,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaumerHelper.cs" />
+    <Compile Include="BaumerProvider.cs" />
+    <Compile Include="BufferEventArgs.cs" />
     <Compile Include="CameraManagerBaumer.cs" />
     <Compile Include="FrameGrabber.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

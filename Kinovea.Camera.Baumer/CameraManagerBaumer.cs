@@ -45,7 +45,7 @@ namespace Kinovea.Camera.Baumer
         private int discoveryStep = 0;
         private int discoverySkip = 5;
         private BGAPI2.SystemList systemList;
-        private BGAPI2.System system;
+        private Dictionary<string, BGAPI2.System> systems = new Dictionary<string, BGAPI2.System>();
         private Dictionary<string, uint> deviceIndices = new Dictionary<string, uint>();
         #endregion
 
@@ -61,7 +61,26 @@ namespace Kinovea.Camera.Baumer
             try
             {
                 systemList = SystemList.Instance;
-                result = true;
+
+                // Collect usable systems.
+                systemList.Refresh();
+                foreach (KeyValuePair<string, BGAPI2.System> systemPair in systemList)
+                {
+                    BGAPI2.System system = systemPair.Value;
+                    if (!system.Vendor.Contains("Baumer"))
+                        continue;
+
+                    system.Open();
+                    if (string.IsNullOrEmpty(system.Id))
+                    {
+                        system.Close();
+                        continue;
+                    }
+
+                    systems.Add(systemPair.Key, system);
+                }
+
+                result = systems.Count > 0;
             }
             catch (Exception e)
             {
@@ -80,27 +99,30 @@ namespace Kinovea.Camera.Baumer
             // List the systems.
             // This will look for anything that implements GenAPI and initialize it, it needs to be 
             // uninitialized otherwise other cameras modules could fail.
-            systemList.Refresh();
-            
+            //systemList.Refresh();
+            //log.DebugFormat("Baumer system list refresh. Looking for devices.");
+
             try
             {
                 // Collect all the devices.
-                foreach (KeyValuePair<string, BGAPI2.System> systemPair in systemList)
+                //foreach (KeyValuePair<string, BGAPI2.System> systemPair in systemList)
+                //foreach (BGAPI2.System system in systems)
+                foreach (KeyValuePair<string, BGAPI2.System> systemPair in systems)
                 {
                     BGAPI2.System system = systemPair.Value;
-                    if (!system.Vendor.Contains("Baumer"))
+                    //if (!system.Vendor.Contains("Baumer"))
+                      //  continue;
+
+                    if (!system.IsOpen)
                         continue;
 
-                    if (system.IsOpen)
-                        continue;
+                    //system.Open();
+                    //if (string.IsNullOrEmpty(system.Id))
+                    //{
+                    //    system.Close();
+                    //    continue;
+                    //}
 
-                    system.Open();
-                    if (string.IsNullOrEmpty(system.Id))
-                    {
-                        system.Close();
-                        continue;
-                    }
-                
                     system.Interfaces.Refresh(100);
                     foreach (KeyValuePair<string, BGAPI2.Interface> interfacePair in system.Interfaces)
                     {
@@ -115,8 +137,8 @@ namespace Kinovea.Camera.Baumer
                         iface.Devices.Refresh(100);
                         foreach (KeyValuePair<string, BGAPI2.Device> devicePair in iface.Devices)
                         {
-                            BGAPI2.Device device = devicePair.Value;    
-                        
+                            BGAPI2.Device device = devicePair.Value;
+                            log.DebugFormat("Found device: {0}", device.DisplayName);
                             string identifier = device.SerialNumber;
                             bool cached = cache.ContainsKey(identifier);
                             if (cached)
@@ -157,7 +179,7 @@ namespace Kinovea.Camera.Baumer
                                 }
                             }
 
-
+                            // Keep temporary info in order to find it back later.
                             specific.DeviceKey = devicePair.Key;
                             specific.InterfaceKey = interfacePair.Key;
                             specific.SystemKey = systemPair.Key;
@@ -173,10 +195,8 @@ namespace Kinovea.Camera.Baumer
                         iface.Close();
                     }
 
-                    system.Close();
+                    //system.Close();
                 }
-
-                systemList.Clear();
             }
             catch (Exception e)
             {
@@ -184,9 +204,8 @@ namespace Kinovea.Camera.Baumer
             }
             finally
             {
-
-
-
+                //systemList.Clear();
+                //log.DebugFormat("Baumer system list clear.");
             }
 
 
@@ -198,7 +217,10 @@ namespace Kinovea.Camera.Baumer
             }
 
             foreach (CameraSummary summary in lost)
+            {
+                log.DebugFormat("Lost device: {0}", summary.Name);
                 cache.Remove(summary.Identifier);
+            }
 
             return summaries;
         }
@@ -230,9 +252,8 @@ namespace Kinovea.Camera.Baumer
 
         public override ICaptureSource CreateCaptureSource(CameraSummary summary)
         {
-            //FrameGrabber grabber = new FrameGrabber(summary, igxFactory);
-            //return grabber;
-            return null;
+            FrameGrabber grabber = new FrameGrabber(summary);
+            return grabber;
         }
 
         public override bool Configure(CameraSummary summary)

@@ -51,16 +51,7 @@ namespace Kinovea.Camera.Baumer
         private ImageDescriptor imageDescriptor = ImageDescriptor.Invalid;
         private CameraSummary summary;
         private EventWaitHandle waitHandle = new AutoResetEvent(false);
-
-        private BGAPI2.System system;
-        private BGAPI2.Interface interf;
-        private BGAPI2.Device device;
-        private BGAPI2.DataStream dataStream;
-        private BGAPI2.BufferList bufferList;
-
-        //private int width;
-        //private int height;
-        //private bool isColor;
+        private BaumerProvider baumerProvider = new BaumerProvider();
         private bool cancelled;
         private bool hadError;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -69,108 +60,6 @@ namespace Kinovea.Camera.Baumer
         public SnapshotRetriever(CameraSummary summary)
         {
             this.summary = summary;
-            SpecificInfo specific = summary.Specific as SpecificInfo;
-
-            try
-            {
-                // Look for the device.
-                SystemList systemList = SystemList.Instance;
-                systemList.Refresh();
-
-                foreach (KeyValuePair<string, BGAPI2.System> systemPair in systemList)
-                {
-                    if (systemPair.Key != specific.SystemKey)
-                        continue;
-
-                    system = systemPair.Value;
-                    system.Open();
-                    break;
-                }
-
-                if (system == null)
-                    return;
-                    
-                system.Interfaces.Refresh(100);
-                foreach (KeyValuePair<string, BGAPI2.Interface> interfacePair in system.Interfaces)
-                {
-                    if (interfacePair.Key != specific.InterfaceKey)
-                        continue;
-
-                    interf = interfacePair.Value;
-                    interf.Open();
-                    break;
-                }
-
-                if (interf == null)
-                {
-                    system.Close();
-                    return;
-                }
-        
-                interf.Devices.Refresh(100);
-                foreach (KeyValuePair<string, BGAPI2.Device> devicePair in interf.Devices)
-                {
-                    if (devicePair.Key != specific.DeviceKey)
-                        continue;
-
-                    device = devicePair.Value;
-                    device.Open();
-                    break;
-                }
-
-                if (device == null)
-                {
-                    interf.Close();
-                    system.Close();
-                    return;
-                }
-
-                DataStreamList dataStreamList = device.DataStreams;
-                dataStreamList.Refresh();
-                foreach (KeyValuePair<string, BGAPI2.DataStream> dataStreamPair in dataStreamList)
-                {
-                    if (string.IsNullOrEmpty(dataStreamPair.Key))
-                        continue;
-
-                    dataStream = dataStreamPair.Value;
-                    dataStream.Open();
-                    break;
-                }
-
-                if (dataStream == null)
-                {
-                    device.Close();
-                    interf.Close();
-                    system.Close();
-                    return;
-                }
-
-                // Use buffers internal to the API.
-                bufferList = dataStream.BufferList;
-                int countBuffers = 4;
-                for (int i = 0; i < countBuffers; i++)
-                {
-                    BGAPI2.Buffer buffer = new BGAPI2.Buffer();
-                    
-                    bufferList.Add(buffer);
-
-                    ulong memSize = buffer.MemSize;
-                    log.DebugFormat("Buffer mem size: {0}", memSize);
-                }
-
-                if (bufferList != null && bufferList.Count == countBuffers)
-                {
-                    foreach (KeyValuePair<string, BGAPI2.Buffer> bufferPair in bufferList)
-                        bufferPair.Value.QueueBuffer();
-                }
-
-                //width = (int)device.RemoteNodeList["Width"].Value.ToLong();
-                //height = (int)device.RemoteNodeList["Height"].Value.ToLong();
-            }
-            catch (Exception e)
-            {
-                LogError(e, "Failed to open device");
-            }
         }
 
         /// <summary>
@@ -179,116 +68,40 @@ namespace Kinovea.Camera.Baumer
         /// </summary>
         public void Run(object data)
         {
-            if (system == null || interf == null || device == null || dataStream == null || bufferList == null || bufferList.Count == 0)
+            Thread.CurrentThread.Name = string.Format("{0} thumbnailer", summary.Alias);
+            log.DebugFormat("Starting {0} for thumbnail.", summary.Alias);
+
+            SpecificInfo specific = summary.Specific as SpecificInfo;
+            bool opened = baumerProvider.Open(specific.SystemKey, specific.InterfaceKey, specific.DeviceKey);
+
+            if (!opened)
             {
-                Close();
                 if (CameraThumbnailProduced != null)
                     CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, null, ImageDescriptor.Invalid, true, false));
 
                 return;
             }
 
-            Thread.CurrentThread.Name = string.Format("{0} thumbnailer", summary.Alias);
-            log.DebugFormat("Starting {0} for thumbnail.", summary.Alias);
+            baumerProvider.BufferProduced += BaumerProducer_BufferProduced;
 
             try
             {
-                // Start continuous acquisition.
-                dataStream.StartAcquisition();
-
-                device.RemoteNodeList["AcquisitionStart"].Execute();
-
-                BGAPI2.Buffer bufferFilled = bufferFilled = dataStream.GetFilledBuffer(1000);
-                if (bufferFilled != null && !bufferFilled.IsIncomplete)
-                {
-                    ulong width = bufferFilled.Width;
-                    ulong height = bufferFilled.Height;
-                    string pixFmt = bufferFilled.PixelFormat;
-                    IntPtr bytes = bufferFilled.MemPtr;
-                    ulong byteCount = (ulong)bufferFilled.MemSize;
-
-                    // bufferFilled.MemPtr contains native memory of the Bayer pattern frame.
-
-                    BGAPI2.ImageProcessor imgProcessor = new BGAPI2.ImageProcessor();
-                    if (imgProcessor.NodeList.GetNodePresent("DemosaicingMethod") == true)
-                    {
-                        imgProcessor.NodeList["DemosaicingMethod"].Value = "NearestNeighbor";
-                        //imgProcessor.NodeList["DemosaicingMethod"].Value = "Bilinear3x3";
-                    }
-
-                    //BGAPI2.Node pixelFormatInfoSelector = imgProcessor.NodeList["PixelFormatInfoSelector"];
-                    BGAPI2.Node bytesPerPixel = imgProcessor.NodeList["BytesPerPixel"];
-                    long bpp = bytesPerPixel.IsAvailable ? bytesPerPixel.Value.ToLong() : 1;
-
-                    //BGAPI2.Image transformImage = null;
-                    //byte[] transformImageBufferCopy;
-
-                    // Demosaicing of the image.
-                    // TODO: only do this if the image is Bayer pattern.
-                    BGAPI2.Image img = imgProcessor.CreateImage((uint)width, (uint)height, pixFmt, bytes, byteCount);
-                    BGAPI2.Image img2 = imgProcessor.CreateTransformedImage(img, "BGR8");
-
-
-                    //image = imgProcessor.CreateBitmap(img, true);
-
-                    //if (bpp == 3)
-                        FillRGB24(img2.Buffer, (int)img2.Width, (int)img2.Height);
-                    //else if (bpp == 1)
-                      //  FillY800(img2.Buffer, (int)img2.Width, (int)img2.Height);
-
-                    if (img != null) 
-                        img.Release();
-                    
-                    if (img2 != null) 
-                        img2.Release();
-
-                    //mTransformImage = imgProcessor.CreateTransformedImage(mImage, "Mono8");
-
-                    //byte[] imageBufferCopy;
-                    //imageBufferCopy = new byte[(uint)((uint)img.Width * (uint)img.Height * fBytesPerPixel)];
-                    //Marshal.Copy(img.Buffer, imageBufferCopy, 0, (int)((int)img.Width * (int)img.Height * fBytesPerPixel));
-                    //ulong imageBufferAddress = (ulong)img.Buffer;
-
-                    //if (img.PixelFormat.StartsWith("Mono"))  // if pixel format starts with "Mono"
-                    //{
-                    //    //transform to Mono8
-                    //    //mTransformImage = imgProcessor.CreateTransformedImage(mImage, "Mono8");
-
-                    //}
-
-
-
-
-                    bufferFilled.QueueBuffer();
-                }
-                
-                if (device.RemoteNodeList.GetNodePresent("AcquisitionAbort"))
-                {
-                    device.RemoteNodeList["AcquisitionAbort"].Execute();
-                }
-
-                device.RemoteNodeList["AcquisitionStop"].Execute();
-
-
-                dataStream.StopAcquisition();
-
-                bufferList.DiscardAllBuffers();
-
-                
-                while (bufferList.Count > 0)
-                {
-                    BGAPI2.Buffer buffer = (BGAPI2.Buffer)bufferList.Values.First();
-                    bufferList.RevokeBuffer(buffer);
-                }
+                baumerProvider.AcquireOne();
             }
             catch (Exception e)
             {
+                hadError = true;
                 LogError(e, null);
             }
 
-            //waitHandle.WaitOne(timeoutGrabbing, false);
+            if (!hadError)
+                waitHandle.WaitOne(timeoutGrabbing, false);
 
+            baumerProvider.BufferProduced -= BaumerProducer_BufferProduced;
+            
+            baumerProvider.Stop();
             Close();
+            log.DebugFormat("{0} closed.", summary.Alias);
 
             if (CameraThumbnailProduced != null)
                 CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, imageDescriptor, hadError, cancelled));
@@ -296,91 +109,44 @@ namespace Kinovea.Camera.Baumer
 
         public void Cancel()
         {
+            if (!baumerProvider.IsOpen)
+                return;
+
+            cancelled = true;
+            waitHandle.Set();
         }
 
         private void Close()
         {
-            if (device == null)
+            if (baumerProvider == null || !baumerProvider.IsOpen)
                 return;
 
-            // Stop everything and destroy resources.
-
-            // Stop acquisition.
-            //try
-            //{
-            //    if (featureControl != null)
-            //    {
-            //        featureControl.GetCommandFeature("AcquisitionStop").Execute();
-            //        featureControl = null;
-            //    }
-            //}
-            //catch (Exception e)
-            //{
-            //    log.Error(e.Message);
-            //}
-
-            try
-            {
-                if (dataStream != null)
-                {
-                    //stream.StopGrab();
-                    //stream.UnregisterCaptureCallback();
-                    if (dataStream.IsOpen)
-                        dataStream.Close();
-                    
-                    dataStream = null;
-                }
-            }
-            catch (Exception e)
-            {
-                log.Error(e.Message);
-            }
-
-            try
-            {
-                if (device != null)
-                {
-                    if (device.IsOpen)
-                        device.Close();
-                    
-                    device = null;
-                }
-            }
-            catch (Exception e)
-            {
-                log.Error(e.Message);
-            }
-
-            try
-            {
-                if (interf != null)
-                {
-                    if (interf.IsOpen)
-                        interf.Close();
-                    
-                    interf = null;
-                }
-            }
-            catch (Exception e)
-            {
-                log.Error(e.Message);
-            }
-
-            try
-            {
-                if (system != null)
-                {
-                    if (system.IsOpen)
-                        system.Close();
-                    
-                    system = null;
-                }
-            }
-            catch (Exception e)
-            {
-                log.Error(e.Message);
-            }
+            baumerProvider.Close();
         }
+
+        #region Camera events
+
+        private void BaumerProducer_BufferProduced(object sender, BufferEventArgs e)
+        {
+            BGAPI2.Buffer buffer = e.Buffer;
+            if (buffer == null)
+            {
+                hadError = true;
+                waitHandle.Set();
+                return;
+            }
+
+            image = new Bitmap((int)buffer.Width, (int)buffer.Height, PixelFormat.Format24bppRgb);
+            bool filled = FillRGB24(e.Buffer, image);
+            if (filled)
+            {
+                int bufferSize = ImageFormatHelper.ComputeBufferSize(image.Width, image.Height, Video.ImageFormat.RGB24);
+                imageDescriptor = new ImageDescriptor(Video.ImageFormat.RGB24, image.Width, image.Height, true, bufferSize);
+            }
+
+            waitHandle.Set();
+        }
+        #endregion
 
         private void LogError(Exception e, string additionalErrorMessage)
         {
@@ -391,77 +157,68 @@ namespace Kinovea.Camera.Baumer
                 log.Error(additionalErrorMessage);
         }
 
-        
-        private unsafe void FillRGB24(IntPtr buffer, int width, int height)
+        /// <summary>
+        /// Takes a raw buffer and copy it into an existing RGB24 Bitmap.
+        /// </summary>
+        public unsafe bool FillRGB24(BGAPI2.Buffer buffer, Bitmap image)
         {
-            image = new Bitmap(width, height, PixelFormat.Format24bppRgb);
-            Rectangle rect = new Rectangle(0, 0, width, height);
-            BitmapData bmpData = null;
+            if (image.Width != (int)buffer.Width || image.Height != (int)buffer.Height || buffer.IsIncomplete || buffer.MemPtr == IntPtr.Zero)
+                return false;
 
+            bool filled = false;
+            ulong width = buffer.Width;
+            ulong height = buffer.Height;
+            string pixFmt = buffer.PixelFormat;
+            IntPtr byteBuffer = buffer.MemPtr;
+            ulong byteCount = buffer.MemSize;
+
+            BGAPI2.ImageProcessor imgProcessor = new BGAPI2.ImageProcessor();
+            if (imgProcessor.NodeList.GetNodePresent("DemosaicingMethod") == true)
+            {
+                imgProcessor.NodeList["DemosaicingMethod"].Value = "NearestNeighbor";
+                //imgProcessor.NodeList["DemosaicingMethod"].Value = "Bilinear3x3";
+            }
+
+            //BGAPI2.Node pixelFormatInfoSelector = imgProcessor.NodeList["PixelFormatInfoSelector"];
+            BGAPI2.Node bytesPerPixel = imgProcessor.NodeList["BytesPerPixel"];
+            long bpp = bytesPerPixel.IsAvailable ? bytesPerPixel.Value.ToLong() : 1;
+
+            // Demosaicing of the image.
+            // TODO: only do this if the image is a Bayer pattern.
+            // How can we avoid copies here?
+            // Is an image a simple wrapper around the MemPtr or does it make a copy?
+            BGAPI2.Image img = imgProcessor.CreateImage((uint)width, (uint)height, pixFmt, byteBuffer, byteCount);
+            BGAPI2.Image img2 = imgProcessor.CreateTransformedImage(img, "BGR8");
+
+            // Fill passed bitmap.
+            Rectangle rect = new Rectangle(0, 0, image.Width, image.Height);
+            BitmapData bmpData = null;
             try
             {
                 bmpData = image.LockBits(rect, ImageLockMode.WriteOnly, image.PixelFormat);
                 IntPtr[] ptrBmp = new IntPtr[] { bmpData.Scan0 };
                 int stride = rect.Width * 3;
-                NativeMethods.memcpy(bmpData.Scan0.ToPointer(), buffer.ToPointer(), stride * height);
-
-                int bufferSize = ImageFormatHelper.ComputeBufferSize(width, height, Video.ImageFormat.RGB24);
-                imageDescriptor = new ImageDescriptor(Video.ImageFormat.RGB24, image.Width, image.Height, true, bufferSize);
+                NativeMethods.memcpy(bmpData.Scan0.ToPointer(), img2.Buffer.ToPointer(), stride * (int)height);
+                filled = true;
             }
             catch (Exception e)
             {
-                log.ErrorFormat("Error while copying bitmaps. {0}", e.Message);
+                log.ErrorFormat("Error while copying bitmap. {0}", e.Message);
             }
             finally
             {
                 if (bmpData != null)
                     image.UnlockBits(bmpData);
             }
+
+            if (img2 != null)
+                img2.Release();
+
+            if (img != null)
+                img.Release();
+
+            return filled;
         }
-
-        /// <summary>
-        /// Convertes Y800 buffer into RGB24 .NET bitmap.
-        /// </summary>
-        private unsafe void FillY800(IntPtr buffer, int width, int height)
-        {
-            image = new Bitmap(width, height, PixelFormat.Format24bppRgb);
-            Rectangle rect = new Rectangle(0, 0, width, height);
-            BitmapData bmpData = null;
-
-            try
-            {
-                bmpData = image.LockBits(rect, ImageLockMode.WriteOnly, image.PixelFormat);
-                int dstOffset = bmpData.Stride - (rect.Width * 3);
-
-                byte* src = (byte*)buffer.ToPointer();
-                byte* dst = (byte*)bmpData.Scan0.ToPointer();
-
-                for (int i = 0; i < rect.Height; i++)
-                {
-                    for (int j = 0; j < rect.Width; j++)
-                    {
-                        dst[0] = dst[1] = dst[2] = *src;
-                        src++;
-                        dst += 3;
-                    }
-
-                    dst += dstOffset;
-                }
-
-                int bufferSize = ImageFormatHelper.ComputeBufferSize(width, height, Video.ImageFormat.RGB24);
-                imageDescriptor = new ImageDescriptor(Video.ImageFormat.RGB24, image.Width, image.Height, true, bufferSize);
-            }
-            catch (Exception e)
-            {
-                log.ErrorFormat("Error while copying bitmaps. {0}", e.Message);
-            }
-            finally
-            {
-                if (bmpData != null)
-                    image.UnlockBits(bmpData);
-            }
-        }
-
     }
 }
 
