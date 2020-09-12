@@ -56,6 +56,8 @@
       	  PylonC.NET.dll is not added to the output build. -->
 	<Copy SourceFiles="..\Refs\Basler\Pylon-6.0\PylonC.Net\PylonC.NET.dll" DestinationFolder="$(TargetDir)"/>
 
+  <Copy SourceFiles="..\Refs\Baumer\2.10.1\bgapi2_genicam.dll" DestinationFolder="$(TargetDir)"/>
+
   </Target>
 
   <Target Name="CopySVGObsRefs">

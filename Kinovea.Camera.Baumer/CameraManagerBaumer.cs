@@ -7,15 +7,15 @@ using System.Drawing;
 using Kinovea.Services;
 using Kinovea.Video;
 using System.Windows.Forms;
-using GxIAPINET;
+using BGAPI2;
 using System.Xml;
 using System.IO;
 using System.Threading;
 using System.Globalization;
 
-namespace Kinovea.Camera.Daheng
+namespace Kinovea.Camera.Baumer
 {
-    public class CameraManagerDaheng : CameraManager
+    public class CameraManagerBaumer : CameraManager
     {
         #region Properties
         public override bool Enabled
@@ -25,11 +25,11 @@ namespace Kinovea.Camera.Daheng
 
         public override string CameraType
         {
-            get { return "E298083B-C0B7-40AF-9560-DA02B8C8753A"; }
+            get { return "67cfc2e8-696b-4ed6-9caa-02baee8872bc"; }
         }
         public override string CameraTypeFriendlyName
         {
-            get { return "Daheng"; }
+            get { return "Baumer"; }
         }
         public override bool HasConnectionWizard
         {
@@ -44,11 +44,12 @@ namespace Kinovea.Camera.Daheng
         private Bitmap defaultIcon;
         private int discoveryStep = 0;
         private int discoverySkip = 5;
-        private IGXFactory igxFactory;
+        private BGAPI2.SystemList systemList;
+        private BGAPI2.System system;
         private Dictionary<string, uint> deviceIndices = new Dictionary<string, uint>();
         #endregion
 
-        public CameraManagerDaheng()
+        public CameraManagerBaumer()
         {
             defaultIcon = IconLibrary.GetIcon("webcam");
         }
@@ -59,13 +60,13 @@ namespace Kinovea.Camera.Daheng
             bool result = false;
             try
             {
-                igxFactory = IGXFactory.GetInstance();
-                igxFactory.Init();
+                systemList = SystemList.Instance;
                 result = true;
             }
             catch (Exception e)
             {
-                log.DebugFormat("Daheng Camera subsystem not available.");
+                log.DebugFormat("Baumer Camera subsystem not available.");
+                log.ErrorFormat(e.Message);
             }
 
             return result;
@@ -76,59 +77,118 @@ namespace Kinovea.Camera.Daheng
             List<CameraSummary> summaries = new List<CameraSummary>();
             List<CameraSummary> found = new List<CameraSummary>();
 
-            List<IGXDeviceInfo> devices = new List<IGXDeviceInfo>();
-            igxFactory.UpdateDeviceList(200, devices);
-
-            foreach (IGXDeviceInfo device in devices)
+            // List the systems.
+            // This will look for anything that implements GenAPI and initialize it, it needs to be 
+            // uninitialized otherwise other cameras modules could fail.
+            systemList.Refresh();
+            
+            try
             {
-                string identifier = device.GetSN();
-                bool cached = cache.ContainsKey(identifier);
-
-                if (cached)
+                // Collect all the devices.
+                foreach (KeyValuePair<string, BGAPI2.System> systemPair in systemList)
                 {
-                    // We've already seen this camera in the current Kinovea session.
-                    //deviceIds[identifier] = device.GetDeviceID();
-                    summaries.Add(cache[identifier]);
-                    found.Add(cache[identifier]);
-                    continue;
-                }
+                    BGAPI2.System system = systemPair.Value;
+                    if (!system.Vendor.Contains("Baumer"))
+                        continue;
 
-                string alias = device.GetDisplayName();
-                Bitmap icon = null;
-                SpecificInfo specific = new SpecificInfo();
-                Rectangle displayRectangle = Rectangle.Empty;
-                CaptureAspectRatio aspectRatio = CaptureAspectRatio.Auto;
-                ImageRotation rotation = ImageRotation.Rotate0;
-                //deviceIndices[identifier] = device.GetDeviceID();
+                    if (system.IsOpen)
+                        continue;
 
-                if (blurbs != null)
-                {
-                    foreach (CameraBlurb blurb in blurbs)
+                    system.Open();
+                    if (string.IsNullOrEmpty(system.Id))
                     {
-                        if (blurb.CameraType != this.CameraType || blurb.Identifier != identifier)
-                            continue;
-
-                        // We know this camera from a previous Kinovea session, restore the user custom values.
-                        alias = blurb.Alias;
-                        icon = blurb.Icon ?? defaultIcon;
-                        displayRectangle = blurb.DisplayRectangle;
-                        if (!string.IsNullOrEmpty(blurb.AspectRatio))
-                            aspectRatio = (CaptureAspectRatio)Enum.Parse(typeof(CaptureAspectRatio), blurb.AspectRatio);
-                        if (!string.IsNullOrEmpty(blurb.Rotation))
-                            rotation = (ImageRotation)Enum.Parse(typeof(ImageRotation), blurb.Rotation);
-                        specific = SpecificInfoDeserialize(blurb.Specific);
-                        break;
+                        system.Close();
+                        continue;
                     }
+                
+                    system.Interfaces.Refresh(100);
+                    foreach (KeyValuePair<string, BGAPI2.Interface> interfacePair in system.Interfaces)
+                    {
+                        BGAPI2.Interface iface = interfacePair.Value;
+                        iface.Open();
+                        if (string.IsNullOrEmpty(iface.Id))
+                        {
+                            iface.Close();
+                            continue;
+                        }
+
+                        iface.Devices.Refresh(100);
+                        foreach (KeyValuePair<string, BGAPI2.Device> devicePair in iface.Devices)
+                        {
+                            BGAPI2.Device device = devicePair.Value;    
+                        
+                            string identifier = device.SerialNumber;
+                            bool cached = cache.ContainsKey(identifier);
+                            if (cached)
+                            {
+                                // We've already seen this camera in the current Kinovea session.
+                                //deviceIds[identifier] = device.GetDeviceID();
+                                summaries.Add(cache[identifier]);
+                                found.Add(cache[identifier]);
+                                continue;
+                            }
+
+                            string alias = device.DisplayName;
+                            Bitmap icon = null;
+                            SpecificInfo specific = new SpecificInfo();
+                            Rectangle displayRectangle = Rectangle.Empty;
+                            CaptureAspectRatio aspectRatio = CaptureAspectRatio.Auto;
+                            ImageRotation rotation = ImageRotation.Rotate0;
+                            //deviceIndices[identifier] = device.GetDeviceID();
+
+                            // Check if we already know this camera from a previous Kinovea session.
+                            if (blurbs != null)
+                            {
+                                foreach (CameraBlurb blurb in blurbs)
+                                {
+                                    if (blurb.CameraType != this.CameraType || blurb.Identifier != identifier)
+                                        continue;
+
+                                    // We know this camera from a previous Kinovea session, restore the user custom values.
+                                    alias = blurb.Alias;
+                                    icon = blurb.Icon ?? defaultIcon;
+                                    displayRectangle = blurb.DisplayRectangle;
+                                    if (!string.IsNullOrEmpty(blurb.AspectRatio))
+                                        aspectRatio = (CaptureAspectRatio)Enum.Parse(typeof(CaptureAspectRatio), blurb.AspectRatio);
+                                    if (!string.IsNullOrEmpty(blurb.Rotation))
+                                        rotation = (ImageRotation)Enum.Parse(typeof(ImageRotation), blurb.Rotation);
+                                    specific = SpecificInfoDeserialize(blurb.Specific);
+                                    break;
+                                }
+                            }
+
+
+                            specific.DeviceKey = devicePair.Key;
+                            specific.InterfaceKey = interfacePair.Key;
+                            specific.SystemKey = systemPair.Key;
+
+                            icon = icon ?? defaultIcon;
+                            CameraSummary summary = new CameraSummary(alias, device.DisplayName, identifier, icon, displayRectangle, aspectRatio, rotation, specific, this);
+
+                            summaries.Add(summary);
+                            found.Add(summary);
+                            cache.Add(identifier, summary);
+                        }
+
+                        iface.Close();
+                    }
+
+                    system.Close();
                 }
 
-                icon = icon ?? defaultIcon;
-
-                CameraSummary summary = new CameraSummary(alias, device.GetDisplayName(), identifier, icon, displayRectangle, aspectRatio, rotation, specific, this);
-
-                summaries.Add(summary);
-                found.Add(summary);
-                cache.Add(identifier, summary);
+                systemList.Clear();
             }
+            catch (Exception e)
+            {
+
+            }
+            finally
+            {
+
+
+
+            }
+
 
             List<CameraSummary> lost = new List<CameraSummary>();
             foreach (CameraSummary summary in cache.Values)
@@ -155,7 +215,7 @@ namespace Kinovea.Camera.Daheng
                 return;
 
             // Spawn a thread to get a snapshot.
-            SnapshotRetriever retriever = new SnapshotRetriever(summary, igxFactory);
+            SnapshotRetriever retriever = new SnapshotRetriever(summary);
             retriever.CameraThumbnailProduced += SnapshotRetriever_CameraThumbnailProduced;
             snapshotting.Add(summary.Identifier);
             ThreadPool.QueueUserWorkItem(retriever.Run);
@@ -170,8 +230,9 @@ namespace Kinovea.Camera.Daheng
 
         public override ICaptureSource CreateCaptureSource(CameraSummary summary)
         {
-            FrameGrabber grabber = new FrameGrabber(summary, igxFactory);
-            return grabber;
+            //FrameGrabber grabber = new FrameGrabber(summary, igxFactory);
+            //return grabber;
+            return null;
         }
 
         public override bool Configure(CameraSummary summary)
@@ -181,32 +242,33 @@ namespace Kinovea.Camera.Daheng
 
         public override bool Configure(CameraSummary summary, Action disconnect, Action connect)
         {
-            bool needsReconnection = false;
-            SpecificInfo info = summary.Specific as SpecificInfo;
-            if (info == null)
-                return false;
+            //bool needsReconnection = false;
+            //SpecificInfo info = summary.Specific as SpecificInfo;
+            //if (info == null)
+            //    return false;
 
-            FormConfiguration form = new FormConfiguration(summary, disconnect, connect);
-            FormsHelper.Locate(form);
-            if (form.ShowDialog() == DialogResult.OK)
-            {
-                if (form.AliasChanged)
-                    summary.UpdateAlias(form.Alias, form.PickedIcon);
+            //FormConfiguration form = new FormConfiguration(summary, disconnect, connect);
+            //FormsHelper.Locate(form);
+            //if (form.ShowDialog() == DialogResult.OK)
+            //{
+            //    if (form.AliasChanged)
+            //        summary.UpdateAlias(form.Alias, form.PickedIcon);
 
-                if (form.SpecificChanged)
-                {
-                    info.StreamFormat = form.SelectedStreamFormat;
-                    info.CameraProperties = form.CameraProperties;
+            //    if (form.SpecificChanged)
+            //    {
+            //        info.StreamFormat = form.SelectedStreamFormat;
+            //        info.CameraProperties = form.CameraProperties;
 
-                    summary.UpdateDisplayRectangle(Rectangle.Empty);
-                    needsReconnection = true;
-                }
+            //        summary.UpdateDisplayRectangle(Rectangle.Empty);
+            //        needsReconnection = true;
+            //    }
 
-                CameraTypeManager.UpdatedCameraSummary(summary);
-            }
+            //    CameraTypeManager.UpdatedCameraSummary(summary);
+            //}
 
-            form.Dispose();
-            return needsReconnection;
+            //form.Dispose();
+            //return needsReconnection;
+            return false;
         }
 
         public override string GetSummaryAsText(CameraSummary summary)
@@ -215,30 +277,7 @@ namespace Kinovea.Camera.Daheng
             string alias = summary.Alias;
             SpecificInfo info = summary.Specific as SpecificInfo;
 
-            try
-            {
-                if (info != null &&
-                    info.CameraProperties.ContainsKey("Width") &&
-                    info.CameraProperties.ContainsKey("Height") &&
-                    info.CameraProperties.ContainsKey("AcquisitionFrameRate"))
-                {
-                    int width = int.Parse(info.CameraProperties["Width"].CurrentValue, CultureInfo.InvariantCulture);
-                    int height = int.Parse(info.CameraProperties["Height"].CurrentValue, CultureInfo.InvariantCulture);
-                    double framerate = DahengHelper.GetResultingFramerate(info.Device);
-                    if (framerate == 0)
-                        framerate = double.Parse(info.CameraProperties["AcquisitionFrameRate"].CurrentValue, CultureInfo.InvariantCulture);
-
-                    result = string.Format("{0} - {1}×{2} @ {3:0.##} fps.", alias, width, height, framerate);
-                }
-                else
-                {
-                    result = string.Format("{0}", alias);
-                }
-            }
-            catch
-            {
-                result = string.Format("{0}", alias);
-            }
+            
 
             return result;
         }
@@ -279,7 +318,7 @@ namespace Kinovea.Camera.Daheng
 
                 Dictionary<string, CameraProperty> cameraProperties = new Dictionary<string, CameraProperty>();
 
-                XmlNodeList props = doc.SelectNodes("/Daheng/CameraProperties/CameraProperty");
+                XmlNodeList props = doc.SelectNodes("/Baumer/CameraProperties/CameraProperty");
                 foreach (XmlNode node in props)
                 {
                     XmlAttribute keyAttribute = node.Attributes["key"];
@@ -289,7 +328,7 @@ namespace Kinovea.Camera.Daheng
                     string key = keyAttribute.Value;
                     CameraProperty property = new CameraProperty();
 
-                    string xpath = string.Format("/Daheng/CameraProperties/CameraProperty[@key='{0}']", key);
+                    string xpath = string.Format("/Baumer/CameraProperties/CameraProperty[@key='{0}']", key);
                     XmlNode xmlPropertyValue = doc.SelectSingleNode(xpath + "/Value");
                     if (xmlPropertyValue != null)
                         property.CurrentValue = xmlPropertyValue.InnerText;
@@ -322,7 +361,7 @@ namespace Kinovea.Camera.Daheng
                 return null;
 
             XmlDocument doc = new XmlDocument();
-            XmlElement xmlRoot = doc.CreateElement("Daheng");
+            XmlElement xmlRoot = doc.CreateElement("Baumer");
 
             XmlElement xmlCameraProperties = doc.CreateElement("CameraProperties");
 

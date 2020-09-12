@@ -75,6 +75,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinovea.Camera.IDS", "Kinov
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinovea.Camera.Daheng", "Kinovea.Camera.Daheng\Kinovea.Camera.Daheng.csproj", "{92CFEB6D-11FB-48BB-A5F9-E2BFB6F8B29F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinovea.Camera.Baumer", "Kinovea.Camera.Baumer\Kinovea.Camera.Baumer.csproj", "{0AAB56AE-86C4-45B0-974A-885EFFB4904F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -324,6 +326,18 @@ Global
 		{92CFEB6D-11FB-48BB-A5F9-E2BFB6F8B29F}.Release|x64.Build.0 = Release|x64
 		{92CFEB6D-11FB-48BB-A5F9-E2BFB6F8B29F}.Release|x86.ActiveCfg = Release|x86
 		{92CFEB6D-11FB-48BB-A5F9-E2BFB6F8B29F}.Release|x86.Build.0 = Release|x86
+		{0AAB56AE-86C4-45B0-974A-885EFFB4904F}.Debug|x64.ActiveCfg = Debug|x64
+		{0AAB56AE-86C4-45B0-974A-885EFFB4904F}.Debug|x64.Build.0 = Debug|x64
+		{0AAB56AE-86C4-45B0-974A-885EFFB4904F}.Debug|x86.ActiveCfg = Debug|x86
+		{0AAB56AE-86C4-45B0-974A-885EFFB4904F}.Debug|x86.Build.0 = Debug|x86
+		{0AAB56AE-86C4-45B0-974A-885EFFB4904F}.DebugExternals|x64.ActiveCfg = Debug|x64
+		{0AAB56AE-86C4-45B0-974A-885EFFB4904F}.DebugExternals|x64.Build.0 = Debug|x64
+		{0AAB56AE-86C4-45B0-974A-885EFFB4904F}.DebugExternals|x86.ActiveCfg = Debug|x86
+		{0AAB56AE-86C4-45B0-974A-885EFFB4904F}.DebugExternals|x86.Build.0 = Debug|x86
+		{0AAB56AE-86C4-45B0-974A-885EFFB4904F}.Release|x64.ActiveCfg = Release|x64
+		{0AAB56AE-86C4-45B0-974A-885EFFB4904F}.Release|x64.Build.0 = Release|x64
+		{0AAB56AE-86C4-45B0-974A-885EFFB4904F}.Release|x86.ActiveCfg = Release|x86
+		{0AAB56AE-86C4-45B0-974A-885EFFB4904F}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -342,6 +356,7 @@ Global
 		{D978AB6E-FEEB-4AD5-8A2B-A515F0DC166A} = {58D505DA-544D-4DCD-B3DB-6562E446E6C4}
 		{117171E1-8FD7-4E59-B1D6-95DC27D90465} = {58D505DA-544D-4DCD-B3DB-6562E446E6C4}
 		{92CFEB6D-11FB-48BB-A5F9-E2BFB6F8B29F} = {58D505DA-544D-4DCD-B3DB-6562E446E6C4}
+		{0AAB56AE-86C4-45B0-974A-885EFFB4904F} = {58D505DA-544D-4DCD-B3DB-6562E446E6C4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D785C0EB-022A-45B5-AF9E-BB711582DB19}
