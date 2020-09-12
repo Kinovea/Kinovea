@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Drawing;
 using BGAPI2;
 using System.Drawing.Imaging;
+using System.Threading;
 
 namespace Kinovea.Camera.Baumer
 {
@@ -30,6 +31,8 @@ namespace Kinovea.Camera.Baumer
         private BGAPI2.BufferList bufferList;
         private bool opened;
         private bool started;
+        private bool grabThreadRun = true;
+        private Thread grabThread;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
@@ -238,11 +241,12 @@ namespace Kinovea.Camera.Baumer
                 Stop();
 
             dataStream.StartAcquisition();
+            //device.RemoteNodeList["AquisitionMode"].Value = "Continuous";
             device.RemoteNodeList["AcquisitionStart"].Execute();
             started = true;
 
             // Wait for a frame.
-            BGAPI2.Buffer bufferFilled = bufferFilled = dataStream.GetFilledBuffer(1000);
+            BGAPI2.Buffer bufferFilled = dataStream.GetFilledBuffer(1000);
             if (bufferFilled == null || bufferFilled.IsIncomplete || bufferFilled.MemPtr == IntPtr.Zero)
             {
                 Stop();
@@ -262,13 +266,32 @@ namespace Kinovea.Camera.Baumer
         public void AcquireContinuous()
         {
             // Start a background thread and post new buffers.
+            if (!opened)
+                return;
 
+            // setup
+            dataStream.StartAcquisition();
+            //device.RemoteNodeList["AquisitionMode"].Value = "Continuous";
+            device.RemoteNodeList["AcquisitionStart"].Execute();
+
+            started = true;
+
+            // TODO: use ThreadPool instead ?
+            grabThreadRun = true;
+            grabThread = new Thread(Grab);
+            grabThread.Start();
         }
 
         public void Stop()
         {
             if (!opened || !started)
                 return;
+
+            if (grabThread != null && grabThread.IsAlive)
+            {
+                grabThreadRun = false;
+                grabThread.Join();
+            }
 
             if (device.RemoteNodeList.GetNodePresent("AcquisitionAbort"))
                 device.RemoteNodeList["AcquisitionAbort"].Execute();
@@ -294,7 +317,46 @@ namespace Kinovea.Camera.Baumer
             return 0;
         }
 
+        /// <summary>
+        /// Thread method.
+        /// </summary>
+        private void Grab()
+        {
+            // raise event start grabbing.
+            try
+            {
+                // setup.
+
+                while (grabThreadRun)
+                {
+                    // Wait for the next buffer.
+                    BGAPI2.Buffer bufferFilled = dataStream.GetFilledBuffer(1000);
+                    if (bufferFilled == null || bufferFilled.IsIncomplete || bufferFilled.MemPtr == IntPtr.Zero)
+                    {
+                        // Grab timeout or error.
+                        throw new Exception("A grab timeout or error occurred.");
+                    }
+
+                    // Post image event.
+                    if (BufferProduced != null)
+                        BufferProduced(this, new BufferEventArgs(bufferFilled));
+
+                    // Make the buffer available again.
+                    bufferFilled.QueueBuffer();
+                }
 
 
+                // Normal cancellation of the grabbing thread.
+                // Cleanup.
+            }
+            catch(Exception e)
+            {
+                grabThreadRun = false;
+
+                // Cleanup.
+            }
+
+            // Normal thread death.
+        }
     }
 }

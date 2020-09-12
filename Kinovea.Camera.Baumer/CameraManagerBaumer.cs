@@ -138,7 +138,7 @@ namespace Kinovea.Camera.Baumer
                         foreach (KeyValuePair<string, BGAPI2.Device> devicePair in iface.Devices)
                         {
                             BGAPI2.Device device = devicePair.Value;
-                            log.DebugFormat("Found device: {0}", device.DisplayName);
+                            //log.DebugFormat("Found device: {0}", device.DisplayName);
                             string identifier = device.SerialNumber;
                             bool cached = cache.ContainsKey(identifier);
                             if (cached)
