@@ -65,7 +65,7 @@ namespace Kinovea.Camera.Daheng
             }
             catch (Exception e)
             {
-                log.DebugFormat("Daheng Camera subsystem not available.");
+                log.DebugFormat("Daheng Camera subsystem not available. {0}.", e.Message);
             }
 
             return result;

@@ -63,12 +63,18 @@ namespace Kinovea.Camera.Baumer
                 systemList = SystemList.Instance;
 
                 // Collect usable systems.
+                // FIXME: This lists all systems and initializes them, including non Baumer GenAPI implementations.
+                // This prevents other modules based on GenAPI from initializing properly.
+                // We need a way to uninitialize the other systems without uninitializing the Baumer systems.
                 systemList.Refresh();
                 foreach (KeyValuePair<string, BGAPI2.System> systemPair in systemList)
                 {
                     BGAPI2.System system = systemPair.Value;
                     if (!system.Vendor.Contains("Baumer"))
+                    {
+                        system.Close();
                         continue;
+                    }
 
                     system.Open();
                     if (string.IsNullOrEmpty(system.Id))
@@ -96,11 +102,15 @@ namespace Kinovea.Camera.Baumer
             List<CameraSummary> summaries = new List<CameraSummary>();
             List<CameraSummary> found = new List<CameraSummary>();
 
-            // List the systems.
-            // This will look for anything that implements GenAPI and initialize it, it needs to be 
-            // uninitialized otherwise other cameras modules could fail.
+            // Lifecycles of objects in the Baumer API.
+            // systemList: entire application. Will initialize all systems, not clear how to uninitialize non Baumer systems.
+            // system: entire application. Should be kept open.
+            // interface & device: camera session.
+
+            
             //systemList.Refresh();
             //log.DebugFormat("Baumer system list refresh. Looking for devices.");
+
 
             try
             {

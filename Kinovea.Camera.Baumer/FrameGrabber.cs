@@ -38,8 +38,9 @@ namespace Kinovea.Camera.Baumer
         private CameraSummary summary;
         private SpecificInfo specific;
         private BaumerProvider baumerProvider = new BaumerProvider();
-        //private PYLON_DEVICE_HANDLE deviceHandle;
-        //private ImageProvider imageProvider = new ImageProvider();
+        BGAPI2.ImageProcessor imgProcessor = new BGAPI2.ImageProcessor();
+        private bool demosaicing = true;
+        private ImageFormat imageFormat = ImageFormat.None;
         private bool grabbing;
         private bool firstOpen = true;
         private float resultingFramerate = 0;
@@ -47,8 +48,8 @@ namespace Kinovea.Camera.Baumer
         private Stopwatch swDataRate = new Stopwatch();
         private Averager dataRateAverager = new Averager(0.02);
         private const double megabyte = 1024 * 1024;
-        private int incomingBufferSize = 0;
-        private byte[] incomingBuffer;
+        private int frameBufferSize = 0;
+        private byte[] frameBuffer;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         #endregion
@@ -72,11 +73,11 @@ namespace Kinovea.Camera.Baumer
                 return ImageDescriptor.Invalid;
 
             firstOpen = false;
+            Device device = baumerProvider.Device;
 
             // Get the configured framerate for recording support.
-            resultingFramerate = baumerProvider.GetResultingFramerate();
+            resultingFramerate = BaumerHelper.GetResultingFramerate(device);
 
-            Device device = baumerProvider.Device;
             bool hasWidth = BaumerHelper.NodeIsReadable(device, "Width");
             bool hasHeight = BaumerHelper.NodeIsReadable(device, "Height");
             bool hasPixelFormat = BaumerHelper.NodeIsReadable(device, "PixelFormat");
@@ -89,24 +90,32 @@ namespace Kinovea.Camera.Baumer
             int height = BaumerHelper.GetInteger(device, "Height");
             string pixelFormat = BaumerHelper.GetString(device, "PixelFormat");
 
+            // We only output in two possible formats: Y800 or RGB24.
+            // The output format depends on the input format and the demosaicing option.
+            // Mono or raw -> Y800, Otherwise -> RGB24.
+
+            demosaicing = false;
+
+            if (demosaicing)
+            {
+                if (imgProcessor.NodeList.GetNodePresent("DemosaicingMethod"))
+                {
+                    // Options: NearestNeighbor, Bilinear3x3, Baumer5x5
+                    imgProcessor.NodeList["DemosaicingMethod"].Value = "NearestNeighbor";
+                }
+                else
+                {
+                    demosaicing = false;
+                }
+            }
             
-            
-            // For now only support RGB24.
-            // TODO: read whatever is the currently configured format.
-            // Determine if we will end up as RGB24 or Y800.
-            // Support finishline mode.
+            imageFormat = BaumerHelper.ConvertImageFormat(pixelFormat, demosaicing);
+            frameBufferSize = ImageFormatHelper.ComputeBufferSize(width, height, imageFormat);
+            frameBuffer = new byte[frameBufferSize];
 
-
-            //ImageFormat format = BaumerHelper.ConvertImageFormat(pixelFormat, bayerMode);
-            ImageFormat format = ImageFormat.RGB24;
-
-            incomingBufferSize = ImageFormatHelper.ComputeBufferSize(width, height, format);
-            incomingBuffer = new byte[incomingBufferSize];
-
-            int outgoingBufferSize = ImageFormatHelper.ComputeBufferSize(width, height, format);
-            bool topDown = false;
-
-            return new ImageDescriptor(format, width, height, topDown, outgoingBufferSize);
+            int outgoingBufferSize = ImageFormatHelper.ComputeBufferSize(width, height, imageFormat);
+            bool topDown = true;
+            return new ImageDescriptor(imageFormat, width, height, topDown, outgoingBufferSize);
         }
 
         /// <summary>
@@ -254,15 +263,46 @@ namespace Kinovea.Camera.Baumer
 
         private void BaumerProvider_BufferProduced(object sender, BufferEventArgs e)
         {
-            log.DebugFormat("Received frame from Baumer camera");
-
-            // TODO: copy/convert the frame and raise FrameProduced with it.
-
             BGAPI2.Buffer buffer = e.Buffer;
             if (buffer == null || buffer.IsIncomplete || buffer.MemPtr == IntPtr.Zero)
                 return;
 
-            ProduceRGB24(buffer);
+            // Wrap the buffer in an image, convert if needed.
+            BGAPI2.Image image = imgProcessor.CreateImage((uint)buffer.Width, (uint)buffer.Height, buffer.PixelFormat, buffer.MemPtr, buffer.MemSize);
+            if (imageFormat == ImageFormat.Y800 && BaumerHelper.IsY800(image.PixelFormat))
+            {
+                ProduceFrame(image);
+            }
+            else
+            {
+                BGAPI2.Image transformedImage;
+                if (!demosaicing && image.PixelFormat.StartsWith("Bayer"))
+                {
+                    // HDR Bayer. Convert to 8-bit while retaining the format.
+                    // Transformation from a bayer pattern to another is not supported by the API.
+                    if (image.PixelFormat.StartsWith("BayerBG"))
+                        transformedImage = imgProcessor.CreateTransformedImage(image, "BayerBG8");
+                    else if (image.PixelFormat.StartsWith("BayerGB"))
+                        transformedImage = imgProcessor.CreateTransformedImage(image, "BayerGB8");
+                    else if (image.PixelFormat.StartsWith("BayerGR"))
+                        transformedImage = imgProcessor.CreateTransformedImage(image, "BayerGR8");
+                    else
+                        transformedImage = imgProcessor.CreateTransformedImage(image, "BayerRG8");
+                }
+                else
+                {
+                    // HDR Mono and all other cases (RGB & YUV).
+                    if (image.PixelFormat.StartsWith("Mono"))
+                        transformedImage = imgProcessor.CreateTransformedImage(image, "Mono8");
+                    else
+                        transformedImage = imgProcessor.CreateTransformedImage(image, "BGR8");
+                }
+                
+                ProduceFrame(transformedImage);
+                transformedImage.Release();
+            }
+
+            image.Release();
 
             //if (finishline.Enabled)
             //{
@@ -288,15 +328,6 @@ namespace Kinovea.Camera.Baumer
             //}
         }
 
-        //private void imageProvider_GrabErrorEvent(Exception grabException, string additionalErrorMessage)
-        //{
-        //    LogError(grabException, additionalErrorMessage);
-        //}
-
-        //private void imageProvider_DeviceRemovedEvent()
-        //{
-
-        //}
 
         private void LogError(Exception e, string additionalErrorMessage)
         {
@@ -306,51 +337,24 @@ namespace Kinovea.Camera.Baumer
         }
         #endregion
 
-        private unsafe void ProduceRGB24(BGAPI2.Buffer buffer)
+        /// <summary>
+        /// Takes a converted input buffer, copy it into the output buffer and raise the frame event.
+        /// </summary>
+        private unsafe void ProduceFrame(BGAPI2.Image image)
         {
-            bool filled = false;
-            ulong width = buffer.Width;
-            ulong height = buffer.Height;
-            string pixFmt = buffer.PixelFormat;
-            IntPtr byteBuffer = buffer.MemPtr;
-            ulong byteCount = buffer.MemSize;
-
-            // Todo: avoid copies.
-
-            BGAPI2.ImageProcessor imgProcessor = new BGAPI2.ImageProcessor();
-            if (imgProcessor.NodeList.GetNodePresent("DemosaicingMethod") == true)
-            {
-                imgProcessor.NodeList["DemosaicingMethod"].Value = "NearestNeighbor";
-                //imgProcessor.NodeList["DemosaicingMethod"].Value = "Bilinear3x3";
-            }
-
-            //BGAPI2.Node pixelFormatInfoSelector = imgProcessor.NodeList["PixelFormatInfoSelector"];
-            BGAPI2.Node bytesPerPixel = imgProcessor.NodeList["BytesPerPixel"];
-            long bpp = bytesPerPixel.IsAvailable ? bytesPerPixel.Value.ToLong() : 1;
-
-            // Demosaicing of the image.
-            // TODO: only do this if the image is a Bayer pattern.
-            // How can we avoid copies here?
-            // Is an image a simple wrapper around the MemPtr or does it make a copy?
-            BGAPI2.Image img = imgProcessor.CreateImage((uint)width, (uint)height, pixFmt, byteBuffer, byteCount);
-            BGAPI2.Image img2 = imgProcessor.CreateTransformedImage(img, "BGR8");
-
-
-
-            fixed (byte* p = incomingBuffer)
+            // At this point the image is either in Mono8, Bayer**8 or BGR8.
+            int bpp = image.PixelFormat == "BGR8" ? 3 : 1;
+            fixed (byte* p = frameBuffer)
             {
                 IntPtr ptrDst = (IntPtr)p;
-                NativeMethods.memcpy(ptrDst.ToPointer(), img2.Buffer.ToPointer(), (int)width * 3 * (int)height);
+                NativeMethods.memcpy(ptrDst.ToPointer(), image.Buffer.ToPointer(), (int)(image.Width * bpp * image.Height));
             }
 
-            ComputeDataRate(incomingBufferSize);
+            ComputeDataRate(frameBufferSize);
 
             if (FrameProduced != null)
-                FrameProduced(this, new FrameProducedEventArgs(incomingBuffer, incomingBufferSize));
-
-
+                FrameProduced(this, new FrameProducedEventArgs(frameBuffer, frameBufferSize));
         }
-
     }
 }
 

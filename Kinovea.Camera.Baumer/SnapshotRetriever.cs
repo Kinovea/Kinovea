@@ -141,7 +141,8 @@ namespace Kinovea.Camera.Baumer
             if (filled)
             {
                 int bufferSize = ImageFormatHelper.ComputeBufferSize(image.Width, image.Height, Video.ImageFormat.RGB24);
-                imageDescriptor = new ImageDescriptor(Video.ImageFormat.RGB24, image.Width, image.Height, true, bufferSize);
+                bool topDown = true;
+                imageDescriptor = new ImageDescriptor(Video.ImageFormat.RGB24, image.Width, image.Height, topDown, bufferSize);
             }
 
             waitHandle.Set();

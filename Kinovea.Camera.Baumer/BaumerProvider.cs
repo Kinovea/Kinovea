@@ -24,6 +24,7 @@ namespace Kinovea.Camera.Baumer
             get { return device; }
         }
 
+        private ulong bufferFilledTimeoutMS = 1000;
         private BGAPI2.System system;
         private BGAPI2.Interface interf;
         private BGAPI2.Device device;
@@ -45,10 +46,9 @@ namespace Kinovea.Camera.Baumer
             try
             {
                 // Look for the device.
+                // The system should already be open.
                 SystemList systemList = SystemList.Instance;
                 systemList.Refresh();
-                log.DebugFormat("Baumer system list refresh.");
-
                 foreach (KeyValuePair<string, BGAPI2.System> systemPair in systemList)
                 {
                     if (systemPair.Key != systemKey)
@@ -241,14 +241,15 @@ namespace Kinovea.Camera.Baumer
                 Stop();
 
             dataStream.StartAcquisition();
-            //device.RemoteNodeList["AquisitionMode"].Value = "Continuous";
+            //device.RemoteNodeList["AcquisitionMode"].Value = "Continuous";
             device.RemoteNodeList["AcquisitionStart"].Execute();
             started = true;
 
-            // Wait for a frame.
-            BGAPI2.Buffer bufferFilled = dataStream.GetFilledBuffer(1000);
+            // Wait for one frame.
+            BGAPI2.Buffer bufferFilled = dataStream.GetFilledBuffer(bufferFilledTimeoutMS);
             if (bufferFilled == null || bufferFilled.IsIncomplete || bufferFilled.MemPtr == IntPtr.Zero)
             {
+                // Timeout or error while waiting for the frame.
                 Stop();
                 return;
             }
@@ -271,7 +272,7 @@ namespace Kinovea.Camera.Baumer
 
             // setup
             dataStream.StartAcquisition();
-            //device.RemoteNodeList["AquisitionMode"].Value = "Continuous";
+            device.RemoteNodeList["AcquisitionMode"].Value = "Continuous";
             device.RemoteNodeList["AcquisitionStart"].Execute();
 
             started = true;
@@ -300,23 +301,7 @@ namespace Kinovea.Camera.Baumer
             dataStream.StopAcquisition();
         }
 
-        public float GetResultingFramerate()
-        {
-            if (device == null || !device.IsOpen)
-                return 0;
-
-            //if (BaumerHelper.NodeIsReadable(device, "ResultingFrameRateAbs"))
-            //    return device.RemoteNodeList["ResultingFrameRateAbs"].Value;
-            //else if (BaumerHelper.NodeIsReadable(device, "ResultingFrameRate"))
-            //    return device.RemoteNodeList["ResultingFrameRate"].Value;
-
-            //if (BaumerHelper.NodeIsReadable(device, "AcquisitionFrameRate"))
-
-            // CurrentAcquisitionFrameRate
-
-            return 0;
-        }
-
+        
         /// <summary>
         /// Thread method.
         /// </summary>
