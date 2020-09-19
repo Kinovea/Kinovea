@@ -81,6 +81,13 @@
     <Compile Include="BaumerProvider.cs" />
     <Compile Include="BufferEventArgs.cs" />
     <Compile Include="CameraManagerBaumer.cs" />
+    <Compile Include="Configuration\CameraPropertyManager.cs" />
+    <Compile Include="Configuration\FormConfiguration.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Configuration\FormConfiguration.Designer.cs">
+      <DependentUpon>FormConfiguration.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrameGrabber.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SnapshotRetriever.cs" />
@@ -104,8 +111,11 @@
       <Name>Kinovea.Video</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Configuration\" />
+    <EmbeddedResource Include="Configuration\FormConfiguration.resx">
+      <DependentUpon>FormConfiguration.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

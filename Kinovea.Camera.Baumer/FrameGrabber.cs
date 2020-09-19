@@ -94,7 +94,7 @@ namespace Kinovea.Camera.Baumer
             // The output format depends on the input format and the demosaicing option.
             // Mono or raw -> Y800, Otherwise -> RGB24.
 
-            demosaicing = false;
+            demosaicing = true;
 
             if (demosaicing)
             {
@@ -199,7 +199,6 @@ namespace Kinovea.Camera.Baumer
             try
             {
                 baumerProvider.Open(specific.SystemKey, specific.InterfaceKey, specific.DeviceKey);
-            //    imageProvider.Open(deviceHandle);
             }
             catch (Exception e)
             {
@@ -208,15 +207,11 @@ namespace Kinovea.Camera.Baumer
                 return;
             }
 
-            //if (!deviceHandle.IsValid)
-            //    return;
+            if (!baumerProvider.IsOpen)
+                return;
 
-            //SpecificInfo specific = summary.Specific as SpecificInfo;
-            //if (specific == null)
-            //    return;
-
-            //// Store the handle into the specific info so that we can retrieve device informations from the configuration dialog.
-            //specific.Handle = deviceHandle;
+            // Store the device into the specific info so that we can retrieve device informations from the configuration dialog.
+            specific.Device = baumerProvider.Device;
             //GenApiEnum currentStreamFormat = PylonHelper.ReadEnumCurrentValue(deviceHandle, "PixelFormat");
 
             //if (!string.IsNullOrEmpty(specific.StreamFormat) && specific.StreamFormat != currentStreamFormat.Symbol)

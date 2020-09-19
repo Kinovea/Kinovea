@@ -35,10 +35,7 @@ namespace Kinovea.Camera.Baumer
         public string SystemKey;
         public string InterfaceKey;
         public string DeviceKey;
-
-        // The camera object is kept here for convenience. It is used to find back the camera from the configuration dialog which is spawned by generic code.
-        // This member is not serialized into the specific info XML.
-        //public Device Device { get; set; }
+        public Device Device;
 
         public Dictionary<string, CameraProperty> CameraProperties { get; set; }
 

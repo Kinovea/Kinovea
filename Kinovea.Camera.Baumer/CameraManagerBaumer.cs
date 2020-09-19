@@ -61,6 +61,7 @@ namespace Kinovea.Camera.Baumer
             try
             {
                 systemList = SystemList.Instance;
+                //systemList = SystemList.CreateInstanceFromPath("");
 
                 // Collect usable systems.
                 // FIXME: This lists all systems and initializes them, including non Baumer GenAPI implementations.
@@ -102,15 +103,12 @@ namespace Kinovea.Camera.Baumer
             List<CameraSummary> summaries = new List<CameraSummary>();
             List<CameraSummary> found = new List<CameraSummary>();
 
-            // Lifecycles of objects in the Baumer API.
-            // systemList: entire application. Will initialize all systems, not clear how to uninitialize non Baumer systems.
-            // system: entire application. Should be kept open.
-            // interface & device: camera session.
-
-            
-            //systemList.Refresh();
-            //log.DebugFormat("Baumer system list refresh. Looking for devices.");
-
+            //---------------------------------------------
+            // Lifecycles of objects in the Baumer API:
+            // - systemList: entire application. Will initialize all systems, not clear how to uninitialize non Baumer systems.
+            // - system: entire application. Should be kept open.
+            // - interface & device: camera session.
+            //---------------------------------------------
 
             try
             {
@@ -190,9 +188,10 @@ namespace Kinovea.Camera.Baumer
                             }
 
                             // Keep temporary info in order to find it back later.
-                            specific.DeviceKey = devicePair.Key;
-                            specific.InterfaceKey = interfacePair.Key;
                             specific.SystemKey = systemPair.Key;
+                            specific.InterfaceKey = interfacePair.Key;
+                            specific.DeviceKey = devicePair.Key;
+                            specific.Device = null;
 
                             icon = icon ?? defaultIcon;
                             CameraSummary summary = new CameraSummary(alias, device.DisplayName, identifier, icon, displayRectangle, aspectRatio, rotation, specific, this);
@@ -212,13 +211,7 @@ namespace Kinovea.Camera.Baumer
             {
 
             }
-            finally
-            {
-                //systemList.Clear();
-                //log.DebugFormat("Baumer system list clear.");
-            }
-
-
+            
             List<CameraSummary> lost = new List<CameraSummary>();
             foreach (CameraSummary summary in cache.Values)
             {
@@ -273,33 +266,32 @@ namespace Kinovea.Camera.Baumer
 
         public override bool Configure(CameraSummary summary, Action disconnect, Action connect)
         {
-            //bool needsReconnection = false;
-            //SpecificInfo info = summary.Specific as SpecificInfo;
-            //if (info == null)
-            //    return false;
+            bool needsReconnection = false;
+            SpecificInfo info = summary.Specific as SpecificInfo;
+            if (info == null)
+                return false;
 
-            //FormConfiguration form = new FormConfiguration(summary, disconnect, connect);
-            //FormsHelper.Locate(form);
-            //if (form.ShowDialog() == DialogResult.OK)
-            //{
-            //    if (form.AliasChanged)
-            //        summary.UpdateAlias(form.Alias, form.PickedIcon);
+            FormConfiguration form = new FormConfiguration(summary, disconnect, connect);
+            FormsHelper.Locate(form);
+            if (form.ShowDialog() == DialogResult.OK)
+            {
+                if (form.AliasChanged)
+                    summary.UpdateAlias(form.Alias, form.PickedIcon);
 
-            //    if (form.SpecificChanged)
-            //    {
-            //        info.StreamFormat = form.SelectedStreamFormat;
-            //        info.CameraProperties = form.CameraProperties;
+                if (form.SpecificChanged)
+                {
+                    //info.StreamFormat = form.SelectedStreamFormat;
+                    info.CameraProperties = form.CameraProperties;
 
-            //        summary.UpdateDisplayRectangle(Rectangle.Empty);
-            //        needsReconnection = true;
-            //    }
+                    summary.UpdateDisplayRectangle(Rectangle.Empty);
+                    needsReconnection = true;
+                }
 
-            //    CameraTypeManager.UpdatedCameraSummary(summary);
-            //}
+                CameraTypeManager.UpdatedCameraSummary(summary);
+            }
 
-            //form.Dispose();
-            //return needsReconnection;
-            return false;
+            form.Dispose();
+            return needsReconnection;
         }
 
         public override string GetSummaryAsText(CameraSummary summary)
@@ -398,6 +390,9 @@ namespace Kinovea.Camera.Baumer
 
             foreach (KeyValuePair<string, CameraProperty> pair in info.CameraProperties)
             {
+                if (pair.Value == null)
+                    continue;
+
                 XmlElement xmlCameraProperty = doc.CreateElement("CameraProperty");
                 XmlAttribute attr = doc.CreateAttribute("key");
                 attr.Value = pair.Key;
