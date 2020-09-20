@@ -71,9 +71,6 @@ namespace Kinovea.Camera.Baumer
         private bool specificChanged;
         private bool iconChanged;
         private Device device;
-        //private PYLON_DEVICE_HANDLE deviceHandle;
-        //private GenApiEnum selectedStreamFormat;
-        //private Bayer8Conversion bayer8Conversion;
         private Dictionary<string, CameraProperty> cameraProperties = new Dictionary<string, CameraProperty>();
         private Dictionary<string, AbstractCameraPropertyView> propertiesControls = new Dictionary<string, AbstractCameraPropertyView>();
         private Action disconnect;
@@ -255,17 +252,17 @@ namespace Kinovea.Camera.Baumer
 
         private void cpvCameraControl_ValueChanged(object sender, EventArgs e)
         {
-            //AbstractCameraPropertyView control = sender as AbstractCameraPropertyView;
-            //if (control == null)
-            //    return;
+            AbstractCameraPropertyView control = sender as AbstractCameraPropertyView;
+            if (control == null)
+                return;
 
-            //string key = control.Tag as string;
-            //if (string.IsNullOrEmpty(key) || !cameraProperties.ContainsKey(key))
-            //    return;
+            string key = control.Tag as string;
+            if (string.IsNullOrEmpty(key) || !cameraProperties.ContainsKey(key))
+                return;
 
-            //CameraPropertyManager.Write(deviceHandle, cameraProperties[key]);
-            //UpdateResultingFramerate();
-            //specificChanged = true;
+            CameraPropertyManager.Write(device, cameraProperties[key]);
+            UpdateResultingFramerate();
+            specificChanged = true;
         }
         
         private void cmbFormat_SelectedIndexChanged(object sender, EventArgs e)
@@ -302,29 +299,29 @@ namespace Kinovea.Camera.Baumer
             //    return;
             //}
 
-            //SpecificInfo info = summary.Specific as SpecificInfo;
-            //if (info == null)
-            //    return;
+            SpecificInfo info = summary.Specific as SpecificInfo;
+            if (info == null)
+                return;
 
             //info.StreamFormat = this.SelectedStreamFormat.Symbol;
             //info.Bayer8Conversion = this.Bayer8Conversion;
-            //info.CameraProperties = this.CameraProperties;
-            //summary.UpdateDisplayRectangle(Rectangle.Empty);
-            //CameraTypeManager.UpdatedCameraSummary(summary);
+            info.CameraProperties = this.CameraProperties;
+            summary.UpdateDisplayRectangle(Rectangle.Empty);
+            CameraTypeManager.UpdatedCameraSummary(summary);
 
-            //disconnect();
-            //connect();
+            disconnect();
+            connect();
 
-            //SpecificInfo specific = summary.Specific as SpecificInfo;
-            //if (specific == null || specific.Handle == null || !specific.Handle.IsValid)
-            //    return;
+            SpecificInfo specific = summary.Specific as SpecificInfo;
+            if (specific == null || specific.Device == null || !specific.Device.IsOpen)
+                return;
 
-            //deviceHandle = specific.Handle;
-            //cameraProperties = CameraPropertyManager.Read(specific.Handle, summary.Identifier);
+            device = specific.Device;
+            cameraProperties = CameraPropertyManager.Read(device, summary.Identifier);
 
-            //RemoveCameraControls();
-            //PopulateCameraControls();
-            //UpdateResultingFramerate();
+            RemoveCameraControls();
+            PopulateCameraControls();
+            UpdateResultingFramerate();
         }
 
         private void UpdateResultingFramerate()

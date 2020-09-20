@@ -27,6 +27,18 @@ namespace Kinovea.Camera.Baumer
             return 0;
         }
 
+        public static Node GetNode(NodeMap map, string name)
+        {
+            bool present = map.GetNodePresent(name);
+            if (!present)
+                return null;
+
+            Node node = map[name];
+            if (!node.IsImplemented || !node.IsAvailable)
+                return null;
+
+            return node;
+        }
 
         public static bool NodeIsReadable(Device device, string name)
         {

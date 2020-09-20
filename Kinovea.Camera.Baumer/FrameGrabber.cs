@@ -227,15 +227,15 @@ namespace Kinovea.Camera.Baumer
                 // We merge the values saved in the XML into the properties.
                 // (The restoration from the XML doesn't create fully formed properties, it just contains the values).
                 // Then commit the properties to the camera.
-                //Dictionary<string, CameraProperty> cameraProperties = CameraPropertyManager.Read(deviceHandle, summary.Identifier);
-            //    CameraPropertyManager.MergeProperties(cameraProperties, specific.CameraProperties);
-            //    specific.CameraProperties = cameraProperties;
-            //    CameraPropertyManager.WriteCriticalProperties(deviceHandle, specific.CameraProperties);
+                Dictionary<string, CameraProperty> cameraProperties = CameraPropertyManager.Read(specific.Device, summary.Identifier);
+                CameraPropertyManager.MergeProperties(cameraProperties, specific.CameraProperties);
+                specific.CameraProperties = cameraProperties;
+                CameraPropertyManager.WriteCriticalProperties(specific.Device, specific.CameraProperties);
             }
-            //else
-            //{
-            //    CameraPropertyManager.WriteCriticalProperties(deviceHandle, specific.CameraProperties);
-            //}
+            else
+            {
+                CameraPropertyManager.WriteCriticalProperties(specific.Device, specific.CameraProperties);
+            }
         }
 
         private void ComputeDataRate(int bytes)
@@ -263,6 +263,7 @@ namespace Kinovea.Camera.Baumer
                 return;
 
             // Wrap the buffer in an image, convert if needed.
+
             BGAPI2.Image image = imgProcessor.CreateImage((uint)buffer.Width, (uint)buffer.Height, buffer.PixelFormat, buffer.MemPtr, buffer.MemSize);
             if (imageFormat == ImageFormat.Y800 && BaumerHelper.IsY800(image.PixelFormat))
             {

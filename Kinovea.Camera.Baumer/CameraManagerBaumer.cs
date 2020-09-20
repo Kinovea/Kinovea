@@ -299,8 +299,28 @@ namespace Kinovea.Camera.Baumer
             string result = "";
             string alias = summary.Alias;
             SpecificInfo info = summary.Specific as SpecificInfo;
+            result = string.Format("{0}", alias);
+            try
+            {
+                if (info != null &&
+                    //info.StreamFormat != null &&
+                    info.CameraProperties.ContainsKey("width") &&
+                    info.CameraProperties.ContainsKey("height") &&
+                    info.CameraProperties.ContainsKey("framerate"))
+                {
+                    //string format = info.StreamFormat;
+                    int width = int.Parse(info.CameraProperties["width"].CurrentValue, CultureInfo.InvariantCulture);
+                    int height = int.Parse(info.CameraProperties["height"].CurrentValue, CultureInfo.InvariantCulture);
+                    double framerate = BaumerHelper.GetResultingFramerate(info.Device);
+                    if (framerate == 0)
+                        framerate = double.Parse(info.CameraProperties["framerate"].CurrentValue, CultureInfo.InvariantCulture);
 
-            
+                    result = string.Format("{0} - {1}×{2} @ {3:0.##} fps.", alias, width, height, framerate);
+                }
+            }
+            catch
+            {
+            }
 
             return result;
         }

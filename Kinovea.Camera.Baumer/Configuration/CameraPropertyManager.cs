@@ -303,47 +303,6 @@ namespace Kinovea.Camera.Baumer
             return p;
         }
 
-        private static CameraProperty ReadBooleanProperty(Device device, string symbol)
-        {
-            return null;
-            //CameraProperty p = new CameraProperty();
-            //p.Identifier = symbol;
-
-            //NODEMAP_HANDLE nodeMapHandle = Pylon.DeviceGetNodeMap(deviceHandle);
-            //NODE_HANDLE nodeHandle = GenApi.NodeMapGetNode(nodeMapHandle, symbol);
-            //if (!nodeHandle.IsValid)
-            //{
-            //    log.WarnFormat("Could not read Basler property {0}: node handle is not valid. (The property is not supported).", symbol);
-            //    return p;
-            //}
-
-            //EGenApiAccessMode accessMode = GenApi.NodeGetAccessMode(nodeHandle);
-            //if (accessMode == EGenApiAccessMode._UndefinedAccesMode || accessMode == EGenApiAccessMode.NA ||
-            //    accessMode == EGenApiAccessMode.NI || accessMode == EGenApiAccessMode.WO)
-            //{
-            //    log.WarnFormat("Could not read Basler property {0}: Access mode not supported. (The property is not readable).", symbol);
-            //    return p;
-            //}
-
-            //EGenApiNodeType type = GenApi.NodeGetType(nodeHandle);
-            //if (type != EGenApiNodeType.BooleanNode)
-            //{
-            //    log.WarnFormat("Could not read Basler property {0}: the node is of the wrong type. Expected: Boolean. Received:{1}", symbol, type.ToString());
-            //    return p;
-            //}
-
-            //p.Supported = true;
-            //p.Type = CameraPropertyType.Boolean;
-            //p.ReadOnly = accessMode != EGenApiAccessMode.RW;
-
-            //bool currentValue = GenApi.BooleanGetValue(nodeHandle);
-
-            //p.Representation = CameraPropertyRepresentation.Checkbox;
-            //p.CurrentValue = currentValue.ToString(CultureInfo.InvariantCulture);
-
-            //return p;
-        }
-
         private static void WriteCenter(Device device)
         {
             // Force write the CenterX and CenterY properties if supported.
@@ -376,60 +335,55 @@ namespace Kinovea.Camera.Baumer
             if (property.ReadOnly)
                 return;
 
-            //NODEMAP_HANDLE nodeMapHandle = Pylon.DeviceGetNodeMap(deviceHandle);
-            //NODE_HANDLE nodeHandle = GenApi.NodeMapGetNode(nodeMapHandle, property.Identifier);
-            //if (!nodeHandle.IsValid)
-            //    return;
-
-            //EGenApiAccessMode accessMode = GenApi.NodeGetAccessMode(nodeHandle);
-            //if (accessMode != EGenApiAccessMode.RW)
-            //    return;
-
-            //long value = long.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
-            //long min = GenApi.IntegerGetMin(nodeHandle);
-            //long max = GenApi.IntegerGetMax(nodeHandle);
-            //long step = GenApi.IntegerGetInc(nodeHandle);
+            NodeMap nodemap = device.RemoteNodeList;
+            Node node = BaumerHelper.GetNode(nodemap, property.Identifier);
+            if (node == null || !node.IsReadable || !node.IsWriteable)
+                return;
             
-            //value = FixValue(value, min, max, step);
-            
-            //// Offset handling.
-            //// Some cameras have a CenterX/CenterY property.
-            //// When it is set, the offset is automatic and becomes read-only.
-            //bool setOffset = false;
-            //NODE_HANDLE nodeHandleOffset = GenApi.NodeMapGetNode(nodeMapHandle, identifierOffset);
-            //if (nodeHandleOffset.IsValid)
-            //{
-            //    EGenApiAccessMode accessModeOffset = GenApi.NodeGetAccessMode(nodeHandleOffset);
-            //    if (accessModeOffset == EGenApiAccessMode.RW)
-            //        setOffset = true;
-            //}
+            long value = long.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
+            long min = node.Min;
+            long step = node.Inc;
 
-            //if (setOffset)
-            //{
-            //    long offset = (max - value) / 2;
-            //    long minOffset = GenApi.IntegerGetMin(nodeHandleOffset);
-            //    long stepOffset = GenApi.IntegerGetInc(nodeHandleOffset);
-            //    long remainderOffset = (offset - minOffset) % stepOffset;
-            //    if (remainderOffset != 0)
-            //        offset = offset - remainderOffset + stepOffset;
+            // Do not clamp on max, the max is based on the offset instead of the true max.
+            value = Math.Max(value, min);
+            long remainder = (value - min) % step;
+            if (remainder != 0)
+                value = value - remainder + step;
 
-            //    // We need to be careful with the order and not write a value that doesn't fit due to the offset, or vice versa.
-            //    long currentValue = GenApi.IntegerGetValue(nodeHandle);
-            //    if (value > currentValue)
-            //    {
-            //        GenApi.IntegerSetValue(nodeHandleOffset, offset);
-            //        GenApi.IntegerSetValue(nodeHandle, value);
-            //    }
-            //    else
-            //    {
-            //        GenApi.IntegerSetValue(nodeHandle, value);
-            //        GenApi.IntegerSetValue(nodeHandleOffset, offset);
-            //    }
-            //}
-            //else
-            //{
-            //    GenApi.IntegerSetValue(nodeHandle, value);
-            //}
+            // Offset handling.
+            // Some cameras have a CenterX/CenterY property.
+            // When it is set, the offset is automatic and becomes read-only.
+            // If the offset can be written we use the normal computation.
+            Node nodeOffset = BaumerHelper.GetNode(nodemap, identifierOffset);
+            bool setOffset = nodeOffset != null && node.IsReadable && node.IsWriteable;
+            if (setOffset)
+            {
+                long currentValue = node.Value;
+                long max = currentValue + nodeOffset.Max;
+                long offset = (max - value) / 2;
+                long minOffset = nodeOffset.Min;
+                long stepOffset = nodeOffset.Inc;
+                
+                long remainderOffset = (offset - minOffset) % stepOffset;
+                if (remainderOffset != 0)
+                    offset = offset - remainderOffset + stepOffset;
+
+                // We need to be careful with the order and not write a value that doesn't fit due to the offset, or vice versa.
+                if (value > currentValue)
+                {
+                    nodeOffset.Value = offset;
+                    node.Value = value;
+                }
+                else
+                {
+                    node.Value = value;
+                    nodeOffset.Value = offset;
+                }
+            }
+            else
+            {
+                node.Value = value;
+            }
         }
 
         /// <summary>
@@ -440,75 +394,74 @@ namespace Kinovea.Camera.Baumer
             if (property.ReadOnly)
                 return;
 
-            //NODEMAP_HANDLE nodeMapHandle = Pylon.DeviceGetNodeMap(deviceHandle);
+            NodeMap nodeMap = device.RemoteNodeList;
 
-            //// Switch OFF the auto flag if needed, to be able to write the main property.
-            //if (!string.IsNullOrEmpty(property.AutomaticIdentifier))
-            //{
-            //    NODE_HANDLE nodeHandleAuto = GenApi.NodeMapGetNode(nodeMapHandle, property.AutomaticIdentifier);
-            //    if (nodeHandleAuto.IsValid)
-            //    {
-            //        bool writeable = GenApi.NodeIsWritable(nodeHandleAuto);
-            //        bool currentAuto = ReadAuto(nodeHandleAuto, property.AutomaticIdentifier);
-            //        if (writeable && property.CanBeAutomatic && currentAuto && !property.Automatic)
-            //            WriteAuto(nodeHandleAuto, property.AutomaticIdentifier, false);
-            //    }
-            //}
+            // Switch OFF the auto flag if needed, to be able to write the main property.
+            if (!string.IsNullOrEmpty(property.AutomaticIdentifier))
+            {
+                Node nodeAuto = BaumerHelper.GetNode(nodeMap, property.AutomaticIdentifier);
+                if (nodeAuto != null)
+                {
+                    bool writeable = nodeAuto.IsWriteable;
+                    bool currentAuto = ReadAuto(nodeAuto, property.AutomaticIdentifier);
+                    if (writeable && property.CanBeAutomatic && currentAuto && !property.Automatic)
+                        WriteAuto(nodeAuto, property.AutomaticIdentifier, false);
+                }
+            }
 
-            //// At this point the auto flag is off. Write the main property.
-            //NODE_HANDLE nodeHandle = GenApi.NodeMapGetNode(nodeMapHandle, property.Identifier);
-            //if (!nodeHandle.IsValid)
-            //    return;
+            // At this point the auto flag is off. Write the main property.
+            Node node = BaumerHelper.GetNode(nodeMap, property.Identifier);
+            if (node == null)
+                return;
 
-            //EGenApiAccessMode accessMode = GenApi.NodeGetAccessMode(nodeHandle);
-            //if (accessMode != EGenApiAccessMode.RW)
-            //    return;
+            if (!node.IsReadable || !node.IsWriteable)
+                return;
 
-            //try
-            //{
-            //    switch (property.Type)
-            //    {
-            //        case CameraPropertyType.Integer:
-            //            {
-            //                long value = long.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
-            //                long min = GenApi.IntegerGetMin(nodeHandle);
-            //                long max = GenApi.IntegerGetMax(nodeHandle);
-            //                long step = GenApi.IntegerGetInc(nodeHandle);
-            //                value = FixValue(value, min, max, step);
-            //                GenApi.IntegerSetValue(nodeHandle, value);
-            //                break;
-            //            }
-            //        case CameraPropertyType.Float:
-            //            {
-            //                double value = double.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
-            //                double min = GenApi.FloatGetMin(nodeHandle);
-            //                double max = GenApi.FloatGetMax(nodeHandle);
-            //                value = FixValue(value, min, max);
-            //                GenApi.FloatSetValue(nodeHandle, value);
-            //                break;
-            //            }
-            //        case CameraPropertyType.Boolean:
-            //            {
-            //                bool value = bool.Parse(property.CurrentValue);
-            //                GenApi.BooleanSetValue(nodeHandle, value);
-            //                break;
-            //            }
-            //        default:
-            //            break;
-            //    }
-            //}
-            //catch
-            //{
-            //    log.ErrorFormat("Error while writing Baumer GenICam property {0}.", property.Identifier);
-            //}
+            try
+            {
+                switch (property.Type)
+                {
+                    case CameraPropertyType.Integer:
+                        {
+                            long value = long.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
+                            long min = node.Min;
+                            long max = node.Max;
+                            long step = node.Inc;
+                            value = FixValue(value, min, max, step);
+                            node.Value = value;
+                            break;
+                        }
+                    case CameraPropertyType.Float:
+                        {
+                            double value = double.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
+                            double min = node.Min;
+                            double max = node.Max;
+                            value = FixValue(value, min, max);
+                            node.Value = value;
+                            break;
+                        }
+                    case CameraPropertyType.Boolean:
+                        {
+                            bool value = bool.Parse(property.CurrentValue);
+                            node.Value = value;
+                            break;
+                        }
+                    default:
+                        break;
+                }
+            }
+            catch
+            {
+                log.ErrorFormat("Error while writing Baumer GenICam property {0}.", property.Identifier);
+            }
 
-            //// Finally, switch ON the auto flag if needed.
-            //if (!string.IsNullOrEmpty(property.AutomaticIdentifier))
-            //{
-            //    NODE_HANDLE nodeHandleAuto = GenApi.NodeMapGetNode(nodeMapHandle, property.AutomaticIdentifier);
-            //    if (nodeHandleAuto.IsValid && GenApi.NodeIsWritable(nodeHandleAuto) && property.CanBeAutomatic && property.Automatic)
-            //        WriteAuto(nodeHandleAuto, property.AutomaticIdentifier, true);
-            //}
+            // Finally, switch ON the auto flag if needed.
+            if (!string.IsNullOrEmpty(property.AutomaticIdentifier))
+            {
+                Node nodeAuto = BaumerHelper.GetNode(nodeMap, property.AutomaticIdentifier);
+                if (nodeAuto != null && nodeAuto.IsWriteable && property.CanBeAutomatic && property.Automatic)
+                    WriteAuto(nodeAuto, property.AutomaticIdentifier, true);
+            }
         }
 
         private static long FixValue(long value, long min, long max, long step)
@@ -549,49 +502,48 @@ namespace Kinovea.Camera.Baumer
         /// <summary>
         /// Read the auto property value and put it into a boolean.
         /// </summary>
-        private static bool ReadAuto(Device device, string identifier)
+        private static bool ReadAuto(Node node, string identifier)
         {
-            return false;
-            //switch (identifier)
-            //{
-            //    case "AcquisitionFrameRateEnable":
-            //        {
-            //            string currentAutoValue = GenApi.BooleanGetValue(nodeHandle).ToString(CultureInfo.InvariantCulture).ToLower();
-            //            return currentAutoValue == GetAutoTrue(identifier);
-            //        }
-            //    case "GainAuto":
-            //    case "ExposureAuto":
-            //    default:
-            //        {
-            //            string currentAutoValue = GenApi.NodeToString(nodeHandle);
-            //            return currentAutoValue == GetAutoTrue(identifier);
-            //        }
-            //}
+            switch (identifier)
+            {
+                case "AcquisitionFrameRateEnable":
+                    {
+                        string currentAutoValue = ((bool)node.Value).ToString(CultureInfo.InvariantCulture).ToLower();
+                        return currentAutoValue == GetAutoTrue(identifier);
+                    }
+                case "GainAuto":
+                case "ExposureAuto":
+                default:
+                    {
+                        string currentAutoValue = node.Value;
+                        return currentAutoValue == GetAutoTrue(identifier);
+                    }
+            }
         }
 
         /// <summary>
         /// Takes a boolean of whether auto is ON or OFF, convert it to the correct representation and write it in the auto property.
         /// </summary>
-        private static void WriteAuto(Device device, string identifier, bool isAuto)
+        private static void WriteAuto(Node node, string identifier, bool isAuto)
         {
-            //string newValue = isAuto ? GetAutoTrue(identifier) : GetAutoFalse(identifier);
+            string newValue = isAuto ? GetAutoTrue(identifier) : GetAutoFalse(identifier);
 
-            //switch (identifier)
-            //{
-            //    case "AcquisitionFrameRateEnable":
-            //        {
-            //            bool newValueBool = bool.Parse(newValue);
-            //            GenApi.BooleanSetValue(nodeHandle, newValueBool);
-            //            break;
-            //        }
-            //    case "GainAuto":
-            //    case "ExposureAuto":
-            //    default:
-            //        {
-            //            PylonHelper.WriteEnum(nodeHandle, identifier, newValue);
-            //            break;
-            //        }
-            //}
+            switch (identifier)
+            {
+                case "AcquisitionFrameRateEnable":
+                    {
+                        bool newValueBool = bool.Parse(newValue);
+                        node.Value = newValueBool;
+                        break;
+                    }
+                case "GainAuto":
+                case "ExposureAuto":
+                default:
+                    {
+                        node.Value = newValue;
+                        break;
+                    }
+            }
         }
 
         /// <summary>
