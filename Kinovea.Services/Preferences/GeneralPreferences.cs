@@ -22,6 +22,8 @@ using System;
 using System.Globalization;
 using System.Threading;
 using System.Xml;
+using System.Windows.Forms;
+using System.Drawing;
 
 namespace Kinovea.Services
 {
@@ -42,6 +44,18 @@ namespace Kinovea.Services
         {
             get { return explorerSplitterDistance; }
             set { explorerSplitterDistance = value; }
+        }
+
+        public FormWindowState WindowState
+        {
+            get { return windowState; }
+            set { windowState = value; }
+        }
+        
+        public Rectangle WindowRectangle 
+        {
+            get { return windowRectangle; }
+            set { windowRectangle = value; }
         }
 
         public bool AllowMultipleInstances
@@ -65,6 +79,8 @@ namespace Kinovea.Services
         private string uiCultureName;
         private bool explorerVisible = true;
         private int explorerSplitterDistance = 250;
+        private FormWindowState windowState = FormWindowState.Maximized;
+        private Rectangle windowRectangle;
         private bool allowMultipleInstances = true;
         private bool instancesOwnPreferences = true;
         private int preferencePage;
@@ -98,6 +114,8 @@ namespace Kinovea.Services
             writer.WriteElementString("Culture", uiCultureName);
             writer.WriteElementString("ExplorerVisible", explorerVisible ? "true" : "false");
             writer.WriteElementString("ExplorerSplitterDistance", explorerSplitterDistance.ToString());
+            writer.WriteElementString("WindowState", windowState.ToString());
+            writer.WriteElementString("WindowRectangle", XmlHelper.WriteRectangleF(windowRectangle));
             writer.WriteElementString("AllowMultipleInstances", allowMultipleInstances ? "true" : "false");
             writer.WriteElementString("InstancesOwnPreferences", instancesOwnPreferences ? "true" : "false");
             writer.WriteElementString("PreferencesPage", preferencePage.ToString());
@@ -119,6 +137,12 @@ namespace Kinovea.Services
                         break;
                     case "ExplorerSplitterDistance":
                         explorerSplitterDistance = reader.ReadElementContentAsInt();
+                        break;
+                    case "WindowState":
+                        windowState = (FormWindowState)Enum.Parse(typeof(FormWindowState), reader.ReadElementContentAsString());
+                        break;
+                    case "WindowRectangle":
+                        windowRectangle = XmlHelper.ParseRectangle(reader.ReadElementContentAsString());
                         break;
                     case "AllowMultipleInstances":
                         allowMultipleInstances = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());

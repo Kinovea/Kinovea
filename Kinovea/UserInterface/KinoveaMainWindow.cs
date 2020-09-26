@@ -22,7 +22,9 @@ using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Linq;
 using Kinovea.Services;
+
 
 namespace Kinovea.Root
 {
@@ -63,12 +65,34 @@ namespace Kinovea.Root
                 title += string.Format(" [{0}]", Software.InstanceName);
 
             this.Text = title;
+            
+            this.FormClosing += KinoveaMainWindow_FormClosing;
             supervisorView = new SupervisorUserInterface(rootKernel);
             this.Controls.Add(supervisorView);
             supervisorView.Dock = DockStyle.Fill;
             supervisorView.BringToFront();
 
+            log.DebugFormat("Restoring window state: {0}, window rectangle: {1}", PreferencesManager.GeneralPreferences.WindowState, PreferencesManager.GeneralPreferences.WindowRectangle);
+            if (Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(PreferencesManager.GeneralPreferences.WindowRectangle)))
+            {
+                // The screen it was on is still here, move it to this screen and then restore the state.
+                this.StartPosition = FormStartPosition.Manual;
+                this.DesktopBounds = PreferencesManager.GeneralPreferences.WindowRectangle;
+                this.WindowState = PreferencesManager.GeneralPreferences.WindowState;
+            }
+            else
+            {
+                this.WindowState = FormWindowState.Maximized;
+            }
+                
             EnableCopyData();
+        }
+
+        private void KinoveaMainWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            PreferencesManager.GeneralPreferences.WindowState = this.WindowState;
+            PreferencesManager.GeneralPreferences.WindowRectangle = this.DesktopBounds;
+            PreferencesManager.Save();
         }
         #endregion
 
