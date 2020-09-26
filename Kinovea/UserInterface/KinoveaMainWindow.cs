@@ -174,9 +174,8 @@ namespace Kinovea.Root
             int dataType = (int)copyData.dwData;
             if (dataType != 0)
                 return;
-                
-            string commandId = Marshal.PtrToStringUni(copyData.lpData);
-            if (commandId == COMMAND_TRIGGERCAPTURE)
+
+            if (Marshal.PtrToStringUni(copyData.lpData) == COMMAND_TRIGGERCAPTURE || Marshal.PtrToStringAnsi(copyData.lpData) == COMMAND_TRIGGERCAPTURE)
             {
                 log.DebugFormat("Received capture trigger command.");
                 NotificationCenter.RaiseCaptureTriggered(this);
