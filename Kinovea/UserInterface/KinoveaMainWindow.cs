@@ -60,7 +60,7 @@ namespace Kinovea.Root
             this.rootKernel = rootKernel;
             InitializeComponent();
 
-            string title = " Kinovea";
+            string title = "Kinovea";
             if (!string.IsNullOrEmpty(Software.InstanceName))
                 title += string.Format(" [{0}]", Software.InstanceName);
 
