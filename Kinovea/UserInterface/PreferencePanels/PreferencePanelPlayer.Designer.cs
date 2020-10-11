@@ -75,6 +75,7 @@ namespace Kinovea.Root
       this.lblSpeedUnit = new System.Windows.Forms.Label();
       this.cmbTimeCodeFormat = new System.Windows.Forms.ComboBox();
       this.lblTimeMarkersFormat = new System.Windows.Forms.Label();
+      this.chkSyncByMotion = new System.Windows.Forms.CheckBox();
       ((System.ComponentModel.ISupportInitialize)(this.trkMemoryBuffer)).BeginInit();
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
@@ -84,7 +85,7 @@ namespace Kinovea.Root
       // 
       // chkDeinterlace
       // 
-      this.chkDeinterlace.Location = new System.Drawing.Point(21, 167);
+      this.chkDeinterlace.Location = new System.Drawing.Point(23, 193);
       this.chkDeinterlace.Name = "chkDeinterlace";
       this.chkDeinterlace.Size = new System.Drawing.Size(369, 20);
       this.chkDeinterlace.TabIndex = 23;
@@ -92,7 +93,7 @@ namespace Kinovea.Root
       this.chkDeinterlace.UseVisualStyleBackColor = true;
       this.chkDeinterlace.CheckedChanged += new System.EventHandler(this.ChkDeinterlaceCheckedChanged);
       // 
-      // trkWorkingZoneMemory
+      // trkMemoryBuffer
       // 
       this.trkMemoryBuffer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -100,7 +101,7 @@ namespace Kinovea.Root
       this.trkMemoryBuffer.Location = new System.Drawing.Point(15, 55);
       this.trkMemoryBuffer.Maximum = 1024;
       this.trkMemoryBuffer.Minimum = 16;
-      this.trkMemoryBuffer.Name = "trkWorkingZoneMemory";
+      this.trkMemoryBuffer.Name = "trkMemoryBuffer";
       this.trkMemoryBuffer.Size = new System.Drawing.Size(452, 45);
       this.trkMemoryBuffer.TabIndex = 35;
       this.trkMemoryBuffer.TickFrequency = 50;
@@ -130,6 +131,7 @@ namespace Kinovea.Root
       // 
       // tabGeneral
       // 
+      this.tabGeneral.Controls.Add(this.chkSyncByMotion);
       this.tabGeneral.Controls.Add(this.chkDetectImageSequences);
       this.tabGeneral.Controls.Add(this.chkInteractiveTracker);
       this.tabGeneral.Controls.Add(this.cmbImageFormats);
@@ -156,7 +158,7 @@ namespace Kinovea.Root
       // 
       // chkInteractiveTracker
       // 
-      this.chkInteractiveTracker.Location = new System.Drawing.Point(23, 79);
+      this.chkInteractiveTracker.Location = new System.Drawing.Point(23, 106);
       this.chkInteractiveTracker.Name = "chkInteractiveTracker";
       this.chkInteractiveTracker.Size = new System.Drawing.Size(369, 20);
       this.chkInteractiveTracker.TabIndex = 30;
@@ -167,7 +169,7 @@ namespace Kinovea.Root
       // cmbImageFormats
       // 
       this.cmbImageFormats.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbImageFormats.Location = new System.Drawing.Point(300, 132);
+      this.cmbImageFormats.Location = new System.Drawing.Point(302, 158);
       this.cmbImageFormats.Name = "cmbImageFormats";
       this.cmbImageFormats.Size = new System.Drawing.Size(154, 21);
       this.cmbImageFormats.TabIndex = 29;
@@ -176,7 +178,7 @@ namespace Kinovea.Root
       // lblImageFormat
       // 
       this.lblImageFormat.AutoSize = true;
-      this.lblImageFormat.Location = new System.Drawing.Point(18, 135);
+      this.lblImageFormat.Location = new System.Drawing.Point(20, 161);
       this.lblImageFormat.Name = "lblImageFormat";
       this.lblImageFormat.Size = new System.Drawing.Size(110, 13);
       this.lblImageFormat.TabIndex = 28;
@@ -362,6 +364,16 @@ namespace Kinovea.Root
       this.lblTimeMarkersFormat.TabIndex = 27;
       this.lblTimeMarkersFormat.Text = "Time markers format :";
       // 
+      // chkSyncByMotion
+      // 
+      this.chkSyncByMotion.Location = new System.Drawing.Point(23, 80);
+      this.chkSyncByMotion.Name = "chkSyncByMotion";
+      this.chkSyncByMotion.Size = new System.Drawing.Size(369, 20);
+      this.chkSyncByMotion.TabIndex = 32;
+      this.chkSyncByMotion.Text = "syncByMotion";
+      this.chkSyncByMotion.UseVisualStyleBackColor = true;
+      this.chkSyncByMotion.CheckedChanged += new System.EventHandler(this.chkSyncByMotion_CheckedChanged);
+      // 
       // PreferencePanelPlayer
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -408,5 +420,6 @@ namespace Kinovea.Root
         private System.Windows.Forms.TextBox tbCustomLengthAb;
         private System.Windows.Forms.TextBox tbCustomLengthUnit;
         private System.Windows.Forms.CheckBox chkDetectImageSequences;
+        private System.Windows.Forms.CheckBox chkSyncByMotion;
     }
 }

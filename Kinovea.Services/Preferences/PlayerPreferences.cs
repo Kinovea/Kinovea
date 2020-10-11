@@ -100,6 +100,13 @@ namespace Kinovea.Services
             get { return syncLockSpeed;}
             set { syncLockSpeed = value;}
         }
+
+        public bool SyncByMotion
+        {
+            get { return syncByMotion; }
+            set { syncByMotion = value; }
+        }
+
         public Color BackgroundColor
         {
             get { return backgroundColor; }
@@ -180,6 +187,7 @@ namespace Kinovea.Services
         private List<Color> recentColors = new List<Color>();
         private int maxRecentColors = 12;
         private bool syncLockSpeed = true;
+        private bool syncByMotion = false;
         private KinoveaImageFormat imageFormat = KinoveaImageFormat.JPG;
         private KinoveaVideoFormat videoFormat = KinoveaVideoFormat.MKV;
         private TrackingProfile trackingProfile = new TrackingProfile();
@@ -209,6 +217,7 @@ namespace Kinovea.Services
             writer.WriteElementString("InteractiveFrameTracker", interactiveFrameTracker ? "true" : "false");
             writer.WriteElementString("WorkingZoneMemory", workingZoneMemory.ToString());
             writer.WriteElementString("SyncLockSpeed", syncLockSpeed ? "true" : "false");
+            writer.WriteElementString("SyncByMotion", syncByMotion ? "true" : "false");
             writer.WriteElementString("ImageFormat", imageFormat.ToString());
             writer.WriteElementString("VideoFormat", videoFormat.ToString());
             writer.WriteElementString("Background", XmlHelper.WriteColor(backgroundColor, true));
@@ -292,6 +301,9 @@ namespace Kinovea.Services
                         break;
                     case "SyncLockSpeed":
                         syncLockSpeed = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
+                    case "SyncByMotion":
+                        syncByMotion = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     case "ImageFormat":
                         imageFormat = (KinoveaImageFormat)Enum.Parse(typeof(KinoveaImageFormat), reader.ReadElementContentAsString());

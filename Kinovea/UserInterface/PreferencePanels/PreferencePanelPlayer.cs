@@ -71,6 +71,7 @@ namespace Kinovea.Root
         private string customLengthUnit;
         private string customLengthAbbreviation;
         private bool syncLockSpeeds;
+        private bool syncByMotion;
         private int memoryBuffer;
         #endregion
         
@@ -116,6 +117,7 @@ namespace Kinovea.Root
             customLengthAbbreviation = PreferencesManager.PlayerPreferences.CustomLengthAbbreviation;
             
             syncLockSpeeds = PreferencesManager.PlayerPreferences.SyncLockSpeed;
+            syncByMotion = PreferencesManager.PlayerPreferences.SyncByMotion;
             
             memoryBuffer = PreferencesManager.PlayerPreferences.WorkingZoneMemory;
         }
@@ -131,6 +133,7 @@ namespace Kinovea.Root
             tabGeneral.Text = RootLang.dlgPreferences_tabGeneral;
             chkDetectImageSequences.Text = RootLang.dlgPreferences_Player_ImportImageSequences;
             chkLockSpeeds.Text = RootLang.dlgPreferences_Player_SyncLockSpeeds;
+            chkSyncByMotion.Text = "Use motion synchronization mode"; // RootLang.dlgPreferences_Player_SyncLockSpeeds;
             chkInteractiveTracker.Text = RootLang.dlgPreferences_Player_InteractiveFrameTracker;
 
             // Combo Image Aspect Ratios (MUST be filled in the order of the enum)
@@ -143,6 +146,7 @@ namespace Kinovea.Root
 
             chkDetectImageSequences.Checked = detectImageSequences;
             chkLockSpeeds.Checked = syncLockSpeeds;
+            chkSyncByMotion.Checked = syncByMotion;
             chkInteractiveTracker.Checked = interactiveFrameTracker;
             SelectCurrentImageFormat();
             chkDeinterlace.Checked = deinterlaceByDefault;
@@ -264,6 +268,10 @@ namespace Kinovea.Root
         {
             syncLockSpeeds = chkLockSpeeds.Checked;
         }
+        private void chkSyncByMotion_CheckedChanged(object sender, EventArgs e)
+        {
+            syncByMotion = chkSyncByMotion.Checked;
+        }
         private void ChkInteractiveTrackerCheckedChanged(object sender, EventArgs e)
         {
             interactiveFrameTracker = chkInteractiveTracker.Checked;
@@ -324,6 +332,7 @@ namespace Kinovea.Root
             PreferencesManager.PlayerPreferences.DeinterlaceByDefault = deinterlaceByDefault;
             PreferencesManager.PlayerPreferences.DetectImageSequences = detectImageSequences;
             PreferencesManager.PlayerPreferences.SyncLockSpeed = syncLockSpeeds;
+            PreferencesManager.PlayerPreferences.SyncByMotion = syncByMotion;
             PreferencesManager.PlayerPreferences.InteractiveFrameTracker = interactiveFrameTracker;
             PreferencesManager.PlayerPreferences.TimecodeFormat = timecodeFormat;
             PreferencesManager.PlayerPreferences.AspectRatio = imageAspectRatio;

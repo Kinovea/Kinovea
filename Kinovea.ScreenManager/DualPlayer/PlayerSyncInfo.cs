@@ -22,5 +22,10 @@ namespace Kinovea.ScreenManager
         /// (Start of running zone for this player).
         /// </summary>
         public long Offset { get; set; }
+
+        /// <summary>
+        /// Scaling factor when using synchronization by motion instead of time.
+        /// </summary>
+        public double Scale { get; set; }
     }
 }
