@@ -437,6 +437,11 @@ namespace Kinovea.ScreenManager
             ToggleRecording();
         }
         
+        public void View_ToggleDelayedDisplay()
+        {
+            delayedDisplay = !delayedDisplay;
+        }
+
         public void View_ValidateFilename(string filename)
         {
             bool allowEmpty = true;

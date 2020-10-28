@@ -110,6 +110,7 @@ namespace Kinovea.Services
         ToggleGrabbing,
         ToggleRecording,
         TakeSnapshot,
+        ToggleDelayedDisplay,
         ResetViewport,
         OpenConfiguration,
         IncreaseZoom,

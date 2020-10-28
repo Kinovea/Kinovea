@@ -220,8 +220,9 @@ namespace Kinovea.Services
                 { "CaptureScreen", new HotkeyCommand[]{
                     hk(CaptureScreenCommands.ToggleGrabbing, Keys.Space), 
                     hk(CaptureScreenCommands.ToggleRecording, Keys.Control | Keys.Return), 
-                    hk(CaptureScreenCommands.TakeSnapshot, Keys.Shift | Keys.Return), 
-                    hk(CaptureScreenCommands.ResetViewport, Keys.Escape), 
+                    hk(CaptureScreenCommands.TakeSnapshot, Keys.Shift | Keys.Return),
+                    hk(CaptureScreenCommands.ToggleDelayedDisplay, Keys.Alt | Keys.Home),
+                    hk(CaptureScreenCommands.ResetViewport, Keys.Escape),
                     hk(CaptureScreenCommands.OpenConfiguration, Keys.F12), 
                     //hk(CaptureScreenCommands.IncreaseZoom, Keys.Control | Keys.Add), 
                     //hk(CaptureScreenCommands.DecreaseZoom, Keys.Control | Keys.Subtract), 
