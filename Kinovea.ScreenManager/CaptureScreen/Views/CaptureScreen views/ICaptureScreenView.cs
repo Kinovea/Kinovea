@@ -35,7 +35,9 @@ namespace Kinovea.ScreenManager
         void DisplayAsActiveScreen(bool active);
         void FullScreen(bool fullScreen);
         void RefreshUICulture();
-        
+
+        bool ExecuteScreenCommand(int cmd);
+
         void AddImageDrawing(string filename, bool svg);
         void AddImageDrawing(Bitmap bmp);
         

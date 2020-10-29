@@ -385,7 +385,7 @@ namespace Kinovea.ScreenManager
         
         public override void ExecuteScreenCommand(int cmd)
         {
-            // execute local command.
+            view.ExecuteScreenCommand(cmd);
         }
 
         public override void LoadKVA(string path)

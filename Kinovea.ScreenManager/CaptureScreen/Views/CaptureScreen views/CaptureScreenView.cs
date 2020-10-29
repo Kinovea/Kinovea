@@ -421,7 +421,7 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        private bool ExecuteScreenCommand(int cmd)
+        public bool ExecuteScreenCommand(int cmd)
         {
             CaptureScreenCommands command = (CaptureScreenCommands)cmd;
 

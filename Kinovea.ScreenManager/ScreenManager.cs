@@ -174,7 +174,7 @@ namespace Kinovea.ScreenManager
 
             NotificationCenter.StopPlayback += (s, e) => DoStopPlaying();
             NotificationCenter.PreferencesOpened += NotificationCenter_PreferencesOpened;
-            NotificationCenter.CaptureTriggered += (s, e) => TriggerCapture();
+            NotificationCenter.ExternalCommand += NotificationCenter_ExternalCommand;
 
             playerScreens = screenList.Where(s => s is PlayerScreen).Select(s => s as PlayerScreen);
             captureScreens = screenList.Where(s => s is CaptureScreen).Select(s => s as CaptureScreen);
@@ -2351,9 +2351,60 @@ namespace Kinovea.ScreenManager
             foreach (CaptureScreen screen in captureScreens)
                 screen.TriggerCapture();
         }
+
         private void NotificationCenter_PreferencesOpened(object source, EventArgs e)
         {
             audioInputLevelMonitor.Enabled = false;
+        }
+
+        private void NotificationCenter_ExternalCommand(object source, ExternalCommandEventArgs e)
+        {
+            // Parses the payload of the external command string and send it to the correct handler.
+            // The payload is in the form "<Handler>.<Command>", for example "CaptureScreen.ToggleRecording".
+
+            string[] tokens = e.Name.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+            if (tokens.Length != 2)
+            {
+                log.ErrorFormat("Malformed external command. \"{0\"}", e.Name);
+                return;
+            }
+
+            switch (tokens[0])
+            {
+                case "CaptureScreen":
+                    {
+                        CaptureScreenCommands command;
+                        bool parsed = Enum.TryParse(tokens[1], out command);
+                        if (!parsed)
+                        {
+                            log.ErrorFormat("Unsupported capture screen command \"{0}\".", tokens[1]);
+                            return;
+                        }
+
+                        foreach (CaptureScreen screen in captureScreens)
+                            screen.ExecuteScreenCommand((int)command);
+
+                        break;
+                    }
+                case "PlayerScreen":
+                    {
+                        PlayerScreenCommands command;
+                        bool parsed = Enum.TryParse(tokens[1], out command);
+                        if (!parsed)
+                        {
+                            log.ErrorFormat("Unsupported player screen command \"{0}\".", tokens[1]);
+                            return;
+                        }
+
+                        foreach (PlayerScreen screen in playerScreens)
+                            screen.ExecuteScreenCommand((int)command);
+
+                        break;
+                    }
+                default:
+                    log.ErrorFormat("Unsupported handler in external command: \"{0}\"", tokens[0]);
+                    break;
+            }
         }
         #endregion
 

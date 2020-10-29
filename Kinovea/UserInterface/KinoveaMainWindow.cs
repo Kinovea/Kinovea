@@ -48,10 +48,10 @@ namespace Kinovea.Root
         private bool fullScreen;
         private Rectangle memoBounds;
         private FormWindowState memoWindowState;
-        private const string COMMAND_TRIGGERCAPTURE = "2b0576a5-43fb-4b92-8e55-a13aea656ee5";
+        private const string EXTERNAL_COMMAND = "2b0576a5";
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
-
+        
         #region Constructor
         public KinoveaMainWindow(RootKernel rootKernel)
         {
@@ -163,29 +163,41 @@ namespace Kinovea.Root
                 return;
             }
 
-            //-------------------------------
-            // Handle WM_COPYDATA.
-            // Supported commands: 
-            // - Trigger capture.
-            //-------------------------------
             log.DebugFormat("Received WM_COPYDATA.");
                 
             NativeMethods.COPYDATASTRUCT copyData = (NativeMethods.COPYDATASTRUCT)Marshal.PtrToStructure(m.LParam, typeof(NativeMethods.COPYDATASTRUCT));
             int dataType = (int)copyData.dwData;
             if (dataType != 0)
-                return;
-
-            if (Marshal.PtrToStringUni(copyData.lpData) == COMMAND_TRIGGERCAPTURE || Marshal.PtrToStringAnsi(copyData.lpData) == COMMAND_TRIGGERCAPTURE)
             {
-                log.DebugFormat("Received capture trigger command.");
-                NotificationCenter.RaiseCaptureTriggered(this);
+                log.DebugFormat("Malformed command.");
+                return;
             }
-            else
+
+            string message = Marshal.PtrToStringUni(copyData.lpData);
+            bool parsed = message.StartsWith(EXTERNAL_COMMAND);
+            if (!parsed)
+            {
+                message = Marshal.PtrToStringAnsi(copyData.lpData);
+                parsed = message.StartsWith(EXTERNAL_COMMAND);
+            }
+
+            if (!parsed)
             {
                 log.ErrorFormat("Unrecognized command.");
+                return;
             }
-    
-            return;
+            
+            int commandIndex = message.IndexOf(':');
+            if (commandIndex < 0)
+            {
+                log.ErrorFormat("Malformed command. Separator not found.");
+                return;
+            }
+
+            string command = message.Substring(commandIndex + 1, message.Length - (commandIndex + 1));
+            log.DebugFormat("Received external command:\"{0}\"", command);
+
+            NotificationCenter.RaiseExternalCommand(this, command);
         }
         #endregion
     }
