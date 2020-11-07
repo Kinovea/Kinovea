@@ -22,7 +22,9 @@ using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Linq;
 using Kinovea.Services;
+
 
 namespace Kinovea.Root
 {
@@ -46,10 +48,10 @@ namespace Kinovea.Root
         private bool fullScreen;
         private Rectangle memoBounds;
         private FormWindowState memoWindowState;
-        private const string COMMAND_TRIGGERCAPTURE = "2b0576a5-43fb-4b92-8e55-a13aea656ee5";
+        private const string EXTERNAL_COMMAND_IDENTIFIER = "Kinovea";
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
-
+        
         #region Constructor
         public KinoveaMainWindow(RootKernel rootKernel)
         {
@@ -58,17 +60,39 @@ namespace Kinovea.Root
             this.rootKernel = rootKernel;
             InitializeComponent();
 
-            string title = " Kinovea";
+            string title = "Kinovea";
             if (!string.IsNullOrEmpty(Software.InstanceName))
                 title += string.Format(" [{0}]", Software.InstanceName);
 
             this.Text = title;
+            
+            this.FormClosing += KinoveaMainWindow_FormClosing;
             supervisorView = new SupervisorUserInterface(rootKernel);
             this.Controls.Add(supervisorView);
             supervisorView.Dock = DockStyle.Fill;
             supervisorView.BringToFront();
 
+            log.DebugFormat("Restoring window state: {0}, window rectangle: {1}", PreferencesManager.GeneralPreferences.WindowState, PreferencesManager.GeneralPreferences.WindowRectangle);
+            if (Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(PreferencesManager.GeneralPreferences.WindowRectangle)))
+            {
+                // The screen it was on is still here, move it to this screen and then restore the state.
+                this.StartPosition = FormStartPosition.Manual;
+                this.DesktopBounds = PreferencesManager.GeneralPreferences.WindowRectangle;
+                this.WindowState = PreferencesManager.GeneralPreferences.WindowState;
+            }
+            else
+            {
+                this.WindowState = FormWindowState.Maximized;
+            }
+                
             EnableCopyData();
+        }
+
+        private void KinoveaMainWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            PreferencesManager.GeneralPreferences.WindowState = this.WindowState;
+            PreferencesManager.GeneralPreferences.WindowRectangle = this.DesktopBounds;
+            PreferencesManager.Save();
         }
         #endregion
 
@@ -139,30 +163,41 @@ namespace Kinovea.Root
                 return;
             }
 
-            //-------------------------------
-            // Handle WM_COPYDATA.
-            // Supported commands: 
-            // - Trigger capture.
-            //-------------------------------
             log.DebugFormat("Received WM_COPYDATA.");
                 
             NativeMethods.COPYDATASTRUCT copyData = (NativeMethods.COPYDATASTRUCT)Marshal.PtrToStructure(m.LParam, typeof(NativeMethods.COPYDATASTRUCT));
             int dataType = (int)copyData.dwData;
             if (dataType != 0)
-                return;
-                
-            string commandId = Marshal.PtrToStringUni(copyData.lpData);
-            if (commandId == COMMAND_TRIGGERCAPTURE)
             {
-                log.DebugFormat("Received capture trigger command.");
-                NotificationCenter.RaiseCaptureTriggered(this);
+                log.DebugFormat("Malformed command.");
+                return;
             }
-            else
+
+            string message = Marshal.PtrToStringUni(copyData.lpData);
+            bool parsed = message.StartsWith(EXTERNAL_COMMAND_IDENTIFIER);
+            if (!parsed)
+            {
+                message = Marshal.PtrToStringAnsi(copyData.lpData);
+                parsed = message.StartsWith(EXTERNAL_COMMAND_IDENTIFIER);
+            }
+
+            if (!parsed)
             {
                 log.ErrorFormat("Unrecognized command.");
+                return;
             }
-    
-            return;
+            
+            int commandIndex = message.IndexOf(':');
+            if (commandIndex < 0)
+            {
+                log.ErrorFormat("Malformed command. Separator not found.");
+                return;
+            }
+
+            string command = message.Substring(commandIndex + 1, message.Length - (commandIndex + 1));
+            log.DebugFormat("Received external command:\"{0}\"", command);
+
+            NotificationCenter.RaiseExternalCommand(this, command);
         }
         #endregion
     }

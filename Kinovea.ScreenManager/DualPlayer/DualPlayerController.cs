@@ -80,6 +80,9 @@ namespace Kinovea.ScreenManager
         public void RefreshUICulture()
         {
             view.RefreshUICulture();
+
+            if (synching == true)
+                InitializeSync();
         }
         public void UpdateTrkFrame(long position)
         {
@@ -186,7 +189,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             PlayerScreen player = sender as PlayerScreen;
-            if (player == null || !PreferencesManager.PlayerPreferences.SyncLockSpeed)
+            if (player == null)
                 return;
 
             // Reinit synchronization.

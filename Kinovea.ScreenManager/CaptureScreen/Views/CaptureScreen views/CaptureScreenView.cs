@@ -421,7 +421,7 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        private bool ExecuteScreenCommand(int cmd)
+        public bool ExecuteScreenCommand(int cmd)
         {
             CaptureScreenCommands command = (CaptureScreenCommands)cmd;
 
@@ -435,6 +435,12 @@ namespace Kinovea.ScreenManager
                     break;
                 case CaptureScreenCommands.TakeSnapshot:
                     presenter.View_SnapshotAsked();
+                    break;
+                case CaptureScreenCommands.ToggleDelayedDisplay:
+                    presenter.View_ToggleDelayedDisplay();
+                    break;
+                case CaptureScreenCommands.ToggleArmCaptureTrigger:
+                    presenter.View_ToggleArmingTrigger();
                     break;
                 case CaptureScreenCommands.ResetViewport:
                     presenter.View_DeselectTool();

@@ -221,6 +221,7 @@
     <Compile Include="Diagnostics\IBenchmarkCounter.cs" />
     <Compile Include="Diagnostics\WMI\PhysicalDisk.cs" />
     <Compile Include="Diagnostics\WMI\WMI.cs" />
+    <Compile Include="Events\ExternalCommandEventArgs.cs" />
     <Compile Include="Events\PreferenceTabEventArgs.cs" />
     <Compile Include="Infrastructure\EventArgs`1.cs" />
     <Compile Include="LaunchSettings\CommandLine\CommandLineArgumentException.cs" />

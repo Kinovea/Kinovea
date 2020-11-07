@@ -184,6 +184,7 @@ namespace Kinovea.ScreenManager
 
         private Delayer delayer = new Delayer();
         private int delay; // The current image age in number of frames.
+        private bool delayedDisplay = true;
 
         private ViewportController viewportController;
         private CapturedFiles capturedFiles = new CapturedFiles();
@@ -384,7 +385,7 @@ namespace Kinovea.ScreenManager
         
         public override void ExecuteScreenCommand(int cmd)
         {
-            // execute local command.
+            view.ExecuteScreenCommand(cmd);
         }
 
         public override void LoadKVA(string path)
@@ -436,6 +437,11 @@ namespace Kinovea.ScreenManager
             ToggleRecording();
         }
         
+        public void View_ToggleDelayedDisplay()
+        {
+            delayedDisplay = !delayedDisplay;
+        }
+
         public void View_ValidateFilename(string filename)
         {
             bool allowEmpty = true;
@@ -718,7 +724,11 @@ namespace Kinovea.ScreenManager
             if (!cameraLoaded || cameraManager == null)
                 return;
 
+            // Make sure we are live during configuration so the changes are immediately apparent.
+            bool memoDelayedDisplay = delayedDisplay;
+            delayedDisplay = false;
             bool needsReconnect = cameraManager.Configure(cameraSummary, Disconnect, Connect);
+            delayedDisplay = memoDelayedDisplay;
 
             if (needsReconnect)
             {
@@ -907,15 +917,16 @@ namespace Kinovea.ScreenManager
                 delayer.Push(freshFrame);
             }
             
-            Bitmap delayed = delayer.GetWeak(delay, ImageRotation);
-            if (delayed != null)
+            // Get the displayed frame.
+            Bitmap displayFrame = delayedDisplay ? delayer.GetWeak(delay, ImageRotation) : delayer.GetWeak(0, ImageRotation);
+            if (displayFrame != null)
             {
                 viewportController.ForgetBitmap();
-                viewportController.Bitmap = delayed;
+                viewportController.Bitmap = displayFrame;
             }
 
-            if (recording && recordingThumbnail == null && delayed != null)
-                recordingThumbnail = BitmapHelper.Copy(delayed);
+            if (recording && recordingThumbnail == null && displayFrame != null)
+                recordingThumbnail = BitmapHelper.Copy(displayFrame);
 
             float maxRecordingSeconds = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.RecordingSeconds;
             if (recording && maxRecordingSeconds > 0)
@@ -973,8 +984,14 @@ namespace Kinovea.ScreenManager
         private void LoadCompanionKVA()
         {
             // Note: anything after the first keyframe will be ignored.
-            string startupFile = Path.Combine(Software.SettingsDirectory, "capture.kva");
-            LoadKVA(startupFile);
+            string startupFile = PreferencesManager.CapturePreferences.CaptureKVA;
+            if (!string.IsNullOrEmpty(startupFile))
+            {
+                if (Path.IsPathRooted(startupFile))
+                    LoadKVA(startupFile);
+                else
+                    LoadKVA(Path.Combine(Software.SettingsDirectory, startupFile));
+            }
         }
         private void InitializeTools()
         {

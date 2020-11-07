@@ -278,8 +278,8 @@ namespace Kinovea.ScreenManager
 
             if (type == TimeType.Duration)
                 frames++;
-             
-            double milliseconds = frames * videoReader.Info.FrameIntervalMilliseconds / metadata.HighSpeedFactor;
+
+            double milliseconds = frames * metadata.UserInterval / metadata.HighSpeedFactor;
 
             double framerate = 1000.0 / metadata.UserInterval * metadata.HighSpeedFactor;
             double framerateMagnitude = Math.Log10(framerate);

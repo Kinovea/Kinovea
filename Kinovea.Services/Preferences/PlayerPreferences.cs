@@ -100,6 +100,13 @@ namespace Kinovea.Services
             get { return syncLockSpeed;}
             set { syncLockSpeed = value;}
         }
+
+        public bool SyncByMotion
+        {
+            get { return syncByMotion; }
+            set { syncByMotion = value; }
+        }
+
         public Color BackgroundColor
         {
             get { return backgroundColor; }
@@ -159,6 +166,11 @@ namespace Kinovea.Services
             get { return preloadKeyframes; }
             set { preloadKeyframes = value; }
         }
+        public string PlaybackKVA
+        {
+            get { return playbackKVA; }
+            set { playbackKVA = value; }
+        }
         #endregion
 
         private TimecodeFormat timecodeFormat = TimecodeFormat.ClassicTime;
@@ -180,6 +192,7 @@ namespace Kinovea.Services
         private List<Color> recentColors = new List<Color>();
         private int maxRecentColors = 12;
         private bool syncLockSpeed = true;
+        private bool syncByMotion = false;
         private KinoveaImageFormat imageFormat = KinoveaImageFormat.JPG;
         private KinoveaVideoFormat videoFormat = KinoveaVideoFormat.MKV;
         private TrackingProfile trackingProfile = new TrackingProfile();
@@ -188,6 +201,7 @@ namespace Kinovea.Services
         private float defaultReplaySpeed = 100;
         private bool detectImageSequences = true;
         private int preloadKeyframes = 20;
+        private string playbackKVA;
         
         public void AddRecentColor(Color _color)
         {
@@ -209,6 +223,7 @@ namespace Kinovea.Services
             writer.WriteElementString("InteractiveFrameTracker", interactiveFrameTracker ? "true" : "false");
             writer.WriteElementString("WorkingZoneMemory", workingZoneMemory.ToString());
             writer.WriteElementString("SyncLockSpeed", syncLockSpeed ? "true" : "false");
+            writer.WriteElementString("SyncByMotion", syncByMotion ? "true" : "false");
             writer.WriteElementString("ImageFormat", imageFormat.ToString());
             writer.WriteElementString("VideoFormat", videoFormat.ToString());
             writer.WriteElementString("Background", XmlHelper.WriteColor(backgroundColor, true));
@@ -244,6 +259,7 @@ namespace Kinovea.Services
             writer.WriteElementString("DefaultReplaySpeed", defaultReplaySpeed.ToString("0", CultureInfo.InvariantCulture));
             writer.WriteElementString("DetectImageSequences", detectImageSequences ? "true" : "false");
             writer.WriteElementString("PreloadKeyframes", preloadKeyframes.ToString());
+            writer.WriteElementString("PlaybackKVA", playbackKVA);
         }
         
         public void ReadXML(XmlReader reader)
@@ -293,6 +309,9 @@ namespace Kinovea.Services
                     case "SyncLockSpeed":
                         syncLockSpeed = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
+                    case "SyncByMotion":
+                        syncByMotion = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
                     case "ImageFormat":
                         imageFormat = (KinoveaImageFormat)Enum.Parse(typeof(KinoveaImageFormat), reader.ReadElementContentAsString());
                         break;
@@ -332,6 +351,9 @@ namespace Kinovea.Services
                         break;
                     case "PreloadKeyframes":
                         preloadKeyframes = reader.ReadElementContentAsInt();
+                        break;
+                    case "PlaybackKVA":
+                        playbackKVA = reader.ReadElementContentAsString();
                         break;
                     default:
                         reader.ReadOuterXml();

@@ -109,11 +109,11 @@ namespace Kinovea.Services
                 PreferencesOpened(sender, EventArgs.Empty);
         }
 
-        public static EventHandler CaptureTriggered;
-        public static void RaiseCaptureTriggered(object sender)
+        public static EventHandler<ExternalCommandEventArgs> ExternalCommand;
+        public static void RaiseExternalCommand(object sender, string name)
         {
-            if (CaptureTriggered != null)
-                CaptureTriggered(sender, EventArgs.Empty);
+            if (ExternalCommand != null)
+                ExternalCommand(sender, new ExternalCommandEventArgs(name));
         }
     }
 }

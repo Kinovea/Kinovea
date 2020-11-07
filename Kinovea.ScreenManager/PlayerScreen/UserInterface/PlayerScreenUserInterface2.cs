@@ -298,7 +298,8 @@ namespace Kinovea.ScreenManager
         private AbstractDrawingTool m_ActiveTool;
         private DrawingToolPointer m_PointerTool;
         private formKeyframeComments m_KeyframeCommentsHub;
-        private bool m_bDocked = true;
+        private bool m_bKeyframePanelCollapsed = true;
+        private bool m_bKeyframePanelCollapsedManual = false;
         private bool m_bTextEdit;
         private PointF m_DescaledMouse;    // The current mouse point expressed in the original image size coordinates.
 
@@ -406,7 +407,7 @@ namespace Kinovea.ScreenManager
             SetupKeyframeCommentsHub();
             pnlThumbnails.Controls.Clear();
             thumbnails.Clear();
-            DockKeyframePanel(true);
+            CollapseKeyframePanel(true);
 
             m_TimerCallback = MultimediaTimer_Tick;
             m_DeselectionTimer.Interval = 10000;
@@ -442,7 +443,7 @@ namespace Kinovea.ScreenManager
             ShowHideRenderingSurface(false);
             SetupPrimarySelectionPanel();
             ClearKeyframeBoxes();
-            DockKeyframePanel(true);
+            CollapseKeyframePanel(true);
             UpdateFramesMarkers();
             EnableDisableAllPlayingControls(true);
             EnableDisableDrawingTools(true);
@@ -578,16 +579,23 @@ namespace Kinovea.ScreenManager
 
             if (!recoveredMetadata)
             {
+                // Side-car KVA.
                 foreach (string extension in MetadataSerializer.SupportedFileFormats())
                 {
                     string candidate = Path.Combine(Path.GetDirectoryName(m_FrameServer.VideoReader.FilePath), Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath) + extension);
                     LookForLinkedAnalysis(candidate);
                 }
 
-                string startupFile = Path.Combine(Software.SettingsDirectory, "playback.kva");
-                LookForLinkedAnalysis(startupFile);
+                // Startup KVA.
+                string startupFile = PreferencesManager.PlayerPreferences.PlaybackKVA;
+                if (!string.IsNullOrEmpty(startupFile))
+                {
+                    if (Path.IsPathRooted(startupFile))
+                        LookForLinkedAnalysis(startupFile);
+                    else
+                        LookForLinkedAnalysis(Path.Combine(Software.SettingsDirectory, startupFile));
+                }
             }
-
 
             UpdateTimebase();
             UpdateFilenameLabel();
@@ -639,8 +647,8 @@ namespace Kinovea.ScreenManager
 
             UpdateFilenameLabel();
             OrganizeKeyframes();
-            if (m_FrameServer.Metadata.Count > 0)
-                DockKeyframePanel(false);
+            if (m_FrameServer.Metadata.Count > 0 && !m_bKeyframePanelCollapsedManual)
+                CollapseKeyframePanel(false);
 
             m_iFramesToDecode = 1;
             ShowNextFrame(m_iSelStart, true);
@@ -852,7 +860,7 @@ namespace Kinovea.ScreenManager
             DisablePlayAndDraw();
             EnableDisableAllPlayingControls(false);
             EnableDisableDrawingTools(false);
-            DockKeyframePanel(true);
+            CollapseKeyframePanel(true);
             m_fill = true;
             ResizeUpdate(true);
         }
@@ -990,7 +998,7 @@ namespace Kinovea.ScreenManager
             m_iActiveKeyFrameIndex = -1;
             m_ActiveTool = m_PointerTool;
 
-            m_bDocked = true;
+            m_bKeyframePanelCollapsed = true;
             m_bTextEdit = false;
 
             m_FrameServer.Metadata.HighSpeedFactor = 1.0f;
@@ -1463,7 +1471,7 @@ namespace Kinovea.ScreenManager
             // 3. Dock Keyf panel if nothing to see.
             if (m_FrameServer.Metadata.Count < 1)
             {
-                DockKeyframePanel(true);
+                CollapseKeyframePanel(true);
             }
         }
         public void UpdateFramesMarkers()
@@ -3655,7 +3663,7 @@ namespace Kinovea.ScreenManager
         {
             // Redo the dock/undock if needed to be at the right place.
             // (Could be handled by layout ?)
-            DockKeyframePanel(m_bDocked);
+            CollapseKeyframePanel(m_bKeyframePanelCollapsed);
         }
         private void btnAddKeyframe_Click(object sender, EventArgs e)
         {
@@ -3701,7 +3709,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                DockKeyframePanel(true);
+                CollapseKeyframePanel(true);
                 m_iActiveKeyFrameIndex = -1;
             }
 
@@ -3845,7 +3853,7 @@ namespace Kinovea.ScreenManager
             UpdateFramesMarkers();
 
             if (m_FrameServer.Metadata.Count == 1)
-                DockKeyframePanel(false);
+                CollapseKeyframePanel(false);
 
             if (!m_bIsCurrentlyPlaying)
                 ActivateKeyframe(m_iCurrentPosition);
@@ -3964,15 +3972,17 @@ namespace Kinovea.ScreenManager
         #region Docking Undocking
         private void btnDockBottom_Click(object sender, EventArgs e)
         {
-            DockKeyframePanel(!m_bDocked);
+            m_bKeyframePanelCollapsedManual = !m_bKeyframePanelCollapsed;
+            CollapseKeyframePanel(!m_bKeyframePanelCollapsed);
         }
         private void splitKeyframes_Panel2_DoubleClick(object sender, EventArgs e)
         {
-            DockKeyframePanel(!m_bDocked);
+            m_bKeyframePanelCollapsedManual = !m_bKeyframePanelCollapsed;
+            CollapseKeyframePanel(!m_bKeyframePanelCollapsed);
         }
-        private void DockKeyframePanel(bool _bDock)
+        private void CollapseKeyframePanel(bool collapse)
         {
-            if (_bDock)
+            if (collapse)
             {
                 // hide the keyframes, change image.
                 splitKeyframes.SplitterDistance = splitKeyframes.Height - 25;
@@ -3987,19 +3997,19 @@ namespace Kinovea.ScreenManager
                 btnDockBottom.Visible = true;
             }
 
-            m_bDocked = _bDock;
+            m_bKeyframePanelCollapsed = collapse;
         }
         private void PrepareKeyframesDock()
         {
             // If there's no keyframe, and we will be using a tool,
             // the keyframes dock should be raised.
             // This way we don't surprise the user when he click the screen and the image moves around.
-            // (especially problematic when using the Pencil.
+            // (especially problematic when using the Pencil).
 
             // this is only done for the very first keyframe.
             if (m_FrameServer.Metadata.Count < 1)
             {
-                DockKeyframePanel(false);
+                CollapseKeyframePanel(false);
             }
         }
         #endregion
@@ -4026,7 +4036,7 @@ namespace Kinovea.ScreenManager
 
             // Ensure there's a key image at this position, unless the tool creates unattached drawings.
             if (m_ActiveTool == m_PointerTool && m_FrameServer.Metadata.Count < 1)
-                DockKeyframePanel(true);
+                CollapseKeyframePanel(true);
             else if (m_ActiveTool.Attached)
                 PrepareKeyframesDock();
 

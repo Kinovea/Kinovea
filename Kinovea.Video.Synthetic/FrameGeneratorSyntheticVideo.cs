@@ -71,6 +71,9 @@ namespace Kinovea.Video.Synthetic
                         {
                             string text = string.Format("Current frame : {0}", timestamp);
                             g.DrawString(text, font, foreBrush, new PointF(25, 25));
+
+                            text = string.Format("Current time : {0:0.000} ms", timestamp  * 1000.0f / video.FramePerSecond);
+                            g.DrawString(text, font, foreBrush, new PointF(25, 75));
                         }
                     }
 

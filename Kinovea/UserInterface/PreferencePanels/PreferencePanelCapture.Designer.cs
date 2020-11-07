@@ -130,6 +130,9 @@ namespace Kinovea.Root
       this.lblPostRecordCommand = new System.Windows.Forms.Label();
       this.tbPostRecordCommand = new System.Windows.Forms.TextBox();
       this.lblRecordingTime = new System.Windows.Forms.Label();
+      this.lblCaptureKVA = new System.Windows.Forms.Label();
+      this.tbCaptureKVA = new System.Windows.Forms.TextBox();
+      this.btnCaptureKVA = new System.Windows.Forms.Button();
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
       this.tabMemory.SuspendLayout();
@@ -168,6 +171,9 @@ namespace Kinovea.Root
       // 
       // tabGeneral
       // 
+      this.tabGeneral.Controls.Add(this.lblCaptureKVA);
+      this.tabGeneral.Controls.Add(this.tbCaptureKVA);
+      this.tabGeneral.Controls.Add(this.btnCaptureKVA);
       this.tabGeneral.Controls.Add(this.chkUncompressedVideo);
       this.tabGeneral.Controls.Add(this.cmbUncompressedVideoFormat);
       this.tabGeneral.Controls.Add(this.lblUncompressedVideoFormat);
@@ -1144,6 +1150,42 @@ namespace Kinovea.Root
       this.lblRecordingTime.TabIndex = 43;
       this.lblRecordingTime.Text = "Recording time (s) :";
       // 
+      // lblCaptureKVA
+      // 
+      this.lblCaptureKVA.Location = new System.Drawing.Point(19, 204);
+      this.lblCaptureKVA.Name = "lblCaptureKVA";
+      this.lblCaptureKVA.Size = new System.Drawing.Size(185, 18);
+      this.lblCaptureKVA.TabIndex = 58;
+      this.lblCaptureKVA.Text = "Default annotations file :";
+      // 
+      // tbCaptureKVA
+      // 
+      this.tbCaptureKVA.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.tbCaptureKVA.Location = new System.Drawing.Point(262, 202);
+      this.tbCaptureKVA.Name = "tbCaptureKVA";
+      this.tbCaptureKVA.Size = new System.Drawing.Size(175, 20);
+      this.tbCaptureKVA.TabIndex = 59;
+      this.tbCaptureKVA.TextChanged += new System.EventHandler(this.tbCaptureKVA_TextChanged);
+      // 
+      // btnCaptureKVA
+      // 
+      this.btnCaptureKVA.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnCaptureKVA.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+      this.btnCaptureKVA.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnCaptureKVA.FlatAppearance.BorderSize = 0;
+      this.btnCaptureKVA.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+      this.btnCaptureKVA.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnCaptureKVA.Image = global::Kinovea.Root.Properties.Resources.folder;
+      this.btnCaptureKVA.Location = new System.Drawing.Point(443, 201);
+      this.btnCaptureKVA.MinimumSize = new System.Drawing.Size(20, 20);
+      this.btnCaptureKVA.Name = "btnCaptureKVA";
+      this.btnCaptureKVA.Size = new System.Drawing.Size(20, 20);
+      this.btnCaptureKVA.TabIndex = 60;
+      this.btnCaptureKVA.Tag = "";
+      this.btnCaptureKVA.UseVisualStyleBackColor = true;
+      this.btnCaptureKVA.Click += new System.EventHandler(this.btnCaptureKVA_Click);
+      // 
       // PreferencePanelCapture
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1265,5 +1307,8 @@ namespace Kinovea.Root
         private System.Windows.Forms.Label lblReplacementThreshold;
         private System.Windows.Forms.NumericUpDown nudRecordingTime;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblCaptureKVA;
+        private System.Windows.Forms.TextBox tbCaptureKVA;
+        private System.Windows.Forms.Button btnCaptureKVA;
     }
 }

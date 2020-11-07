@@ -31,6 +31,7 @@ using Kinovea.Services;
 using Kinovea.Video;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 
 namespace Kinovea.Root
 {
@@ -71,7 +72,9 @@ namespace Kinovea.Root
         private string customLengthUnit;
         private string customLengthAbbreviation;
         private bool syncLockSpeeds;
+        private bool syncByMotion;
         private int memoryBuffer;
+        private string playbackKVA;
         #endregion
         
         #region Construction & Initialization
@@ -116,8 +119,10 @@ namespace Kinovea.Root
             customLengthAbbreviation = PreferencesManager.PlayerPreferences.CustomLengthAbbreviation;
             
             syncLockSpeeds = PreferencesManager.PlayerPreferences.SyncLockSpeed;
+            syncByMotion = PreferencesManager.PlayerPreferences.SyncByMotion;
             
             memoryBuffer = PreferencesManager.PlayerPreferences.WorkingZoneMemory;
+            playbackKVA = PreferencesManager.PlayerPreferences.PlaybackKVA;
         }
         private void InitPage()
         {
@@ -131,6 +136,7 @@ namespace Kinovea.Root
             tabGeneral.Text = RootLang.dlgPreferences_tabGeneral;
             chkDetectImageSequences.Text = RootLang.dlgPreferences_Player_ImportImageSequences;
             chkLockSpeeds.Text = RootLang.dlgPreferences_Player_SyncLockSpeeds;
+            chkSyncByMotion.Text = "Use motion synchronization mode"; // RootLang.dlgPreferences_Player_SyncLockSpeeds;
             chkInteractiveTracker.Text = RootLang.dlgPreferences_Player_InteractiveFrameTracker;
 
             // Combo Image Aspect Ratios (MUST be filled in the order of the enum)
@@ -143,9 +149,12 @@ namespace Kinovea.Root
 
             chkDetectImageSequences.Checked = detectImageSequences;
             chkLockSpeeds.Checked = syncLockSpeeds;
+            chkSyncByMotion.Checked = syncByMotion;
             chkInteractiveTracker.Checked = interactiveFrameTracker;
             SelectCurrentImageFormat();
             chkDeinterlace.Checked = deinterlaceByDefault;
+            lblPlaybackKVA.Text = "Default annotations file:";
+            tbPlaybackKVA.Text = playbackKVA;
         }
 
         private void InitPageUnits()
@@ -264,6 +273,10 @@ namespace Kinovea.Root
         {
             syncLockSpeeds = chkLockSpeeds.Checked;
         }
+        private void chkSyncByMotion_CheckedChanged(object sender, EventArgs e)
+        {
+            syncByMotion = chkSyncByMotion.Checked;
+        }
         private void ChkInteractiveTrackerCheckedChanged(object sender, EventArgs e)
         {
             interactiveFrameTracker = chkInteractiveTracker.Checked;
@@ -317,13 +330,37 @@ namespace Kinovea.Root
         {
             customLengthAbbreviation = tbCustomLengthAb.Text;
         }
+        private void tbPlaybackKVA_TextChanged(object sender, EventArgs e)
+        {
+            playbackKVA = tbPlaybackKVA.Text;
+        }
+        private void btnPlaybackKVA_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            string initialDirectory = "";
+            if (!string.IsNullOrEmpty(playbackKVA) && File.Exists(playbackKVA) && Path.IsPathRooted(playbackKVA))
+                initialDirectory = Path.GetDirectoryName(playbackKVA);
+
+            if (!string.IsNullOrEmpty(initialDirectory))
+                dialog.InitialDirectory = initialDirectory;
+            else
+                dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+            dialog.Title = ScreenManagerLang.dlgLoadAnalysis_Title;
+            dialog.RestoreDirectory = true;
+            dialog.Filter = ScreenManagerLang.FileFilter_KVA_kva + "|*.kva";
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+                tbPlaybackKVA.Text = dialog.FileName;
+        }
         #endregion
-        
+
         public void CommitChanges()
         {
             PreferencesManager.PlayerPreferences.DeinterlaceByDefault = deinterlaceByDefault;
             PreferencesManager.PlayerPreferences.DetectImageSequences = detectImageSequences;
             PreferencesManager.PlayerPreferences.SyncLockSpeed = syncLockSpeeds;
+            PreferencesManager.PlayerPreferences.SyncByMotion = syncByMotion;
             PreferencesManager.PlayerPreferences.InteractiveFrameTracker = interactiveFrameTracker;
             PreferencesManager.PlayerPreferences.TimecodeFormat = timecodeFormat;
             PreferencesManager.PlayerPreferences.AspectRatio = imageAspectRatio;
@@ -333,6 +370,7 @@ namespace Kinovea.Root
             PreferencesManager.PlayerPreferences.AngularVelocityUnit = angularVelocityUnit;
             PreferencesManager.PlayerPreferences.AngularAccelerationUnit = angularAccelerationUnit;
             PreferencesManager.PlayerPreferences.WorkingZoneMemory = memoryBuffer;
+            PreferencesManager.PlayerPreferences.PlaybackKVA = playbackKVA;
 
             // Special case for the custom unit length.
             if (customLengthUnit == RootLang.dlgPreferences_Player_TrackingPercentage)
