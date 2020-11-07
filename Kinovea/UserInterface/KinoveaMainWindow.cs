@@ -48,7 +48,7 @@ namespace Kinovea.Root
         private bool fullScreen;
         private Rectangle memoBounds;
         private FormWindowState memoWindowState;
-        private const string EXTERNAL_COMMAND = "2b0576a5";
+        private const string EXTERNAL_COMMAND_IDENTIFIER = "Kinovea";
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -174,11 +174,11 @@ namespace Kinovea.Root
             }
 
             string message = Marshal.PtrToStringUni(copyData.lpData);
-            bool parsed = message.StartsWith(EXTERNAL_COMMAND);
+            bool parsed = message.StartsWith(EXTERNAL_COMMAND_IDENTIFIER);
             if (!parsed)
             {
                 message = Marshal.PtrToStringAnsi(copyData.lpData);
-                parsed = message.StartsWith(EXTERNAL_COMMAND);
+                parsed = message.StartsWith(EXTERNAL_COMMAND_IDENTIFIER);
             }
 
             if (!parsed)
