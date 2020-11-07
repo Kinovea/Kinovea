@@ -439,6 +439,9 @@ namespace Kinovea.ScreenManager
                 case CaptureScreenCommands.ToggleDelayedDisplay:
                     presenter.View_ToggleDelayedDisplay();
                     break;
+                case CaptureScreenCommands.ToggleArmCaptureTrigger:
+                    presenter.View_ToggleArmingTrigger();
+                    break;
                 case CaptureScreenCommands.ResetViewport:
                     presenter.View_DeselectTool();
                     break;
