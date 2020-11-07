@@ -53,6 +53,7 @@ namespace Kinovea.Root
       this.lblWorkingZoneMemory = new System.Windows.Forms.Label();
       this.tabSubPages = new System.Windows.Forms.TabControl();
       this.tabGeneral = new System.Windows.Forms.TabPage();
+      this.chkSyncByMotion = new System.Windows.Forms.CheckBox();
       this.chkDetectImageSequences = new System.Windows.Forms.CheckBox();
       this.chkInteractiveTracker = new System.Windows.Forms.CheckBox();
       this.cmbImageFormats = new System.Windows.Forms.ComboBox();
@@ -75,7 +76,9 @@ namespace Kinovea.Root
       this.lblSpeedUnit = new System.Windows.Forms.Label();
       this.cmbTimeCodeFormat = new System.Windows.Forms.ComboBox();
       this.lblTimeMarkersFormat = new System.Windows.Forms.Label();
-      this.chkSyncByMotion = new System.Windows.Forms.CheckBox();
+      this.lblPlaybackKVA = new System.Windows.Forms.Label();
+      this.tbPlaybackKVA = new System.Windows.Forms.TextBox();
+      this.btnPlaybackKVA = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.trkMemoryBuffer)).BeginInit();
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
@@ -131,6 +134,9 @@ namespace Kinovea.Root
       // 
       // tabGeneral
       // 
+      this.tabGeneral.Controls.Add(this.lblPlaybackKVA);
+      this.tabGeneral.Controls.Add(this.tbPlaybackKVA);
+      this.tabGeneral.Controls.Add(this.btnPlaybackKVA);
       this.tabGeneral.Controls.Add(this.chkSyncByMotion);
       this.tabGeneral.Controls.Add(this.chkDetectImageSequences);
       this.tabGeneral.Controls.Add(this.chkInteractiveTracker);
@@ -145,6 +151,16 @@ namespace Kinovea.Root
       this.tabGeneral.TabIndex = 0;
       this.tabGeneral.Text = "General";
       this.tabGeneral.UseVisualStyleBackColor = true;
+      // 
+      // chkSyncByMotion
+      // 
+      this.chkSyncByMotion.Location = new System.Drawing.Point(23, 80);
+      this.chkSyncByMotion.Name = "chkSyncByMotion";
+      this.chkSyncByMotion.Size = new System.Drawing.Size(369, 20);
+      this.chkSyncByMotion.TabIndex = 32;
+      this.chkSyncByMotion.Text = "syncByMotion";
+      this.chkSyncByMotion.UseVisualStyleBackColor = true;
+      this.chkSyncByMotion.CheckedChanged += new System.EventHandler(this.chkSyncByMotion_CheckedChanged);
       // 
       // chkDetectImageSequences
       // 
@@ -364,15 +380,41 @@ namespace Kinovea.Root
       this.lblTimeMarkersFormat.TabIndex = 27;
       this.lblTimeMarkersFormat.Text = "Time markers format :";
       // 
-      // chkSyncByMotion
+      // lblPlaybackKVA
       // 
-      this.chkSyncByMotion.Location = new System.Drawing.Point(23, 80);
-      this.chkSyncByMotion.Name = "chkSyncByMotion";
-      this.chkSyncByMotion.Size = new System.Drawing.Size(369, 20);
-      this.chkSyncByMotion.TabIndex = 32;
-      this.chkSyncByMotion.Text = "syncByMotion";
-      this.chkSyncByMotion.UseVisualStyleBackColor = true;
-      this.chkSyncByMotion.CheckedChanged += new System.EventHandler(this.chkSyncByMotion_CheckedChanged);
+      this.lblPlaybackKVA.Location = new System.Drawing.Point(20, 227);
+      this.lblPlaybackKVA.Name = "lblPlaybackKVA";
+      this.lblPlaybackKVA.Size = new System.Drawing.Size(185, 18);
+      this.lblPlaybackKVA.TabIndex = 61;
+      this.lblPlaybackKVA.Text = "Default annotations file :";
+      // 
+      // tbPlaybackKVA
+      // 
+      this.tbPlaybackKVA.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.tbPlaybackKVA.Location = new System.Drawing.Point(263, 225);
+      this.tbPlaybackKVA.Name = "tbPlaybackKVA";
+      this.tbPlaybackKVA.Size = new System.Drawing.Size(175, 20);
+      this.tbPlaybackKVA.TabIndex = 62;
+      this.tbPlaybackKVA.TextChanged += new System.EventHandler(this.tbPlaybackKVA_TextChanged);
+      // 
+      // btnPlaybackKVA
+      // 
+      this.btnPlaybackKVA.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnPlaybackKVA.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+      this.btnPlaybackKVA.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnPlaybackKVA.FlatAppearance.BorderSize = 0;
+      this.btnPlaybackKVA.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+      this.btnPlaybackKVA.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnPlaybackKVA.Image = global::Kinovea.Root.Properties.Resources.folder;
+      this.btnPlaybackKVA.Location = new System.Drawing.Point(444, 224);
+      this.btnPlaybackKVA.MinimumSize = new System.Drawing.Size(20, 20);
+      this.btnPlaybackKVA.Name = "btnPlaybackKVA";
+      this.btnPlaybackKVA.Size = new System.Drawing.Size(20, 20);
+      this.btnPlaybackKVA.TabIndex = 63;
+      this.btnPlaybackKVA.Tag = "";
+      this.btnPlaybackKVA.UseVisualStyleBackColor = true;
+      this.btnPlaybackKVA.Click += new System.EventHandler(this.btnPlaybackKVA_Click);
       // 
       // PreferencePanelPlayer
       // 
@@ -421,5 +463,8 @@ namespace Kinovea.Root
         private System.Windows.Forms.TextBox tbCustomLengthUnit;
         private System.Windows.Forms.CheckBox chkDetectImageSequences;
         private System.Windows.Forms.CheckBox chkSyncByMotion;
+        private System.Windows.Forms.Label lblPlaybackKVA;
+        private System.Windows.Forms.TextBox tbPlaybackKVA;
+        private System.Windows.Forms.Button btnPlaybackKVA;
     }
 }

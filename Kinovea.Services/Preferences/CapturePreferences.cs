@@ -112,6 +112,11 @@ namespace Kinovea.Services
             get { return postRecordCommand; }
             set { postRecordCommand = value; }
         }
+        public string CaptureKVA
+        {
+            get { return captureKVA; }
+            set { captureKVA = value; }
+        }
         #endregion
 
         #region Members
@@ -130,8 +135,9 @@ namespace Kinovea.Services
         private float slowspeedRecordingFramerateThreshold = 1;
         private float slowspeedRecordingFramerateOutput = 30;
         private string postRecordCommand;
+        private string captureKVA;
         #endregion
-        
+
         public void AddCamera(CameraBlurb blurb)
         {
             // Note: there should be a way to remove old entries.
@@ -197,6 +203,7 @@ namespace Kinovea.Services
             writer.WriteElementString("SlowspeedRecordingFramerateOutput", srfo);
 
             writer.WriteElementString("PostRecordCommand", postRecordCommand);
+            writer.WriteElementString("CaptureKVA", captureKVA);
         }
 
         public void ReadXML(XmlReader reader)
@@ -256,6 +263,9 @@ namespace Kinovea.Services
                         break;
                     case "PostRecordCommand":
                         postRecordCommand = reader.ReadElementContentAsString();
+                        break;
+                    case "CaptureKVA":
+                        captureKVA = reader.ReadElementContentAsString();
                         break;
                     default:
                         reader.ReadOuterXml();

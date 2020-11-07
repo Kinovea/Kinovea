@@ -31,6 +31,7 @@ using Kinovea.Services;
 using System.Collections.Generic;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Globalization;
+using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.Root
 {
@@ -77,6 +78,7 @@ namespace Kinovea.Root
         private string postRecordCommand;
         private float replacementFramerateThreshold;
         private float replacementFramerate;
+        private string captureKVA;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -131,6 +133,7 @@ namespace Kinovea.Root
             recordingSeconds = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.RecordingSeconds;
             postRecordCommand = PreferencesManager.CapturePreferences.PostRecordCommand;
             ignoreOverwriteWarning = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.IgnoreOverwrite;
+            captureKVA = PreferencesManager.CapturePreferences.CaptureKVA;
         }
         private void InitInputMonitor()
         {
@@ -178,6 +181,8 @@ namespace Kinovea.Root
 
             lblFramerate.Text = RootLang.dlgPreferences_Capture_lblForcedFramerate;
             tbFramerate.Text = string.Format("{0:0.###}", displaySynchronizationFramerate);
+            lblCaptureKVA.Text = "Default annotations file:";
+            tbCaptureKVA.Text = captureKVA;
         }
 
         private void InitPageMemory()
@@ -355,6 +360,31 @@ namespace Kinovea.Root
             bool parsed = double.TryParse(tbFramerate.Text, out value);
             if (parsed)
                 displaySynchronizationFramerate = value;
+        }
+
+        private void tbCaptureKVA_TextChanged(object sender, EventArgs e)
+        {
+            captureKVA = tbCaptureKVA.Text;
+        }
+
+        private void btnCaptureKVA_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            string initialDirectory = "";
+            if (!string.IsNullOrEmpty(captureKVA) && File.Exists(captureKVA) && Path.IsPathRooted(captureKVA))
+                initialDirectory = Path.GetDirectoryName(captureKVA);
+
+            if (!string.IsNullOrEmpty(initialDirectory))
+                dialog.InitialDirectory = initialDirectory;
+            else
+                dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+            dialog.Title = ScreenManagerLang.dlgLoadAnalysis_Title;
+            dialog.RestoreDirectory = true;
+            dialog.Filter = ScreenManagerLang.FileFilter_KVA_kva + "|*.kva";
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+                tbCaptureKVA.Text = dialog.FileName;
         }
         #endregion
 
@@ -613,6 +643,7 @@ namespace Kinovea.Root
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.RecordingSeconds = recordingSeconds;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.IgnoreOverwrite = ignoreOverwriteWarning;
             PreferencesManager.CapturePreferences.PostRecordCommand = postRecordCommand;
+            PreferencesManager.CapturePreferences.CaptureKVA = captureKVA;
         }
 
         private void formPatterns_FormClosed(object sender, FormClosedEventArgs e)

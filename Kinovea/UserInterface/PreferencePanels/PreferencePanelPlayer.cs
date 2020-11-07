@@ -31,6 +31,7 @@ using Kinovea.Services;
 using Kinovea.Video;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 
 namespace Kinovea.Root
 {
@@ -73,6 +74,7 @@ namespace Kinovea.Root
         private bool syncLockSpeeds;
         private bool syncByMotion;
         private int memoryBuffer;
+        private string playbackKVA;
         #endregion
         
         #region Construction & Initialization
@@ -120,6 +122,7 @@ namespace Kinovea.Root
             syncByMotion = PreferencesManager.PlayerPreferences.SyncByMotion;
             
             memoryBuffer = PreferencesManager.PlayerPreferences.WorkingZoneMemory;
+            playbackKVA = PreferencesManager.PlayerPreferences.PlaybackKVA;
         }
         private void InitPage()
         {
@@ -150,6 +153,8 @@ namespace Kinovea.Root
             chkInteractiveTracker.Checked = interactiveFrameTracker;
             SelectCurrentImageFormat();
             chkDeinterlace.Checked = deinterlaceByDefault;
+            lblPlaybackKVA.Text = "Default annotations file:";
+            tbPlaybackKVA.Text = playbackKVA;
         }
 
         private void InitPageUnits()
@@ -325,8 +330,31 @@ namespace Kinovea.Root
         {
             customLengthAbbreviation = tbCustomLengthAb.Text;
         }
+        private void tbPlaybackKVA_TextChanged(object sender, EventArgs e)
+        {
+            playbackKVA = tbPlaybackKVA.Text;
+        }
+        private void btnPlaybackKVA_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            string initialDirectory = "";
+            if (!string.IsNullOrEmpty(playbackKVA) && File.Exists(playbackKVA) && Path.IsPathRooted(playbackKVA))
+                initialDirectory = Path.GetDirectoryName(playbackKVA);
+
+            if (!string.IsNullOrEmpty(initialDirectory))
+                dialog.InitialDirectory = initialDirectory;
+            else
+                dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+            dialog.Title = ScreenManagerLang.dlgLoadAnalysis_Title;
+            dialog.RestoreDirectory = true;
+            dialog.Filter = ScreenManagerLang.FileFilter_KVA_kva + "|*.kva";
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+                tbPlaybackKVA.Text = dialog.FileName;
+        }
         #endregion
-        
+
         public void CommitChanges()
         {
             PreferencesManager.PlayerPreferences.DeinterlaceByDefault = deinterlaceByDefault;
@@ -342,6 +370,7 @@ namespace Kinovea.Root
             PreferencesManager.PlayerPreferences.AngularVelocityUnit = angularVelocityUnit;
             PreferencesManager.PlayerPreferences.AngularAccelerationUnit = angularAccelerationUnit;
             PreferencesManager.PlayerPreferences.WorkingZoneMemory = memoryBuffer;
+            PreferencesManager.PlayerPreferences.PlaybackKVA = playbackKVA;
 
             // Special case for the custom unit length.
             if (customLengthUnit == RootLang.dlgPreferences_Player_TrackingPercentage)

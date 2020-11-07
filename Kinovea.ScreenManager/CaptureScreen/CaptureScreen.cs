@@ -984,8 +984,14 @@ namespace Kinovea.ScreenManager
         private void LoadCompanionKVA()
         {
             // Note: anything after the first keyframe will be ignored.
-            string startupFile = Path.Combine(Software.SettingsDirectory, "capture.kva");
-            LoadKVA(startupFile);
+            string startupFile = PreferencesManager.CapturePreferences.CaptureKVA;
+            if (!string.IsNullOrEmpty(startupFile))
+            {
+                if (Path.IsPathRooted(startupFile))
+                    LoadKVA(startupFile);
+                else
+                    LoadKVA(Path.Combine(Software.SettingsDirectory, startupFile));
+            }
         }
         private void InitializeTools()
         {

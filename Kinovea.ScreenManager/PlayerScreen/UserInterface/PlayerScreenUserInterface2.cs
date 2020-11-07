@@ -579,16 +579,23 @@ namespace Kinovea.ScreenManager
 
             if (!recoveredMetadata)
             {
+                // Side-car KVA.
                 foreach (string extension in MetadataSerializer.SupportedFileFormats())
                 {
                     string candidate = Path.Combine(Path.GetDirectoryName(m_FrameServer.VideoReader.FilePath), Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath) + extension);
                     LookForLinkedAnalysis(candidate);
                 }
 
-                string startupFile = Path.Combine(Software.SettingsDirectory, "playback.kva");
-                LookForLinkedAnalysis(startupFile);
+                // Startup KVA.
+                string startupFile = PreferencesManager.PlayerPreferences.PlaybackKVA;
+                if (!string.IsNullOrEmpty(startupFile))
+                {
+                    if (Path.IsPathRooted(startupFile))
+                        LookForLinkedAnalysis(startupFile);
+                    else
+                        LookForLinkedAnalysis(Path.Combine(Software.SettingsDirectory, startupFile));
+                }
             }
-
 
             UpdateTimebase();
             UpdateFilenameLabel();
