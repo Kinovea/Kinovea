@@ -52,15 +52,15 @@ namespace Kinovea.Camera.Baumer
             get { return specificChanged; }
         }
 
-        //public GenApiEnum SelectedStreamFormat
-        //{
-        //    get { return selectedStreamFormat; }
-        //}
+        public string SelectedStreamFormat
+        {
+            get { return selectedStreamFormat; }
+        }
 
-        //public Bayer8Conversion Bayer8Conversion
-        //{
-        //    get { return bayer8Conversion; }
-        //}
+        public bool Demosaicing
+        {
+            get { return demosaicing; }
+        }
         
         public Dictionary<string, CameraProperty> CameraProperties
         {
@@ -71,6 +71,8 @@ namespace Kinovea.Camera.Baumer
         private bool specificChanged;
         private bool iconChanged;
         private Device device;
+        private string selectedStreamFormat;
+        private bool demosaicing;
         private Dictionary<string, CameraProperty> cameraProperties = new Dictionary<string, CameraProperty>();
         private Dictionary<string, AbstractCameraPropertyView> propertiesControls = new Dictionary<string, AbstractCameraPropertyView>();
         private Action disconnect;
@@ -101,7 +103,7 @@ namespace Kinovea.Camera.Baumer
             if (cameraProperties.Count != specific.CameraProperties.Count)
                 specificChanged = true;
 
-            //bayer8Conversion = specific.Bayer8Conversion;
+            demosaicing = specific.Demosaicing;
 
             Populate();
             this.Text = CameraLang.FormConfiguration_Title;
@@ -142,55 +144,52 @@ namespace Kinovea.Camera.Baumer
 
         private void PopulateStreamFormat()
         {
-            //lblColorSpace.Text = CameraLang.FormConfiguration_Properties_StreamFormat;
+            lblColorSpace.Text = CameraLang.FormConfiguration_Properties_StreamFormat;
 
-            //bool readable = Pylon.DeviceFeatureIsReadable(deviceHandle, "PixelFormat");
-            //if (!readable)
-            //{
-            //    cmbFormat.Enabled = false;
-            //    return;
-            //}
+            bool readable = BaumerHelper.NodeIsReadable(device, "PixelFormat");
+            if (!readable)
+            {
+                cmbFormat.Enabled = false;
+                return;
+            }
 
-            //List<GenApiEnum> streamFormats = PylonHelper.ReadEnum(deviceHandle, "PixelFormat");
-            //if (streamFormats == null)
-            //{
-            //    cmbFormat.Enabled = false;
-            //    return;
-            //}
+            List<string> streamFormats = new List<string>();
+            NodeMap mapFormats = device.RemoteNodeList["PixelFormat"].EnumNodeList;
+            for (ulong i = 0; i < mapFormats.Count; i++)
+            {
+                var node = mapFormats[i];
+                if (node.IsReadable)
+                    streamFormats.Add(node.Value);
+            }
 
-            //string currentValue = Pylon.DeviceFeatureToString(deviceHandle, "PixelFormat");
-            //cmbFormat.Items.Clear();
+            if (streamFormats.Count == 0)
+            {
+                cmbFormat.Enabled = false;
+                return;
+            }
 
-            //foreach (GenApiEnum streamFormat in streamFormats)
-            //{
-            //    cmbFormat.Items.Add(streamFormat);
-            //    if (currentValue == streamFormat.Symbol)
-            //    {
-            //        selectedStreamFormat = streamFormat;
-            //        cmbFormat.SelectedIndex = cmbFormat.Items.Count - 1;
-            //    }
-            //}
+            string currentValue = BaumerHelper.GetString(device, "PixelFormat");
+            cmbFormat.Items.Clear();
+            foreach (var streamFormat in streamFormats)
+            {
+                cmbFormat.Items.Add(streamFormat);
+                if (currentValue == streamFormat)
+                {
+                    selectedStreamFormat = streamFormat;
+                    cmbFormat.SelectedIndex = cmbFormat.Items.Count - 1;
+                }
+            }
         }
 
         private void PopulateBayerConversion()
         {
-            //cmbBayer8Conversion.Items.Clear();
-
-            //lblBayerConversion.Text = CameraLang.FormConfiguration_Properties_BayerFormatConversion;
-            //cmbBayer8Conversion.Items.Add("Raw");
-            //cmbBayer8Conversion.Items.Add("Mono");
-            //cmbBayer8Conversion.Items.Add("Color");
-            //cmbBayer8Conversion.SelectedIndex = (int)bayer8Conversion;
-            
-            //SetBayerComboVisibility();
+            cbDebayering.Checked = demosaicing;
+            SetDemosaicingVisibility();
         }
 
-        private void SetBayerComboVisibility()
+        private void SetDemosaicingVisibility()
         {
-            //EPylonPixelType pixelType = Pylon.PixelTypeFromString(selectedStreamFormat.Symbol);
-            //bool isBayer8 = PylonHelper.IsBayer8(pixelType);
-            //cmbBayer8Conversion.Enabled = isBayer8;
-            //lblBayerConversion.Enabled = isBayer8;
+            cbDebayering.Enabled = BaumerHelper.IsBayer(selectedStreamFormat);
         }
 
         private void PopulateCameraControls()
@@ -267,44 +266,37 @@ namespace Kinovea.Camera.Baumer
         
         private void cmbFormat_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //GenApiEnum selected = cmbFormat.SelectedItem as GenApiEnum;
-            //if (selected == null || selectedStreamFormat.Symbol == selected.Symbol)
-            //    return;
+            string selected = cmbFormat.SelectedItem as string;
+            if (selected == null)
+                return;
 
-            //selectedStreamFormat = selected;
-            //specificChanged = true;
-            //UpdateResultingFramerate();
-            //SetBayerComboVisibility();
+            selectedStreamFormat = selected;
+            specificChanged = true;
+            UpdateResultingFramerate();
+            SetDemosaicingVisibility();
         }
 
-        private void cmbBayerConversion_SelectedIndexChanged(object sender, EventArgs e)
+        private void cbDebayering_CheckedChanged(object sender, EventArgs e)
         {
-            //EPylonPixelType pixelType = Pylon.PixelTypeFromString(selectedStreamFormat.Symbol);
-            //bool isBayer8 = PylonHelper.IsBayer8(pixelType);
-
-            //Bayer8Conversion selected = (Bayer8Conversion)cmbBayer8Conversion.SelectedIndex;
-            //if (selected == bayer8Conversion)
-            //    return;
-
-            //bayer8Conversion = (Bayer8Conversion)cmbBayer8Conversion.SelectedIndex;
-            //specificChanged = true;
-            //UpdateResultingFramerate();
+            demosaicing = cbDebayering.Checked;
+            specificChanged = true;
+            UpdateResultingFramerate();
         }
 
         private void BtnReconnect_Click(object sender, EventArgs e)
         {
-            //if (SelectedStreamFormat == null)
-            //{
-            //    // This happens when we load the config window and the camera isn't connected.
-            //    return;
-            //}
+            if (SelectedStreamFormat == null)
+            {
+                // This happens when we load the config window and the camera isn't connected.
+                return;
+            }
 
             SpecificInfo info = summary.Specific as SpecificInfo;
             if (info == null)
                 return;
 
-            //info.StreamFormat = this.SelectedStreamFormat.Symbol;
-            //info.Bayer8Conversion = this.Bayer8Conversion;
+            info.StreamFormat = this.SelectedStreamFormat;
+            info.Demosaicing = this.Demosaicing;
             info.CameraProperties = this.CameraProperties;
             summary.UpdateDisplayRectangle(Rectangle.Empty);
             CameraTypeManager.UpdatedCameraSummary(summary);

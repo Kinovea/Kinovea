@@ -100,5 +100,26 @@ namespace Kinovea.Camera.Baumer
                 pixelFormat == "BayerGR8" ||
                 pixelFormat == "BayerRG8";
         }
+
+        public static bool IsBayer(string pixelFormat)
+        {
+            return pixelFormat.StartsWith("Bayer");
+        }
+
+        public static void WriteEnum(Device device, string enumName, string enumValue)
+        {
+            if (device == null || !device.IsOpen)
+                throw new InvalidProgramException();
+
+            bool present = device.RemoteNodeList.GetNodePresent(enumName);
+            if (!present)
+                return;
+
+            Node node = device.RemoteNodeList[enumName];
+            if (!node.IsImplemented || !node.IsAvailable)
+                return;
+
+            node.Value = enumValue;
+        }
     }
 }

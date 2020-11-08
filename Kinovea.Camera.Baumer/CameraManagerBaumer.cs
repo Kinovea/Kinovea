@@ -15,6 +15,10 @@ using System.Globalization;
 
 namespace Kinovea.Camera.Baumer
 {
+    /// <summary>
+    /// The main camera manager for Baumer cameras.
+    /// Camera discovery, instanciating snapshotter and framegrabber.
+    /// </summary>
     public class CameraManagerBaumer : CameraManager
     {
         #region Properties
@@ -280,7 +284,8 @@ namespace Kinovea.Camera.Baumer
 
                 if (form.SpecificChanged)
                 {
-                    //info.StreamFormat = form.SelectedStreamFormat;
+                    info.StreamFormat = form.SelectedStreamFormat;
+                    info.Demosaicing = form.Demosaicing;
                     info.CameraProperties = form.CameraProperties;
 
                     summary.UpdateDisplayRectangle(Rectangle.Empty);
@@ -303,19 +308,19 @@ namespace Kinovea.Camera.Baumer
             try
             {
                 if (info != null &&
-                    //info.StreamFormat != null &&
+                    info.StreamFormat != null &&
                     info.CameraProperties.ContainsKey("width") &&
                     info.CameraProperties.ContainsKey("height") &&
                     info.CameraProperties.ContainsKey("framerate"))
                 {
-                    //string format = info.StreamFormat;
+                    string format = info.StreamFormat;
                     int width = int.Parse(info.CameraProperties["width"].CurrentValue, CultureInfo.InvariantCulture);
                     int height = int.Parse(info.CameraProperties["height"].CurrentValue, CultureInfo.InvariantCulture);
                     double framerate = BaumerHelper.GetResultingFramerate(info.Device);
                     if (framerate == 0)
                         framerate = double.Parse(info.CameraProperties["framerate"].CurrentValue, CultureInfo.InvariantCulture);
 
-                    result = string.Format("{0} - {1}×{2} @ {3:0.##} fps.", alias, width, height, framerate);
+                    result = string.Format("{0} - {1}×{2} @ {3:0.##} fps ({4}).", alias, width, height, framerate, format);
                 }
             }
             catch
@@ -359,6 +364,16 @@ namespace Kinovea.Camera.Baumer
 
                 info = new SpecificInfo();
 
+                string streamFormat = "";
+                XmlNode xmlStreamFormat = doc.SelectSingleNode("/Baumer/StreamFormat");
+                if (xmlStreamFormat != null)
+                    streamFormat = xmlStreamFormat.InnerText;
+
+                bool demosaicing = true;
+                XmlNode xmlDemosaicing = doc.SelectSingleNode("/Baumer/Demosaicing");
+                if (xmlDemosaicing != null)
+                    demosaicing = XmlHelper.ParseBoolean(xmlDemosaicing.InnerText);
+
                 Dictionary<string, CameraProperty> cameraProperties = new Dictionary<string, CameraProperty>();
 
                 XmlNodeList props = doc.SelectNodes("/Baumer/CameraProperties/CameraProperty");
@@ -387,6 +402,8 @@ namespace Kinovea.Camera.Baumer
                     cameraProperties.Add(key, property);
                 }
 
+                info.StreamFormat = streamFormat;
+                info.Demosaicing = demosaicing;
                 info.CameraProperties = cameraProperties;
             }
             catch (Exception e)
@@ -405,6 +422,14 @@ namespace Kinovea.Camera.Baumer
 
             XmlDocument doc = new XmlDocument();
             XmlElement xmlRoot = doc.CreateElement("Baumer");
+
+            XmlElement xmlStreamFormat = doc.CreateElement("StreamFormat");
+            xmlStreamFormat.InnerText = info.StreamFormat;
+            xmlRoot.AppendChild(xmlStreamFormat);
+
+            XmlElement xmlDemosaicing = doc.CreateElement("Demosaicing");
+            xmlDemosaicing.InnerText = info.Demosaicing.ToString().ToLowerInvariant();
+            xmlRoot.AppendChild(xmlDemosaicing);
 
             XmlElement xmlCameraProperties = doc.CreateElement("CameraProperties");
 

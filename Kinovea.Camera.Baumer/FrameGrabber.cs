@@ -89,13 +89,11 @@ namespace Kinovea.Camera.Baumer
             int width = BaumerHelper.GetInteger(device, "Width");
             int height = BaumerHelper.GetInteger(device, "Height");
             string pixelFormat = BaumerHelper.GetString(device, "PixelFormat");
-
+             
             // We only output in two possible formats: Y800 or RGB24.
             // The output format depends on the input format and the demosaicing option.
             // Mono or raw -> Y800, Otherwise -> RGB24.
-
-            demosaicing = true;
-
+            demosaicing = specific.Demosaicing;
             if (demosaicing)
             {
                 if (imgProcessor.NodeList.GetNodePresent("DemosaicingMethod"))
@@ -212,12 +210,9 @@ namespace Kinovea.Camera.Baumer
 
             // Store the device into the specific info so that we can retrieve device informations from the configuration dialog.
             specific.Device = baumerProvider.Device;
-            //GenApiEnum currentStreamFormat = PylonHelper.ReadEnumCurrentValue(deviceHandle, "PixelFormat");
 
-            //if (!string.IsNullOrEmpty(specific.StreamFormat) && specific.StreamFormat != currentStreamFormat.Symbol)
-            //    PylonHelper.WriteEnum(deviceHandle, "PixelFormat", specific.StreamFormat);
-
-            //// The bayer conversion mode will be set during Prepare().
+            if (!string.IsNullOrEmpty(specific.StreamFormat))
+                BaumerHelper.WriteEnum(specific.Device, "PixelFormat", specific.StreamFormat);
 
             if (firstOpen)
             {

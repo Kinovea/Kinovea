@@ -36,6 +36,9 @@ namespace Kinovea.Camera.Baumer
         public string InterfaceKey;
         public string DeviceKey;
         public Device Device;
+        
+        public string StreamFormat { get; set; }
+        public bool Demosaicing { get; set; }
 
         public Dictionary<string, CameraProperty> CameraProperties { get; set; }
 

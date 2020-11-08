@@ -10,6 +10,10 @@ using System.Threading;
 
 namespace Kinovea.Camera.Baumer
 {
+    /// <summary>
+    /// Helper class to wrap Baumer camera.
+    /// Provide open/close and acquisition once / acquisition continuous in a separate thread.
+    /// </summary>
     public class BaumerProvider
     {
         public event EventHandler<BufferEventArgs> BufferProduced;
@@ -326,10 +330,9 @@ namespace Kinovea.Camera.Baumer
                     if (BufferProduced != null)
                         BufferProduced(this, new BufferEventArgs(bufferFilled));
 
-                    // Make the buffer available again.
+                    // Make the buffer available to Baumer internals again.
                     bufferFilled.QueueBuffer();
                 }
-
 
                 // Normal cancellation of the grabbing thread.
                 // Cleanup.

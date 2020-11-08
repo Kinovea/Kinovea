@@ -51,8 +51,6 @@ namespace Kinovea.Camera.Baumer
       this.gbProperties = new System.Windows.Forms.GroupBox();
       this.lblResultingFramerateValue = new System.Windows.Forms.Label();
       this.lblResultingFramerate = new System.Windows.Forms.Label();
-      this.cmbBayer8Conversion = new System.Windows.Forms.ComboBox();
-      this.lblBayerConversion = new System.Windows.Forms.Label();
       this.lblAuto = new System.Windows.Forms.Label();
       this.cmbFormat = new System.Windows.Forms.ComboBox();
       this.lblColorSpace = new System.Windows.Forms.Label();
@@ -62,6 +60,7 @@ namespace Kinovea.Camera.Baumer
       this.btnIcon = new System.Windows.Forms.Button();
       this.btnApply = new System.Windows.Forms.Button();
       this.btnReconnect = new System.Windows.Forms.Button();
+      this.cbDebayering = new System.Windows.Forms.CheckBox();
       this.gbProperties.SuspendLayout();
       this.groupBox2.SuspendLayout();
       this.SuspendLayout();
@@ -71,10 +70,9 @@ namespace Kinovea.Camera.Baumer
       this.gbProperties.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.gbProperties.Controls.Add(this.cbDebayering);
       this.gbProperties.Controls.Add(this.lblResultingFramerateValue);
       this.gbProperties.Controls.Add(this.lblResultingFramerate);
-      this.gbProperties.Controls.Add(this.cmbBayer8Conversion);
-      this.gbProperties.Controls.Add(this.lblBayerConversion);
       this.gbProperties.Controls.Add(this.lblAuto);
       this.gbProperties.Controls.Add(this.cmbFormat);
       this.gbProperties.Controls.Add(this.lblColorSpace);
@@ -111,30 +109,6 @@ namespace Kinovea.Camera.Baumer
       this.lblResultingFramerate.TabIndex = 104;
       this.lblResultingFramerate.Text = "Resulting framerate:";
       this.lblResultingFramerate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      // 
-      // cmbBayer8Conversion
-      // 
-      this.cmbBayer8Conversion.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.cmbBayer8Conversion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbBayer8Conversion.FormattingEnabled = true;
-      this.cmbBayer8Conversion.Location = new System.Drawing.Point(214, 62);
-      this.cmbBayer8Conversion.Name = "cmbBayer8Conversion";
-      this.cmbBayer8Conversion.Size = new System.Drawing.Size(144, 21);
-      this.cmbBayer8Conversion.TabIndex = 84;
-      this.cmbBayer8Conversion.SelectedIndexChanged += new System.EventHandler(this.cmbBayerConversion_SelectedIndexChanged);
-      // 
-      // lblBayerConversion
-      // 
-      this.lblBayerConversion.BackColor = System.Drawing.Color.Transparent;
-      this.lblBayerConversion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblBayerConversion.ForeColor = System.Drawing.Color.Black;
-      this.lblBayerConversion.Location = new System.Drawing.Point(21, 62);
-      this.lblBayerConversion.Name = "lblBayerConversion";
-      this.lblBayerConversion.Size = new System.Drawing.Size(187, 23);
-      this.lblBayerConversion.TabIndex = 103;
-      this.lblBayerConversion.Text = "Bayer format conversion:";
-      this.lblBayerConversion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // lblAuto
       // 
@@ -245,6 +219,17 @@ namespace Kinovea.Camera.Baumer
       this.btnReconnect.UseVisualStyleBackColor = true;
       this.btnReconnect.Click += new System.EventHandler(this.BtnReconnect_Click);
       // 
+      // cbDebayering
+      // 
+      this.cbDebayering.AutoSize = true;
+      this.cbDebayering.Location = new System.Drawing.Point(24, 66);
+      this.cbDebayering.Name = "cbDebayering";
+      this.cbDebayering.Size = new System.Drawing.Size(87, 17);
+      this.cbDebayering.TabIndex = 106;
+      this.cbDebayering.Text = "Demosaicing";
+      this.cbDebayering.UseVisualStyleBackColor = true;
+      this.cbDebayering.CheckedChanged += new System.EventHandler(this.cbDebayering_CheckedChanged);
+      // 
       // FormConfiguration
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -277,10 +262,9 @@ namespace Kinovea.Camera.Baumer
         private System.Windows.Forms.Label lblColorSpace;
         private System.Windows.Forms.Label lblAuto;
         private System.Windows.Forms.Button btnApply;
-        private System.Windows.Forms.ComboBox cmbBayer8Conversion;
-        private System.Windows.Forms.Label lblBayerConversion;
         private System.Windows.Forms.Button btnReconnect;
         private System.Windows.Forms.Label lblResultingFramerateValue;
         private System.Windows.Forms.Label lblResultingFramerate;
+        private System.Windows.Forms.CheckBox cbDebayering;
     }
 }
