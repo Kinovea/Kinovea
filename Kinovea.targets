@@ -56,7 +56,22 @@
       	  PylonC.NET.dll is not added to the output build. -->
 	<Copy SourceFiles="..\Refs\Basler\Pylon-6.0\PylonC.Net\PylonC.NET.dll" DestinationFolder="$(TargetDir)"/>
 
+  <Copy SourceFiles="..\Refs\Baumer\2.10.1\bgapi2_ext_sc.dll" DestinationFolder="$(TargetDir)"/>
   <Copy SourceFiles="..\Refs\Baumer\2.10.1\bgapi2_genicam.dll" DestinationFolder="$(TargetDir)"/>
+  <Copy SourceFiles="..\Refs\Baumer\2.10.1\bgapi2_img.dll" DestinationFolder="$(TargetDir)"/>
+  <Copy SourceFiles="..\Refs\Baumer\2.10.1\bopfdrvctl.dll" DestinationFolder="$(TargetDir)"/>
+  <Copy SourceFiles="..\Refs\Baumer\2.10.1\concrt140.dll" DestinationFolder="$(TargetDir)"/>
+  <Copy SourceFiles="..\Refs\Baumer\2.10.1\GCBase_MD_VC141_v3_2.dll" DestinationFolder="$(TargetDir)"/>
+  <Copy SourceFiles="..\Refs\Baumer\2.10.1\GenApi_MD_VC141_v3_2.dll" DestinationFolder="$(TargetDir)"/>
+  <Copy SourceFiles="..\Refs\Baumer\2.10.1\Log_MD_VC141_v3_2.dll" DestinationFolder="$(TargetDir)"/>
+  <Copy SourceFiles="..\Refs\Baumer\2.10.1\log4cpp_MD_VC141_v3_2.dll" DestinationFolder="$(TargetDir)"/>
+  <Copy SourceFiles="..\Refs\Baumer\2.10.1\MathParser_MD_VC141_v3_2.dll" DestinationFolder="$(TargetDir)"/>
+  <Copy SourceFiles="..\Refs\Baumer\2.10.1\msvcp140.dll" DestinationFolder="$(TargetDir)"/>
+  <Copy SourceFiles="..\Refs\Baumer\2.10.1\NodeMapData_MD_VC141_v3_2.dll" DestinationFolder="$(TargetDir)"/>
+  <Copy SourceFiles="..\Refs\Baumer\2.10.1\vcruntime140.dll" DestinationFolder="$(TargetDir)"/>
+  <Copy SourceFiles="..\Refs\Baumer\2.10.1\XmlParser_MD_VC141_v3_2.dll" DestinationFolder="$(TargetDir)"/>
+  <Copy SourceFiles="..\Refs\Baumer\2.10.1\bgapi2_gige.cti" DestinationFolder="$(TargetDir)"/>
+  <Copy SourceFiles="..\Refs\Baumer\2.10.1\bgapi2_usb.cti" DestinationFolder="$(TargetDir)"/>
 
   </Target>
 
