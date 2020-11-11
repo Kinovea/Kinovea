@@ -1041,7 +1041,7 @@ namespace Kinovea.ScreenManager
                     mnuExportMSXML.Enabled = false;
                     mnuExportXHTML.Enabled = false;
                     mnuExportTEXT.Enabled = false;
-                    mnuLoadAnalysis.Enabled = false;
+                    mnuLoadAnalysis.Enabled = true;
 
                     // Edit
                     HistoryMenuManager.SwitchContext(captureScreen.HistoryStack);
@@ -1491,7 +1491,7 @@ namespace Kinovea.ScreenManager
         }
         private void mnuLoadAnalysisOnClick(object sender, EventArgs e)
         {
-            if (activeScreen != null && activeScreen is PlayerScreen)
+            if (activeScreen != null)
             {
                 int index = activeScreen == screenList[0] ? 0 : 1;
                 LoadAnalysis(index);
@@ -1499,17 +1499,17 @@ namespace Kinovea.ScreenManager
         }
         private void LoadAnalysis(int targetScreen)
         {
-            PlayerScreen player = screenList[targetScreen] as PlayerScreen;
-            if (player == null)
+            if (screenList[targetScreen] == null)
                 return;
 
-            DoStopPlaying();
+            if (screenList[targetScreen] is PlayerScreen)
+                DoStopPlaying();
+             
             string filename = FilePicker.OpenAnnotations();
             if (filename == null)
                 return;
 
-            MetadataSerializer s = new MetadataSerializer();
-            s.Load(player.FrameServer.Metadata, filename, true);
+            screenList[targetScreen].LoadKVA(filename);
         }
         private void mnuExportODF_OnClick(object sender, EventArgs e)
         {
