@@ -165,8 +165,8 @@ namespace Kinovea.ScreenManager
             DrawLine(canvas, transformer, plines, new PointF(-1, -1), new PointF(1, 1));
 
             // Circle
-            float radiusX = 1.0f * factorX;
-            float radiusY = 1.0f * factorY;
+            float radiusX = aspectRatio > 1.0f ? factorX : 1.0f;
+            float radiusY = aspectRatio < 1.0f ? aspectRatio : 1.0f;
             DrawCenteredCircle(canvas, transformer, plines, radiusX, radiusY);
             
             plines.Dispose();
