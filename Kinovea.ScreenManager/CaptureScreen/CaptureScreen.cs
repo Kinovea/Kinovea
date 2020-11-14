@@ -569,15 +569,14 @@ namespace Kinovea.ScreenManager
             // Second part of Connect function. 
             // The function is split because the first part might need to be run repeatedly and from non UI thread, 
             // while this part must run on the UI thread.
-
-            metadata.ImageSize = new Size(imageDescriptor.Width, imageDescriptor.Height);
-            metadata.PostSetupCapture();
-
             AllocateDelayer();
             bool sideways = ImageRotation == ImageRotation.Rotate90 || ImageRotation == ImageRotation.Rotate270;
             Size referenceSize = sideways ? new Size(imageDescriptor.Height, imageDescriptor.Width) : new Size(imageDescriptor.Width, imageDescriptor.Height);
             SanityCheckDisplayRectangle(cameraSummary, referenceSize);
-            
+
+            metadata.ImageSize = referenceSize;
+            metadata.PostSetupCapture();
+
             // Make sure the viewport will not use the bitmap allocated by the consumerDisplay as it is about to be disposed.
             viewportController.ForgetBitmap();
             viewportController.InitializeDisplayRectangle(cameraSummary.DisplayRectangle, referenceSize);
