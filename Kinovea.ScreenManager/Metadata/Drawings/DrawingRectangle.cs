@@ -227,22 +227,26 @@ namespace Kinovea.ScreenManager
                 {
                     case "PointUpperLeft":
                         {
-                            quadImage.A = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
+                            PointF p = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
+                            quadImage.A = p.Scale(scale.X, scale.Y);
                             break;
                         }
                     case "PointUpperRight":
                         {
-                            quadImage.B = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
+                            PointF p = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
+                            quadImage.B = p.Scale(scale.X, scale.Y);
                             break;
                         }
                     case "PointLowerRight":
                         {
-                            quadImage.C = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
+                            PointF p = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
+                            quadImage.C = p.Scale(scale.X, scale.Y);
                             break;
                         }
                     case "PointLowerLeft":
                         {
-                            quadImage.D = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
+                            PointF p = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
+                            quadImage.D = p.Scale(scale.X, scale.Y);
                             break;
                         }
                     case "DrawingStyle":

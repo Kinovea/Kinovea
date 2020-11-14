@@ -322,10 +322,11 @@ namespace Kinovea.ScreenManager
                 switch(xmlReader.Name)
                 {
                     case "Origin":
-                        center = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
+                        PointF p = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
+                        center = p.Scale(scale.X, scale.Y);
                         break;
                     case "Radius":
-                        radius = (int)(xmlReader.ReadElementContentAsInt() * scale.X);
+                        radius = (int)(xmlReader.ReadElementContentAsInt() * Math.Min(scale.X, scale.Y));
                         break;
                     case "ExtraData":
                         {
