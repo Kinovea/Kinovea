@@ -979,15 +979,20 @@ namespace Kinovea.ScreenManager
 
                 delayer.Push(freshFrame);
             }
-            
+
             // Get the displayed frame.
-            Bitmap displayFrame = delayedDisplay ? delayer.GetWeak(delay, ImageRotation) : delayer.GetWeak(0, ImageRotation);
+            int target = 0;
+            Bitmap displayFrame = delayedDisplay ? delayer.GetWeak(delay, ImageRotation, out target) : delayer.GetWeak(0, ImageRotation, out target);
+            
+            if (displayFrame == null && target < 0)
+                displayFrame = CreateWaitImage(-target);
+            
             if (displayFrame != null)
             {
                 viewportController.ForgetBitmap();
                 viewportController.Bitmap = displayFrame;
             }
-
+            
             if (recording && recordingThumbnail == null && displayFrame != null)
                 recordingThumbnail = BitmapHelper.Copy(displayFrame);
 
@@ -1015,6 +1020,28 @@ namespace Kinovea.ScreenManager
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Create a wait image to signal that the camera itself is ready but the delay is larger than the first frame available.
+        /// </summary>
+        private Bitmap CreateWaitImage(int frames)
+        {
+            bool sideways = ImageRotation == ImageRotation.Rotate90 || ImageRotation == ImageRotation.Rotate270;
+            int width = sideways ? imageDescriptor.Height : imageDescriptor.Width;
+            int height = sideways ? imageDescriptor.Width : imageDescriptor.Height;
+
+            Bitmap displayFrame = new Bitmap(width, height, PixelFormat.Format24bppRgb);
+            string text = string.Format(@"- {0:0.000} s", AgeToSeconds(frames));
+            int fontSize = (int)(((float)24 / 480) * imageDescriptor.Height);
+
+            using (Graphics g = Graphics.FromImage(displayFrame))
+            using (Font font = new Font("Arial", fontSize, FontStyle.Regular))
+            {
+                g.DrawString(text, font, Brushes.White, new Point(50, 50));
+            }
+
+            return displayFrame;
         }
 
         private void ViewportController_DisplayRectangleUpdated(object sender, EventArgs e)
@@ -1138,7 +1165,7 @@ namespace Kinovea.ScreenManager
             if (!cameraLoaded)
                 return;
 
-            Bitmap bitmap = delayer.GetWeak(delay, ImageRotation);
+            Bitmap bitmap = delayer.GetWeak(delay, ImageRotation, out _);
             if (bitmap == null)
                 return;
 
@@ -1638,7 +1665,7 @@ namespace Kinovea.ScreenManager
             {
                 if (recordingThumbnail == null)
                 {
-                    Bitmap delayed = delayer.GetWeak(age, ImageRotation);
+                    Bitmap delayed = delayer.GetWeak(age, ImageRotation, out _);
                     if (delayed != null)
                         recordingThumbnail = BitmapHelper.Copy(delayed);
                 }
@@ -1756,7 +1783,7 @@ namespace Kinovea.ScreenManager
             // Force a refresh if we are not connected to the camera to enable "pause and browse".
             if (cameraLoaded && !cameraConnected)
             {
-                Bitmap delayed = delayer.GetWeak(delay, ImageRotation);
+                Bitmap delayed = delayer.GetWeak(delay, ImageRotation, out _);
                 viewportController.Bitmap = delayed;
                 viewportController.Refresh();
             }

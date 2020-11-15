@@ -180,7 +180,7 @@ namespace Kinovea.ScreenManager
             //-----------------------------------------------
             // Runs in the consumer thread, during recording.
             //-----------------------------------------------
-            Frame frame = Get(age);
+            Frame frame = Get(age, out _);
             if (frame == null)
                 return false;
 
@@ -197,14 +197,17 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Get the frame from `age` frames ago as an RGB24 Bitmap, correctly oriented. Do not wait for it and returns null if it's not available. 
+        /// The out target parameter provides the actual frame position we got, or a negative number if we are not ready yet. This can be used
+        /// to implement a waiting image.
         /// </summary>
-        public Bitmap GetWeak(int age, ImageRotation rotation)
+        public Bitmap GetWeak(int age, ImageRotation rotation, out int target)
         {
             //----------------------------------------------------
             // Runs in the UI thread, to get the image to display.
             //----------------------------------------------------
 
             Bitmap copy = null;
+            target = 0;
 
             // The UI thread and the recording thread can ask the same image at the same time.
             // We yield priority to the recording, so if the lock is taken, we return immediately.
@@ -212,7 +215,7 @@ namespace Kinovea.ScreenManager
             {
                 try
                 {
-                    Frame frame = Get(age);
+                    Frame frame = Get(age, out target);
                     if (frame == null)
                         return null;
 
@@ -267,14 +270,14 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Retrieve a frame from "age" frames ago. Returns the original image or null.
         /// </summary>
-        private Frame Get(int age)
+        private Frame Get(int age, out int target)
         {
             //----------------------------------------------------------
             // Runs in UI thread in mode Camera for display (through compositor).
             // Runs in UI thread in mode Delayed for display (through compositor).
             // Runs in consumer thread in mode Delayed for recording.
             //----------------------------------------------------------
-
+            target = 0;
             if (!allocated || frames.Count == 0)
                 return null;
 
@@ -289,7 +292,8 @@ namespace Kinovea.ScreenManager
             if (newestAvailablePosition < 0)
                 return null;
 
-            if (newestAvailablePosition - age <= 0)
+            target = newestAvailablePosition - age;
+            if (target <= 0)
             {
                 // This happens if delay is set and we haven't captured these images yet.
                 return null;
