@@ -53,11 +53,6 @@ namespace Kinovea.Services
         public double SpeedPercentage { get; set; }
 
         /// <summary>
-        /// Time origin of the video, used for synchronizing two videos.
-        /// </summary>
-        public long LocalSyncTime { get; set; }
-
-        /// <summary>
         /// Whether the video should be stretched to fill the player screen estate.
         /// </summary>
         public bool Stretch { get; set; }
@@ -72,8 +67,12 @@ namespace Kinovea.Services
         
         public ScreenDescriptionPlayback()
         {
-            SpeedPercentage = 100;
             Id = Guid.NewGuid();
+            FullPath = "";
+            Autoplay = false;
+            SpeedPercentage = 100;
+            Stretch = false;
+            IsReplayWatcher = false;
             RecoveryLastSave = DateTime.MinValue;
         }
 

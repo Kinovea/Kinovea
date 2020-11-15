@@ -51,6 +51,23 @@ namespace Kinovea.Camera
             this.Specific = specific;
             this.Manager = manager;
         }
+
+        /// <summary>
+        /// Build an invalid camera summary containing just the camera alias.
+        /// This is used to prepare a capture screen that will then listen to new cameras being plugged in and try to match them against the alias.
+        /// </summary>
+        public CameraSummary(string alias)
+        {
+            this.Alias = alias;
+            this.Name = null;
+            this.Identifier = null;
+            this.Icon = null;
+            this.DisplayRectangle = Rectangle.Empty;
+            this.AspectRatio = CaptureAspectRatio.Auto;
+            this.Rotation = ImageRotation.Rotate0;
+            this.Specific = null;
+            this.Manager = null;
+        }
         
         public void UpdateAlias(string alias, Bitmap icon)
         {

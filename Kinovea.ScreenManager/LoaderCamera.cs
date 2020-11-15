@@ -19,7 +19,7 @@ namespace Kinovea.ScreenManager
                 LoadInSpecificTarget(manager, targetScreen, summary);
         }
 
-        private static void LoadUnspecified(ScreenManagerKernel manager, CameraSummary summary)
+        public static void LoadUnspecified(ScreenManagerKernel manager, CameraSummary summary)
         {
             if (manager.ScreenCount == 0)
             {

@@ -48,6 +48,7 @@ namespace Kinovea.ScreenManager
     public class CaptureScreen : AbstractScreen
     {
         #region Events
+        public event EventHandler<EventArgs<string>> CameraDiscoveryComplete;
         public event EventHandler RecordingStarted;
         public event EventHandler RecordingStopped;
         #endregion
@@ -170,6 +171,8 @@ namespace Kinovea.ScreenManager
         private CameraSummary cameraSummary;
         private CameraManager cameraManager;
         private ICaptureSource cameraGrabber;
+        private Stopwatch stopwatchDiscovery = new Stopwatch();
+        private const long discoveryTimeout = 5000;
         private PipelineManager pipelineManager = new PipelineManager();
         private ConsumerDisplay consumerDisplay = new ConsumerDisplay();
         private ConsumerRealtime consumerRealtime;
@@ -471,28 +474,80 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Associate this screen with a camera.
         /// </summary>
-        /// <param name="_cameraSummary"></param>
         public void LoadCamera(CameraSummary _cameraSummary)
         {
             if (cameraLoaded)
                 UnloadCamera();
 
             cameraSummary = _cameraSummary;
-            cameraManager = cameraSummary.Manager;
-            cameraGrabber = cameraManager.CreateCaptureSource(cameraSummary);
 
+            if (cameraSummary.Manager == null)
+            {
+                // Special case for when we want to load a camera but it may not be available yet.
+                log.DebugFormat("Restoring camera: {0}", cameraSummary.Alias);
+                CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
+                stopwatchDiscovery.Start();
+                CameraTypeManager.StartDiscoveringCameras();
+            }
+            else
+            {
+                cameraManager = cameraSummary.Manager;
+                cameraGrabber = cameraManager.CreateCaptureSource(cameraSummary);
+            }
+
+            AssociateCamera();
+        }
+
+        private void AssociateCamera()
+        {
             if (cameraGrabber == null)
                 return;
 
             UpdateTitle();
             cameraLoaded = true;
-            
+
             OnActivated(EventArgs.Empty);
 
             // Automatically connect to the camera upon association.
             Connect();
         }
-        
+
+        private void CameraTypeManager_CamerasDiscovered(object sender, CamerasDiscoveredEventArgs e)
+        {
+            // Go through all cameras and see if find our match.
+            bool discovered = false;
+            foreach (CameraSummary summary in e.Summaries)
+            {
+                if (summary.Alias != cameraSummary.Alias)
+                    continue;
+
+                // We found our camera.
+                log.DebugFormat("Camera discovery: found {0}", cameraSummary.Alias);
+
+                discovered = true;
+                CameraTypeManager.CamerasDiscovered -= CameraTypeManager_CamerasDiscovered;
+                if (CameraDiscoveryComplete != null)
+                    CameraDiscoveryComplete(this, new EventArgs<string>(cameraSummary.Alias));
+
+                // Finish loading the screen.
+                cameraSummary = summary;
+                cameraManager = cameraSummary.Manager;
+                cameraGrabber = cameraManager.CreateCaptureSource(cameraSummary);
+                AssociateCamera();
+                break;
+            }
+
+            if (!discovered && stopwatchDiscovery.ElapsedMilliseconds > discoveryTimeout)
+            {
+                // Stop trying to find our camera.
+                // Turns this back into a regular empty capture screen.
+                log.DebugFormat("Camera discovery: time out while trying to find {0}", cameraSummary.Alias);
+                CameraTypeManager.CamerasDiscovered -= CameraTypeManager_CamerasDiscovered;
+                if (CameraDiscoveryComplete != null)
+                    CameraDiscoveryComplete(this, new EventArgs<string>(cameraSummary.Alias));
+            }
+        }
+
         /// <summary>
         /// Drop the association of this screen with the camera.
         /// </summary>
