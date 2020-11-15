@@ -173,6 +173,7 @@ namespace Kinovea.ScreenManager
         private ICaptureSource cameraGrabber;
         private Stopwatch stopwatchDiscovery = new Stopwatch();
         private const long discoveryTimeout = 5000;
+        private ScreenDescriptionCapture screenDescription;
         private PipelineManager pipelineManager = new PipelineManager();
         private ConsumerDisplay consumerDisplay = new ConsumerDisplay();
         private ConsumerRealtime consumerRealtime;
@@ -474,7 +475,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Associate this screen with a camera.
         /// </summary>
-        public void LoadCamera(CameraSummary _cameraSummary)
+        public void LoadCamera(CameraSummary _cameraSummary, ScreenDescriptionCapture screenDescription)
         {
             if (cameraLoaded)
                 UnloadCamera();
@@ -487,6 +488,7 @@ namespace Kinovea.ScreenManager
                 log.DebugFormat("Restoring camera: {0}", cameraSummary.Alias);
                 CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
                 stopwatchDiscovery.Start();
+                this.screenDescription = screenDescription;
                 CameraTypeManager.StartDiscoveringCameras();
             }
             else
@@ -495,10 +497,10 @@ namespace Kinovea.ScreenManager
                 cameraGrabber = cameraManager.CreateCaptureSource(cameraSummary);
             }
 
-            AssociateCamera();
+            AssociateCamera(true);
         }
 
-        private void AssociateCamera()
+        private void AssociateCamera(bool connect)
         {
             if (cameraGrabber == null)
                 return;
@@ -508,8 +510,8 @@ namespace Kinovea.ScreenManager
 
             OnActivated(EventArgs.Empty);
 
-            // Automatically connect to the camera upon association.
-            Connect();
+            if (connect)
+                Connect();
         }
 
         private void CameraTypeManager_CamerasDiscovered(object sender, CamerasDiscoveredEventArgs e)
@@ -533,7 +535,13 @@ namespace Kinovea.ScreenManager
                 cameraSummary = summary;
                 cameraManager = cameraSummary.Manager;
                 cameraGrabber = cameraManager.CreateCaptureSource(cameraSummary);
-                AssociateCamera();
+
+                bool connect = screenDescription != null ? screenDescription.Autostream : true;
+                AssociateCamera(connect);
+
+                if (screenDescription != null && cameraLoaded && cameraConnected)
+                    view.ForceDelaySeconds(screenDescription.Delay);
+                
                 break;
             }
 
@@ -559,6 +567,7 @@ namespace Kinovea.ScreenManager
             if (cameraConnected)
                 Disconnect();
 
+            screenDescription = null;
             cameraGrabber = null;
 
             delayer.FreeAll();

@@ -2346,7 +2346,7 @@ namespace Kinovea.ScreenManager
                     CameraSummary summary = new CameraSummary(sdc.CameraName);
 
                     int targetScreen = reloaded == 1 ? 1 : 0;
-                    LoaderCamera.LoadCameraInScreen(this, summary, targetScreen);
+                    LoaderCamera.LoadCameraInScreen(this, summary, targetScreen, sdc);
                     reloaded++;
                 }
                 else if (screenDescription is ScreenDescriptionPlayback)

@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Globalization;
 using System.Xml;
 
 namespace Kinovea.Services
@@ -91,7 +92,10 @@ namespace Kinovea.Services
                         Autoplay = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     case "SpeedPercentage":
-                        SpeedPercentage = reader.ReadElementContentAsDouble();
+                        float speed;
+                        bool read = float.TryParse(reader.ReadElementContentAsString(), NumberStyles.Any, CultureInfo.InvariantCulture, out speed);
+                        if (read)
+                            this.SpeedPercentage = speed;
                         break;
                     case "Stretch":
                         Stretch = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());

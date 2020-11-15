@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Globalization;
 using System.Xml;
 
 namespace Kinovea.Services
@@ -45,19 +46,13 @@ namespace Kinovea.Services
         /// <summary>
         /// Delay at which to set the delay slider, whether the video is auto-play or not.
         /// </summary>
-        public double Delay { get; set; }
-
-        /// <summary>
-        /// Whether the camera view should be stretched to fill the capture screen estate.
-        /// </summary>
-        public bool Stretch { get; set; }
+        public float Delay { get; set; }
 
         public ScreenDescriptionCapture()
         {
             CameraName = "";
             Autostream = true;
             Delay = 0;
-            Stretch = true;
         }
 
         public ScreenDescriptionCapture(XmlReader reader) : this()
@@ -75,10 +70,10 @@ namespace Kinovea.Services
                         Autostream = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     case "Delay":
-                        Delay = reader.ReadElementContentAsDouble();
-                        break;
-                    case "Stretch":
-                        Stretch = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        float delay;
+                        bool read = float.TryParse(reader.ReadElementContentAsString(), NumberStyles.Any, CultureInfo.InvariantCulture, out delay);
+                        if (read)
+                            this.Delay = delay;
                         break;
                     default:
                         reader.ReadOuterXml();
