@@ -1523,7 +1523,7 @@ namespace Kinovea.ScreenManager
                 metadata.TimeOrigin = delay * metadata.AverageTimeStampsPerFrame;
             
             // Only save the kva if there is interesting information that can't be found from the video file alone.
-            if (setCaptureFramerate || setUserInterval || metadata.TimeOrigin != 0 || metadata.Count > 0)
+            if (setCaptureFramerate || setUserInterval || metadata.TimeOrigin != 0 || metadata.Count > 0 || metadata.Mirrored)
             {
                 MetadataSerializer serializer = new MetadataSerializer();
                 string kvaFilename = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path)) + ".kva";
