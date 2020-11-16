@@ -113,7 +113,7 @@ namespace Kinovea.ScreenManager
         public override bool Mirrored
         {
             get { return metadata.Mirrored; }
-            set { metadata.Mirrored = value; }
+            set { ChangeMirror(value); }
         }
         public bool TestGridVisible
         {
@@ -622,6 +622,7 @@ namespace Kinovea.ScreenManager
             SanityCheckDisplayRectangle(cameraSummary, referenceSize);
 
             metadata.ImageSize = referenceSize;
+            metadata.Mirrored = cameraSummary.Mirror;
             metadata.PostSetupCapture();
 
             // Make sure the viewport will not use the bitmap allocated by the consumerDisplay as it is about to be disposed.
@@ -898,6 +899,12 @@ namespace Kinovea.ScreenManager
 
             Disconnect();
             Connect();
+        }
+
+        private void ChangeMirror(bool mirror)
+        {
+            metadata.Mirrored = mirror;
+            cameraSummary.UpdateMirror(mirror);
         }
 
         private CaptureAspectRatio Convert(ImageAspectRatio aspectRatio)

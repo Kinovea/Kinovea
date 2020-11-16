@@ -36,10 +36,17 @@ namespace Kinovea.Camera
         public Rectangle DisplayRectangle { get; set; }
         public CaptureAspectRatio AspectRatio { get; private set; }
         public ImageRotation Rotation { get; private set; }
+
+        public bool Mirror { get; private set; }
+
         public object Specific { get; private set;}
         public CameraManager Manager { get; private set;}
-        
-        public CameraSummary(string alias, string name, string identifier, Bitmap icon, Rectangle displayRectangle, CaptureAspectRatio aspectRatio, ImageRotation rotation, object specific, CameraManager manager)
+
+        /// <summary>
+        /// Build a full camera summary.
+        /// This is normally used when we have obtained all the info from an XML blurb of that camera.
+        /// </summary>
+        public CameraSummary(string alias, string name, string identifier, Bitmap icon, Rectangle displayRectangle, CaptureAspectRatio aspectRatio, ImageRotation rotation, bool mirror, object specific, CameraManager manager)
         {
             this.Alias = alias;
             this.Name = name;
@@ -48,7 +55,26 @@ namespace Kinovea.Camera
             this.DisplayRectangle = displayRectangle;
             this.AspectRatio = aspectRatio;
             this.Rotation = rotation;
+            this.Mirror = mirror;
             this.Specific = specific;
+            this.Manager = manager;
+        }
+
+        /// <summary>
+        /// Build a default camera summary.
+        /// This is used for certain camera types.
+        /// </summary>
+        public CameraSummary(string alias, string name, string identifier, Bitmap icon, CameraManager manager)
+        {
+            this.Alias = alias;
+            this.Name = name;
+            this.Identifier = identifier;
+            this.Icon = icon;
+            this.DisplayRectangle = Rectangle.Empty;
+            this.AspectRatio = CaptureAspectRatio.Auto;
+            this.Rotation = ImageRotation.Rotate0;
+            this.Mirror = false;
+            this.Specific = null;
             this.Manager = manager;
         }
 
@@ -65,6 +91,7 @@ namespace Kinovea.Camera
             this.DisplayRectangle = Rectangle.Empty;
             this.AspectRatio = CaptureAspectRatio.Auto;
             this.Rotation = ImageRotation.Rotate0;
+            this.Mirror = false;
             this.Specific = null;
             this.Manager = null;
         }
@@ -93,6 +120,11 @@ namespace Kinovea.Camera
             this.Rotation = rotation;
         }
         
+        public void UpdateMirror(bool mirror)
+        {
+            this.Mirror = mirror;
+        }
+
         public void UpdateSpecific(object specific)
         {
             this.Specific = specific;
