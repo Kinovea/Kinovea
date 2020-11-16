@@ -200,7 +200,7 @@ namespace Kinovea.ScreenManager
         /// The out target parameter provides the actual frame position we got, or a negative number if we are not ready yet. This can be used
         /// to implement a waiting image.
         /// </summary>
-        public Bitmap GetWeak(int age, ImageRotation rotation, out int target)
+        public Bitmap GetWeak(int age, ImageRotation rotation, bool mirror, out int target)
         {
             //----------------------------------------------------
             // Runs in the UI thread, to get the image to display.
@@ -242,15 +242,26 @@ namespace Kinovea.ScreenManager
                     switch (rotation)
                     {
                         case ImageRotation.Rotate90:
-                            copy.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                            if (mirror)
+                                copy.RotateFlip(RotateFlipType.Rotate90FlipX);
+                            else
+                                copy.RotateFlip(RotateFlipType.Rotate90FlipNone);
                             break;
                         case ImageRotation.Rotate180:
-                            copy.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                            if (mirror)
+                                copy.RotateFlip(RotateFlipType.Rotate180FlipX);
+                            else
+                                copy.RotateFlip(RotateFlipType.Rotate180FlipNone);
                             break;
                         case ImageRotation.Rotate270:
-                            copy.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                            if (mirror)
+                                copy.RotateFlip(RotateFlipType.Rotate270FlipX);
+                            else
+                                copy.RotateFlip(RotateFlipType.Rotate270FlipNone);
                             break;
                         default:
+                            if (mirror)
+                                copy.RotateFlip(RotateFlipType.RotateNoneFlipX);
                             break;
                     }
                 }

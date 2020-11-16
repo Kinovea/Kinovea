@@ -135,11 +135,6 @@ namespace Kinovea.ScreenManager
         {
             view.InitializeDisplayRectangle(displayRectangle, referenceSize);
         }
-        
-        public void SetMirrored(bool value)
-        {
-            view.SetMirrored(value);
-        }
 
         public void UpdateDisplayRectangle(Rectangle rectangle)
         {

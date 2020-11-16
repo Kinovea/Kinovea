@@ -112,30 +112,13 @@ namespace Kinovea.ScreenManager
         }
         public override bool Mirrored
         {
-            get
-            {
-                return metadata.Mirrored;
-            }
-
-            set
-            {
-                // Note: mirroring works at the end frame for perfs reasons.
-                // This means that if the quadrants view is active, the most recent will be on the right.
-                // The alternative is to redraw the mirrored image before pushing it to the delay buffer, 
-                // but that seems to be too taxing as it currently runs on the UI thread.
-                metadata.Mirrored = value;
-                viewportController.SetMirrored(value);
-                viewportController.Refresh();
-            }
+            get { return metadata.Mirrored; }
+            set { metadata.Mirrored = value; }
         }
         public bool TestGridVisible
         {
             get { return metadata.TestGridVisible; }
-            set 
-            { 
-                metadata.TestGridVisible = value;
-                //ToggleImageProcessing();
-            }
+            set { metadata.TestGridVisible = value; }
         }
         public HistoryStack HistoryStack
         {
@@ -982,7 +965,7 @@ namespace Kinovea.ScreenManager
 
             // Get the displayed frame.
             int target = 0;
-            Bitmap displayFrame = delayedDisplay ? delayer.GetWeak(delay, ImageRotation, out target) : delayer.GetWeak(0, ImageRotation, out target);
+            Bitmap displayFrame = delayedDisplay ? delayer.GetWeak(delay, ImageRotation, Mirrored, out target) : delayer.GetWeak(0, ImageRotation, Mirrored, out target);
             
             if (displayFrame == null && target < 0)
                 displayFrame = CreateWaitImage(-target);
@@ -1165,7 +1148,7 @@ namespace Kinovea.ScreenManager
             if (!cameraLoaded)
                 return;
 
-            Bitmap bitmap = delayer.GetWeak(delay, ImageRotation, out _);
+            Bitmap bitmap = delayer.GetWeak(delay, ImageRotation, Mirrored, out _);
             if (bitmap == null)
                 return;
 
@@ -1665,7 +1648,7 @@ namespace Kinovea.ScreenManager
             {
                 if (recordingThumbnail == null)
                 {
-                    Bitmap delayed = delayer.GetWeak(age, ImageRotation, out _);
+                    Bitmap delayed = delayer.GetWeak(age, ImageRotation, Mirrored, out _);
                     if (delayed != null)
                         recordingThumbnail = BitmapHelper.Copy(delayed);
                 }
@@ -1783,7 +1766,7 @@ namespace Kinovea.ScreenManager
             // Force a refresh if we are not connected to the camera to enable "pause and browse".
             if (cameraLoaded && !cameraConnected)
             {
-                Bitmap delayed = delayer.GetWeak(delay, ImageRotation, out _);
+                Bitmap delayed = delayer.GetWeak(delay, ImageRotation, Mirrored, out _);
                 viewportController.Bitmap = delayed;
                 viewportController.Refresh();
             }
