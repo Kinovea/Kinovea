@@ -111,6 +111,13 @@ namespace Kinovea.Camera.Baumer
             frameBufferSize = ImageFormatHelper.ComputeBufferSize(width, height, imageFormat);
             frameBuffer = new byte[frameBufferSize];
 
+            finishline.Prepare(width, height, imageFormat, resultingFramerate);
+            if (finishline.Enabled)
+            {
+                height = finishline.Height;
+                resultingFramerate = finishline.ResultingFramerate;
+            }
+
             int outgoingBufferSize = ImageFormatHelper.ComputeBufferSize(width, height, imageFormat);
             bool topDown = true;
             return new ImageDescriptor(imageFormat, width, height, topDown, outgoingBufferSize);
@@ -258,65 +265,36 @@ namespace Kinovea.Camera.Baumer
                 return;
 
             // Wrap the buffer in an image, convert if needed.
-
             BGAPI2.Image image = imgProcessor.CreateImage((uint)buffer.Width, (uint)buffer.Height, buffer.PixelFormat, buffer.MemPtr, buffer.MemSize);
-            if (imageFormat == ImageFormat.Y800 && BaumerHelper.IsY800(image.PixelFormat))
+            if (imageFormat != ImageFormat.Y800 || !BaumerHelper.IsY800(image.PixelFormat))
             {
-                ProduceFrame(image);
+                // Color conversion is required.
+                BGAPI2.Image transformedImage = GetTransformedImage(image);
+                image.Release();
+                image = transformedImage;
+            }
+            
+            CopyFrame(image);
+            image.Release();
+
+            if (finishline.Enabled)
+            {
+                bool flush = finishline.Consolidate(frameBuffer);
+                if (flush)
+                {
+                    ComputeDataRate(finishline.BufferOutput.Length);
+
+                    if (FrameProduced != null)
+                        FrameProduced(this, new FrameProducedEventArgs(finishline.BufferOutput, finishline.BufferOutput.Length));
+                }
             }
             else
             {
-                BGAPI2.Image transformedImage;
-                if (!demosaicing && image.PixelFormat.StartsWith("Bayer"))
-                {
-                    // HDR Bayer. Convert to 8-bit while retaining the format.
-                    // Transformation from a bayer pattern to another is not supported by the API.
-                    if (image.PixelFormat.StartsWith("BayerBG"))
-                        transformedImage = imgProcessor.CreateTransformedImage(image, "BayerBG8");
-                    else if (image.PixelFormat.StartsWith("BayerGB"))
-                        transformedImage = imgProcessor.CreateTransformedImage(image, "BayerGB8");
-                    else if (image.PixelFormat.StartsWith("BayerGR"))
-                        transformedImage = imgProcessor.CreateTransformedImage(image, "BayerGR8");
-                    else
-                        transformedImage = imgProcessor.CreateTransformedImage(image, "BayerRG8");
-                }
-                else
-                {
-                    // HDR Mono and all other cases (RGB & YUV).
-                    if (image.PixelFormat.StartsWith("Mono"))
-                        transformedImage = imgProcessor.CreateTransformedImage(image, "Mono8");
-                    else
-                        transformedImage = imgProcessor.CreateTransformedImage(image, "BGR8");
-                }
-                
-                ProduceFrame(transformedImage);
-                transformedImage.Release();
+                ComputeDataRate(frameBufferSize);
+
+                if (FrameProduced != null)
+                    FrameProduced(this, new FrameProducedEventArgs(frameBuffer, frameBufferSize));
             }
-
-            image.Release();
-
-            //if (finishline.Enabled)
-            //{
-            //    bool flush = finishline.Consolidate(pylonImage.Buffer);
-            //    imageProvider.ReleaseImage();
-
-            //    if (flush)
-            //    {
-            //        ComputeDataRate(finishline.BufferOutput.Length);
-
-            //        if (FrameProduced != null)
-            //            FrameProduced(this, new FrameProducedEventArgs(finishline.BufferOutput, finishline.BufferOutput.Length));
-            //    }
-            //}
-            //else
-            //{
-            //ComputeDataRate(pylonImage.Buffer.Length);
-
-            //if (FrameProduced != null)
-            //  FrameProduced(this, new FrameProducedEventArgs(pylonImage.Buffer, pylonImage.Buffer.Length));
-
-            //imageProvider.ReleaseImage();
-            //}
         }
 
 
@@ -328,10 +306,38 @@ namespace Kinovea.Camera.Baumer
         }
         #endregion
 
+        private BGAPI2.Image GetTransformedImage(BGAPI2.Image image)
+        {
+            BGAPI2.Image transformedImage = null;
+            if (!demosaicing && image.PixelFormat.StartsWith("Bayer"))
+            {
+                // HDR Bayer. Convert to 8-bit while retaining the format.
+                // Transformation from a bayer pattern to another is not supported by the API.
+                if (image.PixelFormat.StartsWith("BayerBG"))
+                    transformedImage = imgProcessor.CreateTransformedImage(image, "BayerBG8");
+                else if (image.PixelFormat.StartsWith("BayerGB"))
+                    transformedImage = imgProcessor.CreateTransformedImage(image, "BayerGB8");
+                else if (image.PixelFormat.StartsWith("BayerGR"))
+                    transformedImage = imgProcessor.CreateTransformedImage(image, "BayerGR8");
+                else
+                    transformedImage = imgProcessor.CreateTransformedImage(image, "BayerRG8");
+            }
+            else
+            {
+                // HDR Mono and all other cases (RGB & YUV).
+                if (image.PixelFormat.StartsWith("Mono"))
+                    transformedImage = imgProcessor.CreateTransformedImage(image, "Mono8");
+                else
+                    transformedImage = imgProcessor.CreateTransformedImage(image, "BGR8");
+            }
+
+            return transformedImage;
+        }
+
         /// <summary>
-        /// Takes a converted input buffer, copy it into the output buffer and raise the frame event.
+        /// Takes a converted input buffer and copy it into the output buffer.
         /// </summary>
-        private unsafe void ProduceFrame(BGAPI2.Image image)
+        private unsafe void CopyFrame(BGAPI2.Image image)
         {
             // At this point the image is either in Mono8, Bayer**8 or BGR8.
             int bpp = image.PixelFormat == "BGR8" ? 3 : 1;
@@ -340,11 +346,6 @@ namespace Kinovea.Camera.Baumer
                 IntPtr ptrDst = (IntPtr)p;
                 NativeMethods.memcpy(ptrDst.ToPointer(), image.Buffer.ToPointer(), (int)(image.Width * bpp * image.Height));
             }
-
-            ComputeDataRate(frameBufferSize);
-
-            if (FrameProduced != null)
-                FrameProduced(this, new FrameProducedEventArgs(frameBuffer, frameBufferSize));
         }
     }
 }
