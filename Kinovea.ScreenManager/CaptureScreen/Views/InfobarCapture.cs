@@ -21,7 +21,7 @@ namespace Kinovea.ScreenManager
         public void UpdateValues(string signal, string bandwidth, string load, string drops)
         {
             lblSignal.Text = "Signal:" + signal;
-            lblBandwidth.Text = "Bandwidth:" + bandwidth;
+            lblBandwidth.Text = "Throughput:" + bandwidth;
             lblLoad.Text = "Load:" + load;
             lblDrops.Text = "Drops:" + drops;
         }

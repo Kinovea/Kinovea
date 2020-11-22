@@ -60,7 +60,7 @@ namespace Kinovea.ScreenManager
         public void Unhide()
         {
             refreshImages = true;
-            CameraTypeManager.DiscoverCameras();
+            CameraTypeManager.StartDiscoveringCameras();
             this.Focus();
         }
         public void CamerasDiscovered(List<CameraSummary> summaries)
@@ -283,7 +283,7 @@ namespace Kinovea.ScreenManager
             CameraTypeManager.ForgetCamera(thumbnail.Summary);
 
             refreshImages = true;
-            CameraTypeManager.DiscoverCameras();
+            CameraTypeManager.StartDiscoveringCameras();
         }
         
         private void Thumbnail_CameraSelected(object sender, EventArgs e)
@@ -396,7 +396,7 @@ namespace Kinovea.ScreenManager
                     break;
                 case ThumbnailViewerCameraCommands.Refresh:
                     refreshImages = true;
-                    CameraTypeManager.DiscoverCameras();
+                    CameraTypeManager.StartDiscoveringCameras();
                     this.Focus();
                     break;
                 default:

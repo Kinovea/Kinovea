@@ -132,6 +132,7 @@ namespace Kinovea.Camera.Basler
                 Rectangle displayRectangle = Rectangle.Empty;
                 CaptureAspectRatio aspectRatio = CaptureAspectRatio.Auto;
                 ImageRotation rotation = ImageRotation.Rotate0;
+                bool mirror = false;
                 deviceIndices[identifier] = device.Index;
 
                 if(blurbs != null)
@@ -150,7 +151,8 @@ namespace Kinovea.Camera.Basler
                         
                         if (!string.IsNullOrEmpty(blurb.Rotation))
                             rotation = (ImageRotation)Enum.Parse(typeof(ImageRotation), blurb.Rotation);
-                        // Restore saved parameters.
+
+                        mirror = blurb.Mirror;
                         specific = SpecificInfoDeserialize(blurb.Specific);
                         break;
                     }
@@ -158,7 +160,7 @@ namespace Kinovea.Camera.Basler
 
                 icon = icon ?? defaultIcon;
             
-                CameraSummary summary = new CameraSummary(alias, device.Name, identifier, icon, displayRectangle, aspectRatio, rotation, specific, this);
+                CameraSummary summary = new CameraSummary(alias, device.Name, identifier, icon, displayRectangle, aspectRatio, rotation, mirror, specific, this);
 
                 summaries.Add(summary);
                 found.Add(summary);
@@ -199,7 +201,7 @@ namespace Kinovea.Camera.Basler
         public override CameraBlurb BlurbFromSummary(CameraSummary summary)
         {
             string specific = SpecificInfoSerialize(summary);
-            CameraBlurb blurb = new CameraBlurb(CameraType, summary.Identifier, summary.Alias, summary.Icon, summary.DisplayRectangle, summary.AspectRatio.ToString(), summary.Rotation.ToString(), specific);
+            CameraBlurb blurb = new CameraBlurb(CameraType, summary.Identifier, summary.Alias, summary.Icon, summary.DisplayRectangle, summary.AspectRatio.ToString(), summary.Rotation.ToString(), summary.Mirror, specific);
             return blurb;
         }
         

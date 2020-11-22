@@ -242,7 +242,7 @@ namespace Kinovea.ScreenManager
                     }
                 case ThumbnailViewerContent.Cameras:
                     {
-                        CameraTypeManager.DiscoverCameras();
+                        CameraTypeManager.StartDiscoveringCameras();
                         viewerCameras.UpdateThumbnailsSize(sizeSelector.SelectedSize);
                         viewer = viewerCameras;
                         break;
@@ -316,8 +316,7 @@ namespace Kinovea.ScreenManager
         }
         private void ThumbnailViewerContainer_Load(object sender, EventArgs e)
         {
-            // TODO: not necessarily the final place for this call.
-            CameraTypeManager.DiscoverCameras();
+            CameraTypeManager.StartDiscoveringCameras();
         }
         #endregion
 

@@ -48,6 +48,7 @@ namespace Kinovea.ScreenManager
     public class CaptureScreen : AbstractScreen
     {
         #region Events
+        public event EventHandler<EventArgs<string>> CameraDiscoveryComplete;
         public event EventHandler RecordingStarted;
         public event EventHandler RecordingStopped;
         #endregion
@@ -111,30 +112,13 @@ namespace Kinovea.ScreenManager
         }
         public override bool Mirrored
         {
-            get
-            {
-                return metadata.Mirrored;
-            }
-
-            set
-            {
-                // Note: mirroring works at the end frame for perfs reasons.
-                // This means that if the quadrants view is active, the most recent will be on the right.
-                // The alternative is to redraw the mirrored image before pushing it to the delay buffer, 
-                // but that seems to be too taxing as it currently runs on the UI thread.
-                metadata.Mirrored = value;
-                viewportController.SetMirrored(value);
-                viewportController.Refresh();
-            }
+            get { return metadata.Mirrored; }
+            set { ChangeMirror(value); }
         }
         public bool TestGridVisible
         {
             get { return metadata.TestGridVisible; }
-            set 
-            { 
-                metadata.TestGridVisible = value;
-                //ToggleImageProcessing();
-            }
+            set { metadata.TestGridVisible = value; }
         }
         public HistoryStack HistoryStack
         {
@@ -170,6 +154,9 @@ namespace Kinovea.ScreenManager
         private CameraSummary cameraSummary;
         private CameraManager cameraManager;
         private ICaptureSource cameraGrabber;
+        private Stopwatch stopwatchDiscovery = new Stopwatch();
+        private const long discoveryTimeout = 5000;
+        private ScreenDescriptionCapture screenDescription;
         private PipelineManager pipelineManager = new PipelineManager();
         private ConsumerDisplay consumerDisplay = new ConsumerDisplay();
         private ConsumerRealtime consumerRealtime;
@@ -471,28 +458,87 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Associate this screen with a camera.
         /// </summary>
-        /// <param name="_cameraSummary"></param>
-        public void LoadCamera(CameraSummary _cameraSummary)
+        public void LoadCamera(CameraSummary _cameraSummary, ScreenDescriptionCapture screenDescription)
         {
             if (cameraLoaded)
                 UnloadCamera();
 
             cameraSummary = _cameraSummary;
-            cameraManager = cameraSummary.Manager;
-            cameraGrabber = cameraManager.CreateCaptureSource(cameraSummary);
 
+            if (cameraSummary.Manager == null)
+            {
+                // Special case for when we want to load a camera but it may not be available yet.
+                log.DebugFormat("Restoring camera: {0}", cameraSummary.Alias);
+                CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
+                stopwatchDiscovery.Start();
+                this.screenDescription = screenDescription;
+                CameraTypeManager.StartDiscoveringCameras();
+            }
+            else
+            {
+                cameraManager = cameraSummary.Manager;
+                cameraGrabber = cameraManager.CreateCaptureSource(cameraSummary);
+            }
+
+            AssociateCamera(true);
+        }
+
+        private void AssociateCamera(bool connect)
+        {
             if (cameraGrabber == null)
                 return;
 
             UpdateTitle();
             cameraLoaded = true;
-            
+
             OnActivated(EventArgs.Empty);
 
-            // Automatically connect to the camera upon association.
-            Connect();
+            if (connect)
+                Connect();
         }
-        
+
+        private void CameraTypeManager_CamerasDiscovered(object sender, CamerasDiscoveredEventArgs e)
+        {
+            // Go through all cameras and see if find our match.
+            bool discovered = false;
+            foreach (CameraSummary summary in e.Summaries)
+            {
+                if (summary.Alias != cameraSummary.Alias)
+                    continue;
+
+                // We found our camera.
+                log.DebugFormat("Camera discovery: found {0}", cameraSummary.Alias);
+
+                discovered = true;
+                CameraTypeManager.CamerasDiscovered -= CameraTypeManager_CamerasDiscovered;
+                if (CameraDiscoveryComplete != null)
+                    CameraDiscoveryComplete(this, new EventArgs<string>(cameraSummary.Alias));
+
+                // Finish loading the screen.
+                cameraSummary = summary;
+                cameraManager = cameraSummary.Manager;
+                cameraGrabber = cameraManager.CreateCaptureSource(cameraSummary);
+
+                bool connect = screenDescription != null ? screenDescription.Autostream : true;
+                AssociateCamera(connect);
+
+                if (screenDescription != null && cameraLoaded && cameraConnected)
+                    view.ForceDelaySeconds(screenDescription.Delay);
+                
+                break;
+            }
+
+            if (!discovered && stopwatchDiscovery.ElapsedMilliseconds > discoveryTimeout)
+            {
+                // Stop trying to find our camera.
+                // Turns this back into a regular empty capture screen.
+                log.DebugFormat("Camera discovery: time out while trying to find {0}", cameraSummary.Alias);
+                CameraTypeManager.CamerasDiscovered -= CameraTypeManager_CamerasDiscovered;
+                if (CameraDiscoveryComplete != null)
+                    CameraDiscoveryComplete(this, new EventArgs<string>(cameraSummary.Alias));
+            }
+        }
+
         /// <summary>
         /// Drop the association of this screen with the camera.
         /// </summary>
@@ -504,6 +550,7 @@ namespace Kinovea.ScreenManager
             if (cameraConnected)
                 Disconnect();
 
+            screenDescription = null;
             cameraGrabber = null;
 
             delayer.FreeAll();
@@ -569,15 +616,15 @@ namespace Kinovea.ScreenManager
             // Second part of Connect function. 
             // The function is split because the first part might need to be run repeatedly and from non UI thread, 
             // while this part must run on the UI thread.
-
-            metadata.ImageSize = new Size(imageDescriptor.Width, imageDescriptor.Height);
-            metadata.PostSetupCapture();
-
             AllocateDelayer();
             bool sideways = ImageRotation == ImageRotation.Rotate90 || ImageRotation == ImageRotation.Rotate270;
             Size referenceSize = sideways ? new Size(imageDescriptor.Height, imageDescriptor.Width) : new Size(imageDescriptor.Width, imageDescriptor.Height);
             SanityCheckDisplayRectangle(cameraSummary, referenceSize);
-            
+
+            metadata.ImageSize = referenceSize;
+            metadata.Mirrored = cameraSummary.Mirror;
+            metadata.PostSetupCapture();
+
             // Make sure the viewport will not use the bitmap allocated by the consumerDisplay as it is about to be disposed.
             viewportController.ForgetBitmap();
             viewportController.InitializeDisplayRectangle(cameraSummary.DisplayRectangle, referenceSize);
@@ -854,6 +901,12 @@ namespace Kinovea.ScreenManager
             Connect();
         }
 
+        private void ChangeMirror(bool mirror)
+        {
+            metadata.Mirrored = mirror;
+            cameraSummary.UpdateMirror(mirror);
+        }
+
         private CaptureAspectRatio Convert(ImageAspectRatio aspectRatio)
         {
             switch(aspectRatio)
@@ -916,15 +969,20 @@ namespace Kinovea.ScreenManager
 
                 delayer.Push(freshFrame);
             }
-            
+
             // Get the displayed frame.
-            Bitmap displayFrame = delayedDisplay ? delayer.GetWeak(delay, ImageRotation) : delayer.GetWeak(0, ImageRotation);
+            int target = 0;
+            Bitmap displayFrame = delayedDisplay ? delayer.GetWeak(delay, ImageRotation, Mirrored, out target) : delayer.GetWeak(0, ImageRotation, Mirrored, out target);
+            
+            if (displayFrame == null && target < 0)
+                displayFrame = CreateWaitImage(-target);
+            
             if (displayFrame != null)
             {
                 viewportController.ForgetBitmap();
                 viewportController.Bitmap = displayFrame;
             }
-
+            
             if (recording && recordingThumbnail == null && displayFrame != null)
                 recordingThumbnail = BitmapHelper.Copy(displayFrame);
 
@@ -952,6 +1010,28 @@ namespace Kinovea.ScreenManager
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Create a wait image to signal that the camera itself is ready but the delay is larger than the first frame available.
+        /// </summary>
+        private Bitmap CreateWaitImage(int frames)
+        {
+            bool sideways = ImageRotation == ImageRotation.Rotate90 || ImageRotation == ImageRotation.Rotate270;
+            int width = sideways ? imageDescriptor.Height : imageDescriptor.Width;
+            int height = sideways ? imageDescriptor.Width : imageDescriptor.Height;
+
+            Bitmap displayFrame = new Bitmap(width, height, PixelFormat.Format24bppRgb);
+            string text = string.Format(@"- {0:0.000} s", AgeToSeconds(frames));
+            int fontSize = (int)(((float)24 / 480) * imageDescriptor.Height);
+
+            using (Graphics g = Graphics.FromImage(displayFrame))
+            using (Font font = new Font("Arial", fontSize, FontStyle.Regular))
+            {
+                g.DrawString(text, font, Brushes.White, new Point(50, 50));
+            }
+
+            return displayFrame;
         }
 
         private void ViewportController_DisplayRectangleUpdated(object sender, EventArgs e)
@@ -1075,7 +1155,7 @@ namespace Kinovea.ScreenManager
             if (!cameraLoaded)
                 return;
 
-            Bitmap bitmap = delayer.GetWeak(delay, ImageRotation);
+            Bitmap bitmap = delayer.GetWeak(delay, ImageRotation, Mirrored, out _);
             if (bitmap == null)
                 return;
 
@@ -1450,7 +1530,7 @@ namespace Kinovea.ScreenManager
                 metadata.TimeOrigin = delay * metadata.AverageTimeStampsPerFrame;
             
             // Only save the kva if there is interesting information that can't be found from the video file alone.
-            if (setCaptureFramerate || setUserInterval || metadata.TimeOrigin != 0 || metadata.Count > 0)
+            if (setCaptureFramerate || setUserInterval || metadata.TimeOrigin != 0 || metadata.Count > 0 || metadata.Mirrored)
             {
                 MetadataSerializer serializer = new MetadataSerializer();
                 string kvaFilename = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path)) + ".kva";
@@ -1575,7 +1655,7 @@ namespace Kinovea.ScreenManager
             {
                 if (recordingThumbnail == null)
                 {
-                    Bitmap delayed = delayer.GetWeak(age, ImageRotation);
+                    Bitmap delayed = delayer.GetWeak(age, ImageRotation, Mirrored, out _);
                     if (delayed != null)
                         recordingThumbnail = BitmapHelper.Copy(delayed);
                 }
@@ -1693,7 +1773,7 @@ namespace Kinovea.ScreenManager
             // Force a refresh if we are not connected to the camera to enable "pause and browse".
             if (cameraLoaded && !cameraConnected)
             {
-                Bitmap delayed = delayer.GetWeak(delay, ImageRotation);
+                Bitmap delayed = delayer.GetWeak(delay, ImageRotation, Mirrored, out _);
                 viewportController.Bitmap = delayed;
                 viewportController.Refresh();
             }

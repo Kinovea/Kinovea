@@ -88,7 +88,6 @@ namespace Kinovea.Camera
             }
         }
 
-
         /// <summary>
         /// Find and instanciate types implementing the CameraManager base class.
         /// </summary>
@@ -134,11 +133,12 @@ namespace Kinovea.Camera
             }
         }
 
-        public static void DiscoverCameras()
+        public static void StartDiscoveringCameras()
         {
             if(timerDiscovery.Enabled)
                 return;
-                
+
+            log.DebugFormat("Start discovering cameras");
             timerDiscovery.Interval = 1000;
             timerDiscovery.Tick += timerDiscovery_Tick;
             timerDiscovery.Enabled = true;
@@ -146,6 +146,7 @@ namespace Kinovea.Camera
         
         public static void StopDiscoveringCameras()
         {
+            log.DebugFormat("Stop discovering cameras");
             timerDiscovery.Enabled = false;
             timerDiscovery.Tick -= timerDiscovery_Tick;
         }

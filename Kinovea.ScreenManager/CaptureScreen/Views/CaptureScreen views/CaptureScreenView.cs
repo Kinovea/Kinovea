@@ -217,6 +217,13 @@ namespace Kinovea.ScreenManager
             // This ensures the coherence of the delay in seconds and in frames after a change in camera framerate.
             NudDelay_ValueChanged(nudDelay, EventArgs.Empty);
         }
+
+        public void ForceDelaySeconds(float delaySeconds)
+        {
+            delaySeconds = Math.Min(Math.Max(delaySeconds, (float)nudDelay.Minimum), (float)nudDelay.Maximum);
+            nudDelay.Value = (decimal)delaySeconds;
+        }
+
         public void UpdateNextImageFilename(string filename)
         {
             fnbImage.Filename = filename;

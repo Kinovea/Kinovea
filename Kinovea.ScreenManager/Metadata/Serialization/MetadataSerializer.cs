@@ -219,6 +219,9 @@ namespace Kinovea.ScreenManager
                         inputImageSize = XmlHelper.ParseSize(r.ReadElementContentAsString());
                         scaling = GetScaling();
                         break;
+                    case "Mirror":
+                        metadata.Mirrored = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
+                        break;
                     case "AverageTimeStampsPerFrame":
                         inputAverageTimeStampsPerFrame = r.ReadElementContentAsLong();
                         break;
@@ -417,6 +420,7 @@ namespace Kinovea.ScreenManager
                 w.WriteElementString("GlobalTitle", metadata.GlobalTitle);
 
             w.WriteElementString("ImageSize", metadata.ImageSize.Width + ";" + metadata.ImageSize.Height);
+            w.WriteElementString("Mirror", metadata.Mirrored.ToString().ToLower());
             w.WriteElementString("AverageTimeStampsPerFrame", metadata.AverageTimeStampsPerFrame.ToString());
             w.WriteElementString("CaptureFramerate", string.Format(CultureInfo.InvariantCulture, "{0}", metadata.CalibrationHelper.CaptureFramesPerSecond));
             w.WriteElementString("UserFramerate", string.Format(CultureInfo.InvariantCulture, "{0}", 1000 / metadata.UserInterval));

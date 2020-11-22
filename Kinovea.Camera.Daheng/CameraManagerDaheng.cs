@@ -99,7 +99,7 @@ namespace Kinovea.Camera.Daheng
                 Rectangle displayRectangle = Rectangle.Empty;
                 CaptureAspectRatio aspectRatio = CaptureAspectRatio.Auto;
                 ImageRotation rotation = ImageRotation.Rotate0;
-                //deviceIndices[identifier] = device.GetDeviceID();
+                bool mirror = false;
 
                 if (blurbs != null)
                 {
@@ -116,6 +116,7 @@ namespace Kinovea.Camera.Daheng
                             aspectRatio = (CaptureAspectRatio)Enum.Parse(typeof(CaptureAspectRatio), blurb.AspectRatio);
                         if (!string.IsNullOrEmpty(blurb.Rotation))
                             rotation = (ImageRotation)Enum.Parse(typeof(ImageRotation), blurb.Rotation);
+                        mirror = blurb.Mirror;
                         specific = SpecificInfoDeserialize(blurb.Specific);
                         break;
                     }
@@ -123,7 +124,7 @@ namespace Kinovea.Camera.Daheng
 
                 icon = icon ?? defaultIcon;
 
-                CameraSummary summary = new CameraSummary(alias, device.GetDisplayName(), identifier, icon, displayRectangle, aspectRatio, rotation, specific, this);
+                CameraSummary summary = new CameraSummary(alias, device.GetDisplayName(), identifier, icon, displayRectangle, aspectRatio, rotation, mirror, specific, this);
 
                 summaries.Add(summary);
                 found.Add(summary);
@@ -164,7 +165,7 @@ namespace Kinovea.Camera.Daheng
         public override CameraBlurb BlurbFromSummary(CameraSummary summary)
         {
             string specific = SpecificInfoSerialize(summary);
-            CameraBlurb blurb = new CameraBlurb(CameraType, summary.Identifier, summary.Alias, summary.Icon, summary.DisplayRectangle, summary.AspectRatio.ToString(), summary.Rotation.ToString(), specific);
+            CameraBlurb blurb = new CameraBlurb(CameraType, summary.Identifier, summary.Alias, summary.Icon, summary.DisplayRectangle, summary.AspectRatio.ToString(), summary.Rotation.ToString(), summary.Mirror, specific);
             return blurb;
         }
 

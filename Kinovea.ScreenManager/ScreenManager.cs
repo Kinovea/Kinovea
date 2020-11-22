@@ -71,6 +71,7 @@ namespace Kinovea.ScreenManager
         private AbstractScreen activeScreen = null;
         private bool canShowCommonControls;
         private int dualLaunchSettingsPendingCountdown;
+        private List<string> camerasToDiscover = new List<string>();
         private AudioInputLevelMonitor audioInputLevelMonitor = new AudioInputLevelMonitor();
         
         // Video Filters
@@ -710,12 +711,22 @@ namespace Kinovea.ScreenManager
             if (dualLaunchSettingsPendingCountdown == 0)
                 dualPlayer.CommitLaunchSettings();
         }
-        
         private void Player_ResetAsked(object sender, EventArgs e)
         {
             // A screen was reset. (ex: a video was reloded in place).
             // We need to also reset all the sync states.
             ResetSync();
+        }
+        private void Capture_CameraDiscoveryComplete(object sender, EventArgs<string> e)
+        {
+            // A capture screen has just completed its camera discovery,
+            // either by finding and loading the camera or by timeout.
+            // Tick off that camera from the list and stop the whole discovery process if we are done.
+            if (camerasToDiscover.Contains(e.Value))
+                camerasToDiscover.Remove(e.Value);
+
+            if (camerasToDiscover.Count == 0)
+                CameraTypeManager.StopDiscoveringCameras();
         }
         #endregion
 
@@ -1041,7 +1052,7 @@ namespace Kinovea.ScreenManager
                     mnuExportMSXML.Enabled = false;
                     mnuExportXHTML.Enabled = false;
                     mnuExportTEXT.Enabled = false;
-                    mnuLoadAnalysis.Enabled = false;
+                    mnuLoadAnalysis.Enabled = true;
 
                     // Edit
                     HistoryMenuManager.SwitchContext(captureScreen.HistoryStack);
@@ -1491,7 +1502,7 @@ namespace Kinovea.ScreenManager
         }
         private void mnuLoadAnalysisOnClick(object sender, EventArgs e)
         {
-            if (activeScreen != null && activeScreen is PlayerScreen)
+            if (activeScreen != null)
             {
                 int index = activeScreen == screenList[0] ? 0 : 1;
                 LoadAnalysis(index);
@@ -1499,17 +1510,17 @@ namespace Kinovea.ScreenManager
         }
         private void LoadAnalysis(int targetScreen)
         {
-            PlayerScreen player = screenList[targetScreen] as PlayerScreen;
-            if (player == null)
+            if (screenList[targetScreen] == null)
                 return;
 
-            DoStopPlaying();
+            if (screenList[targetScreen] is PlayerScreen)
+                DoStopPlaying();
+             
             string filename = FilePicker.OpenAnnotations();
             if (filename == null)
                 return;
 
-            MetadataSerializer s = new MetadataSerializer();
-            s.Load(player.FrameServer.Metadata, filename, true);
+            screenList[targetScreen].LoadKVA(filename);
         }
         private void mnuExportODF_OnClick(object sender, EventArgs e)
         {
@@ -2312,16 +2323,30 @@ namespace Kinovea.ScreenManager
         private void View_AutoLaunchAsked(object source, EventArgs e)
         {
             int reloaded = 0;
+
+            int count = LaunchSettingsManager.ScreenDescriptions.Count;
+            if (count > 2)
+                LaunchSettingsManager.ScreenDescriptions.RemoveRange(2, count - 2);
+
+            // Start by collecting the list of cameras to be found. 
+            // We will keep the camera discovery system active until we have found all of them or time out.
+            camerasToDiscover.Clear();
+            foreach (IScreenDescription screenDescription in LaunchSettingsManager.ScreenDescriptions)
+            {
+                if (screenDescription is ScreenDescriptionCapture)
+                    camerasToDiscover.Add(((ScreenDescriptionCapture)screenDescription).CameraName);
+            }
+
             foreach (IScreenDescription screenDescription in LaunchSettingsManager.ScreenDescriptions)
             {
                 if (screenDescription is ScreenDescriptionCapture)
                 {
                     AddCaptureScreen();
-                    
-                    // TODO: load camera in camera screen. Currently not supported. It's hard to already re-identify the 
-                    // camera at this point, as the normal camera discovery mechanism is asynchronous.
-                    //ScreenDescriptionCapture sdc = screenDescription as ScreenDescriptionCapture;
-                    //LoaderCamera.LoadCameraInScreen(this, sdc.CameraIdentifier, sdc);
+                    ScreenDescriptionCapture sdc = screenDescription as ScreenDescriptionCapture;
+                    CameraSummary summary = new CameraSummary(sdc.CameraName);
+
+                    int targetScreen = reloaded == 1 ? 1 : 0;
+                    LoaderCamera.LoadCameraInScreen(this, summary, targetScreen, sdc);
                     reloaded++;
                 }
                 else if (screenDescription is ScreenDescriptionPlayback)
@@ -2331,9 +2356,6 @@ namespace Kinovea.ScreenManager
                     LoaderVideo.LoadVideoInScreen(this, sdp.FullPath, sdp);
                     reloaded++;
                 }
-
-                if (reloaded == 2)
-                    break;
             }
 
             dualLaunchSettingsPendingCountdown = reloaded;
@@ -2510,14 +2532,20 @@ namespace Kinovea.ScreenManager
 
             if (screen is PlayerScreen)
                 AddPlayerScreenEventHandlers(screen as PlayerScreen);
+            else if (screen is CaptureScreen)
+                AddCaptureScreenEventHandlers(screen as CaptureScreen);
         }
-        private void AddPlayerScreenEventHandlers(PlayerScreen player)
+        private void AddPlayerScreenEventHandlers(PlayerScreen screen)
         {
-            player.OpenVideoAsked += Player_OpenVideoAsked;
-            player.OpenReplayWatcherAsked += Player_OpenReplayWatcherAsked;
-            player.OpenAnnotationsAsked += Player_OpenAnnotationsAsked;
-            player.SelectionChanged += Player_SelectionChanged;
-            player.ResetAsked += Player_ResetAsked;
+            screen.OpenVideoAsked += Player_OpenVideoAsked;
+            screen.OpenReplayWatcherAsked += Player_OpenReplayWatcherAsked;
+            screen.OpenAnnotationsAsked += Player_OpenAnnotationsAsked;
+            screen.SelectionChanged += Player_SelectionChanged;
+            screen.ResetAsked += Player_ResetAsked;
+        }
+        private void AddCaptureScreenEventHandlers(CaptureScreen screen)
+        {
+            screen.CameraDiscoveryComplete += Capture_CameraDiscoveryComplete;
         }
         private void RemoveScreenEventHandlers(AbstractScreen screen)
         {
@@ -2527,16 +2555,24 @@ namespace Kinovea.ScreenManager
 
             if (screen is PlayerScreen)
                 RemovePlayerScreenEventHandlers(screen as PlayerScreen);
+            else if (screen is CaptureScreen)
+                RemoveCaptureScreenEventHandlers(screen as CaptureScreen);
+
         }
-        private void RemovePlayerScreenEventHandlers(PlayerScreen player)
+        private void RemovePlayerScreenEventHandlers(PlayerScreen screen)
         {
-            player.OpenVideoAsked -= Player_OpenVideoAsked;
-            player.OpenReplayWatcherAsked -= Player_OpenReplayWatcherAsked;
-            player.OpenAnnotationsAsked -= Player_OpenAnnotationsAsked;
-            player.SelectionChanged -= Player_SelectionChanged;
-            player.ResetAsked -= Player_ResetAsked;
+            screen.OpenVideoAsked -= Player_OpenVideoAsked;
+            screen.OpenReplayWatcherAsked -= Player_OpenReplayWatcherAsked;
+            screen.OpenAnnotationsAsked -= Player_OpenAnnotationsAsked;
+            screen.SelectionChanged -= Player_SelectionChanged;
+            screen.ResetAsked -= Player_ResetAsked;
         }
-        
+
+        private void RemoveCaptureScreenEventHandlers(CaptureScreen screen)
+        {
+            screen.CameraDiscoveryComplete -= Capture_CameraDiscoveryComplete;
+        }
+
         #endregion
     }
 }

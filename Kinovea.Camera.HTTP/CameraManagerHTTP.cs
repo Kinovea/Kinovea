@@ -95,9 +95,10 @@ namespace Kinovea.Camera.HTTP
                 ImageRotation rotation = ImageRotation.Rotate0;
                 if (!string.IsNullOrEmpty(blurb.Rotation))
                     rotation = (ImageRotation)Enum.Parse(typeof(ImageRotation), blurb.Rotation);
+                bool mirror = blurb.Mirror;
                 object specific = SpecificInfoDeserialize(blurb.Specific);
 
-                CameraSummary summary = new CameraSummary(alias, defaultName, identifier, icon, displayRectangle, aspectRatio, rotation, specific, this);
+                CameraSummary summary = new CameraSummary(alias, defaultName, identifier, icon, displayRectangle, aspectRatio, rotation, mirror, specific, this);
                 summaries.Add(summary);
             }
             
@@ -124,7 +125,7 @@ namespace Kinovea.Camera.HTTP
         public override CameraBlurb BlurbFromSummary(CameraSummary summary)
         {
             string specific = SpecificInfoSerialize(summary);
-            CameraBlurb blurb = new CameraBlurb(CameraType, summary.Identifier, summary.Alias, summary.Icon, summary.DisplayRectangle, summary.AspectRatio.ToString(), summary.Rotation.ToString(), specific);
+            CameraBlurb blurb = new CameraBlurb(CameraType, summary.Identifier, summary.Alias, summary.Icon, summary.DisplayRectangle, summary.AspectRatio.ToString(), summary.Rotation.ToString(), summary.Mirror, specific);
             return blurb;
         }
         
@@ -175,7 +176,7 @@ namespace Kinovea.Camera.HTTP
         
         public CameraSummary GetDefaultCameraSummary(string id)
         {
-            return new CameraSummary(defaultAlias, defaultName, id, defaultIcon, Rectangle.Empty, CaptureAspectRatio.Auto, ImageRotation.Rotate0, null, this);
+            return new CameraSummary(defaultAlias, defaultName, id, defaultIcon, this);
         }
         
         public string BuildURL(SpecificInfo specific)

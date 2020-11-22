@@ -70,6 +70,10 @@ namespace Kinovea.Services
                         ScreenDescriptionPlayback sdp = new ScreenDescriptionPlayback(reader);
                         Screens.Add(sdp);
                         break;
+                    case "ScreenDescriptionCapture":
+                        ScreenDescriptionCapture sdc = new ScreenDescriptionCapture(reader);
+                        Screens.Add(sdc);
+                        break;
                     default:
                         reader.ReadOuterXml();
                         break;
