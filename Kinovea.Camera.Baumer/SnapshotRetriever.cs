@@ -76,6 +76,7 @@ namespace Kinovea.Camera.Baumer
 
             if (!opened)
             {
+                log.DebugFormat("Could not open {0} for thumbnail.", summary.Alias);
                 if (CameraThumbnailProduced != null)
                     CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, null, ImageDescriptor.Invalid, true, false));
 

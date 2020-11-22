@@ -135,7 +135,7 @@ namespace Kinovea.Camera.Baumer
                     //    continue;
                     //}
 
-                    system.Interfaces.Refresh(100);
+                    system.Interfaces.Refresh(500);
                     foreach (KeyValuePair<string, BGAPI2.Interface> interfacePair in system.Interfaces)
                     {
                         BGAPI2.Interface iface = interfacePair.Value;
@@ -146,17 +146,18 @@ namespace Kinovea.Camera.Baumer
                             continue;
                         }
 
-                        iface.Devices.Refresh(100);
+                        iface.Devices.Refresh(500);
                         foreach (KeyValuePair<string, BGAPI2.Device> devicePair in iface.Devices)
                         {
                             BGAPI2.Device device = devicePair.Value;
-                            //log.DebugFormat("Found device: {0}", device.DisplayName);
+                            log.DebugFormat("Found device: {0} ({1})", device.DisplayName, device.SerialNumber);
                             string identifier = device.SerialNumber;
                             bool cached = cache.ContainsKey(identifier);
                             if (cached)
                             {
                                 // We've already seen this camera in the current Kinovea session.
                                 //deviceIds[identifier] = device.GetDeviceID();
+                                log.DebugFormat("Known device from current session.");
                                 summaries.Add(cache[identifier]);
                                 found.Add(cache[identifier]);
                                 continue;
@@ -169,7 +170,6 @@ namespace Kinovea.Camera.Baumer
                             CaptureAspectRatio aspectRatio = CaptureAspectRatio.Auto;
                             ImageRotation rotation = ImageRotation.Rotate0;
                             bool mirror = false;
-                            //deviceIndices[identifier] = device.GetDeviceID();
 
                             // Check if we already know this camera from a previous Kinovea session.
                             if (blurbs != null)
@@ -180,6 +180,7 @@ namespace Kinovea.Camera.Baumer
                                         continue;
 
                                     // We know this camera from a previous Kinovea session, restore the user custom values.
+                                    log.DebugFormat("Known device from previous session.");
                                     alias = blurb.Alias;
                                     icon = blurb.Icon ?? defaultIcon;
                                     displayRectangle = blurb.DisplayRectangle;
@@ -215,7 +216,7 @@ namespace Kinovea.Camera.Baumer
             }
             catch (Exception e)
             {
-
+                log.ErrorFormat("Error while scanning for devices. {0}", e.Message);
             }
             
             List<CameraSummary> lost = new List<CameraSummary>();
