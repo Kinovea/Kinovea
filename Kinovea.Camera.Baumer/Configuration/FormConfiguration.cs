@@ -318,19 +318,19 @@ namespace Kinovea.Camera.Baumer
 
         private void UpdateResultingFramerate()
         {
-            //float resultingFramerate = PylonHelper.GetResultingFramerate(deviceHandle);
-            //lblResultingFramerateValue.Text = string.Format("{0:0.##}", resultingFramerate);
+            float resultingFramerate = BaumerHelper.GetResultingFramerate(device);
+            lblResultingFramerateValue.Text = string.Format("{0:0.##}", resultingFramerate);
 
-            //bool discrepancy = false;
-            //if (cameraProperties.ContainsKey("framerate") && cameraProperties["framerate"].Supported)
-            //{
-            //    float framerate;
-            //    bool parsed = float.TryParse(cameraProperties["framerate"].CurrentValue, NumberStyles.Any, CultureInfo.InvariantCulture, out framerate);
-            //    if (parsed && Math.Abs(framerate - resultingFramerate) > 1)
-            //        discrepancy = true;
-            //}
+            bool discrepancy = false;
+            if (cameraProperties.ContainsKey("framerate") && cameraProperties["framerate"].Supported)
+            {
+                float framerate;
+                bool parsed = float.TryParse(cameraProperties["framerate"].CurrentValue, NumberStyles.Any, CultureInfo.InvariantCulture, out framerate);
+                if (parsed && Math.Abs(framerate - resultingFramerate) > 1)
+                    discrepancy = true;
+            }
 
-            //lblResultingFramerateValue.ForeColor = discrepancy ? Color.Red : Color.Black;
+            lblResultingFramerateValue.ForeColor = discrepancy ? Color.Red : Color.Black;
         }
     }
 }

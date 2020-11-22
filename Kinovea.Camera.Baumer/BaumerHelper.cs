@@ -10,21 +10,25 @@ namespace Kinovea.Camera.Baumer
 {
     public static class BaumerHelper
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public static float GetResultingFramerate(Device device)
         {
             if (device == null || !device.IsOpen)
                 return 0;
 
-            //if (BaumerHelper.NodeIsReadable(device, "ResultingFrameRateAbs"))
-            //    return device.RemoteNodeList["ResultingFrameRateAbs"].Value;
-            //else if (BaumerHelper.NodeIsReadable(device, "ResultingFrameRate"))
-            //    return device.RemoteNodeList["ResultingFrameRate"].Value;
 
-            //if (BaumerHelper.NodeIsReadable(device, "AcquisitionFrameRate"))
+            Node nodeReadOutTime = GetNode(device.RemoteNodeList, "ReadOutTime");
+            Node nodeFramerate = GetNode(device.RemoteNodeList, "AcquisitionFrameRate");
 
-            // CurrentAcquisitionFrameRate
+            if (nodeReadOutTime == null || nodeFramerate == null)
+                return 0;
+    
+            double framerateSelected = nodeFramerate.Value;
+            double framerateReadout = 1000000.0 / nodeReadOutTime.Value;
+            float resultingFramerate = (float)Math.Min(framerateReadout, framerateSelected);
 
-            return 0;
+            return resultingFramerate;
         }
 
         public static Node GetNode(NodeMap map, string name)
