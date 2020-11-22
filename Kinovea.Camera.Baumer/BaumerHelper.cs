@@ -12,22 +12,35 @@ namespace Kinovea.Camera.Baumer
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
+        /// <summary>
+        /// Get the maximum possible framerate based on image size, exposure and user value.
+        /// Note: The resulting value is only correct when using grayscale output.
+        /// </summary>
         public static float GetResultingFramerate(Device device)
         {
             if (device == null || !device.IsOpen)
                 return 0;
 
-
-            Node nodeReadOutTime = GetNode(device.RemoteNodeList, "ReadOutTime");
-            Node nodeFramerate = GetNode(device.RemoteNodeList, "AcquisitionFrameRate");
-
-            if (nodeReadOutTime == null || nodeFramerate == null)
+            Node nodeReadOut = GetNode(device.RemoteNodeList, "ReadOutTime");
+            Node nodeExposure = GetNode(device.RemoteNodeList, "ExposureTime");
+            if (nodeReadOut == null || nodeExposure == null)
                 return 0;
     
-            double framerateSelected = nodeFramerate.Value;
-            double framerateReadout = 1000000.0 / nodeReadOutTime.Value;
-            float resultingFramerate = (float)Math.Min(framerateReadout, framerateSelected);
+            double framerateReadout = 1000000.0 / nodeReadOut.Value;
+            double framerateExposure = 1000000.0 / nodeExposure.Value;
+            float resultingFramerate = (float)Math.Min(framerateReadout, framerateExposure);
 
+            Node nodeFramerate = GetNode(device.RemoteNodeList, "AcquisitionFrameRate");
+            Node nodeFramerateEnable = GetNode(device.RemoteNodeList, "AcquisitionFrameRateEnable");
+            if (nodeFramerate == null || nodeFramerateEnable == null)
+                return resultingFramerate;
+
+            double framerateSelected = nodeFramerate.Value;
+            bool framerateEnabled = nodeFramerateEnable.Value;
+            if (!framerateEnabled)
+                return resultingFramerate;
+
+            resultingFramerate = (float)Math.Min(resultingFramerate, framerateSelected);
             return resultingFramerate;
         }
 
