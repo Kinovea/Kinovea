@@ -135,12 +135,18 @@ namespace Kinovea.ScreenManager
                 player.view.ResetToEmptyState();
 
             player.view.LaunchDescription = screenDescription;
-
-            OpenVideoResult res = player.FrameServer.Load(path);
             player.Id = Guid.NewGuid();
-
             if (screenDescription != null && screenDescription.Id != Guid.Empty)
                 player.Id = screenDescription.Id;
+
+            // This can happen when we load an empty screen from launch settings / workspace.
+            if (string.IsNullOrEmpty(path))
+            {
+                player.view.EnableDisableActions(false);
+                return;
+            }
+
+            OpenVideoResult res = player.FrameServer.Load(path);
 
             switch (res)
             {

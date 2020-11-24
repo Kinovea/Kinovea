@@ -256,6 +256,19 @@ namespace Kinovea.ScreenManager
                 FilesystemHelper.DeleteOrphanFiles();
             }
         }
+
+        public void LoadDefaultWorkspace()
+        {
+            if (LaunchSettingsManager.ScreenDescriptions.Count > 0)
+                return;
+
+            Workspace workspace = PreferencesManager.GeneralPreferences.Workspace;
+            if (workspace.Screens == null || workspace.Screens.Count == 0)
+                return;
+
+            foreach (var sd in workspace.Screens)
+                LaunchSettingsManager.AddScreenDescription(sd);
+        }
         #endregion
 
         #region IKernel Implementation
@@ -900,6 +913,15 @@ namespace Kinovea.ScreenManager
             string msgText = ScreenManagerLang.Error_Capture_DirectoryNotCreated_Text.Replace("\\n", "\n");
 
             MessageBox.Show(msgText, msgTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        }
+        
+        public Workspace ExtractWorkspace()
+        {
+            Workspace workspace = new Workspace();
+            foreach (var screen in screenList)
+                workspace.Screens.Add(screen.GetScreenDescription());
+
+            return workspace;
         }
         #endregion
         

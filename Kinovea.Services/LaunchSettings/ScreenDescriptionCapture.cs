@@ -55,7 +55,7 @@ namespace Kinovea.Services
             Delay = 0;
         }
 
-        public ScreenDescriptionCapture(XmlReader reader) : this()
+        public void Readxml(XmlReader reader)
         {
             reader.ReadStartElement();
 
@@ -82,6 +82,13 @@ namespace Kinovea.Services
             }
 
             reader.ReadEndElement();
+        }
+
+        public void WriteXml(XmlWriter w)
+        {
+            w.WriteElementString("CameraName", CameraName);
+            w.WriteElementString("Autostream", XmlHelper.WriteBoolean(Autostream));
+            w.WriteElementString("Delay", XmlHelper.WriteFloat(Delay));
         }
     }
 }

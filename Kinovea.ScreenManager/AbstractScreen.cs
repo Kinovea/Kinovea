@@ -123,5 +123,6 @@ namespace Kinovea.ScreenManager
         public abstract void Identify(int index);
         public abstract void ExecuteScreenCommand(int cmd);
         public abstract void LoadKVA(string path);
+        public abstract IScreenDescription GetScreenDescription();
     }   
 }

@@ -101,6 +101,11 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        public bool ImageFill 
+        {  
+            get { return m_fill; }
+        }
+
         /// <summary>
         /// Returns the interval between frames in milliseconds, taking slow motion slider into account.
         /// This is suitable for a playback loop timer or metadata in saved file.

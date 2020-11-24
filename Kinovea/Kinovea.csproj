@@ -554,6 +554,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="kinoveabundle.ico" />
+    <None Include="Resources\file_txt.png" />
+    <None Include="Resources\disk.png" />
+    <None Include="Resources\common_controls.png" />
     <None Include="Resources\framenumber.png" />
     <None Include="Resources\timecode.png" />
     <None Include="Resources\microseconds.png" />

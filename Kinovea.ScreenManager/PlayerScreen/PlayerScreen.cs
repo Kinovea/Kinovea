@@ -567,6 +567,29 @@ namespace Kinovea.ScreenManager
             view.ExecuteScreenCommand(cmd);
         }
 
+        public override IScreenDescription GetScreenDescription()
+        {
+            ScreenDescriptionPlayback sd = new ScreenDescriptionPlayback();
+            sd.Id = Id;
+            if (Full)
+            {
+                sd.FullPath = replayWatcher.IsEnabled ? Path.Combine(Path.GetDirectoryName(FilePath), "*") : FilePath;
+                sd.IsReplayWatcher = replayWatcher.IsEnabled;
+                sd.Autoplay = replayWatcher.IsEnabled;
+            }
+            else
+            {
+                sd.FullPath = "";
+                sd.IsReplayWatcher = false;
+                sd.Autoplay = false;
+            }
+            
+            sd.SpeedPercentage = RealtimePercentage;
+            sd.Stretch = view.ImageFill;
+            return sd;
+        }
+
+
         public override void LoadKVA(string path)
         {
             view.StopPlaying();

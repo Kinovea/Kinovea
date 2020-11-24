@@ -146,6 +146,7 @@ namespace Kinovea.ScreenManager
             log.DebugFormat("In ScreenManager OnLoad");
             if (LaunchSettingsManager.ScreenDescriptions.Count > 0 && AutoLaunchAsked != null)
                 AutoLaunchAsked(this, EventArgs.Empty);
+
         }
         private void pnlScreens_Resize(object sender, EventArgs e)
         {

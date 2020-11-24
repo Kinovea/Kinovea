@@ -15,6 +15,8 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class ReplayWatcher : IDisposable
     {
+        public bool IsEnabled { get; private set; } = false;
+
         private PlayerScreen player;
         private ScreenDescriptionPlayback screenDescription;
         private string currentFile;
@@ -76,6 +78,8 @@ namespace Kinovea.ScreenManager
             watcher.Changed += watcher_Changed;
             watcher.Created += watcher_Changed;
             watcher.EnableRaisingEvents = true;
+
+            IsEnabled = true;
         }
 
         private void watcher_Changed(object sender, FileSystemEventArgs e)
@@ -131,6 +135,8 @@ namespace Kinovea.ScreenManager
             watcher.Created -= watcher_Changed;
             watcher.Dispose();
             watcher = null;
+
+            IsEnabled = false;
         }
 
         private void LoadVideo(string path)

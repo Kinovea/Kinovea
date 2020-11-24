@@ -86,6 +86,10 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuTimecodeMicroseconds = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeTimeAndFrames = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeNormalized = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuWorkspace = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuWorkspaceSaveAsDefault = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuWorkspaceForgetDefault = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuWorkspaceExport = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHelp = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHelpContents = new ToolStripMenuItem();
         private ToolStripMenuItem mnuApplicationFolder = new ToolStripMenuItem();
@@ -155,6 +159,7 @@ namespace Kinovea.Root
         public void Launch()
         {
             screenManager.RecoverCrash();
+            screenManager.LoadDefaultWorkspace();
 
             log.Debug("Calling Application.Run() to boot up the UI.");
             Application.Run(mainWindow);
@@ -328,10 +333,16 @@ namespace Kinovea.Root
             mnuTimecodeNormalized.Click += new EventHandler(mnuTimecodeNormalized_OnClick);
 
             mnuTimecode.DropDownItems.AddRange(new ToolStripItem[] { mnuTimecodeClassic, mnuTimecodeFrames, mnuTimecodeMilliseconds, mnuTimecodeMicroseconds, mnuTimecodeTimeAndFrames});
-            
+
+            mnuWorkspaceSaveAsDefault.Click += MnuWorkspaceSaveAsDefault_Click;
+            mnuWorkspaceForgetDefault.Click += MnuWorkspaceForgetDefault_Click;
+            mnuWorkspaceExport.Click += MnuWorkspaceExport_Click;
+            mnuWorkspace.DropDownItems.AddRange(new ToolStripItem[] { mnuWorkspaceSaveAsDefault, mnuWorkspaceExport, new ToolStripSeparator(), mnuWorkspaceForgetDefault });
+
             mnuOptions.DropDownItems.AddRange(new ToolStripItem[] { 
                 mnuLanguages, 
                 mnuTimecode, 
+                mnuWorkspace,
                 new ToolStripSeparator(), 
                 mnuPreferences});
             #endregion
@@ -370,6 +381,7 @@ namespace Kinovea.Root
             // We need to affect the Text properties before merging with submenus.
             RefreshCultureMenu();
         }
+
         private void GetSubModulesMenus(ToolStrip menu)
         {
             fileBrowser.ExtendMenu(menu);
@@ -427,6 +439,15 @@ namespace Kinovea.Root
             mnuTimecodeMicroseconds.Text = RootLang.TimeCodeFormat_Microseconds;
             mnuTimecodeMicroseconds.Image = Properties.Resources.microseconds;
             mnuTimecodeTimeAndFrames.Text = mnuTimecodeClassic.Text + " + " + RootLang.TimeCodeFormat_Frames;
+
+            mnuWorkspace.Text = "Workspace";
+            mnuWorkspace.Image = Properties.Resources.common_controls;
+            mnuWorkspaceSaveAsDefault.Text = "Save as default workspace";
+            mnuWorkspaceSaveAsDefault.Image = Properties.Resources.disk;
+            mnuWorkspaceForgetDefault.Text = "Forget default workspace";
+            mnuWorkspaceForgetDefault.Image = Properties.Resources.bin_empty;
+            mnuWorkspaceExport.Text = "Export workspace";
+            mnuWorkspaceExport.Image = Properties.Resources.file_txt;
 
             mnuHelp.Text = RootLang.mnuHelp;
             mnuHelpContents.Text = RootLang.mnuHelpContents;
@@ -608,6 +629,37 @@ namespace Kinovea.Root
             PreferencesManager.PlayerPreferences.TimecodeFormat = _timecode;
             RefreshUICulture();
             PreferencesManager.Save();
+        }
+
+        private void MnuWorkspaceSaveAsDefault_Click(object sender, EventArgs e)
+        {
+            // Extract the current workspace and save it in the preferences.
+            Workspace workspace = screenManager.ExtractWorkspace();
+            PreferencesManager.GeneralPreferences.Workspace = workspace;
+            PreferencesManager.Save();
+        }
+
+        private void MnuWorkspaceForgetDefault_Click(object sender, EventArgs e)
+        {
+            // Reset the workspace set in preferences.
+            Workspace workspace = new Workspace();
+            PreferencesManager.GeneralPreferences.Workspace = workspace;
+            PreferencesManager.Save();
+        }
+
+        private void MnuWorkspaceExport_Click(object sender, EventArgs e)
+        {
+            // Extract the current workspace and save it in a separate file.
+            Workspace workspace = screenManager.ExtractWorkspace();
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.RestoreDirectory = true;
+            saveFileDialog.Filter = "Kinovea workspace (*.xml)|*.xml";
+            saveFileDialog.FilterIndex = 1;
+            if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))
+                return;
+
+            workspace.Write(saveFileDialog.FileName);
         }
         #endregion
 

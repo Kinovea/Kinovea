@@ -20,11 +20,14 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Xml;
 
 namespace Kinovea.Services
 {
     public interface IScreenDescription
     {
         ScreenType ScreenType { get; }
+
+        void WriteXml(XmlWriter w);
     }
 }

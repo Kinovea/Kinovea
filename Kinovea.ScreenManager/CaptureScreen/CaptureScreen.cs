@@ -375,6 +375,15 @@ namespace Kinovea.ScreenManager
             view.ExecuteScreenCommand(cmd);
         }
 
+        public override IScreenDescription GetScreenDescription()
+        {
+            ScreenDescriptionCapture sd = new ScreenDescriptionCapture();
+            sd.Autostream = true;
+            sd.CameraName = cameraSummary == null ? "" : cameraSummary.Alias;
+            sd.Delay = (float)AgeToSeconds(delay);
+            return sd;
+        }
+
         public override void LoadKVA(string path)
         {
             if (!File.Exists(path))
@@ -468,11 +477,19 @@ namespace Kinovea.ScreenManager
             if (cameraSummary.Manager == null)
             {
                 // Special case for when we want to load a camera but it may not be available yet.
-                log.DebugFormat("Restoring camera: {0}", cameraSummary.Alias);
-                CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
-                stopwatchDiscovery.Start();
-                this.screenDescription = screenDescription;
-                CameraTypeManager.StartDiscoveringCameras();
+                if (string.IsNullOrEmpty(cameraSummary.Alias))
+                {
+                    // Loading an empty screen through launch settings. Our job is done here.
+                    return;
+                }
+                else
+                {
+                    log.DebugFormat("Restoring camera: {0}", cameraSummary.Alias);
+                    CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
+                    stopwatchDiscovery.Start();
+                    this.screenDescription = screenDescription;
+                    CameraTypeManager.StartDiscoveringCameras();
+                }
             }
             else
             {
