@@ -82,7 +82,7 @@ namespace Kinovea.ScreenManager
       // 
       // nudDelay
       // 
-      this.nudDelay.DecimalPlaces = 1;
+      this.nudDelay.DecimalPlaces = 2;
       this.nudDelay.Location = new System.Drawing.Point(275, 16);
       this.nudDelay.Name = "nudDelay";
       this.nudDelay.Size = new System.Drawing.Size(52, 20);
