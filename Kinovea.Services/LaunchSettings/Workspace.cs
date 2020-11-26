@@ -17,8 +17,14 @@ namespace Kinovea.Services
 
         public bool Load(string filename)
         {
-            if (string.IsNullOrEmpty(filename) || !File.Exists(filename))
+            if (string.IsNullOrEmpty(filename))
                 return false;
+            
+            if (!File.Exists(filename))
+            {
+                log.ErrorFormat("The workspace file could not be found. {0}", filename);
+                return false;
+            }
 
             bool loaded = false;
 
@@ -38,7 +44,7 @@ namespace Kinovea.Services
             }
             catch (Exception e)
             {
-                log.Error("An error happened during the parsing of a workspace file");
+                log.ErrorFormat("An error happened during the parsing of the workspace file. {0}", Path.GetFileName(filename));
                 log.Error(e);
             }
             finally
