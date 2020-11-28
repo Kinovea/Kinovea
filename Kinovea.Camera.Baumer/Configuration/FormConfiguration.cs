@@ -95,7 +95,7 @@ namespace Kinovea.Camera.Baumer
             btnReconnect.Text = CameraLang.FormConfiguration_Reconnect;
 
             SpecificInfo specific = summary.Specific as SpecificInfo;
-            if (specific == null || specific.Device == null || !specific.Device.IsOpen)
+            if (specific == null || specific.Device == null || specific.Device.Id == null || !specific.Device.IsOpen)
                 return;
 
             device = specific.Device;

@@ -20,27 +20,38 @@ namespace Kinovea.Camera.Baumer
         {
             if (device == null || !device.IsOpen)
                 return 0;
+            float resultingFramerate = 0;
 
-            Node nodeReadOut = GetNode(device.RemoteNodeList, "ReadOutTime");
-            Node nodeExposure = GetNode(device.RemoteNodeList, "ExposureTime");
-            if (nodeReadOut == null || nodeReadOut.Value == null || nodeExposure == null || nodeExposure.Value == null)
-                return 0;
-    
-            double framerateReadout = 1000000.0 / nodeReadOut.Value;
-            double framerateExposure = 1000000.0 / nodeExposure.Value;
-            float resultingFramerate = (float)Math.Min(framerateReadout, framerateExposure);
+            try
+            {
+                Node nodeReadOut = GetNode(device.RemoteNodeList, "ReadOutTime");
+                Node nodeExposure = GetNode(device.RemoteNodeList, "ExposureTime");
+                if (nodeReadOut == null || !nodeReadOut.IsAvailable || !nodeReadOut.IsReadable || 
+                    nodeExposure == null || !nodeExposure.IsAvailable || !nodeExposure.IsReadable)
+                    return resultingFramerate;
 
-            Node nodeFramerate = GetNode(device.RemoteNodeList, "AcquisitionFrameRate");
-            Node nodeFramerateEnable = GetNode(device.RemoteNodeList, "AcquisitionFrameRateEnable");
-            if (nodeFramerate == null || nodeFramerateEnable == null)
-                return resultingFramerate;
+                double framerateReadout = 1000000.0 / nodeReadOut.Value;
+                double framerateExposure = 1000000.0 / nodeExposure.Value;
+                resultingFramerate = (float)Math.Min(framerateReadout, framerateExposure);
 
-            double framerateSelected = nodeFramerate.Value;
-            bool framerateEnabled = nodeFramerateEnable.Value;
-            if (!framerateEnabled)
-                return resultingFramerate;
+                Node nodeFramerate = GetNode(device.RemoteNodeList, "AcquisitionFrameRate");
+                Node nodeFramerateEnable = GetNode(device.RemoteNodeList, "AcquisitionFrameRateEnable");
+                if (nodeFramerate == null || !nodeFramerate.IsAvailable || !nodeFramerate.IsReadable || 
+                    nodeFramerateEnable == null || !nodeFramerateEnable.IsAvailable || !nodeFramerateEnable.IsReadable)
+                    return resultingFramerate;
 
-            resultingFramerate = (float)Math.Min(resultingFramerate, framerateSelected);
+                double framerateSelected = nodeFramerate.Value;
+                bool framerateEnabled = nodeFramerateEnable.Value;
+                if (!framerateEnabled)
+                    return resultingFramerate;
+
+                resultingFramerate = (float)Math.Min(resultingFramerate, framerateSelected);
+            }
+            catch (Exception e)
+            {
+                log.ErrorFormat("Error while computing resulting framerate. {0}", e.Message);
+            }
+
             return resultingFramerate;
         }
 
@@ -59,8 +70,11 @@ namespace Kinovea.Camera.Baumer
 
         public static bool NodeIsReadable(Device device, string name)
         {
-            if (device == null || !device.IsOpen)
+            if (device == null)
                 throw new InvalidProgramException();
+
+            if (!device.IsOpen)
+                return false;
 
             bool present = device.RemoteNodeList.GetNodePresent(name);
             if (!present)

@@ -208,6 +208,9 @@ namespace Kinovea.Camera.Baumer
             if (!opened)
                 return;
 
+            if (!dataStream.IsOpen)
+                return;
+
             // setup
             dataStream.StartAcquisition();
             device.RemoteNodeList["AcquisitionMode"].Value = "Continuous";
