@@ -76,17 +76,13 @@ namespace Kinovea.Camera.Baumer
                 {
                     BGAPI2.System system = systemPair.Value;
                     if (!system.Vendor.Contains("Baumer"))
-                    {
-                        system.Close();
                         continue;
-                    }
 
-                    system.Open();
+                    if (!system.IsOpen)
+                        system.Open();
+                    
                     if (string.IsNullOrEmpty(system.Id))
-                    {
-                        system.Close();
                         continue;
-                    }
 
                     systems.Add(systemPair.Key, system);
                 }
@@ -111,46 +107,42 @@ namespace Kinovea.Camera.Baumer
             // Lifecycles of objects in the Baumer API:
             // - systemList: entire application. Will initialize all systems, not clear how to uninitialize non Baumer systems.
             // - system: entire application. Should be kept open.
-            // - interface & device: camera session.
+            // - interface: entire application. Allow listing of devices even if they are opened by another application.
+            // - device: camera session.
             //---------------------------------------------
 
             try
             {
-                // Collect all the devices.
-                //foreach (KeyValuePair<string, BGAPI2.System> systemPair in systemList)
-                //foreach (BGAPI2.System system in systems)
                 foreach (KeyValuePair<string, BGAPI2.System> systemPair in systems)
                 {
                     BGAPI2.System system = systemPair.Value;
-                    //if (!system.Vendor.Contains("Baumer"))
-                      //  continue;
-
-                    if (!system.IsOpen)
+                    if (!system.Vendor.Contains("Baumer"))
                         continue;
 
-                    //system.Open();
-                    //if (string.IsNullOrEmpty(system.Id))
-                    //{
-                    //    system.Close();
-                    //    continue;
-                    //}
+                    if (!system.IsOpen)
+                        system.Open();
 
-                    system.Interfaces.Refresh(500);
+                    if (string.IsNullOrEmpty(system.Id))
+                        continue;
+
+                    system.Interfaces.Refresh(200);
                     foreach (KeyValuePair<string, BGAPI2.Interface> interfacePair in system.Interfaces)
                     {
                         BGAPI2.Interface iface = interfacePair.Value;
-                        iface.Open();
+                        //log.DebugFormat("Opening interface {0}", iface.DisplayName);
+                        if (!iface.IsOpen)
+                            iface.Open();
+                        
                         if (string.IsNullOrEmpty(iface.Id))
-                        {
-                            iface.Close();
                             continue;
-                        }
 
-                        iface.Devices.Refresh(500);
+                        iface.Devices.Refresh(200);
+                        //log.DebugFormat("Devices found in interface {0}: {1}.", iface.DisplayName, iface.Devices.Count);
                         foreach (KeyValuePair<string, BGAPI2.Device> devicePair in iface.Devices)
                         {
                             BGAPI2.Device device = devicePair.Value;
-                            log.DebugFormat("Found device: {0} ({1})", device.DisplayName, device.SerialNumber);
+                            //log.DebugFormat("Found device: {0} ({1})", device.DisplayName, device.SerialNumber);
+                            
                             string identifier = device.SerialNumber;
                             bool cached = cache.ContainsKey(identifier);
                             if (cached)
@@ -208,7 +200,7 @@ namespace Kinovea.Camera.Baumer
                             cache.Add(identifier, summary);
                         }
 
-                        iface.Close();
+                        //iface.Close();
                     }
 
                     //system.Close();

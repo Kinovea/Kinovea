@@ -50,7 +50,6 @@ namespace Kinovea.Camera.Baumer
             try
             {
                 // Look for the device.
-                // The system should already be open.
                 SystemList systemList = SystemList.Instance;
                 systemList.Refresh();
                 foreach (KeyValuePair<string, BGAPI2.System> systemPair in systemList)
@@ -75,15 +74,14 @@ namespace Kinovea.Camera.Baumer
                         continue;
 
                     interf = interfacePair.Value;
-                    interf.Open();
+                    if (!interf.IsOpen)
+                        interf.Open();
                     break;
                 }
 
                 if (interf == null || !interf.IsOpen)
-                {
-                    system.Close();
                     return false;
-                }
+                
 
                 interf.Devices.Refresh(100);
                 foreach (KeyValuePair<string, BGAPI2.Device> devicePair in interf.Devices)
@@ -92,16 +90,13 @@ namespace Kinovea.Camera.Baumer
                         continue;
 
                     device = devicePair.Value;
-                    device.Open();
+                    if (!device.IsOpen)
+                        device.Open();
                     break;
                 }
 
                 if (device == null || !device.IsOpen)
-                {
-                    interf.Close();
-                    system.Close();
                     return false;
-                }
 
                 DataStreamList dataStreamList = device.DataStreams;
                 dataStreamList.Refresh();
@@ -117,9 +112,7 @@ namespace Kinovea.Camera.Baumer
 
                 if (dataStream == null)
                 {
-                    device.Close();
-                    interf.Close();
-                    system.Close();
+                    CloseDevice();
                     return false;
                 }
 
@@ -146,6 +139,9 @@ namespace Kinovea.Camera.Baumer
             catch (Exception e)
             {
                 log.ErrorFormat("Failed to open device. {0}", e);
+                DiscardBuffers();
+                CloseDataStream();
+                CloseDevice();
             }
 
             return opened;
@@ -163,74 +159,12 @@ namespace Kinovea.Camera.Baumer
                 Stop();
 
             opened = false;
-            
-            bufferList.DiscardAllBuffers();
-            while (bufferList.Count > 0)
-            {
-                BGAPI2.Buffer buffer = (BGAPI2.Buffer)bufferList.Values.First();
-                bufferList.RevokeBuffer(buffer);
-            }
 
-            try
-            {
-                if (dataStream != null)
-                {
-                    if (dataStream.IsOpen)
-                        dataStream.Close();
-
-                    dataStream = null;
-                }
-            }
-            catch (Exception e)
-            {
-                log.Error(e.Message);
-            }
-
-            // Device.
-            try
-            {
-                if (device != null)
-                {
-                    if (device.IsOpen)
-                        device.Close();
-
-                    device = null;
-                }
-            }
-            catch (Exception e)
-            {
-                log.Error(e.Message);
-            }
-
-            try
-            {
-                if (interf != null)
-                {
-                    if (interf.IsOpen)
-                        interf.Close();
-
-                    interf = null;
-                }
-            }
-            catch (Exception e)
-            {
-                log.Error(e.Message);
-            }
-
-            //try
-            //{
-            //    if (system != null)
-            //    {
-            //        if (system.IsOpen)
-            //            system.Close();
-
-            //        system = null;
-            //    }
-            //}
-            //catch (Exception e)
-            //{
-            //    log.Error(e.Message);
-            //}
+            DiscardBuffers();
+            CloseDataStream();
+            CloseDevice();
+            //CloseInterface();
+            //CloseSystem();
         }
 
         /// <summary>
@@ -304,7 +238,6 @@ namespace Kinovea.Camera.Baumer
             device.RemoteNodeList["AcquisitionStop"].Execute();
             dataStream.StopAcquisition();
         }
-
         
         /// <summary>
         /// Thread method.
@@ -345,6 +278,100 @@ namespace Kinovea.Camera.Baumer
             }
 
             // Normal thread death.
+        }
+
+        private void DiscardBuffers()
+        {
+            try
+            {
+                if (bufferList != null)
+                {
+                    bufferList.DiscardAllBuffers();
+                    while (bufferList.Count > 0)
+                    {
+                        BGAPI2.Buffer buffer = (BGAPI2.Buffer)bufferList.Values.First();
+                        bufferList.RevokeBuffer(buffer);
+                    }
+
+                    bufferList = null;
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error(e.Message);
+            }
+        }
+
+        private void CloseDataStream()
+        {
+            try
+            {
+                if (dataStream != null)
+                {
+                    if (dataStream.IsOpen)
+                        dataStream.Close();
+
+                    dataStream = null;
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error(e.Message);
+            }
+        }
+
+        private void CloseDevice()
+        {
+            try
+            {
+                if (device != null)
+                {
+                    if (device.IsOpen)
+                        device.Close();
+
+                    device = null;
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error(e.Message);
+            }
+        }
+
+        private void CloseInterface()
+        {
+            try
+            {
+                if (interf != null)
+                {
+                    if (interf.IsOpen)
+                        interf.Close();
+
+                    interf = null;
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error(e.Message);
+            }
+        }
+
+        private void CloseSystem()
+        {
+            try
+            {
+                if (system != null)
+                {
+                    if (system.IsOpen)
+                        system.Close();
+
+                    system = null;
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error(e.Message);
+            }
         }
     }
 }

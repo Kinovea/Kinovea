@@ -23,7 +23,7 @@ namespace Kinovea.Camera.Baumer
 
             Node nodeReadOut = GetNode(device.RemoteNodeList, "ReadOutTime");
             Node nodeExposure = GetNode(device.RemoteNodeList, "ExposureTime");
-            if (nodeReadOut == null || nodeExposure == null)
+            if (nodeReadOut == null || nodeReadOut.Value == null || nodeExposure == null || nodeExposure.Value == null)
                 return 0;
     
             double framerateReadout = 1000000.0 / nodeReadOut.Value;
