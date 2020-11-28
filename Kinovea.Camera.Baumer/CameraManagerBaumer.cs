@@ -55,7 +55,7 @@ namespace Kinovea.Camera.Baumer
 
         public CameraManagerBaumer()
         {
-            defaultIcon = IconLibrary.GetIcon("webcam");
+            defaultIcon = IconLibrary.GetIcon("baumer");
         }
 
         #region Public methods - CameraManager implementation
