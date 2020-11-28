@@ -130,6 +130,9 @@ namespace Kinovea.Camera.Baumer
         /// </summary>
         public ImageDescriptor GetPrepareFailedImageDescriptor(ImageDescriptor input)
         {
+            frameBufferSize = ImageFormatHelper.ComputeBufferSize(input.Width, input.Height, input.Format);
+            frameBuffer = new byte[frameBufferSize];
+
             return input;
         }
 
