@@ -149,7 +149,7 @@ namespace Kinovea.Camera.Baumer
                             {
                                 // We've already seen this camera in the current Kinovea session.
                                 //deviceIds[identifier] = device.GetDeviceID();
-                                log.DebugFormat("Known device from current session.");
+                                //log.DebugFormat("Known device from current session.");
                                 summaries.Add(cache[identifier]);
                                 found.Add(cache[identifier]);
                                 continue;
