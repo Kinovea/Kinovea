@@ -715,11 +715,23 @@ namespace Kinovea.ScreenManager
 
         private void cameraManager_CameraThumbnailProduced(object sender, CameraThumbnailProducedEventArgs e)
         {
+            // Runs in the thumbnail producer thread.
             // This handler is only hit during connection workflow when the connection preparation failed due to insufficient configuration information.
             // We get a single snapshot back with its image descriptor.
-            cameraManager.CameraThumbnailProduced -= cameraManager_CameraThumbnailProduced;
-            prepareFailedImageDescriptor = e.ImageDescriptor;
-            Connect();
+            try
+            {
+                ImageDescriptor d = e.ImageDescriptor;
+                dummy.BeginInvoke((Action)delegate {
+                    cameraManager.CameraThumbnailProduced -= cameraManager_CameraThumbnailProduced;
+                    prepareFailedImageDescriptor = d;
+                    Connect();
+                });
+            }
+            catch (Exception ex)
+            {
+                log.ErrorFormat("Begin invoke failed.", ex.ToString());
+                dummy = new Control();
+            }
         }
 
         /// <summary>
