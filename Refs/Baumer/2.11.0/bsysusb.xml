@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ConfigFile VendorName="Baumer">
+  <FileVersion>2.11.0.0</FileVersion>
+  <U3V>
+    <!-- image buffer size for USB transmission --> 
+    <U3VImageBufferSize>0x10000</U3VImageBufferSize>
+    <!-- initial wait for ack timeout for camera response -->
+    <U3VMaxResponseDefaultTime>500</U3VMaxResponseDefaultTime>
+    <!-- size of usb fifo (fix) -->
+    <U3VMaxFifoSize>1024</U3VMaxFifoSize>
+    <!-- number of event buffer in usb event queue -->
+    <U3VMaxNoEventBuffer>100</U3VMaxNoEventBuffer>
+  </U3V>
+</ConfigFile>
+<!-- EOF -->
+

@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ConfigFile VendorName="Baumer">
+    <FileVersion>2.10.0.0</FileVersion>
+    <!--
+    This configuration file allows to change some default values of the Baumer gige producer.
+    Please keep in mind that changes will affect all devices and may lead to non-optimal behavior.
+    All values were chosen to fit for the most configurations.
+    If a value is out of range, deleted or cannot be used the Baumer gige producer will set a valid value,
+    which is the default value in most cases. Some values can be adjusted with the Baumer SDK (see sdk support).
+    -->
+    <Resend>
+        <Version>1</Version>
+        <Version1>
+            <!--
+            Set the maximum number of resend requests per packet.
+            socket:            yes
+            filter driver 3.x: yes
+            filter driver 2.x: yes (deprecated)
+            default:           44 (If the stream is opened by a read only device the value is set to 0 as default.)
+            min:               0 (deactivates resend!)
+            max:               4,294,967,295
+            sdk support:       stream
+            hints:             If resends occur check the hardware connection or the dropped udp packets of your 
+                               system. For high performance applications use a lower value, this will reduce overall 
+                               system load. A higher value can prevent incomplete data blocks (images) at the expense 
+                               of a higher system load.
+                               If changing the default parameter, check that the product of MaxResendsPerPacket and
+                               ResendRetryThreshold do not beyond the parameter FilterDriverBufferCount for filterdriver
+                               or parameter StreamSocketSize(depend on parameter DeviceStreamChannelPacketSizeMax) for socket.
+            -->
+            <MaxResendsPerPacket>44</MaxResendsPerPacket>
+
+            <!--
+            Set the difference of packets between resend requests.
+            socket:            yes
+            filter driver 3.x: yes
+            filter driver 2.x: no (deprecated)
+            default:           100
+            min:               0 (may result in high number of resend requests!)
+            max:               4,294,967,295
+            sdk support:       stream
+            hint:              This parameter is only relevant if MaxResendsPerPacket > 1.
+                               Each Packet will pass through several fifo queues (e.g. network cards, udp stack) 
+                               before it arrives at application level where missing packets are detected. 
+                               Therefore we have to wait a certain number of packets to ensure the resent package
+                               has arrived in our application before requesting the packet again.
+                               If incomplete frames occur this parameter can be raised to allow more time to pass
+                               for the resent packet to be recovered.
+                               If changing the default parameter, check that the product of MaxResendsPerPacket and
+                               ResendRetryThreshold do not beyond the parameter FilterDriverBufferCount for filterdriver
+                               or parameter StreamSocketSize(depend on parameter DeviceStreamChannelPacketSizeMax) for socket.
+            -->
+            <ResendRetryThreshold>100</ResendRetryThreshold>
+
+            <!--
+            Sets a timeout for when an expected packet is marked as missing and a resent request is generated.
+            This timeout also controls when a data block / image will be aborted if outstanding packets are 
+            not received.
+            socket:            yes
+            filter driver 3.x: yes
+            filter driver 2.x: no (deprecated)
+            default:           1000
+            min:               10
+            max:               4,294,967,295
+            sdk support:       stream
+            hint:              Especially in trigger mode there might be no packets received for quite a while after an 
+                               image finished. To enable resents for the last packets of an image in those cases this
+                               timeout is used.
+                               Lower values can produce a higher system load through repeated system calls.
+                               Higher values can reduce the response time of the application.
+            -->
+            <ResendHostTimeout>1000</ResendHostTimeout>
+            
+            <!--
+            Set the number of data blocks / images  used for frame rate calculation.
+            The frame rate calculation needs a minimum of two data blocks / images.
+            socket:            yes
+            filter driver 3.x: yes
+            filter driver 2.x: yes (deprecated)
+            default:           25
+            min:               1 (deactivate frame rate calculation)
+            max:               4,294,967,295
+            sdk support:       stream
+            hints:             Lower value refresh the calculation faster but the average is not as exact.
+                               Higher value provide a better average but leads to changes are not catch.
+            -->
+            <ThroughputCalculationEntries>25</ThroughputCalculationEntries>
+            
+            <!--
+            DEPRECATED
+            Set the maximum number of resend requests per data block / image.
+            socket:            no
+            filter driver 3.x: no
+            filter driver 2.x: yes (deprecated)
+            default:           500
+            min:               0 (deactivates resend!)
+            max:               4,294,967,295
+            sdk support:       stream
+            -->
+            <MaxResendsPerImage>500</MaxResendsPerImage>
+            
+            <!--
+            DEPRECATED
+            Set the number of packets to wait before sending the first resend requests.
+            socket:            no
+            filter driver 3.x: no
+            filter driver 2.x: yes (deprecated)
+            default:           0
+            min:               0
+            max:               4,294,967,295
+            sdk support:       stream
+            -->
+            <FirstResendWaitPackets>0</FirstResendWaitPackets>
+            
+            <!--
+            DEPRECATED
+            Set the number of packets to wait before sending the first resend requests,
+            if the camera propagates a link speed of 2000 MBit/s (two physical links).   
+            socket:            no
+            filter driver 3.x: no
+            filter driver 2.x: yes (deprecated)
+            default:           20
+            min:               0
+            max:               4,294,967,295
+            sdk support:       stream
+            -->
+            <FirstResendWaitPacketsDualLink>20</FirstResendWaitPacketsDualLink>
+            
+            <!--
+            DEPRECATED
+            Set the time in ms to wait before sending the first resend requests.
+            socket:            no
+            filter driver 3.x: no
+            filter driver 2.x: yes (deprecated)
+            default:           150
+            min:               0 (may result in high number of resend requests!)
+            max:               4,294,967,295
+            sdk support:       stream
+            -->
+            <FirstResendWaitTime>150</FirstResendWaitTime>
+            
+            <!--
+            DEPRECATED
+            Set the number of packets to wait before sending the next resend requests.
+            socket:            no
+            filter driver 3.x: no
+            filter driver 2.x: yes (deprecated)
+            default:           20
+            min:               0 (may result in high number of resend requests!)
+            max:               4,294,967,295
+            sdk support:       stream
+            -->
+            <NextResendWaitPackets>20</NextResendWaitPackets>
+            
+            <!--
+            DEPRECATED
+            Set the number of packets to wait before sending the next resend requests,
+            if the camera propagates a link speed of 2000 MBit/s (two physical links). 
+            socket:            no
+            filter driver 3.x: no
+            filter driver 2.x: yes (deprecated)
+            default:           20
+            min:               0 (may result in high number of resend requests!)
+            max:               4,294,967,295
+            sdk support:       stream
+            -->
+            <NextResendWaitPacketsDualLink>20</NextResendWaitPacketsDualLink>
+            
+            <!--
+            DEPRECATED
+            Set the time in ms to wait before sending the next resend requests.
+            socket:            no
+            filter driver 3.x: no
+            filter driver 2.x: yes (deprecated)
+            default:           100
+            min:               0 (may result in high number of resend requests!)
+            max:               4,294,967,295
+            sdk support:       stream
+            -->
+            <NextResendWaitTime>100</NextResendWaitTime>
+            
+            <!--
+            Set the stream channel receive timeout in ms.
+            socket:            yes
+            filter driver 3.x: yes
+            filter driver 2.x: no (deprecated)
+            default:           50
+            min:               1
+            max:               4,294,967,295
+            sdk support:       stream
+            -->
+            <StreamChannelReceiveTimeout>50</StreamChannelReceiveTimeout>
+            
+            <!--
+            Enable packet dropper to test resend.
+            The packet dropper needs its own configuration file to work.
+            socket:            yes
+            filter driver 3.x: yes
+            filter driver 2.x: no (deprecated)
+            default:           0
+            disabled:          0
+            enabled:           1
+            sdk support:       system
+            -->
+            <PacketDropperEnable>0</PacketDropperEnable>
+            
+            <!--
+            Enable packet round trip delay measurement.
+            socket:            yes
+            filter driver 3.x: yes
+            filter driver 2.x: no (deprecated)
+            default:           0
+            disabled:          0
+            enabled:           1
+            sdk support:       system
+            -->
+            <PacketRoundTripDelayMeasurement>0</PacketRoundTripDelayMeasurement>
+            <!--
+              This value controls how often a measurement of the round trip delay is taken. The value specifies after how many packets a measurement packet is introduced.
+              socket:            yes
+              filter driver 3.x: yes
+              filter driver 2.x: no (deprecated)
+              default:           800
+              disabled:          0
+              enabled:           1
+              sdk support:       system
+              -->
+            <PacketRoundTripDelayNext>800</PacketRoundTripDelayNext>
+            <!--
+              This value controls the time until a measurement is discarded and a new measurement is started in case a requested resent package is lost.
+              socket:            yes
+              filter driver 3.x: yes
+              filter driver 2.x: no (deprecated)
+              default:           20000
+              disabled:          0
+              enabled:           1
+              sdk support:       system
+              -->
+              <PacketRoundTripDelayRestart>20000</PacketRoundTripDelayRestart>
+        </Version1>
+    </Resend>
+    <GVCP>
+        <!--
+        Set timeout (in ms) for control channel. If no acknowledge is received in this time the request will be retransmitted.
+        The number of retransmits can be configured with ControlChannelRetries.
+        If a device propagates longer reply times in its pending timeout register, the  register value will be used.
+        socket:            yes
+        filter driver 3.x: yes
+        filter driver 2.x: yes (deprecated)
+        default:           500
+        min:               2
+        max:               60,000
+        sdk support:       device
+        -->
+        <ControlChannelTimeout>500</ControlChannelTimeout>
+        
+        <!--
+        The number of retries of commands on the control channel if a timeout occurs.
+        socket:            yes
+        filter driver 3.x: yes
+        filter driver 2.x: yes (deprecated)
+        default:           3
+        min:               0
+        max:               4,294,967,295
+        sdk support:       device
+        -->
+        <ControlChannelRetries>3</ControlChannelRetries>
+        
+        <!--
+        If a command results in timeout consecutively for the configured number of retries the connection to the device may be lost.
+        To avoid addition waiting time for the next commands the control channel can be locked.
+        This will result in a reduced time to reconnect to the device or close the application.
+        If locking is disabled a timeout will not affect further commands.
+        socket:            yes
+        filter driver 3.x: yes
+        filter driver 2.x: yes (deprecated)
+        default:           1
+        disabled:          0 (All further commands were transmitted after a timeout.)
+        enabled:           1 (No further command were transmitted after a timeout.)
+        sdk support:       device
+        -->
+        <UseControlChannelLocking>1</UseControlChannelLocking>
+    </GVCP>
+    <GEV>
+        <!--
+        Maximum packet size for GigE transmission. This value is used as upper limitation for 
+        automatic MTU (maximum transmission unit) detection.
+        If you set a value outside this range the default value is used.
+        A larger packet size can reduce CPU load but must be supported by your network.
+        socket:            yes
+        filter driver 3.x: yes
+        filter driver 2.x: yes (deprecated)
+        default:           9,000
+        min:               576
+        max:               16,380
+        sdk support:       system
+        -->
+        <DeviceStreamChannelPacketSizeMax>9000</DeviceStreamChannelPacketSizeMax>
+        
+        <!--
+        0 means enable automatic MTU (maximum transmission unit) detection. If you specify this value the
+        MTU detection is disabled and the value DeviceStreamChannelPacketSizeMax is ignored. 
+        The specified value is used directly as packet size if it is between minimum or maximum.
+        If you set a value outside the range and unequal to zero, the minimum is used.
+        A larger packet size can reduce CPU load but must be supported by your network.
+        socket:            yes
+        filter driver 3.x: yes
+        filter driver 2.x: yes (deprecated)
+        default:           9,000
+        min:               576
+        max:               16,380
+        sdk support:       system
+        -->
+        <DeviceStreamChannelPacketSizeFix>0</DeviceStreamChannelPacketSizeFix>
+
+        <!--
+        This value controls the size of socket buffer for the control sockets.
+        If the vale is set a to small value the minimum is used and if it is to high the maximum value is used.
+        socket:            yes
+        filter driver 3.x: yes
+        filter driver 2.x: yes (deprecated)
+        default:           2,097,152 byte
+        min:               16,384 byte
+        max:               67,108,864 byte
+        sdk support:       system
+        -->
+        <ControlSocketSize>2097152</ControlSocketSize>
+        
+        <!--
+        This value controls the size of socket buffer for the stream sockets.
+        If the vale is set a to small value the minimum is used and if it is to high the maximum value is used.
+        socket:            yes
+        filter driver 3.x: no, memory allocated but not used
+        filter driver 2.x: no, memory allocated but not used (deprecated)
+        default:           33,554,432 byte
+        min:               16,384 byte
+        max:               67,108,864 byte
+        sdk support:       system
+        hint:              Increase this value if you observe resends even at low system load.
+                           Lower value results in lower ram usage but increase the risk of package lose.
+                           Higher value results in higher ram usage but decrease the risk of package lose.
+        -->
+        <StreamSocketSize>33554432</StreamSocketSize>
+        
+        <!--
+        This value controls the size of socket buffer for the message sockets.
+        If the vale is set a to small value the minimum is used and if it is to high the maximum value is used.
+        socket:            yes
+        filter driver 3.x: yes
+        filter driver 2.x: yes (deprecated)
+        default:           2,097,152 byte
+        min:               16,384 byte
+        max:               67,108,864 byte
+        sdk support:       system
+        -->
+        <MessageSocketSize>2097152</MessageSocketSize>
+        
+        <!--
+        This value controls the size of the filter driver packet queue.
+        If the value is not between minimum and maximum the default value will be used.
+        socket:            no
+        filter driver 3.x: yes
+        filter driver 2.x: no (deprecated)
+        default:           5000
+        min:               10
+        max:               100,000
+        sdk support:       stream
+        hint:              Increase this value if you observe resends even at low system load.
+                           Lower value results in lower ram usage but increase the risk of package lose.
+                           Higher value results in higher ram usage but decrease the risk of package lose.
+        -->
+        <FilterDriverBufferCount>5000</FilterDriverBufferCount>
+        
+        <!--
+        This value controls the interval for sending packets on the stream channel in seconds.
+        This behavior is used to allow stream data to bypass firewalls.
+        Setting this value to 0 will stop sending packets on the stream channel.
+        socket:            yes
+        filter driver 3.x: yes, but not needed
+        filter driver 2.x: yes, but not needed (deprecated)
+        default:           30
+        min:               0
+        max:               4,294,967,295
+        sdk support:       system
+        -->
+        <StreamChannelSendInterval>30</StreamChannelSendInterval>
+        
+        <!--
+        This value controls the interval for sending packets on the message channel in seconds.
+        This behavior is used to allow event data to bypass firewalls.
+        Setting this value to 0 will stop sending packets on the message channel.
+        socket:            yes
+        filter driver 3.x: yes
+        filter driver 2.x: yes (deprecated)
+        default:           30
+        min:               0
+        max:               4,294,967,295
+        sdk support:       system
+        -->
+        <MessageChannelSendInterval>30</MessageChannelSendInterval>
+    </GEV>
+    <SYSTEM>
+        <!--
+        This value controls if the receive thread tries to get a higher priority.
+        This can help to reduce the number of missing packets.
+        Works on all supported OS.
+        socket:            yes
+        filter driver 3.x: yes
+        filter driver 2.x: yes, but not needed (deprecated)
+        default:           0
+        disabled:          0
+        enabled:           1
+        sdk support:       system
+        -->
+        <IncreaseThreadPriority>0</IncreaseThreadPriority>
+        
+        <!--
+        This value controls if the receive process tries to get a higher priority.
+        This can help to reduce the number of missing packets.
+        Works only on Microsoft Windows (R).
+        socket:            yes
+        filter driver 3.x: yes
+        filter driver 2.x: yes, but not needed (deprecated)
+        default:           0
+        disabled:          0
+        enabled:           1
+        sdk support:       system
+        -->
+        <IncreasePriorityClass>0</IncreasePriorityClass>
+    </SYSTEM>
+
+</ConfigFile>
+<!-- EOF -->
+
