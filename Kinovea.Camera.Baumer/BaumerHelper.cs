@@ -100,8 +100,11 @@ namespace Kinovea.Camera.Baumer
         /// <summary>
         /// Takes a Baumer pixel format and determines the output image format.
         /// </summary>
-        public static ImageFormat ConvertImageFormat(string pixelFormat, bool demosaicing)
+        public static ImageFormat ConvertImageFormat(string pixelFormat, bool compression, bool demosaicing)
         {
+            if (compression)
+                return ImageFormat.JPEG;
+
             if (pixelFormat.StartsWith("Bayer"))
             {
                 if (!demosaicing)
@@ -135,6 +138,52 @@ namespace Kinovea.Camera.Baumer
         public static bool IsBayer(string pixelFormat)
         {
             return pixelFormat.StartsWith("Bayer");
+        }
+
+        /// <summary>
+        /// Whether the device supports hardware JPEG compression.
+        /// </summary>
+        public static bool SupportsJPEG(Device device)
+        {
+            if (device == null)
+                return false;
+
+            bool isReadable = NodeIsReadable(device, "ImageCompressionMode");
+            if (!isReadable)
+                return false;
+            
+            BGAPI2.NodeMap enumCompression = device.RemoteNodeList["ImageCompressionMode"].EnumNodeList;
+            return enumCompression.GetNodePresent("JPEG");
+        }
+
+        /// <summary>
+        /// Whether the pixel format is compatible with hardware compression.
+        /// </summary>
+        public static bool FormatCanCompress(Device device, string pixelFormat)
+        {
+            return pixelFormat == "Mono8" || pixelFormat == "YCbCr422_8";
+        }
+
+        /// <summary>
+        /// Enable or disable JPEG compression.
+        /// </summary>
+        public static void SetJPEG(Device device, bool enable)
+        {
+            if (enable)
+                device.RemoteNodeList["ImageCompressionMode"].Value = "JPEG";
+            else 
+                device.RemoteNodeList["ImageCompressionMode"].Value = "Off";
+        }
+
+        /// <summary>
+        /// Reads the current value of JPEG compression.
+        /// </summary>
+        public static bool GetJPEG(Device device)
+        {
+            if (!SupportsJPEG(device))
+                return false;
+
+            return device.RemoteNodeList["ImageCompressionMode"].Value == "JPEG";
         }
 
         public static void WriteEnum(Device device, string enumName, string enumValue)

@@ -27,10 +27,11 @@ namespace Kinovea.Camera.Baumer
                 properties.Add("height", ReadIntegerProperty(device, "Height", "HeightMax"));
 
                 // Camera properties in Kinovea combine the value and the "auto" flag.
-                // We potentially need to read several Basler camera properties to create one Kinovea camera property.
+                // We potentially need to read several properties to create one Kinovea camera property.
                 ReadFramerate(device, properties);
                 ReadExposure(device, properties);
                 ReadGain(device, properties);
+                ReadCompressionQuality(device, properties);
             }
             catch (Exception e)
             {
@@ -59,6 +60,7 @@ namespace Kinovea.Camera.Baumer
                     case "ExposureTimeAbs":
                     case "Gain":
                     case "GainRaw":
+                    case "ImageCompressionQuality":
                         WriteProperty(device, property);
                         break;
                     case "Width":
@@ -99,8 +101,6 @@ namespace Kinovea.Camera.Baumer
 
             try
             {
-                WriteCenter(device);
-
                 foreach (var pair in properties)
                 {
                     if (pair.Key == "width")
@@ -224,6 +224,17 @@ namespace Kinovea.Camera.Baumer
             properties.Add("gain", p);
         }
 
+        private static void ReadCompressionQuality(Device device, Dictionary<string, CameraProperty> properties)
+        {
+            CameraProperty p = ReadIntegerProperty(device, "ImageCompressionQuality", "");
+
+            p.AutomaticIdentifier = "";
+            p.CanBeAutomatic = false;
+            p.Automatic = false;
+
+            properties.Add("compressionQuality", p);
+        }
+
         private static CameraProperty ReadIntegerProperty(Device device, string symbol, string symbolMax)
         {
             CameraProperty p = new CameraProperty();
@@ -301,30 +312,6 @@ namespace Kinovea.Camera.Baumer
             p.CurrentValue = currentValue.ToString(CultureInfo.InvariantCulture);
 
             return p;
-        }
-
-        private static void WriteCenter(Device device)
-        {
-            // Force write the CenterX and CenterY properties if supported.
-            // https://docs.baslerweb.com/center-x-and-center-y.html
-            // This is apparently required in order for the MaxWidth/MaxHeight properties to behave correctly 
-            // and independently of the offset property.
-            // To summarize we use the following approach:
-            // 1. If CenterX/CenterY are supported properties, we use them and OffsetX/OffsetY will be automated by Pylon.
-            // 2. Otherwise we use manually write OffsetX/OffsetY to center the image.
-            //NODEMAP_HANDLE nodeMapHandle = Pylon.DeviceGetNodeMap(deviceHandle);
-            //NODE_HANDLE nodeHandleX = GenApi.NodeMapGetNode(nodeMapHandle, "CenterX");
-            //NODE_HANDLE nodeHandleY = GenApi.NodeMapGetNode(nodeMapHandle, "CenterY");
-            //if (nodeHandleX.IsValid && nodeHandleY.IsValid)
-            //{
-            //    EGenApiAccessMode accessModeOffsetX = GenApi.NodeGetAccessMode(nodeHandleX);
-            //    EGenApiAccessMode accessModeOffsetY = GenApi.NodeGetAccessMode(nodeHandleY);
-            //    if (accessModeOffsetX == EGenApiAccessMode.RW && accessModeOffsetY == EGenApiAccessMode.RW)
-            //    {
-            //        GenApi.BooleanSetValue(nodeHandleX, true);
-            //        GenApi.BooleanSetValue(nodeHandleY, true);
-            //    }
-            //}
         }
 
         /// <summary>

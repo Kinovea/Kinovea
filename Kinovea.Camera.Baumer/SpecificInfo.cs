@@ -39,12 +39,15 @@ namespace Kinovea.Camera.Baumer
         
         public string StreamFormat { get; set; }
         public bool Demosaicing { get; set; }
+        public bool Compression { get; set; }
 
         public Dictionary<string, CameraProperty> CameraProperties { get; set; }
 
         public SpecificInfo()
         {
             CameraProperties = new Dictionary<string, CameraProperty>();
+            Demosaicing = false;
+            Compression = false;
         }
     }
 }

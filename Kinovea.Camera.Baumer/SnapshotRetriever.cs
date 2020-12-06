@@ -85,6 +85,11 @@ namespace Kinovea.Camera.Baumer
 
             baumerProvider.BufferProduced += BaumerProducer_BufferProduced;
 
+            // Do not use JPEG compression for the thumbnail.
+            bool wasJpegEnabled = BaumerHelper.GetJPEG(baumerProvider.Device);
+            if (wasJpegEnabled)
+                BaumerHelper.SetJPEG(baumerProvider.Device, false);
+
             try
             {
                 baumerProvider.AcquireOne();
@@ -101,6 +106,10 @@ namespace Kinovea.Camera.Baumer
             baumerProvider.BufferProduced -= BaumerProducer_BufferProduced;
             
             baumerProvider.Stop();
+
+            if (wasJpegEnabled)
+                BaumerHelper.SetJPEG(baumerProvider.Device, true);
+
             Close();
             log.DebugFormat("{0} closed.", summary.Alias);
 
@@ -162,45 +171,33 @@ namespace Kinovea.Camera.Baumer
         /// <summary>
         /// Takes a raw buffer and copy it into an existing RGB24 Bitmap.
         /// </summary>
-        public unsafe bool FillRGB24(BGAPI2.Buffer buffer, Bitmap image)
+        public unsafe bool FillRGB24(BGAPI2.Buffer buffer, Bitmap outputImage)
         {
-            if (image.Width != (int)buffer.Width || image.Height != (int)buffer.Height || buffer.IsIncomplete || buffer.MemPtr == IntPtr.Zero)
+            if (buffer == null || buffer.IsIncomplete || buffer.MemPtr == IntPtr.Zero)
+                return false;
+                
+            if (buffer.Width != (ulong)outputImage.Width || buffer.Height != (ulong)outputImage.Height)
                 return false;
 
             bool filled = false;
-            ulong width = buffer.Width;
-            ulong height = buffer.Height;
-            string pixFmt = buffer.PixelFormat;
-            IntPtr byteBuffer = buffer.MemPtr;
-            ulong byteCount = buffer.MemSize;
 
+            // If the input image is a bayer pattern it will be debayered by default by the image processor.
+            // If it's Mono it will be converted to RGB by the image processor.
+            // The input image cannot be JPEG because we temporarily switch off that option before acquisition.
             BGAPI2.ImageProcessor imgProcessor = new BGAPI2.ImageProcessor();
-            if (imgProcessor.NodeList.GetNodePresent("DemosaicingMethod") == true)
-            {
-                imgProcessor.NodeList["DemosaicingMethod"].Value = "NearestNeighbor";
-                //imgProcessor.NodeList["DemosaicingMethod"].Value = "Bilinear3x3";
-            }
+            BGAPI2.Image img = imgProcessor.CreateImage((uint)buffer.Width, (uint)buffer.Height, buffer.PixelFormat, buffer.MemPtr, buffer.SizeFilled);
+            BGAPI2.Image transformedImage = imgProcessor.CreateTransformedImage(img, "BGR8");
+            img.Release();
+            img = transformedImage;
 
-            //BGAPI2.Node pixelFormatInfoSelector = imgProcessor.NodeList["PixelFormatInfoSelector"];
-            BGAPI2.Node bytesPerPixel = imgProcessor.NodeList["BytesPerPixel"];
-            long bpp = bytesPerPixel.IsAvailable ? bytesPerPixel.Value.ToLong() : 1;
-
-            // Demosaicing of the image.
-            // TODO: only do this if the image is a Bayer pattern.
-            // How can we avoid copies here?
-            // Is an image a simple wrapper around the MemPtr or does it make a copy?
-            BGAPI2.Image img = imgProcessor.CreateImage((uint)width, (uint)height, pixFmt, byteBuffer, byteCount);
-            BGAPI2.Image img2 = imgProcessor.CreateTransformedImage(img, "BGR8");
-
-            // Fill passed bitmap.
-            Rectangle rect = new Rectangle(0, 0, image.Width, image.Height);
+            // Push the transformed image into the passed output bitmap.
+            Rectangle rect = new Rectangle(0, 0, outputImage.Width, outputImage.Height);
             BitmapData bmpData = null;
             try
             {
-                bmpData = image.LockBits(rect, ImageLockMode.WriteOnly, image.PixelFormat);
+                bmpData = outputImage.LockBits(rect, ImageLockMode.WriteOnly, outputImage.PixelFormat);
                 IntPtr[] ptrBmp = new IntPtr[] { bmpData.Scan0 };
-                int stride = rect.Width * 3;
-                NativeMethods.memcpy(bmpData.Scan0.ToPointer(), img2.Buffer.ToPointer(), stride * (int)height);
+                NativeMethods.memcpy(bmpData.Scan0.ToPointer(), img.Buffer.ToPointer(), rect.Width * rect.Height * 3);
                 filled = true;
             }
             catch (Exception e)
@@ -210,14 +207,10 @@ namespace Kinovea.Camera.Baumer
             finally
             {
                 if (bmpData != null)
-                    image.UnlockBits(bmpData);
+                    outputImage.UnlockBits(bmpData);
             }
 
-            if (img2 != null)
-                img2.Release();
-
-            if (img != null)
-                img.Release();
+            img.Release();
 
             return filled;
         }

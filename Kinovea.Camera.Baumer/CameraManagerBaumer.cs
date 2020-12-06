@@ -281,6 +281,7 @@ namespace Kinovea.Camera.Baumer
                 {
                     info.StreamFormat = form.SelectedStreamFormat;
                     info.Demosaicing = form.Demosaicing;
+                    info.Compression = form.Compression;
                     info.CameraProperties = form.CameraProperties;
 
                     summary.UpdateDisplayRectangle(Rectangle.Empty);
@@ -364,10 +365,15 @@ namespace Kinovea.Camera.Baumer
                 if (xmlStreamFormat != null)
                     streamFormat = xmlStreamFormat.InnerText;
 
-                bool demosaicing = true;
+                bool demosaicing = false;
                 XmlNode xmlDemosaicing = doc.SelectSingleNode("/Baumer/Demosaicing");
                 if (xmlDemosaicing != null)
                     demosaicing = XmlHelper.ParseBoolean(xmlDemosaicing.InnerText);
+
+                bool compression = false;
+                XmlNode xmlCompression = doc.SelectSingleNode("/Baumer/Compression");
+                if (xmlCompression != null)
+                    compression = XmlHelper.ParseBoolean(xmlCompression.InnerText);
 
                 Dictionary<string, CameraProperty> cameraProperties = new Dictionary<string, CameraProperty>();
 
@@ -399,6 +405,7 @@ namespace Kinovea.Camera.Baumer
 
                 info.StreamFormat = streamFormat;
                 info.Demosaicing = demosaicing;
+                info.Compression = compression;
                 info.CameraProperties = cameraProperties;
             }
             catch (Exception e)
@@ -425,6 +432,10 @@ namespace Kinovea.Camera.Baumer
             XmlElement xmlDemosaicing = doc.CreateElement("Demosaicing");
             xmlDemosaicing.InnerText = info.Demosaicing.ToString().ToLowerInvariant();
             xmlRoot.AppendChild(xmlDemosaicing);
+
+            XmlElement xmlCompression = doc.CreateElement("Compression");
+            xmlCompression.InnerText = info.Compression.ToString().ToLowerInvariant();
+            xmlRoot.AppendChild(xmlCompression);
 
             XmlElement xmlCameraProperties = doc.CreateElement("CameraProperties");
 

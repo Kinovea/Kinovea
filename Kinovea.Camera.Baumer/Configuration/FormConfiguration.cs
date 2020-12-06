@@ -61,7 +61,12 @@ namespace Kinovea.Camera.Baumer
         {
             get { return demosaicing; }
         }
-        
+
+        public bool Compression
+        {
+            get { return compression; }
+        }
+
         public Dictionary<string, CameraProperty> CameraProperties
         {
             get { return cameraProperties; }
@@ -73,6 +78,7 @@ namespace Kinovea.Camera.Baumer
         private Device device;
         private string selectedStreamFormat;
         private bool demosaicing;
+        private bool compression;
         private Dictionary<string, CameraProperty> cameraProperties = new Dictionary<string, CameraProperty>();
         private Dictionary<string, AbstractCameraPropertyView> propertiesControls = new Dictionary<string, AbstractCameraPropertyView>();
         private Action disconnect;
@@ -104,6 +110,7 @@ namespace Kinovea.Camera.Baumer
                 specificChanged = true;
 
             demosaicing = specific.Demosaicing;
+            compression = specific.Compression;
 
             Populate();
             this.Text = CameraLang.FormConfiguration_Title;
@@ -117,6 +124,7 @@ namespace Kinovea.Camera.Baumer
             {
                 PopulateStreamFormat();
                 PopulateBayerConversion();
+                PopulateCompression();
                 PopulateCameraControls();
             }
             catch
@@ -188,12 +196,19 @@ namespace Kinovea.Camera.Baumer
         private void PopulateBayerConversion()
         {
             cbDebayering.Checked = demosaicing;
-            SetDemosaicingVisibility();
+            SetExtraOptionsVisibility();
         }
 
-        private void SetDemosaicingVisibility()
+        private void PopulateCompression()
+        {
+            cbCompression.Checked = compression;
+            SetExtraOptionsVisibility();
+        }
+
+        private void SetExtraOptionsVisibility()
         {
             cbDebayering.Enabled = BaumerHelper.IsBayer(selectedStreamFormat);
+            cbCompression.Enabled = BaumerHelper.SupportsJPEG(device) && BaumerHelper.FormatCanCompress(device, selectedStreamFormat);
         }
 
         private void PopulateCameraControls()
@@ -204,6 +219,7 @@ namespace Kinovea.Camera.Baumer
             AddCameraProperty("framerate", CameraLang.FormConfiguration_Properties_Framerate, top + 60);
             AddCameraProperty("exposure", CameraLang.FormConfiguration_Properties_ExposureMicro, top + 90);
             AddCameraProperty("gain", CameraLang.FormConfiguration_Properties_Gain, top + 120);
+            AddCameraProperty("compressionQuality", "Compression quality:", top + 150);
         }
 
         private void RemoveCameraControls()
@@ -277,12 +293,19 @@ namespace Kinovea.Camera.Baumer
             selectedStreamFormat = selected;
             specificChanged = true;
             UpdateResultingFramerate();
-            SetDemosaicingVisibility();
+            SetExtraOptionsVisibility();
         }
 
         private void cbDebayering_CheckedChanged(object sender, EventArgs e)
         {
             demosaicing = cbDebayering.Checked;
+            specificChanged = true;
+            UpdateResultingFramerate();
+        }
+
+        private void cbCompression_CheckedChanged(object sender, EventArgs e)
+        {
+            compression = cbCompression.Checked;
             specificChanged = true;
             UpdateResultingFramerate();
         }
@@ -301,6 +324,7 @@ namespace Kinovea.Camera.Baumer
 
             info.StreamFormat = this.SelectedStreamFormat;
             info.Demosaicing = this.Demosaicing;
+            info.Compression = this.Compression;
             info.CameraProperties = this.CameraProperties;
             summary.UpdateDisplayRectangle(Rectangle.Empty);
             CameraTypeManager.UpdatedCameraSummary(summary);
@@ -316,7 +340,12 @@ namespace Kinovea.Camera.Baumer
             cameraProperties = CameraPropertyManager.Read(device, summary.Identifier);
 
             RemoveCameraControls();
+            
+            PopulateStreamFormat();
+            PopulateBayerConversion();
+            PopulateCompression();
             PopulateCameraControls();
+            
             UpdateResultingFramerate();
         }
 

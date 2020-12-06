@@ -49,6 +49,8 @@ namespace Kinovea.Camera.Baumer
         private void InitializeComponent()
         {
       this.gbProperties = new System.Windows.Forms.GroupBox();
+      this.cbCompression = new System.Windows.Forms.CheckBox();
+      this.cbDebayering = new System.Windows.Forms.CheckBox();
       this.lblResultingFramerateValue = new System.Windows.Forms.Label();
       this.lblResultingFramerate = new System.Windows.Forms.Label();
       this.lblAuto = new System.Windows.Forms.Label();
@@ -60,7 +62,6 @@ namespace Kinovea.Camera.Baumer
       this.btnIcon = new System.Windows.Forms.Button();
       this.btnApply = new System.Windows.Forms.Button();
       this.btnReconnect = new System.Windows.Forms.Button();
-      this.cbDebayering = new System.Windows.Forms.CheckBox();
       this.gbProperties.SuspendLayout();
       this.groupBox2.SuspendLayout();
       this.SuspendLayout();
@@ -70,6 +71,7 @@ namespace Kinovea.Camera.Baumer
       this.gbProperties.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.gbProperties.Controls.Add(this.cbCompression);
       this.gbProperties.Controls.Add(this.cbDebayering);
       this.gbProperties.Controls.Add(this.lblResultingFramerateValue);
       this.gbProperties.Controls.Add(this.lblResultingFramerate);
@@ -78,9 +80,31 @@ namespace Kinovea.Camera.Baumer
       this.gbProperties.Controls.Add(this.lblColorSpace);
       this.gbProperties.Location = new System.Drawing.Point(12, 94);
       this.gbProperties.Name = "gbProperties";
-      this.gbProperties.Size = new System.Drawing.Size(434, 322);
+      this.gbProperties.Size = new System.Drawing.Size(434, 373);
       this.gbProperties.TabIndex = 80;
       this.gbProperties.TabStop = false;
+      // 
+      // cbCompression
+      // 
+      this.cbCompression.AutoSize = true;
+      this.cbCompression.Location = new System.Drawing.Point(24, 63);
+      this.cbCompression.Name = "cbCompression";
+      this.cbCompression.Size = new System.Drawing.Size(168, 17);
+      this.cbCompression.TabIndex = 107;
+      this.cbCompression.Text = "Enable hardware compression";
+      this.cbCompression.UseVisualStyleBackColor = true;
+      this.cbCompression.CheckedChanged += new System.EventHandler(this.cbCompression_CheckedChanged);
+      // 
+      // cbDebayering
+      // 
+      this.cbDebayering.AutoSize = true;
+      this.cbDebayering.Location = new System.Drawing.Point(24, 88);
+      this.cbDebayering.Name = "cbDebayering";
+      this.cbDebayering.Size = new System.Drawing.Size(164, 17);
+      this.cbDebayering.TabIndex = 106;
+      this.cbDebayering.Text = "Enable software demosaicing";
+      this.cbDebayering.UseVisualStyleBackColor = true;
+      this.cbDebayering.CheckedChanged += new System.EventHandler(this.cbDebayering_CheckedChanged);
       // 
       // lblResultingFramerateValue
       // 
@@ -89,7 +113,7 @@ namespace Kinovea.Camera.Baumer
       this.lblResultingFramerateValue.BackColor = System.Drawing.Color.Transparent;
       this.lblResultingFramerateValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.lblResultingFramerateValue.ForeColor = System.Drawing.Color.Black;
-      this.lblResultingFramerateValue.Location = new System.Drawing.Point(154, 284);
+      this.lblResultingFramerateValue.Location = new System.Drawing.Point(154, 335);
       this.lblResultingFramerateValue.Name = "lblResultingFramerateValue";
       this.lblResultingFramerateValue.Size = new System.Drawing.Size(13, 13);
       this.lblResultingFramerateValue.TabIndex = 105;
@@ -103,7 +127,7 @@ namespace Kinovea.Camera.Baumer
       this.lblResultingFramerate.BackColor = System.Drawing.Color.Transparent;
       this.lblResultingFramerate.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.lblResultingFramerate.ForeColor = System.Drawing.Color.Black;
-      this.lblResultingFramerate.Location = new System.Drawing.Point(21, 284);
+      this.lblResultingFramerate.Location = new System.Drawing.Point(21, 335);
       this.lblResultingFramerate.Name = "lblResultingFramerate";
       this.lblResultingFramerate.Size = new System.Drawing.Size(101, 13);
       this.lblResultingFramerate.TabIndex = 104;
@@ -115,7 +139,7 @@ namespace Kinovea.Camera.Baumer
       this.lblAuto.BackColor = System.Drawing.Color.Transparent;
       this.lblAuto.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.lblAuto.ForeColor = System.Drawing.Color.Black;
-      this.lblAuto.Location = new System.Drawing.Point(372, 91);
+      this.lblAuto.Location = new System.Drawing.Point(372, 110);
       this.lblAuto.Name = "lblAuto";
       this.lblAuto.Size = new System.Drawing.Size(56, 23);
       this.lblAuto.TabIndex = 101;
@@ -168,7 +192,7 @@ namespace Kinovea.Camera.Baumer
       this.tbAlias.Name = "tbAlias";
       this.tbAlias.Size = new System.Drawing.Size(342, 15);
       this.tbAlias.TabIndex = 52;
-      this.tbAlias.Text = "Basler acA2000-50gm";
+      this.tbAlias.Text = "Baumer camera";
       // 
       // lblSystemName
       // 
@@ -201,7 +225,7 @@ namespace Kinovea.Camera.Baumer
       // 
       this.btnApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnApply.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.btnApply.Location = new System.Drawing.Point(349, 422);
+      this.btnApply.Location = new System.Drawing.Point(349, 473);
       this.btnApply.Name = "btnApply";
       this.btnApply.Size = new System.Drawing.Size(99, 24);
       this.btnApply.TabIndex = 200;
@@ -211,7 +235,7 @@ namespace Kinovea.Camera.Baumer
       // btnReconnect
       // 
       this.btnReconnect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnReconnect.Location = new System.Drawing.Point(244, 422);
+      this.btnReconnect.Location = new System.Drawing.Point(244, 473);
       this.btnReconnect.Name = "btnReconnect";
       this.btnReconnect.Size = new System.Drawing.Size(99, 24);
       this.btnReconnect.TabIndex = 203;
@@ -219,23 +243,12 @@ namespace Kinovea.Camera.Baumer
       this.btnReconnect.UseVisualStyleBackColor = true;
       this.btnReconnect.Click += new System.EventHandler(this.BtnReconnect_Click);
       // 
-      // cbDebayering
-      // 
-      this.cbDebayering.AutoSize = true;
-      this.cbDebayering.Location = new System.Drawing.Point(24, 66);
-      this.cbDebayering.Name = "cbDebayering";
-      this.cbDebayering.Size = new System.Drawing.Size(87, 17);
-      this.cbDebayering.TabIndex = 106;
-      this.cbDebayering.Text = "Demosaicing";
-      this.cbDebayering.UseVisualStyleBackColor = true;
-      this.cbDebayering.CheckedChanged += new System.EventHandler(this.cbDebayering_CheckedChanged);
-      // 
       // FormConfiguration
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.Color.White;
-      this.ClientSize = new System.Drawing.Size(458, 458);
+      this.ClientSize = new System.Drawing.Size(458, 509);
       this.Controls.Add(this.btnReconnect);
       this.Controls.Add(this.btnApply);
       this.Controls.Add(this.groupBox2);
@@ -266,5 +279,6 @@ namespace Kinovea.Camera.Baumer
         private System.Windows.Forms.Label lblResultingFramerateValue;
         private System.Windows.Forms.Label lblResultingFramerate;
         private System.Windows.Forms.CheckBox cbDebayering;
+        private System.Windows.Forms.CheckBox cbCompression;
     }
 }

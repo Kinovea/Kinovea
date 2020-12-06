@@ -40,6 +40,7 @@ namespace Kinovea.Camera.Baumer
         private BaumerProvider baumerProvider = new BaumerProvider();
         BGAPI2.ImageProcessor imgProcessor = new BGAPI2.ImageProcessor();
         private bool demosaicing = true;
+        private bool compression = true;
         private ImageFormat imageFormat = ImageFormat.None;
         private bool grabbing;
         private bool firstOpen = true;
@@ -89,10 +90,31 @@ namespace Kinovea.Camera.Baumer
             int width = BaumerHelper.GetInteger(device, "Width");
             int height = BaumerHelper.GetInteger(device, "Height");
             string pixelFormat = BaumerHelper.GetString(device, "PixelFormat");
-             
-            // We only output in two possible formats: Y800 or RGB24.
-            // The output format depends on the input format and the demosaicing option.
+
+            // We output in three possible formats: Y800, RGB24 or JPEG.
+            // The output format depends on the stream format and the options.
             // Mono or raw -> Y800, Otherwise -> RGB24.
+            
+            // Camera-side JPEG compression.
+            compression = specific.Compression;
+            if (BaumerHelper.SupportsJPEG(device))
+            {
+                if (BaumerHelper.FormatCanCompress(device, pixelFormat))
+                {
+                    BaumerHelper.SetJPEG(device, compression);
+                }
+                else
+                {
+                    BaumerHelper.SetJPEG(device, false);
+                    compression = false;
+                }
+            }
+            else
+            {
+                compression = false;
+            }
+            
+            // Debayering.
             demosaicing = specific.Demosaicing;
             if (demosaicing)
             {
@@ -107,7 +129,7 @@ namespace Kinovea.Camera.Baumer
                 }
             }
             
-            imageFormat = BaumerHelper.ConvertImageFormat(pixelFormat, demosaicing);
+            imageFormat = BaumerHelper.ConvertImageFormat(pixelFormat, compression, demosaicing);
             frameBufferSize = ImageFormatHelper.ComputeBufferSize(width, height, imageFormat);
             frameBuffer = new byte[frameBufferSize];
 
@@ -267,20 +289,26 @@ namespace Kinovea.Camera.Baumer
             if (buffer == null || buffer.IsIncomplete || buffer.MemPtr == IntPtr.Zero)
                 return;
 
+            int payloadLength = (int)buffer.SizeFilled;
+
             // Wrap the buffer in an image, convert if needed.
             BGAPI2.Image image = imgProcessor.CreateImage((uint)buffer.Width, (uint)buffer.Height, buffer.PixelFormat, buffer.MemPtr, buffer.MemSize);
-            if (imageFormat != ImageFormat.Y800 || !BaumerHelper.IsY800(image.PixelFormat))
+            bool ready = imageFormat == ImageFormat.JPEG || (imageFormat == ImageFormat.Y800 && BaumerHelper.IsY800(image.PixelFormat));
+            if (!ready)
             {
                 // Color conversion is required.
                 BGAPI2.Image transformedImage = GetTransformedImage(image);
                 image.Release();
                 image = transformedImage;
+
+                int bpp = BaumerHelper.IsY800(image.PixelFormat) ? 1 : 3;
+                payloadLength = (int)(image.Width * image.Height * bpp);
             }
-            
-            CopyFrame(image);
+
+            CopyFrame(image, payloadLength);
             image.Release();
 
-            if (finishline.Enabled)
+            if (imageFormat != ImageFormat.JPEG && finishline.Enabled)
             {
                 bool flush = finishline.Consolidate(frameBuffer);
                 if (flush)
@@ -293,10 +321,10 @@ namespace Kinovea.Camera.Baumer
             }
             else
             {
-                ComputeDataRate(frameBufferSize);
+                ComputeDataRate(payloadLength);
 
                 if (FrameProduced != null)
-                    FrameProduced(this, new FrameProducedEventArgs(frameBuffer, frameBufferSize));
+                    FrameProduced(this, new FrameProducedEventArgs(frameBuffer, payloadLength));
             }
         }
 
@@ -340,14 +368,13 @@ namespace Kinovea.Camera.Baumer
         /// <summary>
         /// Takes a converted input buffer and copy it into the output buffer.
         /// </summary>
-        private unsafe void CopyFrame(BGAPI2.Image image)
+        private unsafe void CopyFrame(BGAPI2.Image image, int length)
         {
             // At this point the image is either in Mono8, Bayer**8 or BGR8.
-            int bpp = image.PixelFormat == "BGR8" ? 3 : 1;
             fixed (byte* p = frameBuffer)
             {
                 IntPtr ptrDst = (IntPtr)p;
-                NativeMethods.memcpy(ptrDst.ToPointer(), image.Buffer.ToPointer(), (int)(image.Width * bpp * image.Height));
+                NativeMethods.memcpy(ptrDst.ToPointer(), image.Buffer.ToPointer(), length);
             }
         }
     }
