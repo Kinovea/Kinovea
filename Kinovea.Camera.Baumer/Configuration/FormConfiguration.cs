@@ -168,6 +168,10 @@ namespace Kinovea.Camera.Baumer
                 return;
             }
 
+            // Sort correctly so that for example "Mono8" appears before "Mono10".
+            // The selection is based on the string itself, not its index in the list.
+            streamFormats.Sort(new AlphanumComparator());
+
             string currentValue = BaumerHelper.GetString(device, "PixelFormat");
             cmbFormat.Items.Clear();
             foreach (var streamFormat in streamFormats)
