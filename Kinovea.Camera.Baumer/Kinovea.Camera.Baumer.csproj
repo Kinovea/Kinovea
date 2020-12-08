@@ -60,7 +60,7 @@
   <ItemGroup>
     <Reference Include="bgapi2_genicam_dotnet, Version=2.10.24907.25624, Culture=neutral, PublicKeyToken=0551630d1b572f70, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\Baumer\2.10.1\bgapi2_genicam_dotnet.dll</HintPath>
+      <HintPath>..\Refs\Baumer\2.11.0\bgapi2_genicam_dotnet.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
