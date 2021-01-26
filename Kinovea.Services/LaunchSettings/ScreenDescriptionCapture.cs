@@ -48,11 +48,17 @@ namespace Kinovea.Services
         /// </summary>
         public float Delay { get; set; }
 
+        /// <summary>
+        /// Whether the display shows the live feed or the delayed feed.
+        /// </summary>
+        public bool DelayedDisplay { get; set; }
+
         public ScreenDescriptionCapture()
         {
             CameraName = "";
             Autostream = true;
             Delay = 0;
+            DelayedDisplay = true;
         }
 
         public void Readxml(XmlReader reader)
@@ -75,6 +81,9 @@ namespace Kinovea.Services
                         if (read)
                             this.Delay = delay;
                         break;
+                    case "DelayedDisplay":
+                        DelayedDisplay = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
                     default:
                         reader.ReadOuterXml();
                         break;
@@ -89,6 +98,7 @@ namespace Kinovea.Services
             w.WriteElementString("CameraName", CameraName);
             w.WriteElementString("Autostream", XmlHelper.WriteBoolean(Autostream));
             w.WriteElementString("Delay", XmlHelper.WriteFloat(Delay));
+            w.WriteElementString("DelayedDisplay", XmlHelper.WriteBoolean(DelayedDisplay));
         }
     }
 }

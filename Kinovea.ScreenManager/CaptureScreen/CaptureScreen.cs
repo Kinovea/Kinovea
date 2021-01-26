@@ -381,6 +381,7 @@ namespace Kinovea.ScreenManager
             sd.Autostream = true;
             sd.CameraName = cameraSummary == null ? "" : cameraSummary.Alias;
             sd.Delay = (float)AgeToSeconds(delay);
+            sd.DelayedDisplay = delayedDisplay;
             return sd;
         }
 
@@ -540,7 +541,10 @@ namespace Kinovea.ScreenManager
                 AssociateCamera(connect);
 
                 if (screenDescription != null && cameraLoaded && cameraConnected)
+                {
                     view.ForceDelaySeconds(screenDescription.Delay);
+                    delayedDisplay = screenDescription.DelayedDisplay;
+                }
                 
                 break;
             }
