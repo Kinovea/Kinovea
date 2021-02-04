@@ -84,6 +84,7 @@ namespace Kinovea.ScreenManager
 
             return builder.ToString();
         }
+
         public void SaveToFile(Metadata metadata, string file)
         {
             if (metadata == null)
@@ -168,6 +169,9 @@ namespace Kinovea.ScreenManager
                 Load(reader);
                 if (relativeTrajectories)
                     metadata.FixRelativeTrajectories();
+
+                if (isFile)
+                    metadata.LastKnownFile = source;
             }
             catch (Exception e)
             {

@@ -4876,7 +4876,7 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Local wrapper for Save, which triggers the main saving pipeline.
+        /// Export the current video to a new file, with drawings painted on.
         /// </summary>
         private void btnSaveVideo_Click(object sender, EventArgs e)
         {
@@ -4886,8 +4886,8 @@ namespace Kinovea.ScreenManager
             StopPlaying();
             OnPauseAsked();
 
-            Save();
-            
+            ExportVideo();
+
             m_iFramesToDecode = 1;
             ShowNextFrame(m_iSelStart, true);
             ActivateKeyframe(m_iCurrentPosition, true);
@@ -4962,16 +4962,15 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Triggers the main video saving pipeline. 
-        /// Ultimately this enumerates frames and comes back to GetFlushedImage(VideoFrame, Bitmap).
+        /// Save the video to a new file.
         /// </summary>
-        public void Save()
+        public void ExportVideo()
         {
-            // This function is public because it is also accessed from the top-level menu.
             saveInProgress = true;
             m_FrameServer.Save(timeMapper.GetInterval(sldrSpeed.Value), slowMotion * 100, GetFlushedImage);
             saveInProgress = false;
         }
+
 
         /// <summary>
         /// Save several images at once. Called back for rafale export.

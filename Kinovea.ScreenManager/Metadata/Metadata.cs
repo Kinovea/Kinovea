@@ -85,6 +85,26 @@ namespace Kinovea.ScreenManager
         {
             get { return kvaImporting; }
         }
+
+        /// <summary>
+        /// The path to the file this KVA was imported from or last saved.
+        /// Returns an empty string if the file is a default KVA, to avoid overwriting them.
+        /// </summary>
+        public string LastKnownFile
+        {
+            get 
+            {
+                if (lastKnownFile == PreferencesManager.PlayerPreferences.PlaybackKVA ||
+                    lastKnownFile == PreferencesManager.CapturePreferences.CaptureKVA)
+                    return "";
+
+                return lastKnownFile;
+            } 
+            set
+            {
+                lastKnownFile = value;
+            }
+        }
         public string GlobalTitle
         {
             get { return globalTitle; }
@@ -104,6 +124,10 @@ namespace Kinovea.ScreenManager
         {
             get { return imageTransform; }
         }
+
+        /// <summary>
+        /// Path to the video file this KVA was created on.
+        /// </summary>
         public string FullPath
         {
             get { return fullPath; }
@@ -293,6 +317,7 @@ namespace Kinovea.ScreenManager
         private string fullPath;
         private string tempFolder;
         private AutoSaver autoSaver;
+        private string lastKnownFile;
 
         private HistoryStack historyStack;
         private List<Keyframe> keyframes = new List<Keyframe>();

@@ -271,11 +271,19 @@ namespace Kinovea.Root
             mnuFile.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuOpenFile,
                 mnuOpenReplayWatcher,
-                mnuHistory, 
+                mnuHistory,
+                // Load annotations,
                 new ToolStripSeparator(),
-                // -> Here will be plugged the other file menus (save, export)
-                new ToolStripSeparator(), 
-                mnuQuit });
+                // Save annotations,
+                // Save annotations as,
+                // Export video,
+                // Export to spreadsheet,
+                new ToolStripSeparator(),
+                // Close A,
+                // Close B,
+                new ToolStripSeparator(),
+                mnuQuit 
+                });
             
             #endregion
 

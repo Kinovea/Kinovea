@@ -661,11 +661,59 @@ namespace Kinovea.ScreenManager
             view.SetSyncMergeImage(_SyncMergeImage, _bUpdateUI);
         }
         
+        /// <summary>
+        /// Save to the last saved KVA if any, otherwise ask for a target filename.
+        /// </summary>
         public void Save()
         {
-            view.Save();
+            // Check if the current metadata bound to a file already.
+            if (string.IsNullOrEmpty(frameServer.Metadata.LastKnownFile))
+            {
+                SaveAs();
+            }
+            else
+            {
+                MetadataSerializer serializer = new MetadataSerializer();
+                serializer.SaveToFile(frameServer.Metadata, frameServer.Metadata.LastKnownFile);
+                frameServer.Metadata.AfterManualExport();
+            }
         }
-        
+
+        /// <summary>
+        /// Save the annotations with an explicit prompt for a filename.
+        /// </summary>
+        public void SaveAs()
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Title = ScreenManagerLang.dlgSaveAnalysisTitle;
+
+            // Go to this video directory and suggest sidecar filename.
+            saveFileDialog.InitialDirectory = Path.GetDirectoryName(frameServer.VideoReader.FilePath);
+            saveFileDialog.FileName = Path.GetFileNameWithoutExtension(frameServer.VideoReader.FilePath);
+            saveFileDialog.FilterIndex = 1;
+            saveFileDialog.Filter = ScreenManagerLang.FileFilter_KVA_kva + "|*.kva";
+
+            if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))
+                return;
+
+            string filename = saveFileDialog.FileName;
+            if (!filename.ToLower().EndsWith(".kva") && !filename.ToLower().EndsWith(".xml"))
+                filename += ".kva";
+
+            MetadataSerializer serializer = new MetadataSerializer();
+            serializer.SaveToFile(frameServer.Metadata, filename);
+            frameServer.Metadata.LastKnownFile = filename;
+            frameServer.Metadata.AfterManualExport();
+        }
+
+        /// <summary>
+        /// Export video.
+        /// </summary>
+        public void ExportVideo()
+        {
+            view.ExportVideo();
+        }
+
         public void ConfigureTimebase()
         {
             if (!frameServer.Loaded)
