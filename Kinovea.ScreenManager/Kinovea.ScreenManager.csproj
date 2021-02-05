@@ -410,6 +410,7 @@
     <Compile Include="Metadata\Importers\OpenPose\OpenPosePerson.cs" />
     <Compile Include="Metadata\Importers\OpenPose\MetadataImporterOpenPose.cs" />
     <Compile Include="Metadata\Importers\SRT\MetadataImporterSRT.cs" />
+    <Compile Include="Metadata\MetadataWatcher.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="PlayerScreen\Events\TimeEventArgs.cs" />
     <Compile Include="Measurement\Geometry\ClipResult.cs" />

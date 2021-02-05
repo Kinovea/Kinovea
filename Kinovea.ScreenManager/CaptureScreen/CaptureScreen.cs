@@ -175,7 +175,9 @@ namespace Kinovea.ScreenManager
 
         private ViewportController viewportController;
         private CapturedFiles capturedFiles = new CapturedFiles();
-        
+        private string lastExportedMetadata;
+        private MetadataWatcher metadataWatcher = new MetadataWatcher();
+
         private bool shared;
         private bool synched;
         private int index;
@@ -226,14 +228,12 @@ namespace Kinovea.ScreenManager
             
             nonGrabbingInteractionTimer.Interval = 40;
             nonGrabbingInteractionTimer.Tick += NonGrabbingInteractionTimer_Tick;
-
             displayTimer.Tick += displayTimer_Tick;
-            
             pipelineManager.FrameSignaled += pipelineManager_FrameSignaled;
+            metadataWatcher.Changed += MetadataWatcher_Changed;
+            SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
 
             shortId = this.id.ToString().Substring(0, 4);
-
-            SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
         }
 
         private void SystemEvents_PowerModeChanged(object sender, PowerModeChangedEventArgs e)
@@ -392,12 +392,45 @@ namespace Kinovea.ScreenManager
             
             MetadataSerializer s = new MetadataSerializer();
             s.Load(metadata, path, true);
+            AfterLoadKVA();
+        }
+
+        private void MetadataWatcher_Changed(object sender, FileSystemEventArgs e)
+        {
+            // This runs in the watcher thread.
+
+            if (dummy.InvokeRequired)
+                dummy.BeginInvoke((Action)delegate { ReloadKVA(e.FullPath); });
+        }
+
+        private void ReloadKVA(string path)
+        {
+            // Reload the KVA.
+            // This is in the context of exporting a KVA from capture and modifying it from the player.
+            // We detect the change and want to update the drawings here.
+            // This is not a merge but a replacement.
+            if (path != lastExportedMetadata)
+                return;
+
+            // Reset the currently loaded metadata.
+            metadata.Keyframes.Clear();
             
-            if (metadata.Count > 1)
-                metadata.Keyframes.RemoveRange(1, metadata.Keyframes.Count - 1);
+            LoadKVA(path);
+        }
+
+        private void AfterLoadKVA()
+        {
+            if (metadata.Count == 0)
+            {
+                // Make sure we have at least one keyframe.
+                // This can happen when we reload the existing KVA after changes from the player side 
+                // and the user has deleted all keyframes.
+                Keyframe kf = new Keyframe(0, "", metadata);
+                metadata.AddKeyframe(kf);
+            }
         }
         #endregion
-        
+
         #region Methods called from the view. These could also be events or commands.
         public void View_SetAsActive()
         {
@@ -1406,6 +1439,7 @@ namespace Kinovea.ScreenManager
 
             // We must save the KVA before the end of the recording for it to get picked up by replay observers.
             // Let's save it right now, before we start collecting frames, to avoid any further pressure on the machine during recording.
+            metadataWatcher.Close();
             SaveKva(path);
 
             if (cameraConnected)
@@ -1512,6 +1546,11 @@ namespace Kinovea.ScreenManager
             PreferencesManager.FileExplorerPreferences.AddRecentCapturedFile(finalFilename);
             NotificationCenter.RaiseRefreshFileExplorer(this, false);
 
+            // Start watching changes in the exported KVA.
+            // We do this before running the post-recording command in case it wants to modify the data.
+            if (!string.IsNullOrEmpty(lastExportedMetadata))
+                metadataWatcher.Start(lastExportedMetadata);
+
             // Execute post-recording command.
             string command = PreferencesManager.CapturePreferences.PostRecordCommand;
             if (!string.IsNullOrEmpty(command))
@@ -1542,6 +1581,7 @@ namespace Kinovea.ScreenManager
         private void SaveKva(string path)
         {
             // Updates to the KVA before saving.
+            lastExportedMetadata = "";
             double fpsDiff = Math.Abs(1.0 - (pipelineManager.Frequency / cameraGrabber.Framerate));
             bool setCaptureFramerate = fpsDiff > 0.01 && fpsDiff < 0.5;
 
@@ -1563,6 +1603,8 @@ namespace Kinovea.ScreenManager
                 MetadataSerializer serializer = new MetadataSerializer();
                 string kvaFilename = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path)) + ".kva";
                 serializer.SaveToFile(metadata, kvaFilename);
+
+                lastExportedMetadata = kvaFilename;
             }
         }
 
