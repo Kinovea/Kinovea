@@ -117,6 +117,11 @@ namespace Kinovea.ScreenManager
                 return timeMapper.GetInterval(sldrSpeed.Value);
             }
         }
+
+        /// <summary>
+        /// Returns the playback speed as a percentage of the real time speed of the captured action.
+        /// This is not the same as the raw slider percentage when the video is not real time.
+        /// </summary>
         public double RealtimePercentage
         {
             get
@@ -143,6 +148,16 @@ namespace Kinovea.ScreenManager
                 UpdateSpeedLabel();
             }
         }
+
+        /// <summary>
+        /// Returns the raw percentage of the slider.
+        /// This is the percentage of nominal framerate of the video.
+        /// </summary>
+        public double SpeedPercentage
+        {
+            get { return slowMotion * 100; }
+        }
+
         public ScreenDescriptionPlayback LaunchDescription
         {
             get { return m_LaunchDescription; }
@@ -574,9 +589,6 @@ namespace Kinovea.ScreenManager
                 if (m_LaunchDescription.Id != Guid.Empty)
                     recoveredMetadata = m_FrameServer.Metadata.Recover(m_LaunchDescription.Id);
 
-                if (m_LaunchDescription.SpeedPercentage != (slowMotion * 100))
-                    slowMotion = m_LaunchDescription.SpeedPercentage / 100.0;
-
                 if (m_LaunchDescription.Stretch)
                 {
                     m_fill = true;
@@ -602,6 +614,13 @@ namespace Kinovea.ScreenManager
                     else
                         LookForLinkedAnalysis(Path.Combine(Software.SettingsDirectory, startupFile));
                 }
+            }
+
+            if (m_LaunchDescription != null)
+            {
+                // We assume this is a speed percentage of video framerate, not real time.
+                // We must do this after KVA loading because it may reset the slowmotion.
+                slowMotion = m_LaunchDescription.SpeedPercentage / 100.0;
             }
 
             UpdateTimebase();

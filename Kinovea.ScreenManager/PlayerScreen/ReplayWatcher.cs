@@ -142,7 +142,7 @@ namespace Kinovea.ScreenManager
         private void LoadVideo(string path)
         {
             // Update the descriptor with the speed from the UI.
-            screenDescription.SpeedPercentage = player.view.RealtimePercentage;
+            screenDescription.SpeedPercentage = player.view.SpeedPercentage;
 
             if (player.IsWaitingForIdle)
             {
