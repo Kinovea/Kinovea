@@ -27,10 +27,12 @@ namespace Kinovea.ScreenManager
     public class MetadataRenderer
     {
         private Metadata metadata;
+        private bool renderExtraDrawings = true;
     
-        public MetadataRenderer(Metadata metadata)
+        public MetadataRenderer(Metadata metadata, bool renderExtraDrawings)
         {
             this.metadata = metadata;
+            this.renderExtraDrawings = renderExtraDrawings;
         }
     
         public void Render(Graphics viewportCanvas, Point imageLocation, float imageZoom, long timestamp)
@@ -41,7 +43,9 @@ namespace Kinovea.ScreenManager
             ImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
             
             viewportCanvas.SmoothingMode = SmoothingMode.AntiAlias;
-            RenderExtraDrawings(metadata, timestamp, viewportCanvas, transformer);
+            if (renderExtraDrawings)
+                RenderExtraDrawings(metadata, timestamp, viewportCanvas, transformer);
+            
             RenderDrawings(metadata, timestamp, viewportCanvas, transformer);
             //RenderMagnifier();
         }

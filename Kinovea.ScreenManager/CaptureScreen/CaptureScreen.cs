@@ -1076,7 +1076,7 @@ namespace Kinovea.ScreenManager
             
             LoadCompanionKVA();
             
-            metadataRenderer = new MetadataRenderer(metadata);
+            metadataRenderer = new MetadataRenderer(metadata, false);
             metadataManipulator = new MetadataManipulator(metadata, screenToolManager);
             
             viewportController.MetadataRenderer = metadataRenderer;

@@ -72,7 +72,7 @@ namespace Kinovea.ScreenManager
             viewportController.Timestamp = timestamp;
 
             InitializeDisplayRectangle(image.Size, timestamp);
-            metadataRenderer = new MetadataRenderer(metadata);
+            metadataRenderer = new MetadataRenderer(metadata, true);
             metadataManipulator = new MetadataManipulator(metadata, screenToolManager);
             metadataManipulator.SetFixedTimestamp(timestamp);
             metadataManipulator.SetFixedKeyframe(-1);
