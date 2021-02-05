@@ -174,12 +174,12 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Main video saving pipeline. Saves either a video or the analysis data.
+        /// Main video export.
         /// </summary>
-        public void Save(double playbackFrameInterval, double slowmotionPercentage, ImageRetriever imageRetriever)
+        public void SaveVideo(double playbackFrameInterval, double slowmotionPercentage, ImageRetriever imageRetriever)
         {
-            // Let the user select what he wants to save exactly.
-            formVideoExport fve = new formVideoExport(videoReader.FilePath, metadata, slowmotionPercentage);
+            // Show the intermediate dialog for export options.
+            formVideoExport fve = new formVideoExport(videoReader.FilePath, slowmotionPercentage);
             if (fve.ShowDialog() != DialogResult.OK)
             {
                 fve.Dispose();
@@ -193,25 +193,16 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            if(fve.SaveAnalysis)
-            {
-                MetadataSerializer serializer = new MetadataSerializer();
-                serializer.SaveToFile(metadata, fve.Filename);
-                metadata.AfterManualExport();
-            }
-            else
-            {
-                DoSave(fve.Filename,
-                        fve.UseSlowMotion ? playbackFrameInterval : metadata.UserInterval,
-                        fve.BlendDrawings,
-                        false,
-                        false,
-                        imageRetriever);
+            DoSave(fve.Filename,
+                   fve.UseSlowMotion ? playbackFrameInterval : metadata.UserInterval,
+                   true,
+                   false,
+                   false,
+                   imageRetriever);
 
-                PreferencesManager.PlayerPreferences.VideoFormat = FilesystemHelper.GetVideoFormat(fve.Filename);
-                PreferencesManager.Save();
-            }
-
+            PreferencesManager.PlayerPreferences.VideoFormat = FilesystemHelper.GetVideoFormat(fve.Filename);
+            PreferencesManager.Save();
+            
             fve.Dispose();
         }
 

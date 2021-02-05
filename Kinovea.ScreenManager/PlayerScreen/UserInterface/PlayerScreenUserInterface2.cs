@@ -4967,7 +4967,7 @@ namespace Kinovea.ScreenManager
         public void ExportVideo()
         {
             saveInProgress = true;
-            m_FrameServer.Save(timeMapper.GetInterval(sldrSpeed.Value), slowMotion * 100, GetFlushedImage);
+            m_FrameServer.SaveVideo(timeMapper.GetInterval(sldrSpeed.Value), slowMotion * 100, GetFlushedImage);
             saveInProgress = false;
         }
 
