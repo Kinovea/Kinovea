@@ -329,8 +329,10 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuOpenVideo = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOpenReplayWatcher = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOpenAnnotations = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuSaveVideo = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuSavePic = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSaveAnnotations = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSaveAnnotationsAs = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportVideo = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportImage = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCloseScreen = new ToolStripMenuItem();
 
         private ContextMenuStrip popMenuDrawings = new ContextMenuStrip();
@@ -1101,17 +1103,22 @@ namespace Kinovea.ScreenManager
             mnuOpenAnnotations.Click += (s, e) => OpenAnnotationsAsked?.Invoke(this, EventArgs.Empty);
             mnuOpenAnnotations.Image = Properties.Resources.file_kva2;
 
-            mnuSaveVideo.Click += btnSaveVideo_Click;
-            mnuSaveVideo.Image = Properties.Resources.filesave;
-            mnuSavePic.Click += btnSnapShot_Click;
-            mnuSavePic.Image = Properties.Resources.picture_save;
+            mnuSaveAnnotations.Click += btnSaveAnnotations_Click;
+            mnuSaveAnnotations.Image = Properties.Resources.filesave;
+            mnuSaveAnnotationsAs.Click += btnSaveAnnotationsAs_Click;
+            mnuSaveAnnotationsAs.Image = Properties.Resources.filesave;
+            mnuExportVideo.Click += btnSaveVideo_Click;
+            mnuExportVideo.Image = Properties.Resources.film_save;
+            mnuExportImage.Click += btnSnapShot_Click;
+            mnuExportImage.Image = Properties.Resources.picture_save;
             mnuCloseScreen.Click += btnClose_Click;
             mnuCloseScreen.Image = Properties.Resources.film_close3;
             popMenu.Items.AddRange(new ToolStripItem[]
             {
                 mnuTimeOrigin, mnuDirectTrack, new ToolStripSeparator(),
                 mnuCopyPic, mnuPastePic, mnuPasteDrawing, new ToolStripSeparator(),
-                mnuOpenVideo, mnuOpenReplayWatcher, mnuOpenAnnotations, mnuSaveVideo, mnuSavePic, new ToolStripSeparator(),
+                mnuOpenVideo, mnuOpenReplayWatcher, mnuOpenAnnotations, new ToolStripSeparator(),
+                mnuSaveAnnotations, mnuSaveAnnotationsAs, mnuExportVideo, mnuExportImage, new ToolStripSeparator(),
                 mnuCloseScreen
             });
 
@@ -2621,8 +2628,10 @@ namespace Kinovea.ScreenManager
             mnuOpenVideo.Text = ScreenManagerLang.mnuOpenVideo;
             mnuOpenReplayWatcher.Text = ScreenManagerLang.mnuOpenReplayWatcher;
             mnuOpenAnnotations.Text = ScreenManagerLang.mnuLoadAnalysis;
-            mnuSaveVideo.Text = ScreenManagerLang.Generic_Save;
-            mnuSavePic.Text = ScreenManagerLang.Generic_SaveImage;
+            mnuSaveAnnotations.Text = "Save annotations";
+            mnuSaveAnnotationsAs.Text = "Save annotations as…";
+            mnuExportVideo.Text = "Export video";
+            mnuExportImage.Text = "Export image";
             mnuCopyPic.Text = ScreenManagerLang.mnuCopyImageToClipboard;
             mnuCopyPic.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.CopyImage);
             mnuPastePic.Text = ScreenManagerLang.mnuPasteImage;
@@ -4875,6 +4884,36 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        private void btnSaveAnnotations_Click(object sender, EventArgs e)
+        {
+            if (!m_FrameServer.Loaded)
+                return;
+
+            StopPlaying();
+            OnPauseAsked();
+
+            SaveAnnotations();
+
+            m_iFramesToDecode = 1;
+            ShowNextFrame(m_iSelStart, true);
+            ActivateKeyframe(m_iCurrentPosition, true);
+        }
+
+        private void btnSaveAnnotationsAs_Click(object sender, EventArgs e)
+        {
+            if (!m_FrameServer.Loaded)
+                return;
+
+            StopPlaying();
+            OnPauseAsked();
+
+            SaveAnnotationsAs();
+
+            m_iFramesToDecode = 1;
+            ShowNextFrame(m_iSelStart, true);
+            ActivateKeyframe(m_iCurrentPosition, true);
+        }
+
         /// <summary>
         /// Export the current video to a new file, with drawings painted on.
         /// </summary>
@@ -4959,6 +4998,24 @@ namespace Kinovea.ScreenManager
             m_iFramesToDecode = 1;
             ShowNextFrame(m_iSelStart, true);
             ActivateKeyframe(m_iCurrentPosition, true);
+        }
+
+        /// <summary>
+        /// Save to the current KVA if it exists, ask for a filename if not.
+        /// </summary>
+        private void SaveAnnotations()
+        {
+            MetadataSerializer serializer = new MetadataSerializer();
+            serializer.UserSave(m_FrameServer.Metadata, m_FrameServer.VideoReader.FilePath);
+        }
+
+        /// <summary>
+        /// Save a KVA to a new file.
+        /// </summary>
+        private void SaveAnnotationsAs()
+        {
+            MetadataSerializer serializer = new MetadataSerializer();
+            serializer.UserSaveAs(m_FrameServer.Metadata, m_FrameServer.VideoReader.FilePath);
         }
 
         /// <summary>

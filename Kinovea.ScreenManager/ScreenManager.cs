@@ -2590,11 +2590,11 @@ namespace Kinovea.ScreenManager
         }
         private DialogResult ShowConfirmDirtyDialog()
         {
-            return MessageBox.Show(
-                ScreenManagerLang.InfoBox_MetadataIsDirty_Text.Replace("\\n", "\n"),
-                ScreenManagerLang.InfoBox_MetadataIsDirty_Title,
-                MessageBoxButtons.YesNoCancel,
-                MessageBoxIcon.Question);
+            string caption = "Save changes";
+            string text = "Annotations have been modified.\nDo you want to save them?";
+            //string caption = ScreenManagerLang.InfoBox_MetadataIsDirty_Title;
+            //string text = ScreenManagerLang.InfoBox_MetadataIsDirty_Text.Replace("\\n", "\n");
+            return MessageBox.Show(text, caption, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
         }
         private void AddScreen(AbstractScreen screen)
         {
