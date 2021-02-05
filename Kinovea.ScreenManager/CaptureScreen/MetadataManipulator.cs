@@ -85,7 +85,7 @@ namespace Kinovea.ScreenManager
             if(screenToolManager.IsUsingHandTool)
             {
                 // TODO: Change cursor.
-                handled = screenToolManager.HandTool.OnMouseDown(metadata, fixedKeyframe, imagePoint, fixedTimestamp, false);
+                handled = screenToolManager.HandTool.OnMouseDown(metadata, fixedKeyframe, imagePoint, fixedTimestamp, true);
             }
             else
             {
