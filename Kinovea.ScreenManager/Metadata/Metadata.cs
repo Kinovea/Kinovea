@@ -345,7 +345,7 @@ namespace Kinovea.ScreenManager
         private string globalTitle;
         private Size imageSize = new Size(0,0);
         private long averageTimeStampsPerFrame = 1;
-        private double averageTimeStampsPerSecond = 1;
+        private double averageTimeStampsPerSecond = 25;
         private long firstTimeStamp;
         private long selectionStart;
         private long selectionEnd;

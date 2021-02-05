@@ -686,6 +686,10 @@ namespace Kinovea.ScreenManager
 
             nonGrabbingInteractionTimer.Enabled = false;
 
+            // Keep ts per frame in sync.
+            // This means that if we have imported keyframes, their time should be kept the same.
+            metadata.AverageTimeStampsPerFrame = (long)(metadata.AverageTimeStampsPerSecond / cameraGrabber.Framerate);
+
             // Start the low frequency / low precision timer.
             // This timer is used for display and to feed the delay buffer when using recording mode "Camera".
             // No point displaying images faster than what the camera produces, or that the monitor can show, but floor at 1 fps.
@@ -1073,7 +1077,13 @@ namespace Kinovea.ScreenManager
         {
             metadata = new Metadata(historyStack, null);
             // TODO: hook to events raised by metadata.
-            
+
+            // Use microseconds as the general time scale.
+            // This is used when importing keyframes from external KVA,
+            // and when exporting the KVA next to the saved videos.
+            metadata.AverageTimeStampsPerSecond = 1000000;
+            metadata.AverageTimeStampsPerFrame = (long)(metadata.AverageTimeStampsPerSecond / 25.0);
+
             LoadCompanionKVA();
             
             metadataRenderer = new MetadataRenderer(metadata, false);
@@ -1539,9 +1549,6 @@ namespace Kinovea.ScreenManager
             double userInterval = 1000.0 / cameraGrabber.Framerate;
             metadata.UserInterval = CalibrationHelper.ComputeFileFrameInterval(userInterval);
             bool setUserInterval = userInterval != metadata.UserInterval;
-
-            // Keep at least microsecond precision on the timestamp coordinates, to avoid misalignment of the zeroeth frame.
-            metadata.AverageTimeStampsPerFrame = (int)Math.Floor(metadata.UserInterval * 1000.0f);
 
             // Set the time origin to match the real time of the recording trigger.
             // This will also help synchronizing videos with different delays.
