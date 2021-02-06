@@ -49,7 +49,7 @@ namespace Kinovea.ScreenManager
         {
             if (disposing)
             {
-                Close();
+                Stop();
                 dummy.Dispose();
             }
         }
@@ -65,7 +65,7 @@ namespace Kinovea.ScreenManager
             if (sdp == null)
             {
                 log.ErrorFormat("Replay watcher started without screen description.");
-                Close();
+                Stop();
                 return;
             }
 
@@ -78,7 +78,7 @@ namespace Kinovea.ScreenManager
                 if (watcher.Path == targetDir)
                     return;
 
-                Close();
+                Stop();
             }
 
             if (!Directory.Exists(targetDir))
@@ -98,7 +98,7 @@ namespace Kinovea.ScreenManager
             log.DebugFormat("Started replay watcher on \"{0}\".", Path.GetFileName(targetDir));
         }
 
-        public void Close()
+        public void Stop()
         {
             if (watcher == null)
                 return;

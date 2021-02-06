@@ -343,6 +343,8 @@ namespace Kinovea.ScreenManager
             view.OpenReplayWatcherAsked += (s, e) => OpenReplayWatcherAsked?.Invoke(this, e);
             view.OpenAnnotationsAsked += (s, e) => OpenAnnotationsAsked?.Invoke(this, e);
             view.CloseAsked += View_CloseAsked;
+            view.StopWatcherAsked += View_StopWatcherAsked;
+            view.StartWatcherAsked += View_StartWatcherAsked;
             view.SetAsActiveScreen += View_SetAsActiveScreen;
             view.SpeedChanged += View_SpeedChanged;
             view.TimeOriginChanged += View_TimeOriginChanged;
@@ -379,7 +381,40 @@ namespace Kinovea.ScreenManager
         {
             OnCloseAsked(EventArgs.Empty);
         }
-        
+
+        private void View_StopWatcherAsked(object sender, EventArgs e)
+        {
+            if (!replayWatcher.IsEnabled)
+                return;
+
+            StopReplayWatcher();
+        }
+
+        private void View_StartWatcherAsked(object sender, EventArgs e)
+        {
+            // Start watching the parent directory of the current file.
+            // This is normally coming from the infobar icon.
+            // We do not want to switch to the latest video immediately.
+
+            if (!frameServer.Loaded)
+                return;
+            
+            string currentFile = frameServer.VideoReader.FilePath;
+            if (string.IsNullOrEmpty(currentFile))
+                return;
+
+            // Prepare the screen descriptor. All replay watchers must have a valid screen descriptor.
+            ScreenDescriptionPlayback sdp = new ScreenDescriptionPlayback();
+            sdp.FullPath = Path.Combine(Path.GetDirectoryName(currentFile), "*");
+            sdp.IsReplayWatcher = true;
+            sdp.Autoplay = true;
+            //sdp.Stretch = view.IsStretched;
+            sdp.Stretch = false;
+            sdp.SpeedPercentage = view.SpeedPercentage;
+
+            StartReplayWatcher(sdp, currentFile);
+        }
+
         public void View_SetAsActiveScreen(object sender, EventArgs e)
         {
             OnActivated(EventArgs.Empty);
@@ -500,7 +535,7 @@ namespace Kinovea.ScreenManager
         public override void AfterClose()
         {
             frameServer.Metadata.Close();
-            replayWatcher.Close();
+            replayWatcher.Stop();
             
             if(!frameServer.Loaded)
                 return;
@@ -847,18 +882,18 @@ namespace Kinovea.ScreenManager
             {
                 // Not a watcher and not asked to watch anything, nothing to do.
             }
-
-            view.UpdateReplayWatcher(replayWatcher.IsEnabled, replayWatcher.WatchedFolder);
         }
 
         public void StartReplayWatcher(ScreenDescriptionPlayback sdp, string path)
         {
             replayWatcher.Start(sdp, path);
+            view.UpdateReplayWatcher(replayWatcher.IsEnabled, replayWatcher.WatchedFolder);
         }
 
         public void StopReplayWatcher()
         {
-            replayWatcher.Close();
+            replayWatcher.Stop();
+            view.UpdateReplayWatcher(replayWatcher.IsEnabled, replayWatcher.WatchedFolder);
         }
 
         /// <summary>

@@ -60,6 +60,8 @@ namespace Kinovea.ScreenManager
         public event EventHandler OpenReplayWatcherAsked;
         public event EventHandler OpenAnnotationsAsked;
         public event EventHandler CloseAsked;
+        public event EventHandler StopWatcherAsked;
+        public event EventHandler StartWatcherAsked;
         public event EventHandler SetAsActiveScreen;
         public event EventHandler SpeedChanged;
         public event EventHandler TimeOriginChanged;
@@ -952,7 +954,10 @@ namespace Kinovea.ScreenManager
         {
             this.panelTop.Controls.Add(infobar);
             infobar.Visible = false;
+            infobar.StopWatcherAsked += (s, e) => StopWatcherAsked?.Invoke(s, e);
+            infobar.StartWatcherAsked += (s, e) => StartWatcherAsked?.Invoke(s, e); 
         }
+
         public void InitializeDrawingTools(DrawingToolbarPresenter drawingToolbarPresenter)
         {
             m_PointerTool = new DrawingToolPointer();
@@ -1087,13 +1092,12 @@ namespace Kinovea.ScreenManager
             if (!m_FrameServer.Loaded)
                 return;
 
-            string name = Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath);
             string size = string.Format("{0}×{1} px", m_FrameServer.Metadata.ImageSize.Width, m_FrameServer.Metadata.ImageSize.Height);
             string fps = string.Format("{0:0.00} fps", 1000 / timeMapper.UserInterval);
 
             infobar.Visible = true;
             infobar.Dock = DockStyle.Fill;
-            infobar.UpdateValues(name, size, fps);
+            infobar.UpdateValues(m_FrameServer.VideoReader.FilePath, size, fps);
         }
         private void ShowHideRenderingSurface(bool _bShow)
         {

@@ -79,6 +79,7 @@
       // 
       this.btnVideoType.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.film_small;
       this.btnVideoType.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+      this.btnVideoType.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnVideoType.FlatAppearance.BorderSize = 0;
       this.btnVideoType.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
       this.btnVideoType.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
@@ -89,10 +90,12 @@
       this.btnVideoType.Size = new System.Drawing.Size(18, 18);
       this.btnVideoType.TabIndex = 8;
       this.btnVideoType.UseVisualStyleBackColor = true;
+      this.btnVideoType.MouseDown += new System.Windows.Forms.MouseEventHandler(this.fileinfo_MouseDown);
       // 
       // lblFilename
       // 
       this.lblFilename.AutoSize = true;
+      this.lblFilename.Cursor = System.Windows.Forms.Cursors.Hand;
       this.lblFilename.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.lblFilename.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.lblFilename.Location = new System.Drawing.Point(27, 3);
@@ -102,6 +105,7 @@
       this.lblFilename.TabIndex = 6;
       this.lblFilename.Text = "Filename";
       this.lblFilename.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      this.lblFilename.MouseDown += new System.Windows.Forms.MouseEventHandler(this.fileinfo_MouseDown);
       // 
       // button3
       // 
