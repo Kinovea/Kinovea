@@ -16,13 +16,17 @@ namespace Kinovea.ScreenManager
             InitializeComponent();
         }
 
-        public void UpdateValues(string filename, string size, string fps, bool replayWatcher)
+        public void UpdateValues(string filename, string size, string fps)
         {
             lblFilename.Text = filename;
             lblSize.Text = size;
             lblFps.Text = fps;
+        }
 
+        public void UpdateReplayWatcher(bool replayWatcher, string path)
+        {
             btnVideoType.BackgroundImage = replayWatcher ? Properties.Resources.replaywatcher : Properties.Resources.film_small;
+            toolTips.SetToolTip(btnVideoType, path);
         }
     }
 }

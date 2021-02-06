@@ -17,6 +17,11 @@ namespace Kinovea.ScreenManager
     {
         public bool IsEnabled { get; private set; } = false;
 
+        public string WatchedFolder 
+        { 
+            get { return watcher != null ? watcher.Path : null; } 
+        }
+
         private PlayerScreen player;
         private ScreenDescriptionPlayback screenDescription;
         private string currentFile;
@@ -25,6 +30,7 @@ namespace Kinovea.ScreenManager
         private int overwriteEventCount;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
+        #region Construction/Destruction
         public ReplayWatcher(PlayerScreen player)
         {
             this.player = player;
@@ -47,29 +53,38 @@ namespace Kinovea.ScreenManager
                 dummy.Dispose();
             }
         }
+        #endregion
 
         public void Start(ScreenDescriptionPlayback sdp, string currentFile)
         {
-            // We'll pass here upon initialization and also everytime the player is reloaded with a video.
-            // Verifiy the file watcher is on the right directory.
-            double oldSpeed = screenDescription == null ? 0 : screenDescription.SpeedPercentage;
+            log.DebugFormat("Starting replay watcher");
+
+            // We should only come here when initializing the player on a watched folder.
+            // currentFile might be null if we started a watcher on an empty directory.
+            // the screen descriptor should never be null.
+            if (sdp == null)
+            {
+                log.ErrorFormat("Replay watcher started without screen description.");
+                Close();
+                return;
+            }
+
             this.screenDescription = sdp;
             this.currentFile = currentFile;
-
-            string watchedDir = Path.GetDirectoryName(sdp.FullPath);
+            string targetDir = Path.GetDirectoryName(sdp.FullPath);
 
             if (watcher != null)
             {
-                if (watcher.Path == watchedDir && oldSpeed == screenDescription.SpeedPercentage)
+                if (watcher.Path == targetDir)
                     return;
 
                 Close();
             }
 
-            if (!Directory.Exists(watchedDir))
+            if (!Directory.Exists(targetDir))
                 return;
 
-            watcher = new FileSystemWatcher(watchedDir);
+            watcher = new FileSystemWatcher(targetDir);
 
             overwriteEventCount = 0;
             watcher.NotifyFilter = NotifyFilters.LastWrite;
@@ -80,6 +95,25 @@ namespace Kinovea.ScreenManager
             watcher.EnableRaisingEvents = true;
 
             IsEnabled = true;
+            log.DebugFormat("Started replay watcher on \"{0}\".", Path.GetFileName(targetDir));
+        }
+
+        public void Close()
+        {
+            if (watcher == null)
+                return;
+
+            string targetDir = watcher.Path;
+            watcher.EnableRaisingEvents = false;
+            watcher.Changed -= watcher_Changed;
+            watcher.Created -= watcher_Changed;
+            watcher.Dispose();
+            watcher = null;
+
+            currentFile = null;
+            IsEnabled = false;
+
+            log.DebugFormat("Stopped replay watcher on \"{0}\".", Path.GetFileName(targetDir));
         }
 
         private void watcher_Changed(object sender, FileSystemEventArgs e)
@@ -87,7 +121,7 @@ namespace Kinovea.ScreenManager
             if (!VideoTypeManager.IsSupported(Path.GetExtension(e.FullPath)))
                 return;
 
-            log.DebugFormat("Replay watcher received an event: {0}, filename:{1}.", e.ChangeType, e.Name);
+            log.DebugFormat("Replay watcher received an event: {0}, filename: \"{1}\".", e.ChangeType, e.Name);
 
             if (e.FullPath == currentFile)
             {
@@ -115,7 +149,7 @@ namespace Kinovea.ScreenManager
             {
                 if (FilesystemHelper.CanRead(e.FullPath))
                 {
-                    log.DebugFormat("Loading video.");
+                    log.DebugFormat("Loading new video.");
                     dummy.BeginInvoke((Action)delegate { LoadVideo(e.FullPath); });
                 }
                 else
@@ -125,22 +159,13 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        public void Close()
-        {
-            if (watcher == null)
-                return;
-
-            watcher.EnableRaisingEvents = false;
-            watcher.Changed -= watcher_Changed;
-            watcher.Created -= watcher_Changed;
-            watcher.Dispose();
-            watcher = null;
-
-            IsEnabled = false;
-        }
-
+        /// <summary>
+        /// Load the new or updated video in the player.
+        /// </summary>
         private void LoadVideo(string path)
         {
+            log.DebugFormat("Replay watcher is about to load a video: {0}.", Path.GetFileName(path));
+
             // Update the descriptor with the speed from the UI.
             screenDescription.SpeedPercentage = player.view.SpeedPercentage;
 

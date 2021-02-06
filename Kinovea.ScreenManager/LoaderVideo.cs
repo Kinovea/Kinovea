@@ -124,9 +124,6 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public static void LoadVideo(PlayerScreen player, string path, ScreenDescriptionPlayback screenDescription)
         {
-            // In the case of replay watcher this will only be called the first time, to setup the screen.
-            // Subsequent video loads will be done directly by the replay watcher.
-
             log.DebugFormat("Loading video {0}.", Path.GetFileName(path));
             
             NotificationCenter.RaiseStopPlayback(null);
@@ -216,20 +213,6 @@ namespace Kinovea.ScreenManager
             // Try to load first frame and other initializations.
             int postLoadResult = player.view.PostLoadProcess();
             player.AfterLoad();
-
-            // Note: player.StartReplayWatcher will update the launch descriptor with the current value of the speed slider.
-            // This is to support carrying over user defined speed when swapping with the latest video.
-            // In the case of the initial load, we need to wait until here to call this function so the view has had time
-            // to update the slider with the value set in the descriptor (when using a special default replay speed).
-            // Otherwise we would always pick the default value from the view.
-            if (player.view.LaunchDescription != null && player.view.LaunchDescription.IsReplayWatcher)
-            {
-                player.StartReplayWatcher(player.view.LaunchDescription, player.FilePath);
-            }
-            else
-            {
-                player.StopReplayWatcher();
-            }
 
             switch (postLoadResult)
             {

@@ -717,6 +717,11 @@ namespace Kinovea.ScreenManager
             UpdateFilenameLabel();
         }
 
+        public void UpdateReplayWatcher(bool replayWatcher, string path)
+        {
+            infobar.UpdateReplayWatcher(replayWatcher, path);
+        }
+
         /// <summary>
         /// Called after the common controls updated the sync position, impacting time origin in both videos.
         /// </summary>
@@ -1088,8 +1093,7 @@ namespace Kinovea.ScreenManager
 
             infobar.Visible = true;
             infobar.Dock = DockStyle.Fill;
-            bool isReplayWatcher = m_LaunchDescription != null && m_LaunchDescription.IsReplayWatcher;
-            infobar.UpdateValues(name, size, fps, isReplayWatcher);
+            infobar.UpdateValues(name, size, fps);
         }
         private void ShowHideRenderingSurface(bool _bShow)
         {

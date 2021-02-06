@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+      this.components = new System.ComponentModel.Container();
       this.lblSize = new System.Windows.Forms.Label();
       this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
       this.btnVideoType = new System.Windows.Forms.Button();
@@ -37,6 +38,7 @@
       this.button4 = new System.Windows.Forms.Button();
       this.button2 = new System.Windows.Forms.Button();
       this.lblFps = new System.Windows.Forms.Label();
+      this.toolTips = new System.Windows.Forms.ToolTip(this.components);
       this.flowLayoutPanel1.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -177,7 +179,7 @@
       this.BackColor = System.Drawing.Color.Transparent;
       this.Controls.Add(this.flowLayoutPanel1);
       this.Name = "InfobarPlayer";
-      this.Size = new System.Drawing.Size(500, 25);
+      this.Size = new System.Drawing.Size(500, 27);
       this.flowLayoutPanel1.ResumeLayout(false);
       this.flowLayoutPanel1.PerformLayout();
       this.ResumeLayout(false);
@@ -195,5 +197,6 @@
         private System.Windows.Forms.Label lblFilename;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button btnVideoType;
+        private System.Windows.Forms.ToolTip toolTips;
     }
 }

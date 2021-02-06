@@ -261,9 +261,6 @@ namespace Kinovea.ScreenManager
                 synched = value;
             }
         }
-        
-        
-        
         public long Position
         {
             // Used to feed SyncPosition. 
@@ -797,6 +794,61 @@ namespace Kinovea.ScreenManager
         public void AfterLoad()
         {
             OnActivated(EventArgs.Empty);
+
+            // Note: player.StartReplayWatcher will update the launch descriptor with the current value of the speed slider.
+            // This is to support carrying over user defined speed when swapping with the latest video.
+            // In the case of the initial load, we need to wait until here to call this function so the view has had time
+            // to update the slider with the value set in the descriptor (when using a special default replay speed).
+            // Otherwise we would always pick the default value from the view.
+
+            //-----------------------------------------------------
+            // Replay watchers will always start with a launch description, whether they are opened from workspace/command line or manually from a menu.
+            // The launch descriptor still exists as long as the new video is auto-loaded from the watcher,
+            // but when opening a new video manually, the launch descriptor is reset.
+            //-----------------------------------------------------
+
+            if (replayWatcher.IsEnabled)
+            {
+                // Not the first time we come here.
+                if (view.LaunchDescription != null && view.LaunchDescription.IsReplayWatcher)
+                {
+                    // We come here when we open a new watcher into an existing one,
+                    // or when a new video is created in the watched folder.
+                    string targetDir = Path.GetDirectoryName(view.LaunchDescription.FullPath);
+                    if (replayWatcher.WatchedFolder != targetDir)
+                    {
+                        // This happens when we are opening a watcher in an existing watcher.
+                        // Since we open a watcher the launch descriptor has been updated to the new folder.
+                        log.DebugFormat("Switch watcher from watching \"{0}\" to watching \"{1}\".", Path.GetFileName(replayWatcher.WatchedFolder), Path.GetFileName(targetDir));
+                        StartReplayWatcher(view.LaunchDescription, FilePath);
+                    }
+                    else
+                    {
+                        // Opened a watcher on the same directory, or new video in the watched folder.
+                        // In this case the launch settings are still full.
+                        log.DebugFormat("Continue watching directory: \"{0}\"", Path.GetFileName(targetDir));
+                    }
+                }
+                else
+                {
+                    // This is when we manually open a new video in an existing watcher.
+                    // Whether it's in the same directory or not we continue watching the original folder.
+                    log.DebugFormat("Continue watching directory: \"{0}\"", Path.GetFileName(replayWatcher.WatchedFolder));
+                }
+            }
+            else if (view.LaunchDescription != null && view.LaunchDescription.IsReplayWatcher)
+            {
+                // First time we come here, start watching.
+                string targetDir = Path.GetDirectoryName(view.LaunchDescription.FullPath);
+                log.DebugFormat("Start replay watcher for the first time. Directory: \"{0}\"", Path.GetFileName(targetDir));
+                StartReplayWatcher(view.LaunchDescription, FilePath);
+            }
+            else
+            {
+                // Not a watcher and not asked to watch anything, nothing to do.
+            }
+
+            view.UpdateReplayWatcher(replayWatcher.IsEnabled, replayWatcher.WatchedFolder);
         }
 
         public void StartReplayWatcher(ScreenDescriptionPlayback sdp, string path)
