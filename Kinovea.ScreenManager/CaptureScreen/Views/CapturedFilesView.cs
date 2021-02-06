@@ -117,9 +117,10 @@ namespace Kinovea.ScreenManager
                 HideCapturedFileView(capturedFiles[0]);
 
             CapturedFileView view = new CapturedFileView(capturedFile);
-            view.SelectAsked += View_Clicked;
             view.LaunchAsked += View_LaunchAsked;
+            view.LaunchWatcherAsked += View_LaunchWatcherAsked;
             view.LocateAsked += view_LocateAsked;
+            view.SelectAsked += View_Clicked;
             view.HideAsked += View_HideAsked;
             view.DeleteAsked += View_DeleteAsked;
             
@@ -181,6 +182,18 @@ namespace Kinovea.ScreenManager
             
             VideoTypeManager.LoadVideo(view.CapturedFile.Filepath, -1);
         }
+        private void View_LaunchWatcherAsked(object sender, EventArgs e)
+        {
+            CapturedFileView view = sender as CapturedFileView;
+            if (view == null || view.CapturedFile == null || string.IsNullOrEmpty(view.CapturedFile.Filepath))
+                return;
+
+            // Replace the filename with a wildcard to turn into a replay watcher over that folder.
+            string path = Path.Combine(Path.GetDirectoryName(view.CapturedFile.Filepath), "*");
+            VideoTypeManager.LoadVideo(path, -1);
+        }
+
+
         private void view_LocateAsked(object sender, EventArgs e)
         {
             CapturedFileView view = sender as CapturedFileView;
