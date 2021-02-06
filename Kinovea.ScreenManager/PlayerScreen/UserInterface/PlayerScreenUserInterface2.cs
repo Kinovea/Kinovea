@@ -448,7 +448,6 @@ namespace Kinovea.ScreenManager
 
             this.Hotkeys = HotkeySettingsManager.LoadHotkeys("PlayerScreen");
         }
-
         #endregion
 
         #region Public Methods
@@ -1488,6 +1487,14 @@ namespace Kinovea.ScreenManager
             if (SelectionChanged != null)
                 SelectionChanged(this, new EventArgs<bool>(initialization));
         }
+
+        
+
+        private void RaiseSetAsActiveScreenEvent()
+        {
+            SetAsActiveScreen?.Invoke(this, EventArgs.Empty);
+        }
+
         private void OnPoke()
         {
             //------------------------------------------------------------------------------
@@ -1495,8 +1502,7 @@ namespace Kinovea.ScreenManager
             // Signal itself as the active screen to the ScreenManager
             // This will trigger an update of the top-level menu to enable/disable specific menus.
             //---------------------------------------------------------------------
-            if (SetAsActiveScreen != null)
-                SetAsActiveScreen(this, EventArgs.Empty);
+            RaiseSetAsActiveScreenEvent();
 
             // 1. Ensure no DrawingText is in edit mode.
             m_FrameServer.Metadata.AllDrawingTextToNormalMode();
@@ -2785,6 +2791,8 @@ namespace Kinovea.ScreenManager
         #region SurfaceScreen Events
         private void SurfaceScreen_MouseDown(object sender, MouseEventArgs e)
         {
+            RaiseSetAsActiveScreenEvent();
+            
             if (!m_FrameServer.Loaded)
                 return;
 
@@ -3691,6 +3699,7 @@ namespace Kinovea.ScreenManager
             mnuPasteDrawing.Enabled = false;
             mnuPastePic.Enabled = false;
             panelCenter.ContextMenuStrip = popMenu;
+            RaiseSetAsActiveScreenEvent();
         }
         #endregion
 
