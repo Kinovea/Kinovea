@@ -22,10 +22,9 @@ using System;
 using System.Drawing;
 using System.Timers;
 using System.Runtime.InteropServices;
-using Kinovea.Services;
-using Kinovea.Pipeline;
 using System.Diagnostics;
-using Kinovea.Video;
+using Kinovea.Pipeline;
+using Kinovea.Services;
 
 namespace Kinovea.Camera.FrameGenerator
 {

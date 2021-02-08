@@ -24,7 +24,6 @@ using System.Threading;
 using System.Drawing.Imaging;
 using Kinovea.Pipeline;
 using Kinovea.Services;
-using Kinovea.Video;
 using AForge.Video;
 using AForge.Video.DirectShow;
 

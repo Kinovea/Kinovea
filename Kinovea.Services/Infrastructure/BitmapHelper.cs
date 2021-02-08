@@ -7,9 +7,8 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.IO;
 using TurboJpegNet;
-using Kinovea.Services;
 
-namespace Kinovea.Video
+namespace Kinovea.Services
 {
     public static class BitmapHelper
     {

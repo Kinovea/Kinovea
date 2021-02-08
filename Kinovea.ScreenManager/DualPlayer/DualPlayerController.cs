@@ -3,13 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using Kinovea.Services;
 using System.Drawing;
-using Kinovea.Video.FFMpeg;
-using System.ComponentModel;
-using Kinovea.ScreenManager.Languages;
-using System.IO;
-using Kinovea.Video;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {

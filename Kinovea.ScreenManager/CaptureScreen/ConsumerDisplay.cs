@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Kinovea.Pipeline.MemoryLayout;
-using Kinovea.Services;
 using System.Drawing;
-using Kinovea.Pipeline;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
-using Kinovea.Video;
+using Kinovea.Pipeline;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {

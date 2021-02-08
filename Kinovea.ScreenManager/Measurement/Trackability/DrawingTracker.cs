@@ -22,8 +22,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-
-using Kinovea.Video;
 using System.Xml;
 using Kinovea.Services;
 

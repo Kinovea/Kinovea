@@ -2,13 +2,11 @@
 using Kinovea.Pipeline.Consumers;
 using System.IO;
 using System;
+using System.Drawing;
+using System.Diagnostics;
 using Kinovea.Video;
 using Kinovea.Video.FFMpeg;
-using System.Drawing;
 using Kinovea.Services;
-using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
-using System.Diagnostics;
 
 namespace Kinovea.ScreenManager
 {

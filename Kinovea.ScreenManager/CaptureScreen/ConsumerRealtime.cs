@@ -1,12 +1,12 @@
-﻿using Kinovea.Pipeline;
-using Kinovea.Pipeline.Consumers;
-using System.IO;
+﻿using System.IO;
 using System;
+using System.Drawing;
+using System.Diagnostics;
 using Kinovea.Video;
 using Kinovea.Video.FFMpeg;
-using System.Drawing;
+using Kinovea.Pipeline;
+using Kinovea.Pipeline.Consumers;
 using Kinovea.Services;
-using System.Diagnostics;
 
 namespace Kinovea.ScreenManager
 {

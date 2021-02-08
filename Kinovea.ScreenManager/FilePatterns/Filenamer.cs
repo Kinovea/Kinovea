@@ -5,7 +5,6 @@ using System.Text;
 using System.IO;
 using System.Text.RegularExpressions;
 using Kinovea.Services;
-using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
 {

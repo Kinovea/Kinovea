@@ -7,7 +7,6 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Globalization;
 using System.Runtime.InteropServices;
-using Kinovea.Video;
 using Kinovea.Pipeline;
 using Kinovea.Services;
 using TurboJpegNet;

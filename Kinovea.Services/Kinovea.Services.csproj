@@ -197,9 +197,13 @@
     <Reference Include="System.Management" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="TurboJpegNet">
+      <HintPath>..\Refs\TurboJpeg\TurboJpegNet.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlphanumComparator.cs" />
+    <Compile Include="Infrastructure\BitmapHelper.cs" />
     <Compile Include="Infrastructure\NativeMethods.cs" />
     <Compile Include="Types\Demosaicing.cs" />
     <Compile Include="Types\ImageAspectRatio.cs" />
