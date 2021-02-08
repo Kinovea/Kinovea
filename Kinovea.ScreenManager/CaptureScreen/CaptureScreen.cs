@@ -721,7 +721,8 @@ namespace Kinovea.ScreenManager
 
             // Keep ts per frame in sync.
             // This means that if we have imported keyframes, their time should be kept the same.
-            metadata.AverageTimeStampsPerFrame = (long)(metadata.AverageTimeStampsPerSecond / cameraGrabber.Framerate);
+            if (cameraGrabber.Framerate != 0)
+                metadata.AverageTimeStampsPerFrame = (long)(metadata.AverageTimeStampsPerSecond / cameraGrabber.Framerate);
 
             // Start the low frequency / low precision timer.
             // This timer is used for display and to feed the delay buffer when using recording mode "Camera".
