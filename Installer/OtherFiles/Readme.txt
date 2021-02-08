@@ -47,6 +47,9 @@ Changelog:
     Improved - General: reorganized the save menu in "Save", "Save as…" and "Export video".
     Improved - General: save and restore the main window position and state.
     Improved - General: support customization of the path to the default KVA for capture and playback.
+    Improved - Playback: replay folder observers keep monitoring their folder when an old video is loaded.
+    Improved - Playback: new menu to switch between normal video and replay folder observer.
+    Improved - Playback: new menus to launch a replay folder observer from any file in the explorer panel.
     Improved - Annotations: support using the calibration line as the vertical axis or use image axes.
     Improved - Annotations: save and restore the mirror flag in KVA files.
     Improved - Capture: support loading KVA files in the capture screen using the File menu.
@@ -56,6 +59,7 @@ Changelog:
     Improved - Capture: added a command to disable delayed display but still use the delay for recording.
     Improved - Capture: display a special image when the delay is larger than the first frame available.
     Improved - Capture: save and restore the mirror flag in camera settings.
+    Fixed - Some manipulations in the playback screen were not triggering screen activation.
     Fixed - The timecodes were wrong when using custom playback rate.
     Fixed - The capture screen didn't export some metadata correctly when the camera is rotated.
     Fixed - The capture test grid was wrong when the camera is rotated.
