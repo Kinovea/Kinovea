@@ -27,6 +27,8 @@ using System.Windows.Forms;
 using System.Linq;
 
 using Kinovea.Services;
+using System.Security;
+using System.Security.Permissions;
 
 namespace Kinovea.Camera
 {
@@ -63,7 +65,7 @@ namespace Kinovea.Camera
         #region Public methods
 
         /// <summary>
-        /// Instanciate types implementing the CameraManager base class.
+        /// Instanciate builtin camera modules.
         /// </summary>
         public static void LoadCameraManagers(List<Type> mgrs)
         {
@@ -91,19 +93,33 @@ namespace Kinovea.Camera
         /// <summary>
         /// Find and instanciate types implementing the CameraManager base class.
         /// </summary>
-        public static void LoadCameraManagers()
+        public static void LoadCameraManagersAddons()
         {
             //----------------------------
-            // OBSOLETE.
-            // For some reason Assembly.LoadFrom() doesn't work for everyone.
-            // The loadFromRemoteSources tag is present in the app.exe.config but the load is still failing.
-            // Use the explicit list instead for now, since we don't really need these to be dynamically looked for.
-            // When we have true plugins we'll need to find a solution.
+            // Broken.
+            // Assembly.LoadFrom() doesn't work for assemblies coming from the internet.
             //----------------------------
 
+
+            // Prototyping.
+            // This will come from an addon manager and manifest files.
+            List<string> addons = new List<string>();
+            addons.Add("Addons/Basler");
+            addons.Add("Addons/Daheng");
+            addons.Add("Addons/IDS");
+
+            foreach (var addon in addons)
+                LoadCameraManagerAddon(addon);
+        }
+
+        private static void LoadCameraManagerAddon(string addonDir)
+        {
             List<Assembly> assemblies = new List<Assembly>();
-            
-            string dir = Path.GetDirectoryName(Application.ExecutablePath);
+            string appBase = Path.GetDirectoryName(Application.ExecutablePath);
+            string dir = Path.Combine(appBase, addonDir);
+            if (!Directory.Exists(dir))
+                return;
+
             IEnumerable<string> files = Directory.GetFiles(dir, "Kinovea.Camera.*.dll");
             foreach (string filename in files)
                 AddAssembly(filename, assemblies);
