@@ -27,11 +27,9 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using System.Linq;
-
-using AForge.Video.DirectShow;
-using Kinovea.Services;
 using System.Text.RegularExpressions;
-using Kinovea.Video;
+using Kinovea.Services;
+using AForge.Video.DirectShow;
 
 namespace Kinovea.Camera.DirectShow
 {

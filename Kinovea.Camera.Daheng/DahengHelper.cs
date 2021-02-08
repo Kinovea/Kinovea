@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Kinovea.Services;
 using GxIAPINET;
-using Kinovea.Video;
 
 namespace Kinovea.Camera.Daheng
 {

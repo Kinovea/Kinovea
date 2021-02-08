@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using Kinovea.Services;
-using Kinovea.Video;
 using System.Windows.Forms;
 using GxIAPINET;
 using System.Xml;

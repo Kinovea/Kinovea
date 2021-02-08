@@ -32,13 +32,11 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using System.Linq;
-
-using Kinovea.Base;
+using System.Globalization;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.ScreenManager.Properties;
-using Kinovea.Services;
 using Kinovea.Video;
-using System.Globalization;
+using Kinovea.Services;
 
 #endregion
 

@@ -21,10 +21,9 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Drawing;
 using System.Diagnostics;
-using AForge.Video;
-using Kinovea.Services;
-using Kinovea.Base;
 using Kinovea.Pipeline;
+using Kinovea.Services;
+using AForge.Video;
 
 namespace Kinovea.Camera.HTTP
 {
@@ -106,7 +105,7 @@ namespace Kinovea.Camera.HTTP
         public ImageDescriptor GetPrepareFailedImageDescriptor(ImageDescriptor input)
         {
             if (format == "MJPEG" || format == "JPEG")
-                return new ImageDescriptor(Video.ImageFormat.JPEG, input.Width, input.Height, input.TopDown, input.BufferSize);
+                return new ImageDescriptor(ImageFormat.JPEG, input.Width, input.Height, input.TopDown, input.BufferSize);
             else
                 return input;
         }

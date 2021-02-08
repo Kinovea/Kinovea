@@ -23,13 +23,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Timers;
 using System.Runtime.InteropServices;
-using Kinovea.Services;
-using Kinovea.Pipeline;
 using System.Diagnostics;
-using Kinovea.Video;
-using Kinovea.Base;
-using PylonC.NETSupportLibrary;
 using System.IO;
+using Kinovea.Pipeline;
+using Kinovea.Services;
+using PylonC.NETSupportLibrary;
 using PylonC.NET;
 
 namespace Kinovea.Camera.Basler

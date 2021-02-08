@@ -26,10 +26,7 @@ using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
-
-using Kinovea.Camera;
 using Kinovea.Services;
-using Kinovea.Video;
 
 namespace Kinovea.Camera.HTTP
 {

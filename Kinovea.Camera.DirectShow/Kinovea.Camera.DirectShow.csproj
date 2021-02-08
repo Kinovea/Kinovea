@@ -171,7 +171,7 @@
       <Name>Kinovea.Services</Name>
     </ProjectReference>
     <ProjectReference Include="..\Kinovea.Video\Kinovea.Video.csproj">
-      <Project>{4CBB8462-00A7-4814-AD3B-07C82EEEB0DE}</Project>
+      <Project>{4cbb8462-00a7-4814-ad3b-07c82eeeb0de}</Project>
       <Name>Kinovea.Video</Name>
     </ProjectReference>
   </ItemGroup>

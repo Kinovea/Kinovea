@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Kinovea.Services;
 using System.Diagnostics;
 
 namespace Kinovea.Pipeline.Consumers

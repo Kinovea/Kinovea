@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 
-namespace Kinovea.Video
+namespace Kinovea.Services
 {
     public static class NativeMethods
     {

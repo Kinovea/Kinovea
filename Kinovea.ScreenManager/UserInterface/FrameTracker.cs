@@ -25,11 +25,9 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-
-using AForge.Imaging.Filters;
-using Kinovea.Base;
 using Kinovea.ScreenManager.Properties;
 using Kinovea.Video;
+using AForge.Imaging.Filters;
 
 namespace Kinovea.ScreenManager
 {

@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -164,9 +165,29 @@ namespace Kinovea.Video
             if(VideoLoadAsked != null)
                 VideoLoadAsked(null, new VideoLoadAskedEventArgs(path, target));
         }
-        
+
+        /// <summary>
+        /// Look for the most recent supported video file in a folder.
+        /// </summary>
+        public static string GetMostRecentSupportedVideo(string path)
+        {
+            var directory = new DirectoryInfo(path);
+            if (directory == null)
+                return null;
+
+            FileInfo latest = directory.GetFiles()
+                .Where(f => VideoTypeManager.IsSupported(f.Extension))
+                .OrderByDescending(f => f.LastWriteTime)
+                .FirstOrDefault();
+
+            if (latest == null)
+                return null;
+
+            return latest.FullName;
+        }
+
         #endregion
-        
+
         #region Private methods
         private static bool IsCompatibleType(Type t)
         {

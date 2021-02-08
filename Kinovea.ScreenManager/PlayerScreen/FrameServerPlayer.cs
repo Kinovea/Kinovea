@@ -25,8 +25,6 @@ using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
-
-using Kinovea.Base;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 using Kinovea.Video;
@@ -113,7 +111,7 @@ namespace Kinovea.ScreenManager
                     // This happens when we first load a file watcher into this screen.
                     // Subsequent calls by the watcher will use the actual file name.
                     // For this initial step, run the most recent file of the directory, if any.
-                    filePath = FilesystemHelper.GetMostRecentFile(Path.GetDirectoryName(filePath));
+                    filePath = VideoTypeManager.GetMostRecentSupportedVideo(Path.GetDirectoryName(filePath));
                     if (string.IsNullOrEmpty(filePath))
                     {
                         // If the directory doesn't have any supported files yet it's not an error, we just load an empty player and get ready.

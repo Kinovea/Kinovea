@@ -277,7 +277,7 @@ namespace Kinovea.Services
 
         public static string WriteBitmap(Bitmap bitmap)
         {
-            ImageFormat imageFormat = ImageFormat.Png;
+            System.Drawing.Imaging.ImageFormat imageFormat = System.Drawing.Imaging.ImageFormat.Png;
             MemoryStream stream = new MemoryStream();
             bitmap.Save(stream, imageFormat);
             byte[] bytes = stream.ToArray();

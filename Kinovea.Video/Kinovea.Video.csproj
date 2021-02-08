@@ -179,10 +179,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Base\Averager.cs" />
-    <Compile Include="Base\DropWatcher.cs" />
-    <Compile Include="Base\LoopWatcher.cs" />
-    <Compile Include="Base\TimeWatcher.cs" />
     <Compile Include="BitmapHelper.cs" />
     <Compile Include="Events\VideoLoadAskedEventArgs.cs" />
     <Compile Include="Extensions.cs" />
@@ -193,9 +189,6 @@
     <Compile Include="FrameContainers\PreBuffer.cs" />
     <Compile Include="CapabilityNotSupportedException.cs" />
     <Compile Include="IFrameGenerator.cs" />
-    <Compile Include="ImageFormat.cs" />
-    <Compile Include="ImageFormatHelper.cs" />
-    <Compile Include="NativeMethods.cs" />
     <Compile Include="VideoReaderAlwaysCaching.cs" />
     <Compile Include="VideoReader.cs" />
     <Compile Include="ThreadCanceler.cs" />
@@ -231,6 +224,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Kinovea.Services\Kinovea.Services.csproj">
+      <Project>{8aa92254-a016-4a84-925c-f5b07e02f8a8}</Project>
+      <Name>Kinovea.Services</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
 </Project>

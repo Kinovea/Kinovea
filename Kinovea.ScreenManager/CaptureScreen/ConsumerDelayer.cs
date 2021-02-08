@@ -101,7 +101,7 @@ namespace Kinovea.ScreenManager
             VideoInfo info = new VideoInfo();
             info.OriginalSize = new Size(delayerImageDescriptor.Width, delayerImageDescriptor.Height);
 
-            bool uncompressed = PreferencesManager.CapturePreferences.SaveUncompressedVideo && delayerImageDescriptor.Format != Video.ImageFormat.JPEG;
+            bool uncompressed = PreferencesManager.CapturePreferences.SaveUncompressedVideo && delayerImageDescriptor.Format != Kinovea.Services.ImageFormat.JPEG;
             string formatString = FilenameHelper.GetFormatStringCapture(uncompressed);
             double fileInterval = CalibrationHelper.ComputeFileFrameInterval(interval);
 

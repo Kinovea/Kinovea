@@ -27,9 +27,8 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using PylonC.NET;
-using Kinovea.Services;
 using PylonC.NETSupportLibrary;
-using Kinovea.Video;
+using Kinovea.Services;
 
 namespace Kinovea.Camera.Basler
 {

@@ -21,11 +21,11 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Drawing;
 using System.Threading;
-using Kinovea.Pipeline;
-using GxIAPINET;
-using Kinovea.Video;
 using System.Runtime.InteropServices;
 using System.Drawing.Imaging;
+using GxIAPINET;
+using Kinovea.Pipeline;
+using Kinovea.Services;
 
 namespace Kinovea.Camera.Daheng
 {
@@ -248,8 +248,8 @@ namespace Kinovea.Camera.Daheng
                 int stride = rect.Width * 3;
                 NativeMethods.memcpy(bmpData.Scan0.ToPointer(), buffer.ToPointer(), stride * height);
 
-                int bufferSize = ImageFormatHelper.ComputeBufferSize(width, height, Video.ImageFormat.RGB24);
-                imageDescriptor = new ImageDescriptor(Video.ImageFormat.RGB24, image.Width, image.Height, true, bufferSize);
+                int bufferSize = ImageFormatHelper.ComputeBufferSize(width, height, Kinovea.Services.ImageFormat.RGB24);
+                imageDescriptor = new ImageDescriptor(Kinovea.Services.ImageFormat.RGB24, image.Width, image.Height, true, bufferSize);
             }
             catch (Exception e)
             {
@@ -288,8 +288,8 @@ namespace Kinovea.Camera.Daheng
                     dst += dstOffset;
                 }
                 
-                int bufferSize = ImageFormatHelper.ComputeBufferSize(width, height, Video.ImageFormat.RGB24);
-                imageDescriptor = new ImageDescriptor(Video.ImageFormat.RGB24, image.Width, image.Height, true, bufferSize);
+                int bufferSize = ImageFormatHelper.ComputeBufferSize(width, height, Kinovea.Services.ImageFormat.RGB24);
+                imageDescriptor = new ImageDescriptor(Kinovea.Services.ImageFormat.RGB24, image.Width, image.Height, true, bufferSize);
             }
             catch (Exception e)
             {

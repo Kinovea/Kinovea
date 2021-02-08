@@ -21,12 +21,12 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Drawing;
 using System.Threading;
-
+using System.Drawing.Imaging;
+using Kinovea.Pipeline;
+using Kinovea.Services;
+using Kinovea.Video;
 using AForge.Video;
 using AForge.Video.DirectShow;
-using System.Drawing.Imaging;
-using Kinovea.Video;
-using Kinovea.Pipeline;
 
 namespace Kinovea.Camera.DirectShow
 {
@@ -138,7 +138,7 @@ namespace Kinovea.Camera.DirectShow
             image = new Bitmap(e.Width, e.Height, PixelFormat.Format24bppRgb);
             Rectangle rect = new Rectangle(0, 0, image.Width, image.Height);
             BitmapHelper.FillFromRGB24(image, rect, false, e.Buffer);
-            imageDescriptor = new ImageDescriptor(Video.ImageFormat.RGB24, image.Width, image.Height, true, ImageFormatHelper.ComputeBufferSize(image.Width, image.Height, Video.ImageFormat.RGB24));
+            imageDescriptor = new ImageDescriptor(Kinovea.Services.ImageFormat.RGB24, image.Width, image.Height, true, ImageFormatHelper.ComputeBufferSize(image.Width, image.Height, Kinovea.Services.ImageFormat.RGB24));
 
             waitHandle.Set();
         }

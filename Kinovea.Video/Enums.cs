@@ -53,31 +53,6 @@ namespace Kinovea.Video
         PreBuffering,   // frames are decoded in a separate thread and pushed to a small buffer.
         Caching         // All the frames of the working zone have been loaded to a large buffer.
     }
-    
-    public enum ImageAspectRatio
-    {
-        Auto,
-        Force43,
-        Force169,
-        ForcedSquarePixels
-    }
-
-    public enum ImageRotation
-    {
-        Rotate0,
-        Rotate90,
-        Rotate180,
-        Rotate270
-    }
-
-    public enum Demosaicing
-    {
-        None,
-        RGGB,
-        BGGR,
-        GRBG,
-        GBRG
-    }
 
     public enum OpenVideoResult
     {

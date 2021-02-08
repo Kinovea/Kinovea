@@ -47,7 +47,7 @@ MJPEGWriter::!MJPEGWriter()
 /// MJPEGWriter::OpenSavingContext
 /// Open a saving context and configure it with default parameters.
 ///</summary>
-SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, String^ _formatString, ImageFormat _imageFormat, bool _uncompressed, double _fFramesInterval, double _fFileFramesInterval, ImageRotation rotation)
+SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, String^ _formatString, Kinovea::Services::ImageFormat _imageFormat, bool _uncompressed, double _fFramesInterval, double _fFileFramesInterval, ImageRotation rotation)
 {
     //---------------------------------------------------------------------------------------------------
     // Set the saving context up.
@@ -210,9 +210,9 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
         // Preallocating the context gains 0.5ms.
         // Using nearest neighbor instead of bilinear gains about 1.5ms on a 1600x1200 frame.
         AVPixelFormat srcFormat = AV_PIX_FMT_BGRA;
-        if (_imageFormat == ImageFormat::RGB24)
+        if (_imageFormat == Kinovea::Services::ImageFormat::RGB24)
             srcFormat = AV_PIX_FMT_BGR24;
-        else if (_imageFormat == ImageFormat::Y800)
+        else if (_imageFormat == Kinovea::Services::ImageFormat::Y800)
             srcFormat = AV_PIX_FMT_GRAY8;
         
         int flags = SWS_POINT;
@@ -316,7 +316,7 @@ SaveResult MJPEGWriter::CloseSavingContext(bool _bEncodingSuccess)
     return result;
 }
 
-SaveResult MJPEGWriter::SaveFrame(ImageFormat format, array<System::Byte>^ buffer, Int64 length, bool topDown)
+SaveResult MJPEGWriter::SaveFrame(Kinovea::Services::ImageFormat format, array<System::Byte>^ buffer, Int64 length, bool topDown)
 {
     SaveResult result = SaveResult::Success;
     bool saved = false;
@@ -325,16 +325,16 @@ SaveResult MJPEGWriter::SaveFrame(ImageFormat format, array<System::Byte>^ buffe
 
     switch (format)
     {
-    case ImageFormat::RGB32:
+    case Kinovea::Services::ImageFormat::RGB32:
         saved = EncodeAndWriteVideoFrameRGB32(m_SavingContext, buffer, length, topDown);
         break;
-    case ImageFormat::RGB24:
+    case Kinovea::Services::ImageFormat::RGB24:
         saved = EncodeAndWriteVideoFrameRGB24(m_SavingContext, buffer, length, topDown);
         break;
-    case ImageFormat::Y800:
+    case Kinovea::Services::ImageFormat::Y800:
         saved = EncodeAndWriteVideoFrameY800(m_SavingContext, buffer, length, topDown);
         break;
-    case ImageFormat::JPEG:
+    case Kinovea::Services::ImageFormat::JPEG:
         saved = EncodeAndWriteVideoFrameJPEG(m_SavingContext, buffer, length);
         break;
     }
@@ -390,7 +390,7 @@ bool MJPEGWriter::SetupMuxer(SavingContext^ _SavingContext)
 /// MJPEGWriter::SetupEncoder
 /// Configure the codec with default parameters.
 ///</summary>
-bool MJPEGWriter::SetupEncoder(SavingContext^ _SavingContext, ImageFormat _imageFormat)
+bool MJPEGWriter::SetupEncoder(SavingContext^ _SavingContext, Kinovea::Services::ImageFormat _imageFormat)
 {
     //----------------------------------------
     // Parameters for encoding.
@@ -455,7 +455,7 @@ bool MJPEGWriter::SetupEncoder(SavingContext^ _SavingContext, ImageFormat _image
     //_SavingContext->pOutputCodecContext->max_b_frames			= 0;								
 
     // Pixel format
-    if (_SavingContext->uncompressed && _imageFormat == ImageFormat::Y800)
+    if (_SavingContext->uncompressed && _imageFormat == Kinovea::Services::ImageFormat::Y800)
         _SavingContext->pOutputCodecContext->pix_fmt = AV_PIX_FMT_GRAY8;
     else
         _SavingContext->pOutputCodecContext->pix_fmt = AV_PIX_FMT_YUV420P; 	

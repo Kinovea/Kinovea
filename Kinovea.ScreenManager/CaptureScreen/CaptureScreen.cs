@@ -26,18 +26,18 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using Kinovea.Camera;
-using Kinovea.ScreenManager.Languages;
-using Kinovea.Services;
-using Kinovea.Video;
-using Kinovea.Pipeline;
-using Kinovea.Pipeline.Consumers;
 using System.Threading;
 using System.Diagnostics;
-using Kinovea.Video.FFMpeg;
 using System.Text;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
+
+using Kinovea.Camera;
+using Kinovea.ScreenManager.Languages;
+using Kinovea.Video;
+using Kinovea.Pipeline;
+using Kinovea.Video.FFMpeg;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -636,7 +636,7 @@ namespace Kinovea.ScreenManager
             {
                 imageDescriptor = cameraGrabber.Prepare();
 
-                if (imageDescriptor == null || imageDescriptor.Format == Video.ImageFormat.None || imageDescriptor.Width <= 0 || imageDescriptor.Height <= 0)
+                if (imageDescriptor == null || imageDescriptor.Format == Kinovea.Services.ImageFormat.None || imageDescriptor.Width <= 0 || imageDescriptor.Height <= 0)
                 {
                     cameraGrabber.Close();
 
@@ -1387,7 +1387,7 @@ namespace Kinovea.ScreenManager
             }
             
             string filenameWithoutExtension = view.CurrentVideoFilename;
-            bool uncompressed = PreferencesManager.CapturePreferences.SaveUncompressedVideo && imageDescriptor.Format != Video.ImageFormat.JPEG;
+            bool uncompressed = PreferencesManager.CapturePreferences.SaveUncompressedVideo && imageDescriptor.Format != Kinovea.Services.ImageFormat.JPEG;
             string extension = Filenamer.GetVideoFileExtension(uncompressed);
 
             Dictionary<PatternContext, string> context = BuildCaptureContext();
@@ -1525,7 +1525,7 @@ namespace Kinovea.ScreenManager
                 recording = false;
                 float recordingSeconds = stopwatchRecording.ElapsedMilliseconds / 1000.0f;
                 Disconnect();
-                bool uncompressed = PreferencesManager.CapturePreferences.SaveUncompressedVideo && imageDescriptor.Format != Video.ImageFormat.JPEG;
+                bool uncompressed = PreferencesManager.CapturePreferences.SaveUncompressedVideo && imageDescriptor.Format != Kinovea.Services.ImageFormat.JPEG;
                 SaveBuffer(finalFilename, uncompressed, forcedStop, recordingSeconds);
                 Connect();
 

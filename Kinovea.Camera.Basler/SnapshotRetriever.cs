@@ -23,7 +23,7 @@ using System.Drawing;
 using System.Threading;
 using Kinovea.Pipeline;
 using PylonC.NETSupportLibrary;
-using Kinovea.Video;
+using Kinovea.Services;
 
 namespace Kinovea.Camera.Basler
 {
@@ -189,8 +189,8 @@ namespace Kinovea.Camera.Basler
 
             if (image != null)
             {
-                int bufferSize = ImageFormatHelper.ComputeBufferSize(image.Width, image.Height, Video.ImageFormat.RGB24);
-                imageDescriptor = new ImageDescriptor(Video.ImageFormat.RGB24, image.Width, image.Height, true, bufferSize);
+                int bufferSize = ImageFormatHelper.ComputeBufferSize(image.Width, image.Height, Kinovea.Services.ImageFormat.RGB24);
+                imageDescriptor = new ImageDescriptor(Kinovea.Services.ImageFormat.RGB24, image.Width, image.Height, true, bufferSize);
             }
 
             waitHandle.Set();

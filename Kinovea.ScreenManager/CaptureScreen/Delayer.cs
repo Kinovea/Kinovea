@@ -225,16 +225,16 @@ namespace Kinovea.ScreenManager
 
                     switch (imageDescriptor.Format)
                     {
-                        case Video.ImageFormat.RGB24:
+                        case Kinovea.Services.ImageFormat.RGB24:
                             BitmapHelper.FillFromRGB24(copy, rect, imageDescriptor.TopDown, frame.Buffer);
                             break;
-                        case Video.ImageFormat.RGB32:
+                        case Kinovea.Services.ImageFormat.RGB32:
                             BitmapHelper.FillFromRGB32(copy, rect, imageDescriptor.TopDown, frame.Buffer);
                             break;
-                        case Video.ImageFormat.Y800:
+                        case Kinovea.Services.ImageFormat.Y800:
                             BitmapHelper.FillFromY800(copy, rect, imageDescriptor.TopDown, frame.Buffer);
                             break;
-                        case Video.ImageFormat.JPEG:
+                        case Kinovea.Services.ImageFormat.JPEG:
                             BitmapHelper.FillFromJPEG(copy, rect, tempJpeg, frame.Buffer, frame.PayloadLength, pitch);
                             break;
                     }

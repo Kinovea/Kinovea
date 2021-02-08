@@ -45,7 +45,7 @@ using namespace System::Text;
 using namespace System::Threading;
 using namespace System::Windows::Forms;
 using namespace Kinovea::Video;
-using namespace Kinovea::Base;
+using namespace Kinovea::Services;
 
 namespace Kinovea { namespace Video { namespace FFMpeg
 {
@@ -60,15 +60,15 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 
     // Public Methods
     public:
-        SaveResult OpenSavingContext(String^ _FilePath, VideoInfo _info, String^ _formatString, ImageFormat _imageFormat, bool _uncompressed, double _fFramesInterval, double _fFileFramesInterval, ImageRotation rotation);
+        SaveResult OpenSavingContext(String^ _FilePath, VideoInfo _info, String^ _formatString, Kinovea::Services::ImageFormat _imageFormat, bool _uncompressed, double _fFramesInterval, double _fFileFramesInterval, ImageRotation rotation);
         SaveResult CloseSavingContext(bool _bEncodingSuccess);
-        SaveResult SaveFrame(ImageFormat format, array<System::Byte>^ buffer, Int64 length, bool topDown);
+        SaveResult SaveFrame(Kinovea::Services::ImageFormat format, array<System::Byte>^ buffer, Int64 length, bool topDown);
 
     // Private Methods
     private:
         double ComputeBitrate(Size outputSize, double frameInterval);
         bool SetupMuxer(SavingContext^ _SavingContext);
-        bool SetupEncoder(SavingContext^ _SavingContext, ImageFormat _imageFormat);
+        bool SetupEncoder(SavingContext^ _SavingContext, Kinovea::Services::ImageFormat _imageFormat);
         
         bool EncodeAndWriteVideoFrameRGB32(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length, bool topDown);
         bool EncodeAndWriteVideoFrameRGB24(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length, bool topDown);

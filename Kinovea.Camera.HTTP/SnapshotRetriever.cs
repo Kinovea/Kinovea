@@ -23,7 +23,7 @@ using System.Drawing;
 using System.Threading;
 using AForge.Video;
 using Kinovea.Pipeline;
-using Kinovea.Video;
+using Kinovea.Services;
 
 namespace Kinovea.Camera.HTTP
 {
@@ -116,8 +116,8 @@ namespace Kinovea.Camera.HTTP
                 g.DrawImageUnscaled(e.Frame, Point.Empty);
             }
 
-            int bufferSize = ImageFormatHelper.ComputeBufferSize(image.Width, image.Height, Video.ImageFormat.RGB24);
-            imageDescriptor = new ImageDescriptor(Video.ImageFormat.RGB24, image.Width, image.Height, true, bufferSize);
+            int bufferSize = ImageFormatHelper.ComputeBufferSize(image.Width, image.Height, ImageFormat.RGB24);
+            imageDescriptor = new ImageDescriptor(ImageFormat.RGB24, image.Width, image.Height, true, bufferSize);
             
             waitHandle.Set();
         }
