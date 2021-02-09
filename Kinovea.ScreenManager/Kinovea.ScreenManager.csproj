@@ -183,9 +183,6 @@
     <Reference Include="AForge.Imaging, Version=2.2.5.0, Culture=neutral, PublicKeyToken=ba8ddea9676ca48b, processorArchitecture=MSIL">
       <HintPath>..\Refs\AForge\AForge.Imaging.dll</HintPath>
     </Reference>
-    <Reference Include="AForge.Math, Version=2.2.5.0, Culture=neutral, PublicKeyToken=abba2e25397ee8c9, processorArchitecture=MSIL">
-      <HintPath>..\Refs\AForge\AForge.Math.dll</HintPath>
-    </Reference>
     <Reference Include="Emgu.CV, Version=2.4.10.1939, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\OpenCV\2.4.10\Emgu.CV.dll</HintPath>
@@ -279,7 +276,10 @@
     <Compile Include="FilePatterns\PatternSymbolsFile.cs" />
     <Compile Include="FilePicker.cs" />
     <Compile Include="Measurement\Calibration\CalibrationAxis.cs" />
+    <Compile Include="Measurement\Geometry\Matrix3x3.cs" />
     <Compile Include="Measurement\Geometry\SegmentF.cs" />
+    <Compile Include="Measurement\Geometry\SVD.cs" />
+    <Compile Include="Measurement\Geometry\Vector3.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPostureOption.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPosturePolyline.cs" />
     <Compile Include="Metadata\Interfaces\IDrawingHostView.cs" />

@@ -22,9 +22,7 @@ using System;
 using System.Drawing;
 using System.Globalization;
 using System.Xml;
-
 using Kinovea.Services;
-using AForge.Math;
 
 namespace Kinovea.ScreenManager
 {
