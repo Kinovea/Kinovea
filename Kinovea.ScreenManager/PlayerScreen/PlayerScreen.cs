@@ -699,7 +699,7 @@ namespace Kinovea.ScreenManager
         public void Save()
         {
             MetadataSerializer serializer = new MetadataSerializer();
-            serializer.UserSave(frameServer.Metadata, frameServer.Metadata.LastKnownFile);
+            serializer.UserSave(frameServer.Metadata, frameServer.VideoReader.FilePath);
         }
 
         /// <summary>
@@ -708,7 +708,7 @@ namespace Kinovea.ScreenManager
         public void SaveAs()
         {
             MetadataSerializer serializer = new MetadataSerializer();
-            serializer.UserSaveAs(frameServer.Metadata, frameServer.Metadata.LastKnownFile);
+            serializer.UserSaveAs(frameServer.Metadata, frameServer.VideoReader.FilePath);
         }
 
         /// <summary>
