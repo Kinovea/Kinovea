@@ -27,8 +27,6 @@ using System.Linq;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
-
-using AForge.Imaging.Filters;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -146,7 +144,7 @@ namespace Kinovea.ScreenManager
             
             Rectangle rect = UIHelper.RatioStretch(image.Size, new Size(100, 75));
             this.thumbnail = new Bitmap(image, rect.Width, rect.Height);
-            this.disabledThumbnail = Grayscale.CommonAlgorithms.BT709.Apply(thumbnail);
+            this.disabledThumbnail = BitmapHelper.Grayscale(thumbnail);
         }
         #endregion
 
