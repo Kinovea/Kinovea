@@ -101,7 +101,7 @@ namespace Kinovea.ScreenManager
         public DrawingBitmap(long timestamp, long averageTimeStampsPerFrame, Bitmap bmp)
         {
             if (bmp != null)
-                bitmap = AForge.Imaging.Image.Clone(bmp);
+                bitmap = BitmapHelper.Copy(bmp);
 
             valid = bitmap != null;
             Initialize(timestamp, averageTimeStampsPerFrame);
