@@ -509,8 +509,7 @@ namespace Kinovea.ScreenManager
             mnuCatchVideo.DropDownItems.Add(new ToolStripSeparator());
             foreach(ToolStripMenuItem m in filterMenus)
             {
-                if(!(m.Tag is AdjustmentFilter))
-                    mnuCatchVideo.DropDownItems.Add(m);
+                mnuCatchVideo.DropDownItems.Add(m);
             }
             #endregion
 
@@ -1321,11 +1320,6 @@ namespace Kinovea.ScreenManager
                 
                 menu.Visible = filter.Experimental ? Software.Experimental : true;
                 menu.Enabled = hasVideo ? player.IsCaching : false;
-
-                // Temporary deactivation of adjustment filters. (Broken with new AForge version).
-                // They will be repurposed in an export feature so they can be used on the whole video.
-                if (filter is AdjustmentFilter)
-                    menu.Enabled = false;
             }
         }
         private void ConfigureImageFormatMenus(AbstractScreen screen)

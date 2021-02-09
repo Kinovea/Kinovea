@@ -180,9 +180,6 @@
     <Reference Include="AForge, Version=2.2.5.0, Culture=neutral, PublicKeyToken=c1db6ff4eaa06aeb, processorArchitecture=MSIL">
       <HintPath>..\Refs\AForge\AForge.dll</HintPath>
     </Reference>
-    <Reference Include="AForge.Imaging, Version=2.2.5.0, Culture=neutral, PublicKeyToken=ba8ddea9676ca48b, processorArchitecture=MSIL">
-      <HintPath>..\Refs\AForge\AForge.Imaging.dll</HintPath>
-    </Reference>
     <Reference Include="Emgu.CV, Version=2.4.10.1939, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\OpenCV\2.4.10\Emgu.CV.dll</HintPath>
@@ -763,7 +760,6 @@
     <Compile Include="Metadata\Magnifier.cs">
     </Compile>
     <Compile Include="PlayerScreen\VideoFilters\AbstractVideoFilter.cs" />
-    <Compile Include="PlayerScreen\VideoFilters\AdjustmentFilter.cs" />
     <Compile Include="PlayerScreen\VideoFilters\FormPreviewVideoFilter.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -771,13 +767,8 @@
       <DependentUpon>FormPreviewVideoFilter.cs</DependentUpon>
     </Compile>
     <Compile Include="PlayerScreen\VideoFilters\InteractiveEffect.cs" />
-    <Compile Include="PlayerScreen\VideoFilters\VideoFilterAutoLevels.cs" />
-    <Compile Include="PlayerScreen\VideoFilters\VideoFilterContrast.cs" />
-    <Compile Include="PlayerScreen\VideoFilters\VideoFilterSandbox.cs" />
-    <Compile Include="PlayerScreen\VideoFilters\VideoFilterEdgesOnly.cs" />
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterMosaic.cs" />
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterReverse.cs" />
-    <Compile Include="PlayerScreen\VideoFilters\VideoFilterSharpen.cs" />
     <Compile Include="PlayerScreen\ViewportManipulator.cs" />
     <Compile Include="Properties\Backgrounds.Designer.cs">
       <DependentUpon>Backgrounds.resx</DependentUpon>
