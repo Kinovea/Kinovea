@@ -141,7 +141,7 @@ namespace Kinovea.Root
 
             log.Debug("Register global services offered at Root level.");
             
-            Services.FormsHelper.SetMainForm(mainWindow);
+            FormsHelper.SetMainForm(mainWindow);
         }
         #endregion
 

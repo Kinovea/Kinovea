@@ -86,24 +86,27 @@ namespace Kinovea.Camera
                     continue;
                 }
 
-                LoadCameraManagerPlugin(info.Directory, info.AssemblyName, info.ClassName);
+                LoadCameraManagerPlugin(info);
             }
         }
 
-        private static void LoadCameraManagerPlugin(string directory, string assemblyName, string className)
+        private static void LoadCameraManagerPlugin(CameraManagerPluginInfo info)
         {
             // TODO: plugins should go under AppData.
             string appBase = Path.GetDirectoryName(Application.ExecutablePath);
-            string dir = Path.Combine(appBase, "Plugins", "Camera", directory);
+            string dir = Path.Combine(Software.CameraPluginsDirectory, info.Directory);
             if (!Directory.Exists(dir))
             {
-                log.ErrorFormat("Could not find directory of camera manager plugin.");
+                log.ErrorFormat("Could not find directory for camera manager plugin: {0}.", info.Name);
                 return;
             }
 
-            string assemblyFile = Path.Combine(dir, assemblyName) + ".dll";
+            string assemblyFile = Path.Combine(dir, info.AssemblyName) + ".dll";
             if (!File.Exists(assemblyFile))
+            {
+                log.ErrorFormat("Could not find assembly: {0}.", info.AssemblyName);
                 return;
+            }
 
             try
             {
@@ -111,7 +114,7 @@ namespace Kinovea.Camera
                 // Loading into a different AppDomain is not really possible, the code is too tightly coupled for perfs.
                 Assembly a = Assembly.LoadFrom(assemblyFile);
 
-                Type t = a.GetType(className);
+                Type t = a.GetType(info.ClassName);
                 LoadCameraManager(t);
             }
             catch (ReflectionTypeLoadException ex)
@@ -121,7 +124,7 @@ namespace Kinovea.Camera
             }
             catch (Exception e)
             {
-                log.ErrorFormat("Could not load camera manager plugin {0}, {1}", assemblyFile, e.Message);
+                log.ErrorFormat("Could not load camera manager plugin {0}, {1}", info.Name, e.Message);
             }
         }
         
