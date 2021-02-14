@@ -116,14 +116,12 @@ namespace Kinovea.Root
             VideoTypeManager.LoadVideoReaders(videoReaders);
 
             log.Debug("Loading built-in camera managers.");
-            List<Type> cameraManagers = new List<Type>();
-            cameraManagers.Add(typeof(Camera.DirectShow.CameraManagerDirectShow));
-            cameraManagers.Add(typeof(Camera.FrameGenerator.CameraManagerFrameGenerator));
-            cameraManagers.Add(typeof(Camera.HTTP.CameraManagerHTTP));
-            CameraTypeManager.LoadCameraManagers(cameraManagers);
+            CameraTypeManager.LoadCameraManager(typeof(Camera.DirectShow.CameraManagerDirectShow));
+            CameraTypeManager.LoadCameraManager(typeof(Camera.HTTP.CameraManagerHTTP));
+            CameraTypeManager.LoadCameraManager(typeof(Camera.FrameGenerator.CameraManagerFrameGenerator));
 
-            log.Debug("Loading camera managers add-ons.");
-            CameraTypeManager.LoadCameraManagersAddons();
+            log.Debug("Loading camera managers plugins.");
+            CameraTypeManager.LoadCameraManagersPlugins();
 
             log.Debug("Loading tools.");
             ToolManager.LoadTools();

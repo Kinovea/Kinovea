@@ -16,7 +16,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\Kinovea\bin\x64\Debug\Addons\IDS\</OutputPath>
+    <OutputPath>..\Kinovea\bin\x64\Debug\Plugins\Camera\IDS\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>

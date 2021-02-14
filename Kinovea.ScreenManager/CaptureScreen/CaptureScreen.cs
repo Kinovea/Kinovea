@@ -619,7 +619,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void Connect()
         {
-            if (!cameraLoaded || cameraGrabber == null)
+           if (!cameraLoaded || cameraGrabber == null)
                 return;
 
             if (cameraConnected)
@@ -643,7 +643,7 @@ namespace Kinovea.ScreenManager
                     imageDescriptor = ImageDescriptor.Invalid;
                     prepareFailed = true;
                     log.ErrorFormat("The camera does not support configuration and we could not preallocate buffers.");
-                    
+
                     // Attempt to retrieve an image and look up its format on the fly.
                     // This is asynchronous. We'll come back here after the image has been captured or a timeout expired.
                     cameraManager.CameraThumbnailProduced += cameraManager_CameraThumbnailProduced;

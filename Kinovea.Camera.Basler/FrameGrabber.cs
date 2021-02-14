@@ -155,7 +155,7 @@ namespace Kinovea.Camera.Basler
             if (!imageProvider.IsOpen)
                 Open();
 
-            if (!deviceHandle.IsValid || !imageProvider.IsOpen)
+            if (deviceHandle == null || !deviceHandle.IsValid || !imageProvider.IsOpen)
                 return;
 
             log.DebugFormat("Starting device {0}, {1}", summary.Alias, summary.Identifier);

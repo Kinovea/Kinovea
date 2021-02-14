@@ -52,10 +52,6 @@
     <Copy SourceFiles="..\Refs\OpenCV\2.4.10\$(Platform)\opencv_imgproc2410.dll" DestinationFolder="$(TargetDir)\$(Platform)"/>
     <Copy SourceFiles="..\Refs\OpenCV\2.4.10\$(Platform)\OpenCL.dll" DestinationFolder="$(TargetDir)\$(Platform)"/>
 
-    <!--  Because the PylonC.NET is added to the GAC by the Pylon installer, when we build the Basler module in VS the 
-      	  PylonC.NET.dll is not added to the output build. -->
-	<Copy SourceFiles="..\Refs\Basler\Pylon-6.0\PylonC.Net\PylonC.NET.dll" DestinationFolder="$(TargetDir)"/>
-
   </Target>
 
   <Target Name="CopySVGObsRefs">

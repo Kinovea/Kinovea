@@ -25,10 +25,7 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Linq;
-
 using Kinovea.Services;
-using System.Security;
-using System.Security.Permissions;
 
 namespace Kinovea.Camera
 {
@@ -55,33 +52,96 @@ namespace Kinovea.Camera
             }
         }
         #endregion
-        
+
         #region Members
+        private static readonly string APIVersion = "3.0";
         private static List<CameraManager> cameraManagers = new List<CameraManager>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static Timer timerDiscovery = new Timer();
         #endregion
 
         #region Public methods
-
         /// <summary>
-        /// Instanciate builtin camera modules.
+        /// Find and instanciate types implementing the CameraManager base class.
         /// </summary>
-        public static void LoadCameraManagers(List<Type> mgrs)
+        public static void LoadCameraManagersPlugins()
+        {
+            //-----------------------
+            // WORK IN PROGRESS.
+            //-----------------------
+
+            // Prototyping.
+            // Plugins will have a manifest with info.
+            List<CameraManagerPluginInfo> plugins = new List<CameraManagerPluginInfo>();
+            plugins.Add(new CameraManagerPluginInfo("Basler", "Basler", "Kinovea.Camera.Basler", "Kinovea.Camera.Basler.CameraManagerBasler", "3.0"));
+            plugins.Add(new CameraManagerPluginInfo("IDS", "IDS", "Kinovea.Camera.IDS", "Kinovea.Camera.IDS.CameraManagerIDS", "3.0"));
+            plugins.Add(new CameraManagerPluginInfo("Daheng", "Daheng", "Kinovea.Camera.Daheng", "Kinovea.Camera.Daheng.CameraManagerDaheng", "3.0"));
+
+            foreach (CameraManagerPluginInfo info in plugins)
+            {
+                if (info.APIVersion != APIVersion)
+                {
+                    log.ErrorFormat("The camera plugin \"{0}\" is incompatible with this version of Kinovea. Current API Version: {1}, Plugin API version: {2}.", 
+                        info.Name, APIVersion, info.APIVersion);
+                    continue;
+                }
+
+                LoadCameraManagerPlugin(info.Directory, info.AssemblyName, info.ClassName);
+            }
+        }
+
+        private static void LoadCameraManagerPlugin(string directory, string assemblyName, string className)
+        {
+            // TODO: plugins should go under AppData.
+            string appBase = Path.GetDirectoryName(Application.ExecutablePath);
+            string dir = Path.Combine(appBase, "Plugins", "Camera", directory);
+            if (!Directory.Exists(dir))
+            {
+                log.ErrorFormat("Could not find directory of camera manager plugin.");
+                return;
+            }
+
+            string assemblyFile = Path.Combine(dir, assemblyName) + ".dll";
+            if (!File.Exists(assemblyFile))
+                return;
+
+            try
+            {
+                // LoadFrom is problematic on many systems for assemblies downloaded from the Internet.
+                // Loading into a different AppDomain is not really possible, the code is too tightly coupled for perfs.
+                Assembly a = Assembly.LoadFrom(assemblyFile);
+
+                Type t = a.GetType(className);
+                LoadCameraManager(t);
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                foreach (Exception exception in ex.LoaderExceptions)
+                    log.ErrorFormat(exception.Message.ToString());
+            }
+            catch (Exception e)
+            {
+                log.ErrorFormat("Could not load camera manager plugin {0}, {1}", assemblyFile, e.Message);
+            }
+        }
+        
+        /// <summary>
+        /// Load one camera manager by type.
+        /// At this point the assembly hosting the type must be loaded.
+        /// </summary>
+        public static void LoadCameraManager(Type t)
         {
             try
             {
-                foreach (Type t in mgrs)
-                {
-                    if (!IsCompatibleType(t))
-                        continue;
+                if (!IsCompatibleType(t))
+                    return;
 
-                    ConstructorInfo ci = t.GetConstructor(System.Type.EmptyTypes);
-                    if (ci == null)
-                        continue;
+                ConstructorInfo ci = t.GetConstructor(System.Type.EmptyTypes);
+                if (ci == null)
+                    return;
 
-                    ProcessType(t);
-                }
+                CameraManager manager = (CameraManager)Activator.CreateInstance(t, null);
+                AddCameraManager(manager);
             }
             catch (ReflectionTypeLoadException ex)
             {
@@ -91,64 +151,8 @@ namespace Kinovea.Camera
         }
 
         /// <summary>
-        /// Find and instanciate types implementing the CameraManager base class.
+        /// Start the camera discovery timer.
         /// </summary>
-        public static void LoadCameraManagersAddons()
-        {
-            //----------------------------
-            // Broken.
-            // Assembly.LoadFrom() doesn't work for assemblies coming from the internet.
-            //----------------------------
-
-
-            // Prototyping.
-            // This will come from an addon manager and manifest files.
-            List<string> addons = new List<string>();
-            addons.Add("Addons/Basler");
-            addons.Add("Addons/Daheng");
-            addons.Add("Addons/IDS");
-
-            foreach (var addon in addons)
-                LoadCameraManagerAddon(addon);
-        }
-
-        private static void LoadCameraManagerAddon(string addonDir)
-        {
-            List<Assembly> assemblies = new List<Assembly>();
-            string appBase = Path.GetDirectoryName(Application.ExecutablePath);
-            string dir = Path.Combine(appBase, addonDir);
-            if (!Directory.Exists(dir))
-                return;
-
-            IEnumerable<string> files = Directory.GetFiles(dir, "Kinovea.Camera.*.dll");
-            foreach (string filename in files)
-                AddAssembly(filename, assemblies);
-                        
-            // Register the camera managers.
-            foreach (Assembly a in assemblies)
-            {
-                try
-                {
-                    foreach(Type t in a.GetTypes())
-                    {
-                        if (!IsCompatibleType(t))
-                            continue;
-
-                        ConstructorInfo ci = t.GetConstructor(System.Type.EmptyTypes);
-                        if (ci == null)
-                            continue;
-
-                        ProcessType(t);
-                    }
-                }
-                catch (ReflectionTypeLoadException ex)
-                {        
-                    foreach (Exception exception in ex.LoaderExceptions)
-                        log.ErrorFormat(exception.Message.ToString());
-                }
-            }
-        }
-
         public static void StartDiscoveringCameras()
         {
             if(timerDiscovery.Enabled)
@@ -160,6 +164,9 @@ namespace Kinovea.Camera
             timerDiscovery.Enabled = true;
         }
         
+        /// <summary>
+        /// Stop the camera discovery timer.
+        /// </summary>
         public static void StopDiscoveringCameras()
         {
             log.DebugFormat("Stop discovering cameras");
@@ -191,54 +198,49 @@ namespace Kinovea.Camera
             if (CameraForgotten != null)
                 CameraForgotten(null, new EventArgs<CameraSummary>(summary));
         }
-        
+
         #endregion
-        
+
         #region Private methods
+        /// <summary>
+        /// Returns true if the type is a camera manager.
+        /// </summary>
         private static bool IsCompatibleType(Type t)
         {
             return t.BaseType != null && !t.IsAbstract && t.BaseType.Name == "CameraManager";
         }
-        private static void AddAssembly(string filename, List<Assembly> list)
+
+        /// <summary>
+        /// Try to add an instantiated camera manager object to our rooster.
+        /// </summary>
+        private static void AddCameraManager(CameraManager manager)
         {
             try
             {
-                Assembly pluginAssembly = Assembly.LoadFrom(filename);
-                list.Add(pluginAssembly);
+                if (!manager.Enabled)
+                {
+                    log.InfoFormat("{0} camera manager is disabled.", manager.CameraTypeFriendlyName);
+                    return;
+                }
+
+                if (manager.SanityCheck())
+                {
+                    manager.CameraThumbnailProduced += CameraManager_CameraThumbnailProduced;
+                    cameraManagers.Add(manager);
+                    log.InfoFormat("Initialized {0} camera manager.", manager.CameraTypeFriendlyName);
+                }
+                else
+                {
+                    log.InfoFormat("{0} camera manager failed sanity check.", manager.CameraTypeFriendlyName);
+                }
+            }
+            catch (FileNotFoundException e)
+            {
+                log.InfoFormat("{0} camera manager is missing dependencies. {1}", manager.CameraTypeFriendlyName, e.Message);
             }
             catch (Exception e)
             {
-                log.ErrorFormat("Could not load assembly {0} for camera types plugin. {1}", filename, e.Message);
-            }
-        }
-
-        private static void ProcessType(Type t)
-        {
-            CameraManager manager = (CameraManager)Activator.CreateInstance(t, null);
-
-            if (manager.Enabled)
-            {
-                try
-                {
-                    if (manager.SanityCheck())
-                    {
-                        manager.CameraThumbnailProduced += CameraManager_CameraThumbnailProduced;
-                        cameraManagers.Add(manager);
-                        log.InfoFormat("Initialized {0} camera manager.", manager.CameraTypeFriendlyName);
-                    }
-                    else
-                    {
-                        log.InfoFormat("{0} camera manager failed sanity check.", manager.CameraTypeFriendlyName);
-                    }
-                }
-                catch (FileNotFoundException)
-                {
-                    log.InfoFormat("{0} camera manager is missing dependencies.", manager.CameraTypeFriendlyName);
-                }
-            }
-            else
-            {
-                log.InfoFormat("{0} camera manager is disabled.", manager.CameraTypeFriendlyName);
+                log.InfoFormat("Error while initializing {0}. {1}", manager.CameraTypeFriendlyName, e.Message);
             }
         }
         
@@ -246,13 +248,14 @@ namespace Kinovea.Camera
         {
             CheckCameras();
         }
-        
+
+        /// <summary>
+        /// Ask each camera manager plugin to discover its cameras.
+        /// This can be dynamic or based on previously saved data.
+        /// Camera managers should also try to connect to the cameras and raise the CameraThumbnailProduced event.
+        /// </summary>
         private static void CheckCameras()
         {
-            // Ask each plug-in to discover its cameras.
-            // This can be dynamic or based on previously saved data.
-            // Camera managers should also try to connect to the cameras and raise the CameraThumbnailProduced event.
-            
             IEnumerable<CameraBlurb> cameraBlurbs = PreferencesManager.CapturePreferences.CameraBlurbs;
             
             List<CameraSummary> summaries = new List<CameraSummary>();
@@ -262,16 +265,15 @@ namespace Kinovea.Camera
             if(CamerasDiscovered != null)
                 CamerasDiscovered(null, new CamerasDiscoveredEventArgs(summaries));
         }
-        
+
         /// <summary>
-        /// Receive a new thumbnail from a camera and forward it upstream.
+        /// Receive a new thumbnail from a camera and raise CameraThumbnailProduced.
+        /// The handler runs in a worker thread spawn the camera manager.
+        /// The final event handler will have to merge back into the UI thread before using the bitmap.
         /// </summary>
         private static void CameraManager_CameraThumbnailProduced(object sender, CameraThumbnailProducedEventArgs e)
         {
-            // This runs in a worker thread.
-            // The final event handler will have to merge back into the UI thread before using the bitmap.
-            if (CameraThumbnailProduced != null)
-                CameraThumbnailProduced(sender, e);
+            CameraThumbnailProduced?.Invoke(sender, e);
         }
         #endregion
     }
