@@ -559,6 +559,7 @@ namespace Kinovea.ScreenManager
 
                 // We found our camera.
                 log.DebugFormat("Camera discovery: found {0}", cameraSummary.Alias);
+                CameraTypeManager.CancelThumbnails();
 
                 discovered = true;
                 CameraTypeManager.CamerasDiscovered -= CameraTypeManager_CamerasDiscovered;
@@ -647,7 +648,7 @@ namespace Kinovea.ScreenManager
                     // Attempt to retrieve an image and look up its format on the fly.
                     // This is asynchronous. We'll come back here after the image has been captured or a timeout expired.
                     cameraManager.CameraThumbnailProduced += cameraManager_CameraThumbnailProduced;
-                    cameraManager.GetSingleImage(cameraSummary);
+                    cameraManager.StartThumbnail(cameraSummary);
                 }
             }
 
@@ -778,7 +779,11 @@ namespace Kinovea.ScreenManager
             // We get a single snapshot back with its image descriptor.
             cameraManager.CameraThumbnailProduced -= cameraManager_CameraThumbnailProduced;
             prepareFailedImageDescriptor = e.ImageDescriptor;
-            Connect();
+
+            if (e.Cancelled || e.HadError || e.Thumbnail == null)
+                log.ErrorFormat("Abandon trying to connect to camera {0}", e.Summary.Alias);
+            else
+                Connect();
         }
 
         /// <summary>

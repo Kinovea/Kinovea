@@ -38,7 +38,18 @@ namespace Kinovea.Camera.HTTP
         { 
             get { return this.summary.Identifier;}
         }
-        
+
+        public string Alias
+        {
+            get { return summary.Alias; }
+        }
+
+        public Thread Thread
+        {
+            get { return snapperThread; }
+        }
+
+
         #region Members
         private static readonly int timeout = 5000;
         private Bitmap image;
@@ -48,6 +59,8 @@ namespace Kinovea.Camera.HTTP
         private bool cancelled;
         private bool hadError;
         private ICameraHTTPClient device;
+        private Thread snapperThread;
+        private object locker = new object();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -58,12 +71,19 @@ namespace Kinovea.Camera.HTTP
             string url = "";
             SpecificInfo specific = summary.Specific as SpecificInfo;
             if(specific != null)
-                url = manager.BuildURL(specific);
+                url = URLHelper.BuildURL(specific);
             
             if(specific.Format == "MJPEG")
                 device = new CameraHTTPClientMJPEG(url, specific.User, specific.Password);
             else if(specific.Format == "JPEG")
                 device = new CameraHTTPClientJPEG(url, specific.User, specific.Password);
+        }
+
+        public void Start()
+        {
+            snapperThread = new Thread(Run) { IsBackground = true };
+            snapperThread.Name = string.Format("{0} thumbnailer", summary.Alias);
+            snapperThread.Start();
         }
 
         /// <summary>
@@ -72,7 +92,6 @@ namespace Kinovea.Camera.HTTP
         /// </summary>
         public void Run(object data)
         {
-            Thread.CurrentThread.Name = string.Format("{0} thumbnailer", summary.Alias);
             log.DebugFormat("Starting {0} for thumbnail.", summary.Alias);
 
             if (device == null)
@@ -89,22 +108,35 @@ namespace Kinovea.Camera.HTTP
             device.Start();
 
             waitHandle.WaitOne(timeout, false);
-            
-            device.NewFrame -= Device_NewFrame;
-            device.VideoSourceError -= Device_VideoSourceError;
+
+            lock (locker)
+            {
+                if (!cancelled)
+                {
+                    device.NewFrame -= Device_NewFrame;
+                    device.VideoSourceError -= Device_VideoSourceError;
+                    device.SignalToStop();
+                }
+            }
             
             if(CameraThumbnailProduced != null)
                 CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, imageDescriptor, hadError, cancelled));
-
-            device.SignalToStop();
-            
-            // TODO: wait for a bit then kill the thread.
-            //device.WaitForStop();
         }
 
         public void Cancel()
         {
-            cancelled = true;
+            // Runs in UI thread.
+            log.DebugFormat("Cancelling thumbnail for {0}.", Alias);
+
+            lock (locker)
+            {
+                device.NewFrame -= Device_NewFrame;
+                device.VideoSourceError -= Device_VideoSourceError;
+                device.SignalToStop();
+
+                cancelled = true;
+            }
+
             waitHandle.Set();
         }
         

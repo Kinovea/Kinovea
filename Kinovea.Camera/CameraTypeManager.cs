@@ -165,13 +165,25 @@ namespace Kinovea.Camera
         }
         
         /// <summary>
-        /// Stop the camera discovery timer.
+        /// Stop the camera discovery timer and cancel any thumbnail in progress.
         /// </summary>
         public static void StopDiscoveringCameras()
         {
             log.DebugFormat("Stop discovering cameras");
             timerDiscovery.Enabled = false;
             timerDiscovery.Tick -= timerDiscovery_Tick;
+
+            CancelThumbnails();
+        }
+
+        /// <summary>
+        /// Stop any camera thumbnail going on.
+        /// </summary>
+        public static void CancelThumbnails()
+        {
+            log.DebugFormat("Cancelling all thumbnails.");
+            foreach (CameraManager manager in cameraManagers)
+              manager.StopAllThumbnails();
         }
 
         public static void UpdatedCameraSummary(CameraSummary summary)
@@ -184,7 +196,7 @@ namespace Kinovea.Camera
         
         public static void LoadCamera(CameraSummary summary, int target)
         {
-            if(CameraLoadAsked != null)
+            if (CameraLoadAsked != null)
                 CameraLoadAsked(null, new CameraLoadAskedEventArgs(summary, target));
         }
         
@@ -267,9 +279,9 @@ namespace Kinovea.Camera
         }
 
         /// <summary>
-        /// Receive a new thumbnail from a camera and raise CameraThumbnailProduced.
-        /// The handler runs in a worker thread spawn the camera manager.
-        /// The final event handler will have to merge back into the UI thread before using the bitmap.
+        /// Receive a new thumbnail from a camera and raise CameraThumbnailProduced in turn.
+        /// The camera manager should make sure this runs in the UI thread.
+        /// This event should always be raised, even if the thumbnail could not be retrieved.
         /// </summary>
         private static void CameraManager_CameraThumbnailProduced(object sender, CameraThumbnailProducedEventArgs e)
         {

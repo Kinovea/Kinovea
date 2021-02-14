@@ -14,6 +14,9 @@ namespace Kinovea.ScreenManager
     {
         public static void LoadCameraInScreen(ScreenManagerKernel manager, CameraSummary summary, int targetScreen, ScreenDescriptionCapture screenDescription = null)
         {
+            CameraTypeManager.CancelThumbnails();
+            CameraTypeManager.StopDiscoveringCameras();
+
             if (targetScreen < 0)
                 LoadUnspecified(manager, summary, screenDescription);
             else

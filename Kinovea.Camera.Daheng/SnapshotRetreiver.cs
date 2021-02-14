@@ -42,6 +42,16 @@ namespace Kinovea.Camera.Daheng
             get { return this.summary.Identifier; }
         }
 
+        public string Alias
+        {
+            get { return summary.Alias; }
+        }
+
+        public Thread Thread
+        {
+            get { return snapperThread; }
+        }
+
         #region Members
         private static readonly int timeoutGrabbing = 5000;
 
@@ -59,6 +69,8 @@ namespace Kinovea.Camera.Daheng
         const uint GX_PIXEL_8BIT = 0x00080000;                        ///<8 bit data image format
         private bool cancelled;
         private bool hadError;
+        private Thread snapperThread;
+        private object locker = new object();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -85,6 +97,13 @@ namespace Kinovea.Camera.Daheng
             }
         }
 
+        public void Start()
+        {
+            snapperThread = new Thread(Run) { IsBackground = true };
+            snapperThread.Name = string.Format("{0} thumbnailer", summary.Alias);
+            snapperThread.Start();
+        }
+
         /// <summary>
         /// Start the device for a frame grab, wait a bit and then return the result.
         /// This method MUST raise a CameraThumbnailProduced event, even in case of error.
@@ -100,7 +119,6 @@ namespace Kinovea.Camera.Daheng
                 return;
             }
 
-            Thread.CurrentThread.Name = string.Format("{0} thumbnailer", summary.Alias);
             log.DebugFormat("Starting {0} for thumbnail.", summary.Alias);
 
             try
@@ -119,7 +137,11 @@ namespace Kinovea.Camera.Daheng
 
             waitHandle.WaitOne(timeoutGrabbing, false);
 
-            Close();
+            lock (locker)
+            {
+                if (!cancelled)
+                    Close();
+            }
 
             if (CameraThumbnailProduced != null)
                 CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, imageDescriptor, hadError, cancelled));
@@ -127,10 +149,17 @@ namespace Kinovea.Camera.Daheng
 
         public void Cancel()
         {
+            log.DebugFormat("Cancelling thumbnail for {0}.", Alias);
+
             if (device == null || stream == null)
                 return;
+            
+            lock (locker)
+            {
+                Close();
+                cancelled = true;
+            }
 
-            cancelled = true;
             waitHandle.Set();
         }
 

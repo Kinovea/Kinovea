@@ -2384,7 +2384,6 @@ namespace Kinovea.ScreenManager
 
         private void CameraTypeManager_CameraLoadAsked(object source, CameraLoadAskedEventArgs e)
         {
-            CameraTypeManager.StopDiscoveringCameras();
             DoLoadCameraInScreen(e.Source, e.Target);
         }
 

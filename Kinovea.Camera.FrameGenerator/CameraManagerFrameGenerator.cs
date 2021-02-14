@@ -26,6 +26,7 @@ using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
+using System.Linq;
 using Kinovea.Services;
 
 namespace Kinovea.Camera.FrameGenerator
@@ -52,7 +53,7 @@ namespace Kinovea.Camera.FrameGenerator
         #endregion
 
         #region Members
-        private List<string> snapshotting = new List<string>();
+        private List<SnapshotRetriever> snapshotting = new List<SnapshotRetriever>();
         private Bitmap defaultIcon;
         private string defaultAlias = "Camera simulator";
         private string defaultName = "Camera simulator";
@@ -102,16 +103,31 @@ namespace Kinovea.Camera.FrameGenerator
         {
         }
 
-        public override void GetSingleImage(CameraSummary summary)
+        public override void StartThumbnail(CameraSummary summary)
         {
-            if (snapshotting.IndexOf(summary.Identifier) >= 0)
+            SnapshotRetriever snapper = snapshotting.FirstOrDefault(s => s.Identifier == summary.Identifier);
+            if (snapper != null)
                 return;
 
-            // Spawn a thread to get a snapshot.
-            SnapshotRetriever retriever = new SnapshotRetriever(summary);
-            retriever.CameraThumbnailProduced += SnapshotRetriever_CameraThumbnailProduced;
-            snapshotting.Add(summary.Identifier);
-            ThreadPool.QueueUserWorkItem(retriever.Run);
+            snapper = new SnapshotRetriever(summary);
+            snapper.CameraThumbnailProduced += SnapshotRetriever_CameraThumbnailProduced;
+            snapshotting.Add(snapper);
+            snapper.Start();
+        }
+
+        public override void StopAllThumbnails()
+        {
+            for (int i = snapshotting.Count - 1; i >= 0; i--)
+            {
+                SnapshotRetriever snapper = snapshotting[i];
+                snapper.Cancel();
+                snapper.Thread.Join(500);
+                if (snapper.Thread.IsAlive)
+                    snapper.Thread.Abort();
+
+                snapper.CameraThumbnailProduced -= SnapshotRetriever_CameraThumbnailProduced;
+                snapshotting.RemoveAt(i);
+            }
         }
 
         public override CameraBlurb BlurbFromSummary(CameraSummary summary)
@@ -181,12 +197,19 @@ namespace Kinovea.Camera.FrameGenerator
 
         private void SnapshotRetriever_CameraThumbnailProduced(object sender, CameraThumbnailProducedEventArgs e)
         {
-            SnapshotRetriever retriever = sender as SnapshotRetriever;
-            if (retriever != null)
-            {
-                retriever.CameraThumbnailProduced -= SnapshotRetriever_CameraThumbnailProduced;
-                snapshotting.Remove(retriever.Identifier);
-            }
+            Invoke((Action)delegate { ProcessThumbnail(sender, e); });
+        }
+
+        private void ProcessThumbnail(object sender, CameraThumbnailProducedEventArgs e)
+        {
+            SnapshotRetriever snapper = sender as SnapshotRetriever;
+            if (snapper == null)
+                return;
+
+            log.DebugFormat("Received thumbnail event for {0}. Cancelled: {1}.", snapper.Alias, e.Cancelled);
+            snapper.CameraThumbnailProduced -= SnapshotRetriever_CameraThumbnailProduced;
+            if (snapshotting.Contains(snapper))
+                snapshotting.Remove(snapper);
 
             OnCameraThumbnailProduced(e);
         }

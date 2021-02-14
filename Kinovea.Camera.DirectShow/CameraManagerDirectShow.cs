@@ -58,20 +58,18 @@ namespace Kinovea.Camera.DirectShow
         #endregion
     
         #region Members
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private Dictionary<string, CameraSummary> cache = new Dictionary<string, CameraSummary>();
         private List<SnapshotRetriever> snapshotting = new List<SnapshotRetriever>();
+        private Dictionary<string, CameraSummary> cache = new Dictionary<string, CameraSummary>();
         private HashSet<string> blacklist = new HashSet<string>();
         private Regex idsPattern = new Regex(@"^UI\d{3,4}");
         private Regex baslerPattern = new Regex(@"^Basler GenICam");
         private Regex dahengPattern = new Regex(@"^Daheng Imaging");
-        private Control dummy = new Control();
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
         public CameraManagerDirectShow()
         {   
             blacklist.Add("Basler GenICam Source");
-            IntPtr forceHandleCreation = dummy.Handle; // Needed to show that the main thread "owns" this Control.
         }
 
         public override bool SanityCheck()
@@ -164,7 +162,7 @@ namespace Kinovea.Camera.DirectShow
                 cache.Remove(summary.Identifier);
         }
         
-        public override void GetSingleImage(CameraSummary summary)
+        public override void StartThumbnail(CameraSummary summary)
         {
             SnapshotRetriever snapper = snapshotting.FirstOrDefault(s => s.Identifier == summary.Identifier);
             if (snapper != null)
@@ -178,7 +176,22 @@ namespace Kinovea.Camera.DirectShow
             snapshotting.Add(snapper);
             snapper.Start();
         }
-        
+
+        public override void StopAllThumbnails()
+        {
+            for (int i = snapshotting.Count - 1; i >= 0; i--)
+            {
+                SnapshotRetriever snapper = snapshotting[i];
+                snapper.Cancel();
+                snapper.Thread.Join(500);
+                if (snapper.Thread.IsAlive)
+                    snapper.Thread.Abort();
+
+                snapper.CameraThumbnailProduced -= SnapshotRetriever_CameraThumbnailProduced;
+                snapshotting.RemoveAt(i);
+            }
+        }
+
         public override CameraBlurb BlurbFromSummary(CameraSummary summary)
         {
             string specific = SpecificInfoSerialize(summary);
@@ -188,18 +201,6 @@ namespace Kinovea.Camera.DirectShow
         
         public override ICaptureSource CreateCaptureSource(CameraSummary summary)
         {
-            SnapshotRetriever snapper = snapshotting.FirstOrDefault(s => s.Identifier == summary.Identifier);
-            if (snapper != null)
-            {
-                snapper.Cancel();
-                snapper.Thread.Join(500);
-                if (snapper.Thread.IsAlive)
-                    snapper.Thread.Abort();
-
-                snapper.CameraThumbnailProduced -= SnapshotRetriever_CameraThumbnailProduced;
-                snapshotting.Remove(snapper);
-            }
-            
             string moniker = summary.Identifier;
             FrameGrabber grabber = new FrameGrabber(summary, moniker);
             return grabber;
@@ -272,11 +273,8 @@ namespace Kinovea.Camera.DirectShow
 
         private void SnapshotRetriever_CameraThumbnailProduced(object sender, CameraThumbnailProducedEventArgs e)
         {
-            //--------------------------------
-            // Runs in the snapshotter thread.
-            //--------------------------------
-            if (!dummy.IsDisposed && dummy.IsHandleCreated)
-                dummy.BeginInvoke((Action)delegate { ProcessThumbnail(sender, e); });
+            // Runs in the snapshotter thread, move to the UI thread.
+            Invoke((Action)delegate { ProcessThumbnail(sender, e); });
         }
 
         private void ProcessThumbnail(object sender, CameraThumbnailProducedEventArgs e)
@@ -285,12 +283,12 @@ namespace Kinovea.Camera.DirectShow
             if (snapper == null)
                 return;
 
-            log.DebugFormat("Received thumbnail for {0}.", snapper.Alias);
+            log.DebugFormat("Received thumbnail event for {0}. Cancelled: {1}.", snapper.Alias, e.Cancelled);
             snapper.CameraThumbnailProduced -= SnapshotRetriever_CameraThumbnailProduced;
-            snapshotting.Remove(snapper);
+            if (snapshotting.Contains(snapper))
+                snapshotting.Remove(snapper);
             
-            if (!e.Cancelled)
-                OnCameraThumbnailProduced(e);
+            OnCameraThumbnailProduced(e);
         }
 
         private Bitmap SelectDefaultIcon(string identifier)

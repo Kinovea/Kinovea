@@ -71,7 +71,6 @@ namespace Kinovea.ScreenManager
         }
         public void CameraImageReceived(CameraSummary summary, Bitmap image)
         {
-            // This generally runs in a worker thread in the camera manager plug-in.
             if(this.InvokeRequired)
                 this.BeginInvoke((Action) delegate {UpdateThumbnailImage(summary, image);});
             else
@@ -131,13 +130,14 @@ namespace Kinovea.ScreenManager
                 if(index >= 0)
                 {
                     if (refreshImages)
-                        summary.Manager.GetSingleImage(summary);
+                        summary.Manager.StartThumbnail(summary);
 
                     continue;
                 }
                 
+                // New camera, add it to the list and start async thumbnail retrieval.
                 updated = true;
-                summary.Manager.GetSingleImage(summary);
+                summary.Manager.StartThumbnail(summary);
                 AddThumbnail(new ThumbnailCamera(summary));
             }
             

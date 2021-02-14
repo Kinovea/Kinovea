@@ -78,7 +78,7 @@ namespace Kinovea.Camera.HTTP
             if (specific == null)
                 return;
 
-            string url = manager.BuildURL(specific);
+            string url = URLHelper.BuildURL(specific);
             this.format = specific.Format;
             
             if (format == "MJPEG")

@@ -167,7 +167,7 @@ namespace Kinovea.Camera.HTTP
         
         private void PopulateURL()
         {
-            tbURL.Text = manager.BuildURL(CreateSpecific());
+            tbURL.Text = URLHelper.BuildURL(CreateSpecific());
         }
         
         #region Parameters event handlers
