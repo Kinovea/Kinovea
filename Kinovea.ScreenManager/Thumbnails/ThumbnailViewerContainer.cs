@@ -304,7 +304,7 @@ namespace Kinovea.ScreenManager
         }
         private void CameraTypeManager_CameraThumbnailProduced(object sender, CameraThumbnailProducedEventArgs e)
         {
-            if(currentContent == ThumbnailViewerContent.Cameras && !e.HadError && !e.Cancelled)
+            if(!e.HadError && !e.Cancelled)
                 viewerCameras.CameraImageReceived(e.Summary, e.Thumbnail);
         }
         private void ThumbnailViewerContainer_Load(object sender, EventArgs e)
