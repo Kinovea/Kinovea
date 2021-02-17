@@ -92,7 +92,7 @@ namespace Kinovea.ScreenManager
         public void Unhide()
         {
             this.Visible = true;
-            
+
             this.Cursor = Cursors.WaitCursor;
             
             if (currentContent == ThumbnailViewerContent.Files)
@@ -213,6 +213,8 @@ namespace Kinovea.ScreenManager
         {
             if(viewer != null && currentContent == newContent)
                 return;
+
+            log.DebugFormat("Switching from {0} to {1}.", currentContent, newContent);
             
             ClearContent();
             this.splitMain.Panel2.Controls.Clear();
@@ -233,7 +235,7 @@ namespace Kinovea.ScreenManager
                     }
                 case ThumbnailViewerContent.Cameras:
                     {
-                        CameraTypeManager.StartDiscoveringCameras();
+                        viewerCameras.BeforeSwitch();
                         viewerCameras.UpdateThumbnailsSize(sizeSelector.SelectedSize);
                         viewer = viewerCameras;
                         break;

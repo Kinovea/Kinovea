@@ -103,6 +103,12 @@ namespace Kinovea.Camera.FrameGenerator
         {
         }
 
+        public override CameraSummary GetCameraSummary(string alias)
+        {
+            // TODO: keep a cache of cameras.
+            return null;
+        }
+
         public override void StartThumbnail(CameraSummary summary)
         {
             SnapshotRetriever snapper = snapshotting.FirstOrDefault(s => s.Identifier == summary.Identifier);

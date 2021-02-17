@@ -76,25 +76,29 @@ namespace Kinovea.Camera.IDS
 
             try
             {
+                log.DebugFormat("Calling camera.Init for {0}.", summary.Alias);
                 uEye.Defines.Status status = camera.Init((Int32)deviceId | (Int32)uEye.Defines.DeviceEnumeration.UseDeviceID);
-
                 if (status != uEye.Defines.Status.SUCCESS)
                 {
                     log.ErrorFormat("Camera {0} could not be opened for thumbnail capture.", summary.Alias);
                     return;
                 }
 
+                log.DebugFormat("{0} initialized.", summary.Alias);
+
                 // We do not load the camera-specific profile for the thumbnail at the moment.
                 // For some reason the .ToBitmap method doesn't work well on the RGB32 format, so in order to at least have something we 
                 // load the camera on the default profile for the thumbnail.
-                //ProfileHelper.Load(camera, ProfileHelper.GetProfileFilename(summary.Identifier));
-
+                
+                log.DebugFormat("Allocating memory for {0} thumbnail.", summary.Alias);
                 status = camera.Memory.Allocate();
                 if (status != uEye.Defines.Status.SUCCESS)
                 {
                     log.ErrorFormat("Camera {0} could not have its buffer allocated for thumbnail capture.", summary.Alias); 
                     return;
                 }
+
+                log.DebugFormat("Ready to start thumbnail thread for {0}.", summary.Alias);
             }
             catch (Exception e) 
             {
@@ -104,6 +108,7 @@ namespace Kinovea.Camera.IDS
 
         public void Start()
         {
+            log.DebugFormat("Starting thumbnail thread for {0}", summary.Alias);
             snapperThread = new Thread(Run) { IsBackground = true };
             snapperThread.Name = string.Format("{0} thumbnailer", summary.Alias);
             snapperThread.Start();

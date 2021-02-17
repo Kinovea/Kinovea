@@ -170,8 +170,14 @@ namespace Kinovea.Camera.IDS
             ProfileHelper.Delete(summary.Identifier);
         }
 
+        public override CameraSummary GetCameraSummary(string alias)
+        {
+            return cache.Values.FirstOrDefault(s => s.Alias == alias);
+        }
+
         public override void StartThumbnail(CameraSummary summary)
         {
+            log.DebugFormat("Start thumbnail for {0}.", summary.Alias);
             SnapshotRetriever snapper = snapshotting.FirstOrDefault(s => s.Identifier == summary.Identifier);
             if (snapper != null)
                 return;

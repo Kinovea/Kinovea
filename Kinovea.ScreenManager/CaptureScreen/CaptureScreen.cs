@@ -508,30 +508,56 @@ namespace Kinovea.ScreenManager
 
             cameraSummary = _cameraSummary;
 
-            if (cameraSummary.Manager == null)
+            if (cameraSummary.Manager != null)
             {
-                // Special case for when we want to load a camera but it may not be available yet.
-                if (string.IsNullOrEmpty(cameraSummary.Alias))
+                cameraManager = cameraSummary.Manager;
+                cameraGrabber = cameraManager.CreateCaptureSource(cameraSummary);
+                AssociateCamera(true);
+                return;
+            }
+            
+            // No camera manager in the camera summary: special case for when we want to load a camera from launch settings.
+            
+            if (string.IsNullOrEmpty(cameraSummary.Alias))
+            {
+                // Loading an empty screen through launch settings. Our job is done here.
+                return;
+            }
+                
+            // Loading a camera through launch settings.
+            // At this point we don't know if the camera has been discovered yet or not.
+            log.DebugFormat("Restoring camera: {0}", cameraSummary.Alias);
+
+            CameraSummary summary2 = CameraTypeManager.GetCameraSummary(cameraSummary.Alias);
+            if (summary2 != null)
+            {
+                log.DebugFormat("Camera is already known.");
+
+                if (CameraDiscoveryComplete != null)
+                    CameraDiscoveryComplete(this, new EventArgs<string>(cameraSummary.Alias));
+
+                // Finish loading the screen.
+                cameraSummary = summary2;
+                cameraManager = cameraSummary.Manager;
+                cameraGrabber = cameraManager.CreateCaptureSource(cameraSummary);
+
+                bool connect = screenDescription != null ? screenDescription.Autostream : true;
+                AssociateCamera(connect);
+
+                if (screenDescription != null && cameraLoaded && cameraConnected)
                 {
-                    // Loading an empty screen through launch settings. Our job is done here.
-                    return;
-                }
-                else
-                {
-                    log.DebugFormat("Restoring camera: {0}", cameraSummary.Alias);
-                    CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
-                    stopwatchDiscovery.Start();
-                    this.screenDescription = screenDescription;
-                    CameraTypeManager.StartDiscoveringCameras();
+                    view.ForceDelaySeconds(screenDescription.Delay);
+                    delayedDisplay = screenDescription.DelayedDisplay;
                 }
             }
             else
             {
-                cameraManager = cameraSummary.Manager;
-                cameraGrabber = cameraManager.CreateCaptureSource(cameraSummary);
+                // We don't know about this camera yet. Go through normal discovery.
+                this.screenDescription = screenDescription;
+                CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
+                stopwatchDiscovery.Start();
+                CameraTypeManager.StartDiscoveringCameras();
             }
-
-            AssociateCamera(true);
         }
 
         private void AssociateCamera(bool connect)

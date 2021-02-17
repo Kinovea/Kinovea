@@ -186,6 +186,11 @@ namespace Kinovea.Camera.Basler
                 cache.Remove(summary.Identifier);
         }
 
+        public override CameraSummary GetCameraSummary(string alias)
+        {
+            return cache.Values.FirstOrDefault(s => s.Alias == alias);
+        }
+
         public override void StartThumbnail(CameraSummary summary)
         {
             SnapshotRetriever snapper = snapshotting.FirstOrDefault(s => s.Identifier == summary.Identifier);

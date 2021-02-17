@@ -49,6 +49,8 @@ namespace Kinovea.ScreenManager
         
         public ThumbnailViewerCameras()
         {
+            log.Debug("Constructing ThumbnailViewerCameras");
+
             InitializeComponent();
             //RefreshUICulture();
             this.Dock = DockStyle.Fill;
@@ -93,6 +95,12 @@ namespace Kinovea.ScreenManager
 
             RemoveThumbnail(thumbnailControls[index]);
             Refresh();
+        }
+
+        public void BeforeSwitch()
+        {
+            CameraTypeManager.StartDiscoveringCameras();
+            refreshImages = true;
         }
         
         public void UpdateThumbnailsSize(ExplorerThumbSize newSize)
@@ -242,6 +250,7 @@ namespace Kinovea.ScreenManager
             if(summary == null)
                 return;
             
+            log.DebugFormat("UpdateThumbnailImage for {0}.", summary.Alias);
             int index = IndexOf(summary.Identifier);
             if(index < 0)
                 return;

@@ -94,6 +94,12 @@ namespace Kinovea.Camera
         public abstract void ForgetCamera(CameraSummary summary);
 
         /// <summary>
+        /// Check if this manager knows this camera.
+        /// Returns the CameraSummary from discovery or null.
+        /// </summary>
+        public abstract CameraSummary GetCameraSummary(string alias);
+
+        /// <summary>
         /// Start a function that will retrieve a single image from a particular camera, for thumbnail purposes.
         /// The function should be asynchronous and raise CameraThumbnailProduced event when done.
         /// The event should always be raised, even if the thumbnail could not be retrieved.

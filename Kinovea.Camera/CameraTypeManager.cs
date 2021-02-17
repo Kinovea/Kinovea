@@ -158,6 +158,8 @@ namespace Kinovea.Camera
         /// </summary>
         public static void StartDiscoveringCameras()
         {
+            log.DebugFormat("Start discovering cameras");
+            
             if(timerDiscovery.Enabled)
                 return;
 
@@ -188,6 +190,22 @@ namespace Kinovea.Camera
             log.DebugFormat("Cancelling all thumbnails.");
             foreach (CameraManager manager in cameraManagers)
               manager.StopAllThumbnails();
+        }
+
+        /// <summary>
+        /// Find the manager that host this camera.
+        /// This is used to match launch settings with already discovered cameras.
+        /// </summary>
+        public static CameraSummary GetCameraSummary(string alias)
+        {
+            foreach (CameraManager manager in cameraManagers)
+            {
+                CameraSummary summary = manager.GetCameraSummary(alias);
+                if (summary != null)
+                    return summary;
+            }
+
+            return null;
         }
 
         public static void UpdatedCameraSummary(CameraSummary summary)
