@@ -51,7 +51,7 @@ namespace Kinovea.Camera.IDS
         }
 
         #region Members
-        private static readonly int timeoutGrabbing = 5000;
+        private static readonly int timeoutGrabbing = 1000;
         private static readonly int timeoutOpening = 100;
 
         private Bitmap image;
@@ -130,7 +130,7 @@ namespace Kinovea.Camera.IDS
 
             try
             {
-                uEye.Defines.Status statusRet = camera.Acquisition.Capture();
+                uEye.Defines.Status statusRet = camera.Acquisition.Freeze();
             }
             catch (Exception e)
             {
@@ -147,7 +147,6 @@ namespace Kinovea.Camera.IDS
                     camera.EventDeviceRemove -= camera_EventDeviceRemove;
                     camera.EventDeviceUnPlugged -= camera_EventDeviceUnPlugged;
 
-                    Stop();
                     Close();
                 }
             }
@@ -169,25 +168,12 @@ namespace Kinovea.Camera.IDS
                 camera.EventDeviceRemove -= camera_EventDeviceRemove;
                 camera.EventDeviceUnPlugged -= camera_EventDeviceUnPlugged;
 
-                Stop();
                 Close();
 
                 cancelled = true;
             }
 
             waitHandle.Set();
-        }
-
-        private void Stop()
-        {
-            try
-            {
-                camera.Acquisition.Freeze();
-            }
-            catch (Exception e)
-            {
-                LogError(e, "");
-            }
         }
 
         private void Close()
@@ -217,13 +203,19 @@ namespace Kinovea.Camera.IDS
             uEye.Camera camera = sender as uEye.Camera;
 
             if (camera == null || !camera.IsOpened)
+            {
+                waitHandle.Set();
                 return;
+            }
 
             uEye.Defines.DisplayMode mode;
             camera.Display.Mode.Get(out mode);
 
             if (mode != uEye.Defines.DisplayMode.DiB)
+            {
+                waitHandle.Set();
                 return;
+            }
 
             Int32 s32MemID;
             camera.Memory.GetActive(out s32MemID);
