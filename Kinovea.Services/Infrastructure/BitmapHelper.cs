@@ -20,6 +20,9 @@ namespace Kinovea.Services
         /// </summary>
         public static Bitmap Copy(Bitmap src)
         {
+            if (src is null)
+                return null;
+
             Bitmap dst = new Bitmap(src.Width, src.Height, src.PixelFormat);
             Rectangle rect = new Rectangle(0, 0, src.Width, src.Height);
 
@@ -253,7 +256,7 @@ namespace Kinovea.Services
         /// Copy the whole bitmap into a rectangle in the frame buffer.
         /// The source bitmap is expected to be smaller than destination.
         /// </summary>
-        public unsafe static void CopyBitmapRectangle(Bitmap bitmap, Point location, byte[] buffer, int dstStride)
+        public unsafe static void CopyBitmapToBufferRectangle(Bitmap bitmap, Point location, byte[] buffer, int dstStride)
         {
             Rectangle bmpRectangle = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
             BitmapData bmpData = bitmap.LockBits(bmpRectangle, ImageLockMode.ReadOnly, bitmap.PixelFormat);

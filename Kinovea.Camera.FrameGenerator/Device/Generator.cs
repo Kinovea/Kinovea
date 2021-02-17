@@ -171,7 +171,7 @@ namespace Kinovea.Camera.FrameGenerator
                 g.DrawString(text, font, foreBrush, Point.Empty);
             }
 
-            BitmapHelper.CopyBitmapRectangle(bmpTimestamp, timestampLocation, entry.Buffer, stride);
+            BitmapHelper.CopyBitmapToBufferRectangle(bmpTimestamp, timestampLocation, entry.Buffer, stride);
         }
     }
 }
