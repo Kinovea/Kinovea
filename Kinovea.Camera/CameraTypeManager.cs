@@ -165,6 +165,7 @@ namespace Kinovea.Camera
             timerDiscovery.Interval = 1000;
             timerDiscovery.Tick += timerDiscovery_Tick;
             timerDiscovery.Enabled = true;
+            CheckCameras();
         }
         
         /// <summary>
