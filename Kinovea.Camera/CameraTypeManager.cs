@@ -161,9 +161,8 @@ namespace Kinovea.Camera
             log.DebugFormat("Start discovering cameras");
             
             if(timerDiscovery.Enabled)
-                return;
+                timerDiscovery.Enabled = false;
 
-            log.DebugFormat("Start discovering cameras");
             timerDiscovery.Interval = 1000;
             timerDiscovery.Tick += timerDiscovery_Tick;
             timerDiscovery.Enabled = true;
