@@ -87,22 +87,23 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// The path to the file this KVA was imported from or last saved.
+        /// The path to the KVA file this metadata was imported from or last saved.
         /// Returns an empty string if the file is a default KVA, to avoid overwriting them.
         /// </summary>
-        public string LastKnownFile
+        public string LastKVAPath
         {
             get 
             {
-                if (lastKnownFile == PreferencesManager.PlayerPreferences.PlaybackKVA ||
-                    lastKnownFile == PreferencesManager.CapturePreferences.CaptureKVA)
+                if (string.IsNullOrEmpty(lastKVAPath) ||
+                    lastKVAPath == PreferencesManager.PlayerPreferences.PlaybackKVA ||
+                    lastKVAPath == PreferencesManager.CapturePreferences.CaptureKVA)
                     return "";
-
-                return lastKnownFile;
+                    
+                return lastKVAPath;
             } 
             set
             {
-                lastKnownFile = value;
+                lastKVAPath = value;
             }
         }
         public string GlobalTitle
@@ -126,12 +127,12 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Path to the video file this KVA was created on.
+        /// Path to the video file this metadata was created on.
         /// </summary>
-        public string FullPath
+        public string VideoPath
         {
-            get { return fullPath; }
-            set { fullPath = value;}
+            get { return videoPath; }
+            set { videoPath = value;}
         }
 
         public Keyframe this[int index]
@@ -314,10 +315,10 @@ namespace Kinovea.ScreenManager
         private bool captureKVA;
 
         // Folders
-        private string fullPath;
+        private string videoPath;
         private string tempFolder;
         private AutoSaver autoSaver;
-        private string lastKnownFile;
+        private string lastKVAPath;
 
         private HistoryStack historyStack;
         private List<Keyframe> keyframes = new List<Keyframe>();
@@ -391,7 +392,7 @@ namespace Kinovea.ScreenManager
             calibrationHelper.CaptureFramesPerSecond = info.FramesPerSeconds;
             firstTimeStamp = info.FirstTimeStamp;
             
-            fullPath = info.FilePath;
+            videoPath = info.FilePath;
 
             MetadataSerializer serializer = new MetadataSerializer();
             serializer.Load(this, kvaString, false);
@@ -892,7 +893,8 @@ namespace Kinovea.ScreenManager
 
             globalTitle = "";
             imageSize = new Size(0, 0);
-            fullPath = "";
+            videoPath = "";
+            lastKVAPath = "";
             averageTimeStampsPerFrame = 1;
             firstTimeStamp = 0;
             

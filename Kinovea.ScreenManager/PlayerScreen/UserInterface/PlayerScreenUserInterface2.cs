@@ -566,7 +566,7 @@ namespace Kinovea.ScreenManager
 
             // Other various infos.
             m_FrameServer.SetupMetadata(true);
-            m_FrameServer.Metadata.FullPath = m_FrameServer.VideoReader.FilePath;
+            m_FrameServer.Metadata.VideoPath = m_FrameServer.VideoReader.FilePath;
             m_FrameServer.Metadata.SelectionStart = m_iSelStart;
             m_FrameServer.Metadata.SelectionEnd = m_iSelEnd;
             m_FrameServer.Metadata.TimeOrigin = m_iSelStart;

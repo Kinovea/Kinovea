@@ -91,13 +91,13 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void UserSave(Metadata metadata, string videoFile)
         {
-            if (string.IsNullOrEmpty(metadata.LastKnownFile))
+            if (string.IsNullOrEmpty(metadata.LastKVAPath))
             {
                 UserSaveAs(metadata, videoFile);
             }
             else
             {
-                SaveToFile(metadata, metadata.LastKnownFile);
+                SaveToFile(metadata, metadata.LastKVAPath);
                 metadata.AfterManualExport();
             }
         }
@@ -124,7 +124,7 @@ namespace Kinovea.ScreenManager
                 filename += ".kva";
 
             SaveToFile(metadata, filename);
-            metadata.LastKnownFile = filename;
+            metadata.LastKVAPath = filename;
             metadata.AfterManualExport();
         }
 
@@ -217,7 +217,7 @@ namespace Kinovea.ScreenManager
                     metadata.FixRelativeTrajectories();
 
                 if (isFile)
-                    metadata.LastKnownFile = source;
+                    metadata.LastKVAPath = source;
             }
             catch (Exception e)
             {
@@ -259,8 +259,8 @@ namespace Kinovea.ScreenManager
                         break;
                     case "FullPath":
                         string fullPath = r.ReadElementContentAsString();
-                        if (string.IsNullOrEmpty(metadata.FullPath))
-                            metadata.FullPath = fullPath;
+                        if (string.IsNullOrEmpty(metadata.VideoPath))
+                            metadata.VideoPath = fullPath;
                         break;
                     case "GlobalTitle":
                         metadata.GlobalTitle = r.ReadElementContentAsString();
@@ -414,7 +414,7 @@ namespace Kinovea.ScreenManager
 
             if ((inputFirstTimeStamp == metadata.FirstTimeStamp) &&
                 (inputAverageTimeStampsPerFrame == metadata.AverageTimeStampsPerFrame) &&
-                (inputFileName == Path.GetFileNameWithoutExtension(metadata.FullPath)))
+                (inputFileName == Path.GetFileNameWithoutExtension(metadata.VideoPath)))
                 return inputTimestamp;
 
             double averageTimestampsPerFrame = metadata.AverageTimeStampsPerSecond / (1000.0 / metadata.UserInterval);
@@ -463,8 +463,8 @@ namespace Kinovea.ScreenManager
         {
             w.WriteElementString("FormatVersion", "2.0");
             w.WriteElementString("Producer", Software.ApplicationName + "." + Software.Version);
-            w.WriteElementString("OriginalFilename", Path.GetFileNameWithoutExtension(metadata.FullPath));
-            w.WriteElementString("FullPath", metadata.FullPath);
+            w.WriteElementString("OriginalFilename", Path.GetFileNameWithoutExtension(metadata.VideoPath));
+            w.WriteElementString("FullPath", metadata.VideoPath);
 
             if (!string.IsNullOrEmpty(metadata.GlobalTitle))
                 w.WriteElementString("GlobalTitle", metadata.GlobalTitle);
