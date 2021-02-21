@@ -40,8 +40,6 @@ namespace Kinovea.Camera.Daheng
         private List<SnapshotRetriever> snapshotting = new List<SnapshotRetriever>();
         private Dictionary<string, CameraSummary> cache = new Dictionary<string, CameraSummary>();
         private Bitmap defaultIcon;
-        private int discoveryStep = 0;
-        private int discoverySkip = 5;
         private IGXFactory igxFactory;
         private Dictionary<string, uint> deviceIndices = new Dictionary<string, uint>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

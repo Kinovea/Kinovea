@@ -24,6 +24,7 @@ using System.Threading;
 using Kinovea.Pipeline;
 using PylonC.NETSupportLibrary;
 using Kinovea.Services;
+using System.Diagnostics;
 
 namespace Kinovea.Camera.Basler
 {
@@ -63,6 +64,7 @@ namespace Kinovea.Camera.Basler
         private bool hadError;
         private Thread snapperThread;
         private object locker = new object();
+        private Stopwatch stopwatch = new Stopwatch();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -76,7 +78,10 @@ namespace Kinovea.Camera.Basler
             
             try
             {
+                stopwatch.Start();
                 imageProvider.Open(deviceIndex);
+                log.DebugFormat("{0} opened in {1} ms.", summary.Alias, stopwatch.ElapsedMilliseconds);
+                stopwatch.Stop();
             }
             catch (Exception e) 
             {

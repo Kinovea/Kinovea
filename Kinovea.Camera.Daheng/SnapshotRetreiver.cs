@@ -26,6 +26,7 @@ using System.Drawing.Imaging;
 using GxIAPINET;
 using Kinovea.Pipeline;
 using Kinovea.Services;
+using System.Diagnostics;
 
 namespace Kinovea.Camera.Daheng
 {
@@ -71,6 +72,7 @@ namespace Kinovea.Camera.Daheng
         private bool hadError;
         private Thread snapperThread;
         private object locker = new object();
+        private Stopwatch stopwatch = new Stopwatch();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -80,8 +82,11 @@ namespace Kinovea.Camera.Daheng
 
             try
             {
+                stopwatch.Start();
                 device = igxFactory.OpenDeviceBySN(summary.Identifier, GX_ACCESS_MODE.GX_ACCESS_EXCLUSIVE);
-                
+                log.DebugFormat("{0} opened in {1} ms.", summary.Alias, stopwatch.ElapsedMilliseconds);
+                stopwatch.Stop();
+
                 featureControl = device.GetRemoteFeatureControl();
                 DahengHelper.AfterOpen(featureControl);
 
