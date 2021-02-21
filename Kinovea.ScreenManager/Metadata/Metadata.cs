@@ -212,6 +212,10 @@ namespace Kinovea.ScreenManager
         {
             get { return drawingCoordinateSystem; }
         }
+        public DrawingTestGrid DrawingTestGrid
+        {
+            get { return drawingTestGrid; }
+        }
         public ChronoManager ChronoManager
         {
             get { return chronoManager; }
