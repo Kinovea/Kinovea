@@ -72,6 +72,7 @@ namespace Kinovea.ScreenManager
             this.screenDescription = sdp;
             this.currentFile = currentFile;
             string targetDir = Path.GetDirectoryName(sdp.FullPath);
+            string filter = Path.GetFileName(sdp.FullPath) + ".*";
 
             if (watcher != null)
             {
@@ -88,7 +89,7 @@ namespace Kinovea.ScreenManager
 
             overwriteEventCount = 0;
             watcher.NotifyFilter = NotifyFilters.LastWrite;
-            watcher.Filter = "*.*";
+            watcher.Filter = filter;
             watcher.IncludeSubdirectories = false;
             watcher.Changed += watcher_Changed;
             watcher.Created += watcher_Changed;

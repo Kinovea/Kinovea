@@ -327,14 +327,15 @@ namespace Kinovea.Services
 
         /// <summary>
         /// Look for the most recent supported video file in the folder.
+        /// The provided path must be in form path/pattern.
         /// </summary>
         public static string GetMostRecentFile(string path)
         {
-            var directory = new DirectoryInfo(path);
+            var directory = new DirectoryInfo(Path.GetDirectoryName(path));
             if (directory == null)
                 return null;
 
-            FileInfo latest = directory.GetFiles()
+            FileInfo latest = directory.GetFiles(Path.GetFileName(path))
                 .Where(f => VideoTypeManager.IsSupported(f.Extension))
                 .OrderByDescending(f => f.LastWriteTime)
                 .FirstOrDefault();
