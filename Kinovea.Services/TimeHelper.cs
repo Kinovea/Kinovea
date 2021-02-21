@@ -22,11 +22,79 @@ using System;
 
 namespace Kinovea.Services
 {
-    /// <summary>
-    /// Description of TimeHelper.
-    /// </summary>
     public static class TimeHelper
     {
+        /// <summary>
+        /// Convert time information to a string.
+        /// </summary>
+        /// <param name="framerate">Framerate of the video, this is used to compute the precision of the output.</param>
+        /// <param name="frames">Number of frames spanning the time period.</param>
+        /// <param name="milliseconds">Number of milliseconds spanning the time period.</param>
+        /// <param name="timestamps">Number of timestamps spanning the time period.</param>
+        /// <param name="durationTimestamps">Total duration, in timestamps, of the larger segment the considered time period is in. This is used to compute normalized time.</param>
+        /// <param name="totalFrames">Total duration, in frames, of the larger segment the considered time period is in.</param>
+        /// <param name="format">The timecode format used for the output.</param>
+        /// <param name="symbol">Whether the final string should contain the time symbol</param>
+        public static string GetTimestring(double framerate, int frames, double milliseconds, long timestamps, double durationTimestamps, double totalFrames, TimecodeFormat format, bool symbol)
+        {
+            string outputTimeCode;
+
+            double framerateMagnitude = Math.Log10(framerate);
+            int precision = (int)Math.Ceiling(framerateMagnitude);
+            string frameString = String.Format("{0}", frames);
+            
+            switch (format)
+            {
+                case TimecodeFormat.ClassicTime:
+                    outputTimeCode = MillisecondsToTimecode(milliseconds, precision);
+                    break;
+                case TimecodeFormat.Frames:
+                    outputTimeCode = frameString;
+                    break;
+                case TimecodeFormat.Milliseconds:
+                    outputTimeCode = String.Format("{0}", (int)Math.Round(milliseconds));
+                    if (symbol)
+                        outputTimeCode += " ms";
+                    break;
+                case TimecodeFormat.Microseconds:
+                    outputTimeCode = String.Format("{0}", (int)Math.Round(milliseconds * 1000));
+                    if (symbol)
+                        outputTimeCode += " µs";
+                    break;
+                case TimecodeFormat.TenThousandthOfHours:
+                    // 1 Ten Thousandth of Hour = 360 ms.
+                    double inTenThousandsOfAnHour = milliseconds / 360.0;
+                    outputTimeCode = String.Format("{0}:{1:00}", (int)inTenThousandsOfAnHour, Math.Floor((inTenThousandsOfAnHour - (int)inTenThousandsOfAnHour) * 100));
+                    break;
+                case TimecodeFormat.HundredthOfMinutes:
+                    // 1 Hundredth of minute = 600 ms.
+                    double inHundredsOfAMinute = milliseconds / 600.0;
+                    outputTimeCode = String.Format("{0}:{1:00}", (int)inHundredsOfAMinute, Math.Floor((inHundredsOfAMinute - (int)inHundredsOfAMinute) * 100));
+                    break;
+                case TimecodeFormat.TimeAndFrames:
+                    String timeString = MillisecondsToTimecode(milliseconds, precision);
+                    outputTimeCode = String.Format("{0} ({1})", timeString, frameString);
+                    break;
+                case TimecodeFormat.Normalized:
+                    // 1.0 is the coordinate of the last frame.
+                    int magnitude = (int)Math.Ceiling(Math.Log10(totalFrames));
+                    string outputFormat = string.Format("{{0:0.{0}}}", new string('0', magnitude));
+                    double normalized = timestamps / durationTimestamps;
+                    outputTimeCode = String.Format(outputFormat, normalized);
+                    break;
+                case TimecodeFormat.Timestamps:
+                    outputTimeCode = String.Format("{0}", (int)timestamps);
+                    break;
+                default:
+                    outputTimeCode = MillisecondsToTimecode(milliseconds, precision);
+                    break;
+            }
+
+            return outputTimeCode;
+        }
+
+
+
         /// <summary>
         /// Input    : Milliseconds (Can be negative.)
         /// Output   : [h:][mm:]ss.xx[x].
