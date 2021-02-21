@@ -1140,9 +1140,9 @@ namespace Kinovea.ScreenManager
 
         private void InitializeMetadata()
         {
-            metadata = new Metadata(historyStack, null);
+            metadata = new Metadata(historyStack, TimeStampsToTimecode);
             // TODO: hook to events raised by metadata.
-
+            
             // Use microseconds as the general time scale.
             // This is used when importing keyframes from external KVA,
             // and when exporting the KVA next to the saved videos.
@@ -1219,7 +1219,30 @@ namespace Kinovea.ScreenManager
 
             return (double)devMode.dmDisplayFrequency;
         }
-        
+
+        /// <summary>
+        /// Returns a textual representation of a time or duration in the user-preferred format.
+        /// In the capture context this is only used to export user time for some drawings.
+        /// </summary>
+        public string TimeStampsToTimecode(long timestamps, TimeType type, TimecodeFormat format, bool symbol)
+        {
+            TimecodeFormat tcf = format == TimecodeFormat.Unknown ? TimecodeFormat.Milliseconds : format;
+            double averageTimestampsPerFrame = metadata.AverageTimeStampsPerFrame;
+            int frames = 0;
+            if (averageTimestampsPerFrame != 0)
+                frames = (int)Math.Round(timestamps/ averageTimestampsPerFrame);
+
+            if (type == TimeType.Duration)
+                frames++;
+
+            double milliseconds = frames * metadata.UserInterval / metadata.HighSpeedFactor;
+            double framerate = 1000.0 / metadata.UserInterval * metadata.HighSpeedFactor;
+            double durationTimestamps = 1.0;
+            double totalFrames = durationTimestamps / averageTimestampsPerFrame;
+
+            return TimeHelper.GetTimestring(framerate, frames, milliseconds, timestamps, durationTimestamps, totalFrames, tcf, symbol);
+        }
+
         #region Recording/Snapshoting
         private void InitializeCaptureFilenames()
         {

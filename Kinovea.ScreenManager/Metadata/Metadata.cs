@@ -213,6 +213,10 @@ namespace Kinovea.ScreenManager
         {
             get { return drawingCoordinateSystem; }
         }
+        public DrawingTestGrid DrawingTestGrid
+        {
+            get { return drawingTestGrid; }
+        }
         public ChronoManager ChronoManager
         {
             get { return chronoManager; }
@@ -363,11 +367,18 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
+
+        /// <summary>
+        /// Main constructor used by the screens when they initialize themselves.
+        /// This is the primary metadata that all other loads are going to merge into.
+        /// The timecodeBuilder MUST be implemented as any metadata is subject to be exported
+        /// and the user time attributes use it.
+        /// </summary>
         public Metadata(HistoryStack historyStack, TimeCodeBuilder timecodeBuilder)
         {
             this.historyStack = historyStack;
             this.timecodeBuilder = timecodeBuilder;
-            
+
             calibrationHelper.CalibrationChanged += CalibrationHelper_CalibrationChanged;
             
             autoSaver = new AutoSaver(this);

@@ -269,65 +269,14 @@ namespace Kinovea.ScreenManager
                 frames++;
 
             double milliseconds = frames * metadata.UserInterval / metadata.HighSpeedFactor;
-
             double framerate = 1000.0 / metadata.UserInterval * metadata.HighSpeedFactor;
-            double framerateMagnitude = Math.Log10(framerate);
-            int precision = (int)Math.Ceiling(framerateMagnitude);
-            
-            string frameString = String.Format("{0}", frames);
-            string outputTimeCode;
+            double durationTimestamps = videoReader.Info.DurationTimeStamps - averageTimestampsPerFrame;
+            double totalFrames = durationTimestamps / averageTimestampsPerFrame;
 
-            switch (tcf)
-            {
-                case TimecodeFormat.ClassicTime:
-                    outputTimeCode = TimeHelper.MillisecondsToTimecode(milliseconds, precision);
-                    break;
-                case TimecodeFormat.Frames:
-                    outputTimeCode = frameString;
-                    break;
-                case TimecodeFormat.Milliseconds:
-                    outputTimeCode = String.Format("{0}", (int)Math.Round(milliseconds));
-                    if (symbol)
-                        outputTimeCode += " ms";
-                    break;
-                case TimecodeFormat.Microseconds:
-                    outputTimeCode = String.Format("{0}", (int)Math.Round(milliseconds * 1000));
-                    if (symbol)
-                        outputTimeCode += " µs";
-                    break;
-                case TimecodeFormat.TenThousandthOfHours:
-                    // 1 Ten Thousandth of Hour = 360 ms.
-                    double inTenThousandsOfAnHour = milliseconds / 360.0;
-                    outputTimeCode = String.Format("{0}:{1:00}", (int)inTenThousandsOfAnHour, Math.Floor((inTenThousandsOfAnHour - (int)inTenThousandsOfAnHour) * 100));
-                    break;
-                case TimecodeFormat.HundredthOfMinutes:
-                    // 1 Hundredth of minute = 600 ms.
-                    double inHundredsOfAMinute = milliseconds / 600.0;
-                    outputTimeCode = String.Format("{0}:{1:00}", (int)inHundredsOfAMinute, Math.Floor((inHundredsOfAMinute - (int)inHundredsOfAMinute) * 100));
-                    break;
-                case TimecodeFormat.TimeAndFrames:
-                    String timeString = TimeHelper.MillisecondsToTimecode(milliseconds, precision);
-                    outputTimeCode = String.Format("{0} ({1})", timeString, frameString);
-                    break;
-                case TimecodeFormat.Normalized:
-                    // 1.0 is the coordinate of the last frame.
-                    double duration = videoReader.Info.DurationTimeStamps - averageTimestampsPerFrame;
-                    double totalFrames = duration / averageTimestampsPerFrame;
-                    int magnitude = (int)Math.Ceiling(Math.Log10(totalFrames));
-                    string outputFormat = string.Format("{{0:0.{0}}}", new string('0', magnitude));
-                    double normalized = actualTimestamps / duration;
-                    outputTimeCode = String.Format(outputFormat, normalized);
-                    break;
-                case TimecodeFormat.Timestamps:
-                    outputTimeCode = String.Format("{0}", (int)actualTimestamps);
-                    break;
-                default:
-                    outputTimeCode = TimeHelper.MillisecondsToTimecode(milliseconds, precision);
-                    break;
-            }
-
-            return outputTimeCode;
+            return TimeHelper.GetTimestring(framerate, frames, milliseconds, actualTimestamps, durationTimestamps, totalFrames, tcf, symbol);
         }
+
+        
         #endregion
         
         #region Saving processing
