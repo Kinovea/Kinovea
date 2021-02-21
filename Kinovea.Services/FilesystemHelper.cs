@@ -321,7 +321,8 @@ namespace Kinovea.Services
         public static bool IsReplayWatcher(string path)
         {
             // We simply detect if the file has a filter pattern.
-            return Path.GetFileNameWithoutExtension(path).Contains("*");
+            string filename = Path.GetFileNameWithoutExtension(path);
+            return filename.Contains("*") || filename.Contains("?");
         }
     }
 }

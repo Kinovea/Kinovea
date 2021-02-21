@@ -98,7 +98,7 @@ namespace Kinovea.ScreenManager
                     {
                         // At this point we have lost the actual file that was loaded. The path here still contaiins the special '*' to indicate the watched folder.
                         // The actual file is the latest file in the folder this was computed right before loading.
-                        string actualPath = VideoTypeManager.GetMostRecentSupportedVideo(Path.GetDirectoryName(path));
+                        string actualPath = VideoTypeManager.GetMostRecentSupportedVideo(path);
                         PreferencesManager.FileExplorerPreferences.AddRecentFile(actualPath);
                     }
                     else

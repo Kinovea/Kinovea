@@ -603,9 +603,9 @@ namespace Kinovea.ScreenManager
         {
             ScreenDescriptionPlayback sd = new ScreenDescriptionPlayback();
             sd.Id = Id;
-            if (Full)
+            if (Full && replayWatcher != null)
             {
-                sd.FullPath = replayWatcher.IsEnabled ? Path.Combine(Path.GetDirectoryName(FilePath), "*") : FilePath;
+                sd.FullPath = replayWatcher.IsEnabled ? replayWatcher.FullPath : FilePath;
                 sd.IsReplayWatcher = replayWatcher.IsEnabled;
                 sd.Autoplay = replayWatcher.IsEnabled;
             }

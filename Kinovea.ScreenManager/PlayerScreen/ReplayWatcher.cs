@@ -22,9 +22,15 @@ namespace Kinovea.ScreenManager
             get { return watcher != null ? watcher.Path : null; } 
         }
 
+        public string FullPath
+        {
+            get { return watcher != null ? Path.Combine(watcher.Path, filter) : null; }
+        }
+
         private PlayerScreen player;
         private ScreenDescriptionPlayback screenDescription;
         private string currentFile;
+        private string filter;
         private FileSystemWatcher watcher;
         private Control dummy = new Control();
         private int overwriteEventCount;
@@ -71,6 +77,7 @@ namespace Kinovea.ScreenManager
 
             this.screenDescription = sdp;
             this.currentFile = currentFile;
+            this.filter = Path.GetFileName(sdp.FullPath);
             string targetDir = Path.GetDirectoryName(sdp.FullPath);
 
             if (watcher != null)
@@ -88,7 +95,7 @@ namespace Kinovea.ScreenManager
 
             overwriteEventCount = 0;
             watcher.NotifyFilter = NotifyFilters.LastWrite;
-            watcher.Filter = "*.*";
+            watcher.Filter = filter;
             watcher.IncludeSubdirectories = false;
             watcher.Changed += watcher_Changed;
             watcher.Created += watcher_Changed;
