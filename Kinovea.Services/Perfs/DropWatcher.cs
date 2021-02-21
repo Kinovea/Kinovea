@@ -20,7 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 
-namespace Kinovea.Base
+namespace Kinovea.Services
 {
     /// <summary>
     /// A simple drop counter to get average number of drops over time.

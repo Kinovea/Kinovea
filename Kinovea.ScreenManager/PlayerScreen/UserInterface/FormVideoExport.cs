@@ -32,191 +32,86 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// A dialog to help the user on what to save and how.
+    /// A dialog to export video with drawings painted on.
+    /// Note: this dialog used to have many more options like saving KVA or saving a video with the KVA as a subtitle track. 
+    /// It's now exclusively used to export video with drawings painted on.
     /// </summary>
     public partial class formVideoExport : Form
     {
         #region Properties
-        public bool SaveAnalysis
-        {
-            get { return m_bSaveAnalysis; }
-        }
-        public bool BlendDrawings
-        {
-            get { return m_bBlendDrawings; }
-        }
         public string Filename
         {
-            get { return m_Filename; }
+            get { return filename; }
         }    	
         public bool UseSlowMotion
         {
-            get { return m_bUseSlowMotion; }
+            get { return useSlomo; }
         }
         #endregion
                 
         #region Members
-        private string m_OriginalFilename;
-        private double m_fSlowmotionPercentage;
-        private Metadata m_Metadata;
-        
-        private bool m_bSaveAnalysis;
-        private bool m_bBlendDrawings;
-        private bool m_bUseSlowMotion;
-        private string m_Filename;
+        private string originalFilename;
+        private double slomoPercentage;
+        private bool useSlomo;
+        private string filename;
         #endregion
         
-        #region constructor and initialisation
-        public formVideoExport(string _OriginalFilename, Metadata _Metadata, double _fSlowmotionPercentage)
+        public formVideoExport(string originalFilename, double slomoPercentage)
         {
-            m_fSlowmotionPercentage = _fSlowmotionPercentage;
-            m_Metadata = _Metadata;
-            m_OriginalFilename = _OriginalFilename;
-            
+            this.slomoPercentage = slomoPercentage;
+            this.originalFilename = originalFilename;
             InitializeComponent();
             InitCulture();
         }
+
         private void InitCulture()
         {
             this.Text = "   " + ScreenManagerLang.CommandSaveMovie_FriendlyName;
-            groupSaveMethod.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_GroupSaveMethod;            
-            radioSaveBlended.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_RadioBlended;
+            lblVideoExport.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_RadioBlended;
             tbSaveBlended.Lines = ScreenManagerLang.dlgSaveAnalysisOrVideo_HintBlended.Split('#');
-            radioSaveAnalysis.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_RadioAnalysis;
-            tbSaveAnalysis.Lines = ScreenManagerLang.dlgSaveAnalysisOrVideo_HintAnalysis.Split('#');
-            
             checkSlowMotion.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_CheckSlow;
-            checkSlowMotion.Text = checkSlowMotion.Text + string.Format("{0:0.00} %).", m_fSlowmotionPercentage);
+            checkSlowMotion.Text = checkSlowMotion.Text + string.Format("{0:0.00} %).", slomoPercentage);
 
             btnOK.Text = ScreenManagerLang.Generic_Save;
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
 
-            EnableDisableOptions();
-
-            // default option
-            radioSaveAnalysis.Checked = true;
+            checkSlowMotion.Enabled = (slomoPercentage != 100);
         }
-        #endregion
         
-        #region event handlers
         private void btnOK_Click(object sender, EventArgs e)
         {
             // Hide/Close logic:
-            // We start by hiding the current dialog.
-            // If the user cancels on the file choosing dialog, we show back ourselves.
-
+            // We start by hiding the current dialog and show the filename selection dialog.
+            // If the user cancels on the filename selection, we show back ourselves.
+            // If the user OKs on the filename selection, we close and the caller will read the dialog result and perform the actual saving.
             Hide();
-            DialogResult dr;
+            useSlomo = checkSlowMotion.Checked;
             
-            m_bBlendDrawings = false;
-            m_bSaveAnalysis = false;
-            m_bUseSlowMotion = false;
-            
-            if(radioSaveAnalysis.Checked)
-            {
-                m_bSaveAnalysis = true;
-                dr = DoSaveAnalysis();
-            }
-            else
-            {
-                m_bBlendDrawings = radioSaveBlended.Checked;
-                m_bUseSlowMotion = checkSlowMotion.Checked;
-                dr = DoSaveVideo();	
-            }
-            
+            DialogResult dr = SelectFilename();
             if(dr == DialogResult.OK)
-            {
                 Close();
-            }
             else 
-            {
-                //If cancelled, we display the wizard again.
                 Show();	
-            }
         }
-        private void BtnSaveAnalysisClick(object sender, EventArgs e)
-        {
-            UncheckAllOptions();
-            radioSaveAnalysis.Checked = true;	
-        }
-        private void BtnSaveBothClick(object sender, EventArgs e)
-        {
-            UncheckAllOptions();
-            radioSaveBlended.Checked = true;
-        }
-        private void radio_CheckedChanged(object sender, EventArgs e)
-        {
-            EnableDisableOptions();
-        }
-        #endregion
         
-        #region lower levels helpers
-        private void EnableDisableOptions()
+        private DialogResult SelectFilename()
         {
-            radioSaveBlended.Enabled = true;
-            radioSaveAnalysis.Enabled = true;            
-            checkSlowMotion.Enabled = radioSaveAnalysis.Checked ? false : (m_fSlowmotionPercentage != 100);
-        }
-        private void UncheckAllOptions()
-        {
-            radioSaveAnalysis.Checked = false;
-            radioSaveBlended.Checked = false;	
-        }
-    
-        private DialogResult DoSaveVideo()
-        {
-            //--------------------------------------------------------------------------
-            // Save Video file. (Either Alone or along with the Analysis muxed into it.)
-            //--------------------------------------------------------------------------
             DialogResult result = DialogResult.Cancel;
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = ScreenManagerLang.CommandSaveMovie_FriendlyName;
-            saveFileDialog.InitialDirectory = Path.GetDirectoryName(m_OriginalFilename);
+            saveFileDialog.InitialDirectory = Path.GetDirectoryName(originalFilename);
             saveFileDialog.Filter = ScreenManagerLang.FileFilter_SaveVideo;
             saveFileDialog.FilterIndex = FilesystemHelper.GetFilterIndex(saveFileDialog.Filter, PreferencesManager.PlayerPreferences.VideoFormat);
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(saveFileDialog.FileName))
             {
-                m_Filename = saveFileDialog.FileName;
+                filename = saveFileDialog.FileName;
                 DialogResult = DialogResult.OK;
                 result = DialogResult.OK;
             }
 
             return result;
         }
-        private DialogResult DoSaveAnalysis()
-        {
-            // Analysis only.
-            DialogResult result = DialogResult.Cancel;
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Title = ScreenManagerLang.dlgSaveAnalysisTitle;
-
-            // Goto this video directory and suggest filename for saving.
-            saveFileDialog.InitialDirectory = Path.GetDirectoryName(m_OriginalFilename);
-            saveFileDialog.FileName = Path.GetFileNameWithoutExtension(m_OriginalFilename);
-            saveFileDialog.FilterIndex = 1;
-            saveFileDialog.Filter = ScreenManagerLang.FileFilter_KVA_kva + "|*.kva";
-
-            if (saveFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                string filePath = saveFileDialog.FileName;
-                if (filePath.Length > 0)
-                {
-                    if(!filePath.ToLower().EndsWith(".kva") && !filePath.ToLower().EndsWith(".xml"))
-                    {
-                        filePath = filePath + ".kva";
-                    }
-                    
-                    // Commit output props
-                    m_Filename = filePath;
-                    DialogResult = DialogResult.OK;
-                    result = DialogResult.OK;
-                }
-            }
-            
-            return result;
-        }
-        #endregion
     }
 }

@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Globalization;
-using Kinovea.Video;
-using TurboJpegNet;
-using Kinovea.Pipeline;
-using System.Runtime.InteropServices;
 using System.IO;
+using System.Globalization;
+using System.Runtime.InteropServices;
+using Kinovea.Pipeline;
+using Kinovea.Services;
+using TurboJpegNet;
 
 namespace Kinovea.Camera.FrameGenerator
 {
@@ -71,7 +71,7 @@ namespace Kinovea.Camera.FrameGenerator
 
             Frame entry = frames[position % capacity];
 
-            if (configuration.ImageFormat == Video.ImageFormat.RGB24)
+            if (configuration.ImageFormat == Kinovea.Services.ImageFormat.RGB24)
             {
                 string text = string.Format(@"{0:HH\:mm\:ss\.fff} ({1})", DateTime.Now, position);
                 CopyTimestamp(entry, text);
@@ -89,7 +89,7 @@ namespace Kinovea.Camera.FrameGenerator
         {
             try
             {
-                if (configuration.ImageFormat != Video.ImageFormat.RGB24 && configuration.ImageFormat != Video.ImageFormat.JPEG)
+                if (configuration.ImageFormat != Kinovea.Services.ImageFormat.RGB24 && configuration.ImageFormat != Kinovea.Services.ImageFormat.JPEG)
                     throw new InvalidProgramException();
 
                 stride = configuration.Width * 3;
@@ -103,7 +103,7 @@ namespace Kinovea.Camera.FrameGenerator
                 {
                     frames.Add(new Frame(bufferSize));
 
-                    if (configuration.ImageFormat == Video.ImageFormat.RGB24)
+                    if (configuration.ImageFormat == Kinovea.Services.ImageFormat.RGB24)
                         frames[i].PayloadLength = bufferSize;
                     else
                         InitializeJPEG(frames[i], i);
@@ -171,7 +171,7 @@ namespace Kinovea.Camera.FrameGenerator
                 g.DrawString(text, font, foreBrush, Point.Empty);
             }
 
-            BitmapHelper.CopyBitmapRectangle(bmpTimestamp, timestampLocation, entry.Buffer, stride);
+            BitmapHelper.CopyBitmapToBufferRectangle(bmpTimestamp, timestampLocation, entry.Buffer, stride);
         }
     }
 }

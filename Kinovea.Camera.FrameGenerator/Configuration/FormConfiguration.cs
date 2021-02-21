@@ -22,10 +22,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using Kinovea.Camera;
 using Kinovea.Services;
 using Kinovea.Camera.Languages;
-using Kinovea.Video;
 
 namespace Kinovea.Camera.FrameGenerator
 {

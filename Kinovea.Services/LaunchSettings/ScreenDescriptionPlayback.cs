@@ -77,7 +77,7 @@ namespace Kinovea.Services
             RecoveryLastSave = DateTime.MinValue;
         }
 
-        public ScreenDescriptionPlayback(XmlReader reader) : this()
+        public void ReadXml(XmlReader reader)
         {
             reader.ReadStartElement();
 
@@ -110,6 +110,15 @@ namespace Kinovea.Services
             }
 
             reader.ReadEndElement();
+        }
+
+        public void WriteXml(XmlWriter w)
+        {
+            w.WriteElementString("FullPath", FullPath);
+            w.WriteElementString("Autoplay", XmlHelper.WriteBoolean(Autoplay));
+            w.WriteElementString("SpeedPercentage", XmlHelper.WriteFloat((float)SpeedPercentage));
+            w.WriteElementString("Stretch", XmlHelper.WriteBoolean(Stretch));
+            w.WriteElementString("IsReplayWatcher", XmlHelper.WriteBoolean(IsReplayWatcher));
         }
     }
 }

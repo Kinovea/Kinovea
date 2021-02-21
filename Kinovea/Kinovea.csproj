@@ -374,18 +374,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Kinovea.Camera.Basler\Kinovea.Camera.Basler.csproj">
-      <Project>{d978ab6e-feeb-4ad5-8a2b-a515f0dc166a}</Project>
-      <Name>Kinovea.Camera.Basler</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Kinovea.Camera.Baumer\Kinovea.Camera.Baumer.csproj">
-      <Project>{0aab56ae-86c4-45b0-974a-885effb4904f}</Project>
-      <Name>Kinovea.Camera.Baumer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Kinovea.Camera.Daheng\Kinovea.Camera.Daheng.csproj">
-      <Project>{92cfeb6d-11fb-48bb-a5f9-e2bfb6f8b29f}</Project>
-      <Name>Kinovea.Camera.Daheng</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Kinovea.Camera.DirectShow\Kinovea.Camera.DirectShow.csproj">
       <Project>{104b98b4-961d-4ed4-b7c3-7e790065aaed}</Project>
       <Name>Kinovea.Camera.DirectShow</Name>
@@ -397,10 +385,6 @@
     <ProjectReference Include="..\Kinovea.Camera.HTTP\Kinovea.Camera.HTTP.csproj">
       <Project>{7b8cf26d-b8af-4914-b395-93661d225ea3}</Project>
       <Name>Kinovea.Camera.HTTP</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Kinovea.Camera.IDS\Kinovea.Camera.IDS.csproj">
-      <Project>{117171e1-8fd7-4e59-b1d6-95dc27d90465}</Project>
-      <Name>Kinovea.Camera.IDS</Name>
     </ProjectReference>
     <ProjectReference Include="..\Kinovea.Camera\Kinovea.Camera.csproj">
       <Project>7EC5DEBF-DF52-40F5-A9FE-1B2007B6116D</Project>
@@ -558,6 +542,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="kinoveabundle.ico" />
+    <None Include="Resources\file_txt.png" />
+    <None Include="Resources\disk.png" />
+    <None Include="Resources\common_controls.png" />
     <None Include="Resources\framenumber.png" />
     <None Include="Resources\timecode.png" />
     <None Include="Resources\microseconds.png" />

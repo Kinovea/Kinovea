@@ -64,6 +64,7 @@
     </Reference>
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -97,18 +98,17 @@
     <ProjectReference Include="..\Kinovea.Camera\Kinovea.Camera.csproj">
       <Project>{2bf373b8-5d33-4fcf-8c30-5e8caf6777e7}</Project>
       <Name>Kinovea.Camera</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Kinovea.Pipeline\Kinovea.Pipeline.csproj">
       <Project>{32380ce3-aa6a-465b-bb0c-bf0708b2b3a5}</Project>
       <Name>Kinovea.Pipeline</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Kinovea.Services\Kinovea.Services.csproj">
       <Project>{8aa92254-a016-4a84-925c-f5b07e02f8a8}</Project>
       <Name>Kinovea.Services</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Kinovea.Video\Kinovea.Video.csproj">
-      <Project>{4cbb8462-00a7-4814-ad3b-07c82eeeb0de}</Project>
-      <Name>Kinovea.Video</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

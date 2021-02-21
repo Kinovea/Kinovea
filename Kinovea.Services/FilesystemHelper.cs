@@ -24,7 +24,6 @@ using Microsoft.VisualBasic.FileIO;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Linq;
-using Kinovea.Video;
 
 namespace Kinovea.Services
 {
@@ -322,27 +321,8 @@ namespace Kinovea.Services
         public static bool IsReplayWatcher(string path)
         {
             // We simply detect if the file has a filter pattern.
-            return Path.GetFileNameWithoutExtension(path).Contains("*");
-        }
-
-        /// <summary>
-        /// Look for the most recent supported video file in the folder.
-        /// </summary>
-        public static string GetMostRecentFile(string path)
-        {
-            var directory = new DirectoryInfo(path);
-            if (directory == null)
-                return null;
-
-            FileInfo latest = directory.GetFiles()
-                .Where(f => VideoTypeManager.IsSupported(f.Extension))
-                .OrderByDescending(f => f.LastWriteTime)
-                .FirstOrDefault();
-
-            if (latest == null)
-                return null;
-            
-            return latest.FullName;
+            string filename = Path.GetFileNameWithoutExtension(path);
+            return filename.Contains("*") || filename.Contains("?");
         }
     }
 }

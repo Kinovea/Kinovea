@@ -4,6 +4,9 @@ using System.Runtime.InteropServices;
 using System.Resources;
 using System;
 
+// This assembly provides various types and utilities that are used throughout the application.
+// This should be the bottom of the dependency tree.
+
 [assembly: AssemblyTitle("Kinovea.Services")]
 [assembly: AssemblyDescription("Kinovea Services Module")]
 [assembly: AssemblyConfiguration("")]

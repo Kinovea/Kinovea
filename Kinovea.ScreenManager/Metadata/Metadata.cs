@@ -85,6 +85,27 @@ namespace Kinovea.ScreenManager
         {
             get { return kvaImporting; }
         }
+
+        /// <summary>
+        /// The path to the KVA file this metadata was imported from or last saved.
+        /// Returns an empty string if the file is a default KVA, to avoid overwriting them.
+        /// </summary>
+        public string LastKVAPath
+        {
+            get 
+            {
+                if (string.IsNullOrEmpty(lastKVAPath) ||
+                    lastKVAPath == PreferencesManager.PlayerPreferences.PlaybackKVA ||
+                    lastKVAPath == PreferencesManager.CapturePreferences.CaptureKVA)
+                    return "";
+                    
+                return lastKVAPath;
+            } 
+            set
+            {
+                lastKVAPath = value;
+            }
+        }
         public string GlobalTitle
         {
             get { return globalTitle; }
@@ -104,10 +125,14 @@ namespace Kinovea.ScreenManager
         {
             get { return imageTransform; }
         }
-        public string FullPath
+
+        /// <summary>
+        /// Path to the video file this metadata was created on.
+        /// </summary>
+        public string VideoPath
         {
-            get { return fullPath; }
-            set { fullPath = value;}
+            get { return videoPath; }
+            set { videoPath = value;}
         }
 
         public Keyframe this[int index]
@@ -187,6 +212,10 @@ namespace Kinovea.ScreenManager
         public DrawingCoordinateSystem DrawingCoordinateSystem
         {
             get { return drawingCoordinateSystem; }
+        }
+        public DrawingTestGrid DrawingTestGrid
+        {
+            get { return drawingTestGrid; }
         }
         public ChronoManager ChronoManager
         {
@@ -290,9 +319,10 @@ namespace Kinovea.ScreenManager
         private bool captureKVA;
 
         // Folders
-        private string fullPath;
+        private string videoPath;
         private string tempFolder;
         private AutoSaver autoSaver;
+        private string lastKVAPath;
 
         private HistoryStack historyStack;
         private List<Keyframe> keyframes = new List<Keyframe>();
@@ -320,7 +350,7 @@ namespace Kinovea.ScreenManager
         private string globalTitle;
         private Size imageSize = new Size(0,0);
         private long averageTimeStampsPerFrame = 1;
-        private double averageTimeStampsPerSecond = 1;
+        private double averageTimeStampsPerSecond = 25;
         private long firstTimeStamp;
         private long selectionStart;
         private long selectionEnd;
@@ -337,11 +367,18 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
+
+        /// <summary>
+        /// Main constructor used by the screens when they initialize themselves.
+        /// This is the primary metadata that all other loads are going to merge into.
+        /// The timecodeBuilder MUST be implemented as any metadata is subject to be exported
+        /// and the user time attributes use it.
+        /// </summary>
         public Metadata(HistoryStack historyStack, TimeCodeBuilder timecodeBuilder)
         {
             this.historyStack = historyStack;
             this.timecodeBuilder = timecodeBuilder;
-            
+
             calibrationHelper.CalibrationChanged += CalibrationHelper_CalibrationChanged;
             
             autoSaver = new AutoSaver(this);
@@ -366,7 +403,7 @@ namespace Kinovea.ScreenManager
             calibrationHelper.CaptureFramesPerSecond = info.FramesPerSeconds;
             firstTimeStamp = info.FirstTimeStamp;
             
-            fullPath = info.FilePath;
+            videoPath = info.FilePath;
 
             MetadataSerializer serializer = new MetadataSerializer();
             serializer.Load(this, kvaString, false);
@@ -867,7 +904,8 @@ namespace Kinovea.ScreenManager
 
             globalTitle = "";
             imageSize = new Size(0, 0);
-            fullPath = "";
+            videoPath = "";
+            lastKVAPath = "";
             averageTimeStampsPerFrame = 1;
             firstTimeStamp = 0;
             

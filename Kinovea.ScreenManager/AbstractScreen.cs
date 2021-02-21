@@ -21,9 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-
 using Kinovea.Services;
-using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
 {
@@ -123,5 +121,6 @@ namespace Kinovea.ScreenManager
         public abstract void Identify(int index);
         public abstract void ExecuteScreenCommand(int cmd);
         public abstract void LoadKVA(string path);
+        public abstract IScreenDescription GetScreenDescription();
     }   
 }

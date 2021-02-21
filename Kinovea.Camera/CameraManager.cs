@@ -44,6 +44,27 @@ namespace Kinovea.Camera
                 invoker(this, e);
         }
 
+        private Control dummy = new Control();
+        public CameraManager()
+        {
+            // Show that the main UI thread (calling this ctor) "owns" the dummy control.
+            // Then we can use it to switch from worker threads to the main thread.
+            IntPtr forceHandleCreation = dummy.Handle; 
+        }
+
+        /// <summary>
+        /// Invoke an action on the UI thread.
+        /// Some events are normally raised inside the camera manager on a worker thread,
+        /// we continue the call to the UI thread.
+        /// </summary>
+        public void Invoke(Action handler)
+        {
+            if (dummy == null || dummy.IsDisposed || !dummy.IsHandleCreated)
+                return;
+
+            dummy.BeginInvoke(handler);
+        }
+
         public abstract bool Enabled { get; }
 
         public abstract string CameraType { get; }
@@ -68,16 +89,28 @@ namespace Kinovea.Camera
         public abstract List<CameraSummary> DiscoverCameras(IEnumerable<CameraBlurb> blurbs);
 
         /// <summary>
-        /// Invalidate the camera reference from any cache held in the extension.
+        /// Invalidate the camera reference from any cache held in the module.
         /// </summary>
         public abstract void ForgetCamera(CameraSummary summary);
-        
+
         /// <summary>
-        /// Get a single image for thumbnail refresh.
-        /// The function is asynchronous and should raise CameraThumbnailProduced when done.
+        /// Check if this manager knows this camera.
+        /// Returns the CameraSummary from discovery or null.
         /// </summary>
-        public abstract void GetSingleImage(CameraSummary summary);
-        
+        public abstract CameraSummary GetCameraSummary(string alias);
+
+        /// <summary>
+        /// Start a function that will retrieve a single image from a particular camera, for thumbnail purposes.
+        /// The function should be asynchronous and raise CameraThumbnailProduced event when done.
+        /// The event should always be raised, even if the thumbnail could not be retrieved.
+        /// </summary>
+        public abstract void StartThumbnail(CameraSummary summary);
+
+        /// <summary>
+        /// Cancel any thumbnail retrieval in progress.
+        /// </summary>
+        public abstract void StopAllThumbnails();
+
         /// <summary>
         /// Extract a camera blurb (used for XML persistence) from a camera summary.
         /// </summary>

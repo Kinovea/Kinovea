@@ -21,11 +21,12 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Drawing;
 using System.Threading;
-using Kinovea.Pipeline;
-using GxIAPINET;
-using Kinovea.Video;
 using System.Runtime.InteropServices;
 using System.Drawing.Imaging;
+using GxIAPINET;
+using Kinovea.Pipeline;
+using Kinovea.Services;
+using System.Diagnostics;
 
 namespace Kinovea.Camera.Daheng
 {
@@ -40,6 +41,16 @@ namespace Kinovea.Camera.Daheng
         public string Identifier
         {
             get { return this.summary.Identifier; }
+        }
+
+        public string Alias
+        {
+            get { return summary.Alias; }
+        }
+
+        public Thread Thread
+        {
+            get { return snapperThread; }
         }
 
         #region Members
@@ -59,6 +70,9 @@ namespace Kinovea.Camera.Daheng
         const uint GX_PIXEL_8BIT = 0x00080000;                        ///<8 bit data image format
         private bool cancelled;
         private bool hadError;
+        private Thread snapperThread;
+        private object locker = new object();
+        private Stopwatch stopwatch = new Stopwatch();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -68,8 +82,11 @@ namespace Kinovea.Camera.Daheng
 
             try
             {
+                stopwatch.Start();
                 device = igxFactory.OpenDeviceBySN(summary.Identifier, GX_ACCESS_MODE.GX_ACCESS_EXCLUSIVE);
-                
+                log.DebugFormat("{0} opened in {1} ms.", summary.Alias, stopwatch.ElapsedMilliseconds);
+                stopwatch.Stop();
+
                 featureControl = device.GetRemoteFeatureControl();
                 DahengHelper.AfterOpen(featureControl);
 
@@ -83,6 +100,13 @@ namespace Kinovea.Camera.Daheng
             {
                 LogError(e, "Failed to open device");
             }
+        }
+
+        public void Start()
+        {
+            snapperThread = new Thread(Run) { IsBackground = true };
+            snapperThread.Name = string.Format("{0} thumbnailer", summary.Alias);
+            snapperThread.Start();
         }
 
         /// <summary>
@@ -100,7 +124,6 @@ namespace Kinovea.Camera.Daheng
                 return;
             }
 
-            Thread.CurrentThread.Name = string.Format("{0} thumbnailer", summary.Alias);
             log.DebugFormat("Starting {0} for thumbnail.", summary.Alias);
 
             try
@@ -119,7 +142,11 @@ namespace Kinovea.Camera.Daheng
 
             waitHandle.WaitOne(timeoutGrabbing, false);
 
-            Close();
+            lock (locker)
+            {
+                if (!cancelled)
+                    Close();
+            }
 
             if (CameraThumbnailProduced != null)
                 CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, imageDescriptor, hadError, cancelled));
@@ -127,10 +154,17 @@ namespace Kinovea.Camera.Daheng
 
         public void Cancel()
         {
+            log.DebugFormat("Cancelling thumbnail for {0}.", Alias);
+
             if (device == null || stream == null)
                 return;
+            
+            lock (locker)
+            {
+                Close();
+                cancelled = true;
+            }
 
-            cancelled = true;
             waitHandle.Set();
         }
 
@@ -248,8 +282,8 @@ namespace Kinovea.Camera.Daheng
                 int stride = rect.Width * 3;
                 NativeMethods.memcpy(bmpData.Scan0.ToPointer(), buffer.ToPointer(), stride * height);
 
-                int bufferSize = ImageFormatHelper.ComputeBufferSize(width, height, Video.ImageFormat.RGB24);
-                imageDescriptor = new ImageDescriptor(Video.ImageFormat.RGB24, image.Width, image.Height, true, bufferSize);
+                int bufferSize = ImageFormatHelper.ComputeBufferSize(width, height, Kinovea.Services.ImageFormat.RGB24);
+                imageDescriptor = new ImageDescriptor(Kinovea.Services.ImageFormat.RGB24, image.Width, image.Height, true, bufferSize);
             }
             catch (Exception e)
             {
@@ -288,8 +322,8 @@ namespace Kinovea.Camera.Daheng
                     dst += dstOffset;
                 }
                 
-                int bufferSize = ImageFormatHelper.ComputeBufferSize(width, height, Video.ImageFormat.RGB24);
-                imageDescriptor = new ImageDescriptor(Video.ImageFormat.RGB24, image.Width, image.Height, true, bufferSize);
+                int bufferSize = ImageFormatHelper.ComputeBufferSize(width, height, Kinovea.Services.ImageFormat.RGB24);
+                imageDescriptor = new ImageDescriptor(Kinovea.Services.ImageFormat.RGB24, image.Width, image.Height, true, bufferSize);
             }
             catch (Exception e)
             {

@@ -58,6 +58,12 @@ namespace Kinovea.Services
             set { windowRectangle = value; }
         }
 
+        public Workspace Workspace
+        {
+            get { return workspace; }
+            set { workspace = value; }
+        }
+
         public bool AllowMultipleInstances
         {
             get { return allowMultipleInstances; }
@@ -81,6 +87,7 @@ namespace Kinovea.Services
         private int explorerSplitterDistance = 250;
         private FormWindowState windowState = FormWindowState.Maximized;
         private Rectangle windowRectangle;
+        private Workspace workspace = new Workspace();
         private bool allowMultipleInstances = true;
         private bool instancesOwnPreferences = true;
         private int preferencePage;
@@ -116,6 +123,14 @@ namespace Kinovea.Services
             writer.WriteElementString("ExplorerSplitterDistance", explorerSplitterDistance.ToString());
             writer.WriteElementString("WindowState", windowState.ToString());
             writer.WriteElementString("WindowRectangle", XmlHelper.WriteRectangleF(windowRectangle));
+
+            if (workspace != null && workspace.Screens != null && workspace.Screens.Count > 0)
+            {
+                writer.WriteStartElement("Workspace");
+                workspace.WriteXML(writer);
+                writer.WriteEndElement();
+            }
+
             writer.WriteElementString("AllowMultipleInstances", allowMultipleInstances ? "true" : "false");
             writer.WriteElementString("InstancesOwnPreferences", instancesOwnPreferences ? "true" : "false");
             writer.WriteElementString("PreferencesPage", preferencePage.ToString());
@@ -143,6 +158,9 @@ namespace Kinovea.Services
                         break;
                     case "WindowRectangle":
                         windowRectangle = XmlHelper.ParseRectangle(reader.ReadElementContentAsString());
+                        break;
+                    case "Workspace":
+                        workspace.ReadXML(reader);
                         break;
                     case "AllowMultipleInstances":
                         allowMultipleInstances = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());

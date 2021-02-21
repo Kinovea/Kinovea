@@ -21,12 +21,11 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Drawing;
 using System.Threading;
-
+using System.Drawing.Imaging;
+using Kinovea.Pipeline;
+using Kinovea.Services;
 using AForge.Video;
 using AForge.Video.DirectShow;
-using System.Drawing.Imaging;
-using Kinovea.Video;
-using Kinovea.Pipeline;
 
 namespace Kinovea.Camera.DirectShow
 {
@@ -64,6 +63,7 @@ namespace Kinovea.Camera.DirectShow
         private string moniker;
         private VideoCaptureDevice device;
         private Thread snapperThread;
+        private object locker = new object();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -97,17 +97,17 @@ namespace Kinovea.Camera.DirectShow
 
             waitHandle.WaitOne(timeout, false);
 
-            if (cancelled)
+            lock (locker)
             {
-                log.WarnFormat("Snapshot for {0} cancelled.", summary.Alias);
-                return;
+                if (!cancelled)
+                {
+                    // Stop the device before reporting the thumbnail, so the parent manager can use the thumbnail event 
+                    // to know the camera is no longer snapping and can be used for actual connection.
+                    device.NewFrameBuffer -= device_NewFrameBuffer;
+                    device.VideoSourceError -= device_VideoSourceError;
+                    DeviceHelper.StopDevice(device);
+                }
             }
-
-            // Stop the device before reporting the thumbnail, so the parent manager can use the thumbnail event 
-            // to know the camera is no longer snapping and can be used for actual connection.
-            device.NewFrameBuffer -= device_NewFrameBuffer;
-            device.VideoSourceError -= device_VideoSourceError;
-            DeviceHelper.StopDevice(device);
             
             if (CameraThumbnailProduced != null)
                 CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, imageDescriptor, hadError, cancelled));
@@ -118,17 +118,20 @@ namespace Kinovea.Camera.DirectShow
         /// </summary>
         public void Cancel()
         {
-            //-------------------
             // Runs in UI thread.
-            //-------------------
 
-            // This is called before we start the camera for actual connection.
-            // It runs on the UI thread and we must make sure the snapper thread is dead and camera ready to use.
-            device.NewFrameBuffer -= device_NewFrameBuffer;
-            device.VideoSourceError -= device_VideoSourceError;
-            DeviceHelper.StopDevice(device);
+            log.DebugFormat("Cancelling thumbnail for {0}.", Alias);
 
-            cancelled = true;
+            lock (locker)
+            {
+                // This is called before we start the camera for actual connection.
+                // It runs on the UI thread and we must make sure the snapper thread is dead and camera ready to use.
+                device.NewFrameBuffer -= device_NewFrameBuffer;
+                device.VideoSourceError -= device_VideoSourceError;
+                DeviceHelper.StopDevice(device);
+                cancelled = true;
+            }
+            
             waitHandle.Set();
         }
 
@@ -138,7 +141,7 @@ namespace Kinovea.Camera.DirectShow
             image = new Bitmap(e.Width, e.Height, PixelFormat.Format24bppRgb);
             Rectangle rect = new Rectangle(0, 0, image.Width, image.Height);
             BitmapHelper.FillFromRGB24(image, rect, false, e.Buffer);
-            imageDescriptor = new ImageDescriptor(Video.ImageFormat.RGB24, image.Width, image.Height, true, ImageFormatHelper.ComputeBufferSize(image.Width, image.Height, Video.ImageFormat.RGB24));
+            imageDescriptor = new ImageDescriptor(Kinovea.Services.ImageFormat.RGB24, image.Width, image.Height, true, ImageFormatHelper.ComputeBufferSize(image.Width, image.Height, Kinovea.Services.ImageFormat.RGB24));
 
             waitHandle.Set();
         }

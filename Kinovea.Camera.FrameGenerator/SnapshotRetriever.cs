@@ -38,6 +38,16 @@ namespace Kinovea.Camera.FrameGenerator
             get { return this.summary.Identifier; }
         }
 
+        public string Alias
+        {
+            get { return summary.Alias; }
+        }
+
+        public Thread Thread
+        {
+            get { return snapperThread; }
+        }
+
         #region Members
         private static readonly int timeout = 5000;
         private Bitmap image;
@@ -47,6 +57,8 @@ namespace Kinovea.Camera.FrameGenerator
         private bool cancelled;
         private bool hadError;
         private FrameGeneratorDevice device;
+        private Thread snapperThread;
+        private object locker = new object();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -57,13 +69,19 @@ namespace Kinovea.Camera.FrameGenerator
             device = new FrameGeneratorDevice();
         }
 
+        public void Start()
+        {
+            snapperThread = new Thread(Run) { IsBackground = true };
+            snapperThread.Name = string.Format("{0} thumbnailer", summary.Alias);
+            snapperThread.Start();
+        }
+
         /// <summary>
         /// Start the device for a frame grab, wait a bit and then return the result.
         /// This method MUST raise a CameraThumbnailProduced event, even in case of error.
         /// </summary>
         public void Run(object data)
         {
-            Thread.CurrentThread.Name = string.Format("{0} thumbnailer", summary.Alias);
             log.DebugFormat("Starting {0} for thumbnail.", summary.Alias);
 
             device.FrameProduced += device_FrameProduced;
@@ -73,18 +91,33 @@ namespace Kinovea.Camera.FrameGenerator
 
             waitHandle.WaitOne(timeout, false);
 
-            device.FrameProduced -= device_FrameProduced;
-            device.FrameError -= device_FrameError;
+            lock (locker)
+            {
+                if (!cancelled)
+                {
+                    device.FrameProduced -= device_FrameProduced;
+                    device.FrameError -= device_FrameError;
+                    device.Stop();
+                }
+            }
 
             if (CameraThumbnailProduced != null)
                 CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, imageDescriptor, hadError, cancelled));
-            
-            device.Stop();
         }
 
         public void Cancel()
         {
-            cancelled = true;
+            log.DebugFormat("Cancelling thumbnail for {0}.", Alias);
+
+            lock (locker)
+            {
+                device.FrameProduced -= device_FrameProduced;
+                device.FrameError -= device_FrameError;
+                device.Stop();
+
+                cancelled = true;
+            }
+
             waitHandle.Set();
         }
 

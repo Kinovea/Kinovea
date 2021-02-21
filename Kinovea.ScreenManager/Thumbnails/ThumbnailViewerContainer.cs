@@ -44,6 +44,7 @@ namespace Kinovea.ScreenManager
         private ThumbnailViewerFiles viewerShortcuts = new ThumbnailViewerFiles();
         private ThumbnailViewerCameras viewerCameras = new ThumbnailViewerCameras();
         private UserControl viewer;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         public ThumbnailViewerContainer()
@@ -62,6 +63,10 @@ namespace Kinovea.ScreenManager
             CameraTypeManager.CameraForgotten += CameraTypeManager_CameraForgotten; 
             CameraTypeManager.CameraThumbnailProduced += CameraTypeManager_CameraThumbnailProduced;
 
+            // Switch immediately to the right tab, don't wait for the file explorer to load.
+            // In particular if the active tab is the cameras we want to get the thumbnails as soon as possible, even if not displaying yet.
+            SwitchContent(Convert(PreferencesManager.FileExplorerPreferences.ActiveTab));
+                    
             this.Hotkeys = HotkeySettingsManager.LoadHotkeys("ThumbnailViewerContainer");
         }
 
@@ -87,7 +92,7 @@ namespace Kinovea.ScreenManager
         public void Unhide()
         {
             this.Visible = true;
-            
+
             this.Cursor = Cursors.WaitCursor;
             
             if (currentContent == ThumbnailViewerContent.Files)
@@ -118,32 +123,18 @@ namespace Kinovea.ScreenManager
                 viewerFiles.CurrentDirectoryChanged(files);
         }
 
-        private void ExplorerTab_Changed(ActiveFileBrowserTab newTab)
-        {
-            SwitchContent(Convert(newTab));
-        }
-
         private void CameraTypeManager_CamerasDiscovered(object sender,  CamerasDiscoveredEventArgs e)
         {
-            if(currentContent != ThumbnailViewerContent.Cameras)
-                return;
-                
             viewerCameras.CamerasDiscovered(e.Summaries);
         }
         
         private void CameraTypeManager_CameraSummaryUpdated(object sender, CameraSummaryUpdatedEventArgs e)
         {
-            if(currentContent != ThumbnailViewerContent.Cameras)
-                return;
-                
             viewerCameras.CameraSummaryUpdated(e.Summary);
         }
 
         private void CameraTypeManager_CameraForgotten(object sender, EventArgs<CameraSummary> e)
         {
-            if (currentContent != ThumbnailViewerContent.Cameras)
-                return;
-
             viewerCameras.CameraForgotten(e.Value);
         }
 
@@ -222,6 +213,8 @@ namespace Kinovea.ScreenManager
         {
             if(viewer != null && currentContent == newContent)
                 return;
+
+            log.DebugFormat("Switching from {0} to {1}.", currentContent, newContent);
             
             ClearContent();
             this.splitMain.Panel2.Controls.Clear();
@@ -242,7 +235,7 @@ namespace Kinovea.ScreenManager
                     }
                 case ThumbnailViewerContent.Cameras:
                     {
-                        CameraTypeManager.StartDiscoveringCameras();
+                        viewerCameras.BeforeSwitch();
                         viewerCameras.UpdateThumbnailsSize(sizeSelector.SelectedSize);
                         viewer = viewerCameras;
                         break;
@@ -311,7 +304,7 @@ namespace Kinovea.ScreenManager
         }
         private void CameraTypeManager_CameraThumbnailProduced(object sender, CameraThumbnailProducedEventArgs e)
         {
-            if(currentContent == ThumbnailViewerContent.Cameras && !e.HadError && !e.Cancelled)
+            if(!e.HadError && !e.Cancelled)
                 viewerCameras.CameraImageReceived(e.Summary, e.Thumbnail);
         }
         private void ThumbnailViewerContainer_Load(object sender, EventArgs e)

@@ -27,6 +27,7 @@ using System.IO;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -206,7 +207,7 @@ namespace Kinovea.ScreenManager
                 TrackPointBlock prevBlock = previousPoints[previousPoints.Count - 1] as TrackPointBlock;
                 if(prevBlock != null && prevBlock.Template != null)
                 {		
-                    tpl = AForge.Imaging.Image.Clone(prevBlock.Template);
+                    tpl = BitmapHelper.Copy(prevBlock.Template);
                     updateWithCurrentImage = false;
                     age = prevBlock.TemplateAge + 1;
                 }

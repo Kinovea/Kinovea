@@ -24,7 +24,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Kinovea.Base
+namespace Kinovea.Services
 {
     /// <summary>
     /// Extends System.Stopwatch with a Dictionary to keep intermediate times.

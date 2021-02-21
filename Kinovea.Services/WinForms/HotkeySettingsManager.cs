@@ -8,7 +8,7 @@ namespace Kinovea.Services
 {
     public static class HotkeySettingsManager
     {
-        private static ToolStripMenuItem dummy = new ToolStripMenuItem();
+        private static ToolStripMenuItem dummy;
 
         public static Dictionary<string, HotkeyCommand[]> Hotkeys
         {
@@ -59,6 +59,9 @@ namespace Kinovea.Services
                         // Some keys like 'Enter' can't be used as menu shortcuts.
                         try
                         {
+                            if (dummy == null)
+                                dummy = new ToolStripMenuItem();
+
                             dummy.ShortcutKeys = c.KeyData;
                             keys = c.KeyData;
                         }

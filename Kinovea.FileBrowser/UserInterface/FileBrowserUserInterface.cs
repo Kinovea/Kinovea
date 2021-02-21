@@ -70,6 +70,7 @@ namespace Kinovea.FileBrowser
 
         private ContextMenuStrip popMenuFiles = new ContextMenuStrip();
         private ToolStripMenuItem mnuLaunch = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuLaunchWatcher = new ToolStripMenuItem();
         private ToolStripMenuItem mnuLocate = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDelete = new ToolStripMenuItem();
 
@@ -131,7 +132,7 @@ namespace Kinovea.FileBrowser
             mnuAddToShortcuts.Click += new EventHandler(mnuAddToShortcuts_Click);
             mnuAddToShortcuts.Visible = false;
 
-            mnuOpenAsReplayWatcher.Image = Properties.Resources.user_detective;
+            mnuOpenAsReplayWatcher.Image = Properties.Resources.replaywatcher;
             mnuOpenAsReplayWatcher.Click += new EventHandler(mnuOpenAsReplayWatcher_Click);
             mnuOpenAsReplayWatcher.Visible = true;
 
@@ -154,6 +155,10 @@ namespace Kinovea.FileBrowser
             mnuLaunch.Click += (s, e) => CommandLaunch();
             mnuLaunch.Visible = false;
 
+            mnuLaunchWatcher.Image = Properties.Resources.replaywatcher;
+            mnuLaunchWatcher.Click += (s, e) => CommandLaunchWatcher();
+            mnuLaunchWatcher.Visible = false;
+
             mnuLocate.Image = Properties.Resources.folder_explore;
             mnuLocate.Click += mnuLocate_Click;
             mnuLocate.Visible = false;
@@ -165,6 +170,8 @@ namespace Kinovea.FileBrowser
             popMenuFiles.Items.AddRange(new ToolStripItem[] 
             {
                 mnuLaunch,
+                mnuLaunchWatcher,
+                new ToolStripSeparator(),
                 mnuLocate,
                 new ToolStripSeparator(), 
                 mnuDelete
@@ -341,6 +348,7 @@ namespace Kinovea.FileBrowser
             mnuLocateFolder.Text = FileBrowserLang.mnuVideoLocate;
             mnuDeleteShortcut.Text = FileBrowserLang.mnuDeleteShortcut;
             mnuLaunch.Text = FileBrowserLang.Generic_Open;
+            mnuLaunchWatcher.Text = FileBrowserLang.mnuOpenAsReplayWatcher;
             mnuLocate.Text = FileBrowserLang.mnuVideoLocate;
             mnuDelete.Text = FileBrowserLang.mnuVideoDelete;
             mnuCameraLaunch.Text = FileBrowserLang.Generic_Open;
@@ -993,17 +1001,27 @@ namespace Kinovea.FileBrowser
 
         private void CommandLaunch()
         {
-            switch(activeTab)
+            ListView lv = GetActiveListView();
+            LaunchSelectedVideo(lv);
+        }
+
+        private void CommandLaunchWatcher()
+        {
+            ListView lv = GetActiveListView();
+            LaunchWatcherSelectedVideo(lv);
+        }
+
+        private ListView GetActiveListView()
+        {
+            switch (activeTab)
             {
-                case ActiveFileBrowserTab.Explorer:
-                    LaunchSelectedVideo(lvExplorer);
-                    break;
                 case ActiveFileBrowserTab.Shortcuts:
-                    LaunchSelectedVideo(lvShortcuts);
-                    break;
+                    return lvShortcuts;
                 case ActiveFileBrowserTab.Cameras:
-                    LaunchSelectedVideo(lvCaptured);
-                    break;
+                    return lvCaptured;
+                case ActiveFileBrowserTab.Explorer:
+                default:
+                    return lvExplorer;
             }
         }
 
@@ -1020,6 +1038,16 @@ namespace Kinovea.FileBrowser
             string path = GetSelectedVideoPath(lv);
             if (path != null)
                 VideoTypeManager.LoadVideo(path, -1);
+        }
+
+        private void LaunchWatcherSelectedVideo(ListView lv)
+        {
+            string path = GetSelectedVideoPath(lv);
+            if (path != null)
+            {
+                path = Path.Combine(Path.GetDirectoryName(path), "*");
+                VideoTypeManager.LoadVideo(path, -1);
+            }
         }
 
         private void LaunchSelectedCamera(ListView lv)

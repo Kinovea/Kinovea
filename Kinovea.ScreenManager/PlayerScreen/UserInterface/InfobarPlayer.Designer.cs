@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+      this.components = new System.ComponentModel.Container();
       this.lblSize = new System.Windows.Forms.Label();
       this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
       this.btnVideoType = new System.Windows.Forms.Button();
@@ -37,6 +38,7 @@
       this.button4 = new System.Windows.Forms.Button();
       this.button2 = new System.Windows.Forms.Button();
       this.lblFps = new System.Windows.Forms.Label();
+      this.toolTips = new System.Windows.Forms.ToolTip(this.components);
       this.flowLayoutPanel1.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -77,6 +79,7 @@
       // 
       this.btnVideoType.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.film_small;
       this.btnVideoType.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+      this.btnVideoType.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnVideoType.FlatAppearance.BorderSize = 0;
       this.btnVideoType.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
       this.btnVideoType.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
@@ -87,10 +90,12 @@
       this.btnVideoType.Size = new System.Drawing.Size(18, 18);
       this.btnVideoType.TabIndex = 8;
       this.btnVideoType.UseVisualStyleBackColor = true;
+      this.btnVideoType.MouseDown += new System.Windows.Forms.MouseEventHandler(this.fileinfo_MouseDown);
       // 
       // lblFilename
       // 
       this.lblFilename.AutoSize = true;
+      this.lblFilename.Cursor = System.Windows.Forms.Cursors.Hand;
       this.lblFilename.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.lblFilename.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.lblFilename.Location = new System.Drawing.Point(27, 3);
@@ -100,6 +105,7 @@
       this.lblFilename.TabIndex = 6;
       this.lblFilename.Text = "Filename";
       this.lblFilename.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      this.lblFilename.MouseDown += new System.Windows.Forms.MouseEventHandler(this.fileinfo_MouseDown);
       // 
       // button3
       // 
@@ -177,7 +183,7 @@
       this.BackColor = System.Drawing.Color.Transparent;
       this.Controls.Add(this.flowLayoutPanel1);
       this.Name = "InfobarPlayer";
-      this.Size = new System.Drawing.Size(500, 25);
+      this.Size = new System.Drawing.Size(500, 27);
       this.flowLayoutPanel1.ResumeLayout(false);
       this.flowLayoutPanel1.PerformLayout();
       this.ResumeLayout(false);
@@ -195,5 +201,6 @@
         private System.Windows.Forms.Label lblFilename;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button btnVideoType;
+        private System.Windows.Forms.ToolTip toolTips;
     }
 }

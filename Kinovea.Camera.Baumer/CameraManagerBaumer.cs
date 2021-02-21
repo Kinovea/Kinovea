@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using Kinovea.Services;
-using Kinovea.Video;
 using System.Windows.Forms;
 using BGAPI2;
 using System.Xml;
@@ -42,15 +41,13 @@ namespace Kinovea.Camera.Baumer
         #endregion
 
         #region Members
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private List<SnapshotRetriever> snapshotting = new List<SnapshotRetriever>();
         private Dictionary<string, CameraSummary> cache = new Dictionary<string, CameraSummary>();
-        private List<string> snapshotting = new List<string>();
         private Bitmap defaultIcon;
-        private int discoveryStep = 0;
-        private int discoverySkip = 5;
         private BGAPI2.SystemList systemList;
         private Dictionary<string, BGAPI2.System> systems = new Dictionary<string, BGAPI2.System>();
         private Dictionary<string, uint> deviceIndices = new Dictionary<string, uint>();
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         public CameraManagerBaumer()
@@ -233,16 +230,36 @@ namespace Kinovea.Camera.Baumer
                 cache.Remove(summary.Identifier);
         }
 
-        public override void GetSingleImage(CameraSummary summary)
+        public override CameraSummary GetCameraSummary(string alias)
         {
-            if (snapshotting.IndexOf(summary.Identifier) >= 0)
+            return cache.Values.FirstOrDefault(s => s.Alias == alias);
+        }
+
+        public override void StartThumbnail(CameraSummary summary)
+        {
+            SnapshotRetriever snapper = snapshotting.FirstOrDefault(s => s.Identifier == summary.Identifier);
+            if (snapper != null)
                 return;
 
-            // Spawn a thread to get a snapshot.
-            SnapshotRetriever retriever = new SnapshotRetriever(summary);
-            retriever.CameraThumbnailProduced += SnapshotRetriever_CameraThumbnailProduced;
-            snapshotting.Add(summary.Identifier);
-            ThreadPool.QueueUserWorkItem(retriever.Run);
+            snapper = new SnapshotRetriever(summary);
+            snapper.CameraThumbnailProduced += SnapshotRetriever_CameraThumbnailProduced;
+            snapshotting.Add(snapper);
+            snapper.Start();
+        }
+
+        public override void StopAllThumbnails()
+        {
+            for (int i = snapshotting.Count - 1; i >= 0; i--)
+            {
+                SnapshotRetriever snapper = snapshotting[i];
+                snapper.Cancel();
+                snapper.Thread.Join(500);
+                if (snapper.Thread.IsAlive)
+                    snapper.Thread.Abort();
+
+                snapper.CameraThumbnailProduced -= SnapshotRetriever_CameraThumbnailProduced;
+                snapshotting.RemoveAt(i);
+            }
         }
 
         public override CameraBlurb BlurbFromSummary(CameraSummary summary)
@@ -335,13 +352,19 @@ namespace Kinovea.Camera.Baumer
         #region Private methods
         private void SnapshotRetriever_CameraThumbnailProduced(object sender, CameraThumbnailProducedEventArgs e)
         {
-            SnapshotRetriever retriever = sender as SnapshotRetriever;
-            if (retriever != null)
-            {
-                retriever.CameraThumbnailProduced -= SnapshotRetriever_CameraThumbnailProduced;
-                if (snapshotting != null && snapshotting.Count > 0)
-                    snapshotting.Remove(retriever.Identifier);
-            }
+            Invoke((Action)delegate { ProcessThumbnail(sender, e); });
+        }
+
+        private void ProcessThumbnail(object sender, CameraThumbnailProducedEventArgs e)
+        {
+            SnapshotRetriever snapper = sender as SnapshotRetriever;
+            if (snapper == null)
+                return;
+
+            log.DebugFormat("Received thumbnail event for {0}. Cancelled: {1}.", snapper.Alias, e.Cancelled);
+            snapper.CameraThumbnailProduced -= SnapshotRetriever_CameraThumbnailProduced;
+            if (snapshotting.Contains(snapper))
+                snapshotting.Remove(snapper);
 
             OnCameraThumbnailProduced(e);
         }

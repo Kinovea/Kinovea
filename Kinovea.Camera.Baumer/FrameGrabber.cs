@@ -5,8 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using Kinovea.Pipeline;
-using Kinovea.Video;
-using Kinovea.Base;
+using Kinovea.Services;
 using BGAPI2;
 
 namespace Kinovea.Camera.Baumer

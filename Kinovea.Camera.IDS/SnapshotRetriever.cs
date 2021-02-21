@@ -19,11 +19,12 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading;
 using Kinovea.Pipeline;
-using Kinovea.Video;
+using Kinovea.Services;
 
 namespace Kinovea.Camera.IDS
 {
@@ -40,8 +41,18 @@ namespace Kinovea.Camera.IDS
             get { return this.summary.Identifier; }
         }
 
+        public string Alias
+        {
+            get { return summary.Alias; }
+        }
+
+        public Thread Thread
+        {
+            get { return snapperThread; }
+        }
+
         #region Members
-        private static readonly int timeoutGrabbing = 5000;
+        private static readonly int timeoutGrabbing = 1000;
         private static readonly int timeoutOpening = 100;
 
         private Bitmap image;
@@ -51,6 +62,9 @@ namespace Kinovea.Camera.IDS
         private uEye.Camera camera = new uEye.Camera();
         private bool cancelled;
         private bool hadError;
+        private Thread snapperThread;
+        private object locker = new object();
+        private Stopwatch stopwatch = new Stopwatch();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -64,19 +78,21 @@ namespace Kinovea.Camera.IDS
 
             try
             {
+                stopwatch.Start();
                 uEye.Defines.Status status = camera.Init((Int32)deviceId | (Int32)uEye.Defines.DeviceEnumeration.UseDeviceID);
-
                 if (status != uEye.Defines.Status.SUCCESS)
                 {
                     log.ErrorFormat("Camera {0} could not be opened for thumbnail capture.", summary.Alias);
                     return;
                 }
 
+                log.DebugFormat("{0} initialized in {1} ms.", summary.Alias, stopwatch.ElapsedMilliseconds);
+                stopwatch.Stop();
+
                 // We do not load the camera-specific profile for the thumbnail at the moment.
                 // For some reason the .ToBitmap method doesn't work well on the RGB32 format, so in order to at least have something we 
                 // load the camera on the default profile for the thumbnail.
-                //ProfileHelper.Load(camera, ProfileHelper.GetProfileFilename(summary.Identifier));
-
+                
                 status = camera.Memory.Allocate();
                 if (status != uEye.Defines.Status.SUCCESS)
                 {
@@ -90,13 +106,19 @@ namespace Kinovea.Camera.IDS
             }
         }
 
+        public void Start()
+        {
+            snapperThread = new Thread(Run) { IsBackground = true };
+            snapperThread.Name = string.Format("{0} thumbnailer", summary.Alias);
+            snapperThread.Start();
+        }
+
         /// <summary>
         /// Start the device for a frame grab, wait a bit and then return the result.
         /// This method MUST raise a CameraThumbnailProduced event, even in case of error.
         /// </summary>
         public void Run(object data)
         {
-            Thread.CurrentThread.Name = string.Format("{0} thumbnailer", summary.Alias);
             log.DebugFormat("Starting {0} for thumbnail.", summary.Alias);
 
             if (!camera.IsOpened)
@@ -112,7 +134,7 @@ namespace Kinovea.Camera.IDS
 
             try
             {
-                uEye.Defines.Status statusRet = camera.Acquisition.Capture();
+                uEye.Defines.Status statusRet = camera.Acquisition.Freeze();
             }
             catch (Exception e)
             {
@@ -121,13 +143,17 @@ namespace Kinovea.Camera.IDS
 
             waitHandle.WaitOne(timeoutGrabbing, false);
 
-            camera.EventFrame -= camera_EventFrame;
-            camera.EventDeviceRemove -= camera_EventDeviceRemove;
-            camera.EventDeviceUnPlugged -= camera_EventDeviceUnPlugged;
-            
-            Stop();
-            Close();
-            log.DebugFormat("Camera {0} closed after thumbnail capture.", summary.Alias);
+            lock (locker)
+            {
+                if (!cancelled)
+                {
+                    camera.EventFrame -= camera_EventFrame;
+                    camera.EventDeviceRemove -= camera_EventDeviceRemove;
+                    camera.EventDeviceUnPlugged -= camera_EventDeviceUnPlugged;
+
+                    Close();
+                }
+            }
 
             if (CameraThumbnailProduced != null)
                 CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, imageDescriptor, hadError, cancelled));
@@ -135,23 +161,23 @@ namespace Kinovea.Camera.IDS
 
         public void Cancel()
         {
+            log.DebugFormat("Cancelling thumbnail for {0}.", Alias);
+
             if (!camera.IsOpened)
                 return;
 
-            cancelled = true;
-            waitHandle.Set();
-        }
+            lock (locker)
+            {
+                camera.EventFrame -= camera_EventFrame;
+                camera.EventDeviceRemove -= camera_EventDeviceRemove;
+                camera.EventDeviceUnPlugged -= camera_EventDeviceUnPlugged;
 
-        private void Stop()
-        {
-            try
-            {
-                camera.Acquisition.Freeze();
+                Close();
+
+                cancelled = true;
             }
-            catch (Exception e)
-            {
-                LogError(e, "");
-            }
+
+            waitHandle.Set();
         }
 
         private void Close()
@@ -181,13 +207,19 @@ namespace Kinovea.Camera.IDS
             uEye.Camera camera = sender as uEye.Camera;
 
             if (camera == null || !camera.IsOpened)
+            {
+                waitHandle.Set();
                 return;
+            }
 
             uEye.Defines.DisplayMode mode;
             camera.Display.Mode.Get(out mode);
 
             if (mode != uEye.Defines.DisplayMode.DiB)
+            {
+                waitHandle.Set();
                 return;
+            }
 
             Int32 s32MemID;
             camera.Memory.GetActive(out s32MemID);
@@ -210,8 +242,8 @@ namespace Kinovea.Camera.IDS
                     g.DrawImage(bitmap, Point.Empty);
                 }
 
-                int bufferSize = ImageFormatHelper.ComputeBufferSize(image.Width, image.Height, Video.ImageFormat.RGB24);
-                imageDescriptor = new ImageDescriptor(Video.ImageFormat.RGB24, image.Width, image.Height, true, bufferSize);
+                int bufferSize = ImageFormatHelper.ComputeBufferSize(image.Width, image.Height, Kinovea.Services.ImageFormat.RGB24);
+                imageDescriptor = new ImageDescriptor(Kinovea.Services.ImageFormat.RGB24, image.Width, image.Height, true, bufferSize);
 
                 bitmap.Dispose();
             }

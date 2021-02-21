@@ -117,6 +117,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CameraManager.cs" />
+    <Compile Include="CameraManagerPluginInfo.cs" />
     <Compile Include="Configuration\AbstractCameraPropertyView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -238,10 +239,6 @@
     <ProjectReference Include="..\Kinovea.Services\Kinovea.Services.csproj">
       <Project>{8AA92254-A016-4A84-925C-F5B07E02F8A8}</Project>
       <Name>Kinovea.Services</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Kinovea.Video\Kinovea.Video.csproj">
-      <Project>{4cbb8462-00a7-4814-ad3b-07c82eeeb0de}</Project>
-      <Name>Kinovea.Video</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

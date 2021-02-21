@@ -6,9 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using GxIAPINET;
 using System.Runtime.InteropServices;
-using Kinovea.Base;
 using Kinovea.Pipeline;
-using Kinovea.Video;
+using Kinovea.Services;
 
 namespace Kinovea.Camera.Daheng
 {

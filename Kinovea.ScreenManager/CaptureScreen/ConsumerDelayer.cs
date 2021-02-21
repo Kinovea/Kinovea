@@ -2,13 +2,11 @@
 using Kinovea.Pipeline.Consumers;
 using System.IO;
 using System;
+using System.Drawing;
+using System.Diagnostics;
 using Kinovea.Video;
 using Kinovea.Video.FFMpeg;
-using System.Drawing;
 using Kinovea.Services;
-using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
-using System.Diagnostics;
 
 namespace Kinovea.ScreenManager
 {
@@ -101,7 +99,7 @@ namespace Kinovea.ScreenManager
             VideoInfo info = new VideoInfo();
             info.OriginalSize = new Size(delayerImageDescriptor.Width, delayerImageDescriptor.Height);
 
-            bool uncompressed = PreferencesManager.CapturePreferences.SaveUncompressedVideo && delayerImageDescriptor.Format != Video.ImageFormat.JPEG;
+            bool uncompressed = PreferencesManager.CapturePreferences.SaveUncompressedVideo && delayerImageDescriptor.Format != Kinovea.Services.ImageFormat.JPEG;
             string formatString = FilenameHelper.GetFormatStringCapture(uncompressed);
             double fileInterval = CalibrationHelper.ComputeFileFrameInterval(interval);
 

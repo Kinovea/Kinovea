@@ -82,7 +82,7 @@ namespace Kinovea.Services
                 return;
             
             string joined = string.Join(" ", arguments);
-            log.DebugFormat("Command line arguments:{0}", string.Join(" ", arguments));
+            log.DebugFormat("Command line arguments: {0}", string.Join(" ", arguments));
             
             try
             {
@@ -103,6 +103,10 @@ namespace Kinovea.Services
                             {
                                 foreach (IScreenDescription screen in workspace.Screens)
                                     LaunchSettingsManager.AddScreenDescription(screen);
+                            }
+                            else
+                            {
+                                log.ErrorFormat("Workspace from command line argument not loaded.");
                             }
                         }
                         else
@@ -142,6 +146,10 @@ namespace Kinovea.Services
                         {
                             foreach (IScreenDescription screen in w.Screens)
                                 LaunchSettingsManager.AddScreenDescription(screen);
+                        }
+                        else
+                        {
+                            log.ErrorFormat("Workspace from command line argument not loaded.");
                         }
                     }
                     else if (!string.IsNullOrEmpty(video))

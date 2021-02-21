@@ -8,17 +8,21 @@ using System.Runtime.InteropServices;
 using System.IO;
 using TurboJpegNet;
 
-namespace Kinovea.Video
+namespace Kinovea.Services
 {
     public static class BitmapHelper
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
+        #region Copy a bitmap into another
         /// <summary>
         /// Allocate a new bitmap and copy the passed bitmap into it.
         /// </summary>
         public static Bitmap Copy(Bitmap src)
         {
+            if (src is null)
+                return null;
+
             Bitmap dst = new Bitmap(src.Width, src.Height, src.PixelFormat);
             Rectangle rect = new Rectangle(0, 0, src.Width, src.Height);
 
@@ -55,6 +59,58 @@ namespace Kinovea.Video
 
             return;
         }
+
+        /// <summary>
+        /// Allocate a new bitmap and copy a grayscale version of the source into it.
+        /// The source bitmap MUST be 4 bytes per pixel.
+        /// The output bitmap has the same pixel format as the source.
+        /// </summary>
+        public unsafe static Bitmap Grayscale(Bitmap src)
+        {
+            const float r = 0.2125f;
+            const float g = 0.7154f;
+            const float b = 0.0721f;
+
+            if (src.PixelFormat != PixelFormat.Format32bppRgb &&
+                src.PixelFormat != PixelFormat.Format32bppArgb &&
+                src.PixelFormat != PixelFormat.Format32bppPArgb)
+                return null;
+
+            Rectangle rect = new Rectangle(0, 0, src.Width, src.Height);
+            BitmapData srcData = src.LockBits(rect, ImageLockMode.ReadOnly, src.PixelFormat);
+            int pixelSize = 4;
+            int srcOffset = srcData.Stride - src.Width * pixelSize;
+
+            Bitmap dst = new Bitmap(src.Width, src.Height, src.PixelFormat);
+            BitmapData dstData = dst.LockBits(rect, ImageLockMode.ReadOnly, dst.PixelFormat);
+            int dstOffset = dstData.Stride - dst.Width * pixelSize;
+
+            byte* pSrc = (byte*)srcData.Scan0.ToPointer();
+            byte* pDst = (byte*)dstData.Scan0.ToPointer();
+
+            for (int y = 0; y < rect.Height; y++)
+            {
+                for (int x = 0; x < rect.Width; x++, pSrc += pixelSize, pDst += pixelSize)
+                {
+                    byte value = (byte)(b * pSrc[0] + g * pSrc[1] + r * pSrc[2]);
+                    pDst[0] = value;
+                    pDst[1] = value;
+                    pDst[2] = value;
+                    pDst[3] = 255;
+                }
+
+                pSrc += srcOffset;
+                pDst += dstOffset;
+            }
+
+            src.UnlockBits(srcData);
+            dst.UnlockBits(dstData);
+
+            return dst;
+        }
+        #endregion
+
+        #region Copy a byte buffer into a Bitmap
 
         /// <summary>
         /// Copy the buffer into the bitmap line by line, with optional vertical flip.
@@ -192,11 +248,15 @@ namespace Kinovea.Video
             bitmap.UnlockBits(bmpData);
         }
 
+        #endregion
+
+        #region Copy a Bitmap into a byte buffer
+
         /// <summary>
         /// Copy the whole bitmap into a rectangle in the frame buffer.
         /// The source bitmap is expected to be smaller than destination.
         /// </summary>
-        public unsafe static void CopyBitmapRectangle(Bitmap bitmap, Point location, byte[] buffer, int dstStride)
+        public unsafe static void CopyBitmapToBufferRectangle(Bitmap bitmap, Point location, byte[] buffer, int dstStride)
         {
             Rectangle bmpRectangle = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
             BitmapData bmpData = bitmap.LockBits(bmpRectangle, ImageLockMode.ReadOnly, bitmap.PixelFormat);
@@ -242,5 +302,6 @@ namespace Kinovea.Video
                     bitmap.UnlockBits(bmpData);
             }
         }
+        #endregion
     }
 }

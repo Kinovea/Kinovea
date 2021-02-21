@@ -25,8 +25,6 @@ using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
-
-using Kinovea.Base;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 using Kinovea.Video;
@@ -113,7 +111,7 @@ namespace Kinovea.ScreenManager
                     // This happens when we first load a file watcher into this screen.
                     // Subsequent calls by the watcher will use the actual file name.
                     // For this initial step, run the most recent file of the directory, if any.
-                    filePath = FilesystemHelper.GetMostRecentFile(Path.GetDirectoryName(filePath));
+                    filePath = VideoTypeManager.GetMostRecentSupportedVideo(filePath);
                     if (string.IsNullOrEmpty(filePath))
                     {
                         // If the directory doesn't have any supported files yet it's not an error, we just load an empty player and get ready.
@@ -174,12 +172,12 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Main video saving pipeline. Saves either a video or the analysis data.
+        /// Main video export.
         /// </summary>
-        public void Save(double playbackFrameInterval, double slowmotionPercentage, ImageRetriever imageRetriever)
+        public void SaveVideo(double playbackFrameInterval, double slowmotionPercentage, ImageRetriever imageRetriever)
         {
-            // Let the user select what he wants to save exactly.
-            formVideoExport fve = new formVideoExport(videoReader.FilePath, metadata, slowmotionPercentage);
+            // Show the intermediate dialog for export options.
+            formVideoExport fve = new formVideoExport(videoReader.FilePath, slowmotionPercentage);
             if (fve.ShowDialog() != DialogResult.OK)
             {
                 fve.Dispose();
@@ -193,25 +191,16 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            if(fve.SaveAnalysis)
-            {
-                MetadataSerializer serializer = new MetadataSerializer();
-                serializer.SaveToFile(metadata, fve.Filename);
-                metadata.AfterManualExport();
-            }
-            else
-            {
-                DoSave(fve.Filename,
-                        fve.UseSlowMotion ? playbackFrameInterval : metadata.UserInterval,
-                        fve.BlendDrawings,
-                        false,
-                        false,
-                        imageRetriever);
+            DoSave(fve.Filename,
+                   fve.UseSlowMotion ? playbackFrameInterval : metadata.UserInterval,
+                   true,
+                   false,
+                   false,
+                   imageRetriever);
 
-                PreferencesManager.PlayerPreferences.VideoFormat = FilesystemHelper.GetVideoFormat(fve.Filename);
-                PreferencesManager.Save();
-            }
-
+            PreferencesManager.PlayerPreferences.VideoFormat = FilesystemHelper.GetVideoFormat(fve.Filename);
+            PreferencesManager.Save();
+            
             fve.Dispose();
         }
 
@@ -280,65 +269,14 @@ namespace Kinovea.ScreenManager
                 frames++;
 
             double milliseconds = frames * metadata.UserInterval / metadata.HighSpeedFactor;
-
             double framerate = 1000.0 / metadata.UserInterval * metadata.HighSpeedFactor;
-            double framerateMagnitude = Math.Log10(framerate);
-            int precision = (int)Math.Ceiling(framerateMagnitude);
-            
-            string frameString = String.Format("{0}", frames);
-            string outputTimeCode;
+            double durationTimestamps = videoReader.Info.DurationTimeStamps - averageTimestampsPerFrame;
+            double totalFrames = durationTimestamps / averageTimestampsPerFrame;
 
-            switch (tcf)
-            {
-                case TimecodeFormat.ClassicTime:
-                    outputTimeCode = TimeHelper.MillisecondsToTimecode(milliseconds, precision);
-                    break;
-                case TimecodeFormat.Frames:
-                    outputTimeCode = frameString;
-                    break;
-                case TimecodeFormat.Milliseconds:
-                    outputTimeCode = String.Format("{0}", (int)Math.Round(milliseconds));
-                    if (symbol)
-                        outputTimeCode += " ms";
-                    break;
-                case TimecodeFormat.Microseconds:
-                    outputTimeCode = String.Format("{0}", (int)Math.Round(milliseconds * 1000));
-                    if (symbol)
-                        outputTimeCode += " µs";
-                    break;
-                case TimecodeFormat.TenThousandthOfHours:
-                    // 1 Ten Thousandth of Hour = 360 ms.
-                    double inTenThousandsOfAnHour = milliseconds / 360.0;
-                    outputTimeCode = String.Format("{0}:{1:00}", (int)inTenThousandsOfAnHour, Math.Floor((inTenThousandsOfAnHour - (int)inTenThousandsOfAnHour) * 100));
-                    break;
-                case TimecodeFormat.HundredthOfMinutes:
-                    // 1 Hundredth of minute = 600 ms.
-                    double inHundredsOfAMinute = milliseconds / 600.0;
-                    outputTimeCode = String.Format("{0}:{1:00}", (int)inHundredsOfAMinute, Math.Floor((inHundredsOfAMinute - (int)inHundredsOfAMinute) * 100));
-                    break;
-                case TimecodeFormat.TimeAndFrames:
-                    String timeString = TimeHelper.MillisecondsToTimecode(milliseconds, precision);
-                    outputTimeCode = String.Format("{0} ({1})", timeString, frameString);
-                    break;
-                case TimecodeFormat.Normalized:
-                    // 1.0 is the coordinate of the last frame.
-                    double duration = videoReader.Info.DurationTimeStamps - averageTimestampsPerFrame;
-                    double totalFrames = duration / averageTimestampsPerFrame;
-                    int magnitude = (int)Math.Ceiling(Math.Log10(totalFrames));
-                    string outputFormat = string.Format("{{0:0.{0}}}", new string('0', magnitude));
-                    double normalized = actualTimestamps / duration;
-                    outputTimeCode = String.Format(outputFormat, normalized);
-                    break;
-                case TimecodeFormat.Timestamps:
-                    outputTimeCode = String.Format("{0}", (int)actualTimestamps);
-                    break;
-                default:
-                    outputTimeCode = TimeHelper.MillisecondsToTimecode(milliseconds, precision);
-                    break;
-            }
-
-            return outputTimeCode;
+            return TimeHelper.GetTimestring(framerate, frames, milliseconds, actualTimestamps, durationTimestamps, totalFrames, tcf, symbol);
         }
+
+        
         #endregion
         
         #region Saving processing

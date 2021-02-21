@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
-using AForge.Math;
 using System.Drawing.Imaging;
 using System.IO;
 

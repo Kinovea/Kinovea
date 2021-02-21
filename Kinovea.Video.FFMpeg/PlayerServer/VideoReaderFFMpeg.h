@@ -70,9 +70,8 @@ using namespace System::ComponentModel;
 using namespace System::Reflection;
 using namespace System::Threading;
 using namespace System::Diagnostics;
-
-using namespace Kinovea::Base;
 using namespace Kinovea::Video;
+using namespace Kinovea::Services;
 
 //#define INSTRUMENTATION // <-- Extra logging.
 

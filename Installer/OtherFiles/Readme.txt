@@ -38,6 +38,36 @@ Communication channels:
 Changelog:
 ----------
 
+0.9.4 - TBD
+    Added - General: support for workspaces as presets of screens arrangements and content.
+    Added - General: support controlling Kinovea from external applications using WM_COPYDATA messages.
+    Added - Capture: support for Baumer cameras.
+    Added - Capture: button to arm and disarm the audio trigger in the capture screen.
+    Added - Capture: capture screens monitor the last exported KVA and reload it automatically when modified.
+    Improved - General: reorganized the save menu in "Save", "Save as…" and "Export video".
+    Improved - General: save and restore the main window position and state.
+    Improved - General: support customization of the path to the default KVA for capture and playback.
+    Improved - Playback: replay folder observers keep monitoring their folder when an old video is loaded.
+    Improved - Playback: new menu to switch between normal video and replay folder observer.
+    Improved - Playback: new menus to launch a replay folder observer from any file in the explorer panel.
+    Improved - Annotations: support using the calibration line as the vertical axis or use image axes.
+    Improved - Annotations: save and restore the mirror flag in KVA files.
+    Improved - Capture: support loading KVA files in the capture screen using the File menu.
+    Improved - Capture: allow manipulation of visible objects even if not on the first keyframe.
+    Improved - Capture: camera streams are now disconnected when the computer enters sleep mode.
+    Improved - Capture: delay is temporary disabled when opening the camera configuration dialog.
+    Improved - Capture: added a command to disable delayed display but still use the delay for recording.
+    Improved - Capture: display a special image when the delay is larger than the first frame available.
+    Improved - Capture: save and restore the mirror flag in camera settings.
+    Fixed - Some manipulations in the playback screen were not triggering screen activation.
+    Fixed - The timecodes were wrong when using custom playback rate.
+    Fixed - The capture screen didn't export some metadata correctly when the camera is rotated.
+    Fixed - The capture test grid was wrong when the camera is rotated.
+    Fixed - The scaling of rectangle and circle was wrong when loading a KVA in a video of a different size.
+    Fixed - Crash when trying to render extra drawings like chronometer in a capture screen.
+    Fixed - The speed slider could fail to keep its value when loading a new video in a replay observer.
+
+
 0.9.3 - July 2020.
     Improved - Playback: more memory can be allocated for cache memory.
     Improved - Annotations: the angle tool now supports font size change.

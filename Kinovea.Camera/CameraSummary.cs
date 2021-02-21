@@ -20,12 +20,13 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Drawing;
-using Kinovea.Video;
+using Kinovea.Services;
 
 namespace Kinovea.Camera
 {
     /// <summary>
-    /// Small info to display the camera in the UI.
+    /// This class contains the necessary info to represent, identify and connect to a camera.
+    /// It has a pointer to its manager and a blob of manager specific data.
     /// </summary>
     public class CameraSummary
     {
@@ -36,9 +37,7 @@ namespace Kinovea.Camera
         public Rectangle DisplayRectangle { get; set; }
         public CaptureAspectRatio AspectRatio { get; private set; }
         public ImageRotation Rotation { get; private set; }
-
         public bool Mirror { get; private set; }
-
         public object Specific { get; private set;}
         public CameraManager Manager { get; private set;}
 

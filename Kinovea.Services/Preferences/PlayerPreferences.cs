@@ -24,8 +24,6 @@ using System.Drawing;
 using System.Globalization;
 using System.Xml;
 
-using Kinovea.Video;
-
 namespace Kinovea.Services
 {
     public class PlayerPreferences : IPreferenceSerializer

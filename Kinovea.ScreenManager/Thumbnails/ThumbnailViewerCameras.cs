@@ -49,6 +49,8 @@ namespace Kinovea.ScreenManager
         
         public ThumbnailViewerCameras()
         {
+            log.Debug("Constructing ThumbnailViewerCameras");
+
             InitializeComponent();
             //RefreshUICulture();
             this.Dock = DockStyle.Fill;
@@ -71,7 +73,6 @@ namespace Kinovea.ScreenManager
         }
         public void CameraImageReceived(CameraSummary summary, Bitmap image)
         {
-            // This generally runs in a worker thread in the camera manager plug-in.
             if(this.InvokeRequired)
                 this.BeginInvoke((Action) delegate {UpdateThumbnailImage(summary, image);});
             else
@@ -94,6 +95,12 @@ namespace Kinovea.ScreenManager
 
             RemoveThumbnail(thumbnailControls[index]);
             Refresh();
+        }
+
+        public void BeforeSwitch()
+        {
+            CameraTypeManager.StartDiscoveringCameras();
+            refreshImages = true;
         }
         
         public void UpdateThumbnailsSize(ExplorerThumbSize newSize)
@@ -131,13 +138,14 @@ namespace Kinovea.ScreenManager
                 if(index >= 0)
                 {
                     if (refreshImages)
-                        summary.Manager.GetSingleImage(summary);
+                        summary.Manager.StartThumbnail(summary);
 
                     continue;
                 }
                 
+                // New camera, add it to the list and start async thumbnail retrieval.
                 updated = true;
-                summary.Manager.GetSingleImage(summary);
+                summary.Manager.StartThumbnail(summary);
                 AddThumbnail(new ThumbnailCamera(summary));
             }
             
@@ -242,6 +250,7 @@ namespace Kinovea.ScreenManager
             if(summary == null)
                 return;
             
+            log.DebugFormat("UpdateThumbnailImage for {0}.", summary.Alias);
             int index = IndexOf(summary.Identifier);
             if(index < 0)
                 return;

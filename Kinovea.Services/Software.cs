@@ -37,7 +37,7 @@ namespace Kinovea.Services
         public static string SettingsDirectory { get; private set; }
         public static string ColorProfileDirectory { get; private set; }
         public static string CameraCalibrationDirectory { get; private set; }
-
+        public static string CameraPluginsDirectory { get; private set; }
         public static string PreferencesFile
         {
             get
@@ -79,6 +79,7 @@ namespace Kinovea.Services
             CameraCalibrationDirectory = SettingsDirectory + "CameraCalibration\\";
             TempDirectory = SettingsDirectory + "Temp\\";
             CameraProfilesDirectory = Path.Combine(SettingsDirectory, "CameraProfiles");
+            CameraPluginsDirectory = Path.Combine(SettingsDirectory, "Plugins", "Camera");
 
             HelpVideosDirectory = applicationDirectory + "HelpVideos\\";
             ManualsDirectory = applicationDirectory + "Manuals\\";
@@ -115,20 +116,18 @@ namespace Kinovea.Services
         
         public static void SanityCheckDirectories()
         {
-        	if(!Directory.Exists(SettingsDirectory))
-        		Directory.CreateDirectory (SettingsDirectory);
-        	
-        	if(!Directory.Exists(ColorProfileDirectory))
-        	   	Directory.CreateDirectory(ColorProfileDirectory);
+            CreateDirectory(SettingsDirectory);
+            CreateDirectory(ColorProfileDirectory);
+            CreateDirectory(CameraCalibrationDirectory);
+            CreateDirectory(CameraProfilesDirectory);
+            CreateDirectory(CameraPluginsDirectory);
+            CreateDirectory(TempDirectory);
+        }
 
-            if (!Directory.Exists(CameraCalibrationDirectory))
-                Directory.CreateDirectory(CameraCalibrationDirectory);
-
-            if (!Directory.Exists(CameraProfilesDirectory))
-                Directory.CreateDirectory(CameraProfilesDirectory);
-            
-            if (!Directory.Exists(TempDirectory))
-                Directory.CreateDirectory(TempDirectory);
+        private static void CreateDirectory(string dir)
+        {
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
         }
         
         public static void LogInfo()

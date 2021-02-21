@@ -21,7 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Diagnostics;
 
-namespace Kinovea.Base
+namespace Kinovea.Services
 {
     /// <summary>
     /// A simple time accumulator to get average loop time.

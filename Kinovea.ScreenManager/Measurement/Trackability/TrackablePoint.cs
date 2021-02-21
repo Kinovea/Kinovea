@@ -201,7 +201,7 @@ namespace Kinovea.ScreenManager
                 
                 if(result.Similarity > trackerParameters.TemplateUpdateThreshold)
                 {
-                    Bitmap template = closestFrame.Template.CloneDeep();
+                    Bitmap template = BitmapHelper.Copy(closestFrame.Template);
                     TrackFrame newFrame = new TrackFrame(context.Time, result.Location, template, PositionningSource.TemplateMatching);
                     trackTimeline.Insert(context.Time, newFrame);
                 }

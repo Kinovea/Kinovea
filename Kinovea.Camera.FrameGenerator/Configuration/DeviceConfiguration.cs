@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Kinovea.Video;
+using Kinovea.Services;
 
 namespace Kinovea.Camera.FrameGenerator
 {

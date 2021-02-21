@@ -17,8 +17,14 @@ namespace Kinovea.Services
 
         public bool Load(string filename)
         {
-            if (string.IsNullOrEmpty(filename) || !File.Exists(filename))
+            if (string.IsNullOrEmpty(filename))
                 return false;
+            
+            if (!File.Exists(filename))
+            {
+                log.ErrorFormat("The workspace file could not be found. {0}", filename);
+                return false;
+            }
 
             bool loaded = false;
 
@@ -38,7 +44,7 @@ namespace Kinovea.Services
             }
             catch (Exception e)
             {
-                log.Error("An error happened during the parsing of a workspace file");
+                log.ErrorFormat("An error happened during the parsing of the workspace file. {0}", Path.GetFileName(filename));
                 log.Error(e);
             }
             finally
@@ -50,15 +56,34 @@ namespace Kinovea.Services
             return loaded;
         }
 
-        private void ReadXML(XmlReader reader)
+        public void Write(string filename)
+        {
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.Indent = true;
+            settings.CloseOutput = true;
+
+            using (XmlWriter w = XmlWriter.Create(filename, settings))
+            {
+                w.WriteStartElement("KinoveaWorkspace");
+                w.WriteElementString("FormatVersion", "1.0");
+                WriteXML(w);
+                w.WriteEndElement();
+            }
+        }
+
+        public void ReadXML(XmlReader reader)
         {
             reader.MoveToContent();
+            bool isEmpty = reader.IsEmptyElement;
 
-            if (!(reader.Name == "KinoveaWorkspace"))
+            if (reader.Name != "Workspace" && reader.Name != "KinoveaWorkspace" || isEmpty)
+            {
+                reader.ReadOuterXml();
                 return;
+            }
 
             reader.ReadStartElement();
-            reader.ReadElementContentAsString("FormatVersion", "");
+            //reader.ReadElementContentAsString("FormatVersion", "");
 
             Screens.Clear();
 
@@ -67,11 +92,14 @@ namespace Kinovea.Services
                 switch (reader.Name)
                 {
                     case "ScreenDescriptionPlayback":
-                        ScreenDescriptionPlayback sdp = new ScreenDescriptionPlayback(reader);
+
+                        ScreenDescriptionPlayback sdp = new ScreenDescriptionPlayback();
+                        sdp.ReadXml(reader);
                         Screens.Add(sdp);
                         break;
                     case "ScreenDescriptionCapture":
-                        ScreenDescriptionCapture sdc = new ScreenDescriptionCapture(reader);
+                        ScreenDescriptionCapture sdc = new ScreenDescriptionCapture();
+                        sdc.Readxml(reader);
                         Screens.Add(sdc);
                         break;
                     default:
@@ -81,6 +109,20 @@ namespace Kinovea.Services
             }
 
             reader.ReadEndElement();
+        }
+
+        public void WriteXML(XmlWriter w)
+        {
+            foreach (var screen in Screens)
+            {
+                if (screen.ScreenType == ScreenType.Playback)
+                    w.WriteStartElement("ScreenDescriptionPlayback");
+                else
+                    w.WriteStartElement("ScreenDescriptionCapture");
+                    
+                screen.WriteXml(w);
+                w.WriteEndElement();
+            }
         }
     }
 }

@@ -25,7 +25,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
-using Kinovea.Base;
+using Kinovea.Services;
 
 namespace Kinovea.Video
 {

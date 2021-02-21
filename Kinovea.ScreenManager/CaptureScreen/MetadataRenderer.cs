@@ -24,13 +24,20 @@ using System.Drawing.Drawing2D;
 
 namespace Kinovea.ScreenManager
 {
+    /// <summary>
+    /// Renderer for metadata.
+    /// This renderer is currently only used by the capture screen and by the trajectory configuration window.
+    /// The playback screen uses a different mechanism that hasn't been factored in yet.
+    /// </summary>
     public class MetadataRenderer
     {
         private Metadata metadata;
+        private bool renderTimedDrawings = true;
     
-        public MetadataRenderer(Metadata metadata)
+        public MetadataRenderer(Metadata metadata, bool renderTimedDrawings)
         {
             this.metadata = metadata;
+            this.renderTimedDrawings = renderTimedDrawings;
         }
     
         public void Render(Graphics viewportCanvas, Point imageLocation, float imageZoom, long timestamp)
@@ -50,16 +57,30 @@ namespace Kinovea.ScreenManager
         {
             DistortionHelper distorter = null;
 
-            foreach (AbstractDrawing ad in metadata.ChronoManager.Drawings)
-                ad.Draw(canvas, distorter, transformer, false, timestamp);
+            metadata.DrawingCoordinateSystem.Draw(canvas, distorter, transformer, false, timestamp);
+            metadata.DrawingTestGrid.Draw(canvas, distorter, transformer, false, timestamp);
 
-            foreach (AbstractDrawing ad in metadata.TrackManager.Drawings)
-                ad.Draw(canvas, distorter, transformer, false, timestamp);
-            
-            foreach (AbstractDrawing ad in metadata.ExtraDrawings)
-                ad.Draw(canvas, distorter, transformer, false, timestamp);
+            if (renderTimedDrawings)
+            {
+                metadata.SpotlightManager.Draw(canvas, distorter, transformer, false, timestamp);
+                metadata.AutoNumberManager.Draw(canvas, distorter, transformer, false, timestamp);
+            }
+
+            if (renderTimedDrawings)
+            {
+                foreach (AbstractDrawing ad in metadata.ChronoManager.Drawings)
+                    ad.Draw(canvas, distorter, transformer, false, timestamp);
+            }
+
+            if (renderTimedDrawings)
+            {
+                foreach (AbstractDrawing ad in metadata.TrackManager.Drawings)
+                    ad.Draw(canvas, distorter, transformer, false, timestamp);
+            }
+
+
         }
-        
+
         private void RenderDrawings(Metadata metadata, long timestamp, Graphics canvas, ImageToViewportTransformer transformer)
         {
             DistortionHelper distorter = metadata.CalibrationHelper.DistortionHelper;

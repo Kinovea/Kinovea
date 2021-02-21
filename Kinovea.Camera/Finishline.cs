@@ -1,10 +1,9 @@
-﻿using Kinovea.Pipeline;
-using Kinovea.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Kinovea.Video;
+using Kinovea.Pipeline;
+using Kinovea.Services;
 
 namespace Kinovea.Camera
 {
@@ -53,7 +52,7 @@ namespace Kinovea.Camera
         /// <summary>
         /// Compute the new image size/framerate and prepare the buffers.
         /// </summary>
-        public void Prepare(int width, int height, ImageFormat format, float inputFramerate)
+        public void Prepare(int width, int height, Kinovea.Services.ImageFormat format, float inputFramerate)
         {
             thresholdHeight = PreferencesManager.CapturePreferences.PhotofinishConfiguration.ThresholdHeight;
             enabled = height <= thresholdHeight;

@@ -26,10 +26,10 @@ using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
+using System.Linq;
 using PylonC.NET;
-using Kinovea.Services;
 using PylonC.NETSupportLibrary;
-using Kinovea.Video;
+using Kinovea.Services;
 
 namespace Kinovea.Camera.Basler
 {
@@ -65,13 +65,13 @@ namespace Kinovea.Camera.Basler
         #endregion
     
         #region Members
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private List<SnapshotRetriever> snapshotting = new List<SnapshotRetriever>();
         private Dictionary<string, CameraSummary> cache = new Dictionary<string, CameraSummary>();
-        private List<string> snapshotting = new List<string>();
         private Bitmap defaultIcon;
         private int discoveryStep = 0;
         private int discoverySkip = 5;
         private Dictionary<string, uint> deviceIndices = new Dictionary<string, uint>();
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
         public CameraManagerBasler()
@@ -186,18 +186,38 @@ namespace Kinovea.Camera.Basler
                 cache.Remove(summary.Identifier);
         }
 
-        public override void GetSingleImage(CameraSummary summary)
+        public override CameraSummary GetCameraSummary(string alias)
         {
-            if(snapshotting.IndexOf(summary.Identifier) >= 0)
-                return;
-            
-            // Spawn a thread to get a snapshot.
-            SnapshotRetriever retriever = new SnapshotRetriever(summary, deviceIndices[summary.Identifier]);
-            retriever.CameraThumbnailProduced += SnapshotRetriever_CameraThumbnailProduced;
-            snapshotting.Add(summary.Identifier);
-            ThreadPool.QueueUserWorkItem(retriever.Run);
+            return cache.Values.FirstOrDefault(s => s.Alias == alias);
         }
-        
+
+        public override void StartThumbnail(CameraSummary summary)
+        {
+            SnapshotRetriever snapper = snapshotting.FirstOrDefault(s => s.Identifier == summary.Identifier);
+            if (snapper != null)
+                return;
+
+            snapper = new SnapshotRetriever(summary, deviceIndices[summary.Identifier]);
+            snapper.CameraThumbnailProduced += SnapshotRetriever_CameraThumbnailProduced;
+            snapshotting.Add(snapper);
+            snapper.Start();
+        }
+
+        public override void StopAllThumbnails()
+        {
+            for (int i = snapshotting.Count - 1; i >= 0; i--)
+            {
+                SnapshotRetriever snapper = snapshotting[i];
+                snapper.Cancel();
+                snapper.Thread.Join(500);
+                if (snapper.Thread.IsAlive)
+                    snapper.Thread.Abort();
+
+                snapper.CameraThumbnailProduced -= SnapshotRetriever_CameraThumbnailProduced;
+                snapshotting.RemoveAt(i);
+            }
+        }
+
         public override CameraBlurb BlurbFromSummary(CameraSummary summary)
         {
             string specific = SpecificInfoSerialize(summary);
@@ -295,17 +315,24 @@ namespace Kinovea.Camera.Basler
 
         private void SnapshotRetriever_CameraThumbnailProduced(object sender, CameraThumbnailProducedEventArgs e)
         {
-            SnapshotRetriever retriever = sender as SnapshotRetriever;
-            if(retriever != null)
-            {
-                retriever.CameraThumbnailProduced -= SnapshotRetriever_CameraThumbnailProduced;
-                if (snapshotting != null && snapshotting.Count > 0)
-                    snapshotting.Remove(retriever.Identifier);
-            }
-            
+            Invoke((Action)delegate { ProcessThumbnail(sender, e); });
+
+        }
+
+        private void ProcessThumbnail(object sender, CameraThumbnailProducedEventArgs e)
+        {
+            SnapshotRetriever snapper = sender as SnapshotRetriever;
+            if (snapper == null)
+                return;
+
+            log.DebugFormat("Received thumbnail event for {0}. Cancelled: {1}.", snapper.Alias, e.Cancelled);
+            snapper.CameraThumbnailProduced -= SnapshotRetriever_CameraThumbnailProduced;
+            if (snapshotting.Contains(snapper))
+                snapshotting.Remove(snapper);
+
             OnCameraThumbnailProduced(e);
         }
-        
+
         private SpecificInfo SpecificInfoDeserialize(string xml)
         {
             if(string.IsNullOrEmpty(xml))

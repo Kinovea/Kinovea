@@ -233,6 +233,9 @@
     <ClInclude Include="VideoReaderFFMpeg.h" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Kinovea.Services\Kinovea.Services.csproj">
+      <Project>{8aa92254-a016-4a84-925c-f5b07e02f8a8}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\Kinovea.Video\Kinovea.Video.csproj">
       <Project>{4cbb8462-00a7-4814-ad3b-07c82eeeb0de}</Project>
     </ProjectReference>

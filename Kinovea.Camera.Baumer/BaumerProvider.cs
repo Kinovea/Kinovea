@@ -273,7 +273,7 @@ namespace Kinovea.Camera.Baumer
                 // Normal cancellation of the grabbing thread.
                 // Cleanup.
             }
-            catch(Exception e)
+            catch(Exception)
             {
                 grabThreadRun = false;
 

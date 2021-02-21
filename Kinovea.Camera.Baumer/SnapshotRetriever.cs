@@ -21,13 +21,14 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Drawing;
 using System.Threading;
-using Kinovea.Pipeline;
-using Kinovea.Video;
 using System.Runtime.InteropServices;
 using System.Drawing.Imaging;
-using BGAPI2;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
+using Kinovea.Pipeline;
+using Kinovea.Services;
+using BGAPI2;
 
 namespace Kinovea.Camera.Baumer
 {
@@ -44,6 +45,16 @@ namespace Kinovea.Camera.Baumer
             get { return this.summary.Identifier; }
         }
 
+        public string Alias
+        {
+            get { return summary.Alias; }
+        }
+
+        public Thread Thread
+        {
+            get { return snapperThread; }
+        }
+
         #region Members
         private static readonly int timeoutGrabbing = 5000;
 
@@ -52,8 +63,12 @@ namespace Kinovea.Camera.Baumer
         private CameraSummary summary;
         private EventWaitHandle waitHandle = new AutoResetEvent(false);
         private BaumerProvider baumerProvider = new BaumerProvider();
+        private bool wasJpegEnabled;
         private bool cancelled;
         private bool hadError;
+        private Thread snapperThread;
+        private object locker = new object();
+        private Stopwatch stopwatch = new Stopwatch();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -62,13 +77,19 @@ namespace Kinovea.Camera.Baumer
             this.summary = summary;
         }
 
+        public void Start()
+        {
+            snapperThread = new Thread(Run) { IsBackground = true };
+            snapperThread.Name = string.Format("{0} thumbnailer", summary.Alias);
+            snapperThread.Start();
+        }
+
         /// <summary>
         /// Start the device for a frame grab, wait a bit and then return the result.
         /// This method MUST raise a CameraThumbnailProduced event, even in case of error.
         /// </summary>
         public void Run(object data)
         {
-            Thread.CurrentThread.Name = string.Format("{0} thumbnailer", summary.Alias);
             log.DebugFormat("Starting {0} for thumbnail.", summary.Alias);
 
             SpecificInfo specific = summary.Specific as SpecificInfo;
@@ -86,7 +107,7 @@ namespace Kinovea.Camera.Baumer
             baumerProvider.BufferProduced += BaumerProducer_BufferProduced;
 
             // Do not use JPEG compression for the thumbnail.
-            bool wasJpegEnabled = BaumerHelper.GetJPEG(baumerProvider.Device);
+            wasJpegEnabled = BaumerHelper.GetJPEG(baumerProvider.Device);
             if (wasJpegEnabled)
                 BaumerHelper.SetJPEG(baumerProvider.Device, false);
 
@@ -103,15 +124,19 @@ namespace Kinovea.Camera.Baumer
             if (!hadError)
                 waitHandle.WaitOne(timeoutGrabbing, false);
 
-            baumerProvider.BufferProduced -= BaumerProducer_BufferProduced;
-            
-            baumerProvider.Stop();
-
-            if (wasJpegEnabled)
-                BaumerHelper.SetJPEG(baumerProvider.Device, true);
-
-            Close();
-            log.DebugFormat("{0} closed.", summary.Alias);
+            lock (locker)
+            {
+                if (!cancelled)
+                {
+                    baumerProvider.BufferProduced -= BaumerProducer_BufferProduced;
+                    baumerProvider.Stop();
+                    if (wasJpegEnabled)
+                        BaumerHelper.SetJPEG(baumerProvider.Device, true);
+                    
+                    Close();
+                    log.DebugFormat("{0} closed.", summary.Alias);
+                }
+            }
 
             if (CameraThumbnailProduced != null)
                 CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, imageDescriptor, hadError, cancelled));
@@ -119,10 +144,23 @@ namespace Kinovea.Camera.Baumer
 
         public void Cancel()
         {
+            log.DebugFormat("Cancelling thumbnail for {0}.", Alias);
+
             if (!baumerProvider.IsOpen)
                 return;
 
-            cancelled = true;
+            lock (locker)
+            {
+                baumerProvider.BufferProduced -= BaumerProducer_BufferProduced;
+                baumerProvider.Stop();
+                if (wasJpegEnabled)
+                    BaumerHelper.SetJPEG(baumerProvider.Device, true);
+
+                Close();
+
+                cancelled = true;
+            }
+
             waitHandle.Set();
         }
 
@@ -150,9 +188,9 @@ namespace Kinovea.Camera.Baumer
             bool filled = FillRGB24(e.Buffer, image);
             if (filled)
             {
-                int bufferSize = ImageFormatHelper.ComputeBufferSize(image.Width, image.Height, Video.ImageFormat.RGB24);
+                int bufferSize = ImageFormatHelper.ComputeBufferSize(image.Width, image.Height, Kinovea.Services.ImageFormat.RGB24);
                 bool topDown = true;
-                imageDescriptor = new ImageDescriptor(Video.ImageFormat.RGB24, image.Width, image.Height, topDown, bufferSize);
+                imageDescriptor = new ImageDescriptor(Kinovea.Services.ImageFormat.RGB24, image.Width, image.Height, topDown, bufferSize);
             }
 
             waitHandle.Set();

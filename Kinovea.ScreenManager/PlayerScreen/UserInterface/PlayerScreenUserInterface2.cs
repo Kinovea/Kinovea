@@ -32,13 +32,11 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using System.Linq;
-
-using Kinovea.Base;
+using System.Globalization;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.ScreenManager.Properties;
-using Kinovea.Services;
 using Kinovea.Video;
-using System.Globalization;
+using Kinovea.Services;
 
 #endregion
 
@@ -60,6 +58,8 @@ namespace Kinovea.ScreenManager
         public event EventHandler OpenReplayWatcherAsked;
         public event EventHandler OpenAnnotationsAsked;
         public event EventHandler CloseAsked;
+        public event EventHandler StopWatcherAsked;
+        public event EventHandler StartWatcherAsked;
         public event EventHandler SetAsActiveScreen;
         public event EventHandler SpeedChanged;
         public event EventHandler TimeOriginChanged;
@@ -101,6 +101,11 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        public bool ImageFill 
+        {  
+            get { return m_fill; }
+        }
+
         /// <summary>
         /// Returns the interval between frames in milliseconds, taking slow motion slider into account.
         /// This is suitable for a playback loop timer or metadata in saved file.
@@ -112,6 +117,11 @@ namespace Kinovea.ScreenManager
                 return timeMapper.GetInterval(sldrSpeed.Value);
             }
         }
+
+        /// <summary>
+        /// Returns the playback speed as a percentage of the real time speed of the captured action.
+        /// This is not the same as the raw slider percentage when the video is not real time.
+        /// </summary>
         public double RealtimePercentage
         {
             get
@@ -138,6 +148,16 @@ namespace Kinovea.ScreenManager
                 UpdateSpeedLabel();
             }
         }
+
+        /// <summary>
+        /// Returns the raw percentage of the slider.
+        /// This is the percentage of nominal framerate of the video.
+        /// </summary>
+        public double SpeedPercentage
+        {
+            get { return slowMotion * 100; }
+        }
+
         public ScreenDescriptionPlayback LaunchDescription
         {
             get { return m_LaunchDescription; }
@@ -324,8 +344,10 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuOpenVideo = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOpenReplayWatcher = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOpenAnnotations = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuSaveVideo = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuSavePic = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSaveAnnotations = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSaveAnnotationsAs = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportVideo = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportImage = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCloseScreen = new ToolStripMenuItem();
 
         private ContextMenuStrip popMenuDrawings = new ContextMenuStrip();
@@ -424,7 +446,6 @@ namespace Kinovea.ScreenManager
 
             this.Hotkeys = HotkeySettingsManager.LoadHotkeys("PlayerScreen");
         }
-
         #endregion
 
         #region Public Methods
@@ -545,7 +566,7 @@ namespace Kinovea.ScreenManager
 
             // Other various infos.
             m_FrameServer.SetupMetadata(true);
-            m_FrameServer.Metadata.FullPath = m_FrameServer.VideoReader.FilePath;
+            m_FrameServer.Metadata.VideoPath = m_FrameServer.VideoReader.FilePath;
             m_FrameServer.Metadata.SelectionStart = m_iSelStart;
             m_FrameServer.Metadata.SelectionEnd = m_iSelEnd;
             m_FrameServer.Metadata.TimeOrigin = m_iSelStart;
@@ -566,9 +587,6 @@ namespace Kinovea.ScreenManager
                 // Starting the video for .Play is done later at first Idle.
                 if (m_LaunchDescription.Id != Guid.Empty)
                     recoveredMetadata = m_FrameServer.Metadata.Recover(m_LaunchDescription.Id);
-
-                if (m_LaunchDescription.SpeedPercentage != (slowMotion * 100))
-                    slowMotion = m_LaunchDescription.SpeedPercentage / 100.0;
 
                 if (m_LaunchDescription.Stretch)
                 {
@@ -595,6 +613,13 @@ namespace Kinovea.ScreenManager
                     else
                         LookForLinkedAnalysis(Path.Combine(Software.SettingsDirectory, startupFile));
                 }
+            }
+
+            if (m_LaunchDescription != null)
+            {
+                // We assume this is a speed percentage of video framerate, not real time.
+                // We must do this after KVA loading because it may reset the slowmotion.
+                slowMotion = m_LaunchDescription.SpeedPercentage / 100.0;
             }
 
             UpdateTimebase();
@@ -689,6 +714,11 @@ namespace Kinovea.ScreenManager
             UpdateCurrentPositionLabel();
             UpdateSpeedLabel();
             UpdateFilenameLabel();
+        }
+
+        public void UpdateReplayWatcher(bool replayWatcher, string path)
+        {
+            infobar.UpdateReplayWatcher(replayWatcher, path);
         }
 
         /// <summary>
@@ -921,7 +951,10 @@ namespace Kinovea.ScreenManager
         {
             this.panelTop.Controls.Add(infobar);
             infobar.Visible = false;
+            infobar.StopWatcherAsked += (s, e) => StopWatcherAsked?.Invoke(s, e);
+            infobar.StartWatcherAsked += (s, e) => StartWatcherAsked?.Invoke(s, e); 
         }
+
         public void InitializeDrawingTools(DrawingToolbarPresenter drawingToolbarPresenter)
         {
             m_PointerTool = new DrawingToolPointer();
@@ -1056,14 +1089,12 @@ namespace Kinovea.ScreenManager
             if (!m_FrameServer.Loaded)
                 return;
 
-            string name = Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath);
             string size = string.Format("{0}×{1} px", m_FrameServer.Metadata.ImageSize.Width, m_FrameServer.Metadata.ImageSize.Height);
             string fps = string.Format("{0:0.00} fps", 1000 / timeMapper.UserInterval);
 
             infobar.Visible = true;
             infobar.Dock = DockStyle.Fill;
-            bool isReplayWatcher = m_LaunchDescription != null && m_LaunchDescription.IsReplayWatcher;
-            infobar.UpdateValues(name, size, fps, isReplayWatcher);
+            infobar.UpdateValues(m_FrameServer.VideoReader.FilePath, size, fps);
         }
         private void ShowHideRenderingSurface(bool _bShow)
         {
@@ -1096,17 +1127,22 @@ namespace Kinovea.ScreenManager
             mnuOpenAnnotations.Click += (s, e) => OpenAnnotationsAsked?.Invoke(this, EventArgs.Empty);
             mnuOpenAnnotations.Image = Properties.Resources.file_kva2;
 
-            mnuSaveVideo.Click += btnSaveVideo_Click;
-            mnuSaveVideo.Image = Properties.Resources.filesave;
-            mnuSavePic.Click += btnSnapShot_Click;
-            mnuSavePic.Image = Properties.Resources.picture_save;
+            mnuSaveAnnotations.Click += btnSaveAnnotations_Click;
+            mnuSaveAnnotations.Image = Properties.Resources.filesave;
+            mnuSaveAnnotationsAs.Click += btnSaveAnnotationsAs_Click;
+            mnuSaveAnnotationsAs.Image = Properties.Resources.filesave;
+            mnuExportVideo.Click += btnSaveVideo_Click;
+            mnuExportVideo.Image = Properties.Resources.film_save;
+            mnuExportImage.Click += btnSnapShot_Click;
+            mnuExportImage.Image = Properties.Resources.picture_save;
             mnuCloseScreen.Click += btnClose_Click;
             mnuCloseScreen.Image = Properties.Resources.film_close3;
             popMenu.Items.AddRange(new ToolStripItem[]
             {
                 mnuTimeOrigin, mnuDirectTrack, new ToolStripSeparator(),
                 mnuCopyPic, mnuPastePic, mnuPasteDrawing, new ToolStripSeparator(),
-                mnuOpenVideo, mnuOpenReplayWatcher, mnuOpenAnnotations, mnuSaveVideo, mnuSavePic, new ToolStripSeparator(),
+                mnuOpenVideo, mnuOpenReplayWatcher, mnuOpenAnnotations, new ToolStripSeparator(),
+                mnuSaveAnnotations, mnuSaveAnnotationsAs, mnuExportVideo, mnuExportImage, new ToolStripSeparator(),
                 mnuCloseScreen
             });
 
@@ -1449,6 +1485,14 @@ namespace Kinovea.ScreenManager
             if (SelectionChanged != null)
                 SelectionChanged(this, new EventArgs<bool>(initialization));
         }
+
+        
+
+        private void RaiseSetAsActiveScreenEvent()
+        {
+            SetAsActiveScreen?.Invoke(this, EventArgs.Empty);
+        }
+
         private void OnPoke()
         {
             //------------------------------------------------------------------------------
@@ -1456,8 +1500,7 @@ namespace Kinovea.ScreenManager
             // Signal itself as the active screen to the ScreenManager
             // This will trigger an update of the top-level menu to enable/disable specific menus.
             //---------------------------------------------------------------------
-            if (SetAsActiveScreen != null)
-                SetAsActiveScreen(this, EventArgs.Empty);
+            RaiseSetAsActiveScreenEvent();
 
             // 1. Ensure no DrawingText is in edit mode.
             m_FrameServer.Metadata.AllDrawingTextToNormalMode();
@@ -2616,8 +2659,10 @@ namespace Kinovea.ScreenManager
             mnuOpenVideo.Text = ScreenManagerLang.mnuOpenVideo;
             mnuOpenReplayWatcher.Text = ScreenManagerLang.mnuOpenReplayWatcher;
             mnuOpenAnnotations.Text = ScreenManagerLang.mnuLoadAnalysis;
-            mnuSaveVideo.Text = ScreenManagerLang.Generic_Save;
-            mnuSavePic.Text = ScreenManagerLang.Generic_SaveImage;
+            mnuSaveAnnotations.Text = "Save annotations";
+            mnuSaveAnnotationsAs.Text = "Save annotations as…";
+            mnuExportVideo.Text = "Export video";
+            mnuExportImage.Text = "Export image";
             mnuCopyPic.Text = ScreenManagerLang.mnuCopyImageToClipboard;
             mnuCopyPic.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.CopyImage);
             mnuPastePic.Text = ScreenManagerLang.mnuPasteImage;
@@ -2744,6 +2789,8 @@ namespace Kinovea.ScreenManager
         #region SurfaceScreen Events
         private void SurfaceScreen_MouseDown(object sender, MouseEventArgs e)
         {
+            RaiseSetAsActiveScreenEvent();
+            
             if (!m_FrameServer.Loaded)
                 return;
 
@@ -3650,6 +3697,7 @@ namespace Kinovea.ScreenManager
             mnuPasteDrawing.Enabled = false;
             mnuPastePic.Enabled = false;
             panelCenter.ContextMenuStrip = popMenu;
+            RaiseSetAsActiveScreenEvent();
         }
         #endregion
 
@@ -4870,8 +4918,38 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        private void btnSaveAnnotations_Click(object sender, EventArgs e)
+        {
+            if (!m_FrameServer.Loaded)
+                return;
+
+            StopPlaying();
+            OnPauseAsked();
+
+            SaveAnnotations();
+
+            m_iFramesToDecode = 1;
+            ShowNextFrame(m_iSelStart, true);
+            ActivateKeyframe(m_iCurrentPosition, true);
+        }
+
+        private void btnSaveAnnotationsAs_Click(object sender, EventArgs e)
+        {
+            if (!m_FrameServer.Loaded)
+                return;
+
+            StopPlaying();
+            OnPauseAsked();
+
+            SaveAnnotationsAs();
+
+            m_iFramesToDecode = 1;
+            ShowNextFrame(m_iSelStart, true);
+            ActivateKeyframe(m_iCurrentPosition, true);
+        }
+
         /// <summary>
-        /// Local wrapper for Save, which triggers the main saving pipeline.
+        /// Export the current video to a new file, with drawings painted on.
         /// </summary>
         private void btnSaveVideo_Click(object sender, EventArgs e)
         {
@@ -4881,8 +4959,8 @@ namespace Kinovea.ScreenManager
             StopPlaying();
             OnPauseAsked();
 
-            Save();
-            
+            ExportVideo();
+
             m_iFramesToDecode = 1;
             ShowNextFrame(m_iSelStart, true);
             ActivateKeyframe(m_iCurrentPosition, true);
@@ -4957,16 +5035,33 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Triggers the main video saving pipeline. 
-        /// Ultimately this enumerates frames and comes back to GetFlushedImage(VideoFrame, Bitmap).
+        /// Save to the current KVA if it exists, ask for a filename if not.
         /// </summary>
-        public void Save()
+        private void SaveAnnotations()
         {
-            // This function is public because it is also accessed from the top-level menu.
+            MetadataSerializer serializer = new MetadataSerializer();
+            serializer.UserSave(m_FrameServer.Metadata, m_FrameServer.VideoReader.FilePath);
+        }
+
+        /// <summary>
+        /// Save a KVA to a new file.
+        /// </summary>
+        private void SaveAnnotationsAs()
+        {
+            MetadataSerializer serializer = new MetadataSerializer();
+            serializer.UserSaveAs(m_FrameServer.Metadata, m_FrameServer.VideoReader.FilePath);
+        }
+
+        /// <summary>
+        /// Save the video to a new file.
+        /// </summary>
+        public void ExportVideo()
+        {
             saveInProgress = true;
-            m_FrameServer.Save(timeMapper.GetInterval(sldrSpeed.Value), slowMotion * 100, GetFlushedImage);
+            m_FrameServer.SaveVideo(timeMapper.GetInterval(sldrSpeed.Value), slowMotion * 100, GetFlushedImage);
             saveInProgress = false;
         }
+
 
         /// <summary>
         /// Save several images at once. Called back for rafale export.

@@ -107,6 +107,7 @@
     <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -125,6 +126,7 @@
     <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugExternals|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -188,32 +190,31 @@
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="OxyPlot, Version=1.0.0.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
-      <HintPath>..\packages\OxyPlot.Core.1.0.0\lib\net45\OxyPlot.dll</HintPath>
-    </Reference>
-    <Reference Include="OxyPlot.WindowsForms, Version=1.0.0.0, Culture=neutral, PublicKeyToken=245eacd6b5d2d338, processorArchitecture=MSIL">
-      <HintPath>..\packages\OxyPlot.WindowsForms.1.0.0\lib\net45\OxyPlot.WindowsForms.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="TurboJpegNet">
+      <HintPath>..\Refs\TurboJpeg\TurboJpegNet.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlphanumComparator.cs" />
+    <Compile Include="Infrastructure\BitmapHelper.cs" />
+    <Compile Include="Infrastructure\NativeMethods.cs" />
+    <Compile Include="Types\Demosaicing.cs" />
+    <Compile Include="Types\ImageAspectRatio.cs" />
+    <Compile Include="Perfs\Averager.cs" />
+    <Compile Include="Perfs\DropWatcher.cs" />
+    <Compile Include="Perfs\LoopWatcher.cs" />
+    <Compile Include="Perfs\TimeWatcher.cs" />
     <Compile Include="Diagnostics\BenchmarkCounterBandwidth.cs" />
     <Compile Include="Diagnostics\BenchmarkCounterIntervals.cs" />
     <Compile Include="Diagnostics\BenchmarkCounterValues.cs" />
-    <Compile Include="Diagnostics\BenchmarkExporter.cs" />
     <Compile Include="Diagnostics\BenchmarkMode.cs" />
-    <Compile Include="Diagnostics\BenchmarkReport.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Diagnostics\BenchmarkReport.Designer.cs">
-      <DependentUpon>BenchmarkReport.cs</DependentUpon>
-    </Compile>
     <Compile Include="Diagnostics\FrequencyCounter.cs" />
     <Compile Include="Diagnostics\MemoryHelper.cs" />
     <Compile Include="Diagnostics\WMI\LogicalDisk.cs" />
@@ -236,24 +237,27 @@
     <Compile Include="LaunchSettings\ScreenDescriptionPlayback.cs" />
     <Compile Include="LaunchSettings\ScreenType.cs" />
     <Compile Include="LaunchSettings\Workspace.cs" />
-    <Compile Include="Pair.cs" />
-    <Compile Include="Preferences\AccelerationUnit.cs" />
-    <Compile Include="Preferences\AngleUnit.cs" />
-    <Compile Include="Preferences\AngularAccelerationUnit.cs" />
-    <Compile Include="Preferences\AngularVelocityUnit.cs" />
-    <Compile Include="Preferences\CaptureAutomationConfiguration.cs" />
-    <Compile Include="Preferences\CapturePathConfiguration.cs" />
-    <Compile Include="Preferences\CaptureRecordingMode.cs" />
-    <Compile Include="Preferences\DelayCompositeConfiguration.cs" />
-    <Compile Include="Preferences\DelayCompositeType.cs" />
-    <Compile Include="Preferences\FileProperty.cs" />
-    <Compile Include="Preferences\FilePropertyVisibility.cs" />
-    <Compile Include="Preferences\KinoveaUncompressedVideoFormat.cs" />
-    <Compile Include="Preferences\PhotofinishConfiguration.cs" />
+    <Compile Include="Types\ImageFormat.cs" />
+    <Compile Include="Types\ImageFormatHelper.cs" />
+    <Compile Include="Types\ImageRotation.cs" />
+    <Compile Include="Types\Pair.cs" />
+    <Compile Include="Types\AccelerationUnit.cs" />
+    <Compile Include="Types\AngleUnit.cs" />
+    <Compile Include="Types\AngularAccelerationUnit.cs" />
+    <Compile Include="Types\AngularVelocityUnit.cs" />
+    <Compile Include="Types\CaptureAutomationConfiguration.cs" />
+    <Compile Include="Types\CapturePathConfiguration.cs" />
+    <Compile Include="Types\CaptureRecordingMode.cs" />
+    <Compile Include="Types\DelayCompositeConfiguration.cs" />
+    <Compile Include="Types\DelayCompositeType.cs" />
+    <Compile Include="Types\FileProperty.cs" />
+    <Compile Include="Types\FilePropertyVisibility.cs" />
+    <Compile Include="Types\KinoveaUncompressedVideoFormat.cs" />
+    <Compile Include="Types\PhotofinishConfiguration.cs" />
     <Compile Include="Preferences\PreferenceTab.cs" />
-    <Compile Include="Preferences\TrackerParameterUnit.cs" />
-    <Compile Include="Preferences\TrackingProfile.cs" />
-    <Compile Include="TimestampMapper.cs" />
+    <Compile Include="Types\TrackerParameterUnit.cs" />
+    <Compile Include="Types\TrackingProfile.cs" />
+    <Compile Include="Infrastructure\TimestampMapper.cs" />
     <Compile Include="UndoRedo\CommandManager.cs" />
     <Compile Include="Events\FileActionEventArgs.cs" />
     <Compile Include="Events\NotificationCenter.cs" />
@@ -270,7 +274,7 @@
     <Compile Include="WinForms\KinoveaControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Preferences\CameraBlurb.cs" />
+    <Compile Include="Types\CameraBlurb.cs" />
     <Compile Include="Preferences\CapturePreferences.cs" />
     <Compile Include="Preferences\FileExplorerPreferences.cs" />
     <Compile Include="Preferences\GeneralPreferences.cs" />
@@ -279,22 +283,22 @@
     <Compile Include="HelpSystem\HelpIndex.cs" />
     <Compile Include="HelpSystem\HelpItem.cs" />
     <Compile Include="IKernel.cs" />
-    <Compile Include="InfosFading.cs" />
+    <Compile Include="Types\InfosFading.cs" />
     <Compile Include="Infrastructure\RelayCommand.cs" />
     <Compile Include="Infrastructure\ToggleCommand.cs" />
-    <Compile Include="LanguageIdentifier.cs" />
-    <Compile Include="LanguageManager.cs" />
+    <Compile Include="Language\LanguageIdentifier.cs" />
+    <Compile Include="Language\LanguageManager.cs" />
     <Compile Include="UndoRedo\IUndoableCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Preferences\ActiveFileBrowserTab.cs" />
-    <Compile Include="Preferences\ExplorerThumbSize.cs" />
-    <Compile Include="Preferences\KinoveaImageFormat.cs" />
-    <Compile Include="Preferences\KinoveaVideoFormat.cs" />
+    <Compile Include="Types\ActiveFileBrowserTab.cs" />
+    <Compile Include="Types\ExplorerThumbSize.cs" />
+    <Compile Include="Types\KinoveaImageFormat.cs" />
+    <Compile Include="Types\KinoveaVideoFormat.cs" />
     <Compile Include="Preferences\PreferencesManager.cs" />
-    <Compile Include="Preferences\ShortcutFolder.cs" />
-    <Compile Include="Preferences\SpeedUnit.cs" />
-    <Compile Include="Preferences\TimecodeFormat.cs" />
-    <Compile Include="Preferences\TimecodeType.cs" />
+    <Compile Include="Types\ShortcutFolder.cs" />
+    <Compile Include="Types\SpeedUnit.cs" />
+    <Compile Include="Types\TimecodeFormat.cs" />
+    <Compile Include="Types\TimecodeType.cs" />
     <Compile Include="ThreePartsVersion.cs" />
     <Compile Include="TimeHelper.cs" />
     <Compile Include="WinForms\TextboxHotkey.cs">
@@ -326,19 +330,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Kinovea.Video\Kinovea.Video.csproj">
-      <Project>{4CBB8462-00A7-4814-AD3B-07C82EEEB0DE}</Project>
-      <Name>Kinovea.Video</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Diagnostics\BenchmarkReport.resx">
-      <DependentUpon>BenchmarkReport.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

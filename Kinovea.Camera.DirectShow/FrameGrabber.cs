@@ -21,15 +21,13 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Drawing;
 using System.Linq;
-using AForge.Video;
-using AForge.Video.DirectShow;
 using System.Collections.Generic;
-using Kinovea.Services;
-using Kinovea.Pipeline;
-using Kinovea.Video;
-using Kinovea.Base;
 using System.Diagnostics;
 using System.Globalization;
+using Kinovea.Pipeline;
+using Kinovea.Services;
+using AForge.Video;
+using AForge.Video.DirectShow;
 
 namespace Kinovea.Camera.DirectShow
 {

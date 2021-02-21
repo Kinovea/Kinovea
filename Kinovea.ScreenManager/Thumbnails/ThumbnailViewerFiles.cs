@@ -57,7 +57,7 @@ namespace Kinovea.ScreenManager
         
         public ThumbnailViewerFiles()
         {
-            log.Debug("Constructing ThumbListView");
+            log.Debug("Constructing ThumbnailViewerFiles");
             
             InitializeComponent();
             RefreshUICulture();

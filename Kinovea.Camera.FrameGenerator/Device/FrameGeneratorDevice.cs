@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
-using Kinovea.Pipeline;
-using Kinovea.Video;
 using System.Drawing.Imaging;
 using System.Threading;
 using System.Diagnostics;
+using Kinovea.Pipeline;
+using Kinovea.Services;
 
 namespace Kinovea.Camera.FrameGenerator
 {
