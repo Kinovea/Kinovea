@@ -13,9 +13,8 @@ using namespace System::Resources;
 [assembly:AssemblyCopyrightAttribute("Copyright © 2006-2019 Joan Charmant")];
 [assembly:AssemblyTrademarkAttribute("")];
 [assembly:AssemblyCultureAttribute("")];
-[assembly: ComVisible(false)]
-[assembly: AssemblyVersion("1.0.1.*")]
-[assembly: AssemblyFileVersion("1.0.1.0")]
-[assembly: NeutralResourcesLanguageAttribute("en")]
+[assembly:ComVisible(false)];
+[assembly:AssemblyVersion("1.0.1.*")];
+[assembly:AssemblyFileVersion("1.0.1.0")];
+[assembly:NeutralResourcesLanguageAttribute("en")];
 
-[assembly:CLSCompliantAttribute(true)];

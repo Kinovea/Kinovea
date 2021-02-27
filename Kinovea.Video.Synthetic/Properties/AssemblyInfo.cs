@@ -16,4 +16,3 @@ using System;
 [assembly: AssemblyFileVersion("1.0.0")]
 [assembly: NeutralResourcesLanguageAttribute("en")]
 [assembly: ComVisible(false)]
-[assembly: CLSCompliant(true)]

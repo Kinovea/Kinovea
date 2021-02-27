@@ -17,5 +17,5 @@ using System.Resources;
 [assembly: AssemblyVersion("0.9.4.0")]
 [assembly: AssemblyFileVersion("0.9.4.0")]
 [assembly: NeutralResourcesLanguageAttribute("en")]
-//[assembly: CLSCompliant(true)]
+
 [assembly: log4net.Config.XmlConfigurator(ConfigFile = "LogConf.xml", Watch = true)]

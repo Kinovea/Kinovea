@@ -95,7 +95,6 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private Guid id = Guid.NewGuid();
-        private bool initialized;
         private long position = -1;            // Position is absolute in all timestamps.
         private string title;
         private string timecode;

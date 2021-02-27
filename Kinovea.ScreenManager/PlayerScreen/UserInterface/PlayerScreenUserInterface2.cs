@@ -77,7 +77,6 @@ namespace Kinovea.ScreenManager
         public event EventHandler<MultiDrawingItemEventArgs> MultiDrawingItemDeleting;
         public event EventHandler<TrackableDrawingEventArgs> TrackableDrawingAdded;
         public event EventHandler<EventArgs<HotkeyCommand>> DualCommandReceived;
-        public event EventHandler<EventArgs<AbstractDrawing>> DataAnalysisAsked;
         #endregion
 
         #region Commands encapsulating domain logic implemented in the presenter.
@@ -3456,7 +3455,7 @@ namespace Kinovea.ScreenManager
                 {
                     log.Error("Error while painting image. Object is currently in use elsewhere. ATI Drivers ?");
                 }
-                catch (Exception exp)
+                catch (Exception)
                 {
                     log.Error("Error while painting image.");
                 }

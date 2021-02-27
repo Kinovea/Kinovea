@@ -20,4 +20,3 @@ using System;
 [assembly: AssemblyVersion("1.0.1.*")]
 [assembly: AssemblyFileVersion("1.0.1.0")]
 [assembly: NeutralResourcesLanguageAttribute("en")]
-[assembly: CLSCompliant(true)]
