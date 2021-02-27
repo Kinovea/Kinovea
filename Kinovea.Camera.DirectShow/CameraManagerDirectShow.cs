@@ -70,6 +70,9 @@ namespace Kinovea.Camera.DirectShow
         public CameraManagerDirectShow()
         {   
             blacklist.Add("Basler GenICam Source");
+            
+            // At the moment the OBS virtual camera doesn't seem to work with our DirectShow library and it causes a low level exception.
+            blacklist.Add("OBS Virtual Camera");
         }
 
         public override bool SanityCheck()
