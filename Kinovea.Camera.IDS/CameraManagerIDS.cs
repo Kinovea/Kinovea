@@ -177,7 +177,6 @@ namespace Kinovea.Camera.IDS
 
         public override void StartThumbnail(CameraSummary summary)
         {
-            log.DebugFormat("Start thumbnail for {0}.", summary.Alias);
             SnapshotRetriever snapper = snapshotting.FirstOrDefault(s => s.Identifier == summary.Identifier);
             if (snapper != null)
                 return;
