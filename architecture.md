@@ -35,31 +35,30 @@ This small project is responsible for the code that checks if a new version is a
 
 **Kinovea.Video**
 
-This project also contains a "plugin" manager that loads and handles video readers. The video readers are implemented in the various projects named Kinovea.Video.Bitmap, Kinovea.Video.FFMpeg, Kinovea.Video.Gif, etc.
+This project contains a "plugin" manager that loads video readers and route file-open commands to the appropriate reader. 
+The actual video readers are implemented in the various projects named Kinovea.Video.Bitmap, Kinovea.Video.FFMpeg, Kinovea.Video.Gif, etc.
 
-Video reader plugins implement interfaces/abstract classes defined in Kinovea.Video. 
+Video reader plugins implement interfaces/abstract classes defined in Kinovea.Video. They are not really *plugins* in the sense that all of them are loaded from a static list rather than discovered dynamically.
 
-The video reader *plugins* are not really plugins in the sense that all of them are loaded from a static list rather than discovered dynamically.
-
-This project also contains the low level video playback pipeline infrastructure and logic.
+This project also contains the low level producer/consumer video playback pipeline infrastructure and logic.
 
 **Kinovea.Camera**
 
-This project contains a "plugin" manager that loads and handles camera managers. The camera managers are implemented in the various projects named Kinovea.Camera.Basler, Kinovea.Camera.Daheng, Kinovea.Camera.DirectShow, etc.
+This project contains a "plugin" manager that loads camera managers. It routes requests for camera discovery and camera loading to the appropriate plugin. 
+The actual camera managers are implemented in the various projects named Kinovea.Camera.Basler, Kinovea.Camera.Daheng, Kinovea.Camera.DirectShow, etc.
 
 This project also contains shared types used by camera managers like interfaces/abstract classes implemented by plugins, types and events used during the capture process and resource strings and images for configuration dialogs.
 
-Some of the camera managers are not really *plugins* and are loaded from a static list. The "machine vision" plugins are loaded by dynamic discovery and installed separately.
+Some of the camera managers are not really *plugins* and are loaded from a static list. The *machine vision* plugins are loaded by dynamic discovery and installed separately.
 
 **Kinovea.Pipeline**
 
-This project contains the low level capture pipeline infrastructure and logic.
-It defines some classes that are used by the Capture screen and by camera plugins and the core ring buffer used during capture.
+This project contains the low level producer/consumer capture pipeline infrastructure and logic.
 
 **Kinovea.Services**
 
-This is a catch-all project containing types and functions shared by several parts of the application. 
-For example the types used in the preferences, the keyboard shortcuts support classes, the command line parser, the workspace system, the undo history system, etc.
+This is a catch-all project containing types and functions shared by multiple parts of the application. 
+For example the types used in the preferences, the keyboard shortcuts support classes, the undo history system, the workspace system, etc.
 
 **Kinovea.Video.FFMpeg**
 
