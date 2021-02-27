@@ -76,6 +76,7 @@ namespace Kinovea.Camera
             plugins.Add(new CameraManagerPluginInfo("Basler", "Basler", "Kinovea.Camera.Basler", "Kinovea.Camera.Basler.CameraManagerBasler", "3.0"));
             plugins.Add(new CameraManagerPluginInfo("IDS", "IDS", "Kinovea.Camera.IDS", "Kinovea.Camera.IDS.CameraManagerIDS", "3.0"));
             plugins.Add(new CameraManagerPluginInfo("Daheng", "Daheng", "Kinovea.Camera.Daheng", "Kinovea.Camera.Daheng.CameraManagerDaheng", "3.0"));
+            plugins.Add(new CameraManagerPluginInfo("Baumer", "Baumer", "Kinovea.Camera.Baumer", "Kinovea.Camera.Baumer.CameraManagerBaumer", "3.0"));
 
             foreach (CameraManagerPluginInfo info in plugins)
             {

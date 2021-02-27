@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Kinovea.Camera.Daheng")]
+[assembly: AssemblyTitle("Kinovea.Camera.Baumer")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Kinovea.Camera.Daheng")]
+[assembly: AssemblyProduct("Kinovea.Camera.Baumer")]
 [assembly: AssemblyCopyright("Copyright © 2020 - Joan Charmant and the Kinovea community.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("92cfeb6d-11fb-48bb-a5f9-e2bfb6f8b29f")]
+[assembly: Guid("0aab56ae-86c4-45b0-974a-885effb4904f")]
 
 // Version information for an assembly consists of the following four values:
 //

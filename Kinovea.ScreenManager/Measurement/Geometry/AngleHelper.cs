@@ -49,7 +49,7 @@ namespace Kinovea.ScreenManager
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         public AngleHelper() :
-            this(defaultTextDistance, 0, false, "")
+            this(defaultTextDistance, 0, true, "")
         {
         }
 

@@ -290,7 +290,7 @@ namespace Kinovea.ScreenManager
         public double HighSpeedFactor
         {
             get { return highSpeedFactor; }
-            set { highSpeedFactor = value; }
+            set { highSpeedFactor = value == 0 ? 1.0 : value; }
         }
 
         /// <summary>
