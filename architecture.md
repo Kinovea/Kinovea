@@ -45,7 +45,7 @@ This project also contains the low level producer/consumer video playback pipeli
 **Kinovea.Camera**
 
 This project contains a "plugin" manager that loads camera managers. It routes requests for camera discovery and camera loading to the appropriate plugin. 
-The actual camera managers are implemented in the various projects named Kinovea.Camera.Basler, Kinovea.Camera.Daheng, Kinovea.Camera.DirectShow, etc.
+The actual camera managers are implemented in the various projects named Kinovea.Camera.DirectShow, Kinovea.Camera.HTTP, etc.
 
 This project also contains shared types used by camera managers like interfaces/abstract classes implemented by plugins, types and events used during the capture process and resource strings and images for configuration dialogs.
 
@@ -62,7 +62,7 @@ For example the types used in the preferences, the keyboard shortcuts support cl
 
 **Kinovea.Video.FFMpeg**
 
-This is a special video module since it also handles *saving* files. Thus unlike all the other video reader plugins it is directly referenced by the video exporting code and the capture code.
+This is a special video module since it also handles *saving* files. Thus unlike all the other video reader plugins it is directly referenced by the video exporting code and the capture code in Kinovea.ScreenManager.
 
 This assembly is written in C++/CLI as it interfaces tightly with FFMpeg.
 

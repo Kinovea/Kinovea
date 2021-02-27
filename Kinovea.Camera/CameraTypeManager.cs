@@ -26,7 +26,6 @@ using System.Reflection;
 using System.Windows.Forms;
 using System.Linq;
 using Kinovea.Services;
-using System.Diagnostics;
 
 namespace Kinovea.Camera
 {

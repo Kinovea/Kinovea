@@ -76,24 +76,6 @@ namespace Kinovea.Tests
             Console.WriteLine("Buffer length: {0:0.00} MB. Average copy time ({1} loops): {2:0.000} ms.", length, loops, averageMilliseconds);
         }
 
-        private static void TestCopy2(int loops, Bitmap bmp1, Bitmap bmp2, Rectangle rect, float length)
-        {
-            // Allocation and cloning.
-
-            Stopwatch sw = Stopwatch.StartNew();
-            for (int i = 0; i < loops; i++)
-            {
-                if (i % 2 == 0)
-                    CopyBitmap2(bmp1);
-                else
-                    CopyBitmap2(bmp2);
-            }
-
-            double elapsed = (double)sw.ElapsedTicks / Stopwatch.Frequency;
-            double averageMilliseconds = (elapsed * 1000) / loops;
-            Console.WriteLine("Buffer length: {0:0.00} MB. Average copy time ({1} loops): {2:0.000} ms.", length, loops, averageMilliseconds);
-        }
-
         private static void TestCopy3(int loops, byte[] b1, byte[] b2, float length)
         {
             // Managed buffer copy.
@@ -210,13 +192,6 @@ namespace Kinovea.Tests
 
             b.UnlockBits(dstData);
             a.UnlockBits(srcData); 
-        }
-
-        private static void CopyBitmap2(Bitmap a)
-        {
-            // There is an additional allocation overhead for this test.
-            // Not really comparable to the others.
-            Bitmap b = AForge.Imaging.Image.Clone(a, a.PixelFormat);
         }
         
         private static void CopyBuffer(byte[] b1, byte[] b2)
