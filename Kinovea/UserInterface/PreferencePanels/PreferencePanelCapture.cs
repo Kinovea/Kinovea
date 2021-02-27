@@ -67,6 +67,7 @@ namespace Kinovea.Root
         private bool formPatternsVisible;
         private bool enableAudioTrigger;
         private float audioTriggerThreshold;
+        private float audioQuietPeriod;
         private float recordingSeconds;
         private bool ignoreOverwriteWarning;
         private string audioInputDevice;
@@ -130,6 +131,7 @@ namespace Kinovea.Root
             enableAudioTrigger = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger;
             audioInputDevice = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioInputDevice;
             audioTriggerThreshold = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioTriggerThreshold;
+            audioQuietPeriod = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioQuietPeriod;
             recordingSeconds = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.RecordingSeconds;
             postRecordCommand = PreferencesManager.CapturePreferences.PostRecordCommand;
             ignoreOverwriteWarning = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.IgnoreOverwrite;
@@ -299,6 +301,9 @@ namespace Kinovea.Root
             vumeter.DecibelRange = decibelRange;
             nudAudioTriggerThreshold.Value = (decimal)vumeter.ThresholdLinear * decibelRange;
             nudAudioTriggerThreshold.Maximum = decibelRange;
+
+            lblQuietPeriod.Text = "Quiet period (s):";
+            nudQuietPeriod.Value = (decimal)audioQuietPeriod;
 
             lblRecordingTime.Text = RootLang.dlgPreferences_Capture_lblStopRecordingByDuration;
             nudRecordingTime.Value = (decimal)recordingSeconds;
@@ -558,6 +563,11 @@ namespace Kinovea.Root
             UpdateHits();
         }
 
+        private void nudQuietPeriod_ValueChanged(object sender, EventArgs e)
+        {
+            audioQuietPeriod = (float)nudQuietPeriod.Value;
+        }
+
         private void NudRecordingTime_ValueChanged(object sender, EventArgs e)
         {
             recordingSeconds = (float)nudRecordingTime.Value;
@@ -616,6 +626,8 @@ namespace Kinovea.Root
             lblAudioTriggerThreshold.Enabled = enabled;
             nudAudioTriggerThreshold.Enabled = enabled;
             vumeter.Enabled = enabled;
+            lblQuietPeriod.Enabled = enabled;
+            nudQuietPeriod.Enabled = enabled;
 
             if (!enabled)
                 inputMonitor.Stop();
@@ -640,6 +652,7 @@ namespace Kinovea.Root
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger = enableAudioTrigger;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioInputDevice = audioInputDevice;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioTriggerThreshold = audioTriggerThreshold;
+            PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioQuietPeriod = audioQuietPeriod;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.RecordingSeconds = recordingSeconds;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.IgnoreOverwrite = ignoreOverwriteWarning;
             PreferencesManager.CapturePreferences.PostRecordCommand = postRecordCommand;

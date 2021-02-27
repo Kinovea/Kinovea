@@ -50,6 +50,9 @@ namespace Kinovea.Root
 		{
       this.tabSubPages = new System.Windows.Forms.TabControl();
       this.tabGeneral = new System.Windows.Forms.TabPage();
+      this.lblCaptureKVA = new System.Windows.Forms.Label();
+      this.tbCaptureKVA = new System.Windows.Forms.TextBox();
+      this.btnCaptureKVA = new System.Windows.Forms.Button();
       this.chkUncompressedVideo = new System.Windows.Forms.CheckBox();
       this.cmbUncompressedVideoFormat = new System.Windows.Forms.ComboBox();
       this.lblUncompressedVideoFormat = new System.Windows.Forms.Label();
@@ -130,9 +133,8 @@ namespace Kinovea.Root
       this.lblPostRecordCommand = new System.Windows.Forms.Label();
       this.tbPostRecordCommand = new System.Windows.Forms.TextBox();
       this.lblRecordingTime = new System.Windows.Forms.Label();
-      this.lblCaptureKVA = new System.Windows.Forms.Label();
-      this.tbCaptureKVA = new System.Windows.Forms.TextBox();
-      this.btnCaptureKVA = new System.Windows.Forms.Button();
+      this.nudQuietPeriod = new System.Windows.Forms.NumericUpDown();
+      this.lblQuietPeriod = new System.Windows.Forms.Label();
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
       this.tabMemory.SuspendLayout();
@@ -152,6 +154,7 @@ namespace Kinovea.Root
       ((System.ComponentModel.ISupportInitialize)(this.nudRecordingTime)).BeginInit();
       this.gbAudioTrigger.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudAudioTriggerThreshold)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudQuietPeriod)).BeginInit();
       this.SuspendLayout();
       // 
       // tabSubPages
@@ -190,6 +193,42 @@ namespace Kinovea.Root
       this.tabGeneral.TabIndex = 0;
       this.tabGeneral.Text = "General";
       this.tabGeneral.UseVisualStyleBackColor = true;
+      // 
+      // lblCaptureKVA
+      // 
+      this.lblCaptureKVA.Location = new System.Drawing.Point(19, 204);
+      this.lblCaptureKVA.Name = "lblCaptureKVA";
+      this.lblCaptureKVA.Size = new System.Drawing.Size(185, 18);
+      this.lblCaptureKVA.TabIndex = 58;
+      this.lblCaptureKVA.Text = "Default annotations file :";
+      // 
+      // tbCaptureKVA
+      // 
+      this.tbCaptureKVA.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.tbCaptureKVA.Location = new System.Drawing.Point(262, 202);
+      this.tbCaptureKVA.Name = "tbCaptureKVA";
+      this.tbCaptureKVA.Size = new System.Drawing.Size(175, 20);
+      this.tbCaptureKVA.TabIndex = 59;
+      this.tbCaptureKVA.TextChanged += new System.EventHandler(this.tbCaptureKVA_TextChanged);
+      // 
+      // btnCaptureKVA
+      // 
+      this.btnCaptureKVA.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnCaptureKVA.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+      this.btnCaptureKVA.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnCaptureKVA.FlatAppearance.BorderSize = 0;
+      this.btnCaptureKVA.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+      this.btnCaptureKVA.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnCaptureKVA.Image = global::Kinovea.Root.Properties.Resources.folder;
+      this.btnCaptureKVA.Location = new System.Drawing.Point(443, 201);
+      this.btnCaptureKVA.MinimumSize = new System.Drawing.Size(20, 20);
+      this.btnCaptureKVA.Name = "btnCaptureKVA";
+      this.btnCaptureKVA.Size = new System.Drawing.Size(20, 20);
+      this.btnCaptureKVA.TabIndex = 60;
+      this.btnCaptureKVA.Tag = "";
+      this.btnCaptureKVA.UseVisualStyleBackColor = true;
+      this.btnCaptureKVA.Click += new System.EventHandler(this.btnCaptureKVA_Click);
       // 
       // chkUncompressedVideo
       // 
@@ -979,7 +1018,7 @@ namespace Kinovea.Root
       this.label1.AutoSize = true;
       this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.label1.ForeColor = System.Drawing.Color.Gray;
-      this.label1.Location = new System.Drawing.Point(206, 222);
+      this.label1.Location = new System.Drawing.Point(206, 237);
       this.label1.Name = "label1";
       this.label1.Size = new System.Drawing.Size(219, 12);
       this.label1.TabIndex = 57;
@@ -988,7 +1027,7 @@ namespace Kinovea.Root
       // nudRecordingTime
       // 
       this.nudRecordingTime.DecimalPlaces = 1;
-      this.nudRecordingTime.Location = new System.Drawing.Point(208, 156);
+      this.nudRecordingTime.Location = new System.Drawing.Point(208, 171);
       this.nudRecordingTime.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -1002,7 +1041,7 @@ namespace Kinovea.Root
       // chkIgnoreOverwriteWarning
       // 
       this.chkIgnoreOverwriteWarning.AutoSize = true;
-      this.chkIgnoreOverwriteWarning.Location = new System.Drawing.Point(19, 250);
+      this.chkIgnoreOverwriteWarning.Location = new System.Drawing.Point(19, 253);
       this.chkIgnoreOverwriteWarning.Name = "chkIgnoreOverwriteWarning";
       this.chkIgnoreOverwriteWarning.Size = new System.Drawing.Size(142, 17);
       this.chkIgnoreOverwriteWarning.TabIndex = 56;
@@ -1012,16 +1051,18 @@ namespace Kinovea.Root
       // 
       // gbAudioTrigger
       // 
+      this.gbAudioTrigger.Controls.Add(this.nudQuietPeriod);
       this.gbAudioTrigger.Controls.Add(this.nudAudioTriggerThreshold);
+      this.gbAudioTrigger.Controls.Add(this.lblQuietPeriod);
       this.gbAudioTrigger.Controls.Add(this.chkEnableAudioTrigger);
       this.gbAudioTrigger.Controls.Add(this.lblAudioTriggerThreshold);
       this.gbAudioTrigger.Controls.Add(this.lblInputDevice);
       this.gbAudioTrigger.Controls.Add(this.vumeter);
       this.gbAudioTrigger.Controls.Add(this.cmbInputDevice);
       this.gbAudioTrigger.Controls.Add(this.lblAudioTriggerHits);
-      this.gbAudioTrigger.Location = new System.Drawing.Point(13, 12);
+      this.gbAudioTrigger.Location = new System.Drawing.Point(13, 2);
       this.gbAudioTrigger.Name = "gbAudioTrigger";
-      this.gbAudioTrigger.Size = new System.Drawing.Size(455, 122);
+      this.gbAudioTrigger.Size = new System.Drawing.Size(455, 152);
       this.gbAudioTrigger.TabIndex = 55;
       this.gbAudioTrigger.TabStop = false;
       // 
@@ -1115,7 +1156,7 @@ namespace Kinovea.Root
       this.btnPostRecordCommand.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnPostRecordCommand.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnPostRecordCommand.Image = global::Kinovea.Root.Properties.Resources.percent;
-      this.btnPostRecordCommand.Location = new System.Drawing.Point(441, 188);
+      this.btnPostRecordCommand.Location = new System.Drawing.Point(441, 203);
       this.btnPostRecordCommand.MinimumSize = new System.Drawing.Size(20, 20);
       this.btnPostRecordCommand.Name = "btnPostRecordCommand";
       this.btnPostRecordCommand.Size = new System.Drawing.Size(20, 20);
@@ -1127,7 +1168,7 @@ namespace Kinovea.Root
       // lblPostRecordCommand
       // 
       this.lblPostRecordCommand.AutoSize = true;
-      this.lblPostRecordCommand.Location = new System.Drawing.Point(16, 192);
+      this.lblPostRecordCommand.Location = new System.Drawing.Point(16, 207);
       this.lblPostRecordCommand.Name = "lblPostRecordCommand";
       this.lblPostRecordCommand.Size = new System.Drawing.Size(127, 13);
       this.lblPostRecordCommand.TabIndex = 52;
@@ -1135,7 +1176,7 @@ namespace Kinovea.Root
       // 
       // tbPostRecordCommand
       // 
-      this.tbPostRecordCommand.Location = new System.Drawing.Point(208, 189);
+      this.tbPostRecordCommand.Location = new System.Drawing.Point(208, 204);
       this.tbPostRecordCommand.Name = "tbPostRecordCommand";
       this.tbPostRecordCommand.Size = new System.Drawing.Size(227, 20);
       this.tbPostRecordCommand.TabIndex = 53;
@@ -1144,47 +1185,34 @@ namespace Kinovea.Root
       // lblRecordingTime
       // 
       this.lblRecordingTime.AutoSize = true;
-      this.lblRecordingTime.Location = new System.Drawing.Point(16, 158);
+      this.lblRecordingTime.Location = new System.Drawing.Point(16, 173);
       this.lblRecordingTime.Name = "lblRecordingTime";
       this.lblRecordingTime.Size = new System.Drawing.Size(98, 13);
       this.lblRecordingTime.TabIndex = 43;
       this.lblRecordingTime.Text = "Recording time (s) :";
       // 
-      // lblCaptureKVA
+      // nudQuietPeriod
       // 
-      this.lblCaptureKVA.Location = new System.Drawing.Point(19, 204);
-      this.lblCaptureKVA.Name = "lblCaptureKVA";
-      this.lblCaptureKVA.Size = new System.Drawing.Size(185, 18);
-      this.lblCaptureKVA.TabIndex = 58;
-      this.lblCaptureKVA.Text = "Default annotations file :";
+      this.nudQuietPeriod.DecimalPlaces = 1;
+      this.nudQuietPeriod.Location = new System.Drawing.Point(195, 113);
+      this.nudQuietPeriod.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+      this.nudQuietPeriod.Name = "nudQuietPeriod";
+      this.nudQuietPeriod.Size = new System.Drawing.Size(42, 20);
+      this.nudQuietPeriod.TabIndex = 59;
+      this.nudQuietPeriod.ValueChanged += new System.EventHandler(this.nudQuietPeriod_ValueChanged);
       // 
-      // tbCaptureKVA
+      // lblQuietPeriod
       // 
-      this.tbCaptureKVA.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.tbCaptureKVA.Location = new System.Drawing.Point(262, 202);
-      this.tbCaptureKVA.Name = "tbCaptureKVA";
-      this.tbCaptureKVA.Size = new System.Drawing.Size(175, 20);
-      this.tbCaptureKVA.TabIndex = 59;
-      this.tbCaptureKVA.TextChanged += new System.EventHandler(this.tbCaptureKVA_TextChanged);
-      // 
-      // btnCaptureKVA
-      // 
-      this.btnCaptureKVA.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnCaptureKVA.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnCaptureKVA.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnCaptureKVA.FlatAppearance.BorderSize = 0;
-      this.btnCaptureKVA.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-      this.btnCaptureKVA.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnCaptureKVA.Image = global::Kinovea.Root.Properties.Resources.folder;
-      this.btnCaptureKVA.Location = new System.Drawing.Point(443, 201);
-      this.btnCaptureKVA.MinimumSize = new System.Drawing.Size(20, 20);
-      this.btnCaptureKVA.Name = "btnCaptureKVA";
-      this.btnCaptureKVA.Size = new System.Drawing.Size(20, 20);
-      this.btnCaptureKVA.TabIndex = 60;
-      this.btnCaptureKVA.Tag = "";
-      this.btnCaptureKVA.UseVisualStyleBackColor = true;
-      this.btnCaptureKVA.Click += new System.EventHandler(this.btnCaptureKVA_Click);
+      this.lblQuietPeriod.AutoSize = true;
+      this.lblQuietPeriod.Location = new System.Drawing.Point(37, 115);
+      this.lblQuietPeriod.Name = "lblQuietPeriod";
+      this.lblQuietPeriod.Size = new System.Drawing.Size(84, 13);
+      this.lblQuietPeriod.TabIndex = 58;
+      this.lblQuietPeriod.Text = "Quiet period (s) :";
       // 
       // PreferencePanelCapture
       // 
@@ -1222,6 +1250,7 @@ namespace Kinovea.Root
       this.gbAudioTrigger.ResumeLayout(false);
       this.gbAudioTrigger.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudAudioTriggerThreshold)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudQuietPeriod)).EndInit();
       this.ResumeLayout(false);
 
 		}
@@ -1310,5 +1339,7 @@ namespace Kinovea.Root
         private System.Windows.Forms.Label lblCaptureKVA;
         private System.Windows.Forms.TextBox tbCaptureKVA;
         private System.Windows.Forms.Button btnCaptureKVA;
+        private System.Windows.Forms.NumericUpDown nudQuietPeriod;
+        private System.Windows.Forms.Label lblQuietPeriod;
     }
 }

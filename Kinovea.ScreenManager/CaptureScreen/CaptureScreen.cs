@@ -168,6 +168,8 @@ namespace Kinovea.ScreenManager
         private VideoFileWriter videoFileWriter = new VideoFileWriter();
         private Stopwatch stopwatchRecording = new Stopwatch();
         private bool triggerArmed = true;
+        private bool manualArmed = true;
+        private bool inQuietPeriod = false;
 
         private Delayer delayer = new Delayer();
         private int delay; // The current image age in number of frames.
@@ -221,7 +223,8 @@ namespace Kinovea.ScreenManager
             InitializeMetadata();
 
             recordingMode = PreferencesManager.CapturePreferences.RecordingMode;
-            
+            UpdateArmableTrigger();
+
             view.SetToolbarView(drawingToolbarPresenter.View);
             
             IntPtr forceHandleCreation = dummy.Handle; // Needed to show that the main thread "owns" this Control.
@@ -308,6 +311,8 @@ namespace Kinovea.ScreenManager
             log.DebugFormat("Master preferences changed, reconnecting the camera.");
             Disconnect();
             Connect();
+
+            UpdateArmableTrigger();
         }
         public override void BeforeClose()
         {
@@ -491,7 +496,9 @@ namespace Kinovea.ScreenManager
         }
         public void View_ToggleArmingTrigger()
         {
-            ToggleArmingTrigger();
+            // Manual toggle.
+            if (PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger)
+                ToggleArmingTrigger(true, true);
         }
         #endregion
         #endregion
@@ -918,6 +925,76 @@ namespace Kinovea.ScreenManager
                 Connect();
             }
         }
+
+        /// <summary>
+        /// Update the arming button based on preferences.
+        /// Does not raise toast message.
+        /// This should be used at the screen creation or after preferences changes.
+        /// </summary>
+        private void UpdateArmableTrigger()
+        {
+            if (!PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger)
+            {
+                // Already disarmed.
+                if (!triggerArmed)
+                    return;
+
+                ToggleArmingTrigger(false, false);
+            }
+            else
+            {
+                // Already armed.
+                if (triggerArmed)
+                    return;
+
+                // Not already armed but the user explicitely disarmed earlier.
+                // When we get out of preferences we may have changed something else, 
+                // so we can't use the EnableAudioTrigger value to override what the user may have manually set.
+                if (!manualArmed)
+                    return;
+
+                // No explicit opposition to re-arming.
+                ToggleArmingTrigger(false, false);
+            }
+        }
+
+        /// <summary>
+        /// Disarm trigger for the quiet period.
+        /// </summary>
+        private void StartQuietPeriod()
+        {
+            if (PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger && 
+                PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioQuietPeriod > 0)
+            {
+                // We will monitor the end of the quiet period in the slow tick event.
+                AudioInputLevelMonitor.StartQuietPeriod();
+                inQuietPeriod = true;
+                if (triggerArmed)
+                    ToggleArmingTrigger(false, false);
+            }
+        }
+
+        /// <summary>
+        /// Re-enable the audio trigger if the quiet period is over.
+        /// </summary>
+        private void CheckQuietPeriod()
+        {
+            if (AudioInputLevelMonitor.IsQuiet())
+                return;
+            
+            // Exiting quiet period. Re-arm only if not manually disarmed and prefs authorize it.
+            log.DebugFormat("Detected end of quiet period.");
+            inQuietPeriod = false;
+
+            if (!PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger)
+                return;
+
+            if (!manualArmed)
+                return;
+                
+            if (!triggerArmed)
+                ToggleArmingTrigger(true, false);
+        }
         
         private void Grabber_GrabbingStatusChanged(object sender, EventArgs e)
         {
@@ -1046,6 +1123,9 @@ namespace Kinovea.ScreenManager
             // Here, whether the delay buffer is sparse or dense, the correct frame to pull is the one specified by this delay in frames, 
             // we don't need to take into account the difference in display framerate vs camera framerate.
             //--------------------------------------------------
+
+            if (inQuietPeriod)
+                CheckQuietPeriod();
 
             if (!cameraConnected)
                 return;
@@ -1402,15 +1482,21 @@ namespace Kinovea.ScreenManager
             return result == DialogResult.Yes;
         }
 
-        private void ToggleArmingTrigger()
+        private void ToggleArmingTrigger(bool toast, bool manual)
         {
             triggerArmed = !triggerArmed;
-
             view.UpdateArmedStatus(triggerArmed);
-            if (triggerArmed)
-                viewportController.ToastMessage("Capture trigger armed", 1000);
-            else
-                viewportController.ToastMessage("Capture trigger disarmed", 1000);
+            
+            if (manual)
+                manualArmed = triggerArmed;
+
+            if (toast)
+            {
+                if (triggerArmed)
+                    viewportController.ToastMessage("Capture trigger armed", 1000);
+                else
+                    viewportController.ToastMessage("Capture trigger disarmed", 1000);
+            }
         }
         
         private void ToggleRecording()
@@ -1541,6 +1627,8 @@ namespace Kinovea.ScreenManager
                 return;
 
             log.DebugFormat("Stopping recording.");
+
+            StartQuietPeriod();
 
             string finalFilename = pipelineManager.Path;
 

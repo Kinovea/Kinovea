@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -37,6 +38,7 @@ namespace Kinovea.ScreenManager
         private string nextDeviceId;
 
         private Control dummy = new Control();
+        private static DateTime quietPeriodStart = DateTime.MinValue;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         #region Construction & disposal
@@ -70,6 +72,10 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
+        #region Static methods
+        /// <summary>
+        /// Get all the audio devices on the system.
+        /// </summary>
         public static List<AudioInputDevice> GetDevices()
         {
             List<AudioInputDevice> devices = new List<AudioInputDevice>();
@@ -79,6 +85,26 @@ namespace Kinovea.ScreenManager
 
             return devices;
         }
+
+        /// <summary>
+        /// Reset the start of the quiet period for all audio input level monitors.
+        /// </summary>
+        public static void StartQuietPeriod()
+        {
+            log.DebugFormat("Entering quiet period");
+            quietPeriodStart = DateTime.Now;
+        }
+
+        /// <summary>
+        /// Return true if we are currently within the quiet period.
+        /// </summary>
+        public static bool IsQuiet()
+        {
+            float quietPeriod = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioQuietPeriod;
+            double ellapsed = (DateTime.Now - quietPeriodStart).TotalSeconds;
+            return quietPeriod != 0 && ellapsed < quietPeriod;
+        }
+        #endregion
 
         public void Start(string id)
         {
@@ -222,6 +248,12 @@ namespace Kinovea.ScreenManager
 
             if (max < Threshold)
                 return;
+
+            if (IsQuiet())
+            {
+                log.DebugFormat("Audio input level above threshold during quiet period: ignored.");
+                return;
+            }
 
             log.DebugFormat("Audio input level above threshold: {0:0.000}.", max);
 
