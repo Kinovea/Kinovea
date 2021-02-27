@@ -33,6 +33,8 @@ namespace Kinovea.Services
         public static string InstanceName { get; private set; }
 
         public static string Version { get; private set; }
+
+        public static string CameraPluginAPIVersion { get; private set; }
         public static bool Is32bit { get; private set; }
         public static string SettingsDirectory { get; private set; }
         public static string ColorProfileDirectory { get; private set; }
@@ -65,6 +67,8 @@ namespace Kinovea.Services
         public static void Initialize(Version version)
         {
             Version = string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build);
+            CameraPluginAPIVersion = "3.0";
+
             string applicationDirectory = Application.StartupPath + "\\";
 
             Is32bit = IntPtr.Size == 4;

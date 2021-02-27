@@ -117,7 +117,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CameraManager.cs" />
-    <Compile Include="CameraManagerPluginInfo.cs" />
     <Compile Include="Configuration\AbstractCameraPropertyView.cs">
       <SubType>UserControl</SubType>
     </Compile>

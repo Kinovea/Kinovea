@@ -26,6 +26,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using System.Linq;
 using Kinovea.Services;
+using System.Diagnostics;
 
 namespace Kinovea.Camera
 {
@@ -54,7 +55,6 @@ namespace Kinovea.Camera
         #endregion
 
         #region Members
-        private static readonly string APIVersion = "3.0";
         private static List<CameraManager> cameraManagers = new List<CameraManager>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static Timer timerDiscovery = new Timer();
@@ -66,43 +66,41 @@ namespace Kinovea.Camera
         /// </summary>
         public static void LoadCameraManagersPlugins()
         {
-            //-----------------------
-            // WORK IN PROGRESS.
-            //-----------------------
-
-            // Prototyping.
-            // Plugins will have a manifest with info.
+            // A camera plugin is a directory under Plugins/Camera with an XML manifest file and an assembly 
+            // implementing the CameraManager abstract class.
+            // To install and uninstall a plugin we add/delete the corresponding folder.
+            // This discovery mechanism is duplicated for each instance.
+            // This adds only a few milliseconds so we don't keep a cache in preferences.
+            string pluginsDirectory = Software.CameraPluginsDirectory;
             List<CameraManagerPluginInfo> plugins = new List<CameraManagerPluginInfo>();
-            plugins.Add(new CameraManagerPluginInfo("Basler", "Basler", "Kinovea.Camera.Basler", "Kinovea.Camera.Basler.CameraManagerBasler", "3.0"));
-            plugins.Add(new CameraManagerPluginInfo("IDS", "IDS", "Kinovea.Camera.IDS", "Kinovea.Camera.IDS.CameraManagerIDS", "3.0"));
-            plugins.Add(new CameraManagerPluginInfo("Daheng", "Daheng", "Kinovea.Camera.Daheng", "Kinovea.Camera.Daheng.CameraManagerDaheng", "3.0"));
-            plugins.Add(new CameraManagerPluginInfo("Baumer", "Baumer", "Kinovea.Camera.Baumer", "Kinovea.Camera.Baumer.CameraManagerBaumer", "3.0"));
-
-            foreach (CameraManagerPluginInfo info in plugins)
+            List<string> directories = Directory.GetDirectories(pluginsDirectory).ToList();
+            foreach (string directory in directories)
             {
-                if (info.APIVersion != APIVersion)
-                {
-                    log.ErrorFormat("The camera plugin \"{0}\" is incompatible with this version of Kinovea. Current API Version: {1}, Plugin API version: {2}.", 
-                        info.Name, APIVersion, info.APIVersion);
+                string manifest = Path.Combine(directory, "manifest.xml");
+                CameraManagerPluginInfo pluginInfo = CameraManagerPluginInfo.Load(manifest);
+                if (pluginInfo == null)
                     continue;
-                }
 
-                LoadCameraManagerPlugin(info);
+                plugins.Add(pluginInfo);
             }
+
+            log.DebugFormat("Loaded camera plugins manifests.");
+
+            // Load all compatible plugins.
+            foreach (CameraManagerPluginInfo info in plugins)
+                LoadCameraManagerPlugin(pluginsDirectory, info);
         }
 
-        private static void LoadCameraManagerPlugin(CameraManagerPluginInfo info)
+        private static void LoadCameraManagerPlugin(string pluginsDirectory, CameraManagerPluginInfo info)
         {
-            // TODO: plugins should go under AppData.
-            string appBase = Path.GetDirectoryName(Application.ExecutablePath);
-            string dir = Path.Combine(Software.CameraPluginsDirectory, info.Directory);
+            string dir = Path.Combine(pluginsDirectory, info.Directory);
             if (!Directory.Exists(dir))
             {
                 log.ErrorFormat("Could not find directory for camera manager plugin: {0}.", info.Name);
                 return;
             }
 
-            string assemblyFile = Path.Combine(dir, info.AssemblyName) + ".dll";
+            string assemblyFile = Path.Combine(dir, info.AssemblyName);
             if (!File.Exists(assemblyFile))
             {
                 log.ErrorFormat("Could not find assembly: {0}.", info.AssemblyName);
