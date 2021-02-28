@@ -1,18 +1,17 @@
 
-Kinovea 0.9.3 - 2020-07.
+Kinovea 0.9.4 - TBD.
 
-Kinovea is an open source solution for capturing, studying and annotating videos.
-Use it for sport coaching, performance analysis, podiatrics, animation commenting, ergonomics engineering and more...
+Kinovea is a video player dedicated to motion analysis.
+It provides a set of tools to capture, slow down, compare, annotate and measure motion in videos.
 
 
 System Requirements:
 --------------------
+- OS : Microsoft Windows 7, 8, 8.1, 10 with .NET framework 4.8.
 - CPU : 1 Ghz
 - RAM : 256 MB
 - Disk Space : 70 MB.
 - Screen Resolution : 1024x600 pixels.
-- OS : Microsoft Windows 7, 8, 8.1, 10. 
-- Framework .NET framework 4.8.
 
 
 License:
@@ -43,7 +42,7 @@ Changelog:
     Added - General: support controlling Kinovea from external applications using WM_COPYDATA messages.
     Added - Capture: support for Baumer cameras.
     Added - Capture: button to arm and disarm the audio trigger in the capture screen.
-    Added - Capture: capture screens monitor the last exported KVA and reload it automatically when modified.
+    Added - Capture: quiet period during which the audio trigger is deactivated.
     Improved - General: reorganized the save menu in "Save", "Save as…" and "Export video".
     Improved - General: save and restore the main window position and state.
     Improved - General: support customization of the path to the default KVA for capture and playback.
@@ -53,6 +52,7 @@ Changelog:
     Improved - Annotations: support using the calibration line as the vertical axis or use image axes.
     Improved - Annotations: save and restore the mirror flag in KVA files.
     Improved - Capture: support loading KVA files in the capture screen using the File menu.
+    Improved - Capture: capture screens monitor the last exported KVA and reload it automatically when modified.
     Improved - Capture: allow manipulation of visible objects even if not on the first keyframe.
     Improved - Capture: camera streams are now disconnected when the computer enters sleep mode.
     Improved - Capture: delay is temporary disabled when opening the camera configuration dialog.
@@ -61,8 +61,8 @@ Changelog:
     Improved - Capture: save and restore the mirror flag in camera settings.
     Fixed - Some manipulations in the playback screen were not triggering screen activation.
     Fixed - The timecodes were wrong when using custom playback rate.
-    Fixed - The capture screen didn't export some metadata correctly when the camera is rotated.
-    Fixed - The capture test grid was wrong when the camera is rotated.
+    Fixed - The capture screen didn't export some metadata correctly when the camera was rotated.
+    Fixed - The capture test grid was wrong when the camera was rotated.
     Fixed - The scaling of rectangle and circle was wrong when loading a KVA in a video of a different size.
     Fixed - Crash when trying to render extra drawings like chronometer in a capture screen.
     Fixed - The speed slider could fail to keep its value when loading a new video in a replay observer.
