@@ -469,8 +469,6 @@ namespace Kinovea.ScreenManager
             EnableDisableDrawingTools(true);
             EnableDisableSnapshot(true);
             buttonPlay.Image = Player.flatplay;
-            slowMotion = 1;
-            sldrSpeed.Force(timeMapper.GetInputFromSlowMotion(slowMotion));
             sldrSpeed.Enabled = false;
             m_KeyframeCommentsHub.Hide();
             UpdatePlayingModeButton();
@@ -683,12 +681,6 @@ namespace Kinovea.ScreenManager
             double captureInterval = 1000 / m_FrameServer.Metadata.CalibrationHelper.CaptureFramesPerSecond;
             m_FrameServer.Metadata.HighSpeedFactor = m_FrameServer.Metadata.UserInterval / captureInterval;
             UpdateTimebase();
-
-            if (oldHSF != m_FrameServer.Metadata.HighSpeedFactor)
-            {
-                slowMotion = 1;
-                sldrSpeed.Force(timeMapper.GetInputFromSlowMotion(slowMotion));
-            }
 
             m_FrameServer.SetupMetadata(false);
             ImportEditboxes();
@@ -1007,7 +999,6 @@ namespace Kinovea.ScreenManager
         {
             m_iFramesToDecode = 1;
 
-            slowMotion = 1;
             DeactivateInteractiveEffect();
             m_bIsCurrentlyPlaying = false;
             m_ePlayingMode = PlayingMode.Loop;
