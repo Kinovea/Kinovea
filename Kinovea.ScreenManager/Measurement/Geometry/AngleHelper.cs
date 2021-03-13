@@ -104,7 +104,7 @@ namespace Kinovea.ScreenManager
             Font tempFont = styleHelper.GetFont(1.0F);
             SizeF labelSize = canvas.MeasureString(label, tempFont);
 
-            Font tempFontTransformed = styleHelper.GetFont(Math.Max((float)transformer.Scale, 1.0F));
+            Font tempFontTransformed = styleHelper.GetFont((float)transformer.Scale);
             SizeF labelSizeTransformed = canvas.MeasureString(label, tempFontTransformed);
 
             // Background
