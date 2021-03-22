@@ -17,6 +17,7 @@ namespace Kinovea.ScreenManager
     {
         public event EventHandler ThresholdPassed;
         public event EventHandler<float> LevelChanged;
+        public event EventHandler DeviceLost;
 
         public bool Enabled
         {
@@ -36,6 +37,7 @@ namespace Kinovea.ScreenManager
         private string currentDeviceId;
         private bool changeDeviceAsked;
         private string nextDeviceId;
+        private bool stopAsked;
 
         private Control dummy = new Control();
         private static DateTime quietPeriodStart = DateTime.MinValue;
@@ -113,12 +115,14 @@ namespace Kinovea.ScreenManager
               throw new InvalidProgramException();
 #endif
 
-            if (!string.IsNullOrEmpty(id) && id == currentDeviceId)
+            if (!string.IsNullOrEmpty(id) && id == currentDeviceId && started)
                 return;
 
             if (started)
             {
-                // We must wait until the recorder is fully closed before restarting it.
+                // We must wait until the monitor is fully closed before restarting it.
+                // We will call back into here from the "device stopped" event.
+                log.DebugFormat("Audio input level monitor already started on a different device.");
                 changeDeviceAsked = true;
                 nextDeviceId = id;
                 Stop();
@@ -131,6 +135,7 @@ namespace Kinovea.ScreenManager
             if (WaveIn.DeviceCount == 0)
             {
                 log.DebugFormat("Audio input level monitor failed to start, no input device available.");
+                DeviceLost?.Invoke(this, EventArgs.Empty);
                 return;
             }
 
@@ -171,6 +176,7 @@ namespace Kinovea.ScreenManager
             catch(Exception e)
             {
                 log.ErrorFormat("The microphone is not available. {0}", e.Message);
+                DeviceLost?.Invoke(this, EventArgs.Empty);
                 currentDeviceId = null;
             }
         }
@@ -180,12 +186,19 @@ namespace Kinovea.ScreenManager
             if (!started)
                 return;
 
+            stopAsked = true;
             waveIn.StopRecording();
+            stopAsked = false;
             log.DebugFormat("Audio input level monitor stopped.");
         }
 
         private void WaveIn_RecordingStopped(object sender, StoppedEventArgs e)
         {
+            // Three scenarios to come into here:
+            // - The audio device was lost.
+            // - We are stopping monitoring. (stopAsked = true).
+            // - We are changing the monitored device. (changeDeviceAsked = true).
+
             started = false;
             
             if (e.Exception != null)
@@ -195,14 +208,23 @@ namespace Kinovea.ScreenManager
                 waveIn.RecordingStopped -= WaveIn_RecordingStopped;
                 waveIn.Dispose();
                 waveIn = null;
-
-                dummy.BeginInvoke((Action)delegate {
-                    Start(currentDeviceId);
+                
+                // Alert of the problem and try to force restart the device.
+                dummy.BeginInvoke((Action)delegate
+                {
+                    if (!stopAsked)
+                        Start(currentDeviceId);
+                    else
+                        currentDeviceId = null;
                 });
+
+                return;
             }
-
+            
             currentDeviceId = null;
-
+            if (stopAsked)
+                return;
+            
             if (changeDeviceAsked && !string.IsNullOrEmpty(nextDeviceId))
             {
                 // This happens when we want to switch from one device to another.

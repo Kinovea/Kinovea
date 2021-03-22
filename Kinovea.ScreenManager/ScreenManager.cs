@@ -171,6 +171,7 @@ namespace Kinovea.ScreenManager
             audioInputLevelMonitor.Enabled = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger;
             audioInputLevelMonitor.Threshold = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioTriggerThreshold;
             audioInputLevelMonitor.ThresholdPassed += (s, e) => TriggerCapture();
+            audioInputLevelMonitor.DeviceLost += (s, e) => AudioDeviceLost();
 
             InitializeVideoFilters();
             InitializeGuideWatcher();
@@ -2439,6 +2440,12 @@ namespace Kinovea.ScreenManager
         {
             foreach (CaptureScreen screen in captureScreens)
                 screen.TriggerCapture();
+        }
+
+        private void AudioDeviceLost()
+        {
+            foreach (CaptureScreen screen in captureScreens)
+                screen.AudioDeviceLost();
         }
 
         private void NotificationCenter_PreferencesOpened(object source, EventArgs e)

@@ -284,6 +284,16 @@ namespace Kinovea.ScreenManager
                 ToggleRecording();
         }
 
+        /// <summary>
+        /// Alert that there was a problem with the audio device.
+        /// This prevents audio trigger to work.
+        /// </summary>
+        public void AudioDeviceLost()
+        {
+            if (cameraConnected)
+                viewportController.ToastMessage("Audio device lost", 5000);
+        }
+
         #region AbstractScreen Implementation
         public override void DisplayAsActiveScreen(bool active)
         {
