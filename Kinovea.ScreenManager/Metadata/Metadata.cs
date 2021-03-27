@@ -96,7 +96,8 @@ namespace Kinovea.ScreenManager
             {
                 if (string.IsNullOrEmpty(lastKVAPath) ||
                     lastKVAPath == PreferencesManager.PlayerPreferences.PlaybackKVA ||
-                    lastKVAPath == PreferencesManager.CapturePreferences.CaptureKVA)
+                    lastKVAPath == PreferencesManager.CapturePreferences.CaptureKVA ||
+                    lastKVAPath.StartsWith(Software.TempDirectory))
                     return "";
                     
                 return lastKVAPath;
