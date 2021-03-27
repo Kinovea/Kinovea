@@ -75,6 +75,7 @@ namespace Kinovea.ScreenManager
                 if (trackablePoints == null)
                     continue;
 
+                bool singlePoint = trackablePoints.Count == 1;
                 foreach (var pair in trackablePoints)
                 {
                     TrackablePoint tp = pair.Value;
@@ -95,7 +96,8 @@ namespace Kinovea.ScreenManager
                     DrawingGenericPosture dgp = trackable as DrawingGenericPosture;
                     if (dgp == null)
                     {
-                        name = name + " - " + pair.Key;
+                        if (!singlePoint)
+                            name = name + " - " + pair.Key;
                     }
                     else
                     {
