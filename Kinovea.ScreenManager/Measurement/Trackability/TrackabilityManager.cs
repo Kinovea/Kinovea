@@ -230,7 +230,6 @@ namespace Kinovea.ScreenManager
 
             w.WriteStartElement("TrackableDrawing");
             w.WriteAttributeString("id", tracker.ID.ToString());
-            w.WriteAttributeString("tracking", tracker.IsTracking.ToString().ToLower());
             tracker.WriteXml(w);
             w.WriteEndElement();
         }

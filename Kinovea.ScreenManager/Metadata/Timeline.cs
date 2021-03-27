@@ -74,6 +74,14 @@ namespace Kinovea.ScreenManager
                 return frames.Values[index];
         }
         
+        /// <summary>
+        /// Return true if there is at least one entry in the timeline.
+        /// </summary>
+        public bool HasData()
+        {
+            return frames.Count > 0;
+        }
+
         public void Clear()
         {
             frames.Clear();

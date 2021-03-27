@@ -35,6 +35,12 @@ namespace Kinovea.ScreenManager
     public class DrawingTracker
     {
         #region Properties
+
+        /// <summary>
+        /// Returns true if the drawing is currently actively tracked.
+        /// A non tracked drawing can still have entries in its timeline. 
+        /// The position of the point is always the closest entry from the timeline, or a special non-tracked value if the timeline is empty.
+        /// </summary>
         public bool IsTracking
         {
             get { return isTracking; }
@@ -239,8 +245,7 @@ namespace Kinovea.ScreenManager
             if (r.MoveToAttribute("id"))
                 drawingId = new Guid(r.ReadContentAsString());
 
-            if (r.MoveToAttribute("tracking"))
-                isTracking = XmlHelper.ParseBoolean(r.ReadContentAsString());
+            isTracking = false;
 
             r.ReadStartElement();
 

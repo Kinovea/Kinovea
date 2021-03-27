@@ -30,8 +30,8 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// Represent a point that can be tracked in time. Hosts a timeline and current value.
-    /// Tracking uses the closest known data point.
-    /// If the point is not currently tracked, a separate value is kept outside the timeline.
+    /// Reading the position of the point always returns the closest entry from the timeline,
+    /// or a special non-tracked value if the timeline is empty.
     /// </summary>
     public class TrackablePoint
     {
@@ -108,16 +108,21 @@ namespace Kinovea.ScreenManager
             currentValue = value;
             timeDifference = 0;
 
-            if (!isTracking)
-            {
+            // There are several cases.
+            // The important point is that as long as we have tracking data the "reading" part will always pick the nearest point from the timeline.
+            // We do not store a point position for all "non-tracked" times, this would break the trajectory when in-between tracked points.
+            // The non-tracking value is only for when the timeline is empty.
+            // Cases:
+            // 1. We are actively tracking: update the timeline.
+            // 2. We are not tracking and we never tracked this object: do not update the timeline.
+            // 3. We are not tracking but we are on a previously tracked point: update the timeline.
+            // In this case it doesn't make sense to force the user to re-enable tracking, we know this point is tracked.
+            // 4. We are not tracking and we are not on a tracked point: update the timeline.
+            // This is the tricky case, but if we don't update the timeline the move is lost.
+            if (isTracking || trackTimeline.HasData())
+                trackTimeline.Insert(context.Time, CreateTrackFrame(value, PositionningSource.Manual));
+            else
                 nonTrackingValue = value;
-                return;
-            }
-            
-            if (trackerParameters.ResetOnMove)
-                ClearTimeline();
-            
-            trackTimeline.Insert(context.Time, CreateTrackFrame(value, PositionningSource.Manual));
         }
         
         /// <summary>
@@ -133,17 +138,16 @@ namespace Kinovea.ScreenManager
             bool inserted = false;
             this.context = context;
            
-            TrackFrame closestFrame = trackTimeline.ClosestFrom(context.Time);
-
-            if (closestFrame == null)
+            if (!trackTimeline.HasData())
             {
                 // Not a single entry in the timeline.
-                // Most likely this drawing has never been activated for tracking so far.
+                // This drawing has never been activated for tracking so far.
                 currentValue = nonTrackingValue;
                 timeDifference = -1;
 
                 if (isTracking)
                 {
+                    // Use the current user-set position as a first tracked point.
                     trackTimeline.Insert(context.Time, CreateTrackFrame(currentValue, PositionningSource.Manual));
                     timeDifference = 0;
                 }
@@ -151,6 +155,7 @@ namespace Kinovea.ScreenManager
                 return isTracking;
             }
 
+            TrackFrame closestFrame = trackTimeline.ClosestFrom(context.Time);
             if (closestFrame.Template == null)
             {
                 // This point has entries in the timeline but doesn't have the corresponding image pattern.
@@ -168,7 +173,8 @@ namespace Kinovea.ScreenManager
                     // When the user switched tracking ON for this drawing, they saw where the point was.
                     // If they moved it manually before changing frame, it will be handled in SetUserValue.
                     // If not, it means they are content with the position it has and thus this insertion is correct.
-                    trackTimeline.Insert(context.Time, CreateTrackFrame(closestFrame.Location, closestFrame.PositionningSource));
+                    PositionningSource source = timeDifference == 0 ? closestFrame.PositionningSource : PositionningSource.ForcedClosest;
+                    trackTimeline.Insert(context.Time, CreateTrackFrame(closestFrame.Location, source));
                     timeDifference = 0;
                 }
 
