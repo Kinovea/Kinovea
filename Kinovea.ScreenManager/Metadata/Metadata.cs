@@ -1401,6 +1401,10 @@ namespace Kinovea.ScreenManager
         {
             trackExtraData = e.Value;
         }
+
+        /// <summary>
+        /// Returns the position of the coordinate system origin at that time.
+        /// </summary>
         private PointF GetCalibrationOrigin(long time)
         {
             if (captureKVA)

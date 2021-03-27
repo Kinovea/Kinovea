@@ -150,6 +150,10 @@ namespace Kinovea.ScreenManager
             AfterToggleTracking();
         }
 
+        /// <summary>
+        /// Returns the position of the point nearest to that time.
+        /// This is used by linear kinematics.
+        /// </summary>
         public PointF GetLocation(string key, long time)
         {
             if (!trackablePoints.ContainsKey(key))

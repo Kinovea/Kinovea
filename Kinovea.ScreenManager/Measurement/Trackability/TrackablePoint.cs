@@ -265,9 +265,13 @@ namespace Kinovea.ScreenManager
                 return false;
         }
 
+        /// <summary>
+        /// Returns the position of the point nearest to that time.
+        /// This is used by linear kinematics.
+        /// </summary>
         public PointF GetLocation(long time)
         {
-            if (!isTracking)
+            if (trackTimeline.Count == 0)
                 return currentValue;
 
             TrackFrame closestFrame = trackTimeline.ClosestFrom(time);

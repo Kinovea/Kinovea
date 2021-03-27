@@ -186,6 +186,10 @@ namespace Kinovea.ScreenManager
             return trackers[drawing.Id].TrackablePoints;
         }
 
+        /// <summary>
+        /// Returns the position of the point nearest to that time.
+        /// This is used by linear kinematics.
+        /// </summary>
         public PointF GetLocation(ITrackable drawing, string key, long time)
         {
             if (!SanityCheck(drawing.Id))
