@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Video;
 using System.IO;
+using Kinovea.Camera;
 
 namespace Kinovea.ScreenManager
 {
@@ -19,6 +20,9 @@ namespace Kinovea.ScreenManager
 
         public static void LoadVideoInScreen(ScreenManagerKernel manager, string path, int targetScreen, ScreenDescriptionPlayback screenDescription = null)
         {
+            CameraTypeManager.CancelThumbnails();
+            CameraTypeManager.StopDiscoveringCameras();
+
             if (targetScreen < 0)
                 LoadUnspecified(manager, path, screenDescription);
             else
@@ -27,6 +31,9 @@ namespace Kinovea.ScreenManager
 
         public static void LoadVideoInScreen(ScreenManagerKernel manager, string path, ScreenDescriptionPlayback screenDescription)
         {
+            CameraTypeManager.CancelThumbnails();
+            CameraTypeManager.StopDiscoveringCameras();
+
             LoadUnspecified(manager, path, screenDescription);
         }
 
