@@ -80,7 +80,7 @@
    
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>ドローイングの削除</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>キーイメージの削除</value></data>
-   <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>ビデオの保存</value></data>
+   <data name="CommandExportVideo_FriendlyName" xml:space="preserve"><value>ビデオの保存</value></data>
    
    
    
@@ -167,6 +167,10 @@
    
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>セグメントの実際のサイズ:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>ライン較正</value></data>
+   
+   
+   
+   
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>平面較正</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>各キーイメージの継続性 : {0} 1/100秒。</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>各キーイメージの継続性 : {0:0.00} 秒。 </value></data>
@@ -191,6 +195,7 @@
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>分析結果をビデオに永続的に付与して保存</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>分析対象はすべてのプレーヤーで参照できますが、変更できません。#キーイメージに取り付けられたコメントは保存されません。</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>キーイメージデータの保存</value></data>
+   
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>シーケンスの保存</value></data>
    
    
@@ -269,6 +274,9 @@
    <data name="Generic_Options" xml:space="preserve"><value>オプション</value></data>
    <data name="Generic_PenSizePicker" xml:space="preserve"><value>サイズ:</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>保存</value></data>
+   
+   
+   
    <data name="Generic_TrackShapePicker" xml:space="preserve"><value>線の形:</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>イメージ</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>ビデオ</value></data>
@@ -287,14 +295,8 @@
    
    
    
-   <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
-   <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG 画像 (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG 画像 (*.png)|*.png|Bitmap 画像 (*.bmp)|*.bmp</value></data>
-   <data name="FileFilter_ImportReference" xml:space="preserve"><value>すべてのファイル拡張子(*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
-   <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|テキスト (*.txt)|*.txt;</value></data>
    
-   <data name="FileFilter_KVA_kva" xml:space="preserve"><value>Kinoveaビデオアナラシス (*.kva)</value></data>
-   
-   <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi;</value></data>
+   <data name="FileFilter_All" xml:space="preserve"><value>すべてのファイル</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>キーイメージが変更されました。\n終了する前にキーイメージを保存しますか？</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>キーイメージは保存されませんでした。</value></data>
    
@@ -343,10 +345,6 @@
    <data name="mnuTwoMixed" xml:space="preserve"><value>キャプチャスクリーンとプレイバックスクリーン</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>二つのプレイバックスクリーン</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>スプレッドシートにエクスポート</value></data>
-   <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
-   <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
-   <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
-   <data name="mnuExportTEXT" xml:space="preserve"><value>シンプルテキストへの変換</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>イメージフォーマット</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>自動検出</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>4:3に変換</value></data>
@@ -376,9 +374,8 @@
    
    
    <data name="mnuOpenVideo" xml:space="preserve"><value>ビデオファイルを開く</value></data>
-   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>すべてのファイル (*.*)|*.*</value></data>
    
-   <data name="mnuSave" xml:space="preserve"><value>保存…</value></data>
+   
    <data name="mnuCalibrate" xml:space="preserve"><value>較正…</value></data>
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>計測値を表示</value></data>
@@ -416,6 +413,9 @@
    <data name="Toast_StartRecord" xml:space="preserve"><value>録画開始</value></data>
    <data name="Toast_StopRecord" xml:space="preserve"><value>録画停止</value></data>
    <data name="Toast_ImageSaved" xml:space="preserve"><value>イメージが保存されました</value></data>
+   
+   
+   
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>キーイメージの追加</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>前のフレームへ移動</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>カラープロファイル</value></data>
@@ -458,12 +458,15 @@
    <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>両方のイメージをコンポジットイメージに保存</value></data>
    <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>両方のビデオをコンポジットビデオに保存</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>作業範囲を設定</value></data>
+   
+   
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>エッジのみ…</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>オートレベル…</value></data>
    <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>鮮明化…</value></data>
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>概要…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>逆再生…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>オートコントラスト…</value></data>
+   
    
    
    

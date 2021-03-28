@@ -127,6 +127,7 @@
    
    
    
+   
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>اظهار الرسومات عند تشغيل الفيديو</value></data>
    
    
@@ -136,6 +137,7 @@
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>فك التشابك دائما عند فتح فيديو جديد.</value></data>
    <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve"><value>تحديث الصورة عند حركة المؤشر</value></data>
    <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>ربط شرائط تمرير السرعة عند مقارنة الفيديوهات</value></data>
+   
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>التبديل الي وضع التحليل</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>عدد الملفات في سجل التصفح:</value></data>
    
@@ -198,9 +200,12 @@
    <data name="mnuTools" xml:space="preserve"><value>الادوات</value></data>
    <data name="mnuOptions" xml:space="preserve"><value>الخيارات</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>التفضيلات...</value></data>
-   <data name="mnuRedo" xml:space="preserve"><value>عوده</value></data>
+   
+   
+   
    <data name="mnuScreens" xml:space="preserve"><value>عرض</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>تراجع</value></data>
+   <data name="mnuRedo" xml:space="preserve"><value>عوده</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>عدد الكادرات</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>مجموع ميلي ثانية</value></data>
    <data name="TimeCodeFormat_Microseconds" xml:space="preserve"><value>مجموع ميكروثانية</value></data>

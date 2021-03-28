@@ -80,7 +80,7 @@
    
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Избриши го цртаното</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Отстрани ја клучната слика</value></data>
-   <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Зачувај го видео</value></data>
+   <data name="CommandExportVideo_FriendlyName" xml:space="preserve"><value>Зачувај го видео</value></data>
    
    
    
@@ -167,6 +167,10 @@
    
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Оригинална големина на сегментот:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Калибрација на линијата</value></data>
+   
+   
+   
+   
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Калибрација на рамнината</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Траење на секоја клучна слика : {0} стоти дел од секунда.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Траење на секоја клучна слика : {0:0.00} секунди.</value></data>
@@ -191,6 +195,7 @@
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Зачувај го видеото со постојана анализа применета на видеото</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>Анализата на предметите ќе биде видлива на сите плеери но нема да може да се модифицира. # Дополнително прикачените клучни слики нема да бидат зачувани.</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Зачувај ги податоците од клучните слики</value></data>
+   
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Зачувај секвенца</value></data>
    
    
@@ -269,6 +274,9 @@
    <data name="Generic_Options" xml:space="preserve"><value>Опции</value></data>
    <data name="Generic_PenSizePicker" xml:space="preserve"><value>Големина:</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Зачувај Видео</value></data>
+   
+   
+   
    <data name="Generic_TrackShapePicker" xml:space="preserve"><value>Форма на линијата:</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>Слика</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Видео</value></data>
@@ -287,14 +295,8 @@
    
    
    
-   <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
-   <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG слики (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG слики (*.png)|*.png|Bitmap слики (*.bmp)|*.bmp</value></data>
-   <data name="FileFilter_ImportReference" xml:space="preserve"><value>Сите поддржани датотеки (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
-   <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
    
-   <data name="FileFilter_KVA_kva" xml:space="preserve"><value>Киновеа видео анализа (*.kva)</value></data>
-   
-   <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
+   <data name="FileFilter_All" xml:space="preserve"><value>Сите датотеки</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Клучните слики се модифицирани.\nДали сакате да се зачуваат податоците од клучните слики пред затворање?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Податотоците од клучните слики не се зачувани</value></data>
    
@@ -343,10 +345,6 @@
    <data name="mnuTwoMixed" xml:space="preserve"><value>Еден екран за снимање и еден екран за репродукција</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Два екрани за репродукција</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Експорт во табеларен приказ</value></data>
-   <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
-   <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
-   <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
-   <data name="mnuExportTEXT" xml:space="preserve"><value>Траекториите во едноставен текст</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Формат на сликата</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>Автоматско пронаоѓање</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>Сила 4:3</value></data>
@@ -376,9 +374,8 @@
    
    
    <data name="mnuOpenVideo" xml:space="preserve"><value>Отвори видео датотека</value></data>
-   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Сите датотеки</value></data>
    
-   <data name="mnuSave" xml:space="preserve"><value>Зачувај...</value></data>
+   
    <data name="mnuCalibrate" xml:space="preserve"><value>Калибрирај...</value></data>
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>Прикажи мерка</value></data>
@@ -416,6 +413,9 @@
    <data name="Toast_StartRecord" xml:space="preserve"><value>Снимањето е започнато</value></data>
    <data name="Toast_StopRecord" xml:space="preserve"><value>Снимањето е стопирано</value></data>
    <data name="Toast_ImageSaved" xml:space="preserve"><value>Зачувана слика</value></data>
+   
+   
+   
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Додади клучна слика</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Оди на претходната слика</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Боја на профилот</value></data>
@@ -458,12 +458,15 @@
    <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>Зачувај ги двете слики како композитна слика</value></data>
    <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>Зачувај ги двете видеа во композитно видео</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Прилагоди ја работната зона</value></data>
+   
+   
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Само рабови...</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Автоматско прилагодување на нивото...</value></data>
    <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Изострување...</value></data>
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Преглед...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Обратно...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Автоматско прилагодување на контрастот...</value></data>
+   
    
    
    

@@ -45,8 +45,8 @@ namespace Kinovea.ScreenManager
             SaveFileDialog dlgSave = new SaveFileDialog();
             dlgSave.Title = ScreenManagerLang.Generic_SaveImage;
             dlgSave.RestoreDirectory = true;
-            dlgSave.Filter = ScreenManagerLang.FileFilter_SaveImage;
-            dlgSave.FilterIndex = 1;
+            dlgSave.Filter = FilesystemHelper.SaveImageFilter();
+            dlgSave.FilterIndex = FilesystemHelper.GetFilterIndex(dlgSave.Filter, PreferencesManager.PlayerPreferences.ImageFormat);
             dlgSave.FileName = String.Format("{0} - {1}", Path.GetFileNameWithoutExtension(leftPlayer.FilePath), Path.GetFileNameWithoutExtension(rightPlayer.FilePath));
 
             if (dlgSave.ShowDialog() != DialogResult.OK)

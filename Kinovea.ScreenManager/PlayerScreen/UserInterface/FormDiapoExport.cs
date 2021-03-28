@@ -26,6 +26,7 @@ using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
 using Kinovea.ScreenManager.Languages;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -72,7 +73,7 @@ namespace Kinovea.ScreenManager
         }
         private void SetupUICulture()
         {
-            this.Text = "   " + ScreenManagerLang.CommandSaveMovie_FriendlyName;
+            this.Text = "   " + ScreenManagerLang.CommandExportVideo_FriendlyName;
             
             groupSaveMethod.Text = ScreenManagerLang.dlgDiapoExport_GroupDiapoType;
             radioSaveSlideshow.Text = ScreenManagerLang.dlgDiapoExport_RadioSlideshow;            
@@ -134,10 +135,10 @@ namespace Kinovea.ScreenManager
             Hide();
             
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Title = ScreenManagerLang.CommandSaveMovie_FriendlyName;
+            saveFileDialog.Title = ScreenManagerLang.CommandExportVideo_FriendlyName;
             saveFileDialog.RestoreDirectory = true;
-            saveFileDialog.Filter = ScreenManagerLang.FileFilter_SaveVideo;
-            saveFileDialog.FilterIndex = 1;
+            saveFileDialog.Filter = FilesystemHelper.SaveVideoFilter();
+            saveFileDialog.FilterIndex = FilesystemHelper.GetFilterIndex(saveFileDialog.Filter, PreferencesManager.PlayerPreferences.VideoFormat);
             
             DialogResult result = DialogResult.Cancel;
             

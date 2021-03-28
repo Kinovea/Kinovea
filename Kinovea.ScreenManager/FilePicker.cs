@@ -21,7 +21,7 @@ namespace Kinovea.ScreenManager
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = ScreenManagerLang.mnuOpenVideo;
             openFileDialog.RestoreDirectory = true;
-            openFileDialog.Filter = ScreenManagerLang.dlgOpenFile_Filter;
+            openFileDialog.Filter = ScreenManagerLang.FileFilter_All + "|*.*";
             openFileDialog.FilterIndex = 1;
             DialogResult result = openFileDialog.ShowDialog();
             if (result != DialogResult.OK || string.IsNullOrEmpty(openFileDialog.FileName) || !File.Exists(openFileDialog.FileName))
@@ -62,12 +62,7 @@ namespace Kinovea.ScreenManager
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = ScreenManagerLang.dlgLoadAnalysis_Title;
             openFileDialog.RestoreDirectory = true;
-            string filterAllAnalysis = ScreenManagerLang.FileFilter_KVA_All + "|*.kva;*.srt;*.json;*.xml";
-            string filterKVA = ScreenManagerLang.FileFilter_KVA_kva + "|*.kva";
-            string filterSRT = ScreenManagerLang.FileFilter_KVA_srt + "|*.srt";
-            string filterOpenPose = "OpenPose (*.json)" + "|*.json";
-            string totalFilter = string.Join("|", new string[] { filterAllAnalysis, filterKVA, filterSRT, filterOpenPose });
-            openFileDialog.Filter = totalFilter;
+            openFileDialog.Filter = FilesystemHelper.OpenKVAFilter(ScreenManagerLang.FileFilter_AllSupported);
             openFileDialog.FilterIndex = 1;
 
             DialogResult result = openFileDialog.ShowDialog();

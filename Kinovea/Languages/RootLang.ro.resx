@@ -127,6 +127,7 @@
    
    
    
+   
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Arată desenele când este rulat fişierul video</value></data>
    
    
@@ -134,6 +135,7 @@
    
    
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Ruleaza intotdeauna filtrul deintretesere cand este deschis un nou fisier video</value></data>
+   
    
    
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Schimbă in Modul Analiză</value></data>
@@ -198,9 +200,12 @@
    
    <data name="mnuOptions" xml:space="preserve"><value>Opţiuni</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Preferinţe...</value></data>
-   <data name="mnuRedo" xml:space="preserve"><value>Refă</value></data>
+   
+   
+   
    <data name="mnuScreens" xml:space="preserve"><value>Vizionare</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>Anulează</value></data>
+   <data name="mnuRedo" xml:space="preserve"><value>Refă</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Numărul imaginilor</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Total în milisecunde</value></data>
    

@@ -126,6 +126,7 @@
    <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve"><value>Invoerapparaat:</value></data>
    <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve"><value>Grenswaarde voor inschakelen:</value></data>
    <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve"><value>Stop opnemen na duur van (s):</value></data>
+   
    <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve"><value>Opdracht na opnemen:</value></data>
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Toon tekening als de video speelt</value></data>
    <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve"><value>Schakel het filteren van coördinaten in</value></data>
@@ -136,6 +137,7 @@
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Altijd de-interlace toepassen bij het openen van nieuwe video</value></data>
    <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve"><value>Aanpassen van afbeelding gedurende het bewegen van de cursor</value></data>
    <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Verbind de snelheid-regelaars tijdens het vergelijken van de videos</value></data>
+   
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Schakel naar Analyse-modus</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Aantal bestanden in historie:</value></data>
    <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve"><value>Instanties hebben hun eigen voorkeuren</value></data>
@@ -198,9 +200,12 @@
    <data name="mnuTools" xml:space="preserve"><value>Gereedschappen</value></data>
    <data name="mnuOptions" xml:space="preserve"><value>Opties</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Voorkeuren…</value></data>
-   <data name="mnuRedo" xml:space="preserve"><value>Opnieuw</value></data>
+   
+   
+   
    <data name="mnuScreens" xml:space="preserve"><value>Bekijk</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>Annuleer</value></data>
+   <data name="mnuRedo" xml:space="preserve"><value>Opnieuw</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Frame nummer</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Totaal millisecondes</value></data>
    <data name="TimeCodeFormat_Microseconds" xml:space="preserve"><value>Totaal microsecondes</value></data>

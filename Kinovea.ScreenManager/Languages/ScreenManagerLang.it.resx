@@ -80,7 +80,7 @@
    
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Cancella il disegno</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Rimuovi un'Immagine Chiave</value></data>
-   <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Salva il video</value></data>
+   <data name="CommandExportVideo_FriendlyName" xml:space="preserve"><value>Salva il video</value></data>
    
    
    
@@ -168,6 +168,10 @@
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Dimensione reale del segmento :</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Misura stabilita</value></data>
    
+   
+   
+   
+   
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Durata per ogni Immagine Chiave : {0} centesimi di secondo.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Durata per ogni Immagine Chiave : {0:0.00} secondi.</value></data>
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Video originale con una pausa su ogni Immagine Chiave</value></data>
@@ -191,6 +195,7 @@
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Includi definitivamente nel Video i Dati delle immagini chiave. </value></data>
    
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Salva i Dati delle immagini chiave</value></data>
+   
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Salva la Sequenza di Immagini</value></data>
    
    
@@ -270,6 +275,9 @@
    
    <data name="Generic_Save" xml:space="preserve"><value>Salva</value></data>
    
+   
+   
+   
    <data name="Generic_Image" xml:space="preserve"><value>Immagine</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Video</value></data>
    <data name="Generic_SaveImage" xml:space="preserve"><value>Salva l'Immagine </value></data>
@@ -287,14 +295,8 @@
    
    
    
-   <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
-   <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG Images (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG Images (*.png)|*.png|Bitmap Images (*.bmp)|*.bmp</value></data>
-   <data name="FileFilter_ImportReference" xml:space="preserve"><value>tutti I file supportati (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
-   <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
    
-   <data name="FileFilter_KVA_kva" xml:space="preserve"><value>Kinovea Video Analisi (*.kva)</value></data>
-   
-   <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
+   <data name="FileFilter_All" xml:space="preserve"><value>Tutti I files</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Le Immagini Chiave sono state modificate.\nSalvare le Immagini Chiave ed i loro Dati prima di chiudere ?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Immagini Chiave non salvate</value></data>
    
@@ -343,10 +345,6 @@
    <data name="mnuTwoMixed" xml:space="preserve"><value>Uno schermo di Cattura Video ed uno di Riproduzione</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Due schermi di Riproduzione</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Esporta su foglio di calcolo</value></data>
-   <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
-   <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
-   <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
-   <data name="mnuExportTEXT" xml:space="preserve"><value>Traiettorie in formato testo</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Formato immagine</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>Rilevazione automatica</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>Applica 4:3</value></data>
@@ -376,9 +374,8 @@
    
    
    <data name="mnuOpenVideo" xml:space="preserve"><value>Apri File Video</value></data>
-   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Tutti I files (*.*)|*.*</value></data>
    
-   <data name="mnuSave" xml:space="preserve"><value>Salva...</value></data>
+   
    
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>Visualizza la misura</value></data>
@@ -416,6 +413,9 @@
    <data name="Toast_StartRecord" xml:space="preserve"><value>Registrazione iniziata </value></data>
    <data name="Toast_StopRecord" xml:space="preserve"><value>Registrazione fermata </value></data>
    <data name="Toast_ImageSaved" xml:space="preserve"><value>Immagine salvata </value></data>
+   
+   
+   
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Aggiungi un'Immagine Chiave</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Vai al Fotogramma precedente</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Impostazioni Colore</value></data>
@@ -458,12 +458,15 @@
    <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>Salva entrambe le immagini in una immagine composta</value></data>
    <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>Salva entrambi i video in un video composto</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Imposta la Zona Lavoro</value></data>
+   
+   
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Solo Contorni...</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Livelli automatici...</value></data>
    <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Nitidezza...</value></data>
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Panoramica...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>A ritroso...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contrasto automatico...</value></data>
+   
    
    
    

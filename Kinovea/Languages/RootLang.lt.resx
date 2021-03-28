@@ -127,6 +127,7 @@
    
    
    
+   
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Rodyti piešinius rodant vaizdą</value></data>
    
    
@@ -134,6 +135,7 @@
    
    
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Deinterlace filtro naudojimas</value></data>
+   
    
    
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Pereitį į analizavimo rėžimą</value></data>
@@ -198,9 +200,12 @@
    
    <data name="mnuOptions" xml:space="preserve"><value>Nustatymai</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Nuostatos...</value></data>
-   <data name="mnuRedo" xml:space="preserve"><value>Veiksmas pirmyn</value></data>
+   
+   
+   
    <data name="mnuScreens" xml:space="preserve"><value>Peržiūra</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>Veiksmas atgal</value></data>
+   <data name="mnuRedo" xml:space="preserve"><value>Veiksmas pirmyn</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Kadro numeriai</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Viso milisekundžių</value></data>
    

@@ -80,12 +80,12 @@
    <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve"><value>Modifier le dessin</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Effacer le dessin</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Supprimer une image clé</value></data>
-   <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Enregistrer la vidéo</value></data>
+   <data name="CommandExportVideo_FriendlyName" xml:space="preserve"><value>Exporter la vidéo</value></data>
    <data name="DataAnalysis" xml:space="preserve"><value>Analyse de données</value></data>
    <data name="DataAnalysis_ScatterDiagram" xml:space="preserve"><value>Nuage de points</value></data>
    <data name="DataAnalysis_LinearKinematics" xml:space="preserve"><value>Cinématique linéaire</value></data>
    <data name="DataAnalysis_AngularKinematics" xml:space="preserve"><value>Cinématique angulaire</value></data>
-   <data name="DataAnalysis_AngleAngleDiagrams" xml:space="preserve"><value>Diagrammes angle-angle</value></data>
+   <data name="DataAnalysis_AngleAngleDiagrams" xml:space="preserve"><value>Diagramme angle-angle</value></data>
    <data name="DataAnalysis_PagePlot" xml:space="preserve"><value>Graphe</value></data>
    <data name="DataAnalysis_Labels" xml:space="preserve"><value>Labels</value></data>
    <data name="DataAnalysis_Title" xml:space="preserve"><value>Titre :</value></data>
@@ -145,8 +145,8 @@
    <data name="dlgConfigureTrajectory_ExtraData_HorizontalPosition" xml:space="preserve"><value>Position horizontale</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve"><value>Distance totale</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_DistanceToOrigin" xml:space="preserve"><value>Distance à l’origine</value></data>
-   <data name="dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement" xml:space="preserve"><value>Déplacement horizontal total</value></data>
-   <data name="dlgConfigureTrajectory_ExtraData_TotalVerticalDisplacement" xml:space="preserve"><value>Déplacement vertical total</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement" xml:space="preserve"><value>Déplacement horizontal relatif</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_TotalVerticalDisplacement" xml:space="preserve"><value>Déplacement vertical relatif</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>Vitesse</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_VerticalVelocity" xml:space="preserve"><value>Vitesse verticale</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_HorizontalVelocity" xml:space="preserve"><value>Vitesse horizontale</value></data>
@@ -167,6 +167,10 @@
    <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve"><value>Fenêtre de recherche :</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Taille réelle du segment :</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Calibration de ligne</value></data>
+   <data name="dlgCalibrateLine_CoordinateSystemAlignment" xml:space="preserve"><value>Alignement du système de coordonnées :</value></data>
+   <data name="dlgCalibrateLine_AxisHorizontal" xml:space="preserve"><value>La ligne définit l’axe horizontal</value></data>
+   <data name="dlgCalibrateLine_AxisVertical" xml:space="preserve"><value>La ligne définit l’axe vertical</value></data>
+   <data name="dlgCalibrateLine_AxesImage" xml:space="preserve"><value>Aligné avec les axes de l’image</value></data>
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Calibration du plan</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Durée de chaque Image Clé : {0} centièmes de secondes.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Durée de chaque image Clé : {0:0.00} secondes.</value></data>
@@ -191,6 +195,7 @@
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Enregistrer la vidéo avec les annotations incrustées définitivement</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>Les annotations seront visible dans tous les lecteurs vidéo, mais ne seront pas modifiables.#Les commentaires attachés aux images clés ne seront pas enregistrés.</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Enregistrer les annotations</value></data>
+   
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Enregistrer la séquence</value></data>
    <data name="dlgCameraCalibration_Title" xml:space="preserve"><value>Calibration de caméra</value></data>
    <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve"><value>Coefficients de distorsion</value></data>
@@ -269,6 +274,9 @@
    <data name="Generic_Options" xml:space="preserve"><value>Options</value></data>
    <data name="Generic_PenSizePicker" xml:space="preserve"><value>Taille :</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Enregistrer</value></data>
+   <data name="Generic_SaveKVA" xml:space="preserve"><value>Enregistrer les annotations</value></data>
+   <data name="Generic_SaveKVAAs" xml:space="preserve"><value>Enregistrer les annotations sous…</value></data>
+   <data name="Generic_ExportVideo" xml:space="preserve"><value>Exporter la vidéo…</value></data>
    <data name="Generic_TrackShapePicker" xml:space="preserve"><value>Forme de ligne :</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>Image</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Vidéo</value></data>
@@ -287,16 +295,10 @@
    <data name="FileProperty_Duration" xml:space="preserve"><value>Durée</value></data>
    <data name="FileProperty_CreationTime" xml:space="preserve"><value>Date de création</value></data>
    <data name="FileProperty_HasKva" xml:space="preserve"><value>Fichier Kva</value></data>
-   <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
-   <data name="FileFilter_SaveImage" xml:space="preserve"><value>Images JPEG (*.jpg,*.jpeg)|*.jpg;*.jpeg|Images PNG (*.png)|*.png|Images Bitmap (*.bmp)|*.bmp</value></data>
-   <data name="FileFilter_ImportReference" xml:space="preserve"><value>Tous les fichiers supportés (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
-   <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Texte (*.txt)|*.txt;</value></data>
-   <data name="FileFilter_KVA_All" xml:space="preserve"><value>Tous les formats supportés</value></data>
-   <data name="FileFilter_KVA_kva" xml:space="preserve"><value>Analyse Video Kinovea (*.kva)</value></data>
-   <data name="FileFilter_KVA_srt" xml:space="preserve"><value>Sous-titres (*.srt)</value></data>
-   <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
-   <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Les images clés ont été modifiées.\nVoulez-vous sauvegarder les données des images clés avant de fermer ?</value></data>
-   <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Images clés non sauvées</value></data>
+   <data name="FileFilter_AllSupported" xml:space="preserve"><value>Tous les formats supportés</value></data>
+   <data name="FileFilter_All" xml:space="preserve"><value>Tous les fichiers</value></data>
+   <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Les annotations ont été modifiées.\nVoulez-vous les sauvegarder ?</value></data>
+   <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Annotations non sauvées</value></data>
    <data name="lblDelay_Text" xml:space="preserve"><value>Délai (s) :</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>Contrôles communs :</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Durée</value></data>
@@ -343,10 +345,6 @@
    <data name="mnuTwoMixed" xml:space="preserve"><value>Un écran de capture et un écran de lecture</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Deux écrans de lecture</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Export tableur</value></data>
-   <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
-   <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
-   <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
-   <data name="mnuExportTEXT" xml:space="preserve"><value>Trajectoires vers texte simple</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Format de l'image</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>Détection automatique</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>Forcer 4:3</value></data>
@@ -358,7 +356,7 @@
    <data name="mnuRotation270" xml:space="preserve"><value>90° anti-horaire</value></data>
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Aller à l'image clé</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Masquer</value></data>
-   <data name="mnuHome" xml:space="preserve"><value>Explorateur de fichiers</value></data>
+   <data name="mnuHome" xml:space="preserve"><value>Panel d’exploration</value></data>
    <data name="mnuImportImage" xml:space="preserve"><value>Importer une image…</value></data>
    <data name="mnuSignedAngle" xml:space="preserve"><value>Angle signé</value></data>
    <data name="mnuCounterClockwise" xml:space="preserve"><value>Anti-horaire</value></data>
@@ -376,15 +374,14 @@
    <data name="mnuMarkTimeAsOrigin" xml:space="preserve"><value>Marquer le temps courant comme origine</value></data>
    <data name="mnuMarkTimeAsOriginClock" xml:space="preserve"><value>Marquer le temps courant comme origine pour cette horloge</value></data>
    <data name="mnuOpenVideo" xml:space="preserve"><value>Ouvrir une vidéo</value></data>
-   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Tous les fichiers (*.*)|*.*</value></data>
    <data name="mnuOpenReplayWatcher" xml:space="preserve"><value>Ouvrir un observateur de dossier de relecture…</value></data>
-   <data name="mnuSave" xml:space="preserve"><value>Enregistrer...</value></data>
+   <data name="mnuOpenAsReplayWatcher" xml:space="preserve"><value>Ouvrir en tant qu’observateur de dossier de relecture…</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>Calibrer…</value></data>
    <data name="mnuTimebase" xml:space="preserve"><value>Configurer le timing de la vidéo…</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Afficher la mesure</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Terminer l'édition de la trajectoire</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>Référence d'observation</value></data>
-   <data name="mnuSwapScreens" xml:space="preserve"><value>Inverser les écrans</value></data>
+   <data name="mnuSwapScreens" xml:space="preserve"><value>Échanger les écrans</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>Supprimer</value></data>
    <data name="mnuThumbnailForget" xml:space="preserve"><value>Oublier les paramètres personnalisés</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>Renommer</value></data>
@@ -416,6 +413,9 @@
    <data name="Toast_StartRecord" xml:space="preserve"><value>Enregistrement démarré</value></data>
    <data name="Toast_StopRecord" xml:space="preserve"><value>Enregistrement arrêté</value></data>
    <data name="Toast_ImageSaved" xml:space="preserve"><value>Image enregistrée</value></data>
+   <data name="Toast_TriggerArmed" xml:space="preserve"><value>Déclencheur de capture armé</value></data>
+   <data name="Toast_TriggerDisarmed" xml:space="preserve"><value>Déclencheur de capture désarmé</value></data>
+   <data name="Toast_AudioLost" xml:space="preserve"><value>Perte du périphérique audio</value></data>
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Ajouter une image clé</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Aller à l'image précédente</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Profil couleur</value></data>
@@ -458,6 +458,8 @@
    <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>Enregistrer les deux images dans une image composée</value></data>
    <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>Enregistrer les deux vidéos dans une vidéo composée</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Spécifier la Zone de Travail</value></data>
+   <data name="ToolTip_DisarmTrigger" xml:space="preserve"><value>Désarmer le déclencheur de capture. État actuel : armé.</value></data>
+   <data name="ToolTip_ArmTrigger" xml:space="preserve"><value>Armer le déclencheur de capture. État actuel : désarmé.</value></data>
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Contours seulement...</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Niveaux automatiques...</value></data>
    <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Renforcement des contours...</value></data>
@@ -469,8 +471,9 @@
    <data name="FormCrashRecovery_File" xml:space="preserve"><value>Fichier</value></data>
    <data name="FormCrashRecovery_Date" xml:space="preserve"><value>Date</value></data>
    <data name="FormCrashRecovery_Info" xml:space="preserve"><value>Les projets suivants n'ont pas été enregistré correctement mais peuvent être récupérés :</value></data>
-   
-   
+   <data name="Infobar_Player_Observing" xml:space="preserve"><value>Dossier en cours d’observation : {0}</value></data>
+   <data name="Infobar_Player_StopWatcher" xml:space="preserve"><value>Arréter d’observer le dossier : {0}</value></data>
+   <data name="Infobar_Player_StartWatcher" xml:space="preserve"><value>Démarrer l’observation du dossier : {0}</value></data>
    
    
    

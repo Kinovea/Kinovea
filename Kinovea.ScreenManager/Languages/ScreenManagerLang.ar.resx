@@ -80,7 +80,7 @@
    
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>حذف الرسم</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>إزالة صورة الرئيسية</value></data>
-   <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>حفظ الفيديو</value></data>
+   <data name="CommandExportVideo_FriendlyName" xml:space="preserve"><value>حفظ الفيديو</value></data>
    <data name="DataAnalysis" xml:space="preserve"><value>تحليل البيانات</value></data>
    <data name="DataAnalysis_ScatterDiagram" xml:space="preserve"><value>نقاط منتشرة</value></data>
    
@@ -167,6 +167,10 @@
    <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve"><value>اطار البحث</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>الحجم الحقيقي للمقطع:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>معايرة الخط</value></data>
+   
+   
+   
+   
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>خطة المعايرة</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>المدة في كل صورة رئيسية: {0} مائة من الثواني.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>مدة كل صورة رئيسية: {0: 0.00} ثواني.</value></data>
@@ -191,6 +195,7 @@
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>حفظ الفيديو مع التحليل المطبق بشكل دائم على الفيديو</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>ادوات التحليل سوف تكون ظاهرة في جميع العروض ولكن غير قابلة للتعديل. التعليقات الاضافية المرفقة بالصور الرئيسية # لن يتم حفظها.</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>حفظ بيانات الصور الرئيسية</value></data>
+   
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>حفظ التسلسل</value></data>
    <data name="dlgCameraCalibration_Title" xml:space="preserve"><value>معايرة الكاميرا</value></data>
    <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve"><value>معاملات الاعوجاج</value></data>
@@ -269,6 +274,9 @@
    <data name="Generic_Options" xml:space="preserve"><value>خيارات</value></data>
    <data name="Generic_PenSizePicker" xml:space="preserve"><value>حجم:</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>حفظ</value></data>
+   
+   
+   
    <data name="Generic_TrackShapePicker" xml:space="preserve"><value>شكل الخط:</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>صورة</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>فيديو</value></data>
@@ -287,14 +295,8 @@
    <data name="FileProperty_Duration" xml:space="preserve"><value>المدة الزمنية</value></data>
    <data name="FileProperty_CreationTime" xml:space="preserve"><value>زمن الانشاء</value></data>
    <data name="FileProperty_HasKva" xml:space="preserve"><value>ملف Kva</value></data>
-   <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
-   <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG صور (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG صور (*.png)|*.png|Bitmap صور (*.bmp)|*.bmp</value></data>
-   <data name="FileFilter_ImportReference" xml:space="preserve"><value>الملفات المدعومة (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
-   <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
    
-   <data name="FileFilter_KVA_kva" xml:space="preserve"><value>Kinovea Video Analysis (*.kva)</value></data>
-   
-   <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi;</value></data>
+   <data name="FileFilter_All" xml:space="preserve"><value>جميع الملفات</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>تم تعديل الصور الرئيسية. \n هل تريد حفظ بيانات الصور الرئيسية قبل الاغلاق؟</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>لم يتم حفظ بيانات الصور الرئيسية</value></data>
    
@@ -343,10 +345,6 @@
    <data name="mnuTwoMixed" xml:space="preserve"><value>شاشة للالتقاط وشاشة للعرض</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>شاشتين للعرض</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>تصدير الي ورقة جدولية</value></data>
-   <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
-   <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
-   <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
-   <data name="mnuExportTEXT" xml:space="preserve"><value>مسارات إلى نص بسيط</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>تنسيق الصورة</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>اكتشاف تلقائي</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>مصدر 4: 3</value></data>
@@ -376,9 +374,8 @@
    
    
    <data name="mnuOpenVideo" xml:space="preserve"><value>فتح ملف الفيديو</value></data>
-   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>جميع الملفات (*. *)| *. *</value></data>
    
-   <data name="mnuSave" xml:space="preserve"><value>حفظ...</value></data>
+   
    <data name="mnuCalibrate" xml:space="preserve"><value>معايرة...</value></data>
    <data name="mnuTimebase" xml:space="preserve"><value>اعدادات توقيت الفيديو ...</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>عرض القياس</value></data>
@@ -416,6 +413,9 @@
    <data name="Toast_StartRecord" xml:space="preserve"><value>بدأ تسجيل</value></data>
    <data name="Toast_StopRecord" xml:space="preserve"><value>توقف تسجيل</value></data>
    <data name="Toast_ImageSaved" xml:space="preserve"><value>الصورة المحفوظة</value></data>
+   
+   
+   
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>إضافة صورة رئيسية</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>الذهاب إلى الكادر السابق</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>بروفايل اللون...</value></data>
@@ -458,6 +458,8 @@
    <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>حفظ كل الصور في صورة مركبة</value></data>
    <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>حفظ كلا الفيديوهين في فيديو مركب</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>اعداد منطقة العمل</value></data>
+   
+   
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>حواف فقط ...</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>مستويات تلقائية...</value></data>
    <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>حدة الوضوح...</value></data>
@@ -469,6 +471,7 @@
    <data name="FormCrashRecovery_File" xml:space="preserve"><value>ملف</value></data>
    <data name="FormCrashRecovery_Date" xml:space="preserve"><value>تاريخ</value></data>
    <data name="FormCrashRecovery_Info" xml:space="preserve"><value>لم يتم حفظ المشاريع التالية بشكل صحيح ولكن يمكن استردادها:</value></data>
+   
    
    
    

@@ -80,7 +80,7 @@
    
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Usuń rysunek</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Usuń obraz kluczowy</value></data>
-   <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Zapisz wideo</value></data>
+   <data name="CommandExportVideo_FriendlyName" xml:space="preserve"><value>Zapisz wideo</value></data>
    
    
    
@@ -168,6 +168,10 @@
    
    
    
+   
+   
+   
+   
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Czas trwania każdego diapozytywu : {0} setnych sekundy.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Czas trwania każdego diapozytywu : {0:0.00} sekund.</value></data>
    
@@ -191,6 +195,7 @@
    
    
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Zapisz dane kluczowych obrazów</value></data>
+   
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Zapisz sekwencję</value></data>
    
    
@@ -272,6 +277,9 @@
    
    
    
+   
+   
+   
    <data name="Generic_SaveImage" xml:space="preserve"><value>Zapisz obraz</value></data>
    
    
@@ -287,14 +295,8 @@
    
    
    
-   <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
-   <data name="FileFilter_SaveImage" xml:space="preserve"><value>Obrazy JPEG (*.jpg,*.jpeg)|*.jpg;*.jpeg|Obrazy PNG (*.png)|*.png|Bitmapy (*.bmp)|*.bmp</value></data>
    
-   
-   
-   <data name="FileFilter_KVA_kva" xml:space="preserve"><value>Kinovea Video Analysis (*.kva)</value></data>
-   
-   <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
+   <data name="FileFilter_All" xml:space="preserve"><value>Wszystkie pliki</value></data>
    
    
    
@@ -354,10 +356,6 @@
    
    
    
-   
-   
-   
-   
    <data name="mnuHome" xml:space="preserve"><value>Przeglądarka plików</value></data>
    
    
@@ -376,9 +374,8 @@
    
    
    <data name="mnuOpenVideo" xml:space="preserve"><value>Otwórz plik wideo</value></data>
-   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Wszystkie pliki (*.*)|*.*</value></data>
    
-   <data name="mnuSave" xml:space="preserve"><value>Zapisz dane wideo albo kluczowych obrazów</value></data>
+   
    
    
    
@@ -411,6 +408,9 @@
    
    
    <data name="statusEmptyScreen" xml:space="preserve"><value>Pusty</value></data>
+   
+   
+   
    
    
    
@@ -458,12 +458,15 @@
    
    
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Ustaw Obszar Roboczy</value></data>
+   
+   
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Tylko krawędzie...</value></data>
    
    <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Wyostrz...</value></data>
    
    
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Kontrast...</value></data>
+   
    
    
    

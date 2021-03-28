@@ -127,6 +127,7 @@
    
    
    
+   
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>نمایش طرح‌ها در هنگام پخش ویدئو</value></data>
    <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve"><value>فیلتر مختصات را فعال کنید</value></data>
    
@@ -136,6 +137,7 @@
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>هنگام باز کردن ویدئوهای جدید، همیشه در حالت تبدیل ویدئوهای درهم آمیخته است.</value></data>
    <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve"><value>بروزرسانی تصویر طی زمان حرکت مکان‌نما</value></data>
    <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>پیوند سرعت اسلایدرها در هنگام تطبیق ویدئوها</value></data>
+   
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>تعویض به حالت تجزیه و تحلیل</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>تعداد فایل‌ها در پیشینه:</value></data>
    
@@ -198,9 +200,12 @@
    <data name="mnuTools" xml:space="preserve"><value>ابزارها</value></data>
    <data name="mnuOptions" xml:space="preserve"><value>گزینه‌ها</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>ترجیحات ...</value></data>
-   <data name="mnuRedo" xml:space="preserve"><value>رویداد بعدی</value></data>
+   
+   
+   
    <data name="mnuScreens" xml:space="preserve"><value>نمایش</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>رویداد قبلی</value></data>
+   <data name="mnuRedo" xml:space="preserve"><value>رویداد بعدی</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>تعداد فریم‌ها </value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>مجموع میلی ثانیه‌ها</value></data>
    <data name="TimeCodeFormat_Microseconds" xml:space="preserve"><value>مجموع میکرو ثانیه‌ها</value></data>

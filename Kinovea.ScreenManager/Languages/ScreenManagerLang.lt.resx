@@ -80,7 +80,7 @@
    
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Trinti piešinius</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Panaikinti paveikslelio žymą</value></data>
-   <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Išsaugoti vaizdą</value></data>
+   <data name="CommandExportVideo_FriendlyName" xml:space="preserve"><value>Išsaugoti vaizdą</value></data>
    
    
    
@@ -168,6 +168,10 @@
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Segmento dydis :</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Nustatyti dydį</value></data>
    
+   
+   
+   
+   
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Trukmė pažymėtų paveikslėlių : {0} šimtųjų sekundžių.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Trukmė pažymėtų paveikslėlių : {0:0.00} sekundžių.</value></data>
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Originalus vaizda su pristabdymu kiekviename pažymėtame paveikslėlyje</value></data>
@@ -191,6 +195,7 @@
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Pastoviai rodyti paveikslėlių žymių duomenis vaizde.</value></data>
    
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Išsaugoti pažymėtų vaizdų duomenis</value></data>
+   
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Išsaugoti seką</value></data>
    
    
@@ -270,6 +275,9 @@
    
    <data name="Generic_Save" xml:space="preserve"><value>Išsaugoti</value></data>
    
+   
+   
+   
    <data name="Generic_Image" xml:space="preserve"><value>Paveikslėlis</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Vaizdas</value></data>
    <data name="Generic_SaveImage" xml:space="preserve"><value>Išsaugoti paveikslėlį</value></data>
@@ -287,14 +295,8 @@
    
    
    
-   <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
-   <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG Images (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG Images (*.png)|*.png|Bitmap Images (*.bmp)|*.bmp</value></data>
-   <data name="FileFilter_ImportReference" xml:space="preserve"><value>Visi palaikomi failai (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
-   <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
    
-   <data name="FileFilter_KVA_kva" xml:space="preserve"><value>Kinovea vaizdo analizė (*.kva)</value></data>
-   
-   <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
+   <data name="FileFilter_All" xml:space="preserve"><value>Visi dokumentai</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Paveikslėlių žymės yra pakeistos.\nAr norite išsaugoti žymes prieš uždarant programą?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Paveiklėlių žymės neišsaugotos</value></data>
    
@@ -343,10 +345,6 @@
    <data name="mnuTwoMixed" xml:space="preserve"><value>Irašymo ir peržiūros ekranas</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Du peržūros ekranai</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Eksportuoti į skaičiuoklę</value></data>
-   <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
-   <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
-   <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
-   <data name="mnuExportTEXT" xml:space="preserve"><value>Versti trajektorijas į paprastą tekstą</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Paveikslėlio formatas</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>Automatinis radimas</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>Formatas 4:3</value></data>
@@ -376,9 +374,8 @@
    
    
    <data name="mnuOpenVideo" xml:space="preserve"><value>Atidaryti vaizdo dokumentą</value></data>
-   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Visi dokumentai (*.*)|*.*</value></data>
    
-   <data name="mnuSave" xml:space="preserve"><value>Išsaugoti...</value></data>
+   
    
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>Rodyti dydį</value></data>
@@ -416,6 +413,9 @@
    <data name="Toast_StartRecord" xml:space="preserve"><value>Irašymas predėtas</value></data>
    <data name="Toast_StopRecord" xml:space="preserve"><value>Irašymas sustapdytas</value></data>
    <data name="Toast_ImageSaved" xml:space="preserve"><value>Paveikslėlis išsaugotas</value></data>
+   
+   
+   
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Pridėti pažymėtą paveikslėlį</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Pereiti į ankstesnį kadrą</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Spalvų profilis</value></data>
@@ -458,12 +458,15 @@
    <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>Išsaugoti abu paveikslėlius kaip vieną</value></data>
    <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>Išsaugoti abu vaizdus kaip vieną</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Nustatyti darbine dalį</value></data>
+   
+   
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Tik kraštai...</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Automatinis lygis...</value></data>
    <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Ryškumas...</value></data>
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Apžvalga...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Reversas...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Automatinis kontrastas...</value></data>
+   
    
    
    

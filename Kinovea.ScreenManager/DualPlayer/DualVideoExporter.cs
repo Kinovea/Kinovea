@@ -81,10 +81,10 @@ namespace Kinovea.ScreenManager
         private string GetFilename(PlayerScreen leftPlayer, PlayerScreen rightPlayer)
         {
             SaveFileDialog dlgSave = new SaveFileDialog();
-            dlgSave.Title = ScreenManagerLang.CommandSaveMovie_FriendlyName;
+            dlgSave.Title = ScreenManagerLang.CommandExportVideo_FriendlyName;
             dlgSave.RestoreDirectory = true;
-            dlgSave.Filter = ScreenManagerLang.FileFilter_SaveVideo;
-            dlgSave.FilterIndex = 1;
+            dlgSave.Filter = FilesystemHelper.SaveVideoFilter();
+            dlgSave.FilterIndex = FilesystemHelper.GetFilterIndex(dlgSave.Filter, PreferencesManager.PlayerPreferences.VideoFormat);
             dlgSave.FileName = String.Format("{0} - {1}", Path.GetFileNameWithoutExtension(leftPlayer.FilePath), Path.GetFileNameWithoutExtension(rightPlayer.FilePath));
 
             if (dlgSave.ShowDialog() != DialogResult.OK)

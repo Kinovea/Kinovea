@@ -113,8 +113,8 @@ namespace Kinovea.ScreenManager
             // Go to this video directory and suggest sidecar filename.
             saveFileDialog.InitialDirectory = Path.GetDirectoryName(videoFile);
             saveFileDialog.FileName = Path.GetFileNameWithoutExtension(videoFile);
+            saveFileDialog.Filter = FilesystemHelper.SaveKVAFilter();
             saveFileDialog.FilterIndex = 1;
-            saveFileDialog.Filter = ScreenManagerLang.FileFilter_KVA_kva + "|*.kva";
 
             if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))
                 return;

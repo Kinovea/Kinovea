@@ -136,7 +136,7 @@ namespace Kinovea.Root
             tabGeneral.Text = RootLang.dlgPreferences_tabGeneral;
             chkDetectImageSequences.Text = RootLang.dlgPreferences_Player_ImportImageSequences;
             chkLockSpeeds.Text = RootLang.dlgPreferences_Player_SyncLockSpeeds;
-            chkSyncByMotion.Text = "Use motion synchronization mode"; // RootLang.dlgPreferences_Player_SyncLockSpeeds;
+            chkSyncByMotion.Text = "Use motion synchronization mode";
             chkInteractiveTracker.Text = RootLang.dlgPreferences_Player_InteractiveFrameTracker;
 
             // Combo Image Aspect Ratios (MUST be filled in the order of the enum)
@@ -153,7 +153,7 @@ namespace Kinovea.Root
             chkInteractiveTracker.Checked = interactiveFrameTracker;
             SelectCurrentImageFormat();
             chkDeinterlace.Checked = deinterlaceByDefault;
-            lblPlaybackKVA.Text = "Default annotations file:";
+            lblPlaybackKVA.Text = RootLang.dlgPreferences_Player_DefaultKVA;
             tbPlaybackKVA.Text = playbackKVA;
         }
 
@@ -348,7 +348,8 @@ namespace Kinovea.Root
 
             dialog.Title = ScreenManagerLang.dlgLoadAnalysis_Title;
             dialog.RestoreDirectory = true;
-            dialog.Filter = ScreenManagerLang.FileFilter_KVA_kva + "|*.kva";
+            dialog.Filter = FilesystemHelper.OpenKVAFilter(ScreenManagerLang.FileFilter_AllSupported);
+            dialog.FilterIndex = 1;
 
             if (dialog.ShowDialog() == DialogResult.OK)
                 tbPlaybackKVA.Text = dialog.FileName;

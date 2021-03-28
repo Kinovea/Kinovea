@@ -80,7 +80,7 @@
    <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve"><value>Pas tekening aan</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Verwijder tekening</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Verwijder een Kernbeeld</value></data>
-   <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Bewaar video</value></data>
+   <data name="CommandExportVideo_FriendlyName" xml:space="preserve"><value>Bewaar video</value></data>
    <data name="DataAnalysis" xml:space="preserve"><value>Gegevens analyse</value></data>
    <data name="DataAnalysis_ScatterDiagram" xml:space="preserve"><value>Spreidings diagram</value></data>
    <data name="DataAnalysis_LinearKinematics" xml:space="preserve"><value>Lineaire kinematica</value></data>
@@ -167,6 +167,10 @@
    <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve"><value>Zoekscherm:</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Werkelijke afmetingen van het segment:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Lijn Calibratie</value></data>
+   
+   
+   
+   
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Vlak Calibratie</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Duur van elke Kernbeeld :{0} hondersten van seconden.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Duur van elk Kernbeeld :{0:0.00} seconden.</value></data>
@@ -191,6 +195,7 @@
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Markeer permanent de Kernbeeld gegevens op de video.</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>De onderdelen van de analyse zijn zichtbaar in alle afspelers, maar niet meer bewerkbaar.# Extra commentaar, verbonden aan de Kernbeelden, wordt niet opgeslagen.</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Bewaar Kernbeeldgegegevens.</value></data>
+   
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Bewaar beeldmateriaal</value></data>
    <data name="dlgCameraCalibration_Title" xml:space="preserve"><value>Camera calibratie</value></data>
    <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve"><value>Distortie coëfficient</value></data>
@@ -269,6 +274,9 @@
    <data name="Generic_Options" xml:space="preserve"><value>Opties</value></data>
    <data name="Generic_PenSizePicker" xml:space="preserve"><value>Afmeting:</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Bewaar</value></data>
+   
+   
+   
    <data name="Generic_TrackShapePicker" xml:space="preserve"><value>Lijnvorm:</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>Beeld</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Video</value></data>
@@ -287,14 +295,8 @@
    <data name="FileProperty_Duration" xml:space="preserve"><value>Lengte</value></data>
    <data name="FileProperty_CreationTime" xml:space="preserve"><value>Datum gemaakt</value></data>
    <data name="FileProperty_HasKva" xml:space="preserve"><value>Kva bestand</value></data>
-   <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
-   <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG afbeeldingen (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG afbeeldingen (*.png)|*.png|Bitmap afbeeldingen (*.bmp)|*.bmp</value></data>
-   <data name="FileFilter_ImportReference" xml:space="preserve"><value>Alle ondersteunde bestandtypes (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
-   <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
-   <data name="FileFilter_KVA_All" xml:space="preserve"><value>Alle ondersteunde bestandtypes</value></data>
-   <data name="FileFilter_KVA_kva" xml:space="preserve"><value>Kinovea Video Analyse (*.kva)</value></data>
-   <data name="FileFilter_KVA_srt" xml:space="preserve"><value>Ondertitels (*.srt)</value></data>
-   <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi;</value></data>
+   <data name="FileFilter_AllSupported" xml:space="preserve"><value>Alle ondersteunde bestandtypes</value></data>
+   <data name="FileFilter_All" xml:space="preserve"><value>Alle bestanden</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Kernbeelden zijn veranderd. \nWilt u de veranderde kernbeelden opslaan voor afsluiten ?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Kernbeelden niet opgeslagen</value></data>
    <data name="lblDelay_Text" xml:space="preserve"><value>Vertraging (s):</value></data>
@@ -343,10 +345,6 @@
    <data name="mnuTwoMixed" xml:space="preserve"><value>Eén opnamescherm en één afspeelscherm</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Twee afspeel schermen</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Export naar Spreadsheet</value></data>
-   <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
-   <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
-   <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
-   <data name="mnuExportTEXT" xml:space="preserve"><value>Trajectpad naar simpele tekst</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Afbeeldingstype</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>Automatische detectie</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>Forceer 4:3</value></data>
@@ -376,9 +374,8 @@
    <data name="mnuMarkTimeAsOrigin" xml:space="preserve"><value>Markeer huidige tijd als oorsprong</value></data>
    
    <data name="mnuOpenVideo" xml:space="preserve"><value>Open een video bestand</value></data>
-   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Alle bestanden (*.*)|*.*</value></data>
    <data name="mnuOpenReplayWatcher" xml:space="preserve"><value>Open de weergave van de herhalingenmap..</value></data>
-   <data name="mnuSave" xml:space="preserve"><value>Bewaar video of kernbeeldgegevens…</value></data>
+   
    <data name="mnuCalibrate" xml:space="preserve"><value>Calibreer…</value></data>
    <data name="mnuTimebase" xml:space="preserve"><value>Configureer de videotiming…</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Toon afmeting</value></data>
@@ -416,6 +413,9 @@
    <data name="Toast_StartRecord" xml:space="preserve"><value>Opname gestart</value></data>
    <data name="Toast_StopRecord" xml:space="preserve"><value>Opname gestopt</value></data>
    <data name="Toast_ImageSaved" xml:space="preserve"><value>Beeld opgeslagen</value></data>
+   
+   
+   
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Voeg een kernbeeld toe</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Ga naar vorige frame</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Kleurprofiel</value></data>
@@ -458,6 +458,8 @@
    <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>Bewaar beide beelden in een samengestelde afbeelding</value></data>
    <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>Bewaar beide videos in een samengestelde video</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Definieer werkgebied</value></data>
+   
+   
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Randen alleen…</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Automatische niveaubepaling</value></data>
    <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Verscherp…</value></data>
@@ -469,6 +471,7 @@
    <data name="FormCrashRecovery_File" xml:space="preserve"><value>Bestand</value></data>
    <data name="FormCrashRecovery_Date" xml:space="preserve"><value>Datum</value></data>
    <data name="FormCrashRecovery_Info" xml:space="preserve"><value>De volgende projecten werden niet correct opgeslagen, maar kunnen hersteld worden:</value></data>
+   
    
    
    

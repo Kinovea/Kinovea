@@ -193,7 +193,7 @@ namespace Kinovea.ScreenManager
             // load file to working copy of the profile
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = ScreenManagerLang.dlgColorProfile_ToolTip_LoadProfile;
-            openFileDialog.Filter = ScreenManagerLang.FileFilter_XML;
+            openFileDialog.Filter = FilesystemHelper.OpenXMLFilter();
             openFileDialog.FilterIndex = 1;
             openFileDialog.InitialDirectory = Software.ColorProfileDirectory;
 
@@ -210,10 +210,9 @@ namespace Kinovea.ScreenManager
         private void BtnSaveProfileClick(object sender, EventArgs e)
         {
             // Save current working copy to file
-
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = ScreenManagerLang.dlgColorProfile_ToolTip_SaveProfile;
-            saveFileDialog.Filter = ScreenManagerLang.FileFilter_XML;
+            saveFileDialog.Filter = FilesystemHelper.SaveXMLFilter();
             saveFileDialog.FilterIndex = 1;
             saveFileDialog.InitialDirectory = Software.ColorProfileDirectory;
 

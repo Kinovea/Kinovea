@@ -80,7 +80,7 @@
    
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>그림 삭제</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>키 이미지' 삭제</value></data>
-   <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>비디오 저장</value></data>
+   <data name="CommandExportVideo_FriendlyName" xml:space="preserve"><value>비디오 저장</value></data>
    
    
    
@@ -168,6 +168,10 @@
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>분절의 실제 크기:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>자를 측정함</value></data>
    
+   
+   
+   
+   
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>키 이미지'에서의 시간간격: {0} hundredth of seconds.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>매 '키 이미지'의 시간간격: {0:0.00} seconds.</value></data>
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>각 '키 이미지'에서 멈추는 원래 비디오</value></data>
@@ -191,6 +195,7 @@
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>비디오를 비디오에 영구적 분석을 적용하여 저장</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>분석개체들은 모든 재생기에서 보이지만 수정은 안됨.#'키 이미지'에 첨부된 주석은 저장되지 않음.</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>키 이미지'자료 저장</value></data>
+   
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>연속 이미지를 저장</value></data>
    
    
@@ -269,6 +274,9 @@
    <data name="Generic_Options" xml:space="preserve"><value>선택사항</value></data>
    <data name="Generic_PenSizePicker" xml:space="preserve"><value>크기:</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>저장</value></data>
+   
+   
+   
    <data name="Generic_TrackShapePicker" xml:space="preserve"><value>선 모양:</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>이미지</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>비디오</value></data>
@@ -287,14 +295,8 @@
    
    
    
-   <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
-   <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG Images (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG Images (*.png)|*.png|Bitmap Images (*.bmp)|*.bmp</value></data>
-   <data name="FileFilter_ImportReference" xml:space="preserve"><value>지원되는 동영상 파일들 (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
-   <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
    
-   <data name="FileFilter_KVA_kva" xml:space="preserve"><value>Kinovea 비디오 분석 (*.kva)</value></data>
-   
-   <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
+   <data name="FileFilter_All" xml:space="preserve"><value>모든 파일들</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>키 이미지'가 수정되었음.\n닫기 전에 키 이지미 자료를 저장할까요?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>키 이미지' 자료는 저장되지 않았음</value></data>
    
@@ -343,10 +345,6 @@
    <data name="mnuTwoMixed" xml:space="preserve"><value>캡처 화면 하나/재생 화면 하나</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>두 개의 재생 화면</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>표 계산 프로그램으로 내보내기</value></data>
-   <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
-   <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
-   <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
-   <data name="mnuExportTEXT" xml:space="preserve"><value>단순 문자에 투사?</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>이미지 형식(format)</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>자동 탐지</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>4:3으로 만들기</value></data>
@@ -376,9 +374,8 @@
    
    
    <data name="mnuOpenVideo" xml:space="preserve"><value>비디오 파일 열기</value></data>
-   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>모든 파일들 (*.*)|*.*</value></data>
    
-   <data name="mnuSave" xml:space="preserve"><value>저장…</value></data>
+   
    
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>자 표시</value></data>
@@ -416,6 +413,9 @@
    <data name="Toast_StartRecord" xml:space="preserve"><value>녹화 시작</value></data>
    <data name="Toast_StopRecord" xml:space="preserve"><value>녹화 정지</value></data>
    <data name="Toast_ImageSaved" xml:space="preserve"><value>이미지 저장됨</value></data>
+   
+   
+   
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>키 이미지' 추가</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>이전 프레임으로 이동</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>색상 프로파일</value></data>
@@ -458,12 +458,15 @@
    <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>두 이미지를 컴포지트 이미지로 저장</value></data>
    <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>두 비디오를 컴포지트 비디오로 저장</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>작업 영역의 지정</value></data>
+   
+   
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>윤곽만…</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>자동 수준…</value></data>
    <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>날카롭게..</value></data>
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>개관(overview)…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>반대(reverse)…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>자동 대비…</value></data>
+   
    
    
    

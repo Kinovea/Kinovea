@@ -127,6 +127,7 @@
    
    
    
+   
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Vis tegninger samtidig meg videoavspilling</value></data>
    
    
@@ -134,6 +135,7 @@
    
    
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Alltid deinterlace ved åpning av ny video</value></data>
+   
    
    
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Bytt til Analyse modus</value></data>
@@ -198,9 +200,12 @@
    
    <data name="mnuOptions" xml:space="preserve"><value>Alternativer</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Instillinger...</value></data>
-   <data name="mnuRedo" xml:space="preserve"><value>Gjør om</value></data>
+   
+   
+   
    <data name="mnuScreens" xml:space="preserve"><value>Se</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>Tilbake</value></data>
+   <data name="mnuRedo" xml:space="preserve"><value>Gjør om</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Bildenummer</value></data>
    
    

@@ -136,6 +136,8 @@
    
    
    
+   
+   
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Przejdź do trybu Analizy</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Liczba plików w historii :</value></data>
    
@@ -198,9 +200,12 @@
    
    <data name="mnuOptions" xml:space="preserve"><value>Opcje</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Preferencje...</value></data>
-   <data name="mnuRedo" xml:space="preserve"><value>Powtórz</value></data>
+   
+   
+   
    <data name="mnuScreens" xml:space="preserve"><value>Widok</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>Cofnij</value></data>
+   <data name="mnuRedo" xml:space="preserve"><value>Powtórz</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Numer klatki</value></data>
    
    

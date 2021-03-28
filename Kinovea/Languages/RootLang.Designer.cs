@@ -178,6 +178,15 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Idle time (s):.
+        /// </summary>
+        public static string dlgPreferences_Capture_lblIdleTime {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_lblIdleTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Image format:.
         /// </summary>
         public static string dlgPreferences_Capture_lblImageFormat {
@@ -651,6 +660,15 @@ namespace Kinovea.Root.Languages {
         public static string dlgPreferences_Keyboard_lblHotkey {
             get {
                 return ResourceManager.GetString("dlgPreferences_Keyboard_lblHotkey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default annotation file:.
+        /// </summary>
+        public static string dlgPreferences_Player_DefaultKVA {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_DefaultKVA", resourceCulture);
             }
         }
         
@@ -1236,6 +1254,33 @@ namespace Kinovea.Root.Languages {
         public static string mnuVideo {
             get {
                 return ResourceManager.GetString("mnuVideo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Workspace.
+        /// </summary>
+        public static string mnuWorkspace {
+            get {
+                return ResourceManager.GetString("mnuWorkspace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export workspace.
+        /// </summary>
+        public static string mnuWorkspaceExport {
+            get {
+                return ResourceManager.GetString("mnuWorkspaceExport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save as default workspace.
+        /// </summary>
+        public static string mnuWorkspaceSaveAsDefault {
+            get {
+                return ResourceManager.GetString("mnuWorkspaceSaveAsDefault", resourceCulture);
             }
         }
         

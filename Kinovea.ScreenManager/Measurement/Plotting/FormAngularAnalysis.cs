@@ -306,7 +306,7 @@ namespace Kinovea.ScreenManager
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = ScreenManagerLang.DataAnalysis_ExportData;
-            saveFileDialog.Filter = "Comma Separated Values (*.csv)|*.csv";
+            saveFileDialog.Filter = FilesystemHelper.SaveCSVFilter();
             saveFileDialog.FilterIndex = 1;
             saveFileDialog.RestoreDirectory = true;
 

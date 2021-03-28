@@ -45,13 +45,16 @@ def validate_resx(filename):
     
     p = re.compile("<data name=\".+\" xml:space=\"preserve\"><value/></data>", re.IGNORECASE)
     resx = p.sub('', resx)
-    
-    p = re.compile("<data name=\"\" xml:space=\"preserve\"/>", re.IGNORECASE)
+
+    p = re.compile("<data name=\".+\" xml:space=\"preserve\"/>", re.IGNORECASE)
     resx = p.sub('', resx)
     
     p = re.compile("<data name=\"\" xml:space=\"preserve\"><value/></data>", re.IGNORECASE)
     resx = p.sub('', resx)
-    
+
+    p = re.compile("<data name=\"\" xml:space=\"preserve\"/>", re.IGNORECASE)
+    resx = p.sub('', resx)
+
     f = open(filename, "wb")
     f.write(resx.encode('utf-8'))
     f.close()
@@ -85,7 +88,7 @@ for pattern in patterns:
         os.remove(file)
 
 # 0. Extract content.xml from the OpenOffice document.
-z = zipfile.ZipFile("Kinovea-l14n-rev0022.ods", "r")
+z = zipfile.ZipFile("Kinovea-l14n-rev0023.ods", "r")
 z.extract("content.xml")
 
 print("\nGenerate all Resx, first pass.")

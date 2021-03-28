@@ -80,12 +80,12 @@
    <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve"><value>Modify drawing</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Delete drawing</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Remove a key image</value></data>
-   <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Save video</value></data>
+   <data name="CommandExportVideo_FriendlyName" xml:space="preserve"><value>Export video</value></data>
    <data name="DataAnalysis" xml:space="preserve"><value>Data analysis</value></data>
    <data name="DataAnalysis_ScatterDiagram" xml:space="preserve"><value>Scatter diagram</value></data>
    <data name="DataAnalysis_LinearKinematics" xml:space="preserve"><value>Linear kinematics</value></data>
    <data name="DataAnalysis_AngularKinematics" xml:space="preserve"><value>Angular kinematics</value></data>
-   <data name="DataAnalysis_AngleAngleDiagrams" xml:space="preserve"><value>Angle-angle diagrams</value></data>
+   <data name="DataAnalysis_AngleAngleDiagrams" xml:space="preserve"><value>Angle-angle diagram</value></data>
    <data name="DataAnalysis_PagePlot" xml:space="preserve"><value>Plot</value></data>
    <data name="DataAnalysis_Labels" xml:space="preserve"><value>Labels</value></data>
    <data name="DataAnalysis_Title" xml:space="preserve"><value>Title:</value></data>
@@ -145,8 +145,8 @@
    <data name="dlgConfigureTrajectory_ExtraData_HorizontalPosition" xml:space="preserve"><value>Horizontal position</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve"><value>Total distance</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_DistanceToOrigin" xml:space="preserve"><value>Distance to origin</value></data>
-   <data name="dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement" xml:space="preserve"><value>Total horizontal displacement</value></data>
-   <data name="dlgConfigureTrajectory_ExtraData_TotalVerticalDisplacement" xml:space="preserve"><value>Total vertical displacement</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement" xml:space="preserve"><value>Relative horizontal displacement</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_TotalVerticalDisplacement" xml:space="preserve"><value>Relative vertical displacement</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>Speed</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_VerticalVelocity" xml:space="preserve"><value>Vertical velocity</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_HorizontalVelocity" xml:space="preserve"><value>Horizontal velocity</value></data>
@@ -167,6 +167,10 @@
    <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve"><value>Search window:</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Real size of the segment:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Line calibration</value></data>
+   <data name="dlgCalibrateLine_CoordinateSystemAlignment" xml:space="preserve"><value>Coordinate system alignment:</value></data>
+   <data name="dlgCalibrateLine_AxisHorizontal" xml:space="preserve"><value>The line defines the horizontal axis</value></data>
+   <data name="dlgCalibrateLine_AxisVertical" xml:space="preserve"><value>The line defines the vertical axis</value></data>
+   <data name="dlgCalibrateLine_AxesImage" xml:space="preserve"><value>Aligned with image axes</value></data>
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Plane calibration</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Duration on each key image: {0} hundredth of seconds.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Duration of each key image: {0:0.00} seconds.</value></data>
@@ -188,9 +192,10 @@
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Save method</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Save only the annotations</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve"><value>Only the annotations will be saved.#The file can be imported in a video later.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Save video with annotations permanently applied on the video</value></data>
+   <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Export video with annotations permanently applied on the video</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>The annotations will be visible in all players but not modifiable.#Extra comments attached to key images will not be saved.</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Save annotations</value></data>
+   
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Save sequence</value></data>
    <data name="dlgCameraCalibration_Title" xml:space="preserve"><value>Camera calibration</value></data>
    <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve"><value>Distortion coefficients</value></data>
@@ -269,6 +274,9 @@
    <data name="Generic_Options" xml:space="preserve"><value>Options</value></data>
    <data name="Generic_PenSizePicker" xml:space="preserve"><value>Size:</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Save</value></data>
+   <data name="Generic_SaveKVA" xml:space="preserve"><value>Save annotations</value></data>
+   <data name="Generic_SaveKVAAs" xml:space="preserve"><value>Save annotations as…</value></data>
+   <data name="Generic_ExportVideo" xml:space="preserve"><value>Export video…</value></data>
    <data name="Generic_TrackShapePicker" xml:space="preserve"><value>Line shape:</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>Image</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Video</value></data>
@@ -287,16 +295,10 @@
    <data name="FileProperty_Duration" xml:space="preserve"><value>Duration</value></data>
    <data name="FileProperty_CreationTime" xml:space="preserve"><value>Creation time</value></data>
    <data name="FileProperty_HasKva" xml:space="preserve"><value>Kva file</value></data>
-   <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
-   <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG Images (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG Images (*.png)|*.png|Bitmap Images (*.bmp)|*.bmp</value></data>
-   <data name="FileFilter_ImportReference" xml:space="preserve"><value>All supported files (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
-   <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
-   <data name="FileFilter_KVA_All" xml:space="preserve"><value>All supported formats</value></data>
-   <data name="FileFilter_KVA_kva" xml:space="preserve"><value>Kinovea Video Analysis (*.kva)</value></data>
-   <data name="FileFilter_KVA_srt" xml:space="preserve"><value>Subtitles (*.srt)</value></data>
-   <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
-   <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Key images have been modified.\nDo you want to save key images data before closing ?</value></data>
-   <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Key images data not saved</value></data>
+   <data name="FileFilter_AllSupported" xml:space="preserve"><value>All supported formats</value></data>
+   <data name="FileFilter_All" xml:space="preserve"><value>All files</value></data>
+   <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Annotations have been modified.\nDo you want to save them?</value></data>
+   <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Save changes</value></data>
    <data name="lblDelay_Text" xml:space="preserve"><value>Delay (s):</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>Joint controls :</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Duration</value></data>
@@ -343,10 +345,6 @@
    <data name="mnuTwoMixed" xml:space="preserve"><value>One capture screen and one playback screen</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Two playback screens</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Export to spreadsheet</value></data>
-   <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
-   <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
-   <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
-   <data name="mnuExportTEXT" xml:space="preserve"><value>Trajectories to simple text</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Image format</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>Auto detection</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>Force 4:3</value></data>
@@ -358,7 +356,7 @@
    <data name="mnuRotation270" xml:space="preserve"><value>90° counter-clockwise</value></data>
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Go to key image</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Hide</value></data>
-   <data name="mnuHome" xml:space="preserve"><value>File explorer</value></data>
+   <data name="mnuHome" xml:space="preserve"><value>Explorer panel</value></data>
    <data name="mnuImportImage" xml:space="preserve"><value>Import image…</value></data>
    <data name="mnuSignedAngle" xml:space="preserve"><value>Signed angle</value></data>
    <data name="mnuCounterClockwise" xml:space="preserve"><value>Counter clockwise</value></data>
@@ -376,15 +374,14 @@
    <data name="mnuMarkTimeAsOrigin" xml:space="preserve"><value>Mark current time as time origin</value></data>
    <data name="mnuMarkTimeAsOriginClock" xml:space="preserve"><value>Mark current time as time origin for this clock</value></data>
    <data name="mnuOpenVideo" xml:space="preserve"><value>Open video…</value></data>
-   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>All files (*.*)|*.*</value></data>
    <data name="mnuOpenReplayWatcher" xml:space="preserve"><value>Open replay folder observer…</value></data>
-   <data name="mnuSave" xml:space="preserve"><value>Save...</value></data>
+   <data name="mnuOpenAsReplayWatcher" xml:space="preserve"><value>Open as replay folder observer…</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>Calibrate...</value></data>
    <data name="mnuTimebase" xml:space="preserve"><value>Configure video timing...</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Display measure</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>End path edition </value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>Observational reference</value></data>
-   <data name="mnuSwapScreens" xml:space="preserve"><value>Invert screens</value></data>
+   <data name="mnuSwapScreens" xml:space="preserve"><value>Swap screens</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>Delete</value></data>
    <data name="mnuThumbnailForget" xml:space="preserve"><value>Forget custom settings</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>Rename</value></data>
@@ -416,6 +413,9 @@
    <data name="Toast_StartRecord" xml:space="preserve"><value>Recording started</value></data>
    <data name="Toast_StopRecord" xml:space="preserve"><value>Recording stopped</value></data>
    <data name="Toast_ImageSaved" xml:space="preserve"><value>Image saved</value></data>
+   <data name="Toast_TriggerArmed" xml:space="preserve"><value>Capture trigger armed</value></data>
+   <data name="Toast_TriggerDisarmed" xml:space="preserve"><value>Capture trigger disarmed</value></data>
+   <data name="Toast_AudioLost" xml:space="preserve"><value>Audio device lost</value></data>
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Add a key image</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Go to previous frame</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Color profile</value></data>
@@ -450,14 +450,16 @@
    <data name="ToolTip_RichText_Strikeout" xml:space="preserve"><value>Strikeout</value></data>
    <data name="ToolTip_RichText_ForeColor" xml:space="preserve"><value>Foreground color</value></data>
    <data name="ToolTip_RichText_BackColor" xml:space="preserve"><value>Background color</value></data>
-   <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Save a slideshow from key images</value></data>
-   <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Save video with a pause on each key image</value></data>
+   <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Export a slideshow from key images</value></data>
+   <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Export video with a pause on each key image</value></data>
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Set the first frame of the Working Zone to the current frame</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Set the last frame of the Working Zone to the current frame</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Show comments</value></data>
    <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>Save both images to a composite image</value></data>
    <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>Save both videos into a composite video</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Set the Working Zone</value></data>
+   <data name="ToolTip_DisarmTrigger" xml:space="preserve"><value>Disarm capture trigger. Current state: armed.</value></data>
+   <data name="ToolTip_ArmTrigger" xml:space="preserve"><value>Arm capture trigger. Current state: disarmed.</value></data>
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Edges only...</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Auto levels...</value></data>
    <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Sharpen...</value></data>
@@ -469,8 +471,9 @@
    <data name="FormCrashRecovery_File" xml:space="preserve"><value>File</value></data>
    <data name="FormCrashRecovery_Date" xml:space="preserve"><value>Date</value></data>
    <data name="FormCrashRecovery_Info" xml:space="preserve"><value>The following projects were not saved properly but can be recovered:</value></data>
-   
-   
+   <data name="Infobar_Player_Observing" xml:space="preserve"><value>Observing folder: {0}</value></data>
+   <data name="Infobar_Player_StopWatcher" xml:space="preserve"><value>Stop observing folder : {0}</value></data>
+   <data name="Infobar_Player_StartWatcher" xml:space="preserve"><value>Start observing folder: {0}</value></data>
    
    
    

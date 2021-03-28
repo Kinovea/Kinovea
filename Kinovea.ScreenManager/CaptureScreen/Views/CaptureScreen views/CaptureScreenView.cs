@@ -169,12 +169,12 @@ namespace Kinovea.ScreenManager
             if (armed)
             {
                 btnArm.Image = Properties.Capture.speaker;
-                toolTips.SetToolTip(btnArm, "Disarm capture trigger. Current status: armed.");
+                toolTips.SetToolTip(btnArm, ScreenManagerLang.ToolTip_DisarmTrigger);
             }
             else
             {
                 btnArm.Image = Properties.Capture.speaker_mute;
-                toolTips.SetToolTip(btnArm, "Arm capture trigger. Current status: disarmed.");
+                toolTips.SetToolTip(btnArm, ScreenManagerLang.ToolTip_ArmTrigger);
             }
         }
 
@@ -392,9 +392,9 @@ namespace Kinovea.ScreenManager
                 toolTips.SetToolTip(btnGrab, ScreenManagerLang.ToolTip_StartCamera);
 
             if (armed)
-                toolTips.SetToolTip(btnArm, "Disarm capture trigger. Current status: armed.");
+                toolTips.SetToolTip(btnArm, ScreenManagerLang.ToolTip_DisarmTrigger);
             else
-                toolTips.SetToolTip(btnArm, "Arm capture trigger. Current status: disarmed.");
+                toolTips.SetToolTip(btnArm, ScreenManagerLang.ToolTip_ArmTrigger);
         }
         #endregion
 

@@ -198,6 +198,7 @@ namespace Kinovea.ScreenManager
                    false,
                    imageRetriever);
 
+            // Save this as the "preferred" format for video exports.
             PreferencesManager.PlayerPreferences.VideoFormat = FilesystemHelper.GetVideoFormat(fve.Filename);
             PreferencesManager.Save();
             

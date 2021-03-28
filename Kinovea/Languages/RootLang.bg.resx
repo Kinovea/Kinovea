@@ -127,6 +127,7 @@
    
    
    
+   
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Показване на снимки по време възпроизвеждането на видео</value></data>
    <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve"><value>Разреши филтрация на координатите</value></data>
    
@@ -136,6 +137,7 @@
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Пренасочване при отваряне на нов видеоклип</value></data>
    <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve"><value>Обновете изображението, докато движите курсора</value></data>
    <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Подравнете скоростта при сравняване на видео</value></data>
+   
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Премини в режим на анализ</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Брой файлове в историята</value></data>
    
@@ -198,9 +200,12 @@
    <data name="mnuTools" xml:space="preserve"><value>Инструменти</value></data>
    <data name="mnuOptions" xml:space="preserve"><value>Настройки</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Избрано</value></data>
-   <data name="mnuRedo" xml:space="preserve"><value>Повторение</value></data>
+   
+   
+   
    <data name="mnuScreens" xml:space="preserve"><value>Вид</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>Назад</value></data>
+   <data name="mnuRedo" xml:space="preserve"><value>Повторение</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Брой кадри</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Общо милисекунди</value></data>
    <data name="TimeCodeFormat_Microseconds" xml:space="preserve"><value>Общо микросекунди</value></data>

@@ -311,7 +311,7 @@ namespace Kinovea.Camera.IDS
             openFileDialog.Title = CameraLang.FormConfiguration_ImportParameters;
             //openFileDialog.InitialDirectory = Path.GetDirectoryName(ProfileHelper.GetProfileFilename(summary.Identifier));
             openFileDialog.RestoreDirectory = true;
-            openFileDialog.Filter = "Ini file (*.ini)" + "|*.ini;";
+            openFileDialog.Filter = Services.FilesystemHelper.OpenINIFilter();
             openFileDialog.FilterIndex = 0;
             if (openFileDialog.ShowDialog() != DialogResult.OK)
                 return;

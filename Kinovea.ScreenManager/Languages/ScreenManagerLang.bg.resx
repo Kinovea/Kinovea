@@ -80,7 +80,7 @@
    
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Изтрии рисунката</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Изтрии ключовия кадър</value></data>
-   <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Съхрани видео</value></data>
+   <data name="CommandExportVideo_FriendlyName" xml:space="preserve"><value>Съхрани видео</value></data>
    <data name="DataAnalysis" xml:space="preserve"><value>Анализ на данните</value></data>
    <data name="DataAnalysis_ScatterDiagram" xml:space="preserve"><value>Диаграма</value></data>
    <data name="DataAnalysis_LinearKinematics" xml:space="preserve"><value>Линейна кинематика</value></data>
@@ -167,6 +167,10 @@
    <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve"><value>Прозорец на търсене:</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Реален размер на сегмента:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Калибриране на линия</value></data>
+   
+   
+   
+   
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Калибриране на равнината</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Продължителност на всеки ключов кадър : {0} стотни от секунда</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Продължителност на всеки ключов кадър : {0:0.00} секунди.</value></data>
@@ -191,6 +195,7 @@
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Съхрани видеото заедно с анализа</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>Анализът на обектите ще бъде видим на всички плейъри, но не може да бъде променен.# Допълнителните коментари, прикачени към ключовото изображение, няма да бъдат запазени.</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Съхрани ключовите кадри</value></data>
+   
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Съхрани последователността</value></data>
    <data name="dlgCameraCalibration_Title" xml:space="preserve"><value>Калибрация на камерата</value></data>
    <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve"><value>Коефициент изкривяване</value></data>
@@ -269,6 +274,9 @@
    <data name="Generic_Options" xml:space="preserve"><value>Опции</value></data>
    <data name="Generic_PenSizePicker" xml:space="preserve"><value>Размер:</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Съхрани</value></data>
+   
+   
+   
    <data name="Generic_TrackShapePicker" xml:space="preserve"><value>Форма на линия:</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>Изображение</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Видео</value></data>
@@ -287,14 +295,8 @@
    <data name="FileProperty_Duration" xml:space="preserve"><value>Продължителност</value></data>
    <data name="FileProperty_CreationTime" xml:space="preserve"><value>Създай време</value></data>
    <data name="FileProperty_HasKva" xml:space="preserve"><value>KVA файл</value></data>
-   <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml</value></data>
-   <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG изображения (*.jpg,*.jpeg)|*.jpg</value></data>
-   <data name="FileFilter_ImportReference" xml:space="preserve"><value>Всички поддържани файлови формати (*.SVG</value></data>
-   <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt</value></data>
    
-   <data name="FileFilter_KVA_kva" xml:space="preserve"><value>Kinovea видео анализ (*.kva)</value></data>
-   
-   <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi</value></data>
+   <data name="FileFilter_All" xml:space="preserve"><value>Всички файлове</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Ключови кадри са променени.\\n Искате ли да ги съхраните преди затваряне?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Данните от ключовите кадри не са съхранени</value></data>
    <data name="lblDelay_Text" xml:space="preserve"><value>Закъснение(c) :</value></data>
@@ -343,10 +345,6 @@
    <data name="mnuTwoMixed" xml:space="preserve"><value>Един екран за снимане и един екран за възпроизвеждане</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Два екрана за възпроизвеждане</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Експортирай в електронна таблица</value></data>
-   <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
-   <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
-   
-   <data name="mnuExportTEXT" xml:space="preserve"><value>Преобразуване на параметрите от треакторията в текстов формат</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Формат на изображението</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>Автоматично определяне</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>Съотношение 4:3</value></data>
@@ -376,9 +374,8 @@
    
    
    <data name="mnuOpenVideo" xml:space="preserve"><value>Отвори видео файл</value></data>
-   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Всички файлове (*.*)|*.*</value></data>
    
-   <data name="mnuSave" xml:space="preserve"><value>Съхранение…</value></data>
+   
    <data name="mnuCalibrate" xml:space="preserve"><value>Калибровка….</value></data>
    <data name="mnuTimebase" xml:space="preserve"><value>Настройка на времето за видео…</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Показване на размера</value></data>
@@ -416,6 +413,9 @@
    <data name="Toast_StartRecord" xml:space="preserve"><value>Начало на запис</value></data>
    <data name="Toast_StopRecord" xml:space="preserve"><value>Спиране на запис</value></data>
    <data name="Toast_ImageSaved" xml:space="preserve"><value>Съхрани изображение</value></data>
+   
+   
+   
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Добави ключови кадри</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Върни към предишния кадър </value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Цветови профил</value></data>
@@ -458,6 +458,8 @@
    <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>Съхрани съставената от два кадъра картина</value></data>
    <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>Съхрани създаденото видео, включващо две видео-ядра</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Задайте интервал</value></data>
+   
+   
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Само за края…</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Автоматични нива…</value></data>
    <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Контраст…</value></data>
@@ -469,6 +471,7 @@
    <data name="FormCrashRecovery_File" xml:space="preserve"><value>Файл</value></data>
    <data name="FormCrashRecovery_Date" xml:space="preserve"><value>Дата:</value></data>
    <data name="FormCrashRecovery_Info" xml:space="preserve"><value>Текущите проекти не бяха съхранени правилно, но могат да бъдат възстановени:</value></data>
+   
    
    
    

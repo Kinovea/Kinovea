@@ -1434,7 +1434,7 @@ namespace Kinovea.ScreenManager
         #region Culture
         private void RefreshCultureToolbar()
         {
-            toolSave.ToolTipText = ScreenManagerLang.mnuSave;
+            toolSave.ToolTipText = ScreenManagerLang.Generic_SaveKVA;
             toolHome.ToolTipText = ScreenManagerLang.mnuHome;
             toolOnePlayer.ToolTipText = ScreenManagerLang.mnuOnePlayer;
             toolTwoPlayers.ToolTipText = ScreenManagerLang.mnuTwoPlayers;
@@ -1447,14 +1447,14 @@ namespace Kinovea.ScreenManager
             // File
             mnuCloseFile.Text = ScreenManagerLang.Generic_Close;
             mnuCloseFile2.Text = ScreenManagerLang.Generic_Close;
-            mnuSave.Text = "Save annotations"; // ScreenManagerLang.mnuSave;
-            mnuSaveAs.Text = "Save annotations as…";
-            mnuExportVideo.Text = "Export video…";
+            mnuSave.Text = ScreenManagerLang.Generic_SaveKVA;
+            mnuSaveAs.Text = ScreenManagerLang.Generic_SaveKVAAs;
+            mnuExportVideo.Text = ScreenManagerLang.Generic_ExportVideo;
             mnuExportSpreadsheet.Text = ScreenManagerLang.mnuExportSpreadsheet;
-            mnuExportODF.Text = ScreenManagerLang.mnuExportODF;
-            mnuExportMSXML.Text = ScreenManagerLang.mnuExportMSXML;
-            mnuExportXHTML.Text = ScreenManagerLang.mnuExportXHTML;
-            mnuExportTEXT.Text = ScreenManagerLang.mnuExportTEXT;
+            mnuExportODF.Text = "LibreOffice (.odf)";
+            mnuExportMSXML.Text = "Microsoft Excel (.xml)";
+            mnuExportXHTML.Text = "Web (.html)";
+            mnuExportTEXT.Text = "Gnuplot (.txt)";
             mnuLoadAnalysis.Text = ScreenManagerLang.mnuLoadAnalysis;
 
             // Edit
@@ -1618,8 +1618,7 @@ namespace Kinovea.ScreenManager
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = ScreenManagerLang.dlgExportSpreadsheet_Title;
             saveFileDialog.RestoreDirectory = true;
-            saveFileDialog.Filter = ScreenManagerLang.FileFilter_Spreadsheet;
-                    
+            saveFileDialog.Filter = "LibreOffice (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|Web (*.html)|*.html|Gnuplot (*.txt)|*.txt";
             saveFileDialog.FilterIndex = ((int)format) + 1;
                         
             saveFileDialog.FileName = Path.GetFileNameWithoutExtension(player.FrameServer.Metadata.VideoPath);
@@ -2221,7 +2220,7 @@ namespace Kinovea.ScreenManager
             // Display file open dialog and launch the drawing.
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = ScreenManagerLang.dlgImportReference_Title;
-            openFileDialog.Filter = ScreenManagerLang.FileFilter_ImportReference;
+            openFileDialog.Filter = FilesystemHelper.OpenImageFilter(ScreenManagerLang.FileFilter_AllSupported);
             openFileDialog.FilterIndex = 1;
 
             if (openFileDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(openFileDialog.FileName))
@@ -2593,10 +2592,8 @@ namespace Kinovea.ScreenManager
         }
         private DialogResult ShowConfirmDirtyDialog()
         {
-            string caption = "Save changes";
-            string text = "Annotations have been modified.\nDo you want to save them?";
-            //string caption = ScreenManagerLang.InfoBox_MetadataIsDirty_Title;
-            //string text = ScreenManagerLang.InfoBox_MetadataIsDirty_Text.Replace("\\n", "\n");
+            string caption = ScreenManagerLang.InfoBox_MetadataIsDirty_Title;
+            string text = ScreenManagerLang.InfoBox_MetadataIsDirty_Text.Replace("\\n", "\n");
             return MessageBox.Show(text, caption, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
         }
         private void AddScreen(AbstractScreen screen)

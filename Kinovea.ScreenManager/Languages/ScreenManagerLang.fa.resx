@@ -80,7 +80,7 @@
    <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve"><value>اصلاح طرح</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>حذف طرح</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>حذف تصویر کلیدی</value></data>
-   <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>ذخیره ویدئو</value></data>
+   <data name="CommandExportVideo_FriendlyName" xml:space="preserve"><value>ذخیره ویدئو</value></data>
    <data name="DataAnalysis" xml:space="preserve"><value>تحلیل داده ها</value></data>
    <data name="DataAnalysis_ScatterDiagram" xml:space="preserve"><value>نمودار پراکندگی</value></data>
    <data name="DataAnalysis_LinearKinematics" xml:space="preserve"><value>کینماتیک خطی</value></data>
@@ -167,6 +167,10 @@
    <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve"><value>پنجره جستجو:</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>اندازه واقعی قطعه:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>کالیبراسیون خط</value></data>
+   
+   
+   
+   
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>کالیبراسیون سطح</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>طول مدت بر هر داده تصویر: {0} صدم ثانیه.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>طول مدت هر داده تصویر: {0: 0.00} ثانیه.</value></data>
@@ -191,6 +195,7 @@
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>ذخیره ویدئو با آنالیز دائمی اعمال شده بر آن</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>اجزاء تجزیه و تحلیل برای همه کاربران قابل مشاهده است، اما قابل تغییر نیست. توضیحات اضافی متصل به داده‌های تصاویر ذخیره نخواهد شد.</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>ذخیره اطلاعات داده‌های تصاویر</value></data>
+   
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>ذخیره توالی</value></data>
    <data name="dlgCameraCalibration_Title" xml:space="preserve"><value>کالیبراسیون دوربین</value></data>
    <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve"><value>ضرایب اعوجاج</value></data>
@@ -269,6 +274,9 @@
    <data name="Generic_Options" xml:space="preserve"><value>گزینه‌ها</value></data>
    <data name="Generic_PenSizePicker" xml:space="preserve"><value>اندازه:</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>ذخیره</value></data>
+   
+   
+   
    <data name="Generic_TrackShapePicker" xml:space="preserve"><value>شکل خط:</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>تصویر</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>ویدئو</value></data>
@@ -287,14 +295,8 @@
    <data name="FileProperty_Duration" xml:space="preserve"><value>مدت زمان</value></data>
    <data name="FileProperty_CreationTime" xml:space="preserve"><value>زمان ایجاد</value></data>
    <data name="FileProperty_HasKva" xml:space="preserve"><value>پرونده Kva</value></data>
-   <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
-   <data name="FileFilter_SaveImage" xml:space="preserve"><value>تصاویر JPEG (* .jpg ، *. jpeg) | * .jpg؛ *. jpeg | تصاویر PNG (* .png) | * .png | تصاویر Bitmap (* .bmp) | * .bmp</value></data>
-   <data name="FileFilter_ImportReference" xml:space="preserve"><value>کلیه پرونده های پشتیبانی شده  (* .SVG؛ *. JPG؛ *. PNG؛ *. BMP؛ *. GIF) | * .SVG؛ *. JPG؛ *. PNG؛ *. BMP؛ *. GIF</value></data>
-   <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (* .ods) | * .ods | Microsoft Excel (* .xml) | * .xml | XHTML (* .html) | * .html | متن (* .txt) | * .txt؛</value></data>
    
-   <data name="FileFilter_KVA_kva" xml:space="preserve"><value>تجزیه و تحلیل ویدئو کینوویا (*.kva)</value></data>
-   
-   <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi;</value></data>
+   <data name="FileFilter_All" xml:space="preserve"><value>تمام فایل‌ها</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>تصاویر کلیدی اصلاح شده اند. \n آیا می‌خواهید قبل از بسته شدن داده‌های تصاویر را ذخیره کنید؟</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>داده‌های تصاویر ذخیره نشده‌اند</value></data>
    
@@ -343,10 +345,6 @@
    <data name="mnuTwoMixed" xml:space="preserve"><value>یک صفحه ضبط و یک صفحه پخش</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>دو صفحه پخش</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>استخراج به صفحه گسترده</value></data>
-   <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
-   <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
-   <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
-   <data name="mnuExportTEXT" xml:space="preserve"><value>مسیرهای متن ساده</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>قالب تصویر</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>تشخیص خودکار</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>تصویر 4:3</value></data>
@@ -376,9 +374,8 @@
    
    
    <data name="mnuOpenVideo" xml:space="preserve"><value>بازکردن فایل ویدیوئی</value></data>
-   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>تمام فایل‌ها (*.*)|*.*</value></data>
    
-   <data name="mnuSave" xml:space="preserve"><value>ذخیره ...</value></data>
+   
    <data name="mnuCalibrate" xml:space="preserve"><value>کالیبراسیون ...</value></data>
    <data name="mnuTimebase" xml:space="preserve"><value>پیکربندی زمانی ویدئو ...</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>مقیاس نمایش</value></data>
@@ -416,6 +413,9 @@
    <data name="Toast_StartRecord" xml:space="preserve"><value>ضبط شروع شد</value></data>
    <data name="Toast_StopRecord" xml:space="preserve"><value>ضبط متوقف شد</value></data>
    <data name="Toast_ImageSaved" xml:space="preserve"><value>تصویر ذخیره شد</value></data>
+   
+   
+   
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>اضافه کردن داده تصویر</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>برو به فریم قبلی</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>مشخصات رنگ</value></data>
@@ -458,6 +458,8 @@
    <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>ذخیره هر دو تصویر در یک تصویر مرکب</value></data>
    <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>ذخیره هر دو ویدئو در یک ویدئوی مرکب</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>تنظیم منطقه کاری</value></data>
+   
+   
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>فقط لبه ها ...</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>سطوح خودکار ...</value></data>
    <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>تیز کردن ...</value></data>
@@ -469,6 +471,7 @@
    <data name="FormCrashRecovery_File" xml:space="preserve"><value>پرونده</value></data>
    <data name="FormCrashRecovery_Date" xml:space="preserve"><value>تاریخ</value></data>
    <data name="FormCrashRecovery_Info" xml:space="preserve"><value>پروژه‌های زیر به درستی ذخیره نشده‌اند اما قابل بازیابی هستند:</value></data>
+   
    
    
    

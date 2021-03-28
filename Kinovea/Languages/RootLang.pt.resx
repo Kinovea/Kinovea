@@ -127,6 +127,7 @@
    
    
    
+   
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Mostrar desenhos enquanto o vídeo estiver reproduzindo</value></data>
    
    
@@ -134,6 +135,7 @@
    
    
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Sempre desentrelaçar ao abrir um novo vídeo</value></data>
+   
    
    
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Mudar para o Módulo de Análise</value></data>
@@ -198,9 +200,12 @@
    
    <data name="mnuOptions" xml:space="preserve"><value>Opções</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Preferências...</value></data>
-   <data name="mnuRedo" xml:space="preserve"><value>Refazer</value></data>
+   
+   
+   
    <data name="mnuScreens" xml:space="preserve"><value>Visualizar</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>Desfazer</value></data>
+   <data name="mnuRedo" xml:space="preserve"><value>Refazer</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Número de quadros</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Total em milisegundos</value></data>
    

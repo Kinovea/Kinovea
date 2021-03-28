@@ -291,7 +291,7 @@ namespace Kinovea.ScreenManager
         public void AudioDeviceLost()
         {
             if (cameraConnected)
-                viewportController.ToastMessage("Audio device lost", 5000);
+                viewportController.ToastMessage(ScreenManagerLang.Toast_AudioLost, 5000);
         }
 
         #region AbstractScreen Implementation
@@ -1503,9 +1503,9 @@ namespace Kinovea.ScreenManager
             if (toast)
             {
                 if (triggerArmed)
-                    viewportController.ToastMessage("Capture trigger armed", 1000);
+                    viewportController.ToastMessage(ScreenManagerLang.Toast_TriggerArmed, 1000);
                 else
-                    viewportController.ToastMessage("Capture trigger disarmed", 1000);
+                    viewportController.ToastMessage(ScreenManagerLang.Toast_TriggerDisarmed, 1000);
             }
         }
         

@@ -188,7 +188,7 @@ namespace Kinovea.ScreenManager
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = ScreenManagerLang.dlgCameraCalibration_OpenDialogTitle;
-            openFileDialog.Filter = ScreenManagerLang.FileFilter_XML;
+            openFileDialog.Filter = FilesystemHelper.OpenXMLFilter();
             openFileDialog.FilterIndex = 1;
             openFileDialog.InitialDirectory = Software.CameraCalibrationDirectory;
 
@@ -223,7 +223,7 @@ namespace Kinovea.ScreenManager
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = ScreenManagerLang.dlgCameraCalibration_SaveDialogTitle;
-            saveFileDialog.Filter = ScreenManagerLang.FileFilter_XML;
+            saveFileDialog.Filter = FilesystemHelper.SaveXMLFilter();
             saveFileDialog.FilterIndex = 1;
             saveFileDialog.InitialDirectory = Software.CameraCalibrationDirectory;
 
@@ -237,7 +237,7 @@ namespace Kinovea.ScreenManager
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = ScreenManagerLang.dlgCameraCalibration_OpenDialogTitle;
-            openFileDialog.Filter = ScreenManagerLang.FileFilter_XML;
+            openFileDialog.Filter = FilesystemHelper.OpenXMLFilter();
             openFileDialog.FilterIndex = 1;
             openFileDialog.InitialDirectory = Software.CameraCalibrationDirectory;
 

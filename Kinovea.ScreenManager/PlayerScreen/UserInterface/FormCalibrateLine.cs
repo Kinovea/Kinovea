@@ -79,12 +79,12 @@ namespace Kinovea.ScreenManager
             
             cbUnit.Items.Add(customLengthUnit + " (" + customLengthAbbreviation + ")");
 
-            lblAxis.Text = "Coordinate system alignment:";
+            lblAxis.Text = ScreenManagerLang.dlgCalibrateLine_CoordinateSystemAlignment;
 
             // Combo axis.
-            cbAxis.Items.Add("The line defines the horizontal axis");
-            cbAxis.Items.Add("The line defines the vertical axis");
-            cbAxis.Items.Add("Align to image axes");
+            cbAxis.Items.Add(ScreenManagerLang.dlgCalibrateLine_AxisHorizontal);
+            cbAxis.Items.Add(ScreenManagerLang.dlgCalibrateLine_AxisVertical);
+            cbAxis.Items.Add(ScreenManagerLang.dlgCalibrateLine_AxesImage);
         }
         private void InitializeValues()
         {

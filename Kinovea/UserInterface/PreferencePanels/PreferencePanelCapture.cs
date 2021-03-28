@@ -183,7 +183,7 @@ namespace Kinovea.Root
 
             lblFramerate.Text = RootLang.dlgPreferences_Capture_lblForcedFramerate;
             tbFramerate.Text = string.Format("{0:0.###}", displaySynchronizationFramerate);
-            lblCaptureKVA.Text = "Default annotations file:";
+            lblCaptureKVA.Text = RootLang.dlgPreferences_Player_DefaultKVA;
             tbCaptureKVA.Text = captureKVA;
         }
 
@@ -302,7 +302,7 @@ namespace Kinovea.Root
             nudAudioTriggerThreshold.Value = (decimal)vumeter.ThresholdLinear * decibelRange;
             nudAudioTriggerThreshold.Maximum = decibelRange;
 
-            lblQuietPeriod.Text = "Quiet period (s):";
+            lblQuietPeriod.Text = RootLang.dlgPreferences_Capture_lblIdleTime;
             nudQuietPeriod.Value = (decimal)audioQuietPeriod;
 
             lblRecordingTime.Text = RootLang.dlgPreferences_Capture_lblStopRecordingByDuration;
@@ -386,7 +386,8 @@ namespace Kinovea.Root
 
             dialog.Title = ScreenManagerLang.dlgLoadAnalysis_Title;
             dialog.RestoreDirectory = true;
-            dialog.Filter = ScreenManagerLang.FileFilter_KVA_kva + "|*.kva";
+            dialog.Filter = FilesystemHelper.OpenKVAFilter(ScreenManagerLang.FileFilter_AllSupported);
+            dialog.FilterIndex = 1;
 
             if (dialog.ShowDialog() == DialogResult.OK)
                 tbCaptureKVA.Text = dialog.FileName;

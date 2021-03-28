@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Reflection;
 using System.IO;
+using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
@@ -58,28 +59,27 @@ namespace Kinovea.ScreenManager
             popMenu.Items.Clear();
             if (replayWatcher)
             {
-                string toolTipText = string.Format("Observing folder: \"{0}\"", watchedFolder);
+                string toolTipText = string.Format(ScreenManagerLang.Infobar_Player_Observing, watchedFolder);
                 toolTips.SetToolTip(btnVideoType, toolTipText);
                 toolTips.SetToolTip(lblFilename, toolTipText);
 
-                mnuStopWatcher.Text = string.Format("Stop observing folder: \"{0}\"", watchedFolder);
+                mnuStopWatcher.Text = string.Format(ScreenManagerLang.Infobar_Player_StopWatcher, watchedFolder);
                 popMenu.Items.Add(mnuStopWatcher);
                 
                 if (!string.IsNullOrEmpty(parentFolder) && parentFolder != watchedFolder)
                 {
-                    mnuStartWatcher.Text = string.Format("Start observing folder: \"{0}\"", parentFolder);
+                    mnuStartWatcher.Text = string.Format(ScreenManagerLang.Infobar_Player_StartWatcher, parentFolder);
                     popMenu.Items.Add(mnuStartWatcher);
                 }
             }
             else
             {
-                //toolTips.SetToolTip(btnVideoType, "Not observing any folder");
                 toolTips.SetToolTip(btnVideoType, null);
                 toolTips.SetToolTip(lblFilename, null);
 
                 if (parentFolder != null)
                 {
-                    mnuStartWatcher.Text = string.Format("Start observing folder: \"{0}\"", parentFolder);
+                    mnuStartWatcher.Text = string.Format(ScreenManagerLang.Infobar_Player_StartWatcher, parentFolder);
                     popMenu.Items.Add(mnuStartWatcher);
                 }
             }
@@ -103,7 +103,5 @@ namespace Kinovea.ScreenManager
         {
             popMenu.Show(btnVideoType, new Point(0, btnVideoType.Height));
         }
-
-        
     }
 }

@@ -126,6 +126,7 @@
    <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve"><value>Périphérique d’entrée :</value></data>
    <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve"><value>Seuil de déclenchement :</value></data>
    <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve"><value>Arrêter l’enregistrement après (s) :</value></data>
+   <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve"><value>Temps d’inactivité (s) :</value></data>
    <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve"><value>Commande post-enregistrement :</value></data>
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Montrer les dessins pendant la lecture vidéo</value></data>
    <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve"><value>Activer le filtrage des coordonnées</value></data>
@@ -136,6 +137,7 @@
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Toujours désentrelacer à l'ouverture d'une nouvelle vidéo</value></data>
    <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve"><value>Mettre à jour l'image pendant le déplacement du curseur de temps</value></data>
    <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Lier les contrôles de vitesse lors de la comparaison de vidéos</value></data>
+   <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve"><value>Fichier d’annotations par défaut :</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Bascule en mode Analyse</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Nombre de fichiers dans l'historique :</value></data>
    <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve"><value>Les instances ont leurs propres préférences</value></data>
@@ -198,9 +200,12 @@
    <data name="mnuTools" xml:space="preserve"><value>Outils</value></data>
    <data name="mnuOptions" xml:space="preserve"><value>Options</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Préférences…</value></data>
-   <data name="mnuRedo" xml:space="preserve"><value>Refaire</value></data>
+   <data name="mnuWorkspace" xml:space="preserve"><value>Espace de travail</value></data>
+   <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve"><value>Sauver comme espace de travail par défaut</value></data>
+   <data name="mnuWorkspaceExport" xml:space="preserve"><value>Exporter l’espace de travail</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Affichage</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>Annuler</value></data>
+   <data name="mnuRedo" xml:space="preserve"><value>Refaire</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Numéro d’image</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Total en millisecondes</value></data>
    <data name="TimeCodeFormat_Microseconds" xml:space="preserve"><value>Total en microsecondes</value></data>

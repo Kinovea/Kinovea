@@ -444,11 +444,11 @@ namespace Kinovea.Root
             mnuTimecodeMicroseconds.Image = Properties.Resources.microseconds;
             mnuTimecodeTimeAndFrames.Text = mnuTimecodeClassic.Text + " + " + RootLang.TimeCodeFormat_Frames;
 
-            mnuWorkspace.Text = "Workspace";
+            mnuWorkspace.Text = RootLang.mnuWorkspace;
             mnuWorkspace.Image = Properties.Resources.common_controls;
-            mnuWorkspaceSaveAsDefault.Text = "Save as default workspace";
+            mnuWorkspaceSaveAsDefault.Text = RootLang.mnuWorkspaceSaveAsDefault;
             mnuWorkspaceSaveAsDefault.Image = Properties.Resources.disk;
-            mnuWorkspaceExport.Text = "Export workspace";
+            mnuWorkspaceExport.Text = RootLang.mnuWorkspaceExport;
             mnuWorkspaceExport.Image = Properties.Resources.file_txt;
 
             mnuHelp.Text = RootLang.mnuHelp;
@@ -650,7 +650,7 @@ namespace Kinovea.Root
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.RestoreDirectory = true;
-            saveFileDialog.Filter = "Kinovea workspace (*.xml)|*.xml";
+            saveFileDialog.Filter = FilesystemHelper.SaveWorkspaceFilter();
             saveFileDialog.FilterIndex = 1;
             if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))
                 return;

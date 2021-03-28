@@ -324,5 +324,72 @@ namespace Kinovea.Services
             string filename = Path.GetFileNameWithoutExtension(path);
             return filename.Contains("*") || filename.Contains("?");
         }
+
+        public static string SaveImageFilter()
+        {
+            return "JPEG|*.jpg;*.jpeg|PNG|*.png|Bitmap|*.bmp";
+        }
+
+        public static string SaveVideoFilter()
+        {
+            return "Matroska|*.mkv|MP4|*.mp4|AVI|*.avi";
+        }
+
+        public static string SaveKVAFilter()
+        {
+            return "Kinovea|*.kva";
+        }
+
+        public static string SaveWorkspaceFilter()
+        {
+            return "Kinovea workspace|*.xml";
+        }
+
+        public static string SaveXMLFilter()
+        {
+            return "XML|*.xml";
+        }
+
+        public static string SaveCSVFilter()
+        {
+            return "Comma-separated values|*.csv";
+        }
+
+        public static string SavePNGFilter()
+        {
+            return "PNG|*.png";
+        }
+
+        public static string OpenImageFilter(string labelAllSupported)
+        {
+            string all = labelAllSupported + "|*.svg;*.jpg;*.png;*.bmp;*.gif";
+            string svg = "Scalable Vector Graphics|*.svg";
+            string jpg = "JPEG|*.jpg;*.jpeg";
+            string png = "PNG|*.png";
+            string bmp = "Bitmap|*.bmp";
+            string gif = "GIF|*.gif";
+            string totalFilter = string.Join("|", new string[] { all, svg, jpg, png, bmp, gif});
+            return totalFilter;
+        }
+
+        public static string OpenKVAFilter(string labelAllSupported)
+        {
+            string all = labelAllSupported + "|*.kva;*.srt;*.json;*.xml";
+            string kva = "Kinovea|*.kva";
+            string srt = "SubRip Subtitle|*.srt";
+            string openPose = "OpenPose|*.json";
+            string totalFilter = string.Join("|", new string[] { all, kva, srt, openPose });
+            return totalFilter;
+        }
+
+        public static string OpenXMLFilter()
+        {
+            return "XML|*.xml";
+        }
+
+        public static string OpenINIFilter()
+        {
+            return "INI|*.ini";
+        }
     }
 }

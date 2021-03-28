@@ -126,6 +126,7 @@
    <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve"><value>Dispositivo de entrada:</value></data>
    <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve"><value>Umbral del disparador:</value></data>
    <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve"><value>Parar la grabación por duración (s):</value></data>
+   
    <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve"><value>Comando post grabación:</value></data>
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Mostrar los dibujos durante la reproducción del vídeo</value></data>
    <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve"><value>Activar el filtrado de coordenadas</value></data>
@@ -136,6 +137,7 @@
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Siempre desentrelazar al abrir un vídeo nuevo</value></data>
    <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve"><value>Actualizar la imagen durante el movimiento del cursor</value></data>
    <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Vincular los deslizadores de velocidad al comparar videos</value></data>
+   
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Cambiar a Modo Análisis</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Número de archivos en historial:</value></data>
    <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve"><value>Las instancias tienen sus propias preferencias</value></data>
@@ -198,9 +200,12 @@
    <data name="mnuTools" xml:space="preserve"><value>Herramientas</value></data>
    <data name="mnuOptions" xml:space="preserve"><value>Opciones</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Preferencias…</value></data>
-   <data name="mnuRedo" xml:space="preserve"><value>Rehacer</value></data>
+   
+   
+   
    <data name="mnuScreens" xml:space="preserve"><value>Vista</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>Cancelar</value></data>
+   <data name="mnuRedo" xml:space="preserve"><value>Rehacer</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Número de cuadros</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Total en milisegundos</value></data>
    <data name="TimeCodeFormat_Microseconds" xml:space="preserve"><value>Total en microsegundos</value></data>

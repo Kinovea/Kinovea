@@ -127,6 +127,7 @@
    
    
    
+   
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>当播放视频的时候显示绘制信息</value></data>
    
    
@@ -134,6 +135,7 @@
    
    
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>当打开一个新视频的时候使用反交错</value></data>
+   
    
    
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>当以下情况切换至分析模式</value></data>
@@ -198,9 +200,12 @@
    
    <data name="mnuOptions" xml:space="preserve"><value>选项</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>首选项...</value></data>
-   <data name="mnuRedo" xml:space="preserve"><value>重做</value></data>
+   
+   
+   
    <data name="mnuScreens" xml:space="preserve"><value>查看</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>撤销</value></data>
+   <data name="mnuRedo" xml:space="preserve"><value>重做</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>帧数</value></data>
    
    

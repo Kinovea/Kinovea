@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Kinovea.Video;
 using Kinovea.ScreenManager.Languages;
 using System.IO;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -121,7 +122,7 @@ namespace Kinovea.ScreenManager
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = ScreenManagerLang.dlgSaveSequenceTitle;
             saveFileDialog.RestoreDirectory = true;
-            saveFileDialog.Filter = ScreenManagerLang.FileFilter_SaveImage;
+            saveFileDialog.Filter = FilesystemHelper.SaveImageFilter();
             saveFileDialog.FilterIndex = 1;
             saveFileDialog.FileName = Path.GetFileNameWithoutExtension(fullPath);
 

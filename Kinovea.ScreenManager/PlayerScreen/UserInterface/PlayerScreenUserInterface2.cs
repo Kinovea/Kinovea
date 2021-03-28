@@ -2649,10 +2649,10 @@ namespace Kinovea.ScreenManager
             mnuOpenVideo.Text = ScreenManagerLang.mnuOpenVideo;
             mnuOpenReplayWatcher.Text = ScreenManagerLang.mnuOpenReplayWatcher;
             mnuOpenAnnotations.Text = ScreenManagerLang.mnuLoadAnalysis;
-            mnuSaveAnnotations.Text = "Save annotations";
-            mnuSaveAnnotationsAs.Text = "Save annotations as…";
-            mnuExportVideo.Text = "Export video";
-            mnuExportImage.Text = "Export image";
+            mnuSaveAnnotations.Text = ScreenManagerLang.Generic_SaveKVA;
+            mnuSaveAnnotationsAs.Text = ScreenManagerLang.Generic_SaveKVAAs;
+            mnuExportVideo.Text = ScreenManagerLang.Generic_ExportVideo;
+            mnuExportImage.Text = ScreenManagerLang.Generic_SaveImage;
             mnuCopyPic.Text = ScreenManagerLang.mnuCopyImageToClipboard;
             mnuCopyPic.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.CopyImage);
             mnuPastePic.Text = ScreenManagerLang.mnuPasteImage;
@@ -2719,7 +2719,7 @@ namespace Kinovea.ScreenManager
             toolTips.SetToolTip(btnSnapShot, ScreenManagerLang.Generic_SaveImage);
             toolTips.SetToolTip(btnRafale, ScreenManagerLang.ToolTip_Rafale);
             toolTips.SetToolTip(btnDiaporama, ScreenManagerLang.ToolTip_SaveDiaporama);
-            toolTips.SetToolTip(btnSaveVideo, ScreenManagerLang.CommandSaveMovie_FriendlyName);
+            toolTips.SetToolTip(btnSaveVideo, ScreenManagerLang.CommandExportVideo_FriendlyName);
             toolTips.SetToolTip(btnPausedVideo, ScreenManagerLang.ToolTip_SavePausedVideo);
 
             // Working zone and sliders.
@@ -4882,7 +4882,7 @@ namespace Kinovea.ScreenManager
                 SaveFileDialog dlgSave = new SaveFileDialog();
                 dlgSave.Title = ScreenManagerLang.Generic_SaveImage;
                 dlgSave.RestoreDirectory = true;
-                dlgSave.Filter = ScreenManagerLang.FileFilter_SaveImage;
+                dlgSave.Filter = FilesystemHelper.SaveImageFilter();
                 dlgSave.FilterIndex = FilesystemHelper.GetFilterIndex(dlgSave.Filter, PreferencesManager.PlayerPreferences.ImageFormat);
                 
                 if(InteractiveFiltering)

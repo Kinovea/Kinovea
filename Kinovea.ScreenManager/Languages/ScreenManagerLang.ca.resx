@@ -80,12 +80,12 @@
    <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve"><value>Modificar el dibuix</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Esborrar dibuix</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Esborrar un fotograma clau</value></data>
-   <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Desar el vídeo</value></data>
+   <data name="CommandExportVideo_FriendlyName" xml:space="preserve"><value>Desar el vídeo</value></data>
    <data name="DataAnalysis" xml:space="preserve"><value>Anàlisi de ddades</value></data>
    <data name="DataAnalysis_ScatterDiagram" xml:space="preserve"><value>Diagrama de dispersió</value></data>
    <data name="DataAnalysis_LinearKinematics" xml:space="preserve"><value>Cinemàtica lineal</value></data>
    <data name="DataAnalysis_AngularKinematics" xml:space="preserve"><value>Cinemàtica angular</value></data>
-   <data name="DataAnalysis_AngleAngleDiagrams" xml:space="preserve"><value>Diagrames Angle-angle</value></data>
+   <data name="DataAnalysis_AngleAngleDiagrams" xml:space="preserve"><value>Diagrama Angle-angle</value></data>
    <data name="DataAnalysis_PagePlot" xml:space="preserve"><value>Gràfica</value></data>
    <data name="DataAnalysis_Labels" xml:space="preserve"><value>Etiquetas</value></data>
    <data name="DataAnalysis_Title" xml:space="preserve"><value>Títol:</value></data>
@@ -167,6 +167,10 @@
    <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve"><value>Finestra de cerca:</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Mesura real del segment</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Calibració lineal</value></data>
+   
+   
+   
+   
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Calibració del pla</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Duració de cada fotograma clau: {0} centèsima de segon.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Duració de cada fotograma clau: {0:0.00} segons.</value></data>
@@ -191,6 +195,7 @@
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Desar un vídeo amb l'anàlisi incrustat permanentment</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>Els objectes de l'anàlisi seran visibles en tots els reproductors però no seran modificables.# Els comentaris de les imatges clau no es desaran.</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Desar les dades de les imatges clau</value></data>
+   
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Desar la seqüència d'imatges</value></data>
    <data name="dlgCameraCalibration_Title" xml:space="preserve"><value>Calibratge de la càmera</value></data>
    <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve"><value>Coeficients de distorsió</value></data>
@@ -269,6 +274,9 @@
    <data name="Generic_Options" xml:space="preserve"><value>Opcions</value></data>
    <data name="Generic_PenSizePicker" xml:space="preserve"><value>Mida :</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Desar</value></data>
+   
+   
+   
    <data name="Generic_TrackShapePicker" xml:space="preserve"><value>Forma de la línia :</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>Imatge</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Vídeo</value></data>
@@ -287,14 +295,8 @@
    <data name="FileProperty_Duration" xml:space="preserve"><value>Duració</value></data>
    <data name="FileProperty_CreationTime" xml:space="preserve"><value>Data de creació</value></data>
    <data name="FileProperty_HasKva" xml:space="preserve"><value>Arxiu Kva</value></data>
-   <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
-   <data name="FileFilter_SaveImage" xml:space="preserve"><value>Imatges JPEG (*.jpg,*.jpeg)|*.jpg;*.jpeg|Imatges PNG (*.png)|*.png|Imatges Bitmap (*.bmp)|*.bmp</value></data>
-   <data name="FileFilter_ImportReference" xml:space="preserve"><value>Tots els formats suportats(*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
-   <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Texte (*.txt)|*.txt;</value></data>
-   <data name="FileFilter_KVA_All" xml:space="preserve"><value>Tots els formats suportats</value></data>
-   <data name="FileFilter_KVA_kva" xml:space="preserve"><value>Anàlisis de vídeo de Kinovea (*.kva)</value></data>
-   <data name="FileFilter_KVA_srt" xml:space="preserve"><value>Subtítols (*.srt)</value></data>
-   <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
+   <data name="FileFilter_AllSupported" xml:space="preserve"><value>Tots els formats suportats</value></data>
+   <data name="FileFilter_All" xml:space="preserve"><value>Tots els fitxers</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Els fotogrames clau han estat modificats:\nVoleu desar-los abans de tancar?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Els fotogrames clau no s'han desat</value></data>
    <data name="lblDelay_Text" xml:space="preserve"><value>Retard (s) :</value></data>
@@ -343,10 +345,6 @@
    <data name="mnuTwoMixed" xml:space="preserve"><value>Una pantalla de captura i una pantalla de reproducció</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Dues pantalles de reproducció</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Exporta Graella</value></data>
-   <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
-   <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
-   <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
-   <data name="mnuExportTEXT" xml:space="preserve"><value>Trajectòries a text simple</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Format d'imatge</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>Detecció automàtica</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>Forçar 4:3</value></data>
@@ -376,9 +374,8 @@
    <data name="mnuMarkTimeAsOrigin" xml:space="preserve"><value>Marcar el temps actual com a origen de temps</value></data>
    
    <data name="mnuOpenVideo" xml:space="preserve"><value>Obrir un arxiu de video</value></data>
-   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Tots els fitxers (*.*)|*.*</value></data>
    <data name="mnuOpenReplayWatcher" xml:space="preserve"><value>Obrir observador de carpeta de reproducció</value></data>
-   <data name="mnuSave" xml:space="preserve"><value>Desar</value></data>
+   
    <data name="mnuCalibrate" xml:space="preserve"><value>Calibrar...</value></data>
    <data name="mnuTimebase" xml:space="preserve"><value>Configurar la velocitat del video</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Mostrar mesura</value></data>
@@ -416,6 +413,9 @@
    <data name="Toast_StartRecord" xml:space="preserve"><value>Gravació iniciada</value></data>
    <data name="Toast_StopRecord" xml:space="preserve"><value>Gravació aturada</value></data>
    <data name="Toast_ImageSaved" xml:space="preserve"><value>Imatge desada</value></data>
+   
+   
+   
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Afegir una imatge clau</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Anar al fotograma previ</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Perfil de colors</value></data>
@@ -458,6 +458,8 @@
    <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>Desar ambdues imatges en una imatge composta</value></data>
    <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>Desar ambdós vídeos en un vídeo compost</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Establir la zona de treball</value></data>
+   
+   
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Només contorns...</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Nivells Automàtics</value></data>
    <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Ressalta els contorns</value></data>
@@ -469,6 +471,7 @@
    <data name="FormCrashRecovery_File" xml:space="preserve"><value>Arxiu</value></data>
    <data name="FormCrashRecovery_Date" xml:space="preserve"><value>Data</value></data>
    <data name="FormCrashRecovery_Info" xml:space="preserve"><value>Els següents projectes no han estat desats però poden ser recuperats:</value></data>
+   
    
    
    

@@ -5,6 +5,7 @@ using System.Text;
 using OxyPlot.WindowsForms;
 using System.Windows.Forms;
 using System.Drawing;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -40,7 +41,7 @@ namespace Kinovea.ScreenManager
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = "Export graph";
-            saveFileDialog.Filter = "PNG (*.png)|*.png";
+            saveFileDialog.Filter = FilesystemHelper.SavePNGFilter();
             saveFileDialog.FilterIndex = 1;
             saveFileDialog.RestoreDirectory = true;
 

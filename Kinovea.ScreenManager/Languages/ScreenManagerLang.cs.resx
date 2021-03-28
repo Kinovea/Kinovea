@@ -80,7 +80,7 @@
    
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Odstranit nákres</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Odstranit klíčovou pozici</value></data>
-   <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Uložit video</value></data>
+   <data name="CommandExportVideo_FriendlyName" xml:space="preserve"><value>Uložit video</value></data>
    
    
    
@@ -168,6 +168,10 @@
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Skutečná velikost segmentu:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Kalibrace měření</value></data>
    
+   
+   
+   
+   
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Výdrž na každé klíčové pozici : {0} setin sekundy.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Výdrž na každé klíčové pozici: {0:0.00} sekund</value></data>
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Originální video s pauzou na každé klíčové pozici.</value></data>
@@ -191,6 +195,7 @@
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Uložit video s analýzou trvale aplikovanou na video</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>Objekty analýzy budou viditelné ve všech přehrávačích, ale nebude je možno modifikovat.#Zvláštní komentáře připojené ke klíčovým pozicím nebudou uloženy.</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Uložit data klíčových pozic</value></data>
+   
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Uložit sekvenci obrazů</value></data>
    
    
@@ -269,6 +274,9 @@
    <data name="Generic_Options" xml:space="preserve"><value>Možnosti</value></data>
    <data name="Generic_PenSizePicker" xml:space="preserve"><value>Velikost:</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Uložit</value></data>
+   
+   
+   
    <data name="Generic_TrackShapePicker" xml:space="preserve"><value>Tvar linky:</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>Obraz</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Video</value></data>
@@ -287,14 +295,8 @@
    
    
    
-   <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
-   <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG Images (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG Images (*.png)|*.png|Bitmap Images (*.bmp)|*.bmp</value></data>
-   <data name="FileFilter_ImportReference" xml:space="preserve"><value>All supported files (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
-   <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
    
-   <data name="FileFilter_KVA_kva" xml:space="preserve"><value>Kinovea Video Analysis (*.kva)</value></data>
-   
-   <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
+   <data name="FileFilter_All" xml:space="preserve"><value>Všechny soubory</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Klíčové pozice byly změněny.\n¨Chcete uložit klíčové pozice před uzavřením?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Data klíčových pozic neuložena</value></data>
    
@@ -343,10 +345,6 @@
    <data name="mnuTwoMixed" xml:space="preserve"><value>1 snímací obrazovka a 1 obrazovka pro přehrávání</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>2 obrazovky pro přehrávání</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Export do tabulkového procesoru</value></data>
-   <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
-   <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
-   <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
-   <data name="mnuExportTEXT" xml:space="preserve"><value>Dráhy jako jednoduchý text</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Formát obrazu</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>Autodetekce</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>Formát 4:3</value></data>
@@ -376,9 +374,8 @@
    
    
    <data name="mnuOpenVideo" xml:space="preserve"><value>Otevřít video soubor</value></data>
-   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Všechny soubory (*.*)|*.*</value></data>
    
-   <data name="mnuSave" xml:space="preserve"><value>Uložit…</value></data>
+   
    
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>Zobrazit měření</value></data>
@@ -416,6 +413,9 @@
    <data name="Toast_StartRecord" xml:space="preserve"><value>Záznam byl zahájen</value></data>
    <data name="Toast_StopRecord" xml:space="preserve"><value>Záznam byl ukončen</value></data>
    <data name="Toast_ImageSaved" xml:space="preserve"><value>Obraz uložen</value></data>
+   
+   
+   
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Přidat klíčovou pozici</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Přejít na předcházející snímek </value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Barevný profil</value></data>
@@ -458,12 +458,15 @@
    <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>Uložit oba obrazy do kompozitního videa</value></data>
    <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>Uložit obě videa jako kompozitní video</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Nastavit pracovní oblast</value></data>
+   
+   
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Pouze okraje…</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Automatické nastavení</value></data>
    <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Zaostřit…</value></data>
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Celkový přehled</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Zpětné přehrávání…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto kontrast….</value></data>
+   
    
    
    

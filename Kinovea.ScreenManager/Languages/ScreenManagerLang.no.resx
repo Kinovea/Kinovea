@@ -80,7 +80,7 @@
    
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Slett tegning</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Slett nøkkelbilde</value></data>
-   <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Lagre video</value></data>
+   <data name="CommandExportVideo_FriendlyName" xml:space="preserve"><value>Lagre video</value></data>
    
    
    
@@ -168,6 +168,10 @@
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Reell størrelse på segment:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Kalibrere måling</value></data>
    
+   
+   
+   
+   
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Varighet av hvert Nøkkelbilde : {0} hundredels sekund</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Varighet av hvert Nøkkelbilde : {0:0.00} sekunder</value></data>
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Original video med pause ved hvert nøkkelbilde</value></data>
@@ -191,6 +195,7 @@
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Lagre tegninger permanent på video</value></data>
    
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Lagre nøkkelbilde data</value></data>
+   
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Lagre sekvens</value></data>
    
    
@@ -270,6 +275,9 @@
    
    <data name="Generic_Save" xml:space="preserve"><value>Lagre</value></data>
    
+   
+   
+   
    <data name="Generic_Image" xml:space="preserve"><value>Bilde</value></data>
    
    <data name="Generic_SaveImage" xml:space="preserve"><value>Lagre bilde</value></data>
@@ -287,14 +295,8 @@
    
    
    
-   <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
-   <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG Images (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG Images (*.png)|*.png|Bitmap Images (*.bmp)|*.bmp</value></data>
    
-   <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
-   
-   <data name="FileFilter_KVA_kva" xml:space="preserve"><value>Kinovea Video Analysis (*.kva)</value></data>
-   
-   <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi;</value></data>
+   <data name="FileFilter_All" xml:space="preserve"><value>Alle filer</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Nøkkelbilder er endret.\nØnsker du å lagre bilder før du avslutter ?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Nøkkelbilder ble ikke lagret</value></data>
    
@@ -343,10 +345,6 @@
    <data name="mnuTwoMixed" xml:space="preserve"><value>Et opptaksvindu og et avspillingsvindu</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>To avspillingsvinduer</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Eksporter til regneark</value></data>
-   <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
-   <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
-   <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
-   <data name="mnuExportTEXT" xml:space="preserve"><value>Overføring til enkel tekst</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Bildeformat</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>Automatisk valg</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>Bruk 4:3</value></data>
@@ -376,9 +374,8 @@
    
    
    <data name="mnuOpenVideo" xml:space="preserve"><value>Åpne videofil</value></data>
-   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Alle filer (*.*)|*.*</value></data>
    
-   <data name="mnuSave" xml:space="preserve"><value>Lagre...</value></data>
+   
    
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>Vis måling</value></data>
@@ -411,6 +408,9 @@
    
    
    <data name="statusEmptyScreen" xml:space="preserve"><value>Tomt</value></data>
+   
+   
+   
    
    
    
@@ -458,12 +458,15 @@
    
    
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Marker arbeidsfeltet</value></data>
+   
+   
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Kun kanter...</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Auto levels...</value></data>
    <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Skarp opp</value></data>
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Oversikt…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inverter</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto kontrast...</value></data>
+   
    
    
    

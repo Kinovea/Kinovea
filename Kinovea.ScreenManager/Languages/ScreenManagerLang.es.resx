@@ -80,12 +80,12 @@
    <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve"><value>Modificar dibujo</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Borrar dibujo</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Remover imagen clave</value></data>
-   <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Guardar video</value></data>
+   <data name="CommandExportVideo_FriendlyName" xml:space="preserve"><value>Guardar video</value></data>
    <data name="DataAnalysis" xml:space="preserve"><value>Análisis de datos</value></data>
    <data name="DataAnalysis_ScatterDiagram" xml:space="preserve"><value>Gráfico de dispersión</value></data>
    <data name="DataAnalysis_LinearKinematics" xml:space="preserve"><value>Cinemática lineal</value></data>
    <data name="DataAnalysis_AngularKinematics" xml:space="preserve"><value>Cinemática angular</value></data>
-   <data name="DataAnalysis_AngleAngleDiagrams" xml:space="preserve"><value>Diagramas ángulo-ángulo</value></data>
+   <data name="DataAnalysis_AngleAngleDiagrams" xml:space="preserve"><value>Diagrama ángulo-ángulo</value></data>
    <data name="DataAnalysis_PagePlot" xml:space="preserve"><value>Gráfico</value></data>
    <data name="DataAnalysis_Labels" xml:space="preserve"><value>Etiquetas</value></data>
    <data name="DataAnalysis_Title" xml:space="preserve"><value>Título:</value></data>
@@ -167,6 +167,10 @@
    <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve"><value>Ventana de búsqueda</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Medida real del segmento:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Calibrar la medida</value></data>
+   
+   
+   
+   
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Plano de calibración</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Duración de cada diapositiva: {0} centésimas de segundo.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Duración de cada diapositiva: {0:0.00} segundos.</value></data>
@@ -191,6 +195,7 @@
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Incrustar permanentemente las anotaciones sobre el vídeo.</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>Las anotaciones serán visibles en todos los reproductores pero no serán modificables.#Los comentarios atados a las imágenes clave no se guardarán.</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Guardar los datos de las imàgenes clave .</value></data>
+   
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Guardar la secuencia de imágenes </value></data>
    <data name="dlgCameraCalibration_Title" xml:space="preserve"><value>Calibración de la cámara</value></data>
    <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve"><value>Coeficientes de distorsión</value></data>
@@ -269,6 +274,9 @@
    <data name="Generic_Options" xml:space="preserve"><value>Opciones</value></data>
    <data name="Generic_PenSizePicker" xml:space="preserve"><value>Tamaño:</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Guardar</value></data>
+   
+   
+   
    <data name="Generic_TrackShapePicker" xml:space="preserve"><value>Forma de la línea</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>Imagen </value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Video</value></data>
@@ -287,14 +295,8 @@
    <data name="FileProperty_Duration" xml:space="preserve"><value>Duración</value></data>
    <data name="FileProperty_CreationTime" xml:space="preserve"><value>Fecha de creación</value></data>
    <data name="FileProperty_HasKva" xml:space="preserve"><value>Archivo kva</value></data>
-   <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
-   <data name="FileFilter_SaveImage" xml:space="preserve"><value>Imagenes JPEG (*.jpg,*.jpeg)|*.jpg;*.jpeg|Imagenes PNG (*.png)|*.png|Imagenes Bitmap (*.bmp)|*.bmp</value></data>
-   <data name="FileFilter_ImportReference" xml:space="preserve"><value>Todos los archivos soportados (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
-   <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
-   <data name="FileFilter_KVA_All" xml:space="preserve"><value>Todos los formatos soportados</value></data>
-   <data name="FileFilter_KVA_kva" xml:space="preserve"><value>Analisis Video Kinovea (*.kva)</value></data>
-   <data name="FileFilter_KVA_srt" xml:space="preserve"><value>Subtítulos (*.srt)</value></data>
-   <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
+   <data name="FileFilter_AllSupported" xml:space="preserve"><value>Todos los formatos soportados</value></data>
+   <data name="FileFilter_All" xml:space="preserve"><value>Todos los archivos</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Imágenes clave han sido modificados.\n ¿Desea guardar los datos antes de cerrar ?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Imágenes clave no guardadas</value></data>
    <data name="lblDelay_Text" xml:space="preserve"><value>Retraso (s):</value></data>
@@ -343,10 +345,6 @@
    <data name="mnuTwoMixed" xml:space="preserve"><value>Una pantalla de captura y una pantalla de lectura</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Dos pantallas de lectura</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Exportar la hoja de cálculo</value></data>
-   <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
-   <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
-   <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
-   <data name="mnuExportTEXT" xml:space="preserve"><value>Trayectoria en texto</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Formato de la imagen</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>Detección automática</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>Forzar 4:3</value></data>
@@ -376,9 +374,8 @@
    <data name="mnuMarkTimeAsOrigin" xml:space="preserve"><value>Marcar tiempo actual como origen de tiempo</value></data>
    
    <data name="mnuOpenVideo" xml:space="preserve"><value>Abrir un video</value></data>
-   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Todos los archivos (*.*)|*.*</value></data>
    <data name="mnuOpenReplayWatcher" xml:space="preserve"><value>Abrir observador de carpeta de reproducción</value></data>
-   <data name="mnuSave" xml:space="preserve"><value>Guardar el video o los datos de las imàgenes clave…</value></data>
+   
    <data name="mnuCalibrate" xml:space="preserve"><value>Calibrar…</value></data>
    <data name="mnuTimebase" xml:space="preserve"><value>Configurar la velocidad del video</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Mostar la medida</value></data>
@@ -416,6 +413,9 @@
    <data name="Toast_StartRecord" xml:space="preserve"><value>Grabación iniciada</value></data>
    <data name="Toast_StopRecord" xml:space="preserve"><value>Grabación detenida</value></data>
    <data name="Toast_ImageSaved" xml:space="preserve"><value>Imagen grabada</value></data>
+   
+   
+   
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Añadir una imagen clave</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Ir a la imagen anterior</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Perfil de color</value></data>
@@ -458,6 +458,8 @@
    <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>Guardar los dos imagenes en una imagen compuesta</value></data>
    <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>Guardar los dos videos en una video compuesto</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Especificar el área de trabajo</value></data>
+   
+   
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Contornos solamente...</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Niveles automáticos...</value></data>
    <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Fortalecimiento de contornos…</value></data>
@@ -469,6 +471,7 @@
    <data name="FormCrashRecovery_File" xml:space="preserve"><value>Archivo</value></data>
    <data name="FormCrashRecovery_Date" xml:space="preserve"><value>Fecha de creación</value></data>
    <data name="FormCrashRecovery_Info" xml:space="preserve"><value>Los siguientes proyectos no se guardaron correctamente pero pueden recuperarse:</value></data>
+   
    
    
    

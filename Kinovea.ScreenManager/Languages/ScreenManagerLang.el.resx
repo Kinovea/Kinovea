@@ -80,7 +80,7 @@
    
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Διαγραφή Σχεδίου</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Κατάργηση Εικόνας "Κλειδί"</value></data>
-   <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Αποθήκευση Video</value></data>
+   <data name="CommandExportVideo_FriendlyName" xml:space="preserve"><value>Αποθήκευση Video</value></data>
    
    
    
@@ -168,6 +168,10 @@
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Πραγματικό μέγεθος του τμήματος</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Μέτρηση σφραγίδας</value></data>
    
+   
+   
+   
+   
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Διάρκεια κάθε Βασικής εικόνας : {0} εκατοστά του δευτερολέπτου.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Διάρκεια κάθε Βασικής εικόνας : {0:0.00} δευτερόλεπτα.</value></data>
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Αρχικό video με παύση σε κάθε Βασική Εικόνα</value></data>
@@ -191,6 +195,7 @@
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Μόνιμος Χρωματισμός βασικών εικόνων στο video.</value></data>
    
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Αποθήκευση Δεδομένων Βασικών Εικόνων</value></data>
+   
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Αποθήκευση Ακολουθίας</value></data>
    
    
@@ -270,6 +275,9 @@
    
    <data name="Generic_Save" xml:space="preserve"><value>Αποθήκευση</value></data>
    
+   
+   
+   
    <data name="Generic_Image" xml:space="preserve"><value>Εικόνα</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Βίντεο</value></data>
    <data name="Generic_SaveImage" xml:space="preserve"><value>Αποθήκευση Εικόνας</value></data>
@@ -287,14 +295,8 @@
    
    
    
-   <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
-   <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG Images (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG Images (*.png)|*.png|Bitmap Images (*.bmp)|*.bmp</value></data>
-   <data name="FileFilter_ImportReference" xml:space="preserve"><value>Όλα τα υποστηριζόμενα αρχεία (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
-   <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt</value></data>
    
-   <data name="FileFilter_KVA_kva" xml:space="preserve"><value>Kinovea Video Analysis (*.kva)</value></data>
-   
-   <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
+   <data name="FileFilter_All" xml:space="preserve"><value>Όλα τα αρχεία</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Οι Βασικές Εικόνες έχουν τροποποιηθεί.\n Επιθυμείτε να αποθηκεύσετε τα δεδομένα των εικόνων κλειδιά πριν διακόψετε?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Τα δεδομένα των Βασικών Εικόνων δεν έχουν αποθηκευτεί</value></data>
    
@@ -343,10 +345,6 @@
    <data name="mnuTwoMixed" xml:space="preserve"><value>Μια οθόνη Αποτύπωσης και μια Αναπαραγωγής</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Δυο Οθόνες Αναπαραγωγής</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Εξαγωγή σε Λογιστικό φύλλο</value></data>
-   <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
-   <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
-   <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
-   <data name="mnuExportTEXT" xml:space="preserve"><value>Τροχιές σε απλό κείμενο</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Μορφή Εικόνας</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>Αυτόματη Ανίχνευση</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>Εφαρμογή 4:3</value></data>
@@ -376,9 +374,8 @@
    
    
    <data name="mnuOpenVideo" xml:space="preserve"><value>Άνοιγμα Αρχείου Video</value></data>
-   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Όλα τα αρχεία (*.*)|*.*</value></data>
    
-   <data name="mnuSave" xml:space="preserve"><value>Αποθήκευση…</value></data>
+   
    
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>Απεικόνιση Μέτρησης</value></data>
@@ -416,6 +413,9 @@
    <data name="Toast_StartRecord" xml:space="preserve"><value>Η εγγραφή ξεκίνησε</value></data>
    <data name="Toast_StopRecord" xml:space="preserve"><value>Η εγγραφή σταμάτησε</value></data>
    <data name="Toast_ImageSaved" xml:space="preserve"><value>Η εικόνα σώθηκε</value></data>
+   
+   
+   
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Προσθήκη Βασικής Εικόνας</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Πήγαινε στο προηγούμενο Πλαίσιο</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Προφίλ Χρώματος…</value></data>
@@ -458,12 +458,15 @@
    <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>Αποθήκευση και των δύο εικόνων σαν μια σύνθετη εικόνα</value></data>
    <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>Αποθήκευση και των δύο βίντεο σαν ένα σύνθετο βίντεο</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Καθορισμός της Ζώνης Εργασίας</value></data>
+   
+   
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Μόνο οι Άκρες…</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Αυτόματα Επίπεδα…</value></data>
    <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Όξυνση…</value></data>
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Περίληψη…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Αντιστροφή…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Αυτόματη Αντίθεση...</value></data>
+   
    
    
    
