@@ -88,7 +88,6 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuTimecodeNormalized = new ToolStripMenuItem();
         private ToolStripMenuItem mnuWorkspace = new ToolStripMenuItem();
         private ToolStripMenuItem mnuWorkspaceSaveAsDefault = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuWorkspaceForgetDefault = new ToolStripMenuItem();
         private ToolStripMenuItem mnuWorkspaceExport = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHelp = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHelpContents = new ToolStripMenuItem();
@@ -341,9 +340,8 @@ namespace Kinovea.Root
             mnuTimecode.DropDownItems.AddRange(new ToolStripItem[] { mnuTimecodeClassic, mnuTimecodeFrames, mnuTimecodeMilliseconds, mnuTimecodeMicroseconds, mnuTimecodeTimeAndFrames});
 
             mnuWorkspaceSaveAsDefault.Click += MnuWorkspaceSaveAsDefault_Click;
-            mnuWorkspaceForgetDefault.Click += MnuWorkspaceForgetDefault_Click;
             mnuWorkspaceExport.Click += MnuWorkspaceExport_Click;
-            mnuWorkspace.DropDownItems.AddRange(new ToolStripItem[] { mnuWorkspaceSaveAsDefault, mnuWorkspaceExport, new ToolStripSeparator(), mnuWorkspaceForgetDefault });
+            mnuWorkspace.DropDownItems.AddRange(new ToolStripItem[] { mnuWorkspaceSaveAsDefault, mnuWorkspaceExport });
 
             mnuOptions.DropDownItems.AddRange(new ToolStripItem[] { 
                 mnuLanguages, 
@@ -450,8 +448,6 @@ namespace Kinovea.Root
             mnuWorkspace.Image = Properties.Resources.common_controls;
             mnuWorkspaceSaveAsDefault.Text = "Save as default workspace";
             mnuWorkspaceSaveAsDefault.Image = Properties.Resources.disk;
-            mnuWorkspaceForgetDefault.Text = "Forget default workspace";
-            mnuWorkspaceForgetDefault.Image = Properties.Resources.bin_empty;
             mnuWorkspaceExport.Text = "Export workspace";
             mnuWorkspaceExport.Image = Properties.Resources.file_txt;
 
@@ -643,14 +639,8 @@ namespace Kinovea.Root
             Workspace workspace = screenManager.ExtractWorkspace();
             PreferencesManager.GeneralPreferences.Workspace = workspace;
             PreferencesManager.Save();
-        }
 
-        private void MnuWorkspaceForgetDefault_Click(object sender, EventArgs e)
-        {
-            // Reset the workspace set in preferences.
-            Workspace workspace = new Workspace();
-            PreferencesManager.GeneralPreferences.Workspace = workspace;
-            PreferencesManager.Save();
+            MessageBox.Show("Default workspace saved.", "Workspace", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void MnuWorkspaceExport_Click(object sender, EventArgs e)
