@@ -2405,6 +2405,9 @@ namespace Kinovea.ScreenManager
                     camerasToDiscover.Add(((ScreenDescriptionCapture)screenDescription).CameraName);
             }
 
+            if (camerasToDiscover.Count == 0)
+                CameraTypeManager.StopDiscoveringCameras();
+
             foreach (IScreenDescription screenDescription in LaunchSettingsManager.ScreenDescriptions)
             {
                 if (screenDescription is ScreenDescriptionCapture)
