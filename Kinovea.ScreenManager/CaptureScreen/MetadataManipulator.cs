@@ -160,6 +160,11 @@ namespace Kinovea.ScreenManager
         {
             return screenToolManager.GetCursor(scale);
         }
+
+        public void InvalidateCursor()
+        {
+            screenToolManager.InvalidateCursor();
+        }
         
         public void DeleteHitDrawing()
         {

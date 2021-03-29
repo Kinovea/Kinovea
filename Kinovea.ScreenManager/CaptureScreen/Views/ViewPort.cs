@@ -39,10 +39,12 @@ namespace Kinovea.ScreenManager
         private Size referenceSize;             // Original image size after optional rotation.
         private Rectangle displayRectangle;     // Position and size of the region of the viewport where we draw the image.
         private ImageManipulator manipulator = new ImageManipulator();
+
         private ZoomHelper zoomHelper = new ZoomHelper();
         private List<EmbeddedButton> resizers = new List<EmbeddedButton>();
         private static Bitmap resizerBitmap = Properties.Resources.resizer;
         private static int resizerOffset = resizerBitmap.Width / 2;
+        private int resizerIndex = -1;
         private MessageToaster toaster;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -189,6 +191,8 @@ namespace Kinovea.ScreenManager
 
             controller.OnMouseUp(e.Location, ModifierKeys, displayRectangle.Location, zoomHelper.Value);
             manipulator.End();
+
+            // TODO: do not call this if we are not resizing.
             ForceZoomValue();
             controller.UpdateDisplayRectangle(displayRectangle);
             Cursor = controller.GetCursor(zoomHelper.Value);
@@ -253,10 +257,14 @@ namespace Kinovea.ScreenManager
             AfterZoomChanged(e.Location);
         }
 
+        /// <summary>
+        /// Explicit zoom change (mouse scroll or reset).
+        /// </summary>
         private void AfterZoomChanged(Point location)
         {
             RecomputeDisplayRectangle(referenceSize, displayRectangle, location);
             ToastZoom();
+            controller.InvalidateCursor();
         }
         
         private void ToastZoom()
@@ -274,6 +282,9 @@ namespace Kinovea.ScreenManager
             ToastMessage(message, 750);
         }
         
+        /// <summary>
+        /// Implicit zoom change (resizers).
+        /// </summary>
         private void ForceZoomValue()
         {
             // The display rectangle has changed size outside the context of zoom (e.g: dragging corners).
@@ -286,6 +297,8 @@ namespace Kinovea.ScreenManager
             float maxDifference = 0.1f;
             if (Math.Abs(newZoom - oldZoom) > maxDifference)
                 ToastZoom();
+
+            controller.InvalidateCursor();
         }
         
         private void InitializeDisplayRectangle(Rectangle saved)
@@ -336,21 +349,36 @@ namespace Kinovea.ScreenManager
             resizers[3].Location = new Point(displayRectangle.Left - resizerOffset, displayRectangle.Bottom - resizerOffset);
         }
         
+        /// <summary>
+        /// Update the cursor to the current tool or resizer.
+        /// </summary>
         private void UpdateCursor(Point mouse)
         {
-            bool onResizer = false;
+            // This is called for every mouse move so it must be as quick as possible and not create unecessary resources.
+            int onResizerIndex = -1;
             for(int i = 0; i < resizers.Count; i++)
             {
-                if(resizers[i].HitTest(mouse))
-                {
-                    onResizer = true;
-                    Cursor = resizers[i].CursorMouseOver;
-                    break;
-                }
+                if (!resizers[i].HitTest(mouse))
+                    continue;
+                
+                onResizerIndex = i;
+                break;
             }
-            
-            if(!onResizer)
-                Cursor = controller.GetCursor(zoomHelper.Value);
+
+            if (onResizerIndex >= 0)
+            {
+                if (onResizerIndex != resizerIndex)
+                {
+                    resizerIndex = onResizerIndex;
+                    Cursor = resizers[resizerIndex].CursorMouseOver;
+                }
+                
+                return;
+            }
+
+            // Not on a resizer (hand tool or normal tool).
+            resizerIndex = -1;
+            Cursor = controller.GetCursor(zoomHelper.Value);
         }
         #endregion
         

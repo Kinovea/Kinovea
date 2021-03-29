@@ -8,9 +8,21 @@ using System.Drawing.Drawing2D;
 
 namespace Kinovea.ScreenManager
 {
-    public static class CursorManager
+    /// <summary>
+    /// Manager for the active cursor.
+    /// There should be one instance of this per screen.
+    /// </summary>
+    public class CursorManager
     {
-        public static Cursor GetToolCursor(AbstractDrawingTool tool, double stretchFactor)
+        private Bitmap bitmap = new Bitmap(16, 16);
+        private IntPtr iconHandle;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        /// <summary>
+        /// Get the cursor for the passed tool.
+        /// This must be called every time the active tool changes or the image scale changes.
+        /// </summary>
+        public Cursor GetToolCursor(AbstractDrawingTool tool, double stretchFactor)
         {
             if (tool is DrawingToolPointer)
                 return ((DrawingToolPointer)tool).GetCursor();
@@ -26,7 +38,7 @@ namespace Kinovea.ScreenManager
             {
                 // Many of the GenericPosture tools have a color style element that doesn't really serve any purpose, 
                 // as the lines making the drawing can have their own color defined in the XML.
-                // They are also draw at once on the canvas like a stamp.
+                // They are also drawn at once on the canvas like a stamp.
                 // So for these we reuse the drawing tool icon as a cursor.
                 return GetCursorIcon(tool);
             }
@@ -73,7 +85,10 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        public static Cursor GetManipulationCursor(AbstractDrawing drawing)
+        /// <summary>
+        /// Get the precision cursor to use while manipulating the object.
+        /// </summary>
+        public Cursor GetManipulationCursor(AbstractDrawing drawing)
         {
             IDecorable decorable = drawing as IDecorable;
             if (decorable == null)
@@ -82,25 +97,38 @@ namespace Kinovea.ScreenManager
             return GetCursorPrecision(decorable.DrawingStyle, false);
         }
 
-        public static Cursor GetManipulationCursorMagnifier()
+        /// <summary>
+        /// Get the cursor used to manipulate the magnifier.
+        /// </summary>
+        public Cursor GetManipulationCursorMagnifier()
         {
             // Special case as the magnifier is not an AbstractDrawing.
             return GetCursorPrecision(null, false);
         }
-        
-        private static Cursor GetCursorIcon(AbstractDrawingTool tool)
+
+        #region Private
+
+        /// <summary>
+        /// Get the cursor from the tool's icon.
+        /// </summary>
+        private Cursor GetCursorIcon(AbstractDrawingTool tool)
         {
             if (tool.Icon == null)
                 return Cursors.Cross;
 
-            Bitmap b = new Bitmap(tool.Icon.Width, tool.Icon.Height);
-            Graphics g = Graphics.FromImage(b);
+            if (bitmap.Width != tool.Icon.Width || bitmap.Height != tool.Icon.Height)
+                bitmap = new Bitmap(tool.Icon.Width, tool.Icon.Height);
+
+            Graphics g = Graphics.FromImage(bitmap);
             g.DrawImage(tool.Icon, 0, 0);
 
-            return new Cursor(b.GetHicon());
+            return CursorFromBitmap(bitmap);
         }
 
-        private static Cursor GetCursorPencil(DrawingStyle style, double stretchFactor)
+        /// <summary>
+        /// Get the variable-size cursor for the pencil tool.
+        /// </summary>
+        private Cursor GetCursorPencil(DrawingStyle style, double stretchFactor)
         {
             // Colored and sized circle with precision cross.
             string keyColor = "color";
@@ -119,9 +147,11 @@ namespace Kinovea.ScreenManager
 
             Pen p = new Pen(c, 1);
             int bmpSize = Math.Max((int)crossSize, circleSize);
-            Bitmap b = new Bitmap(bmpSize, bmpSize);
-            Graphics g = Graphics.FromImage(b);
-            
+            if (bitmap.Width != bmpSize || bitmap.Height != bmpSize)
+                bitmap = new Bitmap(bmpSize, bmpSize);
+
+            Graphics g = Graphics.FromImage(bitmap);
+            g.Clear(Color.Transparent);
             float startCircle = (bmpSize - 1 - circleSize) / 2.0f;
             g.DrawEllipse(p, startCircle, startCircle, circleSize, circleSize);
 
@@ -134,10 +164,13 @@ namespace Kinovea.ScreenManager
             g.Dispose();
             p.Dispose();
 
-            return new Cursor(b.GetHicon());
+            return CursorFromBitmap(bitmap);
         }
 
-        private static Cursor GetCursorCrossMark(DrawingStyle style)
+        /// <summary>
+        /// Get the fixed-size cursor for the cross mark tool.
+        /// </summary>
+        private Cursor GetCursorCrossMark(DrawingStyle style)
         {
             // Cross inside a semi transparent circle (same as drawing).
             string keyColor = "back color";
@@ -146,8 +179,12 @@ namespace Kinovea.ScreenManager
 
             Color c = (Color)style.Elements[keyColor].Value;
             Pen p = new Pen(c, 1);
-            Bitmap b = new Bitmap(9, 9);
-            Graphics g = Graphics.FromImage(b);
+            int size = 9;
+            if (bitmap.Width != size || bitmap.Height != size)
+                bitmap = new Bitmap(size, size);
+            
+            Graphics g = Graphics.FromImage(bitmap);
+            g.Clear(Color.Transparent);
 
             // Center point is {4,4}
             g.DrawLine(p, 1, 4, 7, 4);
@@ -160,10 +197,13 @@ namespace Kinovea.ScreenManager
             g.Dispose();
             p.Dispose();
 
-            return new Cursor(b.GetHicon());
+            return CursorFromBitmap(bitmap);
         }
         
-        private static Cursor GetCursorPrecision(DrawingStyle style, bool invert)
+        /// <summary>
+        /// Get a fixed-size "precision cross" cursor.
+        /// </summary>
+        private Cursor GetCursorPrecision(DrawingStyle style, bool invert)
         {
             // Try to find a color style element to use as the cursor color.
             Color color = Color.Empty;
@@ -192,17 +232,35 @@ namespace Kinovea.ScreenManager
             // Creates a "precision" cursor, simple cross.
             Pen p = new Pen(color, 1);
             int size = 15;
+            if (bitmap.Width != size || bitmap.Height != size)
+                bitmap = new Bitmap(size, size);
+
+            Graphics g = Graphics.FromImage(bitmap);
+            g.Clear(Color.Transparent);
             int half = (size - 1) / 2;
-            Bitmap b = new Bitmap(size, size);
-            Graphics g = Graphics.FromImage(b);
-            
             g.DrawLine(p, 0, half, size-1, half);
             g.DrawLine(p, half, 0, half, size-1);
 
             g.Dispose();
             p.Dispose();
 
-            return new Cursor(b.GetHicon());
+            return CursorFromBitmap(bitmap);
         }
+
+        /// <summary>
+        /// Get a custom cursor object from the painted bitmap.
+        /// </summary>
+        private Cursor CursorFromBitmap(Bitmap bitmap)
+        {
+            IntPtr previousIconHandle = iconHandle;
+            iconHandle = bitmap.GetHicon();
+            Cursor customCursor = new Cursor(iconHandle);
+
+            if (previousIconHandle != IntPtr.Zero)
+                NativeMethods.DestroyIcon(previousIconHandle);
+                
+            return customCursor;
+        }
+        #endregion
     }
 }

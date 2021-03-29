@@ -121,5 +121,8 @@ namespace Kinovea.ScreenManager
             public uint dmPanningHeight;
         }
         #endregion
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool DestroyIcon(IntPtr hIcon);
     }
 }

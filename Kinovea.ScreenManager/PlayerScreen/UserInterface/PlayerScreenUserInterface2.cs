@@ -332,6 +332,7 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Timer m_DeselectionTimer = new System.Windows.Forms.Timer();
         private MessageToaster m_MessageToaster;
         private bool m_Constructed;
+        private CursorManager cursorManager = new CursorManager();
 
         #region Context Menus
         private ContextMenuStrip popMenu = new ContextMenuStrip();
@@ -2803,7 +2804,7 @@ namespace Kinovea.ScreenManager
             {
                 hitMagnifier = m_FrameServer.Metadata.Magnifier.OnMouseDown(m_DescaledMouse, m_FrameServer.Metadata.ImageTransform);
                 if (hitMagnifier)
-                    SetCursor(CursorManager.GetManipulationCursorMagnifier());
+                    SetCursor(cursorManager.GetManipulationCursorMagnifier());
             }
 
             if (hitMagnifier || InteractiveFiltering)
@@ -2825,7 +2826,7 @@ namespace Kinovea.ScreenManager
                 m_PointerTool.OnMouseDown(m_FrameServer.Metadata, m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition, PreferencesManager.PlayerPreferences.DefaultFading.Enabled);
 
                 if (m_FrameServer.Metadata.HitDrawing != null)
-                    SetCursor(CursorManager.GetManipulationCursor(m_FrameServer.Metadata.HitDrawing));
+                    SetCursor(cursorManager.GetManipulationCursor(m_FrameServer.Metadata.HitDrawing));
                 else
                     SetCursor(m_PointerTool.GetCursor(1));
             }
@@ -2866,7 +2867,7 @@ namespace Kinovea.ScreenManager
 
             m_PointerTool.OnMouseDown(m_FrameServer.Metadata, m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition, PreferencesManager.PlayerPreferences.DefaultFading.Enabled);
             if (m_FrameServer.Metadata.HitDrawing != null)
-                SetCursor(CursorManager.GetManipulationCursor(m_FrameServer.Metadata.HitDrawing));
+                SetCursor(cursorManager.GetManipulationCursor(m_FrameServer.Metadata.HitDrawing));
             else
                 SetCursor(m_PointerTool.GetCursor(1));
         }
@@ -4091,7 +4092,7 @@ namespace Kinovea.ScreenManager
             {
                 UnzoomDirectZoom(false);
                 m_FrameServer.Metadata.Magnifier.Mode = MagnifierMode.Direct;
-                SetCursor(CursorManager.GetManipulationCursorMagnifier());
+                SetCursor(cursorManager.GetManipulationCursorMagnifier());
 
                 if (TrackableDrawingAdded != null)
                     TrackableDrawingAdded(this, new TrackableDrawingEventArgs(m_FrameServer.Metadata.Magnifier as ITrackable));
@@ -4176,7 +4177,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                Cursor cursor = CursorManager.GetToolCursor(m_ActiveTool, m_FrameServer.ImageTransform.Scale);
+                Cursor cursor = cursorManager.GetToolCursor(m_ActiveTool, m_FrameServer.ImageTransform.Scale);
                 SetCursor(cursor);
             }
         }

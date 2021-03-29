@@ -198,6 +198,11 @@ namespace Kinovea.ScreenManager
             return metadataManipulator.GetCursor(imageZoom);
         }
 
+        public void InvalidateCursor()
+        {
+            metadataManipulator.InvalidateCursor();
+        }
+
         #region IDrawingHostView
         public void DoInvalidate()
         {

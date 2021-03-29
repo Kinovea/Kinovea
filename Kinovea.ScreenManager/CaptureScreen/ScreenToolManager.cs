@@ -45,6 +45,9 @@ namespace Kinovea.ScreenManager
     
         private AbstractDrawingTool activeTool;
         private DrawingToolPointer handTool;
+        private Cursor cursor;
+        private bool invalidateCursor = true;
+        private CursorManager cursorManager = new CursorManager();
         private List<AbstractDrawingTool> tools = new List<AbstractDrawingTool>();
         
         public ScreenToolManager()
@@ -56,18 +59,48 @@ namespace Kinovea.ScreenManager
         public void SetActiveTool(AbstractDrawingTool tool)
         {
             activeTool = tool ?? handTool;
+            invalidateCursor = true;
         }
         public void AfterFrameChanged()
         {
-            activeTool = activeTool.KeepToolFrameChanged ? activeTool : handTool;
+            if (!activeTool.KeepToolFrameChanged)
+            {
+                activeTool = handTool;
+                invalidateCursor = true;
+            }
         }
+
         public void AfterToolUse()
         {
-            activeTool = activeTool.KeepTool ? activeTool : handTool;
+            if (!activeTool.KeepTool)
+            {
+                activeTool = handTool;
+                invalidateCursor = true;
+            }
         }
+
+        /// <summary>
+        /// Get the current cursor.
+        /// This is called on every mouse move in case we change from image resizer cursor to normal tool cursor.
+        /// </summary>
         public Cursor GetCursor(float scale)
         {
-            return CursorManager.GetToolCursor(activeTool, scale);
+            if (cursor == null || invalidateCursor)
+            {
+                invalidateCursor = false;
+                cursor = cursorManager.GetToolCursor(activeTool, scale);
+            }
+            
+            return cursor;
+        }
+
+        /// <summary>
+        /// Invalidate the cursor. 
+        /// This must be called after a tool change or image scale change.
+        /// </summary>
+        public void InvalidateCursor()
+        {
+            invalidateCursor = true;
         }
     }
 }
