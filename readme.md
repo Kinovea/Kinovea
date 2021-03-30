@@ -1,5 +1,4 @@
-
-
+[![Hosted Weblate](https://hosted.weblate.org/widgets/kinovea/-/svg-badge.svg)](https://hosted.weblate.org/engage/kinovea/)
 
 Kinovea is a video annotation tool designed for motion analysis. It features utilities to capture, slow down, compare, annotate and measure motion in videos.
 
