@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<KinoveaCameraPlugin>
+  <FormatVersion>3.0</FormatVersion>
+  <Name>IDS</Name>
+  <Assembly>Kinovea.Camera.IDS.dll</Assembly>
+  <Class>Kinovea.Camera.IDS.CameraManagerIDS</Class>
+</KinoveaCameraPlugin>
