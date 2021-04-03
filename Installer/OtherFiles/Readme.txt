@@ -1,8 +1,8 @@
 
-Kinovea 0.9.4 - TBD.
+Kinovea 0.9.4 - April 2021.
 
-Kinovea is a video player dedicated to motion analysis.
-It provides a set of tools to capture, slow down, compare, annotate and measure motion in videos.
+Kinovea is a free and open source video annotation tool designed for motion analysis. 
+It features utilities to capture, slow down, compare, annotate and measure motion in videos.
 
 
 System Requirements:
@@ -23,12 +23,13 @@ Please see license.txt for details. In a nutshell:
 - Video Tutorials : CC-BY-SA.
 
 
-Communication channels:
+Project:
 --------
-- Web: http://www.kinovea.org
-- Discussion: https://www.kinovea.org/en/forum
-- Bugs: https://github.com/Kinovea/Kinovea/issues
-- Mail: asso@kinovea.org
+- Website: http://www.kinovea.org
+- Forum: https://www.kinovea.org/en/forum
+- Bug tracker: https://github.com/Kinovea/Kinovea/issues
+- Translation: https://hosted.weblate.org/engage/kinovea/
+- Contact: asso@kinovea.org
 - Youtube: @kinovea
 - Twitter: @Kinovea
 - Instagram: @kinovea
@@ -37,7 +38,7 @@ Communication channels:
 Changelog:
 ----------
 
-0.9.4 - TBD
+0.9.4 - April 2021.
     Added - General: support for workspaces as presets of screens arrangements and content.
     Added - General: support controlling Kinovea from external applications using WM_COPYDATA messages.
     Added - Capture: support for Baumer cameras.
@@ -59,6 +60,7 @@ Changelog:
     Improved - Capture: added a command to disable delayed display but still use the delay for recording.
     Improved - Capture: display a special image when the delay is larger than the first frame available.
     Improved - Capture: save and restore the mirror flag in camera settings.
+    Fixed - The application could crash when using drawing tools in the capture screen.
     Fixed - Some manipulations in the playback screen were not triggering screen activation.
     Fixed - The timecodes were wrong when using custom playback rate.
     Fixed - The capture screen didn't export some metadata correctly when the camera was rotated.
@@ -66,7 +68,8 @@ Changelog:
     Fixed - The scaling of rectangle and circle was wrong when loading a KVA in a video of a different size.
     Fixed - Crash when trying to render extra drawings like chronometer in a capture screen.
     Fixed - The speed slider could fail to keep its value when loading a new video in a replay observer.
-
+    Fixed - Kinematics measurements were off by one frame when the coordinate system is itself tracked.
+    
 
 0.9.3 - July 2020.
     Improved - Playback: more memory can be allocated for cache memory.
