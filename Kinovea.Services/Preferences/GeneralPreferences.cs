@@ -109,7 +109,7 @@ namespace Kinovea.Services
         /// <returns></returns>
         public CultureInfo GetSupportedCulture()
         {
-            CultureInfo ci = new CultureInfo(LanguageManager.FixCultureName(uiCultureName));
+            CultureInfo ci = new CultureInfo(uiCultureName);
             if (LanguageManager.IsSupportedCulture(ci))
                 return ci;
             else

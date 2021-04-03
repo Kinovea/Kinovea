@@ -523,7 +523,7 @@ namespace Kinovea.Root
             try
             {
                 CultureInfo oldCulture = Thread.CurrentThread.CurrentUICulture;
-                CultureInfo newCulture = new CultureInfo(LanguageManager.FixCultureName(name));
+                CultureInfo newCulture = new CultureInfo(name);
 
                 log.Debug(String.Format("Changing culture from [{0}] to [{1}].", oldCulture.Name, newCulture.Name));
 
