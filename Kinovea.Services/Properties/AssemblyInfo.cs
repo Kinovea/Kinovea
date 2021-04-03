@@ -12,7 +12,7 @@ using System;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("www.kinovea.org")]
 [assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("Copyright © 2006-2019 Joan Charmant")]
+[assembly: AssemblyCopyright("Copyright © 2006-2021 Joan Charmant")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]

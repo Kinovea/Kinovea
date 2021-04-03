@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Kinovea.Camera.HTTP")]
-[assembly: AssemblyCopyright("Copyright © 2006-2019 - Joan Charmant and contributors.")]
+[assembly: AssemblyCopyright("Copyright © 2006-2021 - Joan Charmant and contributors.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
