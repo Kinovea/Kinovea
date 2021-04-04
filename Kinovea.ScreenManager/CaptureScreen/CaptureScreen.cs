@@ -326,6 +326,12 @@ namespace Kinovea.ScreenManager
         }
         public override void BeforeClose()
         {
+            if (stopwatchDiscovery.IsRunning)
+            {
+                stopwatchDiscovery.Stop();
+                CameraTypeManager.CamerasDiscovered -= CameraTypeManager_CamerasDiscovered;
+            }
+
             if (cameraLoaded)
                 UnloadCamera();
 
@@ -571,8 +577,8 @@ namespace Kinovea.ScreenManager
             {
                 // We don't know about this camera yet. Go through normal discovery.
                 this.screenDescription = screenDescription;
-                CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
                 stopwatchDiscovery.Start();
+                CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
                 CameraTypeManager.StartDiscoveringCameras();
             }
         }
@@ -593,7 +599,10 @@ namespace Kinovea.ScreenManager
 
         private void CameraTypeManager_CamerasDiscovered(object sender, CamerasDiscoveredEventArgs e)
         {
-            // Go through all cameras and see if find our match.
+            if (!stopwatchDiscovery.IsRunning)
+                return;
+
+            // Go through all cameras and see if we find our match.
             bool discovered = false;
             foreach (CameraSummary summary in e.Summaries)
             {
@@ -605,6 +614,7 @@ namespace Kinovea.ScreenManager
                 CameraTypeManager.CancelThumbnails();
 
                 discovered = true;
+                stopwatchDiscovery.Stop();
                 CameraTypeManager.CamerasDiscovered -= CameraTypeManager_CamerasDiscovered;
                 if (CameraDiscoveryComplete != null)
                     CameraDiscoveryComplete(this, new EventArgs<string>(cameraSummary.Alias));
@@ -631,6 +641,7 @@ namespace Kinovea.ScreenManager
                 // Stop trying to find our camera.
                 // Turns this back into a regular empty capture screen.
                 log.DebugFormat("Camera discovery: time out while trying to find {0}", cameraSummary.Alias);
+                stopwatchDiscovery.Stop();
                 CameraTypeManager.CamerasDiscovered -= CameraTypeManager_CamerasDiscovered;
                 if (CameraDiscoveryComplete != null)
                     CameraDiscoveryComplete(this, new EventArgs<string>(cameraSummary.Alias));
