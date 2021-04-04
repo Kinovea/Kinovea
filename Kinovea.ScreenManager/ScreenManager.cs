@@ -643,16 +643,26 @@ namespace Kinovea.ScreenManager
             foreach (AbstractScreen screen in screenList)
                 screen.RefreshUICulture();
         }
+
+        /// <summary>
+        /// Close the screen manager and its components.
+        /// Returns true if the closing was cancelled. This happens when there are unsaved changes and the user cancelled.
+        /// </summary>
         public bool CloseSubModules()
         {
+            view.Closing = true;
             for(int i = screenList.Count - 1; i >= 0; i--)
             {
                 screenList[i].BeforeClose();
                 CloseFile(i);
                 UpdateCaptureBuffers();
             }
-            
-            return screenList.Count != 0;
+
+            bool cancelled = screenList.Count > 0;
+            if (cancelled)
+                view.Closing = false;
+
+            return cancelled;
         }
         public void PreferencesUpdated()
         {

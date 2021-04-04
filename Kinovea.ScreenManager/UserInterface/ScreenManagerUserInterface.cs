@@ -55,6 +55,7 @@ namespace Kinovea.ScreenManager
                 return cp;
             }
         }
+        public bool Closing { get; set; }
         #endregion
 
         #region Members
@@ -108,7 +109,8 @@ namespace Kinovea.ScreenManager
                 ClearLeftScreen();
                 ClearRightScreen();
 
-                thumbnailViewerContainer.Unhide();
+                if (!Closing)
+                    thumbnailViewerContainer.Unhide();
             }
             else
             {

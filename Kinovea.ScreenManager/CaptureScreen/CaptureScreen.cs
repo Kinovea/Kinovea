@@ -359,8 +359,9 @@ namespace Kinovea.ScreenManager
             }
 
             metadata.Close();
-
             SystemEvents.PowerModeChanged -= SystemEvents_PowerModeChanged;
+
+            log.DebugFormat("Capture screen ready to be closed.");
         }
         public override void AfterClose()
         {
