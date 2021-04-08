@@ -67,7 +67,6 @@ namespace Kinovea.ScreenManager
                 if (manager.ScreenCount == 1)
                 {
                     manager.AddPlayerScreen();
-                    manager.UpdateCaptureBuffers();
                     LoadInSpecificTarget(manager, 1, path, screenDescription);
                 }
             }

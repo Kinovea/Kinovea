@@ -655,7 +655,7 @@ namespace Kinovea.ScreenManager
             {
                 screenList[i].BeforeClose();
                 CloseFile(i);
-                UpdateCaptureBuffers();
+                AfterSharedBufferChange();
             }
 
             bool cancelled = screenList.Count > 0;
@@ -707,7 +707,7 @@ namespace Kinovea.ScreenManager
             else
                 CloseFile(1);
 
-            UpdateCaptureBuffers();
+            AfterSharedBufferChange();
         }
         private void Screen_Activated(object sender, EventArgs e)
         {
@@ -926,7 +926,7 @@ namespace Kinovea.ScreenManager
                 canShowCommonControls = false;
             }
         }
-        public void UpdateCaptureBuffers()
+        public void AfterSharedBufferChange()
         {
             // The screen list has changed and involve capture screens.
             // Update their shared state to trigger a memory buffer reset.
@@ -1933,7 +1933,7 @@ namespace Kinovea.ScreenManager
                     break;
             }
 
-            UpdateCaptureBuffers();
+            AfterSharedBufferChange();
             
             OrganizeScreens();
             OrganizeCommonControls();
@@ -2020,7 +2020,7 @@ namespace Kinovea.ScreenManager
                     break;
             }
             
-            UpdateCaptureBuffers();
+            AfterSharedBufferChange();
             
             OrganizeScreens();
             OrganizeCommonControls();
@@ -2089,7 +2089,7 @@ namespace Kinovea.ScreenManager
                     break;
             }
 
-            UpdateCaptureBuffers();
+            AfterSharedBufferChange();
             
             OrganizeScreens();
             OrganizeCommonControls();
@@ -2537,8 +2537,9 @@ namespace Kinovea.ScreenManager
         }
         public void AddCaptureScreen()
         {
+            
             CaptureScreen screen = new CaptureScreen();
-            if (screenList.Count > 1)
+            if (screenList.Count > 0)
                 screen.SetShared(true);
 
             screen.RefreshUICulture();
@@ -2606,8 +2607,13 @@ namespace Kinovea.ScreenManager
             string text = ScreenManagerLang.InfoBox_MetadataIsDirty_Text.Replace("\\n", "\n");
             return MessageBox.Show(text, caption, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
         }
+        
         private void AddScreen(AbstractScreen screen)
         {
+            // We are about to add a new screen, signal it to a potential existing capture screen for buffer memory management.
+            foreach (CaptureScreen captureScreen in captureScreens)
+                captureScreen.SetShared(true);
+
             AddScreenEventHandlers(screen);
             screenList.Add(screen);
         }
