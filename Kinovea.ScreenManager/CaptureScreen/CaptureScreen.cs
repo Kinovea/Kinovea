@@ -250,6 +250,7 @@ namespace Kinovea.ScreenManager
 
         public void SetShared(bool shared)
         {
+            log.DebugFormat("Set shared: {0}", shared);
             this.shared = shared;
             AllocateDelayer();
         }
@@ -1954,9 +1955,13 @@ namespace Kinovea.ScreenManager
             if (!cameraLoaded || imageDescriptor == null || imageDescriptor == ImageDescriptor.Invalid)
                 return false;
 
-            long totalMemory = ((long)PreferencesManager.CapturePreferences.CaptureMemoryBuffer * 1024 * 1024);
-            long availableMemory = shared ? totalMemory / 2 : totalMemory;
-            
+            long totalMemoryMB = (long)PreferencesManager.CapturePreferences.CaptureMemoryBuffer;
+            long availableMemory = shared ? totalMemoryMB / 2 : totalMemoryMB;
+            log.DebugFormat("Allocating or reallocating delay buffer for {0}. Shared: {1}, Available memory: {2}/{3}", cameraSummary.Alias, shared, availableMemory, totalMemoryMB);
+
+            long megabyte = 1024 * 1024;
+            availableMemory *= megabyte;
+
             // FIXME: get the size of ring buffer from outside.
             availableMemory -= (imageDescriptor.BufferSize * 8);
 
