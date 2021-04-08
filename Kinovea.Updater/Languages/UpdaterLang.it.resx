@@ -64,24 +64,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="mnuCheckForUpdates" xml:space="preserve"><value>Aggiornamento software…</value>
+  <data name="mnuCheckForUpdates" xml:space="preserve"><value>Controlla gli aggiornamenti…</value>
   </data>
-  <data name="Updater_Behind" xml:space="preserve"><value>E' disponibile una nuova versione !</value>
+  <data name="Updater_Behind" xml:space="preserve"><value>È disponibile una nuova versione!</value>
   </data>
-  <data name="Updater_CurrentVersion" xml:space="preserve"><value>Versione Attuale :</value>
+  <data name="Updater_CurrentVersion" xml:space="preserve"><value>Versione attuale:</value>
   </data>
-  <data name="Updater_Download" xml:space="preserve"><value>Scarico (Download)</value>
+  <data name="Updater_Download" xml:space="preserve"><value>Scarica</value>
   </data>
-  <data name="Updater_InternetError" xml:space="preserve"><value>E' avvenuto un errore durante la ricerca di Aggiornamenti. Assicurarsi che sia attiva la connessione Internet.</value>
+  <data name="Updater_InternetError" xml:space="preserve"><value>È avvenuto un errore durante la ricerca di aggiornamenti. Assicurarsi che sia attiva la connessione Internet.</value>
   </data>
-  <data name="Updater_LblChangeLog" xml:space="preserve"><value>Lista Variazioni :</value>
+  <data name="Updater_LblChangeLog" xml:space="preserve"><value>Registro delle modifiche:</value>
   </data>
-  <data name="Updater_NewVersion" xml:space="preserve"><value>Nuova Versione</value>
+  <data name="Updater_NewVersion" xml:space="preserve"><value>Nuova versione</value>
   </data>
   <data name="Updater_Quit" xml:space="preserve"><value>Esci</value>
   </data>
   <data name="Updater_Title" xml:space="preserve"><value>Kinovea – Verifica esistenza di nuova versione.</value>
   </data>
-  <data name="Updater_UpToDate" xml:space="preserve"><value>La vostra Versione e' aggiornata !</value>
+  <data name="Updater_UpToDate" xml:space="preserve"><value>La tua versione è aggiornata!</value>
   </data>
 </root>

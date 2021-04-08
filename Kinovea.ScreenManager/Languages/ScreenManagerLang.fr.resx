@@ -106,7 +106,7 @@
   </data>
   <data name="DataAnalysis_XaxisDefaultPoints" xml:space="preserve"><value>Axe X</value>
   </data>
-  <data name="DataAnalysis_YaxisLabel" xml:space="preserve"><value>Axe Y : </value>
+  <data name="DataAnalysis_YaxisLabel" xml:space="preserve"><value>Axe Y :</value>
   </data>
   <data name="DataAnalysis_YaxisDefaultPoints" xml:space="preserve"><value>Axe Y</value>
   </data>
@@ -172,13 +172,13 @@
   </data>
   <data name="dlgTimebase_lblCapture" xml:space="preserve"><value>Fréquence de capture :</value>
   </data>
-  <data name="dlgTimebase_InfoCapture" xml:space="preserve"><value>Cette option définit la différence entre la fréquence de la vidéo et le temps réel. Elle impacte les labels contenant des temps et les mesures cinématiques. Utilisez cette option lorsque la vidéo a été filmée en mode haute-vitesse.</value>
+  <data name="dlgTimebase_InfoCapture" xml:space="preserve"><value>Cette option définit la différence entre la fréquence de la vidéo et le temps réel. Elle impacte les labels contenant des temps et les mesures cinématiques. Utilisez cette option lorsque la vidéo a été filmée en mode haute-vitesse. </value>
   </data>
   <data name="dlgTimebase_lblFileFPS" xml:space="preserve"><value>Fréquence d'images lue dans le fichier : {0:0.##} fps</value>
   </data>
   <data name="dlgTimebase_lblUserFPS" xml:space="preserve"><value>Fréquence de la vidéo :</value>
   </data>
-  <data name="dlgTimebase_InfoUser" xml:space="preserve"><value>Cette option définit la fréquence de référence utilisée par Kinovea pour jouer la vidéo. À utiliser si la vidéo contient une mauvaise fréquence d'images ou si Kinovea ne peut pas la relire correctement.</value>
+  <data name="dlgTimebase_InfoUser" xml:space="preserve"><value>Cette option définit la fréquence de référence utilisée par Kinovea pour jouer la vidéo. À utiliser si la vidéo contient une mauvaise fréquence d'images ou si Kinovea ne peut pas la relire correctement. </value>
   </data>
   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Remettre à zéro</value>
   </data>
@@ -274,7 +274,7 @@
   </data>
   <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>La vidéo initiale avec une pause sur chaque image clé</value>
   </data>
-  <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Diaporama vidéo avec uniquement les images clés </value>
+  <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Diaporama vidéo avec uniquement les images clés.</value>
   </data>
   <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Type de vidéo</value>
   </data>
@@ -348,7 +348,7 @@
   </data>
   <data name="DrawingName_ArrowPolylineSquiggly" xml:space="preserve"><value>Flèche – Polyligne zigzag</value>
   </data>
-  <data name="DrawingName_CSVL" xml:space="preserve"><value>Ligne médiane sacrée </value>
+  <data name="DrawingName_CSVL" xml:space="preserve"><value>Ligne médiane sacrée</value>
   </data>
   <data name="DrawingName_Polyline" xml:space="preserve"><value>Polyligne</value>
   </data>

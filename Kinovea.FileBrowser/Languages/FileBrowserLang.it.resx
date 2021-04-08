@@ -66,7 +66,7 @@
   </resheader>
   <data name="lblFolders" xml:space="preserve"><value>Cartelle</value>
   </data>
-  <data name="lblVideoFiles" xml:space="preserve"><value>Files Video</value>
+  <data name="lblVideoFiles" xml:space="preserve"><value>File video</value>
   </data>
   <data name="mnuAddShortcut" xml:space="preserve"><value>Aggiungi preferito</value>
   </data>
@@ -90,7 +90,7 @@
     <value>Parametri</value>
   </data>
   <data name="FormCameraWizard_CameraType" xml:space="preserve">
-    <value>Tipo di Fotocamera</value>
+    <value>Tipo di fotocamera</value>
   </data>
   <data name="FormCameraWizard_Title" xml:space="preserve">
     <value>Collegamento manuale</value>
@@ -102,10 +102,10 @@
     <value>Dimentica le impostazioni personalizzate</value>
   </data>
   <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
-    <value>Apri come osservatore della cartella di replay</value>
+    <value>Apri come osservatore della cartella di riproduzione</value>
   </data>
   <data name="mnuVideoDelete" xml:space="preserve">
-    <value>Cancella file</value>
+    <value>Elimina il file</value>
   </data>
   <data name="mnuVideoLocate" xml:space="preserve">
     <value>Trova in Windows Explorer </value>
