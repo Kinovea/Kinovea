@@ -51,7 +51,6 @@ namespace Kinovea.ScreenManager
                 CaptureScreen captureScreen = screen as CaptureScreen;
                 captureScreen.LoadCamera(summary, screenDescription);
 
-                manager.UpdateCaptureBuffers();
                 manager.OrganizeScreens();
                 manager.OrganizeCommonControls();
                 manager.OrganizeMenus();
