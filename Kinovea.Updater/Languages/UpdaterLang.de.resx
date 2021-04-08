@@ -64,11 +64,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="mnuCheckForUpdates" xml:space="preserve"><value>Auf Updates prüfen…</value>
+  <data name="mnuCheckForUpdates" xml:space="preserve"><value>Auf Aktualisierungen prüfen …</value>
   </data>
-  <data name="Updater_Behind" xml:space="preserve"><value>Eine neue Version ist verfügbar !</value>
+  <data name="Updater_Behind" xml:space="preserve"><value>Eine neue Version ist verfügbar!</value>
   </data>
-  <data name="Updater_CurrentVersion" xml:space="preserve"><value>Aktuelle Version :</value>
+  <data name="Updater_CurrentVersion" xml:space="preserve"><value>Aktuelle Version:</value>
   </data>
   <data name="Updater_Download" xml:space="preserve"><value>Herunterladen</value>
   </data>
@@ -80,7 +80,7 @@
   </data>
   <data name="Updater_Quit" xml:space="preserve"><value>Beenden</value>
   </data>
-  <data name="Updater_Title" xml:space="preserve"><value>Kinovea - Prüfung auf Updates.</value>
+  <data name="Updater_Title" xml:space="preserve"><value>Kinovea – Prüfung auf Aktualisierungen.</value>
   </data>
   <data name="Updater_UpToDate" xml:space="preserve"><value>Ihre Version ist auf dem neuesten Stand!</value>
   </data>
