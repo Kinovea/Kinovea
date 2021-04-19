@@ -64,24 +64,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="mnuCheckForUpdates" xml:space="preserve"><value>Actualizat...</value>
+  <data name="mnuCheckForUpdates" xml:space="preserve"><value>Căutare actualizari…</value>
   </data>
-  <data name="Updater_Behind" xml:space="preserve"><value>O nouă versiune este disponibilă !</value>
+  <data name="Updater_Behind" xml:space="preserve"><value>O nouă versiune este disponibilă!</value>
   </data>
-  <data name="Updater_CurrentVersion" xml:space="preserve"><value>Current Version :</value>
+  <data name="Updater_CurrentVersion" xml:space="preserve"><value>Versiunea curentă:</value>
   </data>
   <data name="Updater_Download" xml:space="preserve"><value>Descarcă</value>
   </data>
-  <data name="Updater_InternetError" xml:space="preserve"><value>A apărut o eroare in procesul de verificare a actualizărilor. Vă rugăm să verificaţi conexiunea la Internet.</value>
+  <data name="Updater_InternetError" xml:space="preserve"><value>A apărut o eroare în timpul căutării actualizărilor. Vă rugăm să vă asiguraţi de disponibilitatea conexiunii la Internet.</value>
   </data>
-  <data name="Updater_LblChangeLog" xml:space="preserve"><value>Listă schimbări :</value>
+  <data name="Updater_LblChangeLog" xml:space="preserve"><value>Jurnal de modificări:</value>
   </data>
   <data name="Updater_NewVersion" xml:space="preserve"><value>Versiune nouă</value>
   </data>
-  <data name="Updater_Quit" xml:space="preserve"><value>Ieşi</value>
+  <data name="Updater_Quit" xml:space="preserve"><value>Ieşire</value>
   </data>
-  <data name="Updater_Title" xml:space="preserve"><value>Kinovea – Verific actualizările.</value>
+  <data name="Updater_Title" xml:space="preserve"><value>Kinovea – Căutare actualizări.</value>
   </data>
-  <data name="Updater_UpToDate" xml:space="preserve"><value>Versiunea dumneavostră este ultima disponibilă !</value>
+  <data name="Updater_UpToDate" xml:space="preserve"><value>Versiunea dumneavostră este cea mai recentă!</value>
   </data>
 </root>
