@@ -64,22 +64,19 @@ namespace Kinovea.ScreenManager
             track.TrackerParametersChanged += new EventHandler(track_TrackParametersChanged);
             this.invalidate = invalidate;
             this.timestamp = timestamp;
-            
-            pnlViewport.Controls.Add(viewportController.View);
-            viewportController.View.Dock = DockStyle.Fill;
 
-            viewportController.Bitmap = image;
-            viewportController.Timestamp = timestamp;
-
-            InitializeDisplayRectangle(image.Size, timestamp);
             metadataRenderer = new MetadataRenderer(metadata, true);
             metadataManipulator = new MetadataManipulator(metadata, screenToolManager);
             metadataManipulator.SetFixedTimestamp(timestamp);
             metadataManipulator.SetFixedKeyframe(-1);
 
+            pnlViewport.Controls.Add(viewportController.View);
+            viewportController.View.Dock = DockStyle.Fill;
+            viewportController.Bitmap = image;
+            viewportController.Timestamp = timestamp;
             viewportController.MetadataRenderer = metadataRenderer;
             viewportController.MetadataManipulator = metadataManipulator;
-            
+            InitializeDisplayRectangle(image.Size, timestamp);
             viewportController.Refresh();
 
             track.DrawingStyle.ReadValue();
