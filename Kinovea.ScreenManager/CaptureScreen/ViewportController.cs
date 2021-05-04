@@ -200,6 +200,9 @@ namespace Kinovea.ScreenManager
 
         public void InvalidateCursor()
         {
+            if (metadataManipulator == null)
+                return;
+
             metadataManipulator.InvalidateCursor();
         }
 
