@@ -152,13 +152,13 @@
   </data>
   <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Grade de Perspectiva</value>
   </data>
-  <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Sobrescrever o arquivo</value>
+  <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Sobrescrever o ficheiro</value>
   </data>
-  <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>O arquivo {0} já existe.\nDeseja substitui-lo?</value>
+  <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>O ficheiro {0} já existe.\nDeseja substitui-lo?</value>
   </data>
-  <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Nome de arquivo inválido</value>
+  <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Nome de ficheiro inválido</value>
   </data>
-  <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>O nome do arquivo contém caracteres inválidos.\n O nome do arquivo não pode conter nenhum dos seguintes caracteres:\n \ / : * ? " &lt; &gt;</value>
+  <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>O nome do ficheiro contém caracteres inválidos.\n O nome do ficheiro não pode conter nenhum dos seguintes caracteres:\n \ / : * ? " &lt; &gt;</value>
   </data>
   <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - Não pode criar Apresentação de Slides.</value>
   </data>
@@ -166,7 +166,7 @@
   </data>
   <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea - Nao pode criar video pausado.</value>
   </data>
-  <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Sem poder salvar o arquivo. \nVerifique se você tem autorização para salvar arquivos na pasta escolhida e se o mesmo nao está em uso.</value>
+  <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Sem poder salvar o ficheiro. \nVerifique se você tem autorização para salvar ficheiros na pasta escolhida e se o mesmo nao está em uso.</value>
   </data>
   <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - Sem poder salvar o vídeo.</value>
   </data>
@@ -210,7 +210,7 @@
   </data>
   <data name="Generic_PlayPause" xml:space="preserve"><value>Reproduzir | Pausar</value>
   </data>
-  <data name="FileFilter_All" xml:space="preserve"><value>Todos os arquivos</value>
+  <data name="FileFilter_All" xml:space="preserve"><value>Todos os ficheiros</value>
   </data>
   <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Quadros de imagens foram modificados.\nVocê deseja salvá-los antes de sair?</value>
   </data>
@@ -238,23 +238,23 @@
   </data>
   <data name="LengthUnit_Yards" xml:space="preserve"><value>Jardas</value>
   </data>
-  <data name="LoadMovie_CodecNotFound" xml:space="preserve"><value>Falha: Erro ao tentar abrir o arquivo: formato de vídeo não suportado.</value>
+  <data name="LoadMovie_CodecNotFound" xml:space="preserve"><value>Falha: Erro ao tentar abrir o ficheiro: formato de vídeo não suportado.</value>
   </data>
-  <data name="LoadMovie_CodecNotOpened" xml:space="preserve"><value>Falha: Erro ao tentar abrir o arquivo: problema durante a inicialização do decodificador.</value>
+  <data name="LoadMovie_CodecNotOpened" xml:space="preserve"><value>Falha: Erro ao tentar abrir o ficheiro: problema durante a inicialização do decodificador.</value>
   </data>
-  <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Falha: Erro ao tentar abrir o arquivo: tipo de arquivo não suportado.</value>
+  <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Falha: Erro ao tentar abrir o ficheiro: tipo de ficheiro não suportado.</value>
   </data>
   <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea - Erro ao carregar.</value>
   </data>
-  <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Falha: Erro ao tentar abrir o arquivo: arquivo não encontrado.</value>
+  <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Falha: Erro ao tentar abrir o ficheiro: ficheiro não encontrado.</value>
   </data>
-  <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Falha: Erro ao tentar abrir o arquivo: encontradas inconsistências. Por favor, verifique o processo de codificação.</value>
+  <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Falha: Erro ao tentar abrir o ficheiro: encontradas inconsistências. Por favor, verifique o processo de codificação.</value>
   </data>
-  <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Falha: Erro ao tentar abrir o arquivo: informações do vídeo não encontradas.</value>
+  <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Falha: Erro ao tentar abrir o ficheiro: informações do vídeo não encontradas.</value>
   </data>
-  <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Falha: Erro ao tentar abrir o arquivo: erro desconhecido.</value>
+  <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Falha: Erro ao tentar abrir o ficheiro: erro desconhecido.</value>
   </data>
-  <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Falha: Erro ao tentar abrir o arquivo: vídeo não encontrado.</value>
+  <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Falha: Erro ao tentar abrir o ficheiro: vídeo não encontrado.</value>
   </data>
   <data name="LockSelectionLock" xml:space="preserve"><value>Travar os Limitadores da Zona de Trabalho</value>
   </data>
@@ -264,7 +264,7 @@
   </data>
   <data name="mnuChronoStop" xml:space="preserve"><value>Parar Cronômetro</value>
   </data>
-  <data name="mnuCloseScreen" xml:space="preserve"><value>Fechar esta tela</value>
+  <data name="mnuCloseScreen" xml:space="preserve"><value>Fechar este ecrã</value>
   </data>
   <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Configurar Exibição da Trajetória</value>
   </data>
@@ -276,11 +276,11 @@
   </data>
   <data name="mnuDeleteTrajectory" xml:space="preserve"><value>Apagar todas as trajetórias</value>
   </data>
-  <data name="mnuTwoCaptures" xml:space="preserve"><value>Duas Telas de Captura</value>
+  <data name="mnuTwoCaptures" xml:space="preserve"><value>Dois ecrãs de captura</value>
   </data>
-  <data name="mnuTwoMixed" xml:space="preserve"><value>Uma Tela de Captura e uma de Reprodução</value>
+  <data name="mnuTwoMixed" xml:space="preserve"><value>Um ecrã de captura e uma de reprodução</value>
   </data>
-  <data name="mnuTwoPlayers" xml:space="preserve"><value>Duas Telas de Reprodução</value>
+  <data name="mnuTwoPlayers" xml:space="preserve"><value>Dois ecrãs de reprodução</value>
   </data>
   <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Exportar para Planilha</value>
   </data>
@@ -308,13 +308,13 @@
   </data>
   <data name="mnuMirror" xml:space="preserve"><value>Espelhar</value>
   </data>
-  <data name="mnuOneCapture" xml:space="preserve"><value>Uma Tela de Captura</value>
+  <data name="mnuOneCapture" xml:space="preserve"><value>Um ecrã de captura</value>
   </data>
-  <data name="mnuOnePlayer" xml:space="preserve"><value>Uma Tela de Reproduzir</value>
+  <data name="mnuOnePlayer" xml:space="preserve"><value>Um ecrã de reprodução</value>
   </data>
   <data name="mnuRestartTracking" xml:space="preserve"><value>Reiniciar Edição do Caminho</value>
   </data>
-  <data name="mnuOpenVideo" xml:space="preserve"><value>Abrir arquivo de vídeo</value>
+  <data name="mnuOpenVideo" xml:space="preserve"><value>Abrir ficheiro de vídeo</value>
   </data>
   <data name="mnuShowMeasure" xml:space="preserve"><value>Mostrar Medida</value>
   </data>
