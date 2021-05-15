@@ -102,11 +102,11 @@
   </data>
   <data name="DataAnalysis_XaxisLabel" xml:space="preserve"><value>Ос X:</value>
   </data>
-  <data name="DataAnalysis_XaxisDefaultPoints" xml:space="preserve"><value>Ос X:</value>
+  <data name="DataAnalysis_XaxisDefaultPoints" xml:space="preserve"><value>Ос X</value>
   </data>
   <data name="DataAnalysis_YaxisLabel" xml:space="preserve"><value>Ос Y:</value>
   </data>
-  <data name="DataAnalysis_YaxisDefaultPoints" xml:space="preserve"><value>Ос Y:</value>
+  <data name="DataAnalysis_YaxisDefaultPoints" xml:space="preserve"><value>Ос Y</value>
   </data>
   <data name="DataAnalysis_TimeAxisMilliseconds" xml:space="preserve"><value>Време (мс)</value>
   </data>
@@ -144,7 +144,7 @@
   </data>
   <data name="dlgColorPicker_Title" xml:space="preserve"><value>Цвят</value>
   </data>
-  <data name="dlgColorProfile_Title" xml:space="preserve"><value>Цветови профил</value>
+  <data name="dlgColorProfile_Title" xml:space="preserve"><value>Цветови профил...</value>
   </data>
   <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Възстанови цветовия профил по подразбиране</value>
   </data>
