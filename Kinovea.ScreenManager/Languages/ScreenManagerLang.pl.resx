@@ -566,4 +566,43 @@
   <data name="Generic_Open" xml:space="preserve">
     <value>Otwórz</value>
   </data>
+  <data name="DrawingName_Trajectory" xml:space="preserve">
+    <value>Trajektoria</value>
+  </data>
+  <data name="DrawingName_TestGrid" xml:space="preserve">
+    <value>Test siatki kamery</value>
+  </data>
+  <data name="DrawingName_HumanModel2" xml:space="preserve">
+    <value>Model człowieka (2)</value>
+  </data>
+  <data name="DrawingName_HumanModel" xml:space="preserve">
+    <value>Model człowieka</value>
+  </data>
+  <data name="DrawingName_Profile" xml:space="preserve">
+    <value>Profil</value>
+  </data>
+  <data name="DrawingName_Polyline" xml:space="preserve">
+    <value>Łamacz</value>
+  </data>
+  <data name="DrawingName_CSVL" xml:space="preserve">
+    <value>Centralna krzyrowa pionowa linia</value>
+  </data>
+  <data name="DrawingName_ArrowPolylineSquiggly" xml:space="preserve">
+    <value>Strzałka – łamany zawijas</value>
+  </data>
+  <data name="DrawingName_ArrowSquiggly" xml:space="preserve">
+    <value>Strzałka – Zawijas</value>
+  </data>
+  <data name="DrawingName_ArrowPolylineDash" xml:space="preserve">
+    <value>Strzałka – łamany myśnik</value>
+  </data>
+  <data name="DrawingName_ArrowPolyline" xml:space="preserve">
+    <value>Strzałka – łamana</value>
+  </data>
+  <data name="DrawingName_ArrowCurve" xml:space="preserve">
+    <value>Strzałka – krzywa</value>
+  </data>
+  <data name="DrawingName_ArrowDash" xml:space="preserve">
+    <value>Strzałka – Myślnik</value>
+  </data>
 </root>
