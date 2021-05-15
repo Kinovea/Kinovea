@@ -116,14 +116,18 @@ namespace Kinovea.ScreenManager
         
         public void CleanUnassigned()
         {
+            HashSet<Guid> pruneList = new HashSet<Guid>();
             foreach (KeyValuePair<Guid, DrawingTracker> pair in trackers)
             {
                 if (pair.Value.Assigned)
                     continue;
 
                 pair.Value.Dispose();
-                trackers.Remove(pair.Key);
+                pruneList.Add(pair.Key);
             }
+
+            foreach (Guid key in pruneList)
+                trackers.Remove(key);
         }
 
         public void Clear()
