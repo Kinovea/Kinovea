@@ -66,7 +66,7 @@
   </resheader>
   <data name="mnuCheckForUpdates" xml:space="preserve"><value>Actualització de programari…</value>
   </data>
-  <data name="Updater_Behind" xml:space="preserve"><value>Hi ha disponible una nova versió</value>
+  <data name="Updater_Behind" xml:space="preserve"><value>Hi ha disponible una nova versió!</value>
   </data>
   <data name="Updater_CurrentVersion" xml:space="preserve"><value>Versió actual:</value>
   </data>
@@ -74,14 +74,14 @@
   </data>
   <data name="Updater_InternetError" xml:space="preserve"><value>S'ha produït un error mentre es comprovaven les actualitzacions. Siusplau assegureu-vos de que estu connectats a Internet.</value>
   </data>
-  <data name="Updater_LblChangeLog" xml:space="preserve"><value>Llista de canvis</value>
+  <data name="Updater_LblChangeLog" xml:space="preserve"><value>Llista de canvis:</value>
   </data>
   <data name="Updater_NewVersion" xml:space="preserve"><value>Nova Versió</value>
   </data>
   <data name="Updater_Quit" xml:space="preserve"><value>Sortir</value>
   </data>
-  <data name="Updater_Title" xml:space="preserve"><value>Kinovea – Comprovant si hi ha una nova versió</value>
+  <data name="Updater_Title" xml:space="preserve"><value>Kinovea – Comprovant si hi ha una nova versió.</value>
   </data>
-  <data name="Updater_UpToDate" xml:space="preserve"><value>La vostre versió està actualitzada</value>
+  <data name="Updater_UpToDate" xml:space="preserve"><value>La vostre versió està actualitzada!</value>
   </data>
 </root>
