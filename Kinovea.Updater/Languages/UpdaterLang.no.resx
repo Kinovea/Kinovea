@@ -66,7 +66,7 @@
   </resheader>
   <data name="mnuCheckForUpdates" xml:space="preserve"><value>Se etter oppdateringer …</value>
   </data>
-  <data name="Updater_Behind" xml:space="preserve"><value>En ny versjon er tilgjengelig!</value>
+  <data name="Updater_Behind" xml:space="preserve"><value>En ny versjon er tilgjengelig.</value>
   </data>
   <data name="Updater_CurrentVersion" xml:space="preserve"><value>Nåværende versjon:</value>
   </data>
