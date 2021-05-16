@@ -288,7 +288,7 @@ namespace Kinovea.ScreenManager
                         inputSelectionStart = r.ReadElementContentAsLong();
                         break;
                     case "TimeOrigin":
-                        metadata.TimeOrigin = RemapTimestamp(r.ReadElementContentAsLong(), false);
+                        metadata.TimeOrigin = RemapTimestamp(r.ReadElementContentAsLong());
                         break;
                     case "Calibration":
                         metadata.CalibrationHelper.ReadXml(r, scaling, inputImageSize);
@@ -393,46 +393,25 @@ namespace Kinovea.ScreenManager
 
             return scaling;
         }
-        private long RemapTimestamp(long inputTimestamp, bool relative)
+        private long RemapTimestamp(long inputTimestamp)
         {
-            //-----------------------------------------------------------------------------------------
-            // In the general case:
-            // The Input position was stored as absolute position, in the context of the original video.
-            // It must be adapted in several ways:
-            //
-            // 1. Timestamps (TS) of first frames may differ.
-            // 2. A selection might have been in place, 
-            //      in that case we use relative TS if different file and absolute TS if same file.
-            // 3. TS might be expressed in completely different timebase.
-            //
-            // In the specific case of trajectories, the individual positions are stored relative to 
-            // the start of the trajectory.
-            //-----------------------------------------------------------------------------------------
+            // The Input position was stored as an absolute timestamp in the context of the original video.
+            // The only exception to this are trajectory points from 0.8.15 files.
 
             if (inputAverageTimeStampsPerFrame == 0)
                 return inputTimestamp;
 
+            // If we are in the exact same context and file we don't do any conversion.
             if ((inputFirstTimeStamp == metadata.FirstTimeStamp) &&
                 (inputAverageTimeStampsPerFrame == metadata.AverageTimeStampsPerFrame) &&
                 (inputFileName == Path.GetFileNameWithoutExtension(metadata.VideoPath)))
                 return inputTimestamp;
 
-            double averageTimestampsPerFrame = metadata.AverageTimeStampsPerSecond / (1000.0 / metadata.UserInterval);
-            
             // Different contexts or different files.
-            // We use the relative positions and adapt the context.
-            long outputTimestamp;
-            if (relative)
-            {
-                int frameNumber = (int)(inputTimestamp / inputAverageTimeStampsPerFrame);
-                outputTimestamp = (int)(frameNumber * averageTimestampsPerFrame);
-            }
-            else
-            {
-                long start = Math.Max(inputSelectionStart, inputFirstTimeStamp);
-                int frameNumber = (int)((inputTimestamp - start) / inputAverageTimeStampsPerFrame);
-                outputTimestamp =(int)Math.Round(frameNumber * averageTimestampsPerFrame) + metadata.FirstTimeStamp;
-            }
+            // We compute the frame relatively to the first frame of video and convert it back to timestamps.
+            double frame = (double)(inputTimestamp - inputFirstTimeStamp) / inputAverageTimeStampsPerFrame;
+            double outputAverageTimestampsPerFrame = metadata.AverageTimeStampsPerSecond / (1000.0 / metadata.UserInterval);
+            long outputTimestamp = (long)Math.Round(frame * outputAverageTimestampsPerFrame) + metadata.FirstTimeStamp;
             
             return outputTimestamp;
         }

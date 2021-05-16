@@ -217,7 +217,7 @@ namespace Kinovea.ScreenManager
                 {
                     case "Position":
                         int inputPosition = r.ReadElementContentAsInt();
-                        position = timestampMapper(inputPosition, false);
+                        position = timestampMapper(inputPosition);
                         break;
                     case "Title":
                         title = r.ReadElementContentAsString();

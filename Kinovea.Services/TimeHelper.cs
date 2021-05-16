@@ -197,6 +197,6 @@ namespace Kinovea.Services
             return type;
         }
 
-        public static TimestampMapper IdentityTimestampMapper = (time, relative) => time;
+        public static TimestampMapper IdentityTimestampMapper = (time) => time;
     }
 }

@@ -5,5 +5,5 @@ using System.Text;
 
 namespace Kinovea.Services
 {
-    public delegate long TimestampMapper(long time, bool relative);
+    public delegate long TimestampMapper(long time);
 }

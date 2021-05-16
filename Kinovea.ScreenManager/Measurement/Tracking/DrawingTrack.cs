@@ -1179,7 +1179,7 @@ namespace Kinovea.ScreenManager
                 switch(xmlReader.Name)
                 {
                     case "TimePosition":
-                        beginTimeStamp = timestampMapper(xmlReader.ReadElementContentAsLong(), false);
+                        beginTimeStamp = timestampMapper(xmlReader.ReadElementContentAsLong());
                         break;
                     case "Mode":
                         {
@@ -1261,7 +1261,7 @@ namespace Kinovea.ScreenManager
                     tp.ReadXml(xmlReader);
                     
                     // Time is stored in absolute timestamps.
-                    AbstractTrackPoint adapted = tracker.CreateOrphanTrackPoint(tp.Point.Scale(scale.X, scale.Y), timestampMapper(tp.T, false));
+                    AbstractTrackPoint adapted = tracker.CreateOrphanTrackPoint(tp.Point.Scale(scale.X, scale.Y), timestampMapper(tp.T));
 
                     positions.Add(adapted);
                 }

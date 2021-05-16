@@ -85,7 +85,7 @@ namespace Kinovea.ScreenManager
             PointF location = PointF.Empty;
 
             if (r.MoveToAttribute("time"))
-                time = timestampMapper(r.ReadContentAsLong(), false);
+                time = timestampMapper(r.ReadContentAsLong());
 
             if (r.MoveToAttribute("source"))
                 source = (PositionningSource)Enum.Parse(typeof(PositionningSource), r.ReadContentAsString());

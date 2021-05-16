@@ -392,23 +392,23 @@ namespace Kinovea.ScreenManager
                 switch(xmlReader.Name)
                 {
                     case "Visible":
-                        visibleTimestamp = timestampMapper(xmlReader.ReadElementContentAsLong(), false);
+                        visibleTimestamp = timestampMapper(xmlReader.ReadElementContentAsLong());
                         break;
                     case "Invisible":
                         long hide = xmlReader.ReadElementContentAsLong();
-                        invisibleTimestamp = (hide == -1) ? long.MaxValue : timestampMapper(hide, false);                        
+                        invisibleTimestamp = (hide == -1) ? long.MaxValue : timestampMapper(hide);                        
                         break;
                     case "StartCounting":
                         long start = xmlReader.ReadElementContentAsLong(); 
-                        startCountingTimestamp = (start == -1) ? long.MaxValue : timestampMapper(start, false);
+                        startCountingTimestamp = (start == -1) ? long.MaxValue : timestampMapper(start);
                         break;
                     case "StopCounting":
                         long stop = xmlReader.ReadElementContentAsLong();
-                        stopCountingTimestamp = (stop == -1) ? long.MaxValue : timestampMapper(stop, false);
+                        stopCountingTimestamp = (stop == -1) ? long.MaxValue : timestampMapper(stop);
                         break;
                     case "ClockOrigin":
                         long origin = xmlReader.ReadElementContentAsLong();
-                        clockOriginTimestamp = (origin == -1) ? long.MaxValue : timestampMapper(origin, false);
+                        clockOriginTimestamp = (origin == -1) ? long.MaxValue : timestampMapper(origin);
                         break;
                     case "UserDuration":
                         xmlReader.ReadOuterXml();

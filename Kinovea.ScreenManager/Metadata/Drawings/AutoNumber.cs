@@ -148,7 +148,7 @@ namespace Kinovea.ScreenManager
                 switch(xmlReader.Name)
                 {
                     case "Time":
-                        position = timestampMapper(xmlReader.ReadElementContentAsLong(), false);
+                        position = timestampMapper(xmlReader.ReadElementContentAsLong());
                         break;
                     case "Location":
                         PointF p = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());

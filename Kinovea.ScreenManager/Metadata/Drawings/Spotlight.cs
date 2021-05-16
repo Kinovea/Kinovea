@@ -200,7 +200,7 @@ namespace Kinovea.ScreenManager
         public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timeStampMapper)
         {
             if (timeStampMapper == null)
-                timeStampMapper = (t, b) => t;
+                timeStampMapper = TimeHelper.IdentityTimestampMapper;
             
             if (xmlReader.MoveToAttribute("id"))
                 identifier = new Guid(xmlReader.ReadContentAsString());
@@ -212,7 +212,7 @@ namespace Kinovea.ScreenManager
                 switch(xmlReader.Name)
                 {
                     case "Time":
-                        position = timeStampMapper(xmlReader.ReadElementContentAsLong(), false);
+                        position = timeStampMapper(xmlReader.ReadElementContentAsLong());
                         break;
                     case "Center":
                         PointF p = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
