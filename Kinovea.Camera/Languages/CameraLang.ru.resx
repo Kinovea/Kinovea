@@ -110,7 +110,7 @@
   </data>
   <data name="FormConnectionWizard_Port" xml:space="preserve"><value>Порт</value>
   </data>
-  <data name="FormConnectionWizard_Format" xml:space="preserve"><value>Формат потока видео:</value>
+  <data name="FormConnectionWizard_Format" xml:space="preserve"><value>Формат потока видео</value>
   </data>
   <data name="FormConnectionWizard_Authentication" xml:space="preserve"><value>Аутенттификация</value>
   </data>
