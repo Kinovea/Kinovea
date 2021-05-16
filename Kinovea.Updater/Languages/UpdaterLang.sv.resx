@@ -64,7 +64,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="mnuCheckForUpdates" xml:space="preserve"><value>Programuppdatering...</value>
+  <data name="mnuCheckForUpdates" xml:space="preserve"><value>Programuppdatering…</value>
   </data>
   <data name="Updater_Behind" xml:space="preserve"><value>Ny version är tillgänglig!</value>
   </data>
@@ -80,7 +80,7 @@
   </data>
   <data name="Updater_Quit" xml:space="preserve"><value>Avsluta</value>
   </data>
-  <data name="Updater_Title" xml:space="preserve"><value>Kinovea - Kontrollerar om ny  version finns.</value>
+  <data name="Updater_Title" xml:space="preserve"><value>Kinovea - Kontrollerar om ny version finns.</value>
   </data>
   <data name="Updater_UpToDate" xml:space="preserve"><value>Din version är den senaste!</value>
   </data>

@@ -106,7 +106,7 @@
   </data>
   <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve"><value>Режим съемки и задержки</value>
   </data>
-  <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve"><value>Дисплей: непосредственная запись с экрана</value>
+  <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve"><value>Дисплей: непосредственная запись с экрана.</value>
   </data>
   <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Год</value>
   </data>
@@ -230,7 +230,7 @@
   </data>
   <data name="dlgPreferences_Keyboard_btnClear" xml:space="preserve"><value>Очистить</value>
   </data>
-  <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve"><value>По умолчанию </value>
+  <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve"><value>По умолчанию</value>
   </data>
   <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Загрузить пользовательский интерфейс</value>
   </data>
@@ -252,7 +252,7 @@
   </data>
   <data name="mnuHelp" xml:space="preserve"><value>Помощь</value>
   </data>
-  <data name="mnuHelpContents" xml:space="preserve"><value>Помощь по программе Kinovea </value>
+  <data name="mnuHelpContents" xml:space="preserve"><value>Помощь по программе Kinovea...</value>
   </data>
   <data name="mnuHistory" xml:space="preserve"><value>Недавние</value>
   </data>
@@ -293,6 +293,6 @@
     <value>Несжатый видеоформат:</value>
   </data>
   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
 </root>
