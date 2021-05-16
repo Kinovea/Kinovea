@@ -171,7 +171,7 @@
     <value>Dato (ÅÅÅÅMMDD)</value>
   </data>
   <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
-    <value>Opptaksfilnavn</value>
+    <value>tOpptaksfilnavn</value>
   </data>
   <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
     <value>Opptaksmappe</value>
