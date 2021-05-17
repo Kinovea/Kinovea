@@ -153,6 +153,6 @@
     <value>Ikony</value>
   </data>
   <data name="FormConfiguration_DevicePropertyPages_Error" xml:space="preserve">
-    <value>Błąd, zdarzenie chwilowo próbowało wyświetlić strone własności urządzenia dla {0}.</value>
+    <value>Wystąpił błąd podczas próby wyświetlenia strony właściwości urządzenia dla {0}.</value>
   </data>
 </root>
