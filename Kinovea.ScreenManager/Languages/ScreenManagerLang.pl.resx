@@ -605,4 +605,574 @@
   <data name="DrawingName_ArrowDash" xml:space="preserve">
     <value>Strzałka – Myślnik</value>
   </data>
+  <data name="DrawingName_Genu" xml:space="preserve">
+    <value>Opaska na kolano</value>
+  </data>
+  <data name="mnuShowCircleCenter" xml:space="preserve">
+    <value>Pokaż środek koła</value>
+  </data>
+  <data name="mnuShowArrow" xml:space="preserve">
+    <value>Pokaż strzałkę</value>
+  </data>
+  <data name="mnuPasteImage" xml:space="preserve">
+    <value>Wklej obraz ze schowka</value>
+  </data>
+  <data name="mnuVisibilityConfigure" xml:space="preserve">
+    <value>Konfiguracja niestandardowego przyciemnania</value>
+  </data>
+  <data name="mnuVisibilityCustom" xml:space="preserve">
+    <value>Niestandardowe przyciemnanie</value>
+  </data>
+  <data name="mnuVisibilityDefault" xml:space="preserve">
+    <value>Domyślne przyciemnanie</value>
+  </data>
+  <data name="mnuSetStyleAsDefault" xml:space="preserve">
+    <value>Zmień styl na domyślny</value>
+  </data>
+  <data name="mnuPasteDrawing" xml:space="preserve">
+    <value>Wklej rysunek</value>
+  </data>
+  <data name="mnuCopyDrawing" xml:space="preserve">
+    <value>Kopiuj rysunek</value>
+  </data>
+  <data name="mnuCutDrawing" xml:space="preserve">
+    <value>Wytnij rysunek</value>
+  </data>
+  <data name="mnuPolyline_CloseMenu" xml:space="preserve">
+    <value>Zamknij menu</value>
+  </data>
+  <data name="mnuPolyline_FinishAtPrevious" xml:space="preserve">
+    <value>Zakończ łamaną w poprzednim punkcie</value>
+  </data>
+  <data name="mnuPolyline_FinishHere" xml:space="preserve">
+    <value>Tutaj zakończ łamaną</value>
+  </data>
+  <data name="mnuCoordinateSystemHide" xml:space="preserve">
+    <value>Ukryj</value>
+  </data>
+  <data name="mnuCoordinateSystemShowTickMarks" xml:space="preserve">
+    <value>Znaczniki</value>
+  </data>
+  <data name="mnuCoordinateSystemShowGrid" xml:space="preserve">
+    <value>Siatka</value>
+  </data>
+  <data name="mnuCoordinateSystemShowAxis" xml:space="preserve">
+    <value>Osie</value>
+  </data>
+  <data name="mnuCoordinateSystem" xml:space="preserve">
+    <value>Układ współrzędnych</value>
+  </data>
+  <data name="mnuTrackTrajectory" xml:space="preserve">
+    <value>Ścieżka</value>
+  </data>
+  <data name="FormCrashRecovery_Info" xml:space="preserve">
+    <value>Następujące projekty nie zostały zapisane prawidłowo, ale można je odzyskać:</value>
+  </data>
+  <data name="FormCrashRecovery_Date" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="FormCrashRecovery_Recover" xml:space="preserve">
+    <value>Przywracanie</value>
+  </data>
+  <data name="FormCrashRecovery_Title" xml:space="preserve">
+    <value>Odzyskiwanie po awarii</value>
+  </data>
+  <data name="VideoFilterReverse_FriendlyName" xml:space="preserve">
+    <value>Odwróć...</value>
+  </data>
+  <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve">
+    <value>Przeglądaj...</value>
+  </data>
+  <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve">
+    <value>Auto poziomowanie...</value>
+  </data>
+  <data name="ToolTip_ArmTrigger" xml:space="preserve">
+    <value>Włączyć wyzwalacz przechwytywania. Bieżący stan: wyłączony.</value>
+  </data>
+  <data name="ToolTip_DisarmTrigger" xml:space="preserve">
+    <value>Wyłączyć wyzwalacz przechwytywania. Bieżący stan: włączony.</value>
+  </data>
+  <data name="ToolTip_SideBySideVideo" xml:space="preserve">
+    <value>Zapisz oba filmy w jeden złożony film wideo</value>
+  </data>
+  <data name="ToolTip_SideBySideSnapshot" xml:space="preserve">
+    <value>Zapisz oba obrazy jako obraz łączony</value>
+  </data>
+  <data name="ToolTip_SavePausedVideo" xml:space="preserve">
+    <value>Eksportuj wideo z pauzą na każdym kluczowym obrazie</value>
+  </data>
+  <data name="ToolTip_RichText_BackColor" xml:space="preserve">
+    <value>Kolor tła</value>
+  </data>
+  <data name="ToolTip_RichText_ForeColor" xml:space="preserve">
+    <value>Kolor pierwszego planu</value>
+  </data>
+  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
+    <value>Przekreślenie</value>
+  </data>
+  <data name="ToolTip_RichText_Underline" xml:space="preserve">
+    <value>Podkreślenie</value>
+  </data>
+  <data name="ToolTip_RichText_Italic" xml:space="preserve">
+    <value>Kursywa</value>
+  </data>
+  <data name="ToolTip_RichText_Bold" xml:space="preserve">
+    <value>Pogrubienie</value>
+  </data>
+  <data name="ToolTip_ConfigureCamera" xml:space="preserve">
+    <value>Skonfiguruj kamerę</value>
+  </data>
+  <data name="ToolTip_StartCamera" xml:space="preserve">
+    <value>Uruchom kamerę</value>
+  </data>
+  <data name="ToolTip_PauseCamera" xml:space="preserve">
+    <value>Zatrzymaj kamerę</value>
+  </data>
+  <data name="ToolTip_StopRecording" xml:space="preserve">
+    <value>Zatrzymaj nagrywanie wideo</value>
+  </data>
+  <data name="ToolTip_StartRecording" xml:space="preserve">
+    <value>Rozpocznij nagrywanie wideo</value>
+  </data>
+  <data name="ToolTip_Magnifier" xml:space="preserve">
+    <value>Lupa</value>
+  </data>
+  <data name="ToolTip_DrawingToolAutonumbers" xml:space="preserve">
+    <value>Numery automatyczne</value>
+  </data>
+  <data name="ToolTip_DrawingToolSpotlight" xml:space="preserve">
+    <value>Podświetlanie</value>
+  </data>
+  <data name="ToolTip_DrawingToolCircle" xml:space="preserve">
+    <value>Koło</value>
+  </data>
+  <data name="ToolTip_DrawingToolChrono" xml:space="preserve">
+    <value>Stoper</value>
+  </data>
+  <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve">
+    <value>Włączanie superpozycji obrazów</value>
+  </data>
+  <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve">
+    <value>Wyłączenie superpozycji obrazów</value>
+  </data>
+  <data name="Toast_AudioLost" xml:space="preserve">
+    <value>Odłączono urządzenia audio</value>
+  </data>
+  <data name="Toast_TriggerDisarmed" xml:space="preserve">
+    <value>Wyzwalacz przechwytywania wyłączony</value>
+  </data>
+  <data name="Toast_TriggerArmed" xml:space="preserve">
+    <value>Wyzwalacz przechwytywania włączony</value>
+  </data>
+  <data name="RecentlyUsedColors" xml:space="preserve">
+    <value>Ostatnio używane kolory:</value>
+  </data>
+  <data name="mnuThumbnailLocate" xml:space="preserve">
+    <value>Zlokalizuj plik w Eksploratorze Windows</value>
+  </data>
+  <data name="mnuThumbnailRename" xml:space="preserve">
+    <value>Zmień nazwę</value>
+  </data>
+  <data name="mnuThumbnailForget" xml:space="preserve">
+    <value>Zapomnij własne ustawienia</value>
+  </data>
+  <data name="mnuThumbnailDelete" xml:space="preserve">
+    <value>Usuń</value>
+  </data>
+  <data name="mnuSVGTools" xml:space="preserve">
+    <value>Odniesienie obserwacyjne</value>
+  </data>
+  <data name="mnuStopTracking" xml:space="preserve">
+    <value>Edycja ścieżki końcowej </value>
+  </data>
+  <data name="mnuShowMeasure" xml:space="preserve">
+    <value>Wyświetl miarę</value>
+  </data>
+  <data name="mnuTimebase" xml:space="preserve">
+    <value>Konfiguracja trwania film...</value>
+  </data>
+  <data name="mnuCalibrate" xml:space="preserve">
+    <value>Kalibracja...</value>
+  </data>
+  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
+    <value>Otwórz jako folder obserwowanych powtórek…</value>
+  </data>
+  <data name="mnuOpenReplayWatcher" xml:space="preserve">
+    <value>Otwórz folder obserwowanych powtórek…</value>
+  </data>
+  <data name="mnuMarkTimeAsOriginClock" xml:space="preserve">
+    <value>Zaznacz bieżący czas jako początek czasu dla tego zegara</value>
+  </data>
+  <data name="mnuMarkTimeAsOrigin" xml:space="preserve">
+    <value>Zaznacz bieżący czas jako początek czasu</value>
+  </data>
+  <data name="mnuRestartTracking" xml:space="preserve">
+    <value>Zrestartuj edycję ścieżki</value>
+  </data>
+  <data name="mnuMagnifierQuit" xml:space="preserve">
+    <value>Zamknij lupę</value>
+  </data>
+  <data name="mnuMagnifierDirect" xml:space="preserve">
+    <value>Przełącz na bezpośredne powiększenie</value>
+  </data>
+  <data name="mnuLoadAnalysis" xml:space="preserve">
+    <value>Wczytaj adnotacje…</value>
+  </data>
+  <data name="mnuFlipVertically" xml:space="preserve">
+    <value>Obróć w pionie</value>
+  </data>
+  <data name="mnuFlipHorizontally" xml:space="preserve">
+    <value>Obróć w poziomie</value>
+  </data>
+  <data name="mnuSupplementaryAngle" xml:space="preserve">
+    <value>Kąt uzupełniający</value>
+  </data>
+  <data name="mnuCounterClockwise" xml:space="preserve">
+    <value>Przeciwnie do ruchu wskazówek zegara</value>
+  </data>
+  <data name="mnuSignedAngle" xml:space="preserve">
+    <value>Kąt opisany</value>
+  </data>
+  <data name="mnuImportImage" xml:space="preserve">
+    <value>Importuj obraz…</value>
+  </data>
+  <data name="mnuGridsHide" xml:space="preserve">
+    <value>Ukryj</value>
+  </data>
+  <data name="mnuGotoKeyframe" xml:space="preserve">
+    <value>Przejdź do obrazu klucza</value>
+  </data>
+  <data name="mnuRotation270" xml:space="preserve">
+    <value>Obrót 90° przeciwnie do ruchu wskazówek zegara</value>
+  </data>
+  <data name="mnuRotation90" xml:space="preserve">
+    <value>Obrót 90° zgodnie z ruchem wskazówek zegara</value>
+  </data>
+  <data name="mnuRotation180" xml:space="preserve">
+    <value>Obrót 180°</value>
+  </data>
+  <data name="mnuRotation0" xml:space="preserve">
+    <value>Brak rotacji</value>
+  </data>
+  <data name="mnuRotation" xml:space="preserve">
+    <value>Rotacja obrazu</value>
+  </data>
+  <data name="mnuFormatForce169" xml:space="preserve">
+    <value>Format 16:9</value>
+  </data>
+  <data name="mnuFormatForce43" xml:space="preserve">
+    <value>Format 4:3</value>
+  </data>
+  <data name="mnuFormatAuto" xml:space="preserve">
+    <value>Automatyczne wykrywanie</value>
+  </data>
+  <data name="mnuFormat" xml:space="preserve">
+    <value>Format obrazu</value>
+  </data>
+  <data name="mnuExportSpreadsheet" xml:space="preserve">
+    <value>Eksportuj do arkusza kalkulacyjnego</value>
+  </data>
+  <data name="mnuTwoMixed" xml:space="preserve">
+    <value>Jeden ekran przechwytywania i jeden ekran odtwarzania</value>
+  </data>
+  <data name="mnuDrawingTrackingStop" xml:space="preserve">
+    <value>Zatrzymaj śledzenie</value>
+  </data>
+  <data name="mnuDrawingTrackingStart" xml:space="preserve">
+    <value>Rozpocznij śledzenie</value>
+  </data>
+  <data name="mnuDeleteTrajectory" xml:space="preserve">
+    <value>Usuń całą ścieżkę</value>
+  </data>
+  <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
+    <value>Usuń ścieżkę za punktem</value>
+  </data>
+  <data name="mnuDeinterlace" xml:space="preserve">
+    <value>Usuń przeplot</value>
+  </data>
+  <data name="mnuConfigureTrajectory" xml:space="preserve">
+    <value>Skonfiguruj wyświetlanie ścieżki</value>
+  </data>
+  <data name="mnuCopyImageToClipboard" xml:space="preserve">
+    <value>Skopiuj obraz do schowka</value>
+  </data>
+  <data name="mnuCopyToClipboard" xml:space="preserve">
+    <value>Skopiuj do schowka</value>
+  </data>
+  <data name="mnuShowLabel" xml:space="preserve">
+    <value>Pokaż etykietę</value>
+  </data>
+  <data name="mnuShowAfter" xml:space="preserve">
+    <value>Pokaż po punkcie</value>
+  </data>
+  <data name="mnuHideAfter" xml:space="preserve">
+    <value>Ukryj po punkcie</value>
+  </data>
+  <data name="mnuShowBefore" xml:space="preserve">
+    <value>Pokaż przed punktem</value>
+  </data>
+  <data name="mnuHideBefore" xml:space="preserve">
+    <value>Ukryj przed punktem</value>
+  </data>
+  <data name="mnuChronoStop" xml:space="preserve">
+    <value>Zatrzymaj stoper</value>
+  </data>
+  <data name="mnuChronoStart" xml:space="preserve">
+    <value>Uruchom stoper</value>
+  </data>
+  <data name="LengthUnit_Percentage" xml:space="preserve">
+    <value>Procent</value>
+  </data>
+  <data name="lblDelay_Text" xml:space="preserve">
+    <value>Opóźnienie (s):</value>
+  </data>
+  <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve">
+    <value>Zapisz zmiany</value>
+  </data>
+  <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve">
+    <value>Adnotacje zostały zmodyfikowane.\nCzy chcesz je zapisać?</value>
+  </data>
+  <data name="FileFilter_AllSupported" xml:space="preserve">
+    <value>Wszystkie obsługiwane formaty</value>
+  </data>
+  <data name="FileProperty_HasKva" xml:space="preserve">
+    <value>Plik Kva</value>
+  </data>
+  <data name="FileProperty_CreationTime" xml:space="preserve">
+    <value>Czas tworzenia</value>
+  </data>
+  <data name="FileProperty_Duration" xml:space="preserve">
+    <value>Czas trwania</value>
+  </data>
+  <data name="FileProperty_Framerate" xml:space="preserve">
+    <value>Odświeżanie Obrazu</value>
+  </data>
+  <data name="FileProperty_Size" xml:space="preserve">
+    <value>Rozmiar</value>
+  </data>
+  <data name="Generic_Paste" xml:space="preserve">
+    <value>Wyklej</value>
+  </data>
+  <data name="Generic_Copy" xml:space="preserve">
+    <value>Kopiuj</value>
+  </data>
+  <data name="Generic_Cut" xml:space="preserve">
+    <value>Wytnij</value>
+  </data>
+  <data name="Generic_Restore" xml:space="preserve">
+    <value>Przywrócenie ustawień domyślnych</value>
+  </data>
+  <data name="Generic_Import" xml:space="preserve">
+    <value>Importuj</value>
+  </data>
+  <data name="Generic_File" xml:space="preserve">
+    <value>Plik</value>
+  </data>
+  <data name="Generic_Video" xml:space="preserve">
+    <value>Film</value>
+  </data>
+  <data name="Generic_Image" xml:space="preserve">
+    <value>Obraz</value>
+  </data>
+  <data name="Generic_TrackShapePicker" xml:space="preserve">
+    <value>Kształt linii:</value>
+  </data>
+  <data name="Generic_ExportVideo" xml:space="preserve">
+    <value>Eksportuj wideo…</value>
+  </data>
+  <data name="Generic_SaveKVAAs" xml:space="preserve">
+    <value>Zapisz adnotacje jako…</value>
+  </data>
+  <data name="Generic_SaveKVA" xml:space="preserve">
+    <value>Zapisz adnotacje</value>
+  </data>
+  <data name="Generic_PenSizePicker" xml:space="preserve">
+    <value>Rozmiar:</value>
+  </data>
+  <data name="Generic_Visibility" xml:space="preserve">
+    <value>Widoczność</value>
+  </data>
+  <data name="Generic_Opacity" xml:space="preserve">
+    <value>Nieprzezroczystość</value>
+  </data>
+  <data name="Generic_LineSizePicker" xml:space="preserve">
+    <value>Szerokość:</value>
+  </data>
+  <data name="Generic_FontSizePicker" xml:space="preserve">
+    <value>Rozmiar czcionki:</value>
+  </data>
+  <data name="Generic_GridDivisionsPicker" xml:space="preserve">
+    <value>Podział:</value>
+  </data>
+  <data name="Generic_ColorPicker" xml:space="preserve">
+    <value>Kolor:</value>
+  </data>
+  <data name="Generic_Clock" xml:space="preserve">
+    <value>Zegar:</value>
+  </data>
+  <data name="Generic_Perspective" xml:space="preserve">
+    <value>Perspektywa:</value>
+  </data>
+  <data name="Generic_Curved" xml:space="preserve">
+    <value>Krzywa:</value>
+  </data>
+  <data name="Generic_ArrowPicker" xml:space="preserve">
+    <value>Strzałki:</value>
+  </data>
+  <data name="Generic_Appearance" xml:space="preserve">
+    <value>Wygląd</value>
+  </data>
+  <data name="FormCameraAlias_Icon" xml:space="preserve">
+    <value>Ikona:</value>
+  </data>
+  <data name="FormCameraAlias_Alias" xml:space="preserve">
+    <value>Pseudonim:</value>
+  </data>
+  <data name="FormCameraAlias_Title" xml:space="preserve">
+    <value>Zmiana nazwy kamery</value>
+  </data>
+  <data name="Error_SaveMovie_LowLevelError" xml:space="preserve">
+    <value>Nie można zapisać filmu.\nSpróbuj ponownie w innym formacie.</value>
+  </data>
+  <data name="Error_SaveMovie_Title" xml:space="preserve">
+    <value>Kinovea - Nie można zapisać wideo. </value>
+  </data>
+  <data name="Error_SaveMovie_FileError" xml:space="preserve">
+    <value>Nie można zapisać pliku.\n Upewnij się, że masz prawa do zapisu w folderze docelowym i że plik nie jest aktualnie używany.</value>
+  </data>
+  <data name="Error_SavePausedVideo" xml:space="preserve">
+    <value>Kinovea – Nie można utworzyć, wstrzymane wideo</value>
+  </data>
+  <data name="Error_Capture_DirectoryNotCreated_Text" xml:space="preserve">
+    <value>Nie można utworzyć katalogu przechwytywania.\nSprawdź, czy wskazuje on na prawidłową lokalizację pamięci masowej.</value>
+  </data>
+  <data name="Error_Capture_DirectoryNotCreated_Title" xml:space="preserve">
+    <value>Katalog nie został utworzony</value>
+  </data>
+  <data name="Error_Capture_InvalidFile_Text" xml:space="preserve">
+    <value>Nazwa pliku zawiera nieprawidłowe znaki.\n Nazwa pliku nie może zawierać żadnego z następujących znaków:\n \ / : * ? " &lt; &gt;</value>
+  </data>
+  <data name="Error_Capture_InvalidFile_Title" xml:space="preserve">
+    <value>Nieprawidłowa nazwa pliku</value>
+  </data>
+  <data name="Error_Capture_FileExists_Text" xml:space="preserve">
+    <value>Plik {0} już istnieje.\nCzy chcesz go zastąpić?</value>
+  </data>
+  <data name="Error_Capture_FileExists_Title" xml:space="preserve">
+    <value>Nadpisanie pliku</value>
+  </data>
+  <data name="DrawingName_Clock" xml:space="preserve">
+    <value>Zegar</value>
+  </data>
+  <data name="DrawingName_Curve" xml:space="preserve">
+    <value>Krzywa</value>
+  </data>
+  <data name="DrawingName_Rectangle" xml:space="preserve">
+    <value>Prostokąt</value>
+  </data>
+  <data name="DrawingName_DistanceHorizontal" xml:space="preserve">
+    <value>Odległość (pozioma)</value>
+  </data>
+  <data name="DrawingName_AngleToHorizontal" xml:space="preserve">
+    <value>Kąt do poziomu</value>
+  </data>
+  <data name="DrawingName_AngleToVertical" xml:space="preserve">
+    <value>Kąt do pionu</value>
+  </data>
+  <data name="DrawingName_Archery" xml:space="preserve">
+    <value>Łucznictwo</value>
+  </data>
+  <data name="DrawingName_Bikefit" xml:space="preserve">
+    <value>Dopasowanie roweru</value>
+  </data>
+  <data name="DrawingName_Posture" xml:space="preserve">
+    <value>Postawa</value>
+  </data>
+  <data name="DrawingName_Goniometer" xml:space="preserve">
+    <value>Goniometr</value>
+  </data>
+  <data name="dlgTimebase_InfoUser" xml:space="preserve">
+    <value>Ta opcja definiuje odświeżanie obrazu referencyjnie używany przez Kinovea do odtwarzania wideo. Należy jej użyć, gdy wideo zawiera nieprawidłowy framerate lub Kinovea nie może go odczytać. </value>
+  </data>
+  <data name="DrawingName_DistortionGrid" xml:space="preserve">
+    <value>Siatka zniekształceń</value>
+  </data>
+  <data name="dlgCameraCalibration_lblFocalLength" xml:space="preserve">
+    <value>Ogniskowa (mm):</value>
+  </data>
+  <data name="dlgCameraCalibration_lblSensorWidth" xml:space="preserve">
+    <value>Szerokość czujnika (mm):</value>
+  </data>
+  <data name="dlgCameraCalibration_SaveDialogTitle" xml:space="preserve">
+    <value>Zapisz profil kalibracji aparatu</value>
+  </data>
+  <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
+    <value>Wczytaj profil kalibracji kamery</value>
+  </data>
+  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
+    <value>Zniekształcenie</value>
+  </data>
+  <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
+    <value>Funkcje aparatu</value>
+  </data>
+  <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve">
+    <value>Współczynniki zniekształceń</value>
+  </data>
+  <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve">
+    <value>Adnotacje będą widoczne u wszystkich użtkowników, ale nie będą mogły być modyfikowane.#Dodatkowe komentarze dołączone do kluczowych obrazów nie zostaną zapisane.</value>
+  </data>
+  <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve">
+    <value>Eksportuj wideo z adnotacjami naniesionymi na stałe w wideo</value>
+  </data>
+  <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve">
+    <value>Tylko adnotacje zostaną zapisane.#Plik może być później zaimportowany do filmu.</value>
+  </data>
+  <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve">
+    <value>Eksportuj jeden obraz co {0:0.00} s.</value>
+  </data>
+  <data name="dlgRafaleExport_ExportTimeDecimationSeconds" xml:space="preserve">
+    <value>Eksportuj jeden obraz co {0:0.00} s.</value>
+  </data>
+  <data name="dlgRafaleExport_ExportFrameDecimation" xml:space="preserve">
+    <value>Eksportuj jeden obraz co {0} obrazy.</value>
+  </data>
+  <data name="dlgRafaleExport_ExportAll" xml:space="preserve">
+    <value>Wyeksportuj wszystkie obrazy.</value>
+  </data>
+  <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve">
+    <value>Łącznie: {0:0} obrazów.</value>
+  </data>
+  <data name="dlgImportReference_Title" xml:space="preserve">
+    <value>Importuj obraz jako odniesienie</value>
+  </data>
+  <data name="dlgExportSpreadsheet_Title" xml:space="preserve">
+    <value>Zapisz dane jako dokument arkusza kalkulacyjnego</value>
+  </data>
+  <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve">
+    <value>Rodzaj filmu</value>
+  </data>
+  <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve">
+    <value>Pokaz slajdów wideo tylko z kluczowymi obrazami.</value>
+  </data>
+  <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve">
+    <value>Oryginalne wideo z pauzą na każdym kluczowym obrazie</value>
+  </data>
+  <data name="dlgCalibratePlane_Title" xml:space="preserve">
+    <value>Kalibracja płaszczyzny</value>
+  </data>
+  <data name="dlgCalibrateLine_AxesImage" xml:space="preserve">
+    <value>Wyrównane do osi obrazu</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalVerticalDisplacement" xml:space="preserve">
+    <value>Względne przesunięcie pionowe</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement" xml:space="preserve">
+    <value>Względne przesunięcie poziome</value>
+  </data>
+  <data name="dlgTimebase_InfoCapture" xml:space="preserve">
+    <value>Ta opcja definiuje różnicę pomiędzy prędkością wideo a czasem rzeczywistym. Ma ona wpływ na etykiety zawierające czasy i pomiary kinematyki. Należy jej używać, gdy film został nakręcony w trybie wysokiej prędkości. </value>
+  </data>
+  <data name="Generic_Calibration" xml:space="preserve">
+    <value>Kalibracja</value>
+  </data>
 </root>

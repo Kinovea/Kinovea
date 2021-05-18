@@ -406,13 +406,13 @@
   </data>
   <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Un diaporama est une succession d'images clés enregistrées sous forme de vidéo.\nVeuillez ajouter quelques images clés avant de générer le diaporama.</value>
   </data>
-  <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea - Création de la vidéo impossible.</value>
+  <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea - Création de la vidéo impossible</value>
   </data>
   <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Le fichier n'a pu être écrit.\nAssurez vous d'avoir les droits suffisants pour écrire dans le dossier et que le fichier ne soit pas en cours d'utilisation.</value>
   </data>
-  <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea – Sauvegarde de la vidéo impossible.</value>
+  <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea – Sauvegarde de la vidéo impossible. </value>
   </data>
-  <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>La vidéo n'a pu être enregistrée.\nRéessayez en utilisant un format différent. </value>
+  <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>La vidéo n'a pu être enregistrée.\nRéessayez en utilisant un format différent.</value>
   </data>
   <data name="FormCameraAlias_Title" xml:space="preserve"><value>Renommage de la camera</value>
   </data>
@@ -482,7 +482,7 @@
   </data>
   <data name="Generic_Video" xml:space="preserve"><value>Vidéo</value>
   </data>
-  <data name="Generic_SaveImage" xml:space="preserve"><value>Enregistrer l'image </value>
+  <data name="Generic_SaveImage" xml:space="preserve"><value>Enregistrer l'image</value>
   </data>
   <data name="Generic_File" xml:space="preserve"><value>Fichier</value>
   </data>
@@ -668,7 +668,7 @@
   </data>
   <data name="mnuMarkTimeAsOriginClock" xml:space="preserve"><value>Marquer le temps courant comme origine pour cette horloge</value>
   </data>
-  <data name="mnuOpenVideo" xml:space="preserve"><value>Ouvrir une vidéo</value>
+  <data name="mnuOpenVideo" xml:space="preserve"><value>Ouvrir une vidéo…</value>
   </data>
   <data name="mnuOpenReplayWatcher" xml:space="preserve"><value>Ouvrir un observateur de dossier de relecture…</value>
   </data>
@@ -680,7 +680,7 @@
   </data>
   <data name="mnuShowMeasure" xml:space="preserve"><value>Afficher la mesure</value>
   </data>
-  <data name="mnuStopTracking" xml:space="preserve"><value>Terminer l'édition de la trajectoire</value>
+  <data name="mnuStopTracking" xml:space="preserve"><value>Terminer l'édition de la trajectoire </value>
   </data>
   <data name="mnuSVGTools" xml:space="preserve"><value>Référence d'observation</value>
   </data>

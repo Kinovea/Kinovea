@@ -99,4 +99,7 @@
   <data name="lblCameras" xml:space="preserve">
     <value>Камеры</value>
   </data>
+  <data name="mnuVideoLocate" xml:space="preserve">
+    <value>Найти в проводнике Windows </value>
+  </data>
 </root>

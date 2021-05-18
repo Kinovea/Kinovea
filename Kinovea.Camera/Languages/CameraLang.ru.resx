@@ -110,7 +110,7 @@
   </data>
   <data name="FormConnectionWizard_Port" xml:space="preserve"><value>Порт</value>
   </data>
-  <data name="FormConnectionWizard_Format" xml:space="preserve"><value>Формат потока видео:</value>
+  <data name="FormConnectionWizard_Format" xml:space="preserve"><value>Формат потока видео</value>
   </data>
   <data name="FormConnectionWizard_Authentication" xml:space="preserve"><value>Аутенттификация</value>
   </data>
@@ -125,5 +125,8 @@
   </data>
   <data name="FormConfiguration_Reconnect" xml:space="preserve">
     <value>Переподключиться</value>
+  </data>
+  <data name="FormConfiguration_Properties_BayerFormatConversion" xml:space="preserve">
+    <value>Преобразование фильтра Байера:</value>
   </data>
 </root>
