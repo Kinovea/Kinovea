@@ -424,7 +424,7 @@
   </data>
   <data name="Generic_Clock" xml:space="preserve"><value>Rellotge:</value>
   </data>
-  <data name="Generic_Cancel" xml:space="preserve"><value>Anular</value>
+  <data name="Generic_Cancel" xml:space="preserve"><value>Cancel·la</value>
   </data>
   <data name="Generic_Close" xml:space="preserve"><value>Tancar</value>
   </data>
@@ -450,7 +450,7 @@
   </data>
   <data name="Generic_PenSizePicker" xml:space="preserve"><value>Mida :</value>
   </data>
-  <data name="Generic_Save" xml:space="preserve"><value>Desar</value>
+  <data name="Generic_Save" xml:space="preserve"><value>Desa</value>
   </data>
   <data name="Generic_TrackShapePicker" xml:space="preserve"><value>Forma de la línia :</value>
   </data>
@@ -462,13 +462,13 @@
   </data>
   <data name="Generic_File" xml:space="preserve"><value>Fitxer</value>
   </data>
-  <data name="Generic_Open" xml:space="preserve"><value>Obrir</value>
+  <data name="Generic_Open" xml:space="preserve"><value>Obre</value>
   </data>
   <data name="Generic_Import" xml:space="preserve"><value>Importar</value>
   </data>
   <data name="Generic_Restore" xml:space="preserve"><value>Restaurar paràmetres per defecte</value>
   </data>
-  <data name="Generic_Quit" xml:space="preserve"><value>Sortir</value>
+  <data name="Generic_Quit" xml:space="preserve"><value>Surt</value>
   </data>
   <data name="Generic_Cut" xml:space="preserve"><value>Tallar</value>
   </data>
