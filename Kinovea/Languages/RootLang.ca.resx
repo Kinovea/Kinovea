@@ -100,21 +100,21 @@
   </data>
   <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve"><value>Noms dels vídeos</value>
   </data>
-  <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Format d'imatge</value>
+  <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Format d'imatge:</value>
   </data>
-  <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Format de vídeo</value>
+  <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Format de vídeo:</value>
   </data>
-  <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve"><value>Format de vídeo no comprimit</value>
+  <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve"><value>Format de vídeo no comprimit:</value>
   </data>
-  <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve"><value>Enregistrant un vídeo no comprimit</value>
+  <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve"><value>Enregistra vídeo no comprimit</value>
   </data>
   <data name="dlgPreferences_Capture_Recording" xml:space="preserve"><value>Enregistrant</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve"><value>Mode de registre i retard</value>
   </data>
-  <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve"><value>Càmera: Enregistra fotogrames en temps real.</value>
+  <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve"><value>Càmera: enregistra fotogrames en temps real.</value>
   </data>
-  <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve"><value>Retard: Enregistra fotogrames retardats</value>
+  <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve"><value>Retard: enregistra fotogrames retardats.</value>
   </data>
   <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Any</value>
   </data>
@@ -142,9 +142,9 @@
   </data>
   <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve"><value>Data (AAAAMMDD)</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve"><value>Temps (HHMMDD)</value>
+  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve"><value>Hora (HHMMDD)</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve"><value>Data i temps (AAAAMMDD-HHMMSS)</value>
+  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve"><value>Data i hora (AAAAMMDD-HHMMSS)</value>
   </data>
   <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve"><value>Variables contextuals</value>
   </data>
@@ -168,13 +168,13 @@
   </data>
   <data name="dlgPreferences_Capture_chkEnableAudioTrigger" xml:space="preserve"><value>Activar disparador per so</value>
   </data>
-  <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve"><value>Dispositiu d’entrada</value>
+  <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve"><value>Dispositiu d’entrada:</value>
   </data>
   <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve"><value>Llindar del disparador</value>
   </data>
   <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve"><value>Aturar l’enregistrament per temps(s)</value>
   </data>
-  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve"><value>Comanda post enregistrament</value>
+  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve"><value>Ordre post enregistrament:</value>
   </data>
   <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Mostra els dibuixos mentre el video es reprodueix</value>
   </data>
@@ -194,15 +194,15 @@
   </data>
   <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Enllaçar les barres de velocitats en la comparació de videos</value>
   </data>
-  <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Canviar a Mode d'Anàlisis</value>
+  <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Canvia al mode d’anàlisi</value>
   </data>
-  <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Nombre d'arxius a l'historial</value>
+  <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Nombre de fitxers a l’historial:</value>
   </data>
   <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve"><value>Les instàncies tenen les seves pròpies preferències</value>
   </data>
   <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Format d'imatge per defecte</value>
   </data>
-  <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Idioma</value>
+  <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Llengua:</value>
   </data>
   <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>I</value>
   </data>
@@ -214,7 +214,7 @@
   </data>
   <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Quilòmetre per hora ({0})</value>
   </data>
-  <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Peus per sogon ({0})</value>
+  <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Peus per segon ({0})</value>
   </data>
   <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Milles per hora ({0})</value>
   </data>
@@ -268,37 +268,37 @@
   </data>
   <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve"><value>Categories</value>
   </data>
-  <data name="dlgPreferences_Keyboard_lblCommands" xml:space="preserve"><value>Comandes</value>
+  <data name="dlgPreferences_Keyboard_lblCommands" xml:space="preserve"><value>Ordres</value>
   </data>
   <data name="dlgPreferences_Keyboard_lblHotkey" xml:space="preserve"><value>Tecla d'accés directe per {0}.{1}</value>
   </data>
-  <data name="dlgPreferences_Keyboard_btnApply" xml:space="preserve"><value>Aplicar</value>
+  <data name="dlgPreferences_Keyboard_btnApply" xml:space="preserve"><value>Aplica</value>
   </data>
-  <data name="dlgPreferences_Keyboard_btnClear" xml:space="preserve"><value>Suprimir</value>
+  <data name="dlgPreferences_Keyboard_btnClear" xml:space="preserve"><value>Neteja</value>
   </data>
-  <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve"><value>Defecte</value>
+  <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve"><value>Per defecte</value>
   </data>
-  <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Carregant l'interfície d'usuari</value>
+  <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>S’està carregant l’interfície d’usuari…</value>
   </data>
-  <data name="Generic_Cancel" xml:space="preserve"><value>Cancel·lar</value>
+  <data name="Generic_Cancel" xml:space="preserve"><value>Cancel·la</value>
   </data>
-  <data name="Generic_Quit" xml:space="preserve"><value>Sortir</value>
+  <data name="Generic_Quit" xml:space="preserve"><value>Surt</value>
   </data>
-  <data name="Generic_Save" xml:space="preserve"><value>Desar</value>
+  <data name="Generic_Save" xml:space="preserve"><value>Desa</value>
   </data>
-  <data name="mnuAbout" xml:space="preserve"><value>Sobre el Kinovea</value>
+  <data name="mnuAbout" xml:space="preserve"><value>Quant al Kinovea…</value>
   </data>
-  <data name="mnuApplicationFolder" xml:space="preserve"><value>Obrir l'arxiu de registres</value>
+  <data name="mnuApplicationFolder" xml:space="preserve"><value>Obre el fitxer de registres…</value>
   </data>
-  <data name="mnuEdit" xml:space="preserve"><value>Editar</value>
+  <data name="mnuEdit" xml:space="preserve"><value>Edita</value>
   </data>
-  <data name="mnuFile" xml:space="preserve"><value>Arxiu</value>
+  <data name="mnuFile" xml:space="preserve"><value>Fitxer</value>
   </data>
-  <data name="mnuFullScreen" xml:space="preserve"><value>Pantalla complerta</value>
+  <data name="mnuFullScreen" xml:space="preserve"><value>Pantalla completa</value>
   </data>
   <data name="mnuHelp" xml:space="preserve"><value>Ajuda</value>
   </data>
-  <data name="mnuHelpContents" xml:space="preserve"><value>Ajuda del Kinovea</value>
+  <data name="mnuHelpContents" xml:space="preserve"><value>Ajuda del Kinovea…</value>
   </data>
   <data name="mnuHistory" xml:space="preserve"><value>Recents</value>
   </data>
@@ -314,13 +314,13 @@
   </data>
   <data name="mnuOptions" xml:space="preserve"><value>Opcions</value>
   </data>
-  <data name="mnuPreferences" xml:space="preserve"><value>Preferències...</value>
+  <data name="mnuPreferences" xml:space="preserve"><value>Preferències…</value>
   </data>
   <data name="mnuScreens" xml:space="preserve"><value>Veure</value>
   </data>
-  <data name="mnuUndo" xml:space="preserve"><value>Desfer</value>
+  <data name="mnuUndo" xml:space="preserve"><value>Desfés</value>
   </data>
-  <data name="mnuRedo" xml:space="preserve"><value>Refer</value>
+  <data name="mnuRedo" xml:space="preserve"><value>Refés</value>
   </data>
   <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Número de fotogrames</value>
   </data>
@@ -331,5 +331,26 @@
   <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Centèssimes de minut</value>
   </data>
   <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Deumilèssimes d'hora</value>
+  </data>
+  <data name="mnuWorkspaceExport" xml:space="preserve">
+    <value>Exporta l’espai de treball</value>
+  </data>
+  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
+    <value>Desa com a espai de treball per defecte</value>
+  </data>
+  <data name="mnuWorkspace" xml:space="preserve">
+    <value>Espai de treball</value>
+  </data>
+  <data name="dlgPreferences_Player_lblMemory" xml:space="preserve">
+    <value>Memòria cau assignada a cada pantalla de reproducció: {0} MB.</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
+    <value>Temps d’inactivitat (s):</value>
+  </data>
+  <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
+    <value>Fitxer d’anotació per defecte:</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
+    <value>Retroactiu: enregistra fotogrames quan s'aturi la captura.</value>
   </data>
 </root>

@@ -174,7 +174,7 @@
   </data>
   <data name="dlgTimebase_InfoUser" xml:space="preserve"><value>Esta opción define la tasa de fotogramas usada por Kinovea para reproducir el video. Úsela cuando el video contenga una tasa incorrecta o Kinovea no pueda leerla.</value>
   </data>
-  <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Restaurar</value>
+  <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Restablecer</value>
   </data>
   <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>Configurar herramienta de trayectoria</value>
   </data>
@@ -246,7 +246,7 @@
   </data>
   <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve"><value>Ventana de objeto:</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve"><value>Ventana de búsqueda</value>
+  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve"><value>Ventana de búsqueda:</value>
   </data>
   <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Medida real del segmento:</value>
   </data>
@@ -260,7 +260,7 @@
   </data>
   <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Video inicial con una pausa en cada imagen clave</value>
   </data>
-  <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Presentación de diapositivas con las imágenes clave</value>
+  <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Pase de diapositivas con solo las imágenes clave.</value>
   </data>
   <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Tipo de vídeo</value>
   </data>
@@ -268,7 +268,7 @@
   </data>
   <data name="dlgImportReference_Title" xml:space="preserve"><value>Importar un imagen como referencia</value>
   </data>
-  <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Commentarios...</value>
+  <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Comentarios…</value>
   </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Cargar anotaciones</value>
   </data>
@@ -648,11 +648,11 @@
   </data>
   <data name="mnuSwapScreens" xml:space="preserve"><value>Invertir las pantallas</value>
   </data>
-  <data name="mnuThumbnailDelete" xml:space="preserve"><value>Borrar</value>
+  <data name="mnuThumbnailDelete" xml:space="preserve"><value>Eliminar</value>
   </data>
-  <data name="mnuThumbnailForget" xml:space="preserve"><value>Borrar configuración personalizada</value>
+  <data name="mnuThumbnailForget" xml:space="preserve"><value>Olvidar configuración personalizada</value>
   </data>
-  <data name="mnuThumbnailRename" xml:space="preserve"><value>Renombrar</value>
+  <data name="mnuThumbnailRename" xml:space="preserve"><value>Cambiar nombre</value>
   </data>
   <data name="mnuThumbnailLocate" xml:space="preserve"><value>Buscar archivo en Windows Explorer</value>
   </data>
@@ -692,11 +692,11 @@
   </data>
   <data name="RecentlyUsedColors" xml:space="preserve"><value>Colores usados recientemente</value>
   </data>
-  <data name="statusEmptyScreen" xml:space="preserve"><value>Vacio</value>
+  <data name="statusEmptyScreen" xml:space="preserve"><value>Vacío</value>
   </data>
   <data name="Toast_Pause" xml:space="preserve"><value>Pausa</value>
   </data>
-  <data name="Toast_Zoom" xml:space="preserve"><value>Zoom : {0}%</value>
+  <data name="Toast_Zoom" xml:space="preserve"><value>Escala: {0} %</value>
   </data>
   <data name="Toast_StartRecord" xml:space="preserve"><value>Grabación iniciada</value>
   </data>
@@ -809,5 +809,74 @@
   <data name="FormCrashRecovery_Date" xml:space="preserve"><value>Fecha de creación</value>
   </data>
   <data name="FormCrashRecovery_Info" xml:space="preserve"><value>Los siguientes proyectos no se guardaron correctamente pero pueden recuperarse:</value>
+  </data>
+  <data name="Toast_AudioLost" xml:space="preserve">
+    <value>Se perdió el dispositivo de audio</value>
+  </data>
+  <data name="mnuVisibilityConfigure" xml:space="preserve">
+    <value>Configurar desvanecimiento personalizado</value>
+  </data>
+  <data name="mnuVisibilityCustom" xml:space="preserve">
+    <value>Desvanecimiento personalizado</value>
+  </data>
+  <data name="mnuVisibilityDefault" xml:space="preserve">
+    <value>Desvanecimiento predeterminado</value>
+  </data>
+  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
+    <value>Abrir como observador de carpetas de reproducción…</value>
+  </data>
+  <data name="mnuMarkTimeAsOriginClock" xml:space="preserve">
+    <value>Marcar tiempo actual como origen para este reloj</value>
+  </data>
+  <data name="mnuShowLabel" xml:space="preserve">
+    <value>Mostrar etiqueta</value>
+  </data>
+  <data name="mnuShowAfter" xml:space="preserve">
+    <value>Mostrar después de este punto</value>
+  </data>
+  <data name="mnuHideAfter" xml:space="preserve">
+    <value>Ocultar después de este punto</value>
+  </data>
+  <data name="mnuShowBefore" xml:space="preserve">
+    <value>Mostrar antes de este punto</value>
+  </data>
+  <data name="mnuHideBefore" xml:space="preserve">
+    <value>Ocultar antes de este punto</value>
+  </data>
+  <data name="Generic_ExportVideo" xml:space="preserve">
+    <value>Exportar vídeo…</value>
+  </data>
+  <data name="Generic_SaveKVAAs" xml:space="preserve">
+    <value>Guardar anotaciones como…</value>
+  </data>
+  <data name="Generic_SaveKVA" xml:space="preserve">
+    <value>Guardar anotaciones</value>
+  </data>
+  <data name="dlgCameraCalibration_lblFocalLength" xml:space="preserve">
+    <value>Distancia focal (mm):</value>
+  </data>
+  <data name="dlgCameraCalibration_lblSensorWidth" xml:space="preserve">
+    <value>Anchura del sensor (mm):</value>
+  </data>
+  <data name="dlgCalibrateLine_AxesImage" xml:space="preserve">
+    <value>Alineado con los ejes de la imagen</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisVertical" xml:space="preserve">
+    <value>La línea define el eje vertical</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisHorizontal" xml:space="preserve">
+    <value>La línea define el eje horizontal</value>
+  </data>
+  <data name="dlgCalibrateLine_CoordinateSystemAlignment" xml:space="preserve">
+    <value>Alineación de sistema de coordenadas:</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblFading" xml:space="preserve">
+    <value>Duración de desvanecimiento (fotogramas):</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblOpaque" xml:space="preserve">
+    <value>Duración en opaco (fotogramas):</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
+    <value>Opacidad máxima (%):</value>
   </data>
 </root>
