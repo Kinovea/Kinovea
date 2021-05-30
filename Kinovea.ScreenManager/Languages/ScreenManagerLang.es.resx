@@ -686,7 +686,7 @@
   </data>
   <data name="mnuPasteImage" xml:space="preserve"><value>Pegar imagen del portapapeles</value>
   </data>
-  <data name="mnuShowArrow" xml:space="preserve"><value>Mostar flecha</value>
+  <data name="mnuShowArrow" xml:space="preserve"><value>Mostrar flecha</value>
   </data>
   <data name="mnuShowCircleCenter" xml:space="preserve"><value>Mostrar el centro del círculo</value>
   </data>
@@ -792,13 +792,13 @@
   </data>
   <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Niveles automáticos...</value>
   </data>
-  <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Fortalecimiento de contornos…</value>
+  <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Dar nitidez…</value>
   </data>
   <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Resumen</value>
   </data>
   <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Invertido...</value>
   </data>
-  <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contraste...</value>
+  <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contraste automático…</value>
   </data>
   <data name="FormCrashRecovery_Title" xml:space="preserve"><value>Recuperación de un fallo</value>
   </data>

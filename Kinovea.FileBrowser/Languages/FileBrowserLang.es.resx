@@ -78,9 +78,9 @@
   </data>
   <data name="mnuDeleteShortcut" xml:space="preserve"><value>Borrar atajo</value>
   </data>
-  <data name="mnuVideoLocate" xml:space="preserve"><value>Buscar en Windows Explorer</value>
+  <data name="mnuVideoLocate" xml:space="preserve"><value>Localizar en Explorador de Windows </value>
   </data>
-  <data name="mnuVideoDelete" xml:space="preserve"><value>Borrar archivo</value>
+  <data name="mnuVideoDelete" xml:space="preserve"><value>Eliminar archivo</value>
   </data>
   <data name="mnuOpenAsReplayWatcher" xml:space="preserve"><value>Abrir como observador de carpeta de reproducción</value>
   </data>
