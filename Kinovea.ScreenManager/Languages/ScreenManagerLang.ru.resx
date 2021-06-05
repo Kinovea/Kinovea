@@ -436,7 +436,7 @@
   </data>
   <data name="Generic_Restore" xml:space="preserve"><value>Восстановить умолчание</value>
   </data>
-  <data name="Generic_Quit" xml:space="preserve"><value>Выход</value>
+  <data name="Generic_Quit" xml:space="preserve"><value>Выйти</value>
   </data>
   <data name="Generic_PlayPause" xml:space="preserve"><value>Воспроизвести | Пауза </value>
   </data>
