@@ -293,6 +293,84 @@
     <value>Несжатый видеоформат:</value>
   </data>
   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
-    <value>Кадровая частота (fps):</value>
+    <value>Частота кадров (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
+    <value>Выходная последовательность</value>
+  </data>
+  <data name="mnuWorkspaceExport" xml:space="preserve">
+    <value>Экспортировать рабочую область</value>
+  </data>
+  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
+    <value>Сохранить как рабочую область по умолчанию</value>
+  </data>
+  <data name="mnuWorkspace" xml:space="preserve">
+    <value>Рабочее пространство</value>
+  </data>
+  <data name="dlgPreferences_Player_lblMemory" xml:space="preserve">
+    <value>Кэш-память, выделенная для каждого экрана воспроизведения: {0} МБ.</value>
+  </data>
+  <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve">
+    <value>У экземпляров есть свои предпочтения</value>
+  </data>
+  <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
+    <value>Файл аннотации по умолчанию:</value>
+  </data>
+  <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve">
+    <value>Импортировать последовательности изображений как видео</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve">
+    <value>Включить режим отладки пользовательских инструментов</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
+    <value>Команда пост-записи:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
+    <value>Время простоя (с):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
+    <value>Остановить запись по продолжительности (s):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
+    <value>Порог срабатывания:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve">
+    <value>Устройство ввода:</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkEnableAudioTrigger" xml:space="preserve">
+    <value>Включить звуковой триггер</value>
+  </data>
+  <data name="dlgPreferences_Capture_tabAutomation" xml:space="preserve">
+    <value>Автоматизация</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve">
+    <value>Частота смены кадров (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve">
+    <value>Порог замещения частоты кадров (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
+    <value>Высокоскоростные камеры</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
+    <value>Игнорировать предупреждение о перезаписи файла</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
+    <value>Дата и время (YYYYMMDD-HHMMSS)</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
+    <value>Время (HHMMSS)</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
+    <value>Дата (YYYYMMDD)</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
+    <value>Имя записанного файла</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
+    <value>Каталог захвата</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
+    <value>Ретроактивность: запись кадров при остановке захвата.</value>
   </data>
 </root>
