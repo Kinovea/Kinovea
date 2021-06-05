@@ -373,4 +373,7 @@
   <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
     <value>Ретроактивность: запись кадров при остановке захвата.</value>
   </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
+    <value>Камера: записывает кадры в реальном времени.</value>
+  </data>
 </root>
