@@ -293,6 +293,6 @@
     <value>Несжатый видеоформат:</value>
   </data>
   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
-    <value />
+    <value>Кадровая частота (fps):</value>
   </data>
 </root>
