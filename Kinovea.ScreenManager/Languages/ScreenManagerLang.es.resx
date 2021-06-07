@@ -436,7 +436,7 @@
   </data>
   <data name="Generic_Calibration" xml:space="preserve"><value>Calibración</value>
   </data>
-  <data name="Generic_GridDivisionsPicker" xml:space="preserve"><value>Divisiones</value>
+  <data name="Generic_GridDivisionsPicker" xml:space="preserve"><value>Divisiones:</value>
   </data>
   <data name="Generic_FontSizePicker" xml:space="preserve"><value>Tamaño de la fuente:</value>
   </data>
@@ -452,13 +452,13 @@
   </data>
   <data name="Generic_Save" xml:space="preserve"><value>Guardar</value>
   </data>
-  <data name="Generic_TrackShapePicker" xml:space="preserve"><value>Forma de la línea</value>
+  <data name="Generic_TrackShapePicker" xml:space="preserve"><value>Forma de línea:</value>
   </data>
-  <data name="Generic_Image" xml:space="preserve"><value>Imagen </value>
+  <data name="Generic_Image" xml:space="preserve"><value>Imagen</value>
   </data>
-  <data name="Generic_Video" xml:space="preserve"><value>Video</value>
+  <data name="Generic_Video" xml:space="preserve"><value>Vídeo</value>
   </data>
-  <data name="Generic_SaveImage" xml:space="preserve"><value>Guardar la imagen</value>
+  <data name="Generic_SaveImage" xml:space="preserve"><value>Guardar imagen</value>
   </data>
   <data name="Generic_File" xml:space="preserve"><value>Archivo</value>
   </data>
@@ -466,7 +466,7 @@
   </data>
   <data name="Generic_Import" xml:space="preserve"><value>Importar</value>
   </data>
-  <data name="Generic_Restore" xml:space="preserve"><value>Restaurar a valores por defecto</value>
+  <data name="Generic_Restore" xml:space="preserve"><value>Restaurar valores predeterminados</value>
   </data>
   <data name="Generic_Quit" xml:space="preserve"><value>Salir</value>
   </data>
@@ -476,7 +476,7 @@
   </data>
   <data name="Generic_Paste" xml:space="preserve"><value>Pegar</value>
   </data>
-  <data name="Generic_PlayPause" xml:space="preserve"><value>Lectura | Pausa</value>
+  <data name="Generic_PlayPause" xml:space="preserve"><value>Reproducir | Pausa</value>
   </data>
   <data name="FileProperty_Size" xml:space="preserve"><value>Tamaño</value>
   </data>
@@ -488,7 +488,7 @@
   </data>
   <data name="FileProperty_HasKva" xml:space="preserve"><value>Archivo kva</value>
   </data>
-  <data name="FileFilter_AllSupported" xml:space="preserve"><value>Todos los formatos soportados</value>
+  <data name="FileFilter_AllSupported" xml:space="preserve"><value>Todos los formatos admitidos</value>
   </data>
   <data name="FileFilter_All" xml:space="preserve"><value>Todos los archivos</value>
   </data>
@@ -496,7 +496,7 @@
   </data>
   <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Imágenes clave no guardadas</value>
   </data>
-  <data name="lblDelay_Text" xml:space="preserve"><value>Retraso (s):</value>
+  <data name="lblDelay_Text" xml:space="preserve"><value>Demora (s):</value>
   </data>
   <data name="lblInfo_Text" xml:space="preserve"><value>Controles conjuntos:</value>
   </data>
@@ -504,7 +504,7 @@
   </data>
   <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Principio</value>
   </data>
-  <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Velocidad : {0}</value>
+  <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Velocidad: {0}</value>
   </data>
   <data name="lblTimeCode_Text" xml:space="preserve"><value>Posición</value>
   </data>
@@ -550,21 +550,21 @@
   </data>
   <data name="mnuChronoStop" xml:space="preserve"><value>Detener el cronómetro</value>
   </data>
-  <data name="mnuCloseScreen" xml:space="preserve"><value>Cerrar la pantalla</value>
+  <data name="mnuCloseScreen" xml:space="preserve"><value>Cerrar esta pantalla</value>
   </data>
-  <data name="mnuCopyToClipboard" xml:space="preserve"><value>Copiar al portapapeles</value>
+  <data name="mnuCopyToClipboard" xml:space="preserve"><value>Copiar en portapapeles</value>
   </data>
-  <data name="mnuCopyImageToClipboard" xml:space="preserve"><value>Copiar imagen al portapapeles</value>
+  <data name="mnuCopyImageToClipboard" xml:space="preserve"><value>Copiar imagen en portapapeles</value>
   </data>
   <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Configurar la visualización de la trayectoria</value>
   </data>
   <data name="mnuDeinterlace" xml:space="preserve"><value>Desentrelazado</value>
   </data>
-  <data name="mnuDeleteDrawing" xml:space="preserve"><value>Borrar</value>
+  <data name="mnuDeleteDrawing" xml:space="preserve"><value>Eliminar</value>
   </data>
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve"><value>Borrar la trayectoria a partir de este punto</value>
   </data>
-  <data name="mnuDeleteTrajectory" xml:space="preserve"><value>Borrar toda la trayectoria</value>
+  <data name="mnuDeleteTrajectory" xml:space="preserve"><value>Eliminar toda la trayectoria</value>
   </data>
   <data name="mnuDrawingTrackingStart" xml:space="preserve"><value>Iniciar seguimiento</value>
   </data>
@@ -572,13 +572,13 @@
   </data>
   <data name="mnuTwoCaptures" xml:space="preserve"><value>Dos pantallas de captura</value>
   </data>
-  <data name="mnuTwoMixed" xml:space="preserve"><value>Una pantalla de captura y una pantalla de lectura</value>
+  <data name="mnuTwoMixed" xml:space="preserve"><value>Una pantalla de captura y una de reproducción</value>
   </data>
-  <data name="mnuTwoPlayers" xml:space="preserve"><value>Dos pantallas de lectura</value>
+  <data name="mnuTwoPlayers" xml:space="preserve"><value>Dos pantallas de reproducción</value>
   </data>
-  <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Exportar la hoja de cálculo</value>
+  <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Exportar como hoja de cálculo</value>
   </data>
-  <data name="mnuFormat" xml:space="preserve"><value>Formato de la imagen</value>
+  <data name="mnuFormat" xml:space="preserve"><value>Formato de imagen</value>
   </data>
   <data name="mnuFormatAuto" xml:space="preserve"><value>Detección automática</value>
   </data>
@@ -586,15 +586,15 @@
   </data>
   <data name="mnuFormatForce169" xml:space="preserve"><value>Forzar 16:9</value>
   </data>
-  <data name="mnuRotation" xml:space="preserve"><value>Rotación de la imagen</value>
+  <data name="mnuRotation" xml:space="preserve"><value>Giro de imagen</value>
   </data>
-  <data name="mnuRotation0" xml:space="preserve"><value>Sin rotación</value>
+  <data name="mnuRotation0" xml:space="preserve"><value>Sin giro</value>
   </data>
-  <data name="mnuRotation90" xml:space="preserve"><value>90º horario</value>
+  <data name="mnuRotation90" xml:space="preserve"><value>90° horario</value>
   </data>
-  <data name="mnuRotation180" xml:space="preserve"><value>180º</value>
+  <data name="mnuRotation180" xml:space="preserve"><value>180°</value>
   </data>
-  <data name="mnuRotation270" xml:space="preserve"><value>90º antihorario</value>
+  <data name="mnuRotation270" xml:space="preserve"><value>90° antihorario</value>
   </data>
   <data name="mnuGotoKeyframe" xml:space="preserve"><value>Ir a la imagen clave</value>
   </data>
@@ -690,7 +690,7 @@
   </data>
   <data name="mnuShowCircleCenter" xml:space="preserve"><value>Mostrar el centro del círculo</value>
   </data>
-  <data name="RecentlyUsedColors" xml:space="preserve"><value>Colores usados recientemente</value>
+  <data name="RecentlyUsedColors" xml:space="preserve"><value>Colores usados recientemente:</value>
   </data>
   <data name="statusEmptyScreen" xml:space="preserve"><value>Vacío</value>
   </data>
@@ -706,7 +706,7 @@
   </data>
   <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Añadir una imagen clave</value>
   </data>
-  <data name="ToolTip_Back" xml:space="preserve"><value>Ir a la imagen anterior</value>
+  <data name="ToolTip_Back" xml:space="preserve"><value>Ir a fotograma anterior</value>
   </data>
   <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Perfil de color</value>
   </data>
@@ -806,7 +806,7 @@
   </data>
   <data name="FormCrashRecovery_File" xml:space="preserve"><value>Archivo</value>
   </data>
-  <data name="FormCrashRecovery_Date" xml:space="preserve"><value>Fecha de creación</value>
+  <data name="FormCrashRecovery_Date" xml:space="preserve"><value>Fecha</value>
   </data>
   <data name="FormCrashRecovery_Info" xml:space="preserve"><value>Los siguientes proyectos no se guardaron correctamente pero pueden recuperarse:</value>
   </data>
@@ -878,5 +878,14 @@
   </data>
   <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
     <value>Opacidad máxima (%):</value>
+  </data>
+  <data name="Infobar_Player_StartWatcher" xml:space="preserve">
+    <value>Comenzar a observar la carpeta: {0}</value>
+  </data>
+  <data name="Infobar_Player_StopWatcher" xml:space="preserve">
+    <value>Dejar de observar la carpeta: {0}</value>
+  </data>
+  <data name="Infobar_Player_Observing" xml:space="preserve">
+    <value>Se observa la carpeta: {0}</value>
   </data>
 </root>
