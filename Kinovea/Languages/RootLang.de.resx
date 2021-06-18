@@ -72,9 +72,9 @@
   </data>
   <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>Wiedergabe</value>
   </data>
-  <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Bildformat</value>
+  <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Bildformat:</value>
   </data>
-  <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Videoformat</value>
+  <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Videoformat:</value>
   </data>
   <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Jahr</value>
   </data>
@@ -100,7 +100,7 @@
   </data>
   <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Anzahl Dateien im Verlauf :</value>
   </data>
-  <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Standard Bildformat</value>
+  <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Standard Bildformat:</value>
   </data>
   <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Sprache :</value>
   </data>
@@ -118,7 +118,7 @@
   </data>
   <data name="dlgPreferences_Title" xml:space="preserve"><value>Einstellungen</value>
   </data>
-  <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Laden der Benutzeroberfläche ...</value>
+  <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Laden der Benutzeroberfläche…</value>
   </data>
   <data name="Generic_Cancel" xml:space="preserve"><value>Abbrechen</value>
   </data>
@@ -126,9 +126,9 @@
   </data>
   <data name="Generic_Save" xml:space="preserve"><value>Speichern</value>
   </data>
-  <data name="mnuAbout" xml:space="preserve"><value>Über Kinovea...</value>
+  <data name="mnuAbout" xml:space="preserve"><value>Über Kinovea…</value>
   </data>
-  <data name="mnuApplicationFolder" xml:space="preserve"><value>Log Ordner öffnen...</value>
+  <data name="mnuApplicationFolder" xml:space="preserve"><value>Log Ordner öffnen…</value>
   </data>
   <data name="mnuEdit" xml:space="preserve"><value>Bearbeiten</value>
   </data>
@@ -150,7 +150,7 @@
   </data>
   <data name="mnuOptions" xml:space="preserve"><value>Optionen</value>
   </data>
-  <data name="mnuPreferences" xml:space="preserve"><value>Einstellungen ...</value>
+  <data name="mnuPreferences" xml:space="preserve"><value>Einstellungen…</value>
   </data>
   <data name="mnuScreens" xml:space="preserve"><value>Ansicht</value>
   </data>
