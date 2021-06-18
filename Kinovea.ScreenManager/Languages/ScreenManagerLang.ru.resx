@@ -164,13 +164,13 @@
   </data>
   <data name="dlgTimebase_lblCapture" xml:space="preserve"><value>Частота съемки:</value>
   </data>
-  <data name="dlgTimebase_InfoCapture" xml:space="preserve"><value>Эта опция связывает скорость видео и реальное время. От этого значения зависят метки, содержащие временные и кинематические параметры. Скорректируйте значение, если видео было снято высокоскоростной камерой.</value>
+  <data name="dlgTimebase_InfoCapture" xml:space="preserve"><value>Эта опция связывает скорость видео и реальное время. От этого значения зависят метки, содержащие временные и кинематические параметры. Скорректируйте значение, если видео было снято высокоскоростной камерой. </value>
   </data>
   <data name="dlgTimebase_lblFileFPS" xml:space="preserve"><value>Частота воспроизведения видео: {0:0.##} кадров в секунду</value>
   </data>
-  <data name="dlgTimebase_lblUserFPS" xml:space="preserve"><value>Частота воспроизведения видео </value>
+  <data name="dlgTimebase_lblUserFPS" xml:space="preserve"><value>Частота воспроизведения видео:</value>
   </data>
-  <data name="dlgTimebase_InfoUser" xml:space="preserve"><value>Эта опция определяет частоту воспроизведения видео в программе Kinovea. Используйте эту опцию когда видео содержит ошибочную информацию о файле или Kinovea не может прочитать эту информацию.</value>
+  <data name="dlgTimebase_InfoUser" xml:space="preserve"><value>Эта опция определяет частоту воспроизведения видео в программе Kinovea. Используйте эту опцию когда видео содержит ошибочную информацию о файле или Kinovea не может прочитать эту информацию. </value>
   </data>
   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Сброс параметров</value>
   </data>
@@ -192,7 +192,7 @@
   </data>
   <data name="dlgConfigureTrajectory_CheckDisplayRotationCircle" xml:space="preserve"><value>Круг вращения дисплея</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve"><value>Измерения</value>
+  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve"><value>Измерения:</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve"><value>Отсутствует</value>
   </data>
@@ -240,13 +240,13 @@
   </data>
   <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Калибровка плоскости</value>
   </data>
-  <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Продолжительность каждого ключевого кадра : {0} сотые секунды</value>
+  <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Продолжительность каждого ключевого кадра : {0} сотые секунды.</value>
   </data>
   <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Продолжительность каждого ключевого кадра : {0:0.00} секунды.</value>
   </data>
   <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Оригинальное видео с паузой на каждом ключевом кадре</value>
   </data>
-  <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Видео слайдшоу из ключевых кадров</value>
+  <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Видео слайдшоу из ключевых кадров.</value>
   </data>
   <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Тип видео</value>
   </data>
@@ -356,15 +356,15 @@
   </data>
   <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>Название файла содержит недопустимые символы.\n Название не должно содержать следующие символы:\n \ / : * ? " &lt; &gt;</value>
   </data>
-  <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - невозможно создать слайдшоу</value>
+  <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - невозможно создать слайдшоу.</value>
   </data>
-  <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Слайдшоу - это последовательность ключевых кадров в видеоформате. \n Пожалуйста, добавьте ключевые кадры перед созданием слайдшоу</value>
+  <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Слайдшоу - это последовательность ключевых кадров в видеоформате. \n Пожалуйста, добавьте ключевые кадры перед созданием слайдшоу.</value>
   </data>
   <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea - невозможно создать видео с паузами</value>
   </data>
-  <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Невозможно записать файл. \n Убедитесь, что вы имеете право записи в данной папке, а файла не используется другими приложениями</value>
+  <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Невозможно записать файл. \n Убедитесь, что вы имеете право записи в данной папке, а файла не используется другими приложениями.</value>
   </data>
-  <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - невозможно сохранить видео</value>
+  <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - невозможно сохранить видео. </value>
   </data>
   <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Невозможно сохранить видео. \n Попытайтесь сохранить вновь в другом формате.</value>
   </data>
@@ -380,7 +380,7 @@
   </data>
   <data name="FormFramesExport_Infos" xml:space="preserve"><value>Экспортированные изображения :</value>
   </data>
-  <data name="FormFramesExport_Title" xml:space="preserve"><value>Экспорт изображений:</value>
+  <data name="FormFramesExport_Title" xml:space="preserve"><value>Экспорт изображений…</value>
   </data>
   <data name="FormProgressBar_Title" xml:space="preserve"><value>Прогресс</value>
   </data>
@@ -394,7 +394,7 @@
   </data>
   <data name="Generic_Cancel" xml:space="preserve"><value>Отмена</value>
   </data>
-  <data name="Generic_Close" xml:space="preserve"><value>Закрыть </value>
+  <data name="Generic_Close" xml:space="preserve"><value>Закрыть</value>
   </data>
   <data name="Generic_ColorPicker" xml:space="preserve"><value>Цвета:</value>
   </data>
@@ -428,7 +428,7 @@
   </data>
   <data name="Generic_SaveImage" xml:space="preserve"><value>Сохранить изображение</value>
   </data>
-  <data name="Generic_File" xml:space="preserve"><value>Файл </value>
+  <data name="Generic_File" xml:space="preserve"><value>Файл</value>
   </data>
   <data name="Generic_Open" xml:space="preserve"><value>Открыть</value>
   </data>
@@ -438,7 +438,7 @@
   </data>
   <data name="Generic_Quit" xml:space="preserve"><value>Выйти</value>
   </data>
-  <data name="Generic_PlayPause" xml:space="preserve"><value>Воспроизвести | Пауза </value>
+  <data name="Generic_PlayPause" xml:space="preserve"><value>Воспроизвести | Пауза</value>
   </data>
   <data name="FileProperty_Size" xml:space="preserve"><value>Размер</value>
   </data>
@@ -488,7 +488,7 @@
   </data>
   <data name="LoadMovie_CodecNotOpened" xml:space="preserve"><value>Ошибка: Невозможно открыть файл : проблема при инициализации декодера.</value>
   </data>
-  <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Ошибка: Невозможно открыть файл: тип файла не поддерживается</value>
+  <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Ошибка: Невозможно открыть файл: тип файла не поддерживается.</value>
   </data>
   <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea - ошибка загрузки.</value>
   </data>
@@ -496,9 +496,9 @@
   </data>
   <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Ошибка: невозможно открыть файл: обнаружено несоответствие: Пожалуйста, проконтролируйте процесс кодировки.</value>
   </data>
-  <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Ошибка: Невозможно открыть файл: потоковая информация не найдена</value>
+  <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Ошибка: Невозможно открыть файл: потоковая информация не найдена.</value>
   </data>
-  <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Ошибка: Невозможно открыть файл: неизвестная ошибка</value>
+  <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Ошибка: Невозможно открыть файл: неизвестная ошибка.</value>
   </data>
   <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Ошибка: Невозможно открыть файл: видео не найдено.</value>
   </data>
@@ -588,7 +588,7 @@
   </data>
   <data name="mnuRestartTracking" xml:space="preserve"><value>Повторное определение пути</value>
   </data>
-  <data name="mnuOpenVideo" xml:space="preserve"><value>Открыть видео файл</value>
+  <data name="mnuOpenVideo" xml:space="preserve"><value>Открыть видео файл…</value>
   </data>
   <data name="mnuCalibrate" xml:space="preserve"><value>Калибровка….</value>
   </data>
@@ -596,7 +596,7 @@
   </data>
   <data name="mnuShowMeasure" xml:space="preserve"><value>Отображение размерностей</value>
   </data>
-  <data name="mnuStopTracking" xml:space="preserve"><value>Закончить редактирование пути</value>
+  <data name="mnuStopTracking" xml:space="preserve"><value>Закончить редактирование пути </value>
   </data>
   <data name="mnuSVGTools" xml:space="preserve"><value>Визуальные ориентиры</value>
   </data>
@@ -646,7 +646,7 @@
   </data>
   <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Добавить ключевые кадры</value>
   </data>
-  <data name="ToolTip_Back" xml:space="preserve"><value>Перейти к предыдущему кадру </value>
+  <data name="ToolTip_Back" xml:space="preserve"><value>Перейти к предыдущему кадру</value>
   </data>
   <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Цветовой профиль</value>
   </data>
@@ -666,7 +666,7 @@
   </data>
   <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Карандаш</value>
   </data>
-  <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Движение </value>
+  <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Движение</value>
   </data>
   <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>Текст</value>
   </data>
@@ -680,7 +680,7 @@
   </data>
   <data name="ToolTip_Magnifier" xml:space="preserve"><value>Лупа</value>
   </data>
-  <data name="ToolTip_Next" xml:space="preserve"><value>Перейти к следующему кадру </value>
+  <data name="ToolTip_Next" xml:space="preserve"><value>Перейти к следующему кадру</value>
   </data>
   <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Изменить режим повтора (однократно | зациклить) - текущий режим : зациклить</value>
   </data>
@@ -746,8 +746,11 @@
   </data>
   <data name="FormCrashRecovery_File" xml:space="preserve"><value>Файл</value>
   </data>
-  <data name="FormCrashRecovery_Date" xml:space="preserve"><value>Дата:</value>
+  <data name="FormCrashRecovery_Date" xml:space="preserve"><value>Дата</value>
   </data>
   <data name="FormCrashRecovery_Info" xml:space="preserve"><value>Текущие проекты были не сохранены должным образом, но могут быть восстановлены:</value>
+  </data>
+  <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
+    <value>Изменить рисунок</value>
   </data>
 </root>
