@@ -428,4 +428,7 @@
   </data>
   <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Autokontrast...</value>
   </data>
+  <data name="Generic_Quit" xml:space="preserve">
+    <value>Beenden</value>
+  </data>
 </root>
