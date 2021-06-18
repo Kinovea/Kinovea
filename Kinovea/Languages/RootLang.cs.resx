@@ -74,7 +74,7 @@
   </data>
   <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Formát obrazu:</value>
   </data>
-  <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Formát videa</value>
+  <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Formát videa:</value>
   </data>
   <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Rok</value>
   </data>
@@ -90,7 +90,7 @@
   </data>
   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Paměť</value>
   </data>
-  <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Alokovaná paměť pro záznam: {0} MB</value>
+  <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Alokovaná paměť pro záznam: {0} MB.</value>
   </data>
   <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Zobrazit nákres při přehrávání videa</value>
   </data>
@@ -102,7 +102,7 @@
   </data>
   <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Přednastavený formát obrazu:</value>
   </data>
-  <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Jazyk</value>
+  <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Jazyk:</value>
   </data>
   <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>a</value>
   </data>
@@ -126,9 +126,9 @@
   </data>
   <data name="Generic_Save" xml:space="preserve"><value>Uložit</value>
   </data>
-  <data name="mnuAbout" xml:space="preserve"><value>O Kinovea</value>
+  <data name="mnuAbout" xml:space="preserve"><value>O Kinovea…</value>
   </data>
-  <data name="mnuApplicationFolder" xml:space="preserve"><value>Otovřít log složku….</value>
+  <data name="mnuApplicationFolder" xml:space="preserve"><value>Otovřít log složku…</value>
   </data>
   <data name="mnuEdit" xml:space="preserve"><value>Editovat</value>
   </data>
