@@ -166,13 +166,13 @@
   </data>
   <data name="dlgTimebase_lblCapture" xml:space="preserve"><value>Tasa de captura:</value>
   </data>
-  <data name="dlgTimebase_InfoCapture" xml:space="preserve"><value>Esta opción define la diferencia entre la velocidad del video y el tiempo real. Tiene impacto en las etiquetas que contienen tiempos y en las medidas cinemáticas. Úselo cuando el video esté grabado en alta velocidad.</value>
+  <data name="dlgTimebase_InfoCapture" xml:space="preserve"><value>Esta opción define la diferencia entre la velocidad del video y el tiempo real. Tiene impacto en las etiquetas que contienen tiempos y en las medidas cinemáticas. Úselo cuando el video esté grabado en alta velocidad. </value>
   </data>
   <data name="dlgTimebase_lblFileFPS" xml:space="preserve"><value>Tasa de fotogramas leído en el archivo {0:0.##}</value>
   </data>
   <data name="dlgTimebase_lblUserFPS" xml:space="preserve"><value>Tasa de fotogramas:</value>
   </data>
-  <data name="dlgTimebase_InfoUser" xml:space="preserve"><value>Esta opción define la tasa de fotogramas usada por Kinovea para reproducir el video. Úsela cuando el video contenga una tasa incorrecta o Kinovea no pueda leerla.</value>
+  <data name="dlgTimebase_InfoUser" xml:space="preserve"><value>Esta opción define la tasa de fotogramas usada por Kinovea para reproducir el video. Úsela cuando el video contenga una tasa incorrecta o Kinovea no pueda leerla. </value>
   </data>
   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Restablecer</value>
   </data>
@@ -290,17 +290,17 @@
   </data>
   <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Método para guardar</value>
   </data>
-  <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Guardar sólo anotaciones.</value>
+  <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Guardar sólo anotaciones</value>
   </data>
   <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve"><value>Solo se guardarán las anotaciones.#El archivo se puede importar posteriormente.</value>
   </data>
-  <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Incrustar permanentemente las anotaciones sobre el vídeo.</value>
+  <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Incrustar permanentemente las anotaciones sobre el vídeo</value>
   </data>
   <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>Las anotaciones serán visibles en todos los reproductores pero no serán modificables.#Los comentarios atados a las imágenes clave no se guardarán.</value>
   </data>
-  <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Guardar los datos de las imàgenes clave .</value>
+  <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Guardar los datos de las imàgenes clave</value>
   </data>
-  <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Guardar la secuencia de imágenes </value>
+  <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Guardar la secuencia de imágenes</value>
   </data>
   <data name="dlgCameraCalibration_Title" xml:space="preserve"><value>Calibración de la cámara</value>
   </data>
@@ -362,7 +362,7 @@
   </data>
   <data name="DrawingName_Grid" xml:space="preserve"><value>Cuadrícula</value>
   </data>
-  <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Cuadrícula de perspectiva </value>
+  <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Cuadrícula de perspectiva</value>
   </data>
   <data name="DrawingName_Rectangle" xml:space="preserve"><value>Rectángulo</value>
   </data>
@@ -386,7 +386,7 @@
   </data>
   <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea – Creación de la presentación de diapositivas imposible.</value>
   </data>
-  <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Un pase de diapositivas es una sucesión de imágenes clave guardas en un vídeo.\nAñada alguna imagen clave antes de generar el pase de diapositivas</value>
+  <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Un pase de diapositivas es una sucesión de imágenes clave guardas en un vídeo.\nAñada alguna imagen clave antes de generar el pase de diapositivas.</value>
   </data>
   <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Imposible crear el vídeo</value>
   </data>
@@ -532,7 +532,7 @@
   </data>
   <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea - Error al cargar.</value>
   </data>
-  <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Imposible cargar el archivo: no se encuentra el archivo. </value>
+  <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Imposible cargar el archivo: no se encuentra el archivo.</value>
   </data>
   <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Imposible cargar el archivo: incongruencias en el archivo. Por favor, compruebe el proceso de codificación.</value>
   </data>
@@ -542,9 +542,9 @@
   </data>
   <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Imposible cargar el archivo: no se encontró ningun flujo vídeo.</value>
   </data>
-  <data name="LockSelectionLock" xml:space="preserve"><value>Bloquear la zona de trabajo </value>
+  <data name="LockSelectionLock" xml:space="preserve"><value>Bloquear la zona de trabajo</value>
   </data>
-  <data name="LockSelectionUnlock" xml:space="preserve"><value>Desbloquear la zona de trabajo </value>
+  <data name="LockSelectionUnlock" xml:space="preserve"><value>Desbloquear la zona de trabajo</value>
   </data>
   <data name="mnuChronoStart" xml:space="preserve"><value>Iniciar el cronómetro</value>
   </data>
@@ -632,17 +632,17 @@
   </data>
   <data name="mnuMarkTimeAsOrigin" xml:space="preserve"><value>Marcar tiempo actual como origen de tiempo</value>
   </data>
-  <data name="mnuOpenVideo" xml:space="preserve"><value>Abrir un video</value>
+  <data name="mnuOpenVideo" xml:space="preserve"><value>Abrir un video…</value>
   </data>
-  <data name="mnuOpenReplayWatcher" xml:space="preserve"><value>Abrir observador de carpeta de reproducción</value>
+  <data name="mnuOpenReplayWatcher" xml:space="preserve"><value>Abrir observador de carpeta de reproducción…</value>
   </data>
   <data name="mnuCalibrate" xml:space="preserve"><value>Calibrar…</value>
   </data>
-  <data name="mnuTimebase" xml:space="preserve"><value>Configurar la velocidad del video</value>
+  <data name="mnuTimebase" xml:space="preserve"><value>Configurar la velocidad del video...</value>
   </data>
   <data name="mnuShowMeasure" xml:space="preserve"><value>Mostar la medida</value>
   </data>
-  <data name="mnuStopTracking" xml:space="preserve"><value>Terminar la edición de la trayectoria</value>
+  <data name="mnuStopTracking" xml:space="preserve"><value>Terminar la edición de la trayectoria </value>
   </data>
   <data name="mnuSVGTools" xml:space="preserve"><value>Referencia de observación</value>
   </data>
@@ -746,7 +746,7 @@
   </data>
   <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Cambiar el modo de repetición ( Una vez | En bucle ) - Actual : Una vez</value>
   </data>
-  <data name="ToolTip_Rafale" xml:space="preserve"><value>Guardar una secuencia de imágenes </value>
+  <data name="ToolTip_Rafale" xml:space="preserve"><value>Guardar una secuencia de imágenes</value>
   </data>
   <data name="ToolTip_StartRecording" xml:space="preserve"><value>Iniciar grabación</value>
   </data>
@@ -794,7 +794,7 @@
   </data>
   <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Dar nitidez…</value>
   </data>
-  <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Resumen</value>
+  <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Resumen...</value>
   </data>
   <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Invertido...</value>
   </data>

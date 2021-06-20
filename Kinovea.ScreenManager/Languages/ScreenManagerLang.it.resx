@@ -406,7 +406,7 @@
   </data>
   <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Imposta il Fotogramma attuale come ULTIMO fotogramma della Zona Lavoro</value>
   </data>
-  <data name="ToolTip_ShowComments" xml:space="preserve"><value>Mostra i Commenti</value>
+  <data name="ToolTip_ShowComments" xml:space="preserve"><value>Mostra i commenti</value>
   </data>
   <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>Salva entrambe le immagini in una immagine composta</value>
   </data>
@@ -414,7 +414,7 @@
   </data>
   <data name="ToolTip_trkSelection" xml:space="preserve"><value>Imposta la Zona Lavoro</value>
   </data>
-  <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Solo Contorni...</value>
+  <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Solo contorni...</value>
   </data>
   <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Livelli automatici...</value>
   </data>

@@ -452,7 +452,7 @@
   </data>
   <data name="Generic_ConfigurationElipsis" xml:space="preserve"><value>Configuration…</value>
   </data>
-  <data name="Generic_Calibration" xml:space="preserve"><value>Calibration</value>
+  <data name="Generic_Calibration" xml:space="preserve"><value>Calibrage</value>
   </data>
   <data name="Generic_GridDivisionsPicker" xml:space="preserve"><value>Divisions :</value>
   </data>
@@ -828,9 +828,9 @@
   </data>
   <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Positionner l'entrée de la Zone de Travail sur l'image courante</value>
   </data>
-  <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Positionner la sortie de la Zone de Travail sur l'image courante</value>
+  <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Positionner la sortie de la Zone de travail sur l'image courante</value>
   </data>
-  <data name="ToolTip_ShowComments" xml:space="preserve"><value>Montrer les commentaires</value>
+  <data name="ToolTip_ShowComments" xml:space="preserve"><value>Afficher les commentaires</value>
   </data>
   <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>Enregistrer les deux images dans une image composée</value>
   </data>
@@ -844,15 +844,15 @@
   </data>
   <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Contours seulement...</value>
   </data>
-  <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Niveaux automatiques...</value>
+  <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Niveaux automatiques…</value>
   </data>
-  <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Renforcement des contours...</value>
+  <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Renforcement des contours…</value>
   </data>
-  <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Vue d'ensemble...</value>
+  <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Vue d'ensemble…</value>
   </data>
-  <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inverse...</value>
+  <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inverse…</value>
   </data>
-  <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contraste automatique...</value>
+  <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contraste automatique…</value>
   </data>
   <data name="FormCrashRecovery_Title" xml:space="preserve"><value>Récupération automatique</value>
   </data>
@@ -866,7 +866,7 @@
   </data>
   <data name="Infobar_Player_Observing" xml:space="preserve"><value>Dossier en cours d’observation : {0}</value>
   </data>
-  <data name="Infobar_Player_StopWatcher" xml:space="preserve"><value>Arréter d’observer le dossier : {0}</value>
+  <data name="Infobar_Player_StopWatcher" xml:space="preserve"><value>Arrêter d’observer le dossier : {0}</value>
   </data>
   <data name="Infobar_Player_StartWatcher" xml:space="preserve"><value>Démarrer l’observation du dossier : {0}</value>
   </data>

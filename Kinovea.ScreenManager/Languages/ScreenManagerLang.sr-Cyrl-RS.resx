@@ -96,7 +96,7 @@
   </data>
   <data name="DataAnalysis_XaxisLabel" xml:space="preserve"><value>X оса:</value>
   </data>
-  <data name="DataAnalysis_XaxisDefaultPoints" xml:space="preserve"><value>X оса:</value>
+  <data name="DataAnalysis_XaxisDefaultPoints" xml:space="preserve"><value>X оса</value>
   </data>
   <data name="DataAnalysis_YaxisLabel" xml:space="preserve"><value>Y оса:</value>
   </data>
@@ -142,13 +142,13 @@
   </data>
   <data name="dlgTimebase_lblCapture" xml:space="preserve"><value>Број слика у секунди приликом снимања:</value>
   </data>
-  <data name="dlgTimebase_InfoCapture" xml:space="preserve"><value>Ова опција дефинише разлику између брзине видео снимка и реалног времена. Користити када је снимак направљен камером велике брзине</value>
+  <data name="dlgTimebase_InfoCapture" xml:space="preserve"><value>Ова опција дефинише разлику између брзине видео снимка и реалног времена. Користити када је снимак направљен камером велике брзине. </value>
   </data>
   <data name="dlgTimebase_lblFileFPS" xml:space="preserve"><value>Очитавање броја слика у секунди у датотеци: {0:0.##} fps</value>
   </data>
-  <data name="dlgTimebase_lblUserFPS" xml:space="preserve"><value>Број слику у секунди видео записа</value>
+  <data name="dlgTimebase_lblUserFPS" xml:space="preserve"><value>Број слику у секунди видео записа:</value>
   </data>
-  <data name="dlgTimebase_InfoUser" xml:space="preserve"><value>Ова опција дефинише референтну вредност броја слика у секунди коју користи Киновеа да репродукује видео. Користити када видео садржи нетачан број оквира или ако Киновеа неможе да га прочита.</value>
+  <data name="dlgTimebase_InfoUser" xml:space="preserve"><value>Ова опција дефинише референтну вредност броја слика у секунди коју користи Киновеа да репродукује видео. Користити када видео садржи нетачан број оквира или ако Киновеа неможе да га прочита. </value>
   </data>
   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Поништити</value>
   </data>
@@ -234,7 +234,7 @@
   </data>
   <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>Извези само кључну слику.</value>
   </data>
-  <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>Укупно: {0:0} слика</value>
+  <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>Укупно: {0:0} слика.</value>
   </data>
   <data name="dlgRafaleExport_ExportAll" xml:space="preserve"><value>Извези све слике.</value>
   </data>
@@ -336,9 +336,9 @@
   </data>
   <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea - Није могуће зауставити видео</value>
   </data>
-  <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Није могуц́е записати датотеку.\nБудите сигурни да имате права да пишете у жељеној фасцикли и да се та датотека тренутно не користи. </value>
+  <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Није могуц́е записати датотеку.\nБудите сигурни да имате права да пишете у жељеној фасцикли и да се та датотека тренутно не користи.</value>
   </data>
-  <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Киновеа - Није могyће сачувати видео.</value>
+  <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Киновеа - Није могyће сачувати видео. </value>
   </data>
   <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Није могуће сачувати видео.\nПокушајте поново са другим форматом.</value>
   </data>
@@ -468,13 +468,13 @@
   </data>
   <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Грешка: Није могуће отворити датотеку : датотека није пронађена, или је празна.</value>
   </data>
-  <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Грешка: Није могуће отворити датотеку : пронађене недоследности. Молимо вас да проверите процес кодирања. </value>
+  <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Грешка: Није могуће отворити датотеку : пронађене недоследности. Молимо вас да проверите процес кодирања.</value>
   </data>
   <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Грешка : Није могуће отворити датотеку : информације о току нису пронађене .</value>
   </data>
   <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Грешка : Није могуће отворити датотеку : непозната грешка .</value>
   </data>
-  <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Грешк : Није могуће отворити датотеку : ток видео записа није пронађен. </value>
+  <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Грешк : Није могуће отворити датотеку : ток видео записа није пронађен.</value>
   </data>
   <data name="LockSelectionLock" xml:space="preserve"><value>Закључајте границе радне зоне</value>
   </data>
@@ -522,7 +522,7 @@
   </data>
   <data name="mnuHome" xml:space="preserve"><value>Истраживач датотеке</value>
   </data>
-  <data name="mnuImportImage" xml:space="preserve"><value>Увези слику...</value>
+  <data name="mnuImportImage" xml:space="preserve"><value>Увези слику…</value>
   </data>
   <data name="mnuFlipHorizontally" xml:space="preserve"><value>Окрени хоризонтално</value>
   </data>
@@ -542,15 +542,15 @@
   </data>
   <data name="mnuRestartTracking" xml:space="preserve"><value>Поново покрени путању издања</value>
   </data>
-  <data name="mnuOpenVideo" xml:space="preserve"><value>Отвори видео датотеку</value>
+  <data name="mnuOpenVideo" xml:space="preserve"><value>Отвори видео датотеку…</value>
   </data>
   <data name="mnuCalibrate" xml:space="preserve"><value>Калибриши...</value>
   </data>
-  <data name="mnuTimebase" xml:space="preserve"><value>Подеси време видео записа</value>
+  <data name="mnuTimebase" xml:space="preserve"><value>Подеси време видео записа...</value>
   </data>
   <data name="mnuShowMeasure" xml:space="preserve"><value>Прикажи меру</value>
   </data>
-  <data name="mnuStopTracking" xml:space="preserve"><value>Заврши путању издања</value>
+  <data name="mnuStopTracking" xml:space="preserve"><value>Заврши путању издања </value>
   </data>
   <data name="mnuSVGTools" xml:space="preserve"><value>Тачка посматрања</value>
   </data>
@@ -564,7 +564,7 @@
   </data>
   <data name="mnuThumbnailLocate" xml:space="preserve"><value>Лоцирај датотеку у Windows Explorer</value>
   </data>
-  <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Прикажи/сакриј заједничке контроле </value>
+  <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Прикажи/сакриј заједничке контроле</value>
   </data>
   <data name="mnuTrackTrajectory" xml:space="preserve"><value>Прати путању</value>
   </data>
@@ -610,7 +610,7 @@
   </data>
   <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Угао</value>
   </data>
-  <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Штоперица </value>
+  <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Штоперица</value>
   </data>
   <data name="ToolTip_DrawingToolCircle" xml:space="preserve"><value>Круг</value>
   </data>
@@ -634,7 +634,7 @@
   </data>
   <data name="ToolTip_Magnifier" xml:space="preserve"><value>Лупа</value>
   </data>
-  <data name="ToolTip_Next" xml:space="preserve"><value>Иди на следећу слику </value>
+  <data name="ToolTip_Next" xml:space="preserve"><value>Иди на следећу слику</value>
   </data>
   <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Промените режим понављања ( једном | петља ) - Тренутни режим : петља</value>
   </data>

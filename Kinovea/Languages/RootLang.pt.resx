@@ -126,9 +126,9 @@
   </data>
   <data name="Generic_Save" xml:space="preserve"><value>Salvar</value>
   </data>
-  <data name="mnuAbout" xml:space="preserve"><value>Sobre o Kinovea...</value>
+  <data name="mnuAbout" xml:space="preserve"><value>Sobre o Kinovea…</value>
   </data>
-  <data name="mnuApplicationFolder" xml:space="preserve"><value>Abrir pasta de log...</value>
+  <data name="mnuApplicationFolder" xml:space="preserve"><value>Abrir pasta de log…</value>
   </data>
   <data name="mnuEdit" xml:space="preserve"><value>Editar</value>
   </data>
@@ -150,7 +150,7 @@
   </data>
   <data name="mnuOptions" xml:space="preserve"><value>Opções</value>
   </data>
-  <data name="mnuPreferences" xml:space="preserve"><value>Preferências...</value>
+  <data name="mnuPreferences" xml:space="preserve"><value>Preferências…</value>
   </data>
   <data name="mnuScreens" xml:space="preserve"><value>Visualizar</value>
   </data>
