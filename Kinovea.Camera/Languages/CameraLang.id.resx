@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -58,4 +58,76 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="FormConnectionWizard_URL" xml:space="preserve">
+    <value>URL Final</value>
+  </data>
+  <data name="FormConnectionWizard_Password" xml:space="preserve">
+    <value>Kata sandi</value>
+  </data>
+  <data name="FormConnectionWizard_User" xml:space="preserve">
+    <value>Pengguna</value>
+  </data>
+  <data name="FormConnectionWizard_Authentication" xml:space="preserve">
+    <value>Autentikasi</value>
+  </data>
+  <data name="FormConnectionWizard_Network" xml:space="preserve">
+    <value>Jaringan</value>
+  </data>
+  <data name="FormConfiguration_Test" xml:space="preserve">
+    <value>Tes</value>
+  </data>
+  <data name="FormConfiguration_ImportParameters" xml:space="preserve">
+    <value>Impor parameter</value>
+  </data>
+  <data name="FormConfiguration_Reconnect" xml:space="preserve">
+    <value>Sambungkan ulang</value>
+  </data>
+  <data name="FormConfiguration_DevicePropertyPages" xml:space="preserve">
+    <value>Halaman properti perangkat</value>
+  </data>
+  <data name="FormConfiguration_Auto" xml:space="preserve">
+    <value>Otomatis</value>
+  </data>
+  <data name="FormConfiguration_Properties_Focus" xml:space="preserve">
+    <value>Fokus:</value>
+  </data>
+  <data name="FormConfiguration_Properties_Exposure" xml:space="preserve">
+    <value>Pencahayaan:</value>
+  </data>
+  <data name="FormConfiguration_Properties_Framerate" xml:space="preserve">
+    <value>Kecepatan bingkai:</value>
+  </data>
+  <data name="FormConfiguration_Properties_ImageHeight" xml:space="preserve">
+    <value>Tinggi:</value>
+  </data>
+  <data name="FormConfiguration_Properties_ImageWidth" xml:space="preserve">
+    <value>Lebar:</value>
+  </data>
+  <data name="FormConfiguration_Properties_ImageSize" xml:space="preserve">
+    <value>Ukuran gambar:</value>
+  </data>
+  <data name="FormConfiguration_Properties_StreamFormat" xml:space="preserve">
+    <value>Format stream:</value>
+  </data>
+  <data name="FormConfiguration_Title" xml:space="preserve">
+    <value>Konfigurasi kamera</value>
+  </data>
+  <data name="FormIconPicker_Title" xml:space="preserve">
+    <value>Ikon</value>
+  </data>
+  <data name="FormHandshakeResult_Failure_Message" xml:space="preserve">
+    <value>Sebuah kesalahan terjadi saat tes sambungan.</value>
+  </data>
+  <data name="FormHandshakeResult_Failure_Title" xml:space="preserve">
+    <value>Tes sambungan gagal</value>
+  </data>
+  <data name="FormHandshakeResult_Title" xml:space="preserve">
+    <value>Tes sambungan</value>
+  </data>
+  <data name="Generic_Apply" xml:space="preserve">
+    <value>Terapkan</value>
+  </data>
+  <data name="Generic_Cancel" xml:space="preserve">
+    <value>Batal</value>
+  </data>
 </root>
