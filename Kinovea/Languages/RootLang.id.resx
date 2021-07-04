@@ -61,4 +61,7 @@
   <data name="dlgAbout_Translation" xml:space="preserve">
     <value>Terjemahan</value>
   </data>
+  <data name="Generic_Cancel" xml:space="preserve">
+    <value>Batal</value>
+  </data>
 </root>
