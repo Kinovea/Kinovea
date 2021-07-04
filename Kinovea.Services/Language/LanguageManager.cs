@@ -146,6 +146,10 @@ namespace Kinovea.Services
         {
             get { return Languages["bg"]; }
         }
+        public static string Indonesian
+        {
+            get { return Languages["id"]; }
+        }
         #endregion
 
         private static Dictionary<string, string> languages = null;
@@ -167,6 +171,7 @@ namespace Kinovea.Services
             languages.Add("fa", "فارسی");
             languages.Add("fr", "Français");
             languages.Add("ko", "한국어");
+            languages.Add("id", "Bahasa Indonesia");
             languages.Add("it", "Italiano");
             languages.Add("lt", "Lietuvių");
             languages.Add("nl", "Nederlands");
