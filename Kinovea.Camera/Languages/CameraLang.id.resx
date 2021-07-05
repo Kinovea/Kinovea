@@ -130,4 +130,10 @@
   <data name="Generic_Cancel" xml:space="preserve">
     <value>Batal</value>
   </data>
+  <data name="FormConnectionWizard_Host" xml:space="preserve">
+    <value>Host (alamat IP)</value>
+  </data>
+  <data name="FormConfiguration_DevicePropertyPages_Error" xml:space="preserve">
+    <value>Sebuah kesalahan terjadi saat mencoba menampilkan halaman properti perangkat untuk {0}.</value>
+  </data>
 </root>
