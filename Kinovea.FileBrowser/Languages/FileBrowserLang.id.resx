@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -58,4 +58,61 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="mnuDeleteShortcut" xml:space="preserve">
+    <value>Hapus pintasan</value>
+  </data>
+  <data name="FormCameraWizard_CameraType" xml:space="preserve">
+    <value>Jenis kamera</value>
+  </data>
+  <data name="FormCameraWizard_Title" xml:space="preserve">
+    <value>Sambungan manual</value>
+  </data>
+  <data name="mnuVideoDelete" xml:space="preserve">
+    <value>Hapus berkas</value>
+  </data>
+  <data name="mnuAddToShortcuts" xml:space="preserve">
+    <value>Tambahkan ke pintasan</value>
+  </data>
+  <data name="mnuAddShortcut" xml:space="preserve">
+    <value>Tambah pintasan</value>
+  </data>
+  <data name="lblCaptureHistory" xml:space="preserve">
+    <value>Riwayat rekaman</value>
+  </data>
+  <data name="lblVideoFiles" xml:space="preserve">
+    <value>Berkas video</value>
+  </data>
+  <data name="FormCameraWizard_Create" xml:space="preserve">
+    <value>Buat kamera</value>
+  </data>
+  <data name="FormCameraWizard_Test" xml:space="preserve">
+    <value>Tes</value>
+  </data>
+  <data name="FormCameraWizard_Parameters" xml:space="preserve">
+    <value>Parameter</value>
+  </data>
+  <data name="tabShortcuts" xml:space="preserve">
+    <value>Pintasan</value>
+  </data>
+  <data name="tabExplorer" xml:space="preserve">
+    <value>Penjelajah</value>
+  </data>
+  <data name="Generic_Open" xml:space="preserve">
+    <value>Buka</value>
+  </data>
+  <data name="Generic_Cancel" xml:space="preserve">
+    <value>Batal</value>
+  </data>
+  <data name="lblCameras" xml:space="preserve">
+    <value>Kamera</value>
+  </data>
+  <data name="lblFolders" xml:space="preserve">
+    <value>Map</value>
+  </data>
+  <data name="ForgetCustomSettings" xml:space="preserve">
+    <value>Lupakan pengaturan khusus</value>
+  </data>
+  <data name="mnuVideoLocate" xml:space="preserve">
+    <value>Cari di Windows Explorer </value>
+  </data>
 </root>
