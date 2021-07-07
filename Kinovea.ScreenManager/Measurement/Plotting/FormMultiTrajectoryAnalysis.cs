@@ -75,6 +75,10 @@ namespace Kinovea.ScreenManager
                 if (trackablePoints == null)
                     continue;
 
+                // Do not show points belonging to the calibration object, since it defines the coordinate system.
+                if (trackable.Id == metadata.CalibrationHelper.CalibrationDrawingId || trackable.Id == metadata.DrawingCoordinateSystem.Id)
+                    continue;
+
                 bool singlePoint = trackablePoints.Count == 1;
                 foreach (var pair in trackablePoints)
                 {
