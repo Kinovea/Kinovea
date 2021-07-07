@@ -46,6 +46,14 @@ namespace Kinovea.ScreenManager
             get { return isTracking; }
         }
 
+        /// <summary>
+        /// Returns true if there are entries in the timelines.
+        /// </summary>
+        public bool HasData
+        {
+            get { return trackablePoints.Count > 0 && trackablePoints.First().Value.Timeline.HasData(); }
+        }
+
         public Guid ID
         {
             get { return drawingId; }

@@ -119,7 +119,7 @@ namespace Kinovea.ScreenManager
             {
                 imageSize = value;
                 trackabilityManager.Initialize(imageSize);
-                calibrationHelper.Initialize(imageSize, GetCalibrationOrigin);
+                calibrationHelper.Initialize(imageSize, GetCalibrationOrigin, GetCalibrationQuad, HasTrackingData);
             }
         }
         public ImageTransform ImageTransform
@@ -871,7 +871,7 @@ namespace Kinovea.ScreenManager
             if (init)
             {
                 trackabilityManager.Initialize(imageSize);
-                calibrationHelper.Initialize(imageSize, GetCalibrationOrigin);
+                calibrationHelper.Initialize(imageSize, GetCalibrationOrigin, GetCalibrationQuad, HasTrackingData);
             }
 
             if (!initialized)
@@ -892,7 +892,7 @@ namespace Kinovea.ScreenManager
         {
             captureKVA = true;
             trackabilityManager.Initialize(imageSize);
-            calibrationHelper.Initialize(imageSize, GetCalibrationOrigin);
+            calibrationHelper.Initialize(imageSize, GetCalibrationOrigin, GetCalibrationQuad, HasTrackingData);
 
             for (int i = 0; i < totalStaticExtraDrawings; i++)
                 AfterDrawingCreation(extraDrawings[i]);
@@ -1404,7 +1404,7 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Returns the position of the coordinate system origin at that time.
+        /// Returns the position of the coordinate system origin at the specified time.
         /// </summary>
         private PointF GetCalibrationOrigin(long time)
         {
@@ -1415,6 +1415,50 @@ namespace Kinovea.ScreenManager
             // this function retrieves the coordinates origin based on the specified time.
             return trackabilityManager.GetLocation(drawingCoordinateSystem, "0", time);
         }
+
+        /// <summary>
+        /// Returns the calibration quad at the specified time.
+        /// </summary>
+        private QuadrilateralF GetCalibrationQuad(long time, CalibratorType calibratorType, Guid calibrationDrawingId)
+        {
+            if (captureKVA)
+                return QuadrilateralF.GetUnitSquare();
+            
+            if (calibratorType == CalibratorType.None || calibrationDrawingId == Guid.Empty)
+                throw new InvalidProgramException();
+
+
+            QuadrilateralF quadImage = QuadrilateralF.GetUnitSquare();
+
+            // Retrieve the image coordinates of the quad defining the calibration transform at the specified time.
+            if (calibratorType == CalibratorType.Plane)
+            {
+                // Get the corners of the quad.
+                PointF a = trackabilityManager.GetLocation(calibrationDrawingId, "0", time);
+                PointF b = trackabilityManager.GetLocation(calibrationDrawingId, "1", time);
+                PointF c = trackabilityManager.GetLocation(calibrationDrawingId, "2", time);
+                PointF d = trackabilityManager.GetLocation(calibrationDrawingId, "3", time);
+
+                quadImage = new QuadrilateralF(a, b, c, d);
+            }
+            else
+            {
+                PointF a = trackabilityManager.GetLocation(calibrationDrawingId, "a", time);
+                PointF b = trackabilityManager.GetLocation(calibrationDrawingId, "b", time);
+
+                // Create a fake quad just to transport the segment.
+                // This will be turned into a real quad based on the calibration axis in the caller.
+                quadImage = new QuadrilateralF(a, b, a, b);
+            }
+
+            return quadImage;
+        }
+
+        private bool HasTrackingData(Guid id)
+        {
+            return trackabilityManager.HasData(id);
+        }
+
         private void SetupTempDirectory(Guid id)
         {
             tempFolder = Path.Combine(Software.TempDirectory, id.ToString());

@@ -157,12 +157,26 @@ namespace Kinovea.ScreenManager
             }
         }
         
+        /// <summary>
+        /// Returns true if the drawing is currently actively tracking.
+        /// </summary>
         public bool IsTracking(ITrackable drawing)
         {
             if (!SanityCheck(drawing.Id))
                 return false;
-            
+
             return trackers[drawing.Id].IsTracking;
+        }
+
+        /// <summary>
+        /// Returns true if the drawing has data in its timeline.
+        /// </summary>
+        public bool HasData(Guid id)
+        {
+            if (!SanityCheck(id))
+                return false;
+
+            return trackers[id].HasData;
         }
         
         public void UpdateContext(ITrackable drawing, VideoFrame videoFrame)
@@ -196,10 +210,19 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public PointF GetLocation(ITrackable drawing, string key, long time)
         {
-            if (!SanityCheck(drawing.Id))
+            return GetLocation(drawing.Id, key, time);
+        }
+
+        /// <summary>
+        /// Returns the position of the point nearest to that time.
+        /// This is used by linear kinematics.
+        /// </summary>
+        public PointF GetLocation(Guid id, string key, long time)
+        {
+            if (!SanityCheck(id))
                 return PointF.Empty;
 
-            return trackers[drawing.Id].GetLocation(key, time);
+            return trackers[id].GetLocation(key, time);
         }
 
         private bool SanityCheck(Guid id)

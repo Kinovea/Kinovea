@@ -26,7 +26,7 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// CalibrationHelper encapsulates information used for pixels to real world calculations.
+    /// CalibrationHelper encapsulates information used for pixels-to-real-world transformation.
     /// The user can specify the real distance of a Line drawing and a coordinate system.
     /// We also keep the preferred units.
     /// </summary>
@@ -113,6 +113,11 @@ namespace Kinovea.ScreenManager
             get { return imageSize; }
         }
 
+        public Guid CalibrationDrawingId
+        {
+            get { return calibrationDrawingId; }
+        }
+
         public int ContentHash
         {
             get
@@ -142,6 +147,8 @@ namespace Kinovea.ScreenManager
         private AngularAccelerationUnit angularAccelerationUnit = AngularAccelerationUnit.DegreesPerSecondSquared;
         private double captureFramesPerSecond = 25;
         private Func<long, PointF> getCalibrationOrigin;
+        private Func<long, CalibratorType, Guid, QuadrilateralF> getCalibrationQuad;
+        private Func<Guid, bool> hasTrackingData;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -156,10 +163,12 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Initialize calibration space after a change in image size.
         /// </summary>
-        public void Initialize(Size imageSize, Func<long, PointF> getCalibrationOrigin)
+        public void Initialize(Size imageSize, Func<long, PointF> getCalibrationOrigin, Func<long, CalibratorType, Guid, QuadrilateralF> getCalibrationQuad, Func<Guid, bool> hasTrackingData)
         {
             this.imageSize = imageSize;
             this.getCalibrationOrigin = getCalibrationOrigin;
+            this.getCalibrationQuad = getCalibrationQuad;
+            this.hasTrackingData = hasTrackingData;
             Reset();
             initialized = true;
         }
@@ -298,6 +307,8 @@ namespace Kinovea.ScreenManager
         #region Value computers
         /// <summary>
         /// Takes a point in image space and returns it in world space.
+        /// This function uses whatever calibration transform was last set.
+        /// It is only suitable to get values to display on the viewport.
         /// </summary>
         public PointF GetPoint(PointF p)
         {
@@ -305,16 +316,51 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Takes a point in image space and returns it in world space, 
-        /// based on the value of the coordinate system origin at the specified time.
+        /// Takes a point in image space and returns it in world space.
+        /// This function takes a time and performs the transformation using 
+        /// the state of the calibration object and of the system origin at that time.
         /// </summary>
         public PointF GetPointAtTime(PointF p, long time)
         {
-            if (calibratorType != CalibratorType.Line)
+            if (calibratorType == CalibratorType.None || calibrationDrawingId == Guid.Empty)
                 return GetPoint(p);
 
-            PointF origin = getCalibrationOrigin(time);
-            return calibrationPlane.Transform(distortionHelper.Undistort(p), origin);
+            PointF result;
+            PointF query = distortionHelper.Undistort(p);
+
+            // Tracking mechanics.
+            // Both the calibration object and the system's origin can be tracked, but not at the same time.
+            // If they are both tracked, the calibration object takes precedence and redefines the origin.
+            bool trackedCalibrator = hasTrackingData(calibrationDrawingId);
+
+            if (trackedCalibrator)
+            {
+                // Get the state of the calibration object at the specified time, and init a temporary calibrator object.
+                QuadrilateralF quadImage = getCalibrationQuad(time, calibratorType, calibrationDrawingId);
+
+                if (calibratorType == CalibratorType.Line)
+                    quadImage = CalibrationPlane.MakeQuad(quadImage.A, quadImage.B, calibrationPlane.CalibrationAxis);
+
+                QuadrilateralF undistorted = distortionHelper.Undistort(quadImage);
+
+                CalibrationPlane calibrator = calibrationPlane.Clone();
+                calibrator.Update(undistorted);
+
+                // Force the system's origin to the bottom-left point of the quad.
+                PointF origin = undistorted.D;
+
+                result = calibrator.Transform(query, origin);
+            }
+            else
+            {
+                // In this case we just use the static calibration.
+                // However the system's origin might still be tracked so get its value for that time.
+                PointF origin = distortionHelper.Undistort(getCalibrationOrigin(time));
+
+                result = calibrationPlane.Transform(query, origin);
+            }
+
+            return result;
         }
 
         /// <summary>

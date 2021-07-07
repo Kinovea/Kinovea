@@ -219,6 +219,17 @@ namespace Kinovea.ScreenManager
             Update(MakeQuad(startImage, endImage, calibrationAxis));
         }
 
+        /// <summary>
+        /// Create a new CalibrationPlane initialized with the same transform as this one.
+        /// </summary>
+        public CalibrationPlane Clone()
+        {
+            CalibrationPlane clone = new CalibrationPlane();
+            clone.Initialize(size, quadImage);
+            clone.origin = origin;
+            clone.calibrationAxis = calibrationAxis;
+            return clone;
+        }
         private PointF CalibratedToWorld(PointF p, PointF origin)
         {
             return new PointF(p.X - origin.X, -p.Y + origin.Y);
@@ -233,7 +244,7 @@ namespace Kinovea.ScreenManager
         /// Build a quadrilateral from a single line.
         /// The quadrilateral will be a square with the original line at the bottom edge.
         /// </summary>
-        private QuadrilateralF MakeQuad(PointF start, PointF end, CalibrationAxis calibrationAxis)
+        public static QuadrilateralF MakeQuad(PointF start, PointF end, CalibrationAxis calibrationAxis)
         {
             switch (calibrationAxis)
             {
