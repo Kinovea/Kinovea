@@ -244,4 +244,37 @@
   <data name="dlgPreferences_Capture_Context" xml:space="preserve">
     <value>Konteks</value>
   </data>
+  <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve">
+    <value>Secara default, gambar akan tetap terlihat sebanyak {0} gambar dari seluruh Gambar Utama.</value>
+  </data>
+  <data name="dlgPreferences_Player_lblMemory" xml:space="preserve">
+    <value>Memori cache yang dialokasikan untuk setiap layar pemutaran: {0} MB.</value>
+  </data>
+  <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve">
+    <value>Dan</value>
+  </data>
+  <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve">
+    <value>Bahasa:</value>
+  </data>
+  <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve">
+    <value>Rasio aspek bawaan:</value>
+  </data>
+  <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve">
+    <value>Contoh memiliki preferensinya sendiri</value>
+  </data>
+  <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve">
+    <value>Jumlah berkas dalam histori:</value>
+  </data>
+  <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve">
+    <value>Beralih ke mode Analisis</value>
+  </data>
+  <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
+    <value>Berkas anotasi default:</value>
+  </data>
+  <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve">
+    <value>Tautkan penggeser kecepatan saat membandingkan video</value>
+  </data>
+  <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve">
+    <value>Impor urutan gambar sebagai video</value>
+  </data>
 </root>
