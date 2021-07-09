@@ -124,4 +124,157 @@
   <data name="dlgAbout_License" xml:space="preserve">
     <value>Lisensi</value>
   </data>
+  <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve">
+    <value>Terlihat untuk seluruh video</value>
+  </data>
+  <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve">
+    <value>Visibilitas default gambar baru:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve">
+    <value>Aktifkan mode debug alat khusus</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve">
+    <value>Aktifkan pemfilteran koordinat</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve">
+    <value>Tampilkan gambar saat video diputar</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
+    <value>Perintah pasca perekaman:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
+    <value>Waktu kosong (s):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
+    <value>Berhenti merekam berdasarkan durasi (s):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
+    <value>Ambang batas pemicu:</value>
+  </data>
+  <data name="dlgPreferences_tabKeyboard" xml:space="preserve">
+    <value>Papan kunci</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve">
+    <value>Perangkat input:</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkEnableAudioTrigger" xml:space="preserve">
+    <value>Aktifkan pemicu audio</value>
+  </data>
+  <data name="dlgPreferences_Capture_tabAutomation" xml:space="preserve">
+    <value>Otomatisasi</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve">
+    <value>Ambang batas penggantian kecepatan bingkai (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve">
+    <value>Penggantian kecepatan bingkai (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
+    <value>Kamera kecepatan tinggi</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
+    <value>Abaikan peringatan penimpaan berkas</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve">
+    <value>Memori yang dialokasikan untuk buffer tertunda: {0} MB.</value>
+  </data>
+  <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
+    <value>Memori</value>
+  </data>
+  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
+    <value>Variabel konteks</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
+    <value>Tanggal dan waktu (TTTTBBHH-JJMMDD)</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
+    <value>Waktu (JJMMDD)</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
+    <value>Tanggal (TTTTBBHH)</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
+    <value>Nama berkas tertangkap</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
+    <value>Direktori tangkapan</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
+    <value>Urutan escape</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
+    <value>Kecepatan bingkai diterima</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
+    <value>Kecepatan bingkai terkonfigurasi</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
+    <value>Nama lain kamera</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve">
+    <value>Detik</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve">
+    <value>Menit</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve">
+    <value>Jam</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve">
+    <value>Hari</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve">
+    <value>Bulan</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve">
+    <value>Tahun</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
+    <value>Retroaktif: rekam bingkai ketika tangkapan berhenti.</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve">
+    <value>Tertunda: rekam bingkai tertunda.</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
+    <value>Kamera: rekam bingkai real time.</value>
+  </data>
+  <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
+    <value>Makro</value>
+  </data>
+  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
+    <value>Konteks</value>
+  </data>
+  <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve">
+    <value>Secara default, gambar akan tetap terlihat sebanyak {0} gambar dari seluruh Gambar Utama.</value>
+  </data>
+  <data name="dlgPreferences_Player_lblMemory" xml:space="preserve">
+    <value>Memori cache yang dialokasikan untuk setiap layar pemutaran: {0} MB.</value>
+  </data>
+  <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve">
+    <value>Dan</value>
+  </data>
+  <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve">
+    <value>Bahasa:</value>
+  </data>
+  <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve">
+    <value>Rasio aspek bawaan:</value>
+  </data>
+  <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve">
+    <value>Contoh memiliki preferensinya sendiri</value>
+  </data>
+  <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve">
+    <value>Jumlah berkas dalam histori:</value>
+  </data>
+  <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve">
+    <value>Beralih ke mode Analisis</value>
+  </data>
+  <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
+    <value>Berkas anotasi default:</value>
+  </data>
+  <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve">
+    <value>Tautkan penggeser kecepatan saat membandingkan video</value>
+  </data>
+  <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve">
+    <value>Impor urutan gambar sebagai video</value>
+  </data>
 </root>
