@@ -70,4 +70,205 @@
   <data name="Generic_Cancel" xml:space="preserve">
     <value>Batal</value>
   </data>
+  <data name="dlgRafaleExport_Title" xml:space="preserve">
+    <value>Simpan urutan gambar</value>
+  </data>
+  <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve">
+    <value>Ekspor satu gambar setiap {0:0}ms.</value>
+  </data>
+  <data name="dlgRafaleExport_ExportTimeDecimationSeconds" xml:space="preserve">
+    <value>Ekspor satu gambar setiap {0:0.00} detik.</value>
+  </data>
+  <data name="dlgRafaleExport_ExportFrameDecimation" xml:space="preserve">
+    <value>Ekspor satu gambar setiap {0} gambar.</value>
+  </data>
+  <data name="dlgRafaleExport_ExportAll" xml:space="preserve">
+    <value>Ekspor semua gambar.</value>
+  </data>
+  <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve">
+    <value>Jumlah: {0:0} gambar.</value>
+  </data>
+  <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve">
+    <value>Ekspor gambar utama.</value>
+  </data>
+  <data name="dlgLoadAnalysis_Title" xml:space="preserve">
+    <value>Muat anotasi</value>
+  </data>
+  <data name="dlgKeyframeComment_Title" xml:space="preserve">
+    <value>Komentar...</value>
+  </data>
+  <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve">
+    <value>Tipe video</value>
+  </data>
+  <data name="ExtraData_Diameter" xml:space="preserve">
+    <value>Diameter</value>
+  </data>
+  <data name="ExtraData_Radius" xml:space="preserve">
+    <value>Radius</value>
+  </data>
+  <data name="ExtraData_Center" xml:space="preserve">
+    <value>Tengah</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve">
+    <value>Kecepatan</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalVerticalDisplacement" xml:space="preserve">
+    <value>Perpindahan vertikal relatif</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement" xml:space="preserve">
+    <value>Perpindahan horizontal relatif</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_DistanceToOrigin" xml:space="preserve">
+    <value>Jarak ke asal</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve">
+    <value>Jarak total</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalPosition" xml:space="preserve">
+    <value>Posisi horisontal</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalPosition" xml:space="preserve">
+    <value>Posisi vertikal</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
+    <value>Posisi</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
+    <value>Tidak ada</value>
+  </data>
+  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
+    <value>Pengukuran:</value>
+  </data>
+  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
+    <value>Target</value>
+  </data>
+  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
+    <value>Lingkaran</value>
+  </data>
+  <data name="dlgConfigureTrajectory_VisibilityOneSecond" xml:space="preserve">
+    <value>Satu detik</value>
+  </data>
+  <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve">
+    <value>Atur ulang</value>
+  </data>
+  <data name="dlgTimebase_GroupCapture" xml:space="preserve">
+    <value>Kamera kecepatan tinggi</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
+    <value>Opasitas maksimum (%):</value>
+  </data>
+  <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve">
+    <value>Selalu terlihat</value>
+  </data>
+  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+    <value>Nama</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Absolute" xml:space="preserve">
+    <value>Absolut</value>
+  </data>
+  <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve">
+    <value>Simpan profil warna</value>
+  </data>
+  <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve">
+    <value>Muat profil warna</value>
+  </data>
+  <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve">
+    <value>Atur ulang profil warna default</value>
+  </data>
+  <data name="dlgColorProfile_Title" xml:space="preserve">
+    <value>Profil warna...</value>
+  </data>
+  <data name="dlgColorPicker_Title" xml:space="preserve">
+    <value>Warna</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Relative" xml:space="preserve">
+    <value>Relatif</value>
+  </data>
+  <data name="DataAnalysis_Title" xml:space="preserve">
+    <value>Judul:</value>
+  </data>
+  <data name="DataAnalysis_TimeModel" xml:space="preserve">
+    <value>Waktu :</value>
+  </data>
+  <data name="DataAnalysis_DataLabel" xml:space="preserve">
+    <value>Data :</value>
+  </data>
+  <data name="DataAnalysis_DataSource" xml:space="preserve">
+    <value>Sumber data</value>
+  </data>
+  <data name="DataAnalysis_ExportData" xml:space="preserve">
+    <value>Ekspor data</value>
+  </data>
+  <data name="DataAnalysis_SaveToFile" xml:space="preserve">
+    <value>Simpan ke berkas</value>
+  </data>
+  <data name="DataAnalysis_Pixels" xml:space="preserve">
+    <value>Piksel</value>
+  </data>
+  <data name="DataAnalysis_TimeAxisMilliseconds" xml:space="preserve">
+    <value>Waktu (ms)</value>
+  </data>
+  <data name="DataAnalysis_AngularPosition" xml:space="preserve">
+    <value>Sudut</value>
+  </data>
+  <data name="ToolTip_ColorProfile" xml:space="preserve">
+    <value>Profil warna</value>
+  </data>
+  <data name="Toast_Pause" xml:space="preserve">
+    <value>Jeda</value>
+  </data>
+  <data name="statusEmptyScreen" xml:space="preserve">
+    <value>Kosong</value>
+  </data>
+  <data name="Toast_ImageSaved" xml:space="preserve">
+    <value>Gambar disimpan</value>
+  </data>
+  <data name="Toast_StopRecord" xml:space="preserve">
+    <value>Perekaman dihentikan</value>
+  </data>
+  <data name="Toast_StartRecord" xml:space="preserve">
+    <value>Perekaman dimulai</value>
+  </data>
+  <data name="ToolTip_DrawingToolCircle" xml:space="preserve">
+    <value>Lingkaran</value>
+  </data>
+  <data name="ToolTip_Next" xml:space="preserve">
+    <value>Ke frame selanjutnya</value>
+  </data>
+  <data name="ToolTip_Magnifier" xml:space="preserve">
+    <value>Pembesar</value>
+  </data>
+  <data name="ToolTip_Last" xml:space="preserve">
+    <value>Ke bagian akhir</value>
+  </data>
+  <data name="ToolTip_RichText_Underline" xml:space="preserve">
+    <value>Garis bawah</value>
+  </data>
+  <data name="ToolTip_RichText_Italic" xml:space="preserve">
+    <value>Miring</value>
+  </data>
+  <data name="ToolTip_RichText_Bold" xml:space="preserve">
+    <value>Tebal</value>
+  </data>
+  <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
+    <value>Atur Ulang Zona Kerja</value>
+  </data>
+  <data name="ToolTip_ConfigureCamera" xml:space="preserve">
+    <value>Atur kamera</value>
+  </data>
+  <data name="ToolTip_StartCamera" xml:space="preserve">
+    <value>Mulai kamera</value>
+  </data>
+  <data name="ToolTip_PauseCamera" xml:space="preserve">
+    <value>Jeda kamera</value>
+  </data>
+  <data name="FormCrashRecovery_Date" xml:space="preserve">
+    <value>Tanggal</value>
+  </data>
+  <data name="FormCrashRecovery_File" xml:space="preserve">
+    <value>Berkas</value>
+  </data>
+  <data name="FormCrashRecovery_Recover" xml:space="preserve">
+    <value>Pulihkan</value>
+  </data>
 </root>
