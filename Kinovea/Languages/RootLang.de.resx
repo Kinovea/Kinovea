@@ -229,4 +229,10 @@
   <data name="dlgAbout_Translation" xml:space="preserve">
     <value>Übersetzung</value>
   </data>
+  <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve">
+    <value>Mehrere Einheiten von Kinovea erlauben</value>
+  </data>
+  <data name="dlgPreferences_tabKeyboard" xml:space="preserve">
+    <value>Tastatur</value>
+  </data>
 </root>
