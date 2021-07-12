@@ -459,7 +459,7 @@ namespace Kinovea.ScreenManager
 
             if (ShouldShowProperty(FileProperty.Duration))
             {
-                string duration = m_bIsImage ? ScreenManagerLang.Generic_Image + " " : details.Details[FileProperty.Duration];
+                string duration = m_bIsImage ? ScreenManagerLang.Generic_Image + " " : details.Details[FileProperty.Duration];
                 DrawPropertyString(canvas, duration, top);
                 top += verticalMargin;
             }
@@ -718,7 +718,7 @@ namespace Kinovea.ScreenManager
 
                 }
 
-                lblFileName.Text = fits ? text : text + "…";
+                lblFileName.Text = fits ? text : text + ".";
             }
             catch
             {
