@@ -30,7 +30,7 @@ namespace Kinovea.ScreenManager
     /// <summary>
     /// Picture-in-picture with magnification.
     /// </summary>
-    public class Magnifier : ITrackable
+    public class Magnifier : ITrackable
     {
         // TODO: save positions in the KVA.
         // TODO: support for rendering unscaled.
