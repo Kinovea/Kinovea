@@ -96,7 +96,7 @@
   </data>
   <data name="dlgPreferences_Title" xml:space="preserve"><value>首选项</value>
   </data>
-  <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>载入用户界面...</value>
+  <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>载入用户界面中…</value>
   </data>
   <data name="Generic_Cancel" xml:space="preserve"><value>取消</value>
   </data>
@@ -106,7 +106,7 @@
   </data>
   <data name="mnuAbout" xml:space="preserve"><value>关于本软件…</value>
   </data>
-  <data name="mnuApplicationFolder" xml:space="preserve"><value>上传视频分析...</value>
+  <data name="mnuApplicationFolder" xml:space="preserve"><value>打开记录文件夹</value>
   </data>
   <data name="mnuEdit" xml:space="preserve"><value>编辑</value>
   </data>
@@ -116,7 +116,7 @@
   </data>
   <data name="mnuHelpContents" xml:space="preserve"><value>帮助...</value>
   </data>
-  <data name="mnuHistory" xml:space="preserve"><value>最近文件...</value>
+  <data name="mnuHistory" xml:space="preserve"><value>最近历史...</value>
   </data>
   <data name="mnuHistoryReset" xml:space="preserve"><value>重设历史文件</value>
   </data>
