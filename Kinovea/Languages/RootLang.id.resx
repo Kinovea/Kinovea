@@ -277,4 +277,31 @@
   <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve">
     <value>Impor urutan gambar sebagai video</value>
   </data>
+  <data name="dlgPreferences_Player_UnitTime" xml:space="preserve">
+    <value>Waktu:</value>
+  </data>
+  <data name="mnuTimeFormat" xml:space="preserve">
+    <value>Waktu</value>
+  </data>
+  <data name="dlgPreferences_Title" xml:space="preserve">
+    <value>Preferensi</value>
+  </data>
+  <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve">
+    <value>Mil per jam ({0})</value>
+  </data>
+  <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve">
+    <value>Kaki per detik ({0})</value>
+  </data>
+  <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve">
+    <value>Kilometer per jam ({0})</value>
+  </data>
+  <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve">
+    <value>Meter per detik ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_tabUnits" xml:space="preserve">
+    <value>Satuan</value>
+  </data>
+  <data name="mnuLanguages" xml:space="preserve">
+    <value>Bahasa</value>
+  </data>
 </root>

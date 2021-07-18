@@ -265,4 +265,37 @@
   <data name="dlgAbout_Translation" xml:space="preserve">
     <value>Çeviri</value>
   </data>
+  <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
+    <value>Boşta kalma süresi (leri):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
+    <value>Süreye göre kaydı durdur:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
+    <value>Tetik eşiği:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve">
+    <value>Giriş aygıtı:</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkEnableAudioTrigger" xml:space="preserve">
+    <value>Ses tetikleyiciyi etkinleştir</value>
+  </data>
+  <data name="dlgPreferences_Capture_tabAutomation" xml:space="preserve">
+    <value>Otomasyon</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve">
+    <value>Kare hızı değiştirme eşiği (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
+    <value>Yüksek hızlı kameralar</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
+    <value>Dosyanın üzerine yazma uyarısını yoksay</value>
+  </data>
+  <data name="mnuFullScreen" xml:space="preserve">
+    <value>Tam Ekran</value>
+  </data>
+  <data name="mnuWorkspace" xml:space="preserve">
+    <value>Çalışma Alanı</value>
+  </data>
 </root>
