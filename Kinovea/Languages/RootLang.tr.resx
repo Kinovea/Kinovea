@@ -64,7 +64,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="dlgPreferences_tabCapture" xml:space="preserve"><value>Capture</value>
+  <data name="dlgPreferences_tabCapture" xml:space="preserve"><value>Ekranı yakala</value>
   </data>
   <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>Çizimler</value>
   </data>
@@ -118,17 +118,17 @@
   </data>
   <data name="dlgPreferences_Title" xml:space="preserve"><value>Tercihler</value>
   </data>
-  <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Kullanıcı Arayüzünü Yüklüyor...</value>
+  <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Kullanıcı Arayüzü Yükleniyor…</value>
   </data>
   <data name="Generic_Cancel" xml:space="preserve"><value>İptal Et</value>
   </data>
-  <data name="Generic_Quit" xml:space="preserve"><value>Çık</value>
+  <data name="Generic_Quit" xml:space="preserve"><value>Programdan Çık</value>
   </data>
   <data name="Generic_Save" xml:space="preserve"><value>Kaydet</value>
   </data>
-  <data name="mnuAbout" xml:space="preserve"><value>Kinovea Hakkında...</value>
+  <data name="mnuAbout" xml:space="preserve"><value>Kinovea Hakkında…</value>
   </data>
-  <data name="mnuApplicationFolder" xml:space="preserve"><value>Log klasörünü aç...</value>
+  <data name="mnuApplicationFolder" xml:space="preserve"><value>Log klasörünü aç…</value>
   </data>
   <data name="mnuEdit" xml:space="preserve"><value>Düzenle</value>
   </data>
@@ -150,7 +150,7 @@
   </data>
   <data name="mnuOptions" xml:space="preserve"><value>Seçenekler</value>
   </data>
-  <data name="mnuPreferences" xml:space="preserve"><value>Tercihler...</value>
+  <data name="mnuPreferences" xml:space="preserve"><value>Tercihler…</value>
   </data>
   <data name="mnuScreens" xml:space="preserve"><value>Görünüm</value>
   </data>
@@ -297,5 +297,143 @@
   </data>
   <data name="mnuWorkspace" xml:space="preserve">
     <value>Çalışma Alanı</value>
+  </data>
+  <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve">
+    <value>Videoları karşılaştırırken hız kaydırıcılarını bağlayın</value>
+  </data>
+  <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve">
+    <value>Zaman imleci hareketi sırasında resmi güncelle</value>
+  </data>
+  <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve">
+    <value>Videonun tamamı için görünür</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
+    <value>Kayıt sonrası komutu:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve">
+    <value>Yedek kare hızı (fps):</value>
+  </data>
+  <data name="TimeCodeFormat_Microseconds" xml:space="preserve">
+    <value>Toplam mikrosaniye</value>
+  </data>
+  <data name="mnuWorkspaceExport" xml:space="preserve">
+    <value>Çalışma alanını çıkart</value>
+  </data>
+  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
+    <value>Varsayılan çalışma alanı olarak kaydet</value>
+  </data>
+  <data name="mnuTools" xml:space="preserve">
+    <value>Aletler</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve">
+    <value>Varsayılan</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnClear" xml:space="preserve">
+    <value>Temizle</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnApply" xml:space="preserve">
+    <value>Uygula</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblHotkey" xml:space="preserve">
+    <value>{0}.{1} için kısayol tuşu</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblCommands" xml:space="preserve">
+    <value>Komutlar</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
+    <value>Kategoriler</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
+    <value>Piksel</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
+    <value>Yüzde</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
+    <value>Arama penceresi:</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
+    <value>Obje penceresi:</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
+    <value>Varsayılan izleme parametreleri</value>
+  </data>
+  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
+    <value>İzleme</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
+    <value>Özel uzunluk birimi:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadiansPerSecondSquared" xml:space="preserve">
+    <value>Saniye başına radyan kare ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegreesPerSecondSquared" xml:space="preserve">
+    <value>Saniye başına derece karesi ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRevolutionsPerMinute" xml:space="preserve">
+    <value>Dakika başına düşen devir sayısı ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegreesPerSecond" xml:space="preserve">
+    <value>Saniye başına düşen derece ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadiansPerSecond" xml:space="preserve">
+    <value>Radyan bölü saniye ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadians" xml:space="preserve">
+    <value>Radyan ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegrees" xml:space="preserve">
+    <value>Derece ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsFeetPerSecondSquared" xml:space="preserve">
+    <value>Saniye başına fit kare ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsMetersPerSecondSquared" xml:space="preserve">
+    <value>Metre bölü saniye kare ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngularAcceleration" xml:space="preserve">
+    <value>Açısal ivme:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngularVelocity" xml:space="preserve">
+    <value>Açısal hız:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngle" xml:space="preserve">
+    <value>Açı:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAcceleration" xml:space="preserve">
+    <value>Hızlanma:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsSpeed" xml:space="preserve">
+    <value>Hız:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitTime" xml:space="preserve">
+    <value>Zaman:</value>
+  </data>
+  <data name="mnuTimeFormat" xml:space="preserve">
+    <value>Zaman</value>
+  </data>
+  <data name="dlgPreferences_Player_tabUnits" xml:space="preserve">
+    <value>Birimler</value>
+  </data>
+  <data name="dlgPreferences_Player_lblMemory" xml:space="preserve">
+    <value>Her oynatma ekranına ayrılan önbellek: {0} MB.</value>
+  </data>
+  <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve">
+    <value>Örneklerin kendi tercihleri vardır</value>
+  </data>
+  <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
+    <value>Varsayılan açıklama dosyası:</value>
+  </data>
+  <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve">
+    <value>Görüntü dizilerini video olarak içe aktarın</value>
+  </data>
+  <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve">
+    <value>Yeni çizimlerin varsayılan opaklığı:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve">
+    <value>Özel araç hata ayıklama modunu etkinleştir</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve">
+    <value>Koordinat filtrelemesini etkinleştir</value>
   </data>
 </root>
