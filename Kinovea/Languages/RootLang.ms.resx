@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve">
+    <value>Format video tanpa mampatan</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve">
+    <value>Rekod Video tidak mampat</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve">
+    <value>Format Video:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve">
+    <value>Format Gambar:</value>
+  </data>
+  <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve">
+    <value>Penamaan Video</value>
+  </data>
+  <data name="dlgPreferences_Capture_ImageNaming" xml:space="preserve">
+    <value>Penamaan Gambar</value>
+  </data>
+  <data name="dlgPreferences_Capture_File" xml:space="preserve">
+    <value>Fail:</value>
+  </data>
+  <data name="dlgPreferences_Capture_Subdir" xml:space="preserve">
+    <value>Sub directory:</value>
+  </data>
+  <data name="dlgPreferences_Capture_Root" xml:space="preserve">
+    <value>Root:</value>
+  </data>
+  <data name="dlgPreferences_Capture_Right" xml:space="preserve">
+    <value>Kanan</value>
+  </data>
+  <data name="dlgPreferences_Capture_Left" xml:space="preserve">
+    <value>Kiri</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
+    <value>Paparan Kelajuan Frame (fps):</value>
+  </data>
+  <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve">
+    <value>Benarkan Contoh Pelbagai Kinovea</value>
+  </data>
+  <data name="dlgPreferences_tabKeyboard" xml:space="preserve">
+    <value>Papan Kekunci</value>
+  </data>
+  <data name="dlgPreferences_tabPlayback" xml:space="preserve">
+    <value>Ulang Semula</value>
+  </data>
+  <data name="dlgPreferences_tabGeneral" xml:space="preserve">
+    <value>Umum</value>
+  </data>
+  <data name="dlgPreferences_tabDrawings" xml:space="preserve">
+    <value>Melukis</value>
+  </data>
+  <data name="dlgPreferences_tabCapture" xml:space="preserve">
+    <value>Tangkap</value>
+  </data>
+  <data name="dlgAbout_Citation" xml:space="preserve">
+    <value>Petikan</value>
+  </data>
+  <data name="dlgAbout_BuildingBlocks" xml:space="preserve">
+    <value>Blok Bangunan</value>
+  </data>
+  <data name="dlgAbout_License" xml:space="preserve">
+    <value>Lesen</value>
+  </data>
+  <data name="dlgAbout_Translation" xml:space="preserve">
+    <value>Terjemahan</value>
+  </data>
+</root>
