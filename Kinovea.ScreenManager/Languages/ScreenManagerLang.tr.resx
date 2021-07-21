@@ -531,4 +531,7 @@
   <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
     <value>Çizim Düzenle</value>
   </data>
+  <data name="Generic_Quit" xml:space="preserve">
+    <value>Programdan Çık</value>
+  </data>
 </root>
