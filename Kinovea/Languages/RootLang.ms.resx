@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -58,4 +58,70 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve">
+    <value>Format video tanpa mampatan</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve">
+    <value>Rekod Video tidak mampat</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve">
+    <value>Format Video:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve">
+    <value>Format Gambar:</value>
+  </data>
+  <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve">
+    <value>Penamaan Video</value>
+  </data>
+  <data name="dlgPreferences_Capture_ImageNaming" xml:space="preserve">
+    <value>Penamaan Gambar</value>
+  </data>
+  <data name="dlgPreferences_Capture_File" xml:space="preserve">
+    <value>Fail:</value>
+  </data>
+  <data name="dlgPreferences_Capture_Subdir" xml:space="preserve">
+    <value>Sub directory:</value>
+  </data>
+  <data name="dlgPreferences_Capture_Root" xml:space="preserve">
+    <value>Root:</value>
+  </data>
+  <data name="dlgPreferences_Capture_Right" xml:space="preserve">
+    <value>Kanan</value>
+  </data>
+  <data name="dlgPreferences_Capture_Left" xml:space="preserve">
+    <value>Kiri</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
+    <value>Paparan Kelajuan Frame (fps):</value>
+  </data>
+  <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve">
+    <value>Benarkan Contoh Pelbagai Kinovea</value>
+  </data>
+  <data name="dlgPreferences_tabKeyboard" xml:space="preserve">
+    <value>Papan Kekunci</value>
+  </data>
+  <data name="dlgPreferences_tabPlayback" xml:space="preserve">
+    <value>Ulang Semula</value>
+  </data>
+  <data name="dlgPreferences_tabGeneral" xml:space="preserve">
+    <value>Umum</value>
+  </data>
+  <data name="dlgPreferences_tabDrawings" xml:space="preserve">
+    <value>Melukis</value>
+  </data>
+  <data name="dlgPreferences_tabCapture" xml:space="preserve">
+    <value>Tangkap</value>
+  </data>
+  <data name="dlgAbout_Citation" xml:space="preserve">
+    <value>Petikan</value>
+  </data>
+  <data name="dlgAbout_BuildingBlocks" xml:space="preserve">
+    <value>Blok Bangunan</value>
+  </data>
+  <data name="dlgAbout_License" xml:space="preserve">
+    <value>Lesen</value>
+  </data>
+  <data name="dlgAbout_Translation" xml:space="preserve">
+    <value>Terjemahan</value>
+  </data>
 </root>
