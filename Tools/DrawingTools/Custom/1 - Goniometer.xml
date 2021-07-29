@@ -42,7 +42,7 @@
         <KeepAngle origin="1" leg1="0" leg2="2"/>
       </Impacts>
     </Handle>
-    <Handle type="Point" reference="2" trackable="true">
+    <Handle type="Point" reference="2">
       <Constraint type="RotationSteps">
         <RotationSteps origin="1" leg1="0" step="45" keepDistance="false" />
       </Constraint>
