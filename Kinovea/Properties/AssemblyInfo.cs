@@ -14,8 +14,8 @@ using System.Resources;
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
 [assembly: Guid("b049b83e-90f3-4e84-9289-52ee6ea2a9ea")]
-[assembly: AssemblyVersion("0.9.4.0")]
-[assembly: AssemblyFileVersion("0.9.4.0")]
+[assembly: AssemblyVersion("0.9.4.1")]
+[assembly: AssemblyFileVersion("0.9.4.1")]
 [assembly: NeutralResourcesLanguageAttribute("en")]
 
 [assembly: log4net.Config.XmlConfigurator(ConfigFile = "LogConf.xml", Watch = true)]
