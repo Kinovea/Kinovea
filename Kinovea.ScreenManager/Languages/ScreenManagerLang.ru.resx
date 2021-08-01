@@ -753,4 +753,7 @@
   <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
     <value>Изменить рисунок</value>
   </data>
+  <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
+    <value>Максимальная непрозрачность (%):</value>
+  </data>
 </root>
