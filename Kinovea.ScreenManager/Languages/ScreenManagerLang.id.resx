@@ -271,4 +271,199 @@
   <data name="FormCrashRecovery_Recover" xml:space="preserve">
     <value>Pulihkan</value>
   </data>
+  <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve">
+    <value>Durasi tiap gambar kunci: {0:0.00} detik.</value>
+  </data>
+  <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve">
+    <value>Durasi tiap gambar kunci: {0} per seratus detik.</value>
+  </data>
+  <data name="dlgCalibratePlane_Title" xml:space="preserve">
+    <value>Kalibrasi bidang</value>
+  </data>
+  <data name="dlgCalibrateLine_AxesImage" xml:space="preserve">
+    <value>Selaras dengan axis gambar</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisVertical" xml:space="preserve">
+    <value>Garis ini menentukan axis vertikal</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisHorizontal" xml:space="preserve">
+    <value>Garis ini menentukan axis horizontal</value>
+  </data>
+  <data name="dlgCalibrateLine_CoordinateSystemAlignment" xml:space="preserve">
+    <value>Penyelarasan sistem koordinat:</value>
+  </data>
+  <data name="dlgCalibrateLine_Title" xml:space="preserve">
+    <value>Kalibrasi garis</value>
+  </data>
+  <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve">
+    <value>Ukuran segmen sesungguhnya:</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
+    <value>Jendela pencarian:</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve">
+    <value>Jendela objek:</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
+    <value>Pelacakan</value>
+  </data>
+  <data name="ExtraData_Circumference" xml:space="preserve">
+    <value>Keliling</value>
+  </data>
+  <data name="ExtraData_Length" xml:space="preserve">
+    <value>Panjang</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_CentripetalAcceleration" xml:space="preserve">
+    <value>Percepatan sentripetal</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularAcceleration" xml:space="preserve">
+    <value>Percepatan angular</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
+    <value>Kecepatan angular</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
+    <value>Perpindahan angular</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
+    <value>Percepatan horizontal</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalAcceleration" xml:space="preserve">
+    <value>Percepatan vertikal</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Acceleration" xml:space="preserve">
+    <value>Percepatan</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalVelocity" xml:space="preserve">
+    <value>Kecepatan horizontal</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalVelocity" xml:space="preserve">
+    <value>Kecepatan vertikal</value>
+  </data>
+  <data name="dlgConfigureTrajectory_CheckDisplayRotationCircle" xml:space="preserve">
+    <value>Tampilkan lingkaran rotasi</value>
+  </data>
+  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
+    <value>Penanda:</value>
+  </data>
+  <data name="dlgConfigureTrajectory_VisibilityLabelOnly" xml:space="preserve">
+    <value>Hanya label</value>
+  </data>
+  <data name="dlgConfigureTrajectory_VisibilityComplete" xml:space="preserve">
+    <value>Selesai</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
+    <value>Atur alat trayektori</value>
+  </data>
+  <data name="dlgTimebase_InfoUser" xml:space="preserve">
+    <value>Opsi ini menentukan framerate referensi yang digunakan oleh Kinovea untuk memutar video. Gunakan jika video mengandung framerate yang salah atau Kinovea tidak bisa membacanya. </value>
+  </data>
+  <data name="dlgTimebase_lblUserFPS" xml:space="preserve">
+    <value>Framerate video:</value>
+  </data>
+  <data name="dlgTimebase_lblFileFPS" xml:space="preserve">
+    <value>Framerate yang dibaca dalam file: {0:0.##} fps</value>
+  </data>
+  <data name="dlgTimebase_InfoCapture" xml:space="preserve">
+    <value>Opsi ini menerangkan perbedaan antara kecepatan video dan waktu sesungguhnya. Ini mempengaruhi label yang mengandung waktu dan pengukuran kinematika. Gunakan jika video direkam dalam mode cepat (high speed). </value>
+  </data>
+  <data name="dlgTimebase_lblCapture" xml:space="preserve">
+    <value>Tangkapan framerate:</value>
+  </data>
+  <data name="dlgTimebase_Title" xml:space="preserve">
+    <value>Atur timing video</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblFading" xml:space="preserve">
+    <value>Durasi pudar (frame):</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblOpaque" xml:space="preserve">
+    <value>Durasi buram (frame):</value>
+  </data>
+  <data name="dlgConfigureDrawing_Title" xml:space="preserve">
+    <value>Atur gambar</value>
+  </data>
+  <data name="DataAnalysis_ResultantLinearAcceleration" xml:space="preserve">
+    <value>Percepatan resultan</value>
+  </data>
+  <data name="DataAnalysis_TangentialAcceleration" xml:space="preserve">
+    <value>Percepatan tangensial</value>
+  </data>
+  <data name="DataAnalysis_TangentialVelocity" xml:space="preserve">
+    <value>Kecepatan tangensial</value>
+  </data>
+  <data name="DataAnalysis_TotalAngularDisplacement" xml:space="preserve">
+    <value>Total perpindahan</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Normalized" xml:space="preserve">
+    <value>Ternormalisasi</value>
+  </data>
+  <data name="DataAnalysis_ExportGraph" xml:space="preserve">
+    <value>Ekspor grafik</value>
+  </data>
+  <data name="DataAnalysis_CalibrationPlane" xml:space="preserve">
+    <value>Bidang kalibrasi</value>
+  </data>
+  <data name="DataAnalysis_YaxisDefaultPoints" xml:space="preserve">
+    <value>Y axis</value>
+  </data>
+  <data name="DataAnalysis_YaxisLabel" xml:space="preserve">
+    <value>Y axis :</value>
+  </data>
+  <data name="DataAnalysis_XaxisDefaultPoints" xml:space="preserve">
+    <value>X axis</value>
+  </data>
+  <data name="DataAnalysis_XaxisLabel" xml:space="preserve">
+    <value>X axis :</value>
+  </data>
+  <data name="DataAnalysis_Labels" xml:space="preserve">
+    <value>Label</value>
+  </data>
+  <data name="DataAnalysis_PagePlot" xml:space="preserve">
+    <value>Gambar</value>
+  </data>
+  <data name="DataAnalysis_AngularKinematics" xml:space="preserve">
+    <value>Kinematika angular</value>
+  </data>
+  <data name="DataAnalysis_LinearKinematics" xml:space="preserve">
+    <value>Kinematika linier</value>
+  </data>
+  <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
+    <value>Diagram menyebar</value>
+  </data>
+  <data name="DataAnalysis" xml:space="preserve">
+    <value>Analisis data</value>
+  </data>
+  <data name="CommandExportVideo_FriendlyName" xml:space="preserve">
+    <value>Ekspor video</value>
+  </data>
+  <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve">
+    <value>Hapus gambar kunci</value>
+  </data>
+  <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve">
+    <value>Hapus gambaran</value>
+  </data>
+  <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
+    <value>Modifikasi gambaran</value>
+  </data>
+  <data name="CommandAddDrawing_FriendlyName" xml:space="preserve">
+    <value>Tambahkan gambaran</value>
+  </data>
+  <data name="buttonPlay_ToolTip" xml:space="preserve">
+    <value>Putar atau jeda kedua video</value>
+  </data>
+  <data name="buttonGotoPrevious_ToolTip" xml:space="preserve">
+    <value>Kembali ke frame sebelumnya untuk kedua video</value>
+  </data>
+  <data name="buttonGotoNext_ToolTip" xml:space="preserve">
+    <value>Pergi ke frame selanjutnya untuk kedua video</value>
+  </data>
+  <data name="buttonGotoLast_ToolTip" xml:space="preserve">
+    <value>Pergi ke akhir dari kedua video</value>
+  </data>
+  <data name="buttonGotoFirst_ToolTip" xml:space="preserve">
+    <value>Kembali ke awal dari kedua video</value>
+  </data>
+  <data name="btnSync_ToolTip" xml:space="preserve">
+    <value>Sinkronisasi video pada frame saat ini</value>
+  </data>
 </root>
