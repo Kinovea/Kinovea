@@ -466,4 +466,172 @@
   <data name="btnSync_ToolTip" xml:space="preserve">
     <value>Sinkronisasi video pada frame saat ini</value>
   </data>
+  <data name="Error_Capture_InvalidFile_Title" xml:space="preserve">
+    <value>Nama file tidak valid</value>
+  </data>
+  <data name="Error_Capture_FileExists_Text" xml:space="preserve">
+    <value>File {0} sudah ada.\nApakah mau diganti?</value>
+  </data>
+  <data name="Error_Capture_FileExists_Title" xml:space="preserve">
+    <value>Penimpaan file</value>
+  </data>
+  <data name="DrawingName_Clock" xml:space="preserve">
+    <value>Jam</value>
+  </data>
+  <data name="DrawingName_Curve" xml:space="preserve">
+    <value>Kurva</value>
+  </data>
+  <data name="DrawingName_Trajectory" xml:space="preserve">
+    <value>Trajektori</value>
+  </data>
+  <data name="DrawingName_Rectangle" xml:space="preserve">
+    <value>Segi empat</value>
+  </data>
+  <data name="DrawingName_PerspectiveGrid" xml:space="preserve">
+    <value>Grid perspektif</value>
+  </data>
+  <data name="DrawingName_Grid" xml:space="preserve">
+    <value>Kisi</value>
+  </data>
+  <data name="DrawingName_TestGrid" xml:space="preserve">
+    <value>Grid uji kamera</value>
+  </data>
+  <data name="DrawingName_HumanModel2" xml:space="preserve">
+    <value>Model manusia (2)</value>
+  </data>
+  <data name="DrawingName_HumanModel" xml:space="preserve">
+    <value>Model manusia</value>
+  </data>
+  <data name="DrawingName_DistanceHorizontal" xml:space="preserve">
+    <value>Jarak (horizontal)</value>
+  </data>
+  <data name="DrawingName_AngleToHorizontal" xml:space="preserve">
+    <value>Sudut terhadap horizontal</value>
+  </data>
+  <data name="DrawingName_AngleToVertical" xml:space="preserve">
+    <value>Sudut terhadap vertikal</value>
+  </data>
+  <data name="DrawingName_Archery" xml:space="preserve">
+    <value>Panahan</value>
+  </data>
+  <data name="DrawingName_Genu" xml:space="preserve">
+    <value>Lutut</value>
+  </data>
+  <data name="DrawingName_Profile" xml:space="preserve">
+    <value>Profil</value>
+  </data>
+  <data name="DrawingName_Bikefit" xml:space="preserve">
+    <value>Pencocokan dengan sepeda</value>
+  </data>
+  <data name="DrawingName_Posture" xml:space="preserve">
+    <value>Postur</value>
+  </data>
+  <data name="DrawingName_Goniometer" xml:space="preserve">
+    <value>Goniometer</value>
+  </data>
+  <data name="DrawingName_DistortionGrid" xml:space="preserve">
+    <value>Grid distorsi</value>
+  </data>
+  <data name="DrawingName_ArrowPolyline" xml:space="preserve">
+    <value>Panah - Polyline</value>
+  </data>
+  <data name="DrawingName_ArrowPolylineDash" xml:space="preserve">
+    <value>Panah - Polyline garis putus</value>
+  </data>
+  <data name="DrawingName_ArrowPolylineSquiggly" xml:space="preserve">
+    <value>Panah - Polyline berlekuk</value>
+  </data>
+  <data name="DrawingName_Polyline" xml:space="preserve">
+    <value>Polyline</value>
+  </data>
+  <data name="DrawingName_CSVL" xml:space="preserve">
+    <value>Garis vertikal sakral sentral</value>
+  </data>
+  <data name="DrawingName_ArrowDash" xml:space="preserve">
+    <value>Panah - Garis putus</value>
+  </data>
+  <data name="DrawingName_ArrowCurve" xml:space="preserve">
+    <value>Panah - Kurva</value>
+  </data>
+  <data name="DrawingName_ArrowSquiggly" xml:space="preserve">
+    <value>Panah - Berlekuk</value>
+  </data>
+  <data name="DrawingName_Arrow" xml:space="preserve">
+    <value>Panah</value>
+  </data>
+  <data name="dlgCameraCalibration_lblFocalLength" xml:space="preserve">
+    <value>Panjang fokal (mm):</value>
+  </data>
+  <data name="dlgCameraCalibration_lblSensorWidth" xml:space="preserve">
+    <value>Lebar sensor (mm):</value>
+  </data>
+  <data name="dlgCameraCalibration_SaveDialogTitle" xml:space="preserve">
+    <value>Simpan profil kalibrasi kamera</value>
+  </data>
+  <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
+    <value>Muat profil kalibrasi kamera</value>
+  </data>
+  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
+    <value>Distorsi</value>
+  </data>
+  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
+    <value>Kalibrasikan kamera</value>
+  </data>
+  <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
+    <value>Intrinsik kamera</value>
+  </data>
+  <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve">
+    <value>Koefisian distorsi</value>
+  </data>
+  <data name="dlgCameraCalibration_Title" xml:space="preserve">
+    <value>Kalibrasi kamera</value>
+  </data>
+  <data name="dlgSaveSequenceTitle" xml:space="preserve">
+    <value>Simpan sekuen</value>
+  </data>
+  <data name="dlgSaveAnalysisTitle" xml:space="preserve">
+    <value>Simpan anotasi</value>
+  </data>
+  <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve">
+    <value>Anotasi akan tampak di semua pemutar namun tidak bisa dimodifikasi.#Komentar tambahan yang melekat pada gambar kunci tidak akan bisa disimpan.</value>
+  </data>
+  <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve">
+    <value>Ekspor video dengan anotasi diterapkan pada video secara permanen</value>
+  </data>
+  <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve">
+    <value>Hanya anotasi yang akan disimpan.#File nanti bisa diimpor ke dalam video.</value>
+  </data>
+  <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve">
+    <value>Simpan anotasinya saja</value>
+  </data>
+  <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve">
+    <value>Simpan metode</value>
+  </data>
+  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
+    <value>Pertimbangkan juga gerak lambat. (Current = </value>
+  </data>
+  <data name="dlgImportReference_Title" xml:space="preserve">
+    <value>Impor gambar sebagai referensi</value>
+  </data>
+  <data name="dlgExportSpreadsheet_Title" xml:space="preserve">
+    <value>Simpan data sebagai dokumen spreadsheet</value>
+  </data>
+  <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve">
+    <value>Slideshow video hanya dengan gambar kunci.</value>
+  </data>
+  <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve">
+    <value>Video orisinil dengan pause di setiap gambar kunci</value>
+  </data>
+  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
+    <value>Palang</value>
+  </data>
+  <data name="DataAnalysis_AngleAngleDiagrams" xml:space="preserve">
+    <value>Diagram sudut-sudut</value>
+  </data>
+  <data name="Generic_Save" xml:space="preserve">
+    <value>Simpan</value>
+  </data>
+  <data name="Generic_Quit" xml:space="preserve">
+    <value>Berhenti</value>
+  </data>
 </root>
