@@ -436,4 +436,58 @@
   </data>
   <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>자동 대비…</value>
   </data>
+  <data name="DataAnalysis_ResultantLinearAcceleration" xml:space="preserve">
+    <value>결과 가속도</value>
+  </data>
+  <data name="DataAnalysis" xml:space="preserve">
+    <value>데이터 분석</value>
+  </data>
+  <data name="DataAnalysis_ExportData" xml:space="preserve">
+    <value>데이터 내보내기</value>
+  </data>
+  <data name="DataAnalysis_SaveToFile" xml:space="preserve">
+    <value>파일로 저장하기</value>
+  </data>
+  <data name="DataAnalysis_Pixels" xml:space="preserve">
+    <value>픽셀</value>
+  </data>
+  <data name="DataAnalysis_ExportGraph" xml:space="preserve">
+    <value>그래프 내보내기</value>
+  </data>
+  <data name="DataAnalysis_TimeAxisMilliseconds" xml:space="preserve">
+    <value>시간 (ms)</value>
+  </data>
+  <data name="DataAnalysis_YaxisDefaultPoints" xml:space="preserve">
+    <value>Y 축</value>
+  </data>
+  <data name="DataAnalysis_YaxisLabel" xml:space="preserve">
+    <value>Y 축 :</value>
+  </data>
+  <data name="DataAnalysis_XaxisDefaultPoints" xml:space="preserve">
+    <value>X 축</value>
+  </data>
+  <data name="DataAnalysis_XaxisLabel" xml:space="preserve">
+    <value>X 축 :</value>
+  </data>
+  <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
+    <value>산점도</value>
+  </data>
+  <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
+    <value>그림 수정</value>
+  </data>
+  <data name="DataAnalysis_Title" xml:space="preserve">
+    <value>제목</value>
+  </data>
+  <data name="DataAnalysis_Labels" xml:space="preserve">
+    <value>표시값</value>
+  </data>
+  <data name="DataAnalysis_PagePlot" xml:space="preserve">
+    <value>도표</value>
+  </data>
+  <data name="DataAnalysis_AngularKinematics" xml:space="preserve">
+    <value>각도 운동학</value>
+  </data>
+  <data name="DataAnalysis_LinearKinematics" xml:space="preserve">
+    <value>선형 운동학</value>
+  </data>
 </root>
