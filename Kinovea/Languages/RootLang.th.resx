@@ -67,4 +67,166 @@
   <data name="dlgAbout_Translation" xml:space="preserve">
     <value>การแปลภาษา</value>
   </data>
+  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
+    <value>หยุดการบันทึกด้วยระยะเวลาของวีดีโอ (s):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
+    <value>อัตราทริกเกอร์:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve">
+    <value>อุปกรณ์นำเข้า:</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkEnableAudioTrigger" xml:space="preserve">
+    <value>เปิดการใช้งาน Audio Trigger</value>
+  </data>
+  <data name="dlgPreferences_Capture_tabAutomation" xml:space="preserve">
+    <value>อัตโนมัติ</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve">
+    <value>เฟรทเรทที่ถูกแทนที่ (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve">
+    <value>อัตราเฟรมเรทที่ถูกเขียนทับ(fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
+    <value>กล้องวีดีโอความเร็วสูง</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
+    <value>ยกเลิกการแจ้งเตือนการเขียนทับ</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve">
+    <value>หน่วยความจำอนุญาตให้หน่วงเวลาบัฟเฟอร์{0} MB</value>
+  </data>
+  <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
+    <value>หน่วยความจำ</value>
+  </data>
+  <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
+    <value>มาโคร</value>
+  </data>
+  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
+    <value>บริบท</value>
+  </data>
+  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
+    <value>ตัวแปร</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
+    <value>วันที่และเวลา (YYYYMMDD-HHMMSS)</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
+    <value>เวลา (HHMMSS)</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
+    <value>วันที่ (ปี-เดือน-วัน YYYYMMDD)</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
+    <value>ชื่อไฟล์ที่แคปเจอร์</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
+    <value>ไดเรกทอรี่สำหรับเก็บไฟล์ที่แคปเจอร์</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
+    <value>รูปแบบในการออก</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
+    <value>เฟรมเรทที่ได้รับ</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
+    <value>ปรับตั้งค่าเฟรมเรท</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
+    <value>ชื่อของกล้อง</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve">
+    <value>วินาที</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve">
+    <value>นาที</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve">
+    <value>ชั่วโมง</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve">
+    <value>วัน</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve">
+    <value>เดือน</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve">
+    <value>ปี</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
+    <value>ย้อนหลัง: บันทึกเฟรมเมื่อการจับภาพหยุดลง</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve">
+    <value>การหน่วงเวลา:บันทึกเฟรมที่ถูกหน่วงเวลา</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
+    <value>กล้อง: บันทึกกรอบเวลาจริง</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve">
+    <value>โหมดการบันทึกและการหน่วงเวลา</value>
+  </data>
+  <data name="dlgPreferences_Capture_Recording" xml:space="preserve">
+    <value>กำลังบันทึกวีดีโอ</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve">
+    <value>ไฟล์วีดีโอที่ยังไม่ถูกบีบอัด</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve">
+    <value>นามสกุลวีดีโอที่ไม่ได้รับการบีบอัด:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve">
+    <value>นามสกุลวีดีโอ:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve">
+    <value>นามสกุลภาพ:</value>
+  </data>
+  <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve">
+    <value>ชื่อวีดีโอ</value>
+  </data>
+  <data name="dlgPreferences_Capture_ImageNaming" xml:space="preserve">
+    <value>ชื่อภาพ</value>
+  </data>
+  <data name="dlgPreferences_Capture_File" xml:space="preserve">
+    <value>ไฟล์:</value>
+  </data>
+  <data name="dlgPreferences_Capture_Subdir" xml:space="preserve">
+    <value>ไดเรกทอรี่ย่อย:</value>
+  </data>
+  <data name="dlgPreferences_Capture_Root" xml:space="preserve">
+    <value>รูท:</value>
+  </data>
+  <data name="dlgPreferences_Capture_Right" xml:space="preserve">
+    <value>ขวา</value>
+  </data>
+  <data name="dlgPreferences_Capture_Left" xml:space="preserve">
+    <value>ซ้าย</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
+    <value>แสดงเฟรมเรท (FPS):</value>
+  </data>
+  <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve">
+    <value>อนุญาตให้แสดงตัวอย่างจาก Kinovea</value>
+  </data>
+  <data name="dlgPreferences_tabKeyboard" xml:space="preserve">
+    <value>คีย์บอร์ด</value>
+  </data>
+  <data name="dlgPreferences_tabPlayback" xml:space="preserve">
+    <value>เล่นวีดีโอ</value>
+  </data>
+  <data name="dlgPreferences_tabGeneral" xml:space="preserve">
+    <value>ทั่วไป</value>
+  </data>
+  <data name="dlgPreferences_tabDrawings" xml:space="preserve">
+    <value>วาดรูป</value>
+  </data>
+  <data name="dlgPreferences_tabCapture" xml:space="preserve">
+    <value>แคปเจอร์</value>
+  </data>
+  <data name="dlgAbout_Citation" xml:space="preserve">
+    <value>การอ้างถึง</value>
+  </data>
+  <data name="dlgAbout_BuildingBlocks" xml:space="preserve">
+    <value>การสร้างบล็อค</value>
+  </data>
 </root>

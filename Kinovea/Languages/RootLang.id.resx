@@ -89,7 +89,7 @@
     <value>Penamaan gambar</value>
   </data>
   <data name="dlgPreferences_Capture_File" xml:space="preserve">
-    <value>Berkas:</value>
+    <value>File:</value>
   </data>
   <data name="dlgPreferences_Capture_Subdir" xml:space="preserve">
     <value>Sub direktori:</value>
@@ -101,13 +101,13 @@
     <value>Kiri</value>
   </data>
   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
-    <value>Kecepatan bingkai layar (fps):</value>
+    <value>Framerate tampilan (fps):</value>
   </data>
   <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve">
     <value>Izinkan beberapa contoh dari Kinovea</value>
   </data>
   <data name="dlgPreferences_tabPlayback" xml:space="preserve">
-    <value>Pemutaran</value>
+    <value>Putar ulang</value>
   </data>
   <data name="dlgPreferences_tabGeneral" xml:space="preserve">
     <value>Umum</value>
@@ -128,7 +128,7 @@
     <value>Terlihat untuk seluruh video</value>
   </data>
   <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve">
-    <value>Visibilitas default gambar baru:</value>
+    <value>Opasitas default untuk gambar baru:</value>
   </data>
   <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve">
     <value>Aktifkan mode debug alat khusus</value>
@@ -143,10 +143,10 @@
     <value>Perintah pasca perekaman:</value>
   </data>
   <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
-    <value>Waktu kosong (s):</value>
+    <value>Waktu diam (d):</value>
   </data>
   <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
-    <value>Berhenti merekam berdasarkan durasi (s):</value>
+    <value>Berhenti merekam berdasarkan durasi (d):</value>
   </data>
   <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
     <value>Ambang batas pemicu:</value>
@@ -164,16 +164,16 @@
     <value>Otomatisasi</value>
   </data>
   <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve">
-    <value>Ambang batas penggantian kecepatan bingkai (fps):</value>
+    <value>Ambang batas penggantian framerate (fps):</value>
   </data>
   <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve">
-    <value>Penggantian kecepatan bingkai (fps):</value>
+    <value>Framerate pengganti (fps):</value>
   </data>
   <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
     <value>Kamera kecepatan tinggi</value>
   </data>
   <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
-    <value>Abaikan peringatan penimpaan berkas</value>
+    <value>Abaikan peringatan penimpaan file</value>
   </data>
   <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve">
     <value>Memori yang dialokasikan untuk buffer tertunda: {0} MB.</value>
@@ -194,19 +194,19 @@
     <value>Tanggal (TTTTBBHH)</value>
   </data>
   <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
-    <value>Nama berkas tertangkap</value>
+    <value>Nama file tangkapan</value>
   </data>
   <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
-    <value>Direktori tangkapan</value>
+    <value>Direktori hasil tangkapan</value>
   </data>
   <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
-    <value>Urutan escape</value>
+    <value>Urutan perintah Escape</value>
   </data>
   <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
-    <value>Kecepatan bingkai diterima</value>
+    <value>Framerate diterima</value>
   </data>
   <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
-    <value>Kecepatan bingkai terkonfigurasi</value>
+    <value>Framerate terkonfigurasi</value>
   </data>
   <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
     <value>Nama lain kamera</value>
@@ -248,7 +248,7 @@
     <value>Secara default, gambar akan tetap terlihat sebanyak {0} gambar dari seluruh Gambar Utama.</value>
   </data>
   <data name="dlgPreferences_Player_lblMemory" xml:space="preserve">
-    <value>Memori cache yang dialokasikan untuk setiap layar pemutaran: {0} MB.</value>
+    <value>Memori cache yang dialokasikan untuk setiap layar putar ulang: {0} MB.</value>
   </data>
   <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve">
     <value>Dan</value>
@@ -257,22 +257,22 @@
     <value>Bahasa:</value>
   </data>
   <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve">
-    <value>Rasio aspek bawaan:</value>
+    <value>Rasio aspek default:</value>
   </data>
   <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve">
-    <value>Contoh memiliki preferensinya sendiri</value>
+    <value>Contoh memiliki preferensi tersendiri</value>
   </data>
   <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve">
-    <value>Jumlah berkas dalam histori:</value>
+    <value>Jumlah file dalam histori:</value>
   </data>
   <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve">
-    <value>Beralih ke mode Analisis</value>
+    <value>Beralih ke mode Analisa</value>
   </data>
   <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
-    <value>Berkas anotasi default:</value>
+    <value>File anotasi default:</value>
   </data>
   <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve">
-    <value>Tautkan penggeser kecepatan saat membandingkan video</value>
+    <value>Hubungkan penggeser kecepatan saat membandingkan video</value>
   </data>
   <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve">
     <value>Impor urutan gambar sebagai video</value>
@@ -303,5 +303,182 @@
   </data>
   <data name="mnuLanguages" xml:space="preserve">
     <value>Bahasa</value>
+  </data>
+  <data name="mnuPreferences" xml:space="preserve">
+    <value>Preferensi…</value>
+  </data>
+  <data name="mnuEdit" xml:space="preserve">
+    <value>Suting</value>
+  </data>
+  <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve">
+    <value>Sepersepuluh-ribu jam</value>
+  </data>
+  <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve">
+    <value>Seperseratus menit</value>
+  </data>
+  <data name="TimeCodeFormat_Microseconds" xml:space="preserve">
+    <value>Mikrosekon total</value>
+  </data>
+  <data name="TimeCodeFormat_Milliseconds" xml:space="preserve">
+    <value>Milisekon total</value>
+  </data>
+  <data name="TimeCodeFormat_Frames" xml:space="preserve">
+    <value>Nomor bingkai</value>
+  </data>
+  <data name="mnuUndo" xml:space="preserve">
+    <value>Tidak jadi</value>
+  </data>
+  <data name="mnuRedo" xml:space="preserve">
+    <value>Ulang</value>
+  </data>
+  <data name="mnuScreens" xml:space="preserve">
+    <value>Pandangan</value>
+  </data>
+  <data name="mnuWorkspaceExport" xml:space="preserve">
+    <value>Ekspor ruang kerja</value>
+  </data>
+  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
+    <value>Simpan sebagai ruang kerja bawaan</value>
+  </data>
+  <data name="mnuWorkspace" xml:space="preserve">
+    <value>Ruang kerja</value>
+  </data>
+  <data name="mnuOptions" xml:space="preserve">
+    <value>Pilihan</value>
+  </data>
+  <data name="mnuTools" xml:space="preserve">
+    <value>Alat Bantu</value>
+  </data>
+  <data name="mnuVideo" xml:space="preserve">
+    <value>Video</value>
+  </data>
+  <data name="mnuImage" xml:space="preserve">
+    <value>Gambar</value>
+  </data>
+  <data name="mnuHistoryReset" xml:space="preserve">
+    <value>Setel ulang riwayat</value>
+  </data>
+  <data name="mnuHistory" xml:space="preserve">
+    <value>Terkini</value>
+  </data>
+  <data name="mnuHelpContents" xml:space="preserve">
+    <value>Bantuan Kinovea...</value>
+  </data>
+  <data name="mnuHelp" xml:space="preserve">
+    <value>Bantuan</value>
+  </data>
+  <data name="mnuFullScreen" xml:space="preserve">
+    <value>Layar penuh</value>
+  </data>
+  <data name="mnuFile" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="mnuApplicationFolder" xml:space="preserve">
+    <value>Buka folder log…</value>
+  </data>
+  <data name="mnuAbout" xml:space="preserve">
+    <value>Tentang Kinovea…</value>
+  </data>
+  <data name="Generic_Save" xml:space="preserve">
+    <value>Simpan</value>
+  </data>
+  <data name="Generic_Quit" xml:space="preserve">
+    <value>Berhenti</value>
+  </data>
+  <data name="dlgSplash_LoadInfos" xml:space="preserve">
+    <value>Memuat antarmuka pengguna…</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve">
+    <value>Bawaan</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnClear" xml:space="preserve">
+    <value>Kosongkan</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnApply" xml:space="preserve">
+    <value>Terapkan</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblHotkey" xml:space="preserve">
+    <value>Hotkey untuk {0}.{1}</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblCommands" xml:space="preserve">
+    <value>Perintah</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
+    <value>Kategori</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
+    <value>Piksel</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
+    <value>Persentase</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
+    <value>Jendela pencarian:</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
+    <value>Jendela objek:</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
+    <value>Parameter penelusuran default</value>
+  </data>
+  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
+    <value>Penelusuran</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
+    <value>Satuan panjang yang diinginkan:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadiansPerSecondSquared" xml:space="preserve">
+    <value>Radian per detik dikuadratkan ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegreesPerSecondSquared" xml:space="preserve">
+    <value>Derajat per detik dikuadratkan ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRevolutionsPerMinute" xml:space="preserve">
+    <value>Revolusi per menit ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadiansPerSecond" xml:space="preserve">
+    <value>Radian per detik ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegreesPerSecond" xml:space="preserve">
+    <value>Derajat per detik ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadians" xml:space="preserve">
+    <value>Radian ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegrees" xml:space="preserve">
+    <value>Derajat ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsFeetPerSecondSquared" xml:space="preserve">
+    <value>Kaki per detik dikuadratkan ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsMetersPerSecondSquared" xml:space="preserve">
+    <value>Meter per detik dikuadratkan ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngularAcceleration" xml:space="preserve">
+    <value>Akselerasi sudut:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngularVelocity" xml:space="preserve">
+    <value>Kecepatan sudut:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngle" xml:space="preserve">
+    <value>Sudut:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAcceleration" xml:space="preserve">
+    <value>Akselerasi:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsSpeed" xml:space="preserve">
+    <value>Kecepatan:</value>
+  </data>
+  <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve">
+    <value>Perbarui gambar saat pergerakan cursor waktu</value>
+  </data>
+  <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve">
+    <value>Selalu deinterlance saat membuka vidio baru</value>
+  </data>
+  <data name="dlgPreferences_Capture_Root" xml:space="preserve">
+    <value>Root:</value>
+  </data>
+  <data name="dlgAbout_BuildingBlocks" xml:space="preserve">
+    <value>Komponen utama</value>
   </data>
 </root>

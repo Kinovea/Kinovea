@@ -136,4 +136,19 @@
   <data name="FormConfiguration_DevicePropertyPages_Error" xml:space="preserve">
     <value>Sebuah kesalahan terjadi saat mencoba menampilkan halaman properti perangkat untuk {0}.</value>
   </data>
+  <data name="FormConnectionWizard_Format" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="FormConnectionWizard_Port" xml:space="preserve">
+    <value>Port</value>
+  </data>
+  <data name="FormConfiguration_Properties_BayerFormatConversion" xml:space="preserve">
+    <value>Konversi format Bayer:</value>
+  </data>
+  <data name="FormConfiguration_Properties_Gain" xml:space="preserve">
+    <value>Gain:</value>
+  </data>
+  <data name="FormConfiguration_Properties_ExposureMicro" xml:space="preserve">
+    <value>Eksposur (µs):</value>
+  </data>
 </root>
