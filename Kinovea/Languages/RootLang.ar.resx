@@ -284,4 +284,7 @@
   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
     <value>عرض معدل الإطارات في الثانية (fps):</value>
   </data>
+  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
+    <value>حفظ كبيئة عمل افتراضية</value>
+  </data>
 </root>
