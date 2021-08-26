@@ -166,4 +166,13 @@
   </data>
   <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Dez milésimos de uma hora</value>
   </data>
+  <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve">
+    <value>Permite múltiplas instâncias do Kinovea</value>
+  </data>
+  <data name="dlgAbout_License" xml:space="preserve">
+    <value>Licença</value>
+  </data>
+  <data name="dlgAbout_Translation" xml:space="preserve">
+    <value>Tradução</value>
+  </data>
 </root>
