@@ -92,17 +92,17 @@
   </data>
   <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Pufferspeicher für Aufnahme: {0} MB.</value>
   </data>
-  <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Zeige Zeichenelemente bei Wiedergabe</value>
+  <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Zeichenelemente während Wiedergabe anzeigen</value>
   </data>
   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Beim Öffnen eines neuen Videos Deinterlace verwenden</value>
   </data>
   <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Wechseln zum Analyse-Modus</value>
   </data>
-  <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Anzahl Dateien im Verlauf :</value>
+  <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Anzahl der Dateien im Verlauf:</value>
   </data>
   <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Standard Bildformat:</value>
   </data>
-  <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Sprache :</value>
+  <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Sprache:</value>
   </data>
   <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>Und</value>
   </data>
@@ -185,10 +185,10 @@
     <value>Datum (JJJJMMTT)</value>
   </data>
   <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
-    <value>Name der erfassten Datei</value>
+    <value>Name der gespeicherten Datei</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
-    <value>Rückwirkend: Zeichnet Bilder auf, wenn die Aufnahme beendet wird.</value>
+    <value>Rückwirkend: zeichnet Bilder auf, wenn die Aufnahme beendet wird.</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve">
     <value>Verzögert: zeichnet verzögerte Bilder auf.</value>
@@ -197,7 +197,7 @@
     <value>Kamera: nimmt Bilder in Echtzeit auf.</value>
   </data>
   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
-    <value>Bildfrequenz (fps) anzeigen:</value>
+    <value>Bildwiedergaberate der Anzeige (fps):</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve">
     <value>Aufnahmemodus und Verzögerung</value>
@@ -230,9 +230,87 @@
     <value>Übersetzung</value>
   </data>
   <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve">
-    <value>Mehrere Einheiten von Kinovea erlauben</value>
+    <value>Mehrere Instanzen von Kinovea erlauben</value>
   </data>
   <data name="dlgPreferences_tabKeyboard" xml:space="preserve">
     <value>Tastatur</value>
+  </data>
+  <data name="dlgPreferences_Capture_tabAutomation" xml:space="preserve">
+    <value>Automatisierung</value>
+  </data>
+  <data name="dlgPreferences_Capture_Root" xml:space="preserve">
+    <value>Wurzelverzeichnis:</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
+    <value>Erhaltene Bildrate</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
+    <value>Escape-Sequenz</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
+    <value>Eingestellte Bildrate</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
+    <value>Aufnahmeverzeichnis</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
+    <value>Kamera-Alias</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
+    <value>Trigger-Schwellenwert:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
+    <value>Aufnahme nach Zeit stoppen (s):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve">
+    <value>Ersatzbildwiedergaberate (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve">
+    <value>Schwellenwert für Ersatzbildwiedergaberate (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
+    <value>Kommando nach der Aufnahme:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve">
+    <value>Aufnahmegerät:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
+    <value>Wartezeit (s):</value>
+  </data>
+  <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
+    <value>Hochgeschwindigkeitskameras</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
+    <value>Warnung ignorieren, wenn Datei überschrieben wird</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkEnableAudioTrigger" xml:space="preserve">
+    <value>Audio-Trigger aktivieren</value>
+  </data>
+  <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve">
+    <value>Instanzen haben unabhängige Einstellungen</value>
+  </data>
+  <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve">
+    <value>Während des gesamten Videos sichtbar</value>
+  </data>
+  <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve">
+    <value>Standard-Opazität für neue Zeichenelemente:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve">
+    <value>Debug-Modus für benutzerdefinierte Werkzeuge aktivieren</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve">
+    <value>Filterung von Raumkoordinaten aktivieren</value>
+  </data>
+  <data name="dlgPreferences_Capture_Left" xml:space="preserve">
+    <value>Links</value>
+  </data>
+  <data name="dlgPreferences_Capture_Right" xml:space="preserve">
+    <value>Rechts</value>
+  </data>
+  <data name="dlgAbout_Citation" xml:space="preserve">
+    <value>Zitat</value>
+  </data>
+  <data name="dlgAbout_BuildingBlocks" xml:space="preserve">
+    <value>Bausteine</value>
   </data>
 </root>
