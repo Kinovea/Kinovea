@@ -80,4 +80,40 @@
   </data>
   <data name="tabShortcuts" xml:space="preserve"><value>Genveje</value>
   </data>
+  <data name="FormCameraWizard_Create" xml:space="preserve">
+    <value>Opret kamera</value>
+  </data>
+  <data name="FormCameraWizard_Test" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="FormCameraWizard_Parameters" xml:space="preserve">
+    <value>Indstillinger</value>
+  </data>
+  <data name="FormCameraWizard_CameraType" xml:space="preserve">
+    <value>Kamera type</value>
+  </data>
+  <data name="FormCameraWizard_Title" xml:space="preserve">
+    <value>Tilslut manuelt</value>
+  </data>
+  <data name="Generic_Open" xml:space="preserve">
+    <value>Åbn</value>
+  </data>
+  <data name="ForgetCustomSettings" xml:space="preserve">
+    <value>Slet indstillingerne</value>
+  </data>
+  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
+    <value>Åbn som replay-folder observer</value>
+  </data>
+  <data name="mnuVideoDelete" xml:space="preserve">
+    <value>Slet video</value>
+  </data>
+  <data name="mnuVideoLocate" xml:space="preserve">
+    <value>Vis i stifinder </value>
+  </data>
+  <data name="lblCameras" xml:space="preserve">
+    <value>Kameraer</value>
+  </data>
+  <data name="lblCaptureHistory" xml:space="preserve">
+    <value>Video historik</value>
+  </data>
 </root>

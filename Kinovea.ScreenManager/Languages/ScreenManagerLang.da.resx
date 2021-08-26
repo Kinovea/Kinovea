@@ -443,4 +443,7 @@
   <data name="Generic_Quit" xml:space="preserve">
     <value>Afslut</value>
   </data>
+  <data name="Generic_Open" xml:space="preserve">
+    <value>Åbn</value>
+  </data>
 </root>
