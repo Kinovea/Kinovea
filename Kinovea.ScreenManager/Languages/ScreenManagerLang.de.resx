@@ -104,21 +104,21 @@
   </data>
   <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve"><value>Messung :</value>
   </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve"><value>Keine Messung </value>
+  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve"><value>Keine Messung</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>Geschwindigkeit</value>
   </data>
-  <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Tatsächliche Länge der Strecke</value>
+  <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Tatsächliche Länge des Segments:</value>
   </data>
   <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Messung kalibrieren</value>
   </data>
-  <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Anzeigedauer jedes Bildes : {0} Hundertstelsekunden</value>
+  <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Anzeigedauer jedes Bildes : {0} Hundertstelsekunden.</value>
   </data>
-  <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Anzeigedauer jedes Bildes : {0:0.00} Sekunden</value>
+  <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Anzeigedauer jedes Bildes : {0:0.00} Sekunden.</value>
   </data>
   <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Speichere ein Video mit Pause zwischen jedem Schlüsselbild</value>
   </data>
-  <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Speichere eine Diashow aus den Schlüsselbildern</value>
+  <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Speichere eine Diashow nur aus den Schlüsselbildern.</value>
   </data>
   <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Videotyp</value>
   </data>
@@ -132,17 +132,17 @@
   </data>
   <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>Exportiere nur Schlüsselbilder.</value>
   </data>
-  <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>Gesamte : {0:0}</value>
+  <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>Gesamt : {0:0} Bilder.</value>
   </data>
   <data name="dlgRafaleExport_Title" xml:space="preserve"><value>Bildsequenz speichern</value>
   </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Berücksichtige Slow-Motion (Aktuell =</value>
+  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Berücksichtige Slow-Motion (Aktuell = </value>
   </data>
   <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Speichermethode</value>
   </data>
   <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Speichere nur Schlüsselbilddaten</value>
   </data>
-  <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Schlüsselbilddaten dauerhaft ins Video zeichnen.</value>
+  <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value></value>
   </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Speichere Schlüsselbilddaten</value>
   </data>
@@ -164,11 +164,11 @@
   </data>
   <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Eine Diashow ist eine Sequenz von Schlüsselbildern als Videoformat gespeichert.\n Bitte erst Schlüsselbilder auswählen und dann die Diashow erstellen.</value>
   </data>
-  <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Video kann nicht erstellt werden.</value>
+  <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Pausiertes Video kann nicht erstellt werden</value>
   </data>
   <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Datei kann nicht gespeichert werden.\n Überprüfen Sie, ob Sie ausreichend Schreibrechte im Zielverzeichnis besitzen und die Datei nicht gerade verwendet wird.</value>
   </data>
-  <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea – Video kann nicht gespeichert werden.</value>
+  <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea – Video kann nicht gespeichert werden. </value>
   </data>
   <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Video kann nicht gespeichert werden.\n Versuchen Sie es mit einem anderen Format.</value>
   </data>
@@ -232,7 +232,7 @@
   </data>
   <data name="LengthUnit_Meters" xml:space="preserve"><value>Meter</value>
   </data>
-  <data name="LengthUnit_Inches" xml:space="preserve"><value>Inches</value>
+  <data name="LengthUnit_Inches" xml:space="preserve"><value>Zoll</value>
   </data>
   <data name="LengthUnit_Feet" xml:space="preserve"><value>Fuß</value>
   </data>
@@ -240,7 +240,7 @@
   </data>
   <data name="LoadMovie_CodecNotFound" xml:space="preserve"><value>Fehler beim Öffnen der Datei – Videostream wird nicht unterstützt.</value>
   </data>
-  <data name="LoadMovie_CodecNotOpened" xml:space="preserve"><value>Fehler beim Öffnen der Datei – Initialisierungsfehler des Decoders</value>
+  <data name="LoadMovie_CodecNotOpened" xml:space="preserve"><value>Fehler beim Öffnen der Datei: Fehler während der Initialisierung des Decoders.</value>
   </data>
   <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Fehler beim Öffnen der Datei – Format wird nicht unterstützt.</value>
   </data>
@@ -248,7 +248,7 @@
   </data>
   <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Fehler beim Öffnen der Datei – Datei nicht gefunden.</value>
   </data>
-  <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Fehler beim Öffnen der Datei – Unregelmäßigkeiten gefunden. Bitte Kodierungsprozeß überprüfen!</value>
+  <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Fehler beim Öffnen der Datei: Unregelmäßigkeiten gefunden. Bitte Kodierungsprozess überprüfen.</value>
   </data>
   <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Fehler beim Öffnen der Datei – Videostream Information nicht gefunden.</value>
   </data>
@@ -298,7 +298,7 @@
   </data>
   <data name="mnuHome" xml:space="preserve"><value>Datei Explorer</value>
   </data>
-  <data name="mnuImportImage" xml:space="preserve"><value>Bild importieren</value>
+  <data name="mnuImportImage" xml:space="preserve"><value>Bild importieren…</value>
   </data>
   <data name="mnuMagnification" xml:space="preserve"><value>Zoom x{0:0.00}</value>
   </data>
@@ -314,11 +314,11 @@
   </data>
   <data name="mnuRestartTracking" xml:space="preserve"><value>Trajektorien-Editor neu starten</value>
   </data>
-  <data name="mnuOpenVideo" xml:space="preserve"><value>Videodatei öffnen</value>
+  <data name="mnuOpenVideo" xml:space="preserve"><value>Videodatei öffnen…</value>
   </data>
   <data name="mnuShowMeasure" xml:space="preserve"><value>Messwert anzeigen</value>
   </data>
-  <data name="mnuStopTracking" xml:space="preserve"><value>Beende Trajektorienbearbeitung</value>
+  <data name="mnuStopTracking" xml:space="preserve"><value>Beende Trajektorienbearbeitung </value>
   </data>
   <data name="mnuSVGTools" xml:space="preserve"><value>Referenzobjekt</value>
   </data>
@@ -328,7 +328,7 @@
   </data>
   <data name="mnuTrackTrajectory" xml:space="preserve"><value>Verfolge Trajektorien</value>
   </data>
-  <data name="RecentlyUsedColors" xml:space="preserve"><value>zuletzt verwendete Farben</value>
+  <data name="RecentlyUsedColors" xml:space="preserve"><value>Zuletzt verwendete Farben:</value>
   </data>
   <data name="statusEmptyScreen" xml:space="preserve"><value>Leer</value>
   </data>
@@ -418,17 +418,23 @@
   </data>
   <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Nur Videoränder...</value>
   </data>
-  <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Automatisch</value>
+  <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value></value>
   </data>
   <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Scharfzeichnen...</value>
   </data>
-  <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Übersicht</value>
+  <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Übersicht...</value>
   </data>
-  <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Invers</value>
+  <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value></value>
   </data>
   <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Autokontrast...</value>
   </data>
   <data name="Generic_Quit" xml:space="preserve">
     <value>Beenden</value>
+  </data>
+  <data name="Generic_Open" xml:space="preserve">
+    <value>Öffnen</value>
+  </data>
+  <data name="FormIconPicker_Title" xml:space="preserve">
+    <value>Symbole</value>
   </data>
 </root>

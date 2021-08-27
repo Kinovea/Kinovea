@@ -64,4 +64,28 @@
   <data name="mnuCheckForUpdates" xml:space="preserve">
     <value>ตรวจสอบการอัพเดท…</value>
   </data>
+  <data name="Updater_UpToDate" xml:space="preserve">
+    <value>เวอร์ชันของคุณอัปเดตแล้ว!</value>
+  </data>
+  <data name="Updater_Title" xml:space="preserve">
+    <value>Kinovea - กำลังตรวจสอบเวอร์ชันใหม่</value>
+  </data>
+  <data name="Updater_Quit" xml:space="preserve">
+    <value>ล้มเลิก</value>
+  </data>
+  <data name="Updater_NewVersion" xml:space="preserve">
+    <value>เวอร์ชั่นใหม่</value>
+  </data>
+  <data name="Updater_LblChangeLog" xml:space="preserve">
+    <value>บันทึกการเปลี่ยนแปลง:</value>
+  </data>
+  <data name="Updater_InternetError" xml:space="preserve">
+    <value>เกิดข้อผิดพลาดขณะตรวจสอบการอัปเดต โปรดตรวจสอบให้แน่ใจว่ามีการเชื่อมต่ออินเทอร์เน็ต</value>
+  </data>
+  <data name="Updater_Download" xml:space="preserve">
+    <value>ดาวน์โหลด</value>
+  </data>
+  <data name="Updater_CurrentVersion" xml:space="preserve">
+    <value>เวอร์ชันปัจจุบัน :</value>
+  </data>
 </root>

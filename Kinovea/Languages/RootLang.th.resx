@@ -229,4 +229,256 @@
   <data name="dlgAbout_BuildingBlocks" xml:space="preserve">
     <value>การสร้างบล็อค</value>
   </data>
+  <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve">
+    <value>หนึ่งหมื่นชั่วโมง</value>
+  </data>
+  <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve">
+    <value>หนึ่งร้อยนาที</value>
+  </data>
+  <data name="TimeCodeFormat_Microseconds" xml:space="preserve">
+    <value>รวมไมโครวินาที</value>
+  </data>
+  <data name="TimeCodeFormat_Milliseconds" xml:space="preserve">
+    <value>มิลลิวินาทีทั้งหมด</value>
+  </data>
+  <data name="TimeCodeFormat_Frames" xml:space="preserve">
+    <value>หมายเลขเฟรม</value>
+  </data>
+  <data name="mnuRedo" xml:space="preserve">
+    <value>ทำซ้ำ</value>
+  </data>
+  <data name="mnuUndo" xml:space="preserve">
+    <value>เลิกทำ</value>
+  </data>
+  <data name="mnuScreens" xml:space="preserve">
+    <value>ดู</value>
+  </data>
+  <data name="mnuWorkspaceExport" xml:space="preserve">
+    <value>ส่งออกพื้นที่ทำงาน</value>
+  </data>
+  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
+    <value>บันทึกเป็นพื้นที่ทำงานเริ่มต้น</value>
+  </data>
+  <data name="mnuWorkspace" xml:space="preserve">
+    <value>พื้นที่ทำงาน</value>
+  </data>
+  <data name="mnuPreferences" xml:space="preserve">
+    <value>ค่ากำหนด…</value>
+  </data>
+  <data name="mnuOptions" xml:space="preserve">
+    <value>ตัวเลือก</value>
+  </data>
+  <data name="mnuTools" xml:space="preserve">
+    <value>เครื่องมือ</value>
+  </data>
+  <data name="mnuVideo" xml:space="preserve">
+    <value>วีดีโอ</value>
+  </data>
+  <data name="mnuLanguages" xml:space="preserve">
+    <value>ภาษา</value>
+  </data>
+  <data name="mnuImage" xml:space="preserve">
+    <value>ภาพ</value>
+  </data>
+  <data name="mnuHistoryReset" xml:space="preserve">
+    <value>รีเซ็ตประวัติ</value>
+  </data>
+  <data name="mnuHistory" xml:space="preserve">
+    <value>ล่าสุด</value>
+  </data>
+  <data name="mnuHelpContents" xml:space="preserve">
+    <value>คีโนเวียช่วย...</value>
+  </data>
+  <data name="mnuHelp" xml:space="preserve">
+    <value>ช่วย</value>
+  </data>
+  <data name="mnuFullScreen" xml:space="preserve">
+    <value>เต็มจอ</value>
+  </data>
+  <data name="mnuFile" xml:space="preserve">
+    <value>ไฟล์</value>
+  </data>
+  <data name="mnuEdit" xml:space="preserve">
+    <value>แก้ไข</value>
+  </data>
+  <data name="mnuApplicationFolder" xml:space="preserve">
+    <value>เปิดโฟลเดอร์บันทึก…</value>
+  </data>
+  <data name="mnuAbout" xml:space="preserve">
+    <value>เกี่ยวกับคิโนเวีย…</value>
+  </data>
+  <data name="Generic_Save" xml:space="preserve">
+    <value>บันทึก</value>
+  </data>
+  <data name="Generic_Quit" xml:space="preserve">
+    <value>ล้มเลิก</value>
+  </data>
+  <data name="dlgSplash_LoadInfos" xml:space="preserve">
+    <value>กำลังโหลดอินเทอร์เฟซผู้ใช้…</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve">
+    <value>ค่าเริ่มต้น</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnClear" xml:space="preserve">
+    <value>ชัดเจน</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnApply" xml:space="preserve">
+    <value>นำมาใช้</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblHotkey" xml:space="preserve">
+    <value>ปุ่มลัดสำหรับ {0}.{1}</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblCommands" xml:space="preserve">
+    <value>คำสั่ง</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
+    <value>หมวดหมู่</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
+    <value>พิกเซล</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
+    <value>เปอร์เซ็นต์</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
+    <value>หน้าต่างการค้นหา:</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
+    <value>หน้าต่างวัตถุ:</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
+    <value>พารามิเตอร์การติดตามเริ่มต้น</value>
+  </data>
+  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
+    <value>การติดตาม</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
+    <value>หน่วยความยาวที่กำหนดเอง :</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadiansPerSecondSquared" xml:space="preserve">
+    <value>เรเดียนต่อวินาทีกำลังสอง ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegreesPerSecondSquared" xml:space="preserve">
+    <value>องศาต่อวินาทีกำลังสอง ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRevolutionsPerMinute" xml:space="preserve">
+    <value>รอบต่อนาที ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadiansPerSecond" xml:space="preserve">
+    <value>เรเดียนต่อวินาที ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegreesPerSecond" xml:space="preserve">
+    <value>องศาต่อวินาที ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadians" xml:space="preserve">
+    <value>เรเดียน ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegrees" xml:space="preserve">
+    <value>องศา ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsFeetPerSecondSquared" xml:space="preserve">
+    <value>ฟุตต่อวินาทีกำลังสอง ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsMetersPerSecondSquared" xml:space="preserve">
+    <value>เมตรต่อวินาทียกกำลังสอง ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngularAcceleration" xml:space="preserve">
+    <value>การเร่งความเร็วเชิงมุม:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngularVelocity" xml:space="preserve">
+    <value>ความเร็วเชิงมุม:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngle" xml:space="preserve">
+    <value>มุม:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAcceleration" xml:space="preserve">
+    <value>การเร่งความเร็ว:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsSpeed" xml:space="preserve">
+    <value>ความเร็ว:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitTime" xml:space="preserve">
+    <value>เวลา:</value>
+  </data>
+  <data name="mnuTimeFormat" xml:space="preserve">
+    <value>เวลา</value>
+  </data>
+  <data name="dlgPreferences_Title" xml:space="preserve">
+    <value>การตั้งค่า</value>
+  </data>
+  <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve">
+    <value>ไมล์ต่อชั่วโมง ({0})</value>
+  </data>
+  <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve">
+    <value>ฟุตต่อวินาที ({0})</value>
+  </data>
+  <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve">
+    <value>กิโลเมตรต่อชั่วโมง ({0})</value>
+  </data>
+  <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve">
+    <value>เมตรต่อวินาที ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_tabUnits" xml:space="preserve">
+    <value>หน่วย</value>
+  </data>
+  <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve">
+    <value>ตามค่าเริ่มต้น ภาพวาดจะยังมองเห็นได้สำหรับรูปภาพ {0} ภาพรอบๆ รูปภาพหลัก</value>
+  </data>
+  <data name="dlgPreferences_Player_lblMemory" xml:space="preserve">
+    <value>หน่วยความจำแคชที่จัดสรรให้กับแต่ละหน้าจอการเล่น: {0} MB</value>
+  </data>
+  <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve">
+    <value>และ</value>
+  </data>
+  <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve">
+    <value>ภาษา:</value>
+  </data>
+  <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve">
+    <value>อัตราส่วนภาพเริ่มต้น:</value>
+  </data>
+  <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve">
+    <value>อินสแตนซ์มีค่ากำหนดของตัวเอง</value>
+  </data>
+  <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve">
+    <value>จำนวนไฟล์ในประวัติ:</value>
+  </data>
+  <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve">
+    <value>เปลี่ยนเป็นโหมดการวิเคราะห์</value>
+  </data>
+  <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
+    <value>ไฟล์คำอธิบายประกอบเริ่มต้น:</value>
+  </data>
+  <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve">
+    <value>ลิงก์ตัวเลื่อนความเร็วเมื่อเปรียบเทียบวิดีโอ</value>
+  </data>
+  <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve">
+    <value>อัปเดตรูปภาพระหว่างการเคลื่อนไหวของเคอร์เซอร์เวลา</value>
+  </data>
+  <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve">
+    <value>deinterlace เสมอเมื่อเปิดวิดีโอใหม่</value>
+  </data>
+  <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve">
+    <value>นำเข้าลำดับภาพเป็นวิดีโอ</value>
+  </data>
+  <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve">
+    <value>มองเห็นได้สำหรับวิดีโอทั้งหมด</value>
+  </data>
+  <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve">
+    <value>ความทึบเริ่มต้นของภาพวาดใหม่:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve">
+    <value>เปิดใช้งานโหมดดีบักเครื่องมือที่กำหนดเอง</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve">
+    <value>เปิดใช้งานการกรองพิกัด</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve">
+    <value>แสดงภาพวาดขณะเล่นวิดีโอ</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
+    <value>คำสั่งบันทึกโพสต์:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
+    <value>เวลาว่าง (s):</value>
+  </data>
 </root>

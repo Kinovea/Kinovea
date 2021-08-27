@@ -442,4 +442,61 @@
   <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve">
     <value>รวม:{0:0} ภาพ</value>
   </data>
+  <data name="Generic_Open" xml:space="preserve">
+    <value>เปิด</value>
+  </data>
+  <data name="FormIconPicker_Title" xml:space="preserve">
+    <value>ไอคอน</value>
+  </data>
+  <data name="DrawingName_ArrowPolylineDash" xml:space="preserve">
+    <value>Arrow – เส้นประ</value>
+  </data>
+  <data name="DrawingName_ArrowPolyline" xml:space="preserve">
+    <value>ลูกศร – Polyline</value>
+  </data>
+  <data name="DrawingName_ArrowCurve" xml:space="preserve">
+    <value>ลูกศร – เส้นโค้ง</value>
+  </data>
+  <data name="DrawingName_ArrowSquiggly" xml:space="preserve">
+    <value>ลูกศร - Squiggly</value>
+  </data>
+  <data name="DrawingName_ArrowDash" xml:space="preserve">
+    <value>ลูกศร –Dash</value>
+  </data>
+  <data name="DrawingName_Arrow" xml:space="preserve">
+    <value>ลูกศร</value>
+  </data>
+  <data name="dlgCameraCalibration_lblFocalLength" xml:space="preserve">
+    <value>ความยาวโฟกัส (มม.):</value>
+  </data>
+  <data name="dlgCameraCalibration_lblSensorWidth" xml:space="preserve">
+    <value>ความกว้างเซนเซอร์ (มม.):</value>
+  </data>
+  <data name="dlgCameraCalibration_SaveDialogTitle" xml:space="preserve">
+    <value>บันทึกโปรไฟล์การปรับเทียบกล้อง</value>
+  </data>
+  <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
+    <value>โหลดโปรไฟล์การปรับเทียบกล้อง</value>
+  </data>
+  <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve">
+    <value>คำอธิบายประกอบจะปรากฏในผู้เล่นทุกคนแต่ไม่สามารถแก้ไขได้#ความคิดเห็นเพิ่มเติมที่แนบมากับรูปภาพหลักจะไม่ถูกบันทึก</value>
+  </data>
+  <data name="ExtraData_Center" xml:space="preserve">
+    <value>ศูนย์กลาง</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
+    <value>การกระจัดเชิงมุม</value>
+  </data>
+  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
+    <value>ข้าม</value>
+  </data>
+  <data name="DataAnalysis_AngleAngleDiagrams" xml:space="preserve">
+    <value>แผนภาพมุม-มุม</value>
+  </data>
+  <data name="Generic_Save" xml:space="preserve">
+    <value>บันทึก</value>
+  </data>
+  <data name="Generic_Quit" xml:space="preserve">
+    <value>ล้มเลิก</value>
+  </data>
 </root>
