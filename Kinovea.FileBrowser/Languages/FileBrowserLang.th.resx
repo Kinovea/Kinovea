@@ -67,4 +67,55 @@
   <data name="lblFolders" xml:space="preserve">
     <value>โฟลเดอร์</value>
   </data>
+  <data name="FormCameraWizard_Create" xml:space="preserve">
+    <value>สร้างกล้อง</value>
+  </data>
+  <data name="FormCameraWizard_Test" xml:space="preserve">
+    <value>ทดสอบ</value>
+  </data>
+  <data name="FormCameraWizard_Parameters" xml:space="preserve">
+    <value>พารามิเตอร์</value>
+  </data>
+  <data name="FormCameraWizard_CameraType" xml:space="preserve">
+    <value>ประเภทกล้อง</value>
+  </data>
+  <data name="FormCameraWizard_Title" xml:space="preserve">
+    <value>การเชื่อมต่อด้วยตนเอง</value>
+  </data>
+  <data name="tabShortcuts" xml:space="preserve">
+    <value>ทางลัด</value>
+  </data>
+  <data name="tabExplorer" xml:space="preserve">
+    <value>สำรวจ</value>
+  </data>
+  <data name="Generic_Open" xml:space="preserve">
+    <value>เปิด</value>
+  </data>
+  <data name="ForgetCustomSettings" xml:space="preserve">
+    <value>ลืมการตั้งค่าแบบกำหนดเอง</value>
+  </data>
+  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
+    <value>เปิดเป็นผู้สังเกตการณ์โฟลเดอร์เล่นซ้ำ</value>
+  </data>
+  <data name="mnuVideoDelete" xml:space="preserve">
+    <value>ลบไฟล์</value>
+  </data>
+  <data name="mnuVideoLocate" xml:space="preserve">
+    <value>ค้นหาใน Windows Explorer </value>
+  </data>
+  <data name="mnuDeleteShortcut" xml:space="preserve">
+    <value>ลบทางลัด</value>
+  </data>
+  <data name="mnuAddToShortcuts" xml:space="preserve">
+    <value>เพิ่มไปยังทางลัด</value>
+  </data>
+  <data name="mnuAddShortcut" xml:space="preserve">
+    <value>เพิ่มทางลัด</value>
+  </data>
+  <data name="lblCameras" xml:space="preserve">
+    <value>กล้อง</value>
+  </data>
+  <data name="lblCaptureHistory" xml:space="preserve">
+    <value>บันทึกประวัติศาสตร์</value>
+  </data>
 </root>
