@@ -70,7 +70,7 @@
   </data>
   <data name="mnuAddShortcut" xml:space="preserve"><value>Favoriten hinzufügen</value>
   </data>
-  <data name="mnuAddToShortcuts" xml:space="preserve"><value>zu Favoriten hinzufügen</value>
+  <data name="mnuAddToShortcuts" xml:space="preserve"><value>Zu Favoriten hinzufügen</value>
   </data>
   <data name="mnuDeleteShortcut" xml:space="preserve"><value>Favoriten löschen</value>
   </data>
@@ -81,6 +81,36 @@
   <data name="tabShortcuts" xml:space="preserve"><value>Favoriten</value>
   </data>
   <data name="lblCameras" xml:space="preserve">
-    <value>Kamera</value>
+    <value>Kameras</value>
+  </data>
+  <data name="FormCameraWizard_Create" xml:space="preserve">
+    <value>Kamera erstellen</value>
+  </data>
+  <data name="FormCameraWizard_Test" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="FormCameraWizard_Parameters" xml:space="preserve">
+    <value>Parameter</value>
+  </data>
+  <data name="FormCameraWizard_CameraType" xml:space="preserve">
+    <value>Kameratyp</value>
+  </data>
+  <data name="FormCameraWizard_Title" xml:space="preserve">
+    <value>Manuell verbinden</value>
+  </data>
+  <data name="Generic_Open" xml:space="preserve">
+    <value>Öffnen</value>
+  </data>
+  <data name="ForgetCustomSettings" xml:space="preserve">
+    <value>Benutzereinstellungen löschen</value>
+  </data>
+  <data name="mnuVideoDelete" xml:space="preserve">
+    <value>Datei löschen</value>
+  </data>
+  <data name="mnuVideoLocate" xml:space="preserve">
+    <value>In Windows Explorer öffnen </value>
+  </data>
+  <data name="lblCaptureHistory" xml:space="preserve">
+    <value>Aufnahmeverlauf</value>
   </data>
 </root>
