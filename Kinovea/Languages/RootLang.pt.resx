@@ -419,10 +419,10 @@
     <value>Raiz:</value>
   </data>
   <data name="dlgPreferences_Capture_Right" xml:space="preserve">
-    <value>Direito</value>
+    <value>Direita</value>
   </data>
   <data name="dlgPreferences_Capture_Left" xml:space="preserve">
-    <value>Esquerdo</value>
+    <value>Esquerda</value>
   </data>
   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
     <value>Taxa de quadros do monitor (fps):</value>
