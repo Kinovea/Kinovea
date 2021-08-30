@@ -80,4 +80,40 @@
   </data>
   <data name="tabShortcuts" xml:space="preserve"><value>Atalhos</value>
   </data>
+  <data name="FormCameraWizard_Create" xml:space="preserve">
+    <value>Criar câmera</value>
+  </data>
+  <data name="FormCameraWizard_Test" xml:space="preserve">
+    <value>Teste</value>
+  </data>
+  <data name="FormCameraWizard_Parameters" xml:space="preserve">
+    <value>Parâmetros</value>
+  </data>
+  <data name="FormCameraWizard_CameraType" xml:space="preserve">
+    <value>Tipo de câmera</value>
+  </data>
+  <data name="FormCameraWizard_Title" xml:space="preserve">
+    <value>Conexão manual</value>
+  </data>
+  <data name="Generic_Open" xml:space="preserve">
+    <value>Abrir</value>
+  </data>
+  <data name="ForgetCustomSettings" xml:space="preserve">
+    <value>Esqueçer as configurações personalizadas</value>
+  </data>
+  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
+    <value>Abrir como um observador da pasta de reprodução</value>
+  </data>
+  <data name="mnuVideoDelete" xml:space="preserve">
+    <value>Apagar arquivo</value>
+  </data>
+  <data name="mnuVideoLocate" xml:space="preserve">
+    <value>Encontre no Windows Explorer </value>
+  </data>
+  <data name="lblCameras" xml:space="preserve">
+    <value>Câmeras</value>
+  </data>
+  <data name="lblCaptureHistory" xml:space="preserve">
+    <value>Histórico de captura</value>
+  </data>
 </root>
