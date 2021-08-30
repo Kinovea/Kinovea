@@ -96,9 +96,9 @@
   </data>
   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Sempre desentrelaçar ao abrir um novo vídeo</value>
   </data>
-  <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Mudar para o Módulo de Análise</value>
+  <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Mudar para o modo de Análise</value>
   </data>
-  <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Quantidade de ficheiros no histórico:</value>
+  <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Quantidade de arquivos no histórico:</value>
   </data>
   <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Formato padrão de imagem:</value>
   </data>
@@ -106,11 +106,11 @@
   </data>
   <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>E</value>
   </data>
-  <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Por padrão os desenhos permanecerão {0} imagens ao redor do Quadro de Imagem.</value>
+  <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Por padrão, os desenhos permanecerão visíveis por {0} imagens ao redor da Imagem Principal.</value>
   </data>
   <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Metros por segundo ({0})</value>
   </data>
-  <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Kilomêtros por hora ({0})</value>
+  <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Quilômetros por hora ({0})</value>
   </data>
   <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Pés por segundo ({0})</value>
   </data>
@@ -118,7 +118,7 @@
   </data>
   <data name="dlgPreferences_Title" xml:space="preserve"><value>Preferências</value>
   </data>
-  <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>A carregar a interface de utilizador…</value>
+  <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Carregando a interface de usuário…</value>
   </data>
   <data name="Generic_Cancel" xml:space="preserve"><value>Cancelar</value>
   </data>
@@ -128,7 +128,7 @@
   </data>
   <data name="mnuAbout" xml:space="preserve"><value>Sobre o Kinovea…</value>
   </data>
-  <data name="mnuApplicationFolder" xml:space="preserve"><value>Abrir pasta de log…</value>
+  <data name="mnuApplicationFolder" xml:space="preserve"><value>Abrir a pasta de registro…</value>
   </data>
   <data name="mnuEdit" xml:space="preserve"><value>Editar</value>
   </data>
@@ -146,7 +146,7 @@
   </data>
   <data name="mnuLanguages" xml:space="preserve"><value>Idioma</value>
   </data>
-  <data name="mnuVideo" xml:space="preserve"><value>Video</value>
+  <data name="mnuVideo" xml:space="preserve"><value>Vídeo</value>
   </data>
   <data name="mnuOptions" xml:space="preserve"><value>Opções</value>
   </data>
@@ -164,7 +164,7 @@
   </data>
   <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Centésimos de minuto</value>
   </data>
-  <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Dez milésimos de uma hora</value>
+  <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Dez milésimos de hora</value>
   </data>
   <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve">
     <value>Permite múltiplas instâncias do Kinovea</value>
@@ -174,5 +174,266 @@
   </data>
   <data name="dlgAbout_Translation" xml:space="preserve">
     <value>Tradução</value>
+  </data>
+  <data name="TimeCodeFormat_Microseconds" xml:space="preserve">
+    <value>Total em microssegundos</value>
+  </data>
+  <data name="mnuWorkspaceExport" xml:space="preserve">
+    <value>Exportar área de trabalho</value>
+  </data>
+  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
+    <value>Salvar como área de trabalho padrão</value>
+  </data>
+  <data name="mnuWorkspace" xml:space="preserve">
+    <value>Área de trabalho</value>
+  </data>
+  <data name="mnuTools" xml:space="preserve">
+    <value>Ferramentas</value>
+  </data>
+  <data name="mnuFullScreen" xml:space="preserve">
+    <value>Tela cheia</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve">
+    <value>Padrão</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnClear" xml:space="preserve">
+    <value>Limpar</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnApply" xml:space="preserve">
+    <value>Aplicar</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblHotkey" xml:space="preserve">
+    <value>Tecla de atalho para {0}.{1}</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblCommands" xml:space="preserve">
+    <value>Comandos</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
+    <value>Categorias</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
+    <value>Pixels</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
+    <value>Porcentagem</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
+    <value>Janela de pesquisa:</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
+    <value>Janela do objeto:</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
+    <value>Parâmetros de rastreamento padrão</value>
+  </data>
+  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
+    <value>Rastreamento</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
+    <value>Unidade de comprimento personalizada :</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadiansPerSecondSquared" xml:space="preserve">
+    <value>Radianos por segundo ao quadrado ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegreesPerSecondSquared" xml:space="preserve">
+    <value>Graus por segundo ao quadrado ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRevolutionsPerMinute" xml:space="preserve">
+    <value>Rotações por minuto ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadiansPerSecond" xml:space="preserve">
+    <value>Radianos por segundo ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegreesPerSecond" xml:space="preserve">
+    <value>Graus por segundo ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadians" xml:space="preserve">
+    <value>Radianos ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegrees" xml:space="preserve">
+    <value>Graus ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsFeetPerSecondSquared" xml:space="preserve">
+    <value>Pés por segundo ao quadrado ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsMetersPerSecondSquared" xml:space="preserve">
+    <value>Metros por segundo ao quadrado ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngularAcceleration" xml:space="preserve">
+    <value>Aceleração angular:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngularVelocity" xml:space="preserve">
+    <value>Velocidade angular:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngle" xml:space="preserve">
+    <value>Ângulo:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAcceleration" xml:space="preserve">
+    <value>Aceleração:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsSpeed" xml:space="preserve">
+    <value>Velocidade:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitTime" xml:space="preserve">
+    <value>Tempo:</value>
+  </data>
+  <data name="mnuTimeFormat" xml:space="preserve">
+    <value>Tempo</value>
+  </data>
+  <data name="dlgPreferences_Player_tabUnits" xml:space="preserve">
+    <value>Unidades</value>
+  </data>
+  <data name="dlgPreferences_Player_lblMemory" xml:space="preserve">
+    <value>Memória Cache alocada para cada tela de reprodução: {0} MB.</value>
+  </data>
+  <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve">
+    <value>As instâncias têm suas próprias preferências</value>
+  </data>
+  <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
+    <value>Arquivo de anotação padrão:</value>
+  </data>
+  <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve">
+    <value>Ligue as barras de velocidade ao comparar os vídeos</value>
+  </data>
+  <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve">
+    <value>Atualizar a imagem durante o movimento do cursor</value>
+  </data>
+  <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve">
+    <value>Importar as sequências de imagens como vídeos</value>
+  </data>
+  <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve">
+    <value>Visível por todo o vídeo</value>
+  </data>
+  <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve">
+    <value>Opacidade padrão dos novos desenhos:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve">
+    <value>Ativar modo de depuração das ferramentas personalizadas</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve">
+    <value>Habilitar a filtragem de coordenadas</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
+    <value>Comando de pós-gravação:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
+    <value>Tempo de inatividade (s):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
+    <value>Parar de gravar por determinado tempo (s):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
+    <value>Limite de disparo:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve">
+    <value>Dispositivo de entrada:</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkEnableAudioTrigger" xml:space="preserve">
+    <value>Habilitar o acionador de áudio</value>
+  </data>
+  <data name="dlgPreferences_Capture_tabAutomation" xml:space="preserve">
+    <value>Automação</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve">
+    <value>Substituição da taxa de quadros (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve">
+    <value>Limite de substituição da taxa de quadros (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
+    <value>Câmeras de alta velocidade</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
+    <value>Ignorar o aviso de sobrescrever o arquivo</value>
+  </data>
+  <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
+    <value>Macro</value>
+  </data>
+  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
+    <value>Contexto</value>
+  </data>
+  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
+    <value>Variáveis de contexto</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
+    <value>Data e horário (YYYYMMDD-HHMMSS)</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
+    <value>Horário (HHMMSS)</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
+    <value>Data (YYYYMMDD)</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
+    <value>Nome do arquivo capturado</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
+    <value>Diretório de captura</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
+    <value>Sequência de escape</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
+    <value>Taxa de quadros recebida</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
+    <value>Taxa de quadros configurada</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
+    <value>Apelido da câmera</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
+    <value>Retroativo: grava quadros quando a captura é interrompida.</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
+    <value>Câmera: grava quadros em tempo real.</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve">
+    <value>Atrasado: grava quadros com atraso.</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve">
+    <value>Modo de gravação e atraso</value>
+  </data>
+  <data name="dlgPreferences_Capture_Recording" xml:space="preserve">
+    <value>Gravação</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve">
+    <value>Gravar vídeo descompactado</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve">
+    <value>Formato de vídeo descompactado:</value>
+  </data>
+  <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve">
+    <value>Nomear vídeo</value>
+  </data>
+  <data name="dlgPreferences_Capture_ImageNaming" xml:space="preserve">
+    <value>Nomear imagem</value>
+  </data>
+  <data name="dlgPreferences_Capture_File" xml:space="preserve">
+    <value>Arquivo:</value>
+  </data>
+  <data name="dlgPreferences_Capture_Subdir" xml:space="preserve">
+    <value>Sub-diretório:</value>
+  </data>
+  <data name="dlgPreferences_Capture_Root" xml:space="preserve">
+    <value>Raiz:</value>
+  </data>
+  <data name="dlgPreferences_Capture_Right" xml:space="preserve">
+    <value>Direito</value>
+  </data>
+  <data name="dlgPreferences_Capture_Left" xml:space="preserve">
+    <value>Esquerdo</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
+    <value>Taxa de quadros do monitor (fps):</value>
+  </data>
+  <data name="dlgPreferences_tabKeyboard" xml:space="preserve">
+    <value>Teclado</value>
+  </data>
+  <data name="dlgAbout_Citation" xml:space="preserve">
+    <value>Citação</value>
+  </data>
+  <data name="dlgAbout_BuildingBlocks" xml:space="preserve">
+    <value>Blocos de construção</value>
   </data>
 </root>
