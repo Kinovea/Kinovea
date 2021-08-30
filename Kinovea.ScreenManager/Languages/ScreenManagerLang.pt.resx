@@ -74,7 +74,7 @@
   </data>
   <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Voltar ao Quadro Anterior de Ambos os Vídeos</value>
   </data>
-  <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Reproduzir | Pausar Ambos os Videos</value>
+  <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Reproduzir ou Pausar Ambos os Videos</value>
   </data>
   <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Adicionar Desenho</value>
   </data>
@@ -444,7 +444,7 @@
     <value>Taxa de quadros lida no arquivo: {0:0.##} qps</value>
   </data>
   <data name="dlgTimebase_InfoCapture" xml:space="preserve">
-    <value>Essa opção define a diferença entre a velocidade do video e o tempo real. Ela impacta nos rótulos contendo o tempo e medidas cinemáticas. Use quando o video foi filmado em modo de Alta Velocidade. </value>
+    <value>Essa opção define a diferença entre a velocidade do video e o tempo real. Ela impacta os rótulos que contém tempo e medidas cinemáticas. Use quando o video for filmado em modo de Alta Velocidade. </value>
   </data>
   <data name="dlgTimebase_lblCapture" xml:space="preserve">
     <value>Taxa de Quadros para Captura:</value>
@@ -1069,5 +1069,26 @@
   </data>
   <data name="DataAnalysis_PagePlot" xml:space="preserve">
     <value>Gráfico</value>
+  </data>
+  <data name="Infobar_Player_StartWatcher" xml:space="preserve">
+    <value>Começar a observar a pasta: {0}</value>
+  </data>
+  <data name="Infobar_Player_StopWatcher" xml:space="preserve">
+    <value>Parar de observar a pasta : {0}</value>
+  </data>
+  <data name="Infobar_Player_Observing" xml:space="preserve">
+    <value>Observando pasta: {0}</value>
+  </data>
+  <data name="FormCrashRecovery_Info" xml:space="preserve">
+    <value>Os seguintes projetos não foram salvos corretamente, mas podem ser recuperados:</value>
+  </data>
+  <data name="FormCrashRecovery_Date" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="FormCrashRecovery_File" xml:space="preserve">
+    <value>Arquivo</value>
+  </data>
+  <data name="FormCrashRecovery_Recover" xml:space="preserve">
+    <value>Recuperar</value>
   </data>
 </root>
