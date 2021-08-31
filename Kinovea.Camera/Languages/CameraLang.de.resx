@@ -108,7 +108,7 @@
     <value>Bei der Anzeige der Geräteeigenschaften für {0} ist ein Fehler aufgetreten.</value>
   </data>
   <data name="FormConfiguration_DevicePropertyPages" xml:space="preserve">
-    <value>Geräteigenschaften</value>
+    <value>Geräteeigenschaften</value>
   </data>
   <data name="FormConfiguration_Auto" xml:space="preserve">
     <value>Automatisch</value>
@@ -129,7 +129,7 @@
     <value>Fokus:</value>
   </data>
   <data name="FormConfiguration_Properties_Framerate" xml:space="preserve">
-    <value>Bildwiederholrate:</value>
+    <value>Bildrate:</value>
   </data>
   <data name="FormConfiguration_Properties_ImageHeight" xml:space="preserve">
     <value>Höhe:</value>
