@@ -68,11 +68,11 @@
   </data>
   <data name="lblVideoFiles" xml:space="preserve"><value>Video-Dateien</value>
   </data>
-  <data name="mnuAddShortcut" xml:space="preserve"><value>Favoriten hinzufügen</value>
+  <data name="mnuAddShortcut" xml:space="preserve"><value>Favorit hinzufügen</value>
   </data>
   <data name="mnuAddToShortcuts" xml:space="preserve"><value>Zu Favoriten hinzufügen</value>
   </data>
-  <data name="mnuDeleteShortcut" xml:space="preserve"><value>Favoriten löschen</value>
+  <data name="mnuDeleteShortcut" xml:space="preserve"><value>Favorit löschen</value>
   </data>
   <data name="Generic_Cancel" xml:space="preserve"><value>Abbrechen</value>
   </data>
@@ -102,15 +102,18 @@
     <value>Öffnen</value>
   </data>
   <data name="ForgetCustomSettings" xml:space="preserve">
-    <value>Benutzereinstellungen löschen</value>
+    <value>Benutzerdefinierte Einstellungen löschen</value>
   </data>
   <data name="mnuVideoDelete" xml:space="preserve">
     <value>Datei löschen</value>
   </data>
   <data name="mnuVideoLocate" xml:space="preserve">
-    <value>In Windows Explorer öffnen </value>
+    <value>In Windows-Explorer öffnen </value>
   </data>
   <data name="lblCaptureHistory" xml:space="preserve">
     <value>Aufnahmeverlauf</value>
+  </data>
+  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
+    <value>Als Wiedergabeordner-Beobachter öffnen</value>
   </data>
 </root>
