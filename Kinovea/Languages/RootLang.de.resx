@@ -242,7 +242,7 @@
     <value>Wurzelverzeichnis:</value>
   </data>
   <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
-    <value>Erhaltene Bildrate</value>
+    <value>Empfangene Bildfrequenz</value>
   </data>
   <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
     <value>Escape-Sequenz</value>
