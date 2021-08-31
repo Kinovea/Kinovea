@@ -94,7 +94,7 @@
   </data>
   <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Zeichenelemente während Wiedergabe anzeigen</value>
   </data>
-  <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Beim Öffnen eines neuen Videos Deinterlace verwenden</value>
+  <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Beim Öffnen neuer Videos Deinterlace verwenden</value>
   </data>
   <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Wechseln zum Analyse-Modus</value>
   </data>
@@ -254,22 +254,22 @@
     <value>Aufnahmeverzeichnis</value>
   </data>
   <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
-    <value>Kamera-Alias</value>
+    <value>Kamera-Name</value>
   </data>
   <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
     <value>Trigger-Schwellenwert:</value>
   </data>
   <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
-    <value>Aufnahme nach Zeit stoppen (s):</value>
+    <value>Aufnahme nach dieser Zeit stoppen (s):</value>
   </data>
   <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve">
     <value>Ersatzbildwiedergaberate (fps):</value>
   </data>
   <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve">
-    <value>Schwellenwert für Ersatzbildwiedergaberate (fps):</value>
+    <value>Schwellenwert für Ersatzrate (fps):</value>
   </data>
   <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
-    <value>Kommando nach der Aufnahme:</value>
+    <value>Nach der Aufnahme folgenden Befehl ausführen:</value>
   </data>
   <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve">
     <value>Aufnahmegerät:</value>
@@ -290,7 +290,7 @@
     <value>Instanzen haben unabhängige Einstellungen</value>
   </data>
   <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve">
-    <value>Während des gesamten Videos sichtbar</value>
+    <value>Sichtbar während des gesamten Videos</value>
   </data>
   <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve">
     <value>Standard-Opazität für neue Zeichenelemente:</value>
@@ -311,6 +311,129 @@
     <value>Zitat</value>
   </data>
   <data name="dlgAbout_BuildingBlocks" xml:space="preserve">
-    <value>Bausteine</value>
+    <value>Programmbausteine</value>
+  </data>
+  <data name="TimeCodeFormat_Microseconds" xml:space="preserve">
+    <value>Millisekunden gesamt</value>
+  </data>
+  <data name="mnuWorkspaceExport" xml:space="preserve">
+    <value>Arbeitsbereich exportieren</value>
+  </data>
+  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
+    <value>Als Standard-Arbeitsbereich speichern</value>
+  </data>
+  <data name="mnuWorkspace" xml:space="preserve">
+    <value>Arbeitsbereich</value>
+  </data>
+  <data name="mnuTools" xml:space="preserve">
+    <value>Werkzeuge</value>
+  </data>
+  <data name="mnuFullScreen" xml:space="preserve">
+    <value>Vollbildschirm</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve">
+    <value>Vorgabe</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnClear" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnApply" xml:space="preserve">
+    <value>Anwenden</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblHotkey" xml:space="preserve">
+    <value>Tastenkombination für {0}.{1}</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblCommands" xml:space="preserve">
+    <value>Befehle</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
+    <value>Kategorien</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
+    <value>Pixel</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
+    <value>Prozent</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
+    <value>Suchfenster:</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
+    <value>Objektfenster:</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
+    <value>Standard-Tracking-Parameter</value>
+  </data>
+  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
+    <value>Tracking</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
+    <value>Benutzerdefinierte Längeneinheit :</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadiansPerSecondSquared" xml:space="preserve">
+    <value>Radiant pro Quadratsekunde ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegreesPerSecondSquared" xml:space="preserve">
+    <value>Grad pro Quadratsekunde ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRevolutionsPerMinute" xml:space="preserve">
+    <value>Umdrehungen pro Minute ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadiansPerSecond" xml:space="preserve">
+    <value>Radiant pro Sekunde ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegreesPerSecond" xml:space="preserve">
+    <value>Grad pro Sekunde ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadians" xml:space="preserve">
+    <value>Radiant ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegrees" xml:space="preserve">
+    <value>Grad ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsFeetPerSecondSquared" xml:space="preserve">
+    <value>Fuss pro Quadratsekunde ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsMetersPerSecondSquared" xml:space="preserve">
+    <value>Meter pro Quadratsekunde ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngularAcceleration" xml:space="preserve">
+    <value>Winkelbeschleunigung:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngularVelocity" xml:space="preserve">
+    <value>Winkelgeschwindigkeit:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngle" xml:space="preserve">
+    <value>Winkel:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAcceleration" xml:space="preserve">
+    <value>Beschleunigung:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsSpeed" xml:space="preserve">
+    <value>Geschwindigkeit:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitTime" xml:space="preserve">
+    <value>Zeit:</value>
+  </data>
+  <data name="mnuTimeFormat" xml:space="preserve">
+    <value>Zeit</value>
+  </data>
+  <data name="dlgPreferences_Player_tabUnits" xml:space="preserve">
+    <value>Einheiten</value>
+  </data>
+  <data name="dlgPreferences_Player_lblMemory" xml:space="preserve">
+    <value>Cache-Speicher, der jedem Wiedergabebildschirm zugewiesen ist: {0} MB.</value>
+  </data>
+  <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
+    <value>Standarddatei für Anmerkungen:</value>
+  </data>
+  <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve">
+    <value>Geschwindigkeitsregler beim Vergleichen von Videos miteinander koppeln</value>
+  </data>
+  <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve">
+    <value>Beim Bewegen des Zeitcursors die Bildwiedergabe fortsetzen</value>
+  </data>
+  <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve">
+    <value>Bild-Sequenzen als Videos importieren</value>
   </data>
 </root>
