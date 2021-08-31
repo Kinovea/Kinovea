@@ -66,7 +66,7 @@
   </resheader>
   <data name="dlgPreferences_tabCapture" xml:space="preserve"><value>Aufnahme</value>
   </data>
-  <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>Zeichenelemente</value>
+  <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>Zeichnungen</value>
   </data>
   <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>Allgemein</value>
   </data>
@@ -92,15 +92,15 @@
   </data>
   <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Pufferspeicher für Aufnahme: {0} MB.</value>
   </data>
-  <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Zeichenelemente während Wiedergabe anzeigen</value>
+  <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Zeichenelemente während der Wiedergabe anzeigen</value>
   </data>
-  <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Beim Öffnen neuer Videos Deinterlace verwenden</value>
+  <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Deinterlace beim Öffnen neuer Videos verwenden</value>
   </data>
-  <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Wechseln zum Analyse-Modus</value>
+  <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Zum Analyse-Modus wechseln</value>
   </data>
   <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Anzahl der Dateien im Verlauf:</value>
   </data>
-  <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Standard Bildformat:</value>
+  <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Standard-Bildformat:</value>
   </data>
   <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Sprache:</value>
   </data>
@@ -112,13 +112,13 @@
   </data>
   <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Kilometer pro Stunde ({0})</value>
   </data>
-  <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Fuß pro Sekunde ({0})</value>
+  <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Fuss pro Sekunde ({0})</value>
   </data>
   <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Meilen pro Stunde ({0})</value>
   </data>
   <data name="dlgPreferences_Title" xml:space="preserve"><value>Einstellungen</value>
   </data>
-  <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Laden der Benutzeroberfläche…</value>
+  <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Benutzeroberfläche laden…</value>
   </data>
   <data name="Generic_Cancel" xml:space="preserve"><value>Abbrechen</value>
   </data>
@@ -128,7 +128,7 @@
   </data>
   <data name="mnuAbout" xml:space="preserve"><value>Über Kinovea…</value>
   </data>
-  <data name="mnuApplicationFolder" xml:space="preserve"><value>Log Ordner öffnen…</value>
+  <data name="mnuApplicationFolder" xml:space="preserve"><value>Log-Ordner öffnen…</value>
   </data>
   <data name="mnuEdit" xml:space="preserve"><value>Bearbeiten</value>
   </data>
@@ -136,7 +136,7 @@
   </data>
   <data name="mnuHelp" xml:space="preserve"><value>Hilfe</value>
   </data>
-  <data name="mnuHelpContents" xml:space="preserve"><value>Kinovea Hilfe...</value>
+  <data name="mnuHelpContents" xml:space="preserve"><value>Kinovea-Hilfe...</value>
   </data>
   <data name="mnuHistory" xml:space="preserve"><value>Zuletzt verwendet</value>
   </data>
@@ -144,7 +144,7 @@
   </data>
   <data name="mnuImage" xml:space="preserve"><value>Bild</value>
   </data>
-  <data name="mnuLanguages" xml:space="preserve"><value>Sprachen</value>
+  <data name="mnuLanguages" xml:space="preserve"><value>Sprache</value>
   </data>
   <data name="mnuVideo" xml:space="preserve"><value>Video</value>
   </data>
@@ -158,11 +158,11 @@
   </data>
   <data name="mnuRedo" xml:space="preserve"><value>Wiederholen</value>
   </data>
-  <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Framenummer</value>
+  <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Frame-Nummer</value>
   </data>
   <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Millisekunden</value>
   </data>
-  <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Hundertstelminuten</value>
+  <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Hundertstel einer Minute</value>
   </data>
   <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Zehntausendstel einer Stunde</value>
   </data>
@@ -197,7 +197,7 @@
     <value>Kamera: nimmt Bilder in Echtzeit auf.</value>
   </data>
   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
-    <value>Bildwiedergaberate der Anzeige (fps):</value>
+    <value>Bildwiederholrate der Anzeige (fps):</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve">
     <value>Aufnahmemodus und Verzögerung</value>
@@ -242,7 +242,7 @@
     <value>Wurzelverzeichnis:</value>
   </data>
   <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
-    <value>Empfangene Bildfrequenz</value>
+    <value>Empfangene Bildrate</value>
   </data>
   <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
     <value>Escape-Sequenz</value>
@@ -263,10 +263,10 @@
     <value>Aufnahme nach dieser Zeit stoppen (s):</value>
   </data>
   <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve">
-    <value>Ersatzbildwiedergaberate (fps):</value>
+    <value>Ersatzbildrate (fps):</value>
   </data>
   <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve">
-    <value>Schwellenwert für Ersatzrate (fps):</value>
+    <value>Schwellenwert für Ersatzbildrate (fps):</value>
   </data>
   <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
     <value>Nach der Aufnahme folgenden Befehl ausführen:</value>
@@ -281,7 +281,7 @@
     <value>Hochgeschwindigkeitskameras</value>
   </data>
   <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
-    <value>Warnung ignorieren, wenn Datei überschrieben wird</value>
+    <value>Warnung beim Überschreiben einer Datei ignorieren</value>
   </data>
   <data name="dlgPreferences_Capture_chkEnableAudioTrigger" xml:space="preserve">
     <value>Audio-Trigger aktivieren</value>
@@ -308,13 +308,13 @@
     <value>Rechts</value>
   </data>
   <data name="dlgAbout_Citation" xml:space="preserve">
-    <value>Zitat</value>
+    <value>Zitierung</value>
   </data>
   <data name="dlgAbout_BuildingBlocks" xml:space="preserve">
     <value>Programmbausteine</value>
   </data>
   <data name="TimeCodeFormat_Microseconds" xml:space="preserve">
-    <value>Millisekunden gesamt</value>
+    <value>Mikrosekunden</value>
   </data>
   <data name="mnuWorkspaceExport" xml:space="preserve">
     <value>Arbeitsbereich exportieren</value>
@@ -329,7 +329,7 @@
     <value>Werkzeuge</value>
   </data>
   <data name="mnuFullScreen" xml:space="preserve">
-    <value>Vollbildschirm</value>
+    <value>Vollbild</value>
   </data>
   <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve">
     <value>Vorgabe</value>
@@ -425,7 +425,7 @@
     <value>Cache-Speicher, der jedem Wiedergabebildschirm zugewiesen ist: {0} MB.</value>
   </data>
   <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
-    <value>Standarddatei für Anmerkungen:</value>
+    <value>Standard-Datei für Schlüsselbilddaten:</value>
   </data>
   <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve">
     <value>Geschwindigkeitsregler beim Vergleichen von Videos miteinander koppeln</value>
