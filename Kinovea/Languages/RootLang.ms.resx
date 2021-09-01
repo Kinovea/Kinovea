@@ -124,4 +124,10 @@
   <data name="dlgAbout_Translation" xml:space="preserve">
     <value>Terjemahan</value>
   </data>
+  <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve">
+    <value>Perakaman dan penangguhan</value>
+  </data>
+  <data name="dlgPreferences_Capture_Recording" xml:space="preserve">
+    <value>Rakaman</value>
+  </data>
 </root>
