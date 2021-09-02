@@ -90,7 +90,7 @@
   </data>
   <data name="dlgColorProfile_Title" xml:space="preserve"><value>Farbprofil...</value>
   </data>
-  <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Auf Standardfarbprofil zurücksetzen</value>
+  <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Auf Standard-Farbprofil zurücksetzen</value>
   </data>
   <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Farbprofil laden</value>
   </data>
@@ -216,7 +216,7 @@
   </data>
   <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Änderungen speichern</value>
   </data>
-  <data name="lblInfo_Text" xml:space="preserve"><value>Gemeinsame Steuerungen:</value>
+  <data name="lblInfo_Text" xml:space="preserve"><value>Gemeinsame Steuerungen :</value>
   </data>
   <data name="lblSelDuration_Text" xml:space="preserve"><value>Dauer</value>
   </data>
@@ -654,7 +654,7 @@
     <value>KVA-Datei</value>
   </data>
   <data name="FileProperty_CreationTime" xml:space="preserve">
-    <value>Erstellungszeitpunkt</value>
+    <value>Erstellzeitpunkt</value>
   </data>
   <data name="FileProperty_Duration" xml:space="preserve">
     <value>Dauer</value>
