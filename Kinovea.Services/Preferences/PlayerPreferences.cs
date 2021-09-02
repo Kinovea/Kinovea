@@ -144,6 +144,11 @@ namespace Kinovea.Services
             get { return enableFiltering; }
             set { enableFiltering = value; }
         }
+        public bool EnableHighSpeedDerivativesSmoothing
+        {
+            get { return enableHighSpeedDerivativesSmoothing; }
+            set { enableHighSpeedDerivativesSmoothing = value; }
+        }
         public bool EnableCustomToolsDebugMode
         {
             get { return enableCustomToolsDebugMode; }
@@ -195,6 +200,7 @@ namespace Kinovea.Services
         private KinoveaVideoFormat videoFormat = KinoveaVideoFormat.MKV;
         private TrackingProfile trackingProfile = new TrackingProfile();
         private bool enableFiltering = true;
+        private bool enableHighSpeedDerivativesSmoothing = true;
         private bool enableCustomToolsDebugMode = false;
         private float defaultReplaySpeed = 100;
         private bool detectImageSequences = true;

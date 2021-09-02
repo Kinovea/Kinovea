@@ -74,6 +74,7 @@ namespace Kinovea.Root
       this.label4 = new System.Windows.Forms.Label();
       this.tbBlockWidth = new System.Windows.Forms.TextBox();
       this.lblObjectWindow = new System.Windows.Forms.Label();
+      this.chkEnableHSDS = new System.Windows.Forms.CheckBox();
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
       this.tabPersistence.SuspendLayout();
@@ -97,6 +98,7 @@ namespace Kinovea.Root
       // 
       // tabGeneral
       // 
+      this.tabGeneral.Controls.Add(this.chkEnableHSDS);
       this.tabGeneral.Controls.Add(this.chkCustomToolsDebug);
       this.tabGeneral.Controls.Add(this.chkEnableFiltering);
       this.tabGeneral.Controls.Add(this.chkDrawOnPlay);
@@ -111,7 +113,7 @@ namespace Kinovea.Root
       // chkCustomToolsDebug
       // 
       this.chkCustomToolsDebug.AutoSize = true;
-      this.chkCustomToolsDebug.Location = new System.Drawing.Point(27, 95);
+      this.chkCustomToolsDebug.Location = new System.Drawing.Point(27, 128);
       this.chkCustomToolsDebug.Name = "chkCustomToolsDebug";
       this.chkCustomToolsDebug.Size = new System.Drawing.Size(148, 17);
       this.chkCustomToolsDebug.TabIndex = 54;
@@ -372,6 +374,17 @@ namespace Kinovea.Root
       this.lblObjectWindow.TabIndex = 56;
       this.lblObjectWindow.Text = "Object window :";
       // 
+      // chkEnableHSDS
+      // 
+      this.chkEnableHSDS.AutoSize = true;
+      this.chkEnableHSDS.Location = new System.Drawing.Point(27, 94);
+      this.chkEnableHSDS.Name = "chkEnableHSDS";
+      this.chkEnableHSDS.Size = new System.Drawing.Size(285, 17);
+      this.chkEnableHSDS.TabIndex = 55;
+      this.chkEnableHSDS.Text = "Enable smoothing of derivatives for high speed footage";
+      this.chkEnableHSDS.UseVisualStyleBackColor = true;
+      this.chkEnableHSDS.CheckedChanged += new System.EventHandler(this.chkEnableHSDS_CheckedChanged);
+      // 
       // PreferencePanelDrawings
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -418,5 +431,6 @@ namespace Kinovea.Root
         private System.Windows.Forms.Label lblOpaque;
         private System.Windows.Forms.Label lblFading;
         private System.Windows.Forms.Label lblMax;
+        private System.Windows.Forms.CheckBox chkEnableHSDS;
     }
 }

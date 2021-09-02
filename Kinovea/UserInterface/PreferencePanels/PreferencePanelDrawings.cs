@@ -59,6 +59,7 @@ namespace Kinovea.Root
         private InfosFading defaultFading;
         private bool drawOnPlay;
         private bool enableFiltering;
+        private bool enableHighSpeedDerivativesSmoothing;
         private bool enableCustomToolsDebug;
         private TrackingProfile trackingProfile;
         #endregion
@@ -93,6 +94,7 @@ namespace Kinovea.Root
         {
             drawOnPlay = PreferencesManager.PlayerPreferences.DrawOnPlay;
             enableFiltering = PreferencesManager.PlayerPreferences.EnableFiltering;
+            enableHighSpeedDerivativesSmoothing = PreferencesManager.PlayerPreferences.EnableHighSpeedDerivativesSmoothing;
             enableCustomToolsDebug = PreferencesManager.PlayerPreferences.EnableCustomToolsDebugMode;
             defaultFading = new InfosFading(0, 0);
             trackingProfile = PreferencesManager.PlayerPreferences.TrackingProfile;
@@ -108,10 +110,12 @@ namespace Kinovea.Root
             tabGeneral.Text = RootLang.dlgPreferences_tabGeneral;
             chkDrawOnPlay.Text = RootLang.dlgPreferences_Drawings_chkDrawOnPlay;
             chkEnableFiltering.Text = RootLang.dlgPreferences_Drawings_chkEnableFiltering;
+            //chkEnableHSDS.Text = ""
             chkCustomToolsDebug.Text = RootLang.dlgPreferences_Drawings_chkCustomToolsDebugMode;
 
             chkDrawOnPlay.Checked = drawOnPlay;
             chkEnableFiltering.Checked = enableFiltering;
+            chkEnableHSDS.Checked = enableHighSpeedDerivativesSmoothing;
             chkCustomToolsDebug.Checked = enableCustomToolsDebug;
         }
         private void InitPageOpacity()
@@ -159,6 +163,10 @@ namespace Kinovea.Root
         private void chkEnableFiltering_CheckedChanged(object sender, EventArgs e)
         {
             enableFiltering = chkEnableFiltering.Checked;
+        }
+        private void chkEnableHSDS_CheckedChanged(object sender, EventArgs e)
+        {
+            enableHighSpeedDerivativesSmoothing = chkEnableHSDS.Checked;
         }
         private void chkCustomToolsDebug_CheckedChanged(object sender, EventArgs e)
         {
@@ -254,6 +262,7 @@ namespace Kinovea.Root
         {
             PreferencesManager.PlayerPreferences.DrawOnPlay = drawOnPlay;
             PreferencesManager.PlayerPreferences.EnableFiltering = enableFiltering;
+            PreferencesManager.PlayerPreferences.EnableHighSpeedDerivativesSmoothing = enableHighSpeedDerivativesSmoothing;
             PreferencesManager.PlayerPreferences.EnableCustomToolsDebugMode = enableCustomToolsDebug;
             PreferencesManager.PlayerPreferences.DefaultFading.FromInfosFading(defaultFading);
             PreferencesManager.PlayerPreferences.TrackingProfile = trackingProfile;

@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -111,6 +112,9 @@ namespace Kinovea.ScreenManager
 
             PadVelocities(tsc);
 
+            if (!PreferencesManager.PlayerPreferences.EnableHighSpeedDerivativesSmoothing)
+                return;
+
             // Second pass: apply extra smoothing to the derivatives.
             // This is only applied for high speed videos where the digitization is very noisy 
             // due to the combination of increased time resolution and decreased spatial resolution.
@@ -153,6 +157,9 @@ namespace Kinovea.ScreenManager
 
             PadAccelerations(tsc);
 
+            if (!PreferencesManager.PlayerPreferences.EnableHighSpeedDerivativesSmoothing)
+                return;
+            
             // Second pass: extra smoothing derivatives.
             // This is only applied for high speed videos where the digitization is very noisy 
             // due to the combination of increased time resolution and decreased spatial resolution.
