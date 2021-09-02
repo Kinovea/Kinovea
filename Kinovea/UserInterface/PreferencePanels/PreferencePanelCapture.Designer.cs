@@ -122,7 +122,9 @@ namespace Kinovea.Root
       this.nudRecordingTime = new System.Windows.Forms.NumericUpDown();
       this.chkIgnoreOverwriteWarning = new System.Windows.Forms.CheckBox();
       this.gbAudioTrigger = new System.Windows.Forms.GroupBox();
+      this.nudQuietPeriod = new System.Windows.Forms.NumericUpDown();
       this.nudAudioTriggerThreshold = new System.Windows.Forms.NumericUpDown();
+      this.lblQuietPeriod = new System.Windows.Forms.Label();
       this.chkEnableAudioTrigger = new System.Windows.Forms.CheckBox();
       this.lblAudioTriggerThreshold = new System.Windows.Forms.Label();
       this.lblInputDevice = new System.Windows.Forms.Label();
@@ -133,8 +135,6 @@ namespace Kinovea.Root
       this.lblPostRecordCommand = new System.Windows.Forms.Label();
       this.tbPostRecordCommand = new System.Windows.Forms.TextBox();
       this.lblRecordingTime = new System.Windows.Forms.Label();
-      this.nudQuietPeriod = new System.Windows.Forms.NumericUpDown();
-      this.lblQuietPeriod = new System.Windows.Forms.Label();
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
       this.tabMemory.SuspendLayout();
@@ -153,8 +153,8 @@ namespace Kinovea.Root
       this.tabAutomation.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudRecordingTime)).BeginInit();
       this.gbAudioTrigger.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.nudAudioTriggerThreshold)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudQuietPeriod)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudAudioTriggerThreshold)).BeginInit();
       this.SuspendLayout();
       // 
       // tabSubPages
@@ -196,9 +196,10 @@ namespace Kinovea.Root
       // 
       // lblCaptureKVA
       // 
+      this.lblCaptureKVA.AutoSize = true;
       this.lblCaptureKVA.Location = new System.Drawing.Point(19, 204);
       this.lblCaptureKVA.Name = "lblCaptureKVA";
-      this.lblCaptureKVA.Size = new System.Drawing.Size(185, 18);
+      this.lblCaptureKVA.Size = new System.Drawing.Size(121, 13);
       this.lblCaptureKVA.TabIndex = 58;
       this.lblCaptureKVA.Text = "Default annotations file :";
       // 
@@ -566,9 +567,10 @@ namespace Kinovea.Root
       // 
       // lblRightImageFile
       // 
+      this.lblRightImageFile.AutoSize = true;
       this.lblRightImageFile.Location = new System.Drawing.Point(6, 68);
       this.lblRightImageFile.Name = "lblRightImageFile";
-      this.lblRightImageFile.Size = new System.Drawing.Size(103, 17);
+      this.lblRightImageFile.Size = new System.Drawing.Size(29, 13);
       this.lblRightImageFile.TabIndex = 45;
       this.lblRightImageFile.Text = "File :";
       // 
@@ -583,9 +585,10 @@ namespace Kinovea.Root
       // 
       // lblRightImageSubdir
       // 
+      this.lblRightImageSubdir.AutoSize = true;
       this.lblRightImageSubdir.Location = new System.Drawing.Point(6, 42);
       this.lblRightImageSubdir.Name = "lblRightImageSubdir";
-      this.lblRightImageSubdir.Size = new System.Drawing.Size(103, 17);
+      this.lblRightImageSubdir.Size = new System.Drawing.Size(75, 13);
       this.lblRightImageSubdir.TabIndex = 43;
       this.lblRightImageSubdir.Text = "Sub directory :";
       // 
@@ -600,9 +603,10 @@ namespace Kinovea.Root
       // 
       // lblRightImageRoot
       // 
+      this.lblRightImageRoot.AutoSize = true;
       this.lblRightImageRoot.Location = new System.Drawing.Point(6, 16);
       this.lblRightImageRoot.Name = "lblRightImageRoot";
-      this.lblRightImageRoot.Size = new System.Drawing.Size(58, 17);
+      this.lblRightImageRoot.Size = new System.Drawing.Size(36, 13);
       this.lblRightImageRoot.TabIndex = 38;
       this.lblRightImageRoot.Text = "Root :";
       // 
@@ -671,9 +675,10 @@ namespace Kinovea.Root
       // 
       // lblLeftImageFile
       // 
+      this.lblLeftImageFile.AutoSize = true;
       this.lblLeftImageFile.Location = new System.Drawing.Point(6, 68);
       this.lblLeftImageFile.Name = "lblLeftImageFile";
-      this.lblLeftImageFile.Size = new System.Drawing.Size(103, 17);
+      this.lblLeftImageFile.Size = new System.Drawing.Size(29, 13);
       this.lblLeftImageFile.TabIndex = 45;
       this.lblLeftImageFile.Text = "File :";
       // 
@@ -688,9 +693,10 @@ namespace Kinovea.Root
       // 
       // lblLeftImageSubdir
       // 
+      this.lblLeftImageSubdir.AutoSize = true;
       this.lblLeftImageSubdir.Location = new System.Drawing.Point(6, 42);
       this.lblLeftImageSubdir.Name = "lblLeftImageSubdir";
-      this.lblLeftImageSubdir.Size = new System.Drawing.Size(103, 17);
+      this.lblLeftImageSubdir.Size = new System.Drawing.Size(75, 13);
       this.lblLeftImageSubdir.TabIndex = 43;
       this.lblLeftImageSubdir.Text = "Sub directory :";
       // 
@@ -705,9 +711,10 @@ namespace Kinovea.Root
       // 
       // lblLeftImageRoot
       // 
+      this.lblLeftImageRoot.AutoSize = true;
       this.lblLeftImageRoot.Location = new System.Drawing.Point(6, 16);
       this.lblLeftImageRoot.Name = "lblLeftImageRoot";
-      this.lblLeftImageRoot.Size = new System.Drawing.Size(58, 17);
+      this.lblLeftImageRoot.Size = new System.Drawing.Size(36, 13);
       this.lblLeftImageRoot.TabIndex = 38;
       this.lblLeftImageRoot.Text = "Root :";
       // 
@@ -824,9 +831,10 @@ namespace Kinovea.Root
       // 
       // lblRightVideoFile
       // 
+      this.lblRightVideoFile.AutoSize = true;
       this.lblRightVideoFile.Location = new System.Drawing.Point(6, 68);
       this.lblRightVideoFile.Name = "lblRightVideoFile";
-      this.lblRightVideoFile.Size = new System.Drawing.Size(103, 17);
+      this.lblRightVideoFile.Size = new System.Drawing.Size(29, 13);
       this.lblRightVideoFile.TabIndex = 45;
       this.lblRightVideoFile.Text = "File :";
       // 
@@ -841,9 +849,10 @@ namespace Kinovea.Root
       // 
       // lblRightVideoSubdir
       // 
+      this.lblRightVideoSubdir.AutoSize = true;
       this.lblRightVideoSubdir.Location = new System.Drawing.Point(6, 42);
       this.lblRightVideoSubdir.Name = "lblRightVideoSubdir";
-      this.lblRightVideoSubdir.Size = new System.Drawing.Size(103, 17);
+      this.lblRightVideoSubdir.Size = new System.Drawing.Size(75, 13);
       this.lblRightVideoSubdir.TabIndex = 43;
       this.lblRightVideoSubdir.Text = "Sub directory :";
       // 
@@ -858,9 +867,10 @@ namespace Kinovea.Root
       // 
       // lblRightVideoRoot
       // 
+      this.lblRightVideoRoot.AutoSize = true;
       this.lblRightVideoRoot.Location = new System.Drawing.Point(6, 16);
       this.lblRightVideoRoot.Name = "lblRightVideoRoot";
-      this.lblRightVideoRoot.Size = new System.Drawing.Size(58, 17);
+      this.lblRightVideoRoot.Size = new System.Drawing.Size(36, 13);
       this.lblRightVideoRoot.TabIndex = 38;
       this.lblRightVideoRoot.Text = "Root :";
       // 
@@ -947,9 +957,10 @@ namespace Kinovea.Root
       // 
       // lblLeftVideoFile
       // 
+      this.lblLeftVideoFile.AutoSize = true;
       this.lblLeftVideoFile.Location = new System.Drawing.Point(6, 68);
       this.lblLeftVideoFile.Name = "lblLeftVideoFile";
-      this.lblLeftVideoFile.Size = new System.Drawing.Size(103, 17);
+      this.lblLeftVideoFile.Size = new System.Drawing.Size(29, 13);
       this.lblLeftVideoFile.TabIndex = 45;
       this.lblLeftVideoFile.Text = "File :";
       // 
@@ -964,9 +975,10 @@ namespace Kinovea.Root
       // 
       // lblLeftVideoSubdir
       // 
+      this.lblLeftVideoSubdir.AutoSize = true;
       this.lblLeftVideoSubdir.Location = new System.Drawing.Point(6, 42);
       this.lblLeftVideoSubdir.Name = "lblLeftVideoSubdir";
-      this.lblLeftVideoSubdir.Size = new System.Drawing.Size(103, 17);
+      this.lblLeftVideoSubdir.Size = new System.Drawing.Size(75, 13);
       this.lblLeftVideoSubdir.TabIndex = 43;
       this.lblLeftVideoSubdir.Text = "Sub directory :";
       // 
@@ -981,9 +993,10 @@ namespace Kinovea.Root
       // 
       // lblLeftVideoRoot
       // 
+      this.lblLeftVideoRoot.AutoSize = true;
       this.lblLeftVideoRoot.Location = new System.Drawing.Point(6, 16);
       this.lblLeftVideoRoot.Name = "lblLeftVideoRoot";
-      this.lblLeftVideoRoot.Size = new System.Drawing.Size(58, 17);
+      this.lblLeftVideoRoot.Size = new System.Drawing.Size(36, 13);
       this.lblLeftVideoRoot.TabIndex = 38;
       this.lblLeftVideoRoot.Text = "Root :";
       // 
@@ -1066,6 +1079,20 @@ namespace Kinovea.Root
       this.gbAudioTrigger.TabIndex = 55;
       this.gbAudioTrigger.TabStop = false;
       // 
+      // nudQuietPeriod
+      // 
+      this.nudQuietPeriod.DecimalPlaces = 1;
+      this.nudQuietPeriod.Location = new System.Drawing.Point(195, 113);
+      this.nudQuietPeriod.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+      this.nudQuietPeriod.Name = "nudQuietPeriod";
+      this.nudQuietPeriod.Size = new System.Drawing.Size(42, 20);
+      this.nudQuietPeriod.TabIndex = 59;
+      this.nudQuietPeriod.ValueChanged += new System.EventHandler(this.nudQuietPeriod_ValueChanged);
+      // 
       // nudAudioTriggerThreshold
       // 
       this.nudAudioTriggerThreshold.DecimalPlaces = 1;
@@ -1084,6 +1111,15 @@ namespace Kinovea.Root
             0,
             0});
       this.nudAudioTriggerThreshold.ValueChanged += new System.EventHandler(this.NudAudioTriggerThreshold_ValueChanged);
+      // 
+      // lblQuietPeriod
+      // 
+      this.lblQuietPeriod.AutoSize = true;
+      this.lblQuietPeriod.Location = new System.Drawing.Point(37, 115);
+      this.lblQuietPeriod.Name = "lblQuietPeriod";
+      this.lblQuietPeriod.Size = new System.Drawing.Size(84, 13);
+      this.lblQuietPeriod.TabIndex = 58;
+      this.lblQuietPeriod.Text = "Quiet period (s) :";
       // 
       // chkEnableAudioTrigger
       // 
@@ -1167,10 +1203,9 @@ namespace Kinovea.Root
       // 
       // lblPostRecordCommand
       // 
-      this.lblPostRecordCommand.AutoSize = true;
       this.lblPostRecordCommand.Location = new System.Drawing.Point(16, 207);
       this.lblPostRecordCommand.Name = "lblPostRecordCommand";
-      this.lblPostRecordCommand.Size = new System.Drawing.Size(127, 13);
+      this.lblPostRecordCommand.Size = new System.Drawing.Size(186, 42);
       this.lblPostRecordCommand.TabIndex = 52;
       this.lblPostRecordCommand.Text = "Post recording command:";
       // 
@@ -1190,29 +1225,6 @@ namespace Kinovea.Root
       this.lblRecordingTime.Size = new System.Drawing.Size(98, 13);
       this.lblRecordingTime.TabIndex = 43;
       this.lblRecordingTime.Text = "Recording time (s) :";
-      // 
-      // nudQuietPeriod
-      // 
-      this.nudQuietPeriod.DecimalPlaces = 1;
-      this.nudQuietPeriod.Location = new System.Drawing.Point(195, 113);
-      this.nudQuietPeriod.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-      this.nudQuietPeriod.Name = "nudQuietPeriod";
-      this.nudQuietPeriod.Size = new System.Drawing.Size(42, 20);
-      this.nudQuietPeriod.TabIndex = 59;
-      this.nudQuietPeriod.ValueChanged += new System.EventHandler(this.nudQuietPeriod_ValueChanged);
-      // 
-      // lblQuietPeriod
-      // 
-      this.lblQuietPeriod.AutoSize = true;
-      this.lblQuietPeriod.Location = new System.Drawing.Point(37, 115);
-      this.lblQuietPeriod.Name = "lblQuietPeriod";
-      this.lblQuietPeriod.Size = new System.Drawing.Size(84, 13);
-      this.lblQuietPeriod.TabIndex = 58;
-      this.lblQuietPeriod.Text = "Quiet period (s) :";
       // 
       // PreferencePanelCapture
       // 
@@ -1249,8 +1261,8 @@ namespace Kinovea.Root
       ((System.ComponentModel.ISupportInitialize)(this.nudRecordingTime)).EndInit();
       this.gbAudioTrigger.ResumeLayout(false);
       this.gbAudioTrigger.PerformLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.nudAudioTriggerThreshold)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudQuietPeriod)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudAudioTriggerThreshold)).EndInit();
       this.ResumeLayout(false);
 
 		}
