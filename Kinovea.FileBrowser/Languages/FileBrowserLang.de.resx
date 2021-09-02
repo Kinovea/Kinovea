@@ -114,6 +114,6 @@
     <value>Aufnahmeverlauf</value>
   </data>
   <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
-    <value>Als Wiedergabeordner-Beobachter öffnen</value>
+    <value>Als beobachteten Wiedergabeordner öffnen</value>
   </data>
 </root>

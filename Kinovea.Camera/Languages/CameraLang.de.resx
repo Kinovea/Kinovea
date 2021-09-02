@@ -99,7 +99,7 @@
     <value>Test</value>
   </data>
   <data name="FormConfiguration_ImportParameters" xml:space="preserve">
-    <value>Importparameter</value>
+    <value>Parameter importieren</value>
   </data>
   <data name="FormConfiguration_Reconnect" xml:space="preserve">
     <value>Wiederverbinden</value>
