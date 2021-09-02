@@ -66,7 +66,7 @@
   </resheader>
   <data name="dlgPreferences_tabCapture" xml:space="preserve"><value>Aufnahme</value>
   </data>
-  <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>Zeichenelemente</value>
+  <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>Zeichnungen</value>
   </data>
   <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>Allgemein</value>
   </data>
@@ -287,7 +287,7 @@
     <value>Audio-Trigger aktivieren</value>
   </data>
   <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve">
-    <value>Instanzen haben unabhängige Einstellungen</value>
+    <value>Instanzen haben voneinander unabhängige Einstellungen</value>
   </data>
   <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve">
     <value>Sichtbar während des gesamten Videos</value>
@@ -428,10 +428,10 @@
     <value>Standard-Datei für Annotationen:</value>
   </data>
   <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve">
-    <value>Geschwindigkeitsregler beim Vergleichen von Videos miteinander koppeln</value>
+    <value>Geschwindigkeitsregler beim Vergleichen von Videos koppeln</value>
   </data>
   <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve">
-    <value>Beim Bewegen des Zeitcursors die Bildwiedergabe fortsetzen</value>
+    <value>Beim Bewegen des Zeitcursors die Bildwiedergabe aktualisieren</value>
   </data>
   <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve">
     <value>Bild-Sequenzen als Videos importieren</value>
