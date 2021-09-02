@@ -330,7 +330,7 @@ namespace Kinovea.ScreenManager
                 series.Title = tspd.Label;
                 series.Color = OxyColor.FromArgb(tspd.Color.A, tspd.Color.R, tspd.Color.G, tspd.Color.B);
                 series.MarkerType = MarkerType.None;
-                series.Smooth = true;
+                series.Smooth = PreferencesManager.PlayerPreferences.EnableFiltering;
 
                 double[] points = tspd.TimeSeriesCollection[component];
                 long[] times = tspd.TimeSeriesCollection.Times;
