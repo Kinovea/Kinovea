@@ -50,16 +50,20 @@
     <!-- Stopwatches table -->
     <table>
         <tr>
-            <td class="chronos-title" colspan="2">Stopwatches</td>
+            <td class="chronos-title" colspan="4">Stopwatches</td>
         </tr>
         <tr>
                 <td class="header">Label</td>
                 <td class="header">Duration</td>
+                <td class="header">Start</td>
+                <td class="header">Stop</td>
     </tr>
         <xsl:for-each select="Chrono">
             <tr>
-                <td class="data left"><xsl:value-of select="Label/Text"/></td>
+                <td class="data left"><xsl:value-of select="@name"/></td>
                 <td class="data right"><xsl:value-of select="Values/UserDuration"/></td>
+                <td class="data right"><xsl:value-of select="Values/UserStart"/></td>
+                <td class="data right"><xsl:value-of select="Values/UserStop"/></td>
             </tr>
         </xsl:for-each>
     </table>

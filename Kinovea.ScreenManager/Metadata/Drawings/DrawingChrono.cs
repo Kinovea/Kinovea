@@ -317,10 +317,27 @@ namespace Kinovea.ScreenManager
                 if (ShouldSerializeAll(filter))
                 {
                     // Spreadsheet support
-                    string userDuration = "0";
                     if (!styleHelper.Clock && startCountingTimestamp != long.MaxValue && stopCountingTimestamp != long.MaxValue)
-                        userDuration = parentMetadata.TimeCodeBuilder(stopCountingTimestamp - startCountingTimestamp, TimeType.Absolute, TimecodeFormat.Unknown, false);
-                    w.WriteElementString("UserDuration", userDuration);
+                    {
+                        string userStart = parentMetadata.TimeCodeBuilder(startCountingTimestamp, TimeType.UserOrigin, TimecodeFormat.Unknown, false);
+                        string userStop = parentMetadata.TimeCodeBuilder(stopCountingTimestamp, TimeType.UserOrigin, TimecodeFormat.Unknown, false);
+                        string userDuration = parentMetadata.TimeCodeBuilder(stopCountingTimestamp - startCountingTimestamp, TimeType.Absolute, TimecodeFormat.Unknown, false);
+                        w.WriteElementString("UserStart", userStart);
+                        w.WriteElementString("UserStop", userStop);
+                        w.WriteElementString("UserDuration", userDuration);
+                    }
+                    else if (styleHelper.Clock)
+                    {
+                        // Non-customized clock.
+                        // For clocks using custom time origin return the time of that origin in the global time axis.
+                        string userStart = "0";
+                        if (clockOriginTimestamp == long.MaxValue)
+                            userStart = parentMetadata.TimeCodeBuilder(0, TimeType.Absolute, TimecodeFormat.Unknown, false);
+                        else
+                            userStart = parentMetadata.TimeCodeBuilder(clockOriginTimestamp, TimeType.UserOrigin, TimecodeFormat.Unknown, false);
+                        
+                        w.WriteElementString("UserStart", userStart);
+                    }
                 }
 
                 // </values>

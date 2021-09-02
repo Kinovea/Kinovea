@@ -58,16 +58,20 @@
   <xsl:call-template name="empty-row"/>
     
   <Row>
-    <Cell ss:MergeAcross="1" ss:StyleID="chronos-title"><Data ss:Type="String">Stopwatches</Data></Cell>
+    <Cell ss:MergeAcross="3" ss:StyleID="chronos-title"><Data ss:Type="String">Stopwatches</Data></Cell>
   </Row>  
   <Row>
     <Cell ss:StyleID="header"><Data ss:Type="String">Label</Data></Cell>
     <Cell ss:StyleID="header"><Data ss:Type="String">Duration</Data></Cell>
+    <Cell ss:StyleID="header"><Data ss:Type="String">Start</Data></Cell>
+    <Cell ss:StyleID="header"><Data ss:Type="String">Stop</Data></Cell>
   </Row>
   <xsl:for-each select="Chrono">
     <Row>
-      <Cell ss:StyleID="data"><Data ss:Type="String"><xsl:value-of select="Label/Text"/></Data></Cell>
+      <Cell ss:StyleID="data"><Data ss:Type="String"><xsl:value-of select="@name"/></Data></Cell>
       <Cell ss:StyleID="data"><Data ss:Type="String"><xsl:value-of select="Values/UserDuration"/></Data></Cell>
+      <Cell ss:StyleID="data"><Data ss:Type="String"><xsl:value-of select="Values/UserStart"/></Data></Cell>
+      <Cell ss:StyleID="data"><Data ss:Type="String"><xsl:value-of select="Values/UserStop"/></Data></Cell>
     </Row>
   </xsl:for-each>
 </xsl:template>
@@ -183,7 +187,7 @@
   </Row>
 </xsl:template>
 <xsl:template name="keyframes-table">
-  <!-- Context node: Keyframes -->  
+  <!-- Context node: Keyframes -->  
 
   <xsl:call-template name="empty-row"/>  
   
@@ -257,7 +261,7 @@
   </Row>
   <Row>
     <Cell ss:StyleID="header"><Data ss:Type="String">Name</Data></Cell>
-    <Cell ss:StyleID="header"><Data ss:Type="String">Value (°)</Data></Cell>
+    <Cell ss:StyleID="header"><Data ss:Type="String">Value (ï¿½)</Data></Cell>
     <Cell ss:StyleID="header"><Data ss:Type="String">Time</Data></Cell>
   </Row>
   <xsl:for-each select="Keyframe/Drawings/Angle/Measure">

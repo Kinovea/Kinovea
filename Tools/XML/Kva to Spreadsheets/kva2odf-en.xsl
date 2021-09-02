@@ -61,7 +61,7 @@
   <xsl:call-template name="empty-row"/>
   
   <table:table-row>
-    <table:table-cell table:style-name="chronos-title" table:number-columns-spanned="2"><text:p>Stopwatches</text:p></table:table-cell>
+    <table:table-cell table:style-name="chronos-title" table:number-columns-spanned="4"><text:p>Stopwatches</text:p></table:table-cell>
   </table:table-row>	
   <table:table-row>
     <table:table-cell table:style-name="header"><text:p>Label</text:p></table:table-cell>
@@ -69,8 +69,10 @@
   </table:table-row>
   <xsl:for-each select="Chrono">
 		<table:table-row>
-		  <table:table-cell table:style-name="data"><text:p><xsl:value-of select="Label/Text"/></text:p></table:table-cell>
+		  <table:table-cell table:style-name="data"><text:p><xsl:value-of select="@name"/></text:p></table:table-cell>
 			<table:table-cell table:style-name="data"><text:p><xsl:value-of select="Values/UserDuration"/></text:p></table:table-cell>
+			<table:table-cell table:style-name="data"><text:p><xsl:value-of select="Values/UserStart"/></text:p></table:table-cell>
+			<table:table-cell table:style-name="data"><text:p><xsl:value-of select="Values/UserStop"/></text:p></table:table-cell>
 		</table:table-row>
 	</xsl:for-each>
 	
