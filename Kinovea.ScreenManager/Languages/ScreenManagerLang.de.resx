@@ -76,9 +76,9 @@
   </data>
   <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Beide Videos abspielen oder anhalten</value>
   </data>
-  <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Zeichenelement hinzufügen</value>
+  <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Zeichnung hinzufügen</value>
   </data>
-  <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Zeichenelement löschen</value>
+  <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Zeichnung löschen</value>
   </data>
   <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Schlüsselbild entfernen</value>
   </data>
@@ -96,7 +96,7 @@
   </data>
   <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve"><value>Farbprofil speichern</value>
   </data>
-  <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Zeichenelement konfigurieren</value>
+  <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Zeichnung konfigurieren</value>
   </data>
   <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Immer sichtbar</value>
   </data>
@@ -266,15 +266,15 @@
   </data>
   <data name="mnuCloseScreen" xml:space="preserve"><value>Dieses Fenster schließen</value>
   </data>
-  <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Bewegungspfad-Anzeige konfigurieren</value>
+  <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Bewegungsbahn-Anzeige konfigurieren</value>
   </data>
   <data name="mnuDeinterlace" xml:space="preserve"><value>Deinterlace</value>
   </data>
   <data name="mnuDeleteDrawing" xml:space="preserve"><value>Löschen</value>
   </data>
-  <data name="mnuDeleteEndOfTrajectory" xml:space="preserve"><value>Bewegungspfad nach diesem Punkt löschen</value>
+  <data name="mnuDeleteEndOfTrajectory" xml:space="preserve"><value>Bewegungsbahn nach diesem Punkt löschen</value>
   </data>
-  <data name="mnuDeleteTrajectory" xml:space="preserve"><value>Alle Bewegungspfade löschen</value>
+  <data name="mnuDeleteTrajectory" xml:space="preserve"><value>Alle Bewegungsbahnen löschen</value>
   </data>
   <data name="mnuTwoCaptures" xml:space="preserve"><value>Zwei Aufnahmefenster</value>
   </data>
@@ -302,31 +302,31 @@
   </data>
   <data name="mnuMagnification" xml:space="preserve"><value>Zoom x{0:0.00}</value>
   </data>
-  <data name="mnuMagnifierDirect" xml:space="preserve"><value>Zu Direkt-Zoom wechseln</value>
+  <data name="mnuMagnifierDirect" xml:space="preserve"><value>Zu Bild-Zoom wechseln</value>
   </data>
   <data name="mnuMagnifierQuit" xml:space="preserve"><value>Lupenfunktion schließen</value>
   </data>
-  <data name="mnuMirror" xml:space="preserve"><value>Spiegel</value>
+  <data name="mnuMirror" xml:space="preserve"><value>Spiegeln</value>
   </data>
   <data name="mnuOneCapture" xml:space="preserve"><value>Ein Aufnahmefenster</value>
   </data>
   <data name="mnuOnePlayer" xml:space="preserve"><value>Ein Wiedergabefenster</value>
   </data>
-  <data name="mnuRestartTracking" xml:space="preserve"><value>Bewegungspfadausgabe neu starten</value>
+  <data name="mnuRestartTracking" xml:space="preserve"><value>Bewegungsbahnausgabe neu starten</value>
   </data>
   <data name="mnuOpenVideo" xml:space="preserve"><value>Videodatei öffnen…</value>
   </data>
   <data name="mnuShowMeasure" xml:space="preserve"><value>Messwert anzeigen</value>
   </data>
-  <data name="mnuStopTracking" xml:space="preserve"><value>Bewegungspfadausgabe beenden </value>
+  <data name="mnuStopTracking" xml:space="preserve"><value>Bewegungsbahnausgabe beenden </value>
   </data>
   <data name="mnuSVGTools" xml:space="preserve"><value>Referenzobjekt</value>
   </data>
-  <data name="mnuSwapScreens" xml:space="preserve"><value>Anzeigen vertauschen</value>
+  <data name="mnuSwapScreens" xml:space="preserve"><value>Anzeigen tauschen</value>
   </data>
   <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Zeige/Verstecke Standardwerkzeuge</value>
   </data>
-  <data name="mnuTrackTrajectory" xml:space="preserve"><value>Bewegungspfad verfolgen</value>
+  <data name="mnuTrackTrajectory" xml:space="preserve"><value>Bewegungsbahn verfolgen</value>
   </data>
   <data name="RecentlyUsedColors" xml:space="preserve"><value>Zuletzt verwendete Farben:</value>
   </data>
@@ -364,7 +364,7 @@
   </data>
   <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Stift</value>
   </data>
-  <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Bewegung</value>
+  <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Verschieben</value>
   </data>
   <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>Text</value>
   </data>
@@ -424,7 +424,7 @@
   </data>
   <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Übersicht...</value>
   </data>
-  <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Umkehren...</value>
+  <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Rückwärts...</value>
   </data>
   <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Autokontrast...</value>
   </data>
@@ -444,13 +444,13 @@
     <value>Pixel</value>
   </data>
   <data name="Infobar_Player_StartWatcher" xml:space="preserve">
-    <value>Beobachter-Ordner starten: {0}</value>
+    <value>Ordner beobachten starten: {0}</value>
   </data>
   <data name="Infobar_Player_StopWatcher" xml:space="preserve">
-    <value>Beobachter-Ordner anhalten: {0}</value>
+    <value>Ordner beobachten anhalten: {0}</value>
   </data>
   <data name="Infobar_Player_Observing" xml:space="preserve">
-    <value>Beobachter-Ordner: {0}</value>
+    <value>Beobachteter Ordner: {0}</value>
   </data>
   <data name="FormCrashRecovery_Info" xml:space="preserve">
     <value>Die folgenden Projekte wurden nicht richtig gespeichert, können aber wiederhergestellt werden:</value>
@@ -519,13 +519,13 @@
     <value>Stil als Standard festlegen</value>
   </data>
   <data name="mnuPasteDrawing" xml:space="preserve">
-    <value>Zeichenelement einfügen</value>
+    <value>Zeichnung einfügen</value>
   </data>
   <data name="mnuCopyDrawing" xml:space="preserve">
-    <value>Zeichenelement kopieren</value>
+    <value>Zeichnung kopieren</value>
   </data>
   <data name="mnuCutDrawing" xml:space="preserve">
-    <value>Zeichenelement ausschneiden</value>
+    <value>Zeichnung ausschneiden</value>
   </data>
   <data name="mnuPolyline_CloseMenu" xml:space="preserve">
     <value>Dieses Menü schließen</value>
@@ -570,10 +570,10 @@
     <value>Kalibrieren...</value>
   </data>
   <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
-    <value>Als Wiedergabeordner-Beobachter öffnen…</value>
+    <value>Als beobachteter Wiedergabeordner öffnen…</value>
   </data>
   <data name="mnuOpenReplayWatcher" xml:space="preserve">
-    <value>Wiedergabeordner-Beobachter öffnen…</value>
+    <value>Wiedergabeordner zum Beobachten öffnen…</value>
   </data>
   <data name="mnuMarkTimeAsOriginClock" xml:space="preserve">
     <value>Aktuelle Zeit als Bezugszeit für diese Uhr festlegen</value>
@@ -639,7 +639,7 @@
     <value>Vor diesem Punkt verbergen</value>
   </data>
   <data name="LengthUnit_Percentage" xml:space="preserve">
-    <value>Prozentsatz</value>
+    <value>Prozent</value>
   </data>
   <data name="LengthUnit_Millimeters" xml:space="preserve">
     <value>Millimeter</value>
@@ -846,7 +846,7 @@
     <value>Annotationen speichern</value>
   </data>
   <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve">
-    <value>Die Annotationen werden in allen Wiedergabeprogrammen angezeigt, können aber nicht verändert werden.#Zusätzliche Kommentare für Schlüsselbilder werden nicht gespeichert.</value>
+    <value>Die Annotationen werden in allen Wiedergabeprogrammen angezeigt, können aber nicht verändert werden.#Zusätzliche Anmerkungen für Schlüsselbilder werden nicht gespeichert.</value>
   </data>
   <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve">
     <value>Nur die Annotationen werden gespeichert.#Die Datei kann zu einem späteren Zeitpunkt in ein Video importiert werden.</value>
@@ -951,7 +951,7 @@
     <value>Rotationskreis anzeigen</value>
   </data>
   <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
-    <value>Ziel</value>
+    <value>Zielscheibe</value>
   </data>
   <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
     <value>Kreis</value>
@@ -1086,7 +1086,7 @@
     <value>Datenanalyse</value>
   </data>
   <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
-    <value>Zeichenelement ändern</value>
+    <value>Zeichnung ändern</value>
   </data>
   <data name="DrawingName_Genu" xml:space="preserve">
     <value>Genu</value>
