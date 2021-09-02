@@ -480,7 +480,8 @@ namespace Kinovea.ScreenManager
 
                 using (GraphicsPath path = new GraphicsPath())
                 {
-                    path.AddCurve(points, 0.5f);
+                    float tension = PreferencesManager.PlayerPreferences.EnableFiltering ? 0.5f : 0.0f;
+                    path.AddCurve(points, tension);
                     RectangleF bounds = path.GetBounds();
                     if (!bounds.IsEmpty)
                     {
@@ -535,8 +536,9 @@ namespace Kinovea.ScreenManager
             
             using(Pen trackPen = GetTrackPen(trackStatus, fadingFactor, before))
             {
-                // Tension parameter is at 0.5f for bezier effect (smooth curve).
-                canvas.DrawCurve(trackPen, points, 0.5f);
+                // Tension of 0.5f creates a smooth curve.
+                float tension = PreferencesManager.PlayerPreferences.EnableFiltering ? 0.5f : 0.0f;
+                canvas.DrawCurve(trackPen, points, tension);
                     
                 if(styleHelper.TrackShape.ShowSteps)
                 {
