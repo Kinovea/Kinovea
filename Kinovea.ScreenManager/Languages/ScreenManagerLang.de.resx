@@ -312,13 +312,13 @@
   </data>
   <data name="mnuOnePlayer" xml:space="preserve"><value>Ein Wiedergabefenster</value>
   </data>
-  <data name="mnuRestartTracking" xml:space="preserve"><value>Bewegungsbahnausgabe neu starten</value>
+  <data name="mnuRestartTracking" xml:space="preserve"><value>Aufnahme der Bewegungsbahn neu starten</value>
   </data>
   <data name="mnuOpenVideo" xml:space="preserve"><value>Videodatei öffnen…</value>
   </data>
   <data name="mnuShowMeasure" xml:space="preserve"><value>Messwert anzeigen</value>
   </data>
-  <data name="mnuStopTracking" xml:space="preserve"><value>Bewegungsbahnausgabe beenden </value>
+  <data name="mnuStopTracking" xml:space="preserve"><value>Aufnahme der Bewegungsbahn beenden </value>
   </data>
   <data name="mnuSVGTools" xml:space="preserve"><value>Referenzobjekt</value>
   </data>
