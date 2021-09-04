@@ -107,4 +107,7 @@
   <data name="lblCaptureHistory" xml:space="preserve">
     <value>录制历史</value>
   </data>
+  <data name="mnuVideoLocate" xml:space="preserve">
+    <value>在窗口浏览器中查找 </value>
+  </data>
 </root>
