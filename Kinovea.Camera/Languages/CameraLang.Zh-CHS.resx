@@ -90,7 +90,7 @@
     <value>曝光:</value>
   </data>
   <data name="FormConfiguration_Properties_Framerate" xml:space="preserve">
-    <value>帧率:</value>
+    <value>帧率：</value>
   </data>
   <data name="FormConfiguration_Properties_ImageHeight" xml:space="preserve">
     <value>高度:</value>
