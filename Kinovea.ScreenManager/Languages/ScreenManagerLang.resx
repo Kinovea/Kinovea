@@ -199,7 +199,7 @@
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Save sequence</value></data>
    <data name="dlgCameraCalibration_Title" xml:space="preserve"><value>Camera calibration</value></data>
    <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve"><value>Distortion coefficients</value></data>
-   <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve"><value>Camera intrisics</value></data>
+   <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve"><value>Camera intrinsics</value></data>
    <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve"><value>Calibrate camera</value></data>
    <data name="dlgCameraCalibration_Distortion" xml:space="preserve"><value>Distortion</value></data>
    <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve"><value>Load camera calibration profile</value></data>
