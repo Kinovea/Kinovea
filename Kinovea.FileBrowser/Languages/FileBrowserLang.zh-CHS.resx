@@ -108,6 +108,6 @@
     <value>录制历史</value>
   </data>
   <data name="mnuVideoLocate" xml:space="preserve">
-    <value>在窗口浏览器中查找 </value>
+    <value>在 Windows 资源管理器中定位 </value>
   </data>
 </root>
