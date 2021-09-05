@@ -957,7 +957,7 @@
     <value>Calibrar a câmera</value>
   </data>
   <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
-    <value>Detalhes da câmera</value>
+    <value>Detalhes da câmara</value>
   </data>
   <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve">
     <value>Coeficientes de distorção</value>
