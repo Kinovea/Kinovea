@@ -28,7 +28,7 @@ namespace Kinovea.Services
     public class Software
     {
         public static string ApplicationName { get { return "Kinovea";}}
-        public static bool Experimental { get { return true;}}
+        public static bool Experimental { get { return false;}}
         
         public static string InstanceName { get; private set; }
 
