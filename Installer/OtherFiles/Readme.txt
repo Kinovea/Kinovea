@@ -1,5 +1,5 @@
 
-Kinovea 0.9.4 - April 2021.
+Kinovea 0.9.5 - September 2021.
 
 Kinovea is a free and open source video annotation tool designed for motion analysis. 
 It features utilities to capture, slow down, compare, annotate and measure motion in videos.
@@ -18,14 +18,13 @@ License:
 --------
 Please see license.txt for details. In a nutshell:
 - Source code : GPL v2.
-- Graphics : CC-BY-SA.
-- Manual : CC-BY-SA.
-- Video Tutorials : CC-BY-SA.
+- Translations : MIT.
+- Manual : CC0.
 
 
 Project:
 --------
-- Website: http://www.kinovea.org
+- Website: https://www.kinovea.org
 - Forum: https://www.kinovea.org/en/forum
 - Bug tracker: https://github.com/Kinovea/Kinovea/issues
 - Translation: https://hosted.weblate.org/engage/kinovea/
@@ -37,6 +36,19 @@ Project:
 
 Changelog:
 ----------
+
+0.9.5 - September 2021.
+    Improved - Export the start and end time of chronometers in spreadsheet export.
+    Fixed - Memory sharing for capture screen wasn't working correctly.
+    Fixed - Crash when opening trajectory configuration dialog.
+    Fixed - Crash when clearing unassigned trackers.
+    Fixed - Time values from KVA containing a selection where not imported correctly.
+    Fixed - Tracking of the object defining the coordinate system was not taken into account when computing coordinates.
+    Fixed - Avoid showing calibration object and coordinate system origin in linear kinematics plot.
+    Fixed - In the Goniometer tool the end point of the reference axis should not be trackable.
+    Fixed - Disable smoothing of the track object curve if filtering is not enabled.
+    Fixed - Disable curve smoothing in linear kinematics plot if filtering is not enabled.
+
 
 0.9.4 - April 2021.
     Added - General: support for workspaces as presets of screens arrangements and content.
