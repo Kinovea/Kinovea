@@ -54,9 +54,9 @@ namespace Kinovea.Root
       // logoPictureBox
       // 
       this.logoPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("logoPictureBox.Image")));
-      this.logoPictureBox.Location = new System.Drawing.Point(79, 13);
+      this.logoPictureBox.Location = new System.Drawing.Point(19, 13);
       this.logoPictureBox.Name = "logoPictureBox";
-      this.logoPictureBox.Size = new System.Drawing.Size(356, 124);
+      this.logoPictureBox.Size = new System.Drawing.Size(307, 192);
       this.logoPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
       this.logoPictureBox.TabIndex = 12;
       this.logoPictureBox.TabStop = false;
@@ -64,12 +64,12 @@ namespace Kinovea.Root
       // lblKinovea
       // 
       this.lblKinovea.AutoSize = true;
-      this.lblKinovea.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblKinovea.Location = new System.Drawing.Point(11, 140);
+      this.lblKinovea.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblKinovea.Location = new System.Drawing.Point(16, 223);
       this.lblKinovea.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
       this.lblKinovea.MaximumSize = new System.Drawing.Size(0, 17);
       this.lblKinovea.Name = "lblKinovea";
-      this.lblKinovea.Size = new System.Drawing.Size(79, 13);
+      this.lblKinovea.Size = new System.Drawing.Size(88, 15);
       this.lblKinovea.TabIndex = 19;
       this.lblKinovea.Text = "Kinovea - 0.0.0";
       this.lblKinovea.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -78,7 +78,7 @@ namespace Kinovea.Root
       // 
       this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.okButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.okButton.Location = new System.Drawing.Point(519, 534);
+      this.okButton.Location = new System.Drawing.Point(519, 633);
       this.okButton.Name = "okButton";
       this.okButton.Size = new System.Drawing.Size(75, 21);
       this.okButton.TabIndex = 24;
@@ -87,12 +87,12 @@ namespace Kinovea.Root
       // labelCopyright
       // 
       this.labelCopyright.AutoSize = true;
-      this.labelCopyright.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.labelCopyright.Location = new System.Drawing.Point(11, 159);
+      this.labelCopyright.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.labelCopyright.Location = new System.Drawing.Point(16, 250);
       this.labelCopyright.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
       this.labelCopyright.MaximumSize = new System.Drawing.Size(0, 17);
       this.labelCopyright.Name = "labelCopyright";
-      this.labelCopyright.Size = new System.Drawing.Size(279, 13);
+      this.labelCopyright.Size = new System.Drawing.Size(321, 15);
       this.labelCopyright.TabIndex = 21;
       this.labelCopyright.Text = "Copyright © 2006-2021 - Joan Charmant and contributors.";
       this.labelCopyright.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -101,12 +101,12 @@ namespace Kinovea.Root
       // 
       this.lnkKinovea.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.lnkKinovea.AutoSize = true;
-      this.lnkKinovea.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lnkKinovea.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.lnkKinovea.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
       this.lnkKinovea.LinkColor = System.Drawing.Color.Blue;
-      this.lnkKinovea.Location = new System.Drawing.Point(14, 537);
+      this.lnkKinovea.Location = new System.Drawing.Point(14, 636);
       this.lnkKinovea.Name = "lnkKinovea";
-      this.lnkKinovea.Size = new System.Drawing.Size(90, 13);
+      this.lnkKinovea.Size = new System.Drawing.Size(100, 15);
       this.lnkKinovea.TabIndex = 25;
       this.lnkKinovea.TabStop = true;
       this.lnkKinovea.Text = "www.kinovea.org";
@@ -131,11 +131,13 @@ namespace Kinovea.Root
       // 
       // tabControl
       // 
+      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.pageTranslation);
       this.tabControl.Controls.Add(this.pageLicense);
       this.tabControl.Controls.Add(this.pageBuildingBlocks);
       this.tabControl.Controls.Add(this.pageCitation);
-      this.tabControl.Location = new System.Drawing.Point(13, 179);
+      this.tabControl.Location = new System.Drawing.Point(13, 278);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
       this.tabControl.Size = new System.Drawing.Size(581, 349);
@@ -239,7 +241,7 @@ namespace Kinovea.Root
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.Color.White;
-      this.ClientSize = new System.Drawing.Size(607, 565);
+      this.ClientSize = new System.Drawing.Size(607, 664);
       this.Controls.Add(this.tabControl);
       this.Controls.Add(this.labelCopyright);
       this.Controls.Add(this.lblKinovea);
