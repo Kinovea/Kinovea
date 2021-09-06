@@ -566,7 +566,6 @@ namespace Kinovea.Root
             PreferencesUpdated();
         }
 
-
         private void CheckTimecodeMenu()
         {
             mnuTimecodeClassic.Checked = false;
@@ -662,16 +661,9 @@ namespace Kinovea.Root
         #region Help
         private void mnuHelpContents_OnClick(object sender, EventArgs e)
         {
-            // Launch Help file from current UI language.
-            string resourceUri = GetLocalizedHelpResource(true);
-            if(resourceUri != null && resourceUri.Length > 0 && File.Exists(resourceUri))
-            {
-                Help.ShowHelp(mainWindow, resourceUri);
-            }
-            else
-            {
-                log.Error(String.Format("Cannot find the manual. ({0}).", resourceUri));
-            }
+            // Open online help.
+            // Currently only English is supported.
+            Process.Start("https://www.kinovea.org/help/en/");
         }
         private void mnuAbout_OnClick(object sender, EventArgs e)
         {
