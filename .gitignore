@@ -406,3 +406,4 @@ Installer/build-*.txt
 /Localization/WorkingDirectory/.idea/*
 /Kinovea-*.zip
 /Tools/UnusedResources/UnusedResources/Results*
+/Installer/sign/*
