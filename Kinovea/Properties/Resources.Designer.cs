@@ -401,6 +401,15 @@ namespace Kinovea.Root.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Peter Strikwerda, Bart Kerkvliet..
+        /// </summary>
+        internal static string translators {
+            get {
+                return ResourceManager.GetString("translators", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap user_detective {

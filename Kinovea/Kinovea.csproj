@@ -543,6 +543,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="kinoveabundle.ico" />
+    <None Include="Resources\translators.txt" />
     <None Include="Resources\splash.png" />
     <None Include="Resources\file_txt.png" />
     <None Include="Resources\disk.png" />
