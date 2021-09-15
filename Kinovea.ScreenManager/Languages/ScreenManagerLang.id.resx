@@ -634,4 +634,52 @@
   <data name="Generic_Quit" xml:space="preserve">
     <value>Berhenti</value>
   </data>
+  <data name="Infobar_Player_StopWatcher" xml:space="preserve">
+    <value>Berhenti mengamati folder : {0}</value>
+  </data>
+  <data name="Toast_Zoom" xml:space="preserve">
+    <value>Zoom: {0}%</value>
+  </data>
+  <data name="RecentlyUsedColors" xml:space="preserve">
+    <value>Warna yang terakhir digunakan:</value>
+  </data>
+  <data name="mnuShowCircleCenter" xml:space="preserve">
+    <value>Tampilkan pusat lingkaran</value>
+  </data>
+  <data name="mnuShowArrow" xml:space="preserve">
+    <value>Tampilkan panah</value>
+  </data>
+  <data name="mnuPasteImage" xml:space="preserve">
+    <value>Tempel gambar dari papan klip</value>
+  </data>
+  <data name="mnuVisibilityCustom" xml:space="preserve">
+    <value>Fading kustom</value>
+  </data>
+  <data name="mnuSetStyleAsDefault" xml:space="preserve">
+    <value>Atur gaya sebagai default</value>
+  </data>
+  <data name="mnuPasteDrawing" xml:space="preserve">
+    <value>Tempel gambar</value>
+  </data>
+  <data name="mnuCopyDrawing" xml:space="preserve">
+    <value>Salin gambar</value>
+  </data>
+  <data name="mnuCutDrawing" xml:space="preserve">
+    <value>Potong gambar</value>
+  </data>
+  <data name="mnuPolyline_CloseMenu" xml:space="preserve">
+    <value>Tutup menu ini</value>
+  </data>
+  <data name="mnuPolyline_FinishAtPrevious" xml:space="preserve">
+    <value>Selesaikan polyline pada titik sebelumnya</value>
+  </data>
+  <data name="mnuPolyline_FinishHere" xml:space="preserve">
+    <value>Selesaikan polyline di sini</value>
+  </data>
+  <data name="mnuCoordinateSystemHide" xml:space="preserve">
+    <value>Sembunyikan</value>
+  </data>
+  <data name="Infobar_Player_StartWatcher" xml:space="preserve">
+    <value>Mulai mengamati folder: {0}</value>
+  </data>
 </root>
