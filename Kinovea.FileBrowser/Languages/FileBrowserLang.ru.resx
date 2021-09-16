@@ -102,4 +102,10 @@
   <data name="mnuVideoLocate" xml:space="preserve">
     <value>Найти в проводнике Windows </value>
   </data>
+  <data name="ForgetCustomSettings" xml:space="preserve">
+    <value>Забыть пользовательские настройки</value>
+  </data>
+  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
+    <value>Открыть как наблюдатель за каталогом реплеев</value>
+  </data>
 </root>
