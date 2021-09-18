@@ -316,6 +316,7 @@
     <EmbeddedResource Include="Languages\RootLang.sr-Cyrl-RS.resx" />
     <EmbeddedResource Include="Languages\RootLang.sr-Latn-RS.resx" />
     <EmbeddedResource Include="Languages\RootLang.sv.resx" />
+    <EmbeddedResource Include="Languages\RootLang.th.resx" />
     <EmbeddedResource Include="Languages\RootLang.tr.resx" />
     <EmbeddedResource Include="Languages\RootLang.Zh-CHS.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">

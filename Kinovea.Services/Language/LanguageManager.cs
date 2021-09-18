@@ -72,6 +72,7 @@ namespace Kinovea.Services
                 languages.Add("sr-Latn-RS", "Srpski");
                 languages.Add("fi", "Suomi");
                 languages.Add("sv", "Svenska");
+                languages.Add("th", "ไทย");
                 languages.Add("tr", "Türkçe");
                 languages.Add("zh-CHS", "简体中文");
             }
@@ -106,6 +107,7 @@ namespace Kinovea.Services
                 //languages.Add("sr-Latn-RS", "Srpski");
                 //languages.Add("fi", "Suomi");
                 //languages.Add("sv", "Svenska");
+                languages.Add("th", "ไทย");
                 languages.Add("tr", "Türkçe");
                 //languages.Add("zh-CHS", "简体中文");
             }
