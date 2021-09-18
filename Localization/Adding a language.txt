@@ -1,0 +1,5 @@
+
+1. In Weblate, in Kinovea/Root, Add translation. This will add the language to all other components.
+2. Merge Weblate PR into main project.
+3. Under each project, Languages > Add existing item > pick the language .resx.
+4. Add entry in Kinovea.Services > Language > LanguageManager.cs.

@@ -35,123 +35,6 @@ namespace Kinovea.Services
             }
         }
         
-        #region Languages accessors by english name
-        // This big list of static properties is to support language names in the credits box.
-        // We should have a GetContributors method here instead ?
-        public static string English
-        {
-            get { return Languages["en"]; }
-        }
-        public static string Catalan
-        {
-            get { return Languages["ca"]; }
-        }
-        public static string Czech
-        {
-            get { return Languages["cs"]; }
-        }
-        public static string Danish
-        {
-            get { return Languages["da"]; }
-        }
-        public static string Dutch
-        {
-            get { return Languages["nl"]; }
-        }
-        public static string German
-        {
-            get { return Languages["de"]; }
-        }
-        public static string Portuguese
-        {
-            get { return Languages["pt"]; }
-        }
-        public static string Spanish
-        {
-            get { return Languages["es"]; }
-        }
-        public static string Italian
-        {
-            get { return Languages["it"]; }
-        }
-        public static string Romanian
-        {
-            get { return Languages["ro"]; }
-        }
-        public static string Polish
-        {
-            get { return Languages["pl"]; }
-        }
-        public static string Finnish
-        {
-            get { return Languages["fi"]; }
-        }
-        public static string Norwegian
-        {
-            get { return Languages["no"]; }
-        }
-        public static string Chinese
-        {
-            get { return Languages["zh-CHS"]; }
-        }
-        public static string Turkish
-        {
-            get { return Languages["tr"]; }
-        }
-        public static string Greek
-        {
-            get { return Languages["el"]; }
-        }
-        public static string Lithuanian
-        {
-            get { return Languages["lt"]; }
-        }
-        public static string Swedish
-        {
-            get { return Languages["sv"]; }
-        }
-        public static string Korean
-        {
-            get { return Languages["ko"]; }
-        }
-        public static string Russian
-        {
-            get { return Languages["ru"]; }
-        }
-        public static string Serbian
-        {
-            get { return languages["sr-Latn-RS"]; }
-        }
-        public static string SerbianCyrl
-        {
-            get { return languages["sr-Cyrl-RS"]; }
-        }
-        public static string Japanese
-        {
-            get { return languages["ja"]; }
-        }
-        public static string Macedonian
-        {
-            get { return languages["mk"]; }
-        }
-        public static string Arabic
-        {
-            get { return Languages["ar"]; }
-        }
-        public static string Farsi
-        {
-            get { return Languages["fa"]; }
-        }
-        public static string Bulgarian
-        {
-            get { return Languages["bg"]; }
-        }
-        public static string Indonesian
-        {
-            get { return Languages["id"]; }
-        }
-        #endregion
-
         private static Dictionary<string, string> languages = null;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
@@ -159,35 +42,74 @@ namespace Kinovea.Services
         {
             // Alphabetical order by native name. (Check Wikipedia order if in doubt).
             languages = new Dictionary<string, string>();
-            languages.Add("ar", "العَرَبِية");
-            languages.Add("bg", "Български");
-            languages.Add("ca", "Català");
-            languages.Add("cs", "Čeština");
-            languages.Add("da", "Dansk");
-            languages.Add("de", "Deutsch");
-            languages.Add("el", "Ελληνικά");
-            languages.Add("en", "English");
-            languages.Add("es", "Español");
-            languages.Add("fa", "فارسی");
-            languages.Add("fr", "Français");
-            languages.Add("ko", "한국어");
-            languages.Add("id", "Bahasa Indonesia");
-            languages.Add("it", "Italiano");
-            languages.Add("lt", "Lietuvių");
-            languages.Add("nl", "Nederlands");
-            languages.Add("ja", "日本語");
-            languages.Add("no", "Norsk");
-            languages.Add("mk", "Македонски");
-            languages.Add("pl", "Polski");
-            languages.Add("pt", "Português");
-            languages.Add("ro", "Română");
-            languages.Add("ru", "Русский");
-            languages.Add("sr-Cyrl-RS", "Српски");
-            languages.Add("sr-Latn-RS", "Srpski");
-            languages.Add("fi", "Suomi");
-            languages.Add("sv", "Svenska");
-            languages.Add("tr", "Türkçe");
-            languages.Add("zh-CHS", "简体中文");
+
+            if (Software.Experimental)
+            {
+                languages.Add("ar", "العَرَبِية");
+                languages.Add("bg", "Български");
+                languages.Add("ca", "Català");
+                languages.Add("cs", "Čeština");
+                languages.Add("da", "Dansk");
+                languages.Add("de", "Deutsch");
+                languages.Add("el", "Ελληνικά");
+                languages.Add("en", "English");
+                languages.Add("es", "Español");
+                languages.Add("fa", "فارسی");
+                languages.Add("fr", "Français");
+                languages.Add("ko", "한국어");
+                languages.Add("id", "Bahasa Indonesia");
+                languages.Add("it", "Italiano");
+                languages.Add("lt", "Lietuvių");
+                languages.Add("nl", "Nederlands");
+                languages.Add("ja", "日本語");
+                languages.Add("no", "Norsk bokmål");
+                languages.Add("mk", "Македонски");
+                languages.Add("pl", "Polski");
+                languages.Add("pt", "Português");
+                languages.Add("ro", "Română");
+                languages.Add("ru", "Русский");
+                languages.Add("sr-Cyrl-RS", "Српски");
+                languages.Add("sr-Latn-RS", "Srpski");
+                languages.Add("fi", "Suomi");
+                languages.Add("sv", "Svenska");
+                languages.Add("tr", "Türkçe");
+                languages.Add("zh-CHS", "简体中文");
+            }
+            else
+            {
+                // For the normal version we only include languages that have the Root component translated at > 75%.
+                // This can be checked on Weblate: https://hosted.weblate.org/projects/kinovea/root/
+                languages.Add("ar", "العَرَبِية");
+                languages.Add("bg", "Български");
+                languages.Add("ca", "Català");
+                //languages.Add("cs", "Čeština");
+                //languages.Add("da", "Dansk");
+                languages.Add("de", "Deutsch");
+                //languages.Add("el", "Ελληνικά");
+                languages.Add("en", "English");
+                languages.Add("es", "Español");
+                languages.Add("fa", "فارسی");
+                languages.Add("fr", "Français");
+                //languages.Add("ko", "한국어");
+                languages.Add("id", "Bahasa Indonesia");
+                languages.Add("it", "Italiano");
+                //languages.Add("lt", "Lietuvių");
+                languages.Add("nl", "Nederlands");
+                //languages.Add("ja", "日本語");
+                languages.Add("no", "Norsk bokmål");
+                //languages.Add("mk", "Македонски");
+                languages.Add("pl", "Polski");
+                languages.Add("pt", "Português");
+                languages.Add("ro", "Română");
+                languages.Add("ru", "Русский");
+                //languages.Add("sr-Cyrl-RS", "Српски");
+                //languages.Add("sr-Latn-RS", "Srpski");
+                //languages.Add("fi", "Suomi");
+                //languages.Add("sv", "Svenska");
+                languages.Add("tr", "Türkçe");
+                //languages.Add("zh-CHS", "简体中文");
+            }
+
         }
 
         /// <summary>
