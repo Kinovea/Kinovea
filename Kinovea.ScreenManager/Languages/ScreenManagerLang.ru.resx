@@ -756,4 +756,172 @@
   <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
     <value>Максимальная непрозрачность (%):</value>
   </data>
+  <data name="ToolTip_ArmTrigger" xml:space="preserve">
+    <value>Активировать триггер захвата. Текущее состояние: деактивирован.</value>
+  </data>
+  <data name="ToolTip_DisarmTrigger" xml:space="preserve">
+    <value>Деактивировать триггер захвата. Текущее состояние: активирован.</value>
+  </data>
+  <data name="Toast_TriggerDisarmed" xml:space="preserve">
+    <value>Триггер захвата не активен</value>
+  </data>
+  <data name="Toast_TriggerArmed" xml:space="preserve">
+    <value>Триггер захвата активен</value>
+  </data>
+  <data name="Infobar_Player_StartWatcher" xml:space="preserve">
+    <value>Начать наблюдение за каталогом: {0}</value>
+  </data>
+  <data name="Infobar_Player_StopWatcher" xml:space="preserve">
+    <value>Остановить наблюдение за каталогом: {0}</value>
+  </data>
+  <data name="Infobar_Player_Observing" xml:space="preserve">
+    <value>Каталог для наблюдения {0}</value>
+  </data>
+  <data name="Toast_AudioLost" xml:space="preserve">
+    <value>Аудиоустройство потеряно</value>
+  </data>
+  <data name="mnuShowCircleCenter" xml:space="preserve">
+    <value>Показать центр окружности</value>
+  </data>
+  <data name="mnuShowArrow" xml:space="preserve">
+    <value>Показать стрелку</value>
+  </data>
+  <data name="mnuPasteImage" xml:space="preserve">
+    <value>Вставить изображение из буфера обмена</value>
+  </data>
+  <data name="mnuVisibilityConfigure" xml:space="preserve">
+    <value>Сконфигурировать пользовательский фейдинг</value>
+  </data>
+  <data name="mnuVisibilityCustom" xml:space="preserve">
+    <value>Пользовательский фейдинг</value>
+  </data>
+  <data name="mnuVisibilityDefault" xml:space="preserve">
+    <value>Фейдинг по умолчанию</value>
+  </data>
+  <data name="mnuSetStyleAsDefault" xml:space="preserve">
+    <value>Установить как стиль по умолчанию</value>
+  </data>
+  <data name="mnuPasteDrawing" xml:space="preserve">
+    <value>Вставить рисунок</value>
+  </data>
+  <data name="mnuCopyDrawing" xml:space="preserve">
+    <value>Скопировать рисунок</value>
+  </data>
+  <data name="mnuCutDrawing" xml:space="preserve">
+    <value>Вырезать рисунок</value>
+  </data>
+  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
+    <value>Открыть как наблюдатель за каталогом реплеев…</value>
+  </data>
+  <data name="mnuOpenReplayWatcher" xml:space="preserve">
+    <value>Открыть наблюдателя каталога для реплеев…</value>
+  </data>
+  <data name="mnuMarkTimeAsOriginClock" xml:space="preserve">
+    <value>Пометить текущее время как начало отсчета времени для этих часов</value>
+  </data>
+  <data name="mnuMarkTimeAsOrigin" xml:space="preserve">
+    <value>Пометить текущее время как начальную временную точку</value>
+  </data>
+  <data name="mnuLoadAnalysis" xml:space="preserve">
+    <value>Загрузить аннотации…</value>
+  </data>
+  <data name="mnuShowLabel" xml:space="preserve">
+    <value>Показать метку</value>
+  </data>
+  <data name="mnuShowAfter" xml:space="preserve">
+    <value>Показать после этой точки</value>
+  </data>
+  <data name="mnuHideAfter" xml:space="preserve">
+    <value>Спрятать после этой точки</value>
+  </data>
+  <data name="mnuShowBefore" xml:space="preserve">
+    <value>Показать до этой точки</value>
+  </data>
+  <data name="mnuHideBefore" xml:space="preserve">
+    <value>Спрятать до этой точки</value>
+  </data>
+  <data name="FileFilter_AllSupported" xml:space="preserve">
+    <value>Все поддерживаемые форматы</value>
+  </data>
+  <data name="Generic_Paste" xml:space="preserve">
+    <value>Вставить</value>
+  </data>
+  <data name="Generic_Copy" xml:space="preserve">
+    <value>Копировать</value>
+  </data>
+  <data name="Generic_Cut" xml:space="preserve">
+    <value>Вырезать</value>
+  </data>
+  <data name="Generic_ExportVideo" xml:space="preserve">
+    <value>Экспортировать видео…</value>
+  </data>
+  <data name="Generic_SaveKVAAs" xml:space="preserve">
+    <value>Сохранить аннотации как…</value>
+  </data>
+  <data name="Generic_SaveKVA" xml:space="preserve">
+    <value>Сохранить аннотации</value>
+  </data>
+  <data name="Generic_Clock" xml:space="preserve">
+    <value>Часы:</value>
+  </data>
+  <data name="Generic_Perspective" xml:space="preserve">
+    <value>Перспектива:</value>
+  </data>
+  <data name="Error_Capture_DirectoryNotCreated_Text" xml:space="preserve">
+    <value>Директория для захвата изображений не может быть создана.\nПроверьте, что она указывает на правильное хранилище данных.</value>
+  </data>
+  <data name="Error_Capture_DirectoryNotCreated_Title" xml:space="preserve">
+    <value>Каталог не создан</value>
+  </data>
+  <data name="DrawingName_Clock" xml:space="preserve">
+    <value>Часы</value>
+  </data>
+  <data name="DrawingName_Curve" xml:space="preserve">
+    <value>Кривая</value>
+  </data>
+  <data name="DrawingName_Trajectory" xml:space="preserve">
+    <value>Траектория</value>
+  </data>
+  <data name="DrawingName_Rectangle" xml:space="preserve">
+    <value>Прямоугольник</value>
+  </data>
+  <data name="dlgCameraCalibration_lblFocalLength" xml:space="preserve">
+    <value>Фокальное расстояние (mm):</value>
+  </data>
+  <data name="dlgCameraCalibration_lblSensorWidth" xml:space="preserve">
+    <value>Ширина сенсора (мм):</value>
+  </data>
+  <data name="dlgCalibrateLine_AxesImage" xml:space="preserve">
+    <value>Выровнено по отношению к осям изображения</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisVertical" xml:space="preserve">
+    <value>Линия определяет ось по вертикали</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisHorizontal" xml:space="preserve">
+    <value>Линия определяет ось по горизонтали</value>
+  </data>
+  <data name="dlgCalibrateLine_CoordinateSystemAlignment" xml:space="preserve">
+    <value>Выравнивание системы координат:</value>
+  </data>
+  <data name="ExtraData_Circumference" xml:space="preserve">
+    <value>Окружность</value>
+  </data>
+  <data name="ExtraData_Diameter" xml:space="preserve">
+    <value>Диаметр</value>
+  </data>
+  <data name="ExtraData_Radius" xml:space="preserve">
+    <value>Радиус</value>
+  </data>
+  <data name="ExtraData_Center" xml:space="preserve">
+    <value>Центр</value>
+  </data>
+  <data name="ExtraData_Length" xml:space="preserve">
+    <value>Длина</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_DistanceToOrigin" xml:space="preserve">
+    <value>Расстояние до начала</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblOpaque" xml:space="preserve">
+    <value>Продолжительность непрозрачности (кадров):</value>
+  </data>
 </root>
