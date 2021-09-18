@@ -1,0 +1,14 @@
+Inclusion criteria for the main releases (beta versions have all languages).
+
+Rationale:
+It is frustrating and look unprofessional for users to select their language only to realize that many parts are not actually translated. 
+The following is the heuristic to enable the selection of languages to minimize this problem.
+
+Heuristic:
+1. Any language more than 85% translated in total is included.
+2. Any language that has the Root component less than 75% translated is not included.
+3. For the remaining languages, we look at the top level menus (mainly: File, View and Image) and the user interface of the player.
+If there are too many untranslated strings directly visible in the menu and the player we do not include the language.
+
+Statistics based on Weblate at the moment of release: 
+https://hosted.weblate.org/projects/kinovea/#languages
