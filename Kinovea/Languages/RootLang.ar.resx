@@ -66,19 +66,19 @@
   </resheader>
   <data name="dlgAbout_Translation" xml:space="preserve"><value>الترجمة</value>
   </data>
-  <data name="dlgAbout_License" xml:space="preserve"><value>الرخصة</value>
+  <data name="dlgAbout_License" xml:space="preserve"><value>الترخيص</value>
   </data>
   <data name="dlgAbout_BuildingBlocks" xml:space="preserve"><value>البنية الاساسية</value>
   </data>
   <data name="dlgAbout_Citation" xml:space="preserve"><value>الاقتباس</value>
   </data>
-  <data name="dlgPreferences_tabCapture" xml:space="preserve"><value>التقاط</value>
+  <data name="dlgPreferences_tabCapture" xml:space="preserve"><value>تسجيل</value>
   </data>
-  <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>الرسومات</value>
+  <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>عناصر الرسومات</value>
   </data>
   <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>عام</value>
   </data>
-  <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>اعادة العرض</value>
+  <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>إعادة عرض</value>
   </data>
   <data name="dlgPreferences_tabKeyboard" xml:space="preserve"><value>لوحة المفاتيح</value>
   </data>
@@ -86,11 +86,11 @@
   </data>
   <data name="dlgPreferences_Capture_Right" xml:space="preserve"><value>اليمين</value>
   </data>
-  <data name="dlgPreferences_Capture_Root" xml:space="preserve"><value>الاساسي :</value>
+  <data name="dlgPreferences_Capture_Root" xml:space="preserve"><value>الروت :</value>
   </data>
   <data name="dlgPreferences_Capture_Subdir" xml:space="preserve"><value>الدليل الفرعي :</value>
   </data>
-  <data name="dlgPreferences_Capture_File" xml:space="preserve"><value>ملف :</value>
+  <data name="dlgPreferences_Capture_File" xml:space="preserve"><value>الملف :</value>
   </data>
   <data name="dlgPreferences_Capture_ImageNaming" xml:space="preserve"><value>تسمية الصورة</value>
   </data>
@@ -100,17 +100,17 @@
   </data>
   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>صيغة الفيديو:</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>سنة</value>
+  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>السنة</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>شهر</value>
+  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>الشهر</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>يوم</value>
+  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>اليوم</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve"><value>ساعة</value>
+  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve"><value>الساعة</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve"><value>دقيقة</value>
+  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve"><value>الدقيقة</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve"><value>ثانية</value>
+  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve"><value>الثانية</value>
   </data>
   <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve"><value>الاسم المستعار للكاميرا</value>
   </data>
@@ -126,27 +126,27 @@
   </data>
   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>الذاكرة</value>
   </data>
-  <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>الذاكرة المخصصة للالتقاط المؤقت: {0} ميغابايت</value>
+  <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>ذاكرة التخزين المخصصة للتسجيل المتأخر: {0} ميجابايت.</value>
   </data>
-  <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>اظهار الرسومات عند تشغيل الفيديو</value>
+  <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>إظهار الرسومات عند تشغيل الفيديو</value>
   </data>
-  <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>فك التشابك دائما عند فتح فيديو جديد.</value>
+  <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>إلغاء التداخل دائمًا عند فتح مقطع فيديو جديد</value>
   </data>
   <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve"><value>تحديث الصورة عند حركة المؤشر</value>
   </data>
-  <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>ربط شرائط تمرير السرعة عند مقارنة الفيديوهات</value>
+  <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>ارتباط عناصر التحكم بالسرعة عند مقارنة مقاطع الفيديو</value>
   </data>
   <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>التبديل الي وضع التحليل</value>
   </data>
   <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>عدد الملفات في سجل التصفح:</value>
   </data>
-  <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>تهيئة الصورة الافتراضية:</value>
+  <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>نسبة العرض إلى الارتفاع الافتراضية:</value>
   </data>
   <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>اللغة:</value>
   </data>
   <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>و</value>
   </data>
-  <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>افتراضيا، سوف تبقي الرسومات مستمرة لـ {0} صورة حول الصورة الرئيسية.</value>
+  <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>ستظل عناصر الرسومات مرئية بشكل افتراضي لعدد {0} من الصور الموجودة حول الصورة الرئيسية.</value>
   </data>
   <data name="dlgPreferences_Player_tabUnits" xml:space="preserve"><value>وحدات القياس</value>
   </data>
@@ -172,11 +172,11 @@
   </data>
   <data name="dlgPreferences_Player_UnitsAngularVelocity" xml:space="preserve"><value>السرعة الزاوية:</value>
   </data>
-  <data name="dlgPreferences_Player_UnitsAngularAcceleration" xml:space="preserve"><value>العجلة الزاوية:</value>
+  <data name="dlgPreferences_Player_UnitsAngularAcceleration" xml:space="preserve"><value>التسارع الزاوي:</value>
   </data>
-  <data name="dlgPreferences_Player_UnitsMetersPerSecondSquared" xml:space="preserve"><value>متر في الثانية المربعة ({0})</value>
+  <data name="dlgPreferences_Player_UnitsMetersPerSecondSquared" xml:space="preserve"><value>متر في الثانية مربعة ({0})</value>
   </data>
-  <data name="dlgPreferences_Player_UnitsFeetPerSecondSquared" xml:space="preserve"><value>قدم في الثانية المربعة ({0})</value>
+  <data name="dlgPreferences_Player_UnitsFeetPerSecondSquared" xml:space="preserve"><value>قدم في الثانية مربعة ({0})</value>
   </data>
   <data name="dlgPreferences_Player_UnitsDegrees" xml:space="preserve"><value>درجة ({0})</value>
   </data>
@@ -192,7 +192,7 @@
   </data>
   <data name="dlgPreferences_Player_UnitsRadiansPerSecondSquared" xml:space="preserve"><value>راديان في الثانية المربعة ({0})</value>
   </data>
-  <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve"><value>تخصيص وحدة الطول</value>
+  <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve"><value>تخصيص وحدة الطول:</value>
   </data>
   <data name="dlgPreferences_Player_Tracking" xml:space="preserve"><value>تتبع</value>
   </data>
@@ -206,31 +206,31 @@
   </data>
   <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve"><value>بكسل</value>
   </data>
-  <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve"><value>التقسيمات</value>
+  <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve"><value>الفئات</value>
   </data>
   <data name="dlgPreferences_Keyboard_lblCommands" xml:space="preserve"><value>الأوامر</value>
   </data>
-  <data name="dlgPreferences_Keyboard_lblHotkey" xml:space="preserve"><value>مفتاح ساخن {0}.{1}</value>
+  <data name="dlgPreferences_Keyboard_lblHotkey" xml:space="preserve"><value>اختصار لوحة المفاتيح {0}.{1}</value>
   </data>
   <data name="dlgPreferences_Keyboard_btnApply" xml:space="preserve"><value>تطبيق</value>
   </data>
-  <data name="dlgPreferences_Keyboard_btnClear" xml:space="preserve"><value>تنظيف</value>
+  <data name="dlgPreferences_Keyboard_btnClear" xml:space="preserve"><value>مسح</value>
   </data>
   <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve"><value>افتراضي</value>
   </data>
-  <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>تحميل واجهة المستخدم ...</value>
+  <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>تحميل واجهة المستخدم…</value>
   </data>
-  <data name="Generic_Cancel" xml:space="preserve"><value>الغاء</value>
+  <data name="Generic_Cancel" xml:space="preserve"><value>إلغاء</value>
   </data>
   <data name="Generic_Quit" xml:space="preserve"><value>خروج</value>
   </data>
   <data name="Generic_Save" xml:space="preserve"><value>حفظ</value>
   </data>
-  <data name="mnuAbout" xml:space="preserve"><value>حول كينوفيا ...</value>
+  <data name="mnuAbout" xml:space="preserve"><value>حول كينوفيا…</value>
   </data>
-  <data name="mnuApplicationFolder" xml:space="preserve"><value>فتح مجلد السجل...</value>
+  <data name="mnuApplicationFolder" xml:space="preserve"><value>فتح مجلد السجل…</value>
   </data>
-  <data name="mnuEdit" xml:space="preserve"><value>تحرير</value>
+  <data name="mnuEdit" xml:space="preserve"><value>تعديل</value>
   </data>
   <data name="mnuFile" xml:space="preserve"><value>ملف</value>
   </data>
@@ -240,7 +240,7 @@
   </data>
   <data name="mnuHelpContents" xml:space="preserve"><value>مساعدة كينوفيا…</value>
   </data>
-  <data name="mnuHistory" xml:space="preserve"><value>الاخيرة</value>
+  <data name="mnuHistory" xml:space="preserve"><value>الأخيرة</value>
   </data>
   <data name="mnuHistoryReset" xml:space="preserve"><value>إعادة ضبط سجل التصفح</value>
   </data>
@@ -252,9 +252,9 @@
   </data>
   <data name="mnuTools" xml:space="preserve"><value>الأدوات</value>
   </data>
-  <data name="mnuOptions" xml:space="preserve"><value>الخيارات</value>
+  <data name="mnuOptions" xml:space="preserve"><value>خيارات</value>
   </data>
-  <data name="mnuPreferences" xml:space="preserve"><value>التفضيلات...</value>
+  <data name="mnuPreferences" xml:space="preserve"><value>تفضيلات…</value>
   </data>
   <data name="mnuScreens" xml:space="preserve"><value>عرض</value>
   </data>
@@ -270,7 +270,7 @@
   </data>
   <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>مائة في الدقيقة</value>
   </data>
-  <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>عشرة آلاف في الساعة</value>
+  <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>عشرة آلاف من الساعة</value>
   </data>
   <data name="dlgPreferences_Capture_Recording" xml:space="preserve">
     <value>التسجيل</value>
@@ -279,12 +279,108 @@
     <value>تسجيل فيديو غير مضغوط</value>
   </data>
   <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve">
-    <value>صيغة فيديو غير مضغوطة:</value>
+    <value>صيغة فيديو غير مضغوط:</value>
   </data>
   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
-    <value>عرض معدل الإطارات في الثانية (fps):</value>
+    <value>عرض معدل الإطارات (إطار/ثانية):</value>
   </data>
   <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
-    <value>حفظ كبيئة عمل افتراضية</value>
+    <value>حفظ كمساحة عمل افتراضية</value>
+  </data>
+  <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve">
+    <value>السماح بحالات متعددة في تطبيق كينوفيا</value>
+  </data>
+  <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve">
+    <value>حالات لها تفضيلاتها الخاصة</value>
+  </data>
+  <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
+    <value>ملف افتراضي للتعليقات التوضيحية:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve">
+    <value>مرئي طوال الفيديو</value>
+  </data>
+  <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve">
+    <value>التعتيم الافتراضي لعناصر الرسم الجديدة:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
+    <value>تشغيل الأمر التالي بعد التسجيل:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
+    <value>الوقت الضائع (ث):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
+    <value>إيقاف التسجيل بمدة (ث):</value>
+  </data>
+  <data name="dlgPreferences_Capture_tabAutomation" xml:space="preserve">
+    <value>تشغيل تلقائي</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve">
+    <value>معدل استبدال الكادرات (كادر/ثانية):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve">
+    <value>الحد الأدنى لمعدل استبدال الكادرات (كادر/ثانية):</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
+    <value>تجاهل التحذير عند الكتابة فوق الملف</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
+    <value>اسم الملف المسجل</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
+    <value>دليل التسجيلات</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
+    <value>الكاميرا: تسجيل كادرات في الوقت الحقيقي.</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve">
+    <value>متأخر: تسجيل كادرات متأخرة.</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
+    <value>أثر رجعي: تسجيل كادرات عند توقف الإلتقاط.</value>
+  </data>
+  <data name="mnuWorkspaceExport" xml:space="preserve">
+    <value>تصدير مساحة العمل</value>
+  </data>
+  <data name="mnuWorkspace" xml:space="preserve">
+    <value>مساحة العمل</value>
+  </data>
+  <data name="dlgPreferences_Player_lblMemory" xml:space="preserve">
+    <value>ذاكرة التخزين المؤقت المخصصة لكل شاشة تشغيل: {0} ميجابايت.</value>
+  </data>
+  <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve">
+    <value>استيراد تسلسلات الصور كمقاطع فيديو</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve">
+    <value>تفعيل وضع تصحيح الأخطاء للأدوات المخصصة</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve">
+    <value>تفعيل تصفية الإحداثيات</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
+    <value>عتبة التشغيل:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve">
+    <value>جهاز الإدخال:</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkEnableAudioTrigger" xml:space="preserve">
+    <value>تمكين مشغل الصوت</value>
+  </data>
+  <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
+    <value>كاميرات عالية السرعة</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
+    <value>التاريخ والوقت (YYYYMMDD-HHMMSS)</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
+    <value>الوقت (HHMMSS)</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
+    <value>التاريخ (YYYYMMDD)</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
+    <value>تسلسل الهروب</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve">
+    <value>وضع التسجيل والتأخير</value>
   </data>
 </root>
