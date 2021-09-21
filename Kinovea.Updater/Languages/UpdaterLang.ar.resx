@@ -64,24 +64,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="mnuCheckForUpdates" xml:space="preserve"><value>تحديث البرنامج…</value>
+  <data name="mnuCheckForUpdates" xml:space="preserve"><value>تحقق من تحديثات البرنامج…</value>
   </data>
   <data name="Updater_Behind" xml:space="preserve"><value>يتوفر إصدار جديد!</value>
   </data>
   <data name="Updater_CurrentVersion" xml:space="preserve"><value>النسخة الحالية :</value>
   </data>
-  <data name="Updater_Download" xml:space="preserve"><value>تحميل</value>
+  <data name="Updater_Download" xml:space="preserve"><value>تنزيل</value>
   </data>
   <data name="Updater_InternetError" xml:space="preserve"><value>حدث خطأ أثناء التحقق من وجود تحديثات. يرجى التأكد من الاتصال بالإنترنت.</value>
   </data>
   <data name="Updater_LblChangeLog" xml:space="preserve"><value>قائمة التغيرات :</value>
   </data>
-  <data name="Updater_NewVersion" xml:space="preserve"><value>اصدار جديد</value>
+  <data name="Updater_NewVersion" xml:space="preserve"><value>إصدار جديد</value>
   </data>
   <data name="Updater_Quit" xml:space="preserve"><value>خروج</value>
   </data>
   <data name="Updater_Title" xml:space="preserve"><value>كينوفيا - يتحقق من توافر اصدار جديد.</value>
   </data>
-  <data name="Updater_UpToDate" xml:space="preserve"><value>لديك اخر اصدار !</value>
+  <data name="Updater_UpToDate" xml:space="preserve"><value>لديك أحدث إصدار !</value>
   </data>
 </root>
