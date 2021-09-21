@@ -106,7 +106,7 @@
   </data>
   <data name="mnuAbout" xml:space="preserve"><value>关于本软件…</value>
   </data>
-  <data name="mnuApplicationFolder" xml:space="preserve"><value>打开记录文件夹</value>
+  <data name="mnuApplicationFolder" xml:space="preserve"><value>打开记录文件夹…</value>
   </data>
   <data name="mnuEdit" xml:space="preserve"><value>编辑</value>
   </data>
@@ -116,7 +116,7 @@
   </data>
   <data name="mnuHelpContents" xml:space="preserve"><value>帮助...</value>
   </data>
-  <data name="mnuHistory" xml:space="preserve"><value>最近历史...</value>
+  <data name="mnuHistory" xml:space="preserve"><value>最近历史</value>
   </data>
   <data name="mnuHistoryReset" xml:space="preserve"><value>重设历史文件</value>
   </data>
@@ -126,7 +126,7 @@
   </data>
   <data name="mnuOptions" xml:space="preserve"><value>选项</value>
   </data>
-  <data name="mnuPreferences" xml:space="preserve"><value>首选项...</value>
+  <data name="mnuPreferences" xml:space="preserve"><value>选项…</value>
   </data>
   <data name="mnuScreens" xml:space="preserve"><value>查看</value>
   </data>
@@ -298,5 +298,155 @@
   </data>
   <data name="dlgAbout_Translation" xml:space="preserve">
     <value>翻译</value>
+  </data>
+  <data name="TimeCodeFormat_Microseconds" xml:space="preserve">
+    <value>总微秒数</value>
+  </data>
+  <data name="TimeCodeFormat_Milliseconds" xml:space="preserve">
+    <value>总毫秒数</value>
+  </data>
+  <data name="mnuWorkspaceExport" xml:space="preserve">
+    <value>导出工作区</value>
+  </data>
+  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
+    <value>另存为默认工作区</value>
+  </data>
+  <data name="mnuWorkspace" xml:space="preserve">
+    <value>工作区</value>
+  </data>
+  <data name="mnuTools" xml:space="preserve">
+    <value>工具</value>
+  </data>
+  <data name="mnuVideo" xml:space="preserve">
+    <value>视频</value>
+  </data>
+  <data name="mnuFullScreen" xml:space="preserve">
+    <value>全屏</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve">
+    <value>默认</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnClear" xml:space="preserve">
+    <value>清除</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnApply" xml:space="preserve">
+    <value>应用</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblHotkey" xml:space="preserve">
+    <value>热键{0}.{1}</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblCommands" xml:space="preserve">
+    <value>命令</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
+    <value>类别</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
+    <value>像素</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
+    <value>百分比</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
+    <value>搜索窗口：</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
+    <value>对象窗口：</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
+    <value>默认跟踪参数</value>
+  </data>
+  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
+    <value>追踪</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
+    <value>自定义长度单位：</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadiansPerSecondSquared" xml:space="preserve">
+    <value>每秒平方弧度 ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegreesPerSecondSquared" xml:space="preserve">
+    <value>度每秒平方 ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRevolutionsPerMinute" xml:space="preserve">
+    <value>每分钟转数 ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadiansPerSecond" xml:space="preserve">
+    <value>每秒弧度 ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegreesPerSecond" xml:space="preserve">
+    <value>度每秒 ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadians" xml:space="preserve">
+    <value>弧度({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegrees" xml:space="preserve">
+    <value>度数 ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsFeetPerSecondSquared" xml:space="preserve">
+    <value>英尺每秒平方 ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsMetersPerSecondSquared" xml:space="preserve">
+    <value>米每二次方秒 ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngularAcceleration" xml:space="preserve">
+    <value>角加速度:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngularVelocity" xml:space="preserve">
+    <value>角速度:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngle" xml:space="preserve">
+    <value>角度:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAcceleration" xml:space="preserve">
+    <value>加速度:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsSpeed" xml:space="preserve">
+    <value>速度:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitTime" xml:space="preserve">
+    <value>时间:</value>
+  </data>
+  <data name="mnuTimeFormat" xml:space="preserve">
+    <value>时间</value>
+  </data>
+  <data name="dlgPreferences_Player_tabUnits" xml:space="preserve">
+    <value>单位</value>
+  </data>
+  <data name="dlgPreferences_Player_lblMemory" xml:space="preserve">
+    <value>分配给每个播放屏幕的缓存：{0} MB。</value>
+  </data>
+  <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve">
+    <value>实例有自己的偏好</value>
+  </data>
+  <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
+    <value>默认注释文件：</value>
+  </data>
+  <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve">
+    <value>比较视频时链接速度滑块</value>
+  </data>
+  <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve">
+    <value>在时间光标移动期间更新图像</value>
+  </data>
+  <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve">
+    <value>将图像序列导入为视频</value>
+  </data>
+  <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve">
+    <value>在整个视频中可见</value>
+  </data>
+  <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve">
+    <value>新图纸的默认不透明度：</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
+    <value>空闲时间 (s):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
+    <value>停止录制按持续时间 (s):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve">
+    <value>为延迟缓冲区分配的内存：{0} MB。</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
+    <value>追溯：在捕获停止时记录帧。</value>
   </data>
 </root>
