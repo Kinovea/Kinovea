@@ -64,7 +64,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="btnSync_ToolTip" xml:space="preserve"><value>مزامنة الفيديوهات من الكادرات الحالية</value>
+  <data name="btnSync_ToolTip" xml:space="preserve"><value>مزامنة الفيديوهات مع الكادرات الحالية</value>
   </data>
   <data name="buttonGotoFirst_ToolTip" xml:space="preserve"><value>العودة إلى بداية الفديوهين</value>
   </data>
@@ -74,7 +74,7 @@
   </data>
   <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>الذهاب إلى الكادر السابق لكلا الفيديوهين</value>
   </data>
-  <data name="buttonPlay_ToolTip" xml:space="preserve"><value>تشغيل| ايقاف كلا الفديوهين</value>
+  <data name="buttonPlay_ToolTip" xml:space="preserve"><value>تشغيل أو ايقاف كلا الفديوهين</value>
   </data>
   <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>إضافة رسم</value>
   </data>
@@ -82,11 +82,11 @@
   </data>
   <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>إزالة صورة الرئيسية</value>
   </data>
-  <data name="CommandExportVideo_FriendlyName" xml:space="preserve"><value>حفظ الفيديو</value>
+  <data name="CommandExportVideo_FriendlyName" xml:space="preserve"><value>تصدير فيديو</value>
   </data>
   <data name="DataAnalysis" xml:space="preserve"><value>تحليل البيانات</value>
   </data>
-  <data name="DataAnalysis_ScatterDiagram" xml:space="preserve"><value>نقاط منتشرة</value>
+  <data name="DataAnalysis_ScatterDiagram" xml:space="preserve"><value>مخطط نقاط متناثرة</value>
   </data>
   <data name="DataAnalysis_PagePlot" xml:space="preserve"><value>رسم بياني</value>
   </data>
@@ -98,7 +98,7 @@
   </data>
   <data name="DataAnalysis_XaxisDefaultPoints" xml:space="preserve"><value>محور X</value>
   </data>
-  <data name="DataAnalysis_YaxisLabel" xml:space="preserve"><value>محور Y :</value>
+  <data name="DataAnalysis_YaxisLabel" xml:space="preserve"><value>المحور Y :</value>
   </data>
   <data name="DataAnalysis_YaxisDefaultPoints" xml:space="preserve"><value>محور Y</value>
   </data>
@@ -130,29 +130,29 @@
   </data>
   <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve"><value>حفظ لون البروفايل</value>
   </data>
-  <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>اعدادت الرسم</value>
+  <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>تهيئة الرسم</value>
   </data>
-  <data name="dlgConfigureDrawing_Name" xml:space="preserve"><value>اسم</value>
+  <data name="dlgConfigureDrawing_Name" xml:space="preserve"><value>الاسم</value>
   </data>
   <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>مرئي دائما</value>
   </data>
-  <data name="dlgTimebase_Title" xml:space="preserve"><value>اعدادات توقيت الفيديو</value>
+  <data name="dlgTimebase_Title" xml:space="preserve"><value>إعدادات توقيت الفيديو</value>
   </data>
   <data name="dlgTimebase_GroupCapture" xml:space="preserve"><value>كاميرا عالية السرعة</value>
   </data>
-  <data name="dlgTimebase_lblCapture" xml:space="preserve"><value>معدل كادرات الالتقاط:</value>
+  <data name="dlgTimebase_lblCapture" xml:space="preserve"><value>معدل كادرات التسجيل:</value>
   </data>
-  <data name="dlgTimebase_InfoCapture" xml:space="preserve"><value>هذا الخيار يوضح الفرق بين تردد الفيديو المعروض والتردد الفعلي. حيث ينعكس ذلك على قياس الزمن والقياسات الكينماتيكه . يتم استخدامة عندما يتم تصوير الفيديو بسرعة عالية. </value>
+  <data name="dlgTimebase_InfoCapture" xml:space="preserve"><value>هذا الخيار يوضح الفرق بين سرعة الفيديو المعروضة والسرعة الفعلي. حيث ينعكس ذلك على قياس الزمن والقياسات الحركية. يتم استخدامة عندما يتم تصوير الفيديو بسرعة عالية. </value>
   </data>
-  <data name="dlgTimebase_lblFileFPS" xml:space="preserve"><value>معدل الكادرات في الملف: {0: 0 ##} كادر في الثانية</value>
+  <data name="dlgTimebase_lblFileFPS" xml:space="preserve"><value>معدل الكادرات المحددة في الملف: {0: 0 ##} كادر في الثانية</value>
   </data>
   <data name="dlgTimebase_lblUserFPS" xml:space="preserve"><value>معدل كادرات الفيديو:</value>
   </data>
-  <data name="dlgTimebase_InfoUser" xml:space="preserve"><value>هذا الخيار يوضح معدل الكادرات المرجعية المستخدمة بواسطة كينوفيا لتشغيل الفيديو. يتم استخدامة عندما يحتوي الفيديو علي معدل كادرات غير صحيح أولا يمكن قراءتها بواسطة كينوفيا. </value>
+  <data name="dlgTimebase_InfoUser" xml:space="preserve"><value>هذا الخيار يوضح معدل الكادرات المرجعية المستخدمة بواسطة كينوفيا لتشغيل الفيديو. يتم استخدامة عندما يحتوي الفيديو علي معدل كادرات غير صحيح أو لا يمكن قراءتها بواسطة كينوفيا. </value>
   </data>
   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>إعادة ضبط</value>
   </data>
-  <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>اعدادات اداة تتبع المسار</value>
+  <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>إعدادات أداة تتبع المسار</value>
   </data>
   <data name="dlgConfigureTrajectory_VisibilityComplete" xml:space="preserve"><value>كامل</value>
   </data>
@@ -162,23 +162,23 @@
   </data>
   <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve"><value>العلامة:</value>
   </data>
-  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve"><value>كروس</value>
+  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve"><value>متقاطع</value>
   </data>
   <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve"><value>دائرة</value>
   </data>
-  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve"><value>علامة تصويب</value>
+  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve"><value>علامة التصويب</value>
   </data>
   <data name="dlgConfigureTrajectory_CheckDisplayRotationCircle" xml:space="preserve"><value>عرض حلقة دورانية</value>
   </data>
   <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve"><value>القياس:</value>
   </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve"><value>لايوجد</value>
+  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve"><value>لا يوجد</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve"><value>الموضع</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_VerticalPosition" xml:space="preserve"><value>الموضع الرأسي</value>
   </data>
-  <data name="dlgConfigureTrajectory_ExtraData_HorizontalPosition" xml:space="preserve"><value>الموضع الافقي</value>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalPosition" xml:space="preserve"><value>الموضع الأفقي</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve"><value>المسافة الكلية</value>
   </data>
@@ -186,7 +186,7 @@
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_VerticalVelocity" xml:space="preserve"><value>السرعة الرأسية</value>
   </data>
-  <data name="dlgConfigureTrajectory_ExtraData_HorizontalVelocity" xml:space="preserve"><value>السرعة الافقية</value>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalVelocity" xml:space="preserve"><value>السرعة الأفقية</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_Acceleration" xml:space="preserve"><value>التسارع</value>
   </data>
@@ -194,33 +194,33 @@
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve"><value>التسارع الأفقي</value>
   </data>
-  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve"><value>الازاحة الزاوية</value>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve"><value>الإزاحة الزاوية</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve"><value>السرعة الزاوية</value>
   </data>
-  <data name="dlgConfigureTrajectory_ExtraData_AngularAcceleration" xml:space="preserve"><value>العجلة الزاوية</value>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularAcceleration" xml:space="preserve"><value>التسارع الزاوي</value>
   </data>
-  <data name="dlgConfigureTrajectory_ExtraData_CentripetalAcceleration" xml:space="preserve"><value>العجلة المركزية</value>
+  <data name="dlgConfigureTrajectory_ExtraData_CentripetalAcceleration" xml:space="preserve"><value>التسارع المركزي</value>
   </data>
   <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve"><value>التتبع</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve"><value>اطار الهدف:</value>
+  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve"><value>إطار الهدف:</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve"><value>اطار البحث:</value>
+  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve"><value>إطار البحث:</value>
   </data>
   <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>الحجم الحقيقي للمقطع:</value>
   </data>
   <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>معايرة الخط</value>
   </data>
-  <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>خطة المعايرة</value>
+  <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>معايرة المستوى</value>
   </data>
   <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>المدة في كل صورة رئيسية: {0} مائة من الثواني.</value>
   </data>
   <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>مدة كل صورة رئيسية: {0: 0.00} ثواني.</value>
   </data>
-  <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>الفيديو الأصلي مع وقفة على كل صورة رئيسية</value>
+  <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>الفيديو الأصلي مع توقيف على كل صورة رئيسية</value>
   </data>
-  <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>فيديو عرض الشرائح فقط مع الصور الرئيسية.</value>
+  <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>عرض شرائح الفيديو فقط مع الصور الرئيسية.</value>
   </data>
   <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>نوع الفيديو</value>
   </data>
@@ -240,13 +240,13 @@
   </data>
   <data name="dlgRafaleExport_ExportFrameDecimation" xml:space="preserve"><value>تصدير صورة واحدة كل {0}صورة.</value>
   </data>
-  <data name="dlgRafaleExport_ExportTimeDecimationSeconds" xml:space="preserve"><value>تصدير صورة واحدة كل {0: 0.00} الصورة.</value>
+  <data name="dlgRafaleExport_ExportTimeDecimationSeconds" xml:space="preserve"><value>تصدير صورة واحدة كل {0: 0.00} ثانية.</value>
   </data>
   <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve"><value>تصدير صورة واحدة كل {0: 0} مللي ثانية.</value>
   </data>
   <data name="dlgRafaleExport_Title" xml:space="preserve"><value>  حفظ تسلسل الصور</value>
   </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>تأخذ الحركة البطيئة بعين الاعتبار. (الحالي = </value>
+  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>أخذ الحركة البطيئة بعين الاعتبار. (الحالي = </value>
   </data>
   <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>حفظ الاسلوب</value>
   </data>
@@ -256,7 +256,7 @@
   </data>
   <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>حفظ الفيديو مع التحليل المطبق بشكل دائم على الفيديو</value>
   </data>
-  <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>ادوات التحليل سوف تكون ظاهرة في جميع العروض ولكن غير قابلة للتعديل. التعليقات الاضافية المرفقة بالصور الرئيسية # لن يتم حفظها.</value>
+  <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>أدوات التحليل سوف تكون ظاهرة في جميع العروض ولكن غير قابلة للتعديل. #التعليقات الاضافية المرفقة بالصور الرئيسية لن يتم حفظها.</value>
   </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>حفظ بيانات الصور الرئيسية</value>
   </data>
@@ -270,7 +270,7 @@
   </data>
   <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve"><value>معايرة الكاميرا</value>
   </data>
-  <data name="dlgCameraCalibration_Distortion" xml:space="preserve"><value>الاعوجاج</value>
+  <data name="dlgCameraCalibration_Distortion" xml:space="preserve"><value>الإعوجاج</value>
   </data>
   <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve"><value>تحميل بروفايل معايرة الكاميرا</value>
   </data>
@@ -282,7 +282,7 @@
   </data>
   <data name="DrawingName_ArrowSquiggly" xml:space="preserve"><value>سهم - متعرج</value>
   </data>
-  <data name="DrawingName_ArrowCurve" xml:space="preserve"><value>سهم - منحني</value>
+  <data name="DrawingName_ArrowCurve" xml:space="preserve"><value>سهم - منحنى</value>
   </data>
   <data name="DrawingName_ArrowPolyline" xml:space="preserve"><value>سهم - متعدد الخطوط</value>
   </data>
@@ -306,15 +306,15 @@
   </data>
   <data name="DrawingName_Archery" xml:space="preserve"><value>وضع الرماية</value>
   </data>
-  <data name="DrawingName_AngleToVertical" xml:space="preserve"><value>الزاوية الي الاتجاه العمودي</value>
+  <data name="DrawingName_AngleToVertical" xml:space="preserve"><value>زاوية الي الاتجاه العمودي</value>
   </data>
   <data name="DrawingName_AngleToHorizontal" xml:space="preserve"><value>زاوية إلى الاتجاه أفقي</value>
   </data>
   <data name="DrawingName_DistanceHorizontal" xml:space="preserve"><value>المسافة الافقية</value>
   </data>
-  <data name="DrawingName_HumanModel" xml:space="preserve"><value>نموذج الإنسان</value>
+  <data name="DrawingName_HumanModel" xml:space="preserve"><value>نموذج إنسان</value>
   </data>
-  <data name="DrawingName_HumanModel2" xml:space="preserve"><value>نموذج الإنسان 2</value>
+  <data name="DrawingName_HumanModel2" xml:space="preserve"><value>نموذج إنسان (2)</value>
   </data>
   <data name="DrawingName_TestGrid" xml:space="preserve"><value>شبكة اختبار الكاميرا</value>
   </data>
@@ -332,11 +332,11 @@
   </data>
   <data name="Error_SaveDiaporama" xml:space="preserve"><value>كينوفيا - غير قادر علي إنشاء عرض للشرائح.</value>
   </data>
-  <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>عرض الشرائح هو سلسلة من الصور الرئيسية محفوظة في شكل شريط فيديو. \n الرجاء إضافة بعض الصور الرئيسية قبل إنشاء عرض الشرائح.</value>
+  <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>عرض الشرائح هو سلسلة من الصور الرئيسية محفوظة داخل صيغة الفيديو. \n الرجاء إضافة بعض الصور الرئيسية قبل إنشاء عرض الشرائح.</value>
   </data>
   <data name="Error_SavePausedVideo" xml:space="preserve"><value>كينوفيا - غير قادر علي إنشاء فيديو مؤقت</value>
   </data>
-  <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>غير قادر على الكتابة علي الملف. \n تأكد ان لديك الحق في الكتابة في المجلد المحدد، وأنه لم يتم استخدام الملف حاليا.</value>
+  <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>غير قادر على الكتابة علي الملف. \n تأكد ان لديك الحق في الكتابة في المجلد المحدد، وأنه لم يتم استخدام الملف حاليًا.</value>
   </data>
   <data name="Error_SaveMovie_Title" xml:space="preserve"><value>كينوفيا - غير قادر على حفظ الفيديو. </value>
   </data>
@@ -346,33 +346,33 @@
   </data>
   <data name="FormCameraAlias_Alias" xml:space="preserve"><value>الاسم المستعار:</value>
   </data>
-  <data name="FormCameraAlias_Icon" xml:space="preserve"><value>أيقونة:</value>
+  <data name="FormCameraAlias_Icon" xml:space="preserve"><value>الرمز:</value>
   </data>
   <data name="FormIconPicker_Title" xml:space="preserve"><value>الرموز</value>
   </data>
-  <data name="FormFileSave_Infos" xml:space="preserve"><value>تقدم :</value>
+  <data name="FormFileSave_Infos" xml:space="preserve"><value>التقدم :</value>
   </data>
-  <data name="FormFramesExport_Infos" xml:space="preserve"><value>الصور المصدرة :</value>
+  <data name="FormFramesExport_Infos" xml:space="preserve"><value>الصور التي تم تصديرها:</value>
   </data>
   <data name="FormFramesExport_Title" xml:space="preserve"><value>تصدير الصور...</value>
   </data>
   <data name="FormProgressBar_Title" xml:space="preserve"><value>تقدم</value>
   </data>
-  <data name="Generic_Appearance" xml:space="preserve"><value>الظهور</value>
+  <data name="Generic_Appearance" xml:space="preserve"><value>المظهر</value>
   </data>
   <data name="Generic_Apply" xml:space="preserve"><value>تطبيق</value>
   </data>
-  <data name="Generic_ArrowPicker" xml:space="preserve"><value>اسهم:</value>
+  <data name="Generic_ArrowPicker" xml:space="preserve"><value>أسهم:</value>
   </data>
   <data name="Generic_Curved" xml:space="preserve"><value>منحنى:</value>
   </data>
   <data name="Generic_Cancel" xml:space="preserve"><value>إلغاء</value>
   </data>
-  <data name="Generic_Close" xml:space="preserve"><value>اغلاق</value>
+  <data name="Generic_Close" xml:space="preserve"><value>إغلاق</value>
   </data>
-  <data name="Generic_ColorPicker" xml:space="preserve"><value>لون:</value>
+  <data name="Generic_ColorPicker" xml:space="preserve"><value>اللون:</value>
   </data>
-  <data name="Generic_Configuration" xml:space="preserve"><value>اعدادات</value>
+  <data name="Generic_Configuration" xml:space="preserve"><value>إعدادات</value>
   </data>
   <data name="Generic_ConfigurationElipsis" xml:space="preserve"><value>اعدادت...</value>
   </data>
@@ -384,13 +384,13 @@
   </data>
   <data name="Generic_LineSizePicker" xml:space="preserve"><value>العرض:</value>
   </data>
-  <data name="Generic_Opacity" xml:space="preserve"><value>الغموض</value>
+  <data name="Generic_Opacity" xml:space="preserve"><value>العتامة</value>
   </data>
   <data name="Generic_Visibility" xml:space="preserve"><value>الظهور</value>
   </data>
   <data name="Generic_Options" xml:space="preserve"><value>خيارات</value>
   </data>
-  <data name="Generic_PenSizePicker" xml:space="preserve"><value>حجم:</value>
+  <data name="Generic_PenSizePicker" xml:space="preserve"><value>الحجم:</value>
   </data>
   <data name="Generic_Save" xml:space="preserve"><value>حفظ</value>
   </data>
@@ -400,7 +400,7 @@
   </data>
   <data name="Generic_Video" xml:space="preserve"><value>فيديو</value>
   </data>
-  <data name="Generic_SaveImage" xml:space="preserve"><value>احفظ الصورة</value>
+  <data name="Generic_SaveImage" xml:space="preserve"><value>حفظ الصورة</value>
   </data>
   <data name="Generic_File" xml:space="preserve"><value>ملف</value>
   </data>
@@ -412,41 +412,41 @@
   </data>
   <data name="Generic_Quit" xml:space="preserve"><value>خروج</value>
   </data>
-  <data name="Generic_PlayPause" xml:space="preserve"><value>تشغيل | ايقاف</value>
+  <data name="Generic_PlayPause" xml:space="preserve"><value>تشغيل | إيقاف</value>
   </data>
-  <data name="FileProperty_Size" xml:space="preserve"><value>حجم</value>
+  <data name="FileProperty_Size" xml:space="preserve"><value>الحجم</value>
   </data>
   <data name="FileProperty_Framerate" xml:space="preserve"><value>معدل الكادرات</value>
   </data>
   <data name="FileProperty_Duration" xml:space="preserve"><value>المدة الزمنية</value>
   </data>
-  <data name="FileProperty_CreationTime" xml:space="preserve"><value>زمن الانشاء</value>
+  <data name="FileProperty_CreationTime" xml:space="preserve"><value>زمن الإنشاء</value>
   </data>
   <data name="FileProperty_HasKva" xml:space="preserve"><value>ملف Kva</value>
   </data>
   <data name="FileFilter_All" xml:space="preserve"><value>جميع الملفات</value>
   </data>
-  <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>تم تعديل الصور الرئيسية. \n هل تريد حفظ بيانات الصور الرئيسية قبل الاغلاق؟</value>
+  <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>تم تعديل بيانات الصور الرئيسية. \n هل تريد حفظ بيانات الصور الرئيسية قبل الاغلاق؟</value>
   </data>
-  <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>لم يتم حفظ بيانات الصور الرئيسية</value>
+  <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>حفظ التغيرات</value>
   </data>
   <data name="lblInfo_Text" xml:space="preserve"><value>التحكم العام :</value>
   </data>
-  <data name="lblSelDuration_Text" xml:space="preserve"><value>المدة</value>
+  <data name="lblSelDuration_Text" xml:space="preserve"><value>المدة الزمنية</value>
   </data>
-  <data name="lblSelStartSelection_Text" xml:space="preserve"><value>بداية</value>
+  <data name="lblSelStartSelection_Text" xml:space="preserve"><value>بدء</value>
   </data>
-  <data name="lblSpeedTuner_Text" xml:space="preserve"><value>{0} : سرعة</value>
+  <data name="lblSpeedTuner_Text" xml:space="preserve"><value>السرعة: {0}</value>
   </data>
-  <data name="lblTimeCode_Text" xml:space="preserve"><value>التوقيت</value>
+  <data name="lblTimeCode_Text" xml:space="preserve"><value>الموضع</value>
   </data>
   <data name="lblWorkingZone_Text" xml:space="preserve"><value>منطقة العمل:</value>
   </data>
   <data name="LengthUnit_Millimeters" xml:space="preserve"><value>ملليمترات</value>
   </data>
-  <data name="LengthUnit_Centimeters" xml:space="preserve"><value>سم</value>
+  <data name="LengthUnit_Centimeters" xml:space="preserve"><value>سنتيمترات</value>
   </data>
-  <data name="LengthUnit_Meters" xml:space="preserve"><value>متر</value>
+  <data name="LengthUnit_Meters" xml:space="preserve"><value>أمتار</value>
   </data>
   <data name="LengthUnit_Inches" xml:space="preserve"><value>بوصة</value>
   </data>
@@ -458,15 +458,15 @@
   </data>
   <data name="LoadMovie_CodecNotFound" xml:space="preserve"><value>فشل: غير قادر على فتح الملف: لايدعم البث للفيديو .</value>
   </data>
-  <data name="LoadMovie_CodecNotOpened" xml:space="preserve"><value>فشل: غير قادر على فتح الملف: مشكلة أثناء اعداد فك التشفير.</value>
+  <data name="LoadMovie_CodecNotOpened" xml:space="preserve"><value>فشل: غير قادر على فتح الملف: مشكلة أثناء إعداد فك التشفير.</value>
   </data>
-  <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>فشل: غير قادر على فتح الملف: نوع ملف غير مدعوم.</value>
+  <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>فشل: غير قادر على فتح الملف: نوع الملف غير مدعوم.</value>
   </data>
   <data name="LoadMovie_Error" xml:space="preserve"><value>كينوفيا - خطأ التحميل.</value>
   </data>
-  <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>فشل: غير قادر على فتح الملف: ملف لم يتم العثور أو فارغ.</value>
+  <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>فشل: غير قادر على فتح الملف: لم يتم العثور على الملف أو فارغ.</value>
   </data>
-  <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>فشل: غير قادر على فتح الملف: يوجد عدم اتساق. يرجى مراجعة عملية الترميز.</value>
+  <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>فشل: غير قادر على فتح الملف: يوجد عدم اتساق. يرجى مراجعة عملية التشفير.</value>
   </data>
   <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>فشل: غير قادر على فتح الملف: معلومات البث غير موجوده.</value>
   </data>
@@ -490,7 +490,7 @@
   </data>
   <data name="mnuConfigureTrajectory" xml:space="preserve"><value>اعدادات عرض المسار</value>
   </data>
-  <data name="mnuDeinterlace" xml:space="preserve"><value>فك التشابك</value>
+  <data name="mnuDeinterlace" xml:space="preserve"><value>فك التداخل</value>
   </data>
   <data name="mnuDeleteDrawing" xml:space="preserve"><value>حذف</value>
   </data>
@@ -498,7 +498,7 @@
   </data>
   <data name="mnuDeleteTrajectory" xml:space="preserve"><value>حذف المسار بالكامل</value>
   </data>
-  <data name="mnuTwoCaptures" xml:space="preserve"><value>شاشتين للالتقاط</value>
+  <data name="mnuTwoCaptures" xml:space="preserve"><value>شاشتين للإلتقاط</value>
   </data>
   <data name="mnuTwoMixed" xml:space="preserve"><value>شاشة للالتقاط وشاشة للعرض</value>
   </data>
@@ -522,7 +522,7 @@
   </data>
   <data name="mnuImportImage" xml:space="preserve"><value>استيراد صورة …</value>
   </data>
-  <data name="mnuFlipHorizontally" xml:space="preserve"><value>اقلب أفقيا</value>
+  <data name="mnuFlipHorizontally" xml:space="preserve"><value>اقلب أفقيًا</value>
   </data>
   <data name="mnuFlipVertically" xml:space="preserve"><value>اقلب عموديا</value>
   </data>
@@ -536,19 +536,19 @@
   </data>
   <data name="mnuOneCapture" xml:space="preserve"><value>شاشة واحدة للالتقاط</value>
   </data>
-  <data name="mnuOnePlayer" xml:space="preserve"><value>شاشة واحدة للعرض</value>
+  <data name="mnuOnePlayer" xml:space="preserve"><value>شاشة واحدة لإعادة العرض</value>
   </data>
-  <data name="mnuRestartTracking" xml:space="preserve"><value>اعادة تحرير المسار</value>
+  <data name="mnuRestartTracking" xml:space="preserve"><value>إعادة تحرير المسار</value>
   </data>
-  <data name="mnuOpenVideo" xml:space="preserve"><value>فتح ملف الفيديو…</value>
+  <data name="mnuOpenVideo" xml:space="preserve"><value>فتح مقطع الفيديو…</value>
   </data>
   <data name="mnuCalibrate" xml:space="preserve"><value>معايرة...</value>
   </data>
-  <data name="mnuTimebase" xml:space="preserve"><value>اعدادات توقيت الفيديو ...</value>
+  <data name="mnuTimebase" xml:space="preserve"><value>إعدادات توقيت الفيديو ...</value>
   </data>
   <data name="mnuShowMeasure" xml:space="preserve"><value>عرض القياس</value>
   </data>
-  <data name="mnuStopTracking" xml:space="preserve"><value>انهاء تحرير المسار </value>
+  <data name="mnuStopTracking" xml:space="preserve"><value>إنهاء تعديل المسار </value>
   </data>
   <data name="mnuSVGTools" xml:space="preserve"><value>ملاحظات مرجعية</value>
   </data>
@@ -556,9 +556,9 @@
   </data>
   <data name="mnuThumbnailDelete" xml:space="preserve"><value>حذف</value>
   </data>
-  <data name="mnuThumbnailForget" xml:space="preserve"><value>تجاهل تخصيص الاعدادت</value>
+  <data name="mnuThumbnailForget" xml:space="preserve"><value>تجاهل تخصيص الإعدادت</value>
   </data>
-  <data name="mnuThumbnailRename" xml:space="preserve"><value>اعادة تسمية</value>
+  <data name="mnuThumbnailRename" xml:space="preserve"><value>إعادة تسمية</value>
   </data>
   <data name="mnuThumbnailLocate" xml:space="preserve"><value>العثور علي ملف في متصفح الويندوز</value>
   </data>
@@ -576,19 +576,19 @@
   </data>
   <data name="mnuCoordinateSystemHide" xml:space="preserve"><value>إخفاء</value>
   </data>
-  <data name="mnuPolyline_FinishHere" xml:space="preserve"><value>إنهاء متعدد الخطوط هنا</value>
+  <data name="mnuPolyline_FinishHere" xml:space="preserve"><value>إنهاء الشكل متعدد الخطوط هنا</value>
   </data>
-  <data name="mnuPolyline_FinishAtPrevious" xml:space="preserve"><value>إنهاء متعدد الخطوط في النقطة السابقة</value>
+  <data name="mnuPolyline_FinishAtPrevious" xml:space="preserve"><value>إنهاء الشكل متعدد الخطوط في النقطة السابقة</value>
   </data>
   <data name="mnuPolyline_CloseMenu" xml:space="preserve"><value>إغلاق هذه القائمة</value>
   </data>
-  <data name="RecentlyUsedColors" xml:space="preserve"><value>الألوان المستخدمة مؤخرا:</value>
+  <data name="RecentlyUsedColors" xml:space="preserve"><value>الألوان المستخدمة مؤخرًا:</value>
   </data>
   <data name="statusEmptyScreen" xml:space="preserve"><value>فارغ</value>
   </data>
   <data name="Toast_Pause" xml:space="preserve"><value>وقف</value>
   </data>
-  <data name="Toast_Zoom" xml:space="preserve"><value>التكبير: {0}٪</value>
+  <data name="Toast_Zoom" xml:space="preserve"><value>تكبير: {0}٪</value>
   </data>
   <data name="Toast_StartRecord" xml:space="preserve"><value>بدأ تسجيل</value>
   </data>
@@ -608,7 +608,7 @@
   </data>
   <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>زاوية</value>
   </data>
-  <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>ساعة ايقاف</value>
+  <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>ساعة توقيت</value>
   </data>
   <data name="ToolTip_DrawingToolCircle" xml:space="preserve"><value>دائرة</value>
   </data>
@@ -618,7 +618,7 @@
   </data>
   <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>قلم</value>
   </data>
-  <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>حرك</value>
+  <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>تحريك</value>
   </data>
   <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>نص</value>
   </data>
@@ -628,7 +628,7 @@
   </data>
   <data name="ToolTip_First" xml:space="preserve"><value>العودة إلى البداية</value>
   </data>
-  <data name="ToolTip_Last" xml:space="preserve"><value>القفز الى النهاية</value>
+  <data name="ToolTip_Last" xml:space="preserve"><value>القفز إلى النهاية</value>
   </data>
   <data name="ToolTip_Magnifier" xml:space="preserve"><value>مكبر</value>
   </data>
@@ -648,37 +648,37 @@
   </data>
   <data name="ToolTip_StartCamera" xml:space="preserve"><value>بداية الكاميرا</value>
   </data>
-  <data name="ToolTip_ConfigureCamera" xml:space="preserve"><value>اعدادات الكاميرا</value>
+  <data name="ToolTip_ConfigureCamera" xml:space="preserve"><value>إعدادات الكاميرا</value>
   </data>
   <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>إعادة ضبط منطقة العمل لكامل الفيديو</value>
   </data>
-  <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>غليظ</value>
+  <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>ثقيل</value>
   </data>
   <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>مائل</value>
   </data>
   <data name="ToolTip_RichText_Underline" xml:space="preserve"><value>تحته خط</value>
   </data>
-  <data name="ToolTip_RichText_Strikeout" xml:space="preserve"><value>يتخلله</value>
+  <data name="ToolTip_RichText_Strikeout" xml:space="preserve"><value>شطب</value>
   </data>
   <data name="ToolTip_RichText_ForeColor" xml:space="preserve"><value>اللون الأمامي</value>
   </data>
-  <data name="ToolTip_RichText_BackColor" xml:space="preserve"><value>لون الخلفية</value>
+  <data name="ToolTip_RichText_BackColor" xml:space="preserve"><value>اللون الخلفي</value>
   </data>
-  <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>حفظ شرائح من الصور الرئيسية</value>
+  <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>تصدير شرائح من الصور الرئيسية</value>
   </data>
-  <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>حفظ الفيديو مع وقفة على كل صورة الرئيسية</value>
+  <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>تصدير الفيديو مع لإيقاف على كل صورة رئيسية</value>
   </data>
   <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>تعيين الكادر الأول في منطقة العمل إلى الكادر الحالي</value>
   </data>
   <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>تعيين الكادر الأخير من منطقة العامل إلى الكادر الحالي</value>
   </data>
-  <data name="ToolTip_ShowComments" xml:space="preserve"><value>اظهار التعليقات</value>
+  <data name="ToolTip_ShowComments" xml:space="preserve"><value>إظهار التعليقات</value>
   </data>
-  <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>حفظ كل الصور في صورة مركبة</value>
+  <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>حفظ كل الصور في صورة واحدة مركبة</value>
   </data>
-  <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>حفظ كلا الفيديوهين في فيديو مركب</value>
+  <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>حفظ كلا الفيديوهين في فيديو واحد مركب</value>
   </data>
-  <data name="ToolTip_trkSelection" xml:space="preserve"><value>اعداد منطقة العمل</value>
+  <data name="ToolTip_trkSelection" xml:space="preserve"><value>إعداد منطقة العمل</value>
   </data>
   <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>حواف فقط ...</value>
   </data>
@@ -692,14 +692,266 @@
   </data>
   <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>تباين تلقائي...</value>
   </data>
-  <data name="FormCrashRecovery_Title" xml:space="preserve"><value>استرداد التعطل الكلي</value>
+  <data name="FormCrashRecovery_Title" xml:space="preserve"><value>استعادة التعطل الكلي</value>
   </data>
   <data name="FormCrashRecovery_Recover" xml:space="preserve"><value>استعادة</value>
   </data>
-  <data name="FormCrashRecovery_File" xml:space="preserve"><value>ملف</value>
+  <data name="FormCrashRecovery_File" xml:space="preserve"><value>الملف</value>
   </data>
-  <data name="FormCrashRecovery_Date" xml:space="preserve"><value>تاريخ</value>
+  <data name="FormCrashRecovery_Date" xml:space="preserve"><value>التاريخ</value>
   </data>
-  <data name="FormCrashRecovery_Info" xml:space="preserve"><value>لم يتم حفظ المشاريع التالية بشكل صحيح ولكن يمكن استردادها:</value>
+  <data name="FormCrashRecovery_Info" xml:space="preserve"><value>لم يتم حفظ المشاريع التالية بشكل صحيح ولكن يمكن استعادتها:</value>
+  </data>
+  <data name="mnuVisibilityConfigure" xml:space="preserve">
+    <value>إعدادات تلاشي مخصص</value>
+  </data>
+  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
+    <value>فتح كمجلد تشغيل للمشاهدة…</value>
+  </data>
+  <data name="mnuOpenReplayWatcher" xml:space="preserve">
+    <value>فتح مجلد التشغيل للمشاهدة…</value>
+  </data>
+  <data name="mnuMarkTimeAsOriginClock" xml:space="preserve">
+    <value>ضع علامة على الوقت الحالي كنقطة أصل ومنية لهذه الساعة</value>
+  </data>
+  <data name="mnuMarkTimeAsOrigin" xml:space="preserve">
+    <value>ضع علامة على الوقت الحالي كنقطة أصل زمنية</value>
+  </data>
+  <data name="mnuLoadAnalysis" xml:space="preserve">
+    <value>تحميل البيانات…</value>
+  </data>
+  <data name="FileFilter_AllSupported" xml:space="preserve">
+    <value>جميع الصيغ المدعومة</value>
+  </data>
+  <data name="Generic_ExportVideo" xml:space="preserve">
+    <value>تصدير فيديو…</value>
+  </data>
+  <data name="Generic_SaveKVAAs" xml:space="preserve">
+    <value>حفظ التحليلات باسم…</value>
+  </data>
+  <data name="Generic_SaveKVA" xml:space="preserve">
+    <value>حفظ االتحليلات</value>
+  </data>
+  <data name="Error_Capture_DirectoryNotCreated_Text" xml:space="preserve">
+    <value>تعذر إنشاء دليل الالتقاط. \n تحقق من أنه يشير إلى موقع تخزين صالح.</value>
+  </data>
+  <data name="DrawingName_CSVL" xml:space="preserve">
+    <value>خط عمودي مركزي غير مشمول</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisVertical" xml:space="preserve">
+    <value>يحدد الخط المحور الرأسي</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisHorizontal" xml:space="preserve">
+    <value>يحدد الخط المحور الأفقي</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblFading" xml:space="preserve">
+    <value>مدة التلاشي (الكادرات):</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblOpaque" xml:space="preserve">
+    <value>مدة الإعتام (الكادرات):</value>
+  </data>
+  <data name="DataAnalysis_ResultantLinearAcceleration" xml:space="preserve">
+    <value>التسارع الناتج</value>
+  </data>
+  <data name="DataAnalysis_TangentialAcceleration" xml:space="preserve">
+    <value>التسارع المماسي</value>
+  </data>
+  <data name="Infobar_Player_StopWatcher" xml:space="preserve">
+    <value>إيقاف مشاهدة المجلد: {0}</value>
+  </data>
+  <data name="DataAnalysis_AngularKinematics" xml:space="preserve">
+    <value>حركه بزاوية</value>
+  </data>
+  <data name="DataAnalysis_AngleAngleDiagrams" xml:space="preserve">
+    <value>مخطط زاويه إلى زاوية</value>
+  </data>
+  <data name="DataAnalysis_LinearKinematics" xml:space="preserve">
+    <value>حركة خطيه</value>
+  </data>
+  <data name="Infobar_Player_StartWatcher" xml:space="preserve">
+    <value>بدء مشاهدة المجلد: {0}</value>
+  </data>
+  <data name="Infobar_Player_Observing" xml:space="preserve">
+    <value>مجلد المشاهدة: {0}</value>
+  </data>
+  <data name="ToolTip_ArmTrigger" xml:space="preserve">
+    <value>تفعيل مشغل التسجيل. الوضع الحالي: معطل.</value>
+  </data>
+  <data name="ToolTip_DisarmTrigger" xml:space="preserve">
+    <value>تعطيل مشغل التسجيل. الوضع الحالي: مفعل.</value>
+  </data>
+  <data name="Toast_TriggerArmed" xml:space="preserve">
+    <value>مشغل التسجيل مفعل</value>
+  </data>
+  <data name="Toast_TriggerDisarmed" xml:space="preserve">
+    <value>مشغل التسجيل غير مفعل</value>
+  </data>
+  <data name="Toast_AudioLost" xml:space="preserve">
+    <value>اختفاء جهاز الصوت</value>
+  </data>
+  <data name="mnuShowCircleCenter" xml:space="preserve">
+    <value>إظهار مركز الدائرة</value>
+  </data>
+  <data name="mnuShowArrow" xml:space="preserve">
+    <value>إظهار السهم</value>
+  </data>
+  <data name="mnuPasteImage" xml:space="preserve">
+    <value>لصق صورة من الحافظة</value>
+  </data>
+  <data name="mnuVisibilityCustom" xml:space="preserve">
+    <value>تلاشي مخصص</value>
+  </data>
+  <data name="mnuVisibilityDefault" xml:space="preserve">
+    <value>تلاشي افتراضي</value>
+  </data>
+  <data name="mnuSetStyleAsDefault" xml:space="preserve">
+    <value>ضبط النمط على أنه افتراضي</value>
+  </data>
+  <data name="mnuPasteDrawing" xml:space="preserve">
+    <value>لصق الرسم</value>
+  </data>
+  <data name="mnuCopyDrawing" xml:space="preserve">
+    <value>نسخ الرسم</value>
+  </data>
+  <data name="mnuCutDrawing" xml:space="preserve">
+    <value>قص الرسم</value>
+  </data>
+  <data name="mnuSupplementaryAngle" xml:space="preserve">
+    <value>الزاوية التكميلية</value>
+  </data>
+  <data name="mnuCounterClockwise" xml:space="preserve">
+    <value>عكس اتجاه عقارب الساعه</value>
+  </data>
+  <data name="mnuSignedAngle" xml:space="preserve">
+    <value>زاوية التوقيع</value>
+  </data>
+  <data name="mnuRotation270" xml:space="preserve">
+    <value>90 درجة عكس اتجاه عقارب الساعة</value>
+  </data>
+  <data name="mnuRotation180" xml:space="preserve">
+    <value>180 درجة</value>
+  </data>
+  <data name="mnuRotation90" xml:space="preserve">
+    <value>90 درجة في اتجاه عقارب الساعة</value>
+  </data>
+  <data name="mnuRotation0" xml:space="preserve">
+    <value>لا دوران</value>
+  </data>
+  <data name="mnuRotation" xml:space="preserve">
+    <value>تدوير الصورة</value>
+  </data>
+  <data name="mnuDrawingTrackingStop" xml:space="preserve">
+    <value>توقف عن التتبع</value>
+  </data>
+  <data name="mnuDrawingTrackingStart" xml:space="preserve">
+    <value>بدء تتبع</value>
+  </data>
+  <data name="mnuShowLabel" xml:space="preserve">
+    <value>إظهار التسمية</value>
+  </data>
+  <data name="mnuShowAfter" xml:space="preserve">
+    <value>إظهار بعد هذه النقطة</value>
+  </data>
+  <data name="mnuHideAfter" xml:space="preserve">
+    <value>إخفاء بعد هذه النقطة</value>
+  </data>
+  <data name="mnuShowBefore" xml:space="preserve">
+    <value>إظهار قبل هذه النقطة</value>
+  </data>
+  <data name="mnuHideBefore" xml:space="preserve">
+    <value>إخفاء قبل هذه النقطة</value>
+  </data>
+  <data name="lblDelay_Text" xml:space="preserve">
+    <value>التأخير (ث):</value>
+  </data>
+  <data name="Generic_Paste" xml:space="preserve">
+    <value>لصق</value>
+  </data>
+  <data name="Generic_Copy" xml:space="preserve">
+    <value>نسخ</value>
+  </data>
+  <data name="Generic_Cut" xml:space="preserve">
+    <value>قص</value>
+  </data>
+  <data name="Generic_Clock" xml:space="preserve">
+    <value>الساعة:</value>
+  </data>
+  <data name="Generic_Perspective" xml:space="preserve">
+    <value>منظور:</value>
+  </data>
+  <data name="Error_Capture_DirectoryNotCreated_Title" xml:space="preserve">
+    <value>لم يتم إنشاء الدليل</value>
+  </data>
+  <data name="DrawingName_Clock" xml:space="preserve">
+    <value>الساعة</value>
+  </data>
+  <data name="DrawingName_Curve" xml:space="preserve">
+    <value>منحنى</value>
+  </data>
+  <data name="DrawingName_Trajectory" xml:space="preserve">
+    <value>المسار</value>
+  </data>
+  <data name="DrawingName_Rectangle" xml:space="preserve">
+    <value>مستطيل</value>
+  </data>
+  <data name="dlgCameraCalibration_lblFocalLength" xml:space="preserve">
+    <value>الطول البؤري (مم):</value>
+  </data>
+  <data name="dlgCameraCalibration_lblSensorWidth" xml:space="preserve">
+    <value>عرض المستشعر (مم):</value>
+  </data>
+  <data name="dlgCalibrateLine_AxesImage" xml:space="preserve">
+    <value>محاذاة مع محاور الصورة</value>
+  </data>
+  <data name="dlgCalibrateLine_CoordinateSystemAlignment" xml:space="preserve">
+    <value>تنسيق محاذاة النظام:</value>
+  </data>
+  <data name="ExtraData_Circumference" xml:space="preserve">
+    <value>محيط الدائرة</value>
+  </data>
+  <data name="ExtraData_Diameter" xml:space="preserve">
+    <value>القطر</value>
+  </data>
+  <data name="ExtraData_Radius" xml:space="preserve">
+    <value>نصف القطر</value>
+  </data>
+  <data name="ExtraData_Center" xml:space="preserve">
+    <value>المركز</value>
+  </data>
+  <data name="ExtraData_Length" xml:space="preserve">
+    <value>الطول</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalVerticalDisplacement" xml:space="preserve">
+    <value>الإزاحة العمودية النسبية</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement" xml:space="preserve">
+    <value>الإزاحة الأفقية النسبية</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_DistanceToOrigin" xml:space="preserve">
+    <value>المسافة إلى نقطة الأصل</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
+    <value>العتامة القصوى (٪):</value>
+  </data>
+  <data name="DataAnalysis_TangentialVelocity" xml:space="preserve">
+    <value>السرعة المماسية</value>
+  </data>
+  <data name="DataAnalysis_TotalAngularDisplacement" xml:space="preserve">
+    <value>إجمالي الإزاحة</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Normalized" xml:space="preserve">
+    <value>إعادة إلى الوضع الطبيعي</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Relative" xml:space="preserve">
+    <value>نسبي</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Absolute" xml:space="preserve">
+    <value>تمامًا</value>
+  </data>
+  <data name="DataAnalysis_TimeModel" xml:space="preserve">
+    <value>الوقت:</value>
+  </data>
+  <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
+    <value>تعديل الرسم</value>
   </data>
 </root>
