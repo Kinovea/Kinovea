@@ -78,9 +78,8 @@ namespace Kinovea.Services
             }
             else
             {
-                // For the normal version we only include languages that have the Root component translated at > 75%.
-                // This can be checked on Weblate: https://hosted.weblate.org/projects/kinovea/root/
-                //languages.Add("ar", "العَرَبِية");
+                // For the normal version we only include languages that match the inclusion heuristic described in inclusion.txt.
+                languages.Add("ar", "العَرَبِية");
                 languages.Add("bg", "Български");
                 languages.Add("ca", "Català");
                 //languages.Add("cs", "Čeština");
@@ -109,7 +108,7 @@ namespace Kinovea.Services
                 //languages.Add("sv", "Svenska");
                 //languages.Add("th", "ไทย");
                 languages.Add("tr", "Türkçe");
-                //languages.Add("zh-CHS", "简体中文");
+                languages.Add("zh-CHS", "简体中文");
             }
 
         }
