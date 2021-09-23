@@ -277,7 +277,10 @@ namespace Kinovea.ScreenManager
             return TimeHelper.GetTimestring(framerate, frames, milliseconds, actualTimestamps, durationTimestamps, totalFrames, tcf, symbol);
         }
 
-        
+        public void ActivateVideoFilter(IVideoFilter filter)
+        {
+            filter.SetFrames(VideoReader.WorkingZoneFrames);
+        }
         #endregion
         
         #region Saving processing

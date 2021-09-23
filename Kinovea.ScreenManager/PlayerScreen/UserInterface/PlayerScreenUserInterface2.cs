@@ -94,9 +94,10 @@ namespace Kinovea.ScreenManager
         {
             get
             {
-                return m_InteractiveEffect != null &&
-                       m_InteractiveEffect.Draw != null &&
-                       m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching;
+                return false;
+                //return m_InteractiveEffect != null &&
+                //       m_InteractiveEffect.Draw != null &&
+                //       m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching;
             }
         }
 
@@ -325,7 +326,7 @@ namespace Kinovea.ScreenManager
         // Others
         private NativeMethods.TimerCallback m_TimerCallback;
         private ScreenDescriptionPlayback m_LaunchDescription;
-        private InteractiveEffect m_InteractiveEffect;
+        //private InteractiveEffect m_InteractiveEffect;
         private const float m_MaxZoomFactor = 6.0F;
         private const int m_MaxRenderingDrops = 6;
         private const int m_MaxDecodingDrops = 6;
@@ -872,26 +873,26 @@ namespace Kinovea.ScreenManager
             // Refresh image to update timecode in chronos, grids colors, default fading, etc.
             DoInvalidate();
         }
-        public void SetInteractiveEffect(InteractiveEffect _effect)
+        public void ActivateVideoFilter(IVideoFilter filter)
         {
-            if (_effect == null)
-                return;
+            //if (_effect == null)
+            //    return;
 
-            m_InteractiveEffect = _effect;
+            //m_InteractiveEffect = _effect;
 
-            DisablePlayAndDraw();
-            EnableDisableAllPlayingControls(false);
-            EnableDisableDrawingTools(false);
-            CollapseKeyframePanel(true);
-            m_fill = true;
-            ResizeUpdate(true);
+            //DisablePlayAndDraw();
+            //EnableDisableAllPlayingControls(false);
+            //EnableDisableDrawingTools(false);
+            //CollapseKeyframePanel(true);
+            //m_fill = true;
+            //ResizeUpdate(true);
         }
         public void DeactivateInteractiveEffect()
         {
-            m_InteractiveEffect = null;
-            EnableDisableAllPlayingControls(true);
-            EnableDisableDrawingTools(true);
-            DoInvalidate();
+            //m_InteractiveEffect = null;
+            //EnableDisableAllPlayingControls(true);
+            //EnableDisableDrawingTools(true);
+            //DoInvalidate();
         }
         public void SetSyncMergeImage(Bitmap _SyncMergeImage, bool _bUpdateUI)
         {
@@ -1744,11 +1745,11 @@ namespace Kinovea.ScreenManager
 
             if (InteractiveFiltering)
             {
-                if (m_InteractiveEffect.MouseWheel != null)
-                {
-                    m_InteractiveEffect.MouseWheel(iScrollOffset);
-                    DoInvalidate();
-                }
+                //if (m_InteractiveEffect.MouseWheel != null)
+                //{
+                //    m_InteractiveEffect.MouseWheel(iScrollOffset);
+                //    DoInvalidate();
+                //}
                 return;
             }
 
@@ -3420,7 +3421,7 @@ namespace Kinovea.ScreenManager
 
             if (InteractiveFiltering)
             {
-                m_InteractiveEffect.Draw(e.Graphics, m_FrameServer.VideoReader.WorkingZoneFrames);
+                //m_InteractiveEffect.Draw(e.Graphics, m_FrameServer.VideoReader.WorkingZoneFrames);
             }
             else if (m_FrameServer.CurrentImage != null)
             {
@@ -5126,8 +5127,8 @@ namespace Kinovea.ScreenManager
 
             if(InteractiveFiltering)
             {
-                using (Graphics canvas = Graphics.FromImage(output))
-                    m_InteractiveEffect.Draw(canvas, m_FrameServer.VideoReader.WorkingZoneFrames);
+                //using (Graphics canvas = Graphics.FromImage(output))
+                //    m_InteractiveEffect.Draw(canvas, m_FrameServer.VideoReader.WorkingZoneFrames);
             }
             else
             {

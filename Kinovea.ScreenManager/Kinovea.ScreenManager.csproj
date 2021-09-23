@@ -759,16 +759,10 @@
     </Compile>
     <Compile Include="Metadata\Magnifier.cs">
     </Compile>
-    <Compile Include="PlayerScreen\VideoFilters\AbstractVideoFilter.cs" />
-    <Compile Include="PlayerScreen\VideoFilters\FormPreviewVideoFilter.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\VideoFilters\FormPreviewVideoFilter.Designer.cs">
-      <DependentUpon>FormPreviewVideoFilter.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PlayerScreen\VideoFilters\InteractiveEffect.cs" />
-    <Compile Include="PlayerScreen\VideoFilters\VideoFilterMosaic.cs" />
-    <Compile Include="PlayerScreen\VideoFilters\VideoFilterReverse.cs" />
+    <Compile Include="VideoFilters\IVideoFilter.cs" />
+    <Compile Include="VideoFilters\Kinogram\KinogramParameters.cs" />
+    <Compile Include="VideoFilters\Kinogram\VideoFilterKinogram.cs" />
+    <Compile Include="VideoFilters\Kinogram\VideoFilterMosaic.cs" />
     <Compile Include="PlayerScreen\ViewportManipulator.cs" />
     <Compile Include="Properties\Backgrounds.Designer.cs">
       <DependentUpon>Backgrounds.resx</DependentUpon>
@@ -990,9 +984,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormToolPresets.resx">
       <DependentUpon>FormToolPresets.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\VideoFilters\FormPreviewVideoFilter.resx">
-      <DependentUpon>FormPreviewVideoFilter.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Backgrounds.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -1420,6 +1411,7 @@
   <ItemGroup>
     <None Include="Resources\speakermute.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">
     <Message Text="Adjusting SDK tools directory to use x64 version of AL.EXE" />

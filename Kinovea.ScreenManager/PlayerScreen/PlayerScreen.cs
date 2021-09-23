@@ -677,14 +677,15 @@ namespace Kinovea.ScreenManager
             return view.GetMemo();
         }
         
-        public void SetInteractiveEffect(InteractiveEffect _effect)
+        public void ActivateVideoFilter(IVideoFilter filter)
         {
-            view.SetInteractiveEffect(_effect);
+            view.ActivateVideoFilter(filter);
+            frameServer.ActivateVideoFilter(filter);
         }
         
         public void DeactivateInteractiveEffect()
         {
-            view.DeactivateInteractiveEffect();
+            //view.DeactivateInteractiveEffect();
         }
         
         public void SetSyncMergeImage(Bitmap _SyncMergeImage, bool _bUpdateUI)

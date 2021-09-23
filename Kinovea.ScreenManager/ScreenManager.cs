@@ -190,28 +190,49 @@ namespace Kinovea.ScreenManager
             //filterMenus.Add(CreateFilterMenu(new VideoFilterContrast()));
             //filterMenus.Add(CreateFilterMenu(new VideoFilterSharpen()));
             //filterMenus.Add(CreateFilterMenu(new VideoFilterEdgesOnly()));
-            filterMenus.Add(CreateFilterMenu(new VideoFilterMosaic()));
-            filterMenus.Add(CreateFilterMenu(new VideoFilterReverse()));
+            filterMenus.Add(CreateFilterMenu(new VideoFilterKinogram()));
+            //filterMenus.Add(CreateFilterMenu(new VideoFilterReverse()));
             //filterMenus.Add(CreateFilterMenu(new VideoFilterSandbox()));
+
         }
 
-        private ToolStripMenuItem CreateFilterMenu(AbstractVideoFilter _filter)
+        private ToolStripMenuItem CreateFilterMenu(IVideoFilter filter)
         {
-            // TODO: test if we can directly use a copy of the argument in the closure.
-            // would avoid passing through .Tag and multiple casts.
-            ToolStripMenuItem menu = new ToolStripMenuItem(_filter.Name, _filter.Icon);
+            ToolStripMenuItem menu = new ToolStripMenuItem(filter.Name, filter.Icon);
             menu.MergeAction = MergeAction.Append;
-            menu.Tag = _filter;
-            menu.Click += (s,e) => 
+            menu.Tag = filter;
+            menu.Click += (s, e) =>
             {
                 PlayerScreen screen = activeScreen as PlayerScreen;
                 if(screen == null || !screen.IsCaching)
                     return;
-                AbstractVideoFilter filter = (AbstractVideoFilter)((ToolStripMenuItem)s).Tag;
-                filter.Activate(screen.FrameServer.VideoReader.WorkingZoneFrames, SetInteractiveEffect);
-                screen.RefreshImage();
+
+                IVideoFilter f = (IVideoFilter)((ToolStripMenuItem)s).Tag;
+
+                // TODO: Activate or deactivate this filter for the player screen.
+                screen.ActivateVideoFilter(f);
+
+                // Test update.
+                filter.Update(new Size(1920, 1080), 0);
             };
+
             return menu;
+
+            //// TODO: test if we can directly use a copy of the argument in the closure.
+            //// would avoid passing through .Tag and multiple casts.
+            //ToolStripMenuItem menu = new ToolStripMenuItem(_filter.Name, _filter.Icon);
+            //menu.MergeAction = MergeAction.Append;
+            //menu.Tag = _filter;
+            //menu.Click += (s,e) => 
+            //{
+            //    PlayerScreen screen = activeScreen as PlayerScreen;
+            //    if(screen == null || !screen.IsCaching)
+            //        return;
+            //    AbstractVideoFilter filter = (AbstractVideoFilter)((ToolStripMenuItem)s).Tag;
+            //    filter.Activate(screen.FrameServer.VideoReader.WorkingZoneFrames, SetInteractiveEffect);
+            //    screen.RefreshImage();
+            //};
+            //return menu;
         }
 
         private void InitializeGuideWatcher()
@@ -229,12 +250,12 @@ namespace Kinovea.ScreenManager
             svgFilesWatcher.Renamed += OnSVGFilesChanged;
         }
 
-        public void SetInteractiveEffect(InteractiveEffect _effect)
-        {
-            PlayerScreen player = activeScreen as PlayerScreen;
-            if(player != null)
-                player.SetInteractiveEffect(_effect);
-        }
+        //public void SetInteractiveEffect(InteractiveEffect _effect)
+        //{
+        //    PlayerScreen player = activeScreen as PlayerScreen;
+        //    if(player != null)
+        //        player.SetInteractiveEffect(_effect);
+        //}
         
         public void RecoverCrash()
         {
@@ -1325,12 +1346,14 @@ namespace Kinovea.ScreenManager
             bool hasVideo = player != null && player.Full;
             foreach(ToolStripMenuItem menu in filterMenus)
             {
-                AbstractVideoFilter filter = menu.Tag as AbstractVideoFilter;
-                if(filter == null)
+                IVideoFilter filter = menu.Tag as IVideoFilter;
+                if (filter == null)
                     continue;
                 
                 menu.Visible = filter.Experimental ? Software.Experimental : true;
                 menu.Enabled = hasVideo ? player.IsCaching : false;
+
+                // TODO: checked/unchecked if this is the currently active filter.
             }
         }
         private void ConfigureImageFormatMenus(AbstractScreen screen)
@@ -1523,7 +1546,7 @@ namespace Kinovea.ScreenManager
         {
             foreach(ToolStripMenuItem menu in filterMenus)
             {
-                AbstractVideoFilter filter = menu.Tag as AbstractVideoFilter;
+                IVideoFilter filter = menu.Tag as IVideoFilter;
                 if(filter != null)
                     menu.Text = filter.Name;
             }
