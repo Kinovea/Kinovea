@@ -63,6 +63,7 @@ namespace Kinovea.ScreenManager
         private Bitmap bitmap;
         private KinogramParameters parameters = new KinogramParameters();
         private IWorkingZoneFramesContainer framesContainer;
+        private long timestamp;
         #endregion
 
         #region ctor/dtor
@@ -94,20 +95,38 @@ namespace Kinovea.ScreenManager
         public void SetFrames(IWorkingZoneFramesContainer framesContainer)
         {
             this.framesContainer = framesContainer;
+            if (framesContainer != null && framesContainer.Frames != null && framesContainer.Frames.Count > 0)
+            {
+                UpdateSize(framesContainer.Frames[0].Image.Size);
+            }
         }
 
-        public void Update(Size size, long timestamp)
+        public void UpdateSize(Size size)
         {
-            if (framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count < 1)
-                return;
-
             if (bitmap == null || bitmap.Size != size)
             {
                 if (bitmap != null)
                     bitmap.Dispose();
-                
+
                 bitmap = new Bitmap(size.Width, size.Height);
             }
+
+            Update();
+        }
+
+        public void UpdateTime(long timestamp)
+        {
+            this.timestamp = timestamp;
+            Update();
+        }
+
+        #endregion
+
+        #region Private methods
+        private void Update()
+        {
+            if (bitmap == null || framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count < 1)
+                return;
 
             // TODO: get from parameters:
             int tileCount = 17;
@@ -121,6 +140,7 @@ namespace Kinovea.ScreenManager
             float step = (float)framesContainer.Frames.Count / tileCount;
             IEnumerable<VideoFrame> frames = framesContainer.Frames.Where((frame, i) => i % step < 1);
 
+            Size size = bitmap.Size;
             int cols = (int)Math.Ceiling((float)tileCount / rows);
             Size fullSize = new Size(cropSize.Width * cols, cropSize.Height * rows);
             Rectangle paintArea = UIHelper.RatioStretch(fullSize, size);
@@ -144,10 +164,7 @@ namespace Kinovea.ScreenManager
 
             //bitmap.Save("kinogram.png");
         }
-        #endregion
 
-        #region Private methods
-        
         /// <summary>
         /// Returns the part of the target image where the passed tile should be drawn.
         /// </summary>

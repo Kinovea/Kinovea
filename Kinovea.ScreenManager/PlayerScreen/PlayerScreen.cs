@@ -299,8 +299,8 @@ namespace Kinovea.ScreenManager
                 RefreshImage();
             }
         }
-        public bool InteractiveFiltering {
-            get {return view.InteractiveFiltering;}
+        public bool VideoFilterIsActive {
+            get {return frameServer.VideoFilterIsActive;}
         }
         public HistoryStack HistoryStack
         {
@@ -679,13 +679,14 @@ namespace Kinovea.ScreenManager
         
         public void ActivateVideoFilter(IVideoFilter filter)
         {
-            view.ActivateVideoFilter(filter);
             frameServer.ActivateVideoFilter(filter);
+            view.ActivateVideoFilter(filter);
         }
         
         public void DeactivateInteractiveEffect()
         {
-            //view.DeactivateInteractiveEffect();
+            view.DeactivateVideoFilter();
+            frameServer.DeactivateVideoFilter();
         }
         
         public void SetSyncMergeImage(Bitmap _SyncMergeImage, bool _bUpdateUI)

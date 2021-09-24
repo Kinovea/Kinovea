@@ -40,6 +40,7 @@ namespace Kinovea.ScreenManager
 
         void SetFrames(IWorkingZoneFramesContainer framesContainer);
 
-        void Update(Size size, long timestamp);
+        void UpdateSize(Size size);
+        void UpdateTime(long timestamp);
     }
 }

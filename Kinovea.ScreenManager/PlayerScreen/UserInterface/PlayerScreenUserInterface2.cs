@@ -90,16 +90,6 @@ namespace Kinovea.ScreenManager
             get { return m_bIsCurrentlyPlaying; }
         }
         public bool IsWaitingForIdle { get; private set; }
-        public bool InteractiveFiltering
-        {
-            get
-            {
-                return false;
-                //return m_InteractiveEffect != null &&
-                //       m_InteractiveEffect.Draw != null &&
-                //       m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching;
-            }
-        }
 
         public bool ImageFill 
         {  
@@ -326,7 +316,8 @@ namespace Kinovea.ScreenManager
         // Others
         private NativeMethods.TimerCallback m_TimerCallback;
         private ScreenDescriptionPlayback m_LaunchDescription;
-        //private InteractiveEffect m_InteractiveEffect;
+        private IVideoFilter videoFilter;
+        private bool videoFilterIsActive;
         private const float m_MaxZoomFactor = 6.0F;
         private const int m_MaxRenderingDrops = 6;
         private const int m_MaxDecodingDrops = 6;
@@ -875,24 +866,24 @@ namespace Kinovea.ScreenManager
         }
         public void ActivateVideoFilter(IVideoFilter filter)
         {
-            //if (_effect == null)
-            //    return;
-
-            //m_InteractiveEffect = _effect;
+            videoFilter = filter;
+            videoFilterIsActive = true;
 
             //DisablePlayAndDraw();
             //EnableDisableAllPlayingControls(false);
             //EnableDisableDrawingTools(false);
-            //CollapseKeyframePanel(true);
-            //m_fill = true;
-            //ResizeUpdate(true);
+            CollapseKeyframePanel(true);
+            m_fill = true;
+            ResizeUpdate(true);
         }
-        public void DeactivateInteractiveEffect()
+        public void DeactivateVideoFilter()
         {
+            videoFilterIsActive = false;
+            videoFilter = null;
             //m_InteractiveEffect = null;
             //EnableDisableAllPlayingControls(true);
             //EnableDisableDrawingTools(true);
-            //DoInvalidate();
+            DoInvalidate();
         }
         public void SetSyncMergeImage(Bitmap _SyncMergeImage, bool _bUpdateUI)
         {
@@ -1001,7 +992,7 @@ namespace Kinovea.ScreenManager
         {
             m_iFramesToDecode = 1;
 
-            DeactivateInteractiveEffect();
+            DeactivateVideoFilter();
             m_bIsCurrentlyPlaying = false;
             m_ePlayingMode = PlayingMode.Loop;
             m_fill = false;
@@ -1742,16 +1733,6 @@ namespace Kinovea.ScreenManager
         {
             // MouseWheel was recorded on one of the controls.
             int iScrollOffset = e.Delta * SystemInformation.MouseWheelScrollLines / 120;
-
-            if (InteractiveFiltering)
-            {
-                //if (m_InteractiveEffect.MouseWheel != null)
-                //{
-                //    m_InteractiveEffect.MouseWheel(iScrollOffset);
-                //    DoInvalidate();
-                //}
-                return;
-            }
 
             if ((ModifierKeys & Keys.Control) == Keys.Control)
             {
@@ -2808,12 +2789,12 @@ namespace Kinovea.ScreenManager
                     SetCursor(cursorManager.GetManipulationCursorMagnifier());
             }
 
-            if (hitMagnifier || InteractiveFiltering)
+            if (hitMagnifier)
                 return;
 
             if (m_bIsCurrentlyPlaying)
             {
-                // MouseDown while playing: Halt the video.
+                // MouseDown while playing: pause the video.
                 StopPlaying();
                 OnPauseAsked();
                 ActivateKeyframe(m_iCurrentPosition);
@@ -2997,8 +2978,9 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Metadata.UnselectAll();
             AbstractDrawing hitDrawing = null;
 
-            if (InteractiveFiltering)
+            if (videoFilterIsActive)
             {
+                // TODO: get the context menu from the filter.
                 mnuTimeOrigin.Enabled = false;
                 mnuDirectTrack.Enabled = false;
                 mnuPasteDrawing.Enabled = false;
@@ -3372,11 +3354,7 @@ namespace Kinovea.ScreenManager
             // - If on other drawing, launch the configuration dialog.
             // - Otherwise -> Maximize/Reduce image.
             //------------------------------------------------------------------------------------
-            if (InteractiveFiltering)
-            {
-                ToggleImageFillMode();
-            }
-            else if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition))
+            if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition))
             {
                 // Double click on a drawing:
                 // turn text tool into edit mode, launch config for others.
@@ -3419,11 +3397,7 @@ namespace Kinovea.ScreenManager
 
             m_TimeWatcher.LogTime("Actual start of paint");
 
-            if (InteractiveFiltering)
-            {
-                //m_InteractiveEffect.Draw(e.Graphics, m_FrameServer.VideoReader.WorkingZoneFrames);
-            }
-            else if (m_FrameServer.CurrentImage != null)
+            if (m_FrameServer.CurrentImage != null)
             {
                 try
                 {
@@ -4887,7 +4861,7 @@ namespace Kinovea.ScreenManager
                 dlgSave.Filter = FilesystemHelper.SaveImageFilter();
                 dlgSave.FilterIndex = FilesystemHelper.GetFilterIndex(dlgSave.Filter, PreferencesManager.PlayerPreferences.ImageFormat);
                 
-                if(InteractiveFiltering)
+                if(videoFilterIsActive)
                     dlgSave.FileName = Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath);
                 else
                     dlgSave.FileName = BuildFilename(m_FrameServer.VideoReader.FilePath, m_iCurrentPosition, PreferencesManager.PlayerPreferences.TimecodeFormat);
@@ -5125,18 +5099,10 @@ namespace Kinovea.ScreenManager
             Bitmap output = new Bitmap(renderingSize.Width, renderingSize.Height, PixelFormat.Format24bppRgb);
             output.SetResolution(m_FrameServer.CurrentImage.HorizontalResolution, m_FrameServer.CurrentImage.VerticalResolution);
 
-            if(InteractiveFiltering)
-            {
-                //using (Graphics canvas = Graphics.FromImage(output))
-                //    m_InteractiveEffect.Draw(canvas, m_FrameServer.VideoReader.WorkingZoneFrames);
-            }
-            else
-            {
-                int keyframeIndex = m_FrameServer.Metadata.GetKeyframeIndex(m_iCurrentPosition);
-                using (Graphics canvas = Graphics.FromImage(output))
-                    FlushOnGraphics(m_FrameServer.CurrentImage, canvas, output.Size, keyframeIndex, m_iCurrentPosition, m_FrameServer.ImageTransform);
-            }
-
+            int keyframeIndex = m_FrameServer.Metadata.GetKeyframeIndex(m_iCurrentPosition);
+            using (Graphics canvas = Graphics.FromImage(output))
+                FlushOnGraphics(m_FrameServer.CurrentImage, canvas, output.Size, keyframeIndex, m_iCurrentPosition, m_FrameServer.ImageTransform);
+            
             return output;
         }
 

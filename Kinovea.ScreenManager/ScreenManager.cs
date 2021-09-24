@@ -208,31 +208,10 @@ namespace Kinovea.ScreenManager
                     return;
 
                 IVideoFilter f = (IVideoFilter)((ToolStripMenuItem)s).Tag;
-
-                // TODO: Activate or deactivate this filter for the player screen.
                 screen.ActivateVideoFilter(f);
-
-                // Test update.
-                filter.Update(new Size(1920, 1080), 0);
             };
 
             return menu;
-
-            //// TODO: test if we can directly use a copy of the argument in the closure.
-            //// would avoid passing through .Tag and multiple casts.
-            //ToolStripMenuItem menu = new ToolStripMenuItem(_filter.Name, _filter.Icon);
-            //menu.MergeAction = MergeAction.Append;
-            //menu.Tag = _filter;
-            //menu.Click += (s,e) => 
-            //{
-            //    PlayerScreen screen = activeScreen as PlayerScreen;
-            //    if(screen == null || !screen.IsCaching)
-            //        return;
-            //    AbstractVideoFilter filter = (AbstractVideoFilter)((ToolStripMenuItem)s).Tag;
-            //    filter.Activate(screen.FrameServer.VideoReader.WorkingZoneFrames, SetInteractiveEffect);
-            //    screen.RefreshImage();
-            //};
-            //return menu;
         }
 
         private void InitializeGuideWatcher()
@@ -711,8 +690,8 @@ namespace Kinovea.ScreenManager
             if (screen == null)
                 return;
 
-            // If the screen is in Drawtime filter (e.g: Mosaic), we just go back to normal play.
-            if (screen is PlayerScreen && ((PlayerScreen)screen).InteractiveFiltering)
+            // If a video filter is active we just go back to normal play.
+            if (screen is PlayerScreen && ((PlayerScreen)screen).VideoFilterIsActive)
             {
                 SetActiveScreen(screen);
                 ((PlayerScreen)screen).DeactivateInteractiveEffect();

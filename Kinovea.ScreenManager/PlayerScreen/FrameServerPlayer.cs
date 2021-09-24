@@ -44,6 +44,10 @@ namespace Kinovea.ScreenManager
         {
             get { return videoReader; }
         }
+        public bool VideoFilterIsActive
+        {
+            get { return videoFilterIsActive; }
+        }
         public HistoryStack HistoryStack
         {
             get { return historyStack; }
@@ -66,9 +70,17 @@ namespace Kinovea.ScreenManager
             get 
             { 
                 if(videoReader == null || !videoReader.Loaded || videoReader.Current == null)
+                {
                     return null;
+                }
+                else if (videoFilterIsActive)
+                {
+                    return videoFilter.Current;
+                }
                 else
+                {
                     return videoReader.Current.Image;
+                }
             }
         }
         #endregion
@@ -77,6 +89,8 @@ namespace Kinovea.ScreenManager
         private VideoReader videoReader;
         private HistoryStack historyStack;
         private Metadata metadata;
+        private bool videoFilterIsActive;
+        private IVideoFilter videoFilter;
         private formProgressBar formProgressBar;
         private BackgroundWorker bgWorkerSave = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
         private SaveResult saveResult;
@@ -279,7 +293,14 @@ namespace Kinovea.ScreenManager
 
         public void ActivateVideoFilter(IVideoFilter filter)
         {
-            filter.SetFrames(VideoReader.WorkingZoneFrames);
+            videoFilter = filter;
+            videoFilter.SetFrames(VideoReader.WorkingZoneFrames);
+            videoFilterIsActive = true;
+        }
+        public void DeactivateVideoFilter()
+        {
+            videoFilterIsActive = false;
+            videoFilter = null;
         }
         #endregion
         
