@@ -44,10 +44,10 @@ namespace Kinovea.ScreenManager
         public bool LeftToRight { get; set; } = true;
         
         /// <summary>
-        /// Color of parts outside the composite paint area and of the border between tiles.
+        /// Color of the border between tiles.
         /// This is also the color visible when a tile is panned away from its source image.
         /// </summary>
-        public Color BackgroundColor { get; set; } = Color.FromArgb(44, 44, 44);
+        public Color BorderColor { get; set; } = Color.FromArgb(44, 44, 44);
         
         /// <summary>
         /// Whether to draw a border around tiles.
@@ -80,7 +80,7 @@ namespace Kinovea.ScreenManager
                 clone.CropPositions.Add(p);
 
             clone.LeftToRight = this.LeftToRight;
-            clone.BackgroundColor = this.BackgroundColor;
+            clone.BorderColor = this.BorderColor;
             clone.BorderVisible = this.BorderVisible;
 
             return clone;

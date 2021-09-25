@@ -56,10 +56,10 @@ namespace Kinovea.ScreenManager
         private void SetupStyle()
         {
             style = new DrawingStyle();
-            style.Elements.Add("backcolor", new StyleElementColor(parameters.BackgroundColor));
+            style.Elements.Add("border color", new StyleElementColor(parameters.BorderColor));
 
             styleHelper.Color = Color.Red;
-            style.Bind(styleHelper, "Color", "backcolor");
+            style.Bind(styleHelper, "Color", "border color");
         }
 
         private void SetupStyleControls()
@@ -143,7 +143,7 @@ namespace Kinovea.ScreenManager
         private void btnOK_Click(object sender, EventArgs e)
         {
             // Import style values and commit the parameters object.
-            parameters.BackgroundColor = styleHelper.Color;
+            parameters.BorderColor = styleHelper.Color;
             kinogram.Parameters = parameters;
         }
         #endregion

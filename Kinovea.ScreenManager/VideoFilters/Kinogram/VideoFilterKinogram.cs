@@ -86,6 +86,8 @@ namespace Kinovea.ScreenManager
         private KinogramParameters parameters = new KinogramParameters();
         private IWorkingZoneFramesContainer framesContainer;
         private long timestamp;
+        private Color BackgroundColor = Color.FromArgb(44, 44, 44);
+        bool clamp = false;
         private int movingTile = -1;
         private ToolStripMenuItem mnuConfigure = new ToolStripMenuItem();
         #endregion
@@ -245,7 +247,7 @@ namespace Kinovea.ScreenManager
                 VideoFrame f = frames.ToList()[index];
                 RectangleF srcRect = new RectangleF(parameters.CropPositions[index].X, parameters.CropPositions[index].Y, cropSize.Width, cropSize.Height);
                 Rectangle destRect = GetDestinationRectangle(index, cols, parameters.Rows, parameters.LeftToRight, paintArea, tileSize);
-                using (SolidBrush b = new SolidBrush(parameters.BackgroundColor))
+                using (SolidBrush b = new SolidBrush(parameters.BorderColor))
                     g.FillRectangle(b, destRect);
 
                 g.DrawImage(f.Image, destRect, srcRect, GraphicsUnit.Pixel);
@@ -254,14 +256,18 @@ namespace Kinovea.ScreenManager
             else
             {
                 // Render the whole composite.
-                using (SolidBrush b = new SolidBrush(parameters.BackgroundColor))
-                    g.FillRectangle(b, 0, 0, outputSize.Width, outputSize.Height);
+                using (SolidBrush backgroundBrush = new SolidBrush(BackgroundColor))
+                    g.FillRectangle(backgroundBrush, 0, 0, outputSize.Width, outputSize.Height);
                 
                 int index = 0;
                 foreach (VideoFrame f in frames)
                 {
                     RectangleF srcRect = new RectangleF(parameters.CropPositions[index].X, parameters.CropPositions[index].Y, cropSize.Width, cropSize.Height);
                     Rectangle destRect = GetDestinationRectangle(index, cols, parameters.Rows, parameters.LeftToRight, paintArea, tileSize);
+
+                    using (SolidBrush b = new SolidBrush(parameters.BorderColor))
+                        g.FillRectangle(b, destRect);
+
                     g.DrawImage(f.Image, destRect, srcRect, GraphicsUnit.Pixel);
                     DrawBorder(g, destRect);
                     index++;
@@ -274,7 +280,7 @@ namespace Kinovea.ScreenManager
             if (!parameters.BorderVisible)
                 return;
             
-            using (Pen p = new Pen(parameters.BackgroundColor))
+            using (Pen p = new Pen(parameters.BorderColor))
                 g.DrawRectangle(p, new Rectangle(rect.X, rect.Y, rect.Width - 1, rect.Height - 1));
         }
 
@@ -355,9 +361,6 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void MoveTile(float dx, float dy, int index)
         {
-            // TODO: get from preferences or parameters.
-            bool clamp = true;
-            
             PointF old = parameters.CropPositions[index];
             float x = old.X - dx;
             float y = old.Y - dy;
