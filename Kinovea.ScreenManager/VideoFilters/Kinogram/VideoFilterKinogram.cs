@@ -73,6 +73,11 @@ namespace Kinovea.ScreenManager
                 return contextMenu;
             }
         }
+        public KinogramParameters Parameters
+        {
+            get { return parameters; }
+            set { parameters = value; }
+        }
         #endregion
 
         #region members
@@ -184,7 +189,7 @@ namespace Kinovea.ScreenManager
         private void MnuConfigure_Click(object sender, EventArgs e)
         {
             // Launch dialog.
-            FormConfigureKinogram fck = new FormConfigureKinogram(this, parameters);
+            FormConfigureKinogram fck = new FormConfigureKinogram(this);
             FormsHelper.Locate(fck);
             fck.ShowDialog();
 
@@ -269,7 +274,7 @@ namespace Kinovea.ScreenManager
             if (!parameters.BorderVisible)
                 return;
             
-            using (Pen p = new Pen(parameters.BorderColor))
+            using (Pen p = new Pen(parameters.BackgroundColor))
                 g.DrawRectangle(p, new Rectangle(rect.X, rect.Y, rect.Width - 1, rect.Height - 1));
         }
 

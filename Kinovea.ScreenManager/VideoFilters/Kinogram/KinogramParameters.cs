@@ -44,7 +44,7 @@ namespace Kinovea.ScreenManager
         public bool LeftToRight { get; set; } = true;
         
         /// <summary>
-        /// Color of parts outside the composite paint area.
+        /// Color of parts outside the composite paint area and of the border between tiles.
         /// This is also the color visible when a tile is panned away from its source image.
         /// </summary>
         public Color BackgroundColor { get; set; } = Color.FromArgb(44, 44, 44);
@@ -54,11 +54,6 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public bool BorderVisible { get; set; } = true;
         
-        /// <summary>
-        /// Color of the border around tiles.
-        /// </summary>
-        public Color BorderColor { get; set; } = Color.Black;
-
         // TODO:
         // legend visibility.
         // legend placement.
@@ -66,6 +61,30 @@ namespace Kinovea.ScreenManager
         // Direction bullets (small arrows between tiles).
         // Oversampling factor: to improve quality when viewport zooming.
         #endregion
+
+        public KinogramParameters()
+        {
+        }
+
+        /// <summary>
+        /// Returns a deep clone of this object.
+        /// </summary>
+        public KinogramParameters Clone()
+        {
+            KinogramParameters clone = new KinogramParameters();
+            clone.TileCount = this.TileCount;
+            clone.Rows = this.Rows;
+            clone.CropSize = this.CropSize;
+            clone.CropPositions = new List<PointF>();
+            foreach (PointF p in this.CropPositions)
+                clone.CropPositions.Add(p);
+
+            clone.LeftToRight = this.LeftToRight;
+            clone.BackgroundColor = this.BackgroundColor;
+            clone.BorderVisible = this.BorderVisible;
+
+            return clone;
+        }
 
         #region Serialization
         // TODO: for serialization we'll also need the crop positions.

@@ -44,11 +44,13 @@ namespace Kinovea.ScreenManager
       this.btnOK = new System.Windows.Forms.Button();
       this.btnCancel = new System.Windows.Forms.Button();
       this.grpAppearance = new System.Windows.Forms.GroupBox();
+      this.cbBorderVisible = new System.Windows.Forms.CheckBox();
       this.grpConfig.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudCropHeight)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudCropWidth)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudRows)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudCols)).BeginInit();
+      this.grpAppearance.SuspendLayout();
       this.SuspendLayout();
       // 
       // pnlViewport
@@ -238,6 +240,7 @@ namespace Kinovea.ScreenManager
       this.btnOK.TabIndex = 56;
       this.btnOK.Text = "OK";
       this.btnOK.UseVisualStyleBackColor = true;
+      this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
       // 
       // btnCancel
       // 
@@ -252,6 +255,7 @@ namespace Kinovea.ScreenManager
       // 
       // grpAppearance
       // 
+      this.grpAppearance.Controls.Add(this.cbBorderVisible);
       this.grpAppearance.Location = new System.Drawing.Point(14, 190);
       this.grpAppearance.Name = "grpAppearance";
       this.grpAppearance.Size = new System.Drawing.Size(297, 128);
@@ -259,10 +263,23 @@ namespace Kinovea.ScreenManager
       this.grpAppearance.TabStop = false;
       this.grpAppearance.Text = "Generic_Appearance";
       // 
+      // cbBorderVisible
+      // 
+      this.cbBorderVisible.AutoSize = true;
+      this.cbBorderVisible.Location = new System.Drawing.Point(24, 35);
+      this.cbBorderVisible.Name = "cbBorderVisible";
+      this.cbBorderVisible.Size = new System.Drawing.Size(86, 17);
+      this.cbBorderVisible.TabIndex = 61;
+      this.cbBorderVisible.Text = "Show border";
+      this.cbBorderVisible.UseVisualStyleBackColor = true;
+      this.cbBorderVisible.CheckedChanged += new System.EventHandler(this.cbBorderVisible_CheckedChanged);
+      // 
       // FormConfigureKinogram
       // 
+      this.AcceptButton = this.btnOK;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.CancelButton = this.btnCancel;
       this.ClientSize = new System.Drawing.Size(856, 506);
       this.Controls.Add(this.pnlViewport);
       this.Controls.Add(this.grpConfig);
@@ -282,6 +299,8 @@ namespace Kinovea.ScreenManager
       ((System.ComponentModel.ISupportInitialize)(this.nudCropWidth)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudRows)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudCols)).EndInit();
+      this.grpAppearance.ResumeLayout(false);
+      this.grpAppearance.PerformLayout();
       this.ResumeLayout(false);
 
         }
@@ -303,5 +322,6 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.NumericUpDown nudCropWidth;
         private System.Windows.Forms.NumericUpDown nudRows;
         private System.Windows.Forms.NumericUpDown nudCols;
+        private System.Windows.Forms.CheckBox cbBorderVisible;
     }
 }
