@@ -64,20 +64,20 @@ namespace Kinovea.ScreenManager
         private Bitmap bitmap;
         private Size frameSize;
         private KinogramParameters parameters = new KinogramParameters();
-        private List<PointF> cropPositions = new List<PointF>();
+        
         private IWorkingZoneFramesContainer framesContainer;
         private long timestamp;
         private int movingTile = -1;
-
-        // TODO: Move to parameters.
-        private int tileCount = 60;
-        private int rows = 5;
-        private Size cropSize = new Size(300, 400);
         #endregion
 
         #region ctor/dtor
         public VideoFilterKinogram()
         {
+            // Test values.
+            parameters.TileCount = 16;
+            parameters.Rows = 2;
+            parameters.CropSize = new Size(400, 600);
+            
             UpdateTileCount();
         }
         ~VideoFilterKinogram()
@@ -147,7 +147,7 @@ namespace Kinovea.ScreenManager
 
             if ((modifiers & Keys.Shift) == Keys.Shift)
             {
-                for (int i = 0; i < tileCount; i++)
+                for (int i = 0; i < parameters.TileCount; i++)
                     MoveTile(dx, dy, i);
                 
                 Update();
@@ -171,14 +171,14 @@ namespace Kinovea.ScreenManager
             if (bitmap == null || framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count < 1)
                 return;
 
-            float step = (float)framesContainer.Frames.Count / tileCount;
+            float step = (float)framesContainer.Frames.Count / parameters.TileCount;
             IEnumerable<VideoFrame> frames = framesContainer.Frames.Where((frame, i) => i % step < 1);
 
             Size size = bitmap.Size;
-            int cols = (int)Math.Ceiling((float)tileCount / rows);
-            Size fullSize = new Size(cropSize.Width * cols, cropSize.Height * rows);
+            int cols = (int)Math.Ceiling((float)parameters.TileCount / parameters.Rows);
+            Size fullSize = new Size(parameters.CropSize.Width * cols, parameters.CropSize.Height * parameters.Rows);
             Rectangle paintArea = UIHelper.RatioStretch(fullSize, size);
-            Size tileSize = new Size(paintArea.Width / cols, paintArea.Height / rows);
+            Size tileSize = new Size(paintArea.Width / cols, paintArea.Height / parameters.Rows);
             Graphics g = Graphics.FromImage(bitmap);
             g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
             g.CompositingQuality = CompositingQuality.HighSpeed;
@@ -190,41 +190,59 @@ namespace Kinovea.ScreenManager
                 // Render a single tile.
                 int index = tile;
                 VideoFrame f = frames.ToList()[index];
-                RectangleF srcRect = new RectangleF(cropPositions[index].X, cropPositions[index].Y, cropSize.Width, cropSize.Height);
-                Rectangle destRect = GetDestinationRectangle(index, cols, rows, paintArea, tileSize);
-                g.FillRectangle(Brushes.CornflowerBlue, destRect);
+                RectangleF srcRect = new RectangleF(parameters.CropPositions[index].X, parameters.CropPositions[index].Y, parameters.CropSize.Width, parameters.CropSize.Height);
+                Rectangle destRect = GetDestinationRectangle(index, cols, parameters.Rows, parameters.LeftToRight, paintArea, tileSize);
+                using (SolidBrush b = new SolidBrush(parameters.BackgroundColor))
+                    g.FillRectangle(b, destRect);
+
                 g.DrawImage(f.Image, destRect, srcRect, GraphicsUnit.Pixel);
+                DrawBorder(g, destRect);
             }
             else
             {
                 // Render the whole composite.
-                g.FillRectangle(Brushes.CornflowerBlue, 0, 0, size.Width, size.Height);
+                using (SolidBrush b = new SolidBrush(parameters.BackgroundColor))
+                    g.FillRectangle(b, 0, 0, size.Width, size.Height);
+                
                 int index = 0;
                 foreach (VideoFrame f in frames)
                 {
-                    RectangleF srcRect = new RectangleF(cropPositions[index].X, cropPositions[index].Y, cropSize.Width, cropSize.Height);
-                    Rectangle destRect = GetDestinationRectangle(index, cols, rows, paintArea, tileSize);
+                    RectangleF srcRect = new RectangleF(parameters.CropPositions[index].X, parameters.CropPositions[index].Y, parameters.CropSize.Width, parameters.CropSize.Height);
+                    Rectangle destRect = GetDestinationRectangle(index, cols, parameters.Rows, parameters.LeftToRight, paintArea, tileSize);
                     g.DrawImage(f.Image, destRect, srcRect, GraphicsUnit.Pixel);
+                    DrawBorder(g, destRect);
                     index++;
                 }
             }
         }
 
+        private void DrawBorder(Graphics g, Rectangle rect)
+        {
+            if (!parameters.BorderVisible)
+                return;
+            
+            using (Pen p = new Pen(parameters.BorderColor))
+                g.DrawRectangle(p, new Rectangle(rect.X, rect.Y, rect.Width - 1, rect.Height - 1));
+        }
+
         /// <summary>
         /// Returns the part of the target image where the passed tile should be drawn.
         /// </summary>
-        private Rectangle GetDestinationRectangle(int index, int cols, int rows, Rectangle paintArea, Size tileSize)
+        private Rectangle GetDestinationRectangle(int index, int cols, int rows, bool ltr, Rectangle paintArea, Size tileSize)
         {
             int row = index / cols;
             int col = index - (row * cols);
+            if (!ltr)
+                col = (cols - 1) - col;
+
             return new Rectangle(paintArea.Left + col * tileSize.Width, paintArea.Top + row * tileSize.Height, tileSize.Width, tileSize.Height);
         }
 
         private void UpdateTileCount()
         {
             // TODO: find a way to not invalidate the existing crop positions.
-            for (int i = 0; i < tileCount; i++)
-                cropPositions.Add(new Point(0, 0));
+            for (int i = 0; i < parameters.TileCount; i++)
+                parameters.CropPositions.Add(new Point(0, 0));
         }
 
         /// <summary>
@@ -234,10 +252,10 @@ namespace Kinovea.ScreenManager
         private int GetTile(PointF p)
         {
             Size size = bitmap.Size;
-            int cols = (int)Math.Ceiling((float)tileCount / rows);
-            Size fullSize = new Size(cropSize.Width * cols, cropSize.Height * rows);
+            int cols = (int)Math.Ceiling((float)parameters.TileCount / parameters.Rows);
+            Size fullSize = new Size(parameters.CropSize.Width * cols, parameters.CropSize.Height * parameters.Rows);
             Rectangle paintArea = UIHelper.RatioStretch(fullSize, size);
-            Size tileSize = new Size(paintArea.Width / cols, paintArea.Height / rows);
+            Size tileSize = new Size(paintArea.Width / cols, paintArea.Height / parameters.Rows);
 
             // Express the coordinate in the paint area.
             p = new PointF(p.X - paintArea.X, p.Y - paintArea.Y);
@@ -246,6 +264,9 @@ namespace Kinovea.ScreenManager
                 return -1;
 
             int col = (int)(p.X / tileSize.Width);
+            if (!parameters.LeftToRight)
+                col = (cols - 1) - col;
+
             int row = (int)(p.Y / tileSize.Height);
             int index = row * cols + col;
             return index;
@@ -259,19 +280,19 @@ namespace Kinovea.ScreenManager
             // TODO: get from preferences or parameters.
             bool clamp = true;
 
-            PointF old = cropPositions[index];
+            PointF old = parameters.CropPositions[index];
             float x = old.X - dx;
             float y = old.Y - dy;
 
             if (clamp)
             {
                 x = Math.Max(0, x);
-                x = Math.Min(frameSize.Width - cropSize.Width, x);
+                x = Math.Min(frameSize.Width - parameters.CropSize.Width, x);
                 y = Math.Max(0, y);
-                y = Math.Min(frameSize.Height - cropSize.Height, y);
+                y = Math.Min(frameSize.Height - parameters.CropSize.Height, y);
             }
 
-            cropPositions[index] = new PointF(x, y);
+            parameters.CropPositions[index] = new PointF(x, y);
         }
         #endregion
     }
