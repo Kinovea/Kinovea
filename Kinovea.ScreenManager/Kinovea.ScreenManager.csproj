@@ -760,6 +760,12 @@
     <Compile Include="Metadata\Magnifier.cs">
     </Compile>
     <Compile Include="VideoFilters\IVideoFilter.cs" />
+    <Compile Include="VideoFilters\Kinogram\FormConfigureKinogram.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VideoFilters\Kinogram\FormConfigureKinogram.Designer.cs">
+      <DependentUpon>FormConfigureKinogram.cs</DependentUpon>
+    </Compile>
     <Compile Include="VideoFilters\Kinogram\KinogramParameters.cs" />
     <Compile Include="VideoFilters\Kinogram\VideoFilterKinogram.cs" />
     <Compile Include="VideoFilters\Kinogram\VideoFilterMosaic.cs" />
@@ -1040,6 +1046,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\SliderLogScale.resx">
       <DependentUpon>SliderLogScale.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VideoFilters\Kinogram\FormConfigureKinogram.resx">
+      <DependentUpon>FormConfigureKinogram.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

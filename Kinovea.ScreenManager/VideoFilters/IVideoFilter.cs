@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using Kinovea.Video;
@@ -33,10 +34,32 @@ namespace Kinovea.ScreenManager
     public interface IVideoFilter : IDisposable
     {
         #region Properties
+        
+        /// <summary>
+        /// Name of the filter.
+        /// </summary>
         string Name { get; }
+        
+        /// <summary>
+        /// Icon for the menu.
+        /// </summary>
         Bitmap Icon { get; }
+
+        /// <summary>
+        /// Controls whether this filter should be available in non-experimental releases.
+        /// </summary>
         bool Experimental { get; }
+
+        /// <summary>
+        /// List of context menus specific to the filter.
+        /// </summary>
+        List<ToolStripItem> ContextMenu { get; }
+
+        /// <summary>
+        /// Rendered bitmap to be displayed on the viewport.
+        /// </summary>
         Bitmap Current { get; }
+
         #endregion
 
         void SetFrames(IWorkingZoneFramesContainer framesContainer);

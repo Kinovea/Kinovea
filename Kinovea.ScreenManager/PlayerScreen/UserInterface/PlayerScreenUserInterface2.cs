@@ -374,6 +374,10 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuMagnifierTrack = new ToolStripMenuItem();
         private ToolStripMenuItem mnuMagnifierDirect = new ToolStripMenuItem();
         private ToolStripMenuItem mnuMagnifierQuit = new ToolStripMenuItem();
+
+        private ContextMenuStrip popMenuFilter = new ContextMenuStrip();
+        private ToolStripMenuItem mnuCloseFilter = new ToolStripMenuItem();
+
         #endregion
 
         private ToolStripButton m_btnAddKeyFrame;
@@ -1200,6 +1204,10 @@ namespace Kinovea.ScreenManager
             mnuMagnifierQuit.Image = Properties.Resources.hide;
             popMenuMagnifier.Items.AddRange(new ToolStripItem[] { new ToolStripSeparator(), mnuMagnifierTrack, new ToolStripSeparator(), mnuMagnifierDirect, mnuMagnifierQuit });
 
+            // 6. Video filters.
+            mnuCloseFilter.Click += btnClose_Click;
+            mnuCloseFilter.Image = Properties.Resources.film_close3;
+
             // The right context menu and its content will be choosen upon MouseDown.
             panelCenter.ContextMenuStrip = popMenu;
 
@@ -1436,6 +1444,7 @@ namespace Kinovea.ScreenManager
                 popMenuDrawings.Dispose();
                 popMenuTrack.Dispose();
                 popMenuMagnifier.Dispose();
+                popMenuFilter.Dispose();
             }
 
             base.Dispose(disposing);
@@ -2680,6 +2689,10 @@ namespace Kinovea.ScreenManager
             mnuMagnifierTrack.Text = ScreenManagerLang.mnuTrackTrajectory;
             mnuMagnifierDirect.Text = ScreenManagerLang.mnuMagnifierDirect;
             mnuMagnifierQuit.Text = ScreenManagerLang.mnuMagnifierQuit;
+
+            // 6. Video filters.
+            mnuCloseFilter.Text = "Close"; // ScreenManagerLang.mnuCloseScreen;
+            mnuCloseFilter.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.Close);
         }
         private void ReloadTooltipsCulture()
         {
@@ -2993,16 +3006,7 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Metadata.UnselectAll();
             AbstractDrawing hitDrawing = null;
 
-            if (videoFilterIsActive)
-            {
-                // TODO: get the context menu from the filter.
-                mnuTimeOrigin.Enabled = false;
-                mnuDirectTrack.Enabled = false;
-                mnuPasteDrawing.Enabled = false;
-                mnuPastePic.Enabled = false;
-                panelCenter.ContextMenuStrip = popMenu;
-            }
-            else if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition))
+            if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition))
             {
                 AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
                 PrepareDrawingContextMenu(drawing, popMenuDrawings);
@@ -3078,14 +3082,23 @@ namespace Kinovea.ScreenManager
             else
             {
                 // No drawing touched and no tool selected, but not currently playing. Default menu.
-                mnuTimeOrigin.Visible = true;
-                mnuDirectTrack.Visible = true;
-                mnuDirectTrack.Enabled = true;
-                mnuPasteDrawing.Visible = true;
-                mnuPasteDrawing.Enabled = DrawingClipboard.HasContent;
-                mnuPastePic.Visible = true;
-                mnuPastePic.Enabled = Clipboard.ContainsImage();
-                panelCenter.ContextMenuStrip = popMenu;
+                if (videoFilterIsActive)
+                {
+                    PrepareFilterContextMenu(videoFilter, popMenuFilter);
+                    popMenuFilter.Items.Add(mnuCloseFilter);
+                    panelCenter.ContextMenuStrip = popMenuFilter;
+                }
+                else
+                {
+                    mnuTimeOrigin.Visible = true;
+                    mnuDirectTrack.Visible = true;
+                    mnuDirectTrack.Enabled = true;
+                    mnuPasteDrawing.Visible = true;
+                    mnuPasteDrawing.Enabled = DrawingClipboard.HasContent;
+                    mnuPastePic.Visible = true;
+                    mnuPastePic.Enabled = Clipboard.ContainsImage();
+                    panelCenter.ContextMenuStrip = popMenu;
+                }
             }
         }
         private void PrepareDrawingContextMenu(AbstractDrawing drawing, ContextMenuStrip popMenu)
@@ -3188,6 +3201,34 @@ namespace Kinovea.ScreenManager
             }
 
             return true;
+        }
+        
+        private void PrepareFilterContextMenu(IVideoFilter filter, ContextMenuStrip popMenu)
+        {
+            popMenu.Items.Clear();
+            bool hasExtraMenus = (filter.ContextMenu != null && filter.ContextMenu.Count > 0);
+            if (hasExtraMenus)
+            {
+                foreach (ToolStripItem tsmi in filter.ContextMenu)
+                {
+                    ToolStripMenuItem menuItem = tsmi as ToolStripMenuItem;
+
+                    // Inject dependency on the UI into the menu for invalidation.
+                    tsmi.Tag = this;
+                    if (menuItem != null && menuItem.DropDownItems.Count > 0)
+                    {
+                        foreach (ToolStripItem subMenu in menuItem.DropDownItems)
+                            subMenu.Tag = this;
+                    }
+
+                    if (tsmi.MergeIndex >= 0)
+                        popMenu.Items.Insert(tsmi.MergeIndex, tsmi);
+                    else
+                        popMenu.Items.Add(tsmi);
+                }
+
+                popMenu.Items.Add(mnuSepDrawing);
+            }
         }
         private void SurfaceScreen_MouseMove(object sender, MouseEventArgs e)
         {

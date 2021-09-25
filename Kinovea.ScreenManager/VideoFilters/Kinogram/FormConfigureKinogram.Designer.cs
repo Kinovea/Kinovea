@@ -1,0 +1,307 @@
+﻿
+namespace Kinovea.ScreenManager
+{
+    partial class FormConfigureKinogram
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+      this.pnlViewport = new System.Windows.Forms.Panel();
+      this.label1 = new System.Windows.Forms.Label();
+      this.label4 = new System.Windows.Forms.Label();
+      this.lblObjectWindow = new System.Windows.Forms.Label();
+      this.grpConfig = new System.Windows.Forms.GroupBox();
+      this.cbRTL = new System.Windows.Forms.CheckBox();
+      this.nudCropHeight = new System.Windows.Forms.NumericUpDown();
+      this.nudCropWidth = new System.Windows.Forms.NumericUpDown();
+      this.nudRows = new System.Windows.Forms.NumericUpDown();
+      this.nudCols = new System.Windows.Forms.NumericUpDown();
+      this.lblView = new System.Windows.Forms.Label();
+      this.lblMarker = new System.Windows.Forms.Label();
+      this.btnOK = new System.Windows.Forms.Button();
+      this.btnCancel = new System.Windows.Forms.Button();
+      this.grpAppearance = new System.Windows.Forms.GroupBox();
+      this.grpConfig.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.nudCropHeight)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudCropWidth)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudRows)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudCols)).BeginInit();
+      this.SuspendLayout();
+      // 
+      // pnlViewport
+      // 
+      this.pnlViewport.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.pnlViewport.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+      this.pnlViewport.Location = new System.Drawing.Point(317, 12);
+      this.pnlViewport.Name = "pnlViewport";
+      this.pnlViewport.Size = new System.Drawing.Size(529, 452);
+      this.pnlViewport.TabIndex = 59;
+      // 
+      // label1
+      // 
+      this.label1.AutoSize = true;
+      this.label1.Location = new System.Drawing.Point(249, 97);
+      this.label1.Name = "label1";
+      this.label1.Size = new System.Drawing.Size(18, 13);
+      this.label1.TabIndex = 53;
+      this.label1.Text = "px";
+      // 
+      // label4
+      // 
+      this.label4.AutoSize = true;
+      this.label4.Location = new System.Drawing.Point(184, 97);
+      this.label4.Name = "label4";
+      this.label4.Size = new System.Drawing.Size(13, 13);
+      this.label4.TabIndex = 45;
+      this.label4.Text = "×";
+      // 
+      // lblObjectWindow
+      // 
+      this.lblObjectWindow.AutoSize = true;
+      this.lblObjectWindow.Location = new System.Drawing.Point(21, 97);
+      this.lblObjectWindow.Name = "lblObjectWindow";
+      this.lblObjectWindow.Size = new System.Drawing.Size(56, 13);
+      this.lblObjectWindow.TabIndex = 43;
+      this.lblObjectWindow.Text = "Crop size :";
+      // 
+      // grpConfig
+      // 
+      this.grpConfig.Controls.Add(this.cbRTL);
+      this.grpConfig.Controls.Add(this.nudCropHeight);
+      this.grpConfig.Controls.Add(this.nudCropWidth);
+      this.grpConfig.Controls.Add(this.nudRows);
+      this.grpConfig.Controls.Add(this.nudCols);
+      this.grpConfig.Controls.Add(this.label1);
+      this.grpConfig.Controls.Add(this.lblView);
+      this.grpConfig.Controls.Add(this.lblMarker);
+      this.grpConfig.Controls.Add(this.label4);
+      this.grpConfig.Controls.Add(this.lblObjectWindow);
+      this.grpConfig.Location = new System.Drawing.Point(14, 12);
+      this.grpConfig.Name = "grpConfig";
+      this.grpConfig.Size = new System.Drawing.Size(297, 172);
+      this.grpConfig.TabIndex = 58;
+      this.grpConfig.TabStop = false;
+      this.grpConfig.Text = "Generic_Configuration";
+      // 
+      // cbRTL
+      // 
+      this.cbRTL.AutoSize = true;
+      this.cbRTL.Location = new System.Drawing.Point(24, 131);
+      this.cbRTL.Name = "cbRTL";
+      this.cbRTL.Size = new System.Drawing.Size(123, 17);
+      this.cbRTL.TabIndex = 60;
+      this.cbRTL.Text = "Right to left direction";
+      this.cbRTL.UseVisualStyleBackColor = true;
+      this.cbRTL.CheckedChanged += new System.EventHandler(this.cbRTL_CheckedChanged);
+      // 
+      // nudCropHeight
+      // 
+      this.nudCropHeight.Location = new System.Drawing.Point(198, 95);
+      this.nudCropHeight.Maximum = new decimal(new int[] {
+            4096,
+            0,
+            0,
+            0});
+      this.nudCropHeight.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+      this.nudCropHeight.Name = "nudCropHeight";
+      this.nudCropHeight.Size = new System.Drawing.Size(45, 20);
+      this.nudCropHeight.TabIndex = 59;
+      this.nudCropHeight.Value = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+      this.nudCropHeight.ValueChanged += new System.EventHandler(this.cropSize_ValueChanged);
+      // 
+      // nudCropWidth
+      // 
+      this.nudCropWidth.Location = new System.Drawing.Point(133, 94);
+      this.nudCropWidth.Maximum = new decimal(new int[] {
+            4096,
+            0,
+            0,
+            0});
+      this.nudCropWidth.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+      this.nudCropWidth.Name = "nudCropWidth";
+      this.nudCropWidth.Size = new System.Drawing.Size(45, 20);
+      this.nudCropWidth.TabIndex = 58;
+      this.nudCropWidth.Value = new decimal(new int[] {
+            400,
+            0,
+            0,
+            0});
+      this.nudCropWidth.ValueChanged += new System.EventHandler(this.cropSize_ValueChanged);
+      // 
+      // nudRows
+      // 
+      this.nudRows.Location = new System.Drawing.Point(133, 60);
+      this.nudRows.Maximum = new decimal(new int[] {
+            25,
+            0,
+            0,
+            0});
+      this.nudRows.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+      this.nudRows.Name = "nudRows";
+      this.nudRows.Size = new System.Drawing.Size(35, 20);
+      this.nudRows.TabIndex = 57;
+      this.nudRows.Value = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+      this.nudRows.ValueChanged += new System.EventHandler(this.grid_ValueChanged);
+      // 
+      // nudCols
+      // 
+      this.nudCols.Location = new System.Drawing.Point(133, 28);
+      this.nudCols.Maximum = new decimal(new int[] {
+            25,
+            0,
+            0,
+            0});
+      this.nudCols.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+      this.nudCols.Name = "nudCols";
+      this.nudCols.Size = new System.Drawing.Size(35, 20);
+      this.nudCols.TabIndex = 56;
+      this.nudCols.Value = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+      this.nudCols.ValueChanged += new System.EventHandler(this.grid_ValueChanged);
+      // 
+      // lblView
+      // 
+      this.lblView.AutoSize = true;
+      this.lblView.Location = new System.Drawing.Point(21, 33);
+      this.lblView.Name = "lblView";
+      this.lblView.Size = new System.Drawing.Size(53, 13);
+      this.lblView.TabIndex = 52;
+      this.lblView.Text = "Columns :";
+      // 
+      // lblMarker
+      // 
+      this.lblMarker.AutoSize = true;
+      this.lblMarker.Location = new System.Drawing.Point(21, 62);
+      this.lblMarker.Name = "lblMarker";
+      this.lblMarker.Size = new System.Drawing.Size(40, 13);
+      this.lblMarker.TabIndex = 50;
+      this.lblMarker.Text = "Rows :";
+      // 
+      // btnOK
+      // 
+      this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
+      this.btnOK.Location = new System.Drawing.Point(642, 470);
+      this.btnOK.Name = "btnOK";
+      this.btnOK.Size = new System.Drawing.Size(99, 24);
+      this.btnOK.TabIndex = 56;
+      this.btnOK.Text = "OK";
+      this.btnOK.UseVisualStyleBackColor = true;
+      // 
+      // btnCancel
+      // 
+      this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+      this.btnCancel.Location = new System.Drawing.Point(747, 470);
+      this.btnCancel.Name = "btnCancel";
+      this.btnCancel.Size = new System.Drawing.Size(99, 24);
+      this.btnCancel.TabIndex = 57;
+      this.btnCancel.Text = "Cancel";
+      this.btnCancel.UseVisualStyleBackColor = true;
+      // 
+      // grpAppearance
+      // 
+      this.grpAppearance.Location = new System.Drawing.Point(14, 190);
+      this.grpAppearance.Name = "grpAppearance";
+      this.grpAppearance.Size = new System.Drawing.Size(297, 128);
+      this.grpAppearance.TabIndex = 53;
+      this.grpAppearance.TabStop = false;
+      this.grpAppearance.Text = "Generic_Appearance";
+      // 
+      // FormConfigureKinogram
+      // 
+      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.ClientSize = new System.Drawing.Size(856, 506);
+      this.Controls.Add(this.pnlViewport);
+      this.Controls.Add(this.grpConfig);
+      this.Controls.Add(this.grpAppearance);
+      this.Controls.Add(this.btnOK);
+      this.Controls.Add(this.btnCancel);
+      this.MaximizeBox = false;
+      this.MinimizeBox = false;
+      this.Name = "FormConfigureKinogram";
+      this.ShowIcon = false;
+      this.ShowInTaskbar = false;
+      this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+      this.Text = "FormConfigureKinogram";
+      this.grpConfig.ResumeLayout(false);
+      this.grpConfig.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.nudCropHeight)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudCropWidth)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudRows)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudCols)).EndInit();
+      this.ResumeLayout(false);
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.Panel pnlViewport;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblObjectWindow;
+        private System.Windows.Forms.GroupBox grpConfig;
+        private System.Windows.Forms.Label lblView;
+        private System.Windows.Forms.Label lblMarker;
+        private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.GroupBox grpAppearance;
+        private System.Windows.Forms.CheckBox cbRTL;
+        private System.Windows.Forms.NumericUpDown nudCropHeight;
+        private System.Windows.Forms.NumericUpDown nudCropWidth;
+        private System.Windows.Forms.NumericUpDown nudRows;
+        private System.Windows.Forms.NumericUpDown nudCols;
+    }
+}

@@ -24,6 +24,8 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
+using Kinovea.ScreenManager.Languages;
+using Kinovea.Services;
 using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
@@ -58,28 +60,45 @@ namespace Kinovea.ScreenManager
         {
             get { return bitmap; }
         }
+        public List<ToolStripItem> ContextMenu
+        {
+            get
+            {
+                // Rebuild the menu to get the localized text.
+                List<ToolStripItem> contextMenu = new List<ToolStripItem>();
+                mnuConfigure.Image = Properties.Drawings.configure;
+                mnuConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
+                contextMenu.Add(mnuConfigure);
+
+                return contextMenu;
+            }
+        }
         #endregion
 
         #region members
         private Bitmap bitmap;
         private Size frameSize;
         private KinogramParameters parameters = new KinogramParameters();
-        
         private IWorkingZoneFramesContainer framesContainer;
         private long timestamp;
         private int movingTile = -1;
+        private ToolStripMenuItem mnuConfigure = new ToolStripMenuItem();
         #endregion
 
         #region ctor/dtor
         public VideoFilterKinogram()
         {
+
+            mnuConfigure.Click += MnuConfigure_Click;
+
             // Test values.
-            parameters.TileCount = 16;
-            parameters.Rows = 2;
-            parameters.CropSize = new Size(400, 600);
+            //parameters.TileCount = 16;
+            //parameters.Rows = 2;
+            //parameters.CropSize = new Size(400, 600);
             
-            UpdateTileCount();
+            AfterUpdateTileCount();
         }
+
         ~VideoFilterKinogram()
         {
             Dispose(false);
@@ -162,7 +181,34 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Private methods
-        
+        private void MnuConfigure_Click(object sender, EventArgs e)
+        {
+            // Launch dialog.
+            FormConfigureKinogram fck = new FormConfigureKinogram(this, parameters);
+            FormsHelper.Locate(fck);
+            fck.ShowDialog();
+
+            if (fck.DialogResult == DialogResult.OK)
+            {
+                if (fck.GridChanged)
+                    AfterUpdateTileCount();
+            }
+
+            fck.Dispose();
+
+            Update();
+
+            // Update the main viewport.
+            // The screen hook was injected inside the menu.
+            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
+            if (tsmi == null)
+                return;
+
+            IDrawingHostView host = tsmi.Tag as IDrawingHostView;
+            if (host != null)
+                host.InvalidateFromMenu();
+        }
+
         /// <summary>
         /// Paint the composite or paint one tile of the composite.
         /// </summary>
@@ -174,10 +220,12 @@ namespace Kinovea.ScreenManager
             float step = (float)framesContainer.Frames.Count / parameters.TileCount;
             IEnumerable<VideoFrame> frames = framesContainer.Frames.Where((frame, i) => i % step < 1);
 
-            Size size = bitmap.Size;
             int cols = (int)Math.Ceiling((float)parameters.TileCount / parameters.Rows);
-            Size fullSize = new Size(parameters.CropSize.Width * cols, parameters.CropSize.Height * parameters.Rows);
-            Rectangle paintArea = UIHelper.RatioStretch(fullSize, size);
+            Size cropSize = GetCropSize();
+            Size fullSize = new Size(cropSize.Width * cols, cropSize.Height * parameters.Rows);
+
+            Size outputSize = bitmap.Size;
+            Rectangle paintArea = UIHelper.RatioStretch(fullSize, outputSize);
             Size tileSize = new Size(paintArea.Width / cols, paintArea.Height / parameters.Rows);
             Graphics g = Graphics.FromImage(bitmap);
             g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
@@ -190,7 +238,7 @@ namespace Kinovea.ScreenManager
                 // Render a single tile.
                 int index = tile;
                 VideoFrame f = frames.ToList()[index];
-                RectangleF srcRect = new RectangleF(parameters.CropPositions[index].X, parameters.CropPositions[index].Y, parameters.CropSize.Width, parameters.CropSize.Height);
+                RectangleF srcRect = new RectangleF(parameters.CropPositions[index].X, parameters.CropPositions[index].Y, cropSize.Width, cropSize.Height);
                 Rectangle destRect = GetDestinationRectangle(index, cols, parameters.Rows, parameters.LeftToRight, paintArea, tileSize);
                 using (SolidBrush b = new SolidBrush(parameters.BackgroundColor))
                     g.FillRectangle(b, destRect);
@@ -202,12 +250,12 @@ namespace Kinovea.ScreenManager
             {
                 // Render the whole composite.
                 using (SolidBrush b = new SolidBrush(parameters.BackgroundColor))
-                    g.FillRectangle(b, 0, 0, size.Width, size.Height);
+                    g.FillRectangle(b, 0, 0, outputSize.Width, outputSize.Height);
                 
                 int index = 0;
                 foreach (VideoFrame f in frames)
                 {
-                    RectangleF srcRect = new RectangleF(parameters.CropPositions[index].X, parameters.CropPositions[index].Y, parameters.CropSize.Width, parameters.CropSize.Height);
+                    RectangleF srcRect = new RectangleF(parameters.CropPositions[index].X, parameters.CropPositions[index].Y, cropSize.Width, cropSize.Height);
                     Rectangle destRect = GetDestinationRectangle(index, cols, parameters.Rows, parameters.LeftToRight, paintArea, tileSize);
                     g.DrawImage(f.Image, destRect, srcRect, GraphicsUnit.Pixel);
                     DrawBorder(g, destRect);
@@ -238,11 +286,36 @@ namespace Kinovea.ScreenManager
             return new Rectangle(paintArea.Left + col * tileSize.Width, paintArea.Top + row * tileSize.Height, tileSize.Width, tileSize.Height);
         }
 
-        private void UpdateTileCount()
+        private void AfterUpdateTileCount()
         {
-            // TODO: find a way to not invalidate the existing crop positions.
+            // TODO: find a way to not discard the existing crop positions.
+            parameters.CropPositions.Clear();
             for (int i = 0; i < parameters.TileCount; i++)
                 parameters.CropPositions.Add(new Point(0, 0));
+        }
+
+        /// <summary>
+        /// Get the final crop size, taking the original frame size into account.
+        /// </summary>
+        private Size GetCropSize()
+        {
+            int cropWidth = parameters.CropSize.Width;
+            int cropHeight = parameters.CropSize.Height;
+
+            float aspect = (float)cropWidth / cropHeight;
+            if (cropWidth > frameSize.Width)
+            {
+                cropWidth = frameSize.Width;
+                cropHeight = (int)(cropWidth / aspect);
+            }
+
+            if (cropHeight > frameSize.Height)
+            {
+                cropHeight = frameSize.Height;
+                cropWidth = (int)(cropHeight * aspect);
+            }
+
+            return new Size(cropWidth, cropHeight);
         }
 
         /// <summary>
@@ -279,17 +352,18 @@ namespace Kinovea.ScreenManager
         {
             // TODO: get from preferences or parameters.
             bool clamp = true;
-
+            
             PointF old = parameters.CropPositions[index];
             float x = old.X - dx;
             float y = old.Y - dy;
 
             if (clamp)
             {
+                Size cropSize = GetCropSize();
                 x = Math.Max(0, x);
-                x = Math.Min(frameSize.Width - parameters.CropSize.Width, x);
+                x = Math.Min(frameSize.Width - cropSize.Width, x);
                 y = Math.Max(0, y);
-                y = Math.Min(frameSize.Height - parameters.CropSize.Height, y);
+                y = Math.Min(frameSize.Height - cropSize.Height, y);
             }
 
             parameters.CropPositions[index] = new PointF(x, y);

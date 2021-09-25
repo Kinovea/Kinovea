@@ -18,19 +18,19 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Total number of tiles in the composite.
         /// </summary>
-        public int TileCount { get; set; } = 16;
+        public int TileCount { get; set; } = 18;
         
         /// <summary>
         /// Number of rows in the composite.
         /// The number of columns is always calculated from the total and rows.
         /// </summary>
-        public int Rows { get; set; } = 4;
-        
+        public int Rows { get; set; } = 3;
+
         /// <summary>
         /// Common crop size for all tiles.
         /// The size of the area of the source images we copy in the destination.
         /// </summary>
-        public Size CropSize { get; set; }
+        public Size CropSize { get; set; } = new Size(400, 600);
 
         /// <summary>
         /// List of crop positions. 
