@@ -11,12 +11,11 @@ namespace Kinovea.ScreenManager
         // frame interval.
         // total tiles count.
         // number of rows.
-        // common crop size.
-        // list of crop windows.
+        // crop size.
+        // Direction (left/right).
         // legend visibility.
         // legend placement.
         // legend type (time, tile number).
-        // Direction (left/right).
         // Direction bullets (small arrows in between frames).
         // Background color.
         // Oversampling factor: to improve quality when viewport zooming.

@@ -2808,9 +2808,16 @@ namespace Kinovea.ScreenManager
                 m_PointerTool.OnMouseDown(m_FrameServer.Metadata, m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition, PreferencesManager.PlayerPreferences.DefaultFading.Enabled);
 
                 if (m_FrameServer.Metadata.HitDrawing != null)
+                {
                     SetCursor(cursorManager.GetManipulationCursor(m_FrameServer.Metadata.HitDrawing));
+                }
                 else
+                {
                     SetCursor(m_PointerTool.GetCursor(1));
+
+                    if (videoFilterIsActive)
+                        videoFilter.StartMove(m_DescaledMouse);
+                }
             }
             else if (m_ActiveTool == ToolManager.Tools["Spotlight"])
             {
@@ -2849,9 +2856,17 @@ namespace Kinovea.ScreenManager
 
             m_PointerTool.OnMouseDown(m_FrameServer.Metadata, m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition, PreferencesManager.PlayerPreferences.DefaultFading.Enabled);
             if (m_FrameServer.Metadata.HitDrawing != null)
+            {
                 SetCursor(cursorManager.GetManipulationCursor(m_FrameServer.Metadata.HitDrawing));
+            }
             else
+            {
                 SetCursor(m_PointerTool.GetCursor(1));
+
+                if (videoFilterIsActive)
+                    videoFilter.StartMove(m_DescaledMouse);
+            }
+                
         }
         private void CreateNewDrawing(Guid managerId)
         {
@@ -3246,11 +3261,17 @@ namespace Kinovea.ScreenManager
                                 double fDeltaY = (double)m_PointerTool.MouseDelta.Y;
 
                                 if (m_FrameServer.Metadata.Mirrored)
-                                {
                                     fDeltaX = -fDeltaX;
-                                }
 
-                                m_FrameServer.ImageTransform.MoveZoomWindow(fDeltaX, fDeltaY);
+                                if (!videoFilterIsActive || (ModifierKeys & Keys.Control) == Keys.Control)
+                                {
+                                    m_FrameServer.ImageTransform.MoveZoomWindow(fDeltaX, fDeltaY);
+                                }
+                                else
+                                { 
+                                   videoFilter.Move((float)fDeltaX, (float)fDeltaY, ModifierKeys);
+                                   DoInvalidate();
+                                }
                             }
                         }
                     }
@@ -3276,7 +3297,15 @@ namespace Kinovea.ScreenManager
                         if (m_FrameServer.Metadata.Mirrored)
                             fDeltaX = -fDeltaX;
 
-                        m_FrameServer.ImageTransform.MoveZoomWindow(fDeltaX, fDeltaY);
+                        if (!videoFilterIsActive || (ModifierKeys & Keys.Control) == Keys.Control)
+                        {
+                            m_FrameServer.ImageTransform.MoveZoomWindow(fDeltaX, fDeltaY);
+                        }
+                        else
+                        {
+                            videoFilter.Move((float)fDeltaX, (float)fDeltaY, ModifierKeys);
+                            DoInvalidate();
+                        }
                     }
 
                     DoInvalidate();
@@ -3290,6 +3319,9 @@ namespace Kinovea.ScreenManager
 
             if (!m_FrameServer.Loaded)
                 return;
+
+            if (videoFilterIsActive)
+                videoFilter.StopMove();
 
             if (e.Button == MouseButtons.Middle)
             {

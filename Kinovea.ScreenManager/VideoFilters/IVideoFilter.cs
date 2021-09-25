@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Drawing;
+using System.Windows.Forms;
 using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
@@ -42,5 +43,10 @@ namespace Kinovea.ScreenManager
 
         void UpdateSize(Size size);
         void UpdateTime(long timestamp);
+
+        void StartMove(PointF p);
+        void StopMove();
+
+        void Move(float dx, float dy, Keys modifiers);
     }
 }

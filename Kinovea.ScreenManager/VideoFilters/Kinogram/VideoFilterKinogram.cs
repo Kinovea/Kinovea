@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Windows.Forms;
 using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
@@ -32,7 +33,7 @@ namespace Kinovea.ScreenManager
     /// A Kinogram is a single image containing copies of the original frames of the video.
     /// 
     /// The parameters let the user change the subset of frames selected, the crop dimension,
-    /// the aspect ratio of the final composition, etc.
+    /// the number of columns and rows of the final composition, etc.
     /// 
     /// The filter is interactive. Changing the timestamp will shift the start time of the frames,
     /// panning in the viewport will pan inside the tile under the mouse.
@@ -61,15 +62,23 @@ namespace Kinovea.ScreenManager
 
         #region members
         private Bitmap bitmap;
+        private Size frameSize;
         private KinogramParameters parameters = new KinogramParameters();
+        private List<PointF> cropPositions = new List<PointF>();
         private IWorkingZoneFramesContainer framesContainer;
         private long timestamp;
+        private int movingTile = -1;
+
+        // TODO: Move to parameters.
+        private int tileCount = 60;
+        private int rows = 5;
+        private Size cropSize = new Size(300, 400);
         #endregion
 
         #region ctor/dtor
         public VideoFilterKinogram()
         {
-
+            UpdateTileCount();
         }
         ~VideoFilterKinogram()
         {
@@ -97,7 +106,8 @@ namespace Kinovea.ScreenManager
             this.framesContainer = framesContainer;
             if (framesContainer != null && framesContainer.Frames != null && framesContainer.Frames.Count > 0)
             {
-                UpdateSize(framesContainer.Frames[0].Image.Size);
+                frameSize = framesContainer.Frames[0].Image.Size;
+                UpdateSize(frameSize);
             }
         }
 
@@ -120,23 +130,47 @@ namespace Kinovea.ScreenManager
             Update();
         }
 
+        public void StartMove(PointF p)
+        {
+            movingTile = GetTile(p);
+        }
+
+        public void StopMove()
+        {
+            movingTile = -1;
+        }
+
+        public void Move(float dx, float dy, Keys modifiers)
+        {
+            if (movingTile < 0)
+                return;
+
+            if ((modifiers & Keys.Shift) == Keys.Shift)
+            {
+                for (int i = 0; i < tileCount; i++)
+                    MoveTile(dx, dy, i);
+                
+                Update();
+            }
+            else
+            {
+               MoveTile(dx, dy, movingTile);
+               Update(movingTile);
+            }
+        }
+
         #endregion
 
         #region Private methods
-        private void Update()
+        
+        /// <summary>
+        /// Paint the composite or paint one tile of the composite.
+        /// </summary>
+        private void Update(int tile = -1)
         {
             if (bitmap == null || framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count < 1)
                 return;
 
-            // TODO: get from parameters:
-            int tileCount = 17;
-            int rows = 3;
-            Size cropSize = new Size(800, 800);
-            List<Point> cropPositions = new List<Point>();
-            for (int i = 0; i < tileCount; i++)
-                cropPositions.Add(new Point(0, 0));
-
-            //-------------
             float step = (float)framesContainer.Frames.Count / tileCount;
             IEnumerable<VideoFrame> frames = framesContainer.Frames.Where((frame, i) => i % step < 1);
 
@@ -151,18 +185,29 @@ namespace Kinovea.ScreenManager
             g.InterpolationMode = InterpolationMode.Bilinear;
             g.SmoothingMode = SmoothingMode.HighSpeed;
 
-            // Render the composite.
-            g.FillRectangle(Brushes.CornflowerBlue, 0, 0, size.Width, size.Height);
-            int index = 0;
-            foreach (VideoFrame f in frames)
+            if (tile >= 0)
             {
-                Rectangle srcRect = new Rectangle(cropPositions[index].X, cropPositions[index].Y, cropSize.Width, cropSize.Height);
+                // Render a single tile.
+                int index = tile;
+                VideoFrame f = frames.ToList()[index];
+                RectangleF srcRect = new RectangleF(cropPositions[index].X, cropPositions[index].Y, cropSize.Width, cropSize.Height);
                 Rectangle destRect = GetDestinationRectangle(index, cols, rows, paintArea, tileSize);
+                g.FillRectangle(Brushes.CornflowerBlue, destRect);
                 g.DrawImage(f.Image, destRect, srcRect, GraphicsUnit.Pixel);
-                index++;
             }
-
-            //bitmap.Save("kinogram.png");
+            else
+            {
+                // Render the whole composite.
+                g.FillRectangle(Brushes.CornflowerBlue, 0, 0, size.Width, size.Height);
+                int index = 0;
+                foreach (VideoFrame f in frames)
+                {
+                    RectangleF srcRect = new RectangleF(cropPositions[index].X, cropPositions[index].Y, cropSize.Width, cropSize.Height);
+                    Rectangle destRect = GetDestinationRectangle(index, cols, rows, paintArea, tileSize);
+                    g.DrawImage(f.Image, destRect, srcRect, GraphicsUnit.Pixel);
+                    index++;
+                }
+            }
         }
 
         /// <summary>
@@ -173,6 +218,60 @@ namespace Kinovea.ScreenManager
             int row = index / cols;
             int col = index - (row * cols);
             return new Rectangle(paintArea.Left + col * tileSize.Width, paintArea.Top + row * tileSize.Height, tileSize.Width, tileSize.Height);
+        }
+
+        private void UpdateTileCount()
+        {
+            // TODO: find a way to not invalidate the existing crop positions.
+            for (int i = 0; i < tileCount; i++)
+                cropPositions.Add(new Point(0, 0));
+        }
+
+        /// <summary>
+        /// Find the tile under this point.
+        /// The point is given in the space of the original cached images.
+        /// </summary>
+        private int GetTile(PointF p)
+        {
+            Size size = bitmap.Size;
+            int cols = (int)Math.Ceiling((float)tileCount / rows);
+            Size fullSize = new Size(cropSize.Width * cols, cropSize.Height * rows);
+            Rectangle paintArea = UIHelper.RatioStretch(fullSize, size);
+            Size tileSize = new Size(paintArea.Width / cols, paintArea.Height / rows);
+
+            // Express the coordinate in the paint area.
+            p = new PointF(p.X - paintArea.X, p.Y - paintArea.Y);
+
+            if (p.X < 0 || p.Y < 0 || p.X >= paintArea.Width || p.Y >= paintArea.Height)
+                return -1;
+
+            int col = (int)(p.X / tileSize.Width);
+            int row = (int)(p.Y / tileSize.Height);
+            int index = row * cols + col;
+            return index;
+        }
+
+        /// <summary>
+        /// Move the crop position of a specific tile.
+        /// </summary>
+        private void MoveTile(float dx, float dy, int index)
+        {
+            // TODO: get from preferences or parameters.
+            bool clamp = true;
+
+            PointF old = cropPositions[index];
+            float x = old.X - dx;
+            float y = old.Y - dy;
+
+            if (clamp)
+            {
+                x = Math.Max(0, x);
+                x = Math.Min(frameSize.Width - cropSize.Width, x);
+                y = Math.Max(0, y);
+                y = Math.Min(frameSize.Height - cropSize.Height, y);
+            }
+
+            cropPositions[index] = new PointF(x, y);
         }
         #endregion
     }
