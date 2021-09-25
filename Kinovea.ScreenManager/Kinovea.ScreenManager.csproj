@@ -766,9 +766,14 @@
     <Compile Include="VideoFilters\Kinogram\FormConfigureKinogram.Designer.cs">
       <DependentUpon>FormConfigureKinogram.cs</DependentUpon>
     </Compile>
+    <Compile Include="VideoFilters\Kinogram\FormExportKinogram.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VideoFilters\Kinogram\FormExportKinogram.Designer.cs">
+      <DependentUpon>FormExportKinogram.cs</DependentUpon>
+    </Compile>
     <Compile Include="VideoFilters\Kinogram\KinogramParameters.cs" />
     <Compile Include="VideoFilters\Kinogram\VideoFilterKinogram.cs" />
-    <Compile Include="VideoFilters\Kinogram\VideoFilterMosaic.cs" />
     <Compile Include="PlayerScreen\ViewportManipulator.cs" />
     <Compile Include="Properties\Backgrounds.Designer.cs">
       <DependentUpon>Backgrounds.resx</DependentUpon>
@@ -1049,6 +1054,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="VideoFilters\Kinogram\FormConfigureKinogram.resx">
       <DependentUpon>FormConfigureKinogram.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VideoFilters\Kinogram\FormExportKinogram.resx">
+      <DependentUpon>FormExportKinogram.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

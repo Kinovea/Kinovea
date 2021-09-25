@@ -1206,7 +1206,7 @@ namespace Kinovea.ScreenManager
 
             // 6. Video filters.
             mnuCloseFilter.Click += btnClose_Click;
-            mnuCloseFilter.Image = Properties.Resources.film_close3;
+            mnuCloseFilter.Image = Properties.Resources.hide;
 
             // The right context menu and its content will be choosen upon MouseDown.
             panelCenter.ContextMenuStrip = popMenu;

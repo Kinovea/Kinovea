@@ -68,7 +68,11 @@ namespace Kinovea.ScreenManager
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
                 mnuConfigure.Image = Properties.Drawings.configure;
                 mnuConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
+                mnuExport.Image = Properties.Resources.filesave;
+                mnuExport.Text = "Save";
+
                 contextMenu.Add(mnuConfigure);
+                contextMenu.Add(mnuExport);
 
                 return contextMenu;
             }
@@ -90,6 +94,7 @@ namespace Kinovea.ScreenManager
         bool clamp = false;
         private int movingTile = -1;
         private ToolStripMenuItem mnuConfigure = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExport = new ToolStripMenuItem();
         #endregion
 
         #region ctor/dtor
@@ -97,11 +102,7 @@ namespace Kinovea.ScreenManager
         {
 
             mnuConfigure.Click += MnuConfigure_Click;
-
-            // Test values.
-            //parameters.TileCount = 16;
-            //parameters.Rows = 2;
-            //parameters.CropSize = new Size(400, 600);
+            mnuExport.Click += MnuExport_Click;
             
             AfterUpdateTileCount();
         }
@@ -185,6 +186,34 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        /// <summary>
+        /// Paint the composite on a new bitmap at the requested size and return it.
+        /// </summary>
+        public Bitmap Export(Size outputSize)
+        {
+            Bitmap bitmap = new Bitmap(outputSize.Width, outputSize.Height);
+            Graphics g = Graphics.FromImage(bitmap);
+            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+            g.CompositingQuality = CompositingQuality.HighQuality;
+            g.InterpolationMode = InterpolationMode.HighQualityBilinear;
+            g.SmoothingMode = SmoothingMode.HighQuality;
+
+            Paint(g, outputSize);
+
+            return bitmap;
+        }
+
+        /// <summary>
+        /// Returns the aspect ratio of the kinogram.
+        /// </summary>
+        public float GetAspectRatio()
+        {
+            int cols = (int)Math.Ceiling((float)parameters.TileCount / parameters.Rows);
+            Size cropSize = GetCropSize();
+            Size fullSize = new Size(cropSize.Width * cols, cropSize.Height * parameters.Rows);
+            return (float)fullSize.Width / fullSize.Height;
+        }
+
         #endregion
 
         #region Private methods
@@ -216,14 +245,39 @@ namespace Kinovea.ScreenManager
                 host.InvalidateFromMenu();
         }
 
+        private void MnuExport_Click(object sender, EventArgs e)
+        {
+            // Launch dialog.
+            FormExportKinogram fek = new FormExportKinogram(this);
+            FormsHelper.Locate(fek);
+            fek.ShowDialog();
+            fek.Dispose();
+
+            Update();
+        }
+
         /// <summary>
-        /// Paint the composite or paint one tile of the composite.
+        /// Paint the composite or one tile on the internal bitmap.
         /// </summary>
         private void Update(int tile = -1)
         {
             if (bitmap == null || framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count < 1)
                 return;
 
+            Graphics g = Graphics.FromImage(bitmap);
+            g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
+            g.CompositingQuality = CompositingQuality.HighSpeed;
+            g.InterpolationMode = InterpolationMode.Bilinear;
+            g.SmoothingMode = SmoothingMode.HighSpeed;
+
+            Paint(g, bitmap.Size, tile);
+        }
+
+        /// <summary>
+        /// Paint the composite or paint one tile of the composite.
+        /// </summary>
+        private void Paint(Graphics g, Size outputSize, int tile = -1)
+        { 
             float step = (float)framesContainer.Frames.Count / parameters.TileCount;
             IEnumerable<VideoFrame> frames = framesContainer.Frames.Where((frame, i) => i % step < 1);
 
@@ -231,15 +285,9 @@ namespace Kinovea.ScreenManager
             Size cropSize = GetCropSize();
             Size fullSize = new Size(cropSize.Width * cols, cropSize.Height * parameters.Rows);
 
-            Size outputSize = bitmap.Size;
             Rectangle paintArea = UIHelper.RatioStretch(fullSize, outputSize);
             Size tileSize = new Size(paintArea.Width / cols, paintArea.Height / parameters.Rows);
-            Graphics g = Graphics.FromImage(bitmap);
-            g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
-            g.CompositingQuality = CompositingQuality.HighSpeed;
-            g.InterpolationMode = InterpolationMode.Bilinear;
-            g.SmoothingMode = SmoothingMode.HighSpeed;
-
+           
             if (tile >= 0)
             {
                 // Render a single tile.
