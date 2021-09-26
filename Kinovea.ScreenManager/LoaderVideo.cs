@@ -135,7 +135,10 @@ namespace Kinovea.ScreenManager
             NotificationCenter.RaiseStopPlayback(null);
 
             if (player.FrameServer.Loaded)
+            {
+                player.FrameServer.DeactivateVideoFilter();
                 player.view.ResetToEmptyState();
+            }
 
             player.view.LaunchDescription = screenDescription;
             player.Id = Guid.NewGuid();

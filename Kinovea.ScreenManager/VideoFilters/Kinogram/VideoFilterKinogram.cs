@@ -43,19 +43,6 @@ namespace Kinovea.ScreenManager
     public class VideoFilterKinogram : IVideoFilter
     {
         #region IVideoFilter properties
-        public string Name
-        {
-            get { return "Kinogram"; }
-        }
-        public Bitmap Icon
-        {
-            get { return Properties.Resources.mosaic; }
-        }
-
-        public bool Experimental
-        {
-            get { return false; }
-        }
         public Bitmap Current
         {
             get { return bitmap; }
@@ -100,7 +87,6 @@ namespace Kinovea.ScreenManager
         #region ctor/dtor
         public VideoFilterKinogram()
         {
-
             mnuConfigure.Click += MnuConfigure_Click;
             mnuExport.Click += MnuExport_Click;
             
@@ -128,8 +114,16 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region IVideoFilter methods
+        public void Reset()
+        {
+            this.framesContainer = null;
+            this.parameters = new KinogramParameters();
+            AfterUpdateTileCount();
+        }
+        
         public void SetFrames(IWorkingZoneFramesContainer framesContainer)
         {
+
             this.framesContainer = framesContainer;
             if (framesContainer != null && framesContainer.Frames != null && framesContainer.Frames.Count > 0)
             {

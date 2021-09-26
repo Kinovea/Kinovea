@@ -892,6 +892,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="UIHelper.cs" />
+    <Compile Include="VideoFilters\VideoFilterType.cs" />
+    <Compile Include="VideoFilters\VideoFilterFactory.cs" />
+    <Compile Include="VideoFilters\VideoFilterInfo.cs" />
     <EmbeddedResource Include="CaptureScreen\Views\CapturedFilesView.resx">
       <DependentUpon>CapturedFilesView.cs</DependentUpon>
     </EmbeddedResource>

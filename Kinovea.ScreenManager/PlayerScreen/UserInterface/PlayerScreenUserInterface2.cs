@@ -455,6 +455,10 @@ namespace Kinovea.ScreenManager
             // 1. Reset all data.
             m_FrameServer.Unload();
             ResetData();
+            if (videoFilter != null)
+                videoFilter.Reset();
+
+            videoFilterIsActive = false;
 
             // 2. Reset all interface.
             ShowHideRenderingSurface(false);
@@ -872,7 +876,6 @@ namespace Kinovea.ScreenManager
         {
             videoFilter = filter;
             videoFilterIsActive = true;
-
             //DisablePlayAndDraw();
             //EnableDisableAllPlayingControls(false);
             //EnableDisableDrawingTools(false);
@@ -883,10 +886,6 @@ namespace Kinovea.ScreenManager
         public void DeactivateVideoFilter()
         {
             videoFilterIsActive = false;
-            videoFilter = null;
-            //m_InteractiveEffect = null;
-            //EnableDisableAllPlayingControls(true);
-            //EnableDisableDrawingTools(true);
             DoInvalidate();
         }
         public void SetSyncMergeImage(Bitmap _SyncMergeImage, bool _bUpdateUI)
@@ -996,7 +995,6 @@ namespace Kinovea.ScreenManager
         {
             m_iFramesToDecode = 1;
 
-            DeactivateVideoFilter();
             m_bIsCurrentlyPlaying = false;
             m_ePlayingMode = PlayingMode.Loop;
             m_fill = false;

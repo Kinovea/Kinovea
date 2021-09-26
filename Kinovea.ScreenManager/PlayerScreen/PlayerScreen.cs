@@ -299,9 +299,11 @@ namespace Kinovea.ScreenManager
                 RefreshImage();
             }
         }
-        public bool VideoFilterIsActive {
-            get {return frameServer.VideoFilterIsActive;}
+        public VideoFilterType ActiveVideoFilter 
+        {
+            get {return activeVideoFilter; }
         }
+
         public HistoryStack HistoryStack
         {
             get { return historyStack; }
@@ -317,6 +319,8 @@ namespace Kinovea.ScreenManager
         private bool synched;
         private int index;
         private ReplayWatcher replayWatcher;
+        private Dictionary<VideoFilterType, IVideoFilter> filters = new Dictionary<VideoFilterType, IVideoFilter>();
+        private VideoFilterType activeVideoFilter = VideoFilterType.None;
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -329,7 +333,9 @@ namespace Kinovea.ScreenManager
             frameServer = new FrameServerPlayer(historyStack);
             replayWatcher = new ReplayWatcher(this);
             view = new PlayerScreenUserInterface(frameServer, drawingToolbarPresenter);
-            
+
+            filters.Add(VideoFilterType.Kinogram, VideoFilterFactory.CreateFilter(VideoFilterType.Kinogram));
+
             BindCommands();
         }
         #endregion
@@ -451,6 +457,9 @@ namespace Kinovea.ScreenManager
         
         public void View_SelectionChanged(object sender, EventArgs<bool> e)
         {
+            DeactivateVideoFilter();
+            frameServer.ResetVideoFilter();
+
             if (SelectionChanged != null)
                 SelectionChanged(this, e);
         }
@@ -535,6 +544,8 @@ namespace Kinovea.ScreenManager
         {
             frameServer.Metadata.Close();
             replayWatcher.Stop();
+            foreach (IVideoFilter filter in filters.Values)
+                filter.Dispose();
             
             if(!frameServer.Loaded)
                 return;
@@ -677,16 +688,27 @@ namespace Kinovea.ScreenManager
             return view.GetMemo();
         }
         
-        public void ActivateVideoFilter(IVideoFilter filter)
+        /// <summary>
+        /// A video filter was activated from the main menu for this screen.
+        /// </summary>
+        public void ActivateVideoFilter(VideoFilterType filter)
         {
-            frameServer.ActivateVideoFilter(filter);
-            view.ActivateVideoFilter(filter);
+            // TODO: if changing between two filters, should we reset the old one?
+
+            activeVideoFilter = filter;
+            frameServer.ActivateVideoFilter(filters[filter]);
+            view.ActivateVideoFilter(filters[filter]);
         }
         
-        public void DeactivateInteractiveEffect()
+        /// <summary>
+        /// The active video filter was deactivated from the main menu or from closing the filter window.
+        /// This does not reset its internal data.
+        /// </summary>
+        public void DeactivateVideoFilter()
         {
-            view.DeactivateVideoFilter();
+            activeVideoFilter = VideoFilterType.None;
             frameServer.DeactivateVideoFilter();
+            view.DeactivateVideoFilter();
         }
         
         public void SetSyncMergeImage(Bitmap _SyncMergeImage, bool _bUpdateUI)

@@ -186,29 +186,30 @@ namespace Kinovea.ScreenManager
 
         private void InitializeVideoFilters()
         {
-            //filterMenus.Add(CreateFilterMenu(new VideoFilterAutoLevels()));
-            //filterMenus.Add(CreateFilterMenu(new VideoFilterContrast()));
-            //filterMenus.Add(CreateFilterMenu(new VideoFilterSharpen()));
-            //filterMenus.Add(CreateFilterMenu(new VideoFilterEdgesOnly()));
-            filterMenus.Add(CreateFilterMenu(new VideoFilterKinogram()));
-            //filterMenus.Add(CreateFilterMenu(new VideoFilterReverse()));
-            //filterMenus.Add(CreateFilterMenu(new VideoFilterSandbox()));
+            filterMenus.Add(CreateFilterMenu(VideoFilterType.Kinogram));
+            
 
         }
 
-        private ToolStripMenuItem CreateFilterMenu(IVideoFilter filter)
+        private ToolStripMenuItem CreateFilterMenu(VideoFilterType type)
         {
-            ToolStripMenuItem menu = new ToolStripMenuItem(filter.Name, filter.Icon);
+            VideoFilterInfo info = VideoFilterFactory.Info[type];
+            ToolStripMenuItem menu = new ToolStripMenuItem(info.Name, info.Icon);
             menu.MergeAction = MergeAction.Append;
-            menu.Tag = filter;
+            menu.Tag = type;
             menu.Click += (s, e) =>
             {
                 PlayerScreen screen = activeScreen as PlayerScreen;
                 if(screen == null || !screen.IsCaching)
                     return;
 
-                IVideoFilter f = (IVideoFilter)((ToolStripMenuItem)s).Tag;
-                screen.ActivateVideoFilter(f);
+                VideoFilterType filter = (VideoFilterType)((ToolStripMenuItem)s).Tag;
+                if (filter == screen.ActiveVideoFilter)
+                    screen.DeactivateVideoFilter();
+                else
+                    screen.ActivateVideoFilter(filter);
+
+                OrganizeMenus();
             };
 
             return menu;
@@ -229,13 +230,6 @@ namespace Kinovea.ScreenManager
             svgFilesWatcher.Renamed += OnSVGFilesChanged;
         }
 
-        //public void SetInteractiveEffect(InteractiveEffect _effect)
-        //{
-        //    PlayerScreen player = activeScreen as PlayerScreen;
-        //    if(player != null)
-        //        player.SetInteractiveEffect(_effect);
-        //}
-        
         public void RecoverCrash()
         {
             // Import recovered screens into launch settings.
@@ -691,10 +685,11 @@ namespace Kinovea.ScreenManager
                 return;
 
             // If a video filter is active we just go back to normal play.
-            if (screen is PlayerScreen && ((PlayerScreen)screen).VideoFilterIsActive)
+            if (screen is PlayerScreen && ((PlayerScreen)screen).ActiveVideoFilter != VideoFilterType.None)
             {
                 SetActiveScreen(screen);
-                ((PlayerScreen)screen).DeactivateInteractiveEffect();
+                ((PlayerScreen)screen).DeactivateVideoFilter();
+                OrganizeMenus();
                 return;
             }
 
@@ -761,6 +756,8 @@ namespace Kinovea.ScreenManager
 
             if (dualLaunchSettingsPendingCountdown == 0)
                 dualPlayer.CommitLaunchSettings();
+
+            OrganizeMenus();
         }
         private void Player_ResetAsked(object sender, EventArgs e)
         {
@@ -1325,14 +1322,21 @@ namespace Kinovea.ScreenManager
             bool hasVideo = player != null && player.Full;
             foreach(ToolStripMenuItem menu in filterMenus)
             {
-                IVideoFilter filter = menu.Tag as IVideoFilter;
-                if (filter == null)
-                    continue;
-                
-                menu.Visible = filter.Experimental ? Software.Experimental : true;
-                menu.Enabled = hasVideo ? player.IsCaching : false;
+                VideoFilterType filter = (VideoFilterType)menu.Tag;
+                VideoFilterInfo info = VideoFilterFactory.Info[filter];
 
-                // TODO: checked/unchecked if this is the currently active filter.
+                menu.Visible = info.Experimental ? Software.Experimental : true;
+
+                if (hasVideo)
+                {
+                    menu.Enabled = player.IsCaching;
+                    menu.Checked = player.ActiveVideoFilter == filter;
+                }
+                else
+                {
+                    menu.Enabled = false;
+                    menu.Checked = false;
+                }
             }
         }
         private void ConfigureImageFormatMenus(AbstractScreen screen)
@@ -1347,9 +1351,6 @@ namespace Kinovea.ScreenManager
             if (!canChangeAspectRatio)
                 return;
 
-            if (!canChangeAspectRatio)
-            
-            // Reset all checks before setting the right one.
             mnuFormatAuto.Checked = screen.AspectRatio == ImageAspectRatio.Auto;
             mnuFormatForce43.Checked = screen.AspectRatio == ImageAspectRatio.Force43;
             mnuFormatForce169.Checked = screen.AspectRatio == ImageAspectRatio.Force169;
@@ -1525,9 +1526,10 @@ namespace Kinovea.ScreenManager
         {
             foreach(ToolStripMenuItem menu in filterMenus)
             {
-                IVideoFilter filter = menu.Tag as IVideoFilter;
-                if(filter != null)
-                    menu.Text = filter.Name;
+                VideoFilterType filter = (VideoFilterType)menu.Tag;
+
+                // TODO: localization.
+                menu.Text = VideoFilterFactory.Info[filter].Name;
             }
         }
                 

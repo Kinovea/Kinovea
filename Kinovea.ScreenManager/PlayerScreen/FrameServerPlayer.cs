@@ -300,7 +300,11 @@ namespace Kinovea.ScreenManager
         public void DeactivateVideoFilter()
         {
             videoFilterIsActive = false;
-            videoFilter = null;
+        }
+        public void ResetVideoFilter()
+        {
+            if (videoFilter != null)
+                videoFilter.Reset();
         }
         #endregion
         

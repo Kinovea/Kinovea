@@ -34,22 +34,6 @@ namespace Kinovea.ScreenManager
     public interface IVideoFilter : IDisposable
     {
         #region Properties
-        
-        /// <summary>
-        /// Name of the filter.
-        /// </summary>
-        string Name { get; }
-        
-        /// <summary>
-        /// Icon for the menu.
-        /// </summary>
-        Bitmap Icon { get; }
-
-        /// <summary>
-        /// Controls whether this filter should be available in non-experimental releases.
-        /// </summary>
-        bool Experimental { get; }
-
         /// <summary>
         /// List of context menus specific to the filter.
         /// </summary>
@@ -61,6 +45,8 @@ namespace Kinovea.ScreenManager
         Bitmap Current { get; }
 
         #endregion
+
+        void Reset();
 
         void SetFrames(IWorkingZoneFramesContainer framesContainer);
 
