@@ -76,6 +76,7 @@ namespace Kinovea.ScreenManager
         private Size frameSize;
         private KinogramParameters parameters = new KinogramParameters();
         private IWorkingZoneFramesContainer framesContainer;
+        private FrameServerPlayer frameServer;
         private long timestamp;
         private Color BackgroundColor = Color.FromArgb(44, 44, 44);
         bool clamp = false;
@@ -85,8 +86,9 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region ctor/dtor
-        public VideoFilterKinogram()
+        public VideoFilterKinogram(FrameServerPlayer frameServer)
         {
+            this.frameServer = frameServer;
             mnuConfigure.Click += MnuConfigure_Click;
             mnuExport.Click += MnuExport_Click;
             
@@ -181,9 +183,9 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Paint the composite on a new bitmap at the requested size and return it.
+        /// Paint the composite + annotations on a new bitmap at the requested size and return it.
         /// </summary>
-        public Bitmap Export(Size outputSize)
+        public Bitmap Export(Size outputSize, long timestamp)
         {
             Bitmap bitmap = new Bitmap(outputSize.Width, outputSize.Height);
             Graphics g = Graphics.FromImage(bitmap);
@@ -193,6 +195,14 @@ namespace Kinovea.ScreenManager
             g.SmoothingMode = SmoothingMode.HighQuality;
 
             Paint(g, outputSize);
+
+            // Annotations are expressed in the original frames coordinate system.
+            Rectangle fitArea = UIHelper.RatioStretch(outputSize, frameSize);
+            float scale = (float)outputSize.Width / fitArea.Width;
+            Point location = new Point((int)(-fitArea.X * scale), (int)(-fitArea.Y * scale));
+
+            MetadataRenderer metadataRenderer = new MetadataRenderer(frameServer.Metadata, true);
+            metadataRenderer.Render(g, location, scale, timestamp);
 
             return bitmap;
         }
@@ -213,6 +223,14 @@ namespace Kinovea.ScreenManager
         #region Private methods
         private void MnuConfigure_Click(object sender, EventArgs e)
         {
+            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
+            if (tsmi == null)
+                return;
+
+            IDrawingHostView host = tsmi.Tag as IDrawingHostView;
+            if (host == null)
+                return;
+
             // Launch dialog.
             FormConfigureKinogram fck = new FormConfigureKinogram(this);
             FormsHelper.Locate(fck);
@@ -230,19 +248,21 @@ namespace Kinovea.ScreenManager
 
             // Update the main viewport.
             // The screen hook was injected inside the menu.
+            host.InvalidateFromMenu();
+        }
+
+        private void MnuExport_Click(object sender, EventArgs e)
+        {
             ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
             if (tsmi == null)
                 return;
 
             IDrawingHostView host = tsmi.Tag as IDrawingHostView;
-            if (host != null)
-                host.InvalidateFromMenu();
-        }
+            if (host == null)
+                return;
 
-        private void MnuExport_Click(object sender, EventArgs e)
-        {
             // Launch dialog.
-            FormExportKinogram fek = new FormExportKinogram(this);
+            FormExportKinogram fek = new FormExportKinogram(this, host.CurrentTimestamp);
             FormsHelper.Locate(fek);
             fek.ShowDialog();
             fek.Dispose();

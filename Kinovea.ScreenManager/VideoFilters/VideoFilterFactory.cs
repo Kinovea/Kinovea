@@ -23,12 +23,12 @@ namespace Kinovea.ScreenManager
             Info.Add(VideoFilterType.Kinogram, new VideoFilterInfo("Kinogram", Properties.Resources.mosaic, false));
         }
 
-        public static IVideoFilter CreateFilter(VideoFilterType type)
+        public static IVideoFilter CreateFilter(VideoFilterType type, FrameServerPlayer frameServer)
         {
             switch (type)
             {
                 case VideoFilterType.Kinogram:
-                    return new VideoFilterKinogram();
+                    return new VideoFilterKinogram(frameServer);
                 default:
                     return null;
             }

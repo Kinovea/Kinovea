@@ -23,15 +23,17 @@ namespace Kinovea.ScreenManager
         private bool manualUpdate;
         private int width = 1920;
         private int height = 1080;
+        private long timestamp;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 
-        public FormExportKinogram(VideoFilterKinogram kinogram)
+        public FormExportKinogram(VideoFilterKinogram kinogram, long timestamp)
         {
             InitializeComponent();
 
             this.kinogram = kinogram;
             this.aspect = kinogram.GetAspectRatio();
+            this.timestamp = timestamp;
             InitValues();
             InitCulture();
         }
@@ -49,10 +51,9 @@ namespace Kinovea.ScreenManager
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            // Obtain a render of the Kinogram at the requested size.
-            Bitmap bmp = kinogram.Export(new Size(width, height));
-
-            // TODO: paint drawings on top of the Kinogram.
+            // Obtain a render of the Kinogram + whatever annotations are at the current time stamp.
+            Size outputSize = new Size(width, height);
+            Bitmap bmp = kinogram.Export(outputSize, timestamp);
 
             // Save the image.
             try

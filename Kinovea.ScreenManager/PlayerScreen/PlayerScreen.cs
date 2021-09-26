@@ -334,7 +334,7 @@ namespace Kinovea.ScreenManager
             replayWatcher = new ReplayWatcher(this);
             view = new PlayerScreenUserInterface(frameServer, drawingToolbarPresenter);
 
-            filters.Add(VideoFilterType.Kinogram, VideoFilterFactory.CreateFilter(VideoFilterType.Kinogram));
+            filters.Add(VideoFilterType.Kinogram, VideoFilterFactory.CreateFilter(VideoFilterType.Kinogram, frameServer));
 
             BindCommands();
         }
