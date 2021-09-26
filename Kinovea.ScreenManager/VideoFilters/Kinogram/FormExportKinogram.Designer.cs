@@ -33,7 +33,7 @@ namespace Kinovea.ScreenManager
       this.nudWidth = new System.Windows.Forms.NumericUpDown();
       this.label1 = new System.Windows.Forms.Label();
       this.label4 = new System.Windows.Forms.Label();
-      this.lblObjectWindow = new System.Windows.Forms.Label();
+      this.lblImageSize = new System.Windows.Forms.Label();
       this.btnOK = new System.Windows.Forms.Button();
       this.btnCancel = new System.Windows.Forms.Button();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -106,14 +106,14 @@ namespace Kinovea.ScreenManager
       this.label4.TabIndex = 61;
       this.label4.Text = "×";
       // 
-      // lblObjectWindow
+      // lblImageSize
       // 
-      this.lblObjectWindow.AutoSize = true;
-      this.lblObjectWindow.Location = new System.Drawing.Point(21, 28);
-      this.lblObjectWindow.Name = "lblObjectWindow";
-      this.lblObjectWindow.Size = new System.Drawing.Size(63, 13);
-      this.lblObjectWindow.TabIndex = 60;
-      this.lblObjectWindow.Text = "Image size :";
+      this.lblImageSize.AutoSize = true;
+      this.lblImageSize.Location = new System.Drawing.Point(21, 28);
+      this.lblImageSize.Name = "lblImageSize";
+      this.lblImageSize.Size = new System.Drawing.Size(63, 13);
+      this.lblImageSize.TabIndex = 60;
+      this.lblImageSize.Text = "Image size :";
       // 
       // btnOK
       // 
@@ -142,7 +142,7 @@ namespace Kinovea.ScreenManager
       // 
       this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.groupBox1.Controls.Add(this.lblObjectWindow);
+      this.groupBox1.Controls.Add(this.lblImageSize);
       this.groupBox1.Controls.Add(this.label4);
       this.groupBox1.Controls.Add(this.label1);
       this.groupBox1.Controls.Add(this.nudHeight);
@@ -152,7 +152,6 @@ namespace Kinovea.ScreenManager
       this.groupBox1.Size = new System.Drawing.Size(312, 71);
       this.groupBox1.TabIndex = 67;
       this.groupBox1.TabStop = false;
-      this.groupBox1.Text = "groupBox1";
       // 
       // FormExportKinogram
       // 
@@ -178,7 +177,7 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.NumericUpDown nudWidth;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label lblObjectWindow;
+        private System.Windows.Forms.Label lblImageSize;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.GroupBox groupBox1;

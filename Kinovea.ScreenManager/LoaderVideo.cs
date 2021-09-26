@@ -136,7 +136,7 @@ namespace Kinovea.ScreenManager
 
             if (player.FrameServer.Loaded)
             {
-                player.FrameServer.DeactivateVideoFilter();
+                player.DeactivateVideoFilter();
                 player.view.ResetToEmptyState();
             }
 

@@ -56,7 +56,7 @@ namespace Kinovea.ScreenManager
                 mnuConfigure.Image = Properties.Drawings.configure;
                 mnuConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
                 mnuExport.Image = Properties.Resources.filesave;
-                mnuExport.Text = "Save";
+                mnuExport.Text = "Save…";
 
                 contextMenu.Add(mnuConfigure);
                 contextMenu.Add(mnuExport);

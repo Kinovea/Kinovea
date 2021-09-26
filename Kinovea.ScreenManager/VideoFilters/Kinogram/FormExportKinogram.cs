@@ -33,11 +33,18 @@ namespace Kinovea.ScreenManager
             this.kinogram = kinogram;
             this.aspect = kinogram.GetAspectRatio();
             InitValues();
+            InitCulture();
         }
 
         private void InitValues()
         {
             nudWidth.Value = width;
+        }
+
+        private void InitCulture()
+        {
+            this.Text = "Save image";
+            lblImageSize.Text = "Image size:";
         }
 
         private void btnOK_Click(object sender, EventArgs e)

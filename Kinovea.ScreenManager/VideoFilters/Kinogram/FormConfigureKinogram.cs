@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kinovea.ScreenManager.Languages;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -37,10 +38,11 @@ namespace Kinovea.ScreenManager
 
             SetupStyle();
             SetupStyleControls();
-            InitializeValues();
+            InitValues();
+            InitCulture();
         }
 
-        private void InitializeValues()
+        private void InitValues()
         {
             manualUpdate = true;
             int cols = (int)Math.Ceiling((float)parameters.TileCount / parameters.Rows);
@@ -51,6 +53,19 @@ namespace Kinovea.ScreenManager
             cbRTL.Checked = !parameters.LeftToRight;
             cbBorderVisible.Checked = parameters.BorderVisible;
             manualUpdate = false;
+        }
+
+        private void InitCulture()
+        {
+            this.Text = "Configure Kinogram";
+            grpConfig.Text = ScreenManagerLang.Generic_Configuration;
+            lblColumns.Text = "Columns:";
+            lblRows.Text = "Rows:";
+            lblCropSize.Text = "Crop size:";
+            cbRTL.Text = "Right to left";
+            
+            grpAppearance.Text = ScreenManagerLang.Generic_Appearance;
+            cbBorderVisible.Text = "Show border";
         }
 
         private void SetupStyle()
