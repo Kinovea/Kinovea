@@ -1022,7 +1022,7 @@
     <value>箭头 - 曲线</value>
   </data>
   <data name="DrawingName_ArrowSquiggly" xml:space="preserve">
-    <value>箭头 - 波浪号</value>
+    <value>箭头 - 波浪线</value>
   </data>
   <data name="DrawingName_ArrowDash" xml:space="preserve">
     <value>箭头 – 破折号</value>

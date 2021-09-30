@@ -82,31 +82,31 @@ namespace Kinovea.Services
                 languages.Add("ar", "العَرَبِية");
                 languages.Add("bg", "Български");
                 languages.Add("ca", "Català");
-                //languages.Add("cs", "Čeština");
-                //languages.Add("da", "Dansk");
+                //languages.Add("cs", "Čeština"); // Root < 75%
+                //languages.Add("da", "Dansk"); // Root < 75%
                 languages.Add("de", "Deutsch");
-                //languages.Add("el", "Ελληνικά");
+                //languages.Add("el", "Ελληνικά"); // Root < 75%
                 languages.Add("en", "English");
                 languages.Add("es", "Español");
                 languages.Add("fa", "فارسی");
                 languages.Add("fr", "Français");
-                //languages.Add("ko", "한국어");
-                //languages.Add("id", "Bahasa Indonesia");
-                //languages.Add("it", "Italiano");
-                //languages.Add("lt", "Lietuvių");
+                //languages.Add("ko", "한국어"); // Root < 75%
+                //languages.Add("id", "Bahasa Indonesia"); // Untranslated menu & player
+                //languages.Add("it", "Italiano"); // Untranslated menu & player
+                //languages.Add("lt", "Lietuvių"); // Root < 75%
                 languages.Add("nl", "Nederlands");
-                //languages.Add("ja", "日本語");
-                //languages.Add("no", "Norsk bokmål");
-                //languages.Add("mk", "Македонски");
+                //languages.Add("ja", "日本語"); // Root < 75%
+                //languages.Add("no", "Norsk bokmål"); // Untranslated menu & player
+                //languages.Add("mk", "Македонски"); // Root < 75%
                 languages.Add("pl", "Polski");
                 languages.Add("pt", "Português");
                 languages.Add("ro", "Română");
                 languages.Add("ru", "Русский");
-                //languages.Add("sr-Cyrl-RS", "Српски");
-                //languages.Add("sr-Latn-RS", "Srpski");
-                //languages.Add("fi", "Suomi");
-                //languages.Add("sv", "Svenska");
-                //languages.Add("th", "ไทย");
+                //languages.Add("sr-Cyrl-RS", "Српски"); // Root < 75%
+                //languages.Add("sr-Latn-RS", "Srpski"); // Root < 75%
+                //languages.Add("fi", "Suomi"); // Root < 75%
+                //languages.Add("sv", "Svenska"); // Root < 75%
+                //languages.Add("th", "ไทย"); // Untranslated menu & player
                 languages.Add("tr", "Türkçe");
                 languages.Add("zh-CHS", "简体中文");
             }
