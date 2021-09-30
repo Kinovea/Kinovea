@@ -42,7 +42,7 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class VideoFilterKinogram : IVideoFilter
     {
-        #region IVideoFilter properties
+        #region Properties
         public Bitmap Current
         {
             get { return bitmap; }
@@ -55,14 +55,27 @@ namespace Kinovea.ScreenManager
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
                 mnuConfigure.Image = Properties.Drawings.configure;
                 mnuConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
+                mnuResetPositions.Image = Properties.Resources.bin_empty;
+                mnuResetPositions.Text = "Reset positions";
                 mnuExport.Image = Properties.Resources.filesave;
                 mnuExport.Text = "Save…";
 
                 contextMenu.Add(mnuConfigure);
+                contextMenu.Add(mnuResetPositions);
+                contextMenu.Add(new ToolStripSeparator());
                 contextMenu.Add(mnuExport);
 
                 return contextMenu;
             }
+        }
+        public bool CanExportVideo
+        {
+            get { return false; }
+        }
+
+        public bool CanSaveImage
+        {
+            get { return true; }
         }
         public KinogramParameters Parameters
         {
@@ -82,6 +95,7 @@ namespace Kinovea.ScreenManager
         bool clamp = false;
         private int movingTile = -1;
         private ToolStripMenuItem mnuConfigure = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuResetPositions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExport = new ToolStripMenuItem();
         #endregion
 
@@ -90,9 +104,11 @@ namespace Kinovea.ScreenManager
         {
             this.frameServer = frameServer;
             mnuConfigure.Click += MnuConfigure_Click;
+            mnuResetPositions.Click += MnuResetPositions_Click;
             mnuExport.Click += MnuExport_Click;
-            
-            AfterUpdateTileCount();
+
+            parameters = PreferencesManager.PlayerPreferences.Kinogram;
+            SanitizePositions();
         }
 
         ~VideoFilterKinogram()
@@ -119,8 +135,7 @@ namespace Kinovea.ScreenManager
         public void Reset()
         {
             this.framesContainer = null;
-            this.parameters = new KinogramParameters();
-            AfterUpdateTileCount();
+            this.parameters = PreferencesManager.PlayerPreferences.Kinogram;
         }
         
         public void SetFrames(IWorkingZoneFramesContainer framesContainer)
@@ -161,6 +176,10 @@ namespace Kinovea.ScreenManager
         public void StopMove()
         {
             movingTile = -1;
+
+            // Commit preferences to save the new crop positions.
+            PreferencesManager.PlayerPreferences.Kinogram = parameters.Clone();
+            PreferencesManager.Save();
         }
 
         public void Move(float dx, float dy, Keys modifiers)
@@ -221,6 +240,27 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Private methods
+        /// <summary>
+        /// Add or remove crop positions slots after a change in the number of tiles.
+        /// </summary>
+        private void SanitizePositions()
+        {
+            if (parameters.TileCount == parameters.CropPositions.Count)
+                return;
+
+            if (parameters.TileCount < parameters.CropPositions.Count)
+            {
+                parameters.CropPositions.RemoveRange(parameters.TileCount, parameters.CropPositions.Count - parameters.TileCount);
+            }
+            else
+            {
+                int missing = parameters.TileCount - parameters.CropPositions.Count;
+                for (int i = 0; i < missing; i++)
+                    parameters.CropPositions.Add(PointF.Empty);
+            }
+
+        }
+
         private void MnuConfigure_Click(object sender, EventArgs e)
         {
             ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
@@ -239,11 +279,35 @@ namespace Kinovea.ScreenManager
             if (fck.DialogResult == DialogResult.OK)
             {
                 if (fck.GridChanged)
-                    AfterUpdateTileCount();
+                    SanitizePositions();
+
+                // Save the configuration as the new preferred configuration.
+                PreferencesManager.PlayerPreferences.Kinogram = parameters.Clone();
+                PreferencesManager.Save();
             }
 
             fck.Dispose();
 
+            Update();
+
+            // Update the main viewport.
+            // The screen hook was injected inside the menu.
+            host.InvalidateFromMenu();
+        }
+
+        private void MnuResetPositions_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
+            if (tsmi == null)
+                return;
+
+            IDrawingHostView host = tsmi.Tag as IDrawingHostView;
+            if (host == null)
+                return;
+
+            ResetCropPositions();
+            PreferencesManager.PlayerPreferences.Kinogram = parameters.Clone();
+            PreferencesManager.Save();
             Update();
 
             // Update the main viewport.
@@ -359,12 +423,29 @@ namespace Kinovea.ScreenManager
             return new Rectangle(paintArea.Left + col * tileSize.Width, paintArea.Top + row * tileSize.Height, tileSize.Width, tileSize.Height);
         }
 
+        /// <summary>
+        /// Add or remove crop positions slots after a change in the number of tiles.
+        /// </summary>
         private void AfterUpdateTileCount()
         {
-            // TODO: find a way to not discard the existing crop positions.
+            if (parameters.TileCount == parameters.CropPositions.Count)
+                return;
+
+            if (parameters.TileCount < parameters.CropPositions.Count)
+            {
+                parameters.CropPositions.RemoveRange(parameters.TileCount, parameters.CropPositions.Count - parameters.TileCount);
+                return;
+            }
+
+            for (int i = 0; i < parameters.CropPositions.Count - parameters.TileCount; i++)
+                parameters.CropPositions.Add(PointF.Empty);
+        }
+
+        private void ResetCropPositions()
+        {
             parameters.CropPositions.Clear();
             for (int i = 0; i < parameters.TileCount; i++)
-                parameters.CropPositions.Add(new Point(0, 0));
+                parameters.CropPositions.Add(PointF.Empty);
         }
 
         /// <summary>

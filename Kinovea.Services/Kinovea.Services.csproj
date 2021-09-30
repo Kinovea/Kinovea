@@ -205,6 +205,7 @@
   <ItemGroup>
     <Compile Include="AlphanumComparator.cs" />
     <Compile Include="Infrastructure\BitmapHelper.cs" />
+    <Compile Include="Types\KinogramParameters.cs" />
     <Compile Include="Infrastructure\NativeMethods.cs" />
     <Compile Include="Types\CameraManagerPluginInfo.cs" />
     <Compile Include="Types\Demosaicing.cs" />

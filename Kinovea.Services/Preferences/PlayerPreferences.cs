@@ -174,6 +174,11 @@ namespace Kinovea.Services
             get { return playbackKVA; }
             set { playbackKVA = value; }
         }
+        public KinogramParameters Kinogram
+        {
+            get { return kinogramParameters.Clone(); }
+            set { kinogramParameters = value; }
+        }
         #endregion
 
         private TimecodeFormat timecodeFormat = TimecodeFormat.ClassicTime;
@@ -206,6 +211,7 @@ namespace Kinovea.Services
         private bool detectImageSequences = true;
         private int preloadKeyframes = 20;
         private string playbackKVA;
+        private KinogramParameters kinogramParameters = new KinogramParameters();
         
         public void AddRecentColor(Color _color)
         {
@@ -264,6 +270,10 @@ namespace Kinovea.Services
             writer.WriteElementString("DetectImageSequences", detectImageSequences ? "true" : "false");
             writer.WriteElementString("PreloadKeyframes", preloadKeyframes.ToString());
             writer.WriteElementString("PlaybackKVA", playbackKVA);
+
+            writer.WriteStartElement("Kinogram");
+            kinogramParameters.WriteXml(writer);
+            writer.WriteEndElement();
         }
         
         public void ReadXML(XmlReader reader)
@@ -358,6 +368,9 @@ namespace Kinovea.Services
                         break;
                     case "PlaybackKVA":
                         playbackKVA = reader.ReadElementContentAsString();
+                        break;
+                    case "Kinogram":
+                        kinogramParameters.ReadXml(reader);
                         break;
                     default:
                         reader.ReadOuterXml();

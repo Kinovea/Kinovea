@@ -44,6 +44,8 @@ namespace Kinovea.ScreenManager
         /// </summary>
         Bitmap Current { get; }
 
+        bool CanExportVideo { get; }
+        bool CanSaveImage { get; }
         #endregion
 
         void Reset();

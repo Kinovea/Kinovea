@@ -3224,8 +3224,6 @@ namespace Kinovea.ScreenManager
                     else
                         popMenu.Items.Add(tsmi);
                 }
-
-                popMenu.Items.Add(mnuSepDrawing);
             }
         }
         private void SurfaceScreen_MouseMove(object sender, MouseEventArgs e)

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -159,6 +160,7 @@ namespace Kinovea.ScreenManager
         {
             // Import style values and commit the parameters object.
             parameters.BorderColor = styleHelper.Color;
+            
             kinogram.Parameters = parameters;
         }
         #endregion

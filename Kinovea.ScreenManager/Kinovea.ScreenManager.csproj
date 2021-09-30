@@ -772,7 +772,6 @@
     <Compile Include="VideoFilters\Kinogram\FormExportKinogram.Designer.cs">
       <DependentUpon>FormExportKinogram.cs</DependentUpon>
     </Compile>
-    <Compile Include="VideoFilters\Kinogram\KinogramParameters.cs" />
     <Compile Include="VideoFilters\Kinogram\VideoFilterKinogram.cs" />
     <Compile Include="PlayerScreen\ViewportManipulator.cs" />
     <Compile Include="Properties\Backgrounds.Designer.cs">
