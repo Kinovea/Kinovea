@@ -389,10 +389,6 @@
       <Name>Kinovea.Camera.HTTP</Name>
     </ProjectReference>
     <ProjectReference Include="..\Kinovea.Camera\Kinovea.Camera.csproj">
-      <Project>7EC5DEBF-DF52-40F5-A9FE-1B2007B6116D</Project>
-      <Name>Kinovea.Camera</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Kinovea.Camera\Kinovea.Camera.csproj">
       <Project>{2bf373b8-5d33-4fcf-8c30-5e8caf6777e7}</Project>
       <Name>Kinovea.Camera</Name>
     </ProjectReference>
