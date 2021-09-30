@@ -155,13 +155,20 @@ namespace Kinovea.ScreenManager
       // 
       // FormExportKinogram
       // 
+      this.AcceptButton = this.btnOK;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.CancelButton = this.btnCancel;
       this.ClientSize = new System.Drawing.Size(336, 169);
       this.Controls.Add(this.groupBox1);
       this.Controls.Add(this.btnOK);
       this.Controls.Add(this.btnCancel);
+      this.MaximizeBox = false;
+      this.MinimizeBox = false;
       this.Name = "FormExportKinogram";
+      this.ShowIcon = false;
+      this.ShowInTaskbar = false;
+      this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
       this.Text = "FormExportKinogram";
       ((System.ComponentModel.ISupportInitialize)(this.nudHeight)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudWidth)).EndInit();
