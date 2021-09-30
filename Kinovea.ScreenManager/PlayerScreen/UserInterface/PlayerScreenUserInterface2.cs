@@ -376,8 +376,6 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuMagnifierQuit = new ToolStripMenuItem();
 
         private ContextMenuStrip popMenuFilter = new ContextMenuStrip();
-        private ToolStripMenuItem mnuCloseFilter = new ToolStripMenuItem();
-
         #endregion
 
         private ToolStripButton m_btnAddKeyFrame;
@@ -1201,10 +1199,6 @@ namespace Kinovea.ScreenManager
             mnuMagnifierQuit.Click += mnuMagnifierQuit_Click;
             mnuMagnifierQuit.Image = Properties.Resources.hide;
             popMenuMagnifier.Items.AddRange(new ToolStripItem[] { new ToolStripSeparator(), mnuMagnifierTrack, new ToolStripSeparator(), mnuMagnifierDirect, mnuMagnifierQuit });
-
-            // 6. Video filters.
-            mnuCloseFilter.Click += btnClose_Click;
-            mnuCloseFilter.Image = Properties.Resources.hide;
 
             // The right context menu and its content will be choosen upon MouseDown.
             panelCenter.ContextMenuStrip = popMenu;
@@ -2687,10 +2681,6 @@ namespace Kinovea.ScreenManager
             mnuMagnifierTrack.Text = ScreenManagerLang.mnuTrackTrajectory;
             mnuMagnifierDirect.Text = ScreenManagerLang.mnuMagnifierDirect;
             mnuMagnifierQuit.Text = ScreenManagerLang.mnuMagnifierQuit;
-
-            // 6. Video filters.
-            mnuCloseFilter.Text = "Close"; // ScreenManagerLang.mnuCloseScreen;
-            mnuCloseFilter.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.Close);
         }
         private void ReloadTooltipsCulture()
         {
@@ -2993,6 +2983,8 @@ namespace Kinovea.ScreenManager
             // (Drawing, Trajectory, Chronometer, Magnifier, Nothing)
             if (m_bIsCurrentlyPlaying)
             {
+                PrepareBackgroundContextMenu(popMenu);
+
                 mnuTimeOrigin.Enabled = false;
                 mnuDirectTrack.Enabled = false;
                 mnuPasteDrawing.Enabled = false;
@@ -3083,11 +3075,23 @@ namespace Kinovea.ScreenManager
                 if (videoFilterIsActive)
                 {
                     PrepareFilterContextMenu(videoFilter, popMenuFilter);
-                    popMenuFilter.Items.Add(mnuCloseFilter);
+
+                    popMenuFilter.Items.Add(mnuSaveAnnotations);
+                    popMenuFilter.Items.Add(mnuSaveAnnotationsAs);
+
+                    if (videoFilter.CanExportVideo)
+                        popMenuFilter.Items.Add(mnuExportVideo);
+
+                    if (videoFilter.CanExportImage)
+                        popMenuFilter.Items.Add(mnuExportImage);
+
+                    popMenuFilter.Items.Add(mnuCloseScreen);
                     panelCenter.ContextMenuStrip = popMenuFilter;
                 }
                 else
                 {
+                    PrepareBackgroundContextMenu(popMenu);
+
                     mnuTimeOrigin.Visible = true;
                     mnuDirectTrack.Visible = true;
                     mnuDirectTrack.Enabled = true;
@@ -3095,9 +3099,22 @@ namespace Kinovea.ScreenManager
                     mnuPasteDrawing.Enabled = DrawingClipboard.HasContent;
                     mnuPastePic.Visible = true;
                     mnuPastePic.Enabled = Clipboard.ContainsImage();
+                    
                     panelCenter.ContextMenuStrip = popMenu;
                 }
             }
+        }
+        private void PrepareBackgroundContextMenu(ContextMenuStrip popMenu)
+        {
+            popMenu.Items.Clear();
+            popMenu.Items.AddRange(new ToolStripItem[]
+            {
+                        mnuTimeOrigin, mnuDirectTrack, new ToolStripSeparator(),
+                        mnuCopyPic, mnuPastePic, mnuPasteDrawing, new ToolStripSeparator(),
+                        mnuOpenVideo, mnuOpenReplayWatcher, mnuOpenAnnotations, new ToolStripSeparator(),
+                        mnuSaveAnnotations, mnuSaveAnnotationsAs, mnuExportVideo, mnuExportImage, new ToolStripSeparator(),
+                        mnuCloseScreen
+            });
         }
         private void PrepareDrawingContextMenu(AbstractDrawing drawing, ContextMenuStrip popMenu)
         {
@@ -4921,35 +4938,43 @@ namespace Kinovea.ScreenManager
             
             StopPlaying();
             OnPauseAsked();
-            
-            try
+
+            if (videoFilterIsActive)
             {
-                SaveFileDialog dlgSave = new SaveFileDialog();
-                dlgSave.Title = ScreenManagerLang.Generic_SaveImage;
-                dlgSave.RestoreDirectory = true;
-                dlgSave.Filter = FilesystemHelper.SaveImageFilter();
-                dlgSave.FilterIndex = FilesystemHelper.GetFilterIndex(dlgSave.Filter, PreferencesManager.PlayerPreferences.ImageFormat);
-                
-                if(videoFilterIsActive)
-                    dlgSave.FileName = Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath);
-                else
-                    dlgSave.FileName = BuildFilename(m_FrameServer.VideoReader.FilePath, m_iCurrentPosition, PreferencesManager.PlayerPreferences.TimecodeFormat);
-                
-                if (dlgSave.ShowDialog() == DialogResult.OK)
-                {
-                    Bitmap outputImage = GetFlushedImage();
-                    ImageHelper.Save(dlgSave.FileName, outputImage);
-                    outputImage.Dispose();
-
-                    PreferencesManager.PlayerPreferences.ImageFormat = FilesystemHelper.GetImageFormat(dlgSave.FileName);
-                    PreferencesManager.Save();
-
-                    m_FrameServer.AfterSave();
-                }
+                if (videoFilter.CanExportImage)
+                    videoFilter.ExportImage(this);
             }
-            catch (Exception exp)
+            else
             {
-                log.Error(exp.StackTrace);
+                try
+                {
+                    SaveFileDialog dlgSave = new SaveFileDialog();
+                    dlgSave.Title = ScreenManagerLang.Generic_SaveImage;
+                    dlgSave.RestoreDirectory = true;
+                    dlgSave.Filter = FilesystemHelper.SaveImageFilter();
+                    dlgSave.FilterIndex = FilesystemHelper.GetFilterIndex(dlgSave.Filter, PreferencesManager.PlayerPreferences.ImageFormat);
+                
+                    if(videoFilterIsActive)
+                        dlgSave.FileName = Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath);
+                    else
+                        dlgSave.FileName = BuildFilename(m_FrameServer.VideoReader.FilePath, m_iCurrentPosition, PreferencesManager.PlayerPreferences.TimecodeFormat);
+                
+                    if (dlgSave.ShowDialog() == DialogResult.OK)
+                    {
+                        Bitmap outputImage = GetFlushedImage();
+                        ImageHelper.Save(dlgSave.FileName, outputImage);
+                        outputImage.Dispose();
+
+                        PreferencesManager.PlayerPreferences.ImageFormat = FilesystemHelper.GetImageFormat(dlgSave.FileName);
+                        PreferencesManager.Save();
+
+                        m_FrameServer.AfterSave();
+                    }
+                }
+                catch (Exception exp)
+                {
+                    log.Error(exp.StackTrace);
+                }
             }
         }
 
@@ -5093,7 +5118,15 @@ namespace Kinovea.ScreenManager
         public void ExportVideo()
         {
             saveInProgress = true;
-            m_FrameServer.SaveVideo(timeMapper.GetInterval(sldrSpeed.Value), slowMotion * 100, GetFlushedImage);
+            if (videoFilterIsActive)
+            {
+                if (videoFilter.CanExportVideo)
+                    videoFilter.ExportVideo(this);
+            }
+            else
+            {
+                m_FrameServer.SaveVideo(timeMapper.GetInterval(sldrSpeed.Value), slowMotion * 100, GetFlushedImage);
+            }
             saveInProgress = false;
         }
 

@@ -57,13 +57,10 @@ namespace Kinovea.ScreenManager
                 mnuConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
                 mnuResetPositions.Image = Properties.Resources.bin_empty;
                 mnuResetPositions.Text = "Reset positions";
-                mnuExport.Image = Properties.Resources.filesave;
-                mnuExport.Text = "Save…";
 
                 contextMenu.Add(mnuConfigure);
                 contextMenu.Add(mnuResetPositions);
                 contextMenu.Add(new ToolStripSeparator());
-                contextMenu.Add(mnuExport);
 
                 return contextMenu;
             }
@@ -73,7 +70,7 @@ namespace Kinovea.ScreenManager
             get { return false; }
         }
 
-        public bool CanSaveImage
+        public bool CanExportImage
         {
             get { return true; }
         }
@@ -96,7 +93,6 @@ namespace Kinovea.ScreenManager
         private int movingTile = -1;
         private ToolStripMenuItem mnuConfigure = new ToolStripMenuItem();
         private ToolStripMenuItem mnuResetPositions = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuExport = new ToolStripMenuItem();
         #endregion
 
         #region ctor/dtor
@@ -105,7 +101,6 @@ namespace Kinovea.ScreenManager
             this.frameServer = frameServer;
             mnuConfigure.Click += MnuConfigure_Click;
             mnuResetPositions.Click += MnuResetPositions_Click;
-            mnuExport.Click += MnuExport_Click;
 
             parameters = PreferencesManager.PlayerPreferences.Kinogram;
             SanitizePositions();
@@ -201,6 +196,25 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        public void ExportVideo(IDrawingHostView host)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ExportImage(IDrawingHostView host)
+        {
+            // Launch dialog.
+            FormExportKinogram fek = new FormExportKinogram(this, host.CurrentTimestamp);
+            FormsHelper.Locate(fek);
+            fek.ShowDialog();
+            fek.Dispose();
+
+            Update();
+        }
+        #endregion
+
+
+        #region Public methods, called from dialogs.
         /// <summary>
         /// Paint the composite + annotations on a new bitmap at the requested size and return it.
         /// </summary>
@@ -236,7 +250,6 @@ namespace Kinovea.ScreenManager
             Size fullSize = new Size(cropSize.Width * cols, cropSize.Height * parameters.Rows);
             return (float)fullSize.Width / fullSize.Height;
         }
-
         #endregion
 
         #region Private methods
@@ -313,25 +326,6 @@ namespace Kinovea.ScreenManager
             // Update the main viewport.
             // The screen hook was injected inside the menu.
             host.InvalidateFromMenu();
-        }
-
-        private void MnuExport_Click(object sender, EventArgs e)
-        {
-            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
-            if (tsmi == null)
-                return;
-
-            IDrawingHostView host = tsmi.Tag as IDrawingHostView;
-            if (host == null)
-                return;
-
-            // Launch dialog.
-            FormExportKinogram fek = new FormExportKinogram(this, host.CurrentTimestamp);
-            FormsHelper.Locate(fek);
-            fek.ShowDialog();
-            fek.Dispose();
-
-            Update();
         }
 
         /// <summary>
@@ -421,24 +415,6 @@ namespace Kinovea.ScreenManager
                 col = (cols - 1) - col;
 
             return new Rectangle(paintArea.Left + col * tileSize.Width, paintArea.Top + row * tileSize.Height, tileSize.Width, tileSize.Height);
-        }
-
-        /// <summary>
-        /// Add or remove crop positions slots after a change in the number of tiles.
-        /// </summary>
-        private void AfterUpdateTileCount()
-        {
-            if (parameters.TileCount == parameters.CropPositions.Count)
-                return;
-
-            if (parameters.TileCount < parameters.CropPositions.Count)
-            {
-                parameters.CropPositions.RemoveRange(parameters.TileCount, parameters.CropPositions.Count - parameters.TileCount);
-                return;
-            }
-
-            for (int i = 0; i < parameters.CropPositions.Count - parameters.TileCount; i++)
-                parameters.CropPositions.Add(PointF.Empty);
         }
 
         private void ResetCropPositions()

@@ -45,19 +45,28 @@ namespace Kinovea.ScreenManager
         Bitmap Current { get; }
 
         bool CanExportVideo { get; }
-        bool CanSaveImage { get; }
+
+        bool CanExportImage { get; }
         #endregion
 
+        #region Methods
         void Reset();
 
         void SetFrames(IWorkingZoneFramesContainer framesContainer);
 
         void UpdateSize(Size size);
+
         void UpdateTime(long timestamp);
 
         void StartMove(PointF p);
+
         void StopMove();
 
         void Move(float dx, float dy, Keys modifiers);
+
+        void ExportVideo(IDrawingHostView host);
+
+        void ExportImage(IDrawingHostView host);
+        #endregion
     }
 }
