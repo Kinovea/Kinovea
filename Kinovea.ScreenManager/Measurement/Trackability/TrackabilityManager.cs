@@ -266,13 +266,15 @@ namespace Kinovea.ScreenManager
             bool isEmpty = r.IsEmptyElement;
             r.ReadStartElement();
 
+            if (isEmpty)
+                return;
+
             while (r.NodeType == XmlNodeType.Element)
             {
                 ReadTracker(r, scale, timeMapper);
             }
 
-            if (!isEmpty)
-                r.ReadEndElement();
+            r.ReadEndElement();
         }
 
         public void ReadTracker(XmlReader r, PointF scale, TimestampMapper timeMapper)
