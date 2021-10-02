@@ -2435,6 +2435,9 @@ namespace Kinovea.ScreenManager
                 }
                 else if (m_FrameServer.VideoReader.Current != null)
                 {
+                    if (videoFilterIsActive)
+                        videoFilter.UpdateTime(m_FrameServer.VideoReader.Current.Timestamp);
+                    
                     DoInvalidate();
                     m_iCurrentPosition = m_FrameServer.VideoReader.Current.Timestamp;
 
@@ -2542,6 +2545,9 @@ namespace Kinovea.ScreenManager
 
             if (m_FrameServer.VideoReader.Current != null)
             {
+                if (videoFilterIsActive)
+                    videoFilter.UpdateTime(m_FrameServer.VideoReader.Current.Timestamp);
+                
                 m_iCurrentPosition = m_FrameServer.VideoReader.Current.Timestamp;
 
                 TrackDrawingsCommand.Execute(null);

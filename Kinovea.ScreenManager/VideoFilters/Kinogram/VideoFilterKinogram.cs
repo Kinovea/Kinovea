@@ -227,7 +227,7 @@ namespace Kinovea.ScreenManager
             g.InterpolationMode = InterpolationMode.HighQualityBilinear;
             g.SmoothingMode = SmoothingMode.HighQuality;
 
-            Paint(g, outputSize);
+            Paint(g, outputSize, false);
 
             // Annotations are expressed in the original frames coordinate system.
             Rectangle fitArea = UIHelper.RatioStretch(outputSize, frameSize);
@@ -330,6 +330,7 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Paint the composite or one tile on the internal bitmap.
+        /// This is used for the viewport rendering.
         /// </summary>
         private void Update(int tile = -1)
         {
@@ -342,13 +343,13 @@ namespace Kinovea.ScreenManager
             g.InterpolationMode = InterpolationMode.Bilinear;
             g.SmoothingMode = SmoothingMode.HighSpeed;
 
-            Paint(g, bitmap.Size, tile);
+            Paint(g, bitmap.Size, true, tile);
         }
 
         /// <summary>
         /// Paint the composite or paint one tile of the composite.
         /// </summary>
-        private void Paint(Graphics g, Size outputSize, int tile = -1)
+        private void Paint(Graphics g, Size outputSize, bool isViewport, int tile = -1)
         { 
             float step = (float)framesContainer.Frames.Count / parameters.TileCount;
             IEnumerable<VideoFrame> frames = framesContainer.Frames.Where((frame, i) => i % step < 1);
@@ -359,6 +360,19 @@ namespace Kinovea.ScreenManager
 
             Rectangle paintArea = UIHelper.RatioStretch(fullSize, outputSize);
             Size tileSize = new Size(paintArea.Width / cols, paintArea.Height / parameters.Rows);
+
+            VideoFrame highlight = null;
+            if (isViewport)
+            {
+                // Find the tile matching the current time for highlight.
+                foreach (VideoFrame f in frames)
+                {
+                    if (f.Timestamp > timestamp)
+                        break;
+
+                    highlight = f;
+                }
+            }
            
             if (tile >= 0)
             {
@@ -372,6 +386,8 @@ namespace Kinovea.ScreenManager
 
                 g.DrawImage(f.Image, destRect, srcRect, GraphicsUnit.Pixel);
                 DrawBorder(g, destRect);
+                if (f == highlight)
+                    DrawHighlight(g, destRect);
             }
             else
             {
@@ -390,6 +406,9 @@ namespace Kinovea.ScreenManager
 
                     g.DrawImage(f.Image, destRect, srcRect, GraphicsUnit.Pixel);
                     DrawBorder(g, destRect);
+                    if (f == highlight)
+                        DrawHighlight(g, destRect);
+                    
                     index++;
                 }
             }
@@ -403,6 +422,13 @@ namespace Kinovea.ScreenManager
             using (Pen p = new Pen(parameters.BorderColor))
                 g.DrawRectangle(p, new Rectangle(rect.X, rect.Y, rect.Width - 1, rect.Height - 1));
         }
+
+        private void DrawHighlight(Graphics g, Rectangle rect)
+        {
+            using (Pen p = new Pen(Color.CornflowerBlue, 2.0f))
+                g.DrawRectangle(p, new Rectangle(rect.X, rect.Y, rect.Width - 1, rect.Height - 1));
+        }
+
 
         /// <summary>
         /// Returns the part of the target image where the passed tile should be drawn.
