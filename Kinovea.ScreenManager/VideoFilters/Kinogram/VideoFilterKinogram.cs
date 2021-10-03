@@ -84,6 +84,10 @@ namespace Kinovea.ScreenManager
                 SanitizePositions();
             }
         }
+        public int ContentHash
+        {
+            get { return parameters.GetContentHash(); }
+        }
         #endregion
 
         #region members

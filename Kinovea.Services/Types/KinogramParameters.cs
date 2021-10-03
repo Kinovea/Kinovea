@@ -62,6 +62,7 @@ namespace Kinovea.Services
         // legend type (time, tile number).
         // Direction bullets (small arrows between tiles).
         // Oversampling factor: to improve quality when viewport zooming.
+
         #endregion
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -84,6 +85,21 @@ namespace Kinovea.Services
             clone.BorderVisible = this.BorderVisible;
 
             return clone;
+        }
+
+        public int GetContentHash()
+        {
+            int hash = 0;
+            hash ^= TileCount.GetHashCode();
+            hash ^= Rows.GetHashCode();
+            hash ^= CropSize.GetHashCode();
+            foreach (PointF cropPosition in CropPositions)
+                hash ^= cropPosition.GetHashCode();
+
+            hash ^= LeftToRight.GetHashCode();
+            hash ^= BorderColor.GetHashCode();
+            hash ^= BorderVisible.GetHashCode();
+            return hash;
         }
 
         #region Serialization

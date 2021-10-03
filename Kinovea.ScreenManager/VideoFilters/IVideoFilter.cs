@@ -48,6 +48,8 @@ namespace Kinovea.ScreenManager
         bool CanExportVideo { get; }
 
         bool CanExportImage { get; }
+
+        int ContentHash { get; }
         #endregion
 
         #region Methods

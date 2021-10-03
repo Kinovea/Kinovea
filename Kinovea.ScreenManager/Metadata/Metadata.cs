@@ -989,16 +989,16 @@ namespace Kinovea.ScreenManager
         }
         public int GetContentHash()
         {
-            int hash =
-                mirrored.GetHashCode() ^
-                selectionStart.GetHashCode() ^
-                selectionEnd.GetHashCode() ^
-                timeOrigin.GetHashCode() ^
-                calibrationHelper.ContentHash ^
-                GetKeyframesContentHash() ^
-                GetExtraDrawingsContentHash() ^
-                trackabilityManager.ContentHash;
-
+            int hash = 0;
+            hash ^= mirrored.GetHashCode();
+            hash ^= selectionStart.GetHashCode();
+            hash ^= selectionEnd.GetHashCode();
+            hash ^= timeOrigin.GetHashCode();
+            hash ^= calibrationHelper.ContentHash;
+            hash ^= GetKeyframesContentHash();
+            hash ^= GetExtraDrawingsContentHash();
+            hash ^= trackabilityManager.ContentHash;
+            hash ^= GetVideoFiltersContentHash();
             return hash;
         }
         public void CleanupHash()
@@ -1437,6 +1437,16 @@ namespace Kinovea.ScreenManager
 
             foreach (AbstractDrawing ad in extraDrawings)
                 hash ^= ad.ContentHash;
+
+            return hash;
+        }
+
+        private int GetVideoFiltersContentHash()
+        {
+            int hash = 0;
+            hash ^= activeVideoFilterType.GetHashCode();
+            foreach (IVideoFilter filter in videoFilters.Values)
+                hash ^= filter.ContentHash;
 
             return hash;
         }
