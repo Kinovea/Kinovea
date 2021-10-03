@@ -457,8 +457,6 @@ namespace Kinovea.ScreenManager
         
         public void View_SelectionChanged(object sender, EventArgs<bool> e)
         {
-            DeactivateVideoFilter();
-            
             if (SelectionChanged != null)
                 SelectionChanged(this, e);
         }
