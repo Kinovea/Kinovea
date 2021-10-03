@@ -681,17 +681,6 @@ namespace Kinovea.ScreenManager
             if (screen == null)
                 return;
 
-            // If a video filter is active we just go back to normal play.
-            if (screen is PlayerScreen && ((PlayerScreen)screen).ActiveVideoFilterType != VideoFilterType.None)
-            {
-                SetActiveScreen(screen);
-                ((PlayerScreen)screen).DeactivateVideoFilter();
-                OrganizeMenus();
-                return;
-            }
-
-            //screen.BeforeClose();
-
             // Reorganise screens.
             // We leverage the fact that screens are always well ordered relative to menus.
             if (screenList.Count > 0 && screen == screenList[0])
