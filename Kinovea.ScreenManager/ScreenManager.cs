@@ -187,8 +187,6 @@ namespace Kinovea.ScreenManager
         private void InitializeVideoFilters()
         {
             filterMenus.Add(CreateFilterMenu(VideoFilterType.Kinogram));
-            
-
         }
 
         private ToolStripMenuItem CreateFilterMenu(VideoFilterType type)
@@ -759,6 +757,11 @@ namespace Kinovea.ScreenManager
 
             OrganizeMenus();
         }
+        private void Player_KVAImported(object sender, EventArgs e)
+        {
+            OrganizeMenus();
+        }
+
         private void Player_ResetAsked(object sender, EventArgs e)
         {
             // A screen was reset. (ex: a video was reloded in place).
@@ -2638,6 +2641,7 @@ namespace Kinovea.ScreenManager
             screen.OpenReplayWatcherAsked += Player_OpenReplayWatcherAsked;
             screen.OpenAnnotationsAsked += Player_OpenAnnotationsAsked;
             screen.SelectionChanged += Player_SelectionChanged;
+            screen.KVAImported += Player_KVAImported;
             screen.ResetAsked += Player_ResetAsked;
         }
         private void AddCaptureScreenEventHandlers(CaptureScreen screen)
@@ -2662,6 +2666,7 @@ namespace Kinovea.ScreenManager
             screen.OpenReplayWatcherAsked -= Player_OpenReplayWatcherAsked;
             screen.OpenAnnotationsAsked -= Player_OpenAnnotationsAsked;
             screen.SelectionChanged -= Player_SelectionChanged;
+            screen.KVAImported -= Player_KVAImported;
             screen.ResetAsked -= Player_ResetAsked;
         }
 

@@ -28,7 +28,6 @@ namespace Kinovea.ScreenManager
         private Size inputImageSize;
         private long inputAverageTimeStampsPerFrame;
         private long inputFirstTimeStamp;
-        private long inputSelectionStart;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public void Load(Metadata metadata, string source, bool isFile)
@@ -285,7 +284,14 @@ namespace Kinovea.ScreenManager
                         metadata.UserInterval = 1000 / r.ReadElementContentAsDouble();
                         break;
                     case "SelectionStart":
-                        inputSelectionStart = r.ReadElementContentAsLong();
+                        long selStart = r.ReadElementContentAsLong();
+                        if (IsSameContext())
+                            metadata.SelectionStart = selStart;
+                        break;
+                    case "SelectionEnd":
+                        long selEnd = r.ReadElementContentAsLong();
+                        if (IsSameContext())
+                            metadata.SelectionEnd = selEnd;
                         break;
                     case "TimeOrigin":
                         metadata.TimeOrigin = RemapTimestamp(r.ReadElementContentAsLong());
@@ -353,7 +359,6 @@ namespace Kinovea.ScreenManager
 
             r.ReadEndElement();
         }
-        
         private void ParseChronos(XmlReader r, PointF scale)
         {
             // TODO: catch empty tag <Chronos/>.
@@ -401,10 +406,7 @@ namespace Kinovea.ScreenManager
             if (inputAverageTimeStampsPerFrame == 0)
                 return inputTimestamp;
 
-            // If we are in the exact same context and file we don't do any conversion.
-            if ((inputFirstTimeStamp == metadata.FirstTimeStamp) &&
-                (inputAverageTimeStampsPerFrame == metadata.AverageTimeStampsPerFrame) &&
-                (inputFileName == Path.GetFileNameWithoutExtension(metadata.VideoPath)))
+            if (IsSameContext())
                 return inputTimestamp;
 
             // Different contexts or different files.
@@ -414,6 +416,16 @@ namespace Kinovea.ScreenManager
             long outputTimestamp = (long)Math.Round(frame * outputAverageTimestampsPerFrame) + metadata.FirstTimeStamp;
             
             return outputTimestamp;
+        }
+
+        /// <summary>
+        /// Returns true if we are in the exact same context and file.
+        /// </summary>
+        private bool IsSameContext()
+        {
+            return ((inputFirstTimeStamp == metadata.FirstTimeStamp) &&
+                    (inputAverageTimeStampsPerFrame == metadata.AverageTimeStampsPerFrame) &&
+                    (inputFileName == Path.GetFileNameWithoutExtension(metadata.VideoPath)));
         }
         #endregion
 
@@ -455,6 +467,7 @@ namespace Kinovea.ScreenManager
             w.WriteElementString("UserFramerate", string.Format(CultureInfo.InvariantCulture, "{0}", 1000 / metadata.UserInterval));
             w.WriteElementString("FirstTimeStamp", metadata.FirstTimeStamp.ToString());
             w.WriteElementString("SelectionStart", metadata.SelectionStart.ToString());
+            w.WriteElementString("SelectionEnd", metadata.SelectionEnd.ToString());
             w.WriteElementString("TimeOrigin", metadata.TimeOrigin.ToString());
 
             WriteCalibrationHelp(w);

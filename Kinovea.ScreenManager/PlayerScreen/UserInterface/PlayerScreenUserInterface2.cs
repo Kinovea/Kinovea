@@ -619,7 +619,7 @@ namespace Kinovea.ScreenManager
             }
 
             UpdateTimebase();
-            UpdateFilenameLabel();
+            UpdateInfobar();
 
             sldrSpeed.Force(timeMapper.GetInputFromSlowMotion(slowMotion));
             sldrSpeed.Enabled = true;
@@ -637,36 +637,16 @@ namespace Kinovea.ScreenManager
         }
         private void AfterKVAImported()
         {
-            int firstOutOfRange = -1;
-            int currentKeyframe = -1;
-            long lastTimestamp = m_FrameServer.VideoReader.Info.FirstTimeStamp + m_FrameServer.VideoReader.Info.DurationTimeStamps;
+            InitializeKeyframes();
 
-            int preloaded = 0;
-            int maxPreload = PreferencesManager.PlayerPreferences.PreloadKeyframes;
-            foreach (Keyframe kf in m_FrameServer.Metadata.Keyframes)
-            {
-                currentKeyframe++;
+            // Restore selection.
+            // Force a reload of the cache to account for possible changes in aspect ratio, image rotation, etc.
+            m_iSelStart = m_FrameServer.Metadata.SelectionStart;
+            m_iSelEnd = m_FrameServer.Metadata.SelectionEnd;
+            m_iSelDuration = m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
+            UpdateWorkingZone(true);
 
-                if (kf.Position < lastTimestamp)
-                {
-                    if (!kf.HasThumbnails && preloaded < maxPreload)
-                        InitializeKeyframe(kf);
-
-                    preloaded++;
-                    continue;
-                }
-
-                if (firstOutOfRange < 0)
-                {
-                    firstOutOfRange = currentKeyframe;
-                    break;
-                }
-            }
-
-            if (firstOutOfRange != -1)
-                m_FrameServer.Metadata.Keyframes.RemoveRange(firstOutOfRange, m_FrameServer.Metadata.Keyframes.Count - firstOutOfRange);
-
-            UpdateFilenameLabel();
+            UpdateInfobar();
             OrganizeKeyframes();
             if (m_FrameServer.Metadata.Count > 0 && !m_bKeyframePanelCollapsedManual)
                 CollapseKeyframePanel(false);
@@ -703,7 +683,7 @@ namespace Kinovea.ScreenManager
             UpdateSelectionLabels();
             UpdateCurrentPositionLabel();
             UpdateSpeedLabel();
-            UpdateFilenameLabel();
+            UpdateInfobar();
         }
 
         public void UpdateReplayWatcher(bool replayWatcher, string path)
@@ -720,6 +700,11 @@ namespace Kinovea.ScreenManager
             UpdateCurrentPositionLabel();
         }
 
+        /// <summary>
+        /// Try to load the working zone into the cache if possible
+        /// and consolidate the boundary values afterwards.
+        /// If _bForceReload is true, invalidates the existing cache.
+        /// </summary>
         public void UpdateWorkingZone(bool _bForceReload)
         {
             if (!m_FrameServer.Loaded)
@@ -1067,7 +1052,7 @@ namespace Kinovea.ScreenManager
                 s.Load(m_FrameServer.Metadata, file, true);
             }
         }
-        private void UpdateFilenameLabel()
+        private void UpdateInfobar()
         {
             if (!m_FrameServer.Loaded)
                 return;
@@ -3966,6 +3951,43 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// Initialize keyframes after KVA file import.
+        /// </summary>
+        private void InitializeKeyframes()
+        {
+            int firstOutOfRange = -1;
+            int currentKeyframe = -1;
+            long lastTimestamp = m_FrameServer.VideoReader.Info.FirstTimeStamp + m_FrameServer.VideoReader.Info.DurationTimeStamps;
+
+            // We only create thumbnails for a few keyframes to avoid freezing on large load.
+            // The other ones will be initialized later when the play head lands on them.
+            int preloaded = 0;
+            int maxPreload = PreferencesManager.PlayerPreferences.PreloadKeyframes;
+            foreach (Keyframe kf in m_FrameServer.Metadata.Keyframes)
+            {
+                currentKeyframe++;
+
+                if (kf.Position < lastTimestamp)
+                {
+                    if (!kf.HasThumbnails && preloaded < maxPreload)
+                        InitializeKeyframe(kf);
+
+                    preloaded++;
+                    continue;
+                }
+
+                if (firstOutOfRange < 0)
+                {
+                    firstOutOfRange = currentKeyframe;
+                    break;
+                }
+            }
+
+            if (firstOutOfRange != -1)
+                m_FrameServer.Metadata.Keyframes.RemoveRange(firstOutOfRange, m_FrameServer.Metadata.Keyframes.Count - firstOutOfRange);
+        }
+
+        /// <summary>
         /// Fully initialize a keyframe by seeking the video to the keyframe position 
         /// and creating a thumbnail out of the image.
         /// </summary>
@@ -5276,34 +5298,6 @@ namespace Kinovea.ScreenManager
 
             // Reconstruct filename
             return Path.GetFileNameWithoutExtension(_FilePath) + "-" + suffix.Replace(':', '.');
-        }
-        #endregion
-
-        #region Memo & Reset
-        public MemoPlayerScreen GetMemo()
-        {
-            return new MemoPlayerScreen(m_iSelStart, m_iSelEnd);
-        }
-        public void ResetSelectionImages(MemoPlayerScreen _memo)
-        {
-            // This is typically called when undoing image adjustments.
-            // We do not actually undo the adjustment because we don't have the original data anymore.
-            // We emulate it by reloading the selection.
-            
-            // Memorize the current selection boundaries.
-            MemoPlayerScreen mps = new MemoPlayerScreen(m_iSelStart, m_iSelEnd);
-
-            // Reset the selection to whatever it was when we did the image adjustment.
-            m_iSelStart = _memo.SelStart;
-            m_iSelEnd = _memo.SelEnd;
-
-            // Undo all adjustments made on this portion.
-            UpdateWorkingZone(true);
-            UpdateKeyframes();
-
-            // Reset to the current selection.
-            m_iSelStart = mps.SelStart;
-            m_iSelEnd = mps.SelEnd;
         }
         #endregion
     }

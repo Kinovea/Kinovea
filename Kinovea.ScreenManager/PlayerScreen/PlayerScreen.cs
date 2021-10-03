@@ -47,6 +47,7 @@ namespace Kinovea.ScreenManager
         public event EventHandler PlayStarted;
         public event EventHandler PauseAsked;
         public event EventHandler<EventArgs<bool>> SelectionChanged;
+        public event EventHandler KVAImported;
         public event EventHandler<EventArgs<Bitmap>> ImageChanged;
         public event EventHandler ResetAsked;
         #endregion
@@ -439,6 +440,9 @@ namespace Kinovea.ScreenManager
 
         public void View_KVAImported(object sender, EventArgs e)
         {
+            if (KVAImported != null)
+                KVAImported(this, EventArgs.Empty);
+
             if (HighSpeedFactorChanged != null)
                 HighSpeedFactorChanged(this, EventArgs.Empty);
         }
@@ -676,16 +680,6 @@ namespace Kinovea.ScreenManager
         public void AddKeyframe()
         {
             view.AddKeyframe();
-        }
-        
-        public void ResetSelectionImages(MemoPlayerScreen _memo)
-        {
-            view.ResetSelectionImages(_memo);
-        }
-        
-        public MemoPlayerScreen GetMemo()
-        {
-            return view.GetMemo();
         }
         
         /// <summary>
