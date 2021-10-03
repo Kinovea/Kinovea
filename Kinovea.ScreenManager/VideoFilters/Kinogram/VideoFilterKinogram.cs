@@ -24,6 +24,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
+using System.Xml;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 using Kinovea.Video;
@@ -131,12 +132,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region IVideoFilter methods
-        public void ResetData()
-        {
-            this.framesContainer = null;
-            this.parameters = PreferencesManager.PlayerPreferences.Kinogram;
-            SanitizePositions();
-        }
         
         public void SetFrames(IWorkingZoneFramesContainer framesContainer)
         {
@@ -212,6 +207,25 @@ namespace Kinovea.ScreenManager
             fek.ShowDialog();
             fek.Dispose();
 
+            Update();
+        }
+
+        public void ResetData()
+        {
+            this.framesContainer = null;
+            this.parameters = PreferencesManager.PlayerPreferences.Kinogram;
+            SanitizePositions();
+        }
+
+        public void WriteData(XmlWriter w)
+        {
+            parameters.WriteXml(w);
+        }
+
+        public void ReadData(XmlReader r)
+        {
+            parameters.ReadXml(r);
+            SanitizePositions();
             Update();
         }
         #endregion

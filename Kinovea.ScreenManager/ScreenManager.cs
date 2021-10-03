@@ -197,7 +197,7 @@ namespace Kinovea.ScreenManager
             menu.Click += (s, e) =>
             {
                 PlayerScreen screen = activeScreen as PlayerScreen;
-                if(screen == null || !screen.IsCaching)
+                if(screen == null)
                     return;
 
                 VideoFilterType filterType = (VideoFilterType)((ToolStripMenuItem)s).Tag;

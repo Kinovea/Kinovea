@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Xml;
 using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
@@ -67,6 +68,10 @@ namespace Kinovea.ScreenManager
         void ExportVideo(IDrawingHostView host);
 
         void ExportImage(IDrawingHostView host);
+
+        void WriteData(XmlWriter w);
+
+        void ReadData(XmlReader r);
         #endregion
     }
 }

@@ -642,6 +642,8 @@ namespace Kinovea.ScreenManager
             m_iSelDuration = m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
             UpdateWorkingZone(true);
 
+            RestoreActiveVideoFilter();
+
             UpdateInfobar();
             OrganizeKeyframes();
             if (m_FrameServer.Metadata.Count > 0 && !m_bKeyframePanelCollapsedManual)
@@ -667,6 +669,42 @@ namespace Kinovea.ScreenManager
             trkFrame.UpdateMarkers(m_FrameServer.Metadata);
             UpdateTimeLabels();
             DoInvalidate();
+        }
+
+        /// <summary>
+        /// Restore the active video filter after KVA import.
+        /// </summary>
+        private void RestoreActiveVideoFilter()
+        {
+            if (m_FrameServer.VideoReader.DecodingMode != VideoDecodingMode.Caching)
+            {
+                // The filter is not allowed to be activated.
+                // This may happen if we load a KVA after having lowered the cache size.
+                m_FrameServer.DeactivateVideoFilter();
+                DeactivateVideoFilter();
+            }
+            else if (videoFilterIsActive)
+            {
+                if (m_FrameServer.Metadata.ActiveVideoFilterType == VideoFilterType.None)
+                {
+                    // Exiting filter.
+                    m_FrameServer.DeactivateVideoFilter();
+                    DeactivateVideoFilter();
+                }
+                else
+                {
+                    // Re-entering filter.
+                    // It may be a different one so make sure to send it the cached frames.
+                    m_FrameServer.ActivateVideoFilter(m_FrameServer.Metadata.ActiveVideoFilterType);
+                    ActivateVideoFilter();
+                }
+            }
+            else
+            {
+                // Entering filter.
+                m_FrameServer.ActivateVideoFilter(m_FrameServer.Metadata.ActiveVideoFilterType);
+                ActivateVideoFilter();
+            }
         }
         public void UpdateTimebase()
         {
@@ -863,6 +901,7 @@ namespace Kinovea.ScreenManager
             videoFilterIsActive = false;
             DoInvalidate();
         }
+        
         public void SetSyncMergeImage(Bitmap _SyncMergeImage, bool _bUpdateUI)
         {
             m_SyncMergeImage = _SyncMergeImage;

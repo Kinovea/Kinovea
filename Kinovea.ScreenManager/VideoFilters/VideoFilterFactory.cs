@@ -39,6 +39,17 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// Retrieve the internal name for this filter type.
+        /// </summary>
+        public static string GetName(VideoFilterType type)
+        {
+            if (type == VideoFilterType.None)
+                return "";
+
+            return info[type].Name;
+        }
+
+        /// <summary>
         /// Retrieve the user-facing name for this filter type.
         /// </summary>
         public static string GetFriendlyName(VideoFilterType type)
@@ -55,6 +66,20 @@ namespace Kinovea.ScreenManager
         public static bool GetExperimental(VideoFilterType type)
         {
             return info[type].Experimental;
+        }
+
+        /// <summary>
+        /// Retrieve the filter type from the name.
+        /// </summary>
+        public static VideoFilterType GetFilterType(string name)
+        {
+            foreach (var pair in info)
+            {
+                if (pair.Value.Name == name)
+                    return pair.Key;
+            }
+
+            return VideoFilterType.None;
         }
     }
 }

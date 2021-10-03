@@ -680,6 +680,9 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void ActivateVideoFilter(VideoFilterType type)
         {
+            if (!IsCaching)
+                return;
+            
             frameServer.ActivateVideoFilter(type);
             view.ActivateVideoFilter();
         }

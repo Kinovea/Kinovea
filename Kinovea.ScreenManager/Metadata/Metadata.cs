@@ -1295,6 +1295,41 @@ namespace Kinovea.ScreenManager
         {
             activeVideoFilterType = VideoFilterType.None;
         }
+
+        public void WriteVideoFilters(XmlWriter w)
+        {
+            foreach (var pair in videoFilters)
+            {
+                string xmlName = VideoFilterFactory.GetName(pair.Key);
+                w.WriteStartElement(xmlName);
+                pair.Value.WriteData(w);
+                w.WriteEndElement();
+            }
+        }
+
+        public void ReadVideoFilters(XmlReader r)
+        {
+            bool isEmpty = r.IsEmptyElement;
+
+            if (r.MoveToAttribute("active"))
+                activeVideoFilterType = VideoFilterFactory.GetFilterType(r.ReadContentAsString());
+            
+            r.ReadStartElement();
+
+            if (isEmpty)
+                return;
+
+            while (r.NodeType == XmlNodeType.Element)
+            {
+                VideoFilterType type = VideoFilterFactory.GetFilterType(r.Name);
+                if (type == VideoFilterType.None)
+                    continue;
+
+                videoFilters[type].ReadData(r);
+            }
+
+            r.ReadEndElement();
+        }
         #endregion
 
         #endregion

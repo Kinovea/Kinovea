@@ -320,6 +320,9 @@ namespace Kinovea.ScreenManager
                     case "Trackability":
                         metadata.TrackabilityManager.ReadXml(r, scaling, RemapTimestamp);
                         break;
+                    case "VideoFilters":
+                        metadata.ReadVideoFilters(r);
+                        break;
                     default:
                         // Skip the unparsed nodes.
                         string unparsed = r.ReadOuterXml();
@@ -447,6 +450,7 @@ namespace Kinovea.ScreenManager
             WriteAutoNumbers(w);
             WriteCoordinateSystem(w);
             WriteTrackablePoints(w);
+            WriteVideoFilters(w);
 
             w.WriteEndElement();
         }
@@ -565,6 +569,16 @@ namespace Kinovea.ScreenManager
         {
             w.WriteStartElement("Trackability");
             metadata.TrackabilityManager.WriteXml(w);
+            w.WriteEndElement();
+        }
+        private void WriteVideoFilters(XmlWriter w)
+        {
+            w.WriteStartElement("VideoFilters");
+            string name = VideoFilterFactory.GetName(metadata.ActiveVideoFilterType);
+            if (!string.IsNullOrEmpty(name))
+                w.WriteAttributeString("active", name);
+            
+            metadata.WriteVideoFilters(w);
             w.WriteEndElement();
         }
         #endregion
