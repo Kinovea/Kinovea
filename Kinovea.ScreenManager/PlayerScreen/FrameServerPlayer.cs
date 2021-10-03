@@ -44,10 +44,6 @@ namespace Kinovea.ScreenManager
         {
             get { return videoReader; }
         }
-        public bool VideoFilterIsActive
-        {
-            get { return videoFilterIsActive; }
-        }
         public HistoryStack HistoryStack
         {
             get { return historyStack; }
@@ -73,9 +69,9 @@ namespace Kinovea.ScreenManager
                 {
                     return null;
                 }
-                else if (videoFilterIsActive)
+                else if (metadata.ActiveVideoFilter != null)
                 {
-                    return videoFilter.Current;
+                    return metadata.ActiveVideoFilter.Current;
                 }
                 else
                 {
@@ -89,8 +85,6 @@ namespace Kinovea.ScreenManager
         private VideoReader videoReader;
         private HistoryStack historyStack;
         private Metadata metadata;
-        private bool videoFilterIsActive;
-        private IVideoFilter videoFilter;
         private formProgressBar formProgressBar;
         private BackgroundWorker bgWorkerSave = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
         private SaveResult saveResult;
@@ -291,20 +285,14 @@ namespace Kinovea.ScreenManager
             return TimeHelper.GetTimestring(framerate, frames, milliseconds, actualTimestamps, durationTimestamps, totalFrames, tcf, symbol);
         }
 
-        public void ActivateVideoFilter(IVideoFilter filter)
+        public void ActivateVideoFilter(VideoFilterType type)
         {
-            videoFilter = filter;
-            videoFilter.SetFrames(VideoReader.WorkingZoneFrames);
-            videoFilterIsActive = true;
+            metadata.ActivateVideoFilter(type);
+            metadata.ActiveVideoFilter.SetFrames(VideoReader.WorkingZoneFrames);
         }
         public void DeactivateVideoFilter()
         {
-            videoFilterIsActive = false;
-        }
-        public void ResetVideoFilter()
-        {
-            if (videoFilter != null)
-                videoFilter.Reset();
+            metadata.DeactivateVideoFilter();
         }
         #endregion
         

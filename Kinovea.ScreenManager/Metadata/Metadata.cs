@@ -160,7 +160,7 @@ namespace Kinovea.ScreenManager
         {
             get 
             {
-                // This is used to know if there is anything to burn on the images when saving.
+                // This is used to know if there is anything to draw on the images when saving.
                 // All kind of objects should be taken into account here, even those
                 // that we currently don't save to the .kva but only draw on the image.
                 return keyframes.Count > 0 ||
@@ -303,6 +303,22 @@ namespace Kinovea.ScreenManager
             set { userInterval = value; }
         }
 
+        public VideoFilterType ActiveVideoFilterType
+        {
+            get { return activeVideoFilterType; }
+        }
+
+        public IVideoFilter ActiveVideoFilter
+        {
+            get 
+            {
+                if (activeVideoFilterType == VideoFilterType.None)
+                    return null;
+                else
+                    return videoFilters[activeVideoFilterType];
+            }
+        }
+
         public CalibrationHelper CalibrationHelper 
         {
             get { return calibrationHelper; }
@@ -315,7 +331,10 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private Guid id = Guid.NewGuid();
+        private bool initialized;
         private TimeCodeBuilder timecodeBuilder;
+        private HistoryStack historyStack;
+        private int referenceHash;
         private bool kvaImporting;
         private bool captureKVA;
 
@@ -325,7 +344,7 @@ namespace Kinovea.ScreenManager
         private AutoSaver autoSaver;
         private string lastKVAPath;
 
-        private HistoryStack historyStack;
+        // Keyframes & attached drawings.
         private List<Keyframe> keyframes = new List<Keyframe>();
         private Keyframe hitKeyframe;
         private AbstractDrawing hitDrawing;
@@ -341,29 +360,32 @@ namespace Kinovea.ScreenManager
         private DrawingTestGrid drawingTestGrid;
         private ChronoManager chronoManager = new ChronoManager();
         private TrackManager trackManager = new TrackManager();
-
         private TrackerParameters lastUsedTrackerParameters;
-        
-        private bool mirrored;
         private TrackExtraData trackExtraData;
-        private bool initialized;
-        
+        private TrackabilityManager trackabilityManager = new TrackabilityManager();
+
+        // Other info not related to drawings.
         private string globalTitle;
         private Size imageSize = new Size(0,0);
+        private bool mirrored;
+        private CalibrationHelper calibrationHelper = new CalibrationHelper();
+        private Temporizer calibrationChangedTemporizer;
+        private ImageTransform imageTransform = new ImageTransform();
+
+        // Timing information
         private long averageTimeStampsPerFrame = 1;
         private double averageTimeStampsPerSecond = 25;
         private long firstTimeStamp;
-        private long selectionStart;
-        private long selectionEnd;
         private long timeOrigin;
         private double highSpeedFactor = 1.0;
         private double userInterval = 40;
-        private int referenceHash;
-        private CalibrationHelper calibrationHelper = new CalibrationHelper();
-        private ImageTransform imageTransform = new ImageTransform();
-        private TrackabilityManager trackabilityManager = new TrackabilityManager();
-        private Temporizer calibrationChangedTemporizer;
-        
+        private long selectionStart;
+        private long selectionEnd;
+
+        // Video filters
+        private Dictionary<VideoFilterType, IVideoFilter> videoFilters = new Dictionary<VideoFilterType, IVideoFilter>();
+        private VideoFilterType activeVideoFilterType = VideoFilterType.None;
+
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -385,8 +407,8 @@ namespace Kinovea.ScreenManager
             autoSaver = new AutoSaver(this);
             
             CreateStaticExtraDrawings();
+            CreateVideoFilters();
             CleanupHash();
-
             SetupTempDirectory(id);
 
             calibrationChangedTemporizer = new Temporizer(200, TracksCalibrationChanged);
@@ -917,6 +939,9 @@ namespace Kinovea.ScreenManager
         }
         public void Close()
         {
+            foreach (IVideoFilter filter in videoFilters.Values)
+                filter.Dispose();
+
             DeleteTempDirectory();
         }
         public void ShowCoordinateSystem()
@@ -964,7 +989,17 @@ namespace Kinovea.ScreenManager
         }
         public int GetContentHash()
         {
-            return GetKeyframesContentHash() ^ GetExtraDrawingsContentHash() ^ trackabilityManager.ContentHash ^ calibrationHelper.ContentHash;
+            int hash =
+                mirrored.GetHashCode() ^
+                selectionStart.GetHashCode() ^
+                selectionEnd.GetHashCode() ^
+                timeOrigin.GetHashCode() ^
+                calibrationHelper.ContentHash ^
+                GetKeyframesContentHash() ^
+                GetExtraDrawingsContentHash() ^
+                trackabilityManager.ContentHash;
+
+            return hash;
         }
         public void CleanupHash()
         {
@@ -1246,9 +1281,24 @@ namespace Kinovea.ScreenManager
 
         }
         #endregion
-        
+
+        #region Video filters
+        public void ActivateVideoFilter(VideoFilterType type)
+        {
+            if (!videoFilters.ContainsKey(type))
+                throw new InvalidProgramException();
+            
+            activeVideoFilterType = type;
+        }
+
+        public void DeactivateVideoFilter()
+        {
+            activeVideoFilterType = VideoFilterType.None;
+        }
         #endregion
-   
+
+        #endregion
+
         #region Lower level Helpers
         private void ResetCoreContent()
         {
@@ -1264,6 +1314,7 @@ namespace Kinovea.ScreenManager
             drawingCoordinateSystem.Visible = false;
             drawingTestGrid.Visible = false;
             calibrationHelper.Reset();
+            ResetVideoFilters();
             
             foreach(AbstractDrawing extraDrawing in extraDrawings)
             {
@@ -1457,6 +1508,17 @@ namespace Kinovea.ScreenManager
         private bool HasTrackingData(Guid id)
         {
             return trackabilityManager.HasData(id);
+        }
+
+        private void CreateVideoFilters()
+        {
+            videoFilters.Add(VideoFilterType.Kinogram, VideoFilterFactory.CreateFilter(VideoFilterType.Kinogram, this));
+        }
+
+        private void ResetVideoFilters()
+        {
+            foreach (var filter in videoFilters.Values)
+                filter.ResetData();
         }
 
         private void SetupTempDirectory(Guid id)

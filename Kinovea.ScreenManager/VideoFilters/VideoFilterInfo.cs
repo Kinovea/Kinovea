@@ -13,7 +13,8 @@ namespace Kinovea.ScreenManager
     public class VideoFilterInfo
     {
         /// <summary>
-        /// Name of the filter.
+        /// Internal name of the filter.
+        /// This name will be used internally to identify the filter and as an XML tag.
         /// </summary>
         public string Name { get; private set; }
 

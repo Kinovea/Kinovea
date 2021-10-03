@@ -191,8 +191,7 @@ namespace Kinovea.ScreenManager
 
         private ToolStripMenuItem CreateFilterMenu(VideoFilterType type)
         {
-            VideoFilterInfo info = VideoFilterFactory.Info[type];
-            ToolStripMenuItem menu = new ToolStripMenuItem(info.Name, info.Icon);
+            ToolStripMenuItem menu = new ToolStripMenuItem(VideoFilterFactory.GetFriendlyName(type), VideoFilterFactory.GetIcon(type));
             menu.MergeAction = MergeAction.Append;
             menu.Tag = type;
             menu.Click += (s, e) =>
@@ -201,11 +200,11 @@ namespace Kinovea.ScreenManager
                 if(screen == null || !screen.IsCaching)
                     return;
 
-                VideoFilterType filter = (VideoFilterType)((ToolStripMenuItem)s).Tag;
-                if (filter == screen.ActiveVideoFilter)
+                VideoFilterType filterType = (VideoFilterType)((ToolStripMenuItem)s).Tag;
+                if (filterType == screen.ActiveVideoFilterType)
                     screen.DeactivateVideoFilter();
                 else
-                    screen.ActivateVideoFilter(filter);
+                    screen.ActivateVideoFilter(filterType);
 
                 OrganizeMenus();
             };
@@ -683,7 +682,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             // If a video filter is active we just go back to normal play.
-            if (screen is PlayerScreen && ((PlayerScreen)screen).ActiveVideoFilter != VideoFilterType.None)
+            if (screen is PlayerScreen && ((PlayerScreen)screen).ActiveVideoFilterType != VideoFilterType.None)
             {
                 SetActiveScreen(screen);
                 ((PlayerScreen)screen).DeactivateVideoFilter();
@@ -1325,21 +1324,10 @@ namespace Kinovea.ScreenManager
             bool hasVideo = player != null && player.Full;
             foreach(ToolStripMenuItem menu in filterMenus)
             {
-                VideoFilterType filter = (VideoFilterType)menu.Tag;
-                VideoFilterInfo info = VideoFilterFactory.Info[filter];
-
-                menu.Visible = info.Experimental ? Software.Experimental : true;
-
-                if (hasVideo)
-                {
-                    menu.Enabled = player.IsCaching;
-                    menu.Checked = player.ActiveVideoFilter == filter;
-                }
-                else
-                {
-                    menu.Enabled = false;
-                    menu.Checked = false;
-                }
+                VideoFilterType filterType = (VideoFilterType)menu.Tag;
+                menu.Visible = VideoFilterFactory.GetExperimental(filterType) ? Software.Experimental : true;
+                menu.Enabled = hasVideo && player.IsCaching;
+                menu.Checked = hasVideo && player.ActiveVideoFilterType == filterType;
             }
         }
         private void ConfigureImageFormatMenus(AbstractScreen screen)
@@ -1530,9 +1518,7 @@ namespace Kinovea.ScreenManager
             foreach(ToolStripMenuItem menu in filterMenus)
             {
                 VideoFilterType filter = (VideoFilterType)menu.Tag;
-
-                // TODO: localization.
-                menu.Text = VideoFilterFactory.Info[filter].Name;
+                menu.Text = VideoFilterFactory.GetFriendlyName(filter);
             }
         }
                 

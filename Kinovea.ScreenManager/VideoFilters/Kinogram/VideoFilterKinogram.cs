@@ -77,7 +77,11 @@ namespace Kinovea.ScreenManager
         public KinogramParameters Parameters
         {
             get { return parameters; }
-            set { parameters = value; }
+            set 
+            { 
+                parameters = value;
+                SanitizePositions();
+            }
         }
         #endregion
 
@@ -86,7 +90,7 @@ namespace Kinovea.ScreenManager
         private Size frameSize;
         private KinogramParameters parameters = new KinogramParameters();
         private IWorkingZoneFramesContainer framesContainer;
-        private FrameServerPlayer frameServer;
+        private Metadata metadata;
         private long timestamp;
         private Color BackgroundColor = Color.FromArgb(44, 44, 44);
         bool clamp = false;
@@ -96,9 +100,9 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region ctor/dtor
-        public VideoFilterKinogram(FrameServerPlayer frameServer)
+        public VideoFilterKinogram(Metadata metadata)
         {
-            this.frameServer = frameServer;
+            this.metadata = metadata;
             mnuConfigure.Click += MnuConfigure_Click;
             mnuResetPositions.Click += MnuResetPositions_Click;
 
@@ -127,15 +131,17 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region IVideoFilter methods
-        public void Reset()
+        public void ResetData()
         {
             this.framesContainer = null;
             this.parameters = PreferencesManager.PlayerPreferences.Kinogram;
+            SanitizePositions();
         }
         
         public void SetFrames(IWorkingZoneFramesContainer framesContainer)
         {
-
+            // Changing the number of frames in the source doesn't impact the grid arrangement.
+            // If we don't have enough frames we just show black tiles.
             this.framesContainer = framesContainer;
             if (framesContainer != null && framesContainer.Frames != null && framesContainer.Frames.Count > 0)
             {
@@ -171,10 +177,7 @@ namespace Kinovea.ScreenManager
         public void StopMove()
         {
             movingTile = -1;
-
-            // Commit preferences to save the new crop positions.
-            PreferencesManager.PlayerPreferences.Kinogram = parameters.Clone();
-            PreferencesManager.Save();
+            AfterParametersChanged();
         }
 
         public void Move(float dx, float dy, Keys modifiers)
@@ -213,7 +216,6 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-
         #region Public methods, called from dialogs.
         /// <summary>
         /// Paint the composite + annotations on a new bitmap at the requested size and return it.
@@ -234,7 +236,7 @@ namespace Kinovea.ScreenManager
             float scale = (float)outputSize.Width / fitArea.Width;
             Point location = new Point((int)(-fitArea.X * scale), (int)(-fitArea.Y * scale));
 
-            MetadataRenderer metadataRenderer = new MetadataRenderer(frameServer.Metadata, true);
+            MetadataRenderer metadataRenderer = new MetadataRenderer(metadata, true);
             metadataRenderer.Render(g, location, scale, timestamp);
 
             return bitmap;
@@ -271,7 +273,6 @@ namespace Kinovea.ScreenManager
                 for (int i = 0; i < missing; i++)
                     parameters.CropPositions.Add(PointF.Empty);
             }
-
         }
 
         private void MnuConfigure_Click(object sender, EventArgs e)
@@ -291,12 +292,7 @@ namespace Kinovea.ScreenManager
 
             if (fck.DialogResult == DialogResult.OK)
             {
-                if (fck.GridChanged)
-                    SanitizePositions();
-
-                // Save the configuration as the new preferred configuration.
-                PreferencesManager.PlayerPreferences.Kinogram = parameters.Clone();
-                PreferencesManager.Save();
+                AfterParametersChanged();
             }
 
             fck.Dispose();
@@ -319,8 +315,8 @@ namespace Kinovea.ScreenManager
                 return;
 
             ResetCropPositions();
-            PreferencesManager.PlayerPreferences.Kinogram = parameters.Clone();
-            PreferencesManager.Save();
+            AfterParametersChanged();
+            
             Update();
 
             // Update the main viewport.
@@ -448,6 +444,15 @@ namespace Kinovea.ScreenManager
             parameters.CropPositions.Clear();
             for (int i = 0; i < parameters.TileCount; i++)
                 parameters.CropPositions.Add(PointF.Empty);
+        }
+
+        /// <summary>
+        /// Save the configuration as the new preferred configuration.
+        /// </summary>
+        private void AfterParametersChanged()
+        {
+            PreferencesManager.PlayerPreferences.Kinogram = parameters.Clone();
+            PreferencesManager.Save();
         }
 
         /// <summary>

@@ -316,7 +316,6 @@ namespace Kinovea.ScreenManager
         // Others
         private NativeMethods.TimerCallback m_TimerCallback;
         private ScreenDescriptionPlayback m_LaunchDescription;
-        private IVideoFilter videoFilter;
         private bool videoFilterIsActive;
         private const float m_MaxZoomFactor = 6.0F;
         private const int m_MaxRenderingDrops = 6;
@@ -453,9 +452,6 @@ namespace Kinovea.ScreenManager
             // 1. Reset all data.
             m_FrameServer.Unload();
             ResetData();
-            if (videoFilter != null)
-                videoFilter.Reset();
-
             videoFilterIsActive = false;
 
             // 2. Reset all interface.
@@ -855,13 +851,9 @@ namespace Kinovea.ScreenManager
             // Refresh image to update timecode in chronos, grids colors, default fading, etc.
             DoInvalidate();
         }
-        public void ActivateVideoFilter(IVideoFilter filter)
+        public void ActivateVideoFilter()
         {
-            videoFilter = filter;
             videoFilterIsActive = true;
-            //DisablePlayAndDraw();
-            //EnableDisableAllPlayingControls(false);
-            //EnableDisableDrawingTools(false);
             CollapseKeyframePanel(true);
             m_fill = true;
             ResizeUpdate(true);
@@ -2421,7 +2413,7 @@ namespace Kinovea.ScreenManager
                 else if (m_FrameServer.VideoReader.Current != null)
                 {
                     if (videoFilterIsActive)
-                        videoFilter.UpdateTime(m_FrameServer.VideoReader.Current.Timestamp);
+                        m_FrameServer.Metadata.ActiveVideoFilter.UpdateTime(m_FrameServer.VideoReader.Current.Timestamp);
                     
                     DoInvalidate();
                     m_iCurrentPosition = m_FrameServer.VideoReader.Current.Timestamp;
@@ -2531,7 +2523,7 @@ namespace Kinovea.ScreenManager
             if (m_FrameServer.VideoReader.Current != null)
             {
                 if (videoFilterIsActive)
-                    videoFilter.UpdateTime(m_FrameServer.VideoReader.Current.Timestamp);
+                    m_FrameServer.Metadata.ActiveVideoFilter.UpdateTime(m_FrameServer.VideoReader.Current.Timestamp);
                 
                 m_iCurrentPosition = m_FrameServer.VideoReader.Current.Timestamp;
 
@@ -2808,7 +2800,7 @@ namespace Kinovea.ScreenManager
                     SetCursor(m_PointerTool.GetCursor(1));
 
                     if (videoFilterIsActive)
-                        videoFilter.StartMove(m_DescaledMouse);
+                        m_FrameServer.Metadata.ActiveVideoFilter.StartMove(m_DescaledMouse);
                 }
             }
             else if (m_ActiveTool == ToolManager.Tools["Spotlight"])
@@ -2856,7 +2848,7 @@ namespace Kinovea.ScreenManager
                 SetCursor(m_PointerTool.GetCursor(1));
 
                 if (videoFilterIsActive)
-                    videoFilter.StartMove(m_DescaledMouse);
+                    m_FrameServer.Metadata.ActiveVideoFilter.StartMove(m_DescaledMouse);
             }
                 
         }
@@ -3065,15 +3057,15 @@ namespace Kinovea.ScreenManager
                 // No drawing touched and no tool selected, but not currently playing. Default menu.
                 if (videoFilterIsActive)
                 {
-                    PrepareFilterContextMenu(videoFilter, popMenuFilter);
+                    PrepareFilterContextMenu(m_FrameServer.Metadata.ActiveVideoFilter, popMenuFilter);
 
                     popMenuFilter.Items.Add(mnuSaveAnnotations);
                     popMenuFilter.Items.Add(mnuSaveAnnotationsAs);
 
-                    if (videoFilter.CanExportVideo)
+                    if (m_FrameServer.Metadata.ActiveVideoFilter.CanExportVideo)
                         popMenuFilter.Items.Add(mnuExportVideo);
 
-                    if (videoFilter.CanExportImage)
+                    if (m_FrameServer.Metadata.ActiveVideoFilter.CanExportImage)
                         popMenuFilter.Items.Add(mnuExportImage);
 
                     popMenuFilter.Items.Add(mnuCloseScreen);
@@ -3212,26 +3204,30 @@ namespace Kinovea.ScreenManager
         private void PrepareFilterContextMenu(IVideoFilter filter, ContextMenuStrip popMenu)
         {
             popMenu.Items.Clear();
+
+            if (filter == null)
+                return;
+
             bool hasExtraMenus = (filter.ContextMenu != null && filter.ContextMenu.Count > 0);
-            if (hasExtraMenus)
+            if (!hasExtraMenus)
+                return;
+            
+            foreach (ToolStripItem tsmi in filter.ContextMenu)
             {
-                foreach (ToolStripItem tsmi in filter.ContextMenu)
+                ToolStripMenuItem menuItem = tsmi as ToolStripMenuItem;
+
+                // Inject dependency on the UI into the menu for invalidation.
+                tsmi.Tag = this;
+                if (menuItem != null && menuItem.DropDownItems.Count > 0)
                 {
-                    ToolStripMenuItem menuItem = tsmi as ToolStripMenuItem;
-
-                    // Inject dependency on the UI into the menu for invalidation.
-                    tsmi.Tag = this;
-                    if (menuItem != null && menuItem.DropDownItems.Count > 0)
-                    {
-                        foreach (ToolStripItem subMenu in menuItem.DropDownItems)
-                            subMenu.Tag = this;
-                    }
-
-                    if (tsmi.MergeIndex >= 0)
-                        popMenu.Items.Insert(tsmi.MergeIndex, tsmi);
-                    else
-                        popMenu.Items.Add(tsmi);
+                    foreach (ToolStripItem subMenu in menuItem.DropDownItems)
+                        subMenu.Tag = this;
                 }
+
+                if (tsmi.MergeIndex >= 0)
+                    popMenu.Items.Insert(tsmi.MergeIndex, tsmi);
+                else
+                    popMenu.Items.Add(tsmi);
             }
         }
         private void SurfaceScreen_MouseMove(object sender, MouseEventArgs e)
@@ -3313,9 +3309,9 @@ namespace Kinovea.ScreenManager
                                     m_FrameServer.ImageTransform.MoveZoomWindow(fDeltaX, fDeltaY);
                                 }
                                 else
-                                { 
-                                   videoFilter.Move((float)fDeltaX, (float)fDeltaY, ModifierKeys);
-                                   DoInvalidate();
+                                {
+                                    m_FrameServer.Metadata.ActiveVideoFilter.Move((float)fDeltaX, (float)fDeltaY, ModifierKeys);
+                                    DoInvalidate();
                                 }
                             }
                         }
@@ -3348,7 +3344,7 @@ namespace Kinovea.ScreenManager
                         }
                         else
                         {
-                            videoFilter.Move((float)fDeltaX, (float)fDeltaY, ModifierKeys);
+                            m_FrameServer.Metadata.ActiveVideoFilter.Move((float)fDeltaX, (float)fDeltaY, ModifierKeys);
                             DoInvalidate();
                         }
                     }
@@ -3366,7 +3362,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             if (videoFilterIsActive)
-                videoFilter.StopMove();
+                m_FrameServer.Metadata.ActiveVideoFilter.StopMove();
 
             if (e.Button == MouseButtons.Middle)
             {
@@ -4969,8 +4965,8 @@ namespace Kinovea.ScreenManager
 
             if (videoFilterIsActive)
             {
-                if (videoFilter.CanExportImage)
-                    videoFilter.ExportImage(this);
+                if (m_FrameServer.Metadata.ActiveVideoFilter.CanExportImage)
+                    m_FrameServer.Metadata.ActiveVideoFilter.ExportImage(this);
             }
             else
             {
@@ -5148,8 +5144,8 @@ namespace Kinovea.ScreenManager
             saveInProgress = true;
             if (videoFilterIsActive)
             {
-                if (videoFilter.CanExportVideo)
-                    videoFilter.ExportVideo(this);
+                if (m_FrameServer.Metadata.ActiveVideoFilter.CanExportVideo)
+                    m_FrameServer.Metadata.ActiveVideoFilter.ExportVideo(this);
             }
             else
             {

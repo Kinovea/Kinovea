@@ -50,7 +50,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Methods
-        void Reset();
+        void ResetData();
 
         void SetFrames(IWorkingZoneFramesContainer framesContainer);
 
