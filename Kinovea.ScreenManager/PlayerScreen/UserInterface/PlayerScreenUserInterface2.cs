@@ -683,25 +683,16 @@ namespace Kinovea.ScreenManager
                 m_FrameServer.DeactivateVideoFilter();
                 DeactivateVideoFilter();
             }
-            else if (videoFilterIsActive)
+            else if (m_FrameServer.Metadata.ActiveVideoFilterType == VideoFilterType.None)
             {
-                if (m_FrameServer.Metadata.ActiveVideoFilterType == VideoFilterType.None)
-                {
-                    // Exiting filter.
-                    m_FrameServer.DeactivateVideoFilter();
-                    DeactivateVideoFilter();
-                }
-                else
-                {
-                    // Re-entering filter.
-                    // It may be a different one so make sure to send it the cached frames.
-                    m_FrameServer.ActivateVideoFilter(m_FrameServer.Metadata.ActiveVideoFilterType);
-                    ActivateVideoFilter();
-                }
+                // Exiting filter.
+                m_FrameServer.DeactivateVideoFilter();
+                DeactivateVideoFilter();
             }
             else
             {
-                // Entering filter.
+                // Re-entering filter.
+                // It may be a different one so make sure to send it the cached frames.
                 m_FrameServer.ActivateVideoFilter(m_FrameServer.Metadata.ActiveVideoFilterType);
                 ActivateVideoFilter();
             }
