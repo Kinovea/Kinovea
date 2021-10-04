@@ -164,6 +164,9 @@ namespace Kinovea.ScreenManager
 
         public void UpdateTime(long timestamp)
         {
+            if (timestamp == this.timestamp)
+                return;
+
             this.timestamp = timestamp;
             Update();
         }
