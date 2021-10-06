@@ -52,17 +52,12 @@ namespace Kinovea.ScreenManager
         {
             get
             {
-                // Rebuild the menu to get the localized text.
-                List<ToolStripItem> contextMenu = new List<ToolStripItem>();
-                mnuConfigure.Image = Properties.Drawings.configure;
+                // Just in time localization.
                 mnuConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
-                mnuResetPositions.Image = Properties.Resources.bin_empty;
+                mnuAutoNumbers.Text = "Frame numbers";
+                mnuGenerateNumbers.Text = "Generate frame numbers";
+                mnuDeleteNumbers.Text = "Delete frame numbers";
                 mnuResetPositions.Text = "Reset positions";
-
-                contextMenu.Add(mnuConfigure);
-                contextMenu.Add(mnuResetPositions);
-                contextMenu.Add(new ToolStripSeparator());
-
                 return contextMenu;
             }
         }
@@ -78,11 +73,6 @@ namespace Kinovea.ScreenManager
         public KinogramParameters Parameters
         {
             get { return parameters; }
-            set 
-            { 
-                parameters = value.Clone();
-                SanitizePositions();
-            }
         }
         public int ContentHash
         {
@@ -100,7 +90,11 @@ namespace Kinovea.ScreenManager
         private Color BackgroundColor = Color.FromArgb(44, 44, 44);
         bool clamp = false;
         private int movingTile = -1;
+        private List<ToolStripItem> contextMenu = new List<ToolStripItem>();
         private ToolStripMenuItem mnuConfigure = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuAutoNumbers = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuGenerateNumbers = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuDeleteNumbers = new ToolStripMenuItem();
         private ToolStripMenuItem mnuResetPositions = new ToolStripMenuItem();
         #endregion
 
@@ -108,11 +102,28 @@ namespace Kinovea.ScreenManager
         public VideoFilterKinogram(Metadata metadata)
         {
             this.metadata = metadata;
+            
+            mnuConfigure.Image = Properties.Drawings.configure;
+            mnuAutoNumbers.Image = Properties.Drawings.number;
+            mnuGenerateNumbers.Image = Properties.Drawings.number;
+            mnuDeleteNumbers.Image = Properties.Resources.bin_empty;
+            mnuResetPositions.Image = Properties.Resources.bin_empty;
+
+            mnuAutoNumbers.DropDownItems.Add(mnuGenerateNumbers);
+            mnuAutoNumbers.DropDownItems.Add(mnuDeleteNumbers);
+
+            contextMenu.Add(mnuConfigure);
+            contextMenu.Add(mnuAutoNumbers);
+            contextMenu.Add(mnuResetPositions);
+            contextMenu.Add(new ToolStripSeparator());
+
             mnuConfigure.Click += MnuConfigure_Click;
+            mnuGenerateNumbers.Click += MnuAutonumbers_Click;
+            mnuDeleteNumbers.Click += MnuDeleteAutoNumbers_Click;
             mnuResetPositions.Click += MnuResetPositions_Click;
 
             parameters = PreferencesManager.PlayerPreferences.Kinogram;
-            SanitizePositions();
+            AfterTileCountChange();
         }
 
         ~VideoFilterKinogram()
@@ -179,7 +190,7 @@ namespace Kinovea.ScreenManager
         public void StopMove()
         {
             movingTile = -1;
-            AfterParametersChanged();
+            SaveAsDefaultParameters();
         }
 
         public void Move(float dx, float dy, Keys modifiers)
@@ -221,7 +232,7 @@ namespace Kinovea.ScreenManager
         {
             this.framesContainer = null;
             this.parameters = PreferencesManager.PlayerPreferences.Kinogram;
-            SanitizePositions();
+            AfterTileCountChange();
         }
 
         public void WriteData(XmlWriter w)
@@ -232,7 +243,7 @@ namespace Kinovea.ScreenManager
         public void ReadData(XmlReader r)
         {
             parameters.ReadXml(r);
-            SanitizePositions();
+            AfterTileCountChange();
             Update();
         }
         #endregion
@@ -276,12 +287,75 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Private methods
+        private void MnuConfigure_Click(object sender, EventArgs e)
+        {
+            // Launch dialog.
+            FormConfigureKinogram fck = new FormConfigureKinogram(this);
+            FormsHelper.Locate(fck);
+            fck.ShowDialog();
+
+            if (fck.DialogResult == DialogResult.OK)
+            {
+                parameters = fck.Parameters.Clone();
+                AfterTileCountChange();
+                SaveAsDefaultParameters();
+            }
+
+            fck.Dispose();
+            Update();
+
+            InvalidateFromMenu(sender);
+        }
+
+        private void MnuResetPositions_Click(object sender, EventArgs e)
+        {
+            ResetCropPositions();
+            SaveAsDefaultParameters();
+            Update();
+
+            InvalidateFromMenu(sender);
+        }
+
+        private void MnuAutonumbers_Click(object sender, EventArgs e)
+        {
+            // Reset the auto-numbers to be into the tiles.
+            Size outputSize = bitmap.Size;
+            List<PointF> numbers = new List<PointF>();
+            for (int i = 0; i < parameters.TileCount; i++)
+            {
+                // Find the destination rectangle of this tile.
+                int cols = (int)Math.Ceiling((float)parameters.TileCount / parameters.Rows);
+                Size cropSize = GetCropSize();
+                Size fullSize = new Size(cropSize.Width * cols, cropSize.Height * parameters.Rows);
+                Rectangle paintArea = UIHelper.RatioStretch(fullSize, outputSize);
+                Size tileSize = new Size(paintArea.Width / cols, paintArea.Height / parameters.Rows);
+                Rectangle destRect = GetDestinationRectangle(i, cols, parameters.Rows, parameters.LeftToRight, paintArea, tileSize);
+
+                // Anchor in the top-left by default. 
+                // The user can move all the numbers at once later.
+                PointF location = new PointF(destRect.X + 10, destRect.Y + 10);
+                numbers.Add(location);
+            }
+
+            metadata.AutoNumberManager.Configure(timestamp, metadata.AverageTimeStampsPerFrame, numbers);
+
+            InvalidateFromMenu(sender);
+        }
+
+        private void MnuDeleteAutoNumbers_Click(object sender, EventArgs e)
+        {
+            List<PointF> numbers = new List<PointF>();
+            metadata.AutoNumberManager.Configure(timestamp, metadata.AverageTimeStampsPerFrame, numbers);
+
+            InvalidateFromMenu(sender);
+        }
+
         /// <summary>
         /// Add or remove crop positions slots after a change in the number of tiles.
         /// parameters.TileCount has the new number of tiles, 
         /// parameters.CropPositions has the old list of positions.
         /// </summary>
-        private void SanitizePositions()
+        private void AfterTileCountChange()
         {
             int oldCount = parameters.CropPositions.Count;
             int newCount = parameters.TileCount;
@@ -307,53 +381,7 @@ namespace Kinovea.ScreenManager
             parameters.CropPositions = newCrops;
         }
 
-        private void MnuConfigure_Click(object sender, EventArgs e)
-        {
-            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
-            if (tsmi == null)
-                return;
-
-            IDrawingHostView host = tsmi.Tag as IDrawingHostView;
-            if (host == null)
-                return;
-
-            // Launch dialog.
-            FormConfigureKinogram fck = new FormConfigureKinogram(this);
-            FormsHelper.Locate(fck);
-            fck.ShowDialog();
-
-            if (fck.DialogResult == DialogResult.OK)
-                AfterParametersChanged();
-
-            fck.Dispose();
-
-            Update();
-
-            // Update the main viewport.
-            // The screen hook was injected inside the menu.
-            host.InvalidateFromMenu();
-        }
-
-        private void MnuResetPositions_Click(object sender, EventArgs e)
-        {
-            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
-            if (tsmi == null)
-                return;
-
-            IDrawingHostView host = tsmi.Tag as IDrawingHostView;
-            if (host == null)
-                return;
-
-            ResetCropPositions();
-            AfterParametersChanged();
-            
-            Update();
-
-            // Update the main viewport.
-            // The screen hook was injected inside the menu.
-            host.InvalidateFromMenu();
-        }
-
+        #region Rendering
         /// <summary>
         /// Paint the composite or one tile on the internal bitmap.
         /// This is used for the viewport rendering.
@@ -455,7 +483,6 @@ namespace Kinovea.ScreenManager
                 g.DrawRectangle(p, new Rectangle(rect.X, rect.Y, rect.Width - 1, rect.Height - 1));
         }
 
-
         /// <summary>
         /// Returns the part of the target image where the passed tile should be drawn.
         /// </summary>
@@ -468,6 +495,7 @@ namespace Kinovea.ScreenManager
 
             return new Rectangle(paintArea.Left + col * tileSize.Width, paintArea.Top + row * tileSize.Height, tileSize.Width, tileSize.Height);
         }
+        #endregion
 
         private void ResetCropPositions()
         {
@@ -479,7 +507,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Save the configuration as the new preferred configuration.
         /// </summary>
-        private void AfterParametersChanged()
+        private void SaveAsDefaultParameters()
         {
             PreferencesManager.PlayerPreferences.Kinogram = parameters.Clone();
             PreferencesManager.Save();
@@ -555,6 +583,21 @@ namespace Kinovea.ScreenManager
             }
 
             parameters.CropPositions[index] = new PointF(x, y);
+        }
+
+        private void InvalidateFromMenu(object sender)
+        {
+            // Update the main viewport.
+            // The screen hook was injected inside the menu.
+            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
+            if (tsmi == null)
+                return;
+
+            IDrawingHostView host = tsmi.Tag as IDrawingHostView;
+            if (host == null)
+                return;
+
+            host.InvalidateFromMenu();
         }
         #endregion
     }

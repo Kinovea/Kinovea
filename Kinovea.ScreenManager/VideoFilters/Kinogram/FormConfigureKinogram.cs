@@ -19,8 +19,11 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public partial class FormConfigureKinogram : Form
     {
-
-        public bool GridChanged { get; set; }
+        
+        public KinogramParameters Parameters 
+        { 
+            get{ return parameters; } 
+        }
 
         #region Members
         private VideoFilterKinogram kinogram;
@@ -124,7 +127,6 @@ namespace Kinovea.ScreenManager
             int rows = (int)nudRows.Value;
             parameters.TileCount = cols * rows;
             parameters.Rows = rows;
-            GridChanged = true;
         }
 
         private void grid_KeyUp(object sender, KeyEventArgs e)
@@ -170,8 +172,6 @@ namespace Kinovea.ScreenManager
         {
             // Import style values and commit the parameters object.
             parameters.BorderColor = styleHelper.Color;
-            
-            kinogram.Parameters = parameters;
         }
         #endregion
     }

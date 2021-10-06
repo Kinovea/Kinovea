@@ -222,6 +222,22 @@ namespace Kinovea.ScreenManager
                 w.WriteEndElement();
             }
         }
+        
+        /// <summary>
+        /// Reconfigure the auto-numbers to be placed at the passed locations.
+        /// </summary>
+        public void Configure(long timestamp, long averageTimeStampsPerFrame, List<PointF> locations)
+        {
+            Clear();
+            
+            int value = 0;
+            foreach (var location in locations)
+            {
+                value++;
+                AutoNumber an = new AutoNumber(timestamp, averageTimeStampsPerFrame, location, value);
+                autoNumbers.Add(an);
+            }
+        }
         #endregion
         
         private void BindStyle()
