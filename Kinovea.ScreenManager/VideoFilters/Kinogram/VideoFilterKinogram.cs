@@ -80,7 +80,7 @@ namespace Kinovea.ScreenManager
             get { return parameters; }
             set 
             { 
-                parameters = value;
+                parameters = value.Clone();
                 SanitizePositions();
             }
         }
@@ -278,22 +278,33 @@ namespace Kinovea.ScreenManager
         #region Private methods
         /// <summary>
         /// Add or remove crop positions slots after a change in the number of tiles.
+        /// parameters.TileCount has the new number of tiles, 
+        /// parameters.CropPositions has the old list of positions.
         /// </summary>
         private void SanitizePositions()
         {
-            if (parameters.TileCount == parameters.CropPositions.Count)
+            int oldCount = parameters.CropPositions.Count;
+            int newCount = parameters.TileCount;
+
+            if (newCount == oldCount)
                 return;
 
-            if (parameters.TileCount < parameters.CropPositions.Count)
+            // Interpolate the new positions to match the existing motion of the tiles within the scene.
+            List<PointF> newCrops = new List<PointF>();
+            for (int i = 0; i < newCount; i++)
             {
-                parameters.CropPositions.RemoveRange(parameters.TileCount, parameters.CropPositions.Count - parameters.TileCount);
+                // Find the two closest old values and where we sit between them.
+                float t = ((float)i / newCount) * oldCount;
+                int a = (int)Math.Floor(t);
+                int b = Math.Min(a + 1, oldCount - 1);
+                float alpha = t - a;
+                float beta = 1.0f - alpha;
+                float x = parameters.CropPositions[a].X * beta + parameters.CropPositions[b].X * alpha;
+                float y = parameters.CropPositions[a].Y * beta + parameters.CropPositions[b].Y * alpha;
+                newCrops.Add(new PointF(x, y));
             }
-            else
-            {
-                int missing = parameters.TileCount - parameters.CropPositions.Count;
-                for (int i = 0; i < missing; i++)
-                    parameters.CropPositions.Add(PointF.Empty);
-            }
+
+            parameters.CropPositions = newCrops;
         }
 
         private void MnuConfigure_Click(object sender, EventArgs e)
@@ -312,9 +323,7 @@ namespace Kinovea.ScreenManager
             fck.ShowDialog();
 
             if (fck.DialogResult == DialogResult.OK)
-            {
                 AfterParametersChanged();
-            }
 
             fck.Dispose();
 
