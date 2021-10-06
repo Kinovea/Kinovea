@@ -110,8 +110,19 @@ namespace Kinovea.ScreenManager
         }
         public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
         {
-            if(selected >= 0 && selected < autoNumbers.Count)
+            if (selected < 0 || selected >= autoNumbers.Count)
+                return;
+
+            if ((modifierKeys & Keys.Shift) == Keys.Shift)
+            {
+                // Move all numbers at once.
+                foreach (var number in autoNumbers)
+                    number.MouseMove(dx, dy);
+            }
+            else
+            {
                 autoNumbers[selected].MouseMove(dx, dy);
+            }
         }
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
