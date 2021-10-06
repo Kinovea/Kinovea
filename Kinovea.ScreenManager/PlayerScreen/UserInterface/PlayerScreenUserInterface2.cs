@@ -3391,7 +3391,7 @@ namespace Kinovea.ScreenManager
             if (!m_FrameServer.Loaded)
                 return;
 
-            if (videoFilterIsActive)
+            if (videoFilterIsActive && (e.Button == MouseButtons.Left || e.Button == MouseButtons.Middle))
                 m_FrameServer.Metadata.ActiveVideoFilter.StopMove();
 
             if (e.Button == MouseButtons.Middle)

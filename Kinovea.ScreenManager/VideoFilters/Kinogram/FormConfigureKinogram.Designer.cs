@@ -142,6 +142,7 @@ namespace Kinovea.ScreenManager
             0,
             0});
       this.nudCropHeight.ValueChanged += new System.EventHandler(this.cropSize_ValueChanged);
+      this.nudCropHeight.KeyUp += new System.Windows.Forms.KeyEventHandler(this.cropSize_KeyUp);
       // 
       // nudCropWidth
       // 
@@ -165,6 +166,7 @@ namespace Kinovea.ScreenManager
             0,
             0});
       this.nudCropWidth.ValueChanged += new System.EventHandler(this.cropSize_ValueChanged);
+      this.nudCropWidth.KeyUp += new System.Windows.Forms.KeyEventHandler(this.cropSize_KeyUp);
       // 
       // nudRows
       // 
@@ -188,6 +190,7 @@ namespace Kinovea.ScreenManager
             0,
             0});
       this.nudRows.ValueChanged += new System.EventHandler(this.grid_ValueChanged);
+      this.nudRows.KeyUp += new System.Windows.Forms.KeyEventHandler(this.grid_KeyUp);
       // 
       // nudCols
       // 
@@ -211,6 +214,7 @@ namespace Kinovea.ScreenManager
             0,
             0});
       this.nudCols.ValueChanged += new System.EventHandler(this.grid_ValueChanged);
+      this.nudCols.KeyUp += new System.Windows.Forms.KeyEventHandler(this.grid_KeyUp);
       // 
       // lblColumns
       // 

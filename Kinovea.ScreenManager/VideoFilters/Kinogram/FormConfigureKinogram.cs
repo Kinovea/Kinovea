@@ -127,6 +127,11 @@ namespace Kinovea.ScreenManager
             GridChanged = true;
         }
 
+        private void grid_KeyUp(object sender, KeyEventArgs e)
+        {
+            grid_ValueChanged(sender, EventArgs.Empty);
+        }
+
         private void cropSize_ValueChanged(object sender, EventArgs e)
         {
             if (manualUpdate)
@@ -135,6 +140,11 @@ namespace Kinovea.ScreenManager
             int width = (int)nudCropWidth.Value;
             int height = (int)nudCropHeight.Value;
             parameters.CropSize = new Size(width, height);
+        }
+
+        private void cropSize_KeyUp(object sender, KeyEventArgs e)
+        {
+            cropSize_ValueChanged(sender, EventArgs.Empty);
         }
 
         private void cbRTL_CheckedChanged(object sender, EventArgs e)
