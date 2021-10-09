@@ -127,6 +127,12 @@ namespace Kinovea.ScreenManager
             get { return imageTransform; }
         }
 
+        public ImageAspectRatio ImageAspect { get; set; }
+        public ImageRotation ImageRotation { get; set; }
+        public bool Mirrored { get; set; }
+        public Demosaicing Demosaicing { get; set; }
+        public bool Deinterlacing { get; set; }
+
         /// <summary>
         /// Path to the video file this metadata was created on.
         /// </summary>
@@ -226,11 +232,7 @@ namespace Kinovea.ScreenManager
         {
             get { return trackManager; }
         }
-        public bool Mirrored
-        {
-            get { return mirrored; }
-            set { mirrored = value; }
-        }
+        
         public bool DrawingInitializing
         {
             get
@@ -367,7 +369,6 @@ namespace Kinovea.ScreenManager
         // Other info not related to drawings.
         private string globalTitle;
         private Size imageSize = new Size(0,0);
-        private bool mirrored;
         private CalibrationHelper calibrationHelper = new CalibrationHelper();
         private Temporizer calibrationChangedTemporizer;
         private ImageTransform imageTransform = new ImageTransform();
@@ -990,7 +991,11 @@ namespace Kinovea.ScreenManager
         public int GetContentHash()
         {
             int hash = 0;
-            hash ^= mirrored.GetHashCode();
+            hash ^= ImageAspect.GetHashCode();
+            hash ^= ImageRotation.GetHashCode();
+            hash ^= Mirrored.GetHashCode();
+            hash ^= Demosaicing.GetHashCode();
+            hash ^= Deinterlacing.GetHashCode();
             hash ^= selectionStart.GetHashCode();
             hash ^= selectionEnd.GetHashCode();
             hash ^= timeOrigin.GetHashCode();
@@ -1357,7 +1362,12 @@ namespace Kinovea.ScreenManager
                     ((AbstractMultiDrawing)extraDrawing).Clear();
             }
 
-            mirrored = false;
+            ImageAspect = ImageAspectRatio.Auto;
+            ImageRotation = ImageRotation.Rotate0;
+            Mirrored = false;
+            Demosaicing = Demosaicing.None;
+            Deinterlacing = false;
+
             UnselectAll();
         }
         private bool DrawingsHitTest(int keyFrameIndex, PointF mouseLocation, long timestamp)

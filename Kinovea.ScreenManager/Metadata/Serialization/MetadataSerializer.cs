@@ -268,8 +268,20 @@ namespace Kinovea.ScreenManager
                         inputImageSize = XmlHelper.ParseSize(r.ReadElementContentAsString());
                         scaling = GetScaling();
                         break;
+                    case "Aspect":
+                        metadata.ImageAspect = (ImageAspectRatio)Enum.Parse(typeof(ImageAspectRatio), r.ReadElementContentAsString());
+                        break;
+                    case "Rotation":
+                        metadata.ImageRotation = (ImageRotation)Enum.Parse(typeof(ImageRotation), r.ReadElementContentAsString());
+                        break;
                     case "Mirror":
                         metadata.Mirrored = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
+                        break;
+                    case "Demosaicing":
+                        metadata.Demosaicing = (Demosaicing)Enum.Parse(typeof(Demosaicing), r.ReadElementContentAsString());
+                        break;
+                    case "Deinterlacing":
+                        metadata.Deinterlacing = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
                         break;
                     case "AverageTimeStampsPerFrame":
                         inputAverageTimeStampsPerFrame = r.ReadElementContentAsLong();
@@ -465,7 +477,13 @@ namespace Kinovea.ScreenManager
                 w.WriteElementString("GlobalTitle", metadata.GlobalTitle);
 
             w.WriteElementString("ImageSize", metadata.ImageSize.Width + ";" + metadata.ImageSize.Height);
+            
+            w.WriteElementString("Aspect", metadata.ImageAspect.ToString());
+            w.WriteElementString("Rotation", metadata.ImageRotation.ToString());
             w.WriteElementString("Mirror", metadata.Mirrored.ToString().ToLower());
+            w.WriteElementString("Demosaicing", metadata.Demosaicing.ToString());
+            w.WriteElementString("Deinterlacing", metadata.Deinterlacing.ToString().ToLower());
+
             w.WriteElementString("AverageTimeStampsPerFrame", metadata.AverageTimeStampsPerFrame.ToString());
             w.WriteElementString("CaptureFramerate", string.Format(CultureInfo.InvariantCulture, "{0}", metadata.CalibrationHelper.CaptureFramesPerSecond));
             w.WriteElementString("UserFramerate", string.Format(CultureInfo.InvariantCulture, "{0}", 1000 / metadata.UserInterval));

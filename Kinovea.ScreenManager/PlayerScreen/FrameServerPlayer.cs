@@ -173,6 +173,62 @@ namespace Kinovea.ScreenManager
             log.Debug("Setup metadata.");
         }
 
+        public bool ChangeImageAspect(ImageAspectRatio value)
+        {
+            if (!VideoReader.CanChangeAspectRatio)
+                return false;
+
+            metadata.ImageAspect = value;
+            return VideoReader.ChangeAspectRatio(value);
+        }
+
+        public bool ChangeImageRotation(ImageRotation value)
+        {
+            if (!VideoReader.CanChangeImageRotation)
+                return false;
+
+            metadata.ImageRotation = value;
+            return VideoReader.ChangeImageRotation(value);
+        }
+
+        public bool ChangeMirror(bool value)
+        {
+            metadata.Mirrored = value;
+            
+            // Nothing else to do, mirroring is handled at render time.
+            return false;
+        }
+
+        public bool ChangeDemosaicing(Demosaicing value)
+        {
+            if (!VideoReader.CanChangeDemosaicing)
+                return false;
+
+            metadata.Demosaicing = value;
+            return VideoReader.ChangeDemosaicing(value);
+        }
+
+        public bool ChangeDeinterlacing(bool value)
+        {
+            if (!VideoReader.CanChangeDeinterlacing)
+                return false;
+
+            metadata.Deinterlacing = value;
+            return VideoReader.ChangeDeinterlace(value);
+        }
+
+        /// <summary>
+        /// Consolidate image options after metadata import.
+        /// </summary>
+        public void RestoreImageOptions()
+        {
+            ChangeImageAspect(metadata.ImageAspect);
+            ChangeImageRotation(metadata.ImageRotation);
+            ChangeMirror(metadata.Mirrored);
+            ChangeDemosaicing(metadata.Demosaicing);
+            ChangeDeinterlacing(metadata.Deinterlacing);
+        }
+
         public override void Draw(Graphics canvas)
         {
             // Draw the current image on canvas according to conf.
@@ -290,6 +346,7 @@ namespace Kinovea.ScreenManager
             metadata.ActivateVideoFilter(type);
             metadata.ActiveVideoFilter.SetFrames(VideoReader.WorkingZoneFrames);
         }
+        
         public void DeactivateVideoFilter()
         {
             metadata.DeactivateVideoFilter();

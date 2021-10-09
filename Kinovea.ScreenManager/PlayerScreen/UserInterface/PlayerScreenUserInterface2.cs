@@ -635,6 +635,9 @@ namespace Kinovea.ScreenManager
         {
             InitializeKeyframes();
 
+            // Restore things like aspect ratio, image rotation, deinterlacing, etc.
+            m_FrameServer.RestoreImageOptions();
+
             // Restore selection.
             // Force a reload of the cache to account for possible changes in aspect ratio, image rotation, etc.
             m_iSelStart = m_FrameServer.Metadata.SelectionStart;

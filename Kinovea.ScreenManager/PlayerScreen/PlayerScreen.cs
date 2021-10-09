@@ -86,12 +86,14 @@ namespace Kinovea.ScreenManager
         {
             get { return true;}
         }
+
+        #region Image options
         public override ImageAspectRatio AspectRatio
         {
-            get { return frameServer.VideoReader.Options.ImageAspectRatio; }
+            get { return frameServer.Metadata.ImageAspect; }
             set
             {
-                bool uncached = frameServer.VideoReader.ChangeAspectRatio(value);
+                bool uncached = frameServer.ChangeImageAspect(value);
                 
                 if (uncached && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
                     view.UpdateWorkingZone(true);
@@ -101,10 +103,10 @@ namespace Kinovea.ScreenManager
         }
         public override ImageRotation ImageRotation
         {
-            get { return frameServer.VideoReader.Options.ImageRotation; }
+            get { return frameServer.Metadata.ImageRotation; }
             set
             {
-                bool uncached = frameServer.VideoReader.ChangeImageRotation(value);
+                bool uncached = frameServer.ChangeImageRotation(value);
 
                 if (uncached && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
                     view.UpdateWorkingZone(true);
@@ -114,17 +116,11 @@ namespace Kinovea.ScreenManager
         }
         public override Demosaicing Demosaicing
         {
-            get
-            {
-                return frameServer.VideoReader.Options.Demosaicing;
-            }
+            get { return frameServer.Metadata.Demosaicing; }
 
             set
             {
-                if (!frameServer.VideoReader.CanChangeDemosaicing)
-                    return;
-
-                bool uncached = frameServer.VideoReader.ChangeDemosaicing(value);
+                bool uncached = frameServer.ChangeDemosaicing(value);
 
                 if (uncached && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
                     view.UpdateWorkingZone(true);
@@ -137,10 +133,28 @@ namespace Kinovea.ScreenManager
             get { return frameServer.Metadata.Mirrored; }
             set
             {
-                frameServer.Metadata.Mirrored = value;
+                frameServer.ChangeMirror(value);
                 RefreshImage();
             }
         }
+        public bool Deinterlaced
+        {
+            get { return frameServer.Metadata.Deinterlacing; }
+            set
+            {
+                bool uncached = frameServer.ChangeDeinterlacing(value);
+
+                if (uncached && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
+                    view.UpdateWorkingZone(true);
+
+                RefreshImage();
+            }
+        }
+        public VideoFilterType ActiveVideoFilterType
+        {
+            get { return frameServer.Metadata.ActiveVideoFilterType; }
+        }
+        #endregion
 
         public FrameServerPlayer FrameServer
         {
@@ -284,25 +298,6 @@ namespace Kinovea.ScreenManager
         public bool DualSaveInProgress
         {
             set { view.DualSaveInProgress = value; }
-        }
-        
-        // Pseudo Filters (Impacts rendering)
-        public bool Deinterlaced
-        {
-            get { return frameServer.VideoReader.Options.Deinterlace; }
-            set
-            {
-                bool uncached = frameServer.VideoReader.ChangeDeinterlace(value);
-                
-                if (uncached && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
-                    view.UpdateWorkingZone(true);
-                
-                RefreshImage();
-            }
-        }
-        public VideoFilterType ActiveVideoFilterType 
-        {
-            get { return frameServer.Metadata.ActiveVideoFilterType; }
         }
 
         public HistoryStack HistoryStack
