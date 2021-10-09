@@ -340,19 +340,21 @@ namespace Kinovea.ScreenManager
         {
             // Reset the auto-numbers to be into the tiles.
             Size outputSize = bitmap.Size;
+            int cols = (int)Math.Ceiling((float)parameters.TileCount / parameters.Rows);
+            Size cropSize = GetCropSize();
+            Size fullSize = new Size(cropSize.Width * cols, cropSize.Height * parameters.Rows);
+            Rectangle paintArea = UIHelper.RatioStretch(fullSize, outputSize);
+            Size tileSize = new Size(paintArea.Width / cols, paintArea.Height / parameters.Rows);
+            int tileCount = Math.Min(framesContainer.Frames.Count, parameters.TileCount);
+            
             List<PointF> numbers = new List<PointF>();
-            for (int i = 0; i < parameters.TileCount; i++)
+            for (int i = 0; i < tileCount; i++)
             {
                 // Find the destination rectangle of this tile.
-                int cols = (int)Math.Ceiling((float)parameters.TileCount / parameters.Rows);
-                Size cropSize = GetCropSize();
-                Size fullSize = new Size(cropSize.Width * cols, cropSize.Height * parameters.Rows);
-                Rectangle paintArea = UIHelper.RatioStretch(fullSize, outputSize);
-                Size tileSize = new Size(paintArea.Width / cols, paintArea.Height / parameters.Rows);
                 Rectangle destRect = GetDestinationRectangle(i, cols, parameters.Rows, parameters.LeftToRight, paintArea, tileSize);
 
                 // Anchor in the top-left by default. 
-                // The user can move all the numbers at once later.
+                // The user can move all the numbers at once later with SHIFT+drag.
                 PointF location = new PointF(destRect.X + 10, destRect.Y + 10);
                 numbers.Add(location);
             }
