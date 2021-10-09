@@ -581,6 +581,10 @@ namespace Kinovea.ScreenManager
 
             int row = (int)(p.Y / tileSize.Height);
             int index = row * cols + col;
+
+            if (index >= framesContainer.Frames.Count)
+                return -1;
+
             return index;
         }
 
