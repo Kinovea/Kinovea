@@ -44,6 +44,7 @@ namespace Kinovea.ScreenManager
             SetupStyleControls();
             InitValues();
             InitCulture();
+            UpdateFrameInterval();
         }
 
         private void InitValues()
@@ -117,6 +118,14 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        private void UpdateFrameInterval()
+        {
+            int tileCount = kinogram.GetTileCount(parameters.TileCount);
+            lblTotal.Text = string.Format("Total: {0}", tileCount);
+            float interval = kinogram.GetFrameInterval(parameters.TileCount);
+            lblFrameInterval.Text = string.Format("Frame interval: {0:0.000} ms", interval * 1000.0f);
+        }
+
         #region Event handlers
         private void grid_ValueChanged(object sender, EventArgs e)
         {
@@ -127,6 +136,8 @@ namespace Kinovea.ScreenManager
             int rows = (int)nudRows.Value;
             parameters.TileCount = cols * rows;
             parameters.Rows = rows;
+
+            UpdateFrameInterval();
         }
 
         private void grid_KeyUp(object sender, KeyEventArgs e)

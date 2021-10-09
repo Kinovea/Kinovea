@@ -284,6 +284,26 @@ namespace Kinovea.ScreenManager
             Size fullSize = new Size(cropSize.Width * cols, cropSize.Height * parameters.Rows);
             return (float)fullSize.Width / fullSize.Height;
         }
+
+        /// <summary>
+        /// Return the real tile count clamped to the number of available frames.
+        /// </summary>
+        public int GetTileCount(int tileCount)
+        {
+            return Math.Min(framesContainer.Frames.Count, tileCount);
+        }
+
+        /// <summary>
+        /// Return the average interval in seconds between adjacent frames of the kinogram.
+        /// </summary>
+        public float GetFrameInterval(int tileCount)
+        {
+            int maxFrames = Math.Min(framesContainer.Frames.Count, tileCount);
+            float intervalFrames = (float)framesContainer.Frames.Count / maxFrames;
+            float intervalTimestamp = intervalFrames * metadata.AverageTimeStampsPerFrame;
+            float intervalSeconds = (float)(intervalTimestamp/ metadata.AverageTimeStampsPerSecond);
+            return intervalSeconds;
+        }
         #endregion
 
         #region Private methods
