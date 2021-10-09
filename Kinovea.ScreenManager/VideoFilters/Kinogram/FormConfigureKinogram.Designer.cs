@@ -29,11 +29,12 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void InitializeComponent()
         {
-      this.pnlViewport = new System.Windows.Forms.Panel();
       this.label1 = new System.Windows.Forms.Label();
       this.label4 = new System.Windows.Forms.Label();
       this.lblCropSize = new System.Windows.Forms.Label();
       this.grpConfig = new System.Windows.Forms.GroupBox();
+      this.lblFrameInterval = new System.Windows.Forms.Label();
+      this.lblTotal = new System.Windows.Forms.Label();
       this.cbRTL = new System.Windows.Forms.CheckBox();
       this.nudCropHeight = new System.Windows.Forms.NumericUpDown();
       this.nudCropWidth = new System.Windows.Forms.NumericUpDown();
@@ -45,8 +46,6 @@ namespace Kinovea.ScreenManager
       this.btnCancel = new System.Windows.Forms.Button();
       this.grpAppearance = new System.Windows.Forms.GroupBox();
       this.cbBorderVisible = new System.Windows.Forms.CheckBox();
-      this.lblTotal = new System.Windows.Forms.Label();
-      this.lblFrameInterval = new System.Windows.Forms.Label();
       this.grpConfig.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudCropHeight)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudCropWidth)).BeginInit();
@@ -55,20 +54,10 @@ namespace Kinovea.ScreenManager
       this.grpAppearance.SuspendLayout();
       this.SuspendLayout();
       // 
-      // pnlViewport
-      // 
-      this.pnlViewport.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.pnlViewport.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-      this.pnlViewport.Location = new System.Drawing.Point(317, 12);
-      this.pnlViewport.Name = "pnlViewport";
-      this.pnlViewport.Size = new System.Drawing.Size(529, 452);
-      this.pnlViewport.TabIndex = 59;
-      // 
       // label1
       // 
       this.label1.AutoSize = true;
-      this.label1.Location = new System.Drawing.Point(246, 153);
+      this.label1.Location = new System.Drawing.Point(267, 154);
       this.label1.Name = "label1";
       this.label1.Size = new System.Drawing.Size(18, 13);
       this.label1.TabIndex = 53;
@@ -77,7 +66,7 @@ namespace Kinovea.ScreenManager
       // label4
       // 
       this.label4.AutoSize = true;
-      this.label4.Location = new System.Drawing.Point(179, 154);
+      this.label4.Location = new System.Drawing.Point(200, 155);
       this.label4.Name = "label4";
       this.label4.Size = new System.Drawing.Size(13, 13);
       this.label4.TabIndex = 45;
@@ -113,6 +102,24 @@ namespace Kinovea.ScreenManager
       this.grpConfig.TabStop = false;
       this.grpConfig.Text = "Generic_Configuration";
       // 
+      // lblFrameInterval
+      // 
+      this.lblFrameInterval.AutoSize = true;
+      this.lblFrameInterval.Location = new System.Drawing.Point(148, 99);
+      this.lblFrameInterval.Name = "lblFrameInterval";
+      this.lblFrameInterval.Size = new System.Drawing.Size(79, 13);
+      this.lblFrameInterval.TabIndex = 62;
+      this.lblFrameInterval.Text = "Frame interval :";
+      // 
+      // lblTotal
+      // 
+      this.lblTotal.AutoSize = true;
+      this.lblTotal.Location = new System.Drawing.Point(18, 98);
+      this.lblTotal.Name = "lblTotal";
+      this.lblTotal.Size = new System.Drawing.Size(37, 13);
+      this.lblTotal.TabIndex = 61;
+      this.lblTotal.Text = "Total :";
+      // 
       // cbRTL
       // 
       this.cbRTL.AutoSize = true;
@@ -126,7 +133,7 @@ namespace Kinovea.ScreenManager
       // 
       // nudCropHeight
       // 
-      this.nudCropHeight.Location = new System.Drawing.Point(195, 150);
+      this.nudCropHeight.Location = new System.Drawing.Point(216, 151);
       this.nudCropHeight.Maximum = new decimal(new int[] {
             4096,
             0,
@@ -150,7 +157,7 @@ namespace Kinovea.ScreenManager
       // 
       // nudCropWidth
       // 
-      this.nudCropWidth.Location = new System.Drawing.Point(130, 150);
+      this.nudCropWidth.Location = new System.Drawing.Point(151, 151);
       this.nudCropWidth.Maximum = new decimal(new int[] {
             4096,
             0,
@@ -174,7 +181,7 @@ namespace Kinovea.ScreenManager
       // 
       // nudRows
       // 
-      this.nudRows.Location = new System.Drawing.Point(133, 60);
+      this.nudRows.Location = new System.Drawing.Point(154, 61);
       this.nudRows.Maximum = new decimal(new int[] {
             25,
             0,
@@ -198,7 +205,7 @@ namespace Kinovea.ScreenManager
       // 
       // nudCols
       // 
-      this.nudCols.Location = new System.Drawing.Point(133, 28);
+      this.nudCols.Location = new System.Drawing.Point(154, 29);
       this.nudCols.Maximum = new decimal(new int[] {
             25,
             0,
@@ -242,7 +249,7 @@ namespace Kinovea.ScreenManager
       // 
       this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.btnOK.Location = new System.Drawing.Point(642, 470);
+      this.btnOK.Location = new System.Drawing.Point(111, 384);
       this.btnOK.Name = "btnOK";
       this.btnOK.Size = new System.Drawing.Size(99, 24);
       this.btnOK.TabIndex = 56;
@@ -254,7 +261,7 @@ namespace Kinovea.ScreenManager
       // 
       this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.btnCancel.Location = new System.Drawing.Point(747, 470);
+      this.btnCancel.Location = new System.Drawing.Point(216, 384);
       this.btnCancel.Name = "btnCancel";
       this.btnCancel.Size = new System.Drawing.Size(99, 24);
       this.btnCancel.TabIndex = 57;
@@ -264,7 +271,7 @@ namespace Kinovea.ScreenManager
       // grpAppearance
       // 
       this.grpAppearance.Controls.Add(this.cbBorderVisible);
-      this.grpAppearance.Location = new System.Drawing.Point(14, 263);
+      this.grpAppearance.Location = new System.Drawing.Point(14, 243);
       this.grpAppearance.Name = "grpAppearance";
       this.grpAppearance.Size = new System.Drawing.Size(297, 128);
       this.grpAppearance.TabIndex = 53;
@@ -282,32 +289,13 @@ namespace Kinovea.ScreenManager
       this.cbBorderVisible.UseVisualStyleBackColor = true;
       this.cbBorderVisible.CheckedChanged += new System.EventHandler(this.cbBorderVisible_CheckedChanged);
       // 
-      // lblTotal
-      // 
-      this.lblTotal.AutoSize = true;
-      this.lblTotal.Location = new System.Drawing.Point(18, 98);
-      this.lblTotal.Name = "lblTotal";
-      this.lblTotal.Size = new System.Drawing.Size(37, 13);
-      this.lblTotal.TabIndex = 61;
-      this.lblTotal.Text = "Total :";
-      // 
-      // lblFrameInterval
-      // 
-      this.lblFrameInterval.AutoSize = true;
-      this.lblFrameInterval.Location = new System.Drawing.Point(127, 98);
-      this.lblFrameInterval.Name = "lblFrameInterval";
-      this.lblFrameInterval.Size = new System.Drawing.Size(79, 13);
-      this.lblFrameInterval.TabIndex = 62;
-      this.lblFrameInterval.Text = "Frame interval :";
-      // 
       // FormConfigureKinogram
       // 
       this.AcceptButton = this.btnOK;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.CancelButton = this.btnCancel;
-      this.ClientSize = new System.Drawing.Size(856, 506);
-      this.Controls.Add(this.pnlViewport);
+      this.ClientSize = new System.Drawing.Size(325, 420);
       this.Controls.Add(this.grpConfig);
       this.Controls.Add(this.grpAppearance);
       this.Controls.Add(this.btnOK);
@@ -332,8 +320,6 @@ namespace Kinovea.ScreenManager
         }
 
         #endregion
-
-        private System.Windows.Forms.Panel pnlViewport;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label lblCropSize;
