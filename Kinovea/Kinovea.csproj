@@ -11,7 +11,7 @@
     <RootNamespace>Kinovea.Root</RootNamespace>
     <AssemblyName>Kinovea</AssemblyName>
     <StartupObject>Kinovea.Root.Program</StartupObject>
-    <ApplicationIcon>kinoveabundle.ico</ApplicationIcon>
+    <ApplicationIcon>kinovea-256x256.ico</ApplicationIcon>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <ManifestCertificateThumbprint>4199BE45A0B72AC0126562F0FD2A5A5B02D397DA</ManifestCertificateThumbprint>
     <ManifestKeyFile>Root_TemporaryKey.pfx</ManifestKeyFile>
@@ -351,10 +351,6 @@
       <SubType>Designer</SubType>
       <DependentUpon>SplashScreen.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UserInterface\KinoveaMainWindow.en.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>KinoveaMainWindow.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\KinoveaMainWindow.resx">
       <SubType>Designer</SubType>
       <DependentUpon>KinoveaMainWindow.cs</DependentUpon>
@@ -539,9 +535,9 @@
     </PublishFile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="kinoveabundle.ico" />
+    <Content Include="kinovea-256x256.ico" />
+    <None Include="Resources\kinovea-256x256.ico" />
     <None Include="Resources\translators.txt" />
-    <None Include="Resources\splash.png" />
     <None Include="Resources\file_txt.png" />
     <None Include="Resources\disk.png" />
     <None Include="Resources\common_controls.png" />

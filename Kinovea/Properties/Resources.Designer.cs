@@ -353,16 +353,6 @@ namespace Kinovea.Root.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap splash {
-            get {
-                object obj = ResourceManager.GetObject("splash", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap style {
             get {
                 object obj = ResourceManager.GetObject("style", resourceCulture);
@@ -401,7 +391,36 @@ namespace Kinovea.Root.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Peter Strikwerda, Bart Kerkvliet..
+        ///   Looks up a localized string similar to Peter Strikwerda
+        ///Bart Kerkvliet
+        ///Stephan Frost
+        ///Dominique Saussereau
+        ///Jonathan Boder
+        ///Stephan Peuckert
+        ///Fernando Jorge
+        ///Rafael Fernandes
+        ///Rafael Gonzalez
+        ///Lionel Sosa Estrada
+        ///Andoni Morales Alastruey
+        ///Xavier Padullés
+        ///Giorgio Biancuzzi
+        ///Bogdan Paul Frăţilă
+        ///Kuba Zamojski
+        ///Alexander Holthoer
+        ///Espen Kolderup
+        ///Nicko Deng
+        ///Eray Kıranoğlu
+        ///Nikos Sklavounos
+        ///Mindaugas Slavikas
+        ///Thomas Buska
+        ///Heinrich Winther
+        ///Jiří Rosický
+        ///RakJoon Sung
+        ///Andrey Pomerantsev
+        ///Milan Djupovac
+        ///Ivan Jovanovic
+        ///Mila Mladenovic
+        ///Ryo Ya [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string translators {
             get {
