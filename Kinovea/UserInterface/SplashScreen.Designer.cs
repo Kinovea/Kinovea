@@ -38,20 +38,20 @@ namespace Kinovea.Root
       // 
       this.lblVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.lblVersion.AutoSize = true;
-      this.lblVersion.BackColor = System.Drawing.Color.Black;
+      this.lblVersion.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(54)))), ((int)(((byte)(54)))), ((int)(((byte)(54)))));
       this.lblVersion.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.lblVersion.Font = new System.Drawing.Font("Consolas", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblVersion.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.lblVersion.ForeColor = System.Drawing.Color.White;
-      this.lblVersion.Location = new System.Drawing.Point(428, 302);
+      this.lblVersion.Location = new System.Drawing.Point(422, 299);
       this.lblVersion.Name = "lblVersion";
-      this.lblVersion.Size = new System.Drawing.Size(70, 24);
+      this.lblVersion.Size = new System.Drawing.Size(60, 22);
       this.lblVersion.TabIndex = 1;
       this.lblVersion.Text = "0.9.5";
       // 
       // pictureBox1
       // 
       this.pictureBox1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pictureBox1.BackgroundImage")));
-      this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+      this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
       this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
       this.pictureBox1.Enabled = false;

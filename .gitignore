@@ -407,3 +407,4 @@ Installer/build-*.txt
 /Kinovea-*.zip
 /Tools/UnusedResources/UnusedResources/Results*
 /Installer/sign/*
+/Kinovea/sign.bat

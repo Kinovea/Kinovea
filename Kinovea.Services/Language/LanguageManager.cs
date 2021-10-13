@@ -93,7 +93,7 @@ namespace Kinovea.Services
                 //languages.Add("ko", "한국어"); // Root < 75%
                 //languages.Add("id", "Bahasa Indonesia"); // Untranslated menu & player
                 //languages.Add("it", "Italiano"); // Untranslated menu & player
-                //languages.Add("lt", "Lietuvių"); // Root < 75%
+                languages.Add("lt", "Lietuvių");
                 languages.Add("nl", "Nederlands");
                 //languages.Add("ja", "日本語"); // Root < 75%
                 //languages.Add("no", "Norsk bokmål"); // Untranslated menu & player

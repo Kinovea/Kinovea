@@ -1,5 +1,5 @@
 
-Kinovea 0.9.5 - September 2021.
+Kinovea 0.9.5 - October 2021.
 
 Kinovea is a free and open source video annotation tool designed for motion analysis. 
 It features utilities to capture, slow down, compare, annotate and measure motion in videos.
@@ -25,6 +25,7 @@ Please see license.txt for details. In a nutshell:
 Project:
 --------
 - Website: https://www.kinovea.org
+- Reference manual: https://www.kinovea.org/help.html
 - Forum: https://www.kinovea.org/en/forum
 - Bug tracker: https://github.com/Kinovea/Kinovea/issues
 - Translation: https://hosted.weblate.org/engage/kinovea/
@@ -37,7 +38,7 @@ Project:
 Changelog:
 ----------
 
-0.9.5 - September 2021.
+0.9.5 - October 2021.
     Improved - Export the start and end time of chronometers in spreadsheet export.
     Fixed - Memory sharing for capture screen wasn't working correctly.
     Fixed - Crash when opening trajectory configuration dialog.

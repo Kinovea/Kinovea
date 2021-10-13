@@ -59,7 +59,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="FormIconPicker_Title" xml:space="preserve">
-    <value>Ikon</value>
+    <value>Ikon-ikon</value>
   </data>
   <data name="Generic_Apply" xml:space="preserve">
     <value>Terapkan</value>
@@ -632,7 +632,7 @@
     <value>Simpan</value>
   </data>
   <data name="Generic_Quit" xml:space="preserve">
-    <value>Berhenti</value>
+    <value>Keluar</value>
   </data>
   <data name="Infobar_Player_StopWatcher" xml:space="preserve">
     <value>Berhenti mengamati folder : {0}</value>
@@ -681,5 +681,230 @@
   </data>
   <data name="Infobar_Player_StartWatcher" xml:space="preserve">
     <value>Mulai mengamati folder: {0}</value>
+  </data>
+  <data name="LoadMovie_FileNotOpened" xml:space="preserve">
+    <value>Gagal membuka file: file tidak ditemukan atau kosong.</value>
+  </data>
+  <data name="LoadMovie_Error" xml:space="preserve">
+    <value>Kinovea – Kesalahan memuat.</value>
+  </data>
+  <data name="LoadMovie_CodecNotSupported" xml:space="preserve">
+    <value>Gagal membuka file: jenis file tidak didukung.</value>
+  </data>
+  <data name="LoadMovie_CodecNotOpened" xml:space="preserve">
+    <value>Gagal membuka file: masalah saat menginisialisasi dekoder.</value>
+  </data>
+  <data name="LoadMovie_CodecNotFound" xml:space="preserve">
+    <value>Gagal: tidak dapat membuka file, stream video tidak didukung.</value>
+  </data>
+  <data name="LengthUnit_Percentage" xml:space="preserve">
+    <value>Persentase</value>
+  </data>
+  <data name="LengthUnit_Yards" xml:space="preserve">
+    <value>Yard</value>
+  </data>
+  <data name="LengthUnit_Feet" xml:space="preserve">
+    <value>Kaki</value>
+  </data>
+  <data name="LengthUnit_Inches" xml:space="preserve">
+    <value>Inci</value>
+  </data>
+  <data name="LengthUnit_Meters" xml:space="preserve">
+    <value>Meter</value>
+  </data>
+  <data name="LengthUnit_Centimeters" xml:space="preserve">
+    <value>Sentimeter</value>
+  </data>
+  <data name="LengthUnit_Millimeters" xml:space="preserve">
+    <value>Milimeter</value>
+  </data>
+  <data name="lblWorkingZone_Text" xml:space="preserve">
+    <value>Zona Kerja:</value>
+  </data>
+  <data name="lblTimeCode_Text" xml:space="preserve">
+    <value>Posisi</value>
+  </data>
+  <data name="lblSpeedTuner_Text" xml:space="preserve">
+    <value>Kecepatan : {0}</value>
+  </data>
+  <data name="lblSelStartSelection_Text" xml:space="preserve">
+    <value>Mulai</value>
+  </data>
+  <data name="lblSelDuration_Text" xml:space="preserve">
+    <value>Durasi</value>
+  </data>
+  <data name="lblInfo_Text" xml:space="preserve">
+    <value>Kontrol bersama :</value>
+  </data>
+  <data name="lblDelay_Text" xml:space="preserve">
+    <value>Penundaan (det):</value>
+  </data>
+  <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve">
+    <value>Simpan perubahan</value>
+  </data>
+  <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve">
+    <value>Anotasi telah diubah.\nApakah Anda ingin menyimpannya?</value>
+  </data>
+  <data name="FileFilter_All" xml:space="preserve">
+    <value>Semua berkas</value>
+  </data>
+  <data name="FileFilter_AllSupported" xml:space="preserve">
+    <value>Semua format yang didukung</value>
+  </data>
+  <data name="FileProperty_HasKva" xml:space="preserve">
+    <value>Berkas Kva</value>
+  </data>
+  <data name="FileProperty_CreationTime" xml:space="preserve">
+    <value>Waktu pembuatan</value>
+  </data>
+  <data name="FileProperty_Duration" xml:space="preserve">
+    <value>Durasi</value>
+  </data>
+  <data name="FileProperty_Framerate" xml:space="preserve">
+    <value>Kecepatan bingkai</value>
+  </data>
+  <data name="FileProperty_Size" xml:space="preserve">
+    <value>Ukuran</value>
+  </data>
+  <data name="Generic_PlayPause" xml:space="preserve">
+    <value>Mainkan | Jeda</value>
+  </data>
+  <data name="Generic_Paste" xml:space="preserve">
+    <value>Tempel</value>
+  </data>
+  <data name="Generic_Copy" xml:space="preserve">
+    <value>Salin</value>
+  </data>
+  <data name="Generic_Cut" xml:space="preserve">
+    <value>Potong</value>
+  </data>
+  <data name="Generic_Restore" xml:space="preserve">
+    <value>Kembalikan ke semula</value>
+  </data>
+  <data name="Generic_Import" xml:space="preserve">
+    <value>Impor</value>
+  </data>
+  <data name="Generic_File" xml:space="preserve">
+    <value>Berkas</value>
+  </data>
+  <data name="Generic_SaveImage" xml:space="preserve">
+    <value>Simpan gambar</value>
+  </data>
+  <data name="Generic_Video" xml:space="preserve">
+    <value>Video</value>
+  </data>
+  <data name="Generic_Image" xml:space="preserve">
+    <value>Gambar</value>
+  </data>
+  <data name="Generic_TrackShapePicker" xml:space="preserve">
+    <value>Bentuk garis:</value>
+  </data>
+  <data name="Generic_ExportVideo" xml:space="preserve">
+    <value>Ekspor video…</value>
+  </data>
+  <data name="Generic_SaveKVAAs" xml:space="preserve">
+    <value>Simpan anotasi sebagai…</value>
+  </data>
+  <data name="Generic_SaveKVA" xml:space="preserve">
+    <value>Simpan anotasi</value>
+  </data>
+  <data name="Generic_PenSizePicker" xml:space="preserve">
+    <value>Ukuran:</value>
+  </data>
+  <data name="Generic_Options" xml:space="preserve">
+    <value>Opsi</value>
+  </data>
+  <data name="Generic_Visibility" xml:space="preserve">
+    <value>Visibilitas</value>
+  </data>
+  <data name="Generic_Opacity" xml:space="preserve">
+    <value>Kegelapan</value>
+  </data>
+  <data name="Generic_LineSizePicker" xml:space="preserve">
+    <value>Lebar:</value>
+  </data>
+  <data name="Generic_FontSizePicker" xml:space="preserve">
+    <value>Ukuran Huruf:</value>
+  </data>
+  <data name="Generic_GridDivisionsPicker" xml:space="preserve">
+    <value>Pembagian:</value>
+  </data>
+  <data name="Generic_Calibration" xml:space="preserve">
+    <value>Kalibrasi</value>
+  </data>
+  <data name="Generic_ConfigurationElipsis" xml:space="preserve">
+    <value>Konfigurasi...</value>
+  </data>
+  <data name="Generic_Configuration" xml:space="preserve">
+    <value>Konfigurasi</value>
+  </data>
+  <data name="Generic_ColorPicker" xml:space="preserve">
+    <value>Warna:</value>
+  </data>
+  <data name="Generic_Close" xml:space="preserve">
+    <value>Tutup</value>
+  </data>
+  <data name="Generic_Clock" xml:space="preserve">
+    <value>Jam:</value>
+  </data>
+  <data name="Generic_Perspective" xml:space="preserve">
+    <value>Perspektif:</value>
+  </data>
+  <data name="Generic_Curved" xml:space="preserve">
+    <value>Kurva:</value>
+  </data>
+  <data name="Generic_ArrowPicker" xml:space="preserve">
+    <value>Panah:</value>
+  </data>
+  <data name="Generic_Appearance" xml:space="preserve">
+    <value>Penampilan</value>
+  </data>
+  <data name="FormProgressBar_Title" xml:space="preserve">
+    <value>Kemajuan</value>
+  </data>
+  <data name="FormFramesExport_Title" xml:space="preserve">
+    <value>Mengekspor gambar...</value>
+  </data>
+  <data name="FormFramesExport_Infos" xml:space="preserve">
+    <value>Gambar yang diekspor:</value>
+  </data>
+  <data name="FormFileSave_Infos" xml:space="preserve">
+    <value>Kemajuan:</value>
+  </data>
+  <data name="FormCameraAlias_Icon" xml:space="preserve">
+    <value>Ikon:</value>
+  </data>
+  <data name="FormCameraAlias_Alias" xml:space="preserve">
+    <value>Nama lain:</value>
+  </data>
+  <data name="FormCameraAlias_Title" xml:space="preserve">
+    <value>Ganti nama kamera</value>
+  </data>
+  <data name="Error_SaveMovie_LowLevelError" xml:space="preserve">
+    <value>Tidak dapat menyimpan video.\nCoba lagi dengan format lain.</value>
+  </data>
+  <data name="Error_SaveMovie_Title" xml:space="preserve">
+    <value>Kinovea - Tidak dapat menyimpan video. </value>
+  </data>
+  <data name="Error_SaveMovie_FileError" xml:space="preserve">
+    <value>Tidak dapat menulis file.\nPastikan Anda memiliki hak untuk menulis di folder target dan file tersebut tidak sedang digunakan.</value>
+  </data>
+  <data name="Error_SavePausedVideo" xml:space="preserve">
+    <value>Kinovea – Tidak dapat membuat video yang dijeda</value>
+  </data>
+  <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve">
+    <value>Slideshow adalah urutan gambar utama yang disimpan dalam format video.\n Tambahkan beberapa gambar utama sebelum membuat slideshow.</value>
+  </data>
+  <data name="Error_SaveDiaporama" xml:space="preserve">
+    <value>Kinovea - Tidak dapat membuat tayangan slide.</value>
+  </data>
+  <data name="Error_Capture_DirectoryNotCreated_Text" xml:space="preserve">
+    <value>Direktori pengambilan tidak dapat dibuat. \nPeriksa apakah menunjuk ke lokasi penyimpanan yang valid.</value>
+  </data>
+  <data name="Error_Capture_DirectoryNotCreated_Title" xml:space="preserve">
+    <value>Direktori tidak dibuat</value>
+  </data>
+  <data name="Error_Capture_InvalidFile_Text" xml:space="preserve">
+    <value>Nama berkas mengandung karakter yang tidak valid. \n Nama berkas tidak boleh mengandung karakter berikut: \n \ / : * ? " &lt; &gt;</value>
   </data>
 </root>
