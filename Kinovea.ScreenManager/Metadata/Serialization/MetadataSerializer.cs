@@ -496,16 +496,13 @@ namespace Kinovea.ScreenManager
         }
         private void WriteKeyframes(XmlWriter w)
         {
-            int enabled = metadata.Keyframes.Count(kf => !kf.Disabled);
-            if (enabled == 0)
+            if (metadata.Keyframes.Count() == 0)
                 return;
             
             w.WriteStartElement("Keyframes");
 
-            foreach (Keyframe kf in metadata.Keyframes.Where(kf => !kf.Disabled))
-            {
+            foreach (Keyframe kf in metadata.Keyframes)
                 KeyframeSerializer.Serialize(w, kf);
-            }
 
             w.WriteEndElement();
         }
