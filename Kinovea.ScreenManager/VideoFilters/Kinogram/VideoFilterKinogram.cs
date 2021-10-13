@@ -385,19 +385,27 @@ namespace Kinovea.ScreenManager
             if (newCount == oldCount)
                 return;
 
-            // Interpolate the new positions to match the existing motion of the tiles within the scene.
             List<PointF> newCrops = new List<PointF>();
-            for (int i = 0; i < newCount; i++)
+            if (oldCount < 2)
             {
-                // Find the two closest old values and where we sit between them.
-                float t = ((float)i / newCount) * oldCount;
-                int a = (int)Math.Floor(t);
-                int b = Math.Min(a + 1, oldCount - 1);
-                float alpha = t - a;
-                float beta = 1.0f - alpha;
-                float x = parameters.CropPositions[a].X * beta + parameters.CropPositions[b].X * alpha;
-                float y = parameters.CropPositions[a].Y * beta + parameters.CropPositions[b].Y * alpha;
-                newCrops.Add(new PointF(x, y));
+                for (int i = 0; i < newCount; i++)
+                    newCrops.Add(PointF.Empty);
+            }
+            else
+            {
+                // Interpolate the new positions to match the existing motion of the tiles within the scene.
+                for (int i = 0; i < newCount; i++)
+                {
+                    // Find the two closest old values and where we sit between them.
+                    float t = ((float)i / newCount) * oldCount;
+                    int a = (int)Math.Floor(t);
+                    int b = Math.Min(a + 1, oldCount - 1);
+                    float alpha = t - a;
+                    float beta = 1.0f - alpha;
+                    float x = parameters.CropPositions[a].X * beta + parameters.CropPositions[b].X * alpha;
+                    float y = parameters.CropPositions[a].Y * beta + parameters.CropPositions[b].Y * alpha;
+                    newCrops.Add(new PointF(x, y));
+                }
             }
 
             parameters.CropPositions = newCrops;
