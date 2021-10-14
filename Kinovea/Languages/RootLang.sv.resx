@@ -196,4 +196,58 @@
   <data name="dlgAbout_Translation" xml:space="preserve">
     <value>Översättning</value>
   </data>
+  <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
+    <value>Procent</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitTime" xml:space="preserve">
+    <value>Tid:</value>
+  </data>
+  <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
+    <value>Höghastighetskameror</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
+    <value>Pixlar</value>
+  </data>
+  <data name="mnuTimeFormat" xml:space="preserve">
+    <value>Tid</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve">
+    <value>Spela in okomprimerad video</value>
+  </data>
+  <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
+    <value>Makro</value>
+  </data>
+  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
+    <value>Kontext</value>
+  </data>
+  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
+    <value>Kontextvariabler</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
+    <value>Datum och tid (YYYYMMDD-HHMMSS)</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
+    <value>Tid (HHMMSS)</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
+    <value>Datum (YYYYMMDD)</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
+    <value>Kategorier</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblCommands" xml:space="preserve">
+    <value>Kommandon</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadians" xml:space="preserve">
+    <value>Radianer ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegrees" xml:space="preserve">
+    <value>Grader ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngle" xml:space="preserve">
+    <value>Vinkel:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsSpeed" xml:space="preserve">
+    <value>Hastighet:</value>
+  </data>
 </root>
