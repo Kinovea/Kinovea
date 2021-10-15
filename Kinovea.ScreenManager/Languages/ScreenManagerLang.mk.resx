@@ -214,7 +214,7 @@
   </data>
   <data name="Generic_PenSizePicker" xml:space="preserve"><value>Големина:</value>
   </data>
-  <data name="Generic_Save" xml:space="preserve"><value>Зачувај Видео</value>
+  <data name="Generic_Save" xml:space="preserve"><value>Зачувај</value>
   </data>
   <data name="Generic_TrackShapePicker" xml:space="preserve"><value>Форма на линијата:</value>
   </data>
@@ -465,5 +465,44 @@
   <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Обратно...</value>
   </data>
   <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Автоматско прилагодување на контрастот...</value>
+  </data>
+  <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
+    <value>Модифицирај го цртежот</value>
+  </data>
+  <data name="DataAnalysis_LinearKinematics" xml:space="preserve">
+    <value>Линеарна кинематика</value>
+  </data>
+  <data name="DataAnalysis_AngleAngleDiagrams" xml:space="preserve">
+    <value>Дијаграм на аголна синкинезија</value>
+  </data>
+  <data name="DataAnalysis_XaxisLabel" xml:space="preserve">
+    <value>X оска:</value>
+  </data>
+  <data name="DataAnalysis" xml:space="preserve">
+    <value>Анализа на податоци</value>
+  </data>
+  <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
+    <value>Дијаграм на расејување</value>
+  </data>
+  <data name="DataAnalysis_AngularKinematics" xml:space="preserve">
+    <value>Аголна кинематика</value>
+  </data>
+  <data name="DataAnalysis_PagePlot" xml:space="preserve">
+    <value>Дел</value>
+  </data>
+  <data name="DataAnalysis_Labels" xml:space="preserve">
+    <value>Ознаки</value>
+  </data>
+  <data name="DataAnalysis_Title" xml:space="preserve">
+    <value>Наслов:</value>
+  </data>
+  <data name="DataAnalysis_XaxisDefaultPoints" xml:space="preserve">
+    <value>X оска</value>
+  </data>
+  <data name="DataAnalysis_YaxisLabel" xml:space="preserve">
+    <value>Y оска:</value>
+  </data>
+  <data name="Generic_Quit" xml:space="preserve">
+    <value>Излез</value>
   </data>
 </root>
