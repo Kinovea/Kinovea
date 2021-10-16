@@ -505,4 +505,28 @@
   <data name="Generic_Quit" xml:space="preserve">
     <value>Излез</value>
   </data>
+  <data name="DataAnalysis_YaxisDefaultPoints" xml:space="preserve">
+    <value>Оска Y</value>
+  </data>
+  <data name="DataAnalysis_TimeAxisMilliseconds" xml:space="preserve">
+    <value>Време (мс)</value>
+  </data>
+  <data name="DataAnalysis_CalibrationPlane" xml:space="preserve">
+    <value>Калибрација на рамнина</value>
+  </data>
+  <data name="DataAnalysis_ExportGraph" xml:space="preserve">
+    <value>Експорт на графика</value>
+  </data>
+  <data name="DataAnalysis_SaveToFile" xml:space="preserve">
+    <value>Зачувај во фајл</value>
+  </data>
+  <data name="DataAnalysis_ExportData" xml:space="preserve">
+    <value>Експортирај ги податоците</value>
+  </data>
+  <data name="DataAnalysis_DataSource" xml:space="preserve">
+    <value>Извор на податоци</value>
+  </data>
+  <data name="DataAnalysis_Pixels" xml:space="preserve">
+    <value>Пиксели</value>
+  </data>
 </root>
