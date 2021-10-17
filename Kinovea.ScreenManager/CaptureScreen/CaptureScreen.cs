@@ -733,6 +733,8 @@ namespace Kinovea.ScreenManager
             SanityCheckDisplayRectangle(cameraSummary, referenceSize);
 
             metadata.ImageSize = referenceSize;
+            metadata.ImageAspect = Convert(cameraSummary.AspectRatio);
+            metadata.ImageRotation = cameraSummary.Rotation;
             metadata.Mirrored = cameraSummary.Mirror;
             metadata.PostSetupCapture();
 
@@ -1067,6 +1069,8 @@ namespace Kinovea.ScreenManager
 
         private void ChangeAspectRatio(ImageAspectRatio aspectRatio)
         {
+            metadata.ImageAspect = aspectRatio;
+
             CaptureAspectRatio ratio = Convert(aspectRatio);
             if(ratio == cameraSummary.AspectRatio)
                 return;
@@ -1081,6 +1085,8 @@ namespace Kinovea.ScreenManager
 
         private void ChangeRotation(ImageRotation rotation)
         {
+            metadata.ImageRotation = rotation;
+
             if (rotation == cameraSummary.Rotation)
                 return;
 
@@ -1764,7 +1770,8 @@ namespace Kinovea.ScreenManager
                 metadata.TimeOrigin = delay * metadata.AverageTimeStampsPerFrame;
             
             // Only save the kva if there is interesting information that can't be found from the video file alone.
-            if (setCaptureFramerate || setUserInterval || metadata.TimeOrigin != 0 || metadata.Count > 0 || metadata.Mirrored)
+            if (setCaptureFramerate || setUserInterval || metadata.TimeOrigin != 0 || metadata.Count > 0 || 
+                metadata.ImageAspect != ImageAspectRatio.Auto || metadata.ImageRotation != ImageRotation.Rotate0 || metadata.Mirrored)
             {
                 MetadataSerializer serializer = new MetadataSerializer();
                 string kvaFilename = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path)) + ".kva";
