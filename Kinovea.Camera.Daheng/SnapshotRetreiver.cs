@@ -271,69 +271,46 @@ namespace Kinovea.Camera.Daheng
 
         private unsafe void FillRGB24(IntPtr buffer)
         {
+            Kinovea.Services.ImageFormat format = DahengHelper.ConvertImageFormat(DahengStreamFormat.RGB);
+            int incomingBufferSize = ImageFormatHelper.ComputeBufferSize(width, height, format);
+            byte[] incomingBuffer = new byte[incomingBufferSize];
+
+            fixed (byte* p = incomingBuffer)
+            {
+                IntPtr ptrDst = (IntPtr)p;
+                NativeMethods.memcpy(ptrDst.ToPointer(), buffer.ToPointer(), width * 3 * height);
+            }
+
             image = new Bitmap(width, height, PixelFormat.Format24bppRgb);
             Rectangle rect = new Rectangle(0, 0, width, height);
-            BitmapData bmpData = null;
 
-            try
-            {
-                bmpData = image.LockBits(rect, ImageLockMode.WriteOnly, image.PixelFormat);
-                IntPtr[] ptrBmp = new IntPtr[] { bmpData.Scan0 };
-                int stride = rect.Width * 3;
-                NativeMethods.memcpy(bmpData.Scan0.ToPointer(), buffer.ToPointer(), stride * height);
+            bool topDown = DahengHelper.IsTopDown(DahengStreamFormat.RGB);
+            BitmapHelper.FillFromRGB24(image, rect, topDown, incomingBuffer);
 
-                int bufferSize = ImageFormatHelper.ComputeBufferSize(width, height, Kinovea.Services.ImageFormat.RGB24);
-                imageDescriptor = new ImageDescriptor(Kinovea.Services.ImageFormat.RGB24, image.Width, image.Height, true, bufferSize);
-            }
-            catch (Exception e)
-            {
-                log.ErrorFormat("Error while copying bitmaps. {0}", e.Message);
-            }
-            finally
-            {
-                if (bmpData != null)
-                    image.UnlockBits(bmpData);
-            }
+            int bufferSize = ImageFormatHelper.ComputeBufferSize(width, height, Kinovea.Services.ImageFormat.RGB24);
+            imageDescriptor = new ImageDescriptor(Kinovea.Services.ImageFormat.RGB24, image.Width, image.Height, topDown, bufferSize);
         }
 
         private unsafe void FillY800(IntPtr buffer)
         {
+            Kinovea.Services.ImageFormat format = DahengHelper.ConvertImageFormat(DahengStreamFormat.Mono);
+            int incomingBufferSize = ImageFormatHelper.ComputeBufferSize(width, height, format);
+            byte[] incomingBuffer = new byte[incomingBufferSize];
+
+            fixed (byte* p = incomingBuffer)
+            {
+                IntPtr ptrDst = (IntPtr)p;
+                NativeMethods.memcpy(ptrDst.ToPointer(), buffer.ToPointer(), width * height);
+            }
+
             image = new Bitmap(width, height, PixelFormat.Format24bppRgb);
             Rectangle rect = new Rectangle(0, 0, width, height);
-            BitmapData bmpData = null;
 
-            try
-            {
-                bmpData = image.LockBits(rect, ImageLockMode.WriteOnly, image.PixelFormat);
-                int dstOffset = bmpData.Stride - (rect.Width * 3);
+            bool topDown = DahengHelper.IsTopDown(DahengStreamFormat.Mono);
+            BitmapHelper.FillFromY800(image, rect, topDown, incomingBuffer);
 
-                byte* src = (byte*)buffer.ToPointer();
-                byte* dst = (byte*)bmpData.Scan0.ToPointer();
-
-                for (int i = 0; i < rect.Height; i++)
-                {
-                    for (int j = 0; j < rect.Width; j++)
-                    {
-                        dst[0] = dst[1] = dst[2] = *src;
-                        src++;
-                        dst += 3;
-                    }
-
-                    dst += dstOffset;
-                }
-                
-                int bufferSize = ImageFormatHelper.ComputeBufferSize(width, height, Kinovea.Services.ImageFormat.RGB24);
-                imageDescriptor = new ImageDescriptor(Kinovea.Services.ImageFormat.RGB24, image.Width, image.Height, true, bufferSize);
-            }
-            catch (Exception e)
-            {
-                log.ErrorFormat("Error while copying bitmaps. {0}", e.Message);
-            }
-            finally
-            {
-                if (bmpData != null)
-                    image.UnlockBits(bmpData);
-            }
+            int bufferSize = ImageFormatHelper.ComputeBufferSize(width, height, Kinovea.Services.ImageFormat.RGB24);
+            imageDescriptor = new ImageDescriptor(Kinovea.Services.ImageFormat.RGB24, image.Width, image.Height, topDown, bufferSize);
         }
 
         #endregion

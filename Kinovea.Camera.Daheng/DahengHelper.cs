@@ -129,6 +129,21 @@ namespace Kinovea.Camera.Daheng
             }
         }
 
+        public static bool IsTopDown(DahengStreamFormat format)
+        {
+            switch (format)
+            {
+                case DahengStreamFormat.RGB:
+                    return false;
+                case DahengStreamFormat.Mono:
+                case DahengStreamFormat.Raw:
+                    return true;
+                case DahengStreamFormat.None:
+                default:
+                    return false;
+            }
+        }
+
         /// <summary>
         /// Make sure the feature is triggered at least once, 
         /// either it's currently in continuous mode or we trigger it manually.
