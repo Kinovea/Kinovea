@@ -161,26 +161,45 @@ namespace Kinovea.Services
         public unsafe static void FillFromRGB32(Bitmap bitmap, Rectangle rect, bool topDown, byte[] buffer)
         {
             BitmapData bmpData = bitmap.LockBits(rect, ImageLockMode.WriteOnly, bitmap.PixelFormat);
-
-            int dstOffset = bmpData.Stride - (rect.Width * 3);
+            int dstStride = bmpData.Stride;
+            int dstOffset = dstStride - (rect.Width * 3);
 
             fixed (byte* pBuffer = buffer)
             {
                 byte* src = pBuffer;
-                byte* dst = (byte*)bmpData.Scan0.ToPointer();
 
-                for (int i = 0; i < rect.Height; i++)
+                if (topDown)
                 {
-                    for (int j = 0; j < rect.Width; j++)
+                    byte* dst = (byte*)bmpData.Scan0.ToPointer();
+                    for (int i = 0; i < rect.Height; i++)
                     {
-                        dst[0] = src[0];
-                        dst[1] = src[1];
-                        dst[2] = src[2];
-                        src += 4;
-                        dst += 3;
-                    }
+                        for (int j = 0; j < rect.Width; j++)
+                        {
+                            dst[0] = src[0];
+                            dst[1] = src[1];
+                            dst[2] = src[2];
+                            src += 4;
+                            dst += 3;
+                        }
 
-                    dst += dstOffset;
+                        dst += dstOffset;
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < rect.Height; i++)
+                    {
+                        byte* dst = (byte*)bmpData.Scan0.ToPointer() + (dstStride * (rect.Height - 1 - i));
+
+                        for (int j = 0; j < rect.Width; j++)
+                        {
+                            dst[0] = src[0];
+                            dst[1] = src[1];
+                            dst[2] = src[2];
+                            src += 4;
+                            dst += 3;
+                        }
+                    }
                 }
             }
 
@@ -194,24 +213,43 @@ namespace Kinovea.Services
         public unsafe static void FillFromY800(Bitmap bitmap, Rectangle rect, bool topDown, byte[] buffer)
         {
             BitmapData bmpData = bitmap.LockBits(rect, ImageLockMode.WriteOnly, bitmap.PixelFormat);
-
+            int dstStride = bmpData.Stride;
             int dstOffset = bmpData.Stride - (rect.Width * 3);
             
             fixed (byte* pBuffer = buffer)
             {
                 byte* src = pBuffer;
-                byte* dst = (byte*)bmpData.Scan0.ToPointer();
 
-                for (int i = 0; i < rect.Height; i++)
+                if (topDown)
                 {
-                    for (int j = 0; j < rect.Width; j++)
-                    {
-                        dst[0] = dst[1] = dst[2] = *src;
-                        src++;
-                        dst += 3;
-                    }
+                    byte* dst = (byte*)bmpData.Scan0.ToPointer();
 
-                    dst += dstOffset;
+                    for (int i = 0; i < rect.Height; i++)
+                    {
+                        for (int j = 0; j < rect.Width; j++)
+                        {
+                            dst[0] = dst[1] = dst[2] = *src;
+                            src++;
+                            dst += 3;
+                        }
+
+                        dst += dstOffset;
+                    }
+                }
+                else
+                {
+                    byte* dst = null;
+                    for (int i = 0; i < rect.Height; i++)
+                    {
+                        dst = (byte*)bmpData.Scan0.ToPointer() + (dstStride * (rect.Height - 1 - i));
+
+                        for (int j = 0; j < rect.Width; j++)
+                        {
+                            dst[0] = dst[1] = dst[2] = *src;
+                            src++;
+                            dst += 3;
+                        }
+                    }
                 }
             }
 
