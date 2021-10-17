@@ -89,7 +89,7 @@ namespace Kinovea.Camera.Daheng
             incomingBuffer = new byte[incomingBufferSize];
 
             int outgoingBufferSize = ImageFormatHelper.ComputeBufferSize(width, height, format);
-            bool topDown = false;
+            bool topDown = DahengHelper.IsTopDown(currentStreamFormat);
 
             return new ImageDescriptor(format, width, height, topDown, outgoingBufferSize);
         }
