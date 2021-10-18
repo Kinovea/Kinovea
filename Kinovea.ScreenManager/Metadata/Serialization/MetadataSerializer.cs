@@ -28,6 +28,7 @@ namespace Kinovea.ScreenManager
         private Size inputImageSize;
         private long inputAverageTimeStampsPerFrame;
         private long inputFirstTimeStamp;
+        private long inputTimeOrigin;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public void Load(Metadata metadata, string source, bool isFile)
@@ -306,7 +307,7 @@ namespace Kinovea.ScreenManager
                             metadata.SelectionEnd = selEnd;
                         break;
                     case "TimeOrigin":
-                        metadata.TimeOrigin = RemapTimestamp(r.ReadElementContentAsLong());
+                        inputTimeOrigin = r.ReadElementContentAsLong();
                         break;
                     case "Calibration":
                         metadata.CalibrationHelper.ReadXml(r, scaling, inputImageSize);
@@ -425,10 +426,10 @@ namespace Kinovea.ScreenManager
                 return inputTimestamp;
 
             // Different contexts or different files.
-            // We compute the frame relatively to the first frame of video and convert it back to timestamps.
-            double frame = (double)(inputTimestamp - inputFirstTimeStamp) / inputAverageTimeStampsPerFrame;
+            // Compute the number of frames relatively to the time origin and convert back to timestamps.
+            double frame = (double)(inputTimestamp - inputTimeOrigin) / inputAverageTimeStampsPerFrame;
             double outputAverageTimestampsPerFrame = metadata.AverageTimeStampsPerSecond / (1000.0 / metadata.UserInterval);
-            long outputTimestamp = (long)Math.Round(frame * outputAverageTimestampsPerFrame) + metadata.FirstTimeStamp;
+            long outputTimestamp = (long)Math.Round(frame * outputAverageTimestampsPerFrame) + metadata.TimeOrigin;
             
             return outputTimestamp;
         }
