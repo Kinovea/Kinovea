@@ -756,14 +756,29 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, ar
     {
         Int64 then = m_swEncoding->ElapsedMilliseconds;
 
-        pin_ptr<uint8_t> pInputBuffer = &managedBuffer[0];
+        int width = _SavingContext->outputSize.Width;
+        int height = _SavingContext->outputSize.Height;
 
+        pin_ptr<uint8_t> pInputBuffer = &managedBuffer[0];
+        
         if (_SavingContext->uncompressed)
         {
             // Special shortcut for uncompressed Y800. 
-            // FIXME: if top-down, memcpy line by line.
             pYUV420Buffer = (uint8_t*)av_malloc(length);
-            memcpy(pYUV420Buffer, pInputBuffer, length);
+            if (topDown)
+            {
+                memcpy(pYUV420Buffer, pInputBuffer, length);
+            }
+            else
+            {
+                for (int i = 0; i < height; i++)
+                {
+                    uint8_t* pDst = pYUV420Buffer + i * width;
+                    uint8_t* pSrc = pInputBuffer + ((height - 1 - i) * width);
+                    memcpy(pDst, pSrc, width);
+                }
+            }
+
             m_encodingDurationAccumulator += (m_swEncoding->ElapsedMilliseconds - then);
 
             WriteBuffer(length, _SavingContext, pYUV420Buffer, true);
@@ -771,8 +786,6 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, ar
             break;
         }
 
-        int width = _SavingContext->outputSize.Width;
-        int height = _SavingContext->outputSize.Height;
         avpicture_fill((AVPicture*)_SavingContext->pInputFrame, pInputBuffer, AV_PIX_FMT_GRAY8, width, height);
         
         // Alter planes and stride to vertically flip image during conversion.
