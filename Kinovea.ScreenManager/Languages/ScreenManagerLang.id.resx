@@ -101,7 +101,7 @@
     <value>Tipe video</value>
   </data>
   <data name="ExtraData_Diameter" xml:space="preserve">
-    <value>Diameter</value>
+    <value>Garis tengah</value>
   </data>
   <data name="ExtraData_Radius" xml:space="preserve">
     <value>Radius</value>
@@ -140,7 +140,7 @@
     <value>Pengukuran:</value>
   </data>
   <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
-    <value>Target</value>
+    <value>Sasaran</value>
   </data>
   <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
     <value>Lingkaran</value>
@@ -404,16 +404,16 @@
     <value>Bidang kalibrasi</value>
   </data>
   <data name="DataAnalysis_YaxisDefaultPoints" xml:space="preserve">
-    <value>Y axis</value>
+    <value>Sumbu Y</value>
   </data>
   <data name="DataAnalysis_YaxisLabel" xml:space="preserve">
-    <value>Y axis :</value>
+    <value>Sumbu Y :</value>
   </data>
   <data name="DataAnalysis_XaxisDefaultPoints" xml:space="preserve">
-    <value>X axis</value>
+    <value>Sumbu X</value>
   </data>
   <data name="DataAnalysis_XaxisLabel" xml:space="preserve">
-    <value>X axis :</value>
+    <value>Sumbu X :</value>
   </data>
   <data name="DataAnalysis_Labels" xml:space="preserve">
     <value>Label</value>
@@ -1221,5 +1221,50 @@
   </data>
   <data name="ToolTip_StopRecording" xml:space="preserve">
     <value>Berhenti merekam video</value>
+  </data>
+  <data name="ToolTip_trkSelection" xml:space="preserve">
+    <value>Tetapkan Zona Kerja</value>
+  </data>
+  <data name="ToolTip_DisarmTrigger" xml:space="preserve">
+    <value>Lucuti pemicu tangkapan. Keadaan saat ini: diperlengkapi.</value>
+  </data>
+  <data name="ToolTip_ArmTrigger" xml:space="preserve">
+    <value>Perlengkapi pemicu tangkapan. Status saat ini: dilucuti.</value>
+  </data>
+  <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve">
+    <value>Ujung-ujungnya saja...</value>
+  </data>
+  <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve">
+    <value>Level otomatis...</value>
+  </data>
+  <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve">
+    <value>Mempertajam...</value>
+  </data>
+  <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve">
+    <value>Gambaran...</value>
+  </data>
+  <data name="VideoFilterReverse_FriendlyName" xml:space="preserve">
+    <value>Membalikkan...</value>
+  </data>
+  <data name="VideoFilterContrast_FriendlyName" xml:space="preserve">
+    <value>Kontras otomatis...</value>
+  </data>
+  <data name="FormCrashRecovery_Title" xml:space="preserve">
+    <value>Pemulihan kerusakan</value>
+  </data>
+  <data name="FormCrashRecovery_Info" xml:space="preserve">
+    <value>Proyek berikut tidak tersimpan dengan benar tetapi dapat dipulihkan:</value>
+  </data>
+  <data name="Infobar_Player_Observing" xml:space="preserve">
+    <value>Mengamati folder: {0}</value>
+  </data>
+  <data name="ToolTip_SideBySideSnapshot" xml:space="preserve">
+    <value>Simpan kedua gambar ke gambar komposit</value>
+  </data>
+  <data name="ToolTip_ShowComments" xml:space="preserve">
+    <value>Tampilkan komentar</value>
+  </data>
+  <data name="ToolTip_SideBySideVideo" xml:space="preserve">
+    <value>Simpan kedua video menjadi video komposit</value>
   </data>
 </root>
