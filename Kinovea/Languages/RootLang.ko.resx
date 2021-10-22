@@ -228,4 +228,16 @@
   <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
     <value>구성된 프레임 속도</value>
   </data>
+  <data name="dlgAbout_BuildingBlocks" xml:space="preserve">
+    <value>빌딩 블록</value>
+  </data>
+  <data name="dlgPreferences_tabKeyboard" xml:space="preserve">
+    <value>키보드</value>
+  </data>
+  <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve">
+    <value>키노비아에 대하여 여러 사례 허용</value>
+  </data>
+  <data name="dlgAbout_Citation" xml:space="preserve">
+    <value>인용</value>
+  </data>
 </root>
