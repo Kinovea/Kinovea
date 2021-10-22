@@ -211,4 +211,7 @@
   <data name="dlgAbout_Translation" xml:space="preserve">
     <value>Käännös</value>
   </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
+    <value>Kamera: nauhoittaa reaaliaikaisen kuvan</value>
+  </data>
 </root>
