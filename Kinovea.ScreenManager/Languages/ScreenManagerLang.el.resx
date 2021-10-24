@@ -426,4 +426,10 @@
   </data>
   <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Αυτόματη Αντίθεση...</value>
   </data>
+  <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
+    <value>Διάγραμμα διασποράς</value>
+  </data>
+  <data name="DataAnalysis" xml:space="preserve">
+    <value>Ανάλυση δεδομένων</value>
+  </data>
 </root>
