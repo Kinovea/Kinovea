@@ -208,7 +208,7 @@
     <table:table-row>
 			<table:table-cell table:style-name="data"><text:p><xsl:value-of select="../@name"/></text:p></table:table-cell>
 
-      <!-- Numerical data must be formatted using point as decimal separator. Hence the use of User*Invariant -->
+      <!-- Numerical data must be formatted using point as decimal separator. -->
       <table:table-cell>
         <xsl:attribute name="table:style-name"><xsl:value-of select="'data'"/></xsl:attribute>
         <xsl:attribute name="office:value-type"><xsl:value-of select="'float'"/></xsl:attribute>
@@ -245,7 +245,7 @@
     <table:table-row>
 			<table:table-cell table:style-name="data"><text:p><xsl:value-of select="../@name"/></text:p></table:table-cell>
 
-      <!-- Numerical data must be formatted using point as decimal separator. Hence the use of UserLengthInvariant -->
+      <!-- Numerical data must be formatted using dot as decimal separator. (UserLengthInvariant) -->
       <table:table-cell>
         <xsl:attribute name="table:style-name"><xsl:value-of select="'data'"/></xsl:attribute>
         <xsl:attribute name="office:value-type"><xsl:value-of select="'float'"/></xsl:attribute>
@@ -274,10 +274,11 @@
     <table:table-row>
 			<table:table-cell table:style-name="data"><text:p><xsl:value-of select="../@name"/></text:p></table:table-cell>
     
+      <!-- Numerical data must be formatted using dot as decimal separator (UserAngleInvariant). -->
       <table:table-cell>
         <xsl:attribute name="table:style-name"><xsl:value-of select="'data'"/></xsl:attribute>
         <xsl:attribute name="office:value-type"><xsl:value-of select="'float'"/></xsl:attribute>
-        <xsl:attribute name="office:value"><xsl:value-of select="@UserAngle"/></xsl:attribute>
+        <xsl:attribute name="office:value"><xsl:value-of select="@UserAngleInvariant"/></xsl:attribute>
         <text:p><xsl:value-of select="@UserAngle"/></text:p>
       </table:table-cell>
     
