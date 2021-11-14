@@ -531,4 +531,271 @@
   <data name="Generic_Quit" xml:space="preserve">
     <value>Esci</value>
   </data>
+  <data name="dlgTimebase_Title" xml:space="preserve">
+    <value>Configurazione sincronizzazione video</value>
+  </data>
+  <data name="ExtraData_Diameter" xml:space="preserve">
+    <value>Diametro</value>
+  </data>
+  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
+    <value>Marker</value>
+  </data>
+  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
+    <value>Croce</value>
+  </data>
+  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
+    <value>Cerchio</value>
+  </data>
+  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
+    <value>Obiettivo</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
+    <value>Posizione</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalPosition" xml:space="preserve">
+    <value>Posizione verticale</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalPosition" xml:space="preserve">
+    <value>Posizione orizzontale</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve">
+    <value>Distanza totale</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_DistanceToOrigin" xml:space="preserve">
+    <value>Distanza dall'origine</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalVerticalDisplacement" xml:space="preserve">
+    <value>Spostamento verticale relativo</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalVelocity" xml:space="preserve">
+    <value>Velocità verticale</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalVelocity" xml:space="preserve">
+    <value>Velocità orizzontale</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Acceleration" xml:space="preserve">
+    <value>Accelerazione</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalAcceleration" xml:space="preserve">
+    <value>Accelerazione verticale</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
+    <value>Accelerazione orizzontale</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
+    <value>Spostamento angolare</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
+    <value>Velocità angolare</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_CentripetalAcceleration" xml:space="preserve">
+    <value>Accelerazione centripeta</value>
+  </data>
+  <data name="ExtraData_Length" xml:space="preserve">
+    <value>Lunghezza</value>
+  </data>
+  <data name="ExtraData_Center" xml:space="preserve">
+    <value>Centro</value>
+  </data>
+  <data name="ExtraData_Radius" xml:space="preserve">
+    <value>Raggio</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement" xml:space="preserve">
+    <value>Spostamento orizzontale relativo</value>
+  </data>
+  <data name="ExtraData_Circumference" xml:space="preserve">
+    <value>Circonferenza</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve">
+    <value>Oggetto della finestra</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
+    <value>Finestra di ricerca</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisHorizontal" xml:space="preserve">
+    <value>La linea definisce l'asse orizzontale</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisVertical" xml:space="preserve">
+    <value>La linea definisce l'asse verticale</value>
+  </data>
+  <data name="dlgCalibrateLine_CoordinateSystemAlignment" xml:space="preserve">
+    <value>Allineamento del sistema di coordinate</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
+    <value>Tracciamento</value>
+  </data>
+  <data name="Generic_File" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="dlgCalibrateLine_AxesImage" xml:space="preserve">
+    <value>Allineato con gli assi dell'immagine</value>
+  </data>
+  <data name="Generic_Import" xml:space="preserve">
+    <value>Importa</value>
+  </data>
+  <data name="DrawingName_Arrow" xml:space="preserve">
+    <value>Freccia</value>
+  </data>
+  <data name="DrawingName_ArrowCurve" xml:space="preserve">
+    <value>Freccia - Curva</value>
+  </data>
+  <data name="DrawingName_ArrowPolyline" xml:space="preserve">
+    <value>Freccia - Polilinea</value>
+  </data>
+  <data name="DrawingName_Goniometer" xml:space="preserve">
+    <value>Goniometro</value>
+  </data>
+  <data name="DrawingName_Posture" xml:space="preserve">
+    <value>Postura</value>
+  </data>
+  <data name="DrawingName_Profile" xml:space="preserve">
+    <value>Profilo</value>
+  </data>
+  <data name="DrawingName_DistanceHorizontal" xml:space="preserve">
+    <value>Distanza (orizzontale)</value>
+  </data>
+  <data name="DrawingName_HumanModel2" xml:space="preserve">
+    <value>Modello umano (2)</value>
+  </data>
+  <data name="DrawingName_Rectangle" xml:space="preserve">
+    <value>Rettangolo</value>
+  </data>
+  <data name="DrawingName_Trajectory" xml:space="preserve">
+    <value>Traiettoria</value>
+  </data>
+  <data name="DrawingName_Clock" xml:space="preserve">
+    <value>Orologio</value>
+  </data>
+  <data name="Generic_Curved" xml:space="preserve">
+    <value>Curva:</value>
+  </data>
+  <data name="Generic_Perspective" xml:space="preserve">
+    <value>Prospettiva:</value>
+  </data>
+  <data name="Generic_Calibration" xml:space="preserve">
+    <value>Calibrazione</value>
+  </data>
+  <data name="Generic_PenSizePicker" xml:space="preserve">
+    <value>Dimensione:</value>
+  </data>
+  <data name="Generic_SaveKVA" xml:space="preserve">
+    <value>Salva annotazioni</value>
+  </data>
+  <data name="Generic_ExportVideo" xml:space="preserve">
+    <value>Esporta video…</value>
+  </data>
+  <data name="Generic_TrackShapePicker" xml:space="preserve">
+    <value>Forma della linea:</value>
+  </data>
+  <data name="Generic_Copy" xml:space="preserve">
+    <value>Copia</value>
+  </data>
+  <data name="Generic_Paste" xml:space="preserve">
+    <value>Incolla</value>
+  </data>
+  <data name="FileProperty_Size" xml:space="preserve">
+    <value>Dimensione</value>
+  </data>
+  <data name="FileProperty_Duration" xml:space="preserve">
+    <value>Durata</value>
+  </data>
+  <data name="mnuShowBefore" xml:space="preserve">
+    <value>Mostra prima di questo punto</value>
+  </data>
+  <data name="mnuHideAfter" xml:space="preserve">
+    <value>Nascondi dopo questo punto</value>
+  </data>
+  <data name="mnuShowAfter" xml:space="preserve">
+    <value>Mostra dopo questo punto</value>
+  </data>
+  <data name="mnuDrawingTrackingStop" xml:space="preserve">
+    <value>Ferma tracciamento</value>
+  </data>
+  <data name="mnuRotation180" xml:space="preserve">
+    <value>180°</value>
+  </data>
+  <data name="mnuThumbnailDelete" xml:space="preserve">
+    <value>Cancella</value>
+  </data>
+  <data name="mnuThumbnailRename" xml:space="preserve">
+    <value>Rinomina</value>
+  </data>
+  <data name="mnuCoordinateSystemShowGrid" xml:space="preserve">
+    <value>Griglia</value>
+  </data>
+  <data name="mnuCoordinateSystemHide" xml:space="preserve">
+    <value>Nascondi</value>
+  </data>
+  <data name="mnuPolyline_CloseMenu" xml:space="preserve">
+    <value>Chiudi questo menu</value>
+  </data>
+  <data name="mnuShowArrow" xml:space="preserve">
+    <value>Mostra freccia</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblFading" xml:space="preserve">
+    <value>Durata dissolvenza (fotogrammi)</value>
+  </data>
+  <data name="dlgConfigureTrajectory_VisibilityComplete" xml:space="preserve">
+    <value>Completo</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularAcceleration" xml:space="preserve">
+    <value>Accelerazione angolare</value>
+  </data>
+  <data name="dlgCameraCalibration_lblFocalLength" xml:space="preserve">
+    <value>Lunghezza focale</value>
+  </data>
+  <data name="dlgTimebase_GroupCapture" xml:space="preserve">
+    <value>Camera ad alta velocità</value>
+  </data>
+  <data name="dlgCalibratePlane_Title" xml:space="preserve">
+    <value>Calibrazione del piano</value>
+  </data>
+  <data name="Generic_ArrowPicker" xml:space="preserve">
+    <value>Frecce:</value>
+  </data>
+  <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve">
+    <value>Solo le annotazioni saranno salvate. #Il file può essere importato in un video più tardi.</value>
+  </data>
+  <data name="dlgRafaleExport_ExportAll" xml:space="preserve">
+    <value>Esporta tutte le immagini.</value>
+  </data>
+  <data name="DrawingName_HumanModel" xml:space="preserve">
+    <value>Modello umano</value>
+  </data>
+  <data name="mnuCalibrate" xml:space="preserve">
+    <value>Calibrazione...</value>
+  </data>
+  <data name="DrawingName_Curve" xml:space="preserve">
+    <value>Curva</value>
+  </data>
+  <data name="Generic_Clock" xml:space="preserve">
+    <value>Orologio:</value>
+  </data>
+  <data name="Generic_SaveKVAAs" xml:space="preserve">
+    <value>Salva annotazioni come…</value>
+  </data>
+  <data name="mnuHideBefore" xml:space="preserve">
+    <value>Nascondi prima di questo punto</value>
+  </data>
+  <data name="Generic_Cut" xml:space="preserve">
+    <value>Taglia</value>
+  </data>
+  <data name="LengthUnit_Millimeters" xml:space="preserve">
+    <value>Millimetri</value>
+  </data>
+  <data name="LengthUnit_Percentage" xml:space="preserve">
+    <value>Percentuale</value>
+  </data>
+  <data name="mnuDrawingTrackingStart" xml:space="preserve">
+    <value>Inizia tracciamento</value>
+  </data>
+  <data name="mnuCoordinateSystemShowAxis" xml:space="preserve">
+    <value>Assi</value>
+  </data>
+  <data name="FormCrashRecovery_Date" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="FormCrashRecovery_File" xml:space="preserve">
+    <value>File</value>
+  </data>
 </root>
