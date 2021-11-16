@@ -66,11 +66,11 @@
   </resheader>
   <data name="lblFolders" xml:space="preserve"><value>Папки</value>
   </data>
-  <data name="lblVideoFiles" xml:space="preserve"><value>Видео датотеки</value>
+  <data name="lblVideoFiles" xml:space="preserve"><value>Видео фајлови</value>
   </data>
-  <data name="mnuAddShortcut" xml:space="preserve"><value>Додади скратен пат</value>
+  <data name="mnuAddShortcut" xml:space="preserve"><value>Додај скратен пат</value>
   </data>
-  <data name="mnuAddToShortcuts" xml:space="preserve"><value>Додати во скратените патишта</value>
+  <data name="mnuAddToShortcuts" xml:space="preserve"><value>Додај во скратените патишта</value>
   </data>
   <data name="mnuDeleteShortcut" xml:space="preserve"><value>Избриши го скратениот пат</value>
   </data>
@@ -87,7 +87,7 @@
     <value>Камери</value>
   </data>
   <data name="mnuVideoLocate" xml:space="preserve">
-    <value>Лоцирај во Windows Explorer </value>
+    <value>Пронајди во Windows Explorer </value>
   </data>
   <data name="mnuVideoDelete" xml:space="preserve">
     <value>Отстрани фајл</value>
