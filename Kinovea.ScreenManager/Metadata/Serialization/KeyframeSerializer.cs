@@ -26,7 +26,7 @@ namespace Kinovea.ScreenManager
             {
                 w.WriteStartElement("KeyframeMemento");
 
-                Serialize(w, keyframe);
+                Serialize(w, keyframe, SerializationFilter.KVA);
                 SerializeTrackers(w, metadata, keyframe);
 
                 w.WriteEndElement();
@@ -66,11 +66,12 @@ namespace Kinovea.ScreenManager
             return keyframe;
         }
 
-        public static void Serialize(XmlWriter w, Keyframe keyframe)
+        public static void Serialize(XmlWriter w, Keyframe keyframe, SerializationFilter filter)
         {
             w.WriteStartElement("Keyframe");
-            w.WriteAttributeString("id", keyframe.Id.ToString());
-            keyframe.WriteXml(w);
+            if (filter != SerializationFilter.Spreadsheet)
+                w.WriteAttributeString("id", keyframe.Id.ToString());
+            keyframe.WriteXml(w, filter);
             w.WriteEndElement();
         }
     

@@ -92,6 +92,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuExportMSXML = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportXHTML = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportTEXT = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportRAW = new ToolStripMenuItem();
         private ToolStripMenuItem mnuLoadAnalysis = new ToolStripMenuItem();
 
         private ToolStripMenuItem mnuCutDrawing = new ToolStripMenuItem();
@@ -321,7 +322,9 @@ namespace Kinovea.ScreenManager
             mnuExportXHTML.Click += new EventHandler(mnuExportXHTML_OnClick);
             mnuExportTEXT.Image = Properties.Resources.file_txt;
             mnuExportTEXT.Click += new EventHandler(mnuExportTEXT_OnClick);
-            mnuExportSpreadsheet.DropDownItems.AddRange(new ToolStripItem[] { mnuExportODF, mnuExportMSXML, mnuExportXHTML, mnuExportTEXT });
+            //mnuExportRAW.Image = Properties.Resources.file_txt;
+            mnuExportRAW.Click += new EventHandler(mnuExportRAW_OnClick);
+            mnuExportSpreadsheet.DropDownItems.AddRange(new ToolStripItem[] { mnuExportODF, mnuExportMSXML, mnuExportXHTML, mnuExportTEXT, mnuExportRAW });
 
             //------------------------
 
@@ -1062,6 +1065,7 @@ namespace Kinovea.ScreenManager
                     mnuExportMSXML.Enabled = player.FrameServer.Metadata.HasData;
                     mnuExportXHTML.Enabled = player.FrameServer.Metadata.HasData;
                     mnuExportTEXT.Enabled = player.FrameServer.Metadata.HasTrack;
+                    mnuExportRAW.Enabled = player.FrameServer.Metadata.HasData;
                     mnuLoadAnalysis.Enabled = true;
                     
                     // Edit
@@ -1116,6 +1120,7 @@ namespace Kinovea.ScreenManager
                     mnuExportMSXML.Enabled = false;
                     mnuExportXHTML.Enabled = false;
                     mnuExportTEXT.Enabled = false;
+                    mnuExportRAW.Enabled = false;
                     mnuLoadAnalysis.Enabled = true;
 
                     // Edit
@@ -1171,6 +1176,7 @@ namespace Kinovea.ScreenManager
                 mnuExportMSXML.Enabled = false;
                 mnuExportXHTML.Enabled = false;
                 mnuExportTEXT.Enabled = false;
+                mnuExportRAW.Enabled = false;
 
                 // Edit
                 HistoryMenuManager.SwitchContext(null);
@@ -1465,6 +1471,7 @@ namespace Kinovea.ScreenManager
             mnuExportMSXML.Text = "Microsoft Excel (.xml)";
             mnuExportXHTML.Text = "Web (.html)";
             mnuExportTEXT.Text = "Gnuplot (.txt)";
+            mnuExportRAW.Text = "Raw (.xml)";
             mnuLoadAnalysis.Text = ScreenManagerLang.mnuLoadAnalysis;
 
             // Edit
@@ -1617,6 +1624,10 @@ namespace Kinovea.ScreenManager
         {
             ExportSpreadsheet(MetadataExportFormat.TrajectoryText);
         }
+        private void mnuExportRAW_OnClick(object sender, EventArgs e)
+        {
+            ExportSpreadsheet(MetadataExportFormat.RAW);
+        }
         private void ExportSpreadsheet(MetadataExportFormat format)
         {
             PlayerScreen player = activeScreen as PlayerScreen;
@@ -1628,7 +1639,7 @@ namespace Kinovea.ScreenManager
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = ScreenManagerLang.dlgExportSpreadsheet_Title;
             saveFileDialog.RestoreDirectory = true;
-            saveFileDialog.Filter = "LibreOffice (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|Web (*.html)|*.html|Gnuplot (*.txt)|*.txt";
+            saveFileDialog.Filter = "LibreOffice (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|Web (*.html)|*.html|Gnuplot (*.txt)|*.txt|Raw data (*.xml)|*.xml";
             saveFileDialog.FilterIndex = ((int)format) + 1;
                         
             saveFileDialog.FileName = Path.GetFileNameWithoutExtension(player.FrameServer.Metadata.VideoPath);

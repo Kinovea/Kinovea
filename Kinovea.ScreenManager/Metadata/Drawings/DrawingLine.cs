@@ -397,23 +397,22 @@ namespace Kinovea.ScreenManager
                 w.WriteEndElement();
             }
             
-            if(ShouldSerializeAll(filter))
+            if(ShouldSerializeSpreadsheet(filter))
             {
-                // Spreadsheet support.
-                w.WriteStartElement("Measure");
+                //w.WriteStartElement("Measure");
                 
-                PointF a = CalibrationHelper.GetPoint(new PointF(points["a"].X, points["a"].Y));
-                PointF b = CalibrationHelper.GetPoint(new PointF(points["b"].X, points["b"].Y));
+                //PointF a = CalibrationHelper.GetPoint(new PointF(points["a"].X, points["a"].Y));
+                //PointF b = CalibrationHelper.GetPoint(new PointF(points["b"].X, points["b"].Y));
 
-                float len = GeometryHelper.GetDistance(a, b);
-                string value = String.Format("{0:0.00}", len);
-                string valueInvariant = String.Format(CultureInfo.InvariantCulture, "{0:0.00}", len);
+                //float len = GeometryHelper.GetDistance(a, b);
+                //string value = String.Format("{0:0.00}", len);
+                //string valueInvariant = String.Format(CultureInfo.InvariantCulture, "{0:0.00}", len);
 
-                w.WriteAttributeString("UserLength", value);
-                w.WriteAttributeString("UserLengthInvariant", valueInvariant);
-                w.WriteAttributeString("UserUnitLength", CalibrationHelper.GetLengthAbbreviation());
+                //w.WriteAttributeString("UserLength", value);
+                //w.WriteAttributeString("UserLengthInvariant", valueInvariant);
+                //w.WriteAttributeString("UserUnitLength", CalibrationHelper.GetLengthAbbreviation());
                 
-                w.WriteEndElement();
+                //w.WriteEndElement();
             }
         }
         #endregion

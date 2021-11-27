@@ -119,6 +119,10 @@ namespace Kinovea.ScreenManager
         {
             get { return genericPosture.Angles; }
         }
+        public List<AngleHelper> AngleHelpers 
+        {
+            get { return angles; }
+        }
         public List<GenericPostureHandle> GenericPostureHandles
         {
             get { return genericPosture.Handles; }

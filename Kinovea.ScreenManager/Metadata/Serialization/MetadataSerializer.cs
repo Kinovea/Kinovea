@@ -87,6 +87,39 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// Save the data to a format suited for converters (not KVA).
+        /// </summary>
+        public string SaveToSpreadsheetString(Metadata metadata)
+        {
+            if (metadata == null)
+                throw new ArgumentNullException("metadata");
+
+            this.metadata = metadata;
+
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.Indent = false;
+            settings.CloseOutput = true;
+
+            StringBuilder builder = new StringBuilder();
+            using (XmlWriter w = XmlWriter.Create(builder, settings))
+            {
+                try
+                {
+                    WriteXmlSpreadsheet(w);
+                }
+                catch (Exception e)
+                {
+                    log.Error("An error happened during the writing of the kva string");
+                    log.Error(e);
+                }
+            }
+
+            return builder.ToString();
+
+        }
+
+
+        /// <summary>
         /// Save to the last known storage location of this KVA if any, otherwise ask for a target filename.
         /// </summary>
         public void UserSave(Metadata metadata, string videoFile)
@@ -420,21 +453,41 @@ namespace Kinovea.ScreenManager
         #region Save
         private void WriteXml(XmlWriter w)
         {
-            // Convert the metadata to XML.
-            // The XML Schema for the format should be available in the "tools/Schema/" folder of the source repository.
-            // The format contains both core infos to deserialize back to Metadata and helpers data for XSLT exports, 
-            // so these exports have more user friendly values. (timecode vs timestamps, cm vs pixels, etc.)
-
+            // Convert the metadata to KVA XML.
             w.WriteStartElement("KinoveaVideoAnalysis");
             
             WriteGeneralInformation(w);
-            WriteKeyframes(w);
-            WriteChronos(w);
-            WriteTracks(w);
+            WriteKeyframes(w, SerializationFilter.KVA);
+            WriteChronos(w, SerializationFilter.KVA);
+            WriteTracks(w, SerializationFilter.KVA);
             WriteSpotlights(w);
             WriteAutoNumbers(w);
             WriteCoordinateSystem(w);
             WriteTrackablePoints(w);
+
+            w.WriteEndElement();
+        }
+        private void WriteXmlSpreadsheet(XmlWriter w)
+        {
+            // Convert the metadata to an XML format suited for converters.
+            w.WriteStartElement("KinoveaMeasurementData");
+
+            WriteGeneralInformationSpreadsheet(w);
+            WriteUnits(w);
+            WriteKeyframes(w, SerializationFilter.Spreadsheet);
+            // Drawings (positions, lengths, angles). 
+            WriteAngles(w);
+
+            WriteChronos(w, SerializationFilter.Spreadsheet);
+            WriteTracks(w, SerializationFilter.Spreadsheet);
+            
+
+            // Lengths (lines, circles, custom).
+            // Angles (angles, custom).
+            // Positions (markers, circles, custom, autonumbers?).
+            // Tracks.
+            // Tracked objects.
+            // Tracked coordinate system.
 
             w.WriteEndElement();
         }
@@ -459,7 +512,22 @@ namespace Kinovea.ScreenManager
 
             WriteCalibrationHelp(w);
         }
-        private void WriteKeyframes(XmlWriter w)
+
+        private void WriteGeneralInformationSpreadsheet(XmlWriter w)
+        {
+            w.WriteElementString("FormatVersion", "1.0");
+            w.WriteElementString("Producer", Software.ApplicationName + "." + Software.Version);
+            w.WriteElementString("FullPath", metadata.VideoPath);
+
+            if (!string.IsNullOrEmpty(metadata.GlobalTitle))
+                w.WriteElementString("GlobalTitle", metadata.GlobalTitle);
+
+            w.WriteElementString("ImageSize", metadata.ImageSize.Width + ";" + metadata.ImageSize.Height);
+            w.WriteElementString("CaptureFramerate", string.Format(CultureInfo.InvariantCulture, "{0}", metadata.CalibrationHelper.CaptureFramesPerSecond));
+            w.WriteElementString("UserFramerate", string.Format(CultureInfo.InvariantCulture, "{0}", 1000 / metadata.UserInterval));
+        }
+
+        private void WriteKeyframes(XmlWriter w, SerializationFilter filter)
         {
             int enabled = metadata.Keyframes.Count(kf => !kf.Disabled);
             if (enabled == 0)
@@ -469,12 +537,12 @@ namespace Kinovea.ScreenManager
 
             foreach (Keyframe kf in metadata.Keyframes.Where(kf => !kf.Disabled))
             {
-                KeyframeSerializer.Serialize(w, kf);
+                KeyframeSerializer.Serialize(w, kf, filter);
             }
 
             w.WriteEndElement();
         }
-        private void WriteChronos(XmlWriter w)
+        private void WriteChronos(XmlWriter w, SerializationFilter filter)
         {
             bool atLeastOne = false;
             foreach (DrawingChrono chrono in metadata.ChronoManager.Drawings)
@@ -486,16 +554,17 @@ namespace Kinovea.ScreenManager
                 }
 
                 w.WriteStartElement("Chrono");
-                w.WriteAttributeString("id", chrono.Id.ToString());
+                if (filter != SerializationFilter.Spreadsheet) 
+                    w.WriteAttributeString("id", chrono.Id.ToString());
                 w.WriteAttributeString("name", chrono.Name);
-                chrono.WriteXml(w, SerializationFilter.All);
+                chrono.WriteXml(w, filter);
                 w.WriteEndElement();
             }
 
             if (atLeastOne)
                 w.WriteEndElement();
         }
-        private void WriteTracks(XmlWriter w)
+        private void WriteTracks(XmlWriter w, SerializationFilter filter)
         {
             bool atLeastOne = false;
             foreach (DrawingTrack track in metadata.Tracks())
@@ -507,9 +576,10 @@ namespace Kinovea.ScreenManager
                 }
 
                 w.WriteStartElement("Track");
-                w.WriteAttributeString("id", track.Id.ToString());
+                if (filter != SerializationFilter.Spreadsheet)
+                    w.WriteAttributeString("id", track.Id.ToString());
                 w.WriteAttributeString("name", track.Name);
-                track.WriteXml(w, SerializationFilter.All);
+                track.WriteXml(w, filter);
                 w.WriteEndElement();
             }
 
@@ -522,7 +592,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             w.WriteStartElement("Spotlights");
-            metadata.SpotlightManager.WriteXml(w, SerializationFilter.All);
+            metadata.SpotlightManager.WriteXml(w, SerializationFilter.KVA);
             w.WriteEndElement();
         }
         private void WriteAutoNumbers(XmlWriter w)
@@ -531,7 +601,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             w.WriteStartElement("AutoNumbers");
-            metadata.AutoNumberManager.WriteXml(w, SerializationFilter.All);
+            metadata.AutoNumberManager.WriteXml(w, SerializationFilter.KVA);
             w.WriteEndElement();
         }
         private void WriteCoordinateSystem(XmlWriter w)
@@ -539,7 +609,7 @@ namespace Kinovea.ScreenManager
             w.WriteStartElement("CoordinateSystem");
             w.WriteAttributeString("id", metadata.DrawingCoordinateSystem.Id.ToString());
             w.WriteAttributeString("name", metadata.DrawingCoordinateSystem.Name);
-            metadata.DrawingCoordinateSystem.WriteXml(w, SerializationFilter.All);
+            metadata.DrawingCoordinateSystem.WriteXml(w, SerializationFilter.KVA);
             w.WriteEndElement();
         }
         private void WriteCalibrationHelp(XmlWriter w)
@@ -552,6 +622,82 @@ namespace Kinovea.ScreenManager
         {
             w.WriteStartElement("Trackability");
             metadata.TrackabilityManager.WriteXml(w);
+            w.WriteEndElement();
+        }
+        #endregion
+
+        #region Spreadsheet specific
+        private void WriteUnits(XmlWriter w)
+        {
+            w.WriteStartElement("Units");
+
+            w.WriteStartElement("LengthUnit");
+            w.WriteAttributeString("type", metadata.CalibrationHelper.LengthUnit.ToString());
+            w.WriteAttributeString("symbol", UnitHelper.LengthAbbreviation(metadata.CalibrationHelper.LengthUnit));
+            w.WriteEndElement();
+
+            w.WriteStartElement("SpeedUnit");
+            w.WriteAttributeString("type", PreferencesManager.PlayerPreferences.SpeedUnit.ToString());
+            w.WriteAttributeString("symbol", UnitHelper.SpeedAbbreviation(PreferencesManager.PlayerPreferences.SpeedUnit));
+            w.WriteEndElement();
+
+            w.WriteStartElement("AccelerationUnit");
+            w.WriteAttributeString("type", PreferencesManager.PlayerPreferences.AccelerationUnit.ToString());
+            w.WriteAttributeString("symbol", UnitHelper.AccelerationAbbreviation(PreferencesManager.PlayerPreferences.AccelerationUnit));
+            w.WriteEndElement();
+
+            w.WriteStartElement("AngleUnit");
+            w.WriteAttributeString("type", PreferencesManager.PlayerPreferences.AngleUnit.ToString());
+            w.WriteAttributeString("symbol", UnitHelper.AngleAbbreviation(PreferencesManager.PlayerPreferences.AngleUnit));
+            w.WriteEndElement();
+
+            w.WriteStartElement("AngularVelocityUnit");
+            w.WriteAttributeString("type", PreferencesManager.PlayerPreferences.AngularVelocityUnit.ToString());
+            w.WriteAttributeString("symbol", UnitHelper.AngularVelocityAbbreviation(PreferencesManager.PlayerPreferences.AngularVelocityUnit));
+            w.WriteEndElement();
+
+            w.WriteStartElement("AngularAccelerationUnit");
+            w.WriteAttributeString("type", PreferencesManager.PlayerPreferences.AngularAccelerationUnit.ToString());
+            w.WriteAttributeString("symbol", UnitHelper.AngularAccelerationAbbreviation(PreferencesManager.PlayerPreferences.AngularAccelerationUnit));
+            w.WriteEndElement();
+            
+            w.WriteEndElement();
+        }
+        private void WriteAngles(XmlWriter w)
+        {
+            w.WriteStartElement("Angles");
+
+            foreach (DrawingAngle drawing in metadata.Angles())
+            {
+                w.WriteStartElement("Angle");
+                w.WriteAttributeString("name", drawing.Name);
+                drawing.WriteXml(w, SerializationFilter.Spreadsheet);
+                w.WriteEndElement();
+            }
+
+            foreach (DrawingGenericPosture drawing in metadata.GenericPostures())
+            {
+                for (int i = 0; i < drawing.GenericPostureAngles.Count; i++)
+                {
+                    w.WriteStartElement("Angle");
+
+                    string name = drawing.Name;
+                    GenericPostureAngle gpa = drawing.GenericPostureAngles[i];
+                    if (!string.IsNullOrEmpty(gpa.Name))
+                        name = name + " - " + gpa.Name;
+                    w.WriteAttributeString("name", name);
+
+                    AngleHelper angleHelper = drawing.AngleHelpers[i];
+                    float angle = drawing.CalibrationHelper.ConvertAngle(angleHelper.CalibratedAngle);
+                    string value = String.Format("{0:0.00}", angle);
+                    string valueInvariant = String.Format(CultureInfo.InvariantCulture, "{0:0.00}", angle);
+                    w.WriteAttributeString("value", value);
+                    w.WriteAttributeString("value_invariant", valueInvariant);
+
+                    w.WriteEndElement();
+                }
+            }
+
             w.WriteEndElement();
         }
         #endregion

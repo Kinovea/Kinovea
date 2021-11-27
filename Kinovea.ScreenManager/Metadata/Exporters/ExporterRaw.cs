@@ -19,15 +19,25 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.IO;
+using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Serialization;
+using System.Xml.Xsl;
 
 namespace Kinovea.ScreenManager
 {
-    public enum MetadataExportFormat
+    /// <summary>
+    /// Export the intermediate format directly to an XML file.
+    /// This is used for people that want to write their own importers and for debugging.
+    /// </summary>
+    public class ExporterRaw
     {
-        ODF,
-        MSXML,
-        XHTML,
-        TrajectoryText,
-        RAW
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        public void Export(string path, XmlDocument xml)
+        {
+            
+        }
     }
 }

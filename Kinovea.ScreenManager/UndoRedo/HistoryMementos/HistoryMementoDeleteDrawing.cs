@@ -35,7 +35,7 @@ namespace Kinovea.ScreenManager
             AbstractDrawingManager manager = metadata.GetDrawingManager(managerId);
             
             if (manager != null)
-                data = DrawingSerializer.SerializeMemento(metadata, manager.GetDrawing(drawingId), SerializationFilter.All, true);
+                data = DrawingSerializer.SerializeMemento(metadata, manager.GetDrawing(drawingId), SerializationFilter.KVA, true);
         }
 
         public override HistoryMemento PerformUndo()

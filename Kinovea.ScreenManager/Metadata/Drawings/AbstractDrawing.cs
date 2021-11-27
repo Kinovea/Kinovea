@@ -233,9 +233,13 @@ namespace Kinovea.ScreenManager
         {
             return (filter & SerializationFilter.Fading) == SerializationFilter.Fading;
         }
-        public bool ShouldSerializeAll(SerializationFilter filter)
+        public bool ShouldSerializeKVA(SerializationFilter filter)
         {
-            return (filter & SerializationFilter.All) == SerializationFilter.All;
+            return (filter & SerializationFilter.KVA) == SerializationFilter.KVA;
+        }
+        public bool ShouldSerializeSpreadsheet(SerializationFilter filter)
+        {
+            return (filter & SerializationFilter.Spreadsheet) == SerializationFilter.Spreadsheet;
         }
         #endregion
     }

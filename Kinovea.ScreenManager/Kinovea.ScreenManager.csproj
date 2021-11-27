@@ -279,6 +279,7 @@
     <Compile Include="Measurement\Geometry\Vector3.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPostureOption.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPosturePolyline.cs" />
+    <Compile Include="Metadata\Exporters\ExporterRaw.cs" />
     <Compile Include="Metadata\Interfaces\IDrawingHostView.cs" />
     <Compile Include="Measurement\Geometry\AngleOptions.cs" />
     <Compile Include="Measurement\Geometry\Circle.cs" />
@@ -421,7 +422,7 @@
     <Compile Include="Measurement\LensDistortion\EmguHelper.cs" />
     <Compile Include="Metadata\Serialization\DrawingSerializer.cs" />
     <Compile Include="Metadata\Serialization\KeyframeSerializer.cs" />
-    <Compile Include="PlayerScreen\Export\MetadataExporter.cs" />
+    <Compile Include="Metadata\Exporters\MetadataExporter.cs" />
     <Compile Include="Metadata\HitTester.cs" />
     <Compile Include="Measurement\Kinematics\Component.cs" />
     <Compile Include="Measurement\Kinematics\MovingAverage.cs" />
@@ -604,11 +605,11 @@
     <Compile Include="Metadata\Drawings\Styling\StyleElementTrackShape.cs" />
     <Compile Include="Metadata\Drawings\Styling\StyleHelper.cs" />
     <Compile Include="Metadata\DrawingToolbar\ToolManager.cs" />
-    <Compile Include="PlayerScreen\Export\ExporterODF.cs" />
-    <Compile Include="PlayerScreen\Export\ExporterMSXML.cs" />
-    <Compile Include="PlayerScreen\Export\ExporterTrajectoryText.cs" />
-    <Compile Include="PlayerScreen\Export\ExporterXHTML.cs" />
-    <Compile Include="PlayerScreen\Export\MetadataExportFormat.cs" />
+    <Compile Include="Metadata\Exporters\ExporterODF.cs" />
+    <Compile Include="Metadata\Exporters\ExporterMSXML.cs" />
+    <Compile Include="Metadata\Exporters\ExporterTrajectoryText.cs" />
+    <Compile Include="Metadata\Exporters\ExporterXHTML.cs" />
+    <Compile Include="Metadata\Exporters\MetadataExportFormat.cs" />
     <Compile Include="PlayerScreen\FrameServerPlayer.cs" />
     <Compile Include="Metadata\Drawings\DrawingAngle.cs" />
     <Compile Include="Metadata\Drawings\DrawingCrossMark.cs" />
