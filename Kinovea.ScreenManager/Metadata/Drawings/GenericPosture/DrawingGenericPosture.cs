@@ -131,6 +131,10 @@ namespace Kinovea.ScreenManager
         {
             get { return toolId; }
         }
+        public GenericPosture GenericPosture
+        {
+            get { return genericPosture; }
+        }
         #endregion
 
         #region Members

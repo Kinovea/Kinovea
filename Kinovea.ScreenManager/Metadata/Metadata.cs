@@ -575,11 +575,23 @@ namespace Kinovea.ScreenManager
                 if (drawing is DrawingText)
                     yield return (DrawingText)drawing;
         }
+        public IEnumerable<DrawingLine> Lines()
+        {
+            foreach (AbstractDrawing drawing in AttachedDrawings())
+                if (drawing is DrawingLine)
+                    yield return (DrawingLine)drawing;
+        }
         public IEnumerable<DrawingAngle> Angles()
         {
             foreach (AbstractDrawing drawing in AttachedDrawings())
                 if (drawing is DrawingAngle)
                     yield return (DrawingAngle)drawing;
+        }
+        public IEnumerable<DrawingCrossMark> CrossMarks()
+        {
+            foreach (AbstractDrawing drawing in AttachedDrawings())
+                if (drawing is DrawingCrossMark)
+                    yield return (DrawingCrossMark)drawing;
         }
         public IEnumerable<DrawingGenericPosture> GenericPostures()
         {

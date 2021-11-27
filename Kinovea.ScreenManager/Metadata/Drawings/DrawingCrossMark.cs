@@ -281,17 +281,7 @@ namespace Kinovea.ScreenManager
             
             if(ShouldSerializeSpreadsheet(filter))
             {
-                //w.WriteStartElement("Coordinates");
-
-                //PointF p = new PointF(points["0"].X, points["0"].Y);
-                //PointF coords = CalibrationHelper.GetPoint(p);
-                //w.WriteAttributeString("UserX", String.Format("{0:0.00}", coords.X));
-                //w.WriteAttributeString("UserXInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", coords.X));
-                //w.WriteAttributeString("UserY", String.Format("{0:0.00}", coords.Y));
-                //w.WriteAttributeString("UserYInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", coords.Y));
-                //w.WriteAttributeString("UserUnitLength", CalibrationHelper.GetLengthAbbreviation());
-
-                //w.WriteEndElement();
+                MeasurementSerializationHelper.SerializePosition(w, points["0"], CalibrationHelper);
             }
         }
         #endregion

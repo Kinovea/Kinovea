@@ -344,11 +344,7 @@ namespace Kinovea.ScreenManager
 
             if (ShouldSerializeSpreadsheet(filter))
             {
-                float angle = CalibrationHelper.ConvertAngle(angleHelper.CalibratedAngle);
-                string value = String.Format(CultureInfo.InvariantCulture, "{0:0.00}", angle);
-                string valueLocal = String.Format("{0:0.00}", angle);
-                w.WriteAttributeString("value", value);
-                w.WriteAttributeString("valueLocal", valueLocal);
+                MeasurementSerializationHelper.SerializeAngle(w, angleHelper, CalibrationHelper);
             }
         }
         #endregion

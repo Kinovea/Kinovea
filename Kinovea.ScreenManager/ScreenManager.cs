@@ -324,7 +324,13 @@ namespace Kinovea.ScreenManager
             mnuExportTEXT.Click += new EventHandler(mnuExportTEXT_OnClick);
             //mnuExportRAW.Image = Properties.Resources.file_txt;
             mnuExportRAW.Click += new EventHandler(mnuExportRAW_OnClick);
-            mnuExportSpreadsheet.DropDownItems.AddRange(new ToolStripItem[] { mnuExportODF, mnuExportMSXML, mnuExportXHTML, mnuExportTEXT, mnuExportRAW });
+            mnuExportSpreadsheet.DropDownItems.AddRange(new ToolStripItem[] { 
+                mnuExportRAW,
+                new ToolStripSeparator(),
+                mnuExportODF, 
+                mnuExportMSXML, 
+                mnuExportXHTML, 
+                mnuExportTEXT });
 
             //------------------------
 
