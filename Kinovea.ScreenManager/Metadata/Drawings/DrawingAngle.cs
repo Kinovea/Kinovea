@@ -345,11 +345,10 @@ namespace Kinovea.ScreenManager
             if (ShouldSerializeSpreadsheet(filter))
             {
                 float angle = CalibrationHelper.ConvertAngle(angleHelper.CalibratedAngle);
-                string value = String.Format("{0:0.00}", angle);
-                string valueInvariant = String.Format(CultureInfo.InvariantCulture, "{0:0.00}", angle);
-
+                string value = String.Format(CultureInfo.InvariantCulture, "{0:0.00}", angle);
+                string valueLocal = String.Format("{0:0.00}", angle);
                 w.WriteAttributeString("value", value);
-                w.WriteAttributeString("value_invariant", valueInvariant);
+                w.WriteAttributeString("valueLocal", valueLocal);
             }
         }
         #endregion
