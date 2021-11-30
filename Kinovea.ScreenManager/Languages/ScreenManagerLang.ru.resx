@@ -924,4 +924,10 @@
   <data name="dlgConfigureOpacity_lblOpaque" xml:space="preserve">
     <value>Продолжительность непрозрачности (кадров):</value>
   </data>
+  <data name="dlgConfigureOpacity_lblFading" xml:space="preserve">
+    <value>Продолжительность фейдинга (кадров):</value>
+  </data>
+  <data name="DrawingName_CSVL" xml:space="preserve">
+    <value>Центральная сакральная вертикальная линия</value>
+  </data>
 </root>
