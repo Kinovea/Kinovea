@@ -664,41 +664,6 @@ namespace Kinovea.ScreenManager
             w.WriteEndElement();
         }
         
-        private void WriteDistances(XmlWriter w)
-        {
-            w.WriteStartElement("Distances");
-
-            foreach (DrawingLine drawing in metadata.Lines())
-            {
-                w.WriteStartElement("Distance");
-                w.WriteAttributeString("name", drawing.Name);
-                //drawing.WriteXml(w, SerializationFilter.Spreadsheet);
-                w.WriteEndElement();
-            }
-
-            foreach (DrawingGenericPosture drawing in metadata.GenericPostures())
-            {
-                GenericPosture gp = drawing.GenericPosture;
-
-                foreach (GenericPostureDistance gpd in gp.Distances)
-                {
-                    w.WriteStartElement("Distance");
-
-                    string name = drawing.Name;
-                    if (!string.IsNullOrEmpty(gpd.Name))
-                        name = name + " - " + gpd.Name;
-                    w.WriteAttributeString("name", name);
-
-                    PointF p1 = gp.PointList[gpd.Point1];
-                    PointF p2 = gp.PointList[gpd.Point2];
-                    MeasurementSerializationHelper.SerializeDistance(w, p1, p2, drawing.CalibrationHelper);
-
-                    w.WriteEndElement();
-                }
-            }
-
-            w.WriteEndElement();
-        }
         private void WriteAngles(XmlWriter w)
         {
             //w.WriteStartElement("Angles");

@@ -18,5 +18,6 @@ namespace Kinovea.ScreenManager
 
         public List<MeasuredDataKeyframe> Keyframes { get; set; } = new List<MeasuredDataKeyframe>();
         public List<MeasuredDataPosition> Positions { get; set; } = new List<MeasuredDataPosition>();
+        public List<MeasuredDataDistance> Distances { get; set; } = new List<MeasuredDataDistance>();
     }
 }

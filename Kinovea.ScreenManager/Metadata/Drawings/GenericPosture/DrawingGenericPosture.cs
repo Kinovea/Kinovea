@@ -406,6 +406,57 @@ namespace Kinovea.ScreenManager
                 w.WriteEndElement();
             }
         }
+        
+        public List<MeasuredDataPosition> CollectMeasuredDataPositions()
+        {
+            List<MeasuredDataPosition> mdps = new List<MeasuredDataPosition>();
+
+            GenericPosture gp = genericPosture;
+            foreach (GenericPosturePosition gpp in gp.Positions)
+            {
+                if (gpp.Point < 0)
+                    continue;
+
+                MeasuredDataPosition mdp = new MeasuredDataPosition();
+                string exportedName = name;
+                if (!string.IsNullOrEmpty(gpp.Name))
+                    exportedName = exportedName + " - " + gpp.Name;
+
+                mdps.Add(MeasurementSerializationHelper.CollectPosition(exportedName, gp.PointList[gpp.Point], CalibrationHelper));
+            }
+
+            foreach (GenericPostureComputedPoint gpcp in gp.ComputedPoints)
+            {
+                string exportedName = name;
+                if (!string.IsNullOrEmpty(gpcp.Name))
+                    exportedName = exportedName + " - " + gpcp.Name;
+
+                PointF p = gpcp.ComputeLocation(gp);
+                mdps.Add(MeasurementSerializationHelper.CollectPosition(exportedName, p, CalibrationHelper));
+            }
+
+            return mdps;
+        }
+
+        public List<MeasuredDataDistance> CollectMeasuredDataDistances()
+        {
+            List<MeasuredDataDistance> mdds = new List<MeasuredDataDistance>();
+
+            GenericPosture gp = genericPosture;
+            foreach (GenericPostureDistance gpd in gp.Distances)
+            {
+                MeasuredDataDistance mdp = new MeasuredDataDistance();
+                string exportedName = name;
+                if (!string.IsNullOrEmpty(gpd.Name))
+                    exportedName = exportedName + " - " + gpd.Name;
+
+                PointF p1 = gp.PointList[gpd.Point1];
+                PointF p2 = gp.PointList[gpd.Point2];
+                mdds.Add(MeasurementSerializationHelper.CollectDistance(exportedName, p1, p2, CalibrationHelper));
+            }
+
+            return mdds;
+        }
         #endregion
 
         #region IScalable implementation

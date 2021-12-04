@@ -40,6 +40,8 @@ namespace Kinovea.ScreenManager
                 row += ExportKeyframes(sl, md, row);
                 row++;
                 row += ExportPositions(sl, md, row);
+                row++;
+                row += ExportDistances(sl, md, row);
 
                 sl.SaveAs(path);
             }
@@ -87,12 +89,39 @@ namespace Kinovea.ScreenManager
             sl.SetCellValue(row + writtenRows, 4, "Time");
             writtenRows++;
 
-            foreach (MeasuredDataPosition pos in md.Positions)
+            foreach (MeasuredDataPosition p in md.Positions)
             {
-                sl.SetCellValue(row + writtenRows, 1, pos.Name);
-                sl.SetCellValue(row + writtenRows, 2, pos.X);
-                sl.SetCellValue(row + writtenRows, 3, pos.Y);
-                sl.SetCellValue(row + writtenRows, 4, pos.Time);
+                sl.SetCellValue(row + writtenRows, 1, p.Name);
+                sl.SetCellValue(row + writtenRows, 2, p.X);
+                sl.SetCellValue(row + writtenRows, 3, p.Y);
+                sl.SetCellValue(row + writtenRows, 4, p.Time);
+                writtenRows++;
+            }
+
+            return writtenRows;
+        }
+
+        private int ExportDistances(SLDocument sl, MeasuredData md, int row)
+        {
+            if (md.Distances.Count == 0)
+                return 0;
+
+            int writtenRows = 0;
+
+            sl.SetCellValue(row, 1, "Distances");
+            sl.MergeWorksheetCells(row, 1, row, 3);
+            writtenRows++;
+
+            sl.SetCellValue(row + writtenRows, 1, "Name");
+            sl.SetCellValue(row + writtenRows, 2, "Length (?)");
+            sl.SetCellValue(row + writtenRows, 3, "Time");
+            writtenRows++;
+
+            foreach (MeasuredDataDistance value in md.Distances)
+            {
+                sl.SetCellValue(row + writtenRows, 1, value.Name);
+                sl.SetCellValue(row + writtenRows, 2, value.Value);
+                sl.SetCellValue(row + writtenRows, 3, value.Time);
                 writtenRows++;
             }
 

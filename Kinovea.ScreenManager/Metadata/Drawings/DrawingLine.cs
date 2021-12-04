@@ -396,13 +396,10 @@ namespace Kinovea.ScreenManager
                 infosFading.WriteXml(w);
                 w.WriteEndElement();
             }
-            
-            //if(ShouldSerializeSpreadsheet(filter))
-            //{
-            //    PointF a = points["a"];
-            //    PointF b = points["b"];
-            //    MeasurementSerializationHelper.SerializeDistance(w, a, b, CalibrationHelper);
-            //}
+        }
+        public MeasuredDataDistance CollectMeasuredData()
+        {
+            return MeasurementSerializationHelper.CollectDistance(name, points["a"], points["b"], CalibrationHelper);
         }
         #endregion
         

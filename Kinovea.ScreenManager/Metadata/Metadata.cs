@@ -897,6 +897,7 @@ namespace Kinovea.ScreenManager
                 md.Keyframes.Add(mdkf);
 
                 List<MeasuredDataPosition> mdps = new List<MeasuredDataPosition>();
+                List<MeasuredDataDistance> mdds = new List<MeasuredDataDistance>();
                 foreach (AbstractDrawing d in kf.Drawings)
                 {
                     // Positions from markers.
@@ -905,46 +906,40 @@ namespace Kinovea.ScreenManager
 
                     // Positions from postures.
                     if (d is DrawingGenericPosture)
-                    {
-                        GenericPosture gp = ((DrawingGenericPosture)d).GenericPosture;
-                        foreach (GenericPosturePosition gpp in gp.Positions)
-                        {
-                            if (gpp.Point < 0)
-                                continue;
-
-                            MeasuredDataPosition mdp = new MeasuredDataPosition();
-                            string name = d.Name;
-                            if (!string.IsNullOrEmpty(gpp.Name))
-                                name = name + " - " + gpp.Name;
-
-                            mdps.Add(MeasurementSerializationHelper.CollectPosition(name, gp.PointList[gpp.Point], ((DrawingGenericPosture)d).CalibrationHelper));
-                        }
-
-                        foreach (GenericPostureComputedPoint gpcp in gp.ComputedPoints)
-                        {
-                            string name = d.Name;
-                            if (!string.IsNullOrEmpty(gpcp.Name))
-                                name = name + " - " + gpcp.Name;
-
-                            PointF p = gpcp.ComputeLocation(gp);
-                            mdps.Add(MeasurementSerializationHelper.CollectPosition(name, p, ((DrawingGenericPosture)d).CalibrationHelper));
-                        }
-                    }
+                        mdps.AddRange(((DrawingGenericPosture)d).CollectMeasuredDataPositions());
 
                     // Distances from lines.
+                    if (d is DrawingLine)
+                        mdds.Add(((DrawingLine)d).CollectMeasuredData());
+
+                    // Distances from postures.
+                    if (d is DrawingGenericPosture)
+                        mdds.AddRange(((DrawingGenericPosture)d).CollectMeasuredDataDistances());
+
+                    // Angles.
+
+
 
                 }
 
                 // Sort drawings on the same keyframe by name.
                 mdps.Sort((a, b) => a.Name.CompareTo(b.Name));
+                mdds.Sort((a, b) => a.Name.CompareTo(b.Name));
 
                 // Inject time.
                 foreach (MeasuredDataPosition mdp in mdps)
                     mdp.Time = mdkf.Time;
+                foreach (MeasuredDataDistance mdd in mdds)
+                    mdd.Time = mdkf.Time;
 
                 // Add to the global list.
                 md.Positions.AddRange(mdps);
+                md.Distances.AddRange(mdds);
             }
+
+            // Times.
+            // Tracks.
+            // Timelines.
 
             
             return md;

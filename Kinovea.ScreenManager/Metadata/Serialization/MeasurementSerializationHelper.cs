@@ -23,15 +23,17 @@ namespace Kinovea.ScreenManager
             return md;
         }
 
-        public static void SerializeDistance(XmlWriter w, PointF p1, PointF p2, CalibrationHelper calibrationHelper)
+        public static MeasuredDataDistance CollectDistance(string name, PointF p1, PointF p2, CalibrationHelper calibrationHelper)
         {
+            MeasuredDataDistance md = new MeasuredDataDistance();
+            md.Name = name;
+
             PointF a = calibrationHelper.GetPoint(p1);
             PointF b = calibrationHelper.GetPoint(p2);
             float len = GeometryHelper.GetDistance(a, b);
-            string value = String.Format(CultureInfo.InvariantCulture, "{0:0.00}", len);
-            string valueLocal = String.Format("{0:0.00}", len);
-            w.WriteAttributeString("value", value);
-            w.WriteAttributeString("valueLocal", valueLocal);
+            md.Value = len;
+            md.ValueLocal = String.Format("{0:0.00}", len);
+            return md;
         }
 
         public static void SerializeAngle(XmlWriter w, AngleHelper angleHelper, CalibrationHelper calibrationHelper)
