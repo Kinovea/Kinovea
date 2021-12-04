@@ -341,11 +341,10 @@ namespace Kinovea.ScreenManager
                 infosFading.WriteXml(w);
                 w.WriteEndElement();
             }
-
-            //if (ShouldSerializeSpreadsheet(filter))
-            //{
-            //    MeasurementSerializationHelper.SerializeAngle(w, angleHelper, CalibrationHelper);
-            //}
+        }
+        public MeasuredDataAngle CollectMeasuredData()
+        {
+            return MeasurementSerializationHelper.CollectAngle(name, angleHelper, CalibrationHelper);
         }
         #endregion
         

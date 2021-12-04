@@ -15,9 +15,11 @@ namespace Kinovea.ScreenManager
         public Size ImageSize { get; set; }
         public float CaptureFramerate { get; set; }
         public float UserFramerate { get; set; }
+        public MeasuredDataUnits Units { get; set; }
 
         public List<MeasuredDataKeyframe> Keyframes { get; set; } = new List<MeasuredDataKeyframe>();
         public List<MeasuredDataPosition> Positions { get; set; } = new List<MeasuredDataPosition>();
         public List<MeasuredDataDistance> Distances { get; set; } = new List<MeasuredDataDistance>();
+        public List<MeasuredDataAngle> Angles { get; set; } = new List<MeasuredDataAngle>();
     }
 }

@@ -891,6 +891,21 @@ namespace Kinovea.ScreenManager
             md.CaptureFramerate = (float)calibrationHelper.CaptureFramesPerSecond;
             md.UserFramerate = (float)(1000.0 / userInterval);
 
+            MeasuredDataUnits mdu = new MeasuredDataUnits();
+            mdu.LengthUnit = CalibrationHelper.LengthUnit.ToString();
+            mdu.LengthSymbol = UnitHelper.LengthAbbreviation(CalibrationHelper.LengthUnit);
+            mdu.SpeedUnit = PreferencesManager.PlayerPreferences.SpeedUnit.ToString();
+            mdu.SpeedSymbol = UnitHelper.SpeedAbbreviation(PreferencesManager.PlayerPreferences.SpeedUnit);
+            mdu.AccelerationUnit = PreferencesManager.PlayerPreferences.AccelerationUnit.ToString();
+            mdu.AccelerationSymbol = UnitHelper.AccelerationAbbreviation(PreferencesManager.PlayerPreferences.AccelerationUnit);
+            mdu.AngleUnit = PreferencesManager.PlayerPreferences.AngleUnit.ToString();
+            mdu.AngleSymbol = UnitHelper.AngleAbbreviation(PreferencesManager.PlayerPreferences.AngleUnit);
+            mdu.AngularVelocityUnit = PreferencesManager.PlayerPreferences.AngularVelocityUnit.ToString();
+            mdu.AngularVelocitySymbol = UnitHelper.AngularVelocityAbbreviation(PreferencesManager.PlayerPreferences.AngularVelocityUnit);
+            mdu.AngularAccelerationUnit = PreferencesManager.PlayerPreferences.AngularAccelerationUnit.ToString();
+            mdu.AngularAccelerationSymbol = UnitHelper.AngularAccelerationAbbreviation(PreferencesManager.PlayerPreferences.AngularAccelerationUnit);
+            md.Units = mdu;
+
             foreach (Keyframe kf in Keyframes.Where(kf => !kf.Disabled))
             {
                 var mdkf = kf.CollectMeasuredData();
@@ -898,6 +913,7 @@ namespace Kinovea.ScreenManager
 
                 List<MeasuredDataPosition> mdps = new List<MeasuredDataPosition>();
                 List<MeasuredDataDistance> mdds = new List<MeasuredDataDistance>();
+                List<MeasuredDataAngle> mdas = new List<MeasuredDataAngle>();
                 foreach (AbstractDrawing d in kf.Drawings)
                 {
                     // Positions from markers.
@@ -916,25 +932,33 @@ namespace Kinovea.ScreenManager
                     if (d is DrawingGenericPosture)
                         mdds.AddRange(((DrawingGenericPosture)d).CollectMeasuredDataDistances());
 
-                    // Angles.
+                    // Angles from angle tools.
+                    if (d is DrawingAngle)
+                        mdas.Add(((DrawingAngle)d).CollectMeasuredData());
 
-
+                    // Angles from postures.
+                    if (d is DrawingGenericPosture)
+                        mdas.AddRange(((DrawingGenericPosture)d).CollectMeasuredDataAngles());
 
                 }
 
                 // Sort drawings on the same keyframe by name.
                 mdps.Sort((a, b) => a.Name.CompareTo(b.Name));
                 mdds.Sort((a, b) => a.Name.CompareTo(b.Name));
+                mdas.Sort((a, b) => a.Name.CompareTo(b.Name));
 
                 // Inject time.
                 foreach (MeasuredDataPosition mdp in mdps)
                     mdp.Time = mdkf.Time;
                 foreach (MeasuredDataDistance mdd in mdds)
                     mdd.Time = mdkf.Time;
+                foreach (MeasuredDataAngle mda in mdas)
+                    mda.Time = mdkf.Time;
 
                 // Add to the global list.
                 md.Positions.AddRange(mdps);
                 md.Distances.AddRange(mdds);
+                md.Angles.AddRange(mdas);
             }
 
             // Times.

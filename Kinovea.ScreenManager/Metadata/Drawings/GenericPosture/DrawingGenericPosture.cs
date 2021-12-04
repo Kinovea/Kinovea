@@ -457,6 +457,25 @@ namespace Kinovea.ScreenManager
 
             return mdds;
         }
+        public List<MeasuredDataAngle> CollectMeasuredDataAngles()
+        {
+            List<MeasuredDataAngle> mdas = new List<MeasuredDataAngle>();
+
+            for (int i = 0; i < GenericPostureAngles.Count; i++)
+            {
+                GenericPostureAngle gpa = GenericPostureAngles[i];
+
+                MeasuredDataAngle mda = new MeasuredDataAngle();
+                string exportedName = name;
+                if (!string.IsNullOrEmpty(gpa.Name))
+                    exportedName = exportedName + " - " + gpa.Name;
+
+                AngleHelper angleHelper = AngleHelpers[i];
+                mdas.Add(MeasurementSerializationHelper.CollectAngle(exportedName, angleHelper, CalibrationHelper));
+            }
+
+            return mdas;
+        }
         #endregion
 
         #region IScalable implementation

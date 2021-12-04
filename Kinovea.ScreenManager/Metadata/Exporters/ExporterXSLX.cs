@@ -42,7 +42,9 @@ namespace Kinovea.ScreenManager
                 row += ExportPositions(sl, md, row);
                 row++;
                 row += ExportDistances(sl, md, row);
-
+                row++;
+                row += ExportAngles(sl, md, row);
+                
                 sl.SaveAs(path);
             }
         }
@@ -84,8 +86,8 @@ namespace Kinovea.ScreenManager
             writtenRows++;
 
             sl.SetCellValue(row + writtenRows, 1, "Name");
-            sl.SetCellValue(row + writtenRows, 2, "X");
-            sl.SetCellValue(row + writtenRows, 3, "Y");
+            sl.SetCellValue(row + writtenRows, 2, string.Format("X ({0})", md.Units.LengthSymbol));
+            sl.SetCellValue(row + writtenRows, 3, string.Format("Y ({0})", md.Units.LengthSymbol));
             sl.SetCellValue(row + writtenRows, 4, "Time");
             writtenRows++;
 
@@ -113,7 +115,7 @@ namespace Kinovea.ScreenManager
             writtenRows++;
 
             sl.SetCellValue(row + writtenRows, 1, "Name");
-            sl.SetCellValue(row + writtenRows, 2, "Length (?)");
+            sl.SetCellValue(row + writtenRows, 2, string.Format("Length ({0})", md.Units.LengthSymbol));
             sl.SetCellValue(row + writtenRows, 3, "Time");
             writtenRows++;
 
@@ -127,5 +129,34 @@ namespace Kinovea.ScreenManager
 
             return writtenRows;
         }
+
+        private int ExportAngles(SLDocument sl, MeasuredData md, int row)
+        {
+            if (md.Angles.Count == 0)
+                return 0;
+
+            int writtenRows = 0;
+
+            sl.SetCellValue(row, 1, "Angles");
+            sl.MergeWorksheetCells(row, 1, row, 3);
+            writtenRows++;
+
+            sl.SetCellValue(row + writtenRows, 1, "Name");
+            sl.SetCellValue(row + writtenRows, 2, string.Format("Value ({0})", md.Units.AngleSymbol));
+            sl.SetCellValue(row + writtenRows, 3, "Time");
+            writtenRows++;
+
+            foreach (MeasuredDataAngle value in md.Angles)
+            {
+                sl.SetCellValue(row + writtenRows, 1, value.Name);
+                sl.SetCellValue(row + writtenRows, 2, value.Value);
+                sl.SetCellValue(row + writtenRows, 3, value.Time);
+                writtenRows++;
+            }
+
+            return writtenRows;
+        }
+
+
     }
 }

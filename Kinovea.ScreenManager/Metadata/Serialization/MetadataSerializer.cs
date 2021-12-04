@@ -87,39 +87,6 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Save the data to a format suited for converters (not KVA).
-        /// </summary>
-        public string SaveToSpreadsheetString(Metadata metadata)
-        {
-            if (metadata == null)
-                throw new ArgumentNullException("metadata");
-
-            this.metadata = metadata;
-
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.Indent = false;
-            settings.CloseOutput = true;
-
-            StringBuilder builder = new StringBuilder();
-            using (XmlWriter w = XmlWriter.Create(builder, settings))
-            {
-                try
-                {
-                    WriteXmlSpreadsheet(w);
-                }
-                catch (Exception e)
-                {
-                    log.Error("An error happened during the writing of the kva string");
-                    log.Error(e);
-                }
-            }
-
-            return builder.ToString();
-
-        }
-
-
-        /// <summary>
         /// Save to the last known storage location of this KVA if any, otherwise ask for a target filename.
         /// </summary>
         public void UserSave(Metadata metadata, string videoFile)
@@ -467,29 +434,7 @@ namespace Kinovea.ScreenManager
 
             w.WriteEndElement();
         }
-        private void WriteXmlSpreadsheet(XmlWriter w)
-        {
-            // Convert the metadata to an XML format suited for converters.
-            //w.WriteStartElement("KinoveaMeasurementData");
 
-            //WriteGeneralInformationSpreadsheet(w);
-            //WriteUnits(w);
-            //WriteKeyframes(w, SerializationFilter.Spreadsheet);
-            //WritePositions(w);
-            //WriteDistances(w);
-            //WriteAngles(w);
-            //WriteTimes(w);
-            //WriteTracks(w, SerializationFilter.Spreadsheet);
-            
-            // TODO:
-            // Distances: circle radius.
-            // Positions: circle center.
-            // Tracks.
-            // Tracked objects.
-            // Tracked coordinate system.
-
-            w.WriteEndElement();
-        }
         private void WriteGeneralInformation(XmlWriter w)
         {
             w.WriteElementString("FormatVersion", "2.0");
@@ -510,21 +455,6 @@ namespace Kinovea.ScreenManager
             w.WriteElementString("TimeOrigin", metadata.TimeOrigin.ToString());
 
             WriteCalibrationHelp(w);
-        }
-
-        private void WriteGeneralInformationSpreadsheet(XmlWriter w)
-        {
-            w.WriteElementString("FormatVersion", "1.0");
-            w.WriteElementString("Producer", Software.ApplicationName + "." + Software.Version);
-            w.WriteElementString("OriginalFilename", Path.GetFileNameWithoutExtension(metadata.VideoPath));
-            w.WriteElementString("FullPath", metadata.VideoPath);
-
-            if (!string.IsNullOrEmpty(metadata.GlobalTitle))
-                w.WriteElementString("GlobalTitle", metadata.GlobalTitle);
-
-            w.WriteElementString("ImageSize", metadata.ImageSize.Width + ";" + metadata.ImageSize.Height);
-            w.WriteElementString("CaptureFramerate", string.Format(CultureInfo.InvariantCulture, "{0}", metadata.CalibrationHelper.CaptureFramesPerSecond));
-            w.WriteElementString("UserFramerate", string.Format(CultureInfo.InvariantCulture, "{0}", 1000 / metadata.UserInterval));
         }
 
         private void WriteKeyframes(XmlWriter w, SerializationFilter filter)
@@ -627,76 +557,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Spreadsheet specific
-        private void WriteUnits(XmlWriter w)
-        {
-            w.WriteStartElement("Units");
-
-            w.WriteStartElement("LengthUnit");
-            w.WriteAttributeString("type", metadata.CalibrationHelper.LengthUnit.ToString());
-            w.WriteAttributeString("symbol", UnitHelper.LengthAbbreviation(metadata.CalibrationHelper.LengthUnit));
-            w.WriteEndElement();
-
-            w.WriteStartElement("SpeedUnit");
-            w.WriteAttributeString("type", PreferencesManager.PlayerPreferences.SpeedUnit.ToString());
-            w.WriteAttributeString("symbol", UnitHelper.SpeedAbbreviation(PreferencesManager.PlayerPreferences.SpeedUnit));
-            w.WriteEndElement();
-
-            w.WriteStartElement("AccelerationUnit");
-            w.WriteAttributeString("type", PreferencesManager.PlayerPreferences.AccelerationUnit.ToString());
-            w.WriteAttributeString("symbol", UnitHelper.AccelerationAbbreviation(PreferencesManager.PlayerPreferences.AccelerationUnit));
-            w.WriteEndElement();
-
-            w.WriteStartElement("AngleUnit");
-            w.WriteAttributeString("type", PreferencesManager.PlayerPreferences.AngleUnit.ToString());
-            w.WriteAttributeString("symbol", UnitHelper.AngleAbbreviation(PreferencesManager.PlayerPreferences.AngleUnit));
-            w.WriteEndElement();
-
-            w.WriteStartElement("AngularVelocityUnit");
-            w.WriteAttributeString("type", PreferencesManager.PlayerPreferences.AngularVelocityUnit.ToString());
-            w.WriteAttributeString("symbol", UnitHelper.AngularVelocityAbbreviation(PreferencesManager.PlayerPreferences.AngularVelocityUnit));
-            w.WriteEndElement();
-
-            w.WriteStartElement("AngularAccelerationUnit");
-            w.WriteAttributeString("type", PreferencesManager.PlayerPreferences.AngularAccelerationUnit.ToString());
-            w.WriteAttributeString("symbol", UnitHelper.AngularAccelerationAbbreviation(PreferencesManager.PlayerPreferences.AngularAccelerationUnit));
-            w.WriteEndElement();
-            
-            w.WriteEndElement();
-        }
-        
-        private void WriteAngles(XmlWriter w)
-        {
-            //w.WriteStartElement("Angles");
-
-            //foreach (DrawingAngle drawing in metadata.Angles())
-            //{
-            //    w.WriteStartElement("Angle");
-            //    w.WriteAttributeString("name", drawing.Name);
-            //    drawing.WriteXml(w, SerializationFilter.Spreadsheet);
-            //    w.WriteEndElement();
-            //}
-
-            //foreach (DrawingGenericPosture drawing in metadata.GenericPostures())
-            //{
-            //    for (int i = 0; i < drawing.GenericPostureAngles.Count; i++)
-            //    {
-            //        w.WriteStartElement("Angle");
-
-            //        string name = drawing.Name;
-            //        GenericPostureAngle gpa = drawing.GenericPostureAngles[i];
-            //        if (!string.IsNullOrEmpty(gpa.Name))
-            //            name = name + " - " + gpa.Name;
-            //        w.WriteAttributeString("name", name);
-
-            //        AngleHelper angleHelper = drawing.AngleHelpers[i];
-            //        MeasurementSerializationHelper.SerializeAngle(w, angleHelper, drawing.CalibrationHelper);
-
-            //        w.WriteEndElement();
-            //    }
-            //}
-
-            //w.WriteEndElement();
-        }
         private void WriteTimes(XmlWriter w)
         {
             w.WriteStartElement("Times");

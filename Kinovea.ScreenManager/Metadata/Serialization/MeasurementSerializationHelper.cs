@@ -36,13 +36,15 @@ namespace Kinovea.ScreenManager
             return md;
         }
 
-        public static void SerializeAngle(XmlWriter w, AngleHelper angleHelper, CalibrationHelper calibrationHelper)
+        public static MeasuredDataAngle CollectAngle(string name, AngleHelper angleHelper, CalibrationHelper calibrationHelper)
         {
+            MeasuredDataAngle md = new MeasuredDataAngle();
+            md.Name = name;
+
             float angle = calibrationHelper.ConvertAngle(angleHelper.CalibratedAngle);
-            string value = String.Format(CultureInfo.InvariantCulture, "{0:0.00}", angle);
-            string valueLocal = String.Format("{0:0.00}", angle);
-            w.WriteAttributeString("value", value);
-            w.WriteAttributeString("valueLocal", valueLocal);
+            md.Value = angle;
+            md.ValueLocal = String.Format("{0:0.00}", angle);
+            return md;
         }
     }
 }
