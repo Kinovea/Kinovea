@@ -962,10 +962,13 @@ namespace Kinovea.ScreenManager
             }
 
             // Times.
+            foreach (DrawingChrono chrono in ChronoManager.Drawings)
+                md.Times.Add(chrono.CollectMeasuredData());
+            md.Times.Sort((a, b) => a.Start.CompareTo(b.Start));
+
             // Tracks.
             // Timelines.
 
-            
             return md;
         }
 

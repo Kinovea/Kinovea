@@ -44,7 +44,8 @@ namespace Kinovea.ScreenManager
                 row += ExportDistances(sl, md, row);
                 row++;
                 row += ExportAngles(sl, md, row);
-                
+                row++;
+                row += ExportTimes(sl, md, row);
                 sl.SaveAs(path);
             }
         }
@@ -151,6 +152,35 @@ namespace Kinovea.ScreenManager
                 sl.SetCellValue(row + writtenRows, 1, value.Name);
                 sl.SetCellValue(row + writtenRows, 2, value.Value);
                 sl.SetCellValue(row + writtenRows, 3, value.Time);
+                writtenRows++;
+            }
+
+            return writtenRows;
+        }
+
+        private int ExportTimes(SLDocument sl, MeasuredData md, int row)
+        {
+            if (md.Times.Count == 0)
+                return 0;
+
+            int writtenRows = 0;
+
+            sl.SetCellValue(row, 1, "Times");
+            sl.MergeWorksheetCells(row, 1, row, 4);
+            writtenRows++;
+
+            sl.SetCellValue(row + writtenRows, 1, "Name");
+            sl.SetCellValue(row + writtenRows, 2, "Duration");
+            sl.SetCellValue(row + writtenRows, 3, "Start");
+            sl.SetCellValue(row + writtenRows, 4, "Stop");
+            writtenRows++;
+
+            foreach (MeasuredDataTime value in md.Times)
+            {
+                sl.SetCellValue(row + writtenRows, 1, value.Name);
+                sl.SetCellValue(row + writtenRows, 2, value.Duration);
+                sl.SetCellValue(row + writtenRows, 3, value.Start);
+                sl.SetCellValue(row + writtenRows, 4, value.Stop);
                 writtenRows++;
             }
 
