@@ -69,8 +69,7 @@ namespace Kinovea.ScreenManager
         public static void Serialize(XmlWriter w, Keyframe keyframe, SerializationFilter filter)
         {
             w.WriteStartElement("Keyframe");
-            if (filter != SerializationFilter.Spreadsheet)
-                w.WriteAttributeString("id", keyframe.Id.ToString());
+            w.WriteAttributeString("id", keyframe.Id.ToString());
             keyframe.WriteXml(w, filter);
             w.WriteEndElement();
         }

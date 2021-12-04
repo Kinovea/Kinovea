@@ -342,10 +342,10 @@ namespace Kinovea.ScreenManager
                 w.WriteEndElement();
             }
 
-            if (ShouldSerializeSpreadsheet(filter))
-            {
-                MeasurementSerializationHelper.SerializeAngle(w, angleHelper, CalibrationHelper);
-            }
+            //if (ShouldSerializeSpreadsheet(filter))
+            //{
+            //    MeasurementSerializationHelper.SerializeAngle(w, angleHelper, CalibrationHelper);
+            //}
         }
         #endregion
         

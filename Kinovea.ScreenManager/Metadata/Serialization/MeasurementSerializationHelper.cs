@@ -11,17 +11,16 @@ namespace Kinovea.ScreenManager
 {
     public static class MeasurementSerializationHelper
     {
-        public static void SerializePosition(XmlWriter w, PointF p, CalibrationHelper calibrationHelper)
+        public static MeasuredDataPosition CollectPosition(string name, PointF p, CalibrationHelper calibrationHelper)
         {
+            MeasuredDataPosition md = new MeasuredDataPosition();
+            md.Name = name;
             PointF coords = calibrationHelper.GetPoint(p);
-            string x = String.Format(CultureInfo.InvariantCulture, "{0:0.00}", coords.X);
-            string y = String.Format(CultureInfo.InvariantCulture, "{0:0.00}", coords.Y);
-            string xLocal = String.Format("{0:0.00}", coords.X);
-            string yLocal = String.Format("{0:0.00}", coords.Y);
-            w.WriteAttributeString("x", x);
-            w.WriteAttributeString("y", y);
-            w.WriteAttributeString("xLocal", xLocal);
-            w.WriteAttributeString("yLocal", yLocal);
+            md.X = coords.X;
+            md.Y = coords.Y;
+            md.XLocal = String.Format("{0:0.00}", coords.X);
+            md.YLocal = String.Format("{0:0.00}", coords.Y);
+            return md;
         }
 
         public static void SerializeDistance(XmlWriter w, PointF p1, PointF p2, CalibrationHelper calibrationHelper)

@@ -237,10 +237,6 @@ namespace Kinovea.ScreenManager
         {
             return (filter & SerializationFilter.KVA) == SerializationFilter.KVA;
         }
-        public bool ShouldSerializeSpreadsheet(SerializationFilter filter)
-        {
-            return (filter & SerializationFilter.Spreadsheet) == SerializationFilter.Spreadsheet;
-        }
         #endregion
     }
 }

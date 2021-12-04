@@ -878,6 +878,78 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
+        /// <summary>
+        /// Collect measured data for spreadsheet export.
+        /// </summary>
+        public MeasuredData CollectMeasuredData()
+        {
+            MeasuredData md = new MeasuredData();
+            md.Producer = Software.ApplicationName + "." + Software.Version;
+            md.OriginalFilename = Path.GetFileNameWithoutExtension(videoPath);
+            md.FullPath = videoPath;
+            md.ImageSize = imageSize;
+            md.CaptureFramerate = (float)calibrationHelper.CaptureFramesPerSecond;
+            md.UserFramerate = (float)(1000.0 / userInterval);
+
+            foreach (Keyframe kf in Keyframes.Where(kf => !kf.Disabled))
+            {
+                var mdkf = kf.CollectMeasuredData();
+                md.Keyframes.Add(mdkf);
+
+                List<MeasuredDataPosition> mdps = new List<MeasuredDataPosition>();
+                foreach (AbstractDrawing d in kf.Drawings)
+                {
+                    // Positions from markers.
+                    if (d is DrawingCrossMark)
+                        mdps.Add(((DrawingCrossMark)d).CollectMeasuredData());
+
+                    // Positions from postures.
+                    if (d is DrawingGenericPosture)
+                    {
+                        GenericPosture gp = ((DrawingGenericPosture)d).GenericPosture;
+                        foreach (GenericPosturePosition gpp in gp.Positions)
+                        {
+                            if (gpp.Point < 0)
+                                continue;
+
+                            MeasuredDataPosition mdp = new MeasuredDataPosition();
+                            string name = d.Name;
+                            if (!string.IsNullOrEmpty(gpp.Name))
+                                name = name + " - " + gpp.Name;
+
+                            mdps.Add(MeasurementSerializationHelper.CollectPosition(name, gp.PointList[gpp.Point], ((DrawingGenericPosture)d).CalibrationHelper));
+                        }
+
+                        foreach (GenericPostureComputedPoint gpcp in gp.ComputedPoints)
+                        {
+                            string name = d.Name;
+                            if (!string.IsNullOrEmpty(gpcp.Name))
+                                name = name + " - " + gpcp.Name;
+
+                            PointF p = gpcp.ComputeLocation(gp);
+                            mdps.Add(MeasurementSerializationHelper.CollectPosition(name, p, ((DrawingGenericPosture)d).CalibrationHelper));
+                        }
+                    }
+
+                    // Distances from lines.
+
+                }
+
+                // Sort drawings on the same keyframe by name.
+                mdps.Sort((a, b) => a.Name.CompareTo(b.Name));
+
+                // Inject time.
+                foreach (MeasuredDataPosition mdp in mdps)
+                    mdp.Time = mdkf.Time;
+
+                // Add to the global list.
+                md.Positions.AddRange(mdps);
+            }
+
+            
+            return md;
+        }
+
         public void PostSetup(bool init)
         {
             if (init)

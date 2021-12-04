@@ -1127,10 +1127,10 @@ namespace Kinovea.ScreenManager
                 w.WriteEndElement();
             }
 
-            if (ShouldSerializeSpreadsheet(filter))
-            {
-                TrackPointsToSpreadsheetXml(w);
-            }
+            //if (ShouldSerializeSpreadsheet(filter))
+            //{
+            //    TrackPointsToSpreadsheetXml(w);
+            //}
         }
         private void TrackPointsToXml(XmlWriter w)
         {
@@ -1150,35 +1150,35 @@ namespace Kinovea.ScreenManager
             w.WriteEndElement();
         }
 
-        private void TrackPointsToSpreadsheetXml(XmlWriter w)
-        {
-            w.WriteStartElement("TrackPointList");
-            w.WriteAttributeString("Count", positions.Count.ToString());
+        //private void TrackPointsToSpreadsheetXml(XmlWriter w)
+        //{
+        //    w.WriteStartElement("TrackPointList");
+        //    w.WriteAttributeString("Count", positions.Count.ToString());
             
-            if (positions.Count == 0)
-            {
-                w.WriteEndElement();
-                return;
-            }
+        //    if (positions.Count == 0)
+        //    {
+        //        w.WriteEndElement();
+        //        return;
+        //    }
             
-            foreach (AbstractTrackPoint tp in positions)
-            {
-                w.WriteStartElement("TrackPoint");
+        //    foreach (AbstractTrackPoint tp in positions)
+        //    {
+        //        w.WriteStartElement("TrackPoint");
 
-                PointF p = parentMetadata.CalibrationHelper.GetPointAtTime(tp.Point, tp.T);
-                string userT = parentMetadata.TimeCodeBuilder(tp.T, TimeType.Absolute, TimecodeFormat.Unknown, false);
+        //        PointF p = parentMetadata.CalibrationHelper.GetPointAtTime(tp.Point, tp.T);
+        //        string userT = parentMetadata.TimeCodeBuilder(tp.T, TimeType.Absolute, TimecodeFormat.Unknown, false);
 
-                w.WriteAttributeString("time", userT);
-                w.WriteAttributeString("x", String.Format("{0:0.00}", p.X));
-                w.WriteAttributeString("y", String.Format("{0:0.00}", p.Y));
-                w.WriteAttributeString("x_invariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", p.X));
-                w.WriteAttributeString("y_invariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", p.Y));
+        //        w.WriteAttributeString("time", userT);
+        //        w.WriteAttributeString("x", String.Format("{0:0.00}", p.X));
+        //        w.WriteAttributeString("y", String.Format("{0:0.00}", p.Y));
+        //        w.WriteAttributeString("x_invariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", p.X));
+        //        w.WriteAttributeString("y_invariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", p.Y));
 
-                w.WriteEndElement();
-            }
+        //        w.WriteEndElement();
+        //    }
             
-            w.WriteEndElement();
-        }
+        //    w.WriteEndElement();
+        //}
 
         public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {

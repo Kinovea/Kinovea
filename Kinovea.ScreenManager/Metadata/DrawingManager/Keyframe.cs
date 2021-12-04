@@ -201,18 +201,19 @@ namespace Kinovea.ScreenManager
                 }
                 w.WriteEndElement();
             }
-
-            if ((filter & SerializationFilter.Spreadsheet) == SerializationFilter.Spreadsheet)
-            {
-                if (metadata.TimeCodeBuilder == null)
-                    return;
-
-                w.WriteAttributeString("name", Title);
-
-                string userTime = metadata.TimeCodeBuilder(position, TimeType.UserOrigin, TimecodeFormat.Unknown, false);
-                w.WriteAttributeString("time", userTime);
-            }
         }
+
+        public MeasuredDataKeyframe CollectMeasuredData()
+        {
+            MeasuredDataKeyframe md = new MeasuredDataKeyframe();
+            md.Name = Title;
+
+            string userTime = metadata.TimeCodeBuilder(position, TimeType.UserOrigin, TimecodeFormat.Unknown, false);
+            md.Time = userTime;
+
+            return md;
+        }
+
         private void ReadXml(XmlReader r, PointF scale, TimestampMapper timestampMapper)
         {
             if (r.MoveToAttribute("id"))

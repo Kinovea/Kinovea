@@ -470,16 +470,16 @@ namespace Kinovea.ScreenManager
         private void WriteXmlSpreadsheet(XmlWriter w)
         {
             // Convert the metadata to an XML format suited for converters.
-            w.WriteStartElement("KinoveaMeasurementData");
+            //w.WriteStartElement("KinoveaMeasurementData");
 
-            WriteGeneralInformationSpreadsheet(w);
-            WriteUnits(w);
-            WriteKeyframes(w, SerializationFilter.Spreadsheet);
-            WritePositions(w);
-            WriteDistances(w);
-            WriteAngles(w);
-            WriteTimes(w);
-            WriteTracks(w, SerializationFilter.Spreadsheet);
+            //WriteGeneralInformationSpreadsheet(w);
+            //WriteUnits(w);
+            //WriteKeyframes(w, SerializationFilter.Spreadsheet);
+            //WritePositions(w);
+            //WriteDistances(w);
+            //WriteAngles(w);
+            //WriteTimes(w);
+            //WriteTracks(w, SerializationFilter.Spreadsheet);
             
             // TODO:
             // Distances: circle radius.
@@ -554,8 +554,8 @@ namespace Kinovea.ScreenManager
                 }
 
                 w.WriteStartElement("Chrono");
-                if (filter != SerializationFilter.Spreadsheet) 
-                    w.WriteAttributeString("id", chrono.Id.ToString());
+                //if (filter != SerializationFilter.Spreadsheet) 
+                w.WriteAttributeString("id", chrono.Id.ToString());
                 w.WriteAttributeString("name", chrono.Name);
                 chrono.WriteXml(w, filter);
                 w.WriteEndElement();
@@ -576,8 +576,8 @@ namespace Kinovea.ScreenManager
                 }
 
                 w.WriteStartElement("Track");
-                if (filter != SerializationFilter.Spreadsheet)
-                    w.WriteAttributeString("id", track.Id.ToString());
+                //if (filter != SerializationFilter.Spreadsheet)
+                w.WriteAttributeString("id", track.Id.ToString());
                 w.WriteAttributeString("name", track.Name);
                 track.WriteXml(w, filter);
                 w.WriteEndElement();
@@ -663,57 +663,7 @@ namespace Kinovea.ScreenManager
             
             w.WriteEndElement();
         }
-        private void WritePositions(XmlWriter w)
-        {
-            w.WriteStartElement("Positions");
-
-            foreach (DrawingCrossMark drawing in metadata.CrossMarks())
-            {
-                w.WriteStartElement("Position");
-                w.WriteAttributeString("name", drawing.Name);
-                drawing.WriteXml(w, SerializationFilter.Spreadsheet);
-                w.WriteEndElement();
-            }
-
-            foreach (DrawingGenericPosture drawing in metadata.GenericPostures())
-            {
-                GenericPosture gp = drawing.GenericPosture;
-
-                foreach (GenericPosturePosition gpp in gp.Positions)
-                {
-                    if (gpp.Point < 0)
-                        continue;
-
-                    w.WriteStartElement("Position");
-
-                    string name = drawing.Name;
-                    if (!string.IsNullOrEmpty(gpp.Name))
-                        name = name + " - " + gpp.Name;
-                    w.WriteAttributeString("name", name);
-
-                    MeasurementSerializationHelper.SerializePosition(w, gp.PointList[gpp.Point], drawing.CalibrationHelper);
-                    
-                    w.WriteEndElement();
-                }
-
-                foreach (GenericPostureComputedPoint gpcp in gp.ComputedPoints)
-                {
-                    w.WriteStartElement("Position");
-
-                    string name = drawing.Name;
-                    if (!string.IsNullOrEmpty(gpcp.Name))
-                        name = name + " - " + gpcp.Name;
-                    w.WriteAttributeString("name", name);
-
-                    PointF p = gpcp.ComputeLocation(gp);
-                    MeasurementSerializationHelper.SerializePosition(w, p, drawing.CalibrationHelper);
-
-                    w.WriteEndElement();
-                }
-            }
-
-            w.WriteEndElement();
-        }
+        
         private void WriteDistances(XmlWriter w)
         {
             w.WriteStartElement("Distances");
@@ -722,7 +672,7 @@ namespace Kinovea.ScreenManager
             {
                 w.WriteStartElement("Distance");
                 w.WriteAttributeString("name", drawing.Name);
-                drawing.WriteXml(w, SerializationFilter.Spreadsheet);
+                //drawing.WriteXml(w, SerializationFilter.Spreadsheet);
                 w.WriteEndElement();
             }
 
@@ -751,36 +701,36 @@ namespace Kinovea.ScreenManager
         }
         private void WriteAngles(XmlWriter w)
         {
-            w.WriteStartElement("Angles");
+            //w.WriteStartElement("Angles");
 
-            foreach (DrawingAngle drawing in metadata.Angles())
-            {
-                w.WriteStartElement("Angle");
-                w.WriteAttributeString("name", drawing.Name);
-                drawing.WriteXml(w, SerializationFilter.Spreadsheet);
-                w.WriteEndElement();
-            }
+            //foreach (DrawingAngle drawing in metadata.Angles())
+            //{
+            //    w.WriteStartElement("Angle");
+            //    w.WriteAttributeString("name", drawing.Name);
+            //    drawing.WriteXml(w, SerializationFilter.Spreadsheet);
+            //    w.WriteEndElement();
+            //}
 
-            foreach (DrawingGenericPosture drawing in metadata.GenericPostures())
-            {
-                for (int i = 0; i < drawing.GenericPostureAngles.Count; i++)
-                {
-                    w.WriteStartElement("Angle");
+            //foreach (DrawingGenericPosture drawing in metadata.GenericPostures())
+            //{
+            //    for (int i = 0; i < drawing.GenericPostureAngles.Count; i++)
+            //    {
+            //        w.WriteStartElement("Angle");
 
-                    string name = drawing.Name;
-                    GenericPostureAngle gpa = drawing.GenericPostureAngles[i];
-                    if (!string.IsNullOrEmpty(gpa.Name))
-                        name = name + " - " + gpa.Name;
-                    w.WriteAttributeString("name", name);
+            //        string name = drawing.Name;
+            //        GenericPostureAngle gpa = drawing.GenericPostureAngles[i];
+            //        if (!string.IsNullOrEmpty(gpa.Name))
+            //            name = name + " - " + gpa.Name;
+            //        w.WriteAttributeString("name", name);
 
-                    AngleHelper angleHelper = drawing.AngleHelpers[i];
-                    MeasurementSerializationHelper.SerializeAngle(w, angleHelper, drawing.CalibrationHelper);
+            //        AngleHelper angleHelper = drawing.AngleHelpers[i];
+            //        MeasurementSerializationHelper.SerializeAngle(w, angleHelper, drawing.CalibrationHelper);
 
-                    w.WriteEndElement();
-                }
-            }
+            //        w.WriteEndElement();
+            //    }
+            //}
 
-            w.WriteEndElement();
+            //w.WriteEndElement();
         }
         private void WriteTimes(XmlWriter w)
         {
@@ -791,7 +741,7 @@ namespace Kinovea.ScreenManager
                 w.WriteStartElement("Time");
                 
                 w.WriteAttributeString("name", chrono.Name);
-                chrono.WriteXml(w, SerializationFilter.Spreadsheet);
+                //chrono.WriteXml(w, SerializationFilter.Spreadsheet);
                 
                 w.WriteEndElement();
             }

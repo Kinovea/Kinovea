@@ -278,11 +278,10 @@ namespace Kinovea.ScreenManager
                 infosFading.WriteXml(w);
                 w.WriteEndElement();
             }
-            
-            if(ShouldSerializeSpreadsheet(filter))
-            {
-                MeasurementSerializationHelper.SerializePosition(w, points["0"], CalibrationHelper);
-            }
+        }
+        public MeasuredDataPosition CollectMeasuredData()
+        {
+            return MeasurementSerializationHelper.CollectPosition(name, points["0"], CalibrationHelper);
         }
         #endregion
         

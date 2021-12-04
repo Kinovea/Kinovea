@@ -136,8 +136,7 @@ namespace Kinovea.ScreenManager
             string xmlName = ((XmlTypeAttribute)attributes[0]).TypeName;
 
             w.WriteStartElement(xmlName);
-            if (filter != SerializationFilter.Spreadsheet)
-                w.WriteAttributeString("id", drawing.Id.ToString());
+            w.WriteAttributeString("id", drawing.Id.ToString());
             w.WriteAttributeString("name", drawing.Name);
             drawing.WriteXml(w, filter);
             w.WriteEndElement();

@@ -397,12 +397,12 @@ namespace Kinovea.ScreenManager
                 w.WriteEndElement();
             }
             
-            if(ShouldSerializeSpreadsheet(filter))
-            {
-                PointF a = points["a"];
-                PointF b = points["b"];
-                MeasurementSerializationHelper.SerializeDistance(w, a, b, CalibrationHelper);
-            }
+            //if(ShouldSerializeSpreadsheet(filter))
+            //{
+            //    PointF a = points["a"];
+            //    PointF b = points["b"];
+            //    MeasurementSerializationHelper.SerializeDistance(w, a, b, CalibrationHelper);
+            //}
         }
         #endregion
         

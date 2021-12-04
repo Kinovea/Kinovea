@@ -32,37 +32,71 @@ namespace Kinovea.ScreenManager
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public void Export(string path, XmlDocument xml)
+        public void Export(string path, MeasuredData md)
         {
-
             using (SLDocument sl = new SLDocument())
             {
-                sl.SetCellValue("B3", "Test");
+                int row = 2;
+                row += ExportKeyframes(sl, md, row);
+                row++;
+                row += ExportPositions(sl, md, row);
+
                 sl.SaveAs(path);
             }
+        }
 
-            //string stylesheet = Application.StartupPath + "\\xslt\\kmd2msxml.xsl";
-            //XslCompiledTransform xslt = new XslCompiledTransform();
-            //xslt.Load(stylesheet);
+        private int ExportKeyframes(SLDocument sl, MeasuredData md, int row)
+        {
+            if (md.Keyframes.Count == 0)
+                return 0;
+            
+            int writtenRows = 0;
+            
+            sl.SetCellValue(row, 1, "Keyframes");
+            sl.MergeWorksheetCells(row, 1, row, 2);
+            writtenRows++;
 
-            //XmlWriterSettings settings = new XmlWriterSettings();
-            //settings.Indent = true;
+            sl.SetCellValue(row + writtenRows, 1, "Name");
+            sl.SetCellValue(row + writtenRows, 2, "Time");
+            writtenRows++;
 
-            //try
-            //{
-            //    using (XmlWriter xw = XmlWriter.Create(path, settings))
-            //    {
-            //        //xslt.Transform(kva, xw);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    log.Error("Exception thrown during export to XSLX.");
-            //    log.Error(ex.Message);
-            //    log.Error(ex.Source);
-            //    log.Error(ex.StackTrace);
-            //}
+            foreach (MeasuredDataKeyframe kf in md.Keyframes)
+            {
+                sl.SetCellValue(row + writtenRows, 1, kf.Name);
+                sl.SetCellValue(row + writtenRows, 2, kf.Time);
+                writtenRows++;
+            }
 
+            return writtenRows;
+        }
+
+        private int ExportPositions(SLDocument sl, MeasuredData md, int row)
+        {
+            if (md.Positions.Count == 0)
+                return 0;
+
+            int writtenRows = 0;
+
+            sl.SetCellValue(row, 1, "Positions");
+            sl.MergeWorksheetCells(row, 1, row, 4);
+            writtenRows++;
+
+            sl.SetCellValue(row + writtenRows, 1, "Name");
+            sl.SetCellValue(row + writtenRows, 2, "X");
+            sl.SetCellValue(row + writtenRows, 3, "Y");
+            sl.SetCellValue(row + writtenRows, 4, "Time");
+            writtenRows++;
+
+            foreach (MeasuredDataPosition pos in md.Positions)
+            {
+                sl.SetCellValue(row + writtenRows, 1, pos.Name);
+                sl.SetCellValue(row + writtenRows, 2, pos.X);
+                sl.SetCellValue(row + writtenRows, 3, pos.Y);
+                sl.SetCellValue(row + writtenRows, 4, pos.Time);
+                writtenRows++;
+            }
+
+            return writtenRows;
         }
     }
 }

@@ -12,8 +12,7 @@ namespace Kinovea.ScreenManager
         Core = 1, 
         Style = 2,
         Fading = 4,
-        Spreadsheet = 8,
-        
+
         KVA = Core + Style + Fading,
     }
 }
