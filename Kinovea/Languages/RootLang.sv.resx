@@ -250,4 +250,13 @@
   <data name="dlgPreferences_Player_UnitsSpeed" xml:space="preserve">
     <value>Hastighet:</value>
   </data>
+  <data name="dlgAbout_Citation" xml:space="preserve">
+    <value>Citat</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
+    <value>Bildfrekvens (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_ImageNaming" xml:space="preserve">
+    <value>Namngivning av bilder</value>
+  </data>
 </root>
