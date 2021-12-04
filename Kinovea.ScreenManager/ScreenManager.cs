@@ -1474,7 +1474,7 @@ namespace Kinovea.ScreenManager
             mnuExportVideo.Text = ScreenManagerLang.Generic_ExportVideo;
             mnuExportSpreadsheet.Text = ScreenManagerLang.mnuExportSpreadsheet;
             mnuExportODF.Text = "LibreOffice (.odf)";
-            mnuExportMSXML.Text = "Microsoft Excel (.xml)";
+            mnuExportMSXML.Text = "Microsoft Excel (.xlsx)";
             mnuExportXHTML.Text = "Web (.html)";
             mnuExportTEXT.Text = "Gnuplot (.txt)";
             mnuExportRAW.Text = "Raw (.xml)";
@@ -1620,7 +1620,7 @@ namespace Kinovea.ScreenManager
         }
         private void mnuExportMSXML_OnClick(object sender, EventArgs e)
         {
-            ExportSpreadsheet(MetadataExportFormat.MSXML);	
+            ExportSpreadsheet(MetadataExportFormat.XLSX);	
         }
         private void mnuExportXHTML_OnClick(object sender, EventArgs e)
         {
@@ -1645,9 +1645,25 @@ namespace Kinovea.ScreenManager
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = ScreenManagerLang.dlgExportSpreadsheet_Title;
             saveFileDialog.RestoreDirectory = true;
-            saveFileDialog.Filter = "LibreOffice (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|Web (*.html)|*.html|Gnuplot (*.txt)|*.txt|Raw data (*.xml)|*.xml";
-            saveFileDialog.FilterIndex = ((int)format) + 1;
-                        
+            saveFileDialog.Filter = "LibreOffice (*.ods)|*.ods|Microsoft Excel (*.xlsx)|*.xlsx|Web (*.html)|*.html|Gnuplot (*.txt)|*.txt|Raw data (*.xml)|*.xml";
+            int filterIndex = 5;
+            switch (format)
+            {
+                case MetadataExportFormat.ODF:
+                    filterIndex = 1;
+                    break;
+                case MetadataExportFormat.XLSX:
+                    filterIndex = 2;
+                    break;
+                case MetadataExportFormat.XHTML:
+                    filterIndex = 3;
+                    break;
+                case MetadataExportFormat.TrajectoryText:
+                    filterIndex = 4;
+                    break;
+            }
+
+            saveFileDialog.FilterIndex = filterIndex;
             saveFileDialog.FileName = Path.GetFileNameWithoutExtension(player.FrameServer.Metadata.VideoPath);
 
             if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))

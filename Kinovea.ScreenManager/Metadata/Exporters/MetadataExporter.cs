@@ -10,6 +10,8 @@ namespace Kinovea.ScreenManager
     {
         public static void Export(Metadata metadata, string file, MetadataExportFormat format)
         {
+            // General workflow:
+            // The data is exported 
             // Export the data to an intermediate format that will be consumed by the exporters.
             MetadataSerializer serializer = new MetadataSerializer();
             string xmlString = serializer.SaveToSpreadsheetString(metadata);
@@ -23,10 +25,10 @@ namespace Kinovea.ScreenManager
                 //    exporterODF.Export(file, xml);
                 //    break;
 
-                //case MetadataExportFormat.MSXML:
-                //    ExporterMSXML exporterMSXML = new ExporterMSXML();
-                //    exporterMSXML.Export(file, xml);
-                //    break;
+                case MetadataExportFormat.XLSX:
+                    ExporterXLSX exporterXLSX = new ExporterXLSX();
+                    exporterXLSX.Export(file, xml);
+                    break;
                 case MetadataExportFormat.XHTML:
                     ExporterXHTML exporterXHTML = new ExporterXHTML();
                     exporterXHTML.Export(file, xml);
