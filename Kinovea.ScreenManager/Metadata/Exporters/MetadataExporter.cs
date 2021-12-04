@@ -27,10 +27,10 @@ namespace Kinovea.ScreenManager
                 //    ExporterMSXML exporterMSXML = new ExporterMSXML();
                 //    exporterMSXML.Export(file, xml);
                 //    break;
-                // case MetadataExportFormat.XHTML:
-                //    ExporterXHTML exporterXHTML = new ExporterXHTML();
-                //    exporterXHTML.Export(file, xml);
-                //    break;
+                case MetadataExportFormat.XHTML:
+                    ExporterXHTML exporterXHTML = new ExporterXHTML();
+                    exporterXHTML.Export(file, xml);
+                    break;
                 // case MetadataExportFormat.TrajectoryText:
                 //    ExporterTrajectoryText exporterTrajText = new ExporterTrajectoryText();
                 //    exporterTrajText.Export(file, xml);

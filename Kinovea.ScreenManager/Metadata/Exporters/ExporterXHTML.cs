@@ -31,9 +31,9 @@ namespace Kinovea.ScreenManager
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
-        public void Export(string path, XmlDocument kva)
+        public void Export(string path, XmlDocument xml)
         {
-            string stylesheet = Application.StartupPath + "\\xslt\\kva2xhtml-en.xsl";
+            string stylesheet = Application.StartupPath + "\\xslt\\kmd2xhtml.xsl";
             XslCompiledTransform xslt = new XslCompiledTransform();
             xslt.Load(stylesheet);
             
@@ -45,7 +45,7 @@ namespace Kinovea.ScreenManager
             {
                 using (XmlWriter xw = XmlWriter.Create(path, settings))
                 {
-                    xslt.Transform(kva, xw);
+                    xslt.Transform(xml, xw);
                 }
             }
             catch(Exception ex)

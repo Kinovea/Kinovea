@@ -516,6 +516,7 @@ namespace Kinovea.ScreenManager
         {
             w.WriteElementString("FormatVersion", "1.0");
             w.WriteElementString("Producer", Software.ApplicationName + "." + Software.Version);
+            w.WriteElementString("OriginalFilename", Path.GetFileNameWithoutExtension(metadata.VideoPath));
             w.WriteElementString("FullPath", metadata.VideoPath);
 
             if (!string.IsNullOrEmpty(metadata.GlobalTitle))
