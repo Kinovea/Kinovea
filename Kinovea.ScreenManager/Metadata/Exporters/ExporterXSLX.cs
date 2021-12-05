@@ -44,13 +44,13 @@ namespace Kinovea.ScreenManager
                 
                 int row = 2;
                 row += ExportKeyframes(sl, styles, md, row);
-                row++;
+                row+=2;
                 row += ExportPositions(sl, styles, md, row);
-                row++;
+                row += 2;
                 row += ExportDistances(sl, styles, md, row);
-                row++;
+                row += 2;
                 row += ExportAngles(sl, styles, md, row);
-                row++;
+                row += 2;
                 row += ExportTimes(sl, styles, md, row);
 
                 sl.AutoFitColumn(1, 4);
@@ -84,6 +84,7 @@ namespace Kinovea.ScreenManager
             }
 
             SLStyle normal = sl.CreateStyle();
+            normal.Font.FontName = "Calibri";
             setAllBorders(normal);
 
             SLStyle header = normal.Clone();
@@ -95,7 +96,7 @@ namespace Kinovea.ScreenManager
             setBackgroundColor(kfHeader, System.Drawing.Color.FromArgb(210, 245, 176));
 
             SLStyle timeHeader = header.Clone();
-            kfHeader.Font.Bold = true;
+            timeHeader.Font.Bold = true;
             setBackgroundColor(timeHeader, System.Drawing.Color.FromArgb(194, 223, 255));
 
             SLStyle valueHeader = header.Clone();
