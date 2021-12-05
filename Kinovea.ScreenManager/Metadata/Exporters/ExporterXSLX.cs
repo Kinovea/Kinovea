@@ -35,6 +35,7 @@ namespace Kinovea.ScreenManager
 {
     public class ExporterXLSX
     {
+        private static readonly int margin = 2;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public void Export(string path, MeasuredData md)
@@ -45,13 +46,9 @@ namespace Kinovea.ScreenManager
                 
                 int row = 2;
                 row += ExportKeyframes(sl, styles, md, row);
-                row+=2;
                 row += ExportPositions(sl, styles, md, row);
-                row += 2;
                 row += ExportDistances(sl, styles, md, row);
-                row += 2;
                 row += ExportAngles(sl, styles, md, row);
-                row += 2;
                 row += ExportTimes(sl, styles, md, row);
 
                 sl.AutoFitColumn(1, 4);
@@ -156,7 +153,7 @@ namespace Kinovea.ScreenManager
             sl.SetCellStyle(row + 1, 1, row + 1, 2, styles["valueHeader"]);
             sl.SetCellStyle(row + 2, 2, row + md.Keyframes.Count + 1, 2, styles["time"]);
 
-            return md.Keyframes.Count + 2;
+            return md.Keyframes.Count + 2 + margin;
         }
 
         private int ExportPositions(SLDocument sl, Dictionary<string, SLStyle> styles, MeasuredData md, int row)
@@ -187,7 +184,7 @@ namespace Kinovea.ScreenManager
             sl.SetCellStyle(row + 2, 2, row + md.Positions.Count + 1, 3, styles["number"]);
             sl.SetCellStyle(row + 2, 4, row + md.Positions.Count + 1, 4, styles["time"]);
 
-            return md.Positions.Count + 2;
+            return md.Positions.Count + 2 + margin;
         }
 
         private int ExportDistances(SLDocument sl, Dictionary<string, SLStyle> styles, MeasuredData md, int row)
@@ -216,7 +213,7 @@ namespace Kinovea.ScreenManager
             sl.SetCellStyle(row + 2, 2, row + md.Distances.Count + 1, 2, styles["number"]);
             sl.SetCellStyle(row + 2, 3, row + md.Distances.Count + 1, 3, styles["time"]);
 
-            return md.Distances.Count + 2;
+            return md.Distances.Count + 2 + margin;
         }
 
         private int ExportAngles(SLDocument sl, Dictionary<string, SLStyle> styles, MeasuredData md, int row)
@@ -245,7 +242,7 @@ namespace Kinovea.ScreenManager
             sl.SetCellStyle(row + 2, 2, row + md.Angles.Count + 1, 2, styles["number"]);
             sl.SetCellStyle(row + 2, 3, row + md.Angles.Count + 1, 3, styles["time"]);
 
-            return md.Angles.Count + 2;
+            return md.Angles.Count + 2 + margin;
         }
 
         private int ExportTimes(SLDocument sl, Dictionary<string, SLStyle> styles, MeasuredData md, int row)
@@ -275,7 +272,7 @@ namespace Kinovea.ScreenManager
             sl.SetCellStyle(row + 1, 1, row + 1, 4, styles["valueHeader"]);
             sl.SetCellStyle(row + 2, 2, row + md.Times.Count + 1, 4, styles["time"]);
 
-            return md.Times.Count + 2;
+            return md.Times.Count + 2 + margin;
         }
     }
 }
