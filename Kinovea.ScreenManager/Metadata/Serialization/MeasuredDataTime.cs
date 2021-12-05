@@ -9,8 +9,8 @@ namespace Kinovea.ScreenManager
     public class MeasuredDataTime
     {
         public string Name { get; set; }
-        public string Duration { get; set; }
-        public string Start { get; set; }
-        public string Stop { get; set; }
+        public float Duration { get; set; }
+        public float Start { get; set; }
+        public float Stop { get; set; }
     }
 }

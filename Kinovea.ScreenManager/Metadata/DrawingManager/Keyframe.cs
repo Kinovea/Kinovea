@@ -207,10 +207,7 @@ namespace Kinovea.ScreenManager
         {
             MeasuredDataKeyframe md = new MeasuredDataKeyframe();
             md.Name = Title;
-
-            string userTime = metadata.TimeCodeBuilder(position, TimeType.UserOrigin, TimecodeFormat.Unknown, false);
-            md.Time = userTime;
-
+            md.Time = metadata.GetNumericalTime(position, TimeType.UserOrigin);
             return md;
         }
 

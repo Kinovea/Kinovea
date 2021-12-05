@@ -9,7 +9,6 @@ namespace Kinovea.ScreenManager
     public class MeasuredDataKeyframe
     {
         public string Name { get; set; }
-        public string Time { get; set; }
-        public float TimeValue { get; set; }
+        public float Time { get; set; }
     }
 }

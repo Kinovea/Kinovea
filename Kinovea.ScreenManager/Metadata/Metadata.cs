@@ -904,6 +904,7 @@ namespace Kinovea.ScreenManager
             mdu.AngularVelocitySymbol = UnitHelper.AngularVelocityAbbreviation(PreferencesManager.PlayerPreferences.AngularVelocityUnit);
             mdu.AngularAccelerationUnit = PreferencesManager.PlayerPreferences.AngularAccelerationUnit.ToString();
             mdu.AngularAccelerationSymbol = UnitHelper.AngularAccelerationAbbreviation(PreferencesManager.PlayerPreferences.AngularAccelerationUnit);
+            mdu.TimeSymbol = UnitHelper.TimeAbbreviation(PreferencesManager.PlayerPreferences.TimecodeFormat);
             md.Units = mdu;
 
             foreach (Keyframe kf in Keyframes.Where(kf => !kf.Disabled))
@@ -970,6 +971,67 @@ namespace Kinovea.ScreenManager
             // Timelines.
 
             return md;
+        }
+
+        /// <summary>
+        /// Convert from timestamps to a numerical time format.
+        /// If the preferred time format is not numeric we return seconds.
+        /// TimeType.WorkingZone is not supported.
+        /// </summary>
+        public float GetNumericalTime(long timestamps, TimeType type)
+        {
+            TimecodeFormat tcf = PreferencesManager.PlayerPreferences.TimecodeFormat;
+            
+            // TimecodeFormat.Normalized is not supported at this point.
+            if (tcf == TimecodeFormat.Normalized)
+                tcf = TimecodeFormat.ClassicTime;
+
+            long actualTimestamps = timestamps;
+            if (type == TimeType.UserOrigin)
+                actualTimestamps = timestamps - timeOrigin;
+
+            // TODO: use double for info.AverageTimestampsPerFrame.
+            //double averageTimestampsPerFrame = AverageTimeStampsPerSeconds / FramesPerSeconds;
+            double averageTimestampsPerFrame = this.AverageTimeStampsPerFrame;
+
+            float frames = 0;
+            if (AverageTimeStampsPerFrame != 0)
+                frames = (float)Math.Round(actualTimestamps / averageTimestampsPerFrame);
+
+            if (type == TimeType.Duration)
+                frames++;
+
+            double milliseconds = frames * UserInterval / HighSpeedFactor;
+            
+            double time;
+            switch (tcf)
+            {
+                case TimecodeFormat.Frames:
+                    time = frames;
+                    break;
+                case TimecodeFormat.Milliseconds:
+                    time = milliseconds;
+                    break;
+                case TimecodeFormat.Microseconds:
+                    time = milliseconds * 1000;
+                    break;
+                case TimecodeFormat.TenThousandthOfHours:
+                    // 1 Ten Thousandth of Hour = 360 ms.
+                    time = Math.Round(milliseconds) / 360.0;
+                    break;
+                case TimecodeFormat.HundredthOfMinutes:
+                    // 1 Hundredth of minute = 600 ms.
+                    time = Math.Round(milliseconds) / 600.0;
+                    break;
+                case TimecodeFormat.Timestamps:
+                    time = timestamps;
+                    break;
+                default:
+                    time = Math.Round(milliseconds) / 1000.0;
+                    break;
+            }
+
+            return (float)time;
         }
 
         public void PostSetup(bool init)

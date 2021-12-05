@@ -338,9 +338,10 @@ namespace Kinovea.ScreenManager
 
             if (!styleHelper.Clock && startCountingTimestamp != long.MaxValue && stopCountingTimestamp != long.MaxValue)
             {
-                string userStart = parentMetadata.TimeCodeBuilder(startCountingTimestamp, TimeType.UserOrigin, TimecodeFormat.Unknown, false);
-                string userStop = parentMetadata.TimeCodeBuilder(stopCountingTimestamp, TimeType.UserOrigin, TimecodeFormat.Unknown, false);
-                string userDuration = parentMetadata.TimeCodeBuilder(stopCountingTimestamp - startCountingTimestamp, TimeType.Absolute, TimecodeFormat.Unknown, false);
+                float userStart = parentMetadata.GetNumericalTime(startCountingTimestamp, TimeType.UserOrigin);
+                float userStop = parentMetadata.GetNumericalTime(stopCountingTimestamp, TimeType.UserOrigin);
+                float userDuration = parentMetadata.GetNumericalTime(stopCountingTimestamp - startCountingTimestamp, TimeType.Absolute);
+
                 mdt.Start = userStart;
                 mdt.Stop = userStop;
                 mdt.Duration = userDuration;
@@ -348,15 +349,13 @@ namespace Kinovea.ScreenManager
             else if (styleHelper.Clock)
             {
                 // For clocks using custom time origin return the time of that origin in the global time axis.
-                string userStart = "0";
+                float userStart = 0;
                 if (clockOriginTimestamp == long.MaxValue)
-                    userStart = parentMetadata.TimeCodeBuilder(0, TimeType.Absolute, TimecodeFormat.Unknown, false);
+                    userStart = parentMetadata.GetNumericalTime(0, TimeType.Absolute);
                 else
-                    userStart = parentMetadata.TimeCodeBuilder(clockOriginTimestamp, TimeType.UserOrigin, TimecodeFormat.Unknown, false);
+                    userStart = parentMetadata.GetNumericalTime(clockOriginTimestamp, TimeType.UserOrigin);
 
                 mdt.Start = userStart;
-                mdt.Stop = "";
-                mdt.Duration = "";
             }
 
             return mdt;

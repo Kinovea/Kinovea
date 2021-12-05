@@ -13,7 +13,6 @@ namespace Kinovea.ScreenManager
         public string XLocal { get; set; }
         public float Y { get; set; }
         public string YLocal { get; set; }
-
-        public string Time { get; set; }
+        public float Time { get; set; }
     }
 }

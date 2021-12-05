@@ -20,5 +20,7 @@ namespace Kinovea.ScreenManager
         public string AngularVelocitySymbol { get; set; }
         public string AngularAccelerationUnit { get; set; }
         public string AngularAccelerationSymbol { get; set; }
+
+        public string TimeSymbol { get; set; }
     }
 }
