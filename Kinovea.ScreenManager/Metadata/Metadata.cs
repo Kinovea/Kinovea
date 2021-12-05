@@ -951,7 +951,6 @@ namespace Kinovea.ScreenManager
                     // Angles from postures.
                     if (d is DrawingGenericPosture)
                         mdas.AddRange(((DrawingGenericPosture)d).CollectMeasuredDataAngles());
-
                 }
 
                 // Sort drawings on the same keyframe by name.

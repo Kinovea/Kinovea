@@ -29,6 +29,6 @@ namespace Kinovea.ScreenManager
         XHTML,
         TrajectoryText,
         XLSX,
-        RAW
+        JSON,
     }
 }
