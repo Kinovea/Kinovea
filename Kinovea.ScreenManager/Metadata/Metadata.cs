@@ -527,6 +527,11 @@ namespace Kinovea.ScreenManager
         {
             bool processed = false;
 
+            // If the keyframe is already known (by ID) we don't import nor merge it.
+            Keyframe known = keyframes.FirstOrDefault((kf) => kf.Id == keyframe.Id);
+            if (known != null)
+                return;
+            
             for (int i = 0; i < keyframes.Count; i++)
             {
                 Keyframe k = keyframes[i];
@@ -675,19 +680,25 @@ namespace Kinovea.ScreenManager
             Keyframe keyframe = GetKeyframe(managerId);
             if (keyframe != null)
             {
-                AddDrawing(keyframe, drawing);
+                var known = keyframe.Drawings.FirstOrDefault((d) => d.Id == drawing.Id);
+                if (known == null)
+                    AddDrawing(keyframe, drawing);
                 return;
             }
 
             if (chronoManager.Id == managerId && drawing is DrawingChrono)
             {
-                AddChrono(drawing as DrawingChrono);
+                var known = chronoManager.Drawings.FirstOrDefault((d) => d.Id == drawing.Id);
+                if (known == null)
+                    AddChrono(drawing as DrawingChrono);
                 return;
             }
 
             if (trackManager.Id == managerId && drawing is DrawingTrack)
             {
-                AddTrack(drawing as DrawingTrack);
+                var known = trackManager.Drawings.FirstOrDefault((d) => d.Id == drawing.Id);
+                if (known == null)
+                    AddTrack(drawing as DrawingTrack);
                 return;
             }
         }
