@@ -1669,7 +1669,14 @@ namespace Kinovea.ScreenManager
             if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))
                 return;
 
-            MetadataExporter.Export(player.FrameServer.Metadata, saveFileDialog.FileName, format);
+            try
+            { 
+                MetadataExporter.Export(player.FrameServer.Metadata, saveFileDialog.FileName, format);
+            }
+            catch (Exception e)
+            {
+                log.ErrorFormat("Exception encountered while exporting to spreadsheet.", e);
+            }
         }
         #endregion
 
