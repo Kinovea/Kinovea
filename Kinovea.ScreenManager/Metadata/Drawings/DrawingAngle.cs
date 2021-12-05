@@ -344,6 +344,7 @@ namespace Kinovea.ScreenManager
         }
         public MeasuredDataAngle CollectMeasuredData()
         {
+            angleHelper.Update(points["o"], points["a"], points["b"], signedAngle, counterClockwise, supplementaryAngle, CalibrationHelper);
             return MeasurementSerializationHelper.CollectAngle(name, angleHelper, CalibrationHelper);
         }
         #endregion

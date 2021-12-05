@@ -459,8 +459,8 @@ namespace Kinovea.ScreenManager
         }
         public List<MeasuredDataAngle> CollectMeasuredDataAngles()
         {
+            UpdateAngles();
             List<MeasuredDataAngle> mdas = new List<MeasuredDataAngle>();
-
             for (int i = 0; i < GenericPostureAngles.Count; i++)
             {
                 GenericPostureAngle gpa = GenericPostureAngles[i];
