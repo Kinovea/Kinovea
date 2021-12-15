@@ -262,7 +262,7 @@ namespace Kinovea.ScreenManager
             while (r.NodeType == XmlNodeType.Element)
             {
                 AbstractDrawing drawing = DrawingSerializer.Deserialize(r, scale, TimeHelper.IdentityTimestampMapper, metadata);
-                if (drawing == null || !drawing.IsValid)
+                if (drawing == null || !drawing.IsValid || drawings.Any(d => d.Id == drawing.Id))
                     continue;
 
                 AddDrawing(drawing);

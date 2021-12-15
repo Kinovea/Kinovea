@@ -680,24 +680,24 @@ namespace Kinovea.ScreenManager
             Keyframe keyframe = GetKeyframe(managerId);
             if (keyframe != null)
             {
-                var known = keyframe.Drawings.FirstOrDefault((d) => d.Id == drawing.Id);
-                if (known == null)
+                bool known = keyframe.Drawings.Any(d => d.Id == drawing.Id);
+                if (!known)
                     AddDrawing(keyframe, drawing);
                 return;
             }
 
             if (chronoManager.Id == managerId && drawing is DrawingChrono)
             {
-                var known = chronoManager.Drawings.FirstOrDefault((d) => d.Id == drawing.Id);
-                if (known == null)
+                bool known = chronoManager.Drawings.Any(d => d.Id == drawing.Id);
+                if (!known)
                     AddChrono(drawing as DrawingChrono);
                 return;
             }
 
             if (trackManager.Id == managerId && drawing is DrawingTrack)
             {
-                var known = trackManager.Drawings.FirstOrDefault((d) => d.Id == drawing.Id);
-                if (known == null)
+                bool known = trackManager.Drawings.Any(d => d.Id == drawing.Id);
+                if (!known)
                     AddTrack(drawing as DrawingTrack);
                 return;
             }
