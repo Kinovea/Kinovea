@@ -250,8 +250,8 @@ namespace Kinovea.ScreenManager
 
         private double TimestampToMilliseconds(long ts)
         {
-            long relative = ts - metadata.SelectionStart;
-            double seconds = (double)relative / metadata.AverageTimeStampsPerSecond;
+            long t = ts - metadata.TimeOrigin;
+            double seconds = (double)t / metadata.AverageTimeStampsPerSecond;
             double milliseconds = (seconds * 1000) / metadata.HighSpeedFactor;
             return milliseconds;
         }
