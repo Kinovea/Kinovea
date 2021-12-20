@@ -256,4 +256,22 @@
   <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
     <value>Konfiguroitu kuvataajuus</value>
   </data>
+  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
+    <value>Tallennetun tiedoston nimi</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
+    <value>Ohita varoitus tiedoston ylikirjoituksesta</value>
+  </data>
+  <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve">
+    <value>Salli useamman Kinovean ajo</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
+    <value>Näytä kuvataajuus (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_ImageNaming" xml:space="preserve">
+    <value>Kuvan nimeäminen</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve">
+    <value>Nauhoitustila ja viive</value>
+  </data>
 </root>
