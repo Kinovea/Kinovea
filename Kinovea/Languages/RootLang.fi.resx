@@ -214,4 +214,22 @@
   <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
     <value>Kamera: nauhoittaa reaaliaikaisen kuvan</value>
   </data>
+  <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
+    <value>Korkean kuvantaajuuden kamera</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
+    <value>Koodinvaihtomerkit</value>
+  </data>
+  <data name="dlgAbout_BuildingBlocks" xml:space="preserve">
+    <value>Rakennuspalikat</value>
+  </data>
+  <data name="dlgPreferences_Capture_Recording" xml:space="preserve">
+    <value>Nauhoitus</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve">
+    <value>Viivästetty: nauhoittaa viivästettyjä kuvia</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
+    <value>Takautuva: nauhoittaa kun videokaappaus loppuu</value>
+  </data>
 </root>
