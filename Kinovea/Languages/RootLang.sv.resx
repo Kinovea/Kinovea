@@ -259,4 +259,13 @@
   <data name="dlgPreferences_Capture_ImageNaming" xml:space="preserve">
     <value>Namngivning av bilder</value>
   </data>
+  <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve">
+    <value>Okomprimerat videoformat:</value>
+  </data>
+  <data name="dlgPreferences_Capture_Recording" xml:space="preserve">
+    <value>Spelar in</value>
+  </data>
+  <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve">
+    <value>Namngivning av video</value>
+  </data>
 </root>
