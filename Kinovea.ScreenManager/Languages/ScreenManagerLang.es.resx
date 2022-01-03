@@ -888,4 +888,16 @@
   <data name="Infobar_Player_Observing" xml:space="preserve">
     <value>Se observa la carpeta: {0}</value>
   </data>
+  <data name="ToolTip_DisarmTrigger" xml:space="preserve">
+    <value>Desarmar gatillo de captura. Estado actual: armado.</value>
+  </data>
+  <data name="ToolTip_ArmTrigger" xml:space="preserve">
+    <value>Armar el gatillo de captura. Estado actual: desarmado.</value>
+  </data>
+  <data name="Toast_TriggerArmed" xml:space="preserve">
+    <value>Gatillo de captura armado</value>
+  </data>
+  <data name="Toast_TriggerDisarmed" xml:space="preserve">
+    <value>Gatillo de captura desarmado</value>
+  </data>
 </root>
