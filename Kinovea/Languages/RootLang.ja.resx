@@ -108,7 +108,7 @@
   </data>
   <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>&amp;</value>
   </data>
-  <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>デフォルトでは、ドローイングはキーイメージの周囲で {0} イメージが表示される</value>
+  <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>デフォルトでは、ドローイングはキーイメージの周囲で {0} イメージが表示される。</value>
   </data>
   <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>秒速/m ({0})</value>
   </data>
@@ -124,7 +124,7 @@
   </data>
   <data name="Generic_Cancel" xml:space="preserve"><value>キャンセル</value>
   </data>
-  <data name="Generic_Quit" xml:space="preserve"><value>中止</value>
+  <data name="Generic_Quit" xml:space="preserve"><value>終了</value>
   </data>
   <data name="Generic_Save" xml:space="preserve"><value>保存</value>
   </data>
@@ -140,7 +140,7 @@
   </data>
   <data name="mnuHelp" xml:space="preserve"><value>ヘルプ</value>
   </data>
-  <data name="mnuHelpContents" xml:space="preserve"><value>Kinovea ヘルプ</value>
+  <data name="mnuHelpContents" xml:space="preserve"><value>Kinovea ヘルプ...</value>
   </data>
   <data name="mnuHistory" xml:space="preserve"><value>履歴</value>
   </data>
@@ -193,5 +193,62 @@
   </data>
   <data name="dlgAbout_Translation" xml:space="preserve">
     <value>翻訳</value>
+  </data>
+  <data name="dlgAbout_Citation" xml:space="preserve">
+    <value>引用</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve">
+    <value>遅延付きで録画する。</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve">
+    <value>非圧縮形式で録画</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve">
+    <value>非圧縮動画フォーマット:</value>
+  </data>
+  <data name="dlgPreferences_Capture_Recording" xml:space="preserve">
+    <value>録画</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve">
+    <value>録画設定</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
+    <value>リアルタイムで録画する。</value>
+  </data>
+  <data name="dlgAbout_BuildingBlocks" xml:space="preserve">
+    <value>ビルド</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
+    <value>年月日 (YYYYMMDD)</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
+    <value>時分秒 (HHMMSS)</value>
+  </data>
+  <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
+    <value>ハイスピードカメラ</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkEnableAudioTrigger" xml:space="preserve">
+    <value>音声トリガーの有効化</value>
+  </data>
+  <data name="dlgPreferences_Capture_tabAutomation" xml:space="preserve">
+    <value>自動化</value>
+  </data>
+  <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
+    <value>デフォルトアノテーションファイル:</value>
+  </data>
+  <data name="mnuTools" xml:space="preserve">
+    <value>ツール</value>
+  </data>
+  <data name="mnuWorkspace" xml:space="preserve">
+    <value>ワークスペース</value>
+  </data>
+  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
+    <value>デフォルトワークスペースとして保存</value>
+  </data>
+  <data name="mnuWorkspaceExport" xml:space="preserve">
+    <value>ワークスペースのエクスポート</value>
+  </data>
+  <data name="TimeCodeFormat_Microseconds" xml:space="preserve">
+    <value>合計マイクロ秒</value>
   </data>
 </root>
