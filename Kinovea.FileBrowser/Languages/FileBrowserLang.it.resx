@@ -102,7 +102,7 @@
     <value>Dimentica le impostazioni personalizzate</value>
   </data>
   <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
-    <value>Apri come osservatore della cartella di replay</value>
+    <value>Apri come osservatore della cartella di riproduzione</value>
   </data>
   <data name="mnuVideoDelete" xml:space="preserve">
     <value>Elimina il file</value>
