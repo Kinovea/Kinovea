@@ -73,6 +73,8 @@ namespace Kinovea.Camera.DirectShow
             
             // At the moment the OBS virtual camera doesn't seem to work with our DirectShow library and it causes a low level exception.
             blacklist.Add("OBS Virtual Camera");
+            
+            blacklist.Add("Reincubate Camo");
         }
 
         public override bool SanityCheck()
