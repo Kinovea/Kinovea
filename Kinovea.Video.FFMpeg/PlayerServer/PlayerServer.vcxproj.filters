@@ -49,4 +49,7 @@
     <ClInclude Include="MJPEGWriter.h" />
     <ClInclude Include="ReadResult.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>
