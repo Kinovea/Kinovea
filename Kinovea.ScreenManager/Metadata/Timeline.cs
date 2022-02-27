@@ -100,7 +100,7 @@ namespace Kinovea.ScreenManager
             foreach (KeyValuePair<long, T> pair in frames)
                 yield return pair.Value;
         }
-   
+
         public int Count 
         {
             get { return frames.Count; }
@@ -109,6 +109,11 @@ namespace Kinovea.ScreenManager
         public T First
         {
             get { return frames.Values[0]; }
+        }
+
+        public IList<long> Times
+        {
+            get { return frames.Keys; }
         }
     }
 }

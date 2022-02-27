@@ -31,6 +31,7 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// Manages the drawing trackers.
+    /// Each tracker is identified by the ID of the drawing it is tracking.
     /// </summary>
     public class TrackabilityManager
     {
@@ -238,6 +239,41 @@ namespace Kinovea.ScreenManager
             }
             
             return contains;
+        }
+
+        /// <summary>
+        /// Collect the data used for spreadsheet export.
+        /// </summary>
+        public List<MeasuredDataTimeline> CollectMeasuredData(Metadata metadata)
+        {
+            List<MeasuredDataTimeline> timelines = new List<MeasuredDataTimeline>();
+
+            foreach (DrawingTracker tracker in trackers.Values)
+            {
+                AbstractDrawing drawing = metadata.FindDrawing(tracker.ID);
+                if (drawing == null)
+                    continue;
+
+                MeasuredDataTimeline mdt = new MeasuredDataTimeline();
+                mdt.Name = drawing.Name;
+                List<long> timestamps = tracker.CollectTimeVector();
+                if (timestamps == null || timestamps.Count == 0)
+                    continue;
+
+                Dictionary<string, List<PointF>> dataRaw = tracker.CollectData();
+                
+                mdt.Times = timestamps.Select(ts => metadata.GetNumericalTime(ts, TimeType.UserOrigin)).ToList();
+                mdt.Data = new Dictionary<string, List<PointF>>();
+                foreach (var pair in dataRaw)
+                {
+                    List<PointF> value = pair.Value.Select(p => metadata.CalibrationHelper.GetPoint(p)).ToList();
+                    mdt.Data.Add(pair.Key, value);
+                }
+
+                timelines.Add(mdt);
+            }
+
+            return timelines;
         }
 
         public void WriteXml(XmlWriter w)

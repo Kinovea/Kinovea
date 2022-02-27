@@ -51,7 +51,8 @@ namespace Kinovea.ScreenManager
                 row += ExportAngles(sl, styles, md, row);
                 row += ExportTimes(sl, styles, md, row);
                 row += ExportTracks(sl, styles, md, row);
-
+                row += ExportTimelines(sl, styles, md, row);
+                
                 sl.AutoFitColumn(1, 4);
 
                 sl.SaveAs(path);
@@ -313,7 +314,64 @@ namespace Kinovea.ScreenManager
                 row += track.Coords.Count + 2 + margin;
             }
 
-            return (row - oldRow) + margin;
+            return (row - oldRow);
+        }
+
+        private int ExportTimelines(SLDocument sl, Dictionary<string, SLStyle> styles, MeasuredData md, int row)
+        {
+            if (md.Timelines.Count == 0)
+                return 0;
+
+            int oldRow = row;
+            foreach (var timeline in md.Timelines)
+            {
+                sl.SetCellValue(row, 1, timeline.Name);
+                sl.SetCellValue(row + 1, 1, string.Format("Time ({0})", md.Units.TimeSymbol));
+                
+                // Add the headers for the individual trackable points.
+                int col = 1;
+                foreach (var pointName in timeline.Data.Keys)
+                {
+                    // Header with the name of the trackable point, such as "elbow".
+                    sl.SetCellValue(row + 1, col + 1, pointName);
+                    sl.MergeWorksheetCells(row + 1, col + 1, row + 1, col + 2);
+
+                    // Second row of headers with the data column.
+                    sl.SetCellValue(row + 2, col + 1, string.Format("X ({0})", md.Units.LengthSymbol));
+                    sl.SetCellValue(row + 2, col + 2, string.Format("Y ({0})", md.Units.LengthSymbol));
+
+                    col += 2;
+                }
+
+                // Merge the top-level header all the way to the right.
+                sl.MergeWorksheetCells(row, 1, row, col);
+
+                // Apply styles for the 3 header lines.
+                sl.SetCellStyle(row, 1, styles["trackHeader"]);
+                sl.SetCellStyle(row + 1, 1, row + 1, col, styles["valueHeader"]);
+                sl.SetCellStyle(row + 2, 1, row + 2, col, styles["valueHeader"]);
+
+                // Add each time row.
+                for (int i = 0; i < timeline.Times.Count; i++)
+                {
+                    sl.SetCellValue(row + 3 + i, 1, timeline.Times[i]);
+                    col = 2;
+                    foreach (var pointValues in timeline.Data.Values)
+                    {
+                        sl.SetCellValue(row + 3 + i, col + 0, pointValues[i].X);
+                        sl.SetCellValue(row + 3 + i, col + 1, pointValues[i].Y);
+                        col += 2;
+                    }
+                }
+
+                sl.SetCellStyle(row, 1, row + timeline.Times.Count + 2, timeline.Data.Keys.Count * 2 + 1, styles["normal"]);
+                sl.SetCellStyle(row + 3, 1, row + timeline.Times.Count + 2, 1, styles["time"]);
+                sl.SetCellStyle(row + 3, 2, row + timeline.Times.Count + 2, timeline.Data.Keys.Count * 2 + 1, styles["number"]);
+
+                row += timeline.Times.Count + 3 + margin;
+            }
+
+            return (row - oldRow);
         }
     }
 }

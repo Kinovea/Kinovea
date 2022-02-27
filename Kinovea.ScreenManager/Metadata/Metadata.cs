@@ -514,6 +514,28 @@ namespace Kinovea.ScreenManager
 
             return foundKeyframe == null ? Guid.Empty : foundKeyframe.Id;
         }
+
+
+        /// <summary>
+        /// Returns the id of the keyframe the drawing is attached to.
+        /// </summary>
+        public AbstractDrawing FindDrawing(Guid drawingId)
+        {
+            foreach (Keyframe k in keyframes)
+            {
+                foreach (AbstractDrawing d in k.Drawings)
+                {
+                    if (d.Id != drawingId)
+                        continue;
+
+                    return d;
+                }
+            }
+
+            return null;
+        }
+
+
         public int GetKeyframeIndex(Guid id)
         {
             // Temporary function to accomodate clients of the old API where we used indices to reference keyframes and drawings.
@@ -983,6 +1005,7 @@ namespace Kinovea.ScreenManager
             md.Tracks.Sort((a, b) => a.Start.CompareTo(b.Start));
 
             // Timelines.
+            md.Timelines = trackabilityManager.CollectMeasuredData(this);
 
             return md;
         }

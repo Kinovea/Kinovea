@@ -436,6 +436,7 @@
     <Compile Include="Metadata\Serialization\MeasuredDataKeyframe.cs" />
     <Compile Include="Metadata\Serialization\MeasuredDataPosition.cs" />
     <Compile Include="Metadata\Serialization\MeasuredDataTime.cs" />
+    <Compile Include="Metadata\Serialization\MeasuredDataTimeline.cs" />
     <Compile Include="Metadata\Serialization\MeasuredDataTrack.cs" />
     <Compile Include="Metadata\Serialization\MeasuredDataUnits.cs" />
     <Compile Include="Metadata\Serialization\MeasurementSerializationHelper.cs" />
