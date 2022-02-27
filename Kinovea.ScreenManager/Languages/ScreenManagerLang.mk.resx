@@ -64,7 +64,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="btnSync_ToolTip" xml:space="preserve"><value>Синхронизирај го видеото на актуалната рамка</value>
+  <data name="btnSync_ToolTip" xml:space="preserve"><value>Синхронизирај го видеото и тековните слики</value>
   </data>
   <data name="buttonGotoFirst_ToolTip" xml:space="preserve"><value>Врати се на почетокот кај двете видеа</value>
   </data>

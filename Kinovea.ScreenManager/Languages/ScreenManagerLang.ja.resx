@@ -116,11 +116,11 @@
   </data>
   <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>各キーイメージの継続性 : {0} 1/100秒。</value>
   </data>
-  <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>各キーイメージの継続性 : {0:0.00} 秒。 </value>
+  <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>各キーイメージの継続性 : {0:0.00} 秒。</value>
   </data>
   <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>各キーイメージで一時停止したオリジナルビデオ</value>
   </data>
-  <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>キーイメージのみのビデオスライドショー</value>
+  <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>キーイメージのみのビデオスライドショー。</value>
   </data>
   <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>ビデオの種類</value>
   </data>
@@ -468,5 +468,50 @@
   </data>
   <data name="FormIconPicker_Title" xml:space="preserve">
     <value>アイコン</value>
+  </data>
+  <data name="Generic_Quit" xml:space="preserve">
+    <value>終了</value>
+  </data>
+  <data name="ExtraData_Radius" xml:space="preserve">
+    <value>半径</value>
+  </data>
+  <data name="ExtraData_Diameter" xml:space="preserve">
+    <value>直径</value>
+  </data>
+  <data name="ExtraData_Circumference" xml:space="preserve">
+    <value>円周</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Acceleration" xml:space="preserve">
+    <value>加速度</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalVelocity" xml:space="preserve">
+    <value>垂直速度</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalVelocity" xml:space="preserve">
+    <value>水平速度</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalAcceleration" xml:space="preserve">
+    <value>垂直加速度</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
+    <value>水平加速度</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
+    <value>角変位</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
+    <value>角速度</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularAcceleration" xml:space="preserve">
+    <value>角加速度</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
+    <value>トラッキング</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve">
+    <value>オブジェクトウィンドウ:</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
+    <value>検索窓:</value>
   </data>
 </root>

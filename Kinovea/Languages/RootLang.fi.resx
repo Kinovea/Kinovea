@@ -214,4 +214,64 @@
   <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
     <value>Kamera: nauhoittaa reaaliaikaisen kuvan</value>
   </data>
+  <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
+    <value>Korkean kuvantaajuuden kamera</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
+    <value>Koodinvaihtomerkit</value>
+  </data>
+  <data name="dlgAbout_BuildingBlocks" xml:space="preserve">
+    <value>Rakennuspalikat</value>
+  </data>
+  <data name="dlgPreferences_Capture_Recording" xml:space="preserve">
+    <value>Nauhoitus</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve">
+    <value>Viivästetty: nauhoittaa viivästettyjä kuvia</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
+    <value>Takautuva: nauhoittaa kun videokaappaus loppuu</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
+    <value>Vastaanotettu kuvataajuus</value>
+  </data>
+  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
+    <value>Konteksti muuttujat</value>
+  </data>
+  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
+    <value>Konteksti</value>
+  </data>
+  <data name="dlgAbout_Citation" xml:space="preserve">
+    <value>Sitaatit</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve">
+    <value>Pakkaamaton videoformaatti:</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve">
+    <value>Nauhoita pakkaamaton video</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
+    <value>Kameran nimimerkki</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
+    <value>Konfiguroitu kuvataajuus</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
+    <value>Tallennetun tiedoston nimi</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
+    <value>Ohita varoitus tiedoston ylikirjoituksesta</value>
+  </data>
+  <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve">
+    <value>Salli useamman Kinovean ajo</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
+    <value>Näytä kuvataajuus (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_ImageNaming" xml:space="preserve">
+    <value>Kuvan nimeäminen</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve">
+    <value>Nauhoitustila ja viive</value>
+  </data>
 </root>
