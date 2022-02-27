@@ -978,6 +978,10 @@ namespace Kinovea.ScreenManager
             md.Times.Sort((a, b) => a.Start.CompareTo(b.Start));
 
             // Tracks.
+            foreach (DrawingTrack track in TrackManager.Drawings)
+                md.Tracks.Add(track.CollectMeasuredData());
+            md.Tracks.Sort((a, b) => a.Start.CompareTo(b.Start));
+
             // Timelines.
 
             return md;

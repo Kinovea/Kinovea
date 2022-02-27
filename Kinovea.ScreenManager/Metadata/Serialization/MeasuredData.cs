@@ -22,5 +22,6 @@ namespace Kinovea.ScreenManager
         public List<MeasuredDataDistance> Distances { get; set; } = new List<MeasuredDataDistance>();
         public List<MeasuredDataAngle> Angles { get; set; } = new List<MeasuredDataAngle>();
         public List<MeasuredDataTime> Times { get; set; } = new List<MeasuredDataTime>();
+        public List<MeasuredDataTrack> Tracks { get; set; } = new List<MeasuredDataTrack>();
     }
 }

@@ -50,6 +50,7 @@ namespace Kinovea.ScreenManager
                 row += ExportDistances(sl, styles, md, row);
                 row += ExportAngles(sl, styles, md, row);
                 row += ExportTimes(sl, styles, md, row);
+                row += ExportTracks(sl, styles, md, row);
 
                 sl.AutoFitColumn(1, 4);
 
@@ -97,6 +98,10 @@ namespace Kinovea.ScreenManager
             timeHeader.Font.Bold = true;
             setBackgroundColor(timeHeader, System.Drawing.Color.FromArgb(194, 223, 255));
 
+            SLStyle trackHeader = header.Clone();
+            trackHeader.Font.Bold = true;
+            setBackgroundColor(trackHeader, System.Drawing.Color.FromArgb(255, 221, 253));
+
             SLStyle valueHeader = header.Clone();
             setBackgroundColor(valueHeader, System.Drawing.Color.FromArgb(232, 232, 232));
 
@@ -123,6 +128,7 @@ namespace Kinovea.ScreenManager
             styles.Add("normal", normal);
             styles.Add("kfHeader", kfHeader);
             styles.Add("timeHeader", timeHeader);
+            styles.Add("trackHeader", trackHeader);
             styles.Add("valueHeader", valueHeader);
             styles.Add("number", number);
             styles.Add("time", time);
@@ -273,6 +279,41 @@ namespace Kinovea.ScreenManager
             sl.SetCellStyle(row + 2, 2, row + md.Times.Count + 1, 4, styles["time"]);
 
             return md.Times.Count + 2 + margin;
+        }
+
+        private int ExportTracks(SLDocument sl, Dictionary<string, SLStyle> styles, MeasuredData md, int row)
+        {
+            if (md.Tracks.Count == 0)
+                return 0;
+
+            int oldRow = row;
+            foreach (var track in md.Tracks)
+            {
+                sl.SetCellValue(row, 1, track.Name);
+                sl.MergeWorksheetCells(row, 1, row, 3);
+
+                sl.SetCellValue(row + 1, 1, string.Format("Time ({0})", md.Units.TimeSymbol));
+                sl.SetCellValue(row + 1, 2, string.Format("X ({0})", md.Units.LengthSymbol));
+                sl.SetCellValue(row + 1, 3, string.Format("Y ({0})", md.Units.LengthSymbol));
+
+                for (int i = 0; i < track.Coords.Count; i++)
+                {
+                    var value = track.Coords[i];
+                    sl.SetCellValue(row + 2 + i, 1, value.Time);
+                    sl.SetCellValue(row + 2 + i, 2, value.Point.X);
+                    sl.SetCellValue(row + 2 + i, 3, value.Point.Y);
+                }
+
+                sl.SetCellStyle(row, 1, row + track.Coords.Count + 1, 3, styles["normal"]);
+                sl.SetCellStyle(row, 1, styles["trackHeader"]);
+                sl.SetCellStyle(row + 1, 1, row + 1, 3, styles["valueHeader"]);
+                sl.SetCellStyle(row + 2, 1, row + track.Coords.Count + 1, 1, styles["time"]);
+                sl.SetCellStyle(row + 2, 2, row + track.Coords.Count + 1, 3, styles["number"]);
+
+                row += track.Coords.Count + 2 + margin;
+            }
+
+            return (row - oldRow) + margin;
         }
     }
 }

@@ -1150,35 +1150,21 @@ namespace Kinovea.ScreenManager
             w.WriteEndElement();
         }
 
-        //private void TrackPointsToSpreadsheetXml(XmlWriter w)
-        //{
-        //    w.WriteStartElement("TrackPointList");
-        //    w.WriteAttributeString("Count", positions.Count.ToString());
-            
-        //    if (positions.Count == 0)
-        //    {
-        //        w.WriteEndElement();
-        //        return;
-        //    }
-            
-        //    foreach (AbstractTrackPoint tp in positions)
-        //    {
-        //        w.WriteStartElement("TrackPoint");
+        public MeasuredDataTrack CollectMeasuredData()
+        {
+            MeasuredDataTrack mdt = new MeasuredDataTrack();
+            mdt.Name = name;
+            mdt.Start = positions.Count > 0 ? positions[0].T : 0;
+            mdt.Coords = new List<MeasuredDataCoordinate>();
+            foreach (AbstractTrackPoint tp in positions)
+            {
+                PointF p = parentMetadata.CalibrationHelper.GetPointAtTime(tp.Point, tp.T);
+                float t = parentMetadata.GetNumericalTime(tp.T, TimeType.UserOrigin);
+                mdt.Coords.Add(new MeasuredDataCoordinate(p, t));
+            }
 
-        //        PointF p = parentMetadata.CalibrationHelper.GetPointAtTime(tp.Point, tp.T);
-        //        string userT = parentMetadata.TimeCodeBuilder(tp.T, TimeType.Absolute, TimecodeFormat.Unknown, false);
-
-        //        w.WriteAttributeString("time", userT);
-        //        w.WriteAttributeString("x", String.Format("{0:0.00}", p.X));
-        //        w.WriteAttributeString("y", String.Format("{0:0.00}", p.Y));
-        //        w.WriteAttributeString("x_invariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", p.X));
-        //        w.WriteAttributeString("y_invariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", p.Y));
-
-        //        w.WriteEndElement();
-        //    }
-            
-        //    w.WriteEndElement();
-        //}
+            return mdt;
+        }
 
         public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {
