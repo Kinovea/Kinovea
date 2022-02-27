@@ -22,6 +22,7 @@ namespace Kinovea.ScreenManager
                 { PatternContext.Hour, "%hour" },
                 { PatternContext.Minute, "%minute" },
                 { PatternContext.Second, "%second" },
+                { PatternContext.Millisecond, "%millisecond" },
 
                 { PatternContext.Date, "%date" },
                 { PatternContext.Time, "%time" },
