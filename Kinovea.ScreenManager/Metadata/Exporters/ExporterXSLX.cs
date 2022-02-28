@@ -290,7 +290,7 @@ namespace Kinovea.ScreenManager
             foreach (var timeline in md.Timeseries)
             {
                 sl.SetCellValue(row, 1, timeline.Name);
-                sl.SetCellValue(row + 1, 1, string.Format("Time ({0})", md.Units.TimeSymbol));
+                sl.SetCellValue(row + 2, 1, string.Format("Time ({0})", md.Units.TimeSymbol));
                 
                 // Add the headers for the individual trackable points.
                 int col = 1;

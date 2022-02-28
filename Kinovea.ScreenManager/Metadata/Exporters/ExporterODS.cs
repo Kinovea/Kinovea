@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
@@ -51,7 +52,7 @@ namespace Kinovea.ScreenManager
 
                 WriteMimeType(zip);
                 WriteManifest(zip);
-                WriteContent(zip);
+                WriteContent(zip, md);
                 WriteDefaultFile(zip, "office:document-styles", "styles.xml");
                 WriteDefaultFile(zip, "office:document-meta", "meta.xml");
                 WriteDefaultFile(zip, "office:document-settings", "settings.xml");
@@ -118,7 +119,7 @@ namespace Kinovea.ScreenManager
             zip.Write(bytes, 0, bytes.Length);
         }
 
-        private void WriteContent(ZipOutputStream zip)
+        private void WriteContent(ZipOutputStream zip, MeasuredData md)
         {
             MemoryStream ms = new MemoryStream();
             XmlTextWriter w = new XmlTextWriter(ms, new UTF8Encoding());
@@ -137,7 +138,7 @@ namespace Kinovea.ScreenManager
             w.WriteAttributeString("office:version", "1.2");
 
             w.WriteStartElement("office:body");
-            WriteSpreadsheet(w);
+            WriteSpreadsheet(w, md);
             w.WriteEndElement();
 
             w.WriteEndElement();
@@ -176,18 +177,25 @@ namespace Kinovea.ScreenManager
             zip.Write(bytes, 0, bytes.Length);
         }
 
-        private void WriteSpreadsheet(XmlTextWriter w)
+        private void WriteSpreadsheet(XmlTextWriter w, MeasuredData md)
         {
-            w.WriteStartElement("office:spreadsheet");
+            try
+            {
+                w.WriteStartElement("office:spreadsheet");
 
-            // A table is a sheet of the document, we only have one.
-            w.WriteStartElement("table:table");
-            w.WriteAttributeString("table:name", "Sheet1");
-            WriteColumnStyle(w);
-            WriteSheet(w);
-            w.WriteEndElement();
+                // A table is a sheet of the document, we only have one.
+                w.WriteStartElement("table:table");
+                w.WriteAttributeString("table:name", "Sheet1");
+                WriteColumnStyle(w);
+                WriteSheet(w, md);
+                w.WriteEndElement();
 
-            w.WriteEndElement();
+                w.WriteEndElement();
+            }
+            catch(Exception e)
+            {
+                log.ErrorFormat("Exception while generating ODS file. {0}", e);
+            }
         }
 
         private void WriteColumnStyle(XmlTextWriter w)
@@ -196,21 +204,229 @@ namespace Kinovea.ScreenManager
             w.WriteEndElement();
         }
 
-        private void WriteSheet(XmlTextWriter w)
+        private void WriteSheet(XmlTextWriter w, MeasuredData md)
         {
-            // For each object we export.
+            WriteKeyframes(w, md);
+            WritePositions(w, md);
+            WriteDistances(w, md);
+            WriteAngles(w, md);
+            WriteTimes(w, md);
+            WriteTimeseries(w, md);
+
+            // TODO: Autofit columns 1 to 4.
+        }
+
+        private void WriteKeyframes(XmlTextWriter w, MeasuredData md)
+        {
+            if (md.Keyframes.Count == 0)
+                return;
 
             // Write headers.
-            // Write data.
-            // For each row.
             w.WriteStartElement("table:table-row");
-            //WriteRowStyles(w, sheet, i);
+            WriteCell(w, "Key images");
+            w.WriteEndElement();
 
-            // For each column.
-            //Range cell = sheet.getRange(i, j);
-            WriteCell(w);
+            w.WriteStartElement("table:table-row");
+            WriteCell(w, "Name");
+            WriteCell(w, string.Format("Time ({0})", md.Units.TimeSymbol));
+            w.WriteEndElement();
+
+            // Write data.
+            for (int i = 0; i < md.Keyframes.Count; i++)
+            {
+                var kf = md.Keyframes[i];
+                w.WriteStartElement("table:table-row");
+                //WriteRowStyles(w, sheet, i);
+                WriteCell(w, kf.Name);
+                WriteCell(w, kf.Time);
+                
+                w.WriteEndElement();
+            }
+        }
+
+        private void WritePositions(XmlTextWriter w, MeasuredData md)
+        {
+            if (md.Positions.Count == 0)
+                return;
+
+            WriteMargin(w);
+
+            // Write headers.
+            w.WriteStartElement("table:table-row");
+            WriteCell(w, "Positions");
+            w.WriteEndElement();
+
+            w.WriteStartElement("table:table-row");
+            WriteCell(w, "Name");
+            WriteCell(w, string.Format("Time ({0})", md.Units.TimeSymbol));
+            WriteCell(w, string.Format("X ({0})", md.Units.LengthSymbol));
+            WriteCell(w, string.Format("Y ({0})", md.Units.LengthSymbol));
+            w.WriteEndElement();
+
+            // Write data.
+            for (int i = 0; i < md.Positions.Count; i++)
+            {
+                var p = md.Positions[i];
+                w.WriteStartElement("table:table-row");
+                WriteCell(w, p.Name);
+                WriteCell(w, p.Time);
+                WriteCell(w, p.X);
+                WriteCell(w, p.Y);
+                w.WriteEndElement();
+            }
+        }
+
+        private void WriteDistances(XmlTextWriter w, MeasuredData md)
+        {
+            if (md.Distances.Count == 0)
+                return;
+
+            WriteMargin(w);
+
+            // Write headers.
+            w.WriteStartElement("table:table-row");
+            WriteCell(w, "Distances");
+            w.WriteEndElement();
+
+            w.WriteStartElement("table:table-row");
+            WriteCell(w, "Name");
+            WriteCell(w, string.Format("Time ({0})", md.Units.TimeSymbol));
+            WriteCell(w, string.Format("Length ({0})", md.Units.LengthSymbol));
+            w.WriteEndElement();
+
+            // Write data.
+            for (int i = 0; i < md.Distances.Count; i++)
+            {
+                var value = md.Distances[i];
+                w.WriteStartElement("table:table-row");
+                WriteCell(w, value.Name);
+                WriteCell(w, value.Time);
+                WriteCell(w, value.Value);
+                w.WriteEndElement();
+            }
+        }
+
+        private void WriteAngles(XmlTextWriter w, MeasuredData md)
+        {
+            if (md.Angles.Count == 0)
+                return;
+
+            WriteMargin(w);
+
+            // Write headers.
+            w.WriteStartElement("table:table-row");
+            WriteCell(w, "Angles");
+            w.WriteEndElement();
+
+            w.WriteStartElement("table:table-row");
+            WriteCell(w, "Name");
+            WriteCell(w, string.Format("Time ({0})", md.Units.TimeSymbol));
+            WriteCell(w, string.Format("Value ({0})", md.Units.AngleSymbol));
+            w.WriteEndElement();
+
+            // Write data.
+            for (int i = 0; i < md.Angles.Count; i++)
+            {
+                var value = md.Angles[i];
+                w.WriteStartElement("table:table-row");
+                WriteCell(w, value.Name);
+                WriteCell(w, value.Time);
+                WriteCell(w, value.Value);
+                w.WriteEndElement();
+            }
+        }
+
+        private void WriteTimes(XmlTextWriter w, MeasuredData md)
+        {
+            if (md.Times.Count == 0)
+                return;
+
+            WriteMargin(w);
+
+            // Write headers.
+            w.WriteStartElement("table:table-row");
+            WriteCell(w, "Times");
+            w.WriteEndElement();
+
+            w.WriteStartElement("table:table-row");
+            WriteCell(w, "Name");
+            WriteCell(w, string.Format("Duration ({0})", md.Units.TimeSymbol));
+            WriteCell(w, string.Format("Start ({0})", md.Units.TimeSymbol));
+            WriteCell(w, string.Format("Stop ({0})", md.Units.TimeSymbol));
+            w.WriteEndElement();
+
+            // Write data.
+            for (int i = 0; i < md.Times.Count; i++)
+            {
+                var value = md.Times[i];
+                w.WriteStartElement("table:table-row");
+                WriteCell(w, value.Name);
+                WriteCell(w, value.Duration);
+                WriteCell(w, value.Start);
+                WriteCell(w, value.Stop);
+                w.WriteEndElement();
+            }
+        }
+
+        private void WriteTimeseries(XmlTextWriter w, MeasuredData md)
+        {
+            if (md.Timeseries.Count == 0)
+                return;
+
+            WriteMargin(w);
+
+            foreach (var timeline in md.Timeseries)
+            {
+                // Write the main header.
+                w.WriteStartElement("table:table-row");
+                WriteCell(w, timeline.Name);
+                w.WriteEndElement();
+
+                // Write second row of headers: point names.
+                w.WriteStartElement("table:table-row");
+                // First cell is empty (above Time header).
+                WriteCell(w, "");
+                foreach (var pointName in timeline.Data.Keys)
+                {
+                    WriteCell(w, pointName);
+                    // Merge with next cell.
+                    WriteCell(w, "");
+                }
+                w.WriteEndElement();
+
+                // Third row of headers: Time and Coordinates.
+                w.WriteStartElement("table:table-row");
+                WriteCell(w, string.Format("Time ({0})", md.Units.TimeSymbol));
+                foreach (var pointName in timeline.Data.Keys)
+                {
+                    WriteCell(w, string.Format("X ({0})", md.Units.LengthSymbol));
+                    WriteCell(w, string.Format("Y ({0})", md.Units.LengthSymbol));
+                }
+                w.WriteEndElement();
+
+                // Write data.
+                for (int i = 0; i < timeline.Times.Count; i++)
+                {
+                    //var value = md.Times[i];
+                    w.WriteStartElement("table:table-row");
+                    WriteCell(w, timeline.Times[i]);
+                    foreach (var pointValues in timeline.Data.Values)
+                    {
+                        WriteCell(w, pointValues[i].X);
+                        WriteCell(w, pointValues[i].Y);
+                    }
+                    w.WriteEndElement();
+                }
+
+                WriteMargin(w);
+            }
+        }
 
 
+        private void WriteMargin(XmlTextWriter w)
+        {
+            w.WriteStartElement("table:table-row");
+            w.WriteAttributeString("table:number-rows-repeated", "2");
             w.WriteEndElement();
         }
 
@@ -220,37 +436,20 @@ namespace Kinovea.ScreenManager
             // WriteRowHeight.
         }
 
-        private void WriteCell(XmlTextWriter w)
+        private void WriteCell(XmlTextWriter w, string value)
         {
-            //Style style = range.getStyle();
-
-            // merged cells.
             w.WriteStartElement("table:table-cell");
-            // SetCellStyle()
-            WriteNumber(w);
-
+            w.WriteAttributeString("office:value-type", "string");
+            w.WriteAttributeString("office:string-value", value);
             w.WriteEndElement();
         }
 
-        private void WriteNumber(XmlTextWriter w)
+        private void WriteCell(XmlTextWriter w, float value)
         {
-            // http://docs.oasis-open.org/office/v1.2/part1/cd04/OpenDocument-v1.2-part1-cd04.html#a_19_387_office_value-type
-
+            w.WriteStartElement("table:table-cell");
             w.WriteAttributeString("office:value-type", "float");
-            w.WriteAttributeString("office:value", "42");
-            //w.WriteElementString("text:p", "42.2");
-
-
-            //Object v = range.getValue();
-            //if (v != null)
-            //{
-            //    OfficeValueType valueType = OfficeValueType.ofJavaType(v.getClass());
-            //    valueType.write(v, out);
-            //writer.writeAttribute("office:value-type", getId());
-            //writer.writeAttribute("office:value", value.toString());
-
-            //out.writeStartElement("text:p");
-            //    String text = v.toString();
+            w.WriteAttributeString("office:value", value.ToString(CultureInfo.InvariantCulture));
+            w.WriteEndElement();
         }
     }
 }
