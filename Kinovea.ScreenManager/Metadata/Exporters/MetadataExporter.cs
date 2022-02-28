@@ -12,7 +12,6 @@ namespace Kinovea.ScreenManager
         {
             // The data is exported to an intermediate class containing only the measured data.
             // Each exporter then serialize this data to its target format.
-
             MeasuredData measuredData = metadata.CollectMeasuredData();
 
             //MetadataSerializer serializer = new MetadataSerializer();
@@ -30,6 +29,10 @@ namespace Kinovea.ScreenManager
                 case MetadataExportFormat.XLSX:
                     ExporterXLSX exporterXLSX = new ExporterXLSX();
                     exporterXLSX.Export(file, measuredData);
+                    break;
+                case MetadataExportFormat.JSON:
+                    ExporterJSON exporterJSON = new ExporterJSON();
+                    exporterJSON.Export(file, measuredData);
                     break;
 
                     //    case MetadataExportFormat.XHTML:

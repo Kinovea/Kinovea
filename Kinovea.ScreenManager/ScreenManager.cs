@@ -329,7 +329,7 @@ namespace Kinovea.ScreenManager
                 mnuExportXLSX, 
                 //mnuExportXHTML, 
                 //mnuExportTEXT 
-                //mnuExportJSON,
+                mnuExportJSON,
             });
 
             //------------------------
