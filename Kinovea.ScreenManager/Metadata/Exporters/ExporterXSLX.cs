@@ -171,24 +171,24 @@ namespace Kinovea.ScreenManager
             sl.MergeWorksheetCells(row, 1, row, 4);
             
             sl.SetCellValue(row + 1, 1, "Name");
-            sl.SetCellValue(row + 1, 2, string.Format("X ({0})", md.Units.LengthSymbol));
-            sl.SetCellValue(row + 1, 3, string.Format("Y ({0})", md.Units.LengthSymbol));
-            sl.SetCellValue(row + 1, 4, string.Format("Time ({0})", md.Units.TimeSymbol));
+            sl.SetCellValue(row + 1, 2, string.Format("Time ({0})", md.Units.TimeSymbol));
+            sl.SetCellValue(row + 1, 3, string.Format("X ({0})", md.Units.LengthSymbol));
+            sl.SetCellValue(row + 1, 4, string.Format("Y ({0})", md.Units.LengthSymbol));
 
             for (int i = 0; i < md.Positions.Count; i++)
             {
                 var p = md.Positions[i];
                 sl.SetCellValue(row + 2 + i, 1, p.Name);
-                sl.SetCellValue(row + 2 + i, 2, p.X);
-                sl.SetCellValue(row + 2 + i, 3, p.Y);
-                sl.SetCellValue(row + 2 + i, 4, p.Time);
+                sl.SetCellValue(row + 2 + i, 2, p.Time);
+                sl.SetCellValue(row + 2 + i, 3, p.X);
+                sl.SetCellValue(row + 2 + i, 4, p.Y);
             }
 
             sl.SetCellStyle(row, 1, row + md.Positions.Count + 1, 4, styles["normal"]);
             sl.SetCellStyle(row, 1, styles["kfHeader"]);
             sl.SetCellStyle(row + 1, 1, row + 1, 4, styles["valueHeader"]);
-            sl.SetCellStyle(row + 2, 2, row + md.Positions.Count + 1, 3, styles["number"]);
-            sl.SetCellStyle(row + 2, 4, row + md.Positions.Count + 1, 4, styles["time"]);
+            sl.SetCellStyle(row + 2, 2, row + md.Positions.Count + 1, 2, styles["time"]);
+            sl.SetCellStyle(row + 2, 3, row + md.Positions.Count + 1, 4, styles["number"]);
 
             return md.Positions.Count + 2 + margin;
         }
@@ -202,22 +202,22 @@ namespace Kinovea.ScreenManager
             sl.MergeWorksheetCells(row, 1, row, 3);
 
             sl.SetCellValue(row + 1, 1, "Name");
-            sl.SetCellValue(row + 1, 2, string.Format("Length ({0})", md.Units.LengthSymbol));
-            sl.SetCellValue(row + 1, 3, string.Format("Time ({0})", md.Units.TimeSymbol));
+            sl.SetCellValue(row + 1, 2, string.Format("Time ({0})", md.Units.TimeSymbol));
+            sl.SetCellValue(row + 1, 3, string.Format("Length ({0})", md.Units.LengthSymbol));
 
             for (int i = 0; i < md.Distances.Count; i++)
             {
                 var value = md.Distances[i];
                 sl.SetCellValue(row + 2 + i, 1, value.Name);
-                sl.SetCellValue(row + 2 + i, 2, value.Value);
-                sl.SetCellValue(row + 2 + i, 3, value.Time);
+                sl.SetCellValue(row + 2 + i, 2, value.Time);
+                sl.SetCellValue(row + 2 + i, 3, value.Value);
             }
 
             sl.SetCellStyle(row, 1, row + md.Distances.Count + 1, 3, styles["normal"]);
             sl.SetCellStyle(row, 1, styles["kfHeader"]);
             sl.SetCellStyle(row + 1, 1, row + 1, 3, styles["valueHeader"]);
-            sl.SetCellStyle(row + 2, 2, row + md.Distances.Count + 1, 2, styles["number"]);
-            sl.SetCellStyle(row + 2, 3, row + md.Distances.Count + 1, 3, styles["time"]);
+            sl.SetCellStyle(row + 2, 2, row + md.Distances.Count + 1, 2, styles["time"]);
+            sl.SetCellStyle(row + 2, 3, row + md.Distances.Count + 1, 3, styles["number"]);
 
             return md.Distances.Count + 2 + margin;
         }
@@ -231,22 +231,22 @@ namespace Kinovea.ScreenManager
             sl.MergeWorksheetCells(row, 1, row, 3);
 
             sl.SetCellValue(row + 1, 1, "Name");
-            sl.SetCellValue(row + 1, 2, string.Format("Value ({0})", md.Units.AngleSymbol));
-            sl.SetCellValue(row + 1, 3, string.Format("Time ({0})", md.Units.TimeSymbol));
+            sl.SetCellValue(row + 1, 2, string.Format("Time ({0})", md.Units.TimeSymbol));
+            sl.SetCellValue(row + 1, 3, string.Format("Value ({0})", md.Units.AngleSymbol));
 
             for (int i = 0; i < md.Angles.Count; i++)
             {
                 var value = md.Angles[i];
                 sl.SetCellValue(row + 2 + i, 1, value.Name);
-                sl.SetCellValue(row + 2 + i, 2, value.Value);
-                sl.SetCellValue(row + 2 + i, 3, value.Time);
+                sl.SetCellValue(row + 2 + i, 2, value.Time);
+                sl.SetCellValue(row + 2 + i, 3, value.Value);
             }
 
             sl.SetCellStyle(row, 1, row + md.Angles.Count + 1, 3, styles["normal"]);
             sl.SetCellStyle(row, 1, styles["kfHeader"]);
             sl.SetCellStyle(row + 1, 1, row + 1, 3, styles["valueHeader"]);
-            sl.SetCellStyle(row + 2, 2, row + md.Angles.Count + 1, 2, styles["number"]);
-            sl.SetCellStyle(row + 2, 3, row + md.Angles.Count + 1, 3, styles["time"]);
+            sl.SetCellStyle(row + 2, 2, row + md.Angles.Count + 1, 2, styles["time"]);
+            sl.SetCellStyle(row + 2, 3, row + md.Angles.Count + 1, 3, styles["number"]);
 
             return md.Angles.Count + 2 + margin;
         }
