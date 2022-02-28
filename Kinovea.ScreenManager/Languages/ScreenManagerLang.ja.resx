@@ -514,4 +514,7 @@
   <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
     <value>検索窓:</value>
   </data>
+  <data name="Generic_Open" xml:space="preserve">
+    <value>開く</value>
+  </data>
 </root>
