@@ -7,6 +7,14 @@ using System.Drawing;
 
 namespace Kinovea.ScreenManager
 {
+    /// <summary>
+    /// Intermediate representation of all the data we export for scientific purposes.
+    /// The data here has already been converted to the user coordinate system and time system.
+    /// This is different from the KVA file format which contains the data in internal units like pixels and timestamps.
+    /// 
+    /// All times are converted to a numerical representation rather than timecodes.
+    /// Tracks and Trackable objects are merged into one timeseries list.
+    /// </summary>
     public class MeasuredData
     {
         public string Producer { get; set; }
@@ -22,9 +30,7 @@ namespace Kinovea.ScreenManager
         public List<MeasuredDataDistance> Distances { get; set; } = new List<MeasuredDataDistance>();
         public List<MeasuredDataAngle> Angles { get; set; } = new List<MeasuredDataAngle>();
         public List<MeasuredDataTime> Times { get; set; } = new List<MeasuredDataTime>();
-        public List<MeasuredDataTrack> Tracks { get; set; } = new List<MeasuredDataTrack>();
-
-        public List<MeasuredDataTimeline> Timelines { get; set; } = new List<MeasuredDataTimeline>();
+        public List<MeasuredDataTimeseries> Timeseries { get; set; } = new List<MeasuredDataTimeseries>();
 
     }
 }

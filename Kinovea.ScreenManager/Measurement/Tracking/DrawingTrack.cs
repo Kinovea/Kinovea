@@ -1150,18 +1150,28 @@ namespace Kinovea.ScreenManager
             w.WriteEndElement();
         }
 
-        public MeasuredDataTrack CollectMeasuredData()
+        public MeasuredDataTimeseries CollectMeasuredData()
         {
-            MeasuredDataTrack mdt = new MeasuredDataTrack();
+            MeasuredDataTimeseries mdt = new MeasuredDataTimeseries();
             mdt.Name = name;
-            mdt.Start = positions.Count > 0 ? positions[0].T : 0;
-            mdt.Coords = new List<MeasuredDataCoordinate>();
+            mdt.Times = new List<float>();
+            foreach (AbstractTrackPoint tp in positions)
+            {
+                float time = parentMetadata.GetNumericalTime(tp.T, TimeType.UserOrigin);
+                mdt.Times.Add(time);
+            }
+
+            mdt.Data = new Dictionary<string, List<PointF>>();
+            List<PointF> coords = new List<PointF>();
             foreach (AbstractTrackPoint tp in positions)
             {
                 PointF p = parentMetadata.CalibrationHelper.GetPointAtTime(tp.Point, tp.T);
-                float t = parentMetadata.GetNumericalTime(tp.T, TimeType.UserOrigin);
-                mdt.Coords.Add(new MeasuredDataCoordinate(p, t));
+                coords.Add(p);
             }
+            mdt.Data.Add("0", coords);
+
+            if (positions.Count > 0)
+                mdt.FirstTimestamp = positions[0].T;
 
             return mdt;
         }

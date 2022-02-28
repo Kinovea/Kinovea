@@ -243,23 +243,23 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Collect the data used for spreadsheet export.
+        /// Updates the passed list.
         /// </summary>
-        public List<MeasuredDataTimeline> CollectMeasuredData(Metadata metadata)
+        public void CollectMeasuredData(Metadata metadata, List<MeasuredDataTimeseries> timelines)
         {
-            List<MeasuredDataTimeline> timelines = new List<MeasuredDataTimeline>();
-
             foreach (DrawingTracker tracker in trackers.Values)
             {
                 AbstractDrawing drawing = metadata.FindDrawing(tracker.ID);
                 if (drawing == null)
                     continue;
 
-                MeasuredDataTimeline mdt = new MeasuredDataTimeline();
+                MeasuredDataTimeseries mdt = new MeasuredDataTimeseries();
                 mdt.Name = drawing.Name;
                 List<long> timestamps = tracker.CollectTimeVector();
                 if (timestamps == null || timestamps.Count == 0)
                     continue;
 
+                mdt.FirstTimestamp = timestamps[0];
                 Dictionary<string, List<PointF>> dataRaw = tracker.CollectData();
                 
                 mdt.Times = timestamps.Select(ts => metadata.GetNumericalTime(ts, TimeType.UserOrigin)).ToList();
@@ -272,8 +272,6 @@ namespace Kinovea.ScreenManager
 
                 timelines.Add(mdt);
             }
-
-            return timelines;
         }
 
         public void WriteXml(XmlWriter w)

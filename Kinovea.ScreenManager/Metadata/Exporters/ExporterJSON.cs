@@ -135,8 +135,7 @@ namespace Kinovea.ScreenManager
             WriteDistances(w, md);
             WriteAngles(w, md);
             WriteTimes(w, md);
-            WriteTracks(w, md);
-            WriteTimelines(w, md);
+            WriteTimeseries(w, md);
 
             w.WriteEndObject();
         }
@@ -254,57 +253,15 @@ namespace Kinovea.ScreenManager
             w.WriteEndArray();
         }
 
-        private void WriteTracks(JsonWriter w, MeasuredData md)
+        private void WriteTimeseries(JsonWriter w, MeasuredData md)
         {
             // For time series we follow the Kinetics Toolkit model: 
             // First output an array of times, then an array of matching samples.
-            // Each sample might itself a multi-dimensional array, in our case a 2D array of spatial coordinates.
-            w.WritePropertyName("tracks");
+            // Each sample might itself be a multi-dimensional array, in our case a 2D array of spatial coordinates.
+            w.WritePropertyName("timeseries");
             w.WriteStartArray();
 
-            foreach (var o in md.Tracks)
-            {
-                w.WriteStartObject();
-
-                w.WritePropertyName("name");
-                w.WriteValue(o.Name);
-                w.WritePropertyName("start");
-                w.WriteValue(o.Start);
-
-                // Export all times.
-                w.WritePropertyName("times");
-                w.WriteStartArray();
-                foreach (var c in o.Coords)
-                    w.WriteValue(c.Time);
-                w.WriteEndArray();
-
-                // Export all coordinates.
-                w.WritePropertyName("coordinates");
-                w.WriteStartArray();
-                foreach (var c in o.Coords)
-                {
-                    w.WriteStartArray();
-                    w.WriteValue(c.Point.X);
-                    w.WriteValue(c.Point.Y);
-                    w.WriteEndArray();
-                }
-                w.WriteEndArray();
-
-                w.WriteEndObject();
-            }
-
-            w.WriteEndArray();
-        }
-
-        private void WriteTimelines(JsonWriter w, MeasuredData md)
-        {
-            // For time series we follow the Kinetics Toolkit model: 
-            // First output an array of times, then an array of matching samples.
-            // Each sample might itself a multi-dimensional array, in our case a 2D array of spatial coordinates.
-            w.WritePropertyName("timelines");
-            w.WriteStartArray();
-
-            foreach (var o in md.Timelines)
+            foreach (var o in md.Timeseries)
             {
                 w.WriteStartObject();
 
@@ -320,7 +277,7 @@ namespace Kinovea.ScreenManager
             w.WriteEndArray();
         }
 
-        private void WriteTimelineTimes(JsonWriter w, MeasuredDataTimeline tl)
+        private void WriteTimelineTimes(JsonWriter w, MeasuredDataTimeseries tl)
         {
             w.WritePropertyName("time");
             w.WriteStartArray();
@@ -329,7 +286,7 @@ namespace Kinovea.ScreenManager
             w.WriteEndArray();
         }
 
-        private void WriteTimelineData(JsonWriter w, MeasuredDataTimeline tl)
+        private void WriteTimelineData(JsonWriter w, MeasuredDataTimeseries tl)
         {
             w.WritePropertyName("data");
             w.WriteStartObject();

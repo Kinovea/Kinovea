@@ -999,13 +999,16 @@ namespace Kinovea.ScreenManager
                 md.Times.Add(chrono.CollectMeasuredData());
             md.Times.Sort((a, b) => a.Start.CompareTo(b.Start));
 
+            md.Timeseries = new List<MeasuredDataTimeseries>();
+            
             // Tracks.
             foreach (DrawingTrack track in TrackManager.Drawings)
-                md.Tracks.Add(track.CollectMeasuredData());
-            md.Tracks.Sort((a, b) => a.Start.CompareTo(b.Start));
-
+                md.Timeseries.Add(track.CollectMeasuredData());
+            
             // Timelines.
-            md.Timelines = trackabilityManager.CollectMeasuredData(this);
+            trackabilityManager.CollectMeasuredData(this, md.Timeseries);
+
+            md.Timeseries.Sort((a, b) => a.FirstTimestamp.CompareTo(b.FirstTimestamp));
 
             return md;
         }
