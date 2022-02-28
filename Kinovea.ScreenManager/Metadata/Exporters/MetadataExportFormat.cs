@@ -24,11 +24,11 @@ namespace Kinovea.ScreenManager
 {
     public enum MetadataExportFormat
     {
-        ODF,
-        MSXML,
-        XHTML,
-        TrajectoryText,
+        ODS,
         XLSX,
         JSON,
+        //MSXML,
+        //XHTML,
+        //TrajectoryText,
     }
 }

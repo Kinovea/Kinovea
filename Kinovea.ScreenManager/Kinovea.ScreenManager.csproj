@@ -635,7 +635,7 @@
     <Compile Include="Metadata\Drawings\Styling\StyleElementTrackShape.cs" />
     <Compile Include="Metadata\Drawings\Styling\StyleHelper.cs" />
     <Compile Include="Metadata\DrawingToolbar\ToolManager.cs" />
-    <Compile Include="Metadata\Exporters\ExporterODF.cs" />
+    <Compile Include="Metadata\Exporters\ExporterODS.cs" />
     <Compile Include="Metadata\Exporters\ExporterMSXML.cs" />
     <Compile Include="Metadata\Exporters\ExporterTrajectoryText.cs" />
     <Compile Include="Metadata\Exporters\ExporterXHTML.cs" />
@@ -1451,6 +1451,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\speakermute.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Metadata\Exporters\ODS\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">

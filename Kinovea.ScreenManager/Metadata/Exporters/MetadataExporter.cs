@@ -14,18 +14,12 @@ namespace Kinovea.ScreenManager
             // Each exporter then serialize this data to its target format.
             MeasuredData measuredData = metadata.CollectMeasuredData();
 
-            //MetadataSerializer serializer = new MetadataSerializer();
-            //string xmlString = serializer.SaveToSpreadsheetString(metadata);
-            //XmlDocument xml = new XmlDocument();
-            //xml.LoadXml(xmlString);
-
             switch (format)
             {
-                //    //case MetadataExportFormat.ODF:
-                //    //    ExporterODF exporterODF = new ExporterODF();
-                //    //    exporterODF.Export(file, xml);
-                //    //    break;
-
+                case MetadataExportFormat.ODS:
+                    ExporterODS exporterODF = new ExporterODS();
+                    exporterODF.Export(file, measuredData);
+                    break;
                 case MetadataExportFormat.XLSX:
                     ExporterXLSX exporterXLSX = new ExporterXLSX();
                     exporterXLSX.Export(file, measuredData);
@@ -34,20 +28,6 @@ namespace Kinovea.ScreenManager
                     ExporterJSON exporterJSON = new ExporterJSON();
                     exporterJSON.Export(file, measuredData);
                     break;
-
-                    //    case MetadataExportFormat.XHTML:
-                    //        ExporterXHTML exporterXHTML = new ExporterXHTML();
-                    //        exporterXHTML.Export(file, xml);
-                    //        break;
-                    //    // case MetadataExportFormat.TrajectoryText:
-                    //    //    ExporterTrajectoryText exporterTrajText = new ExporterTrajectoryText();
-                    //    //    exporterTrajText.Export(file, xml);
-                    //    //    break;
-                    //    case MetadataExportFormat.RAW:
-                    //    default:
-                    //        xml.Save(file);
-                    //        break;
-                    //}
             }
         }
     }

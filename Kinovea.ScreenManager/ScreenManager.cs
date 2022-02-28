@@ -88,10 +88,8 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuSaveAs = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportVideo = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportSpreadsheet = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuExportODF = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportODS = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportXLSX = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuExportXHTML = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuExportTEXT = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportJSON = new ToolStripMenuItem();
         private ToolStripMenuItem mnuLoadAnalysis = new ToolStripMenuItem();
 
@@ -314,21 +312,15 @@ namespace Kinovea.ScreenManager
             mnuExportSpreadsheet.Image = Properties.Resources.table;
             mnuExportSpreadsheet.MergeIndex = 8;
             mnuExportSpreadsheet.MergeAction = MergeAction.Insert;
-            mnuExportODF.Image = Properties.Resources.file_ods;
-            mnuExportODF.Click += new EventHandler(mnuExportODF_OnClick);
+            mnuExportODS.Image = Properties.Resources.file_ods;
+            mnuExportODS.Click += new EventHandler(mnuExportODS_OnClick);
             mnuExportXLSX.Image = Properties.Resources.file_xls;
-            mnuExportXLSX.Click += new EventHandler(mnuExportMSXML_OnClick);
-            mnuExportXHTML.Image = Properties.Resources.file_html;
-            mnuExportXHTML.Click += new EventHandler(mnuExportXHTML_OnClick);
-            mnuExportTEXT.Image = Properties.Resources.file_txt;
-            mnuExportTEXT.Click += new EventHandler(mnuExportTEXT_OnClick);
-            //mnuExportJSON.Image = Properties.Resources.file_txt;
+            mnuExportXLSX.Click += new EventHandler(mnuExportXLSX_OnClick);
+            mnuExportJSON.Image = Properties.Resources.table;
             mnuExportJSON.Click += new EventHandler(mnuExportJSON_OnClick);
             mnuExportSpreadsheet.DropDownItems.AddRange(new ToolStripItem[] { 
-                //mnuExportODF, 
+                mnuExportODS, 
                 mnuExportXLSX, 
-                //mnuExportXHTML, 
-                //mnuExportTEXT 
                 mnuExportJSON,
             });
 
@@ -1067,10 +1059,8 @@ namespace Kinovea.ScreenManager
                     mnuExportVideo.Enabled = true;
                     toolSave.Enabled = true;
                     mnuExportSpreadsheet.Enabled = player.FrameServer.Metadata.HasData;
-                    mnuExportODF.Enabled = player.FrameServer.Metadata.HasData;
+                    mnuExportODS.Enabled = player.FrameServer.Metadata.HasData;
                     mnuExportXLSX.Enabled = player.FrameServer.Metadata.HasData;
-                    mnuExportXHTML.Enabled = player.FrameServer.Metadata.HasData;
-                    mnuExportTEXT.Enabled = player.FrameServer.Metadata.HasTrack;
                     mnuExportJSON.Enabled = player.FrameServer.Metadata.HasData;
                     mnuLoadAnalysis.Enabled = true;
                     
@@ -1122,10 +1112,8 @@ namespace Kinovea.ScreenManager
                     mnuExportVideo.Enabled = false;
                     toolSave.Enabled = false;
                     mnuExportSpreadsheet.Enabled = false;
-                    mnuExportODF.Enabled = false;
+                    mnuExportODS.Enabled = false;
                     mnuExportXLSX.Enabled = false;
-                    mnuExportXHTML.Enabled = false;
-                    mnuExportTEXT.Enabled = false;
                     mnuExportJSON.Enabled = false;
                     mnuLoadAnalysis.Enabled = true;
 
@@ -1178,10 +1166,8 @@ namespace Kinovea.ScreenManager
                 toolSave.Enabled = false;
                 mnuLoadAnalysis.Enabled = false;
                 mnuExportSpreadsheet.Enabled = false;
-                mnuExportODF.Enabled = false;
+                mnuExportODS.Enabled = false;
                 mnuExportXLSX.Enabled = false;
-                mnuExportXHTML.Enabled = false;
-                mnuExportTEXT.Enabled = false;
                 mnuExportJSON.Enabled = false;
 
                 // Edit
@@ -1472,12 +1458,11 @@ namespace Kinovea.ScreenManager
             mnuSave.Text = ScreenManagerLang.Generic_SaveKVA;
             mnuSaveAs.Text = ScreenManagerLang.Generic_SaveKVAAs;
             mnuExportVideo.Text = ScreenManagerLang.Generic_ExportVideo;
-            mnuExportSpreadsheet.Text = ScreenManagerLang.mnuExportSpreadsheet;
-            mnuExportODF.Text = "LibreOffice (.odf)";
+            //mnuExportSpreadsheet.Text = ScreenManagerLang.mnuExportSpreadsheet;
+            mnuExportSpreadsheet.Text = "Export data";
+            mnuExportODS.Text = "LibreOffice Calc (.ods)";
             mnuExportXLSX.Text = "Microsoft Excel (.xlsx)";
-            mnuExportXHTML.Text = "Web (.html)";
-            mnuExportTEXT.Text = "Gnuplot (.txt)";
-            mnuExportJSON.Text = "JSON (.json)";
+            mnuExportJSON.Text = "Raw JSON (.json)";
             mnuLoadAnalysis.Text = ScreenManagerLang.mnuLoadAnalysis;
 
             // Edit
@@ -1614,21 +1599,13 @@ namespace Kinovea.ScreenManager
 
             screenList[targetScreen].LoadKVA(filename);
         }
-        private void mnuExportODF_OnClick(object sender, EventArgs e)
+        private void mnuExportODS_OnClick(object sender, EventArgs e)
         {
-            ExportSpreadsheet(MetadataExportFormat.ODF);
+            ExportSpreadsheet(MetadataExportFormat.ODS);
         }
-        private void mnuExportMSXML_OnClick(object sender, EventArgs e)
+        private void mnuExportXLSX_OnClick(object sender, EventArgs e)
         {
-            ExportSpreadsheet(MetadataExportFormat.XLSX);	
-        }
-        private void mnuExportXHTML_OnClick(object sender, EventArgs e)
-        {
-            ExportSpreadsheet(MetadataExportFormat.XHTML);
-        }
-        private void mnuExportTEXT_OnClick(object sender, EventArgs e)
-        {
-            ExportSpreadsheet(MetadataExportFormat.TrajectoryText);
+            ExportSpreadsheet(MetadataExportFormat.XLSX);
         }
         private void mnuExportJSON_OnClick(object sender, EventArgs e)
         {
@@ -1645,25 +1622,19 @@ namespace Kinovea.ScreenManager
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = ScreenManagerLang.dlgExportSpreadsheet_Title;
             saveFileDialog.RestoreDirectory = true;
-            saveFileDialog.Filter = "LibreOffice (*.ods)|*.ods|Microsoft Excel (*.xlsx)|*.xlsx|Web (*.html)|*.html|Gnuplot (*.txt)|*.txt|JSON (*.json)|*.json";
+            saveFileDialog.Filter = "LibreOffice calc (*.ods)|*.ods|Microsoft Excel (*.xlsx)|*.xlsx|JSON (*.json)|*.json";
             int filterIndex;
             switch (format)
             {
-                case MetadataExportFormat.ODF:
+                case MetadataExportFormat.ODS:
                     filterIndex = 1;
                     break;
                 case MetadataExportFormat.XLSX:
                     filterIndex = 2;
                     break;
-                case MetadataExportFormat.XHTML:
-                    filterIndex = 3;
-                    break;
-                case MetadataExportFormat.TrajectoryText:
-                    filterIndex = 4;
-                    break;
                 case MetadataExportFormat.JSON:
                 default:
-                    filterIndex = 5;
+                    filterIndex = 3;
                     break;
             }
 
