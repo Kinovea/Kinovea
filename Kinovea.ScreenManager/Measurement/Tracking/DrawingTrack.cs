@@ -1126,36 +1126,56 @@ namespace Kinovea.ScreenManager
                 style.WriteXml(w);
                 w.WriteEndElement();
             }
+
+            //if (ShouldSerializeSpreadsheet(filter))
+            //{
+            //    TrackPointsToSpreadsheetXml(w);
+            //}
         }
         private void TrackPointsToXml(XmlWriter w)
         {
             w.WriteStartElement("TrackPointList");
             w.WriteAttributeString("Count", positions.Count.ToString());
-            w.WriteAttributeString("UserUnitLength", parentMetadata.CalibrationHelper.GetLengthAbbreviation());
             
             if(positions.Count > 0)
             {
                 foreach (AbstractTrackPoint tp in positions)
                 {
                     w.WriteStartElement("TrackPoint");
-                    
-                    PointF p = parentMetadata.CalibrationHelper.GetPointAtTime(tp.Point, tp.T);
-                    string userT = parentMetadata.TimeCodeBuilder(tp.T, TimeType.Absolute, TimecodeFormat.Unknown, false);
-                    
-                    w.WriteAttributeString("UserX", String.Format("{0:0.00}", p.X));
-                    w.WriteAttributeString("UserXInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", p.X));
-                    w.WriteAttributeString("UserY", String.Format("{0:0.00}", p.Y));
-                    w.WriteAttributeString("UserYInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", p.Y));
-                    w.WriteAttributeString("UserTime", userT);
-            
                     tp.WriteXml(w);
-                    
                     w.WriteEndElement();
                 }
             }
 
             w.WriteEndElement();
         }
+
+        public MeasuredDataTimeseries CollectMeasuredData()
+        {
+            MeasuredDataTimeseries mdt = new MeasuredDataTimeseries();
+            mdt.Name = name;
+            mdt.Times = new List<float>();
+            foreach (AbstractTrackPoint tp in positions)
+            {
+                float time = parentMetadata.GetNumericalTime(tp.T, TimeType.UserOrigin);
+                mdt.Times.Add(time);
+            }
+
+            mdt.Data = new Dictionary<string, List<PointF>>();
+            List<PointF> coords = new List<PointF>();
+            foreach (AbstractTrackPoint tp in positions)
+            {
+                PointF p = parentMetadata.CalibrationHelper.GetPointAtTime(tp.Point, tp.T);
+                coords.Add(p);
+            }
+            mdt.Data.Add("0", coords);
+
+            if (positions.Count > 0)
+                mdt.FirstTimestamp = positions[0].T;
+
+            return mdt;
+        }
+
         public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {
             invalid = true;

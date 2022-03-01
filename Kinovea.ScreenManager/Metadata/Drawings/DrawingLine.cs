@@ -396,25 +396,10 @@ namespace Kinovea.ScreenManager
                 infosFading.WriteXml(w);
                 w.WriteEndElement();
             }
-            
-            if(ShouldSerializeAll(filter))
-            {
-                // Spreadsheet support.
-                w.WriteStartElement("Measure");
-                
-                PointF a = CalibrationHelper.GetPoint(new PointF(points["a"].X, points["a"].Y));
-                PointF b = CalibrationHelper.GetPoint(new PointF(points["b"].X, points["b"].Y));
-
-                float len = GeometryHelper.GetDistance(a, b);
-                string value = String.Format("{0:0.00}", len);
-                string valueInvariant = String.Format(CultureInfo.InvariantCulture, "{0:0.00}", len);
-
-                w.WriteAttributeString("UserLength", value);
-                w.WriteAttributeString("UserLengthInvariant", valueInvariant);
-                w.WriteAttributeString("UserUnitLength", CalibrationHelper.GetLengthAbbreviation());
-                
-                w.WriteEndElement();
-            }
+        }
+        public MeasuredDataDistance CollectMeasuredData()
+        {
+            return MeasurementSerializationHelper.CollectDistance(name, points["a"], points["b"], CalibrationHelper);
         }
         #endregion
         

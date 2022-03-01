@@ -250,4 +250,52 @@
   <data name="dlgPreferences_Player_UnitsSpeed" xml:space="preserve">
     <value>Hastighet:</value>
   </data>
+  <data name="dlgAbout_Citation" xml:space="preserve">
+    <value>Citat</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
+    <value>Bildfrekvens (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_ImageNaming" xml:space="preserve">
+    <value>Namngivning av bilder</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve">
+    <value>Okomprimerat videoformat:</value>
+  </data>
+  <data name="dlgPreferences_Capture_Recording" xml:space="preserve">
+    <value>Spelar in</value>
+  </data>
+  <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve">
+    <value>Namngivning av video</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve">
+    <value>Inspelningsläge och fördröjning</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
+    <value>Kamera: spelar in realtidsramar.</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve">
+    <value>Fördröjd: spelar in fördröjda bildrutor.</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
+    <value>Retroaktiv: spelar in bildrutor när inspelningen stoppas.</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
+    <value>Kamera-alias</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
+    <value>Konfigurerad bildhastighet</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
+    <value>Mottagen bildhastighet</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
+    <value>Inspelat filnamn</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
+    <value>Ignorera varning för filöverskrivning</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve">
+    <value>Tröskelvärde för ersättning av bildhastighet (fps):</value>
+  </data>
 </root>

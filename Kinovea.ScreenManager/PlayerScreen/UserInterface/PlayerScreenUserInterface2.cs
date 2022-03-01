@@ -4499,7 +4499,7 @@ namespace Kinovea.ScreenManager
 
             Guid managerId = m_FrameServer.Metadata.FindManagerId(m_FrameServer.Metadata.HitDrawing);
             AbstractDrawingManager manager = m_FrameServer.Metadata.GetDrawingManager(managerId);
-            string data = DrawingSerializer.SerializeMemento(m_FrameServer.Metadata, manager.GetDrawing(drawing.Id), SerializationFilter.All, false);
+            string data = DrawingSerializer.SerializeMemento(m_FrameServer.Metadata, manager.GetDrawing(drawing.Id), SerializationFilter.KVA, false);
 
             DrawingClipboard.Put(data, drawing.GetCopyPoint(), drawing.Name);
             
@@ -4522,7 +4522,7 @@ namespace Kinovea.ScreenManager
 
             Guid managerId = m_FrameServer.Metadata.FindManagerId(m_FrameServer.Metadata.HitDrawing);
             AbstractDrawingManager manager = m_FrameServer.Metadata.GetDrawingManager(managerId);
-            string data = DrawingSerializer.SerializeMemento(m_FrameServer.Metadata, manager.GetDrawing(drawing.Id), SerializationFilter.All, false);
+            string data = DrawingSerializer.SerializeMemento(m_FrameServer.Metadata, manager.GetDrawing(drawing.Id), SerializationFilter.KVA, false);
 
             DrawingClipboard.Put(data, drawing.GetCopyPoint(), drawing.Name);
 
@@ -4658,8 +4658,8 @@ namespace Kinovea.ScreenManager
             if(track == null)
                 return;
 
-            // Note that we use SerializationFilter.All to backup all data as the dialog allows to modify not only style option but also tracker parameters.
-            HistoryMementoModifyDrawing memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.TrackManager.Id, track.Id, track.Name, SerializationFilter.All);
+            // Note that we use SerializationFilter.KVA to backup all data as the dialog allows to modify not only style option but also tracker parameters.
+            HistoryMementoModifyDrawing memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.TrackManager.Id, track.Id, track.Name, SerializationFilter.KVA);
 
             formConfigureTrajectoryDisplay fctd = new formConfigureTrajectoryDisplay(track, m_FrameServer.Metadata, m_FrameServer.CurrentImage, m_iCurrentPosition, DoInvalidate);
             fctd.StartPosition = FormStartPosition.CenterScreen;

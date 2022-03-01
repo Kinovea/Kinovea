@@ -267,7 +267,7 @@
   <xsl:for-each select="Keyframe/Drawings/Angle/Measure">
     <Row>
       <Cell ss:StyleID="data"><Data ss:Type="String"><xsl:value-of select="../@name"/></Data></Cell>  
-      <Cell ss:StyleID="data"><Data ss:Type="Number"><xsl:value-of select="@UserAngle"/></Data></Cell>
+      <Cell ss:StyleID="data"><Data ss:Type="Number"><xsl:value-of select="@UserAngleInvariant"/></Data></Cell>
       <Cell ss:StyleID="data"><Data ss:Type="String"><xsl:value-of select="../../../Position/@UserTime"/></Data></Cell>
     </Row>
   </xsl:for-each>

@@ -30,7 +30,7 @@ namespace Kinovea.ScreenManager
 
         public override HistoryMemento PerformUndo()
         {
-            HistoryMemento redoMemento = new HistoryMementoDeleteMultiDrawingItem(metadata, manager, itemId, SerializationFilter.All);
+            HistoryMemento redoMemento = new HistoryMementoDeleteMultiDrawingItem(metadata, manager, itemId, SerializationFilter.KVA);
             redoMemento.CommandName = commandName;
 
             metadata.DeleteMultiDrawingItem(manager, itemId);

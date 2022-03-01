@@ -341,15 +341,11 @@ namespace Kinovea.ScreenManager
                 infosFading.WriteXml(w);
                 w.WriteEndElement();
             }
-
-            if (ShouldSerializeAll(filter))
-            {
-                // Spreadsheet support.
-                w.WriteStartElement("Measure");
-                float angle = CalibrationHelper.ConvertAngle(angleHelper.CalibratedAngle);
-                w.WriteAttributeString("UserAngle", angle.ToString());
-                w.WriteEndElement();
-            }
+        }
+        public MeasuredDataAngle CollectMeasuredData()
+        {
+            angleHelper.Update(points["o"], points["a"], points["b"], signedAngle, counterClockwise, supplementaryAngle, CalibrationHelper);
+            return MeasurementSerializationHelper.CollectAngle(name, angleHelper, CalibrationHelper);
         }
         #endregion
         

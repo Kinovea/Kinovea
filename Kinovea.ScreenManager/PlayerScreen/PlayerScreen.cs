@@ -512,7 +512,7 @@ namespace Kinovea.ScreenManager
         
         private void View_MultiDrawingItemDeleting(object sender, MultiDrawingItemEventArgs e)
         {
-            HistoryMemento memento = new HistoryMementoDeleteMultiDrawingItem(frameServer.Metadata, e.Manager, e.Item.Id, SerializationFilter.All);
+            HistoryMemento memento = new HistoryMementoDeleteMultiDrawingItem(frameServer.Metadata, e.Manager, e.Item.Id, SerializationFilter.KVA);
             frameServer.Metadata.DeleteMultiDrawingItem(e.Manager, e.Item.Id);
             historyStack.PushNewCommand(memento);
         }

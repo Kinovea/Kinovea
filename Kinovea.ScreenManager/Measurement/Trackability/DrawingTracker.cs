@@ -95,7 +95,7 @@ namespace Kinovea.ScreenManager
             }
         }
         #endregion
-        
+
         private ITrackable drawing;
         private Guid drawingId;
         private bool isTracking;
@@ -233,6 +233,41 @@ namespace Kinovea.ScreenManager
                 throw new ArgumentException("This point is not bound.");
             
             trackablePoints[e.PointName].SetUserValue(e.Position);
+        }
+
+
+
+        /// <summary>
+        /// Returns a single array of all the timestamps.
+        /// </summary>
+        public List<long> CollectTimeVector()
+        {
+            // Internally we keep different time vectors for each trackable point but they are always in sync.
+            if (trackablePoints == null || trackablePoints.Count == 0)
+                return null;
+            
+            KeyValuePair<string, TrackablePoint> pair = trackablePoints.First();
+            Timeline<TrackFrame> timeline = pair.Value.Timeline;
+            if (!timeline.HasData() || timeline.Times == null)
+                return null;
+
+            return new List<long>(timeline.Times);
+        }
+
+        /// <summary>
+        /// Returns a dictionary of the trackable points mapping names to list of 2D pixel coordinates.
+        /// </summary>
+        public Dictionary<string, List<PointF>> CollectData()
+        {
+            Dictionary<string, List<PointF>> data = new Dictionary<string, List<PointF>>();
+            foreach (KeyValuePair<string, TrackablePoint> pair in trackablePoints)
+            {
+                string key = pair.Key;
+                List<PointF> values = pair.Value.Timeline.Enumerate().Select(frame => frame.Location).ToList();
+                data.Add(key, values);
+            }
+
+            return data;
         }
 
         public void WriteXml(XmlWriter w)

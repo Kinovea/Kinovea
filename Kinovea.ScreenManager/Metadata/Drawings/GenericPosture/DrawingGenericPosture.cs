@@ -119,6 +119,10 @@ namespace Kinovea.ScreenManager
         {
             get { return genericPosture.Angles; }
         }
+        public List<AngleHelper> AngleHelpers 
+        {
+            get { return angles; }
+        }
         public List<GenericPostureHandle> GenericPostureHandles
         {
             get { return genericPosture.Handles; }
@@ -126,6 +130,10 @@ namespace Kinovea.ScreenManager
         public Guid ToolId
         {
             get { return toolId; }
+        }
+        public GenericPosture GenericPosture
+        {
+            get { return genericPosture; }
         }
         #endregion
 
@@ -397,6 +405,91 @@ namespace Kinovea.ScreenManager
                 infosFading.WriteXml(w);
                 w.WriteEndElement();
             }
+        }
+        
+        public List<MeasuredDataPosition> CollectMeasuredDataPositions()
+        {
+            List<MeasuredDataPosition> mdps = new List<MeasuredDataPosition>();
+
+            GenericPosture gp = genericPosture;
+            foreach (GenericPosturePosition gpp in gp.Positions)
+            {
+                if (gpp.Point < 0)
+                    continue;
+
+                MeasuredDataPosition mdp = new MeasuredDataPosition();
+                string exportedName = name;
+                if (!string.IsNullOrEmpty(gpp.Name))
+                    exportedName = exportedName + " - " + gpp.Name;
+
+                mdps.Add(MeasurementSerializationHelper.CollectPosition(exportedName, gp.PointList[gpp.Point], CalibrationHelper));
+            }
+
+            foreach (GenericPostureComputedPoint gpcp in gp.ComputedPoints)
+            {
+                string exportedName = name;
+                if (!string.IsNullOrEmpty(gpcp.Name))
+                    exportedName = exportedName + " - " + gpcp.Name;
+
+                PointF p = gpcp.ComputeLocation(gp);
+                mdps.Add(MeasurementSerializationHelper.CollectPosition(exportedName, p, CalibrationHelper));
+            }
+
+            return mdps;
+        }
+
+        public List<MeasuredDataDistance> CollectMeasuredDataDistances()
+        {
+            List<MeasuredDataDistance> mdds = new List<MeasuredDataDistance>();
+
+            GenericPosture gp = genericPosture;
+            foreach (GenericPostureDistance gpd in gp.Distances)
+            {
+                MeasuredDataDistance mdp = new MeasuredDataDistance();
+                string exportedName = name;
+                if (!string.IsNullOrEmpty(gpd.Name))
+                    exportedName = exportedName + " - " + gpd.Name;
+
+                PointF p1 = gp.PointList[gpd.Point1];
+                PointF p2 = gp.PointList[gpd.Point2];
+                mdds.Add(MeasurementSerializationHelper.CollectDistance(exportedName, p1, p2, CalibrationHelper));
+            }
+
+            return mdds;
+        }
+        public List<MeasuredDataAngle> CollectMeasuredDataAngles()
+        {
+            UpdateAngles();
+            List<MeasuredDataAngle> mdas = new List<MeasuredDataAngle>();
+            for (int i = 0; i < GenericPostureAngles.Count; i++)
+            {
+                GenericPostureAngle gpa = GenericPostureAngles[i];
+
+                MeasuredDataAngle mda = new MeasuredDataAngle();
+                string exportedName = name;
+                if (!string.IsNullOrEmpty(gpa.Name))
+                    exportedName = exportedName + " - " + gpa.Name;
+
+                AngleHelper angleHelper = AngleHelpers[i];
+                mdas.Add(MeasurementSerializationHelper.CollectAngle(exportedName, angleHelper, CalibrationHelper));
+            }
+
+            return mdas;
+        }
+
+        /// <summary>
+        /// Returns the actual name associated with a point. 
+        /// For simplicity the key used for trackable points is always derived from the point index.
+        /// For spreadsheet export however we want to get the actual name of the point if it is declared in the file.
+        /// </summary>
+        public string GetTrackablePointName(string key)
+        {
+            int pointIndex = int.Parse(key);
+            if (pointIndex >= genericPosture.Points.Count)
+                return key;
+
+            GenericPosturePoint point = genericPosture.Points[pointIndex];
+            return string.IsNullOrEmpty(point.Name) ? key : point.Name;
         }
         #endregion
 

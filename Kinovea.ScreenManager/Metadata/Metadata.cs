@@ -537,6 +537,28 @@ namespace Kinovea.ScreenManager
 
             return foundKeyframe == null ? Guid.Empty : foundKeyframe.Id;
         }
+
+
+        /// <summary>
+        /// Returns the id of the keyframe the drawing is attached to.
+        /// </summary>
+        public AbstractDrawing FindDrawing(Guid drawingId)
+        {
+            foreach (Keyframe k in keyframes)
+            {
+                foreach (AbstractDrawing d in k.Drawings)
+                {
+                    if (d.Id != drawingId)
+                        continue;
+
+                    return d;
+                }
+            }
+
+            return null;
+        }
+
+
         public int GetKeyframeIndex(Guid id)
         {
             // Temporary function to accomodate clients of the old API where we used indices to reference keyframes and drawings.
@@ -550,6 +572,11 @@ namespace Kinovea.ScreenManager
         {
             bool processed = false;
 
+            // If the keyframe is already known (by ID) we don't import nor merge it.
+            Keyframe known = keyframes.FirstOrDefault((kf) => kf.Id == keyframe.Id);
+            if (known != null)
+                return;
+            
             for (int i = 0; i < keyframes.Count; i++)
             {
                 Keyframe k = keyframes[i];
@@ -598,11 +625,23 @@ namespace Kinovea.ScreenManager
                 if (drawing is DrawingText)
                     yield return (DrawingText)drawing;
         }
+        public IEnumerable<DrawingLine> Lines()
+        {
+            foreach (AbstractDrawing drawing in AttachedDrawings())
+                if (drawing is DrawingLine)
+                    yield return (DrawingLine)drawing;
+        }
         public IEnumerable<DrawingAngle> Angles()
         {
             foreach (AbstractDrawing drawing in AttachedDrawings())
                 if (drawing is DrawingAngle)
                     yield return (DrawingAngle)drawing;
+        }
+        public IEnumerable<DrawingCrossMark> CrossMarks()
+        {
+            foreach (AbstractDrawing drawing in AttachedDrawings())
+                if (drawing is DrawingCrossMark)
+                    yield return (DrawingCrossMark)drawing;
         }
         public IEnumerable<DrawingGenericPosture> GenericPostures()
         {
@@ -686,19 +725,25 @@ namespace Kinovea.ScreenManager
             Keyframe keyframe = GetKeyframe(managerId);
             if (keyframe != null)
             {
-                AddDrawing(keyframe, drawing);
+                bool known = keyframe.Drawings.Any(d => d.Id == drawing.Id);
+                if (!known)
+                    AddDrawing(keyframe, drawing);
                 return;
             }
 
             if (chronoManager.Id == managerId && drawing is DrawingChrono)
             {
-                AddChrono(drawing as DrawingChrono);
+                bool known = chronoManager.Drawings.Any(d => d.Id == drawing.Id);
+                if (!known)
+                    AddChrono(drawing as DrawingChrono);
                 return;
             }
 
             if (trackManager.Id == managerId && drawing is DrawingTrack)
             {
-                AddTrack(drawing as DrawingTrack);
+                bool known = trackManager.Drawings.Any(d => d.Id == drawing.Id);
+                if (!known)
+                    AddTrack(drawing as DrawingTrack);
                 return;
             }
         }
@@ -889,6 +934,169 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
+        /// <summary>
+        /// Collect measured data for spreadsheet export.
+        /// </summary>
+        public MeasuredData CollectMeasuredData()
+        {
+            MeasuredData md = new MeasuredData();
+            md.Producer = Software.ApplicationName + "." + Software.Version;
+            md.OriginalFilename = Path.GetFileNameWithoutExtension(videoPath);
+            md.FullPath = videoPath;
+            md.ImageSize = imageSize;
+            md.CaptureFramerate = (float)calibrationHelper.CaptureFramesPerSecond;
+            md.UserFramerate = (float)(1000.0 / userInterval);
+
+            MeasuredDataUnits mdu = new MeasuredDataUnits();
+            mdu.LengthUnit = CalibrationHelper.LengthUnit.ToString();
+            mdu.LengthSymbol = UnitHelper.LengthAbbreviation(CalibrationHelper.LengthUnit);
+            mdu.SpeedUnit = PreferencesManager.PlayerPreferences.SpeedUnit.ToString();
+            mdu.SpeedSymbol = UnitHelper.SpeedAbbreviation(PreferencesManager.PlayerPreferences.SpeedUnit);
+            mdu.AccelerationUnit = PreferencesManager.PlayerPreferences.AccelerationUnit.ToString();
+            mdu.AccelerationSymbol = UnitHelper.AccelerationAbbreviation(PreferencesManager.PlayerPreferences.AccelerationUnit);
+            mdu.AngleUnit = PreferencesManager.PlayerPreferences.AngleUnit.ToString();
+            mdu.AngleSymbol = UnitHelper.AngleAbbreviation(PreferencesManager.PlayerPreferences.AngleUnit);
+            mdu.AngularVelocityUnit = PreferencesManager.PlayerPreferences.AngularVelocityUnit.ToString();
+            mdu.AngularVelocitySymbol = UnitHelper.AngularVelocityAbbreviation(PreferencesManager.PlayerPreferences.AngularVelocityUnit);
+            mdu.AngularAccelerationUnit = PreferencesManager.PlayerPreferences.AngularAccelerationUnit.ToString();
+            mdu.AngularAccelerationSymbol = UnitHelper.AngularAccelerationAbbreviation(PreferencesManager.PlayerPreferences.AngularAccelerationUnit);
+            mdu.TimeSymbol = UnitHelper.TimeAbbreviation(PreferencesManager.PlayerPreferences.TimecodeFormat);
+            md.Units = mdu;
+
+            foreach (Keyframe kf in Keyframes.Where(kf => !kf.Disabled))
+            {
+                var mdkf = kf.CollectMeasuredData();
+                md.Keyframes.Add(mdkf);
+
+                List<MeasuredDataPosition> mdps = new List<MeasuredDataPosition>();
+                List<MeasuredDataDistance> mdds = new List<MeasuredDataDistance>();
+                List<MeasuredDataAngle> mdas = new List<MeasuredDataAngle>();
+                foreach (AbstractDrawing d in kf.Drawings)
+                {
+                    // Positions from markers.
+                    if (d is DrawingCrossMark)
+                        mdps.Add(((DrawingCrossMark)d).CollectMeasuredData());
+
+                    // Positions from postures.
+                    if (d is DrawingGenericPosture)
+                        mdps.AddRange(((DrawingGenericPosture)d).CollectMeasuredDataPositions());
+
+                    // Distances from lines.
+                    if (d is DrawingLine)
+                        mdds.Add(((DrawingLine)d).CollectMeasuredData());
+
+                    // Distances from postures.
+                    if (d is DrawingGenericPosture)
+                        mdds.AddRange(((DrawingGenericPosture)d).CollectMeasuredDataDistances());
+
+                    // Angles from angle tools.
+                    if (d is DrawingAngle)
+                        mdas.Add(((DrawingAngle)d).CollectMeasuredData());
+
+                    // Angles from postures.
+                    if (d is DrawingGenericPosture)
+                        mdas.AddRange(((DrawingGenericPosture)d).CollectMeasuredDataAngles());
+                }
+
+                // Sort drawings on the same keyframe by name.
+                mdps.Sort((a, b) => a.Name.CompareTo(b.Name));
+                mdds.Sort((a, b) => a.Name.CompareTo(b.Name));
+                mdas.Sort((a, b) => a.Name.CompareTo(b.Name));
+
+                // Inject time.
+                foreach (MeasuredDataPosition mdp in mdps)
+                    mdp.Time = mdkf.Time;
+                foreach (MeasuredDataDistance mdd in mdds)
+                    mdd.Time = mdkf.Time;
+                foreach (MeasuredDataAngle mda in mdas)
+                    mda.Time = mdkf.Time;
+
+                // Add to the global list.
+                md.Positions.AddRange(mdps);
+                md.Distances.AddRange(mdds);
+                md.Angles.AddRange(mdas);
+            }
+
+            // Times.
+            foreach (DrawingChrono chrono in ChronoManager.Drawings)
+                md.Times.Add(chrono.CollectMeasuredData());
+            md.Times.Sort((a, b) => a.Start.CompareTo(b.Start));
+
+            md.Timeseries = new List<MeasuredDataTimeseries>();
+            
+            // Tracks.
+            foreach (DrawingTrack track in TrackManager.Drawings)
+                md.Timeseries.Add(track.CollectMeasuredData());
+            
+            // Timelines.
+            trackabilityManager.CollectMeasuredData(this, md.Timeseries);
+
+            md.Timeseries.Sort((a, b) => a.FirstTimestamp.CompareTo(b.FirstTimestamp));
+
+            return md;
+        }
+
+        /// <summary>
+        /// Convert from timestamps to a numerical time format.
+        /// If the preferred time format is not numeric we return seconds.
+        /// TimeType.WorkingZone is not supported.
+        /// </summary>
+        public float GetNumericalTime(long timestamps, TimeType type)
+        {
+            TimecodeFormat tcf = PreferencesManager.PlayerPreferences.TimecodeFormat;
+            
+            // TimecodeFormat.Normalized is not supported at this point.
+            if (tcf == TimecodeFormat.Normalized)
+                tcf = TimecodeFormat.ClassicTime;
+
+            long actualTimestamps = timestamps;
+            if (type == TimeType.UserOrigin)
+                actualTimestamps = timestamps - timeOrigin;
+
+            // TODO: use double for info.AverageTimestampsPerFrame.
+            //double averageTimestampsPerFrame = AverageTimeStampsPerSeconds / FramesPerSeconds;
+            double averageTimestampsPerFrame = this.AverageTimeStampsPerFrame;
+
+            float frames = 0;
+            if (AverageTimeStampsPerFrame != 0)
+                frames = (float)Math.Round(actualTimestamps / averageTimestampsPerFrame);
+
+            if (type == TimeType.Duration)
+                frames++;
+
+            double milliseconds = frames * UserInterval / HighSpeedFactor;
+            
+            double time;
+            switch (tcf)
+            {
+                case TimecodeFormat.Frames:
+                    time = frames;
+                    break;
+                case TimecodeFormat.Milliseconds:
+                    time = milliseconds;
+                    break;
+                case TimecodeFormat.Microseconds:
+                    time = milliseconds * 1000;
+                    break;
+                case TimecodeFormat.TenThousandthOfHours:
+                    // 1 Ten Thousandth of Hour = 360 ms.
+                    time = Math.Round(milliseconds) / 360.0;
+                    break;
+                case TimecodeFormat.HundredthOfMinutes:
+                    // 1 Hundredth of minute = 600 ms.
+                    time = Math.Round(milliseconds) / 600.0;
+                    break;
+                case TimecodeFormat.Timestamps:
+                    time = timestamps;
+                    break;
+                default:
+                    time = Math.Round(milliseconds) / 1000.0;
+                    break;
+            }
+
+            return (float)time;
+        }
+
         public void PostSetup(bool init)
         {
             if (init)

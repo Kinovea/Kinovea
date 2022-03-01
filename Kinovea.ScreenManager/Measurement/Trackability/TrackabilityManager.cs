@@ -31,6 +31,7 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// Manages the drawing trackers.
+    /// Each tracker is identified by the ID of the drawing it is tracking.
     /// </summary>
     public class TrackabilityManager
     {
@@ -238,6 +239,48 @@ namespace Kinovea.ScreenManager
             }
             
             return contains;
+        }
+
+        /// <summary>
+        /// Collect the data used for spreadsheet export.
+        /// Updates the passed list.
+        /// </summary>
+        public void CollectMeasuredData(Metadata metadata, List<MeasuredDataTimeseries> timelines)
+        {
+            foreach (DrawingTracker tracker in trackers.Values)
+            {
+                AbstractDrawing drawing = metadata.FindDrawing(tracker.ID);
+                if (drawing == null)
+                    continue;
+
+                MeasuredDataTimeseries mdt = new MeasuredDataTimeseries();
+                mdt.Name = drawing.Name;
+                List<long> timestamps = tracker.CollectTimeVector();
+                if (timestamps == null || timestamps.Count == 0)
+                    continue;
+
+                mdt.FirstTimestamp = timestamps[0];
+                Dictionary<string, List<PointF>> dataRaw = tracker.CollectData();
+
+                // Convert the values to the user coordinate system.
+                mdt.Times = timestamps.Select(ts => metadata.GetNumericalTime(ts, TimeType.UserOrigin)).ToList();
+                mdt.Data = new Dictionary<string, List<PointF>>();
+                foreach (var pair in dataRaw)
+                {
+                    List<PointF> value = pair.Value.Select(p => metadata.CalibrationHelper.GetPoint(p)).ToList();
+                    
+                    string name = pair.Key;
+
+                    // For Generic posture drawings the trackable points are always named from their index.
+                    // Query the drawing itself here to get better names.
+                    if (drawing is DrawingGenericPosture)
+                        name = ((DrawingGenericPosture)drawing).GetTrackablePointName(pair.Key);
+                    
+                    mdt.Data.Add(name, value);
+                }
+
+                timelines.Add(mdt);
+            }
         }
 
         public void WriteXml(XmlWriter w)

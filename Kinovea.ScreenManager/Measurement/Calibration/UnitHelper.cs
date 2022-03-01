@@ -180,6 +180,41 @@ namespace Kinovea.ScreenManager
 
             return abbreviation;
         }
+
+        /// <summary>
+        /// This returns a symbol for the timecode format.
+        /// Non-numerical formats always get converted to seconds so this returns seconds here as well.
+        /// </summary>
+        public static string TimeAbbreviation(TimecodeFormat format)
+        {
+            string abbreviation = "";
+            switch (format)
+            {
+                case TimecodeFormat.Frames:
+                    abbreviation = "F";
+                    break;
+                case TimecodeFormat.HundredthOfMinutes:
+                    abbreviation = "min/100";
+                    break;
+                case TimecodeFormat.Microseconds:
+                    abbreviation = "μs";
+                    break;
+                case TimecodeFormat.Milliseconds:
+                    abbreviation = "ms";
+                    break;
+                case TimecodeFormat.TenThousandthOfHours:
+                    abbreviation = "hour/10000";
+                    break;
+                case TimecodeFormat.Timestamps:
+                    abbreviation = "ts";
+                    break;
+                default:
+                    abbreviation = "s";
+                    break;
+            }
+
+            return abbreviation;
+        }
         #endregion
 
         /// <summary>

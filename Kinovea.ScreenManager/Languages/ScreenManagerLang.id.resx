@@ -101,7 +101,7 @@
     <value>Tipe video</value>
   </data>
   <data name="ExtraData_Diameter" xml:space="preserve">
-    <value>Diameter</value>
+    <value>Garis tengah</value>
   </data>
   <data name="ExtraData_Radius" xml:space="preserve">
     <value>Radius</value>
@@ -140,7 +140,7 @@
     <value>Pengukuran:</value>
   </data>
   <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
-    <value>Target</value>
+    <value>Sasaran</value>
   </data>
   <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
     <value>Lingkaran</value>
@@ -404,16 +404,16 @@
     <value>Bidang kalibrasi</value>
   </data>
   <data name="DataAnalysis_YaxisDefaultPoints" xml:space="preserve">
-    <value>Y axis</value>
+    <value>Sumbu Y</value>
   </data>
   <data name="DataAnalysis_YaxisLabel" xml:space="preserve">
-    <value>Y axis :</value>
+    <value>Sumbu Y :</value>
   </data>
   <data name="DataAnalysis_XaxisDefaultPoints" xml:space="preserve">
-    <value>X axis</value>
+    <value>Sumbu X</value>
   </data>
   <data name="DataAnalysis_XaxisLabel" xml:space="preserve">
-    <value>X axis :</value>
+    <value>Sumbu X :</value>
   </data>
   <data name="DataAnalysis_Labels" xml:space="preserve">
     <value>Label</value>
@@ -653,7 +653,7 @@
     <value>Tempel gambar dari papan klip</value>
   </data>
   <data name="mnuVisibilityCustom" xml:space="preserve">
-    <value>Fading kustom</value>
+    <value>Pemudaran khusus</value>
   </data>
   <data name="mnuSetStyleAsDefault" xml:space="preserve">
     <value>Atur gaya sebagai default</value>
@@ -1014,5 +1014,257 @@
   </data>
   <data name="mnuRotation270" xml:space="preserve">
     <value>90° berlawanan arah jarum jam</value>
+  </data>
+  <data name="mnuGotoKeyframe" xml:space="preserve">
+    <value>Pergi ke gambar kunci</value>
+  </data>
+  <data name="mnuGridsHide" xml:space="preserve">
+    <value>Sembunyikan</value>
+  </data>
+  <data name="mnuHome" xml:space="preserve">
+    <value>Panel penjelajah</value>
+  </data>
+  <data name="mnuImportImage" xml:space="preserve">
+    <value>Impor gambar…</value>
+  </data>
+  <data name="mnuSignedAngle" xml:space="preserve">
+    <value>Sudut bertanda</value>
+  </data>
+  <data name="mnuCounterClockwise" xml:space="preserve">
+    <value>Berlawanan arah jarum jam</value>
+  </data>
+  <data name="mnuSupplementaryAngle" xml:space="preserve">
+    <value>Sudut tambahan</value>
+  </data>
+  <data name="mnuFlipHorizontally" xml:space="preserve">
+    <value>Balik secara horizontal</value>
+  </data>
+  <data name="mnuFlipVertically" xml:space="preserve">
+    <value>Balik secara vertikal</value>
+  </data>
+  <data name="mnuLoadAnalysis" xml:space="preserve">
+    <value>Muat anotasi…</value>
+  </data>
+  <data name="mnuMagnification" xml:space="preserve">
+    <value>Perbesar x{0:0.00}</value>
+  </data>
+  <data name="mnuMagnifierDirect" xml:space="preserve">
+    <value>Beralih ke perbesaran langsung</value>
+  </data>
+  <data name="mnuMagnifierQuit" xml:space="preserve">
+    <value>Tutup kaca pembesar</value>
+  </data>
+  <data name="mnuMirror" xml:space="preserve">
+    <value>Cermin</value>
+  </data>
+  <data name="mnuOneCapture" xml:space="preserve">
+    <value>Satu layar tangkap</value>
+  </data>
+  <data name="mnuOnePlayer" xml:space="preserve">
+    <value>Satu layar pemutaran</value>
+  </data>
+  <data name="mnuRestartTracking" xml:space="preserve">
+    <value>Mulai ulang edisi jalur</value>
+  </data>
+  <data name="mnuMarkTimeAsOrigin" xml:space="preserve">
+    <value>Tandai waktu saat ini sebagai waktu asal</value>
+  </data>
+  <data name="mnuMarkTimeAsOriginClock" xml:space="preserve">
+    <value>Tandai waktu saat ini sebagai asal waktu untuk jam ini</value>
+  </data>
+  <data name="mnuCalibrate" xml:space="preserve">
+    <value>Kalibrasi...</value>
+  </data>
+  <data name="mnuShowMeasure" xml:space="preserve">
+    <value>Tampilkan pengukuran</value>
+  </data>
+  <data name="mnuStopTracking" xml:space="preserve">
+    <value>Akhiri edisi jalur </value>
+  </data>
+  <data name="mnuSVGTools" xml:space="preserve">
+    <value>Referensi observasional</value>
+  </data>
+  <data name="mnuSwapScreens" xml:space="preserve">
+    <value>Tukar layar</value>
+  </data>
+  <data name="mnuThumbnailDelete" xml:space="preserve">
+    <value>Hapus</value>
+  </data>
+  <data name="mnuThumbnailForget" xml:space="preserve">
+    <value>Lupakan pengaturan khusus</value>
+  </data>
+  <data name="mnuThumbnailRename" xml:space="preserve">
+    <value>Ganti nama</value>
+  </data>
+  <data name="mnuCoordinateSystemShowGrid" xml:space="preserve">
+    <value>Kisi</value>
+  </data>
+  <data name="mnuCoordinateSystemShowTickMarks" xml:space="preserve">
+    <value>Tanda centang</value>
+  </data>
+  <data name="mnuVisibilityDefault" xml:space="preserve">
+    <value>Pemudaran bawaan</value>
+  </data>
+  <data name="mnuVisibilityConfigure" xml:space="preserve">
+    <value>Konfigurasikan pemudaran khusus</value>
+  </data>
+  <data name="Toast_TriggerArmed" xml:space="preserve">
+    <value>Pemicu tangkapan telah diperlengkapi</value>
+  </data>
+  <data name="Toast_TriggerDisarmed" xml:space="preserve">
+    <value>Pemicu tangkapan telah dilucuti</value>
+  </data>
+  <data name="Toast_AudioLost" xml:space="preserve">
+    <value>Perangkat audio hilang</value>
+  </data>
+  <data name="ToolTip_AddKeyframe" xml:space="preserve">
+    <value>Tambahkan gambar kunci</value>
+  </data>
+  <data name="ToolTip_Back" xml:space="preserve">
+    <value>Pergi ke bingkai sebelumnya</value>
+  </data>
+  <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve">
+    <value>Nonaktifkan superposisi gambar</value>
+  </data>
+  <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve">
+    <value>Aktifkan superposisi gambar</value>
+  </data>
+  <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve">
+    <value>Sudut</value>
+  </data>
+  <data name="ToolTip_DrawingToolChrono" xml:space="preserve">
+    <value>Penghitung waktu</value>
+  </data>
+  <data name="ToolTip_DrawingToolCross2D" xml:space="preserve">
+    <value>Penanda</value>
+  </data>
+  <data name="ToolTip_DrawingToolLine2D" xml:space="preserve">
+    <value>Garis</value>
+  </data>
+  <data name="ToolTip_DrawingToolPencil" xml:space="preserve">
+    <value>Pensil</value>
+  </data>
+  <data name="ToolTip_DrawingToolPointer" xml:space="preserve">
+    <value>Pindah</value>
+  </data>
+  <data name="ToolTip_DrawingToolText" xml:space="preserve">
+    <value>Teks</value>
+  </data>
+  <data name="ToolTip_DrawingToolSpotlight" xml:space="preserve">
+    <value>Penyorot</value>
+  </data>
+  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
+    <value>Coret</value>
+  </data>
+  <data name="ToolTip_RichText_ForeColor" xml:space="preserve">
+    <value>Warna latar depan</value>
+  </data>
+  <data name="ToolTip_RichText_BackColor" xml:space="preserve">
+    <value>Warna latar belakang</value>
+  </data>
+  <data name="ToolTip_SaveDiaporama" xml:space="preserve">
+    <value>Ekspor tayangan slide dari gambar utama</value>
+  </data>
+  <data name="ToolTip_SavePausedVideo" xml:space="preserve">
+    <value>Ekspor video dengan jeda pada setiap gambar utama</value>
+  </data>
+  <data name="ToolTip_SetHandlerLeft" xml:space="preserve">
+    <value>Atur bingkai pertama Zona Kerja ke bingkai saat ini</value>
+  </data>
+  <data name="ToolTip_SetHandlerRight" xml:space="preserve">
+    <value>Atur bingkai terakhir Zona Kerja ke bingkai saat ini</value>
+  </data>
+  <data name="mnuOpenVideo" xml:space="preserve">
+    <value>Buka video…</value>
+  </data>
+  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
+    <value>Buka sebagai pengamat folder tayangan ulang…</value>
+  </data>
+  <data name="ToolTip_DrawingToolAutonumbers" xml:space="preserve">
+    <value>Nomor otomatis</value>
+  </data>
+  <data name="ToolTip_Rafale" xml:space="preserve">
+    <value>Simpan urutan gambar</value>
+  </data>
+  <data name="ToolTip_StartRecording" xml:space="preserve">
+    <value>Mulai merekam video</value>
+  </data>
+  <data name="mnuOpenReplayWatcher" xml:space="preserve">
+    <value>Buka pengamat folder tayangan ulang…</value>
+  </data>
+  <data name="mnuTimebase" xml:space="preserve">
+    <value>Konfigurasi waktu video...</value>
+  </data>
+  <data name="mnuToggleCommonCtrls" xml:space="preserve">
+    <value>Tampilkan/Sembunyikan kontrol umum</value>
+  </data>
+  <data name="mnuTrackTrajectory" xml:space="preserve">
+    <value>Lacak jalur</value>
+  </data>
+  <data name="mnuThumbnailLocate" xml:space="preserve">
+    <value>Temukan file di Windows Explorer</value>
+  </data>
+  <data name="mnuCoordinateSystem" xml:space="preserve">
+    <value>Sistem koordinat</value>
+  </data>
+  <data name="mnuCoordinateSystemShowAxis" xml:space="preserve">
+    <value>Sumbu</value>
+  </data>
+  <data name="ToolTip_First" xml:space="preserve">
+    <value>Pergi ke awal</value>
+  </data>
+  <data name="ToolTip_PlayingMode_Once" xml:space="preserve">
+    <value>Ubah mode pengulangan ( Sekali | Loop ) - Mode saat ini : Sekali</value>
+  </data>
+  <data name="ToolTip_PlayingMode_Loop" xml:space="preserve">
+    <value>Ubah mode pengulangan ( Sekali | Loop ) - Mode saat ini : Loop</value>
+  </data>
+  <data name="ToolTip_StopRecording" xml:space="preserve">
+    <value>Berhenti merekam video</value>
+  </data>
+  <data name="ToolTip_trkSelection" xml:space="preserve">
+    <value>Tetapkan Zona Kerja</value>
+  </data>
+  <data name="ToolTip_DisarmTrigger" xml:space="preserve">
+    <value>Lucuti pemicu tangkapan. Keadaan saat ini: diperlengkapi.</value>
+  </data>
+  <data name="ToolTip_ArmTrigger" xml:space="preserve">
+    <value>Perlengkapi pemicu tangkapan. Status saat ini: dilucuti.</value>
+  </data>
+  <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve">
+    <value>Ujung-ujungnya saja...</value>
+  </data>
+  <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve">
+    <value>Level otomatis...</value>
+  </data>
+  <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve">
+    <value>Mempertajam...</value>
+  </data>
+  <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve">
+    <value>Gambaran...</value>
+  </data>
+  <data name="VideoFilterReverse_FriendlyName" xml:space="preserve">
+    <value>Membalikkan...</value>
+  </data>
+  <data name="VideoFilterContrast_FriendlyName" xml:space="preserve">
+    <value>Kontras otomatis...</value>
+  </data>
+  <data name="FormCrashRecovery_Title" xml:space="preserve">
+    <value>Pemulihan kerusakan</value>
+  </data>
+  <data name="FormCrashRecovery_Info" xml:space="preserve">
+    <value>Proyek berikut tidak tersimpan dengan benar tetapi dapat dipulihkan:</value>
+  </data>
+  <data name="Infobar_Player_Observing" xml:space="preserve">
+    <value>Mengamati folder: {0}</value>
+  </data>
+  <data name="ToolTip_SideBySideSnapshot" xml:space="preserve">
+    <value>Simpan kedua gambar ke gambar komposit</value>
+  </data>
+  <data name="ToolTip_ShowComments" xml:space="preserve">
+    <value>Tampilkan komentar</value>
+  </data>
+  <data name="ToolTip_SideBySideVideo" xml:space="preserve">
+    <value>Simpan kedua video menjadi video komposit</value>
   </data>
 </root>

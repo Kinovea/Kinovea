@@ -17,6 +17,7 @@ namespace Kinovea.ScreenManager
         Hour,
         Minute,
         Second,
+        Millisecond,
 
         Date,
         Time,

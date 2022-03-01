@@ -92,9 +92,9 @@
             </tr>
             <xsl:for-each select="TrackPointList/TrackPoint">
                 <tr>
-          <td class="data right"><xsl:value-of select="@UserX"/></td>
-                  <td class="data right"><xsl:value-of select="@UserY"/></td>
-          <td class="data right"><xsl:value-of select="@UserTime"/></td>
+                    <td class="data right"><xsl:value-of select="@UserX"/></td>
+                    <td class="data right"><xsl:value-of select="@UserY"/></td>
+                    <td class="data right"><xsl:value-of select="@UserTime"/></td>
                 </tr>
             </xsl:for-each>
         </table>
