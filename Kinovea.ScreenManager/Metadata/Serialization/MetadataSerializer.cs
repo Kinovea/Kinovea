@@ -501,7 +501,7 @@ namespace Kinovea.ScreenManager
             w.WriteStartElement("Keyframes");
 
             foreach (Keyframe kf in metadata.Keyframes)
-                KeyframeSerializer.Serialize(w, kf);
+                KeyframeSerializer.Serialize(w, kf, filter);
 
             w.WriteEndElement();
         }
