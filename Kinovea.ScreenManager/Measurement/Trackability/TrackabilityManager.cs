@@ -261,13 +261,22 @@ namespace Kinovea.ScreenManager
 
                 mdt.FirstTimestamp = timestamps[0];
                 Dictionary<string, List<PointF>> dataRaw = tracker.CollectData();
-                
+
+                // Convert the values to the user coordinate system.
                 mdt.Times = timestamps.Select(ts => metadata.GetNumericalTime(ts, TimeType.UserOrigin)).ToList();
                 mdt.Data = new Dictionary<string, List<PointF>>();
                 foreach (var pair in dataRaw)
                 {
                     List<PointF> value = pair.Value.Select(p => metadata.CalibrationHelper.GetPoint(p)).ToList();
-                    mdt.Data.Add(pair.Key, value);
+                    
+                    string name = pair.Key;
+
+                    // For Generic posture drawings the trackable points are always named from their index.
+                    // Query the drawing itself here to get better names.
+                    if (drawing is DrawingGenericPosture)
+                        name = ((DrawingGenericPosture)drawing).GetTrackablePointName(pair.Key);
+                    
+                    mdt.Data.Add(name, value);
                 }
 
                 timelines.Add(mdt);

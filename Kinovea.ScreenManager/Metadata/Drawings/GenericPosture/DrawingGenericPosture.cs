@@ -476,6 +476,21 @@ namespace Kinovea.ScreenManager
 
             return mdas;
         }
+
+        /// <summary>
+        /// Returns the actual name associated with a point. 
+        /// For simplicity the key used for trackable points is always derived from the point index.
+        /// For spreadsheet export however we want to get the actual name of the point if it is declared in the file.
+        /// </summary>
+        public string GetTrackablePointName(string key)
+        {
+            int pointIndex = int.Parse(key);
+            if (pointIndex >= genericPosture.Points.Count)
+                return key;
+
+            GenericPosturePoint point = genericPosture.Points[pointIndex];
+            return string.IsNullOrEmpty(point.Name) ? key : point.Name;
+        }
         #endregion
 
         #region IScalable implementation
