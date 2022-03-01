@@ -1443,6 +1443,7 @@ namespace Kinovea.ScreenManager
             context[PatternContext.Hour] = string.Format("{0:HH}", now);
             context[PatternContext.Minute] = string.Format("{0:mm}", now);
             context[PatternContext.Second] = string.Format("{0:ss}", now);
+            context[PatternContext.Millisecond] = string.Format("{0:fff}", now);
 
             context[PatternContext.Date] = string.Format("{0:yyyyMMdd}", now);
             context[PatternContext.Time] = string.Format("{0:HHmmss}", now);
