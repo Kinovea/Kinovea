@@ -186,5 +186,25 @@ namespace Kinovea.ScreenManager
             PointF result = GetPointAtAngleAndDistance(c, a, angle, distance);
             return result;
         }
+
+        /// <summary>
+        /// Linear interpolation between two values.
+        /// Returns: (x * (1-alpha)) + (y * alpha).
+        /// </summary>
+        public static float Mix(float a, float b, float alpha)
+        {
+            return a * (1 - alpha) + b * alpha;
+        }
+
+        /// <summary>
+        /// Linear interpolation between two values.
+        /// Returns: (x * (1-alpha)) + (y * alpha).
+        /// </summary>
+        public static PointF Mix(PointF a, PointF b, float alpha)
+        {
+            return new PointF(
+                a.X * (1 - alpha) + b.X * alpha, 
+                a.Y * (1 - alpha) + b.Y * alpha);
+        }
     }
 }

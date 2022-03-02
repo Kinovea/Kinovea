@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -57,6 +58,7 @@ namespace Kinovea.ScreenManager
                 mnuAutoNumbers.Text = "Frame numbers";
                 mnuGenerateNumbers.Text = "Generate frame numbers";
                 mnuDeleteNumbers.Text = "Delete frame numbers";
+                mnuAutoPositions.Text = "Interpolate positions between first and last";
                 mnuResetPositions.Text = "Reset positions";
                 return contextMenu;
             }
@@ -90,12 +92,16 @@ namespace Kinovea.ScreenManager
         private Color BackgroundColor = Color.FromArgb(44, 44, 44);
         bool clamp = false;
         private int movingTile = -1;
+        private bool enableHighlight = false;
         private List<ToolStripItem> contextMenu = new List<ToolStripItem>();
         private ToolStripMenuItem mnuConfigure = new ToolStripMenuItem();
         private ToolStripMenuItem mnuAutoNumbers = new ToolStripMenuItem();
         private ToolStripMenuItem mnuGenerateNumbers = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDeleteNumbers = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuAutoPositions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuResetPositions = new ToolStripMenuItem();
+        private Stopwatch stopwatch = new Stopwatch();
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region ctor/dtor
@@ -107,6 +113,7 @@ namespace Kinovea.ScreenManager
             mnuAutoNumbers.Image = Properties.Drawings.number;
             mnuGenerateNumbers.Image = Properties.Drawings.number;
             mnuDeleteNumbers.Image = Properties.Resources.bin_empty;
+            mnuAutoPositions.Image = Properties.Resources.wand;
             mnuResetPositions.Image = Properties.Resources.bin_empty;
 
             mnuAutoNumbers.DropDownItems.Add(mnuGenerateNumbers);
@@ -114,12 +121,14 @@ namespace Kinovea.ScreenManager
 
             contextMenu.Add(mnuConfigure);
             contextMenu.Add(mnuAutoNumbers);
+            contextMenu.Add(mnuAutoPositions);
             contextMenu.Add(mnuResetPositions);
             contextMenu.Add(new ToolStripSeparator());
 
             mnuConfigure.Click += MnuConfigure_Click;
             mnuGenerateNumbers.Click += MnuAutonumbers_Click;
             mnuDeleteNumbers.Click += MnuDeleteAutoNumbers_Click;
+            mnuAutoPositions.Click += MnuAutoPositions_Click;
             mnuResetPositions.Click += MnuResetPositions_Click;
 
             parameters = PreferencesManager.PlayerPreferences.Kinogram;
@@ -179,7 +188,9 @@ namespace Kinovea.ScreenManager
                 return;
 
             this.timestamp = timestamp;
-            Update();
+            
+            if (enableHighlight)
+                Update();
         }
 
         public void StartMove(PointF p)
@@ -327,6 +338,15 @@ namespace Kinovea.ScreenManager
             InvalidateFromMenu(sender);
         }
 
+        private void MnuAutoPositions_Click(object sender, EventArgs e)
+        {
+            AutoPositions();
+            SaveAsDefaultParameters();
+            Update();
+
+            InvalidateFromMenu(sender);
+        }
+
         private void MnuResetPositions_Click(object sender, EventArgs e)
         {
             ResetCropPositions();
@@ -385,30 +405,70 @@ namespace Kinovea.ScreenManager
             if (newCount == oldCount)
                 return;
 
+            int goodTiles = newCount;
+            if (framesContainer != null && framesContainer.Frames != null && framesContainer.Frames.Count < newCount)
+                goodTiles = framesContainer.Frames.Count;
+
             List<PointF> newCrops = new List<PointF>();
             if (oldCount < 2)
             {
-                for (int i = 0; i < newCount; i++)
+                for (int i = 0; i < goodTiles; i++)
                     newCrops.Add(PointF.Empty);
             }
             else
             {
                 // Interpolate the new positions to match the existing motion of the tiles within the scene.
-                for (int i = 0; i < newCount; i++)
+                for (int i = 0; i < goodTiles; i++)
                 {
                     // Find the two closest old values and where we sit between them.
-                    float t = ((float)i / newCount) * oldCount;
+                    float t = ((float)i / goodTiles) * oldCount;
                     int a = (int)Math.Floor(t);
                     int b = Math.Min(a + 1, oldCount - 1);
-                    float alpha = t - a;
-                    float beta = 1.0f - alpha;
-                    float x = parameters.CropPositions[a].X * beta + parameters.CropPositions[b].X * alpha;
-                    float y = parameters.CropPositions[a].Y * beta + parameters.CropPositions[b].Y * alpha;
-                    newCrops.Add(new PointF(x, y));
+                    PointF lerped = GeometryHelper.Mix(parameters.CropPositions[a], parameters.CropPositions[b], t - a);
+                    newCrops.Add(lerped);
                 }
             }
 
             parameters.CropPositions = newCrops;
+            PadTiles(goodTiles);
+            
+        }
+
+        /// <summary>
+        /// Interpolate between the first and last crop position.
+        /// </summary>
+        private void AutoPositions()
+        {
+            int count = Math.Min(parameters.TileCount, framesContainer.Frames.Count);
+            if (count < 3)
+                return;
+
+            int goodTiles = parameters.TileCount;
+            if (framesContainer != null && framesContainer.Frames != null && framesContainer.Frames.Count < parameters.TileCount)
+                goodTiles = framesContainer.Frames.Count;
+
+            List<PointF> newCrops = new List<PointF>();
+            for (int i = 0; i < goodTiles; i++)
+            {
+                float t = (float)i / (goodTiles - 1);
+                PointF lerped = GeometryHelper.Mix(parameters.CropPositions[0], parameters.CropPositions[goodTiles - 1], t);
+                newCrops.Add(lerped);
+            }
+
+            parameters.CropPositions = newCrops;
+            PadTiles(goodTiles);
+        }
+
+        /// <summary>
+        /// Add extra crop positions for the tiles we don't have images for.
+        /// </summary>
+        private void PadTiles(int goodTiles)
+        {
+            if (goodTiles == parameters.TileCount)
+                return;
+            
+            for (int i = 0; i < parameters.TileCount - goodTiles; i++)
+                parameters.CropPositions.Add(PointF.Empty);
         }
 
         #region Rendering
@@ -421,6 +481,10 @@ namespace Kinovea.ScreenManager
             if (bitmap == null || framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count < 1)
                 return;
 
+            log.DebugFormat("Kinogram update, tile:{0}", tile);
+            stopwatch.Restart();
+            
+
             Graphics g = Graphics.FromImage(bitmap);
             g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
             g.CompositingQuality = CompositingQuality.HighSpeed;
@@ -428,6 +492,8 @@ namespace Kinovea.ScreenManager
             g.SmoothingMode = SmoothingMode.HighSpeed;
 
             Paint(g, bitmap.Size, true, tile);
+            
+            log.DebugFormat("Kinogram paint: {0} ms.", stopwatch.ElapsedMilliseconds);
         }
 
         /// <summary>
@@ -435,6 +501,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void Paint(Graphics g, Size outputSize, bool isViewport, int tile = -1)
         { 
+            
             float step = (float)framesContainer.Frames.Count / parameters.TileCount;
             IEnumerable<VideoFrame> frames = framesContainer.Frames.Where((frame, i) => i % step < 1);
 
@@ -446,7 +513,7 @@ namespace Kinovea.ScreenManager
             Size tileSize = new Size(paintArea.Width / cols, paintArea.Height / parameters.Rows);
 
             VideoFrame highlight = null;
-            if (isViewport)
+            if (enableHighlight && isViewport)
             {
                 // Find the tile matching the current time for highlight.
                 foreach (VideoFrame f in frames)
@@ -470,7 +537,7 @@ namespace Kinovea.ScreenManager
 
                 g.DrawImage(f.Image, destRect, srcRect, GraphicsUnit.Pixel);
                 DrawBorder(g, destRect);
-                if (f == highlight)
+                if (enableHighlight && f == highlight)
                     DrawHighlight(g, destRect);
             }
             else
@@ -490,7 +557,7 @@ namespace Kinovea.ScreenManager
 
                     g.DrawImage(f.Image, destRect, srcRect, GraphicsUnit.Pixel);
                     DrawBorder(g, destRect);
-                    if (f == highlight)
+                    if (enableHighlight && f == highlight)
                         DrawHighlight(g, destRect);
                     
                     index++;
