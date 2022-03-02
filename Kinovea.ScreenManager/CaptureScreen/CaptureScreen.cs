@@ -167,8 +167,8 @@ namespace Kinovea.ScreenManager
         private CaptureRecordingMode recordingMode;
         private VideoFileWriter videoFileWriter = new VideoFileWriter();
         private Stopwatch stopwatchRecording = new Stopwatch();
-        private bool triggerArmed = true;
-        private bool manualArmed = true;
+        private bool triggerArmed = false;
+        private bool manualArmed = false;
         private bool inQuietPeriod = false;
 
         private Delayer delayer = new Delayer();
@@ -223,6 +223,8 @@ namespace Kinovea.ScreenManager
             InitializeMetadata();
 
             recordingMode = PreferencesManager.CapturePreferences.RecordingMode;
+            
+            view.UpdateArmedStatus(triggerArmed);
             UpdateArmableTrigger();
 
             view.SetToolbarView(drawingToolbarPresenter.View);
