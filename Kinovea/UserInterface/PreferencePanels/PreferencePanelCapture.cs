@@ -308,8 +308,8 @@ namespace Kinovea.Root
             nudQuietPeriod.Value = (decimal)audioQuietPeriod;
 
             lblTriggerAction.Text = "Trigger action:";
-            cmbTriggerAction.Items.Add("Record video");
-            cmbTriggerAction.Items.Add("Save snapshot");
+            cmbTriggerAction.Items.Add(ScreenManagerLang.ToolTip_StartRecording);
+            cmbTriggerAction.Items.Add(ScreenManagerLang.Generic_SaveImage);
             cmbTriggerAction.SelectedIndex = ((int)triggerAction < cmbTriggerAction.Items.Count) ? (int)triggerAction : 0;
 
             lblRecordingTime.Text = RootLang.dlgPreferences_Capture_lblStopRecordingByDuration;
