@@ -37,6 +37,9 @@ namespace Kinovea.ScreenManager
         #region Properties
         /// <summary>
         /// List of context menus specific to the filter.
+        /// The menus for exporting images, videos and data should not be present in this menu,
+        /// they will be automatically created at the screen level based on the CanExportVideo and 
+        /// CanExportImage properties.
         /// </summary>
         List<ToolStripItem> ContextMenu { get; }
 
@@ -45,34 +48,88 @@ namespace Kinovea.ScreenManager
         /// </summary>
         Bitmap Current { get; }
 
+        /// <summary>
+        /// Whether this filter is capable of exporting video.
+        /// If this is true a "Save video" menu will be shown 
+        /// and the `ExportVideo` callback should be implemented.
+        /// </summary>
         bool CanExportVideo { get; }
 
+        /// <summary>
+        /// Whether this filter is capable of exporting single images.
+        /// If this is true a "Save image" menu will be shown 
+        /// and the `ExportImage` callback should be implemented.
+        /// </summary>
         bool CanExportImage { get; }
 
+        /// <summary>
+        /// A hash of the settings of the filter, used to detect changes and prompt user for saving.
+        /// </summary>
         int ContentHash { get; }
         #endregion
 
         #region Methods
-        void ResetData();
 
+        /// <summary>
+        /// Called by the screen when the number or content of the frame buffer has changed.
+        /// The filter should reset itself with the new frames, while keeping its existing settings when possible.
+        /// </summary>
         void SetFrames(IWorkingZoneFramesContainer framesContainer);
 
+        /// <summary>
+        /// Called when the main size of the final image has changed.
+        /// </summary>
         void UpdateSize(Size size);
 
+        /// <summary>
+        /// Called when the query time changes. 
+        /// If the filter has dynamic content it should update itself with a new image matching this time.
+        /// </summary>
         void UpdateTime(long timestamp);
 
+        /// <summary>
+        /// Called when the user starts a move action on the filter image.
+        /// </summary>
         void StartMove(PointF p);
 
+        /// <summary>
+        /// Called when the user terminates the move action on the filter image.
+        /// </summary>
         void StopMove();
 
+        /// <summary>
+        /// Called for every mouse update during user move action.
+        /// dx and dy are relative to the previous call.
+        /// </summary>
         void Move(float dx, float dy, Keys modifiers);
 
+        /// <summary>
+        /// Called when the user wants to export the video using images created by the filter.
+        /// </summary>
         void ExportVideo(IDrawingHostView host);
 
+        /// <summary>
+        /// Called when the user wants to export the image currently displayed by the filter.
+        /// This function must create its own saving dialog to allow for possible extra saving options.
+        /// </summary>
         void ExportImage(IDrawingHostView host);
 
+        /// <summary>
+        /// Called when the filter should completely reset itself to a default state.
+        /// This is called when a new video is loaded in the screen for example.
+        /// </summary>
+        void ResetData();
+
+        /// <summary>
+        /// Called during serialization.
+        /// The filter should export its configuration to an XML fragment.
+        /// </summary>
         void WriteData(XmlWriter w);
 
+        /// <summary>
+        /// Called during deserialization.
+        /// The filter should configure itself from the current XML fragment.
+        /// </summary>
         void ReadData(XmlReader r);
         #endregion
     }
