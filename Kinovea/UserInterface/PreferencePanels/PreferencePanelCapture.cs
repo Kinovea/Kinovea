@@ -68,6 +68,7 @@ namespace Kinovea.Root
         private bool enableAudioTrigger;
         private float audioTriggerThreshold;
         private float audioQuietPeriod;
+        private AudioTriggerAction triggerAction;
         private float recordingSeconds;
         private bool ignoreOverwriteWarning;
         private string audioInputDevice;
@@ -124,6 +125,7 @@ namespace Kinovea.Root
             saveUncompressedVideo = PreferencesManager.CapturePreferences.SaveUncompressedVideo;
             displaySynchronizationFramerate = PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate;
             capturePathConfiguration = PreferencesManager.CapturePreferences.CapturePathConfiguration.Clone();
+            captureKVA = PreferencesManager.CapturePreferences.CaptureKVA;
             memoryBuffer = PreferencesManager.CapturePreferences.CaptureMemoryBuffer;
             recordingMode = PreferencesManager.CapturePreferences.RecordingMode;
             replacementFramerateThreshold = PreferencesManager.CapturePreferences.HighspeedRecordingFramerateThreshold;
@@ -132,10 +134,10 @@ namespace Kinovea.Root
             audioInputDevice = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioInputDevice;
             audioTriggerThreshold = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioTriggerThreshold;
             audioQuietPeriod = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioQuietPeriod;
+            triggerAction = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.TriggerAction;
             recordingSeconds = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.RecordingSeconds;
             postRecordCommand = PreferencesManager.CapturePreferences.PostRecordCommand;
             ignoreOverwriteWarning = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.IgnoreOverwrite;
-            captureKVA = PreferencesManager.CapturePreferences.CaptureKVA;
         }
         private void InitInputMonitor()
         {
@@ -304,6 +306,11 @@ namespace Kinovea.Root
 
             lblQuietPeriod.Text = RootLang.dlgPreferences_Capture_lblIdleTime;
             nudQuietPeriod.Value = (decimal)audioQuietPeriod;
+
+            lblTriggerAction.Text = "Trigger action:";
+            cmbTriggerAction.Items.Add("Record video");
+            cmbTriggerAction.Items.Add("Save snapshot");
+            cmbTriggerAction.SelectedIndex = ((int)triggerAction < cmbTriggerAction.Items.Count) ? (int)triggerAction : 0;
 
             lblRecordingTime.Text = RootLang.dlgPreferences_Capture_lblStopRecordingByDuration;
             nudRecordingTime.Value = (decimal)recordingSeconds;
@@ -600,6 +607,11 @@ namespace Kinovea.Root
             ignoreOverwriteWarning = chkIgnoreOverwriteWarning.Checked;
         }
 
+        private void cmbTriggerAction_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            triggerAction = (AudioTriggerAction)cmbTriggerAction.SelectedIndex;
+        }
+
         #endregion
         #endregion
 
@@ -654,6 +666,7 @@ namespace Kinovea.Root
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioInputDevice = audioInputDevice;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioTriggerThreshold = audioTriggerThreshold;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioQuietPeriod = audioQuietPeriod;
+            PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.TriggerAction = triggerAction;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.RecordingSeconds = recordingSeconds;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.IgnoreOverwrite = ignoreOverwriteWarning;
             PreferencesManager.CapturePreferences.PostRecordCommand = postRecordCommand;

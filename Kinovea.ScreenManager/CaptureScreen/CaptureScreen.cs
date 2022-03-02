@@ -283,8 +283,19 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void TriggerCapture()
         {
-            if (cameraConnected && triggerArmed && !recording)
-                ToggleRecording();
+            if (!cameraConnected || !triggerArmed || recording)
+                return;
+            
+            switch (PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.TriggerAction)
+            {
+                case AudioTriggerAction.SaveSnapshot:
+                    MakeSnapshot();
+                    break;
+                case AudioTriggerAction.RecordVideo:
+                default:
+                    ToggleRecording();
+                    break;
+            }
         }
 
         /// <summary>
