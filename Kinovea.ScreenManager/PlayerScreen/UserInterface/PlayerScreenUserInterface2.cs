@@ -3668,6 +3668,9 @@ namespace Kinovea.ScreenManager
             canvas.SmoothingMode = SmoothingMode.AntiAlias;
             canvas.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
+            if (m_FrameServer.Metadata.ActiveVideoFilter != null)
+                m_FrameServer.Metadata.ActiveVideoFilter.DrawExtra(canvas, timestamp);
+
             foreach (DrawingChrono chrono in m_FrameServer.Metadata.ChronoManager.Drawings)
             {
                 bool selected = m_FrameServer.Metadata.HitDrawing == chrono;

@@ -104,6 +104,12 @@ namespace Kinovea.ScreenManager
         void Move(float dx, float dy, Keys modifiers);
 
         /// <summary>
+        /// Draw extra graphics on top of the current image.
+        /// These may be dependent on the current time while the main image might not.
+        /// </summary>
+        void DrawExtra(Graphics canvas, long timestamp);
+
+        /// <summary>
         /// Called when the user wants to export the video using images created by the filter.
         /// </summary>
         void ExportVideo(IDrawingHostView host);

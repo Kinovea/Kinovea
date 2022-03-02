@@ -92,7 +92,6 @@ namespace Kinovea.ScreenManager
         private Color BackgroundColor = Color.FromArgb(44, 44, 44);
         bool clamp = false;
         private int movingTile = -1;
-        private bool enableHighlight = false;
         private List<ToolStripItem> contextMenu = new List<ToolStripItem>();
         private ToolStripMenuItem mnuConfigure = new ToolStripMenuItem();
         private ToolStripMenuItem mnuAutoNumbers = new ToolStripMenuItem();
@@ -100,7 +99,6 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuDeleteNumbers = new ToolStripMenuItem();
         private ToolStripMenuItem mnuAutoPositions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuResetPositions = new ToolStripMenuItem();
-        private Stopwatch stopwatch = new Stopwatch();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -184,13 +182,8 @@ namespace Kinovea.ScreenManager
 
         public void UpdateTime(long timestamp)
         {
-            if (timestamp == this.timestamp)
-                return;
-
+            // At the moment the timestamp is only used to pass to the autonumber manager when generating or deleting the numbers.
             this.timestamp = timestamp;
-            
-            if (enableHighlight)
-                Update();
         }
 
         public void StartMove(PointF p)
@@ -220,6 +213,38 @@ namespace Kinovea.ScreenManager
             {
                MoveTile(dx, dy, movingTile);
                Update(movingTile);
+            }
+        }
+
+        /// <summary>
+        /// Draw a highlighted border around the tile matching the passed timestamp.
+        /// </summary>
+        public void DrawExtra(Graphics canvas, long timestamp)
+        {
+            Size outputSize = canvas.ClipBounds.Size.ToSize();
+
+            float step = (float)framesContainer.Frames.Count / parameters.TileCount;
+            IEnumerable<VideoFrame> frames = framesContainer.Frames.Where((frame, i) => i % step < 1);
+
+            int cols = (int)Math.Ceiling((float)parameters.TileCount / parameters.Rows);
+            Size cropSize = GetCropSize();
+            Size fullSize = new Size(cropSize.Width * cols, cropSize.Height * parameters.Rows);
+
+            Rectangle paintArea = UIHelper.RatioStretch(fullSize, outputSize);
+            Size tileSize = new Size(paintArea.Width / cols, paintArea.Height / parameters.Rows);
+
+            int index = 0;
+            foreach (VideoFrame f in frames)
+            {
+                if (f.Timestamp < timestamp)
+                {
+                    index++;
+                    continue;
+                }
+
+                Rectangle destRect = GetDestinationRectangle(index, cols, parameters.Rows, parameters.LeftToRight, paintArea, tileSize);
+                DrawHighlight(canvas, destRect);
+                break;
             }
         }
 
@@ -262,6 +287,7 @@ namespace Kinovea.ScreenManager
         #region Public methods, called from dialogs.
         /// <summary>
         /// Paint the composite + annotations on a new bitmap at the requested size and return it.
+        /// Note: We do not paint the frame highlight for image export.
         /// </summary>
         public Bitmap Export(Size outputSize, long timestamp)
         {
@@ -272,7 +298,7 @@ namespace Kinovea.ScreenManager
             g.InterpolationMode = InterpolationMode.HighQualityBilinear;
             g.SmoothingMode = SmoothingMode.HighQuality;
 
-            Paint(g, outputSize, false);
+            Paint(g, outputSize);
 
             // Annotations are expressed in the original frames coordinate system.
             Rectangle fitArea = UIHelper.RatioStretch(outputSize, frameSize);
@@ -460,7 +486,7 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Add extra crop positions for the tiles we don't have images for.
+        /// Add extra crop positions for the tiles we don't have source frames for.
         /// </summary>
         private void PadTiles(int goodTiles)
         {
@@ -473,17 +499,13 @@ namespace Kinovea.ScreenManager
 
         #region Rendering
         /// <summary>
-        /// Paint the composite or one tile on the internal bitmap.
-        /// This is used for the viewport rendering.
+        /// Paint the composite or paint one tile on the internal bitmap.
+        /// This is used for viewport rendering.
         /// </summary>
         private void Update(int tile = -1)
         {
             if (bitmap == null || framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count < 1)
                 return;
-
-            log.DebugFormat("Kinogram update, tile:{0}", tile);
-            stopwatch.Restart();
-            
 
             Graphics g = Graphics.FromImage(bitmap);
             g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
@@ -491,17 +513,14 @@ namespace Kinovea.ScreenManager
             g.InterpolationMode = InterpolationMode.Bilinear;
             g.SmoothingMode = SmoothingMode.HighSpeed;
 
-            Paint(g, bitmap.Size, true, tile);
-            
-            log.DebugFormat("Kinogram paint: {0} ms.", stopwatch.ElapsedMilliseconds);
+            Paint(g, bitmap.Size, tile);
         }
 
         /// <summary>
         /// Paint the composite or paint one tile of the composite.
         /// </summary>
-        private void Paint(Graphics g, Size outputSize, bool isViewport, int tile = -1)
+        private void Paint(Graphics g, Size outputSize, int tile = -1)
         { 
-            
             float step = (float)framesContainer.Frames.Count / parameters.TileCount;
             IEnumerable<VideoFrame> frames = framesContainer.Frames.Where((frame, i) => i % step < 1);
 
@@ -512,19 +531,6 @@ namespace Kinovea.ScreenManager
             Rectangle paintArea = UIHelper.RatioStretch(fullSize, outputSize);
             Size tileSize = new Size(paintArea.Width / cols, paintArea.Height / parameters.Rows);
 
-            VideoFrame highlight = null;
-            if (enableHighlight && isViewport)
-            {
-                // Find the tile matching the current time for highlight.
-                foreach (VideoFrame f in frames)
-                {
-                    if (f.Timestamp > timestamp)
-                        break;
-
-                    highlight = f;
-                }
-            }
-           
             if (tile >= 0)
             {
                 // Render a single tile.
@@ -537,8 +543,6 @@ namespace Kinovea.ScreenManager
 
                 g.DrawImage(f.Image, destRect, srcRect, GraphicsUnit.Pixel);
                 DrawBorder(g, destRect);
-                if (enableHighlight && f == highlight)
-                    DrawHighlight(g, destRect);
             }
             else
             {
@@ -557,14 +561,14 @@ namespace Kinovea.ScreenManager
 
                     g.DrawImage(f.Image, destRect, srcRect, GraphicsUnit.Pixel);
                     DrawBorder(g, destRect);
-                    if (enableHighlight && f == highlight)
-                        DrawHighlight(g, destRect);
-                    
                     index++;
                 }
             }
         }
 
+        /// <summary>
+        /// Draw the default border around the tile.
+        /// </summary>
         private void DrawBorder(Graphics g, Rectangle rect)
         {
             if (!parameters.BorderVisible)
@@ -574,6 +578,9 @@ namespace Kinovea.ScreenManager
                 g.DrawRectangle(p, new Rectangle(rect.X, rect.Y, rect.Width - 1, rect.Height - 1));
         }
 
+        /// <summary>
+        /// Draw the highlighted border around the tile corresponding to the current timestamp.
+        /// </summary>
         private void DrawHighlight(Graphics g, Rectangle rect)
         {
             using (Pen p = new Pen(Color.CornflowerBlue, 2.0f))
@@ -594,6 +601,9 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
+        /// <summary>
+        /// Restore all crop positions to zero.
+        /// </summary>
         private void ResetCropPositions()
         {
             parameters.CropPositions.Clear();
