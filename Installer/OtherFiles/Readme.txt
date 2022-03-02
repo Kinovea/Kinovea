@@ -1,5 +1,5 @@
 
-Kinovea 0.9.5 - October 2021.
+Kinovea 0.9.6 - TBD.
 
 Kinovea is a free and open source video annotation tool designed for motion analysis. 
 It features utilities to capture, slow down, compare, annotate and measure motion in videos.
@@ -37,6 +37,37 @@ Project:
 
 Changelog:
 ----------
+
+0.9.6 - TBD
+    Added - Kinogram mode to replace the old Mosaic mode.
+    Added - Data export to raw JSON files.
+    Improved - General: Save and restore the working zone bounds as part of the KVA file.
+    Improved - General: Save and restore all image options (aspect, rotation, demosaicing, deinterlacing).
+    Improved - General: Save keyframes even if they are outside the working zone.
+    Improved - General: Save video filters status and configuration.
+    Improved - General: When importing a KVA file into a different video the times are now aligned by the time origins.
+    Improved - Playback: Using a video filter no longer prevents the usage of the normal video controls and drawings tools.
+    Improved - Playback: Video filters are no longer deactivated when changing the working zone.
+    Improved - Capture: Image aspect and rotation from camera is now saved in the capture KVA.
+    Improved - Capture: Added milliseconds to file naming patterns.
+    Improved - Export: Output to Microsoft Excel now uses Office Open XML (XLSX) instead of MS-XML format.
+    Improved - Export: Output to LibreOffice Calc is now fully conformant with ODF 1.2 standard.
+    Improved - Export: All time types are now exported as numbers, textual timecodes are expressed in seconds.
+    Improved - Export: Added positions, distances and angles from posture-based tools.
+    Improved - Export: Added computed positions (ex: center of mass from human model tool).
+    Improved - Export: Added start and stop times for Chronometers.
+    Improved - Export: Added time series from tracked objects.
+    Improved - Export: Added the unit used for distances and times.
+    Improved - Annotations: Added the ability to move all number objects in Auto numbers at once using the SHIFT key.
+    Fixed - When loading the same data file twice the keyframes and drawings could be duplicated.
+    Fixed - Data angles on key images that hadn't been visited were not exported correctly.
+    Fixed - Angles in radians were not exported correctly.
+    Fixed - The time in kinematics dialogs could be incorrect if the time origin and selection start didn't match.
+    Fixed - The top-down flag on mono and raw streams was not honored.
+    Removed - Video reverse mode.
+    Removed - Exporting data to XHTML.
+    Removed - Exporting data to Gnuplot script.
+
 
 0.9.5 - October 2021.
     Improved - Export the start and end time of chronometers in spreadsheet export.
