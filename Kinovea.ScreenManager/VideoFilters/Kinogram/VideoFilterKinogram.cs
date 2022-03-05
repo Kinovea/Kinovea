@@ -219,18 +219,16 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Draw a highlighted border around the tile matching the passed timestamp.
         /// </summary>
-        public void DrawExtra(Graphics canvas, long timestamp)
+        public void DrawExtra(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
         {
-            Size outputSize = canvas.ClipBounds.Size.ToSize();
-
             float step = (float)framesContainer.Frames.Count / parameters.TileCount;
             IEnumerable<VideoFrame> frames = framesContainer.Frames.Where((frame, i) => i % step < 1);
-
             int cols = (int)Math.Ceiling((float)parameters.TileCount / parameters.Rows);
             Size cropSize = GetCropSize();
             Size fullSize = new Size(cropSize.Width * cols, cropSize.Height * parameters.Rows);
 
-            Rectangle paintArea = UIHelper.RatioStretch(fullSize, outputSize);
+            Rectangle paintArea = UIHelper.RatioStretch(fullSize, frameSize);
+            paintArea = transformer.Transform(paintArea);
             Size tileSize = new Size(paintArea.Width / cols, paintArea.Height / parameters.Rows);
 
             int index = 0;
