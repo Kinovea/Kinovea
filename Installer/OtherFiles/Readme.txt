@@ -39,7 +39,7 @@ Changelog:
 ----------
 
 0.9.6 - TBD
-    Added - Kinogram mode to replace the old Mosaic mode.
+    Added - Kinogram mode to replace the Overview mode.
     Added - Data export to raw JSON files.
     Improved - General: Save and restore the working zone bounds as part of the KVA file.
     Improved - General: Save and restore all image options (aspect, rotation, demosaicing, deinterlacing).
@@ -54,9 +54,9 @@ Changelog:
     Improved - Export: Output to LibreOffice Calc is now fully conformant with ODF 1.2 standard.
     Improved - Export: All time types are now exported as numbers, textual timecodes are expressed in seconds.
     Improved - Export: Added positions, distances and angles from posture-based tools.
-    Improved - Export: Added computed positions (ex: center of mass from human model tool).
+    Improved - Export: Added computed positions (e.g: center of mass from human model tool).
     Improved - Export: Added start and stop times for Chronometers.
-    Improved - Export: Added time series from tracked objects.
+    Improved - Export: Added time series from trajectories and tracked objects.
     Improved - Export: Added the unit used for distances and times.
     Improved - Annotations: Added the ability to move all number objects in Auto numbers at once using the SHIFT key.
     Fixed - When loading the same data file twice the keyframes and drawings could be duplicated.
