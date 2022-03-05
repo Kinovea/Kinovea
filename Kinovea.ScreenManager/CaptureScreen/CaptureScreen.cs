@@ -167,8 +167,8 @@ namespace Kinovea.ScreenManager
         private CaptureRecordingMode recordingMode;
         private VideoFileWriter videoFileWriter = new VideoFileWriter();
         private Stopwatch stopwatchRecording = new Stopwatch();
-        private bool triggerArmed = true;
-        private bool manualArmed = true;
+        private bool triggerArmed = false;
+        private bool manualArmed = false;
         private bool inQuietPeriod = false;
 
         private Delayer delayer = new Delayer();
@@ -223,6 +223,8 @@ namespace Kinovea.ScreenManager
             InitializeMetadata();
 
             recordingMode = PreferencesManager.CapturePreferences.RecordingMode;
+            
+            view.UpdateArmedStatus(triggerArmed);
             UpdateArmableTrigger();
 
             view.SetToolbarView(drawingToolbarPresenter.View);
@@ -281,8 +283,19 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void TriggerCapture()
         {
-            if (cameraConnected && triggerArmed && !recording)
-                ToggleRecording();
+            if (!cameraConnected || !triggerArmed || recording)
+                return;
+            
+            switch (PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.TriggerAction)
+            {
+                case AudioTriggerAction.SaveSnapshot:
+                    MakeSnapshot();
+                    break;
+                case AudioTriggerAction.RecordVideo:
+                default:
+                    ToggleRecording();
+                    break;
+            }
         }
 
         /// <summary>

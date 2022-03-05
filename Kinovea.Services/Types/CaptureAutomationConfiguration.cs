@@ -17,6 +17,7 @@ namespace Kinovea.Services
         public string AudioInputDevice { get; set; }
         public float AudioTriggerThreshold { get; set; }
         public float AudioQuietPeriod { get; set; }
+        public AudioTriggerAction TriggerAction { get; set; }
         public float RecordingSeconds { get; set; }
         public bool IgnoreOverwrite { get; set; }
 
@@ -29,6 +30,7 @@ namespace Kinovea.Services
             AudioInputDevice = Guid.Empty.ToString();
             AudioTriggerThreshold = 0.9f;
             AudioQuietPeriod = 0.0f;
+            TriggerAction = AudioTriggerAction.RecordVideo;
             RecordingSeconds = 0;
             IgnoreOverwrite = false;
         }
@@ -65,6 +67,9 @@ namespace Kinovea.Services
                         string strAudioQuietPeriod = r.ReadElementContentAsString();
                         AudioQuietPeriod = float.Parse(strAudioQuietPeriod, CultureInfo.InvariantCulture);
                         break;
+                    case "TriggerAction":
+                        TriggerAction = (AudioTriggerAction)Enum.Parse(typeof(AudioTriggerAction), r.ReadElementContentAsString());
+                        break;
                     case "RecordingSeconds":
                         string strRecordingSeconds = r.ReadElementContentAsString();
                         RecordingSeconds = float.Parse(strRecordingSeconds, CultureInfo.InvariantCulture);
@@ -88,6 +93,7 @@ namespace Kinovea.Services
             w.WriteElementString("AudioInputDevice", AudioInputDevice);
             w.WriteElementString("AudioTriggerThreshold", AudioTriggerThreshold.ToString("0.000", CultureInfo.InvariantCulture));
             w.WriteElementString("AudioQuietPeriod", AudioQuietPeriod.ToString("0.000", CultureInfo.InvariantCulture));
+            w.WriteElementString("TriggerAction", TriggerAction.ToString());
             w.WriteElementString("RecordingSeconds", RecordingSeconds.ToString("0.000", CultureInfo.InvariantCulture));
             w.WriteElementString("IgnoreOverwriteWarning", IgnoreOverwrite ? "true" : "false");
         }

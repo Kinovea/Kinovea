@@ -254,7 +254,7 @@ namespace Kinovea.ScreenManager
         private void WriteColumnStyle(XmlTextWriter w)
         {
             // Unfortunately it looks like LibreOffice doesn't implement Open Document's "style:use-optimal-column-width".
-            https://bugs.documentfoundation.org/show_bug.cgi?id=113604
+            // https://bugs.documentfoundation.org/show_bug.cgi?id=113604
 
             w.WriteStartElement("style:style");
             w.WriteAttributeString("style:name", "CO1");
