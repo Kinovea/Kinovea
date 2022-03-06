@@ -21,9 +21,6 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using Emgu.CV;
-using Emgu.CV.CvEnum;
-using Emgu.CV.Structure;
 
 namespace Kinovea.ScreenManager
 {
@@ -46,37 +43,31 @@ namespace Kinovea.ScreenManager
             
             Bitmap template = reference.Template;
             Rectangle templateBounds = new Rectangle(0, 0, template.Width, template.Height);
-            
             if(searchZone.Width < template.Width || searchZone.Height < template.Height)
                 return new TrackResult(0, Point.Empty);
-            
-            BitmapData imageData = image.LockBits(imageBounds, ImageLockMode.ReadOnly, image.PixelFormat );
-            BitmapData templateData = template.LockBits(templateBounds, ImageLockMode.ReadOnly, template.PixelFormat );
-            
-            Image<Bgra, Byte> cvImage = new Image<Bgra, Byte>(imageData.Width, imageData.Height, imageData.Stride, imageData.Scan0);
-            Image<Bgra, Byte> cvTemplate = new Image<Bgra, Byte>(templateData.Width, templateData.Height, templateData.Stride, templateData.Scan0);
-            
-            cvImage.ROI = searchZone;
-            
+
+            var cvImage = OpenCvSharp.Extensions.BitmapConverter.ToMat(image);
+            var cvImageROI = cvImage[searchZone.Y, searchZone.Y + searchZone.Height, searchZone.X, searchZone.X + searchZone.Width];
+            var cvTemplate = OpenCvSharp.Extensions.BitmapConverter.ToMat(template);
+
             int similarityMapWidth = searchZone.Width - template.Width + 1;
             int similarityMapHeight = searchZone.Height - template.Height + 1;
-            Image<Gray, Single> similarityMap = new Image<Gray, Single>(similarityMapWidth, similarityMapHeight);
-            
-            CvInvoke.cvMatchTemplate(cvImage.Ptr, cvTemplate.Ptr, similarityMap.Ptr, TM_TYPE.CV_TM_CCOEFF_NORMED);
-                
-            image.UnlockBits(imageData);
-            template.UnlockBits(templateData);
-                
-            Point minLoc = new Point(0,0);
-            Point maxLoc = new Point(0,0);
-            double minSimilarity = 0;
-            double maxSimilarity = 0;
-            
-            CvInvoke.cvMinMaxLoc(similarityMap.Ptr, ref minSimilarity, ref maxSimilarity, ref minLoc, ref maxLoc, IntPtr.Zero);
-                
+            var similarityMap = new OpenCvSharp.Mat(new OpenCvSharp.Size(similarityMapWidth, similarityMapHeight), OpenCvSharp.MatType.CV_32FC1);
+            OpenCvSharp.Cv2.MatchTemplate(cvImageROI, cvTemplate, similarityMap, OpenCvSharp.TemplateMatchModes.CCoeffNormed);
+
+            cvImageROI.Dispose();
+            cvImage.Dispose();
+            cvTemplate.Dispose();
+
+            double min;
+            double max;
+            OpenCvSharp.Point minLoc;
+            OpenCvSharp.Point maxLoc;
+            OpenCvSharp.Cv2.MinMaxLoc(similarityMap, out min, out max, out minLoc, out maxLoc);
+
             Point location = new Point(searchZone.Left + maxLoc.X + template.Width / 2, searchZone.Top + maxLoc.Y + template.Height / 2);
             
-            return new TrackResult(maxSimilarity, location);
+            return new TrackResult(max, location);
         }
     }
 }

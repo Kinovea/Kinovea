@@ -28,8 +28,6 @@ using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using Kinovea.Services;
 
-using CVPoint = OpenCvSharp.Point;
-
 namespace Kinovea.ScreenManager
 {
     /// <summary>
@@ -107,7 +105,6 @@ namespace Kinovea.ScreenManager
                 
                 int resWidth = searchZone.Width - lastTrackPoint.Template.Width + 1;
                 int resHeight = searchZone.Height - lastTrackPoint.Template.Height + 1;
-
                 Mat similarityMap = new Mat(new OpenCvSharp.Size(resWidth, resHeight), MatType.CV_32FC1);
                 Cv2.MatchTemplate(cvImageROI, cvTemplate, similarityMap, TemplateMatchModes.CCoeffNormed);
                 
@@ -117,8 +114,8 @@ namespace Kinovea.ScreenManager
                 
                 double min = 0;
                 double max = 0;
-                CVPoint minLoc;
-                CVPoint maxLoc;
+                OpenCvSharp.Point minLoc;
+                OpenCvSharp.Point maxLoc;
                 Cv2.MinMaxLoc(similarityMap, out min, out max, out minLoc, out maxLoc);
 
                 if(max > similarityTreshold)
@@ -343,7 +340,7 @@ namespace Kinovea.ScreenManager
         /// Computes the center of mass of the similarity scores in the vicinity of the best candidate.
         /// This allows to find a floating point location for the best match.
         /// </summary>
-        private PointF RefineLocation(Mat map, CVPoint loc, int neighborhood)
+        private PointF RefineLocation(Mat map, OpenCvSharp.Point loc, int neighborhood)
         {
             // The best candidate location is expanded by "neighborhood" pixels in each direction.
             float numX = 0;
