@@ -84,6 +84,7 @@ namespace Kinovea.Video.Bitmap
         public override void Close()
         {
             generator.Close();
+            initialized = false;
         }
         public override VideoSummary ExtractSummary(string filePath, int thumbs, Size maxSize)
         {

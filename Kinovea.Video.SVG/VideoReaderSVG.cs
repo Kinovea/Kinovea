@@ -89,6 +89,7 @@ namespace Kinovea.Video.SVG
         public override void Close()
         {
             generator.Close();
+            initialized = false;
         }
         public override VideoSummary ExtractSummary(string filePath, int thumbs, Size maxSize)
         {
