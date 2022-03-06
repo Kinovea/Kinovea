@@ -1174,9 +1174,14 @@ namespace Kinovea.ScreenManager
         }
         public void PerformTracking(VideoFrame videoframe)
         {
-            foreach(DrawingTrack t in Tracks())
-                if (t.Status == TrackStatus.Edit)
-                    t.TrackCurrentPosition(videoframe);
+            using (var cvImage = OpenCvSharp.Extensions.BitmapConverter.ToMat(videoframe.Image))
+            {
+                foreach(DrawingTrack t in Tracks())
+                {
+                    if (t.Status == TrackStatus.Edit)
+                        t.TrackCurrentPosition(videoframe, cvImage);
+                }
+            }
         }
         public void StopAllTracking()
         {

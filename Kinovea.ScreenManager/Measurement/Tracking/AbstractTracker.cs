@@ -35,24 +35,25 @@ namespace Kinovea.ScreenManager
 
 
         #region Abstract Methods
-        
+
         /// <summary>
         /// Performs the tracking. 
         /// Finds the coordinate in current image of the point tracked, using data from previous matches. 
         /// </summary>
-        /// <param name="_previousPoints">The list of tracked points so far.</param>
-        /// <param name="_CurrentImage">Current image.</param>
-        /// <param name="_currentPoint">The resulting point that should be added to the list.</param>
-        /// <param name="_t">The current timestamp to create the TrackPoint.</param>
+        /// <param name="previousPoints">The list of tracked points so far.</param>
+        /// <param name="currentImage">Current image as a Bitmap.</param>
+        /// <param name="cvImage">Current image as a cv Mat.</param>
+        /// <param name="timestamp">The current timestamp to create the TrackPoint.</param>
+        /// <param name="currentPoint">The resulting point that should be added to the list.</param>
         /// <returns>true if the tracking is reliable, false if the point couldn't be found.</returns>
-        public abstract bool Track(List<AbstractTrackPoint> previousPoints, Bitmap currentImage, long t, out AbstractTrackPoint currentPoint);
+        public abstract bool Track(List<AbstractTrackPoint> previousPoints, Bitmap currentImage, OpenCvSharp.Mat cvImage, long time, out AbstractTrackPoint currentPoint);
         
         /// <summary>
         /// Creates a TrackPoint nearest possible of the spatial position passed in parameter.
         /// This function should store algorithm related infos in the created track point,
         /// to be used later for tracking the next point.
         /// </summary>
-        public abstract AbstractTrackPoint CreateTrackPoint(bool manual, PointF p, double similarity, long t, Bitmap bmp, List<AbstractTrackPoint> previousPoints);
+        public abstract AbstractTrackPoint CreateTrackPoint(bool manual, PointF p, double similarity, long time, Bitmap bmp, List<AbstractTrackPoint> previousPoints);
         
         /// <summary>
         /// Creates a bare bone TrackPoint.

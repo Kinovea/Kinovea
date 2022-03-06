@@ -944,7 +944,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Tracking
-        public void TrackCurrentPosition(VideoFrame current)
+        public void TrackCurrentPosition(VideoFrame current, OpenCvSharp.Mat cvImage)
         {
             // Match the previous point in current image.
             // New points to trajectories are always created from here. 
@@ -962,7 +962,7 @@ namespace Kinovea.ScreenManager
             }
 
             AbstractTrackPoint p = null;
-            bool bMatched = tracker.Track(positions, current.Image, current.Timestamp, out p);
+            bool bMatched = tracker.Track(positions, current.Image, cvImage, current.Timestamp, out p);
                 
             if (p == null)
             {

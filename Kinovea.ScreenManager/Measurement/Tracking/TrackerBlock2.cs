@@ -77,7 +77,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region AbstractTracker Implementation
-        public override bool Track(List<AbstractTrackPoint> previousPoints, Bitmap currentImage, long position, out AbstractTrackPoint currentPoint)
+        public override bool Track(List<AbstractTrackPoint> previousPoints, Bitmap currentImage, Mat cvImage, long time, out AbstractTrackPoint currentPoint)
         {
             //---------------------------------------------------------------------
             // The input informations we have at hand are:
@@ -92,7 +92,7 @@ namespace Kinovea.ScreenManager
             bool matched = false;
             currentPoint = null;
             
-            if (lastTrackPoint.Template != null && currentImage != null)
+            if (lastTrackPoint.Template != null && cvImage != null)
             {
                 // Center search zone around last point.
                 PointF searchCenter = lastPoint;
@@ -101,13 +101,8 @@ namespace Kinovea.ScreenManager
                                                         searchWindow.Width, 
                                                         searchWindow.Height);
                 
-                searchZone.Intersect(new Rectangle(0,0,currentImage.Width, currentImage.Height));
-                
-                Bitmap img = currentImage;
-                Bitmap tpl = lastTrackPoint.Template;
-
-                var cvImage = BitmapConverter.ToMat(img);
-                var cvTemplate = BitmapConverter.ToMat(tpl);
+                searchZone.Intersect(new Rectangle(0, 0, cvImage.Width, cvImage.Height));
+                var cvTemplate = BitmapConverter.ToMat(lastTrackPoint.Template);
                 var cvImageROI = cvImage[searchZone.Y, searchZone.Y + searchZone.Height, searchZone.X, searchZone.X + searchZone.Width];
                 
                 int resWidth = searchZone.Width - lastTrackPoint.Template.Width + 1;
@@ -115,10 +110,6 @@ namespace Kinovea.ScreenManager
 
                 Mat similarityMap = new Mat(new OpenCvSharp.Size(resWidth, resHeight), MatType.CV_32FC1);
                 Cv2.MatchTemplate(cvImageROI, cvTemplate, similarityMap, TemplateMatchModes.CCoeffNormed);
-
-                cvImageROI.Dispose();
-                cvImage.Dispose();
-                cvTemplate.Dispose();
                 
                 // Find max
                 double bestScore = 0;
@@ -138,9 +129,13 @@ namespace Kinovea.ScreenManager
                     // We reinject the floating point part of the orginal positon into the result.
                     loc = loc.Translate(subpixel.X, subpixel.Y);
 
-                    bestCandidate = new PointF(searchZone.Left + loc.X + tpl.Width / 2, searchZone.Top + loc.Y + tpl.Height / 2);
+                    bestCandidate = new PointF(searchZone.Left + loc.X + cvTemplate.Width / 2, searchZone.Top + loc.Y + cvTemplate.Height / 2);
                     bestScore = max;
                 }
+
+
+                cvImageROI.Dispose();
+                cvTemplate.Dispose();
 
                 #region Monitoring
                 //if(monitoring)
@@ -161,13 +156,13 @@ namespace Kinovea.ScreenManager
                 // Result of the matching.
                 if(bestCandidate.X != -1 && bestCandidate.Y != -1)
                 {
-                    currentPoint = CreateTrackPoint(false, bestCandidate, bestScore, position, img, previousPoints);
+                    currentPoint = CreateTrackPoint(false, bestCandidate, bestScore, time, currentImage, previousPoints);
                     ((TrackPointBlock)currentPoint).Similarity = bestScore;
                 }
                 else
                 {
                     // No match. Create the point at the center of the search window (whatever that might be).
-                    currentPoint = CreateTrackPoint(false, lastPoint, 0.0f, position, img, previousPoints);
+                    currentPoint = CreateTrackPoint(false, lastPoint, 0.0f, time, currentImage, previousPoints);
                     log.Debug("Track failed. No block over the similarity treshold in the search window.");	
                 }
 
@@ -177,17 +172,17 @@ namespace Kinovea.ScreenManager
             {
                 // No image. (error case ?)
                 // Create the point at the last point location.
-                currentPoint = CreateTrackPoint(false, lastPoint, 0.0f, position, currentImage, previousPoints);
+                currentPoint = CreateTrackPoint(false, lastPoint, 0.0f, time, currentImage, previousPoints);
                 log.Debug("Track failed. No input image, or last point doesn't have any cached block image.");
             }
             
             return matched;
         }
-        public override AbstractTrackPoint CreateTrackPoint(bool manual, PointF p, double similarity, long t, Bitmap currentImage, List<AbstractTrackPoint> previousPoints)
+        public override AbstractTrackPoint CreateTrackPoint(bool manual, PointF p, double similarity, long time, Bitmap currentImage, List<AbstractTrackPoint> previousPoints)
         {
             // Creates a TrackPoint from the input image at the given coordinates.
             // Stores algorithm internal data in the point, to help next match.
-            // _t is in relative timestamps from the first point.
+            // time is in relative timestamps from the first point.
             
             // Copy the template from the image into its own Bitmap.
             
@@ -281,7 +276,7 @@ namespace Kinovea.ScreenManager
             }
             #endregion
             
-            TrackPointBlock tpb = new TrackPointBlock(p.X, p.Y, t, tpl);
+            TrackPointBlock tpb = new TrackPointBlock(p.X, p.Y, time, tpl);
             tpb.TemplateAge = age;
             tpb.IsReferenceBlock = manual;
             tpb.Similarity = manual ? 1.0f : similarity;
