@@ -29,13 +29,13 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Tracks a reference template in the given image. Returns similarity score and position of best candidate.
         /// </summary>
-        public static TrackResult Track(Size searchWindow, TrackFrame reference, Bitmap image)
+        public static TrackResult Track(Size searchWindow, TrackFrame reference, TrackingContext context)
         {
-            if(image == null || reference.Template == null)
+            if(context.CVImage == null || reference.Template == null)
                 throw new ArgumentException("image");
 
             Rectangle searchZone = reference.Location.Box(searchWindow).ToRectangle();
-            Rectangle imageBounds = new Rectangle(0, 0, image.Width, image.Height);
+            Rectangle imageBounds = new Rectangle(0, 0, context.CVImage.Width, context.CVImage.Height);
             searchZone.Intersect(imageBounds);
             
             if(searchZone == Rectangle.Empty)
@@ -46,8 +46,7 @@ namespace Kinovea.ScreenManager
             if(searchZone.Width < template.Width || searchZone.Height < template.Height)
                 return new TrackResult(0, Point.Empty);
 
-            var cvImage = OpenCvSharp.Extensions.BitmapConverter.ToMat(image);
-            var cvImageROI = cvImage[searchZone.Y, searchZone.Y + searchZone.Height, searchZone.X, searchZone.X + searchZone.Width];
+            var cvImageROI = context.CVImage[searchZone.Y, searchZone.Y + searchZone.Height, searchZone.X, searchZone.X + searchZone.Width];
             var cvTemplate = OpenCvSharp.Extensions.BitmapConverter.ToMat(template);
 
             int similarityMapWidth = searchZone.Width - template.Width + 1;
@@ -56,7 +55,6 @@ namespace Kinovea.ScreenManager
             OpenCvSharp.Cv2.MatchTemplate(cvImageROI, cvTemplate, similarityMap, OpenCvSharp.TemplateMatchModes.CCoeffNormed);
 
             cvImageROI.Dispose();
-            cvImage.Dispose();
             cvTemplate.Dispose();
 
             double min;

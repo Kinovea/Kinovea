@@ -156,6 +156,8 @@ namespace Kinovea.ScreenManager
             {
                 tracker.Track(context);
             }
+
+            context.Dispose();
         }
         
         /// <summary>
@@ -178,15 +180,6 @@ namespace Kinovea.ScreenManager
                 return false;
 
             return trackers[id].HasData;
-        }
-        
-        public void UpdateContext(ITrackable drawing, VideoFrame videoFrame)
-        {
-            if(!SanityCheck(drawing.Id))
-                return;
-            
-            TrackingContext context = new TrackingContext(videoFrame.Timestamp, videoFrame.Image);
-            trackers[drawing.Id].Track(context);
         }
         
         public void ToggleTracking(ITrackable drawing)

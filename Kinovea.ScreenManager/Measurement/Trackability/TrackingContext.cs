@@ -35,15 +35,28 @@ namespace Kinovea.ScreenManager
             get { return image; }
         }
 
+        public OpenCvSharp.Mat CVImage
+        {
+            get { return cvImage; }
+        }
+
         private long time;
         private Bitmap image;
-        
+        private OpenCvSharp.Mat cvImage;
+
         public TrackingContext(long time, Bitmap image)
         {
             this.time = time;
             this.image = image;
+
+            cvImage = OpenCvSharp.Extensions.BitmapConverter.ToMat(image);
         }
         
+        public void Dispose()
+        {
+            cvImage.Dispose();
+        }
+
         public override string ToString()
         {
             return string.Format("[TrackingContext] Time:{0}, Image Size:{1}", time, image.Size);

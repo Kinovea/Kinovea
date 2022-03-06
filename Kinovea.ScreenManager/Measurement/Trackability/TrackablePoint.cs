@@ -198,7 +198,7 @@ namespace Kinovea.ScreenManager
             }
 
             // We did not find the exact requested time in the timeline, but tracking is active so let's look for the pattern.
-            TrackResult result = Tracker.Track(trackerParameters.SearchWindow, closestFrame, context.Image);
+            TrackResult result = Tracker.Track(trackerParameters.SearchWindow, closestFrame, context);
 
             if(result.Similarity >= trackerParameters.SimilarityThreshold)
             {
