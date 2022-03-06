@@ -61,8 +61,9 @@ namespace Kinovea.ScreenManager
 
         public double PixelsPerMillimeter { get; set; }
 
-        public IntrinsicCameraParameters IntrinsicCameraParameters { get; private set; }
-        
+        public double[,] cameraMatrix = new double[,] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } };
+        public double[] distCoeffs = new double[5];
+
         // Default camera intrinsics based on Blender values for Go Pro Hero 3.
         public const double defaultFocalLength = 2.77;
         public const double defaultSensorWidth = 6.160;
@@ -80,22 +81,9 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Constructor used when the parameters are fit internally.
         /// </summary>
-        public DistortionParameters(IntrinsicCameraParameters icp, Size imageSize)
+        public DistortionParameters(double k1, double k2, double k3, double p1, double p2, double fx, double fy, double cx, double cy, Size imageSize)
+            : this(k1, k2, k3, p1, p2, fx, fy, cx, cy, imageSize.Width / defaultSensorWidth)
         {
-            this.IntrinsicCameraParameters = icp;
-
-            fx = icp.IntrinsicMatrix[0, 0];
-            fy = icp.IntrinsicMatrix[1, 1];
-            cx = icp.IntrinsicMatrix[0, 2];
-            cy = icp.IntrinsicMatrix[1, 2];
-
-            k1 = icp.DistortionCoeffs[0, 0];
-            k2 = icp.DistortionCoeffs[1, 0];
-            k3 = icp.DistortionCoeffs[4, 0];
-            p1 = icp.DistortionCoeffs[2, 0];
-            p2 = icp.DistortionCoeffs[3, 0];
-
-            PixelsPerMillimeter = imageSize.Width / defaultSensorWidth;
         }
 
         /// <summary>
@@ -145,20 +133,17 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void Build()
         {
-            IntrinsicCameraParameters icp = new IntrinsicCameraParameters();
-            icp.DistortionCoeffs[0, 0] = K1;
-            icp.DistortionCoeffs[1, 0] = K2;
-            icp.DistortionCoeffs[4, 0] = K3;
-            icp.DistortionCoeffs[2, 0] = P1;
-            icp.DistortionCoeffs[3, 0] = P2;
+            distCoeffs[0] = K1;
+            distCoeffs[1] = K2;
+            distCoeffs[4] = K3;
+            distCoeffs[2] = P1;
+            distCoeffs[3] = P2;
 
-            icp.IntrinsicMatrix[0, 0] = Fx;
-            icp.IntrinsicMatrix[1, 1] = Fy;
-            icp.IntrinsicMatrix[0, 2] = Cx;
-            icp.IntrinsicMatrix[1, 2] = Cy;
-            icp.IntrinsicMatrix[2, 2] = 1;
-
-            this.IntrinsicCameraParameters = icp;
+            cameraMatrix[0, 0] = Fx;
+            cameraMatrix[1, 1] = Fy;
+            cameraMatrix[0, 2] = Cx;
+            cameraMatrix[1, 2] = Cy;
+            cameraMatrix[2, 2] = 1.0f;
         }
 
         public int ContentHash

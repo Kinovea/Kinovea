@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Emgu.CV;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
-using System.Runtime.InteropServices;
-using Emgu.CV.Structure;
 
 namespace Kinovea.ScreenManager
 {
@@ -39,7 +34,6 @@ namespace Kinovea.ScreenManager
 
         private bool initialized;
         private DistortionParameters parameters;
-        private IntrinsicCameraParameters icp;
         private Size imageSize;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -51,7 +45,6 @@ namespace Kinovea.ScreenManager
                 this.parameters = parameters;
 
             this.imageSize = imageSize;
-            icp = this.parameters.IntrinsicCameraParameters;
             initialized = true;
         }
 
@@ -63,26 +56,28 @@ namespace Kinovea.ScreenManager
             if (!initialized)
                 return point;
 
-            double x = 0;
-            double y = 0;
+            var src = new OpenCvSharp.Mat(1, 1, OpenCvSharp.MatType.CV_32FC2, new float[] { point.X, point.Y });
+            var dst = new OpenCvSharp.Mat(1, 1, OpenCvSharp.MatType.CV_32FC2);
+            var matCameraMatrix = new OpenCvSharp.Mat(3, 3, OpenCvSharp.MatType.CV_64FC1, parameters.cameraMatrix);
+            var matDistCoeffs = new OpenCvSharp.Mat(5, 1, OpenCvSharp.MatType.CV_64FC1, parameters.distCoeffs);
 
-            using (Matrix<float> src = EmguHelper.ToMatrix(point))
-            using (Matrix<float> dst = new Matrix<float>(1, 1, 2))
-            {
-                CvInvoke.cvUndistortPoints(
-                    src.Ptr,
-                    dst.Ptr,
-                    icp.IntrinsicMatrix.Ptr,
-                    icp.DistortionCoeffs.Ptr,
-                    IntPtr.Zero,
-                    IntPtr.Zero
-                );
+            OpenCvSharp.Cv2.UndistortPoints(
+                src,
+                dst,
+                matCameraMatrix,
+                matDistCoeffs
+            );
 
-                x = dst.Data[0, 0] * parameters.Fx + parameters.Cx;
-                y = dst.Data[0, 1] * parameters.Fy + parameters.Cy;
-            }
+            OpenCvSharp.Vec2f recti = dst.Get<OpenCvSharp.Vec2f>(0);
+            float x = (float)(recti[0] * parameters.Fx + parameters.Cx);
+            float y = (float)(recti[1] * parameters.Fy + parameters.Cy);
+                    
+            matCameraMatrix.Dispose();
+            matDistCoeffs.Dispose();
+            src.Dispose();
+            dst.Dispose();
 
-            return new PointF((float)x, (float)y);
+            return new PointF(x, y);
         }
 
         /// <summary>
@@ -279,34 +274,6 @@ namespace Kinovea.ScreenManager
             p.Dispose();
 
             return bmp;
-        }
-
-        public Bitmap GetUndistortedImage(Bitmap sourceImage)
-        {
-            // The source image is possibly at reduced size, we need to upscale it for the map to work, 
-            // as it's based on the coefficients computed for the full size.
-
-            Matrix<float> mapx;
-            Matrix<float> mapy;
-            icp.InitUndistortMap(imageSize.Width, imageSize.Height, out mapx, out mapy);
-
-            Bitmap source = new Bitmap(imageSize.Width, imageSize.Height, PixelFormat.Format24bppRgb);
-            Graphics g = Graphics.FromImage(source);
-            g.DrawImage(sourceImage, 0, 0, imageSize.Width, imageSize.Height);
-
-            BitmapData sourceImageData = source.LockBits(new Rectangle(0, 0, source.Width, source.Height), ImageLockMode.ReadOnly, source.PixelFormat);
-            Image<Bgr, Byte> cvSource = new Image<Bgr, Byte>(sourceImageData.Width, sourceImageData.Height, sourceImageData.Stride, sourceImageData.Scan0);
-
-            Bitmap result = new Bitmap(source.Width, source.Height, PixelFormat.Format24bppRgb);
-            BitmapData resultImageData = result.LockBits(new Rectangle(0, 0, result.Width, result.Height), ImageLockMode.ReadOnly, result.PixelFormat);
-            Image<Bgr, Byte> cvResult = new Image<Bgr, Byte>(resultImageData.Width, resultImageData.Height, resultImageData.Stride, resultImageData.Scan0);
-
-            CvInvoke.cvRemap(cvSource, cvResult, mapx, mapy, 0, new MCvScalar(0));
-
-            source.UnlockBits(sourceImageData);
-            result.UnlockBits(resultImageData);
-
-            return result;
         }
     }
 
