@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
-using Emgu.CV;
-using Emgu.CV.Structure;
-using System.Runtime.InteropServices;
-using Emgu.CV.CvEnum;
 
 namespace Kinovea.ScreenManager
 {

@@ -186,14 +186,6 @@
     <Reference Include="DocumentFormat.OpenXml, Version=2.11.3.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
       <HintPath>..\packages\DocumentFormat.OpenXml.2.11.3\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
-    <Reference Include="Emgu.CV, Version=2.4.10.1939, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\OpenCV\2.4.10\Emgu.CV.dll</HintPath>
-    </Reference>
-    <Reference Include="Emgu.Util, Version=2.4.10.1939, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\OpenCV\2.4.10\Emgu.Util.dll</HintPath>
-    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=1.3.3.11, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.1.3.3\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
@@ -475,7 +467,6 @@
     <Compile Include="Measurement\LensDistortion\DistortionImporterKinovea.cs" />
     <Compile Include="Measurement\LensDistortion\DistortionParameters.cs" />
     <Compile Include="Measurement\LensDistortion\DistortionSerializer.cs" />
-    <Compile Include="Measurement\LensDistortion\EmguHelper.cs" />
     <Compile Include="Metadata\Serialization\DrawingSerializer.cs" />
     <Compile Include="Metadata\Serialization\KeyframeSerializer.cs" />
     <Compile Include="Metadata\Exporters\MetadataExporter.cs" />
