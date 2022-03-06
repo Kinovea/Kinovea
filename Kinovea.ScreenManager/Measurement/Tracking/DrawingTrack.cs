@@ -947,7 +947,7 @@ namespace Kinovea.ScreenManager
         public void TrackCurrentPosition(VideoFrame current)
         {
             // Match the previous point in current image.
-            // New points to trajectories are always created from here, 
+            // New points to trajectories are always created from here. 
 
             TrackPointBlock closestFrame = positions.Last() as TrackPointBlock;
             if (closestFrame == null || current.Timestamp <= closestFrame.T)

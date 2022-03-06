@@ -24,10 +24,11 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using Emgu.CV;
-using Emgu.CV.CvEnum;
-using Emgu.CV.Structure;
+using OpenCvSharp;
+using OpenCvSharp.Extensions;
 using Kinovea.Services;
+
+using CVPoint = OpenCvSharp.Point;
 
 namespace Kinovea.ScreenManager
 {
@@ -58,8 +59,8 @@ namespace Kinovea.ScreenManager
         private double similarityTreshold = 0.0f;		// Discard candidate block with lower similarity.
         private double templateUpdateThreshold = 1.0f;	// Only update the template if that dissimilar.
         private int refinementNeighborhood = 1;
-        private Size blockWindow = new Size(20, 20);
-        private Size searchWindow = new Size(100, 100);
+        private System.Drawing.Size blockWindow = new System.Drawing.Size(20, 20);
+        private System.Drawing.Size searchWindow = new System.Drawing.Size(100, 100);
         private TrackerParameters parameters;
 
         // Monitoring, debugging.
@@ -102,44 +103,36 @@ namespace Kinovea.ScreenManager
                 
                 searchZone.Intersect(new Rectangle(0,0,currentImage.Width, currentImage.Height));
                 
-                //Image<Bgr, Byte> cvTemplate = new Image<Bgr, Byte>(lastTrackPoint.Template);
-                //Image<Bgr, Byte> cvImage = new Image<Bgr, Byte>(_CurrentImage);
-                
                 Bitmap img = currentImage;
                 Bitmap tpl = lastTrackPoint.Template;
 
-                BitmapData imageData = img.LockBits( new Rectangle( 0, 0, img.Width, img.Height ), ImageLockMode.ReadOnly, img.PixelFormat );
-                BitmapData templateData = tpl.LockBits(new Rectangle( 0, 0, tpl.Width, tpl.Height ), ImageLockMode.ReadOnly, tpl.PixelFormat );
-                
-                Image<Bgra, Byte> cvImage = new Image<Bgra, Byte>(imageData.Width, imageData.Height, imageData.Stride, imageData.Scan0);
-                Image<Bgra, Byte> cvTemplate = new Image<Bgra, Byte>(templateData.Width, templateData.Height, templateData.Stride, templateData.Scan0);
-                
-                cvImage.ROI = searchZone;
+                var cvImage = BitmapConverter.ToMat(img);
+                var cvTemplate = BitmapConverter.ToMat(tpl);
+                var cvImageROI = cvImage[searchZone.Y, searchZone.Y + searchZone.Height, searchZone.X, searchZone.X + searchZone.Width];
                 
                 int resWidth = searchZone.Width - lastTrackPoint.Template.Width + 1;
                 int resHeight = searchZone.Height - lastTrackPoint.Template.Height + 1;
-                
-                Image<Gray, Single> similarityMap = new Image<Gray, Single>(resWidth, resHeight);
-                
-                //CvInvoke.cvMatchTemplate(cvImage.Ptr, cvTemplate.Ptr, similarityMap.Ptr, TM_TYPE.CV_TM_SQDIFF_NORMED);
-                //CvInvoke.cvMatchTemplate(cvImage.Ptr, cvTemplate.Ptr, similarityMap.Ptr, TM_TYPE.CV_TM_CCORR_NORMED);
-                CvInvoke.cvMatchTemplate(cvImage.Ptr, cvTemplate.Ptr, similarityMap.Ptr, TM_TYPE.CV_TM_CCOEFF_NORMED);
-                
-                img.UnlockBits(imageData);
-                tpl.UnlockBits(templateData);
+
+                Mat similarityMap = new Mat(new OpenCvSharp.Size(resWidth, resHeight), MatType.CV_32FC1);
+                Cv2.MatchTemplate(cvImageROI, cvTemplate, similarityMap, TemplateMatchModes.CCoeffNormed);
+
+                cvImageROI.Dispose();
+                cvImage.Dispose();
+                cvTemplate.Dispose();
                 
                 // Find max
                 double bestScore = 0;
                 PointF bestCandidate = new PointF(-1,-1);
-                Point minLoc = Point.Empty;
-                Point maxLoc = Point.Empty;
+                
                 double min = 0;
                 double max = 0;
-                CvInvoke.cvMinMaxLoc(similarityMap.Ptr, ref min, ref max, ref minLoc, ref maxLoc, IntPtr.Zero);
-                
+                CVPoint minLoc;
+                CVPoint maxLoc;
+                Cv2.MinMaxLoc(similarityMap, out min, out max, out minLoc, out maxLoc);
+
                 if(max > similarityTreshold)
                 {
-                    PointF loc = RefineLocation(similarityMap.Data, maxLoc, parameters.RefinementNeighborhood);
+                    PointF loc = RefineLocation(similarityMap, maxLoc, parameters.RefinementNeighborhood);
                     
                     // The template matching was done on a template aligned with the integer part of the actual position.
                     // We reinject the floating point part of the orginal positon into the result.
@@ -148,20 +141,22 @@ namespace Kinovea.ScreenManager
                     bestCandidate = new PointF(searchZone.Left + loc.X + tpl.Width / 2, searchZone.Top + loc.Y + tpl.Height / 2);
                     bestScore = max;
                 }
-            
-                #region Monitoring
-                if(monitoring)
-                {
-                    // Save the similarity map to file.
-                    Image<Gray, Byte> mapNormalized = new Image<Gray, Byte>(similarityMap.Width, similarityMap.Height);
-                    CvInvoke.cvNormalize(similarityMap.Ptr, mapNormalized.Ptr, 0, 255, NORM_TYPE.CV_MINMAX, IntPtr.Zero);
-            
-                    Bitmap bmpMap = mapNormalized.ToBitmap();
 
-                    string tplDirectory = @"C:\Users\Joan\Videos\Kinovea\Video Testing\Tracking\simimap";
-                    bmpMap.Save(tplDirectory + String.Format(@"\simiMap-{0:000}-{1:0.00}.bmp", previousPoints.Count, bestScore));
-                }
+                #region Monitoring
+                //if(monitoring)
+                //{
+                //    // Save the similarity map to file.
+                //    Image<Gray, Byte> mapNormalized = new Image<Gray, Byte>(similarityMap.Width, similarityMap.Height);
+                //    CvInvoke.cvNormalize(similarityMap.Ptr, mapNormalized.Ptr, 0, 255, NORM_TYPE.CV_MINMAX, IntPtr.Zero);
+
+                //    Bitmap bmpMap = mapNormalized.ToBitmap();
+
+                //    string tplDirectory = @"C:\Users\Joan\Videos\Kinovea\Video Testing\Tracking\simimap";
+                //    bmpMap.Save(tplDirectory + String.Format(@"\simiMap-{0:000}-{1:0.00}.bmp", previousPoints.Count, bestScore));
+                //}
                 #endregion
+
+                similarityMap.Dispose();
                 
                 // Result of the matching.
                 if(bestCandidate.X != -1 && bestCandidate.Y != -1)
@@ -304,7 +299,7 @@ namespace Kinovea.ScreenManager
         public override void Draw(Graphics canvas, AbstractTrackPoint point, IImageToViewportTransformer transformer, Color color, double opacityFactor)
         {
             // Draw the search and template boxes around the point.
-            Point p = transformer.Transform(point.Point);
+            var p = transformer.Transform(point.Point);
             Rectangle search = p.Box(transformer.Transform(searchWindow));
 
             using(Pen pen = new Pen(Color.FromArgb((int)(opacityFactor * 192), color)))
@@ -353,7 +348,7 @@ namespace Kinovea.ScreenManager
         /// Computes the center of mass of the similarity scores in the vicinity of the best candidate.
         /// This allows to find a floating point location for the best match.
         /// </summary>
-        private PointF RefineLocation(float[,,] data, Point loc, int neighborhood)
+        private PointF RefineLocation(Mat map, CVPoint loc, int neighborhood)
         {
             // The best candidate location is expanded by "neighborhood" pixels in each direction.
             float numX = 0;
@@ -361,15 +356,16 @@ namespace Kinovea.ScreenManager
             float den = 0;
             for (int i = loc.X - neighborhood; i <= loc.X + neighborhood; i++)
             {
-                if (i < 0 || i > data.GetUpperBound(1))
+                if (i < 0 || i >= map.Cols)
                     continue;
 
                 for (int j = loc.Y - neighborhood; j <= loc.Y + neighborhood; j++)
                 {
-                    if (j < 0 || j > data.GetUpperBound(0))
+                    if (j < 0 || j >= map.Rows)
                         continue;
 
-                    float value = data[j, i, 0];
+                    // Weight each location by its similarity score.
+                    float value = map.Get<float>(j, i);
                     numX += (i * value);
                     numY += (j * value);
                     den += value;
