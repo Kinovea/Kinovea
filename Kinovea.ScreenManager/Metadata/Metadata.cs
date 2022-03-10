@@ -127,6 +127,11 @@ namespace Kinovea.ScreenManager
             get { return imageTransform; }
         }
 
+        public CameraTransformer CameraTransformer
+        {
+            get { return cameraTransformer; }
+        }
+
         public ImageAspectRatio ImageAspect { get; set; }
         public ImageRotation ImageRotation { get; set; }
         public bool Mirrored { get; set; }
@@ -372,6 +377,7 @@ namespace Kinovea.ScreenManager
         private CalibrationHelper calibrationHelper = new CalibrationHelper();
         private Temporizer calibrationChangedTemporizer;
         private ImageTransform imageTransform = new ImageTransform();
+        private CameraTransformer cameraTransformer = new CameraTransformer();
 
         // Timing information
         private long averageTimeStampsPerFrame = 1;
@@ -1127,6 +1133,11 @@ namespace Kinovea.ScreenManager
 
             for (int i = 0; i < totalStaticExtraDrawings; i++)
                 AfterDrawingCreation(extraDrawings[i]);
+        }
+
+        public void SetCameraMotion(Dictionary<long, int> frameIndices, List<OpenCvSharp.Mat> homographies)
+        {
+            cameraTransformer.Initialize(frameIndices, homographies);
         }
 
         public void Reset()

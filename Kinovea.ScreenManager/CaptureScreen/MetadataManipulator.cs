@@ -77,7 +77,7 @@ namespace Kinovea.ScreenManager
             // TODO: see if this could handle whole image manipulation as well, but at the moment the resizers are stored in the viewport.
             
             bool handled = false;
-            ImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
+            IImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
             PointF imagePoint = transformer.Untransform(mouse);
             
             metadata.AllDrawingTextToNormalMode();
@@ -102,7 +102,7 @@ namespace Kinovea.ScreenManager
                 return false;
             
             bool handled = false;
-            ImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
+            IImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
             PointF imagePoint = transformer.Untransform(mouse);
             
             if(screenToolManager.IsUsingHandTool)
@@ -134,8 +134,8 @@ namespace Kinovea.ScreenManager
                 metadata.AllDrawingTextToNormalMode();
                 metadata.UpdateTrackPoint(bitmap);
             }
-            
-            ImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
+
+            IImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
             PointF imagePoint = transformer.Untransform(mouse);
             metadata.InitializeCommit(null, imagePoint);
 
@@ -148,8 +148,8 @@ namespace Kinovea.ScreenManager
 
             if(metadata == null)
                 return false;
-            
-            ImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
+
+            IImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
             PointF imagePoint = transformer.Untransform(mouse);
             
             int keyframeIndex = 0;
@@ -211,7 +211,7 @@ namespace Kinovea.ScreenManager
             metadata.InitializeEnd(cancelLastPoint);
         }
 
-        private void CreateNewDrawing(PointF imagePoint, ImageToViewportTransformer transformer)
+        private void CreateNewDrawing(PointF imagePoint, IImageToViewportTransformer transformer)
         {
             int keyframeIndex = 0;
             int timestampPerFrame = 1;
@@ -233,7 +233,7 @@ namespace Kinovea.ScreenManager
             AddDrawing(imagePoint, keyframeIndex, timestampPerFrame, transformer);
         }
         
-        private bool LabelMouseDown(PointF imagePoint, long currentTimestamp, ImageToViewportTransformer transformer)
+        private bool LabelMouseDown(PointF imagePoint, long currentTimestamp, IImageToViewportTransformer transformer)
         {
             bool hitExisting = false;
             foreach(DrawingText label in metadata.Labels())
@@ -249,7 +249,7 @@ namespace Kinovea.ScreenManager
             return hitExisting;
         }
         
-        private void AddDrawing(PointF imagePoint, int keyframeIndex, int timestampPerFrame, ImageToViewportTransformer transformer)
+        private void AddDrawing(PointF imagePoint, int keyframeIndex, int timestampPerFrame, IImageToViewportTransformer transformer)
         {
             AbstractDrawing drawing = screenToolManager.ActiveTool.GetNewDrawing(imagePoint, keyframeIndex, timestampPerFrame, transformer);
             Guid keyframeId = metadata.GetKeyframeId(keyframeIndex);

@@ -44,8 +44,8 @@ namespace Kinovea.ScreenManager
         {
             if(metadata == null)
                 return;
-            
-            ImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
+
+            IImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
             
             viewportCanvas.SmoothingMode = SmoothingMode.AntiAlias;
             RenderExtraDrawings(metadata, timestamp, viewportCanvas, transformer);
@@ -53,41 +53,43 @@ namespace Kinovea.ScreenManager
             //RenderMagnifier();
         }
         
-        private void RenderExtraDrawings(Metadata metadata, long timestamp, Graphics canvas, ImageToViewportTransformer transformer)
+        private void RenderExtraDrawings(Metadata metadata, long timestamp, Graphics canvas, IImageToViewportTransformer transformer)
         {
             DistortionHelper distorter = null;
+            CameraTransformer camTransformer = null;
 
-            metadata.DrawingCoordinateSystem.Draw(canvas, distorter, transformer, false, timestamp);
-            metadata.DrawingTestGrid.Draw(canvas, distorter, transformer, false, timestamp);
+            metadata.DrawingCoordinateSystem.Draw(canvas, distorter, camTransformer, transformer, false, timestamp);
+            metadata.DrawingTestGrid.Draw(canvas, distorter, camTransformer, transformer, false, timestamp);
 
             if (renderTimedDrawings)
             {
-                metadata.SpotlightManager.Draw(canvas, distorter, transformer, false, timestamp);
-                metadata.AutoNumberManager.Draw(canvas, distorter, transformer, false, timestamp);
+                metadata.SpotlightManager.Draw(canvas, distorter, camTransformer, transformer, false, timestamp);
+                metadata.AutoNumberManager.Draw(canvas, distorter, camTransformer, transformer, false, timestamp);
             }
 
             if (renderTimedDrawings)
             {
                 foreach (AbstractDrawing ad in metadata.ChronoManager.Drawings)
-                    ad.Draw(canvas, distorter, transformer, false, timestamp);
+                    ad.Draw(canvas, distorter, camTransformer, transformer, false, timestamp);
             }
 
             if (renderTimedDrawings)
             {
                 foreach (AbstractDrawing ad in metadata.TrackManager.Drawings)
-                    ad.Draw(canvas, distorter, transformer, false, timestamp);
+                    ad.Draw(canvas, distorter, camTransformer, transformer, false, timestamp);
             }
 
 
         }
 
-        private void RenderDrawings(Metadata metadata, long timestamp, Graphics canvas, ImageToViewportTransformer transformer)
+        private void RenderDrawings(Metadata metadata, long timestamp, Graphics canvas, IImageToViewportTransformer transformer)
         {
             DistortionHelper distorter = metadata.CalibrationHelper.DistortionHelper;
+            CameraTransformer camTransformer = metadata.CameraTransformer;
 
             foreach (Keyframe keyframe in metadata.Keyframes)
                 foreach (AbstractDrawing drawing in keyframe.Drawings)
-                    drawing.Draw(canvas, distorter, transformer, drawing == metadata.HitDrawing, timestamp);
+                    drawing.Draw(canvas, distorter, camTransformer, transformer, drawing == metadata.HitDrawing, timestamp);
         }
     }
 }

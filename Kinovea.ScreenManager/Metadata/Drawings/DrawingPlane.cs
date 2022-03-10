@@ -156,7 +156,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region AbstractDrawing implementation
-        public override void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
+        public override void Draw(Graphics canvas, DistortionHelper distorter, CameraTransformer cameraTransformer, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
             double opacityFactor = infosFading.GetOpacityTrackable(trackingTimestamps, currentTimestamp);
             if (opacityFactor <= 0)

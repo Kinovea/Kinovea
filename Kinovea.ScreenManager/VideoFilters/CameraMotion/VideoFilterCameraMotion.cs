@@ -58,8 +58,8 @@ namespace Kinovea.ScreenManager
         private List<OpenCvSharp.Mat> descriptors = new List<OpenCvSharp.Mat>();
         private List<Tuple<int, int>> imagePairs = new List<Tuple<int, int>>();
         private List<OpenCvSharp.DMatch[]> matches = new List<OpenCvSharp.DMatch[]>();
-        //private List<List<PointF>> inliers = new List<List<PointF>>();
-        private List<List<bool>> inliers = new List<List<bool>>();
+        private List<List<bool>> inlierStatus = new List<List<bool>>();
+        private List<List<PointF>> inliers = new List<List<PointF>>();
         private List<OpenCvSharp.Mat> consecTransforms = new List<OpenCvSharp.Mat>();
         private List<OpenCvSharp.Mat> forwardTransforms = new List<OpenCvSharp.Mat>();
         private List<OpenCvSharp.Mat> backwardTransforms = new List<OpenCvSharp.Mat>();
@@ -71,7 +71,6 @@ namespace Kinovea.ScreenManager
         // Display parameters
         private bool showFeatures = true;
         private bool showMatches = true;
-        //private bool showInliers = true;
         private bool showTransforms = true;
 
         // Menu
@@ -210,6 +209,7 @@ namespace Kinovea.ScreenManager
             descriptors.Clear();
             imagePairs.Clear();
             matches.Clear();
+            inlierStatus.Clear();
             inliers.Clear();
             consecTransforms.Clear();
             forwardTransforms.Clear();
@@ -221,6 +221,9 @@ namespace Kinovea.ScreenManager
             int frameIndex = 0;
             foreach (var f in framesContainer.Frames)
             {
+                if (frameIndices.ContainsKey(f.Timestamp))
+                    continue;
+
                 frameIndices.Add(f.Timestamp, frameIndex);
                 
                 //OpenCvSharp.KeyPoint[] kp = OpenCvSharp.Cv2.FAST(imgGray, 50, true);
@@ -254,60 +257,30 @@ namespace Kinovea.ScreenManager
                 // Find transforms between consecutive frames.
                 var srcPoints = mm.Select(m => new OpenCvSharp.Point2d(keypoints[i][m.QueryIdx].Pt.X, keypoints[i][m.QueryIdx].Pt.Y));
                 var dstPoints = mm.Select(m => new OpenCvSharp.Point2d(keypoints[i + 1][m.TrainIdx].Pt.X, keypoints[i + 1][m.TrainIdx].Pt.Y));
-                //var homography = OpenCvSharp.Cv2.FindHomography(srcPoints, dstPoints, OpenCvSharp.HomographyMethods.Ransac, ransacReprojThreshold, null);
-
+                
                 OpenCvSharp.HomographyMethods method = (OpenCvSharp.HomographyMethods)OpenCvSharp.RobustEstimationAlgorithms.USAC_MAGSAC;
-                //OpenCvSharp.Mat matMask = new OpenCvSharp.Mat();
-                //OpenCvSharp.OutputArray mask = OpenCvSharp.OutputArray.Create(matMask);
                 var mask = new List<byte>();
                 var homography = OpenCvSharp.Cv2.FindHomography(srcPoints, dstPoints, method, ransacReprojThreshold, OpenCvSharp.OutputArray.Create(mask));
 
                 // Collect inliers.
-                inliers.Add(new List<bool>());
+                inlierStatus.Add(new List<bool>());
+                inliers.Add(new List<PointF>());
                 for (int j = 0; j < mask.Count; j++)
                 {
                     bool inlier = mask[j] != 0;
-                    inliers[i].Add(inlier);
-                    
-                    //{
-                    //    PointF p = new PointF(keypoints[i][mm[j].QueryIdx].Pt.X, keypoints[i][mm[j].QueryIdx].Pt.Y);
-                    //    inliers[i].Add(p);        
-                    //}
+                    inlierStatus[i].Add(inlier);
+                 
+                    if (inlier)
+                    {
+                        PointF p = new PointF(keypoints[i][mm[j].QueryIdx].Pt.X, keypoints[i][mm[j].QueryIdx].Pt.Y);
+                        inliers[i].Add(p);        
+                    }
                 }
 
                 consecTransforms.Add(homography);
-
-                //OpenCvSharp.Point2f[] srcPoints = mm.Select(m => keypoints[i][m.QueryIdx].Pt).ToArray();
-                //OpenCvSharp.Point2f[] dstPoints = mm.Select(m => keypoints[i + 1][m.TrainIdx].Pt).ToArray();
-                //var src = new OpenCvSharp.Mat(srcPoints.Length, 1, OpenCvSharp.MatType.CV_32FC2, srcPoints);
-                //var dst = new OpenCvSharp.Mat(dstPoints.Length, 1, OpenCvSharp.MatType.CV_32FC2, dstPoints);
-
-                //ulong maxIterations = 2000;
-                //double confidence = 0.99;
-                //ulong refineIters = 10;
-                //var matrix = OpenCvSharp.Cv2.EstimateAffine2D(src, dst, null, 
-                //    OpenCvSharp.RobustEstimationAlgorithms.USAC_MAGSAC, ransacReprojThreshold, maxIterations, confidence, refineIters);
-
-                //consecTransforms.Add(matrix);
             }
 
             matcher.Dispose();
-
-            // Precompute all the transform matrices towards and back from the common frame of reference.
-            // For now we use the first frame as the global reference.
-            //var identity = OpenCvSharp.Mat.Eye(3, 3, OpenCvSharp.MatType.CV_64FC1);
-            //for (int i = 0; i < frameIndices.Count; i++)
-            //{
-            //    // Forward.
-            //    var mat = identity;
-            //    for (int j = 0; j < i; j++)
-            //    {
-            //        //mat = ConcatAffine(mat, consecTransforms[j]);
-            //        mat = mat * consecTransforms[j];
-            //    }
-
-            //    forwardTransforms.Add(mat);
-            //}
 
             // Precompute all the transform matrices towards and back from the common frame of reference.
             // For now we use the first frame as the global reference.
@@ -325,6 +298,9 @@ namespace Kinovea.ScreenManager
             }
 
             InvalidateFromMenu(sender);
+
+            // Commit transform data.
+            metadata.SetCameraMotion(frameIndices, consecTransforms);
         }
 
         /// <summary>
@@ -392,51 +368,37 @@ namespace Kinovea.ScreenManager
             for (int i = 0; i < frameMatches.Length; i++)
             {
                 var m = frameMatches[i];
-                int queryIndex = m.QueryIdx;
-                int trainIndex = m.TrainIdx;
                 PointF p1 = new PointF(keypoints[frameIndex][m.QueryIdx].Pt.X, keypoints[frameIndex][m.QueryIdx].Pt.Y);
                 PointF p2 = new PointF(keypoints[frameIndex + 1][m.TrainIdx].Pt.X, keypoints[frameIndex + 1][m.TrainIdx].Pt.Y);
                 p1 = transformer.Transform(p1);
                 p2 = transformer.Transform(p2);
 
-                var inlier = inliers[frameIndex][i];
+                var inlier = inlierStatus[frameIndex][i];
                 Color c = inlier ? Color.LimeGreen : Color.Red;
 
                 using (Pen pen = new Pen(c, 2.0f))
                     canvas.DrawLine(pen, p1, p2);
             }
 
-            //foreach (var m in )
-            //{
-            //    int queryIndex = m.QueryIdx;
-            //    int trainIndex = m.TrainIdx;
-
-            //    PointF p1 = new PointF(keypoints[frameIndex][m.QueryIdx].Pt.X, keypoints[frameIndex][m.QueryIdx].Pt.Y);
-            //    PointF p2 = new PointF(keypoints[frameIndex + 1][m.TrainIdx].Pt.X, keypoints[frameIndex + 1][m.TrainIdx].Pt.Y);
-            //    p1 = transformer.Transform(p1);
-            //    p2 = transformer.Transform(p2);
-
-            //    using (Pen pen = new Pen(Color.Red, 2.0f))
-            //        canvas.DrawLine(pen, p1, p2);
-            //}
+            DrawInliers(canvas, transformer, timestamp);
         }
 
-        //private void DrawInliers(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
-        //{
-        //    if (inliers.Count == 0)
-        //        return;
+        private void DrawInliers(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
+        {
+            if (inliers.Count == 0)
+                return;
 
-        //    if (!frameIndices.ContainsKey(timestamp) || frameIndices[timestamp] >= inliers.Count)
-        //        return;
+            if (!frameIndices.ContainsKey(timestamp) || frameIndices[timestamp] >= inliers.Count)
+                return;
 
-        //    int frameIndex = frameIndices[timestamp];
-        //    foreach (var p in inliers[frameIndex])
-        //    {
-        //        var p2 = transformer.Transform(p);
-        //        using (Pen pen = new Pen(Color.LimeGreen, 2.0f))
-        //            canvas.DrawEllipse(pen, p2.Box(3));
-        //    }
-        //}
+            int frameIndex = frameIndices[timestamp];
+            foreach (var p in inliers[frameIndex])
+            {
+                var p2 = transformer.Transform(p);
+                using (Pen pen = new Pen(Color.DarkGreen, 3.0f))
+                    canvas.DrawEllipse(pen, p2.Box(5));
+            }
+        }
 
         private void DrawTransforms(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
         {
@@ -447,8 +409,6 @@ namespace Kinovea.ScreenManager
                 return;
 
             // Transform a rectangle to show how the image is modified from one frame to the next.
-            //Size half = frameSize.Scale(0.5f);
-            //Rectangle rect = new Rectangle(half.Width - half.Width / 2, half.Height - half.Height / 2, half.Width, half.Height);
             Rectangle rect = new Rectangle(Point.Empty, frameSize);
             var bounds = new[]
             {
@@ -458,37 +418,40 @@ namespace Kinovea.ScreenManager
                 new OpenCvSharp.Point2f(rect.Left, rect.Bottom),
             };
 
-            // Forward transform
-            //if (frameIndices[timestamp] < consecTransforms.Count)
+            if (frameIndices[timestamp] >= forwardTransforms.Count)
+                return;
+            
+            // Cumulative transforms.
+            //var transform = forwardTransforms[frameIndices[timestamp]];
+            //DrawTransformRectangle(canvas, transformer, transform, bounds, Color.Yellow);
+
+            // Draw the bounds of one reference frame in all subsequent frames.
+            //var points = bounds;
+            //for (int i = 30; i < frameIndices[timestamp]; i++)
             //{
-            //    var transform = consecTransforms[frameIndices[timestamp]];
-            //    DrawTransformRectangle(canvas, transformer, transform, bounds, Color.Green);
+            //    points = OpenCvSharp.Cv2.PerspectiveTransform(points, consecTransforms[i]);
             //}
 
-            // Backward transform
-            //if (frameIndices[timestamp] > 0)
-            //{
-            //    //var transform = transforms[frameIndices[timestamp] - 1].Inv();
-            //    var transform = consecTransforms[frameIndices[timestamp] - 1].InvertAffineTransform();
-            //    DrawTransformRectangle(canvas, transformer, transform, bounds, Color.Blue);
-            //}
+            //var points3 = points.Select(p => new PointF((float)p.X, (float)p.Y));
 
-            // Cumulative forward.
-            if (frameIndices[timestamp] < forwardTransforms.Count)
+            //var points4 = transformer.Transform(points3);
+            //using (Pen pen = new Pen(Color.Yellow, 4.0f))
+            //    canvas.DrawPolygon(pen, points4.ToArray());
+
+            //---------------------------------
+            // Draw the bounds of all the frames in all subsequent frames.
+            for (int i = 0; i < frameIndices[timestamp]; i++)
             {
-                //var transform = forwardTransforms[frameIndices[timestamp]];
-                //DrawTransformRectangle(canvas, transformer, transform, bounds, Color.Yellow);
-
                 var points = bounds;
-                for (int i = 30; i < frameIndices[timestamp]; i++)
+                for (int j = i; j < frameIndices[timestamp]; j++)
                 {
-                    points = OpenCvSharp.Cv2.PerspectiveTransform(points, consecTransforms[i]);
+                    points = OpenCvSharp.Cv2.PerspectiveTransform(points, consecTransforms[j]);
                 }
 
-                var points3 = points.Select(p => new PointF((float)p.X, (float)p.Y));
-                
+                var points3 = points.Select(p => new PointF(p.X, p.Y));
+
                 var points4 = transformer.Transform(points3);
-                using (Pen pen = new Pen(Color.Yellow, 4.0f))
+                using (Pen pen = new Pen(Color.Yellow, 1.0f))
                     canvas.DrawPolygon(pen, points4.ToArray());
             }
         }

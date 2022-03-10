@@ -25,26 +25,12 @@ using System.Drawing;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// Helper class to encapsulate calculations about the coordinate system for drawings,
-    /// to compensate the differences between the original image and the displayed one.
-    /// Note : This is not the coordinate system that the user can adjust for distance calculations, that one is PlayerScreen/CalibrationHelper.cs.
-    /// 
-    /// Includes : 
-    /// - stretching: the rectangle where the image is displayed may be stretched or squeezed relative to the original size.
-    /// - zooming: the region of interest may be a sub window of the original image.
-    /// 
-    /// 
-    /// The class will keep track of the current changes relatively to the 
-    /// reference image size and provide conversion routines.
+    /// Transforms coordinates from image space to viewport space and back.
     /// The reference image size is the original image size adjusted for aspect ratio and rotation.
-    /// 
-    /// All drawings coordinates are kept in the system of the reference size.
-    /// For actually drawing them on screen we ask the transformation here. 
-    /// The image itself is decoded at a custom size that can be smaller than the reference size.
-    /// The rendering surface also has its own size that can be changed by user stretching.
-    /// 
-    /// The image aspect ratio is never altered. Skew is not supported.
-    /// TODO: merge with ImageToViewportTransformer.
+    ///
+    /// Drawings keep their coordinates in the system of the reference size.
+    /// The video frames are possibly decoded at a custom size smaller than the reference size.
+    /// The rendering surface has its own size that can be changed by user stretching.
     /// </summary>
     public class ImageTransform : IImageToViewportTransformer
     {
@@ -259,30 +245,14 @@ namespace Kinovea.ScreenManager
         /// <returns>The point in screen coordinate system</returns>
         public Point Transform(Point point)
         {
-            // Zoom and translate
-            double zoomedX = (double)(point.X - directZoomWindow.Left) * zoom;
-            double zoomedY = (double)(point.Y - directZoomWindow.Top) * zoom;
-
-            // Scale
-            double stretchedX = zoomedX * stretch;
-            double stretchedY = zoomedY * stretch;
-
-            return new Point((int)stretchedX, (int)stretchedY);
+            return new Point(
+                (int)((point.X - directZoomWindow.Left) * zoom * stretch),
+                (int)((point.Y - directZoomWindow.Top) * zoom * stretch)
+            );
         }
         public Point Transform(PointF point)
         {
-            float x = point.X;
-            float y = point.Y;
-            
-            // Zoom and translate
-            double zoomedX = (x - directZoomWindow.Left) * zoom;
-            double zoomedY = (y - directZoomWindow.Top) * zoom;
-
-            // Scale
-            double stretchedX = zoomedX * stretch;
-            double stretchedY = zoomedY * stretch;
-
-            return new Point((int)stretchedX, (int)stretchedY);
+            return Transform(point.ToPoint());
         }
         public List<Point> Transform(IEnumerable<PointF> points)
         {

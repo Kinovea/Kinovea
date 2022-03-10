@@ -457,6 +457,7 @@
     <Compile Include="Metadata\Serialization\MeasuredDataTimeseries.cs" />
     <Compile Include="Metadata\Serialization\MeasuredDataUnits.cs" />
     <Compile Include="Metadata\Serialization\MeasurementSerializationHelper.cs" />
+    <Compile Include="CameraTransformer.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="PlayerScreen\Events\TimeEventArgs.cs" />
     <Compile Include="Measurement\Geometry\ClipResult.cs" />

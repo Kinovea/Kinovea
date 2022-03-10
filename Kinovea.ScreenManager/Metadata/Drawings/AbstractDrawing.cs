@@ -59,7 +59,6 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-
         #region Abstract properties
         /// <summary>
         /// Gets or set the fading object for this drawing. 
@@ -117,7 +116,7 @@ namespace Kinovea.ScreenManager
         /// <param name="transformer">A helper object providing coordinate systems transformation</param>
         /// <param name="selected">Whether the drawing is currently selected</param>
         /// <param name="currentTimestamp">The current time position in the video</param>
-        public abstract void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, bool selected, long currentTimestamp);
+        public abstract void Draw(Graphics canvas, DistortionHelper distorter, CameraTransformer cameraTransformer, IImageToViewportTransformer transformer, bool selected, long currentTimestamp);
         
         /// <summary>
         /// Evaluates if a particular point is inside the drawing, on a handler, or completely outside the drawing.

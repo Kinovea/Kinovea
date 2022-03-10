@@ -105,6 +105,9 @@ namespace Kinovea.ScreenManager
         private DrawingStyle style;
         private InfosFading infosFading;
 
+        // TODO: move to abstract drawing and setup after KVA import.
+        private long creationTimestamp;
+
         // Context menu
         private ToolStripMenuItem mnuMeasurement = new ToolStripMenuItem();
         private List<ToolStripMenuItem> mnuMeasurementOptions = new List<ToolStripMenuItem>();
@@ -130,6 +133,7 @@ namespace Kinovea.ScreenManager
             BindStyle();
             
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
+            creationTimestamp = timestamp;
 
             ReinitializeMenu();
         }
@@ -141,14 +145,17 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region AbstractDrawing Implementation
-        public override void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
+        public override void Draw(Graphics canvas, DistortionHelper distorter, CameraTransformer cameraTransformer, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
             double opacityFactor = infosFading.GetOpacityTrackable(trackingTimestamps, currentTimestamp);
             if(opacityFactor <= 0)
                 return;
             
             int iAlpha = (int)(opacityFactor * 255);
-            Point c = transformer.Transform(points["0"]);
+            Point c = points["0"].ToPoint();
+            if (cameraTransformer != null && cameraTransformer.Initialized)
+                c = cameraTransformer.Transform(creationTimestamp, currentTimestamp, c);
+            c = transformer.Transform(c);
 
             using(Pen p = styleHelper.GetPen(iAlpha))
             using(SolidBrush b = styleHelper.GetBrush((int)(opacityFactor * defaultBackgroundAlpha)))
