@@ -9,6 +9,7 @@ namespace Kinovea.ScreenManager
     public enum VideoFilterType
     {
         None,
-        Kinogram
+        Kinogram,
+        CameraMotion,
     }
 }

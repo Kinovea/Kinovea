@@ -69,7 +69,7 @@ namespace Kinovea.ScreenManager
                 {
                     return null;
                 }
-                else if (metadata.ActiveVideoFilter != null)
+                else if (metadata.ActiveVideoFilter != null && metadata.ActiveVideoFilter.Current != null)
                 {
                     return metadata.ActiveVideoFilter.Current;
                 }

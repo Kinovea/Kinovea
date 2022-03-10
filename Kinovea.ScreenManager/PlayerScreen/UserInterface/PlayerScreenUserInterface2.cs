@@ -3526,9 +3526,9 @@ namespace Kinovea.ScreenManager
                 }
                 catch (System.InvalidOperationException)
                 {
-                    log.Error("Error while painting image. Object is currently in use elsewhere. ATI Drivers ?");
+                    log.Error("Error while painting image. Object is currently in use elsewhere.");
                 }
-                catch (Exception)
+                catch (Exception exp)
                 {
                     log.Error("Error while painting image.");
                 }
@@ -5178,15 +5178,12 @@ namespace Kinovea.ScreenManager
         public void ExportVideo()
         {
             saveInProgress = true;
-            if (videoFilterIsActive)
-            {
-                if (m_FrameServer.Metadata.ActiveVideoFilter.CanExportVideo)
-                    m_FrameServer.Metadata.ActiveVideoFilter.ExportVideo(this);
-            }
+            
+            if (videoFilterIsActive && m_FrameServer.Metadata.ActiveVideoFilter.CanExportVideo)
+                m_FrameServer.Metadata.ActiveVideoFilter.ExportVideo(this);
             else
-            {
                 m_FrameServer.SaveVideo(timeMapper.GetInterval(sldrSpeed.Value), slowMotion * 100, GetFlushedImage);
-            }
+            
             saveInProgress = false;
         }
 

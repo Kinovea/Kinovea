@@ -21,6 +21,7 @@ namespace Kinovea.ScreenManager
         static VideoFilterFactory()
         {
             info.Add(VideoFilterType.Kinogram, new VideoFilterInfo("Kinogram", Properties.Resources.mosaic, false));
+            info.Add(VideoFilterType.CameraMotion, new VideoFilterInfo("CameraMotion", Properties.Resources.mosaic, false));
         }
 
         /// <summary>
@@ -33,6 +34,8 @@ namespace Kinovea.ScreenManager
             {
                 case VideoFilterType.Kinogram:
                     return new VideoFilterKinogram(metadata);
+                case VideoFilterType.CameraMotion:
+                    return new VideoFilterCameraMotion(metadata);
                 default:
                     return null;
             }
