@@ -327,12 +327,12 @@ namespace Kinovea.ScreenManager
                 int last = GetLastVisiblePoint();
                 if (trackStatus == TrackStatus.Interactive && trackView == TrackView.Complete)
                 {
-                    DrawTrajectory(canvas, first, currentPoint, true, opacityFactor, transformer);
-                    DrawTrajectory(canvas, currentPoint, last, false, opacityFactor, transformer);
+                    DrawTrajectory(canvas, first, currentPoint, true, opacityFactor, cameraTransformer, transformer, currentTimestamp);
+                    DrawTrajectory(canvas, currentPoint, last, false, opacityFactor, cameraTransformer, transformer, currentTimestamp);
                 }
                 else
                 {
-                    DrawTrajectory(canvas, first, last, false, opacityFactor, transformer);
+                    DrawTrajectory(canvas, first, last, false, opacityFactor, cameraTransformer, transformer, currentTimestamp);
                 }
             }
             
@@ -513,7 +513,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Drawing routines
-        private void DrawTrajectory(Graphics canvas, int start, int end, bool before, double fadingFactor, IImageToViewportTransformer transformer)
+        private void DrawTrajectory(Graphics canvas, int start, int end, bool before, double fadingFactor, CameraTransformer cameraTransformer, IImageToViewportTransformer transformer, long currentTimestamp)
         {
             // Points are drawn with various alpha values, possibly 0:
             // In edit mode, all segments are drawn at 64 alpha.
@@ -529,7 +529,14 @@ namespace Kinovea.ScreenManager
 
             Point[] points = new Point[end - start + 1];
             for (int i = 0; i <= end - start; i++)
-                points[i] = transformer.Transform(positions[start + i].Point);
+            {
+                var tp = positions[start + i];
+                PointF p = tp.Point;
+                if (cameraTransformer != null && cameraTransformer.Initialized)
+                    p = cameraTransformer.Transform(tp.T, currentTimestamp, p);
+                
+                points[i] = transformer.Transform(p);
+            }
 
             if (points.Length <= 1)
                 return;
