@@ -70,8 +70,6 @@ namespace Kinovea.ScreenManager
             w.WriteValue(md.CaptureFramerate);
             w.WritePropertyName("userFramerate");
             w.WriteValue(md.UserFramerate);
-            w.WritePropertyName("units");
-            WriteUnits(w, md);
             w.WriteEndObject();
         }
 
@@ -82,46 +80,6 @@ namespace Kinovea.ScreenManager
             w.WriteValue(size.Width);
             w.WritePropertyName("height");
             w.WriteValue(size.Height);
-            w.WriteEndObject();
-        }
-
-        private void WriteUnits(JsonWriter w, MeasuredData md)
-        {
-            w.WriteStartObject();
-
-            w.WritePropertyName("lengthUnit");
-            w.WriteValue(md.Units.LengthUnit);
-            w.WritePropertyName("lengthSymbol");
-            w.WriteValue(md.Units.LengthSymbol);
-
-            w.WritePropertyName("speedUnit");
-            w.WriteValue(md.Units.SpeedUnit);
-            w.WritePropertyName("speedSymbol");
-            w.WriteValue(md.Units.SpeedSymbol);
-
-            w.WritePropertyName("accelerationUnit");
-            w.WriteValue(md.Units.AccelerationUnit);
-            w.WritePropertyName("accelerationSymbol");
-            w.WriteValue(md.Units.AccelerationSymbol);
-
-            w.WritePropertyName("angleUnit");
-            w.WriteValue(md.Units.AngleUnit);
-            w.WritePropertyName("angleSymbol");
-            w.WriteValue(md.Units.AngleSymbol);
-
-            w.WritePropertyName("angularVelocityUnit");
-            w.WriteValue(md.Units.AngularVelocityUnit);
-            w.WritePropertyName("angularVelocitySymbol");
-            w.WriteValue(md.Units.AngularVelocitySymbol);
-
-            w.WritePropertyName("angularAccelerationUnit");
-            w.WriteValue(md.Units.AngularAccelerationUnit);
-            w.WritePropertyName("angularAccelerationSymbol");
-            w.WriteValue(md.Units.AngularAccelerationSymbol);
-
-            w.WritePropertyName("timeSymbol");
-            w.WriteValue(md.Units.TimeSymbol);
-
             w.WriteEndObject();
         }
 
@@ -151,8 +109,11 @@ namespace Kinovea.ScreenManager
                 
                 w.WritePropertyName("name");
                 w.WriteValue(kf.Name);
+                w.WritePropertyName("timeUnit");
+                w.WriteValue(md.Units.TimeSymbol);
                 w.WritePropertyName("time");
-                w.WriteValue(kf.Time); 
+                w.WriteValue(kf.Time);
+                
                 
                 w.WriteEndObject();
             }
@@ -171,6 +132,10 @@ namespace Kinovea.ScreenManager
 
                 w.WritePropertyName("name");
                 w.WriteValue(o.Name);
+                w.WritePropertyName("timeUnit");
+                w.WriteValue(md.Units.TimeSymbol);
+                w.WritePropertyName("dataUnit");
+                w.WriteValue(md.Units.LengthSymbol);
                 w.WritePropertyName("time");
                 w.WriteValue(o.Time);
                 w.WritePropertyName("value");
@@ -196,6 +161,10 @@ namespace Kinovea.ScreenManager
 
                 w.WritePropertyName("name");
                 w.WriteValue(o.Name);
+                w.WritePropertyName("timeUnit");
+                w.WriteValue(md.Units.TimeSymbol);
+                w.WritePropertyName("dataUnit");
+                w.WriteValue(md.Units.LengthSymbol);
                 w.WritePropertyName("time");
                 w.WriteValue(o.Time);
                 w.WritePropertyName("value");
@@ -218,6 +187,10 @@ namespace Kinovea.ScreenManager
 
                 w.WritePropertyName("name");
                 w.WriteValue(o.Name);
+                w.WritePropertyName("timeUnit");
+                w.WriteValue(md.Units.TimeSymbol);
+                w.WritePropertyName("dataUnit");
+                w.WriteValue(md.Units.AngleSymbol);
                 w.WritePropertyName("time");
                 w.WriteValue(o.Time);
                 w.WritePropertyName("value");
@@ -240,6 +213,8 @@ namespace Kinovea.ScreenManager
 
                 w.WritePropertyName("name");
                 w.WriteValue(o.Name);
+                w.WritePropertyName("timeUnit");
+                w.WriteValue(md.Units.TimeSymbol);
                 w.WritePropertyName("duration");
                 w.WriteValue(o.Duration);
                 w.WritePropertyName("start");
@@ -267,6 +242,10 @@ namespace Kinovea.ScreenManager
 
                 w.WritePropertyName("name");
                 w.WriteValue(o.Name);
+                w.WritePropertyName("timeUnit");
+                w.WriteValue(md.Units.TimeSymbol);
+                w.WritePropertyName("dataUnit");
+                w.WriteValue(md.Units.LengthSymbol);
 
                 WriteTimelineTimes(w, o);
                 WriteTimelineData(w, o);
