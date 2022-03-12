@@ -28,6 +28,10 @@ namespace Kinovea.ScreenManager
                     ExporterJSON exporterJSON = new ExporterJSON();
                     exporterJSON.Export(file, measuredData);
                     break;
+                case MetadataExportFormat.CSV:
+                    ExporterCSV exporterCSV = new ExporterCSV();
+                    exporterCSV.Export(file, measuredData);
+                    break;
             }
         }
     }

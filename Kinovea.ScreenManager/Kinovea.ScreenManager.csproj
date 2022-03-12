@@ -299,6 +299,7 @@
     <Compile Include="Measurement\Geometry\Vector3.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPostureOption.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPosturePolyline.cs" />
+    <Compile Include="Metadata\Exporters\ExporterCSV.cs" />
     <Compile Include="Metadata\Exporters\ExporterJSON.cs" />
     <Compile Include="Metadata\Exporters\ExporterXSLX.cs" />
     <Compile Include="Metadata\Interfaces\IDrawingHostView.cs" />
@@ -636,9 +637,6 @@
     <Compile Include="Metadata\Drawings\Styling\StyleHelper.cs" />
     <Compile Include="Metadata\DrawingToolbar\ToolManager.cs" />
     <Compile Include="Metadata\Exporters\ExporterODS.cs" />
-    <Compile Include="Metadata\Exporters\ExporterMSXML.cs" />
-    <Compile Include="Metadata\Exporters\ExporterTrajectoryText.cs" />
-    <Compile Include="Metadata\Exporters\ExporterXHTML.cs" />
     <Compile Include="Metadata\Exporters\MetadataExportFormat.cs" />
     <Compile Include="PlayerScreen\FrameServerPlayer.cs" />
     <Compile Include="Metadata\Drawings\DrawingAngle.cs" />
