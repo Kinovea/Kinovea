@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Drawing;
+using Kinovea.Services;
 using SharpVectors.Dom.Svg;
 using SharpVectors.Dom.Svg.Rendering;
 using SharpVectors.Renderer.Gdi;
@@ -29,8 +30,12 @@ namespace Kinovea.Video.SVG
     public class FrameGeneratorSVG : IFrameGenerator
     {
         #region Properties
-        public Size Size {
+        public Size OriginalSize {
             get { return initialized ? originalSize : Size.Empty; }
+        }
+
+        public Size ReferenceSize {
+            get { return OriginalSize; }
         }
         #endregion
 
@@ -56,7 +61,7 @@ namespace Kinovea.Video.SVG
             svgWindow = new SvgWindow(100, 100, renderer);
         }
 
-        public OpenVideoResult Initialize(string filepath)
+        public OpenVideoResult Open(string filepath)
         {
             OpenVideoResult res = OpenVideoResult.NotSupported;
 
@@ -162,6 +167,11 @@ namespace Kinovea.Video.SVG
             Size size = new Size((int)(originalSize.Width / ratio), (int)(originalSize.Height / ratio));
 
             return size;
+        }
+
+        public void SetRotation(ImageRotation rotation)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
+using Kinovea.Services;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -26,12 +27,14 @@ namespace Kinovea.Video.Synthetic
 {
     public class FrameGeneratorSyntheticVideo : IFrameGenerator
     {
-        public Size Size 
+        public Size OriginalSize 
         {
-            get 
-            {
-                return video.ImageSize;
-            }
+            get { return video.ImageSize; }
+        }
+
+        public Size ReferenceSize
+        {
+            get { return OriginalSize; }
         }
 
         private SyntheticVideo video;
@@ -45,7 +48,7 @@ namespace Kinovea.Video.Synthetic
         }
 
         #region IFrameGenerator implementation
-        public OpenVideoResult Initialize(string init)
+        public OpenVideoResult Open(string init)
         {
             return OpenVideoResult.Success;
         }
@@ -110,6 +113,11 @@ namespace Kinovea.Video.Synthetic
         
         public void Close()
         {
+        }
+
+        public void SetRotation(ImageRotation rotation)
+        {
+            throw new NotImplementedException();
         }
         #endregion
 

@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using Kinovea.Services;
 using SystemBitmap = System.Drawing.Bitmap;
 
 namespace Kinovea.Video.Bitmap
@@ -45,7 +46,7 @@ namespace Kinovea.Video.Bitmap
             get { return current; }
         }
         public override VideoCapabilities Flags { 
-            get { return VideoCapabilities.CanDecodeOnDemand | VideoCapabilities.CanChangeWorkingZone;}
+            get { return VideoCapabilities.CanDecodeOnDemand | VideoCapabilities.CanChangeWorkingZone | VideoCapabilities.CanChangeImageRotation;}
         }
         public override VideoInfo Info { 
             get { return videoInfo;} 
@@ -129,8 +130,15 @@ namespace Kinovea.Video.Bitmap
         }
         public override void BeforeFrameEnumeration(){}
         public override void AfterFrameEnumeration(){}
+
+        public override bool ChangeImageRotation(ImageRotation rotation)
+        {
+            generator.SetRotation(rotation);
+            UpdateSizeInfo();
+            return false;
+        }
         #endregion
-        
+
         #region Private methods
         private OpenVideoResult InstanciateGenerator(string filePath)
         {
@@ -152,32 +160,33 @@ namespace Kinovea.Video.Bitmap
             
             if(generator != null)
             {
-                res = generator.Initialize(filePath);
+                res = generator.Open(filePath);
                 initialized = res == OpenVideoResult.Success;
             }
             return res;
         }
         private void SetupVideoInfo(string filePath)
         {
-            videoInfo.AverageTimeStampsPerFrame = 1;
             videoInfo.FilePath = filePath;
+
+            // 10 seconds @ 25fps.
             videoInfo.FirstTimeStamp = 0;
-            
-            // Testing: 10 seconds @ 25fps.
-            videoInfo.DurationTimeStamps = 251;
+            videoInfo.AverageTimeStampsPerFrame = 1;
             videoInfo.FramesPerSeconds = 25;
+            videoInfo.DurationTimeStamps = 251;
             videoInfo.FrameIntervalMilliseconds = 1000 / videoInfo.FramesPerSeconds;
             videoInfo.AverageTimeStampsPerSeconds = videoInfo.FramesPerSeconds * videoInfo.AverageTimeStampsPerFrame;
-            
-            // Testing 640x480.
-            if(generator.Size != Size.Empty)
-                videoInfo.OriginalSize = generator.Size;
-            else
-                videoInfo.OriginalSize = new Size(640, 480);
 
-            videoInfo.AspectRatioSize = videoInfo.OriginalSize;
-            videoInfo.ReferenceSize = videoInfo.OriginalSize;
+            UpdateSizeInfo();
         }
+
+        private void UpdateSizeInfo()
+        {
+            videoInfo.OriginalSize = generator.OriginalSize;
+            videoInfo.AspectRatioSize = generator.ReferenceSize;
+            videoInfo.ReferenceSize = generator.ReferenceSize;
+        }
+
         private bool UpdateCurrent(long timestamp)
         {
             // We can generate at any timestamp, but we still need to report when the
