@@ -593,9 +593,9 @@ bool VideoFileWriter::EncodeAndWriteVideoFrame(SavingContext^ _SavingContext, Bi
     uint8_t* pYUV420Buffer = nullptr;
     uint8_t* pOutputBuffer = nullptr;
     System::Drawing::Imaging::BitmapData^ bitmapData;
-    AVPixelFormat pixelFormatInput;
 
-    if(_InputBitmap->PixelFormat == Imaging::PixelFormat::Format32bppPArgb)
+    AVPixelFormat pixelFormatInput = AV_PIX_FMT_BGRA;
+    if(_InputBitmap->PixelFormat == Imaging::PixelFormat::Format32bppPArgb || _InputBitmap->PixelFormat == Imaging::PixelFormat::Format32bppArgb)
         pixelFormatInput = AV_PIX_FMT_BGRA;
     else if(_InputBitmap->PixelFormat == Imaging::PixelFormat::Format24bppRgb)
         pixelFormatInput = AV_PIX_FMT_BGR24;
