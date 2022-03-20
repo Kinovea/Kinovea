@@ -15,6 +15,10 @@ namespace Kinovea.ScreenManager
     public class VideoFilterCameraMotion : IVideoFilter
     {
         #region Properties
+        public string FriendlyName
+        {
+            get { return "Camera motion"; }
+        }
         public Bitmap Current
         {
             get { return null; }
@@ -86,10 +90,8 @@ namespace Kinovea.ScreenManager
             this.metadata = metadata;
 
             mnuConfigure.Image = Properties.Drawings.configure;
-            //mnuRun.Image
             contextMenu.Add(mnuConfigure);
             contextMenu.Add(mnuRun);
-            contextMenu.Add(new ToolStripSeparator());
 
             mnuConfigure.Click += MnuConfigure_Click;
             mnuRun.Click += MnuRun_Click;
