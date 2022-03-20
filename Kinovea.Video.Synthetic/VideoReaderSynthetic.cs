@@ -152,7 +152,7 @@ namespace Kinovea.Video.Synthetic
         {
             OpenVideoResult res = OpenVideoResult.NotSupported;
             generator = new FrameGeneratorSyntheticVideo(video);
-            res = generator.Initialize(null);
+            res = generator.Open(null);
             initialized = res == OpenVideoResult.Success;
             return res;
         }

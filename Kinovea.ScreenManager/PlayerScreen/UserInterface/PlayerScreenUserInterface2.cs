@@ -67,6 +67,7 @@ namespace Kinovea.ScreenManager
         public event EventHandler PlayStarted;
         public event EventHandler PauseAsked;
         public event EventHandler ResetAsked;
+        public event EventHandler FilterExited;
         public event EventHandler<EventArgs<bool>> SelectionChanged;
         public event EventHandler<EventArgs<Bitmap>> ImageChanged;
         public event EventHandler<TimeEventArgs> KeyframeAdding;
@@ -340,6 +341,8 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuExportVideo = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportImage = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCloseScreen = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExitFilter = new ToolStripMenuItem();
+
 
         private ContextMenuStrip popMenuDrawings = new ContextMenuStrip();
         private ToolStripMenuItem mnuConfigureDrawing = new ToolStripMenuItem();
@@ -1130,6 +1133,8 @@ namespace Kinovea.ScreenManager
             mnuExportImage.Image = Properties.Resources.picture_save;
             mnuCloseScreen.Click += btnClose_Click;
             mnuCloseScreen.Image = Properties.Resources.film_close3;
+            mnuExitFilter.Click += MnuExitFilter_Click;
+            mnuExitFilter.Image = Properties.Resources.film_close3;
             popMenu.Items.AddRange(new ToolStripItem[]
             {
                 mnuTimeOrigin, mnuDirectTrack, new ToolStripSeparator(),
@@ -1466,6 +1471,12 @@ namespace Kinovea.ScreenManager
             // Set focus to enable mouse scroll
             panelVideoControls.Focus();
         }
+        private void MnuExitFilter_Click(object sender, EventArgs e)
+        {
+            m_FrameServer.DeactivateVideoFilter();
+            DeactivateVideoFilter();
+            FilterExited?.Invoke(this, EventArgs.Empty);
+        }
         #endregion
 
         #region Misc private helpers
@@ -1479,9 +1490,6 @@ namespace Kinovea.ScreenManager
             if (SelectionChanged != null)
                 SelectionChanged(this, new EventArgs<bool>(initialization));
         }
-
-        
-
         private void RaiseSetAsActiveScreenEvent()
         {
             SetAsActiveScreen?.Invoke(this, EventArgs.Empty);
@@ -3242,26 +3250,34 @@ namespace Kinovea.ScreenManager
                 return;
 
             bool hasExtraMenus = (filter.ContextMenu != null && filter.ContextMenu.Count > 0);
-            if (!hasExtraMenus)
-                return;
-            
-            foreach (ToolStripItem tsmi in filter.ContextMenu)
+            if (hasExtraMenus)
             {
-                ToolStripMenuItem menuItem = tsmi as ToolStripMenuItem;
-
-                // Inject dependency on the UI into the menu for invalidation.
-                tsmi.Tag = this;
-                if (menuItem != null && menuItem.DropDownItems.Count > 0)
+                foreach (ToolStripItem tsmi in filter.ContextMenu)
                 {
-                    foreach (ToolStripItem subMenu in menuItem.DropDownItems)
-                        subMenu.Tag = this;
-                }
+                    ToolStripMenuItem menuItem = tsmi as ToolStripMenuItem;
 
-                if (tsmi.MergeIndex >= 0)
-                    popMenu.Items.Insert(tsmi.MergeIndex, tsmi);
-                else
-                    popMenu.Items.Add(tsmi);
+                    // Inject dependency on the UI into the menu for invalidation.
+                    tsmi.Tag = this;
+                    if (menuItem != null && menuItem.DropDownItems.Count > 0)
+                    {
+                        foreach (ToolStripItem subMenu in menuItem.DropDownItems)
+                            subMenu.Tag = this;
+                    }
+
+                    if (tsmi.MergeIndex >= 0)
+                        popMenu.Items.Insert(tsmi.MergeIndex, tsmi);
+                    else
+                        popMenu.Items.Add(tsmi);
+                }
             }
+
+            if (hasExtraMenus)
+                popMenu.Items.Add(new ToolStripSeparator());
+
+            // Add the exit filter menu.
+            mnuExitFilter.Text = string.Format("Exit: {0}", filter.FriendlyName);
+            popMenu.Items.Add(mnuExitFilter);
+            popMenu.Items.Add(new ToolStripSeparator());
         }
         private void SurfaceScreen_MouseMove(object sender, MouseEventArgs e)
         {

@@ -91,6 +91,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuExportODS = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportXLSX = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportJSON = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportCSV = new ToolStripMenuItem();
         private ToolStripMenuItem mnuLoadAnalysis = new ToolStripMenuItem();
 
         private ToolStripMenuItem mnuCutDrawing = new ToolStripMenuItem();
@@ -310,10 +311,13 @@ namespace Kinovea.ScreenManager
             mnuExportXLSX.Click += new EventHandler(mnuExportXLSX_OnClick);
             mnuExportJSON.Image = Properties.Resources.table;
             mnuExportJSON.Click += new EventHandler(mnuExportJSON_OnClick);
+            mnuExportCSV.Image = Properties.Resources.table;
+            mnuExportCSV.Click += new EventHandler(mnuExportCSV_OnClick);
             mnuExportSpreadsheet.DropDownItems.AddRange(new ToolStripItem[] { 
                 mnuExportODS, 
                 mnuExportXLSX, 
                 mnuExportJSON,
+                mnuExportCSV,
             });
 
             //------------------------
@@ -752,6 +756,11 @@ namespace Kinovea.ScreenManager
             OrganizeMenus();
         }
 
+        private void Player_FilterExited(object sender, EventArgs e)
+        {
+            OrganizeMenus();
+        }
+
         private void Player_ResetAsked(object sender, EventArgs e)
         {
             // A screen was reset. (ex: a video was reloded in place).
@@ -1051,6 +1060,7 @@ namespace Kinovea.ScreenManager
                     mnuExportODS.Enabled = player.FrameServer.Metadata.HasData;
                     mnuExportXLSX.Enabled = player.FrameServer.Metadata.HasData;
                     mnuExportJSON.Enabled = player.FrameServer.Metadata.HasData;
+                    mnuExportCSV.Enabled = player.FrameServer.Metadata.HasData;
                     mnuLoadAnalysis.Enabled = true;
                     
                     // Edit
@@ -1104,6 +1114,7 @@ namespace Kinovea.ScreenManager
                     mnuExportODS.Enabled = false;
                     mnuExportXLSX.Enabled = false;
                     mnuExportJSON.Enabled = false;
+                    mnuExportCSV.Enabled = false;
                     mnuLoadAnalysis.Enabled = true;
 
                     // Edit
@@ -1158,6 +1169,7 @@ namespace Kinovea.ScreenManager
                 mnuExportODS.Enabled = false;
                 mnuExportXLSX.Enabled = false;
                 mnuExportJSON.Enabled = false;
+                mnuExportCSV.Enabled = false;
 
                 // Edit
                 HistoryMenuManager.SwitchContext(null);
@@ -1447,6 +1459,7 @@ namespace Kinovea.ScreenManager
             mnuExportODS.Text = "LibreOffice Calc (.ods)";
             mnuExportXLSX.Text = "Microsoft Excel (.xlsx)";
             mnuExportJSON.Text = "Raw JSON (.json)";
+            mnuExportCSV.Text = "Raw CSV (.csv)";
             mnuLoadAnalysis.Text = ScreenManagerLang.mnuLoadAnalysis;
 
             // Edit
@@ -1594,6 +1607,10 @@ namespace Kinovea.ScreenManager
         {
             ExportSpreadsheet(MetadataExportFormat.JSON);
         }
+        private void mnuExportCSV_OnClick(object sender, EventArgs e)
+        {
+            ExportSpreadsheet(MetadataExportFormat.CSV);
+        }
         private void ExportSpreadsheet(MetadataExportFormat format)
         {
             PlayerScreen player = activeScreen as PlayerScreen;
@@ -1605,7 +1622,7 @@ namespace Kinovea.ScreenManager
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = ScreenManagerLang.dlgExportSpreadsheet_Title;
             saveFileDialog.RestoreDirectory = true;
-            saveFileDialog.Filter = "LibreOffice calc (*.ods)|*.ods|Microsoft Excel (*.xlsx)|*.xlsx|JSON (*.json)|*.json";
+            saveFileDialog.Filter = "LibreOffice calc (*.ods)|*.ods|Microsoft Excel (*.xlsx)|*.xlsx|JSON (*.json)|*.json|CSV (*.csv)|*.csv";
             int filterIndex;
             switch (format)
             {
@@ -1614,6 +1631,9 @@ namespace Kinovea.ScreenManager
                     break;
                 case MetadataExportFormat.XLSX:
                     filterIndex = 2;
+                    break;
+                case MetadataExportFormat.CSV:
+                    filterIndex = 4;
                     break;
                 case MetadataExportFormat.JSON:
                 default:
@@ -2633,6 +2653,7 @@ namespace Kinovea.ScreenManager
             screen.OpenAnnotationsAsked += Player_OpenAnnotationsAsked;
             screen.SelectionChanged += Player_SelectionChanged;
             screen.KVAImported += Player_KVAImported;
+            screen.FilterExited += Player_FilterExited;
             screen.ResetAsked += Player_ResetAsked;
         }
         private void AddCaptureScreenEventHandlers(CaptureScreen screen)
@@ -2658,6 +2679,7 @@ namespace Kinovea.ScreenManager
             screen.OpenAnnotationsAsked -= Player_OpenAnnotationsAsked;
             screen.SelectionChanged -= Player_SelectionChanged;
             screen.KVAImported -= Player_KVAImported;
+            screen.FilterExited -= Player_FilterExited;
             screen.ResetAsked -= Player_ResetAsked;
         }
 

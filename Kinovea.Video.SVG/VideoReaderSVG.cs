@@ -147,7 +147,7 @@ namespace Kinovea.Video.SVG
                 throw new NotImplementedException();
 
             generator = new FrameGeneratorSVG();
-            res = generator.Initialize(filePath);
+            res = generator.Open(filePath);
             initialized = res == OpenVideoResult.Success;
             return res;
         }
@@ -164,14 +164,11 @@ namespace Kinovea.Video.SVG
             videoInfo.FrameIntervalMilliseconds = 1000 / videoInfo.FramesPerSeconds;
             videoInfo.AverageTimeStampsPerSeconds = videoInfo.FramesPerSeconds * videoInfo.AverageTimeStampsPerFrame;
 
-            if (generator.Size != Size.Empty)
-                videoInfo.OriginalSize = generator.Size;
-            else
-                videoInfo.OriginalSize = new Size(640, 480);
-            
-            decodingSize = videoInfo.OriginalSize;
+            videoInfo.OriginalSize = generator.OriginalSize != Size.Empty ? generator.OriginalSize : new Size(640, 480);
             videoInfo.AspectRatioSize = videoInfo.OriginalSize;
             videoInfo.ReferenceSize = videoInfo.OriginalSize;
+            
+            decodingSize = videoInfo.ReferenceSize;
         }
 
         private bool UpdateCurrent(long timestamp)

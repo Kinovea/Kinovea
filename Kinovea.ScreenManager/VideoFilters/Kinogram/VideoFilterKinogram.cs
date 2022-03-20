@@ -45,6 +45,10 @@ namespace Kinovea.ScreenManager
     public class VideoFilterKinogram : IVideoFilter
     {
         #region Properties
+        public string FriendlyName
+        {
+            get { return "Kinogram"; }
+        }
         public Bitmap Current
         {
             get { return bitmap; }
@@ -121,7 +125,6 @@ namespace Kinovea.ScreenManager
             contextMenu.Add(mnuAutoNumbers);
             contextMenu.Add(mnuAutoPositions);
             contextMenu.Add(mnuResetPositions);
-            contextMenu.Add(new ToolStripSeparator());
 
             mnuConfigure.Click += MnuConfigure_Click;
             mnuGenerateNumbers.Click += MnuAutonumbers_Click;

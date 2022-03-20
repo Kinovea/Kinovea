@@ -174,11 +174,15 @@ namespace Kinovea.ScreenManager
             else
             {
                 int height = img1.Height;
+                int width = img1.Width;
 
                 if (img1.Height % 2 != 0)
                     height++;
 
-                composite = new Bitmap(img1.Width, height, img1.PixelFormat);
+                if (width % 4 != 0)
+                    width += 4 - (width % 4);
+
+                composite = new Bitmap(width, height, img1.PixelFormat);
                 Graphics g = Graphics.FromImage(composite);
                 g.DrawImage(img1, Point.Empty);
             }
