@@ -44,6 +44,11 @@ namespace Kinovea.ScreenManager
         List<ToolStripItem> ContextMenu { get; }
 
         /// <summary>
+        /// User facing name of the filter.
+        /// </summary>
+        string FriendlyName { get; }
+
+        /// <summary>
         /// Rendered bitmap to be displayed on the viewport.
         /// </summary>
         Bitmap Current { get; }

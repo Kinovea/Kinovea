@@ -49,6 +49,7 @@ namespace Kinovea.ScreenManager
         public event EventHandler<EventArgs<bool>> SelectionChanged;
         public event EventHandler KVAImported;
         public event EventHandler<EventArgs<Bitmap>> ImageChanged;
+        public event EventHandler FilterExited;
         public event EventHandler ResetAsked;
         #endregion
 
@@ -352,6 +353,7 @@ namespace Kinovea.ScreenManager
             view.SelectionChanged += View_SelectionChanged;
             view.ImageChanged += View_ImageChanged;
             view.ResetAsked += View_ResetAsked;
+            view.FilterExited += (s, e) => FilterExited?.Invoke(this, e);
 
             // Requests for metadata modification coming from the view, these should push a memento on the history stack.
             view.KeyframeAdding += View_KeyframeAdding;

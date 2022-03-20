@@ -755,6 +755,11 @@ namespace Kinovea.ScreenManager
             OrganizeMenus();
         }
 
+        private void Player_FilterExited(object sender, EventArgs e)
+        {
+            OrganizeMenus();
+        }
+
         private void Player_ResetAsked(object sender, EventArgs e)
         {
             // A screen was reset. (ex: a video was reloded in place).
@@ -2647,6 +2652,7 @@ namespace Kinovea.ScreenManager
             screen.OpenAnnotationsAsked += Player_OpenAnnotationsAsked;
             screen.SelectionChanged += Player_SelectionChanged;
             screen.KVAImported += Player_KVAImported;
+            screen.FilterExited += Player_FilterExited;
             screen.ResetAsked += Player_ResetAsked;
         }
         private void AddCaptureScreenEventHandlers(CaptureScreen screen)
@@ -2672,6 +2678,7 @@ namespace Kinovea.ScreenManager
             screen.OpenAnnotationsAsked -= Player_OpenAnnotationsAsked;
             screen.SelectionChanged -= Player_SelectionChanged;
             screen.KVAImported -= Player_KVAImported;
+            screen.FilterExited -= Player_FilterExited;
             screen.ResetAsked -= Player_ResetAsked;
         }
 
