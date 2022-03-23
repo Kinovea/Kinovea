@@ -133,6 +133,12 @@ namespace Kinovea.ScreenManager
             get { return clock; }
             set { clock = value; }
         }
+        public bool Filled
+        {
+            get { return filled; }
+            set { filled = value; }
+        }
+
 
         public int ContentHash
         {
@@ -151,6 +157,7 @@ namespace Kinovea.ScreenManager
                 hash ^= curved.GetHashCode();
                 hash ^= perspective.GetHashCode();
                 hash ^= clock.GetHashCode();
+                hash ^= filled.GetHashCode();
                 return hash;
             }
         }
@@ -168,6 +175,7 @@ namespace Kinovea.ScreenManager
         private bool curved;
         private bool perspective;
         private bool clock;
+        private bool filled;
         private int gridDivisions;
         private int minFontSize = 8;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -389,6 +397,16 @@ namespace Kinovea.ScreenManager
 
                         break;
                     }
+                case "Filled":
+                    {
+                        if (value is bool)
+                        {
+                            filled = (bool)value;
+                            imported = true;
+                        }
+
+                        break;
+                    }
                 case "Font":
                     {
                         if (value is int)
@@ -526,6 +544,16 @@ namespace Kinovea.ScreenManager
                         if (targetType == typeof(bool))
                         {
                             result = clock;
+                            converted = true;
+                        }
+
+                        break;
+                    }
+                case "Filled":
+                    {
+                        if (targetType == typeof(bool))
+                        {
+                            result = filled;
                             converted = true;
                         }
 

@@ -11,5 +11,6 @@ namespace Kinovea.ScreenManager
         Curved,
         Perspective,
         Clock,
+        Filled,
     }
 }

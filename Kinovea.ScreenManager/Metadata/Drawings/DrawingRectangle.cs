@@ -97,6 +97,7 @@ namespace Kinovea.ScreenManager
             styleHelper.Color = Color.Empty;
             styleHelper.LineSize = 1;
             styleHelper.PenShape = PenShape.Solid;
+            styleHelper.Filled = false;
             if (preset == null)
                 preset = ToolManager.GetStylePreset("Rectangle");
             
@@ -119,19 +120,26 @@ namespace Kinovea.ScreenManager
             if(opacityFactor <= 0)
                 return;
 
-            QuadrilateralF quad = transformer.Transform(quadImage);
+            Rectangle rect = transformer.Transform(quadImage.GetBoundingBox());
 
             int alpha = (int)(opacityFactor * 255);
-            using(Pen p = styleHelper.GetPen(alpha, transformer.Scale))
+            if (styleHelper.Filled)
             {
-                p.EndCap = LineCap.Square;
-                if (styleHelper.PenShape == PenShape.Dash)
-                    p.DashStyle = DashStyle.Dash;
+                using (SolidBrush b = styleHelper.GetBrush(alpha))
+                {
+                    canvas.FillRectangle(b, rect);
+                }
+            }
+            else
+            {
+                using (Pen p = styleHelper.GetPen(alpha, transformer.Scale))
+                {
+                    p.EndCap = LineCap.Square;
+                    if (styleHelper.PenShape == PenShape.Dash)
+                        p.DashStyle = DashStyle.Dash;
 
-                canvas.DrawLine(p, quad.A, quad.B);
-                canvas.DrawLine(p, quad.B, quad.C);
-                canvas.DrawLine(p, quad.C, quad.D);
-                canvas.DrawLine(p, quad.D, quad.A);
+                    canvas.DrawRectangle(p, rect);
+                }
             }
         }
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
@@ -315,6 +323,7 @@ namespace Kinovea.ScreenManager
             style.Bind(styleHelper, "Color", "color");
             style.Bind(styleHelper, "LineSize", "line size");
             style.Bind(styleHelper, "PenShape", "pen shape");
+            style.Bind(styleHelper, "Filled", "filled");
         }
         #endregion
     }
