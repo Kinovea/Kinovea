@@ -176,7 +176,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public bool HasData(Guid id)
         {
-            if (!SanityCheck(id))
+            if (!trackers.ContainsKey(id))
                 return false;
 
             return trackers[id].HasData;

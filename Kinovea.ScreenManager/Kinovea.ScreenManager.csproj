@@ -559,6 +559,12 @@
     <Compile Include="DualCapture\CommonControlsCapture.Designer.cs">
       <DependentUpon>CommonControlsCapture.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserInterface\FormForegroundColor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserInterface\FormForegroundColor.Designer.cs">
+      <DependentUpon>FormForegroundColor.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserInterface\SliderLinear.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -1007,6 +1013,9 @@
     <EmbeddedResource Include="Properties\Player.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Player.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\FormForegroundColor.resx">
+      <DependentUpon>FormForegroundColor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\FrameTracker.resx">
       <DependentUpon>FrameTracker.cs</DependentUpon>
@@ -1481,6 +1490,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\wand.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\shading.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\shape_square.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">

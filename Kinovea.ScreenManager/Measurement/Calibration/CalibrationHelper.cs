@@ -332,7 +332,6 @@ namespace Kinovea.ScreenManager
             // Both the calibration object and the system's origin can be tracked, but not at the same time.
             // If they are both tracked, the calibration object takes precedence and redefines the origin.
             bool trackedCalibrator = hasTrackingData(calibrationDrawingId);
-
             if (trackedCalibrator)
             {
                 // Get the state of the calibration object at the specified time, and init a temporary calibrator object.

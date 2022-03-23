@@ -3661,13 +3661,12 @@ namespace Kinovea.ScreenManager
                 g.DrawImage(m_SyncMergeImage, rSyncDst, 0, 0, m_SyncMergeImage.Width, m_SyncMergeImage.Height, GraphicsUnit.Pixel, m_SyncMergeImgAttr);
             }
 
-            // Background fader.
-            Color backgroundColor = PreferencesManager.PlayerPreferences.BackgroundColor;
-            if (backgroundColor.A != 0)
+            // Foreground opacity and color.
+            Color foregroundColor = m_FrameServer.Metadata.ForegroundColor;
+            if (foregroundColor.A != 0)
             {
-                SolidBrush brush = new SolidBrush(backgroundColor);
-                g.FillRectangle(brush, rDst);
-                brush.Dispose();
+                using (SolidBrush brush = new SolidBrush(foregroundColor))
+                    g.FillRectangle(brush, rDst);
             }
 
             if ((m_bIsCurrentlyPlaying && PreferencesManager.PlayerPreferences.DrawOnPlay) || !m_bIsCurrentlyPlaying)

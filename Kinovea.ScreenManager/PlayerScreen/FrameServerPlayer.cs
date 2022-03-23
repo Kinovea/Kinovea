@@ -193,9 +193,8 @@ namespace Kinovea.ScreenManager
 
         public bool ChangeMirror(bool value)
         {
-            metadata.Mirrored = value;
-            
             // Nothing else to do, mirroring is handled at render time.
+            metadata.Mirrored = value;
             return false;
         }
 
@@ -217,6 +216,12 @@ namespace Kinovea.ScreenManager
             return VideoReader.ChangeDeinterlace(value);
         }
 
+        public bool ChangeForegroundColor(Color value)
+        {
+            metadata.ForegroundColor = value;
+            return false;
+        }
+
         /// <summary>
         /// Consolidate image options after metadata import.
         /// </summary>
@@ -227,6 +232,7 @@ namespace Kinovea.ScreenManager
             ChangeMirror(metadata.Mirrored);
             ChangeDemosaicing(metadata.Demosaicing);
             ChangeDeinterlacing(metadata.Deinterlacing);
+            ChangeForegroundColor(metadata.ForegroundColor);
         }
 
         public override void Draw(Graphics canvas)

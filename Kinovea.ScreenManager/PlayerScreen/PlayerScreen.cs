@@ -151,6 +151,15 @@ namespace Kinovea.ScreenManager
                 RefreshImage();
             }
         }
+        public Color ForegroundColor 
+        {
+            get { return frameServer.Metadata.ForegroundColor; }
+            set
+            {
+                frameServer.ChangeForegroundColor(value);
+                RefreshImage();
+            }
+        }
         public VideoFilterType ActiveVideoFilterType
         {
             get { return frameServer.Metadata.ActiveVideoFilterType; }

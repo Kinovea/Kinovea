@@ -284,6 +284,9 @@ namespace Kinovea.ScreenManager
                     case "Deinterlacing":
                         metadata.Deinterlacing = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
                         break;
+                    case "ForegroundColor":
+                        metadata.ForegroundColor = XmlHelper.ParseColor(r.ReadElementContentAsString(), Color.Empty);
+                        break;
                     case "AverageTimeStampsPerFrame":
                         inputAverageTimeStampsPerFrame = r.ReadElementContentAsLong();
                         break;
@@ -481,6 +484,7 @@ namespace Kinovea.ScreenManager
             w.WriteElementString("Mirror", metadata.Mirrored.ToString().ToLower());
             w.WriteElementString("Demosaicing", metadata.Demosaicing.ToString());
             w.WriteElementString("Deinterlacing", metadata.Deinterlacing.ToString().ToLower());
+            w.WriteElementString("ForegroundColor", XmlHelper.WriteColor(metadata.ForegroundColor, true));
 
             w.WriteElementString("AverageTimeStampsPerFrame", metadata.AverageTimeStampsPerFrame.ToString());
             w.WriteElementString("CaptureFramerate", string.Format(CultureInfo.InvariantCulture, "{0}", metadata.CalibrationHelper.CaptureFramesPerSecond));

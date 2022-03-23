@@ -127,6 +127,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuRotation270 = new ToolStripMenuItem();
 
         private ToolStripMenuItem mnuMirror = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuForegroundColor = new ToolStripMenuItem();
 
         private ToolStripMenuItem mnuTimebase = new ToolStripMenuItem();
 
@@ -472,8 +473,12 @@ namespace Kinovea.ScreenManager
             mnuMirror.Image = Properties.Resources.shape_mirror;
             mnuMirror.Checked = false;
             mnuMirror.ShortcutKeys = Keys.Control | Keys.M;
-            mnuMirror.Click += new EventHandler(mnuMirrorOnClick);
+            mnuMirror.Click += mnuMirror_Click;
             mnuMirror.MergeAction = MergeAction.Append;
+
+            mnuForegroundColor.Image = Properties.Resources.shading;
+            mnuForegroundColor.Click += mnuForegroundColor_Click;
+            mnuForegroundColor.MergeAction = MergeAction.Append;
 
             ConfigureVideoFilterMenus(null);
 
@@ -482,8 +487,9 @@ namespace Kinovea.ScreenManager
             mnuCatchImage.DropDownItems.Add(mnuMirror);
             mnuCatchImage.DropDownItems.Add(mnuDemosaic);
             mnuCatchImage.DropDownItems.Add(mnuDeinterlace);
+            mnuCatchImage.DropDownItems.Add(mnuForegroundColor);
             //mnuCatchImage.DropDownItems.Add(new ToolStripSeparator());
-            
+
             // Temporary hack for including filters sub menus until a full plugin system is in place.
             // We just check on their type. Ultimately each plugin will have a category or a submenu property.
             //foreach(ToolStripMenuItem m in filterMenus)
@@ -491,7 +497,7 @@ namespace Kinovea.ScreenManager
             //    if (m.Tag is AdjustmentFilter)
             //        mnuCatchImage.DropDownItems.Add(m);
             //}
-            
+
             #endregion
 
             #region Video
@@ -1069,9 +1075,10 @@ namespace Kinovea.ScreenManager
 
                     // Image
                     mnuDeinterlace.Enabled = player.FrameServer.VideoReader.CanChangeDeinterlacing;
-                    mnuMirror.Enabled = true;
                     mnuDeinterlace.Checked = player.Deinterlaced;
+                    mnuMirror.Enabled = true;
                     mnuMirror.Checked = player.Mirrored;
+                    mnuForegroundColor.Enabled = true;
                     if (!player.IsSingleFrame)
                     {
                         ConfigureImageFormatMenus(player);
@@ -1123,9 +1130,10 @@ namespace Kinovea.ScreenManager
 
                     // Image
                     mnuDeinterlace.Enabled = false;
-                    mnuMirror.Enabled = true;
                     mnuDeinterlace.Checked = false;
+                    mnuMirror.Enabled = true;
                     mnuMirror.Checked = captureScreen.Mirrored;
+                    mnuForegroundColor.Enabled = false;
                     ConfigureImageFormatMenus(captureScreen);
                     ConfigureImageRotationMenus(captureScreen);
                     ConfigureImageDemosaicingMenus(captureScreen);
@@ -1177,9 +1185,10 @@ namespace Kinovea.ScreenManager
 
                 // Image
                 mnuDeinterlace.Enabled = false;
-                mnuMirror.Enabled = false;
                 mnuDeinterlace.Checked = false;
+                mnuMirror.Enabled = false;
                 mnuMirror.Checked = false;
+                mnuForegroundColor.Enabled = false;
                 ConfigureImageFormatMenus(null);
                 ConfigureImageRotationMenus(null);
                 ConfigureImageDemosaicingMenus(null);
@@ -1497,6 +1506,7 @@ namespace Kinovea.ScreenManager
             mnuRotation270.Text = ScreenManagerLang.mnuRotation270;
             mnuRotation.Text = ScreenManagerLang.mnuRotation;
             mnuMirror.Text = ScreenManagerLang.mnuMirror;
+            mnuForegroundColor.Text = "Opacity";
             RefreshCultureMenuFilters();
 
             // Video
@@ -2232,7 +2242,7 @@ namespace Kinovea.ScreenManager
             mnuRotation180.Checked = rot == ImageRotation.Rotate180;
             mnuRotation270.Checked = rot == ImageRotation.Rotate270;
         }
-        private void mnuMirrorOnClick(object sender, EventArgs e)
+        private void mnuMirror_Click(object sender, EventArgs e)
         {
             if (activeScreen == null)
                 return;
@@ -2240,6 +2250,27 @@ namespace Kinovea.ScreenManager
             mnuMirror.Checked = !mnuMirror.Checked;
             activeScreen.Mirrored = mnuMirror.Checked;
         }
+
+        private void mnuForegroundColor_Click(object sender, EventArgs e)
+        {
+            // TODO: implement for both Playback and Capture screen.
+            PlayerScreen player = activeScreen as PlayerScreen;
+            if (player != null)
+            {
+                // Launch Opacity dialog.
+                Color memo = player.ForegroundColor;
+                FormForegroundColor ffc = new FormForegroundColor(player.FrameServer.Metadata, player.view);
+                ffc.StartPosition = FormStartPosition.CenterScreen;
+                ffc.ShowDialog();
+                if (ffc.DialogResult != DialogResult.OK)
+                {
+                    player.ForegroundColor = memo;
+                }
+
+                ffc.Dispose();
+            }
+        }
+
         private void mnuImportImage_OnClick(object sender, EventArgs e)
         {
             if(activeScreen == null || !activeScreen.CapabilityDrawings)

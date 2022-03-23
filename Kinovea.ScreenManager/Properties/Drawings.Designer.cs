@@ -353,6 +353,16 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap filled {
+            get {
+                object obj = ResourceManager.GetObject("filled", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap flask {
             get {
                 object obj = ResourceManager.GetObject("flask", resourceCulture);
