@@ -9,6 +9,7 @@ using System.Xml;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Video;
 using Kinovea.Services;
+using System.IO;
 
 namespace Kinovea.ScreenManager
 {
@@ -29,12 +30,11 @@ namespace Kinovea.ScreenManager
             {
                 // Just in time localization.
                 mnuConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
+                mnuImportMask.Text = "Import mask";
                 mnuRun.Text = "Run camera motion estimation";
                 return contextMenu;
             }
         }
-        
-
         public bool CanExportVideo
         {
             get { return false; }
@@ -55,6 +55,7 @@ namespace Kinovea.ScreenManager
         private Size frameSize;
         private IWorkingZoneFramesContainer framesContainer;
         private Metadata metadata;
+        private Bitmap mask;
 
         // Computed data
         private Dictionary<long, int> frameIndices = new Dictionary<long, int>();
@@ -69,7 +70,8 @@ namespace Kinovea.ScreenManager
         private List<OpenCvSharp.Mat> backwardTransforms = new List<OpenCvSharp.Mat>();
         // Core parameters
         private CameraMotionParameters parameters = new CameraMotionParameters();
-        private int featuresPerFrame = 500;
+        //private int featuresPerFrame = 500;
+        private int featuresPerFrame = 1000;
         private double ransacReprojThreshold = 1.5;
 
         // Display parameters
@@ -80,6 +82,7 @@ namespace Kinovea.ScreenManager
         // Menu
         private List<ToolStripItem> contextMenu = new List<ToolStripItem>();
         private ToolStripMenuItem mnuConfigure = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuImportMask = new ToolStripMenuItem();
         private ToolStripMenuItem mnuRun = new ToolStripMenuItem();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -91,9 +94,11 @@ namespace Kinovea.ScreenManager
 
             mnuConfigure.Image = Properties.Drawings.configure;
             contextMenu.Add(mnuConfigure);
+            contextMenu.Add(mnuImportMask);
             contextMenu.Add(mnuRun);
 
             mnuConfigure.Click += MnuConfigure_Click;
+            mnuImportMask.Click += MnuImportMask_Click;
             mnuRun.Click += MnuRun_Click;
 
             //parameters = PreferencesManager.PlayerPreferences.CameraMotion;
@@ -116,6 +121,9 @@ namespace Kinovea.ScreenManager
                 if (descriptors != null && descriptors.Count > 0)
                     foreach (var desc in descriptors)
                         desc.Dispose();
+
+                if (mask != null)
+                    mask.Dispose();
             }
         }
         #endregion
@@ -200,12 +208,35 @@ namespace Kinovea.ScreenManager
             
         }
 
+        private void MnuImportMask_Click(object sender, EventArgs e)
+        {
+            // Open image.
+            // Reject image if not of the same size.
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "Import mask";
+            openFileDialog.RestoreDirectory = true;
+            //openFileDialog.Filter = "";
+            //openFileDialog.FilterIndex = 0;
+            if (openFileDialog.ShowDialog() != DialogResult.OK)
+                return;
+
+            string filename = openFileDialog.FileName;
+            if (string.IsNullOrEmpty(filename) || !File.Exists(filename))
+                return;
+
+            if (mask != null)
+                mask.Dispose();
+            
+            mask = new Bitmap(filename);
+
+            openFileDialog.Dispose();
+        }
+
         private void MnuRun_Click(object sender, EventArgs e)
         {
             if (framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count < 1)
                 return;
 
-            // Find and describe features in all images.
             frameIndices.Clear();
             keypoints.Clear();
             descriptors.Clear();
@@ -219,6 +250,16 @@ namespace Kinovea.ScreenManager
 
             var orb = OpenCvSharp.ORB.Create(featuresPerFrame);
 
+            bool hasMask = mask != null;
+            OpenCvSharp.Mat cvMaskGray = null;
+            if (hasMask)
+            {
+                var cvMask = mask == null ? null : OpenCvSharp.Extensions.BitmapConverter.ToMat(mask);
+                cvMaskGray = new OpenCvSharp.Mat();
+                OpenCvSharp.Cv2.CvtColor(cvMask, cvMaskGray, OpenCvSharp.ColorConversionCodes.BGR2GRAY, 0);
+                cvMask.Dispose();
+            }
+            
             // Loop through frames, detect and describe features.
             int frameIndex = 0;
             foreach (var f in framesContainer.Frames)
@@ -228,7 +269,7 @@ namespace Kinovea.ScreenManager
 
                 frameIndices.Add(f.Timestamp, frameIndex);
                 
-                //OpenCvSharp.KeyPoint[] kp = OpenCvSharp.Cv2.FAST(imgGray, 50, true);
+                // Convert image to OpenCV and convert to grayscale.
                 var cvImage = OpenCvSharp.Extensions.BitmapConverter.ToMat(f.Image);
                 var cvImageGray = new OpenCvSharp.Mat();
                 OpenCvSharp.Cv2.CvtColor(cvImage, cvImageGray, OpenCvSharp.ColorConversionCodes.BGR2GRAY, 0);
@@ -236,7 +277,7 @@ namespace Kinovea.ScreenManager
 
                 // Feature detection & description.
                 var desc = new OpenCvSharp.Mat();
-                orb.DetectAndCompute(cvImageGray, null, out var kp, desc);
+                orb.DetectAndCompute(cvImageGray, cvMaskGray, out var kp, desc);
                 
                 keypoints.Add(kp);
                 descriptors.Add(desc);
@@ -247,6 +288,9 @@ namespace Kinovea.ScreenManager
                 frameIndex++;
             }
 
+            if (hasMask)
+                cvMaskGray.Dispose();
+            
             orb.Dispose();
 
             // Match features in consecutive frames.
