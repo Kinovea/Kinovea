@@ -810,4 +810,25 @@
   </data>
   <data name="FormCrashRecovery_Info" xml:space="preserve"><value>Els següents projectes no han estat desats però poden ser recuperats:</value>
   </data>
+  <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
+    <value>Opacitat màxima (%):</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblFading" xml:space="preserve">
+    <value>Duracio d´esvaniment (frames):</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblOpaque" xml:space="preserve">
+    <value>Duració de la visibilitat (frames):</value>
+  </data>
+  <data name="dlgCalibrateLine_CoordinateSystemAlignment" xml:space="preserve">
+    <value>Ajustament del sistema de coordenades:</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisHorizontal" xml:space="preserve">
+    <value>La línia defineix l´eix horizontal</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisVertical" xml:space="preserve">
+    <value>La línia defineix l´eix vertical</value>
+  </data>
+  <data name="dlgCalibrateLine_AxesImage" xml:space="preserve">
+    <value>Alineat amb els eixos de la imatge</value>
+  </data>
 </root>
