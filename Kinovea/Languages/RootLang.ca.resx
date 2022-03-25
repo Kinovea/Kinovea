@@ -84,7 +84,7 @@
   </data>
   <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve"><value>Permetre múltiples instàncies del Kinovea</value>
   </data>
-  <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve"><value>Mostrar fotogrames per segon (fps)</value>
+  <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve"><value>Mostrar fotogrames per segon (fps):</value>
   </data>
   <data name="dlgPreferences_Capture_Left" xml:space="preserve"><value>Esquerra</value>
   </data>
@@ -160,7 +160,7 @@
   </data>
   <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve"><value>Càmeres d’alta velocitat</value>
   </data>
-  <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve"><value>Llindar de la taxa de fotogrames de substitució</value>
+  <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve"><value>Llindar de la taxa de fotogrames de substitució (fps):</value>
   </data>
   <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve"><value>Taxa de fotogrames de substitució (fps):</value>
   </data>
@@ -170,9 +170,9 @@
   </data>
   <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve"><value>Dispositiu d’entrada:</value>
   </data>
-  <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve"><value>Llindar del disparador</value>
+  <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve"><value>Llindar del disparador:</value>
   </data>
-  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve"><value>Aturar l’enregistrament per temps(s)</value>
+  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve"><value>Aturar l’enregistrament per temps(s):</value>
   </data>
   <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve"><value>Ordre post enregistrament:</value>
   </data>
@@ -200,7 +200,7 @@
   </data>
   <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve"><value>Les instàncies tenen les seves pròpies preferències</value>
   </data>
-  <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Format d'imatge per defecte</value>
+  <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Format d'imatge per defecte:</value>
   </data>
   <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Llengua:</value>
   </data>
