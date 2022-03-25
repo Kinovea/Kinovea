@@ -401,10 +401,6 @@ namespace Kinovea.ScreenManager
 
         private void LogHomography(int index1, int index2, OpenCvSharp.Mat homography)
         {
-            //double m00 = homography.At<double>(0, 0);
-            //double m01 = homography.At<double>(0, 1);
-            //double m02 = homography.At<double>(0, 2);
-
             double[] m;
             homography.GetArray<double>(out m);
             string[] m2 = m.Select(v => v.ToString(CultureInfo.InvariantCulture)).ToArray();

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaDrawingTool>
+  <FormatVersion>1.0</FormatVersion>
+  <Id>7d30b20d-c377-4b78-9243-ea7411f004c5</Id>
+  <Name>TimePolyline</Name>
+  <DisplayName>DrawingName_Polyline</DisplayName>
+  <Icon>polyline2</Icon>
+  <DrawingClass>DrawingTimePolyline</DrawingClass>
+  <Attached>true</Attached>
+  <KeepToolAfterDrawingCreation>true</KeepToolAfterDrawingCreation>
+  <KeepToolAfterFrameChange>true</KeepToolAfterFrameChange>
+  <DefaultStyle>
+    <Color Key="color">
+      <Value>255;0;153;0</Value>
+    </Color>
+    <LineSize Key="line size">
+      <Value>2</Value>
+    </LineSize>
+    <LineShape Key="line shape">
+      <Value>Solid</Value>
+    </LineShape>
+    <Arrows Key="arrows">
+      <Value>None</Value>
+    </Arrows>
+    <Toggle Key="curved">
+      <Value>false</Value>
+      <Variant>Curved</Variant>
+    </Toggle>
+  </DefaultStyle>
+</KinoveaDrawingTool>

@@ -315,6 +315,7 @@
     <Compile Include="Measurement\Geometry\SegmentF.cs" />
     <Compile Include="Measurement\Geometry\SVD.cs" />
     <Compile Include="Measurement\Geometry\Vector3.cs" />
+    <Compile Include="Metadata\Drawings\DrawingTimePolyline.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPostureOption.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPosturePolyline.cs" />
     <Compile Include="Metadata\Exporters\ExporterCSV.cs" />

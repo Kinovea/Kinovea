@@ -26,6 +26,9 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// Defines a method to initialize a drawing after it has been created.
+    /// This is for drawing that need to set multiple points on the anchor frame
+    /// for the drawing to make sense, like "line" or "angle".
+    /// Drawings that span multiple frames shouldn't use this.
     /// </summary>
     public interface IInitializable
     {

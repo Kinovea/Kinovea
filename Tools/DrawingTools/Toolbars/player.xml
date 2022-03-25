@@ -34,7 +34,9 @@
     <subentry name="ArrowPolylineDash" />
     <subentry name="ArrowPolylineSquiggly" />
   </entry>
-  <entry name="CrossMark" />
+  <entry name="CrossMark">
+    <subentry name="TimePolyline" />
+  </entry>
   <entry name="Angle">
     <subentry name="Goniometer" />
     <subentry name="AngleToHorizontal" />
