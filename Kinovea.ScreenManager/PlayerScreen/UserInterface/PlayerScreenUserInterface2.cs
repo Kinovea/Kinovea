@@ -896,6 +896,7 @@ namespace Kinovea.ScreenManager
         public void DeactivateVideoFilter()
         {
             videoFilterIsActive = false;
+            StretchSqueezeSurface(true);
             DoInvalidate();
         }
         
@@ -2197,7 +2198,11 @@ namespace Kinovea.ScreenManager
             // Note: do not update decoding scale here, as this function is called during stretching of the rendering surface, 
             // while the decoding size isn't updated. 
             bool scalable = m_FrameServer.VideoReader.CanScaleIndefinitely || m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.PreBuffering;
-            m_viewportManipulator.Manipulate(finished, panelCenter.Size, targetStretch, m_fill, m_FrameServer.ImageTransform.Zoom, m_bEnableCustomDecodingSize, scalable);
+            bool rotatedCanvas = false;
+            if (videoFilterIsActive)
+                rotatedCanvas = m_FrameServer.Metadata.ActiveVideoFilter.RotatedCanvas;
+
+            m_viewportManipulator.Manipulate(finished, panelCenter.Size, targetStretch, m_fill, m_FrameServer.ImageTransform.Zoom, m_bEnableCustomDecodingSize, scalable, rotatedCanvas);
             
             pbSurfaceScreen.Location = m_viewportManipulator.RenderingLocation;
             pbSurfaceScreen.Size = m_viewportManipulator.RenderingSize;
@@ -3109,6 +3114,8 @@ namespace Kinovea.ScreenManager
                     if (m_FrameServer.Metadata.ActiveVideoFilter.CanExportImage)
                         popMenuFilter.Items.Add(mnuExportImage);
 
+                    mnuExitFilter.Text = string.Format("Exit {0}", m_FrameServer.Metadata.ActiveVideoFilter.FriendlyName);
+                    popMenuFilter.Items.Add(mnuExitFilter);
                     popMenuFilter.Items.Add(mnuCloseScreen);
                     panelCenter.ContextMenuStrip = popMenuFilter;
                 }
@@ -3273,11 +3280,6 @@ namespace Kinovea.ScreenManager
 
             if (hasExtraMenus)
                 popMenu.Items.Add(new ToolStripSeparator());
-
-            // Add the exit filter menu.
-            mnuExitFilter.Text = string.Format("Exit: {0}", filter.FriendlyName);
-            popMenu.Items.Add(mnuExitFilter);
-            popMenu.Items.Add(new ToolStripSeparator());
         }
         private void SurfaceScreen_MouseMove(object sender, MouseEventArgs e)
         {

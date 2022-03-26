@@ -54,6 +54,14 @@ namespace Kinovea.ScreenManager
         Bitmap Current { get; }
 
         /// <summary>
+        /// Whether the aspect ratio of the output image is inverted compared to the input images.
+        /// This is useful when the input images are in portrait mode but the output is better in landscape mode.
+        /// The main viewport should take this into account and change the viewport aspect ratio accordingly
+        /// while still providing images in their original aspect ratio.
+        /// </summary>
+        bool RotatedCanvas { get; }
+
+        /// <summary>
         /// Whether this filter is capable of exporting video.
         /// If this is true a "Save video" menu will be shown 
         /// and the `ExportVideo` callback should be implemented.

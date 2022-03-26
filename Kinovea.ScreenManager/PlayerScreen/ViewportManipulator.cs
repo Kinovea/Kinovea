@@ -81,17 +81,17 @@ namespace Kinovea.ScreenManager
         /// - original size, aspectratio size, reference size, 
         /// - container size, zoom factor, stretch factor.
         /// </summary>
-        public void Manipulate(bool finished, Size _containerSize, double _stretchFactor, bool _fillContainer, double _zoomFactor, bool _enableCustomDecodingSize, bool _scalable)
+        public void Manipulate(bool finished, Size _containerSize, double _stretchFactor, bool _fillContainer, double _zoomFactor, bool _enableCustomDecodingSize, bool _scalable, bool rotatedCanvas)
         {
             // One of the constraint has changed, recompute the sizes.
-            bool sideway = reader.Info.ImageRotation == ImageRotation.Rotate90 || reader.Info.ImageRotation == ImageRotation.Rotate270;
-            ComputeRenderingSize(sideway, _containerSize, _stretchFactor, _fillContainer);
+            ComputeRenderingSize(rotatedCanvas, _containerSize, _stretchFactor, _fillContainer);
 
             // If the manipulation is not finished, we are in the process of scaling the rendering surface.
             // During this period the decoding size doesn't change.
             if (!finished)
                 return;
             
+            bool sideway = reader.Info.ImageRotation == ImageRotation.Rotate90 || reader.Info.ImageRotation == ImageRotation.Rotate270;
             ComputeDecodingSize(sideway, _containerSize, _zoomFactor, _enableCustomDecodingSize, _scalable);
 
             // Decoding scale is used to find the final zoom window in the received images.
@@ -109,11 +109,17 @@ namespace Kinovea.ScreenManager
         /// The stretch factor is how much the user want to stretch the image and is based on image corner manipulation. It can go either way of 1.0f.
         /// The stretch factor is independent from the zoom, which is only the magnification inside the image.
         /// </summary>
-        private void ComputeRenderingSize(bool sideway, Size _containerSize, double _stretchFactor, bool _fillContainer)
+        private void ComputeRenderingSize(bool rotatedCanvas, Size _containerSize, double _stretchFactor, bool _fillContainer)
         {
             Size referenceSize = reader.Info.ReferenceSize;
             stretchFactor = _stretchFactor;
             Size stretchedSize = new Size((int)(referenceSize.Width * stretchFactor), (int)(referenceSize.Height * stretchFactor));
+
+            if (rotatedCanvas)
+            {
+                referenceSize = new Size(referenceSize.Height, referenceSize.Width);
+                stretchedSize = new Size(stretchedSize.Height, stretchedSize.Width);
+            }
 
             if (!stretchedSize.FitsIn(_containerSize) || _fillContainer)
             {

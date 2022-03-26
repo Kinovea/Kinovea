@@ -38,9 +38,6 @@ namespace Kinovea.ScreenManager
     /// 
     /// The parameters let the user change the subset of frames selected, the crop dimension,
     /// the number of columns and rows of the final composition, etc.
-    /// 
-    /// The filter is interactive. Changing the timestamp will shift the start time of the frames,
-    /// panning in the viewport will pan inside the tile under the mouse.
     /// </summary>
     public class VideoFilterKinogram : IVideoFilter
     {
@@ -59,13 +56,17 @@ namespace Kinovea.ScreenManager
             {
                 // Just in time localization.
                 mnuConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
+                mnuAutoPositions.Text = "Interpolate positions between first and last";
+                mnuResetPositions.Text = "Reset positions";
                 mnuAutoNumbers.Text = "Frame numbers";
                 mnuGenerateNumbers.Text = "Generate frame numbers";
                 mnuDeleteNumbers.Text = "Delete frame numbers";
-                mnuAutoPositions.Text = "Interpolate positions between first and last";
-                mnuResetPositions.Text = "Reset positions";
                 return contextMenu;
             }
+        }
+        public bool RotatedCanvas 
+        { 
+            get { return rotatedCanvas; }
         }
         public bool CanExportVideo
         {
@@ -88,7 +89,9 @@ namespace Kinovea.ScreenManager
 
         #region members
         private Bitmap bitmap;
-        private Size frameSize;
+        private Size frameSize;     // Size of input images.
+        private Size canvasSize;    // Nominal size of output image, this is the same as frameSize unless the canvas is rotated.
+        private bool rotatedCanvas = false;
         private KinogramParameters parameters = new KinogramParameters();
         private IWorkingZoneFramesContainer framesContainer;
         private Metadata metadata;
@@ -98,11 +101,11 @@ namespace Kinovea.ScreenManager
         private int movingTile = -1;
         private List<ToolStripItem> contextMenu = new List<ToolStripItem>();
         private ToolStripMenuItem mnuConfigure = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuAutoPositions = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuResetPositions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuAutoNumbers = new ToolStripMenuItem();
         private ToolStripMenuItem mnuGenerateNumbers = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDeleteNumbers = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuAutoPositions = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuResetPositions = new ToolStripMenuItem();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -112,25 +115,25 @@ namespace Kinovea.ScreenManager
             this.metadata = metadata;
             
             mnuConfigure.Image = Properties.Drawings.configure;
+            mnuAutoPositions.Image = Properties.Resources.wand;
+            mnuResetPositions.Image = Properties.Resources.bin_empty;
             mnuAutoNumbers.Image = Properties.Drawings.number;
             mnuGenerateNumbers.Image = Properties.Drawings.number;
             mnuDeleteNumbers.Image = Properties.Resources.bin_empty;
-            mnuAutoPositions.Image = Properties.Resources.wand;
-            mnuResetPositions.Image = Properties.Resources.bin_empty;
 
             mnuAutoNumbers.DropDownItems.Add(mnuGenerateNumbers);
             mnuAutoNumbers.DropDownItems.Add(mnuDeleteNumbers);
 
             contextMenu.Add(mnuConfigure);
-            contextMenu.Add(mnuAutoNumbers);
             contextMenu.Add(mnuAutoPositions);
             contextMenu.Add(mnuResetPositions);
+            contextMenu.Add(mnuAutoNumbers);
 
             mnuConfigure.Click += MnuConfigure_Click;
-            mnuGenerateNumbers.Click += MnuAutonumbers_Click;
-            mnuDeleteNumbers.Click += MnuDeleteAutoNumbers_Click;
             mnuAutoPositions.Click += MnuAutoPositions_Click;
             mnuResetPositions.Click += MnuResetPositions_Click;
+            mnuGenerateNumbers.Click += MnuAutonumbers_Click;
+            mnuDeleteNumbers.Click += MnuDeleteAutoNumbers_Click;
 
             parameters = PreferencesManager.PlayerPreferences.Kinogram;
             AfterTileCountChange();
@@ -172,12 +175,14 @@ namespace Kinovea.ScreenManager
 
         public void UpdateSize(Size size)
         {
-            if (bitmap == null || bitmap.Size != size)
+            canvasSize = rotatedCanvas ? new Size(size.Height, size.Width) : size;
+            
+            if (bitmap == null || bitmap.Size != canvasSize)
             {
                 if (bitmap != null)
                     bitmap.Dispose();
 
-                bitmap = new Bitmap(size.Width, size.Height);
+                bitmap = new Bitmap(canvasSize.Width, canvasSize.Height);
             }
 
             Update();
@@ -230,7 +235,7 @@ namespace Kinovea.ScreenManager
             Size cropSize = GetCropSize();
             Size fullSize = new Size(cropSize.Width * cols, cropSize.Height * parameters.Rows);
 
-            Rectangle paintArea = UIHelper.RatioStretch(fullSize, frameSize);
+            Rectangle paintArea = UIHelper.RatioStretch(fullSize, bitmap.Size);
             paintArea = transformer.Transform(paintArea);
             Size tileSize = new Size(paintArea.Width / cols, paintArea.Height / parameters.Rows);
 
@@ -292,8 +297,8 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public Bitmap Export(Size outputSize, long timestamp)
         {
-            Bitmap bitmap = new Bitmap(outputSize.Width, outputSize.Height);
-            Graphics g = Graphics.FromImage(bitmap);
+            Bitmap bmpExport = new Bitmap(outputSize.Width, outputSize.Height);
+            Graphics g = Graphics.FromImage(bmpExport);
             g.PixelOffsetMode = PixelOffsetMode.HighQuality;
             g.CompositingQuality = CompositingQuality.HighQuality;
             g.InterpolationMode = InterpolationMode.HighQualityBilinear;
@@ -302,14 +307,14 @@ namespace Kinovea.ScreenManager
             Paint(g, outputSize);
 
             // Annotations are expressed in the original frames coordinate system.
-            Rectangle fitArea = UIHelper.RatioStretch(outputSize, frameSize);
+            Rectangle fitArea = UIHelper.RatioStretch(outputSize, canvasSize);
             float scale = (float)outputSize.Width / fitArea.Width;
             Point location = new Point((int)(-fitArea.X * scale), (int)(-fitArea.Y * scale));
 
             MetadataRenderer metadataRenderer = new MetadataRenderer(metadata, true);
             metadataRenderer.Render(g, location, scale, timestamp);
 
-            return bitmap;
+            return bmpExport;
         }
 
         /// <summary>
@@ -386,11 +391,10 @@ namespace Kinovea.ScreenManager
         private void MnuAutonumbers_Click(object sender, EventArgs e)
         {
             // Reset the auto-numbers to be into the tiles.
-            Size outputSize = bitmap.Size;
             int cols = (int)Math.Ceiling((float)parameters.TileCount / parameters.Rows);
             Size cropSize = GetCropSize();
             Size fullSize = new Size(cropSize.Width * cols, cropSize.Height * parameters.Rows);
-            Rectangle paintArea = UIHelper.RatioStretch(fullSize, outputSize);
+            Rectangle paintArea = UIHelper.RatioStretch(fullSize, canvasSize);
             Size tileSize = new Size(paintArea.Width / cols, paintArea.Height / parameters.Rows);
             int tileCount = Math.Min(framesContainer.Frames.Count, parameters.TileCount);
             
@@ -514,7 +518,7 @@ namespace Kinovea.ScreenManager
             g.InterpolationMode = InterpolationMode.Bilinear;
             g.SmoothingMode = SmoothingMode.HighSpeed;
 
-            Paint(g, bitmap.Size, tile);
+            Paint(g, canvasSize, tile);
         }
 
         /// <summary>
@@ -622,7 +626,7 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Get the final crop size, taking the original frame size into account.
+        /// Get the final crop size, clamped to the original frame size.
         /// </summary>
         private Size GetCropSize()
         {
@@ -651,10 +655,9 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private int GetTile(PointF p)
         {
-            Size size = bitmap.Size;
             int cols = (int)Math.Ceiling((float)parameters.TileCount / parameters.Rows);
             Size fullSize = new Size(parameters.CropSize.Width * cols, parameters.CropSize.Height * parameters.Rows);
-            Rectangle paintArea = UIHelper.RatioStretch(fullSize, size);
+            Rectangle paintArea = UIHelper.RatioStretch(fullSize, canvasSize);
             Size tileSize = new Size(paintArea.Width / cols, paintArea.Height / parameters.Rows);
 
             // Express the coordinate in the paint area.
