@@ -50,6 +50,7 @@ namespace Kinovea.Root
 		{
       this.tabSubPages = new System.Windows.Forms.TabControl();
       this.tabGeneral = new System.Windows.Forms.TabPage();
+      this.chkEnableHSDS = new System.Windows.Forms.CheckBox();
       this.chkCustomToolsDebug = new System.Windows.Forms.CheckBox();
       this.chkEnableFiltering = new System.Windows.Forms.CheckBox();
       this.chkDrawOnPlay = new System.Windows.Forms.CheckBox();
@@ -74,7 +75,9 @@ namespace Kinovea.Root
       this.label4 = new System.Windows.Forms.Label();
       this.tbBlockWidth = new System.Windows.Forms.TextBox();
       this.lblObjectWindow = new System.Windows.Forms.Label();
-      this.chkEnableHSDS = new System.Windows.Forms.CheckBox();
+      this.tabExport = new System.Windows.Forms.TabPage();
+      this.cmbDelimiter = new System.Windows.Forms.ComboBox();
+      this.lblCSVDelimiter = new System.Windows.Forms.Label();
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
       this.tabPersistence.SuspendLayout();
@@ -82,6 +85,7 @@ namespace Kinovea.Root
       ((System.ComponentModel.ISupportInitialize)(this.nudOpaque)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudMax)).BeginInit();
       this.tabTracking.SuspendLayout();
+      this.tabExport.SuspendLayout();
       this.SuspendLayout();
       // 
       // tabSubPages
@@ -89,6 +93,7 @@ namespace Kinovea.Root
       this.tabSubPages.Controls.Add(this.tabGeneral);
       this.tabSubPages.Controls.Add(this.tabPersistence);
       this.tabSubPages.Controls.Add(this.tabTracking);
+      this.tabSubPages.Controls.Add(this.tabExport);
       this.tabSubPages.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tabSubPages.Location = new System.Drawing.Point(0, 0);
       this.tabSubPages.Name = "tabSubPages";
@@ -109,6 +114,17 @@ namespace Kinovea.Root
       this.tabGeneral.TabIndex = 0;
       this.tabGeneral.Text = "General";
       this.tabGeneral.UseVisualStyleBackColor = true;
+      // 
+      // chkEnableHSDS
+      // 
+      this.chkEnableHSDS.AutoSize = true;
+      this.chkEnableHSDS.Location = new System.Drawing.Point(27, 94);
+      this.chkEnableHSDS.Name = "chkEnableHSDS";
+      this.chkEnableHSDS.Size = new System.Drawing.Size(285, 17);
+      this.chkEnableHSDS.TabIndex = 55;
+      this.chkEnableHSDS.Text = "Enable smoothing of derivatives for high speed footage";
+      this.chkEnableHSDS.UseVisualStyleBackColor = true;
+      this.chkEnableHSDS.CheckedChanged += new System.EventHandler(this.chkEnableHSDS_CheckedChanged);
       // 
       // chkCustomToolsDebug
       // 
@@ -374,16 +390,34 @@ namespace Kinovea.Root
       this.lblObjectWindow.TabIndex = 56;
       this.lblObjectWindow.Text = "Object window :";
       // 
-      // chkEnableHSDS
+      // tabExport
       // 
-      this.chkEnableHSDS.AutoSize = true;
-      this.chkEnableHSDS.Location = new System.Drawing.Point(27, 94);
-      this.chkEnableHSDS.Name = "chkEnableHSDS";
-      this.chkEnableHSDS.Size = new System.Drawing.Size(285, 17);
-      this.chkEnableHSDS.TabIndex = 55;
-      this.chkEnableHSDS.Text = "Enable smoothing of derivatives for high speed footage";
-      this.chkEnableHSDS.UseVisualStyleBackColor = true;
-      this.chkEnableHSDS.CheckedChanged += new System.EventHandler(this.chkEnableHSDS_CheckedChanged);
+      this.tabExport.Controls.Add(this.cmbDelimiter);
+      this.tabExport.Controls.Add(this.lblCSVDelimiter);
+      this.tabExport.Location = new System.Drawing.Point(4, 22);
+      this.tabExport.Name = "tabExport";
+      this.tabExport.Padding = new System.Windows.Forms.Padding(3);
+      this.tabExport.Size = new System.Drawing.Size(482, 296);
+      this.tabExport.TabIndex = 3;
+      this.tabExport.Text = "Export";
+      this.tabExport.UseVisualStyleBackColor = true;
+      // 
+      // cmbDelimiter
+      // 
+      this.cmbDelimiter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cmbDelimiter.Location = new System.Drawing.Point(300, 36);
+      this.cmbDelimiter.Name = "cmbDelimiter";
+      this.cmbDelimiter.Size = new System.Drawing.Size(116, 21);
+      this.cmbDelimiter.TabIndex = 67;
+      // 
+      // lblCSVDelimiter
+      // 
+      this.lblCSVDelimiter.AutoSize = true;
+      this.lblCSVDelimiter.Location = new System.Drawing.Point(20, 40);
+      this.lblCSVDelimiter.Name = "lblCSVDelimiter";
+      this.lblCSVDelimiter.Size = new System.Drawing.Size(107, 13);
+      this.lblCSVDelimiter.TabIndex = 66;
+      this.lblCSVDelimiter.Text = "CSV Decimal symbol:";
       // 
       // PreferencePanelDrawings
       // 
@@ -402,6 +436,8 @@ namespace Kinovea.Root
       ((System.ComponentModel.ISupportInitialize)(this.nudMax)).EndInit();
       this.tabTracking.ResumeLayout(false);
       this.tabTracking.PerformLayout();
+      this.tabExport.ResumeLayout(false);
+      this.tabExport.PerformLayout();
       this.ResumeLayout(false);
 
 		}
@@ -432,5 +468,8 @@ namespace Kinovea.Root
         private System.Windows.Forms.Label lblFading;
         private System.Windows.Forms.Label lblMax;
         private System.Windows.Forms.CheckBox chkEnableHSDS;
+        private System.Windows.Forms.TabPage tabExport;
+        private System.Windows.Forms.ComboBox cmbDelimiter;
+        private System.Windows.Forms.Label lblCSVDelimiter;
     }
 }

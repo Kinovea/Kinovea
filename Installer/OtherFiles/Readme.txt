@@ -41,6 +41,7 @@ Changelog:
 0.9.6 - TBD
     Added - Kinogram mode to replace the Overview mode.
     Added - Data export to raw JSON files.
+    Added - Data export to raw CSV files.
     Improved - General: Save and restore the working zone bounds as part of the KVA file.
     Improved - General: Save and restore all image options (aspect, rotation, demosaicing, deinterlacing).
     Improved - General: Save keyframes even if they are outside the working zone.

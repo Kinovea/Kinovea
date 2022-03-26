@@ -29,6 +29,7 @@ using Kinovea.ScreenManager;
 using Kinovea.Services;
 using System.Collections.Generic;
 using Kinovea.ScreenManager.Languages;
+using System.Globalization;
 
 namespace Kinovea.Root
 {
@@ -62,6 +63,7 @@ namespace Kinovea.Root
         private bool enableHighSpeedDerivativesSmoothing;
         private bool enableCustomToolsDebug;
         private TrackingProfile trackingProfile;
+        private CSVDecimalSeparator csvDecimalSeparator;
         #endregion
         
         #region Construction & Initialization
@@ -98,12 +100,14 @@ namespace Kinovea.Root
             enableCustomToolsDebug = PreferencesManager.PlayerPreferences.EnableCustomToolsDebugMode;
             defaultFading = new InfosFading(0, 0);
             trackingProfile = PreferencesManager.PlayerPreferences.TrackingProfile;
+            csvDecimalSeparator = PreferencesManager.PlayerPreferences.CSVDecimalSeparator;
         }
         private void InitPage()
         {
             InitPageGeneral();
             InitPageOpacity();
             InitPageTracking();
+            InitPageExport();
         }
         private void InitPageGeneral()
         {
@@ -151,6 +155,30 @@ namespace Kinovea.Root
             tbBlockHeight.Text = trackingProfile.BlockWindow.Height.ToString();
             tbSearchWidth.Text = trackingProfile.SearchWindow.Width.ToString();
             tbSearchHeight.Text = trackingProfile.SearchWindow.Height.ToString();
+        }
+        private void InitPageExport()
+        {
+            tabExport.Text = "Export";
+            lblCSVDelimiter.Text = "CSV export decimal separator:";
+
+            string systemDelimiter = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+            string systemDelimiterText = systemDelimiter;
+            switch (systemDelimiter)
+            {
+                case ".":
+                    systemDelimiterText = "Point";
+                    break;
+                case ",":
+                    systemDelimiterText = "Comma";
+                    break;
+            }
+            
+            cmbDelimiter.Items.Add(string.Format("System ({0})", systemDelimiterText));
+            cmbDelimiter.Items.Add("Point");
+            cmbDelimiter.Items.Add("Comma");
+            int separator = (int)csvDecimalSeparator;
+            cmbDelimiter.SelectedIndex = separator < cmbDelimiter.Items.Count ? separator : 0;
+
         }
         #endregion
 
@@ -256,8 +284,15 @@ namespace Kinovea.Root
             trackingProfile.SearchWindowUnit = (TrackerParameterUnit)cmbSearchWindowUnit.SelectedIndex;
         }
         #endregion
+
+        #region Export
+        private void cmbDelimiter_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            csvDecimalSeparator = (CSVDecimalSeparator)cmbDelimiter.SelectedIndex;
+        }
         #endregion
-        
+        #endregion
+
         public void CommitChanges()
         {
             PreferencesManager.PlayerPreferences.DrawOnPlay = drawOnPlay;
@@ -266,6 +301,7 @@ namespace Kinovea.Root
             PreferencesManager.PlayerPreferences.EnableCustomToolsDebugMode = enableCustomToolsDebug;
             PreferencesManager.PlayerPreferences.DefaultFading.FromInfosFading(defaultFading);
             PreferencesManager.PlayerPreferences.TrackingProfile = trackingProfile;
+            PreferencesManager.PlayerPreferences.CSVDecimalSeparator = csvDecimalSeparator;
         }
     }
 }
