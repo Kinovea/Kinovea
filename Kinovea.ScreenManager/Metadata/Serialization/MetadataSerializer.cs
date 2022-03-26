@@ -344,6 +344,9 @@ namespace Kinovea.ScreenManager
                 }
             }
 
+            if (IsSameContext())
+                metadata.TimeOrigin = inputTimeOrigin;
+
             r.ReadEndElement();
         }
         private void ParseKeyframes(XmlReader r)
