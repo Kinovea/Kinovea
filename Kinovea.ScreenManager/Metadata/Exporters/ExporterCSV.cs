@@ -1,39 +1,32 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 
 namespace Kinovea.ScreenManager
 {
     public class ExporterCSV
     {
-        private static string separator = ",";
-        private static string quote = "\"";
-        private static string escape = "\"\"";
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// Exports the time series to CSV into a single table.
         /// Everything is indexed to a single time column.
         /// Each object exports its points, each point exports its X and Y value.
-        /// 
-        /// Export format (compliant with RFC 4180):
-        /// - Always use comma as the list separator, even in countries where the comma is the decimal separator.
-        /// - Each field is enclosed in double quotes.
-        /// - A double quote inside a field is escaped by another double quote preceding it.
-        /// - Use the decimal separator of the current culture.
-        /// - We do export numbers with comma as decimal separator if the user's system is configured this way.
-        /// - Empty fields do not use the double quotes.
-        /// - Records are separated by CRLF.
         ///
         /// Examples output:
-        /// - "1.0", "2.0", "3.0",,,"6.0".
-        /// - "1,0", "2,0", "3,0",,,"6,0".
+        /// - "1.0","2.0","3.0",,,"6.0"
+        /// - "1,0";"2,0";"3,0";;;"6,0"
         /// </summary>
         public void Export(string path, MeasuredData md)
         {
             List<string> csv = new List<string>();
-
-            csv.Add(WriteHeaders(md));
+            
+            NumberFormatInfo nfi = CSVHelper.GetCSVNFI();
+            string listSeparator = CSVHelper.GetListSeparator(nfi);
+            
+            csv.Add(WriteHeaders(md, listSeparator));
 
             // Consolidate all the data in a single table indexed by global time.
             SortedDictionary<float, List<float>> points = new SortedDictionary<float, List<float>>();
@@ -70,60 +63,33 @@ namespace Kinovea.ScreenManager
 
                     col += 2;
                 }
-
             }
 
             // Project the table to CSV cells.
-            foreach (var valueList in points.Values)
+            foreach (var p in points)
             {
-                List<string> row = new List<string>();
-                foreach (var value in valueList)
-                {
-                    row.Add(WriteCell(value));
-                }
-
-                csv.Add(string.Join(separator, row.ToArray()));
+                IEnumerable<string> row = p.Value.Select(v => CSVHelper.WriteCell(v, nfi));
+                csv.Add(CSVHelper.MakeRow(row, listSeparator));
             }
 
             if (csv.Count > 1)
                 File.WriteAllLines(path, csv);
         }
 
-        private string WriteHeaders(MeasuredData md)
+        private string WriteHeaders(MeasuredData md, string listSeparator)
         {
             var headers = new List<string>();
-            headers.Add(WriteCell("Time"));
+            headers.Add(CSVHelper.WriteCell("Time"));
             foreach (var series in md.Timeseries)
             {
                 foreach (var key in series.Data.Keys)
                 {
-                    headers.Add(WriteCell(series.Name + "/" + key + "/X"));
-                    headers.Add(WriteCell(series.Name + "/" + key + "/Y"));
+                    headers.Add(CSVHelper.WriteCell(series.Name + "/" + key + "/X"));
+                    headers.Add(CSVHelper.WriteCell(series.Name + "/" + key + "/Y"));
                 }
             }
 
-            return string.Join(separator, headers.ToArray());
-        }
-
-        
-        /// <summary>
-        /// Write a string value.
-        /// </summary>
-        private string WriteCell(string value)
-        {
-            value = value?.Replace(quote, escape);
-            return quote + value + quote;
-        }
-
-        /// <summary>
-        /// Write a numerical value using the current culture.
-        /// </summary>
-        private string WriteCell(float value)
-        {
-            if (float.IsNaN(value))
-                return "";
-
-            return WriteCell(value.ToString());
+            return CSVHelper.MakeRow(headers, listSeparator);
         }
     }
 }

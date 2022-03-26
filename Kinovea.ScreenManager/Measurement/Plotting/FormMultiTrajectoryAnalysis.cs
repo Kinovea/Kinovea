@@ -498,14 +498,8 @@ namespace Kinovea.ScreenManager
             if (plotView.Model == null)
                 return;
 
-            List<string> lines = GetCSV();
-
-            StringBuilder b = new StringBuilder();
-            foreach (string line in lines)
-                b.AppendLine(line);
-
-            string text = b.ToString();
-            Clipboard.SetText(text);
+            List<string> csv = GetCSV();
+            CSVHelper.CopyToClipboard(csv);
         }
 
         private void btnExportData_Click(object sender, EventArgs e)
@@ -522,23 +516,20 @@ namespace Kinovea.ScreenManager
             if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))
                 return;
 
-            List<string> lines = GetCSV();
-
-            using (StreamWriter w = File.CreateText(saveFileDialog.FileName))
-            {
-                foreach (string line in lines)
-                    w.WriteLine(line);
-            }
+            List<string> csv = GetCSV();
+            if (csv.Count > 1)
+                File.WriteAllLines(saveFileDialog.FileName, csv);
         }
 
         private List<string> GetCSV()
         {
             List<string> csv = new List<string>();
-            string separator = CultureInfo.CurrentCulture.TextInfo.ListSeparator;
+            NumberFormatInfo nfi = CSVHelper.GetCSVNFI();
+            string listSeparator = CSVHelper.GetListSeparator(nfi);
 
             // Header.
             List<string> headers = new List<string>();
-            headers.Add(plotView.Model.Axes[0].Title);
+            headers.Add(CSVHelper.WriteCell(plotView.Model.Axes[0].Title));
             
             foreach (var serie in plotView.Model.Series)
             {
@@ -546,11 +537,10 @@ namespace Kinovea.ScreenManager
                 if (s == null)
                     continue;
 
-                headers.Add(s.Title);
+                headers.Add(CSVHelper.WriteCell(s.Title));
             }
 
-            string header = string.Join(separator, headers.ToArray());
-            csv.Add(header);
+            csv.Add(CSVHelper.MakeRow(headers, listSeparator));
 
             // Values.
             TimeModel timeModel = (TimeModel)cmbTimeModel.SelectedIndex;
@@ -587,12 +577,11 @@ namespace Kinovea.ScreenManager
                 }
             }
 
-            // Project to strings.
+            // Project the table to CSV cells.
             foreach (var p in points)
             {
-                string[] values = p.Value.Select(v => double.IsNaN(v) ? "" : v.ToString()).ToArray();
-                string line = string.Join(separator, values);
-                csv.Add(line);
+                IEnumerable<string> row = p.Value.Select(v => CSVHelper.WriteCell((float)v, nfi));
+                csv.Add(CSVHelper.MakeRow(row, listSeparator));
             }
 
             return csv;

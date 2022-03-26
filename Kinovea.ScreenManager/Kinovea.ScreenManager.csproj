@@ -299,6 +299,7 @@
     <Compile Include="Measurement\Geometry\Vector3.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPostureOption.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPosturePolyline.cs" />
+    <Compile Include="Metadata\Exporters\CSVHelper.cs" />
     <Compile Include="Metadata\Exporters\ExporterCSV.cs" />
     <Compile Include="Metadata\Exporters\ExporterJSON.cs" />
     <Compile Include="Metadata\Exporters\ExporterXSLX.cs" />

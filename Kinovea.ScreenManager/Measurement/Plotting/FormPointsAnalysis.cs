@@ -209,39 +209,44 @@ namespace Kinovea.ScreenManager
             if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))
                 return;
 
-            string separator = CultureInfo.CurrentCulture.TextInfo.ListSeparator;
-
-            using (StreamWriter w = File.CreateText(saveFileDialog.FileName))
-            {
-                string unit = UnitHelper.LengthAbbreviation(metadata.CalibrationHelper.LengthUnit);
-                w.WriteLine(string.Format("t (ms){0}x ({1}){0}y ({1})", separator, unit));
-
-                foreach (TimedPoint point in points)
-                {
-                    string time = metadata.TimeCodeBuilder(point.T, TimeType.UserOrigin, TimecodeFormat.Milliseconds, false);
-                    PointF p = metadata.CalibrationHelper.GetPointAtTime(point.Point, point.T);
-                    w.WriteLine(string.Format("{0}{3}{1}{3}{2}", time, p.X, p.Y, separator));
-                }
-            }
+            List<string> csv = GetCSV();
+            if (csv.Count > 1)
+                File.WriteAllLines(saveFileDialog.FileName, csv);
         }
 
         private void btnDataCopy_Click(object sender, EventArgs e)
         {
-            StringBuilder b = new StringBuilder();
+            List<string> csv = GetCSV();
+            CSVHelper.CopyToClipboard(csv);
+        }
 
-            string unit = UnitHelper.LengthAbbreviation(metadata.CalibrationHelper.LengthUnit);
-            string separator = CultureInfo.CurrentCulture.TextInfo.ListSeparator;
-            b.AppendLine(string.Format("t (ms){0}x ({1}){0}y ({1})", separator, unit));
+        private List<string> GetCSV()
+        {
+            List<string> csv = new List<string>();
+            NumberFormatInfo nfi = CSVHelper.GetCSVNFI();
+            string listSeparator = CSVHelper.GetListSeparator(nfi);
+            string lengthUnit = UnitHelper.LengthAbbreviation(metadata.CalibrationHelper.LengthUnit);
+            string timeUnit = UnitHelper.TimeAbbreviation(PreferencesManager.PlayerPreferences.TimecodeFormat);
+
+            List<string> headers = new List<string>();
+            headers.Add(CSVHelper.WriteCell(string.Format("Time ({0})", timeUnit)));
+            headers.Add(CSVHelper.WriteCell(string.Format("X ({0})", lengthUnit)));
+            headers.Add(CSVHelper.WriteCell(string.Format("Y ({0})", lengthUnit)));
+            csv.Add(CSVHelper.MakeRow(headers, listSeparator));
 
             foreach (TimedPoint point in points)
             {
-                string time = metadata.TimeCodeBuilder(point.T, TimeType.UserOrigin, TimecodeFormat.Milliseconds, false);
+                float time = metadata.GetNumericalTime(point.T, TimeType.UserOrigin);
                 PointF p = metadata.CalibrationHelper.GetPointAtTime(point.Point, point.T);
-                b.AppendLine(string.Format("{0}{3}{1}{3}{2}", time, p.X, p.Y, separator));
+
+                List<string> row = new List<string>();
+                row.Add(CSVHelper.WriteCell(time, nfi));
+                row.Add(CSVHelper.WriteCell(p.X, nfi));
+                row.Add(CSVHelper.WriteCell(p.Y, nfi));
+                csv.Add(CSVHelper.MakeRow(row, listSeparator));
             }
 
-            string text = b.ToString();
-            Clipboard.SetText(text);
+            return csv;
         }
 
         private void cbCalibrationPlane_CheckedChanged(object sender, EventArgs e)

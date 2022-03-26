@@ -78,6 +78,11 @@ namespace Kinovea.Services
             get { return aspectRatio; }
             set { aspectRatio = value; }
         }
+        public CSVDecimalSeparator CSVDecimalSeparator
+        {
+            get { return csvDecimalSeparator; }
+            set { csvDecimalSeparator = value; }
+        }
         public bool DeinterlaceByDefault
         {
             get { return deinterlaceByDefault; }
@@ -189,6 +194,7 @@ namespace Kinovea.Services
         private AngularAccelerationUnit angularAccelerationUnit = AngularAccelerationUnit.DegreesPerSecondSquared;
         private string customLengthUnit = "";
         private string customLengthAbbreviation = "";
+        private CSVDecimalSeparator csvDecimalSeparator = CSVDecimalSeparator.System;
         private ImageAspectRatio aspectRatio = ImageAspectRatio.Auto;
         private bool deinterlaceByDefault;
         private bool interactiveFrameTracker = true;
@@ -227,7 +233,8 @@ namespace Kinovea.Services
             writer.WriteElementString("AngularVelocityUnit", angularVelocityUnit.ToString());
             writer.WriteElementString("AngularAccelerationUnit", angularAccelerationUnit.ToString());
             writer.WriteElementString("CustomLengthUnit", customLengthUnit);
-            writer.WriteElementString("CustomLengthAbbreviation", customLengthAbbreviation); 
+            writer.WriteElementString("CustomLengthAbbreviation", customLengthAbbreviation);
+            writer.WriteElementString("CSVDecimalSeparator", csvDecimalSeparator.ToString());
             writer.WriteElementString("AspectRatio", aspectRatio.ToString());
             writer.WriteElementString("DeinterlaceByDefault", deinterlaceByDefault ? "true" : "false");
             writer.WriteElementString("InteractiveFrameTracker", interactiveFrameTracker ? "true" : "false");
@@ -307,6 +314,9 @@ namespace Kinovea.Services
                         break;
                     case "CustomLengthAbbreviation":
                         customLengthAbbreviation = reader.ReadElementContentAsString();
+                        break;
+                    case "CSVDecimalSeparator":
+                        csvDecimalSeparator = (CSVDecimalSeparator)Enum.Parse(typeof(CSVDecimalSeparator), reader.ReadElementContentAsString());
                         break;
                     case "AspectRatio":
                         aspectRatio = (ImageAspectRatio) Enum.Parse(typeof(ImageAspectRatio), reader.ReadElementContentAsString());
