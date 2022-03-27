@@ -409,6 +409,7 @@ namespace Kinovea.Root
       this.cmbDelimiter.Name = "cmbDelimiter";
       this.cmbDelimiter.Size = new System.Drawing.Size(116, 21);
       this.cmbDelimiter.TabIndex = 67;
+      this.cmbDelimiter.SelectedIndexChanged += new System.EventHandler(this.cmbDelimiter_SelectedIndexChanged);
       // 
       // lblCSVDelimiter
       // 
