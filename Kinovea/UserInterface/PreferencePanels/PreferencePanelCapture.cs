@@ -55,7 +55,14 @@ namespace Kinovea.Root
         #region Members
         private string description;
         private Bitmap icon;
-        private List<PreferenceTab> tabs = new List<PreferenceTab> { PreferenceTab.Capture_General, PreferenceTab.Capture_Memory, PreferenceTab.Capture_Recording, PreferenceTab.Capture_ImageNaming, PreferenceTab.Capture_VideoNaming, PreferenceTab.Capture_Automation};
+        private List<PreferenceTab> tabs = new List<PreferenceTab> { 
+            PreferenceTab.Capture_General, 
+            PreferenceTab.Capture_Memory, 
+            PreferenceTab.Capture_Recording, 
+            PreferenceTab.Capture_ImageNaming, 
+            PreferenceTab.Capture_VideoNaming, 
+            PreferenceTab.Capture_Automation
+        };
         private CapturePathConfiguration capturePathConfiguration = new CapturePathConfiguration();
         private Dictionary<CaptureVariable, TextBox> namingTextBoxes = new Dictionary<CaptureVariable, TextBox>();
         private double displaySynchronizationFramerate;
@@ -149,17 +156,17 @@ namespace Kinovea.Root
 
         private void InitPage()
         {
-            InitPageGeneral();
-            InitPageMemory();
-            InitPageRecording();
-            InitPageImageNaming();
-            InitPageVideoNaming();
-            InitPageAutomation();
+            InitTabGeneral();
+            InitTabMemory();
+            InitTabRecording();
+            InitTabImageNaming();
+            InitTabVideoNaming();
+            InitTabAutomation();
 
             InitNamingTextBoxes();
         }
 
-        private void InitPageGeneral()
+        private void InitTabGeneral()
         {
             tabGeneral.Text = RootLang.dlgPreferences_tabGeneral;
 
@@ -189,7 +196,7 @@ namespace Kinovea.Root
             tbCaptureKVA.Text = captureKVA;
         }
 
-        private void InitPageMemory()
+        private void InitTabMemory()
         {
             tabMemory.Text = RootLang.dlgPreferences_Capture_tabMemory;
 
@@ -201,7 +208,7 @@ namespace Kinovea.Root
             UpdateMemoryLabel();
         }
 
-        private void InitPageRecording()
+        private void InitTabRecording()
         {
             tabRecording.Text = RootLang.dlgPreferences_Capture_Recording;
 
@@ -227,7 +234,7 @@ namespace Kinovea.Root
             // Tooltip: Starting at this capture framerate, videos will be created with the replacement framerate in their metadata.
         }
 
-        private void InitPageImageNaming()
+        private void InitTabImageNaming()
         {
             tabImageNaming.Text = RootLang.dlgPreferences_Capture_ImageNaming;
 
@@ -249,7 +256,7 @@ namespace Kinovea.Root
             tbRightImageFile.Text = capturePathConfiguration.RightImageFile;
         }
 
-        private void InitPageVideoNaming()
+        private void InitTabVideoNaming()
         {
             tabVideoNaming.Text = RootLang.dlgPreferences_Capture_VideoNaming;
 
@@ -271,7 +278,7 @@ namespace Kinovea.Root
             tbRightVideoFile.Text = capturePathConfiguration.RightVideoFile;
         }
 
-        private void InitPageAutomation()
+        private void InitTabAutomation()
         {
             tabAutomation.Text = RootLang.dlgPreferences_Capture_tabAutomation; 
             chkEnableAudioTrigger.Text = RootLang.dlgPreferences_Capture_chkEnableAudioTrigger;

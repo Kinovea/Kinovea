@@ -56,13 +56,27 @@ namespace Kinovea.Root
         #region Members
         private string description;
         private Bitmap icon;
-        private List<PreferenceTab> tabs = new List<PreferenceTab> { PreferenceTab.Drawings_General, PreferenceTab.Drawings_Persistence, PreferenceTab.Drawings_Tracking };
+        private List<PreferenceTab> tabs = new List<PreferenceTab> { 
+            PreferenceTab.Drawings_General, 
+            PreferenceTab.Drawings_Opacity, 
+            PreferenceTab.Drawings_Tracking,
+            PreferenceTab.Drawings_Units,
+            PreferenceTab.Drawings_Export,
+        };
         private InfosFading defaultFading;
         private bool drawOnPlay;
         private bool enableFiltering;
         private bool enableHighSpeedDerivativesSmoothing;
         private bool enableCustomToolsDebug;
         private TrackingProfile trackingProfile;
+        private TimecodeFormat timecodeFormat;
+        private SpeedUnit speedUnit;
+        private AccelerationUnit accelerationUnit;
+        private AngleUnit angleUnit;
+        private AngularVelocityUnit angularVelocityUnit;
+        private AngularAccelerationUnit angularAccelerationUnit;
+        private string customLengthUnit;
+        private string customLengthAbbreviation;
         private CSVDecimalSeparator csvDecimalSeparator;
         #endregion
         
@@ -100,16 +114,25 @@ namespace Kinovea.Root
             enableCustomToolsDebug = PreferencesManager.PlayerPreferences.EnableCustomToolsDebugMode;
             defaultFading = new InfosFading(0, 0);
             trackingProfile = PreferencesManager.PlayerPreferences.TrackingProfile;
+            timecodeFormat = PreferencesManager.PlayerPreferences.TimecodeFormat;
+            speedUnit = PreferencesManager.PlayerPreferences.SpeedUnit;
+            accelerationUnit = PreferencesManager.PlayerPreferences.AccelerationUnit;
+            angleUnit = PreferencesManager.PlayerPreferences.AngleUnit;
+            angularVelocityUnit = PreferencesManager.PlayerPreferences.AngularVelocityUnit;
+            angularAccelerationUnit = PreferencesManager.PlayerPreferences.AngularAccelerationUnit;
+            customLengthUnit = PreferencesManager.PlayerPreferences.CustomLengthUnit;
+            customLengthAbbreviation = PreferencesManager.PlayerPreferences.CustomLengthAbbreviation;
             csvDecimalSeparator = PreferencesManager.PlayerPreferences.CSVDecimalSeparator;
         }
         private void InitPage()
         {
-            InitPageGeneral();
-            InitPageOpacity();
-            InitPageTracking();
-            InitPageExport();
+            InitTabGeneral();
+            InitTabOpacity();
+            InitTabTracking();
+            InitTabUnits();
+            InitTabExport();
         }
-        private void InitPageGeneral()
+        private void InitTabGeneral()
         {
             tabGeneral.Text = RootLang.dlgPreferences_tabGeneral;
             chkDrawOnPlay.Text = RootLang.dlgPreferences_Drawings_chkDrawOnPlay;
@@ -122,7 +145,7 @@ namespace Kinovea.Root
             chkEnableHSDS.Checked = enableHighSpeedDerivativesSmoothing;
             chkCustomToolsDebug.Checked = enableCustomToolsDebug;
         }
-        private void InitPageOpacity()
+        private void InitTabOpacity()
         {
             tabPersistence.Text = ScreenManagerLang.Generic_Opacity;
             lblDefaultOpacity.Text = RootLang.dlgPreferences_Drawings_lblDefaultOpacity;
@@ -136,7 +159,7 @@ namespace Kinovea.Root
             nudOpaque.Value = (decimal)defaultFading.OpaqueFrames;
             nudFading.Value = (decimal)defaultFading.FadingFrames;
         }
-        private void InitPageTracking()
+        private void InitTabTracking()
         {
             tabTracking.Text = RootLang.dlgPreferences_Player_Tracking;
             lblDescription.Text = RootLang.dlgPreferences_Player_TrackingDescription;
@@ -156,7 +179,88 @@ namespace Kinovea.Root
             tbSearchWidth.Text = trackingProfile.SearchWindow.Width.ToString();
             tbSearchHeight.Text = trackingProfile.SearchWindow.Height.ToString();
         }
-        private void InitPageExport()
+        private void InitTabUnits()
+        {
+            // enum Kinovea.Services.TimecodeFormat.
+            tabUnits.Text = RootLang.dlgPreferences_Player_tabUnits;
+            lblTimeMarkersFormat.Text = RootLang.dlgPreferences_Player_UnitTime;
+            //cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Classic);
+            cmbTimeCodeFormat.Items.Add("[h:][mm:]ss.xx[x]");
+            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Frames);
+            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Milliseconds);
+            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Microseconds);
+            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_TenThousandthOfHours);
+            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_HundredthOfMinutes);
+            cmbTimeCodeFormat.Items.Add("[h:][mm:]ss.xx[x] + " + RootLang.TimeCodeFormat_Frames);
+#if DEBUG
+            cmbTimeCodeFormat.Items.Add("Normalized");
+            cmbTimeCodeFormat.Items.Add("Timestamps");
+#endif
+
+            // enum Kinovea.Services.SpeedUnit.
+            lblSpeedUnit.Text = RootLang.dlgPreferences_Player_UnitsSpeed;
+            cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_MetersPerSecond, UnitHelper.SpeedAbbreviation(SpeedUnit.MetersPerSecond)));
+            cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_KilometersPerHour, UnitHelper.SpeedAbbreviation(SpeedUnit.KilometersPerHour)));
+            cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_FeetPerSecond, UnitHelper.SpeedAbbreviation(SpeedUnit.FeetPerSecond)));
+            cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_MilesPerHour, UnitHelper.SpeedAbbreviation(SpeedUnit.MilesPerHour)));
+
+            // enum Kinovea.Services.AccelerationUnit.
+            lblAccelerationUnit.Text = RootLang.dlgPreferences_Player_UnitsAcceleration;
+            cmbAccelerationUnit.Items.Add(String.Format(RootLang.dlgPreferences_Player_UnitsMetersPerSecondSquared, UnitHelper.AccelerationAbbreviation(AccelerationUnit.MetersPerSecondSquared)));
+            cmbAccelerationUnit.Items.Add(String.Format(RootLang.dlgPreferences_Player_UnitsFeetPerSecondSquared, UnitHelper.AccelerationAbbreviation(AccelerationUnit.FeetPerSecondSquared)));
+
+            // enum Kinovea.Services.AngleUnit.
+            lblAngleUnit.Text = RootLang.dlgPreferences_Player_UnitsAngle;
+            cmbAngleUnit.Items.Add(String.Format(RootLang.dlgPreferences_Player_UnitsDegrees, UnitHelper.AngleAbbreviation(AngleUnit.Degree)));
+            cmbAngleUnit.Items.Add(String.Format(RootLang.dlgPreferences_Player_UnitsRadians, UnitHelper.AngleAbbreviation(AngleUnit.Radian)));
+
+            // enum Kinovea.Services.AngularVelocityUnit.
+            lblAngularVelocityUnit.Text = RootLang.dlgPreferences_Player_UnitsAngularVelocity;
+            cmbAngularVelocityUnit.Items.Add(String.Format(RootLang.dlgPreferences_Player_UnitsDegreesPerSecond, UnitHelper.AngularVelocityAbbreviation(AngularVelocityUnit.DegreesPerSecond)));
+            cmbAngularVelocityUnit.Items.Add(String.Format(RootLang.dlgPreferences_Player_UnitsRadiansPerSecond, UnitHelper.AngularVelocityAbbreviation(AngularVelocityUnit.RadiansPerSecond)));
+            cmbAngularVelocityUnit.Items.Add(String.Format(RootLang.dlgPreferences_Player_UnitsRevolutionsPerMinute, UnitHelper.AngularVelocityAbbreviation(AngularVelocityUnit.RevolutionsPerMinute)));
+
+            // enum Kinovea.Services.AngularAccelerationUnit.
+            lblAngularAcceleration.Text = RootLang.dlgPreferences_Player_UnitsAngularAcceleration;
+            cmbAngularAccelerationUnit.Items.Add(String.Format(RootLang.dlgPreferences_Player_UnitsDegreesPerSecondSquared, UnitHelper.AngularAccelerationAbbreviation(AngularAccelerationUnit.DegreesPerSecondSquared)));
+            cmbAngularAccelerationUnit.Items.Add(String.Format(RootLang.dlgPreferences_Player_UnitsRadiansPerSecondSquared, UnitHelper.AngularAccelerationAbbreviation(AngularAccelerationUnit.RadiansPerSecondSquared)));
+
+            lblCustomLength.Text = RootLang.dlgPreferences_Player_UnitsCustom;
+
+            SelectCurrentUnits();
+        }
+        private void SelectCurrentUnits()
+        {
+            int time = (int)timecodeFormat;
+            cmbTimeCodeFormat.SelectedIndex = time < cmbTimeCodeFormat.Items.Count ? time : 0;
+
+            int speed = (int)speedUnit;
+            cmbSpeedUnit.SelectedIndex = speed < cmbSpeedUnit.Items.Count ? speed : 0;
+
+            int acceleration = (int)accelerationUnit;
+            cmbAccelerationUnit.SelectedIndex = acceleration < cmbAccelerationUnit.Items.Count ? acceleration : 0;
+
+            int angle = (int)angleUnit;
+            cmbAngleUnit.SelectedIndex = angle < cmbAngleUnit.Items.Count ? angle : 0;
+
+            int angularVelocity = (int)angularVelocityUnit;
+            cmbAngularVelocityUnit.SelectedIndex = angularVelocity < cmbAngularVelocityUnit.Items.Count ? angularVelocity : 0;
+
+            int angularAcceleration = (int)angularAccelerationUnit;
+            cmbAngularAccelerationUnit.SelectedIndex = angularAcceleration < cmbAngularAccelerationUnit.Items.Count ? angularAcceleration : 0;
+
+            if (string.IsNullOrEmpty(customLengthUnit))
+            {
+                tbCustomLengthUnit.Text = RootLang.dlgPreferences_Player_TrackingPercentage;
+                tbCustomLengthAb.Text = "%";
+            }
+            else
+            {
+                tbCustomLengthUnit.Text = customLengthUnit;
+                tbCustomLengthAb.Text = customLengthAbbreviation;
+            }
+        }
+        private void InitTabExport()
         {
             tabExport.Text = "Export";
             lblCSVDelimiter.Text = "CSV export decimal separator:";
@@ -285,6 +389,41 @@ namespace Kinovea.Root
         }
         #endregion
 
+        #region Units
+        private void cmbTimeCodeFormat_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            timecodeFormat = (TimecodeFormat)cmbTimeCodeFormat.SelectedIndex;
+        }
+        private void cmbSpeedUnit_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            speedUnit = (SpeedUnit)cmbSpeedUnit.SelectedIndex;
+        }
+        private void cmbAccelerationUnit_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            accelerationUnit = (AccelerationUnit)cmbAccelerationUnit.SelectedIndex;
+        }
+        private void cmbAngleUnit_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            angleUnit = (AngleUnit)cmbAngleUnit.SelectedIndex;
+        }
+        private void cmbAngularVelocityUnit_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            angularVelocityUnit = (AngularVelocityUnit)cmbAngularVelocityUnit.SelectedIndex;
+        }
+        private void cmbAngularAccelerationUnit_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            angularAccelerationUnit = (AngularAccelerationUnit)cmbAngularAccelerationUnit.SelectedIndex;
+        }
+        private void tbCustomLengthUnit_TextChanged(object sender, EventArgs e)
+        {
+            customLengthUnit = tbCustomLengthUnit.Text;
+        }
+        private void tbCustomLengthAb_TextChanged(object sender, EventArgs e)
+        {
+            customLengthAbbreviation = tbCustomLengthAb.Text;
+        }
+        #endregion
+
         #region Export
         private void cmbDelimiter_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -301,7 +440,25 @@ namespace Kinovea.Root
             PreferencesManager.PlayerPreferences.EnableCustomToolsDebugMode = enableCustomToolsDebug;
             PreferencesManager.PlayerPreferences.DefaultFading.FromInfosFading(defaultFading);
             PreferencesManager.PlayerPreferences.TrackingProfile = trackingProfile;
+            PreferencesManager.PlayerPreferences.TimecodeFormat = timecodeFormat;
+            PreferencesManager.PlayerPreferences.SpeedUnit = speedUnit;
+            PreferencesManager.PlayerPreferences.AccelerationUnit = accelerationUnit;
+            PreferencesManager.PlayerPreferences.AngleUnit = angleUnit;
+            PreferencesManager.PlayerPreferences.AngularVelocityUnit = angularVelocityUnit;
+            PreferencesManager.PlayerPreferences.AngularAccelerationUnit = angularAccelerationUnit;
             PreferencesManager.PlayerPreferences.CSVDecimalSeparator = csvDecimalSeparator;
+
+            // Special case for the custom unit length.
+            if (customLengthUnit == RootLang.dlgPreferences_Player_TrackingPercentage)
+            {
+                PreferencesManager.PlayerPreferences.CustomLengthUnit = "";
+                PreferencesManager.PlayerPreferences.CustomLengthAbbreviation = "";
+            }
+            else
+            {
+                PreferencesManager.PlayerPreferences.CustomLengthUnit = customLengthUnit;
+                PreferencesManager.PlayerPreferences.CustomLengthAbbreviation = customLengthAbbreviation;
+            }
         }
     }
 }

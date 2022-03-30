@@ -15,11 +15,12 @@ namespace Kinovea.Services
 
         Player_General,
         Player_Memory,
-        Player_Units,
 
         Drawings_General,
-        Drawings_Persistence,
+        Drawings_Opacity,
         Drawings_Tracking,
+        Drawings_Units,
+        Drawings_Export,
 
         Capture_General,
         Capture_Memory,
