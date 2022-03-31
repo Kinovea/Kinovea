@@ -28,7 +28,7 @@ namespace Kinovea.ScreenManager
             RectangleF imageBounds = new RectangleF(PointF.Empty, calibrationHelper.ImageSize);
             RectangleF clipWindow = imageBounds;
 
-            CalibrationPlane calibrator = calibrationHelper.CalibrationByPlane_GetCalibrator();
+            CalibratorPlane calibrator = calibrationHelper.CalibrationByPlane_GetCalibrator();
             RectangleF plane = new RectangleF(PointF.Empty, calibrator.Size);
 
             int targetSteps = 15;
@@ -123,7 +123,7 @@ namespace Kinovea.ScreenManager
             return grid;
         }
 
-        private static void CreateVerticalGridLines(CoordinateSystemGrid grid, float start, float step, CalibrationPlane calibrator, RectangleF clipWindow, RectangleF plane, QuadrilateralF extendedPlane, bool orthogonal, bool vanishVisible, PointF vanish)
+        private static void CreateVerticalGridLines(CoordinateSystemGrid grid, float start, float step, CalibratorPlane calibrator, RectangleF clipWindow, RectangleF plane, QuadrilateralF extendedPlane, bool orthogonal, bool vanishVisible, PointF vanish)
         {
             // Progress from origin to the side until grid lines are no longer visible when projected on image.
             float x = start;
@@ -192,7 +192,7 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        private static void CreateHorizontalGridLines(CoordinateSystemGrid grid, float start, float step, CalibrationPlane calibrator, RectangleF clipWindow, RectangleF plane, QuadrilateralF extendedPlane, bool orthogonal, bool vanishVisible, PointF vanish)
+        private static void CreateHorizontalGridLines(CoordinateSystemGrid grid, float start, float step, CalibratorPlane calibrator, RectangleF clipWindow, RectangleF plane, QuadrilateralF extendedPlane, bool orthogonal, bool vanishVisible, PointF vanish)
         {
             // Progress from origin to the side until grid lines are no longer visible when projected on image.
             float y = start;
