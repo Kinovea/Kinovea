@@ -449,7 +449,7 @@ namespace Kinovea.ScreenManager
         {
             // Called when we load a new video over an already loaded screen.
             // also recalled if the video loaded but the first frame cannot be displayed.
-
+            // This should reset everything except the playback speed.
             log.Debug("Reset screen to empty state.");
 
             // 1. Reset all data.
@@ -574,7 +574,7 @@ namespace Kinovea.ScreenManager
             SetUpForNewMovie();
             m_KeyframeCommentsHub.UserActivated = false;
 
-            // Check for launch description and startup kva
+            // Check for launch description and startup kva.
             bool recoveredMetadata = false;
             if (m_LaunchDescription != null)
             {

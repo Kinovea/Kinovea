@@ -151,6 +151,10 @@ namespace Kinovea.ScreenManager
                 metadata.Reset();
         }
 
+        /// <summary>
+        /// Set up the metadata related to the video itself.
+        /// This is done after loading the video the first time or after loading a new metadata file.
+        /// </summary>
         public void SetupMetadata(bool init)
         {
             // Setup Metadata global infos in case we want to flush it to a file (or mux).
@@ -166,6 +170,7 @@ namespace Kinovea.ScreenManager
                 metadata.AverageTimeStampsPerSecond = videoReader.Info.AverageTimeStampsPerSeconds;
                 metadata.CalibrationHelper.CaptureFramesPerSecond = videoReader.Info.FramesPerSeconds;
                 metadata.FirstTimeStamp = videoReader.Info.FirstTimeStamp;
+                metadata.ImageRotation = videoReader.Info.ImageRotation;
             }
 
             metadata.PostSetup(init);
