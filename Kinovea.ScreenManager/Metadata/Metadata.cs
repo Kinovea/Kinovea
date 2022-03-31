@@ -1536,7 +1536,11 @@ namespace Kinovea.ScreenManager
             {
                 VideoFilterType type = VideoFilterFactory.GetFilterType(r.Name);
                 if (type == VideoFilterType.None)
+                {
+                    log.DebugFormat("Unsupported video filter: {0}", r.Name);
+                    r.ReadOuterXml();
                     continue;
+                }
 
                 videoFilters[type].ReadData(r);
             }
