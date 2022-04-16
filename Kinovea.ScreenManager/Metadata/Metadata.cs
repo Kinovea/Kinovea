@@ -1565,7 +1565,13 @@ namespace Kinovea.ScreenManager
             imageTransform.Reset();
             drawingCoordinateSystem.Visible = false;
             drawingTestGrid.Visible = false;
-            calibrationHelper.Reset();
+            
+            // Do not reset the calibration when loading new files in the same screen.
+            // The existing calibration is as good the default one.
+            // This supports the scenario of setting up the calibration in a dedicated video and using it in all videos of the same folder,
+            // without having to save and load a dedicated KVA file for it.
+            // If the new file has its own calibration in the KVA it will still be loaded correctly later.
+            
             ResetVideoFilters();
             
             foreach(AbstractDrawing extraDrawing in extraDrawings)
