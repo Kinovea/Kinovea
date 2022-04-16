@@ -327,6 +327,9 @@ namespace Kinovea.ScreenManager
         #region IScalable implementation
         public void Scale(Size imageSize)
         {
+            if (imageSize == this.imageSize)
+                return;
+            
             this.imageSize = imageSize;
             points["0"] = new Point(imageSize.Width / 2, imageSize.Height / 2);
         }

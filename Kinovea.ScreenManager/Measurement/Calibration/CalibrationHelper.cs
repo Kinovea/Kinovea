@@ -165,6 +165,9 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void Initialize(Size imageSize, Func<long, PointF> getCalibrationOrigin, Func<long, CalibratorType, Guid, QuadrilateralF> getCalibrationQuad, Func<Guid, bool> hasTrackingData)
         {
+            if (imageSize == this.imageSize)
+                return;
+
             this.imageSize = imageSize;
             this.getCalibrationOrigin = getCalibrationOrigin;
             this.getCalibrationQuad = getCalibrationQuad;
