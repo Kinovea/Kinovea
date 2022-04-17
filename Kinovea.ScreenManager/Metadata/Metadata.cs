@@ -272,6 +272,18 @@ namespace Kinovea.ScreenManager
             set { selectionEnd = value; }
         }
 
+        public List<Clip> Clips
+        {
+            get { return clips; }
+            set { clips = value; }
+        }
+
+        public string ActiveClip
+        {
+            get { return activeClip; }
+            set { activeClip = value; }
+        }
+
         /// <summary>
         /// User-defined origin of the time coordinate system, in absolute timestamps. 
         /// </summary>
@@ -382,6 +394,8 @@ namespace Kinovea.ScreenManager
         private double userInterval = 40;
         private long selectionStart;
         private long selectionEnd;
+        private List<Clip> clips = new List<Clip>();
+        private string activeClip;
 
         // Video filters
         private Dictionary<VideoFilterType, IVideoFilter> videoFilters = new Dictionary<VideoFilterType, IVideoFilter>();

@@ -333,6 +333,10 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuCopyPic = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPastePic = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPasteDrawing = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuClips = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSaveClip = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSaveClipAs = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuDeleteClip = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOpenVideo = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOpenReplayWatcher = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOpenAnnotations = new ToolStripMenuItem();
@@ -342,7 +346,6 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuExportImage = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCloseScreen = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExitFilter = new ToolStripMenuItem();
-
 
         private ContextMenuStrip popMenuDrawings = new ContextMenuStrip();
         private ToolStripMenuItem mnuConfigureDrawing = new ToolStripMenuItem();
@@ -1117,6 +1120,18 @@ namespace Kinovea.ScreenManager
             mnuPasteDrawing.Click += mnuPasteDrawing_Click;
             mnuPasteDrawing.Image = Properties.Drawings.paste;
 
+            mnuClips.Image = Properties.Resources.clapperboard;
+            mnuSaveClip.Image = Properties.Resources.clapperboard;
+            mnuSaveClipAs.Image = Properties.Resources.clapperboard;
+            mnuDeleteClip.Image = Properties.Resources.clapperboard_delete;
+            mnuClips.DropDownItems.AddRange(new ToolStripItem[]
+            {
+                mnuSaveClip,
+                mnuSaveClipAs,
+                new ToolStripSeparator(),
+                mnuDeleteClip
+            });
+
             mnuOpenVideo.Click += (s, e) => OpenVideoAsked?.Invoke(this, EventArgs.Empty);
             mnuOpenVideo.Image = Properties.Resources.folder;
             mnuOpenReplayWatcher.Click += (s, e) => OpenReplayWatcherAsked?.Invoke(this, EventArgs.Empty);
@@ -1140,6 +1155,7 @@ namespace Kinovea.ScreenManager
             {
                 mnuTimeOrigin, mnuDirectTrack, new ToolStripSeparator(),
                 mnuCopyPic, mnuPastePic, mnuPasteDrawing, new ToolStripSeparator(),
+                mnuClips, new ToolStripSeparator(),
                 mnuOpenVideo, mnuOpenReplayWatcher, mnuOpenAnnotations, new ToolStripSeparator(),
                 mnuSaveAnnotations, mnuSaveAnnotationsAs, mnuExportVideo, mnuExportImage, new ToolStripSeparator(),
                 mnuCloseScreen
@@ -2659,6 +2675,8 @@ namespace Kinovea.ScreenManager
             mnuDirectTrack.Text = ScreenManagerLang.mnuTrackTrajectory;
             mnuPasteDrawing.Text = ScreenManagerLang.mnuPasteDrawing;
             mnuPasteDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.PasteDrawing);
+            mnuClips.Text = "Clips";
+            mnuSaveClipAs.Text = "Save clip as…";
             mnuOpenVideo.Text = ScreenManagerLang.mnuOpenVideo;
             mnuOpenReplayWatcher.Text = ScreenManagerLang.mnuOpenReplayWatcher;
             mnuOpenAnnotations.Text = ScreenManagerLang.mnuLoadAnalysis;
@@ -3137,15 +3155,54 @@ namespace Kinovea.ScreenManager
         }
         private void PrepareBackgroundContextMenu(ContextMenuStrip popMenu)
         {
+            PrepareClipsMenu();
+
+            // Top level context menu.
             popMenu.Items.Clear();
             popMenu.Items.AddRange(new ToolStripItem[]
             {
                         mnuTimeOrigin, mnuDirectTrack, new ToolStripSeparator(),
                         mnuCopyPic, mnuPastePic, mnuPasteDrawing, new ToolStripSeparator(),
+                        mnuClips, new ToolStripSeparator(),
                         mnuOpenVideo, mnuOpenReplayWatcher, mnuOpenAnnotations, new ToolStripSeparator(),
                         mnuSaveAnnotations, mnuSaveAnnotationsAs, mnuExportVideo, mnuExportImage, new ToolStripSeparator(),
                         mnuCloseScreen
             });
+        }
+
+        private void PrepareClipsMenu()
+        {
+            if (!string.IsNullOrEmpty(m_FrameServer.Metadata.ActiveClip))
+            {
+                mnuSaveClip.Text = string.Format("Save clip \"{0}\"", m_FrameServer.Metadata.ActiveClip);
+                mnuDeleteClip.Text = string.Format("Delete clip \"{0}\"", m_FrameServer.Metadata.ActiveClip);
+                mnuSaveClip.Enabled = true;
+                mnuDeleteClip.Enabled = true;
+            }
+            else
+            {
+                mnuSaveClip.Text = "Save clip";
+                mnuDeleteClip.Text = "Delete clip";
+                mnuSaveClip.Enabled = false;
+                mnuDeleteClip.Enabled = false;
+            }
+
+            // Find the existing dynamic menus for the clips and remove the event handlers before clearing.
+            mnuClips.DropDownItems.Clear();
+
+            // Add static menus.
+            mnuClips.DropDownItems.Add(mnuSaveClip);
+            mnuClips.DropDownItems.Add(mnuSaveClipAs);
+            mnuClips.DropDownItems.Add(new ToolStripSeparator());
+            mnuClips.DropDownItems.Add(mnuDeleteClip);
+
+            // Add dynamic menus.
+            if (m_FrameServer.Metadata.Clips.Count > 0)
+            {
+                //mnuClips.DropDownItems.Add(new ToolStripSeparator());
+                // Add one item per clip. With event handler that loads the clip.
+
+            }
         }
         private void PrepareDrawingContextMenu(AbstractDrawing drawing, ContextMenuStrip popMenu)
         {

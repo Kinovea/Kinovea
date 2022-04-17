@@ -297,6 +297,7 @@
     <Compile Include="Measurement\Geometry\SegmentF.cs" />
     <Compile Include="Measurement\Geometry\SVD.cs" />
     <Compile Include="Measurement\Geometry\Vector3.cs" />
+    <Compile Include="Metadata\Clip.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPostureOption.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPosturePolyline.cs" />
     <Compile Include="Metadata\Exporters\CSVHelper.cs" />
@@ -1461,6 +1462,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\wand.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\clapperboard.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\clapperboard-delete.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">

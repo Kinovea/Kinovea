@@ -306,6 +306,9 @@ namespace Kinovea.ScreenManager
                         if (IsSameContext())
                             metadata.SelectionEnd = selEnd;
                         break;
+                    case "Clips":
+                        ParseClips(r);
+                        break;
                     case "TimeOrigin":
                         inputTimeOrigin = r.ReadElementContentAsLong();
                         break;
@@ -378,6 +381,33 @@ namespace Kinovea.ScreenManager
 
             r.ReadEndElement();
         }
+
+        private void ParseClips(XmlReader r)
+        {
+            bool isEmpty = r.IsEmptyElement;
+            r.ReadStartElement();
+
+            if (isEmpty)
+                return;
+
+            while (r.NodeType == XmlNodeType.Element)
+            {
+                if (r.Name == "Clip")
+                {
+                    Clip clip = new Clip();
+                    clip.ReadXml(r);
+                    metadata.Clips.Add(clip);
+                }
+                else
+                {
+                    string unparsed = r.ReadOuterXml();
+                    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                }
+            }
+
+            r.ReadEndElement();
+        }
+        
         private void ParseChronos(XmlReader r, PointF scale)
         {
             // TODO: catch empty tag <Chronos/>.
@@ -491,14 +521,26 @@ namespace Kinovea.ScreenManager
             w.WriteElementString("FirstTimeStamp", metadata.FirstTimeStamp.ToString());
             w.WriteElementString("SelectionStart", metadata.SelectionStart.ToString());
             w.WriteElementString("SelectionEnd", metadata.SelectionEnd.ToString());
+            WriteClips(w);
             w.WriteElementString("TimeOrigin", metadata.TimeOrigin.ToString());
 
             WriteCalibrationHelp(w);
         }
 
+        private void WriteClips(XmlWriter w)
+        {
+            //if (metadata.Clips.Count == 0)
+             //   return;
+
+            w.WriteStartElement("Clips");
+            foreach (var clip in metadata.Clips)
+                clip.WriteXml(w);
+            w.WriteEndElement();
+        }
+
         private void WriteKeyframes(XmlWriter w, SerializationFilter filter)
         {
-            if (metadata.Keyframes.Count() == 0)
+            if (metadata.Keyframes.Count == 0)
                 return;
             
             w.WriteStartElement("Keyframes");
