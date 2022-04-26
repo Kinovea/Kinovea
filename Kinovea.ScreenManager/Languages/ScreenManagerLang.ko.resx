@@ -490,4 +490,10 @@
   <data name="DataAnalysis_LinearKinematics" xml:space="preserve">
     <value>선형 운동학</value>
   </data>
+  <data name="FormIconPicker_Title" xml:space="preserve">
+    <value>아이콘</value>
+  </data>
+  <data name="Generic_Open" xml:space="preserve">
+    <value>열기</value>
+  </data>
 </root>

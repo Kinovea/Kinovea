@@ -120,7 +120,7 @@
   </data>
   <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>유저 인터페이스 가져오기…</value>
   </data>
-  <data name="Generic_Cancel" xml:space="preserve"><value>최소</value>
+  <data name="Generic_Cancel" xml:space="preserve"><value>취소</value>
   </data>
   <data name="Generic_Quit" xml:space="preserve"><value>끝내기</value>
   </data>
