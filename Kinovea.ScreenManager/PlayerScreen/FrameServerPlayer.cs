@@ -130,12 +130,19 @@ namespace Kinovea.ScreenManager
                 videoReader = VideoTypeManager.GetVideoReader(Path.GetExtension(filePath));
             }
 
-            if(videoReader != null)
+            try
             {
-                videoReader.Options = new VideoOptions(PreferencesManager.PlayerPreferences.AspectRatio, ImageRotation.Rotate0, Demosaicing.None, PreferencesManager.PlayerPreferences.DeinterlaceByDefault);
-                return videoReader.Open(filePath);
+                if(videoReader != null)
+                {
+                    videoReader.Options = new VideoOptions(PreferencesManager.PlayerPreferences.AspectRatio, ImageRotation.Rotate0, Demosaicing.None, PreferencesManager.PlayerPreferences.DeinterlaceByDefault);
+                    return videoReader.Open(filePath);
+                }
+                else
+                {
+                    return OpenVideoResult.NotSupported;
+                }
             }
-            else
+            catch
             {
                 return OpenVideoResult.NotSupported;
             }
