@@ -90,7 +90,7 @@
   </data>
   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>메모리</value>
   </data>
-  <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>캡처 버퍼에 메모리 할당됨:{0}</value>
+  <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>딜레이 버퍼에 메모리 할당됨:{0} MB.</value>
   </data>
   <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>비디오 재생시 그림 보이기</value>
   </data>
@@ -239,5 +239,71 @@
   </data>
   <data name="dlgAbout_Citation" xml:space="preserve">
     <value>인용</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
+    <value>날짜(YYYYMMDD)</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
+    <value>날짜와 시간(YYYYMMDD-HHMMSS)</value>
+  </data>
+  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
+    <value>문맥 변수</value>
+  </data>
+  <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
+    <value>매크로</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
+    <value>파일 덮어쓰기 무시</value>
+  </data>
+  <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
+    <value>고속 카메라</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve">
+    <value>프레임율 한계(fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve">
+    <value>프레임율(fps) 변경:</value>
+  </data>
+  <data name="dlgPreferences_Capture_tabAutomation" xml:space="preserve">
+    <value>자동화</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkEnableAudioTrigger" xml:space="preserve">
+    <value>오디오 트리거 활성화</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve">
+    <value>입력 디바이스:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
+    <value>트리거 한계:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
+    <value>녹화 정지 구간(s):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
+    <value>이상 시간(s):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
+    <value>녹화 후 명령:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve">
+    <value>좌표 필터 활성화</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve">
+    <value>사용자 도구 디버그 모드 활성화</value>
+  </data>
+  <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve">
+    <value>새 그리기의 불투명도 기본값:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve">
+    <value>전체 비디오 보이기</value>
+  </data>
+  <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve">
+    <value>연속된 이미지를 비디오로 불러오기</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
+    <value>시간(HHMMSS)</value>
+  </data>
+  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
+    <value>문맥</value>
   </data>
 </root>
