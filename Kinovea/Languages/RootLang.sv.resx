@@ -406,4 +406,16 @@
   <data name="TimeCodeFormat_Microseconds" xml:space="preserve">
     <value>Totalt antal mikrosekunder</value>
   </data>
+  <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
+    <value>Vilotid (er):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
+    <value>Kommando efter inspelning:</value>
+  </data>
+  <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve">
+    <value>Uppdatera bilden under tidsmarkörens rörelse</value>
+  </data>
+  <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
+    <value>Standardannotationsfil:</value>
+  </data>
 </root>
