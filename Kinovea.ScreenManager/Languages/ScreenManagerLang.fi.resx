@@ -134,7 +134,7 @@
   </data>
   <data name="dlgRafaleExport_Title" xml:space="preserve"><value>Tallenna kuvajakso</value>
   </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Huomioi videon hidastus. (Nykyinen:</value>
+  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Huomioi videon hidastus. (Nykyinen = </value>
   </data>
   <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Tallennustapa</value>
   </data>
@@ -166,7 +166,7 @@
   </data>
   <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Tiedoston kirjoittaminen ei onnistu.\nVarmista käyttöoikeutesi tähän kohdehakemistoon ja että kyseinen tiedosto ei ole käytössä.</value>
   </data>
-  <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea – Videon tallennus ei onnistu.</value>
+  <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea – Videon tallennus epäonnistui. </value>
   </data>
   <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Videon tallennus ei onnistu.\nKokeile uudestaan toisella formaatilla.</value>
   </data>
@@ -174,7 +174,7 @@
   </data>
   <data name="FormFramesExport_Infos" xml:space="preserve"><value>Kirkkaus:</value>
   </data>
-  <data name="FormFramesExport_Title" xml:space="preserve"><value>Värisyvyys:</value>
+  <data name="FormFramesExport_Title" xml:space="preserve"><value>Tallennetaan kuvia...</value>
   </data>
   <data name="FormProgressBar_Title" xml:space="preserve"><value>Tarkenna</value>
   </data>
@@ -316,7 +316,7 @@
   </data>
   <data name="mnuShowMeasure" xml:space="preserve"><value>Näytä mitta</value>
   </data>
-  <data name="mnuStopTracking" xml:space="preserve"><value>Lopeta liikeradan editointi</value>
+  <data name="mnuStopTracking" xml:space="preserve"><value>Lopeta liikeradan muokkaus </value>
   </data>
   <data name="mnuSVGTools" xml:space="preserve"><value>Havaintoreferenssi</value>
   </data>
@@ -431,5 +431,44 @@
   </data>
   <data name="Generic_Quit" xml:space="preserve">
     <value>Lopeta</value>
+  </data>
+  <data name="DataAnalysis_LinearKinematics" xml:space="preserve">
+    <value>Tasainen liike</value>
+  </data>
+  <data name="DataAnalysis_AngularKinematics" xml:space="preserve">
+    <value>Pyörimisliike</value>
+  </data>
+  <data name="DataAnalysis_Title" xml:space="preserve">
+    <value>Otsikko:</value>
+  </data>
+  <data name="DataAnalysis_XaxisLabel" xml:space="preserve">
+    <value>X akseli :</value>
+  </data>
+  <data name="DataAnalysis_XaxisDefaultPoints" xml:space="preserve">
+    <value>X akseli</value>
+  </data>
+  <data name="DataAnalysis_YaxisLabel" xml:space="preserve">
+    <value>Y akseli :</value>
+  </data>
+  <data name="DataAnalysis_YaxisDefaultPoints" xml:space="preserve">
+    <value>Y akseli</value>
+  </data>
+  <data name="DataAnalysis_ExportGraph" xml:space="preserve">
+    <value>Tallenna kaavio</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Absolute" xml:space="preserve">
+    <value>Ehdoton</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Relative" xml:space="preserve">
+    <value>Suhteelinen</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Normalized" xml:space="preserve">
+    <value>Normalisoitu</value>
+  </data>
+  <data name="DataAnalysis_TangentialVelocity" xml:space="preserve">
+    <value>Tangentiaalinen nopeus</value>
+  </data>
+  <data name="DataAnalysis_TangentialAcceleration" xml:space="preserve">
+    <value>Tangentiaalinen kiihtyvyys</value>
   </data>
 </root>
