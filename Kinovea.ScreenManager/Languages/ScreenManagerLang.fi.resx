@@ -471,4 +471,16 @@
   <data name="DataAnalysis_TangentialAcceleration" xml:space="preserve">
     <value>Tangentiaalinen kiihtyvyys</value>
   </data>
+  <data name="DataAnalysis_ResultantLinearAcceleration" xml:space="preserve">
+    <value>Tuloksena oleva kiihtyvyys</value>
+  </data>
+  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+    <value>Nimi</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
+    <value>Maksimi sameus (%):</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblOpaque" xml:space="preserve">
+    <value>Läpinäkyvyyden kesto (kehyksinä)</value>
+  </data>
 </root>
