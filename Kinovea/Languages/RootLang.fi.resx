@@ -212,7 +212,7 @@
     <value>Käännös</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
-    <value>Kamera: nauhoittaa reaaliaikaisen kuvan</value>
+    <value>Kamera: nauhoittaa reaaliaikaisen kuvan.</value>
   </data>
   <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
     <value>Korkean kuvantaajuuden kamera</value>
@@ -227,10 +227,10 @@
     <value>Nauhoitus</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve">
-    <value>Viivästetty: nauhoittaa viivästettyjä kuvia</value>
+    <value>Viivästetty: nauhoittaa viivästettyjä kuvia.</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
-    <value>Takautuva: nauhoittaa kun videokaappaus loppuu</value>
+    <value>Takautuva: nauhoittaa kun videokaappaus loppuu.</value>
   </data>
   <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
     <value>Vastaanotettu kuvataajuus</value>
