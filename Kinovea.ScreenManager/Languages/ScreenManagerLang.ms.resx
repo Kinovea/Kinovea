@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -58,4 +58,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="buttonGotoFirst_ToolTip" xml:space="preserve">
+    <value>Kembali ke permulaan kedua-dua video</value>
+  </data>
+  <data name="buttonGotoNext_ToolTip" xml:space="preserve">
+    <value>Pergi ke bingkai seterusnya untuk kedua-dua video</value>
+  </data>
+  <data name="buttonGotoPrevious_ToolTip" xml:space="preserve">
+    <value>Pergi ke bingkai sebelumnya untuk kedua-dua video</value>
+  </data>
+  <data name="buttonPlay_ToolTip" xml:space="preserve">
+    <value>Main atau jeda kedua-dua video</value>
+  </data>
+  <data name="buttonGotoLast_ToolTip" xml:space="preserve">
+    <value>Kembali ke pengakhiran kedua-dua video</value>
+  </data>
+  <data name="btnSync_ToolTip" xml:space="preserve">
+    <value>Segerakkan video-video pada bingkai-bingkai semasa</value>
+  </data>
 </root>
