@@ -61,4 +61,61 @@
   <data name="Generic_Cancel" xml:space="preserve">
     <value>取消</value>
   </data>
+  <data name="mnuVideoDelete" xml:space="preserve">
+    <value>刪除檔案</value>
+  </data>
+  <data name="lblFolders" xml:space="preserve">
+    <value>資料夾</value>
+  </data>
+  <data name="lblVideoFiles" xml:space="preserve">
+    <value>影片檔案</value>
+  </data>
+  <data name="lblCaptureHistory" xml:space="preserve">
+    <value>影像擷取歷程</value>
+  </data>
+  <data name="lblCameras" xml:space="preserve">
+    <value>攝影鏡頭</value>
+  </data>
+  <data name="mnuAddShortcut" xml:space="preserve">
+    <value>新增捷徑項</value>
+  </data>
+  <data name="mnuAddToShortcuts" xml:space="preserve">
+    <value>新增至捷徑</value>
+  </data>
+  <data name="mnuDeleteShortcut" xml:space="preserve">
+    <value>刪除捷徑</value>
+  </data>
+  <data name="mnuVideoLocate" xml:space="preserve">
+    <value>存至Windows資料夾 </value>
+  </data>
+  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
+    <value>開啟重播資料夾</value>
+  </data>
+  <data name="ForgetCustomSettings" xml:space="preserve">
+    <value>放棄自訂選項</value>
+  </data>
+  <data name="Generic_Open" xml:space="preserve">
+    <value>開啟</value>
+  </data>
+  <data name="tabExplorer" xml:space="preserve">
+    <value>瀏覽器</value>
+  </data>
+  <data name="tabShortcuts" xml:space="preserve">
+    <value>捷徑項</value>
+  </data>
+  <data name="FormCameraWizard_Title" xml:space="preserve">
+    <value>手動連接</value>
+  </data>
+  <data name="FormCameraWizard_CameraType" xml:space="preserve">
+    <value>攝影機類型</value>
+  </data>
+  <data name="FormCameraWizard_Parameters" xml:space="preserve">
+    <value>參數</value>
+  </data>
+  <data name="FormCameraWizard_Test" xml:space="preserve">
+    <value>測試</value>
+  </data>
+  <data name="FormCameraWizard_Create" xml:space="preserve">
+    <value>建立攝影鏡頭</value>
+  </data>
 </root>
