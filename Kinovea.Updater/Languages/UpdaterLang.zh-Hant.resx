@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -58,4 +58,34 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Updater_Behind" xml:space="preserve">
+    <value>發現新版本！</value>
+  </data>
+  <data name="Updater_CurrentVersion" xml:space="preserve">
+    <value>現行版本為：</value>
+  </data>
+  <data name="Updater_NewVersion" xml:space="preserve">
+    <value>最新版本為</value>
+  </data>
+  <data name="Updater_Quit" xml:space="preserve">
+    <value>離開</value>
+  </data>
+  <data name="Updater_UpToDate" xml:space="preserve">
+    <value>您目前為最新版本！</value>
+  </data>
+  <data name="Updater_InternetError" xml:space="preserve">
+    <value>更新檢查有誤，請確認網路為正常運作。</value>
+  </data>
+  <data name="Updater_LblChangeLog" xml:space="preserve">
+    <value>更新日誌:</value>
+  </data>
+  <data name="mnuCheckForUpdates" xml:space="preserve">
+    <value>檢查版本更新…</value>
+  </data>
+  <data name="Updater_Download" xml:space="preserve">
+    <value>下載</value>
+  </data>
+  <data name="Updater_Title" xml:space="preserve">
+    <value>檢查Kinovea版本更新。</value>
+  </data>
 </root>
