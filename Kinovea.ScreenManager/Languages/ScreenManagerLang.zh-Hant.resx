@@ -67,4 +67,7 @@
   <data name="Generic_Cancel" xml:space="preserve">
     <value>取消</value>
   </data>
+  <data name="Generic_Open" xml:space="preserve">
+    <value>開啟</value>
+  </data>
 </root>
