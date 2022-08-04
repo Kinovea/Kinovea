@@ -61,4 +61,103 @@
   <data name="Generic_Cancel" xml:space="preserve">
     <value>取消</value>
   </data>
+  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve">
+    <value>小時</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve">
+    <value>分鐘</value>
+  </data>
+  <data name="dlgSplash_LoadInfos" xml:space="preserve">
+    <value>裝載使用者介面…</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
+    <value>目標視窗:</value>
+  </data>
+  <data name="mnuTimeFormat" xml:space="preserve">
+    <value>時間</value>
+  </data>
+  <data name="dlgPreferences_Capture_Left" xml:space="preserve">
+    <value>左</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve">
+    <value>年</value>
+  </data>
+  <data name="dlgPreferences_Capture_File" xml:space="preserve">
+    <value>檔案:</value>
+  </data>
+  <data name="dlgPreferences_tabPlayback" xml:space="preserve">
+    <value>回放</value>
+  </data>
+  <data name="dlgPreferences_tabKeyboard" xml:space="preserve">
+    <value>鍵盤</value>
+  </data>
+  <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve">
+    <value>同時開多個Kinovea</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
+    <value>顯示的FPS:</value>
+  </data>
+  <data name="dlgPreferences_Capture_Right" xml:space="preserve">
+    <value>右</value>
+  </data>
+  <data name="dlgPreferences_tabDrawings" xml:space="preserve">
+    <value>標示繪圖</value>
+  </data>
+  <data name="dlgPreferences_tabCapture" xml:space="preserve">
+    <value>擷取</value>
+  </data>
+  <data name="dlgPreferences_tabGeneral" xml:space="preserve">
+    <value>一般</value>
+  </data>
+  <data name="dlgPreferences_Capture_Subdir" xml:space="preserve">
+    <value>子目錄:</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve">
+    <value>月</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve">
+    <value>日</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve">
+    <value>秒</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
+    <value>相機別名</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
+    <value>配置幀率</value>
+  </data>
+  <data name="Generic_Quit" xml:space="preserve">
+    <value>結束</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve">
+    <value>預設</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnClear" xml:space="preserve">
+    <value>清除</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnApply" xml:space="preserve">
+    <value>運用</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblHotkey" xml:space="preserve">
+    <value>鍵盤快鍵 {0}.{1}</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
+    <value>像素</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
+    <value>百分比</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
+    <value>搜尋視窗:</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
+    <value>預設跟蹤規範</value>
+  </data>
+  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
+    <value>跟蹤</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
+    <value>自訂長度單位:</value>
+  </data>
 </root>
