@@ -106,4 +106,19 @@
   <data name="Generic_Cancel" xml:space="preserve">
     <value>取消</value>
   </data>
+  <data name="FormConfiguration_Properties_BayerFormatConversion" xml:space="preserve">
+    <value>拜耳格式轉換:</value>
+  </data>
+  <data name="FormConfiguration_Auto" xml:space="preserve">
+    <value>自動</value>
+  </data>
+  <data name="FormConfiguration_DevicePropertyPages" xml:space="preserve">
+    <value>設定頁面屬性</value>
+  </data>
+  <data name="FormConfiguration_Reconnect" xml:space="preserve">
+    <value>重新連接</value>
+  </data>
+  <data name="FormConfiguration_DevicePropertyPages_Error" xml:space="preserve">
+    <value>屬性設定時發生錯誤.</value>
+  </data>
 </root>
