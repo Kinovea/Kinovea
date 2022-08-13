@@ -119,6 +119,36 @@
     <value>重新連接</value>
   </data>
   <data name="FormConfiguration_DevicePropertyPages_Error" xml:space="preserve">
-    <value>屬性設定時發生錯誤.</value>
+    <value>屬性設定時發生錯誤{0}.</value>
+  </data>
+  <data name="FormConfiguration_Test" xml:space="preserve">
+    <value>測試</value>
+  </data>
+  <data name="FormConnectionWizard_Network" xml:space="preserve">
+    <value>網路</value>
+  </data>
+  <data name="FormConnectionWizard_Host" xml:space="preserve">
+    <value>主機(IP位址)</value>
+  </data>
+  <data name="FormConfiguration_ImportParameters" xml:space="preserve">
+    <value>匯入參數</value>
+  </data>
+  <data name="FormConnectionWizard_Port" xml:space="preserve">
+    <value>連接埠</value>
+  </data>
+  <data name="FormConnectionWizard_Format" xml:space="preserve">
+    <value>格式</value>
+  </data>
+  <data name="FormConnectionWizard_Authentication" xml:space="preserve">
+    <value>認證</value>
+  </data>
+  <data name="FormConnectionWizard_User" xml:space="preserve">
+    <value>使用者</value>
+  </data>
+  <data name="FormConnectionWizard_Password" xml:space="preserve">
+    <value>密碼</value>
+  </data>
+  <data name="FormConnectionWizard_URL" xml:space="preserve">
+    <value>最後位址</value>
   </data>
 </root>
