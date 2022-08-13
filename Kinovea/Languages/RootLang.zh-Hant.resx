@@ -160,4 +160,43 @@
   <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
     <value>自訂長度單位:</value>
   </data>
+  <data name="dlgAbout_License" xml:space="preserve">
+    <value>授權</value>
+  </data>
+  <data name="dlgAbout_BuildingBlocks" xml:space="preserve">
+    <value>模組建立</value>
+  </data>
+  <data name="dlgAbout_Citation" xml:space="preserve">
+    <value>引用</value>
+  </data>
+  <data name="dlgPreferences_Capture_Root" xml:space="preserve">
+    <value>根目錄:</value>
+  </data>
+  <data name="dlgPreferences_Capture_ImageNaming" xml:space="preserve">
+    <value>圖片名稱</value>
+  </data>
+  <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve">
+    <value>影像名稱</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve">
+    <value>圖片格式:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve">
+    <value>影像格式:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve">
+    <value>未壓縮影像格式:</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve">
+    <value>錄製未壓縮影像</value>
+  </data>
+  <data name="dlgPreferences_Capture_Recording" xml:space="preserve">
+    <value>錄製</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve">
+    <value>錄製模式與延遲</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
+    <value>攝影機:紀錄即時幀數.</value>
+  </data>
 </root>
