@@ -418,4 +418,7 @@
   <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
     <value>Standardannotationsfil:</value>
   </data>
+  <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve">
+    <value>Länka hastighetsreglagen vid jämförning av videos</value>
+  </data>
 </root>
