@@ -609,4 +609,37 @@
   <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
     <value>Sökfönster:</value>
   </data>
+  <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve">
+    <value>Totalt: {0:0} bilder.</value>
+  </data>
+  <data name="dlgCameraCalibration_Title" xml:space="preserve">
+    <value>Kalibrering av kameran</value>
+  </data>
+  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
+    <value>Kalibrera kameran</value>
+  </data>
+  <data name="dlgCameraCalibration_lblSensorWidth" xml:space="preserve">
+    <value>Sensorbredd (mm):</value>
+  </data>
+  <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
+    <value>Ladda kamerans kalibreringsprofil</value>
+  </data>
+  <data name="dlgRafaleExport_ExportAll" xml:space="preserve">
+    <value>Exportera alla bilder.</value>
+  </data>
+  <data name="dlgRafaleExport_ExportFrameDecimation" xml:space="preserve">
+    <value>Exportera en bild per {0} bilder.</value>
+  </data>
+  <data name="dlgRafaleExport_ExportTimeDecimationSeconds" xml:space="preserve">
+    <value>Exportera en bild var {0:0.00}s.</value>
+  </data>
+  <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve">
+    <value>Exportera en bild varje {0:0}ms.</value>
+  </data>
+  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
+    <value>Förvrängning</value>
+  </data>
+  <data name="dlgCameraCalibration_SaveDialogTitle" xml:space="preserve">
+    <value>Spara kamerans kalibreringsprofil</value>
+  </data>
 </root>
