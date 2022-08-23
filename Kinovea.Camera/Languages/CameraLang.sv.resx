@@ -116,4 +116,37 @@
   <data name="FormConfiguration_Properties_Gain" xml:space="preserve">
     <value>Förstärkning:</value>
   </data>
+  <data name="FormConfiguration_Reconnect" xml:space="preserve">
+    <value>Anslut igen</value>
+  </data>
+  <data name="FormConfiguration_ImportParameters" xml:space="preserve">
+    <value>Importera parametrar</value>
+  </data>
+  <data name="FormConnectionWizard_Port" xml:space="preserve">
+    <value>Port</value>
+  </data>
+  <data name="FormConnectionWizard_Authentication" xml:space="preserve">
+    <value>Autentisering</value>
+  </data>
+  <data name="FormConnectionWizard_URL" xml:space="preserve">
+    <value>Slutgiltig URL</value>
+  </data>
+  <data name="FormConfiguration_Test" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="FormConnectionWizard_Network" xml:space="preserve">
+    <value>Nätverk</value>
+  </data>
+  <data name="FormConnectionWizard_Password" xml:space="preserve">
+    <value>Lösenord</value>
+  </data>
+  <data name="FormConnectionWizard_Host" xml:space="preserve">
+    <value>Värd (IP-adress)</value>
+  </data>
+  <data name="FormConnectionWizard_Format" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="FormConnectionWizard_User" xml:space="preserve">
+    <value>Användare</value>
+  </data>
 </root>
