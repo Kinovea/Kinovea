@@ -104,4 +104,16 @@
   <data name="FormConfiguration_Properties_ImageHeight" xml:space="preserve">
     <value>Höjd:</value>
   </data>
+  <data name="FormConfiguration_Properties_BayerFormatConversion" xml:space="preserve">
+    <value>Bayerformat-konvertering:</value>
+  </data>
+  <data name="FormConfiguration_Auto" xml:space="preserve">
+    <value>Auto</value>
+  </data>
+  <data name="FormConfiguration_Properties_Focus" xml:space="preserve">
+    <value>Fokus:</value>
+  </data>
+  <data name="FormConfiguration_Properties_Gain" xml:space="preserve">
+    <value>Förstärkning:</value>
+  </data>
 </root>
