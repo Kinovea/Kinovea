@@ -122,7 +122,7 @@
   </data>
   <data name="Generic_Cancel" xml:space="preserve"><value>취소</value>
   </data>
-  <data name="Generic_Quit" xml:space="preserve"><value>끝내기</value>
+  <data name="Generic_Quit" xml:space="preserve"><value>종료</value>
   </data>
   <data name="Generic_Save" xml:space="preserve"><value>저장</value>
   </data>
@@ -144,7 +144,7 @@
   </data>
   <data name="mnuHistoryReset" xml:space="preserve"><value>기록 초기화</value>
   </data>
-  <data name="mnuImage" xml:space="preserve"><value>이미지 </value>
+  <data name="mnuImage" xml:space="preserve"><value>이미지</value>
   </data>
   <data name="mnuLanguages" xml:space="preserve"><value>언어</value>
   </data>
@@ -152,7 +152,7 @@
   </data>
   <data name="mnuOptions" xml:space="preserve"><value>선택 사항들</value>
   </data>
-  <data name="mnuPreferences" xml:space="preserve"><value>선호 사항들</value>
+  <data name="mnuPreferences" xml:space="preserve"><value>기본 설정…</value>
   </data>
   <data name="mnuScreens" xml:space="preserve"><value>보기</value>
   </data>
@@ -178,7 +178,7 @@
     <value>녹화</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve">
-    <value>녹화 모드와 딜레이</value>
+    <value>녹화 모드와 지연</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
     <value>카메라: 실시간 프레임을 기록합니다.</value>
@@ -217,7 +217,7 @@
     <value>압축되지 않은 비디오 녹화</value>
   </data>
   <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
-    <value>수신된 프레임 레이트</value>
+    <value>수신된 프레임속도</value>
   </data>
   <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
     <value>제어 시퀀스</value>
@@ -226,7 +226,7 @@
     <value>소급: 캡처가 중지될 때 프레임을 기록합니다.</value>
   </data>
   <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
-    <value>구성된 프레임 속도</value>
+    <value>구성된 프레임속도</value>
   </data>
   <data name="dlgAbout_BuildingBlocks" xml:space="preserve">
     <value>빌딩 블록</value>
@@ -305,5 +305,134 @@
   </data>
   <data name="dlgPreferences_Capture_Context" xml:space="preserve">
     <value>문맥</value>
+  </data>
+  <data name="mnuTools" xml:space="preserve">
+    <value>도구</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
+    <value>카메라 별칭</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
+    <value>캡처 디렉토리</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
+    <value>캡처된 파일 이름</value>
+  </data>
+  <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve">
+    <value>시간 커서 이동 중 이미지 업데이트</value>
+  </data>
+  <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve">
+    <value>비디오를 비교할 때 링크 속도 슬라이더</value>
+  </data>
+  <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
+    <value>기본 주석 파일:</value>
+  </data>
+  <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve">
+    <value>인스턴스에는 고유한 기본 설정이 있습니다</value>
+  </data>
+  <data name="dlgPreferences_Player_lblMemory" xml:space="preserve">
+    <value>각 재생 화면에 할당된 캐시 메모리: {0} MB.</value>
+  </data>
+  <data name="dlgPreferences_Player_tabUnits" xml:space="preserve">
+    <value>구성 단위</value>
+  </data>
+  <data name="mnuTimeFormat" xml:space="preserve">
+    <value>시간</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitTime" xml:space="preserve">
+    <value>시간:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsSpeed" xml:space="preserve">
+    <value>속도:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAcceleration" xml:space="preserve">
+    <value>가속:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngle" xml:space="preserve">
+    <value>각도:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngularVelocity" xml:space="preserve">
+    <value>각속도:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngularAcceleration" xml:space="preserve">
+    <value>각가속도:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsMetersPerSecondSquared" xml:space="preserve">
+    <value>초당 미터 제곱 ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsFeetPerSecondSquared" xml:space="preserve">
+    <value>초당 피트 제곱 ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegrees" xml:space="preserve">
+    <value>도 ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadians" xml:space="preserve">
+    <value>라디안 ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegreesPerSecond" xml:space="preserve">
+    <value>초당 도 ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadiansPerSecond" xml:space="preserve">
+    <value>초당 라디안 ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRevolutionsPerMinute" xml:space="preserve">
+    <value>분당 회전수 ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadiansPerSecondSquared" xml:space="preserve">
+    <value>초당 라디안 제곱 ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegreesPerSecondSquared" xml:space="preserve">
+    <value>초당 도 제곱 ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
+    <value>사용자 정의 길이 단위:</value>
+  </data>
+  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
+    <value>추적</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
+    <value>기본 추적 매개변수</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
+    <value>개체 창:</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
+    <value>검색 창:</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
+    <value>백분율</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
+    <value>픽셀</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
+    <value>카테고리</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblCommands" xml:space="preserve">
+    <value>명령어</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblHotkey" xml:space="preserve">
+    <value>{0}.{1}를 위한 단축키</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnApply" xml:space="preserve">
+    <value>적용</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnClear" xml:space="preserve">
+    <value>지움</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve">
+    <value>기본</value>
+  </data>
+  <data name="mnuWorkspace" xml:space="preserve">
+    <value>작업 공간</value>
+  </data>
+  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
+    <value>기본 작업 공간으로 저장</value>
+  </data>
+  <data name="mnuWorkspaceExport" xml:space="preserve">
+    <value>작업 공간 내보내기</value>
+  </data>
+  <data name="TimeCodeFormat_Microseconds" xml:space="preserve">
+    <value>총 마이크로초</value>
   </data>
 </root>
