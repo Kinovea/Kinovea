@@ -948,8 +948,18 @@ namespace Kinovea.ScreenManager
             md.UserFramerate = (float)(1000.0 / userInterval);
 
             MeasuredDataUnits mdu = new MeasuredDataUnits();
-            mdu.LengthUnit = CalibrationHelper.LengthUnit.ToString();
-            mdu.LengthSymbol = UnitHelper.LengthAbbreviation(CalibrationHelper.LengthUnit);
+
+            if (PreferencesManager.PlayerPreferences.ExportSpace == ExportSpace.WorldSpace)
+            { 
+                mdu.LengthUnit = CalibrationHelper.LengthUnit.ToString();
+                mdu.LengthSymbol = UnitHelper.LengthAbbreviation(CalibrationHelper.LengthUnit);
+            }
+            else
+            {
+                mdu.LengthUnit = LengthUnit.Pixels.ToString();
+                mdu.LengthSymbol = UnitHelper.LengthAbbreviation(LengthUnit.Pixels);
+            }
+            
             mdu.SpeedUnit = PreferencesManager.PlayerPreferences.SpeedUnit.ToString();
             mdu.SpeedSymbol = UnitHelper.SpeedAbbreviation(PreferencesManager.PlayerPreferences.SpeedUnit);
             mdu.AccelerationUnit = PreferencesManager.PlayerPreferences.AccelerationUnit.ToString();

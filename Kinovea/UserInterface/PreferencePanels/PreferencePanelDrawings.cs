@@ -78,6 +78,7 @@ namespace Kinovea.Root
         private string customLengthUnit;
         private string customLengthAbbreviation;
         private CSVDecimalSeparator csvDecimalSeparator;
+        private ExportSpace exportSpace;
         #endregion
         
         #region Construction & Initialization
@@ -123,6 +124,7 @@ namespace Kinovea.Root
             customLengthUnit = PreferencesManager.PlayerPreferences.CustomLengthUnit;
             customLengthAbbreviation = PreferencesManager.PlayerPreferences.CustomLengthAbbreviation;
             csvDecimalSeparator = PreferencesManager.PlayerPreferences.CSVDecimalSeparator;
+            exportSpace = PreferencesManager.PlayerPreferences.ExportSpace;
         }
         private void InitPage()
         {
@@ -283,6 +285,11 @@ namespace Kinovea.Root
             int separator = (int)csvDecimalSeparator;
             cmbDelimiter.SelectedIndex = separator < cmbDelimiter.Items.Count ? separator : 0;
 
+            lblExportSpace.Text = "Export space:";
+            cmbExportSpace.Items.Add("Calibrated");
+            cmbExportSpace.Items.Add("Pixels");
+            int option = (int)exportSpace;
+            cmbExportSpace.SelectedIndex = option < cmbExportSpace.Items.Count ? option : 0;
         }
         #endregion
 
@@ -429,6 +436,10 @@ namespace Kinovea.Root
         {
             csvDecimalSeparator = (CSVDecimalSeparator)cmbDelimiter.SelectedIndex;
         }
+        private void cmbExportSpace_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            exportSpace = (ExportSpace)cmbExportSpace.SelectedIndex;
+        }
         #endregion
         #endregion
 
@@ -447,6 +458,7 @@ namespace Kinovea.Root
             PreferencesManager.PlayerPreferences.AngularVelocityUnit = angularVelocityUnit;
             PreferencesManager.PlayerPreferences.AngularAccelerationUnit = angularAccelerationUnit;
             PreferencesManager.PlayerPreferences.CSVDecimalSeparator = csvDecimalSeparator;
+            PreferencesManager.PlayerPreferences.ExportSpace = exportSpace;
 
             // Special case for the custom unit length.
             if (customLengthUnit == RootLang.dlgPreferences_Player_TrackingPercentage)

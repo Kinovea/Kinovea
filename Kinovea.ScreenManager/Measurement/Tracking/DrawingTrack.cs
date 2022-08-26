@@ -1165,7 +1165,10 @@ namespace Kinovea.ScreenManager
             List<PointF> coords = new List<PointF>();
             foreach (AbstractTrackPoint tp in positions)
             {
-                PointF p = parentMetadata.CalibrationHelper.GetPointAtTime(tp.Point, tp.T);
+                PointF p = tp.Point;
+                if (PreferencesManager.PlayerPreferences.ExportSpace == ExportSpace.WorldSpace)
+                    p = parentMetadata.CalibrationHelper.GetPointAtTime(tp.Point, tp.T);
+
                 coords.Add(p);
             }
             mdt.Data.Add("0", coords);

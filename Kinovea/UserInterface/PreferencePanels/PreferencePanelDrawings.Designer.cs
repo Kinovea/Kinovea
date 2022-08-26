@@ -75,9 +75,6 @@ namespace Kinovea.Root
       this.label4 = new System.Windows.Forms.Label();
       this.tbBlockWidth = new System.Windows.Forms.TextBox();
       this.lblObjectWindow = new System.Windows.Forms.Label();
-      this.tabExport = new System.Windows.Forms.TabPage();
-      this.cmbDelimiter = new System.Windows.Forms.ComboBox();
-      this.lblCSVDelimiter = new System.Windows.Forms.Label();
       this.tabUnits = new System.Windows.Forms.TabPage();
       this.tbCustomLengthAb = new System.Windows.Forms.TextBox();
       this.tbCustomLengthUnit = new System.Windows.Forms.TextBox();
@@ -94,6 +91,11 @@ namespace Kinovea.Root
       this.lblSpeedUnit = new System.Windows.Forms.Label();
       this.cmbTimeCodeFormat = new System.Windows.Forms.ComboBox();
       this.lblTimeMarkersFormat = new System.Windows.Forms.Label();
+      this.tabExport = new System.Windows.Forms.TabPage();
+      this.cmbDelimiter = new System.Windows.Forms.ComboBox();
+      this.lblCSVDelimiter = new System.Windows.Forms.Label();
+      this.cmbExportSpace = new System.Windows.Forms.ComboBox();
+      this.lblExportSpace = new System.Windows.Forms.Label();
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
       this.tabPersistence.SuspendLayout();
@@ -101,8 +103,8 @@ namespace Kinovea.Root
       ((System.ComponentModel.ISupportInitialize)(this.nudOpaque)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudMax)).BeginInit();
       this.tabTracking.SuspendLayout();
-      this.tabExport.SuspendLayout();
       this.tabUnits.SuspendLayout();
+      this.tabExport.SuspendLayout();
       this.SuspendLayout();
       // 
       // tabSubPages
@@ -408,36 +410,6 @@ namespace Kinovea.Root
       this.lblObjectWindow.TabIndex = 56;
       this.lblObjectWindow.Text = "Object window :";
       // 
-      // tabExport
-      // 
-      this.tabExport.Controls.Add(this.cmbDelimiter);
-      this.tabExport.Controls.Add(this.lblCSVDelimiter);
-      this.tabExport.Location = new System.Drawing.Point(4, 22);
-      this.tabExport.Name = "tabExport";
-      this.tabExport.Padding = new System.Windows.Forms.Padding(3);
-      this.tabExport.Size = new System.Drawing.Size(482, 296);
-      this.tabExport.TabIndex = 3;
-      this.tabExport.Text = "Export";
-      this.tabExport.UseVisualStyleBackColor = true;
-      // 
-      // cmbDelimiter
-      // 
-      this.cmbDelimiter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbDelimiter.Location = new System.Drawing.Point(300, 36);
-      this.cmbDelimiter.Name = "cmbDelimiter";
-      this.cmbDelimiter.Size = new System.Drawing.Size(116, 21);
-      this.cmbDelimiter.TabIndex = 67;
-      this.cmbDelimiter.SelectedIndexChanged += new System.EventHandler(this.cmbDelimiter_SelectedIndexChanged);
-      // 
-      // lblCSVDelimiter
-      // 
-      this.lblCSVDelimiter.AutoSize = true;
-      this.lblCSVDelimiter.Location = new System.Drawing.Point(20, 40);
-      this.lblCSVDelimiter.Name = "lblCSVDelimiter";
-      this.lblCSVDelimiter.Size = new System.Drawing.Size(107, 13);
-      this.lblCSVDelimiter.TabIndex = 66;
-      this.lblCSVDelimiter.Text = "CSV Decimal symbol:";
-      // 
       // tabUnits
       // 
       this.tabUnits.Controls.Add(this.tbCustomLengthAb);
@@ -596,6 +568,56 @@ namespace Kinovea.Root
       this.lblTimeMarkersFormat.TabIndex = 45;
       this.lblTimeMarkersFormat.Text = "Time markers format :";
       // 
+      // tabExport
+      // 
+      this.tabExport.Controls.Add(this.cmbExportSpace);
+      this.tabExport.Controls.Add(this.lblExportSpace);
+      this.tabExport.Controls.Add(this.cmbDelimiter);
+      this.tabExport.Controls.Add(this.lblCSVDelimiter);
+      this.tabExport.Location = new System.Drawing.Point(4, 22);
+      this.tabExport.Name = "tabExport";
+      this.tabExport.Padding = new System.Windows.Forms.Padding(3);
+      this.tabExport.Size = new System.Drawing.Size(482, 296);
+      this.tabExport.TabIndex = 3;
+      this.tabExport.Text = "Export";
+      this.tabExport.UseVisualStyleBackColor = true;
+      // 
+      // cmbDelimiter
+      // 
+      this.cmbDelimiter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cmbDelimiter.Location = new System.Drawing.Point(300, 36);
+      this.cmbDelimiter.Name = "cmbDelimiter";
+      this.cmbDelimiter.Size = new System.Drawing.Size(116, 21);
+      this.cmbDelimiter.TabIndex = 67;
+      this.cmbDelimiter.SelectedIndexChanged += new System.EventHandler(this.cmbDelimiter_SelectedIndexChanged);
+      // 
+      // lblCSVDelimiter
+      // 
+      this.lblCSVDelimiter.AutoSize = true;
+      this.lblCSVDelimiter.Location = new System.Drawing.Point(20, 40);
+      this.lblCSVDelimiter.Name = "lblCSVDelimiter";
+      this.lblCSVDelimiter.Size = new System.Drawing.Size(107, 13);
+      this.lblCSVDelimiter.TabIndex = 66;
+      this.lblCSVDelimiter.Text = "CSV Decimal symbol:";
+      // 
+      // cmdExportSpace
+      // 
+      this.cmbExportSpace.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cmbExportSpace.Location = new System.Drawing.Point(300, 73);
+      this.cmbExportSpace.Name = "cmdExportSpace";
+      this.cmbExportSpace.Size = new System.Drawing.Size(116, 21);
+      this.cmbExportSpace.TabIndex = 69;
+      this.cmbExportSpace.SelectedIndexChanged += new System.EventHandler(this.cmbExportSpace_SelectedIndexChanged);
+      // 
+      // lblExportSpace
+      // 
+      this.lblExportSpace.AutoSize = true;
+      this.lblExportSpace.Location = new System.Drawing.Point(20, 77);
+      this.lblExportSpace.Name = "lblExportSpace";
+      this.lblExportSpace.Size = new System.Drawing.Size(71, 13);
+      this.lblExportSpace.TabIndex = 68;
+      this.lblExportSpace.Text = "Export metric:";
+      // 
       // PreferencePanelDrawings
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -613,10 +635,10 @@ namespace Kinovea.Root
       ((System.ComponentModel.ISupportInitialize)(this.nudMax)).EndInit();
       this.tabTracking.ResumeLayout(false);
       this.tabTracking.PerformLayout();
-      this.tabExport.ResumeLayout(false);
-      this.tabExport.PerformLayout();
       this.tabUnits.ResumeLayout(false);
       this.tabUnits.PerformLayout();
+      this.tabExport.ResumeLayout(false);
+      this.tabExport.PerformLayout();
       this.ResumeLayout(false);
 
 		}
@@ -666,5 +688,7 @@ namespace Kinovea.Root
         private System.Windows.Forms.Label lblSpeedUnit;
         private System.Windows.Forms.ComboBox cmbTimeCodeFormat;
         private System.Windows.Forms.Label lblTimeMarkersFormat;
+        private System.Windows.Forms.ComboBox cmbExportSpace;
+        private System.Windows.Forms.Label lblExportSpace;
     }
 }

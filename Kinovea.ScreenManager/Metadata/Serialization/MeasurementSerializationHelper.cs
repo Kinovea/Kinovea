@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.Globalization;
 using System.Xml;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -15,7 +16,10 @@ namespace Kinovea.ScreenManager
         {
             MeasuredDataPosition md = new MeasuredDataPosition();
             md.Name = name;
-            PointF coords = calibrationHelper.GetPoint(p);
+            PointF coords = p;
+            if (PreferencesManager.PlayerPreferences.ExportSpace == ExportSpace.WorldSpace)
+                coords = calibrationHelper.GetPoint(p);
+
             md.X = coords.X;
             md.Y = coords.Y;
             md.XLocal = String.Format("{0:0.00}", coords.X);
@@ -28,8 +32,14 @@ namespace Kinovea.ScreenManager
             MeasuredDataDistance md = new MeasuredDataDistance();
             md.Name = name;
 
-            PointF a = calibrationHelper.GetPoint(p1);
-            PointF b = calibrationHelper.GetPoint(p2);
+            PointF a = p1;
+            PointF b = p2;
+            if (PreferencesManager.PlayerPreferences.ExportSpace == ExportSpace.WorldSpace)
+            {
+                a = calibrationHelper.GetPoint(p1);
+                b = calibrationHelper.GetPoint(p2);
+            }
+
             float len = GeometryHelper.GetDistance(a, b);
             md.Value = len;
             md.ValueLocal = String.Format("{0:0.00}", len);
