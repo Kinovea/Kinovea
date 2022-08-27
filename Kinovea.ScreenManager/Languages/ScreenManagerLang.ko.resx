@@ -70,7 +70,7 @@
   </data>
   <data name="buttonGotoLast_ToolTip" xml:space="preserve"><value>두 비디오의 끝으로 감</value>
   </data>
-  <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>두 비디오의 다음 프레임으로 </value>
+  <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>두 비디오의 다음 프레임으로 이동</value>
   </data>
   <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>두 비디오의 이전 프레임으로</value>
   </data>
@@ -134,7 +134,7 @@
   </data>
   <data name="dlgRafaleExport_Title" xml:space="preserve"><value>연속 이미지를 저장</value>
   </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>느린 재생을 고려하라(현재=</value>
+  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>느린 재생을 고려하세요. (현재= </value>
   </data>
   <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>저장 방법</value>
   </data>
@@ -168,9 +168,9 @@
   </data>
   <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – 멈춤 비디오를 만들 수 없음</value>
   </data>
-  <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>파일을 기록할 수 없음.\n타깃 폴더에 쓰기 권한이 있는지, 이 파일이 현재 사용되고 있지 않은지를  확인해야 함.</value>
+  <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>파일을 기록할 수 없음.\n타깃 폴더에 쓰기 권한이 있는지, 이 파일이 현재 사용되고 있지 않은지를 확인해야 함.</value>
   </data>
-  <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - 비디오 저장 불가</value>
+  <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - 비디오를 저장할 수 없습니다. </value>
   </data>
   <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>비디오 저장 불가.\n다른 형식으로 다시 시도해 보십시오.</value>
   </data>
@@ -180,7 +180,7 @@
   </data>
   <data name="FormFramesExport_Title" xml:space="preserve"><value>이미지 반출(export)…</value>
   </data>
-  <data name="FormProgressBar_Title" xml:space="preserve"><value>진행:</value>
+  <data name="FormProgressBar_Title" xml:space="preserve"><value>진행</value>
   </data>
   <data name="Generic_Appearance" xml:space="preserve"><value>모양새</value>
   </data>
@@ -324,11 +324,11 @@
   </data>
   <data name="mnuRestartTracking" xml:space="preserve"><value>경로 편집 다시 시작</value>
   </data>
-  <data name="mnuOpenVideo" xml:space="preserve"><value>비디오 파일 열기</value>
+  <data name="mnuOpenVideo" xml:space="preserve"><value>비디오 열기…</value>
   </data>
   <data name="mnuShowMeasure" xml:space="preserve"><value>자 표시</value>
   </data>
-  <data name="mnuStopTracking" xml:space="preserve"><value>경로 편집 끝</value>
+  <data name="mnuStopTracking" xml:space="preserve"><value>경로 편집 끝 </value>
   </data>
   <data name="mnuSVGTools" xml:space="preserve"><value>관측 가능한 참조</value>
   </data>
@@ -412,9 +412,9 @@
   </data>
   <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>매 '키 이미지'에서 멈추는 비디오 저장</value>
   </data>
-  <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>작업영역의 첫 프레임을 현재 프레임으로 지정 </value>
+  <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>작업 영역의 첫 번째 프레임을 현재 프레임으로 설정</value>
   </data>
-  <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>작업영역의 마지막 프레임을 현재 프레임으로 지정 </value>
+  <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>작업 영역의 마지막 프레임을 현재 프레임으로 설정</value>
   </data>
   <data name="ToolTip_ShowComments" xml:space="preserve"><value>주석 보이기</value>
   </data>
@@ -437,7 +437,7 @@
   <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>자동 대비…</value>
   </data>
   <data name="DataAnalysis_ResultantLinearAcceleration" xml:space="preserve">
-    <value>결과 가속도</value>
+    <value>결과 가속</value>
   </data>
   <data name="DataAnalysis" xml:space="preserve">
     <value>데이터 분석</value>
@@ -476,7 +476,7 @@
     <value>그림 수정</value>
   </data>
   <data name="DataAnalysis_Title" xml:space="preserve">
-    <value>제목</value>
+    <value>제목:</value>
   </data>
   <data name="DataAnalysis_Labels" xml:space="preserve">
     <value>표시값</value>
@@ -495,5 +495,11 @@
   </data>
   <data name="Generic_Open" xml:space="preserve">
     <value>열기</value>
+  </data>
+  <data name="Generic_Quit" xml:space="preserve">
+    <value>종료</value>
+  </data>
+  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
+    <value>리플레이 폴더 관찰자로 열기…</value>
   </data>
 </root>
