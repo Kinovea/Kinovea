@@ -499,4 +499,28 @@
   <data name="Generic_Quit" xml:space="preserve">
     <value>ล้มเลิก</value>
   </data>
+  <data name="DrawingName_ArrowPolylineSquiggly" xml:space="preserve">
+    <value>ลูกศร-Polyline squiggly</value>
+  </data>
+  <data name="DrawingName_Polyline" xml:space="preserve">
+    <value>โพลี่ไลน์</value>
+  </data>
+  <data name="DrawingName_DistortionGrid" xml:space="preserve">
+    <value>ตารางการบิดเบือน</value>
+  </data>
+  <data name="DrawingName_Goniometer" xml:space="preserve">
+    <value>โกนิโอมิเตอร์ (วัดมุมการเคลื่อนไหว)</value>
+  </data>
+  <data name="DrawingName_Bikefit" xml:space="preserve">
+    <value>ฟิตติ้งจักรยาน</value>
+  </data>
+  <data name="DrawingName_Profile" xml:space="preserve">
+    <value>รูปแบบ</value>
+  </data>
+  <data name="DrawingName_CSVL" xml:space="preserve">
+    <value>เส้นกึ่งกลางกระดูกเชิงกรานแนวตั้ง</value>
+  </data>
+  <data name="DrawingName_Posture" xml:space="preserve">
+    <value>รูปร่าง</value>
+  </data>
 </root>
