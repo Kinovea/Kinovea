@@ -517,4 +517,364 @@
   <data name="Generic_Open" xml:space="preserve">
     <value>開く</value>
   </data>
+  <data name="Generic_Cut" xml:space="preserve">
+    <value>カット</value>
+  </data>
+  <data name="Generic_Copy" xml:space="preserve">
+    <value>コピー</value>
+  </data>
+  <data name="Generic_Paste" xml:space="preserve">
+    <value>ペースト</value>
+  </data>
+  <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
+    <value>ドローイングの編集</value>
+  </data>
+  <data name="DataAnalysis" xml:space="preserve">
+    <value>データ分析</value>
+  </data>
+  <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
+    <value>散布図</value>
+  </data>
+  <data name="DataAnalysis_LinearKinematics" xml:space="preserve">
+    <value>線形運動</value>
+  </data>
+  <data name="DataAnalysis_AngularKinematics" xml:space="preserve">
+    <value>回転運動</value>
+  </data>
+  <data name="DataAnalysis_AngleAngleDiagrams" xml:space="preserve">
+    <value>角度-角度図</value>
+  </data>
+  <data name="DataAnalysis_PagePlot" xml:space="preserve">
+    <value>プロット</value>
+  </data>
+  <data name="DataAnalysis_XaxisDefaultPoints" xml:space="preserve">
+    <value>X軸</value>
+  </data>
+  <data name="DataAnalysis_YaxisLabel" xml:space="preserve">
+    <value>Y軸:</value>
+  </data>
+  <data name="DataAnalysis_YaxisDefaultPoints" xml:space="preserve">
+    <value>Y軸</value>
+  </data>
+  <data name="DataAnalysis_TimeAxisMilliseconds" xml:space="preserve">
+    <value>時間(ms)</value>
+  </data>
+  <data name="DataAnalysis_CalibrationPlane" xml:space="preserve">
+    <value>校正面</value>
+  </data>
+  <data name="DataAnalysis_ExportGraph" xml:space="preserve">
+    <value>グラフの書き出し</value>
+  </data>
+  <data name="DataAnalysis_Pixels" xml:space="preserve">
+    <value>ピクセル</value>
+  </data>
+  <data name="DataAnalysis_SaveToFile" xml:space="preserve">
+    <value>ファイルに保存する</value>
+  </data>
+  <data name="DataAnalysis_TangentialVelocity" xml:space="preserve">
+    <value>接線速度</value>
+  </data>
+  <data name="DataAnalysis_TangentialAcceleration" xml:space="preserve">
+    <value>接線加速度</value>
+  </data>
+  <data name="DataAnalysis_ResultantLinearAcceleration" xml:space="preserve">
+    <value>合成加速度</value>
+  </data>
+  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+    <value>名前</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
+    <value>最大不透明度(%):</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblOpaque" xml:space="preserve">
+    <value>不透明な期間 (フレーム):</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblFading" xml:space="preserve">
+    <value>減衰継続時間(フレーム):</value>
+  </data>
+  <data name="dlgTimebase_Title" xml:space="preserve">
+    <value>ビデオタイミング設定</value>
+  </data>
+  <data name="dlgTimebase_GroupCapture" xml:space="preserve">
+    <value>ハイスピードカメラ</value>
+  </data>
+  <data name="dlgTimebase_lblCapture" xml:space="preserve">
+    <value>キャプチャーフレームレート:</value>
+  </data>
+  <data name="dlgTimebase_lblUserFPS" xml:space="preserve">
+    <value>ビデオフレームレート:</value>
+  </data>
+  <data name="dlgTimebase_InfoCapture" xml:space="preserve">
+    <value>このオプションは、ビデオスピードとリアルタイムの差を定義します。時間や運動学的な測定を含むラベルに影響を与えます。映像が高速モードで撮影された場合に使用します。 </value>
+  </data>
+  <data name="dlgTimebase_lblFileFPS" xml:space="preserve">
+    <value>ファイルから読み込んだフレームレート：{0:0.##} fps</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
+    <value>軌道ツールの構成</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
+    <value>位置</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_DistanceToOrigin" xml:space="preserve">
+    <value>原点までの距離</value>
+  </data>
+  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
+    <value>円</value>
+  </data>
+  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
+    <value>ターゲット</value>
+  </data>
+  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
+    <value>十字</value>
+  </data>
+  <data name="dlgConfigureTrajectory_VisibilityOneSecond" xml:space="preserve">
+    <value>1秒</value>
+  </data>
+  <data name="dlgConfigureTrajectory_VisibilityLabelOnly" xml:space="preserve">
+    <value>ラベルのみ</value>
+  </data>
+  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
+    <value>マーカー:</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalVerticalDisplacement" xml:space="preserve">
+    <value>相対的な垂直変位</value>
+  </data>
+  <data name="ExtraData_Length" xml:space="preserve">
+    <value>長さ</value>
+  </data>
+  <data name="ExtraData_Center" xml:space="preserve">
+    <value>中心</value>
+  </data>
+  <data name="dlgCalibrateLine_CoordinateSystemAlignment" xml:space="preserve">
+    <value>座標系の整列:</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisHorizontal" xml:space="preserve">
+    <value>線は水平軸を定義します</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisVertical" xml:space="preserve">
+    <value>線は垂直軸を定義します</value>
+  </data>
+  <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve">
+    <value>合計：{0:0} 画像。</value>
+  </data>
+  <data name="dlgRafaleExport_ExportAll" xml:space="preserve">
+    <value>すべての画像をエクスポートします。</value>
+  </data>
+  <data name="dlgCameraCalibration_Title" xml:space="preserve">
+    <value>カメラのキャリブレーション</value>
+  </data>
+  <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve">
+    <value>歪み係数</value>
+  </data>
+  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
+    <value>カメラのキャリブレーション</value>
+  </data>
+  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
+    <value>歪み</value>
+  </data>
+  <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
+    <value>カメラキャリブレーションプロファイルの読み込み</value>
+  </data>
+  <data name="dlgCameraCalibration_lblSensorWidth" xml:space="preserve">
+    <value>センサー幅 (mm):</value>
+  </data>
+  <data name="DrawingName_Arrow" xml:space="preserve">
+    <value>矢印</value>
+  </data>
+  <data name="DrawingName_ArrowDash" xml:space="preserve">
+    <value>矢印 - ダッシュ</value>
+  </data>
+  <data name="DrawingName_ArrowSquiggly" xml:space="preserve">
+    <value>矢印 – 波線</value>
+  </data>
+  <data name="DrawingName_ArrowCurve" xml:space="preserve">
+    <value>矢印 - 曲線</value>
+  </data>
+  <data name="DrawingName_ArrowPolyline" xml:space="preserve">
+    <value>矢印 - ポリライン</value>
+  </data>
+  <data name="DrawingName_ArrowPolylineDash" xml:space="preserve">
+    <value>矢印 - ポリラインダッシュ</value>
+  </data>
+  <data name="DrawingName_ArrowPolylineSquiggly" xml:space="preserve">
+    <value>矢印 – ポリライン波線</value>
+  </data>
+  <data name="DrawingName_Polyline" xml:space="preserve">
+    <value>ポリライン</value>
+  </data>
+  <data name="DrawingName_DistortionGrid" xml:space="preserve">
+    <value>歪みグリッド</value>
+  </data>
+  <data name="DrawingName_Goniometer" xml:space="preserve">
+    <value>ゴニオメーター</value>
+  </data>
+  <data name="DrawingName_Posture" xml:space="preserve">
+    <value>姿勢</value>
+  </data>
+  <data name="DrawingName_Profile" xml:space="preserve">
+    <value>プロフィール</value>
+  </data>
+  <data name="DrawingName_Genu" xml:space="preserve">
+    <value>膝</value>
+  </data>
+  <data name="DrawingName_Archery" xml:space="preserve">
+    <value>弓</value>
+  </data>
+  <data name="DrawingName_AngleToVertical" xml:space="preserve">
+    <value>垂直方向に対する角度</value>
+  </data>
+  <data name="DrawingName_AngleToHorizontal" xml:space="preserve">
+    <value>水平方向に対する角度</value>
+  </data>
+  <data name="DrawingName_DistanceHorizontal" xml:space="preserve">
+    <value>距離（水平方向）</value>
+  </data>
+  <data name="DrawingName_Rectangle" xml:space="preserve">
+    <value>長方形</value>
+  </data>
+  <data name="DrawingName_Trajectory" xml:space="preserve">
+    <value>軌道</value>
+  </data>
+  <data name="DrawingName_Curve" xml:space="preserve">
+    <value>曲線</value>
+  </data>
+  <data name="DrawingName_Clock" xml:space="preserve">
+    <value>時計</value>
+  </data>
+  <data name="Error_Capture_DirectoryNotCreated_Title" xml:space="preserve">
+    <value>ディレクトリが作成されていません</value>
+  </data>
+  <data name="FormCameraAlias_Alias" xml:space="preserve">
+    <value>別名:</value>
+  </data>
+  <data name="FormCameraAlias_Icon" xml:space="preserve">
+    <value>アイコン:</value>
+  </data>
+  <data name="Generic_Curved" xml:space="preserve">
+    <value>曲線:</value>
+  </data>
+  <data name="Generic_Perspective" xml:space="preserve">
+    <value>視点:</value>
+  </data>
+  <data name="Generic_Clock" xml:space="preserve">
+    <value>時計:</value>
+  </data>
+  <data name="Generic_Restore" xml:space="preserve">
+    <value>デフォルトに戻す</value>
+  </data>
+  <data name="Generic_Visibility" xml:space="preserve">
+    <value>可視性</value>
+  </data>
+  <data name="Generic_ExportVideo" xml:space="preserve">
+    <value>動画を書き出す…</value>
+  </data>
+  <data name="Generic_File" xml:space="preserve">
+    <value>ファイル</value>
+  </data>
+  <data name="FileProperty_Size" xml:space="preserve">
+    <value>大きさ</value>
+  </data>
+  <data name="FileProperty_Framerate" xml:space="preserve">
+    <value>フレームレート</value>
+  </data>
+  <data name="FileProperty_Duration" xml:space="preserve">
+    <value>期間</value>
+  </data>
+  <data name="DataAnalysis_Labels" xml:space="preserve">
+    <value>ラベル</value>
+  </data>
+  <data name="DataAnalysis_Title" xml:space="preserve">
+    <value>タイトル:</value>
+  </data>
+  <data name="DataAnalysis_DataLabel" xml:space="preserve">
+    <value>データ:</value>
+  </data>
+  <data name="DataAnalysis_TotalAngularDisplacement" xml:space="preserve">
+    <value>全移動</value>
+  </data>
+  <data name="DataAnalysis_XaxisLabel" xml:space="preserve">
+    <value>X軸:</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalPosition" xml:space="preserve">
+    <value>垂直位置</value>
+  </data>
+  <data name="DataAnalysis_ExportData" xml:space="preserve">
+    <value>エクスポート</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Relative" xml:space="preserve">
+    <value>相対的</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Normalized" xml:space="preserve">
+    <value>ノーマライズ</value>
+  </data>
+  <data name="DataAnalysis_DataSource" xml:space="preserve">
+    <value>データソース</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Absolute" xml:space="preserve">
+    <value>絶対的</value>
+  </data>
+  <data name="DataAnalysis_TimeModel" xml:space="preserve">
+    <value>時間:</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalPosition" xml:space="preserve">
+    <value>水平位置</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve">
+    <value>総距離</value>
+  </data>
+  <data name="dlgTimebase_InfoUser" xml:space="preserve">
+    <value>このオプションは、Kinovea がビデオを再生するために使用する参照フレームレートを定義します。ビデオに間違ったフレームレートが含まれている場合や、Kinovea が読み取れない場合に使用します。 </value>
+  </data>
+  <data name="dlgConfigureTrajectory_VisibilityComplete" xml:space="preserve">
+    <value>完了</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement" xml:space="preserve">
+    <value>相対的な水平変位</value>
+  </data>
+  <data name="Generic_SaveKVAAs" xml:space="preserve">
+    <value>注釈を別名で保存…</value>
+  </data>
+  <data name="dlgCalibrateLine_AxesImage" xml:space="preserve">
+    <value>画像軸に合わせる</value>
+  </data>
+  <data name="dlgCameraCalibration_lblFocalLength" xml:space="preserve">
+    <value>焦点距離 (mm):</value>
+  </data>
+  <data name="FormCameraAlias_Title" xml:space="preserve">
+    <value>カメラの名前を変更する</value>
+  </data>
+  <data name="dlgCameraCalibration_SaveDialogTitle" xml:space="preserve">
+    <value>カメラのキャリブレーション プロファイルを保存する</value>
+  </data>
+  <data name="DrawingName_HumanModel" xml:space="preserve">
+    <value>人体モデル</value>
+  </data>
+  <data name="DrawingName_HumanModel2" xml:space="preserve">
+    <value>人体モデル (2)</value>
+  </data>
+  <data name="Error_Capture_DirectoryNotCreated_Text" xml:space="preserve">
+    <value>キャプチャ ディレクトリを作成できませんでした。\n有効な保存場所を指していることを確認してください。</value>
+  </data>
+  <data name="Generic_SaveKVA" xml:space="preserve">
+    <value>注釈を保存</value>
+  </data>
+  <data name="Generic_Import" xml:space="preserve">
+    <value>インポート</value>
+  </data>
+  <data name="FileProperty_CreationTime" xml:space="preserve">
+    <value>作成時間</value>
+  </data>
+  <data name="FileProperty_HasKva" xml:space="preserve">
+    <value>Kvaファイル</value>
+  </data>
+  <data name="FileFilter_AllSupported" xml:space="preserve">
+    <value>サポートされているすべての形式</value>
+  </data>
+  <data name="lblDelay_Text" xml:space="preserve">
+    <value>遅延 (秒):</value>
+  </data>
+  <data name="LengthUnit_Percentage" xml:space="preserve">
+    <value>パーセンテージ</value>
+  </data>
 </root>
