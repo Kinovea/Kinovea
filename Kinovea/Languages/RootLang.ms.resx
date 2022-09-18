@@ -130,4 +130,10 @@
   <data name="dlgPreferences_Capture_Recording" xml:space="preserve">
     <value>Rakaman</value>
   </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve">
+    <value>Mohd Amal syah bin syamsah</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
+    <value>Ffftn</value>
+  </data>
 </root>
