@@ -86,7 +86,7 @@ namespace Kinovea.ScreenManager
         	this.lblInfosFrequency.Name = "lblInfosFrequency";
         	this.lblInfosFrequency.Size = new System.Drawing.Size(282, 13);
         	this.lblInfosFrequency.TabIndex = 1;
-        	this.lblInfosFrequency.Text = "Durée de chaque diapositive : 40 centièmes de secondes.";
+        	this.lblInfosFrequency.Text = "Duration of each slide: 40 hundredth.";
         	// 
         	// trkInterval
         	// 

@@ -252,10 +252,10 @@ namespace Kinovea.Services
         public void UpdateIndex(HelpItem helpItem, int listId)
         {
             //-----------------------------------------------------
-            // Vérifier s'il existe déjà, mettre à jour ou ajouter.
+            // Check if it already exists, update or add.
             //-----------------------------------------------------
 
-            // 1. Choix de la liste.
+            // 1. Select the list.
             List<HelpItem> hiList;
             string szDownloadFolder = ""; ;
             if(listId == 0)
@@ -269,7 +269,7 @@ namespace Kinovea.Services
                 szDownloadFolder = Software.HelpVideosDirectory;
             }
 
-            // 2. Recherche de l'Item.
+            // 2. Search for the item.
             bool found = false;
             int i = 0;
             while (!found && i < hiList.Count)
@@ -277,7 +277,6 @@ namespace Kinovea.Services
                 if (helpItem.Identification == hiList[i].Identification && helpItem.Language == hiList[i].Language)
                 {
                     found = true;
-                    // Mise à jour.
                     UpdateHelpItem(hiList[i], helpItem, szDownloadFolder);
                 }
                 else
@@ -288,7 +287,7 @@ namespace Kinovea.Services
 
             if (!found)
             {
-                // Ajout.
+                // Add.
                 HelpItem hiNew = new HelpItem();
                 UpdateHelpItem(hiNew, helpItem, szDownloadFolder);
                 hiList.Add(hiNew);  
@@ -296,7 +295,7 @@ namespace Kinovea.Services
         }
         private void UpdateHelpItem(HelpItem _hiLocalCopy, HelpItem _hiUpdatedCopy, string _szFolder)
         {
-            // rempli plus tard dynamiquement : _hiLocalCopy.Description
+            // Filled later dynamically: _hiLocalCopy.Description
             _hiLocalCopy.FileLocation = _szFolder + "\\" + Path.GetFileName(_hiUpdatedCopy.FileLocation);
             _hiLocalCopy.FileSizeInBytes = _hiUpdatedCopy.FileSizeInBytes;
             _hiLocalCopy.Identification = _hiUpdatedCopy.Identification;
@@ -319,12 +318,12 @@ namespace Kinovea.Services
                 LocalHelpIndexWriter.WriteString(" ");// placeholder necessary due to the parser algo.
                 LocalHelpIndexWriter.WriteEndElement();
 
-                // On retrie les items par langues.
+                // Sort again by language.
                 List<LangGroup> LangList = new List<LangGroup>();
                 SortByLang(LangList, UserGuides, "manual");
                 SortByLang(LangList, HelpVideos, "video");
 
-                // Ajouter les groupes de langues
+                // Add languages groups.
                 foreach (LangGroup lg in LangList)
                 {
                     LocalHelpIndexWriter.WriteStartElement("lang");
@@ -358,7 +357,7 @@ namespace Kinovea.Services
         {
             foreach (HelpItem item in _InputList)
             {
-                // Vérifier si la langue est connue
+                // Check if the language is known.
                 int iLangIndex = -1;
                 for (int i = 0; i < _SortedList.Count; i++)
                 {
@@ -370,7 +369,7 @@ namespace Kinovea.Services
 
                 if (iLangIndex == -1)
                 {
-                    // ajouter l'item dans une nouvelle langue.
+                    // Add item in a new language.
                     LangGroup lg = new LangGroup();
                     lg.Lang = item.Language;
                     lg.Items = new List<HelpItem>();
@@ -381,7 +380,7 @@ namespace Kinovea.Services
                 }
                 else
                 {
-                    // ajouter l'item dans sa langue.
+                    // Add item in its language.
                     _SortedList[iLangIndex].Items.Add(item);
                     _SortedList[iLangIndex].ItemTypes.Add(_szItemType);
                 }

@@ -1285,16 +1285,14 @@ namespace Kinovea.ScreenManager
                         }
                         else
                         {
-                            // Ecran de droite en lecture, avec rien dedans.
-                            // Si l'écran de gauche était également vide, bEmpty reste à true.
-                            // Si l'écran de gauche était plein, bEmpty reste à false.
+                            // Right screen is an empty player screen, nothing to do.
+                            // The final value of allScreensAreEmpty stays at whatever the value was for the left screen. 
                         }
                     }
                     else if (screenList[1] is CaptureScreen)
                     {
-                        // Ecran de droite en capture.
-                        // Si l'écran de gauche était également vide, bEmpty reste à true.
-                        // Si l'écran de gauche était plein, bEmpty reste à false.
+                        // Right screen is a capture screen, nothing to do.
+                        // The final value of allScreensAreEmpty stays at whatever the value was for the left screen. 
                     }
                     break;
 

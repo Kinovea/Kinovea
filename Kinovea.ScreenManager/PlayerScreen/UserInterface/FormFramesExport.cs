@@ -73,17 +73,16 @@ namespace Kinovea.ScreenManager
         public void DoExport()
         {
             //--------------------------------------------------
-            // Lancer le worker (déclenche bgWorker_DoWork)
+            // Start worker (triggers bgWorker_DoWork)
             //--------------------------------------------------
             bgWorker.RunWorkerAsync();
         }
         private void bgWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             //-------------------------------------------------------------
-            // /!\ Cette fonction s'execute dans l'espace du WORKER THREAD.
-            // Les fonctions appelées d'ici ne doivent pas toucher l'UI.
-            // Les appels ici sont synchrones mais on peut remonter de 
-            // l'information par bgWorker_ProgressChanged().
+            // /!\ This function runs in the WORKER THREAD.
+            // Functions called from here must not touch the UI.
+            // Calls from here are synchronous but we can send back info through bgWorker_ProgressChanged().
             //-------------------------------------------------------------
             m_psui.SaveImageSequence(bgWorker, m_FilePath, m_iIntervalTimeStamps, m_bKeyframesOnly, m_iEstimatedTotal);
 
@@ -92,16 +91,15 @@ namespace Kinovea.ScreenManager
         private void bgWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             //--------------------------------------------------------------------------------
-            // Cette fonction s'execute dans le thread local. 
-            // On a le droit de mettre à jour l'UI.
+            // This functions runs in the local thread.
+            // We can update UI from here.
             //--------------------------------------------------------------------------------
 
             //--------------------------------------------------------------------------------
-            // Problème possible : 
-            // Le worker thread va vouloir mettre à jour les données très souvent.
-            // Comme le traitement est asynchrone,il se peut qu'il poste des ReportProgress()
-            // plus vite qu'ils ne soient traités ici.
-            // Il faut donc attendre que la form soit idle.
+            // Possible problems:
+            // The worker thread may want to update data very frequently.
+            // As the processing is synchronous it may post ReportProgress()
+            // faster than they are processed. Thus we must wait for the form to be idle.
             //--------------------------------------------------------------------------------
             if (m_IsIdle)
             {
@@ -121,13 +119,10 @@ namespace Kinovea.ScreenManager
         private void bgWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             //----------------------------------------------------------------------
-            // On arrive ici lorsque la fonction bgWorker_DoWork() ressort.
-            // Les données dans e doivent être mise en place dans bgWorker_DoWork();  
+            // We come here when bgWorker_DoWork() exit. 
+            // Data in `e` must have been set during bgWorker_DoWork
             //----------------------------------------------------------------------
-
-            // Se décrocher de l'event Idle.
             Application.Idle -= new EventHandler(this.IdleDetector);
-
             Hide();
         }
     }

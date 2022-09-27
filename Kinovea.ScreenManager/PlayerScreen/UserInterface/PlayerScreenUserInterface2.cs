@@ -1604,8 +1604,8 @@ namespace Kinovea.ScreenManager
                 OnPauseAsked();
 
                 //---------------------------------------------------------------------------
-                // Si on est en dehors de la zone primaire, ou qu'on va en sortir,
-                // se replacer au début de celle-ci.
+                // If we are outside the primary selection or we are about to leave it,
+                // reset to the start point.
                 //---------------------------------------------------------------------------
                 if ((m_iCurrentPosition <= m_iSelStart) || (m_iCurrentPosition > m_iSelEnd))
                 {
