@@ -12,3 +12,5 @@ If there are too many untranslated strings directly visible in the menu and the 
 
 Statistics based on Weblate at the moment of release: 
 https://hosted.weblate.org/projects/kinovea/#languages
+
+The list is updated in Kinovea.Services > LanguageManager.cs

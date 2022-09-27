@@ -219,6 +219,7 @@
     <EmbeddedResource Include="Languages\UpdaterLang.ko.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.lt.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.mk.resx" />
+    <EmbeddedResource Include="Languages\UpdaterLang.ms.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.no.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.ru.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.sr-Cyrl-RS.resx" />

@@ -950,6 +950,7 @@
     <EmbeddedResource Include="Languages\ScreenManagerLang.ko.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.lt.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.mk.resx" />
+    <EmbeddedResource Include="Languages\ScreenManagerLang.ms.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.no.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.ru.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.sr-Cyrl-RS.resx">
