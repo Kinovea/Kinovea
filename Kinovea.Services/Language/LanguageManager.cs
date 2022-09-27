@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
 
@@ -41,9 +42,11 @@ namespace Kinovea.Services
         static LanguageManager()
         {
             // Alphabetical order by native name. (Check Wikipedia order if in doubt).
+            // ISO 639-1: https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+
             languages = new Dictionary<string, string>();
 
-            if (Software.Experimental)
+            if (Software.Experimental || Debugger.IsAttached)
             {
                 languages.Add("ar", "العَرَبِية");
                 languages.Add("bg", "Български");
@@ -60,10 +63,11 @@ namespace Kinovea.Services
                 languages.Add("id", "Bahasa Indonesia");
                 languages.Add("it", "Italiano");
                 languages.Add("lt", "Lietuvių");
+                languages.Add("mk", "Македонски");
+                languages.Add("ms", "Bahasa Melayu");
                 languages.Add("nl", "Nederlands");
                 languages.Add("ja", "日本語");
                 languages.Add("no", "Norsk bokmål");
-                languages.Add("mk", "Македонски");
                 languages.Add("pl", "Polski");
                 languages.Add("pt", "Português");
                 languages.Add("ro", "Română");
@@ -82,7 +86,7 @@ namespace Kinovea.Services
                 languages.Add("ar", "العَرَبِية");
                 languages.Add("bg", "Български");
                 languages.Add("ca", "Català");
-                //languages.Add("cs", "Čeština"); // Root < 75%
+                languages.Add("cs", "Čeština"); 
                 //languages.Add("da", "Dansk"); // Root < 75%
                 languages.Add("de", "Deutsch");
                 //languages.Add("el", "Ελληνικά"); // Root < 75%
@@ -91,13 +95,14 @@ namespace Kinovea.Services
                 languages.Add("fa", "فارسی");
                 languages.Add("fr", "Français");
                 //languages.Add("ko", "한국어"); // Root < 75%
-                //languages.Add("id", "Bahasa Indonesia"); // Untranslated menu & player
-                //languages.Add("it", "Italiano"); // Untranslated menu & player
+                languages.Add("id", "Bahasa Indonesia"); 
+                languages.Add("it", "Italiano"); 
                 languages.Add("lt", "Lietuvių");
+                languages.Add("mk", "Македонски");
+                //languages.Add("ms", "Bahasa Melayu"); // Root < 75%
                 languages.Add("nl", "Nederlands");
                 //languages.Add("ja", "日本語"); // Root < 75%
                 //languages.Add("no", "Norsk bokmål"); // Untranslated menu & player
-                //languages.Add("mk", "Македонски"); // Root < 75%
                 languages.Add("pl", "Polski");
                 languages.Add("pt", "Português");
                 languages.Add("ro", "Română");
@@ -105,7 +110,7 @@ namespace Kinovea.Services
                 //languages.Add("sr-Cyrl-RS", "Српски"); // Root < 75%
                 //languages.Add("sr-Latn-RS", "Srpski"); // Root < 75%
                 //languages.Add("fi", "Suomi"); // Root < 75%
-                //languages.Add("sv", "Svenska"); // Root < 75%
+                languages.Add("sv", "Svenska"); // ?
                 //languages.Add("th", "ไทย"); // Untranslated menu & player
                 languages.Add("tr", "Türkçe");
                 languages.Add("zh-CHS", "简体中文");
