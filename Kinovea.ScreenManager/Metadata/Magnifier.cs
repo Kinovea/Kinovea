@@ -1,6 +1,6 @@
 #region License
 /*
-Copyright © Joan Charmant 2012.
+Copyright ï½© Joan Charmant 2012.
 jcharmant@gmail.com 
  
 This file is part of Kinovea.
@@ -30,7 +30,7 @@ namespace Kinovea.ScreenManager
     /// <summary>
     /// Picture-in-picture with magnification.
     /// </summary>
-    public class Magnifier : ITrackable
+    public class Magnifier : ITrackable
     {
         // TODO: save positions in the KVA.
         // TODO: support for rendering unscaled.
