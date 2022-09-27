@@ -261,7 +261,7 @@
   </Row>
   <Row>
     <Cell ss:StyleID="header"><Data ss:Type="String">Name</Data></Cell>
-    <Cell ss:StyleID="header"><Data ss:Type="String">Value (�)</Data></Cell>
+    <Cell ss:StyleID="header"><Data ss:Type="String">Value</Data></Cell>
     <Cell ss:StyleID="header"><Data ss:Type="String">Time</Data></Cell>
   </Row>
   <xsl:for-each select="Keyframe/Drawings/Angle/Measure">

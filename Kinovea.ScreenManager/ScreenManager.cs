@@ -1,6 +1,6 @@
 #region License
 /*
-Copyright © Joan Charmant 2008.
+Copyright ÔΩ© Joan Charmant 2008.
 jcharmant@gmail.com 
  
 This file is part of Kinovea.
@@ -1286,15 +1286,15 @@ namespace Kinovea.ScreenManager
                         else
                         {
                             // Ecran de droite en lecture, avec rien dedans.
-                            // Si l'Ècran de gauche Ètait Ègalement vide, bEmpty reste ‡ true.
-                            // Si l'Ècran de gauche Ètait plein, bEmpty reste ‡ false.
+                            // Si l'È¶óran de gauche È®Åait È¶Æalement vide, bEmpty reste „Éªtrue.
+                            // Si l'È¶óran de gauche È®Åait plein, bEmpty reste „Éªfalse.
                         }
                     }
                     else if (screenList[1] is CaptureScreen)
                     {
                         // Ecran de droite en capture.
-                        // Si l'Ècran de gauche Ètait Ègalement vide, bEmpty reste ‡ true.
-                        // Si l'Ècran de gauche Ètait plein, bEmpty reste ‡ false.
+                        // Si l'È¶óran de gauche È®Åait È¶Æalement vide, bEmpty reste „Éªtrue.
+                        // Si l'È¶óran de gauche È®Åait plein, bEmpty reste „Éªfalse.
                     }
                     break;
 
@@ -1506,11 +1506,11 @@ namespace Kinovea.ScreenManager
             mnuImportImage.Text = ScreenManagerLang.mnuImportImage;
             mnuTestGrid.Text = ScreenManagerLang.DrawingName_TestGrid;
             mnuCoordinateAxis.Text = ScreenManagerLang.mnuCoordinateSystem;
-            mnuCameraCalibration.Text = ScreenManagerLang.dlgCameraCalibration_Title + "Ö";
-            mnuScatterDiagram.Text = ScreenManagerLang.DataAnalysis_ScatterDiagram + "Ö";
-            mnuTrajectoryAnalysis.Text = ScreenManagerLang.DataAnalysis_LinearKinematics + "Ö";
-            mnuAngularAnalysis.Text = ScreenManagerLang.DataAnalysis_AngularKinematics + "Ö";
-            mnuAngleAngleAnalysis.Text = ScreenManagerLang.DataAnalysis_AngleAngleDiagrams + "Ö";
+            mnuCameraCalibration.Text = ScreenManagerLang.dlgCameraCalibration_Title + "...";
+            mnuScatterDiagram.Text = ScreenManagerLang.DataAnalysis_ScatterDiagram + "...";
+            mnuTrajectoryAnalysis.Text = ScreenManagerLang.DataAnalysis_LinearKinematics + "...";
+            mnuAngularAnalysis.Text = ScreenManagerLang.DataAnalysis_AngularKinematics + "...";
+            mnuAngleAngleAnalysis.Text = ScreenManagerLang.DataAnalysis_AngleAngleDiagrams + "...";
         }
             
         private void RefreshCultureMenuFilters()
