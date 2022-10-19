@@ -118,7 +118,7 @@
   </data>
   <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>각 '키 이미지'에서 멈추는 원래 비디오</value>
   </data>
-  <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>키 이미지'만 사용한 슬라이드 쇼</value>
+  <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>주요 이미지만 있는 비디오 슬라이드쇼 입니다.</value>
   </data>
   <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>비디오의 형태</value>
   </data>
@@ -130,7 +130,7 @@
   </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>키 이미지'자료 가져오기</value>
   </data>
-  <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>키 이미지'만 내보냄</value>
+  <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>주요 이미지를 내보냅니다.</value>
   </data>
   <data name="dlgRafaleExport_Title" xml:space="preserve"><value>연속 이미지를 저장</value>
   </data>
@@ -140,7 +140,7 @@
   </data>
   <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>분석한 것만 저장</value>
   </data>
-  <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve"><value>그림과 다른 분석 개체들만 저장됨.#파일은 후에 비디오로 가져올 수 있음</value>
+  <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve"><value>주석만 저장됩니다.#파일은 나중에 동영상으로 가져올 수 있습니다.</value>
   </data>
   <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>비디오를 비디오에 영구적 분석을 적용하여 저장</value>
   </data>
@@ -150,15 +150,15 @@
   </data>
   <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>연속 이미지를 저장</value>
   </data>
-  <data name="DrawingName_Grid" xml:space="preserve"><value>그리드</value>
+  <data name="DrawingName_Grid" xml:space="preserve"><value>격자</value>
   </data>
-  <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>원근 그리드</value>
+  <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>원근 격자</value>
   </data>
   <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>파일 덮어쓰기</value>
   </data>
   <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>파일 {0}이 존재함.\n대체할까요?</value>
   </data>
-  <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>잘못된 파일명.</value>
+  <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>잘못된 파일 이름</value>
   </data>
   <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>파일명에 잘못된 문자가 있음.\n 파일명에는 다음의 문자가 있으면 안됨: \n \ / : * ? " &lt; &gt;</value>
   </data>
@@ -437,7 +437,7 @@
   <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>자동 대비…</value>
   </data>
   <data name="DataAnalysis_ResultantLinearAcceleration" xml:space="preserve">
-    <value>결과 가속</value>
+    <value>합성 가속도</value>
   </data>
   <data name="DataAnalysis" xml:space="preserve">
     <value>데이터 분석</value>
@@ -501,5 +501,590 @@
   </data>
   <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
     <value>리플레이 폴더 관찰자로 열기…</value>
+  </data>
+  <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
+    <value>카메라 내장</value>
+  </data>
+  <data name="DataAnalysis_DataSource" xml:space="preserve">
+    <value>데이터 소스</value>
+  </data>
+  <data name="DataAnalysis_AngleAngleDiagrams" xml:space="preserve">
+    <value>각도-각도 다이어그램</value>
+  </data>
+  <data name="DataAnalysis_CalibrationPlane" xml:space="preserve">
+    <value>보정 평면</value>
+  </data>
+  <data name="DataAnalysis_TangentialAcceleration" xml:space="preserve">
+    <value>접선 가속도</value>
+  </data>
+  <data name="dlgTimebase_lblUserFPS" xml:space="preserve">
+    <value>비디오 프레임속도:</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
+    <value>최대 불투명도 (%):</value>
+  </data>
+  <data name="dlgTimebase_Title" xml:space="preserve">
+    <value>비디오 타이밍 구성</value>
+  </data>
+  <data name="dlgTimebase_InfoUser" xml:space="preserve">
+    <value>이 옵션은 Kinovea가 비디오를 재생하는 데 사용하는 참조 프레임 속도를 정의합니다. 비디오에 잘못된 프레임 속도가 포함되어 있거나 Kinovea가 읽을 수 없는 경우에 사용하세요. </value>
+  </data>
+  <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
+    <value>궤적 도구 구성</value>
+  </data>
+  <data name="dlgConfigureTrajectory_VisibilityComplete" xml:space="preserve">
+    <value>완료</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalVelocity" xml:space="preserve">
+    <value>수직 속도</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve">
+    <value>총 거리</value>
+  </data>
+  <data name="dlgConfigureTrajectory_VisibilityOneSecond" xml:space="preserve">
+    <value>1 초</value>
+  </data>
+  <data name="dlgConfigureTrajectory_VisibilityLabelOnly" xml:space="preserve">
+    <value>레이블만</value>
+  </data>
+  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
+    <value>십자</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_DistanceToOrigin" xml:space="preserve">
+    <value>원점까지의 거리</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement" xml:space="preserve">
+    <value>상대 수평 변위</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalVerticalDisplacement" xml:space="preserve">
+    <value>상대 수직 변위</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalVelocity" xml:space="preserve">
+    <value>수평 속도</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Acceleration" xml:space="preserve">
+    <value>가속도</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalAcceleration" xml:space="preserve">
+    <value>수직 가속도</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
+    <value>수평 가속도</value>
+  </data>
+  <data name="dlgCalibrateLine_CoordinateSystemAlignment" xml:space="preserve">
+    <value>좌표계 정렬:</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisHorizontal" xml:space="preserve">
+    <value>선은 수평 축을 정의</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisVertical" xml:space="preserve">
+    <value>선은 수직 축을 정의</value>
+  </data>
+  <data name="DrawingName_Posture" xml:space="preserve">
+    <value>자세</value>
+  </data>
+  <data name="dlgCalibrateLine_AxesImage" xml:space="preserve">
+    <value>이미지 축과 정렬</value>
+  </data>
+  <data name="dlgCalibratePlane_Title" xml:space="preserve">
+    <value>평면 보정</value>
+  </data>
+  <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve">
+    <value>총: {0:0} 이미지입니다.</value>
+  </data>
+  <data name="dlgCameraCalibration_Title" xml:space="preserve">
+    <value>카메라 보정</value>
+  </data>
+  <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve">
+    <value>왜곡 계수</value>
+  </data>
+  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
+    <value>카메라 보정</value>
+  </data>
+  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
+    <value>왜곡</value>
+  </data>
+  <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
+    <value>카메라 보정 프로파일 불러오기</value>
+  </data>
+  <data name="dlgCameraCalibration_SaveDialogTitle" xml:space="preserve">
+    <value>카메라 보정 프로파일 저장</value>
+  </data>
+  <data name="dlgCameraCalibration_lblSensorWidth" xml:space="preserve">
+    <value>센서 폭 (mm):</value>
+  </data>
+  <data name="DrawingName_Bikefit" xml:space="preserve">
+    <value>바이크 핏</value>
+  </data>
+  <data name="DrawingName_Profile" xml:space="preserve">
+    <value>프로파일</value>
+  </data>
+  <data name="DrawingName_Genu" xml:space="preserve">
+    <value>무릎</value>
+  </data>
+  <data name="DrawingName_Archery" xml:space="preserve">
+    <value>양궁</value>
+  </data>
+  <data name="DrawingName_AngleToVertical" xml:space="preserve">
+    <value>수직 각도</value>
+  </data>
+  <data name="FormCameraAlias_Icon" xml:space="preserve">
+    <value>아이콘:</value>
+  </data>
+  <data name="FormCameraAlias_Title" xml:space="preserve">
+    <value>카메라 이름 바꾸기</value>
+  </data>
+  <data name="FormCameraAlias_Alias" xml:space="preserve">
+    <value>별명:</value>
+  </data>
+  <data name="Generic_Curved" xml:space="preserve">
+    <value>곡선:</value>
+  </data>
+  <data name="Generic_Clock" xml:space="preserve">
+    <value>시계:</value>
+  </data>
+  <data name="Generic_Perspective" xml:space="preserve">
+    <value>관점:</value>
+  </data>
+  <data name="Generic_Calibration" xml:space="preserve">
+    <value>보정</value>
+  </data>
+  <data name="Generic_File" xml:space="preserve">
+    <value>파일</value>
+  </data>
+  <data name="Generic_GridDivisionsPicker" xml:space="preserve">
+    <value>분할:</value>
+  </data>
+  <data name="Generic_Visibility" xml:space="preserve">
+    <value>가시성</value>
+  </data>
+  <data name="Generic_SaveKVA" xml:space="preserve">
+    <value>주석 저장</value>
+  </data>
+  <data name="Generic_SaveKVAAs" xml:space="preserve">
+    <value>주석을 다른 이름으로 저장…</value>
+  </data>
+  <data name="Generic_ExportVideo" xml:space="preserve">
+    <value>비디오 내보내기…</value>
+  </data>
+  <data name="Generic_Import" xml:space="preserve">
+    <value>가져오기</value>
+  </data>
+  <data name="mnuRotation270" xml:space="preserve">
+    <value>시계 반대 방향으로 90°</value>
+  </data>
+  <data name="mnuSignedAngle" xml:space="preserve">
+    <value>부호 있는 각도</value>
+  </data>
+  <data name="mnuCounterClockwise" xml:space="preserve">
+    <value>시계 반대 방향</value>
+  </data>
+  <data name="mnuCalibrate" xml:space="preserve">
+    <value>보정...</value>
+  </data>
+  <data name="mnuVisibilityCustom" xml:space="preserve">
+    <value>커스텀 페이딩</value>
+  </data>
+  <data name="mnuVisibilityConfigure" xml:space="preserve">
+    <value>커스텀 페이딩 구성</value>
+  </data>
+  <data name="mnuPasteImage" xml:space="preserve">
+    <value>클립보드에서 이미지 붙여넣기</value>
+  </data>
+  <data name="Toast_TriggerArmed" xml:space="preserve">
+    <value>캡쳐 트리거 활성됨</value>
+  </data>
+  <data name="Toast_TriggerDisarmed" xml:space="preserve">
+    <value>캡쳐 트리거 비활성됨</value>
+  </data>
+  <data name="ToolTip_DrawingToolSpotlight" xml:space="preserve">
+    <value>스포트라이트</value>
+  </data>
+  <data name="ToolTip_DrawingToolAutonumbers" xml:space="preserve">
+    <value>자동 번호</value>
+  </data>
+  <data name="ToolTip_Rafale" xml:space="preserve">
+    <value>일련의 이미지 저장</value>
+  </data>
+  <data name="ToolTip_DisarmTrigger" xml:space="preserve">
+    <value>캡처 트리거를 비활성화 합니다. 현재 상태: 활성화되었습니다.</value>
+  </data>
+  <data name="ToolTip_ArmTrigger" xml:space="preserve">
+    <value>캡처 트리거를 활성화 합니다. 현재 상태: 비활성화되었습니다.</value>
+  </data>
+  <data name="FormCrashRecovery_Recover" xml:space="preserve">
+    <value>복구</value>
+  </data>
+  <data name="FormCrashRecovery_File" xml:space="preserve">
+    <value>파일</value>
+  </data>
+  <data name="Generic_Restore" xml:space="preserve">
+    <value>기본값 복원</value>
+  </data>
+  <data name="mnuShowBefore" xml:space="preserve">
+    <value>이 시점 이전에 표시</value>
+  </data>
+  <data name="FileProperty_Duration" xml:space="preserve">
+    <value>지속</value>
+  </data>
+  <data name="FileFilter_AllSupported" xml:space="preserve">
+    <value>지원되는 모든 형식</value>
+  </data>
+  <data name="mnuRotation" xml:space="preserve">
+    <value>이미지 회전</value>
+  </data>
+  <data name="mnuRotation0" xml:space="preserve">
+    <value>회전 없음</value>
+  </data>
+  <data name="mnuHideBefore" xml:space="preserve">
+    <value>이 지점 이전에 숨기기</value>
+  </data>
+  <data name="mnuCopyImageToClipboard" xml:space="preserve">
+    <value>클립보드에 이미지 복사</value>
+  </data>
+  <data name="mnuDrawingTrackingStop" xml:space="preserve">
+    <value>추적 중지</value>
+  </data>
+  <data name="DataAnalysis_DataLabel" xml:space="preserve">
+    <value>데이터:</value>
+  </data>
+  <data name="mnuShowLabel" xml:space="preserve">
+    <value>레이블 표시</value>
+  </data>
+  <data name="FileProperty_Size" xml:space="preserve">
+    <value>크기</value>
+  </data>
+  <data name="mnuShowAfter" xml:space="preserve">
+    <value>이 시점 이후에 표시</value>
+  </data>
+  <data name="mnuRotation180" xml:space="preserve">
+    <value>180°</value>
+  </data>
+  <data name="mnuCopyToClipboard" xml:space="preserve">
+    <value>클립 보드에 복사</value>
+  </data>
+  <data name="mnuCoordinateSystemHide" xml:space="preserve">
+    <value>숨기기</value>
+  </data>
+  <data name="DataAnalysis_TimeModel" xml:space="preserve">
+    <value>시간:</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Relative" xml:space="preserve">
+    <value>상대적</value>
+  </data>
+  <data name="Generic_Cut" xml:space="preserve">
+    <value>잘라내기</value>
+  </data>
+  <data name="Generic_Copy" xml:space="preserve">
+    <value>복사하기</value>
+  </data>
+  <data name="FileProperty_Framerate" xml:space="preserve">
+    <value>프레임속도</value>
+  </data>
+  <data name="Generic_Paste" xml:space="preserve">
+    <value>붙여넣기</value>
+  </data>
+  <data name="FileProperty_HasKva" xml:space="preserve">
+    <value>Kva 파일</value>
+  </data>
+  <data name="lblDelay_Text" xml:space="preserve">
+    <value>지연 :</value>
+  </data>
+  <data name="LengthUnit_Millimeters" xml:space="preserve">
+    <value>밀리미터</value>
+  </data>
+  <data name="mnuDrawingTrackingStart" xml:space="preserve">
+    <value>추적 시작</value>
+  </data>
+  <data name="mnuCopyDrawing" xml:space="preserve">
+    <value>드로잉 복사</value>
+  </data>
+  <data name="mnuPasteDrawing" xml:space="preserve">
+    <value>드로잉 붙여넣기</value>
+  </data>
+  <data name="LengthUnit_Percentage" xml:space="preserve">
+    <value>퍼센트</value>
+  </data>
+  <data name="mnuHideAfter" xml:space="preserve">
+    <value>이 시점 이후에 숨기기</value>
+  </data>
+  <data name="mnuSupplementaryAngle" xml:space="preserve">
+    <value>보조 각도</value>
+  </data>
+  <data name="mnuFlipHorizontally" xml:space="preserve">
+    <value>수평으로 뒤집기</value>
+  </data>
+  <data name="mnuFlipVertically" xml:space="preserve">
+    <value>수직으로 뒤집기</value>
+  </data>
+  <data name="ToolTip_ConfigureCamera" xml:space="preserve">
+    <value>카메라 구성</value>
+  </data>
+  <data name="FormCrashRecovery_Title" xml:space="preserve">
+    <value>충돌 복원</value>
+  </data>
+  <data name="mnuMarkTimeAsOrigin" xml:space="preserve">
+    <value>현재 시간을 시간 원점으로 표시</value>
+  </data>
+  <data name="mnuMarkTimeAsOriginClock" xml:space="preserve">
+    <value>현재 시간을 이 시계의 시간 원점으로 표시</value>
+  </data>
+  <data name="ToolTip_StartCamera" xml:space="preserve">
+    <value>카메라 시작</value>
+  </data>
+  <data name="mnuOpenReplayWatcher" xml:space="preserve">
+    <value>재생 폴더 관찰자 열기…</value>
+  </data>
+  <data name="mnuTimebase" xml:space="preserve">
+    <value>비디오 타이밍 구성...</value>
+  </data>
+  <data name="mnuThumbnailDelete" xml:space="preserve">
+    <value>삭제</value>
+  </data>
+  <data name="mnuThumbnailForget" xml:space="preserve">
+    <value>커스텀 설정 잊어버리기</value>
+  </data>
+  <data name="mnuThumbnailRename" xml:space="preserve">
+    <value>이름 바꾸기</value>
+  </data>
+  <data name="mnuThumbnailLocate" xml:space="preserve">
+    <value>윈도우즈 탐색기에서 파일 찾기</value>
+  </data>
+  <data name="mnuCoordinateSystemShowAxis" xml:space="preserve">
+    <value>축</value>
+  </data>
+  <data name="mnuCutDrawing" xml:space="preserve">
+    <value>드로잉 잘라내기</value>
+  </data>
+  <data name="mnuSetStyleAsDefault" xml:space="preserve">
+    <value>스타일을 기본값으로 설정</value>
+  </data>
+  <data name="mnuCoordinateSystem" xml:space="preserve">
+    <value>좌표계</value>
+  </data>
+  <data name="mnuCoordinateSystemShowGrid" xml:space="preserve">
+    <value>그리그</value>
+  </data>
+  <data name="mnuCoordinateSystemShowTickMarks" xml:space="preserve">
+    <value>눈금 표시</value>
+  </data>
+  <data name="mnuPolyline_FinishHere" xml:space="preserve">
+    <value>여기에서 폴리라인 완료</value>
+  </data>
+  <data name="mnuVisibilityDefault" xml:space="preserve">
+    <value>기본 페이딩</value>
+  </data>
+  <data name="mnuPolyline_FinishAtPrevious" xml:space="preserve">
+    <value>이전 점에서 폴리라인 완료</value>
+  </data>
+  <data name="mnuPolyline_CloseMenu" xml:space="preserve">
+    <value>이 메뉴 닫기</value>
+  </data>
+  <data name="mnuShowArrow" xml:space="preserve">
+    <value>화살표 표시</value>
+  </data>
+  <data name="mnuShowCircleCenter" xml:space="preserve">
+    <value>원 중심 표시</value>
+  </data>
+  <data name="Toast_AudioLost" xml:space="preserve">
+    <value>오디오 장치 분실</value>
+  </data>
+  <data name="ToolTip_PauseCamera" xml:space="preserve">
+    <value>카메라 일시 중지</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve">
+    <value>객체창:</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
+    <value>검색창:</value>
+  </data>
+  <data name="mnuRotation90" xml:space="preserve">
+    <value>시계 방향으로 90°</value>
+  </data>
+  <data name="DrawingName_ArrowPolylineSquiggly" xml:space="preserve">
+    <value>화살표 - 구불구불한 폴리라인</value>
+  </data>
+  <data name="DrawingName_Trajectory" xml:space="preserve">
+    <value>궤적</value>
+  </data>
+  <data name="FormCrashRecovery_Date" xml:space="preserve">
+    <value>날짜</value>
+  </data>
+  <data name="DrawingName_Curve" xml:space="preserve">
+    <value>곡선</value>
+  </data>
+  <data name="Error_Capture_DirectoryNotCreated_Text" xml:space="preserve">
+    <value>캡처 디렉토리를 생성할 수 없습니다.\n올바른 저장 위치를 가리키는지 확인하세요.</value>
+  </data>
+  <data name="DrawingName_Arrow" xml:space="preserve">
+    <value>화살표</value>
+  </data>
+  <data name="FormCrashRecovery_Info" xml:space="preserve">
+    <value>다음 프로젝트가 제대로 저장되지 않았지만 복구할 수 있습니다:</value>
+  </data>
+  <data name="Infobar_Player_Observing" xml:space="preserve">
+    <value>관찰 폴더: {0}</value>
+  </data>
+  <data name="Infobar_Player_StopWatcher" xml:space="preserve">
+    <value>관찰 폴더 중지: {0}</value>
+  </data>
+  <data name="Infobar_Player_StartWatcher" xml:space="preserve">
+    <value>관찰 폴더 시작: {0}</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
+    <value>각 변위</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
+    <value>각속도</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_CentripetalAcceleration" xml:space="preserve">
+    <value>구심 가속도</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularAcceleration" xml:space="preserve">
+    <value>각가속도</value>
+  </data>
+  <data name="ExtraData_Length" xml:space="preserve">
+    <value>길이</value>
+  </data>
+  <data name="ExtraData_Center" xml:space="preserve">
+    <value>중앙</value>
+  </data>
+  <data name="ExtraData_Circumference" xml:space="preserve">
+    <value>둘레</value>
+  </data>
+  <data name="dlgTimebase_lblFileFPS" xml:space="preserve">
+    <value>파일에서 읽은 프레임 속도: {0:0.##} fps</value>
+  </data>
+  <data name="ExtraData_Radius" xml:space="preserve">
+    <value>반경</value>
+  </data>
+  <data name="dlgRafaleExport_ExportAll" xml:space="preserve">
+    <value>모든 이미지를 내보냅니다.</value>
+  </data>
+  <data name="ExtraData_Diameter" xml:space="preserve">
+    <value>지름</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
+    <value>추적</value>
+  </data>
+  <data name="dlgRafaleExport_ExportFrameDecimation" xml:space="preserve">
+    <value>이미지 {0} 개 마다 하나의 이미지를 내보냅니다.</value>
+  </data>
+  <data name="dlgRafaleExport_ExportTimeDecimationSeconds" xml:space="preserve">
+    <value>{0:0.00} s 마다 하나의 이미지를 내보냅니다.</value>
+  </data>
+  <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve">
+    <value>{0:0} ms 마다 하나의 이미지를 내보냅니다.</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalPosition" xml:space="preserve">
+    <value>수평 위치</value>
+  </data>
+  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+    <value>이름</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblOpaque" xml:space="preserve">
+    <value>불투명 지속 시간 (프레임):</value>
+  </data>
+  <data name="dlgCameraCalibration_lblFocalLength" xml:space="preserve">
+    <value>초점 거리 (mm):</value>
+  </data>
+  <data name="DrawingName_ArrowDash" xml:space="preserve">
+    <value>화살표 - 대시</value>
+  </data>
+  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
+    <value>원</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblFading" xml:space="preserve">
+    <value>페이딩 지속 시간 (프레임):</value>
+  </data>
+  <data name="dlgTimebase_GroupCapture" xml:space="preserve">
+    <value>고속 카메라</value>
+  </data>
+  <data name="dlgTimebase_lblCapture" xml:space="preserve">
+    <value>프레임 속도 캡처:</value>
+  </data>
+  <data name="DrawingName_ArrowSquiggly" xml:space="preserve">
+    <value>화살표 – 구불구불</value>
+  </data>
+  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
+    <value>대상</value>
+  </data>
+  <data name="DrawingName_ArrowCurve" xml:space="preserve">
+    <value>화살표 - 곡선</value>
+  </data>
+  <data name="DrawingName_ArrowPolyline" xml:space="preserve">
+    <value>화살표 - 폴리라인</value>
+  </data>
+  <data name="dlgConfigureTrajectory_CheckDisplayRotationCircle" xml:space="preserve">
+    <value>회전 원 표시</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
+    <value>위치</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalPosition" xml:space="preserve">
+    <value>수직 위치</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Absolute" xml:space="preserve">
+    <value>절대적</value>
+  </data>
+  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
+    <value>마커:</value>
+  </data>
+  <data name="DrawingName_CSVL" xml:space="preserve">
+    <value>중앙 천골 수직선</value>
+  </data>
+  <data name="dlgTimebase_InfoCapture" xml:space="preserve">
+    <value>이 옵션은 비디오 속도와 실시간 간의 차이를 정의합니다. 시간 및 운동학 측정값이 포함된 레이블에 영향을 줍니다. 고속 모드로 동영상을 촬영할 때 사용합니다. </value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Normalized" xml:space="preserve">
+    <value>정규화</value>
+  </data>
+  <data name="DataAnalysis_TotalAngularDisplacement" xml:space="preserve">
+    <value>총 변위</value>
+  </data>
+  <data name="DataAnalysis_TangentialVelocity" xml:space="preserve">
+    <value>접선 속도</value>
+  </data>
+  <data name="DrawingName_ArrowPolylineDash" xml:space="preserve">
+    <value>화살표 - 폴리라인 대시</value>
+  </data>
+  <data name="DrawingName_DistanceHorizontal" xml:space="preserve">
+    <value>거리 (수평)</value>
+  </data>
+  <data name="DrawingName_Polyline" xml:space="preserve">
+    <value>폴리라인</value>
+  </data>
+  <data name="DrawingName_HumanModel" xml:space="preserve">
+    <value>인간 모델</value>
+  </data>
+  <data name="DrawingName_DistortionGrid" xml:space="preserve">
+    <value>왜곡 격자</value>
+  </data>
+  <data name="DrawingName_Goniometer" xml:space="preserve">
+    <value>각도계</value>
+  </data>
+  <data name="DrawingName_AngleToHorizontal" xml:space="preserve">
+    <value>수평 각도</value>
+  </data>
+  <data name="DrawingName_HumanModel2" xml:space="preserve">
+    <value>인간 모델 (2)</value>
+  </data>
+  <data name="DrawingName_Rectangle" xml:space="preserve">
+    <value>직사각형</value>
+  </data>
+  <data name="DrawingName_Clock" xml:space="preserve">
+    <value>시계</value>
+  </data>
+  <data name="Error_Capture_DirectoryNotCreated_Title" xml:space="preserve">
+    <value>디렉토리가 생성되지 않음</value>
+  </data>
+  <data name="DrawingName_TestGrid" xml:space="preserve">
+    <value>카메라 테스트 격자</value>
+  </data>
+  <data name="FileProperty_CreationTime" xml:space="preserve">
+    <value>생성 시간</value>
+  </data>
+  <data name="mnuLoadAnalysis" xml:space="preserve">
+    <value>주석 불러오기…</value>
   </data>
 </root>
