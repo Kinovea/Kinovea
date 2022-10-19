@@ -1,6 +1,6 @@
-#region License
+ï»¿#region License
 /*
-Copyright © Joan Charmant 2008.
+Copyright Â© Joan Charmant 2008.
 jcharmant@gmail.com 
  
 This file is part of Kinovea.
@@ -1504,11 +1504,11 @@ namespace Kinovea.ScreenManager
             mnuImportImage.Text = ScreenManagerLang.mnuImportImage;
             mnuTestGrid.Text = ScreenManagerLang.DrawingName_TestGrid;
             mnuCoordinateAxis.Text = ScreenManagerLang.mnuCoordinateSystem;
-            mnuCameraCalibration.Text = ScreenManagerLang.dlgCameraCalibration_Title + "…";
-            mnuScatterDiagram.Text = ScreenManagerLang.DataAnalysis_ScatterDiagram + "…";
-            mnuTrajectoryAnalysis.Text = ScreenManagerLang.DataAnalysis_LinearKinematics + "…";
-            mnuAngularAnalysis.Text = ScreenManagerLang.DataAnalysis_AngularKinematics + "…";
-            mnuAngleAngleAnalysis.Text = ScreenManagerLang.DataAnalysis_AngleAngleDiagrams + "…";
+            mnuCameraCalibration.Text = ScreenManagerLang.dlgCameraCalibration_Title + "â€¦";
+            mnuScatterDiagram.Text = ScreenManagerLang.DataAnalysis_ScatterDiagram + "â€¦";
+            mnuTrajectoryAnalysis.Text = ScreenManagerLang.DataAnalysis_LinearKinematics + "â€¦";
+            mnuAngularAnalysis.Text = ScreenManagerLang.DataAnalysis_AngularKinematics + "â€¦";
+            mnuAngleAngleAnalysis.Text = ScreenManagerLang.DataAnalysis_AngleAngleDiagrams + "â€¦";
         }
             
         private void RefreshCultureMenuFilters()

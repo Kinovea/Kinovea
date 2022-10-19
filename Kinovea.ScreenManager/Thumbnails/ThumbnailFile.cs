@@ -1,5 +1,5 @@
-/*
-Copyright © Joan Charmant 2008.
+ï»¿/*
+Copyright Â© Joan Charmant 2008.
 jcharmant@gmail.com 
  
 This file is part of Kinovea.
@@ -227,7 +227,7 @@ namespace Kinovea.ScreenManager
                 if (summary.ImageSize == Size.Empty)
                     details.Details[FileProperty.Size] = "";
                 else
-                    details.Details[FileProperty.Size] = string.Format("{0}×{1}", summary.ImageSize.Width, summary.ImageSize.Height);
+                    details.Details[FileProperty.Size] = string.Format("{0}Ã—{1}", summary.ImageSize.Width, summary.ImageSize.Height);
                 
                 hasKva = summary.HasKva;
                 if (hasKva)
@@ -459,7 +459,7 @@ namespace Kinovea.ScreenManager
 
             if (ShouldShowProperty(FileProperty.Duration))
             {
-                string duration = m_bIsImage ? ScreenManagerLang.Generic_Image + " " : details.Details[FileProperty.Duration];
+                string duration = m_bIsImage ? ScreenManagerLang.Generic_Image + "Â " : details.Details[FileProperty.Duration];
                 DrawPropertyString(canvas, duration, top);
                 top += verticalMargin;
             }
@@ -718,7 +718,7 @@ namespace Kinovea.ScreenManager
 
                 }
 
-                lblFileName.Text = fits ? text : text + "…";
+                lblFileName.Text = fits ? text : text + "â€¦";
             }
             catch
             {
