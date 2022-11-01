@@ -25,6 +25,7 @@ using System.Windows.Forms;
 using System.Reflection;
 using Kinovea.Services;
 using System.Diagnostics;
+using Analysistem;
 
 namespace Kinovea.Root
 {
@@ -86,6 +87,9 @@ namespace Kinovea.Root
 
             log.Debug("Launching.");
             kernel.Launch();
+
+            TestClass tc = new TestClass();
+            tc.TestMethod();
         }
         
         private static void AppDomain_UnhandledException(object sender, UnhandledExceptionEventArgs args)
