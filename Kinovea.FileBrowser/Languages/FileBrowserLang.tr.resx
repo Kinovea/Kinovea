@@ -104,4 +104,16 @@
   <data name="FormCameraWizard_Test" xml:space="preserve">
     <value>Test</value>
   </data>
+  <data name="lblCaptureHistory" xml:space="preserve">
+    <value>Yakalama geçmişi</value>
+  </data>
+  <data name="mnuVideoLocate" xml:space="preserve">
+    <value>Windows Gezgini'nde bul </value>
+  </data>
+  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
+    <value>Yeniden oynatma klasörü gözlemcisi olarak aç</value>
+  </data>
+  <data name="ForgetCustomSettings" xml:space="preserve">
+    <value>Özel ayarları unut</value>
+  </data>
 </root>
