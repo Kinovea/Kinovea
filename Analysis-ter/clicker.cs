@@ -1,25 +1,47 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Drawing;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
+using ZedGraph;
 // nuget => emgu.cv.bitmap
 // if you're still getting errors, nuget => emgu.cv (in addition to the above)
 
 namespace SyncRecording
 {
+    //*****************************
+    //=========== RETURN STRUCTS ::
 
-    class SyncR
+    // these structs are intended to be expanded if we want to return additional info
+    public struct Target // using TM_SQDIFF
+    {
+        public Point loc; // minLoc 
+        public double minVal; // minVal for client debugging
+        public bool detected; // minVal < THRESHOLD
+    }
+
+    public struct Data
+    {
+        public Target[] targets;
+        public double delay;
+    }
+
+    static class SyncR
     {
         // if minVal from `DetectTarget()` is below this value, the detection is *likely* to be accurate
         // "likely" because these values tend to be inconsistent across computers and especially between different
         //      templates (e.g., SparkVue's THRESHOLD is approx. double that of Kinovea's (from my own testing!))
-        private static readonly double THRESHOLD = 3_000_000;
-        
+        private const double THRESHOLD = 3_000_000;
+        private static readonly Screen[] screens = Screen.AllScreens;
+        private static Point[] screenOrigins = (from screen in (IEnumerable<Screen>)screens select new Point(screen.Bounds.X, screen.Bounds.Y)).ToArray();  
+        private static int mainScreen = 0;
 
         //**************************
         //=========== MOUSE STUFF ::
@@ -37,69 +59,40 @@ namespace SyncRecording
         private static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint dwData, uint dwExtraInf);
 
 
-        //*****************************
-        //=========== RETURN STRUCTS ::
-
-        // these structs are intended to be expanded if we want to return additional info
-        public struct Target // using TM_SQDIFF
-        {
-            public Point loc; // minLoc 
-            public double minVal; // minVal for client debugging
-            public bool detected; // minVal < THRESHOLD
-        }
-
-        public struct Data
-        {
-            public Target[] targets;
-            public double delay;
-        }
-
-
         //*******************************
         //=========== HELPER FUNCTIONS ::
 
-        private static Mat CaptureScreen()
+        private static double ToMicros(this TimeSpan elapsed)
         {
-            Screen[] screens = Screen.AllScreens;
-            Rectangle bounds = screens[screens.Length - 1].Bounds; // hopefully the main screen's bounds :)
-
-            using (Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height)) // new Bitmap
-            {
-                using (Graphics g = Graphics.FromImage(bitmap)) // take the screenshot
-                {
-                    g.CopyFromScreen(new Point(bounds.Left, bounds.Top), Point.Empty, bounds.Size);
-                }
-
-                return bitmap.ToMat(); // convert Bitmap to Mat and return
-            }
+            return elapsed.Ticks / (double)TimeSpan.TicksPerMillisecond * 1000;
         }
 
-        private static Target DetectTarget(Mat screenshot, Mat template) // using TM_SQDIFF
+        // converts Bitmap RGBA to Mat BGR
+        private static Mat ToMatBGR(this Bitmap bitmap)
         {
-            Mat result = new Mat(); // ref to hold MatchTemplate() result
-            CvInvoke.MatchTemplate(screenshot, template, result, TemplateMatchingType.Sqdiff); // run dumb algo to find best match of template in screenshot
+            Mat matBGR = new Mat();
+            CvInvoke.CvtColor(bitmap.ToMat(), matBGR, ColorConversion.Rgba2Bgr);
 
-            double minVal = 0; // essentially, 'arbitrary' confidence value for detection accuracy
-            double maxVal = 0; // used for other TemplateMatchingTypes
-            Point minLoc = new Point(); // 'best guess' top-left corner location of target
-            Point maxLoc = new Point(); // used for other TemplateMatchingTypes
-            CvInvoke.MinMaxLoc(result, ref minVal, ref maxVal, ref minLoc, ref maxLoc);
+            return matBGR;
+        }
 
-            Console.WriteLine(minLoc);
+        private static Target NewTarget(Point loc, double val, int screen)
+        {
+            if (val > 5_000_000) val -= 3_000_000; // trying to tune the confidence value for sparkvue
 
             return new Target() // the "detected target"
             {
-                loc = minLoc,
-                minVal = minVal,
-                detected = minVal < THRESHOLD,
+                loc = new Point(screenOrigins[screen].X + loc.X, screenOrigins[screen].Y + loc.Y),
+                minVal = val,
+                detected = val < THRESHOLD,
             };
         }
 
-        private static void Click(Point loc)
+        private static void Click(Point loc, Barrier barrier = null, Stopwatch stopwatch = null)
         {
             mouse_event(MOUSEEVENTF_LEFTDOWN, (uint)loc.X, (uint)loc.Y, 0, 0);
-            // can sleep here to delay the full click event, might be useful to have the thread barrier
-            //      here to further reduce time between click-event and recording-start ?
+            if (stopwatch != null) stopwatch.Start();
+            else if (barrier != null) barrier.SignalAndWait(); // maybe the delay would be more accurate with these two lines below LEFTUP ???
             mouse_event(MOUSEEVENTF_LEFTUP, (uint)loc.X, (uint)loc.Y, 0, 0);
         }
 
@@ -111,15 +104,69 @@ namespace SyncRecording
         }
 
 
+        //*******************************
+        //=========== TARGET DETECTION ::
+
+        private static Mat CaptureScreen(int idx)
+        {
+            Rectangle bounds = screens[idx].Bounds; // hopefully the main screen's bounds :)
+
+            using (Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height)) // new Bitmap
+            {
+                using (Graphics g = Graphics.FromImage(bitmap)) // take the screenshot
+                {
+                    g.CopyFromScreen(new Point(bounds.Left, bounds.Top), Point.Empty, bounds.Size);
+                }
+
+                return bitmap.ToMatBGR(); // convert Bitmap to Mat and return
+            }
+        }
+
+        private static Target DetectTargetOnScreen(Mat template, int screen)
+        {
+            Mat screenshot = CaptureScreen(screen);
+            Mat result = new Mat(); // ref to hold MatchTemplate() result
+            CvInvoke.MatchTemplate(screenshot, template, result, TemplateMatchingType.Sqdiff); // run dumb algo to find best match of template in screenshot
+
+            double minVal = 0; // essentially, 'arbitrary' confidence value for detection accuracy
+            double maxVal = 0; // used for other TemplateMatchingTypes
+            Point minLoc = new Point(); // 'best guess' top-left corner location of target
+            Point maxLoc = new Point(); // used for other TemplateMatchingTypes
+            CvInvoke.MinMaxLoc(result, ref minVal, ref maxVal, ref minLoc, ref maxLoc);
+
+            return NewTarget(minLoc, minVal, screen);
+        }
+
+        // convenience function
+        private static Target DetectTargetOnMain(Mat template)
+        {
+            return DetectTargetOnScreen(template, mainScreen);
+        }
+
+        // detect target on all screens
+        private static Target DetectTarget(Mat template) // using TM_SQDIFF
+        {
+            Target bestGuess = DetectTargetOnMain(template);
+
+            for (int idx = 1; idx < screens.Length; idx++)
+            {
+                Target currGuess = DetectTargetOnScreen(template, idx);
+
+                if (currGuess.minVal < bestGuess.minVal) bestGuess = currGuess;
+            }
+
+            return bestGuess;
+        }
+
+
         //**************************************
         //=========== WHERE THE MAGIC HAPPENS ::
 
         private static Data _ClickTargets(Mat kinoveaMat, Mat sparkvueMat)
         {
             // capture screen and detect targets
-            Mat screenshot = CaptureScreen();
-            Target kinoveaTarget = DetectTarget(screenshot, kinoveaMat);
-            Target sparkvueTarget = DetectTarget(screenshot, sparkvueMat);
+            Target kinoveaTarget = DetectTarget(kinoveaMat);
+            Target sparkvueTarget = DetectTarget(sparkvueMat);
 
             // cache original mouse position
             GetCursorPos(out Point origPos);
@@ -137,32 +184,83 @@ namespace SyncRecording
             return new Data() // essentially, the model for the view
             {
                 targets = new Target[] { kinoveaTarget, sparkvueTarget },
-                delay = stopwatch.ElapsedMilliseconds
+                delay = stopwatch.Elapsed.ToMicros()
             };
         }
 
+        // start recording: Synchronous
         private static Data _Record(Mat sparkvueMat, bool isStart)
         {
-            Target sparkvueTarget = DetectTarget(CaptureScreen(), sparkvueMat);
+            Target sparkvueTarget = DetectTarget(sparkvueMat);
+
+            Stopwatch stopwatch = new Stopwatch();
 
             // cache original mouse position
             GetCursorPos(out Point origPos);
 
             // move to and click sparkvue target
             SetCursorPos(sparkvueTarget.loc.X, sparkvueTarget.loc.Y);
-            Click(sparkvueTarget.loc);
+            Click(sparkvueTarget.loc, null, stopwatch); // might be more accurate to start stopwatch below the click?
 
+            // isStart to determine start/stop
             //==============================================================================================================================================================================================================================================
-            //============================================================================================== TODO: start recording kinovea here ============================================================================================================
+            //============================================================================== TODO: start/stop recording kinovea here =======================================================================================================================
             //==============================================================================================================================================================================================================================================
-
+            stopwatch.Stop();
             // return to original mouse position
             SetCursorPos(origPos.X, origPos.Y);
 
             return new Data() // essentially, the model for the view 
-            { 
-                targets = new Target[] { new Target(), sparkvueTarget},
-                delay = 0
+            {
+                targets = new Target[] { new Target(), sparkvueTarget },
+                delay = stopwatch.Elapsed.ToMicros()
+            };
+        }
+
+        // start recording: Asynchronous
+        private static Data _RecordThreads(Mat sparkvueMat, bool isStart)
+        {
+            Target sparkvueTarget = DetectTarget(sparkvueMat);
+
+            Stopwatch stopwatch = new Stopwatch();
+            Barrier barrier = new Barrier(2, (b) =>
+            {
+                if (b.CurrentPhaseNumber == 0) stopwatch.Start();
+                else stopwatch.Stop();
+            });
+
+            Action startKinovea = () =>
+            {
+                barrier.SignalAndWait(); // wait to start stopwatch
+                // isStart to determine start/stop
+                //==========================================================================================================================================================================================================================================
+                //========================================================================== TODO: start/stop recording kinovea here =======================================================================================================================
+                //==========================================================================================================================================================================================================================================
+                barrier.SignalAndWait(); // wait to stop stopwatch
+            };
+
+            Action startSparkvue = () =>
+            {
+                // cache original mouse position
+                GetCursorPos(out Point origPos);
+
+                // move to and click sparkvue target
+                SetCursorPos(sparkvueTarget.loc.X, sparkvueTarget.loc.Y);
+                Click(sparkvueTarget.loc, barrier); // pass in barrier to wait to start stopwatch
+                barrier.SignalAndWait(); // wait to stop stopwatch
+
+                // return to original mouse position
+                SetCursorPos(origPos.X, origPos.Y);
+            };
+
+            Parallel.Invoke(startKinovea, startSparkvue);
+
+            barrier.Dispose();
+
+            return new Data()
+            {
+                targets = new Target[] { new Target(), sparkvueTarget },
+                delay = stopwatch.Elapsed.ToMicros()
             };
         }
 
@@ -180,7 +278,7 @@ namespace SyncRecording
                 bitmap = (Bitmap)Bitmap.FromStream(ms); // convert bytes to Bitmap
             }
 
-            return bitmap.ToMat(); // convert Bitmap to Mat and return
+            return bitmap.ToMatBGR(); // convert Bitmap to Mat and return
         }
 
         private static readonly Dictionary<string, Dictionary<bool, Mat>> encodedTemplates = new Dictionary<string, Dictionary<bool, Mat>>()
@@ -213,6 +311,11 @@ namespace SyncRecording
         public static Data Record(bool isStart)
         {
             return _Record(encodedTemplates["sparkvue"][isStart], isStart);
+        }
+
+        public static Data RecordThreads(bool isStart)
+        {
+            return _RecordThreads(encodedTemplates["sparkvue"][isStart], isStart);
         }
     }
 }
