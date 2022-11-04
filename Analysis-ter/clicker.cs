@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
-using ZedGraph;
 // nuget => emgu.cv.bitmap
 // if you're still getting errors, nuget => emgu.cv (in addition to the above)
 
