@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using autoClickF;
+using SyncRecording;
 
 namespace Analysistem
 {
@@ -19,8 +19,9 @@ namespace Analysistem
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());*/
 
-            Clicker click = new Clicker();
-            click.Start();
+            bool isStart = true; // you set this depending on if you want to start/stop recording
+            SyncR.ClickTargets(isStart); // ClickTargets() for syncing via autoclicker <-- basically just for testing atm
+            SyncR.Record(isStart); // Record() for syncing via Kinovea.Record() and clicking SparkVue <-- the function we will likely actually use
         }
     }
 }
