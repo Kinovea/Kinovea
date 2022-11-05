@@ -71,4 +71,43 @@
   <data name="FormIconPicker_Title" xml:space="preserve">
     <value>İkonlar</value>
   </data>
+  <data name="FormHandshakeResult_Title" xml:space="preserve">
+    <value>Bağlantı denemesi</value>
+  </data>
+  <data name="FormHandshakeResult_Failure_Title" xml:space="preserve">
+    <value>Bağlantı deneme başarısız</value>
+  </data>
+  <data name="FormHandshakeResult_Failure_Message" xml:space="preserve">
+    <value>Bağlantı testi sırasında bir hata ile karşılaşıldı.</value>
+  </data>
+  <data name="FormConfiguration_Title" xml:space="preserve">
+    <value>Kamera yapılandırması</value>
+  </data>
+  <data name="FormConfiguration_Properties_StreamFormat" xml:space="preserve">
+    <value>Akış biçimi:</value>
+  </data>
+  <data name="FormConfiguration_Properties_ImageSize" xml:space="preserve">
+    <value>Görüntü boyutu:</value>
+  </data>
+  <data name="FormConfiguration_Properties_ImageWidth" xml:space="preserve">
+    <value>Genişlik(En):</value>
+  </data>
+  <data name="FormConfiguration_Properties_ImageHeight" xml:space="preserve">
+    <value>Yükseklik (Boy):</value>
+  </data>
+  <data name="FormConfiguration_Properties_Framerate" xml:space="preserve">
+    <value>Kare hızı:</value>
+  </data>
+  <data name="FormConfiguration_Properties_Exposure" xml:space="preserve">
+    <value>Pozlama:</value>
+  </data>
+  <data name="FormConfiguration_Properties_ExposureMicro" xml:space="preserve">
+    <value>Pozlama (µs):</value>
+  </data>
+  <data name="FormConfiguration_Properties_Gain" xml:space="preserve">
+    <value>Kazanç:</value>
+  </data>
+  <data name="FormConfiguration_Properties_Focus" xml:space="preserve">
+    <value>Odak:</value>
+  </data>
 </root>
