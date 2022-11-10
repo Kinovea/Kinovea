@@ -672,4 +672,7 @@
   <data name="dlgConfigureTrajectory_ExtraData_HorizontalPosition" xml:space="preserve">
     <value>Horisontell position</value>
   </data>
+  <data name="dlgTimebase_Title" xml:space="preserve">
+    <value>Konfigurera videotiming</value>
+  </data>
 </root>
