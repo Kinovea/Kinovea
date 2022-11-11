@@ -59,7 +59,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve">
-    <value>Format video tanpa mampatan</value>
+    <value>Format video tanpa mampatan:</value>
   </data>
   <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve">
     <value>Rekod Video tidak mampat</value>
@@ -80,7 +80,7 @@
     <value>Fail:</value>
   </data>
   <data name="dlgPreferences_Capture_Subdir" xml:space="preserve">
-    <value>Sub directory:</value>
+    <value>Direktori sub:</value>
   </data>
   <data name="dlgPreferences_Capture_Root" xml:space="preserve">
     <value>Root:</value>
@@ -131,9 +131,114 @@
     <value>Rakaman</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve">
-    <value>Mohd Amal syah bin syamsah</value>
+    <value>Tertunda: rakam binkai tertunda.</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
-    <value>Ffftn</value>
+    <value>Retroaktif: merekodkan bingkai apabila tangkapan berhenti.</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
+    <value>Tarikh dan masa (YYYYMMDD-HHMMSS)</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
+    <value>Kadar bingkai diterima</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
+    <value>Jujukan keluar</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
+    <value>Kamera: rekod kerangka masa nyata.</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve">
+    <value>Tahun</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve">
+    <value>Bulan</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve">
+    <value>Hari</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve">
+    <value>Jam</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve">
+    <value>Minit</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
+    <value>Direktori tangkapan</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
+    <value>Nama fail yang ditangkap</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
+    <value>Tarikh (YYYYMMDD)</value>
+  </data>
+  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
+    <value>Konteks</value>
+  </data>
+  <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
+    <value>Makro</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve">
+    <value>Memori yang diperuntukkan untuk penampan kelewatan: {0} MB.</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
+    <value>Abai amaran menulis ganti fail</value>
+  </data>
+  <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
+    <value>Kamera berkelajuan tinggi</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkEnableAudioTrigger" xml:space="preserve">
+    <value>Dayakan pencetus audio</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve">
+    <value>Peranti input:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
+    <value>Ambang pencetus:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
+    <value>Hentikan rakaman mengikut tempoh (s):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
+    <value>Masa terbiar (s):</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve">
+    <value>Papar lukisan semasa video dimainkan</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve">
+    <value>Dayakan penapisan koordinat</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve">
+    <value>Saat</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
+    <value>Alias kamera</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
+    <value>Kadar bingkai terkonfigurasi</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
+    <value>Masa (HHMMSS)</value>
+  </data>
+  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
+    <value>Pembolehubah konteks</value>
+  </data>
+  <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
+    <value>Memori</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve">
+    <value>Kadar bingkai gantian (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve">
+    <value>Ambang penggantian bingkai (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_tabAutomation" xml:space="preserve">
+    <value>Automasi</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
+    <value>Arahan pasca rakaman:</value>
+  </data>
+  <data name="Generic_Cancel" xml:space="preserve">
+    <value>Batal</value>
   </data>
 </root>
