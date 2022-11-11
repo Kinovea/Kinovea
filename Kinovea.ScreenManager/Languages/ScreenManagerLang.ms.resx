@@ -76,4 +76,16 @@
   <data name="btnSync_ToolTip" xml:space="preserve">
     <value>Segerakkan video-video pada bingkai-bingkai semasa</value>
   </data>
+  <data name="Generic_Cancel" xml:space="preserve">
+    <value>Batal</value>
+  </data>
+  <data name="FormIconPicker_Title" xml:space="preserve">
+    <value>Ikon</value>
+  </data>
+  <data name="Generic_Open" xml:space="preserve">
+    <value>Buka</value>
+  </data>
+  <data name="Generic_Apply" xml:space="preserve">
+    <value>Gunapakai</value>
+  </data>
 </root>
