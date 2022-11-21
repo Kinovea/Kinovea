@@ -661,7 +661,7 @@
     <value>Konfigurera banverktyget</value>
   </data>
   <data name="dlgConfigureTrajectory_VisibilityLabelOnly" xml:space="preserve">
-    <value>Endast etikett</value>
+    <value>Enbart etikett</value>
   </data>
   <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
     <value>Markör:</value>
@@ -670,7 +670,7 @@
     <value>Kors</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_HorizontalPosition" xml:space="preserve">
-    <value>Horisontell position</value>
+    <value>Horisontellt läge</value>
   </data>
   <data name="dlgTimebase_Title" xml:space="preserve">
     <value>Konfigurera videotiming</value>

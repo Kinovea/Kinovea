@@ -59,6 +59,63 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="lblFolders" xml:space="preserve">
-    <value>https://osdn.net/</value>
+    <value>Folder</value>
+  </data>
+  <data name="lblVideoFiles" xml:space="preserve">
+    <value>Fail video</value>
+  </data>
+  <data name="lblCaptureHistory" xml:space="preserve">
+    <value>Sejarah tangkapan</value>
+  </data>
+  <data name="lblCameras" xml:space="preserve">
+    <value>Kamera</value>
+  </data>
+  <data name="mnuAddShortcut" xml:space="preserve">
+    <value>Tambah pintasan</value>
+  </data>
+  <data name="mnuAddToShortcuts" xml:space="preserve">
+    <value>Tambah ke pintasan</value>
+  </data>
+  <data name="mnuDeleteShortcut" xml:space="preserve">
+    <value>Padam pintasan</value>
+  </data>
+  <data name="mnuVideoLocate" xml:space="preserve">
+    <value>Cari di Windows Explorer </value>
+  </data>
+  <data name="mnuVideoDelete" xml:space="preserve">
+    <value>Padam fail</value>
+  </data>
+  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
+    <value>Buka sebagai pemerhati folder main semula</value>
+  </data>
+  <data name="ForgetCustomSettings" xml:space="preserve">
+    <value>Lupa tetapan tersuai</value>
+  </data>
+  <data name="Generic_Cancel" xml:space="preserve">
+    <value>Batal</value>
+  </data>
+  <data name="Generic_Open" xml:space="preserve">
+    <value>Buka</value>
+  </data>
+  <data name="tabExplorer" xml:space="preserve">
+    <value>Peneroka</value>
+  </data>
+  <data name="FormCameraWizard_Title" xml:space="preserve">
+    <value>Sambungan manual</value>
+  </data>
+  <data name="FormCameraWizard_CameraType" xml:space="preserve">
+    <value>Jenis kamera</value>
+  </data>
+  <data name="FormCameraWizard_Parameters" xml:space="preserve">
+    <value>Parameter</value>
+  </data>
+  <data name="FormCameraWizard_Test" xml:space="preserve">
+    <value>Ujian</value>
+  </data>
+  <data name="FormCameraWizard_Create" xml:space="preserve">
+    <value>Cipta kamera</value>
+  </data>
+  <data name="tabShortcuts" xml:space="preserve">
+    <value>Pintasan</value>
   </data>
 </root>

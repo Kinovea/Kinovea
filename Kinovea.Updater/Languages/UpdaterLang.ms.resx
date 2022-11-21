@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -58,4 +58,34 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="mnuCheckForUpdates" xml:space="preserve">
+    <value>Semak kemas kini…</value>
+  </data>
+  <data name="Updater_CurrentVersion" xml:space="preserve">
+    <value>Versi Semasa :</value>
+  </data>
+  <data name="Updater_InternetError" xml:space="preserve">
+    <value>Ralat berlaku semasa menyemak kemas kini. Sila pastikan sambungan Internet tersedia.</value>
+  </data>
+  <data name="Updater_LblChangeLog" xml:space="preserve">
+    <value>Log perubahan:</value>
+  </data>
+  <data name="Updater_NewVersion" xml:space="preserve">
+    <value>Versi baru</value>
+  </data>
+  <data name="Updater_Quit" xml:space="preserve">
+    <value>Keluar</value>
+  </data>
+  <data name="Updater_Title" xml:space="preserve">
+    <value>Kinovea - Menyemak versi baharu.</value>
+  </data>
+  <data name="Updater_UpToDate" xml:space="preserve">
+    <value>Versi anda adalah terkini!</value>
+  </data>
+  <data name="Updater_Download" xml:space="preserve">
+    <value>Muat Turun</value>
+  </data>
+  <data name="Updater_Behind" xml:space="preserve">
+    <value>Versi baharu tersedia!</value>
+  </data>
 </root>
