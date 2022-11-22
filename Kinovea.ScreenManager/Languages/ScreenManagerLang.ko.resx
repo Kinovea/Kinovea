@@ -98,7 +98,7 @@
   </data>
   <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>그림 그리기 구성</value>
   </data>
-  <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>항상 보이기</value>
+  <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>항상 표시됨</value>
   </data>
   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>초기화</value>
   </data>
@@ -162,9 +162,9 @@
   </data>
   <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>파일명에 잘못된 문자가 있음.\n 파일명에는 다음의 문자가 있으면 안됨: \n \ / : * ? " &lt; &gt;</value>
   </data>
-  <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - 슬라이드 쇼를 만들 수 없음.</value>
+  <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - 슬라이드쇼를 만들 수 없습니다.</value>
   </data>
-  <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>슬라이드 쇼는 비디오 형식(format)으로 저장된 '키 이미지'임.\n슬라이드 쇼를 만들기 전에 몇 개의 '키 이미지'를 만드세요.</value>
+  <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>슬라이드쇼는 동영상 형식으로 저장된 일련의 주요 이미지입니다.\n 슬라이드쇼를 생성하기 전에 몇 가지 주요 이미지를 추가하세요.</value>
   </data>
   <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – 멈춤 비디오를 만들 수 없음</value>
   </data>
@@ -326,7 +326,7 @@
   </data>
   <data name="mnuOpenVideo" xml:space="preserve"><value>비디오 열기…</value>
   </data>
-  <data name="mnuShowMeasure" xml:space="preserve"><value>자 표시</value>
+  <data name="mnuShowMeasure" xml:space="preserve"><value>치수 화면표시</value>
   </data>
   <data name="mnuStopTracking" xml:space="preserve"><value>경로 편집 끝 </value>
   </data>
@@ -334,7 +334,7 @@
   </data>
   <data name="mnuSwapScreens" xml:space="preserve"><value>비디오의 위치를 도치</value>
   </data>
-  <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>공통 조절을 보임/감춤</value>
+  <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>일반 컨트롤 표시/숨기기</value>
   </data>
   <data name="mnuTrackTrajectory" xml:space="preserve"><value>경로를 추적</value>
   </data>
@@ -408,7 +408,7 @@
   </data>
   <data name="ToolTip_RichText_BackColor" xml:space="preserve"><value>배경 색상</value>
   </data>
-  <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>키 이미지'로 부터 슬라이드 쇼 저장</value>
+  <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>주요 이미지에서 슬라이드쇼 내보내기</value>
   </data>
   <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>매 '키 이미지'에서 멈추는 비디오 저장</value>
   </data>
@@ -416,7 +416,7 @@
   </data>
   <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>작업 영역의 마지막 프레임을 현재 프레임으로 설정</value>
   </data>
-  <data name="ToolTip_ShowComments" xml:space="preserve"><value>주석 보이기</value>
+  <data name="ToolTip_ShowComments" xml:space="preserve"><value>주석 표시하기</value>
   </data>
   <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>두 이미지를 컴포지트 이미지로 저장</value>
   </data>
@@ -430,7 +430,7 @@
   </data>
   <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>날카롭게..</value>
   </data>
-  <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>개관(overview)…</value>
+  <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>개요…</value>
   </data>
   <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>반대(reverse)…</value>
   </data>
@@ -722,7 +722,7 @@
     <value>기본값 복원</value>
   </data>
   <data name="mnuShowBefore" xml:space="preserve">
-    <value>이 시점 이전에 표시</value>
+    <value>이 시점 이전에 표시하기</value>
   </data>
   <data name="FileProperty_Duration" xml:space="preserve">
     <value>지속</value>
@@ -749,13 +749,13 @@
     <value>데이터:</value>
   </data>
   <data name="mnuShowLabel" xml:space="preserve">
-    <value>레이블 표시</value>
+    <value>레이블 표시하기</value>
   </data>
   <data name="FileProperty_Size" xml:space="preserve">
     <value>크기</value>
   </data>
   <data name="mnuShowAfter" xml:space="preserve">
-    <value>이 시점 이후에 표시</value>
+    <value>이 시점 이후에 표시하기</value>
   </data>
   <data name="mnuRotation180" xml:space="preserve">
     <value>180°</value>
@@ -863,7 +863,7 @@
     <value>좌표계</value>
   </data>
   <data name="mnuCoordinateSystemShowGrid" xml:space="preserve">
-    <value>그리그</value>
+    <value>격자</value>
   </data>
   <data name="mnuCoordinateSystemShowTickMarks" xml:space="preserve">
     <value>눈금 표시</value>
@@ -881,10 +881,10 @@
     <value>이 메뉴 닫기</value>
   </data>
   <data name="mnuShowArrow" xml:space="preserve">
-    <value>화살표 표시</value>
+    <value>화살표 표시하기</value>
   </data>
   <data name="mnuShowCircleCenter" xml:space="preserve">
-    <value>원 중심 표시</value>
+    <value>원 중심 표시하기</value>
   </data>
   <data name="Toast_AudioLost" xml:space="preserve">
     <value>오디오 장치 분실</value>
@@ -914,7 +914,7 @@
     <value>곡선</value>
   </data>
   <data name="Error_Capture_DirectoryNotCreated_Text" xml:space="preserve">
-    <value>캡처 디렉토리를 생성할 수 없습니다.\n올바른 저장 위치를 가리키는지 확인하세요.</value>
+    <value>캡처 디렉터리를 생성할 수 없습니다.\n올바른 저장 위치를 가리키는지 확인하세요.</value>
   </data>
   <data name="DrawingName_Arrow" xml:space="preserve">
     <value>화살표</value>
@@ -1076,7 +1076,7 @@
     <value>시계</value>
   </data>
   <data name="Error_Capture_DirectoryNotCreated_Title" xml:space="preserve">
-    <value>디렉토리가 생성되지 않음</value>
+    <value>디렉터리가 생성되지 않음</value>
   </data>
   <data name="DrawingName_TestGrid" xml:space="preserve">
     <value>카메라 테스트 격자</value>
