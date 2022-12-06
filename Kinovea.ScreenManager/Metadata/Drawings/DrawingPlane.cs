@@ -165,12 +165,20 @@ namespace Kinovea.ScreenManager
             QuadrilateralF quad = transformer.Transform(quadImage);
 
             bool drawEdgesOnly = !planeIsConvex || (!styleHelper.Perspective && !quadImage.IsAxisAlignedRectangle);
-            
-            using(penEdges = styleHelper.GetPen(opacityFactor, 1.0))
+            const int defaultRadius = 4;
+
+            using (penEdges = styleHelper.GetPen(opacityFactor, 1.0))
             using(SolidBrush br = styleHelper.GetBrush(opacityFactor))
             {
+                // Handles
                 foreach (PointF p in quad)
-                    canvas.FillEllipse(br, p.Box(4));
+                {
+                    canvas.DrawLine(penEdges, p.X - defaultRadius, p.Y, p.X + defaultRadius, p.Y);
+                    canvas.DrawLine(penEdges, p.X, p.Y - defaultRadius, p.X, p.Y + defaultRadius);
+
+                }
+                // Origin
+                canvas.DrawEllipse(penEdges, quad.D.Box(5));
 
                 if (!drawEdgesOnly)
                 {
