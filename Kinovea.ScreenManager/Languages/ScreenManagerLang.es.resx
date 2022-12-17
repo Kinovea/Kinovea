@@ -895,9 +895,9 @@
     <value>Armar el gatillo de captura. Estado actual: desarmado.</value>
   </data>
   <data name="Toast_TriggerArmed" xml:space="preserve">
-    <value>Gatillo de captura armado</value>
+    <value>Activador de la captura armado</value>
   </data>
   <data name="Toast_TriggerDisarmed" xml:space="preserve">
-    <value>Gatillo de captura desarmado</value>
+    <value>Activador para la captura desarmado</value>
   </data>
 </root>
