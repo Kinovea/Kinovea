@@ -141,23 +141,32 @@ namespace Kinovea.ScreenManager
             if (opacityFactor <= 0)
                 return;
 
-            PointF c = GetTimePoint();
+            // Main segment.
             Point start = transformer.Transform(points["a"]);
             Point end = transformer.Transform(points["b"]);
-            Point mid = transformer.Transform(c);
+
+            // Tick mark at A.
+            Vector ab = new Vector(points["a"], points["b"]);
+            Vector perp1 = new Vector(ab.Y, -ab.X) * 0.2f;
+            Vector perp2 = perp1.Negate();
+            Point p1A = transformer.Transform(new PointF(points["a"].X + perp1.X, points["a"].Y + perp1.Y));
+            Point p2A = transformer.Transform(new PointF(points["a"].X + perp2.X, points["a"].Y + perp2.Y));
 
             // Distortion: this tool's target use-case is to be used at the center of the image, with very short lines,
             // thus there should not be any distortion.
             using (Pen penEdges = styleHelper.GetPen(opacityFactor, transformer.Scale))
             using (Brush brush = styleHelper.GetBrush(opacityFactor))
             {
+                // Force line width to 1 at all zoom levels. This tool is all about pixel-perfect precision.
+                penEdges.Width = 1;
                 canvas.DrawLine(penEdges, start, end);
-                canvas.DrawEllipse(penEdges, mid.Box(4));
+                canvas.DrawLine(penEdges, p1A, p2A);
             }
-                
+            
+            // Attached mini label.
             string text = GetTimeText();
             miniLabel.SetText(text);
-            miniLabel.SetAttach(c, true);
+            miniLabel.SetAttach(GetTimePoint(), true);
             miniLabel.Draw(canvas, transformer, opacityFactor);
         }
         public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
