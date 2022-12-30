@@ -297,6 +297,7 @@
     <Compile Include="Measurement\Geometry\SegmentF.cs" />
     <Compile Include="Measurement\Geometry\SVD.cs" />
     <Compile Include="Measurement\Geometry\Vector3.cs" />
+    <Compile Include="Metadata\Drawings\DrawingLine.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPostureOption.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPosturePolyline.cs" />
     <Compile Include="Metadata\Exporters\CSVHelper.cs" />
@@ -640,7 +641,7 @@
     <Compile Include="PlayerScreen\FrameServerPlayer.cs" />
     <Compile Include="Metadata\Drawings\DrawingAngle.cs" />
     <Compile Include="Metadata\Drawings\DrawingCrossMark.cs" />
-    <Compile Include="Metadata\Drawings\DrawingLine.cs" />
+    <Compile Include="Metadata\Drawings\DrawingTimeSegment.cs" />
     <Compile Include="Metadata\Drawings\AbstractDrawing.cs" />
     <Compile Include="Metadata\Drawings\AbstractDrawingTool.cs" />
     <Compile Include="Metadata\Drawings\DrawingPencil.cs" />

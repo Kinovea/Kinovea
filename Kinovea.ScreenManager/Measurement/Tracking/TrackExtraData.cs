@@ -28,5 +28,8 @@ namespace Kinovea.ScreenManager
         Radius,
         Diameter,
         Circumference,
+
+        // Time segment
+        Time,
     }
 }

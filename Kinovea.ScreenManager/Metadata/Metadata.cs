@@ -1107,6 +1107,55 @@ namespace Kinovea.ScreenManager
             return (float)time;
         }
 
+        /// <summary>
+        /// Get the timecode at a fraction of the frame interval.
+        /// This is currently only used by the time segment tool.
+        /// </summary>
+        public string GetFractionTime(long timestamps, float fraction)
+        {
+            TimecodeFormat tcf = PreferencesManager.PlayerPreferences.TimecodeFormat;
+            long actualTimestamps = timestamps - timeOrigin;
+            double averageTimestampsPerFrame = this.AverageTimeStampsPerFrame;
+            float frames = 0;
+            if (AverageTimeStampsPerFrame != 0)
+                frames = (float)Math.Round(actualTimestamps / averageTimestampsPerFrame);
+
+            double startMS = frames * UserInterval / HighSpeedFactor;
+            double endMS = (frames + 1) * UserInterval / HighSpeedFactor;
+            double milliseconds = startMS + ((endMS - startMS) * fraction);
+
+            double framerate = 1000.0 / UserInterval * HighSpeedFactor;
+            double framerateMagnitude = Math.Log10(framerate);
+            int precision = (int)Math.Ceiling(framerateMagnitude);
+            
+            string outputTimeCode = "";
+            switch (tcf)
+            {
+                case TimecodeFormat.Frames:
+                    outputTimeCode = String.Format("{0}", frames + Math.Round(fraction * 1000) / 1000);
+                    break;
+                case TimecodeFormat.Milliseconds:
+                    outputTimeCode = String.Format("{0}", Math.Round(milliseconds * 1000) / 1000);
+                    outputTimeCode += " ms";
+                    break;
+                case TimecodeFormat.Microseconds:
+                    outputTimeCode = String.Format("{0}", Math.Round(milliseconds * 1000000) / 1000);
+                    outputTimeCode += " µs";
+                    break;
+                case TimecodeFormat.ClassicTime:
+                default:
+                    // Increase magnitude by 1. This means for example if we are exactly at 100 fps,
+                    // we'll get the value in milliseconds instead of centiseconds.
+                    // It is equivalent to having 10 possible values along the segment.
+                    // This is the worst case scenario, in other cases we'll get somewhere between 10 and 100 values along the segment.
+                    // We limit the precision here to avoid giving a false sense of accuracy.
+                    outputTimeCode = TimeHelper.MillisecondsToTimecode(milliseconds, precision + 1);
+                    break;
+            }
+
+            return outputTimeCode;
+        }
+
         public void PostSetup(bool init)
         {
             if (init)
@@ -1273,6 +1322,12 @@ namespace Kinovea.ScreenManager
             {
                 DrawingDistortionGrid d = drawing as DrawingDistortionGrid;
                 d.LensCalibrationAsked += LensCalibrationAsked;
+            }
+
+            if (drawing is DrawingTimeSegment)
+            {
+                DrawingTimeSegment d = drawing as DrawingTimeSegment;
+                d.ParentMetadata = this;
             }
         }
 

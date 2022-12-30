@@ -37,7 +37,7 @@ namespace Kinovea.ScreenManager
             float dot = ac.Dot(ab);
             float t =  dot / ab2;
             
-            float fMargin = (float)_margin / ab.Norm();
+            float fMargin = _margin / ab.Norm();
             switch(allowedPosition)
             {
                 case PointLinePosition.BeforeSegment:
@@ -74,9 +74,9 @@ namespace Kinovea.ScreenManager
         
         public static PointF GetMiddlePoint(PointF a, PointF b)
         {
-            return a + (new Vector(a,b) / 2);
+            return a + (new Vector(a,b) * 0.5f);
         }
-        
+
         /// <summary>
         /// Gets the distance between points A and B.
         /// </summary>

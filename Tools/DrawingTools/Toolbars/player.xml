@@ -42,6 +42,7 @@
   </entry>
   <entry name="Chrono">
     <subentry name="Clock" />
+    <subentry name="TimeSegment" />
   </entry>
   <entry name="Plane">
     <subentry name="Grid" />
