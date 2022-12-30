@@ -13,8 +13,5 @@
     <Color Key="color">
       <Value>255;255;0;0</Value>
     </Color>
-    <LineSize Key="line size">
-      <Value>1</Value>
-    </LineSize>
   </DefaultStyle>
 </KinoveaDrawingTool>

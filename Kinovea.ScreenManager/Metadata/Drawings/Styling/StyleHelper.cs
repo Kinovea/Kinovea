@@ -157,9 +157,9 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Members
-        private Color color;
-        private int lineSize;
-        private LineShape lineShape;
+        private Color color = Color.Black;
+        private int lineSize = 1;
+        private LineShape lineShape = LineShape.Solid;
         private Font font = new Font("Arial", 12, FontStyle.Regular);
         private Bicolor bicolor;
         private LineEnding lineEnding = LineEnding.None;

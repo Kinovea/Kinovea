@@ -41,39 +41,14 @@ namespace Kinovea.ScreenManager
     /// The line end points should be placed on a moving object visible in frame I and I+1.
     /// The sliding handle gives the fractional time within the frame interval.
     /// This is useful to get a more precise time for when the object crosses a line between two frames.
-    /// Limitation: this assumes the movement is linear in the interval. A improvement to this tool 
+    /// 
+    /// Limitation: this assumes the movement is linear in the interval. An improvement to this tool 
     /// would be to have two more points on frames I-1 and I+2 and use cubic interpolation.
     /// </summary>
     [XmlType ("TimeSegment")]
-    public class DrawingTimeSegment : AbstractDrawing, IKvaSerializable, IDecorable, IInitializable, IMeasurable
+    public class DrawingTimeSegment : AbstractDrawing, IKvaSerializable, IDecorable, IInitializable
     {
-        #region Events
-        public event EventHandler<EventArgs<TrackExtraData>> ShowMeasurableInfoChanged;
-        #endregion
-        
         #region Properties
-        /// <summary>
-        /// Starting point of the time segment.
-        /// </summary>
-        public PointF A
-        {
-            get { return points["a"]; }
-        }
-        /// <summary>
-        /// End point of the time segment.
-        /// </summary>
-        public PointF B
-        {
-            get { return points["b"]; }
-        }
-
-        /// <summary>
-        /// Point somewhere on the time segment for which we want to know the time.
-        /// </summary>
-        public PointF C
-        {
-            get { return points["c"]; }
-        }
         public override string ToolDisplayName
         {
             get { return "Time segment"; }
@@ -83,7 +58,6 @@ namespace Kinovea.ScreenManager
             get 
             {
                 int hash = 0;
-                hash ^= trackExtraData.GetHashCode();
                 hash ^= miniLabel.GetHashCode();
                 hash ^= styleHelper.ContentHash;
                 hash ^= infosFading.ContentHash;
@@ -105,14 +79,7 @@ namespace Kinovea.ScreenManager
         }
         public override List<ToolStripItem> ContextMenu
         {
-            get 
-            {
-                // Rebuild the menu to get the localized text.
-                List<ToolStripItem> contextMenu = new List<ToolStripItem>();
-                ReinitializeMenu();
-                contextMenu.Add(mnuMeasurement);
-                return contextMenu; 
-            }
+            get { return null; }
         }
         public bool Initializing
         {
@@ -123,26 +90,21 @@ namespace Kinovea.ScreenManager
             get { return parentMetadata; }    // unused.
             set { parentMetadata = value; }
         }
-
-        public CalibrationHelper CalibrationHelper { get; set; }
         #endregion
 
         #region Members
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
         private float fraction = 0.5f;
         private bool initializing = true;
-        private bool measureInitialized;
 
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
+        private int lineSize = 1;
         private DrawingStyle style;
         private MiniLabel miniLabel = new MiniLabel();
-        private TrackExtraData trackExtraData = TrackExtraData.Time;
         private InfosFading infosFading;
 
         // Context menu
-        private ToolStripMenuItem mnuMeasurement = new ToolStripMenuItem();
-        private List<ToolStripMenuItem> mnuMeasurementOptions = new List<ToolStripMenuItem>();
         private Metadata parentMetadata;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -152,13 +114,8 @@ namespace Kinovea.ScreenManager
         {
             points["a"] = origin;
             points["b"] = origin.Translate(10, 0);
-            points["c"] = GetTimePoint();
-            miniLabel.SetAttach(points["c"], true);
             
             styleHelper.Color = Color.DarkSlateGray;
-            styleHelper.LineSize = 1;
-            styleHelper.LineShape = LineShape.Solid;
-            styleHelper.LineEnding = LineEnding.None;
             styleHelper.ValueChanged += StyleHelper_ValueChanged;
             if (preset == null)
                 preset = ToolManager.GetStylePreset("TimeSegment");
@@ -168,9 +125,6 @@ namespace Kinovea.ScreenManager
             
             // Fading
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
-
-            // Context menu
-            ReinitializeMenu();
         }
         
         public DrawingTimeSegment(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
@@ -187,49 +141,37 @@ namespace Kinovea.ScreenManager
             if (opacityFactor <= 0)
                 return;
 
+            PointF c = GetTimePoint();
             Point start = transformer.Transform(points["a"]);
             Point end = transformer.Transform(points["b"]);
-            Point mid = transformer.Transform(points["c"]);
+            Point mid = transformer.Transform(c);
 
+            // Distortion: this tool's target use-case is to be used at the center of the image, with very short lines,
+            // thus there should not be any distortion.
             using (Pen penEdges = styleHelper.GetPen(opacityFactor, transformer.Scale))
             using (Brush brush = styleHelper.GetBrush(opacityFactor))
             {
-                if (distorter != null && distorter.Initialized)
-                    DrawDistorted(canvas, distorter, transformer, penEdges, brush, start, end, mid);
-                else
-                    DrawStraight(canvas, transformer, penEdges, brush, start, end, mid);
+                canvas.DrawLine(penEdges, start, end);
+                canvas.DrawEllipse(penEdges, mid.Box(4));
             }
-
-            if(trackExtraData != TrackExtraData.None)
-            {
-                string text = GetExtraDataText();
-                miniLabel.SetText(text);
-                miniLabel.Draw(canvas, transformer, opacityFactor);
-            }
-        }
-        private void DrawDistorted(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, Pen penEdges, Brush brush, Point start, Point end, Point mid)
-        {
-            List<PointF> curve = distorter.DistortLine(points["a"], points["b"]);
-            List<Point> transformedCurve = transformer.Transform(curve);
-
-            canvas.DrawCurve(penEdges, transformedCurve.ToArray());
-        }
-        private void DrawStraight(Graphics canvas, IImageToViewportTransformer transformer, Pen penEdges, Brush brush, Point start, Point end, Point mid)
-        {
-            canvas.DrawLine(penEdges, start, end);
-            canvas.DrawEllipse(penEdges, mid.Box(4));
-            miniLabel.SetAttach(points["c"], true);
+                
+            string text = GetTimeText();
+            miniLabel.SetText(text);
+            miniLabel.SetAttach(c, true);
+            miniLabel.Draw(canvas, transformer, opacityFactor);
         }
         public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             int result = -1;
             double opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
+            PointF c = GetTimePoint();
             if (opacityFactor > 0)
             {
-                // Give priority to the mini label and the middle point.
-                if (trackExtraData != TrackExtraData.None && miniLabel.HitTest(point, transformer))
+                // Give priority to the mini label and the middle point to guarantee
+                // we can always move them out of the way of the end points if needed.
+                if (miniLabel.HitTest(point, transformer))
                     result = 4;
-                else if (HitTester.HitTest(points["c"], point, transformer))
+                else if (HitTester.HitTest(c, point, transformer))
                     result = 3;
                 else if (HitTester.HitTest(points["a"], point, transformer))
                     result = 1;
@@ -252,7 +194,6 @@ namespace Kinovea.ScreenManager
                     else
                         points["a"] = point;
 
-                    points["c"] = GetTimePoint();
                     break;
                 case 2:
                     if((modifiers & Keys.Shift) == Keys.Shift)
@@ -260,14 +201,11 @@ namespace Kinovea.ScreenManager
                     else
                         points["b"] = point;
 
-                    points["c"] = GetTimePoint();
                     break;
                 case 3:
-                    if (points["a"].NearlyCoincideWith(points["b"]))
-                        points["b"] = points["a"].Translate(10, 0);
-
-                    points["c"] = GeometryHelper.GetClosestPoint(points["a"], points["b"], point, PointLinePosition.OnSegment, 0);
-                    Vector ac = new Vector(points["a"], points["c"]);
+                    // Recompute the fraction based on where the point was slid to.
+                    PointF c = GeometryHelper.GetClosestPoint(points["a"], points["b"], point, PointLinePosition.OnSegment, 0);
+                    Vector ac = new Vector(points["a"], c);
                     Vector ab = new Vector(points["a"], points["b"]);
                     fraction = ac.Norm() / ab.Norm();
                     break;
@@ -286,7 +224,6 @@ namespace Kinovea.ScreenManager
         {
             points["a"] = points["a"].Translate(dx, dy);
             points["b"] = points["b"].Translate(dx, dy);
-            points["c"] = GetTimePoint();
         }
         public override PointF GetCopyPoint()
         {
@@ -325,13 +262,6 @@ namespace Kinovea.ScreenManager
                         {
                             string strFraction = xmlReader.ReadElementContentAsString();
                             fraction = float.Parse(strFraction, CultureInfo.InvariantCulture);
-                            points["c"] = GetTimePoint();
-                            break;
-                        }
-                    case "ExtraData":
-                        {
-                            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(TrackExtraData));
-                            trackExtraData = (TrackExtraData)enumConverter.ConvertFromString(xmlReader.ReadElementContentAsString());
                             break;
                         }
                     case "MeasureLabel":
@@ -340,26 +270,33 @@ namespace Kinovea.ScreenManager
                             break;
                         }
                     case "DrawingStyle":
-                        style = new DrawingStyle(xmlReader);
-                        BindStyle();
-                        break;
+                        {
+                            style = new DrawingStyle(xmlReader);
+                            BindStyle();
+                            break;
+                        }
                     case "InfosFading":
-                        infosFading.ReadXml(xmlReader);
-                        break;
+                        {
+                            infosFading.ReadXml(xmlReader);
+                            break;
+                        }
                     case "Measure":
-                        xmlReader.ReadOuterXml();
-                        break;
+                        {
+                            xmlReader.ReadOuterXml();
+                            break;
+                        }
                     default:
-                        string unparsed = xmlReader.ReadOuterXml();
-                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-                        break;
+                        {
+                            string unparsed = xmlReader.ReadOuterXml();
+                            log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                            break;
+                        }
                 }
             }
             
             xmlReader.ReadEndElement();
             initializing = false;
-            measureInitialized = true;
-            miniLabel.SetAttach(points["c"], false);
+            miniLabel.SetAttach(GetTimePoint(), false);
             miniLabel.BackColor = styleHelper.Color;
         }
         public void WriteXml(XmlWriter w, SerializationFilter filter)
@@ -369,10 +306,6 @@ namespace Kinovea.ScreenManager
                 w.WriteElementString("Start", XmlHelper.WritePointF(points["a"]));
                 w.WriteElementString("End", XmlHelper.WritePointF(points["b"]));
                 w.WriteElementString("Fraction", XmlHelper.WriteFloat(fraction));
-
-                TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(TrackExtraData));
-                string xmlExtraData = enumConverter.ConvertToString(trackExtraData);
-                w.WriteElementString("ExtraData", xmlExtraData);
 
                 w.WriteStartElement("MeasureLabel");
                 miniLabel.WriteXml(w);
@@ -411,86 +344,20 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region Context menu
-        private void ReinitializeMenu()
+        private string GetTimeText()
         {
-            InitializeMenuMeasurement();
-        }
-        private void InitializeMenuMeasurement()
-        {
-            mnuMeasurement.Image = Properties.Drawings.measure;
-            mnuMeasurement.Text = ScreenManagerLang.mnuShowMeasure;
-            mnuMeasurement.DropDownItems.Clear();
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.None));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Time));
-        }
-        private ToolStripMenuItem GetMeasurementMenu(TrackExtraData data)
-        {
-            ToolStripMenuItem mnu = new ToolStripMenuItem();
-            mnu.Text = GetExtraDataOptionText(data);
-            mnu.Checked = trackExtraData == data;
-
-            mnu.Click += (s, e) =>
-            {
-                trackExtraData = data;
-                InvalidateFromMenu(s);
-
-                // Use this setting as the default value for new measurable objects.
-                //if(ShowMeasurableInfoChanged != null)
-                    //ShowMeasurableInfoChanged(this, new EventArgs<TrackExtraData>(trackExtraData));
-            };
-
-            return mnu;
-        }
-        private string GetExtraDataOptionText(TrackExtraData data)
-        {
-            switch (data)
-            {
-                case TrackExtraData.None: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None;
-                case TrackExtraData.Time: return "Time"; //ScreenManagerLang.dlgConfigureDrawing_Name;
-            }
-
-            return "";
-        }
-        private string GetExtraDataText()
-        {
-            if (trackExtraData == TrackExtraData.None)
-                return "";
-
             if (parentMetadata == null)
                 return "";
 
-            string displayText = "###";
-            displayText = parentMetadata.GetFractionTime(infosFading.ReferenceTimestamp, fraction);
-            return displayText;
+            // Get linearly interpolated time at the fraction of the segment.
+            return parentMetadata.GetFractionTime(infosFading.ReferenceTimestamp, fraction);
         }
-        #endregion
-
-        #region IMeasurable implementation
-        public void InitializeMeasurableData(TrackExtraData trackExtraData)
-        {
-            // This is called when the drawing is added and a previous drawing had its measurement option switched on.
-            // We try to retain a similar measurement option.
-            //if (measureInitialized)
-            //    return;
-
-            //measureInitialized = true;
-
-            //// If the option is supported, we just use it, otherwise we use the length.
-            //if (trackExtraData == TrackExtraData.None || 
-            //    trackExtraData == TrackExtraData.Time)
-            //    this.trackExtraData = trackExtraData;
-            //else
-            //    this.trackExtraData = TrackExtraData.Time;
-        }
-        #endregion
-
+        
         #region Lower level helpers
         private void BindStyle()
         {
             DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("TimeSegment"));
             style.Bind(styleHelper, "Color", "color");
-            style.Bind(styleHelper, "LineSize", "line size");
         }
         private void StyleHelper_ValueChanged(object sender, EventArgs e)
         {
@@ -506,18 +373,10 @@ namespace Kinovea.ScreenManager
                 }
                 else
                 {
-                    if (distorter != null && distorter.Initialized)
-                    {
-                        List<PointF> curve = distorter.DistortLine(points["a"], points["b"]);
-                        areaPath.AddCurve(curve.ToArray());
-                    }
-                    else
-                    {
-                        areaPath.AddLine(points["a"], points["b"]);
-                    }
+                    areaPath.AddLine(points["a"], points["b"]);
                 }
 
-                return HitTester.HitTest(areaPath, point, styleHelper.LineSize, false, transformer);
+                return HitTester.HitTest(areaPath, point, lineSize, false, transformer);
             }
         }
         
@@ -531,7 +390,7 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Returns the coordinate of the sliding point based on the current fraction.
+        /// Returns the coordinate of the sliding point based on the fraction.
         /// </summary>
         private PointF GetTimePoint()
         {
