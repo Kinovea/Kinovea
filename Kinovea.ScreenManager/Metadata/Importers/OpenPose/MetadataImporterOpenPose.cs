@@ -112,9 +112,10 @@ namespace Kinovea.ScreenManager
             Guid id = Guid.NewGuid();
             long position = timestamp;
             string title = null;
+            Color color = Keyframe.DefaultColor;
             string timecode = null;
             string comments = "";
-            Keyframe keyframe = new Keyframe(id, position, title, timecode, comments, drawings, metadata);
+            Keyframe keyframe = new Keyframe(id, position, title, color, timecode, comments, drawings, metadata);
 
             metadata.MergeInsertKeyframe(keyframe);
         }

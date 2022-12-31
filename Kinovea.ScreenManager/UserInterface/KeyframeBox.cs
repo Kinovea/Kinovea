@@ -54,6 +54,7 @@ namespace Kinovea.ScreenManager
         private bool editing;
         private Keyframe keyframe;
         private bool manualUpdate;
+        private bool isSelected;
         
         #region Constructor
         public KeyframeBox(Keyframe keyframe)
@@ -63,7 +64,7 @@ namespace Kinovea.ScreenManager
             InitializeComponent();
             lblTimecode.Text = keyframe.Title;
             
-            BackColor = Color.Black;
+            BackColor = keyframe.Color;
             btnClose.Parent = pbThumbnail;
             btnComment.Parent = pbThumbnail;
 
@@ -79,12 +80,14 @@ namespace Kinovea.ScreenManager
         #region Public Methods
         public void DisplayAsSelected(bool selected)
         {
-            BackColor = selected ? Color.SteelBlue : Color.Black;
+            isSelected = selected;
+            pbThumbnail.BackColor = selected ? keyframe.Color : Color.Black;
         }
         public void UpdateTitle(string title)
         {
             lblTimecode.Text = title;
-            
+            BackColor = keyframe.Color;
+            DisplayAsSelected(isSelected);
             manualUpdate = true;
             tbTitle.Text = title;
             manualUpdate = false;

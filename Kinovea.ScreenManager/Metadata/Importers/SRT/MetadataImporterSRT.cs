@@ -182,7 +182,7 @@ namespace Kinovea.ScreenManager
             //}
 
             drawings.Add(drawing);
-            Keyframe keyframe = new Keyframe(id, position, title, timecode, comments, drawings, metadata);
+            Keyframe keyframe = new Keyframe(id, position, title, Keyframe.DefaultColor, timecode, comments, drawings, metadata);
 
             metadata.MergeInsertKeyframe(keyframe);
         }
