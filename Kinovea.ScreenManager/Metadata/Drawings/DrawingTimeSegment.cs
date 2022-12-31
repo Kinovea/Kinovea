@@ -403,8 +403,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private PointF GetTimePoint()
         {
-            Vector v = new Vector(points["a"], points["b"]);
-            return points["a"] + (v * fraction);
+            return GeometryHelper.Mix(points["a"], points["b"], fraction); 
         }
         
         #endregion
