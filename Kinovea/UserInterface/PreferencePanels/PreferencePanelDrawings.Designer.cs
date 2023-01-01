@@ -92,10 +92,11 @@ namespace Kinovea.Root
       this.cmbTimeCodeFormat = new System.Windows.Forms.ComboBox();
       this.lblTimeMarkersFormat = new System.Windows.Forms.Label();
       this.tabExport = new System.Windows.Forms.TabPage();
-      this.cmbDelimiter = new System.Windows.Forms.ComboBox();
-      this.lblCSVDelimiter = new System.Windows.Forms.Label();
       this.cmbExportSpace = new System.Windows.Forms.ComboBox();
       this.lblExportSpace = new System.Windows.Forms.Label();
+      this.cmbDelimiter = new System.Windows.Forms.ComboBox();
+      this.lblCSVDelimiter = new System.Windows.Forms.Label();
+      this.tabPresets = new System.Windows.Forms.TabPage();
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
       this.tabPersistence.SuspendLayout();
@@ -113,6 +114,7 @@ namespace Kinovea.Root
       this.tabSubPages.Controls.Add(this.tabPersistence);
       this.tabSubPages.Controls.Add(this.tabTracking);
       this.tabSubPages.Controls.Add(this.tabUnits);
+      this.tabSubPages.Controls.Add(this.tabPresets);
       this.tabSubPages.Controls.Add(this.tabExport);
       this.tabSubPages.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tabSubPages.Location = new System.Drawing.Point(0, 0);
@@ -582,6 +584,24 @@ namespace Kinovea.Root
       this.tabExport.Text = "Export";
       this.tabExport.UseVisualStyleBackColor = true;
       // 
+      // cmbExportSpace
+      // 
+      this.cmbExportSpace.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cmbExportSpace.Location = new System.Drawing.Point(300, 73);
+      this.cmbExportSpace.Name = "cmbExportSpace";
+      this.cmbExportSpace.Size = new System.Drawing.Size(116, 21);
+      this.cmbExportSpace.TabIndex = 69;
+      this.cmbExportSpace.SelectedIndexChanged += new System.EventHandler(this.cmbExportSpace_SelectedIndexChanged);
+      // 
+      // lblExportSpace
+      // 
+      this.lblExportSpace.AutoSize = true;
+      this.lblExportSpace.Location = new System.Drawing.Point(20, 77);
+      this.lblExportSpace.Name = "lblExportSpace";
+      this.lblExportSpace.Size = new System.Drawing.Size(71, 13);
+      this.lblExportSpace.TabIndex = 68;
+      this.lblExportSpace.Text = "Export metric:";
+      // 
       // cmbDelimiter
       // 
       this.cmbDelimiter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -600,23 +620,15 @@ namespace Kinovea.Root
       this.lblCSVDelimiter.TabIndex = 66;
       this.lblCSVDelimiter.Text = "CSV Decimal symbol:";
       // 
-      // cmdExportSpace
+      // tabPresets
       // 
-      this.cmbExportSpace.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbExportSpace.Location = new System.Drawing.Point(300, 73);
-      this.cmbExportSpace.Name = "cmdExportSpace";
-      this.cmbExportSpace.Size = new System.Drawing.Size(116, 21);
-      this.cmbExportSpace.TabIndex = 69;
-      this.cmbExportSpace.SelectedIndexChanged += new System.EventHandler(this.cmbExportSpace_SelectedIndexChanged);
-      // 
-      // lblExportSpace
-      // 
-      this.lblExportSpace.AutoSize = true;
-      this.lblExportSpace.Location = new System.Drawing.Point(20, 77);
-      this.lblExportSpace.Name = "lblExportSpace";
-      this.lblExportSpace.Size = new System.Drawing.Size(71, 13);
-      this.lblExportSpace.TabIndex = 68;
-      this.lblExportSpace.Text = "Export metric:";
+      this.tabPresets.Location = new System.Drawing.Point(4, 22);
+      this.tabPresets.Margin = new System.Windows.Forms.Padding(2);
+      this.tabPresets.Name = "tabPresets";
+      this.tabPresets.Size = new System.Drawing.Size(482, 296);
+      this.tabPresets.TabIndex = 5;
+      this.tabPresets.Text = "Presets";
+      this.tabPresets.UseVisualStyleBackColor = true;
       // 
       // PreferencePanelDrawings
       // 
@@ -690,5 +702,6 @@ namespace Kinovea.Root
         private System.Windows.Forms.Label lblTimeMarkersFormat;
         private System.Windows.Forms.ComboBox cmbExportSpace;
         private System.Windows.Forms.Label lblExportSpace;
+        private System.Windows.Forms.TabPage tabPresets;
     }
 }

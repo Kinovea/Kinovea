@@ -61,6 +61,7 @@ namespace Kinovea.Root
             PreferenceTab.Drawings_Opacity, 
             PreferenceTab.Drawings_Tracking,
             PreferenceTab.Drawings_Units,
+            PreferenceTab.Drawings_Presets,
             PreferenceTab.Drawings_Export,
         };
         private InfosFading defaultFading;
@@ -77,8 +78,10 @@ namespace Kinovea.Root
         private AngularAccelerationUnit angularAccelerationUnit;
         private string customLengthUnit;
         private string customLengthAbbreviation;
+        private KeyframePresetsParameters keyframePresets;
         private CSVDecimalSeparator csvDecimalSeparator;
         private ExportSpace exportSpace;
+        private int presetsCount = 10;
         #endregion
         
         #region Construction & Initialization
@@ -123,6 +126,7 @@ namespace Kinovea.Root
             angularAccelerationUnit = PreferencesManager.PlayerPreferences.AngularAccelerationUnit;
             customLengthUnit = PreferencesManager.PlayerPreferences.CustomLengthUnit;
             customLengthAbbreviation = PreferencesManager.PlayerPreferences.CustomLengthAbbreviation;
+            keyframePresets = PreferencesManager.PlayerPreferences.KeyframePresets;
             csvDecimalSeparator = PreferencesManager.PlayerPreferences.CSVDecimalSeparator;
             exportSpace = PreferencesManager.PlayerPreferences.ExportSpace;
         }
@@ -132,6 +136,7 @@ namespace Kinovea.Root
             InitTabOpacity();
             InitTabTracking();
             InitTabUnits();
+            InitTabPresets();
             InitTabExport();
         }
         private void InitTabGeneral()
@@ -262,6 +267,82 @@ namespace Kinovea.Root
                 tbCustomLengthAb.Text = customLengthAbbreviation;
             }
         }
+
+        private void InitTabPresets()
+        {
+            tabPresets.Controls.Clear();
+
+            // Dynamically create preset controls.
+            int top = 26;
+            int margin = 10;
+            for (int i = 0; i < presetsCount; i++)
+            {
+                // Make sure we have enough presets on the Preferences side.
+                if (keyframePresets.Presets.Count < i + 1)
+                    keyframePresets.Presets.Add(new KeyframePreset("", Color.SteelBlue));
+
+                // Create the controls.
+                Label lblPresetId = new Label();
+                lblPresetId.Left = 26;
+                lblPresetId.Top = top;
+                lblPresetId.AutoSize = true;
+                lblPresetId.Text = string.Format("Preset {0}:", i + 1);
+
+                TextBox tbPresetName = new TextBox();
+                tbPresetName.Left = 120;
+                tbPresetName.Top = top - 2;
+                tbPresetName.Width = 154;
+                tbPresetName.Height = 20;
+
+                Button btnPresetColor = new Button();
+                btnPresetColor.Left = tbPresetName.Right + 20;
+                btnPresetColor.Top = top;
+                btnPresetColor.Width = 100;
+                btnPresetColor.Height = 20;
+                btnPresetColor.FlatStyle = FlatStyle.Flat;
+                btnPresetColor.FlatAppearance.BorderSize = 0;
+                btnPresetColor.Cursor = Cursors.Hand;
+
+                // Add them to the page.
+                tabPresets.Controls.Add(lblPresetId);
+                tabPresets.Controls.Add(tbPresetName);
+                tabPresets.Controls.Add(btnPresetColor);
+
+                // Import existing preferences.
+                tbPresetName.Text = keyframePresets.Presets[i].Name;
+                SetPresetButtonColor(btnPresetColor, keyframePresets.Presets[i].Color);
+
+                // Handle updates.
+                int index = i;
+                tbPresetName.TextChanged += (s, e) => {
+                    KeyframePreset preset = new KeyframePreset(tbPresetName.Text, btnPresetColor.BackColor);
+                    keyframePresets.Presets[index] = preset;
+                };
+
+                btnPresetColor.Click += (s, e) =>
+                {
+                    FormColorPicker picker = new FormColorPicker(btnPresetColor.BackColor);
+                    FormsHelper.Locate(picker);
+                    if (picker.ShowDialog() == DialogResult.OK)
+                    {
+                        SetPresetButtonColor(btnPresetColor, picker.PickedColor);
+                        KeyframePreset preset = new KeyframePreset(tbPresetName.Text, picker.PickedColor);
+                        keyframePresets.Presets[index] = preset;
+                    }
+                    picker.Dispose();
+                };
+
+                top += lblPresetId.Height + margin;
+            }
+        }
+
+        private void SetPresetButtonColor(Button button, Color color)
+        {
+            button.BackColor = color;
+            button.FlatAppearance.MouseDownBackColor = color;
+            button.FlatAppearance.MouseOverBackColor = color;
+        }
+
         private void InitTabExport()
         {
             tabExport.Text = "Export";
@@ -457,6 +538,7 @@ namespace Kinovea.Root
             PreferencesManager.PlayerPreferences.AngleUnit = angleUnit;
             PreferencesManager.PlayerPreferences.AngularVelocityUnit = angularVelocityUnit;
             PreferencesManager.PlayerPreferences.AngularAccelerationUnit = angularAccelerationUnit;
+            PreferencesManager.PlayerPreferences.KeyframePresets = keyframePresets;
             PreferencesManager.PlayerPreferences.CSVDecimalSeparator = csvDecimalSeparator;
             PreferencesManager.PlayerPreferences.ExportSpace = exportSpace;
 

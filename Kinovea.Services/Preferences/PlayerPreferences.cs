@@ -26,6 +26,9 @@ using System.Xml;
 
 namespace Kinovea.Services
 {
+    /// <summary>
+    /// Preferences for the player, including annotations.
+    /// </summary>
     public class PlayerPreferences : IPreferenceSerializer
     {
         #region Properties
@@ -189,6 +192,12 @@ namespace Kinovea.Services
             get { return kinogramParameters.Clone(); }
             set { kinogramParameters = value; }
         }
+
+        public KeyframePresetsParameters KeyframePresets
+        {
+            get { return keyframePresetsParameters.Clone(); }
+            set { keyframePresetsParameters = value; }
+        }
         #endregion
 
         private TimecodeFormat timecodeFormat = TimecodeFormat.ClassicTime;
@@ -224,7 +233,7 @@ namespace Kinovea.Services
         private int preloadKeyframes = 20;
         private string playbackKVA;
         private KinogramParameters kinogramParameters = new KinogramParameters();
-        
+        private KeyframePresetsParameters keyframePresetsParameters = new KeyframePresetsParameters();
         public void AddRecentColor(Color _color)
         {
             PreferencesManager.UpdateRecents(_color, recentColors, maxRecentColors);
@@ -287,6 +296,10 @@ namespace Kinovea.Services
 
             writer.WriteStartElement("Kinogram");
             kinogramParameters.WriteXml(writer);
+            writer.WriteEndElement();
+
+            writer.WriteStartElement("KeyframePresets");
+            keyframePresetsParameters.WriteXml(writer);
             writer.WriteEndElement();
         }
         
@@ -391,6 +404,9 @@ namespace Kinovea.Services
                         break;
                     case "Kinogram":
                         kinogramParameters.ReadXml(reader);
+                        break;
+                    case "KeyframePresets":
+                        keyframePresetsParameters.ReadXml(reader);
                         break;
                     default:
                         reader.ReadOuterXml();

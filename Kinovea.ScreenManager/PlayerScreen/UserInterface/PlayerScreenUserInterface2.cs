@@ -70,7 +70,7 @@ namespace Kinovea.ScreenManager
         public event EventHandler FilterExited;
         public event EventHandler<EventArgs<bool>> SelectionChanged;
         public event EventHandler<EventArgs<Bitmap>> ImageChanged;
-        public event EventHandler<TimeEventArgs> KeyframeAdding;
+        public event EventHandler<KeyframeAddEventArgs> KeyframeAdding;
         public event EventHandler<KeyframeEventArgs> KeyframeDeleting;
         public event EventHandler<DrawingEventArgs> DrawingAdding;
         public event EventHandler<DrawingEventArgs> DrawingDeleting;
@@ -1418,6 +1418,22 @@ namespace Kinovea.ScreenManager
                 case PlayerScreenCommands.Close:
                     btnClose_Click(this, EventArgs.Empty);
                     break;
+                case PlayerScreenCommands.Preset1:
+                case PlayerScreenCommands.Preset2:
+                case PlayerScreenCommands.Preset3:
+                case PlayerScreenCommands.Preset4:
+                case PlayerScreenCommands.Preset5:
+                case PlayerScreenCommands.Preset6:
+                case PlayerScreenCommands.Preset7:
+                case PlayerScreenCommands.Preset8:
+                case PlayerScreenCommands.Preset9:
+                case PlayerScreenCommands.Preset10:
+
+                    // Get user-defined keyframe preset.
+                    KeyframePreset preset = PreferencesManager.PlayerPreferences.KeyframePresets.GetPreset(command);
+                    AddPresetKeyframe(preset.Name, preset.Color);
+                    break;
+
                 default:
                     return base.ExecuteCommand(cmd);
             }
@@ -3976,8 +3992,22 @@ namespace Kinovea.ScreenManager
             }
 
             if (KeyframeAdding != null)
-                KeyframeAdding(this, new TimeEventArgs(m_iCurrentPosition));
+                KeyframeAdding(this, new KeyframeAddEventArgs(m_iCurrentPosition, null, Keyframe.DefaultColor));
         }
+
+        public void AddPresetKeyframe(string name, Color color)
+        {
+            int keyframeIndex = m_FrameServer.Metadata.GetKeyframeIndex(m_iCurrentPosition);
+            if (keyframeIndex >= 0)
+            {
+                // If there is already a keyframe here, do not overwrite it.
+                return;
+            }
+
+            if (KeyframeAdding != null)
+                KeyframeAdding(this, new KeyframeAddEventArgs(m_iCurrentPosition, name, color));
+        }
+
         private void AfterKeyframeAdded(Guid keyframeId)
         {
             if (m_FrameServer.Metadata.KVAImporting)
@@ -4056,7 +4086,6 @@ namespace Kinovea.ScreenManager
             // The actual position may differ from what was originally stored in the keyframe.
             keyframe.InitializePosition(m_iCurrentPosition);
             keyframe.InitializeImage(m_FrameServer.CurrentImage);
-
         }
         private void DeleteKeyframe(Guid keyframeId)
         {

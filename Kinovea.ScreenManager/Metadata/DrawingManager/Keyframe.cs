@@ -126,11 +126,13 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public Keyframe(long position, string timecode, Metadata metadata)
+        public Keyframe(long position, string timecode, Metadata metadata, string title, Color color)
         {
             this.position = position;
             this.timecode = timecode;
             this.metadata = metadata;
+            this.title = title;
+            this.color = color;
         }
         public Keyframe(Guid id, long position, string title, Color color, string timecode, string comments, List<AbstractDrawing> drawings, Metadata metadata)
         {
@@ -144,7 +146,7 @@ namespace Kinovea.ScreenManager
             this.metadata = metadata;
         }
         public Keyframe(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
-            : this(0, "", metadata)
+            : this(0, "", metadata, "", defaultColor)
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }

@@ -141,7 +141,6 @@ namespace Kinovea.Services
             {
                 { "FileExplorer", new HotkeyCommand[]{
                     hk(FileExplorerCommands.LaunchSelected, Keys.Enter),
-                    //hk(FileExplorerCommands.RenameSelected, Keys.F2),
                     hk(FileExplorerCommands.DeleteSelected, Keys.Delete)
                     }
                 },
@@ -211,7 +210,17 @@ namespace Kinovea.Services
                     hk(PlayerScreenCommands.DecreaseSpeed1, Keys.Control | Keys.Down),
                     hk(PlayerScreenCommands.DecreaseSpeedRoundTo10, Keys.Shift | Keys.Down),
                     hk(PlayerScreenCommands.DecreaseSpeedRoundTo25, Keys.Down),
-                    hk(PlayerScreenCommands.Close, Keys.Control | Keys.F4)
+                    hk(PlayerScreenCommands.Close, Keys.Control | Keys.F4),
+                    hk(PlayerScreenCommands.Preset1, Keys.Control | Keys.NumPad1),
+                    hk(PlayerScreenCommands.Preset2, Keys.Control | Keys.NumPad2),
+                    hk(PlayerScreenCommands.Preset3, Keys.Control | Keys.NumPad3),
+                    hk(PlayerScreenCommands.Preset4, Keys.Control | Keys.NumPad4),
+                    hk(PlayerScreenCommands.Preset5, Keys.Control | Keys.NumPad5),
+                    hk(PlayerScreenCommands.Preset6, Keys.Control | Keys.NumPad6),
+                    hk(PlayerScreenCommands.Preset7, Keys.Control | Keys.NumPad7),
+                    hk(PlayerScreenCommands.Preset8, Keys.Control | Keys.NumPad8),
+                    hk(PlayerScreenCommands.Preset9, Keys.Control | Keys.NumPad9),
+                    hk(PlayerScreenCommands.Preset10, Keys.None)
                     }
                 },
                 { "DualCapture", new HotkeyCommand[]{
@@ -228,9 +237,6 @@ namespace Kinovea.Services
                     hk(CaptureScreenCommands.ToggleArmCaptureTrigger, Keys.None),
                     hk(CaptureScreenCommands.ResetViewport, Keys.Escape),
                     hk(CaptureScreenCommands.OpenConfiguration, Keys.F12), 
-                    //hk(CaptureScreenCommands.IncreaseZoom, Keys.Control | Keys.Add), 
-                    //hk(CaptureScreenCommands.DecreaseZoom, Keys.Control | Keys.Subtract), 
-                    //hk(CaptureScreenCommands.ResetZoom, Keys.Control | Keys.NumPad0), 
                     hk(CaptureScreenCommands.GotoPreviousImage, Keys.Left),
                     hk(CaptureScreenCommands.GotoFirstImage, Keys.Home),
                     hk(CaptureScreenCommands.BackwardRound10Percent, Keys.PageUp),

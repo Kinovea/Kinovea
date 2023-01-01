@@ -443,6 +443,7 @@
     <Compile Include="Metadata\Serialization\MeasuredDataUnits.cs" />
     <Compile Include="Metadata\Serialization\MeasurementSerializationHelper.cs" />
     <Compile Include="NativeMethods.cs" />
+    <Compile Include="PlayerScreen\Events\KeyframeAddEventArgs.cs" />
     <Compile Include="PlayerScreen\Events\TimeEventArgs.cs" />
     <Compile Include="Measurement\Geometry\ClipResult.cs" />
     <Compile Include="Measurement\Geometry\LiangBarsky.cs" />

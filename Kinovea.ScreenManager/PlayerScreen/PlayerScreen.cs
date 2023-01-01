@@ -472,14 +472,16 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Requests for Metadata modification coming from the view
-        private void View_KeyframeAdding(object sender, TimeEventArgs e)
+        private void View_KeyframeAdding(object sender, KeyframeAddEventArgs e)
         {
             if (frameServer.CurrentImage == null)
                 return;
 
             long time = e.Time;
+            string title = e.Name;
+            Color color = e.Color;
             string timecode = frameServer.TimeStampsToTimecode(time, TimeType.UserOrigin, PreferencesManager.PlayerPreferences.TimecodeFormat, true);
-            Keyframe keyframe = new Keyframe(time, timecode, frameServer.Metadata);
+            Keyframe keyframe = new Keyframe(time, timecode, frameServer.Metadata, title, color);
 
             HistoryMementoAddKeyframe memento = new HistoryMementoAddKeyframe(frameServer.Metadata, keyframe.Id);
             frameServer.Metadata.AddKeyframe(keyframe);

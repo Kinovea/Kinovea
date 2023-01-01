@@ -214,6 +214,7 @@
     <Compile Include="Infrastructure\BitmapHelper.cs" />
     <Compile Include="Types\CSVDecimalSeparator.cs" />
     <Compile Include="Types\ExportSpace.cs" />
+    <Compile Include="Types\KeyframePresetsParameters.cs" />
     <Compile Include="Types\KinogramParameters.cs" />
     <Compile Include="Infrastructure\NativeMethods.cs" />
     <Compile Include="Types\AudioTriggerAction.cs" />
@@ -268,6 +269,7 @@
     <Compile Include="Types\KinoveaUncompressedVideoFormat.cs" />
     <Compile Include="Types\PhotofinishConfiguration.cs" />
     <Compile Include="Preferences\PreferenceTab.cs" />
+    <Compile Include="Types\KeyframePreset.cs" />
     <Compile Include="Types\TrackerParameterUnit.cs" />
     <Compile Include="Types\TrackingProfile.cs" />
     <Compile Include="Infrastructure\TimestampMapper.cs" />
