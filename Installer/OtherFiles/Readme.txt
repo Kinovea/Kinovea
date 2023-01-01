@@ -7,7 +7,7 @@ It features utilities to capture, slow down, compare, annotate and measure motio
 
 System Requirements:
 --------------------
-- OS : Microsoft Windows 7, 8, 8.1, 10 with .NET framework 4.8.
+- OS : Microsoft Windows 7, 8, 8.1, 10, 11 with .NET framework 4.8.
 - CPU : 1 Ghz
 - RAM : 256 MB
 - Disk Space : 70 MB.
@@ -40,8 +40,11 @@ Changelog:
 
 0.9.6 - TBD
     Added - Kinogram mode to replace the Overview mode.
+    Added - Keyframe colors.
+    Added - Keyframe presets.
     Added - Data export to raw JSON files.
     Added - Data export to raw CSV files.
+    Added - Support for saving single snapshots from audio trigger.
     Improved - General: Save and restore the working zone bounds as part of the KVA file.
     Improved - General: Save and restore all image options (aspect, rotation, demosaicing, deinterlacing).
     Improved - General: Save keyframes even if they are outside the working zone.
@@ -49,6 +52,7 @@ Changelog:
     Improved - General: When importing a KVA file into a different video the times are now aligned by the time origins.
     Improved - Playback: Using a video filter no longer prevents the usage of the normal video controls and drawings tools.
     Improved - Playback: Video filters are no longer deactivated when changing the working zone.
+    Improved - Playback: Support rotation on single image files.
     Improved - Capture: Image aspect and rotation from camera is now saved in the capture KVA.
     Improved - Capture: Added milliseconds to file naming patterns.
     Improved - Export: Output to Microsoft Excel now uses Office Open XML (XLSX) instead of MS-XML format.
@@ -65,6 +69,7 @@ Changelog:
     Fixed - Angles in radians were not exported correctly.
     Fixed - The time in kinematics dialogs could be incorrect if the time origin and selection start didn't match.
     Fixed - The top-down flag on mono and raw streams was not honored.
+    Fixed - Dual export with superposition could result in broken files.
     Removed - Video reverse mode.
     Removed - Exporting data to XHTML.
     Removed - Exporting data to Gnuplot script.
