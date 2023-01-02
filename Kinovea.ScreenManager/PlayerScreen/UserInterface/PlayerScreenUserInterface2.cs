@@ -3942,10 +3942,13 @@ namespace Kinovea.ScreenManager
             foreach (KeyframeBox box in keyframeBoxes)
                 box.UpdateEnableStatus();
         }
-        public void OnKeyframesTitleChanged()
+
+        // The keyframe title, color or comments were changed.
+        public void OnKeyframeNameChanged()
         {
             m_FrameServer.Metadata.UpdateTrajectoriesForKeyframes();
             EnableDisableKeyframes();
+            UpdateFramesMarkers();
             DoInvalidate();
         }
         public void GotoNextKeyframe()
@@ -4455,6 +4458,7 @@ namespace Kinovea.ScreenManager
 
             fcd.Dispose();
             DoInvalidate();
+            UpdateFramesMarkers();
         }
         private void mnuSetStyleAsDefault_Click(object sender, EventArgs e)
         {
@@ -4749,6 +4753,7 @@ namespace Kinovea.ScreenManager
 
             fctd.Dispose();
             DoInvalidate();
+            UpdateFramesMarkers();
         }
         private void OnShowClosestFrame(Point _mouse, List<AbstractTrackPoint> _positions, int _iPixelTotalDistance, bool _b2DOnly)
         {

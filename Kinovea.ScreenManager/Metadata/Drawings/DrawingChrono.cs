@@ -64,6 +64,10 @@ namespace Kinovea.ScreenManager
         {
             get { return style;}
         }
+        public Color Color
+        {
+            get { return styleHelper.GetBackgroundColor(255); }
+        }
         public override InfosFading  InfosFading
         {
             // Fading is not modifiable from outside for chrono.
