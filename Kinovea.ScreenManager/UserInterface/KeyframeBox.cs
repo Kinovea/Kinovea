@@ -33,14 +33,13 @@ namespace Kinovea.ScreenManager
     public partial class KeyframeBox : UserControl
     {
         #region Events
-        [Category("Action"), Browsable(true)]
-        public event EventHandler CloseThumb;
-        [Category("Action"), Browsable(true)]
-        public event EventHandler ClickThumb;
-        [Category("Action"), Browsable(true)]
-        public event EventHandler ClickInfos;
+        public event EventHandler DeleteAsked;
+        public event EventHandler SelectAsked;
+        public event EventHandler ActivateAsked;
+        public event EventHandler MoveToCurrentTimeAsked;
         #endregion
 
+        #region Properties
         public Keyframe Keyframe
         {
             get { return keyframe; }
@@ -50,13 +49,17 @@ namespace Kinovea.ScreenManager
         {
             get { return editing; }
         }
-        
+        #endregion
+
+        #region Members
         private bool editing;
         private Keyframe keyframe;
         private bool manualUpdate;
         private bool isSelected;
-        
-        #region Constructor
+        private ContextMenuStrip popMenu = new ContextMenuStrip();
+        private ToolStripMenuItem mnuMove = new ToolStripMenuItem();
+        #endregion
+
         public KeyframeBox(Keyframe keyframe)
         {
             this.keyframe = keyframe;
@@ -74,10 +77,11 @@ namespace Kinovea.ScreenManager
             manualUpdate = true;
             tbTitle.Text = keyframe.Title;
             manualUpdate = false;
+
+            BuildContextMenu();
+            ReloadMenusCulture();
         }
-        #endregion
         
-        #region Public Methods
         public void DisplayAsSelected(bool selected)
         {
             isSelected = selected;
@@ -106,9 +110,13 @@ namespace Kinovea.ScreenManager
             this.pbThumbnail.Image = keyframe.Disabled ? keyframe.DisabledThumbnail : keyframe.Thumbnail;
             this.Invalidate();
         }
-        #endregion
-        
-        #region Event Handlers - Mouse Enter / Leave
+
+        public void RefreshUICulture()
+        {
+            ReloadMenusCulture();
+        }
+
+        #region Event Handlers
         private void Controls_MouseEnter(object sender, EventArgs e)
         {
             ShowButtons();
@@ -129,25 +137,19 @@ namespace Kinovea.ScreenManager
         }
         private void Controls_MouseDoubleClick(object sender, EventArgs e)
         {
-            if (ClickInfos != null) ClickInfos(this, e);	
+            ActivateAsked?.Invoke(this, e);
         }
-        #endregion
-
-        #region Event Handlers - Buttons / Text
         private void btnClose_Click(object sender, EventArgs e)
         {
-            if (CloseThumb != null) 
-                CloseThumb(this, e);
+            DeleteAsked?.Invoke(this, e);
         }
         private void pbThumbnail_Click(object sender, EventArgs e)
         {
-            if (ClickThumb != null) 
-                ClickThumb(this, e);
+            SelectAsked?.Invoke(this, e);
         }
         private void btnComment_Click(object sender, EventArgs e)
         {
-            if (ClickInfos != null) 
-                ClickInfos(this, e);
+            ActivateAsked?.Invoke(this, e);
         }
         private void TbTitleTextChanged(object sender, EventArgs e)
         {
@@ -169,6 +171,30 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Private helpers
+        private void BuildContextMenu()
+        {
+            mnuMove.Image = Properties.Drawings.move_keyframe;
+            mnuMove.Click += MnuMove_Click;
+
+            popMenu.Items.AddRange(new ToolStripItem[] { 
+                mnuMove,
+            });
+
+            this.ContextMenuStrip = popMenu;
+        }
+
+        private void MnuMove_Click(object sender, EventArgs e)
+        {
+            MoveToCurrentTimeAsked?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void ReloadMenusCulture()
+        {
+            // Reload the text for each menu.
+            // this is done at construction time and at RefreshUICulture time.
+            mnuMove.Text = "Move to current time";
+        }
+
         private void ShowButtons()
         {
             btnClose.Visible = true;

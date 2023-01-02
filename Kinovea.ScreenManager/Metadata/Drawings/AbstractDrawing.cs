@@ -237,6 +237,14 @@ namespace Kinovea.ScreenManager
         {
             return (filter & SerializationFilter.KVA) == SerializationFilter.KVA;
         }
+        public void UpdateReferenceTime(long timestamp)
+        {
+            InfosFading infoFading = this.InfosFading;
+            if (infoFading == null)
+                return;
+
+            infoFading.ReferenceTimestamp = timestamp;
+        }
         #endregion
     }
 }

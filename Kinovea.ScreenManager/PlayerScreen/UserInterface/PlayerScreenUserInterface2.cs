@@ -304,7 +304,7 @@ namespace Kinovea.ScreenManager
         private bool m_bHandlersLocked;
 
         // Keyframes, Drawings, etc.
-        private List<KeyframeBox> thumbnails = new List<KeyframeBox>();
+        private List<KeyframeBox> keyframeBoxes = new List<KeyframeBox>();
         private int m_iActiveKeyFrameIndex = -1;	// The index of the keyframe we are on, or -1 if not a KF.
         private AbstractDrawingTool m_ActiveTool;
         private DrawingToolPointer m_PointerTool;
@@ -424,7 +424,7 @@ namespace Kinovea.ScreenManager
             SetupPrimarySelectionPanel();
             SetupKeyframeCommentsHub();
             pnlThumbnails.Controls.Clear();
-            thumbnails.Clear();
+            keyframeBoxes.Clear();
             CollapseKeyframePanel(true);
 
             m_TimerCallback = MultimediaTimer_Tick;
@@ -478,17 +478,17 @@ namespace Kinovea.ScreenManager
         }
         private void ClearKeyframeBoxes()
         {
-            for (int i = thumbnails.Count - 1; i >= 0; i--)
+            for (int i = keyframeBoxes.Count - 1; i >= 0; i--)
             {
-                KeyframeBox thumbnail = thumbnails[i];
+                KeyframeBox box = keyframeBoxes[i];
 
-                thumbnail.CloseThumb -= ThumbBoxClose;
-                thumbnail.ClickThumb -= ThumbBoxClick;
-                thumbnail.ClickInfos -= ThumbBoxInfosClick;
+                box.DeleteAsked -= KeyframeBox_DeleteAsked;
+                box.SelectAsked -= KeyframeBox_SelectAsked;
+                box.ActivateAsked -= KeyframeBox_ActivateAsked;
 
-                thumbnails.Remove(thumbnail);
-                pnlThumbnails.Controls.Remove(thumbnail);
-                thumbnail.Dispose();
+                keyframeBoxes.Remove(box);
+                pnlThumbnails.Controls.Remove(box);
+                box.Dispose();
             }
         }
         public void EnableDisableActions(bool _bEnable)
@@ -870,6 +870,8 @@ namespace Kinovea.ScreenManager
             ReloadToolsCulture();
             ReloadMenusCulture();
             m_KeyframeCommentsHub.RefreshUICulture();
+            for (int i = 0; i < keyframeBoxes.Count; i++)
+                keyframeBoxes[i].RefreshUICulture();
 
             // Because this method is called when we change the general preferences,
             // we can use it to update data too.
@@ -1273,7 +1275,7 @@ namespace Kinovea.ScreenManager
             if (m_FrameServer.Metadata.TextEditingInProgress)
                 return false;
 
-            if (thumbnails.Any(t => t.Editing))
+            if (keyframeBoxes.Any(t => t.Editing))
                 return false;
 
             if (!m_bSynched)
@@ -2727,6 +2729,8 @@ namespace Kinovea.ScreenManager
             mnuMagnifierDirect.Text = ScreenManagerLang.mnuMagnifierDirect;
             mnuMagnifierQuit.Text = ScreenManagerLang.mnuMagnifierQuit;
         }
+
+
         private void ReloadTooltipsCulture()
         {
             // Video controls
@@ -3851,14 +3855,15 @@ namespace Kinovea.ScreenManager
 
                     // Finish the setup
                     box.Left = pixelsOffset + pixelsSpacing;
-                    box.CloseThumb += ThumbBoxClose;
-                    box.ClickThumb += ThumbBoxClick;
-                    box.ClickInfos += ThumbBoxInfosClick;
+                    box.DeleteAsked += KeyframeBox_DeleteAsked;
+                    box.SelectAsked += KeyframeBox_SelectAsked;
+                    box.ActivateAsked += KeyframeBox_ActivateAsked;
+                    box.MoveToCurrentTimeAsked += KeyframeBox_MoveToCurrentTimeAsked;
 
                     pixelsOffset += (pixelsSpacing + box.Width);
 
                     pnlThumbnails.Controls.Add(box);
-                    thumbnails.Add(box);
+                    keyframeBoxes.Add(box);
                 }
 
                 EnableDisableKeyframes();
@@ -3893,27 +3898,27 @@ namespace Kinovea.ScreenManager
             // keep it fast or fix the strategy.
 
             m_iActiveKeyFrameIndex = -1;
-            for (int i = 0; i < thumbnails.Count; i++)
+            for (int i = 0; i < keyframeBoxes.Count; i++)
             {
                 if (m_FrameServer.Metadata[i].Position == _iPosition)
                 {
                     m_iActiveKeyFrameIndex = i;
                     if (_bAllowUIUpdate)
                     {
-                        thumbnails[i].DisplayAsSelected(true);
-                        pnlThumbnails.ScrollControlIntoView(thumbnails[i]);
+                        keyframeBoxes[i].DisplayAsSelected(true);
+                        pnlThumbnails.ScrollControlIntoView(keyframeBoxes[i]);
 
                         if (!m_FrameServer.Metadata[i].HasThumbnails && m_FrameServer.CurrentImage != null)
                         {
                             m_FrameServer.Metadata[i].InitializeImage(m_FrameServer.CurrentImage);
-                            thumbnails[i].UpdateImage();
+                            keyframeBoxes[i].UpdateImage();
                         }
                     }
                 }
                 else
                 {
                     if (_bAllowUIUpdate)
-                        thumbnails[i].DisplayAsSelected(false);
+                        keyframeBoxes[i].DisplayAsSelected(false);
                 }
             }
 
@@ -3934,7 +3939,7 @@ namespace Kinovea.ScreenManager
         {
             m_FrameServer.Metadata.EnableDisableKeyframes();
 
-            foreach (KeyframeBox box in thumbnails)
+            foreach (KeyframeBox box in keyframeBoxes)
                 box.UpdateEnableStatus();
         }
         public void OnKeyframesTitleChanged()
@@ -3959,7 +3964,7 @@ namespace Kinovea.ScreenManager
             }
 
             if (next >= 0 && m_FrameServer.Metadata[next].Position <= m_iSelEnd)
-                ThumbBoxClick(thumbnails[next], EventArgs.Empty);
+                KeyframeBox_SelectAsked(keyframeBoxes[next], EventArgs.Empty);
         }
         public void GotoPreviousKeyframe()
         {
@@ -3977,7 +3982,7 @@ namespace Kinovea.ScreenManager
             }
 
             if (prev >= 0 && m_FrameServer.Metadata[prev].Position >= m_iSelStart)
-                ThumbBoxClick(thumbnails[prev], EventArgs.Empty);
+                KeyframeBox_SelectAsked(keyframeBoxes[prev], EventArgs.Empty);
         }
 
         public void AddKeyframe()
@@ -4135,7 +4140,7 @@ namespace Kinovea.ScreenManager
         }
 
         #region ThumbBox event Handlers
-        private void ThumbBoxClose(object sender, EventArgs e)
+        private void KeyframeBox_DeleteAsked(object sender, EventArgs e)
         {
             KeyframeBox keyframeBox = sender as KeyframeBox;
             if (keyframeBox == null)
@@ -4146,7 +4151,7 @@ namespace Kinovea.ScreenManager
             // Set as active screen is done after in case we don't have any keyframes left.
             OnPoke();
         }
-        private void ThumbBoxClick(object sender, EventArgs e)
+        private void KeyframeBox_SelectAsked(object sender, EventArgs e)
         {
             KeyframeBox keyframeBox = sender as KeyframeBox;
             if (keyframeBox == null)
@@ -4168,11 +4173,32 @@ namespace Kinovea.ScreenManager
             UpdatePositionUI();
             ActivateKeyframe(m_iCurrentPosition);
         }
-        private void ThumbBoxInfosClick(object sender, EventArgs e)
+        private void KeyframeBox_ActivateAsked(object sender, EventArgs e)
         {
-            ThumbBoxClick(sender, e);
+            KeyframeBox_SelectAsked(sender, e);
             m_KeyframeCommentsHub.UserActivated = true;
             ActivateKeyframe(m_iCurrentPosition);
+        }
+
+        private void KeyframeBox_MoveToCurrentTimeAsked(object sender, EventArgs e)
+        {
+            KeyframeBox keyframeBox = sender as KeyframeBox;
+            if (keyframeBox == null)
+                return;
+
+            // If there is already a keyframe at the current time we ignore the request.
+            int keyframeIndex = m_FrameServer.Metadata.GetKeyframeIndex(m_iCurrentPosition);
+            if (keyframeIndex >= 0)
+                return;
+
+            // Change the keyframe reference time.
+            keyframeBox.Keyframe.Position = m_iCurrentPosition;
+
+            m_FrameServer.Metadata.Keyframes.Sort();
+            OrganizeKeyframes();
+            ActivateKeyframe(m_iCurrentPosition);
+            UpdateFramesMarkers();
+            DoInvalidate();
         }
         #endregion
 

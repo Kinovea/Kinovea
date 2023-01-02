@@ -42,7 +42,12 @@ namespace Kinovea.ScreenManager
         public long Position
         {
             get { return position; }
-            set { position = value;}
+            set 
+            { 
+                position = value;
+                foreach (AbstractDrawing d in Drawings)
+                    d.UpdateReferenceTime(position);
+            }
         }
         public Bitmap Thumbnail
         {

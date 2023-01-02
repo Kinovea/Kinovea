@@ -42,6 +42,7 @@ Changelog:
     Added - Kinogram mode to replace the Overview mode.
     Added - Keyframe colors.
     Added - Keyframe presets.
+    Added - Time segment tool.
     Added - Data export to raw JSON files.
     Added - Data export to raw CSV files.
     Added - Support for saving single snapshots from audio trigger.
@@ -53,6 +54,8 @@ Changelog:
     Improved - Playback: Using a video filter no longer prevents the usage of the normal video controls and drawings tools.
     Improved - Playback: Video filters are no longer deactivated when changing the working zone.
     Improved - Playback: Support rotation on single image files.
+    Improved - Annotations: Added the ability to move a keyframe to the current time.
+    Improved - Annotations: Added the ability to move all number objects in Auto numbers at once using the SHIFT key.
     Improved - Capture: Image aspect and rotation from camera is now saved in the capture KVA.
     Improved - Capture: Added milliseconds to file naming patterns.
     Improved - Export: Output to Microsoft Excel now uses Office Open XML (XLSX) instead of MS-XML format.
@@ -63,7 +66,6 @@ Changelog:
     Improved - Export: Added start and stop times for Chronometers.
     Improved - Export: Added time series from trajectories and tracked objects.
     Improved - Export: Added the unit used for distances and times.
-    Improved - Annotations: Added the ability to move all number objects in Auto numbers at once using the SHIFT key.
     Fixed - When loading the same data file twice the keyframes and drawings could be duplicated.
     Fixed - Data angles on key images that hadn't been visited were not exported correctly.
     Fixed - Angles in radians were not exported correctly.
