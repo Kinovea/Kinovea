@@ -33,10 +33,10 @@ namespace Kinovea.ScreenManager
     public partial class KeyframeBox : UserControl
     {
         #region Events
-        public event EventHandler DeleteAsked;
         public event EventHandler SelectAsked;
         public event EventHandler ActivateAsked;
         public event EventHandler MoveToCurrentTimeAsked;
+        public event EventHandler DeleteAsked;
         #endregion
 
         #region Properties
@@ -57,7 +57,9 @@ namespace Kinovea.ScreenManager
         private bool manualUpdate;
         private bool isSelected;
         private ContextMenuStrip popMenu = new ContextMenuStrip();
+        private ToolStripMenuItem mnuConfigure = new ToolStripMenuItem();
         private ToolStripMenuItem mnuMove = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuDelete = new ToolStripMenuItem();
         #endregion
 
         public KeyframeBox(Keyframe keyframe)
@@ -173,26 +175,30 @@ namespace Kinovea.ScreenManager
         #region Private helpers
         private void BuildContextMenu()
         {
+            mnuConfigure.Image = Properties.Drawings.configure;
+            mnuConfigure.Click += (s, e) => ActivateAsked?.Invoke(this, e);
             mnuMove.Image = Properties.Drawings.move_keyframe;
-            mnuMove.Click += MnuMove_Click;
+            mnuMove.Click += (s, e) => MoveToCurrentTimeAsked?.Invoke(this, e);
+            mnuDelete.Image = Properties.Drawings.delete;
+            mnuDelete.Click += (s, e) => DeleteAsked?.Invoke(this, e);
 
             popMenu.Items.AddRange(new ToolStripItem[] { 
+                mnuConfigure,
                 mnuMove,
+                new ToolStripSeparator(),
+                mnuDelete
             });
 
             this.ContextMenuStrip = popMenu;
-        }
-
-        private void MnuMove_Click(object sender, EventArgs e)
-        {
-            MoveToCurrentTimeAsked?.Invoke(this, EventArgs.Empty);
         }
 
         private void ReloadMenusCulture()
         {
             // Reload the text for each menu.
             // this is done at construction time and at RefreshUICulture time.
+            mnuConfigure.Text = Languages.ScreenManagerLang.Generic_ConfigurationElipsis;
             mnuMove.Text = "Move to current time";
+            mnuDelete.Text = Languages.ScreenManagerLang.mnuThumbnailDelete;
         }
 
         private void ShowButtons()

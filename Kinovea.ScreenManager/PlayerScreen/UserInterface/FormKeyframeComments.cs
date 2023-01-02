@@ -98,7 +98,7 @@ namespace Kinovea.ScreenManager
         }
         public void RefreshUICulture()
         {
-            this.Text = "   " + ScreenManagerLang.dlgKeyframeComment_Title;
+            this.Text = "   " + ScreenManagerLang.Generic_ConfigurationElipsis;
             toolTips.SetToolTip(btnBold, ScreenManagerLang.ToolTip_RichText_Bold);
             toolTips.SetToolTip(btnItalic, ScreenManagerLang.ToolTip_RichText_Italic);
             toolTips.SetToolTip(btnUnderline, ScreenManagerLang.ToolTip_RichText_Underline);
@@ -180,7 +180,7 @@ namespace Kinovea.ScreenManager
             {
                 m_Keyframe.Color = picker.PickedColor;
                 LoadColor();
-                m_psui.OnKeyframesTitleChanged();
+                m_psui.OnKeyframeNameChanged();
             }
             picker.Dispose();
         }
@@ -190,7 +190,8 @@ namespace Kinovea.ScreenManager
         private void LoadInfos()
         {
             // Update
-            txtTitle.Text = m_Keyframe.Title;
+            tbName.Text = m_Keyframe.Title;
+            lblTimecode.Text = m_Keyframe.TimeCode;
             rtbComment.Clear();
             rtbComment.Rtf = m_Keyframe.Comments;
             LoadColor();
@@ -211,10 +212,10 @@ namespace Kinovea.ScreenManager
             {
                 m_Keyframe.Comments = rtbComment.Rtf;
     
-                if(m_Keyframe.Title != txtTitle.Text)
+                if(m_Keyframe.Title != tbName.Text)
                 {
-                    m_Keyframe.Title = txtTitle.Text;	
-                    m_psui.OnKeyframesTitleChanged();
+                    m_Keyframe.Title = tbName.Text;	
+                    m_psui.OnKeyframeNameChanged();
                 }
             }
         }
