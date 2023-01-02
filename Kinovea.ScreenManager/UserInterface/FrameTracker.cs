@@ -26,6 +26,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using Kinovea.ScreenManager.Properties;
+using Kinovea.Services;
 using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
@@ -42,7 +43,7 @@ namespace Kinovea.ScreenManager
     /// When control appearence needs to be updated
     /// - This is when internal data of the parent control have been modified by other means.
     /// - (At initialization for example)
-    /// - The public properties setters are provided, they doesn't raise the events back.
+    /// - The public properties setters are provided, they don't raise the events back.
     /// </summary>
     public partial class FrameTracker : UserControl
     {
@@ -50,12 +51,11 @@ namespace Kinovea.ScreenManager
         [Category("Behavior"), Browsable(true)]
         public long Minimum
         {
-            get { return minimum; }
+            get { return minTimestamp; }
             set
             {
-                minimum = value;
-                if (position < minimum)
-                    position = minimum;
+                minTimestamp = value;
+                curTimestamp = Math.Max(curTimestamp, minTimestamp);
                 UpdateMarkersPositions();
                 UpdateSyncPointMarkerPosition();
                 UpdateCursorPosition();
@@ -65,11 +65,11 @@ namespace Kinovea.ScreenManager
         [Category("Behavior"), Browsable(true)]
         public long Maximum
         {
-            get { return maximum; }
+            get { return maxTimestamp; }
             set
             {
-                maximum = value;
-                if (position > maximum) position = maximum;
+                maxTimestamp = value;
+                curTimestamp = Math.Min(curTimestamp, maxTimestamp);
                 UpdateMarkersPositions();
                 UpdateSyncPointMarkerPosition();
                 UpdateCursorPosition();
@@ -79,12 +79,10 @@ namespace Kinovea.ScreenManager
         [Category("Behavior"), Browsable(true)]
         public long Position
         {
-            get { return position; }
+            get { return curTimestamp; }
             set
             {
-                position  = value;
-                if (position < minimum) position = minimum;
-                if (position > maximum) position = maximum;
+                curTimestamp = Clamp(value, minTimestamp, maxTimestamp);
                 UpdateCursorPosition();
             }
         }
@@ -105,61 +103,47 @@ namespace Kinovea.ScreenManager
         #endregion
             
         #region Members
-        private bool invalidateAsked;	// To prevent reentry in MouseMove before the paint event has been honored.	
-        private long minimum;			// In absolute timestamps.
-        private long position;			// In absolute timestamps.
-        private long maximum;			// In absolute timestamps.
-        
-        private int maxWidthPixel;		// Number of pixels in the control that can be used for position.
-        private int minimumPixel;
-        private int maximumPixel;
-        private int pixelPosition;		// Left of the cursor in pixels.
-        
-        private int halfCursorWidth = Resources.liqcursor.Width / 2;
-        private int spacers = 10;
+        private bool invalidateAsked;	        // Used to prevent reentry in MouseMove before the paint event has been honored.	
+        private long minTimestamp;
+        private long curTimestamp;
+        private long maxTimestamp;
+        private long tsPerFrame;
+
+        private int gutterLeft;                             // Start of the mapped area of the gutter.
+        private int gutterRight;                            // End of the mapped area of the gutter, this includes the interval of the last frame.
+        private static readonly int gutterMargin = 8;       // Margin between the control edge and the start of the gutter endpoint.
+        private static readonly int gutterUnusable = 14;    // Width of the unusable area at the gutter ends.
+        private static readonly int gutterTop = 5;          // Markers can start drawing from here.
+        private static readonly int gutterHeight = 10;      // Markers can draw this height.
+        private static readonly int frameMarkerWidth = 5;   // Fixed width for frame markers. Also the minimal width of the cursor.
+        private int cursorLeft;                             // The cursor is left-aligned with frame intervals.
+        private int cursorWidth = 30;                       // The width of the cursor will be made to match one frame interval.
         
         private bool enabled = true;
         private bool commonTimeline;
-        private Bitmap bmpNavCursor = Resources.liqcursor;
-        private Bitmap bmpBumperLeft = Resources.liqbumperleft;
-        private Bitmap bmpBumperRight = Resources.liqbumperright;
-        private Bitmap bmpBackground = Resources.liqbackdock;
+        private Bitmap bmpGutterLeft = Resources.gutter_left;
+        private Bitmap bmpGutterRight = Resources.gutter_right;
+        private Bitmap bmpGutterCenter = Resources.gutter_center;
         
         #region Markers handling
         private Metadata metadata;
 
-
-        // Lists are lists of coordinates, or of pair of coordinates (start/end) in pixels.
-        
-        private List<int> keyframesMarks = new List<int>();
-        private static readonly Pen penKey = Pens.SeaGreen;
-        private static readonly SolidBrush brushKey = new SolidBrush(Color.FromArgb(96, Color.SeaGreen));
-        
-        private List<Point> chronosMarks = new List<Point>();
-        private static readonly Pen penChronoBorder = Pens.CornflowerBlue;
-        private static readonly SolidBrush brushChrono = new SolidBrush(Color.FromArgb(96, Color.CornflowerBlue));
-        
-        private List<Point> tracksMarks = new List<Point>();
-        private static readonly Pen penTrackBorder = Pens.Plum; 
-        private static readonly SolidBrush brushTrack = new SolidBrush(Color.FromArgb(96, Color.Plum));
-        
+        // Markers coordinates and colors.
+        private List<Pair<int, Color>> keyframesMarks = new List<Pair<int, Color>>();
+        private List<Pair<Point, Color>> chronosMarks = new List<Pair<Point, Color>>();
+        private List<Pair<Point, Color>> tracksMarks = new List<Pair<Point, Color>>();
         private VideoSection cacheSegment;
-        private List<Point> cacheSegmentMarks = new List<Point>();
-        private static readonly Pen penCacheBorder = Pens.DarkGray;
-        private static readonly SolidBrush brushCache = new SolidBrush(Color.FromArgb(96, Color.DarkGray));
-
+        private List<Pair<Point, Color>> cacheSegmentMarks = new List<Pair<Point, Color>>();
         private long syncPointTimestamp;
-        private int syncPointMark;
-        private static readonly Pen penSync = Pens.Firebrick;
-        private static readonly SolidBrush brushSync = new SolidBrush(Color.FromArgb(96, Color.Firebrick));
-
+        private Pair<int, Color> syncPointMark;
         private long leftHairline;
         private long rightHairline;
         private int leftPlayHeadMark;
         private int rightPlayHeadMark;
+
+        // Standard colors.
         private static readonly Pen penPlayHead = Pens.DarkCyan;
         private static readonly SolidBrush brushPlayHead = new SolidBrush(Color.FromArgb(96, Color.DarkCyan));
-        
         #endregion
         
         private static readonly bool prebufferDisplay = false;
@@ -182,15 +166,12 @@ namespace Kinovea.ScreenManager
             this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.DoubleBuffer, true);
             
             this.Cursor = Cursors.Hand;
-            
-            minimumPixel = spacers + halfCursorWidth;
-            maximumPixel = this.Width - spacers - halfCursorWidth;
-            maxWidthPixel = maximumPixel - minimumPixel;
-            
-            
 
-            // Prepare the images resources for faster painting.
-            //bmpBumperLeft = Resources.liqbumperleft..to32bppPArgb();
+            // Initialize the mapped area.
+            // gutterLeft should never change but gutterRight should be updated when the control is resized.
+            // Note: cursorWidth depends on the size of the mapped area.
+            gutterLeft = gutterMargin + gutterUnusable;
+            gutterRight = this.Width - gutterMargin - gutterUnusable;
         }
         #endregion
         
@@ -199,21 +180,31 @@ namespace Kinovea.ScreenManager
         {
             this.commonTimeline = value;
         }
-        public void Remap(long minimum, long maximum)
+
+        /// <summary>
+        /// Update the appearance of the control after the selection end points were changed.
+        /// Does not raise events back.
+        /// </summary>
+        public void Remap(long minTimestamp, long maxTimeStamp, long tsPerFrame)
         {
             // This method is only a shortcut to updating min and max properties at once.
             // This method update the appearence of the control only, it doesn't raise the events back.
-            this.minimum = minimum;
-            this.maximum = maximum;
+            this.minTimestamp = minTimestamp;
+            this.maxTimestamp = maxTimeStamp;
+            this.tsPerFrame = tsPerFrame;
+            curTimestamp = Clamp(curTimestamp, minTimestamp, maxTimeStamp);
+            cursorWidth = (int)Rescale(tsPerFrame, 0, maxTimestamp - minTimestamp, 0, gutterRight - gutterLeft);
+            cursorWidth = Math.Max(cursorWidth, frameMarkerWidth);
             
-            if (position < minimum) position = minimum;
-            if (position > maximum) position = maximum;
-            
+            // Make room for one more frame so the gutter contains the interval of the last frame.
+            this.maxTimestamp += tsPerFrame;
+
             UpdateMarkersPositions();
             UpdateSyncPointMarkerPosition();
             UpdateCursorPosition();
             Invalidate();
         }
+
         public void EnableDisable(bool enable)
         {
             this.enabled = enable;
@@ -246,12 +237,12 @@ namespace Kinovea.ScreenManager
         public void UpdatePlayHeadMarkers()
         {
             leftPlayHeadMark = 0;
-            if (leftHairline >= minimum && leftHairline <= maximum)
-                leftPlayHeadMark = GetCoordFromTimestamp(leftHairline);
+            if (leftHairline >= minTimestamp && leftHairline <= maxTimestamp)
+                leftPlayHeadMark = TimestampToPixel(leftHairline);
 
             rightPlayHeadMark = 0;
-            if (rightHairline >= minimum && rightHairline <= maximum)
-                rightPlayHeadMark = GetCoordFromTimestamp(rightHairline);
+            if (rightHairline >= minTimestamp && rightHairline <= maxTimestamp)
+                rightPlayHeadMark = TimestampToPixel(rightHairline);
         }
 
         public void UpdateCacheSegmentMarker(VideoSection cacheSegment)
@@ -273,16 +264,16 @@ namespace Kinovea.ScreenManager
                 return;
             
             Point mouseCoords = this.PointToClient(Cursor.Position);
-            int x = Math.Min(Math.Max(mouseCoords.X, minimumPixel), maximumPixel);
+            // gutterRight is the last available pixel, so the right side of the cursor block.
+            cursorLeft = (int)Clamp(mouseCoords.X, gutterLeft, gutterRight - cursorWidth);
             
-            pixelPosition = x - halfCursorWidth;
             Invalidate();
             invalidateAsked = true;
             
             if (PositionChanging != null)
             {
-                position = GetTimestampFromCoord(pixelPosition + halfCursorWidth);
-                PositionChanging(this, new PositionChangedEventArgs(position));
+                curTimestamp = PixelToTimestamp(cursorLeft);
+                PositionChanging(this, new PositionChangedEventArgs(curTimestamp));
             }
             else
             {
@@ -296,21 +287,22 @@ namespace Kinovea.ScreenManager
                 return;
             
             Point mouseCoords = this.PointToClient(Cursor.Position);
-            int x = Math.Min(Math.Max(mouseCoords.X, minimumPixel), maximumPixel);
-
-            pixelPosition = x - halfCursorWidth;
+            cursorLeft = Math.Min(Math.Max(mouseCoords.X, gutterLeft), gutterRight);
+            
             Invalidate();
             if (PositionChanged != null)
             { 
-                position = GetTimestampFromCoord(pixelPosition + halfCursorWidth);
-                PositionChanged(this, new PositionChangedEventArgs(position));
+                curTimestamp = PixelToTimestamp(cursorLeft);
+                PositionChanged(this, new PositionChangedEventArgs(curTimestamp));
             }
         }
         private void FrameTracker_Resize(object sender, EventArgs e)
         {
             // Resize of the control only : internal data doesn't change.
-            maximumPixel = this.Width - spacers - halfCursorWidth;
-            maxWidthPixel = maximumPixel - minimumPixel;
+            gutterRight = this.Width - gutterMargin - gutterUnusable;
+            cursorWidth = (int)Rescale(tsPerFrame, 0, maxTimestamp - minTimestamp, 0, gutterRight - gutterLeft);
+            cursorWidth = Math.Max(cursorWidth, frameMarkerWidth);
+
             UpdateMarkersPositions();
             UpdateSyncPointMarkerPosition();
             UpdateCursorPosition();
@@ -333,95 +325,67 @@ namespace Kinovea.ScreenManager
         }
         private void Draw(Graphics canvas)
         {
-            // Background. (Note: it's faster to draw stretched than multiple tiles).
-            canvas.DrawImage(bmpBackground, 22, 0, Width-40, bmpBackground.Height-1);
-            
-            // Bumpers.
-            canvas.DrawImageUnscaled(bmpBumperLeft, 10, 0);
-            canvas.DrawImageUnscaled(bmpBumperRight, Width-20, 0);
+            // Draw the gutter.
+            int gutterCenterStart = gutterMargin + bmpGutterLeft.Width;
+            int gutterCenterWidth = this.Width - (gutterMargin * 2 + bmpGutterLeft.Width + bmpGutterRight.Width);
+            canvas.DrawImageUnscaled(bmpGutterLeft, gutterMargin, 0);
+            canvas.DrawImageUnscaled(bmpGutterRight, gutterCenterStart + gutterCenterWidth - 4, 0);
+            canvas.DrawImage(bmpGutterCenter, gutterCenterStart, 0, gutterCenterWidth, bmpGutterCenter.Height);
 
             if(!enabled)
                 return;
             
-            if(prebufferDisplay)
+            // Draw the main cursor in the background, then the ranges, then the frames.
+            if (commonTimeline)
             {
-                foreach(Point mark in cacheSegmentMarks)
-                    DrawRangeMark(canvas, Pens.LightSlateGray, Brushes.LightSteelBlue, mark.X, mark.Y);
-
-                DrawAllFrames(canvas, Pens.Black);
-                int pixPos =  GetCoordFromTimestamp(position);
-                canvas.DrawLine(Pens.Red, pixPos, 5, pixPos, 13);
+                DrawSideMark(canvas, penPlayHead, brushPlayHead, leftPlayHeadMark, true);
+                DrawSideMark(canvas, penPlayHead, brushPlayHead, rightPlayHeadMark, false);
             }
             else
             {
-                foreach (Point mark in chronosMarks)
-                    DrawRangeMark(canvas, penChronoBorder, brushChrono, mark.X, mark.Y);
-
-                foreach (Point mark in tracksMarks)
-                    DrawRangeMark(canvas, penTrackBorder, brushTrack, mark.X, mark.Y);
-
-                foreach (int mark in keyframesMarks)
-                    DrawFrameMark(canvas, penKey, brushKey, mark);
-
-                DrawFrameMark(canvas, penSync, brushSync, syncPointMark);
-                
-                if (commonTimeline)
-                {
-                    DrawSideMark(canvas, penPlayHead, brushPlayHead, leftPlayHeadMark, true);
-                    DrawSideMark(canvas, penPlayHead, brushPlayHead, rightPlayHeadMark, false);
-                }
-                else
-                {
-                    canvas.DrawImageUnscaled(bmpNavCursor, pixelPosition, 0);
-                }
+                DrawMainCursor(canvas);
             }
+
+            foreach (var mark in chronosMarks)
+                DrawRangeMark(canvas, mark);
+
+            foreach (var mark in tracksMarks)
+                DrawRangeMark(canvas, mark);
+
+            foreach (var mark in keyframesMarks)
+                DrawFrameMark(canvas, mark);
+
+            DrawFrameMark(canvas, syncPointMark);
         }
-        private void DrawAllFrames(Graphics canvas, Pen pen)
+
+        /// <summary>
+        ///  Draw one frame marker.
+        ///  The frame marker has a fixed width and doesn't take the whole frame interval.
+        ///  The left edge of the marker is drawn at the pixel mapped to the timestamp.
+        /// </summary>
+        private void DrawFrameMark(Graphics canvas, Pair<int, Color> mark)
         {
-            if(metadata == null || metadata.AverageTimeStampsPerFrame < 1)
-                return;
-            
-            long totalTs = maximum - minimum + 1;
-            long totalFrames = totalTs / metadata.AverageTimeStampsPerFrame;
-            
-            while(totalFrames > (maximumPixel/5))
-                totalFrames /= 10;
-            
-            float interval = (float)maxWidthPixel / totalFrames;
-            for(long i = 0;i<totalFrames;i++)
-            {
-                int pixPos = minimumPixel + (int)(interval * i);
-                canvas.DrawLine(pen, pixPos, 5, pixPos, 13);
-            }
-        }
-        private void DrawFrameMark(Graphics canvas, Pen border, SolidBrush inside, int coord)
-        {
+            int coord = mark.First;
+            Color color = mark.Second;
             if (coord <= 0)
                 return;
 
-            float left = coord;
-            float top = 5;
-            float width = 3;
-            float height = 8;
-
             canvas.SmoothingMode = SmoothingMode.Default;
-
-            canvas.FillRectangle(inside, left - width / 2, top + 0.5f, width, height - 0.5f);
-            canvas.DrawRectangle(border, left - width / 2, top + 0.5f, width, height - 0.5f);
+            using (SolidBrush brush = new SolidBrush(color))
+                canvas.FillRectangle(brush, coord, gutterTop + 0.5f, frameMarkerWidth, gutterHeight - 0.5f);
         }
         private void DrawSideMark(Graphics canvas, Pen border, SolidBrush inside, int coord, bool lookLeft)
         {
+            // Draw each screen playhead as a half-disc.
             if (coord <= 0)
                 return;
             
-            float top = 5;
             float width = 9;
-            float height = 8;
             float left = lookLeft ? coord - width * 0.25f : coord - width * 0.75f;
             
             canvas.SmoothingMode = SmoothingMode.AntiAlias;
 
-            RectangleF rect = new RectangleF(left, top, width, height + 0.5f);
+            RectangleF rect = new RectangleF(left, gutterTop, width, gutterHeight + 0.5f);
             
             GraphicsPath gp = new GraphicsPath();
             gp.StartFigure();
@@ -438,37 +402,37 @@ namespace Kinovea.ScreenManager
 
             gp.Dispose();
         }
-        private void DrawRangeMark(Graphics canvas, Pen border, Brush inside, int start, int range)
+        private void DrawRangeMark(Graphics canvas, Pair<Point, Color> mark)
         {
-            float left = start;
-            float top = 5;
-            float width = range;
-            float height = 8;
+            int start = mark.First.X;
+            int range = mark.First.Y;
+            float left = Math.Max(start, gutterLeft);
+            float width = Math.Min(range, gutterRight - left);
             
-            // Bound to bumpers.
-            if(left < minimumPixel) 
-                left = minimumPixel;
-            
-            if(left + width > maximumPixel) 
-                width = maximumPixel - left;
-
             canvas.SmoothingMode = SmoothingMode.Default;
 
-            canvas.FillRectangle(inside, left, top + 0.5f, width, height - 0.5f);
-            canvas.DrawRectangle(border, left, top + 0.5f, width, height - 0.5f);
+            using (SolidBrush brush = new SolidBrush(Color.FromArgb(96, mark.Second)))
+                canvas.FillRectangle(brush, left, gutterTop + 0.5f, width, gutterHeight - 0.5f);
+        }
+        
+        private void DrawMainCursor(Graphics canvas)
+        {
+            canvas.FillRectangle(Brushes.DarkGray, new Rectangle(cursorLeft, gutterTop, cursorWidth, gutterHeight));
         }
         #endregion
         
         #region Binding UI to Data
         private void UpdateCursorPosition()
         {
-            pixelPosition = GetCoordFromTimestamp(position) - halfCursorWidth;
+            cursorLeft = TimestampToPixel(curTimestamp);
         }
+
+        /// <summary>
+        /// Convert timestamps into control coordinates and store it to draw them later.
+        /// Should only be called when either the timestamp range or the control size change.
+        /// </summary>
         private void UpdateMarkersPositions()
         {
-            // Translate timestamps into control coordinates and store the coordinates of the
-            // markers to draw them later.
-            // Should only be called when either the timestamps or the control size changed.
             if(metadata == null)
                 return;
             
@@ -477,9 +441,11 @@ namespace Kinovea.ScreenManager
             foreach(Keyframe kf in metadata.Keyframes)
             {
                 // Only display Key image that are in the selection.
-                if(kf.Position >= minimum && kf.Position <= maximum)
+                if(kf.Position >= minTimestamp && kf.Position <= maxTimestamp)
                 {
-                    keyframesMarks.Add(GetCoordFromTimestamp(kf.Position));
+                    int pixelLeft = TimestampToPixel(kf.Position);
+                    Color color = kf.Color;
+                    keyframesMarks.Add(new Pair<int, Color>(pixelLeft, color));
                 }
             }
             
@@ -487,68 +453,97 @@ namespace Kinovea.ScreenManager
             // We will store the range coords in a Point object, to get a couple of ints structure.
             // X will be the left coordinate, Y the width.
             chronosMarks.Clear();
-            tracksMarks.Clear();
             foreach (DrawingChrono chrono in metadata.ChronoManager.Drawings)
             {
                 if (chrono.TimeStart != long.MaxValue && chrono.TimeStop != long.MaxValue)
                 {
                     // Only chronos that have an end and something inside the selection.
-                    if (chrono.TimeStart <= maximum && chrono.TimeStop >= minimum)
-                        chronosMarks.Add(GetMarkerRange(chrono.TimeStart, chrono.TimeStop));
+                    if (chrono.TimeStart <= maxTimestamp && chrono.TimeStop >= minTimestamp)
+                    {
+                        Point range = TimestampToPixel(chrono.TimeStart, chrono.TimeStop);
+                        Color color = chrono.Color;
+                        chronosMarks.Add(new Pair<Point, Color>(range, color));
+                    }
                 }
             }
 
+            tracksMarks.Clear();
             foreach (DrawingTrack track in metadata.TrackManager.Drawings)
             {
                 if (track == null)
                     continue;
 
-                if (track.BeginTimeStamp <= maximum && track.EndTimeStamp >= minimum)
-                    tracksMarks.Add(GetMarkerRange(track.BeginTimeStamp, track.EndTimeStamp));
+                if (track.BeginTimeStamp <= maxTimestamp && track.EndTimeStamp >= minTimestamp)
+                {
+                    Point range = TimestampToPixel(track.BeginTimeStamp, track.EndTimeStamp);
+                    Color color = track.MainColor;
+                    tracksMarks.Add(new Pair<Point, Color>(range, color));
+                }
             }
         }
         private void UpdateSyncPointMarkerPosition()
         {
-            syncPointMark = 0;
-            if(syncPointTimestamp != 0 && syncPointTimestamp >= minimum && syncPointTimestamp <= maximum)
-                syncPointMark = GetCoordFromTimestamp(syncPointTimestamp);
+            syncPointMark = new Pair<int, Color>(0, Color.Firebrick);
+            if(syncPointTimestamp != 0 && syncPointTimestamp >= minTimestamp && syncPointTimestamp <= maxTimestamp)
+                syncPointMark.First = TimestampToPixel(syncPointTimestamp);
         }
         private void UpdateCacheSegmentMarkerPosition()
         {
             cacheSegmentMarks.Clear();
             if(cacheSegment.Wrapped)
             {
-                cacheSegmentMarks.Add(GetMarkerRange(minimum, cacheSegment.End));
-                cacheSegmentMarks.Add(GetMarkerRange(cacheSegment.Start, maximum));
+                Point rangeEnd = TimestampToPixel(minTimestamp, cacheSegment.End);
+                Point rangeStart = TimestampToPixel(cacheSegment.Start, maxTimestamp);
+
+                cacheSegmentMarks.Add(new Pair<Point, Color>(rangeEnd, Color.Yellow));
+                cacheSegmentMarks.Add(new Pair<Point, Color>(rangeStart, Color.Yellow));
             }
             else
             {
-                cacheSegmentMarks.Add(GetMarkerRange(cacheSegment.Start, cacheSegment.End));
+                Point range = TimestampToPixel(cacheSegment.Start, cacheSegment.End);
+                cacheSegmentMarks.Add(new Pair<Point, Color>(range, Color.Yellow));
             }
         }
-        private Point GetMarkerRange(long start, long stop)
+
+        /// <summary>
+        /// Returns the pixel start and width of a timestamp range.
+        /// </summary>
+        private Point TimestampToPixel(long start, long end)
         {
-            long startTs = Math.Max(start, minimum);
-            long stopTs = Math.Min(stop, maximum);
-            int newStart = GetCoordFromTimestamp(startTs);
-            int newStop = GetCoordFromTimestamp(stopTs);
-            
-            return new Point(newStart, newStop - newStart);
+            int pixelStart = TimestampToPixel(Math.Max(start, minTimestamp));
+            int pixelEnd = TimestampToPixel(Math.Min(end + tsPerFrame, maxTimestamp));
+            int pixelWidth = Math.Max(pixelEnd - pixelStart, frameMarkerWidth);
+            return new Point(pixelStart, pixelWidth);
         }
-        private int GetCoordFromTimestamp(long timestamp)
+
+        /// <summary>
+        /// Returns the absolute pixel coordinate of a timestamp within the control.
+        /// </summary>
+        private int TimestampToPixel(long timestamp)
         {
-            return minimumPixel + (int)Rescale(timestamp - minimum, maximum - minimum, maxWidthPixel);
+            return (int)Rescale(timestamp, minTimestamp, maxTimestamp, gutterLeft, gutterRight);
         }
-        private long GetTimestampFromCoord(int pos)
+
+        /// <summary>
+        /// Returns the timestamp corresponding to a pixel in the control.
+        /// </summary>
+        private long PixelToTimestamp(int pixelPos)
         {
-            return minimum + Rescale(pos - minimumPixel, maxWidthPixel, maximum - minimum);
+            return Rescale(pixelPos, gutterLeft, gutterRight, minTimestamp, maxTimestamp);
         }
-        private long Rescale(long oldValue, long oldMax, long newMax)
+        private long Rescale(long value, long oldMin, long oldMax, long newMin, long newMax)
         {
-            if (oldMax <= 0)
-                return 0;
-            
-            return (long)(Math.Round((double)oldValue / (double)oldMax * (double)newMax));
+            long oldRange = oldMax - oldMin;
+            long newRange = newMax - newMin;
+            if (oldRange <= 0 || newRange <= 0)
+                return newMin;
+
+            float u = (float)(value - oldMin) / oldRange;
+            return (long)(newMin + u * newRange);
+        }
+        private long Clamp(long value, long min, long max)
+        {
+            return Math.Max(Math.Min(value, max), min);
         }
         #endregion
     }
