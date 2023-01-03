@@ -298,15 +298,15 @@ namespace Kinovea.ScreenManager
             if (DualSaveAsked != null)
                 DualSaveAsked(this, EventArgs.Empty);
         }
-        private void trkFrame_PositionChanged(object sender, PositionChangedEventArgs e)
+        private void trkFrame_PositionChanged(object sender, TimeEventArgs e)
         {
-            if (e.Position == oldPosition)
+            if (e.Time == oldPosition)
                 return;
             
-            oldPosition = e.Position;
+            oldPosition = e.Time;
 
             if (PositionChanged != null)
-                PositionChanged(this, new TimeEventArgs(e.Position));
+                PositionChanged(this, new TimeEventArgs(e.Time));
         }
         #endregion
         

@@ -378,8 +378,8 @@ namespace Kinovea.ScreenManager
       this.trkFrame.RightHairline = ((long)(0));
       this.trkFrame.Size = new System.Drawing.Size(410, 20);
       this.trkFrame.TabIndex = 16;
-      this.trkFrame.PositionChanging += new System.EventHandler<Kinovea.ScreenManager.PositionChangedEventArgs>(this.trkFrame_PositionChanging);
-      this.trkFrame.PositionChanged += new System.EventHandler<Kinovea.ScreenManager.PositionChangedEventArgs>(this.trkFrame_PositionChanged);
+      this.trkFrame.PositionChanging += new System.EventHandler<Kinovea.ScreenManager.TimeEventArgs>(this.trkFrame_PositionChanging);
+      this.trkFrame.PositionChanged += new System.EventHandler<Kinovea.ScreenManager.TimeEventArgs>(this.trkFrame_PositionChanged);
       // 
       // btn_HandlersLock
       // 

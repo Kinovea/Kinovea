@@ -2023,7 +2023,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Frame Tracker
-        private void trkFrame_PositionChanging(object sender, PositionChangedEventArgs e)
+        private void trkFrame_PositionChanging(object sender, TimeEventArgs e)
         {
             if (!PreferencesManager.PlayerPreferences.InteractiveFrameTracker)
                 return;
@@ -2039,7 +2039,7 @@ namespace Kinovea.ScreenManager
                 ActivateKeyframe(m_iCurrentPosition);
             }
         }
-        private void trkFrame_PositionChanged(object sender, PositionChangedEventArgs e)
+        private void trkFrame_PositionChanged(object sender, TimeEventArgs e)
         {
             if (m_FrameServer.Loaded)
             {

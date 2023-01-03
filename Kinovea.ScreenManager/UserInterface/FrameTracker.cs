@@ -151,8 +151,8 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Events
-        public event EventHandler<PositionChangedEventArgs> PositionChanging;
-        public event EventHandler<PositionChangedEventArgs> PositionChanged;
+        public event EventHandler<TimeEventArgs> PositionChanging;
+        public event EventHandler<TimeEventArgs> PositionChanged;
         public event EventHandler KeyframeDropped;
         #endregion
 
@@ -324,7 +324,7 @@ namespace Kinovea.ScreenManager
             if (PositionChanging != null)
             {
                 curTimestamp = PixelToTimestamp(cursorLeft);
-                PositionChanging(this, new PositionChangedEventArgs(curTimestamp));
+                PositionChanging(this, new TimeEventArgs(curTimestamp));
             }
             else
             {
@@ -349,7 +349,7 @@ namespace Kinovea.ScreenManager
             if (PositionChanged != null)
             {
                 curTimestamp = PixelToTimestamp(cursorLeft);
-                PositionChanged(this, new PositionChangedEventArgs(curTimestamp));
+                PositionChanged(this, new TimeEventArgs(curTimestamp));
             }
         }
         #endregion
@@ -590,14 +590,5 @@ namespace Kinovea.ScreenManager
             return Math.Max(Math.Min(value, max), min);
         }
         #endregion
-    }
-
-    public class PositionChangedEventArgs : EventArgs
-    {
-        public readonly long Position;
-        public PositionChangedEventArgs(long position)
-        {
-            this.Position = position;
-        }
     }
 }
