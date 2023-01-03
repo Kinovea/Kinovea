@@ -54,9 +54,11 @@ Changelog:
     Improved - Playback: Using a video filter no longer prevents the usage of the normal video controls and drawings tools.
     Improved - Playback: Video filters are no longer deactivated when changing the working zone.
     Improved - Playback: Support rotation on single image files.
-    Improved - Annotations: Added the ability to move a keyframe to the current time.
-    Improved - Annotations: Added the ability to move all number objects in Auto numbers at once using the SHIFT key.
-    Improved - Capture: Image aspect and rotation from camera is now saved in the capture KVA.
+    Improved - Annotations: Support drag and drop between the keyframe list and the timeline.
+    Improved - Annotations: Use color coding in the timeline.
+    Improved - Annotations: Added the ability to transfer a keyframe to the current time.
+    Improved - Annotations: Added the ability to move all number objects in Auto numbers using the SHIFT key.
+    Improved - Capture: Image aspect and rotation from camera are now saved in the capture KVA.
     Improved - Capture: Added milliseconds to file naming patterns.
     Improved - Export: Output to Microsoft Excel now uses Office Open XML (XLSX) instead of MS-XML format.
     Improved - Export: Output to LibreOffice Calc is now fully conformant with ODF 1.2 standard.

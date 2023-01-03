@@ -37,6 +37,8 @@ using Kinovea.ScreenManager.Languages;
 using Kinovea.ScreenManager.Properties;
 using Kinovea.Video;
 using Kinovea.Services;
+using System.Xml;
+using System.Text;
 
 #endregion
 
@@ -414,6 +416,12 @@ namespace Kinovea.ScreenManager
             BuildContextMenus();
             AfterSyncAlphaChange();
             m_MessageToaster = new MessageToaster(pbSurfaceScreen);
+
+            // Drag & drop between keyframe list and bottom panel.
+            trkFrame.KeyframeDropped += trkFrame_KeyframeDropped;
+            panelVideoControls.AllowDrop = true;
+            panelVideoControls.DragOver += PanelVideoControls_DragOver;
+            panelVideoControls.DragDrop += PanelVideoControls_DragDrop;
 
             // Most members and controls should be initialized with the right value.
             // So we don't need to do an extra ResetData here.
@@ -2052,6 +2060,13 @@ namespace Kinovea.ScreenManager
                 trkSelection.Invalidate();
             }
         }
+        private void trkFrame_KeyframeDropped(object sender, EventArgs e)
+        {
+            // A keyframe was dropped on the frame timeline.
+            // By this point we should be on the target time.
+            // This is now similar to the "move keyframe here" action.
+            KeyframeBox_MoveToCurrentTimeAsked(sender, e);
+        }
         private void UpdateFrameCurrentPosition(bool _bUpdateNavCursor)
         {
             // Displays the image corresponding to the current position within working zone.
@@ -2088,6 +2103,27 @@ namespace Kinovea.ScreenManager
             trkSelection.Invalidate();
             UpdateCurrentPositionLabel();
             RepositionSpeedControl();
+        }
+
+        private void PanelVideoControls_DragDrop(object sender, DragEventArgs e)
+        {
+            // Dropping a keyframe somewhere in the bottom part.
+            trkFrame.Commit();
+            
+            // Handle the drop.
+            object keyframeBox = e.Data.GetData(typeof(KeyframeBox));
+            if (keyframeBox != null && keyframeBox is KeyframeBox)
+            {
+                KeyframeBox_MoveToCurrentTimeAsked(keyframeBox, EventArgs.Empty);
+            }
+        }
+
+        private void PanelVideoControls_DragOver(object sender, DragEventArgs e)
+        {
+            // Dragging a keyframe anywhere on the video controls panel.
+            // We turn the whole panel into a timeline.
+            e.Effect = DragDropEffects.Move;
+            trkFrame.Scrub();
         }
         #endregion
 
@@ -3993,6 +4029,7 @@ namespace Kinovea.ScreenManager
             int keyframeIndex = m_FrameServer.Metadata.GetKeyframeIndex(m_iCurrentPosition);
             if (keyframeIndex >= 0)
             {
+                // There is already a keyframe here, just select it.
                 m_iActiveKeyFrameIndex = keyframeIndex;
                 Keyframe keyframe = m_FrameServer.Metadata.GetKeyframe(m_FrameServer.Metadata.GetKeyframeId(keyframeIndex));
                 m_FrameServer.Metadata.SelectKeyframe(keyframe);
@@ -4185,8 +4222,14 @@ namespace Kinovea.ScreenManager
 
         private void KeyframeBox_MoveToCurrentTimeAsked(object sender, EventArgs e)
         {
+            log.DebugFormat("Moving existing keyframe to a new time.");
+
             KeyframeBox keyframeBox = sender as KeyframeBox;
             if (keyframeBox == null)
+                return;
+
+            Keyframe keyframe = keyframeBox.Keyframe;
+            if (keyframe == null)
                 return;
 
             // If there is already a keyframe at the current time we ignore the request.
@@ -4194,8 +4237,56 @@ namespace Kinovea.ScreenManager
             if (keyframeIndex >= 0)
                 return;
 
-            // Change the keyframe reference time.
-            keyframeBox.Keyframe.Position = m_iCurrentPosition;
+            // Check if this keyframe is ours.
+            var knownKeyframe = m_FrameServer.Metadata.GetKeyframe(keyframe.Id);
+            if (knownKeyframe == null)
+            {
+                // The keyframe is coming from outside.
+                // Create a brand new one here and import the data.
+                log.DebugFormat("Importing external keyframe.");
+
+                AddKeyframe();
+                Keyframe newKf = m_FrameServer.Metadata.HitKeyframe;
+                if (newKf == null)
+                    return;
+
+                // Serialize the external keyframe.
+                // This is mainly to get a clean clone of the drawings list.
+                string serialized = "";
+                XmlWriterSettings writerSettings = new XmlWriterSettings();
+                writerSettings.Indent = false;
+                writerSettings.CloseOutput = true;
+                StringBuilder builder = new StringBuilder();
+                using (XmlWriter w = XmlWriter.Create(builder, writerSettings))
+                {
+                    w.WriteStartElement("KeyframeMemento");
+                    KeyframeSerializer.Serialize(w, keyframe, SerializationFilter.KVA);
+                    w.WriteEndElement();
+                    w.Flush();
+                    serialized = builder.ToString();
+                }
+
+                // Deserialize it back and merge it with the newly created one.
+                Keyframe copy = KeyframeSerializer.DeserializeMemento(serialized, m_FrameServer.Metadata);
+                if (copy == null)
+                    return;
+
+                // Import the data manually.
+                // Doing a global Metadata.MergeInsertKeyframe wouldn't work as the original keyframe has a different timestamp.
+                newKf.Title = copy.Title;
+                newKf.Color = copy.Color;
+                newKf.Comments = copy.Comments;
+                foreach (var d in copy.Drawings)
+                    newKf.Drawings.Add(d);
+
+                // Make sure the drawings are anchored to the right time.
+                newKf.Position = m_iCurrentPosition;
+            }
+            else
+            {
+                // Change the keyframe reference time.
+                keyframe.Position = m_iCurrentPosition;
+            }
 
             m_FrameServer.Metadata.Keyframes.Sort();
             OrganizeKeyframes();

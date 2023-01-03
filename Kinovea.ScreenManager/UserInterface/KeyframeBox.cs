@@ -145,10 +145,6 @@ namespace Kinovea.ScreenManager
         {
             DeleteAsked?.Invoke(this, e);
         }
-        private void pbThumbnail_Click(object sender, EventArgs e)
-        {
-            SelectAsked?.Invoke(this, e);
-        }
         private void btnComment_Click(object sender, EventArgs e)
         {
             ActivateAsked?.Invoke(this, e);
@@ -170,8 +166,21 @@ namespace Kinovea.ScreenManager
         {
             editing = true;
         }
+        private void pbThumbnail_MouseUp(object sender, MouseEventArgs e)
+        {
+            SelectAsked?.Invoke(this, e);
+        }
+        private void pbThumbnail_MouseMove(object sender, MouseEventArgs e)
+        {
+            // Support for drag and drop between the keyframe list and the timeline,
+            // to move a keyframe to a specific time.
+            if (e.Button != MouseButtons.Left)
+                return;
+
+            this.DoDragDrop(this, DragDropEffects.Move);
+        }
         #endregion
-        
+
         #region Private helpers
         private void BuildContextMenu()
         {

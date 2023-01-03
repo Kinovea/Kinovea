@@ -28,21 +28,24 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void InitializeComponent()
         {
-        	this.SuspendLayout();
-        	// 
-        	// FrameTracker
-        	// 
-        	this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-        	this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        	this.MinimumSize = new System.Drawing.Size(50, 20);
-        	this.Name = "FrameTracker";
-        	this.Size = new System.Drawing.Size(340, 20);
-        	this.Paint += new System.Windows.Forms.PaintEventHandler(this.FrameTracker_Paint);
-        	this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.FrameTracker_MouseMove);
-        	this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FrameTracker_MouseMove);
-        	this.Resize += new System.EventHandler(this.FrameTracker_Resize);
-        	this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.FrameTracker_MouseUp);
-        	this.ResumeLayout(false);
+      this.SuspendLayout();
+      // 
+      // FrameTracker
+      // 
+      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.MinimumSize = new System.Drawing.Size(50, 20);
+      this.Name = "FrameTracker";
+      this.Size = new System.Drawing.Size(340, 20);
+      this.DragDrop += new System.Windows.Forms.DragEventHandler(this.FrameTracker_DragDrop);
+      this.DragOver += new System.Windows.Forms.DragEventHandler(this.FrameTracker_DragOver);
+      this.Paint += new System.Windows.Forms.PaintEventHandler(this.FrameTracker_Paint);
+      this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FrameTracker_MouseMove);
+      this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.FrameTracker_MouseMove);
+      this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.FrameTracker_MouseUp);
+      this.Resize += new System.EventHandler(this.FrameTracker_Resize);
+      this.ResumeLayout(false);
+
         }
 
         #endregion

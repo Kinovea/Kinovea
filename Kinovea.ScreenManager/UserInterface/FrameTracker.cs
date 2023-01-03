@@ -120,7 +120,7 @@ namespace Kinovea.ScreenManager
         private int cursorWidth = 30;                       // The width of the cursor will be made to match one frame interval.
         
         private bool enabled = true;
-        private bool commonTimeline;
+        private bool isCommonTimeline;
         private Bitmap bmpGutterLeft = Resources.gutter_left;
         private Bitmap bmpGutterRight = Resources.gutter_right;
         private Bitmap bmpGutterCenter = Resources.gutter_center;
@@ -150,11 +150,10 @@ namespace Kinovea.ScreenManager
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        #region Events Delegates
-        [Category("Action"), Browsable(true)]
+        #region Events
         public event EventHandler<PositionChangedEventArgs> PositionChanging;
-        [Category("Action"), Browsable(true)]
         public event EventHandler<PositionChangedEventArgs> PositionChanged;
+        public event EventHandler KeyframeDropped;
         #endregion
 
         #region Constructor
@@ -172,13 +171,15 @@ namespace Kinovea.ScreenManager
             // Note: cursorWidth depends on the size of the mapped area.
             gutterLeft = gutterMargin + gutterUnusable;
             gutterRight = this.Width - gutterMargin - gutterUnusable;
+
+            this.AllowDrop = true;
         }
         #endregion
         
         #region Public Methods
-        public void SetAsCommonTimeline(bool value)
+        public void SetAsCommonTimeline(bool isCommonTimeline)
         {
-            this.commonTimeline = value;
+            this.isCommonTimeline = isCommonTimeline;
         }
 
         /// <summary>
@@ -262,39 +263,16 @@ namespace Kinovea.ScreenManager
             // User wants to jump to position. Update the cursor and optionnaly the image.
             if(!enabled || invalidateAsked || e.Button != MouseButtons.Left)
                 return;
-            
-            Point mouseCoords = this.PointToClient(Cursor.Position);
-            // gutterRight is the last available pixel, so the right side of the cursor block.
-            cursorLeft = (int)Clamp(mouseCoords.X, gutterLeft, gutterRight - cursorWidth);
-            
-            Invalidate();
-            invalidateAsked = true;
-            
-            if (PositionChanging != null)
-            {
-                curTimestamp = PixelToTimestamp(cursorLeft);
-                PositionChanging(this, new PositionChangedEventArgs(curTimestamp));
-            }
-            else
-            {
-                Invalidate();
-            }
+
+            Scrub();
         }
         private void FrameTracker_MouseUp(object sender, MouseEventArgs e)
         {
             // End of a mouse move, jump to position.
             if(!enabled || e.Button != MouseButtons.Left)
                 return;
-            
-            Point mouseCoords = this.PointToClient(Cursor.Position);
-            cursorLeft = Math.Min(Math.Max(mouseCoords.X, gutterLeft), gutterRight);
-            
-            Invalidate();
-            if (PositionChanged != null)
-            { 
-                curTimestamp = PixelToTimestamp(cursorLeft);
-                PositionChanged(this, new PositionChangedEventArgs(curTimestamp));
-            }
+
+            Commit();
         }
         private void FrameTracker_Resize(object sender, EventArgs e)
         {
@@ -307,6 +285,72 @@ namespace Kinovea.ScreenManager
             UpdateSyncPointMarkerPosition();
             UpdateCursorPosition();
             Invalidate();
+        }
+
+        private void FrameTracker_DragOver(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Move;
+            Scrub();
+        }
+
+        private void FrameTracker_DragDrop(object sender, DragEventArgs e)
+        {
+            Commit();
+
+            object keyframeBox = e.Data.GetData(typeof(KeyframeBox));
+            if (keyframeBox != null && keyframeBox is KeyframeBox)
+            {
+                KeyframeDropped?.Invoke(keyframeBox, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Scrub the timeline to the cursor point.
+        /// This may be called from the outside in the context of drag and drop events on other surfaces, 
+        /// as a way to turn these surfaces into large timelines.
+        /// </summary>
+        public void Scrub()
+        {
+            if (!enabled || invalidateAsked || isCommonTimeline)
+                return;
+
+            // gutterRight is the last available pixel, so the right side of the cursor block.
+            Point mouseCoords = this.PointToClient(Cursor.Position);
+            cursorLeft = (int)Clamp(mouseCoords.X, gutterLeft, gutterRight - cursorWidth);
+
+            Invalidate();
+            invalidateAsked = true;
+
+            if (PositionChanging != null)
+            {
+                curTimestamp = PixelToTimestamp(cursorLeft);
+                PositionChanging(this, new PositionChangedEventArgs(curTimestamp));
+            }
+            else
+            {
+                Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// Commit the timeline to the cursor point.
+        /// This may be called from the outside in the context of drag and drop events on other surfaces, 
+        /// as a way to turn these surfaces into large timelines.
+        /// </summary>
+        public void Commit()
+        {
+            if (!enabled || isCommonTimeline)
+                return;
+
+            Point mouseCoords = this.PointToClient(Cursor.Position);
+            cursorLeft = Math.Min(Math.Max(mouseCoords.X, gutterLeft), gutterRight);
+
+            Invalidate();
+            if (PositionChanged != null)
+            {
+                curTimestamp = PixelToTimestamp(cursorLeft);
+                PositionChanged(this, new PositionChangedEventArgs(curTimestamp));
+            }
         }
         #endregion
 
@@ -336,7 +380,7 @@ namespace Kinovea.ScreenManager
                 return;
             
             // Draw the main cursor in the background, then the ranges, then the frames.
-            if (commonTimeline)
+            if (isCommonTimeline)
             {
                 DrawSideMark(canvas, penPlayHead, brushPlayHead, leftPlayHeadMark, true);
                 DrawSideMark(canvas, penPlayHead, brushPlayHead, rightPlayHeadMark, false);
@@ -547,7 +591,7 @@ namespace Kinovea.ScreenManager
         }
         #endregion
     }
-    
+
     public class PositionChangedEventArgs : EventArgs
     {
         public readonly long Position;
