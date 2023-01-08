@@ -110,4 +110,7 @@
   <data name="Generic_Open" xml:space="preserve">
     <value>Öppna</value>
   </data>
+  <data name="mnuVideoLocate" xml:space="preserve">
+    <value>Lokalisera i Utforskaren i Windows </value>
+  </data>
 </root>
