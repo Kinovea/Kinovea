@@ -1,6 +1,6 @@
-#region License
+﻿#region License
 /*
-Copyright � Joan Charmant 2008-2009.
+Copyright © Joan Charmant 2008-2009.
 jcharmant@gmail.com
  
 This file is part of Kinovea.
@@ -179,8 +179,6 @@ namespace Kinovea.ScreenManager
                     if (m_SyncMergeImage != null)
                         m_SyncMergeImage.Dispose();
                 }
-
-                btnPlayingMode.Enabled = !m_bSynched;
             }
         }
 
@@ -477,7 +475,6 @@ namespace Kinovea.ScreenManager
             buttonPlay.Image = Player.flatplay;
             sldrSpeed.Enabled = false;
             m_KeyframeCommentsHub.Hide();
-            UpdatePlayingModeButton();
             m_LaunchDescription = null;
             infobar.Visible = false;
 
@@ -870,10 +867,8 @@ namespace Kinovea.ScreenManager
             lblSelStartSelection.AutoSize = true;
             lblSelDuration.AutoSize = true;
 
-            lblWorkingZone.Text = ScreenManagerLang.lblWorkingZone_Text;
             UpdateTimeLabels();
 
-            RepositionSpeedControl();
             ReloadTooltipsCulture();
             ReloadToolsCulture();
             ReloadMenusCulture();
@@ -1096,7 +1091,7 @@ namespace Kinovea.ScreenManager
             if (!m_FrameServer.Loaded)
                 return;
 
-            string size = string.Format("{0}�{1} px", m_FrameServer.Metadata.ImageSize.Width, m_FrameServer.Metadata.ImageSize.Height);
+            string size = string.Format("{0}×{1} px", m_FrameServer.Metadata.ImageSize.Width, m_FrameServer.Metadata.ImageSize.Height);
             string fps = string.Format("{0:0.00} fps", 1000 / timeMapper.UserInterval);
 
             infobar.Visible = true;
@@ -1983,11 +1978,14 @@ namespace Kinovea.ScreenManager
             }
 
             string startTimecode = m_FrameServer.TimeStampsToTimecode(start, TimeType.Absolute, PreferencesManager.PlayerPreferences.TimecodeFormat, true);
-            lblSelStartSelection.Text = ScreenManagerLang.lblSelStartSelection_Text + " : " + startTimecode;
+            lblSelStartSelection.Text = "◢ " + startTimecode;
 
             duration -= m_FrameServer.Metadata.AverageTimeStampsPerFrame;
             string durationTimecode = m_FrameServer.TimeStampsToTimecode(duration, TimeType.Duration, PreferencesManager.PlayerPreferences.TimecodeFormat, true);
-            lblSelDuration.Text = ScreenManagerLang.lblSelDuration_Text + " : " + durationTimecode;
+            int right = lblSelDuration.Right;
+            lblSelDuration.Text = "[" + durationTimecode + "]";
+            lblSelDuration.Left = right - lblSelDuration.Width;
+
         }
         private void UpdateSelectionDataFromControl()
         {
@@ -2035,6 +2033,7 @@ namespace Kinovea.ScreenManager
                 StopPlaying();
                 UpdateFrameCurrentPosition(false);
                 UpdateCurrentPositionLabel();
+                lblTimeTip.Visible = true;
 
                 ActivateKeyframe(m_iCurrentPosition);
             }
@@ -2053,6 +2052,7 @@ namespace Kinovea.ScreenManager
                 // Update image and cursor.
                 UpdateFrameCurrentPosition(true);
                 UpdateCurrentPositionLabel();
+                lblTimeTip.Visible = false;
                 ActivateKeyframe(m_iCurrentPosition);
 
                 // Update WorkingZone hairline.
@@ -2089,7 +2089,9 @@ namespace Kinovea.ScreenManager
         {
             // Note: among other places, this is run inside the playloop.
             string timecode = m_FrameServer.TimeStampsToTimecode(m_iCurrentPosition, TimeType.UserOrigin, PreferencesManager.PlayerPreferences.TimecodeFormat, true);
-            lblTimeCode.Text = string.Format("{0} : {1}", ScreenManagerLang.lblTimeCode_Text, timecode);
+            lblTimeCode.Text = "▼ " + timecode;
+            lblTimeTip.Text = timecode;
+            lblTimeTip.Left = trkFrame.PixelPosition;
         }
         private void UpdatePositionUI()
         {
@@ -2102,7 +2104,6 @@ namespace Kinovea.ScreenManager
             trkSelection.SelPos = m_iCurrentPosition;
             trkSelection.Invalidate();
             UpdateCurrentPositionLabel();
-            RepositionSpeedControl();
         }
 
         private void PanelVideoControls_DragDrop(object sender, DragEventArgs e)
@@ -2172,54 +2173,7 @@ namespace Kinovea.ScreenManager
             else
                 speedValue = string.Format("{0:0.##}x", multiplier);
 
-            lblSpeedTuner.Text = string.Format(ScreenManagerLang.lblSpeedTuner_Text, speedValue);
-        }
-        private void RepositionSpeedControl()
-        {
-            lblSpeedTuner.Left = lblTimeCode.Right + 8;
-
-            // Fake the longest speed string possible for positioning.
-            string temp = lblSpeedTuner.Text;
-            lblSpeedTuner.Text = string.Format("{0} {1:0.00}%", ScreenManagerLang.lblSpeedTuner_Text, 99.99);
-
-            sldrSpeed.Left = lblSpeedTuner.Right + 8;
-
-            lblSpeedTuner.Text = temp;
-        }
-        #endregion
-
-        #region Loop Mode
-        private void buttonPlayingMode_Click(object sender, EventArgs e)
-        {
-            // Playback mode ('Once' or 'Loop').
-            if (m_FrameServer.Loaded)
-            {
-                OnPoke();
-
-                if (m_ePlayingMode == PlayingMode.Once)
-                {
-                    m_ePlayingMode = PlayingMode.Loop;
-                }
-                else if (m_ePlayingMode == PlayingMode.Loop)
-                {
-                    m_ePlayingMode = PlayingMode.Once;
-                }
-
-                UpdatePlayingModeButton();
-            }
-        }
-        private void UpdatePlayingModeButton()
-        {
-            if (m_ePlayingMode == PlayingMode.Once)
-            {
-                btnPlayingMode.Image = Resources.playmodeonce;
-                toolTips.SetToolTip(btnPlayingMode, ScreenManagerLang.ToolTip_PlayingMode_Once);
-            }
-            else if (m_ePlayingMode == PlayingMode.Loop)
-            {
-                btnPlayingMode.Image = Resources.playmodeloop;
-                toolTips.SetToolTip(btnPlayingMode, ScreenManagerLang.ToolTip_PlayingMode_Loop);
-            }
+            lblSpeedTuner.Text = speedValue;
         }
         #endregion
 
@@ -2775,14 +2729,6 @@ namespace Kinovea.ScreenManager
             toolTips.SetToolTip(buttonGotoNext, ScreenManagerLang.ToolTip_Next);
             toolTips.SetToolTip(buttonGotoFirst, ScreenManagerLang.ToolTip_First);
             toolTips.SetToolTip(buttonGotoLast, ScreenManagerLang.ToolTip_Last);
-            if (m_ePlayingMode == PlayingMode.Once)
-            {
-                toolTips.SetToolTip(btnPlayingMode, ScreenManagerLang.ToolTip_PlayingMode_Once);
-            }
-            else
-            {
-                toolTips.SetToolTip(btnPlayingMode, ScreenManagerLang.ToolTip_PlayingMode_Loop);
-            }
 
             // Export buttons
             toolTips.SetToolTip(btnSnapShot, ScreenManagerLang.Generic_SaveImage);
@@ -2806,6 +2752,13 @@ namespace Kinovea.ScreenManager
             trkSelection.ToolTip = ScreenManagerLang.ToolTip_trkSelection;
 
             toolTips.SetToolTip(btnTimeOrigin, ScreenManagerLang.mnuMarkTimeAsOrigin);
+
+            toolTips.SetToolTip(lblTimeCode, ScreenManagerLang.lblTimeCode_Text);
+            //toolTips.SetToolTip(lblSpeedTuner, ScreenManagerLang.lblSpeedTuner_Text);
+            toolTips.SetToolTip(lblSpeedTuner, "Speed");
+            toolTips.SetToolTip(sldrSpeed, "Speed");
+            toolTips.SetToolTip(lblSelStartSelection, ScreenManagerLang.lblSelStartSelection_Text);
+            toolTips.SetToolTip(lblSelDuration, ScreenManagerLang.lblSelDuration_Text);
         }
         private void ReloadToolsCulture()
         {
@@ -4235,7 +4188,10 @@ namespace Kinovea.ScreenManager
             // If there is already a keyframe at the current time we ignore the request.
             int keyframeIndex = m_FrameServer.Metadata.GetKeyframeIndex(m_iCurrentPosition);
             if (keyframeIndex >= 0)
+            {
+                log.WarnFormat("Ignored move request: there is already a keyframe at the current time.");
                 return;
+            }
 
             // Check if this keyframe is ours.
             var knownKeyframe = m_FrameServer.Metadata.GetKeyframe(keyframe.Id);
@@ -4243,15 +4199,18 @@ namespace Kinovea.ScreenManager
             {
                 // The keyframe is coming from outside.
                 // Create a brand new one here and import the data.
-                log.DebugFormat("Importing external keyframe.");
+                log.DebugFormat("Keyframe move: importing an external keyframe.");
 
                 AddKeyframe();
                 Keyframe newKf = m_FrameServer.Metadata.HitKeyframe;
                 if (newKf == null)
+                {
+                    log.ErrorFormat("Keyframe move: a problem occurred while creating the recipient keyframe.");
                     return;
+                }
 
                 // Serialize the external keyframe.
-                // This is mainly to get a clean clone of the drawings list.
+                // This is mainly to get a clean clone of the drawing list.
                 string serialized = "";
                 XmlWriterSettings writerSettings = new XmlWriterSettings();
                 writerSettings.Indent = false;
@@ -4266,10 +4225,13 @@ namespace Kinovea.ScreenManager
                     serialized = builder.ToString();
                 }
 
-                // Deserialize it back and merge it with the newly created one.
+                // Deserialize it back.
                 Keyframe copy = KeyframeSerializer.DeserializeMemento(serialized, m_FrameServer.Metadata);
                 if (copy == null)
+                {
+                    log.ErrorFormat("Keyframe move: a problem occurred while deserializing the imported keyframe.");
                     return;
+                }
 
                 // Import the data manually.
                 // Doing a global Metadata.MergeInsertKeyframe wouldn't work as the original keyframe has a different timestamp.
@@ -4279,7 +4241,7 @@ namespace Kinovea.ScreenManager
                 foreach (var d in copy.Drawings)
                     newKf.Drawings.Add(d);
 
-                // Make sure the drawings are anchored to the right time.
+                // Make sure the drawings are anchored to the right time for fading.
                 newKf.Position = m_iCurrentPosition;
             }
             else
@@ -5100,7 +5062,6 @@ namespace Kinovea.ScreenManager
             buttonGotoNext.Enabled = _bEnable;
             buttonGotoPrevious.Enabled = _bEnable;
             buttonPlay.Enabled = _bEnable;
-            btnPlayingMode.Enabled = _bEnable;
             
             lblSpeedTuner.Enabled = _bEnable;
             trkFrame.EnableDisable(_bEnable);

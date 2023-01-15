@@ -83,6 +83,16 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap balloon_ellipsis {
+            get {
+                object obj = ResourceManager.GetObject("balloon_ellipsis", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap bggr {
             get {
                 object obj = ResourceManager.GetObject("bggr", resourceCulture);
@@ -226,16 +236,6 @@ namespace Kinovea.ScreenManager.Properties {
         internal static System.Drawing.Bitmap closegrey {
             get {
                 object obj = ResourceManager.GetObject("closegrey", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap comment20x20 {
-            get {
-                object obj = ResourceManager.GetObject("comment20x20", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

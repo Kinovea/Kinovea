@@ -48,7 +48,9 @@ namespace Kinovea.ScreenManager
     public partial class FrameTracker : UserControl
     {
         #region Properties
-        [Category("Behavior"), Browsable(true)]
+        /// <summary>
+        /// The smallest timestamp of the current selection, in absolute timestamps.
+        /// </summary>
         public long Minimum
         {
             get { return minTimestamp; }
@@ -62,7 +64,10 @@ namespace Kinovea.ScreenManager
                 Invalidate();
             }
         }
-        [Category("Behavior"), Browsable(true)]
+
+        /// <summary>
+        /// The largest timestamp of the current selection, in absolute timestamps.
+        /// </summary>
         public long Maximum
         {
             get { return maxTimestamp; }
@@ -76,7 +81,10 @@ namespace Kinovea.ScreenManager
                 Invalidate();
             }
         }
-        [Category("Behavior"), Browsable(true)]
+
+        /// <summary>
+        /// The current timestamp, in absolute timestamps.
+        /// </summary>
         public long Position
         {
             get { return curTimestamp; }
@@ -99,6 +107,16 @@ namespace Kinovea.ScreenManager
         {
             get { return rightHairline; }
             set { rightHairline = value; }
+        }
+        /// <summary>
+        /// The position of the center of the cursor block.
+        /// </summary>
+        public int PixelPosition
+        {
+            get 
+            {
+                return TimestampToPixel(curTimestamp + (tsPerFrame / 2));
+            }
         }
         #endregion
             

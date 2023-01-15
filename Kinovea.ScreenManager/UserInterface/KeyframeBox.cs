@@ -57,7 +57,7 @@ namespace Kinovea.ScreenManager
         private bool manualUpdate;
         private bool isSelected;
         private ContextMenuStrip popMenu = new ContextMenuStrip();
-        private ToolStripMenuItem mnuConfigure = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuComments = new ToolStripMenuItem();
         private ToolStripMenuItem mnuMove = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDelete = new ToolStripMenuItem();
         #endregion
@@ -137,9 +137,39 @@ namespace Kinovea.ScreenManager
                 StopEditing();
             }
         }
+        private void Controls_MouseDown(object sender, MouseEventArgs e)
+        {
+            SelectAsked?.Invoke(this, e);
+        }
+        private void Controls_MouseUp(object sender, MouseEventArgs e)
+        {
+        }
+        private void Controls_MouseMove(object sender, MouseEventArgs e)
+        {
+            // Support for drag and drop between the keyframe list and the timeline,
+            // to move a keyframe to a specific time.
+            if (e.Button != MouseButtons.Left)
+                return;
+
+            SelectAsked?.Invoke(this, e);
+            this.DoDragDrop(this, DragDropEffects.Move);
+        }
+        private void Controls_DragDrop(object sender, DragEventArgs e)
+        {
+            SelectAsked?.Invoke(this, e);
+        }
+        private void Controls_DragOver(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Move;
+        }
         private void Controls_MouseDoubleClick(object sender, EventArgs e)
         {
+            // Full activation: this should bring up the comment editor.
             ActivateAsked?.Invoke(this, e);
+        }
+        private void Controls_Click(object sender, EventArgs e)
+        {
+            SelectAsked?.Invoke(this, e);
         }
         private void btnClose_Click(object sender, EventArgs e)
         {
@@ -166,33 +196,21 @@ namespace Kinovea.ScreenManager
         {
             editing = true;
         }
-        private void pbThumbnail_MouseUp(object sender, MouseEventArgs e)
-        {
-            SelectAsked?.Invoke(this, e);
-        }
-        private void pbThumbnail_MouseMove(object sender, MouseEventArgs e)
-        {
-            // Support for drag and drop between the keyframe list and the timeline,
-            // to move a keyframe to a specific time.
-            if (e.Button != MouseButtons.Left)
-                return;
-
-            this.DoDragDrop(this, DragDropEffects.Move);
-        }
+        
         #endregion
 
         #region Private helpers
         private void BuildContextMenu()
         {
-            mnuConfigure.Image = Properties.Drawings.configure;
-            mnuConfigure.Click += (s, e) => ActivateAsked?.Invoke(this, e);
+            mnuComments.Image = Properties.Resources.balloon_ellipsis;
+            mnuComments.Click += (s, e) => ActivateAsked?.Invoke(this, e);
             mnuMove.Image = Properties.Drawings.move_keyframe;
             mnuMove.Click += (s, e) => MoveToCurrentTimeAsked?.Invoke(this, e);
             mnuDelete.Image = Properties.Drawings.delete;
             mnuDelete.Click += (s, e) => DeleteAsked?.Invoke(this, e);
 
             popMenu.Items.AddRange(new ToolStripItem[] { 
-                mnuConfigure,
+                mnuComments,
                 mnuMove,
                 new ToolStripSeparator(),
                 mnuDelete
@@ -205,7 +223,7 @@ namespace Kinovea.ScreenManager
         {
             // Reload the text for each menu.
             // this is done at construction time and at RefreshUICulture time.
-            mnuConfigure.Text = Languages.ScreenManagerLang.Generic_ConfigurationElipsis;
+            mnuComments.Text = Languages.ScreenManagerLang.dlgKeyframeComment_Title;
             mnuMove.Text = "Move to current time";
             mnuDelete.Text = Languages.ScreenManagerLang.mnuThumbnailDelete;
         }

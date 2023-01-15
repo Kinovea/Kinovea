@@ -98,7 +98,7 @@ namespace Kinovea.ScreenManager
         }
         public void RefreshUICulture()
         {
-            this.Text = "   " + ScreenManagerLang.Generic_ConfigurationElipsis;
+            this.Text = "   " + ScreenManagerLang.dlgKeyframeComment_Title;
             toolTips.SetToolTip(btnBold, ScreenManagerLang.ToolTip_RichText_Bold);
             toolTips.SetToolTip(btnItalic, ScreenManagerLang.ToolTip_RichText_Italic);
             toolTips.SetToolTip(btnUnderline, ScreenManagerLang.ToolTip_RichText_Underline);

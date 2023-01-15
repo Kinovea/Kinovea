@@ -60,17 +60,17 @@ namespace Kinovea.ScreenManager
       // 
       this.btnComment.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.btnComment.BackColor = System.Drawing.Color.Transparent;
-      this.btnComment.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.comment20x20;
-      this.btnComment.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+      this.btnComment.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.balloon_ellipsis;
+      this.btnComment.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
       this.btnComment.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
       this.btnComment.FlatAppearance.BorderSize = 0;
       this.btnComment.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
       this.btnComment.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
       this.btnComment.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnComment.ForeColor = System.Drawing.Color.Transparent;
-      this.btnComment.Location = new System.Drawing.Point(5, 1);
+      this.btnComment.Location = new System.Drawing.Point(3, 1);
       this.btnComment.Name = "btnComment";
-      this.btnComment.Size = new System.Drawing.Size(15, 15);
+      this.btnComment.Size = new System.Drawing.Size(16, 16);
       this.btnComment.TabIndex = 3;
       this.btnComment.UseVisualStyleBackColor = false;
       this.btnComment.Visible = false;
@@ -81,13 +81,13 @@ namespace Kinovea.ScreenManager
       this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.btnClose.BackColor = System.Drawing.Color.Transparent;
       this.btnClose.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.bullet_close_black;
-      this.btnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+      this.btnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
       this.btnClose.FlatAppearance.BorderSize = 0;
       this.btnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
       this.btnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
       this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnClose.ForeColor = System.Drawing.Color.White;
-      this.btnClose.Location = new System.Drawing.Point(84, 1);
+      this.btnClose.Location = new System.Drawing.Point(82, 0);
       this.btnClose.Name = "btnClose";
       this.btnClose.Size = new System.Drawing.Size(15, 15);
       this.btnClose.TabIndex = 1;
@@ -106,11 +106,15 @@ namespace Kinovea.ScreenManager
       this.pbThumbnail.Size = new System.Drawing.Size(98, 73);
       this.pbThumbnail.TabIndex = 0;
       this.pbThumbnail.TabStop = false;
+      this.pbThumbnail.Click += new System.EventHandler(this.Controls_Click);
+      this.pbThumbnail.DragDrop += new System.Windows.Forms.DragEventHandler(this.Controls_DragDrop);
+      this.pbThumbnail.DragOver += new System.Windows.Forms.DragEventHandler(this.Controls_DragOver);
       this.pbThumbnail.DoubleClick += new System.EventHandler(this.Controls_MouseDoubleClick);
+      this.pbThumbnail.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Controls_MouseDown);
       this.pbThumbnail.MouseEnter += new System.EventHandler(this.Controls_MouseEnter);
       this.pbThumbnail.MouseLeave += new System.EventHandler(this.Controls_MouseLeave);
-      this.pbThumbnail.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pbThumbnail_MouseMove);
-      this.pbThumbnail.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pbThumbnail_MouseUp);
+      this.pbThumbnail.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Controls_MouseMove);
+      this.pbThumbnail.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Controls_MouseUp);
       // 
       // tbTitle
       // 
@@ -127,8 +131,11 @@ namespace Kinovea.ScreenManager
       this.tbTitle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
       this.tbTitle.Click += new System.EventHandler(this.tbTitle_Click);
       this.tbTitle.TextChanged += new System.EventHandler(this.TbTitleTextChanged);
+      this.tbTitle.DragDrop += new System.Windows.Forms.DragEventHandler(this.Controls_DragDrop);
       this.tbTitle.MouseEnter += new System.EventHandler(this.Controls_MouseEnter);
       this.tbTitle.MouseLeave += new System.EventHandler(this.Controls_MouseLeave);
+      this.tbTitle.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Controls_MouseMove);
+      this.tbTitle.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Controls_MouseUp);
       // 
       // KeyframeBox
       // 
@@ -142,7 +149,12 @@ namespace Kinovea.ScreenManager
       this.Controls.Add(this.pbThumbnail);
       this.Name = "KeyframeBox";
       this.Size = new System.Drawing.Size(102, 77);
+      this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Controls_DragDrop);
+      this.DoubleClick += new System.EventHandler(this.Controls_MouseDoubleClick);
+      this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Controls_MouseDown);
       this.MouseLeave += new System.EventHandler(this.Controls_MouseLeave);
+      this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Controls_MouseMove);
+      this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Controls_MouseUp);
       ((System.ComponentModel.ISupportInitialize)(this.pbThumbnail)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();

@@ -17,24 +17,21 @@ namespace Kinovea.ScreenManager
         private void InitializeComponent()
         {
       this.components = new System.ComponentModel.Container();
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PlayerScreenUserInterface));
       this.panelTop = new System.Windows.Forms.Panel();
       this.btnClose = new System.Windows.Forms.Button();
       this.lblSelDuration = new System.Windows.Forms.Label();
       this.panelVideoControls = new System.Windows.Forms.Panel();
+      this.lblSpeedTuner = new System.Windows.Forms.Label();
+      this.lblTimeTip = new System.Windows.Forms.Label();
       this.panel1 = new System.Windows.Forms.Panel();
       this.btnSnapShot = new System.Windows.Forms.Button();
       this.btnPausedVideo = new System.Windows.Forms.Button();
       this.btnSaveVideo = new System.Windows.Forms.Button();
       this.btnDiaporama = new System.Windows.Forms.Button();
       this.btnRafale = new System.Windows.Forms.Button();
-      this.sldrSpeed = new Kinovea.ScreenManager.SliderLinear();
       this.btnHandlersReset = new System.Windows.Forms.Button();
       this.btnSetHandlerRight = new System.Windows.Forms.Button();
       this.btnSetHandlerLeft = new System.Windows.Forms.Button();
-      this.lblWorkingZone = new System.Windows.Forms.Label();
-      this.trkSelection = new Kinovea.ScreenManager.SelectionTracker();
-      this.trkFrame = new Kinovea.ScreenManager.FrameTracker();
       this.btn_HandlersLock = new System.Windows.Forms.Button();
       this.lblSelStartSelection = new System.Windows.Forms.Label();
       this.lblTimeCode = new System.Windows.Forms.Label();
@@ -42,9 +39,7 @@ namespace Kinovea.ScreenManager
       this.buttonGotoPrevious = new System.Windows.Forms.Button();
       this.buttonGotoNext = new System.Windows.Forms.Button();
       this.buttonPlay = new System.Windows.Forms.Button();
-      this.lblSpeedTuner = new System.Windows.Forms.Label();
       this.buttonGotoLast = new System.Windows.Forms.Button();
-      this.btnPlayingMode = new System.Windows.Forms.Button();
       this.btnTimeOrigin = new System.Windows.Forms.Button();
       this.groupBoxSpeedTuner = new System.Windows.Forms.GroupBox();
       this.markerSpeedTuner = new System.Windows.Forms.Button();
@@ -73,6 +68,9 @@ namespace Kinovea.ScreenManager
       this.btnDockBottom = new System.Windows.Forms.Button();
       this.pnlThumbnails = new System.Windows.Forms.Panel();
       this.pictureBox1 = new System.Windows.Forms.PictureBox();
+      this.sldrSpeed = new Kinovea.ScreenManager.SliderLinear();
+      this.trkSelection = new Kinovea.ScreenManager.SelectionTracker();
+      this.trkFrame = new Kinovea.ScreenManager.FrameTracker();
       this.panelTop.SuspendLayout();
       this.panelVideoControls.SuspendLayout();
       this.panel1.SuspendLayout();
@@ -94,7 +92,7 @@ namespace Kinovea.ScreenManager
       this.panelTop.Dock = System.Windows.Forms.DockStyle.Top;
       this.panelTop.Location = new System.Drawing.Point(0, 0);
       this.panelTop.Name = "panelTop";
-      this.panelTop.Size = new System.Drawing.Size(420, 25);
+      this.panelTop.Size = new System.Drawing.Size(600, 25);
       this.panelTop.TabIndex = 0;
       // 
       // btnClose
@@ -108,7 +106,7 @@ namespace Kinovea.ScreenManager
       this.btnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
       this.btnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
       this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnClose.Location = new System.Drawing.Point(396, 2);
+      this.btnClose.Location = new System.Drawing.Point(576, 2);
       this.btnClose.Name = "btnClose";
       this.btnClose.Size = new System.Drawing.Size(20, 20);
       this.btnClose.TabIndex = 2;
@@ -117,24 +115,28 @@ namespace Kinovea.ScreenManager
       // 
       // lblSelDuration
       // 
+      this.lblSelDuration.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.lblSelDuration.AutoSize = true;
       this.lblSelDuration.BackColor = System.Drawing.Color.Transparent;
       this.lblSelDuration.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.lblSelDuration.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblSelDuration.Location = new System.Drawing.Point(220, 24);
+      this.lblSelDuration.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblSelDuration.ForeColor = System.Drawing.Color.DimGray;
+      this.lblSelDuration.Location = new System.Drawing.Point(495, 25);
       this.lblSelDuration.Name = "lblSelDuration";
-      this.lblSelDuration.Size = new System.Drawing.Size(91, 15);
+      this.lblSelDuration.Size = new System.Drawing.Size(85, 13);
       this.lblSelDuration.TabIndex = 4;
-      this.lblSelDuration.Text = "Duration: 0:00:00:00";
+      this.lblSelDuration.Text = "[0:00:00.000]";
       // 
       // panelVideoControls
       // 
       this.panelVideoControls.BackColor = System.Drawing.Color.White;
       this.panelVideoControls.Controls.Add(this.sldrSpeed);
+      this.panelVideoControls.Controls.Add(this.lblSpeedTuner);
+      this.panelVideoControls.Controls.Add(this.lblTimeTip);
       this.panelVideoControls.Controls.Add(this.panel1);
       this.panelVideoControls.Controls.Add(this.btnHandlersReset);
       this.panelVideoControls.Controls.Add(this.btnSetHandlerRight);
       this.panelVideoControls.Controls.Add(this.btnSetHandlerLeft);
-      this.panelVideoControls.Controls.Add(this.lblWorkingZone);
       this.panelVideoControls.Controls.Add(this.trkSelection);
       this.panelVideoControls.Controls.Add(this.trkFrame);
       this.panelVideoControls.Controls.Add(this.btn_HandlersLock);
@@ -145,18 +147,46 @@ namespace Kinovea.ScreenManager
       this.panelVideoControls.Controls.Add(this.buttonGotoNext);
       this.panelVideoControls.Controls.Add(this.lblSelDuration);
       this.panelVideoControls.Controls.Add(this.buttonPlay);
-      this.panelVideoControls.Controls.Add(this.lblSpeedTuner);
       this.panelVideoControls.Controls.Add(this.buttonGotoLast);
-      this.panelVideoControls.Controls.Add(this.btnPlayingMode);
       this.panelVideoControls.Controls.Add(this.btnTimeOrigin);
       this.panelVideoControls.Dock = System.Windows.Forms.DockStyle.Bottom;
       this.panelVideoControls.Location = new System.Drawing.Point(0, 386);
       this.panelVideoControls.MinimumSize = new System.Drawing.Size(175, 100);
       this.panelVideoControls.Name = "panelVideoControls";
-      this.panelVideoControls.Size = new System.Drawing.Size(420, 124);
+      this.panelVideoControls.Size = new System.Drawing.Size(600, 124);
       this.panelVideoControls.TabIndex = 2;
       this.panelVideoControls.MouseEnter += new System.EventHandler(this.PanelVideoControls_MouseEnter);
       this.panelVideoControls.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Common_MouseWheel);
+      // 
+      // lblSpeedTuner
+      // 
+      this.lblSpeedTuner.AutoSize = true;
+      this.lblSpeedTuner.BackColor = System.Drawing.Color.Gainsboro;
+      this.lblSpeedTuner.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.lblSpeedTuner.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblSpeedTuner.ForeColor = System.Drawing.Color.Black;
+      this.lblSpeedTuner.Location = new System.Drawing.Point(359, 92);
+      this.lblSpeedTuner.Margin = new System.Windows.Forms.Padding(0);
+      this.lblSpeedTuner.Name = "lblSpeedTuner";
+      this.lblSpeedTuner.Size = new System.Drawing.Size(43, 13);
+      this.lblSpeedTuner.TabIndex = 10;
+      this.lblSpeedTuner.Text = "99.99%";
+      this.lblSpeedTuner.DoubleClick += new System.EventHandler(this.lblSpeedTuner_DoubleClick);
+      // 
+      // lblTimeTip
+      // 
+      this.lblTimeTip.AutoSize = true;
+      this.lblTimeTip.BackColor = System.Drawing.Color.DimGray;
+      this.lblTimeTip.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.lblTimeTip.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblTimeTip.ForeColor = System.Drawing.Color.White;
+      this.lblTimeTip.Location = new System.Drawing.Point(149, 39);
+      this.lblTimeTip.Name = "lblTimeTip";
+      this.lblTimeTip.Padding = new System.Windows.Forms.Padding(2);
+      this.lblTimeTip.Size = new System.Drawing.Size(65, 17);
+      this.lblTimeTip.TabIndex = 30;
+      this.lblTimeTip.Text = "00:00.000";
+      this.lblTimeTip.Visible = false;
       // 
       // panel1
       // 
@@ -169,7 +199,7 @@ namespace Kinovea.ScreenManager
       this.panel1.Controls.Add(this.btnSaveVideo);
       this.panel1.Controls.Add(this.btnDiaporama);
       this.panel1.Controls.Add(this.btnRafale);
-      this.panel1.Location = new System.Drawing.Point(240, 78);
+      this.panel1.Location = new System.Drawing.Point(420, 78);
       this.panel1.Name = "panel1";
       this.panel1.Size = new System.Drawing.Size(185, 46);
       this.panel1.TabIndex = 26;
@@ -269,21 +299,6 @@ namespace Kinovea.ScreenManager
       this.btnRafale.UseVisualStyleBackColor = false;
       this.btnRafale.Click += new System.EventHandler(this.btnRafale_Click);
       // 
-      // sldrSpeed
-      // 
-      this.sldrSpeed.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.sldrSpeed.Location = new System.Drawing.Point(218, 67);
-      this.sldrSpeed.Maximum = 100D;
-      this.sldrSpeed.Minimum = 0D;
-      this.sldrSpeed.Name = "sldrSpeed";
-      this.sldrSpeed.Size = new System.Drawing.Size(176, 23);
-      this.sldrSpeed.Sticky = false;
-      this.sldrSpeed.StickyValue = 0D;
-      this.sldrSpeed.TabIndex = 28;
-      this.sldrSpeed.Text = "sliderLinear1";
-      this.sldrSpeed.Value = 0D;
-      this.sldrSpeed.ValueChanged += new System.EventHandler(this.sldrSpeed_ValueChanged);
-      // 
       // btnHandlersReset
       // 
       this.btnHandlersReset.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
@@ -329,58 +344,6 @@ namespace Kinovea.ScreenManager
       this.btnSetHandlerLeft.UseVisualStyleBackColor = true;
       this.btnSetHandlerLeft.Click += new System.EventHandler(this.btnSetHandlerLeft_Click);
       // 
-      // lblWorkingZone
-      // 
-      this.lblWorkingZone.AutoSize = true;
-      this.lblWorkingZone.BackColor = System.Drawing.Color.White;
-      this.lblWorkingZone.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.lblWorkingZone.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblWorkingZone.ForeColor = System.Drawing.Color.Black;
-      this.lblWorkingZone.Location = new System.Drawing.Point(14, 24);
-      this.lblWorkingZone.Margin = new System.Windows.Forms.Padding(0);
-      this.lblWorkingZone.Name = "lblWorkingZone";
-      this.lblWorkingZone.Size = new System.Drawing.Size(66, 12);
-      this.lblWorkingZone.TabIndex = 19;
-      this.lblWorkingZone.Text = "Working zone: ";
-      // 
-      // trkSelection
-      // 
-      this.trkSelection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.trkSelection.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.trkSelection.Location = new System.Drawing.Point(111, 5);
-      this.trkSelection.Maximum = ((long)(100));
-      this.trkSelection.Minimum = ((long)(0));
-      this.trkSelection.Name = "trkSelection";
-      this.trkSelection.SelEnd = ((long)(100));
-      this.trkSelection.SelLocked = false;
-      this.trkSelection.SelPos = ((long)(0));
-      this.trkSelection.SelStart = ((long)(0));
-      this.trkSelection.Size = new System.Drawing.Size(306, 20);
-      this.trkSelection.TabIndex = 17;
-      this.trkSelection.ToolTip = "";
-      this.trkSelection.SelectionChanging += new System.EventHandler(this.trkSelection_SelectionChanging);
-      this.trkSelection.SelectionChanged += new System.EventHandler(this.trkSelection_SelectionChanged);
-      this.trkSelection.TargetAcquired += new System.EventHandler(this.trkSelection_TargetAcquired);
-      // 
-      // trkFrame
-      // 
-      this.trkFrame.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.trkFrame.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.trkFrame.LeftHairline = ((long)(0));
-      this.trkFrame.Location = new System.Drawing.Point(5, 45);
-      this.trkFrame.Maximum = ((long)(100));
-      this.trkFrame.Minimum = ((long)(0));
-      this.trkFrame.MinimumSize = new System.Drawing.Size(50, 20);
-      this.trkFrame.Name = "trkFrame";
-      this.trkFrame.Position = ((long)(0));
-      this.trkFrame.RightHairline = ((long)(0));
-      this.trkFrame.Size = new System.Drawing.Size(410, 20);
-      this.trkFrame.TabIndex = 16;
-      this.trkFrame.PositionChanging += new System.EventHandler<Kinovea.ScreenManager.TimeEventArgs>(this.trkFrame_PositionChanging);
-      this.trkFrame.PositionChanged += new System.EventHandler<Kinovea.ScreenManager.TimeEventArgs>(this.trkFrame_PositionChanged);
-      // 
       // btn_HandlersLock
       // 
       this.btn_HandlersLock.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
@@ -398,27 +361,31 @@ namespace Kinovea.ScreenManager
       // 
       // lblSelStartSelection
       // 
+      this.lblSelStartSelection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.lblSelStartSelection.AutoSize = true;
       this.lblSelStartSelection.BackColor = System.Drawing.Color.White;
       this.lblSelStartSelection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.lblSelStartSelection.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblSelStartSelection.ForeColor = System.Drawing.Color.Black;
-      this.lblSelStartSelection.Location = new System.Drawing.Point(108, 24);
+      this.lblSelStartSelection.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblSelStartSelection.ForeColor = System.Drawing.Color.DimGray;
+      this.lblSelStartSelection.Location = new System.Drawing.Point(419, 25);
       this.lblSelStartSelection.Margin = new System.Windows.Forms.Padding(0);
       this.lblSelStartSelection.Name = "lblSelStartSelection";
-      this.lblSelStartSelection.Size = new System.Drawing.Size(88, 15);
+      this.lblSelStartSelection.Size = new System.Drawing.Size(73, 13);
       this.lblSelStartSelection.TabIndex = 3;
-      this.lblSelStartSelection.Text = "Start: 0:00:00:00";
+      this.lblSelStartSelection.Text = "0:00:00.000";
       // 
       // lblTimeCode
       // 
       this.lblTimeCode.AutoSize = true;
-      this.lblTimeCode.BackColor = System.Drawing.Color.Transparent;
-      this.lblTimeCode.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblTimeCode.Location = new System.Drawing.Point(14, 68);
+      this.lblTimeCode.BackColor = System.Drawing.Color.White;
+      this.lblTimeCode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.lblTimeCode.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblTimeCode.ForeColor = System.Drawing.Color.DimGray;
+      this.lblTimeCode.Location = new System.Drawing.Point(133, 25);
       this.lblTimeCode.Name = "lblTimeCode";
-      this.lblTimeCode.Size = new System.Drawing.Size(89, 12);
+      this.lblTimeCode.Size = new System.Drawing.Size(67, 13);
       this.lblTimeCode.TabIndex = 2;
-      this.lblTimeCode.Text = "Position : 0:00:00:00";
+      this.lblTimeCode.Text = "0:00:00:00";
       // 
       // buttonGotoFirst
       // 
@@ -486,21 +453,6 @@ namespace Kinovea.ScreenManager
       this.buttonPlay.UseVisualStyleBackColor = true;
       this.buttonPlay.Click += new System.EventHandler(this.buttonPlay_Click);
       // 
-      // lblSpeedTuner
-      // 
-      this.lblSpeedTuner.AutoSize = true;
-      this.lblSpeedTuner.BackColor = System.Drawing.Color.White;
-      this.lblSpeedTuner.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.lblSpeedTuner.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblSpeedTuner.ForeColor = System.Drawing.Color.Black;
-      this.lblSpeedTuner.Location = new System.Drawing.Point(142, 68);
-      this.lblSpeedTuner.Margin = new System.Windows.Forms.Padding(0);
-      this.lblSpeedTuner.Name = "lblSpeedTuner";
-      this.lblSpeedTuner.Size = new System.Drawing.Size(59, 12);
-      this.lblSpeedTuner.TabIndex = 10;
-      this.lblSpeedTuner.Text = "Speed: 100%";
-      this.lblSpeedTuner.DoubleClick += new System.EventHandler(this.lblSpeedTuner_DoubleClick);
-      // 
       // buttonGotoLast
       // 
       this.buttonGotoLast.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -516,24 +468,6 @@ namespace Kinovea.ScreenManager
       this.buttonGotoLast.TabIndex = 1;
       this.buttonGotoLast.UseVisualStyleBackColor = true;
       this.buttonGotoLast.Click += new System.EventHandler(this.buttonGotoLast_Click);
-      // 
-      // btnPlayingMode
-      // 
-      this.btnPlayingMode.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnPlayingMode.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnPlayingMode.FlatAppearance.BorderSize = 0;
-      this.btnPlayingMode.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-      this.btnPlayingMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnPlayingMode.Image = ((System.Drawing.Image)(resources.GetObject("btnPlayingMode.Image")));
-      this.btnPlayingMode.Location = new System.Drawing.Point(196, 87);
-      this.btnPlayingMode.MinimumSize = new System.Drawing.Size(18, 18);
-      this.btnPlayingMode.Name = "btnPlayingMode";
-      this.btnPlayingMode.Size = new System.Drawing.Size(24, 18);
-      this.btnPlayingMode.TabIndex = 5;
-      this.btnPlayingMode.Tag = "";
-      this.btnPlayingMode.UseVisualStyleBackColor = true;
-      this.btnPlayingMode.Visible = false;
-      this.btnPlayingMode.Click += new System.EventHandler(this.buttonPlayingMode_Click);
       // 
       // btnTimeOrigin
       // 
@@ -600,7 +534,7 @@ namespace Kinovea.ScreenManager
       this.panelCenter.Location = new System.Drawing.Point(0, 0);
       this.panelCenter.MinimumSize = new System.Drawing.Size(350, 25);
       this.panelCenter.Name = "panelCenter";
-      this.panelCenter.Size = new System.Drawing.Size(420, 231);
+      this.panelCenter.Size = new System.Drawing.Size(600, 231);
       this.panelCenter.TabIndex = 2;
       this.panelCenter.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PanelCenter_MouseClick);
       this.panelCenter.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PanelCenter_MouseDown);
@@ -614,7 +548,7 @@ namespace Kinovea.ScreenManager
       this.ImageResizerNE.Cursor = System.Windows.Forms.Cursors.SizeNESW;
       this.ImageResizerNE.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.ImageResizerNE.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
-      this.ImageResizerNE.Location = new System.Drawing.Point(92, 68);
+      this.ImageResizerNE.Location = new System.Drawing.Point(182, 68);
       this.ImageResizerNE.Name = "ImageResizerNE";
       this.ImageResizerNE.Size = new System.Drawing.Size(6, 6);
       this.ImageResizerNE.TabIndex = 9;
@@ -629,7 +563,7 @@ namespace Kinovea.ScreenManager
       this.ImageResizerNW.Cursor = System.Windows.Forms.Cursors.SizeNWSE;
       this.ImageResizerNW.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.ImageResizerNW.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
-      this.ImageResizerNW.Location = new System.Drawing.Point(57, 68);
+      this.ImageResizerNW.Location = new System.Drawing.Point(147, 68);
       this.ImageResizerNW.Name = "ImageResizerNW";
       this.ImageResizerNW.Size = new System.Drawing.Size(6, 6);
       this.ImageResizerNW.TabIndex = 8;
@@ -644,7 +578,7 @@ namespace Kinovea.ScreenManager
       this.ImageResizerSW.Cursor = System.Windows.Forms.Cursors.SizeNESW;
       this.ImageResizerSW.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.ImageResizerSW.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
-      this.ImageResizerSW.Location = new System.Drawing.Point(57, 93);
+      this.ImageResizerSW.Location = new System.Drawing.Point(147, 93);
       this.ImageResizerSW.Name = "ImageResizerSW";
       this.ImageResizerSW.Size = new System.Drawing.Size(6, 6);
       this.ImageResizerSW.TabIndex = 7;
@@ -660,7 +594,7 @@ namespace Kinovea.ScreenManager
       this.ImageResizerSE.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.ImageResizerSE.ForeColor = System.Drawing.Color.Transparent;
       this.ImageResizerSE.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
-      this.ImageResizerSE.Location = new System.Drawing.Point(92, 93);
+      this.ImageResizerSE.Location = new System.Drawing.Point(182, 93);
       this.ImageResizerSE.Name = "ImageResizerSE";
       this.ImageResizerSE.Size = new System.Drawing.Size(6, 6);
       this.ImageResizerSE.TabIndex = 6;
@@ -838,7 +772,7 @@ namespace Kinovea.ScreenManager
       this.splitKeyframes.Panel2.Controls.Add(this.pnlThumbnails);
       this.splitKeyframes.Panel2.DoubleClick += new System.EventHandler(this.splitKeyframes_Panel2_DoubleClick);
       this.splitKeyframes.Panel2MinSize = 30;
-      this.splitKeyframes.Size = new System.Drawing.Size(420, 361);
+      this.splitKeyframes.Size = new System.Drawing.Size(600, 361);
       this.splitKeyframes.SplitterDistance = 231;
       this.splitKeyframes.SplitterWidth = 2;
       this.splitKeyframes.TabIndex = 10;
@@ -868,7 +802,7 @@ namespace Kinovea.ScreenManager
       this.btnDockBottom.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
       this.btnDockBottom.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
       this.btnDockBottom.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnDockBottom.Location = new System.Drawing.Point(398, 4);
+      this.btnDockBottom.Location = new System.Drawing.Point(578, 4);
       this.btnDockBottom.Name = "btnDockBottom";
       this.btnDockBottom.Size = new System.Drawing.Size(20, 20);
       this.btnDockBottom.TabIndex = 16;
@@ -886,7 +820,7 @@ namespace Kinovea.ScreenManager
       this.pnlThumbnails.Controls.Add(this.pictureBox1);
       this.pnlThumbnails.Location = new System.Drawing.Point(0, 27);
       this.pnlThumbnails.Name = "pnlThumbnails";
-      this.pnlThumbnails.Size = new System.Drawing.Size(420, 110);
+      this.pnlThumbnails.Size = new System.Drawing.Size(600, 140);
       this.pnlThumbnails.TabIndex = 3;
       this.pnlThumbnails.DoubleClick += new System.EventHandler(this.pnlThumbnails_DoubleClick);
       this.pnlThumbnails.MouseEnter += new System.EventHandler(this.pnlThumbnails_MouseEnter);
@@ -901,6 +835,60 @@ namespace Kinovea.ScreenManager
       this.pictureBox1.TabStop = false;
       this.pictureBox1.Visible = false;
       // 
+      // sldrSpeed
+      // 
+      this.sldrSpeed.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.sldrSpeed.Location = new System.Drawing.Point(180, 91);
+      this.sldrSpeed.Maximum = 100D;
+      this.sldrSpeed.Minimum = 0D;
+      this.sldrSpeed.Name = "sldrSpeed";
+      this.sldrSpeed.Size = new System.Drawing.Size(176, 23);
+      this.sldrSpeed.Sticky = false;
+      this.sldrSpeed.StickyValue = 0D;
+      this.sldrSpeed.TabIndex = 28;
+      this.sldrSpeed.Text = "sliderLinear1";
+      this.sldrSpeed.Value = 0D;
+      this.sldrSpeed.ValueChanged += new System.EventHandler(this.sldrSpeed_ValueChanged);
+      // 
+      // trkSelection
+      // 
+      this.trkSelection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.trkSelection.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.trkSelection.Location = new System.Drawing.Point(111, 5);
+      this.trkSelection.Maximum = ((long)(100));
+      this.trkSelection.Minimum = ((long)(0));
+      this.trkSelection.Name = "trkSelection";
+      this.trkSelection.SelEnd = ((long)(100));
+      this.trkSelection.SelLocked = false;
+      this.trkSelection.SelPos = ((long)(0));
+      this.trkSelection.SelStart = ((long)(0));
+      this.trkSelection.Size = new System.Drawing.Size(486, 20);
+      this.trkSelection.TabIndex = 17;
+      this.trkSelection.ToolTip = "";
+      this.trkSelection.SelectionChanging += new System.EventHandler(this.trkSelection_SelectionChanging);
+      this.trkSelection.SelectionChanged += new System.EventHandler(this.trkSelection_SelectionChanged);
+      this.trkSelection.TargetAcquired += new System.EventHandler(this.trkSelection_TargetAcquired);
+      // 
+      // trkFrame
+      // 
+      this.trkFrame.AllowDrop = true;
+      this.trkFrame.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.trkFrame.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.trkFrame.LeftHairline = ((long)(0));
+      this.trkFrame.Location = new System.Drawing.Point(5, 56);
+      this.trkFrame.Maximum = ((long)(100));
+      this.trkFrame.Minimum = ((long)(0));
+      this.trkFrame.MinimumSize = new System.Drawing.Size(50, 20);
+      this.trkFrame.Name = "trkFrame";
+      this.trkFrame.Position = ((long)(0));
+      this.trkFrame.RightHairline = ((long)(0));
+      this.trkFrame.Size = new System.Drawing.Size(590, 20);
+      this.trkFrame.TabIndex = 16;
+      this.trkFrame.PositionChanging += new System.EventHandler<Kinovea.ScreenManager.TimeEventArgs>(this.trkFrame_PositionChanging);
+      this.trkFrame.PositionChanged += new System.EventHandler<Kinovea.ScreenManager.TimeEventArgs>(this.trkFrame_PositionChanged);
+      // 
       // PlayerScreenUserInterface
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -909,9 +897,9 @@ namespace Kinovea.ScreenManager
       this.Controls.Add(this.splitKeyframes);
       this.Controls.Add(this.panelVideoControls);
       this.Controls.Add(this.panelTop);
-      this.MinimumSize = new System.Drawing.Size(350, 310);
+      this.MinimumSize = new System.Drawing.Size(500, 310);
       this.Name = "PlayerScreenUserInterface";
-      this.Size = new System.Drawing.Size(420, 510);
+      this.Size = new System.Drawing.Size(600, 510);
       this.panelTop.ResumeLayout(false);
       this.panelVideoControls.ResumeLayout(false);
       this.panelVideoControls.PerformLayout();
@@ -944,7 +932,6 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Button buttonGotoPrevious;
         private System.Windows.Forms.Button buttonGotoNext;
         public System.Windows.Forms.Label dbgDrops;
-        private System.Windows.Forms.Button btnPlayingMode;
         private System.Windows.Forms.Button PrimarySelection;
         private System.Windows.Forms.Label lblSelDuration;
         private System.Windows.Forms.GroupBox groupBoxSpeedTuner;
@@ -970,7 +957,6 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Label ImageResizerSW;
         private System.Windows.Forms.Label ImageResizerNE;
         private System.Windows.Forms.Label ImageResizerNW;
-        private System.Windows.Forms.Label lblWorkingZone;
         private System.Windows.Forms.Label dbgDurationFrames;
         private System.Windows.Forms.Label dbgCurrentFrame;
         public System.Windows.Forms.PictureBox pbSurfaceScreen;
@@ -987,5 +973,6 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.ToolStrip stripDrawingTools;
         private SliderLinear sldrSpeed;
         private System.Windows.Forms.Button btnTimeOrigin;
+        private System.Windows.Forms.Label lblTimeTip;
     }
 }
