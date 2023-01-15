@@ -82,7 +82,7 @@
   </data>
   <data name="mnuVideoDelete" xml:space="preserve"><value>Eliminar archivo</value>
   </data>
-  <data name="mnuOpenAsReplayWatcher" xml:space="preserve"><value>Abrir como observador de la carpeta de reproducción</value>
+  <data name="mnuOpenAsReplayWatcher" xml:space="preserve"><value>Carpeta de reproducción abierta como observador</value>
   </data>
   <data name="ForgetCustomSettings" xml:space="preserve"><value>Olvidar los parámetros personalizados</value>
   </data>
