@@ -704,4 +704,7 @@
   </data>
   <data name="FormCrashRecovery_Info" xml:space="preserve"><value>Пројекат није сачуван исправно али се може опоравити:</value>
   </data>
+  <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
+    <value>Модификуј цртање</value>
+  </data>
 </root>

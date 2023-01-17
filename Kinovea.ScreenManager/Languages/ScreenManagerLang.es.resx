@@ -823,7 +823,7 @@
     <value>Desvanecimiento predeterminado</value>
   </data>
   <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
-    <value>Abrir como observador de la carpeta de reproducción…</value>
+    <value>Carpeta de reproducción abierta como observador…</value>
   </data>
   <data name="mnuMarkTimeAsOriginClock" xml:space="preserve">
     <value>Marcar tiempo actual como origen para este reloj</value>
@@ -889,10 +889,10 @@
     <value>Se observa la carpeta: {0}</value>
   </data>
   <data name="ToolTip_DisarmTrigger" xml:space="preserve">
-    <value>Desarmar gatillo de captura. Estado actual: armado.</value>
+    <value>Desactivar el disparador de la captura. Estado actual: Activado.</value>
   </data>
   <data name="ToolTip_ArmTrigger" xml:space="preserve">
-    <value>Armar el gatillo de captura. Estado actual: desarmado.</value>
+    <value>Activa el disparador de grabación. Estado actual: deshabilitado.</value>
   </data>
   <data name="Toast_TriggerArmed" xml:space="preserve">
     <value>Activador de la captura armado</value>
