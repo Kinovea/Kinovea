@@ -675,4 +675,10 @@
   <data name="dlgTimebase_Title" xml:space="preserve">
     <value>Konfigurera videotiming</value>
   </data>
+  <data name="dlgConfigureOpacity_lblFading" xml:space="preserve">
+    <value>Varaktighet för toning (bildrutor):</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisVertical" xml:space="preserve">
+    <value>Raden anger den vertikala axeln</value>
+  </data>
 </root>
