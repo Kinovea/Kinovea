@@ -454,7 +454,7 @@ namespace Kinovea.ScreenManager
             if (result >= 0)
                 return result;
 
-            if (HitTester.HitTest(positions[currentPoint].Point, point, transformer))
+            if (HitTester.HitPoint(point, positions[currentPoint].Point, transformer))
                 return 1;
 
             result = HitTestTrajectory(point, transformer);
@@ -485,7 +485,7 @@ namespace Kinovea.ScreenManager
                     RectangleF bounds = path.GetBounds();
                     if (!bounds.IsEmpty)
                     {
-                        bool hit = HitTester.HitTest(path, point, styleHelper.LineSize, false, transformer);
+                        bool hit = HitTester.HitPath(point, path, styleHelper.LineSize, false, transformer);
                         result = hit ? 0 : -1;
                     }
                 }

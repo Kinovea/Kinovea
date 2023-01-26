@@ -36,7 +36,7 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     [XmlType("TestGrid")]
-    public class DrawingTestGrid : AbstractDrawing, IScalable
+    public class DrawingTestGrid : AbstractDrawing, IDecorable, IScalable
     {
         #region Properties
         public override string ToolDisplayName
@@ -46,6 +46,10 @@ namespace Kinovea.ScreenManager
         public override int ContentHash
         {
             get { return 0; }
+        }
+        public DrawingStyle DrawingStyle
+        {
+            get { return style; }
         }
         public override InfosFading InfosFading
         {
@@ -61,7 +65,7 @@ namespace Kinovea.ScreenManager
         }
         public override DrawingCapabilities Caps
         {
-            get { return DrawingCapabilities.None; }
+            get { return DrawingCapabilities.ConfigureColorSize; }
         }
         public bool Visible { get; set; }
         #endregion
@@ -70,14 +74,29 @@ namespace Kinovea.ScreenManager
         private SizeF imageSize;
         private float halfWidth;
         private float halfHeight;
-        private ToolStripMenuItem menuHide = new ToolStripMenuItem();
+        
+        private StyleHelper styleHelper = new StyleHelper();
+        private DrawingStyle style;
         private const int divisions = 10;
+
+        private ToolStripMenuItem menuHide = new ToolStripMenuItem();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
-        public DrawingTestGrid()
+        public DrawingTestGrid(DrawingStyle preset = null)
         {
+            // Decoration
+            styleHelper.Color = Color.Empty;
+            styleHelper.GridDivisions = 10;
+            
+            //styleHelper.ValueChanged += StyleHelper_ValueChanged;
+            if (preset == null)
+                preset = ToolManager.GetStylePreset("TestGrid");
+
+            style = preset.Clone();
+            BindStyle();
+
             menuHide.Click += menuHide_Click;
             menuHide.Image = Properties.Drawings.hide;
         }
@@ -94,14 +113,50 @@ namespace Kinovea.ScreenManager
         private void DrawGrid(Graphics canvas, IImageToViewportTransformer transformer)
         {
             // Drawing is done in normalized space [-1.0, +1.0] for simplicity.
+            float aspect = imageSize.Width / imageSize.Height;
+            float factorX = aspect > 1.0f ? (1.0f / aspect) : 1.0f;
+            float factorY = aspect < 1.0f ? (1.0f / aspect) : 1.0f;
 
-            float aspectRatio = imageSize.Width / imageSize.Height;
-            float factorX = aspectRatio > 1.0f ? (1.0f/aspectRatio) : 1.0f;
-            float factorY = aspectRatio < 1.0f ? (1.0f/aspectRatio) : 1.0f;
-            float normalizedStepX = 2.0f * factorX / divisions;
-            float normalizedStepY = 2.0f * factorY / divisions;
-                
             Pen plines = new Pen(Color.Firebrick, 1);
+            Pen paxes = new Pen(Color.Firebrick, 1);
+
+            bool gridlines = true;
+            bool horizontalAxis = false;
+            bool verticalAxis = false;
+            bool diagonals = false;
+            bool circle = false;
+
+            // Major axes
+            if (horizontalAxis)
+                DrawLine(canvas, transformer, paxes, new PointF(-1, 0), new PointF(1, 0));
+            
+            if (verticalAxis)
+                DrawLine(canvas, transformer, paxes, new PointF(0, -1), new PointF(0, 1));
+
+            if (diagonals)
+            {
+                DrawLine(canvas, transformer, plines, new PointF(-1, 1), new PointF(1, -1));
+                DrawLine(canvas, transformer, plines, new PointF(-1, -1), new PointF(1, 1));
+            }
+
+            if (circle)
+            {
+                float radiusX = aspect > 1.0f ? factorX : 1.0f;
+                float radiusY = aspect < 1.0f ? aspect : 1.0f;
+                DrawCenteredCircle(canvas, transformer, plines, radiusX, radiusY);
+            }
+
+            if (gridlines)
+                DrawGridlines(canvas, transformer, plines, factorX, factorY);
+
+            paxes.Dispose();
+            plines.Dispose();
+        }
+
+        private void DrawGridlines(Graphics canvas, IImageToViewportTransformer transformer, Pen plines, float fx, float fy)
+        {
+            float normalizedStepX = 2.0f * fx / divisions;
+            float normalizedStepY = 2.0f * fy / divisions;
 
             // Horizontals
             float top = 0;
@@ -154,23 +209,6 @@ namespace Kinovea.ScreenManager
 
                 DrawLine(canvas, transformer, plines, new PointF(left, -1), new PointF(left, 1));
             }
-
-            // Axes
-            Pen paxes = new Pen(Color.Firebrick, 1);
-            DrawLine(canvas, transformer, paxes, new PointF(-1, 0), new PointF(1, 0));
-            DrawLine(canvas, transformer, paxes, new PointF(0, -1), new PointF(0, 1));
-
-            // Diagonals
-            DrawLine(canvas, transformer, plines, new PointF(-1, 1), new PointF(1, -1));
-            DrawLine(canvas, transformer, plines, new PointF(-1, -1), new PointF(1, 1));
-
-            // Circle
-            float radiusX = aspectRatio > 1.0f ? factorX : 1.0f;
-            float radiusY = aspectRatio < 1.0f ? aspectRatio : 1.0f;
-            DrawCenteredCircle(canvas, transformer, plines, radiusX, radiusY);
-            
-            plines.Dispose();
-            paxes.Dispose();
         }
         private void DrawLine(Graphics canvas, IImageToViewportTransformer transformer, Pen pen, PointF a, PointF b)
         {
@@ -197,6 +235,17 @@ namespace Kinovea.ScreenManager
         
         public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
+            //Rectangle quadImage = new Rectangle(0, 0, imageSize.Width - 1, imageSize.Height - 1);
+            
+            //for (int i = 0; i < 4; i++)
+            //{
+            //    if (HitTester.HitPoint(quadImage[i], point, transformer))
+            //        return i + 1;
+            //}
+
+            //if (!zooming && !styleHelper.Perspective && quadImage.Contains(point))
+            //    return 0;
+
             return -1;
         }
         public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
@@ -222,6 +271,13 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Private methods
+        private void BindStyle()
+        {
+            DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("TestGrid"));
+            style.Bind(styleHelper, "Color", "color");
+            style.Bind(styleHelper, "GridDivisions", "divisions");
+        }
+        
         private void menuHide_Click(object sender, EventArgs e)
         {
             Visible = false;

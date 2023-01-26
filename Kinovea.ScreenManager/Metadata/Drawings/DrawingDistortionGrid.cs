@@ -194,7 +194,7 @@ namespace Kinovea.ScreenManager
 
             for (int i = 0; i < points.Count; i++)
             {
-                if (HitTester.HitTest(points[i], point, transformer))
+                if (HitTester.HitPoint(point, points[i], transformer))
                     return i + 1;
             }
 

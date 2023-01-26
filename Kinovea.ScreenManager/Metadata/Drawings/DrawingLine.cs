@@ -249,9 +249,9 @@ namespace Kinovea.ScreenManager
             {
                 if(trackExtraData != TrackExtraData.None && miniLabel.HitTest(point, transformer))
                     result = 3;
-                else if (HitTester.HitTest(points["a"], point, transformer))
+                else if (HitTester.HitPoint(point, points["a"], transformer))
                     result = 1;
-                else if (HitTester.HitTest(points["b"], point, transformer))
+                else if (HitTester.HitPoint(point, points["b"], transformer))
                     result = 2;
                 else if (IsPointInObject(point, distorter, transformer))
                     result = 0;
@@ -599,7 +599,7 @@ namespace Kinovea.ScreenManager
                     }
                 }
 
-                return HitTester.HitTest(areaPath, point, styleHelper.LineSize, false, transformer);
+                return HitTester.HitPath(point, areaPath, styleHelper.LineSize, false, transformer);
             }
         }
         private PointF GetMiddlePoint()

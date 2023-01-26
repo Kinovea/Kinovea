@@ -307,7 +307,7 @@ namespace Kinovea.ScreenManager
                 if (bounds.IsEmpty)
                     return false;
 
-                return HitTester.HitTest(path, point, styleHelper.LineSize, false, transformer);
+                return HitTester.HitPath(point, path, styleHelper.LineSize, false, transformer);
             }
         }
         #endregion

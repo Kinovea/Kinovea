@@ -254,11 +254,11 @@ namespace Kinovea.ScreenManager
                 switch(genericPosture.Handles[i].Type)
                 {
                     case HandleType.Point:
-                        if(reference < genericPosture.PointList.Count && HitTester.HitTest(genericPosture.PointList[reference], point, transformer))
+                        if(reference < genericPosture.PointList.Count && HitTester.HitPoint(point, genericPosture.PointList[reference], transformer))
                             result = i+1;
                         break;
                     case HandleType.Segment:
-                        if(reference < genericPosture.Segments.Count && IsPointOnSegment(genericPosture.Segments[reference], point, transformer))
+                        if(reference < genericPosture.Segments.Count && HitSegment(point, genericPosture.Segments[reference], transformer))
                         {
                             genericPosture.Handles[i].GrabPoint = point;
                             result = i+1;
@@ -266,7 +266,7 @@ namespace Kinovea.ScreenManager
                         break;
                     case HandleType.Ellipse:
                     case HandleType.Circle:
-                        if (reference < genericPosture.Circles.Count && IsPointOnArc(genericPosture.Circles[reference], point, transformer))
+                        if (reference < genericPosture.Circles.Count && HitArc(point, genericPosture.Circles[reference], transformer))
                             result = i+1;
                         break;
                 }
@@ -1046,7 +1046,7 @@ namespace Kinovea.ScreenManager
             
             foreach(GenericPostureAbstractHitZone hitZone in genericPosture.HitZones)
             {
-                hit = IsPointInHitZone(hitZone, point);
+                hit = HitPolygon(point, hitZone);
                 if(hit)
                     break;
             }
@@ -1056,7 +1056,7 @@ namespace Kinovea.ScreenManager
             
             foreach(GenericPostureCircle circle in genericPosture.Circles)
             {
-                hit = IsPointInsideCircle(circle, point, transformer);
+                hit = HitDisc(point, circle, transformer);
                 if(hit)
                     break;
             }
@@ -1066,7 +1066,7 @@ namespace Kinovea.ScreenManager
             
             foreach(GenericPostureSegment segment in genericPosture.Segments)
             {
-                hit = IsPointOnSegment(segment, point, transformer);
+                hit = HitSegment(point, segment, transformer);
                 if(hit)
                     break;
             }
@@ -1076,14 +1076,14 @@ namespace Kinovea.ScreenManager
 
             foreach (GenericPosturePolyline polyline in genericPosture.Polylines)
             {
-                hit = IsPointOnPolyline(polyline, point, transformer);
+                hit = HitPolyline(point, polyline, transformer);
                 if (hit)
                     break;
             }
             
             return hit;
         }
-        private bool IsPointInHitZone(GenericPostureAbstractHitZone hitZone, PointF point)
+        private bool HitPolygon(PointF point, GenericPostureAbstractHitZone hitZone)
         {
             bool hit = false;
             
@@ -1110,7 +1110,7 @@ namespace Kinovea.ScreenManager
             
             return hit;
         }
-        private bool IsPointOnSegment(GenericPostureSegment segment, PointF point, IImageToViewportTransformer transformer)
+        private bool HitSegment(PointF point, GenericPostureSegment segment, IImageToViewportTransformer transformer)
         {
             PointF start = segment.Start >= 0 ? genericPosture.PointList[segment.Start] : GetUntransformedComputedPoint(segment.Start);
             PointF end = segment.End >= 0 ? genericPosture.PointList[segment.End] : GetUntransformedComputedPoint(segment.End);
@@ -1121,34 +1121,34 @@ namespace Kinovea.ScreenManager
             using(GraphicsPath path = new GraphicsPath())
             {
                 path.AddLine(start, end);
-                return HitTester.HitTest(path, point, segment.Width, false, transformer);
+                return HitTester.HitPath(point, path, segment.Width, false, transformer);
             }
         }
-        private bool IsPointOnPolyline(GenericPosturePolyline polyline, PointF point, IImageToViewportTransformer transformer)
+        private bool HitPolyline(PointF point, GenericPosturePolyline polyline, IImageToViewportTransformer transformer)
         {
             using (GraphicsPath path = new GraphicsPath())
             {
                 PointF[] points = polyline.Points.Select(i => genericPosture.PointList[i]).ToArray();
                 path.AddCurve(points);
-                return HitTester.HitTest(path, point, polyline.Width, false, transformer);
+                return HitTester.HitPath(point, path, polyline.Width, false, transformer);
             }
         }
-        private bool IsPointInsideCircle(GenericPostureCircle circle, PointF point, IImageToViewportTransformer transformer)
+        private bool HitDisc(PointF point, GenericPostureCircle circle, IImageToViewportTransformer transformer)
         {
             using(GraphicsPath path = new GraphicsPath())
             {
                 PointF center = circle.Center >= 0 ? genericPosture.PointList[circle.Center] : GetUntransformedComputedPoint(circle.Center);
                 path.AddEllipse(center.Box(circle.Radius));
-                return HitTester.HitTest(path, point, 0, true, transformer);
+                return HitTester.HitPath(point, path, 0, true, transformer);
             }
         }
-        private bool IsPointOnArc(GenericPostureCircle circle, PointF point, IImageToViewportTransformer transformer)
+        private bool HitArc(PointF point, GenericPostureCircle circle, IImageToViewportTransformer transformer)
         {
             using(GraphicsPath path = new GraphicsPath())
             {
                 PointF center = circle.Center >= 0 ? genericPosture.PointList[circle.Center] : GetUntransformedComputedPoint(circle.Center);
                 path.AddArc(center.Box(circle.Radius), 0, 360);
-                return HitTester.HitTest(path, point, circle.Width, false, transformer);
+                return HitTester.HitPath(point, path, circle.Width, false, transformer);
             }
         }
         #endregion

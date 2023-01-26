@@ -248,7 +248,7 @@ namespace Kinovea.ScreenManager
             
             int result = -1;
             
-            if (HitTester.HitTest(points["0"], point, transformer))
+            if (HitTester.HitPoint(point, points["0"], transformer))
                 return 1;
             
             if(showGrid || showGraduations || showAxis)
@@ -257,9 +257,9 @@ namespace Kinovea.ScreenManager
                 if (grid == null)
                     return -1;
 
-                if (grid.HorizontalAxis != null && IsPointOnRectifiedLine(point, grid.HorizontalAxis.Start, grid.HorizontalAxis.End, distorter, transformer))
+                if (grid.HorizontalAxis != null && HitTester.HitLine(point, grid.HorizontalAxis.Start, grid.HorizontalAxis.End, distorter, transformer))
                     result = 2;
-                else if (grid.VerticalAxis != null && IsPointOnRectifiedLine(point, grid.VerticalAxis.Start, grid.VerticalAxis.End, distorter, transformer))
+                else if (grid.VerticalAxis != null && HitTester.HitLine(point, grid.VerticalAxis.Start, grid.VerticalAxis.End, distorter, transformer))
                     result = 3;
             }
             
@@ -451,26 +451,6 @@ namespace Kinovea.ScreenManager
             }
             
             return textPosition;
-        }
-        private bool IsPointOnRectifiedLine(PointF p, PointF a, PointF b, DistortionHelper distorter, IImageToViewportTransformer transformer)
-        {
-            if (a == b)
-                return false;
-
-            using (GraphicsPath path = new GraphicsPath())
-            {
-                if (distorter != null && distorter.Initialized)
-                {
-                    List<PointF> curve = distorter.DistortRectifiedLine(a, b);
-                    path.AddCurve(curve.ToArray());
-                }
-                else
-                {
-                    path.AddLine(a, b);
-                }
-
-                return HitTester.HitTest(path, p, 1, false, transformer);
-            }
         }
         private void MoveHorizontalAxis(PointF p)
         {

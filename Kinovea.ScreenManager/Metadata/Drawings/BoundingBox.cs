@@ -79,13 +79,13 @@ namespace Kinovea.ScreenManager
             PointF botRight = new PointF(rectangle.Right, rectangle.Bottom);
             PointF botLeft = new PointF(rectangle.Left, rectangle.Bottom);
 
-            if (HitTester.HitTest(topLeft, point, transformer))
+            if (HitTester.HitPoint(point, topLeft, transformer))
                 result = 1;
-            else if (HitTester.HitTest(topRight, point, transformer))
+            else if (HitTester.HitPoint(point, topRight, transformer))
                 result = 2;
-            else if (HitTester.HitTest(botRight, point, transformer))
+            else if (HitTester.HitPoint(point, botRight, transformer))
                 result = 3;
-            else if (HitTester.HitTest(botLeft, point, transformer))
+            else if (HitTester.HitPoint(point, botLeft, transformer))
                 result = 4;
             else if (rectangle.Contains(point.ToPoint()))
                 result = 0;

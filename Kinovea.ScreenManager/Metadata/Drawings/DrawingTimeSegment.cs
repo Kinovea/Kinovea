@@ -180,11 +180,11 @@ namespace Kinovea.ScreenManager
                 // we can always move them out of the way of the end points if needed.
                 if (miniLabel.HitTest(point, transformer))
                     result = 4;
-                else if (HitTester.HitTest(c, point, transformer))
+                else if (HitTester.HitPoint(point, c, transformer))
                     result = 3;
-                else if (HitTester.HitTest(points["a"], point, transformer))
+                else if (HitTester.HitPoint(point, points["a"], transformer))
                     result = 1;
-                else if (HitTester.HitTest(points["b"], point, transformer))
+                else if (HitTester.HitPoint(point, points["b"], transformer))
                     result = 2;
                 else if (IsPointInObject(point, distorter, transformer))
                     result = 0;
@@ -385,7 +385,7 @@ namespace Kinovea.ScreenManager
                     areaPath.AddLine(points["a"], points["b"]);
                 }
 
-                return HitTester.HitTest(areaPath, point, lineSize, false, transformer);
+                return HitTester.HitPath(point, areaPath, lineSize, false, transformer);
             }
         }
         

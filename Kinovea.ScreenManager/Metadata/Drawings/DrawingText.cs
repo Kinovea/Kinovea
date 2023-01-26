@@ -220,7 +220,7 @@ namespace Kinovea.ScreenManager
             // Background label: 0, hidden resizer: 1, arrow end: 2.
             if (showArrow)
             {
-                if (HitTester.HitTest(arrowEnd, point, transformer))
+                if (HitTester.HitPoint(point, arrowEnd, transformer))
                     return 2;
 
                 if (IsPointOnSegment(point, background.Rectangle.Center(), arrowEnd, transformer))
@@ -448,7 +448,7 @@ namespace Kinovea.ScreenManager
                 else
                     areaPath.AddLine(a, b);
 
-                return HitTester.HitTest(areaPath, point, styleHelper.LineSize, false, transformer);
+                return HitTester.HitPath(point, areaPath, styleHelper.LineSize, false, transformer);
             }
         }
         #endregion

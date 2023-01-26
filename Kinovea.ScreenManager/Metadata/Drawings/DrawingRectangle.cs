@@ -180,7 +180,7 @@ namespace Kinovea.ScreenManager
 
             for (int i = 0; i < 4; i++)
             {
-                if (HitTester.HitTest(quadImage[i], point, transformer))
+                if (HitTester.HitPoint(point, quadImage[i], transformer))
                     return i + 1;
             }
 
@@ -193,7 +193,7 @@ namespace Kinovea.ScreenManager
                     if (!p1.NearlyCoincideWith(p2))
                     {
                         path.AddLine(p1, p2);
-                        if (HitTester.HitTest(path, point, styleHelper.LineSize, false, transformer))
+                        if (HitTester.HitPath(point, path, styleHelper.LineSize, false, transformer))
                             return i + 5;
                     }
                 }

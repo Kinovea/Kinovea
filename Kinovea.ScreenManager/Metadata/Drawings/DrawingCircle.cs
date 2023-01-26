@@ -578,7 +578,7 @@ namespace Kinovea.ScreenManager
             using(GraphicsPath areaPath = new GraphicsPath())
             {
                 GetHitPath(areaPath);
-                hit = HitTester.HitTest(areaPath, point, 0, true, transformer);
+                hit = HitTester.HitPath(point, areaPath, 0, true, transformer);
             }
             return hit;
         }
@@ -590,7 +590,7 @@ namespace Kinovea.ScreenManager
             using(GraphicsPath areaPath = new GraphicsPath())
             {
                 GetHitPath(areaPath);
-                return HitTester.HitTest(areaPath, point, styleHelper.LineSize, false, transformer);
+                return HitTester.HitPath(point, areaPath, styleHelper.LineSize, false, transformer);
             }
         }
 

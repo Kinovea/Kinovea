@@ -204,16 +204,6 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        private void DrawDiagonals(Graphics canvas, Pen pen, QuadrilateralF quadPlane, ProjectiveMapping projectiveMapping, DistortionHelper distorter, IImageToViewportTransformer transformer)
-        {
-            DrawDistortedLine(canvas, penEdges, quadPlane.A, quadPlane.B, projectiveMapping, distorter, transformer);
-            DrawDistortedLine(canvas, penEdges, quadPlane.B, quadPlane.C, projectiveMapping, distorter, transformer);
-            DrawDistortedLine(canvas, penEdges, quadPlane.C, quadPlane.D, projectiveMapping, distorter, transformer);
-            DrawDistortedLine(canvas, penEdges, quadPlane.D, quadPlane.A, projectiveMapping, distorter, transformer);
-            
-            DrawDistortedLine(canvas, penEdges, quadPlane.A, quadPlane.C, projectiveMapping, distorter, transformer);
-            DrawDistortedLine(canvas, penEdges, quadPlane.B, quadPlane.D, projectiveMapping, distorter, transformer);
-        }
         private void DrawGrid(Graphics canvas, Pen pen, ProjectiveMapping projectiveMapping, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             int start = 0;
@@ -261,7 +251,7 @@ namespace Kinovea.ScreenManager
             
             for(int i = 0; i < 4; i++)
             {
-                if(HitTester.HitTest(quadImage[i], point, transformer))
+                if(HitTester.HitPoint(point, quadImage[i], transformer))
                     return i+1;
             }
             

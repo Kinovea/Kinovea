@@ -228,7 +228,7 @@ namespace Kinovea.ScreenManager
 
             foreach (KeyValuePair<string, PointF> p in points)
             {
-                if (HitTester.HitTest(p.Value, point, transformer))
+                if (HitTester.HitPoint(point, p.Value, transformer))
                     result = int.Parse(p.Key) + 1;
             }
 
@@ -500,7 +500,7 @@ namespace Kinovea.ScreenManager
                         path.AddLines(pp.ToArray());
                 }
 
-                return HitTester.HitTest(path, point, styleHelper.LineSize, false, transformer);
+                return HitTester.HitPath(point, path, styleHelper.LineSize, false, transformer);
             }
         }
 

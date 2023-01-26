@@ -185,7 +185,7 @@ namespace Kinovea.ScreenManager
             {
                 if(trackExtraData != TrackExtraData.None && miniLabel.HitTest(point, transformer))
                     result = 1;
-                else if (HitTester.HitTest(points["0"], point, transformer))
+                else if (HitTester.HitPoint(point, points["0"], transformer))
                     result = 0;
             }
             

@@ -183,7 +183,7 @@ namespace Kinovea.ScreenManager
             using(GraphicsPath path = new GraphicsPath())
             {
                 path.AddEllipse(points["o"].X - radius, points["o"].Y - radius, radius*2, radius*2);
-                return HitTester.HitTest(path, point, 0, true, transformer);
+                return HitTester.HitPath(point, path, 0, true, transformer);
             }
         }
         private bool IsPointOnHandler(PointF point, IImageToViewportTransformer transformer)
@@ -191,7 +191,7 @@ namespace Kinovea.ScreenManager
             using(GraphicsPath path = new GraphicsPath())
             {
                 path.AddArc(points["o"].X - radius, points["o"].Y - radius, radius*2, radius*2, 0, 360);
-                return HitTester.HitTest(path, point, 2, false, transformer);
+                return HitTester.HitPath(point, path, 2, false, transformer);
             }
         }
         #endregion
