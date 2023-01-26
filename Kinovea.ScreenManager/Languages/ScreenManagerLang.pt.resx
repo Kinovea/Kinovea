@@ -441,7 +441,7 @@
     <value>Taxa de quadros do video:</value>
   </data>
   <data name="dlgTimebase_lblFileFPS" xml:space="preserve">
-    <value>Taxa de quadros lida no arquivo: {0:0.##} qps</value>
+    <value>Taxa de quadros lida no ficheiro: {0:0.##} qps</value>
   </data>
   <data name="dlgTimebase_InfoCapture" xml:space="preserve">
     <value>Essa opção define a diferença entre a velocidade do video e o tempo real. Ela impacta os rótulos que contém tempo e medidas cinemáticas. Use quando o video for filmado em modo de Alta Velocidade. </value>
@@ -495,7 +495,7 @@
     <value>Exportar dados</value>
   </data>
   <data name="DataAnalysis_SaveToFile" xml:space="preserve">
-    <value>Salvar para o arquivo</value>
+    <value>Salvar para o ficheiro</value>
   </data>
   <data name="DataAnalysis_Pixels" xml:space="preserve">
     <value>pixels</value>
@@ -666,7 +666,7 @@
     <value>Sistema de coordenadas</value>
   </data>
   <data name="mnuThumbnailLocate" xml:space="preserve">
-    <value>Localize o arquivo no Windows Explorer</value>
+    <value>Localize o ficheiro no Windows Explorer</value>
   </data>
   <data name="mnuThumbnailRename" xml:space="preserve">
     <value>Renomear</value>
@@ -768,7 +768,7 @@
     <value>Todos os formatos suportados</value>
   </data>
   <data name="FileProperty_HasKva" xml:space="preserve">
-    <value>Arquivo Kva</value>
+    <value>Ficheiro Kva</value>
   </data>
   <data name="FileProperty_CreationTime" xml:space="preserve">
     <value>Horário da criação</value>
@@ -798,7 +798,7 @@
     <value>Importar</value>
   </data>
   <data name="Generic_File" xml:space="preserve">
-    <value>Arquivo</value>
+    <value>Ficheiro</value>
   </data>
   <data name="Generic_TrackShapePicker" xml:space="preserve">
     <value>Formato da linha:</value>
@@ -969,7 +969,7 @@
     <value>As anotações serão visíveis em todos os aparelhos, mas não podem ser modificadas.#Os comentários extras anexados às imagens principais não serão salvos.</value>
   </data>
   <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve">
-    <value>Somente as anotações serão salvas.#O arquivo pode ser importado em um vídeo posteriormente.</value>
+    <value>Somente as anotações serão salvas.#O ficheiro pode ser importado num vídeo posteriormente.</value>
   </data>
   <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve">
     <value>Exportar uma imagem a cada {0:0}ms.</value>
@@ -1086,7 +1086,7 @@
     <value>Data</value>
   </data>
   <data name="FormCrashRecovery_File" xml:space="preserve">
-    <value>Arquivo</value>
+    <value>Ficheiro</value>
   </data>
   <data name="FormCrashRecovery_Recover" xml:space="preserve">
     <value>Recuperar</value>

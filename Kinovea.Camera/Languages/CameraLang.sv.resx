@@ -149,4 +149,10 @@
   <data name="FormConnectionWizard_User" xml:space="preserve">
     <value>Användare</value>
   </data>
+  <data name="FormConfiguration_DevicePropertyPages" xml:space="preserve">
+    <value>Sidor för enheternas egenskaper</value>
+  </data>
+  <data name="FormConfiguration_DevicePropertyPages_Error" xml:space="preserve">
+    <value>Ett fel inträffade när enhetens egenskapssida för {0} skulle visas.</value>
+  </data>
 </root>

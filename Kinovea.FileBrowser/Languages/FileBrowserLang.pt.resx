@@ -105,7 +105,7 @@
     <value>Abrir como um observador da pasta de reprodução</value>
   </data>
   <data name="mnuVideoDelete" xml:space="preserve">
-    <value>Apagar arquivo</value>
+    <value>Apagar ficheiro</value>
   </data>
   <data name="mnuVideoLocate" xml:space="preserve">
     <value>Encontre no Windows Explorer </value>

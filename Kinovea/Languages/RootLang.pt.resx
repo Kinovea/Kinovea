@@ -98,7 +98,7 @@
   </data>
   <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Mudar para o modo de Análise</value>
   </data>
-  <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Quantidade de arquivos no histórico:</value>
+  <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Quantidade de ficheiros no histórico:</value>
   </data>
   <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Formato padrão de imagem:</value>
   </data>
@@ -132,7 +132,7 @@
   </data>
   <data name="mnuEdit" xml:space="preserve"><value>Editar</value>
   </data>
-  <data name="mnuFile" xml:space="preserve"><value>Arquivo</value>
+  <data name="mnuFile" xml:space="preserve"><value>Ficheiro</value>
   </data>
   <data name="mnuHelp" xml:space="preserve"><value>Ajuda</value>
   </data>
@@ -290,7 +290,7 @@
     <value>As instâncias têm suas próprias preferências</value>
   </data>
   <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
-    <value>Arquivo de anotação padrão:</value>
+    <value>Ficheiro de anotação padrão:</value>
   </data>
   <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve">
     <value>Ligue as barras de velocidade ao comparar os vídeos</value>
@@ -344,7 +344,7 @@
     <value>Câmeras de alta velocidade</value>
   </data>
   <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
-    <value>Ignorar o aviso de sobrescrever o arquivo</value>
+    <value>Ignorar o aviso de sobrescrever o ficheiro</value>
   </data>
   <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
     <value>Macro</value>
@@ -365,7 +365,7 @@
     <value>Data (YYYYMMDD)</value>
   </data>
   <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
-    <value>Nome do arquivo capturado</value>
+    <value>Nome do ficheiro capturado</value>
   </data>
   <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
     <value>Diretório de captura</value>
@@ -410,7 +410,7 @@
     <value>Nomear imagem</value>
   </data>
   <data name="dlgPreferences_Capture_File" xml:space="preserve">
-    <value>Arquivo:</value>
+    <value>Ficheiro:</value>
   </data>
   <data name="dlgPreferences_Capture_Subdir" xml:space="preserve">
     <value>Sub-diretório:</value>

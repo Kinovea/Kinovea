@@ -134,7 +134,7 @@
   </data>
   <data name="dlgRafaleExport_Title" xml:space="preserve"><value>Spara en bildsekvens</value>
   </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Beakta slow motion (Aktuell =</value>
+  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Ta hänsyn till slow motion. (Nuvarande = </value>
   </data>
   <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Spara metod</value>
   </data>
@@ -160,13 +160,13 @@
   </data>
   <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - Kan inte skapa bildspel.</value>
   </data>
-  <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Bildspel är en sekvens av nyckelbilder  som sparats i videoformat.\n Lägg till nyckelbilder innan bildspel skapas.</value>
+  <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Bildspel är en sekvens av nyckelbilder som sparats i videoformat.\n Lägg till nyckelbilder innan bildspel skapas.</value>
   </data>
   <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Kan inte skapa pausad video</value>
   </data>
   <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Kan inte skriva fil.\nHar du rättighet att skriva i målmapp eller används filen av någon?</value>
   </data>
-  <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - Kan inte spara video.</value>
+  <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - Kan inte spara video. </value>
   </data>
   <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Kan inte spara video.\nProva något annat format.</value>
   </data>
@@ -264,7 +264,7 @@
   </data>
   <data name="mnuCloseScreen" xml:space="preserve"><value>Stäng detta fönster</value>
   </data>
-  <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Konfigurera visning av banan </value>
+  <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Konfigurera visning av banan</value>
   </data>
   <data name="mnuDeinterlace" xml:space="preserve"><value>Uppflätning</value>
   </data>
@@ -316,7 +316,7 @@
   </data>
   <data name="mnuShowMeasure" xml:space="preserve"><value>Visa längd</value>
   </data>
-  <data name="mnuStopTracking" xml:space="preserve"><value>Avsluta banans editering</value>
+  <data name="mnuStopTracking" xml:space="preserve"><value>Avsluta redigering av bana </value>
   </data>
   <data name="mnuSVGTools" xml:space="preserve"><value>Observationsreferens</value>
   </data>
@@ -674,5 +674,11 @@
   </data>
   <data name="dlgTimebase_Title" xml:space="preserve">
     <value>Konfigurera videotiming</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblFading" xml:space="preserve">
+    <value>Varaktighet för toning (bildrutor):</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisVertical" xml:space="preserve">
+    <value>Raden anger den vertikala axeln</value>
   </data>
 </root>
