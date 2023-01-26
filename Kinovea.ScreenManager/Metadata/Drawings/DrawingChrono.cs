@@ -1,12 +1,12 @@
 #region License
 /*
-Copyright © Joan Charmant 2008-2009.
-jcharmant@gmail.com 
- 
+Copyright ï¿½ Joan Charmant 2008-2009.
+jcharmant@gmail.com
+
 This file is part of Kinovea.
 
 Kinovea is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License version 2 
+it under the terms of the GNU General Public License version 2
 as published by the Free Software Foundation.
 
 Kinovea is distributed in the hope that it will be useful,
@@ -46,8 +46,8 @@ namespace Kinovea.ScreenManager
         }
         public override int ContentHash
         {
-            get 
-            { 
+            get
+            {
                 int iHash = visibleTimestamp.GetHashCode();
                 iHash ^= invisibleTimestamp.GetHashCode();
                 iHash ^= startCountingTimestamp.GetHashCode();
@@ -56,10 +56,10 @@ namespace Kinovea.ScreenManager
 
                 iHash ^= styleHelper.ContentHash;
                 iHash ^= showLabel.GetHashCode();
-    
+
                 return iHash;
             }
-        } 
+        }
         public DrawingStyle DrawingStyle
         {
             get { return style;}
@@ -130,7 +130,7 @@ namespace Kinovea.ScreenManager
         private long visibleTimestamp;               	// chrono becomes visible.
         private long invisibleTimestamp;             	// chrono stops being visible.
         private long startCountingTimestamp;         	// chrono starts counting.
-        private long stopCountingTimestamp;          	// chrono stops counting. 
+        private long stopCountingTimestamp;          	// chrono stops counting.
         private long clockOriginTimestamp;              // time origin for clock mode.
         private string timecode;
         private bool showLabel;
@@ -176,10 +176,10 @@ namespace Kinovea.ScreenManager
             styleHelper.Clock = false;
             if (preset == null)
                 preset = ToolManager.GetStylePreset("Chrono");
-            
+
             style = preset.Clone();
             BindStyle();
-            
+
             // We use the InfosFading utility to fade the chrono away.
             // The refererence frame will be the frame at which fading start.
             // Must be updated on "Hide" menu.
@@ -220,7 +220,7 @@ namespace Kinovea.ScreenManager
         {
             if (currentTimestamp < visibleTimestamp)
                 return;
-            
+
             double opacityFactor = 1.0;
             if (currentTimestamp > invisibleTimestamp)
                 opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
@@ -277,8 +277,8 @@ namespace Kinovea.ScreenManager
                     int roundingRadius = fontText.Height / 4;
                     result = mainBackground.HitTest(point, true, (int)(roundingRadius * 1.8f), transformer);
                 }
-               
-                if(result < 0) 
+
+                if(result < 0)
                     result = lblBackground.HitTest(point, false, 0, transformer);
             }
 
@@ -311,7 +311,7 @@ namespace Kinovea.ScreenManager
                 w.WriteElementString("Position", XmlHelper.WritePointF(mainBackground.Rectangle.Location));
 
                 w.WriteStartElement("Values");
-                
+
                 w.WriteElementString("Visible", (visibleTimestamp == long.MaxValue) ? "-1" : visibleTimestamp.ToString());
                 w.WriteElementString("Invisible", (invisibleTimestamp == long.MaxValue) ? "-1" : invisibleTimestamp.ToString());
                 w.WriteElementString("StartCounting", (startCountingTimestamp == long.MaxValue) ? "-1" : startCountingTimestamp.ToString());
@@ -375,7 +375,7 @@ namespace Kinovea.ScreenManager
                 name = xmlReader.ReadContentAsString();
 
             xmlReader.ReadStartElement();
-            
+
             while(xmlReader.NodeType == XmlNodeType.Element)
             {
                 switch(xmlReader.Name)
@@ -400,7 +400,7 @@ namespace Kinovea.ScreenManager
                         break;
                 }
             }
-            
+
             xmlReader.ReadEndElement();
             SanityCheckValues();
         }
@@ -409,11 +409,11 @@ namespace Kinovea.ScreenManager
             if(timestampMapper == null)
             {
                 xmlReader.ReadOuterXml();
-                return;                
+                return;
             }
-            
+
             xmlReader.ReadStartElement();
-            
+
             while(xmlReader.NodeType == XmlNodeType.Element)
             {
                 switch(xmlReader.Name)
@@ -423,10 +423,10 @@ namespace Kinovea.ScreenManager
                         break;
                     case "Invisible":
                         long hide = xmlReader.ReadElementContentAsLong();
-                        invisibleTimestamp = (hide == -1) ? long.MaxValue : timestampMapper(hide);                        
+                        invisibleTimestamp = (hide == -1) ? long.MaxValue : timestampMapper(hide);
                         break;
                     case "StartCounting":
-                        long start = xmlReader.ReadElementContentAsLong(); 
+                        long start = xmlReader.ReadElementContentAsLong();
                         startCountingTimestamp = (start == -1) ? long.MaxValue : timestampMapper(start);
                         break;
                     case "StopCounting":
@@ -446,7 +446,7 @@ namespace Kinovea.ScreenManager
                         break;
                 }
             }
-            
+
             xmlReader.ReadEndElement();
         }
         private void SanityCheckValues()
@@ -465,7 +465,7 @@ namespace Kinovea.ScreenManager
         private void ParseLabel(XmlReader xmlReader)
         {
             xmlReader.ReadStartElement();
-            
+
             while(xmlReader.NodeType == XmlNodeType.Element)
             {
                 switch(xmlReader.Name)
@@ -488,7 +488,7 @@ namespace Kinovea.ScreenManager
                         break;
                 }
             }
-            
+
             xmlReader.ReadEndElement();
         }
         #endregion
@@ -564,7 +564,7 @@ namespace Kinovea.ScreenManager
             DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("Chrono"));
             style.Bind(styleHelper, "Bicolor", "color");
             style.Bind(styleHelper, "Font", "font size");
-            style.Bind(styleHelper, "Clock", "clock");
+            style.Bind(styleHelper, "Toggles/Clock", "clock");
         }
         private void UpdateLabelRectangle()
         {

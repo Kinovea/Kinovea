@@ -1,12 +1,12 @@
 #region License
 /*
-Copyright © Joan Charmant 2008.
-jcharmant@gmail.com 
- 
+Copyright ï¿½ Joan Charmant 2008.
+jcharmant@gmail.com
+
 This file is part of Kinovea.
 
 Kinovea is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License version 2 
+it under the terms of the GNU General Public License version 2
 as published by the Free Software Foundation.
 
 Kinovea is distributed in the hope that it will be useful,
@@ -45,18 +45,18 @@ namespace Kinovea.ScreenManager
         public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved;
         public event EventHandler<EventArgs<TrackExtraData>> ShowMeasurableInfoChanged;
         #endregion
-        
+
         #region Properties
         public override string ToolDisplayName
         {
-            get 
-            {  
+            get
+            {
                 return ToolManager.Tools["Plane"].DisplayName;
             }
         }
         public override int ContentHash
         {
-            get 
+            get
             {
                 int iHash = 0;
                 iHash ^= quadImage.GetHashCode();
@@ -64,7 +64,7 @@ namespace Kinovea.ScreenManager
                 iHash ^= infosFading.ContentHash;
                 return iHash;
             }
-        } 
+        }
         public DrawingStyle DrawingStyle
         {
             get { return style;}
@@ -79,7 +79,7 @@ namespace Kinovea.ScreenManager
             get
             {
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
-                
+
                 mnuCalibrate.Text = ScreenManagerLang.mnuCalibrate;
                 contextMenu.Add(mnuCalibrate);
 
@@ -107,16 +107,16 @@ namespace Kinovea.ScreenManager
         private bool planeIsConvex = true;
 
         private long trackingTimestamps = -1;
-        
+
         private InfosFading infosFading;
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
         private Pen penEdges = Pens.White;
-        
+
         private bool initialized = false;
-        
+
         private ToolStripMenuItem mnuCalibrate = new ToolStripMenuItem();
-        
+
         private static readonly int minimumSubdivisions = StyleElementGridDivisions.options[0];
         private static readonly int defaultSubdivisions = StyleElementGridDivisions.defaultValue;
         private static readonly int maximumSubdivisions = StyleElementGridDivisions.options[StyleElementGridDivisions.options.Count - 1];
@@ -133,18 +133,18 @@ namespace Kinovea.ScreenManager
             styleHelper.ValueChanged += StyleHelper_ValueChanged;
             if (preset == null)
                 preset = ToolManager.GetStylePreset("Plane");
-            
+
             style = preset.Clone();
             BindStyle();
-            
+
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
             infosFading.UseDefault = false;
             infosFading.AlwaysVisible = true;
-            
+
             planeWidth = 100;
             planeHeight = 100;
             quadPlane = new QuadrilateralF(planeWidth, planeHeight);
-            
+
             mnuCalibrate.Click += new EventHandler(mnuCalibrate_Click);
             mnuCalibrate.Image = Properties.Drawings.linecalibrate;
         }
@@ -154,7 +154,7 @@ namespace Kinovea.ScreenManager
             ReadXml(xmlReader, scale, timestampMapper);
         }
         #endregion
-        
+
         #region AbstractDrawing implementation
         public override void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
@@ -248,16 +248,16 @@ namespace Kinovea.ScreenManager
             double opacity = infosFading.GetOpacityTrackable(trackingTimestamps, currentTimestamp);
             if (opacity <= 0)
                 return -1;
-            
+
             for(int i = 0; i < 4; i++)
             {
                 if(HitTester.HitPoint(point, quadImage[i], transformer))
                     return i+1;
             }
-            
+
             if (!zooming && !styleHelper.Perspective && quadImage.Contains(point))
                 return 0;
-            
+
             return -1;
         }
         public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
@@ -282,14 +282,14 @@ namespace Kinovea.ScreenManager
                     CalibrationHelper.CalibrationByPlane_Update(Id, quadImage);
                 }
             }
-            
+
             SignalAllTrackablePointsMoved();
         }
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
             int handle = handleNumber - 1;
             quadImage[handle] = point;
-            
+
             if (styleHelper.Perspective)
             {
                 planeIsConvex = quadImage.IsConvex;
@@ -301,7 +301,7 @@ namespace Kinovea.ScreenManager
                 else
                     quadImage.MakeRectangle(handle);
             }
-            
+
             SignalAllTrackablePointsMoved();
             CalibrationHelper.CalibrationByPlane_Update(Id, quadImage);
         }
@@ -321,14 +321,14 @@ namespace Kinovea.ScreenManager
                 name = xmlReader.ReadContentAsString();
 
             xmlReader.ReadStartElement();
-            
+
             while(xmlReader.NodeType == XmlNodeType.Element)
             {
                 switch(xmlReader.Name)
                 {
                     case "PointUpperLeft":
                         {
-                            quadImage.A = ReadPoint(xmlReader, scale); 
+                            quadImage.A = ReadPoint(xmlReader, scale);
                             break;
                         }
                     case "PointUpperRight":
@@ -359,9 +359,9 @@ namespace Kinovea.ScreenManager
                         break;
                 }
             }
-            
+
             xmlReader.ReadEndElement();
-            
+
             if (!styleHelper.Perspective)
                 planeIsConvex = quadImage.IsConvex;
 
@@ -397,9 +397,9 @@ namespace Kinovea.ScreenManager
                 infosFading.WriteXml(w);
                 w.WriteEndElement();
             }
-        } 
+        }
         #endregion
-        
+
         #region IScalable implementation
         public void Scale(Size imageSize)
         {
@@ -430,7 +430,7 @@ namespace Kinovea.ScreenManager
             }
         }
         #endregion
-        
+
         #region ITrackable implementation and support.
         public Color Color
         {
@@ -446,7 +446,7 @@ namespace Kinovea.ScreenManager
 
             for(int i = 0; i < 4; i++)
                 points.Add(i.ToString(), quadImage[i]);
-            
+
             return points;
         }
         public void SetTrackablePointValue(string name, PointF value, long trackingTimestamps)
@@ -463,7 +463,7 @@ namespace Kinovea.ScreenManager
         {
             if(TrackablePointMoved == null)
                 return;
-            
+
             for(int i = 0; i<4; i++)
                 TrackablePointMoved(this, new TrackablePointMovedEventArgs(i.ToString(), quadImage[i]));
         }
@@ -471,26 +471,26 @@ namespace Kinovea.ScreenManager
         {
             if(TrackablePointMoved == null)
                 return;
-            
+
             TrackablePointMoved(this, new TrackablePointMovedEventArgs(index.ToString(), quadImage[index]));
         }
         #endregion
-        
+
         public void Reset()
         {
             // Used on metadata over load.
             planeIsConvex = true;
             initialized = false;
-            
+
             quadImage = quadPlane.Clone();
         }
-        
+
         public void UpdateMapping(SizeF size)
         {
             planeWidth = size.Width;
             planeHeight = size.Height;
             quadPlane = new QuadrilateralF(planeWidth, planeHeight);
-            
+
             projectiveMapping.Update(quadPlane, quadImage);
         }
 
@@ -506,13 +506,13 @@ namespace Kinovea.ScreenManager
             DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("Plane"));
             style.Bind(styleHelper, "Color", "color");
             style.Bind(styleHelper, "GridDivisions", "divisions");
-            style.Bind(styleHelper, "Perspective", "perspective");
+            style.Bind(styleHelper, "Toggles/Perspective", "perspective");
         }
         private void StyleHelper_ValueChanged(object sender, EventArgs e)
         {
             // Handle the case where we convert from a perspective plane to a grid.
-            // Note: we cannot force rectangle here because this would change the actual points, 
-            // these points are not part of the "style" and so if we cancelled the style change we would not 
+            // Note: we cannot force rectangle here because this would change the actual points,
+            // these points are not part of the "style" and so if we cancelled the style change we would not
             // be able to go back to the original quad.
             planeIsConvex = styleHelper.Perspective ? quadImage.IsConvex : true;
         }
@@ -523,7 +523,7 @@ namespace Kinovea.ScreenManager
             FormsHelper.Locate(fcp);
             fcp.ShowDialog();
             fcp.Dispose();
-            
+
             InvalidateFromMenu(sender);
         }
         #endregion

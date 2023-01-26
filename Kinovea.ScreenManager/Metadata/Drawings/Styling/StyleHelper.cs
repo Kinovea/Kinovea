@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Design.Serialization;
 using System.Drawing;
@@ -120,18 +121,18 @@ namespace Kinovea.ScreenManager
         }
         public bool Curved
         {
-            get { return curved; }
-            set { curved = value; }
+            get { return toggles["curved"]; }
+            set { toggles["curved"] = value; }
         }
         public bool Perspective
         {
-            get { return perspective; }
-            set { perspective = value; }
+            get { return toggles["perspective"]; }
+            set { toggles["perspective"] = value; }
         }
         public bool Clock
         {
-            get { return clock; }
-            set { clock = value; }
+            get { return toggles["clock"]; }
+            set { toggles["clock"] = value; }
         }
 
         public int ContentHash
@@ -148,9 +149,7 @@ namespace Kinovea.ScreenManager
                 hash ^= trackShape.GetHashCode();
                 hash ^= penShape.GetHashCode();
                 hash ^= gridDivisions.GetHashCode();
-                hash ^= curved.GetHashCode();
-                hash ^= perspective.GetHashCode();
-                hash ^= clock.GetHashCode();
+                hash ^= toggles.GetHashCode();
                 return hash;
             }
         }
@@ -165,9 +164,7 @@ namespace Kinovea.ScreenManager
         private LineEnding lineEnding = LineEnding.None;
         private TrackShape trackShape = TrackShape.Solid;
         private PenShape penShape = PenShape.Solid;
-        private bool curved;
-        private bool perspective;
-        private bool clock;
+        private Dictionary<string, bool> toggles = new Dictionary<string, bool>();
         private int gridDivisions;
         private int minFontSize = 8;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -178,6 +175,11 @@ namespace Kinovea.ScreenManager
         {
             BindWrite = DoBindWrite;
             BindRead = DoBindRead;
+
+            // Initialize toggles.
+            toggles.Add("curved", false);
+            toggles.Add("perspective", false);
+            toggles.Add("clock", false);
         }
         #endregion
         
@@ -359,31 +361,31 @@ namespace Kinovea.ScreenManager
 
                         break;
                     }
-                case "Curved":
+                case "Toggles/Curved":
                     {
                         if (value is bool)
                         {
-                            curved = (bool)value;
+                            toggles["curved"] = (bool)value;
                             imported = true;
                         }
 
                         break;
                     }
-                case "Perspective":
+                case "Toggles/Perspective":
                     {
                         if (value is bool)
                         {
-                            perspective = (bool)value;
+                            toggles["perspective"] = (bool)value;
                             imported = true;
                         }
 
                         break;
                     }
-                case "Clock":
+                case "Toggles/Clock":
                     {
                         if (value is bool)
                         {
-                            clock = (bool)value;
+                            toggles["clock"] = (bool)value;
                             imported = true;
                         }
 
@@ -501,31 +503,31 @@ namespace Kinovea.ScreenManager
                         }
                         break;
                     }
-                case "Curved":
+                case "Toggles/Curved":
                     {
                         if (targetType == typeof(bool))
                         {
-                            result = curved;
+                            result = toggles["curved"];
                             converted = true;
                         }
 
                         break;
                     }
-                case "Perspective":
+                case "Toggles/Perspective":
                     {
                         if (targetType == typeof(bool))
                         {
-                            result = perspective;
+                            result = toggles["perspective"];
                             converted = true;
                         }
 
                         break;
                     }
-                case "Clock":
+                case "Toggles/Clock":
                     {
                         if (targetType == typeof(bool))
                         {
-                            result = clock;
+                            result = toggles["clock"];
                             converted = true;
                         }
 
