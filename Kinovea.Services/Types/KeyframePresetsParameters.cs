@@ -32,16 +32,16 @@ namespace Kinovea.Services
             // This is only to bootstrap preferences files from before 0.9.6.
             // These presets will be overwritten by the ones saved in the preferences if any.
             Presets.Clear();
-            Presets.Add(new KeyframePreset("", Color.FromArgb(153, 203, 255)));
-            Presets.Add(new KeyframePreset("", Color.FromArgb(153, 255, 255)));
-            Presets.Add(new KeyframePreset("", Color.FromArgb(203, 255, 153)));
-            Presets.Add(new KeyframePreset("", Color.FromArgb(255, 255, 153)));
-            Presets.Add(new KeyframePreset("", Color.FromArgb(255, 203, 153)));
-            Presets.Add(new KeyframePreset("", Color.FromArgb(255, 153, 153)));
-            Presets.Add(new KeyframePreset("", Color.FromArgb(255, 153, 255)));
-            Presets.Add(new KeyframePreset("", Color.FromArgb(203, 153, 255)));
-            Presets.Add(new KeyframePreset("", Color.FromArgb(153, 153, 255)));
-            Presets.Add(new KeyframePreset("", Color.FromArgb(203, 203, 203)));
+            Presets.Add(new KeyframePreset("", Color.FromArgb(51, 152, 255)));
+            Presets.Add(new KeyframePreset("", Color.FromArgb(51, 255, 255)));
+            Presets.Add(new KeyframePreset("", Color.FromArgb(152, 255, 51)));
+            Presets.Add(new KeyframePreset("", Color.FromArgb(255, 255, 51)));
+            Presets.Add(new KeyframePreset("", Color.FromArgb(255, 152, 51)));
+            Presets.Add(new KeyframePreset("", Color.FromArgb(255, 51, 51)));
+            Presets.Add(new KeyframePreset("", Color.FromArgb(255, 51, 255)));
+            Presets.Add(new KeyframePreset("", Color.FromArgb(152, 51, 255)));
+            Presets.Add(new KeyframePreset("", Color.FromArgb(51, 51, 255)));
+            Presets.Add(new KeyframePreset("", Color.FromArgb(152, 152, 152)));
         }
 
         /// <summary>
