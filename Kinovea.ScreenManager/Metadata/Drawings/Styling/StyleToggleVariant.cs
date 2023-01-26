@@ -11,5 +11,11 @@ namespace Kinovea.ScreenManager
         Curved,
         Perspective,
         Clock,
+
+        // Options of camera test grid.
+        HorizontalLine,
+        VerticalLine,
+        Frame,
+        Thirds,
     }
 }

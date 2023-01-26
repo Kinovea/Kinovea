@@ -91,6 +91,10 @@ namespace Kinovea.ScreenManager
 
             // Decoration
             styleHelper.Color = Color.Red;
+            styleHelper.HorizontalAxis = false;
+            styleHelper.VerticalAxis = false;
+            styleHelper.Frame = false;
+            styleHelper.Thirds = false;
             if (preset != null)
             {
                 style = preset.Clone();
@@ -115,18 +119,27 @@ namespace Kinovea.ScreenManager
             //Pen pen = new Pen(Color.Red, 1);
             Pen p = styleHelper.GetPen(255);
 
-            DrawLine(canvas, transformer, p, gridLines["horizontal"]);
-            DrawLine(canvas, transformer, p, gridLines["vertical"]);
+            if (styleHelper.HorizontalAxis)
+                DrawLine(canvas, transformer, p, gridLines["horizontal"]);
             
-            DrawLine(canvas, transformer, p, gridLines["thirdsLeft"]);
-            DrawLine(canvas, transformer, p, gridLines["thirdsTop"]);
-            DrawLine(canvas, transformer, p, gridLines["thirdsRight"]);
-            DrawLine(canvas, transformer, p, gridLines["thirdsBottom"]);
-
-            DrawLine(canvas, transformer, p, gridLines["frameLeft"]);
-            DrawLine(canvas, transformer, p, gridLines["frameTop"]);
-            DrawLine(canvas, transformer, p, gridLines["frameRight"]);
-            DrawLine(canvas, transformer, p, gridLines["frameBottom"]);
+            if (styleHelper.VerticalAxis)    
+                DrawLine(canvas, transformer, p, gridLines["vertical"]);
+            
+            if (styleHelper.Frame)
+            {
+                DrawLine(canvas, transformer, p, gridLines["frameLeft"]);
+                DrawLine(canvas, transformer, p, gridLines["frameTop"]);
+                DrawLine(canvas, transformer, p, gridLines["frameRight"]);
+                DrawLine(canvas, transformer, p, gridLines["frameBottom"]);
+            }
+            
+            if (styleHelper.Thirds)
+            {
+                DrawLine(canvas, transformer, p, gridLines["thirdsLeft"]);
+                DrawLine(canvas, transformer, p, gridLines["thirdsTop"]);
+                DrawLine(canvas, transformer, p, gridLines["thirdsRight"]);
+                DrawLine(canvas, transformer, p, gridLines["thirdsBottom"]);
+            }
             
             p.Dispose();
         }
@@ -174,6 +187,10 @@ namespace Kinovea.ScreenManager
         {
             DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("TestGrid"));
             style.Bind(styleHelper, "Color", "color");
+            style.Bind(styleHelper, "Toggles/HorizontalAxis", "horizontalAxis");
+            style.Bind(styleHelper, "Toggles/VerticalAxis", "verticalAxis");
+            style.Bind(styleHelper, "Toggles/Frame", "frame");
+            style.Bind(styleHelper, "Toggles/Thirds", "thirds");
         }
         
         private void menuHide_Click(object sender, EventArgs e)
@@ -192,12 +209,6 @@ namespace Kinovea.ScreenManager
             gridLines.Add("horizontal", new GridLine(new PointF(-1, 0), new PointF(1, 0)));
             gridLines.Add("vertical", new GridLine(new PointF(0, -1), new PointF(0, 1)));
             
-            // Rule of thirds.
-            gridLines.Add("thirdsLeft", new GridLine(new PointF(-1.0f/3.0f, -1), new PointF(-1.0f/3.0f, 1)));
-            gridLines.Add("thirdsRight", new GridLine(new PointF(1.0f / 3.0f, -1), new PointF(1.0f / 3.0f, 1)));
-            gridLines.Add("thirdsTop", new GridLine(new PointF(-1, -1.0f/3.0f), new PointF(1, -1.0f / 3.0f)));
-            gridLines.Add("thirdsBottom", new GridLine(new PointF(-1, 1.0f / 3.0f), new PointF(1, 1.0f / 3.0f)));
-
             // Safe framing.
             float margin = 0.8f;
             PointF a = new PointF(-margin, -margin);
@@ -208,6 +219,12 @@ namespace Kinovea.ScreenManager
             gridLines.Add("frameRight", new GridLine(b, c));
             gridLines.Add("frameTop", new GridLine(a, b));
             gridLines.Add("frameBottom", new GridLine(d, c));
+
+            // Rule of thirds.
+            gridLines.Add("thirdsLeft", new GridLine(new PointF(-1.0f / 3.0f, -1), new PointF(-1.0f / 3.0f, 1)));
+            gridLines.Add("thirdsRight", new GridLine(new PointF(1.0f / 3.0f, -1), new PointF(1.0f / 3.0f, 1)));
+            gridLines.Add("thirdsTop", new GridLine(new PointF(-1, -1.0f / 3.0f), new PointF(1, -1.0f / 3.0f)));
+            gridLines.Add("thirdsBottom", new GridLine(new PointF(-1, 1.0f / 3.0f), new PointF(1, 1.0f / 3.0f)));
         }
 
         /// <summary>

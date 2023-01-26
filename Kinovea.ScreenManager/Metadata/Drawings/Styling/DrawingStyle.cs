@@ -27,6 +27,8 @@ namespace Kinovea.ScreenManager
     /// <summary>
     /// Represents the styling elements of a drawing or drawing tool preset.
     /// Host a list of style elements needed to decorate the drawing.
+    /// To see the available elements and their keys for a particular tool, check the constructor of the tool.
+    /// In the case of XML defined tools, the list is declared in the XML in the DefaultStyle tag.
     /// </summary>
     public class DrawingStyle
     {

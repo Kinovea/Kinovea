@@ -134,6 +134,26 @@ namespace Kinovea.ScreenManager
             get { return toggles["clock"]; }
             set { toggles["clock"] = value; }
         }
+        public bool HorizontalAxis
+        {
+            get { return toggles["horizontalAxis"]; }
+            set { toggles["horizontalAxis"] = value; }
+        }
+        public bool VerticalAxis
+        {
+            get { return toggles["verticalAxis"]; }
+            set { toggles["verticalAxis"] = value; }
+        }
+        public bool Frame
+        {
+            get { return toggles["frame"]; }
+            set { toggles["frame"] = value; }
+        }
+        public bool Thirds
+        {
+            get { return toggles["thirds"]; }
+            set { toggles["thirds"] = value; }
+        }
 
         public int ContentHash
         {
@@ -180,6 +200,10 @@ namespace Kinovea.ScreenManager
             toggles.Add("curved", false);
             toggles.Add("perspective", false);
             toggles.Add("clock", false);
+            toggles.Add("horizontalAxis", false);
+            toggles.Add("verticalAxis", false);
+            toggles.Add("frame", false);
+            toggles.Add("thirds", false);
         }
         #endregion
         
@@ -361,6 +385,37 @@ namespace Kinovea.ScreenManager
 
                         break;
                     }
+                case "Font":
+                    {
+                        if (value is int)
+                        {
+                            // Recreate the font changing just the size.
+                            string fontName = font.Name;
+                            FontStyle fontStyle = font.Style;
+                            font.Dispose();
+                            font = new Font(fontName, (int)value, fontStyle);
+                            imported = true;
+                        }
+                        break;
+                    }
+                case "Bicolor":
+                    {
+                        if (value is Color)
+                        {
+                            bicolor.Background = (Color)value;
+                            imported = true;
+                        }
+                        break;
+                    }
+                case "GridDivisions":
+                    {
+                        if (value is int)
+                        {
+                            gridDivisions = (int)value;
+                            imported = true;
+                        }
+                        break;
+                    }
                 case "Toggles/Curved":
                     {
                         if (value is bool)
@@ -391,35 +446,44 @@ namespace Kinovea.ScreenManager
 
                         break;
                     }
-                case "Font":
+                case "Toggles/HorizontalAxis":
                     {
-                        if (value is int)
+                        if (value is bool)
                         {
-                            // Recreate the font changing just the size.
-                            string fontName = font.Name;
-                            FontStyle fontStyle = font.Style;
-                            font.Dispose();
-                            font = new Font(fontName, (int)value, fontStyle);
+                            toggles["horizontalAxis"] = (bool)value;
                             imported = true;
                         }
+
                         break;
                     }
-                case "Bicolor":
+                case "Toggles/VerticalAxis":
                     {
-                        if (value is Color)
+                        if (value is bool)
                         {
-                            bicolor.Background = (Color)value;
+                            toggles["verticalAxis"] = (bool)value;
                             imported = true;
                         }
+
                         break;
                     }
-                case "GridDivisions":
+                case "Toggles/Frame":
                     {
-                        if (value is int)
+                        if (value is bool)
                         {
-                            gridDivisions = (int)value;
+                            toggles["frame"] = (bool)value;
                             imported = true;
                         }
+
+                        break;
+                    }
+                case "Toggles/Thirds":
+                    {
+                        if (value is bool)
+                        {
+                            toggles["thirds"] = (bool)value;
+                            imported = true;
+                        }
+
                         break;
                     }
                 default:
@@ -503,6 +567,33 @@ namespace Kinovea.ScreenManager
                         }
                         break;
                     }
+                case "Font":
+                    {
+                        if (targetType == typeof(int))
+                        {
+                            result = (int)font.Size;
+                            converted = true;
+                        }
+                        break;
+                    }
+                case "Bicolor":
+                    {
+                        if (targetType == typeof(Color))
+                        {
+                            result = bicolor.Background;
+                            converted = true;
+                        }
+                        break;
+                    }
+                case "GridDivisions":
+                    {
+                        if (targetType == typeof(int))
+                        {
+                            result = gridDivisions;
+                            converted = true;
+                        }
+                        break;
+                    }
                 case "Toggles/Curved":
                     {
                         if (targetType == typeof(bool))
@@ -533,31 +624,44 @@ namespace Kinovea.ScreenManager
 
                         break;
                     }
-                case "Font":
+                case "Toggles/HorizontalAxis":
                     {
-                        if (targetType == typeof(int))
+                        if (targetType == typeof(bool))
                         {
-                            result = (int)font.Size;
+                            result = toggles["horizontalAxis"];
                             converted = true;
                         }
+
                         break;
                     }
-                case "Bicolor":
+                case "Toggles/VerticalAxis":
                     {
-                        if (targetType == typeof(Color))
+                        if (targetType == typeof(bool))
                         {
-                            result = bicolor.Background;
+                            result = toggles["verticalAxis"];
                             converted = true;
                         }
+
                         break;
                     }
-                case "GridDivisions":
+                case "Toggles/Frame":
                     {
-                        if (targetType == typeof(int))
+                        if (targetType == typeof(bool))
                         {
-                            result = gridDivisions;
+                            result = toggles["frame"];
                             converted = true;
                         }
+
+                        break;
+                    }
+                case "Toggles/Thirds":
+                    {
+                        if (targetType == typeof(bool))
+                        {
+                            result = toggles["thirds"];
+                            converted = true;
+                        }
+
                         break;
                     }
                 default:
