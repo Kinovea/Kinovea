@@ -9,14 +9,14 @@ using System.IO;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// Finds axes, grid lines and tick marks for the coordinate system drawings (basic or perspective). 
+    /// Finds axes, grid lines and tick marks for the coordinate system drawings (basic or perspective).
     /// Clips to image boundaries and account for vanishing points, lines at infinity and lines behind the camera.
     /// All coordinates found are in rectified image space.
     /// </summary>
     public static class CoordinateSystemGridFinder
     {
         private static Random random = new Random();
-        
+
         public static CoordinateSystemGrid Find(CalibrationHelper calibrationHelper)
         {
             return FindForPlaneCalibration(calibrationHelper);
@@ -55,14 +55,14 @@ namespace Kinovea.ScreenManager
                 float projectedWidthLength = GeometryHelper.GetDistance(quadImage.A, quadImage.B);
                 float scaledTargetHorizontal = targetSteps / (calibrationHelper.ImageSize.Width / projectedWidthLength);
                 stepHorizontal = RangeHelper.FindUsableStepSize(plane.Width, scaledTargetHorizontal);
-                
+
                 float projectedHeightLength = GeometryHelper.GetDistance(quadImage.A, quadImage.D);
                 float scaledTargetVertical = targetSteps / (calibrationHelper.ImageSize.Height / projectedHeightLength);
                 stepVertical = RangeHelper.FindUsableStepSize(plane.Height, scaledTargetVertical);
             }
             else
             {
-                // If flat plane we know there is no way to get any vanishing point inside the image, 
+                // If flat plane we know there is no way to get any vanishing point inside the image,
                 // so we can safely use the whole image reprojection as an extended plane.
                 orthogonal = true;
                 QuadrilateralF quadImageBounds = new QuadrilateralF(imageBounds);
@@ -74,11 +74,11 @@ namespace Kinovea.ScreenManager
 
                 float width = extendedPlane.B.X - extendedPlane.A.X;
                 stepHorizontal = RangeHelper.FindUsableStepSize(width, targetSteps);
-                
+
                 float height = extendedPlane.A.Y - extendedPlane.D.Y;
                 stepVertical = RangeHelper.FindUsableStepSize(height, targetSteps);
             }
-            
+
             //-------------------------------------------------------------------------------------------------
             // There is a complication with points behind the camera, as they projects above the vanishing line.
             // The general strategy is the following:
@@ -286,7 +286,7 @@ namespace Kinovea.ScreenManager
             PointF c = calibrationHelper.GetPointFromRectified(quadImage.C);
             PointF d = calibrationHelper.GetPointFromRectified(quadImage.D);
             QuadrilateralF plane = new QuadrilateralF(a, b, c, d);
-            
+
             return plane;
         }
 
@@ -309,7 +309,7 @@ namespace Kinovea.ScreenManager
                 g.DrawLine(Pens.Red, line.Start, line.End);
 
             string filename = GetRandomString(10);
-            bitmap.Save(Path.Combine(@"C:\Users\Joan\Videos\Kinovea\Video Testing\Projective\infinite plane\rnd", string.Format("{0}.png", filename)));
+            bitmap.Save(Path.Combine(@"", string.Format("{0}.png", filename)));
         }
 
         private static QuadrilateralF GetRandomQuadrilateral(Rectangle window)
