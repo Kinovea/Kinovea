@@ -33,9 +33,21 @@ namespace Kinovea.ScreenManager
     public partial class KeyframeBox : UserControl
     {
         #region Events
+        /// <summary>
+        /// Select this keyframe and move the global playhead there.
+        /// </summary>
         public event EventHandler SelectAsked;
+        /// <summary>
+        /// Same as select plus bring up the comment editor.
+        /// </summary>
         public event EventHandler ActivateAsked;
+        /// <summary>
+        /// Move this keyframe the current time of the playhead.
+        /// </summary>
         public event EventHandler MoveToCurrentTimeAsked;
+        /// <summary>
+        /// Delete this keyframe.
+        /// </summary>
         public event EventHandler DeleteAsked;
         #endregion
 
@@ -139,7 +151,19 @@ namespace Kinovea.ScreenManager
         }
         private void Controls_MouseDown(object sender, MouseEventArgs e)
         {
-            SelectAsked?.Invoke(this, e);
+            if (e.Button != MouseButtons.Left)
+                return;
+
+            // Drag and drop conflicts with the double click event.
+            // Use explicit click counting.
+            if (e.Clicks == 2)
+            {
+                ActivateAsked?.Invoke(this, e);
+            }
+            else
+            {
+                SelectAsked?.Invoke(this, e);
+            }
         }
         private void Controls_MouseUp(object sender, MouseEventArgs e)
         {
@@ -156,20 +180,13 @@ namespace Kinovea.ScreenManager
         }
         private void Controls_DragDrop(object sender, DragEventArgs e)
         {
+            // Called when we "drop" an object on the thumbnail.
             SelectAsked?.Invoke(this, e);
         }
         private void Controls_DragOver(object sender, DragEventArgs e)
         {
+            // Called when we move over the thumbnail during a drag and drop op.
             e.Effect = DragDropEffects.Move;
-        }
-        private void Controls_MouseDoubleClick(object sender, EventArgs e)
-        {
-            // Full activation: this should bring up the comment editor.
-            ActivateAsked?.Invoke(this, e);
-        }
-        private void Controls_Click(object sender, EventArgs e)
-        {
-            SelectAsked?.Invoke(this, e);
         }
         private void btnClose_Click(object sender, EventArgs e)
         {
@@ -186,6 +203,10 @@ namespace Kinovea.ScreenManager
                 keyframe.Title = tbTitle.Text;
                 UpdateToolTip();
             }
+        }
+        private void pbThumbnail_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+
         }
         private void lblTimecode_Click(object sender, EventArgs e)
         {

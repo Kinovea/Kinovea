@@ -106,10 +106,8 @@ namespace Kinovea.ScreenManager
       this.pbThumbnail.Size = new System.Drawing.Size(98, 73);
       this.pbThumbnail.TabIndex = 0;
       this.pbThumbnail.TabStop = false;
-      this.pbThumbnail.Click += new System.EventHandler(this.Controls_Click);
       this.pbThumbnail.DragDrop += new System.Windows.Forms.DragEventHandler(this.Controls_DragDrop);
       this.pbThumbnail.DragOver += new System.Windows.Forms.DragEventHandler(this.Controls_DragOver);
-      this.pbThumbnail.DoubleClick += new System.EventHandler(this.Controls_MouseDoubleClick);
       this.pbThumbnail.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Controls_MouseDown);
       this.pbThumbnail.MouseEnter += new System.EventHandler(this.Controls_MouseEnter);
       this.pbThumbnail.MouseLeave += new System.EventHandler(this.Controls_MouseLeave);
@@ -150,7 +148,6 @@ namespace Kinovea.ScreenManager
       this.Name = "KeyframeBox";
       this.Size = new System.Drawing.Size(102, 77);
       this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Controls_DragDrop);
-      this.DoubleClick += new System.EventHandler(this.Controls_MouseDoubleClick);
       this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Controls_MouseDown);
       this.MouseLeave += new System.EventHandler(this.Controls_MouseLeave);
       this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Controls_MouseMove);
