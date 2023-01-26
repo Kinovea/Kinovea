@@ -138,7 +138,7 @@ namespace Kinovea.ScreenManager
             //--------------------------------------------------------------------------------------
 
             manipulationType = ManipulationType.None;
-            metadata.UnselectAll();
+            metadata.DeselectAll();
 
             // Store position (descaled: in original image coords).
             lastPoint.X = mouseCoordinates.X;

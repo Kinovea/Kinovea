@@ -71,8 +71,7 @@ namespace Kinovea.ScreenManager
 
         public DrawingToolTestGrid()
         {
-            defaultStylePreset.Elements.Add("color", new StyleElementColor(Color.CornflowerBlue));
-            defaultStylePreset.Elements.Add("divisions", new StyleElementGridDivisions(12));
+            defaultStylePreset.Elements.Add("color", new StyleElementColor(Color.Red));
             stylePreset = defaultStylePreset.Clone();
         }
 

@@ -60,7 +60,10 @@ namespace Kinovea.ScreenManager
         {
             get 
             {
-                return null;
+                List<ToolStripItem> contextMenu = new List<ToolStripItem>();
+                menuHide.Text = ScreenManagerLang.mnuCoordinateSystemHide;
+                contextMenu.Add(menuHide);
+                return contextMenu;
             }
         }
         public override DrawingCapabilities Caps
@@ -72,12 +75,10 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private SizeF imageSize;
-        private float halfWidth;
-        private float halfHeight;
         
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
-        private const int divisions = 10;
+        private Dictionary<string, GridLine> gridLines = new Dictionary<string, GridLine>();
 
         private ToolStripMenuItem menuHide = new ToolStripMenuItem();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -86,17 +87,16 @@ namespace Kinovea.ScreenManager
         #region Constructor
         public DrawingTestGrid(DrawingStyle preset = null)
         {
+            CreateGridlines();
+
             // Decoration
-            styleHelper.Color = Color.Empty;
-            styleHelper.GridDivisions = 10;
-            
-            //styleHelper.ValueChanged += StyleHelper_ValueChanged;
-            if (preset == null)
-                preset = ToolManager.GetStylePreset("TestGrid");
-
-            style = preset.Clone();
-            BindStyle();
-
+            styleHelper.Color = Color.Red;
+            if (preset != null)
+            {
+                style = preset.Clone();
+                BindStyle();
+            }
+                
             menuHide.Click += menuHide_Click;
             menuHide.Image = Properties.Drawings.hide;
         }
@@ -112,141 +112,42 @@ namespace Kinovea.ScreenManager
         }
         private void DrawGrid(Graphics canvas, IImageToViewportTransformer transformer)
         {
-            // Drawing is done in normalized space [-1.0, +1.0] for simplicity.
-            float aspect = imageSize.Width / imageSize.Height;
-            float factorX = aspect > 1.0f ? (1.0f / aspect) : 1.0f;
-            float factorY = aspect < 1.0f ? (1.0f / aspect) : 1.0f;
+            //Pen pen = new Pen(Color.Red, 1);
+            Pen p = styleHelper.GetPen(255);
 
-            Pen plines = new Pen(Color.Firebrick, 1);
-            Pen paxes = new Pen(Color.Firebrick, 1);
-
-            bool gridlines = true;
-            bool horizontalAxis = false;
-            bool verticalAxis = false;
-            bool diagonals = false;
-            bool circle = false;
-
-            // Major axes
-            if (horizontalAxis)
-                DrawLine(canvas, transformer, paxes, new PointF(-1, 0), new PointF(1, 0));
+            DrawLine(canvas, transformer, p, gridLines["horizontal"]);
+            DrawLine(canvas, transformer, p, gridLines["vertical"]);
             
-            if (verticalAxis)
-                DrawLine(canvas, transformer, paxes, new PointF(0, -1), new PointF(0, 1));
+            DrawLine(canvas, transformer, p, gridLines["thirdsLeft"]);
+            DrawLine(canvas, transformer, p, gridLines["thirdsTop"]);
+            DrawLine(canvas, transformer, p, gridLines["thirdsRight"]);
+            DrawLine(canvas, transformer, p, gridLines["thirdsBottom"]);
 
-            if (diagonals)
-            {
-                DrawLine(canvas, transformer, plines, new PointF(-1, 1), new PointF(1, -1));
-                DrawLine(canvas, transformer, plines, new PointF(-1, -1), new PointF(1, 1));
-            }
-
-            if (circle)
-            {
-                float radiusX = aspect > 1.0f ? factorX : 1.0f;
-                float radiusY = aspect < 1.0f ? aspect : 1.0f;
-                DrawCenteredCircle(canvas, transformer, plines, radiusX, radiusY);
-            }
-
-            if (gridlines)
-                DrawGridlines(canvas, transformer, plines, factorX, factorY);
-
-            paxes.Dispose();
-            plines.Dispose();
+            DrawLine(canvas, transformer, p, gridLines["frameLeft"]);
+            DrawLine(canvas, transformer, p, gridLines["frameTop"]);
+            DrawLine(canvas, transformer, p, gridLines["frameRight"]);
+            DrawLine(canvas, transformer, p, gridLines["frameBottom"]);
+            
+            p.Dispose();
         }
-
-        private void DrawGridlines(Graphics canvas, IImageToViewportTransformer transformer, Pen plines, float fx, float fy)
+        private void DrawLine(Graphics canvas, IImageToViewportTransformer transformer, Pen pen, GridLine gridLine)
         {
-            float normalizedStepX = 2.0f * fx / divisions;
-            float normalizedStepY = 2.0f * fy / divisions;
-
-            // Horizontals
-            float top = 0;
-
-            // Upward
-            while (true)
-            {
-                top = top - normalizedStepY;
-
-                if (top < -1)
-                    break;
-
-                DrawLine(canvas, transformer, plines, new PointF(-1, top), new PointF(1, top));
-            }
-
-            // Downward
-            top = 0;
-            while (true)
-            {
-                top = top + normalizedStepY;
-
-                if (top > 1)
-                    break;
-
-                DrawLine(canvas, transformer, plines, new PointF(-1, top), new PointF(1, top));
-            }
-
-            // Verticals
-
-            float left = 0;
-            // Leftward
-            while (true)
-            {
-                left = left - normalizedStepX;
-
-                if (left < -1)
-                    break;
-
-                DrawLine(canvas, transformer, plines, new PointF(left, -1), new PointF(left, 1));
-            }
-
-            // Rigthward
-            left = 0;
-            while (true)
-            {
-                left = left + normalizedStepX;
-
-                if (left > 1)
-                    break;
-
-                DrawLine(canvas, transformer, plines, new PointF(left, -1), new PointF(left, 1));
-            }
-        }
-        private void DrawLine(Graphics canvas, IImageToViewportTransformer transformer, Pen pen, PointF a, PointF b)
-        {
-            canvas.DrawLine(pen, transformer.Transform(Map(a)), transformer.Transform(Map(b)));
+            canvas.DrawLine(pen, transformer.Transform(Map(gridLine.Start)), transformer.Transform(Map(gridLine.End)));
         }
 
-        private void DrawCenteredCircle(Graphics canvas, IImageToViewportTransformer transformer, Pen pen, float radiusX, float radiusY)
-        {
-            PointF a = Map(new PointF(-radiusX, radiusY));
-            PointF b = Map(new PointF(radiusX, radiusY));
-            PointF c = Map(new PointF(radiusX, -radiusY));
-            RectangleF rect = new RectangleF(a.X, a.Y, b.X - a.X, c.Y - a.Y);
-
-            canvas.DrawEllipse(pen, transformer.Transform(rect));
-        }
-
-        /// <summary>
-        /// Go from normalized coordinates in [-1, +1] space to image coordinates.
-        /// </summary>
-        private PointF Map(PointF p)
-        {
-            return new PointF(halfWidth + (p.X * halfWidth), halfHeight + (p.Y * halfHeight));
-        }
-        
         public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
-            //Rectangle quadImage = new Rectangle(0, 0, imageSize.Width - 1, imageSize.Height - 1);
-            
-            //for (int i = 0; i < 4; i++)
-            //{
-            //    if (HitTester.HitPoint(quadImage[i], point, transformer))
-            //        return i + 1;
-            //}
+            bool hit = false;
+            foreach (var pair in gridLines)
+            {
+                using (GraphicsPath path = new GraphicsPath())
+                {
+                    path.AddLine(Map(pair.Value.Start), Map(pair.Value.End));
+                    hit = hit || HitTester.HitPath(point, path, 2, false, transformer);
+                }
+            }
 
-            //if (!zooming && !styleHelper.Perspective && quadImage.Contains(point))
-            //    return 0;
-
-            return -1;
+            return hit ? 0 : -1;
         }
         public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
         {
@@ -265,8 +166,6 @@ namespace Kinovea.ScreenManager
         public void Scale(Size imageSize)
         {
             this.imageSize = new SizeF(imageSize.Width, imageSize.Height);
-            this.halfWidth = imageSize.Width / 2.0f;
-            this.halfHeight = imageSize.Height / 2.0f;
         }
         #endregion
 
@@ -275,13 +174,48 @@ namespace Kinovea.ScreenManager
         {
             DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("TestGrid"));
             style.Bind(styleHelper, "Color", "color");
-            style.Bind(styleHelper, "GridDivisions", "divisions");
         }
         
         private void menuHide_Click(object sender, EventArgs e)
         {
             Visible = false;
             InvalidateFromMenu(sender);
+        }
+
+        private void CreateGridlines()
+        {
+            // Grid lines defined in normalized space [-1.0, +1.0].
+            // +X left, +Y down.
+            gridLines.Clear();
+            
+            // Main axes.
+            gridLines.Add("horizontal", new GridLine(new PointF(-1, 0), new PointF(1, 0)));
+            gridLines.Add("vertical", new GridLine(new PointF(0, -1), new PointF(0, 1)));
+            
+            // Rule of thirds.
+            gridLines.Add("thirdsLeft", new GridLine(new PointF(-1.0f/3.0f, -1), new PointF(-1.0f/3.0f, 1)));
+            gridLines.Add("thirdsRight", new GridLine(new PointF(1.0f / 3.0f, -1), new PointF(1.0f / 3.0f, 1)));
+            gridLines.Add("thirdsTop", new GridLine(new PointF(-1, -1.0f/3.0f), new PointF(1, -1.0f / 3.0f)));
+            gridLines.Add("thirdsBottom", new GridLine(new PointF(-1, 1.0f / 3.0f), new PointF(1, 1.0f / 3.0f)));
+
+            // Safe framing.
+            float margin = 0.8f;
+            PointF a = new PointF(-margin, -margin);
+            PointF b = new PointF(margin, -margin);
+            PointF c = new PointF(margin, margin);
+            PointF d = new PointF(-margin, margin);
+            gridLines.Add("frameLeft", new GridLine(a, d));
+            gridLines.Add("frameRight", new GridLine(b, c));
+            gridLines.Add("frameTop", new GridLine(a, b));
+            gridLines.Add("frameBottom", new GridLine(d, c));
+        }
+
+        /// <summary>
+        /// Go from normalized coordinates in [-1, +1] space to image coordinates.
+        /// </summary>
+        private PointF Map(PointF p)
+        {
+            return new PointF((p.X * 0.5f + 0.5f) * imageSize.Width, (p.Y * 0.5f + 0.5f) * imageSize.Height);
         }
         #endregion
     }

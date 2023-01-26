@@ -945,7 +945,7 @@ namespace Kinovea.ScreenManager
             PrepareKeyframesDock();
 
             m_FrameServer.Metadata.AllDrawingTextToNormalMode();
-            m_FrameServer.Metadata.UnselectAll();
+            m_FrameServer.Metadata.DeselectAll();
             AddKeyframe();
         }
         #endregion
@@ -1566,7 +1566,7 @@ namespace Kinovea.ScreenManager
             UnzoomDirectZoom(false);
             m_FrameServer.Metadata.InitializeEnd(true);
             m_FrameServer.Metadata.StopAllTracking();
-            m_FrameServer.Metadata.UnselectAll();
+            m_FrameServer.Metadata.DeselectAll();
             CheckCustomDecodingSize(false);
         }
         private void ValidateDrawing()
@@ -2649,7 +2649,7 @@ namespace Kinovea.ScreenManager
             // Deselect the currently selected drawing.
             // This is used for drawings that must show extra stuff for being transformed, but we 
             // don't want to show the extra stuff all the time for clarity.
-            m_FrameServer.Metadata.UnselectAll();
+            m_FrameServer.Metadata.DeselectAll();
             m_DeselectionTimer.Stop();
             DoInvalidate();
             OnPoke();
@@ -2909,7 +2909,7 @@ namespace Kinovea.ScreenManager
         }
         private void CreateNewDrawing(Guid managerId)
         {
-            m_FrameServer.Metadata.UnselectAll();
+            m_FrameServer.Metadata.DeselectAll();
 
             IImageToViewportTransformer transformer = m_FrameServer.Metadata.ImageTransform;
             bool zooming = m_FrameServer.Metadata.ImageTransform.Zooming;
@@ -2997,7 +2997,7 @@ namespace Kinovea.ScreenManager
         }
         private void CreateNewMultiDrawingItem(AbstractMultiDrawing manager)
         {
-            m_FrameServer.Metadata.UnselectAll();
+            m_FrameServer.Metadata.DeselectAll();
             AddKeyframe();
 
             AbstractMultiDrawingItem item = manager.GetNewItem(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame);
@@ -3031,7 +3031,7 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            m_FrameServer.Metadata.UnselectAll();
+            m_FrameServer.Metadata.DeselectAll();
             AbstractDrawing hitDrawing = null;
 
             if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition))
@@ -3478,7 +3478,7 @@ namespace Kinovea.ScreenManager
 
             m_DescaledMouse = m_FrameServer.ImageTransform.Untransform(e.Location);
             m_FrameServer.Metadata.AllDrawingTextToNormalMode();
-            m_FrameServer.Metadata.UnselectAll();
+            m_FrameServer.Metadata.DeselectAll();
 
             AbstractDrawing hitDrawing = null;
 

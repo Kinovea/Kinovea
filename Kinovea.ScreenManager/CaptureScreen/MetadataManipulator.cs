@@ -41,9 +41,13 @@ namespace Kinovea.ScreenManager
         {
             get { return metadata.HitDrawing;}
         }
-        
+
+        public Keyframe HitKeyframe
+        {
+            get { return metadata.HitKeyframe; }
+        }
         #endregion
-        
+
         #region Members
         private Metadata metadata;
         private ScreenToolManager screenToolManager;
@@ -142,18 +146,23 @@ namespace Kinovea.ScreenManager
             screenToolManager.AfterToolUse();
         }
         
-        public bool HitTest(Point mouse, Point imageLocation, float imageZoom)
+        /// <summary>
+        /// Check if the passed point is on any drawing.
+        /// The hit drawing, if any, will be placed in metadata.hitDrawing.
+        /// The passed point is in screen space coordinates (transformed).
+        /// </summary>
+        public void HitTest(Point p, Point imageLocation, float imageZoom)
         {
-            // Note: at the moment this method does not support extra drawings.
-
             if(metadata == null)
-                return false;
+                return;
             
             ImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
-            PointF imagePoint = transformer.Untransform(mouse);
+            PointF imagePoint = transformer.Untransform(p);
             
             int keyframeIndex = 0;
-            return metadata.IsOnDrawing(keyframeIndex, imagePoint, fixedTimestamp);
+            metadata.DeselectAll();
+            metadata.IsOnDrawing(keyframeIndex, imagePoint, fixedTimestamp);
+            metadata.IsOnExtraDrawing(imagePoint, fixedTimestamp);
         }
         
         public Cursor GetCursor(float scale)
@@ -181,12 +190,14 @@ namespace Kinovea.ScreenManager
 
         public void ConfigureDrawing(AbstractDrawing drawing, Action refresh)
         {
-            Keyframe keyframe = metadata.HitKeyframe;
             IDecorable decorable = drawing as IDecorable;
-            if (keyframe == null || drawing == null || decorable == null)
+            if (drawing == null || decorable == null)
                 return;
-
-            HistoryMementoModifyDrawing memento = new HistoryMementoModifyDrawing(metadata, keyframe.Id, drawing.Id, drawing.Name, SerializationFilter.Style);
+            
+            Keyframe keyframe = metadata.HitKeyframe;
+            HistoryMementoModifyDrawing memento = null;
+            if (keyframe != null)
+                memento = new HistoryMementoModifyDrawing(metadata, keyframe.Id, drawing.Id, drawing.Name, SerializationFilter.Style);
 
             FormConfigureDrawing2 fcd = new FormConfigureDrawing2(decorable, refresh);
             FormsHelper.Locate(fcd);
@@ -194,8 +205,18 @@ namespace Kinovea.ScreenManager
 
             if (fcd.DialogResult == DialogResult.OK)
             {
-                memento.UpdateCommandName(drawing.Name);
-                metadata.HistoryStack.PushNewCommand(memento);
+                if (memento != null)
+                {
+                    memento.UpdateCommandName(drawing.Name);
+                    metadata.HistoryStack.PushNewCommand(memento);
+                }
+
+                // If this was the camera test grid, also update the tool-level preset.
+                if (metadata.HitDrawing is DrawingTestGrid)
+                {
+                    ToolManager.SetStylePreset("TestGrid", ((DrawingTestGrid)metadata.HitDrawing).DrawingStyle);
+                    ToolManager.SavePresets();
+                }
             }
 
             fcd.Dispose();

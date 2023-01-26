@@ -866,7 +866,7 @@ namespace Kinovea.ScreenManager
             BeforeDrawingDeletion(drawing);
             
             manager.RemoveDrawing(drawingId);
-            UnselectAll();
+            DeselectAll();
             
             if (DrawingDeleted != null)
                 DrawingDeleted(this, EventArgs.Empty);
@@ -879,7 +879,7 @@ namespace Kinovea.ScreenManager
                 DeleteTrackableDrawing(item);
 
             manager.Remove(itemId);
-            UnselectAll();
+            DeselectAll();
 
             if (MultiDrawingItemDeleted != null)
                 MultiDrawingItemDeleted(this, EventArgs.Empty);
@@ -1286,7 +1286,7 @@ namespace Kinovea.ScreenManager
             foreach(DrawingSVG svg in SVGs())
                 svg.ResizeFinished();
         }
-        public void UnselectAll()
+        public void DeselectAll()
         {
             hitKeyframe = null;
             hitDrawing = null;
@@ -1349,7 +1349,7 @@ namespace Kinovea.ScreenManager
         {
             kvaImporting = true;
             StopAllTracking();
-            UnselectAll();
+            DeselectAll();
             
             memoCoordinateSystemId = drawingCoordinateSystem.Id;
         }
@@ -1419,11 +1419,13 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Objects Hit Tests
+
         // Note: these hit tests are for right click only.
         // They work slightly differently than the hit test in the PointerTool which is for left click.
         // The main difference is that here we only need to know if the drawing was hit at all,
         // in the pointer tool, we need to differenciate which handle was hit.
-        // For example, Tracks can here be handled with all other ExtraDrawings.
+        // When a drawing is hit it will be stored in Metadata.hitDrawing.
+
         public bool IsOnDrawing(int _iActiveKeyframeIndex, PointF point, long _iTimestamp)
         {
             // Returns whether the mouse is on a drawing attached to a key image.
@@ -1651,7 +1653,7 @@ namespace Kinovea.ScreenManager
             Demosaicing = Demosaicing.None;
             Deinterlacing = false;
 
-            UnselectAll();
+            DeselectAll();
         }
         private bool DrawingsHitTest(int keyFrameIndex, PointF mouseLocation, long timestamp)
         {
@@ -1664,7 +1666,7 @@ namespace Kinovea.ScreenManager
             bool isOnDrawing = false;
             Keyframe keyframe = keyframes[keyFrameIndex];
 
-            UnselectAll();
+            DeselectAll();
             
             int currentDrawing = 0;
             int hitResult = -1;
@@ -1751,7 +1753,7 @@ namespace Kinovea.ScreenManager
             spotlightManager = new SpotlightManager();
             autoNumberManager = new AutoNumberManager(ToolManager.GetStylePreset("AutoNumbers"));
             drawingCoordinateSystem = new DrawingCoordinateSystem(Point.Empty, ToolManager.GetStylePreset("CoordinateSystem"));
-            drawingTestGrid = new DrawingTestGrid();
+            drawingTestGrid = new DrawingTestGrid(ToolManager.GetStylePreset("TestGrid"));
 
             extraDrawings.Add(spotlightManager);
             extraDrawings.Add(autoNumberManager);
