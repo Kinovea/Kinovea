@@ -823,7 +823,7 @@
     <value>Desvanecimiento predeterminado</value>
   </data>
   <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
-    <value>Carpeta de reproducción abierta como observador…</value>
+    <value>Abrir como observador de la carpeta de reproducción…</value>
   </data>
   <data name="mnuMarkTimeAsOriginClock" xml:space="preserve">
     <value>Marcar tiempo actual como origen para este reloj</value>
