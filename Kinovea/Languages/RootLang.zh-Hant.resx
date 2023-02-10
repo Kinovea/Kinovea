@@ -199,4 +199,64 @@
   <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
     <value>攝影機:紀錄即時幀數.</value>
   </data>
+  <data name="dlgAbout_Translation" xml:space="preserve">
+    <value>翻譯</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
+    <value>接收幀率</value>
+  </data>
+  <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
+    <value>記憶體</value>
+  </data>
+  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
+    <value>內容</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve">
+    <value>幀率取代臨界值(fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
+    <value>離開序列</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
+    <value>捕抓目錄</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
+    <value>捕抓檔名</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
+    <value>日期(YYYYMMDD)</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
+    <value>時間(HHMMSS)</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
+    <value>日期及時間(YYYYMMDD-HHMMSS)</value>
+  </data>
+  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
+    <value>內容變數</value>
+  </data>
+  <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
+    <value>巨集</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve">
+    <value>配置延遲記憶體: {0} MB.</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
+    <value>忽略檔案覆寫警告</value>
+  </data>
+  <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
+    <value>高速攝影機</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve">
+    <value>替代幀率 (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_tabAutomation" xml:space="preserve">
+    <value>自動化</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkEnableAudioTrigger" xml:space="preserve">
+    <value>致能聲音觸發</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve">
+    <value>输入装置:</value>
+  </data>
 </root>
