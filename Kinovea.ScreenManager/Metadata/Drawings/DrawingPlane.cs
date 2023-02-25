@@ -106,7 +106,18 @@ namespace Kinovea.ScreenManager
                 calibrationHelper.CalibrationChanged += CalibrationHelper_CalibrationChanged;
             }
         }
-        public bool UsedForCalibration { get; set; }
+        public bool IsDistanceGrid 
+        { 
+            get { return styleHelper.DistanceGrid; }
+        }
+        public float DistanceOffset
+        {
+            get { return distanceOffset; }
+        }
+        public bool DistanceLTR
+        {
+            get { return distanceLTR; }
+        }
         #endregion
 
         #region Members
@@ -118,8 +129,9 @@ namespace Kinovea.ScreenManager
         private bool planeIsConvex = true;
 
         // Distance grid
-        private float xAxisOffset = 0.0f;                                       // Start offset, in world space, for the distance grid.
-        private float xSlidingLine = 0.5f;                                      // Normalized coordinate of the sliding line along X axis.
+        private float distanceCoord = 0.5f;                                     // Normalized coordinate of the sliding line along the X axis.
+        private float distanceOffset = 0.0f;                                    // Start offset, in world space, for the distance grid, only used for displaying values.
+        private bool distanceLTR = true;                                        // Direction of the X-axis, only used for displaying values.
         private const int defaultBackgroundAlpha = 92;
         private const int textMargin = 20;
         private List<TickMark> tickMarks = new List<TickMark>();
@@ -274,7 +286,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             // Sliding line.
-            float x = xSlidingLine * planeWidth;
+            float x = distanceCoord * planeWidth;
             DrawDistortedLine(canvas, pen, new PointF(x, 0), new PointF(x, planeHeight), projectiveMapping, distorter, transformer);
             
             SolidBrush brushFill = styleHelper.GetBrush(defaultBackgroundAlpha);
@@ -282,7 +294,7 @@ namespace Kinovea.ScreenManager
 
             Font font = styleHelper.GetFont(1.0F);
             foreach (TickMark tick in tickMarks)
-                tick.Draw(canvas, distorter, transformer, brushFill, brushFont as SolidBrush, font, textMargin);
+                tick.Draw(canvas, distorter, transformer, brushFill, brushFont as SolidBrush, font, textMargin, true);
             
             font.Dispose();
             brushFill.Dispose();
@@ -325,7 +337,7 @@ namespace Kinovea.ScreenManager
             if (styleHelper.DistanceGrid)
             {
                 // Reverse the mapping to find the location of the line in image space.
-                float h = planeWidth * xSlidingLine;
+                float h = planeWidth * distanceCoord;
                 PointF a = projectiveMapping.Forward(new PointF(h, 0));
                 PointF b = projectiveMapping.Forward(new PointF(h, planeHeight));
                 if (HitTester.HitLine(point, a, b, distorter, transformer))
@@ -375,7 +387,7 @@ namespace Kinovea.ScreenManager
                 // Dragging the distance line.
                 // We get a point in image space, convert to a point in calibrated space and grab the x coord.
                 PointF p = projectiveMapping.Backward(point);
-                xSlidingLine = p.X / planeWidth;
+                distanceCoord = p.X / planeWidth;
                 ClampSlidingLine();
                 UpdateTickMarks();
             }
@@ -441,9 +453,23 @@ namespace Kinovea.ScreenManager
                             quadImage.D = ReadPoint(xmlReader, scale);
                             break;
                         }
-                    case "DistanceLine":
+                    case "DistanceCoord":
                         {
-                            bool read = float.TryParse(xmlReader.ReadElementContentAsString(), NumberStyles.Any, CultureInfo.InvariantCulture, out xSlidingLine);
+                            bool read = float.TryParse(xmlReader.ReadElementContentAsString(), NumberStyles.Any, CultureInfo.InvariantCulture, out distanceCoord);
+                            if (!read)
+                                distanceCoord = 0.5f;
+                            break;
+                        }
+                    case "DistanceOffset":
+                        {
+                            bool read = float.TryParse(xmlReader.ReadElementContentAsString(), NumberStyles.Any, CultureInfo.InvariantCulture, out distanceOffset);
+                            if (!read)
+                                distanceOffset = 0.0f;
+                            break;
+                        }
+                    case "DistanceLTR":
+                        {
+                            distanceLTR = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                             break;
                         }
                     case "DrawingStyle":
@@ -482,7 +508,9 @@ namespace Kinovea.ScreenManager
                 w.WriteElementString("PointUpperRight", XmlHelper.WritePointF(quadImage.B));
                 w.WriteElementString("PointLowerRight", XmlHelper.WritePointF(quadImage.C));
                 w.WriteElementString("PointLowerLeft", XmlHelper.WritePointF(quadImage.D));
-                w.WriteElementString("DistanceLine", XmlHelper.WriteFloat(xSlidingLine));
+                w.WriteElementString("DistanceCoord", XmlHelper.WriteFloat(distanceCoord));
+                w.WriteElementString("DistanceOffset", XmlHelper.WriteFloat(distanceOffset));
+                w.WriteElementString("DistanceLTR", XmlHelper.WriteBoolean(distanceLTR));
             }
 
             if (ShouldSerializeStyle(filter))
@@ -586,11 +614,17 @@ namespace Kinovea.ScreenManager
             quadImage = quadPlane.Clone();
         }
 
-        public void UpdateMapping(SizeF size)
+        public void UpdateMapping(SizeF size, float offset, bool ltr)
         {
             planeWidth = size.Width;
             planeHeight = size.Height;
             quadPlane = new QuadrilateralF(planeWidth, planeHeight);
+
+            if (IsDistanceGrid)
+            {
+                distanceOffset = offset;
+                distanceLTR = ltr;
+            }
 
             projectiveMapping.Update(quadPlane, quadImage);
             UpdateTickMarks();
@@ -633,8 +667,7 @@ namespace Kinovea.ScreenManager
         private void ClampSlidingLine()
         {
             // Limit the sliding line to a certain margin from the side.
-            //xSlidingLine = Math.Min(0.99f, Math.Max(0.01f, xSlidingLine));
-            xSlidingLine = Math.Min(1.0f, Math.Max(0.0f, xSlidingLine));
+            distanceCoord = Math.Min(1.0f, Math.Max(0.0f, distanceCoord));
         }
 
         private void UpdateTickMarks()
@@ -646,14 +679,16 @@ namespace Kinovea.ScreenManager
                 return;
 
             Action<float> addTickMarks = (value) => {
+
+                float displayValue = distanceLTR ? value + distanceOffset : planeWidth - value + distanceOffset;
                 PointF pTop = projectiveMapping.Forward(new PointF(value, 0));
                 PointF pBot = projectiveMapping.Forward(new PointF(value, planeHeight));
-                tickMarks.Add(new TickMark(value, pTop, TextAlignment.Top));
-                tickMarks.Add(new TickMark(value, pBot, TextAlignment.Bottom));
+                tickMarks.Add(new TickMark(displayValue, pTop, TextAlignment.Top));
+                tickMarks.Add(new TickMark(displayValue, pBot, TextAlignment.Bottom));
             };
 
             addTickMarks(0);
-            addTickMarks(xSlidingLine * planeWidth);
+            addTickMarks(distanceCoord * planeWidth);
             addTickMarks(planeWidth);
         }
         public void CalibrationHelper_CalibrationChanged(object sender, EventArgs e)
@@ -663,7 +698,7 @@ namespace Kinovea.ScreenManager
             if (calibrationHelper.CalibrationDrawingId == this.Id)
                 size = calibrationHelper.CalibrationByPlane_GetRectangleSize();
                 
-            UpdateMapping(size);
+            UpdateMapping(size, distanceOffset, distanceLTR);
         }
         #endregion
     }

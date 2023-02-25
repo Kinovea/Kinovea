@@ -194,7 +194,7 @@ namespace Kinovea.ScreenManager
             Font font = styleHelper.GetFont(1.0F);
 
             foreach (TickMark tick in grid.TickMarks)
-                tick.Draw(canvas, distorter, transformer, brushFill, fontBrush, font, textMargin);
+                tick.Draw(canvas, distorter, transformer, brushFill, fontBrush, font, textMargin, false);
             
             font.Dispose();
             fontBrush.Dispose();

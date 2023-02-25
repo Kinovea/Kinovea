@@ -36,6 +36,7 @@ namespace Kinovea.ScreenManager
         private DrawingPlane drawingPlane;
         private QuadrilateralF quadrilateral;
         private QuadrilateralF miniQuadrilateral;
+        private bool isDistanceGrid;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         public FormCalibratePlane(CalibrationHelper calibrationHelper, DrawingPlane drawingPlane)
@@ -43,6 +44,7 @@ namespace Kinovea.ScreenManager
             this.calibrationHelper = calibrationHelper;
             this.drawingPlane = drawingPlane;
             this.quadrilateral = drawingPlane.QuadImage;
+            this.isDistanceGrid = drawingPlane.IsDistanceGrid;
             
             InitializeComponent();
             LocalizeForm();
@@ -79,8 +81,27 @@ namespace Kinovea.ScreenManager
             if(calibrationHelper.IsCalibrated && calibrationHelper.CalibratorType == CalibratorType.Plane)
             {
                 SizeF size = calibrationHelper.CalibrationByPlane_GetRectangleSize();
-                tbA.Text = String.Format("{0:0.00}", size.Height);
-                tbB.Text = String.Format("{0:0.00}", size.Width);
+
+                if (isDistanceGrid)
+                {
+                    float a = drawingPlane.DistanceOffset;
+                    float b = drawingPlane.DistanceOffset + size.Width;
+                    if (drawingPlane.DistanceLTR)
+                    {
+                        tbA.Text = String.Format("{0:0.00}", a);
+                        tbB.Text = String.Format("{0:0.00}", b);
+                    }
+                    else
+                    {
+                        tbA.Text = String.Format("{0:0.00}", b);
+                        tbB.Text = String.Format("{0:0.00}", a);
+                    }
+                }
+                else
+                {
+                    tbA.Text = String.Format("{0:0.00}", size.Height);
+                    tbB.Text = String.Format("{0:0.00}", size.Width);
+                }
                 
                 cbUnit.SelectedIndex = (int)calibrationHelper.LengthUnit;
             }
@@ -90,10 +111,22 @@ namespace Kinovea.ScreenManager
                 tbB.Text = "100";
                 cbUnit.SelectedIndex = (int)LengthUnit.Centimeters;
             }
-            
+
+            if (isDistanceGrid)
+            {
+                lblSeparator.Text = ",";
+                lblHelpText.Text = "Enter the distance from the origin for each marker.";
+            }
+            else
+            {
+                lblSeparator.Text = "×";
+                lblHelpText.Text = "Enter the length of each side.";
+            }
+
+
             // Prepare drawing.
             RectangleF bbox = quadrilateral.GetBoundingBox();
-            SizeF usableSize = new SizeF(pnlQuadrilateral.Width * 0.9f, pnlQuadrilateral.Height * 0.9f);
+            SizeF usableSize = new SizeF(pnlQuadrilateral.Width * 0.8f, pnlQuadrilateral.Height * 0.8f);
             float ratioWidth = bbox.Width / usableSize.Width;
             float ratioHeight = bbox.Height / usableSize.Height;
             float ratio = Math.Max(ratioWidth, ratioHeight);
@@ -137,13 +170,42 @@ namespace Kinovea.ScreenManager
             {
                 float a = float.Parse(tbA.Text);
                 float b = float.Parse(tbB.Text);
-                if(a <= 0 || b <= 0)
-                    return;
-                
-                SizeF size = new SizeF(b, a);
-                
-                drawingPlane.UpdateMapping(size);
-                
+                float offset = 0;
+                bool leftToRight = true;
+                SizeF size;
+                if (isDistanceGrid)
+                {
+                    if (a == b)
+                    {
+                        log.Error(String.Format("The markers coordinates cannot be identical. ({0}, {1}).", tbA.Text, tbB.Text));
+                        return;
+                    }
+
+                    if (a < b)
+                    {
+                        offset = a;
+                        leftToRight = true;
+                        size = new SizeF(b - a, 100);
+                    }
+                    else
+                    {
+                        offset = b;
+                        leftToRight = false;
+                        size = new SizeF(a - b, 100);
+                    }
+                }
+                else
+                {
+                    if (a <= 0 || b <= 0)
+                    {
+                        log.Error(String.Format("The side length cannot be zero or negative. ({0}x{1}).", tbA.Text, tbB.Text));
+                        return;
+                    }
+
+                    size = new SizeF(b, a);
+                }
+
+                drawingPlane.UpdateMapping(size, offset, leftToRight);
                 calibrationHelper.SetCalibratorFromType(CalibratorType.Plane);
                 calibrationHelper.CalibrationByPlane_Initialize(drawingPlane.Id, size, drawingPlane.QuadImage);
                 calibrationHelper.LengthUnit = (LengthUnit)cbUnit.SelectedIndex;
@@ -172,28 +234,40 @@ namespace Kinovea.ScreenManager
             canvas.DrawLine(p, miniQuadrilateral.B, miniQuadrilateral.C);
             canvas.DrawLine(p, miniQuadrilateral.C, miniQuadrilateral.D);
             canvas.DrawLine(p, miniQuadrilateral.D, miniQuadrilateral.A);
-            p.Dispose();
             
-            // Side indicators
-            DrawIndicator(canvas, " b ", miniQuadrilateral.A, miniQuadrilateral.B);
-            DrawIndicator(canvas, " a ", miniQuadrilateral.B, miniQuadrilateral.C);
-            DrawIndicator(canvas, " b ", miniQuadrilateral.C, miniQuadrilateral.D);
-            DrawIndicator(canvas, " a ", miniQuadrilateral.D, miniQuadrilateral.A);
+            // Indicators to identify lengths or coordinates.
+            if (isDistanceGrid)
+            {
+                DrawIndicator(canvas, " a ", miniQuadrilateral.D.Translate(0, 12));
+                DrawIndicator(canvas, " b ", miniQuadrilateral.C.Translate(0, 12));
+                p.DashStyle = DashStyle.Dash;
+                PointF midTop = GeometryHelper.GetMiddlePoint(miniQuadrilateral.A, miniQuadrilateral.B);
+                PointF midBot = GeometryHelper.GetMiddlePoint(miniQuadrilateral.D, miniQuadrilateral.C);
+                canvas.DrawLine(p, midTop, midBot);
+            }
+            else
+            {
+                DrawIndicator(canvas, " b ", GeometryHelper.GetMiddlePoint(miniQuadrilateral.A, miniQuadrilateral.B));
+                DrawIndicator(canvas, " a ", GeometryHelper.GetMiddlePoint(miniQuadrilateral.B, miniQuadrilateral.C));
+                DrawIndicator(canvas, " b ", GeometryHelper.GetMiddlePoint(miniQuadrilateral.C, miniQuadrilateral.D));
+                DrawIndicator(canvas, " a ", GeometryHelper.GetMiddlePoint(miniQuadrilateral.D, miniQuadrilateral.A));
+            }
+
+            p.Dispose();
         }
         
-        private void DrawIndicator(Graphics canvas, string label, PointF a, PointF b)
+        /// <summary>
+        /// Draw a label at the given point.
+        /// </summary>
+        private void DrawIndicator(Graphics canvas, string label, PointF point)
         {
-            PointF middle = GeometryHelper.GetMiddlePoint(a, b);
-            
             Font tempFont = new Font("Arial", 9, FontStyle.Regular);
-            SizeF labelSize = canvas.MeasureString(label, tempFont);
-            
-            PointF textOrigin = new PointF(middle.X - labelSize.Width/2, middle.Y - labelSize.Height/2);
-            
             SolidBrush brushBack = new SolidBrush(pnlQuadrilateral.BackColor);
-            canvas.FillRectangle(brushBack, textOrigin.X, textOrigin.Y, labelSize.Width, labelSize.Height);
-            
             SolidBrush brushFont = new SolidBrush(pnlQuadrilateral.ForeColor);
+            
+            SizeF labelSize = canvas.MeasureString(label, tempFont);
+            PointF textOrigin = new PointF(point.X - labelSize.Width / 2, point.Y - labelSize.Height / 2);
+            canvas.FillRectangle(brushBack, textOrigin.X, textOrigin.Y, labelSize.Width, labelSize.Height);
             canvas.DrawString(label, tempFont, brushFont, textOrigin);
 
             tempFont.Dispose();

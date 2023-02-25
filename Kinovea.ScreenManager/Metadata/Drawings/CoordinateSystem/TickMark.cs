@@ -19,9 +19,14 @@ namespace Kinovea.ScreenManager
             this.TextAlignment = textAlignment;
         }
 
-        public void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, SolidBrush brushFill, SolidBrush fontBrush, Font font, int margin)
+        public void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer,
+            SolidBrush brushFill, SolidBrush fontBrush, Font font, int margin, bool precise)
         {
-            string label = String.Format("{0}", Math.Round(Value, 3));
+            string label = "";
+            if (precise)
+                label = String.Format("{0:0.000}", Value);
+            else
+                label = String.Format("{0}", Math.Round(Value, 3));
 
             PointF location;
             if (distorter != null && distorter.Initialized)
