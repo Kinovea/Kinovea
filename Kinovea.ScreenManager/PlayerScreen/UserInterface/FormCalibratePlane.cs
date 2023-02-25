@@ -144,11 +144,14 @@ namespace Kinovea.ScreenManager
                 p = p.Translate(left, top);
                 miniQuadrilateral[i] = p;
             }
+
+            UpdateTheoreticalPrecision();
         }
         
         private void textBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             // Only accept numbers, decimal separator and backspace.
+            // Note: when we pass here the text hasn't been updated yet.
             // TODO: move to a helper.
             
             NumberFormatInfo nfi = Thread.CurrentThread.CurrentCulture.NumberFormat;
@@ -160,7 +163,18 @@ namespace Kinovea.ScreenManager
                 e.Handled = true;
             }
         }
-        
+
+        private void textBox_TextChanged(object sender, EventArgs e)
+        {
+            // This triggers after the text is changed.
+            UpdateTheoreticalPrecision();
+        }
+
+        private void cbUnit_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateTheoreticalPrecision();
+        }
+
         private void btnOK_Click(object sender, EventArgs e)
         {
             if(tbA.Text.Length == 0 || tbB.Text.Length == 0)
@@ -220,7 +234,47 @@ namespace Kinovea.ScreenManager
         {
         }
         
-        
+        private void UpdateTheoreticalPrecision()
+        {
+            lblPrecision.Visible = false;
+            
+            try
+            {
+                float a = float.Parse(tbA.Text);
+                float b = float.Parse(tbB.Text);
+    
+                if (isDistanceGrid)
+                {
+                    float worldLength = Math.Abs(a - b);
+                    if (worldLength == 0)
+                        return;
+
+                    float ab = GeometryHelper.GetDistance(quadrilateral.A, quadrilateral.B);
+                    float cd = GeometryHelper.GetDistance(quadrilateral.C, quadrilateral.D);
+                    float pixelLength = (ab + cd) / 2;
+
+                    LengthUnit unit = LengthUnit.Pixels;
+                    int selectedIndex = cbUnit.SelectedIndex;
+                    if (selectedIndex >= 0)
+                        unit = (LengthUnit)selectedIndex;
+
+                    string pixelSize = UnitHelper.GetPixelSize(worldLength, pixelLength, unit);
+
+                    lblPrecision.Text = string.Format("Pixel size: {0}.", pixelSize);
+                    lblPrecision.Visible = true;
+                }
+                else
+                {
+                    // TODO: implement comparaison on areas.
+                    return;
+                }
+            }
+            catch
+            {
+
+            }
+        }
+
         private void pnlQuadrilateral_Paint(object sender, PaintEventArgs e)
         {
             Graphics canvas = e.Graphics;
