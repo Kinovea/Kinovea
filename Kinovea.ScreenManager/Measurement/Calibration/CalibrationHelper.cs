@@ -444,7 +444,7 @@ namespace Kinovea.ScreenManager
             string valueTemplate = precise ? "{0:0.00} ; {1:0.00}" : "{0:0} ; {1:0}";
             string text = String.Format(valueTemplate, a.X, a.Y);
             
-            if(abbreviation)
+            if (abbreviation)
                 text = text + " " + String.Format("{0}", UnitHelper.LengthAbbreviation(lengthUnit));
             
             return text;
@@ -459,7 +459,7 @@ namespace Kinovea.ScreenManager
             string valueTemplate = precise ? "{0:0.00}" : "{0:0}";
             string text = String.Format(valueTemplate, length);
             
-            if(abbreviation)
+            if (abbreviation)
                 text = text + " " + String.Format("{0}", UnitHelper.LengthAbbreviation(lengthUnit));
             
             return text;
@@ -695,7 +695,6 @@ namespace Kinovea.ScreenManager
             return fileInterval;
         }
         #endregion
-
 
         #region Private helpers
         private void AfterCalibrationChanged()

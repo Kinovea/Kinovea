@@ -94,7 +94,18 @@ namespace Kinovea.ScreenManager
         {
             get { return quadImage;}
         }
-        public CalibrationHelper CalibrationHelper { get; set; }
+        public CalibrationHelper CalibrationHelper
+        {
+            get
+            {
+                return calibrationHelper;
+            }
+            set
+            {
+                calibrationHelper = value;
+                calibrationHelper.CalibrationChanged += CalibrationHelper_CalibrationChanged;
+            }
+        }
         public bool UsedForCalibration { get; set; }
         #endregion
 
@@ -119,6 +130,7 @@ namespace Kinovea.ScreenManager
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
         private Pen penEdges = Pens.White;
+        private CalibrationHelper calibrationHelper;
 
         private bool initialized = false;
 
@@ -257,12 +269,13 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void DrawDistanceGrid(Graphics canvas, Pen pen, float opacity, ProjectiveMapping projectiveMapping, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
+            // This should only be drawn if we are actually the one used for calibration.
+            if (calibrationHelper.CalibrationDrawingId != this.Id)
+                return;
+
             // Sliding line.
             float x = xSlidingLine * planeWidth;
             DrawDistortedLine(canvas, pen, new PointF(x, 0), new PointF(x, planeHeight), projectiveMapping, distorter, transformer);
-
-            if (tickMarks.Count == 0)
-                UpdateTickMarks();
             
             SolidBrush brushFill = styleHelper.GetBrush(defaultBackgroundAlpha);
             Brush brushFont = pen.Color.GetBrightness() >= 0.5 ? Brushes.Black : Brushes.White;
@@ -364,6 +377,7 @@ namespace Kinovea.ScreenManager
                 PointF p = projectiveMapping.Backward(point);
                 xSlidingLine = p.X / planeWidth;
                 ClampSlidingLine();
+                UpdateTickMarks();
             }
             else
             {
@@ -385,8 +399,6 @@ namespace Kinovea.ScreenManager
                 SignalAllTrackablePointsMoved();
                 CalibrationHelper.CalibrationByPlane_Update(Id, quadImage);
             }
-
-            UpdateTickMarks();
         }
         public override PointF GetCopyPoint()
         {
@@ -456,12 +468,6 @@ namespace Kinovea.ScreenManager
             initialized = true;
 
             SignalAllTrackablePointsMoved();
-
-            if (CalibrationHelper != null && UsedForCalibration)
-            {
-                SizeF size = CalibrationHelper.CalibrationByPlane_GetRectangleSize();
-                UpdateMapping(size);
-            }
         }
         private PointF ReadPoint(XmlReader reader, PointF scale)
         {
@@ -646,18 +652,19 @@ namespace Kinovea.ScreenManager
                 tickMarks.Add(new TickMark(value, pBot, TextAlignment.Bottom));
             };
 
-            //if (CalibrationHelper != null && UsedForCalibration)
-            //{
-            //    SizeF size = CalibrationHelper.CalibrationByPlane_GetRectangleSize();
-            //    planeWidth = size.Width;
-            //    planeHeight = size.Height;
-            //}
-            
             addTickMarks(0);
             addTickMarks(xSlidingLine * planeWidth);
             addTickMarks(planeWidth);
         }
+        public void CalibrationHelper_CalibrationChanged(object sender, EventArgs e)
+        {
+            // Update the projective mapping if we are the calibration drawing.
+            SizeF size = new SizeF(100, 100);
+            if (calibrationHelper.CalibrationDrawingId == this.Id)
+                size = calibrationHelper.CalibrationByPlane_GetRectangleSize();
+                
+            UpdateMapping(size);
+        }
         #endregion
-
     }
 }
