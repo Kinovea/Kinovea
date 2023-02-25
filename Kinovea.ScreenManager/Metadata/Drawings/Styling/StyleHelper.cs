@@ -154,6 +154,11 @@ namespace Kinovea.ScreenManager
             get { return toggles["thirds"]; }
             set { toggles["thirds"] = value; }
         }
+        public bool DistanceGrid
+        {
+            get { return toggles["distanceGrid"]; }
+            set { toggles["distanceGrid"] = value; }
+        }
 
         public int ContentHash
         {
@@ -204,6 +209,7 @@ namespace Kinovea.ScreenManager
             toggles.Add("verticalAxis", false);
             toggles.Add("frame", false);
             toggles.Add("thirds", false);
+            toggles.Add("distanceGrid", false);
         }
         #endregion
         
@@ -486,6 +492,16 @@ namespace Kinovea.ScreenManager
 
                         break;
                     }
+                case "Toggles/DistanceGrid":
+                    {
+                        if (value is bool)
+                        {
+                            toggles["distanceGrid"] = (bool)value;
+                            imported = true;
+                        }
+
+                        break;
+                    }
                 default:
                     {
                         log.DebugFormat("Unknown target property \"{0}\".", targetProperty);
@@ -659,6 +675,16 @@ namespace Kinovea.ScreenManager
                         if (targetType == typeof(bool))
                         {
                             result = toggles["thirds"];
+                            converted = true;
+                        }
+
+                        break;
+                    }
+                case "Toggles/DistanceGrid":
+                    {
+                        if (targetType == typeof(bool))
+                        {
+                            result = toggles["distanceGrid"];
                             converted = true;
                         }
 

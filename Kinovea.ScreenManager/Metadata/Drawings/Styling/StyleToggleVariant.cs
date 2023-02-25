@@ -11,6 +11,7 @@ namespace Kinovea.ScreenManager
         Curved,
         Perspective,
         Clock,
+        DistanceGrid,
 
         // Options of camera test grid.
         HorizontalLine,

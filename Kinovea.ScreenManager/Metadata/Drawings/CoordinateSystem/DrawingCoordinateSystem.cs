@@ -194,34 +194,13 @@ namespace Kinovea.ScreenManager
             Font font = styleHelper.GetFont(1.0F);
 
             foreach (TickMark tick in grid.TickMarks)
-            {
-                DrawTickMark(canvas, distorter, transformer, tick, brushFill, fontBrush, font);
-            }
+                tick.Draw(canvas, distorter, transformer, brushFill, fontBrush, font, textMargin);
             
             font.Dispose();
             fontBrush.Dispose();
             brushFill.Dispose();
 
             p.Dispose();
-        }
-
-        private void DrawTickMark(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, TickMark tick, SolidBrush brushFill, SolidBrush fontBrush, Font font)
-        {
-            string label = String.Format("{0}", Math.Round(tick.Value, 3));
-            
-            PointF location;
-            if (distorter != null && distorter.Initialized)
-                location = distorter.Distort(tick.ImageLocation);
-            else
-                location = tick.ImageLocation;
-
-            PointF transformed = transformer.Transform(location);
-            SizeF labelSize = canvas.MeasureString(label, font);
-            PointF textPosition = GetTextPosition(transformed, tick.TextAlignment, labelSize);
-            RectangleF backRectangle = new RectangleF(textPosition, labelSize);
-
-            RoundedRectangle.Draw(canvas, backRectangle, brushFill, font.Height / 4, false, false, null);
-            canvas.DrawString(label, font, fontBrush, backRectangle.Location);
         }
 
         private void DrawGridLine(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, Pen penLine, PointF a, PointF b)
@@ -427,31 +406,7 @@ namespace Kinovea.ScreenManager
         {
             style.Bind(styleHelper, "Bicolor", "line color");
         }
-        private PointF GetTextPosition(PointF tickPosition, TextAlignment textAlignment, SizeF textSize)
-        {
-            PointF textPosition = tickPosition;
-            
-            switch (textAlignment)
-            {
-                case TextAlignment.Top: 
-                    textPosition = new PointF(tickPosition.X - textSize.Width / 2, tickPosition.Y - textSize.Height - textMargin);
-                    break;
-                case TextAlignment.Left:
-                    textPosition = new PointF(tickPosition.X - textSize.Width - textMargin, tickPosition.Y - textSize.Height / 2);
-                    break;
-                case TextAlignment.Right:
-                    textPosition = new PointF(tickPosition.X + textMargin, tickPosition.Y - textSize.Height / 2);
-                    break;
-                case TextAlignment.Bottom:
-                    textPosition = new PointF(tickPosition.X - textSize.Width / 2, tickPosition.Y + textMargin);
-                    break;
-                case TextAlignment.BottomRight:
-                    textPosition = new PointF(tickPosition.X + textMargin, tickPosition.Y + textMargin);
-                    break;
-            }
-            
-            return textPosition;
-        }
+        
         private void MoveHorizontalAxis(PointF p)
         {
             PointF point = CalibrationHelper.GetPoint(p);
