@@ -86,10 +86,10 @@ namespace Kinovea.ScreenManager
       // lblPrecision
       // 
       this.lblPrecision.AutoSize = true;
-      this.lblPrecision.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblPrecision.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.lblPrecision.Location = new System.Drawing.Point(12, 106);
       this.lblPrecision.Name = "lblPrecision";
-      this.lblPrecision.Size = new System.Drawing.Size(91, 13);
+      this.lblPrecision.Size = new System.Drawing.Size(70, 13);
       this.lblPrecision.TabIndex = 31;
       this.lblPrecision.Text = "Precision text";
       this.lblPrecision.TextAlign = System.Drawing.ContentAlignment.BottomLeft;

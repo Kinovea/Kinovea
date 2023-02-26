@@ -4,7 +4,7 @@
   <Id>efc30ca0-9f42-4668-b853-8f88f099d923</Id>
   <Name>DistanceGrid</Name>
   <DisplayName>Distance grid</DisplayName>
-  <Icon>grid</Icon>
+  <Icon>plane</Icon>
   <DrawingClass>DrawingPlane</DrawingClass>
   <Attached>true</Attached>
   <KeepToolAfterDrawingCreation>false</KeepToolAfterDrawingCreation>

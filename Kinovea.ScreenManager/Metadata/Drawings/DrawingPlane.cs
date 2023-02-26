@@ -197,7 +197,7 @@ namespace Kinovea.ScreenManager
 
             QuadrilateralF quad = transformer.Transform(quadImage);
 
-            bool drawEdgesOnly = !planeIsConvex || (!styleHelper.Perspective && !quadImage.IsAxisAlignedRectangle) || styleHelper.DistanceGrid;
+            bool drawEdgesOnly = !planeIsConvex || (!styleHelper.Perspective && !quadImage.IsAxisAlignedRectangle);
 
             const int defaultRadius = 4;
 
@@ -214,7 +214,7 @@ namespace Kinovea.ScreenManager
                 // Origin
                 canvas.DrawEllipse(penEdges, quad.D.Box(5));
 
-                if (!drawEdgesOnly || styleHelper.DistanceGrid)
+                if (!drawEdgesOnly)
                 {
                     // FIXME: why do we recompute the projective mapping every draw call?
 
@@ -240,39 +240,56 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
+
         private void DrawGrid(Graphics canvas, Pen pen, float opacity, ProjectiveMapping projectiveMapping, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
-            if (styleHelper.DistanceGrid)
+            if (IsDistanceGrid)
             {
-                // Distance grid, draw edges only, then sliding line and measurements.
+                // Draw the edges. and the secondary ticks.
                 DrawDistortedLine(canvas, pen, new PointF(0, 0), new PointF(planeWidth, 0), projectiveMapping, distorter, transformer);
                 DrawDistortedLine(canvas, pen, new PointF(0, planeHeight), new PointF(planeWidth, planeHeight), projectiveMapping, distorter, transformer);
                 DrawDistortedLine(canvas, pen, new PointF(0, 0), new PointF(0, planeHeight), projectiveMapping, distorter, transformer);
                 DrawDistortedLine(canvas, pen, new PointF(planeWidth, 0), new PointF(planeWidth, planeHeight), projectiveMapping, distorter, transformer);
 
+                // Sliding line and measurement marks.
                 if (planeIsConvex)
                     DrawDistanceGrid(canvas, pen, opacity, projectiveMapping, distorter, transformer);
-                
+
+                // Secondary ticks.
+                int start = 1;
+                int end = styleHelper.GridDivisions - 1;
+                float step = planeWidth / styleHelper.GridDivisions;
+                float halfLength = planeHeight / 20.0f;
+                for (int i = start; i <= end; i++)
+                {
+                    float h = step * i;
+                    DrawDistortedLine(canvas, pen, new PointF(h, -halfLength), new PointF(h, halfLength), projectiveMapping, distorter, transformer);
+                    DrawDistortedLine(canvas, pen, new PointF(h, planeHeight - halfLength), new PointF(h, planeHeight + halfLength), projectiveMapping, distorter, transformer);
+                }
+
                 return;
             }
-            
-            // Perspective plane: draw subdivisions in perspective.
-            int start = 0;
-            int end = styleHelper.GridDivisions;
-            int total = styleHelper.GridDivisions;
-
-            // Horizontals
-            for (int i = start; i <= end; i++)
+            else
             {
-                float v = i * (planeHeight / total);
-                DrawDistortedLine(canvas, pen, new PointF(0, v), new PointF(planeWidth, v), projectiveMapping, distorter, transformer);
-            }
+                // Draw vertical and horizontal lines crossing the full grid.
+                int start = 0;
+                int end = styleHelper.GridDivisions;
 
-            // Verticals
-            for (int i = start; i <= end; i++)
-            {
-                float h = i * (planeWidth / total);
-                DrawDistortedLine(canvas, pen, new PointF(h, 0), new PointF(h, planeHeight), projectiveMapping, distorter, transformer);
+                // Horizontals
+                float step = planeHeight / styleHelper.GridDivisions;
+                for (int i = start; i <= end; i++)
+                {
+                    float v = step * i;
+                    DrawDistortedLine(canvas, pen, new PointF(0, v), new PointF(planeWidth, v), projectiveMapping, distorter, transformer);
+                }
+
+                // Verticals
+                step = planeWidth / styleHelper.GridDivisions;
+                for (int i = start; i <= end; i++)
+                {
+                    float h = step * i;
+                    DrawDistortedLine(canvas, pen, new PointF(h, 0), new PointF(h, planeHeight), projectiveMapping, distorter, transformer);
+                }
             }
         }
 
@@ -289,15 +306,20 @@ namespace Kinovea.ScreenManager
             float x = distanceCoord * planeWidth;
             DrawDistortedLine(canvas, pen, new PointF(x, 0), new PointF(x, planeHeight), projectiveMapping, distorter, transformer);
             
-            SolidBrush brushFill = styleHelper.GetBrush(defaultBackgroundAlpha);
-            Brush brushFont = pen.Color.GetBrightness() >= 0.5 ? Brushes.Black : Brushes.White;
+            // If we are zoomed in we are probably adjusting a corner or the distance line,
+            // don't show the measurement markers as they can obstruct important image details during this process.
+            if (transformer.Scale < 2)
+            {
+                SolidBrush brushFill = styleHelper.GetBrush(defaultBackgroundAlpha);
+                Brush brushFont = pen.Color.GetBrightness() > 0.6 ? Brushes.Black : Brushes.White;
 
-            Font font = styleHelper.GetFont(1.0F);
-            foreach (TickMark tick in tickMarks)
-                tick.Draw(canvas, distorter, transformer, brushFill, brushFont as SolidBrush, font, textMargin, true);
+                Font font = styleHelper.GetFont(1.0F);
+                foreach (TickMark tick in tickMarks)
+                    tick.Draw(canvas, distorter, transformer, brushFill, brushFont as SolidBrush, font, textMargin, true);
             
-            font.Dispose();
-            brushFill.Dispose();
+                font.Dispose();
+                brushFill.Dispose();
+            }
         }
 
         /// <summary>
@@ -334,7 +356,7 @@ namespace Kinovea.ScreenManager
             // 1-4: hit a corner.
             // 5: hit the sliding line for the distance grid.
 
-            if (styleHelper.DistanceGrid)
+            if (IsDistanceGrid)
             {
                 // Reverse the mapping to find the location of the line in image space.
                 float h = planeWidth * distanceCoord;
@@ -675,7 +697,7 @@ namespace Kinovea.ScreenManager
             // Update the placement of the six tickmarks.
             tickMarks.Clear();
 
-            if (!styleHelper.DistanceGrid)
+            if (!IsDistanceGrid)
                 return;
 
             Action<float> addTickMarks = (value) => {
@@ -687,9 +709,14 @@ namespace Kinovea.ScreenManager
                 tickMarks.Add(new TickMark(displayValue, pBot, TextAlignment.Bottom));
             };
 
-            addTickMarks(0);
+            // Hide the start/end markers when the sliding line is close to them to avoid overlap.
+            if (distanceCoord > 0.1)
+                addTickMarks(0);
+
             addTickMarks(distanceCoord * planeWidth);
-            addTickMarks(planeWidth);
+            
+            if (distanceCoord < 0.9)
+                addTickMarks(planeWidth);
         }
         public void CalibrationHelper_CalibrationChanged(object sender, EventArgs e)
         {

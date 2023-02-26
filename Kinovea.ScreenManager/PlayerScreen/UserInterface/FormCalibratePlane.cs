@@ -243,12 +243,14 @@ namespace Kinovea.ScreenManager
                 float a = float.Parse(tbA.Text);
                 float b = float.Parse(tbB.Text);
     
+                // Calculate the average pixel size.
                 if (isDistanceGrid)
                 {
                     float worldLength = Math.Abs(a - b);
                     if (worldLength == 0)
                         return;
 
+                    // Average between the near and far side.
                     float ab = GeometryHelper.GetDistance(quadrilateral.A, quadrilateral.B);
                     float cd = GeometryHelper.GetDistance(quadrilateral.C, quadrilateral.D);
                     float pixelLength = (ab + cd) / 2;
@@ -260,7 +262,7 @@ namespace Kinovea.ScreenManager
 
                     string pixelSize = UnitHelper.GetPixelSize(worldLength, pixelLength, unit);
 
-                    lblPrecision.Text = string.Format("Pixel size: {0}.", pixelSize);
+                    lblPrecision.Text = string.Format("Average pixel size: {0}.", pixelSize);
                     lblPrecision.Visible = true;
                 }
                 else
