@@ -269,16 +269,7 @@ namespace Kinovea.ScreenManager
         
         private void ToastZoom()
         {
-            string message = "";
-            if (zoomHelper.Value <= 1.0f)
-                message = string.Format("{0:0}%", Math.Round(zoomHelper.Value * 100));
-            else if (zoomHelper.Value < 10.0f)
-                message = string.Format("{0:0.0}x", Math.Round(zoomHelper.Value, 1));
-            else
-                message = string.Format("{0:0}x", Math.Round(zoomHelper.Value));
-
-            message = string.Format("Zoom:{0}", message);
-
+            string message = string.Format("Zoom:{0}", zoomHelper.GetLabel());
             ToastMessage(message, 750);
         }
         

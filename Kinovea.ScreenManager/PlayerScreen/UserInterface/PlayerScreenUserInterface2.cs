@@ -318,7 +318,7 @@ namespace Kinovea.ScreenManager
         private NativeMethods.TimerCallback m_TimerCallback;
         private ScreenDescriptionPlayback m_LaunchDescription;
         private bool videoFilterIsActive;
-        private const float m_MaxZoomFactor = 6.0F;
+        private ZoomHelper zoomHelper = new ZoomHelper();
         private const int m_MaxRenderingDrops = 6;
         private const int m_MaxDecodingDrops = 6;
         private System.Windows.Forms.Timer m_DeselectionTimer = new System.Windows.Forms.Timer();
@@ -575,7 +575,7 @@ namespace Kinovea.ScreenManager
 
             // Screen position and size.
             m_FrameServer.ImageTransform.SetReferenceSize(m_FrameServer.VideoReader.Info.ReferenceSize);
-            m_FrameServer.ImageTransform.ReinitZoom();
+            m_FrameServer.ImageTransform.ResetZoom();
             SetUpForNewMovie();
             m_KeyframeCommentsHub.UserActivated = false;
 
@@ -921,7 +921,7 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Metadata.ImageSize = m_FrameServer.VideoReader.Info.ReferenceSize;
             m_PointerTool.SetImageSize(m_FrameServer.VideoReader.Info.ReferenceSize);
             m_FrameServer.ImageTransform.SetReferenceSize(m_FrameServer.VideoReader.Info.ReferenceSize);
-            m_FrameServer.ImageTransform.ReinitZoom();
+            m_FrameServer.ImageTransform.ResetZoom();
 
             ResizeUpdate(true);
         }
@@ -1357,13 +1357,13 @@ namespace Kinovea.ScreenManager
                     ForceCurrentFrame(m_FrameServer.Metadata.TimeOrigin, true);
                     break;
                 case PlayerScreenCommands.IncreaseZoom:
-                    IncreaseDirectZoom();
+                    IncreaseDirectZoom(new Point(pbSurfaceScreen.Width / 2, pbSurfaceScreen.Height / 2));
                     break;
                 case PlayerScreenCommands.DecreaseZoom:
-                    DecreaseDirectZoom();
+                    DecreaseDirectZoom(new Point(pbSurfaceScreen.Width / 2, pbSurfaceScreen.Height / 2));
                     break;
                 case PlayerScreenCommands.ResetZoom:
-                    UnzoomDirectZoom(true);
+                    ResetZoom(true);
                     break;
                 case PlayerScreenCommands.IncreaseSyncAlpha:
                     IncreaseSyncAlpha();
@@ -1563,7 +1563,7 @@ namespace Kinovea.ScreenManager
             m_ActiveTool = m_PointerTool;
             SetCursor(m_PointerTool.GetCursor(0));
             DisableMagnifier();
-            UnzoomDirectZoom(false);
+            ResetZoom(false);
             m_FrameServer.Metadata.InitializeEnd(true);
             m_FrameServer.Metadata.StopAllTracking();
             m_FrameServer.Metadata.DeselectAll();
@@ -1773,25 +1773,26 @@ namespace Kinovea.ScreenManager
         public void Common_MouseWheel(object sender, MouseEventArgs e)
         {
             // MouseWheel was recorded on one of the controls.
-            int iScrollOffset = e.Delta * SystemInformation.MouseWheelScrollLines / 120;
+            int steps = e.Delta * SystemInformation.MouseWheelScrollLines / 120;
 
             if ((ModifierKeys & Keys.Control) == Keys.Control)
             {
-                if (iScrollOffset > 0)
-                    IncreaseDirectZoom();
+                if (steps > 0)
+                    IncreaseDirectZoom(e.Location);
                 else
-                    DecreaseDirectZoom();
+                    DecreaseDirectZoom(e.Location);
+                
             }
             else if ((ModifierKeys & Keys.Alt) == Keys.Alt)
             {
-                if (iScrollOffset > 0)
+                if (steps > 0)
                     IncreaseSyncAlpha();
                 else
                     DecreaseSyncAlpha();
             }
             else
             {
-                if (iScrollOffset > 0)
+                if (steps > 0)
                 {
                     buttonGotoNext_Click(null, EventArgs.Empty);
                 }
@@ -3358,19 +3359,19 @@ namespace Kinovea.ScreenManager
                                 // This may not have any effect if we try to move outside the original size and not in "free move" mode.
 
                                 // Get mouse deltas (descaled=in image coords).
-                                double fDeltaX = (double)m_PointerTool.MouseDelta.X;
-                                double fDeltaY = (double)m_PointerTool.MouseDelta.Y;
+                                float dx = m_PointerTool.MouseDelta.X;
+                                float dy = m_PointerTool.MouseDelta.Y;
 
                                 if (m_FrameServer.Metadata.Mirrored)
-                                    fDeltaX = -fDeltaX;
+                                    dx = -dx;
 
                                 if (!videoFilterIsActive || (ModifierKeys & Keys.Control) == Keys.Control)
                                 {
-                                    m_FrameServer.ImageTransform.MoveZoomWindow(fDeltaX, fDeltaY);
+                                    m_FrameServer.ImageTransform.MoveZoomWindow(dx, dy);
                                 }
                                 else
                                 {
-                                    m_FrameServer.Metadata.ActiveVideoFilter.Move((float)fDeltaX, (float)fDeltaY, ModifierKeys);
+                                    m_FrameServer.Metadata.ActiveVideoFilter.Move(dx, dy, ModifierKeys);
                                     DoInvalidate();
                                 }
                             }
@@ -3393,18 +3394,18 @@ namespace Kinovea.ScreenManager
                     if (!bMovingObject)
                     {
                         // Move the whole image.
-                        double fDeltaX = (double)m_PointerTool.MouseDelta.X;
-                        double fDeltaY = (double)m_PointerTool.MouseDelta.Y;
+                        float dx = m_PointerTool.MouseDelta.X;
+                        float dy = m_PointerTool.MouseDelta.Y;
                         if (m_FrameServer.Metadata.Mirrored)
-                            fDeltaX = -fDeltaX;
+                            dx = -dx;
 
                         if (!videoFilterIsActive || (ModifierKeys & Keys.Control) == Keys.Control)
                         {
-                            m_FrameServer.ImageTransform.MoveZoomWindow(fDeltaX, fDeltaY);
+                            m_FrameServer.ImageTransform.MoveZoomWindow(dx, dy);
                         }
                         else
                         {
-                            m_FrameServer.Metadata.ActiveVideoFilter.Move((float)fDeltaX, (float)fDeltaY, ModifierKeys);
+                            m_FrameServer.Metadata.ActiveVideoFilter.Move(dx, dy, ModifierKeys);
                             DoInvalidate();
                         }
                     }
@@ -4340,7 +4341,7 @@ namespace Kinovea.ScreenManager
 
             if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.None)
             {
-                UnzoomDirectZoom(false);
+                ResetZoom(false);
                 m_FrameServer.Metadata.Magnifier.Mode = MagnifierMode.Direct;
                 SetCursor(cursorManager.GetManipulationCursorMagnifier());
 
@@ -4350,7 +4351,7 @@ namespace Kinovea.ScreenManager
             else if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Direct)
             {
                 // Revert to no magnification.
-                UnzoomDirectZoom(false);
+                ResetZoom(false);
                 m_FrameServer.Metadata.Magnifier.Mode = MagnifierMode.None;
                 //btnMagnifier.Image = Drawings.magnifier;
                 SetCursor(m_PointerTool.GetCursor(0));
@@ -4927,35 +4928,40 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region DirectZoom
-        private void UnzoomDirectZoom(bool _toast)
+        private void ResetZoom(bool toast)
         {
-            m_FrameServer.ImageTransform.ReinitZoom();
+            m_FrameServer.ImageTransform.ResetZoom();
             
             m_PointerTool.SetZoomLocation(m_FrameServer.ImageTransform.ZoomWindow.Location);
-            if(_toast)
+            
+            if(toast)
                 ToastZoom();
+
             ReportForSyncMerge();
             ResizeUpdate(true);
         }
-        private void IncreaseDirectZoom()
+        private void IncreaseDirectZoom(Point mouseLocation)
         {
             if (m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.None)
                 DisableMagnifier();
-            
-            m_FrameServer.ImageTransform.Zoom = Math.Min(m_FrameServer.ImageTransform.Zoom + 0.10f, m_MaxZoomFactor);
-            AfterZoomChange();
+
+            zoomHelper.Increase();
+            m_FrameServer.ImageTransform.Zoom = zoomHelper.Value;
+            AfterZoomChange(mouseLocation);
         }
-        private void DecreaseDirectZoom()
+        private void DecreaseDirectZoom(Point mouseLocation)
         {
             if (!m_FrameServer.ImageTransform.Zooming)
                 return;
 
-            m_FrameServer.ImageTransform.Zoom = Math.Max(m_FrameServer.ImageTransform.Zoom - 0.10f, 1.0f);
-            AfterZoomChange();
+            zoomHelper.Decrease();
+            m_FrameServer.ImageTransform.Zoom = zoomHelper.Value;
+            AfterZoomChange(mouseLocation);
         }
-        private void AfterZoomChange()
+        private void AfterZoomChange(Point mouseLocation)
         {
-            m_FrameServer.ImageTransform.UpdateZoomWindow();
+            // Mouse location is given in the system of the picture box control.
+            m_FrameServer.ImageTransform.UpdateZoomWindow(mouseLocation);
             m_PointerTool.SetZoomLocation(m_FrameServer.ImageTransform.ZoomWindow.Location);
             ToastZoom();
             UpdateCursor();
@@ -4967,9 +4973,9 @@ namespace Kinovea.ScreenManager
         #region Toasts
         private void ToastZoom()
         {
+            string message = string.Format("Zoom:{0}", zoomHelper.GetLabel());
             m_MessageToaster.SetDuration(750);
-            int percentage = (int)(m_FrameServer.ImageTransform.Zoom * 100);
-            m_MessageToaster.Show(String.Format(ScreenManagerLang.Toast_Zoom, percentage.ToString()));
+            m_MessageToaster.Show(message);
         }
         private void ToastPause()
         {
