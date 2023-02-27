@@ -78,7 +78,7 @@ namespace Kinovea.ScreenManager
         }
         private void InitializeValues()
         {
-            if(calibrationHelper.IsCalibrated && calibrationHelper.CalibratorType == CalibratorType.Plane)
+            if (calibrationHelper.IsCalibrated && calibrationHelper.CalibratorType == CalibratorType.Plane)
             {
                 SizeF size = calibrationHelper.CalibrationByPlane_GetRectangleSize();
 
@@ -102,16 +102,25 @@ namespace Kinovea.ScreenManager
                     tbA.Text = String.Format("{0:0.00}", size.Height);
                     tbB.Text = String.Format("{0:0.00}", size.Width);
                 }
-                
+
                 cbUnit.SelectedIndex = (int)calibrationHelper.LengthUnit;
             }
-            else
+            else if (isDistanceGrid)
             {
+                // Default values for distance grid.
+                tbA.Text = "0";
+                tbB.Text = "4";
+                cbUnit.SelectedIndex = (int)LengthUnit.Meters;
+            }
+            else
+            { 
+                // Default values for perspective and flat grid.
                 tbA.Text = "100";
                 tbB.Text = "100";
                 cbUnit.SelectedIndex = (int)LengthUnit.Centimeters;
             }
 
+            // Help text.
             if (isDistanceGrid)
             {
                 lblSeparator.Text = ",";
@@ -122,7 +131,6 @@ namespace Kinovea.ScreenManager
                 lblSeparator.Text = "×";
                 lblHelpText.Text = "Enter the length of each side.";
             }
-
 
             // Prepare drawing.
             RectangleF bbox = quadrilateral.GetBoundingBox();
@@ -199,13 +207,13 @@ namespace Kinovea.ScreenManager
                     {
                         offset = a;
                         leftToRight = true;
-                        size = new SizeF(b - a, 100);
+                        size = new SizeF(b - a, 1);
                     }
                     else
                     {
                         offset = b;
                         leftToRight = false;
-                        size = new SizeF(a - b, 100);
+                        size = new SizeF(a - b, 1);
                     }
                 }
                 else
