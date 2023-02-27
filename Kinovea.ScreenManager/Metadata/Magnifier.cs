@@ -56,13 +56,29 @@ namespace Kinovea.ScreenManager
         public Point Center {
             get { return source.Rectangle.Center(); }
         }
+
+        /// <summary>
+        /// Area of the image being magnified.
+        /// </summary>
+        public Rectangle Source 
+        {
+            get { return source.Rectangle; }
+        }
+
+        /// <summary>
+        /// Area where we paint the magnified version of the source rectangle.
+        /// </summary>
+        public RectangleF Destination
+        {
+            get { return insert; }
+        }
         #endregion
         
         #region Members
         private Guid id = Guid.NewGuid();
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
         private BoundingBox source = new BoundingBox();   // Wrapper for the region of interest in the original image.
-        private RectangleF insert;                         // The location and size of the insert window, where we paint the region of interest magnified.
+        private RectangleF insert;                        // The location and size of the insert window, where we paint the region of interest magnified.
         private MagnifierMode mode;
         private PointF sourceLastLocation;
         private PointF insertLastLocation;
@@ -90,18 +106,20 @@ namespace Kinovea.ScreenManager
         {
             // The bitmap passed in is the image decoded, so it might be at a different size than the original image size.
             // We also need to take mirroring into account (until it's included in the ImageTransform).
-            
+
             double scaleX = (double)bitmap.Size.Width / originalSize.Width;
             double scaleY = (double)bitmap.Size.Height / originalSize.Height;
             Rectangle scaledSource = source.Rectangle.Scale(scaleX, scaleY);
-            
+
             Rectangle src;
-            if(mirrored)
+            if (mirrored)
                 src = new Rectangle(bitmap.Width - scaledSource.Left, scaledSource.Top, -scaledSource.Width, scaledSource.Height);
             else
                 src = scaledSource;
-            
+
             canvas.DrawImage(bitmap, imageTransform.Transform(insert), src, GraphicsUnit.Pixel);
+            
+            // Border.
             canvas.DrawRectangle(Pens.White, imageTransform.Transform(insert));
         }
         public void InitializeCommit(PointF location)
@@ -154,8 +172,13 @@ namespace Kinovea.ScreenManager
         {
             return HitTest(location, transformer) >= 0;
         }
-        public int HitTest(PointF point, ImageTransform transformer)
+        private int HitTest(PointF point, ImageTransform transformer)
         {
+            // Mapping:
+            // 0: the source rectangle.
+            // 1-4: the corners of the source rectangle.
+            // 5: the target rendering area.
+
             int result = -1;
             if(insert.Contains(point))
                 result = 5;

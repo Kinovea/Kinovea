@@ -3554,7 +3554,7 @@ namespace Kinovea.ScreenManager
                 }
                 catch (System.InvalidOperationException)
                 {
-                    log.Error("Error while painting image. Object is currently in use elsewhere. ATI Drivers ?");
+                    log.Error("Error while painting image. Object is currently in use elsewhere.");
                 }
                 catch (Exception)
                 {
@@ -3685,7 +3685,7 @@ namespace Kinovea.ScreenManager
             if ((m_bIsCurrentlyPlaying && PreferencesManager.PlayerPreferences.DrawOnPlay) || !m_bIsCurrentlyPlaying)
             {
                 FlushDrawingsOnGraphics(g, _transform, _iKeyFrameIndex, _iPosition);
-                FlushMagnifierOnGraphics(_sourceImage, g, _transform);
+                FlushMagnifierOnGraphics(_sourceImage, g, _transform, _iKeyFrameIndex, _iPosition);
             }
         }
         private void FlushDrawingsOnGraphics(Graphics canvas, ImageTransform transformer, int keyFrameIndex, long timestamp)
@@ -3752,12 +3752,36 @@ namespace Kinovea.ScreenManager
                 // Hence, there is no drawings to draw here.
             }
         }
-        private void FlushMagnifierOnGraphics(Bitmap currentImage, Graphics canvas, ImageTransform transform)
+        private void FlushMagnifierOnGraphics(Bitmap currentImage, Graphics canvas, ImageTransform transform, int keyFrameIndex, long timestamp)
         {
             // Note: the Graphics object must not be the one extracted from the image itself.
             // If needed, clone the image.
             if (currentImage != null && m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.None)
+            {
                 m_FrameServer.Metadata.Magnifier.Draw(currentImage, canvas, transform, m_FrameServer.Metadata.Mirrored, m_FrameServer.VideoReader.Info.ReferenceSize);
+
+                // Redraw the annotations on the magnifier mini canvas.
+                float invStretch = (float)(1.0f / transform.Stretch);
+                float stretch = (float)transform.Stretch;
+
+                PointF destLocation = m_FrameServer.Metadata.Magnifier.Destination.Location;
+                SizeF destSize = m_FrameServer.Metadata.Magnifier.Destination.Size;
+                Point srcLocation = m_FrameServer.Metadata.Magnifier.Source.Location;
+                float zoom = (float)m_FrameServer.Metadata.Magnifier.MagnificationFactor;
+
+                canvas.ScaleTransform(stretch, stretch);
+
+                canvas.SetClip(new Rectangle(destLocation.ToPoint(), destSize.ToSize()));
+                canvas.TranslateTransform(destLocation.X, destLocation.Y);
+                canvas.ScaleTransform(zoom, zoom);
+                canvas.TranslateTransform(- srcLocation.X, -srcLocation.Y);
+                
+                canvas.ScaleTransform(invStretch, invStretch);
+
+                FlushDrawingsOnGraphics(canvas, transform, keyFrameIndex, timestamp);
+                canvas.ResetTransform();
+                canvas.ResetClip();
+            }
         }
         public void DoInvalidate()
         {
