@@ -35,25 +35,26 @@ namespace Kinovea.ScreenManager
         // TODO: save positions in the KVA.
         // TODO: support for rendering unscaled.
         
-        public static readonly double[] MagnificationFactors = new double[]{1.50, 1.75, 2.0, 2.25, 2.5};
-        
         #region Events
         public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved; 
         #endregion
         
         #region Properties
-        public MagnifierMode Mode {
+        public MagnifierMode Mode 
+        {
             get { return mode; }
             set { mode = value; }
         }
-        public double MagnificationFactor {
-            get { return magnificationFactor; }
-            set { 
-                magnificationFactor = value;
-                ResizeInsert();
-            }
+
+        /// <summary>
+        /// Current magnification level.
+        /// </summary>
+        public float Zoom 
+        {
+            get { return zoom; }
         }
-        public Point Center {
+        public Point Center 
+        {
             get { return source.Rectangle.Center(); }
         }
 
@@ -70,29 +71,63 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public RectangleF Destination
         {
-            get { return insert; }
+            get { return destination; }
+        }
+
+        /// <summary>
+        /// List of context menus specific to the magnifier.
+        /// </summary>
+        public List<ToolStripMenuItem> ContextMenu 
+        { 
+            get 
+            {
+                return contextMenu;
+            }
         }
         #endregion
-        
+
         #region Members
         private Guid id = Guid.NewGuid();
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
-        private BoundingBox source = new BoundingBox();   // Wrapper for the region of interest in the original image.
-        private RectangleF insert;                        // The location and size of the insert window, where we paint the region of interest magnified.
+        private BoundingBox source = new BoundingBox();         // Wrapper for the region of interest in the original image.
+        private RectangleF destination;                         // Where we paint the magnified region.
         private MagnifierMode mode;
-        private PointF sourceLastLocation;
-        private PointF insertLastLocation;
+        private PointF srcLastLocation;
+        private PointF dstLastLocation;
         private int hitHandle = -1;
-        private double magnificationFactor = MagnificationFactors[1];
+        private float zoom = 2.0f;
+        private static readonly float[] ZoomFactors = new float[] { 1.0f, 1.50f, 2.0f, 4.0f };
+
+        private List<ToolStripMenuItem> contextMenu = new List<ToolStripMenuItem>();
         #endregion
-       
+
         #region Constructor
         public Magnifier()
         {
             ResetData();
+
+            foreach (float factor in ZoomFactors)
+            {
+                ToolStripMenuItem mnu = new ToolStripMenuItem();
+                mnu.Text = string.Format("{0:0.0}x", factor);
+                mnu.Click += (s, e) => {
+                    foreach (var m in contextMenu) 
+                        m.Checked = false;
+
+                    zoom = factor;
+                    ResizeDestination();
+                    mnu.Checked = true;
+                    InvalidateFromMenu(s);
+                };
+
+                mnu.Checked = factor == zoom;
+                contextMenu.Add(mnu);
+            }
+
+            ResizeDestination();
         }
         #endregion
-       
+
         #region Public interface
         public void Draw(Bitmap bitmap, Graphics canvas, ImageTransform imageTransform, bool mirrored, Size originalSize)
         {
@@ -100,28 +135,24 @@ namespace Kinovea.ScreenManager
                 return;
             
             source.Draw(canvas, imageTransform.Transform(source.Rectangle), Pens.White, (SolidBrush)Brushes.White, 4);
-            DrawInsert(bitmap, canvas, imageTransform, mirrored, originalSize);
+            DrawDestination(bitmap, canvas, imageTransform, mirrored, originalSize);
         }
-        private void DrawInsert(Bitmap bitmap, Graphics canvas, ImageTransform imageTransform, bool mirrored, Size originalSize)
+        private void DrawDestination(Bitmap bitmap, Graphics canvas, ImageTransform imageTransform, bool mirrored, Size originalSize)
         {
             // The bitmap passed in is the image decoded, so it might be at a different size than the original image size.
             // We also need to take mirroring into account (until it's included in the ImageTransform).
 
             double scaleX = (double)bitmap.Size.Width / originalSize.Width;
             double scaleY = (double)bitmap.Size.Height / originalSize.Height;
-            Rectangle scaledSource = source.Rectangle.Scale(scaleX, scaleY);
+            Rectangle srcRect = source.Rectangle.Scale(scaleX, scaleY);
 
-            Rectangle src;
             if (mirrored)
-                src = new Rectangle(bitmap.Width - scaledSource.Left, scaledSource.Top, -scaledSource.Width, scaledSource.Height);
-            else
-                src = scaledSource;
-
-            canvas.DrawImage(bitmap, imageTransform.Transform(insert), src, GraphicsUnit.Pixel);
+                srcRect = new Rectangle(bitmap.Width - srcRect.Left, srcRect.Top, -srcRect.Width, srcRect.Height);
             
-            // Border.
-            canvas.DrawRectangle(Pens.White, imageTransform.Transform(insert));
+            canvas.DrawImage(bitmap, imageTransform.Transform(destination), srcRect, GraphicsUnit.Pixel);
+            canvas.DrawRectangle(Pens.White, imageTransform.Transform(destination));
         }
+
         public void InitializeCommit(PointF location)
         {
             if(Mode == MagnifierMode.Direct)
@@ -134,8 +165,8 @@ namespace Kinovea.ScreenManager
             // Hence, we keep the last location here and recompute the deltas locally.
             if(mode == MagnifierMode.Direct || hitHandle == 0)
             {
-                source.Move(location.X - sourceLastLocation.X, location.Y - sourceLastLocation.Y);
-                sourceLastLocation = location;
+                source.Move(location.X - srcLastLocation.X, location.Y - srcLastLocation.Y);
+                srcLastLocation = location;
                 points["0"] = source.Rectangle.Center();
                 SignalTrackablePointMoved();
             }
@@ -143,13 +174,13 @@ namespace Kinovea.ScreenManager
             {
                 source.MoveHandle(location, hitHandle, Size.Empty, false);
                 points["0"] = source.Rectangle.Center();
-                ResizeInsert();
+                ResizeDestination();
                 SignalTrackablePointMoved();
             }
             else if(hitHandle == 5)
             {
-                insert = new RectangleF(insert.X + (location.X - insertLastLocation.X), insert.Y + (location.Y - insertLastLocation.Y), insert.Width, insert.Height);
-                insertLastLocation = location;
+                destination = new RectangleF(destination.X + (location.X - dstLastLocation.X), destination.Y + (location.Y - dstLastLocation.Y), destination.Width, destination.Height);
+                dstLastLocation = location;
             }
 
             return false;
@@ -162,9 +193,9 @@ namespace Kinovea.ScreenManager
             hitHandle = HitTest(location, transformer);
             
             if(hitHandle == 0)
-                sourceLastLocation = location;
+                srcLastLocation = location;
             else if(hitHandle == 5)
-                insertLastLocation = location;
+                dstLastLocation = location;
 
             return hitHandle >= 0;
         }
@@ -180,7 +211,7 @@ namespace Kinovea.ScreenManager
             // 5: the target rendering area.
 
             int result = -1;
-            if(insert.Contains(point))
+            if(destination.Contains(point))
                 result = 5;
             else
                 result = source.HitTest(point, transformer);
@@ -191,12 +222,34 @@ namespace Kinovea.ScreenManager
         {
             points["0"] = PointF.Empty;
             source.Rectangle = points["0"].Box(50).ToRectangle();
-            insert = new RectangleF(10, 10, (float)(source.Rectangle.Width * magnificationFactor), (float)(source.Rectangle.Height * magnificationFactor));
+            destination = new RectangleF(10, 10, (float)(source.Rectangle.Width * zoom), (float)(source.Rectangle.Height * zoom));
             
-            sourceLastLocation = points["0"];
-            insertLastLocation = points["0"];
+            srcLastLocation = points["0"];
+            dstLastLocation = points["0"];
             
             mode = MagnifierMode.None;
+        }
+
+        /// <summary>
+        /// Transform the canvas where the magnifier is drawn, into the mini canvas with only the magnified area.
+        /// This is used to paint the drawings on top of the magnified area.
+        /// </summary>
+        public void TransformCanvas(Graphics canvas, ImageTransform transform)
+        {
+            float invStretch = (float)(1.0f / transform.Stretch);
+            float stretch = (float)transform.Stretch;
+
+            canvas.ScaleTransform(stretch, stretch);
+
+            // Account for the border.
+            Rectangle clip = new RectangleF(destination.X + 2, destination.Y + 2, destination.Width - 4, destination.Height - 4).ToRectangle();
+
+            canvas.SetClip(clip);
+            canvas.TranslateTransform(destination.X, destination.Y);
+            canvas.ScaleTransform(zoom, zoom);
+            canvas.TranslateTransform(-source.X, -source.Y);
+
+            canvas.ScaleTransform(invStretch, invStretch);
         }
         #endregion
         
@@ -238,9 +291,24 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-        private void ResizeInsert()
+        private void ResizeDestination()
         {
-            insert = new RectangleF(insert.Left, insert.Top, (float)(source.Rectangle.Width * magnificationFactor), (float)(source.Rectangle.Height * magnificationFactor));
+            destination = new RectangleF(destination.Left, destination.Top, (float)(source.Rectangle.Width * zoom), (float)(source.Rectangle.Height * zoom));
+        }
+
+        private void InvalidateFromMenu(object sender)
+        {
+            // Update the main viewport.
+            // The screen hook was injected inside the menu.
+            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
+            if (tsmi == null)
+                return;
+
+            IDrawingHostView host = tsmi.Tag as IDrawingHostView;
+            if (host == null)
+                return;
+
+            host.InvalidateFromMenu();
         }
     }
     

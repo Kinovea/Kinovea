@@ -372,7 +372,6 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuConfigureTrajectory = new ToolStripMenuItem();
 
         private ContextMenuStrip popMenuMagnifier = new ContextMenuStrip();
-        private List<ToolStripMenuItem> maginificationMenus = new List<ToolStripMenuItem>();
         private ToolStripMenuItem mnuMagnifierTrack = new ToolStripMenuItem();
         private ToolStripMenuItem mnuMagnifierDirect = new ToolStripMenuItem();
         private ToolStripMenuItem mnuMagnifierQuit = new ToolStripMenuItem();
@@ -1109,8 +1108,9 @@ namespace Kinovea.ScreenManager
         private void BuildContextMenus()
         {
             // Attach the event handlers and build the menus.
+            // Depending on the context, more menus are added and configured on the fly in SurfaceScreen_RightDown.
 
-            // 1. Default context menu.
+            // Background context menu.
             mnuTimeOrigin.Click += mnuTimeOrigin_Click;
             mnuTimeOrigin.Image = Properties.Resources.marker;
             mnuDirectTrack.Click += mnuDirectTrack_Click;
@@ -1150,7 +1150,7 @@ namespace Kinovea.ScreenManager
                 mnuCloseScreen
             });
 
-            // 2. Drawings context menu (Configure, Delete, Track this)
+            // Drawings context menu (Configure, Delete, Tracking)
             mnuConfigureDrawing.Click += new EventHandler(mnuConfigureDrawing_Click);
             mnuConfigureDrawing.Image = Properties.Drawings.configure;
             mnuSetStyleAsDefault.Click += new EventHandler(mnuSetStyleAsDefault_Click);
@@ -1184,7 +1184,6 @@ namespace Kinovea.ScreenManager
             mnuDrawingTrackingStop.Click += mnuDrawingTrackingToggle_Click;
             mnuDrawingTrackingStop.Image = Properties.Drawings.trackstop;
             mnuDrawingTracking.Image = Properties.Drawings.track;
-            //mnuDrawingTracking.DropDownItems.AddRange(new ToolStripItem[] { mnuDrawingTrackingConfigure, new ToolStripSeparator(), mnuDrawingTrackingStart, mnuDrawingTrackingStop, new ToolStripSeparator(), mnuDrawingTrackingShowNotTracked });
             mnuDrawingTracking.DropDownItems.AddRange(new ToolStripItem[] { mnuDrawingTrackingStart, mnuDrawingTrackingStop });
 
             mnuCutDrawing.Click += new EventHandler(mnuCutDrawing_Click);
@@ -1194,7 +1193,7 @@ namespace Kinovea.ScreenManager
             mnuDeleteDrawing.Click += new EventHandler(mnuDeleteDrawing_Click);
             mnuDeleteDrawing.Image = Properties.Drawings.delete;
 
-            // 3. Tracking pop menu (Restart, Stop tracking)
+            // Tracking pop menu (Restart, Stop tracking)
             mnuStopTracking.Click += new EventHandler(mnuStopTracking_Click);
             mnuStopTracking.Visible = false;
             mnuStopTracking.Image = Properties.Drawings.trackstop;
@@ -1207,19 +1206,13 @@ namespace Kinovea.ScreenManager
             mnuConfigureTrajectory.Click += new EventHandler(mnuConfigureTrajectory_Click);
             mnuConfigureTrajectory.Image = Properties.Drawings.configure;
 
-            // 5. Magnifier
-            foreach (double factor in Magnifier.MagnificationFactors)
-                maginificationMenus.Add(CreateMagnificationMenu(factor));
-            maginificationMenus[1].Checked = true;
-            popMenuMagnifier.Items.AddRange(maginificationMenus.ToArray());
-
+            // Magnifier
             mnuMagnifierTrack.Click += mnuMagnifierTrack_Click;
             mnuMagnifierTrack.Image = Properties.Drawings.track;
             mnuMagnifierDirect.Click += mnuMagnifierDirect_Click;
             mnuMagnifierDirect.Image = Properties.Resources.arrow_out;
             mnuMagnifierQuit.Click += mnuMagnifierQuit_Click;
             mnuMagnifierQuit.Image = Properties.Resources.hide;
-            popMenuMagnifier.Items.AddRange(new ToolStripItem[] { new ToolStripSeparator(), mnuMagnifierTrack, new ToolStripSeparator(), mnuMagnifierDirect, mnuMagnifierQuit });
 
             // The right context menu and its content will be choosen upon MouseDown.
             panelCenter.ContextMenuStrip = popMenu;
@@ -1228,14 +1221,6 @@ namespace Kinovea.ScreenManager
             ReloadMenusCulture();
         }
 
-        private ToolStripMenuItem CreateMagnificationMenu(double magnificationFactor)
-        {
-            ToolStripMenuItem mnu = new ToolStripMenuItem();
-            mnu.Tag = magnificationFactor;
-            mnu.Text = String.Format(ScreenManagerLang.mnuMagnification, magnificationFactor.ToString());
-            mnu.Click += mnuMagnifierChangeMagnification;
-            return mnu;
-        }
         private void PostLoad_Idle(object sender, EventArgs e)
         {
             Application.Idle -= PostLoad_Idle;
@@ -2663,7 +2648,7 @@ namespace Kinovea.ScreenManager
             // Reload the text for each menu.
             // this is done at construction time and at RefreshUICulture time.
 
-            // 1. Default context menu.
+            // Background context menu.
             mnuTimeOrigin.Text = ScreenManagerLang.mnuMarkTimeAsOrigin;
             mnuDirectTrack.Text = ScreenManagerLang.mnuTrackTrajectory;
             mnuPasteDrawing.Text = ScreenManagerLang.mnuPasteDrawing;
@@ -2681,7 +2666,7 @@ namespace Kinovea.ScreenManager
             mnuCloseScreen.Text = ScreenManagerLang.mnuCloseScreen;
             mnuCloseScreen.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.Close);
 
-            // 2. Drawings context menu.
+            // Drawings context menu.
             mnuConfigureDrawing.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
             mnuSetStyleAsDefault.Text = ScreenManagerLang.mnuSetStyleAsDefault;
             mnuVisibility.Text = ScreenManagerLang.Generic_Visibility;
@@ -2702,7 +2687,7 @@ namespace Kinovea.ScreenManager
             mnuDrawingTrackingStart.Text = ScreenManagerLang.mnuDrawingTrackingStart;
             mnuDrawingTrackingStop.Text = ScreenManagerLang.mnuDrawingTrackingStop;
 
-            // 3. Tracking pop menu (Restart, Stop tracking)
+            // Tracking pop menu (Restart, Stop tracking)
             mnuStopTracking.Text = ScreenManagerLang.mnuStopTracking;
             mnuRestartTracking.Text = ScreenManagerLang.mnuRestartTracking;
             mnuDeleteTrajectory.Text = ScreenManagerLang.mnuDeleteTrajectory;
@@ -2710,12 +2695,7 @@ namespace Kinovea.ScreenManager
             mnuDeleteEndOfTrajectory.Text = ScreenManagerLang.mnuDeleteEndOfTrajectory;
             mnuConfigureTrajectory.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
 
-            // 5. Magnifier
-            foreach (ToolStripMenuItem m in maginificationMenus)
-            {
-                double factor = (double)m.Tag;
-                m.Text = String.Format(ScreenManagerLang.mnuMagnification, factor.ToString());
-            }
+            // Magnifier.
             mnuMagnifierTrack.Text = ScreenManagerLang.mnuTrackTrajectory;
             mnuMagnifierDirect.Text = ScreenManagerLang.mnuMagnifierDirect;
             mnuMagnifierQuit.Text = ScreenManagerLang.mnuMagnifierQuit;
@@ -2755,7 +2735,6 @@ namespace Kinovea.ScreenManager
             toolTips.SetToolTip(btnTimeOrigin, ScreenManagerLang.mnuMarkTimeAsOrigin);
 
             toolTips.SetToolTip(lblTimeCode, ScreenManagerLang.lblTimeCode_Text);
-            //toolTips.SetToolTip(lblSpeedTuner, ScreenManagerLang.lblSpeedTuner_Text);
             toolTips.SetToolTip(lblSpeedTuner, "Speed");
             toolTips.SetToolTip(sldrSpeed, "Speed");
             toolTips.SetToolTip(lblSelStartSelection, ScreenManagerLang.lblSelStartSelection_Text);
@@ -3096,6 +3075,15 @@ namespace Kinovea.ScreenManager
             else if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Indirect &&
                      m_FrameServer.Metadata.Magnifier.IsOnObject(m_DescaledMouse, m_FrameServer.Metadata.ImageTransform))
             {
+                PrepareMagnifierContextMenu(popMenuMagnifier);
+                
+                popMenuMagnifier.Items.AddRange(new ToolStripItem[] { 
+                    new ToolStripSeparator(), 
+                    mnuMagnifierTrack, 
+                    new ToolStripSeparator(), 
+                    mnuMagnifierDirect, 
+                    mnuMagnifierQuit });
+
                 mnuMagnifierTrack.Checked = ToggleTrackingCommand.CurrentState(m_FrameServer.Metadata.Magnifier);
                 panelCenter.ContextMenuStrip = popMenuMagnifier;
             }
@@ -3258,7 +3246,27 @@ namespace Kinovea.ScreenManager
 
             return true;
         }
-        
+
+        private void PrepareMagnifierContextMenu(ContextMenuStrip popMenu)
+        {
+            popMenu.Items.Clear();
+            Magnifier magnifier = m_FrameServer.Metadata.Magnifier;
+
+            foreach (ToolStripItem tsmi in magnifier.ContextMenu)
+            {
+                ToolStripMenuItem menuItem = tsmi as ToolStripMenuItem;
+
+                // Inject dependency on the UI for invalidation.
+                tsmi.Tag = this;
+                if (menuItem != null && menuItem.DropDownItems.Count > 0)
+                {
+                    foreach (ToolStripItem subMenu in menuItem.DropDownItems)
+                        subMenu.Tag = this;
+                }
+
+                popMenu.Items.Add(tsmi);
+            }
+        }
         private void PrepareFilterContextMenu(IVideoFilter filter, ContextMenuStrip popMenu)
         {
             popMenu.Items.Clear();
@@ -3763,23 +3771,7 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Metadata.Magnifier.Draw(currentImage, canvas, transform, m_FrameServer.Metadata.Mirrored, m_FrameServer.VideoReader.Info.ReferenceSize);
 
             // Redraw the annotations on top of the magnified area.
-            float invStretch = (float)(1.0f / transform.Stretch);
-            float stretch = (float)transform.Stretch;
-
-            PointF destLocation = m_FrameServer.Metadata.Magnifier.Destination.Location;
-            SizeF destSize = m_FrameServer.Metadata.Magnifier.Destination.Size;
-            Point srcLocation = m_FrameServer.Metadata.Magnifier.Source.Location;
-            float zoom = (float)m_FrameServer.Metadata.Magnifier.MagnificationFactor;
-
-            canvas.ScaleTransform(stretch, stretch);
-
-            canvas.SetClip(new Rectangle(destLocation.ToPoint(), destSize.ToSize()));
-            canvas.TranslateTransform(destLocation.X, destLocation.Y);
-            canvas.ScaleTransform(zoom, zoom);
-            canvas.TranslateTransform(- srcLocation.X, -srcLocation.Y);
-                
-            canvas.ScaleTransform(invStretch, invStretch);
-
+            m_FrameServer.Metadata.Magnifier.TransformCanvas(canvas, transform);
             FlushDrawingsOnGraphics(canvas, transform, keyFrameIndex, timestamp);
             canvas.ResetTransform();
             canvas.ResetClip();
@@ -4911,26 +4903,12 @@ namespace Kinovea.ScreenManager
         {
             // Use position and magnification to Direct Zoom.
             // Go to direct zoom, at magnifier zoom factor, centered on same point as magnifier.
-            m_FrameServer.ImageTransform.Zoom = m_FrameServer.Metadata.Magnifier.MagnificationFactor;
+            m_FrameServer.ImageTransform.Zoom = m_FrameServer.Metadata.Magnifier.Zoom;
             m_FrameServer.ImageTransform.UpdateZoomWindow(m_FrameServer.Metadata.Magnifier.Center);
             DisableMagnifier();
             ToastZoom();
             
             ResizeUpdate(true);
-        }
-        private void mnuMagnifierChangeMagnification(object sender, EventArgs e)
-        {
-            ToolStripMenuItem menu = sender as ToolStripMenuItem;
-            if(menu == null)
-                return;
-            
-            foreach(ToolStripMenuItem m in maginificationMenus)
-                m.Checked = false;
-            
-            menu.Checked = true;
-            
-            m_FrameServer.Metadata.Magnifier.MagnificationFactor = (double)menu.Tag;
-            DoInvalidate();
         }
         private void mnuMagnifierTrack_Click(object sender, EventArgs e)
         {

@@ -195,34 +195,38 @@ namespace Kinovea.ScreenManager
         public void UpdateZoomWindow(Point pivotSurface)
         {
             // All computations are done in UV space.
-            
             RectangleF zoomWindowUVInImage = new RectangleF(
-                (float)directZoomWindow.Left / referenceSize.Width,
-                (float)directZoomWindow.Top / referenceSize.Height,
+                (float)(directZoomWindow.Left + 0.5f) / referenceSize.Width,
+                (float)(directZoomWindow.Top + 0.5f) / referenceSize.Height,
                 (float)directZoomWindow.Width / referenceSize.Width,
                 (float)directZoomWindow.Height / referenceSize.Height);
 
+            Size containerSize = new SizeF(referenceSize.Width * stretch, referenceSize.Height * stretch).ToSize();
             PointF pivotUVInZoomWindow = new PointF(
-                pivotSurface.X / stretch / referenceSize.Width, 
-                pivotSurface.Y / stretch / referenceSize.Height);
+                (pivotSurface.X + 0.5f) / containerSize.Width, 
+                (pivotSurface.Y + 0.5f) / containerSize.Height);
 
             PointF pivotUVInImage = new PointF(
                 zoomWindowUVInImage.Left + pivotUVInZoomWindow.X * zoomWindowUVInImage.Width,
                 zoomWindowUVInImage.Top + pivotUVInZoomWindow.Y * zoomWindowUVInImage.Height
             );
 
-            float newSizeUV = 1.0f / zoom;
-            
+            // This must be aligned to the pixel boundaries, not just (1.0/zoom).
+            SizeF newSizeUV = new SizeF(
+                (float)Math.Floor(referenceSize.Width / zoom) / referenceSize.Width,
+                (float)Math.Floor(referenceSize.Width / zoom) / referenceSize.Height
+            );
+
             PointF newTopLeftUV = new PointF(
-                pivotUVInImage.X - pivotUVInZoomWindow.X * newSizeUV,
-                pivotUVInImage.Y - pivotUVInZoomWindow.Y * newSizeUV
+                pivotUVInImage.X - pivotUVInZoomWindow.X * newSizeUV.Width,
+                pivotUVInImage.Y - pivotUVInZoomWindow.Y * newSizeUV.Height
             );
 
             directZoomWindow = new RectangleF(
-                newTopLeftUV.X * referenceSize.Width,
-                newTopLeftUV.Y * referenceSize.Height,
-                newSizeUV * referenceSize.Width,
-                newSizeUV * referenceSize.Height
+                newTopLeftUV.X * referenceSize.Width - 0.5f,
+                newTopLeftUV.Y * referenceSize.Height - 0.5f,
+                newSizeUV.Width * referenceSize.Width,
+                newSizeUV.Height * referenceSize.Height
             ).ToRectangle();
 
             directZoomWindow.Location = ConfineZoomWindow(directZoomWindow, referenceSize);

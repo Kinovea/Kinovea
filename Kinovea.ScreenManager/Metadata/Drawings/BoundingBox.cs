@@ -41,6 +41,17 @@ namespace Kinovea.ScreenManager
             get { return rectangle; }
             set { rectangle = value; }
         }
+
+        public int X
+        {
+            get { return rectangle.X; }
+        }
+
+        public int Y
+        {
+            get { return rectangle.Y; }
+        }
+
         public int ContentHash
         {
             get

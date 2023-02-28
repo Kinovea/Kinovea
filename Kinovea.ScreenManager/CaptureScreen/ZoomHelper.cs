@@ -68,9 +68,9 @@ namespace Kinovea.ScreenManager
         /// Returns the zoom value as a string, 
         /// using percentage for values less than 1x and multiplier for above 1x.
         /// </summary>
-        public string GetLabel()
+        public string GetLabel(float stretch = 1.0f)
         {
-            float logValue = Map(linearValue);
+            float logValue = Map(linearValue) * stretch;
             string label = "";
             if (logValue <= 1.0f)
                 label = string.Format("{0:0}%", Math.Round(logValue * 100));

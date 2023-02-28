@@ -150,6 +150,9 @@ namespace Kinovea.ScreenManager
 
         public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
+            if (!Visible)
+                return -1;
+
             bool hit = false;
             foreach (var pair in gridLines)
             {
