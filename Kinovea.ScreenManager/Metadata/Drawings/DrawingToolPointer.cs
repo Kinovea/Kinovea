@@ -36,8 +36,6 @@ namespace Kinovea.ScreenManager
             Chrono,  
             Drawing,
             ExtraDrawing,
-            Grid,
-            Plane
         }
         #endregion
         
@@ -85,7 +83,7 @@ namespace Kinovea.ScreenManager
         #region Members
         //--------------------------------------------------------------------
         // We do not keep the strecth/zoom factor here.
-        // All coordinates must be given already descaled to image coordinates.
+        // All coordinates must be given in image coordinates.
         //--------------------------------------------------------------------
         private ManipulationType manipulationType;
         private SelectedObjectType selectedObjectType;
@@ -133,8 +131,8 @@ namespace Kinovea.ScreenManager
             // When we later pass in the MouseMove function, we will have the right ManipulationType set
             // and we will be able to do the right thing.
             //
-            // We give priority to Keyframes Drawings because they can be moved...
-            // If a Drawing is under a Trajectory or Chrono, we have to be able to move it around...
+            // We give priority to Keyframes Drawings because they can be moved.
+            // If a Drawing is under a Trajectory or Chrono, we have to be able to move it around.
             //--------------------------------------------------------------------------------------
 
             manipulationType = ManipulationType.None;
@@ -258,7 +256,7 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-        #region Helpers
+        #region Objects hit testing
         private bool IsOnDrawing(Metadata metadata, int activeKeyFrameIndex, PointF mouseCoordinates, long currentTimeStamp, bool allFrames)
         {
             if (metadata.Keyframes.Count == 0)
@@ -427,6 +425,9 @@ namespace Kinovea.ScreenManager
 
             return isOnDrawing;
         }
+        #endregion
+
+        #region Helpers
         private void SetupHandCursors()
         {
             // Hand cursor.

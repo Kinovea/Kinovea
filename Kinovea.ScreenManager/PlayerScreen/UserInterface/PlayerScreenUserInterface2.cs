@@ -2800,17 +2800,6 @@ namespace Kinovea.ScreenManager
         }
         private void SurfaceScreen_LeftDown()
         {
-            bool hitMagnifier = false;
-            if (m_ActiveTool == m_PointerTool)
-            {
-                hitMagnifier = m_FrameServer.Metadata.Magnifier.OnMouseDown(m_DescaledMouse, m_FrameServer.Metadata.ImageTransform);
-                if (hitMagnifier)
-                    SetCursor(cursorManager.GetManipulationCursorMagnifier());
-            }
-
-            if (hitMagnifier)
-                return;
-
             if (m_bIsCurrentlyPlaying)
             {
                 // MouseDown while playing: pause the video.
@@ -2834,8 +2823,18 @@ namespace Kinovea.ScreenManager
                 {
                     SetCursor(m_PointerTool.GetCursor(1));
 
-                    if (videoFilterIsActive)
-                        m_FrameServer.Metadata.ActiveVideoFilter.StartMove(m_DescaledMouse);
+                    bool hitMagnifier = false;
+                    if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Active)
+                    {
+                        hitMagnifier = m_FrameServer.Metadata.Magnifier.OnMouseDown(m_DescaledMouse, m_FrameServer.Metadata.ImageTransform);
+                    }
+
+                    if (!hitMagnifier)
+                    {
+                        if (videoFilterIsActive)
+                            m_FrameServer.Metadata.ActiveVideoFilter.StartMove(m_DescaledMouse);
+                    }
+
                 }
             }
             else if (m_ActiveTool == ToolManager.Tools["Spotlight"])
@@ -2882,8 +2881,17 @@ namespace Kinovea.ScreenManager
             {
                 SetCursor(m_PointerTool.GetCursor(1));
 
-                if (videoFilterIsActive)
-                    m_FrameServer.Metadata.ActiveVideoFilter.StartMove(m_DescaledMouse);
+                bool hitMagnifier = false;
+                if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Active)
+                {
+                    hitMagnifier = m_FrameServer.Metadata.Magnifier.OnMouseDown(m_DescaledMouse, m_FrameServer.Metadata.ImageTransform);
+                }
+
+                if (!hitMagnifier)
+                {
+                    if (videoFilterIsActive)
+                        m_FrameServer.Metadata.ActiveVideoFilter.StartMove(m_DescaledMouse);
+                }
             }
                 
         }
@@ -3072,8 +3080,7 @@ namespace Kinovea.ScreenManager
                     panelCenter.ContextMenuStrip = popMenuDrawings;
                 }
             }
-            else if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Indirect &&
-                     m_FrameServer.Metadata.Magnifier.IsOnObject(m_DescaledMouse, m_FrameServer.Metadata.ImageTransform))
+            else if (m_FrameServer.Metadata.IsOnMagnifier(m_DescaledMouse))
             {
                 PrepareMagnifierContextMenu(popMenuMagnifier);
                 
@@ -3089,7 +3096,7 @@ namespace Kinovea.ScreenManager
             }
             else if (m_ActiveTool != m_PointerTool)
             {
-                // Launch FormToolPreset.
+                // Right click in the background with tool active: tool preset configuration.
                 FormToolPresets ftp = new FormToolPresets(m_ActiveTool);
                 FormsHelper.Locate(ftp);
                 ftp.ShowDialog();
@@ -3098,7 +3105,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                // No drawing touched and no tool selected, but not currently playing. Default menu.
+                // Right click in the background with hand tool.
                 if (videoFilterIsActive)
                 {
                     PrepareFilterContextMenu(m_FrameServer.Metadata.ActiveVideoFilter, popMenuFilter);
@@ -3179,7 +3186,6 @@ namespace Kinovea.ScreenManager
                 popMenuDrawings.Items.Add(mnuSepDrawing3);
             }
         }
-
         private void PrepareDrawingContextMenuCapabilities(AbstractDrawing drawing, ContextMenuStrip popMenu)
         {
             // Generic context menu from drawing capabilities.
@@ -3311,12 +3317,10 @@ namespace Kinovea.ScreenManager
 
             m_DescaledMouse = m_FrameServer.ImageTransform.Untransform(e.Location);
 
-            if (e.Button == MouseButtons.None && m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Direct)
+            if (e.Button == MouseButtons.None && m_FrameServer.Metadata.Magnifier.Initializing)
             {
-                m_FrameServer.Metadata.Magnifier.Move(m_DescaledMouse);
-
-                if (!m_bIsCurrentlyPlaying)
-                    DoInvalidate();
+                m_FrameServer.Metadata.Magnifier.InitializeMove(m_DescaledMouse, ModifierKeys);
+                DoInvalidate();
             }
             else if (e.Button == MouseButtons.None && m_FrameServer.Metadata.DrawingInitializing)
             {
@@ -3331,8 +3335,9 @@ namespace Kinovea.ScreenManager
             {
                 if (m_ActiveTool != m_PointerTool)
                 {
+                    // Initialization of a drawing that is in the process of being added.
+                    // (ex: dragging the second point of a line that we just added).
                     // Tools that are not IInitializable should reset to Pointer tool right after creation.
-
                     if (m_ActiveTool == ToolManager.Tools["Spotlight"])
                     {
                         IInitializable initializableDrawing = m_FrameServer.Metadata.SpotlightManager as IInitializable;
@@ -3347,41 +3352,38 @@ namespace Kinovea.ScreenManager
                 }
                 else
                 {
-                    bool bMovingMagnifier = false;
-                    if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Indirect)
+                    // Manipulation of an existing drawing via a handle.
+                    if (m_ActiveTool == m_PointerTool && !m_bIsCurrentlyPlaying)
                     {
-                        bMovingMagnifier = m_FrameServer.Metadata.Magnifier.Move(m_DescaledMouse);
-                    }
+                        // Magnifier is not being moved or is invisible, try drawings through pointer tool.
+                        // (including chronos, tracks and grids)
+                        bool movingObject = m_PointerTool.OnMouseMove(m_FrameServer.Metadata, m_DescaledMouse, m_FrameServer.ImageTransform.ZoomWindow.Location, ModifierKeys);
 
-                    if (!bMovingMagnifier && m_ActiveTool == m_PointerTool)
-                    {
-                        if (!m_bIsCurrentlyPlaying)
+                        if (!movingObject && m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Active)
                         {
-                            // Magnifier is not being moved or is invisible, try drawings through pointer tool.
-                            // (including chronos, tracks and grids)
-                            bool bMovingObject = m_PointerTool.OnMouseMove(m_FrameServer.Metadata, m_DescaledMouse, m_FrameServer.ImageTransform.ZoomWindow.Location, ModifierKeys);
+                            movingObject = m_FrameServer.Metadata.Magnifier.OnMouseMove(m_DescaledMouse, ModifierKeys);
+                        }
+                        
+                        if (!movingObject)
+                        {
+                            // User is not moving anything: pan the whole image.
+                            // This may not have any effect if we try to move outside the original size and not in "free move" mode.
 
-                            if (!bMovingObject)
+                            // Get mouse deltas (descaled=in image coords).
+                            float dx = m_PointerTool.MouseDelta.X;
+                            float dy = m_PointerTool.MouseDelta.Y;
+
+                            if (m_FrameServer.Metadata.Mirrored)
+                                dx = -dx;
+
+                            if (!videoFilterIsActive || (ModifierKeys & Keys.Control) == Keys.Control)
                             {
-                                // User is not moving anything: move the whole image.
-                                // This may not have any effect if we try to move outside the original size and not in "free move" mode.
-
-                                // Get mouse deltas (descaled=in image coords).
-                                float dx = m_PointerTool.MouseDelta.X;
-                                float dy = m_PointerTool.MouseDelta.Y;
-
-                                if (m_FrameServer.Metadata.Mirrored)
-                                    dx = -dx;
-
-                                if (!videoFilterIsActive || (ModifierKeys & Keys.Control) == Keys.Control)
-                                {
-                                    m_FrameServer.ImageTransform.MoveZoomWindow(dx, dy);
-                                }
-                                else
-                                {
-                                    m_FrameServer.Metadata.ActiveVideoFilter.Move(dx, dy, ModifierKeys);
-                                    DoInvalidate();
-                                }
+                                m_FrameServer.ImageTransform.MoveZoomWindow(dx, dy);
+                            }
+                            else
+                            {
+                                m_FrameServer.Metadata.ActiveVideoFilter.Move(dx, dy, ModifierKeys);
+                                DoInvalidate();
                             }
                         }
                     }
@@ -3398,8 +3400,14 @@ namespace Kinovea.ScreenManager
                 // This allow to zoom and pan while having an active tool.
                 if (!m_bIsCurrentlyPlaying)
                 {
-                    bool bMovingObject = m_PointerTool.OnMouseMove(m_FrameServer.Metadata, m_DescaledMouse, m_FrameServer.ImageTransform.ZoomWindow.Location, ModifierKeys);
-                    if (!bMovingObject)
+                    bool movingObject = m_PointerTool.OnMouseMove(m_FrameServer.Metadata, m_DescaledMouse, m_FrameServer.ImageTransform.ZoomWindow.Location, ModifierKeys);
+                    
+                    if (!movingObject && m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Active)
+                    {
+                        movingObject = m_FrameServer.Metadata.Magnifier.OnMouseMove(m_DescaledMouse, ModifierKeys);
+                    }
+                    
+                    if (!movingObject)
                     {
                         // Move the whole image.
                         float dx = m_PointerTool.MouseDelta.X;
@@ -3463,8 +3471,10 @@ namespace Kinovea.ScreenManager
 
             if (m_ActiveTool == m_PointerTool)
             {
+
                 SetCursor(m_PointerTool.GetCursor(0));
                 m_PointerTool.OnMouseUp();
+                m_FrameServer.Metadata.Magnifier.OnMouseUp();
 
                 // If we were resizing an SVG drawing, trigger a render.
                 // TODO: this is currently triggered on every mouse up, not only on resize !
@@ -3692,8 +3702,11 @@ namespace Kinovea.ScreenManager
 
             if ((m_bIsCurrentlyPlaying && PreferencesManager.PlayerPreferences.DrawOnPlay) || !m_bIsCurrentlyPlaying)
             {
-                FlushDrawingsOnGraphics(g, _transform, _iKeyFrameIndex, _iPosition);
+                // First draw the magnifier, this includes drawing the objects that are under
+                // the source area onto the destination area, and then draw the objects on the 
+                // image. This way we can still have drawings on top of the magnifier destination area.
                 FlushMagnifierOnGraphics(_sourceImage, g, _transform, _iKeyFrameIndex, _iPosition);
+                FlushDrawingsOnGraphics(g, _transform, _iKeyFrameIndex, _iPosition);
             }
         }
         private void FlushDrawingsOnGraphics(Graphics canvas, ImageTransform transformer, int keyFrameIndex, long timestamp)
@@ -3764,7 +3777,7 @@ namespace Kinovea.ScreenManager
         {
             // Note: the Graphics object must not be the one extracted from the image itself.
             // If needed, clone the image.
-            if (currentImage == null || m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.None)
+            if (currentImage == null || m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Inactive)
                 return;
             
             // Draw the magnifier source rectangle and magnified area.
@@ -4330,10 +4343,8 @@ namespace Kinovea.ScreenManager
             // Set this tool as the active tool (waiting for the actual use) and set the cursor accordingly.
 
             // Deactivate magnifier if not commited.
-            if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Direct)
-            {
+            if (m_FrameServer.Metadata.Magnifier.Initializing)
                 DisableMagnifier();
-            }
 
             OnPoke();
 
@@ -4356,28 +4367,36 @@ namespace Kinovea.ScreenManager
 
             m_ActiveTool = m_PointerTool;
 
-            if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.None)
+            switch (m_FrameServer.Metadata.Magnifier.Mode)
             {
-                ResetZoom(false);
-                m_FrameServer.Metadata.Magnifier.Mode = MagnifierMode.Direct;
-                SetCursor(cursorManager.GetManipulationCursorMagnifier());
+                case MagnifierMode.Inactive:
+                {
+                    ResetZoom(false);
+                    m_FrameServer.Metadata.Magnifier.Mode = MagnifierMode.Initializing;
+                    SetCursor(cursorManager.GetManipulationCursorMagnifier());
 
-                if (TrackableDrawingAdded != null)
-                    TrackableDrawingAdded(this, new TrackableDrawingEventArgs(m_FrameServer.Metadata.Magnifier as ITrackable));
-            }
-            else if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Direct)
-            {
-                // Revert to no magnification.
-                ResetZoom(false);
-                m_FrameServer.Metadata.Magnifier.Mode = MagnifierMode.None;
-                //btnMagnifier.Image = Drawings.magnifier;
-                SetCursor(m_PointerTool.GetCursor(0));
-                DoInvalidate();
-            }
-            else
-            {
-                DisableMagnifier();
-                DoInvalidate();
+                    if (TrackableDrawingAdded != null)
+                        TrackableDrawingAdded(this, new TrackableDrawingEventArgs(m_FrameServer.Metadata.Magnifier as ITrackable));
+
+                    break;
+                }
+                case MagnifierMode.Initializing:
+                {
+                    // Revert to no magnification.
+                    ResetZoom(false);
+                    m_FrameServer.Metadata.Magnifier.Mode = MagnifierMode.Inactive;
+                    //btnMagnifier.Image = Drawings.magnifier;
+                    SetCursor(m_PointerTool.GetCursor(0));
+                    DoInvalidate();
+                    break;
+                }
+                case MagnifierMode.Active:
+                default:
+                {
+                    DisableMagnifier();
+                    DoInvalidate();
+                    break;
+                }
             }
         }
         private void btnShowComments_Click(object sender, EventArgs e)
@@ -4923,7 +4942,7 @@ namespace Kinovea.ScreenManager
         private void DisableMagnifier()
         {
             // Revert to no magnification.
-            m_FrameServer.Metadata.Magnifier.Mode = MagnifierMode.None;
+            m_FrameServer.Metadata.Magnifier.Mode = MagnifierMode.Inactive;
             SetCursor(m_PointerTool.GetCursor(0));
         }
         #endregion
@@ -4945,7 +4964,7 @@ namespace Kinovea.ScreenManager
         }
         private void IncreaseDirectZoom(Point mouseLocation)
         {
-            if (m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.None)
+            if (m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.Inactive)
                 DisableMagnifier();
 
             zoomHelper.Increase();

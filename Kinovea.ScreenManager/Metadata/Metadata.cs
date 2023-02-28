@@ -175,7 +175,7 @@ namespace Kinovea.ScreenManager
                         chronoManager.Drawings.Count > 0 ||
                         trackManager.Drawings.Count > 0 ||
                         extraDrawings.Count > totalStaticExtraDrawings ||
-                        magnifier.Mode != MagnifierMode.None;
+                        magnifier.Mode != MagnifierMode.Inactive;
             }
         }
         public bool Tracking 
@@ -1500,9 +1500,20 @@ namespace Kinovea.ScreenManager
             
             return result;
         }
+        public bool IsOnMagnifier(PointF point)
+        {
+            if (magnifier.Mode != MagnifierMode.Active)
+                return false;
+
+            int hitRes = magnifier.HitTest(point, imageTransform);
+
+            return hitRes >= 0;
+        }
+
+
         public int[] GetKeyframesZOrder(long _iTimestamp)
         {
-            // TODO: turn this into an iterator.
+            // TODO: turn this into an iterator.
             
             // Get the Z ordering of Keyframes for hit tests & draw.
             int[] zOrder = new int[keyframes.Count];

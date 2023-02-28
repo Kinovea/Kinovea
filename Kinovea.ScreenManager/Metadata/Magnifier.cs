@@ -30,7 +30,7 @@ namespace Kinovea.ScreenManager
     /// <summary>
     /// Picture-in-picture with magnification.
     /// </summary>
-    public class Magnifier : ITrackable
+    public class Magnifier : ITrackable, IInitializable
     {
         // TODO: save positions in the KVA.
         // TODO: support for rendering unscaled.
@@ -84,6 +84,11 @@ namespace Kinovea.ScreenManager
                 return contextMenu;
             }
         }
+
+        public bool Initializing
+        {
+            get { return Mode == MagnifierMode.Initializing; }
+        }
         #endregion
 
         #region Members
@@ -94,11 +99,12 @@ namespace Kinovea.ScreenManager
         private MagnifierMode mode;
         private PointF srcLastLocation;
         private PointF dstLastLocation;
+        private ManipulationType manipulationType;
         private int hitHandle = -1;
         private float zoom = 2.0f;
-        private static readonly float[] ZoomFactors = new float[] { 1.0f, 1.50f, 2.0f, 4.0f };
-
         private List<ToolStripMenuItem> contextMenu = new List<ToolStripMenuItem>();
+        private static readonly float[] ZoomFactors = new float[] { 1.0f, 1.50f, 2.0f, 4.0f };
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
@@ -128,10 +134,83 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region Public interface
+        #region Manipulation / Hand tool
+        public bool OnMouseDown(PointF location, ImageTransform transformer)
+        {
+            // Equivalent to DrawingToolPointer.OnMouseDown.
+            if (mode != MagnifierMode.Active)
+                return false;
+
+            hitHandle = HitTest(location, transformer);
+            log.DebugFormat("magnifier on mouse down, hit handle = {0}", hitHandle);
+
+            // Keep track of hit handle, manipulation type and location for when
+            // we come back during mouse move.
+
+            if (hitHandle < 0)
+            {
+                manipulationType = ManipulationType.None;
+                return false;
+            }
+
+            if (hitHandle == 0)
+            {
+                manipulationType = ManipulationType.Move;
+                srcLastLocation = location;
+                log.DebugFormat("magnifier, srcLocation:{0}", srcLastLocation.ToString());
+            }
+            else
+            {
+                manipulationType = ManipulationType.Resize;
+
+                if (hitHandle == 5)
+                    dstLastLocation = location;
+            }
+
+            return true;
+        }
+        public bool OnMouseMove(PointF location, Keys modifiers)
+        {
+            // Equivalent to DrawingToolPointer.OnMouseMove.
+            float dx = location.X - srcLastLocation.X;
+            float dy = location.Y - srcLastLocation.Y;
+
+            if (dx == 0 && dy == 0)
+                return false;
+
+            bool isMovingAnObject = true;
+            int resizingHandle = hitHandle;
+
+            switch (manipulationType)
+            {
+                case ManipulationType.Move:
+                    {
+                        this.MoveDrawing(dx, dy, modifiers);
+                        srcLastLocation = location;
+                        break;
+                    }
+                case ManipulationType.Resize:
+                    this.MoveHandle(location, resizingHandle, modifiers);
+                    break;
+                default:
+                    isMovingAnObject = false;
+                    break;
+            }
+
+            return isMovingAnObject;
+        }
+        public void OnMouseUp()
+        {
+            // Equivalent to DrawingToolPointer.OnMouseUp.
+            manipulationType = ManipulationType.None;
+            hitHandle = -1;
+        }
+        #endregion
+
+        #region Draw, hit testing and manipulation.
         public void Draw(Bitmap bitmap, Graphics canvas, ImageTransform imageTransform, bool mirrored, Size originalSize)
         {
-            if(mode == MagnifierMode.None)
+            if(mode == MagnifierMode.Inactive)
                 return;
             
             source.Draw(canvas, imageTransform.Transform(source.Rectangle), Pens.White, (SolidBrush)Brushes.White, 4);
@@ -152,107 +231,64 @@ namespace Kinovea.ScreenManager
             canvas.DrawImage(bitmap, imageTransform.Transform(destination), srcRect, GraphicsUnit.Pixel);
             canvas.DrawRectangle(Pens.White, imageTransform.Transform(destination));
         }
+        /// <summary>
+        /// Mapping: -1: not hit, 0: source rectangle, 1-4: corners of source, 5: destination rectangle.
+        /// </summary>
+        public int HitTest(PointF point, ImageTransform transformer)
+        {
+            if (destination.Contains(point))
+                return 5;
 
-        public void InitializeCommit(PointF location)
-        {
-            if(Mode == MagnifierMode.Direct)
-                Mode = MagnifierMode.Indirect;
+            return source.HitTest(point, transformer);
         }
-        public bool Move(PointF location)
+        public void MoveHandle(PointF point, int handle, Keys modifiers)
         {
-            // Currently the magnifier does not use the same move/moveHandle mechanics as other drawings.
-            // (Going through the pointer tool to keep track of last mouse location and calling move or moveHandle from there)
-            // Hence, we keep the last location here and recompute the deltas locally.
-            if(mode == MagnifierMode.Direct || hitHandle == 0)
+            if (handle > 0 && handle < 5)
             {
-                source.Move(location.X - srcLastLocation.X, location.Y - srcLastLocation.Y);
-                srcLastLocation = location;
-                points["0"] = source.Rectangle.Center();
-                SignalTrackablePointMoved();
-            }
-            else if(hitHandle > 0 && hitHandle < 5)
-            {
-                source.MoveHandle(location, hitHandle, Size.Empty, false);
+                source.MoveHandle(point, handle, Size.Empty, false);
                 points["0"] = source.Rectangle.Center();
                 ResizeDestination();
                 SignalTrackablePointMoved();
             }
-            else if(hitHandle == 5)
+            else if (handle == 5)
             {
-                destination = new RectangleF(destination.X + (location.X - dstLastLocation.X), destination.Y + (location.Y - dstLastLocation.Y), destination.Width, destination.Height);
-                dstLastLocation = location;
+                destination.Location = new PointF(
+                    destination.X + (point.X - dstLastLocation.X),
+                    destination.Y + (point.Y - dstLastLocation.Y));
+
+                dstLastLocation = point;
             }
-
-            return false;
         }
-        public bool OnMouseDown(PointF location, ImageTransform transformer)
+        public void MoveDrawing(float dx, float dy, Keys modifiersKeys)
         {
-            if(mode != MagnifierMode.Indirect)
-                return false;
-
-            hitHandle = HitTest(location, transformer);
-            
-            if(hitHandle == 0)
-                srcLastLocation = location;
-            else if(hitHandle == 5)
-                dstLastLocation = location;
-
-            return hitHandle >= 0;
-        }
-        public bool IsOnObject(PointF location, ImageTransform transformer)
-        {
-            return HitTest(location, transformer) >= 0;
-        }
-        private int HitTest(PointF point, ImageTransform transformer)
-        {
-            // Mapping:
-            // 0: the source rectangle.
-            // 1-4: the corners of the source rectangle.
-            // 5: the target rendering area.
-
-            int result = -1;
-            if(destination.Contains(point))
-                result = 5;
-            else
-                result = source.HitTest(point, transformer);
-
-            return result;
-        }
-        public void ResetData()
-        {
-            points["0"] = PointF.Empty;
-            source.Rectangle = points["0"].Box(50).ToRectangle();
-            destination = new RectangleF(10, 10, (float)(source.Rectangle.Width * zoom), (float)(source.Rectangle.Height * zoom));
-            
-            srcLastLocation = points["0"];
-            dstLastLocation = points["0"];
-            
-            mode = MagnifierMode.None;
-        }
-
-        /// <summary>
-        /// Transform the canvas where the magnifier is drawn, into the mini canvas with only the magnified area.
-        /// This is used to paint the drawings on top of the magnified area.
-        /// </summary>
-        public void TransformCanvas(Graphics canvas, ImageTransform transform)
-        {
-            float invStretch = (float)(1.0f / transform.Stretch);
-            float stretch = (float)transform.Stretch;
-
-            canvas.ScaleTransform(stretch, stretch);
-
-            // Account for the border.
-            Rectangle clip = new RectangleF(destination.X + 2, destination.Y + 2, destination.Width - 4, destination.Height - 4).ToRectangle();
-
-            canvas.SetClip(clip);
-            canvas.TranslateTransform(destination.X, destination.Y);
-            canvas.ScaleTransform(zoom, zoom);
-            canvas.TranslateTransform(-source.X, -source.Y);
-
-            canvas.ScaleTransform(invStretch, invStretch);
+            source.Move(dx, dy);
+            points["0"] = source.Rectangle.Center();
+            SignalTrackablePointMoved();
         }
         #endregion
-        
+
+        #region IInitializable implementation
+        public void InitializeMove(PointF point, Keys modifiers)
+        {
+            source.Move(point.X - srcLastLocation.X, point.Y - srcLastLocation.Y);
+            srcLastLocation = point;
+            points["0"] = source.Rectangle.Center();
+            SignalTrackablePointMoved();
+        }
+        public string InitializeCommit(PointF location)
+        {
+            if (Mode == MagnifierMode.Initializing)
+                Mode = MagnifierMode.Active;
+
+            return null;
+        }
+
+        public string InitializeEnd(bool cancelCurrentPoint)
+        {
+            return null;
+        }
+        #endregion
+
         #region ITrackable implementation and support.
         public Guid Id
         {
@@ -290,10 +326,45 @@ namespace Kinovea.ScreenManager
             TrackablePointMoved(this, new TrackablePointMovedEventArgs("0", points["0"]));
         }
         #endregion
-        
+
+        public void ResetData()
+        {
+            points["0"] = PointF.Empty;
+            source.Rectangle = points["0"].Box(50).ToRectangle();
+            destination = new RectangleF(10, 10, (float)(source.Rectangle.Width * zoom), (float)(source.Rectangle.Height * zoom));
+
+            srcLastLocation = points["0"];
+            dstLastLocation = points["0"];
+
+            mode = MagnifierMode.Inactive;
+        }
+
+        /// <summary>
+        /// Transform the canvas where the magnifier is drawn, into the mini canvas with only the magnified area.
+        /// This is used to paint the drawings on top of the magnified area.
+        /// </summary>
+        public void TransformCanvas(Graphics canvas, ImageTransform transform)
+        {
+            float invStretch = (float)(1.0f / transform.Stretch);
+            float stretch = (float)transform.Stretch;
+
+            canvas.ScaleTransform(stretch, stretch);
+
+            // Account for the border.
+            Rectangle clip = new RectangleF(destination.X + 2, destination.Y + 2, destination.Width - 4, destination.Height - 4).ToRectangle();
+
+            canvas.SetClip(clip);
+            canvas.TranslateTransform(destination.X, destination.Y);
+            canvas.ScaleTransform(zoom, zoom);
+            canvas.TranslateTransform(-source.X, -source.Y);
+
+            canvas.ScaleTransform(invStretch, invStretch);
+        }
+
         private void ResizeDestination()
         {
-            destination = new RectangleF(destination.Left, destination.Top, (float)(source.Rectangle.Width * zoom), (float)(source.Rectangle.Height * zoom));
+            //destination = new RectangleF(destination.Left, destination.Top, (float)(source.Rectangle.Width * zoom), (float)(source.Rectangle.Height * zoom));
+            destination.Size = new SizeF(source.Rectangle.Width * zoom, source.Rectangle.Height * zoom);
         }
 
         private void InvalidateFromMenu(object sender)
@@ -314,8 +385,12 @@ namespace Kinovea.ScreenManager
     
     public enum MagnifierMode
     {
-        None,
-        Direct, // When the mouse move makes the magnifier move (Initial mode).
-        Indirect // When the user has to click to change the boundaries of the magnifier.
+        Inactive,
+
+        // The magnifier was just added and is being moved around.
+        Initializing,
+
+        // Normal mode.
+        Active
     }
 }
