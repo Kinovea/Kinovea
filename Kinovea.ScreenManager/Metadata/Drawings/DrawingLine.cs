@@ -175,7 +175,7 @@ namespace Kinovea.ScreenManager
             using (Pen penEdges = styleHelper.GetPen(opacityFactor, transformer.Scale))
             using (Brush brush = styleHelper.GetBrush(opacityFactor))
             {
-                if (distorter != null && distorter.Initialized)
+                if (distorter != null && distorter.Initialized && styleHelper.LineShape != LineShape.Squiggle)
                     DrawDistorted(canvas, distorter, transformer, penEdges, brush, start, end);
                 else
                     DrawStraight(canvas, transformer, penEdges, brush, start, end);
@@ -193,11 +193,22 @@ namespace Kinovea.ScreenManager
             List<PointF> curve = distorter.DistortLine(points["a"], points["b"]);
             List<Point> transformedCurve = transformer.Transform(curve);
 
-            if (styleHelper.LineShape == LineShape.Squiggle)
+            PointF arrowOffsetStart = ArrowHelper.GetOffset(penEdges, start, transformedCurve[1]);
+            PointF arrowOffsetEnd = ArrowHelper.GetOffset(penEdges, end, transformedCurve[transformedCurve.Count - 2]);
+
+            if (styleHelper.LineEnding == LineEnding.StartArrow || styleHelper.LineEnding == LineEnding.DoubleArrow)
             {
-                canvas.DrawSquigglyLine(penEdges, start, end);
+                start = new PointF(start.X + arrowOffsetStart.X, start.Y + arrowOffsetStart.Y).ToPoint();
+                transformedCurve[0] = start;
             }
-            else if (styleHelper.LineShape == LineShape.Dash)
+
+            if (styleHelper.LineEnding == LineEnding.EndArrow || styleHelper.LineEnding == LineEnding.DoubleArrow)
+            {
+                end = new PointF(end.X + arrowOffsetEnd.X, end.Y + arrowOffsetEnd.Y).ToPoint();
+                transformedCurve[transformedCurve.Count - 1] = end;
+            }
+
+            if (styleHelper.LineShape == LineShape.Dash)
             {
                 DashStyle oldDashStyle = penEdges.DashStyle;
                 penEdges.DashStyle = DashStyle.Dash;
@@ -212,13 +223,21 @@ namespace Kinovea.ScreenManager
             miniLabel.SetAttach(curve[curve.Count / 2], true);
 
             if (styleHelper.LineEnding == LineEnding.StartArrow || styleHelper.LineEnding == LineEnding.DoubleArrow)
-                ArrowHelper.Draw(canvas, penEdges, start, end);
+                ArrowHelper.Draw(canvas, penEdges, start, transformedCurve[1]);
 
             if (styleHelper.LineEnding == LineEnding.EndArrow || styleHelper.LineEnding == LineEnding.DoubleArrow)
-                ArrowHelper.Draw(canvas, penEdges, end, start);
+                ArrowHelper.Draw(canvas, penEdges, end, transformedCurve[transformedCurve.Count - 2]);
         }
         private void DrawStraight(Graphics canvas, IImageToViewportTransformer transformer, Pen penEdges, Brush brush, Point start, Point end)
         {
+            // Move the segment end points so that the tip of the arrow lands on the original end points.
+            PointF arrowOffset = ArrowHelper.GetOffset(penEdges, start, end);
+            if (styleHelper.LineEnding == LineEnding.StartArrow || styleHelper.LineEnding == LineEnding.DoubleArrow)
+                start = new PointF(start.X + arrowOffset.X, start.Y + arrowOffset.Y).ToPoint();
+
+            if (styleHelper.LineEnding == LineEnding.EndArrow || styleHelper.LineEnding == LineEnding.DoubleArrow)
+                end = new PointF(end.X - arrowOffset.X, end.Y - arrowOffset.Y).ToPoint();
+
             if (styleHelper.LineShape == LineShape.Squiggle)
             {
                 canvas.DrawSquigglyLine(penEdges, start, end);

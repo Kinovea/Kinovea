@@ -41,8 +41,31 @@ namespace Kinovea.ScreenManager
             PointF triangleLeft = new PointF(triangleBase.X + triangleLeftRelative.X, triangleBase.Y + triangleLeftRelative.Y);
             Vector triangleRightRelative = new Vector(-v.Y * triangleSideRatio, v.X * triangleSideRatio);
             PointF triangleRight = new PointF(triangleBase.X + triangleRightRelative.X, triangleBase.Y + triangleRightRelative.Y);
-            
+
             FillTriangle(canvas, penEdges.Color, triangleTop, triangleLeft, triangleRight);
+        }
+
+        /// <summary>
+        /// Returns the offset to be applied to the end points so that when we draw the arrows
+        /// the pointy end of the arrow end up exactly where the original line ended.
+        /// </summary>
+        public static PointF GetOffset(Pen penEdges, Point a, Point b)
+        {
+            // This is based on the arrow drawing routine.
+            // The tip of the triangle is placed 3 pen-widths away after the segment's end.
+            // (this arrangement is so the flat end of the segment doesn't poke through the triangle.)
+            
+            // We will move back the segment end-point by 3 pen-width inward, to pre-compensate and
+            // make sure the triangle tip will end up exactly at the segment's end.
+            
+            Vector v = new Vector(a, b);
+            float norm = v.Norm();
+
+            float refLength = penEdges.Width;
+            refLength = Math.Max(refLength, 4);
+
+            float t = (refLength * 3) / norm;
+            return (v * t).ToPointF();
         }
         
         private static void DrawTriangle(Graphics canvas, Color color, PointF a, PointF b, PointF c)
