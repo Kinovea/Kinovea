@@ -214,7 +214,7 @@ namespace Kinovea.ScreenManager
             // This must be aligned to the pixel boundaries, not just (1.0/zoom).
             SizeF newSizeUV = new SizeF(
                 (float)Math.Floor(referenceSize.Width / zoom) / referenceSize.Width,
-                (float)Math.Floor(referenceSize.Width / zoom) / referenceSize.Height
+                (float)Math.Floor(referenceSize.Height / zoom) / referenceSize.Height
             );
 
             PointF newTopLeftUV = new PointF(
