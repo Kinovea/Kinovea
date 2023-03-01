@@ -89,6 +89,11 @@ namespace Kinovea.ScreenManager
         {
             get { return Mode == MagnifierMode.Initializing; }
         }
+
+        public bool Frozen
+        {
+            get { return frozen; }
+        }
         #endregion
 
         #region Members
@@ -103,6 +108,8 @@ namespace Kinovea.ScreenManager
         private int hitHandle = -1;
         private float zoom = 2.0f;
         private List<ToolStripMenuItem> contextMenu = new List<ToolStripMenuItem>();
+        private Bitmap frozenBitmap;
+        private bool frozen;
         private static readonly float[] ZoomFactors = new float[] { 1.0f, 1.50f, 2.0f, 4.0f };
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -208,21 +215,24 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Draw, hit testing and manipulation.
-        public void Draw(Bitmap bitmap, Graphics canvas, ImageTransform imageTransform, bool mirrored, Size originalSize)
+        public void Draw(Bitmap bitmap, Graphics canvas, ImageTransform imageTransform, bool mirrored, Size referenceSize)
         {
             if(mode == MagnifierMode.Inactive)
                 return;
             
             source.Draw(canvas, imageTransform.Transform(source.Rectangle), Pens.White, (SolidBrush)Brushes.White, 4);
-            DrawDestination(bitmap, canvas, imageTransform, mirrored, originalSize);
+            if (frozen)
+                DrawDestination(frozenBitmap, canvas, imageTransform, mirrored, referenceSize);
+            else
+                DrawDestination(bitmap, canvas, imageTransform, mirrored, referenceSize);
         }
-        private void DrawDestination(Bitmap bitmap, Graphics canvas, ImageTransform imageTransform, bool mirrored, Size originalSize)
+        private void DrawDestination(Bitmap bitmap, Graphics canvas, ImageTransform imageTransform, bool mirrored, Size referenceSize)
         {
             // The bitmap passed in is the image decoded, so it might be at a different size than the original image size.
             // We also need to take mirroring into account (until it's included in the ImageTransform).
 
-            double scaleX = (double)bitmap.Size.Width / originalSize.Width;
-            double scaleY = (double)bitmap.Size.Height / originalSize.Height;
+            float scaleX = (float)bitmap.Size.Width / referenceSize.Width;
+            float scaleY = (float)bitmap.Size.Height / referenceSize.Height;
             Rectangle srcRect = source.Rectangle.Scale(scaleX, scaleY);
 
             if (mirrored)
@@ -329,9 +339,11 @@ namespace Kinovea.ScreenManager
 
         public void ResetData()
         {
+            Unfreeze();
+            zoom = 2.0f;
             points["0"] = PointF.Empty;
             source.Rectangle = points["0"].Box(50).ToRectangle();
-            destination = new RectangleF(10, 10, (float)(source.Rectangle.Width * zoom), (float)(source.Rectangle.Height * zoom));
+            destination = new RectangleF(10, 10, source.Rectangle.Width * zoom, source.Rectangle.Height * zoom);
 
             srcLastLocation = points["0"];
             dstLastLocation = points["0"];
@@ -361,9 +373,26 @@ namespace Kinovea.ScreenManager
             canvas.ScaleTransform(invStretch, invStretch);
         }
 
+        public void Freeze(Bitmap bitmap)
+        {
+            if (bitmap == null)
+                return;
+
+            frozenBitmap = BitmapHelper.Copy(bitmap);
+            frozen = true;
+        }
+
+        public void Unfreeze()
+        {
+            if (!frozen)
+                return;
+
+            frozenBitmap.Dispose();
+            frozen = false;
+        }
+
         private void ResizeDestination()
         {
-            //destination = new RectangleF(destination.Left, destination.Top, (float)(source.Rectangle.Width * zoom), (float)(source.Rectangle.Height * zoom));
             destination.Size = new SizeF(source.Rectangle.Width * zoom, source.Rectangle.Height * zoom);
         }
 

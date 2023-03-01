@@ -372,6 +372,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuConfigureTrajectory = new ToolStripMenuItem();
 
         private ContextMenuStrip popMenuMagnifier = new ContextMenuStrip();
+        private ToolStripMenuItem mnuMagnifierFreeze = new ToolStripMenuItem();
         private ToolStripMenuItem mnuMagnifierTrack = new ToolStripMenuItem();
         private ToolStripMenuItem mnuMagnifierDirect = new ToolStripMenuItem();
         private ToolStripMenuItem mnuMagnifierQuit = new ToolStripMenuItem();
@@ -1207,6 +1208,8 @@ namespace Kinovea.ScreenManager
             mnuConfigureTrajectory.Image = Properties.Drawings.configure;
 
             // Magnifier
+            mnuMagnifierFreeze.Click += mnuMagnifierFreeze_Click;
+            mnuMagnifierFreeze.Image = Properties.Resources.image;
             mnuMagnifierTrack.Click += mnuMagnifierTrack_Click;
             mnuMagnifierTrack.Image = Properties.Drawings.track;
             mnuMagnifierDirect.Click += mnuMagnifierDirect_Click;
@@ -2696,6 +2699,7 @@ namespace Kinovea.ScreenManager
             mnuConfigureTrajectory.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
 
             // Magnifier.
+            mnuMagnifierFreeze.Text = "Freeze";
             mnuMagnifierTrack.Text = ScreenManagerLang.mnuTrackTrajectory;
             mnuMagnifierDirect.Text = ScreenManagerLang.mnuMagnifierDirect;
             mnuMagnifierQuit.Text = ScreenManagerLang.mnuMagnifierQuit;
@@ -3086,12 +3090,12 @@ namespace Kinovea.ScreenManager
                 
                 popMenuMagnifier.Items.AddRange(new ToolStripItem[] { 
                     new ToolStripSeparator(), 
+                    mnuMagnifierFreeze,
                     mnuMagnifierTrack, 
                     new ToolStripSeparator(), 
                     mnuMagnifierDirect, 
                     mnuMagnifierQuit });
 
-                mnuMagnifierTrack.Checked = ToggleTrackingCommand.CurrentState(m_FrameServer.Metadata.Magnifier);
                 panelCenter.ContextMenuStrip = popMenuMagnifier;
             }
             else if (m_ActiveTool != m_PointerTool)
@@ -3272,6 +3276,9 @@ namespace Kinovea.ScreenManager
 
                 popMenu.Items.Add(tsmi);
             }
+
+            mnuMagnifierFreeze.Text = magnifier.Frozen ? "Unfreeze" : "Freeze";
+            mnuMagnifierTrack.Checked = ToggleTrackingCommand.CurrentState(m_FrameServer.Metadata.Magnifier);
         }
         private void PrepareFilterContextMenu(IVideoFilter filter, ContextMenuStrip popMenu)
         {
@@ -4929,6 +4936,17 @@ namespace Kinovea.ScreenManager
             
             ResizeUpdate(true);
         }
+        private void mnuMagnifierFreeze_Click(object sender, EventArgs e)
+        {
+            Magnifier m = m_FrameServer.Metadata.Magnifier;
+            if (m.Frozen)
+                m.Unfreeze();
+            else
+                m.Freeze(m_FrameServer.CurrentImage);
+
+            DoInvalidate();
+        }
+
         private void mnuMagnifierTrack_Click(object sender, EventArgs e)
         {
             ITrackable drawing = m_FrameServer.Metadata.Magnifier as ITrackable;
