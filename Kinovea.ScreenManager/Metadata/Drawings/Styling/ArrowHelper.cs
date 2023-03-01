@@ -60,6 +60,8 @@ namespace Kinovea.ScreenManager
             
             Vector v = new Vector(a, b);
             float norm = v.Norm();
+            if (norm == 0)
+                return PointF.Empty;
 
             float refLength = penEdges.Width;
             refLength = Math.Max(refLength, 4);
