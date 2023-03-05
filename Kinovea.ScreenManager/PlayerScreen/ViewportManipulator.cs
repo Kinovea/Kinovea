@@ -80,11 +80,14 @@ namespace Kinovea.ScreenManager
         /// Compute decoding size, rendering size and adjust the stretch factor, based on:
         /// - original size, aspectratio size, reference size, 
         /// - container size, zoom factor, stretch factor.
+        /// 
+        /// - canCustomDecodingSize: whether the player current state and reader current state is compatible with custom decoding size. 
+        /// tracking is incompatible with it as we store snippets of images, some readers don't support it, or only for some decoding modes.
         /// </summary>
-        public void Manipulate(bool finished, Size _containerSize, double _stretchFactor, bool _fillContainer, double _zoomFactor, bool _enableCustomDecodingSize, bool _scalable, bool rotatedCanvas)
+        public void Manipulate(bool finished, Size _containerSize, double _stretchFactor, bool _fillContainer, double _zoomFactor, bool canCustomDecodingSize, bool rotatedCanvas)
         {
             // One of the constraint has changed, recompute the sizes.
-            ComputeRenderingSize(rotatedCanvas, _containerSize, _stretchFactor, _fillContainer);
+            ComputeRenderingRectangle(rotatedCanvas, _containerSize, _stretchFactor, _fillContainer);
 
             // If the manipulation is not finished, we are in the process of scaling the rendering surface.
             // During this period the decoding size doesn't change.
@@ -92,7 +95,7 @@ namespace Kinovea.ScreenManager
                 return;
             
             bool sideway = reader.Info.ImageRotation == ImageRotation.Rotate90 || reader.Info.ImageRotation == ImageRotation.Rotate270;
-            ComputeDecodingSize(sideway, _containerSize, _zoomFactor, _enableCustomDecodingSize, _scalable);
+            ComputeDecodingSize(sideway, _containerSize, _zoomFactor, canCustomDecodingSize);
 
             // Decoding scale is used to find the final zoom window in the received images.
             // It is the factor to apply to the zoom window in the reference image to get the zoom window in the decoded images.
@@ -109,7 +112,7 @@ namespace Kinovea.ScreenManager
         /// The stretch factor is how much the user want to stretch the image and is based on image corner manipulation. It can go either way of 1.0f.
         /// The stretch factor is independent from the zoom, which is only the magnification inside the image.
         /// </summary>
-        private void ComputeRenderingSize(bool rotatedCanvas, Size _containerSize, double _stretchFactor, bool _fillContainer)
+        private void ComputeRenderingRectangle(bool rotatedCanvas, Size _containerSize, double _stretchFactor, bool _fillContainer)
         {
             Size referenceSize = reader.Info.ReferenceSize;
             stretchFactor = _stretchFactor;
@@ -148,7 +151,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Compute the decoding size.
         /// </summary>
-        private void ComputeDecodingSize(bool sideway, Size _containerSize, double _zoomFactor, bool _enableCustomDecodingSize, bool _scalable)
+        private void ComputeDecodingSize(bool sideway, Size _containerSize, double _zoomFactor, bool canCustomDecodingSize)
         {
             // Updates the following globals: preferredDecodingSize, mayDrawUnscaled, renderingZoomFactor.
             // Note: the decoding size doesn't care about rotation, as the pipeline is read > scale > rotate.
@@ -157,7 +160,7 @@ namespace Kinovea.ScreenManager
             if (sideway)
                 unrotatedRenderingSize = new Size(renderingSize.Height, renderingSize.Width);
 
-            if (!_enableCustomDecodingSize || !_scalable)
+            if (!canCustomDecodingSize)
             {
                 preferredDecodingSize = aspectRatioSize;
                 mayDrawUnscaled = false;

@@ -576,6 +576,8 @@ namespace Kinovea.ScreenManager
             // Screen position and size.
             m_FrameServer.ImageTransform.SetReferenceSize(m_FrameServer.VideoReader.Info.ReferenceSize);
             m_FrameServer.ImageTransform.ResetZoom();
+            zoomHelper.Value = 1.0f;
+            m_PointerTool.SetZoomLocation(new Point(-1, -1));
             SetUpForNewMovie();
             m_KeyframeCommentsHub.UserActivated = false;
 
@@ -921,9 +923,7 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Metadata.ImageSize = m_FrameServer.VideoReader.Info.ReferenceSize;
             m_PointerTool.SetImageSize(m_FrameServer.VideoReader.Info.ReferenceSize);
             m_FrameServer.ImageTransform.SetReferenceSize(m_FrameServer.VideoReader.Info.ReferenceSize);
-            m_FrameServer.ImageTransform.ResetZoom();
-
-            ResizeUpdate(true);
+            ResetZoom(false);
         }
         public void FullScreen(bool _bFullScreen)
         {
@@ -2088,7 +2088,7 @@ namespace Kinovea.ScreenManager
 
             //trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.Cache.Segment);
             trkFrame.Position = m_iCurrentPosition;
-            trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.PreBufferingSegment);
+                trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.PreBufferingSegment);
             trkFrame.Invalidate();
             trkSelection.SelPos = m_iCurrentPosition;
             trkSelection.Invalidate();
@@ -2194,12 +2194,16 @@ namespace Kinovea.ScreenManager
             // - Some decoding modes also prevent changing the decoding size, this is set in scalable here.
             // Note: do not update decoding scale here, as this function is called during stretching of the rendering surface, 
             // while the decoding size isn't updated. 
+            
+            // TODO: move this to a function on video readers.
             bool scalable = m_FrameServer.VideoReader.CanScaleIndefinitely || m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.PreBuffering;
+            bool canCustomDecodingSize = m_bEnableCustomDecodingSize && scalable;
+
             bool rotatedCanvas = false;
             if (videoFilterIsActive)
                 rotatedCanvas = m_FrameServer.Metadata.ActiveVideoFilter.RotatedCanvas;
 
-            m_viewportManipulator.Manipulate(finished, panelCenter.Size, targetStretch, m_fill, m_FrameServer.ImageTransform.Zoom, m_bEnableCustomDecodingSize, scalable, rotatedCanvas);
+            m_viewportManipulator.Manipulate(finished, panelCenter.Size, targetStretch, m_fill, m_FrameServer.ImageTransform.Zoom, canCustomDecodingSize, rotatedCanvas);
             
             pbSurfaceScreen.Location = m_viewportManipulator.RenderingLocation;
             pbSurfaceScreen.Size = m_viewportManipulator.RenderingSize;
@@ -2236,6 +2240,7 @@ namespace Kinovea.ScreenManager
                 }
             }
 
+            ResetZoom(false);
             ResizeUpdate(true);
         }
         private void ImageResizerSE_MouseMove(object sender, MouseEventArgs e)
@@ -2344,15 +2349,15 @@ namespace Kinovea.ScreenManager
             // Custom decoding size is not compatible with tracking.
             // The boolean will later be used each time we attempt to change decoding size in StretchSqueezeSurface.
             // This is not concerned with decoding mode (prebuffering, caching, etc.) as this will be checked inside the reader.
-            bool wasCustomDecodingSize = m_bEnableCustomDecodingSize;
+            bool wasEnabled = m_bEnableCustomDecodingSize;
             m_bEnableCustomDecodingSize = !_forceDisable && !m_FrameServer.Metadata.Tracking;
 
-            if (wasCustomDecodingSize && !m_bEnableCustomDecodingSize)
+            if (wasEnabled && !m_bEnableCustomDecodingSize)
             {
                 m_FrameServer.VideoReader.DisableCustomDecodingSize();
                 ResizeUpdate(true);
             }
-            else if (!wasCustomDecodingSize && m_bEnableCustomDecodingSize)
+            else if (!wasEnabled && m_bEnableCustomDecodingSize)
             {
                 ResizeUpdate(true);
             }
@@ -3380,12 +3385,10 @@ namespace Kinovea.ScreenManager
                             float dx = m_PointerTool.MouseDelta.X;
                             float dy = m_PointerTool.MouseDelta.Y;
 
-                            if (m_FrameServer.Metadata.Mirrored)
-                                dx = -dx;
-
                             if (!videoFilterIsActive || (ModifierKeys & Keys.Control) == Keys.Control)
                             {
-                                m_FrameServer.ImageTransform.MoveZoomWindow(dx, dy);
+                                bool contain = m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.Inactive;
+                                m_FrameServer.ImageTransform.MoveZoomWindow(dx, dy, contain);
                             }
                             else
                             {
@@ -3419,12 +3422,11 @@ namespace Kinovea.ScreenManager
                         // Move the whole image.
                         float dx = m_PointerTool.MouseDelta.X;
                         float dy = m_PointerTool.MouseDelta.Y;
-                        if (m_FrameServer.Metadata.Mirrored)
-                            dx = -dx;
-
+                        
                         if (!videoFilterIsActive || (ModifierKeys & Keys.Control) == Keys.Control)
                         {
-                            m_FrameServer.ImageTransform.MoveZoomWindow(dx, dy);
+                            bool contain = m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.Inactive;
+                            m_FrameServer.ImageTransform.MoveZoomWindow(dx, dy, contain);
                         }
                         else
                         {
@@ -3629,61 +3631,46 @@ namespace Kinovea.ScreenManager
 
             m_TimeWatcher.LogTime("Before DrawImage");
 
-            Rectangle rDst = m_FrameServer.Metadata.Mirrored ? new Rectangle(_renderingSize.Width, 0, -_renderingSize.Width, _renderingSize.Height) : new Rectangle(0, 0, _renderingSize.Width, _renderingSize.Height);
-            
+            // New.
+            Rectangle rDst = new Rectangle(Point.Empty, _renderingSize);
+
+            bool drawn = false;
             if (m_viewportManipulator.MayDrawUnscaled && m_FrameServer.VideoReader.CanDrawUnscaled)
             {
                 // Source image should be at the right size, unless it has been temporarily disabled.
                 // This is an optimization where the video reader is asked to decode images that might be smaller than the original size, 
                 // in order to match the rendering size.
-                if (_transform.ZoomWindowInDecodedImage.Size.CloseTo(_renderingSize) && !m_FrameServer.Metadata.Mirrored)
+                if (!m_FrameServer.Metadata.Mirrored  && _transform.ZoomWindowInDecodedImage.Size.CloseTo(_renderingSize, 4))
                 {
-                    if (!_transform.Zooming)
-                    {
-                        g.DrawImageUnscaled(_sourceImage, 0, 0);
-                        //log.DebugFormat("draw unscaled.");
-                    }
-                    else
-                    {
-                        int left = -_transform.ZoomWindowInDecodedImage.Left;
-                        int top = -_transform.ZoomWindowInDecodedImage.Top;
-                        g.DrawImageUnscaled(_sourceImage, left, top);
-                        //log.DebugFormat("draw unscaled with zoom.");
-                    }
-                }
-                else
-                {
-                    // Image was decoded at customized size, but can't be rendered unscaled.
-                    // TODO: integrate the mirror flag into the ImageTransform.
-                    Rectangle rSrc;
-                    if (_transform.Zooming)
-                        rSrc = _transform.ZoomWindowInDecodedImage;
-                    else
-                        rSrc = new Rectangle(0, 0, _sourceImage.Width, _sourceImage.Height);
-
-                    g.DrawImage(_sourceImage, rDst, rSrc, GraphicsUnit.Pixel);
-                    //log.DebugFormat("draw scaled at custom decoding size.");
+                    g.DrawImageUnscaled(_sourceImage, -_transform.ZoomWindowInDecodedImage.Left, -_transform.ZoomWindowInDecodedImage.Top);
+                    drawn = true;
                 }
             }
-            else
+            else if (!m_FrameServer.Metadata.Mirrored && !_transform.Zooming && _transform.Stretch == 1.0f && _transform.DecodingScale == 1.0)
             {
-                if (!_transform.Zooming && !m_FrameServer.Metadata.Mirrored && _transform.Stretch == 1.0f && _transform.DecodingScale == 1.0)
+                // This allow to draw unscaled while tracking or caching for example, provided we are rendering at original size.
+                g.DrawImageUnscaled(_sourceImage, -_transform.ZoomWindowInDecodedImage.Left, -_transform.ZoomWindowInDecodedImage.Top);
+                drawn = true;
+            }
+            
+            if (!drawn)
+            {
+                Rectangle rSrc;
+                if (m_FrameServer.Metadata.Mirrored)
                 {
-                    // This allow to draw unscaled while tracking or caching for example, provided we are rendering at original size.
-                    g.DrawImageUnscaled(_sourceImage, 0, 0);
-                    //log.DebugFormat("drawing unscaled because at the right size.");
+                    rSrc = new Rectangle(
+                        _sourceImage.Width - 1 - _transform.ZoomWindowInDecodedImage.X,
+                        _transform.ZoomWindowInDecodedImage.Top,
+                        -_transform.ZoomWindowInDecodedImage.Width,
+                        _transform.ZoomWindowInDecodedImage.Height
+                     );
                 }
                 else
                 {
-                    Rectangle rSrc;
-                    if (_transform.Zooming)
-                        rSrc = _transform.ZoomWindowInDecodedImage;
-                    else
-                        rSrc = new Rectangle(0, 0, _sourceImage.Width, _sourceImage.Height);
-
-                    g.DrawImage(_sourceImage, rDst, rSrc, GraphicsUnit.Pixel);
-                    //log.DebugFormat("drawing scaled.");
+                    rSrc = _transform.ZoomWindowInDecodedImage;
                 }
+
+                g.DrawImage(_sourceImage, rDst, rSrc, GraphicsUnit.Pixel);
             }
 
             m_TimeWatcher.LogTime("After DrawImage");
@@ -3719,7 +3706,7 @@ namespace Kinovea.ScreenManager
         private void FlushDrawingsOnGraphics(Graphics canvas, ImageTransform transformer, int keyFrameIndex, long timestamp)
         {
             DistortionHelper distorter = m_FrameServer.Metadata.CalibrationHelper.DistortionHelper;
-
+            
             // Prepare for drawings
             canvas.SmoothingMode = SmoothingMode.AntiAlias;
             canvas.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
@@ -4930,7 +4917,7 @@ namespace Kinovea.ScreenManager
             // Use position and magnification to Direct Zoom.
             // Go to direct zoom, at magnifier zoom factor, centered on same point as magnifier.
             m_FrameServer.ImageTransform.Zoom = m_FrameServer.Metadata.Magnifier.Zoom;
-            m_FrameServer.ImageTransform.UpdateZoomWindow(m_FrameServer.Metadata.Magnifier.Center);
+            m_FrameServer.ImageTransform.UpdateZoomWindow(m_FrameServer.Metadata.Magnifier.Center, false);
             DisableMagnifier();
             ToastZoom();
             
@@ -4971,6 +4958,7 @@ namespace Kinovea.ScreenManager
         private void ResetZoom(bool toast)
         {
             m_FrameServer.ImageTransform.ResetZoom();
+            zoomHelper.Value = 1.0f;
             
             m_PointerTool.SetZoomLocation(m_FrameServer.ImageTransform.ZoomWindow.Location);
             
@@ -4992,7 +4980,11 @@ namespace Kinovea.ScreenManager
         private void DecreaseDirectZoom(Point mouseLocation)
         {
             if (!m_FrameServer.ImageTransform.Zooming)
+            {
+                // If we are already at the lowest zoom level, recenter the window.
+                ResetZoom(false);
                 return;
+            }
 
             zoomHelper.Decrease();
             m_FrameServer.ImageTransform.Zoom = zoomHelper.Value;
@@ -5001,7 +4993,7 @@ namespace Kinovea.ScreenManager
         private void AfterZoomChange(Point mouseLocation)
         {
             // Mouse location is given in the system of the picture box control.
-            m_FrameServer.ImageTransform.UpdateZoomWindow(mouseLocation);
+            m_FrameServer.ImageTransform.UpdateZoomWindow(mouseLocation, false);
             m_PointerTool.SetZoomLocation(m_FrameServer.ImageTransform.ZoomWindow.Location);
             ToastZoom();
             UpdateCursor();
