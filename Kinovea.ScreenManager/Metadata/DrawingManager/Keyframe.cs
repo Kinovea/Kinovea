@@ -329,7 +329,8 @@ namespace Kinovea.ScreenManager
             if(!string.IsNullOrEmpty(title))
                 hash ^= title.GetHashCode();
             
-            hash ^= timecode.GetHashCode();
+            if (!string.IsNullOrEmpty(timecode))
+                hash ^= timecode.GetHashCode();
 
             return hash;
         }
