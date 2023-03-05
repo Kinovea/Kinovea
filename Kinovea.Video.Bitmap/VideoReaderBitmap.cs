@@ -45,8 +45,20 @@ namespace Kinovea.Video.Bitmap
         public override VideoFrame Current { 
             get { return current; }
         }
-        public override VideoCapabilities Flags { 
-            get { return VideoCapabilities.CanDecodeOnDemand | VideoCapabilities.CanChangeWorkingZone | VideoCapabilities.CanChangeImageRotation;}
+        public override VideoCapabilities Flags 
+        { 
+            get 
+            {
+                return
+                    VideoCapabilities.CanDecodeOnDemand |
+                    VideoCapabilities.CanChangeWorkingZone |
+                    VideoCapabilities.CanChangeImageRotation | VideoCapabilities.CanChangeDecodingSize;
+                    //VideoCapabilities.CanChangeImageRotation;
+            }
+        }
+        public override bool CanDrawUnscaled
+        {
+            get { return canDrawUnscaled; }
         }
         public override VideoInfo Info { 
             get { return videoInfo;} 
@@ -68,8 +80,10 @@ namespace Kinovea.Video.Bitmap
         private VideoFrame current = new VideoFrame();
         private VideoSection workingZone;
         private VideoInfo videoInfo = new VideoInfo();
+        private bool canDrawUnscaled = true;
+        private Size decodingSize = new Size(1, 1);
         #endregion
-        
+
         #region Public methods
         public override OpenVideoResult Open(string filePath)
         {
@@ -131,6 +145,12 @@ namespace Kinovea.Video.Bitmap
         public override void BeforeFrameEnumeration(){}
         public override void AfterFrameEnumeration(){}
 
+        public override bool ChangeDecodingSize(Size size)
+        {
+            decodingSize = size;
+            return true;
+        }
+
         public override bool ChangeImageRotation(ImageRotation rotation)
         {
             generator.SetRotation(rotation);
@@ -185,6 +205,8 @@ namespace Kinovea.Video.Bitmap
             videoInfo.OriginalSize = generator.OriginalSize;
             videoInfo.AspectRatioSize = generator.ReferenceSize;
             videoInfo.ReferenceSize = generator.ReferenceSize;
+
+            decodingSize = videoInfo.ReferenceSize;
         }
 
         private bool UpdateCurrent(long timestamp)
@@ -198,7 +220,7 @@ namespace Kinovea.Video.Bitmap
             if(current != null && current.Image != null)
                 generator.DisposePrevious(current.Image);
 
-            SystemBitmap bmp = generator.Generate(timestamp);
+            SystemBitmap bmp = generator.Generate(timestamp, decodingSize);
             current.Image = bmp;
             current.Timestamp = timestamp;
             return true;

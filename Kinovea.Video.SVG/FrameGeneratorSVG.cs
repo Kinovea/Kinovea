@@ -85,7 +85,7 @@ namespace Kinovea.Video.SVG
             if (currentBitmap == null || currentBitmap.Width != originalSize.Width)
                 Render(originalSize);
 
-            return (currentBitmap != null) ? currentBitmap : errorBitmap;
+            return currentBitmap ?? errorBitmap;
         }
 
         public Bitmap Generate(long timestamp, Size maxSize)
