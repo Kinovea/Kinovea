@@ -47,6 +47,12 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public partial class FrameTracker : UserControl
     {
+        private enum MarkerType
+        {
+            Metadata,
+            Cache,
+        }
+
         #region Properties
         /// <summary>
         /// The smallest timestamp of the current selection, in absolute timestamps.
@@ -58,6 +64,7 @@ namespace Kinovea.ScreenManager
             {
                 minTimestamp = value;
                 curTimestamp = Math.Max(curTimestamp, minTimestamp);
+                UpdateCachesMarkersPosition();
                 UpdateMarkersPositions();
                 UpdateSyncPointMarkerPosition();
                 UpdateCursorPosition();
@@ -75,6 +82,7 @@ namespace Kinovea.ScreenManager
             {
                 maxTimestamp = value;
                 curTimestamp = Math.Min(curTimestamp, maxTimestamp);
+                UpdateCachesMarkersPosition();
                 UpdateMarkersPositions();
                 UpdateSyncPointMarkerPosition();
                 UpdateCursorPosition();
@@ -133,9 +141,10 @@ namespace Kinovea.ScreenManager
         private static readonly int gutterUnusable = 14;    // Width of the unusable area at the gutter ends.
         private static readonly int gutterTop = 5;          // Markers can start drawing from here.
         private static readonly int gutterHeight = 10;      // Markers can draw this height.
+        private static readonly int gutterHeightCache = 4;  // Cache markers can draw this height.
         private static readonly int frameMarkerWidth = 5;   // Fixed width for frame markers. Also the minimal width of the cursor.
         private int cursorLeft;                             // The cursor is left-aligned with frame intervals.
-        private int cursorWidth = 30;                       // The width of the cursor will be made to match one frame interval.
+        private int cursorWidth = 30;                       // The width of the cursor is one frame interval.
         
         private bool enabled = true;
         private bool isCommonTimeline;
@@ -151,7 +160,8 @@ namespace Kinovea.ScreenManager
         private List<Pair<Point, Color>> chronosMarks = new List<Pair<Point, Color>>();
         private List<Pair<Point, Color>> tracksMarks = new List<Pair<Point, Color>>();
         private VideoSection cacheSegment;
-        private List<Pair<Point, Color>> cacheSegmentMarks = new List<Pair<Point, Color>>();
+        private List<Pair<Point, Color>> cacheMarks = new List<Pair<Point, Color>>();
+        private bool showCacheMarkers = false;
         private long syncPointTimestamp;
         private Pair<int, Color> syncPointMark;
         private long leftHairline;
@@ -217,7 +227,7 @@ namespace Kinovea.ScreenManager
             
             // Make room for one more frame so the gutter contains the interval of the last frame.
             this.maxTimestamp += tsPerFrame;
-
+            UpdateCachesMarkersPosition();
             UpdateMarkersPositions();
             UpdateSyncPointMarkerPosition();
             UpdateCursorPosition();
@@ -235,9 +245,9 @@ namespace Kinovea.ScreenManager
             // markers position when only the size of the control changes.
             
             this.metadata = metadata;
+            UpdateCachesMarkersPosition();
             UpdateMarkersPositions();
             UpdateSyncPointMarkerPosition();
-            UpdateCacheSegmentMarkerPosition();
 
             this.syncPointTimestamp = metadata.TimeOrigin;
             UpdateSyncPointMarkerPosition();
@@ -266,11 +276,8 @@ namespace Kinovea.ScreenManager
 
         public void UpdateCacheSegmentMarker(VideoSection cacheSegment)
         {
-            if(!cacheSegment.IsEmpty && prebufferDisplay)
-            {
-                this.cacheSegment = cacheSegment;
-                UpdateCacheSegmentMarkerPosition();
-            }
+           this.cacheSegment = cacheSegment;
+           UpdateCachesMarkersPosition();
         }
         #endregion
         
@@ -298,7 +305,7 @@ namespace Kinovea.ScreenManager
             gutterRight = this.Width - gutterMargin - gutterUnusable;
             cursorWidth = (int)Rescale(tsPerFrame, 0, maxTimestamp - minTimestamp, 0, gutterRight - gutterLeft);
             cursorWidth = Math.Max(cursorWidth, frameMarkerWidth);
-
+            UpdateCachesMarkersPosition();
             UpdateMarkersPositions();
             UpdateSyncPointMarkerPosition();
             UpdateCursorPosition();
@@ -408,11 +415,17 @@ namespace Kinovea.ScreenManager
                 DrawMainCursor(canvas);
             }
 
+            if (showCacheMarkers)
+            {
+                foreach (var mark in cacheMarks)
+                    DrawRangeMark(canvas, mark, MarkerType.Cache);
+            }
+
             foreach (var mark in chronosMarks)
-                DrawRangeMark(canvas, mark);
+                DrawRangeMark(canvas, mark, MarkerType.Metadata);
 
             foreach (var mark in tracksMarks)
-                DrawRangeMark(canvas, mark);
+                DrawRangeMark(canvas, mark, MarkerType.Metadata);
 
             foreach (var mark in keyframesMarks)
                 DrawFrameMark(canvas, mark);
@@ -464,7 +477,7 @@ namespace Kinovea.ScreenManager
 
             gp.Dispose();
         }
-        private void DrawRangeMark(Graphics canvas, Pair<Point, Color> mark)
+        private void DrawRangeMark(Graphics canvas, Pair<Point, Color> mark, MarkerType markerType)
         {
             int start = mark.First.X;
             int range = mark.First.Y;
@@ -474,7 +487,18 @@ namespace Kinovea.ScreenManager
             canvas.SmoothingMode = SmoothingMode.Default;
 
             using (SolidBrush brush = new SolidBrush(Color.FromArgb(96, mark.Second)))
-                canvas.FillRectangle(brush, left, gutterTop + 0.5f, width, gutterHeight - 0.5f);
+            {
+                switch (markerType)
+                {
+                    case MarkerType.Metadata:
+                        canvas.FillRectangle(brush, left, gutterTop + 0.5f, width, gutterHeight - 0.5f);
+                        break;
+                    case MarkerType.Cache:
+                        canvas.FillRectangle(brush, left, gutterTop + 0.5f, width, gutterHeightCache - 0.5f);
+                        break;
+                }
+
+            }
         }
         
         private void DrawMainCursor(Graphics canvas)
@@ -490,8 +514,8 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Convert timestamps into control coordinates and store it to draw them later.
-        /// Should only be called when either the timestamp range or the control size change.
+        /// Update the pixel position and range of all annotation-based markers.
+        /// Should be called when either the timestamp range or the control size change.
         /// </summary>
         private void UpdateMarkersPositions()
         {
@@ -549,21 +573,32 @@ namespace Kinovea.ScreenManager
             if(syncPointTimestamp != 0 && syncPointTimestamp >= minTimestamp && syncPointTimestamp <= maxTimestamp)
                 syncPointMark.First = TimestampToPixel(syncPointTimestamp);
         }
-        private void UpdateCacheSegmentMarkerPosition()
+
+        /// <summary>
+        /// Update the pixel range of the cache markers.
+        /// There are two markers if the cache wraps around the end of the selection.
+        /// </summary>
+        private void UpdateCachesMarkersPosition()
         {
-            cacheSegmentMarks.Clear();
+            if (!showCacheMarkers)
+                return;
+
+            cacheMarks.Clear();
+            if (cacheSegment == VideoSection.Empty)
+                return;
+
             if(cacheSegment.Wrapped)
             {
                 Point rangeEnd = TimestampToPixel(minTimestamp, cacheSegment.End);
                 Point rangeStart = TimestampToPixel(cacheSegment.Start, maxTimestamp);
 
-                cacheSegmentMarks.Add(new Pair<Point, Color>(rangeEnd, Color.Yellow));
-                cacheSegmentMarks.Add(new Pair<Point, Color>(rangeStart, Color.Yellow));
+                cacheMarks.Add(new Pair<Point, Color>(rangeEnd, Color.DarkGreen));
+                cacheMarks.Add(new Pair<Point, Color>(rangeStart, Color.DarkGreen));
             }
             else
             {
                 Point range = TimestampToPixel(cacheSegment.Start, cacheSegment.End);
-                cacheSegmentMarks.Add(new Pair<Point, Color>(range, Color.Yellow));
+                cacheMarks.Add(new Pair<Point, Color>(range, Color.DarkGreen));
             }
         }
 
@@ -609,4 +644,5 @@ namespace Kinovea.ScreenManager
         }
         #endregion
     }
+
 }
