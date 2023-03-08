@@ -9,7 +9,6 @@
   <entry name="Pencil" />
   <entry name="HumanModel">
     <subentry name="HumanModel2" />
-    <!--subentry name="OpenPoseBody25" /-->
     <subentry name="Bikefit" />
     <subentry name="Archery" />
     <subentry name="Profile" />

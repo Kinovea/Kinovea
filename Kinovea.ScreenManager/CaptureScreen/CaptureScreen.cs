@@ -115,11 +115,17 @@ namespace Kinovea.ScreenManager
             get { return metadata.Mirrored; }
             set { ChangeMirror(value); }
         }
+        public override bool CoordinateSystemVisible
+        {
+            get { return metadata.DrawingCoordinateSystem.Visible; }
+            set { metadata.DrawingCoordinateSystem.Visible = value; }
+        }
         public bool TestGridVisible
         {
             get { return metadata.TestGridVisible; }
             set { metadata.TestGridVisible = value; }
         }
+
         public HistoryStack HistoryStack
         {
             get { return historyStack; }

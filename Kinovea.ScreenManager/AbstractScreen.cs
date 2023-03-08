@@ -109,6 +109,12 @@ namespace Kinovea.ScreenManager
             set;
         }
 
+        public abstract bool CoordinateSystemVisible
+        {
+            get;
+            set;
+        }
+
         public abstract void DisplayAsActiveScreen(bool active);
         public abstract void RefreshUICulture();
         public abstract void PreferencesUpdated();

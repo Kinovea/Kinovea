@@ -153,29 +153,29 @@ namespace Kinovea.ScreenManager
             metadataRenderer.Render(canvas, location, zoom, timestamp);
         }
 
-        public bool OnMouseLeftDown(Point mouse, Point imageLocation, float imageZoom)
+        public bool OnMouseDown(MouseEventArgs e, Point imageLocation, float imageZoom)
         {
             if (metadataManipulator == null)
                 return false;
 
             Poke();
-            return metadataManipulator.OnMouseLeftDown(mouse, imageLocation, imageZoom);
+            return metadataManipulator.StartMove(e, imageLocation, imageZoom);
         }
 
-        public bool OnMouseLeftMove(Point mouse, Keys modifiers, Point imageLocation, float imageZoom)
+        public bool OnMouseMove(MouseEventArgs e, Keys modifiers, Point imageLocation, float imageZoom)
         {
             if (metadataManipulator == null)
                 return false;
 
-            return metadataManipulator.OnMouseLeftMove(mouse, modifiers, imageLocation, imageZoom);
+            return metadataManipulator.ContinueMove(e, modifiers, imageLocation, imageZoom);
         }
 
-        public void OnMouseUp(Point mouse, Keys modifiers, Point imageLocation, float imageZoom)
+        public void OnMouseUp(MouseEventArgs e, Keys modifiers, Point imageLocation, float imageZoom)
         {
             if (metadataManipulator == null)
                 return;
 
-            metadataManipulator.OnMouseUp(bitmap, mouse, modifiers, imageLocation, imageZoom);
+            metadataManipulator.StopMove(e, bitmap, modifiers, imageLocation, imageZoom);
             Refresh();
         }
 

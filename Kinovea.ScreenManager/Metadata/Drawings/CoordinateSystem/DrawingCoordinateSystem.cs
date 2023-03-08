@@ -163,6 +163,9 @@ namespace Kinovea.ScreenManager
                 return;
             
             CoordinateSystemGrid grid = CalibrationHelper.GetCoordinateSystemGrid();
+            if (grid == null)
+                return;
+
             using (Pen penLine = styleHelper.GetBackgroundPen(255))
             {
                 DrawGrid(canvas, distorter, transformer, grid);

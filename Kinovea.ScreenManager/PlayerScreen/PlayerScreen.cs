@@ -157,6 +157,12 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
+        public override bool CoordinateSystemVisible
+        {
+            get { return frameServer.Metadata.DrawingCoordinateSystem.Visible; }
+            set { frameServer.Metadata.DrawingCoordinateSystem.Visible = value; }
+        }
+
         public FrameServerPlayer FrameServer
         {
             get { return frameServer; }

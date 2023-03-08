@@ -133,8 +133,8 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuSVGTools = new ToolStripMenuItem();
         private ToolStripMenuItem mnuImportImage = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTestGrid = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuCoordinateAxis = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuCameraCalibration = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuCoordinateSystem = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuLensDistortion = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTrajectoryAnalysis = new ToolStripMenuItem();
         private ToolStripMenuItem mnuScatterDiagram = new ToolStripMenuItem();
         private ToolStripMenuItem mnuAngularAnalysis = new ToolStripMenuItem();
@@ -521,13 +521,13 @@ namespace Kinovea.ScreenManager
             mnuTestGrid.Click += mnuTestGrid_OnClick;
             mnuTestGrid.MergeAction = MergeAction.Append;
 
-            mnuCoordinateAxis.Image = Properties.Resources.coordinate_axis;
-            mnuCoordinateAxis.Click += mnuCoordinateAxis_OnClick;
-            mnuCoordinateAxis.MergeAction = MergeAction.Append;
+            mnuCoordinateSystem.Image = Properties.Resources.coordinate_axis;
+            mnuCoordinateSystem.Click += mnuCoordinateAxis_OnClick;
+            mnuCoordinateSystem.MergeAction = MergeAction.Append;
 
-            mnuCameraCalibration.Image = Properties.Resources.checkerboard;
-            mnuCameraCalibration.Click += mnuCameraCalibration_OnClick;
-            mnuCameraCalibration.MergeAction = MergeAction.Append;
+            mnuLensDistortion.Image = Properties.Resources.checkerboard;
+            mnuLensDistortion.Click += mnuCameraCalibration_OnClick;
+            mnuLensDistortion.MergeAction = MergeAction.Append;
 
             mnuTrajectoryAnalysis.Image = Properties.Resources.function;
             mnuTrajectoryAnalysis.Click += mnuTrajectoryAnalysis_OnClick;
@@ -548,8 +548,8 @@ namespace Kinovea.ScreenManager
             mnuCatchTools.DropDownItems.AddRange(new ToolStripItem[] { 
                 mnuSVGTools, 
                 mnuTestGrid, 
-                mnuCoordinateAxis, 
-                mnuCameraCalibration, 
+                mnuCoordinateSystem, 
+                mnuLensDistortion, 
                 new ToolStripSeparator(),
                 mnuScatterDiagram,
                 mnuTrajectoryAnalysis,
@@ -1091,9 +1091,9 @@ namespace Kinovea.ScreenManager
                     // Tools
                     mnuSVGTools.Enabled = hasSvgFiles;
                     mnuTestGrid.Enabled = false;
-                    mnuCoordinateAxis.Enabled = true;
-                    mnuCoordinateAxis.Checked = player.FrameServer.Metadata.DrawingCoordinateSystem.Visible;
-                    mnuCameraCalibration.Enabled = true;
+                    mnuCoordinateSystem.Enabled = true;
+                    mnuCoordinateSystem.Checked = player.CoordinateSystemVisible;
+                    mnuLensDistortion.Enabled = true;
                     mnuTrajectoryAnalysis.Enabled = true;
                     mnuScatterDiagram.Enabled = true;
                     mnuAngularAnalysis.Enabled = true;
@@ -1137,8 +1137,9 @@ namespace Kinovea.ScreenManager
                     mnuSVGTools.Enabled = false;
                     mnuTestGrid.Enabled = true;
                     mnuTestGrid.Checked = captureScreen.TestGridVisible;
-                    mnuCoordinateAxis.Enabled = false;
-                    mnuCameraCalibration.Enabled = false;
+                    mnuCoordinateSystem.Enabled = true;
+                    mnuCoordinateSystem.Checked = captureScreen.CoordinateSystemVisible;
+                    mnuLensDistortion.Enabled = false;
                     mnuTrajectoryAnalysis.Enabled = false;
                     mnuScatterDiagram.Enabled = false;
                     mnuAngularAnalysis.Enabled = false;
@@ -1191,9 +1192,9 @@ namespace Kinovea.ScreenManager
                 mnuSVGTools.Enabled = false;
                 mnuTestGrid.Enabled = false;
                 mnuTestGrid.Checked = false;
-                mnuCoordinateAxis.Enabled = false;
-                mnuCoordinateAxis.Checked = false;
-                mnuCameraCalibration.Enabled = false;
+                mnuCoordinateSystem.Enabled = false;
+                mnuCoordinateSystem.Checked = false;
+                mnuLensDistortion.Enabled = false;
                 mnuTrajectoryAnalysis.Enabled = false;
                 mnuScatterDiagram.Enabled = false;
                 mnuAngularAnalysis.Enabled = false;
@@ -1503,8 +1504,8 @@ namespace Kinovea.ScreenManager
             mnuSVGTools.Text = ScreenManagerLang.mnuSVGTools;
             mnuImportImage.Text = ScreenManagerLang.mnuImportImage;
             mnuTestGrid.Text = ScreenManagerLang.DrawingName_TestGrid;
-            mnuCoordinateAxis.Text = ScreenManagerLang.mnuCoordinateSystem;
-            mnuCameraCalibration.Text = ScreenManagerLang.dlgCameraCalibration_Title + "…";
+            mnuCoordinateSystem.Text = ScreenManagerLang.mnuCoordinateSystem;
+            mnuLensDistortion.Text = ScreenManagerLang.dlgCameraCalibration_Title + "…";
             mnuScatterDiagram.Text = ScreenManagerLang.DataAnalysis_ScatterDiagram + "…";
             mnuTrajectoryAnalysis.Text = ScreenManagerLang.DataAnalysis_LinearKinematics + "…";
             mnuAngularAnalysis.Text = ScreenManagerLang.DataAnalysis_AngularKinematics + "…";
@@ -2274,13 +2275,9 @@ namespace Kinovea.ScreenManager
         }
         private void mnuCoordinateAxis_OnClick(object sender, EventArgs e)
         {
-            PlayerScreen ps = activeScreen as PlayerScreen;
-            if (ps == null)
-                return;
-
-            mnuCoordinateAxis.Checked = !mnuCoordinateAxis.Checked;
-            ps.FrameServer.Metadata.DrawingCoordinateSystem.Visible = mnuCoordinateAxis.Checked;
-            ps.RefreshImage();
+            mnuCoordinateSystem.Checked = !mnuCoordinateSystem.Checked;
+            activeScreen.CoordinateSystemVisible = mnuCoordinateSystem.Checked;
+            activeScreen.RefreshImage();
         }
 
         private void mnuTestGrid_OnClick(object sender, EventArgs e)

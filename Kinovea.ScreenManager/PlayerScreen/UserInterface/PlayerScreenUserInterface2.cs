@@ -3480,7 +3480,6 @@ namespace Kinovea.ScreenManager
 
             if (m_ActiveTool == m_PointerTool)
             {
-
                 SetCursor(m_PointerTool.GetCursor(0));
                 m_PointerTool.OnMouseUp();
                 m_FrameServer.Metadata.Magnifier.OnMouseUp();

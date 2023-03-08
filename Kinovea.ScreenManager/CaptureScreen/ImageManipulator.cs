@@ -86,11 +86,13 @@ namespace Kinovea.ScreenManager
             started = true;
         }
         
-        public void Move(Point mouse, bool sticky, Size containerSize, Size referenceSize)
+        public void Move(MouseEventArgs e, bool sticky, Size containerSize, Size referenceSize)
         {
             if(!started)
                 return;
-                
+            
+            Point mouse = e.Location;
+
             Point deltaStart = mouse.Subtract(mouseStart);
             Point delta = mouse.Subtract(mousePrevious);
             mousePrevious = mouse;

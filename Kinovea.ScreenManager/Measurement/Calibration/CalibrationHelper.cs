@@ -173,7 +173,6 @@ namespace Kinovea.ScreenManager
             this.getCalibrationQuad = getCalibrationQuad;
             this.hasTrackingData = hasTrackingData;
             Reset();
-            initialized = true;
         }
 
         public void Reset()
@@ -183,11 +182,11 @@ namespace Kinovea.ScreenManager
 
             PointF center = imageSize.Center();
             calibrator.Initialize(100, center, new PointF(center.X + 100, center.Y), CalibrationAxis.LineHorizontal);
-
             distortionHelper = new DistortionHelper();
-
             lengthUnit = LengthUnit.Pixels;
             
+            initialized = true;
+
             ComputeCoordinateSystemGrid();
         }
         

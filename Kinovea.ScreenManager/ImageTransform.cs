@@ -26,7 +26,7 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// Helper class to encapsulate the transform between rectified image space and screen space.
-    /// Note : This is not the image to world transform, that one is in PlayerScreen/CalibrationHelper.cs.
+    /// Note : This is not the image to world transform, that one is in Measurement/Calibration/CalibrationHelper.cs.
     ///
     /// Rectified image space is based on the original image space but adjusted for aspect ratio, rotation and distortion.
     ///
