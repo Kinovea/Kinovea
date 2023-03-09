@@ -522,11 +522,11 @@ namespace Kinovea.ScreenManager
             mnuTestGrid.MergeAction = MergeAction.Append;
 
             mnuCoordinateSystem.Image = Properties.Resources.coordinate_axis;
-            mnuCoordinateSystem.Click += mnuCoordinateAxis_OnClick;
+            mnuCoordinateSystem.Click += mnuCoordinateSystem_OnClick;
             mnuCoordinateSystem.MergeAction = MergeAction.Append;
 
             mnuLensDistortion.Image = Properties.Resources.checkerboard;
-            mnuLensDistortion.Click += mnuCameraCalibration_OnClick;
+            mnuLensDistortion.Click += mnuLensDistortion_OnClick;
             mnuLensDistortion.MergeAction = MergeAction.Append;
 
             mnuTrajectoryAnalysis.Image = Properties.Resources.function;
@@ -1055,27 +1055,27 @@ namespace Kinovea.ScreenManager
                     mnuSaveAs.Enabled = true;
                     mnuExportVideo.Enabled = true;
                     toolSave.Enabled = true;
-                    mnuExportSpreadsheet.Enabled = player.FrameServer.Metadata.HasData;
-                    mnuExportODS.Enabled = player.FrameServer.Metadata.HasData;
-                    mnuExportXLSX.Enabled = player.FrameServer.Metadata.HasData;
-                    mnuExportJSON.Enabled = player.FrameServer.Metadata.HasData;
-                    mnuExportCSV.Enabled = player.FrameServer.Metadata.HasData;
+                    mnuExportSpreadsheet.Enabled = player.FrameServer.Metadata.HasVisibleData;
+                    mnuExportODS.Enabled = player.FrameServer.Metadata.HasVisibleData;
+                    mnuExportXLSX.Enabled = player.FrameServer.Metadata.HasVisibleData;
+                    mnuExportJSON.Enabled = player.FrameServer.Metadata.HasVisibleData;
+                    mnuExportCSV.Enabled = player.FrameServer.Metadata.HasVisibleData;
                     mnuLoadAnalysis.Enabled = true;
                     
                     // Edit
-                    HistoryMenuManager.SwitchContext(player.HistoryStack);
+                    HistoryMenuManager.SwitchContext(activeScreen.HistoryStack);
                     ConfigureClipboardMenus(player);
 
                     // Image
                     mnuDeinterlace.Enabled = player.FrameServer.VideoReader.CanChangeDeinterlacing;
                     mnuMirror.Enabled = true;
                     mnuDeinterlace.Checked = player.Deinterlaced;
-                    mnuMirror.Checked = player.Mirrored;
+                    mnuMirror.Checked = activeScreen.Mirrored;
                     if (!player.IsSingleFrame)
                     {
-                        ConfigureImageFormatMenus(player);
-                        ConfigureImageRotationMenus(player);
-                        ConfigureImageDemosaicingMenus(player);
+                        ConfigureImageFormatMenus(activeScreen);
+                        ConfigureImageRotationMenus(activeScreen);
+                        ConfigureImageDemosaicingMenus(activeScreen);
                     }
                     else
                     {
@@ -1090,9 +1090,10 @@ namespace Kinovea.ScreenManager
 
                     // Tools
                     mnuSVGTools.Enabled = hasSvgFiles;
-                    mnuTestGrid.Enabled = false;
+                    mnuTestGrid.Enabled = true;
+                    mnuTestGrid.Checked = activeScreen.TestGridVisible;
                     mnuCoordinateSystem.Enabled = true;
-                    mnuCoordinateSystem.Checked = player.CoordinateSystemVisible;
+                    mnuCoordinateSystem.Checked = activeScreen.CoordinateSystemVisible;
                     mnuLensDistortion.Enabled = true;
                     mnuTrajectoryAnalysis.Enabled = true;
                     mnuScatterDiagram.Enabled = true;
@@ -1117,17 +1118,17 @@ namespace Kinovea.ScreenManager
                     mnuLoadAnalysis.Enabled = true;
 
                     // Edit
-                    HistoryMenuManager.SwitchContext(captureScreen.HistoryStack);
+                    HistoryMenuManager.SwitchContext(activeScreen.HistoryStack);
                     ConfigureClipboardMenus(activeScreen);
 
                     // Image
                     mnuDeinterlace.Enabled = false;
                     mnuMirror.Enabled = true;
                     mnuDeinterlace.Checked = false;
-                    mnuMirror.Checked = captureScreen.Mirrored;
-                    ConfigureImageFormatMenus(captureScreen);
-                    ConfigureImageRotationMenus(captureScreen);
-                    ConfigureImageDemosaicingMenus(captureScreen);
+                    mnuMirror.Checked = activeScreen.Mirrored;
+                    ConfigureImageFormatMenus(activeScreen);
+                    ConfigureImageRotationMenus(activeScreen);
+                    ConfigureImageDemosaicingMenus(activeScreen);
 
                     // Video
                     mnuTimebase.Enabled = false;
@@ -1136,9 +1137,9 @@ namespace Kinovea.ScreenManager
                     // Tools
                     mnuSVGTools.Enabled = false;
                     mnuTestGrid.Enabled = true;
-                    mnuTestGrid.Checked = captureScreen.TestGridVisible;
+                    mnuTestGrid.Checked = activeScreen.TestGridVisible;
                     mnuCoordinateSystem.Enabled = true;
-                    mnuCoordinateSystem.Checked = captureScreen.CoordinateSystemVisible;
+                    mnuCoordinateSystem.Checked = activeScreen.CoordinateSystemVisible;
                     mnuLensDistortion.Enabled = false;
                     mnuTrajectoryAnalysis.Enabled = false;
                     mnuScatterDiagram.Enabled = false;
@@ -1612,7 +1613,7 @@ namespace Kinovea.ScreenManager
         private void ExportSpreadsheet(MetadataExportFormat format)
         {
             PlayerScreen player = activeScreen as PlayerScreen;
-            if (player == null || !player.FrameServer.Metadata.HasData)
+            if (player == null || !player.FrameServer.Metadata.HasVisibleData)
                 return;
             
             DoStopPlaying();    
@@ -2273,7 +2274,7 @@ namespace Kinovea.ScreenManager
                 activeScreen.AddImageDrawing(path, isSVG);
             }	
         }
-        private void mnuCoordinateAxis_OnClick(object sender, EventArgs e)
+        private void mnuCoordinateSystem_OnClick(object sender, EventArgs e)
         {
             mnuCoordinateSystem.Checked = !mnuCoordinateSystem.Checked;
             activeScreen.CoordinateSystemVisible = mnuCoordinateSystem.Checked;
@@ -2282,15 +2283,12 @@ namespace Kinovea.ScreenManager
 
         private void mnuTestGrid_OnClick(object sender, EventArgs e)
         {
-            CaptureScreen cs = activeScreen as CaptureScreen;
-            if (cs == null)
-                return;
-
             mnuTestGrid.Checked = !mnuTestGrid.Checked;
-            cs.TestGridVisible = mnuTestGrid.Checked;
+            activeScreen.TestGridVisible = mnuTestGrid.Checked;
+            activeScreen.RefreshImage();
         }
 
-        private void mnuCameraCalibration_OnClick(object sender, EventArgs e)
+        private void mnuLensDistortion_OnClick(object sender, EventArgs e)
         {
             PlayerScreen ps = activeScreen as PlayerScreen;
             if (ps == null)

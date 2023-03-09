@@ -120,13 +120,13 @@ namespace Kinovea.ScreenManager
             get { return metadata.DrawingCoordinateSystem.Visible; }
             set { metadata.DrawingCoordinateSystem.Visible = value; }
         }
-        public bool TestGridVisible
+        public override bool TestGridVisible
         {
             get { return metadata.TestGridVisible; }
             set { metadata.TestGridVisible = value; }
         }
 
-        public HistoryStack HistoryStack
+        public override HistoryStack HistoryStack
         {
             get { return historyStack; }
         }

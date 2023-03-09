@@ -3039,7 +3039,7 @@ namespace Kinovea.ScreenManager
                 popMenuDrawings.Items.Add(mnuDeleteDrawing);
                 panelCenter.ContextMenuStrip = popMenuDrawings;
             }
-            else if ((hitDrawing = m_FrameServer.Metadata.IsOnExtraDrawing(m_DescaledMouse, m_iCurrentPosition)) != null)
+            else if ((hitDrawing = m_FrameServer.Metadata.IsOnUnattachedDrawing(m_DescaledMouse, m_iCurrentPosition)) != null)
             {
                 // Unlike attached drawings, each extra drawing type has its own context menu for now.
                 // TODO: use the custom menus system to host these menus inside the drawing instead of here.
@@ -3077,7 +3077,7 @@ namespace Kinovea.ScreenManager
 
                     panelCenter.ContextMenuStrip = popMenuTrack;
                 }
-                else if (hitDrawing is DrawingCoordinateSystem)
+                else if (hitDrawing is DrawingCoordinateSystem || hitDrawing is DrawingTestGrid)
                 {
                     PrepareDrawingContextMenu(hitDrawing, popMenuDrawings);
                     panelCenter.ContextMenuStrip = popMenuDrawings;
@@ -3165,25 +3165,33 @@ namespace Kinovea.ScreenManager
         {
             popMenu.Items.Clear();
 
+            
+            // Generic menus based on the drawing capabilities: configuration (style), visibility, tracking.
             if (!m_FrameServer.Metadata.DrawingInitializing)
                 PrepareDrawingContextMenuCapabilities(drawing, popMenu);
 
             if (popMenu.Items.Count > 0)
                 popMenu.Items.Add(mnuSepDrawing);
 
+            // Custom menu handlers implemented by the drawing itself.
+            // These change the drawing core state. (ex: angle orientation, measurement display option, start/stop chrono, etc.).
             bool hasExtraMenus = AddDrawingCustomMenus(drawing, popMenu.Items);
 
-            if (!m_FrameServer.Metadata.DrawingInitializing && drawing.InfosFading != null)
+            // Goto parent keyframe menu.
+            if (!m_FrameServer.Metadata.DrawingInitializing && drawing.InfosFading != null && m_FrameServer.Metadata.IsAttachedDrawing(drawing))
             {
-                bool attachedToKeyframe = m_FrameServer.Metadata.IsAttachedDrawing(drawing);
-                bool gotoVisible = attachedToKeyframe && PreferencesManager.PlayerPreferences.DefaultFading.Enabled && (drawing.InfosFading.ReferenceTimestamp != m_iCurrentPosition);
-
+                bool gotoVisible = PreferencesManager.PlayerPreferences.DefaultFading.Enabled && (drawing.InfosFading.ReferenceTimestamp != m_iCurrentPosition);
                 if (gotoVisible)
                 {
                     popMenu.Items.Add(mnuGotoKeyframe);
                     hasExtraMenus = true;
                 }
             }
+
+            // Below the custom menus and the goto keyframe we have the generic copy-paste and the delete menu.
+            // Singleton drawings cannot be deleted nor copy-pasted, so they don't need the separator.
+            if (drawing is DrawingCoordinateSystem || drawing is DrawingTestGrid)
+                return;
 
             if (hasExtraMenus)
                 popMenu.Items.Add(mnuSepDrawing2);
@@ -3204,8 +3212,12 @@ namespace Kinovea.ScreenManager
                 mnuConfigureDrawing.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
                 popMenu.Items.Add(mnuConfigureDrawing);
 
-                mnuSetStyleAsDefault.Text = ScreenManagerLang.mnuSetStyleAsDefault;
-                popMenu.Items.Add(mnuSetStyleAsDefault);
+                bool isSingleton = drawing is DrawingCoordinateSystem || drawing is DrawingTestGrid;
+                if (!isSingleton)
+                {
+                    mnuSetStyleAsDefault.Text = ScreenManagerLang.mnuSetStyleAsDefault;
+                    popMenu.Items.Add(mnuSetStyleAsDefault);
+                }
             }
 
             if (PreferencesManager.PlayerPreferences.DefaultFading.Enabled && ((drawing.Caps & DrawingCapabilities.Fading) == DrawingCapabilities.Fading))
@@ -3530,7 +3542,7 @@ namespace Kinovea.ScreenManager
                     mnuConfigureDrawing_Click(null, EventArgs.Empty);
                 }
             }
-            else if ((hitDrawing = m_FrameServer.Metadata.IsOnExtraDrawing(m_DescaledMouse, m_iCurrentPosition)) != null)
+            else if ((hitDrawing = m_FrameServer.Metadata.IsOnUnattachedDrawing(m_DescaledMouse, m_iCurrentPosition)) != null)
             {
                 if (hitDrawing is DrawingChrono)
                 {
@@ -3725,7 +3737,7 @@ namespace Kinovea.ScreenManager
                 track.Draw(canvas, distorter, transformer, selected, timestamp);
             }
 
-            foreach (AbstractDrawing drawing in m_FrameServer.Metadata.ExtraDrawings)
+            foreach (AbstractDrawing drawing in m_FrameServer.Metadata.SingletonDrawingsManager.Drawings)
             {
                 bool selected = m_FrameServer.Metadata.HitDrawing == drawing;
                 drawing.Draw(canvas, distorter, transformer, selected, timestamp);
@@ -4517,14 +4529,15 @@ namespace Kinovea.ScreenManager
         #region Drawings Menus
         private void mnuConfigureDrawing_Click(object sender, EventArgs e)
         {
-            Keyframe kf = m_FrameServer.Metadata.HitKeyframe;
-            IDecorable drawing = m_FrameServer.Metadata.HitDrawing as IDecorable;
+            Metadata metadata = m_FrameServer.Metadata;
+            Keyframe kf = metadata.HitKeyframe;
+            IDecorable drawing = metadata.HitDrawing as IDecorable;
             if (drawing == null || drawing.DrawingStyle == null || drawing.DrawingStyle.Elements.Count == 0)
                 return;
 
-            var drawingId = m_FrameServer.Metadata.HitDrawing.Id;
-            var managerId = m_FrameServer.Metadata.FindManagerId(m_FrameServer.Metadata.HitDrawing);
-            var memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, managerId, drawingId, m_FrameServer.Metadata.HitDrawing.Name, SerializationFilter.Style);
+            var drawingId = metadata.HitDrawing.Id;
+            var managerId = metadata.FindManagerId(metadata.HitDrawing);
+            var memento = new HistoryMementoModifyDrawing(metadata, managerId, drawingId, metadata.HitDrawing.Name, SerializationFilter.Style);
             
             FormConfigureDrawing2 fcd = new FormConfigureDrawing2(drawing, DoInvalidate);
             FormsHelper.Locate(fcd);
@@ -4534,6 +4547,18 @@ namespace Kinovea.ScreenManager
             {
                 memento.UpdateCommandName(drawing.Name);
                 m_FrameServer.HistoryStack.PushNewCommand(memento);
+
+                // If this was a singleton drawing also update the tool-level preset.
+                if (metadata.HitDrawing is DrawingCoordinateSystem)
+                {
+                    ToolManager.SetStylePreset("CoordinateSystem", ((DrawingCoordinateSystem)metadata.HitDrawing).DrawingStyle);
+                    ToolManager.SavePresets();
+                }
+                else if (metadata.HitDrawing is DrawingTestGrid)
+                {
+                    ToolManager.SetStylePreset("TestGrid", ((DrawingTestGrid)metadata.HitDrawing).DrawingStyle);
+                    ToolManager.SavePresets();
+                }
             }
 
             fcd.Dispose();
@@ -4558,15 +4583,17 @@ namespace Kinovea.ScreenManager
             if (mnuVisibilityAlways.Checked)
                 return;
 
-            mnuVisibilityAlways.Checked = true;
-            mnuVisibilityDefault.Checked = false;
-            mnuVisibilityCustom.Checked = false;
             AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
             Guid managerId = m_FrameServer.Metadata.FindManagerId(drawing);
             HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, managerId, drawing.Id, drawing.Name, SerializationFilter.Fading);
+            m_FrameServer.HistoryStack.PushNewCommand(memento);
+            
             drawing.InfosFading.AlwaysVisible = true;
             drawing.InfosFading.UseDefault = false;
-            m_FrameServer.HistoryStack.PushNewCommand(memento);
+            
+            mnuVisibilityAlways.Checked = true;
+            mnuVisibilityDefault.Checked = false;
+            mnuVisibilityCustom.Checked = false;
             DoInvalidate();
         }
         private void mnuVisibilityDefault_Click(object sender, EventArgs e)
@@ -4574,15 +4601,17 @@ namespace Kinovea.ScreenManager
             if (mnuVisibilityDefault.Checked)
                 return;
 
-            mnuVisibilityAlways.Checked = false;
-            mnuVisibilityDefault.Checked = true;
-            mnuVisibilityCustom.Checked = false;
             AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
             Guid managerId = m_FrameServer.Metadata.FindManagerId(drawing);
             HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, managerId, drawing.Id, drawing.Name, SerializationFilter.Fading);
+            m_FrameServer.HistoryStack.PushNewCommand(memento);
+            
             drawing.InfosFading.AlwaysVisible = false;
             drawing.InfosFading.UseDefault = true;
-            m_FrameServer.HistoryStack.PushNewCommand(memento);
+            
+            mnuVisibilityAlways.Checked = false;
+            mnuVisibilityDefault.Checked = true;
+            mnuVisibilityCustom.Checked = false;
             DoInvalidate();
         }
         private void mnuVisibilityCustom_Click(object sender, EventArgs e)
@@ -4593,15 +4622,17 @@ namespace Kinovea.ScreenManager
                 return;
             }
             
-            mnuVisibilityAlways.Checked = false;
-            mnuVisibilityDefault.Checked = false;
-            mnuVisibilityCustom.Checked = true;
             AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
             Guid managerId = m_FrameServer.Metadata.FindManagerId(drawing);
             HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, managerId, drawing.Id, drawing.Name, SerializationFilter.Fading);
+            m_FrameServer.HistoryStack.PushNewCommand(memento);
+
             drawing.InfosFading.AlwaysVisible = false;
             drawing.InfosFading.UseDefault = false;
-            m_FrameServer.HistoryStack.PushNewCommand(memento);
+
+            mnuVisibilityAlways.Checked = false;
+            mnuVisibilityDefault.Checked = false;
+            mnuVisibilityCustom.Checked = true;
             DoInvalidate();
 
             // Go to configuration immediately.
@@ -4781,10 +4812,9 @@ namespace Kinovea.ScreenManager
                 return;
 
             HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.TrackManager.Id, track.Id, track.Name, SerializationFilter.Core);
+            m_FrameServer.HistoryStack.PushNewCommand(memento);
 
             track.ChopTrajectory(m_iCurrentPosition);
-
-            m_FrameServer.HistoryStack.PushNewCommand(memento);
 
             DoInvalidate();
             UpdateFramesMarkers();

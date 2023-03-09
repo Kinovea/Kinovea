@@ -158,6 +158,10 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Concrete methods
+
+        /// <summary>
+        /// Invalidate the main viewport after a drawing changed its own state in a custom menu handler.
+        /// </summary>
         public static void InvalidateFromMenu(object sender)
         {
             // The screen hook was injected inside menus during AddDrawingCustomMenus in PlayerScreenUserInterface and for capture ViewportController.

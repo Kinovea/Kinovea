@@ -297,6 +297,7 @@
     <Compile Include="Measurement\Geometry\SegmentF.cs" />
     <Compile Include="Measurement\Geometry\SVD.cs" />
     <Compile Include="Measurement\Geometry\Vector3.cs" />
+    <Compile Include="Metadata\DrawingManager\DrawingManager`1.cs" />
     <Compile Include="Metadata\Drawings\DrawingLine.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPostureOption.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPosturePolyline.cs" />
@@ -402,7 +403,6 @@
     <Compile Include="Metadata\Drawings\CoordinateSystem\GridAxis.cs" />
     <Compile Include="Metadata\Drawings\CoordinateSystem\RangeHelper.cs" />
     <Compile Include="Metadata\Drawings\CoordinateSystem\GridLine.cs" />
-    <Compile Include="Metadata\DrawingManager\ChronoManager.cs" />
     <Compile Include="IImageToViewportTransformer.cs" />
     <Compile Include="ImageHelper.cs" />
     <Compile Include="ImageToViewportTransformer.cs" />
@@ -477,7 +477,6 @@
     <Compile Include="Measurement\Tracking\TrackMarker.cs" />
     <Compile Include="Measurement\Tracking\TrackStatus.cs" />
     <Compile Include="Measurement\Tracking\TrackView.cs" />
-    <Compile Include="Metadata\DrawingManager\TrackManager.cs" />
     <Compile Include="Measurement\LensDistortion\FormCalibrateDistortion.cs">
       <SubType>Form</SubType>
     </Compile>

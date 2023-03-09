@@ -163,6 +163,18 @@ namespace Kinovea.ScreenManager
             set { frameServer.Metadata.DrawingCoordinateSystem.Visible = value; }
         }
 
+        public override bool TestGridVisible
+        {
+            get { return frameServer.Metadata.DrawingTestGrid.Visible; }
+            set { frameServer.Metadata.DrawingTestGrid.Visible = value; }
+        }
+
+        public override HistoryStack HistoryStack
+        {
+            get { return historyStack; }
+        }
+
+
         public FrameServerPlayer FrameServer
         {
             get { return frameServer; }
@@ -305,11 +317,6 @@ namespace Kinovea.ScreenManager
         public bool DualSaveInProgress
         {
             set { view.DualSaveInProgress = value; }
-        }
-
-        public HistoryStack HistoryStack
-        {
-            get { return historyStack; }
         }
         #endregion
 

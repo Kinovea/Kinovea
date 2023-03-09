@@ -37,7 +37,7 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     [XmlType ("CoordinateSystem")]
-    public class DrawingCoordinateSystem : AbstractDrawing, IScalable, ITrackable, IMeasurable, IDecorable
+    public class DrawingCoordinateSystem : AbstractDrawing, IScalable, ITrackable, IMeasurable, IDecorable, IKvaSerializable
     {
         #region Events
         public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved;
@@ -96,7 +96,13 @@ namespace Kinovea.ScreenManager
                 return contextMenu; 
             }
         }
-        
+
+        public Metadata ParentMetadata
+        {
+            get { return parentMetadata; }    // unused.
+            set { parentMetadata = value; }
+        }
+
         public bool Visible { get; set; }
         public CalibrationHelper CalibrationHelper {get; set;}
         #endregion
@@ -112,17 +118,20 @@ namespace Kinovea.ScreenManager
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
 
-        // Context menu
-        private ToolStripMenuItem menuShowAxis = new ToolStripMenuItem();
-        private ToolStripMenuItem menuShowGrid = new ToolStripMenuItem();
-        private ToolStripMenuItem menuShowGraduations = new ToolStripMenuItem();
-        private ToolStripMenuItem menuHide = new ToolStripMenuItem();
         
         private bool trackingUpdate;
 
         private const int defaultBackgroundAlpha = 92;
         private const int gridAlpha = 255;
         private const int textMargin = 8;
+
+        // Context menu
+        private ToolStripMenuItem menuShowAxis = new ToolStripMenuItem();
+        private ToolStripMenuItem menuShowGrid = new ToolStripMenuItem();
+        private ToolStripMenuItem menuShowGraduations = new ToolStripMenuItem();
+        private ToolStripMenuItem menuHide = new ToolStripMenuItem();
+
+        private Metadata parentMetadata;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -317,24 +326,28 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-        #region Context menu
+        #region Custom menu handlers
         private void menuShowAxis_Click(object sender, EventArgs e)
         {
+            CaptureMemento(SerializationFilter.Core);
             showAxis = !showAxis;
             InvalidateFromMenu(sender);
         }
         private void menuShowGrid_Click(object sender, EventArgs e)
         {
+            CaptureMemento(SerializationFilter.Core);
             showGrid = !showGrid;
             InvalidateFromMenu(sender);
         }
         private void menuShowGraduations_Click(object sender, EventArgs e)
         {
+            CaptureMemento(SerializationFilter.Core);
             showGraduations = !showGraduations;
             InvalidateFromMenu(sender);
         }
         private void menuHide_Click(object sender, EventArgs e)
         {
+            CaptureMemento(SerializationFilter.Core);
             Visible = false;
             InvalidateFromMenu(sender);
         }
@@ -345,6 +358,7 @@ namespace Kinovea.ScreenManager
         {
             if (ShouldSerializeCore(filter))
             {
+                w.WriteElementString("Position", XmlHelper.WritePointF(points["0"]));
                 w.WriteElementString("Visible", Visible.ToString().ToLower());
             }
 
@@ -355,6 +369,13 @@ namespace Kinovea.ScreenManager
                 w.WriteEndElement();
             }
         }
+
+        public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
+        {
+            // This method is just to conform to the IKvaSerializable interface and support undo/redo.
+            ReadXml(xmlReader);
+        }
+        
         public void ReadXml(XmlReader r)
         {
             if (r.MoveToAttribute("id"))
@@ -366,6 +387,10 @@ namespace Kinovea.ScreenManager
             {
                 switch (r.Name)
                 {
+                    case "Position":
+                        PointF p = XmlHelper.ParsePointF(r.ReadElementContentAsString());
+                        points["0"] = p;
+                        break;
                     case "Visible":
                         Visible = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
                         break;
@@ -378,6 +403,9 @@ namespace Kinovea.ScreenManager
                         break;
                 }
             }
+
+            CalibrationHelper.SetOrigin(points["0"]);
+            SignalTrackablePointMoved();
 
             r.ReadEndElement();
         }
@@ -419,6 +447,15 @@ namespace Kinovea.ScreenManager
         {
             PointF point = CalibrationHelper.GetPoint(p);
             points["0"] = CalibrationHelper.GetImagePoint(new PointF(point.X, 0));
+        }
+
+        /// <summary>
+        /// Capture the current state to the undo/redo stack.
+        /// </summary>
+        private void CaptureMemento(SerializationFilter filter)
+        {
+            var memento = new HistoryMementoModifyDrawing(parentMetadata, parentMetadata.SingletonDrawingsManager.Id, this.Id, this.Name, filter);
+            parentMetadata.HistoryStack.PushNewCommand(memento);
         }
         #endregion
     }

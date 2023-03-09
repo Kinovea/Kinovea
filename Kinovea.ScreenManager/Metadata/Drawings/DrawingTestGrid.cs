@@ -36,7 +36,7 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     [XmlType("TestGrid")]
-    public class DrawingTestGrid : AbstractDrawing, IDecorable, IScalable
+    public class DrawingTestGrid : AbstractDrawing, IDecorable, IScalable, IKvaSerializable
     {
         #region Properties
         public override string ToolDisplayName
@@ -70,6 +70,11 @@ namespace Kinovea.ScreenManager
         {
             get { return DrawingCapabilities.ConfigureColorSize; }
         }
+        public Metadata ParentMetadata
+        {
+            get { return parentMetadata; }    // unused.
+            set { parentMetadata = value; }
+        }
         public bool Visible { get; set; }
         #endregion
 
@@ -81,6 +86,7 @@ namespace Kinovea.ScreenManager
         private Dictionary<string, GridLine> gridLines = new Dictionary<string, GridLine>();
 
         private ToolStripMenuItem menuHide = new ToolStripMenuItem();
+        private Metadata parentMetadata;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -185,6 +191,67 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
+        #region Custom menu handlers
+        private void menuHide_Click(object sender, EventArgs e)
+        {
+            CaptureMemento(SerializationFilter.Core);
+            Visible = false;
+            InvalidateFromMenu(sender);
+        }
+        #endregion
+
+        #region Serialization
+        public void WriteXml(XmlWriter w, SerializationFilter filter)
+        {
+            if (ShouldSerializeCore(filter))
+            {
+                w.WriteElementString("Visible", Visible.ToString().ToLower());
+            }
+
+            if (ShouldSerializeStyle(filter))
+            {
+                w.WriteStartElement("DrawingStyle");
+                style.WriteXml(w);
+                w.WriteEndElement();
+            }
+        }
+
+        public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
+        {
+            // This method is just to conform to the IKvaSerializable interface and support undo/redo.
+            ReadXml(xmlReader);
+        }
+
+        public void ReadXml(XmlReader r)
+        {
+            if (r.MoveToAttribute("id"))
+                identifier = new Guid(r.ReadContentAsString());
+
+            r.ReadStartElement();
+
+            while (r.NodeType == XmlNodeType.Element)
+            {
+                switch (r.Name)
+                {
+                    case "Visible":
+                        Visible = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
+                        break;
+                    case "DrawingStyle":
+                        style = new DrawingStyle(r);
+                        BindStyle();
+                        break;
+                    default:
+                        string unparsed = r.ReadOuterXml();
+                        break;
+                }
+            }
+
+            r.ReadEndElement();
+        }
+
+        #endregion
+
+
         #region Private methods
         private void BindStyle()
         {
@@ -196,11 +263,6 @@ namespace Kinovea.ScreenManager
             style.Bind(styleHelper, "Toggles/Thirds", "thirds");
         }
         
-        private void menuHide_Click(object sender, EventArgs e)
-        {
-            Visible = false;
-            InvalidateFromMenu(sender);
-        }
 
         private void CreateGridlines()
         {
@@ -236,6 +298,15 @@ namespace Kinovea.ScreenManager
         private PointF Map(PointF p)
         {
             return new PointF((p.X * 0.5f + 0.5f) * imageSize.Width, (p.Y * 0.5f + 0.5f) * imageSize.Height);
+        }
+
+        /// <summary>
+        /// Capture the current state to the undo/redo stack.
+        /// </summary>
+        private void CaptureMemento(SerializationFilter filter)
+        {
+            var memento = new HistoryMementoModifyDrawing(parentMetadata, parentMetadata.SingletonDrawingsManager.Id, this.Id, this.Name, filter);
+            parentMetadata.HistoryStack.PushNewCommand(memento);
         }
         #endregion
     }

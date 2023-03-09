@@ -219,7 +219,7 @@ namespace Kinovea.ScreenManager
             int keyframeIndex = 0;
             metadata.DeselectAll();
             metadata.IsOnDrawing(keyframeIndex, imagePoint, fixedTimestamp);
-            metadata.IsOnExtraDrawing(imagePoint, fixedTimestamp);
+            metadata.IsOnUnattachedDrawing(imagePoint, fixedTimestamp);
         }
         
         public Cursor GetCursor(float scale)
@@ -251,10 +251,10 @@ namespace Kinovea.ScreenManager
             if (drawing == null || decorable == null)
                 return;
             
-            Keyframe keyframe = metadata.HitKeyframe;
+            AbstractDrawingManager owner = metadata.HitDrawingOwner;
             HistoryMementoModifyDrawing memento = null;
-            if (keyframe != null)
-                memento = new HistoryMementoModifyDrawing(metadata, keyframe.Id, drawing.Id, drawing.Name, SerializationFilter.Style);
+            if (owner != null)
+                memento = new HistoryMementoModifyDrawing(metadata, owner.Id, drawing.Id, drawing.Name, SerializationFilter.Style);
 
             FormConfigureDrawing2 fcd = new FormConfigureDrawing2(decorable, refresh);
             FormsHelper.Locate(fcd);
@@ -268,8 +268,13 @@ namespace Kinovea.ScreenManager
                     metadata.HistoryStack.PushNewCommand(memento);
                 }
 
-                // If this was the camera test grid, also update the tool-level preset.
-                if (metadata.HitDrawing is DrawingTestGrid)
+                // If this was a singleton drawing also update the tool-level preset.
+                if (metadata.HitDrawing is DrawingCoordinateSystem)
+                {
+                    ToolManager.SetStylePreset("CoordinateSystem", ((DrawingCoordinateSystem)metadata.HitDrawing).DrawingStyle);
+                    ToolManager.SavePresets();
+                }
+                else if (metadata.HitDrawing is DrawingTestGrid)
                 {
                     ToolManager.SetStylePreset("TestGrid", ((DrawingTestGrid)metadata.HitDrawing).DrawingStyle);
                     ToolManager.SavePresets();
