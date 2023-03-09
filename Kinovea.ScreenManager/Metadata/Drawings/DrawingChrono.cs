@@ -496,12 +496,14 @@ namespace Kinovea.ScreenManager
         #region Specific context menu
         private void MnuShowBefore_Click(object sender, EventArgs e)
         {
+            CaptureMemento(SerializationFilter.Core);
             visibleTimestamp = 0;
             InvalidateFromMenu(sender);
         }
 
         private void MnuShowAfter_Click(object sender, EventArgs e)
         {
+            CaptureMemento(SerializationFilter.Core);
             invisibleTimestamp = long.MaxValue;
             infosFading.ReferenceTimestamp = invisibleTimestamp;
             InvalidateFromMenu(sender);
@@ -509,12 +511,14 @@ namespace Kinovea.ScreenManager
 
         private void MnuHideBefore_Click(object sender, EventArgs e)
         {
+            CaptureMemento(SerializationFilter.Core);
             visibleTimestamp = CurrentTimestampFromMenu(sender);
             InvalidateFromMenu(sender);
         }
 
         private void MnuHideAfter_Click(object sender, EventArgs e)
         {
+            CaptureMemento(SerializationFilter.Core);
             invisibleTimestamp = CurrentTimestampFromMenu(sender);
             infosFading.ReferenceTimestamp = invisibleTimestamp;
             InvalidateFromMenu(sender);
@@ -522,6 +526,7 @@ namespace Kinovea.ScreenManager
 
         private void mnuStart_Click(object sender, EventArgs e)
         {
+            CaptureMemento(SerializationFilter.Core);
             startCountingTimestamp = CurrentTimestampFromMenu(sender);
 
             if (stopCountingTimestamp < startCountingTimestamp)
@@ -533,6 +538,7 @@ namespace Kinovea.ScreenManager
 
         private void mnuStop_Click(object sender, EventArgs e)
         {
+            CaptureMemento(SerializationFilter.Core);
             stopCountingTimestamp = CurrentTimestampFromMenu(sender);
 
             if (stopCountingTimestamp <= startCountingTimestamp)
@@ -547,12 +553,14 @@ namespace Kinovea.ScreenManager
 
         private void mnuMarkOrigin_Click(object sender, EventArgs e)
         {
+            CaptureMemento(SerializationFilter.Core);
             clockOriginTimestamp = CurrentTimestampFromMenu(sender);
             InvalidateFromMenu(sender);
         }
 
         private void mnuShowLabel_Click(object sender, EventArgs e)
         {
+            CaptureMemento(SerializationFilter.Style);
             showLabel = !mnuShowLabel.Checked;
             InvalidateFromMenu(sender);
         }
@@ -605,6 +613,15 @@ namespace Kinovea.ScreenManager
             }
 
             return parentMetadata.TimeCodeBuilder(durationTimestamps, TimeType.Absolute, TimecodeFormat.Unknown, true);
+        }
+
+        /// <summary>
+        /// Capture the current state to the undo/redo stack.
+        /// </summary>
+        private void CaptureMemento(SerializationFilter filter)
+        {
+            var memento = new HistoryMementoModifyDrawing(parentMetadata, parentMetadata.ChronoManager.Id, this.Id, this.Name, filter);
+            parentMetadata.HistoryStack.PushNewCommand(memento);
         }
         #endregion
     }

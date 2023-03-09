@@ -120,10 +120,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Public Interface
-        public void OnMouseUp()
-        {
-            manipulationType = ManipulationType.None;
-        }
         public bool OnMouseDown(Metadata metadata, int activeKeyFrameIndex, PointF mouseCoordinates, long currentTimeStamp, bool allFrames)
         {
             //--------------------------------------------------------------------------------------
@@ -225,6 +221,10 @@ namespace Kinovea.ScreenManager
             
             return isMovingAnObject;
         }
+        public void OnMouseUp()
+        {
+            manipulationType = ManipulationType.None;
+        }
         public void SetImageSize(Size newSize)
         {
             imgSize = newSize;
@@ -262,7 +262,7 @@ namespace Kinovea.ScreenManager
             if (metadata.Keyframes.Count == 0)
                 return false;
 
-            bool bIsOnDrawing = false;
+            bool isOnDrawing = false;
 
             DistortionHelper distorter = metadata.CalibrationHelper.DistortionHelper;
 
@@ -272,17 +272,24 @@ namespace Kinovea.ScreenManager
 
                 for (int i = 0; i < zOrder.Length; i++)
                 {
-                    bIsOnDrawing = DrawingHitTest(metadata, zOrder[i], mouseCoordinates, currentTimeStamp, distorter, metadata.ImageTransform);
-                    if (bIsOnDrawing)
+                    isOnDrawing = DrawingHitTest(metadata, zOrder[i], mouseCoordinates, currentTimeStamp, distorter, metadata.ImageTransform);
+                    if (isOnDrawing)
                         break;
                 }
             }
             else if (activeKeyFrameIndex >= 0)
             {
-                bIsOnDrawing = DrawingHitTest(metadata, activeKeyFrameIndex, mouseCoordinates, metadata[activeKeyFrameIndex].Position, distorter, metadata.ImageTransform);
+                isOnDrawing = DrawingHitTest(metadata, activeKeyFrameIndex, mouseCoordinates, metadata[activeKeyFrameIndex].Position, distorter, metadata.ImageTransform);
             }
 
-            return bIsOnDrawing;
+            // We are about to start a move operation, capture the state for undo/redo.
+            if (isOnDrawing)
+            {
+                HistoryMementoModifyDrawing memento = new HistoryMementoModifyDrawing(metadata, metadata.HitKeyframe.Id, metadata.HitDrawing.Id, metadata.HitDrawing.Name, SerializationFilter.Core);
+                metadata.HistoryStack.PushNewCommand(memento);
+            }
+
+            return isOnDrawing;
         }
         private bool DrawingHitTest(Metadata metadata, int keyFrameIndex, PointF mouseCoordinates, long currentTimeStamp, DistortionHelper distorter, ImageTransform transformer)
         {
@@ -351,7 +358,16 @@ namespace Kinovea.ScreenManager
                     manipulationType = ManipulationType.Move;
                 }
             }
-            
+
+            // We are about to start a move operation, capture the state for undo/redo.
+            if (isOnDrawing)
+            {
+                var managerId = metadata.FindManagerId(metadata.HitDrawing);
+                HistoryMementoModifyDrawing memento = new HistoryMementoModifyDrawing(metadata, managerId, metadata.HitDrawing.Id, metadata.HitDrawing.Name, SerializationFilter.Core);
+                metadata.HistoryStack.PushNewCommand(memento);
+            }
+
+
             return isOnDrawing;
         }
         private bool IsOnChronometer(Metadata metadata, PointF point, long currentTimestamp)
@@ -378,6 +394,15 @@ namespace Kinovea.ScreenManager
                 }
 
                 break;
+            }
+
+            // We are about to start a move operation, capture the state for undo/redo.
+            // Save Core and Style, as we may change the font size by dragging the corner.
+            if (isOnDrawing)
+            {
+                SerializationFilter filter = SerializationFilter.Core | SerializationFilter.Style;
+                HistoryMementoModifyDrawing memento = new HistoryMementoModifyDrawing(metadata, metadata.ChronoManager.Id, metadata.HitDrawing.Id, metadata.HitDrawing.Name, filter);
+                metadata.HistoryStack.PushNewCommand(memento);
             }
 
             return isOnDrawing;
@@ -421,6 +446,13 @@ namespace Kinovea.ScreenManager
                 }
 
                 break;
+            }
+
+            // We are about to start a move operation, capture the state for undo/redo.
+            if (isOnDrawing)
+            {
+                HistoryMementoModifyDrawing memento = new HistoryMementoModifyDrawing(metadata, metadata.TrackManager.Id, metadata.HitDrawing.Id, metadata.HitDrawing.Name, SerializationFilter.Core);
+                metadata.HistoryStack.PushNewCommand(memento);
             }
 
             return isOnDrawing;

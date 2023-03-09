@@ -4522,18 +4522,15 @@ namespace Kinovea.ScreenManager
             if (drawing == null || drawing.DrawingStyle == null || drawing.DrawingStyle.Elements.Count == 0)
                 return;
 
-            // FIXME: memento for coordinate system and autonumbers.
-            bool canMemento = kf != null && !(m_FrameServer.Metadata.HitDrawing is DrawingCoordinateSystem);
-
-            HistoryMementoModifyDrawing memento = null;
-            if (canMemento)
-                memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.HitKeyframe.Id, m_FrameServer.Metadata.HitDrawing.Id, m_FrameServer.Metadata.HitDrawing.Name, SerializationFilter.Style);
-
+            var drawingId = m_FrameServer.Metadata.HitDrawing.Id;
+            var managerId = m_FrameServer.Metadata.FindManagerId(m_FrameServer.Metadata.HitDrawing);
+            var memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, managerId, drawingId, m_FrameServer.Metadata.HitDrawing.Name, SerializationFilter.Style);
+            
             FormConfigureDrawing2 fcd = new FormConfigureDrawing2(drawing, DoInvalidate);
             FormsHelper.Locate(fcd);
             fcd.ShowDialog();
 
-            if (canMemento && fcd.DialogResult == DialogResult.OK)
+            if (fcd.DialogResult == DialogResult.OK)
             {
                 memento.UpdateCommandName(drawing.Name);
                 m_FrameServer.HistoryStack.PushNewCommand(memento);

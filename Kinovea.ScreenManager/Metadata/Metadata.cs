@@ -507,11 +507,23 @@ namespace Kinovea.ScreenManager
         public Guid FindManagerId(AbstractDrawing drawing)
         {
             if (drawing is DrawingChrono)
+            {
                 return chronoManager.Id;
+            }
             else if (drawing is DrawingTrack)
+            {
                 return trackManager.Id;
+            }
+            else if (drawing is DrawingCoordinateSystem || drawing is DrawingTestGrid || 
+                drawing is SpotlightManager || drawing is AutoNumberManager)
+            {
+                // TODO: handle via a dedicated manager.
+                return Guid.Empty;
+            }
             else
+            {
                 return FindAttachmentKeyframeId(drawing);
+            }
         }
 
         /// <summary>
@@ -689,6 +701,8 @@ namespace Kinovea.ScreenManager
         #region Drawings
         public AbstractDrawingManager GetDrawingManager(Guid managerId)
         {
+            // TODO: handle extra drawings.
+
             if (managerId == chronoManager.Id)
                 return chronoManager;
             else if (managerId == trackManager.Id)
@@ -831,6 +845,7 @@ namespace Kinovea.ScreenManager
         public void ModifiedDrawing(Guid managerId, Guid drawingId)
         {
             AbstractDrawing drawing = GetDrawing(managerId, drawingId);
+            
             DrawingTrack track = drawing as DrawingTrack;
             if (track != null)
             {
