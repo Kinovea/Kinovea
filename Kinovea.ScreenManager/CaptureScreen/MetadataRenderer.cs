@@ -62,8 +62,8 @@ namespace Kinovea.ScreenManager
 
             if (renderTimedDrawings)
             {
-                metadata.SpotlightManager.Draw(canvas, distorter, transformer, false, timestamp);
-                metadata.AutoNumberManager.Draw(canvas, distorter, transformer, false, timestamp);
+                metadata.DrawingSpotlight.Draw(canvas, distorter, transformer, false, timestamp);
+                metadata.DrawingNumberSequence.Draw(canvas, distorter, transformer, false, timestamp);
             }
 
             if (renderTimedDrawings)

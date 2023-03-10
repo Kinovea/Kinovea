@@ -58,7 +58,7 @@ namespace Kinovea.ScreenManager
                 mnuConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
                 mnuAutoPositions.Text = "Interpolate positions between first and last";
                 mnuResetPositions.Text = "Reset positions";
-                mnuAutoNumbers.Text = "Frame numbers";
+                mnuNumberSequence.Text = "Frame numbers";
                 mnuGenerateNumbers.Text = "Generate frame numbers";
                 mnuDeleteNumbers.Text = "Delete frame numbers";
                 return contextMenu;
@@ -103,7 +103,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuConfigure = new ToolStripMenuItem();
         private ToolStripMenuItem mnuAutoPositions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuResetPositions = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuAutoNumbers = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuNumberSequence = new ToolStripMenuItem();
         private ToolStripMenuItem mnuGenerateNumbers = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDeleteNumbers = new ToolStripMenuItem();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -117,23 +117,24 @@ namespace Kinovea.ScreenManager
             mnuConfigure.Image = Properties.Drawings.configure;
             mnuAutoPositions.Image = Properties.Resources.wand;
             mnuResetPositions.Image = Properties.Resources.bin_empty;
-            mnuAutoNumbers.Image = Properties.Drawings.number;
+            mnuNumberSequence.Image = Properties.Drawings.number;
             mnuGenerateNumbers.Image = Properties.Drawings.number;
             mnuDeleteNumbers.Image = Properties.Resources.bin_empty;
 
-            mnuAutoNumbers.DropDownItems.Add(mnuGenerateNumbers);
-            mnuAutoNumbers.DropDownItems.Add(mnuDeleteNumbers);
+            mnuNumberSequence.DropDownItems.Add(mnuGenerateNumbers);
+            mnuNumberSequence.DropDownItems.Add(mnuDeleteNumbers);
 
             contextMenu.Add(mnuConfigure);
             contextMenu.Add(mnuAutoPositions);
+            contextMenu.Add(mnuNumberSequence);
+            contextMenu.Add(new ToolStripSeparator());
             contextMenu.Add(mnuResetPositions);
-            contextMenu.Add(mnuAutoNumbers);
 
             mnuConfigure.Click += MnuConfigure_Click;
             mnuAutoPositions.Click += MnuAutoPositions_Click;
             mnuResetPositions.Click += MnuResetPositions_Click;
-            mnuGenerateNumbers.Click += MnuAutonumbers_Click;
-            mnuDeleteNumbers.Click += MnuDeleteAutoNumbers_Click;
+            mnuGenerateNumbers.Click += MnuNumberSequence_Click;
+            mnuDeleteNumbers.Click += MnuDeleteNumberSequence_Click;
 
             parameters = PreferencesManager.PlayerPreferences.Kinogram;
             AfterTileCountChange();
@@ -190,7 +191,7 @@ namespace Kinovea.ScreenManager
 
         public void UpdateTime(long timestamp)
         {
-            // At the moment the timestamp is only used to pass to the autonumber manager when generating or deleting the numbers.
+            // At the moment the timestamp is only used to pass to the number sequence when generating or deleting the numbers.
             this.timestamp = timestamp;
         }
 
@@ -388,7 +389,7 @@ namespace Kinovea.ScreenManager
             InvalidateFromMenu(sender);
         }
 
-        private void MnuAutonumbers_Click(object sender, EventArgs e)
+        private void MnuNumberSequence_Click(object sender, EventArgs e)
         {
             // Reset the auto-numbers to be into the tiles.
             int cols = (int)Math.Ceiling((float)parameters.TileCount / parameters.Rows);
@@ -410,15 +411,15 @@ namespace Kinovea.ScreenManager
                 numbers.Add(location);
             }
 
-            metadata.AutoNumberManager.Configure(timestamp, metadata.AverageTimeStampsPerFrame, numbers);
+            metadata.DrawingNumberSequence.Configure(timestamp, metadata.AverageTimeStampsPerFrame, numbers);
 
             InvalidateFromMenu(sender);
         }
 
-        private void MnuDeleteAutoNumbers_Click(object sender, EventArgs e)
+        private void MnuDeleteNumberSequence_Click(object sender, EventArgs e)
         {
             List<PointF> numbers = new List<PointF>();
-            metadata.AutoNumberManager.Configure(timestamp, metadata.AverageTimeStampsPerFrame, numbers);
+            metadata.DrawingNumberSequence.Configure(timestamp, metadata.AverageTimeStampsPerFrame, numbers);
 
             InvalidateFromMenu(sender);
         }

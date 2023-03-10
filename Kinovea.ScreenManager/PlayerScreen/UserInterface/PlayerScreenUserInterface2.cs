@@ -2848,11 +2848,11 @@ namespace Kinovea.ScreenManager
             }
             else if (m_ActiveTool == ToolManager.Tools["Spotlight"])
             {
-                CreateNewMultiDrawingItem(m_FrameServer.Metadata.SpotlightManager);
+                CreateNewMultiDrawingItem(m_FrameServer.Metadata.DrawingSpotlight);
             }
-            else if (m_ActiveTool == ToolManager.Tools["AutoNumbers"])
+            else if (m_ActiveTool == ToolManager.Tools["NumberSequence"])
             {
-                CreateNewMultiDrawingItem(m_FrameServer.Metadata.AutoNumberManager);
+                CreateNewMultiDrawingItem(m_FrameServer.Metadata.DrawingNumberSequence);
             }
             else if (m_ActiveTool == ToolManager.Tools["Chrono"] || m_ActiveTool == ToolManager.Tools["Clock"])
             {
@@ -3189,7 +3189,7 @@ namespace Kinovea.ScreenManager
             }
 
             // Below the custom menus and the goto keyframe we have the generic copy-paste and the delete menu.
-            // Singleton drawings cannot be deleted nor copy-pasted, so they don't need the separator.
+            // Some singleton drawings cannot be deleted nor copy-pasted, so they don't need the separator.
             if (drawing is DrawingCoordinateSystem || drawing is DrawingTestGrid)
                 return;
 
@@ -3212,7 +3212,7 @@ namespace Kinovea.ScreenManager
                 mnuConfigureDrawing.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
                 popMenu.Items.Add(mnuConfigureDrawing);
 
-                bool isSingleton = drawing is DrawingCoordinateSystem || drawing is DrawingTestGrid;
+                bool isSingleton = drawing is DrawingCoordinateSystem || drawing is DrawingTestGrid || drawing is DrawingNumberSequence;
                 if (!isSingleton)
                 {
                     mnuSetStyleAsDefault.Text = ScreenManagerLang.mnuSetStyleAsDefault;
@@ -3335,7 +3335,7 @@ namespace Kinovea.ScreenManager
             // 1:Magnifier, 2:Drawings, 3:Chronos/Tracks
             // When creating a drawing, the active tool will stay on this drawing until its setup is over.
             // After the drawing is created, we either fall back to Pointer tool or stay on the same tool.
-
+            
             if (!m_FrameServer.Loaded)
                 return;
 
@@ -3364,7 +3364,7 @@ namespace Kinovea.ScreenManager
                     // Tools that are not IInitializable should reset to Pointer tool right after creation.
                     if (m_ActiveTool == ToolManager.Tools["Spotlight"])
                     {
-                        IInitializable initializableDrawing = m_FrameServer.Metadata.SpotlightManager as IInitializable;
+                        IInitializable initializableDrawing = m_FrameServer.Metadata.DrawingSpotlight as IInitializable;
                         initializableDrawing.InitializeMove(m_DescaledMouse, ModifierKeys);
                     }
                     else if (!m_bIsCurrentlyPlaying && m_iActiveKeyFrameIndex >= 0 && m_FrameServer.Metadata.HitDrawing != null)
@@ -4557,6 +4557,11 @@ namespace Kinovea.ScreenManager
                 else if (metadata.HitDrawing is DrawingTestGrid)
                 {
                     ToolManager.SetStylePreset("TestGrid", ((DrawingTestGrid)metadata.HitDrawing).DrawingStyle);
+                    ToolManager.SavePresets();
+                }
+                else if (metadata.HitDrawing is DrawingNumberSequence)
+                {
+                    ToolManager.SetStylePreset("NumberSequence", ((DrawingNumberSequence)metadata.HitDrawing).DrawingStyle);
                     ToolManager.SavePresets();
                 }
             }

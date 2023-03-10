@@ -52,13 +52,12 @@ namespace Kinovea.ScreenManager
         {
             tools = new Dictionary<string, AbstractDrawingTool>();
 
-            // Standard tools internally defined.
-            // These tools cannot be easily externalized at the moment due to some special ctor parameters.
-            tools.Add("AutoNumbers", new DrawingToolAutoNumbers());
-            tools.Add("CoordinateSystem", new DrawingToolCoordinateSystem());
-            tools.Add("Magnifier", new DrawingToolMagnifier());
+            // Singleton tools and magnifier.
+            tools.Add("NumberSequence", new DrawingToolNumberSequence());
             tools.Add("Spotlight", new DrawingToolSpotlight());
+            tools.Add("CoordinateSystem", new DrawingToolCoordinateSystem());
             tools.Add("TestGrid", new DrawingToolTestGrid());
+            tools.Add("Magnifier", new DrawingToolMagnifier());
 
             // Custom tools (externally defined).
             foreach (AbstractDrawingTool customTool in GenericPostureManager.Tools)
@@ -249,7 +248,7 @@ namespace Kinovea.ScreenManager
                 }
                 else
                 {
-                    // For internal standard tool, we have to check types one by one.
+                    // For singleton drawings we have to check types one by one.
                     // The ones that are not listed here (auto numbers, spotlight, etc.) aren't supported.
                     if (drawing is DrawingCoordinateSystem)
                     {
@@ -258,6 +257,10 @@ namespace Kinovea.ScreenManager
                     else if (drawing is DrawingTestGrid)
                     {
                         return "TestGrid";
+                    }
+                    else if (drawing is DrawingNumberSequence)
+                    {
+                        return "NumberSequence";
                     }
                 }
             }

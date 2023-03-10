@@ -322,10 +322,11 @@ namespace Kinovea.ScreenManager
                         ParseChronos(r, scaling);
                         break;
                     case "Spotlights":
-                        metadata.SpotlightManager.ReadXml(r, scaling, RemapTimestamp, metadata);
+                        metadata.DrawingSpotlight.ReadXml(r, scaling, RemapTimestamp, metadata);
                         break;
                     case "AutoNumbers":
-                        metadata.AutoNumberManager.ReadXml(r, scaling, RemapTimestamp, metadata);
+                    case "NumberSequence":
+                        metadata.DrawingNumberSequence.ReadXml(r, scaling, RemapTimestamp, metadata);
                         break;
                     case "CoordinateSystem":
                         metadata.DrawingCoordinateSystem.ReadXml(r);
@@ -459,7 +460,7 @@ namespace Kinovea.ScreenManager
             WriteChronos(w, SerializationFilter.KVA);
             WriteTracks(w, SerializationFilter.KVA);
             WriteSpotlights(w);
-            WriteAutoNumbers(w);
+            WriteNumberSequence(w);
             WriteCoordinateSystem(w);
             WriteTrackablePoints(w);
             WriteVideoFilters(w);
@@ -554,20 +555,20 @@ namespace Kinovea.ScreenManager
         }
         private void WriteSpotlights(XmlWriter w)
         {
-            if (metadata.SpotlightManager.Count == 0)
+            if (metadata.DrawingSpotlight.Count == 0)
                 return;
 
             w.WriteStartElement("Spotlights");
-            metadata.SpotlightManager.WriteXml(w, SerializationFilter.KVA);
+            metadata.DrawingSpotlight.WriteXml(w, SerializationFilter.KVA);
             w.WriteEndElement();
         }
-        private void WriteAutoNumbers(XmlWriter w)
+        private void WriteNumberSequence(XmlWriter w)
         {
-            if (metadata.AutoNumberManager.Count == 0)
+            if (metadata.DrawingNumberSequence.Count == 0)
                 return;
 
-            w.WriteStartElement("AutoNumbers");
-            metadata.AutoNumberManager.WriteXml(w, SerializationFilter.KVA);
+            w.WriteStartElement("NumberSequence");
+            metadata.DrawingNumberSequence.WriteXml(w, SerializationFilter.KVA);
             w.WriteEndElement();
         }
         private void WriteCoordinateSystem(XmlWriter w)

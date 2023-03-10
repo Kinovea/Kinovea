@@ -559,8 +559,8 @@
     <Compile Include="Measurement\Calibration\LengthUnit.cs" />
     <Compile Include="Measurement\Calibration\UnitHelper.cs" />
     <Compile Include="Metadata\Drawings\AbstractMultiDrawing.cs" />
-    <Compile Include="Metadata\Drawings\AutoNumber.cs" />
-    <Compile Include="Metadata\Drawings\AutoNumberManager.cs" />
+    <Compile Include="Metadata\Drawings\DrawingNumberSequenceItem.cs" />
+    <Compile Include="Metadata\Drawings\DrawingNumberSequence.cs" />
     <Compile Include="Metadata\Drawings\BoundingBox.cs" />
     <Compile Include="Metadata\Drawings\DrawingBitmap.cs" />
     <Compile Include="Metadata\Drawings\DrawingCapabilities.cs" />
@@ -571,7 +571,7 @@
     <Compile Include="Metadata\Drawings\DrawingSVG.cs" />
     <Compile Include="Metadata\Drawings\DrawingToolCoordinateSystem.cs" />
     <Compile Include="Metadata\Drawings\DrawingToolMagnifier.cs" />
-    <Compile Include="Metadata\Drawings\DrawingToolAutoNumbers.cs" />
+    <Compile Include="Metadata\Drawings\DrawingToolNumberSequence.cs" />
     <Compile Include="Metadata\Drawings\DrawingToolSpotlight.cs" />
     <Compile Include="Metadata\Events\DrawingEventArgs.cs" />
     <Compile Include="Metadata\Events\MeasurableDrawingEventArgs.cs" />
@@ -624,8 +624,8 @@
     <Compile Include="Metadata\Interfaces\IScalable.cs" />
     <Compile Include="Metadata\Interfaces\ITrackable.cs" />
     <Compile Include="Metadata\Drawings\RoundedRectangle.cs" />
-    <Compile Include="Metadata\Drawings\Spotlight.cs" />
-    <Compile Include="Metadata\Drawings\SpotlightManager.cs" />
+    <Compile Include="Metadata\Drawings\DrawingSpotlightItem.cs" />
+    <Compile Include="Metadata\Drawings\DrawingSpotlight.cs" />
     <Compile Include="Metadata\Drawings\Styling\AbstractStyleElement.cs" />
     <Compile Include="Metadata\Drawings\Styling\StyleElementColor.cs" />
     <Compile Include="Metadata\Drawings\Styling\StyleElementFontSize.cs" />

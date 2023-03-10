@@ -240,8 +240,8 @@ namespace Kinovea.ScreenManager
                 return keyframes.Count > 0 ||
                         chronoManager.Drawings.Count > 0 ||
                         trackManager.Drawings.Count > 0 ||
-                        spotlightManager.Count > 0 ||
-                        autoNumberManager.Count > 0 ||
+                        drawingSpotlight.Count > 0 ||
+                        drawingNumberSequence.Count > 0 ||
                         drawingTestGrid.Visible ||
                         drawingCoordinateSystem.Visible ||
                         magnifier.Mode != MagnifierMode.Inactive;
@@ -296,13 +296,13 @@ namespace Kinovea.ScreenManager
             get { return magnifier;}
             set { magnifier = value;}
         }
-        public SpotlightManager SpotlightManager
+        public DrawingSpotlight DrawingSpotlight
         {
-            get { return spotlightManager;}
+            get { return drawingSpotlight;}
         }
-        public AutoNumberManager AutoNumberManager
+        public DrawingNumberSequence DrawingNumberSequence
         {
-            get { return autoNumberManager;}
+            get { return drawingNumberSequence;}
         }
         public DrawingCoordinateSystem DrawingCoordinateSystem
         {
@@ -458,8 +458,8 @@ namespace Kinovea.ScreenManager
         
         // Singleton drawings
         private DrawingManager<AbstractDrawing> singletonDrawingsManager = new DrawingManager<AbstractDrawing>();
-        private SpotlightManager spotlightManager;
-        private AutoNumberManager autoNumberManager;
+        private DrawingSpotlight drawingSpotlight;
+        private DrawingNumberSequence drawingNumberSequence;
         private DrawingCoordinateSystem drawingCoordinateSystem;
         private DrawingTestGrid drawingTestGrid;
         private Guid memoCoordinateSystemId;
@@ -1901,13 +1901,13 @@ namespace Kinovea.ScreenManager
             // Add the singleton drawings.
             // These drawings are unique and not attached to any particular key image.
             
-            spotlightManager = new SpotlightManager();
-            autoNumberManager = new AutoNumberManager(ToolManager.GetStylePreset("AutoNumbers"));
+            drawingSpotlight = new DrawingSpotlight();
+            drawingNumberSequence = new DrawingNumberSequence(ToolManager.GetStylePreset("NumberSequence"));
             drawingCoordinateSystem = new DrawingCoordinateSystem(Point.Empty, ToolManager.GetStylePreset("CoordinateSystem"));
             drawingTestGrid = new DrawingTestGrid(ToolManager.GetStylePreset("TestGrid"));
 
-            singletonDrawingsManager.AddDrawing(spotlightManager);
-            singletonDrawingsManager.AddDrawing(autoNumberManager);
+            singletonDrawingsManager.AddDrawing(drawingSpotlight);
+            singletonDrawingsManager.AddDrawing(drawingNumberSequence);
             singletonDrawingsManager.AddDrawing(drawingCoordinateSystem);
             singletonDrawingsManager.AddDrawing(drawingTestGrid);
 
@@ -1916,13 +1916,13 @@ namespace Kinovea.ScreenManager
             drawingTestGrid.ParentMetadata = this;
 
             // Handle the children of the spotlight which are trackable.
-            spotlightManager.TrackableDrawingAdded += (s, e) =>
+            drawingSpotlight.TrackableDrawingAdded += (s, e) =>
             {
                 if(AddTrackableDrawingCommand != null) 
                     AddTrackableDrawingCommand.Execute(e.TrackableDrawing); 
             };
             
-            spotlightManager.TrackableDrawingDeleted += (s, e) => DeleteTrackableDrawing(e.TrackableDrawing);
+            drawingSpotlight.TrackableDrawingDeleted += (s, e) => DeleteTrackableDrawing(e.TrackableDrawing);
         }
         private void CalibrationHelper_CalibrationChanged(object sender, EventArgs e)
         {
