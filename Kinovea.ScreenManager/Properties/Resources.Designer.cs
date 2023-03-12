@@ -813,6 +813,16 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap information {
+            get {
+                object obj = ResourceManager.GetObject("information", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap keyframesonly {
             get {
                 object obj = ResourceManager.GetObject("keyframesonly", resourceCulture);
@@ -956,6 +966,36 @@ namespace Kinovea.ScreenManager.Properties {
         internal static System.Drawing.Bitmap mosaic {
             get {
                 object obj = ResourceManager.GetObject("mosaic", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap navback {
+            get {
+                object obj = ResourceManager.GetObject("navback", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap navforward {
+            get {
+                object obj = ResourceManager.GetObject("navforward", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap navup {
+            get {
+                object obj = ResourceManager.GetObject("navup", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1296,6 +1336,16 @@ namespace Kinovea.ScreenManager.Properties {
         internal static System.Drawing.Bitmap snapsingle_1 {
             get {
                 object obj = ResourceManager.GetObject("snapsingle_1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sort {
+            get {
+                object obj = ResourceManager.GetObject("sort", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

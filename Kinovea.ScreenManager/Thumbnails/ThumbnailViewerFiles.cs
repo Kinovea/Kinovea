@@ -46,12 +46,23 @@ namespace Kinovea.ScreenManager
         private object locker = new object();
         private List<SummaryLoader> loaders = new List<SummaryLoader>();
         private List<ThumbnailFile> thumbnails = new List<ThumbnailFile>();
+        private string path;
         private List<string> files;
         private ThumbnailFile selectedThumbnail;
         private bool editing;
         private bool externalSelection;
         private string lastSelectedFile;
+
+        #region menu
         private ContextMenuStrip popMenu = new ContextMenuStrip();
+        private ToolStripMenuItem mnuSortBy = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSortByName = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSortByDate = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSortBySize = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSortAscending = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSortDescending = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuProperties = new ToolStripMenuItem();
+        #endregion
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -72,8 +83,9 @@ namespace Kinovea.ScreenManager
         }
 
         #region Public methods
-        public void CurrentDirectoryChanged(List<string> files)
+        public void CurrentDirectoryChanged(string path, List<string> files)
         {
+            this.path = path;
             this.files = files;
 
             PopulateViewer();
@@ -111,7 +123,16 @@ namespace Kinovea.ScreenManager
             foreach(ThumbnailFile tlvi in thumbnails)
                 tlvi.RefreshUICulture();
 
-            foreach (ToolStripMenuItem mnu in popMenu.Items)
+            mnuSortBy.Text = "Sort by";
+            mnuSortByName.Text = "Name";
+            mnuSortByDate.Text = "Date";
+            mnuSortBySize.Text = "Size";
+            mnuSortAscending.Text = "Ascending";
+            mnuSortDescending.Text = "Descending";
+
+            mnuProperties.Text = "Properties";
+
+            foreach (ToolStripMenuItem mnu in mnuProperties.DropDownItems)
             {
                 FileProperty prop = (FileProperty)mnu.Tag;
                 string resourceName = "FileProperty_" + prop.ToString();
@@ -133,6 +154,28 @@ namespace Kinovea.ScreenManager
 
         private void BuildContextMenus()
         {
+
+            // Sort by options.
+            mnuSortBy.Image = Properties.Resources.sort;
+            mnuSortByName.Click += (s, e) => UpdateSortAxis(FileSortAxis.Name);
+            mnuSortByDate.Click += (s, e) => UpdateSortAxis(FileSortAxis.Date);
+            mnuSortBySize.Click += (s, e) => UpdateSortAxis(FileSortAxis.Size);
+            mnuSortAscending.Click += (s, e) => UpdateSortAscending(true);
+            mnuSortDescending.Click += (s, e) => UpdateSortAscending(false);
+
+            mnuSortBy.DropDownItems.AddRange(new ToolStripItem[]
+            {
+                mnuSortByName,
+                mnuSortByDate,
+                mnuSortBySize,
+                new ToolStripSeparator(),
+                mnuSortAscending,
+                mnuSortDescending
+            });
+
+            mnuProperties.Image = Properties.Resources.information;
+
+            // Properties menus are built dynamically from the enum.
             foreach (FileProperty prop in Enum.GetValues(typeof(FileProperty)))
             {
                 if (!PreferencesManager.FileExplorerPreferences.FilePropertyVisibility.Visible.ContainsKey(prop))
@@ -157,8 +200,24 @@ namespace Kinovea.ScreenManager
                     InvalidateThumbnails();
                 };
 
-                popMenu.Items.Add(mnu);
+                mnuProperties.DropDownItems.Add(mnu);
             }
+
+
+            popMenu.Items.Add(mnuSortBy);
+            popMenu.Items.Add(mnuProperties);
+        }
+
+        private void PrepareSortMenus()
+        {
+            FileSortAxis axis = PreferencesManager.FileExplorerPreferences.FileSortAxis;
+            bool ascending = PreferencesManager.FileExplorerPreferences.FileSortAscending;
+
+            mnuSortByName.Checked = axis == FileSortAxis.Name;
+            mnuSortByDate.Checked = axis == FileSortAxis.Date;
+            mnuSortBySize.Checked = axis == FileSortAxis.Size;
+            mnuSortAscending.Checked = ascending;
+            mnuSortDescending.Checked = !ascending;
         }
 
         #region Organize and Display
@@ -364,6 +423,7 @@ namespace Kinovea.ScreenManager
             // Clicked off nowhere.
             Deselect(true);
             CancelEditMode();
+            PrepareSortMenus();
         }
 
         private void Deselect(bool raiseEvent)
@@ -473,6 +533,20 @@ namespace Kinovea.ScreenManager
             }
 
             return handled || base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void UpdateSortAxis(FileSortAxis axis)
+        {
+            PreferencesManager.FileExplorerPreferences.FileSortAxis = axis;
+            PreferencesManager.Save();
+            NotificationCenter.RaiseRefreshFileExplorer(this, true);
+        }
+
+        private void UpdateSortAscending(bool ascending)
+        {
+            PreferencesManager.FileExplorerPreferences.FileSortAscending = ascending;
+            PreferencesManager.Save();
+            NotificationCenter.RaiseRefreshFileExplorer(this, true);
         }
 
         #region Commands

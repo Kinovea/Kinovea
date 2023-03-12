@@ -198,6 +198,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileBrowser.cs" />
+    <Compile Include="SessionHistory.cs" />
     <Compile Include="UserInterface\FormCameraWizard.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -343,6 +344,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\film_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\sort.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">

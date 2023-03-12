@@ -118,6 +118,18 @@ namespace Kinovea.Services
             set { lastReplayFolder = value; }
         }
 
+        public FileSortAxis FileSortAxis
+        {
+            get { return fileSortAxis; }
+            set { fileSortAxis = value; }
+        }
+
+        public bool FileSortAscending
+        {
+            get { return fileSortAscending; }
+            set { fileSortAscending = value; }
+        }
+
         private int maxRecentFiles = 10;
         private int maxRecentCapturedFiles = 10;
         private List<string> recentFiles = new List<string>();
@@ -131,6 +143,8 @@ namespace Kinovea.Services
         private string lastBrowsedDirectory;
         private FilePropertyVisibility filePropertyVisibility = new FilePropertyVisibility();
         private string lastReplayFolder;
+        private FileSortAxis fileSortAxis = FileSortAxis.Name;
+        private bool fileSortAscending = true;
         
         public void AddRecentFile(string file)
         {
@@ -245,6 +259,8 @@ namespace Kinovea.Services
             writer.WriteEndElement();
 
             writer.WriteElementString("LastReplayFolder", lastReplayFolder);
+            writer.WriteElementString("FileSortAxis", fileSortAxis.ToString());
+            writer.WriteElementString("FileSortAscending", XmlHelper.WriteBoolean(fileSortAscending));
         }
 
         private void WriteRecents(XmlWriter writer, List<string> recentFiles, int max, string collectionTag, string itemTag)
@@ -311,6 +327,12 @@ namespace Kinovea.Services
                         break;
                     case "LastReplayFolder":
                         lastReplayFolder = reader.ReadElementContentAsString();
+                        break;
+                    case "FileSortAxis":
+                        fileSortAxis = (FileSortAxis)Enum.Parse(typeof(FileSortAxis), reader.ReadElementContentAsString());
+                        break;
+                    case "FileSortAscending":
+                        fileSortAscending = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     default:
                         reader.ReadOuterXml();

@@ -210,7 +210,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AlphanumComparator.cs" />
+    <Compile Include="Filesystem\AlphanumComparator.cs" />
+    <Compile Include="Filesystem\FileComparator.cs" />
+    <Compile Include="Filesystem\FolderNavigationType.cs" />
+    <Compile Include="Filesystem\FileSortAxis.cs" />
     <Compile Include="Infrastructure\BitmapHelper.cs" />
     <Compile Include="Types\CSVDecimalSeparator.cs" />
     <Compile Include="Types\ExportSpace.cs" />
@@ -277,7 +280,7 @@
     <Compile Include="Events\FileActionEventArgs.cs" />
     <Compile Include="Events\NotificationCenter.cs" />
     <Compile Include="Events\RefreshFileExplorerEventArgs.cs" />
-    <Compile Include="FilesystemHelper.cs" />
+    <Compile Include="Filesystem\FilesystemHelper.cs" />
     <Compile Include="Preferences\IPreferenceSerializer.cs" />
     <Compile Include="Preferences\KeyboardPreferences.cs" />
     <Compile Include="WinForms\Commands.cs" />
