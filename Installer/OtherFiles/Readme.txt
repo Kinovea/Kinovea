@@ -59,8 +59,8 @@ Changelog:
     Improved - Playback: Video filters are no longer deactivated when changing the working zone.
     Improved - Playback: Support rotation on single image files.
     Improved - Annotations: Support drag and drop between the keyframe list and the timeline to change keyframe time.
-    Improved - Annotations: Use color coding of keyframes in the timeline.
     Improved - Annotations: Support transferring a keyframe to the current time.
+    Improved - Annotations: Use color coding of keyframes in the timeline.
     Improved - Annotations: Support undo/redo for moving drawings.
     Improved - Annotations: Render drawings under the magnifier source.
     Improved - Annotations: Support moving all number objects at once using the SHIFT key.
@@ -68,14 +68,14 @@ Changelog:
     Improved - Capture: Image aspect and rotation from camera are now saved in the capture KVA.
     Improved - Capture: Added milliseconds to file naming patterns.
     Improved - Capture: Added new options to the camera test grid.
-    Improved - Export: Output to Microsoft Excel now uses Office Open XML (XLSX) instead of MS-XML format.
-    Improved - Export: Output to LibreOffice Calc is now fully conformant with ODF 1.2 standard.
-    Improved - Export: All time types are now exported as numbers, textual timecodes are expressed in seconds.
-    Improved - Export: Support exporting positions, distances and angles from posture-based tools.
-    Improved - Export: Support exporting computed positions (e.g: center of mass from human model tool).
-    Improved - Export: Support exporting start and stop times for Chronometers.
-    Improved - Export: Support exporting time series from trajectories and tracked objects.
-    Improved - Export: Support exporting the unit used for distances and times.
+    Improved - Data export: Output to Microsoft Excel now uses Office Open XML (XLSX) instead of MS-XML format.
+    Improved - Data export: Output to LibreOffice Calc is now fully conformant with ODF 1.2 standard.
+    Improved - Data export: All time types are now exported as numbers, textual timecodes are expressed in seconds.
+    Improved - Data export: Support exporting positions, distances and angles from posture-based tools.
+    Improved - Data export: Support exporting computed positions (e.g: center of mass from human model tool).
+    Improved - Data export: Support exporting start and stop times for Chronometers.
+    Improved - Data export: Support exporting time series from trajectories and tracked objects.
+    Improved - Data export: Support exporting the unit used for distances and times.
     Fixed - When loading the same data file twice the keyframes and drawings could be duplicated.
     Fixed - Data angles on key images that hadn't been visited were not exported correctly.
     Fixed - Angles in radians were not exported correctly.
