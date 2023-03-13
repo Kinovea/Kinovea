@@ -40,6 +40,7 @@
     <subentry name="AngleToVertical" />
   </entry>
   <entry name="Chrono">
+    <subentry name="ChronoMulti" />
     <subentry name="Clock" />
     <subentry name="TimeSegment" />
   </entry>

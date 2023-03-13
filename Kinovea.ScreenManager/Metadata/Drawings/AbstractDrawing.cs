@@ -57,6 +57,15 @@ namespace Kinovea.ScreenManager
         {
             get { return (Caps & DrawingCapabilities.CopyPaste) == DrawingCapabilities.CopyPaste; }
         }
+
+        /// <summary>
+        /// Metadata object this drawing belongs to.
+        /// </summary>
+        public virtual Metadata ParentMetadata
+        {
+            get { return parentMetadata; }
+            set { parentMetadata = value; }
+        }
         #endregion
 
 
@@ -107,6 +116,7 @@ namespace Kinovea.ScreenManager
         #region Concrete members
         protected Guid identifier = Guid.NewGuid();
         protected string name;
+        protected Metadata parentMetadata;
         #endregion
 
         #region Abstract methods

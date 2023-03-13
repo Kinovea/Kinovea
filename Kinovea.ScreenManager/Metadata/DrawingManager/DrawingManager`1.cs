@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// A generic and bare bone drawing manager.
+    /// A generic and bare bone drawing manager, which is basically a collection of drawings.
     /// </summary>
     public class DrawingManager<T> : AbstractDrawingManager
     {

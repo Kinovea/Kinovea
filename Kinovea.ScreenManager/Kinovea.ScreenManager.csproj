@@ -298,6 +298,7 @@
     <Compile Include="Measurement\Geometry\SVD.cs" />
     <Compile Include="Measurement\Geometry\Vector3.cs" />
     <Compile Include="Metadata\DrawingManager\DrawingManager`1.cs" />
+    <Compile Include="Metadata\Drawings\DrawingChrono.cs" />
     <Compile Include="Metadata\Drawings\DrawingLine.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPostureOption.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPosturePolyline.cs" />
@@ -564,7 +565,7 @@
     <Compile Include="Metadata\Drawings\BoundingBox.cs" />
     <Compile Include="Metadata\Drawings\DrawingBitmap.cs" />
     <Compile Include="Metadata\Drawings\DrawingCapabilities.cs" />
-    <Compile Include="Metadata\Drawings\DrawingChrono.cs" />
+    <Compile Include="Metadata\Drawings\DrawingChronoMulti.cs" />
     <Compile Include="Metadata\Drawings\DrawingCircle.cs" />
     <Compile Include="Metadata\Drawings\CoordinateSystem\DrawingCoordinateSystem.cs" />
     <Compile Include="Metadata\Drawings\Styling\DrawingStyle.cs" />

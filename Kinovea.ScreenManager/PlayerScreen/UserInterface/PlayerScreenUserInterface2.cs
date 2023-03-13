@@ -2854,7 +2854,9 @@ namespace Kinovea.ScreenManager
             {
                 CreateNewMultiDrawingItem(m_FrameServer.Metadata.DrawingNumberSequence);
             }
-            else if (m_ActiveTool == ToolManager.Tools["Chrono"] || m_ActiveTool == ToolManager.Tools["Clock"])
+            else if (m_ActiveTool == ToolManager.Tools["Chrono"] || 
+                m_ActiveTool == ToolManager.Tools["Clock"] || 
+                m_ActiveTool == ToolManager.Tools["ChronoMulti"])
             {
                 CreateNewDrawing(m_FrameServer.Metadata.ChronoManager.Id);
             }
@@ -3039,13 +3041,13 @@ namespace Kinovea.ScreenManager
                 popMenuDrawings.Items.Add(mnuDeleteDrawing);
                 panelCenter.ContextMenuStrip = popMenuDrawings;
             }
-            else if ((hitDrawing = m_FrameServer.Metadata.IsOnUnattachedDrawing(m_DescaledMouse, m_iCurrentPosition)) != null)
+            else if ((hitDrawing = m_FrameServer.Metadata.IsOnDetachedDrawing(m_DescaledMouse, m_iCurrentPosition)) != null)
             {
                 // Unlike attached drawings, each extra drawing type has its own context menu for now.
                 // TODO: use the custom menus system to host these menus inside the drawing instead of here.
                 // Only the drawing itself knows what to do upon click anyway.
 
-                if (hitDrawing is DrawingChrono)
+                if (hitDrawing is DrawingChrono || hitDrawing is DrawingChronoMulti)
                 {
                     AbstractDrawing drawing = hitDrawing;
                     PrepareDrawingContextMenu(drawing, popMenuDrawings);
@@ -3542,9 +3544,9 @@ namespace Kinovea.ScreenManager
                     mnuConfigureDrawing_Click(null, EventArgs.Empty);
                 }
             }
-            else if ((hitDrawing = m_FrameServer.Metadata.IsOnUnattachedDrawing(m_DescaledMouse, m_iCurrentPosition)) != null)
+            else if ((hitDrawing = m_FrameServer.Metadata.IsOnDetachedDrawing(m_DescaledMouse, m_iCurrentPosition)) != null)
             {
-                if (hitDrawing is DrawingChrono)
+                if (hitDrawing is DrawingChrono || hitDrawing is DrawingChronoMulti)
                 {
                     mnuConfigureDrawing_Click(null, EventArgs.Empty);
                 }
@@ -3725,7 +3727,7 @@ namespace Kinovea.ScreenManager
             if (m_FrameServer.Metadata.ActiveVideoFilter != null)
                 m_FrameServer.Metadata.ActiveVideoFilter.DrawExtra(canvas, transformer, timestamp);
 
-            foreach (DrawingChrono chrono in m_FrameServer.Metadata.ChronoManager.Drawings)
+            foreach (AbstractDrawing chrono in m_FrameServer.Metadata.ChronoManager.Drawings)
             {
                 bool selected = m_FrameServer.Metadata.HitDrawing == chrono;
                 chrono.Draw(canvas, distorter, transformer, selected, timestamp);
@@ -4737,20 +4739,12 @@ namespace Kinovea.ScreenManager
             if (!drawing.IsCopyPasteable)
                 return;
 
-            Guid managerId;
-            if (drawing is DrawingChrono)
+            // Note: the keyframe we used to copy from may not exist anymore. In this case we create a new keyframe.
+            Guid managerId = m_FrameServer.Metadata.FindManagerId(drawing);
+            if (managerId == Guid.Empty && m_FrameServer.Metadata.IsAttachedDrawing(drawing))
             {
-                managerId = m_FrameServer.Metadata.ChronoManager.Id;
-            }
-            else
-            {
+                AddKeyframe();
                 Keyframe kf = m_FrameServer.Metadata.HitKeyframe;
-                if (kf == null)
-                {
-                    AddKeyframe();
-                    kf = m_FrameServer.Metadata.HitKeyframe;
-                }
-
                 managerId = kf.Id;
             }
 

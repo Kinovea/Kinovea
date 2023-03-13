@@ -48,7 +48,7 @@ namespace Kinovea.ScreenManager
     ///
     /// We have essentially 3 types of drawings:
     /// - attached to a keyframe (ex: a line or angle object),
-    /// - unattached (ex: a stopwatch or track object),
+    /// - detached (ex: a stopwatch or track object),
     /// - singletons (ex: the coordinate system or the number sequence).
     /// </summary>
     public class Metadata
@@ -90,7 +90,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public bool IsDirty
         {
-            get 
+            get
             {
                 int currentHash = GetContentHash();
                 bool dirty = currentHash != referenceHash;
@@ -312,7 +312,7 @@ namespace Kinovea.ScreenManager
         {
             get { return drawingTestGrid; }
         }
-        public DrawingManager<DrawingChrono> ChronoManager
+        public DrawingManager<AbstractDrawing> ChronoManager
         {
             get { return chronoManager; }
         }
@@ -452,8 +452,8 @@ namespace Kinovea.ScreenManager
         private AbstractDrawing hitDrawing;
         private AbstractDrawingManager hitDrawingOwner;
 
-        // Unattached drawings.
-        private DrawingManager<DrawingChrono> chronoManager = new DrawingManager<DrawingChrono>();
+        // Detached drawings.
+        private DrawingManager<AbstractDrawing> chronoManager = new DrawingManager<AbstractDrawing>();
         private DrawingManager<DrawingTrack> trackManager = new DrawingManager<DrawingTrack>();
         
         // Singleton drawings
@@ -606,10 +606,16 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Returns whether this drawing is the kind of drawing that is attached to a keyframe.
+        /// This doesn't necessarily mean it is currently parented to an actual keyframe.
         /// </summary>
         public bool IsAttachedDrawing(AbstractDrawing drawing)
         {
-            return !(drawing is DrawingChrono) && !(drawing is DrawingTrack) && !SingletonDrawingsManager.Drawings.Contains(drawing);
+            bool detached = 
+                chronoManager.Drawings.Contains(drawing) ||
+                trackManager.Drawings.Contains(drawing) ||
+                SingletonDrawingsManager.Drawings.Contains(drawing);
+
+            return !detached; 
         }
 
         /// <summary>
@@ -617,7 +623,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public Guid FindManagerId(AbstractDrawing drawing)
         {
-            if (drawing is DrawingChrono)
+            if (drawing is DrawingChrono || drawing is DrawingChronoMulti)
             {
                 return chronoManager.Id;
             }
@@ -856,11 +862,12 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            if (chronoManager.Id == managerId && drawing is DrawingChrono)
+            if (chronoManager.Id == managerId && (drawing is DrawingChrono || drawing is DrawingChronoMulti))
             {
                 bool known = chronoManager.Drawings.Any(d => d.Id == drawing.Id);
                 if (!known)
-                    AddChrono(drawing as DrawingChrono);
+                    AddChrono(drawing);
+
                 return;
             }
 
@@ -882,6 +889,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             keyframe.AddDrawing(drawing);
+            drawing.ParentMetadata = this;
             drawing.InfosFading.ReferenceTimestamp = keyframe.Position;
             drawing.InfosFading.AverageTimeStampsPerFrame = averageTimeStampsPerFrame;
             if (captureKVA)
@@ -914,7 +922,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Adds a new chronometer drawing.
         /// </summary>
-        public void AddChrono(DrawingChrono chrono)
+        public void AddChrono(AbstractDrawing chrono)
         {
             chronoManager.AddDrawing(chrono);
             chrono.ParentMetadata = this;
@@ -933,7 +941,6 @@ namespace Kinovea.ScreenManager
         public void AddTrack(DrawingTrack track)
         {
             trackManager.AddDrawing(track);
-
             track.ParentMetadata = this;
             
             if (lastUsedTrackerParameters != null)
@@ -1154,14 +1161,20 @@ namespace Kinovea.ScreenManager
             }
 
             // Times.
-            foreach (DrawingChrono chrono in ChronoManager.Drawings)
-                md.Times.Add(chrono.CollectMeasuredData());
+            foreach (AbstractDrawing d in chronoManager.Drawings)
+            {   
+                if (d is DrawingChrono)
+                    md.Times.Add(((DrawingChrono)d).CollectMeasuredData());
+
+                if (d is DrawingChronoMulti)
+                    md.Times.Add(((DrawingChronoMulti)d).CollectMeasuredData());
+            }
             md.Times.Sort((a, b) => a.Start.CompareTo(b.Start));
 
             md.Timeseries = new List<MeasuredDataTimeseries>();
             
             // Tracks.
-            foreach (DrawingTrack track in TrackManager.Drawings)
+            foreach (DrawingTrack track in trackManager.Drawings)
                 md.Timeseries.Add(track.CollectMeasuredData());
             
             // Timelines.
@@ -1430,6 +1443,8 @@ namespace Kinovea.ScreenManager
             if (string.IsNullOrEmpty(drawing.Name))
                 SetDrawingName(drawing);
 
+            drawing.ParentMetadata = this;
+
             if (drawing is IScalable)
                 ((IScalable)drawing).Scale(this.ImageSize);
 
@@ -1449,12 +1464,6 @@ namespace Kinovea.ScreenManager
             {
                 DrawingDistortionGrid d = drawing as DrawingDistortionGrid;
                 d.LensCalibrationAsked += LensCalibrationAsked;
-            }
-
-            if (drawing is DrawingTimeSegment)
-            {
-                DrawingTimeSegment d = drawing as DrawingTimeSegment;
-                d.ParentMetadata = this;
             }
         }
 
@@ -1583,14 +1592,14 @@ namespace Kinovea.ScreenManager
 
 
         /// <summary>
-        /// Hit test the passed point with regards to unattached and singleton drawings.
+        /// Hit test the passed point with regards to detached and singleton drawings.
         /// Returns the hit drawing (or null if none), and selects it.
         /// </summary>
-        public AbstractDrawing IsOnUnattachedDrawing(PointF point, long timestamp)
+        public AbstractDrawing IsOnDetachedDrawing(PointF point, long timestamp)
         {
             AbstractDrawing result = null;
 
-            foreach (DrawingChrono chrono in chronoManager.Drawings)
+            foreach (AbstractDrawing chrono in chronoManager.Drawings)
             {
                 int hit = chrono.HitTest(point, timestamp, calibrationHelper.DistortionHelper, imageTransform, imageTransform.Zooming);
                 if (hit < 0)
@@ -1875,7 +1884,7 @@ namespace Kinovea.ScreenManager
         private int GetSingletonDrawingsContentHash()
         {
             int hash = 0;
-            foreach (DrawingChrono chrono in chronoManager.Drawings)
+            foreach (AbstractDrawing chrono in chronoManager.Drawings)
                 hash ^= chrono.ContentHash;
 
             foreach (DrawingTrack track in trackManager.Drawings)

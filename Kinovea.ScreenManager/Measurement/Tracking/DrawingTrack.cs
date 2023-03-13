@@ -152,7 +152,7 @@ namespace Kinovea.ScreenManager
         {    
             get { return styleHelper.Color; }
         }
-        public Metadata ParentMetadata
+        public override Metadata ParentMetadata
         {
             get { return parentMetadata; }    // unused.
             set 
@@ -252,7 +252,6 @@ namespace Kinovea.ScreenManager
         // Memorization poul
         private TrackView memoTrackView;
         private string memoLabel;
-        private Metadata parentMetadata;
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion

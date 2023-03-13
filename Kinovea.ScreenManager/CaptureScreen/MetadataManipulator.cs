@@ -219,7 +219,7 @@ namespace Kinovea.ScreenManager
             int keyframeIndex = 0;
             metadata.DeselectAll();
             metadata.IsOnDrawing(keyframeIndex, imagePoint, fixedTimestamp);
-            metadata.IsOnUnattachedDrawing(imagePoint, fixedTimestamp);
+            metadata.IsOnDetachedDrawing(imagePoint, fixedTimestamp);
         }
         
         public Cursor GetCursor(float scale)

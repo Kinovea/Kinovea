@@ -110,11 +110,7 @@ namespace Kinovea.ScreenManager
                 return contextMenu;
             }
         }
-        public Metadata ParentMetadata
-        {
-            get { return parentMetadata; }    // unused.
-            set { parentMetadata = value; }
-        }
+        
         public long TimeStart
         {
             get { return startCountingTimestamp; }
@@ -154,7 +150,6 @@ namespace Kinovea.ScreenManager
 
         private ToolStripMenuItem mnuShowLabel = new ToolStripMenuItem();
 
-        private Metadata parentMetadata;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 

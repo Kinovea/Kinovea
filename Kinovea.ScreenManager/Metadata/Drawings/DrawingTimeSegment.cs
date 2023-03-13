@@ -85,11 +85,6 @@ namespace Kinovea.ScreenManager
         {
             get { return initializing; }
         }
-        public Metadata ParentMetadata
-        {
-            get { return parentMetadata; }    // unused.
-            set { parentMetadata = value; }
-        }
         #endregion
 
         #region Members
@@ -105,7 +100,6 @@ namespace Kinovea.ScreenManager
         private InfosFading infosFading;
 
         // Context menu
-        private Metadata parentMetadata;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 

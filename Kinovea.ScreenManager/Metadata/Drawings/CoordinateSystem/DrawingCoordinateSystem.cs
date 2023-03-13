@@ -96,13 +96,6 @@ namespace Kinovea.ScreenManager
                 return contextMenu; 
             }
         }
-
-        public Metadata ParentMetadata
-        {
-            get { return parentMetadata; }    // unused.
-            set { parentMetadata = value; }
-        }
-
         public bool Visible { get; set; }
         public CalibrationHelper CalibrationHelper {get; set;}
         #endregion
@@ -130,8 +123,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem menuShowGrid = new ToolStripMenuItem();
         private ToolStripMenuItem menuShowGraduations = new ToolStripMenuItem();
         private ToolStripMenuItem menuHide = new ToolStripMenuItem();
-
-        private Metadata parentMetadata;
+        
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 

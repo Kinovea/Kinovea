@@ -70,11 +70,6 @@ namespace Kinovea.ScreenManager
         {
             get { return DrawingCapabilities.ConfigureColorSize; }
         }
-        public Metadata ParentMetadata
-        {
-            get { return parentMetadata; }    // unused.
-            set { parentMetadata = value; }
-        }
         public bool Visible { get; set; }
         #endregion
 
@@ -86,7 +81,6 @@ namespace Kinovea.ScreenManager
         private Dictionary<string, GridLine> gridLines = new Dictionary<string, GridLine>();
 
         private ToolStripMenuItem menuHide = new ToolStripMenuItem();
-        private Metadata parentMetadata;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 

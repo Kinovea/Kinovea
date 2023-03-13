@@ -539,11 +539,29 @@ namespace Kinovea.ScreenManager
             // We will store the range coords in a Point object, to get a couple of ints structure.
             // X will be the left coordinate, Y the width.
             chronosMarks.Clear();
-            foreach (DrawingChrono chrono in metadata.ChronoManager.Drawings)
+            foreach (AbstractDrawing d in metadata.ChronoManager.Drawings)
             {
-                if (chrono.TimeStart != long.MaxValue && chrono.TimeStop != long.MaxValue)
+                if (d is DrawingChrono)
                 {
-                    // Only chronos that have an end and something inside the selection.
+                    DrawingChrono chrono = d as DrawingChrono;
+                    if (chrono.TimeStart == long.MaxValue || chrono.TimeStop == long.MaxValue)
+                        continue;
+
+                    // Only if we have an end and something inside the selection.
+                    if (chrono.TimeStart <= maxTimestamp && chrono.TimeStop >= minTimestamp)
+                    {
+                        Point range = TimestampToPixel(chrono.TimeStart, chrono.TimeStop);
+                        Color color = chrono.Color;
+                        chronosMarks.Add(new Pair<Point, Color>(range, color));
+                    }
+                }
+                else if (d is DrawingChronoMulti)
+                {
+                    DrawingChronoMulti chrono = d as DrawingChronoMulti;
+                    if (chrono.TimeStart == long.MaxValue || chrono.TimeStop == long.MaxValue)
+                        continue;
+
+                    // Only if we have an end and something inside the selection.
                     if (chrono.TimeStart <= maxTimestamp && chrono.TimeStop >= minTimestamp)
                     {
                         Point range = TimestampToPixel(chrono.TimeStart, chrono.TimeStop);
