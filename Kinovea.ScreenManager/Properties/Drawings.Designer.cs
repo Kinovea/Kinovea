@@ -133,6 +133,16 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap chrono_split {
+            get {
+                object obj = ResourceManager.GetObject("chrono_split", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap chronostart {
             get {
                 object obj = ResourceManager.GetObject("chronostart", resourceCulture);
@@ -736,6 +746,16 @@ namespace Kinovea.ScreenManager.Properties {
         internal static System.Drawing.Bitmap stopwatch {
             get {
                 object obj = ResourceManager.GetObject("stopwatch", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap stopwatch_multi {
+            get {
+                object obj = ResourceManager.GetObject("stopwatch_multi", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

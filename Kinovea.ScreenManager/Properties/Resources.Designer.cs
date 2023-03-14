@@ -213,6 +213,26 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap chronosectionend {
+            get {
+                object obj = ResourceManager.GetObject("chronosectionend", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap chronosectionstart {
+            get {
+                object obj = ResourceManager.GetObject("chronosectionstart", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap clipboard_block {
             get {
                 object obj = ResourceManager.GetObject("clipboard_block", resourceCulture);
@@ -743,9 +763,29 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap handlersetleft1 {
+            get {
+                object obj = ResourceManager.GetObject("handlersetleft1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap handlersetright {
             get {
                 object obj = ResourceManager.GetObject("handlersetright", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap handlersetright1 {
+            get {
+                object obj = ResourceManager.GetObject("handlersetright1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

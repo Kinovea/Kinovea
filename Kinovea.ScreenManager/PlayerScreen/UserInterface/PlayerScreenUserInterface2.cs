@@ -3179,7 +3179,7 @@ namespace Kinovea.ScreenManager
             // These change the drawing core state. (ex: angle orientation, measurement display option, start/stop chrono, etc.).
             bool hasExtraMenus = AddDrawingCustomMenus(drawing, popMenu.Items);
 
-            // Goto parent keyframe menu.
+            // "Goto parent keyframe" menu.
             if (!m_FrameServer.Metadata.DrawingInitializing && drawing.InfosFading != null && m_FrameServer.Metadata.IsAttachedDrawing(drawing))
             {
                 bool gotoVisible = PreferencesManager.PlayerPreferences.DefaultFading.Enabled && (drawing.InfosFading.ReferenceTimestamp != m_iCurrentPosition);
@@ -3245,11 +3245,18 @@ namespace Kinovea.ScreenManager
         }
         private bool AddDrawingCustomMenus(AbstractDrawing drawing, ToolStripItemCollection menuItems)
         {
-            bool hasExtraMenu = (drawing.ContextMenu != null && drawing.ContextMenu.Count > 0);
+            List<ToolStripItem> extraMenu;
+            
+            if (drawing is DrawingChronoMulti)
+                extraMenu = ((DrawingChronoMulti)drawing).GetContextMenu(m_iCurrentPosition);
+            else
+                extraMenu = drawing.ContextMenu;
+
+            bool hasExtraMenu = (extraMenu != null && extraMenu.Count > 0);
             if (!hasExtraMenu)
                 return false;
 
-            foreach (ToolStripItem tsmi in drawing.ContextMenu)
+            foreach (ToolStripItem tsmi in extraMenu)
             {
                 ToolStripMenuItem menuItem = tsmi as ToolStripMenuItem;
 

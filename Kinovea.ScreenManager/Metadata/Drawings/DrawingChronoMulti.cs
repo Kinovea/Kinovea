@@ -33,6 +33,7 @@ using System.Xml.Serialization;
 
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
+using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
 {
@@ -53,9 +54,7 @@ namespace Kinovea.ScreenManager
             {
                 int iHash = visibleTimestamp.GetHashCode();
                 iHash ^= invisibleTimestamp.GetHashCode();
-                iHash ^= startCountingTimestamp.GetHashCode();
-                iHash ^= stopCountingTimestamp.GetHashCode();
-                iHash ^= clockOriginTimestamp.GetHashCode();
+                iHash ^= sections.GetHashCode();
 
                 iHash ^= styleHelper.ContentHash;
                 iHash ^= showLabel.GetHashCode();
@@ -86,50 +85,23 @@ namespace Kinovea.ScreenManager
         {
             get
             {
-                List<ToolStripItem> contextMenu = new List<ToolStripItem>();
-
-                mnuVisibility.Text = ScreenManagerLang.Generic_Visibility;
-                mnuHideBefore.Text = ScreenManagerLang.mnuHideBefore;
-                mnuShowBefore.Text = ScreenManagerLang.mnuShowBefore;
-                mnuHideAfter.Text = ScreenManagerLang.mnuHideAfter;
-                mnuShowAfter.Text = ScreenManagerLang.mnuShowAfter;
-
-                if (styleHelper.Clock)
-                {
-                    mnuMarkOrigin.Text = ScreenManagerLang.mnuMarkTimeAsOriginClock;
-                    contextMenu.AddRange(new ToolStripItem[] { mnuVisibility, mnuMarkOrigin });
-                }
-                else
-                {
-                    mnuStart.Text = ScreenManagerLang.mnuChronoStart;
-                    mnuStop.Text = ScreenManagerLang.mnuChronoStop;
-                    contextMenu.AddRange(new ToolStripItem[] { mnuVisibility, mnuStart, mnuStop });
-                }
-
-                mnuShowLabel.Text = ScreenManagerLang.mnuShowLabel;
-                mnuShowLabel.Checked = showLabel;
-                contextMenu.Add(mnuShowLabel);
-
-                return contextMenu;
+                // This drawing needs to know the current time to produce the right menus.
+                throw new InvalidProgramException();
             }
         }
-        public long TimeStart
+        public List<VideoSection> VideoSections
         {
-            get { return startCountingTimestamp; }
-        }
-        public long TimeStop
-        {
-            get { return stopCountingTimestamp; }
+            get { return sections; }
         }
         #endregion
 
         #region Members
         // Core
+
         private long visibleTimestamp;               	// chrono becomes visible.
         private long invisibleTimestamp;             	// chrono stops being visible.
-        private long startCountingTimestamp;         	// chrono starts counting.
-        private long stopCountingTimestamp;          	// chrono stops counting.
-        private long clockOriginTimestamp;              // time origin for clock mode.
+        private List<VideoSection> sections = new List<VideoSection>(); // start and stop counting.
+        private long currentTimestamp;              // timestamp for context-menu operations.
         private string timecode;
         private bool showLabel;
         // Decoration
@@ -140,17 +112,26 @@ namespace Kinovea.ScreenManager
         private RoundedRectangle mainBackground = new RoundedRectangle();
         private RoundedRectangle lblBackground = new RoundedRectangle();
 
+        #region Menu
         private ToolStripMenuItem mnuVisibility = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHideBefore = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowBefore = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHideAfter = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowAfter = new ToolStripMenuItem();
 
+        private ToolStripMenuItem mnuAction = new ToolStripMenuItem();
         private ToolStripMenuItem mnuStart = new ToolStripMenuItem();
         private ToolStripMenuItem mnuStop = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuMarkOrigin = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSplit = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuRenameSection = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuMoveCurrentStart = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuMoveCurrentEnd = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuMovePreviousEnd = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuMoveNextStart = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuDeleteSection = new ToolStripMenuItem();
 
         private ToolStripMenuItem mnuShowLabel = new ToolStripMenuItem();
+        #endregion
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -160,10 +141,7 @@ namespace Kinovea.ScreenManager
         {
             // Core
             visibleTimestamp = 0;
-            startCountingTimestamp = long.MaxValue;
-            stopCountingTimestamp = long.MaxValue;
             invisibleTimestamp = long.MaxValue;
-            clockOriginTimestamp = long.MaxValue;
             mainBackground.Rectangle = new RectangleF(p, SizeF.Empty);
 
             timecode = "error";
@@ -184,7 +162,18 @@ namespace Kinovea.ScreenManager
             infosFading.FadingFrames = allowedFramesOver;
             infosFading.UseDefault = false;
 
-            mnuVisibility.Image = Properties.Drawings.persistence;
+            InitializeMenus();
+        }
+
+        public DrawingChronoMulti(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
+            : this(PointF.Empty, 0, 1, null)
+        {
+            ReadXml(xmlReader, scale, timestampMapper);
+        }
+
+        private void InitializeMenus()
+        {
+            // Visibility menus.
             mnuShowBefore.Image = Properties.Drawings.showbefore;
             mnuShowAfter.Image = Properties.Drawings.showafter;
             mnuHideBefore.Image = Properties.Drawings.hidebefore;
@@ -193,22 +182,38 @@ namespace Kinovea.ScreenManager
             mnuShowAfter.Click += MnuShowAfter_Click;
             mnuHideBefore.Click += MnuHideBefore_Click;
             mnuHideAfter.Click += MnuHideAfter_Click;
-            mnuVisibility.DropDownItems.AddRange(new ToolStripItem[] { mnuShowBefore, mnuShowAfter, new ToolStripSeparator(),  mnuHideBefore, mnuHideAfter });
+            mnuVisibility.Image = Properties.Drawings.persistence;
+            mnuVisibility.DropDownItems.AddRange(new ToolStripItem[] { 
+                mnuShowBefore, 
+                mnuShowAfter, 
+                new ToolStripSeparator(), 
+                mnuHideBefore, 
+                mnuHideAfter });
 
+            // Action menus
+            mnuAction.Image = Properties.Drawings.stopwatch;
             mnuStart.Image = Properties.Drawings.chronostart;
             mnuStop.Image = Properties.Drawings.chronostop;
-            mnuMarkOrigin.Image = Properties.Resources.marker;
+            mnuSplit.Image = Properties.Drawings.chrono_split;
+            mnuRenameSection.Image = Properties.Resources.rename;
+            mnuMoveCurrentStart.Image = Properties.Resources.chronosectionstart;
+            mnuMoveCurrentEnd.Image = Properties.Resources.chronosectionend;
+            mnuMovePreviousEnd.Image = Properties.Resources.chronosectionend;
+            mnuMoveNextStart.Image = Properties.Resources.chronosectionstart;
+            mnuDeleteSection.Image = Properties.Resources.bin_empty;
+
             mnuStart.Click += mnuStart_Click;
             mnuStop.Click += mnuStop_Click;
-            mnuMarkOrigin.Click += mnuMarkOrigin_Click;
+            mnuSplit.Click += mnuSplit_Click;
+            //mnuRenameSection.Click += mnuRenameSection_Click;
+            mnuMoveCurrentStart.Click += mnuMoveCurrentStart_Click;
+            mnuMoveCurrentEnd.Click += mnuMoveCurrentEnd_Click;
+            mnuMovePreviousEnd.Click += mnuMovePreviousEnd_Click;
+            mnuMoveNextStart.Click += mnuMoveNextStart_Click;
+            mnuDeleteSection.Click += mnuDeleteSection_Click;
+
 
             mnuShowLabel.Click += mnuShowLabel_Click;
-        }
-
-        public DrawingChronoMulti(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
-            : this(PointF.Empty, 0, 1, null)
-        {
-            ReadXml(xmlReader, scale, timestampMapper);
         }
         #endregion
 
@@ -311,9 +316,10 @@ namespace Kinovea.ScreenManager
 
                 w.WriteElementString("Visible", (visibleTimestamp == long.MaxValue) ? "-1" : visibleTimestamp.ToString());
                 w.WriteElementString("Invisible", (invisibleTimestamp == long.MaxValue) ? "-1" : invisibleTimestamp.ToString());
-                w.WriteElementString("StartCounting", (startCountingTimestamp == long.MaxValue) ? "-1" : startCountingTimestamp.ToString());
-                w.WriteElementString("StopCounting", (stopCountingTimestamp == long.MaxValue) ? "-1" : stopCountingTimestamp.ToString());
-                w.WriteElementString("ClockOrigin", (clockOriginTimestamp == long.MaxValue) ? "-1" : clockOriginTimestamp.ToString());
+                
+                
+                //w.WriteElementString("StartCounting", (startCountingTimestamp == long.MaxValue) ? "-1" : startCountingTimestamp.ToString());
+                //w.WriteElementString("StopCounting", (stopCountingTimestamp == long.MaxValue) ? "-1" : stopCountingTimestamp.ToString());
 
                 // </values>
                 w.WriteEndElement();
@@ -337,27 +343,16 @@ namespace Kinovea.ScreenManager
             MeasuredDataTime mdt = new MeasuredDataTime();
             mdt.Name = name;
 
-            if (!styleHelper.Clock && startCountingTimestamp != long.MaxValue && stopCountingTimestamp != long.MaxValue)
-            {
-                float userStart = parentMetadata.GetNumericalTime(startCountingTimestamp, TimeType.UserOrigin);
-                float userStop = parentMetadata.GetNumericalTime(stopCountingTimestamp, TimeType.UserOrigin);
-                float userDuration = parentMetadata.GetNumericalTime(stopCountingTimestamp - startCountingTimestamp, TimeType.Absolute);
+            //if (!styleHelper.Clock && startCountingTimestamp != long.MaxValue && stopCountingTimestamp != long.MaxValue)
+            //{
+            //    float userStart = parentMetadata.GetNumericalTime(startCountingTimestamp, TimeType.UserOrigin);
+            //    float userStop = parentMetadata.GetNumericalTime(stopCountingTimestamp, TimeType.UserOrigin);
+            //    float userDuration = parentMetadata.GetNumericalTime(stopCountingTimestamp - startCountingTimestamp, TimeType.Absolute);
 
-                mdt.Start = userStart;
-                mdt.Stop = userStop;
-                mdt.Duration = userDuration;
-            }
-            else if (styleHelper.Clock)
-            {
-                // For clocks using custom time origin return the time of that origin in the global time axis.
-                float userStart = 0;
-                if (clockOriginTimestamp == long.MaxValue)
-                    userStart = parentMetadata.GetNumericalTime(0, TimeType.Absolute);
-                else
-                    userStart = parentMetadata.GetNumericalTime(clockOriginTimestamp, TimeType.UserOrigin);
-
-                mdt.Start = userStart;
-            }
+            //    mdt.Start = userStart;
+            //    mdt.Stop = userStop;
+            //    mdt.Duration = userDuration;
+            //}
 
             return mdt;
         }
@@ -422,21 +417,14 @@ namespace Kinovea.ScreenManager
                         long hide = xmlReader.ReadElementContentAsLong();
                         invisibleTimestamp = (hide == -1) ? long.MaxValue : timestampMapper(hide);
                         break;
-                    case "StartCounting":
-                        long start = xmlReader.ReadElementContentAsLong();
-                        startCountingTimestamp = (start == -1) ? long.MaxValue : timestampMapper(start);
-                        break;
-                    case "StopCounting":
-                        long stop = xmlReader.ReadElementContentAsLong();
-                        stopCountingTimestamp = (stop == -1) ? long.MaxValue : timestampMapper(stop);
-                        break;
-                    case "ClockOrigin":
-                        long origin = xmlReader.ReadElementContentAsLong();
-                        clockOriginTimestamp = (origin == -1) ? long.MaxValue : timestampMapper(origin);
-                        break;
-                    case "UserDuration":
-                        xmlReader.ReadOuterXml();
-                        break;
+                    //case "StartCounting":
+                    //    long start = xmlReader.ReadElementContentAsLong();
+                    //    startCountingTimestamp = (start == -1) ? long.MaxValue : timestampMapper(start);
+                    //    break;
+                    //case "StopCounting":
+                    //    long stop = xmlReader.ReadElementContentAsLong();
+                    //    stopCountingTimestamp = (stop == -1) ? long.MaxValue : timestampMapper(stop);
+                    //    break;
                     default:
                         string unparsed = xmlReader.ReadOuterXml();
                         log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
@@ -450,14 +438,6 @@ namespace Kinovea.ScreenManager
         {
             visibleTimestamp = Math.Max(visibleTimestamp, 0);
             invisibleTimestamp = Math.Max(invisibleTimestamp, 0);
-            startCountingTimestamp = Math.Max(startCountingTimestamp, 0);
-            stopCountingTimestamp = Math.Max(stopCountingTimestamp, 0);
-
-            if (styleHelper.Clock)
-                return;
-
-            if (stopCountingTimestamp < startCountingTimestamp)
-                stopCountingTimestamp = long.MaxValue;
         }
         private void ParseLabel(XmlReader xmlReader)
         {
@@ -491,6 +471,89 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Specific context menu
+
+
+        /// <summary>
+        /// Get the context menu according to the current time and locale.
+        /// </summary>
+        public List<ToolStripItem> GetContextMenu(long timestamp)
+        {
+            // Backup the time globally for use in the event handlers callbacks.
+            currentTimestamp = timestamp;
+            
+            ReloadMenusCulture();
+
+            List<ToolStripItem> contextMenu = new List<ToolStripItem>();
+
+            // Find if we are on a live or dead section.
+            int sectionIndex = GetSectionIndex(currentTimestamp);
+
+            mnuAction.DropDownItems.Clear();
+
+            if (sectionIndex >= 0)
+            {
+                mnuAction.DropDownItems.AddRange(new ToolStripItem[] {
+                    mnuStop,
+                    mnuSplit,
+                    new ToolStripSeparator(),
+                    mnuRenameSection,
+                    mnuMoveCurrentStart,
+                    mnuMoveCurrentEnd,
+                    mnuDeleteSection
+                });
+            }
+            else
+            {
+                mnuAction.DropDownItems.AddRange(new ToolStripItem[] {
+                    mnuStart,
+                    new ToolStripSeparator(),
+                    mnuMovePreviousEnd,
+                    mnuMoveNextStart,
+                });
+            }
+
+            mnuMovePreviousEnd.Enabled = !IsBeforeFirstSection(sectionIndex);
+            mnuMoveNextStart.Enabled = !IsAfterLastSection(sectionIndex);
+            mnuShowLabel.Checked = showLabel;
+            
+            contextMenu.AddRange(new ToolStripItem[] { 
+                mnuVisibility, 
+                mnuAction,
+                mnuShowLabel
+            });
+
+            return contextMenu;
+        }
+
+        private void ReloadMenusCulture()
+        {
+            // Visibility
+            mnuVisibility.Text = ScreenManagerLang.Generic_Visibility;
+            mnuHideBefore.Text = ScreenManagerLang.mnuHideBefore;
+            mnuShowBefore.Text = ScreenManagerLang.mnuShowBefore;
+            mnuHideAfter.Text = ScreenManagerLang.mnuHideAfter;
+            mnuShowAfter.Text = ScreenManagerLang.mnuShowAfter;
+
+            // Action
+            mnuAction.Text = "Action";
+
+            // When we are on a live section.
+            mnuStop.Text = "Stop: end the current time section on this frame";
+            mnuSplit.Text = "Split: end the current time section on this frame and start a new one";
+            mnuRenameSection.Text = "Rename the current time section";
+            mnuMoveCurrentStart.Text = "Move the start of the current time section to this frame";
+            mnuMoveCurrentEnd.Text = "Move the end of the current time section to this frame";
+            mnuDeleteSection.Text = "Delete the current time section";
+
+            // When we are on a dead section.
+            mnuStart.Text = "Start a new time section on this frame";
+            mnuMovePreviousEnd.Text = "Move the end of the previous section to this frame";
+            mnuMoveNextStart.Text = "Move the start of the next section to this frame";
+
+            // Display.
+            mnuShowLabel.Text = ScreenManagerLang.mnuShowLabel;
+        }
+
         private void MnuShowBefore_Click(object sender, EventArgs e)
         {
             CaptureMemento(SerializationFilter.Core);
@@ -523,36 +586,124 @@ namespace Kinovea.ScreenManager
 
         private void mnuStart_Click(object sender, EventArgs e)
         {
+            // Start a new section here.
             CaptureMemento(SerializationFilter.Core);
-            startCountingTimestamp = CurrentTimestampFromMenu(sender);
-
-            if (stopCountingTimestamp < startCountingTimestamp)
-                stopCountingTimestamp = long.MaxValue;
-
+            
+            InsertSection(new VideoSection(currentTimestamp, long.MaxValue));
+            
             InvalidateFromMenu(sender);
             UpdateFramesMarkersFromMenu(sender);
         }
 
         private void mnuStop_Click(object sender, EventArgs e)
         {
+            // Stop the current section here.
+            int sectionIndex = GetSectionIndex(currentTimestamp);
+            if (sectionIndex < 0)
+                return;
+
             CaptureMemento(SerializationFilter.Core);
-            stopCountingTimestamp = CurrentTimestampFromMenu(sender);
 
-            if (stopCountingTimestamp <= startCountingTimestamp)
-                startCountingTimestamp = stopCountingTimestamp;
+            StopSection(sectionIndex, currentTimestamp);
 
-            if (stopCountingTimestamp > invisibleTimestamp)
-                invisibleTimestamp = stopCountingTimestamp;
+            if (currentTimestamp > invisibleTimestamp)
+                invisibleTimestamp = currentTimestamp;
 
             InvalidateFromMenu(sender);
             UpdateFramesMarkersFromMenu(sender);
         }
 
-        private void mnuMarkOrigin_Click(object sender, EventArgs e)
+        private void mnuSplit_Click(object sender, EventArgs e)
         {
+            // Stop the current section here and start a new one.
+            int sectionIndex = GetSectionIndex(currentTimestamp);
+            if (sectionIndex < 0)
+                return;
+
             CaptureMemento(SerializationFilter.Core);
-            clockOriginTimestamp = CurrentTimestampFromMenu(sender);
+            
+            StopSection(sectionIndex, currentTimestamp);
+            InsertSection(new VideoSection(currentTimestamp, long.MaxValue));
+
+            if (currentTimestamp > invisibleTimestamp)
+                invisibleTimestamp = currentTimestamp;
+
             InvalidateFromMenu(sender);
+            UpdateFramesMarkersFromMenu(sender);
+        }
+
+        private void mnuMoveCurrentStart_Click(object sender, EventArgs e)
+        {
+            int sectionIndex = GetSectionIndex(currentTimestamp);
+            if (sectionIndex < 0)
+                return;
+
+            CaptureMemento(SerializationFilter.Core);
+
+            sections[sectionIndex] = new VideoSection(currentTimestamp, sections[sectionIndex].End);
+
+            InvalidateFromMenu(sender);
+            UpdateFramesMarkersFromMenu(sender);
+        }
+
+        private void mnuMoveCurrentEnd_Click(object sender, EventArgs e)
+        {
+            // Move current end is actually the same as "stop here", but we keep it for symmetry purposes.
+            int sectionIndex = GetSectionIndex(currentTimestamp);
+            if (sectionIndex < 0)
+                return;
+
+            CaptureMemento(SerializationFilter.Core);
+
+            sections[sectionIndex] = new VideoSection(sections[sectionIndex].Start, currentTimestamp);
+
+            InvalidateFromMenu(sender);
+            UpdateFramesMarkersFromMenu(sender);
+        }
+
+
+        private void mnuMovePreviousEnd_Click(object sender, EventArgs e)
+        {
+            int sectionIndex = GetSectionIndex(currentTimestamp);
+            if (sectionIndex >= 0 || IsBeforeFirstSection(sectionIndex))
+                return;
+
+            CaptureMemento(SerializationFilter.Core);
+
+            int prevIndex = -(sectionIndex + 2);
+            sections[prevIndex] = new VideoSection(sections[prevIndex].Start, currentTimestamp);
+
+            InvalidateFromMenu(sender);
+            UpdateFramesMarkersFromMenu(sender);
+        }
+
+        private void mnuMoveNextStart_Click(object sender, EventArgs e)
+        {
+            int sectionIndex = GetSectionIndex(currentTimestamp);
+            if (sectionIndex >= 0 || IsAfterLastSection(sectionIndex))
+                return;
+
+            CaptureMemento(SerializationFilter.Core);
+
+            int nextIndex = -(sectionIndex + 1);
+            sections[nextIndex] = new VideoSection(currentTimestamp, sections[nextIndex].End);
+
+            InvalidateFromMenu(sender);
+            UpdateFramesMarkersFromMenu(sender);
+        }
+
+    private void mnuDeleteSection_Click(object sender, EventArgs e)
+        {
+            int sectionIndex = GetSectionIndex(currentTimestamp);
+            if (sectionIndex < 0)
+                return;
+
+            CaptureMemento(SerializationFilter.Core);
+            
+            sections.RemoveAt(sectionIndex);
+
+            InvalidateFromMenu(sender);
+            UpdateFramesMarkersFromMenu(sender);
         }
 
         private void mnuShowLabel_Click(object sender, EventArgs e)
@@ -579,33 +730,102 @@ namespace Kinovea.ScreenManager
                     mainBackground.X, mainBackground.Y - lblBackground.Rectangle.Height, size.Width + 11, size.Height);
             }
         }
-        private string GetTimecode(long currentTimestamp)
+
+        /// <summary>
+        /// Insert a new section into the list.
+        /// </summary>
+        private void InsertSection(VideoSection section)
         {
-            if (styleHelper.Clock)
+            // Find insertion point and insert the new section there.
+            bool found = false;
+            int i = 0;
+            for (i = 0; i < sections.Count; i++)
             {
-                // Relative clock mode: video time relative to origin.
-                // Origin is either the drawing-specific origin, or this hasn't been set yet, the video-wide origin.
-                if (clockOriginTimestamp == long.MaxValue)
-                    return parentMetadata.TimeCodeBuilder(currentTimestamp, TimeType.UserOrigin, TimecodeFormat.Unknown, true);
-                else
-                    return parentMetadata.TimeCodeBuilder(currentTimestamp - clockOriginTimestamp, TimeType.Absolute, TimecodeFormat.Unknown, true);
+                if (sections[i].Start < section.Start)
+                    continue;
+
+                found = true;
+                break;
             }
 
-            // Stopwatch mode.
-            long durationTimestamps;
-            if (currentTimestamp <= startCountingTimestamp)
+            if (!found)
+                sections.Add(section);
+            else
+                sections.Insert(i, section);
+
+        }
+
+        /// <summary>
+        /// Update the end time of a specific section.
+        /// </summary>
+        private void StopSection(int index, long timestamp)
+        {
+            sections[index] = new VideoSection(sections[index].Start, timestamp);
+        }
+
+        /// <summary>
+        /// Returns the section index that timestamp is in. 
+        /// Otherwise returns a negative number based on the next section:
+        /// -1 if we are before the first live zone, 
+        /// -2 if we are after the first and before the second, 
+        /// -n if we are before the n-th section.
+        /// -(n+1) if we are after the last section.
+        /// </summary>
+        private int GetSectionIndex(long timestamp)
+        {
+            int result = -1;
+            bool found = false;
+            for (int i = 0; i < sections.Count; i++)
             {
-                // Before start. Keep min value.
-                durationTimestamps = 0;
+                found = false;
+
+                // Before start of this section, 
+                // we are in the previous dead zone.
+                if (timestamp < sections[i].Start)
+                    break;
+
+                // Between start and end of this section.
+                // The end of the section is part of the section.
+                if (timestamp <= sections[i].End)
+                {
+                    result = i;
+                    found = true;
+                    break;
+                }
+
+                // We are past that section.
+                result--;
             }
-            else if (currentTimestamp > stopCountingTimestamp)
+
+            return result;
+        }
+
+        private bool IsBeforeFirstSection(int index)
+        {
+            return index == -1;
+        }
+
+        private bool IsAfterLastSection(int index)
+        {
+            return index == -(sections.Count + 1);
+        }
+
+        private string GetTimecode(long currentTimestamp)
+        {
+            // TODO:
+            // This will be replaced by a full table of values.
+
+
+            // Stopwatch mode.
+            long durationTimestamps = 0;
+            int sectionIndex = GetSectionIndex(currentTimestamp);
+            if (sectionIndex >= 0)
             {
-                // After stop. Keep max value.
-                durationTimestamps = stopCountingTimestamp - startCountingTimestamp;
+                durationTimestamps = currentTimestamp - sections[sectionIndex].Start;
             }
             else
             {
-                durationTimestamps = currentTimestamp - startCountingTimestamp;
+                durationTimestamps = 0;
             }
 
             return parentMetadata.TimeCodeBuilder(durationTimestamps, TimeType.Absolute, TimecodeFormat.Unknown, true);

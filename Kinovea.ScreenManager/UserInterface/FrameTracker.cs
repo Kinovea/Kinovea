@@ -558,13 +558,9 @@ namespace Kinovea.ScreenManager
                 else if (d is DrawingChronoMulti)
                 {
                     DrawingChronoMulti chrono = d as DrawingChronoMulti;
-                    if (chrono.TimeStart == long.MaxValue || chrono.TimeStop == long.MaxValue)
-                        continue;
-
-                    // Only if we have an end and something inside the selection.
-                    if (chrono.TimeStart <= maxTimestamp && chrono.TimeStop >= minTimestamp)
+                    foreach (var section in chrono.VideoSections)
                     {
-                        Point range = TimestampToPixel(chrono.TimeStart, chrono.TimeStop);
+                        Point range = TimestampToPixel(section.Start, section.End);
                         Color color = chrono.Color;
                         chronosMarks.Add(new Pair<Point, Color>(range, color));
                     }
@@ -625,6 +621,9 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private Point TimestampToPixel(long start, long end)
         {
+            if (end == long.MaxValue)
+                end = maxTimestamp;
+
             int pixelStart = TimestampToPixel(Math.Max(start, minTimestamp));
             int pixelEnd = TimestampToPixel(Math.Min(end + tsPerFrame, maxTimestamp));
             int pixelWidth = Math.Max(pixelEnd - pixelStart, frameMarkerWidth);
