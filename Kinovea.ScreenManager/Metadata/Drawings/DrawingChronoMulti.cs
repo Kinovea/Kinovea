@@ -63,7 +63,6 @@ namespace Kinovea.ScreenManager
                 int iHash = visibleTimestamp.GetHashCode();
                 iHash ^= invisibleTimestamp.GetHashCode();
                 iHash ^= sections.GetHashCode();
-
                 iHash ^= styleHelper.ContentHash;
                 iHash ^= showLabel.GetHashCode();
 
@@ -101,6 +100,13 @@ namespace Kinovea.ScreenManager
         {
             get { return sections; }
         }
+
+        public List<string> SectionNames
+        {
+            get { return sectionNames; }
+        }
+
+
         #endregion
 
         #region Members
@@ -112,6 +118,7 @@ namespace Kinovea.ScreenManager
         private long currentTimestamp;              // timestamp for context-menu operations.
         private bool showLabel;
         private string text;
+        private List<string> sectionNames = new List<string>();
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
@@ -213,7 +220,7 @@ namespace Kinovea.ScreenManager
             mnuStart.Click += mnuStart_Click;
             mnuStop.Click += mnuStop_Click;
             mnuSplit.Click += mnuSplit_Click;
-            //mnuRenameSection.Click += mnuRenameSection_Click;
+            mnuRenameSection.Click += mnuRenameSection_Click;
             mnuMoveCurrentStart.Click += mnuMoveCurrentStart_Click;
             mnuMoveCurrentEnd.Click += mnuMoveCurrentEnd_Click;
             mnuMovePreviousEnd.Click += mnuMovePreviousEnd_Click;
@@ -683,6 +690,28 @@ namespace Kinovea.ScreenManager
             UpdateFramesMarkersFromMenu(sender);
         }
 
+
+        private void mnuRenameSection_Click(object sender, EventArgs e)
+        {
+            // The dialog will directly modify the drawing.
+            // Backup the original state, restore it on cancel.
+            int sectionIndex = GetSectionIndex(currentTimestamp);
+
+            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
+            if (tsmi == null)
+                return;
+
+            IDrawingHostView host = tsmi.Tag as IDrawingHostView;
+            
+            // The dialog is responsible for backing up and restoring the state in case of cancellation.
+            // When we exit the dialog the drawing has been modified or reverted to its original state.
+            FormTimeSections fts = new FormTimeSections(this, sectionIndex, host);
+            FormsHelper.Locate(fts);
+            fts.ShowDialog();
+
+            InvalidateFromMenu(sender);
+        }
+
         private void mnuMoveCurrentStart_Click(object sender, EventArgs e)
         {
             int sectionIndex = GetSectionIndex(currentTimestamp);
@@ -742,15 +771,15 @@ namespace Kinovea.ScreenManager
             UpdateFramesMarkersFromMenu(sender);
         }
 
-    private void mnuDeleteSection_Click(object sender, EventArgs e)
+        private void mnuDeleteSection_Click(object sender, EventArgs e)
         {
             int sectionIndex = GetSectionIndex(currentTimestamp);
             if (sectionIndex < 0)
                 return;
 
             CaptureMemento(SerializationFilter.Core);
-            
-            sections.RemoveAt(sectionIndex);
+
+            RemoveSection(sectionIndex);
 
             InvalidateFromMenu(sender);
             UpdateFramesMarkersFromMenu(sender);
@@ -802,10 +831,21 @@ namespace Kinovea.ScreenManager
             }
 
             if (!found)
+            {
                 sections.Add(section);
+                sectionNames.Add("");
+            }
             else
+            {
                 sections.Insert(i, section);
+                sectionNames.Insert(i, "");
+            }
+        }
 
+        private void RemoveSection(int index)
+        {
+            sections.RemoveAt(index);
+            sectionNames.RemoveAt(index);
         }
 
         /// <summary>
@@ -899,7 +939,7 @@ namespace Kinovea.ScreenManager
                 if (currentTimestamp < sections[i].Start)
                     break;
 
-                string name = (i + 1).ToString();
+                string name = string.IsNullOrEmpty(sectionNames[i]) ? (i + 1).ToString() : sectionNames[i];
 
                 long elapsedTimestamps = 0;
                 if (currentTimestamp <= sections[i].End)

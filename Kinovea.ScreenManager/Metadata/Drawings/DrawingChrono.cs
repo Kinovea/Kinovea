@@ -53,7 +53,6 @@ namespace Kinovea.ScreenManager
                 iHash ^= startCountingTimestamp.GetHashCode();
                 iHash ^= stopCountingTimestamp.GetHashCode();
                 iHash ^= clockOriginTimestamp.GetHashCode();
-
                 iHash ^= styleHelper.ContentHash;
                 iHash ^= showLabel.GetHashCode();
 

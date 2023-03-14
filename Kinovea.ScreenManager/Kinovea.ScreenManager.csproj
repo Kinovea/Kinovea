@@ -484,6 +484,12 @@
     <Compile Include="Measurement\LensDistortion\FormCalibrateDistortion.Designer.cs">
       <DependentUpon>FormCalibrateDistortion.cs</DependentUpon>
     </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormTimeSections.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormTimeSections.Designer.cs">
+      <DependentUpon>FormTimeSections.cs</DependentUpon>
+    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormConfigureVisibility.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -974,6 +980,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Measurement\LensDistortion\FormCalibrateDistortion.resx">
       <DependentUpon>FormCalibrateDistortion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormTimeSections.resx">
+      <DependentUpon>FormTimeSections.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureVisibility.resx">
       <DependentUpon>FormConfigureVisibility.cs</DependentUpon>
@@ -1518,6 +1527,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\chrono_split.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\arrow-000-medium.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">
