@@ -26,6 +26,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Reflection;
 using System.Resources;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
@@ -118,6 +119,7 @@ namespace Kinovea.ScreenManager
         private static readonly int allowedFramesOver = 12;  // Number of frames the chrono stays visible after the 'Hiding' point.
         private RoundedRectangle mainBackground = new RoundedRectangle();
         private RoundedRectangle lblBackground = new RoundedRectangle();
+        private int backgroundOpacity = 192;
 
         #region Menu
         private ToolStripMenuItem mnuVisibility = new ToolStripMenuItem();
@@ -237,10 +239,16 @@ namespace Kinovea.ScreenManager
             if (opacityFactor <= 0)
                 return;
 
-            timecode = GetTimecode(currentTimestamp);
-            string text = timecode;
+            List<List<string>> entries = GetTimecodes(currentTimestamp);
+            StringBuilder sb = new StringBuilder();
+            foreach (var t in entries)
+            {
+                sb.AppendLine(string.Format("{0}: {1} | {2}", t[0], t[1], t[2]));
+            }
+            
+            string text = sb.ToString();
 
-            using (SolidBrush brushBack = styleHelper.GetBackgroundBrush((int)(opacityFactor * 128)))
+            using (SolidBrush brushBack = styleHelper.GetBackgroundBrush((int)(opacityFactor * backgroundOpacity)))
             using (SolidBrush brushText = styleHelper.GetForegroundBrush((int)(opacityFactor * 255)))
             using (Font fontText = styleHelper.GetFont((float)transformer.Scale))
             {
@@ -846,25 +854,55 @@ namespace Kinovea.ScreenManager
             return index == -(sections.Count + 1);
         }
 
-        private string GetTimecode(long currentTimestamp)
+        /// <summary>
+        /// Returns all the sections text, based on the current timestamp.
+        /// Each entry in the returned list contains the section name, elapsed time and cumulative time.
+        /// - The elapsed time is the time since the start of the section.
+        /// - The cumulative time is the total live time since the start of the first section.
+        /// - The cumulative time of each section stops when the section ends.
+        /// 
+        /// The produced text is always contextualized to the current time.
+        /// Sections that are not yet started are not returned (exception when before first).
+        /// No special treatment for open-ended sections.
+        /// Overlapping sections are counted twice.
+        /// </summary>
+        private List<List<string>> GetTimecodes(long currentTimestamp)
         {
-            // TODO:
-            // This will be replaced by a full table of values.
-
-
-            // Stopwatch mode.
-            long durationTimestamps = 0;
+            List<List<string>> entries = new List<List<string>>();
+            
             int sectionIndex = GetSectionIndex(currentTimestamp);
-            if (sectionIndex >= 0)
+            if (IsBeforeFirstSection(sectionIndex))
             {
-                durationTimestamps = currentTimestamp - sections[sectionIndex].Start;
-            }
-            else
-            {
-                durationTimestamps = 0;
+                string name = "1";
+                string elapsed = parentMetadata.TimeCodeBuilder(0, TimeType.Absolute, TimecodeFormat.Unknown, true);
+                string cumul = elapsed;
+                entries.Add(new List<string>() { name, elapsed, cumul });
+                return entries;
             }
 
-            return parentMetadata.TimeCodeBuilder(durationTimestamps, TimeType.Absolute, TimecodeFormat.Unknown, true);
+            long cumulTimestamps = 0;
+            for (int i = 0; i < sections.Count; i++)
+            {
+                if (currentTimestamp < sections[i].Start)
+                    break;
+
+                string name = (i + 1).ToString();
+
+                long elapsedTimestamps = 0;
+                if (currentTimestamp <= sections[i].End)
+                    elapsedTimestamps = currentTimestamp - sections[i].Start;
+                else
+                    elapsedTimestamps = sections[i].End - sections[i].Start;
+
+                cumulTimestamps += elapsedTimestamps;
+
+                string elapsed = parentMetadata.TimeCodeBuilder(elapsedTimestamps, TimeType.Absolute, TimecodeFormat.Unknown, true);
+                string cumul = parentMetadata.TimeCodeBuilder(cumulTimestamps, TimeType.Absolute, TimecodeFormat.Unknown, true);
+
+                entries.Add(new List<string>() { name, elapsed, cumul });
+            }
+
+            return entries;
         }
 
         /// <summary>
