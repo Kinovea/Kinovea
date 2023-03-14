@@ -254,6 +254,9 @@ namespace Kinovea.ScreenManager
                         Rectangle lblRect = new Rectangle(rect.Location.X, top, (int)lblTextSize.Width, (int)lblTextSize.Height);
                         RoundedRectangle.Draw(canvas, lblRect, brushBack, labelRoundingRadius, true, false, null);
                         canvas.DrawString(name, fontLabel, brushText, lblRect.Location);
+
+                        // Update the rectangle for hit testing.
+                        lblBackground.Rectangle = transformer.Untransform(lblRect);
                     }
                 }
             }

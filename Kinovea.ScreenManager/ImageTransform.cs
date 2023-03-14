@@ -274,6 +274,15 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// Transform a rectangle from screen coordinates to image coordinates.
+        /// </summary>
+
+        public RectangleF Untransform(Rectangle rectangle)
+        {
+            return new RectangleF(Untransform(rectangle.Location), Untransform(rectangle.Size));
+        }
+
+        /// <summary>
         /// Transform a distance from screen coordinates to image coordinates.
         /// </summary>
         public int Untransform(int v)

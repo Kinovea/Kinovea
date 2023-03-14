@@ -150,6 +150,7 @@ namespace Kinovea.ScreenManager
             visibleTimestamp = 0;
             invisibleTimestamp = long.MaxValue;
             mainBackground.Rectangle = new RectangleF(p, SizeF.Empty);
+            lblBackground.Rectangle = RectangleF.Empty;
 
             text = "error";
 
@@ -278,8 +279,12 @@ namespace Kinovea.ScreenManager
                         int labelRoundingRadius = fontLabel.Height / 3;
                         int top = rect.Location.Y - (int)lblTextSize.Height - roundingRadius - labelRoundingRadius;
                         Rectangle lblRect = new Rectangle(rect.Location.X, top, (int)lblTextSize.Width, (int)lblTextSize.Height);
+                        
                         RoundedRectangle.Draw(canvas, lblRect, brushBack, labelRoundingRadius, true, false, null);
                         canvas.DrawString(name, fontLabel, brushText, lblRect.Location);
+
+                        // Update the rectangle for hit testing.
+                        lblBackground.Rectangle = transformer.Untransform(lblRect);
                     }
                 }
             }
