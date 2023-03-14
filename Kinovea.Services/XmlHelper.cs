@@ -238,6 +238,38 @@ namespace Kinovea.Services
             return rect;
         }
 
+        public static VideoSection ParseVideoSection(string str)
+        {
+            VideoSection section = VideoSection.Empty;
+
+            try
+            {
+                string[] a = str.Split(new char[] { ';' });
+
+                long start;
+                long end;
+                bool readStart = long.TryParse(a[0], NumberStyles.Any, CultureInfo.InvariantCulture, out start);
+                bool readEnd = long.TryParse(a[1], NumberStyles.Any, CultureInfo.InvariantCulture, out end);
+
+                if (readStart && readEnd)
+                {
+                    if (start == -1)
+                        start = long.MaxValue;
+
+                    if (end == -1)
+                        end = long.MaxValue;
+
+                    section = new VideoSection(start, end);
+                }
+            }
+            catch (Exception)
+            {
+                log.Error(String.Format("An error happened while parsing VideoSection value. ({0}).", str));
+            }
+
+            return section;
+        }
+
         public static string WriteFloat(float value)
         {
             return string.Format(CultureInfo.InvariantCulture, "{0}", value);
@@ -283,6 +315,13 @@ namespace Kinovea.Services
             byte[] bytes = stream.ToArray();
             string base64 = Convert.ToBase64String(bytes);
             return base64;
+        }
+
+        public static string WriteVideoSection(VideoSection section)
+        {
+            long start = section.Start == long.MaxValue ? -1 : section.Start;
+            long end = section.End == long.MaxValue ? -1 : section.End;
+            return string.Format(CultureInfo.InvariantCulture, "{0};{1}", start, end);
         }
     }
 }

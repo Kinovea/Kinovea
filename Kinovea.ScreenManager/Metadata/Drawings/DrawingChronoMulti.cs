@@ -39,6 +39,13 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// A Chronometer tool with multiple time sections.
+    /// 
+    /// Note on overlap and unclosed sections:
+    /// The way the menus are set up allows for overlapping sections and open-ended sections (no end point).
+    /// We don't do any special treatment for these.
+    /// The sections are always ordered based on their starting point.
+    /// 
+    /// The boundary frames are part of the sections.
     /// </summary>
     [XmlType ("ChronoMulti")]
     public class DrawingChronoMulti : AbstractDrawing, IDecorable, IKvaSerializable
@@ -317,9 +324,15 @@ namespace Kinovea.ScreenManager
                 w.WriteElementString("Visible", (visibleTimestamp == long.MaxValue) ? "-1" : visibleTimestamp.ToString());
                 w.WriteElementString("Invisible", (invisibleTimestamp == long.MaxValue) ? "-1" : invisibleTimestamp.ToString());
                 
-                
-                //w.WriteElementString("StartCounting", (startCountingTimestamp == long.MaxValue) ? "-1" : startCountingTimestamp.ToString());
-                //w.WriteElementString("StopCounting", (stopCountingTimestamp == long.MaxValue) ? "-1" : stopCountingTimestamp.ToString());
+                if (sections.Count > 0)
+                {
+                    w.WriteStartElement("Sections");
+
+                    foreach (VideoSection section in sections)
+                        w.WriteElementString("Section", XmlHelper.WriteVideoSection(section));
+
+                    w.WriteEndElement();
+                }
 
                 // </values>
                 w.WriteEndElement();
@@ -417,14 +430,41 @@ namespace Kinovea.ScreenManager
                         long hide = xmlReader.ReadElementContentAsLong();
                         invisibleTimestamp = (hide == -1) ? long.MaxValue : timestampMapper(hide);
                         break;
-                    //case "StartCounting":
-                    //    long start = xmlReader.ReadElementContentAsLong();
-                    //    startCountingTimestamp = (start == -1) ? long.MaxValue : timestampMapper(start);
-                    //    break;
-                    //case "StopCounting":
-                    //    long stop = xmlReader.ReadElementContentAsLong();
-                    //    stopCountingTimestamp = (stop == -1) ? long.MaxValue : timestampMapper(stop);
-                    //    break;
+                    case "Sections":
+                        ParseSections(xmlReader, timestampMapper);
+                        break;
+                    default:
+                        string unparsed = xmlReader.ReadOuterXml();
+                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        break;
+                }
+            }
+
+            xmlReader.ReadEndElement();
+        }
+
+        private void ParseSections(XmlReader xmlReader, TimestampMapper timestampMapper)
+        {
+            sections.Clear();
+
+            if (timestampMapper == null)
+            {
+                xmlReader.ReadOuterXml();
+                return;
+            }
+
+            xmlReader.ReadStartElement();
+
+            while (xmlReader.NodeType == XmlNodeType.Element)
+            {
+                switch (xmlReader.Name)
+                {
+                    case "Section":
+                        VideoSection section = XmlHelper.ParseVideoSection(xmlReader.ReadElementContentAsString());
+                        section = new VideoSection(timestampMapper(section.Start), timestampMapper(section.End));
+                        InsertSection(section);
+
+                        break;
                     default:
                         string unparsed = xmlReader.ReadOuterXml();
                         log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
@@ -447,15 +487,6 @@ namespace Kinovea.ScreenManager
             {
                 switch(xmlReader.Name)
                 {
-                    // In older versions chronos used to have a label property. It was later merged with the general name property of drawings.
-                    // 0.8.27 should already store the label in the name property.
-                    // For older formats we import it here.
-                    // The current format doesn't export this "Text" tag at all.
-                    case "Text":
-                        string label = xmlReader.ReadElementContentAsString();
-                        if (!string.IsNullOrEmpty(label) && label != name)
-                            name = label;
-                        break;
                     case "Show":
                         showLabel = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
@@ -470,7 +501,7 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region Specific context menu
+        #region Tool-specific context menu
 
 
         /// <summary>
@@ -478,20 +509,19 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public List<ToolStripItem> GetContextMenu(long timestamp)
         {
+            List<ToolStripItem> contextMenu = new List<ToolStripItem>();
+            ReloadMenusCulture();
+
             // Backup the time globally for use in the event handlers callbacks.
             currentTimestamp = timestamp;
             
-            ReloadMenusCulture();
-
-            List<ToolStripItem> contextMenu = new List<ToolStripItem>();
-
-            // Find if we are on a live or dead section.
-            int sectionIndex = GetSectionIndex(currentTimestamp);
-
+            // The context menu depends on whether we are on a live or dead section.
             mnuAction.DropDownItems.Clear();
-
+            int sectionIndex = GetSectionIndex(currentTimestamp);
+            
             if (sectionIndex >= 0)
             {
+                // Live section.
                 mnuAction.DropDownItems.AddRange(new ToolStripItem[] {
                     mnuStop,
                     mnuSplit,
@@ -504,6 +534,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
+                // Dead section.
                 mnuAction.DropDownItems.AddRange(new ToolStripItem[] {
                     mnuStart,
                     new ToolStripSeparator(),
@@ -554,6 +585,7 @@ namespace Kinovea.ScreenManager
             mnuShowLabel.Text = ScreenManagerLang.mnuShowLabel;
         }
 
+        #region Visibility
         private void MnuShowBefore_Click(object sender, EventArgs e)
         {
             CaptureMemento(SerializationFilter.Core);
@@ -583,6 +615,7 @@ namespace Kinovea.ScreenManager
             infosFading.ReferenceTimestamp = invisibleTimestamp;
             InvalidateFromMenu(sender);
         }
+        #endregion
 
         private void mnuStart_Click(object sender, EventArgs e)
         {
@@ -648,7 +681,7 @@ namespace Kinovea.ScreenManager
 
         private void mnuMoveCurrentEnd_Click(object sender, EventArgs e)
         {
-            // Move current end is actually the same as "stop here", but we keep it for symmetry purposes.
+            // Technically "Move current end" is the same as "Stop", but we keep it for symmetry purposes.
             int sectionIndex = GetSectionIndex(currentTimestamp);
             if (sectionIndex < 0)
                 return;
@@ -660,7 +693,6 @@ namespace Kinovea.ScreenManager
             InvalidateFromMenu(sender);
             UpdateFramesMarkersFromMenu(sender);
         }
-
 
         private void mnuMovePreviousEnd_Click(object sender, EventArgs e)
         {
@@ -770,17 +802,16 @@ namespace Kinovea.ScreenManager
         /// -2 if we are after the first and before the second, 
         /// -n if we are before the n-th section.
         /// -(n+1) if we are after the last section.
+        /// 
+        /// In case of overlapping sections, returns the section with the earliest starting point.
+        /// An open-ended section contains all the timestamps after its start.
         /// </summary>
         private int GetSectionIndex(long timestamp)
         {
             int result = -1;
-            bool found = false;
             for (int i = 0; i < sections.Count; i++)
             {
-                found = false;
-
-                // Before start of this section, 
-                // we are in the previous dead zone.
+                // Before the start of this section. 
                 if (timestamp < sections[i].Start)
                     break;
 
@@ -789,22 +820,27 @@ namespace Kinovea.ScreenManager
                 if (timestamp <= sections[i].End)
                 {
                     result = i;
-                    found = true;
                     break;
                 }
 
-                // We are past that section.
+                // After that section.
                 result--;
             }
 
             return result;
         }
 
+        /// <summary>
+        /// Returns true if this dead-zone index is before the first section.
+        /// </summary>
         private bool IsBeforeFirstSection(int index)
         {
             return index == -1;
         }
 
+        /// <summary>
+        /// Returns true if this dead-zone index is after the last section.
+        /// </summary>
         private bool IsAfterLastSection(int index)
         {
             return index == -(sections.Count + 1);

@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using Kinovea.Services;
 
 namespace Kinovea.Video
 {

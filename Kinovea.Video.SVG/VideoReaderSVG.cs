@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using Kinovea.Services;
 
 namespace Kinovea.Video.SVG
 {

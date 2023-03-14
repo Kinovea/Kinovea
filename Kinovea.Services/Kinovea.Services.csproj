@@ -276,6 +276,7 @@
     <Compile Include="Types\TrackerParameterUnit.cs" />
     <Compile Include="Types\TrackingProfile.cs" />
     <Compile Include="Infrastructure\TimestampMapper.cs" />
+    <Compile Include="Types\VideoSection.cs" />
     <Compile Include="UndoRedo\CommandManager.cs" />
     <Compile Include="Events\FileActionEventArgs.cs" />
     <Compile Include="Events\NotificationCenter.cs" />

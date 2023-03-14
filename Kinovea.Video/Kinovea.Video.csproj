@@ -194,7 +194,6 @@
     <Compile Include="VideoInfo.cs" />
     <Compile Include="VideoOptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VideoSection.cs" />
     <Compile Include="VideoSummary.cs" />
     <Compile Include="VideoTypeManager.cs" />
   </ItemGroup>
