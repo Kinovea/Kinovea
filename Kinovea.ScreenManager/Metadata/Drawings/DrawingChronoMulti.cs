@@ -110,8 +110,8 @@ namespace Kinovea.ScreenManager
         private long invisibleTimestamp;             	// chrono stops being visible.
         private List<VideoSection> sections = new List<VideoSection>(); // start and stop counting.
         private long currentTimestamp;              // timestamp for context-menu operations.
-        private string timecode;
         private bool showLabel;
+        private string text;
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
@@ -119,7 +119,7 @@ namespace Kinovea.ScreenManager
         private static readonly int allowedFramesOver = 12;  // Number of frames the chrono stays visible after the 'Hiding' point.
         private RoundedRectangle mainBackground = new RoundedRectangle();
         private RoundedRectangle lblBackground = new RoundedRectangle();
-        private int backgroundOpacity = 192;
+        private int backgroundOpacity = 225;
 
         #region Menu
         private ToolStripMenuItem mnuVisibility = new ToolStripMenuItem();
@@ -127,7 +127,6 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuShowBefore = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHideAfter = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowAfter = new ToolStripMenuItem();
-
         private ToolStripMenuItem mnuAction = new ToolStripMenuItem();
         private ToolStripMenuItem mnuStart = new ToolStripMenuItem();
         private ToolStripMenuItem mnuStop = new ToolStripMenuItem();
@@ -138,7 +137,6 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuMovePreviousEnd = new ToolStripMenuItem();
         private ToolStripMenuItem mnuMoveNextStart = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDeleteSection = new ToolStripMenuItem();
-
         private ToolStripMenuItem mnuShowLabel = new ToolStripMenuItem();
         #endregion
 
@@ -153,7 +151,7 @@ namespace Kinovea.ScreenManager
             invisibleTimestamp = long.MaxValue;
             mainBackground.Rectangle = new RectangleF(p, SizeF.Empty);
 
-            timecode = "error";
+            text = "error";
 
             styleHelper.Bicolor = new Bicolor(Color.Black);
             styleHelper.Font = new Font("Arial", 16, FontStyle.Bold);
@@ -241,29 +239,36 @@ namespace Kinovea.ScreenManager
 
             List<List<string>> entries = GetTimecodes(currentTimestamp);
             StringBuilder sb = new StringBuilder();
-            foreach (var t in entries)
+            foreach (var t in entries)  
             {
                 sb.AppendLine(string.Format("{0}: {1} | {2}", t[0], t[1], t[2]));
             }
             
-            string text = sb.ToString();
+            text = sb.ToString();
 
             using (SolidBrush brushBack = styleHelper.GetBackgroundBrush((int)(opacityFactor * backgroundOpacity)))
             using (SolidBrush brushText = styleHelper.GetForegroundBrush((int)(opacityFactor * 255)))
             using (Font fontText = styleHelper.GetFont((float)transformer.Scale))
             {
                 SizeF textSize = canvas.MeasureString(text, fontText);
+
                 Point bgLocation = transformer.Transform(mainBackground.Rectangle.Location);
                 Size bgSize = new Size((int)textSize.Width, (int)textSize.Height);
 
                 SizeF untransformed = transformer.Untransform(textSize);
+
+                // Backup the main rectangle for hit-testing.
                 mainBackground.Rectangle = new RectangleF(mainBackground.Rectangle.Location, untransformed);
 
+                // Background rounded rectangle.
                 Rectangle rect = new Rectangle(bgLocation, bgSize);
                 int roundingRadius = fontText.Height / 4;
                 RoundedRectangle.Draw(canvas, rect, brushBack, roundingRadius, false, false, null);
+
+                // Main text.
                 canvas.DrawString(text, fontText, brushText, rect.Location);
 
+                // Drawing name.
                 if (showLabel && name.Length > 0)
                 {
                     using (Font fontLabel = styleHelper.GetFont((float)transformer.Scale * 0.5f))
@@ -306,7 +311,7 @@ namespace Kinovea.ScreenManager
             // Invisible handler to change font size.
             int targetHeight = (int)(point.Y - mainBackground.Rectangle.Location.Y);
             StyleElementFontSize elem = style.Elements["font size"] as StyleElementFontSize;
-            elem.ForceSize(targetHeight, timecode, styleHelper.Font);
+            elem.ForceSize(targetHeight, text.TrimEnd(), styleHelper.Font);
             UpdateLabelRectangle();
         }
         public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
@@ -763,11 +768,14 @@ namespace Kinovea.ScreenManager
         }
         private void UpdateLabelRectangle()
         {
-            using(Font f = styleHelper.GetFont(0.5F))
+            using (Font f = styleHelper.GetFont(0.5f))
             {
                 SizeF size = TextHelper.MeasureString(name, f);
                 lblBackground.Rectangle = new RectangleF(
-                    mainBackground.X, mainBackground.Y - lblBackground.Rectangle.Height, size.Width + 11, size.Height);
+                    mainBackground.X, 
+                    mainBackground.Y - lblBackground.Rectangle.Height, 
+                    size.Width + 11, 
+                    size.Height);
             }
         }
 

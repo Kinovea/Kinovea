@@ -137,18 +137,19 @@ namespace Kinovea.ScreenManager
         private static readonly int allowedFramesOver = 12;  // Number of frames the chrono stays visible after the 'Hiding' point.
         private RoundedRectangle mainBackground = new RoundedRectangle();
         private RoundedRectangle lblBackground = new RoundedRectangle();
+        private int backgroundOpacity = 225;
 
+        #region Menu
         private ToolStripMenuItem mnuVisibility = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHideBefore = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowBefore = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHideAfter = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowAfter = new ToolStripMenuItem();
-
         private ToolStripMenuItem mnuStart = new ToolStripMenuItem();
         private ToolStripMenuItem mnuStop = new ToolStripMenuItem();
         private ToolStripMenuItem mnuMarkOrigin = new ToolStripMenuItem();
-
         private ToolStripMenuItem mnuShowLabel = new ToolStripMenuItem();
+        #endregion
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -226,7 +227,7 @@ namespace Kinovea.ScreenManager
             timecode = GetTimecode(currentTimestamp);
             string text = timecode;
 
-            using (SolidBrush brushBack = styleHelper.GetBackgroundBrush((int)(opacityFactor * 128)))
+            using (SolidBrush brushBack = styleHelper.GetBackgroundBrush((int)(opacityFactor * backgroundOpacity)))
             using (SolidBrush brushText = styleHelper.GetForegroundBrush((int)(opacityFactor * 255)))
             using (Font fontText = styleHelper.GetFont((float)transformer.Scale))
             {

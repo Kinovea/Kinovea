@@ -59,8 +59,8 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        public static List<int> options;
-        public static readonly int defaultValue = 14;
+        private static readonly List<int> options = new List<int>() { 6, 7, 8, 9, 10, 11, 12, 14, 18, 24, 30, 36, 48, 60, 72, 96 };
+        private static readonly int defaultValue = 14;
         
         #region Members
         private int value;
@@ -68,11 +68,6 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Constructor
-        static StyleElementFontSize()
-        {
-            options = new List<int>() { 6, 7, 8, 9, 10, 11, 12, 14, 18, 24, 30, 36, 48, 60, 72, 96 };
-        }
-
         public StyleElementFontSize(int initialValue)
         {
             value = options.PickAmong(initialValue);
@@ -149,9 +144,9 @@ namespace Kinovea.ScreenManager
 
             foreach (int size in options)
             {
-                Font testFont = new Font(font.Name, size, font.Style);
-                int height = (int)TextHelper.MeasureString(text + " ", testFont).Height;
-                testFont.Dispose();
+                Font candidateFont = new Font(font.Name, size, font.Style);
+                int height = (int)TextHelper.MeasureString(text + " ", candidateFont).Height;
+                candidateFont.Dispose();
                 
                 int diff = Math.Abs(targetHeight - height);
                 if (diff > minDiff)
