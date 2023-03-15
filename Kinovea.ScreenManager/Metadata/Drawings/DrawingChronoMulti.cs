@@ -248,8 +248,11 @@ namespace Kinovea.ScreenManager
             List<List<string>> entries = GetTimecodes(currentTimestamp);
             StringBuilder sb = new StringBuilder();
             foreach (var t in entries)  
-            {
-                sb.AppendLine(string.Format("{0}: {1} | {2}", t[0], t[1], t[2]));
+            {   
+                if (t[0] == null)
+                    sb.AppendLine(string.Format("{0}", t[1]));
+                else
+                    sb.AppendLine(string.Format("{0}: {1} | {2}", t[0], t[1], t[2]));
             }
             
             text = sb.ToString();
@@ -395,8 +398,7 @@ namespace Kinovea.ScreenManager
                     continue;
 
                 MeasuredDataTime mdt = new MeasuredDataTime();
-                mdt.IsMulti = true;
-
+                
                 string sectionName = string.IsNullOrEmpty(sectionNames[i]) ? (i + 1).ToString() : sectionNames[i];
                 mdt.Name = string.Format("{0} > {1}", this.Name, sectionName);
                 var section = sections[i];
@@ -1022,10 +1024,8 @@ namespace Kinovea.ScreenManager
             int sectionIndex = GetSectionIndex(currentTimestamp);
             if (IsBeforeFirstSection(sectionIndex))
             {
-                string name = "1";
                 string elapsed = parentMetadata.TimeCodeBuilder(0, TimeType.Absolute, TimecodeFormat.Unknown, true);
-                string cumul = elapsed;
-                entries.Add(new List<string>() { name, elapsed, cumul });
+                entries.Add(new List<string>() { null, elapsed, null });
                 return entries;
             }
 

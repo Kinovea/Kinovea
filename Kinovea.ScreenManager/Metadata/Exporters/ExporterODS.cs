@@ -478,12 +478,13 @@ namespace Kinovea.ScreenManager
 
             // Write headers.
             w.WriteStartElement("table:table-row");
-            WriteCell(w, "Times", "timeHeader", 4);
+            WriteCell(w, "Times", "timeHeader", 5);
             w.WriteEndElement();
 
             w.WriteStartElement("table:table-row");
             WriteCell(w, "Name", "valueHeader");
             WriteCell(w, string.Format("Duration ({0})", md.Units.TimeSymbol), "valueHeader");
+            WriteCell(w, string.Format("Cumulative ({0})", md.Units.TimeSymbol), "valueHeader");
             WriteCell(w, string.Format("Start ({0})", md.Units.TimeSymbol), "valueHeader");
             WriteCell(w, string.Format("Stop ({0})", md.Units.TimeSymbol), "valueHeader");
             w.WriteEndElement();
@@ -495,6 +496,7 @@ namespace Kinovea.ScreenManager
                 w.WriteStartElement("table:table-row");
                 WriteCell(w, value.Name, "name");
                 WriteCell(w, value.Duration, "time");
+                WriteCell(w, value.Cumul, "time");
                 WriteCell(w, value.Start, "time");
                 WriteCell(w, value.Stop, "time");
                 w.WriteEndElement();

@@ -346,8 +346,6 @@ namespace Kinovea.ScreenManager
         {
             MeasuredDataTime mdt = new MeasuredDataTime();
             mdt.Name = name;
-            mdt.IsClock = styleHelper.Clock;
-            mdt.IsMulti = false;
 
             if (!styleHelper.Clock && startCountingTimestamp != long.MaxValue && stopCountingTimestamp != long.MaxValue)
             {
@@ -358,6 +356,7 @@ namespace Kinovea.ScreenManager
                 mdt.Start = userStart;
                 mdt.Stop = userStop;
                 mdt.Duration = userDuration;
+                mdt.Cumul = userDuration;
             }
             else if (styleHelper.Clock)
             {

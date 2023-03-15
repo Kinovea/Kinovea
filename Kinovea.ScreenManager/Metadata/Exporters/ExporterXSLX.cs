@@ -236,26 +236,28 @@ namespace Kinovea.ScreenManager
                 return 0;
 
             sl.SetCellValue(row, 1, "Times");
-            sl.MergeWorksheetCells(row, 1, row, 4);
+            sl.MergeWorksheetCells(row, 1, row, 5);
 
             sl.SetCellValue(row + 1, 1, "Name");
             sl.SetCellValue(row + 1, 2, string.Format("Duration ({0})", md.Units.TimeSymbol));
-            sl.SetCellValue(row + 1, 3, string.Format("Start ({0})", md.Units.TimeSymbol));
-            sl.SetCellValue(row + 1, 4, string.Format("Stop ({0})", md.Units.TimeSymbol));
+            sl.SetCellValue(row + 1, 3, string.Format("Cumulative ({0})", md.Units.TimeSymbol));
+            sl.SetCellValue(row + 1, 4, string.Format("Start ({0})", md.Units.TimeSymbol));
+            sl.SetCellValue(row + 1, 5, string.Format("Stop ({0})", md.Units.TimeSymbol));
 
             for (int i = 0; i < md.Times.Count; i++)
             {
                 var value = md.Times[i];
                 sl.SetCellValue(row + 2 + i, 1, value.Name);
                 sl.SetCellValue(row + 2 + i, 2, value.Duration);
-                sl.SetCellValue(row + 2 + i, 3, value.Start);
-                sl.SetCellValue(row + 2 + i, 4, value.Stop);
+                sl.SetCellValue(row + 2 + i, 3, value.Cumul);
+                sl.SetCellValue(row + 2 + i, 4, value.Start);
+                sl.SetCellValue(row + 2 + i, 5, value.Stop);
             }
 
-            sl.SetCellStyle(row, 1, row + md.Times.Count + 1, 4, styles["normal"]);
+            sl.SetCellStyle(row, 1, row + md.Times.Count + 1, 5, styles["normal"]);
             sl.SetCellStyle(row, 1, styles["timeHeader"]);
-            sl.SetCellStyle(row + 1, 1, row + 1, 4, styles["valueHeader"]);
-            sl.SetCellStyle(row + 2, 2, row + md.Times.Count + 1, 4, styles["time"]);
+            sl.SetCellStyle(row + 1, 1, row + 1, 5, styles["valueHeader"]);
+            sl.SetCellStyle(row + 2, 2, row + md.Times.Count + 1, 5, styles["time"]);
 
             return md.Times.Count + 2 + margin;
         }
