@@ -98,6 +98,7 @@
       this.Name = "FormTimeSections";
       this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
       this.Text = "FormTimeSections";
+      this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormTimeSections_FormClosing);
       this.grpConfig.ResumeLayout(false);
       this.ResumeLayout(false);
 

@@ -104,6 +104,8 @@ namespace Kinovea.ScreenManager
                 top += lbl.Height + margin;
             }
 
+            btnIndicator.Visible = currentIndex >= 0;
+
             grpConfig.Height = top + 10;
             btnOK.Top = grpConfig.Bottom + 5;
             btnCancel.Top = btnOK.Top;
@@ -126,15 +128,18 @@ namespace Kinovea.ScreenManager
             drawing.ParentMetadata.HistoryStack.PushNewCommand(memento);
         }
 
-        private void FormConfigureVisibility_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            Cancel();
-        }
-
         private void Cancel()
         {
             memento.PerformUndo();
         }
         #endregion
+
+        private void FormTimeSections_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (this.DialogResult == DialogResult.OK)
+                return;
+
+            memento.PerformUndo();
+        }
     }
 }

@@ -138,7 +138,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuStart = new ToolStripMenuItem();
         private ToolStripMenuItem mnuStop = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSplit = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuRenameSection = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuRenameSections = new ToolStripMenuItem();
         private ToolStripMenuItem mnuMoveCurrentStart = new ToolStripMenuItem();
         private ToolStripMenuItem mnuMoveCurrentEnd = new ToolStripMenuItem();
         private ToolStripMenuItem mnuMovePreviousEnd = new ToolStripMenuItem();
@@ -210,7 +210,7 @@ namespace Kinovea.ScreenManager
             mnuStart.Image = Properties.Drawings.chronostart;
             mnuStop.Image = Properties.Drawings.chronostop;
             mnuSplit.Image = Properties.Drawings.chrono_split;
-            mnuRenameSection.Image = Properties.Resources.rename;
+            mnuRenameSections.Image = Properties.Resources.rename;
             mnuMoveCurrentStart.Image = Properties.Resources.chronosectionstart;
             mnuMoveCurrentEnd.Image = Properties.Resources.chronosectionend;
             mnuMovePreviousEnd.Image = Properties.Resources.chronosectionend;
@@ -220,7 +220,7 @@ namespace Kinovea.ScreenManager
             mnuStart.Click += mnuStart_Click;
             mnuStop.Click += mnuStop_Click;
             mnuSplit.Click += mnuSplit_Click;
-            mnuRenameSection.Click += mnuRenameSection_Click;
+            mnuRenameSections.Click += mnuRenameSections_Click;
             mnuMoveCurrentStart.Click += mnuMoveCurrentStart_Click;
             mnuMoveCurrentEnd.Click += mnuMoveCurrentEnd_Click;
             mnuMovePreviousEnd.Click += mnuMovePreviousEnd_Click;
@@ -353,8 +353,16 @@ namespace Kinovea.ScreenManager
                 {
                     w.WriteStartElement("Sections");
 
-                    foreach (VideoSection section in sections)
-                        w.WriteElementString("Section", XmlHelper.WriteVideoSection(section));
+                    for (int i = 0; i < sections.Count; i++)
+                    {
+                        VideoSection section = sections[i];
+                        string name = sectionNames[i];
+                        w.WriteStartElement("Section");
+                        if (!string.IsNullOrEmpty(name))
+                            w.WriteAttributeString("name", name);
+                        w.WriteString(XmlHelper.WriteVideoSection(section));
+                        w.WriteEndElement();
+                    }
 
                     w.WriteEndElement();
                 }
@@ -471,6 +479,7 @@ namespace Kinovea.ScreenManager
         private void ParseSections(XmlReader xmlReader, TimestampMapper timestampMapper)
         {
             sections.Clear();
+            sectionNames.Clear();
 
             if (timestampMapper == null)
             {
@@ -485,10 +494,18 @@ namespace Kinovea.ScreenManager
                 switch (xmlReader.Name)
                 {
                     case "Section":
-                        VideoSection section = XmlHelper.ParseVideoSection(xmlReader.ReadElementContentAsString());
-                        section = new VideoSection(timestampMapper(section.Start), timestampMapper(section.End));
-                        InsertSection(section);
+                        
+                        string sectionName = "";
+                        if (xmlReader.MoveToAttribute("name"))
+                            sectionName = xmlReader.ReadContentAsString();
 
+                        xmlReader.ReadStartElement();
+                        
+                        VideoSection section = XmlHelper.ParseVideoSection(xmlReader.ReadContentAsString());
+                        section = new VideoSection(timestampMapper(section.Start), timestampMapper(section.End));
+                        InsertSection(section, sectionName);
+
+                        xmlReader.ReadEndElement();
                         break;
                     default:
                         string unparsed = xmlReader.ReadOuterXml();
@@ -528,7 +545,6 @@ namespace Kinovea.ScreenManager
 
         #region Tool-specific context menu
 
-
         /// <summary>
         /// Get the context menu according to the current time and locale.
         /// </summary>
@@ -551,7 +567,7 @@ namespace Kinovea.ScreenManager
                     mnuStop,
                     mnuSplit,
                     new ToolStripSeparator(),
-                    mnuRenameSection,
+                    mnuRenameSections,
                     mnuMoveCurrentStart,
                     mnuMoveCurrentEnd,
                     mnuDeleteSection
@@ -563,6 +579,7 @@ namespace Kinovea.ScreenManager
                 mnuAction.DropDownItems.AddRange(new ToolStripItem[] {
                     mnuStart,
                     new ToolStripSeparator(),
+                    mnuRenameSections,
                     mnuMovePreviousEnd,
                     mnuMoveNextStart,
                 });
@@ -596,7 +613,7 @@ namespace Kinovea.ScreenManager
             // When we are on a live section.
             mnuStop.Text = "Stop: end the current time section on this frame";
             mnuSplit.Text = "Split: end the current time section on this frame and start a new one";
-            mnuRenameSection.Text = "Rename the current time section";
+            mnuRenameSections.Text = "Rename time sections";
             mnuMoveCurrentStart.Text = "Move the start of the current time section to this frame";
             mnuMoveCurrentEnd.Text = "Move the end of the current time section to this frame";
             mnuDeleteSection.Text = "Delete the current time section";
@@ -691,10 +708,11 @@ namespace Kinovea.ScreenManager
         }
 
 
-        private void mnuRenameSection_Click(object sender, EventArgs e)
+        private void mnuRenameSections_Click(object sender, EventArgs e)
         {
-            // The dialog will directly modify the drawing.
-            // Backup the original state, restore it on cancel.
+            // The dialog is responsible for backing up and restoring the state in case of cancellation.
+            // When we exit the dialog the drawing has been modified or reverted to its original state,
+            // or the original state pushed to the history stack in case of validation.
             int sectionIndex = GetSectionIndex(currentTimestamp);
 
             ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
@@ -703,8 +721,6 @@ namespace Kinovea.ScreenManager
 
             IDrawingHostView host = tsmi.Tag as IDrawingHostView;
             
-            // The dialog is responsible for backing up and restoring the state in case of cancellation.
-            // When we exit the dialog the drawing has been modified or reverted to its original state.
             FormTimeSections fts = new FormTimeSections(this, sectionIndex, host);
             FormsHelper.Locate(fts);
             fts.ShowDialog();
@@ -816,7 +832,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Insert a new section into the list.
         /// </summary>
-        private void InsertSection(VideoSection section)
+        private void InsertSection(VideoSection section, string name = "")
         {
             // Find insertion point and insert the new section there.
             bool found = false;
@@ -833,12 +849,12 @@ namespace Kinovea.ScreenManager
             if (!found)
             {
                 sections.Add(section);
-                sectionNames.Add("");
+                sectionNames.Add(name);
             }
             else
             {
                 sections.Insert(i, section);
-                sectionNames.Insert(i, "");
+                sectionNames.Insert(i, name);
             }
         }
 
