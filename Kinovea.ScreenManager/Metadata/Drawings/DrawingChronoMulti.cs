@@ -247,14 +247,16 @@ namespace Kinovea.ScreenManager
             if (opacityFactor <= 0)
                 return;
 
+            bool onFirst = sections.Count == 1 || (sections.Count > 1 && currentTimestamp < sections[1].Start);
             List<List<string>> entries = GetTimecodes(currentTimestamp);
             StringBuilder sb = new StringBuilder();
-            foreach (var t in entries)  
+            for (int i = 0; i < entries.Count; i++)
             {   
-                if (t[0] == null)
-                    sb.AppendLine(string.Format("{0}", t[1]));
+                // If we are before or on the first section, only show the time.
+                if (entries[i][0] == null || onFirst)
+                    sb.AppendLine(string.Format("{0}", entries[i][1]));
                 else
-                    sb.AppendLine(string.Format("{0}: {1} | {2}", t[0], t[1], t[2]));
+                    sb.AppendLine(string.Format("{0}: {1} | {2}", entries[i][0], entries[i][1], entries[i][2]));
             }
             
             text = sb.ToString();
