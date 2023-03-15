@@ -42,6 +42,7 @@ Changelog:
     Added - Kinogram mode to replace the Overview mode.
     Added - Keyframe colors.
     Added - Keyframe presets.
+    Added - Multi-time stopwatch tool.
     Added - Time segment tool.
     Added - Distance grid tool.
     Added - Data export to raw JSON files.
@@ -55,6 +56,8 @@ Changelog:
     Improved - General: When importing a KVA file into a different video the times are now aligned by the time origins.
     Improved - General: Support the coordinate system in capture screen.
     Improved - General: Support the test grid in player screen.
+    Improved - General: Support sorting files by name, date or size in the explorer.
+    Improved - General: Support navigating back and forth in the explorer, and to the parent directory.
     Improved - Playback: Using a video filter no longer prevents the usage of the normal video controls and drawings tools.
     Improved - Playback: Video filters are no longer deactivated when changing the working zone.
     Improved - Playback: Support rotation on single image files.
