@@ -384,23 +384,27 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        public MeasuredDataTime CollectMeasuredData()
+        public List<MeasuredDataTime> CollectMeasuredData()
         {
-            MeasuredDataTime mdt = new MeasuredDataTime();
-            mdt.Name = name;
+            List<MeasuredDataTime> mdtList = new List<MeasuredDataTime>();
 
-            //if (!styleHelper.Clock && startCountingTimestamp != long.MaxValue && stopCountingTimestamp != long.MaxValue)
-            //{
-            //    float userStart = parentMetadata.GetNumericalTime(startCountingTimestamp, TimeType.UserOrigin);
-            //    float userStop = parentMetadata.GetNumericalTime(stopCountingTimestamp, TimeType.UserOrigin);
-            //    float userDuration = parentMetadata.GetNumericalTime(stopCountingTimestamp - startCountingTimestamp, TimeType.Absolute);
+            for (int i = 0; i < sections.Count; i++)
+            {
+                if (sections[i].End == long.MaxValue)
+                    continue;
 
-            //    mdt.Start = userStart;
-            //    mdt.Stop = userStop;
-            //    mdt.Duration = userDuration;
-            //}
+                MeasuredDataTime mdt = new MeasuredDataTime();
+                string sectionName = string.IsNullOrEmpty(sectionNames[i]) ? (i + 1).ToString() : sectionNames[i];
+                mdt.Name = string.Format("{0} > {1}", this.Name, sectionName);
+                var section = sections[i];
+                mdt.Start = parentMetadata.GetNumericalTime(section.Start, TimeType.UserOrigin);
+                mdt.Stop = parentMetadata.GetNumericalTime(section.End, TimeType.UserOrigin);
+                mdt.Duration = parentMetadata.GetNumericalTime(section.End - section.Start, TimeType.Absolute);
 
-            return mdt;
+                mdtList.Add(mdt);
+            }
+
+            return mdtList;
         }
 
 
@@ -975,7 +979,7 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Capture the current state to the undo/redo stack.
+        /// Capture the current state and push it to the undo/redo stack.
         /// </summary>
         private void CaptureMemento(SerializationFilter filter)
         {

@@ -1167,7 +1167,7 @@ namespace Kinovea.ScreenManager
                     md.Times.Add(((DrawingChrono)d).CollectMeasuredData());
 
                 if (d is DrawingChronoMulti)
-                    md.Times.Add(((DrawingChronoMulti)d).CollectMeasuredData());
+                    md.Times.AddRange(((DrawingChronoMulti)d).CollectMeasuredData());
             }
             md.Times.Sort((a, b) => a.Start.CompareTo(b.Start));
 
