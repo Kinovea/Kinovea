@@ -49,7 +49,7 @@ namespace Kinovea.ScreenManager
     /// The boundary frames are part of the sections.
     /// </summary>
     [XmlType ("ChronoMulti")]
-    public class DrawingChronoMulti : AbstractDrawing, IDecorable, IKvaSerializable
+    public class DrawingChronoMulti : AbstractDrawing, IDecorable, IKvaSerializable, ITimeable
     {
         #region Properties
         public override string ToolDisplayName
@@ -388,18 +388,26 @@ namespace Kinovea.ScreenManager
         {
             List<MeasuredDataTime> mdtList = new List<MeasuredDataTime>();
 
+            long cumulTimestamps = 0;
             for (int i = 0; i < sections.Count; i++)
             {
                 if (sections[i].End == long.MaxValue)
                     continue;
 
                 MeasuredDataTime mdt = new MeasuredDataTime();
+                mdt.IsMulti = true;
+
                 string sectionName = string.IsNullOrEmpty(sectionNames[i]) ? (i + 1).ToString() : sectionNames[i];
                 mdt.Name = string.Format("{0} > {1}", this.Name, sectionName);
                 var section = sections[i];
                 mdt.Start = parentMetadata.GetNumericalTime(section.Start, TimeType.UserOrigin);
                 mdt.Stop = parentMetadata.GetNumericalTime(section.End, TimeType.UserOrigin);
-                mdt.Duration = parentMetadata.GetNumericalTime(section.End - section.Start, TimeType.Absolute);
+
+                long elapsedTimestamps = section.End - section.Start;
+                cumulTimestamps += elapsedTimestamps;
+
+                mdt.Duration = parentMetadata.GetNumericalTime(elapsedTimestamps, TimeType.Absolute);
+                mdt.Cumul = parentMetadata.GetNumericalTime(cumulTimestamps, TimeType.Absolute);
 
                 mdtList.Add(mdt);
             }
@@ -559,11 +567,11 @@ namespace Kinovea.ScreenManager
 
             // Backup the time globally for use in the event handlers callbacks.
             currentTimestamp = timestamp;
-            
+
             // The context menu depends on whether we are on a live or dead section.
             mnuAction.DropDownItems.Clear();
             int sectionIndex = GetSectionIndex(currentTimestamp);
-            
+
             if (sectionIndex >= 0)
             {
                 // Live section.
@@ -592,9 +600,9 @@ namespace Kinovea.ScreenManager
             mnuMovePreviousEnd.Enabled = !IsBeforeFirstSection(sectionIndex);
             mnuMoveNextStart.Enabled = !IsAfterLastSection(sectionIndex);
             mnuShowLabel.Checked = showLabel;
-            
-            contextMenu.AddRange(new ToolStripItem[] { 
-                mnuVisibility, 
+
+            contextMenu.AddRange(new ToolStripItem[] {
+                mnuVisibility,
                 mnuAction,
                 mnuShowLabel
             });
@@ -811,6 +819,74 @@ namespace Kinovea.ScreenManager
             showLabel = !mnuShowLabel.Checked;
             InvalidateFromMenu(sender);
         }
+        #endregion
+
+        #region ITimeable
+        public void StartStop(long timestamp)
+        {
+            if (timestamp < visibleTimestamp || timestamp > invisibleTimestamp)
+                return;
+
+            // The commands are mapped to the start/stop menus, not the move menus.
+            // That is, we only support the creation of a new section or setting the end of the last section.
+            // No overwrite of existing data.
+            // Overwriting existing data is always ambiguous with a combo start/stop command.
+
+            // Determine if we are on a live or dead section.
+            int sectionIndex = GetSectionIndex(timestamp);
+            if (sectionIndex < 0)
+            {
+                // Dead section.
+                if (IsAfterLastSection(sectionIndex))
+                {
+                    // Create a new section.
+                    CaptureMemento(SerializationFilter.Core);
+                    InsertSection(new VideoSection(timestamp, long.MaxValue));
+                }
+                else
+                {
+                    // There is already another section in the future.
+                    return;
+                }
+            }
+            else
+            {
+                // Live section.
+                if (sections[sectionIndex].End == long.MaxValue)
+                {
+                    // Open-ended section.
+                    CaptureMemento(SerializationFilter.Core);
+                    StopSection(sectionIndex, timestamp);
+                }
+                else
+                {
+                    // This section already has an ending.
+                    return;
+                }
+            }
+
+        }
+
+        public void Split(long timestamp)
+        {
+            if (timestamp < visibleTimestamp || timestamp > invisibleTimestamp)
+                return;
+
+            // Determine if we are on a live or dead section.
+            int sectionIndex = GetSectionIndex(timestamp);
+            if (sectionIndex < 0)
+                return;
+
+            // Live section.
+            if (sections[sectionIndex].End == long.MaxValue)
+            {
+                // Open-ended section.
+                CaptureMemento(SerializationFilter.Core);
+                StopSection(sectionIndex, timestamp);
+                InsertSection(new VideoSection(timestamp, long.MaxValue));
+            }
+        }
+
         #endregion
 
         #region Lower level helpers

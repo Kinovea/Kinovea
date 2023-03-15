@@ -1390,6 +1390,12 @@ namespace Kinovea.ScreenManager
                 case PlayerScreenCommands.ValidateDrawing:
                     ValidateDrawing();
                     break;
+                case PlayerScreenCommands.ChronometerStartStop:
+                    ChronometerStartStop();
+                    break;
+                case PlayerScreenCommands.ChronometerSplit:
+                    ChronometerSplit();
+                    break;
                 case PlayerScreenCommands.IncreaseSpeed1:
                     ChangeSpeed(1);
                     break;
@@ -1565,6 +1571,38 @@ namespace Kinovea.ScreenManager
                 DoInvalidate();
             }
         }
+
+        private void ChronometerStartStop()
+        {
+            foreach (var drawing in m_FrameServer.Metadata.ChronoManager.Drawings)
+            {
+                var timeable = drawing as ITimeable;
+                if (timeable == null)
+                    continue;
+
+                timeable.StartStop(m_iCurrentPosition);
+            }
+
+            DoInvalidate();
+            UpdateFramesMarkers();
+        }
+
+        private void ChronometerSplit()
+        {
+            foreach (var drawing in m_FrameServer.Metadata.ChronoManager.Drawings)
+            {
+                var timeable = drawing as ITimeable;
+                if (timeable == null)
+                    continue;
+
+                timeable.Split(m_iCurrentPosition);
+            }
+
+            DoInvalidate();
+            UpdateFramesMarkers();
+        }
+
+
 
         /// <summary>
         /// Returns the physical time in microseconds for this timestamp.

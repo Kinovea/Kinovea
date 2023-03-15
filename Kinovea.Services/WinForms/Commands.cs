@@ -87,6 +87,8 @@ namespace Kinovea.Services
         DeleteDrawing,
         CopyImage,
         ValidateDrawing,
+        ChronometerStartStop,
+        ChronometerSplit,
 
         IncreaseSpeed1,
         IncreaseSpeedRoundTo10,
