@@ -144,6 +144,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuMovePreviousEnd = new ToolStripMenuItem();
         private ToolStripMenuItem mnuMoveNextStart = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDeleteSection = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuDeleteTimes = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowLabel = new ToolStripMenuItem();
         #endregion
 
@@ -216,6 +217,7 @@ namespace Kinovea.ScreenManager
             mnuMovePreviousEnd.Image = Properties.Resources.chronosectionend;
             mnuMoveNextStart.Image = Properties.Resources.chronosectionstart;
             mnuDeleteSection.Image = Properties.Resources.bin_empty;
+            mnuDeleteTimes.Image = Properties.Resources.bin_empty;
 
             mnuStart.Click += mnuStart_Click;
             mnuStop.Click += mnuStop_Click;
@@ -226,7 +228,7 @@ namespace Kinovea.ScreenManager
             mnuMovePreviousEnd.Click += mnuMovePreviousEnd_Click;
             mnuMoveNextStart.Click += mnuMoveNextStart_Click;
             mnuDeleteSection.Click += mnuDeleteSection_Click;
-
+            mnuDeleteTimes.Click += mnuDeleteTimes_Click;
 
             mnuShowLabel.Click += mnuShowLabel_Click;
         }
@@ -581,10 +583,12 @@ namespace Kinovea.ScreenManager
                     mnuStop,
                     mnuSplit,
                     new ToolStripSeparator(),
-                    mnuRenameSections,
                     mnuMoveCurrentStart,
                     mnuMoveCurrentEnd,
-                    mnuDeleteSection
+                    new ToolStripSeparator(),
+                    mnuRenameSections,
+                    mnuDeleteSection,
+                    mnuDeleteTimes,
                 });
             }
             else
@@ -593,9 +597,11 @@ namespace Kinovea.ScreenManager
                 mnuAction.DropDownItems.AddRange(new ToolStripItem[] {
                     mnuStart,
                     new ToolStripSeparator(),
-                    mnuRenameSections,
                     mnuMovePreviousEnd,
                     mnuMoveNextStart,
+                    new ToolStripSeparator(),
+                    mnuRenameSections,
+                    mnuDeleteTimes,
                 });
             }
 
@@ -636,6 +642,8 @@ namespace Kinovea.ScreenManager
             mnuStart.Text = "Start a new time section on this frame";
             mnuMovePreviousEnd.Text = "Move the end of the previous section to this frame";
             mnuMoveNextStart.Text = "Move the start of the next section to this frame";
+
+            mnuDeleteTimes.Text = "Delete all times";
 
             // Display.
             mnuShowLabel.Text = ScreenManagerLang.mnuShowLabel;
@@ -814,6 +822,18 @@ namespace Kinovea.ScreenManager
             InvalidateFromMenu(sender);
             UpdateFramesMarkersFromMenu(sender);
         }
+
+        private void mnuDeleteTimes_Click(object sender, EventArgs e)
+        {
+            CaptureMemento(SerializationFilter.Core);
+
+            sections.Clear();
+            sectionNames.Clear();
+
+            InvalidateFromMenu(sender);
+            UpdateFramesMarkersFromMenu(sender);
+        }
+
 
         private void mnuShowLabel_Click(object sender, EventArgs e)
         {
