@@ -58,11 +58,12 @@ VideoReaderFFMpeg::!VideoReaderFFMpeg()
     if (m_bIsLoaded)
         Close();
 }
-OpenVideoResult VideoReaderFFMpeg::Open(String^ _filePath)
+OpenVideoResult VideoReaderFFMpeg::Open(String^ filePath)
 {
-    OpenVideoResult result = Load(_filePath, false);
+    OpenVideoResult result = Load(filePath, false);
     if (result == OpenVideoResult::Success)
         DumpInfo();
+
     return result;
 }
 void VideoReaderFFMpeg::Close()
@@ -99,6 +100,7 @@ void VideoReaderFFMpeg::DataInit()
 VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ _filePath, int _thumbs, Size _maxSize)
 {
     // Open the file and extract some info + a few thumbnails.
+    m_Verbose = false;
     VideoSummary^ summary = gcnew VideoSummary(_filePath);
 
     OpenVideoResult loaded = Load(_filePath, true);
@@ -230,7 +232,9 @@ bool VideoReaderFFMpeg::MoveTo(int64_t _timestamp)
             // (Avoids another locking just for a very rare case).
             if (!m_PreBuffer->IsRolloverJump(_timestamp))
             {
-                log->DebugFormat("Out of segment jump, clearing cache. Asked {0} in {1}.", _timestamp, m_PreBuffer->Segment);
+                if (m_Verbose)
+                    log->DebugFormat("Out of segment jump, clearing cache. Asked {0} in {1}.", _timestamp, m_PreBuffer->Segment);
+                
                 m_PreBuffer->Clear();
             }
 
@@ -359,7 +363,8 @@ bool VideoReaderFFMpeg::ChangeDecodingSize(Size _size)
         return false;
     }
 
-    log->DebugFormat("Changing decoding size from {0} to {1}", m_DecodingSize, targetSize);
+    if (m_Verbose)
+        log->DebugFormat("Changing decoding size from {0} to {1}", m_DecodingSize, targetSize);
 
     long currentTimestamp = m_PreBuffer->CurrentFrame != nullptr ? m_PreBuffer->CurrentFrame->Timestamp : -1;
 
@@ -427,7 +432,8 @@ void VideoReaderFFMpeg::SwitchDecodingMode(VideoDecodingMode _mode)
     if (!CanSwitchDecodingMode(_mode))
         throw gcnew CapabilityNotSupportedException();
 
-    log->DebugFormat("Switching decoding mode. {0} -> {1}", m_DecodingMode.ToString(), _mode.ToString());
+    if (m_Verbose)
+        log->DebugFormat("Switching decoding mode. {0} -> {1}", m_DecodingMode.ToString(), _mode.ToString());
 
     if (m_DecodingMode == VideoDecodingMode::PreBuffering)
     {
@@ -466,7 +472,8 @@ void VideoReaderFFMpeg::UpdateWorkingZone(VideoSection _newZone, bool _forceRelo
     if (!CanChangeWorkingZone)
         throw gcnew CapabilityNotSupportedException();
 
-    log->DebugFormat("Update working zone request. {0} to {1}. Force reload:{2}", m_WorkingZone, _newZone, _forceReload);
+    if (m_Verbose)
+        log->DebugFormat("Update working zone request. {0} to {1}. Force reload:{2}", m_WorkingZone, _newZone, _forceReload);
 
     if (!_forceReload && m_WorkingZone == _newZone)
         return;
@@ -491,11 +498,14 @@ void VideoReaderFFMpeg::UpdateWorkingZone(VideoSection _newZone, bool _forceRelo
         // it is not guaranteed to land on exact frames. We must reupdate our internal value with
         // the actual boundaries, be it for reducing or expanding.
 
-        log->DebugFormat("Working zone update. Current:{0}, Asked:{1}", m_WorkingZone, _newZone);
+        if (m_Verbose)
+            log->DebugFormat("Working zone update. Current:{0}, Asked:{1}", m_WorkingZone, _newZone);
 
         if (!WorkingZoneFitsInMemory(_newZone, _maxMemory))
         {
-            log->Debug("New working zone does not fit in memory.");
+            if (m_Verbose)
+                log->Debug("New working zone does not fit in memory.");
+
             m_WorkingZone = _newZone;
             SwitchToBestAfterCaching();
         }
@@ -506,7 +516,9 @@ void VideoReaderFFMpeg::UpdateWorkingZone(VideoSection _newZone, bool _forceRelo
 
             if (m_DecodingMode != VideoDecodingMode::Caching || _forceReload)
             {
-                log->Debug("Just entering the cached mode, import everything.");
+                if (m_Verbose)
+                    log->Debug("Just entering the cached mode, import everything.");
+
                 if (m_DecodingMode == VideoDecodingMode::Caching)
                 {
                     // Force a reload of the cache.
@@ -554,7 +566,8 @@ void VideoReaderFFMpeg::UpdateWorkingZone(VideoSection _newZone, bool _forceRelo
 
             if (!sectionToCache.IsEmpty)
             {
-                log->DebugFormat("New frames to cache needed:{0}", sectionToCache);
+                if (m_Verbose)
+                    log->DebugFormat("New frames to cache needed:{0}", sectionToCache);
                 //SwitchDecodingMode(VideoDecodingMode::Caching);
 
                 // As C++/CLI doesn't support lambdas expressions, we have to resort to a separate method and global variables.
@@ -605,7 +618,8 @@ bool VideoReaderFFMpeg::ReadMany(BackgroundWorker^ _bgWorker, VideoSection _sect
     if (_bgWorker != nullptr)
         Thread::CurrentThread->Name = "CacheFilling";
 
-    log->DebugFormat("Caching section {0}, prepend:{1}", _section, _prepend);
+    if (m_Verbose)
+        log->DebugFormat("Caching section {0}, prepend:{1}", _section, _prepend);
 
     m_Cache->SetPrependBlock(_prepend);
 
@@ -626,7 +640,8 @@ bool VideoReaderFFMpeg::ReadMany(BackgroundWorker^ _bgWorker, VideoSection _sect
     {
         if (_bgWorker != nullptr && _bgWorker->CancellationPending)
         {
-            log->DebugFormat("Cancellation at frame [{0}]", m_TimestampInfo.CurrentTimestamp);
+            if (m_Verbose)
+                log->DebugFormat("Cancellation at frame [{0}]", m_TimestampInfo.CurrentTimestamp);
             m_Cache->Clear();
             success = false;
             break;
@@ -703,7 +718,9 @@ void VideoReaderFFMpeg::StartPreBuffering()
         //throw gcnew CapabilityNotSupportedException();
     }
 
-    log->Debug("Starting prebuffering thread.");
+    if (m_Verbose)
+        log->Debug("Starting prebuffering thread.");
+
     ParameterizedThreadStart^ pts = gcnew ParameterizedThreadStart(this, &VideoReaderFFMpeg::PreBufferingWorker);
     m_PreBufferingThreadCanceler->Reset();
     m_PreBufferingThread = gcnew Thread(pts);
@@ -714,7 +731,9 @@ void VideoReaderFFMpeg::StopPreBuffering()
     if (m_PreBufferingThread == nullptr || !m_PreBufferingThread->IsAlive)
         return;
 
-    log->Debug("Stopping prebuffering thread.");
+    if (m_Verbose)
+        log->Debug("Stopping prebuffering thread.");
+
     m_PreBufferingThreadCanceler->Cancel();
 
     // The cancellation will only be effective when we next pass in the 
@@ -777,7 +796,9 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ _filePath, bool _forSummary)
             }
             else
             {
-                log->Debug("Subtitle stream found, but not analysis meta data: ignored.");
+                if (m_Verbose)
+                    log->Debug("Subtitle stream found, but not analysis meta data: ignored.");
+
                 m_iMetadataStream = -1;
             }
         }
@@ -821,11 +842,11 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ _filePath, bool _forSummary)
             log->Error("Codec could not be openned. (Codec known, but not supported yet.)");
             break;
         }
-
+        
         // The fundamental unit of time in Kinovea is the timebase of the file.
         // The timebase unit is the span of time (in seconds) in which the timestamps are expressed.
-
-        log->DebugFormat("pFormatCtx->streams[m_iVideoStream]->time_base.den: {0}, .num: {1}", pFormatCtx->streams[m_iVideoStream]->time_base.den, pFormatCtx->streams[m_iVideoStream]->time_base.num);
+        if (m_Verbose)
+            log->DebugFormat("pFormatCtx->streams[m_iVideoStream]->time_base.den: {0}, .num: {1}", pFormatCtx->streams[m_iVideoStream]->time_base.den, pFormatCtx->streams[m_iVideoStream]->time_base.num);
 
         m_VideoInfo.AverageTimeStampsPerSeconds = (double)pFormatCtx->streams[m_iVideoStream]->time_base.den / (double)pFormatCtx->streams[m_iVideoStream]->time_base.num;
         double fAvgFrameRate = 0.0;
@@ -1202,7 +1223,8 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t _iTimeStampToSeekTo, int _iFrame
         if (beTimestamp < m_timestampOffset)
         {
             m_timestampOffset = beTimestamp;
-            log->DebugFormat("Negative timestamp received. Applying new timestamp offset of {0}.", m_timestampOffset);
+            if (m_Verbose)
+                log->DebugFormat("Negative timestamp received. Applying new timestamp offset of {0}.", m_timestampOffset);
         }
 
         m_TimestampInfo.CurrentTimestamp = beTimestamp - m_timestampOffset;
@@ -1223,8 +1245,11 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t _iTimeStampToSeekTo, int _iFrame
             int64_t iMinTarget = System::Math::Min(iForceSeekTimestamp, (int64_t)0);
 
             // Do the seek.
-            log->DebugFormat("[Seek] - First decoded frame [{0}] already after target [{1}]. Force seek {2} more seconds back to [{3}]",
-                m_TimestampInfo.CurrentTimestamp, iTargetTimeStamp, iSecondsBack, iForceSeekTimestamp);
+            if (m_Verbose)
+            {
+                log->DebugFormat("[Seek] - First decoded frame [{0}] already after target [{1}]. Force seek {2} more seconds back to [{3}]",
+                    m_TimestampInfo.CurrentTimestamp, iTargetTimeStamp, iSecondsBack, iForceSeekTimestamp);
+            }
 
             avformat_seek_file(m_pFormatCtx, m_iVideoStream, iMinTarget + m_timestampOffset, iForceSeekTimestamp + m_timestampOffset, iForceSeekTimestamp + m_timestampOffset, AVSEEK_FLAG_BACKWARD);
             avcodec_flush_buffers(m_pFormatCtx->streams[m_iVideoStream]->codec);
@@ -1250,7 +1275,7 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t _iTimeStampToSeekTo, int _iFrame
         {
             done = true;
 
-            if (seeking && m_TimestampInfo.CurrentTimestamp != iTargetTimeStamp)
+            if (m_Verbose && seeking && m_TimestampInfo.CurrentTimestamp != iTargetTimeStamp)
                 log->DebugFormat("Seeking to [{0}] completed. Final position:[{1}]", iTargetTimeStamp, m_TimestampInfo.CurrentTimestamp);
 
             // Deinterlace + rescale + convert pixel format.
@@ -1303,7 +1328,7 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t _iTimeStampToSeekTo, int _iFrame
                 VideoFrame^ vf = gcnew VideoFrame();
                 vf->Image = bmp;
                 vf->Timestamp = m_TimestampInfo.CurrentTimestamp;
-                //log->DebugFormat("Pushing frame {0} to container. {1}", vf->Timestamp, m_DecodingMode);
+                
                 m_LoopWatcher->LoopEnd();
                 m_FramesContainer->Add(vf);
             }
@@ -1475,7 +1500,9 @@ void VideoReaderFFMpeg::PreBufferingWorker(Object^ _canceler)
     {
         if (canceler->CancellationPending)
         {
-            log->DebugFormat("PreBuffering thread, cancellation detected.");
+            if (m_Verbose)
+                log->DebugFormat("PreBuffering thread, cancellation detected.");
+
             break;
         }
 
@@ -1484,7 +1511,9 @@ void VideoReaderFFMpeg::PreBufferingWorker(Object^ _canceler)
         // Rollover.
         if (!canceler->CancellationPending && (res == ReadResult::FrameNotRead || m_TimestampInfo.CurrentTimestamp > m_WorkingZone.End))
         {
-            log->DebugFormat("Average prebuffering loop time: {0:0.000}ms. (Budget: {1:0.000}ms).", m_LoopWatcher->Average, m_VideoInfo.FrameIntervalMilliseconds);
+            if (m_Verbose)
+                log->DebugFormat("Average prebuffering loop time: {0:0.000}ms. (Budget: {1:0.000}ms).", m_LoopWatcher->Average, m_VideoInfo.FrameIntervalMilliseconds);
+            
             m_LoopWatcher->Restart();
 
             ReadFrame(m_WorkingZone.Start, 1, false);

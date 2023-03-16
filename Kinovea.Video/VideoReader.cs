@@ -126,7 +126,7 @@ namespace Kinovea.Video
         #endregion
         
         #region Methods
-        public abstract OpenVideoResult Open(string _filePath);
+        public abstract OpenVideoResult Open(string filePath);
         public abstract void Close();
         public abstract VideoSummary ExtractSummary(string filePath, int thumbsToLoad, Size maxImageSize);
         

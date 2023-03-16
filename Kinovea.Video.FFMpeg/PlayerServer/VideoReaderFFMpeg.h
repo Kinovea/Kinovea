@@ -185,6 +185,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         bool m_Prepend;
         Size m_DecodingSize;
         bool m_CanDrawUnscaled;
+        bool m_Verbose = true;
 
         // Frame containers
         IVideoFramesContainer^ m_FramesContainer;
