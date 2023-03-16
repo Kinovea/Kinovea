@@ -218,6 +218,7 @@ namespace Kinovea.ScreenManager
             mnuMoveNextStart.Image = Properties.Resources.chronosectionstart;
             mnuDeleteSection.Image = Properties.Resources.bin_empty;
             mnuDeleteTimes.Image = Properties.Resources.bin_empty;
+            mnuShowLabel.Image = Properties.Drawings.label;
 
             mnuStart.Click += mnuStart_Click;
             mnuStop.Click += mnuStop_Click;
@@ -229,7 +230,6 @@ namespace Kinovea.ScreenManager
             mnuMoveNextStart.Click += mnuMoveNextStart_Click;
             mnuDeleteSection.Click += mnuDeleteSection_Click;
             mnuDeleteTimes.Click += mnuDeleteTimes_Click;
-
             mnuShowLabel.Click += mnuShowLabel_Click;
         }
         #endregion

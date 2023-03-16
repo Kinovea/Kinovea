@@ -188,10 +188,22 @@ namespace Kinovea.ScreenManager
             mnuShowAfter.Image = Properties.Drawings.showafter;
             mnuHideBefore.Image = Properties.Drawings.hidebefore;
             mnuHideAfter.Image = Properties.Drawings.hideafter;
+            mnuShowLabel.Image = Properties.Drawings.label;
+            mnuStart.Image = Properties.Drawings.chronostart;
+            mnuStop.Image = Properties.Drawings.chronostop;
+            mnuDeleteSection.Image = Properties.Resources.bin_empty;
+            mnuMarkOrigin.Image = Properties.Resources.marker;
+
             mnuShowBefore.Click += MnuShowBefore_Click;
             mnuShowAfter.Click += MnuShowAfter_Click;
             mnuHideBefore.Click += MnuHideBefore_Click;
             mnuHideAfter.Click += MnuHideAfter_Click;
+            mnuStart.Click += mnuStart_Click;
+            mnuStop.Click += mnuStop_Click;
+            mnuDeleteSection.Click += mnuDeleteSection_Click;
+            mnuMarkOrigin.Click += mnuMarkOrigin_Click;
+            mnuShowLabel.Click += mnuShowLabel_Click;
+            
             mnuVisibility.DropDownItems.AddRange(new ToolStripItem[] { 
                 mnuShowBefore, 
                 mnuShowAfter, 
@@ -199,17 +211,6 @@ namespace Kinovea.ScreenManager
                 mnuHideBefore, 
                 mnuHideAfter 
             });
-
-            mnuStart.Image = Properties.Drawings.chronostart;
-            mnuStop.Image = Properties.Drawings.chronostop;
-            mnuDeleteSection.Image = Properties.Resources.bin_empty;
-            mnuMarkOrigin.Image = Properties.Resources.marker;
-            
-            mnuStart.Click += mnuStart_Click;
-            mnuStop.Click += mnuStop_Click;
-            mnuDeleteSection.Click += mnuDeleteSection_Click;
-            mnuMarkOrigin.Click += mnuMarkOrigin_Click;
-            mnuShowLabel.Click += mnuShowLabel_Click;
         }
 
         public DrawingChrono(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
