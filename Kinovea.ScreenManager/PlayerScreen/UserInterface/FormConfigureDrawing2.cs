@@ -92,6 +92,9 @@ namespace Kinovea.ScreenManager
             foreach(KeyValuePair<string, AbstractStyleElement> pair in style.Elements)
             {
                 AbstractStyleElement styleElement = pair.Value;
+                if (styleElement is StyleElementToggle && (((StyleElementToggle)styleElement).IsHidden))
+                    continue;
+
                 m_Elements.Add(styleElement);
                 
                 styleElement.ValueChanged += element_ValueChanged;

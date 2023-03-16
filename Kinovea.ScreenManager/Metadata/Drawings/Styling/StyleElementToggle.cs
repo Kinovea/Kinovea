@@ -57,6 +57,14 @@ namespace Kinovea.ScreenManager
         {
             get { return "Toggle"; }
         }
+
+        /// <summary>
+        /// Returns true if this option should be hidden from the user interface.
+        /// </summary>
+        public bool IsHidden
+        {
+            get { return DrawingStyle.IsHiddenToggle(variant); }
+        }
         #endregion
 
         public static readonly bool defaultValue = false;

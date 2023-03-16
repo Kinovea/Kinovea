@@ -227,5 +227,21 @@ namespace Kinovea.ScreenManager
                     input.Elements.Add(key, preset.Elements[key].Clone());
             }
         }
+
+        /// <summary>
+        /// Returns true if this toggle should be hidden from the user interface.
+        /// </summary>
+        public static bool IsHiddenToggle(StyleToggleVariant toggleType)
+        {
+            switch (toggleType)
+            {
+                case StyleToggleVariant.Perspective:
+                case StyleToggleVariant.DistanceGrid:
+                case StyleToggleVariant.Clock:
+                    return true;
+                default:
+                    return false;
+            }
+        }
     }
 }
