@@ -114,8 +114,8 @@ namespace Kinovea.ScreenManager
 
         private long visibleTimestamp;               	// chrono becomes visible.
         private long invisibleTimestamp;             	// chrono stops being visible.
-        private List<VideoSection> sections = new List<VideoSection>(); // start and stop counting.
-        private long currentTimestamp;              // timestamp for context-menu operations.
+        private List<VideoSection> sections = new List<VideoSection>(); 
+        private long contextTimestamp;                  // timestamp for context-menu operations.
         private bool showLabel;
         private string text;
         private List<string> sectionNames = new List<string>();
@@ -572,11 +572,11 @@ namespace Kinovea.ScreenManager
             ReloadMenusCulture();
 
             // Backup the time globally for use in the event handlers callbacks.
-            currentTimestamp = timestamp;
+            contextTimestamp = timestamp;
 
             // The context menu depends on whether we are on a live or dead section.
             mnuAction.DropDownItems.Clear();
-            int sectionIndex = GetSectionIndex(currentTimestamp);
+            int sectionIndex = GetSectionIndex(contextTimestamp);
 
             if (sectionIndex >= 0)
             {
@@ -688,7 +688,7 @@ namespace Kinovea.ScreenManager
             // Start a new section here.
             CaptureMemento(SerializationFilter.Core);
             
-            InsertSection(new VideoSection(currentTimestamp, long.MaxValue));
+            InsertSection(new VideoSection(contextTimestamp, long.MaxValue));
             
             InvalidateFromMenu(sender);
             UpdateFramesMarkersFromMenu(sender);
@@ -697,16 +697,16 @@ namespace Kinovea.ScreenManager
         private void mnuStop_Click(object sender, EventArgs e)
         {
             // Stop the current section here.
-            int sectionIndex = GetSectionIndex(currentTimestamp);
+            int sectionIndex = GetSectionIndex(contextTimestamp);
             if (sectionIndex < 0)
                 return;
 
             CaptureMemento(SerializationFilter.Core);
 
-            StopSection(sectionIndex, currentTimestamp);
+            StopSection(sectionIndex, contextTimestamp);
 
-            if (currentTimestamp > invisibleTimestamp)
-                invisibleTimestamp = currentTimestamp;
+            if (contextTimestamp > invisibleTimestamp)
+                invisibleTimestamp = contextTimestamp;
 
             InvalidateFromMenu(sender);
             UpdateFramesMarkersFromMenu(sender);
@@ -715,17 +715,17 @@ namespace Kinovea.ScreenManager
         private void mnuSplit_Click(object sender, EventArgs e)
         {
             // Stop the current section here and start a new one.
-            int sectionIndex = GetSectionIndex(currentTimestamp);
+            int sectionIndex = GetSectionIndex(contextTimestamp);
             if (sectionIndex < 0)
                 return;
 
             CaptureMemento(SerializationFilter.Core);
             
-            StopSection(sectionIndex, currentTimestamp);
-            InsertSection(new VideoSection(currentTimestamp, long.MaxValue));
+            StopSection(sectionIndex, contextTimestamp);
+            InsertSection(new VideoSection(contextTimestamp, long.MaxValue));
 
-            if (currentTimestamp > invisibleTimestamp)
-                invisibleTimestamp = currentTimestamp;
+            if (contextTimestamp > invisibleTimestamp)
+                invisibleTimestamp = contextTimestamp;
 
             InvalidateFromMenu(sender);
             UpdateFramesMarkersFromMenu(sender);
@@ -737,7 +737,7 @@ namespace Kinovea.ScreenManager
             // The dialog is responsible for backing up and restoring the state in case of cancellation.
             // When we exit the dialog the drawing has been modified or reverted to its original state,
             // or the original state pushed to the history stack in case of validation.
-            int sectionIndex = GetSectionIndex(currentTimestamp);
+            int sectionIndex = GetSectionIndex(contextTimestamp);
 
             ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
             if (tsmi == null)
@@ -754,13 +754,13 @@ namespace Kinovea.ScreenManager
 
         private void mnuMoveCurrentStart_Click(object sender, EventArgs e)
         {
-            int sectionIndex = GetSectionIndex(currentTimestamp);
+            int sectionIndex = GetSectionIndex(contextTimestamp);
             if (sectionIndex < 0)
                 return;
 
             CaptureMemento(SerializationFilter.Core);
 
-            sections[sectionIndex] = new VideoSection(currentTimestamp, sections[sectionIndex].End);
+            sections[sectionIndex] = new VideoSection(contextTimestamp, sections[sectionIndex].End);
 
             InvalidateFromMenu(sender);
             UpdateFramesMarkersFromMenu(sender);
@@ -769,13 +769,13 @@ namespace Kinovea.ScreenManager
         private void mnuMoveCurrentEnd_Click(object sender, EventArgs e)
         {
             // Technically "Move current end" is the same as "Stop", but we keep it for symmetry purposes.
-            int sectionIndex = GetSectionIndex(currentTimestamp);
+            int sectionIndex = GetSectionIndex(contextTimestamp);
             if (sectionIndex < 0)
                 return;
 
             CaptureMemento(SerializationFilter.Core);
 
-            sections[sectionIndex] = new VideoSection(sections[sectionIndex].Start, currentTimestamp);
+            sections[sectionIndex] = new VideoSection(sections[sectionIndex].Start, contextTimestamp);
 
             InvalidateFromMenu(sender);
             UpdateFramesMarkersFromMenu(sender);
@@ -783,14 +783,14 @@ namespace Kinovea.ScreenManager
 
         private void mnuMovePreviousEnd_Click(object sender, EventArgs e)
         {
-            int sectionIndex = GetSectionIndex(currentTimestamp);
+            int sectionIndex = GetSectionIndex(contextTimestamp);
             if (sectionIndex >= 0 || IsBeforeFirstSection(sectionIndex))
                 return;
 
             CaptureMemento(SerializationFilter.Core);
 
             int prevIndex = -(sectionIndex + 2);
-            sections[prevIndex] = new VideoSection(sections[prevIndex].Start, currentTimestamp);
+            sections[prevIndex] = new VideoSection(sections[prevIndex].Start, contextTimestamp);
 
             InvalidateFromMenu(sender);
             UpdateFramesMarkersFromMenu(sender);
@@ -798,14 +798,14 @@ namespace Kinovea.ScreenManager
 
         private void mnuMoveNextStart_Click(object sender, EventArgs e)
         {
-            int sectionIndex = GetSectionIndex(currentTimestamp);
+            int sectionIndex = GetSectionIndex(contextTimestamp);
             if (sectionIndex >= 0 || IsAfterLastSection(sectionIndex))
                 return;
 
             CaptureMemento(SerializationFilter.Core);
 
             int nextIndex = -(sectionIndex + 1);
-            sections[nextIndex] = new VideoSection(currentTimestamp, sections[nextIndex].End);
+            sections[nextIndex] = new VideoSection(contextTimestamp, sections[nextIndex].End);
 
             InvalidateFromMenu(sender);
             UpdateFramesMarkersFromMenu(sender);
@@ -813,7 +813,7 @@ namespace Kinovea.ScreenManager
 
         private void mnuDeleteSection_Click(object sender, EventArgs e)
         {
-            int sectionIndex = GetSectionIndex(currentTimestamp);
+            int sectionIndex = GetSectionIndex(contextTimestamp);
             if (sectionIndex < 0)
                 return;
 
