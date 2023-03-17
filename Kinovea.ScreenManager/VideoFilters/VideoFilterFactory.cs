@@ -18,6 +18,9 @@ namespace Kinovea.ScreenManager
     {
         private static Dictionary<VideoFilterType, VideoFilterInfo> info = new Dictionary<VideoFilterType, VideoFilterInfo>();
         
+        /// <summary>
+        /// Private constructor initializing all the video filters.
+        /// </summary>
         static VideoFilterFactory()
         {
             info.Add(VideoFilterType.Kinogram, new VideoFilterInfo("Kinogram", Properties.Resources.mosaic, false));

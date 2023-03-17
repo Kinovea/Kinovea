@@ -113,7 +113,16 @@ namespace Kinovea.ScreenManager
         public VideoFilterKinogram(Metadata metadata)
         {
             this.metadata = metadata;
-            
+
+            BuildMenus();
+
+            parameters = PreferencesManager.PlayerPreferences.Kinogram;
+            ResetCropPositions();
+            AfterTileCountChange();
+        }
+
+        private void BuildMenus()
+        {
             mnuConfigure.Image = Properties.Drawings.configure;
             mnuAutoPositions.Image = Properties.Resources.wand;
             mnuResetPositions.Image = Properties.Resources.bin_empty;
@@ -135,9 +144,6 @@ namespace Kinovea.ScreenManager
             mnuResetPositions.Click += MnuResetPositions_Click;
             mnuGenerateNumbers.Click += MnuNumberSequence_Click;
             mnuDeleteNumbers.Click += MnuDeleteNumberSequence_Click;
-
-            parameters = PreferencesManager.PlayerPreferences.Kinogram;
-            AfterTileCountChange();
         }
 
         ~VideoFilterKinogram()
@@ -262,7 +268,7 @@ namespace Kinovea.ScreenManager
 
         public void ExportImage(IDrawingHostView host)
         {
-            // Launch dialog.
+            // Launch dedicated dialog.
             FormExportKinogram fek = new FormExportKinogram(this, host.CurrentTimestamp);
             FormsHelper.Locate(fek);
             fek.ShowDialog();
@@ -275,6 +281,7 @@ namespace Kinovea.ScreenManager
         {
             this.framesContainer = null;
             this.parameters = PreferencesManager.PlayerPreferences.Kinogram;
+            ResetCropPositions();
             AfterTileCountChange();
         }
 

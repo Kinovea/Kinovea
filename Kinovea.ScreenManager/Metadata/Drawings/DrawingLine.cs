@@ -193,7 +193,6 @@ namespace Kinovea.ScreenManager
             List<PointF> curve = distorter.DistortLine(points["a"], points["b"]);
             List<Point> transformedCurve = transformer.Transform(curve);
 
-
             PointF arrowOffsetStart = ArrowHelper.GetOffset(penEdges.Width, start, transformedCurve[1]);
             PointF arrowOffsetEnd = ArrowHelper.GetOffset(penEdges.Width, end, transformedCurve[transformedCurve.Count - 2]);
             float offsetLength = Math.Max(new Vector(arrowOffsetStart.X, arrowOffsetStart.Y).Norm(), new Vector(arrowOffsetEnd.X, arrowOffsetEnd.Y).Norm());

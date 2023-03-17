@@ -41,11 +41,11 @@ namespace Kinovea.ScreenManager
       this.nudRows = new System.Windows.Forms.NumericUpDown();
       this.nudCols = new System.Windows.Forms.NumericUpDown();
       this.lblColumns = new System.Windows.Forms.Label();
-      this.lblRows = new System.Windows.Forms.Label();
       this.btnOK = new System.Windows.Forms.Button();
       this.btnCancel = new System.Windows.Forms.Button();
       this.grpAppearance = new System.Windows.Forms.GroupBox();
       this.cbBorderVisible = new System.Windows.Forms.CheckBox();
+      this.label2 = new System.Windows.Forms.Label();
       this.grpConfig.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudCropHeight)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudCropWidth)).BeginInit();
@@ -57,7 +57,7 @@ namespace Kinovea.ScreenManager
       // label1
       // 
       this.label1.AutoSize = true;
-      this.label1.Location = new System.Drawing.Point(267, 154);
+      this.label1.Location = new System.Drawing.Point(267, 107);
       this.label1.Name = "label1";
       this.label1.Size = new System.Drawing.Size(18, 13);
       this.label1.TabIndex = 53;
@@ -66,7 +66,7 @@ namespace Kinovea.ScreenManager
       // label4
       // 
       this.label4.AutoSize = true;
-      this.label4.Location = new System.Drawing.Point(200, 155);
+      this.label4.Location = new System.Drawing.Point(200, 108);
       this.label4.Name = "label4";
       this.label4.Size = new System.Drawing.Size(13, 13);
       this.label4.TabIndex = 45;
@@ -75,7 +75,7 @@ namespace Kinovea.ScreenManager
       // lblCropSize
       // 
       this.lblCropSize.AutoSize = true;
-      this.lblCropSize.Location = new System.Drawing.Point(18, 153);
+      this.lblCropSize.Location = new System.Drawing.Point(21, 106);
       this.lblCropSize.Name = "lblCropSize";
       this.lblCropSize.Size = new System.Drawing.Size(56, 13);
       this.lblCropSize.TabIndex = 43;
@@ -83,21 +83,21 @@ namespace Kinovea.ScreenManager
       // 
       // grpConfig
       // 
+      this.grpConfig.Controls.Add(this.lblCropSize);
+      this.grpConfig.Controls.Add(this.label4);
+      this.grpConfig.Controls.Add(this.label2);
+      this.grpConfig.Controls.Add(this.label1);
       this.grpConfig.Controls.Add(this.lblFrameInterval);
-      this.grpConfig.Controls.Add(this.lblTotal);
-      this.grpConfig.Controls.Add(this.cbRTL);
-      this.grpConfig.Controls.Add(this.nudCropHeight);
       this.grpConfig.Controls.Add(this.nudCropWidth);
+      this.grpConfig.Controls.Add(this.lblTotal);
+      this.grpConfig.Controls.Add(this.nudCropHeight);
+      this.grpConfig.Controls.Add(this.cbRTL);
       this.grpConfig.Controls.Add(this.nudRows);
       this.grpConfig.Controls.Add(this.nudCols);
-      this.grpConfig.Controls.Add(this.label1);
       this.grpConfig.Controls.Add(this.lblColumns);
-      this.grpConfig.Controls.Add(this.lblRows);
-      this.grpConfig.Controls.Add(this.label4);
-      this.grpConfig.Controls.Add(this.lblCropSize);
       this.grpConfig.Location = new System.Drawing.Point(14, 12);
       this.grpConfig.Name = "grpConfig";
-      this.grpConfig.Size = new System.Drawing.Size(297, 225);
+      this.grpConfig.Size = new System.Drawing.Size(297, 200);
       this.grpConfig.TabIndex = 58;
       this.grpConfig.TabStop = false;
       this.grpConfig.Text = "Generic_Configuration";
@@ -105,7 +105,7 @@ namespace Kinovea.ScreenManager
       // lblFrameInterval
       // 
       this.lblFrameInterval.AutoSize = true;
-      this.lblFrameInterval.Location = new System.Drawing.Point(148, 99);
+      this.lblFrameInterval.Location = new System.Drawing.Point(21, 175);
       this.lblFrameInterval.Name = "lblFrameInterval";
       this.lblFrameInterval.Size = new System.Drawing.Size(79, 13);
       this.lblFrameInterval.TabIndex = 62;
@@ -114,7 +114,7 @@ namespace Kinovea.ScreenManager
       // lblTotal
       // 
       this.lblTotal.AutoSize = true;
-      this.lblTotal.Location = new System.Drawing.Point(18, 98);
+      this.lblTotal.Location = new System.Drawing.Point(21, 144);
       this.lblTotal.Name = "lblTotal";
       this.lblTotal.Size = new System.Drawing.Size(37, 13);
       this.lblTotal.TabIndex = 61;
@@ -123,7 +123,7 @@ namespace Kinovea.ScreenManager
       // cbRTL
       // 
       this.cbRTL.AutoSize = true;
-      this.cbRTL.Location = new System.Drawing.Point(24, 189);
+      this.cbRTL.Location = new System.Drawing.Point(24, 69);
       this.cbRTL.Name = "cbRTL";
       this.cbRTL.Size = new System.Drawing.Size(80, 17);
       this.cbRTL.TabIndex = 60;
@@ -133,7 +133,7 @@ namespace Kinovea.ScreenManager
       // 
       // nudCropHeight
       // 
-      this.nudCropHeight.Location = new System.Drawing.Point(216, 151);
+      this.nudCropHeight.Location = new System.Drawing.Point(216, 104);
       this.nudCropHeight.Maximum = new decimal(new int[] {
             4096,
             0,
@@ -157,7 +157,7 @@ namespace Kinovea.ScreenManager
       // 
       // nudCropWidth
       // 
-      this.nudCropWidth.Location = new System.Drawing.Point(151, 151);
+      this.nudCropWidth.Location = new System.Drawing.Point(151, 104);
       this.nudCropWidth.Maximum = new decimal(new int[] {
             4096,
             0,
@@ -181,7 +181,7 @@ namespace Kinovea.ScreenManager
       // 
       // nudRows
       // 
-      this.nudRows.Location = new System.Drawing.Point(154, 61);
+      this.nudRows.Location = new System.Drawing.Point(211, 29);
       this.nudRows.Maximum = new decimal(new int[] {
             25,
             0,
@@ -205,7 +205,7 @@ namespace Kinovea.ScreenManager
       // 
       // nudCols
       // 
-      this.nudCols.Location = new System.Drawing.Point(154, 29);
+      this.nudCols.Location = new System.Drawing.Point(151, 29);
       this.nudCols.Maximum = new decimal(new int[] {
             25,
             0,
@@ -232,24 +232,15 @@ namespace Kinovea.ScreenManager
       this.lblColumns.AutoSize = true;
       this.lblColumns.Location = new System.Drawing.Point(21, 33);
       this.lblColumns.Name = "lblColumns";
-      this.lblColumns.Size = new System.Drawing.Size(53, 13);
+      this.lblColumns.Size = new System.Drawing.Size(37, 13);
       this.lblColumns.TabIndex = 52;
-      this.lblColumns.Text = "Columns :";
-      // 
-      // lblRows
-      // 
-      this.lblRows.AutoSize = true;
-      this.lblRows.Location = new System.Drawing.Point(21, 62);
-      this.lblRows.Name = "lblRows";
-      this.lblRows.Size = new System.Drawing.Size(40, 13);
-      this.lblRows.TabIndex = 50;
-      this.lblRows.Text = "Rows :";
+      this.lblColumns.Text = "Table:";
       // 
       // btnOK
       // 
       this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.btnOK.Location = new System.Drawing.Point(111, 384);
+      this.btnOK.Location = new System.Drawing.Point(110, 356);
       this.btnOK.Name = "btnOK";
       this.btnOK.Size = new System.Drawing.Size(99, 24);
       this.btnOK.TabIndex = 56;
@@ -261,7 +252,7 @@ namespace Kinovea.ScreenManager
       // 
       this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.btnCancel.Location = new System.Drawing.Point(216, 384);
+      this.btnCancel.Location = new System.Drawing.Point(215, 356);
       this.btnCancel.Name = "btnCancel";
       this.btnCancel.Size = new System.Drawing.Size(99, 24);
       this.btnCancel.TabIndex = 57;
@@ -271,7 +262,7 @@ namespace Kinovea.ScreenManager
       // grpAppearance
       // 
       this.grpAppearance.Controls.Add(this.cbBorderVisible);
-      this.grpAppearance.Location = new System.Drawing.Point(14, 243);
+      this.grpAppearance.Location = new System.Drawing.Point(14, 218);
       this.grpAppearance.Name = "grpAppearance";
       this.grpAppearance.Size = new System.Drawing.Size(297, 128);
       this.grpAppearance.TabIndex = 53;
@@ -289,13 +280,22 @@ namespace Kinovea.ScreenManager
       this.cbBorderVisible.UseVisualStyleBackColor = true;
       this.cbBorderVisible.CheckedChanged += new System.EventHandler(this.cbBorderVisible_CheckedChanged);
       // 
+      // label2
+      // 
+      this.label2.AutoSize = true;
+      this.label2.Location = new System.Drawing.Point(192, 33);
+      this.label2.Name = "label2";
+      this.label2.Size = new System.Drawing.Size(13, 13);
+      this.label2.TabIndex = 63;
+      this.label2.Text = "×";
+      // 
       // FormConfigureKinogram
       // 
       this.AcceptButton = this.btnOK;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.CancelButton = this.btnCancel;
-      this.ClientSize = new System.Drawing.Size(325, 420);
+      this.ClientSize = new System.Drawing.Size(324, 392);
       this.Controls.Add(this.grpConfig);
       this.Controls.Add(this.grpAppearance);
       this.Controls.Add(this.btnOK);
@@ -325,7 +325,6 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Label lblCropSize;
         private System.Windows.Forms.GroupBox grpConfig;
         private System.Windows.Forms.Label lblColumns;
-        private System.Windows.Forms.Label lblRows;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.GroupBox grpAppearance;
@@ -337,5 +336,6 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.CheckBox cbBorderVisible;
         private System.Windows.Forms.Label lblFrameInterval;
         private System.Windows.Forms.Label lblTotal;
+        private System.Windows.Forms.Label label2;
     }
 }

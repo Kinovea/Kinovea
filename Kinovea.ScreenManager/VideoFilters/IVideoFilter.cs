@@ -39,7 +39,7 @@ namespace Kinovea.ScreenManager
         /// List of context menus specific to the filter.
         /// The menus for exporting images, videos and data should not be present in this menu,
         /// they will be automatically created at the screen level based on the CanExportVideo and 
-        /// CanExportImage properties.
+        /// CanExportImage properties and the event handlers will call into ExportVideo and ExportImage.
         /// </summary>
         List<ToolStripItem> ContextMenu { get; }
 
@@ -85,7 +85,7 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Called by the screen when the number or content of the frame buffer has changed.
-        /// The filter should reset itself with the new frames, while keeping its existing settings when possible.
+        /// The filter should reset itself with the new frames, while keeping existing settings when possible.
         /// </summary>
         void SetFrames(IWorkingZoneFramesContainer framesContainer);
 

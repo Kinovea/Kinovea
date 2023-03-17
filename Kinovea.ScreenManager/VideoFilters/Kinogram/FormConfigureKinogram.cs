@@ -45,6 +45,25 @@ namespace Kinovea.ScreenManager
             InitValues();
             InitCulture();
             UpdateFrameInterval();
+            FixNudScroll();
+        }
+
+        private void FixNudScroll()
+        {
+            nudCols.MouseWheel += Nud_Scroll;
+            nudRows.MouseWheel += Nud_Scroll;
+            nudCropWidth.MouseWheel += Nud_Scroll;
+            nudCropHeight.MouseWheel += Nud_Scroll;
+        }
+
+        private void Nud_Scroll(object sender, MouseEventArgs e)
+        {
+            NumericUpDown nud = sender as NumericUpDown;
+            HandledMouseEventArgs handledArgs = e as HandledMouseEventArgs;
+            handledArgs.Handled = true;
+
+            decimal delta = handledArgs.Delta > 0 ? nud.Increment : -nud.Increment;
+            nud.Value = Math.Max(Math.Min(nud.Value + delta, nud.Maximum), nud.Minimum);
         }
 
         private void InitValues()
@@ -64,8 +83,7 @@ namespace Kinovea.ScreenManager
         {
             this.Text = "Configure Kinogram";
             grpConfig.Text = ScreenManagerLang.Generic_Configuration;
-            lblColumns.Text = "Columns:";
-            lblRows.Text = "Rows:";
+            lblColumns.Text = "Table:";
             lblCropSize.Text = "Crop size:";
             cbRTL.Text = "Right to left";
             

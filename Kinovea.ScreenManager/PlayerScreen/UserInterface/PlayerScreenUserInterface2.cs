@@ -784,6 +784,7 @@ namespace Kinovea.ScreenManager
             UpdatePositionUI();
             UpdateSelectionLabels();
             OnPoke();
+            RestoreActiveVideoFilter();
             OnSelectionChanged(true);
         }
         private void ProgressWorker(DoWorkEventHandler _doWork)
