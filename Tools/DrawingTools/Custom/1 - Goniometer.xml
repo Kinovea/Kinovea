@@ -27,7 +27,7 @@
     <Segment name="Movable arm" point1="1" point2="3" style="Solid" arrowEnd="true" width="2"/>
   </Segments>
   <Angles>
-    <Angle origin="1" leg1="2" leg2="3" signed="true" ccw="true" supplementary="false" radius="0" textDistance="40" tenth="true"/>
+    <Angle origin="1" leg1="2" leg2="3" signed="true" ccw="true" supplementary="false" radius="-25" textDistance="40" tenth="true"/>
   </Angles>
 
   <!-- Interaction -->
@@ -49,6 +49,6 @@
     </Handle>
     <Handle type="Point" reference="3" trackable="true"/>
   </Handles>
-  
+
   <Capabilities flipHorizontal="true" flipVertical="true" />
 </KinoveaPostureTool>

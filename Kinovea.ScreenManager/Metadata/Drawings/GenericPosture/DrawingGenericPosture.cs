@@ -629,26 +629,26 @@ namespace Kinovea.ScreenManager
             {
                 if(!IsActive(segment.OptionGroup))
                     continue;
-    
+
                 penEdge.Width = segment.Width;
                 penEdge.DashStyle = Convert(segment.Style);
                 penEdge.Color = segment.Color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, segment.Color);
-
-                if(segment.ArrowBegin)
-                    penEdge.StartCap = LineCap.ArrowAnchor;
-                if(segment.ArrowEnd)
-                    penEdge.EndCap = LineCap.ArrowAnchor;
-
+                
                 PointF start = segment.Start >= 0 ? points[segment.Start] : GetComputedPoint(segment.Start, transformer);
                 PointF end = segment.End >= 0 ? points[segment.End] : GetComputedPoint(segment.End, transformer);
 
+                bool canDrawArrow = ArrowHelper.UpdateStartEnd(penEdge.Width, ref start, ref end, segment.ArrowBegin, segment.ArrowEnd);
+
                 canvas.DrawLine(penEdge, start, end);
 
-                if (segment.ArrowBegin)
-                    ArrowHelper.Draw(canvas, penEdge, start.ToPoint(), end.ToPoint());
+                if (canDrawArrow)
+                {
+                    if (segment.ArrowBegin)
+                        ArrowHelper.Draw(canvas, penEdge, start.ToPoint(), end.ToPoint());
 
-                if (segment.ArrowEnd)
-                    ArrowHelper.Draw(canvas, penEdge, end.ToPoint(), start.ToPoint());
+                    if (segment.ArrowEnd)
+                        ArrowHelper.Draw(canvas, penEdge, end.ToPoint(), start.ToPoint());
+                }
             }
             
             penEdge.Color = basePenEdgeColor;
@@ -686,6 +686,25 @@ namespace Kinovea.ScreenManager
                 {
                     GenericPosturePoint gpp = genericPosture.Points[handle.Reference];
                     if (gpp == null)
+                        continue;
+
+                    // If the handle is at the end of a segment with an arrow, the arrow becomes the handle and we shouldn't draw the ellipse.
+                    bool isArrow = false;
+                    foreach (var segment in genericPosture.Segments)
+                    {
+                        if (segment.Start == handle.Reference && segment.ArrowBegin)
+                        {
+                            isArrow = true;
+                            break;
+                        }
+                        else if (segment.End == handle.Reference && segment.ArrowEnd)
+                        {
+                            isArrow = true;
+                            break;
+                        }
+                    }
+
+                    if (isArrow)
                         continue;
 
                     brushHandle.Color = baseBrushHandleColor;

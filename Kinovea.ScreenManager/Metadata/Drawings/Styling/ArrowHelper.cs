@@ -12,7 +12,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Draws an arrow at the "a" endpoint of segment [ab].
         /// </summary>
-        public static void Draw(Graphics canvas, Pen penEdges, Point a, Point b)
+        public static void Draw(Graphics canvas, Pen penEdges, PointF a, PointF b)
         {
             Vector v = new Vector(a, b);
             float norm = v.Norm();
@@ -46,10 +46,10 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Returns the offset to be applied to the end points so that when we draw the arrows
-        /// the pointy end of the arrow end up exactly where the original line ended.
+        /// Returns the offset to be applied to the end points so that when we draw an arrow
+        /// the pointy end of the arrow ends up exactly where the original line ended.
         /// </summary>
-        public static PointF GetOffset(Pen penEdges, Point a, Point b)
+        public static PointF GetOffset(float penWidth, PointF a, PointF b)
         {
             // This is based on the arrow drawing routine.
             // The tip of the triangle is placed 3 pen-widths away after the segment's end.
@@ -63,11 +63,34 @@ namespace Kinovea.ScreenManager
             if (norm == 0)
                 return PointF.Empty;
 
-            float refLength = penEdges.Width;
+            float refLength = penWidth;
             refLength = Math.Max(refLength, 4);
 
             float t = (refLength * 3) / norm;
             return (v * t).ToPointF();
+        }
+
+        /// <summary>
+        /// Move the segment end points so that the tip of the arrow lands on the original end points.
+        /// Returns true if the segment is long enough so that we can actually draw the arrow.
+        /// </summary>
+        public static bool UpdateStartEnd(float width, ref PointF a, ref PointF b, bool arrowStart, bool arrowEnd)
+        {
+            PointF arrowOffset = ArrowHelper.GetOffset(width, a, b);
+            float offsetLength = new Vector(arrowOffset.X, arrowOffset.Y).Norm();
+            float lineLength = GeometryHelper.GetDistance(a, b);
+            bool canDrawArrow = lineLength > offsetLength;
+
+            if (canDrawArrow)
+            {
+                if (arrowStart)
+                    a = new PointF(a.X + arrowOffset.X, a.Y + arrowOffset.Y).ToPoint();
+
+                if (arrowEnd)
+                    b = new PointF(b.X - arrowOffset.X, b.Y - arrowOffset.Y).ToPoint();
+            }
+
+            return canDrawArrow;
         }
         
         private static void DrawTriangle(Graphics canvas, Color color, PointF a, PointF b, PointF c)

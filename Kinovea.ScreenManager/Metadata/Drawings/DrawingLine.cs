@@ -169,8 +169,8 @@ namespace Kinovea.ScreenManager
             if(opacityFactor <= 0)
                 return;
 
-            Point start = transformer.Transform(points["a"]);
-            Point end = transformer.Transform(points["b"]);
+            PointF start = transformer.Transform(points["a"]);
+            PointF end = transformer.Transform(points["b"]);
 
             using (Pen penEdges = styleHelper.GetPen(opacityFactor, transformer.Scale))
             using (Brush brush = styleHelper.GetBrush(opacityFactor))
@@ -188,13 +188,14 @@ namespace Kinovea.ScreenManager
                 miniLabel.Draw(canvas, transformer, opacityFactor);
             }
         }
-        private void DrawDistorted(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, Pen penEdges, Brush brush, Point start, Point end)
+        private void DrawDistorted(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, Pen penEdges, Brush brush, PointF start, PointF end)
         {
             List<PointF> curve = distorter.DistortLine(points["a"], points["b"]);
             List<Point> transformedCurve = transformer.Transform(curve);
 
-            PointF arrowOffsetStart = ArrowHelper.GetOffset(penEdges, start, transformedCurve[1]);
-            PointF arrowOffsetEnd = ArrowHelper.GetOffset(penEdges, end, transformedCurve[transformedCurve.Count - 2]);
+
+            PointF arrowOffsetStart = ArrowHelper.GetOffset(penEdges.Width, start, transformedCurve[1]);
+            PointF arrowOffsetEnd = ArrowHelper.GetOffset(penEdges.Width, end, transformedCurve[transformedCurve.Count - 2]);
             float offsetLength = Math.Max(new Vector(arrowOffsetStart.X, arrowOffsetStart.Y).Norm(), new Vector(arrowOffsetEnd.X, arrowOffsetEnd.Y).Norm());
             float lineLength = GeometryHelper.GetDistance(start, end);
             bool canDrawArrow = lineLength > offsetLength;
@@ -204,13 +205,13 @@ namespace Kinovea.ScreenManager
                 if (styleHelper.LineEnding == LineEnding.StartArrow || styleHelper.LineEnding == LineEnding.DoubleArrow)
                 {
                     start = new PointF(start.X + arrowOffsetStart.X, start.Y + arrowOffsetStart.Y).ToPoint();
-                    transformedCurve[0] = start;
+                    transformedCurve[0] = start.ToPoint();
                 }
 
                 if (styleHelper.LineEnding == LineEnding.EndArrow || styleHelper.LineEnding == LineEnding.DoubleArrow)
                 {
                     end = new PointF(end.X + arrowOffsetEnd.X, end.Y + arrowOffsetEnd.Y).ToPoint();
-                    transformedCurve[transformedCurve.Count - 1] = end;
+                    transformedCurve[transformedCurve.Count - 1] = end.ToPoint();
                 }
             }
 
@@ -237,23 +238,12 @@ namespace Kinovea.ScreenManager
                     ArrowHelper.Draw(canvas, penEdges, end, transformedCurve[transformedCurve.Count - 2]);
             }
         }
-        private void DrawStraight(Graphics canvas, IImageToViewportTransformer transformer, Pen penEdges, Brush brush, Point start, Point end)
+        private void DrawStraight(Graphics canvas, IImageToViewportTransformer transformer, Pen penEdges, Brush brush, PointF start, PointF end)
         {
-            // Move the segment end points so that the tip of the arrow lands on the original end points.
-            PointF arrowOffset = ArrowHelper.GetOffset(penEdges, start, end);
-            float offsetLength = new Vector(arrowOffset.X, arrowOffset.Y).Norm();
-            float lineLength = GeometryHelper.GetDistance(start, end);
-            bool canDrawArrow = lineLength > offsetLength;
-
-            if (canDrawArrow)
-            {
-                if (styleHelper.LineEnding == LineEnding.StartArrow || styleHelper.LineEnding == LineEnding.DoubleArrow)
-                    start = new PointF(start.X + arrowOffset.X, start.Y + arrowOffset.Y).ToPoint();
-
-                if (styleHelper.LineEnding == LineEnding.EndArrow || styleHelper.LineEnding == LineEnding.DoubleArrow)
-                    end = new PointF(end.X - arrowOffset.X, end.Y - arrowOffset.Y).ToPoint();
-            }
-
+            bool startArrow = styleHelper.LineEnding == LineEnding.StartArrow  || styleHelper.LineEnding == LineEnding.DoubleArrow;
+            bool endArrow = styleHelper.LineEnding == LineEnding.EndArrow || styleHelper.LineEnding == LineEnding.DoubleArrow;
+            bool canDrawArrow = ArrowHelper.UpdateStartEnd(penEdges.Width, ref start, ref end, startArrow, endArrow);
+            
             if (styleHelper.LineShape == LineShape.Squiggle)
             {
                 canvas.DrawSquigglyLine(penEdges, start, end);
@@ -272,10 +262,10 @@ namespace Kinovea.ScreenManager
 
             if (canDrawArrow)
             {
-                if (styleHelper.LineEnding == LineEnding.StartArrow || styleHelper.LineEnding == LineEnding.DoubleArrow)
+                if (startArrow)
                     ArrowHelper.Draw(canvas, penEdges, start, end);
 
-                if (styleHelper.LineEnding == LineEnding.EndArrow || styleHelper.LineEnding == LineEnding.DoubleArrow)
+                if (endArrow)
                     ArrowHelper.Draw(canvas, penEdges, end, start);
             }
         }
