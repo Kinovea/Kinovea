@@ -371,7 +371,7 @@ namespace Kinovea.FileBrowser
                 // If the user adds special folders to the history stack the navigation is broken.
                 // We call "ExpandANode" but this will only work if the folder is already there,
                 // so at the moment it only works on the Desktop.
-                if (!sessionHistory.Current.IsFileSystem)
+                if (sessionHistory.Current != null && !sessionHistory.Current.IsFileSystem)
                 {
                     etShortcuts.ExpandANode(sessionHistory.Current);
                 }
