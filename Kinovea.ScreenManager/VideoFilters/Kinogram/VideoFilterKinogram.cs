@@ -89,16 +89,19 @@ namespace Kinovea.ScreenManager
 
         #region members
         private Bitmap bitmap;
-        private Size frameSize;     // Size of input images.
-        private Size canvasSize;    // Nominal size of output image, this is the same as frameSize unless the canvas is rotated.
+        private List<Bitmap> cache = new List<Bitmap>();    // cache of the original images at the right size for unscaled draw.
+        private Size inputFrameSize;         // Size of input images.
+        private Size canvasSize;        // Nominal size of output image, this is the same as frameSize unless the canvas is rotated.
+        private float cacheScale = 1.0f;
         private bool rotatedCanvas = false;
         private KinogramParameters parameters = new KinogramParameters();
         private IWorkingZoneFramesContainer framesContainer;
         private Metadata metadata;
         private long timestamp;
         private Color BackgroundColor = Color.FromArgb(44, 44, 44);
-        bool clamp = false;
         private int movingTile = -1;
+
+        #region Menu
         private List<ToolStripItem> contextMenu = new List<ToolStripItem>();
         private ToolStripMenuItem mnuConfigure = new ToolStripMenuItem();
         private ToolStripMenuItem mnuAutoPositions = new ToolStripMenuItem();
@@ -106,6 +109,8 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuNumberSequence = new ToolStripMenuItem();
         private ToolStripMenuItem mnuGenerateNumbers = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDeleteNumbers = new ToolStripMenuItem();
+        #endregion
+
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -162,6 +167,8 @@ namespace Kinovea.ScreenManager
             {
                 if (bitmap != null)
                     bitmap.Dispose();
+
+                ClearCache();
             }
         }
         #endregion
@@ -175,8 +182,8 @@ namespace Kinovea.ScreenManager
             this.framesContainer = framesContainer;
             if (framesContainer != null && framesContainer.Frames != null && framesContainer.Frames.Count > 0)
             {
-                frameSize = framesContainer.Frames[0].Image.Size;
-                UpdateSize(frameSize);
+                inputFrameSize = framesContainer.Frames[0].Image.Size;
+                UpdateSize(inputFrameSize);
             }
         }
 
@@ -209,7 +216,6 @@ namespace Kinovea.ScreenManager
         public void StopMove()
         {
             movingTile = -1;
-            SaveAsDefaultParameters();
         }
 
         public void Move(float dx, float dy, Keys modifiers)
@@ -282,6 +288,7 @@ namespace Kinovea.ScreenManager
             this.framesContainer = null;
             this.parameters = PreferencesManager.PlayerPreferences.Kinogram;
             ResetCropPositions();
+            ClearCache();
             AfterTileCountChange();
         }
 
@@ -381,7 +388,6 @@ namespace Kinovea.ScreenManager
         private void MnuAutoPositions_Click(object sender, EventArgs e)
         {
             AutoPositions();
-            SaveAsDefaultParameters();
             Update();
 
             InvalidateFromMenu(sender);
@@ -390,7 +396,6 @@ namespace Kinovea.ScreenManager
         private void MnuResetPositions_Click(object sender, EventArgs e)
         {
             ResetCropPositions();
-            SaveAsDefaultParameters();
             Update();
 
             InvalidateFromMenu(sender);
@@ -544,39 +549,44 @@ namespace Kinovea.ScreenManager
             Rectangle paintArea = UIHelper.RatioStretch(fullSize, outputSize);
             Size tileSize = new Size(paintArea.Width / cols, paintArea.Height / parameters.Rows);
 
+            UpdateCache(frames, cropSize, tileSize);
+
             if (tile >= 0)
             {
                 // Render a single tile.
-                int index = tile;
-                VideoFrame f = frames.ToList()[index];
-                RectangleF srcRect = new RectangleF(parameters.CropPositions[index].X, parameters.CropPositions[index].Y, cropSize.Width, cropSize.Height);
-                Rectangle destRect = GetDestinationRectangle(index, cols, parameters.Rows, parameters.LeftToRight, paintArea, tileSize);
-                using (SolidBrush b = new SolidBrush(parameters.BorderColor))
-                    g.FillRectangle(b, destRect);
-
-                g.DrawImage(f.Image, destRect, srcRect, GraphicsUnit.Pixel);
-                DrawBorder(g, destRect);
+                DrawTile(g, cache[tile], tile, cols, paintArea, tileSize);
             }
             else
             {
                 // Render the whole composite.
+                
+                // Viewport background.
                 using (SolidBrush backgroundBrush = new SolidBrush(BackgroundColor))
                     g.FillRectangle(backgroundBrush, 0, 0, outputSize.Width, outputSize.Height);
                 
-                int index = 0;
-                foreach (VideoFrame f in frames)
-                {
-                    RectangleF srcRect = new RectangleF(parameters.CropPositions[index].X, parameters.CropPositions[index].Y, cropSize.Width, cropSize.Height);
-                    Rectangle destRect = GetDestinationRectangle(index, cols, parameters.Rows, parameters.LeftToRight, paintArea, tileSize);
-
-                    using (SolidBrush b = new SolidBrush(parameters.BorderColor))
-                        g.FillRectangle(b, destRect);
-
-                    g.DrawImage(f.Image, destRect, srcRect, GraphicsUnit.Pixel);
-                    DrawBorder(g, destRect);
-                    index++;
-                }
+                for (int i = 0; i < cache.Count; i++)
+                    DrawTile(g, cache[i], i, cols, paintArea, tileSize);
             }
+        }
+
+        private void DrawTile(Graphics g, Bitmap image, int index, int cols, Rectangle paintArea, Size tileSize)
+        {
+            if (index < 0 || index >= parameters.CropPositions.Count)
+                return;
+
+            Rectangle destRect = GetDestinationRectangle(index, cols, parameters.Rows, parameters.LeftToRight, paintArea, tileSize);
+
+            // Tile background
+            using (SolidBrush b = new SolidBrush(parameters.BorderColor))
+                g.FillRectangle(b, destRect);
+
+            // Tile image.
+            int x = destRect.X + (int)(-parameters.CropPositions[index].X * cacheScale);
+            int y = destRect.Y + (int)(-parameters.CropPositions[index].Y * cacheScale);
+            g.SetClip(destRect);
+            g.DrawImageUnscaled(image, x, y);
+
+            DrawBorder(g, destRect);
         }
 
         /// <summary>
@@ -625,6 +635,17 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// Clear the cache.
+        /// </summary>
+        private void ClearCache()
+        {
+            foreach (var f in cache)
+                f.Dispose();
+
+            cache.Clear();
+        }
+
+        /// <summary>
         /// Save the configuration as the new preferred configuration.
         /// </summary>
         private void SaveAsDefaultParameters()
@@ -642,15 +663,15 @@ namespace Kinovea.ScreenManager
             int cropHeight = parameters.CropSize.Height;
 
             float aspect = (float)cropWidth / cropHeight;
-            if (cropWidth > frameSize.Width)
+            if (cropWidth > inputFrameSize.Width)
             {
-                cropWidth = frameSize.Width;
+                cropWidth = inputFrameSize.Width;
                 cropHeight = (int)(cropWidth / aspect);
             }
 
-            if (cropHeight > frameSize.Height)
+            if (cropHeight > inputFrameSize.Height)
             {
-                cropHeight = frameSize.Height;
+                cropHeight = inputFrameSize.Height;
                 cropWidth = (int)(cropHeight * aspect);
             }
 
@@ -692,20 +713,14 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void MoveTile(float dx, float dy, int index)
         {
-            PointF old = parameters.CropPositions[index];
-            float x = old.X - dx;
-            float y = old.Y - dy;
+            PointF oldPosition = parameters.CropPositions[index];
 
-            if (clamp)
-            {
-                Size cropSize = GetCropSize();
-                x = Math.Max(0, x);
-                x = Math.Min(frameSize.Width - cropSize.Width, x);
-                y = Math.Max(0, y);
-                y = Math.Min(frameSize.Height - cropSize.Height, y);
-            }
-
-            parameters.CropPositions[index] = new PointF(x, y);
+            // Scale the offset so the cached image sticks to the mouse.
+            float x = oldPosition.X - (dx / cacheScale);
+            float y = oldPosition.Y - (dy / cacheScale);
+            
+            PointF newPosition = new PointF(x, y);
+            parameters.CropPositions[index] = newPosition;
         }
 
         private void InvalidateFromMenu(object sender)
@@ -721,6 +736,34 @@ namespace Kinovea.ScreenManager
                 return;
 
             host.InvalidateFromMenu();
+        }
+
+        /// <summary>
+        /// Update the cache of pre-sized source images.
+        /// This should be called whenever the source or output size change.
+        /// </summary>
+        private void UpdateCache(IEnumerable<VideoFrame> frames, Size cropSize, Size tileSize)
+        {
+            // Find the size of the images such that we can draw them unscaled to the output.
+            // Crop size is the source rectangle size and tileSize is the destination rectangle size.
+            // They should already have the same aspect ratio.
+            // Cache scale is the factor we apply to the input images to get the cached ones.
+            float newCacheScale = (float)tileSize.Width / cropSize.Width;
+            if (newCacheScale == cacheScale)
+                return;
+            
+            Size cachedSize = new Size((int)(inputFrameSize.Width * newCacheScale), (int)(inputFrameSize.Height * newCacheScale));
+            log.DebugFormat("Kinogram, updating cache. Scale: {0} -> {1}", cacheScale, newCacheScale);
+
+            ClearCache();
+
+            foreach (var frame in frames)
+            {
+                Bitmap cachedFrame = new Bitmap(frame.Image, cachedSize);
+                cache.Add(cachedFrame);
+            }
+
+            cacheScale = newCacheScale;
         }
         #endregion
     }
