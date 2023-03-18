@@ -44,9 +44,8 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Capture the state of the drawing after the modification, 
-        /// restore the backed up state into the drawing,
-        /// return the memento of the state after modification, to handle a possible redo.
+        /// Restore the backed up state into the drawing.
+        /// This also captures the state of the drawing after the modification and return the memento for it, to handle redo.
         /// </summary>
         public override HistoryMemento PerformUndo()
         {
@@ -59,7 +58,7 @@ namespace Kinovea.ScreenManager
         public void UpdateCommandName(string name)
         {
             drawingName = name;
-            commandName = commandName = string.Format("{0} ({1})", ScreenManagerLang.CommandModifyDrawing_FriendlyName, drawingName);
+            commandName = string.Format("{0} ({1})", ScreenManagerLang.CommandModifyDrawing_FriendlyName, drawingName);
         }
     }
 }

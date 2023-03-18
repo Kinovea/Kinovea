@@ -407,6 +407,7 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Metadata.DrawingDeleted += (s, e) => AfterDrawingDeleted();
             m_FrameServer.Metadata.MultiDrawingItemAdded += (s, e) => AfterMultiDrawingItemAdded();
             m_FrameServer.Metadata.MultiDrawingItemDeleted += (s, e) => AfterMultiDrawingItemDeleted();
+            m_FrameServer.Metadata.VideoFilterModified += (s, e) => AfterVideoFilterModified();
 
             InitializeComponent();
             InitializeInfobar();
@@ -3004,6 +3005,10 @@ namespace Kinovea.ScreenManager
         private void AfterDrawingModified(AbstractDrawing drawing)
         {
             UpdateFramesMarkers();
+            RefreshImage();
+        }
+        private void AfterVideoFilterModified()
+        {
             RefreshImage();
         }
         private void ImportEditboxes()

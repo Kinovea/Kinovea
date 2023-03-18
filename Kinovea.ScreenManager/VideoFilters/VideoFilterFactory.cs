@@ -10,8 +10,9 @@ namespace Kinovea.ScreenManager
     /// <summary>
     /// Static class that produces instances of Video filters and provide information about filter types.
     /// This is used to build the menu or get the XML tag for example.
-    /// The filters are owned by the metadata object of each player screen.
-    /// There can only be one active filter for each screen.
+    /// 
+    /// The individual filters are owned by the metadata object of each player screen.
+    /// The screen has one instance of each filter. There at most one active filter at any given time.
     /// Filters keep their data even when they are not active.
     /// </summary>
     public static class VideoFilterFactory

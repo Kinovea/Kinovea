@@ -86,7 +86,7 @@ namespace Kinovea.ScreenManager
         private bool rotatedCanvas = false;
         private KinogramParameters parameters = new KinogramParameters();
         private IWorkingZoneFramesContainer framesContainer;
-        private Metadata metadata;
+        private Metadata parentMetadata;
         private long timestamp;
         private Color BackgroundColor = Color.FromArgb(44, 44, 44);
         private int contextTile = -1;
@@ -110,7 +110,7 @@ namespace Kinovea.ScreenManager
         #region ctor/dtor
         public VideoFilterKinogram(Metadata metadata)
         {
-            this.metadata = metadata;
+            this.parentMetadata = metadata;
 
             InitializeMenus();
 
@@ -187,6 +187,9 @@ namespace Kinovea.ScreenManager
         public void StartMove(PointF p)
         {
             movingTile = GetTile(p);
+
+            if (movingTile != -1)
+                CaptureMemento();
         }
 
         public void StopMove()
@@ -302,7 +305,7 @@ namespace Kinovea.ScreenManager
             float scale = (float)outputSize.Width / fitArea.Width;
             Point location = new Point((int)(-fitArea.X * scale), (int)(-fitArea.Y * scale));
 
-            MetadataRenderer metadataRenderer = new MetadataRenderer(metadata, true);
+            MetadataRenderer metadataRenderer = new MetadataRenderer(parentMetadata, true);
             metadataRenderer.Render(g, location, scale, timestamp);
 
             return bmpExport;
@@ -334,8 +337,8 @@ namespace Kinovea.ScreenManager
         {
             int maxFrames = Math.Min(framesContainer.Frames.Count, tileCount);
             float intervalFrames = (float)framesContainer.Frames.Count / maxFrames;
-            float intervalTimestamp = intervalFrames * metadata.AverageTimeStampsPerFrame;
-            float intervalSeconds = (float)(intervalTimestamp/ metadata.AverageTimeStampsPerSecond);
+            float intervalTimestamp = intervalFrames * parentMetadata.AverageTimeStampsPerFrame;
+            float intervalSeconds = (float)(intervalTimestamp/ parentMetadata.AverageTimeStampsPerSecond);
             return intervalSeconds;
         }
         #endregion
@@ -400,6 +403,8 @@ namespace Kinovea.ScreenManager
 
         private void MnuAutoPositions_Click(object sender, EventArgs e)
         {
+            CaptureMemento();
+
             AutoPositions();
             Update();
 
@@ -410,6 +415,8 @@ namespace Kinovea.ScreenManager
         {
             if (contextTile < 0 || contextTile >= parameters.CropPositions.Count)
                 return;
+
+            CaptureMemento();
 
             parameters.CropPositions[contextTile] = PointF.Empty;
             contextTile = -1;
@@ -424,6 +431,8 @@ namespace Kinovea.ScreenManager
             if (contextTile < 0 || contextTile >= parameters.CropPositions.Count)
                 return;
 
+            CaptureMemento();
+            
             ResetCropPositions(new List<int>() { contextTile });
             Update();
 
@@ -432,6 +441,7 @@ namespace Kinovea.ScreenManager
 
         private void MnuResetAllTiles_Click(object sender, EventArgs e)
         {
+            CaptureMemento();
             ResetCropPositions();
             Update();
             
@@ -460,7 +470,7 @@ namespace Kinovea.ScreenManager
                 numbers.Add(location);
             }
 
-            metadata.DrawingNumberSequence.Configure(timestamp, metadata.AverageTimeStampsPerFrame, numbers);
+            parentMetadata.DrawingNumberSequence.Configure(timestamp, parentMetadata.AverageTimeStampsPerFrame, numbers);
 
             InvalidateFromMenu(sender);
         }
@@ -468,7 +478,7 @@ namespace Kinovea.ScreenManager
         private void MnuDeleteNumberSequence_Click(object sender, EventArgs e)
         {
             List<PointF> numbers = new List<PointF>();
-            metadata.DrawingNumberSequence.Configure(timestamp, metadata.AverageTimeStampsPerFrame, numbers);
+            parentMetadata.DrawingNumberSequence.Configure(timestamp, parentMetadata.AverageTimeStampsPerFrame, numbers);
 
             InvalidateFromMenu(sender);
         }
@@ -644,7 +654,6 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void ResetCropPositions(List<int> keepers = null)
         {
-            //parameters.CropPositions.Clear();
             for (int i = 0; i < parameters.TileCount; i++)
             {
                 if (keepers != null && keepers.Contains(i))
@@ -777,10 +786,8 @@ namespace Kinovea.ScreenManager
             }
 
             PadTiles(newCrops, parameters.TileCount);
-
             return newCrops;
         }
-
 
         /// <summary>
         /// Add extra crop positions for the tiles we don't have source frames for.
@@ -834,5 +841,12 @@ namespace Kinovea.ScreenManager
 
             cache.Clear();
         }
+    
+        private void CaptureMemento()
+        {
+            var memento = new HistoryMementoModifyVideoFilter(parentMetadata, VideoFilterType.Kinogram, FriendlyName);
+            parentMetadata.HistoryStack.PushNewCommand(memento);
+        }
+        
     }
 }

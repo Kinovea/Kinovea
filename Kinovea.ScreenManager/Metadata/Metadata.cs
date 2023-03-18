@@ -63,7 +63,8 @@ namespace Kinovea.ScreenManager
         public EventHandler<MultiDrawingItemEventArgs> MultiDrawingItemAdded;
         public EventHandler MultiDrawingItemDeleted;
         public EventHandler CameraCalibrationAsked;
-            
+        public EventHandler VideoFilterModified;
+
         public RelayCommand<ITrackable> AddTrackableDrawingCommand { get; set; }
         public RelayCommand<ITrackable> DeleteTrackableDrawingCommand { get; set; }
         #endregion
@@ -974,6 +975,12 @@ namespace Kinovea.ScreenManager
             if (DrawingModified != null)
                 DrawingModified(this, new DrawingEventArgs(drawing, managerId));
         }
+
+        public void ModifiedVideoFilter()
+        {
+            if (VideoFilterModified != null)
+                VideoFilterModified(this, EventArgs.Empty);
+        }
         
         public void DeleteDrawing(Guid managerId, Guid drawingId)
         {
@@ -1732,6 +1739,14 @@ namespace Kinovea.ScreenManager
         public void DeactivateVideoFilter()
         {
             activeVideoFilterType = VideoFilterType.None;
+        }
+
+        public IVideoFilter GetVideoFilter(VideoFilterType type)
+        {
+            if (videoFilters.ContainsKey(type))
+                return videoFilters[type];
+
+            return null;
         }
 
         public void WriteVideoFilters(XmlWriter w)
