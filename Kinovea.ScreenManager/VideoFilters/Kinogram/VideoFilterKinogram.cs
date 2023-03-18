@@ -97,6 +97,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuConfigure = new ToolStripMenuItem();
         private ToolStripMenuItem mnuAutoPositions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuResetTile = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuResetOtherTiles = new ToolStripMenuItem();
         private ToolStripMenuItem mnuResetAllTiles = new ToolStripMenuItem();
         private ToolStripMenuItem mnuNumberSequence = new ToolStripMenuItem();
         private ToolStripMenuItem mnuGenerateNumbers = new ToolStripMenuItem();
@@ -123,6 +124,7 @@ namespace Kinovea.ScreenManager
             mnuConfigure.Image = Properties.Drawings.configure;
             mnuAutoPositions.Image = Properties.Resources.wand;
             mnuResetTile.Image = Properties.Resources.bin_empty;
+            mnuResetOtherTiles.Image = Properties.Resources.bin_empty;
             mnuResetAllTiles.Image = Properties.Resources.bin_empty;
             mnuNumberSequence.Image = Properties.Drawings.number;
             mnuGenerateNumbers.Image = Properties.Drawings.number;
@@ -134,6 +136,7 @@ namespace Kinovea.ScreenManager
             mnuConfigure.Click += MnuConfigure_Click;
             mnuAutoPositions.Click += MnuAutoPositions_Click;
             mnuResetTile.Click += MnuResetTile_Click;
+            mnuResetOtherTiles.Click += MnuResetOtherTiles_Click;
             mnuResetAllTiles.Click += MnuResetAllTiles_Click;
             mnuGenerateNumbers.Click += MnuNumberSequence_Click;
             mnuDeleteNumbers.Click += MnuDeleteNumberSequence_Click;
@@ -355,6 +358,7 @@ namespace Kinovea.ScreenManager
                 new ToolStripSeparator(),
                 mnuAutoPositions,
                 mnuResetTile,
+                mnuResetOtherTiles,
                 mnuResetAllTiles,
             });
 
@@ -366,7 +370,8 @@ namespace Kinovea.ScreenManager
             // Just in time localization.
             mnuConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
             mnuAutoPositions.Text = "Interpolate positions";
-            mnuResetTile.Text = "Reset this tile position";
+            mnuResetTile.Text = "Reset this position";
+            mnuResetOtherTiles.Text = "Reset other positions";
             mnuResetAllTiles.Text = "Reset all positions";
             mnuNumberSequence.Text = "Frame numbers";
             mnuGenerateNumbers.Text = "Generate frame numbers";
@@ -411,6 +416,17 @@ namespace Kinovea.ScreenManager
 
             Update();
             
+            InvalidateFromMenu(sender);
+        }
+
+        private void MnuResetOtherTiles_Click(object sender, EventArgs e)
+        {
+            if (contextTile < 0 || contextTile >= parameters.CropPositions.Count)
+                return;
+
+            ResetCropPositions(new List<int>() { contextTile });
+            Update();
+
             InvalidateFromMenu(sender);
         }
 
@@ -611,39 +627,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void AfterTileCountChange()
         {
-            int oldCount = parameters.CropPositions.Count;
-            int newCount = parameters.TileCount;
-
-            if (newCount == oldCount)
-                return;
-
-            int goodTiles = newCount;
-            if (framesContainer != null && framesContainer.Frames != null && framesContainer.Frames.Count < newCount)
-                goodTiles = framesContainer.Frames.Count;
-
-            List<PointF> newCrops = new List<PointF>();
-            if (oldCount < 2)
-            {
-                for (int i = 0; i < goodTiles; i++)
-                    newCrops.Add(PointF.Empty);
-            }
-            else
-            {
-                // Interpolate the new positions to match the existing motion of the tiles within the scene.
-                for (int i = 0; i < goodTiles; i++)
-                {
-                    // Find the two closest old values and where we sit between them.
-                    float t = ((float)i / goodTiles) * oldCount;
-                    int a = (int)Math.Floor(t);
-                    int b = Math.Min(a + 1, oldCount - 1);
-                    PointF lerped = GeometryHelper.Mix(parameters.CropPositions[a], parameters.CropPositions[b], t - a);
-                    newCrops.Add(lerped);
-                }
-            }
-
-            parameters.CropPositions = newCrops;
-            PadTiles(goodTiles);
-
+            parameters.CropPositions = Interpolate(parameters.CropPositions, parameters.TileCount);
         }
 
         /// <summary>
@@ -658,11 +642,16 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Reset all crop positions to zero.
         /// </summary>
-        private void ResetCropPositions()
+        private void ResetCropPositions(List<int> keepers = null)
         {
-            parameters.CropPositions.Clear();
+            //parameters.CropPositions.Clear();
             for (int i = 0; i < parameters.TileCount; i++)
-                parameters.CropPositions.Add(PointF.Empty);
+            {
+                if (keepers != null && keepers.Contains(i))
+                    continue;
+                
+                parameters.CropPositions[i] = PointF.Empty;
+            }
         }
 
         /// <summary>
@@ -735,41 +724,76 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Interpolate between the first and last crop position.
+        /// Interpolate between already positionned tiles.
         /// </summary>
         private void AutoPositions()
         {
-            int count = Math.Min(parameters.TileCount, framesContainer.Frames.Count);
-            if (count < 3)
-                return;
+            // The original function was only interpolating between the first and last tiles.
+            // In practice a strategy that worked better was to reduce the number of tiles to a few, place these tiles
+            // and then expand back to the total number. This function is now similar to this,
+            // taking the initialized tiles as the anchor points.
+            List<PointF> oldCrops = new List<PointF>();
+            foreach (var crop in parameters.CropPositions)
+            {
+                if (crop != PointF.Empty)
+                    oldCrops.Add(crop);
+            }
 
-            int goodTiles = parameters.TileCount;
-            if (framesContainer != null && framesContainer.Frames != null && framesContainer.Frames.Count < parameters.TileCount)
+            parameters.CropPositions = Interpolate(oldCrops, parameters.TileCount);
+        }
+
+        /// <summary>
+        /// Generate new positions by interpolating the old list.
+        /// </summary>
+        private List<PointF> Interpolate(List<PointF> oldCrops, int newCount)
+        {
+            int oldCount = oldCrops.Count;
+            
+            if (newCount == oldCount)
+                return oldCrops;
+
+            int goodTiles = newCount;
+            if (framesContainer != null && framesContainer.Frames != null && framesContainer.Frames.Count < newCount)
                 goodTiles = framesContainer.Frames.Count;
 
             List<PointF> newCrops = new List<PointF>();
-            for (int i = 0; i < goodTiles; i++)
+            if (oldCount < 2)
             {
-                float t = (float)i / (goodTiles - 1);
-                PointF lerped = GeometryHelper.Mix(parameters.CropPositions[0], parameters.CropPositions[goodTiles - 1], t);
-                newCrops.Add(lerped);
+                for (int i = 0; i < goodTiles; i++)
+                    newCrops.Add(PointF.Empty);
+            }
+            else
+            {
+                // Interpolate the new positions to match the existing motion of the tiles within the scene.
+                for (int i = 0; i < goodTiles; i++)
+                {
+                    // Find the two closest old values and where we sit between them.
+                    float t = ((float)i / goodTiles) * oldCount;
+                    int a = (int)Math.Floor(t);
+                    int b = Math.Min(a + 1, oldCount - 1);
+                    PointF lerped = GeometryHelper.Mix(oldCrops[a], oldCrops[b], t - a);
+                    newCrops.Add(lerped);
+                }
             }
 
-            parameters.CropPositions = newCrops;
-            PadTiles(goodTiles);
+            PadTiles(newCrops, parameters.TileCount);
+
+            return newCrops;
         }
+
 
         /// <summary>
         /// Add extra crop positions for the tiles we don't have source frames for.
         /// This happens when the table config produces more cells than there are available frames.
         /// </summary>
-        private void PadTiles(int goodTiles)
+        private void PadTiles(List<PointF> crops, int targetCount)
         {
-            if (goodTiles == parameters.TileCount)
+            int filledCount = crops.Count;
+            if (filledCount == targetCount)
                 return;
 
-            for (int i = 0; i < parameters.TileCount - goodTiles; i++)
-                parameters.CropPositions.Add(PointF.Empty);
+            for (int i = 0; i < targetCount - filledCount; i++)
+                crops.Add(PointF.Empty);
         }
 
         /// <summary>
