@@ -345,6 +345,15 @@ namespace Kinovea.ScreenManager
             float intervalSeconds = (float)(intervalTimestamp/ parentMetadata.AverageTimeStampsPerSecond);
             return intervalSeconds;
         }
+        
+        public void ConfigurationChanged(bool tileCountChanged)
+        {
+            if (tileCountChanged)
+                AfterTileCountChange();
+            
+            Update();
+        }
+        
         #endregion
 
         #region Context menu
@@ -387,8 +396,14 @@ namespace Kinovea.ScreenManager
 
         private void MnuConfigure_Click(object sender, EventArgs e)
         {
+            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
+            if (tsmi == null)
+                return;
+
+            IDrawingHostView host = tsmi.Tag as IDrawingHostView;
+
             // The dialog is responsible for handling undo/redo.
-            FormConfigureKinogram fck = new FormConfigureKinogram(this);
+            FormConfigureKinogram fck = new FormConfigureKinogram(this, host);
             FormsHelper.Locate(fck);
             fck.ShowDialog();
 
@@ -789,53 +804,54 @@ namespace Kinovea.ScreenManager
                 goodTiles = framesContainer.Frames.Count;
 
             List<PointF> newCrops = new List<PointF>();
-            if (oldCount < 2)
+            if (oldCount == 0)
             {
                 for (int i = 0; i < goodTiles; i++)
                     newCrops.Add(PointF.Empty);
+
+                PadTiles(newCrops, parameters.TileCount);
+                return newCrops;
             }
-            else
+
+            // Interpolate the new positions to match the existing motion of the tiles within the scene.
+            for (int i = 0; i < goodTiles; i++)
             {
-                // Interpolate the new positions to match the existing motion of the tiles within the scene.
-                for (int i = 0; i < goodTiles; i++)
+                // 1D coord in the new sequence.    
+                float t = (float)i / goodTiles;
+
+                // Find the two closest old values and where we sit between them.
+                int a = -1;
+
+                //for (int j = 0; j < oldCoords.Count; j++)
+                for (int j = oldCoords.Count - 1; j >= 0; j--)
                 {
-                    // 1D coord in the new sequence.    
-                    float t = (float)i / goodTiles;
-
-                    // Find the two closest old values and where we sit between them.
-                    int a = -1;
-
-                    //for (int j = 0; j < oldCoords.Count; j++)
-                    for (int j = oldCoords.Count - 1; j >= 0; j--)
+                    if (t > oldCoords[j])
                     {
-                        if (t > oldCoords[j])
-                        {
-                            a = j;
-                            break;
-                        }
+                        a = j;
+                        break;
                     }
-
-                    if (a == -1)
-                    {
-                        // All the existing known positions are after the tile being interpolated.
-                        newCrops.Add(oldCrops[0]);
-                        continue;
-                    }
-
-                    if (a == oldCount - 1)
-                    {
-                        // All the existing known positions are before the tile being interpolated.
-                        newCrops.Add(oldCrops[oldCount-1]);
-                        continue;
-                    }
-
-                    int b = a + 1;
-                    float alpha = (t - oldCoords[a]) / (oldCoords[b] - oldCoords[a]) ;
-                    PointF lerped = GeometryHelper.Mix(oldCrops[a], oldCrops[b], alpha);
-                    newCrops.Add(lerped);
                 }
-            }
 
+                if (a == -1)
+                {
+                    // All the existing known positions are after the tile being interpolated.
+                    newCrops.Add(oldCrops[0]);
+                    continue;
+                }
+
+                if (a == oldCount - 1)
+                {
+                    // All the existing known positions are before the tile being interpolated.
+                    newCrops.Add(oldCrops[oldCount-1]);
+                    continue;
+                }
+
+                int b = a + 1;
+                float alpha = (t - oldCoords[a]) / (oldCoords[b] - oldCoords[a]) ;
+                PointF lerped = GeometryHelper.Mix(oldCrops[a], oldCrops[b], alpha);
+                newCrops.Add(lerped);
+            }
+            
             PadTiles(newCrops, parameters.TileCount);
             return newCrops;
         }

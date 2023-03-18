@@ -27,17 +27,18 @@ namespace Kinovea.ScreenManager
         private bool manualUpdate;
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
+        private IDrawingHostView hostView;
         #endregion
 
-        public FormConfigureKinogram(VideoFilterKinogram kinogram)
+        public FormConfigureKinogram(VideoFilterKinogram kinogram, IDrawingHostView hostView)
         {
-            InitializeComponent();
-
             this.kinogram = kinogram;
+            this.hostView = hostView;
 
             memento = new HistoryMementoModifyVideoFilter(kinogram.ParentMetadata, VideoFilterType.Kinogram, kinogram.FriendlyName); ;
             this.parameters = kinogram.Parameters;
 
+            InitializeComponent();
             SetupStyle();
             SetupStyleControls();
             InitValues();
@@ -154,6 +155,7 @@ namespace Kinovea.ScreenManager
             parameters.Rows = rows;
 
             UpdateFrameInterval();
+            UpdateKinogram();
         }
 
         private void grid_KeyUp(object sender, KeyEventArgs e)
@@ -183,6 +185,7 @@ namespace Kinovea.ScreenManager
 
             bool rtl = cbRTL.Checked;
             parameters.LeftToRight = !rtl;
+            UpdateKinogram();
         }
 
         private void cbBorderVisible_CheckedChanged(object sender, EventArgs e)
@@ -191,6 +194,18 @@ namespace Kinovea.ScreenManager
                 return;
 
             parameters.BorderVisible = cbBorderVisible.Checked;
+            UpdateKinogram();
+        }
+        private void btnApply_Click(object sender, EventArgs e)
+        {
+            UpdateKinogram();
+        }
+
+        private void UpdateKinogram()
+        {
+            parameters.BorderColor = styleHelper.Color;
+            kinogram.ConfigurationChanged(true);
+            hostView?.InvalidateFromMenu();
         }
         #endregion
 
