@@ -3349,33 +3349,29 @@ namespace Kinovea.ScreenManager
         {
             popMenu.Items.Clear();
 
-            if (filter == null)
+            if (filter == null || !filter.HasContextMenu)
                 return;
 
-            bool hasExtraMenus = (filter.ContextMenu != null && filter.ContextMenu.Count > 0);
-            if (hasExtraMenus)
+            List< ToolStripItem> menus = filter.GetContextMenu(m_DescaledMouse, m_iCurrentPosition);
+            foreach (ToolStripItem tsmi in menus)
             {
-                foreach (ToolStripItem tsmi in filter.ContextMenu)
+                ToolStripMenuItem menuItem = tsmi as ToolStripMenuItem;
+
+                // Inject dependency on the UI into the menu for invalidation.
+                tsmi.Tag = this;
+                if (menuItem != null && menuItem.DropDownItems.Count > 0)
                 {
-                    ToolStripMenuItem menuItem = tsmi as ToolStripMenuItem;
-
-                    // Inject dependency on the UI into the menu for invalidation.
-                    tsmi.Tag = this;
-                    if (menuItem != null && menuItem.DropDownItems.Count > 0)
-                    {
-                        foreach (ToolStripItem subMenu in menuItem.DropDownItems)
-                            subMenu.Tag = this;
-                    }
-
-                    if (tsmi.MergeIndex >= 0)
-                        popMenu.Items.Insert(tsmi.MergeIndex, tsmi);
-                    else
-                        popMenu.Items.Add(tsmi);
+                    foreach (ToolStripItem subMenu in menuItem.DropDownItems)
+                        subMenu.Tag = this;
                 }
-            }
 
-            if (hasExtraMenus)
-                popMenu.Items.Add(new ToolStripSeparator());
+                if (tsmi.MergeIndex >= 0)
+                    popMenu.Items.Insert(tsmi.MergeIndex, tsmi);
+                else
+                    popMenu.Items.Add(tsmi);
+            }
+        
+            popMenu.Items.Add(new ToolStripSeparator());
         }
         private void SurfaceScreen_MouseMove(object sender, MouseEventArgs e)
         {

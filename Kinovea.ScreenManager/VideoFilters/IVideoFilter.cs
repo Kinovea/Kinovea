@@ -36,14 +36,6 @@ namespace Kinovea.ScreenManager
     {
         #region Properties
         /// <summary>
-        /// List of context menus specific to the filter.
-        /// The menus for exporting images, videos and data should not be present in this menu,
-        /// they will be automatically created at the screen level based on the CanExportVideo and 
-        /// CanExportImage properties and the event handlers will call into ExportVideo and ExportImage.
-        /// </summary>
-        List<ToolStripItem> ContextMenu { get; }
-
-        /// <summary>
         /// User facing name of the filter.
         /// </summary>
         string FriendlyName { get; }
@@ -52,6 +44,12 @@ namespace Kinovea.ScreenManager
         /// Rendered bitmap to be displayed on the viewport.
         /// </summary>
         Bitmap Current { get; }
+
+        /// <summary>
+        /// Whether this filter has a set of custom context menus.
+        /// They will then be retrieved from GetContextMenu.
+        /// </summary>
+        bool HasContextMenu { get; }
 
         /// <summary>
         /// Whether the aspect ratio of the output image is inverted compared to the input images.
@@ -84,15 +82,18 @@ namespace Kinovea.ScreenManager
         #region Methods
 
         /// <summary>
+        /// Retrieve the list of context menus specific to the filter.
+        /// The menus for exporting images, videos and data should not be present in this menu,
+        /// they will be automatically created at the screen level based on the CanExportVideo and 
+        /// CanExportImage properties and the event handlers will call into ExportVideo and ExportImage.
+        /// </summary>
+        List<ToolStripItem> GetContextMenu(PointF pivot, long timestamp);
+
+        /// <summary>
         /// Called by the screen when the number or content of the frame buffer has changed.
         /// The filter should reset itself with the new frames, while keeping existing settings when possible.
         /// </summary>
         void SetFrames(IWorkingZoneFramesContainer framesContainer);
-
-        /// <summary>
-        /// Called when the main size of the final image has changed.
-        /// </summary>
-        void UpdateSize(Size size);
 
         /// <summary>
         /// Called when the query time changes. 

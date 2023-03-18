@@ -50,19 +50,9 @@ namespace Kinovea.ScreenManager
         {
             get { return bitmap; }
         }
-        public List<ToolStripItem> ContextMenu
+        public bool HasContextMenu
         {
-            get
-            {
-                // Just in time localization.
-                mnuConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
-                mnuAutoPositions.Text = "Interpolate positions between first and last";
-                mnuResetPositions.Text = "Reset positions";
-                mnuNumberSequence.Text = "Frame numbers";
-                mnuGenerateNumbers.Text = "Generate frame numbers";
-                mnuDeleteNumbers.Text = "Delete frame numbers";
-                return contextMenu;
-            }
+            get { return true; }
         }
         public bool RotatedCanvas 
         { 
@@ -99,13 +89,15 @@ namespace Kinovea.ScreenManager
         private Metadata metadata;
         private long timestamp;
         private Color BackgroundColor = Color.FromArgb(44, 44, 44);
+        private int contextTile = -1;
         private int movingTile = -1;
 
         #region Menu
         private List<ToolStripItem> contextMenu = new List<ToolStripItem>();
         private ToolStripMenuItem mnuConfigure = new ToolStripMenuItem();
         private ToolStripMenuItem mnuAutoPositions = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuResetPositions = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuResetTile = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuResetAllTiles = new ToolStripMenuItem();
         private ToolStripMenuItem mnuNumberSequence = new ToolStripMenuItem();
         private ToolStripMenuItem mnuGenerateNumbers = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDeleteNumbers = new ToolStripMenuItem();
@@ -119,18 +111,19 @@ namespace Kinovea.ScreenManager
         {
             this.metadata = metadata;
 
-            BuildMenus();
+            InitializeMenus();
 
             parameters = PreferencesManager.PlayerPreferences.Kinogram;
             ResetCropPositions();
             AfterTileCountChange();
         }
 
-        private void BuildMenus()
+        private void InitializeMenus()
         {
             mnuConfigure.Image = Properties.Drawings.configure;
             mnuAutoPositions.Image = Properties.Resources.wand;
-            mnuResetPositions.Image = Properties.Resources.bin_empty;
+            mnuResetTile.Image = Properties.Resources.bin_empty;
+            mnuResetAllTiles.Image = Properties.Resources.bin_empty;
             mnuNumberSequence.Image = Properties.Drawings.number;
             mnuGenerateNumbers.Image = Properties.Drawings.number;
             mnuDeleteNumbers.Image = Properties.Resources.bin_empty;
@@ -138,15 +131,10 @@ namespace Kinovea.ScreenManager
             mnuNumberSequence.DropDownItems.Add(mnuGenerateNumbers);
             mnuNumberSequence.DropDownItems.Add(mnuDeleteNumbers);
 
-            contextMenu.Add(mnuConfigure);
-            contextMenu.Add(mnuAutoPositions);
-            contextMenu.Add(mnuNumberSequence);
-            contextMenu.Add(new ToolStripSeparator());
-            contextMenu.Add(mnuResetPositions);
-
             mnuConfigure.Click += MnuConfigure_Click;
             mnuAutoPositions.Click += MnuAutoPositions_Click;
-            mnuResetPositions.Click += MnuResetPositions_Click;
+            mnuResetTile.Click += MnuResetTile_Click;
+            mnuResetAllTiles.Click += MnuResetAllTiles_Click;
             mnuGenerateNumbers.Click += MnuNumberSequence_Click;
             mnuDeleteNumbers.Click += MnuDeleteNumberSequence_Click;
         }
@@ -185,21 +173,6 @@ namespace Kinovea.ScreenManager
                 inputFrameSize = framesContainer.Frames[0].Image.Size;
                 UpdateSize(inputFrameSize);
             }
-        }
-
-        public void UpdateSize(Size size)
-        {
-            canvasSize = rotatedCanvas ? new Size(size.Height, size.Width) : size;
-            
-            if (bitmap == null || bitmap.Size != canvasSize)
-            {
-                if (bitmap != null)
-                    bitmap.Dispose();
-
-                bitmap = new Bitmap(canvasSize.Width, canvasSize.Height);
-            }
-
-            Update();
         }
 
         public void UpdateTime(long timestamp)
@@ -364,7 +337,42 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region Private methods
+        #region Context menu
+
+        /// <summary>
+        /// Get the context menu according to the mouse position, current time and locale.
+        /// </summary>
+        public List<ToolStripItem> GetContextMenu(PointF pivot, long timestamp)
+        {
+            List<ToolStripItem> contextMenu = new List<ToolStripItem>();
+            ReloadMenusCulture();
+
+            contextTile = GetTile(pivot);
+
+            contextMenu.AddRange(new ToolStripItem[] {
+                mnuConfigure,
+                mnuNumberSequence,
+                new ToolStripSeparator(),
+                mnuAutoPositions,
+                mnuResetTile,
+                mnuResetAllTiles,
+            });
+
+            return contextMenu;
+        }
+
+        private void ReloadMenusCulture()
+        {
+            // Just in time localization.
+            mnuConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
+            mnuAutoPositions.Text = "Interpolate positions";
+            mnuResetTile.Text = "Reset this tile position";
+            mnuResetAllTiles.Text = "Reset all positions";
+            mnuNumberSequence.Text = "Frame numbers";
+            mnuGenerateNumbers.Text = "Generate frame numbers";
+            mnuDeleteNumbers.Text = "Delete frame numbers";
+        }
+
         private void MnuConfigure_Click(object sender, EventArgs e)
         {
             // Launch dialog.
@@ -393,11 +401,24 @@ namespace Kinovea.ScreenManager
             InvalidateFromMenu(sender);
         }
 
-        private void MnuResetPositions_Click(object sender, EventArgs e)
+        private void MnuResetTile_Click(object sender, EventArgs e)
+        {
+            if (contextTile < 0 || contextTile >= parameters.CropPositions.Count)
+                return;
+
+            parameters.CropPositions[contextTile] = PointF.Empty;
+            contextTile = -1;
+
+            Update();
+            
+            InvalidateFromMenu(sender);
+        }
+
+        private void MnuResetAllTiles_Click(object sender, EventArgs e)
         {
             ResetCropPositions();
             Update();
-
+            
             InvalidateFromMenu(sender);
         }
 
@@ -437,83 +458,22 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Add or remove crop positions slots after a change in the number of tiles.
-        /// parameters.TileCount has the new number of tiles, 
-        /// parameters.CropPositions has the old list of positions.
+        /// Update the main viewport from a menu event handler.
         /// </summary>
-        private void AfterTileCountChange()
+        private void InvalidateFromMenu(object sender)
         {
-            int oldCount = parameters.CropPositions.Count;
-            int newCount = parameters.TileCount;
-
-            if (newCount == oldCount)
+            // The screen hook was injected inside the menu.
+            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
+            if (tsmi == null)
                 return;
 
-            int goodTiles = newCount;
-            if (framesContainer != null && framesContainer.Frames != null && framesContainer.Frames.Count < newCount)
-                goodTiles = framesContainer.Frames.Count;
-
-            List<PointF> newCrops = new List<PointF>();
-            if (oldCount < 2)
-            {
-                for (int i = 0; i < goodTiles; i++)
-                    newCrops.Add(PointF.Empty);
-            }
-            else
-            {
-                // Interpolate the new positions to match the existing motion of the tiles within the scene.
-                for (int i = 0; i < goodTiles; i++)
-                {
-                    // Find the two closest old values and where we sit between them.
-                    float t = ((float)i / goodTiles) * oldCount;
-                    int a = (int)Math.Floor(t);
-                    int b = Math.Min(a + 1, oldCount - 1);
-                    PointF lerped = GeometryHelper.Mix(parameters.CropPositions[a], parameters.CropPositions[b], t - a);
-                    newCrops.Add(lerped);
-                }
-            }
-
-            parameters.CropPositions = newCrops;
-            PadTiles(goodTiles);
-            
-        }
-
-        /// <summary>
-        /// Interpolate between the first and last crop position.
-        /// </summary>
-        private void AutoPositions()
-        {
-            int count = Math.Min(parameters.TileCount, framesContainer.Frames.Count);
-            if (count < 3)
+            IDrawingHostView host = tsmi.Tag as IDrawingHostView;
+            if (host == null)
                 return;
 
-            int goodTiles = parameters.TileCount;
-            if (framesContainer != null && framesContainer.Frames != null && framesContainer.Frames.Count < parameters.TileCount)
-                goodTiles = framesContainer.Frames.Count;
-
-            List<PointF> newCrops = new List<PointF>();
-            for (int i = 0; i < goodTiles; i++)
-            {
-                float t = (float)i / (goodTiles - 1);
-                PointF lerped = GeometryHelper.Mix(parameters.CropPositions[0], parameters.CropPositions[goodTiles - 1], t);
-                newCrops.Add(lerped);
-            }
-
-            parameters.CropPositions = newCrops;
-            PadTiles(goodTiles);
+            host.InvalidateFromMenu();
         }
-
-        /// <summary>
-        /// Add extra crop positions for the tiles we don't have source frames for.
-        /// </summary>
-        private void PadTiles(int goodTiles)
-        {
-            if (goodTiles == parameters.TileCount)
-                return;
-            
-            for (int i = 0; i < parameters.TileCount - goodTiles; i++)
-                parameters.CropPositions.Add(PointF.Empty);
-        }
+        #endregion
 
         #region Rendering
         /// <summary>
@@ -625,24 +585,65 @@ namespace Kinovea.ScreenManager
         #endregion
 
         /// <summary>
-        /// Restore all crop positions to zero.
+        /// The input frames size has changed.
         /// </summary>
-        private void ResetCropPositions()
+        public void UpdateSize(Size inputFrameSize)
         {
-            parameters.CropPositions.Clear();
-            for (int i = 0; i < parameters.TileCount; i++)
-                parameters.CropPositions.Add(PointF.Empty);
+            canvasSize = rotatedCanvas ? new Size(inputFrameSize.Height, inputFrameSize.Width) : inputFrameSize;
+
+            if (bitmap == null || bitmap.Size != canvasSize)
+            {
+                if (bitmap != null)
+                    bitmap.Dispose();
+
+                bitmap = new Bitmap(canvasSize.Width, canvasSize.Height);
+            }
+
+            // Redraw the kinogram and update update the cache if necessary.
+            Update();
         }
 
         /// <summary>
-        /// Clear the cache.
+        /// Add or remove crop positions slots after a change in the number of tiles.
+        /// parameters.TileCount has the new number of tiles, 
+        /// parameters.CropPositions has the old list of positions.
+        /// This will interpolate the new positions based on the old ones.
         /// </summary>
-        private void ClearCache()
+        private void AfterTileCountChange()
         {
-            foreach (var f in cache)
-                f.Dispose();
+            int oldCount = parameters.CropPositions.Count;
+            int newCount = parameters.TileCount;
 
-            cache.Clear();
+            if (newCount == oldCount)
+                return;
+
+            int goodTiles = newCount;
+            if (framesContainer != null && framesContainer.Frames != null && framesContainer.Frames.Count < newCount)
+                goodTiles = framesContainer.Frames.Count;
+
+            List<PointF> newCrops = new List<PointF>();
+            if (oldCount < 2)
+            {
+                for (int i = 0; i < goodTiles; i++)
+                    newCrops.Add(PointF.Empty);
+            }
+            else
+            {
+                // Interpolate the new positions to match the existing motion of the tiles within the scene.
+                for (int i = 0; i < goodTiles; i++)
+                {
+                    // Find the two closest old values and where we sit between them.
+                    float t = ((float)i / goodTiles) * oldCount;
+                    int a = (int)Math.Floor(t);
+                    int b = Math.Min(a + 1, oldCount - 1);
+                    PointF lerped = GeometryHelper.Mix(parameters.CropPositions[a], parameters.CropPositions[b], t - a);
+                    newCrops.Add(lerped);
+                }
+            }
+
+            parameters.CropPositions = newCrops;
+            PadTiles(goodTiles);
+
         }
 
         /// <summary>
@@ -652,6 +653,16 @@ namespace Kinovea.ScreenManager
         {
             PreferencesManager.PlayerPreferences.Kinogram = parameters.Clone();
             PreferencesManager.Save();
+        }
+
+        /// <summary>
+        /// Reset all crop positions to zero.
+        /// </summary>
+        private void ResetCropPositions()
+        {
+            parameters.CropPositions.Clear();
+            for (int i = 0; i < parameters.TileCount; i++)
+                parameters.CropPositions.Add(PointF.Empty);
         }
 
         /// <summary>
@@ -680,7 +691,7 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Find the tile under this point.
-        /// The point is given in the space of the original cached images.
+        /// The point is given in the space of the input images.
         /// </summary>
         private int GetTile(PointF p)
         {
@@ -723,19 +734,42 @@ namespace Kinovea.ScreenManager
             parameters.CropPositions[index] = newPosition;
         }
 
-        private void InvalidateFromMenu(object sender)
+        /// <summary>
+        /// Interpolate between the first and last crop position.
+        /// </summary>
+        private void AutoPositions()
         {
-            // Update the main viewport.
-            // The screen hook was injected inside the menu.
-            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
-            if (tsmi == null)
+            int count = Math.Min(parameters.TileCount, framesContainer.Frames.Count);
+            if (count < 3)
                 return;
 
-            IDrawingHostView host = tsmi.Tag as IDrawingHostView;
-            if (host == null)
+            int goodTiles = parameters.TileCount;
+            if (framesContainer != null && framesContainer.Frames != null && framesContainer.Frames.Count < parameters.TileCount)
+                goodTiles = framesContainer.Frames.Count;
+
+            List<PointF> newCrops = new List<PointF>();
+            for (int i = 0; i < goodTiles; i++)
+            {
+                float t = (float)i / (goodTiles - 1);
+                PointF lerped = GeometryHelper.Mix(parameters.CropPositions[0], parameters.CropPositions[goodTiles - 1], t);
+                newCrops.Add(lerped);
+            }
+
+            parameters.CropPositions = newCrops;
+            PadTiles(goodTiles);
+        }
+
+        /// <summary>
+        /// Add extra crop positions for the tiles we don't have source frames for.
+        /// This happens when the table config produces more cells than there are available frames.
+        /// </summary>
+        private void PadTiles(int goodTiles)
+        {
+            if (goodTiles == parameters.TileCount)
                 return;
 
-            host.InvalidateFromMenu();
+            for (int i = 0; i < parameters.TileCount - goodTiles; i++)
+                parameters.CropPositions.Add(PointF.Empty);
         }
 
         /// <summary>
@@ -765,6 +799,16 @@ namespace Kinovea.ScreenManager
 
             cacheScale = newCacheScale;
         }
-        #endregion
+
+        /// <summary>
+        /// Clear the cache.
+        /// </summary>
+        private void ClearCache()
+        {
+            foreach (var f in cache)
+                f.Dispose();
+
+            cache.Clear();
+        }
     }
 }
