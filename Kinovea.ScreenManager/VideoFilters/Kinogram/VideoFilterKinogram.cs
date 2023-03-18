@@ -71,6 +71,10 @@ namespace Kinovea.ScreenManager
         {
             get { return parameters; }
         }
+        public Metadata ParentMetadata
+        {
+            get { return parentMetadata; }
+        }
         public int ContentHash
         {
             get { return parameters.GetContentHash(); }
@@ -383,14 +387,13 @@ namespace Kinovea.ScreenManager
 
         private void MnuConfigure_Click(object sender, EventArgs e)
         {
-            // Launch dialog.
+            // The dialog is responsible for handling undo/redo.
             FormConfigureKinogram fck = new FormConfigureKinogram(this);
             FormsHelper.Locate(fck);
             fck.ShowDialog();
 
             if (fck.DialogResult == DialogResult.OK)
             {
-                parameters = fck.Parameters.Clone();
                 AfterTileCountChange();
                 SaveAsDefaultParameters();
             }
