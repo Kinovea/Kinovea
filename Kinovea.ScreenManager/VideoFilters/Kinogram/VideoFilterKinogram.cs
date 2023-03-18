@@ -526,7 +526,7 @@ namespace Kinovea.ScreenManager
         private void Paint(Graphics g, Size outputSize, int tile = -1)
         { 
             float step = (float)framesContainer.Frames.Count / parameters.TileCount;
-            IEnumerable<VideoFrame> frames = framesContainer.Frames.Where((frame, i) => i % step < 1);
+            List<VideoFrame> frames = framesContainer.Frames.Where((frame, i) => i % step < 1).ToList();
 
             int cols = (int)Math.Ceiling((float)parameters.TileCount / parameters.Rows);
             Size cropSize = GetCropSize();
@@ -571,6 +571,14 @@ namespace Kinovea.ScreenManager
             int y = destRect.Y + (int)(-parameters.CropPositions[index].Y * cacheScale);
             g.SetClip(destRect);
             g.DrawImageUnscaled(image, x, y);
+
+            // Debug info
+            //using (Font f = new Font("Arial", 10))
+            //using (SolidBrush brush = new SolidBrush(Color.Red))
+            //{
+            //    string info = string.Format("{0}: {1}, {2}", index, x - destRect.X, y - destRect.Y);
+            //    g.DrawString(info, f, brush, destRect.X + 5, destRect.Y + 5);
+            //}
 
             DrawBorder(g, destRect);
         }
@@ -742,24 +750,36 @@ namespace Kinovea.ScreenManager
             // and then expand back to the total number. This function is now similar to this,
             // taking the initialized tiles as the anchor points.
             List<PointF> oldCrops = new List<PointF>();
-            foreach (var crop in parameters.CropPositions)
+            List<float> coords = new List<float>();
+            for (int i = 0; i < parameters.CropPositions.Count; i++)
             {
-                if (crop != PointF.Empty)
-                    oldCrops.Add(crop);
+                if (parameters.CropPositions[i] != PointF.Empty)
+                {
+                    oldCrops.Add(parameters.CropPositions[i]);
+                    coords.Add((float)i / parameters.CropPositions.Count);
+                }
             }
 
-            parameters.CropPositions = Interpolate(oldCrops, parameters.TileCount);
+            parameters.CropPositions = Interpolate(oldCrops, parameters.TileCount, coords);
         }
 
         /// <summary>
         /// Generate new positions by interpolating the old list.
+        /// oldCoords contains the 1D coordinate of the old crops along the sequence.
         /// </summary>
-        private List<PointF> Interpolate(List<PointF> oldCrops, int newCount)
+        private List<PointF> Interpolate(List<PointF> oldCrops, int newCount, List<float> oldCoords = null)
         {
             int oldCount = oldCrops.Count;
             
             if (newCount == oldCount)
                 return oldCrops;
+
+            if (oldCoords == null)
+            {
+                oldCoords = new List<float>();
+                for (int i = 0; i < oldCrops.Count; i++)
+                    oldCoords.Add((float)i / oldCrops.Count);
+            }
 
             int goodTiles = newCount;
             if (framesContainer != null && framesContainer.Frames != null && framesContainer.Frames.Count < newCount)
@@ -776,11 +796,39 @@ namespace Kinovea.ScreenManager
                 // Interpolate the new positions to match the existing motion of the tiles within the scene.
                 for (int i = 0; i < goodTiles; i++)
                 {
+                    // 1D coord in the new sequence.    
+                    float t = (float)i / goodTiles;
+
                     // Find the two closest old values and where we sit between them.
-                    float t = ((float)i / goodTiles) * oldCount;
-                    int a = (int)Math.Floor(t);
-                    int b = Math.Min(a + 1, oldCount - 1);
-                    PointF lerped = GeometryHelper.Mix(oldCrops[a], oldCrops[b], t - a);
+                    int a = -1;
+
+                    //for (int j = 0; j < oldCoords.Count; j++)
+                    for (int j = oldCoords.Count - 1; j >= 0; j--)
+                    {
+                        if (t > oldCoords[j])
+                        {
+                            a = j;
+                            break;
+                        }
+                    }
+
+                    if (a == -1)
+                    {
+                        // All the existing known positions are after the tile being interpolated.
+                        newCrops.Add(oldCrops[0]);
+                        continue;
+                    }
+
+                    if (a == oldCount - 1)
+                    {
+                        // All the existing known positions are before the tile being interpolated.
+                        newCrops.Add(oldCrops[oldCount-1]);
+                        continue;
+                    }
+
+                    int b = a + 1;
+                    float alpha = (t - oldCoords[a]) / (oldCoords[b] - oldCoords[a]) ;
+                    PointF lerped = GeometryHelper.Mix(oldCrops[a], oldCrops[b], alpha);
                     newCrops.Add(lerped);
                 }
             }
@@ -807,14 +855,14 @@ namespace Kinovea.ScreenManager
         /// Update the cache of pre-sized source images.
         /// This should be called whenever the source or output size change.
         /// </summary>
-        private void UpdateCache(IEnumerable<VideoFrame> frames, Size cropSize, Size tileSize)
+        private void UpdateCache(List<VideoFrame> frames, Size cropSize, Size tileSize)
         {
             // Find the size of the images such that we can draw them unscaled to the output.
             // Crop size is the source rectangle size and tileSize is the destination rectangle size.
             // They should already have the same aspect ratio.
             // Cache scale is the factor we apply to the input images to get the cached ones.
             float newCacheScale = (float)tileSize.Width / cropSize.Width;
-            if (newCacheScale == cacheScale)
+            if (newCacheScale == cacheScale && frames.Count == cache.Count)
                 return;
             
             Size cachedSize = new Size((int)(inputFrameSize.Width * newCacheScale), (int)(inputFrameSize.Height * newCacheScale));
