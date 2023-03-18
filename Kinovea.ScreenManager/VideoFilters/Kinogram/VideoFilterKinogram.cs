@@ -102,7 +102,6 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuConfigure = new ToolStripMenuItem();
         private ToolStripMenuItem mnuAutoPositions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuResetTile = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuResetOtherTiles = new ToolStripMenuItem();
         private ToolStripMenuItem mnuResetAllTiles = new ToolStripMenuItem();
         private ToolStripMenuItem mnuNumberSequence = new ToolStripMenuItem();
         private ToolStripMenuItem mnuGenerateNumbers = new ToolStripMenuItem();
@@ -129,7 +128,6 @@ namespace Kinovea.ScreenManager
             mnuConfigure.Image = Properties.Drawings.configure;
             mnuAutoPositions.Image = Properties.Resources.wand;
             mnuResetTile.Image = Properties.Resources.bin_empty;
-            mnuResetOtherTiles.Image = Properties.Resources.bin_empty;
             mnuResetAllTiles.Image = Properties.Resources.bin_empty;
             mnuNumberSequence.Image = Properties.Drawings.number;
             mnuGenerateNumbers.Image = Properties.Drawings.number;
@@ -141,7 +139,6 @@ namespace Kinovea.ScreenManager
             mnuConfigure.Click += MnuConfigure_Click;
             mnuAutoPositions.Click += MnuAutoPositions_Click;
             mnuResetTile.Click += MnuResetTile_Click;
-            mnuResetOtherTiles.Click += MnuResetOtherTiles_Click;
             mnuResetAllTiles.Click += MnuResetAllTiles_Click;
             mnuGenerateNumbers.Click += MnuNumberSequence_Click;
             mnuDeleteNumbers.Click += MnuDeleteNumberSequence_Click;
@@ -376,7 +373,6 @@ namespace Kinovea.ScreenManager
                 new ToolStripSeparator(),
                 mnuAutoPositions,
                 mnuResetTile,
-                mnuResetOtherTiles,
                 mnuResetAllTiles,
             });
 
@@ -389,7 +385,6 @@ namespace Kinovea.ScreenManager
             mnuConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
             mnuAutoPositions.Text = "Interpolate positions";
             mnuResetTile.Text = "Reset this position";
-            mnuResetOtherTiles.Text = "Reset other positions";
             mnuResetAllTiles.Text = "Reset all positions";
             mnuNumberSequence.Text = "Frame numbers";
             mnuGenerateNumbers.Text = "Generate frame numbers";
@@ -443,19 +438,6 @@ namespace Kinovea.ScreenManager
 
             Update();
             
-            InvalidateFromMenu(sender);
-        }
-
-        private void MnuResetOtherTiles_Click(object sender, EventArgs e)
-        {
-            if (contextTile < 0 || contextTile >= parameters.CropPositions.Count)
-                return;
-
-            CaptureMemento();
-            
-            ResetCropPositions(new List<int>() { contextTile });
-            Update();
-
             InvalidateFromMenu(sender);
         }
 
@@ -680,15 +662,11 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Reset all crop positions to zero.
         /// </summary>
-        private void ResetCropPositions(List<int> keepers = null)
+        private void ResetCropPositions()
         {
+            parameters.CropPositions.Clear();
             for (int i = 0; i < parameters.TileCount; i++)
-            {
-                if (keepers != null && keepers.Contains(i))
-                    continue;
-                
-                parameters.CropPositions[i] = PointF.Empty;
-            }
+                parameters.CropPositions.Add(PointF.Empty);
         }
 
         /// <summary>
