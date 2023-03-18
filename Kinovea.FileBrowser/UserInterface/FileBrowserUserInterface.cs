@@ -876,9 +876,17 @@ namespace Kinovea.FileBrowser
             }
 
             // Sort the files.
-            FileSortAxis axis = PreferencesManager.FileExplorerPreferences.FileSortAxis;
-            bool ascending = PreferencesManager.FileExplorerPreferences.FileSortAscending;
-            filenames.Sort(new FileComparator(axis, ascending));
+            try
+            {
+                FileSortAxis axis = PreferencesManager.FileExplorerPreferences.FileSortAxis;
+                bool ascending = PreferencesManager.FileExplorerPreferences.FileSortAscending;
+                filenames.Sort(new FileComparator(axis, ascending));
+            }
+            catch(Exception e)
+            {
+                // Sometimes when renaming a file this might throw with "FileNotFoundException.
+                log.ErrorFormat("An error happened while trying to sort files : {0}", e.Message);
+            }
 
             // Push them to the list view.
             foreach (string filename in filenames)
