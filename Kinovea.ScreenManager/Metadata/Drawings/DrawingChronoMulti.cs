@@ -143,6 +143,8 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuMoveCurrentEnd = new ToolStripMenuItem();
         private ToolStripMenuItem mnuMovePreviousEnd = new ToolStripMenuItem();
         private ToolStripMenuItem mnuMoveNextStart = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuMovePreviousSplit = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuMoveNextSplit = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDeleteSection = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDeleteTimes = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowLabel = new ToolStripMenuItem();
@@ -216,6 +218,8 @@ namespace Kinovea.ScreenManager
             mnuMoveCurrentEnd.Image = Properties.Resources.chronosectionend;
             mnuMovePreviousEnd.Image = Properties.Resources.chronosectionend;
             mnuMoveNextStart.Image = Properties.Resources.chronosectionstart;
+            mnuMovePreviousSplit.Image = Properties.Resources.chronosectionstart;
+            mnuMoveNextSplit.Image = Properties.Resources.chronosectionend;
             mnuDeleteSection.Image = Properties.Resources.bin_empty;
             mnuDeleteTimes.Image = Properties.Resources.bin_empty;
             mnuShowLabel.Image = Properties.Drawings.label;
@@ -228,6 +232,8 @@ namespace Kinovea.ScreenManager
             mnuMoveCurrentEnd.Click += mnuMoveCurrentEnd_Click;
             mnuMovePreviousEnd.Click += mnuMovePreviousEnd_Click;
             mnuMoveNextStart.Click += mnuMoveNextStart_Click;
+            mnuMovePreviousSplit.Click += mnuMovePreviousSplit_Click;
+            mnuMoveNextSplit.Click += mnuMoveNextSplit_Click;
             mnuDeleteSection.Click += mnuDeleteSection_Click;
             mnuDeleteTimes.Click += mnuDeleteTimes_Click;
             mnuShowLabel.Click += mnuShowLabel_Click;
@@ -254,9 +260,17 @@ namespace Kinovea.ScreenManager
             {   
                 // If we are before or on the first section, only show the time.
                 if (entries[i][0] == null || onFirst)
+                {
                     sb.AppendLine(string.Format("{0}", entries[i][1]));
+                }
                 else
-                    sb.AppendLine(string.Format("{0}: {1} | {2}", entries[i][0], entries[i][1], entries[i][2]));
+                {
+                    string line = string.Format("{0}: {1} | {2}", entries[i][0], entries[i][1], entries[i][2]);
+                    if (sections[i].Contains(currentTimestamp))
+                        line += " ◀";
+
+                    sb.AppendLine(line);
+                }
             }
             
             text = sb.ToString();
@@ -581,12 +595,21 @@ namespace Kinovea.ScreenManager
             if (sectionIndex >= 0)
             {
                 // Live section.
+                // If the next event is a split point we move the split as a whole (current end and next start).
+                // Another option would be to allow moving the next start when we are on the boundary frame, this requires two actions to 
+                // move a split but it is the lowest level and allow detaching the end points making up the split.
+                //
+                // Rationale: the most common scenario for adjusting existing end points will be to respect the "type" (split vs disconnected).
+                // If the user really wants to disconnect a split they can always delete one of the sections and redo.
+                bool isPrevSplit = sectionIndex > 0 && sections[sectionIndex - 1].End == sections[sectionIndex].Start;
+                bool isNextSplit = sectionIndex < sections.Count - 1 && sections[sectionIndex + 1].Start == sections[sectionIndex].End;
+
                 mnuAction.DropDownItems.AddRange(new ToolStripItem[] {
                     mnuStop,
                     mnuSplit,
                     new ToolStripSeparator(),
-                    mnuMoveCurrentStart,
-                    mnuMoveCurrentEnd,
+                    isPrevSplit ? mnuMovePreviousSplit : mnuMoveCurrentStart,
+                    isNextSplit ? mnuMoveNextSplit : mnuMoveCurrentEnd,
                     new ToolStripSeparator(),
                     mnuRenameSections,
                     mnuDeleteSection,
@@ -596,6 +619,7 @@ namespace Kinovea.ScreenManager
             else
             {
                 // Dead section.
+                // If we are on a dead section we already know the previous and next events aren't split points.
                 mnuAction.DropDownItems.AddRange(new ToolStripItem[] {
                     mnuStart,
                     new ToolStripSeparator(),
@@ -607,8 +631,10 @@ namespace Kinovea.ScreenManager
                 });
             }
 
+            // Corner-case dead sections.
             mnuMovePreviousEnd.Enabled = !IsBeforeFirstSection(sectionIndex);
             mnuMoveNextStart.Enabled = !IsAfterLastSection(sectionIndex);
+            
             mnuShowLabel.Checked = showLabel;
 
             contextMenu.AddRange(new ToolStripItem[] {
@@ -638,13 +664,14 @@ namespace Kinovea.ScreenManager
             mnuRenameSections.Text = "Rename time sections";
             mnuMoveCurrentStart.Text = "Move the start of the current time section to this frame";
             mnuMoveCurrentEnd.Text = "Move the end of the current time section to this frame";
+            mnuMovePreviousSplit.Text = "Move the previous split point to this frame";
+            mnuMoveNextSplit.Text = "Move the next split point to this frame";
             mnuDeleteSection.Text = "Delete the current time section";
 
             // When we are on a dead section.
             mnuStart.Text = "Start a new time section on this frame";
             mnuMovePreviousEnd.Text = "Move the end of the previous section to this frame";
             mnuMoveNextStart.Text = "Move the start of the next section to this frame";
-
             mnuDeleteTimes.Text = "Delete all times";
 
             // Display.
@@ -776,6 +803,38 @@ namespace Kinovea.ScreenManager
             CaptureMemento(SerializationFilter.Core);
 
             sections[sectionIndex] = new VideoSection(sections[sectionIndex].Start, contextTimestamp);
+
+            InvalidateFromMenu(sender);
+            UpdateFramesMarkersFromMenu(sender);
+        }
+
+        private void mnuMovePreviousSplit_Click(object sender, EventArgs e)
+        {
+            int sectionIndex = GetSectionIndex(contextTimestamp);
+            if (sectionIndex < 1)
+                return;
+
+            CaptureMemento(SerializationFilter.Core);
+
+            int prevIndex = sectionIndex - 1;
+            sections[prevIndex] = new VideoSection(sections[prevIndex].Start, contextTimestamp);
+            sections[sectionIndex] = new VideoSection(contextTimestamp, sections[sectionIndex].End);
+
+            InvalidateFromMenu(sender);
+            UpdateFramesMarkersFromMenu(sender);
+        }
+
+        private void mnuMoveNextSplit_Click(object sender, EventArgs e)
+        {
+            int sectionIndex = GetSectionIndex(contextTimestamp);
+            if (sectionIndex < 0 || sectionIndex > sections.Count - 2)
+                return;
+
+            CaptureMemento(SerializationFilter.Core);
+
+            int nextIndex = sectionIndex + 1;
+            sections[sectionIndex] = new VideoSection(sections[sectionIndex].Start, contextTimestamp);
+            sections[nextIndex] = new VideoSection(contextTimestamp, sections[nextIndex].End);
 
             InvalidateFromMenu(sender);
             UpdateFramesMarkersFromMenu(sender);
