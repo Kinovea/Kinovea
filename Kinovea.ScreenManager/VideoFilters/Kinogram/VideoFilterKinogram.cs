@@ -87,6 +87,7 @@ namespace Kinovea.ScreenManager
         private Size inputFrameSize;         // Size of input images.
         private Size canvasSize;        // Nominal size of output image, this is the same as frameSize unless the canvas is rotated.
         private float cacheScale = 1.0f;
+        private bool isCacheDirty = true;
         private bool rotatedCanvas = false;
         private KinogramParameters parameters = new KinogramParameters();
         private IWorkingZoneFramesContainer framesContainer;
@@ -175,6 +176,7 @@ namespace Kinovea.ScreenManager
             // Changing the number of frames in the source doesn't impact the grid arrangement.
             // If we don't have enough frames we just show black tiles.
             this.framesContainer = framesContainer;
+            isCacheDirty = true;
             if (framesContainer != null && framesContainer.Frames != null && framesContainer.Frames.Count > 0)
             {
                 inputFrameSize = framesContainer.Frames[0].Image.Size;
@@ -881,7 +883,7 @@ namespace Kinovea.ScreenManager
             // They should already have the same aspect ratio.
             // Cache scale is the factor we apply to the input images to get the cached ones.
             float newCacheScale = (float)tileSize.Width / cropSize.Width;
-            if (newCacheScale == cacheScale && frames.Count == cache.Count)
+            if (!isCacheDirty && newCacheScale == cacheScale && frames.Count == cache.Count)
                 return;
             
             Size cachedSize = new Size((int)(inputFrameSize.Width * newCacheScale), (int)(inputFrameSize.Height * newCacheScale));
@@ -896,6 +898,7 @@ namespace Kinovea.ScreenManager
             }
 
             cacheScale = newCacheScale;
+            isCacheDirty = false;
         }
 
         /// <summary>
