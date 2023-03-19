@@ -36,6 +36,13 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
+    /// <summary>
+    /// This is the original Chronometer object. 
+    /// Chronometer mode: single time span.
+    /// Clock mode: video time based on the time origin or a drawing specific time origin.
+    /// 
+    /// The chronometer mode is superceded by the ChronoMulti object.
+    /// </summary>
     [XmlType ("Chrono")]
     public class DrawingChrono : AbstractDrawing, IDecorable, IKvaSerializable, ITimeable
     {

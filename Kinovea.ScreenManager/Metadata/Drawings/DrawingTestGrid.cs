@@ -153,16 +153,45 @@ namespace Kinovea.ScreenManager
             if (!Visible)
                 return -1;
 
-            bool hit = false;
-            foreach (var pair in gridLines)
+            // The individual lines are not movable so we always only ever return -1 (no hit) or 0 (hit).
+            // However we need to treat them separately because a given grid line might not be visible.
+            
+            void addGridLine(GraphicsPath path, GridLine line)
             {
-                using (GraphicsPath path = new GraphicsPath())
-                {
-                    path.AddLine(Map(pair.Value.Start), Map(pair.Value.End));
-                    hit = hit || HitTester.HitPath(point, path, 2, false, transformer);
-                }
+                path.StartFigure();
+                path.AddLine(Map(line.Start), Map(line.End));
+                path.CloseFigure();
             }
+            
+            bool hit = false;
+            List<GridLine> visibleGridLines = new List<GridLine>();
+            using (GraphicsPath path = new GraphicsPath())
+            {
+                if (styleHelper.HorizontalAxis)
+                    addGridLine(path, gridLines["horizontal"]);
 
+                if (styleHelper.VerticalAxis)
+                    addGridLine(path, gridLines["vertical"]);
+                
+                if (styleHelper.Frame)
+                {
+                    addGridLine(path, gridLines["frameLeft"]);
+                    addGridLine(path, gridLines["frameTop"]);
+                    addGridLine(path, gridLines["frameRight"]);
+                    addGridLine(path, gridLines["frameBottom"]);
+                }
+
+                if (styleHelper.Thirds)
+                {
+                    addGridLine(path, gridLines["thirdsLeft"]);
+                    addGridLine(path, gridLines["thirdsTop"]);
+                    addGridLine(path, gridLines["thirdsRight"]);
+                    addGridLine(path, gridLines["thirdsBottom"]);
+                }
+
+                hit = HitTester.HitPath(point, path, 2, false, transformer);
+            }
+            
             return hit ? 0 : -1;
         }
         public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
