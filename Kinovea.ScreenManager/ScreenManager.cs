@@ -74,14 +74,8 @@ namespace Kinovea.ScreenManager
         private List<string> camerasToDiscover = new List<string>();
         private AudioInputLevelMonitor audioInputLevelMonitor = new AudioInputLevelMonitor();
         
-        // Video Filters
-        private bool hasSvgFiles;
-        private string svgPath;
-        private FileSystemWatcher svgFilesWatcher = new FileSystemWatcher();
-        private bool buildingSVGMenu;
-        private List<ToolStripMenuItem> filterMenus = new List<ToolStripMenuItem>();
-        
         #region Menus
+        
         private ToolStripMenuItem mnuCloseFile = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCloseFile2 = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSave = new ToolStripMenuItem();
@@ -128,8 +122,8 @@ namespace Kinovea.ScreenManager
 
         private ToolStripMenuItem mnuMirror = new ToolStripMenuItem();
 
+        private List<ToolStripMenuItem> filterMenus = new List<ToolStripMenuItem>();
 
-        private ToolStripMenuItem mnuImageTools = new ToolStripMenuItem();
         private ToolStripMenuItem mnuImportImage = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimeCalibration = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCoordinateSystem = new ToolStripMenuItem();
@@ -174,8 +168,7 @@ namespace Kinovea.ScreenManager
             audioInputLevelMonitor.DeviceLost += (s, e) => AudioDeviceLost();
 
             InitializeVideoFilters();
-            InitializeGuideWatcher();
-
+            
             NotificationCenter.StopPlayback += (s, e) => DoStopPlaying();
             NotificationCenter.PreferencesOpened += NotificationCenter_PreferencesOpened;
             NotificationCenter.ExternalCommand += NotificationCenter_ExternalCommand;
@@ -216,21 +209,6 @@ namespace Kinovea.ScreenManager
             };
 
             return menu;
-        }
-
-        private void InitializeGuideWatcher()
-        {
-            svgPath = Path.GetDirectoryName(Application.ExecutablePath) + "\\guides\\";
-            svgFilesWatcher.Path = svgPath;
-            svgFilesWatcher.NotifyFilter = NotifyFilters.DirectoryName | NotifyFilters.FileName | NotifyFilters.LastWrite;
-            svgFilesWatcher.Filter = "*.svg";
-            svgFilesWatcher.IncludeSubdirectories = true;
-            svgFilesWatcher.EnableRaisingEvents = true;
-
-            svgFilesWatcher.Changed += OnSVGFilesChanged;
-            svgFilesWatcher.Created += OnSVGFilesChanged;
-            svgFilesWatcher.Deleted += OnSVGFilesChanged;
-            svgFilesWatcher.Renamed += OnSVGFilesChanged;
         }
 
         public void RecoverCrash()
@@ -480,7 +458,6 @@ namespace Kinovea.ScreenManager
             mnuMirror.Click += new EventHandler(mnuMirrorOnClick);
             mnuMirror.MergeAction = MergeAction.Append;
 
-            ConfigureVideoFilterMenus(null);
 
             mnuCatchImage.DropDownItems.Add(mnuAspectRatio);
             mnuCatchImage.DropDownItems.Add(mnuRotation);
@@ -494,10 +471,12 @@ namespace Kinovea.ScreenManager
             mnuCatchVideo.MergeIndex = 4;
             mnuCatchVideo.MergeAction = MergeAction.MatchOnly;
 
-            foreach(ToolStripMenuItem m in filterMenus)
-            {
-                mnuCatchVideo.DropDownItems.Add(m);
-            }
+            ConfigureVideoFilterMenus(null);
+            mnuCatchVideo.DropDownItems.Add(filterMenus[0]);
+            mnuCatchVideo.DropDownItems.Add(new ToolStripSeparator());
+            for (int i = 1; i < filterMenus.Count; i++)
+                mnuCatchVideo.DropDownItems.Add(filterMenus[i]);
+            
             #endregion
 
             #region Tools
@@ -505,7 +484,9 @@ namespace Kinovea.ScreenManager
             mnuCatchTools.MergeIndex = 5;
             mnuCatchTools.MergeAction = MergeAction.MatchOnly;
 
-            BuildImageToolsMenus();
+            mnuImportImage.Image = Properties.Resources.image;
+            mnuImportImage.Click += new EventHandler(mnuImportImage_OnClick);
+            mnuImportImage.MergeAction = MergeAction.Append;
 
             mnuTimeCalibration.Image = Properties.Drawings.clock_frame;
             mnuTimeCalibration.Click += new EventHandler(mnuTimebase_OnClick);
@@ -540,7 +521,7 @@ namespace Kinovea.ScreenManager
             mnuAngleAngleAnalysis.MergeAction = MergeAction.Append;
 
             mnuCatchTools.DropDownItems.AddRange(new ToolStripItem[] { 
-                mnuImageTools,
+                mnuImportImage,
                 new ToolStripSeparator(),
                 mnuTimeCalibration,
                 mnuLensDistortion, 
@@ -962,69 +943,10 @@ namespace Kinovea.ScreenManager
         {
             DoOrganizeMenu();
         }
-        private void BuildImageToolsMenus()
-        {
-            mnuImageTools.Image = Properties.Resources.images;
-            mnuImageTools.MergeAction = MergeAction.Append;
-            mnuImportImage.Image = Properties.Resources.image;
-            mnuImportImage.Click += new EventHandler(mnuImportImage_OnClick);
-            mnuImportImage.MergeAction = MergeAction.Append;
-            AddImportImageMenu(mnuImageTools);
-            AddSvgSubMenus(svgPath, mnuImageTools);
-        }
         private void AddImportImageMenu(ToolStripMenuItem menu)
         {
             menu.DropDownItems.Add(mnuImportImage);
             menu.DropDownItems.Add(new ToolStripSeparator());
-        }
-        private void AddSvgSubMenus(string dir, ToolStripMenuItem menu)
-        {
-            // This is a recursive function that browses a directory and its sub directories,
-            // each directory is made into a menu tree, each svg file is added as a menu leaf.
-            if (!Directory.Exists(dir))
-                return;
-            
-            buildingSVGMenu = true;
-
-            // Loop sub directories.
-            string[] subDirs = Directory.GetDirectories (dir);
-            foreach (string subDir in subDirs)
-            {
-                // Create a menu
-                ToolStripMenuItem mnuSubDir = new ToolStripMenuItem();
-                mnuSubDir.Text = Path.GetFileName(subDir);
-                mnuSubDir.Image = Properties.Resources.folder;
-                mnuSubDir.MergeAction = MergeAction.Append;
-                    
-                // Build sub tree.
-                AddSvgSubMenus(subDir, mnuSubDir);
-                    
-                // Add to parent if non-empty.
-                if(mnuSubDir.HasDropDownItems)
-                    menu.DropDownItems.Add(mnuSubDir);
-            }
-
-            // Then loop files within the sub directory.
-            foreach (string file in Directory.GetFiles(dir))
-            {
-                if (!Path.GetExtension(file).ToLower().Equals(".svg"))
-                    continue;
-                
-                hasSvgFiles = true;
-                        
-                // Create a menu. 
-                ToolStripMenuItem mnuSVGDrawing = new ToolStripMenuItem();
-                mnuSVGDrawing.Text = Path.GetFileNameWithoutExtension(file);
-                mnuSVGDrawing.Tag = file;
-                mnuSVGDrawing.Image = Properties.Resources.vector;
-                mnuSVGDrawing.Click += new EventHandler(mnuSVGDrawing_OnClick);
-                mnuSVGDrawing.MergeAction = MergeAction.Append;
-                        
-                // Add to parent.
-                menu.DropDownItems.Add(mnuSVGDrawing);
-            }
-                    
-            buildingSVGMenu = false;
         }
         private void DoOrganizeMenu()
         {
@@ -1083,7 +1005,7 @@ namespace Kinovea.ScreenManager
                     ConfigureVideoFilterMenus(player);
 
                     // Tools
-                    mnuImageTools.Enabled = hasSvgFiles;
+                    mnuImportImage.Enabled = true;
                     mnuTimeCalibration.Enabled = true;
                     mnuCoordinateSystem.Enabled = true;
                     mnuLensDistortion.Enabled = true;
@@ -1129,7 +1051,7 @@ namespace Kinovea.ScreenManager
                     ConfigureVideoFilterMenus(null);
 
                     // Tools
-                    mnuImageTools.Enabled = false;
+                    mnuImportImage.Enabled = false;
                     mnuTimeCalibration.Enabled = false;
                     mnuCoordinateSystem.Enabled = true;
                     mnuLensDistortion.Enabled = false;
@@ -1186,7 +1108,7 @@ namespace Kinovea.ScreenManager
 
                 // Tools
                 mnuTimeCalibration.Enabled = false;
-                mnuImageTools.Enabled = false;
+                mnuImportImage.Enabled = false;
                 mnuCoordinateSystem.Enabled = false;
                 mnuLensDistortion.Enabled = false;
                 mnuTestGrid.Enabled = false;
@@ -1322,7 +1244,7 @@ namespace Kinovea.ScreenManager
             {
                 VideoFilterType filterType = (VideoFilterType)menu.Tag;
                 menu.Visible = VideoFilterFactory.GetExperimental(filterType) ? Software.Experimental : true;
-                menu.Enabled = filterType == VideoFilterType.None || (hasVideo && player.IsCaching);
+                menu.Enabled = hasVideo && (filterType == VideoFilterType.None || player.IsCaching);
                 menu.Checked = hasVideo && player.ActiveVideoFilterType == filterType;
             }
         }
@@ -1380,23 +1302,7 @@ namespace Kinovea.ScreenManager
             mnuRotation180.Checked = screen.ImageRotation == ImageRotation.Rotate180;
             mnuRotation270.Checked = screen.ImageRotation == ImageRotation.Rotate270;
         }
-        private void OnSVGFilesChanged(object source, FileSystemEventArgs e)
-        {
-            // We are in the file watcher thread. NO direct UI Calls from here.
-            log.Debug(String.Format("Action recorded in the guides directory: {0}", e.ChangeType));
-            if(!buildingSVGMenu)
-            {
-                buildingSVGMenu = true;
-                // Use "view" object just to merge back into the UI thread.
-                view.BeginInvoke((MethodInvoker) delegate {DoSVGFilesChanged();});
-            }
-        }
-        public void DoSVGFilesChanged()
-        {
-            mnuImageTools.DropDownItems.Clear();
-            AddImportImageMenu(mnuImageTools);
-            AddSvgSubMenus(svgPath, mnuImageTools);
-        }
+        
         private void ConfigureClipboardMenus(AbstractScreen screen)
         {
             if (screen is PlayerScreen)
@@ -1500,10 +1406,7 @@ namespace Kinovea.ScreenManager
             
             RefreshCultureMenuFilters();
 
-            // Video
-
             // Tools
-            mnuImageTools.Text = ScreenManagerLang.mnuSVGTools;
             mnuImportImage.Text = ScreenManagerLang.mnuImportImage;
             mnuTimeCalibration.Text = "Time calibration…";
             mnuLensDistortion.Text = "Lens calibration…";
@@ -2254,19 +2157,8 @@ namespace Kinovea.ScreenManager
 
             if (openFileDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(openFileDialog.FileName))
             {
-                bool svg = Path.GetExtension(openFileDialog.FileName).ToLower() == ".svg";
-                LoadDrawing(openFileDialog.FileName, svg);
-            }
-        }
-        private void mnuSVGDrawing_OnClick(object sender, EventArgs e)
-        {
-            // One of the dynamically added SVG tools menu has been clicked.
-            // Add a drawing of the right type to the active screen.
-            ToolStripMenuItem menu = sender as ToolStripMenuItem;
-            if(menu != null)
-            {
-                string svgFile = menu.Tag as string;
-                LoadDrawing(svgFile, true);
+                bool isSVG = Path.GetExtension(openFileDialog.FileName).ToLower() == ".svg";
+                LoadDrawing(openFileDialog.FileName, isSVG);
             }
         }
         private void LoadDrawing(string path, bool isSVG)
