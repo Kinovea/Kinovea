@@ -59,16 +59,26 @@ namespace Kinovea.ScreenManager
         public static string GetFriendlyName(VideoFilterType type)
         {
             // TODO: localization.
-            return info[type].Name;
+            // The filter should provide a resource string.
+            if (type == VideoFilterType.None)
+                return "Analysis";
+            else
+                return info[type].Name;
         }
 
         public static Bitmap GetIcon(VideoFilterType type)
         {
+            if (type == VideoFilterType.None)
+                return Properties.Drawings.track;
+
             return info[type].Icon;
         }
 
         public static bool GetExperimental(VideoFilterType type)
         {
+            if (type == VideoFilterType.None)
+                return false;
+
             return info[type].Experimental;
         }
 

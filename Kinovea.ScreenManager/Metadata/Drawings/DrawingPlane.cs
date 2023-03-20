@@ -179,7 +179,7 @@ namespace Kinovea.ScreenManager
             quadPlane = new QuadrilateralF(planeWidth, planeHeight);
 
             mnuCalibrate.Click += mnuCalibrate_Click;
-            mnuCalibrate.Image = Properties.Drawings.linecalibrate;
+            mnuCalibrate.Image = Properties.Drawings.coordinates_graduations;
         }
         public DrawingPlane(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
             : this(PointF.Empty, 0, 0, ToolManager.GetStylePreset("Grid"))

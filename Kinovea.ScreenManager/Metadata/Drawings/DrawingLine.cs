@@ -151,8 +151,8 @@ namespace Kinovea.ScreenManager
 
             // Context menu
             ReinitializeMenu();
+            mnuCalibrate.Image = Properties.Drawings.coordinates_graduations;
             mnuCalibrate.Click += mnuCalibrate_Click;
-            mnuCalibrate.Image = Properties.Drawings.linecalibrate;
         }
         
         public DrawingLine(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
@@ -494,7 +494,7 @@ namespace Kinovea.ScreenManager
         }
         private void InitializeMenuMeasurement()
         {
-            mnuMeasurement.Image = Properties.Drawings.measure;
+            mnuMeasurement.Image = Properties.Drawings.label;
             mnuMeasurement.Text = ScreenManagerLang.mnuShowMeasure;
 
             // TODO: unhook event handlers ?

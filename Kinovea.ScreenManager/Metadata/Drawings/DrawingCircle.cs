@@ -428,7 +428,7 @@ namespace Kinovea.ScreenManager
         private void InitializeMenuMeasurement()
         {
             //mnuMeasurement.MergeIndex = 4;
-            mnuMeasurement.Image = Properties.Drawings.measure;
+            mnuMeasurement.Image = Properties.Drawings.label;
             mnuMeasurement.Text = ScreenManagerLang.mnuShowMeasure;
 
             // TODO: unhook event handlers ?
