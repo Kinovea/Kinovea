@@ -41,7 +41,7 @@ namespace Kinovea.ScreenManager
     {
         #region Events
         public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved;
-        public event EventHandler<EventArgs<TrackExtraData>> ShowMeasurableInfoChanged;
+        public event EventHandler<EventArgs<MeasureLabelType>> ShowMeasurableInfoChanged;
         #endregion
         
         #region Properties
@@ -435,7 +435,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region IMeasurable implementation
-        public void InitializeMeasurableData(TrackExtraData trackExtraData)
+        public void InitializeMeasurableData(MeasureLabelType measureLabelType)
         {
         }
         #endregion

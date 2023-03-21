@@ -38,7 +38,7 @@ namespace Kinovea.ScreenManager
             this.lblView = new System.Windows.Forms.Label();
             this.cmbMarker = new System.Windows.Forms.ComboBox();
             this.lblMarker = new System.Windows.Forms.Label();
-            this.cmbExtraData = new System.Windows.Forms.ComboBox();
+            this.cmbMeasureLabelType = new System.Windows.Forms.ComboBox();
             this.lblExtra = new System.Windows.Forms.Label();
             this.grpIdentification = new System.Windows.Forms.GroupBox();
             this.grpTracking = new System.Windows.Forms.GroupBox();
@@ -108,7 +108,7 @@ namespace Kinovea.ScreenManager
             this.grpConfig.Controls.Add(this.lblView);
             this.grpConfig.Controls.Add(this.cmbMarker);
             this.grpConfig.Controls.Add(this.lblMarker);
-            this.grpConfig.Controls.Add(this.cmbExtraData);
+            this.grpConfig.Controls.Add(this.cmbMeasureLabelType);
             this.grpConfig.Controls.Add(this.lblExtra);
             this.grpConfig.Location = new System.Drawing.Point(12, 74);
             this.grpConfig.Name = "grpConfig";
@@ -170,14 +170,14 @@ namespace Kinovea.ScreenManager
             // 
             // cmbExtraData
             // 
-            this.cmbExtraData.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.cmbMeasureLabelType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmbExtraData.FormattingEnabled = true;
-            this.cmbExtraData.Location = new System.Drawing.Point(146, 75);
-            this.cmbExtraData.Name = "cmbExtraData";
-            this.cmbExtraData.Size = new System.Drawing.Size(138, 21);
-            this.cmbExtraData.TabIndex = 46;
-            this.cmbExtraData.SelectedIndexChanged += new System.EventHandler(this.CmbExtraData_SelectedIndexChanged);
+            this.cmbMeasureLabelType.FormattingEnabled = true;
+            this.cmbMeasureLabelType.Location = new System.Drawing.Point(146, 75);
+            this.cmbMeasureLabelType.Name = "cmbExtraData";
+            this.cmbMeasureLabelType.Size = new System.Drawing.Size(138, 21);
+            this.cmbMeasureLabelType.TabIndex = 46;
+            this.cmbMeasureLabelType.SelectedIndexChanged += new System.EventHandler(this.CmbMeasureLabelType_SelectedIndexChanged);
             // 
             // lblExtra
             // 
@@ -347,7 +347,7 @@ namespace Kinovea.ScreenManager
 
         }
         private System.Windows.Forms.Label lblExtra;
-        private System.Windows.Forms.ComboBox cmbExtraData;
+        private System.Windows.Forms.ComboBox cmbMeasureLabelType;
         private System.Windows.Forms.GroupBox grpAppearance;
 
         #endregion

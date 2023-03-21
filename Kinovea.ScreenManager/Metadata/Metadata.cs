@@ -469,7 +469,7 @@ namespace Kinovea.ScreenManager
         private Magnifier magnifier = new Magnifier();
 
         private TrackerParameters lastUsedTrackerParameters;
-        private TrackExtraData trackExtraData;
+        private MeasureLabelType mesureLabelType;
         private TrackabilityManager trackabilityManager = new TrackabilityManager();
 
         // Other info not related to drawings.
@@ -1463,7 +1463,7 @@ namespace Kinovea.ScreenManager
                 IMeasurable measurableDrawing = drawing as IMeasurable;
                 measurableDrawing.CalibrationHelper = calibrationHelper;
 
-                measurableDrawing.InitializeMeasurableData(trackExtraData);
+                measurableDrawing.InitializeMeasurableData(mesureLabelType);
                 measurableDrawing.ShowMeasurableInfoChanged += MeasurableDrawing_ShowMeasurableInfoChanged;
             }
 
@@ -1965,9 +1965,9 @@ namespace Kinovea.ScreenManager
             foreach (DrawingTrack t in Tracks())
                 t.CalibrationChanged();
         }
-        private void MeasurableDrawing_ShowMeasurableInfoChanged(object sender, EventArgs<TrackExtraData> e)
+        private void MeasurableDrawing_ShowMeasurableInfoChanged(object sender, EventArgs<MeasureLabelType> e)
         {
-            trackExtraData = e.Value;
+            mesureLabelType = e.Value;
         }
 
         /// <summary>

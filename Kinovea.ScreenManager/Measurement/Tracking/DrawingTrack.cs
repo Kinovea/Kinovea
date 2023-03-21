@@ -104,12 +104,12 @@ namespace Kinovea.ScreenManager
                 AfterTrackStatusChanged();
             }
         }
-        public TrackExtraData ExtraData
+        public MeasureLabelType MeasureLabelType
         {
-            get { return trackExtraData; }
+            get { return measureLabelType; }
             set 
             { 
-                trackExtraData = value; 
+                measureLabelType = value; 
                 IntegrateKeyframes();
             }
         }
@@ -203,7 +203,7 @@ namespace Kinovea.ScreenManager
         // Current state.
         private TrackView trackView = TrackView.Complete;
         private TrackStatus trackStatus = TrackStatus.Interactive;
-        private TrackExtraData trackExtraData = TrackExtraData.None;
+        private MeasureLabelType measureLabelType = MeasureLabelType.None;
         private TrackMarker trackMarker = TrackMarker.Cross;
         private bool displayBestFitCircle;
         private int movingHandler = -1;
@@ -247,7 +247,6 @@ namespace Kinovea.ScreenManager
 
         // Context menu
         private ToolStripMenuItem mnuMeasurement = new ToolStripMenuItem();
-        private List<ToolStripMenuItem> mnuMeasurementOptions = new List<ToolStripMenuItem>();
         
         // Memorization poul
         private TrackView memoTrackView;
@@ -318,7 +317,7 @@ namespace Kinovea.ScreenManager
             if(positions.Count > 1)
             {
                 // Key Images titles.
-                if (trackStatus == TrackStatus.Interactive && trackView != TrackView.Label && trackExtraData != TrackExtraData.None)
+                if (trackStatus == TrackStatus.Interactive && trackView != TrackView.Label && measureLabelType != MeasureLabelType.None)
                     DrawKeyframesTitles(canvas, opacityFactor, transformer);
                 
                 // Track.
@@ -350,7 +349,7 @@ namespace Kinovea.ScreenManager
 
                 // Main label.
                 if (trackStatus == TrackStatus.Interactive && trackView == TrackView.Label ||
-                    trackStatus == TrackStatus.Interactive && trackExtraData != TrackExtraData.None)
+                    trackStatus == TrackStatus.Interactive && measureLabelType != MeasureLabelType.None)
                 {
                     DrawMainLabel(canvas, currentPoint, opacityFactor, transformer);
                 }
@@ -684,7 +683,7 @@ namespace Kinovea.ScreenManager
             
             miniLabel.SetAttach(positions[currentPoint].Point, true);
                 
-            string text = trackView == TrackView.Label ? name : GetExtraDataText(currentPoint);
+            string text = trackView == TrackView.Label ? name : GetMeasureLabelText(currentPoint);
             miniLabel.SetText(text);
             miniLabel.Draw(canvas, transformer, fadingFactor);
         }
@@ -723,26 +722,26 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region Extra informations (Speed, distance)
-        public string GetExtraDataOptionText(TrackExtraData data)
+        #region Measure label
+        public string GetMeasureLabelOptionText(MeasureLabelType data)
         {
             switch (data)
             {
-                case TrackExtraData.None: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None;
-                case TrackExtraData.Name: return ScreenManagerLang.dlgConfigureDrawing_Name;
-                case TrackExtraData.Position: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Position;
+                case MeasureLabelType.None: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None;
+                case MeasureLabelType.Name: return ScreenManagerLang.dlgConfigureDrawing_Name;
+                case MeasureLabelType.Position: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Position;
 
-                case TrackExtraData.TotalDistance: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalDistance;
-                case TrackExtraData.TotalHorizontalDisplacement: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement;
-                case TrackExtraData.TotalVerticalDisplacement: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalVerticalDisplacement;
+                case MeasureLabelType.TotalDistance: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalDistance;
+                case MeasureLabelType.TotalHorizontalDisplacement: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement;
+                case MeasureLabelType.TotalVerticalDisplacement: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalVerticalDisplacement;
 
-                case TrackExtraData.Speed: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Speed;
-                case TrackExtraData.HorizontalVelocity: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_HorizontalVelocity;
-                case TrackExtraData.VerticalVelocity: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_VerticalVelocity;
+                case MeasureLabelType.Speed: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Speed;
+                case MeasureLabelType.HorizontalVelocity: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_HorizontalVelocity;
+                case MeasureLabelType.VerticalVelocity: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_VerticalVelocity;
                 
-                case TrackExtraData.Acceleration: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Acceleration;
-                case TrackExtraData.HorizontalAcceleration: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_HorizontalAcceleration;
-                case TrackExtraData.VerticalAcceleration: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_VerticalAcceleration;
+                case MeasureLabelType.Acceleration: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Acceleration;
+                case MeasureLabelType.HorizontalAcceleration: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_HorizontalAcceleration;
+                case MeasureLabelType.VerticalAcceleration: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_VerticalAcceleration;
             }
 
             return "";
@@ -751,59 +750,55 @@ namespace Kinovea.ScreenManager
         public bool IsUsingAngularKinematics()
         {
             return false;
-            /*return trackExtraData == TrackExtraData.AngularDisplacement ||
-                trackExtraData == TrackExtraData.AngularVelocity ||
-                trackExtraData == TrackExtraData.AngularAcceleration ||
-                trackExtraData == TrackExtraData.CentripetalAcceleration;*/
         }
 
-        private string GetExtraDataText(int index)
+        private string GetMeasureLabelText(int index)
         {
             CalibrationHelper helper = parentMetadata.CalibrationHelper;
             CultureInfo culture = CultureInfo.InvariantCulture;
             string displayText = "###";
 
-            switch(trackExtraData)
+            switch(measureLabelType)
             {
-                case TrackExtraData.Name:
+                case MeasureLabelType.Name:
                     displayText = name;
                     break;
-                case TrackExtraData.Position:
+                case MeasureLabelType.Position:
                     double x = timeSeriesCollection[Kinematics.XRaw][index];
                     double y = timeSeriesCollection[Kinematics.YRaw][index];
                     displayText = string.Format(culture, "{0:0.00} ; {1:0.00} {2}", x, y, helper.GetLengthAbbreviation());
                     break;
                 
-                case TrackExtraData.TotalDistance:
+                case MeasureLabelType.TotalDistance:
                     displayText = GetKinematicsDisplayText(Kinematics.LinearDistance, index, helper.GetLengthAbbreviation());
                     break;
-                case TrackExtraData.TotalHorizontalDisplacement:
+                case MeasureLabelType.TotalHorizontalDisplacement:
                     displayText = GetKinematicsDisplayText(Kinematics.LinearHorizontalDisplacement, index, helper.GetLengthAbbreviation());
                     break;
-                case TrackExtraData.TotalVerticalDisplacement:
+                case MeasureLabelType.TotalVerticalDisplacement:
                     displayText = GetKinematicsDisplayText(Kinematics.LinearVerticalDisplacement, index, helper.GetLengthAbbreviation());
                     break;
 
-                case TrackExtraData.Speed:
+                case MeasureLabelType.Speed:
                     displayText = GetKinematicsDisplayText(Kinematics.LinearSpeed, index, helper.GetSpeedAbbreviation());
                     break;
-                case TrackExtraData.HorizontalVelocity:
+                case MeasureLabelType.HorizontalVelocity:
                     displayText = GetKinematicsDisplayText(Kinematics.LinearHorizontalVelocity, index, helper.GetSpeedAbbreviation());
                     break;
-                case TrackExtraData.VerticalVelocity:
+                case MeasureLabelType.VerticalVelocity:
                     displayText = GetKinematicsDisplayText(Kinematics.LinearVerticalVelocity, index, helper.GetSpeedAbbreviation());
                     break;
 
-                case TrackExtraData.Acceleration:
+                case MeasureLabelType.Acceleration:
                     displayText = GetKinematicsDisplayText(Kinematics.LinearAcceleration, index, helper.GetAccelerationAbbreviation());
                     break;
-                case TrackExtraData.HorizontalAcceleration:
+                case MeasureLabelType.HorizontalAcceleration:
                     displayText = GetKinematicsDisplayText(Kinematics.LinearHorizontalAcceleration, index, helper.GetAccelerationAbbreviation());
                     break;
-                case TrackExtraData.VerticalAcceleration:
+                case MeasureLabelType.VerticalAcceleration:
                     displayText = GetKinematicsDisplayText(Kinematics.LinearVerticalAcceleration, index, helper.GetAccelerationAbbreviation());
                     break;
-                case TrackExtraData.None:
+                case MeasureLabelType.None:
                 default:
                     break;
             }    
@@ -847,7 +842,7 @@ namespace Kinovea.ScreenManager
             
             if (trackStatus == TrackStatus.Edit || trackView != TrackView.Label)
             {
-                if(trackExtraData != TrackExtraData.None && labelNumber == 2)
+                if(measureLabelType != MeasureLabelType.None && labelNumber == 2)
                 {
                     // Move the main label.
                     miniLabel.MoveLabel(dx, dy);
@@ -877,7 +872,7 @@ namespace Kinovea.ScreenManager
             {
                 // Even when we aren't in TrackView.Label, the main label is visible
                 // if we are displaying the extra data (distance, speed).
-                if (trackExtraData != TrackExtraData.None)
+                if (measureLabelType != MeasureLabelType.None)
                 {
                     if (miniLabel.HitTest(point, transformer))
                         hitResult = 2;
@@ -1028,8 +1023,8 @@ namespace Kinovea.ScreenManager
                 if(keyframesLabels[i].Timestamp == current.T)
                 {
                     keyframesLabels[i].SetAttach(current.Point, true);
-                    if(trackExtraData != TrackExtraData.None)
-                        keyframesLabels[i].SetText(GetExtraDataText(keyframesLabels[i].AttachIndex));
+                    if(measureLabelType != MeasureLabelType.None)
+                        keyframesLabels[i].SetText(GetMeasureLabelText(keyframesLabels[i].AttachIndex));
                     
                     break;
                 }
@@ -1074,9 +1069,9 @@ namespace Kinovea.ScreenManager
                 string xmlMode = enumConverter.ConvertToString(trackView);
                 w.WriteElementString("Mode", xmlMode);
             
-                enumConverter = TypeDescriptor.GetConverter(typeof(TrackExtraData));
-                string xmlExtraData = enumConverter.ConvertToString(trackExtraData);
-                w.WriteElementString("ExtraData", xmlExtraData);
+                enumConverter = TypeDescriptor.GetConverter(typeof(MeasureLabelType));
+                string xmlMeasureLabelType = enumConverter.ConvertToString(measureLabelType);
+                w.WriteElementString("ExtraData", xmlMeasureLabelType);
 
                 enumConverter = TypeDescriptor.GetConverter(typeof(TrackMarker));
                 string xmlTrackMarker = enumConverter.ConvertToString(trackMarker);
@@ -1213,8 +1208,8 @@ namespace Kinovea.ScreenManager
                         }
                     case "ExtraData":
                         {
-                            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(TrackExtraData));
-                            trackExtraData = (TrackExtraData)enumConverter.ConvertFromString(xmlReader.ReadElementContentAsString());
+                            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(MeasureLabelType));
+                            measureLabelType = (MeasureLabelType)enumConverter.ConvertFromString(xmlReader.ReadElementContentAsString());
                             break;
                         }
                     case "Marker":
@@ -1419,10 +1414,10 @@ namespace Kinovea.ScreenManager
             }
             
             // Reinject the labels in the list for extra data.
-            if(trackExtraData != TrackExtraData.None)
+            if(measureLabelType != MeasureLabelType.None)
             {
                 for( int iKfl = 0; iKfl < keyframesLabels.Count; iKfl++)
-                    keyframesLabels[iKfl].SetText(GetExtraDataText(keyframesLabels[iKfl].AttachIndex));
+                    keyframesLabels[iKfl].SetText(GetMeasureLabelText(keyframesLabels[iKfl].AttachIndex));
             }
 
             // Reapply style.
@@ -1477,28 +1472,28 @@ namespace Kinovea.ScreenManager
 
             // TODO: unhook event handlers ?
             mnuMeasurement.DropDownItems.Clear();
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.None));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Name));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Position));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.TotalDistance));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.TotalHorizontalDisplacement));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.TotalVerticalDisplacement));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Speed));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.HorizontalVelocity));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.VerticalVelocity));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Acceleration));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.HorizontalAcceleration));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.VerticalAcceleration));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.None));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.Name));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.Position));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.TotalDistance));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.TotalHorizontalDisplacement));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.TotalVerticalDisplacement));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.Speed));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.HorizontalVelocity));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.VerticalVelocity));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.Acceleration));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.HorizontalAcceleration));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.VerticalAcceleration));
         }
-        private ToolStripMenuItem GetMeasurementMenu(TrackExtraData data)
+        private ToolStripMenuItem GetMeasurementMenu(MeasureLabelType data)
         {
             ToolStripMenuItem mnu = new ToolStripMenuItem();
-            mnu.Text = GetExtraDataOptionText(data);
-            mnu.Checked = trackExtraData == data;
+            mnu.Text = GetMeasureLabelOptionText(data);
+            mnu.Checked = measureLabelType == data;
 
             mnu.Click += (s, e) =>
             {
-                trackExtraData = data;
+                measureLabelType = data;
                 displayBestFitCircle = IsUsingAngularKinematics();
                 IntegrateKeyframes();
                 InvalidateFromMenu(s);

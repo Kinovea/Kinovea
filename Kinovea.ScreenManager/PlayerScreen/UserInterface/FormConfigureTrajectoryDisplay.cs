@@ -87,7 +87,7 @@ namespace Kinovea.ScreenManager
 
             InitViewCombo();
             InitMarkerCombo();
-            InitExtraDataCombo();
+            InitMeasureLabelTypeCombo();
             chkBestFitCircle.Checked = track.DisplayBestFitCircle;
             InitTrackParameters();
             SetupStyleControls();
@@ -107,21 +107,21 @@ namespace Kinovea.ScreenManager
             cmbView.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_VisibilityOneSecond);
             cmbView.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_VisibilityLabelOnly);
         }
-        private void InitExtraDataCombo()
+        private void InitMeasureLabelTypeCombo()
         {
             // Combo must be filled in the order of the enum.
-            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.None));
-            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.Name));
-            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.Position));
-            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.TotalDistance));
-            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.TotalHorizontalDisplacement));
-            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.TotalVerticalDisplacement));
-            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.Speed));
-            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.HorizontalVelocity));
-            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.VerticalVelocity));
-            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.Acceleration));
-            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.HorizontalAcceleration));
-            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.VerticalAcceleration));
+            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.None));
+            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.Name));
+            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.Position));
+            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.TotalDistance));
+            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.TotalHorizontalDisplacement));
+            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.TotalVerticalDisplacement));
+            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.Speed));
+            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.HorizontalVelocity));
+            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.VerticalVelocity));
+            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.Acceleration));
+            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.HorizontalAcceleration));
+            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.VerticalAcceleration));
         }
         private void InitMarkerCombo()
         {
@@ -184,7 +184,7 @@ namespace Kinovea.ScreenManager
         {
             tbLabel.Text = track.Name;
             cmbView.SelectedIndex = (int)track.View;
-            cmbExtraData.SelectedIndex = (int)track.ExtraData;
+            cmbMeasureLabelType.SelectedIndex = (int)track.MeasureLabelType;
             cmbMarker.SelectedIndex = (int)track.Marker;
         }
         private void InitCulture()
@@ -252,9 +252,9 @@ namespace Kinovea.ScreenManager
             if (invalidate != null)
                 invalidate();
         }
-        private void CmbExtraData_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbMeasureLabelType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            track.ExtraData = (TrackExtraData)cmbExtraData.SelectedIndex;
+            track.MeasureLabelType = (MeasureLabelType)cmbMeasureLabelType.SelectedIndex;
             track.IsUsingAngularKinematics();
 
             if (track.IsUsingAngularKinematics())

@@ -128,7 +128,7 @@ namespace Kinovea.ScreenManager
             infosFading.AlwaysVisible = false;
 
             mnuCalibrate.Click += new EventHandler(mnuCalibrate_Click);
-            mnuCalibrate.Image = Properties.Drawings.linecalibrate;
+            mnuCalibrate.Image = Properties.Drawings.coordinates_graduations;
         }
         public DrawingDistortionGrid(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
             : this(PointF.Empty, 0, 0)

@@ -475,7 +475,7 @@
     <Compile Include="Measurement\Kinematics\StatsHelper.cs" />
     <Compile Include="Measurement\Kinematics\TimedPoint.cs" />
     <Compile Include="Measurement\Tracking\TrackColorCycler.cs" />
-    <Compile Include="Measurement\Tracking\TrackExtraData.cs" />
+    <Compile Include="Measurement\Tracking\MeasureLabelType.cs" />
     <Compile Include="Measurement\Tracking\TrackMarker.cs" />
     <Compile Include="Measurement\Tracking\TrackStatus.cs" />
     <Compile Include="Measurement\Tracking\TrackView.cs" />
