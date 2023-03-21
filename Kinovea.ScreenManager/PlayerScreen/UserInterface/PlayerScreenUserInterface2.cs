@@ -365,11 +365,11 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuDeleteDrawing = new ToolStripMenuItem();
 
         private ContextMenuStrip popMenuTrack = new ContextMenuStrip();
+        private ToolStripMenuItem mnuConfigureTrajectory = new ToolStripMenuItem();
         private ToolStripMenuItem mnuRestartTracking = new ToolStripMenuItem();
         private ToolStripMenuItem mnuStopTracking = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuDeleteTrajectory = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDeleteEndOfTrajectory = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuConfigureTrajectory = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuDeleteTrajectory = new ToolStripMenuItem();
 
         private ContextMenuStrip popMenuMagnifier = new ContextMenuStrip();
         private ToolStripMenuItem mnuMagnifierFreeze = new ToolStripMenuItem();
@@ -1180,14 +1180,17 @@ namespace Kinovea.ScreenManager
             mnuGotoKeyframe.Click += new EventHandler(mnuGotoKeyframe_Click);
             mnuGotoKeyframe.Image = Properties.Resources.page_white_go;
 
+            mnuDrawingTracking.Image = Properties.Drawings.track;
             mnuDrawingTrackingConfigure.Click += mnuDrawingTrackingConfigure_Click;
             mnuDrawingTrackingConfigure.Image = Properties.Drawings.configure;
             mnuDrawingTrackingStart.Click += mnuDrawingTrackingToggle_Click;
             mnuDrawingTrackingStart.Image = Properties.Drawings.trackingplay;
             mnuDrawingTrackingStop.Click += mnuDrawingTrackingToggle_Click;
             mnuDrawingTrackingStop.Image = Properties.Drawings.trackstop;
-            mnuDrawingTracking.Image = Properties.Drawings.track;
-            mnuDrawingTracking.DropDownItems.AddRange(new ToolStripItem[] { mnuDrawingTrackingStart, mnuDrawingTrackingStop });
+            mnuDrawingTracking.DropDownItems.AddRange(new ToolStripItem[] { 
+                mnuDrawingTrackingStart, 
+                mnuDrawingTrackingStop 
+            });
 
             mnuCutDrawing.Click += new EventHandler(mnuCutDrawing_Click);
             mnuCutDrawing.Image = Properties.Drawings.cut;
@@ -1198,14 +1201,13 @@ namespace Kinovea.ScreenManager
 
             // Tracking pop menu (Restart, Stop tracking)
             mnuStopTracking.Click += new EventHandler(mnuStopTracking_Click);
-            mnuStopTracking.Visible = false;
             mnuStopTracking.Image = Properties.Drawings.trackstop;
             mnuRestartTracking.Click += new EventHandler(mnuRestartTracking_Click);
-            mnuRestartTracking.Visible = false;
             mnuRestartTracking.Image = Properties.Drawings.trackingplay;
             mnuDeleteTrajectory.Click += new EventHandler(mnuDeleteTrajectory_Click);
             mnuDeleteTrajectory.Image = Properties.Drawings.delete;
             mnuDeleteEndOfTrajectory.Click += new EventHandler(mnuDeleteEndOfTrajectory_Click);
+            mnuDeleteEndOfTrajectory.Image = Properties.Resources.bin_empty;
             mnuConfigureTrajectory.Click += new EventHandler(mnuConfigureTrajectory_Click);
             mnuConfigureTrajectory.Image = Properties.Drawings.configure;
 
@@ -3101,26 +3103,8 @@ namespace Kinovea.ScreenManager
                 else if (hitDrawing is DrawingTrack)
                 {
                     DrawingTrack track = (DrawingTrack)hitDrawing;
-                    popMenuTrack.Items.Clear();
-                    popMenuTrack.Items.Add(mnuConfigureTrajectory);
-
-                    bool customMenus = AddDrawingCustomMenus(hitDrawing, popMenuTrack.Items);
-                    if (customMenus)
-                        popMenuTrack.Items.Add(new ToolStripSeparator());
-
-                    popMenuTrack.Items.AddRange(new ToolStripItem[] { mnuStopTracking, mnuRestartTracking, new ToolStripSeparator(), mnuDeleteEndOfTrajectory, mnuDeleteTrajectory });
-
-                    if (track.Status == TrackStatus.Edit)
-                    {
-                        mnuStopTracking.Visible = true;
-                        mnuRestartTracking.Visible = false;
-                    }
-                    else
-                    {
-                        mnuStopTracking.Visible = false;
-                        mnuRestartTracking.Visible = true;
-                    }
-
+                    PrepareTrackContextMenu(track, popMenuTrack);
+                    popMenuTrack.Items.Add(mnuDeleteTrajectory);
                     panelCenter.ContextMenuStrip = popMenuTrack;
                 }
                 else if (hitDrawing is DrawingCoordinateSystem || hitDrawing is DrawingTestGrid)
@@ -3325,6 +3309,24 @@ namespace Kinovea.ScreenManager
             }
 
             return true;
+        }
+
+        private void PrepareTrackContextMenu(DrawingTrack track, ContextMenuStrip popMenu)
+        {
+            popMenu.Items.Clear();
+            popMenu.Items.Add(mnuConfigureTrajectory);
+            popMenu.Items.Add(new ToolStripSeparator());
+
+            bool customMenus = AddDrawingCustomMenus(track, popMenu.Items);
+            if (customMenus)
+                popMenu.Items.Add(new ToolStripSeparator());
+
+            bool isTracking = track.Status == TrackStatus.Edit;
+            popMenu.Items.AddRange(new ToolStripItem[] {
+                        isTracking ? mnuStopTracking : mnuRestartTracking,
+                        mnuDeleteEndOfTrajectory,
+                        new ToolStripSeparator(),
+                        mnuDeleteTrajectory });
         }
 
         private void PrepareMagnifierContextMenu(ContextMenuStrip popMenu)
@@ -4547,7 +4549,7 @@ namespace Kinovea.ScreenManager
             style.Elements.Add("line size", new StyleElementLineSize(3));
             style.Elements.Add("track shape", new StyleElementTrackShape(TrackShape.Solid));
 
-            DrawingTrack track = new DrawingTrack(m_DescaledMouse, m_iCurrentPosition, style);
+            DrawingTrack track = new DrawingTrack(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame, style);
             track.Status = TrackStatus.Edit;
 
             if (DrawingAdding != null)

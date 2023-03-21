@@ -334,7 +334,7 @@ namespace Kinovea.ScreenManager
             mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.None));
             mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.Name));
             mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.Position));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.TotalDistance));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.Distance));
 
         }
         private ToolStripMenuItem GetMeasurementMenu(MeasureLabelType data)
@@ -361,7 +361,7 @@ namespace Kinovea.ScreenManager
                 case MeasureLabelType.None: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None;
                 case MeasureLabelType.Name: return ScreenManagerLang.dlgConfigureDrawing_Name;
                 case MeasureLabelType.Position: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Position;
-                case MeasureLabelType.TotalDistance: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_DistanceToOrigin;
+                case MeasureLabelType.Distance: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_DistanceToOrigin;
             }
 
             return "";
@@ -377,7 +377,7 @@ namespace Kinovea.ScreenManager
                 case MeasureLabelType.Name:
                     displayText = name;
                     break;
-                case MeasureLabelType.TotalDistance:
+                case MeasureLabelType.Distance:
                     PointF o = CalibrationHelper.GetOrigin();
                     displayText = CalibrationHelper.GetLengthText(o, points["0"], true, true);
                     break;
@@ -406,7 +406,7 @@ namespace Kinovea.ScreenManager
                 MeasureLabelType.None,
                 MeasureLabelType.Name,
                 MeasureLabelType.Position,
-                MeasureLabelType.TotalDistance
+                MeasureLabelType.Distance
             };
 
             MeasureLabelType defaultMeasureLabelType = MeasureLabelType.Position;

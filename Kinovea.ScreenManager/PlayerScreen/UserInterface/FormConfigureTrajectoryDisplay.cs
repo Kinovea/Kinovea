@@ -113,7 +113,7 @@ namespace Kinovea.ScreenManager
             cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.None));
             cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.Name));
             cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.Position));
-            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.TotalDistance));
+            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.TravelDistance));
             cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.TotalHorizontalDisplacement));
             cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.TotalVerticalDisplacement));
             cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.Speed));

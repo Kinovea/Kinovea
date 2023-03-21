@@ -35,7 +35,7 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// A class to encapsulate a mini label.
-    /// Mainly used for Keyframe labels / line measure / track speed.
+    /// Mainly used for Keyframe labels on the trajectory and the measure labels on measurable objects.
     /// 
     /// The object is comprised of an attach point and the mini label itself.
     /// The label can be moved relatively to the attach point from the container drawing tool.
@@ -47,20 +47,42 @@ namespace Kinovea.ScreenManager
     public class MiniLabel
     {
         #region Properties
+        
+        /// <summary>
+        /// The timestamp associated with the label. This is used to compute fading and recognize known attach points.
+        /// </summary>
         public long Timestamp
         {
             get { return timestamp; }
             set { timestamp = value; }
         }
+
+        /// <summary>
+        /// An index into a list of points owned by the drawing.
+        /// This is used to contextualize the displayed information based on the reference point.
+        /// </summary>
         public int AttachIndex
         {
             get { return attachIndex; }
             set { attachIndex = value; }
         }
+
+        /// <summary>
+        /// The color of the background of the label.
+        /// </summary>
         public Color BackColor
         {
             get { return styleHelper.Bicolor.Background; }
             set { styleHelper.Bicolor = new Bicolor(value); }
+        }
+
+        /// <summary>
+        /// The name to use when the MeasureLabelType is set to Name.
+        /// For other measure options the text is computed on the fly.
+        /// </summary>
+        public string Name
+        {
+            get; set;
         }
         #endregion
 

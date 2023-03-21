@@ -312,6 +312,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Returns a textual representation of a time or duration in the user-preferred format.
         /// The time must be passed in absolute timestamps, and the time type is used to make it relative.
+        /// This is the implementation of the "TimeCodeBuilder" delegate used by drawings.
         /// </summary>
         public string TimeStampsToTimecode(long timestamps, TimeType type, TimecodeFormat format, bool symbol)
         {

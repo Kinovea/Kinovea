@@ -500,7 +500,7 @@ namespace Kinovea.ScreenManager
             mnuMeasurement.DropDownItems.Clear();
             mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.None));
             mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.Name));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.TotalDistance));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.TravelDistance));
         }
         private ToolStripMenuItem GetMeasurementMenu(MeasureLabelType data)
         {
@@ -530,7 +530,7 @@ namespace Kinovea.ScreenManager
             {
                 case MeasureLabelType.None: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None;
                 case MeasureLabelType.Name: return ScreenManagerLang.dlgConfigureDrawing_Name;
-                case MeasureLabelType.TotalDistance: return ScreenManagerLang.ExtraData_Length;
+                case MeasureLabelType.TravelDistance: return ScreenManagerLang.ExtraData_Length;
             }
 
             return "";
@@ -550,7 +550,7 @@ namespace Kinovea.ScreenManager
                 case MeasureLabelType.Name:
                     displayText = name;
                     break;
-                case MeasureLabelType.TotalDistance:
+                case MeasureLabelType.TravelDistance:
                 default:
                     displayText = CalibrationHelper.GetLengthText(points["a"], points["b"], true, true);
                     break;
@@ -565,7 +565,7 @@ namespace Kinovea.ScreenManager
             
             if (measureLabelType == MeasureLabelType.None)
             {
-                measureLabelType = MeasureLabelType.TotalDistance;
+                measureLabelType = MeasureLabelType.TravelDistance;
                 if (ShowMeasurableInfoChanged != null)
                     ShowMeasurableInfoChanged(this, new EventArgs<MeasureLabelType>(measureLabelType));
             }
@@ -593,10 +593,10 @@ namespace Kinovea.ScreenManager
             {
                 MeasureLabelType.None,
                 MeasureLabelType.Name,
-                MeasureLabelType.TotalDistance
+                MeasureLabelType.TravelDistance
             };
 
-            MeasureLabelType defaultMeasureLabelType = MeasureLabelType.TotalDistance;
+            MeasureLabelType defaultMeasureLabelType = MeasureLabelType.TravelDistance;
             this.measureLabelType = supported.Contains(measureLabelType) ? measureLabelType : defaultMeasureLabelType;
         }
         #endregion

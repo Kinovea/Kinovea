@@ -50,7 +50,7 @@ namespace Kinovea.ScreenManager
     /// In Edit state: dragging the target moves the point's coordinates.
     /// In Interactive state: dragging the target moves to the next point (in time).
     /// </summary>
-    [XmlType ("Track")]
+    [XmlType("Track")]
     public class DrawingTrack : AbstractDrawing, IDecorable, IScalable, IKvaSerializable
     {
         #region Events
@@ -60,7 +60,7 @@ namespace Kinovea.ScreenManager
         #region Delegates
         // To ask the UI to display the frame closest to selected pos.
         // used when moving the target in direct interactive mode.
-        public ClosestFrameDisplayer ClosestFrameDisplayer;     
+        public ClosestFrameDisplayer ClosestFrameDisplayer;
         #endregion
 
         #region Properties
@@ -70,23 +70,27 @@ namespace Kinovea.ScreenManager
         }
         public override int ContentHash
         {
-            get 
-            { 
+            get
+            {
                 // Combine all relevant fields with XOR to get the Hash.
                 int hash = 0;
+                hash ^= visibleTimestamp.GetHashCode();
+                hash ^= invisibleTimestamp.GetHashCode();
                 hash ^= trackView.GetHashCode();
                 foreach (AbstractTrackPoint p in positions)
                     hash ^= p.ContentHash;
-                
+
                 hash ^= defaultCrossRadius.GetHashCode();
                 hash ^= styleHelper.ContentHash;
                 hash ^= miniLabel.GetHashCode();
-                
+
                 foreach (MiniLabel kfl in keyframesLabels)
                     hash ^= kfl.GetHashCode();
 
                 hash ^= tracker.Parameters.ContentHash;
-                
+                hash ^= showKeyframeLabels.GetHashCode();
+                hash ^= useKeyframeColors.GetHashCode();
+
                 return hash;
             }
         }
@@ -98,8 +102,8 @@ namespace Kinovea.ScreenManager
         public TrackStatus Status
         {
             get { return trackStatus; }
-            set 
-            { 
+            set
+            {
                 trackStatus = value;
                 AfterTrackStatusChanged();
             }
@@ -107,9 +111,9 @@ namespace Kinovea.ScreenManager
         public MeasureLabelType MeasureLabelType
         {
             get { return measureLabelType; }
-            set 
-            { 
-                measureLabelType = value; 
+            set
+            {
+                measureLabelType = value;
                 IntegrateKeyframes();
             }
         }
@@ -121,7 +125,7 @@ namespace Kinovea.ScreenManager
         public TrackerParameters TrackerParameters
         {
             get { return tracker.Parameters; }
-            set 
+            set
             {
                 if (scalingDone)
                     return;
@@ -146,29 +150,29 @@ namespace Kinovea.ScreenManager
         }
         public DrawingStyle DrawingStyle
         {
-            get { return style;}
+            get { return style; }
         }
         public Color MainColor
-        {    
+        {
             get { return styleHelper.Color; }
         }
         public override Metadata ParentMetadata
         {
             get { return parentMetadata; }    // unused.
-            set 
-            { 
-                parentMetadata = value; 
+            set
+            {
+                parentMetadata = value;
                 infosFading.AverageTimeStampsPerFrame = parentMetadata.AverageTimeStampsPerFrame;
             }
         }
-        public bool Invalid 
+        public bool Invalid
         {
-            get { return invalid;}
+            get { return invalid; }
         }
         // Fading is not modifiable from outside.
-        public override InfosFading  InfosFading
+        public override InfosFading InfosFading
         {
-            get { return null;}
+            get { return null; }
             set { }
         }
         public override DrawingCapabilities Caps
@@ -177,15 +181,29 @@ namespace Kinovea.ScreenManager
         }
         public override List<ToolStripItem> ContextMenu
         {
-            get 
+            get
             {
-                if (trackStatus != TrackStatus.Interactive)
-                    return null;
-
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
-                // Initialize menu each time to get translated texts.
-                ReinitializeMenu();
-                contextMenu.Add(mnuMeasurement);
+                ReloadMenusCulture();
+
+                contextMenu.AddRange(new ToolStripItem[] {
+                    mnuVisibility,
+                    mnuMeasurement,
+                    mnuKeyframes,
+                });
+                
+                mnuShowKeyframeLabel.Checked = showKeyframeLabels;
+                mnuUseKeyframeColor.Checked = useKeyframeColors;
+
+                mnuVisibility.Enabled = trackStatus == TrackStatus.Interactive;
+                mnuMeasurement.Enabled = trackStatus == TrackStatus.Interactive;
+                mnuKeyframes.Enabled = trackStatus == TrackStatus.Interactive;
+
+                // Disable the keyframe labels menu if we are not showing anything,
+                // as a hint that we must first select a measurement type.
+                // Furthermore, showing the keyframe color only makes sense if we are showing their labels.
+                mnuShowKeyframeLabel.Enabled = measureLabelType != MeasureLabelType.None;
+                mnuUseKeyframeColor.Enabled = showKeyframeLabels && measureLabelType != MeasureLabelType.None;
                 return contextMenu;
             }
         }
@@ -209,26 +227,28 @@ namespace Kinovea.ScreenManager
         private int movingHandler = -1;
         private bool invalid;                                 // Used for XML import.
         private bool scalingDone;
-            
+
         // Tracker tool.
         private AbstractTracker tracker;
-        
+
         // Hardwired parameters.
         private const int defaultCrossRadius = 4;
         private const int allowedFramesOver = 12;      // Number of frames over which the global fading spans (after end point).
         private const int focusFadingFrames = 30;    // Number of frames of the focus section. 
-       
+
         // Internal data.
         private List<AbstractTrackPoint> positions = new List<AbstractTrackPoint>();
         private FilteredTrajectory filteredTrajectory = new FilteredTrajectory();
         private TimeSeriesCollection timeSeriesCollection;
         private LinearKinematics linearKinematics = new LinearKinematics();
         private IImageToViewportTransformer transformer;
-        
-        private long beginTimeStamp;                 // absolute.
-        private long endTimeStamp = long.MaxValue;     // absolute.
-        private int totalDistance;                   // This is used to normalize timestamps to a par scale with distances.
-        private int currentPoint;
+
+        private long visibleTimestamp;               	// trajectory becomes visible.
+        private long invisibleTimestamp;             	// trajectory stops being visible.
+        private long beginTimeStamp;                    // timestamp of the first point.
+        private long endTimeStamp = long.MaxValue;      // timestamp of the last point.
+        private int totalDistance;                      // This is used to normalize timestamps to a par scale with distances.
+        private int currentPointIndex;
 
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
@@ -240,35 +260,52 @@ namespace Kinovea.ScreenManager
         private const int afterCurrentAlpha = 64;        // alpha of track after the current point when in normal mode.
         private const int editModeAlpha = 128;            // alpha of track when in Edit mode.
         private const int labelFollowsTrackAlpha = 80;    // alpha of track when in LabelFollows view.
+        private bool showKeyframeLabels = true;
+        private bool useKeyframeColors = true;
 
         // Configuration
         private BoundingBox searchWindow = new BoundingBox(10);
         private BoundingBox blockWindow = new BoundingBox(4);
 
-        // Context menu
+        #region Context menu
+        private ToolStripMenuItem mnuVisibility = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuHideBefore = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuShowBefore = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuHideAfter = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuShowAfter = new ToolStripMenuItem();
         private ToolStripMenuItem mnuMeasurement = new ToolStripMenuItem();
-        
+        private Dictionary<MeasureLabelType, ToolStripMenuItem> mnuMeasureLabelTypes = new Dictionary<MeasureLabelType, ToolStripMenuItem>();
+        private ToolStripMenuItem mnuKeyframes = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuShowKeyframeLabel = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuUseKeyframeColor = new ToolStripMenuItem();
+        #endregion
+
         // Memorization poul
         private TrackView memoTrackView;
         private string memoLabel;
-        
+
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
-        public DrawingTrack(PointF origin, long t, DrawingStyle preset)
+        public DrawingTrack(PointF p, long start, long averageTimeStampsPerFrame, DrawingStyle preset)
         {
             tracker = new TrackerBlock2(GetTrackerParameters(new Size(800, 600)));
-            positions.Add(new TrackPointBlock(origin.X, origin.Y, t));
+            positions.Add(new TrackPointBlock(p.X, p.Y, start));
 
-            beginTimeStamp = t;
-            endTimeStamp = t;
-            miniLabel.SetAttach(origin, true);
-                
+            visibleTimestamp = start;
+            invisibleTimestamp = long.MaxValue;
+            beginTimeStamp = start;
+            endTimeStamp = start;
+            miniLabel.SetAttach(p, true);
+
+            // We use the InfosFading utility to fade the chrono away.
+            // The refererence frame will be the frame at which fading start.
+            // Must be updated on "Hide" menu.
+            infosFading = new InfosFading(invisibleTimestamp, averageTimeStampsPerFrame);
             infosFading.FadingFrames = allowedFramesOver;
             infosFading.UseDefault = false;
-            infosFading.Enabled = true;
-            
+
             styleHelper.Color = Color.Black;
             styleHelper.LineSize = 3;
             styleHelper.TrackShape = TrackShape.Dash;
@@ -278,72 +315,120 @@ namespace Kinovea.ScreenManager
                 style = preset.Clone();
                 BindStyle();
             }
-            
-            ReinitializeMenu();
+
+            InitializeMenus();
         }
-        
+
         public DrawingTrack(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
-            : this(PointF.Empty, 0, null)
+            : this(PointF.Empty, 0, 1, null)
         {
             ReadXml(xmlReader, scale, timestampMapper);
+        }
+
+        private void InitializeMenus()
+        {
+            // Visibility menus.
+            mnuShowBefore.Image = Properties.Drawings.showbefore;
+            mnuShowAfter.Image = Properties.Drawings.showafter;
+            mnuHideBefore.Image = Properties.Drawings.hidebefore;
+            mnuHideAfter.Image = Properties.Drawings.hideafter;
+            mnuShowBefore.Click += MnuShowBefore_Click;
+            mnuShowAfter.Click += MnuShowAfter_Click;
+            mnuHideBefore.Click += MnuHideBefore_Click;
+            mnuHideAfter.Click += MnuHideAfter_Click;
+            mnuVisibility.Image = Properties.Drawings.persistence;
+            mnuVisibility.DropDownItems.AddRange(new ToolStripItem[] {
+                mnuShowBefore,
+                mnuShowAfter,
+                new ToolStripSeparator(),
+                mnuHideBefore,
+                mnuHideAfter });
+
+            // Measurement menus.
+            mnuMeasurement.Image = Properties.Drawings.label;
+            mnuMeasurement.DropDownItems.Clear();
+            mnuMeasurement.DropDownItems.AddRange(new ToolStripItem[] {
+                CreateMeasureLabelTypeMenu(MeasureLabelType.None),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.Name),
+                new ToolStripSeparator(),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.Clock),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.RelativeTime),
+                new ToolStripSeparator(),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.Position),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.TravelDistance),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.TotalHorizontalDisplacement),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.TotalVerticalDisplacement),
+                new ToolStripSeparator(),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.Speed),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.HorizontalVelocity),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.VerticalVelocity),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.Acceleration),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.HorizontalAcceleration),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.VerticalAcceleration),
+            });
+
+            mnuKeyframes.Image = Properties.Resources.images;
+            mnuShowKeyframeLabel.Image = Properties.Drawings.label;
+            mnuUseKeyframeColor.Image = Properties.Resources.SwatchIcon3;
+
+            mnuKeyframes.DropDownItems.Add(mnuShowKeyframeLabel);
+            mnuKeyframes.DropDownItems.Add(mnuUseKeyframeColor);
+
+            mnuShowKeyframeLabel.Click += MnuShowKeyframeLabel_Click;
+            mnuUseKeyframeColor.Click += MnuUseKeyframeColor_Click;
+
         }
         #endregion
 
         #region AbstractDrawing implementation
         public override void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
-            if (currentTimestamp < beginTimeStamp)
-                return;
-                
-            this.transformer = transformer;
-            
-            // 0. Compute the fading factor. 
-            // Special case from other drawings:
-            // ref frame is last point, and we only fade after it, not before.
-            double opacityFactor = 1.0;
-            if (trackStatus == TrackStatus.Interactive && currentTimestamp > endTimeStamp)
-            {
-                infosFading.ReferenceTimestamp = endTimeStamp;
-                opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
-            }
-            
-            if(opacityFactor <= 0)
+            if (currentTimestamp < visibleTimestamp)
                 return;
 
-            currentPoint = FindClosestPoint(currentTimestamp);
-            
+            this.transformer = transformer;
+
+            // If we are editing the track points don't hide the trajectory.
+            double opacityFactor = 1.0;
+            if (trackStatus == TrackStatus.Interactive && currentTimestamp > invisibleTimestamp)
+                opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
+
+            if (opacityFactor <= 0)
+                return;
+
+            currentPointIndex = FindClosestPoint(currentTimestamp);
+
             // Draw various elements depending on combination of view and status.
             // The exact alpha at which the traj will be drawn will be decided in GetTrackPen().
-            if(positions.Count > 1)
+            if (positions.Count > 1)
             {
-                // Key Images titles.
-                if (trackStatus == TrackStatus.Interactive && trackView != TrackView.Label && measureLabelType != MeasureLabelType.None)
-                    DrawKeyframesTitles(canvas, opacityFactor, transformer);
-                
+                if (showKeyframeLabels && trackStatus == TrackStatus.Interactive && trackView != TrackView.Label && measureLabelType != MeasureLabelType.None)
+                    DrawKeyframesLabels(canvas, opacityFactor, transformer);
+
                 // Track.
                 int first = GetFirstVisiblePoint();
                 int last = GetLastVisiblePoint();
                 if (trackStatus == TrackStatus.Interactive && trackView == TrackView.Complete)
                 {
-                    DrawTrajectory(canvas, first, currentPoint, true, opacityFactor, transformer);
-                    DrawTrajectory(canvas, currentPoint, last, false, opacityFactor, transformer);
+                    DrawTrajectory(canvas, first, currentPointIndex, true, opacityFactor, transformer);
+                    DrawTrajectory(canvas, currentPointIndex, last, false, opacityFactor, transformer);
                 }
                 else
                 {
                     DrawTrajectory(canvas, first, last, false, opacityFactor, transformer);
                 }
             }
-            
-            if(positions.Count > 0)
+
+            if (positions.Count > 0)
             {
                 // Angular motion
                 if (displayBestFitCircle && trackStatus == TrackStatus.Interactive)
-                    DrawBestFitCircle(canvas, currentPoint, opacityFactor, transformer);
+                    DrawBestFitCircle(canvas, currentPointIndex, opacityFactor, transformer);
 
                 // Track.
-                if( opacityFactor == 1.0 && trackView != TrackView.Label)
+                if (opacityFactor == 1.0 && trackView != TrackView.Label)
                     DrawMarker(canvas, opacityFactor, transformer);
-                
+
                 if (opacityFactor == 1.0)
                     DrawTrackerHelp(canvas, transformer, styleHelper.Color, opacityFactor);
 
@@ -351,7 +436,7 @@ namespace Kinovea.ScreenManager
                 if (trackStatus == TrackStatus.Interactive && trackView == TrackView.Label ||
                     trackStatus == TrackStatus.Interactive && measureLabelType != MeasureLabelType.None)
                 {
-                    DrawMainLabel(canvas, currentPoint, opacityFactor, transformer);
+                    DrawMainLabel(canvas, currentPointIndex, opacityFactor, transformer);
                 }
             }
         }
@@ -365,8 +450,8 @@ namespace Kinovea.ScreenManager
 
             if (movingHandler == 1 && (trackStatus == TrackStatus.Edit || trackStatus == TrackStatus.Configuration))
             {
-                positions[currentPoint].X += dx;
-                positions[currentPoint].Y += dy;
+                positions[currentPointIndex].X += dx;
+                positions[currentPointIndex].Y += dy;
 
                 if (trackStatus == TrackStatus.Configuration)
                     UpdateBoundingBoxes();
@@ -382,15 +467,15 @@ namespace Kinovea.ScreenManager
             else if (trackStatus == TrackStatus.Configuration)
             {
                 TrackerParameters old = tracker.Parameters;
-                
+
                 if (movingHandler > 1 && movingHandler < 6)
-                    searchWindow.MoveHandleKeepSymmetry(point.ToPoint(), movingHandler - 1, positions[currentPoint].Point);
+                    searchWindow.MoveHandleKeepSymmetry(point.ToPoint(), movingHandler - 1, positions[currentPointIndex].Point);
                 else if (movingHandler >= 6 && movingHandler < 11)
-                    blockWindow.MoveHandleKeepSymmetry(point.ToPoint(), movingHandler - 5, positions[currentPoint].Point);
+                    blockWindow.MoveHandleKeepSymmetry(point.ToPoint(), movingHandler - 5, positions[currentPointIndex].Point);
 
                 TrackerParameters newParams = new TrackerParameters(
                     old.SimilarityThreshold, old.TemplateUpdateThreshold, old.RefinementNeighborhood, searchWindow.Rectangle.Size, blockWindow.Rectangle.Size, old.ResetOnMove);
-                
+
                 tracker.Parameters = newParams;
                 UpdateBoundingBoxes();
                 if (TrackerParametersChanged != null)
@@ -399,7 +484,11 @@ namespace Kinovea.ScreenManager
         }
         public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
-            if (currentTimestamp < beginTimeStamp || currentTimestamp > endTimeStamp)
+            long maxHitTimeStamps = invisibleTimestamp;
+            if (maxHitTimeStamps != long.MaxValue)
+                maxHitTimeStamps += (allowedFramesOver * parentMetadata.AverageTimeStampsPerFrame);
+
+            if (currentTimestamp < visibleTimestamp || currentTimestamp > maxHitTimeStamps)
             {
                 movingHandler = -1;
                 return -1;
@@ -418,15 +507,15 @@ namespace Kinovea.ScreenManager
                     result = HitTestInteractive(point, currentTimestamp, transformer);
                     break;
             }
-        
+
             movingHandler = result;
-            
+
             return result;
         }
         private int HitTestEdit(PointF point, long currentTimestamp, IImageToViewportTransformer transformer)
         {
             // 1: search window.
-            RectangleF search = positions[currentPoint].Point.Box(tracker.Parameters.SearchWindow);
+            RectangleF search = positions[currentPointIndex].Point.Box(tracker.Parameters.SearchWindow);
             if (search.Contains(point))
                 return 1;
 
@@ -438,7 +527,7 @@ namespace Kinovea.ScreenManager
             int blockWindowHit = blockWindow.HitTest(point, transformer);
             if (blockWindowHit >= 1)
                 return blockWindowHit + 5;
-            
+
             int searchWindowHit = searchWindow.HitTest(point, transformer);
             if (searchWindowHit >= 0)
                 return searchWindowHit + 1;
@@ -452,13 +541,13 @@ namespace Kinovea.ScreenManager
             if (result >= 0)
                 return result;
 
-            if (HitTester.HitPoint(point, positions[currentPoint].Point, transformer))
+            if (HitTester.HitPoint(point, positions[currentPointIndex].Point, transformer))
                 return 1;
 
             result = HitTestTrajectory(point, transformer);
-            
+
             if (result == 0)
-                MoveCursor(point.X, point.Y);
+              MoveCursor(point.X, point.Y);
 
             return result;
         }
@@ -466,7 +555,7 @@ namespace Kinovea.ScreenManager
         {
             // 0: track. -1: not on track.
             int result = -1;
-            
+
             try
             {
                 int iStart = GetFirstVisiblePoint();
@@ -531,35 +620,35 @@ namespace Kinovea.ScreenManager
 
             if (points.Length <= 1)
                 return;
-            
-            using(Pen trackPen = GetTrackPen(trackStatus, fadingFactor, before))
+
+            using (Pen trackPen = GetTrackPen(trackStatus, fadingFactor, before))
             {
                 // Tension of 0.5f creates a smooth curve.
                 float tension = PreferencesManager.PlayerPreferences.EnableFiltering ? 0.5f : 0.0f;
                 canvas.DrawCurve(trackPen, points, tension);
-                    
-                if(styleHelper.TrackShape.ShowSteps)
+
+                if (styleHelper.TrackShape.ShowSteps)
                 {
-                    using(Pen stepPen = new Pen(trackPen.Color, 2))
+                    using (Pen stepPen = new Pen(trackPen.Color, 2))
                     {
                         int margin = (int)(trackPen.Width * 1.5);
-                        foreach(Point p in points)
+                        foreach (Point p in points)
                             canvas.DrawEllipse(stepPen, p.Box(margin));
                     }
                 }
             }
         }
-        private void DrawMarker(Graphics canvas,  double fadingFactor, IImageToViewportTransformer transformer)
+        private void DrawMarker(Graphics canvas, double fadingFactor, IImageToViewportTransformer transformer)
         {
             int radius = defaultCrossRadius;
-            Point location = transformer.Transform(positions[currentPoint].Point);
-            
+            Point location = transformer.Transform(positions[currentPointIndex].Point);
+
             if (trackMarker == TrackMarker.Cross || trackStatus == TrackStatus.Edit || trackStatus == TrackStatus.Configuration)
             {
-                using(Pen p = new Pen(Color.FromArgb((int)(fadingFactor * 255), styleHelper.Color)))
+                using (Pen p = new Pen(Color.FromArgb((int)(fadingFactor * 255), styleHelper.Color)))
                 {
-                  canvas.DrawLine(p, location.X, location.Y - radius, location.X, location.Y + radius);
-                  canvas.DrawLine(p, location.X - radius, location.Y, location.X + radius, location.Y);
+                    canvas.DrawLine(p, location.X, location.Y - radius, location.X, location.Y + radius);
+                    canvas.DrawLine(p, location.X - radius, location.Y, location.X + radius, location.Y);
                 }
             }
             else if (trackMarker == TrackMarker.Circle)
@@ -572,18 +661,18 @@ namespace Kinovea.ScreenManager
             else if (trackMarker == TrackMarker.Target)
             {
                 int diameter = radius * 2;
-                canvas.FillPie(Brushes.Black, location.X - radius , location.Y - radius , diameter, diameter, 0, 90);
-                canvas.FillPie(Brushes.White, location.X - radius , location.Y - radius , diameter, diameter, 90, 90);
-                canvas.FillPie(Brushes.Black, location.X - radius , location.Y - radius , diameter, diameter, 180, 90);
-                canvas.FillPie(Brushes.White, location.X - radius , location.Y - radius , diameter, diameter, 270, 90);
+                canvas.FillPie(Brushes.Black, location.X - radius, location.Y - radius, diameter, diameter, 0, 90);
+                canvas.FillPie(Brushes.White, location.X - radius, location.Y - radius, diameter, diameter, 90, 90);
+                canvas.FillPie(Brushes.Black, location.X - radius, location.Y - radius, diameter, diameter, 180, 90);
+                canvas.FillPie(Brushes.White, location.X - radius, location.Y - radius, diameter, diameter, 270, 90);
                 canvas.DrawEllipse(Pens.White, location.Box(radius + 2));
-            }   
+            }
         }
         private void DrawTrackerHelp(Graphics canvas, IImageToViewportTransformer transformer, Color color, double opacity)
         {
             if (trackStatus == TrackStatus.Edit)
             {
-                tracker.Draw(canvas, positions[currentPoint], transformer, styleHelper.Color, opacity);
+                tracker.Draw(canvas, positions[currentPointIndex], transformer, styleHelper.Color, opacity);
             }
             /*else if (trackStatus == TrackStatus.Interactive)
             {
@@ -591,7 +680,7 @@ namespace Kinovea.ScreenManager
             }*/
             else if (trackStatus == TrackStatus.Configuration)
             {
-                Point location = transformer.Transform(positions[currentPoint].Point);
+                Point location = transformer.Transform(positions[currentPointIndex].Point);
                 Size searchSize = transformer.Transform(tracker.Parameters.SearchWindow);
                 Size blockSize = transformer.Transform(tracker.Parameters.BlockWindow);
                 Rectangle searchBox = location.Box(searchSize);
@@ -616,7 +705,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        private void DrawKeyframesTitles(Graphics canvas, double fadingFactor, IImageToViewportTransformer transformer)
+        private void DrawKeyframesLabels(Graphics canvas, double fadingFactor, IImageToViewportTransformer transformer)
         {
             //------------------------------------------------------------
             // Draw the Keyframes labels
@@ -626,18 +715,18 @@ namespace Kinovea.ScreenManager
             //------------------------------------------------------------
             if (fadingFactor < 0 || trackStatus == TrackStatus.Configuration)
                 return;
-            
+
             foreach (MiniLabel kl in keyframesLabels)
             {
                 // In focus mode, only show labels that are in focus section.
-                if(trackView == TrackView.Complete || infosFading.IsVisible(positions[currentPoint].T, kl.Timestamp, focusFadingFrames))
+                if (trackView == TrackView.Complete || infosFading.IsVisible(positions[currentPointIndex].T, kl.Timestamp, focusFadingFrames))
                     kl.Draw(canvas, transformer, fadingFactor);
             }
         }
         private void DrawBestFitCircle(Graphics canvas, int currentPoint, double fadingFactor, IImageToViewportTransformer transformer)
         {
             Circle circle = filteredTrajectory.BestFitCircle;
-            
+
             if (circle.Center == PointF.Empty)
                 return;
 
@@ -656,7 +745,7 @@ namespace Kinovea.ScreenManager
             Ellipse ellipse = new Ellipse(ellipseCenter, semiMajorAxis, semiMinorAxis, ellipseInImage.Rotation);
             RectangleF rect = new RectangleF(-ellipse.SemiMajorAxis, -ellipse.SemiMinorAxis, ellipse.SemiMajorAxis * 2, ellipse.SemiMinorAxis * 2);
             float angle = (float)(ellipse.Rotation * MathHelper.RadiansToDegrees);
-            
+
             using (Pen p = new Pen(Color.FromArgb((int)(fadingFactor * 255), styleHelper.Color)))
             {
                 // Center and radius
@@ -664,13 +753,13 @@ namespace Kinovea.ScreenManager
                 canvas.DrawEllipse(p, center.Box(4));
                 p.DashStyle = DashStyle.Dash;
                 canvas.DrawLine(p, center, location);
-                
+
                 // Ellipse or circle
                 canvas.TranslateTransform(ellipse.Center.X, ellipse.Center.Y);
                 canvas.RotateTransform(angle);
-                
+
                 canvas.DrawEllipse(p, rect);
-                
+
                 canvas.RotateTransform(-angle);
                 canvas.TranslateTransform(-ellipse.Center.X, -ellipse.Center.Y);
             }
@@ -680,9 +769,9 @@ namespace Kinovea.ScreenManager
             // Draw the main label and its connector to the current point.
             if (fadingFactor != 1.0f || trackStatus == TrackStatus.Configuration)
                 return;
-            
+
             miniLabel.SetAttach(positions[currentPoint].Point, true);
-                
+
             string text = trackView == TrackView.Label ? name : GetMeasureLabelText(currentPoint);
             miniLabel.SetText(text);
             miniLabel.Draw(canvas, transformer, fadingFactor);
@@ -690,16 +779,16 @@ namespace Kinovea.ScreenManager
         private Pen GetTrackPen(TrackStatus status, double fadingFactor, bool before)
         {
             int alpha = 0;
-            
-            if(status == TrackStatus.Edit)
+
+            if (status == TrackStatus.Edit)
             {
                 alpha = editModeAlpha;
             }
-            else 
+            else
             {
-                if(trackView == TrackView.Complete)
+                if (trackView == TrackView.Complete)
                 {
-                    if(before)
+                    if (before)
                     {
                         alpha = (int)(fadingFactor * baseAlpha);
                     }
@@ -708,16 +797,16 @@ namespace Kinovea.ScreenManager
                         alpha = afterCurrentAlpha;
                     }
                 }
-                else if(trackView == TrackView.Focus)
+                else if (trackView == TrackView.Focus)
                 {
                     alpha = (int)(fadingFactor * baseAlpha);
                 }
-                else if(trackView == TrackView.Label)
+                else if (trackView == TrackView.Label)
                 {
                     alpha = (int)(fadingFactor * labelFollowsTrackAlpha);
                 }
             }
-            
+
             return styleHelper.GetPen(alpha, 1.0);
         }
         #endregion
@@ -729,16 +818,18 @@ namespace Kinovea.ScreenManager
             {
                 case MeasureLabelType.None: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None;
                 case MeasureLabelType.Name: return ScreenManagerLang.dlgConfigureDrawing_Name;
-                case MeasureLabelType.Position: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Position;
 
-                case MeasureLabelType.TotalDistance: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalDistance;
+                case MeasureLabelType.Clock: return "Clock";
+                case MeasureLabelType.RelativeTime: return "Time delta";
+
+                case MeasureLabelType.Position: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Position;
+                case MeasureLabelType.TravelDistance: return "Travel distance"; //ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalDistance;
                 case MeasureLabelType.TotalHorizontalDisplacement: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement;
                 case MeasureLabelType.TotalVerticalDisplacement: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalVerticalDisplacement;
 
                 case MeasureLabelType.Speed: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Speed;
                 case MeasureLabelType.HorizontalVelocity: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_HorizontalVelocity;
                 case MeasureLabelType.VerticalVelocity: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_VerticalVelocity;
-                
                 case MeasureLabelType.Acceleration: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Acceleration;
                 case MeasureLabelType.HorizontalAcceleration: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_HorizontalAcceleration;
                 case MeasureLabelType.VerticalAcceleration: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_VerticalAcceleration;
@@ -754,22 +845,74 @@ namespace Kinovea.ScreenManager
 
         private string GetMeasureLabelText(int index)
         {
-            CalibrationHelper helper = parentMetadata.CalibrationHelper;
-            CultureInfo culture = CultureInfo.InvariantCulture;
-            string displayText = "###";
-
-            switch(measureLabelType)
+            string displayText = "";
+            switch (measureLabelType)
             {
+                case MeasureLabelType.None:
+                    displayText = "";
+                    break;
                 case MeasureLabelType.Name:
                     displayText = name;
                     break;
-                case MeasureLabelType.Position:
-                    double x = timeSeriesCollection[Kinematics.XRaw][index];
-                    double y = timeSeriesCollection[Kinematics.YRaw][index];
-                    displayText = string.Format(culture, "{0:0.00} ; {1:0.00} {2}", x, y, helper.GetLengthAbbreviation());
+
+                case MeasureLabelType.Clock:
+                case MeasureLabelType.RelativeTime:
+                    displayText = GetMeasureLabelTextTime(measureLabelType, index);
                     break;
+
+                case MeasureLabelType.Position:
+                case MeasureLabelType.TravelDistance:
+                case MeasureLabelType.TotalHorizontalDisplacement:
+                case MeasureLabelType.TotalVerticalDisplacement:
+                    displayText = GetMeasureLabelPositionDistance(measureLabelType, index);
+                    break;
+
+                case MeasureLabelType.Speed:
+                case MeasureLabelType.HorizontalVelocity:
+                case MeasureLabelType.VerticalVelocity:
+                case MeasureLabelType.Acceleration:
+                case MeasureLabelType.HorizontalAcceleration:
+                case MeasureLabelType.VerticalAcceleration:
+                    displayText = GetMeasureLabelSpeedAcceleration(measureLabelType, index);
+                    break;
+                    
+                default:
+                    break;
+            }
+
+            return displayText;
+        }
+
+        private string GetMeasureLabelTextTime(MeasureLabelType type, int index)
+        {
+            string displayText = "";
+            if (type == MeasureLabelType.Clock)
+            {
+                displayText = parentMetadata.TimeCodeBuilder(positions[index].T, TimeType.UserOrigin, TimecodeFormat.Unknown, true);
+            }
+            else if (type == MeasureLabelType.RelativeTime)
+            {
+                long elapsed = positions[index].T - positions[0].T;
+                displayText = parentMetadata.TimeCodeBuilder(elapsed, TimeType.Absolute, TimecodeFormat.Unknown, true);
+            }
+
+            return displayText;
+        }
+
+        private string GetMeasureLabelPositionDistance(MeasureLabelType type, int index)
+        {
+            CalibrationHelper helper = parentMetadata.CalibrationHelper;
+            CultureInfo culture = CultureInfo.InvariantCulture;
+            string displayText = "";
+            switch (type)
+            {
+                case MeasureLabelType.Position:
+                        double x = timeSeriesCollection[Kinematics.XRaw][index];
+                double y = timeSeriesCollection[Kinematics.YRaw][index];
+                displayText = string.Format(culture, "{0:0.00} ; {1:0.00} {2}", x, y, helper.GetLengthAbbreviation());
+                break;
                 
-                case MeasureLabelType.TotalDistance:
+                case MeasureLabelType.TravelDistance:
                     displayText = GetKinematicsDisplayText(Kinematics.LinearDistance, index, helper.GetLengthAbbreviation());
                     break;
                 case MeasureLabelType.TotalHorizontalDisplacement:
@@ -778,7 +921,20 @@ namespace Kinovea.ScreenManager
                 case MeasureLabelType.TotalVerticalDisplacement:
                     displayText = GetKinematicsDisplayText(Kinematics.LinearVerticalDisplacement, index, helper.GetLengthAbbreviation());
                     break;
+                default:
+                    break;
+            }
 
+            return displayText;
+        }
+
+        private string GetMeasureLabelSpeedAcceleration(MeasureLabelType type, int index)
+        {
+            CalibrationHelper helper = parentMetadata.CalibrationHelper;
+            CultureInfo culture = CultureInfo.InvariantCulture;
+            string displayText = "";
+            switch (type)
+            {
                 case MeasureLabelType.Speed:
                     displayText = GetKinematicsDisplayText(Kinematics.LinearSpeed, index, helper.GetSpeedAbbreviation());
                     break;
@@ -788,7 +944,6 @@ namespace Kinovea.ScreenManager
                 case MeasureLabelType.VerticalVelocity:
                     displayText = GetKinematicsDisplayText(Kinematics.LinearVerticalVelocity, index, helper.GetSpeedAbbreviation());
                     break;
-
                 case MeasureLabelType.Acceleration:
                     displayText = GetKinematicsDisplayText(Kinematics.LinearAcceleration, index, helper.GetAccelerationAbbreviation());
                     break;
@@ -798,10 +953,7 @@ namespace Kinovea.ScreenManager
                 case MeasureLabelType.VerticalAcceleration:
                     displayText = GetKinematicsDisplayText(Kinematics.LinearVerticalAcceleration, index, helper.GetAccelerationAbbreviation());
                     break;
-                case MeasureLabelType.None:
-                default:
-                    break;
-            }    
+            }
 
             return displayText;
         }
@@ -816,7 +968,7 @@ namespace Kinovea.ScreenManager
                 return "###";
         }
         #endregion
-    
+
         #region User manipulation
         private void MoveCursor(float dx, float dy)
         {
@@ -825,8 +977,8 @@ namespace Kinovea.ScreenManager
                 // Move cursor to new coords
                 // In this case, _X and _Y are delta values.
                 // Image will be reseted at mouse up. (=> UpdateTrackPoint)
-                positions[currentPoint].X += dx;
-                positions[currentPoint].Y += dy;
+                positions[currentPointIndex].X += dx;
+                positions[currentPointIndex].Y += dy;
             }
             else
             {
@@ -836,13 +988,13 @@ namespace Kinovea.ScreenManager
                     ClosestFrameDisplayer(new Point((int)dx, (int)dy), positions, totalDistance, false);
             }
         }
-        private void MoveLabelTo(float dx, float dy, int labelNumber)
+        private void MoveLabelTo(float dx, float dy, int labelId)
         {
-            // _iLabelNumber coding: 2 = main label, 3+ = keyframes labels.
-            
+            // labelId: 2 = main label, 3+ = keyframes labels.
+
             if (trackStatus == TrackStatus.Edit || trackView != TrackView.Label)
             {
-                if(measureLabelType != MeasureLabelType.None && labelNumber == 2)
+                if (measureLabelType != MeasureLabelType.None && labelId == 2)
                 {
                     // Move the main label.
                     miniLabel.MoveLabel(dx, dy);
@@ -850,7 +1002,7 @@ namespace Kinovea.ScreenManager
                 else
                 {
                     // Move the specified label by specified amount.
-                    int iLabel = labelNumber - 3;
+                    int iLabel = labelId - 3;
                     keyframesLabels[iLabel].MoveLabel(dx, dy);
                 }
             }
@@ -877,13 +1029,13 @@ namespace Kinovea.ScreenManager
                     if (miniLabel.HitTest(point, transformer))
                         hitResult = 2;
                 }
-                
+
                 for (int i = 0; i < keyframesLabels.Count; i++)
                 {
-                    bool isVisible = infosFading.IsVisible(positions[currentPoint].T, 
-                                                             keyframesLabels[i].Timestamp, 
+                    bool isVisible = infosFading.IsVisible(positions[currentPointIndex].T,
+                                                             keyframesLabels[i].Timestamp,
                                                              focusFadingFrames);
-                    if(trackView == TrackView.Complete || isVisible)
+                    if (trackView == TrackView.Complete || isVisible)
                     {
                         if (keyframesLabels[i].HitTest(point, transformer))
                         {
@@ -898,27 +1050,58 @@ namespace Kinovea.ScreenManager
         }
         private int GetFirstVisiblePoint()
         {
-            if((trackView != TrackView.Complete || trackStatus == TrackStatus.Edit) && currentPoint - focusFadingFrames > 0)
-                return currentPoint - focusFadingFrames;
+            if ((trackView != TrackView.Complete || trackStatus == TrackStatus.Edit) && currentPointIndex - focusFadingFrames > 0)
+                return currentPointIndex - focusFadingFrames;
             else
                 return 0;
         }
         private int GetLastVisiblePoint()
         {
-            if((trackView != TrackView.Complete || trackStatus == TrackStatus.Edit) && currentPoint + focusFadingFrames < positions.Count - 1)
-                return currentPoint + focusFadingFrames;
+            if ((trackView != TrackView.Complete || trackStatus == TrackStatus.Edit) && currentPointIndex + focusFadingFrames < positions.Count - 1)
+                return currentPointIndex + focusFadingFrames;
             else
                 return positions.Count - 1;
         }
         #endregion
-        
+
         #region Context Menu implementation
+
+        #region Visibility
+        private void MnuShowBefore_Click(object sender, EventArgs e)
+        {
+            //CaptureMemento(SerializationFilter.Core);
+            visibleTimestamp = 0;
+            InvalidateFromMenu(sender);
+        }
+        private void MnuShowAfter_Click(object sender, EventArgs e)
+        {
+            //CaptureMemento(SerializationFilter.Core);
+            invisibleTimestamp = long.MaxValue;
+            infosFading.ReferenceTimestamp = invisibleTimestamp;
+            InvalidateFromMenu(sender);
+        }
+        private void MnuHideBefore_Click(object sender, EventArgs e)
+        {
+            //CaptureMemento(SerializationFilter.Core);
+            visibleTimestamp = CurrentTimestampFromMenu(sender);
+            InvalidateFromMenu(sender);
+        }
+
+        private void MnuHideAfter_Click(object sender, EventArgs e)
+        {
+            //CaptureMemento(SerializationFilter.Core);
+            invisibleTimestamp = CurrentTimestampFromMenu(sender);
+            infosFading.ReferenceTimestamp = invisibleTimestamp;
+            InvalidateFromMenu(sender);
+        }
+        #endregion
+
         public void ChopTrajectory(long currentTimestamp)
         {
             // Delete end of track.
-            currentPoint = FindClosestPoint(currentTimestamp);
-            if (currentPoint < positions.Count - 1)
-                positions.RemoveRange(currentPoint + 1, positions.Count - currentPoint - 1);
+            currentPointIndex = FindClosestPoint(currentTimestamp);
+            if (currentPointIndex < positions.Count - 1)
+                positions.RemoveRange(currentPointIndex + 1, positions.Count - currentPointIndex - 1);
 
             endTimeStamp = positions[positions.Count - 1].T;
 
@@ -935,8 +1118,22 @@ namespace Kinovea.ScreenManager
             trackStatus = TrackStatus.Edit;
             AfterTrackStatusChanged();
         }
-        #endregion
         
+        private void MnuUseKeyframeColor_Click(object sender, EventArgs e)
+        {
+            useKeyframeColors = !mnuUseKeyframeColor.Checked;
+            IntegrateKeyframes();
+            InvalidateFromMenu(sender);
+        }
+
+        private void MnuShowKeyframeLabel_Click(object sender, EventArgs e)
+        {
+            showKeyframeLabels = !mnuShowKeyframeLabel.Checked;
+            InvalidateFromMenu(sender);
+        }
+
+        #endregion
+
         #region Tracking
         public void TrackCurrentPosition(VideoFrame current)
         {
@@ -957,18 +1154,18 @@ namespace Kinovea.ScreenManager
 
             AbstractTrackPoint p = null;
             bool bMatched = tracker.Track(positions, current.Image, current.Timestamp, out p);
-                
+
             if (p == null)
             {
                 StopTracking();
                 return;
             }
-            
+
             positions.Add(p);
 
             if (!bMatched)
                 StopTracking();
-            
+
             // Adjust internal data.
             endTimeStamp = positions.Last().T;
             ComputeFlatDistance();
@@ -977,7 +1174,7 @@ namespace Kinovea.ScreenManager
         private void ComputeFlatDistance()
         {
             // This distance is used to normalize distance vs time in interactive manipulation.
-            
+
             int smallestTop = int.MaxValue;
             int smallestLeft = int.MaxValue;
             int highestBottom = -1;
@@ -993,7 +1190,7 @@ namespace Kinovea.ScreenManager
 
                 if (positions[i].Y < smallestTop)
                     smallestTop = (int)positions[i].Y;
-                
+
                 if (positions[i].Y > highestBottom)
                     highestBottom = (int)positions[i].Y;
             }
@@ -1006,26 +1203,26 @@ namespace Kinovea.ScreenManager
             // The user moved a point that had been previously placed.
             // We need to reconstruct tracking data stored in the point, for later tracking.
             // The coordinate of the point have already been updated during the mouse move.
-            if (currentImage == null || positions.Count < 1 || currentPoint < 0)
+            if (currentImage == null || positions.Count < 1 || currentPointIndex < 0)
                 return;
-            
-            AbstractTrackPoint current = positions[currentPoint];
-        
+
+            AbstractTrackPoint current = positions[currentPointIndex];
+
             current.ResetTrackData();
-            AbstractTrackPoint atp = tracker.CreateTrackPoint(true, current.Point, 1.0f, current.T,  currentImage, positions);
-            
-            if(atp != null)
-                 positions[currentPoint] = atp;
-            
-            // Update the mini label (attach, position of label, and text).
+            AbstractTrackPoint atp = tracker.CreateTrackPoint(true, current.Point, 1.0f, current.T, currentImage, positions);
+
+            if (atp != null)
+                positions[currentPointIndex] = atp;
+
+            // Update the main mini label (attach, position of label, and text).
             for (int i = 0; i < keyframesLabels.Count; i++)
             {
-                if(keyframesLabels[i].Timestamp == current.T)
+                if (keyframesLabels[i].Timestamp == current.T)
                 {
                     keyframesLabels[i].SetAttach(current.Point, true);
-                    if(measureLabelType != MeasureLabelType.None)
+                    if (measureLabelType != MeasureLabelType.None)
                         keyframesLabels[i].SetText(GetMeasureLabelText(keyframesLabels[i].AttachIndex));
-                    
+
                     break;
                 }
             }
@@ -1053,22 +1250,24 @@ namespace Kinovea.ScreenManager
                 int height = (int)(size.Height * (profile.BlockWindow.Height / 100.0));
                 blockWindow = new Size(width, height);
             }
-            
+
             return new TrackerParameters(similarityThreshold, templateUpdateThreshold, refinementNeighborhood, searchWindow, blockWindow, false);
         }
         #endregion
-        
+
         #region KVA Serialization
         public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
             if (ShouldSerializeCore(filter))
             {
                 w.WriteElementString("TimePosition", beginTimeStamp.ToString());
+                w.WriteElementString("Visible", (visibleTimestamp == long.MaxValue) ? "-1" : visibleTimestamp.ToString());
+                w.WriteElementString("Invisible", (invisibleTimestamp == long.MaxValue) ? "-1" : invisibleTimestamp.ToString());
 
                 TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(TrackView));
                 string xmlMode = enumConverter.ConvertToString(trackView);
                 w.WriteElementString("Mode", xmlMode);
-            
+
                 enumConverter = TypeDescriptor.GetConverter(typeof(MeasureLabelType));
                 string xmlMeasureLabelType = enumConverter.ConvertToString(measureLabelType);
                 w.WriteElementString("ExtraData", xmlMeasureLabelType);
@@ -1095,8 +1294,8 @@ namespace Kinovea.ScreenManager
                 miniLabel.WriteXml(w);
                 w.WriteEndElement();
 
-                if (positions.Count > 0 && currentPoint < positions.Count)
-                    miniLabel.SetAttach(positions[currentPoint].Point, true);
+                if (positions.Count > 0 && currentPointIndex < positions.Count)
+                    miniLabel.SetAttach(positions[currentPointIndex].Point, true);
 
                 if (keyframesLabels.Count > 0)
                 {
@@ -1112,6 +1311,10 @@ namespace Kinovea.ScreenManager
 
                     w.WriteEndElement();
                 }
+
+                w.WriteElementString("ShowKeyframeLabels", XmlHelper.WriteBoolean(showKeyframeLabels));
+                w.WriteElementString("UseKeyframeColors", XmlHelper.WriteBoolean(useKeyframeColors));
+
             }
 
             if (ShouldSerializeStyle(filter))
@@ -1130,8 +1333,8 @@ namespace Kinovea.ScreenManager
         {
             w.WriteStartElement("TrackPointList");
             w.WriteAttributeString("Count", positions.Count.ToString());
-            
-            if(positions.Count > 0)
+
+            if (positions.Count > 0)
             {
                 foreach (AbstractTrackPoint tp in positions)
                 {
@@ -1177,7 +1380,7 @@ namespace Kinovea.ScreenManager
         {
             invalid = true;
             tracker = new TrackerBlock2(GetTrackerParameters(new Size(800, 600)));
-                
+
             if (timestampMapper == null)
             {
                 string unparsed = xmlReader.ReadOuterXml();
@@ -1192,13 +1395,20 @@ namespace Kinovea.ScreenManager
                 name = xmlReader.ReadContentAsString();
 
             xmlReader.ReadStartElement();
-            
-            while(xmlReader.NodeType == XmlNodeType.Element)
+
+            while (xmlReader.NodeType == XmlNodeType.Element)
             {
-                switch(xmlReader.Name)
+                switch (xmlReader.Name)
                 {
                     case "TimePosition":
                         beginTimeStamp = timestampMapper(xmlReader.ReadElementContentAsLong());
+                        break;
+                    case "Visible":
+                        visibleTimestamp = timestampMapper(xmlReader.ReadElementContentAsLong());
+                        break;
+                    case "Invisible":
+                        long hide = xmlReader.ReadElementContentAsLong();
+                        invisibleTimestamp = (hide == -1) ? long.MaxValue : timestampMapper(hide);
                         break;
                     case "Mode":
                         {
@@ -1239,30 +1449,38 @@ namespace Kinovea.ScreenManager
                     case "KeyframeLabelList":
                         ParseKeyframeLabelList(xmlReader, scale);
                         break;
+                    case "ShowKeyframeLabels":
+                        showKeyframeLabels = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
+                        break;
+                    case "UseKeyframeColors":
+                        useKeyframeColors = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
+                        break;
                     default:
                         string unparsed = xmlReader.ReadOuterXml();
                         log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                         break;
                 }
             }
-            
+
             xmlReader.ReadEndElement();
             scalingDone = true;
-            
+
             if (positions.Count > 0)
             {
                 endTimeStamp = positions.Last().T;
                 miniLabel.SetAttach(positions[0].Point, false);
                 miniLabel.SetText(name);
-                
-                if(positions.Count > 1 || 
-                   positions[0].X != 0 || 
-                   positions[0].Y != 0 || 
+
+                if (positions.Count > 1 ||
+                   positions[0].X != 0 ||
+                   positions[0].Y != 0 ||
                    positions[0].T != 0)
                 {
                     invalid = false;
                 }
             }
+
+            SanityCheckValues();
 
             // Depending on the order of parsing the main style initialization may have not impacted the mini labels.
             AfterMainStyleChange();
@@ -1271,14 +1489,14 @@ namespace Kinovea.ScreenManager
         {
             positions.Clear();
             xmlReader.ReadStartElement();
-            
-            while(xmlReader.NodeType == XmlNodeType.Element)
+
+            while (xmlReader.NodeType == XmlNodeType.Element)
             {
-                if(xmlReader.Name == "TrackPoint")
+                if (xmlReader.Name == "TrackPoint")
                 {
                     AbstractTrackPoint tp = tracker.CreateOrphanTrackPoint(PointF.Empty, 0);
                     tp.ReadXml(xmlReader);
-                    
+
                     // Time is stored in absolute timestamps.
                     AbstractTrackPoint adapted = tracker.CreateOrphanTrackPoint(tp.Point.Scale(scale.X, scale.Y), timestampMapper(tp.T));
 
@@ -1290,7 +1508,7 @@ namespace Kinovea.ScreenManager
                     log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                 }
             }
-            
+
             xmlReader.ReadEndElement();
         }
         public void ParseKeyframeLabelList(XmlReader xmlReader, PointF scale)
@@ -1298,19 +1516,19 @@ namespace Kinovea.ScreenManager
             keyframesLabels.Clear();
 
             xmlReader.ReadStartElement();
-            
-            while(xmlReader.NodeType == XmlNodeType.Element)
+
+            while (xmlReader.NodeType == XmlNodeType.Element)
             {
-                if(xmlReader.Name == "KeyframeLabel")
+                if (xmlReader.Name == "KeyframeLabel")
                 {
                     MiniLabel kfl = new MiniLabel(xmlReader, scale);
-                    
+
                     if (positions.Count > 0)
                     {
                         // Match with TrackPositions previously found.
                         int iMatchedTrackPosition = FindClosestPoint(kfl.Timestamp, positions);
                         kfl.AttachIndex = iMatchedTrackPosition;
-                        
+
                         kfl.SetAttach(positions[iMatchedTrackPosition].Point, false);
                         keyframesLabels.Add(kfl);
                     }
@@ -1321,11 +1539,16 @@ namespace Kinovea.ScreenManager
                     log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                 }
             }
-            
+
             xmlReader.ReadEndElement();
         }
+        private void SanityCheckValues()
+        {
+            visibleTimestamp = Math.Max(visibleTimestamp, 0);
+            invisibleTimestamp = Math.Max(invisibleTimestamp, 0);
+        }
         #endregion
-        
+
         #region IScalable implementation
         public void Scale(Size imageSize)
         {
@@ -1370,13 +1593,13 @@ namespace Kinovea.ScreenManager
             {
                 // Strictly superior because we don't show the keyframe that was created when the
                 // user added the CrossMarker drawing to make the Track out of it.
-                if (parentMetadata[i].Position > beginTimeStamp && 
+                if (parentMetadata[i].Position > beginTimeStamp &&
                     parentMetadata[i].Position <= positions.Last().T)
                 {
                     // The Keyframe is within the Trajectory interval.
                     // Do we know it already ?
-                    int iKnown = - 1;
-                    for(int j=0;j<keyframesLabels.Count;j++)
+                    int iKnown = -1;
+                    for (int j = 0; j < keyframesLabels.Count; j++)
                     {
                         if (keyframesLabels[j].Timestamp == parentMetadata[i].Position)
                         {
@@ -1385,11 +1608,13 @@ namespace Kinovea.ScreenManager
                             break;
                         }
                     }
-                    
+
                     if (iKnown >= 0)
                     {
-                        // Known Keyframe, Read text again in case it changed
-                        keyframesLabels[iKnown].SetText(parentMetadata[i].Title);
+                        // Known Keyframe, import name and color.
+                        //keyframesLabels[iKnown].SetText(parentMetadata[i].Title);
+                        keyframesLabels[iKnown].Name = parentMetadata[i].Title;
+                        keyframesLabels[iKnown].BackColor = useKeyframeColors ? parentMetadata[i].Color : styleHelper.Color;
                     }
                     else
                     {
@@ -1397,8 +1622,9 @@ namespace Kinovea.ScreenManager
                         MiniLabel kfl = new MiniLabel();
                         kfl.AttachIndex = FindClosestPoint(parentMetadata[i].Position);
                         kfl.SetAttach(positions[kfl.AttachIndex].Point, true);
-                        kfl.Timestamp = positions[kfl.AttachIndex].T;                        
-                        kfl.SetText(parentMetadata[i].Title);
+                        kfl.Timestamp = positions[kfl.AttachIndex].T;
+                        kfl.Name = parentMetadata[i].Title;
+                        kfl.BackColor = useKeyframeColors ? parentMetadata[i].Color : styleHelper.Color;
                         
                         keyframesLabels.Add(kfl);
                     }
@@ -1412,17 +1638,18 @@ namespace Kinovea.ScreenManager
                 if (!matched[iLabel])
                     keyframesLabels.RemoveAt(iLabel);
             }
-            
-            // Reinject the labels in the list for extra data.
-            if(measureLabelType != MeasureLabelType.None)
-            {
-                for( int iKfl = 0; iKfl < keyframesLabels.Count; iKfl++)
-                    keyframesLabels[iKfl].SetText(GetMeasureLabelText(keyframesLabels[iKfl].AttachIndex));
-            }
 
-            // Reapply style.
-            foreach (MiniLabel kfl in keyframesLabels)
-                kfl.BackColor = styleHelper.Color;
+            // Recompute labels.
+            if (measureLabelType != MeasureLabelType.None)
+            {
+                for (int iKfl = 0; iKfl < keyframesLabels.Count; iKfl++)
+                {
+                    if (measureLabelType == MeasureLabelType.Name)
+                        keyframesLabels[iKfl].SetText(keyframesLabels[iKfl].Name);
+                    else
+                        keyframesLabels[iKfl].SetText(GetMeasureLabelText(keyframesLabels[iKfl].AttachIndex));
+                }
+            }
         }
         public void MemorizeState()
         {
@@ -1460,46 +1687,63 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Miscellaneous private methods
-        private void ReinitializeMenu()
+        
+        private void ReloadMenusCulture()
         {
-            InitializeMenuMeasurement();
-        }
-        private void InitializeMenuMeasurement()
-        {
-            mnuMeasurement.MergeIndex = 1;
-            mnuMeasurement.Image = Properties.Drawings.label;
-            mnuMeasurement.Text = ScreenManagerLang.mnuShowMeasure;
+            // Visibility
+            mnuVisibility.Text = ScreenManagerLang.Generic_Visibility;
+            mnuHideBefore.Text = ScreenManagerLang.mnuHideBefore;
+            mnuShowBefore.Text = ScreenManagerLang.mnuShowBefore;
+            mnuHideAfter.Text = ScreenManagerLang.mnuHideAfter;
+            mnuShowAfter.Text = ScreenManagerLang.mnuShowAfter;
 
-            // TODO: unhook event handlers ?
-            mnuMeasurement.DropDownItems.Clear();
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.None));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.Name));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.Position));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.TotalDistance));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.TotalHorizontalDisplacement));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.TotalVerticalDisplacement));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.Speed));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.HorizontalVelocity));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.VerticalVelocity));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.Acceleration));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.HorizontalAcceleration));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.VerticalAcceleration));
-        }
-        private ToolStripMenuItem GetMeasurementMenu(MeasureLabelType data)
-        {
-            ToolStripMenuItem mnu = new ToolStripMenuItem();
-            mnu.Text = GetMeasureLabelOptionText(data);
-            mnu.Checked = measureLabelType == data;
-
-            mnu.Click += (s, e) =>
+            // Display options
+            mnuMeasurement.Text = "Label";
+            foreach (var pair in mnuMeasureLabelTypes)
             {
-                measureLabelType = data;
-                displayBestFitCircle = IsUsingAngularKinematics();
-                IntegrateKeyframes();
-                InvalidateFromMenu(s);
-            };
+                ToolStripMenuItem tsmi = pair.Value;
+                MeasureLabelType measureLabelType = pair.Key;
+                tsmi.Text = GetMeasureLabelOptionText(measureLabelType);
+                tsmi.Checked = this.measureLabelType == measureLabelType;
+            }
 
+            mnuKeyframes.Text = "Key images";
+            mnuShowKeyframeLabel.Text = "Show label";
+            mnuUseKeyframeColor.Text = "Use key image color";
+        }
+
+        /// <summary>
+        /// Create a new measure label type menu and store it in the global dictionary.
+        /// </summary>
+        private ToolStripMenuItem CreateMeasureLabelTypeMenu(MeasureLabelType measureLabelType)
+        {
+            // Note: the tag is reserved for injecting the screen user interface to support invalidation.
+            ToolStripMenuItem mnu = new ToolStripMenuItem();
+            mnu.Click += mnuMeasureLabelType_Click;
+            mnuMeasureLabelTypes.Add(measureLabelType, mnu);
             return mnu;
+        }
+
+        private void mnuMeasureLabelType_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
+            if (tsmi == null)
+                return;
+
+            MeasureLabelType measureLabelType = MeasureLabelType.None;
+            foreach (var pair in mnuMeasureLabelTypes)
+            {
+                if (pair.Value == tsmi)
+                {
+                    measureLabelType = pair.Key;
+                    break;
+                }
+            }
+            
+            this.measureLabelType = measureLabelType;
+            displayBestFitCircle = IsUsingAngularKinematics();
+            IntegrateKeyframes();
+            InvalidateFromMenu(tsmi);
         }
         private void AfterTrackStatusChanged()
         {
@@ -1510,8 +1754,8 @@ namespace Kinovea.ScreenManager
         }
         private void UpdateBoundingBoxes()
         {
-            searchWindow.Rectangle = positions[currentPoint].Point.Box(tracker.Parameters.SearchWindow).ToRectangle();
-            blockWindow.Rectangle = positions[currentPoint].Point.Box(tracker.Parameters.BlockWindow).ToRectangle();
+            searchWindow.Rectangle = positions[currentPointIndex].Point.Box(tracker.Parameters.SearchWindow).ToRectangle();
+            blockWindow.Rectangle = positions[currentPointIndex].Point.Box(tracker.Parameters.BlockWindow).ToRectangle();
         }
         private int FindClosestPoint(long currentTimestamp)
         {
