@@ -65,6 +65,7 @@ namespace Kinovea.ScreenManager
                 iHash ^= sections.GetHashCode();
                 iHash ^= styleHelper.ContentHash;
                 iHash ^= showLabel.GetHashCode();
+                iHash ^= locked.GetHashCode();
 
                 return iHash;
             }
@@ -119,6 +120,7 @@ namespace Kinovea.ScreenManager
         private bool showLabel;
         private string text;
         private List<string> sectionNames = new List<string>();
+        private bool locked;
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
@@ -148,6 +150,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuDeleteSection = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDeleteTimes = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowLabel = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuLock = new ToolStripMenuItem();
         #endregion
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -222,6 +225,7 @@ namespace Kinovea.ScreenManager
             mnuMoveNextSplit.Image = Properties.Resources.chronosectionend;
             mnuDeleteSection.Image = Properties.Resources.bin_empty;
             mnuDeleteTimes.Image = Properties.Resources.bin_empty;
+            mnuLock.Image = Properties.Drawings.padlock2;
             mnuShowLabel.Image = Properties.Drawings.label;
 
             mnuStart.Click += mnuStart_Click;
@@ -237,6 +241,7 @@ namespace Kinovea.ScreenManager
             mnuDeleteSection.Click += mnuDeleteSection_Click;
             mnuDeleteTimes.Click += mnuDeleteTimes_Click;
             mnuShowLabel.Click += mnuShowLabel_Click;
+            mnuLock.Click += mnuLock_Click;
         }
         #endregion
 
@@ -303,13 +308,15 @@ namespace Kinovea.ScreenManager
                     using (Font fontLabel = styleHelper.GetFont((float)transformer.Scale * 0.5f))
                     {
                         // Note: the alignment here assumes fixed margins of the rounded rectangle class.
-                        SizeF lblTextSize = canvas.MeasureString(name, fontLabel);
+
+                        string text = (locked ? "■ " : "") + name;
+                        SizeF lblTextSize = canvas.MeasureString(text, fontLabel);
                         int labelRoundingRadius = fontLabel.Height / 3;
                         int top = rect.Location.Y - (int)lblTextSize.Height - roundingRadius - labelRoundingRadius;
                         Rectangle lblRect = new Rectangle(rect.Location.X, top, (int)lblTextSize.Width, (int)lblTextSize.Height);
                         
                         RoundedRectangle.Draw(canvas, lblRect, brushBack, labelRoundingRadius, true, false, null);
-                        canvas.DrawString(name, fontLabel, brushText, lblRect.Location);
+                        canvas.DrawString(text, fontLabel, brushText, lblRect.Location);
 
                         // Update the rectangle for hit testing.
                         lblBackground.Rectangle = transformer.Untransform(lblRect);
@@ -388,6 +395,8 @@ namespace Kinovea.ScreenManager
                     w.WriteEndElement();
                 }
 
+                w.WriteElementString("Locked", locked.ToString().ToLower());
+                
                 // </values>
                 w.WriteEndElement();
             }
@@ -497,6 +506,9 @@ namespace Kinovea.ScreenManager
                         break;
                     case "Sections":
                         ParseSections(xmlReader, timestampMapper);
+                        break;
+                    case "Locked":
+                        locked = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
                     default:
                         string unparsed = xmlReader.ReadOuterXml();
@@ -634,13 +646,15 @@ namespace Kinovea.ScreenManager
             // Corner-case dead sections.
             mnuMovePreviousEnd.Enabled = !IsBeforeFirstSection(sectionIndex);
             mnuMoveNextStart.Enabled = !IsAfterLastSection(sectionIndex);
-            
+
             mnuShowLabel.Checked = showLabel;
+            mnuLock.Checked = locked;
 
             contextMenu.AddRange(new ToolStripItem[] {
                 mnuVisibility,
                 mnuAction,
-                mnuShowLabel
+                mnuShowLabel,
+                mnuLock,
             });
 
             return contextMenu;
@@ -674,8 +688,10 @@ namespace Kinovea.ScreenManager
             mnuMoveNextStart.Text = "Move the start of the next section to this frame";
             mnuDeleteTimes.Text = "Delete all times";
 
+
             // Display.
             mnuShowLabel.Text = ScreenManagerLang.mnuShowLabel;
+            mnuLock.Text = locked ? "Unlock" : "Lock";
         }
 
         #region Visibility
@@ -895,11 +911,17 @@ namespace Kinovea.ScreenManager
             UpdateFramesMarkersFromMenu(sender);
         }
 
-
         private void mnuShowLabel_Click(object sender, EventArgs e)
         {
             CaptureMemento(SerializationFilter.Style);
             showLabel = !mnuShowLabel.Checked;
+            InvalidateFromMenu(sender);
+        }
+        
+        private void mnuLock_Click(object sender, EventArgs e)
+        {
+            CaptureMemento(SerializationFilter.Core);
+            locked = !mnuLock.Checked;
             InvalidateFromMenu(sender);
         }
         #endregion
@@ -907,7 +929,7 @@ namespace Kinovea.ScreenManager
         #region ITimeable
         public void StartStop(long timestamp)
         {
-            if (timestamp < visibleTimestamp || timestamp > invisibleTimestamp)
+            if (locked || timestamp < visibleTimestamp || timestamp > invisibleTimestamp)
                 return;
 
             // The commands are mapped to the start/stop menus, not the move menus.
@@ -952,7 +974,7 @@ namespace Kinovea.ScreenManager
 
         public void Split(long timestamp)
         {
-            if (timestamp < visibleTimestamp || timestamp > invisibleTimestamp)
+            if (locked || timestamp < visibleTimestamp || timestamp > invisibleTimestamp)
                 return;
 
             // Determine if we are on a live or dead section.

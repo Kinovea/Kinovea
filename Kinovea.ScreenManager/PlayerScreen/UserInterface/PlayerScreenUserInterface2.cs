@@ -3772,7 +3772,7 @@ namespace Kinovea.ScreenManager
             canvas.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
             if (m_FrameServer.Metadata.ActiveVideoFilter != null)
-                m_FrameServer.Metadata.ActiveVideoFilter.DrawExtra(canvas, transformer, timestamp);
+                m_FrameServer.Metadata.ActiveVideoFilter.DrawExtra(canvas, distorter, transformer, timestamp);
 
             foreach (AbstractDrawing chrono in m_FrameServer.Metadata.ChronoManager.Drawings)
             {
