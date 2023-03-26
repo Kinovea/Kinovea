@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Globalization;
+using Kinovea.Services;
 
 namespace Kinovea.Camera
 {
@@ -32,6 +33,7 @@ namespace Kinovea.Camera
 
             nud.Visible = useDefaultMapper;
             lblValue.Visible = !useDefaultMapper;
+            NudHelper.FixNudScroll(nud);
         }
 
         public override void Repopulate(CameraProperty property)

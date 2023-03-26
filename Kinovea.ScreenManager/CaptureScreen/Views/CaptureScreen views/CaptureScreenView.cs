@@ -71,6 +71,7 @@ namespace Kinovea.ScreenManager
             
             nudDelay.Minimum = 0;
             nudDelay.Maximum = 100;
+            NudHelper.FixNudScroll(nudDelay);
 
             ConfigureDisplayControl(delayCompositeType);
 

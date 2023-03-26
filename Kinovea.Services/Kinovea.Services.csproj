@@ -320,6 +320,7 @@
     <Compile Include="Types\TimecodeType.cs" />
     <Compile Include="ThreePartsVersion.cs" />
     <Compile Include="TimeHelper.cs" />
+    <Compile Include="WinForms\NudHelper.cs" />
     <Compile Include="WinForms\TextboxHotkey.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -109,6 +109,8 @@ namespace Kinovea.ScreenManager
                 cbUnit.SelectedIndex = (int)LengthUnit.Centimeters;
                 cbAxis.SelectedIndex = (int)CalibrationAxis.LineHorizontal;
             }
+
+            NudHelper.FixNudScroll(nudMeasure);
         }
         #endregion
 

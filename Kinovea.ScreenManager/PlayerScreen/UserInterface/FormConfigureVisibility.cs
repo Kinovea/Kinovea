@@ -44,6 +44,8 @@ namespace Kinovea.ScreenManager
                 nudMax.Value = (decimal)(drawing.InfosFading.MasterFactor * 100);
                 nudOpaque.Value = (decimal)drawing.InfosFading.OpaqueFrames;
                 nudFading.Value = (decimal)drawing.InfosFading.FadingFrames;
+                NudHelper.FixNudScroll(nudOpaque);
+                NudHelper.FixNudScroll(nudFading);
             }
             catch
             {
