@@ -141,7 +141,6 @@ namespace Kinovea.ScreenManager
       this.lblAddress.Name = "lblAddress";
       this.lblAddress.Size = new System.Drawing.Size(171, 18);
       this.lblAddress.TabIndex = 27;
-      this.lblAddress.Text = "url";
       // 
       // viewerSelector
       // 
