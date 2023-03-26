@@ -280,6 +280,7 @@
     <Compile Include="CaptureScreen\Delayer.cs" />
     <Compile Include="CaptureScreen\LoadStatus.cs" />
     <Compile Include="CaptureScreen\PipelineManager.cs" />
+    <Compile Include="CaptureScreen\RecordingStatus.cs" />
     <Compile Include="CaptureScreen\Views\InfobarCapture.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -39,12 +39,16 @@ namespace Kinovea.ScreenManager
         private Size referenceSize;             // Original image size after optional rotation.
         private Rectangle displayRectangle;     // Position and size of the region of the viewport where we draw the image.
         private ImageManipulator imageManipulator = new ImageManipulator();
-
+        
+        
         private ZoomHelper zoomHelper = new ZoomHelper();
         private List<EmbeddedButton> resizers = new List<EmbeddedButton>();
         private static Bitmap resizerBitmap = Properties.Resources.resizer;
         private static int resizerOffset = resizerBitmap.Width / 2;
         private int resizerIndex = -1;
+
+        private RecordingStatus recordingStatus;
+        private float recordingStatusProgress = 1.0f;
         private MessageToaster toaster;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -102,6 +106,12 @@ namespace Kinovea.ScreenManager
             toaster.SetDuration(duration);
             toaster.Show(message);
         }
+
+        public void UpdateRecordingIndicator(RecordingStatus status, float progress)
+        {
+            this.recordingStatus = status;
+            this.recordingStatusProgress = progress;
+        }
         
         #region Drawing
         protected override void OnPaint(PaintEventArgs e)
@@ -115,6 +125,7 @@ namespace Kinovea.ScreenManager
 
             DrawImage(e.Graphics);
             DrawKVA(e.Graphics);
+            DrawRecordingIndicator(e.Graphics);
             DrawResizers(e.Graphics);
             toaster.Draw(e.Graphics);
         }
@@ -150,6 +161,55 @@ namespace Kinovea.ScreenManager
                 controller.DrawKVA(canvas, displayRectangle.Location, zoom);
             }
         }
+        private void DrawRecordingIndicator(Graphics canvas)
+        {
+            // Draw the recording status banner/reverse progress bar.
+            Color bannerColor = GetBannerColor(recordingStatus);
+            int bannerHeight = GetBannerHeight(recordingStatus);
+            int progressPixels = (int)(recordingStatusProgress * this.Width);
+            
+            if (recordingStatus == RecordingStatus.Recording)
+                canvas.DrawRectangle(Pens.Red, displayRectangle);
+            
+            using (SolidBrush brush = new SolidBrush(bannerColor))
+            {
+                canvas.FillRectangle(brush, new Rectangle(0, 0, progressPixels, bannerHeight));
+            }
+        }
+
+        private Color GetBannerColor(RecordingStatus status)
+        {
+            switch (status)
+            {
+                case RecordingStatus.Armed:
+                    return Color.LightGreen;
+                case RecordingStatus.Recording:
+                    return Color.Red;
+                case RecordingStatus.NotGrabbing:
+                    return Color.DarkOrchid;
+                case RecordingStatus.Disarmed:
+                case RecordingStatus.Quiet:
+                default:
+                    return Color.SkyBlue;
+            }
+        }
+
+        private int GetBannerHeight(RecordingStatus status)
+        {
+            switch (status)
+            {
+                case RecordingStatus.Recording:
+                    return 50;
+                case RecordingStatus.NotGrabbing:
+                case RecordingStatus.Armed:
+                case RecordingStatus.Quiet:
+                    return 25;
+                case RecordingStatus.Disarmed:
+                default:
+                    return 10;
+            }
+        }
+        
         private void DrawResizers(Graphics canvas)
         {
             foreach(EmbeddedButton resizer in resizers)
