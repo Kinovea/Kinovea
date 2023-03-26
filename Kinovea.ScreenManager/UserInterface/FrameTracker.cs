@@ -53,6 +53,12 @@ namespace Kinovea.ScreenManager
             Cache,
         }
 
+        #region Events
+        public event EventHandler<TimeEventArgs> PositionChanging;
+        public event EventHandler<TimeEventArgs> PositionChanged;
+        public event EventHandler KeyframeDropped;
+        #endregion
+
         #region Properties
         /// <summary>
         /// The smallest timestamp of the current selection, in absolute timestamps.
@@ -182,12 +188,6 @@ namespace Kinovea.ScreenManager
         #endregion
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        #endregion
-
-        #region Events
-        public event EventHandler<TimeEventArgs> PositionChanging;
-        public event EventHandler<TimeEventArgs> PositionChanged;
-        public event EventHandler KeyframeDropped;
         #endregion
 
         #region Constructor
@@ -335,12 +335,13 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Scrub the timeline to the cursor point.
+        /// This is called on mouse move
         /// This may be called from the outside in the context of drag and drop events on other surfaces, 
         /// as a way to turn these surfaces into large timelines.
         /// </summary>
         public void Scrub()
         {
-            if (!enabled || invalidateAsked || isCommonTimeline)
+            if (!enabled || invalidateAsked)
                 return;
 
             // gutterRight is the last available pixel, so the right side of the cursor block.
@@ -368,7 +369,8 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void Commit()
         {
-            if (!enabled || isCommonTimeline)
+            //if (!enabled || isCommonTimeline)
+            if (!enabled)
                 return;
 
             Point mouseCoords = this.PointToClient(Cursor.Position);
