@@ -314,6 +314,7 @@ namespace Kinovea.ScreenManager
         private bool m_bKeyframePanelCollapsedManual = false;
         private bool m_bTextEdit;
         private PointF m_DescaledMouse;    // The current mouse point expressed in the original image size coordinates.
+        private bool showDrawings = true;
 
         // Others
         private NativeMethods.TimerCallback m_TimerCallback;
@@ -1295,103 +1296,18 @@ namespace Kinovea.ScreenManager
 
             switch (command)
             {
-                case PlayerScreenCommands.TogglePlay:
-                    OnButtonPlay();
-                    break;
+                // General
                 case PlayerScreenCommands.ResetViewport:
                     DisablePlayAndDraw();
                     DoInvalidate();
                     break;
-                case PlayerScreenCommands.GotoPreviousImage:
-                    buttonGotoPrevious_Click(null, EventArgs.Empty);
+                case PlayerScreenCommands.Close:
+                    btnClose_Click(this, EventArgs.Empty);
                     break;
-                case PlayerScreenCommands.GotoPreviousImageForceLoop:
-                    if (m_iCurrentPosition <= m_iSelStart)
-                        buttonGotoLast_Click(null, EventArgs.Empty);
-                    else
-                        buttonGotoPrevious_Click(null, EventArgs.Empty);
-                    break;
-                case PlayerScreenCommands.GotoFirstImage:
-                    buttonGotoFirst_Click(null, EventArgs.Empty);
-                    break;
-                case PlayerScreenCommands.GotoPreviousKeyframe:
-                    GotoPreviousKeyframe();
-                    break;
-                case PlayerScreenCommands.BackwardRound10Percent:
-                    JumpToPercent(10, false);
-                    break;
-                case PlayerScreenCommands.BackwardRound1Percent:
-                    JumpToPercent(1, false);
-                    break;
-                case PlayerScreenCommands.GotoNextImage:
-                    buttonGotoNext_Click(null, EventArgs.Empty);
-                    break;
-                case PlayerScreenCommands.ForwardRound10Percent:
-                    JumpToPercent(10, true);
-                    break;
-                case PlayerScreenCommands.ForwardRound1Percent:
-                    JumpToPercent(1, true);
-                    break;
-                case PlayerScreenCommands.GotoLastImage:
-                    buttonGotoLast_Click(null, EventArgs.Empty);
-                    break;
-                case PlayerScreenCommands.GotoNextKeyframe:
-                    GotoNextKeyframe();
-                    break;
-                case PlayerScreenCommands.GotoSyncPoint:
-                    ForceCurrentFrame(m_FrameServer.Metadata.TimeOrigin, true);
-                    break;
-                case PlayerScreenCommands.IncreaseZoom:
-                    IncreaseDirectZoom(new Point(pbSurfaceScreen.Width / 2, pbSurfaceScreen.Height / 2));
-                    break;
-                case PlayerScreenCommands.DecreaseZoom:
-                    DecreaseDirectZoom(new Point(pbSurfaceScreen.Width / 2, pbSurfaceScreen.Height / 2));
-                    break;
-                case PlayerScreenCommands.ResetZoom:
-                    ResetZoom(true);
-                    break;
-                case PlayerScreenCommands.IncreaseSyncAlpha:
-                    IncreaseSyncAlpha();
-                    break;
-                case PlayerScreenCommands.DecreaseSyncAlpha:
-                    DecreaseSyncAlpha();
-                    break;
-                case PlayerScreenCommands.AddKeyframe:
-                    AddKeyframe();
-                    break;
-                case PlayerScreenCommands.DeleteKeyframe:
-                    if (m_iActiveKeyFrameIndex >= 0)
-                    {
-                        Guid id = m_FrameServer.Metadata.GetKeyframeId(m_iActiveKeyFrameIndex);
-                        DeleteKeyframe(id);
-                    }
-                    break;
-                case PlayerScreenCommands.CutDrawing:
-                    CutDrawing();
-                    break;
-                case PlayerScreenCommands.CopyDrawing:
-                    CopyDrawing();
-                    break;
-                case PlayerScreenCommands.PasteDrawing:
-                    PasteDrawing(false);
-                    break;
-                case PlayerScreenCommands.PasteInPlaceDrawing:
-                    PasteDrawing(true);
-                    break;
-                case PlayerScreenCommands.DeleteDrawing:
-                    DeleteSelectedDrawing();
-                    break;
-                case PlayerScreenCommands.CopyImage:
-                    CopyImageToClipboard();
-                    break;
-                case PlayerScreenCommands.ValidateDrawing:
-                    ValidateDrawing();
-                    break;
-                case PlayerScreenCommands.ChronometerStartStop:
-                    ChronometerStartStop();
-                    break;
-                case PlayerScreenCommands.ChronometerSplit:
-                    ChronometerSplit();
+
+                // Playback control
+                case PlayerScreenCommands.TogglePlay:
+                    OnButtonPlay();
                     break;
                 case PlayerScreenCommands.IncreaseSpeed1:
                     ChangeSpeed(1);
@@ -1411,8 +1327,77 @@ namespace Kinovea.ScreenManager
                 case PlayerScreenCommands.DecreaseSpeedRoundTo25:
                     ChangeSpeed(-25);
                     break;
-                case PlayerScreenCommands.Close:
-                    btnClose_Click(this, EventArgs.Empty);
+
+                // Frame by frame navigation
+                case PlayerScreenCommands.GotoPreviousImage:
+                    buttonGotoPrevious_Click(null, EventArgs.Empty);
+                    break;
+                case PlayerScreenCommands.GotoNextImage:
+                    buttonGotoNext_Click(null, EventArgs.Empty);
+                    break;
+                case PlayerScreenCommands.GotoFirstImage:
+                    buttonGotoFirst_Click(null, EventArgs.Empty);
+                    break;
+                case PlayerScreenCommands.GotoLastImage:
+                    buttonGotoLast_Click(null, EventArgs.Empty);
+                    break;
+                case PlayerScreenCommands.GotoPreviousImageForceLoop:
+                    if (m_iCurrentPosition <= m_iSelStart)
+                        buttonGotoLast_Click(null, EventArgs.Empty);
+                    else
+                        buttonGotoPrevious_Click(null, EventArgs.Empty);
+                    break;
+                case PlayerScreenCommands.BackwardRound10Percent:
+                    JumpToPercent(10, false);
+                    break;
+                case PlayerScreenCommands.ForwardRound10Percent:
+                    JumpToPercent(10, true);
+                    break;
+                case PlayerScreenCommands.BackwardRound1Percent:
+                    JumpToPercent(1, false);
+                    break;
+                case PlayerScreenCommands.ForwardRound1Percent:
+                    JumpToPercent(1, true);
+                    break;
+                case PlayerScreenCommands.GotoPreviousKeyframe:
+                    GotoPreviousKeyframe();
+                    break;
+                case PlayerScreenCommands.GotoNextKeyframe:
+                    GotoNextKeyframe();
+                    break;
+                case PlayerScreenCommands.GotoSyncPoint:
+                    ForceCurrentFrame(m_FrameServer.Metadata.TimeOrigin, true);
+                    break;
+
+                // Synchronization
+                case PlayerScreenCommands.IncreaseSyncAlpha:
+                    IncreaseSyncAlpha();
+                    break;
+                case PlayerScreenCommands.DecreaseSyncAlpha:
+                    DecreaseSyncAlpha();
+                    break;
+
+                // Zoom
+                case PlayerScreenCommands.IncreaseZoom:
+                    IncreaseDirectZoom(new Point(pbSurfaceScreen.Width / 2, pbSurfaceScreen.Height / 2));
+                    break;
+                case PlayerScreenCommands.DecreaseZoom:
+                    DecreaseDirectZoom(new Point(pbSurfaceScreen.Width / 2, pbSurfaceScreen.Height / 2));
+                    break;
+                case PlayerScreenCommands.ResetZoom:
+                    ResetZoom(true);
+                    break;
+
+                // Keyframes
+                case PlayerScreenCommands.AddKeyframe:
+                    AddKeyframe();
+                    break;
+                case PlayerScreenCommands.DeleteKeyframe:
+                    if (m_iActiveKeyFrameIndex >= 0)
+                    {
+                        Guid id = m_FrameServer.Metadata.GetKeyframeId(m_iActiveKeyFrameIndex);
+                        DeleteKeyframe(id);
+                    }
                     break;
                 case PlayerScreenCommands.Preset1:
                 case PlayerScreenCommands.Preset2:
@@ -1424,11 +1409,45 @@ namespace Kinovea.ScreenManager
                 case PlayerScreenCommands.Preset8:
                 case PlayerScreenCommands.Preset9:
                 case PlayerScreenCommands.Preset10:
-
                     // Get user-defined keyframe preset.
                     KeyframePreset preset = PreferencesManager.PlayerPreferences.KeyframePresets.GetPreset(command);
                     AddPresetKeyframe(preset.Name, preset.Color);
                     break;
+
+                // Annotations
+                case PlayerScreenCommands.CutDrawing:
+                    CutDrawing();
+                    break;
+                case PlayerScreenCommands.CopyDrawing:
+                    CopyDrawing();
+                    break;
+                case PlayerScreenCommands.PasteDrawing:
+                    PasteDrawing(false);
+                    break;
+                case PlayerScreenCommands.PasteInPlaceDrawing:
+                    PasteDrawing(true);
+                    break;
+                case PlayerScreenCommands.DeleteDrawing:
+                    DeleteSelectedDrawing();
+                    break;
+                case PlayerScreenCommands.ValidateDrawing:
+                    ValidateDrawing();
+                    break;
+                case PlayerScreenCommands.CopyImage:
+                    CopyImageToClipboard();
+                    break;
+                case PlayerScreenCommands.ToggleDrawingsVisibility:
+                    showDrawings = !showDrawings;
+                    DoInvalidate();
+                    break;
+                case PlayerScreenCommands.ChronometerStartStop:
+                    ChronometerStartStop();
+                    break;
+                case PlayerScreenCommands.ChronometerSplit:
+                    ChronometerSplit();
+                    break;
+                
+                
 
                 default:
                     return base.ExecuteCommand(cmd);
@@ -3750,7 +3769,9 @@ namespace Kinovea.ScreenManager
                 brush.Dispose();
             }
 
-            if ((m_bIsCurrentlyPlaying && PreferencesManager.PlayerPreferences.DrawOnPlay) || !m_bIsCurrentlyPlaying)
+            if (
+                (showDrawings && m_bIsCurrentlyPlaying && PreferencesManager.PlayerPreferences.DrawOnPlay) || 
+                (showDrawings && !m_bIsCurrentlyPlaying))
             {
                 // First draw the magnifier, this includes drawing the objects that are under
                 // the source area onto the destination area, and then draw the objects on the 

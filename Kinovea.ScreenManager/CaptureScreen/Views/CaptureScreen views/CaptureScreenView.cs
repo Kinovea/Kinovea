@@ -524,9 +524,6 @@ namespace Kinovea.ScreenManager
                         sldrDelay.StepJump( - target / sldrDelay.Maximum);
                         break;
                     }
-                case CaptureScreenCommands.ToggleArmingTrigger:
-                    presenter.View_ToggleArmingTrigger();
-                    break;
                 case CaptureScreenCommands.Close:
                     presenter.View_Close();
                     break;

@@ -284,11 +284,11 @@
     <Compile Include="Filesystem\FilesystemHelper.cs" />
     <Compile Include="Preferences\IPreferenceSerializer.cs" />
     <Compile Include="Preferences\KeyboardPreferences.cs" />
-    <Compile Include="WinForms\Commands.cs" />
+    <Compile Include="Commands\Commands.cs" />
     <Compile Include="WinForms\FormsHelper.cs" />
-    <Compile Include="WinForms\HotkeyCommand.cs" />
-    <Compile Include="WinForms\HotkeySettings.cs" />
-    <Compile Include="WinForms\HotkeySettingsManager.cs" />
+    <Compile Include="Commands\HotkeyCommand.cs" />
+    <Compile Include="Commands\HotkeySettings.cs" />
+    <Compile Include="Commands\HotkeySettingsManager.cs" />
     <Compile Include="WinForms\KeysExtensions.cs" />
     <Compile Include="WinForms\KinoveaControl.cs">
       <SubType>UserControl</SubType>

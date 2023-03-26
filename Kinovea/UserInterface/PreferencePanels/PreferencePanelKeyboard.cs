@@ -104,7 +104,7 @@ namespace Kinovea.Root
             foreach (HotkeyCommand command in commands)
             {
                 string name = command.Name;
-                string key = command.KeyData.ToText();
+                string key = command.KeyData == Keys.None ? "" : command.KeyData.ToText();
                 ListViewItem item = new ListViewItem(new string[] { name, key });
                 item.Tag = command;
                 if (command == selectedCommand)
