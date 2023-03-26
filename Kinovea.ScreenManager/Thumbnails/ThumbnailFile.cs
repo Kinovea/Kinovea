@@ -228,12 +228,20 @@ namespace Kinovea.ScreenManager
                     details.Details[FileProperty.Size] = "";
                 else
                     details.Details[FileProperty.Size] = string.Format("{0}×{1}", summary.ImageSize.Width, summary.ImageSize.Height);
-                
-                hasKva = summary.HasKva;
+
+                // Filesystem level properties.
+                bool hasKva = false;
+                DateTime creation = DateTime.Now;
+                if (!string.IsNullOrEmpty(summary.Filename) && File.Exists(summary.Filename))
+                {
+                    hasKva = VideoSummary.HasCompanionKva(summary.Filename);
+                    creation = File.GetCreationTime(summary.Filename);
+                }
+
                 if (hasKva)
                     details.Details[FileProperty.HasKva] = "kva";
 
-                details.Details[FileProperty.CreationTime] = string.Format("{0:g}", summary.Creation);
+                details.Details[FileProperty.CreationTime] = string.Format("{0:g}", creation);
 
                 SetSize(this.Width, this.Height);
             }
