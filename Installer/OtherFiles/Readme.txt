@@ -1,5 +1,5 @@
 
-Kinovea 0.9.6 - TBD.
+Kinovea 2023.1 - TBD.
 
 Kinovea is a free and open source video annotation tool designed for motion analysis.
 It features utilities to capture, slow down, compare, annotate and measure motion in videos.
@@ -56,10 +56,8 @@ Changelog:
     Improved - General: Save keyframes even if they are outside the working zone.
     Improved - General: Save video filters status and configuration.
     Improved - General: When importing a KVA file into a different video the times are now aligned by the time origins.
-    Improved - General: Support the coordinate system in capture screen.
-    Improved - General: Support the test grid in player screen.
     Improved - General: Support sorting files by name, date or size in the explorer.
-    Improved - General: Support navigating back and forth in the explorer, and to the parent directory.
+    Improved - General: Support navigating back, forth and up in the explorer.
     Improved - Playback: Using a video filter no longer prevents the usage of the normal video controls and drawings tools.
     Improved - Playback: Video filters are no longer deactivated when changing the working zone.
     Improved - Playback: Support rotation on single image files.
@@ -69,11 +67,14 @@ Changelog:
     Improved - Annotations: Support undo/redo for moving drawings.
     Improved - Annotations: Render drawings under the magnifier source.
     Improved - Annotations: Support moving all number objects at once using the SHIFT key.
-    Improved - Annotations: Support using polyline and curve tools in the capture screen.
-    Improved - Annotations: Added more display options to trajectories.
+    Improved - Annotations: Support the polyline and curve tools in the capture screen.
+    Improved - Annotations: Support the coordinate system in the capture screen.
+    Improved - Annotations: Support the test grid in the player screen.
+    Improved - Annotations: Added new options to trajectory objects.
+    Improved - Annotations: Added new options to the camera test grid.
+    Improved - Annotations: Added new options to the coordinate system.
     Improved - Capture: Image aspect and rotation from camera are now saved in the capture KVA.
     Improved - Capture: Added milliseconds to file naming patterns.
-    Improved - Capture: Added new options to the camera test grid.
     Improved - Data export: Output to Microsoft Excel now uses Office Open XML (XLSX) instead of MS-XML format.
     Improved - Data export: Output to LibreOffice Calc is now fully conformant with ODF 1.2 standard.
     Improved - Data export: All time types are now exported as numbers, textual timecodes are expressed in seconds.
