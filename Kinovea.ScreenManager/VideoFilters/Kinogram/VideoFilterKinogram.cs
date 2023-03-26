@@ -440,7 +440,7 @@ namespace Kinovea.ScreenManager
             mnuResetLabelPositions.Text = "Reset label positions";
 
             // Measurement
-            mnuMeasurement.Text = "Measure";
+            mnuMeasurement.Text = "Labels";
             foreach (var pair in mnuMeasureLabelTypes)
             {
                 ToolStripMenuItem tsmi = pair.Value;

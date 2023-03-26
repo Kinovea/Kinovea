@@ -90,12 +90,13 @@ namespace Kinovea.ScreenManager
             {
                 // Rebuild the menu to get the localized text.
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
-                ReinitializeMenu();
-                contextMenu.Add(mnuMeasurement);
+                ReloadMenusCulture();
 
-                mnuCalibrate.Text = ScreenManagerLang.mnuCalibrate;
-                contextMenu.Add(mnuCalibrate);
-                
+                contextMenu.AddRange(new ToolStripItem[] {
+                    mnuCalibrate,
+                    mnuMeasurement,
+                });
+
                 return contextMenu; 
             }
         }
@@ -120,9 +121,11 @@ namespace Kinovea.ScreenManager
         private MeasureLabelType measureLabelType = MeasureLabelType.None;
         private InfosFading infosFading;
 
-        // Context menu
+        #region Menus
         private ToolStripMenuItem mnuMeasurement = new ToolStripMenuItem();
+        private Dictionary<MeasureLabelType, ToolStripMenuItem> mnuMeasureLabelTypes = new Dictionary<MeasureLabelType, ToolStripMenuItem>();
         private ToolStripMenuItem mnuCalibrate = new ToolStripMenuItem();
+        #endregion
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -148,16 +151,30 @@ namespace Kinovea.ScreenManager
             // Fading
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
 
-            // Context menu
-            ReinitializeMenu();
-            mnuCalibrate.Image = Properties.Drawings.coordinates_graduations;
-            mnuCalibrate.Click += mnuCalibrate_Click;
+            InitializeMenus();
         }
         
         public DrawingLine(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
             : this(PointF.Empty, 0, 0)
         {
             ReadXml(xmlReader, scale, timestampMapper);
+        }
+
+        private void InitializeMenus()
+        {
+            // Measurement.    
+            mnuMeasurement.Image = Properties.Drawings.label;
+            mnuMeasurement.DropDownItems.Clear();
+            mnuMeasurement.DropDownItems.AddRange(new ToolStripItem[] {
+                CreateMeasureLabelTypeMenu(MeasureLabelType.None),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.Name),
+                new ToolStripSeparator(),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.TravelDistance),
+            });
+
+            // Calibrate
+            mnuCalibrate.Image = Properties.Drawings.coordinates_graduations;
+            mnuCalibrate.Click += mnuCalibrate_Click;
         }
         #endregion
 
@@ -487,77 +504,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Context menu
-        private void ReinitializeMenu()
-        {
-            InitializeMenuMeasurement();
-        }
-        private void InitializeMenuMeasurement()
-        {
-            mnuMeasurement.Image = Properties.Drawings.label;
-            mnuMeasurement.Text = ScreenManagerLang.mnuShowMeasure;
-
-            // TODO: unhook event handlers ?
-            mnuMeasurement.DropDownItems.Clear();
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.None));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.Name));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.TravelDistance));
-        }
-        private ToolStripMenuItem GetMeasurementMenu(MeasureLabelType data)
-        {
-            ToolStripMenuItem mnu = new ToolStripMenuItem();
-            mnu.Text = GetMeasureLabelOptionText(data);
-            mnu.Checked = measureLabelType == data;
-
-            mnu.Click += (s, e) =>
-            {
-                measureLabelType = data;
-                InvalidateFromMenu(s);
-
-                // Use this setting as the default value for new measurable objects.
-                if(ShowMeasurableInfoChanged != null)
-                    ShowMeasurableInfoChanged(this, new EventArgs<MeasureLabelType>(measureLabelType));
-            };
-
-            return mnu;
-        }
-
-        /// <summary>
-        /// Returns the user-facing name of a measure label type.
-        /// </summary>
-        private string GetMeasureLabelOptionText(MeasureLabelType data)
-        {
-            switch (data)
-            {
-                case MeasureLabelType.None: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None;
-                case MeasureLabelType.Name: return ScreenManagerLang.dlgConfigureDrawing_Name;
-                case MeasureLabelType.TravelDistance: return ScreenManagerLang.ExtraData_Length;
-            }
-
-            return "";
-        }
-
-        /// <summary>
-        /// Get the final measure label to be rendered.
-        /// </summary>
-        private string GetMeasureLabelText()
-        {
-            if (measureLabelType == MeasureLabelType.None)
-                return "";
-            
-            string displayText = "###";
-            switch (measureLabelType)
-            {
-                case MeasureLabelType.Name:
-                    displayText = name;
-                    break;
-                case MeasureLabelType.TravelDistance:
-                default:
-                    displayText = CalibrationHelper.GetLengthText(points["a"], points["b"], true, true);
-                    break;
-            }
-
-            return displayText;
-        }
         private void mnuCalibrate_Click(object sender, EventArgs e)
         {
             if(points["a"].NearlyCoincideWith(points["b"]))
@@ -643,7 +589,93 @@ namespace Kinovea.ScreenManager
             // Used only to attach the measure.
             return GeometryHelper.GetMiddlePoint(points["a"], points["b"]);
         }
+
+        private void ReloadMenusCulture()
+        {
+            // Calibrate
+            mnuCalibrate.Text = ScreenManagerLang.mnuCalibrate;
+
+            // Measurement
+            mnuMeasurement.Text = ScreenManagerLang.mnuShowMeasure;
+            foreach (var pair in mnuMeasureLabelTypes)
+            {
+                ToolStripMenuItem tsmi = pair.Value;
+                MeasureLabelType measureLabelType = pair.Key;
+                tsmi.Text = GetMeasureLabelOptionText(measureLabelType);
+                tsmi.Checked = this.measureLabelType == measureLabelType;
+            }
+        }
         
+        private ToolStripMenuItem CreateMeasureLabelTypeMenu(MeasureLabelType measureLabelType)
+        {
+            ToolStripMenuItem mnu = new ToolStripMenuItem();
+            mnu.Click += mnuMeasureLabelType_Click;
+            mnuMeasureLabelTypes.Add(measureLabelType, mnu);
+            return mnu;
+        }
+
+        private void mnuMeasureLabelType_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
+            if (tsmi == null)
+                return;
+
+            MeasureLabelType measureLabelType = MeasureLabelType.None;
+            foreach (var pair in mnuMeasureLabelTypes)
+            {
+                if (pair.Value == tsmi)
+                {
+                    measureLabelType = pair.Key;
+                    break;
+                }
+            }
+
+            this.measureLabelType = measureLabelType;
+            InvalidateFromMenu(tsmi);
+
+            if (ShowMeasurableInfoChanged != null)
+                ShowMeasurableInfoChanged(this, new EventArgs<MeasureLabelType>(measureLabelType));
+        }
+
+        /// <summary>
+        /// Returns the user-facing name of a measure label type.
+        /// </summary>
+        private string GetMeasureLabelOptionText(MeasureLabelType data)
+        {
+            switch (data)
+            {
+                case MeasureLabelType.None: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None;
+                case MeasureLabelType.Name: return ScreenManagerLang.dlgConfigureDrawing_Name;
+                case MeasureLabelType.TravelDistance: return ScreenManagerLang.ExtraData_Length;
+            }
+
+            return "";
+        }
+
+        /// <summary>
+        /// Get the final measure label to be rendered.
+        /// </summary>
+        private string GetMeasureLabelText()
+        {
+            string displayText = "";
+            switch (measureLabelType)
+            {
+                case MeasureLabelType.None:
+                    displayText = "";
+                    break;
+                case MeasureLabelType.Name:
+                    displayText = name;
+                    break;
+                case MeasureLabelType.TravelDistance:
+                    displayText = CalibrationHelper.GetLengthText(points["a"], points["b"], true, true);
+                    break;
+                default:
+                    break;
+            }
+
+            return displayText;
+        }
+
         #endregion
     }
 }

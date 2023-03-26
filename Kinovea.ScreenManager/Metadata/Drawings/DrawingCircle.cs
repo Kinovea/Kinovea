@@ -81,11 +81,15 @@ namespace Kinovea.ScreenManager
         {
             get
             {
-                // Rebuild the menu to get the localized text.
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
-                ReinitializeMenu();
-                contextMenu.Add(mnuMeasurement);
-                contextMenu.Add(mnuShowCenter);
+                ReloadMenusCulture();
+
+                contextMenu.AddRange(new ToolStripItem[] {
+                    mnuOptions,
+                    mnuMeasurement,
+                });
+
+                mnuShowCenter.Checked = showCenter;
                 return contextMenu;
             }
         }
@@ -117,8 +121,13 @@ namespace Kinovea.ScreenManager
         private static readonly float crossRadius = crossSize / 2.0f;
         private MiniLabel miniLabel = new MiniLabel();
         private MeasureLabelType measureLabelType = MeasureLabelType.None;
+
+        #region Menus
         private ToolStripMenuItem mnuMeasurement = new ToolStripMenuItem();
+        private Dictionary<MeasureLabelType, ToolStripMenuItem> mnuMeasureLabelTypes = new Dictionary<MeasureLabelType, ToolStripMenuItem>();
+        private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowCenter = new ToolStripMenuItem();
+        #endregion
 
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
@@ -163,15 +172,35 @@ namespace Kinovea.ScreenManager
             style = preset.Clone();
             BindStyle();
 
-            mnuShowCenter.Image = Properties.Drawings.crossmark;
-            mnuShowCenter.Checked = showCenter;
-            mnuShowCenter.Click += mnuShowCenter_Click;
-            ReinitializeMenu();
+            InitializeMenus();
         }
         public DrawingCircle(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
             : this(PointF.Empty, 0, 0)
         {
             ReadXml(xmlReader, scale, timestampMapper);
+        }
+        private void InitializeMenus()
+        {
+            // Measurement.    
+            mnuMeasurement.Image = Properties.Drawings.label;
+            mnuMeasurement.DropDownItems.Clear();
+            mnuMeasurement.DropDownItems.AddRange(new ToolStripItem[] {
+                CreateMeasureLabelTypeMenu(MeasureLabelType.None),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.Name),
+                new ToolStripSeparator(),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.Center),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.Radius),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.Diameter),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.Circumference),
+            });
+
+            // Options
+            mnuOptions.Image = Properties.Resources.equalizer;
+            mnuShowCenter.Image = Properties.Drawings.crossmark;
+            mnuShowCenter.Click += mnuShowCenter_Click;
+            mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
+                mnuShowCenter,
+            });
         }
         #endregion
 
@@ -418,87 +447,7 @@ namespace Kinovea.ScreenManager
             showCenter = mnuShowCenter.Checked;
             InvalidateFromMenu(sender);
         }
-        private void ReinitializeMenu()
-        {
-            InitializeMenuMeasurement();
-            mnuShowCenter.Text = ScreenManagerLang.mnuShowCircleCenter;
-            mnuShowCenter.Checked = showCenter;
-        }
-        private void InitializeMenuMeasurement()
-        {
-            //mnuMeasurement.MergeIndex = 4;
-            mnuMeasurement.Image = Properties.Drawings.label;
-            mnuMeasurement.Text = ScreenManagerLang.mnuShowMeasure;
-
-            // TODO: unhook event handlers ?
-            mnuMeasurement.DropDownItems.Clear();
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.None));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.Name));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.Center));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.Radius));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.Diameter));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(MeasureLabelType.Circumference));
-        }
-        private ToolStripMenuItem GetMeasurementMenu(MeasureLabelType data)
-        {
-            ToolStripMenuItem mnu = new ToolStripMenuItem();
-            mnu.Text = GetMeasureLabelOptionText(data);
-            mnu.Checked = measureLabelType == data;
-
-            mnu.Click += (s, e) =>
-            {
-                measureLabelType = data;
-                ResetAttachPoint();
-                InvalidateFromMenu(s);
-
-                if(ShowMeasurableInfoChanged != null)
-                    ShowMeasurableInfoChanged(this, new EventArgs<MeasureLabelType>(measureLabelType));
-            };
-
-            return mnu;
-        }
-        private string GetMeasureLabelOptionText(MeasureLabelType data)
-        {
-            switch (data)
-            {
-                case MeasureLabelType.None: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None;
-                case MeasureLabelType.Name: return ScreenManagerLang.dlgConfigureDrawing_Name;
-                case MeasureLabelType.Center: return ScreenManagerLang.ExtraData_Center;
-                case MeasureLabelType.Radius: return ScreenManagerLang.ExtraData_Radius;
-                case MeasureLabelType.Diameter: return ScreenManagerLang.ExtraData_Diameter;
-                case MeasureLabelType.Circumference: return ScreenManagerLang.ExtraData_Circumference;
-            }
-
-            return "";
-        }
-        private string GetMeasureLabelText(long currentTimestamp)
-        {
-            if (measureLabelType == MeasureLabelType.None)
-                return "";
-
-            string displayText = "###";
-            switch (measureLabelType)
-            {
-                case MeasureLabelType.Center:
-                    displayText = CalibrationHelper.GetPointText(center, true, true, currentTimestamp);
-                    break;
-                case MeasureLabelType.Radius:
-                    displayText = CalibrationHelper.GetLengthText(center, radiusRightInImage, true, true);
-                    break;
-                case MeasureLabelType.Diameter:
-                    displayText = CalibrationHelper.GetLengthText(radiusLeftInImage, radiusRightInImage, true, true);
-                    break;
-                case MeasureLabelType.Circumference:
-                    displayText = CalibrationHelper.GetCircumferenceText(center, radiusRightInImage, true, true);
-                    break;
-                case MeasureLabelType.Name:
-                default:
-                    displayText = name;
-                    break;
-            }
-
-            return displayText;
-        }
+        
         #endregion
         
         #region IMeasurable implementation
@@ -613,6 +562,98 @@ namespace Kinovea.ScreenManager
             {
                 areaPath.AddEllipse(center.Box(radius));
             }
+        }
+
+        private void ReloadMenusCulture()
+        {
+            // Measurement
+            mnuMeasurement.Text = "Measurement";
+            foreach (var pair in mnuMeasureLabelTypes)
+            {
+                ToolStripMenuItem tsmi = pair.Value;
+                MeasureLabelType measureLabelType = pair.Key;
+                tsmi.Text = GetMeasureLabelOptionText(measureLabelType);
+                tsmi.Checked = this.measureLabelType == measureLabelType;
+            }
+
+            // Options
+            mnuOptions.Text = "Options";
+            mnuShowCenter.Text = ScreenManagerLang.mnuShowCircleCenter;
+        }
+
+        private ToolStripMenuItem CreateMeasureLabelTypeMenu(MeasureLabelType measureLabelType)
+        {
+            ToolStripMenuItem mnu = new ToolStripMenuItem();
+            mnu.Click += mnuMeasureLabelType_Click;
+            mnuMeasureLabelTypes.Add(measureLabelType, mnu);
+            return mnu;
+        }
+        private void mnuMeasureLabelType_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
+            if (tsmi == null)
+                return;
+
+            MeasureLabelType measureLabelType = MeasureLabelType.None;
+            foreach (var pair in mnuMeasureLabelTypes)
+            {
+                if (pair.Value == tsmi)
+                {
+                    measureLabelType = pair.Key;
+                    break;
+                }
+            }
+
+            this.measureLabelType = measureLabelType;
+            ResetAttachPoint();
+            InvalidateFromMenu(tsmi);
+
+            if (ShowMeasurableInfoChanged != null)
+                ShowMeasurableInfoChanged(this, new EventArgs<MeasureLabelType>(measureLabelType));
+        }
+        private string GetMeasureLabelOptionText(MeasureLabelType data)
+        {
+            switch (data)
+            {
+                case MeasureLabelType.None: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None;
+                case MeasureLabelType.Name: return ScreenManagerLang.dlgConfigureDrawing_Name;
+                case MeasureLabelType.Center: return ScreenManagerLang.ExtraData_Center;
+                case MeasureLabelType.Radius: return ScreenManagerLang.ExtraData_Radius;
+                case MeasureLabelType.Diameter: return ScreenManagerLang.ExtraData_Diameter;
+                case MeasureLabelType.Circumference: return ScreenManagerLang.ExtraData_Circumference;
+            }
+
+            return "";
+        }
+        private string GetMeasureLabelText(long timestamp)
+        {
+            string displayText = "";
+            switch (measureLabelType)
+            {
+                case MeasureLabelType.None:
+                    displayText = "";
+                    break;
+                case MeasureLabelType.Name:
+                    displayText = name;
+                    break;
+
+                case MeasureLabelType.Center:
+                    displayText = CalibrationHelper.GetPointText(center, true, true, timestamp);
+                    break;
+                case MeasureLabelType.Radius:
+                    displayText = CalibrationHelper.GetLengthText(center, radiusRightInImage, true, true);
+                    break;
+                case MeasureLabelType.Diameter:
+                    displayText = CalibrationHelper.GetLengthText(radiusLeftInImage, radiusRightInImage, true, true);
+                    break;
+                case MeasureLabelType.Circumference:
+                    displayText = CalibrationHelper.GetCircumferenceText(center, radiusRightInImage, true, true);
+                    break;
+                default:
+                    break;
+            }
+
+            return displayText;
         }
         #endregion
     }

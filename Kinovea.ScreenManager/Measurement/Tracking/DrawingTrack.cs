@@ -185,7 +185,7 @@ namespace Kinovea.ScreenManager
                 contextMenu.AddRange(new ToolStripItem[] {
                     mnuVisibility,
                     mnuTracking,
-                    mnuDisplayOptions,
+                    mnuOptions,
                     mnuMeasurement,
                 });
 
@@ -202,7 +202,7 @@ namespace Kinovea.ScreenManager
 
                 mnuVisibility.Enabled = trackStatus == TrackStatus.Interactive;
                 mnuMeasurement.Enabled = trackStatus == TrackStatus.Interactive;
-                mnuDisplayOptions.Enabled = trackStatus == TrackStatus.Interactive;
+                mnuOptions.Enabled = trackStatus == TrackStatus.Interactive;
 
                 // Disable the keyframe labels menu if we are not showing anything.
                 // This serves as a hint that we must first select a measurement type.
@@ -293,7 +293,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuMeasurement = new ToolStripMenuItem();
         private Dictionary<MeasureLabelType, ToolStripMenuItem> mnuMeasureLabelTypes = new Dictionary<MeasureLabelType, ToolStripMenuItem>();
         
-        private ToolStripMenuItem mnuDisplayOptions = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSeeFuture = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowTrackLabel = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowKeyframeLabel = new ToolStripMenuItem();
@@ -402,7 +402,8 @@ namespace Kinovea.ScreenManager
                 CreateMeasureLabelTypeMenu(MeasureLabelType.VerticalAcceleration),
             });
 
-            mnuDisplayOptions.Image = Properties.Resources.equalizer;
+            // Options
+            mnuOptions.Image = Properties.Resources.equalizer;
             mnuSeeFuture.Image = Properties.Drawings.binocular;
             mnuShowTrackLabel.Image = Properties.Drawings.label;
             mnuShowKeyframeLabel.Image = Properties.Drawings.label;
@@ -417,7 +418,7 @@ namespace Kinovea.ScreenManager
             mnuIsInteractiveTrack.Click += MnuIsInteractiveTrack_Click;
             mnuShowRotationCircle.Click += MnuShowRotationCircle_Click;
 
-            mnuDisplayOptions.DropDownItems.AddRange(new ToolStripItem[] {
+            mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuSeeFuture,
                 mnuShowTrackLabel,
                 mnuShowKeyframeLabel,
@@ -868,7 +869,7 @@ namespace Kinovea.ScreenManager
                 case MeasureLabelType.RelativeTime: return "Stopwatch";
 
                 case MeasureLabelType.Position: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Position;
-                case MeasureLabelType.TravelDistance: return "Travel distance"; //ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalDistance;
+                case MeasureLabelType.TravelDistance: return ScreenManagerLang.ExtraData_Length;
                 case MeasureLabelType.TotalHorizontalDisplacement: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement;
                 case MeasureLabelType.TotalVerticalDisplacement: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalVerticalDisplacement;
 
@@ -1815,7 +1816,7 @@ namespace Kinovea.ScreenManager
             mnuTrackingTrim.Text = ScreenManagerLang.mnuDeleteEndOfTrajectory;
 
             // Measurement
-            mnuMeasurement.Text = "Measure";
+            mnuMeasurement.Text = "Measurement";
             foreach (var pair in mnuMeasureLabelTypes)
             {
                 ToolStripMenuItem tsmi = pair.Value;
@@ -1825,7 +1826,7 @@ namespace Kinovea.ScreenManager
             }
 
             // Display options
-            mnuDisplayOptions.Text = "Options";
+            mnuOptions.Text = "Options";
             mnuSeeFuture.Text = "See future";
             mnuShowTrackLabel.Text = "Show track label";
             mnuShowKeyframeLabel.Text = "Show key image labels";
