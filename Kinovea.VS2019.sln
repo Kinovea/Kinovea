@@ -58,8 +58,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinovea.Video", "Kinovea.Vi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Kinovea.Video.FFMpeg", "Kinovea.Video.FFMpeg\PlayerServer\PlayerServer.vcxproj", "{F80DBE6D-D394-4811-B5E6-7528F849C71A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinovea.Tests", "Kinovea.Tests\Kinovea.Tests.csproj", "{506486BB-5E65-49DF-A84C-EFC058E81E46}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinovea.Video.Synthetic", "Kinovea.Video.Synthetic\Kinovea.Video.Synthetic.csproj", "{94D6DE5A-B99A-4EED-AF5B-C08746EA568E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinovea.Camera.FrameGenerator", "Kinovea.Camera.FrameGenerator\Kinovea.Camera.FrameGenerator.csproj", "{6358DC91-456D-41D3-8C73-6EE39C6E3048}"
@@ -239,18 +237,6 @@ Global
 		{F80DBE6D-D394-4811-B5E6-7528F849C71A}.Release|x64.ActiveCfg = Release|x64
 		{F80DBE6D-D394-4811-B5E6-7528F849C71A}.Release|x64.Build.0 = Release|x64
 		{F80DBE6D-D394-4811-B5E6-7528F849C71A}.Release|x86.ActiveCfg = Release|x64
-		{506486BB-5E65-49DF-A84C-EFC058E81E46}.Debug|x64.ActiveCfg = Debug|x64
-		{506486BB-5E65-49DF-A84C-EFC058E81E46}.Debug|x64.Build.0 = Debug|x64
-		{506486BB-5E65-49DF-A84C-EFC058E81E46}.Debug|x86.ActiveCfg = Debug|x86
-		{506486BB-5E65-49DF-A84C-EFC058E81E46}.Debug|x86.Build.0 = Debug|x86
-		{506486BB-5E65-49DF-A84C-EFC058E81E46}.DebugExternals|x64.ActiveCfg = Debug|x64
-		{506486BB-5E65-49DF-A84C-EFC058E81E46}.DebugExternals|x64.Build.0 = Debug|x64
-		{506486BB-5E65-49DF-A84C-EFC058E81E46}.DebugExternals|x86.ActiveCfg = Debug|x86
-		{506486BB-5E65-49DF-A84C-EFC058E81E46}.DebugExternals|x86.Build.0 = Debug|x86
-		{506486BB-5E65-49DF-A84C-EFC058E81E46}.Release|x64.ActiveCfg = Release|x64
-		{506486BB-5E65-49DF-A84C-EFC058E81E46}.Release|x64.Build.0 = Release|x64
-		{506486BB-5E65-49DF-A84C-EFC058E81E46}.Release|x86.ActiveCfg = Release|x86
-		{506486BB-5E65-49DF-A84C-EFC058E81E46}.Release|x86.Build.0 = Release|x86
 		{94D6DE5A-B99A-4EED-AF5B-C08746EA568E}.Debug|x64.ActiveCfg = Debug|x64
 		{94D6DE5A-B99A-4EED-AF5B-C08746EA568E}.Debug|x64.Build.0 = Debug|x64
 		{94D6DE5A-B99A-4EED-AF5B-C08746EA568E}.Debug|x86.ActiveCfg = Debug|x86
