@@ -78,9 +78,9 @@
   </data>
   <data name="Updater_NewVersion" xml:space="preserve"><value>새 버전</value>
   </data>
-  <data name="Updater_Quit" xml:space="preserve"><value>나가기</value>
+  <data name="Updater_Quit" xml:space="preserve"><value>종료</value>
   </data>
-  <data name="Updater_Title" xml:space="preserve"><value>Kinovea-새 버전을 확인하세요.</value>
+  <data name="Updater_Title" xml:space="preserve"><value>Kinovea - 새 버전을 확인 중입니다.</value>
   </data>
   <data name="Updater_UpToDate" xml:space="preserve"><value>최신 버전입니다!</value>
   </data>
