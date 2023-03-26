@@ -117,6 +117,7 @@ namespace Kinovea.ScreenManager
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
+            DrawRecordingIndicator(e.Graphics);
             
             if(controller.Bitmap == null)
                 return;
@@ -125,7 +126,6 @@ namespace Kinovea.ScreenManager
 
             DrawImage(e.Graphics);
             DrawKVA(e.Graphics);
-            DrawRecordingIndicator(e.Graphics);
             DrawResizers(e.Graphics);
             toaster.Draw(e.Graphics);
         }
@@ -168,9 +168,6 @@ namespace Kinovea.ScreenManager
             int bannerHeight = GetBannerHeight(recordingStatus);
             int progressPixels = (int)(recordingStatusProgress * this.Width);
             
-            if (recordingStatus == RecordingStatus.Recording)
-                canvas.DrawRectangle(Pens.Red, displayRectangle);
-            
             using (SolidBrush brush = new SolidBrush(bannerColor))
             {
                 canvas.FillRectangle(brush, new Rectangle(0, 0, progressPixels, bannerHeight));
@@ -181,12 +178,14 @@ namespace Kinovea.ScreenManager
         {
             switch (status)
             {
+                case RecordingStatus.Disconnected:
+                    return Color.DarkOrchid;
+                case RecordingStatus.Paused:
+                    return Color.Khaki;
                 case RecordingStatus.Armed:
                     return Color.LightGreen;
                 case RecordingStatus.Recording:
                     return Color.Red;
-                case RecordingStatus.NotGrabbing:
-                    return Color.DarkOrchid;
                 case RecordingStatus.Disarmed:
                 case RecordingStatus.Quiet:
                 default:
@@ -200,10 +199,11 @@ namespace Kinovea.ScreenManager
             {
                 case RecordingStatus.Recording:
                     return 50;
-                case RecordingStatus.NotGrabbing:
+                case RecordingStatus.Disconnected:
                 case RecordingStatus.Armed:
                 case RecordingStatus.Quiet:
                     return 25;
+                case RecordingStatus.Paused:
                 case RecordingStatus.Disarmed:
                 default:
                     return 10;

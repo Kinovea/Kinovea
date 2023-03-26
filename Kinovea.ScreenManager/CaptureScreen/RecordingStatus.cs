@@ -12,9 +12,19 @@ namespace Kinovea.ScreenManager
     public enum RecordingStatus
     {
         /// <summary>
-        /// Grabbing is running and audio trigger is disarmed.
+        /// The camera is disconnected.
+        /// </summary>
+        Disconnected,
+
+        /// <summary>
+        /// The camera stream is paused.
+        /// </summary>
+        Paused,
+
+        /// <summary>
+        /// The camera is streaming and audio trigger is disarmed.
         /// Recording can still be started manually.
-        /// This is the default state.
+        /// This is the default state when connected.
         /// </summary>
         Disarmed,
 
@@ -27,11 +37,6 @@ namespace Kinovea.ScreenManager
         /// Audio trigger is in the quiet period.
         /// </summary>
         Quiet,
-
-        /// <summary>
-        /// The camera stream is paused.
-        /// </summary>
-        NotGrabbing,
 
         /// <summary>
         /// Recording is in progress.

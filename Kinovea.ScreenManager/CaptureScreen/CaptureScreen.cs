@@ -686,7 +686,7 @@ namespace Kinovea.ScreenManager
 
             delayer.FreeAll();
             UpdateDelayMaxAge();
-
+            UpdateRecordingIndicator();
             UpdateTitle();
             cameraLoaded = false;
         }
@@ -906,6 +906,7 @@ namespace Kinovea.ScreenManager
 
             prepareFailedImageDescriptor = ImageDescriptor.Invalid;
             UpdateTitle();
+            UpdateRecordingIndicator();
         }
 
         private void ConfigureCamera()
@@ -1582,14 +1583,18 @@ namespace Kinovea.ScreenManager
             // There are other calls to viewportController.UpdateRecordingIndicator when we need to pass different progress value.
             RecordingStatus status = RecordingStatus.Disarmed;
             
-            if (cameraGrabber != null && !cameraGrabber.Grabbing)
-                status = RecordingStatus.NotGrabbing;
+            if (!cameraLoaded)
+                status = RecordingStatus.Disconnected;
+            else if (cameraGrabber != null && !cameraGrabber.Grabbing)
+                status = RecordingStatus.Paused;
             else if (recording)
                 status = RecordingStatus.Recording;
             else if (inQuietPeriod)
                 status = RecordingStatus.Quiet;
             else if (triggerArmed)
                 status = RecordingStatus.Armed;
+            else
+                status = RecordingStatus.Disarmed;
 
             viewportController.UpdateRecordingIndicator(status, 1.0f);
         }
