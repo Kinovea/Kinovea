@@ -272,6 +272,7 @@ namespace Kinovea.ScreenManager
         // Timing
         private TimeMapper timeMapper = new TimeMapper();
         private double slowMotion = 1;  // Current scaling relatively to the nominal speed of the video.
+        private float timeGrabSpeed = 25.0f / 500.0f; // Speed of time grab in frames per pixel.
 
         // Synchronisation
         private bool m_bSynched;
@@ -1761,16 +1762,15 @@ namespace Kinovea.ScreenManager
 
             if (m_bIsCurrentlyPlaying)
             {
-                // Go into Pause mode.
+                // Pause playback.
                 StopPlaying();
                 OnPauseAsked();
                 buttonPlay.Image = Player.flatplay;
                 ActivateKeyframe(m_iCurrentPosition);
-                ToastPause();
             }
             else
             {
-                // Go into Play mode
+                // Start playback.
                 buttonPlay.Image = Resources.flatpause3b;
                 StartMultimediaTimer(GetPlaybackFrameInterval());
                 PlayStarted?.Invoke(this, EventArgs.Empty);
@@ -2830,10 +2830,10 @@ namespace Kinovea.ScreenManager
 
             if (e.Button == MouseButtons.Left)
                 SurfaceScreen_LeftDown();
-            else if (e.Button == MouseButtons.Right)
-                SurfaceScreen_RightDown();
             else if (e.Button == MouseButtons.Middle)
                 SurfaceScreen_MiddleDown();
+            else if (e.Button == MouseButtons.Right)
+                SurfaceScreen_RightDown();
 
             DoInvalidate();
         }
@@ -2845,36 +2845,13 @@ namespace Kinovea.ScreenManager
                 StopPlaying();
                 OnPauseAsked();
                 ActivateKeyframe(m_iCurrentPosition);
-                ToastPause();
             }
 
             m_FrameServer.Metadata.AllDrawingTextToNormalMode();
 
             if (m_ActiveTool == m_PointerTool)
             {
-                m_PointerTool.OnMouseDown(m_FrameServer.Metadata, m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition, PreferencesManager.PlayerPreferences.DefaultFading.Enabled);
-
-                if (m_FrameServer.Metadata.HitDrawing != null)
-                {
-                    SetCursor(cursorManager.GetManipulationCursor(m_FrameServer.Metadata.HitDrawing));
-                }
-                else
-                {
-                    SetCursor(m_PointerTool.GetCursor(1));
-
-                    bool hitMagnifier = false;
-                    if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Active)
-                    {
-                        hitMagnifier = m_FrameServer.Metadata.Magnifier.OnMouseDown(m_DescaledMouse, m_FrameServer.Metadata.ImageTransform);
-                    }
-
-                    if (!hitMagnifier)
-                    {
-                        if (videoFilterIsActive)
-                            m_FrameServer.Metadata.ActiveVideoFilter.StartMove(m_DescaledMouse);
-                    }
-
-                }
+                HandToolDown();
             }
             else if (m_ActiveTool == ToolManager.Tools["Spotlight"])
             {
@@ -2901,19 +2878,27 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
+
         private void SurfaceScreen_MiddleDown()
         {
-            // Middle mouse button is used to pan the image or move a drawing while the active tool is not the hand tool.
+            // Middle mouse button is a shortcut to temporary use the hand tool, disregarding the selected tool.
+            // It should provide exactly the same interaction mechanics as if we were using Left mouse button with hand tool selected.
+
             if (m_bIsCurrentlyPlaying)
             {
                 // MouseDown while playing: Halt the video.
                 StopPlaying();
                 OnPauseAsked();
                 ActivateKeyframe(m_iCurrentPosition);
-                ToastPause();
             }
 
+            HandToolDown();
+        }
+
+        private void HandToolDown()
+        {
             m_PointerTool.OnMouseDown(m_FrameServer.Metadata, m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition, PreferencesManager.PlayerPreferences.DefaultFading.Enabled);
+
             if (m_FrameServer.Metadata.HitDrawing != null)
             {
                 SetCursor(cursorManager.GetManipulationCursor(m_FrameServer.Metadata.HitDrawing));
@@ -2934,8 +2919,8 @@ namespace Kinovea.ScreenManager
                         m_FrameServer.Metadata.ActiveVideoFilter.StartMove(m_DescaledMouse);
                 }
             }
-                
         }
+
         private void CreateNewDrawing(Guid managerId)
         {
             m_FrameServer.Metadata.DeselectAll();
@@ -3139,12 +3124,9 @@ namespace Kinovea.ScreenManager
                     PrepareFilterContextMenu(m_FrameServer.Metadata.ActiveVideoFilter, popMenuFilter);
 
                     popMenuFilter.Items.Add(new ToolStripSeparator());
-
                     mnuExitFilter.Text = string.Format("Exit {0}", m_FrameServer.Metadata.ActiveVideoFilter.FriendlyName);
                     popMenuFilter.Items.Add(mnuExitFilter);
-
                     popMenuFilter.Items.Add(new ToolStripSeparator());
-
                     popMenuFilter.Items.Add(mnuSaveAnnotations);
                     popMenuFilter.Items.Add(mnuSaveAnnotationsAs);
 
@@ -3179,10 +3161,22 @@ namespace Kinovea.ScreenManager
             popMenu.Items.Clear();
             popMenu.Items.AddRange(new ToolStripItem[]
             {
-                        mnuTimeOrigin, mnuDirectTrack, new ToolStripSeparator(),
-                        mnuCopyPic, mnuPastePic, mnuPasteDrawing, new ToolStripSeparator(),
-                        mnuOpenVideo, mnuOpenReplayWatcher, mnuOpenAnnotations, new ToolStripSeparator(),
-                        mnuSaveAnnotations, mnuSaveAnnotationsAs, mnuExportVideo, mnuExportImage, new ToolStripSeparator(),
+                        mnuTimeOrigin, 
+                        mnuDirectTrack, 
+                        new ToolStripSeparator(),
+                        mnuCopyPic, 
+                        mnuPastePic, 
+                        mnuPasteDrawing, 
+                        new ToolStripSeparator(),
+                        mnuOpenVideo, 
+                        mnuOpenReplayWatcher, 
+                        mnuOpenAnnotations, 
+                        new ToolStripSeparator(),
+                        mnuSaveAnnotations, 
+                        mnuSaveAnnotationsAs, 
+                        mnuExportVideo, 
+                        mnuExportImage, 
+                        new ToolStripSeparator(),
                         mnuCloseScreen
             });
         }
@@ -3305,7 +3299,6 @@ namespace Kinovea.ScreenManager
 
             return true;
         }
-
         private void PrepareTrackContextMenu(DrawingTrack track, ContextMenuStrip popMenu)
         {
             popMenu.Items.Clear();
@@ -3316,7 +3309,6 @@ namespace Kinovea.ScreenManager
             if (customMenus)
                 popMenu.Items.Add(new ToolStripSeparator());
         }
-
         private void PrepareMagnifierContextMenu(ContextMenuStrip popMenu)
         {
             popMenu.Items.Clear();
@@ -3380,11 +3372,13 @@ namespace Kinovea.ScreenManager
 
             if (e.Button == MouseButtons.None && m_FrameServer.Metadata.Magnifier.Initializing)
             {
+                // Moving the magnifier source area around.
                 m_FrameServer.Metadata.Magnifier.InitializeMove(m_DescaledMouse, ModifierKeys);
                 DoInvalidate();
             }
             else if (e.Button == MouseButtons.None && m_FrameServer.Metadata.DrawingInitializing)
             {
+                // Moving the third+ point of a drawing that was just created.
                 IInitializable initializableDrawing = m_FrameServer.Metadata.HitDrawing as IInitializable;
                 if (initializableDrawing != null)
                 {
@@ -3396,8 +3390,7 @@ namespace Kinovea.ScreenManager
             {
                 if (m_ActiveTool != m_PointerTool)
                 {
-                    // Initialization of a drawing that is in the process of being added.
-                    // (ex: dragging the second point of a line that we just added).
+                    // Moving the second point of a drawing that was just created.
                     // Tools that are not IInitializable should reset to Pointer tool right after creation.
                     if (m_ActiveTool == ToolManager.Tools["Spotlight"])
                     {
@@ -3410,84 +3403,86 @@ namespace Kinovea.ScreenManager
                         if (initializableDrawing != null)
                             initializableDrawing.InitializeMove(m_DescaledMouse, ModifierKeys);
                     }
-                }
-                else
-                {
-                    // Manipulation of an existing drawing via a handle.
-                    if (m_ActiveTool == m_PointerTool && !m_bIsCurrentlyPlaying)
+
+                    if (!m_bIsCurrentlyPlaying)
                     {
-                        // Magnifier is not being moved or is invisible, try drawings through pointer tool.
-                        // (including chronos, tracks and grids)
-                        bool movingObject = m_PointerTool.OnMouseMove(m_FrameServer.Metadata, m_DescaledMouse, m_FrameServer.ImageTransform.ZoomWindow.Location, ModifierKeys);
-
-                        if (!movingObject && m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Active)
-                        {
-                            movingObject = m_FrameServer.Metadata.Magnifier.OnMouseMove(m_DescaledMouse, ModifierKeys);
-                        }
-                        
-                        if (!movingObject)
-                        {
-                            // User is not moving anything: pan the whole image.
-                            // This may not have any effect if we try to move outside the original size and not in "free move" mode.
-
-                            // Get mouse deltas (descaled=in image coords).
-                            float dx = m_PointerTool.MouseDelta.X;
-                            float dy = m_PointerTool.MouseDelta.Y;
-
-                            if (!videoFilterIsActive || (ModifierKeys & Keys.Control) == Keys.Control)
-                            {
-                                bool contain = m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.Inactive;
-                                m_FrameServer.ImageTransform.MoveZoomWindow(dx, dy, contain);
-                            }
-                            else
-                            {
-                                m_FrameServer.Metadata.ActiveVideoFilter.Move(dx, dy, ModifierKeys);
-                                DoInvalidate();
-                            }
-                        }
+                        DoInvalidate();
                     }
                 }
-
-                if (!m_bIsCurrentlyPlaying)
+                else if (!m_bIsCurrentlyPlaying)
                 {
-                    DoInvalidate();
+                    HandMove();
                 }
             }
             else if (e.Button == MouseButtons.Middle)
             {
-                // Middle mouse button: allow to move stuff even if we have a tool selected.
-                // This allow to zoom and pan while having an active tool.
+                // Middle mouse button: supercedes the selected tool to provide manipulation.
                 if (!m_bIsCurrentlyPlaying)
                 {
-                    bool movingObject = m_PointerTool.OnMouseMove(m_FrameServer.Metadata, m_DescaledMouse, m_FrameServer.ImageTransform.ZoomWindow.Location, ModifierKeys);
-                    
-                    if (!movingObject && m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Active)
-                    {
-                        movingObject = m_FrameServer.Metadata.Magnifier.OnMouseMove(m_DescaledMouse, ModifierKeys);
-                    }
-                    
-                    if (!movingObject)
-                    {
-                        // Move the whole image.
-                        float dx = m_PointerTool.MouseDelta.X;
-                        float dy = m_PointerTool.MouseDelta.Y;
-                        
-                        if (!videoFilterIsActive || (ModifierKeys & Keys.Control) == Keys.Control)
-                        {
-                            bool contain = m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.Inactive;
-                            m_FrameServer.ImageTransform.MoveZoomWindow(dx, dy, contain);
-                        }
-                        else
-                        {
-                            m_FrameServer.Metadata.ActiveVideoFilter.Move(dx, dy, ModifierKeys);
-                            DoInvalidate();
-                        }
-                    }
-
-                    DoInvalidate();
+                    HandMove();
                 }
             }
         }
+
+        private void HandMove()
+        {
+            // Hand tool interaction.
+            // - Manipulation of an existing drawing via a handle.
+            // - Time grab.
+            // - Manipulation in a video filter.
+            // - Panning the video while zoomed in.
+            
+            bool movedObject = m_PointerTool.OnMouseMove(m_FrameServer.Metadata, m_DescaledMouse, m_FrameServer.ImageTransform.ZoomWindow.Location, ModifierKeys);
+            if (movedObject)
+            {
+                DoInvalidate();
+                return;
+            }
+
+            if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Active)
+            {
+                movedObject = m_FrameServer.Metadata.Magnifier.OnMouseMove(m_DescaledMouse, ModifierKeys);
+                if (movedObject)
+                {
+                    DoInvalidate();
+                    return;
+                }
+            }
+    
+            // User is not moving anything: time-grab, filter interaction, pan.
+            // TODO: let filters delegate the handling to the normal mechanics.
+            if ((ModifierKeys & Keys.Alt) == Keys.Alt)
+            {
+                // Time grab.
+                float dtx = m_PointerTool.MouseDeltaOrigin.X * timeGrabSpeed;
+                float dty = m_PointerTool.MouseDeltaOrigin.Y * timeGrabSpeed;
+                float dt = Math.Abs(dtx) > Math.Abs(dty) ? dtx : dty;
+                long target = m_PointerTool.OriginTime - (long)(dt * m_FrameServer.Metadata.AverageTimeStampsPerFrame);
+                target = Math.Min(Math.Max(m_iSelStart, target), m_iSelEnd);
+
+                m_iFramesToDecode = 1;
+                ShowNextFrame(target, true);
+                UpdatePositionUI();
+            }
+            else if (videoFilterIsActive)
+            {
+                // Filter-specific.
+                float dx = m_PointerTool.MouseDelta.X;
+                float dy = m_PointerTool.MouseDelta.Y;
+                m_FrameServer.Metadata.ActiveVideoFilter.Move(dx, dy, ModifierKeys);
+            }
+            else
+            {
+                // CTRL or no modifiers on background: pan.
+                float dx = m_PointerTool.MouseDelta.X;
+                float dy = m_PointerTool.MouseDelta.Y;
+                bool contain = m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.Inactive;
+                m_FrameServer.ImageTransform.MoveZoomWindow(dx, dy, contain);
+            }
+
+            DoInvalidate();
+        }
+
         private void SurfaceScreen_MouseUp(object sender, MouseEventArgs e)
         {
             // End of an action.
@@ -3501,8 +3496,8 @@ namespace Kinovea.ScreenManager
 
             if (e.Button == MouseButtons.Middle)
             {
-                // Special case where we move around even with an active tool.
-                // On mouse up we need to restore the cursor of the active tool.
+                // Special case where we pan around with an active tool that is not the hand tool.
+                // Restore the cursor of the active tool.
                 UpdateCursor();
                 return;
             }
@@ -5033,11 +5028,6 @@ namespace Kinovea.ScreenManager
             string message = string.Format("Zoom:{0}", zoomHelper.GetLabel());
             m_MessageToaster.SetDuration(750);
             m_MessageToaster.Show(message);
-        }
-        private void ToastPause()
-        {
-            m_MessageToaster.SetDuration(750);
-            m_MessageToaster.Show(ScreenManagerLang.Toast_Pause);
         }
         #endregion
 

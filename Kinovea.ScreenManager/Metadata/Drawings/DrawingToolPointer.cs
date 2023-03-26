@@ -74,12 +74,31 @@ namespace Kinovea.ScreenManager
             get	{ throw new NotImplementedException(); }
         }
         
+        /// <summary>
+        /// Delta between the current location and the previous location.
+        /// </summary>
         public PointF MouseDelta
         {
             get { return mouseDelta; }
         }
+
+        /// <summary>
+        /// Delta between the current location and the initial mouse down.
+        /// </summary>
+        public PointF MouseDeltaOrigin
+        {
+            get { return mouseDeltaOrigin; }
+        }
+
+        /// <summary>
+        /// Timestamp at the initial mouse down.
+        /// </summary>
+        public long OriginTime
+        {
+            get { return originTime; }
+        }
         #endregion
-        
+
         #region Members
         //--------------------------------------------------------------------
         // We do not keep the strecth/zoom factor here.
@@ -88,7 +107,10 @@ namespace Kinovea.ScreenManager
         private ManipulationType manipulationType;
         private SelectedObjectType selectedObjectType;
         private PointF lastPoint;
+        private PointF originPoint;
         private PointF mouseDelta;
+        private PointF mouseDeltaOrigin;
+        private long originTime;
         private Point directZoomTopLeft;
         private int resizingHandle;
         private Size imgSize;
@@ -137,6 +159,8 @@ namespace Kinovea.ScreenManager
             // Store position (descaled: in original image coords).
             lastPoint.X = mouseCoordinates.X;
             lastPoint.Y = mouseCoordinates.Y;
+            originPoint = lastPoint;
+            originTime = currentTimeStamp;
 
             if (IsOnDrawing(metadata, activeKeyFrameIndex, mouseCoordinates, currentTimeStamp, allFrames))
                 return true;
@@ -159,9 +183,7 @@ namespace Kinovea.ScreenManager
             // Note: We work with image coordinates at subpixel accuracy.
             // Note: We only get here if left mouse button is down.
 
-            bool isMovingAnObject = true;
-            float deltaX = 0;
-            float deltaY = 0;
+            bool movedObject = true;
 
             if (this.directZoomTopLeft.X == -1)
             {
@@ -170,13 +192,14 @@ namespace Kinovea.ScreenManager
             }
 
             // Find difference between previous and current position
-            deltaX = (mouseLocation.X - lastPoint.X) - (newDirectZoomTopLeft.X - directZoomTopLeft.X);
-            lastPoint.X = mouseLocation.X;
+            float deltaX = (mouseLocation.X - lastPoint.X) - (newDirectZoomTopLeft.X - directZoomTopLeft.X);
+            float deltaY = (mouseLocation.Y - lastPoint.Y) - (newDirectZoomTopLeft.Y - directZoomTopLeft.Y);
+            mouseDelta = new PointF(deltaX, deltaY);
+            mouseDeltaOrigin = new PointF(mouseLocation.X - originPoint.X, mouseLocation.Y - originPoint.Y);
             
-            deltaY = (mouseLocation.Y - lastPoint.Y) - (newDirectZoomTopLeft.Y - directZoomTopLeft.Y);
+            lastPoint.X = mouseLocation.X;
             lastPoint.Y = mouseLocation.Y;
             
-            mouseDelta = new PointF(deltaX, deltaY);
             directZoomTopLeft = new Point(newDirectZoomTopLeft.X, newDirectZoomTopLeft.Y);
 
             if (deltaX == 0 && deltaY == 0)
@@ -189,7 +212,7 @@ namespace Kinovea.ScreenManager
                         switch (selectedObjectType)
                         {
                             case SelectedObjectType.None:
-                                isMovingAnObject = false;
+                                movedObject = false;
                                 break;
                             default:
                                 if (metadata.HitDrawing != null)
@@ -203,7 +226,7 @@ namespace Kinovea.ScreenManager
                         switch (selectedObjectType)
                         {
                             case SelectedObjectType.None:
-                                isMovingAnObject = false;
+                                movedObject = false;
                                 break;
                             default:
                                 if (metadata.HitDrawing != null)
@@ -213,11 +236,11 @@ namespace Kinovea.ScreenManager
                     }
                     break;
                 default:
-                    isMovingAnObject = false;
+                    movedObject = false;
                     break;
             }
             
-            return isMovingAnObject;
+            return movedObject;
         }
         public void OnMouseUp()
         {
