@@ -56,6 +56,8 @@ namespace Kinovea.ScreenManager
             get 
             {
                 int hash = 0;
+                foreach (PointF p in points.Values)
+                    hash ^= p.GetHashCode();
                 hash ^= measureLabelType.GetHashCode();
                 hash ^= miniLabel.GetHashCode();
                 hash ^= styleHelper.ContentHash;

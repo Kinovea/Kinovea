@@ -55,6 +55,9 @@ namespace Kinovea.ScreenManager
             get 
             { 
                 int hash = Visible.GetHashCode();
+                hash ^= styleHelper.ContentHash;
+                hash ^= showGrid.GetHashCode();
+                hash ^= showGraduations.GetHashCode();
                 return hash;
             }
         } 

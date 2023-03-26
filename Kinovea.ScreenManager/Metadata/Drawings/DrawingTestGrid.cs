@@ -45,7 +45,16 @@ namespace Kinovea.ScreenManager
         }
         public override int ContentHash
         {
-            get { return 0; }
+            get 
+            {
+                int hash = Visible.GetHashCode();
+                hash ^= styleHelper.ContentHash;
+                hash ^= showHorizontalAxis.GetHashCode();
+                hash ^= showVerticalAxis.GetHashCode();
+                hash ^= showFraming.GetHashCode();
+                hash ^= showThirds.GetHashCode();
+                return hash; 
+            }
         }
         public DrawingStyle DrawingStyle
         {
