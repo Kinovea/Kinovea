@@ -657,6 +657,8 @@ namespace Kinovea.ScreenManager
             // Corner-case dead sections.
             mnuMovePreviousEnd.Enabled = !IsBeforeFirstSection(sectionIndex);
             mnuMoveNextStart.Enabled = !IsAfterLastSection(sectionIndex);
+            mnuRenameSections.Enabled = sections.Count > 0;
+            mnuDeleteTimes.Enabled = sections.Count > 0;
 
             mnuShowLabel.Checked = showLabel;
             mnuLocked.Checked = locked;
@@ -790,6 +792,9 @@ namespace Kinovea.ScreenManager
             // The dialog is responsible for backing up and restoring the state in case of cancellation.
             // When we exit the dialog the drawing has been modified or reverted to its original state,
             // or the original state pushed to the history stack in case of validation.
+            if (sections.Count == 0)
+                return;
+
             int sectionIndex = GetSectionIndex(contextTimestamp);
 
             ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
