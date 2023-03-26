@@ -198,7 +198,7 @@ bool VideoReaderFFMpeg::MoveNext(int _skip, bool _decodeIfNecessary)
 
     return moved && HasMoreFrames();
 }
-bool VideoReaderFFMpeg::MoveTo(int64_t _timestamp)
+bool VideoReaderFFMpeg::MoveTo(int64_t from, int64_t target)
 {
     if (!m_bIsLoaded || m_DecodingMode == VideoDecodingMode::NotInitialized)
         return false;
@@ -207,19 +207,21 @@ bool VideoReaderFFMpeg::MoveTo(int64_t _timestamp)
 
     if (m_DecodingMode == VideoDecodingMode::OnDemand)
     {
-        ReadResult res = ReadFrame(_timestamp, 1, false);
+        ReadResult res = ReadFrame(target, 1, false);
         moved = (res == ReadResult::Success);
     }
     else if (m_DecodingMode == VideoDecodingMode::Caching)
     {
-        moved = m_Cache->MoveTo(_timestamp);
+        moved = m_Cache->MoveTo(target);
     }
     else if (m_DecodingMode == VideoDecodingMode::PreBuffering)
     {
-        //log->DebugFormat("MoveTo [{0}]", _timestamp);
-        if (m_PreBuffer->Contains(_timestamp))
+        if (m_PreBuffer->Contains(target))
         {
-            moved = m_PreBuffer->MoveTo(_timestamp);
+            //if (m_Verbose)
+            //    log->DebugFormat("MoveTo. From:{0} to target:{1}. In buffer:{2}.", from, target, m_PreBuffer->Segment);
+            
+            moved = m_PreBuffer->MoveTo(target);
         }
         else
         {
@@ -230,16 +232,16 @@ bool VideoReaderFFMpeg::MoveTo(int64_t _timestamp)
             // If the frame is the next one or it's a rollover jump, fine. Otherwise we need to clear.
             // jump to next frame after current segment is currently not handled gracefully and will clear anyway.
             // (Avoids another locking just for a very rare case).
-            if (!m_PreBuffer->IsRolloverJump(_timestamp))
+            if (!m_PreBuffer->IsRolloverJump(target))
             {
                 if (m_Verbose)
-                    log->DebugFormat("Out of segment jump, clearing cache. Asked {0} in {1}.", _timestamp, m_PreBuffer->Segment);
+                    log->DebugFormat("MoveTo. From:{0} to target:{1}. Out of buffer:{2}. Clearing buffer.", from, target, m_PreBuffer->Segment);
                 
                 m_PreBuffer->Clear();
             }
 
             // This is done on the UI thread but the decoding thread has just been put to sleep.
-            ReadResult res = ReadFrame(_timestamp, 1, false);
+            ReadResult res = ReadFrame(target, 1, false);
 
             if (res == ReadResult::Success)
             {

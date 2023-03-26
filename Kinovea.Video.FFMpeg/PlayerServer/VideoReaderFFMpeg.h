@@ -145,7 +145,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         virtual OpenVideoResult Open(String^ _filePath) override;
         virtual void Close() override;
         virtual bool MoveNext(int _skip, bool _decodeIfNecessary) override;
-        virtual bool MoveTo(int64_t _timestamp) override;
+        virtual bool MoveTo(int64_t from, int64_t target) override;
         virtual VideoSummary^ ExtractSummary(String^ _filePath, int _thumbs, Size _maxSize) override;
         virtual void PostLoad() override;
         virtual String^ ReadMetadata() override;

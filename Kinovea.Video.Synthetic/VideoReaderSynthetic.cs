@@ -131,9 +131,9 @@ namespace Kinovea.Video.Synthetic
                 return UpdateCurrent(current.Timestamp + offset);
             }
         }
-        public override bool MoveTo(long timestamp)
+        public override bool MoveTo(long from, long target)
         {
-            return UpdateCurrent(timestamp);
+            return UpdateCurrent(target);
         }
         public override void UpdateWorkingZone(VideoSection newZone, bool forceReload, int maxMemory, Action<DoWorkEventHandler> workerFn)
         {

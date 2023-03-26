@@ -53,8 +53,13 @@ namespace Kinovea.Video
         public VideoFrame CurrentFrame { 
             get { return m_Current; } 
         }
-        public VideoSection Segment { 
-            get { lock(m_Locker) return m_Segment;} 
+        public VideoSection Segment 
+        { 
+            get 
+            { 
+                lock(m_Locker) 
+                    return m_Segment;
+            } 
         }
         public int Drops { 
             get { return m_Drops; }
@@ -343,6 +348,8 @@ namespace Kinovea.Video
                 m_Segment = VideoSection.Empty;
             else
                 m_Segment = new VideoSection(m_Frames[0].Timestamp, m_Frames[m_Frames.Count - 1].Timestamp);
+
+            //log.DebugFormat("Updated segment: {0}", m_Segment);
         }
         private int GetWrapIndex()
         {
@@ -365,13 +372,15 @@ namespace Kinovea.Video
             lock(m_Locker)
             {
                 int framesToForget = m_CurrentIndex - m_OldFramesCapacity + 1;
+                //log.DebugFormat("Forgetting {0} frames.", framesToForget);
                 
                 for(int i=0;i<framesToForget;i++)
                     DisposeFrame(m_Frames[i]);
 
                 m_Frames.RemoveRange(0, framesToForget);
                 m_CurrentIndex -= framesToForget;
-                
+
+
                 UpdateSegment();
                 
                 Monitor.Pulse(m_Locker);

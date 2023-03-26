@@ -2119,23 +2119,17 @@ namespace Kinovea.ScreenManager
         private void UpdatePositionUI()
         {
             // Update markers and label for position.
-
             if (PreferencesManager.PlayerPreferences.ShowCacheInTimeline)
             {
+                VideoSection section;
                 if (m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
-                {
-                    VideoSection section = new VideoSection(m_iSelStart, m_iSelEnd);
-                    trkFrame.UpdateCacheSegmentMarker(section);
-                }
+                    section = new VideoSection(m_iSelStart, m_iSelEnd);
                 else if (m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.PreBuffering)
-                {
-                    trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.PreBufferingSegment);
-                }
+                    section = m_FrameServer.VideoReader.PreBufferingSegment;
                 else
-                {
-                    VideoSection section = new VideoSection(m_iCurrentPosition, m_iCurrentPosition);
-                    trkFrame.UpdateCacheSegmentMarker(section);
-                }
+                    section = new VideoSection(m_iCurrentPosition, m_iCurrentPosition);
+                
+                trkFrame.UpdateCacheSegmentMarker(section);
             }
 
             trkFrame.Position = m_iCurrentPosition;
@@ -2602,21 +2596,25 @@ namespace Kinovea.ScreenManager
         }
         private bool ShowNextFrame(long _iSeekTarget, bool _bAllowUIUpdate)
         {
+            if (!m_FrameServer.VideoReader.Loaded)
+                return false;
+
             // TODO: More refactoring needed.
             // Eradicate the scheme where we use the _iSeekTarget parameter to mean two things.
             if (m_bIsCurrentlyPlaying)
                 throw new ThreadStateException("ShowNextFrame called while play loop.");
 
-            if (!m_FrameServer.VideoReader.Loaded)
-                return false;
-
             bool refreshInPlace = _iSeekTarget == m_iCurrentPosition;
             bool hasMore = false;
 
             if (_iSeekTarget < 0)
+            {
                 hasMore = m_FrameServer.VideoReader.MoveBy(m_iFramesToDecode, true);
+            }
             else
-                hasMore = m_FrameServer.VideoReader.MoveTo(_iSeekTarget);
+            {
+                hasMore = m_FrameServer.VideoReader.MoveTo(m_iCurrentPosition, _iSeekTarget);
+            }
 
             if (m_FrameServer.VideoReader.Current != null)
             {
@@ -2649,9 +2647,6 @@ namespace Kinovea.ScreenManager
 
                 m_FrameServer.Metadata.StopAllTracking();
             }
-
-            //m_Stopwatch.Stop();
-            //log.Debug(String.Format("ShowNextFrame: {0} ms.", m_Stopwatch.ElapsedMilliseconds));
 
             return hasMore;
         }
@@ -3477,6 +3472,7 @@ namespace Kinovea.ScreenManager
                 long target = m_PointerTool.OriginTime - (long)(dt * m_FrameServer.Metadata.AverageTimeStampsPerFrame);
                 target = Math.Min(Math.Max(m_iSelStart, target), m_iSelEnd);
 
+                // FIXME: Ignore / skip if busy.
                 m_iFramesToDecode = 1;
                 ShowNextFrame(target, true);
                 UpdatePositionUI();

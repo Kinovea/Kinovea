@@ -92,15 +92,15 @@ namespace Kinovea.Video
             UpdateCurrentFrame();
             return true;
         }
-        public bool MoveTo(long _timestamp)
+        public bool MoveTo(long target)
         {
-            if(!Contains(_timestamp))
+            if(!Contains(target))
                 return false;
             
-            if( m_Current != null && _timestamp == m_Current.Timestamp)
+            if( m_Current != null && target == m_Current.Timestamp)
                 return true;
 
-            m_CurrentIndex = m_Frames.FindIndex(f => f.Timestamp >= _timestamp);
+            m_CurrentIndex = m_Frames.FindIndex(f => f.Timestamp >= target);
             UpdateCurrentFrame();
             return true;
         }
