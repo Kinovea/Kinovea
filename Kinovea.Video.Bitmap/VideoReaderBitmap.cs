@@ -185,6 +185,7 @@ namespace Kinovea.Video.Bitmap
             videoInfo.OriginalSize = generator.OriginalSize;
             videoInfo.AspectRatioSize = generator.ReferenceSize;
             videoInfo.ReferenceSize = generator.ReferenceSize;
+            videoInfo.ImageRotation = generator.ImageRotation;
         }
 
         private bool UpdateCurrent(long timestamp)
