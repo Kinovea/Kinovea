@@ -38,15 +38,17 @@ Project:
 Changelog:
 ----------
 
-0.9.6 - TBD
+2023.1 - TBD
     Added - Kinogram mode to replace the Overview mode.
     Added - Keyframe colors.
     Added - Keyframe presets.
+    Added - Time grab interaction.
     Added - Multi-time stopwatch tool.
     Added - Time segment tool.
     Added - Distance grid tool.
     Added - Data export to raw JSON files.
     Added - Data export to raw CSV files.
+    Added - Recording status bar.
     Added - Support for saving single snapshots from audio trigger.
     Added - Magnifier "Freeze" mode.
     Improved - General: Save and restore the working zone bounds as part of the KVA file.
@@ -68,6 +70,7 @@ Changelog:
     Improved - Annotations: Render drawings under the magnifier source.
     Improved - Annotations: Support moving all number objects at once using the SHIFT key.
     Improved - Annotations: Support using polyline and curve tools in the capture screen.
+    Improved - Annotations: Added more display options to trajectories.
     Improved - Capture: Image aspect and rotation from camera are now saved in the capture KVA.
     Improved - Capture: Added milliseconds to file naming patterns.
     Improved - Capture: Added new options to the camera test grid.
@@ -91,6 +94,7 @@ Changelog:
     Removed - Video reverse mode.
     Removed - Exporting data to XHTML.
     Removed - Exporting data to Gnuplot script.
+    Removed - Built-in SVG files "Observational references".
 
 
 0.9.5 - October 2021.
