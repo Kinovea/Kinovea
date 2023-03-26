@@ -136,10 +136,7 @@ namespace Kinovea.Video.Bitmap
                 if (image != null)
                 {
                     if (!customRotation)
-                    {
                         rotation = GetRotation(GetOrientation(image));
-                        log.DebugFormat("Image internal orientation: {0}", rotation.ToString());
-                    }
 
                     res = OpenVideoResult.Success;
                     originalSize = image.Size;
