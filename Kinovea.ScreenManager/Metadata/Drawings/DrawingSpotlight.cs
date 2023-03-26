@@ -25,6 +25,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.Serialization;
 using System.Linq;
 
 using Kinovea.ScreenManager.Languages;
@@ -36,7 +37,8 @@ namespace Kinovea.ScreenManager
     /// The spotlight drawing manages several spotlight items, which are the individual spotlight circles.
     /// This is a proxy object dispatching requests. (draw, hit testing, etc.)
     /// </summary>
-    public class DrawingSpotlight : AbstractMultiDrawing, IInitializable
+    [XmlType("Spotlights")]
+    public class DrawingSpotlight : AbstractMultiDrawing, IInitializable, IKvaSerializable
     {
         #region Events
         public event EventHandler<TrackableDrawingEventArgs> TrackableDrawingAdded;
@@ -213,8 +215,12 @@ namespace Kinovea.ScreenManager
             spotlights.Clear();
             selected = -1;
         }
+        public int IndexOf(Guid id)
+        {
+            return spotlights.FindIndex(item => item.Id == id);
+        }
         #endregion
-        
+
         #region IInitializable implementation
         public void InitializeMove(PointF point, Keys modifiers)
         {
@@ -232,20 +238,21 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Public methods
-        public void ReadXml(XmlReader r, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
+        public void ReadXml(XmlReader r, PointF scale, TimestampMapper timestampMapper)
         {
-            Clear();
-
             r.ReadStartElement();
 
             while (r.NodeType == XmlNodeType.Element)
             {
                 if (r.Name == "Spotlight")
                 {
-                    AbstractMultiDrawingItem item = MultiDrawingItemSerializer.Deserialize(r, scale, timestampMapper, metadata);
+                    AbstractMultiDrawingItem item = MultiDrawingItemSerializer.Deserialize(r, scale, timestampMapper, parentMetadata);
                     DrawingSpotlightItem spotlight = item as DrawingSpotlightItem;
-                    if (spotlight != null)
-                        metadata.AddMultidrawingItem(this, spotlight);
+                    int index = IndexOf(spotlight.Id);
+                    if (index == -1)
+                        parentMetadata.AddMultidrawingItem(this, spotlight);
+                    else
+                        spotlights[index] = spotlight;
                 }
                 else
                 {

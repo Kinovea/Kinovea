@@ -322,11 +322,11 @@ namespace Kinovea.ScreenManager
                         ParseChronos(r, scaling);
                         break;
                     case "Spotlights":
-                        metadata.DrawingSpotlight.ReadXml(r, scaling, RemapTimestamp, metadata);
+                        metadata.DrawingSpotlight.ReadXml(r, scaling, RemapTimestamp);
                         break;
                     case "AutoNumbers":
                     case "NumberSequence":
-                        metadata.DrawingNumberSequence.ReadXml(r, scaling, RemapTimestamp, metadata);
+                        metadata.DrawingNumberSequence.ReadXml(r, scaling, RemapTimestamp);
                         break;
                     case "CoordinateSystem":
                         metadata.DrawingCoordinateSystem.ReadXml(r);

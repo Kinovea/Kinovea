@@ -4809,9 +4809,11 @@ namespace Kinovea.ScreenManager
         private void PasteDrawing(bool inPlace)
         {
             string data = DrawingClipboard.Content;
+            if (data == null)
+                return;
 
             AbstractDrawing drawing = DrawingSerializer.DeserializeMemento(data, m_FrameServer.Metadata);
-            if (!drawing.IsCopyPasteable)
+            if (drawing == null || !drawing.IsCopyPasteable)
                 return;
 
             // Note: the keyframe we used to copy from may not exist anymore. In this case we create a new keyframe.
