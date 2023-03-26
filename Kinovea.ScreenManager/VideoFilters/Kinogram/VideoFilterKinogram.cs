@@ -58,6 +58,20 @@ namespace Kinovea.ScreenManager
         { 
             get { return rotatedCanvas; }
         }
+        public bool DrawAttachedDrawings
+        {
+            get { return true; }
+        }
+
+        public bool DrawDetachedDrawings
+        {
+            get 
+            {
+                // Because the Kinogram is a summary picture is doesn't make sense to 
+                // paint the trajectories and chronos over it, they won't match with anything.
+                return false; 
+            }
+        }
         public bool CanExportVideo
         {
             get { return false; }
@@ -97,15 +111,23 @@ namespace Kinovea.ScreenManager
         private int contextTile = -1;
         private int movingTile = -1;
 
+        // Labels
+        private MeasureLabelType measureLabelType = MeasureLabelType.None;
+        private List<MiniLabel> frameLabels = new List<MiniLabel>();
+
         #region Menu
-        private List<ToolStripItem> contextMenu = new List<ToolStripItem>();
         private ToolStripMenuItem mnuConfigure = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuAutoPositions = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuAction = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuInterpolate = new ToolStripMenuItem();
         private ToolStripMenuItem mnuResetTile = new ToolStripMenuItem();
         private ToolStripMenuItem mnuResetAllTiles = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuNumberSequence = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuGenerateNumbers = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuDeleteNumbers = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuRightToLeft = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuShowBorder = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuResetLabelPositions = new ToolStripMenuItem();
+
+        private ToolStripMenuItem mnuMeasurement = new ToolStripMenuItem();
+        private Dictionary<MeasureLabelType, ToolStripMenuItem> mnuMeasureLabelTypes = new Dictionary<MeasureLabelType, ToolStripMenuItem>();
         #endregion
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -126,22 +148,43 @@ namespace Kinovea.ScreenManager
         private void InitializeMenus()
         {
             mnuConfigure.Image = Properties.Drawings.configure;
-            mnuAutoPositions.Image = Properties.Resources.wand;
+            mnuConfigure.Click += MnuConfigure_Click;
+
+            mnuAction.Image = Properties.Resources.action;
+            mnuInterpolate.Image = Properties.Resources.wand;
             mnuResetTile.Image = Properties.Resources.bin_empty;
             mnuResetAllTiles.Image = Properties.Resources.bin_empty;
-            mnuNumberSequence.Image = Properties.Drawings.number;
-            mnuGenerateNumbers.Image = Properties.Drawings.number;
-            mnuDeleteNumbers.Image = Properties.Resources.bin_empty;
-
-            mnuNumberSequence.DropDownItems.Add(mnuGenerateNumbers);
-            mnuNumberSequence.DropDownItems.Add(mnuDeleteNumbers);
-
-            mnuConfigure.Click += MnuConfigure_Click;
-            mnuAutoPositions.Click += MnuAutoPositions_Click;
+            mnuInterpolate.Click += MnuInterpolate_Click;
             mnuResetTile.Click += MnuResetTile_Click;
             mnuResetAllTiles.Click += MnuResetAllTiles_Click;
-            mnuGenerateNumbers.Click += MnuNumberSequence_Click;
-            mnuDeleteNumbers.Click += MnuDeleteNumberSequence_Click;
+            mnuAction.DropDownItems.AddRange(new ToolStripItem[] {
+                mnuInterpolate,
+                new ToolStripSeparator(),
+                mnuResetTile,
+                mnuResetAllTiles,
+            });
+
+            mnuOptions.Image = Properties.Resources.equalizer;
+            mnuRightToLeft.Image = Properties.Resources.rtl;
+            mnuShowBorder.Image = Properties.Resources.border_all;
+            mnuResetLabelPositions.Image = Properties.Drawings.label;
+            mnuRightToLeft.Click += MnuRightToLeft_Click;
+            mnuShowBorder.Click += MnuShowBorder_Click;
+            mnuResetLabelPositions.Click += MnuResetLabelPositions_Click;
+            mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
+                mnuRightToLeft,
+                mnuShowBorder,
+                mnuResetLabelPositions,
+            });
+
+            mnuMeasurement.Image = Properties.Drawings.label;
+            mnuMeasurement.DropDownItems.AddRange(new ToolStripItem[] {
+                CreateMeasureLabelTypeMenu(MeasureLabelType.None),
+                new ToolStripSeparator(),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.Clock),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.Frame),
+            });
+
         }
 
         ~VideoFilterKinogram()
@@ -222,7 +265,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Draw a highlighted border around the tile matching the passed timestamp.
         /// </summary>
-        public void DrawExtra(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
+        public void DrawExtra(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, long timestamp)
         {
             float step = (float)framesContainer.Frames.Count / parameters.TileCount;
             IEnumerable<VideoFrame> frames = framesContainer.Frames.Where((frame, i) => i % step < 1);
@@ -369,12 +412,14 @@ namespace Kinovea.ScreenManager
 
             contextMenu.AddRange(new ToolStripItem[] {
                 mnuConfigure,
-                mnuNumberSequence,
                 new ToolStripSeparator(),
-                mnuAutoPositions,
-                mnuResetTile,
-                mnuResetAllTiles,
+                mnuAction,
+                mnuOptions,
+                mnuMeasurement,
             });
+
+            mnuRightToLeft.Checked = !parameters.LeftToRight;
+            mnuShowBorder.Checked = parameters.BorderVisible;
 
             return contextMenu;
         }
@@ -383,23 +428,50 @@ namespace Kinovea.ScreenManager
         {
             // Just in time localization.
             mnuConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
-            mnuAutoPositions.Text = "Interpolate positions";
-            mnuResetTile.Text = "Reset this position";
-            mnuResetAllTiles.Text = "Reset all positions";
-            mnuNumberSequence.Text = "Frame numbers";
-            mnuGenerateNumbers.Text = "Generate frame numbers";
-            mnuDeleteNumbers.Text = "Delete frame numbers";
+            
+            mnuAction.Text = "Action";
+            mnuInterpolate.Text = "Interpolate tiles";
+            mnuResetTile.Text = "Reset this tile";
+            mnuResetAllTiles.Text = "Reset all tiles";
+
+            mnuOptions.Text = "Options";
+            mnuRightToLeft.Text = "Right to left";
+            mnuShowBorder.Text = "Show border";
+            mnuResetLabelPositions.Text = "Reset label positions";
+
+            // Measurement
+            mnuMeasurement.Text = "Measure";
+            foreach (var pair in mnuMeasureLabelTypes)
+            {
+                ToolStripMenuItem tsmi = pair.Value;
+                MeasureLabelType measureLabelType = pair.Key;
+                tsmi.Text = GetMeasureLabelOptionText(measureLabelType);
+                tsmi.Checked = this.measureLabelType == measureLabelType;
+            }
+        }
+
+        public string GetMeasureLabelOptionText(MeasureLabelType data)
+        {
+            switch (data)
+            {
+                case MeasureLabelType.None: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None;
+
+                case MeasureLabelType.Clock: return "Clock";
+                case MeasureLabelType.Frame: return "Frame";
+            }
+
+            return "";
         }
 
         private void MnuConfigure_Click(object sender, EventArgs e)
         {
+            // The dialog is responsible for handling undo/redo.
+
             ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
             if (tsmi == null)
                 return;
 
             IDrawingHostView host = tsmi.Tag as IDrawingHostView;
-
-            // The dialog is responsible for handling undo/redo.
             FormConfigureKinogram fck = new FormConfigureKinogram(this, host);
             FormsHelper.Locate(fck);
             fck.ShowDialog();
@@ -412,17 +484,14 @@ namespace Kinovea.ScreenManager
 
             fck.Dispose();
             Update();
-
             InvalidateFromMenu(sender);
         }
 
-        private void MnuAutoPositions_Click(object sender, EventArgs e)
+        private void MnuInterpolate_Click(object sender, EventArgs e)
         {
             CaptureMemento();
-
-            AutoPositions();
+            InterpolatePositions();
             Update();
-
             InvalidateFromMenu(sender);
         }
 
@@ -437,7 +506,6 @@ namespace Kinovea.ScreenManager
             contextTile = -1;
 
             Update();
-            
             InvalidateFromMenu(sender);
         }
 
@@ -446,7 +514,37 @@ namespace Kinovea.ScreenManager
             CaptureMemento();
             ResetCropPositions();
             Update();
-            
+            InvalidateFromMenu(sender);
+        }
+
+        private void MnuRightToLeft_Click(object sender, EventArgs e)
+        {
+            CaptureMemento();
+
+            // Inverse to toggle.
+            parameters.LeftToRight = mnuRightToLeft.Checked;
+
+            Update();
+            InvalidateFromMenu(sender);
+        }
+
+        private void MnuShowBorder_Click(object sender, EventArgs e)
+        {
+            CaptureMemento();
+
+            parameters.BorderVisible = !mnuShowBorder.Checked;
+
+            Update();
+            InvalidateFromMenu(sender);
+        }
+
+        private void MnuResetLabelPositions_Click(object sender, EventArgs e)
+        {
+            CaptureMemento();
+
+            // TODO
+
+            Update();
             InvalidateFromMenu(sender);
         }
 
@@ -557,6 +655,9 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        /// <summary>
+        /// Render one tile.
+        /// </summary>
         private void DrawTile(Graphics g, Bitmap image, int index, int cols, Rectangle paintArea, Size tileSize)
         {
             if (index < 0 || index >= parameters.CropPositions.Count)
@@ -741,7 +842,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Interpolate between already positionned tiles.
         /// </summary>
-        private void AutoPositions()
+        private void InterpolatePositions()
         {
             // The original function was only interpolating between the first and last tiles.
             // In practice a strategy that worked better was to reduce the number of tiles to a few, place these tiles
@@ -895,6 +996,38 @@ namespace Kinovea.ScreenManager
             var memento = new HistoryMementoModifyVideoFilter(parentMetadata, VideoFilterType.Kinogram, FriendlyName);
             parentMetadata.HistoryStack.PushNewCommand(memento);
         }
-        
+
+        /// <summary>
+        /// Create a new measure label type menu and store it in the global dictionary.
+        /// </summary>
+        private ToolStripMenuItem CreateMeasureLabelTypeMenu(MeasureLabelType measureLabelType)
+        {
+            // Note: the tag is reserved for injecting the screen user interface to support invalidation.
+            ToolStripMenuItem mnu = new ToolStripMenuItem();
+            mnu.Click += mnuMeasureLabelType_Click;
+            mnuMeasureLabelTypes.Add(measureLabelType, mnu);
+            return mnu;
+        }
+
+        private void mnuMeasureLabelType_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
+            if (tsmi == null)
+                return;
+
+            MeasureLabelType measureLabelType = MeasureLabelType.None;
+            foreach (var pair in mnuMeasureLabelTypes)
+            {
+                if (pair.Value == tsmi)
+                {
+                    measureLabelType = pair.Key;
+                    break;
+                }
+            }
+
+            this.measureLabelType = measureLabelType;
+            InvalidateFromMenu(tsmi);
+        }
+
     }
 }

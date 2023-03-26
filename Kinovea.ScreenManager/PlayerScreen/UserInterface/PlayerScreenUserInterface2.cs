@@ -1140,7 +1140,7 @@ namespace Kinovea.ScreenManager
             mnuCloseScreen.Click += btnClose_Click;
             mnuCloseScreen.Image = Properties.Resources.film_close3;
             mnuExitFilter.Click += MnuExitFilter_Click;
-            mnuExitFilter.Image = Properties.Resources.film_close3;
+            mnuExitFilter.Image = Properties.Resources.exit_filter;
             popMenu.Items.AddRange(new ToolStripItem[]
             {
                 mnuTimeOrigin, mnuDirectTrack, new ToolStripSeparator(),
@@ -3138,6 +3138,13 @@ namespace Kinovea.ScreenManager
                 {
                     PrepareFilterContextMenu(m_FrameServer.Metadata.ActiveVideoFilter, popMenuFilter);
 
+                    popMenuFilter.Items.Add(new ToolStripSeparator());
+
+                    mnuExitFilter.Text = string.Format("Exit {0}", m_FrameServer.Metadata.ActiveVideoFilter.FriendlyName);
+                    popMenuFilter.Items.Add(mnuExitFilter);
+
+                    popMenuFilter.Items.Add(new ToolStripSeparator());
+
                     popMenuFilter.Items.Add(mnuSaveAnnotations);
                     popMenuFilter.Items.Add(mnuSaveAnnotationsAs);
 
@@ -3147,8 +3154,7 @@ namespace Kinovea.ScreenManager
                     if (m_FrameServer.Metadata.ActiveVideoFilter.CanExportImage)
                         popMenuFilter.Items.Add(mnuExportImage);
 
-                    mnuExitFilter.Text = string.Format("Exit {0}", m_FrameServer.Metadata.ActiveVideoFilter.FriendlyName);
-                    popMenuFilter.Items.Add(mnuExitFilter);
+                    popMenuFilter.Items.Add(new ToolStripSeparator());
                     popMenuFilter.Items.Add(mnuCloseScreen);
                     panelCenter.ContextMenuStrip = popMenuFilter;
                 }
@@ -3359,8 +3365,6 @@ namespace Kinovea.ScreenManager
                 else
                     popMenu.Items.Add(tsmi);
             }
-        
-            popMenu.Items.Add(new ToolStripSeparator());
         }
         private void SurfaceScreen_MouseMove(object sender, MouseEventArgs e)
         {
@@ -3754,61 +3758,72 @@ namespace Kinovea.ScreenManager
             // Prepare for drawings
             canvas.SmoothingMode = SmoothingMode.AntiAlias;
             canvas.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
-
+            bool drawAttached = true;
+            bool drawDetached = true;
             if (m_FrameServer.Metadata.ActiveVideoFilter != null)
+            {
                 m_FrameServer.Metadata.ActiveVideoFilter.DrawExtra(canvas, distorter, transformer, timestamp);
-
-            foreach (AbstractDrawing chrono in m_FrameServer.Metadata.ChronoManager.Drawings)
-            {
-                bool selected = m_FrameServer.Metadata.HitDrawing == chrono;
-                chrono.Draw(canvas, distorter, transformer, selected, timestamp);
+                drawAttached = m_FrameServer.Metadata.ActiveVideoFilter.DrawAttachedDrawings;
+                drawDetached = m_FrameServer.Metadata.ActiveVideoFilter.DrawDetachedDrawings;
             }
 
-            foreach (DrawingTrack track in m_FrameServer.Metadata.TrackManager.Drawings)
+            if (drawDetached)
             {
-                bool selected = m_FrameServer.Metadata.HitDrawing == track;
-                track.Draw(canvas, distorter, transformer, selected, timestamp);
-            }
-
-            foreach (AbstractDrawing drawing in m_FrameServer.Metadata.SingletonDrawingsManager.Drawings)
-            {
-                bool selected = m_FrameServer.Metadata.HitDrawing == drawing;
-                drawing.Draw(canvas, distorter, transformer, selected, timestamp);
-            }
-
-            if (PreferencesManager.PlayerPreferences.DefaultFading.Enabled)
-            {
-                // If fading is on, we ask all drawings to draw themselves with their respective
-                // fading factor for this position.
-
-                int[] zOrder = m_FrameServer.Metadata.GetKeyframesZOrder(timestamp);
-
-                // Draw in reverse keyframes z order so the closest next keyframe gets drawn on top (last).
-                for (int kfIndex = zOrder.Length - 1; kfIndex >= 0; kfIndex--)
+                foreach (AbstractDrawing chrono in m_FrameServer.Metadata.ChronoManager.Drawings)
                 {
-                    Keyframe keyframe = m_FrameServer.Metadata.Keyframes[zOrder[kfIndex]];
+                    bool selected = m_FrameServer.Metadata.HitDrawing == chrono;
+                    chrono.Draw(canvas, distorter, transformer, selected, timestamp);
+                }
+
+                foreach (DrawingTrack track in m_FrameServer.Metadata.TrackManager.Drawings)
+                {
+                    bool selected = m_FrameServer.Metadata.HitDrawing == track;
+                    track.Draw(canvas, distorter, transformer, selected, timestamp);
+                }
+
+                foreach (AbstractDrawing drawing in m_FrameServer.Metadata.SingletonDrawingsManager.Drawings)
+                {
+                    bool selected = m_FrameServer.Metadata.HitDrawing == drawing;
+                    drawing.Draw(canvas, distorter, transformer, selected, timestamp);
+                }
+            }
+
+            if (drawAttached)
+            {
+                if (PreferencesManager.PlayerPreferences.DefaultFading.Enabled)
+                {
+                    // If fading is on, we ask all drawings to draw themselves with their respective
+                    // fading factor for this position.
+
+                    int[] zOrder = m_FrameServer.Metadata.GetKeyframesZOrder(timestamp);
+
+                    // Draw in reverse keyframes z order so the closest next keyframe gets drawn on top (last).
+                    for (int kfIndex = zOrder.Length - 1; kfIndex >= 0; kfIndex--)
+                    {
+                        Keyframe keyframe = m_FrameServer.Metadata.Keyframes[zOrder[kfIndex]];
+                        for (int drawingIndex = keyframe.Drawings.Count - 1; drawingIndex >= 0; drawingIndex--)
+                        {
+                            bool selected = keyframe.Drawings[drawingIndex] == m_FrameServer.Metadata.HitDrawing;
+                            keyframe.Drawings[drawingIndex].Draw(canvas, distorter, transformer, selected, timestamp);
+                        }
+                    }
+                }
+                else if (keyFrameIndex >= 0)
+                {
+                    // if fading is off, only draw the current keyframe.
+                    // Draw all drawings in reverse order to get first object on the top of Z-order.
+                    Keyframe keyframe = m_FrameServer.Metadata.Keyframes[keyFrameIndex];
                     for (int drawingIndex = keyframe.Drawings.Count - 1; drawingIndex >= 0; drawingIndex--)
                     {
                         bool selected = keyframe.Drawings[drawingIndex] == m_FrameServer.Metadata.HitDrawing;
                         keyframe.Drawings[drawingIndex].Draw(canvas, distorter, transformer, selected, timestamp);
                     }
                 }
-            }
-            else if (keyFrameIndex >= 0)
-            {
-                // if fading is off, only draw the current keyframe.
-                // Draw all drawings in reverse order to get first object on the top of Z-order.
-                Keyframe keyframe = m_FrameServer.Metadata.Keyframes[keyFrameIndex];
-                for (int drawingIndex = keyframe.Drawings.Count - 1; drawingIndex >= 0; drawingIndex--)
+                else
                 {
-                    bool selected = keyframe.Drawings[drawingIndex] == m_FrameServer.Metadata.HitDrawing;
-                    keyframe.Drawings[drawingIndex].Draw(canvas, distorter, transformer, selected, timestamp);
+                    // This is not a Keyframe, and fading is off.
+                    // Hence, there is no drawings to draw here.
                 }
-            }
-            else
-            {
-                // This is not a Keyframe, and fading is off.
-                // Hence, there is no drawings to draw here.
             }
         }
         private void FlushMagnifierOnGraphics(Bitmap currentImage, Graphics canvas, ImageTransform transform, int keyFrameIndex, long timestamp)

@@ -55,8 +55,6 @@ namespace Kinovea.ScreenManager
             nudRows.Value = parameters.Rows;
             nudCropWidth.Value = parameters.CropSize.Width;
             nudCropHeight.Value = parameters.CropSize.Height;
-            cbRTL.Checked = !parameters.LeftToRight;
-            cbBorderVisible.Checked = parameters.BorderVisible;
             manualUpdate = false;
         }
 
@@ -66,10 +64,6 @@ namespace Kinovea.ScreenManager
             grpConfig.Text = ScreenManagerLang.Generic_Configuration;
             lblColumns.Text = "Table:";
             lblCropSize.Text = "Crop size:";
-            cbRTL.Text = "Right to left";
-            
-            grpAppearance.Text = ScreenManagerLang.Generic_Appearance;
-            cbBorderVisible.Text = "Show border";
         }
 
         private void SetupStyle()
@@ -83,9 +77,9 @@ namespace Kinovea.ScreenManager
 
         private void SetupStyleControls()
         {
-            int btnLeft = cbBorderVisible.Left;
-            int editorsLeft = 200;
-            int lastEditorBottom = cbBorderVisible.Bottom;
+            int btnLeft = lblColumns.Left;
+            int editorsLeft = nudCropWidth.Left;
+            int lastEditorBottom = lblCropSize.Bottom;
             Size editorSize = new Size(60, 20);
 
             foreach (KeyValuePair<string, AbstractStyleElement> pair in style.Elements)
@@ -95,7 +89,7 @@ namespace Kinovea.ScreenManager
                 Button btn = new Button();
                 btn.Image = styleElement.Icon;
                 btn.Size = new Size(20, 20);
-                btn.Location = new Point(btnLeft, lastEditorBottom + 15);
+                btn.Location = new Point(btnLeft, lastEditorBottom + 20);
                 btn.FlatStyle = FlatStyle.Flat;
                 btn.FlatAppearance.BorderSize = 0;
                 btn.BackColor = Color.Transparent;
@@ -103,7 +97,7 @@ namespace Kinovea.ScreenManager
                 Label lbl = new Label();
                 lbl.Text = styleElement.DisplayName;
                 lbl.AutoSize = true;
-                lbl.Location = new Point(btn.Right + 10, lastEditorBottom + 20);
+                lbl.Location = new Point(btn.Right + 10, lastEditorBottom + 25);
 
                 Control miniEditor = styleElement.GetEditor();
                 miniEditor.Size = editorSize;
@@ -111,16 +105,16 @@ namespace Kinovea.ScreenManager
 
                 lastEditorBottom = miniEditor.Bottom;
 
-                grpAppearance.Controls.Add(btn);
-                grpAppearance.Controls.Add(lbl);
-                grpAppearance.Controls.Add(miniEditor);
+                grpConfig.Controls.Add(btn);
+                grpConfig.Controls.Add(lbl);
+                grpConfig.Controls.Add(miniEditor);
             }
         }
 
         private void UpdateFrameInterval()
         {
             int tileCount = kinogram.GetTileCount(parameters.TileCount);
-            lblTotal.Text = string.Format("Total: {0}", tileCount);
+            lblTotal.Text = string.Format("Frames: {0}", tileCount);
             float interval = kinogram.GetFrameInterval(parameters.TileCount);
             lblFrameInterval.Text = string.Format("Frame interval: {0:0.000} ms", interval * 1000.0f);
         }
@@ -178,24 +172,6 @@ namespace Kinovea.ScreenManager
             cropSize_ValueChanged(sender, EventArgs.Empty);
         }
 
-        private void cbRTL_CheckedChanged(object sender, EventArgs e)
-        {
-            if (manualUpdate)
-                return;
-
-            bool rtl = cbRTL.Checked;
-            parameters.LeftToRight = !rtl;
-            UpdateKinogram();
-        }
-
-        private void cbBorderVisible_CheckedChanged(object sender, EventArgs e)
-        {
-            if (manualUpdate)
-                return;
-
-            parameters.BorderVisible = cbBorderVisible.Checked;
-            UpdateKinogram();
-        }
         private void btnApply_Click(object sender, EventArgs e)
         {
             UpdateKinogram();

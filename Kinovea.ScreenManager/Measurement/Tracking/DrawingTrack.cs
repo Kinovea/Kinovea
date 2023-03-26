@@ -85,7 +85,7 @@ namespace Kinovea.ScreenManager
                 hash ^= styleHelper.ContentHash;
                 hash ^= miniLabel.GetHashCode();
 
-                foreach (MiniLabel kfl in keyframesLabels)
+                foreach (MiniLabel kfl in keyframeLabels)
                     hash ^= kfl.GetHashCode();
 
                 hash ^= tracker.Parameters.ContentHash;
@@ -264,7 +264,7 @@ namespace Kinovea.ScreenManager
         // Measurement labels
         private MeasureLabelType measureLabelType = MeasureLabelType.Name;
         private MiniLabel miniLabel = new MiniLabel();
-        private List<MiniLabel> keyframesLabels = new List<MiniLabel>();
+        private List<MiniLabel> keyframeLabels = new List<MiniLabel>();
         
         // Options
         private bool seeFuture = true;
@@ -402,7 +402,7 @@ namespace Kinovea.ScreenManager
                 CreateMeasureLabelTypeMenu(MeasureLabelType.VerticalAcceleration),
             });
 
-            mnuDisplayOptions.Image = Properties.Drawings.eye;
+            mnuDisplayOptions.Image = Properties.Resources.equalizer;
             mnuSeeFuture.Image = Properties.Drawings.binocular;
             mnuShowTrackLabel.Image = Properties.Drawings.label;
             mnuShowKeyframeLabel.Image = Properties.Drawings.label;
@@ -781,7 +781,7 @@ namespace Kinovea.ScreenManager
             float opacityFuture = GetOpacity(trackStatus, baselineOpacity, false);
             long currentTimestamp = positions[currentPointIndex].T;
 
-            foreach (MiniLabel kl in keyframesLabels)
+            foreach (MiniLabel kl in keyframeLabels)
             {
                 bool isFuture = kl.Timestamp > currentTimestamp;
                 float opacity = isFuture ? opacityFuture : opacityPast;
@@ -1046,7 +1046,7 @@ namespace Kinovea.ScreenManager
             {
                 // Move the specified label by specified amount.
                 int iLabel = labelId - 3;
-                keyframesLabels[iLabel].MoveLabel(dx, dy);
+                keyframeLabels[iLabel].MoveLabel(dx, dy);
             }
         }
         private int IsOnKeyframesLabels(PointF point, long currentTimestamp, IImageToViewportTransformer transformer)
@@ -1064,12 +1064,12 @@ namespace Kinovea.ScreenManager
             if (!showKeyframeLabels)
                 return -1;
 
-            for (int i = 0; i < keyframesLabels.Count; i++)
+            for (int i = 0; i < keyframeLabels.Count; i++)
             {
-                bool isFuture = keyframesLabels[i].Timestamp > currentTimestamp;
+                bool isFuture = keyframeLabels[i].Timestamp > currentTimestamp;
                 if (!isFuture || seeFuture)
                 {
-                    if (keyframesLabels[i].HitTest(point, transformer))
+                    if (keyframeLabels[i].HitTest(point, transformer))
                     {
                         return i + 3;
                     }
@@ -1321,13 +1321,13 @@ namespace Kinovea.ScreenManager
                 positions[currentPointIndex] = atp;
 
             // Update the main mini label (attach, position of label, and text).
-            for (int i = 0; i < keyframesLabels.Count; i++)
+            for (int i = 0; i < keyframeLabels.Count; i++)
             {
-                if (keyframesLabels[i].Timestamp == current.T)
+                if (keyframeLabels[i].Timestamp == current.T)
                 {
-                    keyframesLabels[i].SetAttach(current.Point, true);
+                    keyframeLabels[i].SetAttach(current.Point, true);
                     if (measureLabelType != MeasureLabelType.None)
-                        keyframesLabels[i].SetText(GetMeasureLabelText(keyframesLabels[i].AttachIndex));
+                        keyframeLabels[i].SetText(GetMeasureLabelText(keyframeLabels[i].AttachIndex));
 
                     break;
                 }
@@ -1399,12 +1399,12 @@ namespace Kinovea.ScreenManager
                 if (positions.Count > 0 && currentPointIndex < positions.Count)
                     miniLabel.SetAttach(positions[currentPointIndex].Point, true);
 
-                if (keyframesLabels.Count > 0)
+                if (keyframeLabels.Count > 0)
                 {
                     w.WriteStartElement("KeyframeLabelList");
-                    w.WriteAttributeString("Count", keyframesLabels.Count.ToString());
+                    w.WriteAttributeString("Count", keyframeLabels.Count.ToString());
 
-                    foreach (MiniLabel kfl in keyframesLabels)
+                    foreach (MiniLabel kfl in keyframeLabels)
                     {
                         w.WriteStartElement("KeyframeLabel");
                         kfl.WriteXml(w);
@@ -1617,7 +1617,7 @@ namespace Kinovea.ScreenManager
         }
         public void ParseKeyframeLabelList(XmlReader xmlReader, PointF scale)
         {
-            keyframesLabels.Clear();
+            keyframeLabels.Clear();
 
             xmlReader.ReadStartElement();
 
@@ -1634,7 +1634,7 @@ namespace Kinovea.ScreenManager
                         kfl.AttachIndex = iMatchedTrackPosition;
 
                         kfl.SetAttach(positions[iMatchedTrackPosition].Point, false);
-                        keyframesLabels.Add(kfl);
+                        keyframeLabels.Add(kfl);
                     }
                 }
                 else
@@ -1679,7 +1679,7 @@ namespace Kinovea.ScreenManager
         public void Clear()
         {
             positions.Clear();
-            keyframesLabels.Clear();
+            keyframeLabels.Clear();
         }
         public void IntegrateKeyframes()
         {
@@ -1690,7 +1690,7 @@ namespace Kinovea.ScreenManager
             //-----------------------------------------------------------------------------------
 
             // Keep track of matched keyframes so we can remove the others.
-            bool[] matched = new bool[keyframesLabels.Count];
+            bool[] matched = new bool[keyframeLabels.Count];
 
             // Filter out key images that are not in the trajectory boundaries.
             for (int i = 0; i < parentMetadata.Count; i++)
@@ -1703,9 +1703,9 @@ namespace Kinovea.ScreenManager
                     // The Keyframe is within the Trajectory interval.
                     // Do we know it already ?
                     int iKnown = -1;
-                    for (int j = 0; j < keyframesLabels.Count; j++)
+                    for (int j = 0; j < keyframeLabels.Count; j++)
                     {
-                        if (keyframesLabels[j].Timestamp == parentMetadata[i].Position)
+                        if (keyframeLabels[j].Timestamp == parentMetadata[i].Position)
                         {
                             iKnown = j;
                             matched[j] = true;
@@ -1717,8 +1717,8 @@ namespace Kinovea.ScreenManager
                     {
                         // Known Keyframe, import name and color.
                         //keyframesLabels[iKnown].SetText(parentMetadata[i].Title);
-                        keyframesLabels[iKnown].Name = parentMetadata[i].Title;
-                        keyframesLabels[iKnown].BackColor = useKeyframeColors ? parentMetadata[i].Color : styleHelper.Color;
+                        keyframeLabels[iKnown].Name = parentMetadata[i].Title;
+                        keyframeLabels[iKnown].BackColor = useKeyframeColors ? parentMetadata[i].Color : styleHelper.Color;
                     }
                     else
                     {
@@ -1730,7 +1730,7 @@ namespace Kinovea.ScreenManager
                         kfl.Name = parentMetadata[i].Title;
                         kfl.BackColor = useKeyframeColors ? parentMetadata[i].Color : styleHelper.Color;
                         
-                        keyframesLabels.Add(kfl);
+                        keyframeLabels.Add(kfl);
                     }
                 }
             }
@@ -1740,18 +1740,18 @@ namespace Kinovea.ScreenManager
             for (int iLabel = matched.Length - 1; iLabel >= 0; iLabel--)
             {
                 if (!matched[iLabel])
-                    keyframesLabels.RemoveAt(iLabel);
+                    keyframeLabels.RemoveAt(iLabel);
             }
 
             // Recompute labels.
             if (measureLabelType != MeasureLabelType.None)
             {
-                for (int iKfl = 0; iKfl < keyframesLabels.Count; iKfl++)
+                for (int iKfl = 0; iKfl < keyframeLabels.Count; iKfl++)
                 {
                     if (measureLabelType == MeasureLabelType.Name)
-                        keyframesLabels[iKfl].SetText(keyframesLabels[iKfl].Name);
+                        keyframeLabels[iKfl].SetText(keyframeLabels[iKfl].Name);
                     else
-                        keyframesLabels[iKfl].SetText(GetMeasureLabelText(keyframesLabels[iKfl].AttachIndex));
+                        keyframeLabels[iKfl].SetText(GetMeasureLabelText(keyframeLabels[iKfl].AttachIndex));
                 }
             }
         }
@@ -1918,7 +1918,7 @@ namespace Kinovea.ScreenManager
         {
             // Impact the style of mini labels based on the main color.
             miniLabel.BackColor = styleHelper.Color;
-            foreach (MiniLabel kfl in keyframesLabels)
+            foreach (MiniLabel kfl in keyframeLabels)
                 kfl.BackColor = styleHelper.Color;
         }
         #endregion

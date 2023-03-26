@@ -212,7 +212,7 @@ namespace Kinovea.ScreenManager
                 mnuHideAfter });
 
             // Action menus
-            mnuAction.Image = Properties.Drawings.stopwatch;
+            mnuAction.Image = Properties.Resources.action;
             mnuStart.Image = Properties.Drawings.chronostart;
             mnuStop.Image = Properties.Drawings.chronostop;
             mnuSplit.Image = Properties.Drawings.chrono_split;

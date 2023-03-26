@@ -1538,6 +1538,21 @@
   <ItemGroup>
     <None Include="Resources\binocular.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\action.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\equalizer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\rtl.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\border-all.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\exit_filter.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">
     <Message Text="Adjusting SDK tools directory to use x64 version of AL.EXE" />

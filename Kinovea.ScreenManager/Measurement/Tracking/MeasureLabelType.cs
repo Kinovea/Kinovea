@@ -31,6 +31,11 @@ namespace Kinovea.ScreenManager
         RelativeTime,
 
         /// <summary>
+        /// Frame number within a sequence (Kinogram mode).
+        /// </summary>
+        Frame,
+
+        /// <summary>
         /// 2D position to the coordinate system origin.
         /// </summary>
         Position,

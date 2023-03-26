@@ -36,7 +36,7 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// The template matching failed but we need the data if the tracked point is 
-        /// part of the bigger drawing that has other points that successfully matched.
+        /// part of a bigger drawing that has other points that successfully matched.
         /// In this case the placement reuses old data.
         /// </summary>
         ForcedClosest
