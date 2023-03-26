@@ -870,7 +870,8 @@ namespace Kinovea.ScreenManager
             lblSelDuration.AutoSize = true;
 
             UpdateTimeLabels();
-
+            trkFrame.ShowCacheInTimeline = PreferencesManager.PlayerPreferences.ShowCacheInTimeline;
+            
             ReloadTooltipsCulture();
             ReloadToolsCulture();
             ReloadMenusCulture();
@@ -2119,9 +2120,25 @@ namespace Kinovea.ScreenManager
         {
             // Update markers and label for position.
 
-            //trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.Cache.Segment);
+            if (PreferencesManager.PlayerPreferences.ShowCacheInTimeline)
+            {
+                if (m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
+                {
+                    VideoSection section = new VideoSection(m_iSelStart, m_iSelEnd);
+                    trkFrame.UpdateCacheSegmentMarker(section);
+                }
+                else if (m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.PreBuffering)
+                {
+                    trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.PreBufferingSegment);
+                }
+                else
+                {
+                    VideoSection section = new VideoSection(m_iCurrentPosition, m_iCurrentPosition);
+                    trkFrame.UpdateCacheSegmentMarker(section);
+                }
+            }
+
             trkFrame.Position = m_iCurrentPosition;
-                trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.PreBufferingSegment);
             trkFrame.Invalidate();
             trkSelection.SelPos = m_iCurrentPosition;
             trkSelection.Invalidate();

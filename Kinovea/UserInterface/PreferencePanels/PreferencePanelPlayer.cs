@@ -69,6 +69,7 @@ namespace Kinovea.Root
         private bool syncLockSpeeds;
         private bool syncByMotion;
         private int memoryBuffer;
+        private bool showCacheInTimeline;
         private string playbackKVA;
         #endregion
         
@@ -107,6 +108,7 @@ namespace Kinovea.Root
             syncLockSpeeds = PreferencesManager.PlayerPreferences.SyncLockSpeed;
             syncByMotion = PreferencesManager.PlayerPreferences.SyncByMotion;
             memoryBuffer = PreferencesManager.PlayerPreferences.WorkingZoneMemory;
+            showCacheInTimeline = PreferencesManager.PlayerPreferences.ShowCacheInTimeline;
             playbackKVA = PreferencesManager.PlayerPreferences.PlaybackKVA;
         }
         private void InitPage()
@@ -154,6 +156,9 @@ namespace Kinovea.Root
             memoryBuffer = Math.Min(memoryBuffer, trkMemoryBuffer.Maximum);
             trkMemoryBuffer.Value = memoryBuffer;
             UpdateMemoryLabel();
+
+            cbCacheInTimeline.Text = "Show memory indicator in the timeline";
+            cbCacheInTimeline.Checked = showCacheInTimeline;
         }
         #endregion
 
@@ -223,6 +228,10 @@ namespace Kinovea.Root
 
             lblWorkingZoneMemory.Text = string.Format(RootLang.dlgPreferences_Player_lblMemory, formatted);
         }
+        private void cbCacheInTimeline_CheckedChanged(object sender, EventArgs e)
+        {
+            showCacheInTimeline = cbCacheInTimeline.Checked;
+        }
         #endregion
         #endregion
 
@@ -236,6 +245,7 @@ namespace Kinovea.Root
             PreferencesManager.PlayerPreferences.AspectRatio = imageAspectRatio;
             PreferencesManager.PlayerPreferences.PlaybackKVA = playbackKVA;
             PreferencesManager.PlayerPreferences.WorkingZoneMemory = memoryBuffer;
+            PreferencesManager.PlayerPreferences.ShowCacheInTimeline = showCacheInTimeline;
         }
     }
 }

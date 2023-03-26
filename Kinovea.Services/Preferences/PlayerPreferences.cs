@@ -106,6 +106,11 @@ namespace Kinovea.Services
             get { return workingZoneMemory; }
             set { workingZoneMemory = value; }
         }
+        public bool ShowCacheInTimeline
+        {
+            get { return showCacheInTimeline; }
+            set { showCacheInTimeline = value; }
+        }
         public bool SyncLockSpeed
         {
             get { return syncLockSpeed;}
@@ -234,6 +239,7 @@ namespace Kinovea.Services
         private string playbackKVA;
         private KinogramParameters kinogramParameters = new KinogramParameters();
         private KeyframePresetsParameters keyframePresetsParameters = new KeyframePresetsParameters();
+        private bool showCacheInTimeline = false;
         public void AddRecentColor(Color _color)
         {
             PreferencesManager.UpdateRecents(_color, recentColors, maxRecentColors);
@@ -252,11 +258,12 @@ namespace Kinovea.Services
             writer.WriteElementString("CSVDecimalSeparator", csvDecimalSeparator.ToString());
             writer.WriteElementString("ExportSpace", exportSpace.ToString());
             writer.WriteElementString("AspectRatio", aspectRatio.ToString());
-            writer.WriteElementString("DeinterlaceByDefault", deinterlaceByDefault ? "true" : "false");
-            writer.WriteElementString("InteractiveFrameTracker", interactiveFrameTracker ? "true" : "false");
+            writer.WriteElementString("DeinterlaceByDefault", XmlHelper.WriteBoolean(deinterlaceByDefault));
+            writer.WriteElementString("InteractiveFrameTracker", XmlHelper.WriteBoolean(interactiveFrameTracker));
             writer.WriteElementString("WorkingZoneMemory", workingZoneMemory.ToString());
-            writer.WriteElementString("SyncLockSpeed", syncLockSpeed ? "true" : "false");
-            writer.WriteElementString("SyncByMotion", syncByMotion ? "true" : "false");
+            writer.WriteElementString("ShowCacheInTimeline", XmlHelper.WriteBoolean(showCacheInTimeline));
+            writer.WriteElementString("SyncLockSpeed", XmlHelper.WriteBoolean(syncLockSpeed));
+            writer.WriteElementString("SyncByMotion", XmlHelper.WriteBoolean(syncByMotion));
             writer.WriteElementString("ImageFormat", imageFormat.ToString());
             writer.WriteElementString("VideoFormat", videoFormat.ToString());
             writer.WriteElementString("Background", XmlHelper.WriteColor(backgroundColor, true));
@@ -290,7 +297,7 @@ namespace Kinovea.Services
             writer.WriteElementString("EnableFiltering", enableFiltering ? "true" : "false");
             writer.WriteElementString("EnableCustomToolsDebugMode", enableCustomToolsDebugMode ? "true" : "false");
             writer.WriteElementString("DefaultReplaySpeed", defaultReplaySpeed.ToString("0", CultureInfo.InvariantCulture));
-            writer.WriteElementString("DetectImageSequences", detectImageSequences ? "true" : "false");
+            writer.WriteElementString("DetectImageSequences", XmlHelper.WriteBoolean(detectImageSequences));
             writer.WriteElementString("PreloadKeyframes", preloadKeyframes.ToString());
             writer.WriteElementString("PlaybackKVA", playbackKVA);
 
@@ -301,6 +308,7 @@ namespace Kinovea.Services
             writer.WriteStartElement("KeyframePresets");
             keyframePresetsParameters.WriteXml(writer);
             writer.WriteEndElement();
+
         }
         
         public void ReadXML(XmlReader reader)
@@ -352,6 +360,9 @@ namespace Kinovea.Services
                         break;
                     case "WorkingZoneMemory":
                         workingZoneMemory = reader.ReadElementContentAsInt();
+                        break;
+                    case "ShowCacheInTimeline":
+                        showCacheInTimeline = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     case "SyncLockSpeed":
                         syncLockSpeed = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
