@@ -66,7 +66,10 @@ namespace Kinovea.Services
         
         public static void Initialize(Version version)
         {
-            Version = string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build);
+            Version = version.Build == 0 ? 
+                string.Format("{0}.{1}", version.Major, version.Minor) : 
+                string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build);
+
             CameraPluginAPIVersion = "3.0";
 
             string applicationDirectory = Application.StartupPath + "\\";

@@ -89,7 +89,10 @@ namespace Kinovea.Services
         }
         public override string ToString()
         {
-            return String.Format("{0}.{1}.{2}", Major, Minor, Revision);
+            if (Revision == 0)
+                return String.Format("{0}.{1}", Major, Minor, Revision);
+            else
+                return String.Format("{0}.{1}.{2}", Major, Minor, Revision);
         }
     }
 }
