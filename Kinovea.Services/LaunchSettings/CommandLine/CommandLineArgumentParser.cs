@@ -204,7 +204,7 @@ namespace Bsc
             
             foreach (string paramName in paramNames)
             {
-                int paramInd = rawArguments.IndexOf(paramName);
+                int paramInd = IndexOfCaseInsensitive(paramName, rawArguments);
                 if (paramInd < 0)
                 {
                     missingRequiredParameters.Add(paramName);                    
@@ -242,8 +242,7 @@ namespace Bsc
 
             foreach (string paramName in paramNames)
             {
-                int paramInd = rawArguments.IndexOf(paramName);
-
+                int paramInd = IndexOfCaseInsensitive(paramName, rawArguments);
                 if (paramInd >= 0)
                 {
                     if (paramInd + 1 < rawArguments.Count)
@@ -278,14 +277,31 @@ namespace Bsc
 
             foreach (string paramName in paramNames)
             {
-                int paramInd = rawArguments.IndexOf(paramName);
-
+                int paramInd = IndexOfCaseInsensitive(paramName, rawArguments);
                 if (paramInd >= 0)
                 {
                     CommandLineArgumentParser.switches[paramName] = true;
                     rawArguments.RemoveAt(paramInd);
                 }
             }
+        }
+
+        /// <summary>
+        /// Find the index of paramName in rawArguments, case insensitive.
+        /// </summary>
+        private static int IndexOfCaseInsensitive(string paramName, List<string> rawArguments)
+        {
+            int paramInd = -1;
+            for (int i = 0; i < rawArguments.Count; i++)
+            {
+                if (paramName.ToLower() == rawArguments[i].ToLower())
+                {
+                    paramInd = i;
+                    break;
+                }
+            }
+
+            return paramInd;
         }
 
         private static void ThrowIfErrors()

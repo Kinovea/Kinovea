@@ -88,7 +88,7 @@ namespace Kinovea.Services
             {
                 if(arguments.Length == 1)
                 {
-                    if(arguments[0].Trim() == "-help" || arguments[0].Trim() == "-h")
+                    if(arguments[0].Trim().ToLower() == "-help" || arguments[0].Trim().ToLower() == "-h")
                     {
                         PrintUsage();
                     }
@@ -118,6 +118,11 @@ namespace Kinovea.Services
                             sdp.Stretch = true;
                             LaunchSettingsManager.AddScreenDescription(sdp);
                         }
+                    }
+                    else
+                    {
+                        log.ErrorFormat("Single command line argument provided but not a file.");
+                        PrintUsage();
                     }
                 }
                 else
@@ -170,11 +175,27 @@ namespace Kinovea.Services
 
                         LaunchSettingsManager.AddScreenDescription(sdp);
                     }
+                    else
+                    {
+                        if (stretch)
+                        {
+                            string error = "Ignored command line parameter: -stretch. No video provided.";
+                            Console.WriteLine(error);
+                            log.ErrorFormat(error);
+                        }
+
+                        if (!string.IsNullOrEmpty(speed))
+                        {
+                            string error = "Ignored command line parameter: -speed. No video provided.";
+                            Console.WriteLine(error);
+                            log.ErrorFormat(error);
+                        }
+                    }
                 }
             }
             catch (CommandLineArgumentException e)
             {
-                log.Error("Command line arguments couldn't be parsed.");
+                log.Error("Command line arguments could not be parsed.");
                 log.Error(e.Message);
                 PrintUsage();
             }
