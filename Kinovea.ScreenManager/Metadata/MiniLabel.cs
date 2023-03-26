@@ -132,12 +132,12 @@ namespace Kinovea.ScreenManager
             hash ^= styleHelper.ContentHash;
             return hash;
         }
-        public void Draw(Graphics canvas, IImageToViewportTransformer transformer, double opacityFactor)
+        public void Draw(Graphics canvas, IImageToViewportTransformer transformer, double opacity)
         {
-            using(SolidBrush fillBrush = styleHelper.GetBackgroundBrush((int)(opacityFactor*255)))
-            using(Pen p = styleHelper.GetBackgroundPen((int)(opacityFactor*64)))
+            using(SolidBrush fillBrush = styleHelper.GetBackgroundBrush((int)(opacity*255)))
+            using(Pen p = styleHelper.GetBackgroundPen((int)(opacity*64)))
             using(Font f = styleHelper.GetFont((float)transformer.Scale))
-            using(SolidBrush fontBrush = styleHelper.GetForegroundBrush((int)(opacityFactor*255)))
+            using(SolidBrush fontBrush = styleHelper.GetForegroundBrush((int)(opacity*255)))
             {
                 SizeF textSize = canvas.MeasureString(text, f);
                 Point location = transformer.Transform(background.Rectangle.Location);

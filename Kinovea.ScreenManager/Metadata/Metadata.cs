@@ -522,7 +522,7 @@ namespace Kinovea.ScreenManager
 
             log.Debug("Constructing new Metadata object.");
         }
-        public Metadata(string kvaString,  VideoInfo info, HistoryStack historyStack, TimeCodeBuilder timecodeBuilder, ClosestFrameDisplayer closestFrameDisplayer)
+        public Metadata(string kvaString,  VideoInfo info, HistoryStack historyStack, TimeCodeBuilder timecodeBuilder)
             : this(historyStack, timecodeBuilder)
         {
             // This should reflect what we do in FrameServerPlayer.SetupMetadata

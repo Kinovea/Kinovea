@@ -85,10 +85,8 @@ namespace Kinovea.ScreenManager
             track.MemorizeState();
             track.DrawingStyle.Memorize();
 
-            InitViewCombo();
             InitMarkerCombo();
             InitMeasureLabelTypeCombo();
-            chkBestFitCircle.Checked = track.DisplayBestFitCircle;
             InitTrackParameters();
             SetupStyleControls();
             SetCurrentOptions();
@@ -101,12 +99,6 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Init
-        private void InitViewCombo()
-        {
-            cmbView.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_VisibilityComplete);
-            cmbView.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_VisibilityOneSecond);
-            cmbView.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_VisibilityLabelOnly);
-        }
         private void InitMeasureLabelTypeCombo()
         {
             // Combo must be filled in the order of the enum.
@@ -183,7 +175,6 @@ namespace Kinovea.ScreenManager
         private void SetCurrentOptions()
         {
             tbLabel.Text = track.Name;
-            cmbView.SelectedIndex = (int)track.View;
             cmbMeasureLabelType.SelectedIndex = (int)track.MeasureLabelType;
             cmbMarker.SelectedIndex = (int)track.Marker;
         }
@@ -194,11 +185,9 @@ namespace Kinovea.ScreenManager
             grpIdentification.Text = ScreenManagerLang.dlgConfigureDrawing_Name;
 
             grpConfig.Text = ScreenManagerLang.Generic_Configuration;
-            lblView.Text = ScreenManagerLang.Generic_Visibility + " :";
 
             lblMarker.Text = ScreenManagerLang.dlgConfigureTrajectory_LabelMarker;
             lblExtra.Text = ScreenManagerLang.dlgConfigureTrajectory_LabelExtraData;
-            chkBestFitCircle.Text = ScreenManagerLang.dlgConfigureTrajectory_CheckDisplayRotationCircle;
             
             grpAppearance.Text = ScreenManagerLang.Generic_Appearance;
 
@@ -246,20 +235,9 @@ namespace Kinovea.ScreenManager
             if(invalidate != null) 
                 invalidate();
         }
-        private void CmbView_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            track.View = (TrackView)cmbView.SelectedIndex;
-            if (invalidate != null)
-                invalidate();
-        }
         private void CmbMeasureLabelType_SelectedIndexChanged(object sender, EventArgs e)
         {
             track.MeasureLabelType = (MeasureLabelType)cmbMeasureLabelType.SelectedIndex;
-            track.IsUsingAngularKinematics();
-
-            if (track.IsUsingAngularKinematics())
-                chkBestFitCircle.Checked = true;
-
             if(invalidate != null) 
                 invalidate();
         }
@@ -273,15 +251,6 @@ namespace Kinovea.ScreenManager
         private void element_ValueChanged(object sender, EventArgs e)
         {
             if(invalidate != null) 
-                invalidate();
-        }
-
-
-        private void chkBestFitCircle_CheckedChanged(object sender, EventArgs e)
-        {
-            track.DisplayBestFitCircle = chkBestFitCircle.Checked;
-
-            if (invalidate != null)
                 invalidate();
         }
 

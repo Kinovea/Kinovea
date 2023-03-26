@@ -478,7 +478,6 @@
     <Compile Include="Measurement\Tracking\MeasureLabelType.cs" />
     <Compile Include="Measurement\Tracking\TrackMarker.cs" />
     <Compile Include="Measurement\Tracking\TrackStatus.cs" />
-    <Compile Include="Measurement\Tracking\TrackView.cs" />
     <Compile Include="Measurement\LensDistortion\FormCalibrateDistortion.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1535,6 +1534,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\padlock2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\binocular.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">

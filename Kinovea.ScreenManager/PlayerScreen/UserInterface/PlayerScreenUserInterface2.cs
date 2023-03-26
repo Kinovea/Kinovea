@@ -366,9 +366,6 @@ namespace Kinovea.ScreenManager
 
         private ContextMenuStrip popMenuTrack = new ContextMenuStrip();
         private ToolStripMenuItem mnuConfigureTrajectory = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuRestartTracking = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuStopTracking = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuDeleteEndOfTrajectory = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDeleteTrajectory = new ToolStripMenuItem();
 
         private ContextMenuStrip popMenuMagnifier = new ContextMenuStrip();
@@ -1199,17 +1196,11 @@ namespace Kinovea.ScreenManager
             mnuDeleteDrawing.Click += new EventHandler(mnuDeleteDrawing_Click);
             mnuDeleteDrawing.Image = Properties.Drawings.delete;
 
-            // Tracking pop menu (Restart, Stop tracking)
-            mnuStopTracking.Click += new EventHandler(mnuStopTracking_Click);
-            mnuStopTracking.Image = Properties.Drawings.trackstop;
-            mnuRestartTracking.Click += new EventHandler(mnuRestartTracking_Click);
-            mnuRestartTracking.Image = Properties.Drawings.trackingplay;
-            mnuDeleteTrajectory.Click += new EventHandler(mnuDeleteTrajectory_Click);
-            mnuDeleteTrajectory.Image = Properties.Drawings.delete;
-            mnuDeleteEndOfTrajectory.Click += new EventHandler(mnuDeleteEndOfTrajectory_Click);
-            mnuDeleteEndOfTrajectory.Image = Properties.Resources.bin_empty;
+            // Tracks.
             mnuConfigureTrajectory.Click += new EventHandler(mnuConfigureTrajectory_Click);
             mnuConfigureTrajectory.Image = Properties.Drawings.configure;
+            mnuDeleteTrajectory.Click += new EventHandler(mnuDeleteTrajectory_Click);
+            mnuDeleteTrajectory.Image = Properties.Drawings.delete;
 
             // Magnifier
             mnuMagnifierFreeze.Click += mnuMagnifierFreeze_Click;
@@ -2738,12 +2729,9 @@ namespace Kinovea.ScreenManager
             mnuDrawingTrackingStop.Text = ScreenManagerLang.mnuDrawingTrackingStop;
 
             // Tracking pop menu (Restart, Stop tracking)
-            mnuStopTracking.Text = ScreenManagerLang.mnuStopTracking;
-            mnuRestartTracking.Text = ScreenManagerLang.mnuRestartTracking;
-            mnuDeleteTrajectory.Text = ScreenManagerLang.mnuDeleteTrajectory;
-            mnuDeleteTrajectory.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.DeleteDrawing);
-            mnuDeleteEndOfTrajectory.Text = ScreenManagerLang.mnuDeleteEndOfTrajectory;
             mnuConfigureTrajectory.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
+            mnuDeleteTrajectory.Text = ScreenManagerLang.mnuDeleteDrawing;
+            mnuDeleteTrajectory.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.DeleteDrawing);
 
             // Magnifier.
             mnuMagnifierFreeze.Text = "Freeze";
@@ -2990,7 +2978,8 @@ namespace Kinovea.ScreenManager
 
             if (drawing is DrawingTrack)
             {
-                ((DrawingTrack)drawing).ClosestFrameDisplayer = OnShowClosestFrame;
+                ((DrawingTrack)drawing).DisplayClosestFrame = DisplayClosestFrame;
+                ((DrawingTrack)drawing).CheckCustomDecodingSize = CheckCustomDecodingSize;
 
                 // TODO: move this to a tool.
                 m_ActiveTool = m_PointerTool;
@@ -3320,13 +3309,6 @@ namespace Kinovea.ScreenManager
             bool customMenus = AddDrawingCustomMenus(track, popMenu.Items);
             if (customMenus)
                 popMenu.Items.Add(new ToolStripSeparator());
-
-            bool isTracking = track.Status == TrackStatus.Edit;
-            popMenu.Items.AddRange(new ToolStripItem[] {
-                        isTracking ? mnuStopTracking : mnuRestartTracking,
-                        mnuDeleteEndOfTrajectory,
-                        new ToolStripSeparator(),
-                        mnuDeleteTrajectory });
         }
 
         private void PrepareMagnifierContextMenu(ContextMenuStrip popMenu)
@@ -4843,40 +4825,6 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Trajectory tool menus
-        private void mnuStopTracking_Click(object sender, EventArgs e)
-        {
-            DrawingTrack track = m_FrameServer.Metadata.HitDrawing as DrawingTrack;
-            if (track == null)
-                return;
-
-            track.StopTracking();
-            CheckCustomDecodingSize(false);
-            DoInvalidate();
-        }
-        private void mnuDeleteEndOfTrajectory_Click(object sender, EventArgs e)
-        {
-            DrawingTrack track = m_FrameServer.Metadata.HitDrawing as DrawingTrack;
-            if (track == null)
-                return;
-
-            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.TrackManager.Id, track.Id, track.Name, SerializationFilter.Core);
-            m_FrameServer.HistoryStack.PushNewCommand(memento);
-
-            track.ChopTrajectory(m_iCurrentPosition);
-
-            DoInvalidate();
-            UpdateFramesMarkers();
-        }
-        private void mnuRestartTracking_Click(object sender, EventArgs e)
-        {
-            DrawingTrack track = m_FrameServer.Metadata.HitDrawing as DrawingTrack;
-            if(track == null)
-                return;
-            
-            CheckCustomDecodingSize(true);
-            track.RestartTracking();
-            DoInvalidate();
-        }
         private void mnuDeleteTrajectory_Click(object sender, EventArgs e)
         {
             AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
@@ -4913,7 +4861,7 @@ namespace Kinovea.ScreenManager
             DoInvalidate();
             UpdateFramesMarkers();
         }
-        private void OnShowClosestFrame(Point _mouse, List<AbstractTrackPoint> _positions, int _iPixelTotalDistance, bool _b2DOnly)
+        private void DisplayClosestFrame(Point p, List<AbstractTrackPoint> trackPoints, float timeScale, bool use3D)
         {
             //--------------------------------------------------------------------------
             // This is where the interactivity of the trajectory is done.
@@ -4922,60 +4870,48 @@ namespace Kinovea.ScreenManager
             //--------------------------------------------------------------------------
 
             // Compute the 3D distance (x,y,t) of each point in the path.
-            // unscaled coordinates.
+            
+            float minDistance = float.MaxValue;
+            int closestPointIndex = 0;
 
-            double minDistance = double.MaxValue;
-            int iClosestPoint = 0;
-
-            if (_b2DOnly)
+            if (use3D)
             {
-                // Check the closest location on screen.
-                for (int i = 0; i < _positions.Count; i++)
+                // Find closest location on screen in 3D (X, Y, T).
+                for (int i = 0; i < trackPoints.Count; i++)
                 {
-                    double dist = Math.Sqrt(((_mouse.X - _positions[i].X) * (_mouse.X - _positions[i].X))
-                                            + ((_mouse.Y - _positions[i].Y) * (_mouse.Y - _positions[i].Y)));
+                    float dx = p.X - trackPoints[i].X;
+                    float dy = p.Y - trackPoints[i].Y;
+                    float dt = m_iCurrentPosition - trackPoints[i].T;
+                    dt /= timeScale;
 
-
+                    float dist = (float)Math.Sqrt((dx * dx) + (dy * dy) + (dt * dt));
                     if (dist < minDistance)
                     {
                         minDistance = dist;
-                        iClosestPoint = i;
+                        closestPointIndex = i;
                     }
                 }
             }
             else
             {
-                // Check closest location on screen, but giving priority to the one also close in time.
-                // = distance in 3D.
-                // Distance on t is not in the same unit as distance on x and y.
-                // So first step is to normalize t.
-
-                // _iPixelTotalDistance should be the flat distance (distance from topleft to bottomright)
-                // not the added distances of each segments, otherwise it will be biased towards time.
-
-                long TimeTotalDistance = _positions[_positions.Count -1].T - _positions[0].T;
-                double scaleFactor = (double)TimeTotalDistance / (double)_iPixelTotalDistance;
-
-                for (int i = 0; i < _positions.Count; i++)
+                // Find closest location on screen in 2D.
+                for (int i = 0; i < trackPoints.Count; i++)
                 {
-                    double fTimeDistance = (double)(m_iCurrentPosition - _positions[i].T);
-
-                    double dist = Math.Sqrt(((_mouse.X - _positions[i].X) * (_mouse.X - _positions[i].X))
-                                            + ((_mouse.Y - _positions[i].Y) * (_mouse.Y - _positions[i].Y))
-                                            + ((long)(fTimeDistance / scaleFactor) * (long)(fTimeDistance / scaleFactor)));
+                    float dx = p.X - trackPoints[i].X;
+                    float dy = p.Y - trackPoints[i].Y;
+                    float dist = (float)Math.Sqrt((dx * dx) + (dy * dy));
 
                     if (dist < minDistance)
                     {
                         minDistance = dist;
-                        iClosestPoint = i;
+                        closestPointIndex = i;
                     }
                 }
-
             }
 
             // move to corresponding timestamp.
             m_iFramesToDecode = 1;
-            ShowNextFrame(_positions[iClosestPoint].T, true);
+            ShowNextFrame(trackPoints[closestPointIndex].T, true);
             UpdatePositionUI();
         }
         #endregion
