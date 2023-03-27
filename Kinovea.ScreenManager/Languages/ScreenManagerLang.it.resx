@@ -829,7 +829,7 @@
     <value>Calibrazione della fotocamera</value>
   </data>
   <data name="dlgTimebase_lblCapture" xml:space="preserve">
-    <value>Cattura framerate:</value>
+    <value>Cattura frame-rate:</value>
   </data>
   <data name="dlgConfigureTrajectory_VisibilityOneSecond" xml:space="preserve">
     <value>Un secondo</value>

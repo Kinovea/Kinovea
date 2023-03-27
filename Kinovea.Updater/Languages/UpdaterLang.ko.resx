@@ -64,11 +64,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="mnuCheckForUpdates" xml:space="preserve"><value>새 소프트웨어로 교체…</value>
+  <data name="mnuCheckForUpdates" xml:space="preserve"><value>업데이트 확인중…</value>
   </data>
-  <data name="Updater_Behind" xml:space="preserve"><value>새로운 버전 가용함!</value>
+  <data name="Updater_Behind" xml:space="preserve"><value>새로운 버전이 있습니다!</value>
   </data>
-  <data name="Updater_CurrentVersion" xml:space="preserve"><value>현재 버전:</value>
+  <data name="Updater_CurrentVersion" xml:space="preserve"><value>현재 버전 :</value>
   </data>
   <data name="Updater_Download" xml:space="preserve"><value>내려 받기</value>
   </data>
@@ -78,9 +78,9 @@
   </data>
   <data name="Updater_NewVersion" xml:space="preserve"><value>새 버전</value>
   </data>
-  <data name="Updater_Quit" xml:space="preserve"><value>끝내기</value>
+  <data name="Updater_Quit" xml:space="preserve"><value>종료</value>
   </data>
-  <data name="Updater_Title" xml:space="preserve"><value>Kinovea-새 버전을 검토하시오.</value>
+  <data name="Updater_Title" xml:space="preserve"><value>Kinovea - 새 버전을 확인 중입니다.</value>
   </data>
   <data name="Updater_UpToDate" xml:space="preserve"><value>최신 버전입니다!</value>
   </data>
