@@ -111,22 +111,22 @@ namespace Kinovea.ScreenManager
         private Color BackgroundColor = Color.FromArgb(44, 44, 44);
         private int contextTile = -1;
         private int movingTile = -1;
+        private int movingLabel = -1;
 
         // Labels
-        private MeasureLabelType measureLabelType = MeasureLabelType.None;
         private List<MiniLabel> frameLabels = new List<MiniLabel>();
 
         #region Menu
         private ToolStripMenuItem mnuConfigure = new ToolStripMenuItem();
         private ToolStripMenuItem mnuAction = new ToolStripMenuItem();
         private ToolStripMenuItem mnuInterpolate = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuResetLabelPositions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuResetTile = new ToolStripMenuItem();
         private ToolStripMenuItem mnuResetAllTiles = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuRightToLeft = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowBorder = new ToolStripMenuItem();
         private ToolStripMenuItem mnuAutoInterpolate = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuResetLabelPositions = new ToolStripMenuItem();
 
         private ToolStripMenuItem mnuMeasurement = new ToolStripMenuItem();
         private Dictionary<MeasureLabelType, ToolStripMenuItem> mnuMeasureLabelTypes = new Dictionary<MeasureLabelType, ToolStripMenuItem>();
@@ -154,14 +154,17 @@ namespace Kinovea.ScreenManager
 
             mnuAction.Image = Properties.Resources.action;
             mnuInterpolate.Image = Properties.Resources.wand;
+            mnuResetLabelPositions.Image = Properties.Drawings.label;
             mnuResetTile.Image = Properties.Resources.bin_empty;
             mnuResetAllTiles.Image = Properties.Resources.bin_empty;
             mnuInterpolate.Click += MnuInterpolate_Click;
+            mnuResetLabelPositions.Click += MnuResetLabelPositions_Click;
             mnuResetTile.Click += MnuResetTile_Click;
             mnuResetAllTiles.Click += MnuResetAllTiles_Click;
             mnuAction.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuInterpolate,
                 new ToolStripSeparator(),
+                mnuResetLabelPositions,
                 mnuResetTile,
                 mnuResetAllTiles,
             });
@@ -170,16 +173,13 @@ namespace Kinovea.ScreenManager
             mnuRightToLeft.Image = Properties.Resources.rtl;
             mnuShowBorder.Image = Properties.Resources.border_all;
             mnuAutoInterpolate.Image = Properties.Resources.wand;
-            mnuResetLabelPositions.Image = Properties.Drawings.label;
             mnuRightToLeft.Click += MnuRightToLeft_Click;
             mnuShowBorder.Click += MnuShowBorder_Click;
             mnuAutoInterpolate.Click += MnuAutoInterpolate_Click;
-            mnuResetLabelPositions.Click += MnuResetLabelPositions_Click;
             mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuRightToLeft,
                 mnuShowBorder,
                 mnuAutoInterpolate,
-                mnuResetLabelPositions,
             });
 
             mnuMeasurement.Image = Properties.Drawings.label;
@@ -237,15 +237,33 @@ namespace Kinovea.ScreenManager
 
         public void StartMove(PointF p)
         {
-            movingTile = GetTile(p);
+            bool hitFrameLabel = false;
+            if (parameters.MeasureLabelType != MeasureLabelType.None)
+            {
+                for (int i = 0; i < frameLabels.Count; i++)
+                {
+                    if (frameLabels[i].HitTest(p, parentMetadata.ImageTransform))
+                    {
+                        movingLabel = i;
+                        hitFrameLabel = true;
+                        break;
+                    }
+                }
+            }
+            
+            if (!hitFrameLabel)
+            {
+                movingTile = GetTile(p);
+            }
 
-            if (movingTile != -1)
+            if (movingTile != -1 || movingLabel != -1)
                 CaptureMemento();
         }
 
         public void StopMove()
         {
             movingTile = -1;
+            movingLabel = -1;
 
             if (parameters.AutoInterpolate)
             {
@@ -256,55 +274,56 @@ namespace Kinovea.ScreenManager
 
         public void Move(float dx, float dy, Keys modifiers)
         {
-            if (movingTile < 0)
-                return;
-
-            parameters.ManualPositions.Add(movingTile);
-
-            if ((modifiers & Keys.Shift) == Keys.Shift)
+            if (movingLabel >= 0)
             {
-                for (int i = 0; i < parameters.TileCount; i++)
-                    MoveTile(dx, dy, i);
-                
-                Update();
+                if ((modifiers & Keys.Shift) == Keys.Shift)
+                {
+                    foreach (var label in frameLabels)
+                        label.MoveLabel(dx, dy);
+                }
+                else
+                {
+                    frameLabels[movingLabel].MoveLabel(dx, dy);
+                }
             }
-            else
+            else if (movingTile >= 0)
             {
-                MoveTile(dx, dy, movingTile);
-                Update(movingTile);
+                parameters.ManualPositions.Add(movingTile);
+
+                if ((modifiers & Keys.Shift) == Keys.Shift)
+                {
+                    for (int i = 0; i < parameters.TileCount; i++)
+                        MoveTile(dx, dy, i);
+                
+                    Update();
+                }
+                else
+                {
+                    MoveTile(dx, dy, movingTile);
+                    Update(movingTile);
+                }
             }
         }
 
         /// <summary>
         /// Draw extra content on top of the produced image.
         /// </summary>
-        public void DrawExtra(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, long timestamp)
+        public void DrawExtra(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, long timestamp, bool export)
         {
-            // Draw highlight border.
             float step = (float)framesContainer.Frames.Count / parameters.TileCount;
-            IEnumerable<VideoFrame> frames = framesContainer.Frames.Where((frame, i) => i % step < 1);
+            List<VideoFrame> frames = framesContainer.Frames.Where((frame, i) => i % step < 1).ToList();
             int cols = (int)Math.Ceiling((float)parameters.TileCount / parameters.Rows);
             Size cropSize = GetCropSize();
             Size fullSize = new Size(cropSize.Width * cols, cropSize.Height * parameters.Rows);
-
             Rectangle paintArea = UIHelper.RatioStretch(fullSize, bitmap.Size);
-            paintArea = transformer.Transform(paintArea);
             Size tileSize = new Size(paintArea.Width / cols, paintArea.Height / parameters.Rows);
 
-            int index = 0;
-            foreach (VideoFrame f in frames)
-            {
-                if (f.Timestamp < timestamp)
-                {
-                    index++;
-                    continue;
-                }
-
-                Rectangle destRect = GetDestinationRectangle(index, cols, parameters.Rows, parameters.LeftToRight, paintArea, tileSize);
-                DrawHighlight(canvas, destRect);
-                break;
-            }
+            if (!export)
+                DrawHighlightBorder(canvas, transformer, timestamp, frames, cols, paintArea, tileSize);
+            
+            DrawLabels(canvas, transformer);
         }
+
 
         public void ExportVideo(IDrawingHostView host)
         {
@@ -355,11 +374,11 @@ namespace Kinovea.ScreenManager
             Graphics g = Graphics.FromImage(bmpExport);
             g.PixelOffsetMode = PixelOffsetMode.HighQuality;
             g.CompositingQuality = CompositingQuality.HighQuality;
-            g.InterpolationMode = InterpolationMode.HighQualityBilinear;
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.SmoothingMode = SmoothingMode.HighQuality;
 
             Paint(g, outputSize);
-
+            
             // Annotations are expressed in the original frames coordinate system.
             Rectangle fitArea = UIHelper.RatioStretch(outputSize, canvasSize);
             float scale = (float)outputSize.Width / fitArea.Width;
@@ -367,6 +386,10 @@ namespace Kinovea.ScreenManager
 
             MetadataRenderer metadataRenderer = new MetadataRenderer(parentMetadata, true);
             metadataRenderer.Render(g, location, scale, timestamp);
+            
+            // Local drawings (labels).
+            ImageToViewportTransformer transformer = new ImageToViewportTransformer(location, scale);
+            DrawExtra(g, null, transformer, timestamp, true);
 
             return bmpExport;
         }
@@ -451,6 +474,7 @@ namespace Kinovea.ScreenManager
             
             mnuAction.Text = "Action";
             mnuInterpolate.Text = "Interpolate tiles";
+            mnuResetLabelPositions.Text = "Reset label positions";
             mnuResetTile.Text = "Reset this tile";
             mnuResetAllTiles.Text = "Reset all tiles";
 
@@ -458,7 +482,6 @@ namespace Kinovea.ScreenManager
             mnuRightToLeft.Text = "Right to left";
             mnuShowBorder.Text = "Show border";
             mnuAutoInterpolate.Text = "Auto interpolate";
-            mnuResetLabelPositions.Text = "Reset label positions";
 
             // Measurement
             mnuMeasurement.Text = "Labels";
@@ -467,7 +490,7 @@ namespace Kinovea.ScreenManager
                 ToolStripMenuItem tsmi = pair.Value;
                 MeasureLabelType measureLabelType = pair.Key;
                 tsmi.Text = GetMeasureLabelOptionText(measureLabelType);
-                tsmi.Checked = this.measureLabelType == measureLabelType;
+                tsmi.Checked = parameters.MeasureLabelType == measureLabelType;
             }
         }
 
@@ -553,6 +576,7 @@ namespace Kinovea.ScreenManager
             parameters.LeftToRight = mnuRightToLeft.Checked;
 
             Update();
+            UpdateFrameLabels(true, false);
             InvalidateFromMenu(sender);
         }
 
@@ -586,45 +610,43 @@ namespace Kinovea.ScreenManager
         {
             CaptureMemento();
 
-            // TODO
+            UpdateFrameLabels(true, true);
 
             Update();
             InvalidateFromMenu(sender);
         }
 
-        private void MnuNumberSequence_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Create a new measure label type menu and store it in the global dictionary.
+        /// </summary>
+        private ToolStripMenuItem CreateMeasureLabelTypeMenu(MeasureLabelType measureLabelType)
         {
-            // Reset the auto-numbers to be into the tiles.
-            int cols = (int)Math.Ceiling((float)parameters.TileCount / parameters.Rows);
-            Size cropSize = GetCropSize();
-            Size fullSize = new Size(cropSize.Width * cols, cropSize.Height * parameters.Rows);
-            Rectangle paintArea = UIHelper.RatioStretch(fullSize, canvasSize);
-            Size tileSize = new Size(paintArea.Width / cols, paintArea.Height / parameters.Rows);
-            int tileCount = Math.Min(framesContainer.Frames.Count, parameters.TileCount);
-            
-            List<PointF> numbers = new List<PointF>();
-            for (int i = 0; i < tileCount; i++)
-            {
-                // Find the destination rectangle of this tile.
-                Rectangle destRect = GetDestinationRectangle(i, cols, parameters.Rows, parameters.LeftToRight, paintArea, tileSize);
-
-                // Anchor in the top-left by default. 
-                // The user can move all the numbers at once later with SHIFT+drag.
-                PointF location = new PointF(destRect.X + 10, destRect.Y + 10);
-                numbers.Add(location);
-            }
-
-            parentMetadata.DrawingNumberSequence.Configure(timestamp, parentMetadata.AverageTimeStampsPerFrame, numbers);
-
-            InvalidateFromMenu(sender);
+            // Note: the tag is reserved for injecting the screen user interface to support invalidation.
+            ToolStripMenuItem mnu = new ToolStripMenuItem();
+            mnu.Click += mnuMeasureLabelType_Click;
+            mnuMeasureLabelTypes.Add(measureLabelType, mnu);
+            return mnu;
         }
 
-        private void MnuDeleteNumberSequence_Click(object sender, EventArgs e)
+        private void mnuMeasureLabelType_Click(object sender, EventArgs e)
         {
-            List<PointF> numbers = new List<PointF>();
-            parentMetadata.DrawingNumberSequence.Configure(timestamp, parentMetadata.AverageTimeStampsPerFrame, numbers);
+            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
+            if (tsmi == null)
+                return;
 
-            InvalidateFromMenu(sender);
+            MeasureLabelType measureLabelType = MeasureLabelType.None;
+            foreach (var pair in mnuMeasureLabelTypes)
+            {
+                if (pair.Value == tsmi)
+                {
+                    measureLabelType = pair.Key;
+                    break;
+                }
+            }
+
+            parameters.MeasureLabelType = measureLabelType;
+            UpdateFrameLabels(false);
+            InvalidateFromMenu(tsmi);
         }
 
         /// <summary>
@@ -662,6 +684,9 @@ namespace Kinovea.ScreenManager
             g.SmoothingMode = SmoothingMode.HighSpeed;
 
             Paint(g, canvasSize, tile);
+
+            if (frameLabels.Count == 0)
+                UpdateFrameLabels(true, true);
         }
 
         /// <summary>
@@ -718,6 +743,7 @@ namespace Kinovea.ScreenManager
             int y = destRect.Y + (int)(-parameters.CropPositions[index].Y * cacheScale);
             g.SetClip(destRect);
             g.DrawImageUnscaled(image, x, y);
+            g.ResetClip();
 
             if (showDebug)
             {
@@ -753,12 +779,39 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Draw the highlighted border around the tile corresponding to the current timestamp.
+        /// Find the tile corresponding to the current time and draw a border around it.
         /// </summary>
-        private void DrawHighlight(Graphics g, Rectangle rect)
+        private void DrawHighlightBorder(Graphics canvas, IImageToViewportTransformer transformer, long timestamp, List<VideoFrame> frames, int cols, Rectangle paintArea, Size tileSize)
         {
-            using (Pen p = new Pen(Color.CornflowerBlue, 2.0f))
-                g.DrawRectangle(p, new Rectangle(rect.X, rect.Y, rect.Width - 1, rect.Height - 1));
+            // Draw a border around the current tile.
+            // More precisely, the tile immediately before the current time.            
+            int index = 0;
+            foreach (VideoFrame f in frames)
+            {
+                if (f.Timestamp < timestamp)
+                {
+                    index++;
+                    continue;
+                }
+
+                Rectangle destRect = GetDestinationRectangle(index, cols, parameters.Rows, parameters.LeftToRight, paintArea, tileSize);
+                destRect = transformer.Transform(destRect);
+                destRect.Width = destRect.Width - 1;
+                destRect.Height = destRect.Height - 1;
+                using (Pen p = new Pen(Color.CornflowerBlue, 2.0f))
+                    canvas.DrawRectangle(p, destRect);
+
+                break;
+            }
+        }
+
+        private void DrawLabels(Graphics canvas, IImageToViewportTransformer transformer)
+        {
+            if (parameters.MeasureLabelType == MeasureLabelType.None)
+                return;
+
+            foreach (var label in frameLabels)
+                label.Draw(canvas, transformer, 1.0f);
         }
 
         /// <summary>
@@ -773,6 +826,97 @@ namespace Kinovea.ScreenManager
 
             return new Rectangle(paintArea.Left + col * tileSize.Width, paintArea.Top + row * tileSize.Height, tileSize.Width, tileSize.Height);
         }
+        #endregion
+
+        #region Frame labels
+        private void UpdateFrameLabels(bool resetPositions, bool hardReset = false)
+        {
+            if (canvasSize == Size.Empty || framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count == 0)
+                return;
+
+            // Reset the auto-numbers to be into the tiles.
+            float step = (float)framesContainer.Frames.Count / parameters.TileCount;
+            List<VideoFrame> frames = framesContainer.Frames.Where((frame, i) => i % step < 1).ToList();
+
+            int cols = (int)Math.Ceiling((float)parameters.TileCount / parameters.Rows);
+            Size cropSize = GetCropSize();
+            Size fullSize = new Size(cropSize.Width * cols, cropSize.Height * parameters.Rows);
+            Rectangle paintArea = UIHelper.RatioStretch(fullSize, canvasSize);
+            Size tileSize = new Size(paintArea.Width / cols, paintArea.Height / parameters.Rows);
+            int tileCount = Math.Min(framesContainer.Frames.Count, parameters.TileCount);
+
+            if (resetPositions)
+            {
+                // Reset vs hard reset:
+                // If we have the same number of labels we might be in the case where we have only changed the tile size or sequence direction.
+                // In this case we keep the offset of the labels, just change their attach point.
+                // This is especially important if the user has set all the labels to be bottom center for example.
+                hardReset |= (frameLabels.Count != frames.Count);
+                if (hardReset)
+                    frameLabels.Clear();
+
+                int index = 0;
+                foreach (VideoFrame f in frames)
+                {
+                    // Find the destination rectangle of this tile.
+                    Rectangle destRect = GetDestinationRectangle(index, cols, parameters.Rows, parameters.LeftToRight, paintArea, tileSize);
+
+                    // Anchor in the top-left by default. 
+                    PointF location = new PointF(destRect.X + 10, destRect.Y + 10);
+
+                    if (hardReset)
+                    {
+                        MiniLabel label = new MiniLabel();
+                        label.AttachIndex = index;
+                        label.SetAttach(location, false);
+                        label.SetCenter(location);
+                        label.Timestamp = f.Timestamp;
+                        label.BackColor = Color.Black;
+                        label.ShowConnector = false;
+                        frameLabels.Add(label);
+                    }
+                    else
+                    {
+                        frameLabels[index].SetAttach(location, true);
+                    }
+
+                    index++;
+                }
+            }
+
+            // Update the labels text.
+            if (parameters.MeasureLabelType != MeasureLabelType.None)
+            {
+                for (int i = 0; i < frameLabels.Count; i++)
+                {
+                    frameLabels[i].SetText(GetMeasureLabelText(frameLabels[i]));
+                }
+            }
+
+        }
+
+        private string GetMeasureLabelText(MiniLabel label)
+        {
+            string displayText = "";
+            switch (parameters.MeasureLabelType)
+            {
+                case MeasureLabelType.None:
+                    displayText = "";
+                    break;
+
+                case MeasureLabelType.Clock:
+                    displayText = parentMetadata.TimeCodeBuilder(label.Timestamp, TimeType.UserOrigin, TimecodeFormat.Unknown, true);
+                    break;
+                case MeasureLabelType.Frame:
+                    displayText = string.Format("{0}", label.AttachIndex + 1);
+                    break;
+                default:
+                    break;
+            }
+
+            return displayText;
+        }
+
         #endregion
 
         /// <summary>
@@ -790,8 +934,9 @@ namespace Kinovea.ScreenManager
                 bitmap = new Bitmap(canvasSize.Width, canvasSize.Height);
             }
 
-            // Redraw the kinogram and update update the cache if necessary.
+            // Redraw the kinogram and update the cache if necessary.
             Update();
+            UpdateFrameLabels(true, false);
         }
 
         /// <summary>
@@ -822,6 +967,8 @@ namespace Kinovea.ScreenManager
                 anchorIndex = Math.Min(anchorIndex, parameters.CropPositions.Count - 1);
                 parameters.ManualPositions.Add(anchorIndex);
             }
+
+            UpdateFrameLabels(true);
         }
 
         /// <summary>
@@ -1074,38 +1221,5 @@ namespace Kinovea.ScreenManager
             var memento = new HistoryMementoModifyVideoFilter(parentMetadata, VideoFilterType.Kinogram, FriendlyName);
             parentMetadata.HistoryStack.PushNewCommand(memento);
         }
-
-        /// <summary>
-        /// Create a new measure label type menu and store it in the global dictionary.
-        /// </summary>
-        private ToolStripMenuItem CreateMeasureLabelTypeMenu(MeasureLabelType measureLabelType)
-        {
-            // Note: the tag is reserved for injecting the screen user interface to support invalidation.
-            ToolStripMenuItem mnu = new ToolStripMenuItem();
-            mnu.Click += mnuMeasureLabelType_Click;
-            mnuMeasureLabelTypes.Add(measureLabelType, mnu);
-            return mnu;
-        }
-
-        private void mnuMeasureLabelType_Click(object sender, EventArgs e)
-        {
-            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
-            if (tsmi == null)
-                return;
-
-            MeasureLabelType measureLabelType = MeasureLabelType.None;
-            foreach (var pair in mnuMeasureLabelTypes)
-            {
-                if (pair.Value == tsmi)
-                {
-                    measureLabelType = pair.Key;
-                    break;
-                }
-            }
-
-            this.measureLabelType = measureLabelType;
-            InvalidateFromMenu(tsmi);
-        }
-
     }
 }

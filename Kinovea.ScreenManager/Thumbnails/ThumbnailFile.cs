@@ -71,7 +71,6 @@ namespace Kinovea.ScreenManager
         private Bitmap currentThumbnail;
         private FileDetails details = new FileDetails();
         private bool m_bIsImage;
-        private bool hasKva;
         private int currentThumbnailIndex;
         private bool m_Hovering;
         private Bitmap bmpKvaAnalysis = Resources.bullet_white;

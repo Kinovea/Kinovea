@@ -184,7 +184,7 @@ namespace Kinovea.ScreenManager
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
             if(handleNumber == 1)
-                miniLabel.SetLabel(point);
+                miniLabel.SetCenter(point);
         }
         public override void MoveDrawing(float dx, float dy, Keys modifiers, bool zooming)
         {

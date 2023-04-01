@@ -25,6 +25,7 @@ using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
+using Kinovea.Services;
 
 using Kinovea.ScreenManager.Languages;
 

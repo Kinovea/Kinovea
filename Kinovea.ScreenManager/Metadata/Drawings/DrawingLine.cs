@@ -327,7 +327,7 @@ namespace Kinovea.ScreenManager
                     break;
                 case 3:
                     // Move the center of the mini label to the mouse coord.
-                    miniLabel.SetLabel(point);
+                    miniLabel.SetCenter(point);
                     break;
             }
 

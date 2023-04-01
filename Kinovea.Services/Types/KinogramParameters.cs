@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Globalization;
+using System.ComponentModel;
 
 namespace Kinovea.Services
 {
@@ -73,6 +74,12 @@ namespace Kinovea.Services
         /// </summary>
         public bool BorderVisible { get; set; } = true;
 
+        /// <summary>
+        /// Type of measurement used in the labels.
+        /// Supported: None, Time, Frame.
+        /// </summary>
+        public MeasureLabelType MeasureLabelType { get; set; } = MeasureLabelType.None;
+        
         // TODO:
         // legend type (none, time, tile number).
         // legend placement.
@@ -103,6 +110,7 @@ namespace Kinovea.Services
             clone.LeftToRight = this.LeftToRight;
             clone.BorderColor = this.BorderColor;
             clone.BorderVisible = this.BorderVisible;
+            clone.MeasureLabelType = this.MeasureLabelType;
 
             return clone;
         }
@@ -123,6 +131,7 @@ namespace Kinovea.Services
             hash ^= LeftToRight.GetHashCode();
             hash ^= BorderColor.GetHashCode();
             hash ^= BorderVisible.GetHashCode();
+            hash ^= MeasureLabelType.GetHashCode();
             return hash;
         }
 
@@ -158,6 +167,10 @@ namespace Kinovea.Services
                         break;
                     case "BorderVisible":
                         BorderVisible = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
+                        break;
+                    case "MeasureLabelType":
+                        TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(MeasureLabelType));
+                        MeasureLabelType = (MeasureLabelType)enumConverter.ConvertFromString(r.ReadElementContentAsString());
                         break;
                     default:
                         string outerXml = r.ReadOuterXml();
@@ -231,6 +244,10 @@ namespace Kinovea.Services
             w.WriteElementString("LeftToRight", XmlHelper.WriteBoolean(LeftToRight));
             w.WriteElementString("BorderColor", XmlHelper.WriteColor(BorderColor, false));
             w.WriteElementString("BorderVisible", XmlHelper.WriteBoolean(BorderVisible));
+
+            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(MeasureLabelType));
+            string xmlMeasureLabelType = enumConverter.ConvertToString(MeasureLabelType);
+            w.WriteElementString("MeasureLabelType", xmlMeasureLabelType);
         }
         #endregion
     }

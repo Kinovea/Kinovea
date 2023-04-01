@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Kinovea.ScreenManager
+﻿
+namespace Kinovea.Services
 {
     /// <summary>
     /// The various type of measurement that "mesurable" drawings can display in their attached label.

@@ -3793,7 +3793,7 @@ namespace Kinovea.ScreenManager
             bool drawDetached = true;
             if (m_FrameServer.Metadata.ActiveVideoFilter != null)
             {
-                m_FrameServer.Metadata.ActiveVideoFilter.DrawExtra(canvas, distorter, transformer, timestamp);
+                m_FrameServer.Metadata.ActiveVideoFilter.DrawExtra(canvas, distorter, transformer, timestamp, false);
                 drawAttached = m_FrameServer.Metadata.ActiveVideoFilter.DrawAttachedDrawings;
                 drawDetached = m_FrameServer.Metadata.ActiveVideoFilter.DrawDetachedDrawings;
             }

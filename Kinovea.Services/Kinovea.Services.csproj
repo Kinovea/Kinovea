@@ -257,6 +257,7 @@
     <Compile Include="Types\ImageFormat.cs" />
     <Compile Include="Types\ImageFormatHelper.cs" />
     <Compile Include="Types\ImageRotation.cs" />
+    <Compile Include="Types\MeasureLabelType.cs" />
     <Compile Include="Types\Pair.cs" />
     <Compile Include="Types\AccelerationUnit.cs" />
     <Compile Include="Types\AngleUnit.cs" />

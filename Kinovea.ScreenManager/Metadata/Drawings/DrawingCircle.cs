@@ -296,7 +296,7 @@ namespace Kinovea.ScreenManager
             }
             else if (handleNumber == 2)
             {
-                miniLabel.SetLabel(point);
+                miniLabel.SetCenter(point);
                 UpdateEllipseInImage();
             }
         }

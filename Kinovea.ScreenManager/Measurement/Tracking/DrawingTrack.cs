@@ -29,13 +29,13 @@ using System.Drawing.Imaging;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 using System.Xml;
+using System.Xml.Serialization;
+using System.Windows.Forms;
 
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 using Kinovea.Video;
-using System.Xml.Serialization;
 
 namespace Kinovea.ScreenManager
 {
@@ -115,7 +115,7 @@ namespace Kinovea.ScreenManager
             set
             {
                 measureLabelType = value;
-                IntegrateKeyframes();
+                UpdateKeyframeLabels();
             }
         }
         public TrackMarker Marker
@@ -600,7 +600,7 @@ namespace Kinovea.ScreenManager
         private int HitTestInteractive(PointF point, long currentTimestamp, IImageToViewportTransformer transformer)
         {
             // 0: track, 1: current point on track, 2: main label, 3+: keyframe label.
-            int result = IsOnKeyframesLabels(point, currentTimestamp, transformer);
+            int result = HitTestKeyframesLabels(point, currentTimestamp, transformer);
             if (result >= 0)
                 return result;
 
@@ -1050,7 +1050,7 @@ namespace Kinovea.ScreenManager
                 keyframeLabels[iLabel].MoveLabel(dx, dy);
             }
         }
-        private int IsOnKeyframesLabels(PointF point, long currentTimestamp, IImageToViewportTransformer transformer)
+        private int HitTestKeyframesLabels(PointF point, long currentTimestamp, IImageToViewportTransformer transformer)
         {
             // Convention: -1 = miss, 2 = on main label, 3+ = on keyframe label.
             if (measureLabelType == MeasureLabelType.None)
@@ -1187,7 +1187,7 @@ namespace Kinovea.ScreenManager
             endTimeStamp = positions[positions.Count - 1].T;
 
             UpdateKinematics();
-            IntegrateKeyframes();
+            UpdateKeyframeLabels();
             UpdateFramesMarkersFromMenu(sender);
             InvalidateFromMenu(sender);
         }
@@ -1228,7 +1228,7 @@ namespace Kinovea.ScreenManager
         {
             CaptureMemento(SerializationFilter.Core);
             useKeyframeColors = !mnuUseKeyframeColor.Checked;
-            IntegrateKeyframes();
+            UpdateKeyframeLabels();
             InvalidateFromMenu(sender);
         }
 
@@ -1302,7 +1302,7 @@ namespace Kinovea.ScreenManager
 
             // Adjust internal data.
             endTimeStamp = positions.Last().T;
-            IntegrateKeyframes();
+            UpdateKeyframeLabels();
         }
         
         public void UpdateTrackPoint(Bitmap currentImage)
@@ -1669,7 +1669,7 @@ namespace Kinovea.ScreenManager
         public void CalibrationChanged()
         {
             UpdateKinematics();
-            IntegrateKeyframes();
+            UpdateKeyframeLabels();
         }
         public void UpdateKinematics()
         {
@@ -1682,7 +1682,7 @@ namespace Kinovea.ScreenManager
             positions.Clear();
             keyframeLabels.Clear();
         }
-        public void IntegrateKeyframes()
+        public void UpdateKeyframeLabels()
         {
             //-----------------------------------------------------------------------------------
             // The Keyframes list changed (add/remove/comments)
@@ -1744,7 +1744,7 @@ namespace Kinovea.ScreenManager
                     keyframeLabels.RemoveAt(iLabel);
             }
 
-            // Recompute labels.
+            // Recompute labels' text.
             if (measureLabelType != MeasureLabelType.None)
             {
                 for (int iKfl = 0; iKfl < keyframeLabels.Count; iKfl++)
@@ -1864,7 +1864,7 @@ namespace Kinovea.ScreenManager
             }
             
             this.measureLabelType = measureLabelType;
-            IntegrateKeyframes();
+            UpdateKeyframeLabels();
             InvalidateFromMenu(tsmi);
         }
         private void AfterTrackStatusChanged()
