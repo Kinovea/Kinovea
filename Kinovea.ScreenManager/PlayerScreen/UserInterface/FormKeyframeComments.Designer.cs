@@ -54,8 +54,9 @@ namespace Kinovea.ScreenManager
       this.rtbComment.Size = new System.Drawing.Size(373, 176);
       this.rtbComment.TabIndex = 10;
       this.rtbComment.Text = "";
+      this.rtbComment.TextChanged += new System.EventHandler(this.rtbComment_TextChanged);
       // 
-      // txtTitle
+      // tbName
       // 
       this.tbName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -64,10 +65,11 @@ namespace Kinovea.ScreenManager
       this.tbName.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.tbName.ForeColor = System.Drawing.Color.CornflowerBlue;
       this.tbName.Location = new System.Drawing.Point(87, 22);
-      this.tbName.Name = "txtTitle";
+      this.tbName.Name = "tbName";
       this.tbName.Size = new System.Drawing.Size(309, 22);
       this.tbName.TabIndex = 5;
       this.tbName.Text = "Name";
+      this.tbName.TextChanged += new System.EventHandler(this.tbName_TextChanged);
       // 
       // pnlTextArea
       // 

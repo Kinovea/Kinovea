@@ -1493,7 +1493,9 @@ namespace Kinovea.ScreenManager
         #region Misc Events
         private void btnClose_Click(object sender, EventArgs e)
         {
-            // If we currently are in DrawTime filter, we just close this and return to normal playback.
+            if (m_KeyframeCommentsHub.Visible)
+                m_KeyframeCommentsHub.CommitChanges();
+
             // Propagate to PlayerScreen which will report to ScreenManager.
             if (CloseAsked != null)
                 CloseAsked(this, EventArgs.Empty);
@@ -4047,7 +4049,7 @@ namespace Kinovea.ScreenManager
                 box.UpdateEnableStatus();
         }
 
-        // The keyframe title, color or comments were changed.
+        // The keyframe name or color was changed.
         public void OnKeyframeNameChanged()
         {
             m_FrameServer.Metadata.UpdateTrajectoriesForKeyframes();
