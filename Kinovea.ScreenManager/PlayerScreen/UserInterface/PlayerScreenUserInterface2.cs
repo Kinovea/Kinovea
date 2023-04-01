@@ -3479,10 +3479,12 @@ namespace Kinovea.ScreenManager
                     return;
                 }
             }
-    
+
             // User is not moving anything: time-grab, filter interaction, pan.
             // TODO: let filters delegate the handling to the normal mechanics.
-            if ((ModifierKeys & Keys.Alt) == Keys.Alt)
+            bool isAlt = (ModifierKeys & Keys.Alt) == Keys.Alt;
+            bool isCtrl = (ModifierKeys & Keys.Control) == Keys.Control;
+            if (isAlt)
             {
                 // Time grab.
                 float dtx = m_PointerTool.MouseDeltaOrigin.X * timeGrabSpeed;
@@ -3496,7 +3498,7 @@ namespace Kinovea.ScreenManager
                 ShowNextFrame(target, true);
                 UpdatePositionUI();
             }
-            else if (videoFilterIsActive)
+            else if (videoFilterIsActive && !isCtrl)
             {
                 // Filter-specific.
                 float dx = m_PointerTool.MouseDelta.X;
