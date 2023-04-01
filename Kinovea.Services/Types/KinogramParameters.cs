@@ -41,6 +41,23 @@ namespace Kinovea.Services
         public List<PointF> CropPositions { get; set; } = new List<PointF>();
 
         /// <summary>
+        /// Set of indices of crop positions that were set manually.
+        /// This is used to support interpolation.
+        /// </summary>
+        public HashSet<int> ManualPositions { get; set; } = new HashSet<int>();
+
+        /// <summary>
+        /// Whether to automatically interpolate non-manually placed positions.
+        /// When this is true moving a single tile will also move all the other tiles
+        /// to interpolate between the manually anchored ones.
+        /// If this is false the other tiles won't be interpolated until we use the 
+        /// interpolate menu manually.
+        /// When using the Reset tile menu, if this is true the reset tile will 
+        /// be interpolated, if this is false it will be reset to empty.
+        /// </summary>
+        public bool AutoInterpolate { get; set; } = true;
+
+        /// <summary>
         /// Wether time progresses from left to right or right to left.
         /// </summary>
         public bool LeftToRight { get; set; } = true;
@@ -57,11 +74,9 @@ namespace Kinovea.Services
         public bool BorderVisible { get; set; } = true;
 
         // TODO:
-        // legend visibility.
+        // legend type (none, time, tile number).
         // legend placement.
-        // legend type (time, tile number).
         // Direction bullets (small arrows between tiles).
-        // Oversampling factor: to improve quality when viewport zooming.
 
         #endregion
 
@@ -80,6 +95,11 @@ namespace Kinovea.Services
             foreach (PointF p in this.CropPositions)
                 clone.CropPositions.Add(p);
 
+            clone.ManualPositions = new HashSet<int>();
+            foreach (int index in this.ManualPositions)
+                clone.ManualPositions.Add(index);
+
+            clone.AutoInterpolate = this.AutoInterpolate;
             clone.LeftToRight = this.LeftToRight;
             clone.BorderColor = this.BorderColor;
             clone.BorderVisible = this.BorderVisible;
@@ -95,7 +115,11 @@ namespace Kinovea.Services
             hash ^= CropSize.GetHashCode();
             foreach (PointF cropPosition in CropPositions)
                 hash ^= cropPosition.GetHashCode();
-
+            
+            foreach (int index in ManualPositions)
+                hash ^= index.GetHashCode();
+            
+            hash ^= AutoInterpolate.GetHashCode();
             hash ^= LeftToRight.GetHashCode();
             hash ^= BorderColor.GetHashCode();
             hash ^= BorderVisible.GetHashCode();
@@ -122,6 +146,9 @@ namespace Kinovea.Services
                         break;
                     case "CropPositions":
                         ParseCropPositions(r);
+                        break;
+                    case "AutoInterpolate":
+                        AutoInterpolate = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
                         break;
                     case "LeftToRight":
                         LeftToRight = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
@@ -151,12 +178,30 @@ namespace Kinovea.Services
             if (empty)
                 return;
 
-            while(r.NodeType == XmlNodeType.Element)
+            while (r.NodeType == XmlNodeType.Element)
             {
-                if (r.Name == "CropPosition")
-                    CropPositions.Add(XmlHelper.ParsePointF(r.ReadElementContentAsString()));
-                else
-                    r.ReadOuterXml();
+                switch (r.Name)
+                {
+                    case "CropPosition":
+                        bool isAnchor = false;
+                        if (r.MoveToAttribute("anchor"))
+                            isAnchor = XmlHelper.ParseBoolean(r.ReadContentAsString());
+
+                        r.ReadStartElement();
+                        CropPositions.Add(XmlHelper.ParsePointF(r.ReadContentAsString()));
+                        
+                        if (isAnchor)
+                            ManualPositions.Add(CropPositions.Count - 1);
+
+                        r.ReadEndElement();
+                        break;
+
+                    default:
+                        string unparsed = r.ReadOuterXml();
+                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        r.ReadOuterXml();
+                        break;
+                }
             }
 
             r.ReadEndElement();
@@ -171,9 +216,18 @@ namespace Kinovea.Services
 
             w.WriteStartElement("CropPositions");
             for (int i = 0; i < CropPositions.Count; i++)
-                w.WriteElementString("CropPosition", XmlHelper.WritePointF(CropPositions[i]));
+            {
+                w.WriteStartElement("CropPosition");
+
+                if (ManualPositions.Contains(i))
+                    w.WriteAttributeString("anchor", "true");
+
+                w.WriteString(XmlHelper.WritePointF(CropPositions[i]));
+                w.WriteEndElement();
+            }
             w.WriteEndElement();
 
+            w.WriteElementString("AutoInterpolate", XmlHelper.WriteBoolean(AutoInterpolate));
             w.WriteElementString("LeftToRight", XmlHelper.WriteBoolean(LeftToRight));
             w.WriteElementString("BorderColor", XmlHelper.WriteColor(BorderColor, false));
             w.WriteElementString("BorderVisible", XmlHelper.WriteBoolean(BorderVisible));

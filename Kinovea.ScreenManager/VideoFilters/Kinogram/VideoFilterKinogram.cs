@@ -97,12 +97,13 @@ namespace Kinovea.ScreenManager
 
         #region members
         private Bitmap bitmap;
-        private List<Bitmap> cache = new List<Bitmap>();    // cache of the original images at the right size for unscaled draw.
+        private List<Bitmap> cache = new List<Bitmap>();    // cache of the original images we are using, at the right size for unscaled draw.
         private Size inputFrameSize;         // Size of input images.
         private Size canvasSize;        // Nominal size of output image, this is the same as frameSize unless the canvas is rotated.
         private float cacheScale = 1.0f;
         private bool isCacheDirty = true;
         private bool rotatedCanvas = false;
+        private bool showDebug = false;
         private KinogramParameters parameters = new KinogramParameters();
         private IWorkingZoneFramesContainer framesContainer;
         private Metadata parentMetadata;
@@ -124,6 +125,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuRightToLeft = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowBorder = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuAutoInterpolate = new ToolStripMenuItem();
         private ToolStripMenuItem mnuResetLabelPositions = new ToolStripMenuItem();
 
         private ToolStripMenuItem mnuMeasurement = new ToolStripMenuItem();
@@ -167,13 +169,16 @@ namespace Kinovea.ScreenManager
             mnuOptions.Image = Properties.Resources.equalizer;
             mnuRightToLeft.Image = Properties.Resources.rtl;
             mnuShowBorder.Image = Properties.Resources.border_all;
+            mnuAutoInterpolate.Image = Properties.Resources.wand;
             mnuResetLabelPositions.Image = Properties.Drawings.label;
             mnuRightToLeft.Click += MnuRightToLeft_Click;
             mnuShowBorder.Click += MnuShowBorder_Click;
+            mnuAutoInterpolate.Click += MnuAutoInterpolate_Click;
             mnuResetLabelPositions.Click += MnuResetLabelPositions_Click;
             mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuRightToLeft,
                 mnuShowBorder,
+                mnuAutoInterpolate,
                 mnuResetLabelPositions,
             });
 
@@ -241,12 +246,20 @@ namespace Kinovea.ScreenManager
         public void StopMove()
         {
             movingTile = -1;
+
+            if (parameters.AutoInterpolate)
+            {
+                InterpolatePositions();
+                Update();
+            }
         }
 
         public void Move(float dx, float dy, Keys modifiers)
         {
             if (movingTile < 0)
                 return;
+
+            parameters.ManualPositions.Add(movingTile);
 
             if ((modifiers & Keys.Shift) == Keys.Shift)
             {
@@ -257,16 +270,17 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-               MoveTile(dx, dy, movingTile);
-               Update(movingTile);
+                MoveTile(dx, dy, movingTile);
+                Update(movingTile);
             }
         }
 
         /// <summary>
-        /// Draw a highlighted border around the tile matching the passed timestamp.
+        /// Draw extra content on top of the produced image.
         /// </summary>
         public void DrawExtra(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, long timestamp)
         {
+            // Draw highlight border.
             float step = (float)framesContainer.Frames.Count / parameters.TileCount;
             IEnumerable<VideoFrame> frames = framesContainer.Frames.Where((frame, i) => i % step < 1);
             int cols = (int)Math.Ceiling((float)parameters.TileCount / parameters.Rows);
@@ -388,10 +402,15 @@ namespace Kinovea.ScreenManager
             return intervalSeconds;
         }
         
+        /// <summary>
+        /// This is called from the configuration dialog to provide live update.
+        /// </summary>
         public void ConfigurationChanged(bool tileCountChanged)
         {
             if (tileCountChanged)
+            {
                 AfterTileCountChange();
+            }
             
             Update();
         }
@@ -420,6 +439,7 @@ namespace Kinovea.ScreenManager
 
             mnuRightToLeft.Checked = !parameters.LeftToRight;
             mnuShowBorder.Checked = parameters.BorderVisible;
+            mnuAutoInterpolate.Checked = parameters.AutoInterpolate;
 
             return contextMenu;
         }
@@ -437,6 +457,7 @@ namespace Kinovea.ScreenManager
             mnuOptions.Text = "Options";
             mnuRightToLeft.Text = "Right to left";
             mnuShowBorder.Text = "Show border";
+            mnuAutoInterpolate.Text = "Auto interpolate";
             mnuResetLabelPositions.Text = "Reset label positions";
 
             // Measurement
@@ -477,7 +498,7 @@ namespace Kinovea.ScreenManager
             fck.ShowDialog();
 
             if (fck.DialogResult == DialogResult.OK)
-            {
+            {   
                 AfterTileCountChange();
                 SaveAsDefaultParameters();
             }
@@ -502,7 +523,14 @@ namespace Kinovea.ScreenManager
 
             CaptureMemento();
 
-            parameters.CropPositions[contextTile] = PointF.Empty;
+            if (parameters.ManualPositions.Contains(contextTile))
+                parameters.ManualPositions.Remove(contextTile);
+            
+            if (parameters.AutoInterpolate)
+                InterpolatePositions();
+            else
+                parameters.CropPositions[contextTile] = PointF.Empty;
+
             contextTile = -1;
 
             Update();
@@ -533,6 +561,22 @@ namespace Kinovea.ScreenManager
             CaptureMemento();
 
             parameters.BorderVisible = !mnuShowBorder.Checked;
+
+            Update();
+            InvalidateFromMenu(sender);
+        }
+
+        private void MnuAutoInterpolate_Click(object sender, EventArgs e)
+        {
+            CaptureMemento();
+
+            parameters.AutoInterpolate = !mnuAutoInterpolate.Checked;
+
+            if (parameters.AutoInterpolate)
+            {
+                // We just turned auto-interpolate on, let's interpolate.
+                InterpolatePositions();
+            }
 
             Update();
             InvalidateFromMenu(sender);
@@ -675,13 +719,23 @@ namespace Kinovea.ScreenManager
             g.SetClip(destRect);
             g.DrawImageUnscaled(image, x, y);
 
-            // Debug info
-            //using (Font f = new Font("Arial", 10))
-            //using (SolidBrush brush = new SolidBrush(Color.Red))
-            //{
-            //    string info = string.Format("{0}: {1}, {2}", index, x - destRect.X, y - destRect.Y);
-            //    g.DrawString(info, f, brush, destRect.X + 5, destRect.Y + 5);
-            //}
+            if (showDebug)
+            {
+                using (Font f = new Font("Arial", 10))
+                using (SolidBrush brush = new SolidBrush(Color.Red))
+                {
+                    // crop position.
+                    string info = string.Format("{0}: {1}, {2}", index, x - destRect.X, y - destRect.Y);
+                    g.DrawString(info, f, brush, destRect.X + 5, destRect.Y + 5);
+
+                    // Manual position.
+                    if (parameters.ManualPositions.Contains(index))
+                    {
+                        PointF corner = new PointF(destRect.X + 10, destRect.Y + 20);
+                        g.FillEllipse(brush, corner.Box(3));
+                    }
+                }
+            }
 
             DrawBorder(g, destRect);
         }
@@ -748,7 +802,26 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void AfterTileCountChange()
         {
-            parameters.CropPositions = Interpolate(parameters.CropPositions, parameters.TileCount);
+            // Adapt the anchor tiles (manually placed tiles) to the new list.
+            // Collect where we have anchor tiles.
+            List<float> anchorCoords = new List<float>();
+            foreach (int index in parameters.ManualPositions)
+            {
+                float coord = (float)index / parameters.CropPositions.Count;
+                anchorCoords.Add(coord);
+            }
+
+            // Perform the interpolation using all old tiles as anchors.
+            parameters.CropPositions = Interpolate(parameters.TileCount, parameters.CropPositions);
+
+            // Restore anchor tiles based on the new tile count.
+            parameters.ManualPositions.Clear();
+            foreach (float anchorCoord in anchorCoords)
+            {
+                int anchorIndex = (int)Math.Round(parameters.CropPositions.Count * anchorCoord);
+                anchorIndex = Math.Min(anchorIndex, parameters.CropPositions.Count - 1);
+                parameters.ManualPositions.Add(anchorIndex);
+            }
         }
 
         /// <summary>
@@ -768,6 +841,8 @@ namespace Kinovea.ScreenManager
             parameters.CropPositions.Clear();
             for (int i = 0; i < parameters.TileCount; i++)
                 parameters.CropPositions.Add(PointF.Empty);
+
+            parameters.ManualPositions.Clear();
         }
 
         /// <summary>
@@ -844,32 +919,37 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void InterpolatePositions()
         {
-            // The original function was only interpolating between the first and last tiles.
+            // Interpolation approach.
+            // 1. The original function was interpolating between the first and last tiles.
             // In practice a strategy that worked better was to reduce the number of tiles to a few, place these tiles
-            // and then expand back to the total number. This function is now similar to this,
-            // taking the initialized tiles as the anchor points.
+            // and then expand back to the total number. Essentially interpolating between a few manually placed tiles.
+            // 2. The second approach was to use non-zero position to identify tiles placed manually.
+            // The issue with that was that as soon as we do one pass of interpolation we lose the information.
+            // 3. The third version of the interpolation explicitly keeps track of which tile were placed manually.
+            // The information is stored in parameters.ManualPositions and saved to KVA.
+
+            // Identify and collect the anchor points (tiles placed manually) and their 1D coordinate in the sequence.
             List<PointF> oldCrops = new List<PointF>();
             List<float> coords = new List<float>();
             for (int i = 0; i < parameters.CropPositions.Count; i++)
             {
-                if (parameters.CropPositions[i] != PointF.Empty)
+                if (parameters.ManualPositions.Contains(i))
                 {
                     oldCrops.Add(parameters.CropPositions[i]);
                     coords.Add((float)i / parameters.CropPositions.Count);
                 }
             }
 
-            parameters.CropPositions = Interpolate(oldCrops, parameters.TileCount, coords);
+            parameters.CropPositions = Interpolate(parameters.TileCount, oldCrops, coords);
         }
 
         /// <summary>
         /// Generate new positions by interpolating the old list.
         /// oldCoords contains the 1D coordinate of the old crops along the sequence.
         /// </summary>
-        private List<PointF> Interpolate(List<PointF> oldCrops, int newCount, List<float> oldCoords = null)
+        private List<PointF> Interpolate(int newCount, List<PointF> oldCrops, List<float> oldCoords = null)
         {
             int oldCount = oldCrops.Count;
-            
             if (newCount == oldCount)
                 return oldCrops;
 
@@ -902,8 +982,6 @@ namespace Kinovea.ScreenManager
 
                 // Find the two closest old values and where we sit between them.
                 int a = -1;
-
-                //for (int j = 0; j < oldCoords.Count; j++)
                 for (int j = oldCoords.Count - 1; j >= 0; j--)
                 {
                     if (t > oldCoords[j])
