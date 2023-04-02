@@ -1157,7 +1157,7 @@ namespace Kinovea.ScreenManager
             mnuOpenVideo.Click += (s, e) => OpenVideoAsked?.Invoke(this, EventArgs.Empty);
             mnuOpenVideo.Image = Properties.Resources.folder;
             mnuOpenReplayWatcher.Click += (s, e) => OpenReplayWatcherAsked?.Invoke(this, EventArgs.Empty);
-            mnuOpenReplayWatcher.Image = Properties.Resources.replaywatcher;
+            mnuOpenReplayWatcher.Image = Properties.Resources.replaywatcher2;
             mnuOpenAnnotations.Click += (s, e) => OpenAnnotationsAsked?.Invoke(this, EventArgs.Empty);
             mnuOpenAnnotations.Image = Properties.Resources.file_kva2;
 

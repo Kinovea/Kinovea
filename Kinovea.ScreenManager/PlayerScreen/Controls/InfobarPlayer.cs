@@ -48,7 +48,7 @@ namespace Kinovea.ScreenManager
         {
             this.replayWatcher = replayWatcher;
             this.watchedFolder = path;
-            btnVideoType.BackgroundImage = replayWatcher ? Properties.Resources.replaywatcher : Properties.Resources.film_small;
+            btnVideoType.BackgroundImage = replayWatcher ? Properties.Resources.replaywatcher2 : Properties.Resources.film_small;
             
             SetContextMenu();
         }
@@ -90,7 +90,7 @@ namespace Kinovea.ScreenManager
             mnuStopWatcher.Image = Properties.Resources.film_small;
             mnuStopWatcher.Click += (s, e) => StopWatcherAsked?.Invoke(s, e);
 
-            mnuStartWatcher.Image = Properties.Resources.replaywatcher;
+            mnuStartWatcher.Image = Properties.Resources.replaywatcher2;
             mnuStartWatcher.Click += (s, e) => StartWatcherAsked?.Invoke(s, e);
         }
 

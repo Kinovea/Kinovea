@@ -153,7 +153,7 @@ namespace Kinovea.ScreenManager
         private void BuildContextMenus()
         {
             mnuLoadVideo.Image = Properties.Resources.film_go;
-            mnuLoadWatcher.Image = Properties.Resources.replaywatcher;
+            mnuLoadWatcher.Image = Properties.Resources.replaywatcher2;
             mnuLocate.Image = Properties.Resources.folder_new;
             mnuRename.Image = Properties.Capture.rename;
             mnuHide.Image = Properties.Resources.hide;

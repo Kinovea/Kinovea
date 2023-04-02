@@ -293,15 +293,16 @@ namespace Kinovea.ScreenManager
             mnuExportODS.Click += new EventHandler(mnuExportODS_OnClick);
             mnuExportXLSX.Image = Properties.Resources.file_xls;
             mnuExportXLSX.Click += new EventHandler(mnuExportXLSX_OnClick);
-            mnuExportJSON.Image = Properties.Resources.table;
+            mnuExportJSON.Image = Properties.Resources.json;
             mnuExportJSON.Click += new EventHandler(mnuExportJSON_OnClick);
-            mnuExportCSV.Image = Properties.Resources.table;
+            mnuExportCSV.Image = Properties.Resources.csv;
             mnuExportCSV.Click += new EventHandler(mnuExportCSV_OnClick);
             mnuExportSpreadsheet.DropDownItems.AddRange(new ToolStripItem[] { 
                 mnuExportODS, 
                 mnuExportXLSX, 
-                mnuExportJSON,
                 mnuExportCSV,
+                new ToolStripSeparator(),
+                mnuExportJSON,
             });
 
             //------------------------
@@ -356,7 +357,12 @@ namespace Kinovea.ScreenManager
             mnuPasteDrawing.Click += new EventHandler(mnuPasteDrawing_OnClick);
             mnuPasteDrawing.MergeAction = MergeAction.Append;
             
-            ToolStripItem[] subEdit = new ToolStripItem[] { new ToolStripSeparator(), mnuCutDrawing, mnuCopyDrawing, mnuPasteDrawing };
+            ToolStripItem[] subEdit = new ToolStripItem[] { 
+                new ToolStripSeparator(), 
+                mnuCutDrawing, 
+                mnuCopyDrawing, 
+                mnuPasteDrawing 
+            };
             mnuCatchEdit.DropDownItems.AddRange(subEdit);
             #endregion
 
@@ -1363,11 +1369,11 @@ namespace Kinovea.ScreenManager
             mnuSaveAs.Text = ScreenManagerLang.Generic_SaveKVAAs;
             mnuExportVideo.Text = ScreenManagerLang.Generic_ExportVideo;
             //mnuExportSpreadsheet.Text = ScreenManagerLang.mnuExportSpreadsheet;
-            mnuExportSpreadsheet.Text = "Export data";
+            mnuExportSpreadsheet.Text = "Export spreadsheet";
             mnuExportODS.Text = "LibreOffice Calc (.ods)";
             mnuExportXLSX.Text = "Microsoft Excel (.xlsx)";
-            mnuExportJSON.Text = "Raw JSON (.json)";
-            mnuExportCSV.Text = "Raw CSV (.csv)";
+            mnuExportJSON.Text = "JSON (.json)";
+            mnuExportCSV.Text = "Trajectory CSV (.csv)";
             mnuLoadAnalysis.Text = ScreenManagerLang.mnuLoadAnalysis;
 
             // Edit

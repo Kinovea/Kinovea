@@ -250,7 +250,7 @@ namespace Kinovea.Root
             mnuOpenFile.ShortcutKeys = Keys.Control | Keys.O;
             mnuOpenFile.Click += mnuOpenFileOnClick;
 
-            mnuOpenReplayWatcher.Image = Properties.Resources.user_detective;
+            mnuOpenReplayWatcher.Image = Properties.Resources.replaywatcher2;
             mnuOpenReplayWatcher.Click += mnuOpenReplayWatcherOnClick;
 
             mnuHistory.Image = Properties.Resources.time;
@@ -717,7 +717,7 @@ namespace Kinovea.Root
                 }
 
                 ToolStripMenuItem menu = new ToolStripMenuItem();
-                menu.Image = isFile ? Properties.Resources.film_small : Properties.Resources.user_detective;
+                menu.Image = isFile ? Properties.Resources.film_small : Properties.Resources.replaywatcher2;
                 menu.Text = file;
                 menu.Click += (s, evt) => OpenFromPath(file);
 

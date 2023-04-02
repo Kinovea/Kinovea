@@ -146,7 +146,7 @@ namespace Kinovea.FileBrowser
             mnuAddToShortcuts.Click += new EventHandler(mnuAddToShortcuts_Click);
             mnuAddToShortcuts.Visible = false;
 
-            mnuOpenAsReplayWatcher.Image = Properties.Resources.replaywatcher;
+            mnuOpenAsReplayWatcher.Image = Properties.Resources.replaywatcher2;
             mnuOpenAsReplayWatcher.Click += new EventHandler(mnuOpenAsReplayWatcher_Click);
             mnuOpenAsReplayWatcher.Visible = true;
 
@@ -187,7 +187,7 @@ namespace Kinovea.FileBrowser
             mnuLaunch.Click += (s, e) => CommandLaunch();
             mnuLaunch.Visible = false;
 
-            mnuLaunchWatcher.Image = Properties.Resources.replaywatcher;
+            mnuLaunchWatcher.Image = Properties.Resources.replaywatcher2;
             mnuLaunchWatcher.Click += (s, e) => CommandLaunchWatcher();
             mnuLaunchWatcher.Visible = false;
 

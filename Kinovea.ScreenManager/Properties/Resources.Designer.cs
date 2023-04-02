@@ -343,6 +343,16 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap csv {
+            get {
+                object obj = ResourceManager.GetObject("csv", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap dashboard {
             get {
                 object obj = ResourceManager.GetObject("dashboard", resourceCulture);
@@ -923,6 +933,16 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap json {
+            get {
+                object obj = ResourceManager.GetObject("json", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap keyframesonly {
             get {
                 object obj = ResourceManager.GetObject("keyframesonly", resourceCulture);
@@ -1206,6 +1226,16 @@ namespace Kinovea.ScreenManager.Properties {
         internal static System.Drawing.Bitmap replaywatcher {
             get {
                 object obj = ResourceManager.GetObject("replaywatcher", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap replaywatcher2 {
+            get {
+                object obj = ResourceManager.GetObject("replaywatcher2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
