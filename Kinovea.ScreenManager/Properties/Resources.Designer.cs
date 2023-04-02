@@ -283,6 +283,16 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap closeplayer {
+            get {
+                object obj = ResourceManager.GetObject("closeplayer", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap comments2 {
             get {
                 object obj = ResourceManager.GetObject("comments2", resourceCulture);
@@ -573,9 +583,9 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap film_close3 {
+        internal static System.Drawing.Bitmap film {
             get {
-                object obj = ResourceManager.GetObject("film_close3", resourceCulture);
+                object obj = ResourceManager.GetObject("film", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1203,9 +1213,9 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap quit {
+        internal static System.Drawing.Bitmap quit2 {
             get {
-                object obj = ResourceManager.GetObject("quit", resourceCulture);
+                object obj = ResourceManager.GetObject("quit2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1226,16 +1236,6 @@ namespace Kinovea.ScreenManager.Properties {
         internal static System.Drawing.Bitmap replaywatcher {
             get {
                 object obj = ResourceManager.GetObject("replaywatcher", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap replaywatcher2 {
-            get {
-                object obj = ResourceManager.GetObject("replaywatcher2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1456,16 +1456,6 @@ namespace Kinovea.ScreenManager.Properties {
         internal static System.Drawing.Bitmap sidepanel {
             get {
                 object obj = ResourceManager.GetObject("sidepanel", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap sidepanel2 {
-            get {
-                object obj = ResourceManager.GetObject("sidepanel2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

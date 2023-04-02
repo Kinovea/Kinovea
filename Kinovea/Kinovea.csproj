@@ -533,6 +533,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="kinovea-256x256.ico" />
+    <None Include="Resources\disk2.png" />
+    <None Include="Resources\quit2.png" />
+    <None Include="Resources\replaywatcher4.png" />
     <None Include="Resources\replaywatcher2.png" />
     <None Include="Resources\csv.png" />
     <None Include="Resources\json.png" />

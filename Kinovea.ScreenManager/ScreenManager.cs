@@ -307,13 +307,13 @@ namespace Kinovea.ScreenManager
 
             //------------------------
 
-            mnuCloseFile.Image = Properties.Resources.film_close3;
+            mnuCloseFile.Image = Properties.Resources.closeplayer;
             mnuCloseFile.Enabled = false;
             mnuCloseFile.Click += new EventHandler(mnuCloseFileOnClick);
             mnuCloseFile.MergeIndex = 10;
             mnuCloseFile.MergeAction = MergeAction.Insert;
 
-            mnuCloseFile2.Image = Properties.Resources.film_close3;
+            mnuCloseFile2.Image = Properties.Resources.closeplayer;
             mnuCloseFile2.Enabled = false;
             mnuCloseFile2.Visible = false;
             mnuCloseFile2.Click += new EventHandler(mnuCloseFile2OnClick);

@@ -985,6 +985,9 @@ namespace Kinovea.ScreenManager
             sidePanelKeyframes.KeyframeSelected += KeyframeControl_KeyframeSelected;
             sidePanelKeyframes.KeyframeUpdated += KeyframeControl_KeyframeUpdated;
 
+            // Hide work-in-progress panels.
+            tabControl.TabPages.RemoveAt(1);
+
             splitViewport_Properties.Panel2Collapsed = true;
         }
 
@@ -1157,7 +1160,7 @@ namespace Kinovea.ScreenManager
             mnuOpenVideo.Click += (s, e) => OpenVideoAsked?.Invoke(this, EventArgs.Empty);
             mnuOpenVideo.Image = Properties.Resources.folder;
             mnuOpenReplayWatcher.Click += (s, e) => OpenReplayWatcherAsked?.Invoke(this, EventArgs.Empty);
-            mnuOpenReplayWatcher.Image = Properties.Resources.replaywatcher2;
+            mnuOpenReplayWatcher.Image = Properties.Resources.replaywatcher;
             mnuOpenAnnotations.Click += (s, e) => OpenAnnotationsAsked?.Invoke(this, EventArgs.Empty);
             mnuOpenAnnotations.Image = Properties.Resources.file_kva2;
 
@@ -1170,7 +1173,7 @@ namespace Kinovea.ScreenManager
             mnuExportImage.Click += btnSnapShot_Click;
             mnuExportImage.Image = Properties.Resources.picture_save;
             mnuCloseScreen.Click += btnClose_Click;
-            mnuCloseScreen.Image = Properties.Resources.film_close3;
+            mnuCloseScreen.Image = Properties.Resources.closeplayer;
             mnuExitFilter.Click += MnuExitFilter_Click;
             mnuExitFilter.Image = Properties.Resources.exit_filter;
             popMenu.Items.AddRange(new ToolStripItem[]

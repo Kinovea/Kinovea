@@ -250,7 +250,7 @@ namespace Kinovea.Root
             mnuOpenFile.ShortcutKeys = Keys.Control | Keys.O;
             mnuOpenFile.Click += mnuOpenFileOnClick;
 
-            mnuOpenReplayWatcher.Image = Properties.Resources.replaywatcher2;
+            mnuOpenReplayWatcher.Image = Properties.Resources.user_detective;
             mnuOpenReplayWatcher.Click += mnuOpenReplayWatcherOnClick;
 
             mnuHistory.Image = Properties.Resources.time;
@@ -259,7 +259,7 @@ namespace Kinovea.Root
             mnuHistoryReset.Image = Properties.Resources.bin_empty;
             mnuHistoryReset.Click += mnuHistoryResetOnClick;
             
-            mnuQuit.Image = Properties.Resources.quit;
+            mnuQuit.Image = Properties.Resources.quit2;
             mnuQuit.Click += new EventHandler(menuQuitOnClick);
 
             mnuFile.DropDownItems.AddRange(new ToolStripItem[] {
@@ -444,7 +444,7 @@ namespace Kinovea.Root
             mnuWorkspace.Text = RootLang.mnuWorkspace;
             mnuWorkspace.Image = Properties.Resources.common_controls;
             mnuWorkspaceSaveAsDefault.Text = RootLang.mnuWorkspaceSaveAsDefault;
-            mnuWorkspaceSaveAsDefault.Image = Properties.Resources.disk;
+            mnuWorkspaceSaveAsDefault.Image = Properties.Resources.filesave;
             mnuWorkspaceExport.Text = RootLang.mnuWorkspaceExport;
             mnuWorkspaceExport.Image = Properties.Resources.file_txt;
 
@@ -717,7 +717,7 @@ namespace Kinovea.Root
                 }
 
                 ToolStripMenuItem menu = new ToolStripMenuItem();
-                menu.Image = isFile ? Properties.Resources.film_small : Properties.Resources.replaywatcher2;
+                menu.Image = isFile ? Properties.Resources.film_small : Properties.Resources.user_detective;
                 menu.Text = file;
                 menu.Click += (s, evt) => OpenFromPath(file);
 

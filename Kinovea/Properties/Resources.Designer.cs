@@ -123,16 +123,6 @@ namespace Kinovea.Root.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap capture {
-            get {
-                object obj = ResourceManager.GetObject("capture", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap closegrey {
             get {
                 object obj = ResourceManager.GetObject("closegrey", resourceCulture);
@@ -146,26 +136,6 @@ namespace Kinovea.Root.Properties {
         internal static System.Drawing.Bitmap common_controls {
             get {
                 object obj = ResourceManager.GetObject("common_controls", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap configure {
-            get {
-                object obj = ResourceManager.GetObject("configure", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap disk {
-            get {
-                object obj = ResourceManager.GetObject("disk", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -196,6 +166,16 @@ namespace Kinovea.Root.Properties {
         internal static System.Drawing.Bitmap file_txt {
             get {
                 object obj = ResourceManager.GetObject("file_txt", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap filesave {
+            get {
+                object obj = ResourceManager.GetObject("filesave", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -343,19 +323,9 @@ namespace Kinovea.Root.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap quit {
+        internal static System.Drawing.Bitmap quit2 {
             get {
-                object obj = ResourceManager.GetObject("quit", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap replaywatcher2 {
-            get {
-                object obj = ResourceManager.GetObject("replaywatcher2", resourceCulture);
+                object obj = ResourceManager.GetObject("quit2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
