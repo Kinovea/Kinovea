@@ -109,9 +109,9 @@ namespace Kinovea.FileBrowser
             btnDeleteShortcut.Parent = lblFavFolders;
             
             // Drag Drop handling.
-            lvExplorer.ItemDrag += lv_ItemDrag;
-            lvShortcuts.ItemDrag += lv_ItemDrag;
-            lvCaptured.ItemDrag += lv_ItemDrag;
+            lvExplorer.ItemDrag += listView_ItemDrag;
+            lvShortcuts.ItemDrag += listView_ItemDrag;
+            lvCaptured.ItemDrag += listView_ItemDrag;
 
             etExplorer.AllowDrop = false;
             etShortcuts.AllowDrop = false;
@@ -950,7 +950,7 @@ namespace Kinovea.FileBrowser
             listView.EndUpdate();
         }
 
-        private void lv_ItemDrag(object sender, ItemDragEventArgs e)
+        private void listView_ItemDrag(object sender, ItemDragEventArgs e)
         {
             ListViewItem lvi = e.Item as ListViewItem;
             if (lvi == null)
@@ -963,7 +963,7 @@ namespace Kinovea.FileBrowser
             DoDragDrop(path, DragDropEffects.All);
         }
 
-        private void listViews_MouseDown(object sender, MouseEventArgs e)
+        private void listView_MouseDown(object sender, MouseEventArgs e)
         {
             PrepareSortMenus();
             ShowHideListMenu(false);
@@ -980,6 +980,16 @@ namespace Kinovea.FileBrowser
                 return;
 
             ShowHideListMenu(true);
+        }
+
+        private void listView_SizeChanged(object sender, EventArgs e)
+        {
+            // Make sure the column takes all the space.
+            var lv = sender as ListView;
+            if (lv.Columns.Count == 0)
+                return;
+
+            lv.Columns[0].Width = lv.Width;
         }
 
         /// <summary>
@@ -1084,7 +1094,7 @@ namespace Kinovea.FileBrowser
             wizard.Dispose();
         }
 
-        private void listViews_SelectedIndexChanged(object sender, EventArgs e)
+        private void listView_SelectedIndexChanged(object sender, EventArgs e)
         {
             ListView lv = sender as ListView;
             if (lv == null || lv.SelectedItems.Count != 1)
