@@ -446,6 +446,12 @@
     <Compile Include="Metadata\Serialization\MeasuredDataUnits.cs" />
     <Compile Include="Metadata\Serialization\MeasurementSerializationHelper.cs" />
     <Compile Include="NativeMethods.cs" />
+    <Compile Include="PlayerScreen\Controls\KeyframeCommentBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\Controls\KeyframeCommentBox.Designer.cs">
+      <DependentUpon>KeyframeCommentBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="PlayerScreen\Events\KeyframeAddEventArgs.cs" />
     <Compile Include="PlayerScreen\Events\TimeEventArgs.cs" />
     <Compile Include="Measurement\Geometry\ClipResult.cs" />
@@ -484,22 +490,28 @@
     <Compile Include="Measurement\LensDistortion\FormCalibrateDistortion.Designer.cs">
       <DependentUpon>FormCalibrateDistortion.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormTimeSections.cs">
+    <Compile Include="PlayerScreen\Controls\SidePanels\SidePanelKeyframes.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\Controls\SidePanels\SidePanelKeyframes.Designer.cs">
+      <DependentUpon>SidePanelKeyframes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\Forms\FormTimeSections.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormTimeSections.Designer.cs">
+    <Compile Include="PlayerScreen\Forms\FormTimeSections.Designer.cs">
       <DependentUpon>FormTimeSections.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureVisibility.cs">
+    <Compile Include="PlayerScreen\Forms\FormConfigureVisibility.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureVisibility.Designer.cs">
+    <Compile Include="PlayerScreen\Forms\FormConfigureVisibility.Designer.cs">
       <DependentUpon>FormConfigureVisibility.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormRafaleExport.cs">
+    <Compile Include="PlayerScreen\Forms\FormRafaleExport.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormRafaleExport.Designer.cs">
+    <Compile Include="PlayerScreen\Forms\FormRafaleExport.Designer.cs">
       <DependentUpon>FormRafaleExport.cs</DependentUpon>
     </Compile>
     <Compile Include="Measurement\Plotting\FormPointsAnalysis.cs">
@@ -509,13 +521,13 @@
       <DependentUpon>FormPointsAnalysis.cs</DependentUpon>
     </Compile>
     <Compile Include="Measurement\Plotting\PlotHelper.cs" />
-    <Compile Include="PlayerScreen\UserInterface\InfobarPlayer.cs">
+    <Compile Include="PlayerScreen\Controls\InfobarPlayer.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\InfobarPlayer.Designer.cs">
+    <Compile Include="PlayerScreen\Controls\InfobarPlayer.Designer.cs">
       <DependentUpon>InfobarPlayer.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\PanelDoubleBuffer.cs">
+    <Compile Include="PlayerScreen\Controls\PanelDoubleBuffer.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Properties\Player.Designer.cs">
@@ -689,10 +701,10 @@
     <Compile Include="UserInterface\DropDownMenuContainer.Designer.cs">
       <DependentUpon>DropDownMenuContainer.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserInterface\FrameTracker.cs">
+    <Compile Include="PlayerScreen\Controls\FrameTracker.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UserInterface\FrameTracker.Designer.cs">
+    <Compile Include="PlayerScreen\Controls\FrameTracker.Designer.cs">
       <DependentUpon>FrameTracker.cs</DependentUpon>
     </Compile>
     <Compile Include="UserInterface\FrequencyViewer.cs">
@@ -701,97 +713,91 @@
     <Compile Include="UserInterface\FrequencyViewer.Designer.cs">
       <DependentUpon>FrequencyViewer.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserInterface\KeyframeBox.cs">
+    <Compile Include="PlayerScreen\Controls\KeyframeBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UserInterface\KeyframeBox.Designer.cs">
+    <Compile Include="PlayerScreen\Controls\KeyframeBox.Designer.cs">
       <DependentUpon>KeyframeBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserInterface\SelectionTracker.cs">
+    <Compile Include="PlayerScreen\Controls\SelectionTracker.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UserInterface\SelectionTracker.Designer.cs">
+    <Compile Include="PlayerScreen\Controls\SelectionTracker.Designer.cs">
       <DependentUpon>SelectionTracker.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UserInterface\SpeedSlider.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UserInterface\SpeedSlider.designer.cs">
-      <DependentUpon>SpeedSlider.cs</DependentUpon>
     </Compile>
     <Compile Include="UserInterface\ToolStripButtonWithDropDown.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormCalibratePlane.cs">
+    <Compile Include="PlayerScreen\Forms\FormCalibratePlane.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormCalibratePlane.Designer.cs">
+    <Compile Include="PlayerScreen\Forms\FormCalibratePlane.Designer.cs">
       <DependentUpon>FormCalibratePlane.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureDrawing2.cs">
+    <Compile Include="PlayerScreen\Forms\FormConfigureDrawing2.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureDrawing2.Designer.cs">
+    <Compile Include="PlayerScreen\Forms\FormConfigureDrawing2.Designer.cs">
       <DependentUpon>FormConfigureDrawing2.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormProgressBar2.cs">
+    <Compile Include="PlayerScreen\Forms\FormProgressBar2.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormProgressBar2.Designer.cs">
+    <Compile Include="PlayerScreen\Forms\FormProgressBar2.Designer.cs">
       <DependentUpon>FormProgressBar2.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormToolPresets.cs">
+    <Compile Include="PlayerScreen\Forms\FormToolPresets.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormToolPresets.Designer.cs">
+    <Compile Include="PlayerScreen\Forms\FormToolPresets.Designer.cs">
       <DependentUpon>FormToolPresets.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormCalibrateLine.cs">
+    <Compile Include="PlayerScreen\Forms\FormCalibrateLine.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormCalibrateLine.Designer.cs">
+    <Compile Include="PlayerScreen\Forms\FormCalibrateLine.Designer.cs">
       <DependentUpon>FormCalibrateLine.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureSpeed.cs">
+    <Compile Include="PlayerScreen\Forms\FormConfigureSpeed.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureSpeed.Designer.cs">
+    <Compile Include="PlayerScreen\Forms\FormConfigureSpeed.Designer.cs">
       <DependentUpon>FormConfigureSpeed.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureTrajectoryDisplay.cs">
+    <Compile Include="PlayerScreen\Forms\FormConfigureTrajectoryDisplay.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureTrajectoryDisplay.Designer.cs">
+    <Compile Include="PlayerScreen\Forms\FormConfigureTrajectoryDisplay.Designer.cs">
       <DependentUpon>FormConfigureTrajectoryDisplay.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormDiapoExport.cs">
+    <Compile Include="PlayerScreen\Forms\FormDiapoExport.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormDiapoExport.Designer.cs">
+    <Compile Include="PlayerScreen\Forms\FormDiapoExport.Designer.cs">
       <DependentUpon>FormDiapoExport.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormFramesExport.cs">
+    <Compile Include="PlayerScreen\Forms\FormFramesExport.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormFramesExport.Designer.cs">
+    <Compile Include="PlayerScreen\Forms\FormFramesExport.Designer.cs">
       <DependentUpon>FormFramesExport.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormKeyframeComments.cs">
+    <Compile Include="PlayerScreen\Forms\FormKeyframeComments.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormKeyframeComments.Designer.cs">
+    <Compile Include="PlayerScreen\Forms\FormKeyframeComments.Designer.cs">
       <DependentUpon>FormKeyframeComments.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormProgressBar.cs">
+    <Compile Include="PlayerScreen\Forms\FormProgressBar.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormProgressBar.Designer.cs">
+    <Compile Include="PlayerScreen\Forms\FormProgressBar.Designer.cs">
       <DependentUpon>FormProgressBar.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormVideoExport.cs">
+    <Compile Include="PlayerScreen\Forms\FormVideoExport.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormVideoExport.Designer.cs">
+    <Compile Include="PlayerScreen\Forms\FormVideoExport.Designer.cs">
       <DependentUpon>FormVideoExport.cs</DependentUpon>
     </Compile>
     <Compile Include="Metadata\Magnifier.cs">
@@ -903,10 +909,10 @@
       <DependentUpon>ScreenManagerLang.resx</DependentUpon>
     </Compile>
     <Compile Include="PlayerScreen\PlayerScreen.cs" />
-    <Compile Include="PlayerScreen\UserInterface\PlayerScreenUserInterface2.cs">
+    <Compile Include="PlayerScreen\Controls\PlayerScreenUserInterface2.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\PlayerScreenUserInterface2.Designer.cs">
+    <Compile Include="PlayerScreen\Controls\PlayerScreenUserInterface2.Designer.cs">
       <DependentUpon>PlayerScreenUserInterface2.cs</DependentUpon>
     </Compile>
     <Compile Include="ScreenManager.cs" />
@@ -982,26 +988,32 @@
     <EmbeddedResource Include="Measurement\LensDistortion\FormCalibrateDistortion.resx">
       <DependentUpon>FormCalibrateDistortion.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormTimeSections.resx">
+    <EmbeddedResource Include="PlayerScreen\Controls\KeyframeCommentBox.resx">
+      <DependentUpon>KeyframeCommentBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\Controls\SidePanels\SidePanelKeyframes.resx">
+      <DependentUpon>SidePanelKeyframes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\Forms\FormTimeSections.resx">
       <DependentUpon>FormTimeSections.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureVisibility.resx">
+    <EmbeddedResource Include="PlayerScreen\Forms\FormConfigureVisibility.resx">
       <DependentUpon>FormConfigureVisibility.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormRafaleExport.resx">
+    <EmbeddedResource Include="PlayerScreen\Forms\FormRafaleExport.resx">
       <DependentUpon>FormRafaleExport.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Measurement\Plotting\FormPointsAnalysis.resx">
       <DependentUpon>FormPointsAnalysis.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\InfobarPlayer.resx">
+    <EmbeddedResource Include="PlayerScreen\Controls\InfobarPlayer.resx">
       <DependentUpon>InfobarPlayer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Player.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Player.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="UserInterface\FrameTracker.resx">
+    <EmbeddedResource Include="PlayerScreen\Controls\FrameTracker.resx">
       <DependentUpon>FrameTracker.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -1009,34 +1021,30 @@
       <SubType>Designer</SubType>
       <DependentUpon>FrequencyViewer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UserInterface\KeyframeBox.resx">
+    <EmbeddedResource Include="PlayerScreen\Controls\KeyframeBox.resx">
       <SubType>Designer</SubType>
       <DependentUpon>KeyframeBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UserInterface\SelectionTracker.resx">
+    <EmbeddedResource Include="PlayerScreen\Controls\SelectionTracker.resx">
       <DependentUpon>SelectionTracker.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="UserInterface\SpeedSlider.resx">
-      <DependentUpon>SpeedSlider.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormCalibratePlane.resx">
+    <EmbeddedResource Include="PlayerScreen\Forms\FormCalibratePlane.resx">
       <DependentUpon>FormCalibratePlane.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureDrawing2.resx">
+    <EmbeddedResource Include="PlayerScreen\Forms\FormConfigureDrawing2.resx">
       <DependentUpon>FormConfigureDrawing2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormCalibrateLine.resx">
+    <EmbeddedResource Include="PlayerScreen\Forms\FormCalibrateLine.resx">
       <DependentUpon>FormCalibrateLine.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormProgressBar.resx">
+    <EmbeddedResource Include="PlayerScreen\Forms\FormProgressBar.resx">
       <DependentUpon>FormProgressBar.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormProgressBar2.resx">
+    <EmbeddedResource Include="PlayerScreen\Forms\FormProgressBar2.resx">
       <DependentUpon>FormProgressBar2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormToolPresets.resx">
+    <EmbeddedResource Include="PlayerScreen\Forms\FormToolPresets.resx">
       <DependentUpon>FormToolPresets.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Backgrounds.resx">
@@ -1118,7 +1126,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ScreenManagerLang.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\PlayerScreenUserInterface2.resx">
+    <EmbeddedResource Include="PlayerScreen\Controls\PlayerScreenUserInterface2.resx">
       <DependentUpon>PlayerScreenUserInterface2.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -1151,27 +1159,27 @@
     <EmbeddedResource Include="Languages\ScreenManagerLang.ro.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureSpeed.resx">
+    <EmbeddedResource Include="PlayerScreen\Forms\FormConfigureSpeed.resx">
       <DependentUpon>FormConfigureSpeed.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureTrajectoryDisplay.resx">
+    <EmbeddedResource Include="PlayerScreen\Forms\FormConfigureTrajectoryDisplay.resx">
       <SubType>Designer</SubType>
       <DependentUpon>FormConfigureTrajectoryDisplay.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormDiapoExport.resx">
+    <EmbeddedResource Include="PlayerScreen\Forms\FormDiapoExport.resx">
       <SubType>Designer</SubType>
       <DependentUpon>FormDiapoExport.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormFramesExport.resx">
+    <EmbeddedResource Include="PlayerScreen\Forms\FormFramesExport.resx">
       <SubType>Designer</SubType>
       <DependentUpon>FormFramesExport.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormKeyframeComments.resx">
+    <EmbeddedResource Include="PlayerScreen\Forms\FormKeyframeComments.resx">
       <SubType>Designer</SubType>
       <DependentUpon>FormKeyframeComments.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormVideoExport.resx">
+    <EmbeddedResource Include="PlayerScreen\Forms\FormVideoExport.resx">
       <SubType>Designer</SubType>
       <DependentUpon>FormVideoExport.cs</DependentUpon>
     </EmbeddedResource>
