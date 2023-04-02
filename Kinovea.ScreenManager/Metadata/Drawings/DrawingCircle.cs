@@ -443,8 +443,8 @@ namespace Kinovea.ScreenManager
         #region Context menu
         private void mnuShowCenter_Click(object sender, EventArgs e)
         {
-            mnuShowCenter.Checked = !mnuShowCenter.Checked;
-            showCenter = mnuShowCenter.Checked;
+            CaptureMemento(SerializationFilter.Core);
+            showCenter = !mnuShowCenter.Checked;
             InvalidateFromMenu(sender);
         }
         
@@ -562,6 +562,16 @@ namespace Kinovea.ScreenManager
             {
                 areaPath.AddEllipse(center.Box(radius));
             }
+        }
+
+        /// <summary>
+        /// Capture the current state to the undo/redo stack.
+        /// </summary>
+        private void CaptureMemento(SerializationFilter filter)
+        {
+            Guid keyframeId = parentMetadata.FindAttachmentKeyframeId(this);
+            var memento = new HistoryMementoModifyDrawing(parentMetadata, keyframeId, this.Id, this.Name, filter);
+            parentMetadata.HistoryStack.PushNewCommand(memento);
         }
 
         private void ReloadMenusCulture()
