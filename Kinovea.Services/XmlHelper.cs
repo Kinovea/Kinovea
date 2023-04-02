@@ -34,6 +34,17 @@ namespace Kinovea.Services
         // Note: the built-in TypeConverters are crashing on some machines for unknown reason. (TypeDescriptor.GetConverter(typeof(Point)))
     	private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
+        public static float ParseFloat(string str)
+        {
+            bool read = float.TryParse(str, NumberStyles.Any, CultureInfo.InvariantCulture, out float x);
+            if (read)
+                return x;
+            else
+                log.Error(String.Format("An error happened while parsing float value. ({0}).", str));
+
+            return 0;
+        }
+
         public static PointF ParsePointF(string str)
         {
             PointF point = PointF.Empty;
@@ -41,11 +52,8 @@ namespace Kinovea.Services
             try
             {
                 string[] a = str.Split(new char[] {';'});
-                
-                float x;
-                float y;
-                bool readX = float.TryParse(a[0], NumberStyles.Any, CultureInfo.InvariantCulture, out x);
-                bool readY = float.TryParse(a[1], NumberStyles.Any, CultureInfo.InvariantCulture, out y);
+                bool readX = float.TryParse(a[0], NumberStyles.Any, CultureInfo.InvariantCulture, out float x);
+                bool readY = float.TryParse(a[1], NumberStyles.Any, CultureInfo.InvariantCulture, out float y);
                 
                 if(readX && readY)
                     point = new PointF(x, y);
@@ -80,11 +88,8 @@ namespace Kinovea.Services
             try
             {
                 string[] a = str.Split(new char[] {';'});
-                
-                float width;
-                float height;
-                bool readWidth = float.TryParse(a[0], NumberStyles.Any, CultureInfo.InvariantCulture, out width);
-                bool readHeight = float.TryParse(a[1], NumberStyles.Any, CultureInfo.InvariantCulture, out height);
+                bool readWidth = float.TryParse(a[0], NumberStyles.Any, CultureInfo.InvariantCulture, out float width);
+                bool readHeight = float.TryParse(a[1], NumberStyles.Any, CultureInfo.InvariantCulture, out float height);
                 
                 if(readWidth && readHeight)
                     size = new SizeF(width, height);
@@ -217,15 +222,10 @@ namespace Kinovea.Services
             try
             {
                 string[] a = str.Split(new char[] { ';' });
-
-                float x;
-                float y;
-                float width;
-                float height;
-                bool readX = float.TryParse(a[0], NumberStyles.Any, CultureInfo.InvariantCulture, out x);
-                bool readY = float.TryParse(a[1], NumberStyles.Any, CultureInfo.InvariantCulture, out y);
-                bool readWidth = float.TryParse(a[2], NumberStyles.Any, CultureInfo.InvariantCulture, out width);
-                bool readHeight = float.TryParse(a[3], NumberStyles.Any, CultureInfo.InvariantCulture, out height);
+                bool readX = float.TryParse(a[0], NumberStyles.Any, CultureInfo.InvariantCulture, out float x);
+                bool readY = float.TryParse(a[1], NumberStyles.Any, CultureInfo.InvariantCulture, out float y);
+                bool readWidth = float.TryParse(a[2], NumberStyles.Any, CultureInfo.InvariantCulture, out float width);
+                bool readHeight = float.TryParse(a[3], NumberStyles.Any, CultureInfo.InvariantCulture, out float height);
 
                 if (readX && readY && readWidth && readHeight)
                     rect = new RectangleF(x, y, width, height);
@@ -245,11 +245,8 @@ namespace Kinovea.Services
             try
             {
                 string[] a = str.Split(new char[] { ';' });
-
-                long start;
-                long end;
-                bool readStart = long.TryParse(a[0], NumberStyles.Any, CultureInfo.InvariantCulture, out start);
-                bool readEnd = long.TryParse(a[1], NumberStyles.Any, CultureInfo.InvariantCulture, out end);
+                bool readStart = long.TryParse(a[0], NumberStyles.Any, CultureInfo.InvariantCulture, out long start);
+                bool readEnd = long.TryParse(a[1], NumberStyles.Any, CultureInfo.InvariantCulture, out long end);
 
                 if (readStart && readEnd)
                 {

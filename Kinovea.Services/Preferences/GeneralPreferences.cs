@@ -46,6 +46,12 @@ namespace Kinovea.Services
             set { explorerSplitterDistance = value; }
         }
 
+        public float SidePanelSplitterDistance
+        {
+            get { return sidePanelSplitterDistance; }
+            set { sidePanelSplitterDistance = value; }
+        }
+
         public FormWindowState WindowState
         {
             get { return windowState; }
@@ -85,6 +91,7 @@ namespace Kinovea.Services
         private string uiCultureName;
         private bool explorerVisible = true;
         private int explorerSplitterDistance = 250;
+        private float sidePanelSplitterDistance = 0.8f;
         private FormWindowState windowState = FormWindowState.Maximized;
         private Rectangle windowRectangle;
         private Workspace workspace = new Workspace();
@@ -121,6 +128,7 @@ namespace Kinovea.Services
             writer.WriteElementString("Culture", uiCultureName);
             writer.WriteElementString("ExplorerVisible", explorerVisible ? "true" : "false");
             writer.WriteElementString("ExplorerSplitterDistance", explorerSplitterDistance.ToString());
+            writer.WriteElementString("SidePanelSplitterDistance", XmlHelper.WriteFloat(sidePanelSplitterDistance));
             writer.WriteElementString("WindowState", windowState.ToString());
             writer.WriteElementString("WindowRectangle", XmlHelper.WriteRectangleF(windowRectangle));
 
@@ -152,6 +160,9 @@ namespace Kinovea.Services
                         break;
                     case "ExplorerSplitterDistance":
                         explorerSplitterDistance = reader.ReadElementContentAsInt();
+                        break;
+                    case "SidePanelSplitterDistance":
+                        sidePanelSplitterDistance = XmlHelper.ParseFloat(reader.ReadElementContentAsString());
                         break;
                     case "WindowState":
                         windowState = (FormWindowState)Enum.Parse(typeof(FormWindowState), reader.ReadElementContentAsString());

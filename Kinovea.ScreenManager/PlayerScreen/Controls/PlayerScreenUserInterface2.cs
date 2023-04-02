@@ -967,19 +967,24 @@ namespace Kinovea.ScreenManager
 
         private void InitializePropertiesPanel()
         {
+            // Restore splitter distance and hook preferences save.
+            splitViewport_Properties.SplitterDistance = (int)(splitViewport_Properties.Width * PreferencesManager.GeneralPreferences.SidePanelSplitterDistance);
+            splitViewport_Properties.SplitterMoved += (s, e) => {
+                PreferencesManager.GeneralPreferences.SidePanelSplitterDistance = (float)e.SplitX / splitViewport_Properties.Width;
+                PreferencesManager.Save();
+            };
+
             // Create and add all the side panels.
-            var tabProperties =  splitViewport_Properties.Panel2.Controls[0] as TabControl;
-            if (tabProperties == null)
+            TabControl tabControl =  splitViewport_Properties.Panel2.Controls[0] as TabControl;
+            if (tabControl == null)
                 return;
 
-            tabProperties.TabPages[0].Controls.Add(sidePanelKeyframes);
+            tabControl.TabPages[0].Controls.Add(sidePanelKeyframes);
             sidePanelKeyframes.Dock = DockStyle.Fill;
             sidePanelKeyframes.KeyframeSelected += KeyframeControl_KeyframeSelected;
             sidePanelKeyframes.KeyframeUpdated += KeyframeControl_KeyframeUpdated;
 
-            // Hook events.
-            // Start visible or not based on prefs.
-            splitViewport_Properties.Panel2Collapsed = !showPropertiesPanel;
+            splitViewport_Properties.Panel2Collapsed = true;
         }
 
         private void InitializeDrawingTools(DrawingToolbarPresenter drawingToolbarPresenter)
