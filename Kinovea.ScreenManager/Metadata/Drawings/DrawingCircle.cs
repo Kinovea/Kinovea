@@ -137,7 +137,7 @@ namespace Kinovea.ScreenManager
         private Ellipse ellipseInImage;
         private PointF radiusLeftInImage;
         private PointF radiusRightInImage;
-        private bool showCenter = true;
+        private bool showCenter = false;
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
