@@ -67,11 +67,18 @@ namespace Kinovea.ScreenManager
             this.keyframe = keyframe;
             if (keyframe == null)
                 return;
+
             manualUpdate = true;
             tbName.Text = keyframe.Title;
             AfterNameChange();
             lblTimecode.Text = string.Format("{0}", keyframe.TimeCode);
+            
+            // The font size is stored in the rich text format string itself.
+            // Get rid of all formatting.
             rtbComment.Rtf = keyframe.Comments;
+            string text = rtbComment.Text;
+            rtbComment.Text = text;
+
             manualUpdate = false;
         }
 
@@ -87,6 +94,7 @@ namespace Kinovea.ScreenManager
             isSelected = keyframe.Position == timestamp;
             btnSidebar.BackColor = isSelected ? keyframe.Color : this.BackColor;
             rtbComment.BackColor = isSelected ? Color.White : this.BackColor;
+            pnlComment.BackColor = rtbComment.BackColor;
         }
         #endregion
 

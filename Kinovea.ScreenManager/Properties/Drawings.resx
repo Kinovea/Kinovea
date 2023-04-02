@@ -560,19 +560,6 @@
         koYrScN1lNMHpMuN0NcJPXkAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="handtool" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
-        JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAABkUlEQVRIS7WTPW7CQBCFKVOmpOQIOQIt
-        9LlLxA24gEVjUtNwA9fcgIKKwhQuzI9QLMUUk/eMh+x4l5BIm5E+MfN2/J5tmZ6I/CtBMSZBMSZmGI1G
-        93gCB/ABnlvNw/VSzOAuj8fjHL80pflxvV5LnucC/R2zAC/M9VLMoIswOdR1LUVR0LCAhuNrab/b7Xh2
-        1msIZA8zOMv7LMvkcrnQsAY4vla355MlScL+FZLxI2bAksLXUp9OJ2EQehxfq9tPp9MmBP0ZkvEjZsCS
-        iywWi9tT4Lwpt1fzsixVN37EDFgyXwve8RH63WIAa7VaMYC7xo+YgUv6tbQhkG0Nh8O2+640TWU+n7M1
-        fsQMMNxXVYVWNOT2OrRCAe3NDNAaP2KG2Wwmm80GrV807sLipwzzT2C8FDNwaTKZiD5FqNRYa7lcNvw6
-        APR/CukGYJ//k8FfAsjLoydhbbdbBlR6HSQPM+hiy8MQfMYl9t70GkgeZtBFhybkXuGcd9/XfUgeQTEm
-        QTEmQTEmQTEmQTEmQTEe0vsCE6pREPCrJUEAAAAASUVORK5CYII=
-</value>
-  </data>
   <data name="grid" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29m
@@ -635,19 +622,6 @@
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAB1SURBVDhPpc/LCYAwEIThXD1ZgG3p0XrswCasxBos
         Zp0JJMiSx248fIEE5ocEEfklHtt5DRkJzN+7N7DAA0d68wTSWOCGCcwBPc7fsASqY+oFmmNqBbpjqgVM
         YyoFzGPSAdeYdGAH85h0gFYwjakUcMmBcRJeEy0EyJfOvJcAAAAASUVORK5CYII=
-</value>
-  </data>
-  <data name="addkeyimage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29m
-        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAGdSURBVDhPlZM7SwNBFIWj/0EkoCAWYqPgg9gI9iJY
-        WAhWSfABsbKwsrJR0GhUsmLAxsLKKiIBV0sLS9HgT9iQF9k8Nm89zhkyMcbExIGPyW7mfHvvXdYGwCbW
-        gGBK4OjAkKCXGYUSTBWLRbNSqXxUq1W0QvwPv99/2ixRAgfDuVwOlmXVSafTSKVSiEajUhKJRKBp2g8J
-        V4/AwQOFQgGlUknuJJvNwjRNxGIxKcjn8+BDAoGAlPwSMKyggIFMJoN4PP6jHcJMLfstEG3UD/A3+1at
-        JBIJWYlhGO0FzTRKWAnnkUwmuxcQJWE7nAlFvN+1gJTLZTkXSgjv/UvAKkLPN9gOOLF+vAjXwTxm3SMX
-        fwoYUgSfrrF748JdWMOLocP34MGybwwzm3ZvRwHLdx/OI/h2guD7mXj1gPdxDb7HDQoKbQWNkoWdCYTC
-        lzKs1u2rRgFnURd8NgsUc1vDONTd2NedMrx/7/yuQFxTMi2mbInDLT+m8+AelryjONJX5ZO581rOoCYY
-        pETAV9OS8ZW+K4fHbrFs7pOu/nMAti+Htq/CgDMXBgAAAABJRU5ErkJggg==
 </value>
   </data>
   <data name="label" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -942,5 +916,11 @@
   </data>
   <data name="binocular" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\binocular.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="handtool4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\handtool4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="handtool3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\handtool3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

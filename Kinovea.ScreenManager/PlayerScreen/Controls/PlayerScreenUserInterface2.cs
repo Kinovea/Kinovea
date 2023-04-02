@@ -994,7 +994,7 @@ namespace Kinovea.ScreenManager
 
             // Create key image.
             m_btnAddKeyFrame = CreateToolButton();
-            m_btnAddKeyFrame.Image = Drawings.addkeyimage;
+            m_btnAddKeyFrame.Image = Resources.createkeyframe;
             m_btnAddKeyFrame.Click += btnAddKeyframe_Click;
             m_btnAddKeyFrame.ToolTipText = ScreenManagerLang.ToolTip_AddKeyframe;
             drawingToolbarPresenter.AddSpecialButton(m_btnAddKeyFrame);
@@ -1579,9 +1579,12 @@ namespace Kinovea.ScreenManager
                 CollapseKeyframePanel(true);
             }
         }
+
+        /// <summary>
+        /// Update the markers in the main timeline.
+        /// </summary>
         public void UpdateFramesMarkers()
         {
-            // Updates the markers coordinates and redraw the trkFrame.
             trkFrame.UpdateMarkers(m_FrameServer.Metadata);
         }
         private void ShowBorder(bool _bShow)
@@ -4378,8 +4381,12 @@ namespace Kinovea.ScreenManager
         
         private void KeyframeControl_KeyframeSelected(object sender, TimeEventArgs e)
         {
-            // A keyframe was selected from a keyframe control (thumbnail or side panel).
+            // A keyframe was selected from a keyframe control (thumbnail or side panel),
+            // or from a command jumping from keyframe to keyframe.
             // Move to the corresponding time.
+            if (e.Time < m_iSelStart || e.Time > m_iSelEnd)
+                return;
+
             OnPoke();
             StopPlaying();
             OnPauseAsked();
@@ -4408,6 +4415,8 @@ namespace Kinovea.ScreenManager
                     box.UpdateData();
                 }
             }
+
+            UpdateFramesMarkers();
         }
         #endregion
 

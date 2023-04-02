@@ -50,7 +50,7 @@ namespace Kinovea.ScreenManager
         }
         public override Bitmap Icon
         {
-            get { return Kinovea.ScreenManager.Properties.Drawings.handtool; }
+            get { return Kinovea.ScreenManager.Properties.Drawings.handtool4; }
         }
         public override bool Attached
         {

@@ -1564,6 +1564,18 @@
   <ItemGroup>
     <None Include="Resources\sidepanel.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\createkeyframe.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\handtool4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\handtool3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\sidepanel2.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">
     <Message Text="Adjusting SDK tools directory to use x64 version of AL.EXE" />

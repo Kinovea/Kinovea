@@ -63,16 +63,6 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap addkeyimage {
-            get {
-                object obj = ResourceManager.GetObject("addkeyimage", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap alignmentangle2 {
             get {
                 object obj = ResourceManager.GetObject("alignmentangle2", resourceCulture);
@@ -443,9 +433,19 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap handtool {
+        internal static System.Drawing.Bitmap handtool3 {
             get {
-                object obj = ResourceManager.GetObject("handtool", resourceCulture);
+                object obj = ResourceManager.GetObject("handtool3", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap handtool4 {
+            get {
+                object obj = ResourceManager.GetObject("handtool4", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

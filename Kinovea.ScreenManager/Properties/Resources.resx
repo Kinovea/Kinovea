@@ -1759,9 +1759,6 @@
   <data name="gutter_right" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\gutter-right.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="balloon_ellipsis" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\balloon-ellipsis.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="navback" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\navback.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -1809,5 +1806,11 @@
   </data>
   <data name="sidepanel" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\sidepanel.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="createkeyframe" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\createkeyframe.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sidepanel2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\sidepanel2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

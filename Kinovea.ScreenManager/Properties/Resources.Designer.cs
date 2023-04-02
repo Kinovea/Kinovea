@@ -103,16 +103,6 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap balloon_ellipsis {
-            get {
-                object obj = ResourceManager.GetObject("balloon_ellipsis", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap bggr {
             get {
                 object obj = ResourceManager.GetObject("bggr", resourceCulture);
@@ -336,6 +326,16 @@ namespace Kinovea.ScreenManager.Properties {
         internal static System.Drawing.Bitmap coordinate_axis {
             get {
                 object obj = ResourceManager.GetObject("coordinate_axis", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap createkeyframe {
+            get {
+                object obj = ResourceManager.GetObject("createkeyframe", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1416,6 +1416,16 @@ namespace Kinovea.ScreenManager.Properties {
         internal static System.Drawing.Bitmap sidepanel {
             get {
                 object obj = ResourceManager.GetObject("sidepanel", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sidepanel2 {
+            get {
+                object obj = ResourceManager.GetObject("sidepanel2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

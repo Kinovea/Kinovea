@@ -408,7 +408,7 @@ namespace Kinovea.ScreenManager
             mnuShowTrackLabel.Image = Properties.Drawings.label;
             mnuShowKeyframeLabel.Image = Properties.Drawings.label;
             mnuUseKeyframeColor.Image = Properties.Resources.SwatchIcon3;
-            mnuIsInteractiveTrack.Image = Properties.Drawings.handtool;
+            mnuIsInteractiveTrack.Image = Properties.Drawings.handtool4;
             mnuShowRotationCircle.Image = Properties.Drawings.circle;
 
             mnuSeeFuture.Click += MnuSeeFuture_Click;
