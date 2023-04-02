@@ -46,14 +46,10 @@ namespace Kinovea.Root
             // splitWorkSpace.Panel1
             // 
             this.splitWorkSpace.Panel1.Controls.Add(this.buttonCloseExplo);
-            this.splitWorkSpace.Panel1.Click += new System.EventHandler(this.splitWorkSpace_Panel1_Click);
             this.splitWorkSpace.Panel1MinSize = 4;
             this.splitWorkSpace.Size = new System.Drawing.Size(960, 560);
             this.splitWorkSpace.SplitterDistance = 199;
             this.splitWorkSpace.TabIndex = 0;
-            this.splitWorkSpace.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer1_SplitterMoved);
-            this.splitWorkSpace.DoubleClick += new System.EventHandler(this._splitWorkSpace_DoubleClick);
-            this.splitWorkSpace.MouseMove += new System.Windows.Forms.MouseEventHandler(this.splitWorkSpace_MouseMove);
             // 
             // buttonCloseExplo
             // 

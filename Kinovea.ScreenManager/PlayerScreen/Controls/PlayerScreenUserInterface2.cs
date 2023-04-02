@@ -968,9 +968,9 @@ namespace Kinovea.ScreenManager
         private void InitializePropertiesPanel()
         {
             // Restore splitter distance and hook preferences save.
-            splitViewport_Properties.SplitterDistance = (int)(splitViewport_Properties.Width * PreferencesManager.GeneralPreferences.SidePanelSplitterDistance);
+            splitViewport_Properties.SplitterDistance = (int)(splitViewport_Properties.Width * PreferencesManager.GeneralPreferences.SidePanelSplitterRatio);
             splitViewport_Properties.SplitterMoved += (s, e) => {
-                PreferencesManager.GeneralPreferences.SidePanelSplitterDistance = (float)e.SplitX / splitViewport_Properties.Width;
+                PreferencesManager.GeneralPreferences.SidePanelSplitterRatio = (float)e.SplitX / splitViewport_Properties.Width;
                 PreferencesManager.Save();
             };
 

@@ -307,7 +307,7 @@ namespace Kinovea.Root
             mnuToggleFileExplorer.Checked = true;
             mnuToggleFileExplorer.CheckState = System.Windows.Forms.CheckState.Checked;
             mnuToggleFileExplorer.ShortcutKeys = Keys.F4;
-            mnuToggleFileExplorer.Click += new EventHandler(mnuToggleFileExplorerOnClick);
+            mnuToggleFileExplorer.Click += mnuToggleFileExplorer_Click;
             mnuFullScreen.Image = Properties.Resources.fullscreen;
             mnuFullScreen.ShortcutKeys = Keys.F11;
             mnuFullScreen.Click += new EventHandler(mnuFullScreenOnClick);
@@ -494,20 +494,15 @@ namespace Kinovea.Root
         #endregion
 
         #region View
-        private void mnuToggleFileExplorerOnClick(object sender, EventArgs e)
+        private void mnuToggleFileExplorer_Click(object sender, EventArgs e)
         {
-            if (mainWindow.SupervisorControl.IsExplorerCollapsed)
-            {
-                mainWindow.SupervisorControl.ExpandExplorer(true);
-            }
-            else
-            {
-                mainWindow.SupervisorControl.CollapseExplorer();
-            }
+            bool show = !mnuToggleFileExplorer.Checked;
+            mainWindow.SupervisorControl.ShowHideExplorerPanel(show, true);
+            mnuToggleFileExplorer.Checked = show;
         }
         private void mnuFullScreenOnClick(object sender, EventArgs e)
         {
-            FullscreenToggle();
+            ToggleFullScreen();
         }
         #endregion
 
@@ -679,7 +674,6 @@ namespace Kinovea.Root
         {
             mnuHistory.DropDownItems.Clear();
 
-
             int maxRecentFiles = PreferencesManager.FileExplorerPreferences.MaxRecentFiles;
             List<string> recentFiles = PreferencesManager.FileExplorerPreferences.RecentFiles;
             List<string> recentWatchers = PreferencesManager.FileExplorerPreferences.RecentWatchers;
@@ -739,7 +733,7 @@ namespace Kinovea.Root
 
         private void NotificationCenter_FullscreenToggle(object sender, EventArgs e)
         {
-            FullscreenToggle();
+            ToggleFullScreen();
         }
 
         private void NotificationCenter_PreferenceTabAsked(object sender, PreferenceTabEventArgs e)
@@ -832,15 +826,23 @@ namespace Kinovea.Root
             
             return resourceUri;
         }
-        private void FullscreenToggle()
+
+        private void ToggleFullScreen()
         {
             mainWindow.ToggleFullScreen();
 
             if (mainWindow.FullScreen)
-                mainWindow.SupervisorControl.CollapseExplorer();
+            {
+                // Entering full screen, force hide explorer, don't save prefs.
+                mainWindow.SupervisorControl.ShowHideExplorerPanel(false, false);
+            }
             else
-                mainWindow.SupervisorControl.ExpandExplorer(true);
-
+            {
+                // Exiting full screen, restore from preferences.
+                bool show = PreferencesManager.GeneralPreferences.ExplorerVisible;
+                mainWindow.SupervisorControl.ShowHideExplorerPanel(show, false);
+            }
+            
             // Propagates the call to screens.
             screenManager.FullScreen(mainWindow.FullScreen);
         }

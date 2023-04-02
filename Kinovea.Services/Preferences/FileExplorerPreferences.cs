@@ -76,23 +76,28 @@ namespace Kinovea.Services
             get { return recentCapturedFiles; }
         }
 
-        public int ExplorerFilesSplitterDistance
+        /// <summary>
+        /// Splitter between folders and files.
+        /// </summary>
+        public float ExplorerFilesSplitterRatio
         {
-            // Splitter between folders and files on Explorer tab
-            get { return explorerFilesSplitterDistance; }
-            set { explorerFilesSplitterDistance = value; }
+            get { return explorerFilesSplitterRatio; }
+            set { explorerFilesSplitterRatio = value; }
+        }
+
+        /// <summary>
+        /// Splitter between folders and files on Shortcuts tab
+        /// </summary>
+        public float ShortcutsFilesSplitterRatio
+        {
+            get { return shortcutsFilesSplitterRatio; }
+            set { shortcutsFilesSplitterRatio = value; }
         }
         public ExplorerThumbSize ExplorerThumbsSize
         {
             // Size category of the thumbnails.
             get { return explorerThumbsSize; }
             set { explorerThumbsSize = value; }				
-        }
-        public int ShortcutsFilesSplitterDistance
-        {
-            // Splitter between folders and files on Shortcuts tab
-            get { return shortcutsFilesSplitterDistance; }
-            set { shortcutsFilesSplitterDistance = value; }
         }
         public List<ShortcutFolder> ShortcutFolders
         {
@@ -135,8 +140,8 @@ namespace Kinovea.Services
         private List<string> recentFiles = new List<string>();
         private List<string> recentWatchers = new List<string>();
         private List<string> recentCapturedFiles = new List<string>();
-        private int explorerFilesSplitterDistance = 350;
-        private int shortcutsFilesSplitterDistance = 350;
+        private float shortcutsFilesSplitterRatio = 0.25f;
+        private float explorerFilesSplitterRatio = 0.25f;
         private ExplorerThumbSize explorerThumbsSize = ExplorerThumbSize.Medium; 
         private List<ShortcutFolder> shortcutFolders = new List<ShortcutFolder>();
         private ActiveFileBrowserTab activeTab = ActiveFileBrowserTab.Explorer;
@@ -249,9 +254,9 @@ namespace Kinovea.Services
             }
 
             writer.WriteElementString("ThumbnailSize", explorerThumbsSize.ToString());
-            
-            writer.WriteElementString("ExplorerFilesSplitterDistance", explorerFilesSplitterDistance.ToString());
-            writer.WriteElementString("ShortcutsFilesSplitterDistance", shortcutsFilesSplitterDistance.ToString());
+
+            writer.WriteElementString("ExplorerFilesSplitterRatio", XmlHelper.WriteFloat(explorerFilesSplitterRatio));
+            writer.WriteElementString("ShortcutsFilesSplitterRatio", XmlHelper.WriteFloat(shortcutsFilesSplitterRatio));
             writer.WriteElementString("ActiveTab", activeTab.ToString());
 
             writer.WriteStartElement("FilePropertyVisibility");
@@ -313,11 +318,15 @@ namespace Kinovea.Services
                     case "ThumbnailSize":
                         explorerThumbsSize = (ExplorerThumbSize) Enum.Parse(typeof(ExplorerThumbSize), reader.ReadElementContentAsString());
                         break;
-                    case "ExplorerFilesSplitterDistance":
-                        explorerFilesSplitterDistance = reader.ReadElementContentAsInt();
+                    case "ExplorerFilesSplitterRatio":
+                        explorerFilesSplitterRatio = XmlHelper.ParseFloat(reader.ReadElementContentAsString());
+                        if (explorerFilesSplitterRatio <= 0)
+                            explorerFilesSplitterRatio = 0.25f;
                         break;
-                    case "ShortcutsFilesSplitterDistance":
-                        shortcutsFilesSplitterDistance = reader.ReadElementContentAsInt();
+                    case "ShortcutsFilesSplitterRatio":
+                        shortcutsFilesSplitterRatio = XmlHelper.ParseFloat(reader.ReadElementContentAsString());
+                        if (explorerFilesSplitterRatio <= 0)
+                            explorerFilesSplitterRatio = 0.25f;
                         break;                        
                     case "ActiveTab":
                         activeTab = (ActiveFileBrowserTab) Enum.Parse(typeof(ActiveFileBrowserTab), reader.ReadElementContentAsString());

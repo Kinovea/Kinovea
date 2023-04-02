@@ -93,7 +93,13 @@ namespace Kinovea.FileBrowser
         public FileBrowserUserInterface()
         {
             InitializeComponent();
-            
+
+            // Splitters
+            splitExplorerFiles.SplitterDistance = (int)(splitExplorerFiles.Height * PreferencesManager.FileExplorerPreferences.ExplorerFilesSplitterRatio);
+            splitShortcutsFiles.SplitterDistance = (int)(splitShortcutsFiles.Height * PreferencesManager.FileExplorerPreferences.ShortcutsFilesSplitterRatio);
+            splitExplorerFiles.SplitterMoved += Splitters_SplitterMoved;
+            splitShortcutsFiles.SplitterMoved += Splitters_SplitterMoved;
+
             lvCameras.SmallImageList = cameraIcons;
             cameraIcons.Images.Add("historyEntryDay", Properties.Resources.calendar_view_day);
             cameraIcons.Images.Add("historyEntryMonth", Properties.Resources.calendar_view_month);
@@ -234,10 +240,6 @@ namespace Kinovea.FileBrowser
             Application.Idle -= new EventHandler(this.IdleDetector);
             initializing = false;
             
-            // Now that we are at full size, we can load splitters from prefs.
-            splitExplorerFiles.SplitterDistance = PreferencesManager.FileExplorerPreferences.ExplorerFilesSplitterDistance;
-            splitShortcutsFiles.SplitterDistance = PreferencesManager.FileExplorerPreferences.ShortcutsFilesSplitterDistance;
-
             // Prune any captured file removed since last run.
             PreferencesManager.FileExplorerPreferences.ConsolidateRecentCapturedFiles();
 
@@ -538,15 +540,20 @@ namespace Kinovea.FileBrowser
         {
             if(currentExptreeItem != null)
                 PreferencesManager.FileExplorerPreferences.LastBrowsedDirectory = currentExptreeItem.Path;
-            
-            PreferencesManager.FileExplorerPreferences.ExplorerFilesSplitterDistance = splitExplorerFiles.SplitterDistance;
-            PreferencesManager.FileExplorerPreferences.ShortcutsFilesSplitterDistance = splitShortcutsFiles.SplitterDistance;
+
+            PreferencesManager.Save();
+        }
+
+        private void Splitters_SplitterMoved(object sender, SplitterEventArgs e)
+        {
+            PreferencesManager.FileExplorerPreferences.ExplorerFilesSplitterRatio = (float)splitExplorerFiles.SplitterDistance / splitExplorerFiles.Height;
+            PreferencesManager.FileExplorerPreferences.ShortcutsFilesSplitterRatio = (float)splitShortcutsFiles.SplitterDistance / splitShortcutsFiles.Height;
             PreferencesManager.Save();
         }
         #endregion
-        
+
         #region Explorer tab
-        
+
         #region TreeView
         private void etExplorer_ExpTreeNodeSelected(string selectedPath, CShItem item)
         {

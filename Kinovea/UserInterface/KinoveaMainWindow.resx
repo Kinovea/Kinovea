@@ -714,7 +714,7 @@
     <value>CenterScreen</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>UserInterface</value>
+    <value>Kinovea</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>KinoveaMainWindow</value>

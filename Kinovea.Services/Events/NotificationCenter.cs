@@ -38,7 +38,13 @@ namespace Kinovea.Services
             if(RefreshFileExplorer != null)
                 RefreshFileExplorer(sender, new RefreshFileExplorerEventArgs(refreshThumbnails));
         }
-        
+
+        public static EventHandler ToggleShowExplorerPanel;
+        public static void RaiseToggleShowExplorerPanel(object sender)
+        {
+            ToggleShowExplorerPanel?.Invoke(sender, EventArgs.Empty);
+        }
+
         public static EventHandler LaunchOpenDialog;
         public static void RaiseLaunchOpenDialog(object sender)
         {

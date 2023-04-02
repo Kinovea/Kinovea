@@ -40,16 +40,16 @@ namespace Kinovea.Services
             set { explorerVisible = value; }
         }
 
-        public int ExplorerSplitterDistance
+        public float ExplorerSplitterRatio
         {
-            get { return explorerSplitterDistance; }
-            set { explorerSplitterDistance = value; }
+            get { return explorerSplitterRatio; }
+            set { explorerSplitterRatio = value; }
         }
 
-        public float SidePanelSplitterDistance
+        public float SidePanelSplitterRatio
         {
-            get { return sidePanelSplitterDistance; }
-            set { sidePanelSplitterDistance = value; }
+            get { return sidePanelSplitterRatio; }
+            set { sidePanelSplitterRatio = value; }
         }
 
         public FormWindowState WindowState
@@ -90,8 +90,8 @@ namespace Kinovea.Services
 
         private string uiCultureName;
         private bool explorerVisible = true;
-        private int explorerSplitterDistance = 250;
-        private float sidePanelSplitterDistance = 0.8f;
+        private float explorerSplitterRatio = 0.2f;
+        private float sidePanelSplitterRatio = 0.8f;
         private FormWindowState windowState = FormWindowState.Maximized;
         private Rectangle windowRectangle;
         private Workspace workspace = new Workspace();
@@ -127,8 +127,8 @@ namespace Kinovea.Services
         {
             writer.WriteElementString("Culture", uiCultureName);
             writer.WriteElementString("ExplorerVisible", explorerVisible ? "true" : "false");
-            writer.WriteElementString("ExplorerSplitterDistance", explorerSplitterDistance.ToString());
-            writer.WriteElementString("SidePanelSplitterDistance", XmlHelper.WriteFloat(sidePanelSplitterDistance));
+            writer.WriteElementString("ExplorerSplitterRatio", XmlHelper.WriteFloat(explorerSplitterRatio));
+            writer.WriteElementString("SidePanelSplitterRatio", XmlHelper.WriteFloat(sidePanelSplitterRatio));
             writer.WriteElementString("WindowState", windowState.ToString());
             writer.WriteElementString("WindowRectangle", XmlHelper.WriteRectangleF(windowRectangle));
 
@@ -158,11 +158,11 @@ namespace Kinovea.Services
                     case "ExplorerVisible":
                         explorerVisible = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
-                    case "ExplorerSplitterDistance":
-                        explorerSplitterDistance = reader.ReadElementContentAsInt();
+                    case "ExplorerSplitterRatio":
+                        explorerSplitterRatio = XmlHelper.ParseFloat(reader.ReadElementContentAsString());
                         break;
-                    case "SidePanelSplitterDistance":
-                        sidePanelSplitterDistance = XmlHelper.ParseFloat(reader.ReadElementContentAsString());
+                    case "SidePanelSplitterRatio":
+                        sidePanelSplitterRatio = XmlHelper.ParseFloat(reader.ReadElementContentAsString());
                         break;
                     case "WindowState":
                         windowState = (FormWindowState)Enum.Parse(typeof(FormWindowState), reader.ReadElementContentAsString());
