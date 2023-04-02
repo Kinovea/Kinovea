@@ -57,15 +57,16 @@ namespace Kinovea.ScreenManager
         {
             InitializeComponent();
             this.BackColor = Color.WhiteSmoke;
-            btnColor.BackColor = this.BackColor;
             rtbComment.BackColor = this.BackColor;
-            btnSidebar.BackColor = this.BackColor;
+            btnColor.BackColor = this.BackColor;
             btnColor.FlatAppearance.MouseDownBackColor = this.BackColor;
             btnColor.FlatAppearance.MouseOverBackColor = this.BackColor;
 
             this.Paint += KeyframeCommentBox_Paint;
             btnColor.Paint += BtnColor_Paint;
             rtbComment.MouseWheel += RtbComment_MouseWheel;
+
+            AfterColorChange();
         }
 
         private void RtbComment_MouseWheel(object sender, MouseEventArgs e)
@@ -107,7 +108,8 @@ namespace Kinovea.ScreenManager
                 return;
 
             isSelected = keyframe.Timestamp == timestamp;
-            btnSidebar.BackColor = isSelected ? keyframe.Color : this.BackColor;
+
+            AfterColorChange();
             rtbComment.BackColor = isSelected ? Color.White : this.BackColor;
             pnlComment.BackColor = rtbComment.BackColor;
         }
@@ -207,8 +209,13 @@ namespace Kinovea.ScreenManager
 
         private void AfterColorChange()
         {
+            if (keyframe == null)
+                return;
+            
             btnColor.Invalidate();
-            btnSidebar.BackColor = isSelected ? keyframe.Color : Color.White;
+            btnSidebar.BackColor = isSelected ? keyframe.Color : this.BackColor;
+            btnSidebar.FlatAppearance.MouseDownBackColor = btnSidebar.BackColor;
+            btnSidebar.FlatAppearance.MouseOverBackColor = btnSidebar.BackColor;
         }
 
         private void rtbComment_TextChanged(object sender, EventArgs e)
