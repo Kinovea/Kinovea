@@ -51,7 +51,7 @@ namespace Kinovea.ScreenManager
       // 
       // tbName
       // 
-      this.tbName.BackColor = System.Drawing.Color.White;
+      this.tbName.BackColor = System.Drawing.Color.WhiteSmoke;
       this.tbName.BorderStyle = System.Windows.Forms.BorderStyle.None;
       this.tbName.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.tbName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
@@ -88,12 +88,12 @@ namespace Kinovea.ScreenManager
       this.rtbComment.BackColor = System.Drawing.Color.Silver;
       this.rtbComment.BorderStyle = System.Windows.Forms.BorderStyle.None;
       this.rtbComment.DetectUrls = false;
-      this.rtbComment.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.rtbComment.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.rtbComment.Location = new System.Drawing.Point(57, 59);
       this.rtbComment.Name = "rtbComment";
       this.rtbComment.Size = new System.Drawing.Size(203, 59);
       this.rtbComment.TabIndex = 90;
-      this.rtbComment.Text = "";
+      this.rtbComment.Text = "Comment";
       this.rtbComment.TextChanged += new System.EventHandler(this.rtbComment_TextChanged);
       this.rtbComment.Enter += new System.EventHandler(this.rtbComment_Enter);
       this.rtbComment.Leave += new System.EventHandler(this.rtbComment_Leave);
@@ -115,7 +115,7 @@ namespace Kinovea.ScreenManager
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.BackColor = System.Drawing.Color.White;
+      this.BackColor = System.Drawing.Color.WhiteSmoke;
       this.Controls.Add(this.btnSidebar);
       this.Controls.Add(this.rtbComment);
       this.Controls.Add(this.lblTimecode);

@@ -490,14 +490,15 @@ namespace Kinovea.ScreenManager
             {
                 KeyframeBox box = keyframeBoxes[i];
 
-                box.DeleteAsked -= KeyframeBox_DeleteAsked;
-                box.SelectAsked -= Keyframe_SelectAsked;
-                box.ActivateAsked -= KeyframeBox_ActivateAsked;
+                box.DeleteAsked -= KeyframeControl_KeyframeDeleteAsked;
+                box.Selected -= KeyframeControl_KeyframeSelected;
 
                 keyframeBoxes.Remove(box);
                 pnlThumbnails.Controls.Remove(box);
                 box.Dispose();
             }
+
+            sidePanelKeyframes.Clear();
         }
         public void EnableDisableActions(bool _bEnable)
         {
@@ -967,15 +968,18 @@ namespace Kinovea.ScreenManager
         private void InitializePropertiesPanel()
         {
             // Create and add all the side panels.
-            splitViewport_Properties.Panel2.Controls.Add(sidePanelKeyframes);
+            var tabProperties =  splitViewport_Properties.Panel2.Controls[0] as TabControl;
+            if (tabProperties == null)
+                return;
+
+            tabProperties.TabPages[0].Controls.Add(sidePanelKeyframes);
             sidePanelKeyframes.Dock = DockStyle.Fill;
+            sidePanelKeyframes.KeyframeSelected += KeyframeControl_KeyframeSelected;
+            sidePanelKeyframes.KeyframeUpdated += KeyframeControl_KeyframeUpdated;
 
             // Hook events.
             // Start visible or not based on prefs.
             splitViewport_Properties.Panel2Collapsed = !showPropertiesPanel;
-
-
-
         }
 
         private void InitializeDrawingTools(DrawingToolbarPresenter drawingToolbarPresenter)
@@ -985,22 +989,24 @@ namespace Kinovea.ScreenManager
 
             drawingToolbarPresenter.ForceView(stripDrawingTools);
 
+            // Hand tool.
             drawingToolbarPresenter.AddToolButton(m_PointerTool, drawingTool_Click);
-            drawingToolbarPresenter.AddSeparator();
 
-            // Special button: Add key image
+            // Create key image.
             m_btnAddKeyFrame = CreateToolButton();
             m_btnAddKeyFrame.Image = Drawings.addkeyimage;
             m_btnAddKeyFrame.Click += btnAddKeyframe_Click;
             m_btnAddKeyFrame.ToolTipText = ScreenManagerLang.ToolTip_AddKeyframe;
             drawingToolbarPresenter.AddSpecialButton(m_btnAddKeyFrame);
 
-            // Special button: Key image comments
+            // Side panel toggle.
             m_btnShowComments = CreateToolButton();
-            m_btnShowComments.Image = Resources.comments2;
-            m_btnShowComments.Click += btnShowComments_Click;
+            m_btnShowComments.Image = Resources.sidepanel;
+            m_btnShowComments.Click += btnShowSidePanel_Click;
             m_btnShowComments.ToolTipText = ScreenManagerLang.ToolTip_ShowComments;
             drawingToolbarPresenter.AddSpecialButton(m_btnShowComments);
+
+            drawingToolbarPresenter.AddSeparator();
 
             // All drawing tools.
             DrawingToolbarImporter importer = new DrawingToolbarImporter();
@@ -2129,7 +2135,7 @@ namespace Kinovea.ScreenManager
             // A keyframe was dropped on the frame timeline.
             // By this point we should be on the target time.
             // This is now similar to the "move keyframe here" action.
-            KeyframeBox_MoveToCurrentTimeAsked(sender, e);
+            KeyframeControl_MoveToCurrentTimeAsked(sender, e);
         }
         private void UpdateFrameCurrentPosition(bool _bUpdateNavCursor)
         {
@@ -2189,7 +2195,7 @@ namespace Kinovea.ScreenManager
             object keyframeBox = e.Data.GetData(typeof(KeyframeBox));
             if (keyframeBox != null && keyframeBox is KeyframeBox)
             {
-                KeyframeBox_MoveToCurrentTimeAsked(keyframeBox, EventArgs.Empty);
+                KeyframeControl_MoveToCurrentTimeAsked(keyframeBox, EventArgs.Empty);
             }
         }
 
@@ -3980,10 +3986,9 @@ namespace Kinovea.ScreenManager
 
                     // Finish the setup
                     box.Left = pixelsOffset + pixelsSpacing;
-                    box.DeleteAsked += KeyframeBox_DeleteAsked;
-                    box.SelectAsked += Keyframe_SelectAsked;
-                    box.ActivateAsked += KeyframeBox_ActivateAsked;
-                    box.MoveToCurrentTimeAsked += KeyframeBox_MoveToCurrentTimeAsked;
+                    box.DeleteAsked += KeyframeControl_KeyframeDeleteAsked;
+                    box.Selected += KeyframeControl_KeyframeSelected;
+                    box.MoveToCurrentTimeAsked += KeyframeControl_MoveToCurrentTimeAsked;
 
                     pixelsOffset += (pixelsSpacing + box.Width);
 
@@ -4000,9 +4005,7 @@ namespace Kinovea.ScreenManager
                 m_iActiveKeyFrameIndex = -1;
             }
 
-            sidePanelKeyframes.ResetKeyframes();
-            sidePanelKeyframes.Keyframe_SelectAsked += Keyframe_SelectAsked;
-
+            sidePanelKeyframes.Reset(m_FrameServer.Metadata);
             UpdateFramesMarkers();
             DoInvalidate(); // Because of trajectories with keyframes labels.
         }
@@ -4101,7 +4104,7 @@ namespace Kinovea.ScreenManager
             }
 
             if (next >= 0 && m_FrameServer.Metadata[next].Position <= m_iSelEnd)
-                Keyframe_SelectAsked(null, new TimeEventArgs(m_FrameServer.Metadata[next].Position));
+                KeyframeControl_KeyframeSelected(null, new TimeEventArgs(m_FrameServer.Metadata[next].Position));
         }
         public void GotoPreviousKeyframe()
         {
@@ -4119,7 +4122,7 @@ namespace Kinovea.ScreenManager
             }
 
             if (prev >= 0 && m_FrameServer.Metadata[prev].Position >= m_iSelStart)
-                Keyframe_SelectAsked(null, new TimeEventArgs(m_FrameServer.Metadata[prev].Position));
+                KeyframeControl_KeyframeSelected(null, new TimeEventArgs(m_FrameServer.Metadata[prev].Position));
         }
 
         public void AddKeyframe()
@@ -4178,8 +4181,6 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void InitializeKeyframes()
         {
-            sidePanelKeyframes.SetMetadata(m_FrameServer.Metadata);
-
             int firstOutOfRange = -1;
             int currentKeyframe = -1;
             long lastTimestamp = m_FrameServer.VideoReader.Info.FirstTimeStamp + m_FrameServer.VideoReader.Info.DurationTimeStamps;
@@ -4279,7 +4280,7 @@ namespace Kinovea.ScreenManager
         }
 
         #region ThumbBox event Handlers
-        private void KeyframeBox_DeleteAsked(object sender, EventArgs e)
+        private void KeyframeControl_KeyframeDeleteAsked(object sender, EventArgs e)
         {
             KeyframeBox keyframeBox = sender as KeyframeBox;
             if (keyframeBox == null)
@@ -4290,14 +4291,8 @@ namespace Kinovea.ScreenManager
             // Set as active screen is done after in case we don't have any keyframes left.
             OnPoke();
         }
-        private void KeyframeBox_ActivateAsked(object sender, EventArgs e)
-        {
-            //KeyframeBox_SelectAsked(sender, e);
-            //m_KeyframeCommentsHub.UserActivated = true;
-            //ActivateKeyframe(m_iCurrentPosition);
-        }
-
-        private void KeyframeBox_MoveToCurrentTimeAsked(object sender, EventArgs e)
+       
+        private void KeyframeControl_MoveToCurrentTimeAsked(object sender, EventArgs e)
         {
             log.DebugFormat("Moving existing keyframe to a new time.");
 
@@ -4381,9 +4376,9 @@ namespace Kinovea.ScreenManager
             DoInvalidate();
         }
         
-        private void Keyframe_SelectAsked(object sender, TimeEventArgs e)
+        private void KeyframeControl_KeyframeSelected(object sender, TimeEventArgs e)
         {
-            // A keyframe was selected (either from thumbnail or side panel).
+            // A keyframe was selected from a keyframe control (thumbnail or side panel).
             // Move to the corresponding time.
             OnPoke();
             StopPlaying();
@@ -4399,6 +4394,20 @@ namespace Kinovea.ScreenManager
 
             UpdatePositionUI();
             ActivateKeyframe(m_iCurrentPosition);
+        }
+
+        private void KeyframeControl_KeyframeUpdated(object sender, EventArgs<Guid> e)
+        {
+            // A keyframe core data was updated from a keyframe control.
+            // This is only raised when we change the name, color or comment from the side panel.
+            // Update the corresponding thumbnail box.
+            foreach (KeyframeBox box in keyframeBoxes)
+            {
+                if (box.Keyframe.Id == e.Value)
+                {
+                    box.UpdateData();
+                }
+            }
         }
         #endregion
 
@@ -4512,7 +4521,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        private void btnShowComments_Click(object sender, EventArgs e)
+        private void btnShowSidePanel_Click(object sender, EventArgs e)
         {
             OnPoke();
 
@@ -4522,42 +4531,6 @@ namespace Kinovea.ScreenManager
             // Toggle between showing and hiding the properties panel.
             showPropertiesPanel = !showPropertiesPanel;
             splitViewport_Properties.Panel2Collapsed = !showPropertiesPanel;
-
-            //// If the video is currently playing, the comments are not visible.
-            //// We stop the video and show them.
-            //bool bWasPlaying = m_bIsCurrentlyPlaying;
-            //if (m_bIsCurrentlyPlaying)
-            //{
-            //    StopPlaying();
-            //    OnPauseAsked();
-            //    ActivateKeyframe(m_iCurrentPosition);
-            //}
-
-            //if (m_iActiveKeyFrameIndex < 0 || !m_KeyframeCommentsHub.UserActivated || bWasPlaying)
-            //{
-            //    // As of now, Keyframes infobox should display when we are on a keyframe
-            //    m_KeyframeCommentsHub.UserActivated = true;
-
-            //    if (m_iActiveKeyFrameIndex < 0)
-            //    {
-            //        // We are not on a keyframe but user asked to show the infos...
-            //        // did he want to create a keyframe here and put some infos,
-            //        // or did he only want to activate the infobox for next keyframes ?
-            //        //
-            //        // Since he clicked on the DrawingTools bar, we will act as if it was a Drawing,
-            //        // and add a keyframe here in case there isn't already one.
-            //        AddKeyframe();
-            //    }
-
-            //    m_KeyframeCommentsHub.UpdateContent(m_FrameServer.Metadata[m_iActiveKeyFrameIndex]);
-            //    m_KeyframeCommentsHub.Visible = true;
-            //}
-            //else
-            //{
-            //    m_KeyframeCommentsHub.UserActivated = false;
-            //    m_KeyframeCommentsHub.CommitChanges();
-            //    m_KeyframeCommentsHub.Visible = false;
-            //}
         }
         private void btnColorProfile_Click(object sender, EventArgs e)
         {

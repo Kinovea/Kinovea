@@ -22,7 +22,8 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Asks the main timeline to move to the time of this keyframe.
         /// </summary>
-        public event EventHandler<TimeEventArgs> SelectAsked;
+        public event EventHandler<TimeEventArgs> Selected;
+        public event EventHandler<EventArgs<Guid>> Updated;
         #endregion
 
         #region Properties
@@ -47,24 +48,13 @@ namespace Kinovea.ScreenManager
         public KeyframeCommentBox()
         {
             InitializeComponent();
-            btnColor.BackColor = Color.White;
-            rtbComment.BackColor = Color.White;
-            btnSidebar.BackColor = Color.White;
-
-            btnColor.FlatAppearance.MouseDownBackColor = Color.White;
-            btnColor.FlatAppearance.MouseOverBackColor = Color.White;
+            btnColor.BackColor = this.BackColor;
+            rtbComment.BackColor = this.BackColor;
+            btnSidebar.BackColor = this.BackColor;
+            btnColor.FlatAppearance.MouseDownBackColor = this.BackColor;
+            btnColor.FlatAppearance.MouseOverBackColor = this.BackColor;
+            
             btnColor.Paint += BtnColor_Paint;
-            this.Paint += KeyframeCommentBox_Paint;
-        }
-
-        private void KeyframeCommentBox_Paint(object sender, PaintEventArgs e)
-        {
-            //btnColor.Invalidate();
-        }
-
-        private void KeyframeCommentBox_Invalidated(object sender, InvalidateEventArgs e)
-        {
-            //btnColor.Invalidate();
         }
 
         #region Public methods
@@ -95,8 +85,8 @@ namespace Kinovea.ScreenManager
                 return;
 
             isSelected = keyframe.Position == timestamp;
-
-            btnSidebar.BackColor = isSelected ? keyframe.Color : Color.White;
+            btnSidebar.BackColor = isSelected ? keyframe.Color : this.BackColor;
+            rtbComment.BackColor = isSelected ? Color.White : this.BackColor;
         }
         #endregion
 
@@ -107,11 +97,7 @@ namespace Kinovea.ScreenManager
 
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-            Rectangle rect = e.ClipRectangle;
-            rect.X += 1;
-            rect.Y += 1;
-            rect.Width -= 2;
-            rect.Height -= 2;
+            Rectangle rect = new Rectangle(1, 1, btnColor.Width - 2, btnColor.Height - 2);
             using (SolidBrush brush = new SolidBrush(keyframe.Color))
                 e.Graphics.FillEllipse(brush, rect);
         }
@@ -126,6 +112,7 @@ namespace Kinovea.ScreenManager
             if (picker.ShowDialog() == DialogResult.OK)
             {
                 keyframe.Color = picker.PickedColor;
+                RaiseUpdated();
                 AfterColorChange();
             }
             picker.Dispose();
@@ -136,7 +123,19 @@ namespace Kinovea.ScreenManager
             if (keyframe == null || manualUpdate)
                 return;
 
-            keyframe.Title = tbName.Text;
+            if (string.IsNullOrEmpty(tbName.Text.Trim()))
+            {
+                keyframe.Title = "";
+                manualUpdate = true;
+                tbName.Text = keyframe.Title;
+                manualUpdate = false;
+            }
+            else
+            {
+                keyframe.Title = tbName.Text;
+            }
+
+            RaiseUpdated();
             AfterNameChange();
         }
 
@@ -158,6 +157,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             keyframe.Comments = rtbComment.Rtf;
+            RaiseUpdated();
         }
 
         private void tbName_Leave(object sender, EventArgs e)
@@ -182,12 +182,22 @@ namespace Kinovea.ScreenManager
 
         private void KeyframeCommentBox_Enter(object sender, EventArgs e)
         {
-            SelectAsked?.Invoke(this, new TimeEventArgs(keyframe.Position));
+            RaiseSelected();
         }
 
         private void KeyframeCommentBox_Click(object sender, EventArgs e)
         {
-            SelectAsked?.Invoke(this, new TimeEventArgs(keyframe.Position));
+            RaiseSelected();
+        }
+
+        private void RaiseUpdated()
+        {
+            Updated?.Invoke(this, new EventArgs<Guid>(keyframe.Id));
+        }
+
+        private void RaiseSelected()
+        {
+            Selected?.Invoke(this, new TimeEventArgs(keyframe.Position));
         }
     }
 }

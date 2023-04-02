@@ -7,16 +7,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// This is the panel containing the existing keyframe comment boxes.
+    /// This is the panel containing the keyframe comment boxes.
     /// </summary>
     public partial class SidePanelKeyframes : UserControl
     {
         #region Events
-        public event EventHandler<TimeEventArgs> Keyframe_SelectAsked;
+        public event EventHandler<TimeEventArgs> KeyframeSelected;
+        public event EventHandler<EventArgs<Guid>> KeyframeUpdated;
         #endregion
 
         #region Properties
@@ -26,10 +28,10 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-
         #region Members
         private Metadata parentMetadata;
         private Dictionary<Guid, KeyframeCommentBox> kfcbs = new Dictionary<Guid, KeyframeCommentBox>();
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         public SidePanelKeyframes()
@@ -37,18 +39,44 @@ namespace Kinovea.ScreenManager
             InitializeComponent();
         }
 
-        public void SetMetadata(Metadata metadata)
+        #region Public methods
+        /// <summary>
+        /// Reset the list of keyframe comment boxes.
+        /// </summary>
+        public void Reset(Metadata metadata)
         {
             this.parentMetadata = metadata;
             ResetContent();
+            log.DebugFormat("Side panel: ResetKeyframes");
+        }
+
+        public void Clear()
+        {
+            this.parentMetadata = null;
+            ResetContent();
+            log.DebugFormat("Side panel: Clear");
+        }
+        #endregion
+
+        /// <summary>
+        /// Highlight the keyframe corresponding to the passed time, unhighlight the others.
+        /// </summary>
+        public void HighlightKeyframe(long timestamp)
+        {
+            foreach (var kfb in kfcbs)
+            {
+                kfb.Value.UpdateHighlight(timestamp);
+
+                if (kfb.Value.Keyframe.Position == timestamp)
+                    pnlKeyframes.ScrollControlIntoView(kfb.Value);
+            }
         }
 
         private void ResetContent()
         {
-            // Import the metadata anew.
-            // Create a control for each keyframe and add it to the panel.
-            pnlKeyframes.Controls.Clear();
+            // Import the keyframe list from scratch.
             kfcbs.Clear();
+            pnlKeyframes.Controls.Clear();
 
             if (parentMetadata == null || parentMetadata.Count == 0)
                 return;
@@ -60,38 +88,15 @@ namespace Kinovea.ScreenManager
                 KeyframeCommentBox kfb = new KeyframeCommentBox();
                 kfb.SetKeyframe(kf);
                 kfb.Top = top;
-                kfb.Width = this.Width;
+                kfb.Width = this.Width - 10;
                 kfb.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-                kfb.SelectAsked += KeyframeCommentBox_SelectAsked;
+                kfb.Selected += (s, e) => KeyframeSelected?.Invoke(s, e);
+                kfb.Updated += (s, e) => KeyframeUpdated?.Invoke(s, e);
 
                 kfcbs.Add(kf.Id, kfb);
                 pnlKeyframes.Controls.Add(kfb);
                 
                 top += kfb.Height + margin;
-            }
-
-        }
-
-        private void KeyframeCommentBox_SelectAsked(object sender, TimeEventArgs e)
-        {
-            Keyframe_SelectAsked?.Invoke(sender, e);
-        }
-
-        public void ResetKeyframes()
-        {
-            // The model has changed.
-            // Add/removed keyframes, or just changed content ?
-            ResetContent();
-        }
-
-        /// <summary>
-        /// Highlight the keyframe corresponding to the passed time, unhighlight the others.
-        /// </summary>
-        public void HighlightKeyframe(long timestamp)
-        {
-            foreach (var kfb in kfcbs)
-            {
-                kfb.Value.UpdateHighlight(timestamp);
             }
         }
     }

@@ -17,6 +17,7 @@ namespace Kinovea.ScreenManager
         private void InitializeComponent()
         {
       this.components = new System.ComponentModel.Container();
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PlayerScreenUserInterface));
       this.panelTop = new System.Windows.Forms.Panel();
       this.btnClose = new System.Windows.Forms.Button();
       this.lblSelDuration = new System.Windows.Forms.Label();
@@ -68,6 +69,10 @@ namespace Kinovea.ScreenManager
       this.toolTips = new System.Windows.Forms.ToolTip(this.components);
       this.splitKeyframes = new System.Windows.Forms.SplitContainer();
       this.splitViewport_Properties = new System.Windows.Forms.SplitContainer();
+      this.tabProperties = new System.Windows.Forms.TabControl();
+      this.tabPage1 = new System.Windows.Forms.TabPage();
+      this.tabPage2 = new System.Windows.Forms.TabPage();
+      this.imgListPropertyTabs = new System.Windows.Forms.ImageList(this.components);
       this.stripDrawingTools = new System.Windows.Forms.ToolStrip();
       this.btnDockBottom = new System.Windows.Forms.Button();
       this.pnlThumbnails = new System.Windows.Forms.Panel();
@@ -84,7 +89,9 @@ namespace Kinovea.ScreenManager
       this.splitKeyframes.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitViewport_Properties)).BeginInit();
       this.splitViewport_Properties.Panel1.SuspendLayout();
+      this.splitViewport_Properties.Panel2.SuspendLayout();
       this.splitViewport_Properties.SuspendLayout();
+      this.tabProperties.SuspendLayout();
       this.pnlThumbnails.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
       this.SuspendLayout();
@@ -839,7 +846,7 @@ namespace Kinovea.ScreenManager
       // 
       // splitViewport_Properties
       // 
-      this.splitViewport_Properties.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+      this.splitViewport_Properties.BackColor = System.Drawing.Color.White;
       this.splitViewport_Properties.Dock = System.Windows.Forms.DockStyle.Fill;
       this.splitViewport_Properties.Location = new System.Drawing.Point(0, 0);
       this.splitViewport_Properties.Name = "splitViewport_Properties";
@@ -850,10 +857,53 @@ namespace Kinovea.ScreenManager
       // 
       // splitViewport_Properties.Panel2
       // 
-      this.splitViewport_Properties.Panel2.BackColor = System.Drawing.Color.DimGray;
+      this.splitViewport_Properties.Panel2.BackColor = System.Drawing.Color.White;
+      this.splitViewport_Properties.Panel2.Controls.Add(this.tabProperties);
       this.splitViewport_Properties.Size = new System.Drawing.Size(600, 231);
       this.splitViewport_Properties.SplitterDistance = 445;
       this.splitViewport_Properties.TabIndex = 3;
+      // 
+      // tabProperties
+      // 
+      this.tabProperties.Controls.Add(this.tabPage1);
+      this.tabProperties.Controls.Add(this.tabPage2);
+      this.tabProperties.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.tabProperties.ImageList = this.imgListPropertyTabs;
+      this.tabProperties.ItemSize = new System.Drawing.Size(36, 24);
+      this.tabProperties.Location = new System.Drawing.Point(0, 0);
+      this.tabProperties.Margin = new System.Windows.Forms.Padding(0);
+      this.tabProperties.Name = "tabProperties";
+      this.tabProperties.SelectedIndex = 0;
+      this.tabProperties.Size = new System.Drawing.Size(151, 231);
+      this.tabProperties.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
+      this.tabProperties.TabIndex = 0;
+      // 
+      // tabPage1
+      // 
+      this.tabPage1.ImageKey = "comments2.png";
+      this.tabPage1.Location = new System.Drawing.Point(4, 28);
+      this.tabPage1.Name = "tabPage1";
+      this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+      this.tabPage1.Size = new System.Drawing.Size(143, 199);
+      this.tabPage1.TabIndex = 0;
+      this.tabPage1.UseVisualStyleBackColor = true;
+      // 
+      // tabPage2
+      // 
+      this.tabPage2.ImageKey = "colorswatch.png";
+      this.tabPage2.Location = new System.Drawing.Point(4, 28);
+      this.tabPage2.Name = "tabPage2";
+      this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+      this.tabPage2.Size = new System.Drawing.Size(143, 199);
+      this.tabPage2.TabIndex = 1;
+      this.tabPage2.UseVisualStyleBackColor = true;
+      // 
+      // imgListPropertyTabs
+      // 
+      this.imgListPropertyTabs.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgListPropertyTabs.ImageStream")));
+      this.imgListPropertyTabs.TransparentColor = System.Drawing.Color.Transparent;
+      this.imgListPropertyTabs.Images.SetKeyName(0, "comments2.png");
+      this.imgListPropertyTabs.Images.SetKeyName(1, "colorswatch.png");
       // 
       // stripDrawingTools
       // 
@@ -897,7 +947,7 @@ namespace Kinovea.ScreenManager
       this.pnlThumbnails.Controls.Add(this.pictureBox1);
       this.pnlThumbnails.Location = new System.Drawing.Point(0, 27);
       this.pnlThumbnails.Name = "pnlThumbnails";
-      this.pnlThumbnails.Size = new System.Drawing.Size(600, 144);
+      this.pnlThumbnails.Size = new System.Drawing.Size(600, 158);
       this.pnlThumbnails.TabIndex = 3;
       this.pnlThumbnails.DoubleClick += new System.EventHandler(this.pnlThumbnails_DoubleClick);
       this.pnlThumbnails.MouseEnter += new System.EventHandler(this.pnlThumbnails_MouseEnter);
@@ -936,8 +986,10 @@ namespace Kinovea.ScreenManager
       ((System.ComponentModel.ISupportInitialize)(this.splitKeyframes)).EndInit();
       this.splitKeyframes.ResumeLayout(false);
       this.splitViewport_Properties.Panel1.ResumeLayout(false);
+      this.splitViewport_Properties.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.splitViewport_Properties)).EndInit();
       this.splitViewport_Properties.ResumeLayout(false);
+      this.tabProperties.ResumeLayout(false);
       this.pnlThumbnails.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
       this.ResumeLayout(false);
@@ -1001,5 +1053,9 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Button btnTimeOrigin;
         private System.Windows.Forms.Label lblTimeTip;
         private System.Windows.Forms.SplitContainer splitViewport_Properties;
+        private System.Windows.Forms.TabControl tabProperties;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.ImageList imgListPropertyTabs;
     }
 }

@@ -34,13 +34,9 @@ namespace Kinovea.ScreenManager
     {
         #region Events
         /// <summary>
-        /// Select this keyframe and move the time cursor there.
+        /// Asks the main timeline to move to the time of this keyframe.
         /// </summary>
-        public event EventHandler<TimeEventArgs> SelectAsked;
-        /// <summary>
-        /// Same as select plus bring up the comment editor.
-        /// </summary>
-        public event EventHandler ActivateAsked;
+        public event EventHandler<TimeEventArgs> Selected;
         /// <summary>
         /// Move this keyframe the current time of the playhead.
         /// </summary>
@@ -66,7 +62,6 @@ namespace Kinovea.ScreenManager
         #region Members
         private bool editing;
         private Keyframe keyframe;
-        private bool manualUpdate;
         private bool isSelected;
         private ContextMenuStrip popMenu = new ContextMenuStrip();
         private ToolStripMenuItem mnuComments = new ToolStripMenuItem();
@@ -79,18 +74,13 @@ namespace Kinovea.ScreenManager
             this.keyframe = keyframe;
             
             InitializeComponent();
-            lblTimecode.Text = keyframe.Title;
+            lblName.Text = keyframe.Title;
             
             BackColor = keyframe.Color;
             btnClose.Parent = pbThumbnail;
-            btnComment.Parent = pbThumbnail;
 
             pbThumbnail.BackColor = Color.Black;
             pbThumbnail.SizeMode = PictureBoxSizeMode.CenterImage;
-
-            manualUpdate = true;
-            tbTitle.Text = keyframe.Title;
-            manualUpdate = false;
 
             BuildContextMenu();
             ReloadMenusCulture();
@@ -104,7 +94,7 @@ namespace Kinovea.ScreenManager
         public void UpdateEnableStatus()
         {
             this.Enabled = !keyframe.Disabled;
-            UpdateTitle(keyframe.Title);
+            UpdateCore();
             UpdateImage();
         }
 
@@ -112,6 +102,14 @@ namespace Kinovea.ScreenManager
         {
             this.pbThumbnail.Image = keyframe.Disabled ? keyframe.DisabledThumbnail : keyframe.Thumbnail;
             this.Invalidate();
+        }
+
+        /// <summary>
+        /// Update the name or color after a core change from elsewhere.
+        /// </summary>
+        public void UpdateData()
+        {
+            UpdateCore();
         }
 
         public void RefreshUICulture()
@@ -133,9 +131,6 @@ namespace Kinovea.ScreenManager
             {
                 HideButtons();
                 editing = false;
-
-                // Fixme: Doesn't prevent typing until another control takes focus.
-                StopEditing();
             }
         }
         private void Controls_MouseDown(object sender, MouseEventArgs e)
@@ -143,16 +138,9 @@ namespace Kinovea.ScreenManager
             if (e.Button != MouseButtons.Left)
                 return;
 
-            // Drag and drop conflicts with the double click event.
-            // Use explicit click counting.
-            if (e.Clicks == 2)
-            {
-                ActivateAsked?.Invoke(this, e);
-            }
-            else
-            {
-                SelectAsked?.Invoke(this, new TimeEventArgs(keyframe.Position));
-            }
+            // Note: for double click drag and drop conflicts with the double click event.
+            // We can use explicit click counting if needed. (e.Clicks == 2)
+            Selected?.Invoke(this, new TimeEventArgs(keyframe.Position));
         }
         private void Controls_MouseUp(object sender, MouseEventArgs e)
         {
@@ -164,13 +152,13 @@ namespace Kinovea.ScreenManager
             if (e.Button != MouseButtons.Left)
                 return;
 
-            SelectAsked?.Invoke(this, new TimeEventArgs(keyframe.Position));
+            Selected?.Invoke(this, new TimeEventArgs(keyframe.Position));
             this.DoDragDrop(this, DragDropEffects.Move);
         }
         private void Controls_DragDrop(object sender, DragEventArgs e)
         {
             // Called when we "drop" an object on the thumbnail.
-            SelectAsked?.Invoke(this, new TimeEventArgs(keyframe.Position));
+            Selected?.Invoke(this, new TimeEventArgs(keyframe.Position));
         }
         private void Controls_DragOver(object sender, DragEventArgs e)
         {
@@ -180,22 +168,6 @@ namespace Kinovea.ScreenManager
         private void btnClose_Click(object sender, EventArgs e)
         {
             DeleteAsked?.Invoke(this, e);
-        }
-        private void btnComment_Click(object sender, EventArgs e)
-        {
-            ActivateAsked?.Invoke(this, e);
-        }
-        private void TbTitleTextChanged(object sender, EventArgs e)
-        {
-            if(!manualUpdate)
-            {
-                keyframe.Title = tbTitle.Text;
-                UpdateToolTip();
-            }
-        }
-        private void pbThumbnail_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-
         }
         private void lblTimecode_Click(object sender, EventArgs e)
         {
@@ -210,28 +182,28 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Private helpers
-        private void UpdateTitle(string title)
+        
+        /// <summary>
+        /// Update the UI representation of the core data (name and color).
+        /// </summary>
+        private void UpdateCore()
         {
-            lblTimecode.Text = title;
+            lblName.Text = keyframe.Title;
             BackColor = keyframe.Color;
             DisplayAsSelected(isSelected);
-            manualUpdate = true;
-            tbTitle.Text = title;
-            manualUpdate = false;
-
             UpdateToolTip();
         }
         private void BuildContextMenu()
         {
-            mnuComments.Image = Properties.Resources.balloon_ellipsis;
-            mnuComments.Click += (s, e) => ActivateAsked?.Invoke(this, e);
+            //mnuComments.Image = Properties.Resources.balloon_ellipsis;
+            //mnuComments.Click += (s, e) => Selected?.Invoke(this, e);
             mnuMove.Image = Properties.Drawings.move_keyframe;
             mnuMove.Click += (s, e) => MoveToCurrentTimeAsked?.Invoke(this, e);
             mnuDelete.Image = Properties.Drawings.delete;
             mnuDelete.Click += (s, e) => DeleteAsked?.Invoke(this, e);
 
             popMenu.Items.AddRange(new ToolStripItem[] { 
-                mnuComments,
+                //mnuComments,
                 mnuMove,
                 new ToolStripSeparator(),
                 mnuDelete
@@ -252,26 +224,12 @@ namespace Kinovea.ScreenManager
         private void ShowButtons()
         {
             btnClose.Visible = true;
-            btnComment.Visible = true;
         }
         private void HideButtons()
         {
             btnClose.Visible = false;
-            btnComment.Visible = false;
         }
         
-        private void StopEditing()
-        {
-            if(tbTitle.Text.Length == 0)
-            {
-                // We reseted the title. We should now display the timecode.
-                manualUpdate = true;
-                tbTitle.Text = keyframe.Title;
-                manualUpdate = false;
-            }
-
-            UpdateToolTip();
-        }
         private void UpdateToolTip()
         {
             if(keyframe.TimeCode != keyframe.Title)
