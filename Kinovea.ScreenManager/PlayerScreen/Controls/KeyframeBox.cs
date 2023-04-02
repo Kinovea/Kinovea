@@ -64,7 +64,6 @@ namespace Kinovea.ScreenManager
         private Keyframe keyframe;
         private bool isSelected;
         private ContextMenuStrip popMenu = new ContextMenuStrip();
-        private ToolStripMenuItem mnuComments = new ToolStripMenuItem();
         private ToolStripMenuItem mnuMove = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDelete = new ToolStripMenuItem();
         #endregion
@@ -195,15 +194,12 @@ namespace Kinovea.ScreenManager
         }
         private void BuildContextMenu()
         {
-            //mnuComments.Image = Properties.Resources.balloon_ellipsis;
-            //mnuComments.Click += (s, e) => Selected?.Invoke(this, e);
             mnuMove.Image = Properties.Drawings.move_keyframe;
             mnuMove.Click += (s, e) => MoveToCurrentTimeAsked?.Invoke(this, e);
             mnuDelete.Image = Properties.Drawings.delete;
             mnuDelete.Click += (s, e) => DeleteAsked?.Invoke(this, e);
 
             popMenu.Items.AddRange(new ToolStripItem[] { 
-                //mnuComments,
                 mnuMove,
                 new ToolStripSeparator(),
                 mnuDelete
@@ -216,7 +212,6 @@ namespace Kinovea.ScreenManager
         {
             // Reload the text for each menu.
             // this is done at construction time and at RefreshUICulture time.
-            mnuComments.Text = Languages.ScreenManagerLang.dlgKeyframeComment_Title;
             mnuMove.Text = "Move to current time";
             mnuDelete.Text = Languages.ScreenManagerLang.mnuThumbnailDelete;
         }

@@ -68,7 +68,7 @@ namespace Kinovea.ScreenManager
                 kfb.Value.UpdateHighlight(timestamp);
 
                 if (kfb.Value.Keyframe.Position == timestamp)
-                    pnlKeyframes.ScrollControlIntoView(kfb.Value);
+                    flowKeyframes.ScrollControlIntoView(kfb.Value);
             }
         }
 
@@ -76,7 +76,7 @@ namespace Kinovea.ScreenManager
         {
             // Import the keyframe list from scratch.
             kfcbs.Clear();
-            pnlKeyframes.Controls.Clear();
+            flowKeyframes.Controls.Clear();
 
             if (parentMetadata == null || parentMetadata.Count == 0)
                 return;
@@ -87,16 +87,21 @@ namespace Kinovea.ScreenManager
             {
                 KeyframeCommentBox kfb = new KeyframeCommentBox();
                 kfb.SetKeyframe(kf);
-                kfb.Top = top;
-                kfb.Width = this.Width - 10;
-                kfb.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
                 kfb.Selected += (s, e) => KeyframeSelected?.Invoke(s, e);
                 kfb.Updated += (s, e) => KeyframeUpdated?.Invoke(s, e);
-
+                
                 kfcbs.Add(kf.Id, kfb);
-                pnlKeyframes.Controls.Add(kfb);
+                flowKeyframes.Controls.Add(kfb);
                 
                 top += kfb.Height + margin;
+            }
+        }
+
+        private void flowKeyframes_Layout(object sender, LayoutEventArgs e)
+        {
+            foreach (var kfb in kfcbs)
+            {
+                kfb.Value.Width = flowKeyframes.ClientSize.Width - 10;
             }
         }
     }

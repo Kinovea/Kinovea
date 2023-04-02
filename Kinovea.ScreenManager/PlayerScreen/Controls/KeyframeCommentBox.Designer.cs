@@ -83,17 +83,17 @@ namespace Kinovea.ScreenManager
       // 
       // rtbComment
       // 
-      this.rtbComment.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.rtbComment.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.rtbComment.AutoWordSelection = true;
       this.rtbComment.BackColor = System.Drawing.Color.Silver;
       this.rtbComment.BorderStyle = System.Windows.Forms.BorderStyle.None;
       this.rtbComment.DetectUrls = false;
       this.rtbComment.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.rtbComment.Location = new System.Drawing.Point(5, 5);
+      this.rtbComment.Location = new System.Drawing.Point(3, 3);
       this.rtbComment.Name = "rtbComment";
-      this.rtbComment.Size = new System.Drawing.Size(235, 49);
+      this.rtbComment.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
+      this.rtbComment.Size = new System.Drawing.Size(235, 82);
       this.rtbComment.TabIndex = 90;
       this.rtbComment.Text = "Comment";
       this.rtbComment.TextChanged += new System.EventHandler(this.rtbComment_TextChanged);
@@ -107,21 +107,20 @@ namespace Kinovea.ScreenManager
       this.btnSidebar.BackColor = System.Drawing.Color.Silver;
       this.btnSidebar.FlatAppearance.BorderSize = 0;
       this.btnSidebar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnSidebar.Location = new System.Drawing.Point(0, 0);
+      this.btnSidebar.Location = new System.Drawing.Point(1, 1);
       this.btnSidebar.Name = "btnSidebar";
-      this.btnSidebar.Size = new System.Drawing.Size(5, 129);
+      this.btnSidebar.Size = new System.Drawing.Size(5, 158);
       this.btnSidebar.TabIndex = 91;
       this.btnSidebar.UseVisualStyleBackColor = false;
       // 
       // pnlComment
       // 
-      this.pnlComment.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.pnlComment.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.pnlComment.Controls.Add(this.rtbComment);
-      this.pnlComment.Location = new System.Drawing.Point(14, 59);
+      this.pnlComment.Location = new System.Drawing.Point(14, 53);
       this.pnlComment.Name = "pnlComment";
-      this.pnlComment.Size = new System.Drawing.Size(245, 59);
+      this.pnlComment.Size = new System.Drawing.Size(245, 96);
       this.pnlComment.TabIndex = 92;
       // 
       // KeyframeCommentBox
@@ -135,8 +134,10 @@ namespace Kinovea.ScreenManager
       this.Controls.Add(this.tbName);
       this.Controls.Add(this.btnColor);
       this.DoubleBuffered = true;
+      this.ForeColor = System.Drawing.Color.Gray;
+      this.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
       this.Name = "KeyframeCommentBox";
-      this.Size = new System.Drawing.Size(271, 129);
+      this.Size = new System.Drawing.Size(271, 160);
       this.Click += new System.EventHandler(this.KeyframeCommentBox_Click);
       this.Enter += new System.EventHandler(this.KeyframeCommentBox_Enter);
       this.pnlComment.ResumeLayout(false);

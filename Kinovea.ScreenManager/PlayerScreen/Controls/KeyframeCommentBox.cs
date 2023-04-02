@@ -43,18 +43,34 @@ namespace Kinovea.ScreenManager
         private Keyframe keyframe;
         private bool manualUpdate;
         private bool isSelected;
+        private Pen penBorder = Pens.Silver;
         #endregion
 
         public KeyframeCommentBox()
         {
             InitializeComponent();
+            this.BackColor = Color.WhiteSmoke;
             btnColor.BackColor = this.BackColor;
             rtbComment.BackColor = this.BackColor;
             btnSidebar.BackColor = this.BackColor;
             btnColor.FlatAppearance.MouseDownBackColor = this.BackColor;
             btnColor.FlatAppearance.MouseOverBackColor = this.BackColor;
-            
+
+            this.Paint += KeyframeCommentBox_Paint;
             btnColor.Paint += BtnColor_Paint;
+            rtbComment.MouseWheel += RtbComment_MouseWheel;
+        }
+
+        private void RtbComment_MouseWheel(object sender, MouseEventArgs e)
+        {
+            ((HandledMouseEventArgs)e).Handled = true;
+            this.OnMouseWheel(e);
+        }
+
+        private void KeyframeCommentBox_Paint(object sender, PaintEventArgs e)
+        {
+            Rectangle rect = new Rectangle(0, 0, this.ClientRectangle.Width - 1, this.ClientRectangle.Height - 1);
+            e.Graphics.DrawRectangle(penBorder, rect);
         }
 
         #region Public methods
@@ -133,6 +149,7 @@ namespace Kinovea.ScreenManager
 
             if (string.IsNullOrEmpty(tbName.Text.Trim()))
             {
+                // We can't allow an empty string so fall back to the timecode.
                 keyframe.Title = "";
                 manualUpdate = true;
                 tbName.Text = keyframe.Title;
@@ -161,11 +178,36 @@ namespace Kinovea.ScreenManager
 
         private void rtbComment_TextChanged(object sender, EventArgs e)
         {
+            UpdateTextHeight();
+
             if (keyframe == null || manualUpdate)
                 return;
 
             keyframe.Comments = rtbComment.Rtf;
             RaiseUpdated();
+        }
+
+        private void UpdateTextHeight()
+        {
+            // Manually update the textbox height and manually grow the containers.
+            // Other approaches tried:
+            // - Having the container controls on autosize. broke work during init.
+            // - Listening to ContentsResized event. Doesn't work with wordwrap.
+            // - Using GetPreferredSize. 
+            //
+            // The setup for this is to have wordwrap, no scrollbars (None), anchors top-left-right.
+            // Then coming here we manually compute the height of the control, and make sure it fits
+            // the content. Then grow the containers.
+
+            // Grow richtextbox.
+            const int padding = 6;
+            int numLines = rtbComment.GetLineFromCharIndex(rtbComment.TextLength) + 1;
+            int border = rtbComment.Height - rtbComment.ClientSize.Height;
+            rtbComment.Height = rtbComment.Font.Height * numLines + padding + border;
+
+            // Grow containers.
+            pnlComment.Height = rtbComment.Top + rtbComment.Height + rtbComment.Margin.Bottom + padding;
+            this.Height = pnlComment.Top + pnlComment.Height + pnlComment.Margin.Bottom + padding;
         }
 
         private void tbName_Leave(object sender, EventArgs e)
