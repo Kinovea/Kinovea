@@ -23,15 +23,14 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using System.Collections.Generic;
+using System.Globalization;
 
 using Kinovea.Root.Languages;
 using Kinovea.Root.Properties;
 using Kinovea.ScreenManager;
-using Kinovea.Services;
-using System.Collections.Generic;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using System.Globalization;
 using Kinovea.ScreenManager.Languages;
+using Kinovea.Services;
 
 namespace Kinovea.Root
 {
@@ -476,15 +475,15 @@ namespace Kinovea.Root
 
             TextBox tb = namingTextBoxes[captureVariable];
 
-            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
-            dialog.IsFolderPicker = true;
+            string initialDirectory = null;
             if (Directory.Exists(tb.Text))
-                dialog.InitialDirectory = tb.Text;
+                initialDirectory = tb.Text;
             else
-                dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                initialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-                tb.Text = dialog.FileName;
+            string path = FilesystemHelper.OpenFolderBrowserDialog(initialDirectory);
+            if (string.IsNullOrEmpty(path))
+                tb.Text = path;
         }
 
         private void btnMacroReference_Click(object sender, EventArgs e)

@@ -38,5 +38,7 @@ namespace Kinovea.Services
             else
                 form.Location = new Point(Cursor.Position.X - (form.Width / 2), Cursor.Position.Y - 20);
         }
+
+
     }
 }

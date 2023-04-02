@@ -302,7 +302,7 @@
     <Compile Include="Software.cs" />
     <Compile Include="HelpSystem\HelpIndex.cs" />
     <Compile Include="HelpSystem\HelpItem.cs" />
-    <Compile Include="IKernel.cs" />
+    <Compile Include="Infrastructure\IKernel.cs" />
     <Compile Include="Types\InfosFading.cs" />
     <Compile Include="Infrastructure\RelayCommand.cs" />
     <Compile Include="Infrastructure\ToggleCommand.cs" />

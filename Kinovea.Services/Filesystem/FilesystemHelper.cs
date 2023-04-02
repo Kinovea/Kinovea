@@ -24,6 +24,7 @@ using Microsoft.VisualBasic.FileIO;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace Kinovea.Services
 {
@@ -390,6 +391,41 @@ namespace Kinovea.Services
         public static string OpenINIFilter()
         {
             return "INI|*.ini";
+        }
+
+        /// <summary>
+        /// Show the folder selection dialog and return the selected path.
+        /// </summary>
+        public static string OpenFolderBrowserDialog(string initDirectory)
+        {
+            //-----------------------------------
+            // The standard folder picker has poor usability, so we try to use CommonOpenFileDialog,
+            // from the Microsoft.WindowsAPICodePack.Shell project.
+            // Unfortunately when using High DPI, this component causes the parent window to shrink back to 1:1 scale.
+            // Kinovea is not DPI aware at this point.
+            // Unfortunately it seems we can't reliably detect usage of high dpi.
+            // Control.DeviceDpi always comes back as 96.
+            // Similarly, the registry key Current user > Control Panel > Desktop > WindowMetrics > AppliedDPI is stuck at 96 dpi.
+            // Revert to the old dialog for now.
+            //-----------------------------------
+            string selectedPath = null;
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+            fbd.ShowNewFolderButton = true;
+            if (fbd.ShowDialog() == DialogResult.OK)
+                selectedPath = fbd.SelectedPath;
+
+            //-----------------------------------
+            // Code used until Kinovea 2023.1.
+            // This uses using Microsoft.WindowsAPICodePack.Dialogs;
+            // It breaks when using high dpi.
+            //-----------------------------------
+            //CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            //dialog.IsFolderPicker = true;
+            //dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            //if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            //    selectedPath = dialog.FileName;
+
+            return selectedPath;
         }
     }
 }

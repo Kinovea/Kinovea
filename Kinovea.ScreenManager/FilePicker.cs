@@ -1,12 +1,7 @@
 ﻿using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
-using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
@@ -32,24 +27,20 @@ namespace Kinovea.ScreenManager
 
         public static string OpenReplayWatcher()
         {
-            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            string initialDirectory = null;
             string lastReplayFolder = PreferencesManager.FileExplorerPreferences.LastReplayFolder;
             if (!string.IsNullOrEmpty(lastReplayFolder))
             {
                 lastReplayFolder = Path.GetDirectoryName(lastReplayFolder);
                 if (Directory.Exists(lastReplayFolder))
-                    dialog.InitialDirectory = lastReplayFolder;
+                    initialDirectory = lastReplayFolder;
             }
             else
             {
-                dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                initialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             }
 
-            dialog.IsFolderPicker = true;
-            string path = null;
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-                path = dialog.FileName;
-
+            string path = FilesystemHelper.OpenFolderBrowserDialog(initialDirectory);
             if (path == null || !Directory.Exists(path))
                 return null;
 

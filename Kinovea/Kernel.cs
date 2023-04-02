@@ -23,10 +23,9 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
-using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -38,8 +37,6 @@ using Kinovea.Services;
 using Kinovea.Updater;
 using Kinovea.Video;
 using Kinovea.Camera;
-using System.Drawing;
-using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace Kinovea.Root
 {

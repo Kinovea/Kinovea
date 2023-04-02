@@ -29,15 +29,14 @@ using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
+using System.Drawing;
+using System.Globalization;
 
 using ExpTreeLib;
 using Kinovea.Camera;
 using Kinovea.FileBrowser.Languages;
 using Kinovea.Services;
 using Kinovea.Video;
-using System.Drawing;
-using System.Globalization;
-using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace Kinovea.FileBrowser
 {
@@ -606,12 +605,10 @@ namespace Kinovea.FileBrowser
         }
         private void AddShortcut()
         {
-            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
-            dialog.IsFolderPicker = true;
-            dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok && !string.IsNullOrEmpty(dialog.FileName))
+            string selectedPath = FilesystemHelper.OpenFolderBrowserDialog("");
+            if (!string.IsNullOrEmpty(selectedPath))
             {
-                ShortcutFolder sf = new ShortcutFolder(Path.GetFileName(dialog.FileName), dialog.FileName);
+                ShortcutFolder sf = new ShortcutFolder(Path.GetFileName(selectedPath), selectedPath);
                 PreferencesManager.FileExplorerPreferences.AddShortcut(sf);
                 PreferencesManager.Save();
                 ReloadShortcuts();
