@@ -402,6 +402,7 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Metadata = new Metadata(m_FrameServer.HistoryStack, m_FrameServer.TimeStampsToTimecode);
             m_FrameServer.Metadata.KVAImported += (s, e) => AfterKVAImported();
             m_FrameServer.Metadata.KeyframeAdded += (s, e) => AfterKeyframeAdded(e.KeyframeId);
+            m_FrameServer.Metadata.KeyframeModified += (s, e) => AfterKeyframeModified(e.KeyframeId);
             m_FrameServer.Metadata.KeyframeDeleted += (s, e) => AfterKeyframeDeleted();
             m_FrameServer.Metadata.DrawingAdded += (s, e) => AfterDrawingAdded(e.Drawing);
             m_FrameServer.Metadata.DrawingModified += (s, e) => AfterDrawingModified(e.Drawing);
@@ -4185,6 +4186,15 @@ namespace Kinovea.ScreenManager
                 ActivateKeyframe(m_iCurrentPosition);
         }
 
+        private void AfterKeyframeModified(Guid id)
+        {
+            // A keyframe was modified from the outside. This happens on undo for example.
+            // Update the UI version of the keyframe.
+            sidePanelKeyframes.UpdateKeyframe(id);
+
+            KeyframeControl_KeyframeUpdated(null, new EventArgs<Guid>(id));
+        }
+
         /// <summary>
         /// Initialize keyframes after KVA file import.
         /// </summary>
@@ -4414,15 +4424,24 @@ namespace Kinovea.ScreenManager
             // A keyframe core data was updated from a keyframe control.
             // This is only raised when we change the name, color or comment from the side panel.
             // Update the corresponding thumbnail box.
-            foreach (KeyframeBox box in keyframeBoxes)
-            {
-                if (box.Keyframe.Id == e.Value)
-                {
-                    box.UpdateData();
-                }
-            }
+            UpdateKeyframeBox(e.Value);
 
             UpdateFramesMarkers();
+        }
+
+        /// <summary>
+        /// Update the keyframe box holding this keyframe after an external change.
+        /// </summary>
+        private void UpdateKeyframeBox(Guid id)
+        {
+            foreach (KeyframeBox box in keyframeBoxes)
+            {
+                if (box.Keyframe.Id == id)
+                {
+                    box.UpdateContent();
+                    break;
+                }
+            }
         }
         #endregion
 

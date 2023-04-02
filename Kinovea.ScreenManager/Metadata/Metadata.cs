@@ -56,6 +56,7 @@ namespace Kinovea.ScreenManager
         #region Events and commands
         public EventHandler KVAImported;
         public EventHandler<KeyframeEventArgs> KeyframeAdded;
+        public EventHandler<KeyframeEventArgs> KeyframeModified;
         public EventHandler KeyframeDeleted;
         public EventHandler<DrawingEventArgs> DrawingAdded;
         public EventHandler<DrawingEventArgs> DrawingModified; 
@@ -960,6 +961,9 @@ namespace Kinovea.ScreenManager
                 DrawingAdded(this, new DrawingEventArgs(track, trackManager.Id));
         }
 
+        /// <summary>
+        /// A drawing was modified without direct user interaction, for example after undo/redo.
+        /// </summary>
         public void ModifiedDrawing(Guid managerId, Guid drawingId)
         {
             AbstractDrawing drawing = GetDrawing(managerId, drawingId);
@@ -971,14 +975,23 @@ namespace Kinovea.ScreenManager
                 track.UpdateKeyframeLabels();
             }
 
-            if (DrawingModified != null)
-                DrawingModified(this, new DrawingEventArgs(drawing, managerId));
+            DrawingModified?.Invoke(this, new DrawingEventArgs(drawing, managerId));
         }
 
+        /// <summary>
+        /// A keyframe was modified without direct user interaction, for example after undo/redo.
+        /// </summary>
+        public void ModifiedKeyframe(Guid keyframeId)
+        {
+            KeyframeModified?.Invoke(this, new KeyframeEventArgs(keyframeId));
+        }
+
+        /// <summary>
+        /// A video filter was modified without direct user interaction, for example after undo/redo.
+        /// </summary>
         public void ModifiedVideoFilter()
         {
-            if (VideoFilterModified != null)
-                VideoFilterModified(this, EventArgs.Empty);
+            VideoFilterModified?.Invoke(this, EventArgs.Empty);
         }
         
         public void DeleteDrawing(Guid managerId, Guid drawingId)

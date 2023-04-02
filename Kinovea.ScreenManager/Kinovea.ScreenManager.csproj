@@ -547,6 +547,7 @@
     <Compile Include="Thumbnails\FileDetails.cs" />
     <Compile Include="UndoRedo\HistoryMemento.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoAddDrawing.cs" />
+    <Compile Include="UndoRedo\HistoryMementos\HistoryMementoModifyKeyframe.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoAddKeyframe.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoAddMultiDrawingItem.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoDeleteDrawing.cs" />

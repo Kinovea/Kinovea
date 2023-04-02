@@ -79,6 +79,12 @@ namespace Kinovea.ScreenManager
                     flowKeyframes.ScrollControlIntoView(kfcb.Value);
             }
         }
+
+        public void UpdateKeyframe(Guid id)
+        {
+            if (kfcbs.ContainsKey(id))
+                kfcbs[id].UpdateContent();
+        }
         #endregion
 
 
@@ -96,7 +102,7 @@ namespace Kinovea.ScreenManager
             foreach (var kf in parentMetadata.Keyframes)
             {
                 KeyframeCommentBox kfb = new KeyframeCommentBox();
-                kfb.SetKeyframe(kf);
+                kfb.SetKeyframe(parentMetadata, kf);
                 kfb.Selected += (s, e) => KeyframeSelected?.Invoke(s, e);
                 kfb.Updated += (s, e) => KeyframeUpdated?.Invoke(s, e);
                 

@@ -15,6 +15,10 @@ namespace Kinovea.ScreenManager
     /// <summary>
     /// This controls holds the keyframe name, color, timecode and comment.
     /// It is used in the side panel.
+    /// 
+    /// Undo/redo mechanics:
+    /// After any change or re-init, capture the new state to a global memento.
+    /// When making a new change, push the memento containing the previous state to the history stack.
     /// </summary>
     public partial class KeyframeCommentBox : UserControl
     {
@@ -38,12 +42,15 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
+        private Metadata metadata;
+        private Keyframe keyframe;
         private bool editingName;
         private bool editingComment;
-        private Keyframe keyframe;
         private bool manualUpdate;
         private bool isSelected;
         private Pen penBorder = Pens.Silver;
+        private HistoryMementoModifyKeyframe memento;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         public KeyframeCommentBox()
@@ -78,24 +85,16 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Set the keyframe this control is wrapping.
         /// </summary>
-        public void SetKeyframe(Keyframe keyframe)
+        public void SetKeyframe(Metadata metadata, Keyframe keyframe)
         {
+            this.metadata = metadata;
             this.keyframe = keyframe;
             if (keyframe == null)
                 return;
 
-            manualUpdate = true;
-            tbName.Text = keyframe.Name;
-            AfterNameChange();
-            lblTimecode.Text = keyframe.TimeCode;
-            
-            // The font size is stored in the rich text format string itself.
-            // Get rid of all formatting.
-            rtbComment.Rtf = keyframe.Comments;
-            string text = rtbComment.Text;
-            rtbComment.Text = text;
+            UpdateContent();
 
-            manualUpdate = false;
+            CaptureCurrentState();
         }
 
         /// <summary>
@@ -123,30 +122,52 @@ namespace Kinovea.ScreenManager
 
             lblTimecode.Text = keyframe.TimeCode;
         }
-        #endregion
 
-        private void BtnColor_Paint(object sender, PaintEventArgs e)
+        /// <summary>
+        /// Update title, color or comments after an external change.
+        /// </summary>
+        public void UpdateContent()
         {
             if (keyframe == null)
                 return;
 
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            manualUpdate = true;
 
-            Rectangle rect = new Rectangle(1, 1, btnColor.Width - 2, btnColor.Height - 2);
-            using (SolidBrush brush = new SolidBrush(keyframe.Color))
-                e.Graphics.FillEllipse(brush, rect);
+            tbName.Text = keyframe.Name;
+            AfterNameChange();
+            lblTimecode.Text = keyframe.TimeCode;
+
+            // The font size is stored in the rich text format string itself.
+            // Get rid of all formatting.
+            rtbComment.Rtf = keyframe.Comments;
+            string text = rtbComment.Text;
+            rtbComment.Text = text;
+
+            AfterColorChange();
+
+            manualUpdate = false;
+
+            // Capture the new state as the baseline, even if this is coming from undo.
+            CaptureCurrentState();
         }
+        #endregion
 
         private void btnColor_Click(object sender, EventArgs e)
         {
             if (keyframe == null || manualUpdate)
                 return;
 
+            // We should have a memento ready at this point.
+
             FormColorPicker picker = new FormColorPicker(keyframe.Color);
             FormsHelper.Locate(picker);
             if (picker.ShowDialog() == DialogResult.OK)
             {
-                keyframe.Color = picker.PickedColor;
+                if (picker.PickedColor != keyframe.Color)
+                {
+                    keyframe.Color = picker.PickedColor;
+                    AfterStateChanged();
+                }
                 RaiseUpdated();
                 AfterColorChange();
             }
@@ -173,6 +194,8 @@ namespace Kinovea.ScreenManager
 
             RaiseUpdated();
             AfterNameChange();
+
+            AfterStateChanged();
         }
 
         private void AfterNameChange()
@@ -184,6 +207,7 @@ namespace Kinovea.ScreenManager
 
         private void AfterColorChange()
         {
+            btnColor.Invalidate();
             btnSidebar.BackColor = isSelected ? keyframe.Color : Color.White;
         }
 
@@ -196,6 +220,28 @@ namespace Kinovea.ScreenManager
 
             keyframe.Comments = rtbComment.Rtf;
             RaiseUpdated();
+
+            AfterStateChanged();
+        }
+
+        /// <summary>
+        /// Push the previously saved memento to the history stack, and capture the new current state.
+        /// This should be called after making any undoable change to the data.
+        /// </summary>
+        private void AfterStateChanged()
+        {
+            metadata.HistoryStack.PushNewCommand(memento);
+            CaptureCurrentState();
+        }
+
+        /// <summary>
+        /// Capture the current state to a memento.
+        /// This may be pushed to the history stack later if we change state again.
+        /// This should be called when the data is initialized or changed from the outside.
+        /// </summary>
+        private void CaptureCurrentState()
+        {
+            memento = new HistoryMementoModifyKeyframe(metadata, keyframe.Id);
         }
 
         private void UpdateTextHeight()
@@ -219,6 +265,18 @@ namespace Kinovea.ScreenManager
             // Grow containers.
             pnlComment.Height = rtbComment.Top + rtbComment.Height + rtbComment.Margin.Bottom + padding;
             this.Height = pnlComment.Top + pnlComment.Height + pnlComment.Margin.Bottom + padding;
+        }
+
+        private void BtnColor_Paint(object sender, PaintEventArgs e)
+        {
+            if (keyframe == null)
+                return;
+
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
+            Rectangle rect = new Rectangle(1, 1, btnColor.Width - 2, btnColor.Height - 2);
+            using (SolidBrush brush = new SolidBrush(keyframe.Color))
+                e.Graphics.FillEllipse(brush, rect);
         }
 
         private void tbName_Leave(object sender, EventArgs e)

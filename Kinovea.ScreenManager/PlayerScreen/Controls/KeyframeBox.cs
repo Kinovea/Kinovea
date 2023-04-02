@@ -106,7 +106,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Update the name or color after a core change from elsewhere.
         /// </summary>
-        public void UpdateData()
+        public void UpdateContent()
         {
             UpdateCore();
         }

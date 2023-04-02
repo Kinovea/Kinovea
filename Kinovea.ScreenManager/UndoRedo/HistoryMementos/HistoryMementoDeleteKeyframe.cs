@@ -27,13 +27,11 @@ namespace Kinovea.ScreenManager
             this.metadata = metadata;
             this.keyframeId = keyframeId;
 
-            // TODO: save the complete keyframe to XML (including the thumbnail).
-            // Including all drawings and trackable drawings associated with these drawings.
             Keyframe keyframe = metadata.GetKeyframe(keyframeId);
             if (keyframe == null)
                 throw new NullReferenceException("keyframe");
 
-            data = KeyframeSerializer.SerializeMemento(metadata, keyframe);
+            data = KeyframeSerializer.SerializeMemento(metadata, keyframe, SerializationFilter.KVA);
         }
 
         public override HistoryMemento PerformUndo()
