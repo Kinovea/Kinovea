@@ -73,7 +73,7 @@ namespace Kinovea.ScreenManager
             this.keyframe = keyframe;
             
             InitializeComponent();
-            lblName.Text = keyframe.Title;
+            lblName.Text = keyframe.Name;
             
             BackColor = keyframe.Color;
             btnClose.Parent = pbThumbnail;
@@ -139,7 +139,7 @@ namespace Kinovea.ScreenManager
 
             // Note: for double click drag and drop conflicts with the double click event.
             // We can use explicit click counting if needed. (e.Clicks == 2)
-            Selected?.Invoke(this, new TimeEventArgs(keyframe.Position));
+            Selected?.Invoke(this, new TimeEventArgs(keyframe.Timestamp));
         }
         private void Controls_MouseUp(object sender, MouseEventArgs e)
         {
@@ -151,13 +151,13 @@ namespace Kinovea.ScreenManager
             if (e.Button != MouseButtons.Left)
                 return;
 
-            Selected?.Invoke(this, new TimeEventArgs(keyframe.Position));
+            Selected?.Invoke(this, new TimeEventArgs(keyframe.Timestamp));
             this.DoDragDrop(this, DragDropEffects.Move);
         }
         private void Controls_DragDrop(object sender, DragEventArgs e)
         {
             // Called when we "drop" an object on the thumbnail.
-            Selected?.Invoke(this, new TimeEventArgs(keyframe.Position));
+            Selected?.Invoke(this, new TimeEventArgs(keyframe.Timestamp));
         }
         private void Controls_DragOver(object sender, DragEventArgs e)
         {
@@ -187,7 +187,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void UpdateCore()
         {
-            lblName.Text = keyframe.Title;
+            lblName.Text = keyframe.Name;
             BackColor = keyframe.Color;
             DisplayAsSelected(isSelected);
             UpdateToolTip();
@@ -227,10 +227,7 @@ namespace Kinovea.ScreenManager
         
         private void UpdateToolTip()
         {
-            if(keyframe.TimeCode != keyframe.Title)
-                toolTips.SetToolTip(pbThumbnail, keyframe.Title + "\n" + keyframe.TimeCode);
-            else
-                toolTips.SetToolTip(pbThumbnail, "");
+            toolTips.SetToolTip(pbThumbnail, keyframe.Name + "\n" + keyframe.TimeCode);
         }
         #endregion
     }

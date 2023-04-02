@@ -588,14 +588,13 @@ namespace Kinovea.ScreenManager
         {
             foreach(Keyframe keyframe in keyframes)
             {
-                keyframe.TimeCode = timecodeBuilder(keyframe.Position, TimeType.UserOrigin, PreferencesManager.PlayerPreferences.TimecodeFormat, true);
-                keyframe.Disabled = keyframe.Position < selectionStart || keyframe.Position > selectionEnd;
+                keyframe.Disabled = keyframe.Timestamp < selectionStart || keyframe.Timestamp > selectionEnd;
             }
         }
         public int GetKeyframeIndex(long position)
         {
             for (int i = 0; i < keyframes.Count; i++)
-                if (keyframes[i].Position == position)
+                if (keyframes[i].Timestamp == position)
                     return i;
 
             return -1;
@@ -709,13 +708,13 @@ namespace Kinovea.ScreenManager
             {
                 Keyframe k = keyframes[i];
 
-                if (keyframe.Position < k.Position)
+                if (keyframe.Timestamp < k.Timestamp)
                 {
                     keyframes.Insert(i, keyframe);
                     processed = true;
                     break;
                 }
-                else if (keyframe.Position == k.Position)
+                else if (keyframe.Timestamp == k.Timestamp)
                 {
                     foreach (AbstractDrawing ad in keyframe.Drawings)
                         k.Drawings.Add(ad);
@@ -891,7 +890,7 @@ namespace Kinovea.ScreenManager
 
             keyframe.AddDrawing(drawing);
             drawing.ParentMetadata = this;
-            drawing.InfosFading.ReferenceTimestamp = keyframe.Position;
+            drawing.InfosFading.ReferenceTimestamp = keyframe.Timestamp;
             drawing.InfosFading.AverageTimeStampsPerFrame = averageTimeStampsPerFrame;
             if (captureKVA)
             {
@@ -1675,7 +1674,7 @@ namespace Kinovea.ScreenManager
 
             if (keyframes.Count > 0)
             {
-                if (_iTimestamp <= keyframes[0].Position)
+                if (_iTimestamp <= keyframes[0].Timestamp)
                 {
                     // All key frames are after this position
                     for(int i=0;i<keyframes.Count;i++)
@@ -1683,7 +1682,7 @@ namespace Kinovea.ScreenManager
                         zOrder[i] = i;
                     }
                 }
-                else if (_iTimestamp > keyframes[keyframes.Count - 1].Position)
+                else if (_iTimestamp > keyframes[keyframes.Count - 1].Timestamp)
                 {
                     // All keyframes are before this position
                     for (int i = 0; i < keyframes.Count; i++)
@@ -1702,7 +1701,7 @@ namespace Kinovea.ScreenManager
                     while (iCurrentFrame > 0)
                     {
                         iCurrentFrame--;
-                        if (keyframes[iCurrentFrame].Position >= _iTimestamp)
+                        if (keyframes[iCurrentFrame].Timestamp >= _iTimestamp)
                         {
                             iClosestNext = iCurrentFrame;
                         }

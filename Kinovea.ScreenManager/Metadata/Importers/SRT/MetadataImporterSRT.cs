@@ -155,7 +155,6 @@ namespace Kinovea.ScreenManager
             Guid id = Guid.NewGuid();
             long position = startTs;
             string title = null;
-            string timecode = start.ToString();
             string comments = "";
             List<AbstractDrawing> drawings = new List<AbstractDrawing>();
             
@@ -182,7 +181,7 @@ namespace Kinovea.ScreenManager
             //}
 
             drawings.Add(drawing);
-            Keyframe keyframe = new Keyframe(id, position, title, Keyframe.DefaultColor, timecode, comments, drawings, metadata);
+            Keyframe keyframe = new Keyframe(id, position, title, Keyframe.DefaultColor, comments, drawings, metadata);
 
             metadata.MergeInsertKeyframe(keyframe);
         }

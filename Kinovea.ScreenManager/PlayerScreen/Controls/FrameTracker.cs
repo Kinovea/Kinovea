@@ -533,9 +533,9 @@ namespace Kinovea.ScreenManager
             foreach(Keyframe kf in metadata.Keyframes)
             {
                 // Only display Key image that are in the selection.
-                if(kf.Position >= minTimestamp && kf.Position <= maxTimestamp)
+                if(kf.Timestamp >= minTimestamp && kf.Timestamp <= maxTimestamp)
                 {
-                    int pixelLeft = TimestampToPixel(kf.Position);
+                    int pixelLeft = TimestampToPixel(kf.Timestamp);
                     Color color = kf.Color;
                     keyframesMarks.Add(new Pair<int, Color>(pixelLeft, color));
                 }

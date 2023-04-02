@@ -56,21 +56,31 @@ namespace Kinovea.ScreenManager
             ResetContent();
             log.DebugFormat("Side panel: Clear");
         }
-        #endregion
+
+        /// <summary>
+        /// Update the timecode on all keyframes after a change in time calibration.
+        /// </summary>
+        public void UpdateTimecodes()
+        {
+            foreach (var kfcb in kfcbs)
+                kfcb.Value.UpdateTimecode();
+        }
 
         /// <summary>
         /// Highlight the keyframe corresponding to the passed time, unhighlight the others.
         /// </summary>
         public void HighlightKeyframe(long timestamp)
         {
-            foreach (var kfb in kfcbs)
+            foreach (var kfcb in kfcbs)
             {
-                kfb.Value.UpdateHighlight(timestamp);
+                kfcb.Value.UpdateHighlight(timestamp);
 
-                if (kfb.Value.Keyframe.Position == timestamp)
-                    flowKeyframes.ScrollControlIntoView(kfb.Value);
+                if (kfcb.Value.Keyframe.Timestamp == timestamp)
+                    flowKeyframes.ScrollControlIntoView(kfcb.Value);
             }
         }
+        #endregion
+
 
         private void ResetContent()
         {
@@ -99,9 +109,9 @@ namespace Kinovea.ScreenManager
 
         private void flowKeyframes_Layout(object sender, LayoutEventArgs e)
         {
-            foreach (var kfb in kfcbs)
+            foreach (var kfcb in kfcbs)
             {
-                kfb.Value.Width = flowKeyframes.ClientSize.Width - 10;
+                kfcb.Value.Width = flowKeyframes.ClientSize.Width - 10;
             }
         }
     }

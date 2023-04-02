@@ -300,7 +300,7 @@ namespace Kinovea.ScreenManager
             }
             else if (activeKeyFrameIndex >= 0)
             {
-                isOnDrawing = DrawingHitTest(metadata, activeKeyFrameIndex, mouseCoordinates, metadata[activeKeyFrameIndex].Position, distorter, metadata.ImageTransform);
+                isOnDrawing = DrawingHitTest(metadata, activeKeyFrameIndex, mouseCoordinates, metadata[activeKeyFrameIndex].Timestamp, distorter, metadata.ImageTransform);
             }
 
             // We are about to start a move operation, capture the state for undo/redo.

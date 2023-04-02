@@ -309,7 +309,7 @@ namespace Kinovea.ScreenManager
 
             if(metadata.Count == 0)
             {
-                Keyframe kf = new Keyframe(0, "", metadata, "", Keyframe.DefaultColor);
+                Keyframe kf = new Keyframe(0, "", Keyframe.DefaultColor, metadata);
                 metadata.AddKeyframe(kf);
             }
 

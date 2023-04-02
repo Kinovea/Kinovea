@@ -468,7 +468,7 @@ namespace Kinovea.ScreenManager
                 // Make sure we have at least one keyframe.
                 // This can happen when we reload the existing KVA after changes from the player side 
                 // and the user has deleted all keyframes.
-                Keyframe kf = new Keyframe(0, "", metadata, "", Keyframe.DefaultColor);
+                Keyframe kf = new Keyframe(0, "", Keyframe.DefaultColor, metadata);
                 metadata.AddKeyframe(kf);
             }
         }

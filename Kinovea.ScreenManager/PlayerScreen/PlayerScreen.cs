@@ -490,11 +490,7 @@ namespace Kinovea.ScreenManager
             if (frameServer.CurrentImage == null)
                 return;
 
-            long time = e.Time;
-            string title = e.Name;
-            Color color = e.Color;
-            string timecode = frameServer.TimeStampsToTimecode(time, TimeType.UserOrigin, PreferencesManager.PlayerPreferences.TimecodeFormat, true);
-            Keyframe keyframe = new Keyframe(time, timecode, frameServer.Metadata, title, color);
+            Keyframe keyframe = new Keyframe(e.Time, e.Name, e.Color, frameServer.Metadata);
 
             HistoryMementoAddKeyframe memento = new HistoryMementoAddKeyframe(frameServer.Metadata, keyframe.Id);
             frameServer.Metadata.AddKeyframe(keyframe);

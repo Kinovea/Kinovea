@@ -203,7 +203,7 @@ namespace Kinovea.ScreenManager
             if (m_Keyframe == null || manualUpdate)
                 return;
 
-            m_Keyframe.Title = tbName.Text;
+            m_Keyframe.Name = tbName.Text;
             CommitInternal();
         }
         #endregion
@@ -213,7 +213,7 @@ namespace Kinovea.ScreenManager
         {
             manualUpdate = true;
             // Update
-            tbName.Text = m_Keyframe.Title;
+            tbName.Text = m_Keyframe.Name;
             lblTimecode.Text = m_Keyframe.TimeCode;
             rtbComment.Clear();
             rtbComment.Rtf = m_Keyframe.Comments;
@@ -235,9 +235,9 @@ namespace Kinovea.ScreenManager
             
             m_Keyframe.Comments = rtbComment.Rtf;
     
-            if(m_Keyframe.Title != tbName.Text)
+            if(m_Keyframe.Name != tbName.Text)
             {
-                m_Keyframe.Title = tbName.Text;
+                m_Keyframe.Name = tbName.Text;
                 m_psui.OnKeyframeNameChanged();
             }
         }

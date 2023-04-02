@@ -39,7 +39,7 @@ namespace Kinovea.ScreenManager
 
             foreach (Keyframe kf in metadata.Keyframes)
             {
-                long t = kf.Position;
+                long t = kf.Timestamp;
                 List<DrawingCrossMark> kfDrawings = kf.Drawings.Where(d => d is DrawingCrossMark).Select(d => (DrawingCrossMark)d).ToList();
                 
                 // Points are revesed to match the order of addition.

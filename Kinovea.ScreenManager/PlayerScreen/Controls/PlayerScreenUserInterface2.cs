@@ -1899,6 +1899,7 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Metadata.TimeOrigin = m_iCurrentPosition;
             trkFrame.UpdateMarkers(m_FrameServer.Metadata);
             UpdateCurrentPositionLabel();
+            sidePanelKeyframes.UpdateTimecodes();
 
             // This will update the timecode on keyframe boxes if the user hasn't changed the kf name.
             EnableDisableKeyframes();
@@ -4045,7 +4046,7 @@ namespace Kinovea.ScreenManager
 
             for (int i = 0; i < keyframeBoxes.Count; i++)
             {
-                if (m_FrameServer.Metadata[i].Position == _iPosition)
+                if (m_FrameServer.Metadata[i].Timestamp == _iPosition)
                 {
                     m_iActiveKeyFrameIndex = i;
                     if (_bAllowUIUpdate)
@@ -4104,15 +4105,15 @@ namespace Kinovea.ScreenManager
             int next = -1;
             for (int i = 0; i < m_FrameServer.Metadata.Count; i++)
             {
-                if (m_iCurrentPosition < m_FrameServer.Metadata[i].Position)
+                if (m_iCurrentPosition < m_FrameServer.Metadata[i].Timestamp)
                 {
                     next = i;
                     break;
                 }
             }
 
-            if (next >= 0 && m_FrameServer.Metadata[next].Position <= m_iSelEnd)
-                KeyframeControl_KeyframeSelected(null, new TimeEventArgs(m_FrameServer.Metadata[next].Position));
+            if (next >= 0 && m_FrameServer.Metadata[next].Timestamp <= m_iSelEnd)
+                KeyframeControl_KeyframeSelected(null, new TimeEventArgs(m_FrameServer.Metadata[next].Timestamp));
         }
         public void GotoPreviousKeyframe()
         {
@@ -4122,15 +4123,15 @@ namespace Kinovea.ScreenManager
             int prev = -1;
             for (int i = m_FrameServer.Metadata.Count - 1; i >= 0; i--)
             {
-                if (m_iCurrentPosition > m_FrameServer.Metadata[i].Position)
+                if (m_iCurrentPosition > m_FrameServer.Metadata[i].Timestamp)
                 {
                     prev = i;
                     break;
                 }
             }
 
-            if (prev >= 0 && m_FrameServer.Metadata[prev].Position >= m_iSelStart)
-                KeyframeControl_KeyframeSelected(null, new TimeEventArgs(m_FrameServer.Metadata[prev].Position));
+            if (prev >= 0 && m_FrameServer.Metadata[prev].Timestamp >= m_iSelStart)
+                KeyframeControl_KeyframeSelected(null, new TimeEventArgs(m_FrameServer.Metadata[prev].Timestamp));
         }
 
         public void AddKeyframe()
@@ -4201,7 +4202,7 @@ namespace Kinovea.ScreenManager
             {
                 currentKeyframe++;
 
-                if (kf.Position < lastTimestamp)
+                if (kf.Timestamp < lastTimestamp)
                 {
                     if (!kf.HasThumbnails && preloaded < maxPreload)
                         InitializeKeyframe(kf);
@@ -4226,10 +4227,10 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void InitializeKeyframe(Keyframe keyframe)
         {
-            if (m_iCurrentPosition != keyframe.Position)
+            if (m_iCurrentPosition != keyframe.Timestamp)
             {
                 m_iFramesToDecode = 1;
-                ShowNextFrame(keyframe.Position, true);
+                ShowNextFrame(keyframe.Timestamp, true);
                 UpdatePositionUI();
             }
 
@@ -4261,7 +4262,7 @@ namespace Kinovea.ScreenManager
 
             foreach (Keyframe kf in m_FrameServer.Metadata.Keyframes)
             {
-                if (kf.Position >= m_iSelStart && kf.Position <= m_iSelEnd)
+                if (kf.Timestamp >= m_iSelStart && kf.Timestamp <= m_iSelEnd)
                 {
                     //kf.ImportImage(m_FrameServer.VideoReader.FrameList[(int)m_FrameServer.VideoReader.GetFrameNumber(kf.Position)].BmpImage);
                     //kf.GenerateDisabledThumbnail();
@@ -4362,19 +4363,19 @@ namespace Kinovea.ScreenManager
 
                 // Import the data manually.
                 // Doing a global Metadata.MergeInsertKeyframe wouldn't work as the original keyframe has a different timestamp.
-                newKf.Title = copy.Title;
+                newKf.Name = copy.Name;
                 newKf.Color = copy.Color;
                 newKf.Comments = copy.Comments;
                 foreach (var d in copy.Drawings)
                     newKf.Drawings.Add(d);
 
                 // Make sure the drawings are anchored to the right time for fading.
-                newKf.Position = m_iCurrentPosition;
+                newKf.Timestamp = m_iCurrentPosition;
             }
             else
             {
                 // Change the keyframe reference time.
-                keyframe.Position = m_iCurrentPosition;
+                keyframe.Timestamp = m_iCurrentPosition;
             }
 
             m_FrameServer.Metadata.Keyframes.Sort();

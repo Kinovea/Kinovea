@@ -1698,15 +1698,15 @@ namespace Kinovea.ScreenManager
             {
                 // Strictly superior because we don't show the keyframe that was created when the
                 // user added the CrossMarker drawing to make the Track out of it.
-                if (parentMetadata[i].Position > beginTimeStamp &&
-                    parentMetadata[i].Position <= positions.Last().T)
+                if (parentMetadata[i].Timestamp > beginTimeStamp &&
+                    parentMetadata[i].Timestamp <= positions.Last().T)
                 {
                     // The Keyframe is within the Trajectory interval.
                     // Do we know it already ?
                     int iKnown = -1;
                     for (int j = 0; j < keyframeLabels.Count; j++)
                     {
-                        if (keyframeLabels[j].Timestamp == parentMetadata[i].Position)
+                        if (keyframeLabels[j].Timestamp == parentMetadata[i].Timestamp)
                         {
                             iKnown = j;
                             matched[j] = true;
@@ -1718,17 +1718,17 @@ namespace Kinovea.ScreenManager
                     {
                         // Known Keyframe, import name and color.
                         //keyframesLabels[iKnown].SetText(parentMetadata[i].Title);
-                        keyframeLabels[iKnown].Name = parentMetadata[i].Title;
+                        keyframeLabels[iKnown].Name = parentMetadata[i].Name;
                         keyframeLabels[iKnown].BackColor = useKeyframeColors ? parentMetadata[i].Color : styleHelper.Color;
                     }
                     else
                     {
                         // Unknown Keyframe, Configure and add it to list.
                         MiniLabel kfl = new MiniLabel();
-                        kfl.AttachIndex = FindClosestPoint(parentMetadata[i].Position);
+                        kfl.AttachIndex = FindClosestPoint(parentMetadata[i].Timestamp);
                         kfl.SetAttach(positions[kfl.AttachIndex].Point, true);
                         kfl.Timestamp = positions[kfl.AttachIndex].T;
-                        kfl.Name = parentMetadata[i].Title;
+                        kfl.Name = parentMetadata[i].Name;
                         kfl.BackColor = useKeyframeColors ? parentMetadata[i].Color : styleHelper.Color;
                         
                         keyframeLabels.Add(kfl);

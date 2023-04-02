@@ -85,9 +85,9 @@ namespace Kinovea.ScreenManager
                 return;
 
             manualUpdate = true;
-            tbName.Text = keyframe.Title;
+            tbName.Text = keyframe.Name;
             AfterNameChange();
-            lblTimecode.Text = string.Format("{0}", keyframe.TimeCode);
+            lblTimecode.Text = keyframe.TimeCode;
             
             // The font size is stored in the rich text format string itself.
             // Get rid of all formatting.
@@ -107,10 +107,21 @@ namespace Kinovea.ScreenManager
             if (keyframe == null)
                 return;
 
-            isSelected = keyframe.Position == timestamp;
+            isSelected = keyframe.Timestamp == timestamp;
             btnSidebar.BackColor = isSelected ? keyframe.Color : this.BackColor;
             rtbComment.BackColor = isSelected ? Color.White : this.BackColor;
             pnlComment.BackColor = rtbComment.BackColor;
+        }
+
+        /// <summary>
+        /// Update the timecode after a change in time calibration.
+        /// </summary>
+        public void UpdateTimecode()
+        {
+            if (keyframe == null)
+                return;
+
+            lblTimecode.Text = keyframe.TimeCode;
         }
         #endregion
 
@@ -150,14 +161,14 @@ namespace Kinovea.ScreenManager
             if (string.IsNullOrEmpty(tbName.Text.Trim()))
             {
                 // We can't allow an empty string so fall back to the timecode.
-                keyframe.Title = "";
+                keyframe.Name = "";
                 manualUpdate = true;
-                tbName.Text = keyframe.Title;
+                tbName.Text = keyframe.Name;
                 manualUpdate = false;
             }
             else
             {
-                keyframe.Title = tbName.Text;
+                keyframe.Name = tbName.Text;
             }
 
             RaiseUpdated();
@@ -247,7 +258,7 @@ namespace Kinovea.ScreenManager
 
         private void RaiseSelected()
         {
-            Selected?.Invoke(this, new TimeEventArgs(keyframe.Position));
+            Selected?.Invoke(this, new TimeEventArgs(keyframe.Timestamp));
         }
     }
 }
