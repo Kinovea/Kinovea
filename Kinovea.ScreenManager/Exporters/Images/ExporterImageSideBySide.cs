@@ -10,9 +10,11 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
+    /// <summary>
+    /// Exporter for side by side images. Either horizontal or vertical layout.
+    /// </summary>
     public class ExporterImageSideBySide
     {
-    
         public void Export(string filePath, bool horizontal, PlayerScreen leftPlayer, PlayerScreen rightPlayer)
         {
             Bitmap leftImage = leftPlayer.GetFlushedImage();

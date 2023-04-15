@@ -3,15 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Threading;
-using System.ComponentModel;
-using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using Kinovea.Video;
 using Kinovea.Services;
 using Kinovea.ScreenManager.Languages;
-using Kinovea.Video.FFMpeg;
 
 namespace Kinovea.ScreenManager
 {
@@ -23,24 +19,8 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class VideoExporter
     {
-        private BackgroundWorker worker = new BackgroundWorker();
-        private FormProgressBar formProgressBar = new FormProgressBar(true);
-        private PlayerScreen player1;
-        private PlayerScreen player2;
-        private SaveResult saveResult;
         private const double maxInterval = 1000.0 / 8.0;
         private readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        public VideoExporter()
-        {
-            worker.WorkerReportsProgress = true;
-            worker.WorkerSupportsCancellation = true;
-            worker.ProgressChanged += Worker_ProgressChanged;
-            worker.DoWork += Worker_DoWork;
-            worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
-
-            formProgressBar.CancelAsked += FormProgressBar_CancelAsked;
-        }
 
         public void Export(VideoExportFormat format, PlayerScreen player1, PlayerScreen player2)
         {
@@ -87,6 +67,7 @@ namespace Kinovea.ScreenManager
             PreferencesManager.Save();
 
             SavingSettings s = new SavingSettings();
+            Metadata metadata = player1.FrameServer.Metadata;
 
             try
             {
@@ -105,8 +86,6 @@ namespace Kinovea.ScreenManager
 
                         bool useSlowMotion = fcev.UseSlowMotion;
                         fcev.Dispose();
-
-                        Metadata metadata = player1.FrameServer.Metadata;
 
                         s.Section = new VideoSection(metadata.SelectionStart, metadata.SelectionEnd);
                         s.KeyframesOnly = false;
@@ -129,9 +108,24 @@ namespace Kinovea.ScreenManager
                         int totalFrames = (int)((metadata.SelectionEnd - metadata.SelectionStart) / metadata.AverageTimeStampsPerFrame) + 1;
                         s.EstimatedTotal = totalFrames * s.Duplication;
 
-                        ExportVideo(s, player1);
+                        ExporterVideo exporterVideo = new ExporterVideo();
+                        exporterVideo.Export(s, player1);
                         break;
+
+                    case VideoExportFormat.VideoSlideShow:
+
+                        // Show a configuration dialog.
+
+
+                        break;
+
+                    case VideoExportFormat.VideoWithPauses:
+
+                        break;
+                
                 }
+
+                
             }
             catch (Exception e)
             {
@@ -161,68 +155,6 @@ namespace Kinovea.ScreenManager
             }
 
             return filename;
-        }
-
-        private void ExportVideo(SavingSettings settings, PlayerScreen player1)
-        {
-            // Setup global variables we'll use from inside the background thread.
-            this.player1 = player1;
-
-            // Start the background worker.
-            formProgressBar.Reset();
-            worker.RunWorkerAsync(settings);
-
-            // Show the progress bar.
-            // This is the end of this function and the UI thread is now in the progress bar.
-            // Anything else should be done from the background thread,
-            // until we come back in `Worker_RunWorkerCompleted`.
-            formProgressBar.ShowDialog();
-        }
-
-        private void Worker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            // This runs in the background thread.
-            Thread.CurrentThread.Name = "VideoExporter";
-            BackgroundWorker worker = sender as BackgroundWorker;
-            SavingSettings s = e.Argument as SavingSettings;
-
-            player1.view.BeforeExportVideo();
-
-            // Get the image enumerator.
-            player1.FrameServer.VideoReader.BeforeFrameEnumeration();
-            IEnumerable<Bitmap> images = player1.FrameServer.EnumerateImages(s);
-
-            // Export loop.
-            VideoFileWriter w = new VideoFileWriter();
-            string formatString = FilenameHelper.GetFormatString(s.File);
-            saveResult = w.Save(s, player1.FrameServer.VideoReader.Info, formatString, images, worker);
-            
-            player1.FrameServer.VideoReader.AfterFrameEnumeration();
-        }
-
-        private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            // This runs in the UI thread.
-            // This method is called from the background thread for each processed frame.
-            int value = e.ProgressPercentage;
-            int max = (int)e.UserState;
-            formProgressBar.Update(value, max, false);
-        }
-
-        private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            // We are back in the UI thread after the work is complete or cancelled.
-            formProgressBar.Close();
-            formProgressBar.Dispose();
-
-            player1.view.AfterExportVideo();
-            player1.FrameServer.AfterSave();
-        }
-
-        private void FormProgressBar_CancelAsked(object sender, EventArgs e)
-        {
-            // Turn the CancellationPending flag on.
-            worker.CancelAsync();
         }
     }
 }

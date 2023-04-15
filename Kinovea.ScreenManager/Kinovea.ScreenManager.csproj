@@ -282,7 +282,9 @@
     </Compile>
     <Compile Include="DrawingClipboard.cs" />
     <Compile Include="Exporters\Images\ExporterImage.cs" />
+    <Compile Include="Exporters\Images\ExporterImageSequence.cs" />
     <Compile Include="Exporters\Spreadsheet\ExporterCSVChrono.cs" />
+    <Compile Include="Exporters\Video\ExporterVideo.cs" />
     <Compile Include="Exporters\Video\FormConfigureExportVideo.cs">
       <SubType>Form</SubType>
     </Compile>

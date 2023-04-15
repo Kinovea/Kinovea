@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
-using System.ComponentModel;
-using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using Kinovea.Video;
@@ -22,22 +18,7 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class ImageExporter
     {
-        private BackgroundWorker worker = new BackgroundWorker();
-        private FormProgressBar formProgressBar = new FormProgressBar(true);
-        private PlayerScreen player1;
-        private PlayerScreen player2;
         private readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        public ImageExporter()
-        {
-            worker.WorkerReportsProgress = true;
-            worker.WorkerSupportsCancellation = true;
-            worker.ProgressChanged += Worker_ProgressChanged;
-            worker.DoWork += Worker_DoWork;
-            worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
-
-            formProgressBar.CancelAsked += FormProgressBar_CancelAsked;
-        }
 
         // Get a filename from the user and export an image or image sequence.
         public void Export(ImageExportFormat format, PlayerScreen player1, PlayerScreen player2)
@@ -127,7 +108,8 @@ namespace Kinovea.ScreenManager
 
                         fceis.Dispose();
 
-                        ExportSequence(s, player1);
+                        ExporterImageSequence exporterImageSequence = new ExporterImageSequence();
+                        exporterImageSequence.Export(s, player1);
                         break;
 
                     case ImageExportFormat.KeyImages:
@@ -140,7 +122,8 @@ namespace Kinovea.ScreenManager
                         s.ImageRetriever = player1.view.GetFlushedImage;
                         s.EstimatedTotal = player1.FrameServer.Metadata.Keyframes.Count;
 
-                        ExportSequence(s, player1);
+                        ExporterImageSequence exporterKeyImages = new ExporterImageSequence();
+                        exporterKeyImages.Export(s, player1);
                         break;
                 }
             }
@@ -175,87 +158,6 @@ namespace Kinovea.ScreenManager
             }
 
             return filename;
-        }
-
-        private void ExportSequence(SavingSettings settings, PlayerScreen player1)
-        {
-            // Setup global variables we'll use from inside the background thread.
-            this.player1 = player1;
-            
-            // Start the background worker.
-            formProgressBar.Reset();
-            worker.RunWorkerAsync(settings);
-
-            // Show the progress bar.
-            // This is the end of this function and the UI thread is now in the progress bar.
-            // Anything else should be done from the background thread,
-            // until we come back in `Worker_RunWorkerCompleted`.
-            formProgressBar.ShowDialog();
-        }
-
-        private void Worker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            // This runs in the background thread.
-            Thread.CurrentThread.Name = "ImageExporter";
-            BackgroundWorker worker = sender as BackgroundWorker;
-            SavingSettings s = e.Argument as SavingSettings;
-
-            // Get the image enumerator.
-            player1.FrameServer.VideoReader.BeforeFrameEnumeration();
-            IEnumerable<Bitmap> images = player1.FrameServer.EnumerateImages(s);
-
-            // Enumerate and save the images.
-            string dir = Path.GetDirectoryName(s.File);
-            string extension = Path.GetExtension(s.File);
-            int i = 0;
-            foreach (var image in images)
-            {
-                if (worker.CancellationPending)
-                    break;
-
-                // The timestamp should be stored in the Bitmap.Tag.
-                long timestamp = 0;
-                if (image.Tag is long)
-                    timestamp = (long)image.Tag;
-
-                string filename = player1.FrameServer.GetImageFilename(s.File, timestamp, PreferencesManager.PlayerPreferences.TimecodeFormat);
-                string filePath = Path.Combine(dir, filename + extension);
-
-                image.Save(filePath);
-
-                i++;
-                worker.ReportProgress(i, s.EstimatedTotal);
-            }
-
-            player1.FrameServer.VideoReader.AfterFrameEnumeration();
-        }
-
-        private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            // This runs in the UI thread.
-            // This method is called from the background thread for each processed frame.
-            int value = e.ProgressPercentage;
-            int max = (int)e.UserState;
-            formProgressBar.Update(value, max, false);
-        }
-
-        private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            // We are back in the UI thread after the work is complete or cancelled.
-            formProgressBar.Close();
-            formProgressBar.Dispose();
-
-            player1.FrameServer.AfterSave();
-            // Return to the start of the zone.
-            //m_iFramesToDecode = 1;
-            //ShowNextFrame(m_iSelStart, true);
-            //ActivateKeyframe(m_iCurrentPosition, true);
-        }
-
-        private void FormProgressBar_CancelAsked(object sender, EventArgs e)
-        {
-            // Turn the CancellationPending flag on.
-            worker.CancelAsync();
         }
     }
 }

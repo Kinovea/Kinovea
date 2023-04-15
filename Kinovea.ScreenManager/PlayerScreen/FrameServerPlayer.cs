@@ -576,7 +576,7 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-        private void ReportError(SaveResult saveResult)
+        public void ReportError(SaveResult saveResult)
         {
             switch(saveResult)
             {
