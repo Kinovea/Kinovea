@@ -49,22 +49,18 @@ namespace Kinovea.ScreenManager
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = "Export document";
             saveFileDialog.RestoreDirectory = true;
-            saveFileDialog.Filter = "LibreOffice writer (*.odt)|*.odt|Microsoft Word (*.docx)|*.docx|Markdown (*.md)|*.md";
-            int filterIndex;
             bool needsPandoc = format != DocumentExportFormat.Mardown;
             switch (format)
             {
                 case DocumentExportFormat.ODT:
-                    filterIndex = 1;
-                    needsPandoc = true;
+                    saveFileDialog.Filter = "LibreOffice writer|*.odt";
                     break;
                 case DocumentExportFormat.DOCX:
-                    filterIndex = 2;
-                    needsPandoc = true;
+                    saveFileDialog.Filter = "Microsoft Word|*.docx";
                     break;
                 case DocumentExportFormat.Mardown:
                 default:
-                    filterIndex = 3;
+                    saveFileDialog.Filter = "Markdown|*.md";
                     break;
             }
 
@@ -80,7 +76,7 @@ namespace Kinovea.ScreenManager
                 }
             }
 
-            saveFileDialog.FilterIndex = filterIndex;
+            saveFileDialog.FilterIndex = 1;
             saveFileDialog.FileName = Path.GetFileNameWithoutExtension(player.FrameServer.Metadata.VideoPath);
 
             if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))
@@ -137,10 +133,15 @@ namespace Kinovea.ScreenManager
             BackgroundWorker worker = sender as BackgroundWorker;
             SavingSettings s = e.Argument as SavingSettings;
 
+            //-----------------
+            // Markdown export.
+            //-----------------
+
             // Get the key image enumerator.
             player.FrameServer.VideoReader.BeforeFrameEnumeration();
             IEnumerable<Bitmap> images = player.FrameServer.EnumerateImages(s);
 
+            //string assetsDir = Path.GetFileNameWithoutExtension(s.File) + "_images";
             string assetsDir = "images";
             string assetsPath = Path.Combine(Path.GetDirectoryName(s.File), assetsDir);
             if (!Directory.Exists(assetsPath))
@@ -148,7 +149,7 @@ namespace Kinovea.ScreenManager
 
             // Enumerate and save the images. Collect the relative filenames for later.
             List<string> filePathsRelative = new List<string>();
-            int magnitude = (int)Math.Ceiling(Math.Log10(metadata.Keyframes.Count));
+            int magnitude = (int)Math.Ceiling(Math.Log10(s.EstimatedTotal));
             int i = 0;
             foreach (var image in images)
             {
@@ -176,6 +177,9 @@ namespace Kinovea.ScreenManager
             if (format == DocumentExportFormat.Mardown)
                 return;
 
+            //-----------------
+            // Other formats export
+            //-----------------
             RunPandoc(format, s.File);
         }
 
@@ -217,20 +221,21 @@ namespace Kinovea.ScreenManager
             string dir = Path.GetDirectoryName(pathMarkdown);
             string pathWithoutExtension = Path.Combine(dir, Path.GetFileNameWithoutExtension(pathMarkdown));
             string pathFinal = "";
+            string arguments = "";
             switch (format)
             {
                 case DocumentExportFormat.ODT:
                     pathFinal = string.Format("{0}.odt", pathWithoutExtension);
+                    arguments = string.Format("-f markdown -t odt \"{0}\" -o \"{1}\"", pathMarkdown, pathFinal);
                     break;
                 case DocumentExportFormat.DOCX:
                     pathFinal = string.Format("{0}.docx", pathWithoutExtension);
+                    arguments = string.Format("-f markdown -t docx \"{0}\" -o \"{1}\"", pathMarkdown, pathFinal);
                     break;
                 case DocumentExportFormat.Mardown:
                 default:
                     break;
             }
-
-            string arguments = string.Format("-f markdown -t odt -o \"{0}\" \"{1}\"", pathFinal, pathMarkdown);
 
             Process process = new Process();
             try

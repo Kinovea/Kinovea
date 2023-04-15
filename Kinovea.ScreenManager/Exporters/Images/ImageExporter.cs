@@ -129,6 +129,7 @@ namespace Kinovea.ScreenManager
 
                         ExportSequence(s, player1);
                         break;
+
                     case ImageExportFormat.KeyImages:
                         
                         // No dialog needed.
