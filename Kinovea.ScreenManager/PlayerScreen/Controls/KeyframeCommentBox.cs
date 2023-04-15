@@ -141,9 +141,7 @@ namespace Kinovea.ScreenManager
 
             // The font size is stored in the rich text format string itself.
             // Get rid of all formatting.
-            rtbComment.Rtf = keyframe.Comments;
-            string text = rtbComment.Text;
-            rtbComment.Text = text;
+            rtbComment.Text = RichTextHelper.GetText(keyframe.Comments);
 
             AfterColorChange();
 

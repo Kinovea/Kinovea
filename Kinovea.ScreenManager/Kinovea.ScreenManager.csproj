@@ -296,10 +296,13 @@
     <Compile Include="Metadata\Drawings\DrawingLine.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPostureOption.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPosturePolyline.cs" />
-    <Compile Include="Metadata\Exporters\CSVHelper.cs" />
-    <Compile Include="Metadata\Exporters\ExporterCSV.cs" />
-    <Compile Include="Metadata\Exporters\ExporterJSON.cs" />
-    <Compile Include="Metadata\Exporters\ExporterXSLX.cs" />
+    <Compile Include="Metadata\Exporters\Document\DocumentExporter.cs" />
+    <Compile Include="Metadata\Exporters\Document\DocumentExportFormat.cs" />
+    <Compile Include="Metadata\Exporters\Document\ExporterMarkdown.cs" />
+    <Compile Include="Metadata\Exporters\Spreadsheet\CSVHelper.cs" />
+    <Compile Include="Metadata\Exporters\Spreadsheet\ExporterCSV.cs" />
+    <Compile Include="Metadata\Exporters\Spreadsheet\ExporterJSON.cs" />
+    <Compile Include="Metadata\Exporters\Spreadsheet\ExporterXSLX.cs" />
     <Compile Include="Metadata\Interfaces\IDrawingHostView.cs" />
     <Compile Include="Measurement\Geometry\AngleOptions.cs" />
     <Compile Include="Measurement\Geometry\Circle.cs" />
@@ -458,7 +461,7 @@
     <Compile Include="Measurement\LensDistortion\EmguHelper.cs" />
     <Compile Include="Metadata\Serialization\DrawingSerializer.cs" />
     <Compile Include="Metadata\Serialization\KeyframeSerializer.cs" />
-    <Compile Include="Metadata\Exporters\MetadataExporter.cs" />
+    <Compile Include="Metadata\Exporters\Spreadsheet\SpreadsheetExporter.cs" />
     <Compile Include="Metadata\HitTester.cs" />
     <Compile Include="Measurement\Kinematics\Component.cs" />
     <Compile Include="Measurement\Kinematics\MovingAverage.cs" />
@@ -650,8 +653,8 @@
     <Compile Include="Metadata\Drawings\Styling\StyleElementTrackShape.cs" />
     <Compile Include="Metadata\Drawings\Styling\StyleHelper.cs" />
     <Compile Include="Metadata\DrawingToolbar\ToolManager.cs" />
-    <Compile Include="Metadata\Exporters\ExporterODS.cs" />
-    <Compile Include="Metadata\Exporters\MetadataExportFormat.cs" />
+    <Compile Include="Metadata\Exporters\Spreadsheet\ExporterODS.cs" />
+    <Compile Include="Metadata\Exporters\Spreadsheet\SpreadsheetExportFormat.cs" />
     <Compile Include="PlayerScreen\FrameServerPlayer.cs" />
     <Compile Include="Metadata\Drawings\DrawingAngle.cs" />
     <Compile Include="Metadata\Drawings\DrawingCrossMark.cs" />

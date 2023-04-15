@@ -1,10 +1,10 @@
 ﻿namespace Kinovea.ScreenManager
 {
-    public enum MetadataExportFormat
+    public enum SpreadsheetExportFormat
     {
         ODS,
         XLSX,
-        JSON,
         CSV,
+        JSON,
     }
 }
