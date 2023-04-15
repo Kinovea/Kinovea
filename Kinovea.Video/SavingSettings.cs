@@ -28,9 +28,9 @@ namespace Kinovea.Video
     /// </summary>
     public class SavingSettings
     {
-
         //-------------------------------
         // Input parameters
+        // Describes which frames from the input we are interested in.
         //-------------------------------
 
         /// <summary>
@@ -43,7 +43,12 @@ namespace Kinovea.Video
         /// </summary>
         public bool KeyframesOnly = false;
 
-        public double InputIntervalMilliseconds = 0.4;
+        /// <summary>
+        /// Interval between the frames to collect in timestamps.
+        /// Zero means we collect every frame.
+        /// Larger than zero means we do a timelapse-style export and jump from timestamp to timestamp.
+        /// </summary>
+        public long InputIntervalTimestamps = 0;
 
         //-------------------------------
         // Output parameters
@@ -70,7 +75,7 @@ namespace Kinovea.Video
         /// Repeat count for keyframe images.
         /// This is used to "pause" the video on the key images.
         /// </summary>
-        public int KeyframeDuplication = 1;
+        public int DuplicationKeyframes = 1;
 
         /// <summary>
         /// Whether to paint the drawings on the video frames.
@@ -84,22 +89,19 @@ namespace Kinovea.Video
 
         /// <summary>
         /// Interval between exported frames, in milliseconds.
-        /// For timelapse or image sequence this will be different than in the original video.
-        /// For video output this is used to compute the bitrate.
-        /// For image sequence output this is not used, use OutputIntervalTimestamps instead.
-        /// Zero means we export every frame.
+        /// This is only used for video output.
+        /// For slowed down or sped up output this may be different than the original.
+        /// This should not be zero.
         /// </summary>
-        public double OutputIntervalMilliseconds = 0;
-
-        /// <summary>
-        /// Interval between exported frames for timelapse or image sequence, in timestamps.
-        /// Zero means we export every frame.
-        /// </summary>
-        public long OutputIntervalTimestamps = 0;
+        public double OutputIntervalMilliseconds = 0.4;
 
         //-------------------------------
         // Helpers
         //-------------------------------
+
+
+        //public double InputIntervalMilliseconds = 0.4;
+
 
         /// <summary>
         /// A delegate taking a video frame and an output bitmap and painting the 

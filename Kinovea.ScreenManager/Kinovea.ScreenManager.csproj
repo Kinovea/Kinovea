@@ -282,6 +282,12 @@
     </Compile>
     <Compile Include="DrawingClipboard.cs" />
     <Compile Include="Exporters\Images\ExporterImage.cs" />
+    <Compile Include="Exporters\Video\FormConfigureExportVideo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Exporters\Video\FormConfigureExportVideo.Designer.cs">
+      <DependentUpon>FormConfigureExportVideo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Exporters\Images\FormConfigureExportImageSideBySide.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -296,6 +302,8 @@
     </Compile>
     <Compile Include="Exporters\Images\ImageExporter.cs" />
     <Compile Include="Exporters\Images\ImageExportFormat.cs" />
+    <Compile Include="Exporters\Video\VideoExporter.cs" />
+    <Compile Include="Exporters\Video\VideoExportFormat.cs" />
     <Compile Include="FilePatterns\PatternSymbolsCommand.cs" />
     <Compile Include="FilePatterns\Filenamer.cs" />
     <Compile Include="FilePatterns\PatternContext.cs" />
@@ -949,6 +957,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CaptureScreen\Views\InfobarCapture.resx">
       <DependentUpon>InfobarCapture.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Exporters\Video\FormConfigureExportVideo.resx">
+      <DependentUpon>FormConfigureExportVideo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Exporters\Images\FormConfigureExportImageSideBySide.resx">
       <DependentUpon>FormConfigureExportImageSideBySide.cs</DependentUpon>

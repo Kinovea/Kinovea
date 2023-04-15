@@ -109,7 +109,7 @@ namespace Kinovea.ScreenManager
         /// Returns the interval between frames in milliseconds, taking slow motion slider into account.
         /// This is suitable for a playback loop timer or metadata in saved file.
         /// </summary>
-        public double FrameInterval
+        public double PlaybackFrameInterval
         {
             get
             {
@@ -680,7 +680,7 @@ namespace Kinovea.ScreenManager
 
             double oldHSF = m_FrameServer.Metadata.HighSpeedFactor;
             double captureInterval = 1000 / m_FrameServer.Metadata.CalibrationHelper.CaptureFramesPerSecond;
-            m_FrameServer.Metadata.HighSpeedFactor = m_FrameServer.Metadata.UserInterval / captureInterval;
+            m_FrameServer.Metadata.HighSpeedFactor = m_FrameServer.Metadata.BaselineFrameInterval / captureInterval;
             UpdateTimebase();
 
             m_FrameServer.SetupMetadata(false);
@@ -724,7 +724,7 @@ namespace Kinovea.ScreenManager
         public void UpdateTimebase()
         {
             timeMapper.FileInterval = m_FrameServer.VideoReader.Info.FrameIntervalMilliseconds;
-            timeMapper.UserInterval = m_FrameServer.Metadata.UserInterval;
+            timeMapper.UserInterval = m_FrameServer.Metadata.BaselineFrameInterval;
             timeMapper.CaptureInterval = timeMapper.UserInterval / m_FrameServer.Metadata.HighSpeedFactor;
         }
         public void UpdateTimeLabels()
@@ -1174,7 +1174,7 @@ namespace Kinovea.ScreenManager
             mnuSaveAnnotations.Image = Properties.Resources.filesave;
             mnuSaveAnnotationsAs.Click += btnSaveAnnotationsAs_Click;
             mnuSaveAnnotationsAs.Image = Properties.Resources.filesave;
-            mnuExportVideo.Click += btnSaveVideo_Click;
+            mnuExportVideo.Click += (s, e) => ExportVideoAsked?.Invoke(s, e);
             mnuExportVideo.Image = Properties.Resources.film_save;
             mnuExportImage.Click += (s, e) => ExportImageAsked?.Invoke(s, e);
             mnuExportImage.Image = Properties.Resources.picture_save;
@@ -1673,7 +1673,7 @@ namespace Kinovea.ScreenManager
         /// convert it into video time then to real time using high speed factor.
         private long TimestampToRealtime(long timestamp)
         {
-            double correctedTPS = m_FrameServer.VideoReader.Info.FrameIntervalMilliseconds * m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds / m_FrameServer.Metadata.UserInterval;
+            double correctedTPS = m_FrameServer.VideoReader.Info.FrameIntervalMilliseconds * m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds / m_FrameServer.Metadata.BaselineFrameInterval;
 
             if (correctedTPS == 0 || m_FrameServer.Metadata.HighSpeedFactor == 0)
                 return 0;
@@ -5318,22 +5318,9 @@ namespace Kinovea.ScreenManager
             ExportImageSequenceAsked?.Invoke(sender, e);
         }
 
-        /// <summary>
-        /// Export the current video to a new file, with drawings painted on.
-        /// </summary>
         private void btnSaveVideo_Click(object sender, EventArgs e)
         {
-            if(!m_FrameServer.Loaded)
-                return;
-            
-            StopPlaying();
-            OnPauseAsked();
-
-            ExportVideo();
-
-            m_iFramesToDecode = 1;
-            ShowNextFrame(m_iSelStart, true);
-            ActivateKeyframe(m_iCurrentPosition, true);
+            ExportVideoAsked?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -5370,21 +5357,26 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Save the video to a new file.
+        /// Called before we start exporting video.
         /// </summary>
-        public void ExportVideo()
+        public void BeforeExportVideo()
         {
+            StopPlaying();
+            OnPauseAsked();
+
             saveInProgress = true;
-            if (videoFilterIsActive)
-            {
-                if (m_FrameServer.Metadata.ActiveVideoFilter.CanExportVideo)
-                    m_FrameServer.Metadata.ActiveVideoFilter.ExportVideo(this);
-            }
-            else
-            {
-                m_FrameServer.SaveVideo(timeMapper.GetInterval(sldrSpeed.Value), slowMotion * 100, GetFlushedImage);
-            }
+        }
+
+        /// <summary>
+        /// Called after we finish exporting video.
+        /// </summary>
+        public void AfterExportVideo()
+        {
             saveInProgress = false;
+
+            m_iFramesToDecode = 1;
+            ShowNextFrame(m_iSelStart, true);
+            ActivateKeyframe(m_iCurrentPosition, true);
         }
 
         /// <summary>

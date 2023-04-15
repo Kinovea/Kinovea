@@ -1,6 +1,6 @@
 namespace Kinovea.ScreenManager
 {
-    partial class formVideoExport
+    partial class FormVideoExport
     {
         /// <summary>
         /// Required designer variable.

@@ -325,7 +325,10 @@ namespace Kinovea.ScreenManager
             mnuExportVideoSlideshow.Image = Properties.Resources.export_video_slideshow;
             mnuExportVideoWithPauses.Image = Properties.Resources.export_video_with_pauses;
             mnuExportVideoSideBySide.Image = Properties.Resources.export_video_sidebyside;
-            mnuExportVideoVideo.Click += mnuExportVideoVideo_Click;
+            mnuExportVideoVideo.Click += (s, e) => ExportVideo(VideoExportFormat.Video);
+            mnuExportVideoSlideshow.Click += (s, e) => ExportVideo(VideoExportFormat.VideoSlideShow);
+            mnuExportVideoWithPauses.Click += (s, e) => ExportVideo(VideoExportFormat.VideoWithPauses);
+            mnuExportVideoSideBySide.Click += (s, e) => ExportVideo(VideoExportFormat.SideBySide);
             mnuExportVideo.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuExportVideoVideo,
                 mnuExportVideoSlideshow,
@@ -1617,14 +1620,34 @@ namespace Kinovea.ScreenManager
             screenList[targetScreen].LoadKVA(filename);
         }
 
-        private void mnuExportVideoVideo_Click(object sender, EventArgs e)
+        private void ExportVideo(VideoExportFormat format)
         {
-            PlayerScreen player = activeScreen as PlayerScreen;
-            if (player == null)
-                return;
-
             DoStopPlaying();
-            player.ExportVideo();
+            if (format == VideoExportFormat.SideBySide)
+            {
+                // For side-by-side we don't care about the active screen but the order is important.
+                AbstractScreen screen0 = GetScreenAt(0);
+                AbstractScreen screen1 = GetScreenAt(1);
+                PlayerScreen player1 = screen0 as PlayerScreen;
+                PlayerScreen player2 = screen1 as PlayerScreen;
+                if (player1 == null || player2 == null)
+                    return;
+
+                if (!player1.Full || !player2.Full)
+                    return;
+
+                VideoExporter exporter = new VideoExporter();
+                exporter.Export(format, player1, player2);
+            }
+            else
+            {
+                PlayerScreen player = activeScreen as PlayerScreen;
+                if (player == null)
+                    return;
+
+                VideoExporter exporter = new VideoExporter();
+                exporter.Export(format, player, null);
+            }
         }
 
         private void ExportImages(ImageExportFormat format)

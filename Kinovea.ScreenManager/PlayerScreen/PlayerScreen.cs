@@ -271,12 +271,12 @@ namespace Kinovea.ScreenManager
         /// Returns the interval between frames in milliseconds, taking slow motion slider into account.
         /// This is suitable for a playback timer or metadata in saved file.
         /// </summary>
-        public double FrameInterval
+        public double PlaybackFrameInterval
         {
             get 
             { 
                 if (frameServer.Loaded && frameServer.VideoReader.Info.FrameIntervalMilliseconds > 0)
-                    return view.FrameInterval;
+                    return view.PlaybackFrameInterval;
                 else
                     return 40;
             }
@@ -739,21 +739,13 @@ namespace Kinovea.ScreenManager
             serializer.UserSaveAs(frameServer.Metadata, frameServer.VideoReader.FilePath);
         }
 
-        /// <summary>
-        /// Export video.
-        /// </summary>
-        public void ExportVideo()
-        {
-            view.ExportVideo();
-        }
-
         public void ConfigureTimebase()
         {
             if (!frameServer.Loaded)
                 return;
 
-            double captureInterval = frameServer.Metadata.UserInterval / frameServer.Metadata.HighSpeedFactor;
-            formConfigureSpeed fcs = new formConfigureSpeed(frameServer.VideoReader.Info.FrameIntervalMilliseconds, frameServer.Metadata.UserInterval, captureInterval);
+            double captureInterval = frameServer.Metadata.BaselineFrameInterval / frameServer.Metadata.HighSpeedFactor;
+            formConfigureSpeed fcs = new formConfigureSpeed(frameServer.VideoReader.Info.FrameIntervalMilliseconds, frameServer.Metadata.BaselineFrameInterval, captureInterval);
             fcs.StartPosition = FormStartPosition.CenterScreen;
 
             if (fcs.ShowDialog() != DialogResult.OK)
@@ -762,17 +754,17 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            frameServer.Metadata.UserInterval = fcs.UserInterval;
+            frameServer.Metadata.BaselineFrameInterval = fcs.UserInterval;
             frameServer.Metadata.HighSpeedFactor = fcs.UserInterval / fcs.CaptureInterval;
             fcs.Dispose();
 
             log.DebugFormat("Time configuration. File interval:{0:0.###}ms, User interval:{1:0.###}ms, Capture interval:{2:0.###}ms.",
-                frameServer.VideoReader.Info.FrameIntervalMilliseconds, frameServer.Metadata.UserInterval, fcs.CaptureInterval);
+                frameServer.VideoReader.Info.FrameIntervalMilliseconds, frameServer.Metadata.BaselineFrameInterval, fcs.CaptureInterval);
 
             if (HighSpeedFactorChanged != null)
                 HighSpeedFactorChanged(this, EventArgs.Empty);
 
-            frameServer.Metadata.CalibrationHelper.CaptureFramesPerSecond = 1000 * frameServer.Metadata.HighSpeedFactor / frameServer.Metadata.UserInterval;
+            frameServer.Metadata.CalibrationHelper.CaptureFramesPerSecond = 1000 * frameServer.Metadata.HighSpeedFactor / frameServer.Metadata.BaselineFrameInterval;
             frameServer.Metadata.UpdateTrajectoriesForKeyframes();
 
             view.UpdateTimebase();
@@ -914,7 +906,7 @@ namespace Kinovea.ScreenManager
             double realtimeSeconds = (double)time / 1000000;
             double videoSeconds = realtimeSeconds * frameServer.Metadata.HighSpeedFactor;
 
-            double correctedTPS = frameServer.VideoReader.Info.FrameIntervalMilliseconds * frameServer.VideoReader.Info.AverageTimeStampsPerSeconds / frameServer.Metadata.UserInterval;
+            double correctedTPS = frameServer.VideoReader.Info.FrameIntervalMilliseconds * frameServer.VideoReader.Info.AverageTimeStampsPerSeconds / frameServer.Metadata.BaselineFrameInterval;
             double timestamp = videoSeconds * correctedTPS;
             timestamp = Math.Round(timestamp);
 

@@ -172,7 +172,7 @@ namespace Kinovea.ScreenManager
             if (init)
             {
                 metadata.ImageSize = videoReader.Info.ReferenceSize;
-                metadata.UserInterval = videoReader.Info.FrameIntervalMilliseconds;
+                metadata.BaselineFrameInterval = videoReader.Info.FrameIntervalMilliseconds;
                 metadata.AverageTimeStampsPerFrame = videoReader.Info.AverageTimeStampsPerFrame;
                 metadata.AverageTimeStampsPerSecond = videoReader.Info.AverageTimeStampsPerSeconds;
                 metadata.CalibrationHelper.CaptureFramesPerSecond = videoReader.Info.FramesPerSeconds;
@@ -278,8 +278,8 @@ namespace Kinovea.ScreenManager
             if (type == TimeType.Duration)
                 frames++;
 
-            double milliseconds = frames * metadata.UserInterval / metadata.HighSpeedFactor;
-            double framerate = 1000.0 / metadata.UserInterval * metadata.HighSpeedFactor;
+            double milliseconds = frames * metadata.BaselineFrameInterval / metadata.HighSpeedFactor;
+            double framerate = 1000.0 / metadata.BaselineFrameInterval * metadata.HighSpeedFactor;
             double durationTimestamps = videoReader.Info.DurationTimeStamps - averageTimestampsPerFrame;
             double totalFrames = durationTimestamps / averageTimestampsPerFrame;
 
@@ -308,7 +308,7 @@ namespace Kinovea.ScreenManager
         public void SaveVideo(double playbackFrameInterval, double slowmotionPercentage, ImageRetriever imageRetriever)
         {
             // Show the intermediate dialog for export options.
-            formVideoExport fve = new formVideoExport(videoReader.FilePath, slowmotionPercentage);
+            FormVideoExport fve = new FormVideoExport(videoReader.FilePath, slowmotionPercentage);
             if (fve.ShowDialog() != DialogResult.OK)
             {
                 fve.Dispose();
@@ -323,7 +323,7 @@ namespace Kinovea.ScreenManager
             }
 
             DoSave(fve.Filename,
-                   fve.UseSlowMotion ? playbackFrameInterval : metadata.UserInterval,
+                   fve.UseSlowMotion ? playbackFrameInterval : metadata.BaselineFrameInterval,
                    true,
                    false,
                    false,
@@ -403,7 +403,7 @@ namespace Kinovea.ScreenManager
             SavingSettings s = new SavingSettings();
             s.Section = videoReader.WorkingZone;
             s.File = filePath;
-            s.InputIntervalMilliseconds = frameInterval;
+            //s.InputIntervalMilliseconds = frameInterval;
             s.FlushDrawings = flushDrawings;
             s.KeyframesOnly = keyframesOnly;
             s.PausedVideo = pausedVideo;
@@ -431,12 +431,12 @@ namespace Kinovea.ScreenManager
             
             SavingSettings settings = (SavingSettings)e.Argument;
             
-            if(settings.ImageRetriever == null || settings.InputIntervalMilliseconds < 0 || bgWorker == null)
-            {
-                saveResult = SaveResult.UnknownError;
-                e.Result = 0;
-                return;
-            }
+            //if(settings.ImageRetriever == null || settings.InputIntervalMilliseconds < 0 || bgWorker == null)
+            //{
+            //    saveResult = SaveResult.UnknownError;
+            //    e.Result = 0;
+            //    return;
+            //}
             
             try
             {
@@ -446,32 +446,32 @@ namespace Kinovea.ScreenManager
                 // save, paused video and diaporama. It will cause inevitable code duplication but better encapsulation and simpler algo.
                 // When each save method has its own class and UI panel, it will be a better design.
 
-                if(!settings.PausedVideo)
-                {
-                    // Take special care for slowmotion, the frame interval can not go down indefinitely.
-                    // Use frame duplication when under 8fps.
-                    settings.Duplication = (int)Math.Ceiling(settings.InputIntervalMilliseconds / 125.0);
-                    settings.KeyframeDuplication = settings.Duplication;
-                    settings.OutputIntervalMilliseconds = settings.InputIntervalMilliseconds / settings.Duplication;
-                    if(settings.KeyframesOnly)
-                        settings.EstimatedTotal = metadata.Count * settings.Duplication;
-                    else
-                        settings.EstimatedTotal = (int)(videoReader.EstimatedFrames * settings.Duplication);
-                }
-                else
-                {
-                    // For paused video, slow motion is not supported.
-                    // InputFrameInterval will have been set to a multiple of the original frame interval.
-                    settings.Duplication = 1;
-                    settings.KeyframeDuplication = (int)(settings.InputIntervalMilliseconds / metadata.UserInterval);
-                    settings.OutputIntervalMilliseconds = metadata.UserInterval;
+                //if(!settings.PausedVideo)
+                //{
+                //    // Take special care for slowmotion, the frame interval can not go down indefinitely.
+                //    // Use frame duplication when under 8fps.
+                //    settings.Duplication = (int)Math.Ceiling(settings.InputIntervalMilliseconds / 125.0);
+                //    settings.DuplicationKeyframes = settings.Duplication;
+                //    settings.OutputIntervalMilliseconds = settings.InputIntervalMilliseconds / settings.Duplication;
+                //    if(settings.KeyframesOnly)
+                //        settings.EstimatedTotal = metadata.Count * settings.Duplication;
+                //    else
+                //        settings.EstimatedTotal = (int)(videoReader.EstimatedFrames * settings.Duplication);
+                //}
+                //else
+                //{
+                //    // For paused video, slow motion is not supported.
+                //    // InputFrameInterval will have been set to a multiple of the original frame interval.
+                //    settings.Duplication = 1;
+                //    settings.DuplicationKeyframes = (int)(settings.InputIntervalMilliseconds / metadata.UserInterval);
+                //    settings.OutputIntervalMilliseconds = metadata.UserInterval;
                     
-                    long regularFramesTotal = videoReader.EstimatedFrames - metadata.Count;
-                    long keyframesTotal = metadata.Count * settings.KeyframeDuplication;
-                    settings.EstimatedTotal = (int)(regularFramesTotal + keyframesTotal);
-                }
+                //    long regularFramesTotal = videoReader.EstimatedFrames - metadata.Count;
+                //    long keyframesTotal = metadata.Count * settings.DuplicationKeyframes;
+                //    settings.EstimatedTotal = (int)(regularFramesTotal + keyframesTotal);
+                //}
                 
-                log.DebugFormat("interval:{0}, duplication:{1}, kf duplication:{2}", settings.OutputIntervalMilliseconds, settings.Duplication, settings.KeyframeDuplication);
+                //log.DebugFormat("interval:{0}, duplication:{1}, kf duplication:{2}", settings.OutputIntervalMilliseconds, settings.Duplication, settings.DuplicationKeyframes);
 
                 videoReader.BeforeFrameEnumeration();
                 IEnumerable<Bitmap> images = EnumerateImages(settings);
@@ -496,13 +496,13 @@ namespace Kinovea.ScreenManager
         /// This includes skipping and duplicating frames as needed.
         /// This returns an internal bitmap and the caller should do its own copy.
         /// </summary>
-        public IEnumerable<Bitmap> EnumerateImages(SavingSettings settings, long interval = 0)
+        public IEnumerable<Bitmap> EnumerateImages(SavingSettings settings)
         {
             Bitmap output = null;
             int consumedKeyframes = 0;
 
             // Enumerates the raw frames from the video.
-            foreach (VideoFrame vf in videoReader.EnumerateFrames(interval))
+            foreach (VideoFrame vf in videoReader.EnumerateFrames(settings.InputIntervalTimestamps))
             {
                 if (vf == null)
                 {
@@ -519,6 +519,7 @@ namespace Kinovea.ScreenManager
                 if (settings.KeyframesOnly && !isKeyframe)
                     continue;
 
+                // Keep track of how many keyframes we have seen to exit early if we are only interested in these.
                 if (isKeyframe)
                     consumedKeyframes++;
 
@@ -532,7 +533,7 @@ namespace Kinovea.ScreenManager
                 // Store the input timestamp in the bitmap, this may be used by the caller to build a file name.
                 output.Tag = vf.Timestamp;
 
-                int repeat = (settings.PausedVideo && onKeyframe) ? settings.KeyframeDuplication : settings.Duplication;
+                int repeat = (settings.PausedVideo && onKeyframe) ? settings.DuplicationKeyframes : settings.Duplication;
                 for (int i = 0; i < repeat; i++)
                 { 
                     yield return output;

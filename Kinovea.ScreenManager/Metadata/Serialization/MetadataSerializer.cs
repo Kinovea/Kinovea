@@ -294,7 +294,7 @@ namespace Kinovea.ScreenManager
                         metadata.CalibrationHelper.CaptureFramesPerSecond = r.ReadElementContentAsDouble();
                         break;
                     case "UserFramerate":
-                        metadata.UserInterval = 1000 / r.ReadElementContentAsDouble();
+                        metadata.BaselineFrameInterval = 1000 / r.ReadElementContentAsDouble();
                         break;
                     case "SelectionStart":
                         long selStart = r.ReadElementContentAsLong();
@@ -435,7 +435,7 @@ namespace Kinovea.ScreenManager
             // Different contexts or different files.
             // Compute the number of frames relatively to the time origin and convert back to timestamps.
             double frame = (double)(inputTimestamp - inputTimeOrigin) / inputAverageTimeStampsPerFrame;
-            double outputAverageTimestampsPerFrame = metadata.AverageTimeStampsPerSecond / (1000.0 / metadata.UserInterval);
+            double outputAverageTimestampsPerFrame = metadata.AverageTimeStampsPerSecond / (1000.0 / metadata.BaselineFrameInterval);
             long outputTimestamp = (long)Math.Round(frame * outputAverageTimestampsPerFrame) + metadata.TimeOrigin;
             
             return outputTimestamp;
@@ -495,7 +495,7 @@ namespace Kinovea.ScreenManager
 
             w.WriteElementString("AverageTimeStampsPerFrame", metadata.AverageTimeStampsPerFrame.ToString());
             w.WriteElementString("CaptureFramerate", string.Format(CultureInfo.InvariantCulture, "{0}", metadata.CalibrationHelper.CaptureFramesPerSecond));
-            w.WriteElementString("UserFramerate", string.Format(CultureInfo.InvariantCulture, "{0}", 1000 / metadata.UserInterval));
+            w.WriteElementString("UserFramerate", string.Format(CultureInfo.InvariantCulture, "{0}", 1000 / metadata.BaselineFrameInterval));
             w.WriteElementString("FirstTimeStamp", metadata.FirstTimeStamp.ToString());
             w.WriteElementString("SelectionStart", metadata.SelectionStart.ToString());
             w.WriteElementString("SelectionEnd", metadata.SelectionEnd.ToString());

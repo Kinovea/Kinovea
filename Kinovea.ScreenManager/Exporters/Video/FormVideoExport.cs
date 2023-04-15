@@ -36,7 +36,7 @@ namespace Kinovea.ScreenManager
     /// Note: this dialog used to have many more options like saving KVA or saving a video with the KVA as a subtitle track. 
     /// It's now exclusively used to export video with drawings painted on.
     /// </summary>
-    public partial class formVideoExport : Form
+    public partial class FormVideoExport : Form
     {
         #region Properties
         public string Filename
@@ -56,7 +56,7 @@ namespace Kinovea.ScreenManager
         private string filename;
         #endregion
         
-        public formVideoExport(string originalFilename, double slomoPercentage)
+        public FormVideoExport(string originalFilename, double slomoPercentage)
         {
             this.slomoPercentage = slomoPercentage;
             this.originalFilename = originalFilename;

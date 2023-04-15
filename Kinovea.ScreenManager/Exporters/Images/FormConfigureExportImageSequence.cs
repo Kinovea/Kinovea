@@ -47,7 +47,7 @@ namespace Kinovea.ScreenManager
             this.player = player;
             this.metadata = player.FrameServer.Metadata;
             this.videoInfo = player.FrameServer.VideoReader.Info;
-            frameInterval = metadata.UserInterval;
+            frameInterval = metadata.BaselineFrameInterval;
             totalFrames = (int)((metadata.SelectionEnd - metadata.SelectionStart) / metadata.AverageTimeStampsPerFrame) + 1;
             maxDecimationFrames = totalFrames / 2;
             maxDecimationFrames = Math.Min(limitDecimationFrames, maxDecimationFrames);

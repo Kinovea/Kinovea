@@ -41,7 +41,7 @@ namespace Kinovea.ScreenManager
 
             // During saving we move through the common timeline by a time unit based on framerate and high speed factor, but not based on user custom slow motion factor.
             // For the framerate saved in the file metadata we take user custom slow motion into account and not high speed factor.
-            fileFrameInterval = Math.Max(leftPlayer.FrameInterval, rightPlayer.FrameInterval);
+            fileFrameInterval = Math.Max(leftPlayer.PlaybackFrameInterval, rightPlayer.PlaybackFrameInterval);
             
             dualSaveFileName = GetFilename(leftPlayer, rightPlayer);
             if (string.IsNullOrEmpty(dualSaveFileName))
@@ -245,6 +245,16 @@ namespace Kinovea.ScreenManager
                 log.Error(exp.StackTrace);
             }
         }
-        
+
+        public static string SuggestFilename(PlayerScreen player1, PlayerScreen player2)
+        {
+            if (player1 == null || player2 == null || !player1.Full || !player2.Full)
+                return null;
+
+            return String.Format("{0} - {1}",
+                Path.GetFileNameWithoutExtension(player1.FilePath),
+                Path.GetFileNameWithoutExtension(player2.FilePath));
+        }
+
     }
 }

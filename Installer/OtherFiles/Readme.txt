@@ -62,8 +62,8 @@ Changelog:
     Improved - General: When importing a KVA file into a different video the times are now aligned by the time origins.
     Improved - General: Support sorting files by name, date or size in the explorer.
     Improved - General: Support navigating back, forth and up in the explorer.
-    Improved - General: Added commands to toggle drawings visibility.
-    Improved - Playback: Using a video filter no longer prevents the usage of the normal video controls and drawings tools.
+    Improved - General: Support toggling drawings visibility via a command.
+    Improved - Playback: Using a video filter no longer prevents the usage of the playback controls and drawings tools.
     Improved - Playback: Video filters are no longer deactivated when changing the working zone.
     Improved - Playback: Support rotation on single image files.
     Improved - Annotations: Support drag and drop between the keyframe list and the timeline to change keyframe time.
@@ -98,7 +98,7 @@ Changelog:
     Fixed - The picture-in-picture area of the magnifier was hiding drawings.
     Fixed - Lines with arrows did not take the arrow length into account for measurement.
     Fixed - Undo/redo was broken in various places.
-    Fixed - Saving the scene with the comment dialog open was not saving the comments.
+    Fixed - Saving the scene with the comment dialog open could miss saving the latest changes to the comments.
     Fixed - The position of the main splitters of the user interface were not saved and restored correctly.
     Fixed - Key images timecode displayed on the thumbnail could be incorrect.
     Fixed - The folder browser dialog was causing UI issues when using high DPI scaling.

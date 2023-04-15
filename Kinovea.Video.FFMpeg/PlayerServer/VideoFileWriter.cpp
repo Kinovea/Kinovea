@@ -42,14 +42,14 @@ VideoFileWriter::!VideoFileWriter()
 {
 }
 
-SaveResult VideoFileWriter::Save(SavingSettings^ _settings, VideoInfo _info, String^ _formatString, IEnumerable<Bitmap^>^ _frames, BackgroundWorker^ _worker)
+SaveResult VideoFileWriter::Save(SavingSettings^ s, VideoInfo videoInfo, String^ formatString, IEnumerable<Bitmap^>^ images, BackgroundWorker^ worker)
 {
     SaveResult result = SaveResult::Success;
 
-    if(_frames == nullptr || _worker == nullptr)
+    if(images == nullptr || worker == nullptr)
         return SaveResult::UnknownError;
 
-    result = OpenSavingContext(	_settings->File, _info, _formatString, _settings->OutputIntervalMilliseconds);
+    result = OpenSavingContext(s->File, videoInfo, formatString, s->OutputIntervalMilliseconds);
 
     if(result != SaveResult::Success)
     {
@@ -57,25 +57,26 @@ SaveResult VideoFileWriter::Save(SavingSettings^ _settings, VideoInfo _info, Str
         return result;
     }
 
-    int64_t current = 0;
-    for each (Bitmap^ bmp in _frames)
+    int64_t i = 0;
+    for each (Bitmap^ image in images)
     {
-        if(_worker->CancellationPending)
+        if(worker->CancellationPending)
         {
-            delete bmp;
+            delete image;
             result = SaveResult::Cancelled;
             break;
         }
         
-        result = SaveFrame(bmp);
+        result = SaveFrame(image);
         if(result != SaveResult::Success)
             log->Error("Frame not saved.");
         
-        _worker->ReportProgress(current++, _settings->EstimatedTotal);
+        i++;
+        worker->ReportProgress(i, s->EstimatedTotal);
 
         if(result != SaveResult::Success)
         {
-            delete bmp;		
+            delete image;
             break;
         }
     }
@@ -85,8 +86,8 @@ SaveResult VideoFileWriter::Save(SavingSettings^ _settings, VideoInfo _info, Str
     if(result == SaveResult::Cancelled)
     {
         log->Debug("Saving cancelled by user, deleting temporary file.");
-        if(File::Exists(_settings->File))
-            File::Delete(_settings->File);
+        if(File::Exists(s->File))
+            File::Delete(s->File);
     }
 
     return result;

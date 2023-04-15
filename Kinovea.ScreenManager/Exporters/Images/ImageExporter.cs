@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.ComponentModel;
-using Kinovea.Video;
-using Kinovea.Services;
-using System.Windows.Forms;
-using Kinovea.ScreenManager.Languages;
 using System.Drawing;
 using System.IO;
+using System.Windows.Forms;
+using Kinovea.Video;
+using Kinovea.Services;
+using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
@@ -66,7 +66,7 @@ namespace Kinovea.ScreenManager
             if (sfd.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(sfd.FileName))
                 return;
 
-            // Save this as the new preferred image format.
+            // Save the new preferred image format.
             PreferencesManager.PlayerPreferences.ImageFormat = FilesystemHelper.GetImageFormat(sfd.FileName);
             PreferencesManager.Save();
             
@@ -81,6 +81,7 @@ namespace Kinovea.ScreenManager
                         exporterImage.Export(sfd.FileName, player1);
                         player1.FrameServer.AfterSave();
                         break;
+
                     case ImageExportFormat.SideBySide:
 
                         // Show a configuration dialog to get the layout.
@@ -121,7 +122,7 @@ namespace Kinovea.ScreenManager
                         s.KeyframesOnly = false;
                         s.File = sfd.FileName;
                         s.ImageRetriever = player1.view.GetFlushedImage;
-                        s.OutputIntervalTimestamps = fceis.IntervalTimestamps;
+                        s.InputIntervalTimestamps = fceis.IntervalTimestamps;
                         s.EstimatedTotal = fceis.RemainingFrames;
 
                         fceis.Dispose();
@@ -200,7 +201,7 @@ namespace Kinovea.ScreenManager
 
             // Get the image enumerator.
             player1.FrameServer.VideoReader.BeforeFrameEnumeration();
-            IEnumerable<Bitmap> images = player1.FrameServer.EnumerateImages(s, s.OutputIntervalTimestamps);
+            IEnumerable<Bitmap> images = player1.FrameServer.EnumerateImages(s);
 
             // Enumerate and save the images.
             string dir = Path.GetDirectoryName(s.File);
