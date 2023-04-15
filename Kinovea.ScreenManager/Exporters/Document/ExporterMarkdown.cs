@@ -57,8 +57,12 @@ namespace Kinovea.ScreenManager
                 sb.Append(ItalicWrap + keyframe.TimeCode + ItalicWrap + ParagraphBreak);
                 sb.Append(string.Format("![]({0}){{width=100%}}", filePaths[i]) + ParagraphBreak);
 
+                // Extract comments from rich text to simple text.
                 rtb.Rtf = keyframe.Comments;
                 string text = rtb.Text;
+
+                // Enforce Markdown linebreaks.
+                text = text.Replace("\n", LineBreak);
                 sb.Append(text + ParagraphBreak);
             }
 
