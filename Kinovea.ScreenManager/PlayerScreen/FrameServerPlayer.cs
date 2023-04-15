@@ -37,7 +37,7 @@ namespace Kinovea.ScreenManager
     /// needed to render the frame and access file functions.
     /// PlayerScreenUserInterface is the View, FrameServerPlayer is the Model.
     /// </summary>
-    public class FrameServerPlayer : AbstractFrameServer
+    public class FrameServerPlayer
     {
         #region Properties
         public VideoReader VideoReader
@@ -239,12 +239,6 @@ namespace Kinovea.ScreenManager
             ChangeMirror(metadata.Mirrored);
             ChangeDemosaicing(metadata.Demosaicing);
             ChangeDeinterlacing(metadata.Deinterlacing);
-        }
-
-        public override void Draw(Graphics canvas)
-        {
-            // Draw the current image on canvas according to conf.
-            // This is called back from screen paint method.
         }
 
         /// <summary>
