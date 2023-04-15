@@ -463,8 +463,10 @@ namespace Kinovea.Root
         private void mnuOpenFileOnClick(object sender, EventArgs e)
         {
             NotificationCenter.RaiseStopPlayback(this);
-            
-            string filename = FilePicker.OpenVideo();
+
+            string title = ScreenManagerLang.mnuOpenVideo;
+            string filter = ScreenManagerLang.FileFilter_All + "|*.*";
+            string filename = FilePicker.OpenVideo(title, filter);
             if (!string.IsNullOrEmpty(filename))
                 OpenFromPath(filename);
         }

@@ -20,7 +20,6 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Windows.Forms;
-using Kinovea.ScreenManager;
 using Kinovea.Services;
 using Kinovea.Video;
 
@@ -98,7 +97,9 @@ namespace Kinovea.Root
             
             isOpening = true;
 
-            string filename = FilePicker.OpenVideo();
+            string title = ScreenManager.Languages.ScreenManagerLang.mnuOpenVideo;
+            string filter = ScreenManager.Languages.ScreenManagerLang.FileFilter_All + "|*.*";
+            string filename = FilePicker.OpenVideo(title, filter);
             if (!string.IsNullOrEmpty(filename))
                 VideoTypeManager.LoadVideo(filename, -1);
                 

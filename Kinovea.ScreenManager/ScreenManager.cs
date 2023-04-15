@@ -699,7 +699,9 @@ namespace Kinovea.ScreenManager
 
         private void Player_OpenVideoAsked(object sender, EventArgs e)
         {
-            string filename = FilePicker.OpenVideo();
+            string title = ScreenManagerLang.mnuOpenVideo;
+            string filter = ScreenManagerLang.FileFilter_All + "|*.*";
+            string filename = FilePicker.OpenVideo(title, filter);
             if (string.IsNullOrEmpty(filename))
                 return;
 

@@ -286,7 +286,6 @@
     <Compile Include="FilePatterns\Filenamer.cs" />
     <Compile Include="FilePatterns\PatternContext.cs" />
     <Compile Include="FilePatterns\PatternSymbolsFile.cs" />
-    <Compile Include="FilePicker.cs" />
     <Compile Include="Measurement\Calibration\CalibrationAxis.cs" />
     <Compile Include="Measurement\Geometry\Matrix3x3.cs" />
     <Compile Include="Measurement\Geometry\SegmentF.cs" />
