@@ -56,15 +56,9 @@ namespace Kinovea.Video
         public string File = "";
 
         /// <summary>
-        /// A delegate taking a video frame and an output bitmap and painting the 
-        /// video frame + the drawings at that particular time, to the output bitmap.
-        /// </summary>
-        public ImageRetriever ImageRetriever;
-
-        /// <summary>
         /// Approximate number of images to export.
         /// </summary>
-        public long EstimatedTotal = 0;
+        public int EstimatedTotal = 0;
 
         /// <summary>
         /// Repeat count for normal images.
@@ -90,5 +84,16 @@ namespace Kinovea.Video
         public bool PausedVideo = false;
         
         public double OutputFrameInterval = 0.4;
+
+        //-------------------------------
+        // Helpers
+        //-------------------------------
+
+        /// <summary>
+        /// A delegate taking a video frame and an output bitmap and painting the 
+        /// video frame + the drawings at that particular time, to the output bitmap.
+        /// </summary>
+        public ImageRetriever ImageRetriever;
+
     }
 }

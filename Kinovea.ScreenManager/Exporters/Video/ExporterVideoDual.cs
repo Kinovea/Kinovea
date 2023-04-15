@@ -64,7 +64,7 @@ namespace Kinovea.ScreenManager
             rightPlayer.DualSaveInProgress = true;
 
             dualSaveProgressBar = new FormProgressBar(true);
-            dualSaveProgressBar.CancelAsked = dualSave_CancelAsked;
+            dualSaveProgressBar.CancelAsked += dualSave_CancelAsked;
             
             // The worker thread runs in the background while the UI thread is in the progress bar dialog.
             // We only continue after these two lines once the video has been saved or the saving cancelled.

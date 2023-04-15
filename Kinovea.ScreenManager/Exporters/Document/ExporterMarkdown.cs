@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.IO;
 using Kinovea.Services;
+using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
@@ -40,6 +41,10 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
+            // We are currently in the background thread, we need that control used for conversion to
+            // also be on the background thread.
+            RichTextBox rtb = new RichTextBox();
+            
             for (int i = 0; i < metadata.Keyframes.Count; i++)
             {
                 var keyframe = metadata.Keyframes[i];
@@ -47,7 +52,10 @@ namespace Kinovea.ScreenManager
                 sb.Append(string.Format("![]({0})", filePaths[i]) + LineBreak);
                 sb.Append(Heading2Prefix + keyframe.Name + LineBreak);
                 sb.Append(ItalicWrap + keyframe.TimeCode + ItalicWrap + ParagraphBreak);
-                sb.Append(TextHelper.GetText(keyframe.Comments) + ParagraphBreak);
+
+                rtb.Rtf = keyframe.Comments;
+                string text = rtb.Text;
+                sb.Append(text + ParagraphBreak);
             }
 
             File.WriteAllText(path, sb.ToString());

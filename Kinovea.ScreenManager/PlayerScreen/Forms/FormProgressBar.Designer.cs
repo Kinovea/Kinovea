@@ -102,7 +102,6 @@ namespace Kinovea.ScreenManager
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "[formProgressBar_Title]";
-			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormProgressBar_FormClosing);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}

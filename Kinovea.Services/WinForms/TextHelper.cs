@@ -22,6 +22,7 @@ namespace Kinovea.Services
 
         /// <summary>
         /// Extract plain text from rich text.
+        /// This can only be called from the UI thread.
         /// </summary>
         public static string GetText(string richText)
         {

@@ -1707,7 +1707,8 @@ namespace Kinovea.ScreenManager
             if (player == null)
                 return;
 
-            DocumentExporter.Export(DocumentExportFormat.Mardown, player);
+            DocumentExporter exporter = new DocumentExporter();
+            exporter.Export(DocumentExportFormat.Mardown, player);
         }
 
 

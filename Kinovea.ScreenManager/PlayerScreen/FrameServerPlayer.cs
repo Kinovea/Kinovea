@@ -385,7 +385,7 @@ namespace Kinovea.ScreenManager
             s.ImageRetriever = imageRetriever;
             
             formProgressBar = new FormProgressBar(true);
-            formProgressBar.CancelAsked = FormProgressBark_CancelAsked;
+            formProgressBar.CancelAsked += FormProgressBark_CancelAsked;
             formProgressBar.ShowDialog();
             
             bgWorkerSave.RunWorkerAsync(s);
@@ -431,7 +431,7 @@ namespace Kinovea.ScreenManager
                     if(settings.KeyframesOnly)
                         settings.EstimatedTotal = metadata.Count * settings.Duplication;
                     else
-                        settings.EstimatedTotal = videoReader.EstimatedFrames * settings.Duplication;
+                        settings.EstimatedTotal = (int)(videoReader.EstimatedFrames * settings.Duplication);
                 }
                 else
                 {
@@ -443,7 +443,7 @@ namespace Kinovea.ScreenManager
                     
                     long regularFramesTotal = videoReader.EstimatedFrames - metadata.Count;
                     long keyframesTotal = metadata.Count * settings.KeyframeDuplication;
-                    settings.EstimatedTotal = regularFramesTotal + keyframesTotal;
+                    settings.EstimatedTotal = (int)(regularFramesTotal + keyframesTotal);
                 }
                 
                 log.DebugFormat("interval:{0}, duplication:{1}, kf duplication:{2}", settings.OutputFrameInterval, settings.Duplication, settings.KeyframeDuplication);

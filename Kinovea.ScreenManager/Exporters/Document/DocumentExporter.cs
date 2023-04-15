@@ -9,17 +9,34 @@ using System.IO;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Video;
 using Kinovea.Services;
+using System.ComponentModel;
+using System.Threading;
 
 namespace Kinovea.ScreenManager
 {
-    public static class DocumentExporter
+    public class DocumentExporter
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private BackgroundWorker worker = new BackgroundWorker();
+        private FormProgressBar formProgressBar = new FormProgressBar(true);
+        private PlayerScreen player;
+        private Metadata metadata;
+        private readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        public DocumentExporter()
+        {
+            worker.WorkerReportsProgress = true;
+            worker.WorkerSupportsCancellation = true;
+            worker.ProgressChanged += Worker_ProgressChanged;
+            worker.DoWork += Worker_DoWork;
+            worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
+
+            formProgressBar.CancelAsked += FormProgressBar_CancelAsked;
+        }
 
         /// <summary>
-        /// Export a document from the video and metadata.
+        /// Get a filename from the user and export a document out of the video and metadata.
         /// </summary>
-        public static void Export(DocumentExportFormat format, PlayerScreen player)
+        public void Export(DocumentExportFormat format, PlayerScreen player)
         {
             if (player == null)
                 return;
@@ -62,13 +79,11 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Export a document from the video and metadata.
         /// </summary>
-        private static void Export(string file, DocumentExportFormat format, Metadata metadata, PlayerScreen player)
+        private void Export(string file, DocumentExportFormat format, Metadata metadata, PlayerScreen player)
         {
             // Always export to Markdown first.
             // For other formats we delegate the conversion to Pandoc.
-
             SavingSettings s = new SavingSettings();
-
             s.Section = new VideoSection(metadata.SelectionStart, metadata.SelectionEnd);
             s.KeyframesOnly = true;
 
@@ -76,16 +91,33 @@ namespace Kinovea.ScreenManager
             s.ImageRetriever = player.view.GetFlushedImage;
             s.EstimatedTotal = metadata.Keyframes.Count;
 
+            // Setup global variables we'll use from inside the background thread.
+            this.player = player;
+            this.metadata = metadata;
+
+            // Start the background worker.
+            formProgressBar.Reset();
+            worker.RunWorkerAsync(s);
+
+            // Finally, show the progress bar.
+            // This is the end of this function and the UI thread is now in the progress bar.
+            // Anything else should run from the background thread.
+            formProgressBar.ShowDialog();
+        }
+
+        private void Worker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            // This runs in the background thread.
+            Thread.CurrentThread.Name = "DocumentExporter";
+            BackgroundWorker worker = sender as BackgroundWorker;
+            SavingSettings s = e.Argument as SavingSettings;
+
             // Get the key image enumerator.
             player.FrameServer.VideoReader.BeforeFrameEnumeration();
             IEnumerable<Bitmap> images = player.FrameServer.EnumerateImages(s);
 
-            // TODO: start background thread with progress bar.
-            // TODO: Check if enumeration got cancelled.
-            // TODO: if the format is not markdown, save assets to a temporary directory.
-
             string assetsDir = "images";
-            string assetsPath = Path.Combine(Path.GetDirectoryName(file), assetsDir);
+            string assetsPath = Path.Combine(Path.GetDirectoryName(s.File), assetsDir);
             if (!Directory.Exists(assetsPath))
                 Directory.CreateDirectory(assetsPath);
 
@@ -95,6 +127,11 @@ namespace Kinovea.ScreenManager
             int i = 0;
             foreach (var image in images)
             {
+                if (worker.CancellationPending)
+                {
+                    break;
+                }
+
                 string filename = string.Format("{0}.png", i.ToString("D" + magnitude));
                 filePathsRelative.Add(Path.Combine(assetsDir, filename));
                 
@@ -102,15 +139,45 @@ namespace Kinovea.ScreenManager
                 image.Save(filePath);
 
                 i++;
+                worker.ReportProgress(i, s.EstimatedTotal);
             }
 
             player.FrameServer.VideoReader.AfterFrameEnumeration();
 
-            ExporterMarkdown exporterMarkdown = new ExporterMarkdown();
-            exporterMarkdown.Export(file, filePathsRelative, metadata);
+            if (worker.CancellationPending)
+            {
+                // We got cancelled, nothing more to do.
+            }
+            else
+            {
+                ExporterMarkdown exporterMarkdown = new ExporterMarkdown();
+                exporterMarkdown.Export(s.File, filePathsRelative, metadata);
 
-            // TODO: handle other formats.
+                // TODO: handle other formats.
+                
+            }
+        }
 
+        private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            // This runs in the UI thread.
+            // This method is called from the background thread for each processed frame.
+            int value = e.ProgressPercentage;
+            int max = (int)e.UserState;
+            formProgressBar.Update(value, max, true);
+        }
+
+        private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            // We are back in the UI thread after the work is complete or cancelled.
+            formProgressBar.Close();
+            formProgressBar.Dispose();
+        }
+
+        private void FormProgressBar_CancelAsked(object sender, EventArgs e)
+        {
+            // Turn the CancellationPending flag on.
+            worker.CancelAsync();
         }
     }
 }
