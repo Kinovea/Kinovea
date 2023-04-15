@@ -285,6 +285,12 @@
     <Compile Include="Exporters\Images\ExporterImageSequence.cs" />
     <Compile Include="Exporters\Spreadsheet\ExporterCSVChrono.cs" />
     <Compile Include="Exporters\Video\ExporterVideo.cs" />
+    <Compile Include="Exporters\Video\FormConfigureExportVideoSlideshow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Exporters\Video\FormConfigureExportVideoSlideshow.Designer.cs">
+      <DependentUpon>FormConfigureExportVideoSlideshow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Exporters\Video\FormConfigureExportVideo.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -961,6 +967,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CaptureScreen\Views\InfobarCapture.resx">
       <DependentUpon>InfobarCapture.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Exporters\Video\FormConfigureExportVideoSlideshow.resx">
+      <DependentUpon>FormConfigureExportVideoSlideshow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Exporters\Video\FormConfigureExportVideo.resx">
       <DependentUpon>FormConfigureExportVideo.cs</DependentUpon>

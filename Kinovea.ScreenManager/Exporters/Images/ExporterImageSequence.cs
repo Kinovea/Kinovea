@@ -80,7 +80,7 @@ namespace Kinovea.ScreenManager
                 image.Save(filePath);
 
                 i++;
-                worker.ReportProgress(i, s.EstimatedTotal);
+                worker.ReportProgress(i, s.TotalFrameCount);
             }
 
             player.FrameServer.VideoReader.AfterFrameEnumeration();

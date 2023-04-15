@@ -406,7 +406,7 @@ namespace Kinovea.ScreenManager
             //s.InputIntervalMilliseconds = frameInterval;
             s.FlushDrawings = flushDrawings;
             s.KeyframesOnly = keyframesOnly;
-            s.PausedVideo = pausedVideo;
+            s.HasDuplicatedKeyframes = pausedVideo;
             s.ImageRetriever = imageRetriever;
             
             formProgressBar = new FormProgressBar(true);
@@ -530,11 +530,11 @@ namespace Kinovea.ScreenManager
                 // Paint the frame + annotations to our bitmap.
                 bool onKeyframe = settings.ImageRetriever(vf, output);
 
-                // Store the input timestamp in the bitmap, this may be used by the caller to build a file name.
+                // Store the input timestamp in the bitmap, this may be used by the caller to build a file name for image exports.
                 output.Tag = vf.Timestamp;
 
-                int repeat = (settings.PausedVideo && onKeyframe) ? settings.DuplicationKeyframes : settings.Duplication;
-                for (int i = 0; i < repeat; i++)
+                int repeatCount = (settings.HasDuplicatedKeyframes && onKeyframe) ? settings.DuplicationKeyframes : settings.Duplication;
+                for (int i = 0; i < repeatCount; i++)
                 { 
                     yield return output;
                 }

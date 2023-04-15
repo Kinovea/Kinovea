@@ -61,8 +61,9 @@ namespace Kinovea.Video
 
         /// <summary>
         /// Approximate number of images to export.
+        /// This is used for the progress bar.
         /// </summary>
-        public int EstimatedTotal = 0;
+        public int TotalFrameCount = 0;
 
         /// <summary>
         /// Repeat count for normal images.
@@ -83,9 +84,10 @@ namespace Kinovea.Video
         public bool FlushDrawings = true;
         
         /// <summary>
-        /// Whether we are in the context of exporting a video with pauses.
+        /// Whether we are in the context of exporting a video with pauses on keyframes.
+        /// This is true for video slideshow and video with pauses.
         /// </summary>
-        public bool PausedVideo = false;
+        public bool HasDuplicatedKeyframes = false;
 
         /// <summary>
         /// Interval between exported frames, in milliseconds.

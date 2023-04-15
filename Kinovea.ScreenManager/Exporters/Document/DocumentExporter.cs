@@ -109,7 +109,7 @@ namespace Kinovea.ScreenManager
 
             s.File = file;
             s.ImageRetriever = player.view.GetFlushedImage;
-            s.EstimatedTotal = metadata.Keyframes.Count;
+            s.TotalFrameCount = metadata.Keyframes.Count;
 
             // Setup global variables we'll use from inside the background thread.
             this.player = player;
@@ -149,7 +149,7 @@ namespace Kinovea.ScreenManager
 
             // Enumerate and save the images. Collect the relative filenames for later.
             List<string> filePathsRelative = new List<string>();
-            int magnitude = (int)Math.Ceiling(Math.Log10(s.EstimatedTotal));
+            int magnitude = (int)Math.Ceiling(Math.Log10(s.TotalFrameCount));
             int i = 0;
             foreach (var image in images)
             {
@@ -163,7 +163,7 @@ namespace Kinovea.ScreenManager
                 image.Save(filePath);
 
                 i++;
-                worker.ReportProgress(i, s.EstimatedTotal);
+                worker.ReportProgress(i, s.TotalFrameCount);
             }
 
             player.FrameServer.VideoReader.AfterFrameEnumeration();

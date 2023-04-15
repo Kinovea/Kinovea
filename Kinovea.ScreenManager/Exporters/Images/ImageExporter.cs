@@ -104,7 +104,7 @@ namespace Kinovea.ScreenManager
                         s.File = sfd.FileName;
                         s.ImageRetriever = player1.view.GetFlushedImage;
                         s.InputIntervalTimestamps = fceis.IntervalTimestamps;
-                        s.EstimatedTotal = fceis.RemainingFrames;
+                        s.TotalFrameCount = fceis.RemainingFrames;
 
                         fceis.Dispose();
 
@@ -120,7 +120,7 @@ namespace Kinovea.ScreenManager
                         s.KeyframesOnly = true;
                         s.File = sfd.FileName;
                         s.ImageRetriever = player1.view.GetFlushedImage;
-                        s.EstimatedTotal = player1.FrameServer.Metadata.Keyframes.Count;
+                        s.TotalFrameCount = player1.FrameServer.Metadata.Keyframes.Count;
 
                         ExporterImageSequence exporterKeyImages = new ExporterImageSequence();
                         exporterKeyImages.Export(s, player1);

@@ -72,7 +72,7 @@ SaveResult VideoFileWriter::Save(SavingSettings^ s, VideoInfo videoInfo, String^
             log->Error("Frame not saved.");
         
         i++;
-        worker->ReportProgress(i, s->EstimatedTotal);
+        worker->ReportProgress(i, s->TotalFrameCount);
 
         if(result != SaveResult::Success)
         {

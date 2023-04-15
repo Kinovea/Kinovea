@@ -106,18 +106,48 @@ namespace Kinovea.ScreenManager
 
                         // Total frames
                         int totalFrames = (int)((metadata.SelectionEnd - metadata.SelectionStart) / metadata.AverageTimeStampsPerFrame) + 1;
-                        s.EstimatedTotal = totalFrames * s.Duplication;
+                        s.TotalFrameCount = totalFrames * s.Duplication;
 
                         ExporterVideo exporterVideo = new ExporterVideo();
                         exporterVideo.Export(s, player1);
                         break;
 
                     case VideoExportFormat.VideoSlideShow:
+                        {
+                            // Show a configuration dialog.
+                            FormConfigureExportVideoSlideshow fcevs = new FormConfigureExportVideoSlideshow();
+                            fcevs.StartPosition = FormStartPosition.CenterScreen;
+                            if (fcevs.ShowDialog() != DialogResult.OK)
+                            {
+                                fcevs.Dispose();
+                                return;
+                            }
 
-                        // Show a configuration dialog.
+                            double slideDurationMilliseconds = fcevs.SlideDurationMilliseconds;
+                            fcevs.Dispose();
 
+                            s.Section = new VideoSection(metadata.SelectionStart, metadata.SelectionEnd);
+                            s.KeyframesOnly = true;
+                            s.File = sfd.FileName;
+                            s.ImageRetriever = player1.view.GetFlushedImage;
+                            s.OutputIntervalMilliseconds = slideDurationMilliseconds;
 
-                        break;
+                            // Setup keyframe duplication.
+                            s.HasDuplicatedKeyframes = true;
+                            s.DuplicationKeyframes = 1;
+                            if (s.OutputIntervalMilliseconds > maxInterval)
+                            {
+                                s.DuplicationKeyframes = (int)Math.Ceiling(s.OutputIntervalMilliseconds / maxInterval);
+                                s.OutputIntervalMilliseconds = s.OutputIntervalMilliseconds / s.DuplicationKeyframes;
+                            }
+
+                            // Total frames
+                            s.TotalFrameCount = metadata.Keyframes.Count * s.DuplicationKeyframes;
+
+                            ExporterVideo exporterVideoSlideshow = new ExporterVideo();
+                            exporterVideoSlideshow.Export(s, player1);
+                            break;
+                        }
 
                     case VideoExportFormat.VideoWithPauses:
 
