@@ -141,7 +141,9 @@ namespace Kinovea.ScreenManager
 
             // The font size is stored in the rich text format string itself.
             // Get rid of all formatting.
-            rtbComment.Text = TextHelper.GetText(keyframe.Comments);
+            string text = TextHelper.GetText(keyframe.Comments);
+            rtbComment.Text = text;
+            UpdateTextHeight();
 
             AfterColorChange();
 
@@ -253,7 +255,7 @@ namespace Kinovea.ScreenManager
         {
             // Manually update the textbox height and manually grow the containers.
             // Other approaches tried:
-            // - Having the container controls on autosize. broke work during init.
+            // - Having the container controls on autosize. Broke during init.
             // - Listening to ContentsResized event. Doesn't work with wordwrap.
             // - Using GetPreferredSize. 
             //
@@ -262,10 +264,10 @@ namespace Kinovea.ScreenManager
             // the content. Then grow the containers.
 
             // Grow richtextbox.
-            const int padding = 6;
+            const int padding = 3;
             int numLines = rtbComment.GetLineFromCharIndex(rtbComment.TextLength) + 1;
             int border = rtbComment.Height - rtbComment.ClientSize.Height;
-            rtbComment.Height = rtbComment.Font.Height * numLines + padding + border;
+            rtbComment.Height = (rtbComment.Font.Height + 3) * numLines + border;
 
             // Grow containers.
             pnlComment.Height = rtbComment.Top + rtbComment.Height + rtbComment.Margin.Bottom + padding;
@@ -322,6 +324,18 @@ namespace Kinovea.ScreenManager
         private void RaiseSelected()
         {
             Selected?.Invoke(this, new TimeEventArgs(keyframe.Timestamp));
+        }
+
+        private void KeyframeCommentBox_Resize(object sender, EventArgs e)
+        {
+            if (manualUpdate)
+                return;
+
+            manualUpdate = true;
+
+            UpdateTextHeight();
+
+            manualUpdate = false;
         }
     }
 }

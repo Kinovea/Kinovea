@@ -497,8 +497,10 @@ namespace Kinovea.ScreenManager
             {
                 KeyframeBox box = keyframeBoxes[i];
 
-                box.DeleteAsked -= KeyframeControl_KeyframeDeleteAsked;
-                box.Selected -= KeyframeControl_KeyframeSelected;
+                box.Selected -= KeyframeControl_Selected;
+                box.ShowCommentsAsked -= KeyframeControl_ShowCommentsAsked;
+                box.MoveToCurrentTimeAsked -= KeyframeControl_MoveToCurrentTimeAsked;
+                box.DeleteAsked -= KeyframeControl_DeleteAsked;
 
                 keyframeBoxes.Remove(box);
                 pnlThumbnails.Controls.Remove(box);
@@ -988,7 +990,7 @@ namespace Kinovea.ScreenManager
 
             tabControl.TabPages[0].Controls.Add(sidePanelKeyframes);
             sidePanelKeyframes.Dock = DockStyle.Fill;
-            sidePanelKeyframes.KeyframeSelected += KeyframeControl_KeyframeSelected;
+            sidePanelKeyframes.KeyframeSelected += KeyframeControl_Selected;
             sidePanelKeyframes.KeyframeUpdated += KeyframeControl_KeyframeUpdated;
 
             // Hide work-in-progress panels.
@@ -4005,9 +4007,10 @@ namespace Kinovea.ScreenManager
 
                     // Finish the setup
                     box.Left = pixelsOffset + pixelsSpacing;
-                    box.DeleteAsked += KeyframeControl_KeyframeDeleteAsked;
-                    box.Selected += KeyframeControl_KeyframeSelected;
+                    box.Selected += KeyframeControl_Selected;
+                    box.ShowCommentsAsked += KeyframeControl_ShowCommentsAsked;
                     box.MoveToCurrentTimeAsked += KeyframeControl_MoveToCurrentTimeAsked;
+                    box.DeleteAsked += KeyframeControl_DeleteAsked;
 
                     pixelsOffset += (pixelsSpacing + box.Width);
 
@@ -4123,7 +4126,7 @@ namespace Kinovea.ScreenManager
             }
 
             if (next >= 0 && m_FrameServer.Metadata[next].Timestamp <= m_iSelEnd)
-                KeyframeControl_KeyframeSelected(null, new TimeEventArgs(m_FrameServer.Metadata[next].Timestamp));
+                KeyframeControl_Selected(null, new TimeEventArgs(m_FrameServer.Metadata[next].Timestamp));
         }
         public void GotoPreviousKeyframe()
         {
@@ -4141,7 +4144,7 @@ namespace Kinovea.ScreenManager
             }
 
             if (prev >= 0 && m_FrameServer.Metadata[prev].Timestamp >= m_iSelStart)
-                KeyframeControl_KeyframeSelected(null, new TimeEventArgs(m_FrameServer.Metadata[prev].Timestamp));
+                KeyframeControl_Selected(null, new TimeEventArgs(m_FrameServer.Metadata[prev].Timestamp));
         }
 
         public void AddKeyframe()
@@ -4307,8 +4310,8 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        #region ThumbBox event Handlers
-        private void KeyframeControl_KeyframeDeleteAsked(object sender, EventArgs e)
+        #region Thumbnail box event Handlers
+        private void KeyframeControl_DeleteAsked(object sender, EventArgs e)
         {
             KeyframeBox keyframeBox = sender as KeyframeBox;
             if (keyframeBox == null)
@@ -4404,7 +4407,7 @@ namespace Kinovea.ScreenManager
             DoInvalidate();
         }
         
-        private void KeyframeControl_KeyframeSelected(object sender, TimeEventArgs e)
+        private void KeyframeControl_Selected(object sender, TimeEventArgs e)
         {
             // A keyframe was selected from a keyframe control (thumbnail or side panel),
             // or from a command jumping from keyframe to keyframe.
@@ -4426,6 +4429,16 @@ namespace Kinovea.ScreenManager
 
             UpdatePositionUI();
             ActivateKeyframe(m_iCurrentPosition);
+        }
+
+        private void KeyframeControl_ShowCommentsAsked(object sender, EventArgs e)
+        {
+            // Make sure the properties panel is visible.
+            if (showPropertiesPanel)
+                return;
+            
+            splitViewport_Properties.Panel2Collapsed = false;
+            showPropertiesPanel = true;
         }
 
         private void KeyframeControl_KeyframeUpdated(object sender, EventArgs<Guid> e)

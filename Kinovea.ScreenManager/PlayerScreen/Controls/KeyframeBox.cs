@@ -38,6 +38,10 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public event EventHandler<TimeEventArgs> Selected;
         /// <summary>
+        /// Display the side panel.
+        /// </summary>
+        public event EventHandler ShowCommentsAsked;
+        /// <summary>
         /// Move this keyframe the current time of the playhead.
         /// </summary>
         public event EventHandler MoveToCurrentTimeAsked;
@@ -137,9 +141,16 @@ namespace Kinovea.ScreenManager
             if (e.Button != MouseButtons.Left)
                 return;
 
-            // Note: for double click drag and drop conflicts with the double click event.
+            // Note for double click: drag and drop conflicts with the double click event.
             // We can use explicit click counting if needed. (e.Clicks == 2)
-            Selected?.Invoke(this, new TimeEventArgs(keyframe.Timestamp));
+            if (e.Clicks == 2)
+            {
+                ShowCommentsAsked?.Invoke(this, EventArgs.Empty);
+            }
+            else
+            {
+                Selected?.Invoke(this, new TimeEventArgs(keyframe.Timestamp));
+            }
         }
         private void Controls_MouseUp(object sender, MouseEventArgs e)
         {
