@@ -408,7 +408,7 @@ namespace Kinovea.ScreenManager
 
             dualSaveInProgress = true;
 
-            DualVideoExporter exporter = new DualVideoExporter();
+            ExporterVideoDual exporter = new ExporterVideoDual();
             exporter.Export(commonTimeline, players[0], players[1], view.Merging);
 
             dualSaveInProgress = false;

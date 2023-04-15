@@ -395,7 +395,7 @@
     <Compile Include="DualPlayer\CommonTimeline.cs" />
     <Compile Include="DualPlayer\DualPlayerController.cs" />
     <Compile Include="DualPlayer\DualSnapshoter.cs" />
-    <Compile Include="DualPlayer\DualVideoExporter.cs" />
+    <Compile Include="Exporters\Video\ExporterVideoDual.cs" />
     <Compile Include="DualPlayer\PlayerSyncInfo.cs" />
     <Compile Include="Metadata\Drawings\CoordinateSystem\CoordinateSystemGridFinder.cs" />
     <Compile Include="Metadata\Drawings\CoordinateSystem\GridAxis.cs" />
@@ -539,7 +539,6 @@
     <Compile Include="RecoveryManager.cs" />
     <Compile Include="ScreenRemover.cs" />
     <Compile Include="Temporizer.cs" />
-    <Compile Include="TextHelper.cs" />
     <Compile Include="Thumbnails\FileDetails.cs" />
     <Compile Include="UndoRedo\HistoryMemento.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoAddDrawing.cs" />

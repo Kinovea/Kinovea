@@ -5232,23 +5232,21 @@ namespace Kinovea.ScreenManager
             }
         }
         #endregion
-        
-        #region Export images and videos
 
-        /// <summary>
-        /// Export the current frame with drawings to the clipboard.
-        /// </summary>
-        private void CopyImageToClipboard()
+        #region Export event handlers
+        private void btnSaveAnnotations_Click(object sender, EventArgs e)
         {
-            if (!m_FrameServer.Loaded || m_FrameServer.CurrentImage == null)
+            if (!m_FrameServer.Loaded)
                 return;
 
             StopPlaying();
             OnPauseAsked();
 
-            Bitmap outputImage = GetFlushedImage();
-            Clipboard.SetImage(outputImage);
-            outputImage.Dispose();
+            SaveAnnotations();
+
+            m_iFramesToDecode = 1;
+            ShowNextFrame(m_iSelStart, true);
+            ActivateKeyframe(m_iCurrentPosition, true);
         }
 
         /// <summary>
@@ -5258,7 +5256,7 @@ namespace Kinovea.ScreenManager
         {
             if (!m_FrameServer.Loaded || m_FrameServer.CurrentImage == null)
                 return;
-            
+
             StopPlaying();
             OnPauseAsked();
 
@@ -5276,12 +5274,12 @@ namespace Kinovea.ScreenManager
                     dlgSave.RestoreDirectory = true;
                     dlgSave.Filter = FilesystemHelper.SaveImageFilter();
                     dlgSave.FilterIndex = FilesystemHelper.GetFilterIndex(dlgSave.Filter, PreferencesManager.PlayerPreferences.ImageFormat);
-                
-                    if(videoFilterIsActive)
+
+                    if (videoFilterIsActive)
                         dlgSave.FileName = Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath);
                     else
                         dlgSave.FileName = BuildFilename(m_FrameServer.VideoReader.FilePath, m_iCurrentPosition, PreferencesManager.PlayerPreferences.TimecodeFormat);
-                
+
                     if (dlgSave.ShowDialog() == DialogResult.OK)
                     {
                         Bitmap outputImage = GetFlushedImage();
@@ -5301,20 +5299,45 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        private void btnSaveAnnotations_Click(object sender, EventArgs e)
+
+        #endregion
+
+        #region Export implementation
+
+        /// <summary>
+        /// Export the current frame with drawings to the clipboard.
+        /// </summary>
+        private void CopyImageToClipboard()
         {
-            if (!m_FrameServer.Loaded)
+            if (!m_FrameServer.Loaded || m_FrameServer.CurrentImage == null)
                 return;
 
             StopPlaying();
             OnPauseAsked();
 
-            SaveAnnotations();
-
-            m_iFramesToDecode = 1;
-            ShowNextFrame(m_iSelStart, true);
-            ActivateKeyframe(m_iCurrentPosition, true);
+            Bitmap outputImage = GetFlushedImage();
+            Clipboard.SetImage(outputImage);
+            outputImage.Dispose();
         }
+
+        /// <summary>
+        /// Save to the current KVA if it exists, ask for a filename if not.
+        /// </summary>
+        private void SaveAnnotations()
+        {
+            MetadataSerializer serializer = new MetadataSerializer();
+            serializer.UserSave(m_FrameServer.Metadata, m_FrameServer.VideoReader.FilePath);
+        }
+
+        /// <summary>
+        /// Save a KVA to a new file.
+        /// </summary>
+        private void SaveAnnotationsAs()
+        {
+            MetadataSerializer serializer = new MetadataSerializer();
+            serializer.UserSaveAs(m_FrameServer.Metadata, m_FrameServer.VideoReader.FilePath);
+        }
+        
 
         private void btnSaveAnnotationsAs_Click(object sender, EventArgs e)
         {
@@ -5415,24 +5438,6 @@ namespace Kinovea.ScreenManager
             m_iFramesToDecode = 1;
             ShowNextFrame(m_iSelStart, true);
             ActivateKeyframe(m_iCurrentPosition, true);
-        }
-
-        /// <summary>
-        /// Save to the current KVA if it exists, ask for a filename if not.
-        /// </summary>
-        private void SaveAnnotations()
-        {
-            MetadataSerializer serializer = new MetadataSerializer();
-            serializer.UserSave(m_FrameServer.Metadata, m_FrameServer.VideoReader.FilePath);
-        }
-
-        /// <summary>
-        /// Save a KVA to a new file.
-        /// </summary>
-        private void SaveAnnotationsAs()
-        {
-            MetadataSerializer serializer = new MetadataSerializer();
-            serializer.UserSaveAs(m_FrameServer.Metadata, m_FrameServer.VideoReader.FilePath);
         }
 
         /// <summary>
@@ -5568,7 +5573,6 @@ namespace Kinovea.ScreenManager
             else
                 tcf = _timeCodeFormat;
 
-            // Timecode string (Not relative to sync position)
             string suffix = m_FrameServer.TimeStampsToTimecode(_position, TimeType.UserOrigin, tcf, false);
             string maxSuffix = m_FrameServer.TimeStampsToTimecode(m_iSelEnd, TimeType.UserOrigin, tcf, false);
 

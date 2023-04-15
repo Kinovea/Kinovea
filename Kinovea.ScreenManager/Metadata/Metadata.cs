@@ -600,6 +600,13 @@ namespace Kinovea.ScreenManager
 
             return -1;
         }
+
+        public bool IsKeyframe(long position)
+        {
+            return keyframes.Any(kf => kf.Timestamp == position);
+        }
+
+
         public Guid GetKeyframeId(int keyframeIndex)
         {
             return keyframes[keyframeIndex].Id;

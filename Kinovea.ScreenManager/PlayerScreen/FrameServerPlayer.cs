@@ -85,7 +85,7 @@ namespace Kinovea.ScreenManager
         private VideoReader videoReader;
         private HistoryStack historyStack;
         private Metadata metadata;
-        private formProgressBar formProgressBar;
+        private FormProgressBar formProgressBar;
         private BackgroundWorker bgWorkerSave = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
         private SaveResult saveResult;
         private bool savingMetada;
@@ -248,6 +248,67 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// Returns a textual representation of a time or duration in the user-preferred format.
+        /// The time must be passed in absolute timestamps, and the time type is used to make it relative.
+        /// This is the implementation of the "TimeCodeBuilder" delegate used by drawings.
+        /// </summary>
+        public string TimeStampsToTimecode(long timestamps, TimeType type, TimecodeFormat format, bool symbol)
+        {
+            if (videoReader == null || !videoReader.Loaded)
+                return "0";
+
+            TimecodeFormat tcf = format == TimecodeFormat.Unknown ? PreferencesManager.PlayerPreferences.TimecodeFormat : format;
+            long actualTimestamps;
+            switch (type)
+            {
+                case TimeType.WorkingZone:
+                    actualTimestamps = timestamps - videoReader.WorkingZone.Start;
+                    break;
+                case TimeType.UserOrigin:
+                    actualTimestamps = timestamps - metadata.TimeOrigin;
+                    break;
+                case TimeType.Absolute:
+                case TimeType.Duration:
+                default:
+                    actualTimestamps = timestamps;
+                    break;
+            }
+
+            // TODO: use double for info.AverageTimestampsPerFrame.
+            double averageTimestampsPerFrame = videoReader.Info.AverageTimeStampsPerSeconds / videoReader.Info.FramesPerSeconds;
+
+            int frames = 0;
+            if (averageTimestampsPerFrame != 0)
+                frames = (int)Math.Round(actualTimestamps / averageTimestampsPerFrame);
+
+            if (type == TimeType.Duration)
+                frames++;
+
+            double milliseconds = frames * metadata.UserInterval / metadata.HighSpeedFactor;
+            double framerate = 1000.0 / metadata.UserInterval * metadata.HighSpeedFactor;
+            double durationTimestamps = videoReader.Info.DurationTimeStamps - averageTimestampsPerFrame;
+            double totalFrames = durationTimestamps / averageTimestampsPerFrame;
+
+            return TimeHelper.GetTimestring(framerate, frames, milliseconds, actualTimestamps, durationTimestamps, totalFrames, tcf, symbol);
+        }
+
+        public void ActivateVideoFilter(VideoFilterType type)
+        {
+            metadata.ActivateVideoFilter(type);
+            metadata.ActiveVideoFilter.SetFrames(VideoReader.WorkingZoneFrames);
+        }
+
+        public void DeactivateVideoFilter()
+        {
+            metadata.DeactivateVideoFilter();
+        }
+
+        #endregion
+
+
+        #region Support functions for exporters that need the images
+
+        /// <summary>
         /// Main video export.
         /// </summary>
         public void SaveVideo(double playbackFrameInterval, double slowmotionPercentage, ImageRetriever imageRetriever)
@@ -309,61 +370,6 @@ namespace Kinovea.ScreenManager
             NotificationCenter.RaiseRefreshFileExplorer(this, false);
         }
 
-        /// <summary>
-        /// Returns a textual representation of a time or duration in the user-preferred format.
-        /// The time must be passed in absolute timestamps, and the time type is used to make it relative.
-        /// This is the implementation of the "TimeCodeBuilder" delegate used by drawings.
-        /// </summary>
-        public string TimeStampsToTimecode(long timestamps, TimeType type, TimecodeFormat format, bool symbol)
-        {
-            if (videoReader == null || !videoReader.Loaded)
-                return "0";
-
-            TimecodeFormat tcf = format == TimecodeFormat.Unknown ? PreferencesManager.PlayerPreferences.TimecodeFormat : format;
-            long actualTimestamps;
-            switch (type)
-            {
-                case TimeType.WorkingZone:
-                    actualTimestamps = timestamps - videoReader.WorkingZone.Start;
-                    break;
-                case TimeType.UserOrigin:
-                    actualTimestamps = timestamps - metadata.TimeOrigin;
-                    break;
-                case TimeType.Absolute:
-                case TimeType.Duration:
-                default:
-                    actualTimestamps = timestamps;
-                    break;
-            }
-
-            // TODO: use double for info.AverageTimestampsPerFrame.
-            double averageTimestampsPerFrame = videoReader.Info.AverageTimeStampsPerSeconds / videoReader.Info.FramesPerSeconds;
-
-            int frames = 0;
-            if (averageTimestampsPerFrame != 0)
-                frames = (int)Math.Round(actualTimestamps / averageTimestampsPerFrame);
-
-            if (type == TimeType.Duration)
-                frames++;
-
-            double milliseconds = frames * metadata.UserInterval / metadata.HighSpeedFactor;
-            double framerate = 1000.0 / metadata.UserInterval * metadata.HighSpeedFactor;
-            double durationTimestamps = videoReader.Info.DurationTimeStamps - averageTimestampsPerFrame;
-            double totalFrames = durationTimestamps / averageTimestampsPerFrame;
-
-            return TimeHelper.GetTimestring(framerate, frames, milliseconds, actualTimestamps, durationTimestamps, totalFrames, tcf, symbol);
-        }
-
-        public void ActivateVideoFilter(VideoFilterType type)
-        {
-            metadata.ActivateVideoFilter(type);
-            metadata.ActiveVideoFilter.SetFrames(VideoReader.WorkingZoneFrames);
-        }
-        
-        public void DeactivateVideoFilter()
-        {
-            metadata.DeactivateVideoFilter();
-        }
         #endregion
         
         #region Saving processing
@@ -378,10 +384,11 @@ namespace Kinovea.ScreenManager
             s.PausedVideo = pausedVideo;
             s.ImageRetriever = imageRetriever;
             
-            formProgressBar = new formProgressBar(true);
-            formProgressBar.Cancel = Cancel_Asked;
-            bgWorkerSave.RunWorkerAsync(s);
+            formProgressBar = new FormProgressBar(true);
+            formProgressBar.CancelAsked = FormProgressBark_CancelAsked;
             formProgressBar.ShowDialog();
+            
+            bgWorkerSave.RunWorkerAsync(s);
         }
         
         #region Background worker event handlers
@@ -440,7 +447,7 @@ namespace Kinovea.ScreenManager
                 }
                 
                 log.DebugFormat("interval:{0}, duplication:{1}, kf duplication:{2}", settings.OutputFrameInterval, settings.Duplication, settings.KeyframeDuplication);
-                
+
                 videoReader.BeforeFrameEnumeration();
                 IEnumerable<Bitmap> images = EnumerateImages(settings);
 
@@ -460,13 +467,14 @@ namespace Kinovea.ScreenManager
         }
         
         /// <summary>
-        /// Lazily enumerate the images that will end up in the final file.
-        /// Return fully painted bitmaps ready for saving in the output.
-        /// In case of early cancellation or error, the caller must dispose the bitmap to avoid a leak.
+        /// Lazily enumerates the images from the video, for export purposes.
+        /// This includes skipping and duplicating frames as needed.
+        /// This returns an internal bitmap and the caller should do its own copy.
         /// </summary>
-        private IEnumerable<Bitmap> EnumerateImages(SavingSettings settings)
+        public IEnumerable<Bitmap> EnumerateImages(SavingSettings settings)
         {
             Bitmap output = null;
+            int consumedKeyframes = 0;
 
             // Enumerates the raw frames from the video (at original video size).
             foreach (VideoFrame vf in videoReader.FrameEnumerator())
@@ -481,20 +489,38 @@ namespace Kinovea.ScreenManager
                     yield break;
                 }
 
+                // We have a video frame.
+                bool isKeyframe = this.metadata.IsKeyframe(vf.Timestamp);
+                if (settings.KeyframesOnly && !isKeyframe)
+                    continue;
+
+                if (isKeyframe)
+                    consumedKeyframes++;
+
+                // Initialize the output Bitmap if not done already.
                 if (output == null)
                     output = new Bitmap(vf.Image.Width, vf.Image.Height, vf.Image.PixelFormat);
                 
+                // Paint the frame + annotations to our bitmap.
                 bool onKeyframe = settings.ImageRetriever(vf, output);
-                bool savable = onKeyframe || !settings.KeyframesOnly;
 
-                if (savable)
+                int repeat = (settings.PausedVideo && onKeyframe) ? settings.KeyframeDuplication : settings.Duplication;
+                for (int i = 0; i < repeat; i++)
+                { 
+                    yield return output;
+                }
+
+                // If we are done getting keyframes, no need to enumerate further.
+                if (settings.KeyframesOnly && consumedKeyframes == metadata.Keyframes.Count)
                 {
-                    int duplication = settings.PausedVideo && onKeyframe ? settings.KeyframeDuplication : settings.Duplication;
-                    for (int i = 0; i < duplication; i++)
-                        yield return output;
+                    if (output != null)
+                        output.Dispose();
+                    
+                    yield break;
                 }
             }
 
+            // End of enumeration.
             if (output != null)
                 output.Dispose();
         }
@@ -558,7 +584,7 @@ namespace Kinovea.ScreenManager
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Exclamation);
         }
-        private void Cancel_Asked(object sender, EventArgs e)
+        private void FormProgressBark_CancelAsked(object sender, EventArgs e)
         {
             // User cancelled from progress form.
             bgWorkerSave.CancelAsync();

@@ -34,29 +34,25 @@ namespace Kinovea.ScreenManager
     /// The progress is computed outside and communicated through Update() method.
     /// See AbstractVideoFilter for usage sample.
     /// </summary>
-    public partial class formProgressBar : Form
+    public partial class FormProgressBar : Form
     {
         #region Callbacks
-        public EventHandler Cancel;
+        public EventHandler CancelAsked;
         #endregion
         
         #region Members
-        private bool m_IsIdle;
-        private bool m_bIsCancelling;
-        private bool m_bAsPercentage;
+        private bool isIdle;
+        private bool isCancelling;
         #endregion
         
         #region Constructor
-        public formProgressBar(bool _cancellable) : this(_cancellable, true){}
-        public formProgressBar(bool _cancellable, bool _asPercentage)
+        public FormProgressBar(bool isCancellable)
         {
-            m_bAsPercentage = _asPercentage;
-            
             InitializeComponent();
             Application.Idle += IdleDetector;
-            btnCancel.Visible = _cancellable;
+            btnCancel.Visible = isCancellable;
             this.Text = "   " + ScreenManagerLang.FormProgressBar_Title;
-            labelInfos.Text = ScreenManagerLang.FormFileSave_Infos + " 0 / ~?";
+            labelInfo.Text = "0";
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
         }
         #endregion	
@@ -64,31 +60,30 @@ namespace Kinovea.ScreenManager
         #region Methods
         private void IdleDetector(object sender, EventArgs e)
         {
-            m_IsIdle = true;
+            isIdle = true;
         }
-        public void Update(int _iValue, int _iMaximum, bool _bAsPercentage)
+        public void Update(int value, int maximum, bool showAsPercentage)
         {
-            if (m_IsIdle && !m_bIsCancelling)
-            {
-                m_IsIdle = false;
+            if (!isIdle || isCancelling)
+                return;
 
-                progressBar.Maximum = _iMaximum;
-                progressBar.Value = _iValue > 0 ? _iValue : 0;
+            isIdle = false;
 
-                if(_bAsPercentage)
-                {
-                    labelInfos.Text = ScreenManagerLang.FormFileSave_Infos + " " + (int)((_iValue * 100) / _iMaximum) + "%";
-                }
-                else
-                {
-                    labelInfos.Text = ScreenManagerLang.FormFileSave_Infos + " " + _iValue + " / ~" + _iMaximum;
-                }
-            }
+            progressBar.Maximum = maximum;
+            progressBar.Value = Math.Min(Math.Max(value, 0), maximum);
+
+            string info;
+            if (showAsPercentage)
+                info = string.Format("{0}%", (int)Math.Floor((value / maximum) * 100.0f));
+            else
+                info = string.Format("{0}/{1}", value, maximum);
+
+            labelInfo.Text = info;
         }
         #endregion
         
         #region Events
-        private void formProgressBar_FormClosing(object sender, FormClosingEventArgs e)
+        private void FormProgressBar_FormClosing(object sender, FormClosingEventArgs e)
         {
             Application.Idle -= new EventHandler(IdleDetector);	
         }
@@ -96,8 +91,8 @@ namespace Kinovea.ScreenManager
         {
             // User clicked on cancel, trigger the callback that will cancel the ongoing operation.
             btnCancel.Enabled = false;
-            m_bIsCancelling = true;
-            if(Cancel != null) Cancel(this, EventArgs.Empty);	
+            isCancelling = true;
+            CancelAsked?.Invoke(this, EventArgs.Empty);	
         }
         #endregion
         

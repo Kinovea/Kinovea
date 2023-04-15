@@ -1697,52 +1697,22 @@ namespace Kinovea.ScreenManager
         
         private void mnuExportMarkdown_Click(object sender, EventArgs e)
         {
-            ExportDocument(DocumentExportFormat.Mardown);    
+            ExportDocument(DocumentExportFormat.Mardown);
         }
 
         private void ExportDocument(DocumentExportFormat format)
         {
-            PlayerScreen player = activeScreen as PlayerScreen;
-            if (player == null || !player.FrameServer.Metadata.HasVisibleData)
-                return;
-
             DoStopPlaying();
-
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Title = ScreenManagerLang.dlgExportSpreadsheet_Title;
-            saveFileDialog.RestoreDirectory = true;
-            saveFileDialog.Filter = "LibreOffice writer (*.odt)|*.odt|Microsoft Word (*.docx)|*.docx|Markdown (*.md)|*.md";
-            int filterIndex;
-            switch (format)
-            {
-                case DocumentExportFormat.ODT:
-                    filterIndex = 1;
-                    break;
-                case DocumentExportFormat.DOCX:
-                    filterIndex = 2;
-                    break;
-                case DocumentExportFormat.Mardown:
-                default:
-                    filterIndex = 3;
-                    break;
-            }
-
-            saveFileDialog.FilterIndex = filterIndex;
-            saveFileDialog.FileName = Path.GetFileNameWithoutExtension(player.FrameServer.Metadata.VideoPath);
-
-            if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))
+            PlayerScreen player = activeScreen as PlayerScreen;
+            if (player == null)
                 return;
 
-            try
-            {
-                DocumentExporter.Export(saveFileDialog.FileName, format, null, player.FrameServer.Metadata);
-            }
-            catch (Exception e)
-            {
-                log.ErrorFormat("Exception encountered while exporting document.", e);
-            }
+            DocumentExporter.Export(DocumentExportFormat.Mardown, player);
         }
 
+
+
+        
 
         #endregion
 

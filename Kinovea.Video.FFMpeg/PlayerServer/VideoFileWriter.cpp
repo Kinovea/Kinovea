@@ -42,14 +42,14 @@ VideoFileWriter::!VideoFileWriter()
 {
 }
 
-SaveResult VideoFileWriter::Save(SavingSettings _settings, VideoInfo _info, String^ _formatString, IEnumerable<Bitmap^>^ _frames, BackgroundWorker^ _worker)
+SaveResult VideoFileWriter::Save(SavingSettings^ _settings, VideoInfo _info, String^ _formatString, IEnumerable<Bitmap^>^ _frames, BackgroundWorker^ _worker)
 {
     SaveResult result = SaveResult::Success;
 
     if(_frames == nullptr || _worker == nullptr)
         return SaveResult::UnknownError;
 
-    result = OpenSavingContext(	_settings.File, _info, _formatString, _settings.OutputFrameInterval);
+    result = OpenSavingContext(	_settings->File, _info, _formatString, _settings->OutputFrameInterval);
 
     if(result != SaveResult::Success)
     {
@@ -71,7 +71,7 @@ SaveResult VideoFileWriter::Save(SavingSettings _settings, VideoInfo _info, Stri
         if(result != SaveResult::Success)
             log->Error("Frame not saved.");
         
-        _worker->ReportProgress(current++, _settings.EstimatedTotal);
+        _worker->ReportProgress(current++, _settings->EstimatedTotal);
 
         if(result != SaveResult::Success)
         {
@@ -85,8 +85,8 @@ SaveResult VideoFileWriter::Save(SavingSettings _settings, VideoInfo _info, Stri
     if(result == SaveResult::Cancelled)
     {
         log->Debug("Saving cancelled by user, deleting temporary file.");
-        if(File::Exists(_settings.File))
-            File::Delete(_settings.File);
+        if(File::Exists(_settings->File))
+            File::Delete(_settings->File);
     }
 
     return result;

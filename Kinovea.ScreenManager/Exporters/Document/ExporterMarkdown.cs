@@ -30,16 +30,24 @@ namespace Kinovea.ScreenManager
         public static readonly string OrderedListItemPrefix = DefaultListItemNumber + ". ";
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public void Export(string path, List<Bitmap> images, Metadata metadata)
+        public void Export(string path, List<string> filePaths, Metadata metadata)
         {
             StringBuilder sb = new StringBuilder();
 
-            foreach (var keyframe in metadata.Keyframes)
+            if (filePaths.Count != metadata.Count)
             {
-                // Insert image.
+                log.ErrorFormat("Error while exporting document. Images and keyframes mismatch.");
+                return;
+            }
+
+            for (int i = 0; i < metadata.Keyframes.Count; i++)
+            {
+                var keyframe = metadata.Keyframes[i];
+                sb.Append(Heading2Prefix + keyframe.Name + LineBreak);
+                sb.Append(string.Format("![]({0})", filePaths[i]) + LineBreak);
                 sb.Append(Heading2Prefix + keyframe.Name + LineBreak);
                 sb.Append(ItalicWrap + keyframe.TimeCode + ItalicWrap + ParagraphBreak);
-                sb.Append(RichTextHelper.GetText(keyframe.Comments) + ParagraphBreak);
+                sb.Append(TextHelper.GetText(keyframe.Comments) + ParagraphBreak);
             }
 
             File.WriteAllText(path, sb.ToString());
