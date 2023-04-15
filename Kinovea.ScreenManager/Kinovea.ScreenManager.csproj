@@ -282,6 +282,9 @@
       <DependentUpon>InfobarCapture.cs</DependentUpon>
     </Compile>
     <Compile Include="DrawingClipboard.cs" />
+    <Compile Include="Exporters\Images\ExporterImage.cs" />
+    <Compile Include="Exporters\Images\ImageExporter.cs" />
+    <Compile Include="Exporters\Images\ImageExportFormat.cs" />
     <Compile Include="FilePatterns\PatternSymbolsCommand.cs" />
     <Compile Include="FilePatterns\Filenamer.cs" />
     <Compile Include="FilePatterns\PatternContext.cs" />

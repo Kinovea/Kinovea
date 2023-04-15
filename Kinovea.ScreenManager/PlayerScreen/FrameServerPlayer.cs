@@ -370,8 +370,38 @@ namespace Kinovea.ScreenManager
             NotificationCenter.RaiseRefreshFileExplorer(this, false);
         }
 
+        /// <summary>
+        /// Builds an image file name with the passed timecode and the extension.
+        /// </summary>
+        public string GetImageFilename(string path, long timestamp, TimecodeFormat format)
+        {
+            if (format == TimecodeFormat.TimeAndFrames)
+                format = TimecodeFormat.ClassicTime;
+
+            string suffix = TimeStampsToTimecode(timestamp, TimeType.UserOrigin, format, false);
+            string maxSuffix = TimeStampsToTimecode(metadata.SelectionEnd, TimeType.UserOrigin, format, false);
+
+            switch (format)
+            {
+                case TimecodeFormat.Frames:
+                case TimecodeFormat.Milliseconds:
+                case TimecodeFormat.Microseconds:
+                case TimecodeFormat.TenThousandthOfHours:
+                case TimecodeFormat.HundredthOfMinutes:
+
+                    int padding = maxSuffix.Length - suffix.Length;
+                    for (int i = 0; i < padding; i++)
+                        suffix = suffix.Insert(0, "0");
+                    break;
+                default:
+                    break;
+            }
+
+            // Reconstruct filename
+            return Path.GetFileNameWithoutExtension(path) + "-" + suffix.Replace(':', '.');
+        }
         #endregion
-        
+
         #region Saving processing
         private void DoSave(string filePath, double frameInterval, bool flushDrawings, bool keyframesOnly, bool pausedVideo, ImageRetriever imageRetriever)
         {

@@ -5274,11 +5274,7 @@ namespace Kinovea.ScreenManager
                     dlgSave.RestoreDirectory = true;
                     dlgSave.Filter = FilesystemHelper.SaveImageFilter();
                     dlgSave.FilterIndex = FilesystemHelper.GetFilterIndex(dlgSave.Filter, PreferencesManager.PlayerPreferences.ImageFormat);
-
-                    if (videoFilterIsActive)
-                        dlgSave.FileName = Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath);
-                    else
-                        dlgSave.FileName = BuildFilename(m_FrameServer.VideoReader.FilePath, m_iCurrentPosition, PreferencesManager.PlayerPreferences.TimecodeFormat);
+                    dlgSave.FileName = m_FrameServer.GetImageFilename(m_FrameServer.VideoReader.FilePath, m_iCurrentPosition, PreferencesManager.PlayerPreferences.TimecodeFormat);
 
                     if (dlgSave.ShowDialog() == DialogResult.OK)
                     {
@@ -5471,7 +5467,6 @@ namespace Kinovea.ScreenManager
 
             m_FrameServer.VideoReader.BeforeFrameEnumeration();
 
-            // We do not use the cached Bitmap in keyframe.FullImage because it is saved at the display size of the time of the creation of the keyframe.
             IEnumerable<VideoFrame> frames = keyframesOnly ? m_FrameServer.VideoReader.FrameEnumerator() : m_FrameServer.VideoReader.FrameEnumerator(interval);
 
             foreach (VideoFrame vf in frames)
@@ -5495,7 +5490,7 @@ namespace Kinovea.ScreenManager
                     {
                         string filename = string.Format("{0}\\{1}{2}",
                             Path.GetDirectoryName(filepath),
-                            BuildFilename(filepath, vf.Timestamp, PreferencesManager.PlayerPreferences.TimecodeFormat),
+                            m_FrameServer.GetImageFilename(filepath, vf.Timestamp, PreferencesManager.PlayerPreferences.TimecodeFormat),
                             Path.GetExtension(filepath));
 
                         ImageHelper.Save(filename, output);
@@ -5562,42 +5557,7 @@ namespace Kinovea.ScreenManager
             return keyframeIndex != -1;
         }
 
-        /// <summary>
-        /// Builds a file name with the current timecode and the extension.
-        /// </summary>
-        private string BuildFilename(string _FilePath, long _position, TimecodeFormat _timeCodeFormat)
-        {
-            TimecodeFormat tcf;
-            if(_timeCodeFormat == TimecodeFormat.TimeAndFrames)
-                tcf = TimecodeFormat.ClassicTime;
-            else
-                tcf = _timeCodeFormat;
-
-            string suffix = m_FrameServer.TimeStampsToTimecode(_position, TimeType.UserOrigin, tcf, false);
-            string maxSuffix = m_FrameServer.TimeStampsToTimecode(m_iSelEnd, TimeType.UserOrigin, tcf, false);
-
-            switch (tcf)
-            {
-                case TimecodeFormat.Frames:
-                case TimecodeFormat.Milliseconds:
-                case TimecodeFormat.Microseconds:
-                case TimecodeFormat.TenThousandthOfHours:
-                case TimecodeFormat.HundredthOfMinutes:
-                    
-                    int iZerosToPad = maxSuffix.Length - suffix.Length;
-                    for (int i = 0; i < iZerosToPad; i++)
-                    {
-                        // Add a leading zero.
-                        suffix = suffix.Insert(0, "0");
-                    }
-                    break;
-                default:
-                    break;
-            }
-
-            // Reconstruct filename
-            return Path.GetFileNameWithoutExtension(_FilePath) + "-" + suffix.Replace(':', '.');
-        }
+        
         #endregion
     }
 }
