@@ -376,6 +376,11 @@ namespace Kinovea.ScreenManager
             view.MultiDrawingItemAdding += View_MultiDrawingItemAdding;
             view.MultiDrawingItemDeleting += View_MultiDrawingItemDeleting;
             view.DualCommandReceived += (s, e) => OnDualCommandReceived(e);
+
+            // Export requests
+            view.ExportImageSequenceAsked += (s, e) => ExportImages(ImageExportFormat.ImageSequence);
+            view.ExportImageAsked += (s, e) => ExportImages(ImageExportFormat.Image);
+            view.ExportKeyImagesAsked += (s, e) => ExportImages(ImageExportFormat.KeyImages);
             
             // Just for the magnifier. Remove as soon as possible when the adding of the magnifier is handled in Metadata.
             view.TrackableDrawingAdded += (s, e) => AddTrackableDrawing(e.TrackableDrawing);
@@ -530,6 +535,15 @@ namespace Kinovea.ScreenManager
             historyStack.PushNewCommand(memento);
         }
         #endregion
+
+        #region Export requests from the view
+        private void ExportImages(ImageExportFormat format)
+        {
+            ImageExporter exporter = new ImageExporter();
+            exporter.Export(format, this, null);
+        }
+        #endregion
+
 
         #region AbstractScreen Implementation
         public override void DisplayAsActiveScreen(bool _bActive)

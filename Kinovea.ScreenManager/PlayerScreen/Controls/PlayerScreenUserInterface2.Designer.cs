@@ -19,19 +19,41 @@ namespace Kinovea.ScreenManager
       this.components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PlayerScreenUserInterface));
       this.panelTop = new System.Windows.Forms.Panel();
+      this.btnClose = new System.Windows.Forms.Button();
       this.lblSelDuration = new System.Windows.Forms.Label();
       this.panelVideoControls = new System.Windows.Forms.Panel();
       this.sldrSpeed = new Kinovea.ScreenManager.SliderLinear();
       this.lblSpeedTuner = new System.Windows.Forms.Label();
       this.lblTimeTip = new System.Windows.Forms.Label();
+      this.panel1 = new System.Windows.Forms.Panel();
+      this.btnExportImage = new System.Windows.Forms.Button();
+      this.btnPausedVideo = new System.Windows.Forms.Button();
+      this.btnSaveVideo = new System.Windows.Forms.Button();
+      this.btnDiaporama = new System.Windows.Forms.Button();
+      this.btnExportImageSequence = new System.Windows.Forms.Button();
+      this.btnHandlersReset = new System.Windows.Forms.Button();
+      this.btnSetHandlerRight = new System.Windows.Forms.Button();
+      this.btnSetHandlerLeft = new System.Windows.Forms.Button();
       this.trkSelection = new Kinovea.ScreenManager.SelectionTracker();
       this.trkFrame = new Kinovea.ScreenManager.FrameTracker();
+      this.btn_HandlersLock = new System.Windows.Forms.Button();
       this.lblSelStartSelection = new System.Windows.Forms.Label();
       this.lblTimeCode = new System.Windows.Forms.Label();
+      this.buttonGotoFirst = new System.Windows.Forms.Button();
+      this.buttonGotoPrevious = new System.Windows.Forms.Button();
+      this.buttonGotoNext = new System.Windows.Forms.Button();
+      this.buttonPlay = new System.Windows.Forms.Button();
+      this.buttonGotoLast = new System.Windows.Forms.Button();
+      this.btnTimeOrigin = new System.Windows.Forms.Button();
       this.groupBoxSpeedTuner = new System.Windows.Forms.GroupBox();
       this.markerSpeedTuner = new System.Windows.Forms.Button();
       this.PrimarySelection = new System.Windows.Forms.Button();
       this.panelCenter = new System.Windows.Forms.Panel();
+      this.ImageResizerNE = new System.Windows.Forms.Label();
+      this.ImageResizerNW = new System.Windows.Forms.Label();
+      this.ImageResizerSW = new System.Windows.Forms.Label();
+      this.ImageResizerSE = new System.Windows.Forms.Label();
+      this.pbSurfaceScreen = new System.Windows.Forms.PictureBox();
       this.dbgAvailableRam = new System.Windows.Forms.Label();
       this.dbgDurationFrames = new System.Windows.Forms.Label();
       this.dbgCurrentFrame = new System.Windows.Forms.Label();
@@ -52,35 +74,15 @@ namespace Kinovea.ScreenManager
       this.tabPage2 = new System.Windows.Forms.TabPage();
       this.imgListPropertyTabs = new System.Windows.Forms.ImageList(this.components);
       this.stripDrawingTools = new System.Windows.Forms.ToolStrip();
-      this.pnlThumbnails = new System.Windows.Forms.Panel();
-      this.ImageResizerNE = new System.Windows.Forms.Label();
-      this.ImageResizerNW = new System.Windows.Forms.Label();
-      this.ImageResizerSW = new System.Windows.Forms.Label();
-      this.ImageResizerSE = new System.Windows.Forms.Label();
-      this.pbSurfaceScreen = new System.Windows.Forms.PictureBox();
       this.btnDockBottom = new System.Windows.Forms.Button();
+      this.pnlThumbnails = new System.Windows.Forms.Panel();
       this.pictureBox1 = new System.Windows.Forms.PictureBox();
-      this.panel1 = new System.Windows.Forms.Panel();
-      this.btnSnapShot = new System.Windows.Forms.Button();
-      this.btnPausedVideo = new System.Windows.Forms.Button();
-      this.btnSaveVideo = new System.Windows.Forms.Button();
-      this.btnDiaporama = new System.Windows.Forms.Button();
-      this.btnRafale = new System.Windows.Forms.Button();
-      this.btnHandlersReset = new System.Windows.Forms.Button();
-      this.btnSetHandlerRight = new System.Windows.Forms.Button();
-      this.btnSetHandlerLeft = new System.Windows.Forms.Button();
-      this.btn_HandlersLock = new System.Windows.Forms.Button();
-      this.buttonGotoFirst = new System.Windows.Forms.Button();
-      this.buttonGotoPrevious = new System.Windows.Forms.Button();
-      this.buttonGotoNext = new System.Windows.Forms.Button();
-      this.buttonPlay = new System.Windows.Forms.Button();
-      this.buttonGotoLast = new System.Windows.Forms.Button();
-      this.btnTimeOrigin = new System.Windows.Forms.Button();
-      this.btnClose = new System.Windows.Forms.Button();
       this.panelTop.SuspendLayout();
       this.panelVideoControls.SuspendLayout();
+      this.panel1.SuspendLayout();
       this.groupBoxSpeedTuner.SuspendLayout();
       this.panelCenter.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.pbSurfaceScreen)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.splitKeyframes)).BeginInit();
       this.splitKeyframes.Panel1.SuspendLayout();
       this.splitKeyframes.Panel2.SuspendLayout();
@@ -91,9 +93,7 @@ namespace Kinovea.ScreenManager
       this.splitViewport_Properties.SuspendLayout();
       this.tabProperties.SuspendLayout();
       this.pnlThumbnails.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.pbSurfaceScreen)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-      this.panel1.SuspendLayout();
       this.SuspendLayout();
       // 
       // panelTop
@@ -105,6 +105,24 @@ namespace Kinovea.ScreenManager
       this.panelTop.Name = "panelTop";
       this.panelTop.Size = new System.Drawing.Size(600, 25);
       this.panelTop.TabIndex = 0;
+      // 
+      // btnClose
+      // 
+      this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnClose.BackColor = System.Drawing.Color.Transparent;
+      this.btnClose.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.closegrey;
+      this.btnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+      this.btnClose.Cursor = System.Windows.Forms.Cursors.Default;
+      this.btnClose.FlatAppearance.BorderSize = 0;
+      this.btnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+      this.btnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+      this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnClose.Location = new System.Drawing.Point(576, 2);
+      this.btnClose.Name = "btnClose";
+      this.btnClose.Size = new System.Drawing.Size(20, 20);
+      this.btnClose.TabIndex = 2;
+      this.btnClose.UseVisualStyleBackColor = false;
+      this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
       // 
       // lblSelDuration
       // 
@@ -196,6 +214,162 @@ namespace Kinovea.ScreenManager
       this.lblTimeTip.Text = "00:00.000";
       this.lblTimeTip.Visible = false;
       // 
+      // panel1
+      // 
+      this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.panel1.BackColor = System.Drawing.Color.White;
+      this.panel1.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.ExportDock5;
+      this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+      this.panel1.Controls.Add(this.btnExportImage);
+      this.panel1.Controls.Add(this.btnPausedVideo);
+      this.panel1.Controls.Add(this.btnSaveVideo);
+      this.panel1.Controls.Add(this.btnDiaporama);
+      this.panel1.Controls.Add(this.btnExportImageSequence);
+      this.panel1.Location = new System.Drawing.Point(420, 78);
+      this.panel1.Name = "panel1";
+      this.panel1.Size = new System.Drawing.Size(185, 46);
+      this.panel1.TabIndex = 26;
+      // 
+      // btnExportImage
+      // 
+      this.btnExportImage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnExportImage.BackColor = System.Drawing.Color.Transparent;
+      this.btnExportImage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+      this.btnExportImage.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnExportImage.FlatAppearance.BorderSize = 0;
+      this.btnExportImage.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+      this.btnExportImage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnExportImage.Image = global::Kinovea.ScreenManager.Properties.Resources.image;
+      this.btnExportImage.Location = new System.Drawing.Point(28, 14);
+      this.btnExportImage.MinimumSize = new System.Drawing.Size(25, 25);
+      this.btnExportImage.Name = "btnExportImage";
+      this.btnExportImage.Size = new System.Drawing.Size(30, 25);
+      this.btnExportImage.TabIndex = 18;
+      this.btnExportImage.Tag = "";
+      this.btnExportImage.UseVisualStyleBackColor = false;
+      this.btnExportImage.Click += new System.EventHandler(this.btnExportImage_Click);
+      // 
+      // btnPausedVideo
+      // 
+      this.btnPausedVideo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnPausedVideo.BackColor = System.Drawing.Color.Transparent;
+      this.btnPausedVideo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+      this.btnPausedVideo.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnPausedVideo.FlatAppearance.BorderSize = 0;
+      this.btnPausedVideo.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+      this.btnPausedVideo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnPausedVideo.Image = global::Kinovea.ScreenManager.Properties.Resources.export_video_with_pauses;
+      this.btnPausedVideo.Location = new System.Drawing.Point(148, 14);
+      this.btnPausedVideo.MinimumSize = new System.Drawing.Size(25, 25);
+      this.btnPausedVideo.Name = "btnPausedVideo";
+      this.btnPausedVideo.Size = new System.Drawing.Size(30, 25);
+      this.btnPausedVideo.TabIndex = 25;
+      this.btnPausedVideo.Tag = "";
+      this.btnPausedVideo.UseVisualStyleBackColor = false;
+      this.btnPausedVideo.Click += new System.EventHandler(this.btnDiaporama_Click);
+      // 
+      // btnSaveVideo
+      // 
+      this.btnSaveVideo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnSaveVideo.BackColor = System.Drawing.Color.Transparent;
+      this.btnSaveVideo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+      this.btnSaveVideo.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnSaveVideo.FlatAppearance.BorderSize = 0;
+      this.btnSaveVideo.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+      this.btnSaveVideo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnSaveVideo.Image = global::Kinovea.ScreenManager.Properties.Resources.export_video_video;
+      this.btnSaveVideo.Location = new System.Drawing.Point(88, 14);
+      this.btnSaveVideo.MinimumSize = new System.Drawing.Size(25, 25);
+      this.btnSaveVideo.Name = "btnSaveVideo";
+      this.btnSaveVideo.Size = new System.Drawing.Size(30, 25);
+      this.btnSaveVideo.TabIndex = 25;
+      this.btnSaveVideo.Tag = "";
+      this.btnSaveVideo.UseVisualStyleBackColor = false;
+      this.btnSaveVideo.Click += new System.EventHandler(this.btnSaveVideo_Click);
+      // 
+      // btnDiaporama
+      // 
+      this.btnDiaporama.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnDiaporama.BackColor = System.Drawing.Color.Transparent;
+      this.btnDiaporama.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+      this.btnDiaporama.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnDiaporama.FlatAppearance.BorderSize = 0;
+      this.btnDiaporama.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+      this.btnDiaporama.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnDiaporama.Image = global::Kinovea.ScreenManager.Properties.Resources.export_video_slideshow;
+      this.btnDiaporama.Location = new System.Drawing.Point(118, 14);
+      this.btnDiaporama.MinimumSize = new System.Drawing.Size(25, 25);
+      this.btnDiaporama.Name = "btnDiaporama";
+      this.btnDiaporama.Size = new System.Drawing.Size(30, 25);
+      this.btnDiaporama.TabIndex = 25;
+      this.btnDiaporama.Tag = "";
+      this.btnDiaporama.UseVisualStyleBackColor = false;
+      this.btnDiaporama.Click += new System.EventHandler(this.btnDiaporama_Click);
+      // 
+      // btnExportImageSequence
+      // 
+      this.btnExportImageSequence.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnExportImageSequence.BackColor = System.Drawing.Color.Transparent;
+      this.btnExportImageSequence.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+      this.btnExportImageSequence.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnExportImageSequence.FlatAppearance.BorderSize = 0;
+      this.btnExportImageSequence.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+      this.btnExportImageSequence.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnExportImageSequence.Image = global::Kinovea.ScreenManager.Properties.Resources.images;
+      this.btnExportImageSequence.Location = new System.Drawing.Point(58, 14);
+      this.btnExportImageSequence.MinimumSize = new System.Drawing.Size(25, 25);
+      this.btnExportImageSequence.Name = "btnExportImageSequence";
+      this.btnExportImageSequence.Size = new System.Drawing.Size(30, 25);
+      this.btnExportImageSequence.TabIndex = 23;
+      this.btnExportImageSequence.Tag = "";
+      this.btnExportImageSequence.UseVisualStyleBackColor = false;
+      this.btnExportImageSequence.Click += new System.EventHandler(this.btnExportImageSequence_Click);
+      // 
+      // btnHandlersReset
+      // 
+      this.btnHandlersReset.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+      this.btnHandlersReset.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnHandlersReset.FlatAppearance.BorderSize = 0;
+      this.btnHandlersReset.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+      this.btnHandlersReset.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnHandlersReset.Image = global::Kinovea.ScreenManager.Properties.Resources.outward4;
+      this.btnHandlersReset.Location = new System.Drawing.Point(85, 5);
+      this.btnHandlersReset.Name = "btnHandlersReset";
+      this.btnHandlersReset.Size = new System.Drawing.Size(20, 20);
+      this.btnHandlersReset.TabIndex = 24;
+      this.btnHandlersReset.UseVisualStyleBackColor = true;
+      this.btnHandlersReset.Click += new System.EventHandler(this.btnHandlersReset_Click);
+      // 
+      // btnSetHandlerRight
+      // 
+      this.btnSetHandlerRight.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+      this.btnSetHandlerRight.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnSetHandlerRight.FlatAppearance.BorderSize = 0;
+      this.btnSetHandlerRight.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+      this.btnSetHandlerRight.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnSetHandlerRight.Image = global::Kinovea.ScreenManager.Properties.Resources.handlersetright;
+      this.btnSetHandlerRight.Location = new System.Drawing.Point(65, 5);
+      this.btnSetHandlerRight.Name = "btnSetHandlerRight";
+      this.btnSetHandlerRight.Size = new System.Drawing.Size(20, 20);
+      this.btnSetHandlerRight.TabIndex = 22;
+      this.btnSetHandlerRight.UseVisualStyleBackColor = true;
+      this.btnSetHandlerRight.Click += new System.EventHandler(this.btnSetHandlerRight_Click);
+      // 
+      // btnSetHandlerLeft
+      // 
+      this.btnSetHandlerLeft.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+      this.btnSetHandlerLeft.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnSetHandlerLeft.FlatAppearance.BorderSize = 0;
+      this.btnSetHandlerLeft.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+      this.btnSetHandlerLeft.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnSetHandlerLeft.Image = global::Kinovea.ScreenManager.Properties.Resources.handlersetleft;
+      this.btnSetHandlerLeft.Location = new System.Drawing.Point(45, 5);
+      this.btnSetHandlerLeft.Name = "btnSetHandlerLeft";
+      this.btnSetHandlerLeft.Size = new System.Drawing.Size(20, 20);
+      this.btnSetHandlerLeft.TabIndex = 21;
+      this.btnSetHandlerLeft.UseVisualStyleBackColor = true;
+      this.btnSetHandlerLeft.Click += new System.EventHandler(this.btnSetHandlerLeft_Click);
+      // 
       // trkSelection
       // 
       this.trkSelection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -236,6 +410,21 @@ namespace Kinovea.ScreenManager
       this.trkFrame.PositionChanging += new System.EventHandler<Kinovea.ScreenManager.TimeEventArgs>(this.trkFrame_PositionChanging);
       this.trkFrame.PositionChanged += new System.EventHandler<Kinovea.ScreenManager.TimeEventArgs>(this.trkFrame_PositionChanged);
       // 
+      // btn_HandlersLock
+      // 
+      this.btn_HandlersLock.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+      this.btn_HandlersLock.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btn_HandlersLock.FlatAppearance.BorderSize = 0;
+      this.btn_HandlersLock.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+      this.btn_HandlersLock.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btn_HandlersLock.Image = global::Kinovea.ScreenManager.Properties.Resources.primselec_unlocked3;
+      this.btn_HandlersLock.Location = new System.Drawing.Point(25, 5);
+      this.btn_HandlersLock.Name = "btn_HandlersLock";
+      this.btn_HandlersLock.Size = new System.Drawing.Size(20, 20);
+      this.btn_HandlersLock.TabIndex = 8;
+      this.btn_HandlersLock.UseVisualStyleBackColor = true;
+      this.btn_HandlersLock.Click += new System.EventHandler(this.btn_HandlersLock_Click);
+      // 
       // lblSelStartSelection
       // 
       this.lblSelStartSelection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -263,6 +452,103 @@ namespace Kinovea.ScreenManager
       this.lblTimeCode.Size = new System.Drawing.Size(67, 13);
       this.lblTimeCode.TabIndex = 2;
       this.lblTimeCode.Text = "0:00:00:00";
+      // 
+      // buttonGotoFirst
+      // 
+      this.buttonGotoFirst.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.buttonGotoFirst.FlatAppearance.BorderColor = System.Drawing.Color.White;
+      this.buttonGotoFirst.FlatAppearance.BorderSize = 0;
+      this.buttonGotoFirst.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
+      this.buttonGotoFirst.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
+      this.buttonGotoFirst.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.buttonGotoFirst.Image = global::Kinovea.ScreenManager.Properties.Resources.flatstart3;
+      this.buttonGotoFirst.Location = new System.Drawing.Point(23, 89);
+      this.buttonGotoFirst.MinimumSize = new System.Drawing.Size(18, 18);
+      this.buttonGotoFirst.Name = "buttonGotoFirst";
+      this.buttonGotoFirst.Size = new System.Drawing.Size(24, 18);
+      this.buttonGotoFirst.TabIndex = 4;
+      this.buttonGotoFirst.UseVisualStyleBackColor = true;
+      this.buttonGotoFirst.Click += new System.EventHandler(this.buttonGotoFirst_Click);
+      // 
+      // buttonGotoPrevious
+      // 
+      this.buttonGotoPrevious.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.buttonGotoPrevious.FlatAppearance.BorderSize = 0;
+      this.buttonGotoPrevious.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
+      this.buttonGotoPrevious.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
+      this.buttonGotoPrevious.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.buttonGotoPrevious.Image = global::Kinovea.ScreenManager.Properties.Resources.flatprev3;
+      this.buttonGotoPrevious.Location = new System.Drawing.Point(47, 89);
+      this.buttonGotoPrevious.MinimumSize = new System.Drawing.Size(18, 18);
+      this.buttonGotoPrevious.Name = "buttonGotoPrevious";
+      this.buttonGotoPrevious.Size = new System.Drawing.Size(24, 18);
+      this.buttonGotoPrevious.TabIndex = 3;
+      this.buttonGotoPrevious.UseVisualStyleBackColor = true;
+      this.buttonGotoPrevious.Click += new System.EventHandler(this.buttonGotoPrevious_Click);
+      // 
+      // buttonGotoNext
+      // 
+      this.buttonGotoNext.BackColor = System.Drawing.Color.Transparent;
+      this.buttonGotoNext.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.buttonGotoNext.FlatAppearance.BorderSize = 0;
+      this.buttonGotoNext.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
+      this.buttonGotoNext.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
+      this.buttonGotoNext.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.buttonGotoNext.Image = global::Kinovea.ScreenManager.Properties.Resources.flatnext3;
+      this.buttonGotoNext.Location = new System.Drawing.Point(123, 89);
+      this.buttonGotoNext.MinimumSize = new System.Drawing.Size(18, 18);
+      this.buttonGotoNext.Name = "buttonGotoNext";
+      this.buttonGotoNext.Size = new System.Drawing.Size(24, 18);
+      this.buttonGotoNext.TabIndex = 2;
+      this.buttonGotoNext.UseVisualStyleBackColor = false;
+      this.buttonGotoNext.Click += new System.EventHandler(this.buttonGotoNext_Click);
+      // 
+      // buttonPlay
+      // 
+      this.buttonPlay.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.buttonPlay.FlatAppearance.BorderSize = 0;
+      this.buttonPlay.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
+      this.buttonPlay.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
+      this.buttonPlay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.buttonPlay.Image = global::Kinovea.ScreenManager.Properties.Player.flatplay;
+      this.buttonPlay.Location = new System.Drawing.Point(77, 83);
+      this.buttonPlay.MinimumSize = new System.Drawing.Size(30, 25);
+      this.buttonPlay.Name = "buttonPlay";
+      this.buttonPlay.Size = new System.Drawing.Size(40, 30);
+      this.buttonPlay.TabIndex = 0;
+      this.buttonPlay.UseVisualStyleBackColor = true;
+      this.buttonPlay.Click += new System.EventHandler(this.buttonPlay_Click);
+      // 
+      // buttonGotoLast
+      // 
+      this.buttonGotoLast.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.buttonGotoLast.FlatAppearance.BorderSize = 0;
+      this.buttonGotoLast.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
+      this.buttonGotoLast.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
+      this.buttonGotoLast.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.buttonGotoLast.Image = global::Kinovea.ScreenManager.Properties.Resources.flatend3;
+      this.buttonGotoLast.Location = new System.Drawing.Point(147, 89);
+      this.buttonGotoLast.MinimumSize = new System.Drawing.Size(18, 18);
+      this.buttonGotoLast.Name = "buttonGotoLast";
+      this.buttonGotoLast.Size = new System.Drawing.Size(24, 18);
+      this.buttonGotoLast.TabIndex = 1;
+      this.buttonGotoLast.UseVisualStyleBackColor = true;
+      this.buttonGotoLast.Click += new System.EventHandler(this.buttonGotoLast_Click);
+      // 
+      // btnTimeOrigin
+      // 
+      this.btnTimeOrigin.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+      this.btnTimeOrigin.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnTimeOrigin.FlatAppearance.BorderSize = 0;
+      this.btnTimeOrigin.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+      this.btnTimeOrigin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnTimeOrigin.Image = global::Kinovea.ScreenManager.Properties.Resources.marker_small;
+      this.btnTimeOrigin.Location = new System.Drawing.Point(5, 5);
+      this.btnTimeOrigin.Name = "btnTimeOrigin";
+      this.btnTimeOrigin.Size = new System.Drawing.Size(20, 20);
+      this.btnTimeOrigin.TabIndex = 29;
+      this.btnTimeOrigin.UseVisualStyleBackColor = true;
+      this.btnTimeOrigin.Click += new System.EventHandler(this.BtnTimeOrigin_Click);
       // 
       // groupBoxSpeedTuner
       // 
@@ -320,6 +606,83 @@ namespace Kinovea.ScreenManager
       this.panelCenter.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PanelCenter_MouseDown);
       this.panelCenter.MouseEnter += new System.EventHandler(this.PanelCenter_MouseEnter);
       this.panelCenter.Resize += new System.EventHandler(this.PanelCenter_Resize);
+      // 
+      // ImageResizerNE
+      // 
+      this.ImageResizerNE.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.ImageResizerNE.BackColor = System.Drawing.Color.DimGray;
+      this.ImageResizerNE.Cursor = System.Windows.Forms.Cursors.SizeNESW;
+      this.ImageResizerNE.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.ImageResizerNE.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
+      this.ImageResizerNE.Location = new System.Drawing.Point(104, 68);
+      this.ImageResizerNE.Name = "ImageResizerNE";
+      this.ImageResizerNE.Size = new System.Drawing.Size(6, 6);
+      this.ImageResizerNE.TabIndex = 9;
+      this.ImageResizerNE.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseDoubleClick);
+      this.ImageResizerNE.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerNE_MouseMove);
+      this.ImageResizerNE.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseUp);
+      // 
+      // ImageResizerNW
+      // 
+      this.ImageResizerNW.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.ImageResizerNW.BackColor = System.Drawing.Color.DimGray;
+      this.ImageResizerNW.Cursor = System.Windows.Forms.Cursors.SizeNWSE;
+      this.ImageResizerNW.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.ImageResizerNW.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
+      this.ImageResizerNW.Location = new System.Drawing.Point(69, 68);
+      this.ImageResizerNW.Name = "ImageResizerNW";
+      this.ImageResizerNW.Size = new System.Drawing.Size(6, 6);
+      this.ImageResizerNW.TabIndex = 8;
+      this.ImageResizerNW.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseDoubleClick);
+      this.ImageResizerNW.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerNW_MouseMove);
+      this.ImageResizerNW.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseUp);
+      // 
+      // ImageResizerSW
+      // 
+      this.ImageResizerSW.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.ImageResizerSW.BackColor = System.Drawing.Color.DimGray;
+      this.ImageResizerSW.Cursor = System.Windows.Forms.Cursors.SizeNESW;
+      this.ImageResizerSW.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.ImageResizerSW.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
+      this.ImageResizerSW.Location = new System.Drawing.Point(69, 93);
+      this.ImageResizerSW.Name = "ImageResizerSW";
+      this.ImageResizerSW.Size = new System.Drawing.Size(6, 6);
+      this.ImageResizerSW.TabIndex = 7;
+      this.ImageResizerSW.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseDoubleClick);
+      this.ImageResizerSW.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerSW_MouseMove);
+      this.ImageResizerSW.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseUp);
+      // 
+      // ImageResizerSE
+      // 
+      this.ImageResizerSE.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.ImageResizerSE.BackColor = System.Drawing.Color.DimGray;
+      this.ImageResizerSE.Cursor = System.Windows.Forms.Cursors.SizeNWSE;
+      this.ImageResizerSE.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.ImageResizerSE.ForeColor = System.Drawing.Color.Transparent;
+      this.ImageResizerSE.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
+      this.ImageResizerSE.Location = new System.Drawing.Point(104, 93);
+      this.ImageResizerSE.Name = "ImageResizerSE";
+      this.ImageResizerSE.Size = new System.Drawing.Size(6, 6);
+      this.ImageResizerSE.TabIndex = 6;
+      this.ImageResizerSE.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseDoubleClick);
+      this.ImageResizerSE.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerSE_MouseMove);
+      this.ImageResizerSE.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseUp);
+      // 
+      // pbSurfaceScreen
+      // 
+      this.pbSurfaceScreen.Cursor = System.Windows.Forms.Cursors.Arrow;
+      this.pbSurfaceScreen.Location = new System.Drawing.Point(43, 29);
+      this.pbSurfaceScreen.Name = "pbSurfaceScreen";
+      this.pbSurfaceScreen.Size = new System.Drawing.Size(101, 73);
+      this.pbSurfaceScreen.TabIndex = 2;
+      this.pbSurfaceScreen.TabStop = false;
+      this.pbSurfaceScreen.Paint += new System.Windows.Forms.PaintEventHandler(this.SurfaceScreen_Paint);
+      this.pbSurfaceScreen.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.SurfaceScreen_MouseDoubleClick);
+      this.pbSurfaceScreen.MouseDown += new System.Windows.Forms.MouseEventHandler(this.SurfaceScreen_MouseDown);
+      this.pbSurfaceScreen.MouseEnter += new System.EventHandler(this.SurfaceScreen_MouseEnter);
+      this.pbSurfaceScreen.MouseMove += new System.Windows.Forms.MouseEventHandler(this.SurfaceScreen_MouseMove);
+      this.pbSurfaceScreen.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SurfaceScreen_MouseUp);
+      this.pbSurfaceScreen.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Common_MouseWheel);
       // 
       // dbgAvailableRam
       // 
@@ -555,98 +918,6 @@ namespace Kinovea.ScreenManager
       this.stripDrawingTools.Stretch = true;
       this.stripDrawingTools.TabIndex = 27;
       // 
-      // pnlThumbnails
-      // 
-      this.pnlThumbnails.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.pnlThumbnails.AutoScroll = true;
-      this.pnlThumbnails.BackColor = System.Drawing.Color.Black;
-      this.pnlThumbnails.Controls.Add(this.pictureBox1);
-      this.pnlThumbnails.Location = new System.Drawing.Point(0, 27);
-      this.pnlThumbnails.Name = "pnlThumbnails";
-      this.pnlThumbnails.Size = new System.Drawing.Size(600, 160);
-      this.pnlThumbnails.TabIndex = 3;
-      this.pnlThumbnails.DoubleClick += new System.EventHandler(this.pnlThumbnails_DoubleClick);
-      this.pnlThumbnails.MouseEnter += new System.EventHandler(this.pnlThumbnails_MouseEnter);
-      // 
-      // ImageResizerNE
-      // 
-      this.ImageResizerNE.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.ImageResizerNE.BackColor = System.Drawing.Color.DimGray;
-      this.ImageResizerNE.Cursor = System.Windows.Forms.Cursors.SizeNESW;
-      this.ImageResizerNE.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.ImageResizerNE.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
-      this.ImageResizerNE.Location = new System.Drawing.Point(104, 68);
-      this.ImageResizerNE.Name = "ImageResizerNE";
-      this.ImageResizerNE.Size = new System.Drawing.Size(6, 6);
-      this.ImageResizerNE.TabIndex = 9;
-      this.ImageResizerNE.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseDoubleClick);
-      this.ImageResizerNE.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerNE_MouseMove);
-      this.ImageResizerNE.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseUp);
-      // 
-      // ImageResizerNW
-      // 
-      this.ImageResizerNW.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.ImageResizerNW.BackColor = System.Drawing.Color.DimGray;
-      this.ImageResizerNW.Cursor = System.Windows.Forms.Cursors.SizeNWSE;
-      this.ImageResizerNW.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.ImageResizerNW.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
-      this.ImageResizerNW.Location = new System.Drawing.Point(69, 68);
-      this.ImageResizerNW.Name = "ImageResizerNW";
-      this.ImageResizerNW.Size = new System.Drawing.Size(6, 6);
-      this.ImageResizerNW.TabIndex = 8;
-      this.ImageResizerNW.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseDoubleClick);
-      this.ImageResizerNW.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerNW_MouseMove);
-      this.ImageResizerNW.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseUp);
-      // 
-      // ImageResizerSW
-      // 
-      this.ImageResizerSW.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.ImageResizerSW.BackColor = System.Drawing.Color.DimGray;
-      this.ImageResizerSW.Cursor = System.Windows.Forms.Cursors.SizeNESW;
-      this.ImageResizerSW.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.ImageResizerSW.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
-      this.ImageResizerSW.Location = new System.Drawing.Point(69, 93);
-      this.ImageResizerSW.Name = "ImageResizerSW";
-      this.ImageResizerSW.Size = new System.Drawing.Size(6, 6);
-      this.ImageResizerSW.TabIndex = 7;
-      this.ImageResizerSW.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseDoubleClick);
-      this.ImageResizerSW.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerSW_MouseMove);
-      this.ImageResizerSW.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseUp);
-      // 
-      // ImageResizerSE
-      // 
-      this.ImageResizerSE.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.ImageResizerSE.BackColor = System.Drawing.Color.DimGray;
-      this.ImageResizerSE.Cursor = System.Windows.Forms.Cursors.SizeNWSE;
-      this.ImageResizerSE.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.ImageResizerSE.ForeColor = System.Drawing.Color.Transparent;
-      this.ImageResizerSE.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
-      this.ImageResizerSE.Location = new System.Drawing.Point(104, 93);
-      this.ImageResizerSE.Name = "ImageResizerSE";
-      this.ImageResizerSE.Size = new System.Drawing.Size(6, 6);
-      this.ImageResizerSE.TabIndex = 6;
-      this.ImageResizerSE.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseDoubleClick);
-      this.ImageResizerSE.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerSE_MouseMove);
-      this.ImageResizerSE.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseUp);
-      // 
-      // pbSurfaceScreen
-      // 
-      this.pbSurfaceScreen.Cursor = System.Windows.Forms.Cursors.Arrow;
-      this.pbSurfaceScreen.Location = new System.Drawing.Point(43, 29);
-      this.pbSurfaceScreen.Name = "pbSurfaceScreen";
-      this.pbSurfaceScreen.Size = new System.Drawing.Size(101, 73);
-      this.pbSurfaceScreen.TabIndex = 2;
-      this.pbSurfaceScreen.TabStop = false;
-      this.pbSurfaceScreen.Paint += new System.Windows.Forms.PaintEventHandler(this.SurfaceScreen_Paint);
-      this.pbSurfaceScreen.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.SurfaceScreen_MouseDoubleClick);
-      this.pbSurfaceScreen.MouseDown += new System.Windows.Forms.MouseEventHandler(this.SurfaceScreen_MouseDown);
-      this.pbSurfaceScreen.MouseEnter += new System.EventHandler(this.SurfaceScreen_MouseEnter);
-      this.pbSurfaceScreen.MouseMove += new System.Windows.Forms.MouseEventHandler(this.SurfaceScreen_MouseMove);
-      this.pbSurfaceScreen.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SurfaceScreen_MouseUp);
-      this.pbSurfaceScreen.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Common_MouseWheel);
-      // 
       // btnDockBottom
       // 
       this.btnDockBottom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -666,6 +937,21 @@ namespace Kinovea.ScreenManager
       this.btnDockBottom.Visible = false;
       this.btnDockBottom.Click += new System.EventHandler(this.btnDockBottom_Click);
       // 
+      // pnlThumbnails
+      // 
+      this.pnlThumbnails.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.pnlThumbnails.AutoScroll = true;
+      this.pnlThumbnails.BackColor = System.Drawing.Color.Black;
+      this.pnlThumbnails.Controls.Add(this.pictureBox1);
+      this.pnlThumbnails.Location = new System.Drawing.Point(0, 27);
+      this.pnlThumbnails.Name = "pnlThumbnails";
+      this.pnlThumbnails.Size = new System.Drawing.Size(600, 162);
+      this.pnlThumbnails.TabIndex = 3;
+      this.pnlThumbnails.DoubleClick += new System.EventHandler(this.pnlThumbnails_DoubleClick);
+      this.pnlThumbnails.MouseEnter += new System.EventHandler(this.pnlThumbnails_MouseEnter);
+      // 
       // pictureBox1
       // 
       this.pictureBox1.BackColor = System.Drawing.Color.DimGray;
@@ -675,292 +961,6 @@ namespace Kinovea.ScreenManager
       this.pictureBox1.TabIndex = 2;
       this.pictureBox1.TabStop = false;
       this.pictureBox1.Visible = false;
-      // 
-      // panel1
-      // 
-      this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.panel1.BackColor = System.Drawing.Color.White;
-      this.panel1.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.ExportDock5;
-      this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-      this.panel1.Controls.Add(this.btnSnapShot);
-      this.panel1.Controls.Add(this.btnPausedVideo);
-      this.panel1.Controls.Add(this.btnSaveVideo);
-      this.panel1.Controls.Add(this.btnDiaporama);
-      this.panel1.Controls.Add(this.btnRafale);
-      this.panel1.Location = new System.Drawing.Point(420, 78);
-      this.panel1.Name = "panel1";
-      this.panel1.Size = new System.Drawing.Size(185, 46);
-      this.panel1.TabIndex = 26;
-      // 
-      // btnSnapShot
-      // 
-      this.btnSnapShot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnSnapShot.BackColor = System.Drawing.Color.Transparent;
-      this.btnSnapShot.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnSnapShot.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnSnapShot.FlatAppearance.BorderSize = 0;
-      this.btnSnapShot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-      this.btnSnapShot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnSnapShot.Image = global::Kinovea.ScreenManager.Properties.Resources.snapsingle_1;
-      this.btnSnapShot.Location = new System.Drawing.Point(28, 14);
-      this.btnSnapShot.MinimumSize = new System.Drawing.Size(25, 25);
-      this.btnSnapShot.Name = "btnSnapShot";
-      this.btnSnapShot.Size = new System.Drawing.Size(30, 25);
-      this.btnSnapShot.TabIndex = 18;
-      this.btnSnapShot.Tag = "";
-      this.btnSnapShot.UseVisualStyleBackColor = false;
-      this.btnSnapShot.Click += new System.EventHandler(this.btnSnapShot_Click);
-      // 
-      // btnPausedVideo
-      // 
-      this.btnPausedVideo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnPausedVideo.BackColor = System.Drawing.Color.Transparent;
-      this.btnPausedVideo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnPausedVideo.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnPausedVideo.FlatAppearance.BorderSize = 0;
-      this.btnPausedVideo.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-      this.btnPausedVideo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnPausedVideo.Image = global::Kinovea.ScreenManager.Properties.Resources.export_video_with_pauses;
-      this.btnPausedVideo.Location = new System.Drawing.Point(148, 14);
-      this.btnPausedVideo.MinimumSize = new System.Drawing.Size(25, 25);
-      this.btnPausedVideo.Name = "btnPausedVideo";
-      this.btnPausedVideo.Size = new System.Drawing.Size(30, 25);
-      this.btnPausedVideo.TabIndex = 25;
-      this.btnPausedVideo.Tag = "";
-      this.btnPausedVideo.UseVisualStyleBackColor = false;
-      this.btnPausedVideo.Click += new System.EventHandler(this.btnDiaporama_Click);
-      // 
-      // btnSaveVideo
-      // 
-      this.btnSaveVideo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnSaveVideo.BackColor = System.Drawing.Color.Transparent;
-      this.btnSaveVideo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnSaveVideo.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnSaveVideo.FlatAppearance.BorderSize = 0;
-      this.btnSaveVideo.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-      this.btnSaveVideo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnSaveVideo.Image = global::Kinovea.ScreenManager.Properties.Resources.film_save;
-      this.btnSaveVideo.Location = new System.Drawing.Point(88, 14);
-      this.btnSaveVideo.MinimumSize = new System.Drawing.Size(25, 25);
-      this.btnSaveVideo.Name = "btnSaveVideo";
-      this.btnSaveVideo.Size = new System.Drawing.Size(30, 25);
-      this.btnSaveVideo.TabIndex = 25;
-      this.btnSaveVideo.Tag = "";
-      this.btnSaveVideo.UseVisualStyleBackColor = false;
-      this.btnSaveVideo.Click += new System.EventHandler(this.btnSaveVideo_Click);
-      // 
-      // btnDiaporama
-      // 
-      this.btnDiaporama.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnDiaporama.BackColor = System.Drawing.Color.Transparent;
-      this.btnDiaporama.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnDiaporama.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnDiaporama.FlatAppearance.BorderSize = 0;
-      this.btnDiaporama.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-      this.btnDiaporama.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnDiaporama.Image = global::Kinovea.ScreenManager.Properties.Resources.export_video_slideshow;
-      this.btnDiaporama.Location = new System.Drawing.Point(118, 14);
-      this.btnDiaporama.MinimumSize = new System.Drawing.Size(25, 25);
-      this.btnDiaporama.Name = "btnDiaporama";
-      this.btnDiaporama.Size = new System.Drawing.Size(30, 25);
-      this.btnDiaporama.TabIndex = 25;
-      this.btnDiaporama.Tag = "";
-      this.btnDiaporama.UseVisualStyleBackColor = false;
-      this.btnDiaporama.Click += new System.EventHandler(this.btnDiaporama_Click);
-      // 
-      // btnRafale
-      // 
-      this.btnRafale.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnRafale.BackColor = System.Drawing.Color.Transparent;
-      this.btnRafale.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnRafale.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnRafale.FlatAppearance.BorderSize = 0;
-      this.btnRafale.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-      this.btnRafale.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnRafale.Image = global::Kinovea.ScreenManager.Properties.Resources.snapmulti_1;
-      this.btnRafale.Location = new System.Drawing.Point(58, 14);
-      this.btnRafale.MinimumSize = new System.Drawing.Size(25, 25);
-      this.btnRafale.Name = "btnRafale";
-      this.btnRafale.Size = new System.Drawing.Size(30, 25);
-      this.btnRafale.TabIndex = 23;
-      this.btnRafale.Tag = "";
-      this.btnRafale.UseVisualStyleBackColor = false;
-      this.btnRafale.Click += new System.EventHandler(this.btnRafale_Click);
-      // 
-      // btnHandlersReset
-      // 
-      this.btnHandlersReset.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnHandlersReset.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnHandlersReset.FlatAppearance.BorderSize = 0;
-      this.btnHandlersReset.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-      this.btnHandlersReset.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnHandlersReset.Image = global::Kinovea.ScreenManager.Properties.Resources.outward4;
-      this.btnHandlersReset.Location = new System.Drawing.Point(85, 5);
-      this.btnHandlersReset.Name = "btnHandlersReset";
-      this.btnHandlersReset.Size = new System.Drawing.Size(20, 20);
-      this.btnHandlersReset.TabIndex = 24;
-      this.btnHandlersReset.UseVisualStyleBackColor = true;
-      this.btnHandlersReset.Click += new System.EventHandler(this.btnHandlersReset_Click);
-      // 
-      // btnSetHandlerRight
-      // 
-      this.btnSetHandlerRight.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnSetHandlerRight.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnSetHandlerRight.FlatAppearance.BorderSize = 0;
-      this.btnSetHandlerRight.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-      this.btnSetHandlerRight.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnSetHandlerRight.Image = global::Kinovea.ScreenManager.Properties.Resources.handlersetright;
-      this.btnSetHandlerRight.Location = new System.Drawing.Point(65, 5);
-      this.btnSetHandlerRight.Name = "btnSetHandlerRight";
-      this.btnSetHandlerRight.Size = new System.Drawing.Size(20, 20);
-      this.btnSetHandlerRight.TabIndex = 22;
-      this.btnSetHandlerRight.UseVisualStyleBackColor = true;
-      this.btnSetHandlerRight.Click += new System.EventHandler(this.btnSetHandlerRight_Click);
-      // 
-      // btnSetHandlerLeft
-      // 
-      this.btnSetHandlerLeft.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnSetHandlerLeft.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnSetHandlerLeft.FlatAppearance.BorderSize = 0;
-      this.btnSetHandlerLeft.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-      this.btnSetHandlerLeft.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnSetHandlerLeft.Image = global::Kinovea.ScreenManager.Properties.Resources.handlersetleft;
-      this.btnSetHandlerLeft.Location = new System.Drawing.Point(45, 5);
-      this.btnSetHandlerLeft.Name = "btnSetHandlerLeft";
-      this.btnSetHandlerLeft.Size = new System.Drawing.Size(20, 20);
-      this.btnSetHandlerLeft.TabIndex = 21;
-      this.btnSetHandlerLeft.UseVisualStyleBackColor = true;
-      this.btnSetHandlerLeft.Click += new System.EventHandler(this.btnSetHandlerLeft_Click);
-      // 
-      // btn_HandlersLock
-      // 
-      this.btn_HandlersLock.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btn_HandlersLock.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btn_HandlersLock.FlatAppearance.BorderSize = 0;
-      this.btn_HandlersLock.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-      this.btn_HandlersLock.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btn_HandlersLock.Image = global::Kinovea.ScreenManager.Properties.Resources.primselec_unlocked3;
-      this.btn_HandlersLock.Location = new System.Drawing.Point(25, 5);
-      this.btn_HandlersLock.Name = "btn_HandlersLock";
-      this.btn_HandlersLock.Size = new System.Drawing.Size(20, 20);
-      this.btn_HandlersLock.TabIndex = 8;
-      this.btn_HandlersLock.UseVisualStyleBackColor = true;
-      this.btn_HandlersLock.Click += new System.EventHandler(this.btn_HandlersLock_Click);
-      // 
-      // buttonGotoFirst
-      // 
-      this.buttonGotoFirst.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.buttonGotoFirst.FlatAppearance.BorderColor = System.Drawing.Color.White;
-      this.buttonGotoFirst.FlatAppearance.BorderSize = 0;
-      this.buttonGotoFirst.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
-      this.buttonGotoFirst.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
-      this.buttonGotoFirst.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.buttonGotoFirst.Image = global::Kinovea.ScreenManager.Properties.Resources.flatstart3;
-      this.buttonGotoFirst.Location = new System.Drawing.Point(23, 89);
-      this.buttonGotoFirst.MinimumSize = new System.Drawing.Size(18, 18);
-      this.buttonGotoFirst.Name = "buttonGotoFirst";
-      this.buttonGotoFirst.Size = new System.Drawing.Size(24, 18);
-      this.buttonGotoFirst.TabIndex = 4;
-      this.buttonGotoFirst.UseVisualStyleBackColor = true;
-      this.buttonGotoFirst.Click += new System.EventHandler(this.buttonGotoFirst_Click);
-      // 
-      // buttonGotoPrevious
-      // 
-      this.buttonGotoPrevious.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.buttonGotoPrevious.FlatAppearance.BorderSize = 0;
-      this.buttonGotoPrevious.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
-      this.buttonGotoPrevious.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
-      this.buttonGotoPrevious.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.buttonGotoPrevious.Image = global::Kinovea.ScreenManager.Properties.Resources.flatprev3;
-      this.buttonGotoPrevious.Location = new System.Drawing.Point(47, 89);
-      this.buttonGotoPrevious.MinimumSize = new System.Drawing.Size(18, 18);
-      this.buttonGotoPrevious.Name = "buttonGotoPrevious";
-      this.buttonGotoPrevious.Size = new System.Drawing.Size(24, 18);
-      this.buttonGotoPrevious.TabIndex = 3;
-      this.buttonGotoPrevious.UseVisualStyleBackColor = true;
-      this.buttonGotoPrevious.Click += new System.EventHandler(this.buttonGotoPrevious_Click);
-      // 
-      // buttonGotoNext
-      // 
-      this.buttonGotoNext.BackColor = System.Drawing.Color.Transparent;
-      this.buttonGotoNext.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.buttonGotoNext.FlatAppearance.BorderSize = 0;
-      this.buttonGotoNext.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
-      this.buttonGotoNext.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
-      this.buttonGotoNext.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.buttonGotoNext.Image = global::Kinovea.ScreenManager.Properties.Resources.flatnext3;
-      this.buttonGotoNext.Location = new System.Drawing.Point(123, 89);
-      this.buttonGotoNext.MinimumSize = new System.Drawing.Size(18, 18);
-      this.buttonGotoNext.Name = "buttonGotoNext";
-      this.buttonGotoNext.Size = new System.Drawing.Size(24, 18);
-      this.buttonGotoNext.TabIndex = 2;
-      this.buttonGotoNext.UseVisualStyleBackColor = false;
-      this.buttonGotoNext.Click += new System.EventHandler(this.buttonGotoNext_Click);
-      // 
-      // buttonPlay
-      // 
-      this.buttonPlay.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.buttonPlay.FlatAppearance.BorderSize = 0;
-      this.buttonPlay.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
-      this.buttonPlay.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
-      this.buttonPlay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.buttonPlay.Image = global::Kinovea.ScreenManager.Properties.Player.flatplay;
-      this.buttonPlay.Location = new System.Drawing.Point(77, 83);
-      this.buttonPlay.MinimumSize = new System.Drawing.Size(30, 25);
-      this.buttonPlay.Name = "buttonPlay";
-      this.buttonPlay.Size = new System.Drawing.Size(40, 30);
-      this.buttonPlay.TabIndex = 0;
-      this.buttonPlay.UseVisualStyleBackColor = true;
-      this.buttonPlay.Click += new System.EventHandler(this.buttonPlay_Click);
-      // 
-      // buttonGotoLast
-      // 
-      this.buttonGotoLast.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.buttonGotoLast.FlatAppearance.BorderSize = 0;
-      this.buttonGotoLast.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
-      this.buttonGotoLast.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
-      this.buttonGotoLast.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.buttonGotoLast.Image = global::Kinovea.ScreenManager.Properties.Resources.flatend3;
-      this.buttonGotoLast.Location = new System.Drawing.Point(147, 89);
-      this.buttonGotoLast.MinimumSize = new System.Drawing.Size(18, 18);
-      this.buttonGotoLast.Name = "buttonGotoLast";
-      this.buttonGotoLast.Size = new System.Drawing.Size(24, 18);
-      this.buttonGotoLast.TabIndex = 1;
-      this.buttonGotoLast.UseVisualStyleBackColor = true;
-      this.buttonGotoLast.Click += new System.EventHandler(this.buttonGotoLast_Click);
-      // 
-      // btnTimeOrigin
-      // 
-      this.btnTimeOrigin.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnTimeOrigin.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnTimeOrigin.FlatAppearance.BorderSize = 0;
-      this.btnTimeOrigin.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-      this.btnTimeOrigin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnTimeOrigin.Image = global::Kinovea.ScreenManager.Properties.Resources.marker_small;
-      this.btnTimeOrigin.Location = new System.Drawing.Point(5, 5);
-      this.btnTimeOrigin.Name = "btnTimeOrigin";
-      this.btnTimeOrigin.Size = new System.Drawing.Size(20, 20);
-      this.btnTimeOrigin.TabIndex = 29;
-      this.btnTimeOrigin.UseVisualStyleBackColor = true;
-      this.btnTimeOrigin.Click += new System.EventHandler(this.BtnTimeOrigin_Click);
-      // 
-      // btnClose
-      // 
-      this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnClose.BackColor = System.Drawing.Color.Transparent;
-      this.btnClose.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.closegrey;
-      this.btnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-      this.btnClose.Cursor = System.Windows.Forms.Cursors.Default;
-      this.btnClose.FlatAppearance.BorderSize = 0;
-      this.btnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-      this.btnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-      this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnClose.Location = new System.Drawing.Point(576, 2);
-      this.btnClose.Name = "btnClose";
-      this.btnClose.Size = new System.Drawing.Size(20, 20);
-      this.btnClose.TabIndex = 2;
-      this.btnClose.UseVisualStyleBackColor = false;
-      this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
       // 
       // PlayerScreenUserInterface
       // 
@@ -976,8 +976,10 @@ namespace Kinovea.ScreenManager
       this.panelTop.ResumeLayout(false);
       this.panelVideoControls.ResumeLayout(false);
       this.panelVideoControls.PerformLayout();
+      this.panel1.ResumeLayout(false);
       this.groupBoxSpeedTuner.ResumeLayout(false);
       this.panelCenter.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.pbSurfaceScreen)).EndInit();
       this.splitKeyframes.Panel1.ResumeLayout(false);
       this.splitKeyframes.Panel2.ResumeLayout(false);
       this.splitKeyframes.Panel2.PerformLayout();
@@ -989,9 +991,7 @@ namespace Kinovea.ScreenManager
       this.splitViewport_Properties.ResumeLayout(false);
       this.tabProperties.ResumeLayout(false);
       this.pnlThumbnails.ResumeLayout(false);
-      ((System.ComponentModel.ISupportInitialize)(this.pbSurfaceScreen)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-      this.panel1.ResumeLayout(false);
       this.ResumeLayout(false);
 
         }
@@ -1030,7 +1030,7 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Label lblSpeedTuner;
         private FrameTracker trkFrame;
         private SelectionTracker trkSelection;
-        private System.Windows.Forms.Button btnSnapShot;
+        private System.Windows.Forms.Button btnExportImage;
         private System.Windows.Forms.Label ImageResizerSE;
         private System.Windows.Forms.Label ImageResizerSW;
         private System.Windows.Forms.Label ImageResizerNE;
@@ -1045,7 +1045,7 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Panel pnlThumbnails;
         private System.Windows.Forms.Button btnDockBottom;
-        private System.Windows.Forms.Button btnRafale;
+        private System.Windows.Forms.Button btnExportImageSequence;
         private System.Windows.Forms.Button btnHandlersReset;
         private System.Windows.Forms.Button btnDiaporama;
         private System.Windows.Forms.ToolStrip stripDrawingTools;

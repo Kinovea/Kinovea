@@ -45,6 +45,17 @@ namespace Kinovea.ScreenManager
             if (player1 == null)
                 return;
 
+            // Special case for video filter with custom save mechanics.
+            if (format == ImageExportFormat.Image && 
+                player1.ActiveVideoFilterType != VideoFilterType.None &&
+                player1.FrameServer.Metadata.ActiveVideoFilter.CanExportImage)
+            {
+                player1.FrameServer.Metadata.ActiveVideoFilter.ExportImage(player1.view);
+                return;
+            }
+
+            // Immediately get a file name to save to.
+            // Any configuration of the save happens later.
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Title = ScreenManagerLang.Generic_SaveImage;
             sfd.RestoreDirectory = true;
@@ -55,6 +66,10 @@ namespace Kinovea.ScreenManager
             if (sfd.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(sfd.FileName))
                 return;
 
+            // Save this as the new preferred image format.
+            PreferencesManager.PlayerPreferences.ImageFormat = FilesystemHelper.GetImageFormat(sfd.FileName);
+            PreferencesManager.Save();
+            
             SavingSettings s = new SavingSettings();
 
             try
@@ -64,11 +79,15 @@ namespace Kinovea.ScreenManager
                     case ImageExportFormat.Image:
                         ExporterImage exporterImage = new ExporterImage();
                         exporterImage.Export(sfd.FileName, player1);
+                        player1.FrameServer.AfterSave();
                         break;
                     case ImageExportFormat.SideBySide:
                         log.ErrorFormat("Exporter side-by-side: Not implemented.");
-                        // Configuration dialog to get direction and output size.
+                        // Show a configuration dialog to get layout.
+
+
                         //exporterImageSideBySide.Export(sfd.FileName, player1);
+                        player1.FrameServer.AfterSave();
                         break;
                     case ImageExportFormat.ImageSequence:
                         
@@ -206,6 +225,12 @@ namespace Kinovea.ScreenManager
             // We are back in the UI thread after the work is complete or cancelled.
             formProgressBar.Close();
             formProgressBar.Dispose();
+
+            player1.FrameServer.AfterSave();
+            // Return to the start of the zone.
+            //m_iFramesToDecode = 1;
+            //ShowNextFrame(m_iSelStart, true);
+            //ActivateKeyframe(m_iCurrentPosition, true);
         }
 
         private void FormProgressBar_CancelAsked(object sender, EventArgs e)

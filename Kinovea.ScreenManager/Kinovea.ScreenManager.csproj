@@ -513,12 +513,6 @@
     <Compile Include="PlayerScreen\Forms\FormConfigureVisibility.Designer.cs">
       <DependentUpon>FormConfigureVisibility.cs</DependentUpon>
     </Compile>
-    <Compile Include="Exporters\Images\FormRafaleExport.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Exporters\Images\FormRafaleExport.Designer.cs">
-      <DependentUpon>FormRafaleExport.cs</DependentUpon>
-    </Compile>
     <Compile Include="Measurement\Plotting\FormPointsAnalysis.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -781,12 +775,6 @@
     <Compile Include="Exporters\Video\FormDiapoExport.Designer.cs">
       <DependentUpon>FormDiapoExport.cs</DependentUpon>
     </Compile>
-    <Compile Include="Exporters\Images\FormFramesExport.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Exporters\Images\FormFramesExport.Designer.cs">
-      <DependentUpon>FormFramesExport.cs</DependentUpon>
-    </Compile>
     <Compile Include="PlayerScreen\Forms\FormKeyframeComments.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1008,9 +996,6 @@
     <EmbeddedResource Include="PlayerScreen\Forms\FormConfigureVisibility.resx">
       <DependentUpon>FormConfigureVisibility.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Exporters\Images\FormRafaleExport.resx">
-      <DependentUpon>FormRafaleExport.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Measurement\Plotting\FormPointsAnalysis.resx">
       <DependentUpon>FormPointsAnalysis.cs</DependentUpon>
     </EmbeddedResource>
@@ -1178,10 +1163,6 @@
     <EmbeddedResource Include="Exporters\Video\FormDiapoExport.resx">
       <SubType>Designer</SubType>
       <DependentUpon>FormDiapoExport.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Exporters\Images\FormFramesExport.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>FormFramesExport.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\Forms\FormKeyframeComments.resx">
       <SubType>Designer</SubType>
