@@ -421,7 +421,7 @@ namespace Kinovea.ScreenManager
                 return;
             
             Pause();
-            DualSnapshoter.Save(players[0], players[1], view.Merging);
+            ExporterImageSideBySide.Save(players[0], players[1], view.Merging);
         }
 
         private void CCtrl_GotoPrevKeyframe(object sender, EventArgs e)

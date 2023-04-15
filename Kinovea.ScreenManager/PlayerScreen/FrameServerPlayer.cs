@@ -371,9 +371,10 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Builds an image file name with the passed timecode and the extension.
+        /// Builds an image file name with the passed timecode.
+        /// This returns a file name without the directory and without the extension.
         /// </summary>
-        public string GetImageFilename(string path, long timestamp, TimecodeFormat format)
+        public string GetImageFilename(string videoFilePath, long timestamp, TimecodeFormat format)
         {
             if (format == TimecodeFormat.TimeAndFrames)
                 format = TimecodeFormat.ClassicTime;
@@ -398,7 +399,7 @@ namespace Kinovea.ScreenManager
             }
 
             // Reconstruct filename
-            return Path.GetFileNameWithoutExtension(path) + "-" + suffix.Replace(':', '.');
+            return Path.GetFileNameWithoutExtension(videoFilePath) + "-" + suffix.Replace(':', '.');
         }
         #endregion
 
@@ -501,13 +502,13 @@ namespace Kinovea.ScreenManager
         /// This includes skipping and duplicating frames as needed.
         /// This returns an internal bitmap and the caller should do its own copy.
         /// </summary>
-        public IEnumerable<Bitmap> EnumerateImages(SavingSettings settings)
+        public IEnumerable<Bitmap> EnumerateImages(SavingSettings settings, long interval = 0)
         {
             Bitmap output = null;
             int consumedKeyframes = 0;
 
-            // Enumerates the raw frames from the video (at original video size).
-            foreach (VideoFrame vf in videoReader.FrameEnumerator())
+            // Enumerates the raw frames from the video.
+            foreach (VideoFrame vf in videoReader.EnumerateFrames(interval))
             {
                 if (vf == null)
                 {
@@ -533,6 +534,9 @@ namespace Kinovea.ScreenManager
                 
                 // Paint the frame + annotations to our bitmap.
                 bool onKeyframe = settings.ImageRetriever(vf, output);
+
+                // Store the input timestamp in the bitmap, this may be used by the caller to build a file name.
+                output.Tag = vf.Timestamp;
 
                 int repeat = (settings.PausedVideo && onKeyframe) ? settings.KeyframeDuplication : settings.Duplication;
                 for (int i = 0; i < repeat; i++)

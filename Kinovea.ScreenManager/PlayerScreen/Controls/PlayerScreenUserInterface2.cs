@@ -5467,7 +5467,7 @@ namespace Kinovea.ScreenManager
 
             m_FrameServer.VideoReader.BeforeFrameEnumeration();
 
-            IEnumerable<VideoFrame> frames = keyframesOnly ? m_FrameServer.VideoReader.FrameEnumerator() : m_FrameServer.VideoReader.FrameEnumerator(interval);
+            IEnumerable<VideoFrame> frames = keyframesOnly ? m_FrameServer.VideoReader.EnumerateFrames(0) : m_FrameServer.VideoReader.EnumerateFrames(interval);
 
             foreach (VideoFrame vf in frames)
             {

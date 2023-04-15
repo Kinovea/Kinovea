@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
-using Kinovea.ScreenManager.Languages;
-using Kinovea.Video;
-using Kinovea.Services;
 using System.ComponentModel;
 using System.Threading;
 using System.Diagnostics;
+using Kinovea.ScreenManager.Languages;
+using Kinovea.Video;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -51,7 +51,7 @@ namespace Kinovea.ScreenManager
             saveFileDialog.RestoreDirectory = true;
             saveFileDialog.Filter = "LibreOffice writer (*.odt)|*.odt|Microsoft Word (*.docx)|*.docx|Markdown (*.md)|*.md";
             int filterIndex;
-            bool needsPandoc = false;
+            bool needsPandoc = format != DocumentExportFormat.Mardown;
             switch (format)
             {
                 case DocumentExportFormat.ODT:
@@ -102,11 +102,11 @@ namespace Kinovea.ScreenManager
         private void Export(string file, DocumentExportFormat format, Metadata metadata, PlayerScreen player)
         {
             // Always export to Markdown first.
+            // For other formats we delegate the conversion to Pandoc.
             string dir = Path.GetDirectoryName(file);
             string filename = Path.GetFileNameWithoutExtension(file);
             file = Path.Combine(dir, filename + ".md");
 
-            // For other formats we delegate the conversion to Pandoc.
             SavingSettings s = new SavingSettings();
             s.Section = new VideoSection(metadata.SelectionStart, metadata.SelectionEnd);
             s.KeyframesOnly = true;
@@ -124,9 +124,9 @@ namespace Kinovea.ScreenManager
             formProgressBar.Reset();
             worker.RunWorkerAsync(s);
 
-            // Finally, show the progress bar.
+            // Show the progress bar.
             // This is the end of this function and the UI thread is now in the progress bar.
-            // Anything else should run from the background thread.
+            // Anything else should be done from the background thread.
             formProgressBar.ShowDialog();
         }
 
@@ -139,7 +139,7 @@ namespace Kinovea.ScreenManager
 
             // Get the key image enumerator.
             player.FrameServer.VideoReader.BeforeFrameEnumeration();
-            IEnumerable<Bitmap> images = player.FrameServer.EnumerateImages(s);
+            IEnumerable<Bitmap> images = player.FrameServer.EnumerateImages(s, 0);
 
             string assetsDir = "images";
             string assetsPath = Path.Combine(Path.GetDirectoryName(s.File), assetsDir);
@@ -153,9 +153,7 @@ namespace Kinovea.ScreenManager
             foreach (var image in images)
             {
                 if (worker.CancellationPending)
-                {
                     break;
-                }
 
                 string filename = string.Format("{0}.png", i.ToString("D" + magnitude));
                 filePathsRelative.Add(Path.Combine(assetsDir, filename));

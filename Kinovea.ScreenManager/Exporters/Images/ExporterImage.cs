@@ -17,34 +17,16 @@ namespace Kinovea.ScreenManager
     {
         private readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public void Export(PlayerScreen player)
+        public void Export(string file, PlayerScreen player)
         {
-            try
-            {
-                SaveFileDialog dlgSave = new SaveFileDialog();
-                dlgSave.Title = ScreenManagerLang.Generic_SaveImage;
-                dlgSave.RestoreDirectory = true;
-                dlgSave.Filter = FilesystemHelper.SaveImageFilter();
-                dlgSave.FilterIndex = FilesystemHelper.GetFilterIndex(dlgSave.Filter, PreferencesManager.PlayerPreferences.ImageFormat);
-                dlgSave.FileName = player.FrameServer.GetImageFilename(player.FrameServer.VideoReader.FilePath, player.view.CurrentTimestamp, PreferencesManager.PlayerPreferences.TimecodeFormat);
+            Bitmap outputImage = player.view.GetFlushedImage();
+            ImageHelper.Save(file, outputImage);
+            outputImage.Dispose();
 
-                if (dlgSave.ShowDialog() != DialogResult.OK)
-                    return;
+            PreferencesManager.PlayerPreferences.ImageFormat = FilesystemHelper.GetImageFormat(file);
+            PreferencesManager.Save();
 
-                Bitmap outputImage = player.view.GetFlushedImage();
-                ImageHelper.Save(dlgSave.FileName, outputImage);
-                outputImage.Dispose();
-
-                PreferencesManager.PlayerPreferences.ImageFormat = FilesystemHelper.GetImageFormat(dlgSave.FileName);
-                PreferencesManager.Save();
-
-                player.FrameServer.AfterSave();
-            }
-            catch (Exception exp)
-            {
-                log.Error(exp.StackTrace);
-            }
+            player.FrameServer.AfterSave();
         }
-
     }
 }

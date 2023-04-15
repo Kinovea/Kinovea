@@ -397,7 +397,7 @@
     <Compile Include="DualCapture\DualCaptureController.cs" />
     <Compile Include="DualPlayer\CommonTimeline.cs" />
     <Compile Include="DualPlayer\DualPlayerController.cs" />
-    <Compile Include="DualPlayer\DualSnapshoter.cs" />
+    <Compile Include="Exporters\Images\ExporterImageSideBySide.cs" />
     <Compile Include="Exporters\Video\ExporterVideoDual.cs" />
     <Compile Include="DualPlayer\PlayerSyncInfo.cs" />
     <Compile Include="Metadata\Drawings\CoordinateSystem\CoordinateSystemGridFinder.cs" />
