@@ -349,8 +349,6 @@ namespace Kinovea.ScreenManager
         private void BindCommands()
         {
             // Provides implementation for behaviors triggered from the view, either as commands or as event handlers.
-            // Fixme: those using FrameServer.Metadata work only because the Metadata object is never replaced during the PlayerScreen life.
-
             view.OpenVideoAsked += (s, e) => OpenVideoAsked?.Invoke(this, e);
             view.OpenReplayWatcherAsked += (s, e) => OpenReplayWatcherAsked?.Invoke(this, e);
             view.OpenAnnotationsAsked += (s, e) => OpenAnnotationsAsked?.Invoke(this, e);
@@ -368,7 +366,8 @@ namespace Kinovea.ScreenManager
             view.ResetAsked += View_ResetAsked;
             view.FilterExited += (s, e) => FilterExited?.Invoke(this, e);
 
-            // Requests for metadata modification coming from the view, these should push a memento on the history stack.
+            // Requests for metadata modification coming from the view.
+            // These should push a memento on the history stack.
             view.KeyframeAdding += View_KeyframeAdding;
             view.KeyframeDeleting += View_KeyframeDeleting;
             view.DrawingAdding += View_DrawingAdding;
@@ -377,9 +376,9 @@ namespace Kinovea.ScreenManager
             view.MultiDrawingItemDeleting += View_MultiDrawingItemDeleting;
             view.DualCommandReceived += (s, e) => OnDualCommandReceived(e);
 
-            // Export requests
-            view.ExportImageSequenceAsked += (s, e) => ExportImages(ImageExportFormat.ImageSequence);
+            // Export requests coming from the view.
             view.ExportImageAsked += (s, e) => ExportImages(ImageExportFormat.Image);
+            view.ExportImageSequenceAsked += (s, e) => ExportImages(ImageExportFormat.ImageSequence);
             view.ExportKeyImagesAsked += (s, e) => ExportImages(ImageExportFormat.KeyImages);
             
             // Just for the magnifier. Remove as soon as possible when the adding of the magnifier is handled in Metadata.

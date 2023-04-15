@@ -13,6 +13,10 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class DualPlayerController
     {
+        #region Events
+        public event EventHandler ExportImageAsked;
+        #endregion
+
         #region Properties
         public CommonControlsPlayers View
         {
@@ -57,8 +61,8 @@ namespace Kinovea.ScreenManager
             view.SyncAsked += CCtrl_SyncAsked;
             view.MergeAsked += CCtrl_MergeAsked;
             view.PositionChanged += CCtrl_PositionChanged;
-            view.DualSaveAsked += CCtrl_DualSaveAsked;
-            view.DualSnapshotAsked += CCtrl_DualSnapshotAsked;
+            view.ExportImageAsked += (s, e) => ExportImageAsked?.Invoke(s, e);
+            view.ExportvideoAsked += CCtrl_DualSaveAsked;
 
             hotkeys = HotkeySettingsManager.LoadHotkeys("DualPlayer");
         }
@@ -415,15 +419,7 @@ namespace Kinovea.ScreenManager
 
             GotoTime(currentTime, true);
         }
-        private void CCtrl_DualSnapshotAsked(object sender, EventArgs e)
-        {
-            if (!synching)
-                return;
-            
-            Pause();
-            ExporterImageSideBySide.Save(players[0], players[1], view.Merging);
-        }
-
+        
         private void CCtrl_GotoPrevKeyframe(object sender, EventArgs e)
         {
             Pause();

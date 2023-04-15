@@ -82,13 +82,30 @@ namespace Kinovea.ScreenManager
                         player1.FrameServer.AfterSave();
                         break;
                     case ImageExportFormat.SideBySide:
-                        log.ErrorFormat("Exporter side-by-side: Not implemented.");
-                        // Show a configuration dialog to get layout.
 
+                        // Show a configuration dialog to get the layout.
+                        FormConfigureExportImageSideBySide fceisbs = new FormConfigureExportImageSideBySide();
+                        fceisbs.StartPosition = FormStartPosition.CenterScreen;
+                        if (fceisbs.ShowDialog() != DialogResult.OK)
+                        {
+                            fceisbs.Dispose();
+                            return;
+                        }
 
-                        //exporterImageSideBySide.Export(sfd.FileName, player1);
+                        bool horizontal = fceisbs.Horizontal;
+
+                        // Save this as the new preferred layout.
+                        PreferencesManager.PlayerPreferences.SideBySideHorizontal = horizontal;
+                        PreferencesManager.Save();
+
+                        // Export
+                        ExporterImageSideBySide exporterSidebySide = new ExporterImageSideBySide();
+                        exporterSidebySide.Export(sfd.FileName, horizontal, player1, player2);
+                        
                         player1.FrameServer.AfterSave();
+                        player2.FrameServer.AfterSave();
                         break;
+
                     case ImageExportFormat.ImageSequence:
                         
                         // Show a configuration dialog to get the interval.

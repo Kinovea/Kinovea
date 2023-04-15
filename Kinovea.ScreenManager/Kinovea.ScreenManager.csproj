@@ -283,6 +283,12 @@
     </Compile>
     <Compile Include="DrawingClipboard.cs" />
     <Compile Include="Exporters\Images\ExporterImage.cs" />
+    <Compile Include="Exporters\Images\FormConfigureExportImageSideBySide.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Exporters\Images\FormConfigureExportImageSideBySide.Designer.cs">
+      <DependentUpon>FormConfigureExportImageSideBySide.cs</DependentUpon>
+    </Compile>
     <Compile Include="Exporters\Images\FormConfigureExportImageSequence.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -944,6 +950,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CaptureScreen\Views\InfobarCapture.resx">
       <DependentUpon>InfobarCapture.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Exporters\Images\FormConfigureExportImageSideBySide.resx">
+      <DependentUpon>FormConfigureExportImageSideBySide.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Exporters\Images\FormConfigureExportImageSequence.resx">
       <DependentUpon>FormConfigureExportImageSequence.cs</DependentUpon>

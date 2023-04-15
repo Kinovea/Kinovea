@@ -45,8 +45,8 @@ namespace Kinovea.ScreenManager
         public event EventHandler SyncAsked;
         public event EventHandler MergeAsked;
         public event EventHandler<TimeEventArgs> PositionChanged;
-        public event EventHandler DualSaveAsked;
-        public event EventHandler DualSnapshotAsked;
+        public event EventHandler ExportImageAsked;
+        public event EventHandler ExportvideoAsked;
         #endregion
 
         #region Properties
@@ -290,13 +290,13 @@ namespace Kinovea.ScreenManager
         }
         private void btnSnapshot_Click(object sender, EventArgs e)
         {
-            if (DualSnapshotAsked != null)
-                DualSnapshotAsked(this, EventArgs.Empty);
+            if (ExportImageAsked != null)
+                ExportImageAsked(this, EventArgs.Empty);
         }
         private void btnDualVideo_Click(object sender, EventArgs e)
         {
-            if (DualSaveAsked != null)
-                DualSaveAsked(this, EventArgs.Empty);
+            if (ExportvideoAsked != null)
+                ExportvideoAsked(this, EventArgs.Empty);
         }
         private void trkFrame_PositionChanged(object sender, TimeEventArgs e)
         {

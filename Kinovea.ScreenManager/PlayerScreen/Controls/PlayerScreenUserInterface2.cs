@@ -5390,7 +5390,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Returns the image currently on screen with all drawings flushed, including grids, magnifier, mirroring, etc.
         /// The resulting Bitmap will be at the same size as the image currently on screen.
-        /// This is used to export individual images or get the image for dual video export.
+        /// This is used to export individual images or get the image for dual export.
         /// </summary>
         public Bitmap GetFlushedImage()
         {

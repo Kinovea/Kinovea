@@ -10,49 +10,23 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public static class ExporterImageSideBySide
+    public class ExporterImageSideBySide
     {
-        public static void Save(PlayerScreen leftPlayer, PlayerScreen rightPlayer, bool merging)
+    
+        public void Export(string filePath, bool horizontal, PlayerScreen leftPlayer, PlayerScreen rightPlayer)
         {
-            string filename = GetFilename(leftPlayer, rightPlayer);
-            if (string.IsNullOrEmpty(filename))
-                return;
-
-            Bitmap composite;
-
             Bitmap leftImage = leftPlayer.GetFlushedImage();
+            Bitmap rightImage = rightPlayer.GetFlushedImage();
 
-            if (!merging)
-            {
-                Bitmap rightImage = rightPlayer.GetFlushedImage();
-                composite = ImageHelper.GetSideBySideComposite(leftImage, rightImage, false, true);
-                rightImage.Dispose();
-            }
-            else
-            {
-                composite = leftImage;
-            }
+            bool isVideo = false;
+            Bitmap composite = ImageHelper.GetSideBySideComposite(leftImage, rightImage, isVideo, horizontal);
+
+            leftImage.Dispose();
+            rightImage.Dispose();
             
-            ImageHelper.Save(filename, composite);
+            ImageHelper.Save(filePath, composite);
 
             composite.Dispose();
-            
-            NotificationCenter.RaiseRefreshFileExplorer(null, false);
-        }
-
-        private static string GetFilename(PlayerScreen leftPlayer, PlayerScreen rightPlayer)
-        {
-            SaveFileDialog dlgSave = new SaveFileDialog();
-            dlgSave.Title = ScreenManagerLang.Generic_SaveImage;
-            dlgSave.RestoreDirectory = true;
-            dlgSave.Filter = FilesystemHelper.SaveImageFilter();
-            dlgSave.FilterIndex = FilesystemHelper.GetFilterIndex(dlgSave.Filter, PreferencesManager.PlayerPreferences.ImageFormat);
-            dlgSave.FileName = SuggestFilename(leftPlayer, rightPlayer);
-
-            if (dlgSave.ShowDialog() != DialogResult.OK)
-                return null;
-
-            return dlgSave.FileName;
         }
 
         public static string SuggestFilename(PlayerScreen player1, PlayerScreen player2)

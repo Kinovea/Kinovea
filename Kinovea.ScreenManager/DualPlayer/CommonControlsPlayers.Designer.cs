@@ -56,6 +56,7 @@ namespace Kinovea.ScreenManager
       // 
       // trkFrame
       // 
+      this.trkFrame.AllowDrop = true;
       this.trkFrame.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.trkFrame.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -67,6 +68,7 @@ namespace Kinovea.ScreenManager
       this.trkFrame.Name = "trkFrame";
       this.trkFrame.Position = ((long)(0));
       this.trkFrame.RightHairline = ((long)(0));
+      this.trkFrame.ShowCacheInTimeline = false;
       this.trkFrame.Size = new System.Drawing.Size(212, 20);
       this.trkFrame.TabIndex = 14;
       this.trkFrame.PositionChanging += new System.EventHandler<Kinovea.ScreenManager.TimeEventArgs>(this.trkFrame_PositionChanged);
@@ -211,7 +213,7 @@ namespace Kinovea.ScreenManager
       this.btnSnapshot.FlatAppearance.BorderSize = 0;
       this.btnSnapshot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnSnapshot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnSnapshot.Image = global::Kinovea.ScreenManager.Properties.Resources.camerasingle;
+      this.btnSnapshot.Image = global::Kinovea.ScreenManager.Properties.Resources.export_image_sidebyside;
       this.btnSnapshot.Location = new System.Drawing.Point(594, 10);
       this.btnSnapshot.Margin = new System.Windows.Forms.Padding(0);
       this.btnSnapshot.MinimumSize = new System.Drawing.Size(25, 25);
@@ -229,7 +231,7 @@ namespace Kinovea.ScreenManager
       this.btnDualSave.FlatAppearance.BorderSize = 0;
       this.btnDualSave.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnDualSave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnDualSave.Image = global::Kinovea.ScreenManager.Properties.Resources.film_save;
+      this.btnDualSave.Image = global::Kinovea.ScreenManager.Properties.Resources.export_video_sidebyside;
       this.btnDualSave.Location = new System.Drawing.Point(627, 10);
       this.btnDualSave.Margin = new System.Windows.Forms.Padding(0);
       this.btnDualSave.MinimumSize = new System.Drawing.Size(25, 25);
