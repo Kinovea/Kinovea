@@ -42,15 +42,19 @@ Changelog:
     Added - Kinogram mode to replace the Overview mode.
     Added - Keyframe colors.
     Added - Keyframe presets.
-    Added - Time grab interaction.
     Added - Multi-time stopwatch tool.
     Added - Time segment tool.
     Added - Distance grid tool.
-    Added - Data export to raw JSON files.
-    Added - Data export to raw CSV files.
     Added - Recording status bar.
     Added - Support for saving single snapshots from audio trigger.
+    Added - Time grab interaction.
     Added - Magnifier "Freeze" mode.
+    Added - Side panel with key image comments.
+    Added - Spreadsheet exporter to JSON.
+    Added - Spreadsheet exporter to CSV.
+    Added - Document exporter to Markdown.
+    Added - Document exporter to ODT and DOCX via Pandoc.
+    Added - Support for saving side-by-side image in a vertical layout.
     Improved - General: Save and restore the working zone bounds as part of the KVA file.
     Improved - General: Save and restore all video import options (aspect, rotation, demosaicing, deinterlacing).
     Improved - General: Save keyframes even if they are outside the working zone.
@@ -58,6 +62,7 @@ Changelog:
     Improved - General: When importing a KVA file into a different video the times are now aligned by the time origins.
     Improved - General: Support sorting files by name, date or size in the explorer.
     Improved - General: Support navigating back, forth and up in the explorer.
+    Improved - General: Added commands to toggle drawings visibility.
     Improved - Playback: Using a video filter no longer prevents the usage of the normal video controls and drawings tools.
     Improved - Playback: Video filters are no longer deactivated when changing the working zone.
     Improved - Playback: Support rotation on single image files.
@@ -92,10 +97,16 @@ Changelog:
     Fixed - Zooming in the player was not centered on the mouse cursor.
     Fixed - The picture-in-picture area of the magnifier was hiding drawings.
     Fixed - Lines with arrows did not take the arrow length into account for measurement.
+    Fixed - Undo/redo was broken in various places.
+    Fixed - Saving the scene with the comment dialog open was not saving the comments.
+    Fixed - The position of the main splitters of the user interface were not saved and restored correctly.
+    Fixed - Key images timecode displayed on the thumbnail could be incorrect.
+    Fixed - The folder browser dialog was causing UI issues when using high DPI scaling.
     Removed - Video reverse mode.
     Removed - Exporting data to XHTML.
     Removed - Exporting data to Gnuplot script.
     Removed - Built-in SVG files "Observational references".
+    Removed - Popup dialog with comments, replaced by side panel.
 
 
 0.9.5 - October 2021.
