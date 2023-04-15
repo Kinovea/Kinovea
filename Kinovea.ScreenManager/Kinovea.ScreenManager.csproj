@@ -282,6 +282,7 @@
     </Compile>
     <Compile Include="DrawingClipboard.cs" />
     <Compile Include="Exporters\Images\ExporterImage.cs" />
+    <Compile Include="Exporters\Spreadsheet\ExporterCSVChrono.cs" />
     <Compile Include="Exporters\Video\FormConfigureExportVideo.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -322,7 +323,7 @@
     <Compile Include="Exporters\Document\DocumentExportFormat.cs" />
     <Compile Include="Exporters\Document\ExporterMarkdown.cs" />
     <Compile Include="Exporters\Spreadsheet\CSVHelper.cs" />
-    <Compile Include="Exporters\Spreadsheet\ExporterCSV.cs" />
+    <Compile Include="Exporters\Spreadsheet\ExporterCSVTrajectory.cs" />
     <Compile Include="Exporters\Spreadsheet\ExporterJSON.cs" />
     <Compile Include="Exporters\Spreadsheet\ExporterXSLX.cs" />
     <Compile Include="Metadata\Interfaces\IDrawingHostView.cs" />
@@ -460,6 +461,7 @@
     <Compile Include="Metadata\Serialization\MeasuredDataKeyframe.cs" />
     <Compile Include="Metadata\Serialization\MeasuredDataPosition.cs" />
     <Compile Include="Metadata\Serialization\MeasuredDataTime.cs" />
+    <Compile Include="Metadata\Serialization\MeasuredDataTimeSection.cs" />
     <Compile Include="Metadata\Serialization\MeasuredDataTimeseries.cs" />
     <Compile Include="Metadata\Serialization\MeasuredDataUnits.cs" />
     <Compile Include="Metadata\Serialization\MeasurementSerializationHelper.cs" />

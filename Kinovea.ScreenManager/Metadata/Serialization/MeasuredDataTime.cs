@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace Kinovea.ScreenManager
 {
+    /// <summary>
+    /// Collects the time information for a chronometer, with possibly multiple time sections.
+    /// </summary>
     public class MeasuredDataTime
     {
         public string Name { get; set; }
-        public float Duration { get; set; }
-        public float Cumul { get; set; }
-        public float Start { get; set; }
-        public float Stop { get; set; }
+
+        public List<MeasuredDataTimeSection> Sections { get; set; } = new List<MeasuredDataTimeSection>();
     }
 }

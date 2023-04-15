@@ -4,7 +4,8 @@
     {
         ODS,
         XLSX,
-        CSV,
+        CSVTrajectory,
+        CSVChronometer,
         JSON,
     }
 }

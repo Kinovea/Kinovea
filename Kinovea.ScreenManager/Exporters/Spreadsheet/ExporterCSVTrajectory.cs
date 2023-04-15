@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Kinovea.ScreenManager
 {
-    public class ExporterCSV
+    public class ExporterCSVTrajectory
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 

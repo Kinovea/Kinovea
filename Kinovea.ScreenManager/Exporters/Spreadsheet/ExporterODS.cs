@@ -493,13 +493,18 @@ namespace Kinovea.ScreenManager
             for (int i = 0; i < md.Times.Count; i++)
             {
                 var value = md.Times[i];
-                w.WriteStartElement("table:table-row");
-                WriteCell(w, value.Name, "name");
-                WriteCell(w, value.Duration, "time");
-                WriteCell(w, value.Cumul, "time");
-                WriteCell(w, value.Start, "time");
-                WriteCell(w, value.Stop, "time");
-                w.WriteEndElement();
+                for (int j = 0; j < value.Sections.Count; j++)
+                {
+                    var section = value.Sections[j];
+                    string name = string.IsNullOrEmpty(section.Name) ? value.Name : value.Name + " " + section.Name;
+                    w.WriteStartElement("table:table-row");
+                    WriteCell(w, name, "name");
+                    WriteCell(w, section.Duration, "time");
+                    WriteCell(w, section.Cumul, "time");
+                    WriteCell(w, section.Start, "time");
+                    WriteCell(w, section.Stop, "time");
+                    w.WriteEndElement();
+                }
             }
         }
 

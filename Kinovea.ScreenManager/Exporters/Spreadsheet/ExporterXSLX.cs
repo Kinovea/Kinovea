@@ -247,11 +247,16 @@ namespace Kinovea.ScreenManager
             for (int i = 0; i < md.Times.Count; i++)
             {
                 var value = md.Times[i];
-                sl.SetCellValue(row + 2 + i, 1, value.Name);
-                sl.SetCellValue(row + 2 + i, 2, value.Duration);
-                sl.SetCellValue(row + 2 + i, 3, value.Cumul);
-                sl.SetCellValue(row + 2 + i, 4, value.Start);
-                sl.SetCellValue(row + 2 + i, 5, value.Stop);
+                for (int j = 0; j < value.Sections.Count; j++)
+                {
+                    var section = value.Sections[j];
+                    string name = string.IsNullOrEmpty(section.Name) ? value.Name : value.Name + " " + section.Name;
+                    sl.SetCellValue(row + 2 + i, 1, name);
+                    sl.SetCellValue(row + 2 + i, 2, section.Duration);
+                    sl.SetCellValue(row + 2 + i, 3, section.Cumul);
+                    sl.SetCellValue(row + 2 + i, 4, section.Start);
+                    sl.SetCellValue(row + 2 + i, 5, section.Stop);
+                }
             }
 
             sl.SetCellStyle(row, 1, row + md.Times.Count + 1, 5, styles["normal"]);

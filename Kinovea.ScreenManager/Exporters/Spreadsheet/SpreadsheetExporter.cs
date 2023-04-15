@@ -21,26 +21,26 @@ namespace Kinovea.ScreenManager
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = ScreenManagerLang.dlgExportSpreadsheet_Title;
             saveFileDialog.RestoreDirectory = true;
-            saveFileDialog.Filter = "LibreOffice calc (*.ods)|*.ods|Microsoft Excel (*.xlsx)|*.xlsx|CSV (*.csv)|*.csv|JSON (*.json)|*.json";
-            int filterIndex;
             switch (format)
             {
                 case SpreadsheetExportFormat.ODS:
-                    filterIndex = 1;
+                    saveFileDialog.Filter = "LibreOffice calc|*.ods";
                     break;
                 case SpreadsheetExportFormat.XLSX:
-                    filterIndex = 2;
+                    saveFileDialog.Filter = "Microsoft Excel|*.xlsx";
                     break;
-                case SpreadsheetExportFormat.CSV:
-                    filterIndex = 3;
+                case SpreadsheetExportFormat.CSVTrajectory:
+                case SpreadsheetExportFormat.CSVChronometer:
+                    saveFileDialog.Filter = "CSV|*.csv";
                     break;
                 case SpreadsheetExportFormat.JSON:
+                    saveFileDialog.Filter = "JSON|*.json";
+                    break;
                 default:
-                    filterIndex = 4;
                     break;
             }
 
-            saveFileDialog.FilterIndex = filterIndex;
+            saveFileDialog.FilterIndex = 1;
             saveFileDialog.FileName = Path.GetFileNameWithoutExtension(player.FrameServer.Metadata.VideoPath);
 
             if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))
@@ -72,13 +72,17 @@ namespace Kinovea.ScreenManager
                     ExporterXLSX exporterXLSX = new ExporterXLSX();
                     exporterXLSX.Export(file, measuredData);
                     break;
+                case SpreadsheetExportFormat.CSVTrajectory:
+                    ExporterCSVTrajectory exporterTrajectoryCSV = new ExporterCSVTrajectory();
+                    exporterTrajectoryCSV.Export(file, measuredData);
+                    break;
+                case SpreadsheetExportFormat.CSVChronometer:
+                    ExporterCSVChrono exporterChronoCSV = new ExporterCSVChrono();
+                    exporterChronoCSV.Export(file, measuredData);
+                    break;
                 case SpreadsheetExportFormat.JSON:
                     ExporterJSON exporterJSON = new ExporterJSON();
                     exporterJSON.Export(file, measuredData);
-                    break;
-                case SpreadsheetExportFormat.CSV:
-                    ExporterCSV exporterCSV = new ExporterCSV();
-                    exporterCSV.Export(file, measuredData);
                     break;
             }
         }

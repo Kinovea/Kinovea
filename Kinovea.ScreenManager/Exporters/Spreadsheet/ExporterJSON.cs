@@ -190,18 +190,24 @@ namespace Kinovea.ScreenManager
             {
                 w.WriteStartObject();
 
-                w.WritePropertyName("name");
-                w.WriteValue(o.Name);
-                w.WritePropertyName("timeUnit");
-                w.WriteValue(md.Units.TimeSymbol);
-                w.WritePropertyName("duration");
-                w.WriteValue(o.Duration);
-                w.WritePropertyName("cumul");
-                w.WriteValue(o.Cumul);
-                w.WritePropertyName("start");
-                w.WriteValue(o.Start);
-                w.WritePropertyName("stop");
-                w.WriteValue(o.Stop);
+                foreach (var section in o.Sections)
+                {
+                    string name = string.IsNullOrEmpty(section.Name) ? o.Name : o.Name + " " + section.Name;
+
+                    w.WritePropertyName("name");
+                    w.WriteValue(name);
+
+                    w.WritePropertyName("timeUnit");
+                    w.WriteValue(md.Units.TimeSymbol);
+                    w.WritePropertyName("duration");
+                    w.WriteValue(section.Duration);
+                    w.WritePropertyName("cumul");
+                    w.WriteValue(section.Cumul);
+                    w.WritePropertyName("start");
+                    w.WriteValue(section.Start);
+                    w.WritePropertyName("stop");
+                    w.WriteValue(section.Stop);
+                }
 
                 w.WriteEndObject();
             }

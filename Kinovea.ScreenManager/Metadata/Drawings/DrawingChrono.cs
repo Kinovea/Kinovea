@@ -354,6 +354,8 @@ namespace Kinovea.ScreenManager
         {
             MeasuredDataTime mdt = new MeasuredDataTime();
             mdt.Name = name;
+            MeasuredDataTimeSection mdts = new MeasuredDataTimeSection();
+            mdts.Name = "";
 
             if (!styleHelper.Clock && startCountingTimestamp != long.MaxValue && stopCountingTimestamp != long.MaxValue)
             {
@@ -361,10 +363,10 @@ namespace Kinovea.ScreenManager
                 float userStop = parentMetadata.GetNumericalTime(stopCountingTimestamp, TimeType.UserOrigin);
                 float userDuration = parentMetadata.GetNumericalTime(stopCountingTimestamp - startCountingTimestamp, TimeType.Absolute);
 
-                mdt.Start = userStart;
-                mdt.Stop = userStop;
-                mdt.Duration = userDuration;
-                mdt.Cumul = userDuration;
+                mdts.Start = userStart;
+                mdts.Stop = userStop;
+                mdts.Duration = userDuration;
+                mdts.Cumul = userDuration;
             }
             else if (styleHelper.Clock)
             {
@@ -375,8 +377,10 @@ namespace Kinovea.ScreenManager
                 else
                     userStart = parentMetadata.GetNumericalTime(clockOriginTimestamp, TimeType.UserOrigin);
 
-                mdt.Start = userStart;
+                mdts.Start = userStart;
             }
+
+            mdt.Sections.Add(mdts);
 
             return mdt;
         }

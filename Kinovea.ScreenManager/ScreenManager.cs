@@ -88,7 +88,6 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuExportVideoWithPauses = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportVideoSideBySide = new ToolStripMenuItem();
 
-        
         private ToolStripMenuItem mnuExportImage = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportImageImage = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportImageKeys = new ToolStripMenuItem();
@@ -98,7 +97,8 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuExportSpreadsheet = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportODS = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportXLSX = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuExportCSV = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportCSVTrajectory = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportCSVChronometer = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportJSON = new ToolStripMenuItem();
         
         private ToolStripMenuItem mnuExportDocument = new ToolStripMenuItem();
@@ -378,16 +378,19 @@ namespace Kinovea.ScreenManager
             mnuExportSpreadsheet.MergeAction = MergeAction.Insert;
             mnuExportODS.Image = Properties.Resources.file_ods;
             mnuExportXLSX.Image = Properties.Resources.file_xls;
-            mnuExportCSV.Image = Properties.Resources.file_csv;
+            mnuExportCSVTrajectory.Image = Properties.Resources.file_csv;
+            mnuExportCSVChronometer.Image = Properties.Resources.file_csv;
             mnuExportJSON.Image = Properties.Resources.json;
             mnuExportODS.Click += (s, e) => ExportSpreadsheet(SpreadsheetExportFormat.ODS);
             mnuExportXLSX.Click += (s, e) => ExportSpreadsheet(SpreadsheetExportFormat.XLSX);
-            mnuExportCSV.Click += (s, e) => ExportSpreadsheet(SpreadsheetExportFormat.CSV);
+            mnuExportCSVTrajectory.Click += (s, e) => ExportSpreadsheet(SpreadsheetExportFormat.CSVTrajectory);
+            mnuExportCSVChronometer.Click += (s, e) => ExportSpreadsheet(SpreadsheetExportFormat.CSVChronometer);
             mnuExportJSON.Click += (s, e) => ExportSpreadsheet(SpreadsheetExportFormat.JSON);
             mnuExportSpreadsheet.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuExportODS,
                 mnuExportXLSX,
-                mnuExportCSV,
+                mnuExportCSVTrajectory,
+                mnuExportCSVChronometer,
                 new ToolStripSeparator(),
                 mnuExportJSON,
             });
@@ -1482,8 +1485,10 @@ namespace Kinovea.ScreenManager
             mnuExportSpreadsheet.Text = "Export spreadsheet";
             mnuExportODS.Text = "LibreOffice Calc…";
             mnuExportXLSX.Text = "Microsoft Excel…";
+            mnuExportCSVTrajectory.Text = "Trajectory CSV…";
+            mnuExportCSVChronometer.Text = "Chronometer CSV…";
             mnuExportJSON.Text = "JSON…";
-            mnuExportCSV.Text = "Trajectory CSV…";
+
 
             mnuExportDocument.Text = "Export document";
             mnuExportODT.Text = "LibreOffice Writer…";

@@ -425,9 +425,10 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        public List<MeasuredDataTime> CollectMeasuredData()
+        public MeasuredDataTime CollectMeasuredData()
         {
-            List<MeasuredDataTime> mdtList = new List<MeasuredDataTime>();
+            MeasuredDataTime mdt = new MeasuredDataTime();
+            mdt.Name = this.Name;
 
             long cumulTimestamps = 0;
             for (int i = 0; i < sections.Count; i++)
@@ -435,24 +436,23 @@ namespace Kinovea.ScreenManager
                 if (sections[i].End == long.MaxValue)
                     continue;
 
-                MeasuredDataTime mdt = new MeasuredDataTime();
-                
-                string sectionName = string.IsNullOrEmpty(sectionNames[i]) ? (i + 1).ToString() : sectionNames[i];
-                mdt.Name = string.Format("{0} > {1}", this.Name, sectionName);
+                MeasuredDataTimeSection mdts = new MeasuredDataTimeSection();    
+                mdts.Name = string.IsNullOrEmpty(sectionNames[i]) ? (i + 1).ToString() : sectionNames[i]; ;
+
                 var section = sections[i];
-                mdt.Start = parentMetadata.GetNumericalTime(section.Start, TimeType.UserOrigin);
-                mdt.Stop = parentMetadata.GetNumericalTime(section.End, TimeType.UserOrigin);
+                mdts.Start = parentMetadata.GetNumericalTime(section.Start, TimeType.UserOrigin);
+                mdts.Stop = parentMetadata.GetNumericalTime(section.End, TimeType.UserOrigin);
 
                 long elapsedTimestamps = section.End - section.Start;
                 cumulTimestamps += elapsedTimestamps;
 
-                mdt.Duration = parentMetadata.GetNumericalTime(elapsedTimestamps, TimeType.Absolute);
-                mdt.Cumul = parentMetadata.GetNumericalTime(cumulTimestamps, TimeType.Absolute);
+                mdts.Duration = parentMetadata.GetNumericalTime(elapsedTimestamps, TimeType.Absolute);
+                mdts.Cumul = parentMetadata.GetNumericalTime(cumulTimestamps, TimeType.Absolute);
 
-                mdtList.Add(mdt);
+                mdt.Sections.Add(mdts);
             }
 
-            return mdtList;
+            return mdt;
         }
 
 
