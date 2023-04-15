@@ -54,6 +54,9 @@ namespace Kinovea.Root
       this.cmbLanguage = new System.Windows.Forms.ComboBox();
       this.chkAllowMultipleInstances = new System.Windows.Forms.CheckBox();
       this.chkInstancesPreferences = new System.Windows.Forms.CheckBox();
+      this.lblPandocPath = new System.Windows.Forms.Label();
+      this.tbPandocPath = new System.Windows.Forms.TextBox();
+      this.btnPandocPath = new System.Windows.Forms.Button();
       this.SuspendLayout();
       // 
       // cmbHistoryCount
@@ -131,11 +134,51 @@ namespace Kinovea.Root
       this.chkInstancesPreferences.UseVisualStyleBackColor = true;
       this.chkInstancesPreferences.CheckedChanged += new System.EventHandler(this.ChkInstancesPreferences_CheckedChanged);
       // 
+      // lblPandocPath
+      // 
+      this.lblPandocPath.AutoSize = true;
+      this.lblPandocPath.Location = new System.Drawing.Point(29, 196);
+      this.lblPandocPath.Name = "lblPandocPath";
+      this.lblPandocPath.Size = new System.Drawing.Size(71, 13);
+      this.lblPandocPath.TabIndex = 64;
+      this.lblPandocPath.Text = "Pandoc path:";
+      // 
+      // tbPandocPath
+      // 
+      this.tbPandocPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.tbPandocPath.Location = new System.Drawing.Point(302, 193);
+      this.tbPandocPath.Name = "tbPandocPath";
+      this.tbPandocPath.Size = new System.Drawing.Size(140, 20);
+      this.tbPandocPath.TabIndex = 65;
+      this.tbPandocPath.TextChanged += new System.EventHandler(this.tbPlaybackKVA_TextChanged);
+      // 
+      // btnPandocPath
+      // 
+      this.btnPandocPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnPandocPath.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+      this.btnPandocPath.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnPandocPath.FlatAppearance.BorderSize = 0;
+      this.btnPandocPath.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+      this.btnPandocPath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnPandocPath.Image = global::Kinovea.Root.Properties.Resources.folder;
+      this.btnPandocPath.Location = new System.Drawing.Point(448, 192);
+      this.btnPandocPath.MinimumSize = new System.Drawing.Size(20, 20);
+      this.btnPandocPath.Name = "btnPandocPath";
+      this.btnPandocPath.Size = new System.Drawing.Size(20, 20);
+      this.btnPandocPath.TabIndex = 66;
+      this.btnPandocPath.Tag = "";
+      this.btnPandocPath.UseVisualStyleBackColor = true;
+      this.btnPandocPath.Click += new System.EventHandler(this.btnPlaybackKVA_Click);
+      // 
       // PreferencePanelGeneral
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.Color.Gainsboro;
+      this.Controls.Add(this.lblPandocPath);
+      this.Controls.Add(this.tbPandocPath);
+      this.Controls.Add(this.btnPandocPath);
       this.Controls.Add(this.chkInstancesPreferences);
       this.Controls.Add(this.chkAllowMultipleInstances);
       this.Controls.Add(this.cmbHistoryCount);
@@ -154,5 +197,8 @@ namespace Kinovea.Root
 		private System.Windows.Forms.ComboBox cmbHistoryCount;
         private System.Windows.Forms.CheckBox chkAllowMultipleInstances;
         private System.Windows.Forms.CheckBox chkInstancesPreferences;
+        private System.Windows.Forms.Label lblPandocPath;
+        private System.Windows.Forms.TextBox tbPandocPath;
+        private System.Windows.Forms.Button btnPandocPath;
     }
 }

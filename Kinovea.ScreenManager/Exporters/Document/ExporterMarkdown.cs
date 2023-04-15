@@ -31,6 +31,9 @@ namespace Kinovea.ScreenManager
         public static readonly string OrderedListItemPrefix = DefaultListItemNumber + ". ";
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
+        /// <summary>
+        /// Export to a markdown document.
+        /// </summary>
         public void Export(string path, List<string> filePaths, Metadata metadata)
         {
             StringBuilder sb = new StringBuilder();
@@ -49,7 +52,7 @@ namespace Kinovea.ScreenManager
             {
                 var keyframe = metadata.Keyframes[i];
                 sb.Append(Heading2Prefix + keyframe.Name + LineBreak);
-                sb.Append(string.Format("![]({0})", filePaths[i]) + LineBreak);
+                sb.Append(string.Format("![]({0}){{width=100%}}", filePaths[i]) + ParagraphBreak);
                 sb.Append(Heading2Prefix + keyframe.Name + LineBreak);
                 sb.Append(ItalicWrap + keyframe.TimeCode + ItalicWrap + ParagraphBreak);
 

@@ -354,7 +354,9 @@ namespace Kinovea.ScreenManager
             mnuExportODT.Image = Properties.Resources.file_odt;
             mnuExportDOCX.Image = Properties.Resources.file_doc;
             mnuExportMarkdown.Image = Properties.Resources.file_markdown;
-            mnuExportMarkdown.Click += mnuExportMarkdown_Click;
+            mnuExportODT.Click += (s, e) => ExportDocument(DocumentExportFormat.ODT);
+            mnuExportDOCX.Click += (s, e) => ExportDocument(DocumentExportFormat.DOCX);
+            mnuExportMarkdown.Click += (s, e) => ExportDocument(DocumentExportFormat.Mardown);
             mnuExportDocument.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuExportODT,
                 mnuExportDOCX,
@@ -370,10 +372,10 @@ namespace Kinovea.ScreenManager
             mnuExportXLSX.Image = Properties.Resources.file_xls;
             mnuExportCSV.Image = Properties.Resources.file_csv;
             mnuExportJSON.Image = Properties.Resources.json;
-            mnuExportODS.Click += mnuExportODS_Click;
-            mnuExportXLSX.Click += mnuExportXLSX_Click;
-            mnuExportCSV.Click += mnuExportCSV_Click;
-            mnuExportJSON.Click += mnuExportJSON_Click;
+            mnuExportODS.Click += (s, e) => ExportSpreadsheet(SpreadsheetExportFormat.ODS);
+            mnuExportXLSX.Click += (s, e) => ExportSpreadsheet(SpreadsheetExportFormat.XLSX);
+            mnuExportCSV.Click += (s, e) => ExportSpreadsheet(SpreadsheetExportFormat.CSV);
+            mnuExportJSON.Click += (s, e) => ExportSpreadsheet(SpreadsheetExportFormat.JSON);
             mnuExportSpreadsheet.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuExportODS,
                 mnuExportXLSX,
@@ -1633,72 +1635,6 @@ namespace Kinovea.ScreenManager
 
             screenList[targetScreen].LoadKVA(filename);
         }
-        private void mnuExportODS_Click(object sender, EventArgs e)
-        {
-            ExportSpreadsheet(SpreadsheetExportFormat.ODS);
-        }
-        private void mnuExportXLSX_Click(object sender, EventArgs e)
-        {
-            ExportSpreadsheet(SpreadsheetExportFormat.XLSX);
-        }
-        private void mnuExportJSON_Click(object sender, EventArgs e)
-        {
-            ExportSpreadsheet(SpreadsheetExportFormat.JSON);
-        }
-        private void mnuExportCSV_Click(object sender, EventArgs e)
-        {
-            ExportSpreadsheet(SpreadsheetExportFormat.CSV);
-        }
-        private void ExportSpreadsheet(SpreadsheetExportFormat format)
-        {
-            PlayerScreen player = activeScreen as PlayerScreen;
-            if (player == null || !player.FrameServer.Metadata.HasVisibleData)
-                return;
-            
-            DoStopPlaying();    
-
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Title = ScreenManagerLang.dlgExportSpreadsheet_Title;
-            saveFileDialog.RestoreDirectory = true;
-            saveFileDialog.Filter = "LibreOffice calc (*.ods)|*.ods|Microsoft Excel (*.xlsx)|*.xlsx|CSV (*.csv)|*.csv|JSON (*.json)|*.json";
-            int filterIndex;
-            switch (format)
-            {
-                case SpreadsheetExportFormat.ODS:
-                    filterIndex = 1;
-                    break;
-                case SpreadsheetExportFormat.XLSX:
-                    filterIndex = 2;
-                    break;
-                case SpreadsheetExportFormat.CSV:
-                    filterIndex = 3;
-                    break;
-                case SpreadsheetExportFormat.JSON:
-                default:
-                    filterIndex = 4;
-                    break;
-            }
-
-            saveFileDialog.FilterIndex = filterIndex;
-            saveFileDialog.FileName = Path.GetFileNameWithoutExtension(player.FrameServer.Metadata.VideoPath);
-
-            if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))
-                return;
-
-            try
-            { 
-                SpreadsheetExporter.Export(player.FrameServer.Metadata, saveFileDialog.FileName, format);
-            }
-            catch (Exception e)
-            {
-                log.ErrorFormat("Exception encountered while exporting to spreadsheet.", e);
-            }
-        }
-        
-        private void mnuExportMarkdown_Click(object sender, EventArgs e)
-        {
-            ExportDocument(DocumentExportFormat.Mardown);
-        }
 
         private void ExportDocument(DocumentExportFormat format)
         {
@@ -1708,17 +1644,23 @@ namespace Kinovea.ScreenManager
                 return;
 
             DocumentExporter exporter = new DocumentExporter();
-            exporter.Export(DocumentExportFormat.Mardown, player);
+            exporter.Export(format, player);
         }
 
+        private void ExportSpreadsheet(SpreadsheetExportFormat format)
+        {
+            DoStopPlaying();
+            PlayerScreen player = activeScreen as PlayerScreen;
+            if (player == null || !player.FrameServer.Metadata.HasVisibleData)
+                return;
 
-
-        
-
+            SpreadsheetExporter exporter = new SpreadsheetExporter();
+            exporter.Export(format, player);
+        }
         #endregion
 
         #region Edit
-            private void mnuCutDrawing_OnClick(object sender, EventArgs e)
+        private void mnuCutDrawing_OnClick(object sender, EventArgs e)
         {
             if (activeScreen is PlayerScreen)
             {

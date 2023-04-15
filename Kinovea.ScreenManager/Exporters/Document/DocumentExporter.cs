@@ -11,15 +11,20 @@ using Kinovea.Video;
 using Kinovea.Services;
 using System.ComponentModel;
 using System.Threading;
+using System.Diagnostics;
 
 namespace Kinovea.ScreenManager
 {
+    /// <summary>
+    /// Exports key images and comments to text document fomats.
+    /// </summary>
     public class DocumentExporter
     {
         private BackgroundWorker worker = new BackgroundWorker();
         private FormProgressBar formProgressBar = new FormProgressBar(true);
         private PlayerScreen player;
         private Metadata metadata;
+        private DocumentExportFormat format;
         private readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public DocumentExporter()
@@ -46,18 +51,33 @@ namespace Kinovea.ScreenManager
             saveFileDialog.RestoreDirectory = true;
             saveFileDialog.Filter = "LibreOffice writer (*.odt)|*.odt|Microsoft Word (*.docx)|*.docx|Markdown (*.md)|*.md";
             int filterIndex;
+            bool needsPandoc = false;
             switch (format)
             {
                 case DocumentExportFormat.ODT:
                     filterIndex = 1;
+                    needsPandoc = true;
                     break;
                 case DocumentExportFormat.DOCX:
                     filterIndex = 2;
+                    needsPandoc = true;
                     break;
                 case DocumentExportFormat.Mardown:
                 default:
                     filterIndex = 3;
                     break;
+            }
+
+            if (needsPandoc)
+            {
+                // Sanity check pandoc immediately.
+                string pathPandoc = PreferencesManager.PlayerPreferences.PandocPath;
+                if (string.IsNullOrEmpty(pathPandoc) || !File.Exists(pathPandoc))
+                {
+                    // Raise an error box telling the user to install Pandoc.
+                    log.ErrorFormat("Document export: pandoc not found.");
+                    return;
+                }
             }
 
             saveFileDialog.FilterIndex = filterIndex;
@@ -82,6 +102,10 @@ namespace Kinovea.ScreenManager
         private void Export(string file, DocumentExportFormat format, Metadata metadata, PlayerScreen player)
         {
             // Always export to Markdown first.
+            string dir = Path.GetDirectoryName(file);
+            string filename = Path.GetFileNameWithoutExtension(file);
+            file = Path.Combine(dir, filename + ".md");
+
             // For other formats we delegate the conversion to Pandoc.
             SavingSettings s = new SavingSettings();
             s.Section = new VideoSection(metadata.SelectionStart, metadata.SelectionEnd);
@@ -94,6 +118,7 @@ namespace Kinovea.ScreenManager
             // Setup global variables we'll use from inside the background thread.
             this.player = player;
             this.metadata = metadata;
+            this.format = format;
 
             // Start the background worker.
             formProgressBar.Reset();
@@ -145,17 +170,15 @@ namespace Kinovea.ScreenManager
             player.FrameServer.VideoReader.AfterFrameEnumeration();
 
             if (worker.CancellationPending)
-            {
-                // We got cancelled, nothing more to do.
-            }
-            else
-            {
-                ExporterMarkdown exporterMarkdown = new ExporterMarkdown();
-                exporterMarkdown.Export(s.File, filePathsRelative, metadata);
+                return; 
+            
+            ExporterMarkdown exporterMarkdown = new ExporterMarkdown();
+            exporterMarkdown.Export(s.File, filePathsRelative, metadata);
 
-                // TODO: handle other formats.
-                
-            }
+            if (format == DocumentExportFormat.Mardown)
+                return;
+
+            RunPandoc(format, s.File);
         }
 
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -178,6 +201,69 @@ namespace Kinovea.ScreenManager
         {
             // Turn the CancellationPending flag on.
             worker.CancelAsync();
+        }
+
+        private void RunPandoc(DocumentExportFormat format, string pathMarkdown)
+        {
+            if (string.IsNullOrEmpty(pathMarkdown) || !File.Exists(pathMarkdown))
+                return;
+
+            string pathPandoc = PreferencesManager.PlayerPreferences.PandocPath;
+            if (string.IsNullOrEmpty(pathPandoc) || !File.Exists(pathPandoc))
+            {
+                // Raise an error box telling the user to install Pandoc.
+                log.ErrorFormat("Document export: pandoc not found.");
+                return;
+            }
+
+            string dir = Path.GetDirectoryName(pathMarkdown);
+            string pathWithoutExtension = Path.Combine(dir, Path.GetFileNameWithoutExtension(pathMarkdown));
+            string pathFinal = "";
+            switch (format)
+            {
+                case DocumentExportFormat.ODT:
+                    pathFinal = string.Format("{0}.odt", pathWithoutExtension);
+                    break;
+                case DocumentExportFormat.DOCX:
+                    pathFinal = string.Format("{0}.docx", pathWithoutExtension);
+                    break;
+                case DocumentExportFormat.Mardown:
+                default:
+                    break;
+            }
+
+            string arguments = string.Format("-f markdown -t odt -o \"{0}\" \"{1}\"", pathFinal, pathMarkdown);
+
+            Process process = new Process();
+            try
+            {
+                process.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
+                process.StartInfo.FileName = pathPandoc;
+                process.StartInfo.Arguments = arguments;
+                process.StartInfo.CreateNoWindow = true;
+                process.StartInfo.UseShellExecute = false;
+
+                // This is necessary so pandoc finds the images.
+                process.StartInfo.WorkingDirectory = dir;
+
+                log.DebugFormat("Running pandoc:");
+                log.DebugFormat("{0} {1}", pathPandoc, arguments);
+
+                process.Start();
+
+                // Wait for 10 seconds max then delete the markdown file.
+                process.WaitForExit(10000);
+                File.Delete(pathMarkdown);
+
+                if (File.Exists(pathFinal))
+                    log.DebugFormat("Document created at {0}", pathFinal);
+                else
+                    log.ErrorFormat("Unknown error while executing pandoc.");
+            }
+            catch (Exception e)
+            {
+                log.ErrorFormat("Could not execute pandoc. {0}", e.Message);
+            }
         }
     }
 }

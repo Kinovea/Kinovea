@@ -203,6 +203,12 @@ namespace Kinovea.Services
             get { return keyframePresetsParameters.Clone(); }
             set { keyframePresetsParameters = value; }
         }
+        public string PandocPath
+        {
+            get { return pandocPath; }
+            set { pandocPath = value; }
+        }
+
         #endregion
 
         private TimecodeFormat timecodeFormat = TimecodeFormat.ClassicTime;
@@ -240,6 +246,8 @@ namespace Kinovea.Services
         private KinogramParameters kinogramParameters = new KinogramParameters();
         private KeyframePresetsParameters keyframePresetsParameters = new KeyframePresetsParameters();
         private bool showCacheInTimeline = false;
+        private string pandocPath = "";
+
         public void AddRecentColor(Color _color)
         {
             PreferencesManager.UpdateRecents(_color, recentColors, maxRecentColors);
@@ -309,6 +317,7 @@ namespace Kinovea.Services
             keyframePresetsParameters.WriteXml(writer);
             writer.WriteEndElement();
 
+            writer.WriteElementString("PandocPath", pandocPath);
         }
         
         public void ReadXML(XmlReader reader)
@@ -418,6 +427,9 @@ namespace Kinovea.Services
                         break;
                     case "KeyframePresets":
                         keyframePresetsParameters.ReadXml(reader);
+                        break;
+                    case "PandocPath":
+                        pandocPath = reader.ReadElementContentAsString();
                         break;
                     default:
                         reader.ReadOuterXml();
