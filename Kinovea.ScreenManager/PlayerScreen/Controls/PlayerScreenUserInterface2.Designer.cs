@@ -720,7 +720,7 @@ namespace Kinovea.ScreenManager
       this.btnPausedVideo.FlatAppearance.BorderSize = 0;
       this.btnPausedVideo.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
       this.btnPausedVideo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnPausedVideo.Image = global::Kinovea.ScreenManager.Properties.Resources.save_paused_video;
+      this.btnPausedVideo.Image = global::Kinovea.ScreenManager.Properties.Resources.export_video_with_pauses;
       this.btnPausedVideo.Location = new System.Drawing.Point(148, 14);
       this.btnPausedVideo.MinimumSize = new System.Drawing.Size(25, 25);
       this.btnPausedVideo.Name = "btnPausedVideo";
@@ -758,7 +758,7 @@ namespace Kinovea.ScreenManager
       this.btnDiaporama.FlatAppearance.BorderSize = 0;
       this.btnDiaporama.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
       this.btnDiaporama.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnDiaporama.Image = global::Kinovea.ScreenManager.Properties.Resources.saveStaticDiaporama;
+      this.btnDiaporama.Image = global::Kinovea.ScreenManager.Properties.Resources.export_video_slideshow;
       this.btnDiaporama.Location = new System.Drawing.Point(118, 14);
       this.btnDiaporama.MinimumSize = new System.Drawing.Size(25, 25);
       this.btnDiaporama.Name = "btnDiaporama";

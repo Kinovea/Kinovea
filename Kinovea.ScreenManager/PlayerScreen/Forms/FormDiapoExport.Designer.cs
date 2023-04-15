@@ -114,7 +114,7 @@ namespace Kinovea.ScreenManager
         	// btnSaveMuxed
         	// 
         	this.btnSaveMuxed.BackColor = System.Drawing.Color.WhiteSmoke;
-        	this.btnSaveMuxed.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.save_paused_video;
+        	this.btnSaveMuxed.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.export_video_with_pauses;
         	this.btnSaveMuxed.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnSaveMuxed.FlatAppearance.BorderColor = System.Drawing.Color.Black;
         	this.btnSaveMuxed.FlatAppearance.BorderSize = 0;
@@ -128,7 +128,7 @@ namespace Kinovea.ScreenManager
         	// btnSaveVideo
         	// 
         	this.btnSaveVideo.BackColor = System.Drawing.Color.WhiteSmoke;
-        	this.btnSaveVideo.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.saveStaticDiaporama;
+        	this.btnSaveVideo.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.export_video_slideshow;
         	this.btnSaveVideo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnSaveVideo.FlatAppearance.BorderColor = System.Drawing.Color.Black;
         	this.btnSaveVideo.FlatAppearance.BorderSize = 0;

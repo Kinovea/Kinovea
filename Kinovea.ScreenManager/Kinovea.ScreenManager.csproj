@@ -1594,6 +1594,63 @@
   <ItemGroup>
     <None Include="Resources\filesave2.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file_notebook.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file_odt.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file_ppt.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file_doc.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file_html.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file_pdf.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file_csv.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\table.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file_spreadsheet.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\film_key.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\save_paused_video.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export_video_video.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export_spreadsheet.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export_document.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export_image_keys.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export_sidebyside.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file_markdown.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export_video_video_sidebyside2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export_image_sidebyside3.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">
     <Message Text="Adjusting SDK tools directory to use x64 version of AL.EXE" />
