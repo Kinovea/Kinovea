@@ -56,6 +56,9 @@ namespace Kinovea.ScreenManager
         }
         #endregion	
         
+        /// <summary>
+        /// Reset the progress bar and value indicator to zero.
+        /// </summary>
         public void Reset()
         {
             labelInfo.Text = "0";
@@ -63,6 +66,9 @@ namespace Kinovea.ScreenManager
             progressBar.Value = 0;
         }
 
+        /// <summary>
+        /// Update the progress bar and value indicator.
+        /// </summary>
         public void Update(int value, int maximum, bool showAsPercentage)
         {
             if (!isIdle || isCancelling)

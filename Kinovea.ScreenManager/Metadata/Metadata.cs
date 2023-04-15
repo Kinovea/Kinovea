@@ -396,7 +396,9 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// The frame interval used for playback timer, as specified by the user.
+        /// The frame interval used as the baseline for the playback timer, in milliseconds.
+        /// Same as the video frame interval unless overriden by the user in time calibration.
+        /// Not affected by the slow motion slider.
         /// </summary>
         public double UserInterval
         {

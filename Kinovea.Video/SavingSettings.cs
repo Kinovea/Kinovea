@@ -43,8 +43,7 @@ namespace Kinovea.Video
         /// </summary>
         public bool KeyframesOnly = false;
 
-        public double InputFrameInterval = 0.4;
-
+        public double InputIntervalMilliseconds = 0.4;
 
         //-------------------------------
         // Output parameters
@@ -82,8 +81,21 @@ namespace Kinovea.Video
         /// Whether we are in the context of exporting a video with pauses.
         /// </summary>
         public bool PausedVideo = false;
-        
-        public double OutputFrameInterval = 0.4;
+
+        /// <summary>
+        /// Interval between exported frames, in milliseconds.
+        /// For timelapse or image sequence this will be different than in the original video.
+        /// For video output this is used to compute the bitrate.
+        /// For image sequence output this is not used, use OutputIntervalTimestamps instead.
+        /// Zero means we export every frame.
+        /// </summary>
+        public double OutputIntervalMilliseconds = 0;
+
+        /// <summary>
+        /// Interval between exported frames for timelapse or image sequence, in timestamps.
+        /// Zero means we export every frame.
+        /// </summary>
+        public long OutputIntervalTimestamps = 0;
 
         //-------------------------------
         // Helpers

@@ -185,7 +185,7 @@ namespace Kinovea.ScreenManager
             // This method is called from the background thread for each processed frame.
             int value = e.ProgressPercentage;
             int max = (int)e.UserState;
-            formProgressBar.Update(value, max, true);
+            formProgressBar.Update(value, max, false);
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)

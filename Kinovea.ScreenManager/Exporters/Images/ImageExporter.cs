@@ -55,6 +55,8 @@ namespace Kinovea.ScreenManager
             if (sfd.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(sfd.FileName))
                 return;
 
+            SavingSettings s = new SavingSettings();
+
             try
             {
                 switch (format)
@@ -65,18 +67,37 @@ namespace Kinovea.ScreenManager
                         break;
                     case ImageExportFormat.SideBySide:
                         log.ErrorFormat("Exporter side-by-side: Not implemented.");
+                        // Configuration dialog to get direction and output size.
                         //exporterImageSideBySide.Export(sfd.FileName, player1);
                         break;
                     case ImageExportFormat.ImageSequence:
-                        // Present a configuration dialog to get the interval.
-                        log.ErrorFormat("Exporter sequence: Not implemented.");
+                        
+                        // Show a configuration dialog to get the interval.
+                        FormConfigureExportImageSequence fceis = new FormConfigureExportImageSequence(player1);
+                        fceis.StartPosition = FormStartPosition.CenterScreen;
+                        if (fceis.ShowDialog() != DialogResult.OK)
+                        {
+                            fceis.Dispose();
+                            return;
+                        }
+
+                        s.Section = new VideoSection(player1.FrameServer.Metadata.SelectionStart, player1.FrameServer.Metadata.SelectionEnd);
+                        s.KeyframesOnly = false;
+                        s.File = sfd.FileName;
+                        s.ImageRetriever = player1.view.GetFlushedImage;
+                        s.OutputIntervalTimestamps = fceis.IntervalTimestamps;
+                        s.EstimatedTotal = fceis.RemainingFrames;
+
+                        fceis.Dispose();
+
+                        ExportSequence(s, player1);
                         break;
                     case ImageExportFormat.KeyImages:
                         
                         // No dialog needed.
-                        SavingSettings s = new SavingSettings();
+                        
                         s.Section = new VideoSection(player1.FrameServer.Metadata.SelectionStart, player1.FrameServer.Metadata.SelectionEnd);
-                        s.KeyframesOnly = format == ImageExportFormat.KeyImages;
+                        s.KeyframesOnly = true;
                         s.File = sfd.FileName;
                         s.ImageRetriever = player1.view.GetFlushedImage;
                         s.EstimatedTotal = player1.FrameServer.Metadata.Keyframes.Count;
@@ -141,11 +162,9 @@ namespace Kinovea.ScreenManager
             BackgroundWorker worker = sender as BackgroundWorker;
             SavingSettings s = e.Argument as SavingSettings;
 
-            long interval = 0;// s.OutputFrameInterval;
-
             // Get the image enumerator.
             player1.FrameServer.VideoReader.BeforeFrameEnumeration();
-            IEnumerable<Bitmap> images = player1.FrameServer.EnumerateImages(s, interval);
+            IEnumerable<Bitmap> images = player1.FrameServer.EnumerateImages(s, s.OutputIntervalTimestamps);
 
             // Enumerate and save the images.
             string dir = Path.GetDirectoryName(s.File);
@@ -179,7 +198,7 @@ namespace Kinovea.ScreenManager
             // This method is called from the background thread for each processed frame.
             int value = e.ProgressPercentage;
             int max = (int)e.UserState;
-            formProgressBar.Update(value, max, true);
+            formProgressBar.Update(value, max, false);
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)

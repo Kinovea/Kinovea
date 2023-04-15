@@ -409,7 +409,7 @@ namespace Kinovea.ScreenManager
             SavingSettings s = new SavingSettings();
             s.Section = videoReader.WorkingZone;
             s.File = filePath;
-            s.InputFrameInterval = frameInterval;
+            s.InputIntervalMilliseconds = frameInterval;
             s.FlushDrawings = flushDrawings;
             s.KeyframesOnly = keyframesOnly;
             s.PausedVideo = pausedVideo;
@@ -437,7 +437,7 @@ namespace Kinovea.ScreenManager
             
             SavingSettings settings = (SavingSettings)e.Argument;
             
-            if(settings.ImageRetriever == null || settings.InputFrameInterval < 0 || bgWorker == null)
+            if(settings.ImageRetriever == null || settings.InputIntervalMilliseconds < 0 || bgWorker == null)
             {
                 saveResult = SaveResult.UnknownError;
                 e.Result = 0;
@@ -456,9 +456,9 @@ namespace Kinovea.ScreenManager
                 {
                     // Take special care for slowmotion, the frame interval can not go down indefinitely.
                     // Use frame duplication when under 8fps.
-                    settings.Duplication = (int)Math.Ceiling(settings.InputFrameInterval / 125.0);
+                    settings.Duplication = (int)Math.Ceiling(settings.InputIntervalMilliseconds / 125.0);
                     settings.KeyframeDuplication = settings.Duplication;
-                    settings.OutputFrameInterval = settings.InputFrameInterval / settings.Duplication;
+                    settings.OutputIntervalMilliseconds = settings.InputIntervalMilliseconds / settings.Duplication;
                     if(settings.KeyframesOnly)
                         settings.EstimatedTotal = metadata.Count * settings.Duplication;
                     else
@@ -469,15 +469,15 @@ namespace Kinovea.ScreenManager
                     // For paused video, slow motion is not supported.
                     // InputFrameInterval will have been set to a multiple of the original frame interval.
                     settings.Duplication = 1;
-                    settings.KeyframeDuplication = (int)(settings.InputFrameInterval / metadata.UserInterval);
-                    settings.OutputFrameInterval = metadata.UserInterval;
+                    settings.KeyframeDuplication = (int)(settings.InputIntervalMilliseconds / metadata.UserInterval);
+                    settings.OutputIntervalMilliseconds = metadata.UserInterval;
                     
                     long regularFramesTotal = videoReader.EstimatedFrames - metadata.Count;
                     long keyframesTotal = metadata.Count * settings.KeyframeDuplication;
                     settings.EstimatedTotal = (int)(regularFramesTotal + keyframesTotal);
                 }
                 
-                log.DebugFormat("interval:{0}, duplication:{1}, kf duplication:{2}", settings.OutputFrameInterval, settings.Duplication, settings.KeyframeDuplication);
+                log.DebugFormat("interval:{0}, duplication:{1}, kf duplication:{2}", settings.OutputIntervalMilliseconds, settings.Duplication, settings.KeyframeDuplication);
 
                 videoReader.BeforeFrameEnumeration();
                 IEnumerable<Bitmap> images = EnumerateImages(settings);

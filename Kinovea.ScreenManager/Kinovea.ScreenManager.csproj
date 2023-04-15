@@ -283,6 +283,12 @@
     </Compile>
     <Compile Include="DrawingClipboard.cs" />
     <Compile Include="Exporters\Images\ExporterImage.cs" />
+    <Compile Include="Exporters\Images\FormConfigureExportImageSequence.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Exporters\Images\FormConfigureExportImageSequence.Designer.cs">
+      <DependentUpon>FormConfigureExportImageSequence.cs</DependentUpon>
+    </Compile>
     <Compile Include="Exporters\Images\ImageExporter.cs" />
     <Compile Include="Exporters\Images\ImageExportFormat.cs" />
     <Compile Include="FilePatterns\PatternSymbolsCommand.cs" />
@@ -507,10 +513,10 @@
     <Compile Include="PlayerScreen\Forms\FormConfigureVisibility.Designer.cs">
       <DependentUpon>FormConfigureVisibility.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\Forms\FormRafaleExport.cs">
+    <Compile Include="Exporters\Images\FormRafaleExport.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\Forms\FormRafaleExport.Designer.cs">
+    <Compile Include="Exporters\Images\FormRafaleExport.Designer.cs">
       <DependentUpon>FormRafaleExport.cs</DependentUpon>
     </Compile>
     <Compile Include="Measurement\Plotting\FormPointsAnalysis.cs">
@@ -769,16 +775,16 @@
     <Compile Include="PlayerScreen\Forms\FormConfigureTrajectoryDisplay.Designer.cs">
       <DependentUpon>FormConfigureTrajectoryDisplay.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\Forms\FormDiapoExport.cs">
+    <Compile Include="Exporters\Video\FormDiapoExport.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\Forms\FormDiapoExport.Designer.cs">
+    <Compile Include="Exporters\Video\FormDiapoExport.Designer.cs">
       <DependentUpon>FormDiapoExport.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\Forms\FormFramesExport.cs">
+    <Compile Include="Exporters\Images\FormFramesExport.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\Forms\FormFramesExport.Designer.cs">
+    <Compile Include="Exporters\Images\FormFramesExport.Designer.cs">
       <DependentUpon>FormFramesExport.cs</DependentUpon>
     </Compile>
     <Compile Include="PlayerScreen\Forms\FormKeyframeComments.cs">
@@ -793,10 +799,10 @@
     <Compile Include="PlayerScreen\Forms\FormProgressBar.Designer.cs">
       <DependentUpon>FormProgressBar.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\Forms\FormVideoExport.cs">
+    <Compile Include="Exporters\Video\FormVideoExport.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\Forms\FormVideoExport.Designer.cs">
+    <Compile Include="Exporters\Video\FormVideoExport.Designer.cs">
       <DependentUpon>FormVideoExport.cs</DependentUpon>
     </Compile>
     <Compile Include="Metadata\Magnifier.cs">
@@ -951,6 +957,9 @@
     <EmbeddedResource Include="CaptureScreen\Views\InfobarCapture.resx">
       <DependentUpon>InfobarCapture.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Exporters\Images\FormConfigureExportImageSequence.resx">
+      <DependentUpon>FormConfigureExportImageSequence.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Languages\ScreenManagerLang.ar.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.bg.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.ca.resx" />
@@ -999,7 +1008,7 @@
     <EmbeddedResource Include="PlayerScreen\Forms\FormConfigureVisibility.resx">
       <DependentUpon>FormConfigureVisibility.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\Forms\FormRafaleExport.resx">
+    <EmbeddedResource Include="Exporters\Images\FormRafaleExport.resx">
       <DependentUpon>FormRafaleExport.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Measurement\Plotting\FormPointsAnalysis.resx">
@@ -1166,11 +1175,11 @@
       <SubType>Designer</SubType>
       <DependentUpon>FormConfigureTrajectoryDisplay.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\Forms\FormDiapoExport.resx">
+    <EmbeddedResource Include="Exporters\Video\FormDiapoExport.resx">
       <SubType>Designer</SubType>
       <DependentUpon>FormDiapoExport.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\Forms\FormFramesExport.resx">
+    <EmbeddedResource Include="Exporters\Images\FormFramesExport.resx">
       <SubType>Designer</SubType>
       <DependentUpon>FormFramesExport.cs</DependentUpon>
     </EmbeddedResource>
@@ -1178,7 +1187,7 @@
       <SubType>Designer</SubType>
       <DependentUpon>FormKeyframeComments.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\Forms\FormVideoExport.resx">
+    <EmbeddedResource Include="Exporters\Video\FormVideoExport.resx">
       <SubType>Designer</SubType>
       <DependentUpon>FormVideoExport.cs</DependentUpon>
     </EmbeddedResource>

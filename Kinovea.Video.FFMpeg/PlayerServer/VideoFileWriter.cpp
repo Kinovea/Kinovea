@@ -49,7 +49,7 @@ SaveResult VideoFileWriter::Save(SavingSettings^ _settings, VideoInfo _info, Str
     if(_frames == nullptr || _worker == nullptr)
         return SaveResult::UnknownError;
 
-    result = OpenSavingContext(	_settings->File, _info, _formatString, _settings->OutputFrameInterval);
+    result = OpenSavingContext(	_settings->File, _info, _formatString, _settings->OutputIntervalMilliseconds);
 
     if(result != SaveResult::Success)
     {
