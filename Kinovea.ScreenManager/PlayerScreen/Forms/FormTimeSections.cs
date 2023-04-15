@@ -48,6 +48,7 @@ namespace Kinovea.ScreenManager
             Metadata metadata = drawing.ParentMetadata;
             List<VideoSection> sections = drawing.VideoSections;
             List<string> names = drawing.SectionNames;
+            List<string> tags = drawing.SectionTags;
             long cumulativeTimestamps = 0;
 
             int top = 40;
@@ -56,6 +57,7 @@ namespace Kinovea.ScreenManager
             {
                 VideoSection section = sections[i];
                 string name = names[i];
+                string tag = tags[i];
 
                 string end = "";
                 string elapsed = "";
@@ -73,30 +75,44 @@ namespace Kinovea.ScreenManager
                     end = metadata.TimeCodeBuilder(section.End, TimeType.Absolute, TimecodeFormat.Unknown, true);
                 }
                 
-                TextBox tb = new TextBox();
-                tb.Location = new Point(65, top);
-                tb.Size = new Size(163, 20);
-                tb.Text = string.IsNullOrEmpty(name) ? (i + 1).ToString() : name;
-                
+                TextBox tbName = new TextBox();
+                tbName.Location = new Point(65, top);
+                tbName.Size = new Size(120, 20);
+                tbName.Text = string.IsNullOrEmpty(name) ? (i + 1).ToString() : name;
+
+                TextBox tbTag = new TextBox();
+                tbTag.Location = new Point(tbName.Right + 10, top);
+                tbTag.Size = new Size(80, 20);
+                tbTag.Text = tag;
+
                 Label lbl = new Label();
                 lbl.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-                lbl.Location = new Point(257, top + 5);
-                lbl.Size = new Size(188, 20);
+                lbl.Location = new Point(tbTag.Right + 10, top + 5);
+                lbl.AutoSize = true;
 
                 if (openEnded)
                     lbl.Text = string.Format("{0}", start);
                 else
                     lbl.Text = string.Format("{0} -> {1} | {2} | {3}", start, end, elapsed, cumul);
 
+                // Text box event handlers.
                 int index = i;
-                tb.TextChanged += (s, e) => {
-                    drawing.SectionNames[index] = tb.Text;
+                tbName.TextChanged += (s, e) => {
+                    drawing.SectionNames[index] = tbName.Text;
                     if (hostView != null)
                         hostView.InvalidateFromMenu();
                 };
 
-                grpConfig.Controls.Add(tb);
+                tbTag.TextChanged += (s, e) =>
+                {
+                    drawing.SectionTags[index] = tbTag.Text;
+                    if (hostView != null)
+                        hostView.InvalidateFromMenu();
+                };
+
+                grpConfig.Controls.Add(tbName);
                 grpConfig.Controls.Add(lbl);
+                grpConfig.Controls.Add(tbTag);
 
                 if (currentIndex == i)
                     btnIndicator.Top = top - 2;

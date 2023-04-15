@@ -42,9 +42,12 @@ namespace Kinovea.ScreenManager
             {
                 List<string> rowCumul = new List<string>();
                 List<string> rowSplits = new List<string>();
-
+                List<string> rowTags = new List<string>();
+                
                 rowCumul.Add(CSVHelper.WriteCell(t.Name + " (Cumulative)"));
                 rowSplits.Add(CSVHelper.WriteCell(t.Name + " (Duration)"));
+                if (t.HasTags)
+                    rowTags.Add(CSVHelper.WriteCell(t.Name + " (Tag)"));
 
                 // Go through the known sections in order.
                 foreach (var name in names)
@@ -55,17 +58,24 @@ namespace Kinovea.ScreenManager
                         // We have that section, fill the cells.
                         rowCumul.Add(CSVHelper.WriteCell(section.Cumul, nfi));
                         rowSplits.Add(CSVHelper.WriteCell(section.Duration, nfi));
+                        if (t.HasTags)
+                            rowTags.Add(CSVHelper.WriteCell(section.Tag));
+
                     }
                     else
                     {
                         // We don't have the section, create empty cells.
                         rowCumul.Add(CSVHelper.WriteCell(""));
                         rowSplits.Add(CSVHelper.WriteCell(""));
+                        if (t.HasTags)
+                            rowTags.Add(CSVHelper.WriteCell(""));
                     }
                 }
 
                 csv.Add(CSVHelper.MakeRow(rowCumul, listSeparator));
                 csv.Add(CSVHelper.MakeRow(rowSplits, listSeparator));
+                if (t.HasTags)
+                    csv.Add(CSVHelper.MakeRow(rowTags, listSeparator));
             }
 
             if (csv.Count > 1)

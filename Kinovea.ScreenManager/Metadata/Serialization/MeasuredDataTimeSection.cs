@@ -18,5 +18,7 @@ namespace Kinovea.ScreenManager
         public float Cumul { get; set; }
         public float Start { get; set; }
         public float Stop { get; set; }
+
+        public string Tag { get; set; }
     }
 }
