@@ -74,45 +74,47 @@ namespace Kinovea.ScreenManager
                 switch (format)
                 {
                     case VideoExportFormat.Video:
-                        
-                        // Show a configuration dialog.
-                        FormConfigureExportVideo fcev = new FormConfigureExportVideo(player1);
-                        fcev.StartPosition = FormStartPosition.CenterScreen;
-                        if (fcev.ShowDialog() != DialogResult.OK)
                         {
+                            // Show a configuration dialog.
+                            FormConfigureExportVideo fcev = new FormConfigureExportVideo(player1);
+                            fcev.StartPosition = FormStartPosition.CenterScreen;
+                            if (fcev.ShowDialog() != DialogResult.OK)
+                            {
+                                fcev.Dispose();
+                                return;
+                            }
+
+                            bool useSlowMotion = fcev.UseSlowMotion;
                             fcev.Dispose();
-                            return;
-                        }
 
-                        bool useSlowMotion = fcev.UseSlowMotion;
-                        fcev.Dispose();
-
-                        s.Section = new VideoSection(metadata.SelectionStart, metadata.SelectionEnd);
-                        s.KeyframesOnly = false;
-                        s.File = sfd.FileName;
-                        s.ImageRetriever = player1.view.GetFlushedImage;
+                            s.Section = new VideoSection(metadata.SelectionStart, metadata.SelectionEnd);
+                            s.KeyframesOnly = false;
+                            s.File = sfd.FileName;
+                            s.ImageRetriever = player1.view.GetFlushedImage;
                         
-                        // Output framerate.
-                        double frameInterval = useSlowMotion ? player1.view.PlaybackFrameInterval : metadata.BaselineFrameInterval;
-                        s.OutputIntervalMilliseconds = frameInterval;
+                            // Output framerate.
+                            double frameInterval = useSlowMotion ? player1.view.PlaybackFrameInterval : metadata.BaselineFrameInterval;
+                            s.OutputIntervalMilliseconds = frameInterval;
 
-                        // Frame duplication: if slower than 8 fps, start duplicating frames.
-                        s.Duplication = 1;
-                        if (s.OutputIntervalMilliseconds > maxInterval)
-                        {
-                            s.Duplication = (int)Math.Ceiling(s.OutputIntervalMilliseconds / maxInterval);
-                            s.OutputIntervalMilliseconds = s.OutputIntervalMilliseconds / s.Duplication;
+                            // Frame duplication: if slower than 8 fps, start duplicating frames.
+                            s.Duplication = 1;
+                            if (s.OutputIntervalMilliseconds > maxInterval)
+                            {
+                                s.Duplication = (int)Math.Ceiling(s.OutputIntervalMilliseconds / maxInterval);
+                                s.OutputIntervalMilliseconds = s.OutputIntervalMilliseconds / s.Duplication;
+                            }
+
+                            // Total frames
+                            int totalFrames = (int)((metadata.SelectionEnd - metadata.SelectionStart) / metadata.AverageTimeStampsPerFrame) + 1;
+                            s.TotalFrameCount = totalFrames * s.Duplication;
+
+                            ExporterVideo exporterVideo = new ExporterVideo();
+                            exporterVideo.Export(s, player1);
+                            break;
                         }
-
-                        // Total frames
-                        int totalFrames = (int)((metadata.SelectionEnd - metadata.SelectionStart) / metadata.AverageTimeStampsPerFrame) + 1;
-                        s.TotalFrameCount = totalFrames * s.Duplication;
-
-                        ExporterVideo exporterVideo = new ExporterVideo();
-                        exporterVideo.Export(s, player1);
-                        break;
 
                     case VideoExportFormat.VideoSlideShow:
+                    case VideoExportFormat.VideoWithPauses:
                         {
                             // Show a configuration dialog.
                             FormConfigureExportVideoSlideshow fcevs = new FormConfigureExportVideoSlideshow();
@@ -127,32 +129,44 @@ namespace Kinovea.ScreenManager
                             fcevs.Dispose();
 
                             s.Section = new VideoSection(metadata.SelectionStart, metadata.SelectionEnd);
-                            s.KeyframesOnly = true;
                             s.File = sfd.FileName;
                             s.ImageRetriever = player1.view.GetFlushedImage;
-                            s.OutputIntervalMilliseconds = slideDurationMilliseconds;
-
-                            // Setup keyframe duplication.
                             s.HasDuplicatedKeyframes = true;
-                            s.DuplicationKeyframes = 1;
-                            if (s.OutputIntervalMilliseconds > maxInterval)
-                            {
-                                s.DuplicationKeyframes = (int)Math.Ceiling(s.OutputIntervalMilliseconds / maxInterval);
-                                s.OutputIntervalMilliseconds = s.OutputIntervalMilliseconds / s.DuplicationKeyframes;
-                            }
 
-                            // Total frames
-                            s.TotalFrameCount = metadata.Keyframes.Count * s.DuplicationKeyframes;
+                            if (format == VideoExportFormat.VideoSlideShow)
+                            {
+                                s.KeyframesOnly = true;
+                                s.OutputIntervalMilliseconds = slideDurationMilliseconds;
+
+                                // Keyframe duplication.
+                                s.DuplicationKeyframes = 1;
+                                if (s.OutputIntervalMilliseconds > maxInterval)
+                                {
+                                    s.DuplicationKeyframes = (int)Math.Ceiling(s.OutputIntervalMilliseconds / maxInterval);
+                                    s.OutputIntervalMilliseconds = s.OutputIntervalMilliseconds / s.DuplicationKeyframes;
+                                }
+
+                                // Total frames
+                                s.TotalFrameCount = metadata.Keyframes.Count * s.DuplicationKeyframes;
+                            }
+                            else if (format == VideoExportFormat.VideoWithPauses)
+                            {
+                                s.KeyframesOnly = false;
+                                s.OutputIntervalMilliseconds = metadata.BaselineFrameInterval;
+
+                                // Keyframe duplication.
+                                s.DuplicationKeyframes = (int)(slideDurationMilliseconds / metadata.BaselineFrameInterval);
+
+                                // Total frames.
+                                s.TotalFrameCount = (int)((metadata.SelectionEnd - metadata.SelectionStart) / metadata.AverageTimeStampsPerFrame) + 1;
+                                s.TotalFrameCount -= metadata.Keyframes.Count;
+                                s.TotalFrameCount += (metadata.Keyframes.Count * s.DuplicationKeyframes);
+                            }
 
                             ExporterVideo exporterVideoSlideshow = new ExporterVideo();
                             exporterVideoSlideshow.Export(s, player1);
                             break;
                         }
-
-                    case VideoExportFormat.VideoWithPauses:
-
-                        break;
-                
                 }
 
                 
