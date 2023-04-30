@@ -512,7 +512,6 @@ namespace Kinovea.ScreenManager
             }
 
             xmlReader.ReadStartElement();
-            visibleColumns.Clear();
 
             while(xmlReader.NodeType == XmlNodeType.Element)
             {
@@ -532,6 +531,7 @@ namespace Kinovea.ScreenManager
                         locked = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
                     case "VisibleColumns":
+                        visibleColumns.Clear();
                         string str = xmlReader.ReadElementContentAsString();
                         string[] a = str.Split(new char[] { ';' });
                         foreach(var strCol in a)
