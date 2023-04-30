@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-      BrightIdeasSoftware.HeaderStateStyle headerStateStyle4 = new BrightIdeasSoftware.HeaderStateStyle();
-      BrightIdeasSoftware.HeaderStateStyle headerStateStyle5 = new BrightIdeasSoftware.HeaderStateStyle();
-      BrightIdeasSoftware.HeaderStateStyle headerStateStyle6 = new BrightIdeasSoftware.HeaderStateStyle();
+      BrightIdeasSoftware.HeaderStateStyle headerStateStyle1 = new BrightIdeasSoftware.HeaderStateStyle();
+      BrightIdeasSoftware.HeaderStateStyle headerStateStyle2 = new BrightIdeasSoftware.HeaderStateStyle();
+      BrightIdeasSoftware.HeaderStateStyle headerStateStyle3 = new BrightIdeasSoftware.HeaderStateStyle();
       this.btnOK = new System.Windows.Forms.Button();
       this.btnCancel = new System.Windows.Forms.Button();
       this.olvSections = new BrightIdeasSoftware.ObjectListView();
@@ -69,7 +69,6 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.olvSections.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClickAlways;
-      this.olvSections.CellEditTabChangesRows = true;
       this.olvSections.CellEditUseWholeCell = false;
       this.olvSections.Cursor = System.Windows.Forms.Cursors.Default;
       this.olvSections.GridLines = true;
@@ -85,11 +84,11 @@
       // 
       // headerFormatStyle1
       // 
-      this.headerFormatStyle1.Hot = headerStateStyle4;
-      headerStateStyle5.BackColor = System.Drawing.Color.Gainsboro;
-      headerStateStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.headerFormatStyle1.Normal = headerStateStyle5;
-      this.headerFormatStyle1.Pressed = headerStateStyle6;
+      this.headerFormatStyle1.Hot = headerStateStyle1;
+      headerStateStyle2.BackColor = System.Drawing.Color.Gainsboro;
+      headerStateStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.headerFormatStyle1.Normal = headerStateStyle2;
+      this.headerFormatStyle1.Pressed = headerStateStyle3;
       // 
       // FormTimeSections
       // 

@@ -25,5 +25,10 @@ namespace Kinovea.ScreenManager
         /// The list of time sections.
         /// </summary>
         public List<MeasuredDataTimeSection> Sections { get; set; } = new List<MeasuredDataTimeSection>();
+
+        /// <summary>
+        /// List of visible columns.
+        /// </summary>
+        public HashSet<ChronoColumns> VisibleColumns { get; set; } = new HashSet<ChronoColumns>();
     }
 }

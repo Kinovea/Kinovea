@@ -354,6 +354,9 @@ namespace Kinovea.ScreenManager
         {
             MeasuredDataTime mdt = new MeasuredDataTime();
             mdt.Name = name;
+            mdt.VisibleColumns = new HashSet<ChronoColumns>();
+            mdt.VisibleColumns.Add(ChronoColumns.Duration);
+
             MeasuredDataTimeSection mdts = new MeasuredDataTimeSection();
             mdts.Name = "";
 

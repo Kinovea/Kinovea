@@ -72,9 +72,12 @@ namespace Kinovea.ScreenManager
                     }
                 }
 
-                csv.Add(CSVHelper.MakeRow(rowCumul, listSeparator));
+                if (t.VisibleColumns.Contains(ChronoColumns.Cumul))
+                    csv.Add(CSVHelper.MakeRow(rowCumul, listSeparator));
+
                 csv.Add(CSVHelper.MakeRow(rowSplits, listSeparator));
-                if (t.HasTags)
+                
+                if (t.HasTags && t.VisibleColumns.Contains(ChronoColumns.Tag))
                     csv.Add(CSVHelper.MakeRow(rowTags, listSeparator));
             }
 

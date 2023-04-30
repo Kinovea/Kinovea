@@ -146,8 +146,12 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowLabel = new ToolStripMenuItem();
         private ToolStripMenuItem mnuLocked = new ToolStripMenuItem();
-
+        
+        private ToolStripMenuItem mnuColumns = new ToolStripMenuItem();
         private ToolStripMenuItem mnuConfigureSections = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuColumnName = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuColumnCumul = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuColumnTag = new ToolStripMenuItem();
         #endregion
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -251,9 +255,20 @@ namespace Kinovea.ScreenManager
                 mnuLocked,
             });
 
-            // Section management
-            mnuConfigureSections.Image = Properties.Resources.rename;
+            // Column and section management
+            mnuColumns.Image = Properties.Drawings.label;
+            mnuConfigureSections.Image = Properties.Resources.timetable;
             mnuConfigureSections.Click += mnuConfigureSections_Click;
+            mnuColumnName.Click += (s, e) => mnuColumn_Click(s, ChronoColumns.Name);
+            mnuColumnCumul.Click += (s, e) => mnuColumn_Click(s, ChronoColumns.Cumul);
+            mnuColumnTag.Click += (s, e) => mnuColumn_Click(s, ChronoColumns.Tag);
+            mnuColumns.DropDownItems.AddRange(new ToolStripItem[] {
+                mnuConfigureSections,
+                new ToolStripSeparator(),
+                mnuColumnName,
+                mnuColumnCumul,
+                mnuColumnTag 
+            });
 
         }
         #endregion
@@ -415,6 +430,7 @@ namespace Kinovea.ScreenManager
         {
             MeasuredDataTime mdt = new MeasuredDataTime();
             mdt.Name = this.Name;
+            mdt.VisibleColumns = this.visibleColumns;
 
             long cumulTimestamps = 0;
             for (int i = 0; i < sections.Count; i++)
@@ -651,14 +667,20 @@ namespace Kinovea.ScreenManager
             mnuConfigureSections.Enabled = sections.Count > 0;
             mnuDeleteTimes.Enabled = sections.Count > 0;
 
+            // Options
             mnuShowLabel.Checked = showLabel;
             mnuLocked.Checked = locked;
+
+            // Columns and section management
+            mnuColumnName.Checked = visibleColumns.Contains(ChronoColumns.Name);
+            mnuColumnCumul.Checked = visibleColumns.Contains(ChronoColumns.Cumul);
+            mnuColumnTag.Checked = visibleColumns.Contains(ChronoColumns.Tag);
 
             contextMenu.AddRange(new ToolStripItem[] {
                 mnuVisibility,
                 mnuAction,
                 mnuOptions,
-                mnuConfigureSections,
+                mnuColumns,
             });
 
             return contextMenu;
@@ -679,7 +701,6 @@ namespace Kinovea.ScreenManager
             // When we are on a live section.
             mnuStop.Text = "Stop: end the current time section on this frame";
             mnuSplit.Text = "Split: end the current time section on this frame and start a new one";
-            mnuConfigureSections.Text = "Configure time sections";
             mnuMoveCurrentStart.Text = "Move the start of the current time section to this frame";
             mnuMoveCurrentEnd.Text = "Move the end of the current time section to this frame";
             mnuMovePreviousSplit.Text = "Move the previous split point to this frame";
@@ -696,6 +717,13 @@ namespace Kinovea.ScreenManager
             mnuOptions.Text = "Options";
             mnuShowLabel.Text = ScreenManagerLang.mnuShowLabel;
             mnuLocked.Text = "Locked";
+
+            // Columns and section management.
+            mnuColumns.Text = "Columns";
+            mnuConfigureSections.Text = "Configure time sections";
+            mnuColumnName.Text = "Name";
+            mnuColumnCumul.Text = "Cumulative time";
+            mnuColumnTag.Text = "Tag";
         }
 
         #region Visibility
@@ -778,7 +806,7 @@ namespace Kinovea.ScreenManager
             UpdateFramesMarkersFromMenu(sender);
         }
 
-
+        #region Column and section management
         private void mnuConfigureSections_Click(object sender, EventArgs e)
         {
             // The dialog is responsible for backing up and restoring the state in case of cancellation.
@@ -795,13 +823,30 @@ namespace Kinovea.ScreenManager
 
             IDrawingHostView host = tsmi.Tag as IDrawingHostView;
             
-            FormTimeSections fts = new FormTimeSections(this, sectionIndex, host);
-            FormsHelper.Locate(fts);
-            fts.ShowDialog();
+            try
+            {
+                FormTimeSections fts = new FormTimeSections(this, sectionIndex, host);
+                FormsHelper.Locate(fts);
+                fts.ShowDialog();
+            }
+            catch
+            {
+            }
 
             InvalidateFromMenu(sender);
         }
+        
+        private void mnuColumn_Click(object sender, ChronoColumns column)
+        {
+            if (visibleColumns.Contains(column))
+                visibleColumns.Remove(column);
+            else
+                visibleColumns.Add(column);
 
+            InvalidateFromMenu(sender);
+        }
+        #endregion
+        
         private void mnuMoveCurrentStart_Click(object sender, EventArgs e)
         {
             int sectionIndex = GetSectionIndex(sections, contextTimestamp);

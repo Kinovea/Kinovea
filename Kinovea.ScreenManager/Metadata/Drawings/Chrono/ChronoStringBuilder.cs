@@ -66,10 +66,10 @@ namespace Kinovea.ScreenManager
                 string cumul = string.Format(padding[ChronoColumns.Cumul], sections[i].Cumul);
                 string tag = string.Format(padding[ChronoColumns.Tag], sections[i].Tag);
 
-                cells.Clear();
-                if (visible.Contains(ChronoColumns.Name)) 
-                    cells.Add(name);
+                if (visible.Contains(ChronoColumns.Name))
+                    sb.Append(string.Format("{0}: ", name));
                 
+                cells.Clear();
                 if (visible.Contains(ChronoColumns.Duration))
                     cells.Add(duration);
 
