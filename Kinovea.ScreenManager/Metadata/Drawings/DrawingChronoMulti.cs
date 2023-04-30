@@ -52,12 +52,16 @@ namespace Kinovea.ScreenManager
     public class DrawingChronoMulti : AbstractDrawing, IDecorable, IKvaSerializable, ITimeable
     {
         #region Section
+        /// <summary>
+        /// This struct is used for drawing a chrono section on the canvas.
+        /// </summary>
         private struct Section
         {
             public string Name;
             public string Duration;
             public string Cumul;
             public string Tag;
+            
             public Section(string name, string duration, string cumul, string tag)
             {
                 this.Name = name;
@@ -114,22 +118,10 @@ namespace Kinovea.ScreenManager
                 throw new InvalidProgramException();
             }
         }
-        public List<VideoSection> VideoSections
+        public List<ChronoSection> Sections
         {
             get { return sections; }
         }
-
-        public List<string> SectionNames
-        {
-            get { return sectionNames; }
-        }
-
-        public List<string> SectionTags
-        {
-            get { return sectionTags; }
-        }
-
-
         #endregion
 
         #region Members
@@ -137,12 +129,10 @@ namespace Kinovea.ScreenManager
 
         private long visibleTimestamp;               	// chrono becomes visible.
         private long invisibleTimestamp;             	// chrono stops being visible.
-        private List<VideoSection> sections = new List<VideoSection>(); 
+        private List<ChronoSection> sections = new List<ChronoSection>(); 
         private long contextTimestamp;                  // timestamp for context-menu operations.
         private bool showLabel;
         private string text;
-        private List<string> sectionNames = new List<string>();
-        private List<string> sectionTags = new List<string>();
         private bool locked;
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
@@ -295,7 +285,7 @@ namespace Kinovea.ScreenManager
             if (opacityFactor <= 0)
                 return;
 
-            bool onFirst = sections.Count == 1 || (sections.Count > 1 && currentTimestamp < sections[1].Start);
+            bool onFirst = sections.Count == 1 || (sections.Count > 1 && currentTimestamp < sections[1].Section.Start);
             List<Section> entries = GetTimecodes(currentTimestamp);
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < entries.Count; i++)
@@ -308,7 +298,7 @@ namespace Kinovea.ScreenManager
                 else
                 {
                     string prefix = "  ";
-                    if (sections[i].Contains(currentTimestamp))
+                    if (sections[i].Section.Contains(currentTimestamp))
                         prefix = "▶ ";
 
                     string line = "";
@@ -432,9 +422,9 @@ namespace Kinovea.ScreenManager
 
                     for (int i = 0; i < sections.Count; i++)
                     {
-                        VideoSection section = sections[i];
-                        string name = sectionNames[i];
-                        string tag = sectionTags[i];
+                        VideoSection section = sections[i].Section;
+                        string name = sections[i].Name;
+                        string tag = sections[i].Tag;
                         w.WriteStartElement("Section");
                         if (!string.IsNullOrEmpty(name))
                             w.WriteAttributeString("name", name);
@@ -474,21 +464,21 @@ namespace Kinovea.ScreenManager
             long cumulTimestamps = 0;
             for (int i = 0; i < sections.Count; i++)
             {
-                if (sections[i].End == long.MaxValue)
+                if (sections[i].Section.End == long.MaxValue)
                     continue;
 
                 MeasuredDataTimeSection mdts = new MeasuredDataTimeSection();    
-                mdts.Name = string.IsNullOrEmpty(sectionNames[i]) ? (i + 1).ToString() : sectionNames[i];
-                mdts.Tag = sectionTags[i];
+                mdts.Name = string.IsNullOrEmpty(sections[i].Name) ? (i + 1).ToString() : sections[i].Name;
+                mdts.Tag = sections[i].Tag;
 
                 if (!string.IsNullOrEmpty(mdts.Tag))
                     mdt.HasTags = true;
 
                 var section = sections[i];
-                mdts.Start = parentMetadata.GetNumericalTime(section.Start, TimeType.UserOrigin);
-                mdts.Stop = parentMetadata.GetNumericalTime(section.End, TimeType.UserOrigin);
+                mdts.Start = parentMetadata.GetNumericalTime(section.Section.Start, TimeType.UserOrigin);
+                mdts.Stop = parentMetadata.GetNumericalTime(section.Section.End, TimeType.UserOrigin);
 
-                long elapsedTimestamps = section.End - section.Start;
+                long elapsedTimestamps = section.Section.End - section.Section.Start;
                 cumulTimestamps += elapsedTimestamps;
 
                 mdts.Duration = parentMetadata.GetNumericalTime(elapsedTimestamps, TimeType.Absolute);
@@ -579,8 +569,6 @@ namespace Kinovea.ScreenManager
         private void ParseSections(XmlReader xmlReader, TimestampMapper timestampMapper)
         {
             sections.Clear();
-            sectionNames.Clear();
-            sectionTags.Clear();
 
             if (timestampMapper == null)
             {
@@ -674,8 +662,8 @@ namespace Kinovea.ScreenManager
                 //
                 // Rationale: the most common scenario for adjusting existing end points will be to respect the "type" (split vs disconnected).
                 // If the user really wants to disconnect a split they can always delete one of the sections and redo.
-                bool isPrevSplit = sectionIndex > 0 && sections[sectionIndex - 1].End == sections[sectionIndex].Start;
-                bool isNextSplit = sectionIndex < sections.Count - 1 && sections[sectionIndex + 1].Start == sections[sectionIndex].End;
+                bool isPrevSplit = sectionIndex > 0 && sections[sectionIndex - 1].Section.End == sections[sectionIndex].Section.Start;
+                bool isNextSplit = sectionIndex < sections.Count - 1 && sections[sectionIndex + 1].Section.Start == sections[sectionIndex].Section.End;
 
                 mnuAction.DropDownItems.AddRange(new ToolStripItem[] {
                     mnuStop,
@@ -867,7 +855,7 @@ namespace Kinovea.ScreenManager
 
             CaptureMemento(SerializationFilter.Core);
 
-            sections[sectionIndex] = new VideoSection(contextTimestamp, sections[sectionIndex].End);
+            sections[sectionIndex].Section = new VideoSection(contextTimestamp, sections[sectionIndex].Section.End);
 
             InvalidateFromMenu(sender);
             UpdateFramesMarkersFromMenu(sender);
@@ -882,7 +870,7 @@ namespace Kinovea.ScreenManager
 
             CaptureMemento(SerializationFilter.Core);
 
-            sections[sectionIndex] = new VideoSection(sections[sectionIndex].Start, contextTimestamp);
+            sections[sectionIndex].Section = new VideoSection(sections[sectionIndex].Section.Start, contextTimestamp);
 
             InvalidateFromMenu(sender);
             UpdateFramesMarkersFromMenu(sender);
@@ -897,8 +885,8 @@ namespace Kinovea.ScreenManager
             CaptureMemento(SerializationFilter.Core);
 
             int prevIndex = sectionIndex - 1;
-            sections[prevIndex] = new VideoSection(sections[prevIndex].Start, contextTimestamp);
-            sections[sectionIndex] = new VideoSection(contextTimestamp, sections[sectionIndex].End);
+            sections[prevIndex].Section = new VideoSection(sections[prevIndex].Section.Start, contextTimestamp);
+            sections[sectionIndex].Section = new VideoSection(contextTimestamp, sections[sectionIndex].Section.End);
 
             InvalidateFromMenu(sender);
             UpdateFramesMarkersFromMenu(sender);
@@ -913,8 +901,8 @@ namespace Kinovea.ScreenManager
             CaptureMemento(SerializationFilter.Core);
 
             int nextIndex = sectionIndex + 1;
-            sections[sectionIndex] = new VideoSection(sections[sectionIndex].Start, contextTimestamp);
-            sections[nextIndex] = new VideoSection(contextTimestamp, sections[nextIndex].End);
+            sections[sectionIndex].Section = new VideoSection(sections[sectionIndex].Section.Start, contextTimestamp);
+            sections[nextIndex].Section = new VideoSection(contextTimestamp, sections[nextIndex].Section.End);
 
             InvalidateFromMenu(sender);
             UpdateFramesMarkersFromMenu(sender);
@@ -929,7 +917,7 @@ namespace Kinovea.ScreenManager
             CaptureMemento(SerializationFilter.Core);
 
             int prevIndex = -(sectionIndex + 2);
-            sections[prevIndex] = new VideoSection(sections[prevIndex].Start, contextTimestamp);
+            sections[prevIndex].Section = new VideoSection(sections[prevIndex].Section.Start, contextTimestamp);
 
             InvalidateFromMenu(sender);
             UpdateFramesMarkersFromMenu(sender);
@@ -944,7 +932,7 @@ namespace Kinovea.ScreenManager
             CaptureMemento(SerializationFilter.Core);
 
             int nextIndex = -(sectionIndex + 1);
-            sections[nextIndex] = new VideoSection(contextTimestamp, sections[nextIndex].End);
+            sections[nextIndex].Section = new VideoSection(contextTimestamp, sections[nextIndex].Section.End);
 
             InvalidateFromMenu(sender);
             UpdateFramesMarkersFromMenu(sender);
@@ -969,9 +957,7 @@ namespace Kinovea.ScreenManager
             CaptureMemento(SerializationFilter.Core);
 
             sections.Clear();
-            sectionNames.Clear();
-            sectionTags.Clear();
-
+            
             InvalidateFromMenu(sender);
             UpdateFramesMarkersFromMenu(sender);
         }
@@ -1022,7 +1008,7 @@ namespace Kinovea.ScreenManager
             else
             {
                 // Live section.
-                if (sections[sectionIndex].End == long.MaxValue)
+                if (sections[sectionIndex].Section.End == long.MaxValue)
                 {
                     // Open-ended section.
                     CaptureMemento(SerializationFilter.Core);
@@ -1048,7 +1034,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             // Live section.
-            if (sections[sectionIndex].End == long.MaxValue)
+            if (sections[sectionIndex].Section.End == long.MaxValue)
             {
                 // Open-ended section.
                 CaptureMemento(SerializationFilter.Core);
@@ -1085,11 +1071,13 @@ namespace Kinovea.ScreenManager
         private void InsertSection(VideoSection section, string name = "", string tag = "")
         {
             // Find insertion point and insert the new section there.
+            ChronoSection chronoSection = new ChronoSection(section, name, tag);
+
             bool found = false;
             int i = 0;
             for (i = 0; i < sections.Count; i++)
             {
-                if (sections[i].Start < section.Start)
+                if (sections[i].Section.Start < section.Start)
                     continue;
 
                 found = true;
@@ -1098,23 +1086,17 @@ namespace Kinovea.ScreenManager
 
             if (!found)
             {
-                sections.Add(section);
-                sectionNames.Add(name);
-                sectionTags.Add(tag);
+                sections.Add(chronoSection);
             }
             else
             {
-                sections.Insert(i, section);
-                sectionNames.Insert(i, name);
-                sectionTags.Insert(i, tag);
+                sections.Insert(i, chronoSection);
             }
         }
 
         private void RemoveSection(int index)
         {
             sections.RemoveAt(index);
-            sectionNames.RemoveAt(index);
-            sectionTags.RemoveAt(index);
         }
 
         /// <summary>
@@ -1122,7 +1104,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void StopSection(int index, long timestamp)
         {
-            sections[index] = new VideoSection(sections[index].Start, timestamp);
+            sections[index].Section = new VideoSection(sections[index].Section.Start, timestamp);
         }
 
         /// <summary>
@@ -1142,12 +1124,12 @@ namespace Kinovea.ScreenManager
             for (int i = 0; i < sections.Count; i++)
             {
                 // Before the start of this section. 
-                if (timestamp < sections[i].Start)
+                if (timestamp < sections[i].Section.Start)
                     break;
 
                 // Between start and end of this section.
                 // The end of the section is part of the section.
-                if (timestamp <= sections[i].End)
+                if (timestamp <= sections[i].Section.End)
                 {
                     result = i;
                     break;
@@ -1204,17 +1186,17 @@ namespace Kinovea.ScreenManager
             long cumulTimestamps = 0;
             for (int i = 0; i < sections.Count; i++)
             {
-                if (currentTimestamp < sections[i].Start)
+                if (currentTimestamp < sections[i].Section.Start)
                     break;
 
-                string name = string.IsNullOrEmpty(sectionNames[i]) ? (i + 1).ToString() : sectionNames[i];
-                string tag = sectionTags[i];
+                string name = string.IsNullOrEmpty(sections[i].Name) ? (i + 1).ToString() : sections[i].Name;
+                string tag = sections[i].Tag;
 
                 long elapsedTimestamps = 0;
-                if (currentTimestamp <= sections[i].End)
-                    elapsedTimestamps = currentTimestamp - sections[i].Start;
+                if (currentTimestamp <= sections[i].Section.End)
+                    elapsedTimestamps = currentTimestamp - sections[i].Section.Start;
                 else
-                    elapsedTimestamps = sections[i].End - sections[i].Start;
+                    elapsedTimestamps = sections[i].Section.End - sections[i].Section.Start;
 
                 cumulTimestamps += elapsedTimestamps;
 

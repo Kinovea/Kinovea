@@ -28,18 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
+      BrightIdeasSoftware.HeaderStateStyle headerStateStyle7 = new BrightIdeasSoftware.HeaderStateStyle();
+      BrightIdeasSoftware.HeaderStateStyle headerStateStyle8 = new BrightIdeasSoftware.HeaderStateStyle();
+      BrightIdeasSoftware.HeaderStateStyle headerStateStyle9 = new BrightIdeasSoftware.HeaderStateStyle();
       this.btnOK = new System.Windows.Forms.Button();
       this.btnCancel = new System.Windows.Forms.Button();
-      this.grpConfig = new System.Windows.Forms.GroupBox();
-      this.btnIndicator = new System.Windows.Forms.Button();
-      this.grpConfig.SuspendLayout();
+      this.olvSections = new BrightIdeasSoftware.ObjectListView();
+      this.headerFormatStyle1 = new BrightIdeasSoftware.HeaderFormatStyle();
+      ((System.ComponentModel.ISupportInitialize)(this.olvSections)).BeginInit();
       this.SuspendLayout();
       // 
       // btnOK
       // 
-      this.btnOK.Anchor = System.Windows.Forms.AnchorStyles.Top;
+      this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.btnOK.Location = new System.Drawing.Point(275, 282);
+      this.btnOK.Location = new System.Drawing.Point(317, 276);
       this.btnOK.Name = "btnOK";
       this.btnOK.Size = new System.Drawing.Size(99, 24);
       this.btnOK.TabIndex = 33;
@@ -49,9 +52,9 @@
       // 
       // btnCancel
       // 
-      this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Top;
+      this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.btnCancel.Location = new System.Drawing.Point(381, 282);
+      this.btnCancel.Location = new System.Drawing.Point(423, 276);
       this.btnCancel.Name = "btnCancel";
       this.btnCancel.Size = new System.Drawing.Size(99, 24);
       this.btnCancel.TabIndex = 34;
@@ -59,28 +62,33 @@
       this.btnCancel.UseVisualStyleBackColor = true;
       this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
       // 
-      // grpConfig
+      // olvSections
       // 
-      this.grpConfig.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.olvSections.AlternateRowBackColor = System.Drawing.Color.Gainsboro;
+      this.olvSections.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.grpConfig.Controls.Add(this.btnIndicator);
-      this.grpConfig.Location = new System.Drawing.Point(12, 12);
-      this.grpConfig.Name = "grpConfig";
-      this.grpConfig.Padding = new System.Windows.Forms.Padding(3, 3, 20, 3);
-      this.grpConfig.Size = new System.Drawing.Size(468, 264);
-      this.grpConfig.TabIndex = 35;
-      this.grpConfig.TabStop = false;
+      this.olvSections.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClickAlways;
+      this.olvSections.CellEditTabChangesRows = true;
+      this.olvSections.CellEditUseWholeCell = false;
+      this.olvSections.GridLines = true;
+      this.olvSections.HeaderFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.olvSections.HeaderFormatStyle = this.headerFormatStyle1;
+      this.olvSections.HideSelection = false;
+      this.olvSections.Location = new System.Drawing.Point(12, 12);
+      this.olvSections.Name = "olvSections";
+      this.olvSections.Size = new System.Drawing.Size(510, 258);
+      this.olvSections.TabIndex = 25;
+      this.olvSections.UseCompatibleStateImageBehavior = false;
+      this.olvSections.View = System.Windows.Forms.View.Details;
       // 
-      // btnIndicator
+      // headerFormatStyle1
       // 
-      this.btnIndicator.FlatAppearance.BorderSize = 0;
-      this.btnIndicator.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnIndicator.Image = global::Kinovea.ScreenManager.Properties.Resources.arrow_medium;
-      this.btnIndicator.Location = new System.Drawing.Point(30, 43);
-      this.btnIndicator.Name = "btnIndicator";
-      this.btnIndicator.Size = new System.Drawing.Size(19, 23);
-      this.btnIndicator.TabIndex = 24;
-      this.btnIndicator.UseVisualStyleBackColor = true;
+      this.headerFormatStyle1.Hot = headerStateStyle7;
+      headerStateStyle8.BackColor = System.Drawing.Color.Gainsboro;
+      headerStateStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.headerFormatStyle1.Normal = headerStateStyle8;
+      this.headerFormatStyle1.Pressed = headerStateStyle9;
       // 
       // FormTimeSections
       // 
@@ -88,8 +96,8 @@
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.CancelButton = this.btnCancel;
-      this.ClientSize = new System.Drawing.Size(492, 317);
-      this.Controls.Add(this.grpConfig);
+      this.ClientSize = new System.Drawing.Size(534, 311);
+      this.Controls.Add(this.olvSections);
       this.Controls.Add(this.btnOK);
       this.Controls.Add(this.btnCancel);
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
@@ -99,7 +107,7 @@
       this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
       this.Text = "FormTimeSections";
       this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormTimeSections_FormClosing);
-      this.grpConfig.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.olvSections)).EndInit();
       this.ResumeLayout(false);
 
         }
@@ -108,7 +116,7 @@
 
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.GroupBox grpConfig;
-        private System.Windows.Forms.Button btnIndicator;
+        private BrightIdeasSoftware.ObjectListView olvSections;
+        private BrightIdeasSoftware.HeaderFormatStyle headerFormatStyle1;
     }
 }
