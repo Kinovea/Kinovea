@@ -27,9 +27,9 @@ namespace Kinovea.ScreenManager
       this.lblTimeTip = new System.Windows.Forms.Label();
       this.panel1 = new System.Windows.Forms.Panel();
       this.btnExportImage = new System.Windows.Forms.Button();
-      this.btnPausedVideo = new System.Windows.Forms.Button();
-      this.btnSaveVideo = new System.Windows.Forms.Button();
-      this.btnDiaporama = new System.Windows.Forms.Button();
+      this.btnExportVideoWithPauses = new System.Windows.Forms.Button();
+      this.btnExportVideo = new System.Windows.Forms.Button();
+      this.btnExportVideoSlideshow = new System.Windows.Forms.Button();
       this.btnExportImageSequence = new System.Windows.Forms.Button();
       this.btnHandlersReset = new System.Windows.Forms.Button();
       this.btnSetHandlerRight = new System.Windows.Forms.Button();
@@ -221,9 +221,9 @@ namespace Kinovea.ScreenManager
       this.panel1.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.ExportDock5;
       this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
       this.panel1.Controls.Add(this.btnExportImage);
-      this.panel1.Controls.Add(this.btnPausedVideo);
-      this.panel1.Controls.Add(this.btnSaveVideo);
-      this.panel1.Controls.Add(this.btnDiaporama);
+      this.panel1.Controls.Add(this.btnExportVideoWithPauses);
+      this.panel1.Controls.Add(this.btnExportVideo);
+      this.panel1.Controls.Add(this.btnExportVideoSlideshow);
       this.panel1.Controls.Add(this.btnExportImageSequence);
       this.panel1.Location = new System.Drawing.Point(420, 78);
       this.panel1.Name = "panel1";
@@ -247,64 +247,60 @@ namespace Kinovea.ScreenManager
       this.btnExportImage.TabIndex = 18;
       this.btnExportImage.Tag = "";
       this.btnExportImage.UseVisualStyleBackColor = false;
-      this.btnExportImage.Click += new System.EventHandler(this.btnExportImage_Click);
       // 
       // btnPausedVideo
       // 
-      this.btnPausedVideo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnPausedVideo.BackColor = System.Drawing.Color.Transparent;
-      this.btnPausedVideo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnPausedVideo.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnPausedVideo.FlatAppearance.BorderSize = 0;
-      this.btnPausedVideo.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-      this.btnPausedVideo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnPausedVideo.Image = global::Kinovea.ScreenManager.Properties.Resources.export_video_with_pauses;
-      this.btnPausedVideo.Location = new System.Drawing.Point(148, 14);
-      this.btnPausedVideo.MinimumSize = new System.Drawing.Size(25, 25);
-      this.btnPausedVideo.Name = "btnPausedVideo";
-      this.btnPausedVideo.Size = new System.Drawing.Size(30, 25);
-      this.btnPausedVideo.TabIndex = 25;
-      this.btnPausedVideo.Tag = "";
-      this.btnPausedVideo.UseVisualStyleBackColor = false;
-      this.btnPausedVideo.Click += new System.EventHandler(this.btnDiaporama_Click);
+      this.btnExportVideoWithPauses.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnExportVideoWithPauses.BackColor = System.Drawing.Color.Transparent;
+      this.btnExportVideoWithPauses.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+      this.btnExportVideoWithPauses.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnExportVideoWithPauses.FlatAppearance.BorderSize = 0;
+      this.btnExportVideoWithPauses.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+      this.btnExportVideoWithPauses.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnExportVideoWithPauses.Image = global::Kinovea.ScreenManager.Properties.Resources.export_video_with_pauses;
+      this.btnExportVideoWithPauses.Location = new System.Drawing.Point(148, 14);
+      this.btnExportVideoWithPauses.MinimumSize = new System.Drawing.Size(25, 25);
+      this.btnExportVideoWithPauses.Name = "btnPausedVideo";
+      this.btnExportVideoWithPauses.Size = new System.Drawing.Size(30, 25);
+      this.btnExportVideoWithPauses.TabIndex = 25;
+      this.btnExportVideoWithPauses.Tag = "";
+      this.btnExportVideoWithPauses.UseVisualStyleBackColor = false;
       // 
       // btnSaveVideo
       // 
-      this.btnSaveVideo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnSaveVideo.BackColor = System.Drawing.Color.Transparent;
-      this.btnSaveVideo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnSaveVideo.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnSaveVideo.FlatAppearance.BorderSize = 0;
-      this.btnSaveVideo.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-      this.btnSaveVideo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnSaveVideo.Image = global::Kinovea.ScreenManager.Properties.Resources.export_video_video;
-      this.btnSaveVideo.Location = new System.Drawing.Point(88, 14);
-      this.btnSaveVideo.MinimumSize = new System.Drawing.Size(25, 25);
-      this.btnSaveVideo.Name = "btnSaveVideo";
-      this.btnSaveVideo.Size = new System.Drawing.Size(30, 25);
-      this.btnSaveVideo.TabIndex = 25;
-      this.btnSaveVideo.Tag = "";
-      this.btnSaveVideo.UseVisualStyleBackColor = false;
-      this.btnSaveVideo.Click += new System.EventHandler(this.btnSaveVideo_Click);
+      this.btnExportVideo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnExportVideo.BackColor = System.Drawing.Color.Transparent;
+      this.btnExportVideo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+      this.btnExportVideo.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnExportVideo.FlatAppearance.BorderSize = 0;
+      this.btnExportVideo.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+      this.btnExportVideo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnExportVideo.Image = global::Kinovea.ScreenManager.Properties.Resources.export_video_video;
+      this.btnExportVideo.Location = new System.Drawing.Point(88, 14);
+      this.btnExportVideo.MinimumSize = new System.Drawing.Size(25, 25);
+      this.btnExportVideo.Name = "btnSaveVideo";
+      this.btnExportVideo.Size = new System.Drawing.Size(30, 25);
+      this.btnExportVideo.TabIndex = 25;
+      this.btnExportVideo.Tag = "";
+      this.btnExportVideo.UseVisualStyleBackColor = false;
       // 
       // btnDiaporama
       // 
-      this.btnDiaporama.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnDiaporama.BackColor = System.Drawing.Color.Transparent;
-      this.btnDiaporama.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnDiaporama.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnDiaporama.FlatAppearance.BorderSize = 0;
-      this.btnDiaporama.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-      this.btnDiaporama.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnDiaporama.Image = global::Kinovea.ScreenManager.Properties.Resources.export_video_slideshow;
-      this.btnDiaporama.Location = new System.Drawing.Point(118, 14);
-      this.btnDiaporama.MinimumSize = new System.Drawing.Size(25, 25);
-      this.btnDiaporama.Name = "btnDiaporama";
-      this.btnDiaporama.Size = new System.Drawing.Size(30, 25);
-      this.btnDiaporama.TabIndex = 25;
-      this.btnDiaporama.Tag = "";
-      this.btnDiaporama.UseVisualStyleBackColor = false;
-      this.btnDiaporama.Click += new System.EventHandler(this.btnDiaporama_Click);
+      this.btnExportVideoSlideshow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnExportVideoSlideshow.BackColor = System.Drawing.Color.Transparent;
+      this.btnExportVideoSlideshow.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+      this.btnExportVideoSlideshow.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnExportVideoSlideshow.FlatAppearance.BorderSize = 0;
+      this.btnExportVideoSlideshow.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+      this.btnExportVideoSlideshow.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnExportVideoSlideshow.Image = global::Kinovea.ScreenManager.Properties.Resources.export_video_slideshow;
+      this.btnExportVideoSlideshow.Location = new System.Drawing.Point(118, 14);
+      this.btnExportVideoSlideshow.MinimumSize = new System.Drawing.Size(25, 25);
+      this.btnExportVideoSlideshow.Name = "btnDiaporama";
+      this.btnExportVideoSlideshow.Size = new System.Drawing.Size(30, 25);
+      this.btnExportVideoSlideshow.TabIndex = 25;
+      this.btnExportVideoSlideshow.Tag = "";
+      this.btnExportVideoSlideshow.UseVisualStyleBackColor = false;
       // 
       // btnExportImageSequence
       // 
@@ -323,7 +319,6 @@ namespace Kinovea.ScreenManager
       this.btnExportImageSequence.TabIndex = 23;
       this.btnExportImageSequence.Tag = "";
       this.btnExportImageSequence.UseVisualStyleBackColor = false;
-      this.btnExportImageSequence.Click += new System.EventHandler(this.btnExportImageSequence_Click);
       // 
       // btnHandlersReset
       // 
@@ -995,8 +990,8 @@ namespace Kinovea.ScreenManager
       this.ResumeLayout(false);
 
         }
-        private System.Windows.Forms.Button btnPausedVideo;
-        private System.Windows.Forms.Button btnSaveVideo;
+        private System.Windows.Forms.Button btnExportVideoWithPauses;
+        private System.Windows.Forms.Button btnExportVideo;
         private System.Windows.Forms.Panel panel1;
 
         #endregion
@@ -1047,7 +1042,7 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Button btnDockBottom;
         private System.Windows.Forms.Button btnExportImageSequence;
         private System.Windows.Forms.Button btnHandlersReset;
-        private System.Windows.Forms.Button btnDiaporama;
+        private System.Windows.Forms.Button btnExportVideoSlideshow;
         private System.Windows.Forms.ToolStrip stripDrawingTools;
         private SliderLinear sldrSpeed;
         private System.Windows.Forms.Button btnTimeOrigin;

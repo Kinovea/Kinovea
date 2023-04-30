@@ -69,8 +69,6 @@ namespace Kinovea.ScreenManager
             VideoFileWriter w = new VideoFileWriter();
             string formatString = FilenameHelper.GetFormatString(s.File);
             saveResult = w.Save(s, player.FrameServer.VideoReader.Info, formatString, images, worker);
-
-            player.FrameServer.VideoReader.AfterFrameEnumeration();
         }
 
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -88,6 +86,7 @@ namespace Kinovea.ScreenManager
             formProgressBar.Close();
             formProgressBar.Dispose();
 
+            player.FrameServer.VideoReader.AfterFrameEnumeration();
             player.view.AfterExportVideo();
             player.FrameServer.AfterSave();
 

@@ -188,6 +188,7 @@ namespace Kinovea.ScreenManager
             CameraTypeManager.CameraLoadAsked += CameraTypeManager_CameraLoadAsked;
             VideoTypeManager.VideoLoadAsked += VideoTypeManager_VideoLoadAsked;
             dualPlayer.ExportImageAsked += (s, e) => ExportImages(ImageExportFormat.SideBySide);
+            dualPlayer.ExportVideoAsked += (s, e) => ExportVideo(VideoExportFormat.SideBySide);
 
             audioInputLevelMonitor.Enabled = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger;
             audioInputLevelMonitor.Threshold = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioTriggerThreshold;
@@ -1642,7 +1643,7 @@ namespace Kinovea.ScreenManager
                     return;
 
                 VideoExporter exporter = new VideoExporter();
-                exporter.Export(format, player1, player2);
+                exporter.Export(format, player1, player2, dualPlayer);
             }
             else
             {
@@ -1651,7 +1652,7 @@ namespace Kinovea.ScreenManager
                     return;
 
                 VideoExporter exporter = new VideoExporter();
-                exporter.Export(format, player, null);
+                exporter.Export(format, player, null, null);
             }
         }
 

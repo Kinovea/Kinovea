@@ -380,7 +380,10 @@ namespace Kinovea.ScreenManager
             view.ExportImageAsked += (s, e) => ExportImages(ImageExportFormat.Image);
             view.ExportImageSequenceAsked += (s, e) => ExportImages(ImageExportFormat.ImageSequence);
             view.ExportKeyImagesAsked += (s, e) => ExportImages(ImageExportFormat.KeyImages);
-            
+            view.ExportVideoAsked += (s, e) => ExportVideo(VideoExportFormat.Video);
+            view.ExportVideoSlideshowAsked+= (s, e) => ExportVideo(VideoExportFormat.VideoSlideShow);
+            view.ExportVideoWithPausesAsked += (s, e) => ExportVideo(VideoExportFormat.VideoWithPauses);
+
             // Just for the magnifier. Remove as soon as possible when the adding of the magnifier is handled in Metadata.
             view.TrackableDrawingAdded += (s, e) => AddTrackableDrawing(e.TrackableDrawing);
             
@@ -540,6 +543,11 @@ namespace Kinovea.ScreenManager
         {
             ImageExporter exporter = new ImageExporter();
             exporter.Export(format, this, null);
+        }
+        private void ExportVideo(VideoExportFormat format)
+        {
+            VideoExporter exporter = new VideoExporter();
+            exporter.Export(format, this, null, null);
         }
         #endregion
 

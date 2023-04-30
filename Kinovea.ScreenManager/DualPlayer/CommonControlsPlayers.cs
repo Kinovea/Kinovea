@@ -40,11 +40,11 @@ namespace Kinovea.ScreenManager
         public event EventHandler GotoLast;
         public event EventHandler GotoNextKeyframe;
         public event EventHandler GotoSync;
-        public event EventHandler SwapAsked;
+        public event EventHandler<TimeEventArgs> PositionChanged;
         public event EventHandler AddKeyframe;
+        public event EventHandler SwapAsked;
         public event EventHandler SyncAsked;
         public event EventHandler MergeAsked;
-        public event EventHandler<TimeEventArgs> PositionChanged;
         public event EventHandler ExportImageAsked;
         public event EventHandler ExportvideoAsked;
         #endregion
@@ -79,6 +79,11 @@ namespace Kinovea.ScreenManager
         {
             BackColor = Color.White;
             trkFrame.SetAsCommonTimeline(true);
+
+            btnSnapshot.Click += (s, e) => ExportImageAsked?.Invoke(s, e);
+            btnDualSave.Click += (s, e) => ExportvideoAsked?.Invoke(s, e);
+            btnSwap.Click += (s, e) => SwapAsked?.Invoke(s, e);
+            btnSync.Click += (s, e) => SyncAsked?.Invoke(s, e);
         }
         #endregion
         
@@ -274,29 +279,9 @@ namespace Kinovea.ScreenManager
         {
             Last();
         }
-        private void btnSwap_Click(object sender, EventArgs e)
-        {
-            if (SwapAsked != null)
-                SwapAsked(this, EventArgs.Empty);
-        }
-        private void btnSync_Click(object sender, EventArgs e)
-        {
-            if (SyncAsked != null)
-                SyncAsked(this, EventArgs.Empty);
-        }
         private void btnMerge_Click(object sender, EventArgs e)
         {
             ToggleMerge();
-        }
-        private void btnSnapshot_Click(object sender, EventArgs e)
-        {
-            if (ExportImageAsked != null)
-                ExportImageAsked(this, EventArgs.Empty);
-        }
-        private void btnDualVideo_Click(object sender, EventArgs e)
-        {
-            if (ExportvideoAsked != null)
-                ExportvideoAsked(this, EventArgs.Empty);
         }
         private void trkFrame_PositionChanged(object sender, TimeEventArgs e)
         {

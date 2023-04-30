@@ -32,7 +32,7 @@ namespace Kinovea.ScreenManager
 
         private void InitializeCulture()
         {
-            this.Text = "Export image side by side";
+            this.Text = "Export side by side";
 
             rbHorizontal.Text = "Horizontal";
             rbVertical.Text = "Vertical";

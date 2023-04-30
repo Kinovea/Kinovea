@@ -106,7 +106,6 @@ namespace Kinovea.ScreenManager
       this.btnSync.Size = new System.Drawing.Size(30, 25);
       this.btnSync.TabIndex = 12;
       this.btnSync.UseVisualStyleBackColor = false;
-      this.btnSync.Click += new System.EventHandler(this.btnSync_Click);
       // 
       // btnSwap
       // 
@@ -123,7 +122,6 @@ namespace Kinovea.ScreenManager
       this.btnSwap.Size = new System.Drawing.Size(30, 25);
       this.btnSwap.TabIndex = 11;
       this.btnSwap.UseVisualStyleBackColor = true;
-      this.btnSwap.Click += new System.EventHandler(this.btnSwap_Click);
       // 
       // buttonGotoFirst
       // 
@@ -221,7 +219,6 @@ namespace Kinovea.ScreenManager
       this.btnSnapshot.Size = new System.Drawing.Size(25, 25);
       this.btnSnapshot.TabIndex = 17;
       this.btnSnapshot.UseVisualStyleBackColor = false;
-      this.btnSnapshot.Click += new System.EventHandler(this.btnSnapshot_Click);
       // 
       // btnDualSave
       // 
@@ -239,7 +236,6 @@ namespace Kinovea.ScreenManager
       this.btnDualSave.Size = new System.Drawing.Size(25, 25);
       this.btnDualSave.TabIndex = 18;
       this.btnDualSave.UseVisualStyleBackColor = false;
-      this.btnDualSave.Click += new System.EventHandler(this.btnDualVideo_Click);
       // 
       // CommonControlsPlayers
       // 

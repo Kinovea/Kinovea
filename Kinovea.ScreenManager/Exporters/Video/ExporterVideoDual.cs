@@ -5,11 +5,13 @@ using System.Text;
 using System.Windows.Forms;
 using Kinovea.ScreenManager.Languages;
 using System.IO;
-using Kinovea.Video.FFMpeg;
+using System.Threading.Tasks;
+using System.Threading;
 using System.ComponentModel;
-using Kinovea.Services;
 using System.Drawing;
+using Kinovea.Services;
 using Kinovea.Video;
+using Kinovea.Video.FFMpeg;
 
 namespace Kinovea.ScreenManager
 {
@@ -19,101 +21,91 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class ExporterVideoDual
     {
-        private CommonTimeline commonTimeline;
+        private BackgroundWorker worker = new BackgroundWorker();
+        private FormProgressBar formProgressBar = new FormProgressBar(true);
         private PlayerScreen leftPlayer;
         private PlayerScreen rightPlayer;
+        private DualPlayerController dualPlayer;
+        private string filePath;
+        private bool horizontal = true;
+        private bool merging = false;
+
+        private CommonTimeline commonTimeline;
         private double fileFrameInterval;
-        private string dualSaveFileName;
-        private bool dualSaveCancelled;
-        private bool merging;
+        private bool cancelled;
         
         private VideoFileWriter videoFileWriter = new VideoFileWriter();
-        private BackgroundWorker bgWorkerDualSave;
-        private FormProgressBar dualSaveProgressBar;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public void Export(CommonTimeline commonTimeline, PlayerScreen leftPlayer, PlayerScreen rightPlayer, bool merging)
+        public ExporterVideoDual()
         {
-            this.commonTimeline = commonTimeline;
+            worker.WorkerReportsProgress = true;
+            worker.WorkerSupportsCancellation = true;
+            worker.ProgressChanged += Worker_ProgressChanged;
+            worker.DoWork += Worker_DoWork;
+            worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
+
+            formProgressBar.CancelAsked += FormProgressBar_CancelAsked;
+        }
+
+        public void Export(PlayerScreen leftPlayer, PlayerScreen rightPlayer, string filePath, bool horizontal, DualPlayerController dualPlayer)
+        {
             this.leftPlayer = leftPlayer;
             this.rightPlayer = rightPlayer;
-            this.merging = merging;
+            this.dualPlayer = dualPlayer;
+            this.filePath = filePath;
+            this.horizontal = horizontal;
+
+            this.merging = dualPlayer.View.Merging;
+            this.commonTimeline = dualPlayer.CommonTimeline;
 
             // During saving we move through the common timeline by a time unit based on framerate and high speed factor, but not based on user custom slow motion factor.
             // For the framerate saved in the file metadata we take user custom slow motion into account and not high speed factor.
             fileFrameInterval = Math.Max(leftPlayer.PlaybackFrameInterval, rightPlayer.PlaybackFrameInterval);
             
-            dualSaveFileName = GetFilename(leftPlayer, rightPlayer);
-            if (string.IsNullOrEmpty(dualSaveFileName))
-                return;
-
-            dualSaveCancelled = false;
-            
-            // Instanciate and configure the bgWorker.
-            bgWorkerDualSave = new BackgroundWorker();
-            bgWorkerDualSave.WorkerReportsProgress = true;
-            bgWorkerDualSave.WorkerSupportsCancellation = true;
-            bgWorkerDualSave.DoWork += bgWorkerDualSave_DoWork;
-            bgWorkerDualSave.ProgressChanged += bgWorkerDualSave_ProgressChanged;
-            bgWorkerDualSave.RunWorkerCompleted += bgWorkerDualSave_RunWorkerCompleted;
-
             // Make sure none of the screen will try to update itself.
             // Otherwise it will cause access to the other screen image (in case of merge), which can cause a crash.
-            
             leftPlayer.DualSaveInProgress = true;
             rightPlayer.DualSaveInProgress = true;
+            dualPlayer.DualSaveInProgress = true;
 
-            dualSaveProgressBar = new FormProgressBar(true);
-            dualSaveProgressBar.CancelAsked += dualSave_CancelAsked;
+            // Start the background worker.
+            formProgressBar.Reset();
+            worker.RunWorkerAsync();
+
+            // Show the progress bar.
+            formProgressBar.ShowDialog();
+        }
+
+        private void Worker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            // This runs in the background thread.
+            Thread.CurrentThread.Name = "VideoExporter";
+            BackgroundWorker worker = sender as BackgroundWorker;
+            SavingSettings s = e.Argument as SavingSettings;
+
+            leftPlayer.view.BeforeExportVideo();
+            rightPlayer.view.BeforeExportVideo();
+
+            leftPlayer.FrameServer.VideoReader.BeforeFrameEnumeration();
+            rightPlayer.FrameServer.VideoReader.BeforeFrameEnumeration();
             
-            // The worker thread runs in the background while the UI thread is in the progress bar dialog.
-            // We only continue after these two lines once the video has been saved or the saving cancelled.
-            bgWorkerDualSave.RunWorkerAsync();
-            dualSaveProgressBar.ShowDialog();
-
-            if (dualSaveCancelled)
-                DeleteTemporaryFile(dualSaveFileName);
-
-            leftPlayer.DualSaveInProgress = false;
-            rightPlayer.DualSaveInProgress = false;
-        }
-
-        private string GetFilename(PlayerScreen leftPlayer, PlayerScreen rightPlayer)
-        {
-            SaveFileDialog dlgSave = new SaveFileDialog();
-            dlgSave.Title = ScreenManagerLang.CommandExportVideo_FriendlyName;
-            dlgSave.RestoreDirectory = true;
-            dlgSave.Filter = FilesystemHelper.SaveVideoFilter();
-            dlgSave.FilterIndex = FilesystemHelper.GetFilterIndex(dlgSave.Filter, PreferencesManager.PlayerPreferences.VideoFormat);
-            dlgSave.FileName = String.Format("{0} - {1}", Path.GetFileNameWithoutExtension(leftPlayer.FilePath), Path.GetFileNameWithoutExtension(rightPlayer.FilePath));
-
-            if (dlgSave.ShowDialog() != DialogResult.OK)
-                return null;
-
-            return dlgSave.FileName;
-        }
-
-        private void bgWorkerDualSave_DoWork(object sender, DoWorkEventArgs e)
-        {
-            // This is executed in Worker Thread space. (Do not call any UI methods)
-            log.Debug("Saving side by side video.");
-
             int threadResult = 0;
             
             // Get first frame outside the loop to set up the saving context.
             long currentTime = 0;
-            Bitmap composite = GetCompositeImage(currentTime);
+            Bitmap bmpComposite = GetCompositeImage(currentTime);
             
-            log.DebugFormat("Composite size: {0}.", composite.Size);
+            log.DebugFormat("Composite size: {0}.", bmpComposite.Size);
 
             VideoInfo info = new VideoInfo
             {
-                ReferenceSize = composite.Size
+                ReferenceSize = bmpComposite.Size
             };
 
-            string formatString = FilenameHelper.GetFormatString(dualSaveFileName);
+            string formatString = FilenameHelper.GetFormatString(filePath);
 
-            SaveResult result = videoFileWriter.OpenSavingContext(dualSaveFileName, info, formatString, fileFrameInterval);
+            SaveResult result = videoFileWriter.OpenSavingContext(filePath, info, formatString, fileFrameInterval);
 
             if (result != SaveResult.Success)
             {
@@ -121,34 +113,70 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            videoFileWriter.SaveFrame(composite);
-            composite.Dispose();
+            videoFileWriter.SaveFrame(bmpComposite);
+            bmpComposite.Dispose();
             
-            while (currentTime < commonTimeline.LastTime && !dualSaveCancelled)
+            while (currentTime < commonTimeline.LastTime && !cancelled)
             {
                 currentTime += commonTimeline.FrameTime;
 
-                if (bgWorkerDualSave.CancellationPending)
+                if (worker.CancellationPending)
                 {
                     threadResult = 1;
-                    dualSaveCancelled = true;
+                    cancelled = true;
                     break;
                 }
 
-                composite = GetCompositeImage(currentTime);
-                videoFileWriter.SaveFrame(composite);
-                composite.Dispose();
+                bmpComposite = GetCompositeImage(currentTime);
+                videoFileWriter.SaveFrame(bmpComposite);
+                bmpComposite.Dispose();
 
                 int percent = (int)((double)currentTime * 100 / commonTimeline.LastTime);
-                bgWorkerDualSave.ReportProgress(percent);
+                worker.ReportProgress(percent);
             }
 
-            if (!dualSaveCancelled)
+            if (!cancelled)
                 threadResult = 0;
             
             e.Result = threadResult;
         }
-        
+
+        private Bitmap GetCompositeImage(long currentTime)
+        {
+            Bitmap bmpComposite;
+
+            GotoTime(leftPlayer, currentTime);
+            GotoTime(rightPlayer, currentTime);
+
+            Bitmap bmpLeft = leftPlayer.GetFlushedImage();
+
+            if (!merging)
+            {
+                Bitmap bmpRight = rightPlayer.GetFlushedImage();
+                bmpComposite = ImageHelper.GetSideBySideComposite(bmpLeft, bmpRight, true, horizontal);
+                bmpRight.Dispose();
+            }
+            else
+            {
+                int height = bmpLeft.Height;
+                int width = bmpLeft.Width;
+
+                if (bmpLeft.Height % 2 != 0)
+                    height++;
+
+                if (width % 4 != 0)
+                    width += 4 - (width % 4);
+
+                bmpComposite = new Bitmap(width, height, bmpLeft.PixelFormat);
+                Graphics g = Graphics.FromImage(bmpComposite);
+                g.DrawImage(bmpLeft, Point.Empty);
+            }
+
+            bmpLeft.Dispose();
+            
+            return bmpComposite;
+        }
+
         private void GotoTime(PlayerScreen player, long commonTime)
         {
             long localTime = commonTimeline.GetLocalTime(player, commonTime);
@@ -156,58 +184,39 @@ namespace Kinovea.ScreenManager
             player.GotoTime(localTime, false);
         }
 
-        private Bitmap GetCompositeImage(long currentTime)
+        private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            Bitmap composite;
-
-            GotoTime(leftPlayer, currentTime);
-            GotoTime(rightPlayer, currentTime);
-
-            Bitmap img1 = leftPlayer.GetFlushedImage();
-
-            if (!merging)
-            {
-                Bitmap img2 = rightPlayer.GetFlushedImage();
-                composite = ImageHelper.GetSideBySideComposite(img1, img2, true, true);
-                img2.Dispose();
-            }
-            else
-            {
-                int height = img1.Height;
-                int width = img1.Width;
-
-                if (img1.Height % 2 != 0)
-                    height++;
-
-                if (width % 4 != 0)
-                    width += 4 - (width % 4);
-
-                composite = new Bitmap(width, height, img1.PixelFormat);
-                Graphics g = Graphics.FromImage(composite);
-                g.DrawImage(img1, Point.Empty);
-            }
-
-            img1.Dispose();
-            
-            return composite;
-        }
-
-        private void bgWorkerDualSave_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            if (bgWorkerDualSave.CancellationPending)
+            if (worker.CancellationPending)
                 return;
 
-            dualSaveProgressBar.Update(Math.Min(e.ProgressPercentage, 100), 100, true);
+            formProgressBar.Update(Math.Min(e.ProgressPercentage, 100), 100, true);
         }
 
-        private void bgWorkerDualSave_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            
+            formProgressBar.Close();
+            formProgressBar.Dispose();
+
+            leftPlayer.FrameServer.VideoReader.AfterFrameEnumeration();
+            rightPlayer.FrameServer.VideoReader.AfterFrameEnumeration();
+
+            leftPlayer.view.AfterExportVideo();
+            rightPlayer.view.AfterExportVideo();
+
+            leftPlayer.FrameServer.AfterSave();
+            rightPlayer.FrameServer.AfterSave();
+
+            dualPlayer.DualSaveInProgress = false;
+
+            //GotoTime(currentTime, true);
+
             try
             {
-                dualSaveProgressBar.Close();
-                dualSaveProgressBar.Dispose();
+                if (cancelled)
+                    DeleteTemporaryFile(filePath);
 
-                if (!dualSaveCancelled && (int)e.Result != 1 && videoFileWriter != null)
+                if (!cancelled && (int)e.Result != 1 && videoFileWriter != null)
                     videoFileWriter.CloseSavingContext((int)e.Result == 0);
             }
             catch (Exception exception)
@@ -218,19 +227,18 @@ namespace Kinovea.ScreenManager
             NotificationCenter.RaiseRefreshFileExplorer(this, false);
         }
 
-        private void dualSave_CancelAsked(object sender, EventArgs e)
+        private void FormProgressBar_CancelAsked(object sender, EventArgs e)
         {
-            // This will simply set BgWorker.CancellationPending to true, which we check periodically in the saving loop.
-            // This will also end the bgWorker immediately, maybe before we check for the cancellation in the other thread. 
-            
+            // This will set worker.CancellationPending to true, which we check periodically in the saving loop.
+            // This will also end the worker immediately, maybe before we check for the cancellation in the other thread. 
             videoFileWriter.CloseSavingContext(false);
-            dualSaveCancelled = true;
-            bgWorkerDualSave.CancelAsync();
+            cancelled = true;
+            worker.CancelAsync();
         }
 
         private void DeleteTemporaryFile(string filename)
         {
-            log.Debug("Dual video saving cancelled. Deleting file.");
+            log.Debug("Video saving cancelled. Deleting file.");
             if (!File.Exists(filename))
                 return;
 

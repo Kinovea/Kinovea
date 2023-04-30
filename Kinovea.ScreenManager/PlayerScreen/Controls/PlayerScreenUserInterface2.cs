@@ -80,12 +80,12 @@ namespace Kinovea.ScreenManager
         public event EventHandler<MultiDrawingItemEventArgs> MultiDrawingItemDeleting;
         public event EventHandler<TrackableDrawingEventArgs> TrackableDrawingAdded;
         public event EventHandler<EventArgs<HotkeyCommand>> DualCommandReceived;
-        public event EventHandler ExportVideoAsked;
-        public event EventHandler ExportVideoWithPausesAsked;
-        public event EventHandler ExportVideoSlideshowAsked;
         public event EventHandler ExportImageAsked;
         public event EventHandler ExportImageSequenceAsked;
         public event EventHandler ExportKeyImagesAsked;
+        public event EventHandler ExportVideoAsked;
+        public event EventHandler ExportVideoWithPausesAsked;
+        public event EventHandler ExportVideoSlideshowAsked;
         #endregion
 
         #region Commands encapsulating domain logic implemented in the presenter.
@@ -259,7 +259,7 @@ namespace Kinovea.ScreenManager
         }
         public bool DualSaveInProgress
         {
-            set { m_DualSaveInProgress = value; }
+            set { dualSaveInProgress = value; }
         }
         #endregion
 
@@ -287,7 +287,7 @@ namespace Kinovea.ScreenManager
         private ColorMatrix m_SyncMergeMatrix = new ColorMatrix();
         private ImageAttributes m_SyncMergeImgAttr = new ImageAttributes();
         private float m_SyncAlpha = 0.5f;
-        private bool m_DualSaveInProgress;
+        private bool dualSaveInProgress;
         private bool saveInProgress;
 
         // Image
@@ -422,6 +422,7 @@ namespace Kinovea.ScreenManager
             InitializePropertiesPanel();
             InitializeDrawingTools(drawingToolbarPresenter);
             BuildContextMenus();
+            BuildExportButtons();
             AfterSyncAlphaChange();
             m_MessageToaster = new MessageToaster(pbSurfaceScreen);
 
@@ -481,7 +482,7 @@ namespace Kinovea.ScreenManager
             UpdateFramesMarkers();
             EnableDisableAllPlayingControls(true);
             EnableDisableDrawingTools(true);
-            EnableDisableSnapshot(true);
+            EnableDisableExportButtons(true);
             buttonPlay.Image = Player.flatplay;
             sldrSpeed.Enabled = false;
             m_KeyframeCommentsHub.Hide();
@@ -509,20 +510,20 @@ namespace Kinovea.ScreenManager
 
             sidePanelKeyframes.Clear();
         }
-        public void EnableDisableActions(bool _bEnable)
+        public void EnableDisableActions(bool enable)
         {
             // Called back after a load error.
             // Prevent any actions.
-            if (!_bEnable)
+            if (!enable)
                 DisablePlayAndDraw();
 
-            EnableDisableSnapshot(_bEnable);
-            EnableDisableDrawingTools(_bEnable);
+            EnableDisableDrawingTools(enable);
+            EnableDisableExportButtons(enable);
 
-            if (_bEnable && m_FrameServer.Loaded && m_FrameServer.VideoReader.IsSingleFrame)
+            if (enable && m_FrameServer.Loaded && m_FrameServer.VideoReader.IsSingleFrame)
                 EnableDisableAllPlayingControls(false);
             else
-                EnableDisableAllPlayingControls(_bEnable);
+                EnableDisableAllPlayingControls(enable);
         }
         public int PostLoadProcess()
         {
@@ -1260,6 +1261,15 @@ namespace Kinovea.ScreenManager
 
             // Load texts
             ReloadMenusCulture();
+        }
+
+        private void BuildExportButtons()
+        {
+            btnExportImage.Click += (s, e) => ExportImageAsked?.Invoke(s, e);
+            btnExportImageSequence.Click += (s, e) => ExportImageSequenceAsked?.Invoke(s, e);
+            btnExportVideo.Click += (s, e) => ExportVideoAsked?.Invoke(s, e);
+            btnExportVideoSlideshow.Click += (s, e) => ExportVideoSlideshowAsked?.Invoke(s, e);
+            btnExportVideoWithPauses.Click += (s, e) => ExportVideoWithPausesAsked?.Invoke(s, e);
         }
 
         private void PostLoad_Idle(object sender, EventArgs e)
@@ -2833,9 +2843,9 @@ namespace Kinovea.ScreenManager
             // Export buttons
             toolTips.SetToolTip(btnExportImage, ScreenManagerLang.Generic_SaveImage);
             toolTips.SetToolTip(btnExportImageSequence, ScreenManagerLang.ToolTip_Rafale);
-            toolTips.SetToolTip(btnDiaporama, ScreenManagerLang.ToolTip_SaveDiaporama);
-            toolTips.SetToolTip(btnSaveVideo, ScreenManagerLang.CommandExportVideo_FriendlyName);
-            toolTips.SetToolTip(btnPausedVideo, ScreenManagerLang.ToolTip_SavePausedVideo);
+            toolTips.SetToolTip(btnExportVideo, ScreenManagerLang.CommandExportVideo_FriendlyName);
+            toolTips.SetToolTip(btnExportVideoSlideshow, ScreenManagerLang.ToolTip_SaveDiaporama);
+            toolTips.SetToolTip(btnExportVideoWithPauses, ScreenManagerLang.ToolTip_SavePausedVideo);
 
             // Working zone and sliders.
             if (m_bHandlersLocked)
@@ -3679,7 +3689,7 @@ namespace Kinovea.ScreenManager
             // We always draw at full SurfaceScreen size.
             // It is the SurfaceScreen itself that is resized if needed.
             //-------------------------------------------------------------------
-            if (!m_FrameServer.Loaded || saveInProgress || m_DualSaveInProgress)
+            if (!m_FrameServer.Loaded || saveInProgress || dualSaveInProgress)
                 return;
 
             m_TimeWatcher.LogTime("Actual start of paint");
@@ -5199,7 +5209,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region VideoFilters Management
-        private void EnableDisableAllPlayingControls(bool _bEnable)
+        private void EnableDisableAllPlayingControls(bool enable)
         {
             // Disable playback controls and some other controls for the case
             // of a one-frame rendering. (mosaic, single image)
@@ -5207,47 +5217,46 @@ namespace Kinovea.ScreenManager
             if(m_FrameServer.Loaded && !m_FrameServer.VideoReader.CanChangeWorkingZone)
                 EnableDisableWorkingZoneControls(false);
             else
-                EnableDisableWorkingZoneControls(_bEnable);
+                EnableDisableWorkingZoneControls(enable);
             
-            buttonGotoFirst.Enabled = _bEnable;
-            buttonGotoLast.Enabled = _bEnable;
-            buttonGotoNext.Enabled = _bEnable;
-            buttonGotoPrevious.Enabled = _bEnable;
-            buttonPlay.Enabled = _bEnable;
+            buttonGotoFirst.Enabled = enable;
+            buttonGotoLast.Enabled = enable;
+            buttonGotoNext.Enabled = enable;
+            buttonGotoPrevious.Enabled = enable;
+            buttonPlay.Enabled = enable;
             
-            lblSpeedTuner.Enabled = _bEnable;
-            trkFrame.EnableDisable(_bEnable);
+            lblSpeedTuner.Enabled = enable;
+            trkFrame.EnableDisable(enable);
 
-            trkFrame.Enabled = _bEnable;
-            trkSelection.Enabled = _bEnable;
-            sldrSpeed.Enabled = _bEnable;
+            trkFrame.Enabled = enable;
+            trkSelection.Enabled = enable;
+            sldrSpeed.Enabled = enable;
             
-            btnExportImageSequence.Enabled = _bEnable;
-            btnSaveVideo.Enabled = _bEnable;
-            btnDiaporama.Enabled = _bEnable;
-            btnPausedVideo.Enabled = _bEnable;
-            
-            mnuDirectTrack.Enabled = _bEnable;
-            mnuTimeOrigin.Enabled = _bEnable;
+            mnuDirectTrack.Enabled = enable;
+            mnuTimeOrigin.Enabled = enable;
         }
-        private void EnableDisableWorkingZoneControls(bool _bEnable)
+        private void EnableDisableWorkingZoneControls(bool enable)
         {
-            btnSetHandlerLeft.Enabled = _bEnable;
-            btnSetHandlerRight.Enabled = _bEnable;
-            btnHandlersReset.Enabled = _bEnable;
-            btn_HandlersLock.Enabled = _bEnable;
-            btnTimeOrigin.Enabled = _bEnable;
-            trkSelection.EnableDisable(_bEnable);
+            btnSetHandlerLeft.Enabled = enable;
+            btnSetHandlerRight.Enabled = enable;
+            btnHandlersReset.Enabled = enable;
+            btn_HandlersLock.Enabled = enable;
+            btnTimeOrigin.Enabled = enable;
+            trkSelection.EnableDisable(enable);
         }
-        private void EnableDisableSnapshot(bool _bEnable)
+        private void EnableDisableExportButtons(bool enable)
         {
-            btnExportImage.Enabled = _bEnable;
+            btnExportImage.Enabled = enable;
+            btnExportImageSequence.Enabled = enable;
+            btnExportVideo.Enabled = enable;
+            btnExportVideoSlideshow.Enabled = enable;
+            btnExportVideoWithPauses.Enabled = enable;
         }
-        private void EnableDisableDrawingTools(bool _bEnable)
+        private void EnableDisableDrawingTools(bool enable)
         {
             foreach(ToolStripItem tsi in stripDrawingTools.Items)
             {
-                tsi.Enabled = _bEnable;
+                tsi.Enabled = enable;
             }
         }
         #endregion
@@ -5321,54 +5330,6 @@ namespace Kinovea.ScreenManager
             outputImage.Dispose();
         }
 
-        private void btnExportImage_Click(object sender, EventArgs e)
-        {
-            ExportImageAsked?.Invoke(sender, e);
-        }
-
-        private void btnExportImageSequence_Click(object sender, EventArgs e)
-        {
-            ExportImageSequenceAsked?.Invoke(sender, e);
-        }
-
-        private void btnSaveVideo_Click(object sender, EventArgs e)
-        {
-            ExportVideoAsked?.Invoke(this, EventArgs.Empty);
-        }
-
-        /// <summary>
-        /// Triggers the special video export pipeline.
-        /// Ultimately this enumerates frames and comes back to GetFlushedImage(VideoFrame, Bitmap).
-        /// </summary>
-        private void btnDiaporama_Click(object sender, EventArgs e)
-        {
-            if (!m_FrameServer.Loaded || m_FrameServer.CurrentImage == null)
-                return;
-                
-            bool diaporama = sender == btnDiaporama;
-            
-            StopPlaying();
-            OnPauseAsked();
-            
-            if(m_FrameServer.Metadata.Keyframes.Count < 1)
-            {
-                string error = diaporama ? ScreenManagerLang.Error_SavePausedVideo : ScreenManagerLang.Error_SavePausedVideo;
-                MessageBox.Show(ScreenManagerLang.Error_SaveDiaporama_NoKeyframes.Replace("\\n", "\n"),
-                                error,
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Exclamation);
-                return;
-            }
-            
-            saveInProgress = true;
-            m_FrameServer.SaveDiaporama(GetFlushedImage, diaporama);
-            saveInProgress = false;
-            
-            m_iFramesToDecode = 1;
-            ShowNextFrame(m_iSelStart, true);
-            ActivateKeyframe(m_iCurrentPosition, true);
-        }
-
         /// <summary>
         /// Called before we start exporting video.
         /// </summary>
@@ -5386,6 +5347,7 @@ namespace Kinovea.ScreenManager
         public void AfterExportVideo()
         {
             saveInProgress = false;
+            dualSaveInProgress = false;
 
             m_iFramesToDecode = 1;
             ShowNextFrame(m_iSelStart, true);
@@ -5394,13 +5356,11 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Returns the image currently on screen with all drawings flushed, including grids, magnifier, mirroring, etc.
-        /// The resulting Bitmap will be at the same size as the image currently on screen.
-        /// This is used to export individual images or get the image for dual export.
+        /// This is used to export individual images or get images for dual export.
         /// </summary>
         public Bitmap GetFlushedImage()
         {
-            Size renderingSize = m_viewportManipulator.RenderingSize;
-            Bitmap output = new Bitmap(renderingSize.Width, renderingSize.Height, PixelFormat.Format24bppRgb);
+            Bitmap output = new Bitmap(m_FrameServer.CurrentImage.Size.Width, m_FrameServer.CurrentImage.Size.Height, PixelFormat.Format24bppRgb);
             output.SetResolution(m_FrameServer.CurrentImage.HorizontalResolution, m_FrameServer.CurrentImage.VerticalResolution);
 
             int keyframeIndex = m_FrameServer.Metadata.GetKeyframeIndex(m_iCurrentPosition);

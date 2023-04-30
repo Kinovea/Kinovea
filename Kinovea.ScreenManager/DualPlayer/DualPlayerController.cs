@@ -15,6 +15,7 @@ namespace Kinovea.ScreenManager
     {
         #region Events
         public event EventHandler ExportImageAsked;
+        public event EventHandler ExportVideoAsked;
         #endregion
 
         #region Properties
@@ -25,6 +26,16 @@ namespace Kinovea.ScreenManager
         public bool Active
         {
             get { return active; }
+        }
+        public bool DualSaveInProgress
+        {
+            get { return dualSaveInProgress; }
+            set { dualSaveInProgress = value; }
+        }
+
+        public CommonTimeline CommonTimeline
+        {
+            get { return commonTimeline; }
         }
         #endregion
 
@@ -62,7 +73,7 @@ namespace Kinovea.ScreenManager
             view.MergeAsked += CCtrl_MergeAsked;
             view.PositionChanged += CCtrl_PositionChanged;
             view.ExportImageAsked += (s, e) => ExportImageAsked?.Invoke(s, e);
-            view.ExportvideoAsked += CCtrl_DualSaveAsked;
+            view.ExportvideoAsked += (s, e) => ExportVideoAsked?.Invoke(s, e);
 
             hotkeys = HotkeySettingsManager.LoadHotkeys("DualPlayer");
         }
@@ -401,22 +412,6 @@ namespace Kinovea.ScreenManager
             Pause();
             
             currentTime = e.Time;
-            GotoTime(currentTime, true);
-        }
-        private void CCtrl_DualSaveAsked(object sender, EventArgs e)
-        {
-            if (!synching)
-                return;
-
-            Pause();
-
-            dualSaveInProgress = true;
-
-            ExporterVideoDual exporter = new ExporterVideoDual();
-            exporter.Export(commonTimeline, players[0], players[1], view.Merging);
-
-            dualSaveInProgress = false;
-
             GotoTime(currentTime, true);
         }
         

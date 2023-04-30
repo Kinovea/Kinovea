@@ -75,6 +75,7 @@ namespace Kinovea.ScreenManager
                         }
 
                         bool horizontal = fceisbs.Horizontal;
+                        fceisbs.Dispose();
 
                         // Save this as the new preferred layout.
                         PreferencesManager.PlayerPreferences.SideBySideHorizontal = horizontal;

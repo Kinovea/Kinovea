@@ -22,7 +22,7 @@ namespace Kinovea.ScreenManager
         private const double maxInterval = 1000.0 / 8.0;
         private readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public void Export(VideoExportFormat format, PlayerScreen player1, PlayerScreen player2)
+        public void Export(VideoExportFormat format, PlayerScreen player1, PlayerScreen player2, DualPlayerController dualPlayer)
         {
             if (player1 == null)
                 return;
@@ -165,6 +165,30 @@ namespace Kinovea.ScreenManager
 
                             ExporterVideo exporterVideoSlideshow = new ExporterVideo();
                             exporterVideoSlideshow.Export(s, player1);
+                            break;
+                        }
+                    case VideoExportFormat.SideBySide:
+                        {
+                            // Show a configuration dialog to get the layout.
+                            FormConfigureExportImageSideBySide fceisbs = new FormConfigureExportImageSideBySide();
+                            fceisbs.StartPosition = FormStartPosition.CenterScreen;
+                            if (fceisbs.ShowDialog() != DialogResult.OK)
+                            {
+                                fceisbs.Dispose();
+                                return;
+                            }
+
+                            bool horizontal = fceisbs.Horizontal;
+                            fceisbs.Dispose();
+
+                            // Save this as the new preferred layout.
+                            PreferencesManager.PlayerPreferences.SideBySideHorizontal = horizontal;
+                            PreferencesManager.Save();
+
+                            // Export the video.
+                            ExporterVideoDual exporterVideoDual = new ExporterVideoDual();
+                            exporterVideoDual.Export(player1, player2, sfd.FileName, horizontal, dualPlayer);
+
                             break;
                         }
                 }
