@@ -299,60 +299,7 @@ namespace Kinovea.ScreenManager
 
         #endregion
 
-
         #region Support functions for exporters that need the images
-
-        /// <summary>
-        /// Main video export.
-        /// </summary>
-        public void SaveVideo(double playbackFrameInterval, double slowmotionPercentage, ImageRetriever imageRetriever)
-        {
-            // Show the intermediate dialog for export options.
-            FormVideoExport fve = new FormVideoExport(videoReader.FilePath, slowmotionPercentage);
-            if (fve.ShowDialog() != DialogResult.OK)
-            {
-                fve.Dispose();
-                return;
-            }
-
-            if (!FilesystemHelper.CanWrite(fve.Filename))
-            {
-                DisplayErrorMessage(ScreenManagerLang.Error_SaveMovie_FileError);
-                fve.Dispose();
-                return;
-            }
-
-            DoSave(fve.Filename,
-                   fve.UseSlowMotion ? playbackFrameInterval : metadata.BaselineFrameInterval,
-                   true,
-                   false,
-                   false,
-                   imageRetriever);
-
-            // Save this as the "preferred" format for video exports.
-            PreferencesManager.PlayerPreferences.VideoFormat = FilesystemHelper.GetVideoFormat(fve.Filename);
-            PreferencesManager.Save();
-            
-            fve.Dispose();
-        }
-
-        public void SaveDiaporama(ImageRetriever imageRetriever, bool diapo)
-        {
-            // Let the user configure the diaporama export.
-            using(formDiapoExport fde = new formDiapoExport(diapo))
-            {
-                if(fde.ShowDialog() == DialogResult.OK)
-                {
-                    DoSave(fde.Filename, 
-                            fde.FrameInterval,
-                            true, 
-                            fde.PausedVideo ? false : true,
-                            fde.PausedVideo,
-                            imageRetriever);
-                }
-            }
-        }
-
         public void AfterSave()
         {
             if(savingMetada)

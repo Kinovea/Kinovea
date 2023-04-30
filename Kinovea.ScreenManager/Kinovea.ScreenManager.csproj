@@ -432,7 +432,7 @@
     <Compile Include="DualPlayer\CommonTimeline.cs" />
     <Compile Include="DualPlayer\DualPlayerController.cs" />
     <Compile Include="Exporters\Images\ExporterImageSideBySide.cs" />
-    <Compile Include="Exporters\Video\ExporterVideoDual.cs" />
+    <Compile Include="Exporters\Video\ExporterVideoSideBySide.cs" />
     <Compile Include="DualPlayer\PlayerSyncInfo.cs" />
     <Compile Include="Metadata\Drawings\CoordinateSystem\CoordinateSystemGridFinder.cs" />
     <Compile Include="Metadata\Drawings\CoordinateSystem\GridAxis.cs" />
@@ -798,12 +798,6 @@
     <Compile Include="PlayerScreen\Forms\FormConfigureTrajectoryDisplay.Designer.cs">
       <DependentUpon>FormConfigureTrajectoryDisplay.cs</DependentUpon>
     </Compile>
-    <Compile Include="Exporters\Video\FormDiapoExport.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Exporters\Video\FormDiapoExport.Designer.cs">
-      <DependentUpon>FormDiapoExport.cs</DependentUpon>
-    </Compile>
     <Compile Include="PlayerScreen\Forms\FormKeyframeComments.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -815,12 +809,6 @@
     </Compile>
     <Compile Include="PlayerScreen\Forms\FormProgressBar.Designer.cs">
       <DependentUpon>FormProgressBar.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Exporters\Video\FormVideoExport.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Exporters\Video\FormVideoExport.Designer.cs">
-      <DependentUpon>FormVideoExport.cs</DependentUpon>
     </Compile>
     <Compile Include="Metadata\Magnifier.cs">
     </Compile>
@@ -1198,17 +1186,9 @@
       <SubType>Designer</SubType>
       <DependentUpon>FormConfigureTrajectoryDisplay.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Exporters\Video\FormDiapoExport.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>FormDiapoExport.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\Forms\FormKeyframeComments.resx">
       <SubType>Designer</SubType>
       <DependentUpon>FormKeyframeComments.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Exporters\Video\FormVideoExport.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>FormVideoExport.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

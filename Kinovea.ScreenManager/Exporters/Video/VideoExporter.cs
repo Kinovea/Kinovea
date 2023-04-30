@@ -186,7 +186,7 @@ namespace Kinovea.ScreenManager
                             PreferencesManager.Save();
 
                             // Export the video.
-                            ExporterVideoDual exporterVideoDual = new ExporterVideoDual();
+                            ExporterVideoSideBySide exporterVideoDual = new ExporterVideoSideBySide();
                             exporterVideoDual.Export(player1, player2, sfd.FileName, horizontal, dualPlayer);
 
                             break;
@@ -218,7 +218,7 @@ namespace Kinovea.ScreenManager
                     break;
                 case VideoExportFormat.SideBySide:
                     // Double video name.
-                    filename = ExporterVideoDual.SuggestFilename(player1, player2);
+                    filename = ExporterVideoSideBySide.SuggestFilename(player1, player2);
                     break;
             }
 

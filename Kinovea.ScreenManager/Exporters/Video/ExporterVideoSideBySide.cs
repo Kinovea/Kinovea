@@ -16,10 +16,9 @@ using Kinovea.Video.FFMpeg;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// Create and save a composite video with side by side synchronized images.
-    /// If merge is active, only saves the left video.
+    /// Exporter for side by side videos. Either horizontal or vertical layout.
     /// </summary>
-    public class ExporterVideoDual
+    public class ExporterVideoSideBySide
     {
         private BackgroundWorker worker = new BackgroundWorker();
         private FormProgressBar formProgressBar = new FormProgressBar(true);
@@ -37,7 +36,7 @@ namespace Kinovea.ScreenManager
         private VideoFileWriter videoFileWriter = new VideoFileWriter();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public ExporterVideoDual()
+        public ExporterVideoSideBySide()
         {
             worker.WorkerReportsProgress = true;
             worker.WorkerSupportsCancellation = true;
