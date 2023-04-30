@@ -7,6 +7,9 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
+    /// <summary>
+    /// This class represent one time section in the multi-time chronometer.
+    /// </summary>
     public class ChronoSection
     {
         /// <summary>
@@ -25,13 +28,23 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public string Tag;
 
-        // The following properties are only used by the FormTimeSections dialog to 
-        // display the sections in the list view.
+        //-------------------------------------------------------------------------
+        // The following properties are only used to draw the object or display it
+        // in a list view.
+        // These properties may depend on the current timestamp.
+        //-------------------------------------------------------------------------
+
+        public bool IsCurrent { get; set; }
+
+        /// <summary>
+        /// The name of the section, but guaranteed to be non empty. 
+        /// If there is no user-provided name it falls back to the index of the section.
+        /// </summary>
+        public string NameOrIndex { get; set; }
         public string Start { get; set; }
         public string End { get; set; }
         public string Duration { get; set; }
         public string Cumul { get; set; }
-        public bool IsCurrent { get; set; }
 
         public ChronoSection(VideoSection section, string name, string tag)
         {

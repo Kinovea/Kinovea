@@ -51,27 +51,6 @@ namespace Kinovea.ScreenManager
     [XmlType ("ChronoMulti")]
     public class DrawingChronoMulti : AbstractDrawing, IDecorable, IKvaSerializable, ITimeable
     {
-        #region Section
-        /// <summary>
-        /// This struct is used for drawing a chrono section on the canvas.
-        /// </summary>
-        private struct Section
-        {
-            public string Name;
-            public string Duration;
-            public string Cumul;
-            public string Tag;
-            
-            public Section(string name, string duration, string cumul, string tag)
-            {
-                this.Name = name;
-                this.Duration = duration;
-                this.Cumul = cumul;
-                this.Tag = tag;
-            }
-        }
-        #endregion
-
         #region Properties
         public override string ToolDisplayName
         {
@@ -134,6 +113,7 @@ namespace Kinovea.ScreenManager
         private bool showLabel;
         private string text;
         private bool locked;
+        private HashSet<ChronoColumns> visibleColumns = new HashSet<ChronoColumns>();
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
@@ -201,6 +181,12 @@ namespace Kinovea.ScreenManager
             infosFading.UseDefault = false;
 
             InitializeMenus();
+
+            visibleColumns.Clear();
+            visibleColumns.Add(ChronoColumns.Name);
+            visibleColumns.Add(ChronoColumns.Duration);
+            visibleColumns.Add(ChronoColumns.Cumul);
+            visibleColumns.Add(ChronoColumns.Tag);
         }
 
         public DrawingChronoMulti(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
@@ -285,39 +271,8 @@ namespace Kinovea.ScreenManager
             if (opacityFactor <= 0)
                 return;
 
-            bool onFirst = sections.Count == 1 || (sections.Count > 1 && currentTimestamp < sections[1].Section.Start);
-            List<Section> entries = GetTimecodes(currentTimestamp);
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < entries.Count; i++)
-            {   
-                // If we are before or on the first section, only show the time.
-                if (entries[i].Name == null || onFirst)
-                {
-                    sb.AppendLine(entries[i].Duration);
-                }
-                else
-                {
-                    string prefix = "  ";
-                    if (sections[i].Section.Contains(currentTimestamp))
-                        prefix = "▶ ";
-
-                    string line = "";
-                    if (string.IsNullOrEmpty(entries[i].Tag))
-                    {
-                        line = string.Format("{0}: {1} | {2}",
-                                entries[i].Name, entries[i].Duration, entries[i].Cumul);
-                    }
-                    else
-                    {
-                        line = string.Format("{0}: {1} | {2} | {3}",
-                            entries[i].Name, entries[i].Duration, entries[i].Cumul, entries[i].Tag);
-                    }
-
-                    sb.AppendLine(prefix + line);
-                }
-            }
-            
-            text = sb.ToString();
+            ChronoStringBuilder csb = new ChronoStringBuilder(sections, parentMetadata);
+            text = csb.Build(currentTimestamp, visibleColumns);
 
             using (SolidBrush brushBack = styleHelper.GetBackgroundBrush((int)(opacityFactor * backgroundOpacity)))
             using (SolidBrush brushText = styleHelper.GetForegroundBrush((int)(opacityFactor * 255)))
@@ -651,7 +606,7 @@ namespace Kinovea.ScreenManager
 
             // The context menu depends on whether we are on a live or dead section.
             mnuAction.DropDownItems.Clear();
-            int sectionIndex = GetSectionIndex(contextTimestamp);
+            int sectionIndex = GetSectionIndex(sections, contextTimestamp);
 
             if (sectionIndex >= 0)
             {
@@ -789,7 +744,7 @@ namespace Kinovea.ScreenManager
         private void mnuStop_Click(object sender, EventArgs e)
         {
             // Stop the current section here.
-            int sectionIndex = GetSectionIndex(contextTimestamp);
+            int sectionIndex = GetSectionIndex(sections, contextTimestamp);
             if (sectionIndex < 0)
                 return;
 
@@ -807,7 +762,7 @@ namespace Kinovea.ScreenManager
         private void mnuSplit_Click(object sender, EventArgs e)
         {
             // Stop the current section here and start a new one.
-            int sectionIndex = GetSectionIndex(contextTimestamp);
+            int sectionIndex = GetSectionIndex(sections, contextTimestamp);
             if (sectionIndex < 0)
                 return;
 
@@ -832,7 +787,7 @@ namespace Kinovea.ScreenManager
             if (sections.Count == 0)
                 return;
 
-            int sectionIndex = GetSectionIndex(contextTimestamp);
+            int sectionIndex = GetSectionIndex(sections, contextTimestamp);
 
             ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
             if (tsmi == null)
@@ -849,7 +804,7 @@ namespace Kinovea.ScreenManager
 
         private void mnuMoveCurrentStart_Click(object sender, EventArgs e)
         {
-            int sectionIndex = GetSectionIndex(contextTimestamp);
+            int sectionIndex = GetSectionIndex(sections, contextTimestamp);
             if (sectionIndex < 0)
                 return;
 
@@ -864,7 +819,7 @@ namespace Kinovea.ScreenManager
         private void mnuMoveCurrentEnd_Click(object sender, EventArgs e)
         {
             // Technically "Move current end" is the same as "Stop", but we keep it for symmetry purposes.
-            int sectionIndex = GetSectionIndex(contextTimestamp);
+            int sectionIndex = GetSectionIndex(sections, contextTimestamp);
             if (sectionIndex < 0)
                 return;
 
@@ -878,7 +833,7 @@ namespace Kinovea.ScreenManager
 
         private void mnuMovePreviousSplit_Click(object sender, EventArgs e)
         {
-            int sectionIndex = GetSectionIndex(contextTimestamp);
+            int sectionIndex = GetSectionIndex(sections, contextTimestamp);
             if (sectionIndex < 1)
                 return;
 
@@ -894,7 +849,7 @@ namespace Kinovea.ScreenManager
 
         private void mnuMoveNextSplit_Click(object sender, EventArgs e)
         {
-            int sectionIndex = GetSectionIndex(contextTimestamp);
+            int sectionIndex = GetSectionIndex(sections, contextTimestamp);
             if (sectionIndex < 0 || sectionIndex > sections.Count - 2)
                 return;
 
@@ -910,7 +865,7 @@ namespace Kinovea.ScreenManager
 
         private void mnuMovePreviousEnd_Click(object sender, EventArgs e)
         {
-            int sectionIndex = GetSectionIndex(contextTimestamp);
+            int sectionIndex = GetSectionIndex(sections, contextTimestamp);
             if (sectionIndex >= 0 || IsBeforeFirstSection(sectionIndex))
                 return;
 
@@ -925,7 +880,7 @@ namespace Kinovea.ScreenManager
 
         private void mnuMoveNextStart_Click(object sender, EventArgs e)
         {
-            int sectionIndex = GetSectionIndex(contextTimestamp);
+            int sectionIndex = GetSectionIndex(sections, contextTimestamp);
             if (sectionIndex >= 0 || IsAfterLastSection(sectionIndex))
                 return;
 
@@ -940,7 +895,7 @@ namespace Kinovea.ScreenManager
 
         private void mnuDeleteSection_Click(object sender, EventArgs e)
         {
-            int sectionIndex = GetSectionIndex(contextTimestamp);
+            int sectionIndex = GetSectionIndex(sections, contextTimestamp);
             if (sectionIndex < 0)
                 return;
 
@@ -989,7 +944,7 @@ namespace Kinovea.ScreenManager
             // Overwriting existing data is always ambiguous with a combo start/stop command.
 
             // Determine if we are on a live or dead section.
-            int sectionIndex = GetSectionIndex(timestamp);
+            int sectionIndex = GetSectionIndex(sections, timestamp);
             if (sectionIndex < 0)
             {
                 // Dead section.
@@ -1029,7 +984,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             // Determine if we are on a live or dead section.
-            int sectionIndex = GetSectionIndex(timestamp);
+            int sectionIndex = GetSectionIndex(sections, timestamp);
             if (sectionIndex < 0)
                 return;
 
@@ -1108,6 +1063,32 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// Returns true if this dead-zone index is before the first section.
+        /// </summary>
+        private bool IsBeforeFirstSection(int index)
+        {
+            return index == -1;
+        }
+
+        /// <summary>
+        /// Returns true if this dead-zone index is after the last section.
+        /// </summary>
+        private bool IsAfterLastSection(int index)
+        {
+            return index == -(sections.Count + 1);
+        }
+
+        /// <summary>
+        /// Capture the current state and push it to the undo/redo stack.
+        /// </summary>
+        private void CaptureMemento(SerializationFilter filter)
+        {
+            var memento = new HistoryMementoModifyDrawing(parentMetadata, parentMetadata.ChronoManager.Id, this.Id, this.Name, filter);
+            parentMetadata.HistoryStack.PushNewCommand(memento);
+        }
+        #endregion
+
+        /// <summary>
         /// Returns the section index that timestamp is in. 
         /// Otherwise returns a negative number based on the next section:
         /// -1 if we are before the first live zone, 
@@ -1118,7 +1099,7 @@ namespace Kinovea.ScreenManager
         /// In case of overlapping sections, returns the section with the earliest starting point.
         /// An open-ended section contains all the timestamps after its start.
         /// </summary>
-        private int GetSectionIndex(long timestamp)
+        public static int GetSectionIndex(List<ChronoSection> sections, long timestamp)
         {
             int result = -1;
             for (int i = 0; i < sections.Count; i++)
@@ -1141,111 +1122,5 @@ namespace Kinovea.ScreenManager
 
             return result;
         }
-
-        /// <summary>
-        /// Returns true if this dead-zone index is before the first section.
-        /// </summary>
-        private bool IsBeforeFirstSection(int index)
-        {
-            return index == -1;
-        }
-
-        /// <summary>
-        /// Returns true if this dead-zone index is after the last section.
-        /// </summary>
-        private bool IsAfterLastSection(int index)
-        {
-            return index == -(sections.Count + 1);
-        }
-
-        /// <summary>
-        /// Returns all the sections text, based on the current timestamp.
-        /// Each entry in the returned list contains the section name, elapsed time and cumulative time.
-        /// - The elapsed time is the time since the start of the section.
-        /// - The cumulative time is the total live time since the start of the first section.
-        /// - The cumulative time of each section stops when the section ends.
-        /// 
-        /// The produced text is always contextualized to the current time.
-        /// Sections that are not yet started are not returned (exception when before first).
-        /// No special treatment for open-ended sections.
-        /// Overlapping sections are counted twice.
-        /// </summary>
-        private List<Section> GetTimecodes(long currentTimestamp)
-        {
-            List<Section> entries = new List<Section>();
-            
-            int sectionIndex = GetSectionIndex(currentTimestamp);
-            if (IsBeforeFirstSection(sectionIndex))
-            {
-                string elapsed = parentMetadata.TimeCodeBuilder(0, TimeType.Absolute, TimecodeFormat.Unknown, true);
-                entries.Add(new Section(null, elapsed, null, null));
-                return entries;
-            }
-
-            // Collect all rows as text.
-            long cumulTimestamps = 0;
-            for (int i = 0; i < sections.Count; i++)
-            {
-                if (currentTimestamp < sections[i].Section.Start)
-                    break;
-
-                string name = string.IsNullOrEmpty(sections[i].Name) ? (i + 1).ToString() : sections[i].Name;
-                string tag = sections[i].Tag;
-
-                long elapsedTimestamps = 0;
-                if (currentTimestamp <= sections[i].Section.End)
-                    elapsedTimestamps = currentTimestamp - sections[i].Section.Start;
-                else
-                    elapsedTimestamps = sections[i].Section.End - sections[i].Section.Start;
-
-                cumulTimestamps += elapsedTimestamps;
-
-                string elapsed = parentMetadata.TimeCodeBuilder(elapsedTimestamps, TimeType.Absolute, TimecodeFormat.Unknown, true);
-                string cumul = parentMetadata.TimeCodeBuilder(cumulTimestamps, TimeType.Absolute, TimecodeFormat.Unknown, true);
-
-                entries.Add(new Section(name, elapsed, cumul, tag));
-            }
-
-            // Find longest cell of each row.
-            int countName = 0;
-            int countElapsed = 0;
-            int countCumul = 0;
-            int countTag = 0;
-            foreach (var entry in entries)
-            {
-                countName = Math.Max(countName, entry.Name.Length);
-                countElapsed = Math.Max(countElapsed, entry.Duration.Length);
-                countCumul = Math.Max(countCumul, entry.Cumul.Length);
-                countTag = Math.Max(countTag, entry.Tag.Length);
-            }
-
-            // Extend cells to right-align with longest.
-            string padName = "{0," + countName + "}";
-            string padElapsed = "{0," + countElapsed + "}";
-            string padCumul = "{0," + countCumul + "}";
-            string padTag = "{0," + countTag + "}";
-            List<Section> padded = new List<Section>();
-            for (int i = 0; i < entries.Count; i++)
-            {
-                padded.Add(new Section(
-                    string.Format(padName, entries[i].Name),
-                    string.Format(padElapsed, entries[i].Duration),
-                    string.Format(padCumul, entries[i].Cumul),
-                    string.Format(padTag, entries[i].Tag)
-                ));
-            }
-
-            return padded;
-        }
-
-        /// <summary>
-        /// Capture the current state and push it to the undo/redo stack.
-        /// </summary>
-        private void CaptureMemento(SerializationFilter filter)
-        {
-            var memento = new HistoryMementoModifyDrawing(parentMetadata, parentMetadata.ChronoManager.Id, this.Id, this.Name, filter);
-            parentMetadata.HistoryStack.PushNewCommand(memento);
-        }
-        #endregion
     }
 }

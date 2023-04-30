@@ -154,7 +154,6 @@ namespace Kinovea.ScreenManager
                 });
 
             olvSections.SetObjects(sections);
-
         }
 
         private void SetTimeColumn(OLVColumn col)

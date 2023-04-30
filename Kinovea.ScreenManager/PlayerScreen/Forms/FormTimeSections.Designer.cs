@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-      BrightIdeasSoftware.HeaderStateStyle headerStateStyle7 = new BrightIdeasSoftware.HeaderStateStyle();
-      BrightIdeasSoftware.HeaderStateStyle headerStateStyle8 = new BrightIdeasSoftware.HeaderStateStyle();
-      BrightIdeasSoftware.HeaderStateStyle headerStateStyle9 = new BrightIdeasSoftware.HeaderStateStyle();
+      BrightIdeasSoftware.HeaderStateStyle headerStateStyle4 = new BrightIdeasSoftware.HeaderStateStyle();
+      BrightIdeasSoftware.HeaderStateStyle headerStateStyle5 = new BrightIdeasSoftware.HeaderStateStyle();
+      BrightIdeasSoftware.HeaderStateStyle headerStateStyle6 = new BrightIdeasSoftware.HeaderStateStyle();
       this.btnOK = new System.Windows.Forms.Button();
       this.btnCancel = new System.Windows.Forms.Button();
       this.olvSections = new BrightIdeasSoftware.ObjectListView();
@@ -42,7 +42,7 @@
       // 
       this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.btnOK.Location = new System.Drawing.Point(317, 276);
+      this.btnOK.Location = new System.Drawing.Point(317, 287);
       this.btnOK.Name = "btnOK";
       this.btnOK.Size = new System.Drawing.Size(99, 24);
       this.btnOK.TabIndex = 33;
@@ -54,7 +54,7 @@
       // 
       this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.btnCancel.Location = new System.Drawing.Point(423, 276);
+      this.btnCancel.Location = new System.Drawing.Point(423, 287);
       this.btnCancel.Name = "btnCancel";
       this.btnCancel.Size = new System.Drawing.Size(99, 24);
       this.btnCancel.TabIndex = 34;
@@ -71,24 +71,25 @@
       this.olvSections.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClickAlways;
       this.olvSections.CellEditTabChangesRows = true;
       this.olvSections.CellEditUseWholeCell = false;
+      this.olvSections.Cursor = System.Windows.Forms.Cursors.Default;
       this.olvSections.GridLines = true;
       this.olvSections.HeaderFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.olvSections.HeaderFormatStyle = this.headerFormatStyle1;
       this.olvSections.HideSelection = false;
-      this.olvSections.Location = new System.Drawing.Point(12, 12);
+      this.olvSections.Location = new System.Drawing.Point(12, 23);
       this.olvSections.Name = "olvSections";
-      this.olvSections.Size = new System.Drawing.Size(510, 258);
+      this.olvSections.Size = new System.Drawing.Size(510, 256);
       this.olvSections.TabIndex = 25;
       this.olvSections.UseCompatibleStateImageBehavior = false;
       this.olvSections.View = System.Windows.Forms.View.Details;
       // 
       // headerFormatStyle1
       // 
-      this.headerFormatStyle1.Hot = headerStateStyle7;
-      headerStateStyle8.BackColor = System.Drawing.Color.Gainsboro;
-      headerStateStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.headerFormatStyle1.Normal = headerStateStyle8;
-      this.headerFormatStyle1.Pressed = headerStateStyle9;
+      this.headerFormatStyle1.Hot = headerStateStyle4;
+      headerStateStyle5.BackColor = System.Drawing.Color.Gainsboro;
+      headerStateStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.headerFormatStyle1.Normal = headerStateStyle5;
+      this.headerFormatStyle1.Pressed = headerStateStyle6;
       // 
       // FormTimeSections
       // 
@@ -96,7 +97,7 @@
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.CancelButton = this.btnCancel;
-      this.ClientSize = new System.Drawing.Size(534, 311);
+      this.ClientSize = new System.Drawing.Size(534, 320);
       this.Controls.Add(this.olvSections);
       this.Controls.Add(this.btnOK);
       this.Controls.Add(this.btnCancel);
