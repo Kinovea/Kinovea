@@ -27,6 +27,7 @@ using System.Drawing.Drawing2D;
 using System.Reflection;
 using System.Resources;
 using System.Text;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
@@ -408,7 +409,10 @@ namespace Kinovea.ScreenManager
                 }
 
                 w.WriteElementString("Locked", locked.ToString().ToLower());
-                
+
+                string strVisibleColumns = string.Join(";", visibleColumns.ToArray());
+                w.WriteElementString("VisibleColumns", strVisibleColumns);
+
                 // </values>
                 w.WriteEndElement();
             }
@@ -509,6 +513,7 @@ namespace Kinovea.ScreenManager
             }
 
             xmlReader.ReadStartElement();
+            visibleColumns.Clear();
 
             while(xmlReader.NodeType == XmlNodeType.Element)
             {
@@ -526,6 +531,18 @@ namespace Kinovea.ScreenManager
                         break;
                     case "Locked":
                         locked = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
+                        break;
+                    case "VisibleColumns":
+                        string str = xmlReader.ReadElementContentAsString();
+                        string[] a = str.Split(new char[] { ';' });
+                        foreach(var strCol in a)
+                        {
+                            ChronoColumns col;
+                            bool parsed = Enum.TryParse<ChronoColumns>(strCol, out col);
+                            if (parsed)
+                                visibleColumns.Add(col);
+                        }
+
                         break;
                     default:
                         string unparsed = xmlReader.ReadOuterXml();
