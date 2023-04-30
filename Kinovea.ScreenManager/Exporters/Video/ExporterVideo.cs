@@ -14,6 +14,9 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// Exporter for single video and special videos (slideshow, pauses).
+    /// This is basically a bridge between the VideoExporter broker which 
+    /// sets up the save settings based on the type of export, and the actual video writer code 
+    /// which uses the settings to configure the output file.
     /// </summary>
     public class ExporterVideo
     {
