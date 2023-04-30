@@ -267,6 +267,13 @@ namespace Kinovea.Services
             return section;
         }
 
+        public static TEnum ParseEnum<TEnum>(string str, TEnum defaultValue) where TEnum : struct
+        {
+            TEnum result;
+            bool parsed = Enum.TryParse<TEnum>(str, out result);
+            return parsed ? result: defaultValue; 
+        }
+
         public static string WriteFloat(float value)
         {
             return string.Format(CultureInfo.InvariantCulture, "{0}", value);

@@ -169,8 +169,7 @@ namespace Kinovea.Services
                         BorderVisible = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
                         break;
                     case "MeasureLabelType":
-                        TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(MeasureLabelType));
-                        MeasureLabelType = (MeasureLabelType)enumConverter.ConvertFromString(r.ReadElementContentAsString());
+                        MeasureLabelType = XmlHelper.ParseEnum<MeasureLabelType>(r.ReadElementContentAsString(), MeasureLabelType.None);
                         break;
                     default:
                         string outerXml = r.ReadOuterXml();
