@@ -64,8 +64,14 @@ namespace Kinovea.ScreenManager
                 VideoSection timeSection = section.Section;
                 bool openEnded = timeSection.End == long.MaxValue;
                 section.Start = metadata.TimeCodeBuilder(timeSection.Start, TimeType.Absolute, TimecodeFormat.Unknown, true);
-                if (!openEnded)
+                if (openEnded)
                 {
+                    section.Duration = "";
+                    section.Cumul = "";
+                    section.End = "";
+                }
+                else
+                { 
                     long elapsedTimestamps = timeSection.End - timeSection.Start;
                     cumulativeTimestamps += elapsedTimestamps; 
                     section.Duration = metadata.TimeCodeBuilder(elapsedTimestamps, TimeType.Absolute, TimecodeFormat.Unknown, true);

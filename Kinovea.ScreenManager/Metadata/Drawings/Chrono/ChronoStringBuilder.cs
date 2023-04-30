@@ -79,7 +79,7 @@ namespace Kinovea.ScreenManager
                 if (visible.Contains(ChronoColumns.Tag) && hasTags)
                     cells.Add(tag);
                 
-                string joined = string.Join("|", cells);
+                string joined = string.Join(" | ", cells);
 
                 sb.Append(joined);
                 sb.Append(Environment.NewLine);
