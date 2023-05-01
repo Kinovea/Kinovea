@@ -64,7 +64,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="mnuCheckForUpdates" xml:space="preserve"><value>업데이트 확인중…</value>
+  <data name="mnuCheckForUpdates" xml:space="preserve"><value>업데이트 확인 중…</value>
   </data>
   <data name="Updater_Behind" xml:space="preserve"><value>새로운 버전이 있습니다!</value>
   </data>
