@@ -241,4 +241,13 @@
   <data name="Generic_Cancel" xml:space="preserve">
     <value>Batal</value>
   </data>
+  <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve">
+    <value>Aktifkan mod debug alat kustom</value>
+  </data>
+  <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve">
+    <value>Kelegapan lalai lukisan baharu:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve">
+    <value>Kelihatan untuk keseluruhan video</value>
+  </data>
 </root>
