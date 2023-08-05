@@ -681,4 +681,7 @@
   <data name="dlgCalibrateLine_AxisVertical" xml:space="preserve">
     <value>Raden anger den vertikala axeln</value>
   </data>
+  <data name="dlgTimebase_InfoCapture" xml:space="preserve">
+    <value>Det här alternativet definierar skillnaden mellan videohastighet och realtid. Det påverkar etiketter som innehåller tider och kinematiska mätningar. Använd den när videon filmades i höghastighetsläge. </value>
+  </data>
 </root>
