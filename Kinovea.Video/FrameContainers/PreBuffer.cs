@@ -68,8 +68,8 @@ namespace Kinovea.Video
         
         #region Members
         private List<VideoFrame> m_Frames = new List<VideoFrame>();
-        private VideoSection m_Segment = VideoSection.Empty;
-        private VideoSection m_WorkingZone = VideoSection.Empty;
+        private VideoSection m_Segment = VideoSection.MakeEmpty();
+        private VideoSection m_WorkingZone = VideoSection.MakeEmpty();
         private int m_CurrentIndex = -1;
         private VideoFrame m_Current;
         private readonly object m_Locker = new object();
@@ -220,7 +220,7 @@ namespace Kinovea.Video
                 m_Frames.Clear();
                 m_CurrentIndex = -1;
                 m_Drops = 0;
-                m_Segment = VideoSection.Empty;
+                m_Segment = VideoSection.MakeEmpty();
                 m_TotalCapacity = m_DefaultTotalCapacity;
                 m_OldFramesCapacity = m_DefaultOldFramesCapacity;
                 
@@ -345,7 +345,7 @@ namespace Kinovea.Video
             // Get real data from the stored frames.
             // Always inside a lock.
             if(m_Frames.Count < 1)
-                m_Segment = VideoSection.Empty;
+                m_Segment = VideoSection.MakeEmpty();
             else
                 m_Segment = new VideoSection(m_Frames[0].Timestamp, m_Frames[m_Frames.Count - 1].Timestamp);
 

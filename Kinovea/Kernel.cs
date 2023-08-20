@@ -270,8 +270,11 @@ namespace Kinovea.Root
                 new ToolStripSeparator(),
                 // Save annotations,
                 // Save annotations as,
+                new ToolStripSeparator(),
                 // Export video,
-                // Export to spreadsheet,
+                // Export image,
+                // Export spreadsheet,
+                // Export document,
                 new ToolStripSeparator(),
                 // Close A,
                 // Close B,
@@ -463,8 +466,10 @@ namespace Kinovea.Root
         private void mnuOpenFileOnClick(object sender, EventArgs e)
         {
             NotificationCenter.RaiseStopPlayback(this);
-            
-            string filename = FilePicker.OpenVideo();
+
+            string title = ScreenManagerLang.mnuOpenVideo;
+            string filter = ScreenManagerLang.FileFilter_All + "|*.*";
+            string filename = FilePicker.OpenVideo(title, filter);
             if (!string.IsNullOrEmpty(filename))
                 OpenFromPath(filename);
         }

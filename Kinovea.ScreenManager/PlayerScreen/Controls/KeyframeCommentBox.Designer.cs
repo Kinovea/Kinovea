@@ -140,6 +140,7 @@ namespace Kinovea.ScreenManager
       this.Size = new System.Drawing.Size(271, 160);
       this.Click += new System.EventHandler(this.KeyframeCommentBox_Click);
       this.Enter += new System.EventHandler(this.KeyframeCommentBox_Enter);
+      this.Resize += new System.EventHandler(this.KeyframeCommentBox_Resize);
       this.pnlComment.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();

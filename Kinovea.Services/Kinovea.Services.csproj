@@ -212,6 +212,7 @@
   <ItemGroup>
     <Compile Include="Filesystem\AlphanumComparator.cs" />
     <Compile Include="Filesystem\FileComparator.cs" />
+    <Compile Include="Filesystem\FilePicker.cs" />
     <Compile Include="Filesystem\FolderNavigationType.cs" />
     <Compile Include="Filesystem\FileSortAxis.cs" />
     <Compile Include="Infrastructure\BitmapHelper.cs" />
@@ -322,6 +323,7 @@
     <Compile Include="ThreePartsVersion.cs" />
     <Compile Include="TimeHelper.cs" />
     <Compile Include="WinForms\NudHelper.cs" />
+    <Compile Include="WinForms\TextHelper.cs" />
     <Compile Include="WinForms\TextboxHotkey.cs">
       <SubType>Component</SubType>
     </Compile>

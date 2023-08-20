@@ -271,12 +271,12 @@ namespace Kinovea.ScreenManager
         /// Returns the interval between frames in milliseconds, taking slow motion slider into account.
         /// This is suitable for a playback timer or metadata in saved file.
         /// </summary>
-        public double FrameInterval
+        public double PlaybackFrameInterval
         {
             get 
             { 
                 if (frameServer.Loaded && frameServer.VideoReader.Info.FrameIntervalMilliseconds > 0)
-                    return view.FrameInterval;
+                    return view.PlaybackFrameInterval;
                 else
                     return 40;
             }
@@ -349,8 +349,6 @@ namespace Kinovea.ScreenManager
         private void BindCommands()
         {
             // Provides implementation for behaviors triggered from the view, either as commands or as event handlers.
-            // Fixme: those using FrameServer.Metadata work only because the Metadata object is never replaced during the PlayerScreen life.
-
             view.OpenVideoAsked += (s, e) => OpenVideoAsked?.Invoke(this, e);
             view.OpenReplayWatcherAsked += (s, e) => OpenReplayWatcherAsked?.Invoke(this, e);
             view.OpenAnnotationsAsked += (s, e) => OpenAnnotationsAsked?.Invoke(this, e);
@@ -368,7 +366,8 @@ namespace Kinovea.ScreenManager
             view.ResetAsked += View_ResetAsked;
             view.FilterExited += (s, e) => FilterExited?.Invoke(this, e);
 
-            // Requests for metadata modification coming from the view, these should push a memento on the history stack.
+            // Requests for metadata modification coming from the view.
+            // These should push a memento on the history stack.
             view.KeyframeAdding += View_KeyframeAdding;
             view.KeyframeDeleting += View_KeyframeDeleting;
             view.DrawingAdding += View_DrawingAdding;
@@ -376,7 +375,15 @@ namespace Kinovea.ScreenManager
             view.MultiDrawingItemAdding += View_MultiDrawingItemAdding;
             view.MultiDrawingItemDeleting += View_MultiDrawingItemDeleting;
             view.DualCommandReceived += (s, e) => OnDualCommandReceived(e);
-            
+
+            // Export requests coming from the view.
+            view.ExportImageAsked += (s, e) => ExportImages(ImageExportFormat.Image);
+            view.ExportImageSequenceAsked += (s, e) => ExportImages(ImageExportFormat.ImageSequence);
+            view.ExportKeyImagesAsked += (s, e) => ExportImages(ImageExportFormat.KeyImages);
+            view.ExportVideoAsked += (s, e) => ExportVideo(VideoExportFormat.Video);
+            view.ExportVideoSlideshowAsked+= (s, e) => ExportVideo(VideoExportFormat.VideoSlideShow);
+            view.ExportVideoWithPausesAsked += (s, e) => ExportVideo(VideoExportFormat.VideoWithPauses);
+
             // Just for the magnifier. Remove as soon as possible when the adding of the magnifier is handled in Metadata.
             view.TrackableDrawingAdded += (s, e) => AddTrackableDrawing(e.TrackableDrawing);
             
@@ -530,6 +537,20 @@ namespace Kinovea.ScreenManager
             historyStack.PushNewCommand(memento);
         }
         #endregion
+
+        #region Export requests from the view
+        private void ExportImages(ImageExportFormat format)
+        {
+            ImageExporter exporter = new ImageExporter();
+            exporter.Export(format, this, null);
+        }
+        private void ExportVideo(VideoExportFormat format)
+        {
+            VideoExporter exporter = new VideoExporter();
+            exporter.Export(format, this, null, null);
+        }
+        #endregion
+
 
         #region AbstractScreen Implementation
         public override void DisplayAsActiveScreen(bool _bActive)
@@ -726,21 +747,13 @@ namespace Kinovea.ScreenManager
             serializer.UserSaveAs(frameServer.Metadata, frameServer.VideoReader.FilePath);
         }
 
-        /// <summary>
-        /// Export video.
-        /// </summary>
-        public void ExportVideo()
-        {
-            view.ExportVideo();
-        }
-
         public void ConfigureTimebase()
         {
             if (!frameServer.Loaded)
                 return;
 
-            double captureInterval = frameServer.Metadata.UserInterval / frameServer.Metadata.HighSpeedFactor;
-            formConfigureSpeed fcs = new formConfigureSpeed(frameServer.VideoReader.Info.FrameIntervalMilliseconds, frameServer.Metadata.UserInterval, captureInterval);
+            double captureInterval = frameServer.Metadata.BaselineFrameInterval / frameServer.Metadata.HighSpeedFactor;
+            formConfigureSpeed fcs = new formConfigureSpeed(frameServer.VideoReader.Info.FrameIntervalMilliseconds, frameServer.Metadata.BaselineFrameInterval, captureInterval);
             fcs.StartPosition = FormStartPosition.CenterScreen;
 
             if (fcs.ShowDialog() != DialogResult.OK)
@@ -749,17 +762,17 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            frameServer.Metadata.UserInterval = fcs.UserInterval;
+            frameServer.Metadata.BaselineFrameInterval = fcs.UserInterval;
             frameServer.Metadata.HighSpeedFactor = fcs.UserInterval / fcs.CaptureInterval;
             fcs.Dispose();
 
             log.DebugFormat("Time configuration. File interval:{0:0.###}ms, User interval:{1:0.###}ms, Capture interval:{2:0.###}ms.",
-                frameServer.VideoReader.Info.FrameIntervalMilliseconds, frameServer.Metadata.UserInterval, fcs.CaptureInterval);
+                frameServer.VideoReader.Info.FrameIntervalMilliseconds, frameServer.Metadata.BaselineFrameInterval, fcs.CaptureInterval);
 
             if (HighSpeedFactorChanged != null)
                 HighSpeedFactorChanged(this, EventArgs.Empty);
 
-            frameServer.Metadata.CalibrationHelper.CaptureFramesPerSecond = 1000 * frameServer.Metadata.HighSpeedFactor / frameServer.Metadata.UserInterval;
+            frameServer.Metadata.CalibrationHelper.CaptureFramesPerSecond = 1000 * frameServer.Metadata.HighSpeedFactor / frameServer.Metadata.BaselineFrameInterval;
             frameServer.Metadata.UpdateTrajectoriesForKeyframes();
 
             view.UpdateTimebase();
@@ -901,7 +914,7 @@ namespace Kinovea.ScreenManager
             double realtimeSeconds = (double)time / 1000000;
             double videoSeconds = realtimeSeconds * frameServer.Metadata.HighSpeedFactor;
 
-            double correctedTPS = frameServer.VideoReader.Info.FrameIntervalMilliseconds * frameServer.VideoReader.Info.AverageTimeStampsPerSeconds / frameServer.Metadata.UserInterval;
+            double correctedTPS = frameServer.VideoReader.Info.FrameIntervalMilliseconds * frameServer.VideoReader.Info.AverageTimeStampsPerSeconds / frameServer.Metadata.BaselineFrameInterval;
             double timestamp = videoSeconds * correctedTPS;
             timestamp = Math.Round(timestamp);
 

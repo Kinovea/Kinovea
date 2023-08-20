@@ -387,7 +387,7 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// The ratio between the capture framerate and the video framerate.
-        /// The slowdown factor of the video relatively to real time.
+        /// This relates the video time to real time.
         /// </summary>
         public double HighSpeedFactor
         {
@@ -396,12 +396,14 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// The frame interval used for playback timer, as specified by the user.
+        /// The frame interval used as the baseline for the playback timer, in milliseconds.
+        /// Same as the video frame interval unless overriden by the user in time calibration.
+        /// Not affected by the slow motion slider.
         /// </summary>
-        public double UserInterval
+        public double BaselineFrameInterval
         {
-            get { return userInterval; }
-            set { userInterval = value; }
+            get { return baselineFrameInterval; }
+            set { baselineFrameInterval = value; }
         }
 
         public VideoFilterType ActiveVideoFilterType
@@ -486,7 +488,7 @@ namespace Kinovea.ScreenManager
         private long firstTimeStamp;
         private long timeOrigin;
         private double highSpeedFactor = 1.0;
-        private double userInterval = 40;
+        private double baselineFrameInterval = 40;
         private long selectionStart;
         private long selectionEnd;
 
@@ -528,7 +530,7 @@ namespace Kinovea.ScreenManager
         {
             // This should reflect what we do in FrameServerPlayer.SetupMetadata
             imageSize = info.ReferenceSize;
-            userInterval = info.FrameIntervalMilliseconds;
+            baselineFrameInterval = info.FrameIntervalMilliseconds;
             averageTimeStampsPerFrame = info.AverageTimeStampsPerFrame;
             averageTimeStampsPerSecond = info.AverageTimeStampsPerSeconds;
             calibrationHelper.CaptureFramesPerSecond = info.FramesPerSeconds;
@@ -600,6 +602,13 @@ namespace Kinovea.ScreenManager
 
             return -1;
         }
+
+        public bool IsKeyframe(long position)
+        {
+            return keyframes.Any(kf => kf.Timestamp == position);
+        }
+
+
         public Guid GetKeyframeId(int keyframeIndex)
         {
             return keyframes[keyframeIndex].Id;
@@ -1097,7 +1106,7 @@ namespace Kinovea.ScreenManager
             md.FullPath = videoPath;
             md.ImageSize = imageSize;
             md.CaptureFramerate = (float)calibrationHelper.CaptureFramesPerSecond;
-            md.UserFramerate = (float)(1000.0 / userInterval);
+            md.UserFramerate = (float)(1000.0 / baselineFrameInterval);
 
             MeasuredDataUnits mdu = new MeasuredDataUnits();
 
@@ -1186,10 +1195,14 @@ namespace Kinovea.ScreenManager
                     md.Times.Add(((DrawingChrono)d).CollectMeasuredData());
 
                 if (d is DrawingChronoMulti)
-                    md.Times.AddRange(((DrawingChronoMulti)d).CollectMeasuredData());
+                {
+                    var mdt = ((DrawingChronoMulti)d).CollectMeasuredData();
+                    if (mdt.Sections.Count > 0)
+                        md.Times.Add(mdt);
+                }
             }
-            md.Times.Sort((a, b) => a.Start.CompareTo(b.Start));
-
+            md.Times.Sort((a, b) => a.Sections[0].Start.CompareTo(b.Sections[0].Start));
+            
             md.Timeseries = new List<MeasuredDataTimeseries>();
             
             // Tracks.
@@ -1232,7 +1245,7 @@ namespace Kinovea.ScreenManager
             if (type == TimeType.Duration)
                 frames++;
 
-            double milliseconds = frames * UserInterval / HighSpeedFactor;
+            double milliseconds = frames * BaselineFrameInterval / HighSpeedFactor;
             
             double time;
             switch (tcf)
@@ -1278,11 +1291,11 @@ namespace Kinovea.ScreenManager
             if (AverageTimeStampsPerFrame != 0)
                 frames = (float)Math.Round(actualTimestamps / averageTimestampsPerFrame);
 
-            double startMS = frames * UserInterval / HighSpeedFactor;
-            double endMS = (frames + 1) * UserInterval / HighSpeedFactor;
+            double startMS = frames * BaselineFrameInterval / HighSpeedFactor;
+            double endMS = (frames + 1) * BaselineFrameInterval / HighSpeedFactor;
             double milliseconds = startMS + ((endMS - startMS) * fraction);
 
-            double framerate = 1000.0 / UserInterval * HighSpeedFactor;
+            double framerate = 1000.0 / BaselineFrameInterval * HighSpeedFactor;
             double framerateMagnitude = Math.Log10(framerate);
             int precision = (int)Math.Ceiling(framerateMagnitude);
             

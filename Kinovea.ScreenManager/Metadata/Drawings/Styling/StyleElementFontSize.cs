@@ -26,6 +26,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Globalization;
 using Kinovea.ScreenManager.Languages;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -138,7 +139,7 @@ namespace Kinovea.ScreenManager
         public void ForceSize(int targetHeight, string text, Font font)
         {
             // We must loop through all allowed font size and compute the output rectangle to find the best match.
-            // Look for the first local minima, as the list is linearly increasing.
+            // Look for the first local minima, as the list is monotonically increasing.
             int minDiff = int.MaxValue;
             int bestCandidate = options[0];
 

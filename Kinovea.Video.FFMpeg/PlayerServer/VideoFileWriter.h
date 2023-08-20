@@ -74,7 +74,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 
     // Public Methods
     public:
-        SaveResult Save(SavingSettings _settings,  VideoInfo _info, String^ _formatString, IEnumerable<Bitmap^>^ _frames, BackgroundWorker^ _worker);
+        SaveResult Save(SavingSettings^ _settings,  VideoInfo _info, String^ _formatString, IEnumerable<Bitmap^>^ _frames, BackgroundWorker^ _worker);
         SaveResult OpenSavingContext(String^ _FilePath, VideoInfo _info, String^ _formatString, double _fFramesInterval);
         SaveResult CloseSavingContext(bool _bEncodingSuccess);
         SaveResult SaveFrame(Bitmap^ _image);

@@ -207,6 +207,9 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="ObjectListView, Version=2.9.1.1072, Culture=neutral, PublicKeyToken=b1c5bf581481bcd4, processorArchitecture=MSIL">
+      <HintPath>..\packages\ObjectListView.Official.2.9.1\lib\net20\ObjectListView.dll</HintPath>
+    </Reference>
     <Reference Include="OxyPlot, Version=1.0.0.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
       <HintPath>..\packages\OxyPlot.Core.1.0.0\lib\net45\OxyPlot.dll</HintPath>
     </Reference>
@@ -264,7 +267,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbstractFrameServer.cs" />
     <Compile Include="AbstractScreen.cs" />
     <Compile Include="AudioInputDevice.cs" />
     <Compile Include="AudioInputLevelMonitor.cs" />
@@ -282,25 +284,62 @@
       <DependentUpon>InfobarCapture.cs</DependentUpon>
     </Compile>
     <Compile Include="DrawingClipboard.cs" />
+    <Compile Include="Exporters\Images\ExporterImage.cs" />
+    <Compile Include="Exporters\Images\ExporterImageSequence.cs" />
+    <Compile Include="Exporters\Spreadsheet\ExporterCSVChrono.cs" />
+    <Compile Include="Exporters\Video\ExporterVideo.cs" />
+    <Compile Include="Exporters\Video\FormConfigureExportVideoSlideshow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Exporters\Video\FormConfigureExportVideoSlideshow.Designer.cs">
+      <DependentUpon>FormConfigureExportVideoSlideshow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Exporters\Video\FormConfigureExportVideo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Exporters\Video\FormConfigureExportVideo.Designer.cs">
+      <DependentUpon>FormConfigureExportVideo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Exporters\Images\FormConfigureExportImageSideBySide.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Exporters\Images\FormConfigureExportImageSideBySide.Designer.cs">
+      <DependentUpon>FormConfigureExportImageSideBySide.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Exporters\Images\FormConfigureExportImageSequence.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Exporters\Images\FormConfigureExportImageSequence.Designer.cs">
+      <DependentUpon>FormConfigureExportImageSequence.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Exporters\Images\ImageExporter.cs" />
+    <Compile Include="Exporters\Images\ImageExportFormat.cs" />
+    <Compile Include="Exporters\Video\VideoExporter.cs" />
+    <Compile Include="Exporters\Video\VideoExportFormat.cs" />
     <Compile Include="FilePatterns\PatternSymbolsCommand.cs" />
     <Compile Include="FilePatterns\Filenamer.cs" />
     <Compile Include="FilePatterns\PatternContext.cs" />
     <Compile Include="FilePatterns\PatternSymbolsFile.cs" />
-    <Compile Include="FilePicker.cs" />
     <Compile Include="Measurement\Calibration\CalibrationAxis.cs" />
     <Compile Include="Measurement\Geometry\Matrix3x3.cs" />
     <Compile Include="Measurement\Geometry\SegmentF.cs" />
     <Compile Include="Measurement\Geometry\SVD.cs" />
     <Compile Include="Measurement\Geometry\Vector3.cs" />
     <Compile Include="Metadata\DrawingManager\DrawingManager`1.cs" />
-    <Compile Include="Metadata\Drawings\DrawingChrono.cs" />
+    <Compile Include="Metadata\Drawings\Chrono\ChronoColumns.cs" />
+    <Compile Include="Metadata\Drawings\Chrono\ChronoSection.cs" />
+    <Compile Include="Metadata\Drawings\Chrono\ChronoStringBuilder.cs" />
+    <Compile Include="Metadata\Drawings\Chrono\DrawingChrono.cs" />
     <Compile Include="Metadata\Drawings\DrawingLine.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPostureOption.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPosturePolyline.cs" />
-    <Compile Include="Metadata\Exporters\CSVHelper.cs" />
-    <Compile Include="Metadata\Exporters\ExporterCSV.cs" />
-    <Compile Include="Metadata\Exporters\ExporterJSON.cs" />
-    <Compile Include="Metadata\Exporters\ExporterXSLX.cs" />
+    <Compile Include="Exporters\Document\DocumentExporter.cs" />
+    <Compile Include="Exporters\Document\DocumentExportFormat.cs" />
+    <Compile Include="Exporters\Document\ExporterMarkdown.cs" />
+    <Compile Include="Exporters\Spreadsheet\CSVHelper.cs" />
+    <Compile Include="Exporters\Spreadsheet\ExporterCSVTrajectory.cs" />
+    <Compile Include="Exporters\Spreadsheet\ExporterJSON.cs" />
+    <Compile Include="Exporters\Spreadsheet\ExporterXSLX.cs" />
     <Compile Include="Metadata\Interfaces\IDrawingHostView.cs" />
     <Compile Include="Measurement\Geometry\AngleOptions.cs" />
     <Compile Include="Measurement\Geometry\Circle.cs" />
@@ -392,8 +431,8 @@
     <Compile Include="DualCapture\DualCaptureController.cs" />
     <Compile Include="DualPlayer\CommonTimeline.cs" />
     <Compile Include="DualPlayer\DualPlayerController.cs" />
-    <Compile Include="DualPlayer\DualSnapshoter.cs" />
-    <Compile Include="DualPlayer\DualVideoExporter.cs" />
+    <Compile Include="Exporters\Images\ExporterImageSideBySide.cs" />
+    <Compile Include="Exporters\Video\ExporterVideoSideBySide.cs" />
     <Compile Include="DualPlayer\PlayerSyncInfo.cs" />
     <Compile Include="Metadata\Drawings\CoordinateSystem\CoordinateSystemGridFinder.cs" />
     <Compile Include="Metadata\Drawings\CoordinateSystem\GridAxis.cs" />
@@ -424,10 +463,10 @@
     <Compile Include="Metadata\Drawings\Styling\LineShape.cs" />
     <Compile Include="Metadata\Drawings\Styling\StyleElementLineShape.cs" />
     <Compile Include="Metadata\Drawings\Styling\TrackShape.cs" />
-    <Compile Include="Metadata\Importers\OpenPose\OpenPoseFrame.cs" />
-    <Compile Include="Metadata\Importers\OpenPose\OpenPosePerson.cs" />
-    <Compile Include="Metadata\Importers\OpenPose\MetadataImporterOpenPose.cs" />
-    <Compile Include="Metadata\Importers\SRT\MetadataImporterSRT.cs" />
+    <Compile Include="Importers\OpenPose\OpenPoseFrame.cs" />
+    <Compile Include="Importers\OpenPose\OpenPosePerson.cs" />
+    <Compile Include="Importers\OpenPose\MetadataImporterOpenPose.cs" />
+    <Compile Include="Importers\SRT\MetadataImporterSRT.cs" />
     <Compile Include="Metadata\Interfaces\ITimeable.cs" />
     <Compile Include="Metadata\Serialization\MeasuredData.cs" />
     <Compile Include="Metadata\MetadataWatcher.cs" />
@@ -436,6 +475,7 @@
     <Compile Include="Metadata\Serialization\MeasuredDataKeyframe.cs" />
     <Compile Include="Metadata\Serialization\MeasuredDataPosition.cs" />
     <Compile Include="Metadata\Serialization\MeasuredDataTime.cs" />
+    <Compile Include="Metadata\Serialization\MeasuredDataTimeSection.cs" />
     <Compile Include="Metadata\Serialization\MeasuredDataTimeseries.cs" />
     <Compile Include="Metadata\Serialization\MeasuredDataUnits.cs" />
     <Compile Include="Metadata\Serialization\MeasurementSerializationHelper.cs" />
@@ -459,7 +499,7 @@
     <Compile Include="Measurement\LensDistortion\EmguHelper.cs" />
     <Compile Include="Metadata\Serialization\DrawingSerializer.cs" />
     <Compile Include="Metadata\Serialization\KeyframeSerializer.cs" />
-    <Compile Include="Metadata\Exporters\MetadataExporter.cs" />
+    <Compile Include="Exporters\Spreadsheet\SpreadsheetExporter.cs" />
     <Compile Include="Metadata\HitTester.cs" />
     <Compile Include="Measurement\Kinematics\Component.cs" />
     <Compile Include="Measurement\Kinematics\MovingAverage.cs" />
@@ -502,12 +542,6 @@
     <Compile Include="PlayerScreen\Forms\FormConfigureVisibility.Designer.cs">
       <DependentUpon>FormConfigureVisibility.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\Forms\FormRafaleExport.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\Forms\FormRafaleExport.Designer.cs">
-      <DependentUpon>FormRafaleExport.cs</DependentUpon>
-    </Compile>
     <Compile Include="Measurement\Plotting\FormPointsAnalysis.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -537,7 +571,6 @@
     <Compile Include="RecoveryManager.cs" />
     <Compile Include="ScreenRemover.cs" />
     <Compile Include="Temporizer.cs" />
-    <Compile Include="TextHelper.cs" />
     <Compile Include="Thumbnails\FileDetails.cs" />
     <Compile Include="UndoRedo\HistoryMemento.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoAddDrawing.cs" />
@@ -579,7 +612,7 @@
     <Compile Include="Metadata\Drawings\BoundingBox.cs" />
     <Compile Include="Metadata\Drawings\DrawingBitmap.cs" />
     <Compile Include="Metadata\Drawings\DrawingCapabilities.cs" />
-    <Compile Include="Metadata\Drawings\DrawingChronoMulti.cs" />
+    <Compile Include="Metadata\Drawings\Chrono\DrawingChronoMulti.cs" />
     <Compile Include="Metadata\Drawings\DrawingCircle.cs" />
     <Compile Include="Metadata\Drawings\CoordinateSystem\DrawingCoordinateSystem.cs" />
     <Compile Include="Metadata\Drawings\Styling\DrawingStyle.cs" />
@@ -651,8 +684,8 @@
     <Compile Include="Metadata\Drawings\Styling\StyleElementTrackShape.cs" />
     <Compile Include="Metadata\Drawings\Styling\StyleHelper.cs" />
     <Compile Include="Metadata\DrawingToolbar\ToolManager.cs" />
-    <Compile Include="Metadata\Exporters\ExporterODS.cs" />
-    <Compile Include="Metadata\Exporters\MetadataExportFormat.cs" />
+    <Compile Include="Exporters\Spreadsheet\ExporterODS.cs" />
+    <Compile Include="Exporters\Spreadsheet\SpreadsheetExportFormat.cs" />
     <Compile Include="PlayerScreen\FrameServerPlayer.cs" />
     <Compile Include="Metadata\Drawings\DrawingAngle.cs" />
     <Compile Include="Metadata\Drawings\DrawingCrossMark.cs" />
@@ -765,18 +798,6 @@
     <Compile Include="PlayerScreen\Forms\FormConfigureTrajectoryDisplay.Designer.cs">
       <DependentUpon>FormConfigureTrajectoryDisplay.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\Forms\FormDiapoExport.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\Forms\FormDiapoExport.Designer.cs">
-      <DependentUpon>FormDiapoExport.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PlayerScreen\Forms\FormFramesExport.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\Forms\FormFramesExport.Designer.cs">
-      <DependentUpon>FormFramesExport.cs</DependentUpon>
-    </Compile>
     <Compile Include="PlayerScreen\Forms\FormKeyframeComments.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -788,12 +809,6 @@
     </Compile>
     <Compile Include="PlayerScreen\Forms\FormProgressBar.Designer.cs">
       <DependentUpon>FormProgressBar.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PlayerScreen\Forms\FormVideoExport.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\Forms\FormVideoExport.Designer.cs">
-      <DependentUpon>FormVideoExport.cs</DependentUpon>
     </Compile>
     <Compile Include="Metadata\Magnifier.cs">
     </Compile>
@@ -947,6 +962,18 @@
     <EmbeddedResource Include="CaptureScreen\Views\InfobarCapture.resx">
       <DependentUpon>InfobarCapture.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Exporters\Video\FormConfigureExportVideoSlideshow.resx">
+      <DependentUpon>FormConfigureExportVideoSlideshow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Exporters\Video\FormConfigureExportVideo.resx">
+      <DependentUpon>FormConfigureExportVideo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Exporters\Images\FormConfigureExportImageSideBySide.resx">
+      <DependentUpon>FormConfigureExportImageSideBySide.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Exporters\Images\FormConfigureExportImageSequence.resx">
+      <DependentUpon>FormConfigureExportImageSequence.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Languages\ScreenManagerLang.ar.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.bg.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.ca.resx" />
@@ -994,9 +1021,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\Forms\FormConfigureVisibility.resx">
       <DependentUpon>FormConfigureVisibility.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\Forms\FormRafaleExport.resx">
-      <DependentUpon>FormRafaleExport.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Measurement\Plotting\FormPointsAnalysis.resx">
       <DependentUpon>FormPointsAnalysis.cs</DependentUpon>
@@ -1162,21 +1186,9 @@
       <SubType>Designer</SubType>
       <DependentUpon>FormConfigureTrajectoryDisplay.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\Forms\FormDiapoExport.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>FormDiapoExport.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\Forms\FormFramesExport.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>FormFramesExport.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\Forms\FormKeyframeComments.resx">
       <SubType>Designer</SubType>
       <DependentUpon>FormKeyframeComments.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\Forms\FormVideoExport.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>FormVideoExport.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -1594,6 +1606,66 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\filesave2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file_notebook.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file_odt.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file_ppt.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file_doc.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file_html.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file_pdf.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file_csv.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\table.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file_spreadsheet.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\film_key.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\save_paused_video.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export_video_video.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export_spreadsheet.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export_document.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export_image_keys.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export_sidebyside.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file_markdown.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export_video_video_sidebyside2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export_image_sidebyside3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\timetable.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">

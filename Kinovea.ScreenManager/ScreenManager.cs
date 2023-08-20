@@ -76,22 +76,44 @@ namespace Kinovea.ScreenManager
         
         #region Menus
         
-        private ToolStripMenuItem mnuCloseFile = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuCloseFile2 = new ToolStripMenuItem();
+        // File
+        private ToolStripMenuItem mnuLoadAnalysis = new ToolStripMenuItem();
+
         private ToolStripMenuItem mnuSave = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSaveAs = new ToolStripMenuItem();
+        
         private ToolStripMenuItem mnuExportVideo = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportVideoVideo = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportVideoSlideshow = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportVideoWithPauses = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportVideoSideBySide = new ToolStripMenuItem();
+
+        private ToolStripMenuItem mnuExportImage = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportImageImage = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportImageKeys = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportImageSequence = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportImageSideBySide = new ToolStripMenuItem();
+
         private ToolStripMenuItem mnuExportSpreadsheet = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportODS = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportXLSX = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportCSVTrajectory = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportCSVChronometer = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportJSON = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuExportCSV = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuLoadAnalysis = new ToolStripMenuItem();
+        
+        private ToolStripMenuItem mnuExportDocument = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportODT = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportDOCX = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportMarkdown = new ToolStripMenuItem();
+
+        private ToolStripMenuItem mnuCloseFile = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuCloseFile2 = new ToolStripMenuItem();
 
         private ToolStripMenuItem mnuCutDrawing = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCopyDrawing = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPasteDrawing = new ToolStripMenuItem();
         
+        // View
         private ToolStripMenuItem mnuOnePlayer = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTwoPlayers = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOneCapture = new ToolStripMenuItem();
@@ -100,6 +122,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuSwapScreens = new ToolStripMenuItem();
         private ToolStripMenuItem mnuToggleCommonCtrls = new ToolStripMenuItem();
 
+        // Image
         private ToolStripMenuItem mnuDeinterlace = new ToolStripMenuItem();
 
         private ToolStripMenuItem mnuDemosaic = new ToolStripMenuItem();
@@ -122,8 +145,10 @@ namespace Kinovea.ScreenManager
 
         private ToolStripMenuItem mnuMirror = new ToolStripMenuItem();
 
+        // Video
         private List<ToolStripMenuItem> filterMenus = new List<ToolStripMenuItem>();
 
+        // Tools
         private ToolStripMenuItem mnuImportImage = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimeCalibration = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCoordinateSystem = new ToolStripMenuItem();
@@ -162,6 +187,8 @@ namespace Kinovea.ScreenManager
 
             CameraTypeManager.CameraLoadAsked += CameraTypeManager_CameraLoadAsked;
             VideoTypeManager.VideoLoadAsked += VideoTypeManager_VideoLoadAsked;
+            dualPlayer.ExportImageAsked += (s, e) => ExportImages(ImageExportFormat.SideBySide);
+            dualPlayer.ExportVideoAsked += (s, e) => ExportVideo(VideoExportFormat.SideBySide);
 
             audioInputLevelMonitor.Enabled = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger;
             audioInputLevelMonitor.Threshold = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioTriggerThreshold;
@@ -262,62 +289,129 @@ namespace Kinovea.ScreenManager
             mnuCatchFile.MergeIndex = 0; // (File)
             mnuCatchFile.MergeAction = MergeAction.MatchOnly;
 
+            // Open video = 0
+            // Open instant replay = 1
+            int index = 2;
+
             // Load Analysis
             mnuLoadAnalysis.Image = Properties.Resources.file_kva2;
             mnuLoadAnalysis.Click += mnuLoadAnalysisOnClick;
-            mnuLoadAnalysis.MergeIndex = 2;
+            mnuLoadAnalysis.MergeIndex = index;
             mnuLoadAnalysis.MergeAction = MergeAction.Insert;
 
             //----
-
+            // Recent = 3
+            // Separator = 4
+            index = 5;
             mnuSave.Image = Properties.Resources.filesave;
             mnuSave.Click += new EventHandler(mnuSaveOnClick);
             mnuSave.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S;
-            mnuSave.MergeIndex = 5;
+            mnuSave.MergeIndex = index;
             mnuSave.MergeAction = MergeAction.Insert;
 
+            index = 6;
             mnuSaveAs.Image = Properties.Resources.filesave;
             mnuSaveAs.Click += new EventHandler(mnuSaveAsOnClick);
-            mnuSaveAs.MergeIndex = 6;
+            mnuSaveAs.MergeIndex = index;
             mnuSaveAs.MergeAction = MergeAction.Insert;
 
-            mnuExportVideo.Image = Properties.Resources.film_save;
-            mnuExportVideo.Click += new EventHandler(mnuExportVideoOnClick);
-            mnuExportVideo.MergeIndex = 7;
-            mnuExportVideo.MergeAction = MergeAction.Insert;
+            //----
+            // Separator = 7
 
-            mnuExportSpreadsheet.Image = Properties.Resources.table;
-            mnuExportSpreadsheet.MergeIndex = 8;
+            index = 8;
+            mnuExportVideo.Image = Properties.Resources.film_save;
+            mnuExportVideo.MergeIndex = index;
+            mnuExportVideo.MergeAction = MergeAction.Insert;
+            mnuExportVideoVideo.Image = Properties.Resources.export_video_video;
+            mnuExportVideoSlideshow.Image = Properties.Resources.export_video_slideshow;
+            mnuExportVideoWithPauses.Image = Properties.Resources.export_video_with_pauses;
+            mnuExportVideoSideBySide.Image = Properties.Resources.export_video_sidebyside;
+            mnuExportVideoVideo.Click += (s, e) => ExportVideo(VideoExportFormat.Video);
+            mnuExportVideoSlideshow.Click += (s, e) => ExportVideo(VideoExportFormat.VideoSlideShow);
+            mnuExportVideoWithPauses.Click += (s, e) => ExportVideo(VideoExportFormat.VideoWithPauses);
+            mnuExportVideoSideBySide.Click += (s, e) => ExportVideo(VideoExportFormat.SideBySide);
+            mnuExportVideo.DropDownItems.AddRange(new ToolStripItem[] {
+                mnuExportVideoVideo,
+                mnuExportVideoSlideshow,
+                mnuExportVideoWithPauses,
+                mnuExportVideoSideBySide,
+            });
+
+            index = 9;
+            mnuExportImage.Image = Properties.Resources.picture_save;
+            mnuExportImage.MergeIndex = index;
+            mnuExportImage.MergeAction = MergeAction.Insert;
+            mnuExportImageImage.Image = Properties.Resources.image;
+            mnuExportImageSequence.Image = Properties.Resources.images;
+            mnuExportImageKeys.Image = Properties.Resources.export_image_keys;
+            mnuExportImageSideBySide.Image = Properties.Resources.export_image_sidebyside;
+            mnuExportImageImage.Click += (s, e) => ExportImages(ImageExportFormat.Image);
+            mnuExportImageSequence.Click += (s, e) => ExportImages(ImageExportFormat.ImageSequence);
+            mnuExportImageKeys.Click += (s, e) => ExportImages(ImageExportFormat.KeyImages);
+            mnuExportImageSideBySide.Click += (s, e) => ExportImages(ImageExportFormat.SideBySide);
+            mnuExportImage.DropDownItems.AddRange(new ToolStripItem[] {
+                mnuExportImageImage,
+                mnuExportImageSequence,
+                mnuExportImageKeys,
+                mnuExportImageSideBySide,
+            });
+
+            index = 10;
+            mnuExportDocument.Image = Properties.Resources.export_document;
+            mnuExportDocument.MergeIndex = index;
+            mnuExportDocument.MergeAction = MergeAction.Insert;
+            mnuExportODT.Image = Properties.Resources.file_odt;
+            mnuExportDOCX.Image = Properties.Resources.file_doc;
+            mnuExportMarkdown.Image = Properties.Resources.file_markdown;
+            mnuExportODT.Click += (s, e) => ExportDocument(DocumentExportFormat.ODT);
+            mnuExportDOCX.Click += (s, e) => ExportDocument(DocumentExportFormat.DOCX);
+            mnuExportMarkdown.Click += (s, e) => ExportDocument(DocumentExportFormat.Mardown);
+            mnuExportDocument.DropDownItems.AddRange(new ToolStripItem[] {
+                mnuExportODT,
+                mnuExportDOCX,
+                new ToolStripSeparator(),
+                mnuExportMarkdown,
+            });
+
+            index = 11;
+            mnuExportSpreadsheet.Image = Properties.Resources.export_spreadsheet;
+            mnuExportSpreadsheet.MergeIndex = index;
             mnuExportSpreadsheet.MergeAction = MergeAction.Insert;
             mnuExportODS.Image = Properties.Resources.file_ods;
-            mnuExportODS.Click += new EventHandler(mnuExportODS_OnClick);
             mnuExportXLSX.Image = Properties.Resources.file_xls;
-            mnuExportXLSX.Click += new EventHandler(mnuExportXLSX_OnClick);
+            mnuExportCSVTrajectory.Image = Properties.Resources.file_csv;
+            mnuExportCSVChronometer.Image = Properties.Resources.file_csv;
             mnuExportJSON.Image = Properties.Resources.json;
-            mnuExportJSON.Click += new EventHandler(mnuExportJSON_OnClick);
-            mnuExportCSV.Image = Properties.Resources.csv;
-            mnuExportCSV.Click += new EventHandler(mnuExportCSV_OnClick);
-            mnuExportSpreadsheet.DropDownItems.AddRange(new ToolStripItem[] { 
-                mnuExportODS, 
-                mnuExportXLSX, 
-                mnuExportCSV,
+            mnuExportODS.Click += (s, e) => ExportSpreadsheet(SpreadsheetExportFormat.ODS);
+            mnuExportXLSX.Click += (s, e) => ExportSpreadsheet(SpreadsheetExportFormat.XLSX);
+            mnuExportCSVTrajectory.Click += (s, e) => ExportSpreadsheet(SpreadsheetExportFormat.CSVTrajectory);
+            mnuExportCSVChronometer.Click += (s, e) => ExportSpreadsheet(SpreadsheetExportFormat.CSVChronometer);
+            mnuExportJSON.Click += (s, e) => ExportSpreadsheet(SpreadsheetExportFormat.JSON);
+            mnuExportSpreadsheet.DropDownItems.AddRange(new ToolStripItem[] {
+                mnuExportODS,
+                mnuExportXLSX,
+                mnuExportCSVTrajectory,
+                mnuExportCSVChronometer,
                 new ToolStripSeparator(),
                 mnuExportJSON,
             });
 
             //------------------------
+            // Separator = 12
 
+            index = 13;
             mnuCloseFile.Image = Properties.Resources.closeplayer;
             mnuCloseFile.Enabled = false;
             mnuCloseFile.Click += new EventHandler(mnuCloseFileOnClick);
-            mnuCloseFile.MergeIndex = 10;
+            mnuCloseFile.MergeIndex = index;
             mnuCloseFile.MergeAction = MergeAction.Insert;
 
+            index = 14;
             mnuCloseFile2.Image = Properties.Resources.closeplayer;
             mnuCloseFile2.Enabled = false;
             mnuCloseFile2.Visible = false;
             mnuCloseFile2.Click += new EventHandler(mnuCloseFile2OnClick);
-            mnuCloseFile2.MergeIndex = 11;
+            mnuCloseFile2.MergeIndex = index;
             mnuCloseFile2.MergeAction = MergeAction.Insert;
 
             //--------------------
@@ -330,7 +424,10 @@ namespace Kinovea.ScreenManager
                 // ----
                 mnuSave,
                 mnuSaveAs,
+                // ----
                 mnuExportVideo,
+                mnuExportImage,
+                mnuExportDocument,
                 mnuExportSpreadsheet,
                 //----
                 mnuCloseFile,
@@ -699,7 +796,9 @@ namespace Kinovea.ScreenManager
 
         private void Player_OpenVideoAsked(object sender, EventArgs e)
         {
-            string filename = FilePicker.OpenVideo();
+            string title = ScreenManagerLang.mnuOpenVideo;
+            string filter = ScreenManagerLang.FileFilter_All + "|*.*";
+            string filename = FilePicker.OpenVideo(title, filter);
             if (string.IsNullOrEmpty(filename))
                 return;
 
@@ -979,16 +1078,15 @@ namespace Kinovea.ScreenManager
                     // 1. Video is loaded : save-able and analysis is loadable.
                     
                     // File
+                    mnuLoadAnalysis.Enabled = true;
                     mnuSave.Enabled = true;
                     mnuSaveAs.Enabled = true;
                     mnuExportVideo.Enabled = true;
-                    toolSave.Enabled = true;
+                    mnuExportImage.Enabled = true;
                     mnuExportSpreadsheet.Enabled = player.FrameServer.Metadata.HasVisibleData;
-                    mnuExportODS.Enabled = player.FrameServer.Metadata.HasVisibleData;
-                    mnuExportXLSX.Enabled = player.FrameServer.Metadata.HasVisibleData;
-                    mnuExportJSON.Enabled = player.FrameServer.Metadata.HasVisibleData;
-                    mnuExportCSV.Enabled = player.FrameServer.Metadata.HasVisibleData;
-                    mnuLoadAnalysis.Enabled = true;
+                    mnuExportDocument.Enabled = true;
+                    
+                    toolSave.Enabled = true;
                     
                     // Edit
                     HistoryMenuManager.SwitchContext(activeScreen.HistoryStack);
@@ -1034,16 +1132,14 @@ namespace Kinovea.ScreenManager
                     CaptureScreen captureScreen = activeScreen as CaptureScreen;   
                     
                     // File
+                    mnuLoadAnalysis.Enabled = true;
                     mnuSave.Enabled = false;
                     mnuSaveAs.Enabled = false;
                     mnuExportVideo.Enabled = false;
-                    toolSave.Enabled = false;
+                    mnuExportImage.Enabled = false;
                     mnuExportSpreadsheet.Enabled = false;
-                    mnuExportODS.Enabled = false;
-                    mnuExportXLSX.Enabled = false;
-                    mnuExportJSON.Enabled = false;
-                    mnuExportCSV.Enabled = false;
-                    mnuLoadAnalysis.Enabled = true;
+                    mnuExportDocument.Enabled = false;
+                    toolSave.Enabled = false;
 
                     // Edit
                     HistoryMenuManager.SwitchContext(activeScreen.HistoryStack);
@@ -1090,16 +1186,14 @@ namespace Kinovea.ScreenManager
             if (activeScreenIsEmpty)
             {
                 // File
+                mnuLoadAnalysis.Enabled = false;
                 mnuSave.Enabled = false;
                 mnuSaveAs.Enabled = false;
                 mnuExportVideo.Enabled = false;
-                toolSave.Enabled = false;
-                mnuLoadAnalysis.Enabled = false;
+                mnuExportImage.Enabled = false;
                 mnuExportSpreadsheet.Enabled = false;
-                mnuExportODS.Enabled = false;
-                mnuExportXLSX.Enabled = false;
-                mnuExportJSON.Enabled = false;
-                mnuExportCSV.Enabled = false;
+                mnuExportDocument.Enabled = false;
+                toolSave.Enabled = false;
 
                 // Edit
                 HistoryMenuManager.SwitchContext(null);
@@ -1141,27 +1235,30 @@ namespace Kinovea.ScreenManager
             mnuCloseFile2.Enabled = false;
             string strClosingText = ScreenManagerLang.Generic_Close;
             
-            bool allScreensAreEmpty = false;
+            bool hasNothingToClose = false;
+            bool canSaveSideBySide = true;
             switch (screenList.Count)
             {
                 case 0:
                     mnuSwapScreens.Enabled = false;
                     mnuToggleCommonCtrls.Enabled = false;
-                    allScreensAreEmpty = true;
+                    hasNothingToClose = true;
+                    canSaveSideBySide = false;
                     break;
 
                 case 1:
                     mnuSwapScreens.Enabled = false;
                     mnuToggleCommonCtrls.Enabled = false;
+                    canSaveSideBySide = false;
 
                     if(!screenList[0].Full)
                     {
-                        allScreensAreEmpty = true;	
+                        hasNothingToClose = true;	
                     }
                     else if(screenList[0] is PlayerScreen)
                     {
                         // Only screen is an full PlayerScreen.
-                        mnuCloseFile.Text = strClosingText;
+                        mnuCloseFile.Text = strClosingText + " - " + ((PlayerScreen)screenList[0]).FileName;
                         mnuCloseFile.Enabled = true;
                         mnuCloseFile.Visible = true;
 
@@ -1170,7 +1267,7 @@ namespace Kinovea.ScreenManager
                     }
                     else if(screenList[0] is CaptureScreen)
                     {
-                        allScreensAreEmpty = true;	
+                        hasNothingToClose = true;	
                     }
                     break;
 
@@ -1183,10 +1280,9 @@ namespace Kinovea.ScreenManager
                     {
                         if (screenList[0].Full)
                         {
-                            allScreensAreEmpty = false;
+                            hasNothingToClose = false;
                             
-                            string strCompleteClosingText = strClosingText + " - " + ((PlayerScreen)screenList[0]).FileName;
-                            mnuCloseFile.Text = strCompleteClosingText;
+                            mnuCloseFile.Text = strClosingText + " - " + ((PlayerScreen)screenList[0]).FileName;
                             mnuCloseFile.Enabled = true;
                             mnuCloseFile.Visible = true;
                         }
@@ -1194,13 +1290,15 @@ namespace Kinovea.ScreenManager
                         {
                             // Left screen is an empty PlayerScreen.
                             // Global emptiness might be changed below.
-                            allScreensAreEmpty = true;
+                            hasNothingToClose = true;
+                            canSaveSideBySide = false;
                         }
                     }
                     else if(screenList[0] is CaptureScreen)
                     {
                         // Global emptiness might be changed below.
-                        allScreensAreEmpty = true;
+                        hasNothingToClose = true;
+                        canSaveSideBySide = false;
                     }
 
                     // Right Screen.
@@ -1208,23 +1306,24 @@ namespace Kinovea.ScreenManager
                     {
                         if (screenList[1].Full)
                         {
-                            allScreensAreEmpty = false;
+                            hasNothingToClose = false;
                             
-                            string strCompleteClosingText = strClosingText + " - " + ((PlayerScreen)screenList[1]).FileName;
-                            mnuCloseFile2.Text = strCompleteClosingText;
+                            mnuCloseFile2.Text = strClosingText + " - " + ((PlayerScreen)screenList[1]).FileName;
                             mnuCloseFile2.Enabled = true;
                             mnuCloseFile2.Visible = true;
                         }
                         else
                         {
                             // Right screen is an empty player screen, nothing to do.
-                            // The final value of allScreensAreEmpty stays at whatever the value was for the left screen. 
+                            // The final value of hasNothingToClose stays at whatever the value was for the left screen. 
+                            canSaveSideBySide = false;
                         }
                     }
                     else if (screenList[1] is CaptureScreen)
                     {
                         // Right screen is a capture screen, nothing to do.
-                        // The final value of allScreensAreEmpty stays at whatever the value was for the left screen. 
+                        // The final value of hasNothingToClose stays at whatever the value was for the left screen. 
+                        canSaveSideBySide = false;
                     }
                     break;
 
@@ -1232,20 +1331,23 @@ namespace Kinovea.ScreenManager
                     // KO.
                     mnuSwapScreens.Enabled       = false;
                     mnuToggleCommonCtrls.Enabled = false;
-                    allScreensAreEmpty = true;
+                    hasNothingToClose = true;
                     break;
             }
 
-            if (allScreensAreEmpty)
+            if (hasNothingToClose)
             {
-                // No screens at all, or all screens empty => 1 menu visible but disabled.
-
+                // No screens or all screens are either capture or empty players.
+                // Single menu visible but disabled.
                 mnuCloseFile.Text = strClosingText;
                 mnuCloseFile.Visible = true;
                 mnuCloseFile.Enabled = false;
-
                 mnuCloseFile2.Visible = false;
             }
+
+            mnuExportImageSideBySide.Enabled = canSaveSideBySide;
+            mnuExportVideoSideBySide.Enabled = canSaveSideBySide;
+
             #endregion
         }
         private void ConfigureVideoFilterMenus(PlayerScreen player)
@@ -1367,13 +1469,33 @@ namespace Kinovea.ScreenManager
             mnuCloseFile2.Text = ScreenManagerLang.Generic_Close;
             mnuSave.Text = ScreenManagerLang.Generic_SaveKVA;
             mnuSaveAs.Text = ScreenManagerLang.Generic_SaveKVAAs;
-            mnuExportVideo.Text = ScreenManagerLang.Generic_ExportVideo;
+
+            mnuExportVideo.Text = "Export video"; //ScreenManagerLang.Generic_ExportVideo;
+            mnuExportVideoVideo.Text = "Video…";
+            mnuExportVideoSlideshow.Text = "Video slideshow…";
+            mnuExportVideoWithPauses.Text = "Video with pauses…";
+            mnuExportVideoSideBySide.Text = "Side by side…";
+
+            mnuExportImage.Text = "Export images";
+            mnuExportImageImage.Text = "Image…";
+            mnuExportImageKeys.Text = "Key images…";
+            mnuExportImageSequence.Text = "Image sequence…";
+            mnuExportImageSideBySide.Text = "Side by side…";
+            
             //mnuExportSpreadsheet.Text = ScreenManagerLang.mnuExportSpreadsheet;
             mnuExportSpreadsheet.Text = "Export spreadsheet";
-            mnuExportODS.Text = "LibreOffice Calc (.ods)";
-            mnuExportXLSX.Text = "Microsoft Excel (.xlsx)";
-            mnuExportJSON.Text = "JSON (.json)";
-            mnuExportCSV.Text = "Trajectory CSV (.csv)";
+            mnuExportODS.Text = "LibreOffice Calc…";
+            mnuExportXLSX.Text = "Microsoft Excel…";
+            mnuExportCSVTrajectory.Text = "Trajectory CSV…";
+            mnuExportCSVChronometer.Text = "Chronometer CSV…";
+            mnuExportJSON.Text = "JSON…";
+
+
+            mnuExportDocument.Text = "Export document";
+            mnuExportODT.Text = "LibreOffice Writer…";
+            mnuExportDOCX.Text = "Microsoft Word…";
+            mnuExportMarkdown.Text = "Markdown…";
+
             mnuLoadAnalysis.Text = ScreenManagerLang.mnuLoadAnalysis;
 
             // Edit
@@ -1479,16 +1601,6 @@ namespace Kinovea.ScreenManager
             player.SaveAs();
         }
 
-        private void mnuExportVideoOnClick(object sender, EventArgs e)
-        {
-            PlayerScreen player = activeScreen as PlayerScreen;
-            if (player == null)
-                return;
-
-            DoStopPlaying();
-            player.ExportVideo();
-        }
-
         private void mnuLoadAnalysisOnClick(object sender, EventArgs e)
         {
             if (activeScreen != null)
@@ -1504,73 +1616,96 @@ namespace Kinovea.ScreenManager
 
             if (screenList[targetScreen] is PlayerScreen)
                 DoStopPlaying();
-             
-            string filename = FilePicker.OpenAnnotations();
+
+            string title = ScreenManagerLang.dlgLoadAnalysis_Title;
+            string filter = FilesystemHelper.OpenKVAFilter(ScreenManagerLang.FileFilter_AllSupported);
+            string filename = FilePicker.OpenAnnotations(title, filter);
             if (filename == null)
                 return;
 
             screenList[targetScreen].LoadKVA(filename);
         }
-        private void mnuExportODS_OnClick(object sender, EventArgs e)
+
+        private void ExportVideo(VideoExportFormat format)
         {
-            ExportSpreadsheet(MetadataExportFormat.ODS);
+            DoStopPlaying();
+            if (format == VideoExportFormat.SideBySide)
+            {
+                // For side-by-side we don't care about the active screen but the order is important.
+                AbstractScreen screen0 = GetScreenAt(0);
+                AbstractScreen screen1 = GetScreenAt(1);
+                PlayerScreen player1 = screen0 as PlayerScreen;
+                PlayerScreen player2 = screen1 as PlayerScreen;
+                if (player1 == null || player2 == null)
+                    return;
+
+                if (!player1.Full || !player2.Full)
+                    return;
+
+                VideoExporter exporter = new VideoExporter();
+                exporter.Export(format, player1, player2, dualPlayer);
+            }
+            else
+            {
+                PlayerScreen player = activeScreen as PlayerScreen;
+                if (player == null)
+                    return;
+
+                VideoExporter exporter = new VideoExporter();
+                exporter.Export(format, player, null, null);
+            }
         }
-        private void mnuExportXLSX_OnClick(object sender, EventArgs e)
+
+        private void ExportImages(ImageExportFormat format)
         {
-            ExportSpreadsheet(MetadataExportFormat.XLSX);
+            DoStopPlaying();
+            if (format == ImageExportFormat.SideBySide)
+            {
+                // For side-by-side we don't care about the active screen but the order is important.
+                AbstractScreen screen0 = GetScreenAt(0);
+                AbstractScreen screen1 = GetScreenAt(1);
+                PlayerScreen player1 = screen0 as PlayerScreen;
+                PlayerScreen player2 = screen1 as PlayerScreen;
+                if (player1 == null || player2 == null)
+                    return;
+
+                if (!player1.Full || !player2.Full)
+                    return;
+
+                ImageExporter exporter = new ImageExporter();
+                exporter.Export(format, player1, player2);
+            }
+            else
+            {
+                PlayerScreen player = activeScreen as PlayerScreen;
+                if (player == null)
+                    return;
+
+                ImageExporter exporter = new ImageExporter();
+                exporter.Export(format, player, null);
+            }
         }
-        private void mnuExportJSON_OnClick(object sender, EventArgs e)
+
+        private void ExportDocument(DocumentExportFormat format)
         {
-            ExportSpreadsheet(MetadataExportFormat.JSON);
+            DoStopPlaying();
+            PlayerScreen player = activeScreen as PlayerScreen;
+            if (player == null)
+                return;
+
+            DocumentExporter exporter = new DocumentExporter();
+            exporter.Export(format, player);
         }
-        private void mnuExportCSV_OnClick(object sender, EventArgs e)
+
+        private void ExportSpreadsheet(SpreadsheetExportFormat format)
         {
-            ExportSpreadsheet(MetadataExportFormat.CSV);
-        }
-        private void ExportSpreadsheet(MetadataExportFormat format)
-        {
+            DoStopPlaying();
             PlayerScreen player = activeScreen as PlayerScreen;
             if (player == null || !player.FrameServer.Metadata.HasVisibleData)
                 return;
-            
-            DoStopPlaying();    
 
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Title = ScreenManagerLang.dlgExportSpreadsheet_Title;
-            saveFileDialog.RestoreDirectory = true;
-            saveFileDialog.Filter = "LibreOffice calc (*.ods)|*.ods|Microsoft Excel (*.xlsx)|*.xlsx|JSON (*.json)|*.json|CSV (*.csv)|*.csv";
-            int filterIndex;
-            switch (format)
-            {
-                case MetadataExportFormat.ODS:
-                    filterIndex = 1;
-                    break;
-                case MetadataExportFormat.XLSX:
-                    filterIndex = 2;
-                    break;
-                case MetadataExportFormat.CSV:
-                    filterIndex = 4;
-                    break;
-                case MetadataExportFormat.JSON:
-                default:
-                    filterIndex = 3;
-                    break;
-            }
-
-            saveFileDialog.FilterIndex = filterIndex;
-            saveFileDialog.FileName = Path.GetFileNameWithoutExtension(player.FrameServer.Metadata.VideoPath);
-
-            if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))
-                return;
-
-            try
-            { 
-                MetadataExporter.Export(player.FrameServer.Metadata, saveFileDialog.FileName, format);
-            }
-            catch (Exception e)
-            {
-                log.ErrorFormat("Exception encountered while exporting to spreadsheet.", e);
-            }
+            SpreadsheetExporter exporter = new SpreadsheetExporter();
+            exporter.Export(format, player);
         }
         #endregion
 
@@ -2242,7 +2377,7 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region Motion
+        #region Tools
         private void mnuTimebase_OnClick(object sender, EventArgs e)
         {
             PlayerScreen ps = activeScreen as PlayerScreen;

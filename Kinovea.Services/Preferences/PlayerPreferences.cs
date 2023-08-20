@@ -203,6 +203,18 @@ namespace Kinovea.Services
             get { return keyframePresetsParameters.Clone(); }
             set { keyframePresetsParameters = value; }
         }
+        public string PandocPath
+        {
+            get { return pandocPath; }
+            set { pandocPath = value; }
+        }
+
+        public bool SideBySideHorizontal
+        {
+            get { return sideBySideHorizontal; }
+            set { sideBySideHorizontal = value; }
+        }
+
         #endregion
 
         private TimecodeFormat timecodeFormat = TimecodeFormat.ClassicTime;
@@ -240,6 +252,9 @@ namespace Kinovea.Services
         private KinogramParameters kinogramParameters = new KinogramParameters();
         private KeyframePresetsParameters keyframePresetsParameters = new KeyframePresetsParameters();
         private bool showCacheInTimeline = false;
+        private string pandocPath = "";
+        private bool sideBySideHorizontal = true;
+
         public void AddRecentColor(Color _color)
         {
             PreferencesManager.UpdateRecents(_color, recentColors, maxRecentColors);
@@ -309,6 +324,8 @@ namespace Kinovea.Services
             keyframePresetsParameters.WriteXml(writer);
             writer.WriteEndElement();
 
+            writer.WriteElementString("PandocPath", pandocPath);
+            writer.WriteElementString("SideBySideHorizontal", XmlHelper.WriteBoolean(SideBySideHorizontal));
         }
         
         public void ReadXML(XmlReader reader)
@@ -418,6 +435,12 @@ namespace Kinovea.Services
                         break;
                     case "KeyframePresets":
                         keyframePresetsParameters.ReadXml(reader);
+                        break;
+                    case "PandocPath":
+                        pandocPath = reader.ReadElementContentAsString();
+                        break;
+                    case "SideBySideHorizontal":
+                        SideBySideHorizontal = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     default:
                         reader.ReadOuterXml();

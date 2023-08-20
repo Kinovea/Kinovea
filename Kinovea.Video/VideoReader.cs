@@ -60,7 +60,7 @@ namespace Kinovea.Video
             get { return null;}
         }
         public virtual VideoSection PreBufferingSegment {
-            get { return VideoSection.Empty; }
+            get { return VideoSection.MakeEmpty(); }
         }
         // If the reader is subject to decoding drops (prebuffering), this property should be filled accordingly.
         public virtual int Drops {
@@ -276,7 +276,7 @@ namespace Kinovea.Video
         /// <summary>
         /// Provide a lazy enumerator on each frame of the Working Zone.
         /// </summary>
-        public IEnumerable<VideoFrame> FrameEnumerator(long interval)
+        public IEnumerable<VideoFrame> EnumerateFrames(long interval)
         {
             if(DecodingMode == VideoDecodingMode.PreBuffering)
                 throw new ThreadStateException("Frame enumerator called while prebuffering");
@@ -294,11 +294,7 @@ namespace Kinovea.Video
                 yield return Current;
             }
         }
-        public IEnumerable<VideoFrame> FrameEnumerator()
-        {
-            return FrameEnumerator(0);
-        }
-
+        
         public virtual string ReadMetadata()
         {
             return "";

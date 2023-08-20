@@ -92,7 +92,7 @@ void VideoReaderFFMpeg::DataInit()
     m_iAudioStream = -1;
     m_iMetadataStream = -1;
     m_VideoInfo = VideoInfo::Empty;
-    m_WorkingZone = VideoSection::Empty;
+    m_WorkingZone = VideoSection::MakeEmpty();
     m_TimestampInfo = TimestampInfo::Empty;
     m_WasPrebuffering = false;
     m_CanDrawUnscaled = false;
@@ -513,9 +513,9 @@ void VideoReaderFFMpeg::UpdateWorkingZone(VideoSection _newZone, bool _forceRelo
         }
         else
         {
-            VideoSection sectionToCache = VideoSection::Empty;
-            bool prepend = false;
-
+            m_SectionToPrepend = VideoSection::MakeEmpty();
+            m_SectionToAppend = VideoSection::MakeEmpty();
+            
             if (m_DecodingMode != VideoDecodingMode::Caching || _forceReload)
             {
                 if (m_Verbose)
@@ -529,52 +529,58 @@ void VideoReaderFFMpeg::UpdateWorkingZone(VideoSection _newZone, bool _forceRelo
                 }
 
                 SwitchDecodingMode(VideoDecodingMode::Caching);
-                sectionToCache = _newZone;
+                m_SectionToPrepend = _newZone;
             }
             else
             {
-                // First reduce where needed, then expand.
                 if (_newZone.Start > m_WorkingZone.Start)
                 {
-                    m_Cache->ReduceWorkingZone(VideoSection(_newZone.Start, m_WorkingZone.End));
-                    m_WorkingZone = m_Cache->WorkingZone;
+                    // Only do it if the new start is at least one frame beyond the old one.
+                    if (_newZone.Start - m_WorkingZone.Start > m_VideoInfo.AverageTimeStampsPerFrame)
+                    {
+                        m_Cache->ReduceWorkingZone(VideoSection(_newZone.Start, m_WorkingZone.End));
+                        m_WorkingZone = m_Cache->WorkingZone;
+                        log->DebugFormat("Reduced cache from the front: {0}.", m_WorkingZone);
+                    }
+
+                    // Realign the request to avoid unnecessary loads due to timestamp mismatch.
+                    _newZone = VideoSection(m_WorkingZone.Start, _newZone.End);
                 }
 
                 if (_newZone.End < m_WorkingZone.End)
                 {
-                    m_Cache->ReduceWorkingZone(VideoSection(m_WorkingZone.Start, _newZone.End));
-                    m_WorkingZone = m_Cache->WorkingZone;
+                    // Only do it if the new end is at least one frame before the old one.
+                    if (m_WorkingZone.End - _newZone.End > m_VideoInfo.AverageTimeStampsPerFrame)
+                    {
+                        m_Cache->ReduceWorkingZone(VideoSection(m_WorkingZone.Start, _newZone.End));
+                        m_WorkingZone = m_Cache->WorkingZone;
+                        log->DebugFormat("Reduced cache from the back: {0}.", m_WorkingZone);
+                    }
+
+                    // Realign the request to avoid unnecessary loads due to timestamp mismatch.
+                    _newZone = VideoSection(_newZone.Start, m_WorkingZone.End);
                 }
 
-                if (_newZone.Start < m_WorkingZone.Start && _newZone.End > m_WorkingZone.End)
+                // Bail out if our job is done.
+                if (_newZone.Start == m_WorkingZone.Start && _newZone.End == m_WorkingZone.End)
+                    return;
+
+                // Expand at the front if there is more than one frame to expand.
+                if (m_WorkingZone.Start - _newZone.Start > m_VideoInfo.AverageTimeStampsPerFrame)
                 {
-                    // Special case of both prepend and append. Clear all and import all for simplicity.
-                    // Unfortunately this may also happen as the result of rounding error during pixel to timestamp conversion.
-                    m_Cache->Clear();
-                    sectionToCache = _newZone;
+                    m_SectionToPrepend = VideoSection(_newZone.Start, m_WorkingZone.Start);
                 }
-                else if (_newZone.Start < m_WorkingZone.Start)
+                
+                // Expand at the back if there is more than one frame to expand.
+                if (_newZone.End - m_WorkingZone.End > m_VideoInfo.AverageTimeStampsPerFrame)
                 {
-                    // Prepending only.
-                    sectionToCache = VideoSection(_newZone.Start, m_WorkingZone.Start);
-                    prepend = true;
-                }
-                else
-                {
-                    // Appending only.
-                    sectionToCache = VideoSection(m_WorkingZone.End, _newZone.End);
+                    m_SectionToAppend = VideoSection(m_WorkingZone.End, _newZone.End);
                 }
             }
 
-            if (!sectionToCache.IsEmpty)
+            if (!m_SectionToPrepend.IsEmpty || !m_SectionToAppend.IsEmpty)
             {
-                if (m_Verbose)
-                    log->DebugFormat("New frames to cache needed:{0}", sectionToCache);
-                //SwitchDecodingMode(VideoDecodingMode::Caching);
-
                 // As C++/CLI doesn't support lambdas expressions, we have to resort to a separate method and global variables.
-                m_SectionToCache = sectionToCache;
-                m_Prepend = prepend;
                 DoWorkEventHandler^ workHandler = gcnew DoWorkEventHandler(this, &VideoReaderFFMpeg::ImportWorkingZoneToCache);
                 _workerFn(workHandler);
 
@@ -588,16 +594,22 @@ void VideoReaderFFMpeg::UpdateWorkingZone(VideoSection _newZone, bool _forceRelo
         }
     }
 }
+
 void VideoReaderFFMpeg::ImportWorkingZoneToCache(System::Object^ sender, DoWorkEventArgs^ e)
 {
     BackgroundWorker^ worker = dynamic_cast<BackgroundWorker^>(sender);
-    bool success = ReadMany(worker, m_SectionToCache, m_Prepend);
-    m_SectionToCache = VideoSection::Empty;
-    m_Prepend = false;
+    
+    bool success = true;
+    if (!m_SectionToPrepend.IsEmpty)
+        success = ReadMany(worker, m_SectionToPrepend, true);
+    
+    if (success && !m_SectionToAppend.IsEmpty)
+        success = ReadMany(worker, m_SectionToAppend, false);
 
     if (!success)
         SwitchToBestAfterCaching();
 }
+
 void VideoReaderFFMpeg::SwitchToBestAfterCaching()
 {
     // If we cannot enter Caching mode, switch to the next best thing.
@@ -608,6 +620,7 @@ void VideoReaderFFMpeg::SwitchToBestAfterCaching()
     else
         throw gcnew CapabilityNotSupportedException();
 }
+
 bool VideoReaderFFMpeg::ReadMany(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend)
 {
     // Load the asked section to cache (doesn't move the playhead).
@@ -621,45 +634,84 @@ bool VideoReaderFFMpeg::ReadMany(BackgroundWorker^ _bgWorker, VideoSection _sect
         Thread::CurrentThread->Name = "CacheFilling";
 
     if (m_Verbose)
-        log->DebugFormat("Caching section {0}, prepend:{1}", _section, _prepend);
+        log->DebugFormat("Requested section to cache: {0}. Prepend:{1}", _section, _prepend);
 
     m_Cache->SetPrependBlock(_prepend);
 
     bool success = true;
     int read = 0;
-    int total = (int)((_section.End - _section.Start + m_VideoInfo.AverageTimeStampsPerFrame) / m_VideoInfo.AverageTimeStampsPerFrame);
 
-    ReadResult res;
+    // Note: the passed section only represents what we need to prepend or append, not the target section.
+    // Realign the requested section on real timestamps.
+    if (!m_Cache->WorkingZone.IsEmpty)
+    {
+        if (_prepend && 
+           (m_Cache->WorkingZone.Start - _section.Start < m_VideoInfo.AverageTimeStampsPerFrame))
+        {
+            // Start target is less than one frame before the current start.
+            _section = VideoSection(m_Cache->WorkingZone.Start, _section.End);
+        }
+        else if (!_prepend && 
+            (_section.End - m_Cache->WorkingZone.End < m_VideoInfo.AverageTimeStampsPerFrame))
+        {
+            // End target is less than one frame beyond the current end.
+            _section = VideoSection(_section.Start, m_Cache->WorkingZone.End);
+        }
+
+        log->DebugFormat("Aligned requested section to cache: {0}", _section);
+    }
+
+    double end = _section.End + (m_VideoInfo.AverageTimeStampsPerFrame * 0.5);
+    double frames = (end - _section.Start) / m_VideoInfo.AverageTimeStampsPerFrame;
+    int total = (int)Math::Floor(frames);
+
+    log->DebugFormat("Frames to cache: {0}", total);
+
+    // Bail out if re-alignment revealed we don't need to cache anything new.
+    if (total == 0)
+        return true;
+
     // If the video is very short this call can only happen when opening the video.
     // We avoid a useless seek in this case. Prevent problems with non seekable files like single images.
+    ReadResult res;
     if (m_bIsVeryShort)
         res = ReadFrame(-1, 1, false);
     else
         res = ReadFrame(_section.Start, 1, false);
 
-    success = res == ReadResult::Success;
-    while (m_TimestampInfo.CurrentTimestamp < _section.End && read < total && res == ReadResult::Success)
+    success = (res == ReadResult::Success);
+
+
+
+
+    // Continue reading frames until we have the right number or we are past the target.
+    while ((m_TimestampInfo.CurrentTimestamp < _section.End) &&
+           (read < total) && 
+           (res == ReadResult::Success))
     {
         if (_bgWorker != nullptr && _bgWorker->CancellationPending)
         {
             if (m_Verbose)
                 log->DebugFormat("Cancellation at frame [{0}]", m_TimestampInfo.CurrentTimestamp);
+
             m_Cache->Clear();
             success = false;
             break;
         }
 
+        // Read one frame.
         res = ReadFrame(-1, 1, false);
-        success = res == ReadResult::Success;
+        success = (res == ReadResult::Success);
 
         if (_bgWorker != nullptr)
             _bgWorker->ReportProgress(read++, total);
     }
 
+    m_WorkingZone = m_Cache->WorkingZone;
     m_Cache->SetPrependBlock(false);
 
     // Sometimes a few frames at the end can't be read.
-    if (read < total)
+    if (m_TimestampInfo.CurrentTimestamp < _section.End && read < total)
     {
         log->ErrorFormat("Caching section: could only read {0} out of {1} frames.", read, total);
     
@@ -669,7 +721,7 @@ bool VideoReaderFFMpeg::ReadMany(BackgroundWorker^ _bgWorker, VideoSection _sect
             success = true;
         }
     }
-    
+
     return success;
 }
 void VideoReaderFFMpeg::BeforeFrameEnumeration()

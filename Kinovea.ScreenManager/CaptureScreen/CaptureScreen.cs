@@ -1391,8 +1391,8 @@ namespace Kinovea.ScreenManager
             if (type == TimeType.Duration)
                 frames++;
 
-            double milliseconds = frames * metadata.UserInterval / metadata.HighSpeedFactor;
-            double framerate = 1000.0 / metadata.UserInterval * metadata.HighSpeedFactor;
+            double milliseconds = frames * metadata.BaselineFrameInterval / metadata.HighSpeedFactor;
+            double framerate = 1000.0 / metadata.BaselineFrameInterval * metadata.HighSpeedFactor;
             double durationTimestamps = 1.0;
             double totalFrames = durationTimestamps / averageTimestampsPerFrame;
 
@@ -1831,8 +1831,8 @@ namespace Kinovea.ScreenManager
 
             metadata.CalibrationHelper.CaptureFramesPerSecond = setCaptureFramerate ? pipelineManager.Frequency : cameraGrabber.Framerate;
             double userInterval = 1000.0 / cameraGrabber.Framerate;
-            metadata.UserInterval = CalibrationHelper.ComputeFileFrameInterval(userInterval);
-            bool setUserInterval = userInterval != metadata.UserInterval;
+            metadata.BaselineFrameInterval = CalibrationHelper.ComputeFileFrameInterval(userInterval);
+            bool setUserInterval = userInterval != metadata.BaselineFrameInterval;
 
             // Set the time origin to match the real time of the recording trigger.
             // This will also help synchronizing videos with different delays.

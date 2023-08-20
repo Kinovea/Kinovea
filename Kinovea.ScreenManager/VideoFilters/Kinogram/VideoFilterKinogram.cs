@@ -384,7 +384,7 @@ namespace Kinovea.ScreenManager
             float scale = (float)outputSize.Width / fitArea.Width;
             Point location = new Point((int)(-fitArea.X * scale), (int)(-fitArea.Y * scale));
 
-            MetadataRenderer metadataRenderer = new MetadataRenderer(parentMetadata, true);
+            MetadataRenderer metadataRenderer = new MetadataRenderer(parentMetadata, false);
             metadataRenderer.Render(g, location, scale, timestamp);
             
             // Local drawings (labels).

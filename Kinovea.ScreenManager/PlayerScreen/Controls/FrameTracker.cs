@@ -564,9 +564,9 @@ namespace Kinovea.ScreenManager
                 else if (d is DrawingChronoMulti)
                 {
                     DrawingChronoMulti chrono = d as DrawingChronoMulti;
-                    foreach (var section in chrono.VideoSections)
+                    foreach (var section in chrono.Sections)
                     {
-                        Point range = TimestampToPixel(section.Start, section.End);
+                        Point range = TimestampToPixel(section.Section.Start, section.Section.End);
                         Color color = chrono.Color;
                         chronosMarks.Add(new Pair<Point, Color>(range, color));
                     }
@@ -604,7 +604,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             cacheMarks.Clear();
-            if (cacheSegment == VideoSection.Empty)
+            if (cacheSegment.IsEmpty)
                 return;
 
             if(cacheSegment.Wrapped)

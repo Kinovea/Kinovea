@@ -240,7 +240,7 @@ namespace Kinovea.Services
 
         public static VideoSection ParseVideoSection(string str)
         {
-            VideoSection section = VideoSection.Empty;
+            VideoSection section = VideoSection.MakeEmpty();
 
             try
             {
@@ -265,6 +265,13 @@ namespace Kinovea.Services
             }
 
             return section;
+        }
+
+        public static TEnum ParseEnum<TEnum>(string str, TEnum defaultValue) where TEnum : struct
+        {
+            TEnum result;
+            bool parsed = Enum.TryParse<TEnum>(str, out result);
+            return parsed ? result: defaultValue; 
         }
 
         public static string WriteFloat(float value)

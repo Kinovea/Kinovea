@@ -20,7 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 namespace Kinovea.ScreenManager
 {
-	partial class formProgressBar
+	partial class FormProgressBar
 	{
 		/// <summary>
 		/// Designer variable used to keep track of non-visual components.
@@ -49,7 +49,7 @@ namespace Kinovea.ScreenManager
 		private void InitializeComponent()
 		{
 			this.progressBar = new System.Windows.Forms.ProgressBar();
-			this.labelInfos = new System.Windows.Forms.Label();
+			this.labelInfo = new System.Windows.Forms.Label();
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
@@ -65,12 +65,12 @@ namespace Kinovea.ScreenManager
 			// 
 			// labelInfos
 			// 
-			this.labelInfos.AutoSize = true;
-			this.labelInfos.Location = new System.Drawing.Point(17, 47);
-			this.labelInfos.Name = "labelInfos";
-			this.labelInfos.Size = new System.Drawing.Size(36, 13);
-			this.labelInfos.TabIndex = 5;
-			this.labelInfos.Text = "[Infos]";
+			this.labelInfo.AutoSize = true;
+			this.labelInfo.Location = new System.Drawing.Point(17, 47);
+			this.labelInfo.Name = "labelInfos";
+			this.labelInfo.Size = new System.Drawing.Size(36, 13);
+			this.labelInfo.TabIndex = 5;
+			this.labelInfo.Text = "[Infos]";
 			// 
 			// btnCancel
 			// 
@@ -91,7 +91,7 @@ namespace Kinovea.ScreenManager
 			this.ClientSize = new System.Drawing.Size(369, 76);
 			this.ControlBox = false;
 			this.Controls.Add(this.btnCancel);
-			this.Controls.Add(this.labelInfos);
+			this.Controls.Add(this.labelInfo);
 			this.Controls.Add(this.progressBar);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
@@ -102,12 +102,11 @@ namespace Kinovea.ScreenManager
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "[formProgressBar_Title]";
-			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.formProgressBar_FormClosing);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
 		private System.Windows.Forms.Button btnCancel;
-		public System.Windows.Forms.Label labelInfos;
+		public System.Windows.Forms.Label labelInfo;
 		public System.Windows.Forms.ProgressBar progressBar;
 	}
 }
