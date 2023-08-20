@@ -332,6 +332,7 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Timer m_DeselectionTimer = new System.Windows.Forms.Timer();
         private MessageToaster m_MessageToaster;
         private bool m_Constructed;
+        private bool workingZoneLoaded;
         private CursorManager cursorManager = new CursorManager();
 
         #region Context Menus
@@ -668,6 +669,10 @@ namespace Kinovea.ScreenManager
             m_iSelEnd = m_FrameServer.Metadata.SelectionEnd;
             m_iSelDuration = m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
             UpdateWorkingZone(true);
+
+            // Remember that we already loaded the working zone, to avoid an unnecessary caching operation during the
+            // initialization of the screen. This is only for the first load into this screen.
+            workingZoneLoaded = true;
 
             RestoreActiveVideoFilter();
 
@@ -1283,14 +1288,16 @@ namespace Kinovea.ScreenManager
             if (!m_FrameServer.Loaded)
                 return;
 
-            // This would be a good time to start the prebuffering if supported.
-            // The UpdateWorkingZone call may try to go full cache if possible.
+            // This is a good time to start the prebuffering/caching if supported.
             m_FrameServer.VideoReader.PostLoad();
 
-            if (m_LaunchDescription != null && m_LaunchDescription.IsReplayWatcher)
-                UpdateWorkingZone(false);
-            else
-                UpdateWorkingZone(true);
+            if (!workingZoneLoaded)
+            {
+                if (m_LaunchDescription != null && m_LaunchDescription.IsReplayWatcher)
+                    UpdateWorkingZone(false);
+                else
+                    UpdateWorkingZone(true);
+            }
 
             UpdateFramesMarkers();
             ShowHideRenderingSurface(true);
