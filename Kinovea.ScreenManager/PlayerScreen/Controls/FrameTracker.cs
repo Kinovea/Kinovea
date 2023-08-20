@@ -604,7 +604,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             cacheMarks.Clear();
-            if (cacheSegment == VideoSection.Empty)
+            if (cacheSegment.IsEmpty)
                 return;
 
             if(cacheSegment.Wrapped)

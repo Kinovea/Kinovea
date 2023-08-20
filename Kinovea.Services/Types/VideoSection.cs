@@ -30,15 +30,14 @@ namespace Kinovea.Services
     /// </summary>
     public struct VideoSection : IComparable, IEquatable<VideoSection>
     {
-        public static VideoSection Empty {
-            get { return new VideoSection(-1,-1); }
-        }
         public bool IsEmpty {
-            get { return Start < 0 || End < 0; }
+            get { return (End < 0); }
         }
         public bool Wrapped {
             get { return !IsEmpty && End < Start;}
         }
+
+        
         public readonly long Start;
         public readonly long End;
         
@@ -47,6 +46,12 @@ namespace Kinovea.Services
             this.Start = start;
             this.End = end;
         }
+
+        public static VideoSection MakeEmpty()
+        {
+            return new VideoSection(-1, -1);
+        }
+
 
         /// <summary>
         /// Returns true if this timestamp is contained in the section.

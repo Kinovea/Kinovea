@@ -60,7 +60,7 @@ namespace Kinovea.Video
             get { return null;}
         }
         public virtual VideoSection PreBufferingSegment {
-            get { return VideoSection.Empty; }
+            get { return VideoSection.MakeEmpty(); }
         }
         // If the reader is subject to decoding drops (prebuffering), this property should be filled accordingly.
         public virtual int Drops {

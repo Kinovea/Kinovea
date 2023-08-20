@@ -121,7 +121,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
                 if(m_DecodingMode == VideoDecodingMode::PreBuffering)
                     return m_PreBuffer->Segment;
                 else 
-                    return VideoSection::Empty; 
+                    return VideoSection::MakeEmpty(); 
             }
         }
         virtual property VideoFrame^ Current {
@@ -181,8 +181,8 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         VideoSection m_WorkingZone;
         Object^ m_Locker;
         ThreadCanceler^ m_PreBufferingThreadCanceler;
-        VideoSection m_SectionToCache;
-        bool m_Prepend;
+        VideoSection m_SectionToPrepend;
+        VideoSection m_SectionToAppend;
         Size m_DecodingSize;
         bool m_CanDrawUnscaled;
         bool m_Verbose = true;

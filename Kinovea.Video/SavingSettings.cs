@@ -36,7 +36,7 @@ namespace Kinovea.Video
         /// <summary>
         /// Section of the video to get the images from.
         /// </summary>
-        public VideoSection Section = VideoSection.Empty;
+        public VideoSection Section = VideoSection.MakeEmpty();
 
         /// <summary>
         /// Whether to only collect the key images or all the frames.

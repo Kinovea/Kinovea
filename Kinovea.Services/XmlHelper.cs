@@ -240,7 +240,7 @@ namespace Kinovea.Services
 
         public static VideoSection ParseVideoSection(string str)
         {
-            VideoSection section = VideoSection.Empty;
+            VideoSection section = VideoSection.MakeEmpty();
 
             try
             {

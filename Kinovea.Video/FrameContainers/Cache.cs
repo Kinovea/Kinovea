@@ -47,7 +47,7 @@ namespace Kinovea.Video
         private List<VideoFrame> m_Frames = new List<VideoFrame>();
         private int m_CurrentIndex = -1;
         private VideoFrame m_Current;
-        private VideoSection m_WorkingZone = VideoSection.Empty;
+        private VideoSection m_WorkingZone = VideoSection.MakeEmpty();
         private bool m_PrependingBlock;
         private int m_InsertIndex;
         private VideoFrameDisposer m_Disposer;
@@ -122,7 +122,9 @@ namespace Kinovea.Video
                 DisposeFrame(frame);
                 
             m_Frames.Clear();
-            m_WorkingZone = VideoSection.Empty;
+            m_WorkingZone = VideoSection.MakeEmpty();
+
+            log.Debug("Cache cleared.");
         }
         /// <summary>
         /// Remove all items that are outside the working zone.
@@ -198,12 +200,16 @@ namespace Kinovea.Video
                 #endif
             }
         }
+
+        /// <summary>
+        /// Update the internal working zone with the actual timestamps of the first and last frame.
+        /// </summary>
         private void UpdateWorkingZone()
         {
             if(m_Frames.Count > 0)
                 m_WorkingZone = new VideoSection(m_Frames[0].Timestamp, m_Frames[m_Frames.Count - 1].Timestamp);
             else
-                m_WorkingZone = VideoSection.Empty;
+                m_WorkingZone = VideoSection.MakeEmpty();
         }
         #endregion
         
