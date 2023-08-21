@@ -3221,9 +3221,6 @@ namespace Kinovea.ScreenManager
                     PrepareFilterContextMenu(m_FrameServer.Metadata.ActiveVideoFilter, popMenuFilter);
 
                     popMenuFilter.Items.Add(new ToolStripSeparator());
-                    mnuExitFilter.Text = string.Format("Exit {0}", m_FrameServer.Metadata.ActiveVideoFilter.FriendlyName);
-                    popMenuFilter.Items.Add(mnuExitFilter);
-                    popMenuFilter.Items.Add(new ToolStripSeparator());
                     popMenuFilter.Items.Add(mnuSaveAnnotations);
                     popMenuFilter.Items.Add(mnuSaveAnnotationsAs);
 
@@ -3234,6 +3231,8 @@ namespace Kinovea.ScreenManager
                         popMenuFilter.Items.Add(mnuExportImage);
 
                     popMenuFilter.Items.Add(new ToolStripSeparator());
+                    mnuExitFilter.Text = string.Format("Exit {0}", m_FrameServer.Metadata.ActiveVideoFilter.FriendlyName);
+                    popMenuFilter.Items.Add(mnuExitFilter);
                     popMenuFilter.Items.Add(mnuCloseScreen);
                     panelCenter.ContextMenuStrip = popMenuFilter;
                 }
