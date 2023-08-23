@@ -551,7 +551,7 @@ namespace Kinovea.ScreenManager
                 return -2;
             }
 
-            log.DebugFormat("First frame loaded.");
+            log.DebugFormat("First frame loaded. Adjusted ts: {0}.", m_iCurrentPosition);
 
             //---------------------------------------------------------------------------------------
             // First frame loaded.

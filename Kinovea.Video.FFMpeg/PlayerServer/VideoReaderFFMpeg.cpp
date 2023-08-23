@@ -613,7 +613,7 @@ void VideoReaderFFMpeg::ImportWorkingZoneToCache(System::Object^ sender, DoWorkE
 void VideoReaderFFMpeg::SwitchToBestAfterCaching()
 {
     // If we cannot enter Caching mode, switch to the next best thing.
-    if (CanPreBuffer)
+    if (CanPreBuffer && !m_WorkingZone.IsEmpty)
         SwitchDecodingMode(VideoDecodingMode::PreBuffering);
     else if (CanDecodeOnDemand)
         SwitchDecodingMode(VideoDecodingMode::OnDemand);
@@ -1210,7 +1210,10 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t _iTimeStampToSeekTo, int _iFrame
         iFramesToDecode = 1; // We'll use the target timestamp anyway.
         int iSeekRes = SeekTo(iTargetTimeStamp);
         if (iSeekRes < 0)
-            log->ErrorFormat("Error during seek: {0}. Target was:[{1}]", iSeekRes, iTargetTimeStamp);
+        {
+            log->ErrorFormat("Error during seek. Error code:{0}. Seek target was:[{1}]", iSeekRes, iTargetTimeStamp);
+            seeking = false;
+        }
     }
 
     // Allocate 2 AVFrames, one for the raw decoded frame and one for deinterlaced/rescaled/converted frame.
@@ -1422,12 +1425,16 @@ int VideoReaderFFMpeg::SeekTo(int64_t _target)
     // Perform an FFMpeg seek without decoding the frame.
     // AVSEEK_FLAG_BACKWARD -> goes to first I-Frame before target.
     // Then we'll need to decode frame by frame until the target is reached.
+    long minTs = m_timestampOffset;
+    long ts = _target + m_timestampOffset;
+    long maxTs = _target + m_timestampOffset + (int64_t)m_VideoInfo.AverageTimeStampsPerSeconds;
+
     int res = avformat_seek_file(
         m_pFormatCtx,
         m_iVideoStream,
-        m_timestampOffset,
-        _target + m_timestampOffset,
-        _target + m_timestampOffset + (int64_t)m_VideoInfo.AverageTimeStampsPerSeconds,
+        minTs,
+        ts,
+        maxTs,
         AVSEEK_FLAG_BACKWARD);
 
     avcodec_flush_buffers(m_pFormatCtx->streams[m_iVideoStream]->codec);
@@ -1554,23 +1561,42 @@ void VideoReaderFFMpeg::PreBufferingWorker(Object^ _canceler)
     {
         if (canceler->CancellationPending)
         {
-            if (m_Verbose)
-                log->DebugFormat("PreBuffering thread, cancellation detected.");
-
+            log->DebugFormat("PreBuffering thread, cancellation detected. (1)");
             break;
         }
 
         ReadResult res = ReadFrame(-1, 1, false);
 
-        // Rollover.
-        if (!canceler->CancellationPending && (res == ReadResult::FrameNotRead || m_TimestampInfo.CurrentTimestamp > m_WorkingZone.End))
+        if (canceler->CancellationPending)
+        {
+            log->DebugFormat("PreBuffering thread, cancellation detected. (2)");
+            break;
+        }
+
+        // Check if we hit the end of the zone.
+        if (m_TimestampInfo.CurrentTimestamp > m_WorkingZone.End)
         {
             if (m_Verbose)
                 log->DebugFormat("Average prebuffering loop time: {0:0.000}ms. (Budget: {1:0.000}ms).", m_LoopWatcher->Average, m_VideoInfo.FrameIntervalMilliseconds);
             
             m_LoopWatcher->Restart();
-
             ReadFrame(m_WorkingZone.Start, 1, false);
+            continue;
+        }
+
+        if (res == ReadResult::FrameNotRead)
+        {
+            // We got a frame-not-read but we are not yet at the end of the zone.
+            log->ErrorFormat("Frame not read in the middle of the working zone. Reached timestamp:[{0}], in {1}.", m_TimestampInfo.CurrentTimestamp, m_WorkingZone);
+            
+            if (m_WorkingZone.IsEmpty)
+                break;
+
+            // The most sensible thing to do is still to go back to the begining and start again, 
+            // as if we just hit the end of the zone.
+            m_LoopWatcher->Restart();
+            ReadFrame(m_WorkingZone.Start, 1, false);
+            continue;
         }
     }
 
