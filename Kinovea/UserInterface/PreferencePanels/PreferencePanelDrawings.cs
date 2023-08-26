@@ -349,30 +349,30 @@ namespace Kinovea.Root
 
         private void InitTabExport()
         {
-            tabExport.Text = "Export";
-            lblCSVDelimiter.Text = "CSV export decimal separator:";
+            tabExport.Text = RootLang.dlgPreferences_Drawings_TabExport;
+            lblCSVDelimiter.Text = RootLang.dlgPreferences_Drawings_CSVDelimiter;
 
             string systemDelimiter = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
             string systemDelimiterText = systemDelimiter;
             switch (systemDelimiter)
             {
                 case ".":
-                    systemDelimiterText = "Point";
+                    systemDelimiterText = RootLang.dlgPreferences_Drawings_CSVPoint;
                     break;
                 case ",":
-                    systemDelimiterText = "Comma";
+                    systemDelimiterText = RootLang.dlgPreferences_Drawings_CSVComma;
                     break;
             }
             
-            cmbDelimiter.Items.Add(string.Format("System ({0})", systemDelimiterText));
-            cmbDelimiter.Items.Add("Point");
-            cmbDelimiter.Items.Add("Comma");
+            cmbDelimiter.Items.Add(string.Format(RootLang.dlgPreferences_Drawing_CSVSystem, systemDelimiterText));
+            cmbDelimiter.Items.Add(RootLang.dlgPreferences_Drawings_CSVPoint);
+            cmbDelimiter.Items.Add(RootLang.dlgPreferences_Drawings_CSVComma);
             int separator = (int)csvDecimalSeparator;
             cmbDelimiter.SelectedIndex = separator < cmbDelimiter.Items.Count ? separator : 0;
 
-            lblExportSpace.Text = "Export space:";
-            cmbExportSpace.Items.Add("Calibrated");
-            cmbExportSpace.Items.Add("Pixels");
+            lblExportSpace.Text = RootLang.dlgPreferences_Drawings_ExportSpace;
+            cmbExportSpace.Items.Add(RootLang.dlgPreferences_Drawings_ExportCalibrated);
+            cmbExportSpace.Items.Add(RootLang.dlgPreferences_Drawings_ExportPixels);
             int option = (int)exportSpace;
             cmbExportSpace.SelectedIndex = option < cmbExportSpace.Items.Count ? option : 0;
         }

@@ -538,6 +538,15 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to System ({0}).
+        /// </summary>
+        internal static string dlgPreferences_Drawing_CSVSystem {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Drawing_CSVSystem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable custom tools debug mode.
         /// </summary>
         internal static string dlgPreferences_Drawings_chkCustomToolsDebugMode {
@@ -565,6 +574,60 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Comma.
+        /// </summary>
+        internal static string dlgPreferences_Drawings_CSVComma {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Drawings_CSVComma", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CSV export decimal separator:.
+        /// </summary>
+        internal static string dlgPreferences_Drawings_CSVDelimiter {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Drawings_CSVDelimiter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Point.
+        /// </summary>
+        internal static string dlgPreferences_Drawings_CSVPoint {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Drawings_CSVPoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Calibrated.
+        /// </summary>
+        internal static string dlgPreferences_Drawings_ExportCalibrated {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Drawings_ExportCalibrated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pixels.
+        /// </summary>
+        internal static string dlgPreferences_Drawings_ExportPixels {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Drawings_ExportPixels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export space:.
+        /// </summary>
+        internal static string dlgPreferences_Drawings_ExportSpace {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Drawings_ExportSpace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default opacity of new drawings:.
         /// </summary>
         internal static string dlgPreferences_Drawings_lblDefaultOpacity {
@@ -588,6 +651,15 @@ namespace Kinovea.Root.Languages {
         internal static string dlgPreferences_Drawings_rbAlwaysVisible {
             get {
                 return ResourceManager.GetString("dlgPreferences_Drawings_rbAlwaysVisible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export.
+        /// </summary>
+        internal static string dlgPreferences_Drawings_TabExport {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Drawings_TabExport", resourceCulture);
             }
         }
         
