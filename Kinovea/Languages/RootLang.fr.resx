@@ -346,4 +346,10 @@
   </data>
   <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Dix millièmes d'heure</value>
   </data>
+  <data name="dlgPreferences_Capture_TriggerAction" xml:space="preserve">
+    <value>Action déclenchée :</value>
+  </data>
+  <data name="dlgPreferences_General_PathToPandoc" xml:space="preserve">
+    <value>Chemin vers pandoc :</value>
+  </data>
 </root>
