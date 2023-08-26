@@ -123,14 +123,14 @@ namespace Kinovea.ScreenManager
             foreach(ThumbnailFile tlvi in thumbnails)
                 tlvi.RefreshUICulture();
 
-            mnuSortBy.Text = "Sort by";
-            mnuSortByName.Text = "Name";
-            mnuSortByDate.Text = "Date";
-            mnuSortBySize.Text = "Size";
-            mnuSortAscending.Text = "Ascending";
-            mnuSortDescending.Text = "Descending";
+            mnuSortBy.Text = ScreenManagerLang.mnuSortBy;
+            mnuSortByName.Text = ScreenManagerLang.mnuSortBy_Name;
+            mnuSortByDate.Text = ScreenManagerLang.mnuSortBy_Date;
+            mnuSortBySize.Text = ScreenManagerLang.mnuSortBy_Size;
+            mnuSortAscending.Text = ScreenManagerLang.mnuSortBy_Ascending;
+            mnuSortDescending.Text = ScreenManagerLang.mnuSortBy_Descending;
 
-            mnuProperties.Text = "Properties";
+            mnuProperties.Text = ScreenManagerLang.mnuProperties;
 
             foreach (ToolStripMenuItem mnu in mnuProperties.DropDownItems)
             {

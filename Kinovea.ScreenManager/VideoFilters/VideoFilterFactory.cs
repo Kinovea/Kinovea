@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
@@ -24,7 +25,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         static VideoFilterFactory()
         {
-            info.Add(VideoFilterType.Kinogram, new VideoFilterInfo("Kinogram", Properties.Resources.mosaic, false));
+            info.Add(VideoFilterType.Kinogram, new VideoFilterInfo("Kinogram", "filterName_Kinogram", Properties.Resources.mosaic, false));
         }
 
         /// <summary>
@@ -58,12 +59,10 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public static string GetFriendlyName(VideoFilterType type)
         {
-            // TODO: localization.
-            // The filter should provide a resource string.
             if (type == VideoFilterType.None)
-                return "Analysis";
+                return ScreenManagerLang.filterName_Analysis;
             else
-                return info[type].Name;
+                return ScreenManagerLang.ResourceManager.GetString(info[type].FriendlyNameResource);
         }
 
         public static Bitmap GetIcon(VideoFilterType type)

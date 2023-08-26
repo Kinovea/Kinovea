@@ -1455,7 +1455,7 @@ namespace Kinovea.ScreenManager
         {
             toolSave.ToolTipText = ScreenManagerLang.Generic_SaveKVA;
             toolToggleExplorerPanel.ToolTipText = ScreenManagerLang.mnuHome;
-            toolThumbnails.ToolTipText = "Thumbnails";
+            toolThumbnails.ToolTipText = ScreenManagerLang.mnuThumbnails;
             toolOnePlayer.ToolTipText = ScreenManagerLang.mnuOnePlayer;
             toolTwoPlayers.ToolTipText = ScreenManagerLang.mnuTwoPlayers;
             toolOneCapture.ToolTipText = ScreenManagerLang.mnuOneCapture;
@@ -1470,28 +1470,27 @@ namespace Kinovea.ScreenManager
             mnuSave.Text = ScreenManagerLang.Generic_SaveKVA;
             mnuSaveAs.Text = ScreenManagerLang.Generic_SaveKVAAs;
 
-            mnuExportVideo.Text = "Export video"; //ScreenManagerLang.Generic_ExportVideo;
-            mnuExportVideoVideo.Text = "Video…";
-            mnuExportVideoSlideshow.Text = "Video slideshow…";
-            mnuExportVideoWithPauses.Text = "Video with pauses…";
-            mnuExportVideoSideBySide.Text = "Side by side…";
+            mnuExportVideo.Text = ScreenManagerLang.mnuExport_Video;
+            mnuExportVideoVideo.Text = ScreenManagerLang.mnuExport_Video_Video;
+            mnuExportVideoSlideshow.Text = ScreenManagerLang.mnuExport_Video_Slideshow;
+            mnuExportVideoWithPauses.Text = ScreenManagerLang.mnuExport_Video_WithPauses;
+            mnuExportVideoSideBySide.Text = ScreenManagerLang.mnuExport_Video_SideBySide;
 
-            mnuExportImage.Text = "Export images";
-            mnuExportImageImage.Text = "Image…";
-            mnuExportImageKeys.Text = "Key images…";
-            mnuExportImageSequence.Text = "Image sequence…";
-            mnuExportImageSideBySide.Text = "Side by side…";
+            mnuExportImage.Text = ScreenManagerLang.mnuExport_Image;
+            mnuExportImageImage.Text = ScreenManagerLang.mnuExport_Images_Image;
+            mnuExportImageKeys.Text = ScreenManagerLang.mnuExport_Images_Keys;
+            mnuExportImageSequence.Text = ScreenManagerLang.mnuExport_Images_Sequence;
+            mnuExportImageSideBySide.Text = ScreenManagerLang.mnuExport_Images_SideBySide;
             
-            //mnuExportSpreadsheet.Text = ScreenManagerLang.mnuExportSpreadsheet;
-            mnuExportSpreadsheet.Text = "Export spreadsheet";
+            mnuExportSpreadsheet.Text = ScreenManagerLang.mnuExport_Spreadsheet;
             mnuExportODS.Text = "LibreOffice Calc…";
             mnuExportXLSX.Text = "Microsoft Excel…";
-            mnuExportCSVTrajectory.Text = "Trajectory CSV…";
-            mnuExportCSVChronometer.Text = "Chronometer CSV…";
+            mnuExportCSVTrajectory.Text = ScreenManagerLang.mnuExport_Spreadsheet_TrajectoryCSV;
+            mnuExportCSVChronometer.Text = ScreenManagerLang.mnuExport_Spreadsheet_ChronoCSV;
             mnuExportJSON.Text = "JSON…";
 
 
-            mnuExportDocument.Text = "Export document";
+            mnuExportDocument.Text = ScreenManagerLang.mnuExport_Document;
             mnuExportODT.Text = "LibreOffice Writer…";
             mnuExportDOCX.Text = "Microsoft Word…";
             mnuExportMarkdown.Text = "Markdown…";
@@ -1516,13 +1515,12 @@ namespace Kinovea.ScreenManager
             mnuToggleCommonCtrls.Text = ScreenManagerLang.mnuToggleCommonCtrls;
             
             // Image
+            mnuAspectRatio.Text = ScreenManagerLang.mnuFormat;
             mnuAspectRatioAuto.Text = ScreenManagerLang.mnuFormatAuto;
             mnuAspectRatioForce43.Text = ScreenManagerLang.mnuFormatForce43;
             mnuAspectRatioForce169.Text = ScreenManagerLang.mnuFormatForce169;
-            mnuAspectRatio.Text = "Aspect ratio";
 
-            //mnuRotation.Text = ScreenManagerLang.mnuRotation;
-            mnuRotation.Text = "Rotation";
+            mnuRotation.Text = ScreenManagerLang.mnuRotation;
             mnuRotation0.Text = ScreenManagerLang.mnuRotation0;
             mnuRotation90.Text = ScreenManagerLang.mnuRotation90;
             mnuRotation180.Text = ScreenManagerLang.mnuRotation180;
@@ -1531,8 +1529,8 @@ namespace Kinovea.ScreenManager
             mnuMirror.Text = ScreenManagerLang.mnuMirror;
             mnuDeinterlace.Text = ScreenManagerLang.mnuDeinterlace;
 
-            mnuDemosaic.Text = "Demosaicing";
-            mnuDemosaicNone.Text = "None";
+            mnuDemosaic.Text = ScreenManagerLang.mnuDemosaic;
+            mnuDemosaicNone.Text = ScreenManagerLang.mnuDemosaicNone;
             mnuDemosaicRGGB.Text = "RGGB";
             mnuDemosaicBGGR.Text = "BGGR";
             mnuDemosaicGRBG.Text = "GRBG";
@@ -1542,8 +1540,8 @@ namespace Kinovea.ScreenManager
 
             // Tools
             mnuImportImage.Text = ScreenManagerLang.mnuImportImage;
-            mnuTimeCalibration.Text = "Time calibration…";
-            mnuLensDistortion.Text = "Lens calibration…";
+            mnuTimeCalibration.Text = ScreenManagerLang.mnuTimeCalibration;
+            mnuLensDistortion.Text = ScreenManagerLang.mnuLensCalibration;
             mnuCoordinateSystem.Text = ScreenManagerLang.mnuCoordinateSystem;
             mnuTestGrid.Text = ScreenManagerLang.DrawingName_TestGrid;
             mnuScatterDiagram.Text = ScreenManagerLang.DataAnalysis_ScatterDiagram + "…";

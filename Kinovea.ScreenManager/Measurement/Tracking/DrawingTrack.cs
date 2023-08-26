@@ -862,11 +862,11 @@ namespace Kinovea.ScreenManager
         {
             switch (data)
             {
-                case MeasureLabelType.None: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None;
-                case MeasureLabelType.Name: return ScreenManagerLang.dlgConfigureDrawing_Name;
+                case MeasureLabelType.None: return ScreenManagerLang.mnuMeasure_Trajectory_None;
+                case MeasureLabelType.Name: return ScreenManagerLang.mnuMeasure_Name;
 
-                case MeasureLabelType.Clock: return "Clock";
-                case MeasureLabelType.RelativeTime: return "Stopwatch";
+                case MeasureLabelType.Clock: return ScreenManagerLang.mnuMeasure_Clock;
+                case MeasureLabelType.RelativeTime: return ScreenManagerLang.mnuMeasure_Stopwatch;
 
                 case MeasureLabelType.Position: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Position;
                 case MeasureLabelType.TravelDistance: return ScreenManagerLang.ExtraData_Length;
@@ -1815,7 +1815,7 @@ namespace Kinovea.ScreenManager
             mnuTrackingTrim.Text = ScreenManagerLang.mnuDeleteEndOfTrajectory;
 
             // Measurement
-            mnuMeasurement.Text = "Measurement";
+            mnuMeasurement.Text = ScreenManagerLang.mnuMeasure_Trajectory_Menu;
             foreach (var pair in mnuMeasureLabelTypes)
             {
                 ToolStripMenuItem tsmi = pair.Value;
@@ -1825,13 +1825,13 @@ namespace Kinovea.ScreenManager
             }
 
             // Display options
-            mnuOptions.Text = "Options";
-            mnuSeeFuture.Text = "See future";
-            mnuShowTrackLabel.Text = "Show track label";
-            mnuShowKeyframeLabel.Text = "Show key image labels";
-            mnuUseKeyframeColor.Text = "Use key image colors";
-            mnuIsInteractiveTrack.Text = "Interactive track";
-            mnuShowRotationCircle.Text = "Show rotation circle";
+            mnuOptions.Text = ScreenManagerLang.mnuOptions;
+            mnuSeeFuture.Text = ScreenManagerLang.mnuOptions_Trajectory_SeeFuture;
+            mnuShowTrackLabel.Text = ScreenManagerLang.mnuOptions_Trajectory_ShowTrackLabel;
+            mnuShowKeyframeLabel.Text = ScreenManagerLang.mnuOptions_Trajectory_ShowKeyImageLabels;
+            mnuUseKeyframeColor.Text = ScreenManagerLang.mnuOptions_Trajectory_UseKeyImageColors;
+            mnuIsInteractiveTrack.Text = ScreenManagerLang.mnuOptions_Trajectory_Interactive;
+            mnuShowRotationCircle.Text = ScreenManagerLang.mnuOptions_Trajectory_ShowRotationCircle;
         }
 
         /// <summary>

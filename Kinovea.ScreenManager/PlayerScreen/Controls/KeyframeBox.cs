@@ -18,6 +18,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 using System;
 using System.ComponentModel;
@@ -223,8 +224,8 @@ namespace Kinovea.ScreenManager
         {
             // Reload the text for each menu.
             // this is done at construction time and at RefreshUICulture time.
-            mnuMove.Text = "Move to current time";
-            mnuDelete.Text = Languages.ScreenManagerLang.mnuThumbnailDelete;
+            mnuMove.Text = ScreenManagerLang.mnuThumbnail_MoveToCurrentTime;
+            mnuDelete.Text = ScreenManagerLang.mnuThumbnailDelete;
         }
 
         private void ShowButtons()

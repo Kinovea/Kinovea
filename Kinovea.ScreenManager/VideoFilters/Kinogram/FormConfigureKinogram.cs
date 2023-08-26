@@ -35,7 +35,7 @@ namespace Kinovea.ScreenManager
             this.kinogram = kinogram;
             this.hostView = hostView;
 
-            memento = new HistoryMementoModifyVideoFilter(kinogram.ParentMetadata, VideoFilterType.Kinogram, kinogram.FriendlyName); ;
+            memento = new HistoryMementoModifyVideoFilter(kinogram.ParentMetadata, VideoFilterType.Kinogram, kinogram.FriendlyNameResource);
             this.parameters = kinogram.Parameters;
 
             InitializeComponent();
@@ -60,10 +60,13 @@ namespace Kinovea.ScreenManager
 
         private void InitCulture()
         {
-            this.Text = "Configure Kinogram";
+            this.Text = ScreenManagerLang.formConfigureKinogram_Title;
             grpConfig.Text = ScreenManagerLang.Generic_Configuration;
-            lblColumns.Text = "Table:";
-            lblCropSize.Text = "Crop size:";
+            lblColumns.Text = ScreenManagerLang.formConfigureKinogram_Table;
+            lblCropSize.Text = ScreenManagerLang.formConfigureKinogram_CropSize;
+            btnApply.Text = ScreenManagerLang.Generic_Apply;
+            btnOK.Text = ScreenManagerLang.Generic_OK;
+            btnCancel.Text = ScreenManagerLang.Generic_Cancel;
         }
 
         private void SetupStyle()
@@ -114,9 +117,9 @@ namespace Kinovea.ScreenManager
         private void UpdateFrameInterval()
         {
             int tileCount = kinogram.GetTileCount(parameters.TileCount);
-            lblTotal.Text = string.Format("Frames: {0}", tileCount);
+            lblTotal.Text = string.Format(ScreenManagerLang.formConfigureKinogram_lblTotal, tileCount);
             float interval = kinogram.GetFrameInterval(parameters.TileCount);
-            lblFrameInterval.Text = string.Format("Frame interval: {0:0.000} ms", interval * 1000.0f);
+            lblFrameInterval.Text = string.Format(ScreenManagerLang.formConfigureKinogram_lblFrameInterval, interval * 1000.0f);
         }
 
         private void FixNudScroll()

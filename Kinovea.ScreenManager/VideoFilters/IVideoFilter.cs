@@ -36,9 +36,9 @@ namespace Kinovea.ScreenManager
     {
         #region Properties
         /// <summary>
-        /// User facing name of the filter.
+        /// Resource string for the user facing name of the filter.
         /// </summary>
-        string FriendlyName { get; }
+        string FriendlyNameResource { get; }
 
         /// <summary>
         /// Rendered bitmap to be displayed on the viewport.

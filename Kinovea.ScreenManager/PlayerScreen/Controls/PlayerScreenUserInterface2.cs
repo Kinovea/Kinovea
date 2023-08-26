@@ -2831,7 +2831,7 @@ namespace Kinovea.ScreenManager
             mnuDeleteTrajectory.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.DeleteDrawing);
 
             // Magnifier.
-            mnuMagnifierFreeze.Text = "Freeze";
+            mnuMagnifierFreeze.Text = ScreenManagerLang.mnuMagnifierFreeze;
             mnuMagnifierTrack.Text = ScreenManagerLang.mnuTrackTrajectory;
             mnuMagnifierDirect.Text = ScreenManagerLang.mnuMagnifierDirect;
             mnuMagnifierQuit.Text = ScreenManagerLang.mnuMagnifierQuit;
@@ -2871,8 +2871,8 @@ namespace Kinovea.ScreenManager
             toolTips.SetToolTip(btnTimeOrigin, ScreenManagerLang.mnuMarkTimeAsOrigin);
 
             toolTips.SetToolTip(lblTimeCode, ScreenManagerLang.lblTimeCode_Text);
-            toolTips.SetToolTip(lblSpeedTuner, "Speed");
-            toolTips.SetToolTip(sldrSpeed, "Speed");
+            toolTips.SetToolTip(lblSpeedTuner, ScreenManagerLang.toolTip_Speed);
+            toolTips.SetToolTip(sldrSpeed, ScreenManagerLang.toolTip_Speed);
             toolTips.SetToolTip(lblSelStartSelection, ScreenManagerLang.lblSelStartSelection_Text);
             toolTips.SetToolTip(lblSelDuration, ScreenManagerLang.lblSelDuration_Text);
         }
@@ -3231,7 +3231,8 @@ namespace Kinovea.ScreenManager
                         popMenuFilter.Items.Add(mnuExportImage);
 
                     popMenuFilter.Items.Add(new ToolStripSeparator());
-                    mnuExitFilter.Text = string.Format("Exit {0}", m_FrameServer.Metadata.ActiveVideoFilter.FriendlyName);
+                    string filterName = ScreenManagerLang.ResourceManager.GetString(m_FrameServer.Metadata.ActiveVideoFilter.FriendlyNameResource);
+                    mnuExitFilter.Text = string.Format(ScreenManagerLang.mnuExitFilter, filterName);
                     popMenuFilter.Items.Add(mnuExitFilter);
                     popMenuFilter.Items.Add(mnuCloseScreen);
                     panelCenter.ContextMenuStrip = popMenuFilter;
@@ -3425,7 +3426,7 @@ namespace Kinovea.ScreenManager
                 popMenu.Items.Add(tsmi);
             }
 
-            mnuMagnifierFreeze.Text = magnifier.Frozen ? "Unfreeze" : "Freeze";
+            mnuMagnifierFreeze.Text = magnifier.Frozen ? ScreenManagerLang.mnuMagnifierUnfreeze : ScreenManagerLang.mnuMagnifierFreeze;
             mnuMagnifierTrack.Checked = ToggleTrackingCommand.CurrentState(m_FrameServer.Metadata.Magnifier);
         }
         private void PrepareFilterContextMenu(IVideoFilter filter, ContextMenuStrip popMenu)

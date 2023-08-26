@@ -42,9 +42,9 @@ namespace Kinovea.ScreenManager
     public class VideoFilterKinogram : IVideoFilter
     {
         #region Properties
-        public string FriendlyName
+        public string FriendlyNameResource
         {
-            get { return "Kinogram"; }
+            get { return "filterName_Kinogram"; }
         }
         public Bitmap Current
         {
@@ -472,19 +472,19 @@ namespace Kinovea.ScreenManager
             // Just in time localization.
             mnuConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
             
-            mnuAction.Text = "Action";
-            mnuInterpolate.Text = "Interpolate tiles";
-            mnuResetLabelPositions.Text = "Reset label positions";
-            mnuResetTile.Text = "Reset this tile";
-            mnuResetAllTiles.Text = "Reset all tiles";
+            mnuAction.Text = ScreenManagerLang.mnuAction;
+            mnuInterpolate.Text = ScreenManagerLang.mnuAction_Kinogram_Interpolate;
+            mnuResetLabelPositions.Text = ScreenManagerLang.mnuAction_Kinogram_ResetLabelPositions;
+            mnuResetTile.Text = ScreenManagerLang.mnuAction_Kinogram_ResetTile;
+            mnuResetAllTiles.Text = ScreenManagerLang.mnuAction_Kinogram_ResetAllTiles;
 
-            mnuOptions.Text = "Options";
-            mnuRightToLeft.Text = "Right to left";
-            mnuShowBorder.Text = "Show border";
-            mnuAutoInterpolate.Text = "Auto interpolate";
+            mnuOptions.Text = ScreenManagerLang.mnuOptions;
+            mnuRightToLeft.Text = ScreenManagerLang.mnuOptions_Kinogram_RightToLeft;
+            mnuShowBorder.Text = ScreenManagerLang.mnuOptions_Kinogram_ShowBorder;
+            mnuAutoInterpolate.Text = ScreenManagerLang.mnuOptions_Kinogram_AutoInterpolate;
 
             // Measurement
-            mnuMeasurement.Text = "Labels";
+            mnuMeasurement.Text = ScreenManagerLang.mnuMeasure_Kinogram_Menu;
             foreach (var pair in mnuMeasureLabelTypes)
             {
                 ToolStripMenuItem tsmi = pair.Value;
@@ -500,8 +500,8 @@ namespace Kinovea.ScreenManager
             {
                 case MeasureLabelType.None: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None;
 
-                case MeasureLabelType.Clock: return "Clock";
-                case MeasureLabelType.Frame: return "Frame";
+                case MeasureLabelType.Clock: return ScreenManagerLang.mnuMeasure_Clock;
+                case MeasureLabelType.Frame: return ScreenManagerLang.mnuMeasure_FrameNumber;
             }
 
             return "";
@@ -1218,7 +1218,7 @@ namespace Kinovea.ScreenManager
     
         private void CaptureMemento()
         {
-            var memento = new HistoryMementoModifyVideoFilter(parentMetadata, VideoFilterType.Kinogram, FriendlyName);
+            var memento = new HistoryMementoModifyVideoFilter(parentMetadata, VideoFilterType.Kinogram, FriendlyNameResource);
             parentMetadata.HistoryStack.PushNewCommand(memento);
         }
     }

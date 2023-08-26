@@ -61,7 +61,7 @@ namespace Kinovea.ScreenManager
 
         private void InitializeCulture()
         {
-            this.Text = "Export image sequence";
+            this.Text = ScreenManagerLang.formConfigureExport_ImageSequence;
 
             grpboxConfig.Text = ScreenManagerLang.Generic_Configuration;
             btnOK.Text = ScreenManagerLang.Generic_Save;

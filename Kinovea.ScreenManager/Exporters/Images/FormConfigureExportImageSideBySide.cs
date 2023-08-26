@@ -32,10 +32,10 @@ namespace Kinovea.ScreenManager
 
         private void InitializeCulture()
         {
-            this.Text = "Export side by side";
+            this.Text = ScreenManagerLang.formConfigureExport_SBS;
 
-            rbHorizontal.Text = "Horizontal";
-            rbVertical.Text = "Vertical";
+            rbHorizontal.Text = ScreenManagerLang.formConfigureExport_SBS_Horizontal;
+            rbVertical.Text = ScreenManagerLang.formConfigureExport_SBS_Vertical;
 
             grpboxConfig.Text = ScreenManagerLang.Generic_Configuration;
             btnOK.Text = ScreenManagerLang.Generic_Save;

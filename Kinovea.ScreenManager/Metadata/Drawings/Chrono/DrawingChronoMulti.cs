@@ -713,36 +713,36 @@ namespace Kinovea.ScreenManager
             mnuShowAfter.Text = ScreenManagerLang.mnuShowAfter;
 
             // Action
-            mnuAction.Text = "Action";
+            mnuAction.Text = ScreenManagerLang.mnuAction;
 
             // When we are on a live section.
-            mnuStop.Text = "Stop: end the current time section on this frame";
-            mnuSplit.Text = "Split: end the current time section on this frame and start a new one";
-            mnuMoveCurrentStart.Text = "Move the start of the current time section to this frame";
-            mnuMoveCurrentEnd.Text = "Move the end of the current time section to this frame";
-            mnuMovePreviousSplit.Text = "Move the previous split point to this frame";
-            mnuMoveNextSplit.Text = "Move the next split point to this frame";
-            mnuDeleteSection.Text = "Delete the current time section";
+            mnuStop.Text = ScreenManagerLang.mnuAction_Chrono_Stop;
+            mnuSplit.Text = ScreenManagerLang.mnuAction_Chrono_Split;
+            mnuMoveCurrentStart.Text = ScreenManagerLang.mnuAction_Chrono_MoveCurrentStart;
+            mnuMoveCurrentEnd.Text = ScreenManagerLang.mnuAction_Chrono_MoveCurrentEnd;
+            mnuMovePreviousSplit.Text = ScreenManagerLang.mnuAction_Chrono_MovePrevSplit;
+            mnuMoveNextSplit.Text = ScreenManagerLang.mnuAction_Chrono_MoveNextSplit;
+            mnuDeleteSection.Text = ScreenManagerLang.mnuAction_Chrono_DeleteSection;
 
             // When we are on a dead section.
-            mnuStart.Text = "Start a new time section on this frame";
-            mnuMovePreviousEnd.Text = "Move the end of the previous section to this frame";
-            mnuMoveNextStart.Text = "Move the start of the next section to this frame";
-            mnuDeleteTimes.Text = "Delete all times";
+            mnuStart.Text = ScreenManagerLang.mnuAction_Chrono_Start;
+            mnuMovePreviousEnd.Text = ScreenManagerLang.mnuAction_Chrono_MovePrevEnd;
+            mnuMoveNextStart.Text = ScreenManagerLang.mnuAction_Chrono_MoveNextStart;
+            mnuDeleteTimes.Text = ScreenManagerLang.mnuAction_Chrono_DeleteTimes;
 
             // Options.
-            mnuOptions.Text = "Options";
+            mnuOptions.Text = ScreenManagerLang.mnuOptions;
             mnuShowLabel.Text = ScreenManagerLang.mnuShowLabel;
-            mnuLocked.Text = "Locked";
+            mnuLocked.Text = ScreenManagerLang.mnuOptions_Chrono_Locked;
 
             // Columns.
-            mnuColumns.Text = "Columns";
-            mnuColumnName.Text = "Name";
-            mnuColumnCumul.Text = "Cumulative time";
-            mnuColumnTag.Text = "Tag";
+            mnuColumns.Text = ScreenManagerLang.mnuMeasure_Chrono_Menu;
+            mnuColumnName.Text = ScreenManagerLang.mnuMeasure_Name;
+            mnuColumnCumul.Text = ScreenManagerLang.mnuMeasure_Chrono_Cumul;
+            mnuColumnTag.Text = ScreenManagerLang.mnuMeasure_Chrono_Tag;
 
             // Sections.
-            mnuConfigureSections.Text = "Time sections";
+            mnuConfigureSections.Text = ScreenManagerLang.mnuTimeSections;
         }
 
         #region Visibility

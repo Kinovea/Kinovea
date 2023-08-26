@@ -124,12 +124,12 @@ namespace Kinovea.ScreenManager
             if (isDistanceGrid)
             {
                 lblSeparator.Text = ",";
-                lblHelpText.Text = "Enter the distance from the origin for each marker.";
+                lblHelpText.Text = ScreenManagerLang.dlgCalibratePlane_HelpDistanceGrid;
             }
             else
             {
                 lblSeparator.Text = "×";
-                lblHelpText.Text = "Enter the length of each side.";
+                lblHelpText.Text = ScreenManagerLang.dlgCalibratePlane_HelpPlane;
             }
 
             // Prepare drawing.
@@ -270,7 +270,7 @@ namespace Kinovea.ScreenManager
 
                     string pixelSize = UnitHelper.GetPixelSize(worldLength, pixelLength, unit);
 
-                    lblPrecision.Text = string.Format("Average pixel size: {0}.", pixelSize);
+                    lblPrecision.Text = string.Format(ScreenManagerLang.dlgCalibratePlane_AveragePixelSize, pixelSize);
                     lblPrecision.Visible = true;
                 }
                 else

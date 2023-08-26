@@ -19,7 +19,7 @@ namespace Kinovea.ScreenManager.Languages {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ScreenManagerLang {
@@ -466,6 +466,33 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Average pixel size: {0}..
+        /// </summary>
+        public static string dlgCalibratePlane_AveragePixelSize {
+            get {
+                return ResourceManager.GetString("dlgCalibratePlane_AveragePixelSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter the distance from the origin for each marker..
+        /// </summary>
+        public static string dlgCalibratePlane_HelpDistanceGrid {
+            get {
+                return ResourceManager.GetString("dlgCalibratePlane_HelpDistanceGrid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter the length of each side..
+        /// </summary>
+        public static string dlgCalibratePlane_HelpPlane {
+            get {
+                return ResourceManager.GetString("dlgCalibratePlane_HelpPlane", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Plane calibration.
         /// </summary>
         public static string dlgCalibratePlane_Title {
@@ -484,7 +511,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Camera intrisics.
+        ///   Looks up a localized string similar to Camera intrinsics.
         /// </summary>
         public static string dlgCameraCalibration_CameraIntrinsics {
             get {
@@ -1699,6 +1726,24 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Analysis.
+        /// </summary>
+        public static string filterName_Analysis {
+            get {
+                return ResourceManager.GetString("filterName_Analysis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kinogram.
+        /// </summary>
+        public static string filterName_Kinogram {
+            get {
+                return ResourceManager.GetString("filterName_Kinogram", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Alias:.
         /// </summary>
         public static string FormCameraAlias_Alias {
@@ -1722,6 +1767,87 @@ namespace Kinovea.ScreenManager.Languages {
         public static string FormCameraAlias_Title {
             get {
                 return ResourceManager.GetString("FormCameraAlias_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export image sequence.
+        /// </summary>
+        public static string formConfigureExport_ImageSequence {
+            get {
+                return ResourceManager.GetString("formConfigureExport_ImageSequence", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export side by side.
+        /// </summary>
+        public static string formConfigureExport_SBS {
+            get {
+                return ResourceManager.GetString("formConfigureExport_SBS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Horizontal.
+        /// </summary>
+        public static string formConfigureExport_SBS_Horizontal {
+            get {
+                return ResourceManager.GetString("formConfigureExport_SBS_Horizontal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vertical.
+        /// </summary>
+        public static string formConfigureExport_SBS_Vertical {
+            get {
+                return ResourceManager.GetString("formConfigureExport_SBS_Vertical", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Crop size:.
+        /// </summary>
+        public static string formConfigureKinogram_CropSize {
+            get {
+                return ResourceManager.GetString("formConfigureKinogram_CropSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Frame interval: {0:0.000} ms.
+        /// </summary>
+        public static string formConfigureKinogram_lblFrameInterval {
+            get {
+                return ResourceManager.GetString("formConfigureKinogram_lblFrameInterval", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Frames: {0}.
+        /// </summary>
+        public static string formConfigureKinogram_lblTotal {
+            get {
+                return ResourceManager.GetString("formConfigureKinogram_lblTotal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Table:.
+        /// </summary>
+        public static string formConfigureKinogram_Table {
+            get {
+                return ResourceManager.GetString("formConfigureKinogram_Table", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configure Kinogram.
+        /// </summary>
+        public static string formConfigureKinogram_Title {
+            get {
+                return ResourceManager.GetString("formConfigureKinogram_Title", resourceCulture);
             }
         }
         
@@ -1996,6 +2122,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        public static string Generic_OK {
+            get {
+                return ResourceManager.GetString("Generic_OK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Opacity.
         /// </summary>
         public static string Generic_Opacity {
@@ -2181,6 +2316,15 @@ namespace Kinovea.ScreenManager.Languages {
         public static string InfoBox_MetadataIsDirty_Title {
             get {
                 return ResourceManager.GetString("InfoBox_MetadataIsDirty_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Image size:.
+        /// </summary>
+        public static string lblConfig_ImageSize {
+            get {
+                return ResourceManager.GetString("lblConfig_ImageSize", resourceCulture);
             }
         }
         
@@ -2410,6 +2554,150 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Action.
+        /// </summary>
+        public static string mnuAction {
+            get {
+                return ResourceManager.GetString("mnuAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete the current time section.
+        /// </summary>
+        public static string mnuAction_Chrono_DeleteSection {
+            get {
+                return ResourceManager.GetString("mnuAction_Chrono_DeleteSection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete all times.
+        /// </summary>
+        public static string mnuAction_Chrono_DeleteTimes {
+            get {
+                return ResourceManager.GetString("mnuAction_Chrono_DeleteTimes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move the end of the current time section to this frame.
+        /// </summary>
+        public static string mnuAction_Chrono_MoveCurrentEnd {
+            get {
+                return ResourceManager.GetString("mnuAction_Chrono_MoveCurrentEnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move the start of the current time section to this frame.
+        /// </summary>
+        public static string mnuAction_Chrono_MoveCurrentStart {
+            get {
+                return ResourceManager.GetString("mnuAction_Chrono_MoveCurrentStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move the next split point to this frame.
+        /// </summary>
+        public static string mnuAction_Chrono_MoveNextSplit {
+            get {
+                return ResourceManager.GetString("mnuAction_Chrono_MoveNextSplit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move the start of the next section to this frame.
+        /// </summary>
+        public static string mnuAction_Chrono_MoveNextStart {
+            get {
+                return ResourceManager.GetString("mnuAction_Chrono_MoveNextStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move the end of the previous section to this frame.
+        /// </summary>
+        public static string mnuAction_Chrono_MovePrevEnd {
+            get {
+                return ResourceManager.GetString("mnuAction_Chrono_MovePrevEnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move the previous split point to this frame.
+        /// </summary>
+        public static string mnuAction_Chrono_MovePrevSplit {
+            get {
+                return ResourceManager.GetString("mnuAction_Chrono_MovePrevSplit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Split: end the current time section on this frame and start a new one.
+        /// </summary>
+        public static string mnuAction_Chrono_Split {
+            get {
+                return ResourceManager.GetString("mnuAction_Chrono_Split", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start a new time section on this frame.
+        /// </summary>
+        public static string mnuAction_Chrono_Start {
+            get {
+                return ResourceManager.GetString("mnuAction_Chrono_Start", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop: end the current time section on this frame.
+        /// </summary>
+        public static string mnuAction_Chrono_Stop {
+            get {
+                return ResourceManager.GetString("mnuAction_Chrono_Stop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Interpolate tiles.
+        /// </summary>
+        public static string mnuAction_Kinogram_Interpolate {
+            get {
+                return ResourceManager.GetString("mnuAction_Kinogram_Interpolate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset all tiles.
+        /// </summary>
+        public static string mnuAction_Kinogram_ResetAllTiles {
+            get {
+                return ResourceManager.GetString("mnuAction_Kinogram_ResetAllTiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset label positions.
+        /// </summary>
+        public static string mnuAction_Kinogram_ResetLabelPositions {
+            get {
+                return ResourceManager.GetString("mnuAction_Kinogram_ResetLabelPositions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset this tile.
+        /// </summary>
+        public static string mnuAction_Kinogram_ResetTile {
+            get {
+                return ResourceManager.GetString("mnuAction_Kinogram_ResetTile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Calibrate....
         /// </summary>
         public static string mnuCalibrate {
@@ -2581,6 +2869,24 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Demosaicing.
+        /// </summary>
+        public static string mnuDemosaic {
+            get {
+                return ResourceManager.GetString("mnuDemosaic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None.
+        /// </summary>
+        public static string mnuDemosaicNone {
+            get {
+                return ResourceManager.GetString("mnuDemosaicNone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Start tracking.
         /// </summary>
         public static string mnuDrawingTrackingStart {
@@ -2595,6 +2901,141 @@ namespace Kinovea.ScreenManager.Languages {
         public static string mnuDrawingTrackingStop {
             get {
                 return ResourceManager.GetString("mnuDrawingTrackingStop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exit {0}.
+        /// </summary>
+        public static string mnuExitFilter {
+            get {
+                return ResourceManager.GetString("mnuExitFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export document.
+        /// </summary>
+        public static string mnuExport_Document {
+            get {
+                return ResourceManager.GetString("mnuExport_Document", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export images.
+        /// </summary>
+        public static string mnuExport_Image {
+            get {
+                return ResourceManager.GetString("mnuExport_Image", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Image….
+        /// </summary>
+        public static string mnuExport_Images_Image {
+            get {
+                return ResourceManager.GetString("mnuExport_Images_Image", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key images….
+        /// </summary>
+        public static string mnuExport_Images_Keys {
+            get {
+                return ResourceManager.GetString("mnuExport_Images_Keys", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Image sequence….
+        /// </summary>
+        public static string mnuExport_Images_Sequence {
+            get {
+                return ResourceManager.GetString("mnuExport_Images_Sequence", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Side by side….
+        /// </summary>
+        public static string mnuExport_Images_SideBySide {
+            get {
+                return ResourceManager.GetString("mnuExport_Images_SideBySide", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export spreadsheet.
+        /// </summary>
+        public static string mnuExport_Spreadsheet {
+            get {
+                return ResourceManager.GetString("mnuExport_Spreadsheet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chronometer CSV….
+        /// </summary>
+        public static string mnuExport_Spreadsheet_ChronoCSV {
+            get {
+                return ResourceManager.GetString("mnuExport_Spreadsheet_ChronoCSV", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trajectory CSV….
+        /// </summary>
+        public static string mnuExport_Spreadsheet_TrajectoryCSV {
+            get {
+                return ResourceManager.GetString("mnuExport_Spreadsheet_TrajectoryCSV", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export video.
+        /// </summary>
+        public static string mnuExport_Video {
+            get {
+                return ResourceManager.GetString("mnuExport_Video", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Side by side….
+        /// </summary>
+        public static string mnuExport_Video_SideBySide {
+            get {
+                return ResourceManager.GetString("mnuExport_Video_SideBySide", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Video slideshow….
+        /// </summary>
+        public static string mnuExport_Video_Slideshow {
+            get {
+                return ResourceManager.GetString("mnuExport_Video_Slideshow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Video….
+        /// </summary>
+        public static string mnuExport_Video_Video {
+            get {
+                return ResourceManager.GetString("mnuExport_Video_Video", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Video with pauses….
+        /// </summary>
+        public static string mnuExport_Video_WithPauses {
+            get {
+                return ResourceManager.GetString("mnuExport_Video_WithPauses", resourceCulture);
             }
         }
         
@@ -2626,7 +3067,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Image format.
+        ///   Looks up a localized string similar to Aspect ratio.
         /// </summary>
         public static string mnuFormat {
             get {
@@ -2716,6 +3157,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Lens calibration….
+        /// </summary>
+        public static string mnuLensCalibration {
+            get {
+                return ResourceManager.GetString("mnuLensCalibration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Load annotations….
         /// </summary>
         public static string mnuLoadAnalysis {
@@ -2743,11 +3193,29 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Freeze.
+        /// </summary>
+        public static string mnuMagnifierFreeze {
+            get {
+                return ResourceManager.GetString("mnuMagnifierFreeze", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Close magnifier.
         /// </summary>
         public static string mnuMagnifierQuit {
             get {
                 return ResourceManager.GetString("mnuMagnifierQuit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unfreeze.
+        /// </summary>
+        public static string mnuMagnifierUnfreeze {
+            get {
+                return ResourceManager.GetString("mnuMagnifierUnfreeze", resourceCulture);
             }
         }
         
@@ -2766,6 +3234,105 @@ namespace Kinovea.ScreenManager.Languages {
         public static string mnuMarkTimeAsOriginClock {
             get {
                 return ResourceManager.GetString("mnuMarkTimeAsOriginClock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cumulative time.
+        /// </summary>
+        public static string mnuMeasure_Chrono_Cumul {
+            get {
+                return ResourceManager.GetString("mnuMeasure_Chrono_Cumul", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Columns.
+        /// </summary>
+        public static string mnuMeasure_Chrono_Menu {
+            get {
+                return ResourceManager.GetString("mnuMeasure_Chrono_Menu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tag.
+        /// </summary>
+        public static string mnuMeasure_Chrono_Tag {
+            get {
+                return ResourceManager.GetString("mnuMeasure_Chrono_Tag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clock.
+        /// </summary>
+        public static string mnuMeasure_Clock {
+            get {
+                return ResourceManager.GetString("mnuMeasure_Clock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Frame number.
+        /// </summary>
+        public static string mnuMeasure_FrameNumber {
+            get {
+                return ResourceManager.GetString("mnuMeasure_FrameNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Labels.
+        /// </summary>
+        public static string mnuMeasure_Kinogram_Menu {
+            get {
+                return ResourceManager.GetString("mnuMeasure_Kinogram_Menu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None.
+        /// </summary>
+        public static string mnuMeasure_Kinogram_None {
+            get {
+                return ResourceManager.GetString("mnuMeasure_Kinogram_None", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string mnuMeasure_Name {
+            get {
+                return ResourceManager.GetString("mnuMeasure_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stopwatch.
+        /// </summary>
+        public static string mnuMeasure_Stopwatch {
+            get {
+                return ResourceManager.GetString("mnuMeasure_Stopwatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Measurement.
+        /// </summary>
+        public static string mnuMeasure_Trajectory_Menu {
+            get {
+                return ResourceManager.GetString("mnuMeasure_Trajectory_Menu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None.
+        /// </summary>
+        public static string mnuMeasure_Trajectory_None {
+            get {
+                return ResourceManager.GetString("mnuMeasure_Trajectory_None", resourceCulture);
             }
         }
         
@@ -2824,6 +3391,105 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Options.
+        /// </summary>
+        public static string mnuOptions {
+            get {
+                return ResourceManager.GetString("mnuOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Locked.
+        /// </summary>
+        public static string mnuOptions_Chrono_Locked {
+            get {
+                return ResourceManager.GetString("mnuOptions_Chrono_Locked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto interpolate.
+        /// </summary>
+        public static string mnuOptions_Kinogram_AutoInterpolate {
+            get {
+                return ResourceManager.GetString("mnuOptions_Kinogram_AutoInterpolate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Right to left.
+        /// </summary>
+        public static string mnuOptions_Kinogram_RightToLeft {
+            get {
+                return ResourceManager.GetString("mnuOptions_Kinogram_RightToLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show border.
+        /// </summary>
+        public static string mnuOptions_Kinogram_ShowBorder {
+            get {
+                return ResourceManager.GetString("mnuOptions_Kinogram_ShowBorder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Interactive track.
+        /// </summary>
+        public static string mnuOptions_Trajectory_Interactive {
+            get {
+                return ResourceManager.GetString("mnuOptions_Trajectory_Interactive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to See future.
+        /// </summary>
+        public static string mnuOptions_Trajectory_SeeFuture {
+            get {
+                return ResourceManager.GetString("mnuOptions_Trajectory_SeeFuture", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show key image labels.
+        /// </summary>
+        public static string mnuOptions_Trajectory_ShowKeyImageLabels {
+            get {
+                return ResourceManager.GetString("mnuOptions_Trajectory_ShowKeyImageLabels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show rotation circle.
+        /// </summary>
+        public static string mnuOptions_Trajectory_ShowRotationCircle {
+            get {
+                return ResourceManager.GetString("mnuOptions_Trajectory_ShowRotationCircle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show track label.
+        /// </summary>
+        public static string mnuOptions_Trajectory_ShowTrackLabel {
+            get {
+                return ResourceManager.GetString("mnuOptions_Trajectory_ShowTrackLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use key image colors.
+        /// </summary>
+        public static string mnuOptions_Trajectory_UseKeyImageColors {
+            get {
+                return ResourceManager.GetString("mnuOptions_Trajectory_UseKeyImageColors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Paste drawing.
         /// </summary>
         public static string mnuPasteDrawing {
@@ -2869,16 +3535,16 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Restart path edition.
+        ///   Looks up a localized string similar to Properties.
         /// </summary>
-        public static string mnuRestartTracking {
+        public static string mnuProperties {
             get {
-                return ResourceManager.GetString("mnuRestartTracking", resourceCulture);
+                return ResourceManager.GetString("mnuProperties", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Image rotation.
+        ///   Looks up a localized string similar to Rotation.
         /// </summary>
         public static string mnuRotation {
             get {
@@ -2995,11 +3661,56 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to End path edition .
+        ///   Looks up a localized string similar to Sort by.
         /// </summary>
-        public static string mnuStopTracking {
+        public static string mnuSortBy {
             get {
-                return ResourceManager.GetString("mnuStopTracking", resourceCulture);
+                return ResourceManager.GetString("mnuSortBy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ascending.
+        /// </summary>
+        public static string mnuSortBy_Ascending {
+            get {
+                return ResourceManager.GetString("mnuSortBy_Ascending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date.
+        /// </summary>
+        public static string mnuSortBy_Date {
+            get {
+                return ResourceManager.GetString("mnuSortBy_Date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Descending.
+        /// </summary>
+        public static string mnuSortBy_Descending {
+            get {
+                return ResourceManager.GetString("mnuSortBy_Descending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string mnuSortBy_Name {
+            get {
+                return ResourceManager.GetString("mnuSortBy_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size.
+        /// </summary>
+        public static string mnuSortBy_Size {
+            get {
+                return ResourceManager.GetString("mnuSortBy_Size", resourceCulture);
             }
         }
         
@@ -3013,20 +3724,20 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Observational reference.
-        /// </summary>
-        public static string mnuSVGTools {
-            get {
-                return ResourceManager.GetString("mnuSVGTools", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Swap screens.
         /// </summary>
         public static string mnuSwapScreens {
             get {
                 return ResourceManager.GetString("mnuSwapScreens", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move to current time.
+        /// </summary>
+        public static string mnuThumbnail_MoveToCurrentTime {
+            get {
+                return ResourceManager.GetString("mnuThumbnail_MoveToCurrentTime", resourceCulture);
             }
         }
         
@@ -3067,11 +3778,38 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Thumbnails.
+        /// </summary>
+        public static string mnuThumbnails {
+            get {
+                return ResourceManager.GetString("mnuThumbnails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Configure video timing....
         /// </summary>
         public static string mnuTimebase {
             get {
                 return ResourceManager.GetString("mnuTimebase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time calibration….
+        /// </summary>
+        public static string mnuTimeCalibration {
+            get {
+                return ResourceManager.GetString("mnuTimeCalibration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time sections.
+        /// </summary>
+        public static string mnuTimeSections {
+            get {
+                return ResourceManager.GetString("mnuTimeSections", resourceCulture);
             }
         }
         
@@ -3225,15 +3963,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string Toast_TriggerDisarmed {
             get {
                 return ResourceManager.GetString("Toast_TriggerDisarmed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Zoom: {0}%.
-        /// </summary>
-        public static string Toast_Zoom {
-            get {
-                return ResourceManager.GetString("Toast_Zoom", resourceCulture);
             }
         }
         
@@ -3445,24 +4174,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change repeat mode ( Once | Loop ) - Current mode : Loop.
-        /// </summary>
-        public static string ToolTip_PlayingMode_Loop {
-            get {
-                return ResourceManager.GetString("ToolTip_PlayingMode_Loop", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Change repeat mode ( Once | Loop ) - Current mode : Once.
-        /// </summary>
-        public static string ToolTip_PlayingMode_Once {
-            get {
-                return ResourceManager.GetString("ToolTip_PlayingMode_Once", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Save a sequence of images.
         /// </summary>
         public static string ToolTip_Rafale {
@@ -3598,6 +4309,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Speed.
+        /// </summary>
+        public static string toolTip_Speed {
+            get {
+                return ResourceManager.GetString("toolTip_Speed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Start camera.
         /// </summary>
         public static string ToolTip_StartCamera {
@@ -3630,60 +4350,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string ToolTip_trkSelection {
             get {
                 return ResourceManager.GetString("ToolTip_trkSelection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Auto levels....
-        /// </summary>
-        public static string VideoFilterAutoLevels_FriendlyName {
-            get {
-                return ResourceManager.GetString("VideoFilterAutoLevels_FriendlyName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Auto contrast....
-        /// </summary>
-        public static string VideoFilterContrast_FriendlyName {
-            get {
-                return ResourceManager.GetString("VideoFilterContrast_FriendlyName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Edges only....
-        /// </summary>
-        public static string VideoFilterEdgesOnly_FriendlyName {
-            get {
-                return ResourceManager.GetString("VideoFilterEdgesOnly_FriendlyName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Overview....
-        /// </summary>
-        public static string VideoFilterMosaic_FriendlyName {
-            get {
-                return ResourceManager.GetString("VideoFilterMosaic_FriendlyName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Reverse....
-        /// </summary>
-        public static string VideoFilterReverse_FriendlyName {
-            get {
-                return ResourceManager.GetString("VideoFilterReverse_FriendlyName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Sharpen....
-        /// </summary>
-        public static string VideoFilterSharpen_FriendlyName {
-            get {
-                return ResourceManager.GetString("VideoFilterSharpen_FriendlyName", resourceCulture);
             }
         }
     }

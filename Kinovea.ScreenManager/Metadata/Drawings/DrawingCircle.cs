@@ -625,7 +625,7 @@ namespace Kinovea.ScreenManager
             switch (data)
             {
                 case MeasureLabelType.None: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None;
-                case MeasureLabelType.Name: return ScreenManagerLang.dlgConfigureDrawing_Name;
+                case MeasureLabelType.Name: return ScreenManagerLang.mnuMeasure_Name;
                 case MeasureLabelType.Center: return ScreenManagerLang.ExtraData_Center;
                 case MeasureLabelType.Radius: return ScreenManagerLang.ExtraData_Radius;
                 case MeasureLabelType.Diameter: return ScreenManagerLang.ExtraData_Diameter;

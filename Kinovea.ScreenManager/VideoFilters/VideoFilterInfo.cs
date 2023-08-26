@@ -19,6 +19,12 @@ namespace Kinovea.ScreenManager
         public string Name { get; private set; }
 
         /// <summary>
+        /// Resource string for the friendly name of the filter, visible in the menus
+        /// This name should be localized if it makes sense.
+        /// </summary>
+        public string FriendlyNameResource { get; private set; }
+
+        /// <summary>
         /// Icon for the menu.
         /// </summary>
         public Bitmap Icon { get; private set; }
@@ -28,9 +34,10 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public bool Experimental { get; private set; }
 
-        public VideoFilterInfo(string name, Bitmap icon, bool experimental)
+        public VideoFilterInfo(string name, string friendlyNameResource, Bitmap icon, bool experimental)
         {
             Name = name;
+            FriendlyNameResource = friendlyNameResource;
             Icon = icon;
             Experimental = experimental;
         }
