@@ -544,6 +544,6 @@
     <value>Trigger action:</value>
   </data>
   <data name="dlgPreferences_General_PathToPandoc" xml:space="preserve">
-    <value>Path to pandoc</value>
+    <value>Path to pandoc:</value>
   </data>
 </root>

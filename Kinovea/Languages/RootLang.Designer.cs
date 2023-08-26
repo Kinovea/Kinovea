@@ -619,7 +619,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Path to pandoc.
+        ///   Looks up a localized string similar to Path to pandoc:.
         /// </summary>
         internal static string dlgPreferences_General_PathToPandoc {
             get {
