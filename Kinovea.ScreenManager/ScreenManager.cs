@@ -70,7 +70,7 @@ namespace Kinovea.ScreenManager
         private IEnumerable<CaptureScreen> captureScreens;
         private AbstractScreen activeScreen = null;
         private bool canShowCommonControls;
-        private int dualLaunchSettingsPendingCountdown;
+        private int pendingPlayerLoads;
         private bool launchLoadingInProgress;
         private List<string> camerasToDiscover = new List<string>();
         private AudioInputLevelMonitor audioInputLevelMonitor = new AudioInputLevelMonitor();
@@ -836,12 +836,12 @@ namespace Kinovea.ScreenManager
                 return;
             }
                
-            dualLaunchSettingsPendingCountdown--;
+            pendingPlayerLoads--;
 
-            log.DebugFormat("Player load event received in Screen manager. Pending loads:{0}",
-                dualLaunchSettingsPendingCountdown);
+            log.DebugFormat("Player load event received in Screen manager. Remaining pending loads:{0}",
+                pendingPlayerLoads);
 
-            if (dualLaunchSettingsPendingCountdown > 0)
+            if (pendingPlayerLoads > 0)
                 return;
 
             log.DebugFormat("Auto launch complete.");
@@ -2494,9 +2494,8 @@ namespace Kinovea.ScreenManager
             if (camerasToDiscover.Count == 0)
                 CameraTypeManager.StopDiscoveringCameras();
 
-            // Loading a video may trigger a working zone load.
             int added = 0;
-            dualLaunchSettingsPendingCountdown = count;
+            pendingPlayerLoads = count - camerasToDiscover.Count;
             launchLoadingInProgress = true;
             foreach (IScreenDescription screenDescription in LaunchSettingsManager.ScreenDescriptions)
             {
@@ -2522,7 +2521,7 @@ namespace Kinovea.ScreenManager
             // We come here after the screens have been added and the initial load started, but the load is asynchronous.
             // The true completion is when we receive the matching number of "Load" events.
             log.DebugFormat("Auto launch progress: Count:{0}, Added screens{1}. Pending loads:{2}.", 
-                count, added, dualLaunchSettingsPendingCountdown);
+                count, added, pendingPlayerLoads);
             
             if (added > 0)
             {
