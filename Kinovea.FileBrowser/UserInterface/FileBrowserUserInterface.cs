@@ -454,11 +454,11 @@ namespace Kinovea.FileBrowser
             mnuLocateFolder.Text = FileBrowserLang.mnuVideoLocate;
             mnuDeleteShortcut.Text = FileBrowserLang.mnuDeleteShortcut;
             mnuSortBy.Text = FileBrowserLang.mnuSortBy;
-            mnuSortByName.Text = FileBrowserLang.mnuSortByName;
-            mnuSortByDate.Text = FileBrowserLang.mnuSortByDate;
-            mnuSortBySize.Text = FileBrowserLang.mnuSortBySize;
-            mnuSortAscending.Text = FileBrowserLang.mnuSortAscending;
-            mnuSortDescending.Text = FileBrowserLang.mnuSortDescending;
+            mnuSortByName.Text = FileBrowserLang.mnuSortBy_Name;
+            mnuSortByDate.Text = FileBrowserLang.mnuSortBy_Date;
+            mnuSortBySize.Text = FileBrowserLang.mnuSortBy_Size;
+            mnuSortAscending.Text = FileBrowserLang.mnuSortBy_Ascending;
+            mnuSortDescending.Text = FileBrowserLang.mnuSortBy_Descending;
             mnuLaunch.Text = FileBrowserLang.Generic_Open;
             mnuLaunchWatcher.Text = FileBrowserLang.mnuOpenAsReplayWatcher;
             mnuLocate.Text = FileBrowserLang.mnuVideoLocate;

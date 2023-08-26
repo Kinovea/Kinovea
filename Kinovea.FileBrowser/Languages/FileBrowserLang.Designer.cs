@@ -205,15 +205,6 @@ namespace Kinovea.FileBrowser.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ascending.
-        /// </summary>
-        internal static string mnuSortAscending {
-            get {
-                return ResourceManager.GetString("mnuSortAscending", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Sort by.
         /// </summary>
         internal static string mnuSortBy {
@@ -223,38 +214,47 @@ namespace Kinovea.FileBrowser.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ascending.
+        /// </summary>
+        internal static string mnuSortBy_Ascending {
+            get {
+                return ResourceManager.GetString("mnuSortBy_Ascending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Date.
         /// </summary>
-        internal static string mnuSortByDate {
+        internal static string mnuSortBy_Date {
             get {
-                return ResourceManager.GetString("mnuSortByDate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Name.
-        /// </summary>
-        internal static string mnuSortByName {
-            get {
-                return ResourceManager.GetString("mnuSortByName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Size.
-        /// </summary>
-        internal static string mnuSortBySize {
-            get {
-                return ResourceManager.GetString("mnuSortBySize", resourceCulture);
+                return ResourceManager.GetString("mnuSortBy_Date", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Descending.
         /// </summary>
-        internal static string mnuSortDescending {
+        internal static string mnuSortBy_Descending {
             get {
-                return ResourceManager.GetString("mnuSortDescending", resourceCulture);
+                return ResourceManager.GetString("mnuSortBy_Descending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        internal static string mnuSortBy_Name {
+            get {
+                return ResourceManager.GetString("mnuSortBy_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size.
+        /// </summary>
+        internal static string mnuSortBy_Size {
+            get {
+                return ResourceManager.GetString("mnuSortBy_Size", resourceCulture);
             }
         }
         
