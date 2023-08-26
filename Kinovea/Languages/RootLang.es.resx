@@ -351,4 +351,40 @@
   <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
     <value>Tiempo de inactividad (s):</value>
   </data>
+  <data name="dlgPreferences_Capture_TriggerAction" xml:space="preserve">
+    <value>Acción activada:</value>
+  </data>
+  <data name="dlgPreferences_General_PathToPandoc" xml:space="preserve">
+    <value>Ruta del programa pandoc:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVComma" xml:space="preserve">
+    <value>Coma</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVDelimiter" xml:space="preserve">
+    <value>Separador decimal para exportar en CSV:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVPoint" xml:space="preserve">
+    <value>Punto</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportCalibrated" xml:space="preserve">
+    <value>Calibrado</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportPixels" xml:space="preserve">
+    <value>Píxeles</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportSpace" xml:space="preserve">
+    <value>Configuración al exportar:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_TabExport" xml:space="preserve">
+    <value>Exportación</value>
+  </data>
+  <data name="dlgWorkspace_ConfirmationMessage" xml:space="preserve">
+    <value>Espacio de trabajo por defecto guardado.</value>
+  </data>
+  <data name="dlgPreferences_Drawing_CSVSystem" xml:space="preserve">
+    <value>Sistema ({0})</value>
+  </data>
+  <data name="dlgWorkspace_Title" xml:space="preserve">
+    <value>Espacio de trabajo</value>
+  </data>
 </root>
