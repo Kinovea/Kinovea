@@ -1150,6 +1150,24 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Default workspace saved..
+        /// </summary>
+        internal static string dlgWorkspace_ConfirmationMessage {
+            get {
+                return ResourceManager.GetString("dlgWorkspace_ConfirmationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Workspace.
+        /// </summary>
+        internal static string dlgWorkspace_Title {
+            get {
+                return ResourceManager.GetString("dlgWorkspace_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         internal static string Generic_Cancel {

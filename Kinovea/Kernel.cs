@@ -636,7 +636,11 @@ namespace Kinovea.Root
             PreferencesManager.GeneralPreferences.Workspace = workspace;
             PreferencesManager.Save();
 
-            MessageBox.Show("Default workspace saved.", "Workspace", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(
+                RootLang.dlgWorkspace_ConfirmationMessage, 
+                RootLang.dlgWorkspace_Title, 
+                MessageBoxButtons.OK, 
+                MessageBoxIcon.Information);
         }
 
         private void MnuWorkspaceExport_Click(object sender, EventArgs e)
