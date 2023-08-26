@@ -104,4 +104,22 @@
   </data>
   <data name="FormCameraWizard_Create" xml:space="preserve"><value>Crear cámara</value>
   </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Fecha</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Tamaño</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>Descendente</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>Ascendente</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Ordenar por</value>
+  </data>
 </root>
