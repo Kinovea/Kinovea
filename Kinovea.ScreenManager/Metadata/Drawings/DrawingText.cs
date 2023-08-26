@@ -485,7 +485,7 @@ namespace Kinovea.ScreenManager
         private void ReloadMenusCulture()
         {
             // Options
-            mnuOptions.Text = "Options";
+            mnuOptions.Text = ScreenManagerLang.mnuOptions;
             mnuShowArrow.Text = ScreenManagerLang.mnuShowArrow;
         }
         #endregion

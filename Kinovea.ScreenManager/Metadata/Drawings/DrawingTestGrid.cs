@@ -438,11 +438,11 @@ namespace Kinovea.ScreenManager
 
         private void ReloadMenusCulture()
         {
-            mnuOptions.Text = "Options";
-            mnuShowHorizontalAxis.Text = "Show horizontal axis";
-            mnuShowVerticalAxis.Text = "Show vertical axis";
-            mnuShowFraming.Text = "Show frame";
-            mnuShowThirds.Text = "Show 3x3 grid";
+            mnuOptions.Text = ScreenManagerLang.mnuOptions;
+            mnuShowHorizontalAxis.Text = ScreenManagerLang.mnuOptions_TestGrid_ShowHorizontalAxis;
+            mnuShowVerticalAxis.Text = ScreenManagerLang.mnuOptions_TestGrid_ShowVerticalAxis;
+            mnuShowFraming.Text = ScreenManagerLang.mnuOptions_TestGrid_ShowFrame;
+            mnuShowThirds.Text = ScreenManagerLang.mnuOptions_TestGrid_ShowThirds;
             mnuHide.Text = ScreenManagerLang.mnuCoordinateSystemHide;
         }
         #endregion

@@ -597,7 +597,7 @@ namespace Kinovea.ScreenManager
             mnuCalibrate.Text = ScreenManagerLang.mnuCalibrate;
 
             // Measurement
-            mnuMeasurement.Text = ScreenManagerLang.mnuShowMeasure;
+            mnuMeasurement.Text = ScreenManagerLang.mnuMeasure_Label_Menu;
             foreach (var pair in mnuMeasureLabelTypes)
             {
                 ToolStripMenuItem tsmi = pair.Value;
@@ -645,8 +645,8 @@ namespace Kinovea.ScreenManager
         {
             switch (data)
             {
-                case MeasureLabelType.None: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None;
-                case MeasureLabelType.Name: return ScreenManagerLang.dlgConfigureDrawing_Name;
+                case MeasureLabelType.None: return ScreenManagerLang.mnuMeasure_Label_None;
+                case MeasureLabelType.Name: return ScreenManagerLang.mnuMeasure_Name;
                 case MeasureLabelType.TravelDistance: return ScreenManagerLang.ExtraData_Length;
             }
 

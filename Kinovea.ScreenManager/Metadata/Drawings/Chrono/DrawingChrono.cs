@@ -579,7 +579,7 @@ namespace Kinovea.ScreenManager
             mnuShowAfter.Text = ScreenManagerLang.mnuShowAfter;
             mnuStart.Text = ScreenManagerLang.mnuChronoStart;
             mnuStop.Text = ScreenManagerLang.mnuChronoStop;
-            mnuDeleteSection.Text = "Delete times";
+            mnuDeleteSection.Text = ScreenManagerLang.mnuAction_Chrono_DeleteTimes;
             mnuMarkOrigin.Text = ScreenManagerLang.mnuMarkTimeAsOriginClock;
             mnuShowLabel.Text = ScreenManagerLang.mnuShowLabel;
         }

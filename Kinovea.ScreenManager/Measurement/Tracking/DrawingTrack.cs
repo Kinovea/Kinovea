@@ -862,7 +862,7 @@ namespace Kinovea.ScreenManager
         {
             switch (data)
             {
-                case MeasureLabelType.None: return ScreenManagerLang.mnuMeasure_Trajectory_None;
+                case MeasureLabelType.None: return ScreenManagerLang.mnuMeasure_Label_None;
                 case MeasureLabelType.Name: return ScreenManagerLang.mnuMeasure_Name;
 
                 case MeasureLabelType.Clock: return ScreenManagerLang.mnuMeasure_Clock;
@@ -1815,7 +1815,7 @@ namespace Kinovea.ScreenManager
             mnuTrackingTrim.Text = ScreenManagerLang.mnuDeleteEndOfTrajectory;
 
             // Measurement
-            mnuMeasurement.Text = ScreenManagerLang.mnuMeasure_Trajectory_Menu;
+            mnuMeasurement.Text = ScreenManagerLang.mnuMeasure_Labels_Menu;
             foreach (var pair in mnuMeasureLabelTypes)
             {
                 ToolStripMenuItem tsmi = pair.Value;

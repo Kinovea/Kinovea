@@ -318,8 +318,8 @@
   <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
     <value>Target</value>
   </data>
-  <data name="dlgConfigureTrajectory_CheckDisplayRotationCircle" xml:space="preserve">
-    <value>Display rotation circle</value>
+  <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
+    <value>Show best fit circle</value>
   </data>
   <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
     <value>Measurement:</value>
@@ -1461,11 +1461,8 @@
   <data name="mnuMeasure_FrameNumber" xml:space="preserve">
     <value>Frame number</value>
   </data>
-  <data name="mnuMeasure_Kinogram_Menu" xml:space="preserve">
+  <data name="mnuMeasure_Labels_Menu" xml:space="preserve">
     <value>Labels</value>
-  </data>
-  <data name="mnuMeasure_Kinogram_None" xml:space="preserve">
-    <value>None</value>
   </data>
   <data name="mnuMeasure_Name" xml:space="preserve">
     <value>Name</value>
@@ -1473,10 +1470,10 @@
   <data name="mnuMeasure_Stopwatch" xml:space="preserve">
     <value>Stopwatch</value>
   </data>
-  <data name="mnuMeasure_Trajectory_Menu" xml:space="preserve">
-    <value>Measurement</value>
+  <data name="mnuMeasure_Label_Menu" xml:space="preserve">
+    <value>Label</value>
   </data>
-  <data name="mnuMeasure_Trajectory_None" xml:space="preserve">
+  <data name="mnuMeasure_Label_None" xml:space="preserve">
     <value>None</value>
   </data>
   <data name="mnuOptions" xml:space="preserve">
@@ -1502,9 +1499,6 @@
   </data>
   <data name="mnuOptions_Trajectory_ShowKeyImageLabels" xml:space="preserve">
     <value>Show key image labels</value>
-  </data>
-  <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
-    <value>Show rotation circle</value>
   </data>
   <data name="mnuOptions_Trajectory_ShowTrackLabel" xml:space="preserve">
     <value>Show track label</value>
@@ -1547,5 +1541,23 @@
   </data>
   <data name="toolTip_Speed" xml:space="preserve">
     <value>Speed</value>
+  </data>
+  <data name="mnuOptions_CoordinateSystem_ShowGraduations" xml:space="preserve">
+    <value>Show graduations</value>
+  </data>
+  <data name="mnuOptions_CoordinateSystem_ShowGrid" xml:space="preserve">
+    <value>Show grid</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowFrame" xml:space="preserve">
+    <value>Show frame</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowHorizontalAxis" xml:space="preserve">
+    <value>Show horizontal axis</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowThirds" xml:space="preserve">
+    <value>Show 3x3 grid</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowVerticalAxis" xml:space="preserve">
+    <value>Show vertical axis</value>
   </data>
 </root>

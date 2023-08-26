@@ -691,15 +691,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Display rotation circle.
-        /// </summary>
-        public static string dlgConfigureTrajectory_CheckDisplayRotationCircle {
-            get {
-                return ResourceManager.GetString("dlgConfigureTrajectory_CheckDisplayRotationCircle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Acceleration.
         /// </summary>
         public static string dlgConfigureTrajectory_ExtraData_Acceleration {
@@ -3283,20 +3274,29 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Labels.
+        ///   Looks up a localized string similar to Label.
         /// </summary>
-        public static string mnuMeasure_Kinogram_Menu {
+        public static string mnuMeasure_Label_Menu {
             get {
-                return ResourceManager.GetString("mnuMeasure_Kinogram_Menu", resourceCulture);
+                return ResourceManager.GetString("mnuMeasure_Label_Menu", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to None.
         /// </summary>
-        public static string mnuMeasure_Kinogram_None {
+        public static string mnuMeasure_Label_None {
             get {
-                return ResourceManager.GetString("mnuMeasure_Kinogram_None", resourceCulture);
+                return ResourceManager.GetString("mnuMeasure_Label_None", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Labels.
+        /// </summary>
+        public static string mnuMeasure_Labels_Menu {
+            get {
+                return ResourceManager.GetString("mnuMeasure_Labels_Menu", resourceCulture);
             }
         }
         
@@ -3315,24 +3315,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string mnuMeasure_Stopwatch {
             get {
                 return ResourceManager.GetString("mnuMeasure_Stopwatch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Measurement.
-        /// </summary>
-        public static string mnuMeasure_Trajectory_Menu {
-            get {
-                return ResourceManager.GetString("mnuMeasure_Trajectory_Menu", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to None.
-        /// </summary>
-        public static string mnuMeasure_Trajectory_None {
-            get {
-                return ResourceManager.GetString("mnuMeasure_Trajectory_None", resourceCulture);
             }
         }
         
@@ -3409,6 +3391,24 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show graduations.
+        /// </summary>
+        public static string mnuOptions_CoordinateSystem_ShowGraduations {
+            get {
+                return ResourceManager.GetString("mnuOptions_CoordinateSystem_ShowGraduations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show grid.
+        /// </summary>
+        public static string mnuOptions_CoordinateSystem_ShowGrid {
+            get {
+                return ResourceManager.GetString("mnuOptions_CoordinateSystem_ShowGrid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Auto interpolate.
         /// </summary>
         public static string mnuOptions_Kinogram_AutoInterpolate {
@@ -3432,6 +3432,42 @@ namespace Kinovea.ScreenManager.Languages {
         public static string mnuOptions_Kinogram_ShowBorder {
             get {
                 return ResourceManager.GetString("mnuOptions_Kinogram_ShowBorder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show frame.
+        /// </summary>
+        public static string mnuOptions_TestGrid_ShowFrame {
+            get {
+                return ResourceManager.GetString("mnuOptions_TestGrid_ShowFrame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show horizontal axis.
+        /// </summary>
+        public static string mnuOptions_TestGrid_ShowHorizontalAxis {
+            get {
+                return ResourceManager.GetString("mnuOptions_TestGrid_ShowHorizontalAxis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show 3x3 grid.
+        /// </summary>
+        public static string mnuOptions_TestGrid_ShowThirds {
+            get {
+                return ResourceManager.GetString("mnuOptions_TestGrid_ShowThirds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show vertical axis.
+        /// </summary>
+        public static string mnuOptions_TestGrid_ShowVerticalAxis {
+            get {
+                return ResourceManager.GetString("mnuOptions_TestGrid_ShowVerticalAxis", resourceCulture);
             }
         }
         
@@ -3463,7 +3499,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show rotation circle.
+        ///   Looks up a localized string similar to Show best fit circle.
         /// </summary>
         public static string mnuOptions_Trajectory_ShowRotationCircle {
             get {

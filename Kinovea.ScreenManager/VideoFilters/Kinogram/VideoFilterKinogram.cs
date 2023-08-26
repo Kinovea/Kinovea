@@ -484,7 +484,7 @@ namespace Kinovea.ScreenManager
             mnuAutoInterpolate.Text = ScreenManagerLang.mnuOptions_Kinogram_AutoInterpolate;
 
             // Measurement
-            mnuMeasurement.Text = ScreenManagerLang.mnuMeasure_Kinogram_Menu;
+            mnuMeasurement.Text = ScreenManagerLang.mnuMeasure_Labels_Menu;
             foreach (var pair in mnuMeasureLabelTypes)
             {
                 ToolStripMenuItem tsmi = pair.Value;
@@ -498,8 +498,8 @@ namespace Kinovea.ScreenManager
         {
             switch (data)
             {
-                case MeasureLabelType.None: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None;
-
+                case MeasureLabelType.None: return ScreenManagerLang.mnuMeasure_Label_None;
+                
                 case MeasureLabelType.Clock: return ScreenManagerLang.mnuMeasure_Clock;
                 case MeasureLabelType.Frame: return ScreenManagerLang.mnuMeasure_FrameNumber;
             }
