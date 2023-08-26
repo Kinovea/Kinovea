@@ -352,4 +352,34 @@
   <data name="dlgPreferences_General_PathToPandoc" xml:space="preserve">
     <value>Chemin vers pandoc :</value>
   </data>
+  <data name="dlgPreferences_Drawings_ExportPixels" xml:space="preserve">
+    <value>Pixels</value>
+  </data>
+  <data name="dlgPreferences_Drawings_TabExport" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVDelimiter" xml:space="preserve">
+    <value>Séparateur décimal pour l'export CSV :</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVComma" xml:space="preserve">
+    <value>Virgule</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVPoint" xml:space="preserve">
+    <value>Point</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportCalibrated" xml:space="preserve">
+    <value>Calibré</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportSpace" xml:space="preserve">
+    <value>Configuration d'export :</value>
+  </data>
+  <data name="dlgPreferences_Drawing_CSVSystem" xml:space="preserve">
+    <value>Système ({0})</value>
+  </data>
+  <data name="dlgWorkspace_ConfirmationMessage" xml:space="preserve">
+    <value>Espace de travail par défaut sauvegardé.</value>
+  </data>
+  <data name="dlgWorkspace_Title" xml:space="preserve">
+    <value>Espace de travail</value>
+  </data>
 </root>
