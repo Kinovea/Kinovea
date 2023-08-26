@@ -71,6 +71,7 @@ namespace Kinovea.ScreenManager
         private AbstractScreen activeScreen = null;
         private bool canShowCommonControls;
         private int dualLaunchSettingsPendingCountdown;
+        private bool launchLoadingInProgress;
         private List<string> camerasToDiscover = new List<string>();
         private AudioInputLevelMonitor audioInputLevelMonitor = new AudioInputLevelMonitor();
         
@@ -826,15 +827,36 @@ namespace Kinovea.ScreenManager
             int index = sender == screenList[0] ? 0 : 1;
             LoadAnalysis(index);
         }
-        private void Player_SelectionChanged(object sender, EventArgs<bool> e)
+        private void Player_Loaded(object sender, EventArgs e)
         {
-            ResetSync();
-
+            if (!launchLoadingInProgress)
+            {
+                ResetSync();
+                OrganizeMenus();
+                return;
+            }
+               
             dualLaunchSettingsPendingCountdown--;
 
-            if (dualLaunchSettingsPendingCountdown == 0)
-                dualPlayer.CommitLaunchSettings();
+            log.DebugFormat("Player load event received in Screen manager. Pending loads:{0}",
+                dualLaunchSettingsPendingCountdown);
 
+            if (dualLaunchSettingsPendingCountdown > 0)
+                return;
+
+            log.DebugFormat("Auto launch complete.");
+
+            launchLoadingInProgress = false;
+            ResetSync();
+            dualPlayer.CommitLaunchSettings();
+            OrganizeMenus();
+        }
+        private void Player_SelectionChanged(object sender, EventArgs<bool> e)
+        {
+            if (launchLoadingInProgress)
+                return;
+            
+            ResetSync();
             OrganizeMenus();
         }
         private void Player_KVAImported(object sender, EventArgs e)
@@ -2453,11 +2475,12 @@ namespace Kinovea.ScreenManager
 
         private void View_AutoLaunchAsked(object source, EventArgs e)
         {
-            int reloaded = 0;
-
             int count = LaunchSettingsManager.ScreenDescriptions.Count;
             if (count > 2)
+            {
                 LaunchSettingsManager.ScreenDescriptions.RemoveRange(2, count - 2);
+                count = 2;
+            }
 
             // Start by collecting the list of cameras to be found. 
             // We will keep the camera discovery system active until we have found all of them or time out.
@@ -2471,6 +2494,10 @@ namespace Kinovea.ScreenManager
             if (camerasToDiscover.Count == 0)
                 CameraTypeManager.StopDiscoveringCameras();
 
+            // Loading a video may trigger a working zone load.
+            int added = 0;
+            dualLaunchSettingsPendingCountdown = count;
+            launchLoadingInProgress = true;
             foreach (IScreenDescription screenDescription in LaunchSettingsManager.ScreenDescriptions)
             {
                 if (screenDescription is ScreenDescriptionCapture)
@@ -2479,22 +2506,25 @@ namespace Kinovea.ScreenManager
                     ScreenDescriptionCapture sdc = screenDescription as ScreenDescriptionCapture;
                     CameraSummary summary = new CameraSummary(sdc.CameraName);
 
-                    int targetScreen = reloaded == 1 ? 1 : 0;
+                    int targetScreen = added == 0 ? 0 : 1;
                     LoaderCamera.LoadCameraInScreen(this, summary, targetScreen, sdc);
-                    reloaded++;
+                    added++;
                 }
                 else if (screenDescription is ScreenDescriptionPlayback)
                 {
                     AddPlayerScreen();
                     ScreenDescriptionPlayback sdp = screenDescription as ScreenDescriptionPlayback;
                     LoaderVideo.LoadVideoInScreen(this, sdp.FullPath, sdp);
-                    reloaded++;
+                    added++;
                 }
             }
 
-            dualLaunchSettingsPendingCountdown = reloaded;
-
-            if (reloaded > 0)
+            // We come here after the screens have been added and the initial load started, but the load is asynchronous.
+            // The true completion is when we receive the matching number of "Load" events.
+            log.DebugFormat("Auto launch progress: Count:{0}, Added screens{1}. Pending loads:{2}.", 
+                count, added, dualLaunchSettingsPendingCountdown);
+            
+            if (added > 0)
             {
                 OrganizeScreens();
                 OrganizeCommonControls();
@@ -2687,6 +2717,7 @@ namespace Kinovea.ScreenManager
             screen.OpenVideoAsked += Player_OpenVideoAsked;
             screen.OpenReplayWatcherAsked += Player_OpenReplayWatcherAsked;
             screen.OpenAnnotationsAsked += Player_OpenAnnotationsAsked;
+            screen.Loaded += Player_Loaded;
             screen.SelectionChanged += Player_SelectionChanged;
             screen.KVAImported += Player_KVAImported;
             screen.FilterExited += Player_FilterExited;

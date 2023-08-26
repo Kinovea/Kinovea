@@ -91,7 +91,7 @@ namespace Kinovea.ScreenManager
         {
             view.RefreshUICulture();
 
-            if (synching == true)
+            if (synching)
                 InitializeSync();
         }
         public void UpdateTrkFrame(long position)
@@ -542,6 +542,8 @@ namespace Kinovea.ScreenManager
         {
             if (!active)
                 return;
+            
+            log.DebugFormat("Re-initializing dual player synchronization");
 
             synching = false;
             dynamicSynching = false;

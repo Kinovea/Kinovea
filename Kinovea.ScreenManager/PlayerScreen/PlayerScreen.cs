@@ -41,6 +41,7 @@ namespace Kinovea.ScreenManager
         public event EventHandler OpenVideoAsked;
         public event EventHandler OpenReplayWatcherAsked;
         public event EventHandler OpenAnnotationsAsked;
+        public event EventHandler Loaded;
         public event EventHandler SpeedChanged;
         public event EventHandler HighSpeedFactorChanged;
         public event EventHandler TimeOriginChanged;
@@ -361,7 +362,8 @@ namespace Kinovea.ScreenManager
             view.KVAImported += View_KVAImported;
             view.PlayStarted += View_PlayStarted;
             view.PauseAsked += View_PauseAsked;
-            view.SelectionChanged += View_SelectionChanged;
+            view.Loaded += (s, e) => Loaded?.Invoke(this, e);
+            view.SelectionChanged += (s, e) => SelectionChanged?.Invoke(this, e);
             view.ImageChanged += View_ImageChanged;
             view.ResetAsked += View_ResetAsked;
             view.FilterExited += (s, e) => FilterExited?.Invoke(this, e);
@@ -470,12 +472,6 @@ namespace Kinovea.ScreenManager
         {
             if (PauseAsked != null)
                 PauseAsked(this, EventArgs.Empty);
-        }
-        
-        public void View_SelectionChanged(object sender, EventArgs<bool> e)
-        {
-            if (SelectionChanged != null)
-                SelectionChanged(this, e);
         }
         
         public void View_ImageChanged(object sender, EventArgs<Bitmap> e)

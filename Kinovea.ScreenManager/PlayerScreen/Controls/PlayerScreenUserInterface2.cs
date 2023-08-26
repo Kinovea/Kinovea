@@ -70,6 +70,7 @@ namespace Kinovea.ScreenManager
         public event EventHandler PauseAsked;
         public event EventHandler ResetAsked;
         public event EventHandler FilterExited;
+        public event EventHandler Loaded;
         public event EventHandler<EventArgs<bool>> SelectionChanged;
         public event EventHandler<EventArgs<Bitmap>> ImageChanged;
         public event EventHandler<KeyframeAddEventArgs> KeyframeAdding;
@@ -1298,6 +1299,10 @@ namespace Kinovea.ScreenManager
                 else
                     UpdateWorkingZone(true);
             }
+
+            // Signal post-load idle event to listeners.
+            // This is used to setup synchronization in case of launching a workspace with two videos.
+            Loaded?.Invoke(this, EventArgs.Empty);
 
             UpdateFramesMarkers();
             ShowHideRenderingSurface(true);
