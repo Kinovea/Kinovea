@@ -317,7 +317,7 @@ namespace Kinovea.Root
             nudQuietPeriod.Value = (decimal)audioQuietPeriod;
             NudHelper.FixNudScroll(nudQuietPeriod);
 
-            lblTriggerAction.Text = "Trigger action:";
+            lblTriggerAction.Text = RootLang.dlgPreferences_Capture_TriggerAction;
             cmbTriggerAction.Items.Add(ScreenManagerLang.ToolTip_StartRecording);
             cmbTriggerAction.Items.Add(ScreenManagerLang.Generic_SaveImage);
             cmbTriggerAction.SelectedIndex = ((int)triggerAction < cmbTriggerAction.Items.Count) ? (int)triggerAction : 0;

@@ -115,7 +115,7 @@ namespace Kinovea.Root
             chkInstancesPreferences.Text = RootLang.dlgPreferences_General_InstancesHaveOwnPreferences;
             chkInstancesPreferences.Checked = instancesOwnPreferences;
             chkInstancesPreferences.Enabled = allowMultipleInstances;
-            lblPandocPath.Text = "Path to pandoc";
+            lblPandocPath.Text = RootLang.dlgPreferences_General_PathToPandoc;
             tbPandocPath.Text = pandocPath;
 
             if (!string.IsNullOrEmpty(Software.InstanceName) && PreferencesManager.GeneralPreferences.InstancesOwnPreferences)
