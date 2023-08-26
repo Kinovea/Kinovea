@@ -272,7 +272,7 @@
   </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Cargar anotaciones</value>
   </data>
-  <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>Guardar sólo imàgenes clave.</value>
+  <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>Guardar sólo imágenes clave.</value>
   </data>
   <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>Total : {0:0} imágenes.</value>
   </data>
@@ -578,7 +578,7 @@
   </data>
   <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Exportar como hoja de cálculo</value>
   </data>
-  <data name="mnuFormat" xml:space="preserve"><value>Formato de imagen</value>
+  <data name="mnuFormat" xml:space="preserve"><value>Relación de aspecto</value>
   </data>
   <data name="mnuFormatAuto" xml:space="preserve"><value>Detección automática</value>
   </data>
@@ -586,7 +586,7 @@
   </data>
   <data name="mnuFormatForce169" xml:space="preserve"><value>Forzar 16:9</value>
   </data>
-  <data name="mnuRotation" xml:space="preserve"><value>Giro de imagen</value>
+  <data name="mnuRotation" xml:space="preserve"><value>Rotación</value>
   </data>
   <data name="mnuRotation0" xml:space="preserve"><value>Sin giro</value>
   </data>
@@ -899,5 +899,263 @@
   </data>
   <data name="Toast_TriggerDisarmed" xml:space="preserve">
     <value>Activador para la captura desarmado</value>
+  </data>
+  <data name="mnuDemosaicNone" xml:space="preserve">
+    <value>Ninguno</value>
+  </data>
+  <data name="toolTip_Speed" xml:space="preserve">
+    <value>Velocidad</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Fecha</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Tamaño</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>Descendente</value>
+  </data>
+  <data name="dlgCalibratePlane_AveragePixelSize" xml:space="preserve">
+    <value>Tamaño medio de los píxeles: {0}.</value>
+  </data>
+  <data name="dlgCalibratePlane_HelpDistanceGrid" xml:space="preserve">
+    <value>Introduzca la distancia desde el origen para cada marcador.</value>
+  </data>
+  <data name="dlgCalibratePlane_HelpPlane" xml:space="preserve">
+    <value>Introduzca la dimensión de cada lado.</value>
+  </data>
+  <data name="filterName_Analysis" xml:space="preserve">
+    <value>Análisis</value>
+  </data>
+  <data name="filterName_Kinogram" xml:space="preserve">
+    <value>Kinograma</value>
+  </data>
+  <data name="formConfigureExport_ImageSequence" xml:space="preserve">
+    <value>Exportar una secuencia de imágenes</value>
+  </data>
+  <data name="formConfigureExport_SBS" xml:space="preserve">
+    <value>Exportar en paralelo</value>
+  </data>
+  <data name="formConfigureExport_SBS_Horizontal" xml:space="preserve">
+    <value>Horizontal</value>
+  </data>
+  <data name="formConfigureExport_SBS_Vertical" xml:space="preserve">
+    <value>Vertical</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>Ascendente</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Ordenar por</value>
+  </data>
+  <data name="formConfigureKinogram_lblTotal" xml:space="preserve">
+    <value>Imágenes: {0}</value>
+  </data>
+  <data name="formConfigureKinogram_lblFrameInterval" xml:space="preserve">
+    <value>Intervalo de tiempo entre las imágenes: {0:0.000} ms</value>
+  </data>
+  <data name="formConfigureKinogram_Table" xml:space="preserve">
+    <value>Tabla:</value>
+  </data>
+  <data name="mnuAction_Kinogram_Interpolate" xml:space="preserve">
+    <value>Interpolar celdas</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetAllTiles" xml:space="preserve">
+    <value>Reiniciar todas las celdas</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetLabelPositions" xml:space="preserve">
+    <value>Reiniciar la posición de las etiquetas</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetTile" xml:space="preserve">
+    <value>Reiniciar esta celda</value>
+  </data>
+  <data name="mnuDemosaic" xml:space="preserve">
+    <value>Mosaico de Bayer</value>
+  </data>
+  <data name="mnuExitFilter" xml:space="preserve">
+    <value>Salir del modo {0}</value>
+  </data>
+  <data name="formConfigureKinogram_Title" xml:space="preserve">
+    <value>Configurar el Kinograma</value>
+  </data>
+  <data name="Generic_OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="lblConfig_ImageSize" xml:space="preserve">
+    <value>Tamaño de imagen:</value>
+  </data>
+  <data name="mnuAction" xml:space="preserve">
+    <value>Acción</value>
+  </data>
+  <data name="mnuAction_Chrono_DeleteTimes" xml:space="preserve">
+    <value>Borrar todos los tiempos</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveCurrentEnd" xml:space="preserve">
+    <value>Mover el final del segmento de tiempo actual hasta esta imagen</value>
+  </data>
+  <data name="mnuExport_Document" xml:space="preserve">
+    <value>Exportar un documento</value>
+  </data>
+  <data name="mnuExport_Images_Image" xml:space="preserve">
+    <value>Imagen…</value>
+  </data>
+  <data name="mnuExport_Image" xml:space="preserve">
+    <value>Exportar imágenes</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveNextSplit" xml:space="preserve">
+    <value>Mover el próximo punto de tiempo intermedio hasta esta imagen</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveCurrentStart" xml:space="preserve">
+    <value>Mover el inicio del segmento de tiempo actual hasta esta imagen</value>
+  </data>
+  <data name="mnuAction_Chrono_DeleteSection" xml:space="preserve">
+    <value>Borrar el segmento de tiempo actual</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveNextStart" xml:space="preserve">
+    <value>Mover el inicio del próximo segmento de tiempo hasta esta imagen</value>
+  </data>
+  <data name="mnuAction_Chrono_MovePrevSplit" xml:space="preserve">
+    <value>Mover el punto de tiempo intermedio precedente hasta esta imagen</value>
+  </data>
+  <data name="mnuAction_Chrono_MovePrevEnd" xml:space="preserve">
+    <value>Mover el final del segmento de tiempo precedente hasta esta imagen</value>
+  </data>
+  <data name="mnuAction_Chrono_Split" xml:space="preserve">
+    <value>Tiempo intermedio: completar el segmento de tiempo actual en esta imagen e iniciar uno nuevo</value>
+  </data>
+  <data name="mnuAction_Chrono_Stop" xml:space="preserve">
+    <value>Stop: completar el segmento de tiempo actual en esta imagen</value>
+  </data>
+  <data name="mnuAction_Chrono_Start" xml:space="preserve">
+    <value>Iniciar un nuevo segmento de tiempo en esta imagen</value>
+  </data>
+  <data name="mnuExport_Images_Keys" xml:space="preserve">
+    <value>Imágenes clave…</value>
+  </data>
+  <data name="mnuExport_Images_Sequence" xml:space="preserve">
+    <value>Secuencia de imágenes…</value>
+  </data>
+  <data name="mnuExport_Spreadsheet" xml:space="preserve">
+    <value>Exportar una hoja de cálculo</value>
+  </data>
+  <data name="mnuExport_Images_SideBySide" xml:space="preserve">
+    <value>En paralelo…</value>
+  </data>
+  <data name="mnuExport_Spreadsheet_TrajectoryCSV" xml:space="preserve">
+    <value>CSV de las trayectorias…</value>
+  </data>
+  <data name="mnuExport_Video" xml:space="preserve">
+    <value>Exportar un video</value>
+  </data>
+  <data name="mnuExport_Spreadsheet_ChronoCSV" xml:space="preserve">
+    <value>CSV de los cronómetros…</value>
+  </data>
+  <data name="mnuExport_Video_Video" xml:space="preserve">
+    <value>Video…</value>
+  </data>
+  <data name="mnuExport_Video_SideBySide" xml:space="preserve">
+    <value>En paralelo…</value>
+  </data>
+  <data name="mnuExport_Video_WithPauses" xml:space="preserve">
+    <value>Video con pausas…</value>
+  </data>
+  <data name="mnuMeasure_Trajectory_Menu" xml:space="preserve">
+    <value>Medida</value>
+  </data>
+  <data name="mnuExport_Video_Slideshow" xml:space="preserve">
+    <value>Diaporama video…</value>
+  </data>
+  <data name="mnuLensCalibration" xml:space="preserve">
+    <value>Calibración óptica…</value>
+  </data>
+  <data name="mnuMagnifierFreeze" xml:space="preserve">
+    <value>Congelar</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Cumul" xml:space="preserve">
+    <value>Tiempo acumulado</value>
+  </data>
+  <data name="mnuMagnifierUnfreeze" xml:space="preserve">
+    <value>Descongelar</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Tag" xml:space="preserve">
+    <value>Etiqueta</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Menu" xml:space="preserve">
+    <value>Columnas</value>
+  </data>
+  <data name="mnuMeasure_Clock" xml:space="preserve">
+    <value>Reloj</value>
+  </data>
+  <data name="mnuMeasure_FrameNumber" xml:space="preserve">
+    <value>Número de imagen</value>
+  </data>
+  <data name="mnuMeasure_Kinogram_Menu" xml:space="preserve">
+    <value>Etiquetas</value>
+  </data>
+  <data name="mnuMeasure_Kinogram_None" xml:space="preserve">
+    <value>Ninguna</value>
+  </data>
+  <data name="mnuMeasure_Name" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="mnuMeasure_Stopwatch" xml:space="preserve">
+    <value>Cronómetro</value>
+  </data>
+  <data name="mnuMeasure_Trajectory_None" xml:space="preserve">
+    <value>Ninguna</value>
+  </data>
+  <data name="mnuOptions" xml:space="preserve">
+    <value>Opciones</value>
+  </data>
+  <data name="mnuOptions_Kinogram_AutoInterpolate" xml:space="preserve">
+    <value>Interpolación automática</value>
+  </data>
+  <data name="mnuOptions_Kinogram_RightToLeft" xml:space="preserve">
+    <value>De derecha a izquierda</value>
+  </data>
+  <data name="mnuOptions_Chrono_Locked" xml:space="preserve">
+    <value>Bloqueado</value>
+  </data>
+  <data name="mnuOptions_Kinogram_ShowBorder" xml:space="preserve">
+    <value>Mostrar el borde</value>
+  </data>
+  <data name="mnuOptions_Trajectory_Interactive" xml:space="preserve">
+    <value>Trayectoria interactiva</value>
+  </data>
+  <data name="mnuOptions_Trajectory_SeeFuture" xml:space="preserve">
+    <value>Ver el futuro</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowKeyImageLabels" xml:space="preserve">
+    <value>Mostrar las etiquetas de las imágenes clave</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowTrackLabel" xml:space="preserve">
+    <value>Mostrar la etiqueta de la trayectoria</value>
+  </data>
+  <data name="mnuOptions_Trajectory_UseKeyImageColors" xml:space="preserve">
+    <value>Utilizar los colores de las imágenes clave</value>
+  </data>
+  <data name="mnuProperties" xml:space="preserve">
+    <value>Propriedades</value>
+  </data>
+  <data name="mnuThumbnails" xml:space="preserve">
+    <value>Miniaturas</value>
+  </data>
+  <data name="mnuThumbnail_MoveToCurrentTime" xml:space="preserve">
+    <value>Mover hasta el tiempo actual</value>
+  </data>
+  <data name="mnuTimeCalibration" xml:space="preserve">
+    <value>Calibración del tiempo…</value>
+  </data>
+  <data name="mnuTimeSections" xml:space="preserve">
+    <value>Segmentos de tiempo</value>
+  </data>
+  <data name="formConfigureKinogram_CropSize" xml:space="preserve">
+    <value>Tamaño de las celdas:</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
+    <value>Mostrar el círculo de rotación</value>
   </data>
 </root>
