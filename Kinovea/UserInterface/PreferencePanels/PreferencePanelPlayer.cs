@@ -159,6 +159,8 @@ namespace Kinovea.Root
 
             cbCacheInTimeline.Text = "Show memory indicator in the timeline";
             cbCacheInTimeline.Checked = showCacheInTimeline;
+
+            cbCacheInTimeline.Visible = false;
         }
         #endregion
 

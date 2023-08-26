@@ -182,9 +182,10 @@ namespace Kinovea.ScreenManager
         private int rightPlayHeadMark;
 
         // Standard colors.
-        private static readonly Pen penPlayHead = Pens.DarkCyan;
-        private static readonly SolidBrush brushPlayHead = new SolidBrush(Color.FromArgb(96, Color.DarkCyan));
-        private static readonly Color cacheColor = Color.Lime;
+        private static readonly Color colorPlayHead = Color.FromArgb(20, 161, 80);
+        private static readonly Pen penPlayHead = new Pen(colorPlayHead);
+        private static readonly SolidBrush brushPlayHead = new SolidBrush(colorPlayHead);
+        private static readonly Color colorCache = Color.Lime;
         #endregion
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -509,7 +510,7 @@ namespace Kinovea.ScreenManager
         
         private void DrawMainCursor(Graphics canvas)
         {
-            canvas.FillRectangle(Brushes.DarkGray, new Rectangle(cursorLeft, gutterTop, cursorWidth, gutterHeight));
+            canvas.FillRectangle(brushPlayHead, new Rectangle(cursorLeft, gutterTop, cursorWidth, gutterHeight));
         }
         #endregion
         
@@ -612,13 +613,13 @@ namespace Kinovea.ScreenManager
                 Point rangeEnd = TimestampToPixel(minTimestamp, cacheSegment.End);
                 Point rangeStart = TimestampToPixel(cacheSegment.Start, maxTimestamp);
 
-                cacheMarks.Add(new Pair<Point, Color>(rangeEnd, cacheColor));
-                cacheMarks.Add(new Pair<Point, Color>(rangeStart, cacheColor));
+                cacheMarks.Add(new Pair<Point, Color>(rangeEnd, colorCache));
+                cacheMarks.Add(new Pair<Point, Color>(rangeStart, colorCache));
             }
             else
             {
                 Point range = TimestampToPixel(cacheSegment.Start, cacheSegment.End);
-                cacheMarks.Add(new Pair<Point, Color>(range, cacheColor));
+                cacheMarks.Add(new Pair<Point, Color>(range, colorCache));
             }
         }
 
