@@ -1102,7 +1102,7 @@
     <value>Voir le futur</value>
   </data>
   <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
-    <value>Montrer le cercle de rotation</value>
+    <value>Montrer le cercle de meilleur ajustement</value>
   </data>
   <data name="mnuOptions_Trajectory_ShowTrackLabel" xml:space="preserve">
     <value>Montrer le label de la trajectoire</value>
@@ -1127,5 +1127,32 @@
   </data>
   <data name="mnuThumbnails" xml:space="preserve">
     <value>Miniatures</value>
+  </data>
+  <data name="mnuMeasure_Label_Menu" xml:space="preserve">
+    <value>Label</value>
+  </data>
+  <data name="mnuOptions_CoordinateSystem_ShowGrid" xml:space="preserve">
+    <value>Montrer la grille</value>
+  </data>
+  <data name="mnuMeasure_Labels_Menu" xml:space="preserve">
+    <value>Labels</value>
+  </data>
+  <data name="mnuOptions_CoordinateSystem_ShowGraduations" xml:space="preserve">
+    <value>Montrer les graduations</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowFrame" xml:space="preserve">
+    <value>Montrer le cadre</value>
+  </data>
+  <data name="mnuMeasure_Label_None" xml:space="preserve">
+    <value>Aucun</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowHorizontalAxis" xml:space="preserve">
+    <value>Montrer l'axe horizontal</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowThirds" xml:space="preserve">
+    <value>Montrer la grille 3x3</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowVerticalAxis" xml:space="preserve">
+    <value>Montrer l'axe vertical</value>
   </data>
 </root>
