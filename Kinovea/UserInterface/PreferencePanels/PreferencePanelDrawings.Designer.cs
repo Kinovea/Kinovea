@@ -91,12 +91,12 @@ namespace Kinovea.Root
       this.lblSpeedUnit = new System.Windows.Forms.Label();
       this.cmbTimeCodeFormat = new System.Windows.Forms.ComboBox();
       this.lblTimeMarkersFormat = new System.Windows.Forms.Label();
+      this.tabPresets = new System.Windows.Forms.TabPage();
       this.tabExport = new System.Windows.Forms.TabPage();
       this.cmbExportSpace = new System.Windows.Forms.ComboBox();
       this.lblExportSpace = new System.Windows.Forms.Label();
       this.cmbDelimiter = new System.Windows.Forms.ComboBox();
       this.lblCSVDelimiter = new System.Windows.Forms.Label();
-      this.tabPresets = new System.Windows.Forms.TabPage();
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
       this.tabPersistence.SuspendLayout();
@@ -271,7 +271,7 @@ namespace Kinovea.Root
             | System.Windows.Forms.AnchorStyles.Right)));
       this.lblFading.Location = new System.Drawing.Point(53, 163);
       this.lblFading.Name = "lblFading";
-      this.lblFading.Size = new System.Drawing.Size(153, 25);
+      this.lblFading.Size = new System.Drawing.Size(205, 25);
       this.lblFading.TabIndex = 60;
       this.lblFading.Text = "Fading duration (frames):";
       this.lblFading.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -570,6 +570,16 @@ namespace Kinovea.Root
       this.lblTimeMarkersFormat.TabIndex = 45;
       this.lblTimeMarkersFormat.Text = "Time markers format :";
       // 
+      // tabPresets
+      // 
+      this.tabPresets.Location = new System.Drawing.Point(4, 22);
+      this.tabPresets.Margin = new System.Windows.Forms.Padding(2);
+      this.tabPresets.Name = "tabPresets";
+      this.tabPresets.Size = new System.Drawing.Size(482, 296);
+      this.tabPresets.TabIndex = 5;
+      this.tabPresets.Text = "Presets";
+      this.tabPresets.UseVisualStyleBackColor = true;
+      // 
       // tabExport
       // 
       this.tabExport.Controls.Add(this.cmbExportSpace);
@@ -619,16 +629,6 @@ namespace Kinovea.Root
       this.lblCSVDelimiter.Size = new System.Drawing.Size(107, 13);
       this.lblCSVDelimiter.TabIndex = 66;
       this.lblCSVDelimiter.Text = "CSV Decimal symbol:";
-      // 
-      // tabPresets
-      // 
-      this.tabPresets.Location = new System.Drawing.Point(4, 22);
-      this.tabPresets.Margin = new System.Windows.Forms.Padding(2);
-      this.tabPresets.Name = "tabPresets";
-      this.tabPresets.Size = new System.Drawing.Size(482, 296);
-      this.tabPresets.TabIndex = 5;
-      this.tabPresets.Text = "Presets";
-      this.tabPresets.UseVisualStyleBackColor = true;
       // 
       // PreferencePanelDrawings
       // 
