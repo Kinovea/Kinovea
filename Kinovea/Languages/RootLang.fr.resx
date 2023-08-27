@@ -359,7 +359,7 @@
     <value>Export</value>
   </data>
   <data name="dlgPreferences_Drawings_CSVDelimiter" xml:space="preserve">
-    <value>Séparateur décimal pour l'export CSV :</value>
+    <value>Séparateur décimal pour les fichiers CSV :</value>
   </data>
   <data name="dlgPreferences_Drawings_CSVComma" xml:space="preserve">
     <value>Virgule</value>
@@ -368,10 +368,10 @@
     <value>Point</value>
   </data>
   <data name="dlgPreferences_Drawings_ExportCalibrated" xml:space="preserve">
-    <value>Calibré</value>
+    <value>Mesures calibrées</value>
   </data>
   <data name="dlgPreferences_Drawings_ExportSpace" xml:space="preserve">
-    <value>Configuration d'export :</value>
+    <value>Mode d'export :</value>
   </data>
   <data name="dlgPreferences_Drawing_CSVSystem" xml:space="preserve">
     <value>Système ({0})</value>
