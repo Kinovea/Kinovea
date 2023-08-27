@@ -106,7 +106,7 @@
   </data>
   <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>E</value>
   </data>
-  <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Come preimpostazione, il disegno restera' visibile per {0} immagini intorno all'Immagine Chiave.</value>
+  <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Come preimpostazione, il disegno resterà visibile per {0} immagini intorno all'Immagine Chiave.</value>
   </data>
   <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Metri al secondo ({0})</value>
   </data>
@@ -118,7 +118,7 @@
   </data>
   <data name="dlgPreferences_Title" xml:space="preserve"><value>Preferenze</value>
   </data>
-  <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Caricamento Interfaccia Utente…</value>
+  <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Caricamento interfaccia utente…</value>
   </data>
   <data name="Generic_Cancel" xml:space="preserve"><value>Annulla</value>
   </data>
@@ -182,7 +182,7 @@
     <value>Esporta spazio di lavoro</value>
   </data>
   <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
-    <value>Salvare come area di lavoro predefinita</value>
+    <value>Salvare come spazio di lavoro predefinito</value>
   </data>
   <data name="mnuWorkspace" xml:space="preserve">
     <value>Spazio di lavoro</value>
@@ -435,5 +435,41 @@
   </data>
   <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve">
     <value>Visibile per l'intero video</value>
+  </data>
+  <data name="dlgPreferences_Capture_TriggerAction" xml:space="preserve">
+    <value>Azione attivata:</value>
+  </data>
+  <data name="dlgPreferences_General_PathToPandoc" xml:space="preserve">
+    <value>Percorso di pandoc:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVComma" xml:space="preserve">
+    <value>Virgola</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVDelimiter" xml:space="preserve">
+    <value>Separatore decimale per esportare in CSV:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVPoint" xml:space="preserve">
+    <value>Punto</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportCalibrated" xml:space="preserve">
+    <value>Calibrato</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportSpace" xml:space="preserve">
+    <value>Configurazione per l'esportazione:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportPixels" xml:space="preserve">
+    <value>Pixel</value>
+  </data>
+  <data name="dlgPreferences_Drawing_CSVSystem" xml:space="preserve">
+    <value>Sistema ({0})</value>
+  </data>
+  <data name="dlgPreferences_Drawings_TabExport" xml:space="preserve">
+    <value>Esportazione</value>
+  </data>
+  <data name="dlgWorkspace_Title" xml:space="preserve">
+    <value>Spazio di lavoro</value>
+  </data>
+  <data name="dlgWorkspace_ConfirmationMessage" xml:space="preserve">
+    <value>Spazio di lavoro predefinito salvato.</value>
   </data>
 </root>
