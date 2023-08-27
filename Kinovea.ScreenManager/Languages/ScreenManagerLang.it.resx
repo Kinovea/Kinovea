@@ -82,7 +82,7 @@
   </data>
   <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Rimuovi un'immagine chiave</value>
   </data>
-  <data name="CommandExportVideo_FriendlyName" xml:space="preserve"><value>Salva il video</value>
+  <data name="CommandExportVideo_FriendlyName" xml:space="preserve"><value>Esporta un video</value>
   </data>
   <data name="DataAnalysis_AngularPosition" xml:space="preserve"><value>Angolo</value>
   </data>
@@ -142,9 +142,9 @@
   </data>
   <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Esporta il video includendo permanentemente i dati delle immagini chiave</value>
   </data>
-  <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Salva i dati delle immagini chiave</value>
+  <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Salva annotazioni</value>
   </data>
-  <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Salva la sequenza di immagini</value>
+  <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Salva una sequenza di immagini</value>
   </data>
   <data name="DrawingName_Grid" xml:space="preserve"><value>Griglia</value>
   </data>
@@ -168,7 +168,7 @@
   </data>
   <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea – Impossibile salvare il video. </value>
   </data>
-  <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Impossibile salvare il video.\nRiprovare con formato diverso.</value>
+  <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Impossibile salvare il video.\nRiprova con formato diverso.</value>
   </data>
   <data name="FormFileSave_Infos" xml:space="preserve"><value>In esecuzione :</value>
   </data>
@@ -300,7 +300,7 @@
   </data>
   <data name="mnuMagnification" xml:space="preserve"><value>Zoom x{0:0.00}</value>
   </data>
-  <data name="mnuMagnifierDirect" xml:space="preserve"><value>Passa a ZOOM diretto</value>
+  <data name="mnuMagnifierDirect" xml:space="preserve"><value>Passa a zoom diretto</value>
   </data>
   <data name="mnuMagnifierQuit" xml:space="preserve"><value>Chiudi lente d'ingrandimento</value>
   </data>
@@ -312,7 +312,7 @@
   </data>
   <data name="mnuRestartTracking" xml:space="preserve"><value>Riprendi tracciatura Traiettoria</value>
   </data>
-  <data name="mnuOpenVideo" xml:space="preserve"><value>Apri File Video…</value>
+  <data name="mnuOpenVideo" xml:space="preserve"><value>Apri file video…</value>
   </data>
   <data name="mnuShowMeasure" xml:space="preserve"><value>Visualizza la misura</value>
   </data>
@@ -682,7 +682,7 @@
     <value>Salva annotazioni</value>
   </data>
   <data name="Generic_ExportVideo" xml:space="preserve">
-    <value>Esporta video…</value>
+    <value>Esporta un video…</value>
   </data>
   <data name="Generic_TrackShapePicker" xml:space="preserve">
     <value>Forma della linea:</value>
@@ -937,7 +937,7 @@
     <value>Marca la posizione corrente come origine per questo orologio</value>
   </data>
   <data name="mnuOpenReplayWatcher" xml:space="preserve">
-    <value>Apri la cartella dell'osservatore di riproduzione…</value>
+    <value>Apri una cartella di riproduzione…</value>
   </data>
   <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
     <value>Apri come osservatore della cartella di replay…</value>
@@ -1195,13 +1195,13 @@
     <value>Azione</value>
   </data>
   <data name="mnuAction_Chrono_DeleteSection" xml:space="preserve">
-    <value>Cancellare il segmento di tempo corrente</value>
+    <value>Cancella il segmento di tempo corrente</value>
   </data>
   <data name="mnuAction_Chrono_DeleteTimes" xml:space="preserve">
-    <value>Cancellare tutti i tempi</value>
+    <value>Cancella tutti i tempi</value>
   </data>
   <data name="formConfigureKinogram_Title" xml:space="preserve">
-    <value>Configurare il Kinogramma</value>
+    <value>Configura il Kinogramma</value>
   </data>
   <data name="mnuAction_Chrono_MoveCurrentEnd" xml:space="preserve">
     <value>Sposta la fine del segmento di tempo corrente fino a questa immagine</value>
@@ -1216,34 +1216,34 @@
     <value>Sposta il punto di tempo intermedio precedente fino a questa immagine</value>
   </data>
   <data name="mnuAction_Chrono_Start" xml:space="preserve">
-    <value>Iniziare un nuovo segmento di tempo su questa immagine</value>
+    <value>Inizia un nuovo segmento di tempo su questa immagine</value>
   </data>
   <data name="mnuAction_Chrono_Split" xml:space="preserve">
     <value>Tempo intermedio: terminare il segmento di tempo corrente e iniziarne un nuovo</value>
   </data>
   <data name="mnuAction_Chrono_Stop" xml:space="preserve">
-    <value>Stop: terminare il segmento di tempo corrente su questa immagine</value>
+    <value>Stop: termina il segmento di tempo corrente su questa immagine</value>
   </data>
   <data name="mnuAction_Kinogram_Interpolate" xml:space="preserve">
-    <value>Interpolare le celle</value>
+    <value>Interpola le celle</value>
   </data>
   <data name="mnuAction_Kinogram_ResetLabelPositions" xml:space="preserve">
-    <value>Azzerare le posizioni delle celle</value>
+    <value>Azzera le posizioni delle celle</value>
   </data>
   <data name="mnuAction_Kinogram_ResetTile" xml:space="preserve">
-    <value>Azzerare questa cella</value>
+    <value>Azzera questa cella</value>
   </data>
   <data name="mnuDemosaic" xml:space="preserve">
     <value>Demosaicizzazione</value>
   </data>
   <data name="mnuAction_Kinogram_ResetAllTiles" xml:space="preserve">
-    <value>Azzerare tutte le celle</value>
+    <value>Azzera tutte le celle</value>
   </data>
   <data name="mnuDemosaicNone" xml:space="preserve">
     <value>Nessuno</value>
   </data>
   <data name="mnuExitFilter" xml:space="preserve">
-    <value>Uscire dalla modalità {0}</value>
+    <value>Esci dalla modalità {0}</value>
   </data>
   <data name="mnuExport_Images_Image" xml:space="preserve">
     <value>Immagine…</value>
