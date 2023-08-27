@@ -263,7 +263,7 @@
     <value>Ora:</value>
   </data>
   <data name="mnuTimeFormat" xml:space="preserve">
-    <value>Ora</value>
+    <value>Tempo</value>
   </data>
   <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
     <value>File di annotazione predefinito:</value>
