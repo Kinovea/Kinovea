@@ -583,7 +583,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CSV export decimal separator:.
+        ///   Looks up a localized string similar to Decimal separator for CSV files:.
         /// </summary>
         internal static string dlgPreferences_Drawings_CSVDelimiter {
             get {
@@ -601,7 +601,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Calibrated.
+        ///   Looks up a localized string similar to Calibrated measurements.
         /// </summary>
         internal static string dlgPreferences_Drawings_ExportCalibrated {
             get {
@@ -619,7 +619,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Export space:.
+        ///   Looks up a localized string similar to Export mode:.
         /// </summary>
         internal static string dlgPreferences_Drawings_ExportSpace {
             get {

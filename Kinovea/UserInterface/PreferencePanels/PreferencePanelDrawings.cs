@@ -30,6 +30,7 @@ using Kinovea.Services;
 using System.Collections.Generic;
 using Kinovea.ScreenManager.Languages;
 using System.Globalization;
+using System.IO;
 
 namespace Kinovea.Root
 {
@@ -82,8 +83,9 @@ namespace Kinovea.Root
         private CSVDecimalSeparator csvDecimalSeparator;
         private ExportSpace exportSpace;
         private int presetsCount = 10;
+        private string pandocPath;
         #endregion
-        
+
         #region Construction & Initialization
         public PreferencePanelDrawings()
         {
@@ -129,6 +131,7 @@ namespace Kinovea.Root
             keyframePresets = PreferencesManager.PlayerPreferences.KeyframePresets;
             csvDecimalSeparator = PreferencesManager.PlayerPreferences.CSVDecimalSeparator;
             exportSpace = PreferencesManager.PlayerPreferences.ExportSpace;
+            pandocPath = PreferencesManager.PlayerPreferences.PandocPath;
         }
         private void InitPage()
         {
@@ -375,6 +378,9 @@ namespace Kinovea.Root
             cmbExportSpace.Items.Add(RootLang.dlgPreferences_Drawings_ExportPixels);
             int option = (int)exportSpace;
             cmbExportSpace.SelectedIndex = option < cmbExportSpace.Items.Count ? option : 0;
+
+            lblPandocPath.Text = RootLang.dlgPreferences_General_PathToPandoc;
+            tbPandocPath.Text = pandocPath;
         }
         #endregion
 
@@ -525,6 +531,30 @@ namespace Kinovea.Root
         {
             exportSpace = (ExportSpace)cmbExportSpace.SelectedIndex;
         }
+        private void tbPandocPath_TextChanged(object sender, EventArgs e)
+        {
+            pandocPath = tbPandocPath.Text;
+        }
+
+        private void btnPandocPath_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            string initialDirectory = "";
+            if (!string.IsNullOrEmpty(pandocPath) && File.Exists(pandocPath))
+                initialDirectory = Path.GetDirectoryName(pandocPath);
+
+            if (!string.IsNullOrEmpty(initialDirectory))
+                dialog.InitialDirectory = initialDirectory;
+            else
+                dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+            dialog.RestoreDirectory = true;
+            dialog.Filter = "*.exe|*.exe";
+            dialog.FilterIndex = 1;
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+                tbPandocPath.Text = dialog.FileName;
+        }
         #endregion
         #endregion
 
@@ -545,6 +575,7 @@ namespace Kinovea.Root
             PreferencesManager.PlayerPreferences.KeyframePresets = keyframePresets;
             PreferencesManager.PlayerPreferences.CSVDecimalSeparator = csvDecimalSeparator;
             PreferencesManager.PlayerPreferences.ExportSpace = exportSpace;
+            PreferencesManager.PlayerPreferences.PandocPath = pandocPath;
 
             // Special case for the custom unit length.
             if (customLengthUnit == RootLang.dlgPreferences_Player_TrackingPercentage)

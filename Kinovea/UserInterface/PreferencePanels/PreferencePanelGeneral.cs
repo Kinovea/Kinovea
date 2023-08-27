@@ -20,17 +20,13 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Globalization;
 using System.Windows.Forms;
 using System.IO;
 
 using Kinovea.Root.Languages;
 using Kinovea.Root.Properties;
-using Kinovea.ScreenManager;
 using Kinovea.Services;
-using Kinovea.Video;
 
 namespace Kinovea.Root
 {
@@ -62,7 +58,6 @@ namespace Kinovea.Root
         private int maxRecentFiles;
         private bool allowMultipleInstances;
         private bool instancesOwnPreferences;
-        private string pandocPath;
         #endregion
 
         #region Construction & Initialization
@@ -92,7 +87,6 @@ namespace Kinovea.Root
             maxRecentFiles = PreferencesManager.FileExplorerPreferences.MaxRecentFiles;
             allowMultipleInstances = PreferencesManager.GeneralPreferences.AllowMultipleInstances;
             instancesOwnPreferences = PreferencesManager.GeneralPreferences.InstancesOwnPreferences;
-            pandocPath = PreferencesManager.PlayerPreferences.PandocPath;
         }
         private void InitPage()
         {
@@ -115,8 +109,6 @@ namespace Kinovea.Root
             chkInstancesPreferences.Text = RootLang.dlgPreferences_General_InstancesHaveOwnPreferences;
             chkInstancesPreferences.Checked = instancesOwnPreferences;
             chkInstancesPreferences.Enabled = allowMultipleInstances;
-            lblPandocPath.Text = RootLang.dlgPreferences_General_PathToPandoc;
-            tbPandocPath.Text = pandocPath;
 
             if (!string.IsNullOrEmpty(Software.InstanceName) && PreferencesManager.GeneralPreferences.InstancesOwnPreferences)
             {
@@ -127,8 +119,6 @@ namespace Kinovea.Root
                 chkAllowMultipleInstances.Enabled = false;
                 chkInstancesPreferences.Enabled = false;
             }
-
-           //tbPandocPath.Text
         }
         private void SelectCurrentLanguage()
         {
@@ -167,30 +157,6 @@ namespace Kinovea.Root
         private void ChkInstancesPreferences_CheckedChanged(object sender, EventArgs e)
         {
             instancesOwnPreferences = chkInstancesPreferences.Checked;
-        }
-        private void tbPlaybackKVA_TextChanged(object sender, EventArgs e)
-        {
-            pandocPath = tbPandocPath.Text;
-        }
-
-        private void btnPlaybackKVA_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog dialog = new OpenFileDialog();
-            string initialDirectory = "";
-            if (!string.IsNullOrEmpty(pandocPath) && File.Exists(pandocPath))
-                initialDirectory = Path.GetDirectoryName(pandocPath);
-
-            if (!string.IsNullOrEmpty(initialDirectory))
-                dialog.InitialDirectory = initialDirectory;
-            else
-                dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-
-            dialog.RestoreDirectory = true;
-            dialog.Filter = "*.exe|*.exe";
-            dialog.FilterIndex = 1;
-
-            if (dialog.ShowDialog() == DialogResult.OK)
-                tbPandocPath.Text = dialog.FileName;
         } 
         #endregion
 
@@ -200,7 +166,6 @@ namespace Kinovea.Root
             PreferencesManager.FileExplorerPreferences.MaxRecentFiles = maxRecentFiles;
             PreferencesManager.GeneralPreferences.AllowMultipleInstances = allowMultipleInstances;
             PreferencesManager.GeneralPreferences.InstancesOwnPreferences = instancesOwnPreferences;
-            PreferencesManager.PlayerPreferences.PandocPath = pandocPath;
         }
     }
 }

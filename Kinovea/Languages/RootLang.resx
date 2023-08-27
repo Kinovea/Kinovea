@@ -550,19 +550,19 @@
     <value>Comma</value>
   </data>
   <data name="dlgPreferences_Drawings_CSVDelimiter" xml:space="preserve">
-    <value>CSV export decimal separator:</value>
+    <value>Decimal separator for CSV files:</value>
   </data>
   <data name="dlgPreferences_Drawings_CSVPoint" xml:space="preserve">
     <value>Point</value>
   </data>
   <data name="dlgPreferences_Drawings_ExportCalibrated" xml:space="preserve">
-    <value>Calibrated</value>
+    <value>Calibrated measurements</value>
   </data>
   <data name="dlgPreferences_Drawings_ExportPixels" xml:space="preserve">
     <value>Pixels</value>
   </data>
   <data name="dlgPreferences_Drawings_ExportSpace" xml:space="preserve">
-    <value>Export space:</value>
+    <value>Export mode:</value>
   </data>
   <data name="dlgPreferences_Drawings_TabExport" xml:space="preserve">
     <value>Export</value>

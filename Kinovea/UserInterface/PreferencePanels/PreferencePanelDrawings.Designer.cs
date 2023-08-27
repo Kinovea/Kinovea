@@ -93,6 +93,9 @@ namespace Kinovea.Root
       this.lblTimeMarkersFormat = new System.Windows.Forms.Label();
       this.tabPresets = new System.Windows.Forms.TabPage();
       this.tabExport = new System.Windows.Forms.TabPage();
+      this.lblPandocPath = new System.Windows.Forms.Label();
+      this.tbPandocPath = new System.Windows.Forms.TextBox();
+      this.btnPandocPath = new System.Windows.Forms.Button();
       this.cmbExportSpace = new System.Windows.Forms.ComboBox();
       this.lblExportSpace = new System.Windows.Forms.Label();
       this.cmbDelimiter = new System.Windows.Forms.ComboBox();
@@ -582,6 +585,9 @@ namespace Kinovea.Root
       // 
       // tabExport
       // 
+      this.tabExport.Controls.Add(this.lblPandocPath);
+      this.tabExport.Controls.Add(this.tbPandocPath);
+      this.tabExport.Controls.Add(this.btnPandocPath);
       this.tabExport.Controls.Add(this.cmbExportSpace);
       this.tabExport.Controls.Add(this.lblExportSpace);
       this.tabExport.Controls.Add(this.cmbDelimiter);
@@ -594,10 +600,47 @@ namespace Kinovea.Root
       this.tabExport.Text = "Export";
       this.tabExport.UseVisualStyleBackColor = true;
       // 
+      // lblPandocPath
+      // 
+      this.lblPandocPath.AutoSize = true;
+      this.lblPandocPath.Location = new System.Drawing.Point(20, 114);
+      this.lblPandocPath.Name = "lblPandocPath";
+      this.lblPandocPath.Size = new System.Drawing.Size(71, 13);
+      this.lblPandocPath.TabIndex = 70;
+      this.lblPandocPath.Text = "Pandoc path:";
+      // 
+      // tbPandocPath
+      // 
+      this.tbPandocPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.tbPandocPath.Location = new System.Drawing.Point(233, 111);
+      this.tbPandocPath.Name = "tbPandocPath";
+      this.tbPandocPath.Size = new System.Drawing.Size(183, 20);
+      this.tbPandocPath.TabIndex = 71;
+      this.tbPandocPath.TextChanged += new System.EventHandler(this.tbPandocPath_TextChanged);
+      // 
+      // btnPandocPath
+      // 
+      this.btnPandocPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnPandocPath.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+      this.btnPandocPath.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnPandocPath.FlatAppearance.BorderSize = 0;
+      this.btnPandocPath.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+      this.btnPandocPath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnPandocPath.Image = global::Kinovea.Root.Properties.Resources.folder;
+      this.btnPandocPath.Location = new System.Drawing.Point(422, 110);
+      this.btnPandocPath.MinimumSize = new System.Drawing.Size(20, 20);
+      this.btnPandocPath.Name = "btnPandocPath";
+      this.btnPandocPath.Size = new System.Drawing.Size(20, 20);
+      this.btnPandocPath.TabIndex = 72;
+      this.btnPandocPath.Tag = "";
+      this.btnPandocPath.UseVisualStyleBackColor = true;
+      this.btnPandocPath.Click += new System.EventHandler(this.btnPandocPath_Click);
+      // 
       // cmbExportSpace
       // 
       this.cmbExportSpace.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbExportSpace.Location = new System.Drawing.Point(300, 73);
+      this.cmbExportSpace.Location = new System.Drawing.Point(300, 30);
       this.cmbExportSpace.Name = "cmbExportSpace";
       this.cmbExportSpace.Size = new System.Drawing.Size(116, 21);
       this.cmbExportSpace.TabIndex = 69;
@@ -606,7 +649,7 @@ namespace Kinovea.Root
       // lblExportSpace
       // 
       this.lblExportSpace.AutoSize = true;
-      this.lblExportSpace.Location = new System.Drawing.Point(20, 77);
+      this.lblExportSpace.Location = new System.Drawing.Point(20, 34);
       this.lblExportSpace.Name = "lblExportSpace";
       this.lblExportSpace.Size = new System.Drawing.Size(71, 13);
       this.lblExportSpace.TabIndex = 68;
@@ -615,7 +658,7 @@ namespace Kinovea.Root
       // cmbDelimiter
       // 
       this.cmbDelimiter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbDelimiter.Location = new System.Drawing.Point(300, 36);
+      this.cmbDelimiter.Location = new System.Drawing.Point(300, 69);
       this.cmbDelimiter.Name = "cmbDelimiter";
       this.cmbDelimiter.Size = new System.Drawing.Size(116, 21);
       this.cmbDelimiter.TabIndex = 67;
@@ -624,7 +667,7 @@ namespace Kinovea.Root
       // lblCSVDelimiter
       // 
       this.lblCSVDelimiter.AutoSize = true;
-      this.lblCSVDelimiter.Location = new System.Drawing.Point(20, 40);
+      this.lblCSVDelimiter.Location = new System.Drawing.Point(20, 73);
       this.lblCSVDelimiter.Name = "lblCSVDelimiter";
       this.lblCSVDelimiter.Size = new System.Drawing.Size(107, 13);
       this.lblCSVDelimiter.TabIndex = 66;
@@ -703,5 +746,8 @@ namespace Kinovea.Root
         private System.Windows.Forms.ComboBox cmbExportSpace;
         private System.Windows.Forms.Label lblExportSpace;
         private System.Windows.Forms.TabPage tabPresets;
+        private System.Windows.Forms.Label lblPandocPath;
+        private System.Windows.Forms.TextBox tbPandocPath;
+        private System.Windows.Forms.Button btnPandocPath;
     }
 }
