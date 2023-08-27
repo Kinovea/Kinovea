@@ -45,76 +45,74 @@ namespace Kinovea.Services
             // ISO 639-1: https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
 
             languages = new Dictionary<string, string>();
+            languages.Add("ar", "العَرَبِية");
+            languages.Add("bg", "Български");
+            languages.Add("ca", "Català");
+            languages.Add("cs", "Čeština");
+            languages.Add("da", "Dansk");
+            languages.Add("de", "Deutsch");
+            languages.Add("el", "Ελληνικά");
+            languages.Add("en", "English");
+            languages.Add("es", "Español");
+            languages.Add("fa", "فارسی");
+            languages.Add("fr", "Français");
+            languages.Add("ko", "한국어");
+            languages.Add("id", "Bahasa Indonesia");
+            languages.Add("it", "Italiano");
+            languages.Add("lt", "Lietuvių");
+            languages.Add("mk", "Македонски");
+            languages.Add("ms", "Bahasa Melayu");
+            languages.Add("nl", "Nederlands");
+            languages.Add("ja", "日本語");
+            languages.Add("no", "Norsk bokmål");
+            languages.Add("pl", "Polski");
+            languages.Add("pt", "Português");
+            languages.Add("ro", "Română");
+            languages.Add("ru", "Русский");
+            languages.Add("sr-Cyrl-RS", "Српски");
+            languages.Add("sr-Latn-RS", "Srpski");
+            languages.Add("fi", "Suomi");
+            languages.Add("sv", "Svenska");
+            languages.Add("th", "ไทย");
+            languages.Add("tr", "Türkçe");
+            languages.Add("zh-CHS", "简体中文");
 
-            if (Software.Experimental || Debugger.IsAttached)
-            {
-                languages.Add("ar", "العَرَبِية");
-                languages.Add("bg", "Български");
-                languages.Add("ca", "Català");
-                languages.Add("cs", "Čeština");
-                languages.Add("da", "Dansk");
-                languages.Add("de", "Deutsch");
-                languages.Add("el", "Ελληνικά");
-                languages.Add("en", "English");
-                languages.Add("es", "Español");
-                languages.Add("fa", "فارسی");
-                languages.Add("fr", "Français");
-                languages.Add("ko", "한국어");
-                languages.Add("id", "Bahasa Indonesia");
-                languages.Add("it", "Italiano");
-                languages.Add("lt", "Lietuvių");
-                languages.Add("mk", "Македонски");
-                languages.Add("ms", "Bahasa Melayu");
-                languages.Add("nl", "Nederlands");
-                languages.Add("ja", "日本語");
-                languages.Add("no", "Norsk bokmål");
-                languages.Add("pl", "Polski");
-                languages.Add("pt", "Português");
-                languages.Add("ro", "Română");
-                languages.Add("ru", "Русский");
-                languages.Add("sr-Cyrl-RS", "Српски");
-                languages.Add("sr-Latn-RS", "Srpski");
-                languages.Add("fi", "Suomi");
-                languages.Add("sv", "Svenska");
-                languages.Add("th", "ไทย");
-                languages.Add("tr", "Türkçe");
-                languages.Add("zh-CHS", "简体中文");
-            }
-            else
-            {
-                // For the normal version we only include languages that match the inclusion heuristic described in inclusion.txt.
-                languages.Add("ar", "العَرَبِية");
-                languages.Add("bg", "Български");
-                languages.Add("ca", "Català");
-                languages.Add("cs", "Čeština"); 
-                //languages.Add("da", "Dansk"); // Root < 75%
-                languages.Add("de", "Deutsch");
-                //languages.Add("el", "Ελληνικά"); // Root < 75%
-                languages.Add("en", "English");
-                languages.Add("es", "Español");
-                languages.Add("fa", "فارسی");
-                languages.Add("fr", "Français");
-                //languages.Add("ko", "한국어"); // Root < 75%
-                languages.Add("id", "Bahasa Indonesia"); 
-                languages.Add("it", "Italiano"); 
-                languages.Add("lt", "Lietuvių");
-                languages.Add("mk", "Македонски");
-                //languages.Add("ms", "Bahasa Melayu"); // Root < 75%
-                languages.Add("nl", "Nederlands");
-                //languages.Add("ja", "日本語"); // Root < 75%
-                //languages.Add("no", "Norsk bokmål"); // Untranslated menu & player
-                languages.Add("pl", "Polski");
-                languages.Add("pt", "Português");
-                languages.Add("ro", "Română");
-                languages.Add("ru", "Русский");
-                //languages.Add("sr-Cyrl-RS", "Српски"); // Root < 75%
-                //languages.Add("sr-Latn-RS", "Srpski"); // Root < 75%
-                //languages.Add("fi", "Suomi"); // Root < 75%
-                languages.Add("sv", "Svenska"); // ?
-                //languages.Add("th", "ไทย"); // Untranslated menu & player
-                languages.Add("tr", "Türkçe");
-                languages.Add("zh-CHS", "简体中文");
-            }
+            if (Debugger.IsAttached)
+                return;
+
+            // For release, remove languages that don't match the inclusion heuristic below.
+            //
+            // Rationale:
+            // It is frustrating and look unprofessional for users to select their language only to realize
+            // that many parts of the interface are not actually translated.
+            // 
+            // Criteria:
+            // 1. > 85% translated in total -> kept.
+            // 2. < 50% translated in total -> removed.
+            // 3. For the remaining languages, we look at
+            // - the Root component (top level menu and preferences), 
+            // - how the front UI looks like, File, View and Image, and the UI of the player.
+            // If there are too many untranslated strings directly visible in the menu and the player UI
+            // we do not include the language.
+
+            // Reference: https://hosted.weblate.org/projects/kinovea/#languages
+
+            // Languages with less than 50% translation coverage.
+            languages.Remove("da"); // Danish.
+            languages.Remove("el"); // Greek.
+            languages.Remove("fi"); // Finnish.
+            languages.Remove("ms"); // Malay.
+            languages.Remove("no"); // Norwegian.
+            languages.Remove("sr-Latn-RS"); // Serbo-croatian.
+
+            // Languages between 50% and 85%.
+            //languages.Remove("bg"); // Bulgarian.
+            //languages.Remove("fa"); // Farsi.
+            languages.Remove("ja"); // Japanese.
+            languages.Remove("sr-Cyrl-RS"); // Serbian.
+            languages.Remove("sv"); // Swedish.
+            languages.Remove("th"); // Thai.
+            //languages.Remove("tr"); // Turkish.
 
         }
 
