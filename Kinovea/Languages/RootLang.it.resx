@@ -446,16 +446,16 @@
     <value>Virgola</value>
   </data>
   <data name="dlgPreferences_Drawings_CSVDelimiter" xml:space="preserve">
-    <value>Separatore decimale per esportare in CSV:</value>
+    <value>Separatore decimale per i file CSV:</value>
   </data>
   <data name="dlgPreferences_Drawings_CSVPoint" xml:space="preserve">
     <value>Punto</value>
   </data>
   <data name="dlgPreferences_Drawings_ExportCalibrated" xml:space="preserve">
-    <value>Calibrato</value>
+    <value>Misure calibrate</value>
   </data>
   <data name="dlgPreferences_Drawings_ExportSpace" xml:space="preserve">
-    <value>Configurazione per l'esportazione:</value>
+    <value>Modalità di esportazione:</value>
   </data>
   <data name="dlgPreferences_Drawings_ExportPixels" xml:space="preserve">
     <value>Pixel</value>
