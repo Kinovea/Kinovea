@@ -1114,7 +1114,7 @@
     <value>Etichette</value>
   </data>
   <data name="mnuOptions_Trajectory_ShowTrackLabel" xml:space="preserve">
-    <value>Mostrare l'etichetta della traiettoria</value>
+    <value>Mostra l'etichetta della traiettoria</value>
   </data>
   <data name="mnuOptions_Trajectory_UseKeyImageColors" xml:space="preserve">
     <value>Utilizza i colori delle immagini chiave</value>
@@ -1150,7 +1150,7 @@
     <value>Decrescente</value>
   </data>
   <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
-    <value>Mostrare il cerchio di miglior adattamento</value>
+    <value>Mostra il cerchio di miglior adattamento</value>
   </data>
   <data name="dlgCalibratePlane_AveragePixelSize" xml:space="preserve">
     <value>Dimensione media dei pixel: {0}.</value>
@@ -1321,16 +1321,16 @@
     <value>Da destra a sinistra</value>
   </data>
   <data name="mnuOptions_Kinogram_ShowBorder" xml:space="preserve">
-    <value>Mostrare il bordo</value>
+    <value>Mostra il bordo</value>
   </data>
   <data name="mnuOptions_Trajectory_Interactive" xml:space="preserve">
     <value>Traiettoria interattiva</value>
   </data>
   <data name="mnuOptions_Trajectory_SeeFuture" xml:space="preserve">
-    <value>Vedere il futuro</value>
+    <value>Vedi il futuro</value>
   </data>
   <data name="mnuOptions_Trajectory_ShowKeyImageLabels" xml:space="preserve">
-    <value>Mostrare le etichette delle immagini chiavi</value>
+    <value>Mostra le etichette delle immagini chiavi</value>
   </data>
   <data name="mnuTimeCalibration" xml:space="preserve">
     <value>Calibrazione del tempo…</value>
