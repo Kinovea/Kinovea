@@ -98,9 +98,9 @@
   </data>
   <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Passa a Modalità Analisi</value>
   </data>
-  <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Numero di Files nella cronologia :</value>
+  <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Numero di file nella cronologia :</value>
   </data>
-  <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Proporzioni immagine predefinite:</value>
+  <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Rapporto d'aspetto predefinito:</value>
   </data>
   <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Lingua :</value>
   </data>
@@ -269,13 +269,13 @@
     <value>File di annotazione predefinito:</value>
   </data>
   <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve">
-    <value>Collegare i dispositivi di scorrimento della velocità quando si confrontano i video</value>
+    <value>Collega i dispositivi di scorrimento della velocità quando si confrontano i video</value>
   </data>
   <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve">
     <value>Aggiorna l'immagine durante il movimento del cursore</value>
   </data>
   <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve">
-    <value>Abilitare la modalità di debug degli strumenti personalizzati</value>
+    <value>Abilita la modalità di debug degli strumenti personalizzati</value>
   </data>
   <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve">
     <value>Abilita il filtraggio delle coordinate</value>
@@ -284,7 +284,7 @@
     <value>Comando di post registrazione:</value>
   </data>
   <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
-    <value>Interrompere la registrazione per durata (s):</value>
+    <value>Interrompi la registrazione dopo (s):</value>
   </data>
   <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
     <value>Soglia di attivazione:</value>
@@ -341,7 +341,7 @@
     <value>Retroattivo: registra i fotogrammi quando la registrazione si interrompe.</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve">
-    <value>Delayed: registra i frame in ritardo.</value>
+    <value>Ritardo: registra i frame in ritardo.</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
     <value>Fotocamera: registra i fotogrammi in tempo reale.</value>
@@ -377,7 +377,7 @@
     <value>Sinistra</value>
   </data>
   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
-    <value>Visualizza framerate (fps):</value>
+    <value>Framerate di visualizzazione (fps):</value>
   </data>
   <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve">
     <value>Permetti istanze multiple di Kinovea</value>
