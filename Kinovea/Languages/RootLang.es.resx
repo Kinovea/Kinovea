@@ -361,19 +361,19 @@
     <value>Coma</value>
   </data>
   <data name="dlgPreferences_Drawings_CSVDelimiter" xml:space="preserve">
-    <value>Separador decimal para exportar en CSV:</value>
+    <value>Separador decimal al exportar en CSV:</value>
   </data>
   <data name="dlgPreferences_Drawings_CSVPoint" xml:space="preserve">
     <value>Punto</value>
   </data>
   <data name="dlgPreferences_Drawings_ExportCalibrated" xml:space="preserve">
-    <value>Calibrado</value>
+    <value>Medidas calibradas</value>
   </data>
   <data name="dlgPreferences_Drawings_ExportPixels" xml:space="preserve">
     <value>Píxeles</value>
   </data>
   <data name="dlgPreferences_Drawings_ExportSpace" xml:space="preserve">
-    <value>Configuración al exportar:</value>
+    <value>Modo de exportación:</value>
   </data>
   <data name="dlgPreferences_Drawings_TabExport" xml:space="preserve">
     <value>Exportación</value>
