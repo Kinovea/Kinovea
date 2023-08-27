@@ -731,7 +731,7 @@ namespace Kinovea.ScreenManager
             mnuDeleteTimes.Text = ScreenManagerLang.mnuAction_Chrono_DeleteTimes;
 
             // Options.
-            mnuOptions.Text = ScreenManagerLang.mnuOptions;
+            mnuOptions.Text = ScreenManagerLang.Generic_Options;
             mnuShowLabel.Text = ScreenManagerLang.mnuShowLabel;
             mnuLocked.Text = ScreenManagerLang.mnuOptions_Chrono_Locked;
 

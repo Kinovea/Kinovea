@@ -583,15 +583,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Colors.
-        /// </summary>
-        public static string dlgColorPicker_Title {
-            get {
-                return ResourceManager.GetString("dlgColorPicker_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Color profile....
         /// </summary>
         public static string dlgColorProfile_Title {
@@ -934,42 +925,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Complete.
-        /// </summary>
-        public static string dlgConfigureTrajectory_VisibilityComplete {
-            get {
-                return ResourceManager.GetString("dlgConfigureTrajectory_VisibilityComplete", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Label only.
-        /// </summary>
-        public static string dlgConfigureTrajectory_VisibilityLabelOnly {
-            get {
-                return ResourceManager.GetString("dlgConfigureTrajectory_VisibilityLabelOnly", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to One second.
-        /// </summary>
-        public static string dlgConfigureTrajectory_VisibilityOneSecond {
-            get {
-                return ResourceManager.GetString("dlgConfigureTrajectory_VisibilityOneSecond", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Type of video.
-        /// </summary>
-        public static string dlgDiapoExport_GroupDiapoType {
-            get {
-                return ResourceManager.GetString("dlgDiapoExport_GroupDiapoType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Duration on each key image: {0} hundredth of seconds..
         /// </summary>
         public static string dlgDiapoExport_LabelFrequencyHundredth {
@@ -984,24 +939,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string dlgDiapoExport_LabelFrequencySeconds {
             get {
                 return ResourceManager.GetString("dlgDiapoExport_LabelFrequencySeconds", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Original video with a pause on each key image.
-        /// </summary>
-        public static string dlgDiapoExport_RadioPausedVideo {
-            get {
-                return ResourceManager.GetString("dlgDiapoExport_RadioPausedVideo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Video slideshow with only the key images..
-        /// </summary>
-        public static string dlgDiapoExport_RadioSlideshow {
-            get {
-                return ResourceManager.GetString("dlgDiapoExport_RadioSlideshow", resourceCulture);
             }
         }
         
@@ -1078,29 +1015,11 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Export the key images..
-        /// </summary>
-        public static string dlgRafaleExport_LabelKeyframesOnly {
-            get {
-                return ResourceManager.GetString("dlgRafaleExport_LabelKeyframesOnly", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Total: {0:0} images..
         /// </summary>
         public static string dlgRafaleExport_LabelTotalFrames {
             get {
                 return ResourceManager.GetString("dlgRafaleExport_LabelTotalFrames", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Save a sequence of images.
-        /// </summary>
-        public static string dlgRafaleExport_Title {
-            get {
-                return ResourceManager.GetString("dlgRafaleExport_Title", resourceCulture);
             }
         }
         
@@ -1114,65 +1033,11 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save method.
-        /// </summary>
-        public static string dlgSaveAnalysisOrVideo_GroupSaveMethod {
-            get {
-                return ResourceManager.GetString("dlgSaveAnalysisOrVideo_GroupSaveMethod", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Only the annotations will be saved.#The file can be imported in a video later..
-        /// </summary>
-        public static string dlgSaveAnalysisOrVideo_HintAnalysis {
-            get {
-                return ResourceManager.GetString("dlgSaveAnalysisOrVideo_HintAnalysis", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The annotations will be visible in all players but not modifiable.#Extra comments attached to key images will not be saved..
-        /// </summary>
-        public static string dlgSaveAnalysisOrVideo_HintBlended {
-            get {
-                return ResourceManager.GetString("dlgSaveAnalysisOrVideo_HintBlended", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Save only the annotations.
-        /// </summary>
-        public static string dlgSaveAnalysisOrVideo_RadioAnalysis {
-            get {
-                return ResourceManager.GetString("dlgSaveAnalysisOrVideo_RadioAnalysis", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Export video with annotations permanently applied on the video.
-        /// </summary>
-        public static string dlgSaveAnalysisOrVideo_RadioBlended {
-            get {
-                return ResourceManager.GetString("dlgSaveAnalysisOrVideo_RadioBlended", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Save annotations.
         /// </summary>
         public static string dlgSaveAnalysisTitle {
             get {
                 return ResourceManager.GetString("dlgSaveAnalysisTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Save sequence.
-        /// </summary>
-        public static string dlgSaveSequenceTitle {
-            get {
-                return ResourceManager.GetString("dlgSaveSequenceTitle", resourceCulture);
             }
         }
         
@@ -1465,15 +1330,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Profile.
-        /// </summary>
-        public static string DrawingName_Profile {
-            get {
-                return ResourceManager.GetString("DrawingName_Profile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Rectangle.
         /// </summary>
         public static string DrawingName_Rectangle {
@@ -1555,24 +1411,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Kinovea - Cannot create the slideshow..
-        /// </summary>
-        public static string Error_SaveDiaporama {
-            get {
-                return ResourceManager.GetString("Error_SaveDiaporama", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A slideshow is a sequence of key images saved in video format.\n Please add some key images before generating the slideshow..
-        /// </summary>
-        public static string Error_SaveDiaporama_NoKeyframes {
-            get {
-                return ResourceManager.GetString("Error_SaveDiaporama_NoKeyframes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Unable to write file.\nMake sure you have the rights to write in the target folder and that the file not be currently used..
         /// </summary>
         public static string Error_SaveMovie_FileError {
@@ -1596,15 +1434,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string Error_SaveMovie_Title {
             get {
                 return ResourceManager.GetString("Error_SaveMovie_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Kinovea – Cannot create paused video.
-        /// </summary>
-        public static string Error_SavePausedVideo {
-            get {
-                return ResourceManager.GetString("Error_SavePausedVideo", resourceCulture);
             }
         }
         
@@ -1893,24 +1722,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string FormFileSave_Infos {
             get {
                 return ResourceManager.GetString("FormFileSave_Infos", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Exported images:.
-        /// </summary>
-        public static string FormFramesExport_Infos {
-            get {
-                return ResourceManager.GetString("FormFramesExport_Infos", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Exporting images....
-        /// </summary>
-        public static string FormFramesExport_Title {
-            get {
-                return ResourceManager.GetString("FormFramesExport_Title", resourceCulture);
             }
         }
         
@@ -2356,29 +2167,11 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Speed : {0}.
-        /// </summary>
-        public static string lblSpeedTuner_Text {
-            get {
-                return ResourceManager.GetString("lblSpeedTuner_Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Position.
         /// </summary>
         public static string lblTimeCode_Text {
             get {
                 return ResourceManager.GetString("lblTimeCode_Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Working Zone:.
-        /// </summary>
-        public static string lblWorkingZone_Text {
-            get {
-                return ResourceManager.GetString("lblWorkingZone_Text", resourceCulture);
             }
         }
         
@@ -2748,33 +2541,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string mnuCoordinateSystemHide {
             get {
                 return ResourceManager.GetString("mnuCoordinateSystemHide", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Axes.
-        /// </summary>
-        public static string mnuCoordinateSystemShowAxis {
-            get {
-                return ResourceManager.GetString("mnuCoordinateSystemShowAxis", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Grid.
-        /// </summary>
-        public static string mnuCoordinateSystemShowGrid {
-            get {
-                return ResourceManager.GetString("mnuCoordinateSystemShowGrid", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Tick marks.
-        /// </summary>
-        public static string mnuCoordinateSystemShowTickMarks {
-            get {
-                return ResourceManager.GetString("mnuCoordinateSystemShowTickMarks", resourceCulture);
             }
         }
         
@@ -3166,15 +2932,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Zoom x{0:0.00}.
-        /// </summary>
-        public static string mnuMagnification {
-            get {
-                return ResourceManager.GetString("mnuMagnification", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Switch to direct zoom.
         /// </summary>
         public static string mnuMagnifierDirect {
@@ -3369,15 +3126,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string mnuOpenVideo {
             get {
                 return ResourceManager.GetString("mnuOpenVideo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Options.
-        /// </summary>
-        public static string mnuOptions {
-            get {
-                return ResourceManager.GetString("mnuOptions", resourceCulture);
             }
         }
         
@@ -3675,15 +3423,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string mnuShowLabel {
             get {
                 return ResourceManager.GetString("mnuShowLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Display measure.
-        /// </summary>
-        public static string mnuShowMeasure {
-            get {
-                return ResourceManager.GetString("mnuShowMeasure", resourceCulture);
             }
         }
         

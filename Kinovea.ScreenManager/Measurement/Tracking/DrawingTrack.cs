@@ -1825,7 +1825,7 @@ namespace Kinovea.ScreenManager
             }
 
             // Display options
-            mnuOptions.Text = ScreenManagerLang.mnuOptions;
+            mnuOptions.Text = ScreenManagerLang.Generic_Options;
             mnuSeeFuture.Text = ScreenManagerLang.mnuOptions_Trajectory_SeeFuture;
             mnuShowTrackLabel.Text = ScreenManagerLang.mnuOptions_Trajectory_ShowTrackLabel;
             mnuShowKeyframeLabel.Text = ScreenManagerLang.mnuOptions_Trajectory_ShowKeyImageLabels;

@@ -586,7 +586,7 @@ namespace Kinovea.ScreenManager
             }
 
             // Options
-            mnuOptions.Text = ScreenManagerLang.mnuOptions;
+            mnuOptions.Text = ScreenManagerLang.Generic_Options;
             mnuShowCenter.Text = ScreenManagerLang.mnuShowCircleCenter;
         }
 

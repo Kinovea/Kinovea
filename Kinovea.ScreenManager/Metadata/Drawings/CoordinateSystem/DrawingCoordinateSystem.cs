@@ -471,7 +471,7 @@ namespace Kinovea.ScreenManager
 
         private void ReloadMenusCulture()
         {
-            mnuOptions.Text = ScreenManagerLang.mnuOptions;
+            mnuOptions.Text = ScreenManagerLang.Generic_Options;
             mnuShowGrid.Text = ScreenManagerLang.mnuOptions_CoordinateSystem_ShowGrid;
             mnuShowGraduations.Text = ScreenManagerLang.mnuOptions_CoordinateSystem_ShowGraduations;
             mnuHide.Text = ScreenManagerLang.mnuCoordinateSystemHide;

@@ -478,7 +478,7 @@ namespace Kinovea.ScreenManager
             mnuResetTile.Text = ScreenManagerLang.mnuAction_Kinogram_ResetTile;
             mnuResetAllTiles.Text = ScreenManagerLang.mnuAction_Kinogram_ResetAllTiles;
 
-            mnuOptions.Text = ScreenManagerLang.mnuOptions;
+            mnuOptions.Text = ScreenManagerLang.Generic_Options;
             mnuRightToLeft.Text = ScreenManagerLang.mnuOptions_Kinogram_RightToLeft;
             mnuShowBorder.Text = ScreenManagerLang.mnuOptions_Kinogram_ShowBorder;
             mnuAutoInterpolate.Text = ScreenManagerLang.mnuOptions_Kinogram_AutoInterpolate;

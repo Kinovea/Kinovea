@@ -237,9 +237,6 @@
   <data name="DataAnalysis_ResultantLinearAcceleration" xml:space="preserve">
     <value>Resultant acceleration</value>
   </data>
-  <data name="dlgColorPicker_Title" xml:space="preserve">
-    <value>Colors</value>
-  </data>
   <data name="dlgColorProfile_Title" xml:space="preserve">
     <value>Color profile...</value>
   </data>
@@ -296,15 +293,6 @@
   </data>
   <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
     <value>Configure trajectory tool</value>
-  </data>
-  <data name="dlgConfigureTrajectory_VisibilityComplete" xml:space="preserve">
-    <value>Complete</value>
-  </data>
-  <data name="dlgConfigureTrajectory_VisibilityOneSecond" xml:space="preserve">
-    <value>One second</value>
-  </data>
-  <data name="dlgConfigureTrajectory_VisibilityLabelOnly" xml:space="preserve">
-    <value>Label only</value>
   </data>
   <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
     <value>Marker:</value>
@@ -429,15 +417,6 @@
   <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve">
     <value>Duration of each key image: {0:0.00} seconds.</value>
   </data>
-  <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve">
-    <value>Original video with a pause on each key image</value>
-  </data>
-  <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve">
-    <value>Video slideshow with only the key images.</value>
-  </data>
-  <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve">
-    <value>Type of video</value>
-  </data>
   <data name="dlgExportSpreadsheet_Title" xml:space="preserve">
     <value>Save the data as a spreadsheet document</value>
   </data>
@@ -449,9 +428,6 @@
   </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>Load annotations</value>
-  </data>
-  <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve">
-    <value>Export the key images.</value>
   </data>
   <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve">
     <value>Total: {0:0} images.</value>
@@ -468,32 +444,11 @@
   <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve">
     <value>Export one image every {0:0}ms.</value>
   </data>
-  <data name="dlgRafaleExport_Title" xml:space="preserve">
-    <value>Save a sequence of images</value>
-  </data>
   <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
     <value>Take slow motion into account. (Current = </value>
   </data>
-  <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve">
-    <value>Save method</value>
-  </data>
-  <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve">
-    <value>Save only the annotations</value>
-  </data>
-  <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve">
-    <value>Only the annotations will be saved.#The file can be imported in a video later.</value>
-  </data>
-  <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve">
-    <value>Export video with annotations permanently applied on the video</value>
-  </data>
-  <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve">
-    <value>The annotations will be visible in all players but not modifiable.#Extra comments attached to key images will not be saved.</value>
-  </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>Save annotations</value>
-  </data>
-  <data name="dlgSaveSequenceTitle" xml:space="preserve">
-    <value>Save sequence</value>
   </data>
   <data name="dlgCameraCalibration_Title" xml:space="preserve">
     <value>Camera calibration</value>
@@ -561,9 +516,6 @@
   <data name="DrawingName_Bikefit" xml:space="preserve">
     <value>Bike fit</value>
   </data>
-  <data name="DrawingName_Profile" xml:space="preserve">
-    <value>Profile</value>
-  </data>
   <data name="DrawingName_Genu" xml:space="preserve">
     <value>Genu</value>
   </data>
@@ -624,15 +576,6 @@
   <data name="Error_Capture_DirectoryNotCreated_Text" xml:space="preserve">
     <value>The capture directory could not be created.\nCheck that it points to a valid storage location.</value>
   </data>
-  <data name="Error_SaveDiaporama" xml:space="preserve">
-    <value>Kinovea - Cannot create the slideshow.</value>
-  </data>
-  <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve">
-    <value>A slideshow is a sequence of key images saved in video format.\n Please add some key images before generating the slideshow.</value>
-  </data>
-  <data name="Error_SavePausedVideo" xml:space="preserve">
-    <value>Kinovea – Cannot create paused video</value>
-  </data>
   <data name="Error_SaveMovie_FileError" xml:space="preserve">
     <value>Unable to write file.\nMake sure you have the rights to write in the target folder and that the file not be currently used.</value>
   </data>
@@ -656,12 +599,6 @@
   </data>
   <data name="FormFileSave_Infos" xml:space="preserve">
     <value>Progress:</value>
-  </data>
-  <data name="FormFramesExport_Infos" xml:space="preserve">
-    <value>Exported images:</value>
-  </data>
-  <data name="FormFramesExport_Title" xml:space="preserve">
-    <value>Exporting images...</value>
   </data>
   <data name="FormProgressBar_Title" xml:space="preserve">
     <value>Progress</value>
@@ -813,14 +750,8 @@
   <data name="lblSelStartSelection_Text" xml:space="preserve">
     <value>Start</value>
   </data>
-  <data name="lblSpeedTuner_Text" xml:space="preserve">
-    <value>Speed : {0}</value>
-  </data>
   <data name="lblTimeCode_Text" xml:space="preserve">
     <value>Position</value>
-  </data>
-  <data name="lblWorkingZone_Text" xml:space="preserve">
-    <value>Working Zone:</value>
   </data>
   <data name="LengthUnit_Millimeters" xml:space="preserve">
     <value>Millimeters</value>
@@ -996,9 +927,6 @@
   <data name="mnuLoadAnalysis" xml:space="preserve">
     <value>Load annotations…</value>
   </data>
-  <data name="mnuMagnification" xml:space="preserve">
-    <value>Zoom x{0:0.00}</value>
-  </data>
   <data name="mnuMagnifierDirect" xml:space="preserve">
     <value>Switch to direct zoom</value>
   </data>
@@ -1035,9 +963,6 @@
   <data name="mnuTimebase" xml:space="preserve">
     <value>Configure video timing...</value>
   </data>
-  <data name="mnuShowMeasure" xml:space="preserve">
-    <value>Display measure</value>
-  </data>
   <data name="mnuSwapScreens" xml:space="preserve">
     <value>Swap screens</value>
   </data>
@@ -1061,15 +986,6 @@
   </data>
   <data name="mnuCoordinateSystem" xml:space="preserve">
     <value>Coordinate system</value>
-  </data>
-  <data name="mnuCoordinateSystemShowAxis" xml:space="preserve">
-    <value>Axes</value>
-  </data>
-  <data name="mnuCoordinateSystemShowGrid" xml:space="preserve">
-    <value>Grid</value>
-  </data>
-  <data name="mnuCoordinateSystemShowTickMarks" xml:space="preserve">
-    <value>Tick marks</value>
   </data>
   <data name="mnuCoordinateSystemHide" xml:space="preserve">
     <value>Hide</value>
@@ -1475,9 +1391,6 @@
   </data>
   <data name="mnuMeasure_Label_None" xml:space="preserve">
     <value>None</value>
-  </data>
-  <data name="mnuOptions" xml:space="preserve">
-    <value>Options</value>
   </data>
   <data name="mnuOptions_Chrono_Locked" xml:space="preserve">
     <value>Locked</value>

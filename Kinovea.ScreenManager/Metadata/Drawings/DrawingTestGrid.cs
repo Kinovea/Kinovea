@@ -438,7 +438,7 @@ namespace Kinovea.ScreenManager
 
         private void ReloadMenusCulture()
         {
-            mnuOptions.Text = ScreenManagerLang.mnuOptions;
+            mnuOptions.Text = ScreenManagerLang.Generic_Options;
             mnuShowHorizontalAxis.Text = ScreenManagerLang.mnuOptions_TestGrid_ShowHorizontalAxis;
             mnuShowVerticalAxis.Text = ScreenManagerLang.mnuOptions_TestGrid_ShowVerticalAxis;
             mnuShowFraming.Text = ScreenManagerLang.mnuOptions_TestGrid_ShowFrame;

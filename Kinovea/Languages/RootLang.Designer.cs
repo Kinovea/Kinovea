@@ -637,15 +637,6 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to By default, drawings will stay visible for {0} images around the Key Image..
-        /// </summary>
-        internal static string dlgPreferences_Drawings_lblFading {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Drawings_lblFading", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Visible for the entire video.
         /// </summary>
         internal static string dlgPreferences_Drawings_rbAlwaysVisible {
@@ -772,15 +763,6 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Switch to Analysis mode.
-        /// </summary>
-        internal static string dlgPreferences_Player_GroupAnalysisMode {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Player_GroupAnalysisMode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Import image sequences as videos.
         /// </summary>
         internal static string dlgPreferences_Player_ImportImageSequences {
@@ -813,15 +795,6 @@ namespace Kinovea.Root.Languages {
         internal static string dlgPreferences_Player_lblLanguages {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_lblLanguages", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to And.
-        /// </summary>
-        internal static string dlgPreferences_Player_lblLogicAnd {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Player_lblLogicAnd", resourceCulture);
             }
         }
         
@@ -1137,15 +1110,6 @@ namespace Kinovea.Root.Languages {
         internal static string dlgPreferences_Title {
             get {
                 return ResourceManager.GetString("dlgPreferences_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Loading the user interface….
-        /// </summary>
-        internal static string dlgSplash_LoadInfos {
-            get {
-                return ResourceManager.GetString("dlgSplash_LoadInfos", resourceCulture);
             }
         }
         

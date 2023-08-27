@@ -321,9 +321,6 @@
   <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
     <value>Default annotation file:</value>
   </data>
-  <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve">
-    <value>Switch to Analysis mode</value>
-  </data>
   <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve">
     <value>Number of files in history:</value>
   </data>
@@ -336,14 +333,8 @@
   <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve">
     <value>Language:</value>
   </data>
-  <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve">
-    <value>And</value>
-  </data>
   <data name="dlgPreferences_Player_lblMemory" xml:space="preserve">
     <value>Cache memory allocated to each playback screen: {0} MB.</value>
-  </data>
-  <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve">
-    <value>By default, drawings will stay visible for {0} images around the Key Image.</value>
   </data>
   <data name="dlgPreferences_Player_tabUnits" xml:space="preserve">
     <value>Units</value>
@@ -449,9 +440,6 @@
   </data>
   <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve">
     <value>Default</value>
-  </data>
-  <data name="dlgSplash_LoadInfos" xml:space="preserve">
-    <value>Loading the user interface…</value>
   </data>
   <data name="Generic_Cancel" xml:space="preserve">
     <value>Cancel</value>
