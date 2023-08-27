@@ -176,7 +176,7 @@
     <value>Elementi costitutivi</value>
   </data>
   <data name="TimeCodeFormat_Microseconds" xml:space="preserve">
-    <value>Microsecondi totali</value>
+    <value>Totale in microsecondi</value>
   </data>
   <data name="mnuWorkspaceExport" xml:space="preserve">
     <value>Esporta spazio di lavoro</value>
