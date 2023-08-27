@@ -381,7 +381,7 @@ namespace Kinovea.FileBrowser
                     etShortcuts.SelectNode(lastOpenedDirectory);
                 }
             }
-            else if (activeTab == ActiveFileBrowserTab.Explorer)
+            else if (activeTab == ActiveFileBrowserTab.Explorer && sessionHistory.Current != null)
             {
                 etExplorer.ExpandANode(sessionHistory.Current);
             }
