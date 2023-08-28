@@ -1,5 +1,5 @@
 
-Kinovea 2023.1 - TBD.
+Kinovea 2023.1 - 2023-08.
 
 Kinovea is a free and open source video annotation tool designed for motion analysis.
 It features utilities to capture, slow down, compare, annotate and measure motion in videos.
@@ -38,23 +38,23 @@ Project:
 Changelog:
 ----------
 
-2023.1 - TBD
+2023.1 - August 2023.
     Added - Kinogram mode to replace the Overview mode.
-    Added - Keyframe colors.
-    Added - Keyframe presets.
+    Added - Side panel with key image comments.
     Added - Multi-time stopwatch tool.
     Added - Time segment tool.
     Added - Distance grid tool.
+    Added - Magnifier "Freeze" mode.
+    Added - Keyframe colors.
+    Added - Keyframe presets.
+    Added - Time grab interaction.
     Added - Recording status bar.
     Added - Support for saving single snapshots from audio trigger.
-    Added - Time grab interaction.
-    Added - Magnifier "Freeze" mode.
-    Added - Side panel with key image comments.
+    Added - Support for saving side-by-side image in a vertical layout.
     Added - Spreadsheet exporter to JSON.
     Added - Spreadsheet exporter to CSV.
     Added - Document exporter to Markdown.
     Added - Document exporter to ODT and DOCX via Pandoc.
-    Added - Support for saving side-by-side image in a vertical layout.
     Improved - General: Save and restore the working zone bounds as part of the KVA file.
     Improved - General: Save and restore all video import options (aspect, rotation, demosaicing, deinterlacing).
     Improved - General: Save keyframes even if they are outside the working zone.
@@ -102,6 +102,7 @@ Changelog:
     Fixed - The position of the main splitters of the user interface were not saved and restored correctly.
     Fixed - Key images timecode displayed on the thumbnail could be incorrect.
     Fixed - The folder browser dialog was causing UI issues when using high DPI scaling.
+    Fixed - Recording of webcams could result in files with the wrong framerate.
     Removed - Video reverse mode.
     Removed - Exporting data to XHTML.
     Removed - Exporting data to Gnuplot script.
