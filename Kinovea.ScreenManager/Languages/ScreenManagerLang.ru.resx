@@ -114,7 +114,7 @@
   </data>
   <data name="DataAnalysis_ExportGraph" xml:space="preserve"><value>Экспорт графика</value>
   </data>
-  <data name="DataAnalysis_Pixels" xml:space="preserve"><value>Пиксели</value>
+  <data name="DataAnalysis_Pixels" xml:space="preserve"><value>пиксели</value>
   </data>
   <data name="DataAnalysis_SaveToFile" xml:space="preserve"><value>Сохранить в файл</value>
   </data>
