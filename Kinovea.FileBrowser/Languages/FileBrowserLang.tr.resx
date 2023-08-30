@@ -111,9 +111,27 @@
     <value>Windows Gezgini'nde bul </value>
   </data>
   <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
-    <value>Yeniden oynatma klasörü gözlemcisi olarak aç</value>
+    <value>Tekrar oynatma klasörü gözlemcisi olarak aç</value>
   </data>
   <data name="ForgetCustomSettings" xml:space="preserve">
     <value>Özel ayarları unut</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>Artan</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Sıralama</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Boyut</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Tarih</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>İsim</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>Azalan</value>
   </data>
 </root>
