@@ -376,4 +376,40 @@
   <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
     <value>Камера: записывает кадры в реальном времени.</value>
   </data>
+  <data name="dlgPreferences_Drawings_CSVPoint" xml:space="preserve">
+    <value>Точка</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportPixels" xml:space="preserve">
+    <value>Пиксели</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportCalibrated" xml:space="preserve">
+    <value>Откалиброванные измерения</value>
+  </data>
+  <data name="dlgPreferences_Capture_TriggerAction" xml:space="preserve">
+    <value>Действие при срабатывании:</value>
+  </data>
+  <data name="dlgPreferences_General_PathToPandoc" xml:space="preserve">
+    <value>Путь до Pandoc:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVComma" xml:space="preserve">
+    <value>Запятая</value>
+  </data>
+  <data name="dlgPreferences_Drawings_TabExport" xml:space="preserve">
+    <value>Экспорт</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVDelimiter" xml:space="preserve">
+    <value>Десятичный разделитель для файлов CSV:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportSpace" xml:space="preserve">
+    <value>Режим экспорта:</value>
+  </data>
+  <data name="dlgPreferences_Drawing_CSVSystem" xml:space="preserve">
+    <value>Система ({0})</value>
+  </data>
+  <data name="dlgWorkspace_ConfirmationMessage" xml:space="preserve">
+    <value>Рабочее пространство по умолчанию сохранено.</value>
+  </data>
+  <data name="dlgWorkspace_Title" xml:space="preserve">
+    <value>Рабочее пространство</value>
+  </data>
 </root>

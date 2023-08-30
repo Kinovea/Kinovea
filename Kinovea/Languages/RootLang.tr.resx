@@ -436,4 +436,40 @@
   <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve">
     <value>Koordinat filtrelemesini etkinleştir</value>
   </data>
+  <data name="dlgPreferences_Capture_TriggerAction" xml:space="preserve">
+    <value>Tetikleme hareketi:</value>
+  </data>
+  <data name="dlgPreferences_General_PathToPandoc" xml:space="preserve">
+    <value>Pandoc dizini:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVComma" xml:space="preserve">
+    <value>Virgül</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVPoint" xml:space="preserve">
+    <value>Nokta</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportPixels" xml:space="preserve">
+    <value>Pikseller</value>
+  </data>
+  <data name="dlgPreferences_Drawings_TabExport" xml:space="preserve">
+    <value>Dışa aktar</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportCalibrated" xml:space="preserve">
+    <value>Kalibre edilmiş ölçümler</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVDelimiter" xml:space="preserve">
+    <value>CSV dosyaları için virgül ayracı:</value>
+  </data>
+  <data name="dlgPreferences_Drawing_CSVSystem" xml:space="preserve">
+    <value>Sistem ({0})</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportSpace" xml:space="preserve">
+    <value>Dışa aktarma modu:</value>
+  </data>
+  <data name="dlgWorkspace_ConfirmationMessage" xml:space="preserve">
+    <value>Varsayılan çalışma alanı kaydedildi.</value>
+  </data>
+  <data name="dlgWorkspace_Title" xml:space="preserve">
+    <value>Çalışma alanı</value>
+  </data>
 </root>
