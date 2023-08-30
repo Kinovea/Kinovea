@@ -105,9 +105,54 @@
     <value>Pozlama (µs):</value>
   </data>
   <data name="FormConfiguration_Properties_Gain" xml:space="preserve">
-    <value>Kazanç:</value>
+    <value>Alıcı gücü:</value>
   </data>
   <data name="FormConfiguration_Properties_Focus" xml:space="preserve">
     <value>Odak:</value>
+  </data>
+  <data name="FormConfiguration_Properties_BayerFormatConversion" xml:space="preserve">
+    <value>Bayer format dönüşümü:</value>
+  </data>
+  <data name="FormConfiguration_Auto" xml:space="preserve">
+    <value>Otomatik</value>
+  </data>
+  <data name="FormConnectionWizard_URL" xml:space="preserve">
+    <value>Bitiş URL'si</value>
+  </data>
+  <data name="FormConfiguration_Reconnect" xml:space="preserve">
+    <value>Yeniden bağlan</value>
+  </data>
+  <data name="FormConnectionWizard_Format" xml:space="preserve">
+    <value>Biçim</value>
+  </data>
+  <data name="FormConfiguration_DevicePropertyPages" xml:space="preserve">
+    <value>Cihaz özellik sayfaları</value>
+  </data>
+  <data name="FormConfiguration_Test" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="FormConnectionWizard_Host" xml:space="preserve">
+    <value>Host (IP adresi)</value>
+  </data>
+  <data name="FormConfiguration_DevicePropertyPages_Error" xml:space="preserve">
+    <value>{0} için cihaz özellik sayfasını görüntülerken bir hata oluştu.</value>
+  </data>
+  <data name="FormConfiguration_ImportParameters" xml:space="preserve">
+    <value>Parametreleri içe aktar</value>
+  </data>
+  <data name="FormConnectionWizard_Network" xml:space="preserve">
+    <value>Ağ</value>
+  </data>
+  <data name="FormConnectionWizard_Port" xml:space="preserve">
+    <value>Port</value>
+  </data>
+  <data name="FormConnectionWizard_Authentication" xml:space="preserve">
+    <value>Doğrulama</value>
+  </data>
+  <data name="FormConnectionWizard_User" xml:space="preserve">
+    <value>Kullanıcı</value>
+  </data>
+  <data name="FormConnectionWizard_Password" xml:space="preserve">
+    <value>Şifre</value>
   </data>
 </root>
