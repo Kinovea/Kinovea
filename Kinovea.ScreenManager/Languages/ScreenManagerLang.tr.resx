@@ -78,11 +78,11 @@
   </data>
   <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Çizim Ekle</value>
   </data>
-  <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Çizim Sil</value>
+  <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Çizimi Sil</value>
   </data>
-  <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Bir Anahtar İmajı Kaldır</value>
+  <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Bir anahtar resmi kaldır</value>
   </data>
-  <data name="CommandExportVideo_FriendlyName" xml:space="preserve"><value>Video Kaydet</value>
+  <data name="CommandExportVideo_FriendlyName" xml:space="preserve"><value>Video olarak dışa aktar</value>
   </data>
   <data name="DataAnalysis_AngularPosition" xml:space="preserve"><value>Açı</value>
   </data>
@@ -90,17 +90,17 @@
   </data>
   <data name="dlgColorProfile_Title" xml:space="preserve"><value>Renk Profili...</value>
   </data>
-  <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Varsayılan Renk Profiline Dön</value>
+  <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Varsayılan renk profiline dön</value>
   </data>
-  <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Renk Profili Yükle</value>
+  <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Renk profilini yükle</value>
   </data>
-  <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve"><value>Renk Profili Kaydet</value>
+  <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve"><value>Renk profilini kaydet</value>
   </data>
-  <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Çizimi Ayarla</value>
+  <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Çizimi ayarla</value>
   </data>
-  <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Her zaman Görünür</value>
+  <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Her zaman görünür</value>
   </data>
-  <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Baştaki Konuma Getir</value>
+  <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Sıfırla</value>
   </data>
   <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve"><value>Ölçüm:</value>
   </data>
@@ -282,7 +282,7 @@
   </data>
   <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Spreadsheet'e export et</value>
   </data>
-  <data name="mnuFormat" xml:space="preserve"><value>İmaj Formatı</value>
+  <data name="mnuFormat" xml:space="preserve"><value>En boy oranı</value>
   </data>
   <data name="mnuFormatAuto" xml:space="preserve"><value>Otomatik Bulma</value>
   </data>
@@ -439,7 +439,7 @@
     <value>Zamanlamayı düzenle</value>
   </data>
   <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
-    <value>Maksimum şeffaflık (%):</value>
+    <value>Maksimum opaklık (%):</value>
   </data>
   <data name="dlgConfigureDrawing_Name" xml:space="preserve">
     <value>İsim</value>
@@ -448,52 +448,52 @@
     <value>Bileşke ivme</value>
   </data>
   <data name="DataAnalysis_TangentialAcceleration" xml:space="preserve">
-    <value>Teğet ivme</value>
+    <value>Teğetsel ivme</value>
   </data>
   <data name="DataAnalysis_TangentialVelocity" xml:space="preserve">
-    <value>Teğet hız</value>
+    <value>Teğetsel hız</value>
   </data>
   <data name="DataAnalysis_TotalAngularDisplacement" xml:space="preserve">
-    <value>Toplam yerdeğiştirme</value>
+    <value>Toplam yer değiştirme</value>
   </data>
   <data name="DataAnalysis_TimeModel_Normalized" xml:space="preserve">
-    <value>Normalize</value>
+    <value>Normalleştirilmiş</value>
   </data>
   <data name="DataAnalysis_TimeModel_Relative" xml:space="preserve">
-    <value>Rölatif</value>
+    <value>Göreli</value>
   </data>
   <data name="DataAnalysis_TimeModel_Absolute" xml:space="preserve">
     <value>Mutlak</value>
   </data>
   <data name="DataAnalysis_TimeModel" xml:space="preserve">
-    <value>Zaman :</value>
+    <value>Zaman:</value>
   </data>
   <data name="DataAnalysis_DataLabel" xml:space="preserve">
-    <value>Veri :</value>
+    <value>Veri:</value>
   </data>
   <data name="DataAnalysis_DataSource" xml:space="preserve">
     <value>Veri kaynağı</value>
   </data>
   <data name="DataAnalysis_ExportData" xml:space="preserve">
-    <value>Veriyi Dışarı Aktar</value>
+    <value>Veriyi dışarı aktar</value>
   </data>
   <data name="DataAnalysis_SaveToFile" xml:space="preserve">
-    <value>Dosyaya Kaydet</value>
+    <value>Dosyaya kaydet</value>
   </data>
   <data name="DataAnalysis_Title" xml:space="preserve">
     <value>Başlık:</value>
   </data>
   <data name="DataAnalysis_Pixels" xml:space="preserve">
-    <value>noktalar</value>
+    <value>pikseller</value>
   </data>
   <data name="DataAnalysis_ExportGraph" xml:space="preserve">
     <value>Grafiği dışarı aktar</value>
   </data>
   <data name="DataAnalysis_Labels" xml:space="preserve">
-    <value>Başlıklar</value>
+    <value>Etiketler</value>
   </data>
   <data name="DataAnalysis_PagePlot" xml:space="preserve">
-    <value>Çizgim</value>
+    <value>Çizim alanı</value>
   </data>
   <data name="DataAnalysis_AngleAngleDiagrams" xml:space="preserve">
     <value>Açı-açı grafiği</value>
@@ -526,10 +526,10 @@
     <value>X ekseni:</value>
   </data>
   <data name="DataAnalysis" xml:space="preserve">
-    <value>Veri Analizi</value>
+    <value>Veri analizi</value>
   </data>
   <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
-    <value>Çizim Düzenle</value>
+    <value>Çizimi Düzenle</value>
   </data>
   <data name="Generic_Quit" xml:space="preserve">
     <value>Programdan Çık</value>
@@ -580,7 +580,7 @@
     <value>Rotayon yok</value>
   </data>
   <data name="mnuRotation" xml:space="preserve">
-    <value>Resim rotasyonu</value>
+    <value>Rotasyon</value>
   </data>
   <data name="mnuDrawingTrackingStop" xml:space="preserve">
     <value>Takibi durdur</value>
@@ -667,7 +667,7 @@
     <value>Ek açıklamaları farklı kaydet…</value>
   </data>
   <data name="dlgTimebase_InfoUser" xml:space="preserve">
-    <value>Bu seçenek, Kinovea tarafından videoyu oynatmak için kullanılan referans kare hızını tanımlar. Video yanlış bir kare hızı içerdiğinde veya Kinovea onu okuyamadığında kullanın. </value>
+    <value>Bu seçenek, Kinovea tarafından videoyu oynatmak için kullanılan referans kare hızını tanımlar. Videonun içerdiği kare hızı yanlışsa veya Kinovea okuyamıyorsa kullanın. </value>
   </data>
   <data name="dlgTimebase_lblUserFPS" xml:space="preserve">
     <value>Video kare hızı:</value>
@@ -676,10 +676,10 @@
     <value>Dosyada okunan kare hızı: {0:0.##} fps</value>
   </data>
   <data name="dlgTimebase_InfoCapture" xml:space="preserve">
-    <value>Bu seçenek, video hızı ile gerçek zaman arasındaki farkı tanımlar. Süreleri ve kinematik ölçümlerini içeren etiketleri etkiler. Video yüksek hız modunda çekildiğinde bunu kullanın. </value>
+    <value>Bu seçenek, video hızı ile gerçek zaman arasındaki farkı tanımlar. Süreleri ve kinematik ölçümlerini içeren etiketleri etkiler. Video yüksek hız modunda çekildiyse bunu kullanın. </value>
   </data>
   <data name="dlgTimebase_lblCapture" xml:space="preserve">
-    <value>Solma süresi (kareler):</value>
+    <value>Kare hızını yakala:</value>
   </data>
   <data name="dlgConfigureOpacity_lblFading" xml:space="preserve">
     <value>Solma süresi (kareler):</value>
@@ -962,5 +962,23 @@
   </data>
   <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
     <value>Yörünge aracını yapılandır</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Sıralama</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Boyut</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>Artan</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Tarih</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>İsim</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>Azalan</value>
   </data>
 </root>
