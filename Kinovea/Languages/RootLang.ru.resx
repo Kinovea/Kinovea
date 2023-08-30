@@ -376,4 +376,13 @@
   <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
     <value>Камера: записывает кадры в реальном времени.</value>
   </data>
+  <data name="dlgPreferences_Drawings_CSVPoint" xml:space="preserve">
+    <value>Точка</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportPixels" xml:space="preserve">
+    <value>Пиксели</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportCalibrated" xml:space="preserve">
+    <value>Откалиброванные измерения</value>
+  </data>
 </root>
