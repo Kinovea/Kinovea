@@ -461,6 +461,7 @@ namespace Kinovea.ScreenManager
                 float opacity = 0;
                 if (trackStatus == TrackStatus.Interactive)
                 {
+                    // Past and present section.
                     opacity = GetOpacity(trackStatus, (float)opacityFactor, true);
                     DrawTrajectory(canvas, first, currentPointIndex, opacity, transformer);
 
@@ -676,6 +677,9 @@ namespace Kinovea.ScreenManager
             {
                 // Tension of 0.5f creates a smooth curve.
                 float tension = PreferencesManager.PlayerPreferences.EnableFiltering ? 0.5f : 0.0f;
+
+                trackPen.StartCap = LineCap.Round;
+                trackPen.EndCap = LineCap.Round;
 
                 if (trackStatus == TrackStatus.Edit)
                 {
