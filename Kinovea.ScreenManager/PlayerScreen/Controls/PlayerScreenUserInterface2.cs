@@ -4469,8 +4469,11 @@ namespace Kinovea.ScreenManager
             // This is only raised when we change the name, color or comment from the side panel.
             // Update the corresponding thumbnail box.
             UpdateKeyframeBox(e.Value);
-
             UpdateFramesMarkers();
+
+            // Update all the tracks for the keyframe labels name and color.
+            m_FrameServer.Metadata.UpdateTrajectoriesForKeyframes();
+            DoInvalidate();
         }
 
         /// <summary>
