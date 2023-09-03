@@ -271,7 +271,7 @@ namespace Kinovea.ScreenManager
         private bool showTrackLabel = false;
         private bool showKeyframeLabels = true;
         private bool useKeyframeColors = true;
-        private bool isInteractiveTrack = true;
+        private bool isInteractiveTrack = false;
         private bool showRotationCircle = false;
 
         // Configuration
