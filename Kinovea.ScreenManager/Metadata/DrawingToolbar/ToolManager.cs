@@ -52,13 +52,12 @@ namespace Kinovea.ScreenManager
         {
             tools = new Dictionary<string, AbstractDrawingTool>();
 
-            // Standard tools internally defined.
-            // These tools cannot be easily externalized at the moment due to some special ctor parameters.
-            tools.Add("AutoNumbers", new DrawingToolAutoNumbers());
-            tools.Add("CoordinateSystem", new DrawingToolCoordinateSystem());
-            tools.Add("Magnifier", new DrawingToolMagnifier());
+            // Singleton tools and magnifier.
+            tools.Add("NumberSequence", new DrawingToolNumberSequence());
             tools.Add("Spotlight", new DrawingToolSpotlight());
+            tools.Add("CoordinateSystem", new DrawingToolCoordinateSystem());
             tools.Add("TestGrid", new DrawingToolTestGrid());
+            tools.Add("Magnifier", new DrawingToolMagnifier());
 
             // Custom tools (externally defined).
             foreach (AbstractDrawingTool customTool in GenericPostureManager.Tools)
@@ -132,7 +131,7 @@ namespace Kinovea.ScreenManager
                         {
                             string key = r.GetAttribute("Key");
                             DrawingStyle preset = new DrawingStyle(r);
-                                
+
                             // Find the tool with this key and replace its preset style with the one we just read.
                             AbstractDrawingTool tool;
                             bool found = Tools.TryGetValue(key, out tool);
@@ -249,7 +248,7 @@ namespace Kinovea.ScreenManager
                 }
                 else
                 {
-                    // For internal standard tool, we have to check types one by one.
+                    // For singleton drawings we have to check types one by one.
                     // The ones that are not listed here (auto numbers, spotlight, etc.) aren't supported.
                     if (drawing is DrawingCoordinateSystem)
                     {
@@ -258,6 +257,10 @@ namespace Kinovea.ScreenManager
                     else if (drawing is DrawingTestGrid)
                     {
                         return "TestGrid";
+                    }
+                    else if (drawing is DrawingNumberSequence)
+                    {
+                        return "NumberSequence";
                     }
                 }
             }
@@ -282,11 +285,17 @@ namespace Kinovea.ScreenManager
             }
 
             // Remove options unknown to the default.
+            HashSet<string> keysToRemove = new HashSet<string>();
             foreach(KeyValuePair<string, AbstractStyleElement> pair in preset.Elements)
             {
                 if(!defaultStyle.Elements.ContainsKey(pair.Key))
-                    preset.Elements.Remove(pair.Key);
+                {
+                    keysToRemove.Add(pair.Key);
+                }
             }
+
+            foreach (string key in keysToRemove)
+                preset.Elements.Remove(key);
 
             return preset;
         }
@@ -371,7 +380,10 @@ namespace Kinovea.ScreenManager
 
         private static string GetPlaneStyleVariant(DrawingPlane drawing)
         {
-            // Style variants of DrawingPlane: Plane, Grid.
+            // Style variants of DrawingPlane: Plane, Grid, Distance grid.
+            // Plane is the perspective plane, grid is the flat grid.
+            
+            // Default when unknown is plane.
             if (!drawing.DrawingStyle.Elements.ContainsKey("perspective"))
                 return "Plane";
 
@@ -380,10 +392,22 @@ namespace Kinovea.ScreenManager
                 return "Plane";
 
             bool valuePerspective = (bool)elementPerspective.Value;
-            if (valuePerspective)
-                return "Plane";
-            else
+            if (!valuePerspective)
                 return "Grid";
+
+            // Either perspective plane or distance grid.
+            if (!drawing.DrawingStyle.Elements.ContainsKey("distanceGrid"))
+                return "Plane";
+
+            StyleElementToggle elementDistanceGrid = drawing.DrawingStyle.Elements["distanceGrid"] as StyleElementToggle;
+            if (elementDistanceGrid == null)
+                return "Plane";
+
+            bool valueDistanceGrid = (bool)elementDistanceGrid.Value;
+            if (valueDistanceGrid)
+                return "DistanceGrid";
+            else
+                return "Plane";
         }
 
         private static string GetChronoStyleVariant(DrawingChrono drawing)

@@ -53,8 +53,13 @@ namespace Kinovea.Video
         public VideoFrame CurrentFrame { 
             get { return m_Current; } 
         }
-        public VideoSection Segment { 
-            get { lock(m_Locker) return m_Segment;} 
+        public VideoSection Segment 
+        { 
+            get 
+            { 
+                lock(m_Locker) 
+                    return m_Segment;
+            } 
         }
         public int Drops { 
             get { return m_Drops; }
@@ -63,8 +68,8 @@ namespace Kinovea.Video
         
         #region Members
         private List<VideoFrame> m_Frames = new List<VideoFrame>();
-        private VideoSection m_Segment = VideoSection.Empty;
-        private VideoSection m_WorkingZone = VideoSection.Empty;
+        private VideoSection m_Segment = VideoSection.MakeEmpty();
+        private VideoSection m_WorkingZone = VideoSection.MakeEmpty();
         private int m_CurrentIndex = -1;
         private VideoFrame m_Current;
         private readonly object m_Locker = new object();
@@ -215,7 +220,7 @@ namespace Kinovea.Video
                 m_Frames.Clear();
                 m_CurrentIndex = -1;
                 m_Drops = 0;
-                m_Segment = VideoSection.Empty;
+                m_Segment = VideoSection.MakeEmpty();
                 m_TotalCapacity = m_DefaultTotalCapacity;
                 m_OldFramesCapacity = m_DefaultOldFramesCapacity;
                 
@@ -340,9 +345,11 @@ namespace Kinovea.Video
             // Get real data from the stored frames.
             // Always inside a lock.
             if(m_Frames.Count < 1)
-                m_Segment = VideoSection.Empty;
+                m_Segment = VideoSection.MakeEmpty();
             else
                 m_Segment = new VideoSection(m_Frames[0].Timestamp, m_Frames[m_Frames.Count - 1].Timestamp);
+
+            //log.DebugFormat("Updated segment: {0}", m_Segment);
         }
         private int GetWrapIndex()
         {
@@ -365,13 +372,15 @@ namespace Kinovea.Video
             lock(m_Locker)
             {
                 int framesToForget = m_CurrentIndex - m_OldFramesCapacity + 1;
+                //log.DebugFormat("Forgetting {0} frames.", framesToForget);
                 
                 for(int i=0;i<framesToForget;i++)
                     DisposeFrame(m_Frames[i]);
 
                 m_Frames.RemoveRange(0, framesToForget);
                 m_CurrentIndex -= framesToForget;
-                
+
+
                 UpdateSegment();
                 
                 Monitor.Pulse(m_Locker);

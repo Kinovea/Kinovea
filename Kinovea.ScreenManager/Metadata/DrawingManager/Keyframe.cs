@@ -39,10 +39,15 @@ namespace Kinovea.ScreenManager
             get { return id; }
             set { id = value; }
         }
-        public long Position
+        public long Timestamp
         {
-            get { return position; }
-            set { position = value;}
+            get { return timestamp; }
+            set 
+            { 
+                timestamp = value;
+                foreach (AbstractDrawing d in Drawings)
+                    d.UpdateReferenceTime(timestamp);
+            }
         }
         public Bitmap Thumbnail
         {
@@ -65,22 +70,33 @@ namespace Kinovea.ScreenManager
             get { return comments; }
             set { comments = value; }
         }
-        public string Title
+        public string Name
         {
             get 
             {
-                return string.IsNullOrEmpty(title) ? timecode : title;
+                return string.IsNullOrEmpty(name) ? TimeCode : name;
             }
             set 
             { 
-                title = value;
-                metadata.UpdateTrajectoriesForKeyframes();
+                name = value;
+                parentMetadata.UpdateTrajectoriesForKeyframes();
+            }
+        }
+
+        public Color Color
+        {
+            get
+            {
+                return color;
+            }
+            set
+            {
+                color = value;
             }
         }
         public string TimeCode
         {
-            get { return timecode; }
-            set { timecode = value; }
+            get { return parentMetadata.TimeCodeBuilder(this.timestamp, TimeType.UserOrigin, TimecodeFormat.Unknown, true); }
         }
         public bool Disabled
         {
@@ -91,50 +107,63 @@ namespace Kinovea.ScreenManager
         {
             get { return GetContentHash();}
         }
+        public static Color DefaultColor
+        {
+            get { return defaultColor; }
+        }
         #endregion
 
         #region Members
         private Guid id = Guid.NewGuid();
-        private long position = -1;            // Position is absolute in all timestamps.
-        private string title;
-        private string timecode;
+        private long timestamp = -1;            // Absolute timestamp.
+        private string name;
         private string comments;
         private Bitmap thumbnail;
         private Bitmap disabledThumbnail;
+        public static readonly Color defaultColor = Color.SteelBlue;
+        private Color color = defaultColor;
         private List<AbstractDrawing> drawings = new List<AbstractDrawing>();
         private bool disabled;
-        private Metadata metadata;
+        private Metadata parentMetadata;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
-        public Keyframe(long position, string timecode, Metadata metadata)
+        /// <summary>
+        /// General constructor used to build an empty keyframe or load it from KVA XML.
+        /// </summary>
+        public Keyframe(long timestamp, string name, Color color, Metadata metadata)
         {
-            this.position = position;
-            this.timecode = timecode;
-            this.metadata = metadata;
+            this.timestamp = timestamp;
+            this.name = name;
+            this.color = color;
+            this.parentMetadata = metadata;
         }
-        public Keyframe(Guid id, long position, string title, string timecode, string comments, List<AbstractDrawing> drawings, Metadata metadata)
+
+        /// <summary>
+        /// Constructor used by external serializers like OpenPose and Subtitles which build the keyframe data in advance.
+        /// </summary>
+        public Keyframe(Guid id, long timestamp, string name, Color color, string comments, List<AbstractDrawing> drawings, Metadata metadata)
         {
             this.id = id;
-            this.position = position;
-            this.title = title;
-            this.timecode = timecode;
+            this.timestamp = timestamp;
+            this.name = name;
+            this.color = color;
             this.comments = comments;
             this.drawings = drawings;
-            this.metadata = metadata;
+            this.parentMetadata = metadata;
         }
         public Keyframe(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
-            : this(0, "", metadata)
+            : this(0, "", defaultColor, metadata)
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }
         #endregion
 
         #region Public Interface
-        public void InitializePosition(long position)
+        public void InitializePosition(long timestamp)
         {
-            this.position = position;
+            this.timestamp = timestamp;
         }
         public void InitializeImage(Bitmap image)
         {
@@ -173,19 +202,23 @@ namespace Kinovea.ScreenManager
         #region KVA Serialization
         public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
-            // Keyframe only support two kind of serialization, KVA or Spreadsheet.
-            if ((filter & SerializationFilter.KVA) == SerializationFilter.KVA)
+            if (ShouldSerializeCore(filter))
             {
-                w.WriteStartElement("Position");
-                w.WriteString(position.ToString());
+                w.WriteStartElement("Timestamp");
+                w.WriteString(timestamp.ToString());
                 w.WriteEndElement();
 
-                if (!string.IsNullOrEmpty(Title))
-                    w.WriteElementString("Title", Title);
+                if (!string.IsNullOrEmpty(Name))
+                    w.WriteElementString("Name", Name);
+
+                w.WriteElementString("Color", XmlHelper.WriteColor(color, false));
 
                 if (!string.IsNullOrEmpty(comments))
                     w.WriteElementString("Comment", comments);
+            }
 
+            if (ShouldSerializeKVA(filter))
+            {
                 if (drawings.Count == 0)
                     return;
 
@@ -199,19 +232,30 @@ namespace Kinovea.ScreenManager
 
                     DrawingSerializer.Serialize(w, serializableDrawing, SerializationFilter.KVA);
                 }
+
                 w.WriteEndElement();
             }
+        }
+
+        public bool ShouldSerializeCore(SerializationFilter filter)
+        {
+            return (filter & SerializationFilter.Core) == SerializationFilter.Core;
+        }
+
+        public bool ShouldSerializeKVA(SerializationFilter filter)
+        {
+            return (filter & SerializationFilter.KVA) == SerializationFilter.KVA;
         }
 
         public MeasuredDataKeyframe CollectMeasuredData()
         {
             MeasuredDataKeyframe md = new MeasuredDataKeyframe();
-            md.Name = Title;
-            md.Time = metadata.GetNumericalTime(position, TimeType.UserOrigin);
+            md.Name = Name;
+            md.Time = parentMetadata.GetNumericalTime(timestamp, TimeType.UserOrigin);
             return md;
         }
 
-        private void ReadXml(XmlReader r, PointF scale, TimestampMapper timestampMapper)
+        public void ReadXml(XmlReader r, PointF scale, TimestampMapper timestampMapper)
         {
             if (r.MoveToAttribute("id"))
                 id = new Guid(r.ReadContentAsString());
@@ -223,14 +267,24 @@ namespace Kinovea.ScreenManager
                 switch (r.Name)
                 {
                     case "Position":
-                        int inputPosition = r.ReadElementContentAsInt();
-                        position = timestampMapper(inputPosition);
+                    case "Timestamp":
+                        int inputTimestamp = r.ReadElementContentAsInt();
+                        timestamp = timestampMapper(inputTimestamp);
                         break;
                     case "Title":
-                        title = r.ReadElementContentAsString();
+                    case "Name":
+                        name = r.ReadElementContentAsString();
+                        break;
+                    case "Color":
+                        color = XmlHelper.ParseColor(r.ReadElementContentAsString(), Color.SteelBlue);
                         break;
                     case "Comment":
                         comments = r.ReadElementContentAsString();
+
+                        // Note: XML spec specifies that any CRLF must be converted to single LF.
+                        // This breaks the comparison between saved data and read data.
+                        // Force CRLF back.
+                        comments = comments.Replace("\n", "\r\n");
                         break;
                     case "Drawings":
                         ParseDrawings(r, scale);
@@ -261,13 +315,13 @@ namespace Kinovea.ScreenManager
 
             while (r.NodeType == XmlNodeType.Element)
             {
-                AbstractDrawing drawing = DrawingSerializer.Deserialize(r, scale, TimeHelper.IdentityTimestampMapper, metadata);
+                AbstractDrawing drawing = DrawingSerializer.Deserialize(r, scale, TimeHelper.IdentityTimestampMapper, parentMetadata);
                 if (drawing == null || !drawing.IsValid || drawings.Any(d => d.Id == drawing.Id))
                     continue;
 
                 AddDrawing(drawing);
-                drawing.InfosFading.ReferenceTimestamp = this.Position;
-                drawing.InfosFading.AverageTimeStampsPerFrame = metadata.AverageTimeStampsPerFrame;
+                drawing.InfosFading.ReferenceTimestamp = this.Timestamp;
+                drawing.InfosFading.AverageTimeStampsPerFrame = parentMetadata.AverageTimeStampsPerFrame;
             }
 
             r.ReadEndElement();
@@ -279,7 +333,7 @@ namespace Kinovea.ScreenManager
         public int CompareTo(object obj)
         {
             if(obj is Keyframe)
-                return this.position.CompareTo(((Keyframe)obj).position);
+                return this.timestamp.CompareTo(((Keyframe)obj).timestamp);
             else
                 throw new ArgumentException("Impossible comparison");
         }
@@ -294,13 +348,16 @@ namespace Kinovea.ScreenManager
 
             if(comments != null)
                 hash ^= comments.GetHashCode();
-            
-            if(!string.IsNullOrEmpty(title))
-                hash ^= title.GetHashCode();
-            
-            hash ^= timecode.GetHashCode();
+
+            if (!string.IsNullOrEmpty(name))
+                hash ^= name.GetHashCode();
+
+            hash ^= color.GetHashCode();
+
+            hash ^= timestamp.GetHashCode();
 
             return hash;
+
         }
         #endregion
     }

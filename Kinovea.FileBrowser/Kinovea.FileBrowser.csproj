@@ -175,18 +175,12 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ExpTreeLib, Version=2.11.7185.42776, Culture=neutral, processorArchitecture=AMD64">
+    <Reference Include="ExpTreeLib, Version=2.11.7225.42618, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\ExpTreeLib\Net48\ExpTreeLib.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.14.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.14\lib\net45\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.3.3, Culture=neutral, PublicKeyToken=8985beaab7ea3f04, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft-WindowsAPICodePack-Core.1.1.3.3\lib\net452\Microsoft.WindowsAPICodePack.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.3.3, Culture=neutral, PublicKeyToken=8985beaab7ea3f04, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft-WindowsAPICodePack-Shell.1.1.3.3\lib\net452\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -198,6 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileBrowser.cs" />
+    <Compile Include="SessionHistory.cs" />
     <Compile Include="UserInterface\FormCameraWizard.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -234,6 +229,7 @@
     <EmbeddedResource Include="Languages\FileBrowserLang.ko.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.lt.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.mk.resx" />
+    <EmbeddedResource Include="Languages\FileBrowserLang.ms.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.nl.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.no.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.ru.resx" />
@@ -342,6 +338,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\film_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\sort.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\replaywatcher2.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">

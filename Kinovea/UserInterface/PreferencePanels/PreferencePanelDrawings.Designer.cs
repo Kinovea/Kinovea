@@ -50,6 +50,7 @@ namespace Kinovea.Root
 		{
       this.tabSubPages = new System.Windows.Forms.TabControl();
       this.tabGeneral = new System.Windows.Forms.TabPage();
+      this.chkEnableHSDS = new System.Windows.Forms.CheckBox();
       this.chkCustomToolsDebug = new System.Windows.Forms.CheckBox();
       this.chkEnableFiltering = new System.Windows.Forms.CheckBox();
       this.chkDrawOnPlay = new System.Windows.Forms.CheckBox();
@@ -74,7 +75,31 @@ namespace Kinovea.Root
       this.label4 = new System.Windows.Forms.Label();
       this.tbBlockWidth = new System.Windows.Forms.TextBox();
       this.lblObjectWindow = new System.Windows.Forms.Label();
-      this.chkEnableHSDS = new System.Windows.Forms.CheckBox();
+      this.tabUnits = new System.Windows.Forms.TabPage();
+      this.tbCustomLengthAb = new System.Windows.Forms.TextBox();
+      this.tbCustomLengthUnit = new System.Windows.Forms.TextBox();
+      this.lblCustomLength = new System.Windows.Forms.Label();
+      this.cmbAngularAccelerationUnit = new System.Windows.Forms.ComboBox();
+      this.lblAngularAcceleration = new System.Windows.Forms.Label();
+      this.cmbAngularVelocityUnit = new System.Windows.Forms.ComboBox();
+      this.lblAngularVelocityUnit = new System.Windows.Forms.Label();
+      this.cmbAngleUnit = new System.Windows.Forms.ComboBox();
+      this.lblAngleUnit = new System.Windows.Forms.Label();
+      this.cmbAccelerationUnit = new System.Windows.Forms.ComboBox();
+      this.lblAccelerationUnit = new System.Windows.Forms.Label();
+      this.cmbSpeedUnit = new System.Windows.Forms.ComboBox();
+      this.lblSpeedUnit = new System.Windows.Forms.Label();
+      this.cmbTimeCodeFormat = new System.Windows.Forms.ComboBox();
+      this.lblTimeMarkersFormat = new System.Windows.Forms.Label();
+      this.tabPresets = new System.Windows.Forms.TabPage();
+      this.tabExport = new System.Windows.Forms.TabPage();
+      this.lblPandocPath = new System.Windows.Forms.Label();
+      this.tbPandocPath = new System.Windows.Forms.TextBox();
+      this.btnPandocPath = new System.Windows.Forms.Button();
+      this.cmbExportSpace = new System.Windows.Forms.ComboBox();
+      this.lblExportSpace = new System.Windows.Forms.Label();
+      this.cmbDelimiter = new System.Windows.Forms.ComboBox();
+      this.lblCSVDelimiter = new System.Windows.Forms.Label();
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
       this.tabPersistence.SuspendLayout();
@@ -82,6 +107,8 @@ namespace Kinovea.Root
       ((System.ComponentModel.ISupportInitialize)(this.nudOpaque)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudMax)).BeginInit();
       this.tabTracking.SuspendLayout();
+      this.tabUnits.SuspendLayout();
+      this.tabExport.SuspendLayout();
       this.SuspendLayout();
       // 
       // tabSubPages
@@ -89,6 +116,9 @@ namespace Kinovea.Root
       this.tabSubPages.Controls.Add(this.tabGeneral);
       this.tabSubPages.Controls.Add(this.tabPersistence);
       this.tabSubPages.Controls.Add(this.tabTracking);
+      this.tabSubPages.Controls.Add(this.tabUnits);
+      this.tabSubPages.Controls.Add(this.tabPresets);
+      this.tabSubPages.Controls.Add(this.tabExport);
       this.tabSubPages.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tabSubPages.Location = new System.Drawing.Point(0, 0);
       this.tabSubPages.Name = "tabSubPages";
@@ -109,6 +139,17 @@ namespace Kinovea.Root
       this.tabGeneral.TabIndex = 0;
       this.tabGeneral.Text = "General";
       this.tabGeneral.UseVisualStyleBackColor = true;
+      // 
+      // chkEnableHSDS
+      // 
+      this.chkEnableHSDS.AutoSize = true;
+      this.chkEnableHSDS.Location = new System.Drawing.Point(27, 94);
+      this.chkEnableHSDS.Name = "chkEnableHSDS";
+      this.chkEnableHSDS.Size = new System.Drawing.Size(285, 17);
+      this.chkEnableHSDS.TabIndex = 55;
+      this.chkEnableHSDS.Text = "Enable smoothing of derivatives for high speed footage";
+      this.chkEnableHSDS.UseVisualStyleBackColor = true;
+      this.chkEnableHSDS.CheckedChanged += new System.EventHandler(this.chkEnableHSDS_CheckedChanged);
       // 
       // chkCustomToolsDebug
       // 
@@ -233,7 +274,7 @@ namespace Kinovea.Root
             | System.Windows.Forms.AnchorStyles.Right)));
       this.lblFading.Location = new System.Drawing.Point(53, 163);
       this.lblFading.Name = "lblFading";
-      this.lblFading.Size = new System.Drawing.Size(153, 25);
+      this.lblFading.Size = new System.Drawing.Size(205, 25);
       this.lblFading.TabIndex = 60;
       this.lblFading.Text = "Fading duration (frames):";
       this.lblFading.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -374,16 +415,263 @@ namespace Kinovea.Root
       this.lblObjectWindow.TabIndex = 56;
       this.lblObjectWindow.Text = "Object window :";
       // 
-      // chkEnableHSDS
+      // tabUnits
       // 
-      this.chkEnableHSDS.AutoSize = true;
-      this.chkEnableHSDS.Location = new System.Drawing.Point(27, 94);
-      this.chkEnableHSDS.Name = "chkEnableHSDS";
-      this.chkEnableHSDS.Size = new System.Drawing.Size(285, 17);
-      this.chkEnableHSDS.TabIndex = 55;
-      this.chkEnableHSDS.Text = "Enable smoothing of derivatives for high speed footage";
-      this.chkEnableHSDS.UseVisualStyleBackColor = true;
-      this.chkEnableHSDS.CheckedChanged += new System.EventHandler(this.chkEnableHSDS_CheckedChanged);
+      this.tabUnits.Controls.Add(this.tbCustomLengthAb);
+      this.tabUnits.Controls.Add(this.tbCustomLengthUnit);
+      this.tabUnits.Controls.Add(this.lblCustomLength);
+      this.tabUnits.Controls.Add(this.cmbAngularAccelerationUnit);
+      this.tabUnits.Controls.Add(this.lblAngularAcceleration);
+      this.tabUnits.Controls.Add(this.cmbAngularVelocityUnit);
+      this.tabUnits.Controls.Add(this.lblAngularVelocityUnit);
+      this.tabUnits.Controls.Add(this.cmbAngleUnit);
+      this.tabUnits.Controls.Add(this.lblAngleUnit);
+      this.tabUnits.Controls.Add(this.cmbAccelerationUnit);
+      this.tabUnits.Controls.Add(this.lblAccelerationUnit);
+      this.tabUnits.Controls.Add(this.cmbSpeedUnit);
+      this.tabUnits.Controls.Add(this.lblSpeedUnit);
+      this.tabUnits.Controls.Add(this.cmbTimeCodeFormat);
+      this.tabUnits.Controls.Add(this.lblTimeMarkersFormat);
+      this.tabUnits.Location = new System.Drawing.Point(4, 22);
+      this.tabUnits.Name = "tabUnits";
+      this.tabUnits.Padding = new System.Windows.Forms.Padding(3);
+      this.tabUnits.Size = new System.Drawing.Size(482, 296);
+      this.tabUnits.TabIndex = 4;
+      this.tabUnits.Text = "Units";
+      this.tabUnits.UseVisualStyleBackColor = true;
+      // 
+      // tbCustomLengthAb
+      // 
+      this.tbCustomLengthAb.Location = new System.Drawing.Point(358, 237);
+      this.tbCustomLengthAb.Name = "tbCustomLengthAb";
+      this.tbCustomLengthAb.Size = new System.Drawing.Size(49, 20);
+      this.tbCustomLengthAb.TabIndex = 59;
+      this.tbCustomLengthAb.TextChanged += new System.EventHandler(this.tbCustomLengthAb_TextChanged);
+      // 
+      // tbCustomLengthUnit
+      // 
+      this.tbCustomLengthUnit.Location = new System.Drawing.Point(214, 237);
+      this.tbCustomLengthUnit.Name = "tbCustomLengthUnit";
+      this.tbCustomLengthUnit.Size = new System.Drawing.Size(138, 20);
+      this.tbCustomLengthUnit.TabIndex = 58;
+      this.tbCustomLengthUnit.TextChanged += new System.EventHandler(this.tbCustomLengthUnit_TextChanged);
+      // 
+      // lblCustomLength
+      // 
+      this.lblCustomLength.AutoSize = true;
+      this.lblCustomLength.Location = new System.Drawing.Point(30, 241);
+      this.lblCustomLength.Name = "lblCustomLength";
+      this.lblCustomLength.Size = new System.Drawing.Size(100, 13);
+      this.lblCustomLength.TabIndex = 57;
+      this.lblCustomLength.Text = "Custom length unit :";
+      // 
+      // cmbAngularAccelerationUnit
+      // 
+      this.cmbAngularAccelerationUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cmbAngularAccelerationUnit.Location = new System.Drawing.Point(186, 195);
+      this.cmbAngularAccelerationUnit.Name = "cmbAngularAccelerationUnit";
+      this.cmbAngularAccelerationUnit.Size = new System.Drawing.Size(221, 21);
+      this.cmbAngularAccelerationUnit.TabIndex = 56;
+      this.cmbAngularAccelerationUnit.SelectedIndexChanged += new System.EventHandler(this.cmbAngularAccelerationUnit_SelectedIndexChanged);
+      // 
+      // lblAngularAcceleration
+      // 
+      this.lblAngularAcceleration.AutoSize = true;
+      this.lblAngularAcceleration.Location = new System.Drawing.Point(30, 200);
+      this.lblAngularAcceleration.Name = "lblAngularAcceleration";
+      this.lblAngularAcceleration.Size = new System.Drawing.Size(110, 13);
+      this.lblAngularAcceleration.TabIndex = 55;
+      this.lblAngularAcceleration.Text = "Angular acceleration :";
+      // 
+      // cmbAngularVelocityUnit
+      // 
+      this.cmbAngularVelocityUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cmbAngularVelocityUnit.Location = new System.Drawing.Point(186, 161);
+      this.cmbAngularVelocityUnit.Name = "cmbAngularVelocityUnit";
+      this.cmbAngularVelocityUnit.Size = new System.Drawing.Size(221, 21);
+      this.cmbAngularVelocityUnit.TabIndex = 54;
+      this.cmbAngularVelocityUnit.SelectedIndexChanged += new System.EventHandler(this.cmbAngularVelocityUnit_SelectedIndexChanged);
+      // 
+      // lblAngularVelocityUnit
+      // 
+      this.lblAngularVelocityUnit.AutoSize = true;
+      this.lblAngularVelocityUnit.Location = new System.Drawing.Point(30, 166);
+      this.lblAngularVelocityUnit.Name = "lblAngularVelocityUnit";
+      this.lblAngularVelocityUnit.Size = new System.Drawing.Size(81, 13);
+      this.lblAngularVelocityUnit.TabIndex = 53;
+      this.lblAngularVelocityUnit.Text = "Angular speed :";
+      // 
+      // cmbAngleUnit
+      // 
+      this.cmbAngleUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cmbAngleUnit.Location = new System.Drawing.Point(186, 127);
+      this.cmbAngleUnit.Name = "cmbAngleUnit";
+      this.cmbAngleUnit.Size = new System.Drawing.Size(221, 21);
+      this.cmbAngleUnit.TabIndex = 52;
+      this.cmbAngleUnit.SelectedIndexChanged += new System.EventHandler(this.cmbAngleUnit_SelectedIndexChanged);
+      // 
+      // lblAngleUnit
+      // 
+      this.lblAngleUnit.AutoSize = true;
+      this.lblAngleUnit.Location = new System.Drawing.Point(30, 132);
+      this.lblAngleUnit.Name = "lblAngleUnit";
+      this.lblAngleUnit.Size = new System.Drawing.Size(40, 13);
+      this.lblAngleUnit.TabIndex = 51;
+      this.lblAngleUnit.Text = "Angle :";
+      // 
+      // cmbAccelerationUnit
+      // 
+      this.cmbAccelerationUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cmbAccelerationUnit.Location = new System.Drawing.Point(186, 93);
+      this.cmbAccelerationUnit.Name = "cmbAccelerationUnit";
+      this.cmbAccelerationUnit.Size = new System.Drawing.Size(221, 21);
+      this.cmbAccelerationUnit.TabIndex = 50;
+      this.cmbAccelerationUnit.SelectedIndexChanged += new System.EventHandler(this.cmbAccelerationUnit_SelectedIndexChanged);
+      // 
+      // lblAccelerationUnit
+      // 
+      this.lblAccelerationUnit.AutoSize = true;
+      this.lblAccelerationUnit.Location = new System.Drawing.Point(30, 98);
+      this.lblAccelerationUnit.Name = "lblAccelerationUnit";
+      this.lblAccelerationUnit.Size = new System.Drawing.Size(72, 13);
+      this.lblAccelerationUnit.TabIndex = 49;
+      this.lblAccelerationUnit.Text = "Acceleration :";
+      // 
+      // cmbSpeedUnit
+      // 
+      this.cmbSpeedUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cmbSpeedUnit.Location = new System.Drawing.Point(186, 59);
+      this.cmbSpeedUnit.Name = "cmbSpeedUnit";
+      this.cmbSpeedUnit.Size = new System.Drawing.Size(221, 21);
+      this.cmbSpeedUnit.TabIndex = 48;
+      this.cmbSpeedUnit.SelectedIndexChanged += new System.EventHandler(this.cmbSpeedUnit_SelectedIndexChanged);
+      // 
+      // lblSpeedUnit
+      // 
+      this.lblSpeedUnit.AutoSize = true;
+      this.lblSpeedUnit.Location = new System.Drawing.Point(30, 64);
+      this.lblSpeedUnit.Name = "lblSpeedUnit";
+      this.lblSpeedUnit.Size = new System.Drawing.Size(50, 13);
+      this.lblSpeedUnit.TabIndex = 47;
+      this.lblSpeedUnit.Text = "Velocity :";
+      // 
+      // cmbTimeCodeFormat
+      // 
+      this.cmbTimeCodeFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cmbTimeCodeFormat.Location = new System.Drawing.Point(186, 25);
+      this.cmbTimeCodeFormat.Name = "cmbTimeCodeFormat";
+      this.cmbTimeCodeFormat.Size = new System.Drawing.Size(221, 21);
+      this.cmbTimeCodeFormat.TabIndex = 46;
+      this.cmbTimeCodeFormat.SelectedIndexChanged += new System.EventHandler(this.cmbTimeCodeFormat_SelectedIndexChanged);
+      // 
+      // lblTimeMarkersFormat
+      // 
+      this.lblTimeMarkersFormat.AutoSize = true;
+      this.lblTimeMarkersFormat.Location = new System.Drawing.Point(30, 28);
+      this.lblTimeMarkersFormat.Name = "lblTimeMarkersFormat";
+      this.lblTimeMarkersFormat.Size = new System.Drawing.Size(108, 13);
+      this.lblTimeMarkersFormat.TabIndex = 45;
+      this.lblTimeMarkersFormat.Text = "Time markers format :";
+      // 
+      // tabPresets
+      // 
+      this.tabPresets.Location = new System.Drawing.Point(4, 22);
+      this.tabPresets.Margin = new System.Windows.Forms.Padding(2);
+      this.tabPresets.Name = "tabPresets";
+      this.tabPresets.Size = new System.Drawing.Size(482, 296);
+      this.tabPresets.TabIndex = 5;
+      this.tabPresets.Text = "Presets";
+      this.tabPresets.UseVisualStyleBackColor = true;
+      // 
+      // tabExport
+      // 
+      this.tabExport.Controls.Add(this.lblPandocPath);
+      this.tabExport.Controls.Add(this.tbPandocPath);
+      this.tabExport.Controls.Add(this.btnPandocPath);
+      this.tabExport.Controls.Add(this.cmbExportSpace);
+      this.tabExport.Controls.Add(this.lblExportSpace);
+      this.tabExport.Controls.Add(this.cmbDelimiter);
+      this.tabExport.Controls.Add(this.lblCSVDelimiter);
+      this.tabExport.Location = new System.Drawing.Point(4, 22);
+      this.tabExport.Name = "tabExport";
+      this.tabExport.Padding = new System.Windows.Forms.Padding(3);
+      this.tabExport.Size = new System.Drawing.Size(482, 296);
+      this.tabExport.TabIndex = 3;
+      this.tabExport.Text = "Export";
+      this.tabExport.UseVisualStyleBackColor = true;
+      // 
+      // lblPandocPath
+      // 
+      this.lblPandocPath.AutoSize = true;
+      this.lblPandocPath.Location = new System.Drawing.Point(20, 114);
+      this.lblPandocPath.Name = "lblPandocPath";
+      this.lblPandocPath.Size = new System.Drawing.Size(71, 13);
+      this.lblPandocPath.TabIndex = 70;
+      this.lblPandocPath.Text = "Pandoc path:";
+      // 
+      // tbPandocPath
+      // 
+      this.tbPandocPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.tbPandocPath.Location = new System.Drawing.Point(233, 111);
+      this.tbPandocPath.Name = "tbPandocPath";
+      this.tbPandocPath.Size = new System.Drawing.Size(183, 20);
+      this.tbPandocPath.TabIndex = 71;
+      this.tbPandocPath.TextChanged += new System.EventHandler(this.tbPandocPath_TextChanged);
+      // 
+      // btnPandocPath
+      // 
+      this.btnPandocPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnPandocPath.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+      this.btnPandocPath.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnPandocPath.FlatAppearance.BorderSize = 0;
+      this.btnPandocPath.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+      this.btnPandocPath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnPandocPath.Image = global::Kinovea.Root.Properties.Resources.folder;
+      this.btnPandocPath.Location = new System.Drawing.Point(422, 110);
+      this.btnPandocPath.MinimumSize = new System.Drawing.Size(20, 20);
+      this.btnPandocPath.Name = "btnPandocPath";
+      this.btnPandocPath.Size = new System.Drawing.Size(20, 20);
+      this.btnPandocPath.TabIndex = 72;
+      this.btnPandocPath.Tag = "";
+      this.btnPandocPath.UseVisualStyleBackColor = true;
+      this.btnPandocPath.Click += new System.EventHandler(this.btnPandocPath_Click);
+      // 
+      // cmbExportSpace
+      // 
+      this.cmbExportSpace.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cmbExportSpace.Location = new System.Drawing.Point(300, 30);
+      this.cmbExportSpace.Name = "cmbExportSpace";
+      this.cmbExportSpace.Size = new System.Drawing.Size(116, 21);
+      this.cmbExportSpace.TabIndex = 69;
+      this.cmbExportSpace.SelectedIndexChanged += new System.EventHandler(this.cmbExportSpace_SelectedIndexChanged);
+      // 
+      // lblExportSpace
+      // 
+      this.lblExportSpace.AutoSize = true;
+      this.lblExportSpace.Location = new System.Drawing.Point(20, 34);
+      this.lblExportSpace.Name = "lblExportSpace";
+      this.lblExportSpace.Size = new System.Drawing.Size(71, 13);
+      this.lblExportSpace.TabIndex = 68;
+      this.lblExportSpace.Text = "Export metric:";
+      // 
+      // cmbDelimiter
+      // 
+      this.cmbDelimiter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cmbDelimiter.Location = new System.Drawing.Point(300, 69);
+      this.cmbDelimiter.Name = "cmbDelimiter";
+      this.cmbDelimiter.Size = new System.Drawing.Size(116, 21);
+      this.cmbDelimiter.TabIndex = 67;
+      this.cmbDelimiter.SelectedIndexChanged += new System.EventHandler(this.cmbDelimiter_SelectedIndexChanged);
+      // 
+      // lblCSVDelimiter
+      // 
+      this.lblCSVDelimiter.AutoSize = true;
+      this.lblCSVDelimiter.Location = new System.Drawing.Point(20, 73);
+      this.lblCSVDelimiter.Name = "lblCSVDelimiter";
+      this.lblCSVDelimiter.Size = new System.Drawing.Size(107, 13);
+      this.lblCSVDelimiter.TabIndex = 66;
+      this.lblCSVDelimiter.Text = "CSV Decimal symbol:";
       // 
       // PreferencePanelDrawings
       // 
@@ -402,6 +690,10 @@ namespace Kinovea.Root
       ((System.ComponentModel.ISupportInitialize)(this.nudMax)).EndInit();
       this.tabTracking.ResumeLayout(false);
       this.tabTracking.PerformLayout();
+      this.tabUnits.ResumeLayout(false);
+      this.tabUnits.PerformLayout();
+      this.tabExport.ResumeLayout(false);
+      this.tabExport.PerformLayout();
       this.ResumeLayout(false);
 
 		}
@@ -432,5 +724,30 @@ namespace Kinovea.Root
         private System.Windows.Forms.Label lblFading;
         private System.Windows.Forms.Label lblMax;
         private System.Windows.Forms.CheckBox chkEnableHSDS;
+        private System.Windows.Forms.TabPage tabExport;
+        private System.Windows.Forms.ComboBox cmbDelimiter;
+        private System.Windows.Forms.Label lblCSVDelimiter;
+        private System.Windows.Forms.TabPage tabUnits;
+        private System.Windows.Forms.TextBox tbCustomLengthAb;
+        private System.Windows.Forms.TextBox tbCustomLengthUnit;
+        private System.Windows.Forms.Label lblCustomLength;
+        private System.Windows.Forms.ComboBox cmbAngularAccelerationUnit;
+        private System.Windows.Forms.Label lblAngularAcceleration;
+        private System.Windows.Forms.ComboBox cmbAngularVelocityUnit;
+        private System.Windows.Forms.Label lblAngularVelocityUnit;
+        private System.Windows.Forms.ComboBox cmbAngleUnit;
+        private System.Windows.Forms.Label lblAngleUnit;
+        private System.Windows.Forms.ComboBox cmbAccelerationUnit;
+        private System.Windows.Forms.Label lblAccelerationUnit;
+        private System.Windows.Forms.ComboBox cmbSpeedUnit;
+        private System.Windows.Forms.Label lblSpeedUnit;
+        private System.Windows.Forms.ComboBox cmbTimeCodeFormat;
+        private System.Windows.Forms.Label lblTimeMarkersFormat;
+        private System.Windows.Forms.ComboBox cmbExportSpace;
+        private System.Windows.Forms.Label lblExportSpace;
+        private System.Windows.Forms.TabPage tabPresets;
+        private System.Windows.Forms.Label lblPandocPath;
+        private System.Windows.Forms.TextBox tbPandocPath;
+        private System.Windows.Forms.Button btnPandocPath;
     }
 }

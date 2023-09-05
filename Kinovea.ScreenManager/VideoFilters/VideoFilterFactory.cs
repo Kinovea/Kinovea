@@ -4,24 +4,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// Static class that produces instances of Video filters and provide information about filter types.
     /// This is used to build the menu or get the XML tag for example.
-    /// The filters are owned by the metadata object of each player screen.
-    /// There can only be one active filter for each screen.
+    ///
+    /// The individual filters are owned by the metadata object of each player screen.
+    /// The screen has one instance of each filter. There at most one active filter at any given time.
     /// Filters keep their data even when they are not active.
     /// </summary>
     public static class VideoFilterFactory
     {
         private static Dictionary<VideoFilterType, VideoFilterInfo> info = new Dictionary<VideoFilterType, VideoFilterInfo>();
-        
+
+        /// <summary>
+        /// Private constructor initializing all the video filters.
+        /// </summary>
         static VideoFilterFactory()
         {
-            info.Add(VideoFilterType.Kinogram, new VideoFilterInfo("Kinogram", Properties.Resources.mosaic, false));
-            info.Add(VideoFilterType.CameraMotion, new VideoFilterInfo("CameraMotion", Properties.Resources.mosaic, false));
+            info.Add(VideoFilterType.Kinogram, new VideoFilterInfo("Kinogram", "filterName_Kinogram", Properties.Resources.mosaic, false));
+            info.Add(VideoFilterType.CameraMotion, new VideoFilterInfo("CameraMotion", "filterName_CameraMotion", Properties.Resources.mosaic, false));
         }
 
         /// <summary>
@@ -57,17 +62,33 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public static string GetFriendlyName(VideoFilterType type)
         {
-            // TODO: localization.
-            return info[type].Name;
+            if (type == VideoFilterType.None)
+                return ScreenManagerLang.filterName_Analysis;
+
+            string friendlyNameResource = info[type].FriendlyNameResource;
+            if (string.IsNullOrEmpty(friendlyNameResource))
+                return info[type].Name;
+
+            string friendlyName = ScreenManagerLang.ResourceManager.GetString(friendlyNameResource);
+            if (string.IsNullOrEmpty(friendlyName))
+                return info[type].Name;
+
+            return friendlyName;
         }
 
         public static Bitmap GetIcon(VideoFilterType type)
         {
+            if (type == VideoFilterType.None)
+                return Properties.Drawings.track;
+
             return info[type].Icon;
         }
 
         public static bool GetExperimental(VideoFilterType type)
         {
+            if (type == VideoFilterType.None)
+                return false;
+
             return info[type].Experimental;
         }
 

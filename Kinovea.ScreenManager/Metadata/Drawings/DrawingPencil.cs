@@ -89,6 +89,7 @@ namespace Kinovea.ScreenManager
         private DrawingStyle style;
         private InfosFading infosFading;
         private bool initializing = true;
+        private bool debugMode = false;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -125,9 +126,25 @@ namespace Kinovea.ScreenManager
             using(Pen penLine = styleHelper.GetPen(opacityFactor, transformer.Scale))
             {
                 Point[] points = transformer.Transform(pointList).ToArray();
-                
-                if (!initializing)
+
+                if (debugMode)
                 {
+                    // Debugging frequency of points.
+                    penLine.Width = 1.0f;
+                    foreach (var p in points)
+                        canvas.DrawEllipse(penLine, p.Box(4));
+
+                    canvas.DrawLines(penLine, points);
+                }
+                else if (initializing)
+                {
+                    // During initialization show a thin line.
+                    penLine.Width = 1.0f;
+                    canvas.DrawLines(penLine, points);
+                }
+                else
+                { 
+                    // Normal mode.
                     penLine.EndCap = LineCap.Round;
                     penLine.StartCap = LineCap.Round;
 
@@ -136,12 +153,6 @@ namespace Kinovea.ScreenManager
 
                     canvas.DrawCurve(penLine, points, 0.5f);
                 }
-                else
-                {
-                    penLine.Width = 1.0f;
-                    canvas.DrawLines(penLine, points);
-                }
-                
             }
         }
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
@@ -307,7 +318,7 @@ namespace Kinovea.ScreenManager
                 if (bounds.IsEmpty)
                     return false;
 
-                return HitTester.HitTest(path, point, styleHelper.LineSize, false, transformer);
+                return HitTester.HitPath(point, path, styleHelper.LineSize, false, transformer);
             }
         }
         #endregion

@@ -40,13 +40,13 @@ namespace Kinovea.ScreenManager
         #region Properties
         public Viewport View
         {
-            get { return view;}
+            get { return view; }
         }
-        
+
         public Bitmap Bitmap
         {
-            get { return bitmap;}
-            set { bitmap = value;}
+            get { return bitmap; }
+            set { bitmap = value; }
         }
 
         public long Timestamp
@@ -54,12 +54,12 @@ namespace Kinovea.ScreenManager
             get { return timestamp; }
             set { timestamp = value; }
         }
-        
+
         public Rectangle DisplayRectangle
         {
-            get { return displayRectangle;}
+            get { return displayRectangle; }
         }
-        
+
         public MetadataRenderer MetadataRenderer
         {
             get { return metadataRenderer; }
@@ -69,22 +69,22 @@ namespace Kinovea.ScreenManager
         public MetadataManipulator MetadataManipulator
         {
             get { return metadataManipulator; }
-            set 
-            { 
-                if(metadataManipulator != null)
+            set
+            {
+                if (metadataManipulator != null)
                     metadataManipulator.LabelAdded -= LabelAdded;
 
-                metadataManipulator = value; 
+                metadataManipulator = value;
                 metadataManipulator.LabelAdded += LabelAdded;
             }
         }
-        
+
         public bool IsUsingHandTool
         {
             get { return metadataManipulator == null ? true : metadataManipulator.IsUsingHandTool; }
         }
         #endregion
-        
+
         #region Members
         private Viewport view;
         private Bitmap bitmap;
@@ -92,13 +92,13 @@ namespace Kinovea.ScreenManager
         private Rectangle displayRectangle;
         private MetadataRenderer metadataRenderer;
         private MetadataManipulator metadataManipulator;
-        
+
         private ContextMenuStrip popMenu = new ContextMenuStrip();
         private ToolStripMenuItem mnuConfigureDrawing = new ToolStripMenuItem();
         private ToolStripMenuItem mnuConfigureOpacity = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDeleteDrawing = new ToolStripMenuItem();
         #endregion
-        
+
         public ViewportController()
         {
             view = new Viewport(this);
@@ -109,12 +109,12 @@ namespace Kinovea.ScreenManager
         {
             ReloadMenuCulture();
         }
-        
+
         public void Refresh()
         {
             view.Invalidate();
         }
-        
+
         /// <summary>
         /// Make sure the viewport will not try to draw the bitmap.
         /// Use this when the bitmap is about to be disposed from elsewhere.
@@ -136,7 +136,7 @@ namespace Kinovea.ScreenManager
         public void UpdateDisplayRectangle(Rectangle rectangle)
         {
             displayRectangle = rectangle;
-            if(DisplayRectangleUpdated != null)
+            if (DisplayRectangleUpdated != null)
                 DisplayRectangleUpdated(this, EventArgs.Empty);
         }
 
@@ -144,44 +144,58 @@ namespace Kinovea.ScreenManager
         {
             view.ToastMessage(message, duration);
         }
-        
+
+        public void StartingRecording()
+        {
+            ToastMessage(ScreenManagerLang.Toast_StartRecord, 1000);
+        }
+
+        public void UpdateRecordingIndicator(RecordingStatus status, float progress)
+        {
+            view.UpdateRecordingIndicator(status, progress);
+        }
+        public void StoppingRecording()
+        {
+            ToastMessage(ScreenManagerLang.Toast_StopRecord, 750);
+        }
+
         public void DrawKVA(Graphics canvas, Point location, float zoom)
         {
-            if(metadataRenderer == null)
+            if (metadataRenderer == null)
                 return;
-            
+
             metadataRenderer.Render(canvas, location, zoom, timestamp);
         }
-        
-        public bool OnMouseLeftDown(Point mouse, Point imageLocation, float imageZoom)
+
+        public bool OnMouseDown(MouseEventArgs e, Point imageLocation, float imageZoom)
         {
-            if(metadataManipulator == null)
+            if (metadataManipulator == null)
                 return false;
 
             Poke();
-            return metadataManipulator.OnMouseLeftDown(mouse, imageLocation, imageZoom);
+            return metadataManipulator.StartMove(e, imageLocation, imageZoom);
         }
-        
-        public bool OnMouseLeftMove(Point mouse, Keys modifiers, Point imageLocation, float imageZoom)
+
+        public bool OnMouseMove(MouseEventArgs e, Keys modifiers, Point imageLocation, float imageZoom)
         {
-            if(metadataManipulator == null)
+            if (metadataManipulator == null)
                 return false;
-                
-            return metadataManipulator.OnMouseLeftMove(mouse, modifiers, imageLocation, imageZoom);
+
+            return metadataManipulator.ContinueMove(e, modifiers, imageLocation, imageZoom);
         }
-        
-        public void OnMouseUp(Point mouse, Keys modifiers, Point imageLocation, float imageZoom)
+
+        public void OnMouseUp(MouseEventArgs e, Keys modifiers, Point imageLocation, float imageZoom)
         {
-            if(metadataManipulator == null)
+            if (metadataManipulator == null)
                 return;
 
-            metadataManipulator.OnMouseUp(bitmap, mouse, modifiers, imageLocation, imageZoom);
+            metadataManipulator.StopMove(e, bitmap, modifiers, imageLocation, imageZoom);
             Refresh();
         }
-        
+
         public void OnMouseRightDown(Point mouse, Point imageLocation, float imageZoom)
         {
-            if(metadataManipulator == null)
+            if (metadataManipulator == null)
                 return;
 
             Poke();
@@ -189,12 +203,12 @@ namespace Kinovea.ScreenManager
             PrepareContextMenu();
             view.SetContextMenu(popMenu);
         }
-        
+
         public Cursor GetCursor(float imageZoom)
         {
-            if(metadataManipulator == null)
+            if (metadataManipulator == null)
                 return Cursors.Default;
-            
+
             return metadataManipulator.GetCursor(imageZoom);
         }
 
@@ -261,16 +275,21 @@ namespace Kinovea.ScreenManager
         private void PrepareContextMenu()
         {
             popMenu.Items.Clear();
-            // TODO: Add general menus from the screen. (close, snapshot, settings.)
-            PrepareContextMenuDrawing(metadataManipulator.HitDrawing);
+
+            AbstractDrawing drawing = metadataManipulator.HitDrawing;
+            if (drawing == null)
+            {
+                // TODO: general context menu at screen level. (close, snapshot, settings.)
+                return;
+            }
+            else
+            {
+                PrepareContextMenuDrawing(drawing);
+            }
         }
-        
+
         private void PrepareContextMenuDrawing(AbstractDrawing drawing)
         {
-            // Add menus depending on drawing capabilities and its own menus.
-            if(drawing == null)
-                return;
-
             if((drawing.Caps & DrawingCapabilities.ConfigureColor) == DrawingCapabilities.ConfigureColor ||
                (drawing.Caps & DrawingCapabilities.ConfigureColorSize) == DrawingCapabilities.ConfigureColorSize)
             {
@@ -284,12 +303,14 @@ namespace Kinovea.ScreenManager
             popMenu.Items.Add(new ToolStripSeparator());
 
             bool hasExtraMenus = AddDrawingCustomMenus(drawing, popMenu.Items);
-            if (hasExtraMenus)
-                popMenu.Items.Add(new ToolStripSeparator());
 
-            // TODO: Add copy and paste menu here.
+            if (metadataManipulator.HitKeyframe != null)
+            {
+                if (hasExtraMenus)
+                    popMenu.Items.Add(new ToolStripSeparator());
 
-            popMenu.Items.Add(mnuDeleteDrawing);
+                popMenu.Items.Add(mnuDeleteDrawing);
+            }
         }
         private bool AddDrawingCustomMenus(AbstractDrawing drawing, ToolStripItemCollection menuItems)
         {

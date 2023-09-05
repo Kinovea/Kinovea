@@ -242,16 +242,8 @@ namespace Kinovea.ScreenManager
             if (plotView.Model == null)
                 return;
 
-            List<string> lines = GetCSV();
-            if (lines.Count <= 1)
-                return;
-
-            StringBuilder b = new StringBuilder();
-            foreach (string line in lines)
-                b.AppendLine(line);
-
-            string text = b.ToString();
-            Clipboard.SetText(text);
+            List<string> csv = GetCSV();
+            CSVHelper.CopyToClipboard(csv);
         }
 
         private void btnExportData_Click(object sender, EventArgs e)
@@ -268,24 +260,21 @@ namespace Kinovea.ScreenManager
             if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))
                 return;
 
-            List<string> lines = GetCSV();
-            if (lines.Count <= 1)
-                return;
-
-            using (StreamWriter w = File.CreateText(saveFileDialog.FileName))
-            {
-                foreach (string line in lines)
-                    w.WriteLine(line);
-            }
+            List<string> csv = GetCSV();
+            if (csv.Count > 1)
+                File.WriteAllLines(saveFileDialog.FileName, csv);
         }
 
         private List<string> GetCSV()
         {
             List<string> csv = new List<string>();
-            string separator = CultureInfo.CurrentCulture.TextInfo.ListSeparator;
+            NumberFormatInfo nfi = CSVHelper.GetCSVNFI();
+            string listSeparator = CSVHelper.GetListSeparator(nfi);
 
-            string line = string.Format("{0}{1}{2}", plotView.Model.Axes[0].Title, separator, plotView.Model.Axes[1].Title);
-            csv.Add(line);
+            List<string> headers = new List<string>();
+            headers.Add(CSVHelper.WriteCell(plotView.Model.Axes[0].Title));
+            headers.Add(CSVHelper.WriteCell(plotView.Model.Axes[1].Title));
+            csv.Add(CSVHelper.MakeRow(headers, listSeparator));
             
             Dictionary<double, double> points = new Dictionary<double, double>();
             LineSeries s = plotView.Model.Series[0] as LineSeries;
@@ -294,11 +283,11 @@ namespace Kinovea.ScreenManager
 
             foreach (DataPoint p in s.Points)
             {
-                string x = double.IsNaN(p.X) ? "" : p.X.ToString();
-                string y = double.IsNaN(p.Y) ? "" : p.Y.ToString();
-
-                line = string.Format("{0}{1}{2}", x, separator, y);
-                csv.Add(line);
+                List<string> cells = new List<string>();
+                cells.Add(CSVHelper.WriteCell((float)p.X, nfi));
+                cells.Add(CSVHelper.WriteCell((float)p.Y, nfi));
+                
+                csv.Add(CSVHelper.MakeRow(cells, listSeparator));
             }
             
             return csv;

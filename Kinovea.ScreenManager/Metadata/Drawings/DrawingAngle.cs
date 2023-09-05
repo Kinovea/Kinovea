@@ -41,7 +41,7 @@ namespace Kinovea.ScreenManager
     {
         #region Events
         public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved;
-        public event EventHandler<EventArgs<TrackExtraData>> ShowMeasurableInfoChanged;
+        public event EventHandler<EventArgs<MeasureLabelType>> ShowMeasurableInfoChanged;
         #endregion
         
         #region Properties
@@ -204,11 +204,11 @@ namespace Kinovea.ScreenManager
             double opacityFactor = infosFading.GetOpacityTrackable(trackingTimestamps, currentTimestamp);
             if (opacityFactor > 0)
             {
-                if (HitTester.HitTest(points["o"], point, transformer))
+                if (HitTester.HitPoint(point, points["o"], transformer))
                     result = 1;
-                else if (HitTester.HitTest(points["a"], point, transformer))
+                else if (HitTester.HitPoint(point, points["a"], transformer))
                     result = 2;
-                else if (HitTester.HitTest(points["b"], point, transformer))
+                else if (HitTester.HitPoint(point, points["b"], transformer))
                     result = 3;
                 else if (IsPointInObject(point))
                     result = 0;
@@ -435,7 +435,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region IMeasurable implementation
-        public void InitializeMeasurableData(TrackExtraData trackExtraData)
+        public void InitializeMeasurableData(MeasureLabelType measureLabelType)
         {
         }
         #endregion

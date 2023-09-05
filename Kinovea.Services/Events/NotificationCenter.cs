@@ -38,7 +38,13 @@ namespace Kinovea.Services
             if(RefreshFileExplorer != null)
                 RefreshFileExplorer(sender, new RefreshFileExplorerEventArgs(refreshThumbnails));
         }
-        
+
+        public static EventHandler ToggleShowExplorerPanel;
+        public static void RaiseToggleShowExplorerPanel(object sender)
+        {
+            ToggleShowExplorerPanel?.Invoke(sender, EventArgs.Empty);
+        }
+
         public static EventHandler LaunchOpenDialog;
         public static void RaiseLaunchOpenDialog(object sender)
         {
@@ -60,6 +66,23 @@ namespace Kinovea.Services
                 FileOpened(sender, new FileActionEventArgs(file));
         }
 
+        public static EventHandler<FileActionEventArgs> FolderChangeAsked;
+        /// <summary>
+        /// Ask the explorer panel to load a new folder and trigger a general update.
+        /// </summary>
+        public static void RaiseFolderChangeAsked(object sender, string path)
+        {
+            if (FolderChangeAsked != null)
+                FolderChangeAsked(sender, new FileActionEventArgs(path));
+        }
+
+        public static EventHandler<EventArgs<FolderNavigationType>> FolderNavigationAsked;
+        public static void RaiseFolderNavigationAsked(object sender, FolderNavigationType fnt)
+        {
+            if (FolderNavigationAsked != null)
+                FolderNavigationAsked(sender, new EventArgs<FolderNavigationType>(fnt));
+        }
+
         public static EventHandler<ExplorerTabEventArgs> ExplorerTabChanged;
         public static void RaiseExplorerTabChanged(object sender, ActiveFileBrowserTab tab)
         {
@@ -75,10 +98,10 @@ namespace Kinovea.Services
         }
 
         public static EventHandler<CurrentDirectoryChangedEventArgs> CurrentDirectoryChanged;
-        public static void RaiseCurrentDirectoryChanged(object sender, bool shortcuts, List<string> files, bool refresh)
+        public static void RaiseCurrentDirectoryChanged(object sender, string path, List<string> files, bool isShortcuts, bool doRefresh)
         {
             if (CurrentDirectoryChanged != null)
-                CurrentDirectoryChanged(sender, new CurrentDirectoryChangedEventArgs(shortcuts, files, refresh));
+                CurrentDirectoryChanged(sender, new CurrentDirectoryChangedEventArgs(path, files, isShortcuts, doRefresh));
         }
 
         public static EventHandler<StatusUpdatedEventArgs> StatusUpdated;

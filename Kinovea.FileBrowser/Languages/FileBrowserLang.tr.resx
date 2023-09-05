@@ -83,4 +83,55 @@
   <data name="Generic_Open" xml:space="preserve">
     <value>Aç</value>
   </data>
+  <data name="lblCameras" xml:space="preserve">
+    <value>Kameralar</value>
+  </data>
+  <data name="mnuVideoDelete" xml:space="preserve">
+    <value>Dosyayı sil</value>
+  </data>
+  <data name="FormCameraWizard_Title" xml:space="preserve">
+    <value>Manuel bağlantı</value>
+  </data>
+  <data name="FormCameraWizard_CameraType" xml:space="preserve">
+    <value>Kamera tipi</value>
+  </data>
+  <data name="FormCameraWizard_Create" xml:space="preserve">
+    <value>Kamera oluştur</value>
+  </data>
+  <data name="FormCameraWizard_Parameters" xml:space="preserve">
+    <value>Parametreler</value>
+  </data>
+  <data name="FormCameraWizard_Test" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="lblCaptureHistory" xml:space="preserve">
+    <value>Yakalama geçmişi</value>
+  </data>
+  <data name="mnuVideoLocate" xml:space="preserve">
+    <value>Windows Gezgini'nde bul </value>
+  </data>
+  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
+    <value>Tekrar oynatma klasörü gözlemcisi olarak aç</value>
+  </data>
+  <data name="ForgetCustomSettings" xml:space="preserve">
+    <value>Özel ayarları unut</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>Artan</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Sıralama</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Boyut</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Tarih</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>İsim</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>Azalan</value>
+  </data>
 </root>

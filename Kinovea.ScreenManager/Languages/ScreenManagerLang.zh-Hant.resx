@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="FormIconPicker_Title" xml:space="preserve">
+    <value>圖示</value>
+  </data>
+  <data name="Generic_Apply" xml:space="preserve">
+    <value>確認</value>
+  </data>
+  <data name="Generic_Cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="Generic_Open" xml:space="preserve">
+    <value>開啟</value>
+  </data>
+  <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve">
+    <value>重設到預設顏色資料</value>
+  </data>
+  <data name="dlgConfigureDrawing_Title" xml:space="preserve">
+    <value>配置圖繪</value>
+  </data>
+  <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve">
+    <value>永遠顯示</value>
+  </data>
+  <data name="buttonPlay_ToolTip" xml:space="preserve">
+    <value>播放或停止兩個影片</value>
+  </data>
+  <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
+    <value>修改圖繪</value>
+  </data>
+  <data name="CommandAddDrawing_FriendlyName" xml:space="preserve">
+    <value>添加圖繪</value>
+  </data>
+  <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve">
+    <value>刪除圖繪</value>
+  </data>
+  <data name="CommandExportVideo_FriendlyName" xml:space="preserve">
+    <value>輸出影片</value>
+  </data>
+  <data name="DataAnalysis" xml:space="preserve">
+    <value>資料分析</value>
+  </data>
+  <data name="buttonGotoFirst_ToolTip" xml:space="preserve">
+    <value>回到兩個影片的起點</value>
+  </data>
+  <data name="buttonGotoLast_ToolTip" xml:space="preserve">
+    <value>到兩個影片的最終點</value>
+  </data>
+  <data name="btnSync_ToolTip" xml:space="preserve">
+    <value>依照此影格同步影片</value>
+  </data>
+  <data name="buttonGotoNext_ToolTip" xml:space="preserve">
+    <value>到兩個影片的下個影格</value>
+  </data>
+  <data name="buttonGotoPrevious_ToolTip" xml:space="preserve">
+    <value>回到兩個影瑱的上個影格</value>
+  </data>
+  <data name="DataAnalysis_XaxisLabel" xml:space="preserve">
+    <value>X軸:</value>
+  </data>
+  <data name="DataAnalysis_XaxisDefaultPoints" xml:space="preserve">
+    <value>X軸</value>
+  </data>
+  <data name="DataAnalysis_YaxisLabel" xml:space="preserve">
+    <value>Y軸:</value>
+  </data>
+  <data name="DataAnalysis_YaxisDefaultPoints" xml:space="preserve">
+    <value>Y軸</value>
+  </data>
+  <data name="DataAnalysis_TimeAxisMilliseconds" xml:space="preserve">
+    <value>時間 (毫秒)</value>
+  </data>
+  <data name="DataAnalysis_ExportGraph" xml:space="preserve">
+    <value>輸出表圖</value>
+  </data>
+  <data name="DataAnalysis_Pixels" xml:space="preserve">
+    <value>像素</value>
+  </data>
+  <data name="DataAnalysis_SaveToFile" xml:space="preserve">
+    <value>存儲到檔案</value>
+  </data>
+  <data name="DataAnalysis_ExportData" xml:space="preserve">
+    <value>輸出資料</value>
+  </data>
+  <data name="DataAnalysis_DataSource" xml:space="preserve">
+    <value>資料來源</value>
+  </data>
+  <data name="DataAnalysis_DataLabel" xml:space="preserve">
+    <value>資料:</value>
+  </data>
+  <data name="DataAnalysis_TimeModel" xml:space="preserve">
+    <value>時間:</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Absolute" xml:space="preserve">
+    <value>絕對</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Relative" xml:space="preserve">
+    <value>相對</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Normalized" xml:space="preserve">
+    <value>標準化</value>
+  </data>
+  <data name="DataAnalysis_AngularPosition" xml:space="preserve">
+    <value>角度</value>
+  </data>
+  <data name="DataAnalysis_TangentialVelocity" xml:space="preserve">
+    <value>切線速度</value>
+  </data>
+  <data name="DataAnalysis_TangentialAcceleration" xml:space="preserve">
+    <value>切線加速</value>
+  </data>
+  <data name="DataAnalysis_ResultantLinearAcceleration" xml:space="preserve">
+    <value>結果加速</value>
+  </data>
+  <data name="dlgColorPicker_Title" xml:space="preserve">
+    <value>顏色</value>
+  </data>
+  <data name="dlgColorProfile_Title" xml:space="preserve">
+    <value>顏色資料...</value>
+  </data>
+  <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve">
+    <value>裝載顏色資料</value>
+  </data>
+  <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve">
+    <value>儲存顏色資料</value>
+  </data>
+  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+    <value>名稱'</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
+    <value>最大不透明度 (%):</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblOpaque" xml:space="preserve">
+    <value>不透明期間 (frames):</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblFading" xml:space="preserve">
+    <value>變暗期間 (frames):</value>
+  </data>
+  <data name="dlgTimebase_Title" xml:space="preserve">
+    <value>配置影片校時</value>
+  </data>
+  <data name="dlgTimebase_GroupCapture" xml:space="preserve">
+    <value>高速相機</value>
+  </data>
+  <data name="dlgTimebase_lblCapture" xml:space="preserve">
+    <value>擷取影格數:</value>
+  </data>
+  <data name="Generic_Quit" xml:space="preserve">
+    <value>結束</value>
+  </data>
+</root>

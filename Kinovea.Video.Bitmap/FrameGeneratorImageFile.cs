@@ -21,6 +21,8 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using Kinovea.Services;
 using System;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.Linq;
 //using SystemBitmap = System.Drawing.Bitmap;
 
 namespace Kinovea.Video.Bitmap
@@ -38,9 +40,15 @@ namespace Kinovea.Video.Bitmap
             get { return referenceSize; }
         }   
 
+        public ImageRotation ImageRotation {
+            get { return rotation; }
+        }
+
         private string filename;
         private Size originalSize;
         private Size referenceSize;
+        private ImageRotation rotation;
+        private bool customRotation;
         private System.Drawing.Bitmap image;
         private System.Drawing.Bitmap errorImage;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -77,7 +85,10 @@ namespace Kinovea.Video.Bitmap
 
         public OpenVideoResult Open(string filename)
         {
-            return Open(filename, ImageRotation.Rotate0);
+            // The rotation will be set during reading if the file has the EXIF tag.
+            rotation = ImageRotation.Rotate0;
+            customRotation = false;
+            return OpenInternal(filename);
         }
 
         public void Close()
@@ -104,12 +115,13 @@ namespace Kinovea.Video.Bitmap
         public void SetRotation(ImageRotation rotation)
         {
             // Re-initialize with different rotation.
-            Open(filename, rotation);
+            this.rotation = rotation;
+            customRotation = true;
+            OpenInternal(filename);
         }
 
-        private OpenVideoResult Open(string filename, ImageRotation rotation)
+        private OpenVideoResult OpenInternal(string filename)
         {
-
             this.filename = filename;
             OpenVideoResult res = OpenVideoResult.NotSupported;
 
@@ -118,9 +130,14 @@ namespace Kinovea.Video.Bitmap
 
             try
             {
+                
                 image = new System.Drawing.Bitmap(filename);
+
                 if (image != null)
                 {
+                    if (!customRotation)
+                        rotation = GetRotation(GetOrientation(image));
+
                     res = OpenVideoResult.Success;
                     originalSize = image.Size;
 
@@ -152,6 +169,57 @@ namespace Kinovea.Video.Bitmap
             }
 
             return res;
+        }
+
+        /// <summary>
+        /// Returns the orientation of the image as per EXIF metadata.
+        /// </summary>
+        private RotateFlipType GetOrientation(Image image)
+        {
+            // https://learn.microsoft.com/en-us/dotnet/api/system.drawing.imaging.propertyitem.id?view=dotnet-plat-ext-7.0
+            // https://exiftool.org/TagNames/EXIF.html
+            int tagOrientation = 0x112;
+            if (!image.PropertyIdList.Contains(tagOrientation))
+                return RotateFlipType.RotateNoneFlipNone;
+
+            PropertyItem prop = image.GetPropertyItem(tagOrientation);
+            int val = BitConverter.ToUInt16(prop.Value, 0);
+            
+            switch (val)
+            {
+                case 1: return RotateFlipType.RotateNoneFlipNone;
+                case 2: return RotateFlipType.RotateNoneFlipX;
+                case 3: return RotateFlipType.Rotate180FlipNone;
+                case 4: return RotateFlipType.RotateNoneFlipY;
+                case 5: return RotateFlipType.Rotate90FlipX;
+                case 6: return RotateFlipType.Rotate90FlipNone;
+                case 7: return RotateFlipType.Rotate270FlipX;
+                case 8: return RotateFlipType.Rotate270FlipNone;
+                default:return RotateFlipType.RotateNoneFlipNone;
+            }
+        }
+
+        /// <summary>
+        /// Maps RotateFlipType to our internal ImageRotation flag.
+        /// We only support orientation here, mirroring is handled elsewhere.
+        /// </summary>
+        private ImageRotation GetRotation(RotateFlipType rft)
+        {
+            switch (rft)
+            {
+                case RotateFlipType.RotateNoneFlipNone: 
+                    return ImageRotation.Rotate0;
+                case RotateFlipType.Rotate90FlipNone:
+                    return ImageRotation.Rotate90;
+                case RotateFlipType.Rotate180FlipNone:
+                    return ImageRotation.Rotate180;
+                case RotateFlipType.Rotate270FlipNone:
+                    return ImageRotation.Rotate270;
+
+                default:
+                    return ImageRotation.Rotate0;
+
+            }
         }
     }
 }

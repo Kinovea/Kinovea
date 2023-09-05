@@ -106,7 +106,7 @@
   </data>
   <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>Och</value>
   </data>
-  <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Som standard, ritningar kommer att vara  synliga i {0} bilder runt nyckelbild.</value>
+  <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Ritningar kommer att vara synliga som standard i {0} bilder runt nyckelbilden.</value>
   </data>
   <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Meter/sekund ({0})</value>
   </data>
@@ -118,7 +118,7 @@
   </data>
   <data name="dlgPreferences_Title" xml:space="preserve"><value>Inställningar</value>
   </data>
-  <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Laddar användargränssnitt...</value>
+  <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Laddar användargränssnitt…</value>
   </data>
   <data name="Generic_Cancel" xml:space="preserve"><value>Ångra</value>
   </data>
@@ -126,9 +126,9 @@
   </data>
   <data name="Generic_Save" xml:space="preserve"><value>Spara</value>
   </data>
-  <data name="mnuAbout" xml:space="preserve"><value>Om Kinovea...</value>
+  <data name="mnuAbout" xml:space="preserve"><value>Om Kinovea…</value>
   </data>
-  <data name="mnuApplicationFolder" xml:space="preserve"><value>Öppna log mapp...</value>
+  <data name="mnuApplicationFolder" xml:space="preserve"><value>Öppna logg-mapp…</value>
   </data>
   <data name="mnuEdit" xml:space="preserve"><value>Redigera</value>
   </data>
@@ -150,7 +150,7 @@
   </data>
   <data name="mnuOptions" xml:space="preserve"><value>Alternativ</value>
   </data>
-  <data name="mnuPreferences" xml:space="preserve"><value>Inställningar...</value>
+  <data name="mnuPreferences" xml:space="preserve"><value>Egenskaper…</value>
   </data>
   <data name="mnuScreens" xml:space="preserve"><value>Granska</value>
   </data>
@@ -297,5 +297,143 @@
   </data>
   <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve">
     <value>Tröskelvärde för ersättning av bildhastighet (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
+    <value>Utrymningssekvens</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
+    <value>Fångst-katalog</value>
+  </data>
+  <data name="dlgPreferences_Capture_tabAutomation" xml:space="preserve">
+    <value>Automatisering</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkEnableAudioTrigger" xml:space="preserve">
+    <value>Aktivera ljudutlösare</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve">
+    <value>Inmatningsenhet:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
+    <value>Tröskel för utlösare:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
+    <value>Stoppa inspelningen efter varaktighet (er):</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve">
+    <value>Aktivera filtrering av koordinater</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve">
+    <value>Aktivera felsökningsläge för anpassade verktyg</value>
+  </data>
+  <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve">
+    <value>Standardopacitet för nya ritningar:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve">
+    <value>Synlig för hela videon</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblHotkey" xml:space="preserve">
+    <value>Snabbtangent för {0}.{1}</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnApply" xml:space="preserve">
+    <value>Verkställ</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnClear" xml:space="preserve">
+    <value>Rensa</value>
+  </data>
+  <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve">
+    <value>Importera bildsekvenser som videor</value>
+  </data>
+  <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve">
+    <value>Instanser har sina egna egenskaper</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAcceleration" xml:space="preserve">
+    <value>Accelerering:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegreesPerSecond" xml:space="preserve">
+    <value>Grader per sekund ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadiansPerSecond" xml:space="preserve">
+    <value>Radianer per sekund ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRevolutionsPerMinute" xml:space="preserve">
+    <value>Revolutioner per minut ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegreesPerSecondSquared" xml:space="preserve">
+    <value>Grader per sekund i kvadrat ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadiansPerSecondSquared" xml:space="preserve">
+    <value>Radianer per sekund i kvadrat ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
+    <value>Anpassad längdenhet :</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
+    <value>Standardparametrar för spårning</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
+    <value>Objektfönster:</value>
+  </data>
+  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
+    <value>Spara som standard-arbetsyta</value>
+  </data>
+  <data name="mnuWorkspaceExport" xml:space="preserve">
+    <value>Exportera arbetsyta</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve">
+    <value>Ersättande bildfrekvens (fps):</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
+    <value>Sökfönster:</value>
+  </data>
+  <data name="mnuTools" xml:space="preserve">
+    <value>Verktyg</value>
+  </data>
+  <data name="dlgPreferences_Player_tabUnits" xml:space="preserve">
+    <value>Enheter</value>
+  </data>
+  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
+    <value>Spårning</value>
+  </data>
+  <data name="mnuFullScreen" xml:space="preserve">
+    <value>Fullskärm</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+  <data name="mnuWorkspace" xml:space="preserve">
+    <value>Arbetsyta</value>
+  </data>
+  <data name="TimeCodeFormat_Microseconds" xml:space="preserve">
+    <value>Totalt antal mikrosekunder</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
+    <value>Vilotid(er):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
+    <value>Kommando efter inspelning:</value>
+  </data>
+  <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve">
+    <value>Uppdatera bilden under tiden som musen rör på sig</value>
+  </data>
+  <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
+    <value>Standardannotationsfil:</value>
+  </data>
+  <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve">
+    <value>Länka hastighetsreglage när vid jämförelse av videor</value>
+  </data>
+  <data name="dlgPreferences_Player_lblMemory" xml:space="preserve">
+    <value>Cache-minne som tilldelas till varje uppspelningsskärm: {0} MB.</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngularVelocity" xml:space="preserve">
+    <value>Vinkelhastighet:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngularAcceleration" xml:space="preserve">
+    <value>Vinkelacceleration:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsMetersPerSecondSquared" xml:space="preserve">
+    <value>Meter per sekund i kvadrat ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsFeetPerSecondSquared" xml:space="preserve">
+    <value>Fot per sekund i kvadrat ({0})</value>
   </data>
 </root>

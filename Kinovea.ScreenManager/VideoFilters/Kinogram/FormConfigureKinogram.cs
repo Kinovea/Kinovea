@@ -14,37 +14,37 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// Configuration dialog for Kinogram.
-    /// OK/Cancel mechanics: we work with a copy of the parameters object.
-    /// In case of cancel or close we simply don't inject it back in the Kinogram.
+    /// OK/Cancel mechanics: we keep a backup of the original state and directly modify the object.
+    /// - In case of cancel or close we perform an undo manually from here.
+    /// - In case of OK we commit the original state to the undo stack.
     /// </summary>
     public partial class FormConfigureKinogram : Form
     {
-        
-        public KinogramParameters Parameters 
-        { 
-            get{ return parameters; } 
-        }
-
         #region Members
         private VideoFilterKinogram kinogram;
+        private HistoryMementoModifyVideoFilter memento;
         private KinogramParameters parameters;
         private bool manualUpdate;
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
+        private IDrawingHostView hostView;
         #endregion
 
-        public FormConfigureKinogram(VideoFilterKinogram kinogram)
+        public FormConfigureKinogram(VideoFilterKinogram kinogram, IDrawingHostView hostView)
         {
-            InitializeComponent();
-
             this.kinogram = kinogram;
-            this.parameters = kinogram.Parameters.Clone();
+            this.hostView = hostView;
 
+            memento = new HistoryMementoModifyVideoFilter(kinogram.ParentMetadata, VideoFilterType.Kinogram, kinogram.FriendlyNameResource);
+            this.parameters = kinogram.Parameters;
+
+            InitializeComponent();
             SetupStyle();
             SetupStyleControls();
             InitValues();
             InitCulture();
             UpdateFrameInterval();
+            FixNudScroll();
         }
 
         private void InitValues()
@@ -55,22 +55,18 @@ namespace Kinovea.ScreenManager
             nudRows.Value = parameters.Rows;
             nudCropWidth.Value = parameters.CropSize.Width;
             nudCropHeight.Value = parameters.CropSize.Height;
-            cbRTL.Checked = !parameters.LeftToRight;
-            cbBorderVisible.Checked = parameters.BorderVisible;
             manualUpdate = false;
         }
 
         private void InitCulture()
         {
-            this.Text = "Configure Kinogram";
+            this.Text = ScreenManagerLang.formConfigureKinogram_Title;
             grpConfig.Text = ScreenManagerLang.Generic_Configuration;
-            lblColumns.Text = "Columns:";
-            lblRows.Text = "Rows:";
-            lblCropSize.Text = "Crop size:";
-            cbRTL.Text = "Right to left";
-            
-            grpAppearance.Text = ScreenManagerLang.Generic_Appearance;
-            cbBorderVisible.Text = "Show border";
+            lblColumns.Text = ScreenManagerLang.formConfigureKinogram_Table;
+            lblCropSize.Text = ScreenManagerLang.formConfigureKinogram_CropSize;
+            btnApply.Text = ScreenManagerLang.Generic_Apply;
+            btnOK.Text = ScreenManagerLang.Generic_OK;
+            btnCancel.Text = ScreenManagerLang.Generic_Cancel;
         }
 
         private void SetupStyle()
@@ -84,9 +80,9 @@ namespace Kinovea.ScreenManager
 
         private void SetupStyleControls()
         {
-            int btnLeft = cbBorderVisible.Left;
-            int editorsLeft = 200;
-            int lastEditorBottom = cbBorderVisible.Bottom;
+            int btnLeft = lblColumns.Left;
+            int editorsLeft = nudCropWidth.Left;
+            int lastEditorBottom = lblCropSize.Bottom;
             Size editorSize = new Size(60, 20);
 
             foreach (KeyValuePair<string, AbstractStyleElement> pair in style.Elements)
@@ -96,7 +92,7 @@ namespace Kinovea.ScreenManager
                 Button btn = new Button();
                 btn.Image = styleElement.Icon;
                 btn.Size = new Size(20, 20);
-                btn.Location = new Point(btnLeft, lastEditorBottom + 15);
+                btn.Location = new Point(btnLeft, lastEditorBottom + 20);
                 btn.FlatStyle = FlatStyle.Flat;
                 btn.FlatAppearance.BorderSize = 0;
                 btn.BackColor = Color.Transparent;
@@ -104,7 +100,7 @@ namespace Kinovea.ScreenManager
                 Label lbl = new Label();
                 lbl.Text = styleElement.DisplayName;
                 lbl.AutoSize = true;
-                lbl.Location = new Point(btn.Right + 10, lastEditorBottom + 20);
+                lbl.Location = new Point(btn.Right + 10, lastEditorBottom + 25);
 
                 Control miniEditor = styleElement.GetEditor();
                 miniEditor.Size = editorSize;
@@ -112,18 +108,26 @@ namespace Kinovea.ScreenManager
 
                 lastEditorBottom = miniEditor.Bottom;
 
-                grpAppearance.Controls.Add(btn);
-                grpAppearance.Controls.Add(lbl);
-                grpAppearance.Controls.Add(miniEditor);
+                grpConfig.Controls.Add(btn);
+                grpConfig.Controls.Add(lbl);
+                grpConfig.Controls.Add(miniEditor);
             }
         }
 
         private void UpdateFrameInterval()
         {
             int tileCount = kinogram.GetTileCount(parameters.TileCount);
-            lblTotal.Text = string.Format("Total: {0}", tileCount);
+            lblTotal.Text = string.Format(ScreenManagerLang.formConfigureKinogram_lblTotal, tileCount);
             float interval = kinogram.GetFrameInterval(parameters.TileCount);
-            lblFrameInterval.Text = string.Format("Frame interval: {0:0.000} ms", interval * 1000.0f);
+            lblFrameInterval.Text = string.Format(ScreenManagerLang.formConfigureKinogram_lblFrameInterval, interval * 1000.0f);
+        }
+
+        private void FixNudScroll()
+        {
+            NudHelper.FixNudScroll(nudCols);
+            NudHelper.FixNudScroll(nudRows);
+            NudHelper.FixNudScroll(nudCropWidth);
+            NudHelper.FixNudScroll(nudCropHeight);
         }
 
         #region Event handlers
@@ -138,6 +142,7 @@ namespace Kinovea.ScreenManager
             parameters.Rows = rows;
 
             UpdateFrameInterval();
+            UpdateKinogram();
         }
 
         private void grid_KeyUp(object sender, KeyEventArgs e)
@@ -160,29 +165,44 @@ namespace Kinovea.ScreenManager
             cropSize_ValueChanged(sender, EventArgs.Empty);
         }
 
-        private void cbRTL_CheckedChanged(object sender, EventArgs e)
+        private void btnApply_Click(object sender, EventArgs e)
         {
-            if (manualUpdate)
-                return;
-
-            bool rtl = cbRTL.Checked;
-            parameters.LeftToRight = !rtl;
+            UpdateKinogram();
         }
 
-        private void cbBorderVisible_CheckedChanged(object sender, EventArgs e)
+        private void UpdateKinogram()
         {
-            if (manualUpdate)
-                return;
-
-            parameters.BorderVisible = cbBorderVisible.Checked;
+            parameters.BorderColor = styleHelper.Color;
+            kinogram.ConfigurationChanged(true);
+            hostView?.InvalidateFromMenu();
         }
         #endregion
 
         #region OK/Cancel/Close
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            Cancel();
+        }
         private void btnOK_Click(object sender, EventArgs e)
         {
             // Import style values and commit the parameters object.
             parameters.BorderColor = styleHelper.Color;
+
+            // Commit the original state to the undo history stack.
+            kinogram.ParentMetadata.HistoryStack.PushNewCommand(memento);
+        }
+
+        private void Cancel()
+        {
+            memento.PerformUndo();
+        }
+
+        private void Form_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (this.DialogResult == DialogResult.OK)
+                return;
+
+            memento.PerformUndo();
         }
         #endregion
     }

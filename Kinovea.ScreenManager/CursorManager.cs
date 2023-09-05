@@ -34,7 +34,7 @@ namespace Kinovea.ScreenManager
             // - Drawings that splat themselves at once on the canvas (no dragging a second leg), should use the icon,
             // - Drawings that are created in several steps should use the precision cross.
 
-            if (tool is DrawingToolGenericPosture || tool is DrawingToolAutoNumbers)
+            if (tool is DrawingToolGenericPosture || tool is DrawingToolNumberSequence)
             {
                 // Many of the GenericPosture tools have a color style element that doesn't really serve any purpose, 
                 // as the lines making the drawing can have their own color defined in the XML.

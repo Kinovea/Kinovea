@@ -31,9 +31,7 @@ namespace Kinovea.Root
     /// FormPreferences2. A dynamically generated form to display preferences.
     /// It is a host for preferences pages.
     /// Preferences pages are UserControl conforming to a IPreferencePanel interface.
-    /// The pages should be of size 432; 236 with white background.
-    /// 
-    /// _initPage can be passed to the constructor to directly load a specific page.
+    /// Each preference page contains one or more tabs.
     /// </summary>
     public partial class FormPreferences2 : Form
     {
@@ -45,17 +43,23 @@ namespace Kinovea.Root
         #endregion
         
         #region Construction and Initialization
+        
+        /// <summary>
+        /// Open the preferences and restore the last page opened.
+        /// </summary>
         public FormPreferences2()
         {
             NotificationCenter.RaisePreferencesOpened(this);
-
             Init();
-
-            int initPage = PreferencesManager.GeneralPreferences.PreferencePage;
-            DisplayPage(initPage);
+            DisplayPage(PreferencesManager.GeneralPreferences.PreferencePage);
         }
+
+        /// <summary>
+        /// Open the preferences on the specified page and tab.
+        /// </summary>
         public FormPreferences2(PreferenceTab tab)
         {
+            NotificationCenter.RaisePreferencesOpened(this);
             Init();
             DisplayTab(tab);
         }

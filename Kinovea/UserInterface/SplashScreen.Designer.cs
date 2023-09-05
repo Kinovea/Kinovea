@@ -42,11 +42,11 @@ namespace Kinovea.Root
       this.lblVersion.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.lblVersion.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.lblVersion.ForeColor = System.Drawing.Color.White;
-      this.lblVersion.Location = new System.Drawing.Point(422, 299);
+      this.lblVersion.Location = new System.Drawing.Point(411, 301);
       this.lblVersion.Name = "lblVersion";
-      this.lblVersion.Size = new System.Drawing.Size(60, 22);
+      this.lblVersion.Size = new System.Drawing.Size(70, 22);
       this.lblVersion.TabIndex = 1;
-      this.lblVersion.Text = "0.9.5";
+      this.lblVersion.Text = "2023.1";
       // 
       // pictureBox1
       // 

@@ -88,10 +88,11 @@ namespace Kinovea.Camera.DirectShow
         /// </summary>
         public ImageDescriptor Prepare()
         {
-            ConfigureDevice();
+            // Try to pre-configure the device according to what is saved in the preferences, if anything.
+            var loadedConfig = ConfigureDevice();
 
             AForge.Video.DirectShow.VideoCapabilities cap = null;
-            if (device.VideoResolution == null)
+            if (loadedConfig == null || device.VideoResolution == null)
             {
                 // This device was never connected to in Kinovea, use the first media type.
                 AForge.Video.DirectShow.VideoCapabilities[] caps = device.VideoCapabilities;
@@ -103,18 +104,20 @@ namespace Kinovea.Camera.DirectShow
 
                 cap = caps[0];
 
-                device.SetMediaTypeAndFramerate(cap.Index, (float)cap.AverageFrameRate);
+                device.SetMediaTypeAndFramerate(cap.Index, cap.AverageFrameRate);
+                resultingFramerate = cap.AverageFrameRate;
+
                 log.DebugFormat("Device set to default configuration: Index:{0}. ({1}x{2} @ {3:0.###} fps ({4})).",
                     cap.Index, cap.FrameSize.Width, cap.FrameSize.Height, cap.AverageFrameRate, cap.Compression);
             }
             else
             {
                 cap = device.VideoResolution;
+                resultingFramerate = loadedConfig.SelectedFramerate;
             }
 
             int width = cap.FrameSize.Width;
             int height = cap.FrameSize.Height;
-            resultingFramerate = cap.AverageFrameRate;
 
             ImageFormat format = ImageFormat.RGB24;
 
@@ -184,14 +187,15 @@ namespace Kinovea.Camera.DirectShow
 
         /// <summary>
         /// Configure the device according to what is saved in the preferences for it.
+        /// Returns the info of the loaded configuration, if any.
         /// </summary>
-        private void ConfigureDevice()
+        private SpecificInfo ConfigureDevice()
         {
             SpecificInfo info = summary.Specific as SpecificInfo;
             if (info == null || info.MediaTypeIndex < 0)
             {
                 log.DebugFormat("No configuration saved in preferences for this device.");
-                return;
+                return null;
             }
 
             // Initialize device configuration (Extract and cache media types on the output pin).
@@ -201,7 +205,7 @@ namespace Kinovea.Camera.DirectShow
             if (match == null)
             {
                 log.ErrorFormat("Could not match the saved media type.");
-                return;
+                return null;
             }
 
             device.SetMediaTypeAndFramerate(info.MediaTypeIndex, info.SelectedFramerate);
@@ -219,6 +223,8 @@ namespace Kinovea.Camera.DirectShow
             {
                 log.ErrorFormat("An error occured while reloading camera properties. {0}", e.Message);
             }
+
+            return info;
         }
         
         private void device_NewFrameBuffer(object sender, NewFrameBufferEventArgs e)

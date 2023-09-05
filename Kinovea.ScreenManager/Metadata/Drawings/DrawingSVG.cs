@@ -159,7 +159,7 @@ namespace Kinovea.ScreenManager
         }
         public override void MoveDrawing(float dx, float dy, Keys _ModifierKeys, bool zooming)
         {
-            boundingBox.MoveAndSnap((int)dx, (int)dy, videoSize, snapMargin);
+            boundingBox.MoveAndSnap(dx, dy, videoSize, snapMargin);
         }
         public override PointF GetCopyPoint()
         {

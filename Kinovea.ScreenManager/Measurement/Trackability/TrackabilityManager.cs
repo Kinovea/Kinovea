@@ -260,7 +260,24 @@ namespace Kinovea.ScreenManager
                 mdt.Data = new Dictionary<string, List<PointF>>();
                 foreach (var pair in dataRaw)
                 {
-                    List<PointF> value = pair.Value.Select(p => metadata.CalibrationHelper.GetPoint(p)).ToList();
+                    // Each item here is the list of positions of this particular point over time.
+                    // We need to convert these pixel locations based on frame time to account for moving coordinate system.
+                    // All points in the object should have exactly the same number of entries, which should also match timestamps.Count.
+                    List<PointF> value = new List<PointF>();
+                    if (PreferencesManager.PlayerPreferences.ExportSpace == ExportSpace.WorldSpace)
+                    {
+                        int frame = 0;
+                        foreach (var p in pair.Value)
+                        {
+                            long ts = timestamps[frame];
+                            value.Add(metadata.CalibrationHelper.GetPointAtTime(p, ts));
+                            frame++;
+                        }
+                    }
+                    else
+                    {
+                        value = pair.Value;
+                    }
                     
                     string name = pair.Key;
 

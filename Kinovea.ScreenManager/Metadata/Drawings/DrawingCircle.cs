@@ -42,7 +42,7 @@ namespace Kinovea.ScreenManager
     public class DrawingCircle : AbstractDrawing, IKvaSerializable, IDecorable, IInitializable, IMeasurable
     {
         #region Events
-        public event EventHandler<EventArgs<TrackExtraData>> ShowMeasurableInfoChanged;
+        public event EventHandler<EventArgs<MeasureLabelType>> ShowMeasurableInfoChanged;
         #endregion
 
         #region Properties
@@ -57,7 +57,7 @@ namespace Kinovea.ScreenManager
                 int hash = center.GetHashCode();
                 hash ^= radius.GetHashCode();
                 hash ^= showCenter.GetHashCode();
-                hash ^= trackExtraData.GetHashCode();
+                hash ^= measureLabelType.GetHashCode();
                 hash ^= miniLabel.GetHashCode();
                 hash ^= styleHelper.ContentHash;
                 hash ^= infosFading.ContentHash;
@@ -81,11 +81,15 @@ namespace Kinovea.ScreenManager
         {
             get
             {
-                // Rebuild the menu to get the localized text.
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
-                ReinitializeMenu();
-                contextMenu.Add(mnuMeasurement);
-                contextMenu.Add(mnuShowCenter);
+                ReloadMenusCulture();
+
+                contextMenu.AddRange(new ToolStripItem[] {
+                    mnuOptions,
+                    mnuMeasurement,
+                });
+
+                mnuShowCenter.Checked = showCenter;
                 return contextMenu;
             }
         }
@@ -116,10 +120,14 @@ namespace Kinovea.ScreenManager
         private static readonly float crossSize = 15;
         private static readonly float crossRadius = crossSize / 2.0f;
         private MiniLabel miniLabel = new MiniLabel();
-        private TrackExtraData trackExtraData = TrackExtraData.None;
+        private MeasureLabelType measureLabelType = MeasureLabelType.None;
+
+        #region Menus
         private ToolStripMenuItem mnuMeasurement = new ToolStripMenuItem();
-        private List<ToolStripMenuItem> mnuMeasurementOptions = new List<ToolStripMenuItem>();
+        private Dictionary<MeasureLabelType, ToolStripMenuItem> mnuMeasureLabelTypes = new Dictionary<MeasureLabelType, ToolStripMenuItem>();
+        private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowCenter = new ToolStripMenuItem();
+        #endregion
 
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
@@ -129,7 +137,7 @@ namespace Kinovea.ScreenManager
         private Ellipse ellipseInImage;
         private PointF radiusLeftInImage;
         private PointF radiusRightInImage;
-        private bool showCenter = true;
+        private bool showCenter = false;
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -164,15 +172,35 @@ namespace Kinovea.ScreenManager
             style = preset.Clone();
             BindStyle();
 
-            mnuShowCenter.Image = Properties.Drawings.crossmark;
-            mnuShowCenter.Checked = showCenter;
-            mnuShowCenter.Click += mnuShowCenter_Click;
-            ReinitializeMenu();
+            InitializeMenus();
         }
         public DrawingCircle(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
             : this(PointF.Empty, 0, 0)
         {
             ReadXml(xmlReader, scale, timestampMapper);
+        }
+        private void InitializeMenus()
+        {
+            // Measurement.    
+            mnuMeasurement.Image = Properties.Drawings.label;
+            mnuMeasurement.DropDownItems.Clear();
+            mnuMeasurement.DropDownItems.AddRange(new ToolStripItem[] {
+                CreateMeasureLabelTypeMenu(MeasureLabelType.None),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.Name),
+                new ToolStripSeparator(),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.Center),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.Radius),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.Diameter),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.Circumference),
+            });
+
+            // Options
+            mnuOptions.Image = Properties.Resources.equalizer;
+            mnuShowCenter.Image = Properties.Drawings.crossmark;
+            mnuShowCenter.Click += mnuShowCenter_Click;
+            mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
+                mnuShowCenter,
+            });
         }
         #endregion
 
@@ -218,22 +246,22 @@ namespace Kinovea.ScreenManager
                     canvas.DrawEllipse(p, boundingBox);
                 }
 
-                if (trackExtraData != TrackExtraData.None)
+                if (measureLabelType != MeasureLabelType.None)
                 {
                     // Draw lines from the center to the periphery of the circle to show the radius or diameter.
-                    if (trackExtraData == TrackExtraData.Radius)
+                    if (measureLabelType == MeasureLabelType.Radius)
                     {
                         PointF radiusRight = transformer.Transform(radiusRightInImage);
                         canvas.DrawLine(p, circleCenter, radiusRight);
                     }
-                    else if (trackExtraData == TrackExtraData.Diameter)
+                    else if (measureLabelType == MeasureLabelType.Diameter)
                     {
                         PointF radiusLeft = transformer.Transform(radiusLeftInImage);
                         PointF radiusRight = transformer.Transform(radiusRightInImage);
                         canvas.DrawLine(p, radiusLeft, radiusRight);
                     }
 
-                    string text = GetExtraDataText(currentTimestamp);
+                    string text = GetMeasureLabelText(currentTimestamp);
                     miniLabel.SetText(text);
                     miniLabel.Draw(canvas, transformer, opacityFactor);
                 }
@@ -268,7 +296,7 @@ namespace Kinovea.ScreenManager
             }
             else if (handleNumber == 2)
             {
-                miniLabel.SetLabel(point);
+                miniLabel.SetCenter(point);
                 UpdateEllipseInImage();
             }
         }
@@ -289,7 +317,7 @@ namespace Kinovea.ScreenManager
             if (opacity <= 0)
                 return -1;
 
-            if (trackExtraData != TrackExtraData.None && miniLabel.HitTest(point, transformer))
+            if (measureLabelType != MeasureLabelType.None && miniLabel.HitTest(point, transformer))
                 return 2;
 
             if (IsPointOnHandler(point, transformer))
@@ -330,8 +358,7 @@ namespace Kinovea.ScreenManager
                         break;
                     case "ExtraData":
                         {
-                            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(TrackExtraData));
-                            trackExtraData = (TrackExtraData)enumConverter.ConvertFromString(xmlReader.ReadElementContentAsString());
+                            measureLabelType = XmlHelper.ParseEnum<MeasureLabelType>(xmlReader.ReadElementContentAsString(), MeasureLabelType.None);
                             break;
                         }
                     case "MeasureLabel":
@@ -369,9 +396,9 @@ namespace Kinovea.ScreenManager
                 w.WriteElementString("Origin", XmlHelper.WritePointF(center));
                 w.WriteElementString("Radius", radius.ToString());
 
-                TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(TrackExtraData));
-                string xmlExtraData = enumConverter.ConvertToString(trackExtraData);
-                w.WriteElementString("ExtraData", xmlExtraData);
+                TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(MeasureLabelType));
+                string xmlMeasureLabelType = enumConverter.ConvertToString(measureLabelType);
+                w.WriteElementString("ExtraData", xmlMeasureLabelType);
 
                 w.WriteStartElement("MeasureLabel");
                 miniLabel.WriteXml(w);
@@ -415,95 +442,15 @@ namespace Kinovea.ScreenManager
         #region Context menu
         private void mnuShowCenter_Click(object sender, EventArgs e)
         {
-            mnuShowCenter.Checked = !mnuShowCenter.Checked;
-            showCenter = mnuShowCenter.Checked;
+            CaptureMemento(SerializationFilter.Core);
+            showCenter = !mnuShowCenter.Checked;
             InvalidateFromMenu(sender);
         }
-        private void ReinitializeMenu()
-        {
-            InitializeMenuMeasurement();
-            mnuShowCenter.Text = ScreenManagerLang.mnuShowCircleCenter;
-            mnuShowCenter.Checked = showCenter;
-        }
-        private void InitializeMenuMeasurement()
-        {
-            //mnuMeasurement.MergeIndex = 4;
-            mnuMeasurement.Image = Properties.Drawings.measure;
-            mnuMeasurement.Text = ScreenManagerLang.mnuShowMeasure;
-
-            // TODO: unhook event handlers ?
-            mnuMeasurement.DropDownItems.Clear();
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.None));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Name));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Center));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Radius));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Diameter));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Circumference));
-        }
-        private ToolStripMenuItem GetMeasurementMenu(TrackExtraData data)
-        {
-            ToolStripMenuItem mnu = new ToolStripMenuItem();
-            mnu.Text = GetExtraDataOptionText(data);
-            mnu.Checked = trackExtraData == data;
-
-            mnu.Click += (s, e) =>
-            {
-                trackExtraData = data;
-                ResetAttachPoint();
-                InvalidateFromMenu(s);
-
-                if(ShowMeasurableInfoChanged != null)
-                    ShowMeasurableInfoChanged(this, new EventArgs<TrackExtraData>(trackExtraData));
-            };
-
-            return mnu;
-        }
-        private string GetExtraDataOptionText(TrackExtraData data)
-        {
-            switch (data)
-            {
-                case TrackExtraData.None: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None;
-                case TrackExtraData.Name: return ScreenManagerLang.dlgConfigureDrawing_Name;
-                case TrackExtraData.Center: return ScreenManagerLang.ExtraData_Center;
-                case TrackExtraData.Radius: return ScreenManagerLang.ExtraData_Radius;
-                case TrackExtraData.Diameter: return ScreenManagerLang.ExtraData_Diameter;
-                case TrackExtraData.Circumference: return ScreenManagerLang.ExtraData_Circumference;
-            }
-
-            return "";
-        }
-        private string GetExtraDataText(long currentTimestamp)
-        {
-            if (trackExtraData == TrackExtraData.None)
-                return "";
-
-            string displayText = "###";
-            switch (trackExtraData)
-            {
-                case TrackExtraData.Center:
-                    displayText = CalibrationHelper.GetPointText(center, true, true, currentTimestamp);
-                    break;
-                case TrackExtraData.Radius:
-                    displayText = CalibrationHelper.GetLengthText(center, radiusRightInImage, true, true);
-                    break;
-                case TrackExtraData.Diameter:
-                    displayText = CalibrationHelper.GetLengthText(radiusLeftInImage, radiusRightInImage, true, true);
-                    break;
-                case TrackExtraData.Circumference:
-                    displayText = CalibrationHelper.GetCircumferenceText(center, radiusRightInImage, true, true);
-                    break;
-                case TrackExtraData.Name:
-                default:
-                    displayText = name;
-                    break;
-            }
-
-            return displayText;
-        }
+        
         #endregion
         
         #region IMeasurable implementation
-        public void InitializeMeasurableData(TrackExtraData trackExtraData)
+        public void InitializeMeasurableData(MeasureLabelType measureLabelType)
         {
             // This is called when the drawing is added and a previous drawing had its measurement option switched on.
             // We try to retain a similar measurement option.
@@ -511,17 +458,19 @@ namespace Kinovea.ScreenManager
                 return;
 
             measureInitialized = true;
-            
-            // If the option is supported, we just use it, otherwise we use the center.
-            if (trackExtraData == TrackExtraData.None || 
-                trackExtraData == TrackExtraData.Name || 
-                trackExtraData == TrackExtraData.Center || 
-                trackExtraData == TrackExtraData.Radius || 
-                trackExtraData == TrackExtraData.Diameter || 
-                trackExtraData == TrackExtraData.Circumference)
-                this.trackExtraData = trackExtraData;
-            else
-                this.trackExtraData = TrackExtraData.Center;
+
+            List<MeasureLabelType> supported = new List<MeasureLabelType>() 
+            {
+                MeasureLabelType.None,
+                MeasureLabelType.Name,
+                MeasureLabelType.Center,
+                MeasureLabelType.Radius,
+                MeasureLabelType.Diameter,
+                MeasureLabelType.Circumference
+            };
+
+            MeasureLabelType defaultMeasureLabelType = MeasureLabelType.Center;
+            this.measureLabelType = supported.Contains(measureLabelType) ? measureLabelType : defaultMeasureLabelType;
 
             ResetAttachPoint();
         }
@@ -549,13 +498,13 @@ namespace Kinovea.ScreenManager
         }
         private void ResetAttachPoint()
         {
-            if (trackExtraData == TrackExtraData.Name || 
-                trackExtraData == TrackExtraData.Center ||
-                trackExtraData == TrackExtraData.Diameter)
+            if (measureLabelType == MeasureLabelType.Name || 
+                measureLabelType == MeasureLabelType.Center ||
+                measureLabelType == MeasureLabelType.Diameter)
                 miniLabel.SetAttach(center, true);
-            else if (trackExtraData == TrackExtraData.Radius)
+            else if (measureLabelType == MeasureLabelType.Radius)
                 miniLabel.SetAttach(GeometryHelper.GetMiddlePoint(center, radiusRightInImage), true);
-            else if (trackExtraData == TrackExtraData.Circumference)
+            else if (measureLabelType == MeasureLabelType.Circumference)
                 miniLabel.SetAttach(radiusRightInImage, true);
         }
         #endregion
@@ -578,7 +527,7 @@ namespace Kinovea.ScreenManager
             using(GraphicsPath areaPath = new GraphicsPath())
             {
                 GetHitPath(areaPath);
-                hit = HitTester.HitTest(areaPath, point, 0, true, transformer);
+                hit = HitTester.HitPath(point, areaPath, 0, true, transformer);
             }
             return hit;
         }
@@ -590,7 +539,7 @@ namespace Kinovea.ScreenManager
             using(GraphicsPath areaPath = new GraphicsPath())
             {
                 GetHitPath(areaPath);
-                return HitTester.HitTest(areaPath, point, styleHelper.LineSize, false, transformer);
+                return HitTester.HitPath(point, areaPath, styleHelper.LineSize, false, transformer);
             }
         }
 
@@ -612,6 +561,108 @@ namespace Kinovea.ScreenManager
             {
                 areaPath.AddEllipse(center.Box(radius));
             }
+        }
+
+        /// <summary>
+        /// Capture the current state to the undo/redo stack.
+        /// </summary>
+        private void CaptureMemento(SerializationFilter filter)
+        {
+            Guid keyframeId = parentMetadata.FindAttachmentKeyframeId(this);
+            var memento = new HistoryMementoModifyDrawing(parentMetadata, keyframeId, this.Id, this.Name, filter);
+            parentMetadata.HistoryStack.PushNewCommand(memento);
+        }
+
+        private void ReloadMenusCulture()
+        {
+            // Measurement
+            mnuMeasurement.Text = ScreenManagerLang.mnuMeasure_Label_Menu;
+            foreach (var pair in mnuMeasureLabelTypes)
+            {
+                ToolStripMenuItem tsmi = pair.Value;
+                MeasureLabelType measureLabelType = pair.Key;
+                tsmi.Text = GetMeasureLabelOptionText(measureLabelType);
+                tsmi.Checked = this.measureLabelType == measureLabelType;
+            }
+
+            // Options
+            mnuOptions.Text = ScreenManagerLang.Generic_Options;
+            mnuShowCenter.Text = ScreenManagerLang.mnuShowCircleCenter;
+        }
+
+        private ToolStripMenuItem CreateMeasureLabelTypeMenu(MeasureLabelType measureLabelType)
+        {
+            ToolStripMenuItem mnu = new ToolStripMenuItem();
+            mnu.Click += mnuMeasureLabelType_Click;
+            mnuMeasureLabelTypes.Add(measureLabelType, mnu);
+            return mnu;
+        }
+        private void mnuMeasureLabelType_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
+            if (tsmi == null)
+                return;
+
+            MeasureLabelType measureLabelType = MeasureLabelType.None;
+            foreach (var pair in mnuMeasureLabelTypes)
+            {
+                if (pair.Value == tsmi)
+                {
+                    measureLabelType = pair.Key;
+                    break;
+                }
+            }
+
+            this.measureLabelType = measureLabelType;
+            ResetAttachPoint();
+            InvalidateFromMenu(tsmi);
+
+            if (ShowMeasurableInfoChanged != null)
+                ShowMeasurableInfoChanged(this, new EventArgs<MeasureLabelType>(measureLabelType));
+        }
+        private string GetMeasureLabelOptionText(MeasureLabelType data)
+        {
+            switch (data)
+            {
+                case MeasureLabelType.None: return ScreenManagerLang.mnuMeasure_Label_None;
+                case MeasureLabelType.Name: return ScreenManagerLang.mnuMeasure_Name;
+                case MeasureLabelType.Center: return ScreenManagerLang.ExtraData_Center;
+                case MeasureLabelType.Radius: return ScreenManagerLang.ExtraData_Radius;
+                case MeasureLabelType.Diameter: return ScreenManagerLang.ExtraData_Diameter;
+                case MeasureLabelType.Circumference: return ScreenManagerLang.ExtraData_Circumference;
+            }
+
+            return "";
+        }
+        private string GetMeasureLabelText(long timestamp)
+        {
+            string displayText = "";
+            switch (measureLabelType)
+            {
+                case MeasureLabelType.None:
+                    displayText = "";
+                    break;
+                case MeasureLabelType.Name:
+                    displayText = name;
+                    break;
+
+                case MeasureLabelType.Center:
+                    displayText = CalibrationHelper.GetPointText(center, true, true, timestamp);
+                    break;
+                case MeasureLabelType.Radius:
+                    displayText = CalibrationHelper.GetLengthText(center, radiusRightInImage, true, true);
+                    break;
+                case MeasureLabelType.Diameter:
+                    displayText = CalibrationHelper.GetLengthText(radiusLeftInImage, radiusRightInImage, true, true);
+                    break;
+                case MeasureLabelType.Circumference:
+                    displayText = CalibrationHelper.GetCircumferenceText(center, radiusRightInImage, true, true);
+                    break;
+                default:
+                    break;
+            }
+
+            return displayText;
         }
         #endregion
     }

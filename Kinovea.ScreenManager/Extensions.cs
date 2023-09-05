@@ -82,27 +82,28 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Tests whether this point is very close to the other one.
-        /// Used to test for equality on PointF.
+        /// Returns true if this point is less than one unit away from the passed one.
+        /// Used to test if two floating point pixel coordinates are conceptually in the same location.
         /// </summary>
         public static bool NearlyCoincideWith(this PointF p1, PointF p2)
         {
             return Math.Abs(p1.X - p2.X) < 0.5f && Math.Abs(p1.Y - p2.Y) < 0.5f;
         }
         
-        // Size
+        /// <summary>
+        /// Returns true if the size is smaller or equal to the container size on both dimensions.
+        /// </summary>
         public static bool FitsIn(this Size size, Size container)
         {
             return size.Width <= container.Width && size.Height <= container.Height;
         }
-        public static bool CloseTo(this Size size, Size other)
+
+        /// <summary>
+        /// Returns true if the size is almost the same up to a threshold.
+        /// </summary>
+        public static bool CloseTo(this Size size, Size other, int threshold)
         {
-            if(size == other)
-                return true;
-            
-            int widthDifference = size.Width - other.Width;
-            int heightDifference = size.Height - other.Height;
-            return widthDifference > -4 && widthDifference < 4 && heightDifference > -4 && heightDifference < 4;
+            return Math.Abs(size.Width - other.Width) <= threshold && Math.Abs(size.Height - other.Height) <= threshold;
         }
         public static Size Scale(this Size s, float scale)
         {

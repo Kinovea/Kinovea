@@ -207,6 +207,7 @@
     <EmbeddedResource Include="Languages\CameraLang.ko.resx" />
     <EmbeddedResource Include="Languages\CameraLang.lt.resx" />
     <EmbeddedResource Include="Languages\CameraLang.mk.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.ms.resx" />
     <EmbeddedResource Include="Languages\CameraLang.nl.resx" />
     <EmbeddedResource Include="Languages\CameraLang.no.resx" />
     <EmbeddedResource Include="Languages\CameraLang.pl.resx" />

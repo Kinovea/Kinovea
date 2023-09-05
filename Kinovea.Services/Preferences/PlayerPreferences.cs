@@ -26,6 +26,9 @@ using System.Xml;
 
 namespace Kinovea.Services
 {
+    /// <summary>
+    /// Preferences for the player, including annotations.
+    /// </summary>
     public class PlayerPreferences : IPreferenceSerializer
     {
         #region Properties
@@ -78,6 +81,16 @@ namespace Kinovea.Services
             get { return aspectRatio; }
             set { aspectRatio = value; }
         }
+        public CSVDecimalSeparator CSVDecimalSeparator
+        {
+            get { return csvDecimalSeparator; }
+            set { csvDecimalSeparator = value; }
+        }
+        public ExportSpace ExportSpace
+        {
+            get { return exportSpace; }
+            set { exportSpace = value; }
+        }
         public bool DeinterlaceByDefault
         {
             get { return deinterlaceByDefault; }
@@ -92,6 +105,11 @@ namespace Kinovea.Services
         {
             get { return workingZoneMemory; }
             set { workingZoneMemory = value; }
+        }
+        public bool ShowCacheInTimeline
+        {
+            get { return showCacheInTimeline; }
+            set { showCacheInTimeline = value; }
         }
         public bool SyncLockSpeed
         {
@@ -174,6 +192,24 @@ namespace Kinovea.Services
             get { return kinogramParameters.Clone(); }
             set { kinogramParameters = value; }
         }
+
+        public KeyframePresetsParameters KeyframePresets
+        {
+            get { return keyframePresetsParameters.Clone(); }
+            set { keyframePresetsParameters = value; }
+        }
+        public string PandocPath
+        {
+            get { return pandocPath; }
+            set { pandocPath = value; }
+        }
+
+        public bool SideBySideHorizontal
+        {
+            get { return sideBySideHorizontal; }
+            set { sideBySideHorizontal = value; }
+        }
+
         #endregion
 
         private TimecodeFormat timecodeFormat = TimecodeFormat.ClassicTime;
@@ -184,6 +220,8 @@ namespace Kinovea.Services
         private AngularAccelerationUnit angularAccelerationUnit = AngularAccelerationUnit.DegreesPerSecondSquared;
         private string customLengthUnit = "";
         private string customLengthAbbreviation = "";
+        private CSVDecimalSeparator csvDecimalSeparator = CSVDecimalSeparator.System;
+        private ExportSpace exportSpace = ExportSpace.WorldSpace;
         private ImageAspectRatio aspectRatio = ImageAspectRatio.Auto;
         private bool deinterlaceByDefault;
         private bool interactiveFrameTracker = true;
@@ -205,7 +243,11 @@ namespace Kinovea.Services
         private int preloadKeyframes = 20;
         private string playbackKVA;
         private KinogramParameters kinogramParameters = new KinogramParameters();
-        
+        private KeyframePresetsParameters keyframePresetsParameters = new KeyframePresetsParameters();
+        private bool showCacheInTimeline = false;
+        private string pandocPath = "";
+        private bool sideBySideHorizontal = true;
+
         public void AddRecentColor(Color _color)
         {
             PreferencesManager.UpdateRecents(_color, recentColors, maxRecentColors);
@@ -220,13 +262,16 @@ namespace Kinovea.Services
             writer.WriteElementString("AngularVelocityUnit", angularVelocityUnit.ToString());
             writer.WriteElementString("AngularAccelerationUnit", angularAccelerationUnit.ToString());
             writer.WriteElementString("CustomLengthUnit", customLengthUnit);
-            writer.WriteElementString("CustomLengthAbbreviation", customLengthAbbreviation); 
+            writer.WriteElementString("CustomLengthAbbreviation", customLengthAbbreviation);
+            writer.WriteElementString("CSVDecimalSeparator", csvDecimalSeparator.ToString());
+            writer.WriteElementString("ExportSpace", exportSpace.ToString());
             writer.WriteElementString("AspectRatio", aspectRatio.ToString());
-            writer.WriteElementString("DeinterlaceByDefault", deinterlaceByDefault ? "true" : "false");
-            writer.WriteElementString("InteractiveFrameTracker", interactiveFrameTracker ? "true" : "false");
+            writer.WriteElementString("DeinterlaceByDefault", XmlHelper.WriteBoolean(deinterlaceByDefault));
+            writer.WriteElementString("InteractiveFrameTracker", XmlHelper.WriteBoolean(interactiveFrameTracker));
             writer.WriteElementString("WorkingZoneMemory", workingZoneMemory.ToString());
-            writer.WriteElementString("SyncLockSpeed", syncLockSpeed ? "true" : "false");
-            writer.WriteElementString("SyncByMotion", syncByMotion ? "true" : "false");
+            writer.WriteElementString("ShowCacheInTimeline", XmlHelper.WriteBoolean(showCacheInTimeline));
+            writer.WriteElementString("SyncLockSpeed", XmlHelper.WriteBoolean(syncLockSpeed));
+            writer.WriteElementString("SyncByMotion", XmlHelper.WriteBoolean(syncByMotion));
             writer.WriteElementString("ImageFormat", imageFormat.ToString());
             writer.WriteElementString("VideoFormat", videoFormat.ToString());
             
@@ -259,13 +304,20 @@ namespace Kinovea.Services
             writer.WriteElementString("EnableFiltering", enableFiltering ? "true" : "false");
             writer.WriteElementString("EnableCustomToolsDebugMode", enableCustomToolsDebugMode ? "true" : "false");
             writer.WriteElementString("DefaultReplaySpeed", defaultReplaySpeed.ToString("0", CultureInfo.InvariantCulture));
-            writer.WriteElementString("DetectImageSequences", detectImageSequences ? "true" : "false");
+            writer.WriteElementString("DetectImageSequences", XmlHelper.WriteBoolean(detectImageSequences));
             writer.WriteElementString("PreloadKeyframes", preloadKeyframes.ToString());
             writer.WriteElementString("PlaybackKVA", playbackKVA);
 
             writer.WriteStartElement("Kinogram");
             kinogramParameters.WriteXml(writer);
             writer.WriteEndElement();
+
+            writer.WriteStartElement("KeyframePresets");
+            keyframePresetsParameters.WriteXml(writer);
+            writer.WriteEndElement();
+
+            writer.WriteElementString("PandocPath", pandocPath);
+            writer.WriteElementString("SideBySideHorizontal", XmlHelper.WriteBoolean(SideBySideHorizontal));
         }
         
         public void ReadXML(XmlReader reader)
@@ -300,6 +352,12 @@ namespace Kinovea.Services
                     case "CustomLengthAbbreviation":
                         customLengthAbbreviation = reader.ReadElementContentAsString();
                         break;
+                    case "CSVDecimalSeparator":
+                        csvDecimalSeparator = (CSVDecimalSeparator)Enum.Parse(typeof(CSVDecimalSeparator), reader.ReadElementContentAsString());
+                        break;
+                    case "ExportSpace":
+                        exportSpace = (ExportSpace)Enum.Parse(typeof(ExportSpace), reader.ReadElementContentAsString());
+                        break;
                     case "AspectRatio":
                         aspectRatio = (ImageAspectRatio) Enum.Parse(typeof(ImageAspectRatio), reader.ReadElementContentAsString());
                         break;
@@ -311,6 +369,9 @@ namespace Kinovea.Services
                         break;
                     case "WorkingZoneMemory":
                         workingZoneMemory = reader.ReadElementContentAsInt();
+                        break;
+                    case "ShowCacheInTimeline":
+                        showCacheInTimeline = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     case "SyncLockSpeed":
                         syncLockSpeed = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
@@ -360,6 +421,15 @@ namespace Kinovea.Services
                         break;
                     case "Kinogram":
                         kinogramParameters.ReadXml(reader);
+                        break;
+                    case "KeyframePresets":
+                        keyframePresetsParameters.ReadXml(reader);
+                        break;
+                    case "PandocPath":
+                        pandocPath = reader.ReadElementContentAsString();
+                        break;
+                    case "SideBySideHorizontal":
+                        SideBySideHorizontal = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     default:
                         reader.ReadOuterXml();

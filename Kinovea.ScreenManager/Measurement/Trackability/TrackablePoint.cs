@@ -99,12 +99,13 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Value adjusted manually by the user.
         /// </summary>
-        public void SetUserValue(PointF value)
+        public bool SetUserValue(PointF value)
         {
             // The context should have been set at Track() time when we landed on the video frame.
             if (context == null)
-                return;
+                return false;
 
+            bool inserted = false;
             currentValue = value;
             timeDifference = 0;
 
@@ -120,9 +121,16 @@ namespace Kinovea.ScreenManager
             // 4. We are not tracking and we are not on a tracked point: update the timeline.
             // This is the tricky case, but if we don't update the timeline the move is lost.
             if (isTracking || trackTimeline.HasData())
+            {
                 trackTimeline.Insert(context.Time, CreateTrackFrame(value, PositionningSource.Manual));
+                inserted = true;
+            }
             else
+            {
                 nonTrackingValue = value;
+            }
+
+            return inserted;
         }
         
         /// <summary>
@@ -231,19 +239,20 @@ namespace Kinovea.ScreenManager
 
         public void ForceInsertClosestLocation()
         {
-            // This function is used when a drawing containing multiple trackable points has some of the points failing the template matching and others succeeding.
+            // This function is used when a drawing containing multiple trackable points has some of the points failing 
+            // the template matching and others succeeding, or when a point that wasn't in the timeline range is moved manually.
             // We must always keep the same number of entries in the timelines of all trackable points of a given drawing.
             // In this function we force the points that failed tracking to insert a dummy value in their timeline.
-            if (!isTracking)
-                return;
-
             TrackFrame closestFrame = trackTimeline.ClosestFrom(context.Time);
             if (closestFrame == null)
                 return;
 
             currentValue = closestFrame.Location;
             timeDifference = Math.Abs(context.Time - closestFrame.Time);
-            trackTimeline.Insert(context.Time, CreateTrackFrame(currentValue, PositionningSource.ForcedClosest));
+
+            // If time difference is zero, we actually already had an entry at that time, so nothing more to do here.
+            if (timeDifference > 0)
+                trackTimeline.Insert(context.Time, CreateTrackFrame(currentValue, PositionningSource.ForcedClosest));
         }
         
         public void Reset()

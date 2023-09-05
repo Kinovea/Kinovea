@@ -8,19 +8,27 @@
     <subentry name="HumanModel2" />
     <subentry name="Bikefit" />
     <subentry name="Archery" />
-    <subentry name="HorizontalDistance" />
     <subentry name="Profile" />
     <subentry name="Genu" />
     <subentry name="Posture" />
     <subentry name="CSVL" />
+    <subentry name="Canis" />
+    <subentry name="Equus" />
   </entry>
   <entry name="Line">
+    <subentry name="Curve" />
+    <subentry name="Polyline" />
     <subentry name="Rectangle" />
     <subentry name="Circle" />
+    <subentry name="HorizontalDistance" />
   </entry>
   <entry name="Arrow">
     <subentry name="ArrowDash" />
     <subentry name="ArrowSquiggly" />
+    <subentry name="ArrowCurve" />
+    <subentry name="ArrowPolyline" />
+    <subentry name="ArrowPolylineDash" />
+    <subentry name="ArrowPolylineSquiggly" />
   </entry>
   <entry name="CrossMark" />
   <entry name="Angle">
@@ -30,5 +38,6 @@
   </entry>
   <entry name="Plane">
     <subentry name="Grid" />
+    <subentry name="DistanceGrid" />
   </entry>
 </KinoveaToolbar>

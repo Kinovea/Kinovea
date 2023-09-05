@@ -1,12 +1,12 @@
 ﻿#region License
 /*
 Copyright © Joan Charmant 2014.
-jcharmant@gmail.com 
- 
+jcharmant@gmail.com
+
 This file is part of Kinovea.
 
 Kinovea is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License version 2 
+it under the terms of the GNU General Public License version 2
 as published by the Free Software Foundation.
 
 Kinovea is distributed in the hope that it will be useful,
@@ -45,7 +45,7 @@ namespace Kinovea.ScreenManager
         #region Events
         public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved;
         #endregion
-        
+
         #region Properties
         public override string ToolDisplayName
         {
@@ -79,7 +79,7 @@ namespace Kinovea.ScreenManager
             get
             {
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
-                
+
                 if (initializing)
                 {
                     mnuAddThenFinish.Text = ScreenManagerLang.mnuPolyline_FinishHere;
@@ -89,8 +89,8 @@ namespace Kinovea.ScreenManager
                     contextMenu.Add(mnuFinish);
                     contextMenu.Add(mnuCloseMenu);
                 }
-                
-                return contextMenu; 
+
+                return contextMenu;
             }
         }
         public bool Initializing
@@ -125,10 +125,10 @@ namespace Kinovea.ScreenManager
 
             if (preset == null)
                 preset = ToolManager.GetStylePreset("Polyline");
-            
+
             style = preset.Clone();
             BindStyle();
-            
+
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
 
             mnuFinish.Click += mnuFinish_Click;
@@ -162,7 +162,7 @@ namespace Kinovea.ScreenManager
             {
                 PointF danglingStart;
                 PointF danglingEnd;
-                
+
                 if (initializing)
                 {
                     danglingStart = pointList[pointList.Length - 2];
@@ -196,14 +196,14 @@ namespace Kinovea.ScreenManager
                     foreach (PointF p in pointList)
                         canvas.FillEllipse(penEdges.Brush, p.Box(3));
                 }
-                
+
             }
         }
         private void DrawPath(Graphics canvas, Pen penEdges, Point[] path)
         {
             penEdges.EndCap = LineCap.NoAnchor;
             penEdges.DashStyle = styleHelper.LineShape == LineShape.Dash ? DashStyle.Dash : DashStyle.Solid;
-                        
+
             switch (styleHelper.LineShape)
             {
                 case LineShape.Squiggle:
@@ -228,19 +228,19 @@ namespace Kinovea.ScreenManager
 
             foreach (KeyValuePair<string, PointF> p in points)
             {
-                if (HitTester.HitTest(p.Value, point, transformer))
+                if (HitTester.HitPoint(point, p.Value, transformer))
                     result = int.Parse(p.Key) + 1;
             }
 
             if (result == -1 && IsPointInObject(point, distorter, transformer))
                 result = 0;
-            
+
             return result;
         }
         public override void MoveHandle(PointF point, int handle, Keys modifiers)
         {
             //int constraintAngleSubdivisions = 8; // (Constraint by 45° steps).
-            
+
             string index = (handle - 1).ToString();
             if (points[index] != null)
             {
@@ -253,7 +253,7 @@ namespace Kinovea.ScreenManager
             List<string> keys = points.Keys.ToList();
             foreach (string key in keys)
                 points[key] = points[key].Translate(dx, dy);
-            
+
             SignalAllTrackablePointsMoved();
         }
         public override PointF GetCopyPoint()
@@ -363,7 +363,7 @@ namespace Kinovea.ScreenManager
                 w.WriteEndElement();
             }
         }
-        
+
         #endregion
 
         #region IInitializable implementation
@@ -375,7 +375,7 @@ namespace Kinovea.ScreenManager
         {
             // Contrary to most other drawings, polyline is a multi-step initializable.
             // We add a point and we do not get out of initialization mode.
-            
+
             // Only add the point if it's not the same as the last one.
             // This is mostly to fix a "click" instead of "drag" of first point.
             if (points.Count < 2)
@@ -471,7 +471,7 @@ namespace Kinovea.ScreenManager
             style.Bind(styleHelper, "LineSize", "line size");
             style.Bind(styleHelper, "LineShape", "line shape");
             style.Bind(styleHelper, "LineEnding", "arrows");
-            style.Bind(styleHelper, "Curved", "curved");
+            style.Bind(styleHelper, "Toggles/Curved", "curved");
         }
         private bool IsPointInObject(PointF point, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
@@ -493,14 +493,14 @@ namespace Kinovea.ScreenManager
                         if (pp.Count == 0 || p != pp[pp.Count-1])
                             pp.Add(p);
                     }
-                    
+
                     if (styleHelper.Curved)
                         path.AddCurve(pp.ToArray());
                     else
                         path.AddLines(pp.ToArray());
                 }
 
-                return HitTester.HitTest(path, point, styleHelper.LineSize, false, transformer);
+                return HitTester.HitPath(point, path, styleHelper.LineSize, false, transformer);
             }
         }
 

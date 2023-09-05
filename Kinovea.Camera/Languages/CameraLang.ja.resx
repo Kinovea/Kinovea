@@ -128,4 +128,13 @@
   <data name="FormHandshakeResult_Title" xml:space="preserve">
     <value>接続テスト</value>
   </data>
+  <data name="FormHandshakeResult_Failure_Message" xml:space="preserve">
+    <value>接続テスト中にエラーが発生しました。</value>
+  </data>
+  <data name="FormConnectionWizard_Format" xml:space="preserve">
+    <value>フォーマット</value>
+  </data>
+  <data name="FormConnectionWizard_URL" xml:space="preserve">
+    <value>最終 URL</value>
+  </data>
 </root>

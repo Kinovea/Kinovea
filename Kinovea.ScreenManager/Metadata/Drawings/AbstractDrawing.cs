@@ -57,6 +57,15 @@ namespace Kinovea.ScreenManager
         {
             get { return (Caps & DrawingCapabilities.CopyPaste) == DrawingCapabilities.CopyPaste; }
         }
+
+        /// <summary>
+        /// Metadata object this drawing belongs to.
+        /// </summary>
+        public virtual Metadata ParentMetadata
+        {
+            get { return parentMetadata; }
+            set { parentMetadata = value; }
+        }
         #endregion
 
         #region Abstract properties
@@ -106,6 +115,7 @@ namespace Kinovea.ScreenManager
         #region Concrete members
         protected Guid identifier = Guid.NewGuid();
         protected string name;
+        protected Metadata parentMetadata;
         #endregion
 
         #region Abstract methods
@@ -157,6 +167,10 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Concrete methods
+
+        /// <summary>
+        /// Invalidate the main viewport after a drawing changed its own state in a custom menu handler.
+        /// </summary>
         public static void InvalidateFromMenu(object sender)
         {
             // The screen hook was injected inside menus during AddDrawingCustomMenus in PlayerScreenUserInterface and for capture ViewportController.
@@ -235,6 +249,14 @@ namespace Kinovea.ScreenManager
         public bool ShouldSerializeKVA(SerializationFilter filter)
         {
             return (filter & SerializationFilter.KVA) == SerializationFilter.KVA;
+        }
+        public void UpdateReferenceTime(long timestamp)
+        {
+            InfosFading infoFading = this.InfosFading;
+            if (infoFading == null)
+                return;
+
+            infoFading.ReferenceTimestamp = timestamp;
         }
         #endregion
     }

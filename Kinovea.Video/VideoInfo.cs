@@ -29,17 +29,40 @@ namespace Kinovea.Video
     
     public struct VideoInfo
     {
-        // Structural info
+        /// <summary>
+        /// Full path of the video file.
+        /// </summary>
         public string FilePath;
+
+        /// <summary>
+        /// Whether a separate KVA metadata file has been loaded for this video.
+        /// </summary>
         public bool HasKva;
 
-        // Image size - Not included: decoding size.
-        public Size OriginalSize;           // The image size in the file.
-        public Size AspectRatioSize;        // The unscaled size after aspect ratio fix, either from pixel aspect ratio or forced by user. Padded to 4 bytes along rotated width.
-        public Size ReferenceSize;          // The unscaled size after aspect ratio fix and rotation.
+        /// <summary>
+        /// Image size in the file.
+        /// </summary>
+        public Size OriginalSize;
+
+        /// <summary>
+        /// Image size after aspect ratio fix (either from pixel aspect ratio or by user configuration).
+        /// Padded to 4 bytes along rotated width.
+        /// </summary>
+        public Size AspectRatioSize;
+
+        /// <summary>
+        /// Image size after aspect ratio fix and rotation.
+        /// This is the unscaled image size, the images might be decoded at a smaller size still.
+        /// </summary>
+        public Size ReferenceSize;
         public double PixelAspectRatio;
         public Fraction SampleAspectRatio;
         public bool IsCodecMpeg2;
+
+        /// <summary>
+        /// Image rotation to use for decoding images.
+        /// Either from video internal metadata or user configuration.
+        /// </summary>
         public ImageRotation ImageRotation;
 
         // Timing info - some of this might be overriden by the user.

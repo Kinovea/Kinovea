@@ -29,7 +29,7 @@ namespace Kinovea.Tests
                 ClipAndDraw(g, random.NextColor(255), window, a, b);
             }*/
 
-            
+
             // Hand crafted lines, to check special cases.
 
             // Normal lines.
@@ -39,7 +39,7 @@ namespace Kinovea.Tests
 
             // Line not visible.
             ClipAndDraw(g, random.NextColor(255), window, new PointF(250, 250), new PointF(500, 1750));
-            
+
             // Lines parallel to edges.
             ClipAndDraw(g, random.NextColor(255), window, new PointF(250, 250), new PointF(250, 1750));
             ClipAndDraw(g, random.NextColor(255), window, new PointF(600, 250), new PointF(600, 1750));
@@ -52,7 +52,7 @@ namespace Kinovea.Tests
             ClipAndDraw(g, random.NextColor(255), window, new PointF(1750, 250), new PointF(750, 750));
 
 
-            image.Save(@"C:\Users\Joan\Videos\Kinovea\Video Testing\Projective\line clipping\test.png");
+            image.Save(@"test.png");
 
         }
 

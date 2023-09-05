@@ -436,4 +436,655 @@
   </data>
   <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto kontrast….</value>
   </data>
+  <data name="Generic_Copy" xml:space="preserve">
+    <value>Kopírovat</value>
+  </data>
+  <data name="Generic_Cut" xml:space="preserve">
+    <value>Řez</value>
+  </data>
+  <data name="mnuRotation" xml:space="preserve">
+    <value>Otáčení obrázků</value>
+  </data>
+  <data name="Generic_Calibration" xml:space="preserve">
+    <value>Kalibrace</value>
+  </data>
+  <data name="mnuHideBefore" xml:space="preserve">
+    <value>Skrýt před tímto bodem</value>
+  </data>
+  <data name="Generic_Import" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="Generic_Paste" xml:space="preserve">
+    <value>Vložit</value>
+  </data>
+  <data name="mnuRotation0" xml:space="preserve">
+    <value>Žádná rotace</value>
+  </data>
+  <data name="FileProperty_Size" xml:space="preserve">
+    <value>Velikost</value>
+  </data>
+  <data name="mnuHideAfter" xml:space="preserve">
+    <value>Skrýt po tomto bodě</value>
+  </data>
+  <data name="mnuCounterClockwise" xml:space="preserve">
+    <value>Proti směru hodinových ručiček</value>
+  </data>
+  <data name="ToolTip_DrawingToolSpotlight" xml:space="preserve">
+    <value>Spotlight</value>
+  </data>
+  <data name="ToolTip_StartCamera" xml:space="preserve">
+    <value>Spustit kameru</value>
+  </data>
+  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
+    <value>Strikeout</value>
+  </data>
+  <data name="ToolTip_ArmTrigger" xml:space="preserve">
+    <value>Zajistit spoušť zachycení. Aktuální stav: odjištěno.</value>
+  </data>
+  <data name="FormCrashRecovery_File" xml:space="preserve">
+    <value>Soubor</value>
+  </data>
+  <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
+    <value>Vlastnosti fotoaparátu</value>
+  </data>
+  <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
+    <value>Změnit kresbu</value>
+  </data>
+  <data name="DataAnalysis" xml:space="preserve">
+    <value>Analýza dat</value>
+  </data>
+  <data name="DataAnalysis_SaveToFile" xml:space="preserve">
+    <value>Uložit do souboru</value>
+  </data>
+  <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
+    <value>Bodový diagram</value>
+  </data>
+  <data name="DataAnalysis_LinearKinematics" xml:space="preserve">
+    <value>Lineární kinematika</value>
+  </data>
+  <data name="DataAnalysis_AngularKinematics" xml:space="preserve">
+    <value>Úhlová kinematika</value>
+  </data>
+  <data name="DataAnalysis_AngleAngleDiagrams" xml:space="preserve">
+    <value>Úhlový diagram</value>
+  </data>
+  <data name="DataAnalysis_PagePlot" xml:space="preserve">
+    <value>Graf</value>
+  </data>
+  <data name="DataAnalysis_Labels" xml:space="preserve">
+    <value>Popisky</value>
+  </data>
+  <data name="DataAnalysis_Title" xml:space="preserve">
+    <value>Název:</value>
+  </data>
+  <data name="DataAnalysis_XaxisLabel" xml:space="preserve">
+    <value>Osa X:</value>
+  </data>
+  <data name="DataAnalysis_XaxisDefaultPoints" xml:space="preserve">
+    <value>Osa X</value>
+  </data>
+  <data name="DataAnalysis_YaxisLabel" xml:space="preserve">
+    <value>Osa Y:</value>
+  </data>
+  <data name="DataAnalysis_YaxisDefaultPoints" xml:space="preserve">
+    <value>Osa Y</value>
+  </data>
+  <data name="DataAnalysis_ExportData" xml:space="preserve">
+    <value>Export dat</value>
+  </data>
+  <data name="DataAnalysis_DataSource" xml:space="preserve">
+    <value>Datový zdroj</value>
+  </data>
+  <data name="DataAnalysis_TimeAxisMilliseconds" xml:space="preserve">
+    <value>Čas (ms)</value>
+  </data>
+  <data name="DataAnalysis_CalibrationPlane" xml:space="preserve">
+    <value>Kalibrační rovina</value>
+  </data>
+  <data name="DataAnalysis_ExportGraph" xml:space="preserve">
+    <value>Exportovat graf</value>
+  </data>
+  <data name="DataAnalysis_Pixels" xml:space="preserve">
+    <value>pixely</value>
+  </data>
+  <data name="DataAnalysis_DataLabel" xml:space="preserve">
+    <value>Data :</value>
+  </data>
+  <data name="DataAnalysis_TimeModel" xml:space="preserve">
+    <value>Čas :</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Absolute" xml:space="preserve">
+    <value>Absolutní</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Relative" xml:space="preserve">
+    <value>Relativní</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Normalized" xml:space="preserve">
+    <value>Normalizované</value>
+  </data>
+  <data name="DataAnalysis_TotalAngularDisplacement" xml:space="preserve">
+    <value>Celkový posun</value>
+  </data>
+  <data name="DataAnalysis_TangentialVelocity" xml:space="preserve">
+    <value>Tečná rychlost</value>
+  </data>
+  <data name="DataAnalysis_TangentialAcceleration" xml:space="preserve">
+    <value>Tečné zrychlení</value>
+  </data>
+  <data name="DataAnalysis_ResultantLinearAcceleration" xml:space="preserve">
+    <value>Výsledné zrychlení</value>
+  </data>
+  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+    <value>Název</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
+    <value>Maximální krytí (%):</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblOpaque" xml:space="preserve">
+    <value>Doba trvání neprůhlednosti (snímky):</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblFading" xml:space="preserve">
+    <value>Doba trvání blednutí (snímky):</value>
+  </data>
+  <data name="dlgTimebase_Title" xml:space="preserve">
+    <value>Konfigurace časování videa</value>
+  </data>
+  <data name="dlgTimebase_GroupCapture" xml:space="preserve">
+    <value>Vysokorychlostní kamera</value>
+  </data>
+  <data name="dlgTimebase_lblCapture" xml:space="preserve">
+    <value>Zachycení snímkové frekvence:</value>
+  </data>
+  <data name="dlgTimebase_lblFileFPS" xml:space="preserve">
+    <value>Rychlost čtení snímků v souboru: {0:0.##} fps</value>
+  </data>
+  <data name="dlgTimebase_lblUserFPS" xml:space="preserve">
+    <value>Snímková frekvence videa:</value>
+  </data>
+  <data name="dlgTimebase_InfoUser" xml:space="preserve">
+    <value>Tato možnost definuje referenční snímkovou frekvenci, kterou Kinovea používá k přehrávání videa. Použijte jej, když video obsahuje nesprávnou snímkovou frekvenci nebo jej Kinovea nemůže přečíst. </value>
+  </data>
+  <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
+    <value>Nástroj pro konfiguraci trajektorie</value>
+  </data>
+  <data name="dlgConfigureTrajectory_VisibilityComplete" xml:space="preserve">
+    <value>Kompletní</value>
+  </data>
+  <data name="dlgConfigureTrajectory_VisibilityOneSecond" xml:space="preserve">
+    <value>Jedna sekunda</value>
+  </data>
+  <data name="dlgConfigureTrajectory_VisibilityLabelOnly" xml:space="preserve">
+    <value>Pouze štítek</value>
+  </data>
+  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
+    <value>Značka:</value>
+  </data>
+  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
+    <value>Kruh</value>
+  </data>
+  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
+    <value>Cíl</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
+    <value>Pozice</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalPosition" xml:space="preserve">
+    <value>Vertikální poloha</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalPosition" xml:space="preserve">
+    <value>Horizontální poloha</value>
+  </data>
+  <data name="DrawingName_DistortionGrid" xml:space="preserve">
+    <value>Zkreslovací mřížka</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve">
+    <value>Celková vzdálenost</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_DistanceToOrigin" xml:space="preserve">
+    <value>Vzdálenost od místa původu</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement" xml:space="preserve">
+    <value>Relativní horizontální posun</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalVerticalDisplacement" xml:space="preserve">
+    <value>Relativní vertikální posun</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalVelocity" xml:space="preserve">
+    <value>Vertikální rychlost</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalVelocity" xml:space="preserve">
+    <value>Horizontální rychlost</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Acceleration" xml:space="preserve">
+    <value>Zrychlení</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalAcceleration" xml:space="preserve">
+    <value>Vertikální zrychlení</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
+    <value>Horizontální zrychlení</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
+    <value>Úhlové posunutí</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
+    <value>Úhlová rychlost</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularAcceleration" xml:space="preserve">
+    <value>Úhlové zrychlení</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_CentripetalAcceleration" xml:space="preserve">
+    <value>Odstředivé zrychlení</value>
+  </data>
+  <data name="ExtraData_Length" xml:space="preserve">
+    <value>Délka</value>
+  </data>
+  <data name="ExtraData_Center" xml:space="preserve">
+    <value>Toto je střed kruhu. Je to podstatné jméno, nikoli sloveso nebo příkaz.</value>
+  </data>
+  <data name="ExtraData_Radius" xml:space="preserve">
+    <value>Poloměr</value>
+  </data>
+  <data name="ExtraData_Diameter" xml:space="preserve">
+    <value>Průměr</value>
+  </data>
+  <data name="ExtraData_Circumference" xml:space="preserve">
+    <value>Obvod</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
+    <value>Sledování</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve">
+    <value>Okno objektu:</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
+    <value>Okno pro vyhledávání:</value>
+  </data>
+  <data name="dlgCalibrateLine_CoordinateSystemAlignment" xml:space="preserve">
+    <value>Zarovnání souřadnicového systému:</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisHorizontal" xml:space="preserve">
+    <value>Čára vymezuje vodorovnou osu</value>
+  </data>
+  <data name="dlgCalibrateLine_AxesImage" xml:space="preserve">
+    <value>Zarovnáno s osami obrazu</value>
+  </data>
+  <data name="dlgCalibratePlane_Title" xml:space="preserve">
+    <value>Kalibrace roviny</value>
+  </data>
+  <data name="dlgRafaleExport_ExportTimeDecimationSeconds" xml:space="preserve">
+    <value>Exportovat jeden obrázek každou {0:0.00}s.</value>
+  </data>
+  <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve">
+    <value>Exportovat jeden obrázek každých {0:0}ms.</value>
+  </data>
+  <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve">
+    <value>Celkem: {0:0} obrázků.</value>
+  </data>
+  <data name="dlgRafaleExport_ExportAll" xml:space="preserve">
+    <value>Exportovat všechny obrázky.</value>
+  </data>
+  <data name="dlgRafaleExport_ExportFrameDecimation" xml:space="preserve">
+    <value>Exportovat jeden obrázek na {0} obrázků.</value>
+  </data>
+  <data name="dlgCameraCalibration_lblFocalLength" xml:space="preserve">
+    <value>Ohnisková vzdálenost (mm):</value>
+  </data>
+  <data name="DrawingName_Arrow" xml:space="preserve">
+    <value>Šipka</value>
+  </data>
+  <data name="DrawingName_ArrowDash" xml:space="preserve">
+    <value>Šipka - Dash</value>
+  </data>
+  <data name="DrawingName_ArrowSquiggly" xml:space="preserve">
+    <value>Squiggly označuje zvlněný nebo klikatý aspekt šípu.</value>
+  </data>
+  <data name="DrawingName_ArrowCurve" xml:space="preserve">
+    <value>Šipka - křivka</value>
+  </data>
+  <data name="DrawingName_ArrowPolyline" xml:space="preserve">
+    <value>Šipka - Polyline</value>
+  </data>
+  <data name="DrawingName_ArrowPolylineDash" xml:space="preserve">
+    <value>Šipka - Polylineární pomlčka</value>
+  </data>
+  <data name="DrawingName_ArrowPolylineSquiggly" xml:space="preserve">
+    <value>Squiggly označuje zvlněný nebo klikatý aspekt šípu.</value>
+  </data>
+  <data name="dlgCameraCalibration_Title" xml:space="preserve">
+    <value>Kalibrace kamery</value>
+  </data>
+  <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve">
+    <value>Koeficienty zkreslení</value>
+  </data>
+  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
+    <value>Kalibrace fotoaparátu</value>
+  </data>
+  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
+    <value>Zkreslení</value>
+  </data>
+  <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
+    <value>Načtení kalibračního profilu kamery</value>
+  </data>
+  <data name="dlgCameraCalibration_SaveDialogTitle" xml:space="preserve">
+    <value>Uložení kalibračního profilu fotoaparátu</value>
+  </data>
+  <data name="dlgCameraCalibration_lblSensorWidth" xml:space="preserve">
+    <value>Šířka snímače (mm):</value>
+  </data>
+  <data name="DrawingName_CSVL" xml:space="preserve">
+    <value>Centrální sakrální vertikální linie</value>
+  </data>
+  <data name="DrawingName_Polyline" xml:space="preserve">
+    <value>Polyline</value>
+  </data>
+  <data name="DrawingName_Goniometer" xml:space="preserve">
+    <value>Goniometr</value>
+  </data>
+  <data name="DrawingName_Posture" xml:space="preserve">
+    <value>Držení těla</value>
+  </data>
+  <data name="DrawingName_Bikefit" xml:space="preserve">
+    <value>Vybavení jízdního kola</value>
+  </data>
+  <data name="DrawingName_Profile" xml:space="preserve">
+    <value>Profil</value>
+  </data>
+  <data name="DrawingName_Genu" xml:space="preserve">
+    <value>Genu</value>
+  </data>
+  <data name="DrawingName_Archery" xml:space="preserve">
+    <value>Lukostřelba</value>
+  </data>
+  <data name="DrawingName_AngleToVertical" xml:space="preserve">
+    <value>Úhel vůči svislici</value>
+  </data>
+  <data name="DrawingName_AngleToHorizontal" xml:space="preserve">
+    <value>Úhel vůči vodorovné rovině</value>
+  </data>
+  <data name="DrawingName_DistanceHorizontal" xml:space="preserve">
+    <value>Vzdálenost (horizontální)</value>
+  </data>
+  <data name="DrawingName_HumanModel" xml:space="preserve">
+    <value>Lidský model</value>
+  </data>
+  <data name="DrawingName_HumanModel2" xml:space="preserve">
+    <value>Lidský model (2)</value>
+  </data>
+  <data name="DrawingName_TestGrid" xml:space="preserve">
+    <value>Zkušební mřížka fotoaparátu</value>
+  </data>
+  <data name="DrawingName_Rectangle" xml:space="preserve">
+    <value>Obdélník</value>
+  </data>
+  <data name="DrawingName_Trajectory" xml:space="preserve">
+    <value>Trajektorie</value>
+  </data>
+  <data name="DrawingName_Curve" xml:space="preserve">
+    <value>Křivka</value>
+  </data>
+  <data name="DrawingName_Clock" xml:space="preserve">
+    <value>Hodiny</value>
+  </data>
+  <data name="Error_Capture_DirectoryNotCreated_Title" xml:space="preserve">
+    <value>Adresář nebyl vytvořen</value>
+  </data>
+  <data name="Error_Capture_DirectoryNotCreated_Text" xml:space="preserve">
+    <value>Adresář pro zachycení se nepodařilo vytvořit.\nZkontrolujte, zda ukazuje na platné umístění úložiště.</value>
+  </data>
+  <data name="FormCameraAlias_Title" xml:space="preserve">
+    <value>Přejmenování kameru</value>
+  </data>
+  <data name="FormCameraAlias_Alias" xml:space="preserve">
+    <value>Alias:</value>
+  </data>
+  <data name="FormCameraAlias_Icon" xml:space="preserve">
+    <value>Ikona:</value>
+  </data>
+  <data name="FormIconPicker_Title" xml:space="preserve">
+    <value>Ikony:</value>
+  </data>
+  <data name="Generic_Curved" xml:space="preserve">
+    <value>Křivka:</value>
+  </data>
+  <data name="Generic_Perspective" xml:space="preserve">
+    <value>Perspektiva:</value>
+  </data>
+  <data name="Generic_Clock" xml:space="preserve">
+    <value>Hodiny:</value>
+  </data>
+  <data name="Generic_GridDivisionsPicker" xml:space="preserve">
+    <value>Toto je popisek pro selektor definující velikost mřížky.</value>
+  </data>
+  <data name="Generic_Visibility" xml:space="preserve">
+    <value>Viditelnost</value>
+  </data>
+  <data name="Generic_SaveKVA" xml:space="preserve">
+    <value>Uložení poznámek</value>
+  </data>
+  <data name="Generic_SaveKVAAs" xml:space="preserve">
+    <value>Uložit anotace jako…</value>
+  </data>
+  <data name="Generic_ExportVideo" xml:space="preserve">
+    <value>Export videa…</value>
+  </data>
+  <data name="Generic_File" xml:space="preserve">
+    <value>Soubor</value>
+  </data>
+  <data name="Generic_Restore" xml:space="preserve">
+    <value>Obnovení výchozího nastavení</value>
+  </data>
+  <data name="Generic_Quit" xml:space="preserve">
+    <value>Ukončit</value>
+  </data>
+  <data name="FileProperty_Framerate" xml:space="preserve">
+    <value>Snímková rychlost</value>
+  </data>
+  <data name="FileProperty_Duration" xml:space="preserve">
+    <value>Doba trvání</value>
+  </data>
+  <data name="FileProperty_CreationTime" xml:space="preserve">
+    <value>Doba vytvoření</value>
+  </data>
+  <data name="FileProperty_HasKva" xml:space="preserve">
+    <value>Soubor Kva</value>
+  </data>
+  <data name="FileFilter_AllSupported" xml:space="preserve">
+    <value>Všechny podporované formáty</value>
+  </data>
+  <data name="lblDelay_Text" xml:space="preserve">
+    <value>Zpoždění (s):</value>
+  </data>
+  <data name="LengthUnit_Millimeters" xml:space="preserve">
+    <value>Milimetry</value>
+  </data>
+  <data name="LengthUnit_Percentage" xml:space="preserve">
+    <value>Procenta</value>
+  </data>
+  <data name="mnuShowBefore" xml:space="preserve">
+    <value>Zobrazit před tímto bodem</value>
+  </data>
+  <data name="mnuShowAfter" xml:space="preserve">
+    <value>Zobrazit po tomto bodě</value>
+  </data>
+  <data name="mnuShowLabel" xml:space="preserve">
+    <value>Zobrazit popisek</value>
+  </data>
+  <data name="mnuCopyToClipboard" xml:space="preserve">
+    <value>Kopírování do schránky</value>
+  </data>
+  <data name="mnuCopyImageToClipboard" xml:space="preserve">
+    <value>Kopírovat obrázek do schránky</value>
+  </data>
+  <data name="mnuDrawingTrackingStart" xml:space="preserve">
+    <value>Zahájení sledování</value>
+  </data>
+  <data name="mnuDrawingTrackingStop" xml:space="preserve">
+    <value>Zastavení sledování</value>
+  </data>
+  <data name="mnuRotation90" xml:space="preserve">
+    <value>90° ve směru hodinových ručiček</value>
+  </data>
+  <data name="mnuRotation180" xml:space="preserve">
+    <value>180°</value>
+  </data>
+  <data name="mnuRotation270" xml:space="preserve">
+    <value>90° proti směru hodinových ručiček</value>
+  </data>
+  <data name="mnuSignedAngle" xml:space="preserve">
+    <value>Značený úhel</value>
+  </data>
+  <data name="mnuSupplementaryAngle" xml:space="preserve">
+    <value>Doplňkový úhel</value>
+  </data>
+  <data name="mnuFlipHorizontally" xml:space="preserve">
+    <value>Vodorovné překlopení</value>
+  </data>
+  <data name="mnuFlipVertically" xml:space="preserve">
+    <value>Překlopení na výšku</value>
+  </data>
+  <data name="mnuLoadAnalysis" xml:space="preserve">
+    <value>Načtení anotací…</value>
+  </data>
+  <data name="mnuMarkTimeAsOrigin" xml:space="preserve">
+    <value>Označit aktuální čas jako počáteční čas</value>
+  </data>
+  <data name="mnuMarkTimeAsOriginClock" xml:space="preserve">
+    <value>Označit aktuální čas jako počáteční čas pro tyto hodiny</value>
+  </data>
+  <data name="mnuOpenReplayWatcher" xml:space="preserve">
+    <value>Otevřít pozorovatele složky přehrávání…</value>
+  </data>
+  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
+    <value>Otevřít jako pozorovatel složky přehrávání…</value>
+  </data>
+  <data name="mnuCalibrate" xml:space="preserve">
+    <value>Kalibrace...</value>
+  </data>
+  <data name="mnuTimebase" xml:space="preserve">
+    <value>Konfigurace časování videa...</value>
+  </data>
+  <data name="mnuThumbnailDelete" xml:space="preserve">
+    <value>Odstranit</value>
+  </data>
+  <data name="mnuThumbnailForget" xml:space="preserve">
+    <value>Zapomeňte na vlastní nastavení</value>
+  </data>
+  <data name="mnuThumbnailRename" xml:space="preserve">
+    <value>Přejmenování</value>
+  </data>
+  <data name="mnuThumbnailLocate" xml:space="preserve">
+    <value>Vyhledání souboru v Průzkumníku Windows</value>
+  </data>
+  <data name="mnuCoordinateSystem" xml:space="preserve">
+    <value>Souřadnicový systém</value>
+  </data>
+  <data name="mnuCoordinateSystemShowAxis" xml:space="preserve">
+    <value>Osy</value>
+  </data>
+  <data name="mnuCoordinateSystemShowGrid" xml:space="preserve">
+    <value>Mřížka</value>
+  </data>
+  <data name="mnuCoordinateSystemShowTickMarks" xml:space="preserve">
+    <value>Zaškrtávací značky</value>
+  </data>
+  <data name="mnuCoordinateSystemHide" xml:space="preserve">
+    <value>Skrýt</value>
+  </data>
+  <data name="mnuPolyline_FinishHere" xml:space="preserve">
+    <value>Zde dokončete polylinii</value>
+  </data>
+  <data name="mnuPolyline_FinishAtPrevious" xml:space="preserve">
+    <value>Dokončení polylinie v předchozím bodě</value>
+  </data>
+  <data name="mnuPolyline_CloseMenu" xml:space="preserve">
+    <value>Zavřít tuto nabídku</value>
+  </data>
+  <data name="mnuCutDrawing" xml:space="preserve">
+    <value>Střihová kresba</value>
+  </data>
+  <data name="mnuCopyDrawing" xml:space="preserve">
+    <value>Kopírování kresby</value>
+  </data>
+  <data name="mnuPasteDrawing" xml:space="preserve">
+    <value>Vložení kresby</value>
+  </data>
+  <data name="mnuSetStyleAsDefault" xml:space="preserve">
+    <value>Nastavení stylu jako výchozího</value>
+  </data>
+  <data name="mnuVisibilityDefault" xml:space="preserve">
+    <value>Výchozí blednutí</value>
+  </data>
+  <data name="mnuVisibilityCustom" xml:space="preserve">
+    <value>Vlastní blednutí</value>
+  </data>
+  <data name="mnuVisibilityConfigure" xml:space="preserve">
+    <value>Konfigurace vlastního stmívání</value>
+  </data>
+  <data name="mnuPasteImage" xml:space="preserve">
+    <value>Vložení obrázku ze schránky</value>
+  </data>
+  <data name="mnuShowArrow" xml:space="preserve">
+    <value>Zobrazit šipku</value>
+  </data>
+  <data name="mnuShowCircleCenter" xml:space="preserve">
+    <value>Zobrazit střed kruhu</value>
+  </data>
+  <data name="Toast_TriggerArmed" xml:space="preserve">
+    <value>Spoušť zachycení odjištěna</value>
+  </data>
+  <data name="Toast_TriggerDisarmed" xml:space="preserve">
+    <value>Spoušť zachycení odjištěna</value>
+  </data>
+  <data name="Toast_AudioLost" xml:space="preserve">
+    <value>Ztráta zvukového zařízení</value>
+  </data>
+  <data name="ToolTip_DrawingToolAutonumbers" xml:space="preserve">
+    <value>Automatická čísla</value>
+  </data>
+  <data name="ToolTip_PauseCamera" xml:space="preserve">
+    <value>Pozastavení kamery</value>
+  </data>
+  <data name="ToolTip_ConfigureCamera" xml:space="preserve">
+    <value>Konfigurace kamery</value>
+  </data>
+  <data name="ToolTip_DisarmTrigger" xml:space="preserve">
+    <value>Odjistit spoušť zachycení. Aktuální stav: odjištěno.</value>
+  </data>
+  <data name="FormCrashRecovery_Title" xml:space="preserve">
+    <value>Obnova po havárii</value>
+  </data>
+  <data name="FormCrashRecovery_Recover" xml:space="preserve">
+    <value>Obnovit</value>
+  </data>
+  <data name="FormCrashRecovery_Date" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="FormCrashRecovery_Info" xml:space="preserve">
+    <value>Následující projekty nebyly správně uloženy, ale lze je obnovit:</value>
+  </data>
+  <data name="Infobar_Player_Observing" xml:space="preserve">
+    <value>Pozorovací složka: {0}</value>
+  </data>
+  <data name="Infobar_Player_StopWatcher" xml:space="preserve">
+    <value>Přestat sledovat složku : {0}</value>
+  </data>
+  <data name="Infobar_Player_StartWatcher" xml:space="preserve">
+    <value>Spusťte sledování složky: {0}</value>
+  </data>
+  <data name="Generic_Open" xml:space="preserve">
+    <value>Otevřít</value>
+  </data>
+  <data name="dlgTimebase_InfoCapture" xml:space="preserve">
+    <value>Tato možnost definuje rozdíl mezi rychlostí videa a reálným časem. Ovlivňuje štítky obsahující časy a kinematická měření. Použijte ji, pokud bylo video natočeno v režimu vysoké rychlosti. </value>
+  </data>
+  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
+    <value>Kříž</value>
+  </data>
+  <data name="dlgConfigureTrajectory_CheckDisplayRotationCircle" xml:space="preserve">
+    <value>Kruh otáčení displeje</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisVertical" xml:space="preserve">
+    <value>Čára vymezuje svislou osu</value>
+  </data>
 </root>

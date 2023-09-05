@@ -39,6 +39,7 @@ namespace Kinovea.ScreenManager
         private const double kilometerToMeters = 1000;
         private const double mileToMeters = 1609.344;
         private const double nauticalMileToMeters = 1852;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         #region Abbreviations
         public static string LengthAbbreviation(LengthUnit unit)
@@ -463,6 +464,73 @@ namespace Kinovea.ScreenManager
             }
 
             return (float)meters;
-        }  
+        }
+
+        /// <summary>
+        /// Returns the theoretical precision expected from the calibration.
+        /// This is purely for informational purposes.
+        /// The result is a string and contains the unit (world unit per pixel).
+        /// This function may switch to a lower metric unit to get a more sensible result.
+        /// </summary>
+        public static string GetPixelSize(float worldValue, float pixelValue, LengthUnit unit)
+        {
+            if (unit == LengthUnit.Pixels)
+                return "";
+
+            float unitsPerPixel = worldValue / pixelValue;
+
+            // Try to get clever with metric units and return a sensible unit if we can.
+            // We only do that going down and only for metric units.
+            float magnitude = (float)Math.Log10(unitsPerPixel);
+            log.DebugFormat("Calibration precision. Raw: {0} {1}/pixel. Magnitude: {2}.", unitsPerPixel, unit.ToString(), magnitude);
+
+            if (unit == LengthUnit.Meters)
+            {
+                if (magnitude < -2)
+                {
+                    // Under 1 cm, move to mm.
+                    unitsPerPixel = unitsPerPixel * 1000;
+                    unit = LengthUnit.Millimeters;
+                }
+                else if (magnitude < 0)
+                {
+                    // Under 1 m, move to cm.
+                    unitsPerPixel = unitsPerPixel * 100;
+                    unit = LengthUnit.Centimeters;
+                }
+            }
+            else if (unit == LengthUnit.Centimeters)
+            {
+                if (magnitude < 0)
+                {
+                    // Under 1 cm, move to mm.
+                    unitsPerPixel = unitsPerPixel * 10;
+                    unit = LengthUnit.Millimeters;
+                }
+            }
+
+            string abbrUnit = UnitHelper.LengthAbbreviation(unit);
+
+            // Limit the number of significant digits.
+            magnitude = (float)Math.Floor(Math.Log10(unitsPerPixel));
+            if (magnitude >= 1)
+            {
+                // If we got a number above 10, round to nearest integer.
+                unitsPerPixel = (float)Math.Round(unitsPerPixel);
+            }
+            else if (magnitude >= 0)
+            {
+                // If we got between 1 and 9, get one decimal.
+                unitsPerPixel = (float)Math.Round(unitsPerPixel, 1);
+            }
+            else
+            {
+                // Otherwise just get enough significant digits to show one non zero.
+                float scale = (float)Math.Pow(10, magnitude);
+                unitsPerPixel = (float)(scale * Math.Round(unitsPerPixel / scale));
+            }
+            
+            return string.Format("{0} {1}", unitsPerPixel, abbrUnit);
+        }
     }
 }

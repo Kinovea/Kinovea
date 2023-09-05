@@ -60,7 +60,7 @@ namespace Kinovea.Video
             get { return null;}
         }
         public virtual VideoSection PreBufferingSegment {
-            get { return VideoSection.Empty; }
+            get { return VideoSection.MakeEmpty(); }
         }
         // If the reader is subject to decoding drops (prebuffering), this property should be filled accordingly.
         public virtual int Drops {
@@ -126,7 +126,7 @@ namespace Kinovea.Video
         #endregion
         
         #region Methods
-        public abstract OpenVideoResult Open(string _filePath);
+        public abstract OpenVideoResult Open(string filePath);
         public abstract void Close();
         public abstract VideoSummary ExtractSummary(string filePath, int thumbsToLoad, Size maxImageSize);
         
@@ -144,7 +144,7 @@ namespace Kinovea.Video
         /// Set the "Current" property to hold an arbitrary video frame, based on timestamp.
         /// </summary>
         /// <returns>false if the end of file has been reached</returns>
-        public abstract bool MoveTo(long _timestamp);
+        public abstract bool MoveTo(long from, long target);
         
         public abstract void BeforeFrameEnumeration();
         public abstract void AfterFrameEnumeration();
@@ -163,29 +163,29 @@ namespace Kinovea.Video
         #region Move playhead
         public bool MovePrev()
         {
-            return MoveTo(Current.Timestamp - Info.AverageTimeStampsPerFrame);
+            return MoveTo(Current.Timestamp, Current.Timestamp - Info.AverageTimeStampsPerFrame);
         }
         public bool MoveFirst()
         {
-            return MoveTo(WorkingZone.Start);
+            return MoveTo(Current.Timestamp, WorkingZone.Start);
         }
         public bool MoveLast()
         {
-            return MoveTo(WorkingZone.End);
+            return MoveTo(Current.Timestamp, WorkingZone.End);
         }
-        public bool MoveBy(int _frames, bool _decodeIfNecessary)
+        public bool MoveBy(int frames, bool decodeIfNecessary)
         {
-            if(_frames == 1)
+            if(frames == 1)
             {
-                return MoveNext(0, _decodeIfNecessary);
+                return MoveNext(0, decodeIfNecessary);
             }
             else
             {
                 long currentTimestamp = Current == null ? 0 : Current.Timestamp;
-                long target = currentTimestamp + (Info.AverageTimeStampsPerFrame * _frames);
-                if(target < 0)
-                    target = 0;
-                return MoveTo(target);
+                long target = currentTimestamp + (Info.AverageTimeStampsPerFrame * frames);
+                target = Math.Max(0, target);
+                
+                return MoveTo(currentTimestamp, target);
             }
         }
         #endregion
@@ -276,7 +276,7 @@ namespace Kinovea.Video
         /// <summary>
         /// Provide a lazy enumerator on each frame of the Working Zone.
         /// </summary>
-        public IEnumerable<VideoFrame> FrameEnumerator(long interval)
+        public IEnumerable<VideoFrame> EnumerateFrames(long interval)
         {
             if(DecodingMode == VideoDecodingMode.PreBuffering)
                 throw new ThreadStateException("Frame enumerator called while prebuffering");
@@ -289,16 +289,12 @@ namespace Kinovea.Video
                 if(interval == 0)
                     hasMore = MoveNext(0, true);
                 else
-                    hasMore = MoveTo(Current.Timestamp + interval);
+                    hasMore = MoveTo(Current.Timestamp, Current.Timestamp + interval);
                 
                 yield return Current;
             }
         }
-        public IEnumerable<VideoFrame> FrameEnumerator()
-        {
-            return FrameEnumerator(0);
-        }
-
+        
         public virtual string ReadMetadata()
         {
             return "";

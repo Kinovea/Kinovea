@@ -13,7 +13,7 @@ namespace Kinovea.ScreenManager
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static string SerializeMemento(Metadata metadata, Keyframe keyframe)
+        public static string SerializeMemento(Metadata metadata, Keyframe keyframe, SerializationFilter filter)
         {
             string result = "";
             XmlWriterSettings settings = new XmlWriterSettings();
@@ -26,7 +26,7 @@ namespace Kinovea.ScreenManager
             {
                 w.WriteStartElement("KeyframeMemento");
 
-                Serialize(w, keyframe, SerializationFilter.KVA);
+                Serialize(w, keyframe, filter);
                 SerializeTrackers(w, metadata, keyframe);
 
                 w.WriteEndElement();
@@ -64,6 +64,35 @@ namespace Kinovea.ScreenManager
             }
 
             return keyframe;
+        }
+
+        public static void DeserializeModifyMemento(Guid keyframeId, string data, Metadata metadata)
+        {
+            Keyframe keyframe = metadata.GetKeyframe(keyframeId);
+            if (keyframe == null)
+                return;
+
+            PointF identityScaling = new PointF(1, 1);
+
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.IgnoreComments = true;
+            settings.IgnoreProcessingInstructions = true;
+            settings.IgnoreWhitespace = true;
+            settings.CloseInput = true;
+
+            using (XmlReader r = XmlReader.Create(new StringReader(data), settings))
+            {
+                r.MoveToContent();
+
+                if (!(r.Name == "KeyframeMemento"))
+                    return;
+
+                r.ReadStartElement();
+
+                keyframe.ReadXml(r, identityScaling, TimeHelper.IdentityTimestampMapper);
+            }
+
+            return;
         }
 
         public static void Serialize(XmlWriter w, Keyframe keyframe, SerializationFilter filter)

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaDrawingTool>
+  <FormatVersion>1.0</FormatVersion>
+  <Id>06a608ac-b23e-4549-88d5-335e025f3ef1</Id>
+  <Name>TimeSegment</Name>
+  <DisplayName>Time segment</DisplayName>
+  <Icon>line</Icon>
+  <DrawingClass>DrawingTimeSegment</DrawingClass>
+  <Attached>true</Attached>
+  <KeepToolAfterDrawingCreation>false</KeepToolAfterDrawingCreation>
+  <KeepToolAfterFrameChange>false</KeepToolAfterFrameChange>
+  <DefaultStyle>
+    <Color Key="color">
+      <Value>255;255;0;0</Value>
+    </Color>
+  </DefaultStyle>
+</KinoveaDrawingTool>

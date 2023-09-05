@@ -117,6 +117,9 @@ namespace Kinovea.ScreenManager
             assigned = true;
         }
 
+        /// <summary>
+        /// Register the drawing this tracker is responsible for.
+        /// </summary>
         public void Assign(ITrackable drawing)
         {
             if (drawing.Id != drawingId)
@@ -232,10 +235,25 @@ namespace Kinovea.ScreenManager
             if(!trackablePoints.ContainsKey(e.PointName))
                 throw new ArgumentException("This point is not bound.");
             
-            trackablePoints[e.PointName].SetUserValue(e.Position);
+            bool inserted = trackablePoints[e.PointName].SetUserValue(e.Position);
+
+            // This is called when we manually move a point even though the object is not in tracking mode.
+            // In this case we may have added a new entry in the timeline. 
+            // We must ensure the other points have a data point at that time too. 
+            // This is also called programmatically when the origin of the coordinate system is updated for a moving system.
+            if (inserted)
+            {
+                foreach (KeyValuePair<string, TrackablePoint> pair in trackablePoints)
+                {
+                    if (pair.Key == e.PointName)
+                        continue;
+
+                    // Force insert using closest existing value.
+                    pair.Value.ForceInsertClosestLocation();
+                    drawing.SetTrackablePointValue(pair.Key, pair.Value.CurrentValue, pair.Value.TimeDifference);
+                }
+            }
         }
-
-
 
         /// <summary>
         /// Returns a single array of all the timestamps.

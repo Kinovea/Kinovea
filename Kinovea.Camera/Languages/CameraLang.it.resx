@@ -96,7 +96,7 @@
     <value>Rete</value>
   </data>
   <data name="FormConfiguration_Test" xml:space="preserve">
-    <value>Testare</value>
+    <value>Testa</value>
   </data>
   <data name="FormConfiguration_ImportParameters" xml:space="preserve">
     <value>Importa parametri</value>
@@ -126,7 +126,7 @@
     <value>Esposizione:</value>
   </data>
   <data name="FormConfiguration_Properties_Framerate" xml:space="preserve">
-    <value>Frame rate:</value>
+    <value>Framerate:</value>
   </data>
   <data name="FormConfiguration_Properties_ImageHeight" xml:space="preserve">
     <value>Altezza:</value>

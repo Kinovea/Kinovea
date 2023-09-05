@@ -121,7 +121,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
                 if(m_DecodingMode == VideoDecodingMode::PreBuffering)
                     return m_PreBuffer->Segment;
                 else 
-                    return VideoSection::Empty; 
+                    return VideoSection::MakeEmpty(); 
             }
         }
         virtual property VideoFrame^ Current {
@@ -145,7 +145,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         virtual OpenVideoResult Open(String^ _filePath) override;
         virtual void Close() override;
         virtual bool MoveNext(int _skip, bool _decodeIfNecessary) override;
-        virtual bool MoveTo(int64_t _timestamp) override;
+        virtual bool MoveTo(int64_t from, int64_t target) override;
         virtual VideoSummary^ ExtractSummary(String^ _filePath, int _thumbs, Size _maxSize) override;
         virtual void PostLoad() override;
         virtual String^ ReadMetadata() override;
@@ -181,10 +181,11 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         VideoSection m_WorkingZone;
         Object^ m_Locker;
         ThreadCanceler^ m_PreBufferingThreadCanceler;
-        VideoSection m_SectionToCache;
-        bool m_Prepend;
+        VideoSection m_SectionToPrepend;
+        VideoSection m_SectionToAppend;
         Size m_DecodingSize;
         bool m_CanDrawUnscaled;
+        bool m_Verbose = true;
 
         // Frame containers
         IVideoFramesContainer^ m_FramesContainer;

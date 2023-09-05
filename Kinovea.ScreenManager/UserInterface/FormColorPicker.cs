@@ -59,7 +59,6 @@ namespace Kinovea.ScreenManager
             colorPicker.ColorPicked += colorPicker_ColorPicked;
             
             Controls.Add(colorPicker);
-            this.Text = "   " + ScreenManagerLang.dlgColorPicker_Title;
             this.ResumeLayout();
             
             // Recent colors.

@@ -10,7 +10,7 @@ using Kinovea.ScreenManager.Languages;
 using Kinovea.Video;
 using Kinovea.Services;
 using System.IO;
-using Microsoft.WindowsAPICodePack.Dialogs;
+//using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Globalization;
 
 namespace Kinovea.ScreenManager
@@ -18,36 +18,45 @@ namespace Kinovea.ScreenManager
     public class VideoFilterCameraMotion : IVideoFilter
     {
         #region Properties
-        public string FriendlyName
+        public VideoFilterType Type
         {
-            get { return "Camera motion"; }
+            get { return VideoFilterType.CameraMotion; }
         }
+        public string FriendlyNameResource
+        {
+            get { return "filterName_CameraMotion"; }
+        }
+
         public Bitmap Current
         {
             get { return null; }
         }
-        public List<ToolStripItem> ContextMenu
+        public bool HasContextMenu
         {
-            get
-            {
-                // Just in time localization.
-                mnuConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
-                mnuImportMask.Text = "Import mask";
-                mnuImportColmap.Text = "Import COLMAP";
-                mnuRun.Text = "Run camera motion estimation";
-                return contextMenu;
-            }
+            get { return true; }
+        }
+        public bool RotatedCanvas
+        {
+            get { return false; }
+        }
+        public bool DrawAttachedDrawings
+        {
+            // Don't draw the normal drawings, this is a technical filter, it is not 
+            // supposed to be used as a playback mode.
+            get { return false; }
+        }
+        public bool DrawDetachedDrawings
+        {
+            get { return false; }
         }
         public bool CanExportVideo
         {
             get { return false; }
         }
-
         public bool CanExportImage
         {
             get { return false; }
         }
-
         public int ContentHash 
         { 
             get { return 0; }
@@ -85,12 +94,13 @@ namespace Kinovea.ScreenManager
         private bool showMatches = true;
         private bool showTransforms = true;
 
-        // Menu
-        private List<ToolStripItem> contextMenu = new List<ToolStripItem>();
+        #region Menu
         private ToolStripMenuItem mnuConfigure = new ToolStripMenuItem();
         private ToolStripMenuItem mnuImportMask = new ToolStripMenuItem();
         private ToolStripMenuItem mnuImportColmap = new ToolStripMenuItem();
         private ToolStripMenuItem mnuRun = new ToolStripMenuItem();
+        #endregion
+
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -99,19 +109,11 @@ namespace Kinovea.ScreenManager
         {
             this.metadata = metadata;
 
-            mnuConfigure.Image = Properties.Drawings.configure;
-            contextMenu.Add(mnuConfigure);
-            contextMenu.Add(mnuImportMask);
-            contextMenu.Add(mnuImportColmap);
-            contextMenu.Add(mnuRun);
-
-            mnuConfigure.Click += MnuConfigure_Click;
-            mnuImportMask.Click += MnuImportMask_Click;
-            mnuImportColmap.Click += MnuImportColmap_Click;
-            mnuRun.Click += MnuRun_Click;
+            InitializeMenus();
 
             //parameters = PreferencesManager.PlayerPreferences.CameraMotion;
         }
+
         ~VideoFilterCameraMotion()
         {
             Dispose(false);
@@ -135,6 +137,17 @@ namespace Kinovea.ScreenManager
                     mask.Dispose();
             }
         }
+
+        private void InitializeMenus()
+        {
+            mnuConfigure.Image = Properties.Drawings.configure;
+            mnuConfigure.Click += MnuConfigure_Click;
+
+            mnuImportMask.Click += MnuImportMask_Click;
+            mnuImportColmap.Click += MnuImportColmap_Click;
+            mnuRun.Click += MnuRun_Click;
+        }
+
         #endregion
 
         #region IVideoFilter methods
@@ -164,7 +177,10 @@ namespace Kinovea.ScreenManager
         {
         }
 
-        public void DrawExtra(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
+        /// <summary>
+        /// Draw extra content on top of the produced image.
+        /// </summary>
+        public void DrawExtra(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, long timestamp, bool export)
         {
             if (showFeatures)
                 DrawFeatures(canvas, transformer, timestamp);
@@ -173,7 +189,7 @@ namespace Kinovea.ScreenManager
                 DrawMatches(canvas, transformer, timestamp);
 
             //if (showInliers)
-              //  DrawInliers(canvas, transformer, timestamp);
+            //  DrawInliers(canvas, transformer, timestamp);
 
             if (showTransforms)
                 DrawTransforms(canvas, transformer, timestamp);
@@ -211,6 +227,34 @@ namespace Kinovea.ScreenManager
 
         #endregion
 
+        /// <summary>
+        /// Get the context menu according to the mouse position, current time and locale.
+        /// </summary>
+        public List<ToolStripItem> GetContextMenu(PointF pivot, long timestamp)
+        {
+            List<ToolStripItem> contextMenu = new List<ToolStripItem>();
+            ReloadMenusCulture();
+
+            contextMenu.AddRange(new ToolStripItem[] {
+                mnuConfigure,
+                new ToolStripSeparator(),
+                mnuImportMask,
+                mnuImportColmap,
+                mnuRun,
+            });
+
+            return contextMenu;
+        }
+
+        private void ReloadMenusCulture()
+        {
+            // Just in time localization.
+            mnuConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
+            mnuImportMask.Text = "Import mask";
+            mnuImportColmap.Text = "Import COLMAP";
+            mnuRun.Text = "Run camera motion estimation";
+        }
+
         #region Private methods
         private void MnuConfigure_Click(object sender, EventArgs e)
         {
@@ -245,33 +289,33 @@ namespace Kinovea.ScreenManager
         {
             // Import camera intrinsics & extrinsics calculated by COLMAP.
             // Point to folder containing text export.
-            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
-            dialog.IsFolderPicker = true;
-            dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            //CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            //dialog.IsFolderPicker = true;
+            //dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
-            string folderName = "";
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok && !string.IsNullOrEmpty(dialog.FileName))
-                folderName = dialog.FileName;
+            //string folderName = "";
+            //if (dialog.ShowDialog() == CommonFileDialogResult.Ok && !string.IsNullOrEmpty(dialog.FileName))
+            //    folderName = dialog.FileName;
 
-            dialog.Dispose();
-            if (string.IsNullOrEmpty(folderName))
-                return;
+            //dialog.Dispose();
+            //if (string.IsNullOrEmpty(folderName))
+            //    return;
 
-            ParseColmap(folderName);
-            InvalidateFromMenu(sender);
+            //ParseColmap(folderName);
+            //InvalidateFromMenu(sender);
 
-            // Commit transform data.
-            int frameIndex = 0;
-            foreach (var f in framesContainer.Frames)
-            {
-                if (frameIndices.ContainsKey(f.Timestamp))
-                    continue;
+            //// Commit transform data.
+            //int frameIndex = 0;
+            //foreach (var f in framesContainer.Frames)
+            //{
+            //    if (frameIndices.ContainsKey(f.Timestamp))
+            //        continue;
 
-                frameIndices.Add(f.Timestamp, frameIndex);
-                frameIndex++;
-            }
+            //    frameIndices.Add(f.Timestamp, frameIndex);
+            //    frameIndex++;
+            //}
 
-            metadata.SetCameraMotion(frameIndices, consecTransforms);
+            //metadata.SetCameraMotion(frameIndices, consecTransforms);
         }
 
         private void MnuRun_Click(object sender, EventArgs e)

@@ -30,12 +30,19 @@ namespace Kinovea.Video.SVG
     public class FrameGeneratorSVG : IFrameGenerator
     {
         #region Properties
-        public Size OriginalSize {
+        public Size OriginalSize 
+        {
             get { return initialized ? originalSize : Size.Empty; }
         }
 
-        public Size ReferenceSize {
+        public Size ReferenceSize 
+        {
             get { return OriginalSize; }
+        }
+
+        public ImageRotation ImageRotation
+        {
+            get { return ImageRotation.Rotate0; }
         }
         #endregion
 

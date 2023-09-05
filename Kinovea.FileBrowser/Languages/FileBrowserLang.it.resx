@@ -84,7 +84,7 @@
     <value>Crea fotocamera</value>
   </data>
   <data name="FormCameraWizard_Test" xml:space="preserve">
-    <value>Testare</value>
+    <value>Testa</value>
   </data>
   <data name="FormCameraWizard_Parameters" xml:space="preserve">
     <value>Parametri</value>
@@ -115,5 +115,23 @@
   </data>
   <data name="lblCaptureHistory" xml:space="preserve">
     <value>Cronologia di acquisizione</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Ordinamento per</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>Crescente</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Dimensione</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>Decrescente</value>
   </data>
 </root>

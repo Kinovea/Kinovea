@@ -2,7 +2,6 @@
   
   <ItemGroup>
     <SVGObsRefsFiles Include="..\Tools\svg\*.svg" />
-    <XSLTFiles Include="..\Tools\XML\Kva to Spreadsheets\*.xsl" />
     <XSLTFiles Include="..\Tools\XML\Kva to Kva\*.xsl" />
     <XSLTFiles Include="..\Tools\XML\Preferences\*.xsl" />
     <DrawingToolsFiles Include="..\Tools\DrawingTools\**\*.xml" />

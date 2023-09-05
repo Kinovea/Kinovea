@@ -41,12 +41,14 @@ namespace Kinovea.ScreenManager
         private void InitValues()
         {
             nudWidth.Value = width;
+            NudHelper.FixNudScroll(nudWidth);
+            NudHelper.FixNudScroll(nudHeight);
         }
 
         private void InitCulture()
         {
-            this.Text = "Save image";
-            lblImageSize.Text = "Image size:";
+            this.Text = ScreenManagerLang.Generic_SaveImage;
+            lblImageSize.Text = ScreenManagerLang.lblConfig_ImageSize;
         }
 
         private void btnOK_Click(object sender, EventArgs e)

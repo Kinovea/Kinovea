@@ -4,12 +4,11 @@
   <Name>Player</Name>
   <Id>93A56D9C-6B02-41AF-BF9B-33B1CAA1ADA3</Id>
   <entry name="Label">
-    <subentry name="AutoNumbers" />
+    <subentry name="NumberSequence" />
   </entry>
   <entry name="Pencil" />
   <entry name="HumanModel">
     <subentry name="HumanModel2" />
-    <!--subentry name="OpenPoseBody25" /-->
     <subentry name="Bikefit" />
     <subentry name="Archery" />
     <subentry name="Profile" />
@@ -42,11 +41,13 @@
     <subentry name="AngleToHorizontal" />
     <subentry name="AngleToVertical" />
   </entry>
-  <entry name="Chrono">
+  <entry name="ChronoMulti">
     <subentry name="Clock" />
+    <subentry name="TimeSegment" />
   </entry>
   <entry name="Plane">
     <subentry name="Grid" />
+    <subentry name="DistanceGrid" />
     <subentry name="DistortionGrid" />
   </entry>
   <entry name="Spotlight" />

@@ -98,15 +98,15 @@
   </data>
   <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Passa a Modalità Analisi</value>
   </data>
-  <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Numero di Files nella cronologia :</value>
+  <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Numero di file nella cronologia :</value>
   </data>
-  <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Proporzioni immagine predefinite:</value>
+  <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Rapporto d'aspetto predefinito:</value>
   </data>
   <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Lingua :</value>
   </data>
   <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>E</value>
   </data>
-  <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Come preimpostazione, il disegno restera' visibile per {0} immagini intorno all'Immagine Chiave.</value>
+  <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Come preimpostazione, il disegno resterà visibile per {0} immagini intorno all'Immagine Chiave.</value>
   </data>
   <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Metri al secondo ({0})</value>
   </data>
@@ -118,7 +118,7 @@
   </data>
   <data name="dlgPreferences_Title" xml:space="preserve"><value>Preferenze</value>
   </data>
-  <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Caricamento Interfaccia Utente…</value>
+  <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Caricamento interfaccia utente…</value>
   </data>
   <data name="Generic_Cancel" xml:space="preserve"><value>Annulla</value>
   </data>
@@ -176,13 +176,13 @@
     <value>Elementi costitutivi</value>
   </data>
   <data name="TimeCodeFormat_Microseconds" xml:space="preserve">
-    <value>Microsecondi totali</value>
+    <value>Totale in microsecondi</value>
   </data>
   <data name="mnuWorkspaceExport" xml:space="preserve">
     <value>Esporta spazio di lavoro</value>
   </data>
   <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
-    <value>Salvare come area di lavoro predefinita</value>
+    <value>Salvare come spazio di lavoro predefinito</value>
   </data>
   <data name="mnuWorkspace" xml:space="preserve">
     <value>Spazio di lavoro</value>
@@ -263,19 +263,19 @@
     <value>Ora:</value>
   </data>
   <data name="mnuTimeFormat" xml:space="preserve">
-    <value>Ora</value>
+    <value>Tempo</value>
   </data>
   <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
     <value>File di annotazione predefinito:</value>
   </data>
   <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve">
-    <value>Collegare i dispositivi di scorrimento della velocità quando si confrontano i video</value>
+    <value>Collega i dispositivi di scorrimento della velocità quando si confrontano i video</value>
   </data>
   <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve">
     <value>Aggiorna l'immagine durante il movimento del cursore</value>
   </data>
   <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve">
-    <value>Abilitare la modalità di debug degli strumenti personalizzati</value>
+    <value>Abilita la modalità di debug degli strumenti personalizzati</value>
   </data>
   <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve">
     <value>Abilita il filtraggio delle coordinate</value>
@@ -284,7 +284,7 @@
     <value>Comando di post registrazione:</value>
   </data>
   <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
-    <value>Interrompere la registrazione per durata (s):</value>
+    <value>Interrompi la registrazione dopo (s):</value>
   </data>
   <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
     <value>Soglia di attivazione:</value>
@@ -341,7 +341,7 @@
     <value>Retroattivo: registra i fotogrammi quando la registrazione si interrompe.</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve">
-    <value>Delayed: registra i frame in ritardo.</value>
+    <value>Ritardo: registra i frame in ritardo.</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
     <value>Fotocamera: registra i fotogrammi in tempo reale.</value>
@@ -377,7 +377,7 @@
     <value>Sinistra</value>
   </data>
   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
-    <value>Visualizza framerate (fps):</value>
+    <value>Framerate di visualizzazione (fps):</value>
   </data>
   <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve">
     <value>Permetti istanze multiple di Kinovea</value>
@@ -435,5 +435,41 @@
   </data>
   <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve">
     <value>Visibile per l'intero video</value>
+  </data>
+  <data name="dlgPreferences_Capture_TriggerAction" xml:space="preserve">
+    <value>Azione attivata:</value>
+  </data>
+  <data name="dlgPreferences_General_PathToPandoc" xml:space="preserve">
+    <value>Percorso di pandoc:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVComma" xml:space="preserve">
+    <value>Virgola</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVDelimiter" xml:space="preserve">
+    <value>Separatore decimale per i file CSV:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVPoint" xml:space="preserve">
+    <value>Punto</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportCalibrated" xml:space="preserve">
+    <value>Misure calibrate</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportSpace" xml:space="preserve">
+    <value>Modalità di esportazione:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportPixels" xml:space="preserve">
+    <value>Pixel</value>
+  </data>
+  <data name="dlgPreferences_Drawing_CSVSystem" xml:space="preserve">
+    <value>Sistema ({0})</value>
+  </data>
+  <data name="dlgPreferences_Drawings_TabExport" xml:space="preserve">
+    <value>Esportazione</value>
+  </data>
+  <data name="dlgWorkspace_Title" xml:space="preserve">
+    <value>Spazio di lavoro</value>
+  </data>
+  <data name="dlgWorkspace_ConfirmationMessage" xml:space="preserve">
+    <value>Spazio di lavoro predefinito salvato.</value>
   </data>
 </root>

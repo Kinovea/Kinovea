@@ -1,12 +1,12 @@
 ﻿#region License
 /*
 Copyright © Joan Charmant 2011.
-jcharmant@gmail.com 
- 
+jcharmant@gmail.com
+
 This file is part of Kinovea.
 
 Kinovea is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License version 2 
+it under the terms of the GNU General Public License version 2
 as published by the Free Software Foundation.
 
 Kinovea is distributed in the hope that it will be useful,
@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Design.Serialization;
 using System.Drawing;
@@ -32,11 +33,11 @@ namespace Kinovea.ScreenManager
     /// Role: expose the final values used by the drawing routines to render the drawing.
     /// The values are converted from bound style elements.
     /// For example a style element of type StyleElementFontSize will be exposed here as an actual Font object.
-    /// 
+    ///
     /// This class also exposes utilities to get the objects according to requested opacity and scale.
     /// This class contains all the possible primitives but only a few will actually be bound to style element sources.
-    /// 
-    /// The primitives can be bound to a style element (editable in the UI) through the Bind() method on the 
+    ///
+    /// The primitives can be bound to a style element (editable in the UI) through the Bind() method on the
     /// style element, passing the name of the primitive. The binding will be effective only if types are compatible.
     /// </summary>
     public class StyleHelper
@@ -44,7 +45,7 @@ namespace Kinovea.ScreenManager
         #region Exposed function delegates
         public BindWriter BindWrite;
         public BindReader BindRead;
-        
+
         /// <summary>
         /// Event raised when the value is changed dynamically through binding.
         /// This may be useful if the Drawing has several StyleHelper that must be linked somehow.
@@ -54,7 +55,7 @@ namespace Kinovea.ScreenManager
         /// <remarks>The event is not raised when the value is changed manually through a property setter</remarks>
         public event EventHandler ValueChanged;
         #endregion
-        
+
         #region Properties
         public Color Color
         {
@@ -79,11 +80,11 @@ namespace Kinovea.ScreenManager
         public Font Font
         {
             get { return font; }
-            set 
-            { 
+            set
+            {
                 if(value != null)
                 {
-                    // We make temp copies of the variables because we call .Dispose() but 
+                    // We make temp copies of the variables because we call .Dispose() but
                     // it's possible that input value was pointing to the same reference.
                     string fontName = value.Name;
                     FontStyle fontStyle = value.Style;
@@ -120,29 +121,54 @@ namespace Kinovea.ScreenManager
         }
         public bool Curved
         {
-            get { return curved; }
-            set { curved = value; }
+            get { return toggles["curved"]; }
+            set { toggles["curved"] = value; }
         }
         public bool Perspective
         {
-            get { return perspective; }
-            set { perspective = value; }
+            get { return toggles["perspective"]; }
+            set { toggles["perspective"] = value; }
         }
         public bool Clock
         {
-            get { return clock; }
-            set { clock = value; }
+            get { return toggles["clock"]; }
+            set { toggles["clock"] = value; }
+        }
+        public bool HorizontalAxis
+        {
+            get { return toggles["horizontalAxis"]; }
+            set { toggles["horizontalAxis"] = value; }
+        }
+        public bool VerticalAxis
+        {
+            get { return toggles["verticalAxis"]; }
+            set { toggles["verticalAxis"] = value; }
+        }
+        public bool Frame
+        {
+            get { return toggles["frame"]; }
+            set { toggles["frame"] = value; }
+        }
+        public bool Thirds
+        {
+            get { return toggles["thirds"]; }
+            set { toggles["thirds"] = value; }
+        }
+        public bool DistanceGrid
+        {
+            get { return toggles["distanceGrid"]; }
+            set { toggles["distanceGrid"] = value; }
         }
         public bool Filled
         {
-            get { return filled; }
-            set { filled = value; }
+            get { return toggles["filled"]; }
+            set { toggles["filled"] = value; }
         }
 
 
         public int ContentHash
         {
-            get 
+            get
             {
                 int hash = 0;
                 hash ^= color.GetHashCode();
@@ -154,43 +180,47 @@ namespace Kinovea.ScreenManager
                 hash ^= trackShape.GetHashCode();
                 hash ^= penShape.GetHashCode();
                 hash ^= gridDivisions.GetHashCode();
-                hash ^= curved.GetHashCode();
-                hash ^= perspective.GetHashCode();
-                hash ^= clock.GetHashCode();
-                hash ^= filled.GetHashCode();
+                hash ^= toggles.GetHashCode();
                 return hash;
             }
         }
         #endregion
-        
+
         #region Members
-        private Color color;
-        private int lineSize;
-        private LineShape lineShape;
+        private Color color = Color.Black;
+        private int lineSize = 1;
+        private LineShape lineShape = LineShape.Solid;
         private Font font = new Font("Arial", 12, FontStyle.Regular);
         private Bicolor bicolor;
         private LineEnding lineEnding = LineEnding.None;
         private TrackShape trackShape = TrackShape.Solid;
         private PenShape penShape = PenShape.Solid;
-        private bool curved;
-        private bool perspective;
-        private bool clock;
-        private bool filled;
+        private Dictionary<string, bool> toggles = new Dictionary<string, bool>();
         private int gridDivisions;
         private int minFontSize = 8;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
-        
+
         #region Constructor
         public StyleHelper()
         {
             BindWrite = DoBindWrite;
             BindRead = DoBindRead;
+
+            // Initialize toggles.
+            toggles.Add("curved", false);
+            toggles.Add("perspective", false);
+            toggles.Add("clock", false);
+            toggles.Add("horizontalAxis", false);
+            toggles.Add("verticalAxis", false);
+            toggles.Add("frame", false);
+            toggles.Add("thirds", false);
+            toggles.Add("distanceGrid", false);
         }
         #endregion
-        
+
         #region Public Methods
-        
+
         #region Color and LineSize properties
         /// <summary>
         /// Returns a Pen object suitable to draw a background or color only contour.
@@ -201,7 +231,7 @@ namespace Kinovea.ScreenManager
         public Pen GetPen(int alpha)
         {
             Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, color) : color;
-            
+
             return NormalPen(new Pen(c, 1.0f));
         }
         public Pen GetPen(double opacity)
@@ -222,21 +252,21 @@ namespace Kinovea.ScreenManager
         {
             Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, color) : color;
             float penWidth = (float)((double)lineSize * stretchFactor);
-            if (penWidth < 1) 
+            if (penWidth < 1)
                 penWidth = 1;
-            
+
             Pen p = new Pen(c, penWidth);
             p.LineJoin = LineJoin.Round;
-            
+
             p.DashStyle = trackShape.DashStyle;
-            
+
             return p;
         }
         public Pen GetPen(double opacity, double stretchFactor)
         {
             return GetPen((int)(opacity * 255), stretchFactor);
         }
-        
+
         /// <summary>
         /// Returns a Brush object suitable to draw a background or colored area.
         /// Only use the color property.
@@ -253,7 +283,7 @@ namespace Kinovea.ScreenManager
             return GetBrush((int)(opacity * 255));
         }
         #endregion
-        
+
         #region Font property
         public Font GetFont(float stretchFactor)
         {
@@ -265,7 +295,7 @@ namespace Kinovea.ScreenManager
             return new Font(font.Name, fontSize, font.Style);
         }
         #endregion
-        
+
         #region Bicolor property
         public Color GetForegroundColor(int alpha)
         {
@@ -298,9 +328,9 @@ namespace Kinovea.ScreenManager
             return NormalPen(new Pen(c, 1.0f));
         }
         #endregion
-        
+
         #endregion
-        
+
         #region Private Methods
         private void DoBindWrite(string targetProperty, object value)
         {
@@ -367,46 +397,6 @@ namespace Kinovea.ScreenManager
 
                         break;
                     }
-                case "Curved":
-                    {
-                        if (value is bool)
-                        {
-                            curved = (bool)value;
-                            imported = true;
-                        }
-
-                        break;
-                    }
-                case "Perspective":
-                    {
-                        if (value is bool)
-                        {
-                            perspective = (bool)value;
-                            imported = true;
-                        }
-
-                        break;
-                    }
-                case "Clock":
-                    {
-                        if (value is bool)
-                        {
-                            clock = (bool)value;
-                            imported = true;
-                        }
-
-                        break;
-                    }
-                case "Filled":
-                    {
-                        if (value is bool)
-                        {
-                            filled = (bool)value;
-                            imported = true;
-                        }
-
-                        break;
-                    }
                 case "Font":
                     {
                         if (value is int)
@@ -438,23 +428,113 @@ namespace Kinovea.ScreenManager
                         }
                         break;
                     }
+                case "Toggles/Curved":
+                    {
+                        if (value is bool)
+                        {
+                            toggles["curved"] = (bool)value;
+                            imported = true;
+                        }
+
+                        break;
+                    }
+                case "Toggles/Perspective":
+                    {
+                        if (value is bool)
+                        {
+                            toggles["perspective"] = (bool)value;
+                            imported = true;
+                        }
+
+                        break;
+                    }
+                case "Toggles/Clock":
+                    {
+                        if (value is bool)
+                        {
+                            toggles["clock"] = (bool)value;
+                            imported = true;
+                        }
+
+                        break;
+                    }
+                case "Toggles/HorizontalAxis":
+                    {
+                        if (value is bool)
+                        {
+                            toggles["horizontalAxis"] = (bool)value;
+                            imported = true;
+                        }
+
+                        break;
+                    }
+                case "Toggles/VerticalAxis":
+                    {
+                        if (value is bool)
+                        {
+                            toggles["verticalAxis"] = (bool)value;
+                            imported = true;
+                        }
+
+                        break;
+                    }
+                case "Toggles/Frame":
+                    {
+                        if (value is bool)
+                        {
+                            toggles["frame"] = (bool)value;
+                            imported = true;
+                        }
+
+                        break;
+                    }
+                case "Toggles/Thirds":
+                    {
+                        if (value is bool)
+                        {
+                            toggles["thirds"] = (bool)value;
+                            imported = true;
+                        }
+
+                        break;
+                    }
+                case "Toggles/DistanceGrid":
+                    {
+                        if (value is bool)
+                        {
+                            toggles["distanceGrid"] = (bool)value;
+                            imported = true;
+                        }
+
+                        break;
+                    }
+                case "Toggles/Filled":
+                    {
+                        if (value is bool)
+                        {
+                            toggles["filled"] = (bool)value;
+                            imported = true;
+                        }
+
+                        break;
+                    }
                 default:
                     {
                         log.DebugFormat("Unknown target property \"{0}\".", targetProperty);
                         break;
                     }
             }
-            
+
             if(imported)
             {
-                if(ValueChanged != null) 
+                if(ValueChanged != null)
                     ValueChanged(null, EventArgs.Empty);
             }
             else
             {
                 log.DebugFormat("Could not import value \"{0}\" to property \"{1}\"." , value.ToString(), targetProperty);
             }
-            
+
         }
         private object DoBindRead(string sourceProperty, Type targetType)
         {
@@ -519,46 +599,6 @@ namespace Kinovea.ScreenManager
                         }
                         break;
                     }
-                case "Curved":
-                    {
-                        if (targetType == typeof(bool))
-                        {
-                            result = curved;
-                            converted = true;
-                        }
-
-                        break;
-                    }
-                case "Perspective":
-                    {
-                        if (targetType == typeof(bool))
-                        {
-                            result = perspective;
-                            converted = true;
-                        }
-
-                        break;
-                    }
-                case "Clock":
-                    {
-                        if (targetType == typeof(bool))
-                        {
-                            result = clock;
-                            converted = true;
-                        }
-
-                        break;
-                    }
-                case "Filled":
-                    {
-                        if (targetType == typeof(bool))
-                        {
-                            result = filled;
-                            converted = true;
-                        }
-
-                        break;
-                    }
                 case "Font":
                     {
                         if (targetType == typeof(int))
@@ -586,18 +626,109 @@ namespace Kinovea.ScreenManager
                         }
                         break;
                     }
+                case "Toggles/Curved":
+                    {
+                        if (targetType == typeof(bool))
+                        {
+                            result = toggles["curved"];
+                            converted = true;
+                        }
+
+                        break;
+                    }
+                case "Toggles/Perspective":
+                    {
+                        if (targetType == typeof(bool))
+                        {
+                            result = toggles["perspective"];
+                            converted = true;
+                        }
+
+                        break;
+                    }
+                case "Toggles/Clock":
+                    {
+                        if (targetType == typeof(bool))
+                        {
+                            result = toggles["clock"];
+                            converted = true;
+                        }
+
+                        break;
+                    }
+                case "Toggles/HorizontalAxis":
+                    {
+                        if (targetType == typeof(bool))
+                        {
+                            result = toggles["horizontalAxis"];
+                            converted = true;
+                        }
+
+                        break;
+                    }
+                case "Toggles/VerticalAxis":
+                    {
+                        if (targetType == typeof(bool))
+                        {
+                            result = toggles["verticalAxis"];
+                            converted = true;
+                        }
+
+                        break;
+                    }
+
+                case "Toggles/Frame":
+                    {
+                        if (targetType == typeof(bool))
+                        {
+                            result = toggles["frame"];
+                            converted = true;
+                        }
+
+                        break;
+                    }
+                case "Toggles/Thirds":
+                    {
+                        if (targetType == typeof(bool))
+                        {
+                            result = toggles["thirds"];
+                            converted = true;
+                        }
+
+                        break;
+                    }
+                case "Toggles/DistanceGrid":
+                    {
+                        if (targetType == typeof(bool))
+                        {
+                            result = toggles["distanceGrid"];
+                            converted = true;
+                        }
+
+                        break;
+                    }
+                case "Toggles/Filled":
+                    {
+                        if (targetType == typeof(bool))
+                        {
+                            result = toggles["filled"];
+                            converted = true;
+                        }
+
+                        break;
+                    }
                 default:
                     {
                         log.DebugFormat("Unknown source property \"{0}\".", sourceProperty);
                         break;
                     }
             }
-            
+
             if(!converted)
             {
                 log.DebugFormat("Could not convert property \"{0}\" to update value \"{1}\"." , sourceProperty, targetType);
             }
-            
+
             return result;
         }
         private float GetRescaledFontSize(float stretchFactor)

@@ -24,6 +24,9 @@ namespace Kinovea.ScreenManager
         private string commandName;
         private string data;
 
+        /// <summary>
+        /// Capture the state of the drawing before a modification.
+        /// </summary>
         public HistoryMementoModifyDrawing(Metadata metadata, Guid managerId, Guid drawingId, string drawingName, SerializationFilter filter)
         {
             this.metadata = metadata;
@@ -40,6 +43,10 @@ namespace Kinovea.ScreenManager
                 data = DrawingSerializer.SerializeMemento(metadata, manager.GetDrawing(drawingId), filter, false);
         }
 
+        /// <summary>
+        /// Restore the backed up state into the drawing.
+        /// This also captures the state of the drawing after the modification and return the memento for it, to handle redo.
+        /// </summary>
         public override HistoryMemento PerformUndo()
         {
             HistoryMemento redoMemento = new HistoryMementoModifyDrawing(metadata, managerId, drawingId, drawingName, filter);
@@ -51,7 +58,7 @@ namespace Kinovea.ScreenManager
         public void UpdateCommandName(string name)
         {
             drawingName = name;
-            commandName = commandName = string.Format("{0} ({1})", ScreenManagerLang.CommandModifyDrawing_FriendlyName, drawingName);
+            commandName = string.Format("{0} ({1})", ScreenManagerLang.CommandModifyDrawing_FriendlyName, drawingName);
         }
     }
 }

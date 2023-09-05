@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.ComponentModel;
+using Kinovea.Services;
 
 namespace Kinovea.Video
 {
@@ -54,9 +55,9 @@ namespace Kinovea.Video
         {
             return m_Cache.MoveBy(_skip + 1);
         }
-        public override bool MoveTo(long _timestamp)
+        public override bool MoveTo(long from, long target)
         {
-            return m_Cache.MoveTo(_timestamp);
+            return m_Cache.MoveTo(target);
         }
         public override void Close()
         {

@@ -23,10 +23,9 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
-using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -38,8 +37,6 @@ using Kinovea.Services;
 using Kinovea.Updater;
 using Kinovea.Video;
 using Kinovea.Camera;
-using System.Drawing;
-using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace Kinovea.Root
 {
@@ -262,7 +259,7 @@ namespace Kinovea.Root
             mnuHistoryReset.Image = Properties.Resources.bin_empty;
             mnuHistoryReset.Click += mnuHistoryResetOnClick;
             
-            mnuQuit.Image = Properties.Resources.quit;
+            mnuQuit.Image = Properties.Resources.quit2;
             mnuQuit.Click += new EventHandler(menuQuitOnClick);
 
             mnuFile.DropDownItems.AddRange(new ToolStripItem[] {
@@ -273,8 +270,11 @@ namespace Kinovea.Root
                 new ToolStripSeparator(),
                 // Save annotations,
                 // Save annotations as,
+                new ToolStripSeparator(),
                 // Export video,
-                // Export to spreadsheet,
+                // Export image,
+                // Export spreadsheet,
+                // Export document,
                 new ToolStripSeparator(),
                 // Close A,
                 // Close B,
@@ -307,7 +307,7 @@ namespace Kinovea.Root
             mnuToggleFileExplorer.Checked = true;
             mnuToggleFileExplorer.CheckState = System.Windows.Forms.CheckState.Checked;
             mnuToggleFileExplorer.ShortcutKeys = Keys.F4;
-            mnuToggleFileExplorer.Click += new EventHandler(mnuToggleFileExplorerOnClick);
+            mnuToggleFileExplorer.Click += mnuToggleFileExplorer_Click;
             mnuFullScreen.Image = Properties.Resources.fullscreen;
             mnuFullScreen.ShortcutKeys = Keys.F11;
             mnuFullScreen.Click += new EventHandler(mnuFullScreenOnClick);
@@ -447,7 +447,7 @@ namespace Kinovea.Root
             mnuWorkspace.Text = RootLang.mnuWorkspace;
             mnuWorkspace.Image = Properties.Resources.common_controls;
             mnuWorkspaceSaveAsDefault.Text = RootLang.mnuWorkspaceSaveAsDefault;
-            mnuWorkspaceSaveAsDefault.Image = Properties.Resources.disk;
+            mnuWorkspaceSaveAsDefault.Image = Properties.Resources.filesave;
             mnuWorkspaceExport.Text = RootLang.mnuWorkspaceExport;
             mnuWorkspaceExport.Image = Properties.Resources.file_txt;
 
@@ -466,8 +466,10 @@ namespace Kinovea.Root
         private void mnuOpenFileOnClick(object sender, EventArgs e)
         {
             NotificationCenter.RaiseStopPlayback(this);
-            
-            string filename = FilePicker.OpenVideo();
+
+            string title = ScreenManagerLang.mnuOpenVideo;
+            string filter = ScreenManagerLang.FileFilter_All + "|*.*";
+            string filename = FilePicker.OpenVideo(title, filter);
             if (!string.IsNullOrEmpty(filename))
                 OpenFromPath(filename);
         }
@@ -494,20 +496,15 @@ namespace Kinovea.Root
         #endregion
 
         #region View
-        private void mnuToggleFileExplorerOnClick(object sender, EventArgs e)
+        private void mnuToggleFileExplorer_Click(object sender, EventArgs e)
         {
-            if (mainWindow.SupervisorControl.IsExplorerCollapsed)
-            {
-                mainWindow.SupervisorControl.ExpandExplorer(true);
-            }
-            else
-            {
-                mainWindow.SupervisorControl.CollapseExplorer();
-            }
+            bool show = !mnuToggleFileExplorer.Checked;
+            mainWindow.SupervisorControl.ShowHideExplorerPanel(show, true);
+            mnuToggleFileExplorer.Checked = show;
         }
         private void mnuFullScreenOnClick(object sender, EventArgs e)
         {
-            FullscreenToggle();
+            ToggleFullScreen();
         }
         #endregion
 
@@ -639,7 +636,11 @@ namespace Kinovea.Root
             PreferencesManager.GeneralPreferences.Workspace = workspace;
             PreferencesManager.Save();
 
-            MessageBox.Show("Default workspace saved.", "Workspace", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(
+                RootLang.dlgWorkspace_ConfirmationMessage, 
+                RootLang.dlgWorkspace_Title, 
+                MessageBoxButtons.OK, 
+                MessageBoxIcon.Information);
         }
 
         private void MnuWorkspaceExport_Click(object sender, EventArgs e)
@@ -678,7 +679,6 @@ namespace Kinovea.Root
         private void NotificationCenter_RecentFilesChanged(object sender, EventArgs e)
         {
             mnuHistory.DropDownItems.Clear();
-
 
             int maxRecentFiles = PreferencesManager.FileExplorerPreferences.MaxRecentFiles;
             List<string> recentFiles = PreferencesManager.FileExplorerPreferences.RecentFiles;
@@ -739,7 +739,7 @@ namespace Kinovea.Root
 
         private void NotificationCenter_FullscreenToggle(object sender, EventArgs e)
         {
-            FullscreenToggle();
+            ToggleFullScreen();
         }
 
         private void NotificationCenter_PreferenceTabAsked(object sender, PreferenceTabEventArgs e)
@@ -832,15 +832,23 @@ namespace Kinovea.Root
             
             return resourceUri;
         }
-        private void FullscreenToggle()
+
+        private void ToggleFullScreen()
         {
             mainWindow.ToggleFullScreen();
 
             if (mainWindow.FullScreen)
-                mainWindow.SupervisorControl.CollapseExplorer();
+            {
+                // Entering full screen, force hide explorer, don't save prefs.
+                mainWindow.SupervisorControl.ShowHideExplorerPanel(false, false);
+            }
             else
-                mainWindow.SupervisorControl.ExpandExplorer(true);
-
+            {
+                // Exiting full screen, restore from preferences.
+                bool show = PreferencesManager.GeneralPreferences.ExplorerVisible;
+                mainWindow.SupervisorControl.ShowHideExplorerPanel(show, false);
+            }
+            
             // Propagates the call to screens.
             screenManager.FullScreen(mainWindow.FullScreen);
         }

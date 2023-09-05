@@ -32,7 +32,7 @@ namespace Kinovea.Root
 {
     public partial class FormAbout : Form
     {
-        private string year = "2021";
+        private string year = "2023";
         private Font fontHeader = new Font("Microsoft Sans Serif", 10, FontStyle.Bold);
         private Font fontText = new Font("Microsoft Sans Serif", 9, FontStyle.Regular);
 
@@ -73,16 +73,21 @@ namespace Kinovea.Root
         {
             pageBuildingBlocks.Text = RootLang.dlgAbout_BuildingBlocks;
          
-            rtbBuildingBlocks.AppendText(" FFmpeg - Video formats and codecs - https://www.ffmpeg.org/\n");
-            rtbBuildingBlocks.AppendText(" OpenCV - Computer Vision - http://opencv.org/.\n");
-            rtbBuildingBlocks.AppendText(" AForge - Image processing - http://www.aforgenet.com/\n");
-            rtbBuildingBlocks.AppendText(" EmguCV - OpenCV .NET Wrapper - http://www.emgu.com/\n");
-            rtbBuildingBlocks.AppendText(" OxyPlot - Plotting. https://oxyplot.github.io/\n");
+            rtbBuildingBlocks.AppendText(" FFmpeg - https://www.ffmpeg.org/\n");
+            rtbBuildingBlocks.AppendText(" OpenCV - http://opencv.org/.\n");
+            rtbBuildingBlocks.AppendText(" AForge - http://www.aforgenet.com/\n");
+            rtbBuildingBlocks.AppendText(" EmguCV - http://www.emgu.com/\n");
+            rtbBuildingBlocks.AppendText(" OxyPlot - https://oxyplot.github.io/\n");
             rtbBuildingBlocks.AppendText(" Sharp Vector Graphics - http://sourceforge.net/projects/svgdomcsharp/\n");
-            rtbBuildingBlocks.AppendText(" SharpZipLib - https://icsharpcode.github.io/SharpZipLib/.\n");
-            rtbBuildingBlocks.AppendText(" ExpTree - Explorer Treeview - http://www.codeproject.com/Articles/8546/\n");
-            rtbBuildingBlocks.AppendText(" FileDownloader - http://codeproject.com/cs/library/downloader.asp\n");
-            rtbBuildingBlocks.AppendText(" log4Net - Logging utility. https://logging.apache.org/log4net/\n");
+            
+            rtbBuildingBlocks.AppendText(" NAudio - https://github.com/naudio/NAudio\n");
+            rtbBuildingBlocks.AppendText(" Math.Net Numerics- https://numerics.mathdotnet.com/\n");
+            rtbBuildingBlocks.AppendText(" SharpZipLib - https://github.com/icsharpcode/SharpZipLib\n");
+            rtbBuildingBlocks.AppendText(" Json.NET - https://www.newtonsoft.com/json\n");
+            rtbBuildingBlocks.AppendText(" SpreadsheetLight - https://spreadsheetlight.com/\n");
+
+            rtbBuildingBlocks.AppendText(" ExpTree - http://www.codeproject.com/Articles/8546/\n");
+            rtbBuildingBlocks.AppendText(" log4Net - https://logging.apache.org/log4net/\n");
             rtbBuildingBlocks.AppendText(" Silk Icon set - http://www.famfamfam.com/lab/icons/silk/\n");
             rtbBuildingBlocks.AppendText(" Fugue Icon set - http://p.yusukekamiyamane.com/\n");
         }

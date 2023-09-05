@@ -38,13 +38,17 @@ namespace Kinovea.ScreenManager
         private ViewportController controller;
         private Size referenceSize;             // Original image size after optional rotation.
         private Rectangle displayRectangle;     // Position and size of the region of the viewport where we draw the image.
-        private ImageManipulator manipulator = new ImageManipulator();
-
+        private ImageManipulator imageManipulator = new ImageManipulator();
+        
+        
         private ZoomHelper zoomHelper = new ZoomHelper();
         private List<EmbeddedButton> resizers = new List<EmbeddedButton>();
         private static Bitmap resizerBitmap = Properties.Resources.resizer;
         private static int resizerOffset = resizerBitmap.Width / 2;
         private int resizerIndex = -1;
+
+        private RecordingStatus recordingStatus;
+        private float recordingStatusProgress = 1.0f;
         private MessageToaster toaster;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -102,11 +106,18 @@ namespace Kinovea.ScreenManager
             toaster.SetDuration(duration);
             toaster.Show(message);
         }
+
+        public void UpdateRecordingIndicator(RecordingStatus status, float progress)
+        {
+            this.recordingStatus = status;
+            this.recordingStatusProgress = progress;
+        }
         
         #region Drawing
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
+            DrawRecordingIndicator(e.Graphics);
             
             if(controller.Bitmap == null)
                 return;
@@ -150,6 +161,55 @@ namespace Kinovea.ScreenManager
                 controller.DrawKVA(canvas, displayRectangle.Location, zoom);
             }
         }
+        private void DrawRecordingIndicator(Graphics canvas)
+        {
+            // Draw the recording status banner/reverse progress bar.
+            Color bannerColor = GetBannerColor(recordingStatus);
+            int bannerHeight = GetBannerHeight(recordingStatus);
+            int progressPixels = (int)(recordingStatusProgress * this.Width);
+            
+            using (SolidBrush brush = new SolidBrush(bannerColor))
+            {
+                canvas.FillRectangle(brush, new Rectangle(0, 0, progressPixels, bannerHeight));
+            }
+        }
+
+        private Color GetBannerColor(RecordingStatus status)
+        {
+            switch (status)
+            {
+                case RecordingStatus.Disconnected:
+                    return Color.DarkOrchid;
+                case RecordingStatus.Paused:
+                    return Color.Khaki;
+                case RecordingStatus.Armed:
+                    return Color.LightGreen;
+                case RecordingStatus.Recording:
+                    return Color.Red;
+                case RecordingStatus.Disarmed:
+                case RecordingStatus.Quiet:
+                default:
+                    return Color.SkyBlue;
+            }
+        }
+
+        private int GetBannerHeight(RecordingStatus status)
+        {
+            switch (status)
+            {
+                case RecordingStatus.Recording:
+                    return 50;
+                case RecordingStatus.Disconnected:
+                case RecordingStatus.Armed:
+                case RecordingStatus.Quiet:
+                    return 25;
+                case RecordingStatus.Paused:
+                case RecordingStatus.Disarmed:
+                default:
+                    return 10;
+            }
+        }
+        
         private void DrawResizers(Graphics canvas)
         {
             foreach(EmbeddedButton resizer in resizers)
@@ -162,24 +222,42 @@ namespace Kinovea.ScreenManager
         {
             base.OnMouseDown(e);
 
-            if (e.Button == MouseButtons.Left)
+            if (e.Button == MouseButtons.Left || e.Button == MouseButtons.Middle)
                 OnMouseLeftDown(e);
             else if (e.Button == MouseButtons.Right)
                 OnMouseRightDown(e);
         }
-        
+
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
             this.Focus();
-            
-            if(controller.Bitmap == null)
+
+            if (controller.Bitmap == null)
                 return;
 
-            if(e.Button == MouseButtons.Left)
-                OnMouseLeftMove(e);
-            else if(e.Button == MouseButtons.None)
-                OnMouseNoneMove(e);
+            if (e.Button == MouseButtons.None && controller.MetadataManipulator.DrawingInitializing)
+            {
+                controller.OnMouseMove(e, ModifierKeys, displayRectangle.Location, zoomHelper.Value);
+            }
+            else if (e.Button == MouseButtons.Left || e.Button == MouseButtons.Middle)
+            {
+                if (imageManipulator.Started)
+                {
+                    bool sticky = true;
+                    imageManipulator.Move(e, sticky, this.Size, referenceSize);
+                    displayRectangle = imageManipulator.DisplayRectangle;
+                    AfterDisplayRectangleChanged();
+                }
+                else
+                {
+                    controller.OnMouseMove(e, ModifierKeys, displayRectangle.Location, zoomHelper.Value);
+                }
+            }
+            else 
+            {
+                UpdateCursor(e.Location);
+            }
         }
         
         protected override void OnMouseUp(MouseEventArgs e)
@@ -189,8 +267,18 @@ namespace Kinovea.ScreenManager
             if(controller.Bitmap == null)
                 return;
 
-            controller.OnMouseUp(e.Location, ModifierKeys, displayRectangle.Location, zoomHelper.Value);
-            manipulator.End();
+            imageManipulator.End();
+
+            if (e.Button == MouseButtons.Middle)
+            {
+                UpdateCursor(e.Location);
+                return;
+            }
+
+            if (e.Button != MouseButtons.Left)
+                return;
+
+            controller.OnMouseUp(e, ModifierKeys, displayRectangle.Location, zoomHelper.Value);
 
             // TODO: do not call this if we are not resizing.
             ForceZoomValue();
@@ -207,8 +295,8 @@ namespace Kinovea.ScreenManager
             Point mouse = this.PointToClient(Control.MousePosition);
             if(displayRectangle.Contains(mouse))
             {
-                manipulator.Expand(referenceSize, displayRectangle, this.Size);
-                displayRectangle = manipulator.DisplayRectangle;
+                imageManipulator.Expand(referenceSize, displayRectangle, this.Size);
+                displayRectangle = imageManipulator.DisplayRectangle;
                 AfterDisplayRectangleChanged();
                 ForceZoomValue();
                 controller.UpdateDisplayRectangle(displayRectangle);
@@ -269,16 +357,7 @@ namespace Kinovea.ScreenManager
         
         private void ToastZoom()
         {
-            string message = "";
-            if (zoomHelper.Value <= 1.0f)
-                message = string.Format("{0:0}%", Math.Round(zoomHelper.Value * 100));
-            else if (zoomHelper.Value < 10.0f)
-                message = string.Format("{0:0.0}x", Math.Round(zoomHelper.Value, 1));
-            else
-                message = string.Format("{0:0}x", Math.Round(zoomHelper.Value));
-
-            message = string.Format("Zoom:{0}", message);
-
+            string message = string.Format("Zoom:{0}", zoomHelper.GetLabel());
             ToastMessage(message, 750);
         }
         
@@ -384,32 +463,34 @@ namespace Kinovea.ScreenManager
         
         private void OnMouseLeftDown(MouseEventArgs e)
         {
-            if(controller.Bitmap == null)
+            if(controller.Bitmap == null || imageManipulator.Started)
                 return;
                 
-            if(manipulator.Started)
-                return;
-            
+            // Resize image.
             int hit = HitTestResizers(e.Location);
             if(hit > 0)
             {
                 // Cursor should be resizer cursor.
-                manipulator.Start(e.Location, hit, displayRectangle);
+                imageManipulator.Start(e.Location, hit, displayRectangle);
                 return;
             }
             
-            bool handled = controller.OnMouseLeftDown(e.Location, displayRectangle.Location, zoomHelper.Value);
+            // Create a new drawing,
+            // start moving an existing drawing or a handle,
+            // continue initializing a multi-step drawing.
+            bool handled = controller.OnMouseDown(e, displayRectangle.Location, zoomHelper.Value);
             if(handled)
             {
                 Cursor = controller.GetCursor(zoomHelper.Value);
                 return;
             }
             
+            // Start moving image.
             hit = HitTestImage(e.Location);
             if(hit == 0)
             {
-                manipulator.Start(e.Location, hit, displayRectangle);
-                Cursor = manipulator.GetCursorClosedHand();
+                imageManipulator.Start(e.Location, hit, displayRectangle);
+                Cursor = imageManipulator.GetCursorClosedHand();
             }
         }
         
@@ -421,24 +502,6 @@ namespace Kinovea.ScreenManager
             controller.OnMouseRightDown(e.Location, displayRectangle.Location, zoomHelper.Value);
         }
         
-        private void OnMouseLeftMove(MouseEventArgs e)
-        {
-            if(manipulator.Started)
-            {
-                bool sticky = true;
-                manipulator.Move(e.Location, sticky, this.Size, referenceSize);
-                displayRectangle = manipulator.DisplayRectangle;
-                AfterDisplayRectangleChanged();
-                return;
-            }
-            
-            controller.OnMouseLeftMove(e.Location, ModifierKeys, displayRectangle.Location, zoomHelper.Value);
-        }
-        
-        private void OnMouseNoneMove(MouseEventArgs e)
-        {
-            UpdateCursor(e.Location);
-        }
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);

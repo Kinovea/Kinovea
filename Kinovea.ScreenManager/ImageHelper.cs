@@ -95,7 +95,12 @@ namespace Kinovea.ScreenManager
 
             return new Bitmap(memStr);
         }
-        public static Bitmap GetSideBySideComposite(Bitmap leftImage, Bitmap rightImage, bool video, bool horizontal)
+
+        /// <summary>
+        /// Composite the two images side by side either horizontally or vertically.
+        /// If `isVideo` is true, the final width and height may be cropped to be a multiple of 4.
+        /// </summary>
+        public static Bitmap GetSideBySideComposite(Bitmap leftImage, Bitmap rightImage, bool isVideo, bool horizontal)
         {
             Bitmap composite = null;
             
@@ -105,7 +110,7 @@ namespace Kinovea.ScreenManager
                 int height = Math.Max(leftImage.Height, rightImage.Height);
                 int width = leftImage.Width + rightImage.Width;
 
-                if (video)
+                if (isVideo)
                 {
                     if (height % 2 != 0)
                         height++;
@@ -136,7 +141,7 @@ namespace Kinovea.ScreenManager
                 int height = leftImage.Height + rightImage.Height;
                 int width = Math.Max(leftImage.Width, rightImage.Width);
 
-                if (video)
+                if (isVideo)
                 {
                     if (height % 2 != 0)
                         height++;

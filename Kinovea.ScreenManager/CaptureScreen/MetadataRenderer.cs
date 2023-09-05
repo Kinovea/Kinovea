@@ -1,12 +1,12 @@
 ﻿#region License
 /*
 Copyright © Joan Charmant 2013.
-jcharmant@gmail.com 
- 
+jcharmant@gmail.com
+
 This file is part of Kinovea.
 
 Kinovea is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License version 2 
+it under the terms of the GNU General Public License version 2
 as published by the Free Software Foundation.
 
 Kinovea is distributed in the hope that it will be useful,
@@ -33,26 +33,26 @@ namespace Kinovea.ScreenManager
     {
         private Metadata metadata;
         private bool renderTimedDrawings = true;
-    
+
         public MetadataRenderer(Metadata metadata, bool renderTimedDrawings)
         {
             this.metadata = metadata;
             this.renderTimedDrawings = renderTimedDrawings;
         }
-    
+
         public void Render(Graphics viewportCanvas, Point imageLocation, float imageZoom, long timestamp)
         {
             if(metadata == null)
                 return;
 
             IImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
-            
+
             viewportCanvas.SmoothingMode = SmoothingMode.AntiAlias;
             RenderExtraDrawings(metadata, timestamp, viewportCanvas, transformer);
             RenderDrawings(metadata, timestamp, viewportCanvas, transformer);
             //RenderMagnifier();
         }
-        
+
         private void RenderExtraDrawings(Metadata metadata, long timestamp, Graphics canvas, IImageToViewportTransformer transformer)
         {
             DistortionHelper distorter = null;
@@ -63,8 +63,8 @@ namespace Kinovea.ScreenManager
 
             if (renderTimedDrawings)
             {
-                metadata.SpotlightManager.Draw(canvas, distorter, camTransformer, transformer, false, timestamp);
-                metadata.AutoNumberManager.Draw(canvas, distorter, camTransformer, transformer, false, timestamp);
+                metadata.DrawingSpotlight.Draw(canvas, distorter, camTransformer, transformer, false, timestamp);
+                metadata.DrawingNumberSequence.Draw(canvas, distorter, camTransformer, transformer, false, timestamp);
             }
 
             if (renderTimedDrawings)

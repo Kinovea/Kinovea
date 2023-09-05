@@ -1,12 +1,12 @@
-#region License
+ï»¿#region License
 /*
-Copyright © Joan Charmant 2008.
-jcharmant@gmail.com 
- 
+Copyright Â© Joan Charmant 2008.
+jcharmant@gmail.com
+
 This file is part of Kinovea.
 
 Kinovea is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License version 2 
+it under the terms of the GNU General Public License version 2
 as published by the Free Software Foundation.
 
 Kinovea is distributed in the hope that it will be useful,
@@ -70,34 +70,51 @@ namespace Kinovea.ScreenManager
         private IEnumerable<CaptureScreen> captureScreens;
         private AbstractScreen activeScreen = null;
         private bool canShowCommonControls;
-        private int dualLaunchSettingsPendingCountdown;
+        private int pendingPlayerLoads;
+        private bool launchLoadingInProgress;
         private List<string> camerasToDiscover = new List<string>();
         private AudioInputLevelMonitor audioInputLevelMonitor = new AudioInputLevelMonitor();
-        
-        // Video Filters
-        private bool hasSvgFiles;
-        private string svgPath;
-        private FileSystemWatcher svgFilesWatcher = new FileSystemWatcher();
-        private bool buildingSVGMenu;
-        private List<ToolStripMenuItem> filterMenus = new List<ToolStripMenuItem>();
-        
+
         #region Menus
-        private ToolStripMenuItem mnuCloseFile = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuCloseFile2 = new ToolStripMenuItem();
+
+        // File
+        private ToolStripMenuItem mnuLoadAnalysis = new ToolStripMenuItem();
+
         private ToolStripMenuItem mnuSave = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSaveAs = new ToolStripMenuItem();
+
         private ToolStripMenuItem mnuExportVideo = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportVideoVideo = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportVideoSlideshow = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportVideoWithPauses = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportVideoSideBySide = new ToolStripMenuItem();
+
+        private ToolStripMenuItem mnuExportImage = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportImageImage = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportImageKeys = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportImageSequence = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportImageSideBySide = new ToolStripMenuItem();
+
         private ToolStripMenuItem mnuExportSpreadsheet = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportODS = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportXLSX = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportCSVTrajectory = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportCSVChronometer = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportJSON = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuExportCSV = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuLoadAnalysis = new ToolStripMenuItem();
+
+        private ToolStripMenuItem mnuExportDocument = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportODT = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportDOCX = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportMarkdown = new ToolStripMenuItem();
+
+        private ToolStripMenuItem mnuCloseFile = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuCloseFile2 = new ToolStripMenuItem();
 
         private ToolStripMenuItem mnuCutDrawing = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCopyDrawing = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPasteDrawing = new ToolStripMenuItem();
-        
+
+        // View
         private ToolStripMenuItem mnuOnePlayer = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTwoPlayers = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOneCapture = new ToolStripMenuItem();
@@ -106,6 +123,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuSwapScreens = new ToolStripMenuItem();
         private ToolStripMenuItem mnuToggleCommonCtrls = new ToolStripMenuItem();
 
+        // Image
         private ToolStripMenuItem mnuDeinterlace = new ToolStripMenuItem();
 
         private ToolStripMenuItem mnuDemosaic = new ToolStripMenuItem();
@@ -115,10 +133,10 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuDemosaicGRBG = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDemosaicGBRG = new ToolStripMenuItem();
 
-        private ToolStripMenuItem mnuFormat = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuFormatAuto = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuFormatForce43 = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuFormatForce169 = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuAspectRatio = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuAspectRatioAuto = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuAspectRatioForce43 = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuAspectRatioForce169 = new ToolStripMenuItem();
 
         private ToolStripMenuItem mnuRotation = new ToolStripMenuItem();
         private ToolStripMenuItem mnuRotation0 = new ToolStripMenuItem();
@@ -129,13 +147,15 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuMirror = new ToolStripMenuItem();
         private ToolStripMenuItem mnuForegroundColor = new ToolStripMenuItem();
 
-        private ToolStripMenuItem mnuTimebase = new ToolStripMenuItem();
+        // Video
+        private List<ToolStripMenuItem> filterMenus = new List<ToolStripMenuItem>();
 
-        private ToolStripMenuItem mnuSVGTools = new ToolStripMenuItem();
+        // Tools
         private ToolStripMenuItem mnuImportImage = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuTimeCalibration = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuCoordinateSystem = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuLensDistortion = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTestGrid = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuCoordinateAxis = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuCameraCalibration = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTrajectoryAnalysis = new ToolStripMenuItem();
         private ToolStripMenuItem mnuScatterDiagram = new ToolStripMenuItem();
         private ToolStripMenuItem mnuAngularAnalysis = new ToolStripMenuItem();
@@ -144,15 +164,16 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Toolbar
-        private ToolStripButton toolHome = new ToolStripButton();
         private ToolStripButton toolSave = new ToolStripButton();
+        private ToolStripButton toolToggleExplorerPanel = new ToolStripButton();
+        private ToolStripButton toolThumbnails = new ToolStripButton();
         private ToolStripButton toolOnePlayer = new ToolStripButton();
         private ToolStripButton toolTwoPlayers = new ToolStripButton();
         private ToolStripButton toolOneCapture = new ToolStripButton();
         private ToolStripButton toolTwoCaptures = new ToolStripButton();
         private ToolStripButton toolTwoMixed = new ToolStripButton();
         #endregion
-        
+
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -168,6 +189,8 @@ namespace Kinovea.ScreenManager
 
             CameraTypeManager.CameraLoadAsked += CameraTypeManager_CameraLoadAsked;
             VideoTypeManager.VideoLoadAsked += VideoTypeManager_VideoLoadAsked;
+            dualPlayer.ExportImageAsked += (s, e) => ExportImages(ImageExportFormat.SideBySide);
+            dualPlayer.ExportVideoAsked += (s, e) => ExportVideo(VideoExportFormat.SideBySide);
 
             audioInputLevelMonitor.Enabled = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger;
             audioInputLevelMonitor.Threshold = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioTriggerThreshold;
@@ -175,7 +198,6 @@ namespace Kinovea.ScreenManager
             audioInputLevelMonitor.DeviceLost += (s, e) => AudioDeviceLost();
 
             InitializeVideoFilters();
-            InitializeGuideWatcher();
 
             NotificationCenter.StopPlayback += (s, e) => DoStopPlaying();
             NotificationCenter.PreferencesOpened += NotificationCenter_PreferencesOpened;
@@ -187,6 +209,7 @@ namespace Kinovea.ScreenManager
 
         private void InitializeVideoFilters()
         {
+            filterMenus.Add(CreateFilterMenu(VideoFilterType.None));
             filterMenus.Add(CreateFilterMenu(VideoFilterType.Kinogram));
             filterMenus.Add(CreateFilterMenu(VideoFilterType.CameraMotion));
         }
@@ -203,30 +226,20 @@ namespace Kinovea.ScreenManager
                     return;
 
                 VideoFilterType filterType = (VideoFilterType)((ToolStripMenuItem)s).Tag;
-                if (filterType == screen.ActiveVideoFilterType)
+                if (filterType == VideoFilterType.None)
+                {
                     screen.DeactivateVideoFilter();
+                }
                 else
-                    screen.ActivateVideoFilter(filterType);
+                {
+                    if (filterType != screen.ActiveVideoFilterType)
+                        screen.ActivateVideoFilter(filterType);
+                }
 
                 OrganizeMenus();
             };
 
             return menu;
-        }
-
-        private void InitializeGuideWatcher()
-        {
-            svgPath = Path.GetDirectoryName(Application.ExecutablePath) + "\\guides\\";
-            svgFilesWatcher.Path = svgPath;
-            svgFilesWatcher.NotifyFilter = NotifyFilters.DirectoryName | NotifyFilters.FileName | NotifyFilters.LastWrite;
-            svgFilesWatcher.Filter = "*.svg";
-            svgFilesWatcher.IncludeSubdirectories = true;
-            svgFilesWatcher.EnableRaisingEvents = true;
-
-            svgFilesWatcher.Changed += OnSVGFilesChanged;
-            svgFilesWatcher.Created += OnSVGFilesChanged;
-            svgFilesWatcher.Deleted += OnSVGFilesChanged;
-            svgFilesWatcher.Renamed += OnSVGFilesChanged;
         }
 
         public void RecoverCrash()
@@ -279,61 +292,129 @@ namespace Kinovea.ScreenManager
             mnuCatchFile.MergeIndex = 0; // (File)
             mnuCatchFile.MergeAction = MergeAction.MatchOnly;
 
+            // Open video = 0
+            // Open instant replay = 1
+            int index = 2;
+
             // Load Analysis
             mnuLoadAnalysis.Image = Properties.Resources.file_kva2;
             mnuLoadAnalysis.Click += mnuLoadAnalysisOnClick;
-            mnuLoadAnalysis.MergeIndex = 2;
+            mnuLoadAnalysis.MergeIndex = index;
             mnuLoadAnalysis.MergeAction = MergeAction.Insert;
 
             //----
-
+            // Recent = 3
+            // Separator = 4
+            index = 5;
             mnuSave.Image = Properties.Resources.filesave;
             mnuSave.Click += new EventHandler(mnuSaveOnClick);
             mnuSave.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S;
-            mnuSave.MergeIndex = 5;
+            mnuSave.MergeIndex = index;
             mnuSave.MergeAction = MergeAction.Insert;
 
+            index = 6;
             mnuSaveAs.Image = Properties.Resources.filesave;
             mnuSaveAs.Click += new EventHandler(mnuSaveAsOnClick);
-            mnuSaveAs.MergeIndex = 6;
+            mnuSaveAs.MergeIndex = index;
             mnuSaveAs.MergeAction = MergeAction.Insert;
 
-            mnuExportVideo.Image = Properties.Resources.film_save;
-            mnuExportVideo.Click += new EventHandler(mnuExportVideoOnClick);
-            mnuExportVideo.MergeIndex = 7;
-            mnuExportVideo.MergeAction = MergeAction.Insert;
+            //----
+            // Separator = 7
 
-            mnuExportSpreadsheet.Image = Properties.Resources.table;
-            mnuExportSpreadsheet.MergeIndex = 8;
+            index = 8;
+            mnuExportVideo.Image = Properties.Resources.film_save;
+            mnuExportVideo.MergeIndex = index;
+            mnuExportVideo.MergeAction = MergeAction.Insert;
+            mnuExportVideoVideo.Image = Properties.Resources.export_video_video;
+            mnuExportVideoSlideshow.Image = Properties.Resources.export_video_slideshow;
+            mnuExportVideoWithPauses.Image = Properties.Resources.export_video_with_pauses;
+            mnuExportVideoSideBySide.Image = Properties.Resources.export_video_sidebyside;
+            mnuExportVideoVideo.Click += (s, e) => ExportVideo(VideoExportFormat.Video);
+            mnuExportVideoSlideshow.Click += (s, e) => ExportVideo(VideoExportFormat.VideoSlideShow);
+            mnuExportVideoWithPauses.Click += (s, e) => ExportVideo(VideoExportFormat.VideoWithPauses);
+            mnuExportVideoSideBySide.Click += (s, e) => ExportVideo(VideoExportFormat.SideBySide);
+            mnuExportVideo.DropDownItems.AddRange(new ToolStripItem[] {
+                mnuExportVideoVideo,
+                mnuExportVideoSlideshow,
+                mnuExportVideoWithPauses,
+                mnuExportVideoSideBySide,
+            });
+
+            index = 9;
+            mnuExportImage.Image = Properties.Resources.picture_save;
+            mnuExportImage.MergeIndex = index;
+            mnuExportImage.MergeAction = MergeAction.Insert;
+            mnuExportImageImage.Image = Properties.Resources.image;
+            mnuExportImageSequence.Image = Properties.Resources.images;
+            mnuExportImageKeys.Image = Properties.Resources.export_image_keys;
+            mnuExportImageSideBySide.Image = Properties.Resources.export_image_sidebyside;
+            mnuExportImageImage.Click += (s, e) => ExportImages(ImageExportFormat.Image);
+            mnuExportImageSequence.Click += (s, e) => ExportImages(ImageExportFormat.ImageSequence);
+            mnuExportImageKeys.Click += (s, e) => ExportImages(ImageExportFormat.KeyImages);
+            mnuExportImageSideBySide.Click += (s, e) => ExportImages(ImageExportFormat.SideBySide);
+            mnuExportImage.DropDownItems.AddRange(new ToolStripItem[] {
+                mnuExportImageImage,
+                mnuExportImageSequence,
+                mnuExportImageKeys,
+                mnuExportImageSideBySide,
+            });
+
+            index = 10;
+            mnuExportDocument.Image = Properties.Resources.export_document;
+            mnuExportDocument.MergeIndex = index;
+            mnuExportDocument.MergeAction = MergeAction.Insert;
+            mnuExportODT.Image = Properties.Resources.file_odt;
+            mnuExportDOCX.Image = Properties.Resources.file_doc;
+            mnuExportMarkdown.Image = Properties.Resources.file_markdown;
+            mnuExportODT.Click += (s, e) => ExportDocument(DocumentExportFormat.ODT);
+            mnuExportDOCX.Click += (s, e) => ExportDocument(DocumentExportFormat.DOCX);
+            mnuExportMarkdown.Click += (s, e) => ExportDocument(DocumentExportFormat.Mardown);
+            mnuExportDocument.DropDownItems.AddRange(new ToolStripItem[] {
+                mnuExportODT,
+                mnuExportDOCX,
+                new ToolStripSeparator(),
+                mnuExportMarkdown,
+            });
+
+            index = 11;
+            mnuExportSpreadsheet.Image = Properties.Resources.export_spreadsheet;
+            mnuExportSpreadsheet.MergeIndex = index;
             mnuExportSpreadsheet.MergeAction = MergeAction.Insert;
             mnuExportODS.Image = Properties.Resources.file_ods;
-            mnuExportODS.Click += new EventHandler(mnuExportODS_OnClick);
             mnuExportXLSX.Image = Properties.Resources.file_xls;
-            mnuExportXLSX.Click += new EventHandler(mnuExportXLSX_OnClick);
-            mnuExportJSON.Image = Properties.Resources.table;
-            mnuExportJSON.Click += new EventHandler(mnuExportJSON_OnClick);
-            mnuExportCSV.Image = Properties.Resources.table;
-            mnuExportCSV.Click += new EventHandler(mnuExportCSV_OnClick);
-            mnuExportSpreadsheet.DropDownItems.AddRange(new ToolStripItem[] { 
-                mnuExportODS, 
-                mnuExportXLSX, 
+            mnuExportCSVTrajectory.Image = Properties.Resources.file_csv;
+            mnuExportCSVChronometer.Image = Properties.Resources.file_csv;
+            mnuExportJSON.Image = Properties.Resources.json;
+            mnuExportODS.Click += (s, e) => ExportSpreadsheet(SpreadsheetExportFormat.ODS);
+            mnuExportXLSX.Click += (s, e) => ExportSpreadsheet(SpreadsheetExportFormat.XLSX);
+            mnuExportCSVTrajectory.Click += (s, e) => ExportSpreadsheet(SpreadsheetExportFormat.CSVTrajectory);
+            mnuExportCSVChronometer.Click += (s, e) => ExportSpreadsheet(SpreadsheetExportFormat.CSVChronometer);
+            mnuExportJSON.Click += (s, e) => ExportSpreadsheet(SpreadsheetExportFormat.JSON);
+            mnuExportSpreadsheet.DropDownItems.AddRange(new ToolStripItem[] {
+                mnuExportODS,
+                mnuExportXLSX,
+                mnuExportCSVTrajectory,
+                mnuExportCSVChronometer,
+                new ToolStripSeparator(),
                 mnuExportJSON,
-                mnuExportCSV,
             });
 
             //------------------------
+            // Separator = 12
 
-            mnuCloseFile.Image = Properties.Resources.film_close3;
+            index = 13;
+            mnuCloseFile.Image = Properties.Resources.closeplayer;
             mnuCloseFile.Enabled = false;
             mnuCloseFile.Click += new EventHandler(mnuCloseFileOnClick);
-            mnuCloseFile.MergeIndex = 10;
+            mnuCloseFile.MergeIndex = index;
             mnuCloseFile.MergeAction = MergeAction.Insert;
 
-            mnuCloseFile2.Image = Properties.Resources.film_close3;
+            index = 14;
+            mnuCloseFile2.Image = Properties.Resources.closeplayer;
             mnuCloseFile2.Enabled = false;
             mnuCloseFile2.Visible = false;
             mnuCloseFile2.Click += new EventHandler(mnuCloseFile2OnClick);
-            mnuCloseFile2.MergeIndex = 11;
+            mnuCloseFile2.MergeIndex = index;
             mnuCloseFile2.MergeAction = MergeAction.Insert;
 
             //--------------------
@@ -346,7 +427,10 @@ namespace Kinovea.ScreenManager
                 // ----
                 mnuSave,
                 mnuSaveAs,
+                // ----
                 mnuExportVideo,
+                mnuExportImage,
+                mnuExportDocument,
                 mnuExportSpreadsheet,
                 //----
                 mnuCloseFile,
@@ -372,8 +456,13 @@ namespace Kinovea.ScreenManager
             mnuPasteDrawing.Image = Properties.Drawings.paste;
             mnuPasteDrawing.Click += new EventHandler(mnuPasteDrawing_OnClick);
             mnuPasteDrawing.MergeAction = MergeAction.Append;
-            
-            ToolStripItem[] subEdit = new ToolStripItem[] { new ToolStripSeparator(), mnuCutDrawing, mnuCopyDrawing, mnuPasteDrawing };
+
+            ToolStripItem[] subEdit = new ToolStripItem[] {
+                new ToolStripSeparator(),
+                mnuCutDrawing,
+                mnuCopyDrawing,
+                mnuPasteDrawing
+            };
             mnuCatchEdit.DropDownItems.AddRange(subEdit);
             #endregion
 
@@ -397,27 +486,27 @@ namespace Kinovea.ScreenManager
             mnuTwoMixed.Image = Properties.Resources.dualmixed3;
             mnuTwoMixed.Click += new EventHandler(mnuTwoMixedOnClick);
             mnuTwoMixed.MergeAction = MergeAction.Append;
-                        
+
             mnuSwapScreens.Image = Properties.Resources.flatswap3d;
             mnuSwapScreens.Enabled = false;
             mnuSwapScreens.Click += new EventHandler(mnuSwapScreensOnClick);
             mnuSwapScreens.MergeAction = MergeAction.Append;
-            
+
             mnuToggleCommonCtrls.Image = Properties.Resources.common_controls;
             mnuToggleCommonCtrls.Enabled = false;
             mnuToggleCommonCtrls.ShortcutKeys = Keys.F5;
             mnuToggleCommonCtrls.Click += new EventHandler(mnuToggleCommonCtrlsOnClick);
             mnuToggleCommonCtrls.MergeAction = MergeAction.Append;
-            
+
             ToolStripItem[] subScreens = new ToolStripItem[] { 		mnuOnePlayer,
                                                                     mnuTwoPlayers,
                                                                     new ToolStripSeparator(),
-                                                                    mnuOneCapture, 
+                                                                    mnuOneCapture,
                                                                     mnuTwoCaptures,
                                                                     new ToolStripSeparator(),
-                                                                    mnuTwoMixed, 
-                                                                    new ToolStripSeparator(), 
-                                                                    mnuSwapScreens, 
+                                                                    mnuTwoMixed,
+                                                                    new ToolStripSeparator(),
+                                                                    mnuSwapScreens,
                                                                     mnuToggleCommonCtrls };
             mnuCatchScreens.DropDownItems.AddRange(subScreens);
             #endregion
@@ -426,7 +515,7 @@ namespace Kinovea.ScreenManager
             ToolStripMenuItem mnuCatchImage = new ToolStripMenuItem();
             mnuCatchImage.MergeIndex = 3; // (Image)
             mnuCatchImage.MergeAction = MergeAction.MatchOnly;
-            
+
             mnuDeinterlace.Image = Properties.Resources.deinterlace;
             mnuDeinterlace.Checked = false;
             mnuDeinterlace.ShortcutKeys = Keys.Control | Keys.D;
@@ -445,19 +534,19 @@ namespace Kinovea.ScreenManager
             mnuDemosaic.Image = Properties.Resources.rggb;
             mnuDemosaic.MergeAction = MergeAction.Append;
             mnuDemosaic.DropDownItems.AddRange(new ToolStripItem[] { mnuDemosaicNone, new ToolStripSeparator(), mnuDemosaicRGGB, mnuDemosaicBGGR, mnuDemosaicGRBG, mnuDemosaicGBRG });
-            
-            mnuFormatAuto.Checked = true;
-            mnuFormatAuto.Click += mnuFormatAutoOnClick;
-            mnuFormatAuto.MergeAction = MergeAction.Append;
-            mnuFormatForce43.Image = Properties.Resources.format43;
-            mnuFormatForce43.Click += mnuFormatForce43OnClick;
-            mnuFormatForce43.MergeAction = MergeAction.Append;
-            mnuFormatForce169.Image = Properties.Resources.format169;
-            mnuFormatForce169.Click += mnuFormatForce169OnClick;
-            mnuFormatForce169.MergeAction = MergeAction.Append;
-            mnuFormat.Image = Properties.Resources.shape_formats;
-            mnuFormat.MergeAction = MergeAction.Append;
-            mnuFormat.DropDownItems.AddRange(new ToolStripItem[] { mnuFormatAuto, new ToolStripSeparator(), mnuFormatForce43, mnuFormatForce169});
+
+            mnuAspectRatioAuto.Checked = true;
+            mnuAspectRatioAuto.Click += mnuFormatAutoOnClick;
+            mnuAspectRatioAuto.MergeAction = MergeAction.Append;
+            mnuAspectRatioForce43.Image = Properties.Resources.format43;
+            mnuAspectRatioForce43.Click += mnuFormatForce43OnClick;
+            mnuAspectRatioForce43.MergeAction = MergeAction.Append;
+            mnuAspectRatioForce169.Image = Properties.Resources.format169;
+            mnuAspectRatioForce169.Click += mnuFormatForce169OnClick;
+            mnuAspectRatioForce169.MergeAction = MergeAction.Append;
+            mnuAspectRatio.Image = Properties.Resources.shape_formats;
+            mnuAspectRatio.MergeAction = MergeAction.Append;
+            mnuAspectRatio.DropDownItems.AddRange(new ToolStripItem[] { mnuAspectRatioAuto, new ToolStripSeparator(), mnuAspectRatioForce43, mnuAspectRatioForce169});
 
             mnuRotation0.Click += mnuRotation0_Click;
             mnuRotation90.Image = Properties.Resources.rotate90;
@@ -480,24 +569,13 @@ namespace Kinovea.ScreenManager
             mnuForegroundColor.Click += mnuForegroundColor_Click;
             mnuForegroundColor.MergeAction = MergeAction.Append;
 
-            ConfigureVideoFilterMenus(null);
 
-            mnuCatchImage.DropDownItems.Add(mnuFormat);
+            mnuCatchImage.DropDownItems.Add(mnuAspectRatio);
             mnuCatchImage.DropDownItems.Add(mnuRotation);
             mnuCatchImage.DropDownItems.Add(mnuMirror);
-            mnuCatchImage.DropDownItems.Add(mnuDemosaic);
             mnuCatchImage.DropDownItems.Add(mnuDeinterlace);
+            mnuCatchImage.DropDownItems.Add(mnuDemosaic);
             mnuCatchImage.DropDownItems.Add(mnuForegroundColor);
-            //mnuCatchImage.DropDownItems.Add(new ToolStripSeparator());
-
-            // Temporary hack for including filters sub menus until a full plugin system is in place.
-            // We just check on their type. Ultimately each plugin will have a category or a submenu property.
-            //foreach(ToolStripMenuItem m in filterMenus)
-            //{
-            //    if (m.Tag is AdjustmentFilter)
-            //        mnuCatchImage.DropDownItems.Add(m);
-            //}
-
             #endregion
 
             #region Video
@@ -505,16 +583,12 @@ namespace Kinovea.ScreenManager
             mnuCatchVideo.MergeIndex = 4;
             mnuCatchVideo.MergeAction = MergeAction.MatchOnly;
 
-            mnuTimebase.Image = Properties.Resources.camera_speed;
-            mnuTimebase.Click += new EventHandler(mnuTimebase_OnClick);
-            mnuTimebase.MergeAction = MergeAction.Append;
-            
-            mnuCatchVideo.DropDownItems.Add(mnuTimebase);
+            ConfigureVideoFilterMenus(null);
+            mnuCatchVideo.DropDownItems.Add(filterMenus[0]);
             mnuCatchVideo.DropDownItems.Add(new ToolStripSeparator());
-            foreach(ToolStripMenuItem m in filterMenus)
-            {
-                mnuCatchVideo.DropDownItems.Add(m);
-            }
+            for (int i = 1; i < filterMenus.Count; i++)
+                mnuCatchVideo.DropDownItems.Add(filterMenus[i]);
+
             #endregion
 
             #region Tools
@@ -522,27 +596,33 @@ namespace Kinovea.ScreenManager
             mnuCatchTools.MergeIndex = 5;
             mnuCatchTools.MergeAction = MergeAction.MatchOnly;
 
-            BuildSvgMenu();
+            mnuImportImage.Image = Properties.Resources.image;
+            mnuImportImage.Click += new EventHandler(mnuImportImage_OnClick);
+            mnuImportImage.MergeAction = MergeAction.Append;
+
+            mnuTimeCalibration.Image = Properties.Drawings.clock_frame;
+            mnuTimeCalibration.Click += new EventHandler(mnuTimebase_OnClick);
+            mnuTimeCalibration.MergeAction = MergeAction.Append;
+
+            mnuLensDistortion.Image = Properties.Resources.checkerboard;
+            mnuLensDistortion.Click += mnuLensDistortion_OnClick;
+            mnuLensDistortion.MergeAction = MergeAction.Append;
+
+            mnuCoordinateSystem.Image = Properties.Resources.coordinate_axis;
+            mnuCoordinateSystem.Click += mnuCoordinateSystem_OnClick;
+            mnuCoordinateSystem.MergeAction = MergeAction.Append;
 
             mnuTestGrid.Image = Properties.Resources.grid2;
             mnuTestGrid.Click += mnuTestGrid_OnClick;
             mnuTestGrid.MergeAction = MergeAction.Append;
 
-            mnuCoordinateAxis.Image = Properties.Resources.coordinate_axis;
-            mnuCoordinateAxis.Click += mnuCoordinateAxis_OnClick;
-            mnuCoordinateAxis.MergeAction = MergeAction.Append;
-
-            mnuCameraCalibration.Image = Properties.Resources.checkerboard;
-            mnuCameraCalibration.Click += mnuCameraCalibration_OnClick;
-            mnuCameraCalibration.MergeAction = MergeAction.Append;
+            mnuScatterDiagram.Image = Properties.Resources.function;
+            mnuScatterDiagram.Click += mnuScatterDiagram_OnClick;
+            mnuScatterDiagram.MergeAction = MergeAction.Append;
 
             mnuTrajectoryAnalysis.Image = Properties.Resources.function;
             mnuTrajectoryAnalysis.Click += mnuTrajectoryAnalysis_OnClick;
             mnuTrajectoryAnalysis.MergeAction = MergeAction.Append;
-
-            mnuScatterDiagram.Image = Properties.Resources.function;
-            mnuScatterDiagram.Click += mnuScatterDiagram_OnClick;
-            mnuScatterDiagram.MergeAction = MergeAction.Append;
 
             mnuAngularAnalysis.Image = Properties.Resources.function;
             mnuAngularAnalysis.Click += mnuAngularAnalysis_OnClick;
@@ -552,11 +632,13 @@ namespace Kinovea.ScreenManager
             mnuAngleAngleAnalysis.Click += mnuAngleAngleAnalysis_OnClick;
             mnuAngleAngleAnalysis.MergeAction = MergeAction.Append;
 
-            mnuCatchTools.DropDownItems.AddRange(new ToolStripItem[] { 
-                mnuSVGTools, 
-                mnuTestGrid, 
-                mnuCoordinateAxis, 
-                mnuCameraCalibration, 
+            mnuCatchTools.DropDownItems.AddRange(new ToolStripItem[] {
+                mnuImportImage,
+                new ToolStripSeparator(),
+                mnuTimeCalibration,
+                mnuLensDistortion,
+                mnuCoordinateSystem,
+                mnuTestGrid,
                 new ToolStripSeparator(),
                 mnuScatterDiagram,
                 mnuTrajectoryAnalysis,
@@ -581,48 +663,52 @@ namespace Kinovea.ScreenManager
             toolSave.DisplayStyle = ToolStripItemDisplayStyle.Image;
             toolSave.Image = Properties.Resources.filesave;
             toolSave.Click += new EventHandler(mnuSaveOnClick);
-            
+
             // Workspace presets.
-            
-            toolHome.DisplayStyle = ToolStripItemDisplayStyle.Image;
-            toolHome.Image = Properties.Resources.home3;
-            toolHome.Click += new EventHandler(mnuHome_OnClick);
-            
+            toolToggleExplorerPanel.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolToggleExplorerPanel.Image = Properties.Resources.explorer;
+            toolToggleExplorerPanel.Click += toolToggleExplorerPanel_Click;
+
+            toolThumbnails.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolThumbnails.Image = Properties.Resources.home3;
+            toolThumbnails.Click += new EventHandler(mnuHome_OnClick);
+
             toolOnePlayer.DisplayStyle = ToolStripItemDisplayStyle.Image;
             toolOnePlayer.Image = Properties.Resources.television;
             toolOnePlayer.Click += new EventHandler(mnuOnePlayerOnClick);
-            
+
             toolTwoPlayers.DisplayStyle = ToolStripItemDisplayStyle.Image;
             toolTwoPlayers.Image = Properties.Resources.dualplayback;
             toolTwoPlayers.Click += new EventHandler(mnuTwoPlayersOnClick);
-            
+
             toolOneCapture.DisplayStyle = ToolStripItemDisplayStyle.Image;
             toolOneCapture.Image = Properties.Resources.camera_video;
             toolOneCapture.Click += new EventHandler(mnuOneCaptureOnClick);
-            
+
             toolTwoCaptures.DisplayStyle = ToolStripItemDisplayStyle.Image;
             toolTwoCaptures.Image = Properties.Resources.dualcapture2;
             toolTwoCaptures.Click += new EventHandler(mnuTwoCapturesOnClick);
-            
+
             toolTwoMixed.DisplayStyle = ToolStripItemDisplayStyle.Image;
             toolTwoMixed.Image = Properties.Resources.dualmixed3;
             toolTwoMixed.Click += new EventHandler(mnuTwoMixedOnClick);
-            
-            ToolStrip ts = new ToolStrip(new ToolStripItem[] { 
+
+            ToolStrip ts = new ToolStrip(new ToolStripItem[] {
                                             toolSave,
                                             new ToolStripSeparator(),
-                                            toolHome,
+                                            toolToggleExplorerPanel,
+                                            toolThumbnails,
                                             new ToolStripSeparator(),
                                             toolOnePlayer,
                                             toolTwoPlayers,
                                             new ToolStripSeparator(),
-                                            toolOneCapture, 
-                                            toolTwoCaptures, 
+                                            toolOneCapture,
+                                            toolTwoCaptures,
                                             new ToolStripSeparator(),
                                             toolTwoMixed });
-            
+
             ToolStripManager.Merge(ts, toolbar);
-            
+
         }
         public void ExtendStatusBar(ToolStrip statusbar)
         {
@@ -685,7 +771,7 @@ namespace Kinovea.ScreenManager
             RefreshUICulture();
         }
         #endregion
-        
+
         #region Event handlers for screens
         private void Screen_CloseAsked(object sender, EventArgs e)
         {
@@ -718,7 +804,9 @@ namespace Kinovea.ScreenManager
 
         private void Player_OpenVideoAsked(object sender, EventArgs e)
         {
-            string filename = FilePicker.OpenVideo();
+            string title = ScreenManagerLang.mnuOpenVideo;
+            string filter = ScreenManagerLang.FileFilter_All + "|*.*";
+            string filename = FilePicker.OpenVideo(title, filter);
             if (string.IsNullOrEmpty(filename))
                 return;
 
@@ -746,15 +834,36 @@ namespace Kinovea.ScreenManager
             int index = sender == screenList[0] ? 0 : 1;
             LoadAnalysis(index);
         }
+        private void Player_Loaded(object sender, EventArgs e)
+        {
+            if (!launchLoadingInProgress)
+            {
+                ResetSync();
+                OrganizeMenus();
+                return;
+            }
+
+            pendingPlayerLoads--;
+
+            log.DebugFormat("Player load event received in Screen manager. Remaining pending loads:{0}",
+                pendingPlayerLoads);
+
+            if (pendingPlayerLoads > 0)
+                return;
+
+            log.DebugFormat("Auto launch complete.");
+
+            launchLoadingInProgress = false;
+            ResetSync();
+            dualPlayer.CommitLaunchSettings();
+            OrganizeMenus();
+        }
         private void Player_SelectionChanged(object sender, EventArgs<bool> e)
         {
+            if (launchLoadingInProgress)
+                return;
+
             ResetSync();
-
-            dualLaunchSettingsPendingCountdown--;
-
-            if (dualLaunchSettingsPendingCountdown == 0)
-                dualPlayer.CommitLaunchSettings();
-
             OrganizeMenus();
         }
         private void Player_KVAImported(object sender, EventArgs e)
@@ -794,10 +903,10 @@ namespace Kinovea.ScreenManager
         }
         private void CCtrl_SwapAsked(object sender, EventArgs e)
         {
-            mnuSwapScreensOnClick(null, EventArgs.Empty);	
+            mnuSwapScreensOnClick(null, EventArgs.Empty);
         }
         #endregion
-        
+
         #region Public Methods
         public void SetActiveScreen(AbstractScreen screen)
         {
@@ -813,7 +922,7 @@ namespace Kinovea.ScreenManager
 
             foreach (AbstractScreen s in screenList)
                 s.DisplayAsActiveScreen(s == screen);
-                
+
             activeScreen = screen;
             OrganizeMenus();
         }
@@ -826,7 +935,7 @@ namespace Kinovea.ScreenManager
         {
             return (index >= 0 && index < screenList.Count) ? screenList[index] : null;
         }
-        
+
         public void RemoveFirstEmpty()
         {
             foreach (AbstractScreen screen in screenList)
@@ -837,17 +946,17 @@ namespace Kinovea.ScreenManager
                 RemoveScreen(screen);
                 break;
             }
-            
+
             AfterRemoveScreen();
         }
         public void RemoveScreen(AbstractScreen screen)
         {
             RemoveScreenEventHandlers(screen);
-            
+
             screen.BeforeClose();
             screenList.Remove(screen);
             screen.AfterClose();
-            
+
             AfterRemoveScreen();
         }
         private void AfterRemoveScreen()
@@ -860,12 +969,12 @@ namespace Kinovea.ScreenManager
             foreach (PlayerScreen p in playerScreens)
                 p.Synched = false;
         }
-        
+
         public void SwapScreens()
         {
             if (screenList.Count != 2)
                 return;
-            
+
             AbstractScreen temp = screenList[0];
             screenList[0] = screenList[1];
             screenList[1] = temp;
@@ -917,7 +1026,7 @@ namespace Kinovea.ScreenManager
         {
             dualPlayer.ScreenListChanged(screenList);
             dualCapture.ScreenListChanged(screenList);
-            
+
             if (screenList.Count == 2)
             {
                 Pair<Type, Type> types = new Pair<Type, Type>(screenList[0].GetType(), screenList[1].GetType());
@@ -947,7 +1056,7 @@ namespace Kinovea.ScreenManager
         {
             string msgTitle = ScreenManagerLang.Error_Capture_InvalidFile_Title;
             string msgText = ScreenManagerLang.Error_Capture_InvalidFile_Text.Replace("\\n", "\n");
-                
+
             MessageBox.Show(msgText, msgTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
         public static void AlertDirectoryNotCreated()
@@ -957,7 +1066,7 @@ namespace Kinovea.ScreenManager
 
             MessageBox.Show(msgText, msgTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
-        
+
         public Workspace ExtractWorkspace()
         {
             Workspace workspace = new Workspace();
@@ -967,82 +1076,22 @@ namespace Kinovea.ScreenManager
             return workspace;
         }
         #endregion
-        
+
         #region Menu organization
         public void OrganizeMenus()
         {
             DoOrganizeMenu();
-        }
-        private void BuildSvgMenu()
-        {
-            mnuSVGTools.Image = Properties.Resources.images;
-            mnuSVGTools.MergeAction = MergeAction.Append;
-            mnuImportImage.Image = Properties.Resources.image;
-            mnuImportImage.Click += new EventHandler(mnuImportImage_OnClick);
-            mnuImportImage.MergeAction = MergeAction.Append;
-            AddImportImageMenu(mnuSVGTools);
-            
-            AddSvgSubMenus(svgPath, mnuSVGTools);
         }
         private void AddImportImageMenu(ToolStripMenuItem menu)
         {
             menu.DropDownItems.Add(mnuImportImage);
             menu.DropDownItems.Add(new ToolStripSeparator());
         }
-        private void AddSvgSubMenus(string dir, ToolStripMenuItem menu)
-        {
-            // This is a recursive function that browses a directory and its sub directories,
-            // each directory is made into a menu tree, each svg file is added as a menu leaf.
-            if (!Directory.Exists(dir))
-                return;
-            
-            buildingSVGMenu = true;
-
-            // Loop sub directories.
-            string[] subDirs = Directory.GetDirectories (dir);
-            foreach (string subDir in subDirs)
-            {
-                // Create a menu
-                ToolStripMenuItem mnuSubDir = new ToolStripMenuItem();
-                mnuSubDir.Text = Path.GetFileName(subDir);
-                mnuSubDir.Image = Properties.Resources.folder;
-                mnuSubDir.MergeAction = MergeAction.Append;
-                    
-                // Build sub tree.
-                AddSvgSubMenus(subDir, mnuSubDir);
-                    
-                // Add to parent if non-empty.
-                if(mnuSubDir.HasDropDownItems)
-                    menu.DropDownItems.Add(mnuSubDir);
-            }
-
-            // Then loop files within the sub directory.
-            foreach (string file in Directory.GetFiles(dir))
-            {
-                if (!Path.GetExtension(file).ToLower().Equals(".svg"))
-                    continue;
-                
-                hasSvgFiles = true;
-                        
-                // Create a menu. 
-                ToolStripMenuItem mnuSVGDrawing = new ToolStripMenuItem();
-                mnuSVGDrawing.Text = Path.GetFileNameWithoutExtension(file);
-                mnuSVGDrawing.Tag = file;
-                mnuSVGDrawing.Image = Properties.Resources.vector;
-                mnuSVGDrawing.Click += new EventHandler(mnuSVGDrawing_OnClick);
-                mnuSVGDrawing.MergeAction = MergeAction.Append;
-                        
-                // Add to parent.
-                menu.DropDownItems.Add(mnuSVGDrawing);
-            }
-                    
-            buildingSVGMenu = false;
-        }
         private void DoOrganizeMenu()
         {
             // Enable / disable menus depending on state of active screen
             // and global screen configuration.
-            
+
             #region Menus depending only on the state of the active screen
             bool activeScreenIsEmpty = false;
             if (activeScreen != null && screenList.Count > 0)
@@ -1054,36 +1103,37 @@ namespace Kinovea.ScreenManager
                 else if (activeScreen is PlayerScreen)
                 {
                     PlayerScreen player = activeScreen as PlayerScreen;
-                    
+
                     // 1. Video is loaded : save-able and analysis is loadable.
-                    
+
                     // File
+                    mnuLoadAnalysis.Enabled = true;
                     mnuSave.Enabled = true;
                     mnuSaveAs.Enabled = true;
                     mnuExportVideo.Enabled = true;
+                    mnuExportImage.Enabled = true;
+                    mnuExportSpreadsheet.Enabled = player.FrameServer.Metadata.HasVisibleData;
+                    mnuExportDocument.Enabled = true;
+
                     toolSave.Enabled = true;
-                    mnuExportSpreadsheet.Enabled = player.FrameServer.Metadata.HasData;
-                    mnuExportODS.Enabled = player.FrameServer.Metadata.HasData;
-                    mnuExportXLSX.Enabled = player.FrameServer.Metadata.HasData;
-                    mnuExportJSON.Enabled = player.FrameServer.Metadata.HasData;
-                    mnuExportCSV.Enabled = player.FrameServer.Metadata.HasData;
-                    mnuLoadAnalysis.Enabled = true;
-                    
+
                     // Edit
-                    HistoryMenuManager.SwitchContext(player.HistoryStack);
+                    HistoryMenuManager.SwitchContext(activeScreen.HistoryStack);
                     ConfigureClipboardMenus(player);
 
                     // Image
                     mnuDeinterlace.Enabled = player.FrameServer.VideoReader.CanChangeDeinterlacing;
-                    mnuDeinterlace.Checked = player.Deinterlaced;
                     mnuMirror.Enabled = true;
-                    mnuMirror.Checked = player.Mirrored;
                     mnuForegroundColor.Enabled = true;
+
+                    mnuDeinterlace.Checked = player.Deinterlaced;
+                    mnuMirror.Checked = activeScreen.Mirrored;
+
                     if (!player.IsSingleFrame)
                     {
-                        ConfigureImageFormatMenus(player);
-                        ConfigureImageRotationMenus(player);
-                        ConfigureImageDemosaicingMenus(player);
+                        ConfigureImageFormatMenus(activeScreen);
+                        ConfigureImageRotationMenus(activeScreen);
+                        ConfigureImageDemosaicingMenus(activeScreen);
                     }
                     else
                     {
@@ -1093,65 +1143,68 @@ namespace Kinovea.ScreenManager
                     }
 
                     // Video
-                    mnuTimebase.Enabled = true;
                     ConfigureVideoFilterMenus(player);
 
                     // Tools
-                    mnuSVGTools.Enabled = hasSvgFiles;
-                    mnuTestGrid.Enabled = false;
-                    mnuCoordinateAxis.Enabled = true;
-                    mnuCoordinateAxis.Checked = player.FrameServer.Metadata.DrawingCoordinateSystem.Visible;
-                    mnuCameraCalibration.Enabled = true;
-                    mnuTrajectoryAnalysis.Enabled = true;
+                    mnuImportImage.Enabled = true;
+                    mnuTimeCalibration.Enabled = true;
+                    mnuCoordinateSystem.Enabled = true;
+                    mnuLensDistortion.Enabled = true;
+                    mnuTestGrid.Enabled = true;
                     mnuScatterDiagram.Enabled = true;
+                    mnuTrajectoryAnalysis.Enabled = true;
                     mnuAngularAnalysis.Enabled = true;
                     mnuAngleAngleAnalysis.Enabled = true;
-                    
+
+                    mnuCoordinateSystem.Checked = activeScreen.CoordinateSystemVisible;
+                    mnuTestGrid.Checked = activeScreen.TestGridVisible;
                 }
                 else if(activeScreen is CaptureScreen)
                 {
-                    CaptureScreen captureScreen = activeScreen as CaptureScreen;   
-                    
+                    CaptureScreen captureScreen = activeScreen as CaptureScreen;
+
                     // File
+                    mnuLoadAnalysis.Enabled = true;
                     mnuSave.Enabled = false;
                     mnuSaveAs.Enabled = false;
                     mnuExportVideo.Enabled = false;
-                    toolSave.Enabled = false;
+                    mnuExportImage.Enabled = false;
                     mnuExportSpreadsheet.Enabled = false;
-                    mnuExportODS.Enabled = false;
-                    mnuExportXLSX.Enabled = false;
-                    mnuExportJSON.Enabled = false;
-                    mnuExportCSV.Enabled = false;
-                    mnuLoadAnalysis.Enabled = true;
+                    mnuExportDocument.Enabled = false;
+                    toolSave.Enabled = false;
 
                     // Edit
-                    HistoryMenuManager.SwitchContext(captureScreen.HistoryStack);
+                    HistoryMenuManager.SwitchContext(activeScreen.HistoryStack);
                     ConfigureClipboardMenus(activeScreen);
 
                     // Image
                     mnuDeinterlace.Enabled = false;
-                    mnuDeinterlace.Checked = false;
                     mnuMirror.Enabled = true;
-                    mnuMirror.Checked = captureScreen.Mirrored;
                     mnuForegroundColor.Enabled = false;
-                    ConfigureImageFormatMenus(captureScreen);
-                    ConfigureImageRotationMenus(captureScreen);
-                    ConfigureImageDemosaicingMenus(captureScreen);
+
+                    mnuDeinterlace.Checked = false;
+                    mnuMirror.Checked = activeScreen.Mirrored;
+
+                    ConfigureImageFormatMenus(activeScreen);
+                    ConfigureImageRotationMenus(activeScreen);
+                    ConfigureImageDemosaicingMenus(activeScreen);
 
                     // Video
-                    mnuTimebase.Enabled = false;
                     ConfigureVideoFilterMenus(null);
 
                     // Tools
-                    mnuSVGTools.Enabled = false;
+                    mnuImportImage.Enabled = false;
+                    mnuTimeCalibration.Enabled = false;
+                    mnuCoordinateSystem.Enabled = true;
+                    mnuLensDistortion.Enabled = false;
                     mnuTestGrid.Enabled = true;
-                    mnuTestGrid.Checked = captureScreen.TestGridVisible;
-                    mnuCoordinateAxis.Enabled = false;
-                    mnuCameraCalibration.Enabled = false;
-                    mnuTrajectoryAnalysis.Enabled = false;
                     mnuScatterDiagram.Enabled = false;
+                    mnuTrajectoryAnalysis.Enabled = false;
                     mnuAngularAnalysis.Enabled = false;
                     mnuAngleAngleAnalysis.Enabled = false;
+
+                    mnuCoordinateSystem.Checked = activeScreen.CoordinateSystemVisible;
+                    mnuTestGrid.Checked = activeScreen.TestGridVisible;
                 }
                 else
                 {
@@ -1168,16 +1221,14 @@ namespace Kinovea.ScreenManager
             if (activeScreenIsEmpty)
             {
                 // File
+                mnuLoadAnalysis.Enabled = false;
                 mnuSave.Enabled = false;
                 mnuSaveAs.Enabled = false;
                 mnuExportVideo.Enabled = false;
-                toolSave.Enabled = false;
-                mnuLoadAnalysis.Enabled = false;
+                mnuExportImage.Enabled = false;
                 mnuExportSpreadsheet.Enabled = false;
-                mnuExportODS.Enabled = false;
-                mnuExportXLSX.Enabled = false;
-                mnuExportJSON.Enabled = false;
-                mnuExportCSV.Enabled = false;
+                mnuExportDocument.Enabled = false;
+                toolSave.Enabled = false;
 
                 // Edit
                 HistoryMenuManager.SwitchContext(null);
@@ -1192,22 +1243,23 @@ namespace Kinovea.ScreenManager
                 ConfigureImageFormatMenus(null);
                 ConfigureImageRotationMenus(null);
                 ConfigureImageDemosaicingMenus(null);
-                
+
                 // Video
-                mnuTimebase.Enabled = false;
                 ConfigureVideoFilterMenus(null);
 
                 // Tools
-                mnuSVGTools.Enabled = false;
+                mnuTimeCalibration.Enabled = false;
+                mnuImportImage.Enabled = false;
+                mnuCoordinateSystem.Enabled = false;
+                mnuLensDistortion.Enabled = false;
                 mnuTestGrid.Enabled = false;
-                mnuTestGrid.Checked = false;
-                mnuCoordinateAxis.Enabled = false;
-                mnuCoordinateAxis.Checked = false;
-                mnuCameraCalibration.Enabled = false;
-                mnuTrajectoryAnalysis.Enabled = false;
                 mnuScatterDiagram.Enabled = false;
+                mnuTrajectoryAnalysis.Enabled = false;
                 mnuAngularAnalysis.Enabled = false;
                 mnuAngleAngleAnalysis.Enabled = false;
+
+                mnuCoordinateSystem.Checked = false;
+                mnuTestGrid.Checked = false;
             }
             #endregion
 
@@ -1218,28 +1270,31 @@ namespace Kinovea.ScreenManager
             mnuCloseFile2.Visible = false;
             mnuCloseFile2.Enabled = false;
             string strClosingText = ScreenManagerLang.Generic_Close;
-            
-            bool allScreensAreEmpty = false;
+
+            bool hasNothingToClose = false;
+            bool canSaveSideBySide = true;
             switch (screenList.Count)
             {
                 case 0:
                     mnuSwapScreens.Enabled = false;
                     mnuToggleCommonCtrls.Enabled = false;
-                    allScreensAreEmpty = true;
+                    hasNothingToClose = true;
+                    canSaveSideBySide = false;
                     break;
 
                 case 1:
                     mnuSwapScreens.Enabled = false;
                     mnuToggleCommonCtrls.Enabled = false;
+                    canSaveSideBySide = false;
 
                     if(!screenList[0].Full)
                     {
-                        allScreensAreEmpty = true;	
+                        hasNothingToClose = true;
                     }
                     else if(screenList[0] is PlayerScreen)
                     {
                         // Only screen is an full PlayerScreen.
-                        mnuCloseFile.Text = strClosingText;
+                        mnuCloseFile.Text = strClosingText + " - " + ((PlayerScreen)screenList[0]).FileName;
                         mnuCloseFile.Enabled = true;
                         mnuCloseFile.Visible = true;
 
@@ -1248,23 +1303,22 @@ namespace Kinovea.ScreenManager
                     }
                     else if(screenList[0] is CaptureScreen)
                     {
-                        allScreensAreEmpty = true;	
+                        hasNothingToClose = true;
                     }
                     break;
 
                 case 2:
                     mnuSwapScreens.Enabled = true;
                     mnuToggleCommonCtrls.Enabled = canShowCommonControls;
-                    
+
                     // Left Screen
                     if (screenList[0] is PlayerScreen)
                     {
                         if (screenList[0].Full)
                         {
-                            allScreensAreEmpty = false;
-                            
-                            string strCompleteClosingText = strClosingText + " - " + ((PlayerScreen)screenList[0]).FileName;
-                            mnuCloseFile.Text = strCompleteClosingText;
+                            hasNothingToClose = false;
+
+                            mnuCloseFile.Text = strClosingText + " - " + ((PlayerScreen)screenList[0]).FileName;
                             mnuCloseFile.Enabled = true;
                             mnuCloseFile.Visible = true;
                         }
@@ -1272,13 +1326,15 @@ namespace Kinovea.ScreenManager
                         {
                             // Left screen is an empty PlayerScreen.
                             // Global emptiness might be changed below.
-                            allScreensAreEmpty = true;
+                            hasNothingToClose = true;
+                            canSaveSideBySide = false;
                         }
                     }
                     else if(screenList[0] is CaptureScreen)
                     {
                         // Global emptiness might be changed below.
-                        allScreensAreEmpty = true;
+                        hasNothingToClose = true;
+                        canSaveSideBySide = false;
                     }
 
                     // Right Screen.
@@ -1286,25 +1342,24 @@ namespace Kinovea.ScreenManager
                     {
                         if (screenList[1].Full)
                         {
-                            allScreensAreEmpty = false;
-                            
-                            string strCompleteClosingText = strClosingText + " - " + ((PlayerScreen)screenList[1]).FileName;
-                            mnuCloseFile2.Text = strCompleteClosingText;
+                            hasNothingToClose = false;
+
+                            mnuCloseFile2.Text = strClosingText + " - " + ((PlayerScreen)screenList[1]).FileName;
                             mnuCloseFile2.Enabled = true;
                             mnuCloseFile2.Visible = true;
                         }
                         else
                         {
-                            // Ecran de droite en lecture, avec rien dedans.
-                            // Si l'écran de gauche était également vide, bEmpty reste à true.
-                            // Si l'écran de gauche était plein, bEmpty reste à false.
+                            // Right screen is an empty player screen, nothing to do.
+                            // The final value of hasNothingToClose stays at whatever the value was for the left screen.
+                            canSaveSideBySide = false;
                         }
                     }
                     else if (screenList[1] is CaptureScreen)
                     {
-                        // Ecran de droite en capture.
-                        // Si l'écran de gauche était également vide, bEmpty reste à true.
-                        // Si l'écran de gauche était plein, bEmpty reste à false.
+                        // Right screen is a capture screen, nothing to do.
+                        // The final value of hasNothingToClose stays at whatever the value was for the left screen.
+                        canSaveSideBySide = false;
                     }
                     break;
 
@@ -1312,20 +1367,23 @@ namespace Kinovea.ScreenManager
                     // KO.
                     mnuSwapScreens.Enabled       = false;
                     mnuToggleCommonCtrls.Enabled = false;
-                    allScreensAreEmpty = true;
+                    hasNothingToClose = true;
                     break;
             }
 
-            if (allScreensAreEmpty)
+            if (hasNothingToClose)
             {
-                // No screens at all, or all screens empty => 1 menu visible but disabled.
-
+                // No screens or all screens are either capture or empty players.
+                // Single menu visible but disabled.
                 mnuCloseFile.Text = strClosingText;
                 mnuCloseFile.Visible = true;
                 mnuCloseFile.Enabled = false;
-
                 mnuCloseFile2.Visible = false;
             }
+
+            mnuExportImageSideBySide.Enabled = canSaveSideBySide;
+            mnuExportVideoSideBySide.Enabled = canSaveSideBySide;
+
             #endregion
         }
         private void ConfigureVideoFilterMenus(PlayerScreen player)
@@ -1335,7 +1393,7 @@ namespace Kinovea.ScreenManager
             {
                 VideoFilterType filterType = (VideoFilterType)menu.Tag;
                 menu.Visible = VideoFilterFactory.GetExperimental(filterType) ? Software.Experimental : true;
-                menu.Enabled = hasVideo && player.IsCaching;
+                menu.Enabled = hasVideo && (filterType == VideoFilterType.None || player.IsCaching);
                 menu.Checked = hasVideo && player.ActiveVideoFilterType == filterType;
             }
         }
@@ -1343,17 +1401,17 @@ namespace Kinovea.ScreenManager
         {
             // Set the enable and check prop of the image formats menu according of current screen state.
             bool canChangeAspectRatio = screen != null && screen.Full && screen is PlayerScreen && ((PlayerScreen)screen).FrameServer.VideoReader.CanChangeAspectRatio;
-            mnuFormat.Enabled = canChangeAspectRatio;
-            mnuFormatAuto.Enabled = canChangeAspectRatio;
-            mnuFormatForce43.Enabled = canChangeAspectRatio;
-            mnuFormatForce169.Enabled = canChangeAspectRatio;
+            mnuAspectRatio.Enabled = canChangeAspectRatio;
+            mnuAspectRatioAuto.Enabled = canChangeAspectRatio;
+            mnuAspectRatioForce43.Enabled = canChangeAspectRatio;
+            mnuAspectRatioForce169.Enabled = canChangeAspectRatio;
 
             if (!canChangeAspectRatio)
                 return;
 
-            mnuFormatAuto.Checked = screen.AspectRatio == ImageAspectRatio.Auto;
-            mnuFormatForce43.Checked = screen.AspectRatio == ImageAspectRatio.Force43;
-            mnuFormatForce169.Checked = screen.AspectRatio == ImageAspectRatio.Force169;
+            mnuAspectRatioAuto.Checked = screen.AspectRatio == ImageAspectRatio.Auto;
+            mnuAspectRatioForce43.Checked = screen.AspectRatio == ImageAspectRatio.Force43;
+            mnuAspectRatioForce169.Checked = screen.AspectRatio == ImageAspectRatio.Force169;
         }
         private void ConfigureImageDemosaicingMenus(AbstractScreen screen)
         {
@@ -1367,7 +1425,7 @@ namespace Kinovea.ScreenManager
 
             if (!canChangeDemosaicing)
                 return;
-            
+
             mnuDemosaicNone.Checked = screen.Demosaicing == Demosaicing.None;
             mnuDemosaicRGGB.Checked = screen.Demosaicing == Demosaicing.RGGB;
             mnuDemosaicBGGR.Checked = screen.Demosaicing == Demosaicing.BGGR;
@@ -1393,23 +1451,7 @@ namespace Kinovea.ScreenManager
             mnuRotation180.Checked = screen.ImageRotation == ImageRotation.Rotate180;
             mnuRotation270.Checked = screen.ImageRotation == ImageRotation.Rotate270;
         }
-        private void OnSVGFilesChanged(object source, FileSystemEventArgs e)
-        {
-            // We are in the file watcher thread. NO direct UI Calls from here.
-            log.Debug(String.Format("Action recorded in the guides directory: {0}", e.ChangeType));
-            if(!buildingSVGMenu)
-            {
-                buildingSVGMenu = true;
-                // Use "view" object just to merge back into the UI thread.
-                view.BeginInvoke((MethodInvoker) delegate {DoSVGFilesChanged();});
-            }
-        }
-        public void DoSVGFilesChanged()
-        {
-            mnuSVGTools.DropDownItems.Clear();
-            AddImportImageMenu(mnuSVGTools);
-            AddSvgSubMenus(svgPath, mnuSVGTools);
-        }
+
         private void ConfigureClipboardMenus(AbstractScreen screen)
         {
             if (screen is PlayerScreen)
@@ -1428,7 +1470,7 @@ namespace Kinovea.ScreenManager
                     mnuCutDrawing.Text = string.Format("{0} ({1})", ScreenManagerLang.mnuCutDrawing, player.FrameServer.Metadata.HitDrawing.Name);
                     mnuCopyDrawing.Text = string.Format("{0} ({1})", ScreenManagerLang.mnuCopyDrawing, player.FrameServer.Metadata.HitDrawing.Name);
                 }
-                
+
                 mnuPasteDrawing.Enabled = DrawingClipboard.HasContent;
                 if (DrawingClipboard.HasContent)
                 {
@@ -1448,12 +1490,13 @@ namespace Kinovea.ScreenManager
         private void RefreshCultureToolbar()
         {
             toolSave.ToolTipText = ScreenManagerLang.Generic_SaveKVA;
-            toolHome.ToolTipText = ScreenManagerLang.mnuHome;
+            toolToggleExplorerPanel.ToolTipText = ScreenManagerLang.mnuHome;
+            toolThumbnails.ToolTipText = ScreenManagerLang.mnuThumbnails;
             toolOnePlayer.ToolTipText = ScreenManagerLang.mnuOnePlayer;
             toolTwoPlayers.ToolTipText = ScreenManagerLang.mnuTwoPlayers;
             toolOneCapture.ToolTipText = ScreenManagerLang.mnuOneCapture;
             toolTwoCaptures.ToolTipText = ScreenManagerLang.mnuTwoCaptures;
-            toolTwoMixed.ToolTipText = ScreenManagerLang.mnuTwoMixed;	
+            toolTwoMixed.ToolTipText = ScreenManagerLang.mnuTwoMixed;
         }
         private void RefreshCultureMenu()
         {
@@ -1462,13 +1505,32 @@ namespace Kinovea.ScreenManager
             mnuCloseFile2.Text = ScreenManagerLang.Generic_Close;
             mnuSave.Text = ScreenManagerLang.Generic_SaveKVA;
             mnuSaveAs.Text = ScreenManagerLang.Generic_SaveKVAAs;
-            mnuExportVideo.Text = ScreenManagerLang.Generic_ExportVideo;
-            //mnuExportSpreadsheet.Text = ScreenManagerLang.mnuExportSpreadsheet;
-            mnuExportSpreadsheet.Text = "Export data";
-            mnuExportODS.Text = "LibreOffice Calc (.ods)";
-            mnuExportXLSX.Text = "Microsoft Excel (.xlsx)";
-            mnuExportJSON.Text = "Raw JSON (.json)";
-            mnuExportCSV.Text = "Raw CSV (.csv)";
+
+            mnuExportVideo.Text = ScreenManagerLang.mnuExport_Video;
+            mnuExportVideoVideo.Text = ScreenManagerLang.mnuExport_Video_Video;
+            mnuExportVideoSlideshow.Text = ScreenManagerLang.mnuExport_Video_Slideshow;
+            mnuExportVideoWithPauses.Text = ScreenManagerLang.mnuExport_Video_WithPauses;
+            mnuExportVideoSideBySide.Text = ScreenManagerLang.mnuExport_Video_SideBySide;
+
+            mnuExportImage.Text = ScreenManagerLang.mnuExport_Image;
+            mnuExportImageImage.Text = ScreenManagerLang.mnuExport_Images_Image;
+            mnuExportImageKeys.Text = ScreenManagerLang.mnuExport_Images_Keys;
+            mnuExportImageSequence.Text = ScreenManagerLang.mnuExport_Images_Sequence;
+            mnuExportImageSideBySide.Text = ScreenManagerLang.mnuExport_Images_SideBySide;
+
+            mnuExportSpreadsheet.Text = ScreenManagerLang.mnuExport_Spreadsheet;
+            mnuExportODS.Text = "LibreOffice Calcâ€¦";
+            mnuExportXLSX.Text = "Microsoft Excelâ€¦";
+            mnuExportCSVTrajectory.Text = ScreenManagerLang.mnuExport_Spreadsheet_TrajectoryCSV;
+            mnuExportCSVChronometer.Text = ScreenManagerLang.mnuExport_Spreadsheet_ChronoCSV;
+            mnuExportJSON.Text = "JSONâ€¦";
+
+
+            mnuExportDocument.Text = ScreenManagerLang.mnuExport_Document;
+            mnuExportODT.Text = "LibreOffice Writerâ€¦";
+            mnuExportDOCX.Text = "Microsoft Wordâ€¦";
+            mnuExportMarkdown.Text = "Markdownâ€¦";
+
             mnuLoadAnalysis.Text = ScreenManagerLang.mnuLoadAnalysis;
 
             // Edit
@@ -1478,7 +1540,7 @@ namespace Kinovea.ScreenManager
             mnuCutDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.CutDrawing);
             mnuCopyDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.CopyDrawing);
             mnuPasteDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.PasteDrawing);
-            
+
             // View
             mnuOnePlayer.Text = ScreenManagerLang.mnuOnePlayer;
             mnuTwoPlayers.Text = ScreenManagerLang.mnuTwoPlayers;
@@ -1487,54 +1549,56 @@ namespace Kinovea.ScreenManager
             mnuTwoMixed.Text = ScreenManagerLang.mnuTwoMixed;
             mnuSwapScreens.Text = ScreenManagerLang.mnuSwapScreens;
             mnuToggleCommonCtrls.Text = ScreenManagerLang.mnuToggleCommonCtrls;
-            
+
             // Image
-            mnuDeinterlace.Text = ScreenManagerLang.mnuDeinterlace;
-            mnuFormatAuto.Text = ScreenManagerLang.mnuFormatAuto;
-            mnuFormatForce43.Text = ScreenManagerLang.mnuFormatForce43;
-            mnuFormatForce169.Text = ScreenManagerLang.mnuFormatForce169;
-            mnuFormat.Text = ScreenManagerLang.mnuFormat;
-            mnuDemosaicNone.Text = "None";
-            mnuDemosaicRGGB.Text = "RGGB";
-            mnuDemosaicBGGR.Text = "BGGR";
-            mnuDemosaicGRBG.Text = "GRBG";
-            mnuDemosaicGBRG.Text = "GBRG";
-            mnuDemosaic.Text = "Demosaicing";
+            mnuAspectRatio.Text = ScreenManagerLang.mnuFormat;
+            mnuAspectRatioAuto.Text = ScreenManagerLang.mnuFormatAuto;
+            mnuAspectRatioForce43.Text = ScreenManagerLang.mnuFormatForce43;
+            mnuAspectRatioForce169.Text = ScreenManagerLang.mnuFormatForce169;
+
+            mnuRotation.Text = ScreenManagerLang.mnuRotation;
             mnuRotation0.Text = ScreenManagerLang.mnuRotation0;
             mnuRotation90.Text = ScreenManagerLang.mnuRotation90;
             mnuRotation180.Text = ScreenManagerLang.mnuRotation180;
             mnuRotation270.Text = ScreenManagerLang.mnuRotation270;
-            mnuRotation.Text = ScreenManagerLang.mnuRotation;
+
             mnuMirror.Text = ScreenManagerLang.mnuMirror;
+            mnuDeinterlace.Text = ScreenManagerLang.mnuDeinterlace;
+
+            mnuDemosaic.Text = ScreenManagerLang.mnuDemosaic;
+            mnuDemosaicNone.Text = ScreenManagerLang.mnuDemosaicNone;
+            mnuDemosaicRGGB.Text = "RGGB";
+            mnuDemosaicBGGR.Text = "BGGR";
+            mnuDemosaicGRBG.Text = "GRBG";
+            mnuDemosaicGBRG.Text = "GBRG";
+
             mnuForegroundColor.Text = "Opacity";
+
             RefreshCultureMenuFilters();
 
-            // Video
-            mnuTimebase.Text = ScreenManagerLang.mnuTimebase;
-
             // Tools
-            mnuSVGTools.Text = ScreenManagerLang.mnuSVGTools;
             mnuImportImage.Text = ScreenManagerLang.mnuImportImage;
+            mnuTimeCalibration.Text = ScreenManagerLang.mnuTimeCalibration;
+            mnuLensDistortion.Text = ScreenManagerLang.mnuLensCalibration;
+            mnuCoordinateSystem.Text = ScreenManagerLang.mnuCoordinateSystem;
             mnuTestGrid.Text = ScreenManagerLang.DrawingName_TestGrid;
-            mnuCoordinateAxis.Text = ScreenManagerLang.mnuCoordinateSystem;
-            mnuCameraCalibration.Text = ScreenManagerLang.dlgCameraCalibration_Title + "…";
-            mnuScatterDiagram.Text = ScreenManagerLang.DataAnalysis_ScatterDiagram + "…";
-            mnuTrajectoryAnalysis.Text = ScreenManagerLang.DataAnalysis_LinearKinematics + "…";
-            mnuAngularAnalysis.Text = ScreenManagerLang.DataAnalysis_AngularKinematics + "…";
-            mnuAngleAngleAnalysis.Text = ScreenManagerLang.DataAnalysis_AngleAngleDiagrams + "…";
+            mnuScatterDiagram.Text = ScreenManagerLang.DataAnalysis_ScatterDiagram + "â€¦";
+            mnuTrajectoryAnalysis.Text = ScreenManagerLang.DataAnalysis_LinearKinematics + "â€¦";
+            mnuAngularAnalysis.Text = ScreenManagerLang.DataAnalysis_AngularKinematics + "â€¦";
+            mnuAngleAngleAnalysis.Text = ScreenManagerLang.DataAnalysis_AngleAngleDiagrams + "â€¦";
         }
-            
+
         private void RefreshCultureMenuFilters()
         {
             foreach(ToolStripMenuItem menu in filterMenus)
             {
-                VideoFilterType filter = (VideoFilterType)menu.Tag;
-                menu.Text = VideoFilterFactory.GetFriendlyName(filter);
+                VideoFilterType filterType = (VideoFilterType)menu.Tag;
+                menu.Text = VideoFilterFactory.GetFriendlyName(filterType);
             }
         }
-                
+
         #endregion
-             
+
         #region Menus events handlers
 
         #region File
@@ -1573,16 +1637,6 @@ namespace Kinovea.ScreenManager
             player.SaveAs();
         }
 
-        private void mnuExportVideoOnClick(object sender, EventArgs e)
-        {
-            PlayerScreen player = activeScreen as PlayerScreen;
-            if (player == null)
-                return;
-
-            DoStopPlaying();
-            player.ExportVideo();
-        }
-
         private void mnuLoadAnalysisOnClick(object sender, EventArgs e)
         {
             if (activeScreen != null)
@@ -1598,73 +1652,96 @@ namespace Kinovea.ScreenManager
 
             if (screenList[targetScreen] is PlayerScreen)
                 DoStopPlaying();
-             
-            string filename = FilePicker.OpenAnnotations();
+
+            string title = ScreenManagerLang.dlgLoadAnalysis_Title;
+            string filter = FilesystemHelper.OpenKVAFilter(ScreenManagerLang.FileFilter_AllSupported);
+            string filename = FilePicker.OpenAnnotations(title, filter);
             if (filename == null)
                 return;
 
             screenList[targetScreen].LoadKVA(filename);
         }
-        private void mnuExportODS_OnClick(object sender, EventArgs e)
+
+        private void ExportVideo(VideoExportFormat format)
         {
-            ExportSpreadsheet(MetadataExportFormat.ODS);
+            DoStopPlaying();
+            if (format == VideoExportFormat.SideBySide)
+            {
+                // For side-by-side we don't care about the active screen but the order is important.
+                AbstractScreen screen0 = GetScreenAt(0);
+                AbstractScreen screen1 = GetScreenAt(1);
+                PlayerScreen player1 = screen0 as PlayerScreen;
+                PlayerScreen player2 = screen1 as PlayerScreen;
+                if (player1 == null || player2 == null)
+                    return;
+
+                if (!player1.Full || !player2.Full)
+                    return;
+
+                VideoExporter exporter = new VideoExporter();
+                exporter.Export(format, player1, player2, dualPlayer);
+            }
+            else
+            {
+                PlayerScreen player = activeScreen as PlayerScreen;
+                if (player == null)
+                    return;
+
+                VideoExporter exporter = new VideoExporter();
+                exporter.Export(format, player, null, null);
+            }
         }
-        private void mnuExportXLSX_OnClick(object sender, EventArgs e)
+
+        private void ExportImages(ImageExportFormat format)
         {
-            ExportSpreadsheet(MetadataExportFormat.XLSX);
+            DoStopPlaying();
+            if (format == ImageExportFormat.SideBySide)
+            {
+                // For side-by-side we don't care about the active screen but the order is important.
+                AbstractScreen screen0 = GetScreenAt(0);
+                AbstractScreen screen1 = GetScreenAt(1);
+                PlayerScreen player1 = screen0 as PlayerScreen;
+                PlayerScreen player2 = screen1 as PlayerScreen;
+                if (player1 == null || player2 == null)
+                    return;
+
+                if (!player1.Full || !player2.Full)
+                    return;
+
+                ImageExporter exporter = new ImageExporter();
+                exporter.Export(format, player1, player2);
+            }
+            else
+            {
+                PlayerScreen player = activeScreen as PlayerScreen;
+                if (player == null)
+                    return;
+
+                ImageExporter exporter = new ImageExporter();
+                exporter.Export(format, player, null);
+            }
         }
-        private void mnuExportJSON_OnClick(object sender, EventArgs e)
+
+        private void ExportDocument(DocumentExportFormat format)
         {
-            ExportSpreadsheet(MetadataExportFormat.JSON);
-        }
-        private void mnuExportCSV_OnClick(object sender, EventArgs e)
-        {
-            ExportSpreadsheet(MetadataExportFormat.CSV);
-        }
-        private void ExportSpreadsheet(MetadataExportFormat format)
-        {
+            DoStopPlaying();
             PlayerScreen player = activeScreen as PlayerScreen;
-            if (player == null || !player.FrameServer.Metadata.HasData)
-                return;
-            
-            DoStopPlaying();    
-
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Title = ScreenManagerLang.dlgExportSpreadsheet_Title;
-            saveFileDialog.RestoreDirectory = true;
-            saveFileDialog.Filter = "LibreOffice calc (*.ods)|*.ods|Microsoft Excel (*.xlsx)|*.xlsx|JSON (*.json)|*.json|CSV (*.csv)|*.csv";
-            int filterIndex;
-            switch (format)
-            {
-                case MetadataExportFormat.ODS:
-                    filterIndex = 1;
-                    break;
-                case MetadataExportFormat.XLSX:
-                    filterIndex = 2;
-                    break;
-                case MetadataExportFormat.CSV:
-                    filterIndex = 4;
-                    break;
-                case MetadataExportFormat.JSON:
-                default:
-                    filterIndex = 3;
-                    break;
-            }
-
-            saveFileDialog.FilterIndex = filterIndex;
-            saveFileDialog.FileName = Path.GetFileNameWithoutExtension(player.FrameServer.Metadata.VideoPath);
-
-            if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))
+            if (player == null)
                 return;
 
-            try
-            { 
-                MetadataExporter.Export(player.FrameServer.Metadata, saveFileDialog.FileName, format);
-            }
-            catch (Exception e)
-            {
-                log.ErrorFormat("Exception encountered while exporting to spreadsheet.", e);
-            }
+            DocumentExporter exporter = new DocumentExporter();
+            exporter.Export(format, player);
+        }
+
+        private void ExportSpreadsheet(SpreadsheetExportFormat format)
+        {
+            DoStopPlaying();
+            PlayerScreen player = activeScreen as PlayerScreen;
+            if (player == null || !player.FrameServer.Metadata.HasVisibleData)
+                return;
+
+            SpreadsheetExporter exporter = new SpreadsheetExporter();
+            exporter.Export(format, player);
         }
         #endregion
 
@@ -1701,16 +1778,21 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region View
+        private void toolToggleExplorerPanel_Click(object sender, EventArgs e)
+        {
+            NotificationCenter.RaiseToggleShowExplorerPanel(this);
+        }
+
         private void mnuHome_OnClick(object sender, EventArgs e)
         {
             // Remove all screens.
-            if(screenList.Count <= 0)
+            if (screenList.Count <= 0)
                 return;
-            
-            if(ScreenRemover.RemoveScreen(this, 0))
-            {   
+
+            if (ScreenRemover.RemoveScreen(this, 0))
+            {
                 // Second screen is now in [0] spot.
-                if(screenList.Count > 0)
+                if (screenList.Count > 0)
                     ScreenRemover.RemoveScreen(this, 0);
             }
 
@@ -1723,7 +1805,7 @@ namespace Kinovea.ScreenManager
             //------------------------------------------------------------
             // - Reorganize the list so it conforms to the asked combination.
             // - Display the new list.
-            // 
+            //
             // Here : One player screen.
             //------------------------------------------------------------
 
@@ -1754,9 +1836,9 @@ namespace Kinovea.ScreenManager
                         // Possible cases :
                         // [capture][capture] -> remove both and add player.
                         // [capture][player] -> remove capture.
-                        // [player][capture] -> remove capture.	
+                        // [player][capture] -> remove capture.
                         // [player][player] -> depends on emptiness.
-                        
+
                         if(screenList[0] is CaptureScreen && screenList[1] is CaptureScreen)
                         {
                             // [capture][capture] -> remove both and add player.
@@ -1766,25 +1848,25 @@ namespace Kinovea.ScreenManager
                         }
                         else if(screenList[0] is CaptureScreen && screenList[1] is PlayerScreen)
                         {
-                            // [capture][player] -> remove capture.	
+                            // [capture][player] -> remove capture.
                             ScreenRemover.RemoveScreen(this, 0);
                         }
                         else if(screenList[0] is PlayerScreen && screenList[1] is CaptureScreen)
                         {
-                            // [player][capture] -> remove capture.	
+                            // [player][capture] -> remove capture.
                             ScreenRemover.RemoveScreen(this, 1);
                         }
                         else
                         {
                             //---------------------------------------------
                             // [player][player] -> depends on emptiness :
-                            // 
-                            // [empty][full] -> remove empty. 
+                            //
+                            // [empty][full] -> remove empty.
                             // [full][full] -> remove second one (right).
                             // [full][empty] -> remove empty (right).
                             // [empty][empty] -> remove second one (right).
                             //---------------------------------------------
-                            
+
                             if(!screenList[0].Full && screenList[1].Full)
                                 ScreenRemover.RemoveScreen(this, 0);
                             else
@@ -1805,7 +1887,7 @@ namespace Kinovea.ScreenManager
             //------------------------------------------------------------
             // - Reorganize the list so it conforms to the asked combination.
             // - Display the new list.
-            // 
+            //
             // Here : Two player screens.
             //------------------------------------------------------------
 
@@ -1832,7 +1914,7 @@ namespace Kinovea.ScreenManager
                         {
                             // Currently : 1 player. -> add another.
                             AddPlayerScreen();
-                        }                    
+                        }
                         break;
                     }
                 case 2:
@@ -1841,9 +1923,9 @@ namespace Kinovea.ScreenManager
                         // Possible cases :
                         // [capture][capture] -> remove both and add two players.
                         // [capture][player] -> remove capture and add player.
-                        // [player][capture] -> remove capture and add player.	
+                        // [player][capture] -> remove capture and add player.
                         // [player][player] -> do nothing.
-                        
+
                         if(screenList[0] is CaptureScreen && screenList[1] is CaptureScreen)
                         {
                             // [capture][capture] -> remove both and add two players.
@@ -1868,7 +1950,7 @@ namespace Kinovea.ScreenManager
                         {
                             // [player][player] -> do nothing.
                         }
-                        
+
                         break;
                     }
                 default:
@@ -1884,10 +1966,10 @@ namespace Kinovea.ScreenManager
             //------------------------------------------------------------
             // - Reorganize the list so it conforms to the asked combination.
             // - Display the new list.
-            // 
+            //
             // Here : One capture screens.
             //------------------------------------------------------------
-            
+
             switch (screenList.Count)
             {
                 case 0:
@@ -1916,20 +1998,20 @@ namespace Kinovea.ScreenManager
                         // Possible cases :
                         // [capture][capture] -> depends on emptiness.
                         // [capture][player] -> remove player.
-                        // [player][capture] -> remove player.	
+                        // [player][capture] -> remove player.
                         // [player][player] -> remove both and add capture.
-                        
+
                         if(screenList[0] is CaptureScreen && screenList[1] is CaptureScreen)
                         {
                             //---------------------------------------------
                             // [capture][capture] -> depends on emptiness.
-                            // 
+                            //
                             // [empty][full] -> remove empty.
                             // [full][full] -> remove second one (right).
                             // [full][empty] -> remove empty (right).
                             // [empty][empty] -> remove second one (right).
                             //---------------------------------------------
-                            
+
                             if(!screenList[0].Full && screenList[1].Full)
                                 ScreenRemover.RemoveScreen(this, 0);
                             else
@@ -1937,7 +2019,7 @@ namespace Kinovea.ScreenManager
                         }
                         else if(screenList[0] is CaptureScreen && screenList[1] is PlayerScreen)
                         {
-                            // [capture][player] -> remove player.	
+                            // [capture][player] -> remove player.
                             ScreenRemover.RemoveScreen(this, 1);
                         }
                         else if(screenList[0] is PlayerScreen && screenList[1] is CaptureScreen)
@@ -1962,7 +2044,7 @@ namespace Kinovea.ScreenManager
             }
 
             AfterSharedBufferChange();
-            
+
             OrganizeScreens();
             OrganizeCommonControls();
             OrganizeMenus();
@@ -1972,10 +2054,10 @@ namespace Kinovea.ScreenManager
             //------------------------------------------------------------
             // - Reorganize the list so it conforms to the asked combination.
             // - Display the new list.
-            // 
+            //
             // Here : Two capture screens.
             //------------------------------------------------------------
-            
+
             switch (screenList.Count)
             {
                 case 0:
@@ -2000,7 +2082,7 @@ namespace Kinovea.ScreenManager
                                 AddCaptureScreen();
                                 AddCaptureScreen();
                             }
-                        }                   
+                        }
                         break;
                     }
                 case 2:
@@ -2009,9 +2091,9 @@ namespace Kinovea.ScreenManager
                         // Possible cases :
                         // [capture][capture] -> do nothing.
                         // [capture][player] -> remove player and add capture.
-                        // [player][capture] -> remove player and add capture.	
+                        // [player][capture] -> remove player and add capture.
                         // [player][player] -> remove both and add 2 capture.
-                        
+
                         if(screenList[0] is CaptureScreen && screenList[1] is CaptureScreen)
                         {
                             // [capture][capture] -> do nothing.
@@ -2041,15 +2123,15 @@ namespace Kinovea.ScreenManager
                                 }
                             }
                         }
-                        
+
                         break;
                     }
                 default:
                     break;
             }
-            
+
             AfterSharedBufferChange();
-            
+
             OrganizeScreens();
             OrganizeCommonControls();
             OrganizeMenus();
@@ -2059,10 +2141,10 @@ namespace Kinovea.ScreenManager
             //------------------------------------------------------------
             // - Reorganize the list so it conforms to the asked combination.
             // - Display the new list.
-            // 
+            //
             // Here : Mixed screen. The workspace preset is : [capture][player]
             //------------------------------------------------------------
-            
+
             switch (screenList.Count)
             {
                 case 0:
@@ -2089,7 +2171,7 @@ namespace Kinovea.ScreenManager
                 case 2:
                     {
                         // We need to decide which screen(s) to remove/replace.
-                        
+
                         if(screenList[0] is CaptureScreen && screenList[1] is CaptureScreen)
                         {
                             // [capture][capture] -> remove right and add player.
@@ -2110,7 +2192,7 @@ namespace Kinovea.ScreenManager
                             if(ScreenRemover.RemoveScreen(this, 1))
                                 AddCaptureScreen();
                         }
-                        
+
                         break;
                     }
                 default:
@@ -2118,7 +2200,7 @@ namespace Kinovea.ScreenManager
             }
 
             AfterSharedBufferChange();
-            
+
             OrganizeScreens();
             OrganizeCommonControls();
             OrganizeMenus();
@@ -2132,14 +2214,14 @@ namespace Kinovea.ScreenManager
             OrganizeScreens();
             OrganizeMenus();
             UpdateStatusBar();
-            
+
             dualPlayer.SwapSync();
         }
         private void mnuToggleCommonCtrlsOnClick(object sender, EventArgs e)
         {
             view.ToggleCommonControls();
 
-            // Reset synchronization. 
+            // Reset synchronization.
             // This will allow the shortcuts to only be routed to the active screen if the dual controls aren't visible.
             ResetSync();
         }
@@ -2152,7 +2234,7 @@ namespace Kinovea.ScreenManager
             if(player != null)
             {
                 mnuDeinterlace.Checked = !mnuDeinterlace.Checked;
-                player.Deinterlaced = mnuDeinterlace.Checked;	
+                player.Deinterlaced = mnuDeinterlace.Checked;
             }
         }
         private void mnuFormatAutoOnClick(object sender, EventArgs e)
@@ -2166,18 +2248,18 @@ namespace Kinovea.ScreenManager
         private void mnuFormatForce169OnClick(object sender, EventArgs e)
         {
             ChangeAspectRatio(ImageAspectRatio.Force169);
-        }      
+        }
         private void ChangeAspectRatio(ImageAspectRatio aspect)
         {
             if(activeScreen == null)
                 return;
-        
+
             if(activeScreen.AspectRatio != aspect)
                 activeScreen.AspectRatio = aspect;
-            
-            mnuFormatForce43.Checked = aspect == ImageAspectRatio.Force43;
-            mnuFormatForce169.Checked = aspect == ImageAspectRatio.Force169;
-            mnuFormatAuto.Checked = aspect == ImageAspectRatio.Auto;
+
+            mnuAspectRatioForce43.Checked = aspect == ImageAspectRatio.Force43;
+            mnuAspectRatioForce169.Checked = aspect == ImageAspectRatio.Force169;
+            mnuAspectRatioAuto.Checked = aspect == ImageAspectRatio.Auto;
         }
         private void mnuDemosaicNone_Click(object sender, EventArgs e)
         {
@@ -2206,7 +2288,7 @@ namespace Kinovea.ScreenManager
 
             if (activeScreen.Demosaicing != demosaic)
                 activeScreen.Demosaicing = demosaic;
-            
+
             mnuDemosaicNone.Checked = activeScreen.Demosaicing == Demosaicing.None;
             mnuDemosaicRGGB.Checked = activeScreen.Demosaicing == Demosaicing.RGGB;
             mnuDemosaicBGGR.Checked = activeScreen.Demosaicing == Demosaicing.BGGR;
@@ -2275,7 +2357,7 @@ namespace Kinovea.ScreenManager
         {
             if(activeScreen == null || !activeScreen.CapabilityDrawings)
                 return;
-            
+
             // Display file open dialog and launch the drawing.
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = ScreenManagerLang.dlgImportReference_Title;
@@ -2284,19 +2366,8 @@ namespace Kinovea.ScreenManager
 
             if (openFileDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(openFileDialog.FileName))
             {
-                bool svg = Path.GetExtension(openFileDialog.FileName).ToLower() == ".svg";
-                LoadDrawing(openFileDialog.FileName, svg);
-            }
-        }
-        private void mnuSVGDrawing_OnClick(object sender, EventArgs e)
-        {
-            // One of the dynamically added SVG tools menu has been clicked.
-            // Add a drawing of the right type to the active screen.
-            ToolStripMenuItem menu = sender as ToolStripMenuItem;
-            if(menu != null)
-            {
-                string svgFile = menu.Tag as string;
-                LoadDrawing(svgFile, true);
+                bool isSVG = Path.GetExtension(openFileDialog.FileName).ToLower() == ".svg";
+                LoadDrawing(openFileDialog.FileName, isSVG);
             }
         }
         private void LoadDrawing(string path, bool isSVG)
@@ -2304,30 +2375,23 @@ namespace Kinovea.ScreenManager
             if(path != null && path.Length > 0 && activeScreen != null && activeScreen.CapabilityDrawings)
             {
                 activeScreen.AddImageDrawing(path, isSVG);
-            }	
+            }
         }
-        private void mnuCoordinateAxis_OnClick(object sender, EventArgs e)
+        private void mnuCoordinateSystem_OnClick(object sender, EventArgs e)
         {
-            PlayerScreen ps = activeScreen as PlayerScreen;
-            if (ps == null)
-                return;
-
-            mnuCoordinateAxis.Checked = !mnuCoordinateAxis.Checked;
-            ps.FrameServer.Metadata.DrawingCoordinateSystem.Visible = mnuCoordinateAxis.Checked;
-            ps.RefreshImage();
+            mnuCoordinateSystem.Checked = !mnuCoordinateSystem.Checked;
+            activeScreen.CoordinateSystemVisible = mnuCoordinateSystem.Checked;
+            activeScreen.RefreshImage();
         }
 
         private void mnuTestGrid_OnClick(object sender, EventArgs e)
         {
-            CaptureScreen cs = activeScreen as CaptureScreen;
-            if (cs == null)
-                return;
-
             mnuTestGrid.Checked = !mnuTestGrid.Checked;
-            cs.TestGridVisible = mnuTestGrid.Checked;
+            activeScreen.TestGridVisible = mnuTestGrid.Checked;
+            activeScreen.RefreshImage();
         }
 
-        private void mnuCameraCalibration_OnClick(object sender, EventArgs e)
+        private void mnuLensDistortion_OnClick(object sender, EventArgs e)
         {
             PlayerScreen ps = activeScreen as PlayerScreen;
             if (ps == null)
@@ -2370,7 +2434,7 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region Motion
+        #region Tools
         private void mnuTimebase_OnClick(object sender, EventArgs e)
         {
             PlayerScreen ps = activeScreen as PlayerScreen;
@@ -2385,7 +2449,7 @@ namespace Kinovea.ScreenManager
         {
             DoLoadMovieInScreen(e.Path, e.Target);
         }
-        
+
         private void DoLoadMovieInScreen(string path, int targetScreen)
         {
             if (FilesystemHelper.IsReplayWatcher(path))
@@ -2419,7 +2483,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        
+
         private void DoLoadCameraInScreen(CameraSummary summary, int targetScreen)
         {
             if(summary == null)
@@ -2427,7 +2491,7 @@ namespace Kinovea.ScreenManager
 
             LoaderCamera.LoadCameraInScreen(this, summary, targetScreen);
         }
-        
+
         private void DoStopPlaying()
         {
             foreach (PlayerScreen player in playerScreens)
@@ -2448,13 +2512,14 @@ namespace Kinovea.ScreenManager
 
         private void View_AutoLaunchAsked(object source, EventArgs e)
         {
-            int reloaded = 0;
-
             int count = LaunchSettingsManager.ScreenDescriptions.Count;
             if (count > 2)
+            {
                 LaunchSettingsManager.ScreenDescriptions.RemoveRange(2, count - 2);
+                count = 2;
+            }
 
-            // Start by collecting the list of cameras to be found. 
+            // Start by collecting the list of cameras to be found.
             // We will keep the camera discovery system active until we have found all of them or time out.
             camerasToDiscover.Clear();
             foreach (IScreenDescription screenDescription in LaunchSettingsManager.ScreenDescriptions)
@@ -2466,6 +2531,9 @@ namespace Kinovea.ScreenManager
             if (camerasToDiscover.Count == 0)
                 CameraTypeManager.StopDiscoveringCameras();
 
+            int added = 0;
+            pendingPlayerLoads = count - camerasToDiscover.Count;
+            launchLoadingInProgress = true;
             foreach (IScreenDescription screenDescription in LaunchSettingsManager.ScreenDescriptions)
             {
                 if (screenDescription is ScreenDescriptionCapture)
@@ -2474,22 +2542,25 @@ namespace Kinovea.ScreenManager
                     ScreenDescriptionCapture sdc = screenDescription as ScreenDescriptionCapture;
                     CameraSummary summary = new CameraSummary(sdc.CameraName);
 
-                    int targetScreen = reloaded == 1 ? 1 : 0;
+                    int targetScreen = added == 0 ? 0 : 1;
                     LoaderCamera.LoadCameraInScreen(this, summary, targetScreen, sdc);
-                    reloaded++;
+                    added++;
                 }
                 else if (screenDescription is ScreenDescriptionPlayback)
                 {
                     AddPlayerScreen();
                     ScreenDescriptionPlayback sdp = screenDescription as ScreenDescriptionPlayback;
                     LoaderVideo.LoadVideoInScreen(this, sdp.FullPath, sdp);
-                    reloaded++;
+                    added++;
                 }
             }
 
-            dualLaunchSettingsPendingCountdown = reloaded;
+            // We come here after the screens have been added and the initial load started, but the load is asynchronous.
+            // The true completion is when we receive the matching number of "Load" events.
+            log.DebugFormat("Auto launch progress: Count:{0}, Added screens{1}. Pending loads:{2}.",
+                count, added, pendingPlayerLoads);
 
-            if (reloaded > 0)
+            if (added > 0)
             {
                 OrganizeScreens();
                 OrganizeCommonControls();
@@ -2586,7 +2657,7 @@ namespace Kinovea.ScreenManager
         }
         public void AddCaptureScreen()
         {
-            
+
             CaptureScreen screen = new CaptureScreen();
             if (screenList.Count > 0)
                 screen.SetShared(true);
@@ -2656,7 +2727,7 @@ namespace Kinovea.ScreenManager
             string text = ScreenManagerLang.InfoBox_MetadataIsDirty_Text.Replace("\\n", "\n");
             return MessageBox.Show(text, caption, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
         }
-        
+
         private void AddScreen(AbstractScreen screen)
         {
             // We are about to add a new screen, signal it to a potential existing capture screen for buffer memory management.
@@ -2682,6 +2753,7 @@ namespace Kinovea.ScreenManager
             screen.OpenVideoAsked += Player_OpenVideoAsked;
             screen.OpenReplayWatcherAsked += Player_OpenReplayWatcherAsked;
             screen.OpenAnnotationsAsked += Player_OpenAnnotationsAsked;
+            screen.Loaded += Player_Loaded;
             screen.SelectionChanged += Player_SelectionChanged;
             screen.KVAImported += Player_KVAImported;
             screen.FilterExited += Player_FilterExited;

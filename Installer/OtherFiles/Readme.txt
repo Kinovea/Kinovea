@@ -1,13 +1,13 @@
 
-Kinovea 0.9.6 - TBD.
+Kinovea 2023.1 - 2023-08.
 
-Kinovea is a free and open source video annotation tool designed for motion analysis. 
+Kinovea is a free and open source video annotation tool designed for motion analysis.
 It features utilities to capture, slow down, compare, annotate and measure motion in videos.
 
 
 System Requirements:
 --------------------
-- OS : Microsoft Windows 7, 8, 8.1, 10 with .NET framework 4.8.
+- OS : Microsoft Windows 7, 8, 8.1, 10, 11 with .NET framework 4.8.
 - CPU : 1 Ghz
 - RAM : 256 MB
 - Disk Space : 70 MB.
@@ -38,35 +38,76 @@ Project:
 Changelog:
 ----------
 
-0.9.6 - TBD
+2023.1 - August 2023.
     Added - Kinogram mode to replace the Overview mode.
-    Added - Data export to raw JSON files.
+    Added - Side panel with key image comments.
+    Added - Multi-time stopwatch tool.
+    Added - Time segment tool.
+    Added - Distance grid tool.
+    Added - Magnifier "Freeze" mode.
+    Added - Keyframe colors.
+    Added - Keyframe presets.
+    Added - Time grab interaction.
+    Added - Recording status bar.
+    Added - Support for saving single snapshots from audio trigger.
+    Added - Support for saving side-by-side image in a vertical layout.
+    Added - Spreadsheet exporter to JSON.
+    Added - Spreadsheet exporter to CSV.
+    Added - Document exporter to Markdown.
+    Added - Document exporter to ODT and DOCX via Pandoc.
     Improved - General: Save and restore the working zone bounds as part of the KVA file.
-    Improved - General: Save and restore all image options (aspect, rotation, demosaicing, deinterlacing).
+    Improved - General: Save and restore all video import options (aspect, rotation, demosaicing, deinterlacing).
     Improved - General: Save keyframes even if they are outside the working zone.
     Improved - General: Save video filters status and configuration.
     Improved - General: When importing a KVA file into a different video the times are now aligned by the time origins.
-    Improved - Playback: Using a video filter no longer prevents the usage of the normal video controls and drawings tools.
+    Improved - General: Support sorting files by name, date or size in the explorer.
+    Improved - General: Support navigating back, forth and up in the explorer.
+    Improved - General: Support toggling drawings visibility via a command.
+    Improved - Playback: Using a video filter no longer prevents the usage of the playback controls and drawings tools.
     Improved - Playback: Video filters are no longer deactivated when changing the working zone.
-    Improved - Capture: Image aspect and rotation from camera is now saved in the capture KVA.
+    Improved - Playback: Support rotation on single image files.
+    Improved - Annotations: Support drag and drop between the keyframe list and the timeline to change keyframe time.
+    Improved - Annotations: Support transferring a keyframe to the current time.
+    Improved - Annotations: Use color coding of keyframes in the timeline.
+    Improved - Annotations: Support undo/redo for moving drawings.
+    Improved - Annotations: Render drawings under the magnifier source.
+    Improved - Annotations: Support moving all number objects at once using the SHIFT key.
+    Improved - Annotations: Support the polyline and curve tools in the capture screen.
+    Improved - Annotations: Support the coordinate system in the capture screen.
+    Improved - Annotations: Support the test grid in the player screen.
+    Improved - Annotations: Added new options to trajectory objects.
+    Improved - Annotations: Added new options to the camera test grid.
+    Improved - Annotations: Added new options to the coordinate system.
+    Improved - Capture: Image aspect and rotation from camera are now saved in the capture KVA.
     Improved - Capture: Added milliseconds to file naming patterns.
-    Improved - Export: Output to Microsoft Excel now uses Office Open XML (XLSX) instead of MS-XML format.
-    Improved - Export: Output to LibreOffice Calc is now fully conformant with ODF 1.2 standard.
-    Improved - Export: All time types are now exported as numbers, textual timecodes are expressed in seconds.
-    Improved - Export: Added positions, distances and angles from posture-based tools.
-    Improved - Export: Added computed positions (e.g: center of mass from human model tool).
-    Improved - Export: Added start and stop times for Chronometers.
-    Improved - Export: Added time series from trajectories and tracked objects.
-    Improved - Export: Added the unit used for distances and times.
-    Improved - Annotations: Added the ability to move all number objects in Auto numbers at once using the SHIFT key.
+    Improved - Data export: Output to Microsoft Excel now uses Office Open XML (XLSX) instead of MS-XML format.
+    Improved - Data export: Output to LibreOffice Calc is now fully conformant with ODF 1.2 standard.
+    Improved - Data export: All time types are now exported as numbers, textual timecodes are expressed in seconds.
+    Improved - Data export: Support exporting positions, distances and angles from posture-based tools.
+    Improved - Data export: Support exporting computed positions (e.g: center of mass from human model tool).
+    Improved - Data export: Support exporting start and stop times for Chronometers.
+    Improved - Data export: Support exporting time series from trajectories and tracked objects.
+    Improved - Data export: Support exporting the unit used for distances and times.
     Fixed - When loading the same data file twice the keyframes and drawings could be duplicated.
     Fixed - Data angles on key images that hadn't been visited were not exported correctly.
     Fixed - Angles in radians were not exported correctly.
     Fixed - The time in kinematics dialogs could be incorrect if the time origin and selection start didn't match.
     Fixed - The top-down flag on mono and raw streams was not honored.
+    Fixed - Dual export with superposition could result in broken files.
+    Fixed - Zooming in the player was not centered on the mouse cursor.
+    Fixed - The picture-in-picture area of the magnifier was hiding drawings.
+    Fixed - Lines with arrows did not take the arrow length into account for measurement.
+    Fixed - Undo/redo was broken in various places.
+    Fixed - Saving the scene with the comment dialog open could miss saving the latest changes to the comments.
+    Fixed - The position of the main splitters of the user interface were not saved and restored correctly.
+    Fixed - Key images timecode displayed on the thumbnail could be incorrect.
+    Fixed - The folder browser dialog was causing UI issues when using high DPI scaling.
+    Fixed - Recording of webcams could result in files with the wrong framerate.
     Removed - Video reverse mode.
     Removed - Exporting data to XHTML.
     Removed - Exporting data to Gnuplot script.
+    Removed - Built-in SVG files "Observational references".
+    Removed - Popup dialog with comments, replaced by side panel.
 
 
 0.9.5 - October 2021.
@@ -113,7 +154,7 @@ Changelog:
     Fixed - Crash when trying to render extra drawings like chronometer in a capture screen.
     Fixed - The speed slider could fail to keep its value when loading a new video in a replay observer.
     Fixed - Kinematics measurements were off by one frame when the coordinate system is itself tracked.
-    
+
 
 0.9.3 - July 2020.
     Improved - Playback: more memory can be allocated for cache memory.
@@ -149,7 +190,7 @@ Changelog:
     Fixed - Video comparison was broken when one of the videos was over 35 minutes.
     Fixed - There was an unnecessary hard coded limit of 100fps when saving dual video.
     Fixed - Custom tools with points that are both constrained and tracked were not working correctly.
-    Fixed - In custom tools with angles the custom distance of the angle label was not correct. 
+    Fixed - In custom tools with angles the custom distance of the angle label was not correct.
     Fixed - Importing time origin from KVA files could yield wrong value.
     Fixed - The precision of time display was not good in some cases.
     Fixed - The visibility of the label of chronometer was broken.
@@ -297,7 +338,7 @@ Changelog:
     Added - A button to go in and out of full screen from the thumbnail viewer.
     Added - Custom length unit and symbol.
     Improved - Thumbnails can now display more details about the file and the list of details is configurable.
-    Improved - The player now defaults to interactive frame tracker. 
+    Improved - The player now defaults to interactive frame tracker.
     Improved - The current directory is watched for file events and the file explorer updated.
     Improved - The top-level menus were changed for role clarification.
     Improved - Custom tools now spawn under the mouse pointer rather than at fixed position.
@@ -364,7 +405,7 @@ Changelog:
     Added - Auto-save and crash recovery mechanism.
     Added - Coordinate system for plane calibration.
     Added - Velocities, accelerations and coordinates display for trajectories.
-    Added - Angular kinematics through best fit circle of trajectory.    
+    Added - Angular kinematics through best fit circle of trajectory.
     Added - Ability to drag and drop a KVA file from the Windows Explorer to an open playback or capture screen.
     Added - KSV files (Kinovea Synthetic Video).
     Added - Camera simulator camera type.

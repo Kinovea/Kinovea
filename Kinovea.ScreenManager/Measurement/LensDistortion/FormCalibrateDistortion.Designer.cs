@@ -535,7 +535,7 @@
       // 
       // mnuQuit
       // 
-      this.mnuQuit.Image = global::Kinovea.ScreenManager.Properties.Resources.quit;
+      this.mnuQuit.Image = global::Kinovea.ScreenManager.Properties.Resources.quit2;
       this.mnuQuit.Name = "mnuQuit";
       this.mnuQuit.Size = new System.Drawing.Size(153, 22);
       this.mnuQuit.Text = "Quit";

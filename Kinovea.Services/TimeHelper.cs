@@ -131,7 +131,7 @@ namespace Kinovea.Services
             string sign = negative ? "- " : "";
             if (precision > 2)
             {
-                int fractionValue = (int)(milliseconds * (precision - 2));
+                int fractionValue = (int)(milliseconds * Math.Pow(10, (precision - 3)));
                 string format = "D" + precision.ToString();
                 string fraction = fractionValue.ToString(format);
 

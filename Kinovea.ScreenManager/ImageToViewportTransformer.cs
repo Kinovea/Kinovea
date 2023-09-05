@@ -29,6 +29,7 @@ namespace Kinovea.ScreenManager
     /// Converts image coordinates to viewport coordinates and back.
     /// Helpers methods to directly transform points, rectangles, length, etc.
     /// TODO: merge with ImageTransform.
+    /// This is currently only used by the Capture screen.
     /// </summary>
     public class ImageToViewportTransformer : IImageToViewportTransformer
     {
@@ -108,6 +109,11 @@ namespace Kinovea.ScreenManager
         {
             double unscale = 1.0 / scale;
             return new SizeF((float)(size.Width * unscale), (float)(size.Height * unscale));
+        }
+
+        public RectangleF Untransform(Rectangle rectangle)
+        {
+            return new RectangleF(Untransform(rectangle.Location), Untransform(rectangle.Size));
         }
         public int Untransform(int distance)
         {

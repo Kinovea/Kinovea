@@ -20,5 +20,9 @@
       <Value>false</Value>
       <Variant>Perspective</Variant>
     </Toggle>
+    <Toggle Key="distanceGrid">
+      <Value>false</Value>
+      <Variant>DistanceGrid</Variant>
+    </Toggle>
   </DefaultStyle>
 </KinoveaDrawingTool>

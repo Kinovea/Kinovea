@@ -449,7 +449,7 @@ namespace Kinovea.ScreenManager
             
             foreach(int pointRef in impact.Impacted)
             {
-                posture.PointList[pointRef] = GeometryHelper.Pivot(pivot, posture.PointList[pointRef], radians);
+                posture.PointList[pointRef] = GeometryHelper.Rotate(pivot, posture.PointList[pointRef], radians);
             }
         }
         private static void MoveSegmentSymmetrically(GenericPosture posture, GenericPostureImpactHorizontalSymmetry impact)

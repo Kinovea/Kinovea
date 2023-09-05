@@ -196,17 +196,14 @@
       <HintPath>..\packages\MathNet.Numerics.4.8.1\lib\net461\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.3.3, Culture=neutral, PublicKeyToken=8985beaab7ea3f04, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft-WindowsAPICodePack-Core.1.1.3.3\lib\net452\Microsoft.WindowsAPICodePack.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.3.3, Culture=neutral, PublicKeyToken=8985beaab7ea3f04, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft-WindowsAPICodePack-Shell.1.1.3.3\lib\net452\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
-    </Reference>
     <Reference Include="NAudio, Version=1.9.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NAudio.1.9.0\lib\net35\NAudio.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="ObjectListView, Version=2.9.1.1072, Culture=neutral, PublicKeyToken=b1c5bf581481bcd4, processorArchitecture=MSIL">
+      <HintPath>..\packages\ObjectListView.Official.2.9.1\lib\net20\ObjectListView.dll</HintPath>
     </Reference>
     <Reference Include="OpenCvSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6adad1e807fea099, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenCvSharp4.4.5.5.20211231\lib\net48\OpenCvSharp.dll</HintPath>
@@ -288,7 +285,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbstractFrameServer.cs" />
     <Compile Include="AbstractScreen.cs" />
     <Compile Include="AudioInputDevice.cs" />
     <Compile Include="AudioInputLevelMonitor.cs" />
@@ -298,6 +294,7 @@
     <Compile Include="CaptureScreen\Delayer.cs" />
     <Compile Include="CaptureScreen\LoadStatus.cs" />
     <Compile Include="CaptureScreen\PipelineManager.cs" />
+    <Compile Include="CaptureScreen\RecordingStatus.cs" />
     <Compile Include="CaptureScreen\Views\InfobarCapture.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -305,22 +302,63 @@
       <DependentUpon>InfobarCapture.cs</DependentUpon>
     </Compile>
     <Compile Include="DrawingClipboard.cs" />
+    <Compile Include="Exporters\Images\ExporterImage.cs" />
+    <Compile Include="Exporters\Images\ExporterImageSequence.cs" />
+    <Compile Include="Exporters\Spreadsheet\ExporterCSVChrono.cs" />
+    <Compile Include="Exporters\Video\ExporterVideo.cs" />
+    <Compile Include="Exporters\Video\FormConfigureExportVideoSlideshow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Exporters\Video\FormConfigureExportVideoSlideshow.Designer.cs">
+      <DependentUpon>FormConfigureExportVideoSlideshow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Exporters\Video\FormConfigureExportVideo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Exporters\Video\FormConfigureExportVideo.Designer.cs">
+      <DependentUpon>FormConfigureExportVideo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Exporters\Images\FormConfigureExportImageSideBySide.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Exporters\Images\FormConfigureExportImageSideBySide.Designer.cs">
+      <DependentUpon>FormConfigureExportImageSideBySide.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Exporters\Images\FormConfigureExportImageSequence.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Exporters\Images\FormConfigureExportImageSequence.Designer.cs">
+      <DependentUpon>FormConfigureExportImageSequence.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Exporters\Images\ImageExporter.cs" />
+    <Compile Include="Exporters\Images\ImageExportFormat.cs" />
+    <Compile Include="Exporters\Video\VideoExporter.cs" />
+    <Compile Include="Exporters\Video\VideoExportFormat.cs" />
     <Compile Include="FilePatterns\PatternSymbolsCommand.cs" />
     <Compile Include="FilePatterns\Filenamer.cs" />
     <Compile Include="FilePatterns\PatternContext.cs" />
     <Compile Include="FilePatterns\PatternSymbolsFile.cs" />
-    <Compile Include="FilePicker.cs" />
     <Compile Include="Measurement\Calibration\CalibrationAxis.cs" />
     <Compile Include="Measurement\Geometry\Matrix3x3.cs" />
     <Compile Include="Measurement\Geometry\SegmentF.cs" />
     <Compile Include="Measurement\Geometry\SVD.cs" />
     <Compile Include="Measurement\Geometry\Vector3.cs" />
+    <Compile Include="Metadata\DrawingManager\DrawingManager`1.cs" />
+    <Compile Include="Metadata\Drawings\Chrono\ChronoColumns.cs" />
+    <Compile Include="Metadata\Drawings\Chrono\ChronoSection.cs" />
+    <Compile Include="Metadata\Drawings\Chrono\ChronoStringBuilder.cs" />
+    <Compile Include="Metadata\Drawings\Chrono\DrawingChrono.cs" />
+    <Compile Include="Metadata\Drawings\DrawingLine.cs" />
     <Compile Include="Metadata\Drawings\DrawingTimePolyline.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPostureOption.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPosturePolyline.cs" />
-    <Compile Include="Metadata\Exporters\ExporterCSV.cs" />
-    <Compile Include="Metadata\Exporters\ExporterJSON.cs" />
-    <Compile Include="Metadata\Exporters\ExporterXSLX.cs" />
+    <Compile Include="Exporters\Document\DocumentExporter.cs" />
+    <Compile Include="Exporters\Document\DocumentExportFormat.cs" />
+    <Compile Include="Exporters\Document\ExporterMarkdown.cs" />
+    <Compile Include="Exporters\Spreadsheet\CSVHelper.cs" />
+    <Compile Include="Exporters\Spreadsheet\ExporterCSVTrajectory.cs" />
+    <Compile Include="Exporters\Spreadsheet\ExporterJSON.cs" />
+    <Compile Include="Exporters\Spreadsheet\ExporterXSLX.cs" />
     <Compile Include="Metadata\Interfaces\IDrawingHostView.cs" />
     <Compile Include="Measurement\Geometry\AngleOptions.cs" />
     <Compile Include="Measurement\Geometry\Circle.cs" />
@@ -412,14 +450,13 @@
     <Compile Include="DualCapture\DualCaptureController.cs" />
     <Compile Include="DualPlayer\CommonTimeline.cs" />
     <Compile Include="DualPlayer\DualPlayerController.cs" />
-    <Compile Include="DualPlayer\DualSnapshoter.cs" />
-    <Compile Include="DualPlayer\DualVideoExporter.cs" />
+    <Compile Include="Exporters\Images\ExporterImageSideBySide.cs" />
+    <Compile Include="Exporters\Video\ExporterVideoSideBySide.cs" />
     <Compile Include="DualPlayer\PlayerSyncInfo.cs" />
     <Compile Include="Metadata\Drawings\CoordinateSystem\CoordinateSystemGridFinder.cs" />
     <Compile Include="Metadata\Drawings\CoordinateSystem\GridAxis.cs" />
     <Compile Include="Metadata\Drawings\CoordinateSystem\RangeHelper.cs" />
     <Compile Include="Metadata\Drawings\CoordinateSystem\GridLine.cs" />
-    <Compile Include="Metadata\DrawingManager\ChronoManager.cs" />
     <Compile Include="IImageToViewportTransformer.cs" />
     <Compile Include="ImageHelper.cs" />
     <Compile Include="ImageToViewportTransformer.cs" />
@@ -445,10 +482,11 @@
     <Compile Include="Metadata\Drawings\Styling\LineShape.cs" />
     <Compile Include="Metadata\Drawings\Styling\StyleElementLineShape.cs" />
     <Compile Include="Metadata\Drawings\Styling\TrackShape.cs" />
-    <Compile Include="Metadata\Importers\OpenPose\OpenPoseFrame.cs" />
-    <Compile Include="Metadata\Importers\OpenPose\OpenPosePerson.cs" />
-    <Compile Include="Metadata\Importers\OpenPose\MetadataImporterOpenPose.cs" />
-    <Compile Include="Metadata\Importers\SRT\MetadataImporterSRT.cs" />
+    <Compile Include="Importers\OpenPose\OpenPoseFrame.cs" />
+    <Compile Include="Importers\OpenPose\OpenPosePerson.cs" />
+    <Compile Include="Importers\OpenPose\MetadataImporterOpenPose.cs" />
+    <Compile Include="Importers\SRT\MetadataImporterSRT.cs" />
+    <Compile Include="Metadata\Interfaces\ITimeable.cs" />
     <Compile Include="Metadata\Serialization\MeasuredData.cs" />
     <Compile Include="Metadata\MetadataWatcher.cs" />
     <Compile Include="Metadata\Serialization\MeasuredDataAngle.cs" />
@@ -456,11 +494,19 @@
     <Compile Include="Metadata\Serialization\MeasuredDataKeyframe.cs" />
     <Compile Include="Metadata\Serialization\MeasuredDataPosition.cs" />
     <Compile Include="Metadata\Serialization\MeasuredDataTime.cs" />
+    <Compile Include="Metadata\Serialization\MeasuredDataTimeSection.cs" />
     <Compile Include="Metadata\Serialization\MeasuredDataTimeseries.cs" />
     <Compile Include="Metadata\Serialization\MeasuredDataUnits.cs" />
     <Compile Include="Metadata\Serialization\MeasurementSerializationHelper.cs" />
     <Compile Include="CameraTransformer.cs" />
     <Compile Include="NativeMethods.cs" />
+    <Compile Include="PlayerScreen\Controls\KeyframeCommentBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\Controls\KeyframeCommentBox.Designer.cs">
+      <DependentUpon>KeyframeCommentBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\Events\KeyframeAddEventArgs.cs" />
     <Compile Include="PlayerScreen\Events\TimeEventArgs.cs" />
     <Compile Include="Measurement\Geometry\ClipResult.cs" />
     <Compile Include="Measurement\Geometry\LiangBarsky.cs" />
@@ -472,7 +518,7 @@
     <Compile Include="Measurement\LensDistortion\DistortionSerializer.cs" />
     <Compile Include="Metadata\Serialization\DrawingSerializer.cs" />
     <Compile Include="Metadata\Serialization\KeyframeSerializer.cs" />
-    <Compile Include="Metadata\Exporters\MetadataExporter.cs" />
+    <Compile Include="Exporters\Spreadsheet\SpreadsheetExporter.cs" />
     <Compile Include="Metadata\HitTester.cs" />
     <Compile Include="Measurement\Kinematics\Component.cs" />
     <Compile Include="Measurement\Kinematics\MovingAverage.cs" />
@@ -489,28 +535,31 @@
     <Compile Include="Measurement\Kinematics\StatsHelper.cs" />
     <Compile Include="Measurement\Kinematics\TimedPoint.cs" />
     <Compile Include="Measurement\Tracking\TrackColorCycler.cs" />
-    <Compile Include="Measurement\Tracking\TrackExtraData.cs" />
     <Compile Include="Measurement\Tracking\TrackMarker.cs" />
     <Compile Include="Measurement\Tracking\TrackStatus.cs" />
-    <Compile Include="Measurement\Tracking\TrackView.cs" />
-    <Compile Include="Metadata\DrawingManager\TrackManager.cs" />
     <Compile Include="Measurement\LensDistortion\FormCalibrateDistortion.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Measurement\LensDistortion\FormCalibrateDistortion.Designer.cs">
       <DependentUpon>FormCalibrateDistortion.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureVisibility.cs">
+    <Compile Include="PlayerScreen\Controls\SidePanels\SidePanelKeyframes.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\Controls\SidePanels\SidePanelKeyframes.Designer.cs">
+      <DependentUpon>SidePanelKeyframes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\Forms\FormTimeSections.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureVisibility.Designer.cs">
+    <Compile Include="PlayerScreen\Forms\FormTimeSections.Designer.cs">
+      <DependentUpon>FormTimeSections.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\Forms\FormConfigureVisibility.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\Forms\FormConfigureVisibility.Designer.cs">
       <DependentUpon>FormConfigureVisibility.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormRafaleExport.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormRafaleExport.Designer.cs">
-      <DependentUpon>FormRafaleExport.cs</DependentUpon>
     </Compile>
     <Compile Include="Measurement\Plotting\FormPointsAnalysis.cs">
       <SubType>Form</SubType>
@@ -519,13 +568,13 @@
       <DependentUpon>FormPointsAnalysis.cs</DependentUpon>
     </Compile>
     <Compile Include="Measurement\Plotting\PlotHelper.cs" />
-    <Compile Include="PlayerScreen\UserInterface\InfobarPlayer.cs">
+    <Compile Include="PlayerScreen\Controls\InfobarPlayer.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\InfobarPlayer.Designer.cs">
+    <Compile Include="PlayerScreen\Controls\InfobarPlayer.Designer.cs">
       <DependentUpon>InfobarPlayer.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\PanelDoubleBuffer.cs">
+    <Compile Include="PlayerScreen\Controls\PanelDoubleBuffer.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Properties\Player.Designer.cs">
@@ -541,15 +590,16 @@
     <Compile Include="RecoveryManager.cs" />
     <Compile Include="ScreenRemover.cs" />
     <Compile Include="Temporizer.cs" />
-    <Compile Include="TextHelper.cs" />
     <Compile Include="Thumbnails\FileDetails.cs" />
     <Compile Include="UndoRedo\HistoryMemento.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoAddDrawing.cs" />
+    <Compile Include="UndoRedo\HistoryMementos\HistoryMementoModifyKeyframe.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoAddKeyframe.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoAddMultiDrawingItem.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoDeleteDrawing.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoDeleteKeyframe.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoDeleteMultiDrawingItem.cs" />
+    <Compile Include="UndoRedo\HistoryMementos\HistoryMementoModifyVideoFilter.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoModifyDrawing.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoNull.cs" />
     <Compile Include="UndoRedo\HistoryMenuManager.cs" />
@@ -577,26 +627,24 @@
     </Compile>
     <Compile Include="ManipulationType.cs" />
     <Compile Include="Measurement\Calibration\CalibrationHelper.cs" />
-    <Compile Include="Measurement\Calibration\CalibrationLine.cs" />
-    <Compile Include="Measurement\Calibration\CalibrationPlane.cs" />
+    <Compile Include="Measurement\Calibration\CalibratorPlane.cs" />
     <Compile Include="Measurement\Calibration\CalibratorType.cs" />
-    <Compile Include="Measurement\Calibration\ICalibrator.cs" />
     <Compile Include="Measurement\Calibration\LengthUnit.cs" />
     <Compile Include="Measurement\Calibration\UnitHelper.cs" />
     <Compile Include="Metadata\Drawings\AbstractMultiDrawing.cs" />
-    <Compile Include="Metadata\Drawings\AutoNumber.cs" />
-    <Compile Include="Metadata\Drawings\AutoNumberManager.cs" />
+    <Compile Include="Metadata\Drawings\DrawingNumberSequenceItem.cs" />
+    <Compile Include="Metadata\Drawings\DrawingNumberSequence.cs" />
     <Compile Include="Metadata\Drawings\BoundingBox.cs" />
     <Compile Include="Metadata\Drawings\DrawingBitmap.cs" />
     <Compile Include="Metadata\Drawings\DrawingCapabilities.cs" />
-    <Compile Include="Metadata\Drawings\DrawingChrono.cs" />
+    <Compile Include="Metadata\Drawings\Chrono\DrawingChronoMulti.cs" />
     <Compile Include="Metadata\Drawings\DrawingCircle.cs" />
     <Compile Include="Metadata\Drawings\CoordinateSystem\DrawingCoordinateSystem.cs" />
     <Compile Include="Metadata\Drawings\Styling\DrawingStyle.cs" />
     <Compile Include="Metadata\Drawings\DrawingSVG.cs" />
     <Compile Include="Metadata\Drawings\DrawingToolCoordinateSystem.cs" />
     <Compile Include="Metadata\Drawings\DrawingToolMagnifier.cs" />
-    <Compile Include="Metadata\Drawings\DrawingToolAutoNumbers.cs" />
+    <Compile Include="Metadata\Drawings\DrawingToolNumberSequence.cs" />
     <Compile Include="Metadata\Drawings\DrawingToolSpotlight.cs" />
     <Compile Include="Metadata\Events\DrawingEventArgs.cs" />
     <Compile Include="Metadata\Events\MeasurableDrawingEventArgs.cs" />
@@ -649,8 +697,8 @@
     <Compile Include="Metadata\Interfaces\IScalable.cs" />
     <Compile Include="Metadata\Interfaces\ITrackable.cs" />
     <Compile Include="Metadata\Drawings\RoundedRectangle.cs" />
-    <Compile Include="Metadata\Drawings\Spotlight.cs" />
-    <Compile Include="Metadata\Drawings\SpotlightManager.cs" />
+    <Compile Include="Metadata\Drawings\DrawingSpotlightItem.cs" />
+    <Compile Include="Metadata\Drawings\DrawingSpotlight.cs" />
     <Compile Include="Metadata\Drawings\Styling\AbstractStyleElement.cs" />
     <Compile Include="Metadata\Drawings\Styling\StyleElementColor.cs" />
     <Compile Include="Metadata\Drawings\Styling\StyleElementFontSize.cs" />
@@ -661,12 +709,12 @@
     <Compile Include="Metadata\Drawings\Styling\StyleElementTrackShape.cs" />
     <Compile Include="Metadata\Drawings\Styling\StyleHelper.cs" />
     <Compile Include="Metadata\DrawingToolbar\ToolManager.cs" />
-    <Compile Include="Metadata\Exporters\ExporterODS.cs" />
-    <Compile Include="Metadata\Exporters\MetadataExportFormat.cs" />
+    <Compile Include="Exporters\Spreadsheet\ExporterODS.cs" />
+    <Compile Include="Exporters\Spreadsheet\SpreadsheetExportFormat.cs" />
     <Compile Include="PlayerScreen\FrameServerPlayer.cs" />
     <Compile Include="Metadata\Drawings\DrawingAngle.cs" />
     <Compile Include="Metadata\Drawings\DrawingCrossMark.cs" />
-    <Compile Include="Metadata\Drawings\DrawingLine.cs" />
+    <Compile Include="Metadata\Drawings\DrawingTimeSegment.cs" />
     <Compile Include="Metadata\Drawings\AbstractDrawing.cs" />
     <Compile Include="Metadata\Drawings\AbstractDrawingTool.cs" />
     <Compile Include="Metadata\Drawings\DrawingPencil.cs" />
@@ -706,10 +754,10 @@
     <Compile Include="UserInterface\DropDownMenuContainer.Designer.cs">
       <DependentUpon>DropDownMenuContainer.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserInterface\FrameTracker.cs">
+    <Compile Include="PlayerScreen\Controls\FrameTracker.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UserInterface\FrameTracker.Designer.cs">
+    <Compile Include="PlayerScreen\Controls\FrameTracker.Designer.cs">
       <DependentUpon>FrameTracker.cs</DependentUpon>
     </Compile>
     <Compile Include="UserInterface\FrequencyViewer.cs">
@@ -718,98 +766,74 @@
     <Compile Include="UserInterface\FrequencyViewer.Designer.cs">
       <DependentUpon>FrequencyViewer.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserInterface\KeyframeBox.cs">
+    <Compile Include="PlayerScreen\Controls\KeyframeBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UserInterface\KeyframeBox.Designer.cs">
+    <Compile Include="PlayerScreen\Controls\KeyframeBox.Designer.cs">
       <DependentUpon>KeyframeBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserInterface\SelectionTracker.cs">
+    <Compile Include="PlayerScreen\Controls\SelectionTracker.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UserInterface\SelectionTracker.Designer.cs">
+    <Compile Include="PlayerScreen\Controls\SelectionTracker.Designer.cs">
       <DependentUpon>SelectionTracker.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UserInterface\SpeedSlider.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UserInterface\SpeedSlider.designer.cs">
-      <DependentUpon>SpeedSlider.cs</DependentUpon>
     </Compile>
     <Compile Include="UserInterface\ToolStripButtonWithDropDown.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormCalibratePlane.cs">
+    <Compile Include="PlayerScreen\Forms\FormCalibratePlane.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormCalibratePlane.Designer.cs">
+    <Compile Include="PlayerScreen\Forms\FormCalibratePlane.Designer.cs">
       <DependentUpon>FormCalibratePlane.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureDrawing2.cs">
+    <Compile Include="PlayerScreen\Forms\FormConfigureDrawing2.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureDrawing2.Designer.cs">
+    <Compile Include="PlayerScreen\Forms\FormConfigureDrawing2.Designer.cs">
       <DependentUpon>FormConfigureDrawing2.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormProgressBar2.cs">
+    <Compile Include="PlayerScreen\Forms\FormProgressBar2.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormProgressBar2.Designer.cs">
+    <Compile Include="PlayerScreen\Forms\FormProgressBar2.Designer.cs">
       <DependentUpon>FormProgressBar2.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormToolPresets.cs">
+    <Compile Include="PlayerScreen\Forms\FormToolPresets.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormToolPresets.Designer.cs">
+    <Compile Include="PlayerScreen\Forms\FormToolPresets.Designer.cs">
       <DependentUpon>FormToolPresets.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormCalibrateLine.cs">
+    <Compile Include="PlayerScreen\Forms\FormCalibrateLine.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormCalibrateLine.Designer.cs">
+    <Compile Include="PlayerScreen\Forms\FormCalibrateLine.Designer.cs">
       <DependentUpon>FormCalibrateLine.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureSpeed.cs">
+    <Compile Include="PlayerScreen\Forms\FormConfigureSpeed.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureSpeed.Designer.cs">
+    <Compile Include="PlayerScreen\Forms\FormConfigureSpeed.Designer.cs">
       <DependentUpon>FormConfigureSpeed.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureTrajectoryDisplay.cs">
+    <Compile Include="PlayerScreen\Forms\FormConfigureTrajectoryDisplay.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureTrajectoryDisplay.Designer.cs">
+    <Compile Include="PlayerScreen\Forms\FormConfigureTrajectoryDisplay.Designer.cs">
       <DependentUpon>FormConfigureTrajectoryDisplay.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormDiapoExport.cs">
+    <Compile Include="PlayerScreen\Forms\FormKeyframeComments.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormDiapoExport.Designer.cs">
-      <DependentUpon>FormDiapoExport.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormFramesExport.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormFramesExport.Designer.cs">
-      <DependentUpon>FormFramesExport.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormKeyframeComments.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormKeyframeComments.Designer.cs">
+    <Compile Include="PlayerScreen\Forms\FormKeyframeComments.Designer.cs">
       <DependentUpon>FormKeyframeComments.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormProgressBar.cs">
+    <Compile Include="PlayerScreen\Forms\FormProgressBar.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormProgressBar.Designer.cs">
+    <Compile Include="PlayerScreen\Forms\FormProgressBar.Designer.cs">
       <DependentUpon>FormProgressBar.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormVideoExport.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormVideoExport.Designer.cs">
-      <DependentUpon>FormVideoExport.cs</DependentUpon>
     </Compile>
     <Compile Include="Metadata\Magnifier.cs">
     </Compile>
@@ -878,7 +902,7 @@
       <DependentUpon>ViewerSelector.cs</DependentUpon>
     </Compile>
     <Compile Include="Thumbnails\SelectorOption.cs" />
-    <Compile Include="Thumbnails\ThumbnailViewerContent.cs" />
+    <Compile Include="Thumbnails\ThumbnailViewerType.cs" />
     <Compile Include="Thumbnails\ThumbnailViewerCameras.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -921,10 +945,10 @@
       <DependentUpon>ScreenManagerLang.resx</DependentUpon>
     </Compile>
     <Compile Include="PlayerScreen\PlayerScreen.cs" />
-    <Compile Include="PlayerScreen\UserInterface\PlayerScreenUserInterface2.cs">
+    <Compile Include="PlayerScreen\Controls\PlayerScreenUserInterface2.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\PlayerScreenUserInterface2.Designer.cs">
+    <Compile Include="PlayerScreen\Controls\PlayerScreenUserInterface2.Designer.cs">
       <DependentUpon>PlayerScreenUserInterface2.cs</DependentUpon>
     </Compile>
     <Compile Include="ScreenManager.cs" />
@@ -964,6 +988,18 @@
     <EmbeddedResource Include="CaptureScreen\Views\InfobarCapture.resx">
       <DependentUpon>InfobarCapture.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Exporters\Video\FormConfigureExportVideoSlideshow.resx">
+      <DependentUpon>FormConfigureExportVideoSlideshow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Exporters\Video\FormConfigureExportVideo.resx">
+      <DependentUpon>FormConfigureExportVideo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Exporters\Images\FormConfigureExportImageSideBySide.resx">
+      <DependentUpon>FormConfigureExportImageSideBySide.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Exporters\Images\FormConfigureExportImageSequence.resx">
+      <DependentUpon>FormConfigureExportImageSequence.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Languages\ScreenManagerLang.ar.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.bg.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.ca.resx" />
@@ -977,6 +1013,7 @@
     <EmbeddedResource Include="Languages\ScreenManagerLang.ko.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.lt.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.mk.resx" />
+    <EmbeddedResource Include="Languages\ScreenManagerLang.ms.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.no.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.ru.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.sr-Cyrl-RS.resx">
@@ -999,16 +1036,22 @@
     <EmbeddedResource Include="Measurement\LensDistortion\FormCalibrateDistortion.resx">
       <DependentUpon>FormCalibrateDistortion.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureVisibility.resx">
-      <DependentUpon>FormConfigureVisibility.cs</DependentUpon>
+    <EmbeddedResource Include="PlayerScreen\Controls\KeyframeCommentBox.resx">
+      <DependentUpon>KeyframeCommentBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormRafaleExport.resx">
-      <DependentUpon>FormRafaleExport.cs</DependentUpon>
+    <EmbeddedResource Include="PlayerScreen\Controls\SidePanels\SidePanelKeyframes.resx">
+      <DependentUpon>SidePanelKeyframes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\Forms\FormTimeSections.resx">
+      <DependentUpon>FormTimeSections.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\Forms\FormConfigureVisibility.resx">
+      <DependentUpon>FormConfigureVisibility.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Measurement\Plotting\FormPointsAnalysis.resx">
       <DependentUpon>FormPointsAnalysis.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\InfobarPlayer.resx">
+    <EmbeddedResource Include="PlayerScreen\Controls\InfobarPlayer.resx">
       <DependentUpon>InfobarPlayer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Player.resx">
@@ -1018,7 +1061,7 @@
     <EmbeddedResource Include="UserInterface\FormForegroundColor.resx">
       <DependentUpon>FormForegroundColor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UserInterface\FrameTracker.resx">
+    <EmbeddedResource Include="PlayerScreen\Controls\FrameTracker.resx">
       <DependentUpon>FrameTracker.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -1026,34 +1069,30 @@
       <SubType>Designer</SubType>
       <DependentUpon>FrequencyViewer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UserInterface\KeyframeBox.resx">
+    <EmbeddedResource Include="PlayerScreen\Controls\KeyframeBox.resx">
       <SubType>Designer</SubType>
       <DependentUpon>KeyframeBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UserInterface\SelectionTracker.resx">
+    <EmbeddedResource Include="PlayerScreen\Controls\SelectionTracker.resx">
       <DependentUpon>SelectionTracker.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="UserInterface\SpeedSlider.resx">
-      <DependentUpon>SpeedSlider.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormCalibratePlane.resx">
+    <EmbeddedResource Include="PlayerScreen\Forms\FormCalibratePlane.resx">
       <DependentUpon>FormCalibratePlane.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureDrawing2.resx">
+    <EmbeddedResource Include="PlayerScreen\Forms\FormConfigureDrawing2.resx">
       <DependentUpon>FormConfigureDrawing2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormCalibrateLine.resx">
+    <EmbeddedResource Include="PlayerScreen\Forms\FormCalibrateLine.resx">
       <DependentUpon>FormCalibrateLine.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormProgressBar.resx">
+    <EmbeddedResource Include="PlayerScreen\Forms\FormProgressBar.resx">
       <DependentUpon>FormProgressBar.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormProgressBar2.resx">
+    <EmbeddedResource Include="PlayerScreen\Forms\FormProgressBar2.resx">
       <DependentUpon>FormProgressBar2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormToolPresets.resx">
+    <EmbeddedResource Include="PlayerScreen\Forms\FormToolPresets.resx">
       <DependentUpon>FormToolPresets.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Backgrounds.resx">
@@ -1132,16 +1171,16 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Languages\ScreenManagerLang.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ScreenManagerLang.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\PlayerScreenUserInterface2.resx">
+    <EmbeddedResource Include="PlayerScreen\Controls\PlayerScreenUserInterface2.resx">
       <DependentUpon>PlayerScreenUserInterface2.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\ScreenManagerUserInterface.resx">
@@ -1168,29 +1207,17 @@
     <EmbeddedResource Include="Languages\ScreenManagerLang.ro.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureSpeed.resx">
+    <EmbeddedResource Include="PlayerScreen\Forms\FormConfigureSpeed.resx">
       <DependentUpon>FormConfigureSpeed.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureTrajectoryDisplay.resx">
+    <EmbeddedResource Include="PlayerScreen\Forms\FormConfigureTrajectoryDisplay.resx">
       <SubType>Designer</SubType>
       <DependentUpon>FormConfigureTrajectoryDisplay.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormDiapoExport.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>FormDiapoExport.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormFramesExport.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>FormFramesExport.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormKeyframeComments.resx">
+    <EmbeddedResource Include="PlayerScreen\Forms\FormKeyframeComments.resx">
       <SubType>Designer</SubType>
       <DependentUpon>FormKeyframeComments.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormVideoExport.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>FormVideoExport.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -1491,6 +1518,183 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\wand.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\move_keyframe.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\gutter-center.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\gutter-left.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\gutter-right.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\gutter-cursor.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\comment.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\balloon-ellipsis.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\navforward.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\navup.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\navback.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\sort.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\information.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\stopwatch_multi.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\handlersetleft.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\handlersetright.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\leftconstraint3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\rightconstraint.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\chrono_split.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\arrow-000-medium.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\padlock2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\binocular.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\action.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\equalizer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\rtl.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\border-all.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\exit_filter.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\sidepanel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\createkeyframe.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\handtool4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\handtool3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\sidepanel2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\explorer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\json.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\csv.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\replaywatcher2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\closeplayer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\film.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\quit2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\filesave2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file_notebook.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file_odt.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file_ppt.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file_doc.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file_html.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file_pdf.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file_csv.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\table.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file_spreadsheet.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\film_key.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\save_paused_video.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export_video_video.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export_spreadsheet.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export_document.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export_image_keys.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export_sidebyside.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file_markdown.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export_video_video_sidebyside2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export_image_sidebyside3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\timetable.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shading.png" />

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaDrawingTool>
+  <FormatVersion>1.0</FormatVersion>
+  <Id>42694435-9FCC-43C0-AC27-2FB09D8B6FDF</Id>
+  <Name>ChronoMulti</Name>
+  <DisplayName>ToolTip_DrawingToolChrono</DisplayName>
+  <Icon>stopwatch</Icon>
+  <DrawingClass>DrawingChronoMulti</DrawingClass>
+  <Attached>false</Attached>
+  <KeepToolAfterDrawingCreation>false</KeepToolAfterDrawingCreation>
+  <KeepToolAfterFrameChange>false</KeepToolAfterFrameChange>
+  <DefaultStyle>
+    <Color Key="color">
+      <Value>255;0;0;0</Value>
+    </Color>
+    <FontSize Key="font size">
+      <Value>16</Value>
+    </FontSize>
+  </DefaultStyle>
+</KinoveaDrawingTool>

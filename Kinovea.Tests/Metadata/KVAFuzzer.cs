@@ -459,8 +459,8 @@ namespace Kinovea.Tests.Metadata
 
             Array viewValues = Enum.GetValues(typeof(TrackView));
             TrackView view = (TrackView)viewValues.GetValue(random.Next(viewValues.Length));
-            Array extraDataValues = Enum.GetValues(typeof(TrackExtraData));
-            TrackExtraData extraData = (TrackExtraData)extraDataValues.GetValue(random.Next(extraDataValues.Length));
+            Array extraDataValues = Enum.GetValues(typeof(MeasureLabelType));
+            MeasureLabelType extraData = (MeasureLabelType)extraDataValues.GetValue(random.Next(extraDataValues.Length));
             Array markerValues = Enum.GetValues(typeof(TrackMarker));
             TrackMarker marker = (TrackMarker)markerValues.GetValue(random.Next(markerValues.Length));
             bool displayBestFitCircle = random.NextBoolean();

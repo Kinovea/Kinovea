@@ -36,22 +36,43 @@ namespace Kinovea.ScreenManager
     {
         #region Properties
         /// <summary>
-        /// List of context menus specific to the filter.
-        /// The menus for exporting images, videos and data should not be present in this menu,
-        /// they will be automatically created at the screen level based on the CanExportVideo and 
-        /// CanExportImage properties.
+        /// Filter type.
         /// </summary>
-        List<ToolStripItem> ContextMenu { get; }
+        VideoFilterType Type { get; }
 
         /// <summary>
-        /// User facing name of the filter.
+        /// Resource string for the user facing name of the filter.
         /// </summary>
-        string FriendlyName { get; }
+        string FriendlyNameResource { get; }
 
         /// <summary>
         /// Rendered bitmap to be displayed on the viewport.
         /// </summary>
         Bitmap Current { get; }
+
+        /// <summary>
+        /// Whether this filter has a set of custom context menus.
+        /// They will then be retrieved from GetContextMenu.
+        /// </summary>
+        bool HasContextMenu { get; }
+
+        /// <summary>
+        /// Whether the aspect ratio of the output image is inverted compared to the input images.
+        /// This is useful when the input images are in portrait mode but the output is better in landscape mode.
+        /// The main viewport should take this into account and change the viewport aspect ratio accordingly
+        /// while still providing images in their original aspect ratio.
+        /// </summary>
+        bool RotatedCanvas { get; }
+
+        /// <summary>
+        /// Whether we should draw the keyframe-attached drawings on top of the bitmap rendered by this filter.
+        /// </summary>
+        bool DrawAttachedDrawings { get; }
+
+        /// <summary>
+        /// Whether we should draw the detached drawings on top of the bitmap rendered by this filter.
+        /// </summary>
+        bool DrawDetachedDrawings { get; }
 
         /// <summary>
         /// Whether this filter is capable of exporting video.
@@ -76,15 +97,18 @@ namespace Kinovea.ScreenManager
         #region Methods
 
         /// <summary>
-        /// Called by the screen when the number or content of the frame buffer has changed.
-        /// The filter should reset itself with the new frames, while keeping its existing settings when possible.
+        /// Retrieve the list of context menus specific to the filter.
+        /// The menus for exporting images, videos and data should not be present in this menu,
+        /// they will be automatically created at the screen level based on the CanExportVideo and 
+        /// CanExportImage properties and the event handlers will call into ExportVideo and ExportImage.
         /// </summary>
-        void SetFrames(IWorkingZoneFramesContainer framesContainer);
+        List<ToolStripItem> GetContextMenu(PointF pivot, long timestamp);
 
         /// <summary>
-        /// Called when the main size of the final image has changed.
+        /// Called by the screen when the number or content of the frame buffer has changed.
+        /// The filter should reset itself with the new frames, while keeping existing settings when possible.
         /// </summary>
-        void UpdateSize(Size size);
+        void SetFrames(IWorkingZoneFramesContainer framesContainer);
 
         /// <summary>
         /// Called when the query time changes. 
@@ -112,7 +136,7 @@ namespace Kinovea.ScreenManager
         /// Draw extra graphics on top of the current image.
         /// These may be dependent on the current time while the main image might not.
         /// </summary>
-        void DrawExtra(Graphics canvas, IImageToViewportTransformer transformer, long timestamp);
+        void DrawExtra(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, long timestamp, bool export);
 
         /// <summary>
         /// Called when the user wants to export the video using images created by the filter.

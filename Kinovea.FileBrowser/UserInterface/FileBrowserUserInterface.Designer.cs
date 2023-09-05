@@ -166,9 +166,10 @@ namespace Kinovea.FileBrowser
       this.lvExplorer.TabIndex = 0;
       this.lvExplorer.UseCompatibleStateImageBehavior = false;
       this.lvExplorer.View = System.Windows.Forms.View.Details;
-      this.lvExplorer.SelectedIndexChanged += new System.EventHandler(this.listViews_SelectedIndexChanged);
+      this.lvExplorer.SelectedIndexChanged += new System.EventHandler(this.listView_SelectedIndexChanged);
+      this.lvExplorer.SizeChanged += new System.EventHandler(this.listView_SizeChanged);
       this.lvExplorer.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lvExplorer_MouseDoubleClick);
-      this.lvExplorer.MouseDown += new System.Windows.Forms.MouseEventHandler(this.listViews_MouseDown);
+      this.lvExplorer.MouseDown += new System.Windows.Forms.MouseEventHandler(this.listView_MouseDown);
       // 
       // imgListFiles
       // 
@@ -321,9 +322,10 @@ namespace Kinovea.FileBrowser
       this.lvShortcuts.TabIndex = 2;
       this.lvShortcuts.UseCompatibleStateImageBehavior = false;
       this.lvShortcuts.View = System.Windows.Forms.View.Details;
-      this.lvShortcuts.SelectedIndexChanged += new System.EventHandler(this.listViews_SelectedIndexChanged);
+      this.lvShortcuts.SelectedIndexChanged += new System.EventHandler(this.listView_SelectedIndexChanged);
+      this.lvShortcuts.SizeChanged += new System.EventHandler(this.listView_SizeChanged);
       this.lvShortcuts.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lvShortcuts_MouseDoubleClick);
-      this.lvShortcuts.MouseDown += new System.Windows.Forms.MouseEventHandler(this.listViews_MouseDown);
+      this.lvShortcuts.MouseDown += new System.Windows.Forms.MouseEventHandler(this.listView_MouseDown);
       // 
       // tabPageCameras
       // 
@@ -362,9 +364,10 @@ namespace Kinovea.FileBrowser
       this.lvCaptured.TabIndex = 10;
       this.lvCaptured.UseCompatibleStateImageBehavior = false;
       this.lvCaptured.View = System.Windows.Forms.View.Details;
-      this.lvCaptured.SelectedIndexChanged += new System.EventHandler(this.listViews_SelectedIndexChanged);
+      this.lvCaptured.SelectedIndexChanged += new System.EventHandler(this.listView_SelectedIndexChanged);
+      this.lvCaptured.SizeChanged += new System.EventHandler(this.listView_SizeChanged);
       this.lvCaptured.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.LvCaptured_MouseDoubleClick);
-      this.lvCaptured.MouseDown += new System.Windows.Forms.MouseEventHandler(this.listViews_MouseDown);
+      this.lvCaptured.MouseDown += new System.Windows.Forms.MouseEventHandler(this.listView_MouseDown);
       // 
       // lblCaptureHistory
       // 

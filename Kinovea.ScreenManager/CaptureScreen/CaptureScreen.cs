@@ -115,12 +115,18 @@ namespace Kinovea.ScreenManager
             get { return metadata.Mirrored; }
             set { ChangeMirror(value); }
         }
-        public bool TestGridVisible
+        public override bool CoordinateSystemVisible
+        {
+            get { return metadata.DrawingCoordinateSystem.Visible; }
+            set { metadata.DrawingCoordinateSystem.Visible = value; }
+        }
+        public override bool TestGridVisible
         {
             get { return metadata.TestGridVisible; }
             set { metadata.TestGridVisible = value; }
         }
-        public HistoryStack HistoryStack
+
+        public override HistoryStack HistoryStack
         {
             get { return historyStack; }
         }
@@ -167,8 +173,8 @@ namespace Kinovea.ScreenManager
         private CaptureRecordingMode recordingMode;
         private VideoFileWriter videoFileWriter = new VideoFileWriter();
         private Stopwatch stopwatchRecording = new Stopwatch();
-        private bool triggerArmed = false;
-        private bool manualArmed = false;
+        private bool triggerArmed = false;  // This indicates whether we are currently armed or not and is used to discard capture trigger commands.
+        private bool manualArmed = false;   // This indicates whether the user manually armed/disarmed the audio/software trigger.
         private bool inQuietPeriod = false;
 
         private Delayer delayer = new Delayer();
@@ -225,6 +231,7 @@ namespace Kinovea.ScreenManager
             recordingMode = PreferencesManager.CapturePreferences.RecordingMode;
             
             view.UpdateArmedStatus(triggerArmed);
+            UpdateRecordingIndicator();
             UpdateArmableTrigger();
 
             view.SetToolbarView(drawingToolbarPresenter.View);
@@ -461,7 +468,7 @@ namespace Kinovea.ScreenManager
                 // Make sure we have at least one keyframe.
                 // This can happen when we reload the existing KVA after changes from the player side 
                 // and the user has deleted all keyframes.
-                Keyframe kf = new Keyframe(0, "", metadata);
+                Keyframe kf = new Keyframe(0, "", Keyframe.DefaultColor, metadata);
                 metadata.AddKeyframe(kf);
             }
         }
@@ -679,7 +686,7 @@ namespace Kinovea.ScreenManager
 
             delayer.FreeAll();
             UpdateDelayMaxAge();
-
+            UpdateRecordingIndicator();
             UpdateTitle();
             cameraLoaded = false;
         }
@@ -899,6 +906,7 @@ namespace Kinovea.ScreenManager
 
             prepareFailedImageDescriptor = ImageDescriptor.Invalid;
             UpdateTitle();
+            UpdateRecordingIndicator();
         }
 
         private void ConfigureCamera()
@@ -985,7 +993,7 @@ namespace Kinovea.ScreenManager
                 if (triggerArmed)
                     return;
 
-                // Not already armed but the user explicitely disarmed earlier.
+                // Not already armed but the user hasn't explicitely armed earlier.
                 // When we get out of preferences we may have changed something else, 
                 // so we can't use the EnableAudioTrigger value to override what the user may have manually set.
                 if (!manualArmed)
@@ -1017,12 +1025,27 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void CheckQuietPeriod()
         {
-            if (AudioInputLevelMonitor.IsQuiet())
+            float quietProgress = AudioInputLevelMonitor.QuietProgress();
+            if (quietProgress < 1.0f)
+            {
+                if (!manualArmed)
+                {
+                    // The user has manually disarmed, this means that when exiting the quiet period we'll still be in disarmed mode.
+                    // In this case it is more confusing than anything to show the quiet period reverse progress.
+                    viewportController.UpdateRecordingIndicator(RecordingStatus.Quiet, 1.0f);
+                }
+                else
+                {
+                    float progress = Math.Max(0.0f, 1.0f - quietProgress);
+                    viewportController.UpdateRecordingIndicator(RecordingStatus.Quiet, progress);
+                }
                 return;
+            }
             
             // Exiting quiet period. Re-arm only if not manually disarmed and prefs authorize it.
             log.DebugFormat("Detected end of quiet period.");
             inQuietPeriod = false;
+            UpdateRecordingIndicator();
 
             if (!PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger)
                 return;
@@ -1037,9 +1060,18 @@ namespace Kinovea.ScreenManager
         private void Grabber_GrabbingStatusChanged(object sender, EventArgs e)
         {
             if (dummy.InvokeRequired)
-                dummy.BeginInvoke((Action)delegate { view.UpdateGrabbingStatus(cameraGrabber.Grabbing); });
+            {
+                dummy.BeginInvoke((Action)delegate 
+                { 
+                    view.UpdateGrabbingStatus(cameraGrabber.Grabbing);
+                    UpdateRecordingIndicator();
+                });
+            }
             else
+            {
                 view.UpdateGrabbingStatus(cameraGrabber.Grabbing);
+                UpdateRecordingIndicator();
+            }
         }
         
         private void UpdateTitle()
@@ -1203,7 +1235,9 @@ namespace Kinovea.ScreenManager
             {
                 // Test if recording duration threshold is passed.
                 float recordingSeconds = stopwatchRecording.ElapsedMilliseconds / 1000.0f;
-                
+                float progress = Math.Max(0.0f, 1.0f - (recordingSeconds / maxRecordingSeconds));
+                viewportController.UpdateRecordingIndicator(RecordingStatus.Recording, progress);
+
                 if (recordingMode == CaptureRecordingMode.Scheduled)
                 {
                     // Always stop recording before the oldest frame drops off the bandwagon.
@@ -1357,8 +1391,8 @@ namespace Kinovea.ScreenManager
             if (type == TimeType.Duration)
                 frames++;
 
-            double milliseconds = frames * metadata.UserInterval / metadata.HighSpeedFactor;
-            double framerate = 1000.0 / metadata.UserInterval * metadata.HighSpeedFactor;
+            double milliseconds = frames * metadata.BaselineFrameInterval / metadata.HighSpeedFactor;
+            double framerate = 1000.0 / metadata.BaselineFrameInterval * metadata.HighSpeedFactor;
             double durationTimestamps = 1.0;
             double totalFrames = durationTimestamps / averageTimestampsPerFrame;
 
@@ -1529,6 +1563,7 @@ namespace Kinovea.ScreenManager
         {
             triggerArmed = !triggerArmed;
             view.UpdateArmedStatus(triggerArmed);
+            UpdateRecordingIndicator();
             
             if (manual)
                 manualArmed = triggerArmed;
@@ -1540,6 +1575,28 @@ namespace Kinovea.ScreenManager
                 else
                     viewportController.ToastMessage(ScreenManagerLang.Toast_TriggerDisarmed, 1000);
             }
+        }
+
+        private void UpdateRecordingIndicator()
+        {
+            // Generic update based on the current state.
+            // There are other calls to viewportController.UpdateRecordingIndicator when we need to pass different progress value.
+            RecordingStatus status = RecordingStatus.Disarmed;
+            
+            if (!cameraLoaded)
+                status = RecordingStatus.Disconnected;
+            else if (cameraGrabber != null && !cameraGrabber.Grabbing)
+                status = RecordingStatus.Paused;
+            else if (recording)
+                status = RecordingStatus.Recording;
+            else if (inQuietPeriod)
+                status = RecordingStatus.Quiet;
+            else if (triggerArmed)
+                status = RecordingStatus.Armed;
+            else
+                status = RecordingStatus.Disarmed;
+
+            viewportController.UpdateRecordingIndicator(status, 1.0f);
         }
         
         private void ToggleRecording()
@@ -1648,7 +1705,8 @@ namespace Kinovea.ScreenManager
                     stopwatchRecording.Restart();
                 
                     view.UpdateRecordingStatus(recording);
-                    viewportController.ToastMessage(ScreenManagerLang.Toast_StartRecord, 1000);
+                    viewportController.StartingRecording();
+                    viewportController.UpdateRecordingIndicator(RecordingStatus.Recording, 1.0f);
 
                     if (RecordingStarted != null)
                         RecordingStarted(this, EventArgs.Empty);
@@ -1699,8 +1757,7 @@ namespace Kinovea.ScreenManager
                 else
                     log.Debug(dropMessage);
 
-                viewportController.ToastMessage(ScreenManagerLang.Toast_StopRecord, 750);
-
+                viewportController.StoppingRecording();
                 AfterStopRecording(finalFilename);
             }
             else // recordingMode == CaptureRecordingMode.Scheduled
@@ -1756,6 +1813,7 @@ namespace Kinovea.ScreenManager
             view.UpdateNextVideoFilename(next);
 
             view.UpdateRecordingStatus(recording);
+            UpdateRecordingIndicator();
 
             if (RecordingStopped != null)
                 RecordingStopped(this, EventArgs.Empty);
@@ -1773,8 +1831,8 @@ namespace Kinovea.ScreenManager
 
             metadata.CalibrationHelper.CaptureFramesPerSecond = setCaptureFramerate ? pipelineManager.Frequency : cameraGrabber.Framerate;
             double userInterval = 1000.0 / cameraGrabber.Framerate;
-            metadata.UserInterval = CalibrationHelper.ComputeFileFrameInterval(userInterval);
-            bool setUserInterval = userInterval != metadata.UserInterval;
+            metadata.BaselineFrameInterval = CalibrationHelper.ComputeFileFrameInterval(userInterval);
+            bool setUserInterval = userInterval != metadata.BaselineFrameInterval;
 
             // Set the time origin to match the real time of the recording trigger.
             // This will also help synchronizing videos with different delays.

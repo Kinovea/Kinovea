@@ -37,7 +37,7 @@ namespace Kinovea.ScreenManager
             float dot = ac.Dot(ab);
             float t =  dot / ab2;
             
-            float fMargin = (float)_margin / ab.Norm();
+            float fMargin = _margin / ab.Norm();
             switch(allowedPosition)
             {
                 case PointLinePosition.BeforeSegment:
@@ -74,9 +74,9 @@ namespace Kinovea.ScreenManager
         
         public static PointF GetMiddlePoint(PointF a, PointF b)
         {
-            return a + (new Vector(a,b) / 2);
+            return a + (new Vector(a,b) * 0.5f);
         }
-        
+
         /// <summary>
         /// Gets the distance between points A and B.
         /// </summary>
@@ -86,7 +86,7 @@ namespace Kinovea.ScreenManager
         }
         
         /// <summary>
-        /// Returns the between vectors ab and ac in the range [-π..+π], positive CCW.
+        /// Returns the angle between vectors ab and ac in the range [-π..+π], positive CCW.
         /// </summary>
         public static float GetAngle(PointF a, PointF b, PointF c)
         {
@@ -105,9 +105,9 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Rotates point b around point a by given rotation factor (in radians).
+        /// Rotates point b around point a by an angle in radians).
         /// </summary>
-        public static PointF Pivot(PointF a, PointF b, float radians)
+        public static PointF Rotate(PointF a, PointF b, float radians)
         {
             Vector v = new Vector(a,b);
             float dx = (float)(v.X * Math.Cos(radians) - v.Y * Math.Sin(radians));
@@ -134,7 +134,7 @@ namespace Kinovea.ScreenManager
             
             float deltaAngle = (section * step) - angle;
             
-            return Pivot(pivot, point, deltaAngle);
+            return Rotate(pivot, point, deltaAngle);
         }
         
         /// <summary>
@@ -165,7 +165,7 @@ namespace Kinovea.ScreenManager
         public static PointF GetPointAtAngleAndDistance(PointF origin, PointF leg1, float angle, float distance)
         {
             // First get a point in the right direction, then get the point in this direction that is at the right distance.
-            PointF direction = Pivot(origin, leg1, angle);
+            PointF direction = Rotate(origin, leg1, angle);
             PointF result = GetPointAtDistance(origin, direction, distance);
             return result;
         }

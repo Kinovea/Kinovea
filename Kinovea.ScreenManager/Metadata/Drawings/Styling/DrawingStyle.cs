@@ -27,6 +27,8 @@ namespace Kinovea.ScreenManager
     /// <summary>
     /// Represents the styling elements of a drawing or drawing tool preset.
     /// Host a list of style elements needed to decorate the drawing.
+    /// To see the available elements and their keys for a particular tool, check the constructor of the tool.
+    /// In the case of XML defined tools, the list is declared in the XML in the DefaultStyle tag.
     /// </summary>
     public class DrawingStyle
     {
@@ -223,6 +225,22 @@ namespace Kinovea.ScreenManager
             {
                 if (!input.Elements.ContainsKey(key))
                     input.Elements.Add(key, preset.Elements[key].Clone());
+            }
+        }
+
+        /// <summary>
+        /// Returns true if this toggle should be hidden from the user interface.
+        /// </summary>
+        public static bool IsHiddenToggle(StyleToggleVariant toggleType)
+        {
+            switch (toggleType)
+            {
+                case StyleToggleVariant.Perspective:
+                case StyleToggleVariant.DistanceGrid:
+                case StyleToggleVariant.Clock:
+                    return true;
+                default:
+                    return false;
             }
         }
     }

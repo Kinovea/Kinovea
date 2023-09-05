@@ -23,15 +23,14 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using System.Collections.Generic;
+using System.Globalization;
 
 using Kinovea.Root.Languages;
 using Kinovea.Root.Properties;
 using Kinovea.ScreenManager;
-using Kinovea.Services;
-using System.Collections.Generic;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using System.Globalization;
 using Kinovea.ScreenManager.Languages;
+using Kinovea.Services;
 
 namespace Kinovea.Root
 {
@@ -55,7 +54,14 @@ namespace Kinovea.Root
         #region Members
         private string description;
         private Bitmap icon;
-        private List<PreferenceTab> tabs = new List<PreferenceTab> { PreferenceTab.Capture_General, PreferenceTab.Capture_Memory, PreferenceTab.Capture_Recording, PreferenceTab.Capture_ImageNaming, PreferenceTab.Capture_VideoNaming, PreferenceTab.Capture_Automation};
+        private List<PreferenceTab> tabs = new List<PreferenceTab> { 
+            PreferenceTab.Capture_General, 
+            PreferenceTab.Capture_Memory, 
+            PreferenceTab.Capture_Recording, 
+            PreferenceTab.Capture_ImageNaming, 
+            PreferenceTab.Capture_VideoNaming, 
+            PreferenceTab.Capture_Automation
+        };
         private CapturePathConfiguration capturePathConfiguration = new CapturePathConfiguration();
         private Dictionary<CaptureVariable, TextBox> namingTextBoxes = new Dictionary<CaptureVariable, TextBox>();
         private double displaySynchronizationFramerate;
@@ -149,17 +155,17 @@ namespace Kinovea.Root
 
         private void InitPage()
         {
-            InitPageGeneral();
-            InitPageMemory();
-            InitPageRecording();
-            InitPageImageNaming();
-            InitPageVideoNaming();
-            InitPageAutomation();
+            InitTabGeneral();
+            InitTabMemory();
+            InitTabRecording();
+            InitTabImageNaming();
+            InitTabVideoNaming();
+            InitTabAutomation();
 
             InitNamingTextBoxes();
         }
 
-        private void InitPageGeneral()
+        private void InitTabGeneral()
         {
             tabGeneral.Text = RootLang.dlgPreferences_tabGeneral;
 
@@ -189,7 +195,7 @@ namespace Kinovea.Root
             tbCaptureKVA.Text = captureKVA;
         }
 
-        private void InitPageMemory()
+        private void InitTabMemory()
         {
             tabMemory.Text = RootLang.dlgPreferences_Capture_tabMemory;
 
@@ -201,7 +207,7 @@ namespace Kinovea.Root
             UpdateMemoryLabel();
         }
 
-        private void InitPageRecording()
+        private void InitTabRecording()
         {
             tabRecording.Text = RootLang.dlgPreferences_Capture_Recording;
 
@@ -224,10 +230,12 @@ namespace Kinovea.Root
             lblReplacementFramerate.Text = RootLang.dlgPreferences_Capture_lblReplacementValue;
             nudReplacementThreshold.Value = (decimal)replacementFramerateThreshold;
             nudReplacementFramerate.Value = (decimal)replacementFramerate;
+            NudHelper.FixNudScroll(nudReplacementThreshold);
+            NudHelper.FixNudScroll(nudReplacementFramerate);
             // Tooltip: Starting at this capture framerate, videos will be created with the replacement framerate in their metadata.
         }
 
-        private void InitPageImageNaming()
+        private void InitTabImageNaming()
         {
             tabImageNaming.Text = RootLang.dlgPreferences_Capture_ImageNaming;
 
@@ -249,7 +257,7 @@ namespace Kinovea.Root
             tbRightImageFile.Text = capturePathConfiguration.RightImageFile;
         }
 
-        private void InitPageVideoNaming()
+        private void InitTabVideoNaming()
         {
             tabVideoNaming.Text = RootLang.dlgPreferences_Capture_VideoNaming;
 
@@ -271,7 +279,7 @@ namespace Kinovea.Root
             tbRightVideoFile.Text = capturePathConfiguration.RightVideoFile;
         }
 
-        private void InitPageAutomation()
+        private void InitTabAutomation()
         {
             tabAutomation.Text = RootLang.dlgPreferences_Capture_tabAutomation; 
             chkEnableAudioTrigger.Text = RootLang.dlgPreferences_Capture_chkEnableAudioTrigger;
@@ -303,18 +311,21 @@ namespace Kinovea.Root
             vumeter.DecibelRange = decibelRange;
             nudAudioTriggerThreshold.Value = (decimal)vumeter.ThresholdLinear * decibelRange;
             nudAudioTriggerThreshold.Maximum = decibelRange;
+            NudHelper.FixNudScroll(nudAudioTriggerThreshold);
 
             lblQuietPeriod.Text = RootLang.dlgPreferences_Capture_lblIdleTime;
             nudQuietPeriod.Value = (decimal)audioQuietPeriod;
+            NudHelper.FixNudScroll(nudQuietPeriod);
 
-            lblTriggerAction.Text = "Trigger action:";
+            lblTriggerAction.Text = RootLang.dlgPreferences_Capture_TriggerAction;
             cmbTriggerAction.Items.Add(ScreenManagerLang.ToolTip_StartRecording);
             cmbTriggerAction.Items.Add(ScreenManagerLang.Generic_SaveImage);
             cmbTriggerAction.SelectedIndex = ((int)triggerAction < cmbTriggerAction.Items.Count) ? (int)triggerAction : 0;
 
             lblRecordingTime.Text = RootLang.dlgPreferences_Capture_lblStopRecordingByDuration;
             nudRecordingTime.Value = (decimal)recordingSeconds;
-            
+            NudHelper.FixNudScroll(nudRecordingTime);
+
             chkEnableAudioTrigger.Checked = enableAudioTrigger;
             EnableDisableAudioTrigger();
 
@@ -464,15 +475,15 @@ namespace Kinovea.Root
 
             TextBox tb = namingTextBoxes[captureVariable];
 
-            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
-            dialog.IsFolderPicker = true;
+            string initialDirectory = null;
             if (Directory.Exists(tb.Text))
-                dialog.InitialDirectory = tb.Text;
+                initialDirectory = tb.Text;
             else
-                dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                initialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-                tb.Text = dialog.FileName;
+            string path = FilesystemHelper.OpenFolderBrowserDialog(initialDirectory);
+            if (string.IsNullOrEmpty(path))
+                tb.Text = path;
         }
 
         private void btnMacroReference_Click(object sender, EventArgs e)

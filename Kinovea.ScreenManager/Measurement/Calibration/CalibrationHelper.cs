@@ -27,8 +27,10 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// CalibrationHelper encapsulates information used for pixels-to-real-world transformation.
-    /// The user can specify the real distance of a Line drawing and a coordinate system.
-    /// We also keep the preferred units.
+    /// This contains:
+    /// - Camera extrinsics (As Kinovea is 2D this is only a homography, not a full camera pose).
+    /// - Camera intrinsics.
+    /// - Capture framerate.
     /// </summary>
     public class CalibrationHelper
     {
@@ -100,7 +102,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public CalibrationAxis CalibrationAxis
         {
-            get { return calibrationPlane.CalibrationAxis; }
+            get { return calibrator.CalibrationAxis; }
         }
 
         public DistortionHelper DistortionHelper
@@ -133,8 +135,7 @@ namespace Kinovea.ScreenManager
         #region Members
         private bool initialized;
         private CalibratorType calibratorType = CalibratorType.Line;
-        private ICalibrator calibrator;
-        private CalibrationPlane calibrationPlane = new CalibrationPlane();
+        private CalibratorPlane calibrator = new CalibratorPlane();
         private DistortionHelper distortionHelper = new DistortionHelper();
         private Guid calibrationDrawingId;
         private Size imageSize;
@@ -156,7 +157,6 @@ namespace Kinovea.ScreenManager
         public CalibrationHelper()
         {
             RefreshUnits();
-            calibrator = calibrationPlane;
         }
         #endregion
         
@@ -165,28 +165,28 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void Initialize(Size imageSize, Func<long, PointF> getCalibrationOrigin, Func<long, CalibratorType, Guid, QuadrilateralF> getCalibrationQuad, Func<Guid, bool> hasTrackingData)
         {
+            if (imageSize == this.imageSize)
+                return;
+
             this.imageSize = imageSize;
             this.getCalibrationOrigin = getCalibrationOrigin;
             this.getCalibrationQuad = getCalibrationQuad;
             this.hasTrackingData = hasTrackingData;
             Reset();
-            initialized = true;
         }
 
         public void Reset()
         {
             calibratorType = CalibratorType.Line;
-            calibrationPlane = new CalibrationPlane();
+            calibrator = new CalibratorPlane();
 
             PointF center = imageSize.Center();
-            calibrationPlane.Initialize(100, center, new PointF(center.X + 100, center.Y), CalibrationAxis.LineHorizontal);
-
-            calibrator = calibrationPlane;
-
+            calibrator.Initialize(100, center, new PointF(center.X + 100, center.Y), CalibrationAxis.LineHorizontal);
             distortionHelper = new DistortionHelper();
-
             lengthUnit = LengthUnit.Pixels;
             
+            initialized = true;
+
             ComputeCoordinateSystemGrid();
         }
         
@@ -240,7 +240,7 @@ namespace Kinovea.ScreenManager
             calibrationDrawingId = id;
             PointF aRectif = distortionHelper.Undistort(a);
             PointF bRectif = distortionHelper.Undistort(b);
-            calibrationPlane.Initialize(length, aRectif, bRectif, calibrationAxis);
+            calibrator.Initialize(length, aRectif, bRectif, calibrationAxis);
             AfterCalibrationChanged();
         }
 
@@ -251,20 +251,20 @@ namespace Kinovea.ScreenManager
 
             PointF aRectif = distortionHelper.Undistort(a);
             PointF bRectif = distortionHelper.Undistort(b);
-            calibrationPlane.Update(aRectif, bRectif);
+            calibrator.Update(aRectif, bRectif);
             AfterCalibrationChanged();
         }
 
-        public CalibrationPlane CalibrationByLine_GetCalibrator()
+        public CalibratorPlane CalibrationByLine_GetCalibrator()
         {
-            return calibrationPlane;
+            return calibrator;
         }
 
         public void CalibrationByPlane_Initialize(Guid id, SizeF size, QuadrilateralF quadImage)
         {
             calibrationDrawingId = id;
             QuadrilateralF undistorted = distortionHelper.Undistort(quadImage);
-            calibrationPlane.Initialize(size, undistorted);
+            calibrator.Initialize(size, undistorted);
             AfterCalibrationChanged();
         }
 
@@ -274,33 +274,33 @@ namespace Kinovea.ScreenManager
                 return;
 
             QuadrilateralF undistorted = distortionHelper.Undistort(quadImage);
-            calibrationPlane.Update(undistorted);
+            calibrator.Update(undistorted);
             AfterCalibrationChanged();
         }
 
         public SizeF CalibrationByPlane_GetRectangleSize()
         {
             // Real size of the calibration rectangle. Used to populate the calibration dialog.
-            return calibrationPlane.Size;
+            return calibrator.Size;
         }
         public bool CalibrationByPlane_IsValid()
         {
-            return calibrationPlane.Valid;
+            return calibrator.Valid;
         }
         
-        public CalibrationPlane CalibrationByPlane_GetCalibrator()
+        public CalibratorPlane CalibrationByPlane_GetCalibrator()
         {
-            return calibrationPlane;
+            return calibrator;
         }
         public ProjectiveMapping CalibrationByPlane_GetProjectiveMapping()
         {
-            return calibrationPlane.ProjectiveMapping;
+            return calibrator.ProjectiveMapping;
         }
         public QuadrilateralF CalibrationByPlane_GetProjectedQuad()
         {
             // Projection of the reference rectangle onto image space.
             // This is the quadrilateral defined by the user.
-            return calibrationPlane.QuadImage;
+            return calibrator.QuadImage;
         }
         #endregion
 
@@ -338,17 +338,16 @@ namespace Kinovea.ScreenManager
                 QuadrilateralF quadImage = getCalibrationQuad(time, calibratorType, calibrationDrawingId);
 
                 if (calibratorType == CalibratorType.Line)
-                    quadImage = CalibrationPlane.MakeQuad(quadImage.A, quadImage.B, calibrationPlane.CalibrationAxis);
+                    quadImage = CalibratorPlane.MakeQuad(quadImage.A, quadImage.B, calibrator.CalibrationAxis);
 
                 QuadrilateralF undistorted = distortionHelper.Undistort(quadImage);
-
-                CalibrationPlane calibrator = calibrationPlane.Clone();
-                calibrator.Update(undistorted);
+                CalibratorPlane calibratorAtTime = calibrator.Clone();
+                calibratorAtTime.Update(undistorted);
 
                 // Force the system's origin to the bottom-left point of the quad.
                 PointF origin = undistorted.D;
 
-                result = calibrator.Transform(query, origin);
+                result = calibratorAtTime.Transform(query, origin);
             }
             else
             {
@@ -356,7 +355,7 @@ namespace Kinovea.ScreenManager
                 // However the system's origin might still be tracked so get its value for that time.
                 PointF origin = distortionHelper.Undistort(getCalibrationOrigin(time));
 
-                result = calibrationPlane.Transform(query, origin);
+                result = calibrator.Transform(query, origin);
             }
 
             return result;
@@ -443,7 +442,7 @@ namespace Kinovea.ScreenManager
             string valueTemplate = precise ? "{0:0.00} ; {1:0.00}" : "{0:0} ; {1:0}";
             string text = String.Format(valueTemplate, a.X, a.Y);
             
-            if(abbreviation)
+            if (abbreviation)
                 text = text + " " + String.Format("{0}", UnitHelper.LengthAbbreviation(lengthUnit));
             
             return text;
@@ -458,7 +457,7 @@ namespace Kinovea.ScreenManager
             string valueTemplate = precise ? "{0:0.00}" : "{0:0}";
             string text = String.Format(valueTemplate, length);
             
-            if(abbreviation)
+            if (abbreviation)
                 text = text + " " + String.Format("{0}", UnitHelper.LengthAbbreviation(lengthUnit));
             
             return text;
@@ -607,13 +606,13 @@ namespace Kinovea.ScreenManager
             if(calibratorType == CalibratorType.Line)
             {
                 w.WriteStartElement("CalibrationLine");
-                calibrationPlane.WriteLineXml(w);
+                calibrator.WriteLineXml(w);
                 w.WriteEndElement();
             }
             else if(calibratorType == CalibratorType.Plane)
             {   
                 w.WriteStartElement("CalibrationPlane");                
-                calibrationPlane.WritePlaneXml(w);
+                calibrator.WritePlaneXml(w);
                 w.WriteEndElement();
             }
 
@@ -636,16 +635,12 @@ namespace Kinovea.ScreenManager
                 {
                     case "CalibrationPlane":
                         calibratorType = CalibratorType.Plane;
-                        calibrator = calibrationPlane;
-                        calibrationPlane.ReadPlaneXml(r, scale);
+                        calibrator.ReadPlaneXml(r, scale);
                         ComputeCoordinateSystemGrid();
                         break;
                     case "CalibrationLine":
                         calibratorType = CalibratorType.Line;
-                        //calibrator = calibrationLine;
-                        calibrator = calibrationPlane;
-                        calibrationPlane.ReadLineXml(r, scale);
-                        //calibrationLine.ReadXml(r, scale);
+                        calibrator.ReadLineXml(r, scale);
                         break;
                     case "CalibrationDrawingId":
                         Guid result;
@@ -698,7 +693,6 @@ namespace Kinovea.ScreenManager
             return fileInterval;
         }
         #endregion
-
 
         #region Private helpers
         private void AfterCalibrationChanged()

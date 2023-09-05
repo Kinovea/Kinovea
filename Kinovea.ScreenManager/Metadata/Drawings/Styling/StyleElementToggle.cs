@@ -1,12 +1,12 @@
 ﻿#region License
 /*
 Copyright © Joan Charmant 2014.
-jcharmant@gmail.com 
- 
+jcharmant@gmail.com
+
 This file is part of Kinovea.
 
 Kinovea is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License version 2 
+it under the terms of the GNU General Public License version 2
 as published by the Free Software Foundation.
 
 Kinovea is distributed in the hope that it will be useful,
@@ -56,6 +56,14 @@ namespace Kinovea.ScreenManager
         public override string XmlName
         {
             get { return "Toggle"; }
+        }
+
+        /// <summary>
+        /// Returns true if this option should be hidden from the user interface.
+        /// </summary>
+        public bool IsHidden
+        {
+            get { return DrawingStyle.IsHiddenToggle(variant); }
         }
         #endregion
 
@@ -130,7 +138,7 @@ namespace Kinovea.ScreenManager
                 variant = StyleToggleVariant.Curved;
                 log.ErrorFormat("Unknown variant in style element toggle. Assumed: {0}", variant.ToString());
             }
-    
+
             UpdateVariant(variant);
         }
         public override void WriteXml(XmlWriter xmlWriter)
@@ -158,6 +166,10 @@ namespace Kinovea.ScreenManager
                 case StyleToggleVariant.Clock:
                     icon = Properties.Drawings.stopwatch;
                     displayName = ScreenManagerLang.Generic_Clock;
+                    break;
+                case StyleToggleVariant.DistanceGrid:
+                    icon = Properties.Drawings.plane;
+                    displayName = "Distance grid";
                     break;
                 case StyleToggleVariant.Filled:
                     icon = Properties.Drawings.filled;

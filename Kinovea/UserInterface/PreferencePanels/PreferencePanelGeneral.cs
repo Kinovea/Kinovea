@@ -20,16 +20,13 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Globalization;
 using System.Windows.Forms;
+using System.IO;
 
 using Kinovea.Root.Languages;
 using Kinovea.Root.Properties;
-using Kinovea.ScreenManager;
 using Kinovea.Services;
-using Kinovea.Video;
 
 namespace Kinovea.Root
 {
@@ -62,7 +59,7 @@ namespace Kinovea.Root
         private bool allowMultipleInstances;
         private bool instancesOwnPreferences;
         #endregion
-        
+
         #region Construction & Initialization
         public PreferencePanelGeneral()
         {
@@ -160,7 +157,7 @@ namespace Kinovea.Root
         private void ChkInstancesPreferences_CheckedChanged(object sender, EventArgs e)
         {
             instancesOwnPreferences = chkInstancesPreferences.Checked;
-        }
+        } 
         #endregion
 
         public void CommitChanges()
