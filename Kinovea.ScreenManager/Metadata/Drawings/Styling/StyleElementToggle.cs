@@ -120,11 +120,14 @@ namespace Kinovea.ScreenManager
                         value = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
                     case "Variant":
-                        variant = (StyleToggleVariant)Enum.Parse(typeof(StyleToggleVariant), xmlReader.ReadElementContentAsString());
+                        string text = xmlReader.ReadElementContentAsString();
+                        bool parsed = Enum.TryParse(text, out variant);
+                        if (!parsed)
+                            log.ErrorFormat("Unknown toggle variant: {0}.", text);
                         break;
                     default:
                         string unparsed = xmlReader.ReadOuterXml();
-                        log.DebugFormat("Unparsed content in style element toggle XML: {0}", unparsed);
+                        log.ErrorFormat("Unparsed content in style element toggle XML: {0}", unparsed);
                         break;
                 }
             }
