@@ -87,31 +87,7 @@ namespace Kinovea.ScreenManager
         {
             get 
             {
-                // Rebuild the menu each time to get the localized text.
-                List<ToolStripItem> contextMenu = new List<ToolStripItem>();
-                
-                if(genericPosture.HasNonHiddenOptions)
-                {
-                    menuOptions.Text = ScreenManagerLang.Generic_Options;
-                    contextMenu.Add(menuOptions);
-                }
-                
-                if((genericPosture.Capabilities & GenericPostureCapabilities.FlipHorizontal) == GenericPostureCapabilities.FlipHorizontal)
-                {
-                    menuFlipHorizontal.Text = ScreenManagerLang.mnuFlipHorizontally;
-                    contextMenu.Add(menuFlipHorizontal);
-                }
-
-                if((genericPosture.Capabilities & GenericPostureCapabilities.FlipVertical) == GenericPostureCapabilities.FlipVertical)
-                {
-                    menuFlipVertical.Text = ScreenManagerLang.mnuFlipVertically;
-                    contextMenu.Add(menuFlipVertical);
-                }
-
-                if(contextMenu.Count == 0)
-                    return null;
-                else 
-                    return contextMenu; 
+                return GetContextMenu();
             }
         }
         public CalibrationHelper CalibrationHelper { get; set; }
@@ -143,13 +119,20 @@ namespace Kinovea.ScreenManager
         private PointF origin;
         private GenericPosture genericPosture;
         private List<AngleHelper> angles = new List<AngleHelper>();
-        private ToolStripMenuItem menuOptions = new ToolStripMenuItem();
-        private ToolStripMenuItem menuFlipHorizontal = new ToolStripMenuItem();
-        private ToolStripMenuItem menuFlipVertical = new ToolStripMenuItem();
+        
 
         private Font debugFont = new Font("Arial", 8, FontStyle.Bold);
         private PointF debugOffset = new PointF(10, 10);
         SolidBrush debugBrush = new SolidBrush(Color.FromArgb(160, 0, 0, 0));
+
+        #region Menu
+        private ToolStripMenuItem mnuAction = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuFlipHorizontal = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuFlipVertical = new ToolStripMenuItem();
+
+        private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
+        #endregion
+
 
         private DrawingStyle style;
         private StyleHelper styleHelper = new StyleHelper();
@@ -181,17 +164,27 @@ namespace Kinovea.ScreenManager
             
             // Fading
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
-            
-            menuFlipHorizontal.Click += menuFlipHorizontal_Click;
-            menuFlipHorizontal.Image = Properties.Drawings.fliphorizontal;
-            menuFlipVertical.Click += menuFlipVertical_Click;
-            menuFlipVertical.Image = Properties.Drawings.flipvertical;
+
+            InitializeMenus();
         }
         
         public DrawingGenericPosture(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
             : this(Guid.Empty, PointF.Empty, null, 0, 0, null)
         {
             ReadXml(xmlReader, scale, timestampMapper);
+        }
+
+        private void InitializeMenus()
+        {
+            // Action
+            mnuAction.Image = Properties.Resources.action;
+            mnuFlipHorizontal.Image = Properties.Drawings.fliphorizontal;
+            mnuFlipVertical.Image = Properties.Drawings.flipvertical;
+            mnuFlipHorizontal.Click += menuFlipHorizontal_Click;
+            mnuFlipVertical.Click += menuFlipVertical_Click;
+
+            // Options
+            mnuOptions.Image = Properties.Resources.equalizer;
         }
         
         #region AbstractDrawing Implementation
@@ -569,7 +562,52 @@ namespace Kinovea.ScreenManager
             genericPosture.SignalTrackablePointMoved(handle, TrackablePointMoved);
         }
         #endregion
-        
+
+        #region Tool-specific context menu
+        private List<ToolStripItem> GetContextMenu()
+        {
+            List<ToolStripItem> contextMenu = new List<ToolStripItem>();
+            ReloadMenusCulture();
+
+            // Actions
+            mnuAction.DropDownItems.Clear();
+            if ((genericPosture.Capabilities & GenericPostureCapabilities.FlipHorizontal) == GenericPostureCapabilities.FlipHorizontal)
+            {
+                mnuFlipHorizontal.Text = ScreenManagerLang.mnuFlipHorizontally;
+                mnuAction.DropDownItems.Add(mnuFlipHorizontal);
+            }
+
+            if ((genericPosture.Capabilities & GenericPostureCapabilities.FlipVertical) == GenericPostureCapabilities.FlipVertical)
+            {
+                mnuFlipVertical.Text = ScreenManagerLang.mnuFlipVertically;
+                mnuAction.DropDownItems.Add(mnuFlipVertical);
+            }
+
+            if (mnuAction.DropDownItems.Count > 0)
+                contextMenu.Add(mnuAction);
+
+            // Options
+            // The exact list of options, if any, depend on the posture script and were added 
+            // during the parsing of the tool in InitOptionMenus.
+            if (genericPosture.HasNonHiddenOptions)
+            {
+                contextMenu.Add(mnuOptions);
+            }
+
+            return contextMenu;
+        }
+
+        private void ReloadMenusCulture()
+        {
+            // Actions
+            mnuAction.Text = ScreenManagerLang.mnuAction;
+            mnuFlipHorizontal.Text = ScreenManagerLang.mnuFlipHorizontally;
+            mnuFlipVertical.Text = ScreenManagerLang.mnuFlipVertically;
+
+            // Options
+            mnuOptions.Text = ScreenManagerLang.Generic_Options;
+        }
+
         private void menuFlipHorizontal_Click(object sender, EventArgs e)
         {
             genericPosture.FlipHorizontal();
@@ -590,6 +628,7 @@ namespace Kinovea.ScreenManager
             SignalAllTrackablePointsMoved();
             InvalidateFromMenu(sender);
         }
+        #endregion
         
         #region Drawing helpers
         private void DrawComputedPoints(Pen penEdge, Color basePenEdgeColor, SolidBrush brushHandle, Color baseBrushHandleColor, int alpha, double opacity, Graphics canvas, IImageToViewportTransformer transformer)
@@ -964,10 +1003,8 @@ namespace Kinovea.ScreenManager
                     InvalidateFromMenu(s);
                 };
                 
-                menuOptions.DropDownItems.Add(menu);
+                mnuOptions.DropDownItems.Add(menu);
             }
-            
-            menuOptions.Image = Properties.Drawings.eye;
         }
         private void InitAngles()
         {

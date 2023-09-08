@@ -3286,13 +3286,9 @@ namespace Kinovea.ScreenManager
         {
             popMenu.Items.Clear();
 
-            
             // Generic menus based on the drawing capabilities: configuration (style), visibility, tracking.
             if (!m_FrameServer.Metadata.DrawingInitializing)
                 PrepareDrawingContextMenuCapabilities(drawing, popMenu);
-
-            if (popMenu.Items.Count > 0)
-                popMenu.Items.Add(mnuSepDrawing);
 
             // Custom menu handlers implemented by the drawing itself.
             // These change the drawing core state. (ex: angle orientation, measurement display option, start/stop chrono, etc.).
@@ -3310,12 +3306,11 @@ namespace Kinovea.ScreenManager
             }
 
             // Below the custom menus and the goto keyframe we have the generic copy-paste and the delete menu.
-            // Some singleton drawings cannot be deleted nor copy-pasted, so they don't need the separator.
+            // Some singleton drawings cannot be deleted nor copy-pasted, so they don't need this.
             if (drawing is DrawingCoordinateSystem || drawing is DrawingTestGrid)
                 return;
 
-            if (hasExtraMenus)
-                popMenu.Items.Add(mnuSepDrawing2);
+            popMenu.Items.Add(mnuSepDrawing2);
 
             if (drawing.IsCopyPasteable)
             {
@@ -3339,6 +3334,8 @@ namespace Kinovea.ScreenManager
                     mnuSetStyleAsDefault.Text = ScreenManagerLang.mnuSetStyleAsDefault;
                     popMenu.Items.Add(mnuSetStyleAsDefault);
                 }
+
+                popMenu.Items.Add(mnuSepDrawing);
             }
 
             if (PreferencesManager.PlayerPreferences.DefaultFading.Enabled && ((drawing.Caps & DrawingCapabilities.Fading) == DrawingCapabilities.Fading))
@@ -4469,11 +4466,8 @@ namespace Kinovea.ScreenManager
             // This is only raised when we change the name, color or comment from the side panel.
             // Update the corresponding thumbnail box.
             UpdateKeyframeBox(e.Value);
-            UpdateFramesMarkers();
 
-            // Update all the tracks for the keyframe labels name and color.
-            m_FrameServer.Metadata.UpdateTrajectoriesForKeyframes();
-            DoInvalidate();
+            UpdateFramesMarkers();
         }
 
         /// <summary>
