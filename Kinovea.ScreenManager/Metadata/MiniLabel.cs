@@ -68,6 +68,15 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// The Font used by the mini label.
+        /// </summary>
+        public int FontSize
+        {
+            get { return (int)styleHelper.Font.Size; }
+            set { styleHelper.Font = new Font("Arial", value, FontStyle.Bold); }
+        }
+
+        /// <summary>
         /// The color of the background of the label.
         /// </summary>
         public Color BackColor

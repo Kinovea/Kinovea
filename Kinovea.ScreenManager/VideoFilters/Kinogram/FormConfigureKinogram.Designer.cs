@@ -94,7 +94,7 @@ namespace Kinovea.ScreenManager
       this.grpConfig.Controls.Add(this.lblColumns);
       this.grpConfig.Location = new System.Drawing.Point(14, 12);
       this.grpConfig.Name = "grpConfig";
-      this.grpConfig.Size = new System.Drawing.Size(314, 211);
+      this.grpConfig.Size = new System.Drawing.Size(314, 225);
       this.grpConfig.TabIndex = 58;
       this.grpConfig.TabStop = false;
       this.grpConfig.Text = "Generic_Configuration";
@@ -217,7 +217,7 @@ namespace Kinovea.ScreenManager
       // 
       this.lblFrameInterval.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.lblFrameInterval.AutoSize = true;
-      this.lblFrameInterval.Location = new System.Drawing.Point(11, 271);
+      this.lblFrameInterval.Location = new System.Drawing.Point(11, 285);
       this.lblFrameInterval.Name = "lblFrameInterval";
       this.lblFrameInterval.Size = new System.Drawing.Size(76, 13);
       this.lblFrameInterval.TabIndex = 62;
@@ -228,7 +228,7 @@ namespace Kinovea.ScreenManager
       // 
       this.lblTotal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.lblTotal.AutoSize = true;
-      this.lblTotal.Location = new System.Drawing.Point(12, 240);
+      this.lblTotal.Location = new System.Drawing.Point(12, 254);
       this.lblTotal.Name = "lblTotal";
       this.lblTotal.Size = new System.Drawing.Size(44, 13);
       this.lblTotal.TabIndex = 61;
@@ -238,7 +238,7 @@ namespace Kinovea.ScreenManager
       // 
       this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.btnOK.Location = new System.Drawing.Point(126, 313);
+      this.btnOK.Location = new System.Drawing.Point(126, 327);
       this.btnOK.Name = "btnOK";
       this.btnOK.Size = new System.Drawing.Size(99, 24);
       this.btnOK.TabIndex = 56;
@@ -250,7 +250,7 @@ namespace Kinovea.ScreenManager
       // 
       this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.btnCancel.Location = new System.Drawing.Point(231, 313);
+      this.btnCancel.Location = new System.Drawing.Point(231, 327);
       this.btnCancel.Name = "btnCancel";
       this.btnCancel.Size = new System.Drawing.Size(99, 24);
       this.btnCancel.TabIndex = 57;
@@ -261,7 +261,7 @@ namespace Kinovea.ScreenManager
       // btnApply
       // 
       this.btnApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.btnApply.Location = new System.Drawing.Point(14, 313);
+      this.btnApply.Location = new System.Drawing.Point(14, 327);
       this.btnApply.Name = "btnApply";
       this.btnApply.Size = new System.Drawing.Size(100, 24);
       this.btnApply.TabIndex = 59;
@@ -275,7 +275,7 @@ namespace Kinovea.ScreenManager
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.CancelButton = this.btnCancel;
-      this.ClientSize = new System.Drawing.Size(340, 349);
+      this.ClientSize = new System.Drawing.Size(340, 363);
       this.Controls.Add(this.btnApply);
       this.Controls.Add(this.grpConfig);
       this.Controls.Add(this.btnOK);

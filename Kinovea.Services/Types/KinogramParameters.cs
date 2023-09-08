@@ -85,6 +85,11 @@ namespace Kinovea.Services
         /// </summary>
         public Color LabelColor { get; set; } = Color.FromArgb(0, 0, 0);
 
+        /// <summary>
+        /// Size of the font for the mini labels.
+        /// </summary>
+        public int LabelSize { get; set; } = 8;
+
         // TODO:
         // Direction bullets (small arrows between tiles).
 
@@ -114,6 +119,7 @@ namespace Kinovea.Services
             clone.BorderColor = this.BorderColor;
             clone.BorderVisible = this.BorderVisible;
             clone.LabelColor = this.LabelColor;
+            clone.LabelSize = this.LabelSize;
             clone.MeasureLabelType = this.MeasureLabelType;
 
             return clone;
@@ -136,6 +142,7 @@ namespace Kinovea.Services
             hash ^= BorderColor.GetHashCode();
             hash ^= BorderVisible.GetHashCode();
             hash ^= LabelColor.GetHashCode();
+            hash ^= LabelSize.GetHashCode();
             hash ^= MeasureLabelType.GetHashCode();
             return hash;
         }
@@ -175,6 +182,9 @@ namespace Kinovea.Services
                         break;
                     case "LabelColor":
                         LabelColor = XmlHelper.ParseColor(r.ReadElementContentAsString(), Color.FromArgb(0, 0, 0));
+                        break;
+                    case "LabelSize":
+                        LabelSize = int.Parse(r.ReadElementContentAsString(), CultureInfo.InvariantCulture);
                         break;
                     case "MeasureLabelType":
                         MeasureLabelType = XmlHelper.ParseEnum<MeasureLabelType>(r.ReadElementContentAsString(), MeasureLabelType.None);
@@ -252,6 +262,7 @@ namespace Kinovea.Services
             w.WriteElementString("BorderColor", XmlHelper.WriteColor(BorderColor, false));
             w.WriteElementString("BorderVisible", XmlHelper.WriteBoolean(BorderVisible));
             w.WriteElementString("LabelColor", XmlHelper.WriteColor(LabelColor, false));
+            w.WriteElementString("LabelSize", LabelSize.ToString(CultureInfo.InvariantCulture));
 
             TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(MeasureLabelType));
             string xmlMeasureLabelType = enumConverter.ConvertToString(MeasureLabelType);

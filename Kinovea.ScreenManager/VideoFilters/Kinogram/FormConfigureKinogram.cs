@@ -71,17 +71,18 @@ namespace Kinovea.ScreenManager
 
         private void SetupStyle()
         {
-            
             style = new DrawingStyle();
-            style.Elements.Add("border color", new StyleElementColor(parameters.BorderColor, "Border color"));
-            style.Elements.Add("label color", new StyleElementColor(parameters.LabelColor, "Label color"));
+            style.Elements.Add("borderColor", new StyleElementColor(parameters.BorderColor, "Border color"));
+            style.Elements.Add("labelColor", new StyleElementColor(parameters.LabelColor, "Label color"));
+            style.Elements.Add("labelSize", new StyleElementFontSize(parameters.LabelSize, "Label size"));
 
             styleHelper.Color = Color.Red;
             styleHelper.Bicolor = new Bicolor(Color.Black);
-            //styleHelper.Font = new Font("Arial", 16, FontStyle.Bold);
+            styleHelper.Font = new Font("Arial", 16, FontStyle.Bold);
 
-            style.Bind(styleHelper, "Color", "border color");
-            style.Bind(styleHelper, "Bicolor", "label color");
+            style.Bind(styleHelper, "Color", "borderColor");
+            style.Bind(styleHelper, "Bicolor", "labelColor");
+            style.Bind(styleHelper, "Font", "labelSize");
         }
 
         private void SetupStyleControls()
@@ -187,6 +188,7 @@ namespace Kinovea.ScreenManager
         {
             parameters.BorderColor = styleHelper.Color;
             parameters.LabelColor = styleHelper.Bicolor.Background;
+            parameters.LabelSize = (int)styleHelper.Font.Size;
             kinogram.ConfigurationChanged(true);
             hostView?.InvalidateFromMenu();
         }
@@ -202,6 +204,7 @@ namespace Kinovea.ScreenManager
             // Import style values and commit the parameters object.
             parameters.BorderColor = styleHelper.Color;
             parameters.LabelColor = styleHelper.Bicolor.Background;
+            parameters.LabelSize = (int)styleHelper.Font.Size;
 
             // Commit the original state to the undo history stack.
             kinogram.ParentMetadata.HistoryStack.PushNewCommand(memento);

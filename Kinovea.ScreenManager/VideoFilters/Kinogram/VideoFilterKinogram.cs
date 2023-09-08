@@ -886,8 +886,9 @@ namespace Kinovea.ScreenManager
             {
                 for (int i = 0; i < frameLabels.Count; i++)
                 {
-                    frameLabels[i].SetText(GetMeasureLabelText(frameLabels[i]));
                     frameLabels[i].BackColor = parameters.LabelColor;
+                    frameLabels[i].FontSize = parameters.LabelSize;
+                    frameLabels[i].SetText(GetMeasureLabelText(frameLabels[i]));
                 }
             }
 

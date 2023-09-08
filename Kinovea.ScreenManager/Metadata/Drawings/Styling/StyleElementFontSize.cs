@@ -52,7 +52,7 @@ namespace Kinovea.ScreenManager
         }
         public override string DisplayName
         {
-            get { return ScreenManagerLang.Generic_FontSizePicker;}
+            get { return displayName;}
         }
         public override string XmlName
         {
@@ -65,6 +65,7 @@ namespace Kinovea.ScreenManager
         
         #region Members
         private int value;
+        private string displayName = ScreenManagerLang.Generic_FontSizePicker;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -72,6 +73,11 @@ namespace Kinovea.ScreenManager
         public StyleElementFontSize(int initialValue)
         {
             value = options.PickAmong(initialValue);
+        }
+        public StyleElementFontSize(int initialValue, string displayName)
+        {
+            value = options.PickAmong(initialValue);
+            this.displayName = displayName;
         }
         public StyleElementFontSize(XmlReader xmlReader)
         {
