@@ -51,7 +51,7 @@ namespace Kinovea.ScreenManager
 		}
 		public override string DisplayName
 		{
-			get { return ScreenManagerLang.Generic_ColorPicker;}
+			get { return displayName;}
 		}
 		public override string XmlName
 		{
@@ -63,6 +63,7 @@ namespace Kinovea.ScreenManager
 
 		#region Members
 		private Color value;
+        private string displayName = ScreenManagerLang.Generic_ColorPicker;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
@@ -71,7 +72,12 @@ namespace Kinovea.ScreenManager
 		{
 			value = initialValue;
 		}
-		public StyleElementColor(XmlReader xmlReader)
+        public StyleElementColor(Color initialValue, string displayName)
+        {
+            value = initialValue;
+            this.displayName = displayName;
+        }
+        public StyleElementColor(XmlReader xmlReader)
 		{
 			ReadXML(xmlReader);
 		}

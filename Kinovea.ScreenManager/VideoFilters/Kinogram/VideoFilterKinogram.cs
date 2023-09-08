@@ -431,13 +431,10 @@ namespace Kinovea.ScreenManager
         public void ConfigurationChanged(bool tileCountChanged)
         {
             if (tileCountChanged)
-            {
                 AfterTileCountChange();
-            }
-            
+
             Update();
         }
-        
         #endregion
 
         #region Context menu
@@ -521,7 +518,7 @@ namespace Kinovea.ScreenManager
             fck.ShowDialog();
 
             if (fck.DialogResult == DialogResult.OK)
-            {   
+            {
                 AfterTileCountChange();
                 SaveAsDefaultParameters();
             }
@@ -884,12 +881,13 @@ namespace Kinovea.ScreenManager
                 }
             }
 
-            // Update the labels text.
+            // Update the labels text and color.
             if (parameters.MeasureLabelType != MeasureLabelType.None)
             {
                 for (int i = 0; i < frameLabels.Count; i++)
                 {
                     frameLabels[i].SetText(GetMeasureLabelText(frameLabels[i]));
+                    frameLabels[i].BackColor = parameters.LabelColor;
                 }
             }
 
