@@ -57,6 +57,7 @@ namespace Kinovea.ScreenManager
                 int hash = center.GetHashCode();
                 hash ^= radius.GetHashCode();
                 hash ^= showCenter.GetHashCode();
+                hash ^= filled.GetHashCode();
                 hash ^= measureLabelType.GetHashCode();
                 hash ^= miniLabel.GetHashCode();
                 hash ^= styleHelper.ContentHash;
@@ -90,6 +91,7 @@ namespace Kinovea.ScreenManager
                 });
 
                 mnuShowCenter.Checked = showCenter;
+                mnuFilled.Checked = filled;
                 return contextMenu;
             }
         }
@@ -127,6 +129,7 @@ namespace Kinovea.ScreenManager
         private Dictionary<MeasureLabelType, ToolStripMenuItem> mnuMeasureLabelTypes = new Dictionary<MeasureLabelType, ToolStripMenuItem>();
         private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowCenter = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuFilled = new ToolStripMenuItem();
         #endregion
 
         // Decoration
@@ -138,6 +141,7 @@ namespace Kinovea.ScreenManager
         private PointF radiusLeftInImage;
         private PointF radiusRightInImage;
         private bool showCenter = false;
+        private bool filled = false;
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -197,9 +201,12 @@ namespace Kinovea.ScreenManager
             // Options
             mnuOptions.Image = Properties.Resources.equalizer;
             mnuShowCenter.Image = Properties.Drawings.crossmark;
+            mnuFilled.Image = Properties.Drawings.filled;
             mnuShowCenter.Click += mnuShowCenter_Click;
+            mnuFilled.Click += mnuFilled_Click;
             mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuShowCenter,
+                mnuFilled,
             });
         }
         #endregion
@@ -236,6 +243,11 @@ namespace Kinovea.ScreenManager
                     canvas.RotateTransform(angle);
 
                     canvas.DrawEllipse(p, rect);
+                    if (filled)
+                    {
+                        using (SolidBrush b = styleHelper.GetBrush(alpha))
+                            canvas.FillEllipse(b, rect);
+                    }
                     
                     canvas.RotateTransform(-angle);
                     canvas.TranslateTransform(-ellipse.Center.X, -ellipse.Center.Y);
@@ -244,6 +256,11 @@ namespace Kinovea.ScreenManager
                 {
                     Rectangle boundingBox = transformer.Transform(center.Box(radius));
                     canvas.DrawEllipse(p, boundingBox);
+                    if (filled)
+                    {
+                        using (SolidBrush b = styleHelper.GetBrush(alpha))
+                            canvas.FillEllipse(b, boundingBox);
+                    }
                 }
 
                 if (measureLabelType != MeasureLabelType.None)
@@ -369,6 +386,9 @@ namespace Kinovea.ScreenManager
                     case "ShowCenter":
                         showCenter = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
+                    case "Filled":
+                        filled = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
+                        break;
                     case "DrawingStyle":
                         style = new DrawingStyle(xmlReader);
                         BindStyle();
@@ -405,6 +425,7 @@ namespace Kinovea.ScreenManager
                 w.WriteEndElement();
 
                 w.WriteElementString("ShowCenter", XmlHelper.WriteBoolean(showCenter));
+                w.WriteElementString("Filled", XmlHelper.WriteBoolean(filled));
             }
 
             if (ShouldSerializeStyle(filter))
@@ -446,9 +467,14 @@ namespace Kinovea.ScreenManager
             showCenter = !mnuShowCenter.Checked;
             InvalidateFromMenu(sender);
         }
-        
+        private void mnuFilled_Click(object sender, EventArgs e)
+        {
+            CaptureMemento(SerializationFilter.Core);
+            filled = !mnuFilled.Checked;
+            InvalidateFromMenu(sender);
+        }
         #endregion
-        
+
         #region IMeasurable implementation
         public void InitializeMeasurableData(MeasureLabelType measureLabelType)
         {
@@ -588,6 +614,7 @@ namespace Kinovea.ScreenManager
             // Options
             mnuOptions.Text = ScreenManagerLang.Generic_Options;
             mnuShowCenter.Text = ScreenManagerLang.mnuShowCircleCenter;
+            mnuFilled.Text = "Filled";
         }
 
         private ToolStripMenuItem CreateMeasureLabelTypeMenu(MeasureLabelType measureLabelType)
