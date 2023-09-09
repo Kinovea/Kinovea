@@ -1885,8 +1885,16 @@ namespace Kinovea.ScreenManager
         {
             // MouseWheel was recorded on one of the controls.
             int steps = e.Delta * SystemInformation.MouseWheelScrollLines / 120;
+            bool isAlt = (ModifierKeys & Keys.Alt) == Keys.Alt;
+            bool isCtrl = (ModifierKeys & Keys.Control) == Keys.Control;
 
-            if ((ModifierKeys & Keys.Control) == Keys.Control)
+            if (videoFilterIsActive && isAlt)
+            {
+                PointF descaledMouse = m_FrameServer.ImageTransform.Untransform(e.Location);
+                m_FrameServer.Metadata.ActiveVideoFilter.Scroll(steps, descaledMouse, ModifierKeys);
+                DoInvalidate();
+            }
+            else if (isCtrl)
             {
                 if (steps > 0)
                     IncreaseDirectZoom(e.Location);
@@ -1894,7 +1902,7 @@ namespace Kinovea.ScreenManager
                     DecreaseDirectZoom(e.Location);
                 
             }
-            else if ((ModifierKeys & Keys.Alt) == Keys.Alt)
+            else if (isAlt)
             {
                 if (steps > 0)
                     IncreaseSyncAlpha();
@@ -1934,7 +1942,9 @@ namespace Kinovea.ScreenManager
             trkFrame.UpdateMarkers(m_FrameServer.Metadata);
             UpdateCurrentPositionLabel();
             sidePanelKeyframes.UpdateTimecodes();
-
+            if (videoFilterIsActive)
+                m_FrameServer.Metadata.ActiveVideoFilter.UpdateTimeOrigin(m_FrameServer.Metadata.TimeOrigin);
+            
             // This will update the timecode on keyframe boxes if the user hasn't changed the kf name.
             EnableDisableKeyframes();
 
@@ -3549,7 +3559,6 @@ namespace Kinovea.ScreenManager
             }
 
             // User is not moving anything: time-grab, filter interaction, pan.
-            // TODO: let filters delegate the handling to the normal mechanics.
             bool isAlt = (ModifierKeys & Keys.Alt) == Keys.Alt;
             bool isCtrl = (ModifierKeys & Keys.Control) == Keys.Control;
             if (isAlt)

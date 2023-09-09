@@ -112,6 +112,7 @@ namespace Kinovea.ScreenManager
         private int contextTile = -1;
         private int movingTile = -1;
         private int movingLabel = -1;
+        private bool isMovingTileInTime = false;
 
         // Labels
         private List<MiniLabel> frameLabels = new List<MiniLabel>();
@@ -235,6 +236,11 @@ namespace Kinovea.ScreenManager
             this.timestamp = timestamp;
         }
 
+        public void UpdateTimeOrigin(long timestamp)
+        {
+            UpdateFrameLabels(false, true, false);
+        }
+
         public void StartMove(PointF p)
         {
             bool hitFrameLabel = false;
@@ -288,6 +294,7 @@ namespace Kinovea.ScreenManager
             }
             else if (movingTile >= 0)
             {
+                // Moving one or all tiles in space.
                 parameters.ManualPositions.Add(movingTile);
 
                 if ((modifiers & Keys.Shift) == Keys.Shift)
@@ -305,13 +312,44 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        public void Scroll(int steps, PointF p, Keys modifiers)
+        {
+            if ((modifiers & Keys.Alt) != Keys.Alt)
+                return;
+
+            // Moving one tile in time.
+            movingTile = GetTile(p);
+            if (movingTile == -1)
+                return;
+
+            // Setup globals for when we update the cache below.
+            isMovingTileInTime = true;
+
+            int deltaOffset = steps > 0 ? 1 : -1;
+
+            // Move the offset by a single frame forwards or backwards.
+            int offset = parameters.FrameOffsets[movingTile] + deltaOffset;
+            
+            // Clamp the offset to the frame sequence.
+            List<int> indices = GetBaseIndices();
+            int baseIndex = indices[movingTile];
+            offset = ClampOffset(baseIndex, offset);
+
+            // Set the new offset and update the cache and labels.
+            parameters.FrameOffsets[movingTile] = offset;
+            Update(movingTile);
+            UpdateFrameLabels(false, true, false);
+
+            isMovingTileInTime = false;
+        }
+
+
         /// <summary>
         /// Draw extra content on top of the produced image.
         /// </summary>
         public void DrawExtra(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, long timestamp, bool export)
         {
-            float step = (float)framesContainer.Frames.Count / parameters.TileCount;
-            List<VideoFrame> frames = framesContainer.Frames.Where((frame, i) => i % step < 1).ToList();
+            List<VideoFrame> frames = MakeFrameList();
             int cols = (int)Math.Ceiling((float)parameters.TileCount / parameters.Rows);
             Size cropSize = GetCropSize();
             Size fullSize = new Size(cropSize.Width * cols, cropSize.Height * parameters.Rows);
@@ -551,6 +589,12 @@ namespace Kinovea.ScreenManager
             else
                 parameters.CropPositions[contextTile] = PointF.Empty;
 
+            if (parameters.FrameOffsets[contextTile] != 0)
+            {
+                parameters.FrameOffsets[contextTile] = 0;
+                isCacheDirty = true;
+            }
+
             contextTile = -1;
 
             Update();
@@ -561,7 +605,10 @@ namespace Kinovea.ScreenManager
         {
             CaptureMemento();
             ResetCropPositions();
+
+            isCacheDirty = true;
             Update();
+            UpdateFrameLabels(false, true, false);
             InvalidateFromMenu(sender);
         }
 
@@ -573,7 +620,7 @@ namespace Kinovea.ScreenManager
             parameters.LeftToRight = mnuRightToLeft.Checked;
 
             Update();
-            UpdateFrameLabels(true, false);
+            UpdateFrameLabels(true, false, false);
             InvalidateFromMenu(sender);
         }
 
@@ -607,7 +654,7 @@ namespace Kinovea.ScreenManager
         {
             CaptureMemento();
 
-            UpdateFrameLabels(true, true);
+            UpdateFrameLabels(true, true, true);
 
             Update();
             InvalidateFromMenu(sender);
@@ -642,7 +689,7 @@ namespace Kinovea.ScreenManager
             }
 
             parameters.MeasureLabelType = measureLabelType;
-            UpdateFrameLabels(false);
+            UpdateFrameLabels(false, false, false);
             InvalidateFromMenu(tsmi);
         }
 
@@ -683,17 +730,15 @@ namespace Kinovea.ScreenManager
             Paint(g, canvasSize, tile);
 
             if (frameLabels.Count == 0)
-                UpdateFrameLabels(true, true);
+                UpdateFrameLabels(true, true, true);
         }
 
         /// <summary>
         /// Paint the composite or paint one tile of the composite.
         /// </summary>
         private void Paint(Graphics g, Size outputSize, int tile = -1)
-        { 
-            float step = (float)framesContainer.Frames.Count / parameters.TileCount;
-            List<VideoFrame> frames = framesContainer.Frames.Where((frame, i) => i % step < 1).ToList();
-
+        {
+            List<VideoFrame> frames = MakeFrameList();
             int cols = (int)Math.Ceiling((float)parameters.TileCount / parameters.Rows);
             Size cropSize = GetCropSize();
             Size fullSize = new Size(cropSize.Width * cols, cropSize.Height * parameters.Rows);
@@ -701,7 +746,7 @@ namespace Kinovea.ScreenManager
             Rectangle paintArea = UIHelper.RatioStretch(fullSize, outputSize);
             Size tileSize = new Size(paintArea.Width / cols, paintArea.Height / parameters.Rows);
 
-            UpdateCache(frames, cropSize, tileSize);
+            UpdateCache(frames, cropSize, tileSize, tile);
 
             if (tile >= 0)
             {
@@ -719,6 +764,71 @@ namespace Kinovea.ScreenManager
                 for (int i = 0; i < cache.Count; i++)
                     DrawTile(g, cache[i], i, cols, paintArea, tileSize);
             }
+        }
+
+        /// <summary>
+        /// Returns the list of video frames used for the tiles.
+        /// This takes custom offsets into account.
+        /// </summary>
+        private List<VideoFrame> MakeFrameList()
+        {
+            List<int> indices = GetBaseIndices();
+            
+            // There can be more frame offsets and crop positions than indices if we don't have enough images.
+            // But the opposite should never happen.
+            if (indices.Count > parameters.FrameOffsets.Count)
+            {
+                throw new InvalidProgramException();
+            }
+
+            // Build the frame list with custom time offsets.
+            List<VideoFrame> frames = new List<VideoFrame>();
+            for (int i = 0; i < indices.Count; i++)
+            {
+                int baseIndex = indices[i];
+                int offset = parameters.FrameOffsets[i];
+
+                // At this point we should be in bounds.
+                if ((baseIndex + offset > framesContainer.Frames.Count - 1) ||
+                    baseIndex + offset < 0)
+                {
+                    throw new InvalidProgramException();
+                }
+                
+                frames.Add(framesContainer.Frames[baseIndex + offset]);
+            }
+
+            return frames;
+        }
+
+        /// <summary>
+        /// Returns the index into the larger frame container, for each tile.
+        /// This is the baseline index, it is further modified by the frame offset stored at that tile.
+        /// </summary>
+        private List<int> GetBaseIndices()
+        {
+            // Base list of indices based on linear interval.
+            // This associate each tile with the index of its frame in the larger frame container sequence.
+            float step = (float)framesContainer.Frames.Count / parameters.TileCount;
+            List<int> indices = new List<int>();
+            for (int i = 0; i < framesContainer.Frames.Count; i++)
+            {
+                if (i % step < 1)
+                    indices.Add(i);
+            }
+
+            return indices;
+        }
+
+        /// <summary>
+        /// Returns the clamped offset based on the total number of frames in the sequence.
+        /// </summary>
+        private int ClampOffset(int baseIndex, int offset)
+        {
+            int minOffset = -baseIndex;
+            int maxOffset = framesContainer.Frames.Count - 1 - baseIndex;
+            int clampedOffset = Math.Max(minOffset, Math.Min(offset, maxOffset));
+            return clampedOffset;
         }
 
         /// <summary>
@@ -748,7 +858,9 @@ namespace Kinovea.ScreenManager
                 using (SolidBrush brush = new SolidBrush(Color.Red))
                 {
                     // crop position.
-                    string info = string.Format("{0}: {1}, {2}", index, x - destRect.X, y - destRect.Y);
+                    string info = string.Format("{0}: {1}, {2}.", 
+                        index, x - destRect.X, y - destRect.Y);
+
                     g.DrawString(info, f, brush, destRect.X + 5, destRect.Y + 5);
 
                     // Manual position.
@@ -826,15 +938,13 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Frame labels
-        private void UpdateFrameLabels(bool resetPositions, bool hardReset = false)
+        private void UpdateFrameLabels(bool resetPositions, bool resetTimes, bool hardReset = false)
         {
             if (canvasSize == Size.Empty || framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count == 0)
                 return;
 
             // Reset the auto-numbers to be into the tiles.
-            float step = (float)framesContainer.Frames.Count / parameters.TileCount;
-            List<VideoFrame> frames = framesContainer.Frames.Where((frame, i) => i % step < 1).ToList();
-
+            List<VideoFrame> frames = MakeFrameList();
             int cols = (int)Math.Ceiling((float)parameters.TileCount / parameters.Rows);
             Size cropSize = GetCropSize();
             Size fullSize = new Size(cropSize.Width * cols, cropSize.Height * parameters.Rows);
@@ -842,7 +952,7 @@ namespace Kinovea.ScreenManager
             Size tileSize = new Size(paintArea.Width / cols, paintArea.Height / parameters.Rows);
             int tileCount = Math.Min(framesContainer.Frames.Count, parameters.TileCount);
 
-            if (resetPositions)
+            if (resetPositions || hardReset)
             {
                 // Reset vs hard reset:
                 // If we have the same number of labels we might be in the case where we have only changed the tile size or sequence direction.
@@ -878,6 +988,14 @@ namespace Kinovea.ScreenManager
                     }
 
                     index++;
+                }
+            }
+
+            if (!hardReset && resetTimes)
+            {
+                for (int i = 0; i < frameLabels.Count; i++)
+                {
+                    frameLabels[i].Timestamp = frames[i].Timestamp;
                 }
             }
 
@@ -967,7 +1085,34 @@ namespace Kinovea.ScreenManager
                 parameters.ManualPositions.Add(anchorIndex);
             }
 
-            UpdateFrameLabels(true);
+            // Make sure we have the right number of frame offsets.
+            int count = parameters.CropPositions.Count;
+            if (parameters.FrameOffsets.Count < count)
+            {
+                int missing = count - parameters.FrameOffsets.Count;
+                for (int i = 0; i < missing; i++)
+                    parameters.FrameOffsets.Add(0);
+            }
+            else if (parameters.FrameOffsets.Count > count)
+            {
+                parameters.FrameOffsets.RemoveRange(count, parameters.FrameOffsets.Count - count);
+            }
+
+            if (framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count < 1)
+                return;
+            
+            // Changing the tile count doesn't change the larger frame sequence, but it will change the reference index of existing tiles.
+            // This means an existing frame offset might become out of bounds.
+            // For example if we have a tile with an offset such that the target is index 0 and we increase the number of tiles,
+            // this tile reference index will now be closer to index 0 and the offset will make the target negative.
+            List<int> indices = GetBaseIndices();
+            for (int i = 0; i < indices.Count; i++)
+            {
+                int baseIndex = indices[i];
+                parameters.FrameOffsets[i] = ClampOffset(baseIndex, parameters.FrameOffsets[i]);
+            }
+
+            UpdateFrameLabels(true, true, false);
         }
 
         /// <summary>
@@ -985,8 +1130,12 @@ namespace Kinovea.ScreenManager
         private void ResetCropPositions()
         {
             parameters.CropPositions.Clear();
+            parameters.FrameOffsets.Clear();
             for (int i = 0; i < parameters.TileCount; i++)
+            {
                 parameters.CropPositions.Add(PointF.Empty);
+                parameters.FrameOffsets.Add(0);
+            }
 
             parameters.ManualPositions.Clear();
         }
@@ -1179,19 +1328,30 @@ namespace Kinovea.ScreenManager
         /// Update the cache of pre-sized source images.
         /// This should be called whenever the source or output size change.
         /// </summary>
-        private void UpdateCache(List<VideoFrame> frames, Size cropSize, Size tileSize)
+        private void UpdateCache(List<VideoFrame> frames, Size cropSize, Size tileSize, int tile)
         {
             // Find the size of the images such that we can draw them unscaled to the output.
             // Crop size is the source rectangle size and tileSize is the destination rectangle size.
             // They should already have the same aspect ratio.
             // Cache scale is the factor we apply to the input images to get the cached ones.
             float newCacheScale = (float)tileSize.Width / cropSize.Width;
-            if (!isCacheDirty && newCacheScale == cacheScale && frames.Count == cache.Count)
+            if (!isCacheDirty && newCacheScale == cacheScale && frames.Count == cache.Count && !isMovingTileInTime)
                 return;
             
             Size cachedSize = new Size((int)(inputFrameSize.Width * newCacheScale), (int)(inputFrameSize.Height * newCacheScale));
-            log.DebugFormat("Kinogram, updating cache. Scale: {0} -> {1}", cacheScale, newCacheScale);
 
+            // If we are currently moving a tile in time, we can update the cache for that tile only and return.
+            if (isMovingTileInTime && tile >= 0)
+            {
+                cache[tile].Dispose();
+                Bitmap cachedFrame = new Bitmap(frames[tile].Image, cachedSize);
+                cache[tile] = cachedFrame;
+
+                if (!isCacheDirty && newCacheScale == cacheScale && frames.Count == cache.Count)
+                    return;
+            }
+
+            log.DebugFormat("Kinogram, rebuilding cache. Scale: {0} -> {1}", cacheScale, newCacheScale);
             ClearCache();
 
             foreach (var frame in frames)

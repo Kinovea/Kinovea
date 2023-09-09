@@ -47,6 +47,15 @@ namespace Kinovea.Services
         /// </summary>
         public HashSet<int> ManualPositions { get; set; } = new HashSet<int>();
 
+
+        /// <summary>
+        /// List of frame offsets.
+        /// Frame offset for each tile relative to normal interpolation.
+        /// Defaults to zero for every tile.
+        /// </summary>
+        public List<int> FrameOffsets { get; set; } = new List<int>();
+
+
         /// <summary>
         /// Whether to automatically interpolate non-manually placed positions.
         /// When this is true moving a single tile will also move all the other tiles
@@ -114,6 +123,10 @@ namespace Kinovea.Services
             foreach (int index in this.ManualPositions)
                 clone.ManualPositions.Add(index);
 
+            clone.FrameOffsets = new List<int>();
+            foreach (int offset in this.FrameOffsets)
+                clone.FrameOffsets.Add(offset);
+
             clone.AutoInterpolate = this.AutoInterpolate;
             clone.LeftToRight = this.LeftToRight;
             clone.BorderColor = this.BorderColor;
@@ -136,7 +149,10 @@ namespace Kinovea.Services
             
             foreach (int index in ManualPositions)
                 hash ^= index.GetHashCode();
-            
+
+            foreach (int offset in FrameOffsets)
+                hash ^= offset.GetHashCode();
+
             hash ^= AutoInterpolate.GetHashCode();
             hash ^= LeftToRight.GetHashCode();
             hash ^= BorderColor.GetHashCode();
@@ -202,6 +218,7 @@ namespace Kinovea.Services
         private void ParseCropPositions(XmlReader r)
         {
             CropPositions.Clear();
+            FrameOffsets.Clear();
             bool empty = r.IsEmptyElement;
 
             r.ReadStartElement();
@@ -216,6 +233,12 @@ namespace Kinovea.Services
                         bool isAnchor = false;
                         if (r.MoveToAttribute("anchor"))
                             isAnchor = XmlHelper.ParseBoolean(r.ReadContentAsString());
+
+                        if (r.MoveToAttribute("offset"))
+                        {
+                            int offset = int.Parse(r.ReadContentAsString());
+                            FrameOffsets.Add(offset);
+                        }
 
                         r.ReadStartElement();
                         CropPositions.Add(XmlHelper.ParsePointF(r.ReadContentAsString()));
@@ -232,6 +255,18 @@ namespace Kinovea.Services
                         r.ReadOuterXml();
                         break;
                 }
+            }
+
+            if (FrameOffsets.Count < CropPositions.Count)
+            {
+                for (int i = 0; i < CropPositions.Count - FrameOffsets.Count; i++)
+                {
+                    FrameOffsets.Add(0);
+                }
+            }
+            else if (FrameOffsets.Count > CropPositions.Count)
+            {
+                FrameOffsets.RemoveRange(CropPositions.Count, FrameOffsets.Count - CropPositions.Count);
             }
 
             r.ReadEndElement();
@@ -251,6 +286,8 @@ namespace Kinovea.Services
 
                 if (ManualPositions.Contains(i))
                     w.WriteAttributeString("anchor", "true");
+
+                w.WriteAttributeString("offset", FrameOffsets[i].ToString(CultureInfo.InvariantCulture));
 
                 w.WriteString(XmlHelper.WritePointF(CropPositions[i]));
                 w.WriteEndElement();
