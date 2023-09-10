@@ -855,7 +855,7 @@
     <value>Brak rotacji</value>
   </data>
   <data name="mnuRotation" xml:space="preserve">
-    <value>Rotacja obrazu</value>
+    <value>Obrót</value>
   </data>
   <data name="mnuFormatForce169" xml:space="preserve">
     <value>Format 16:9</value>
@@ -1174,5 +1174,26 @@
   </data>
   <data name="Generic_Calibration" xml:space="preserve">
     <value>Kalibracja</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Rozmiar</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>Malejąco</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>Rosnąco</value>
+  </data>
+  <data name="filterName_Analysis" xml:space="preserve">
+    <value>Analityka</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>Nazwa</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Sortuj według</value>
   </data>
 </root>
