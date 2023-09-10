@@ -119,4 +119,22 @@
   <data name="Generic_Open" xml:space="preserve">
     <value>Otwórz</value>
   </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Rozmiar</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>Malejąco</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>Rosnąco</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>Nazwa</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Sortuj według</value>
+  </data>
 </root>
