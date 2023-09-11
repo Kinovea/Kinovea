@@ -383,4 +383,7 @@
   <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve">
     <value>وضع التسجيل والتأخير</value>
   </data>
+  <data name="dlgPreferences_Capture_TriggerAction" xml:space="preserve">
+    <value>عمل الزناد</value>
+  </data>
 </root>
