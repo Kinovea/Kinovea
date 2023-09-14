@@ -480,10 +480,10 @@
     <Compile Include="Metadata\Serialization\MeasuredDataUnits.cs" />
     <Compile Include="Metadata\Serialization\MeasurementSerializationHelper.cs" />
     <Compile Include="NativeMethods.cs" />
-    <Compile Include="PlayerScreen\Controls\KeyframeCommentBox.cs">
+    <Compile Include="PlayerScreen\Controls\SidePanels\KeyframeCommentBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\Controls\KeyframeCommentBox.Designer.cs">
+    <Compile Include="PlayerScreen\Controls\SidePanels\KeyframeCommentBox.Designer.cs">
       <DependentUpon>KeyframeCommentBox.cs</DependentUpon>
     </Compile>
     <Compile Include="PlayerScreen\Events\KeyframeAddEventArgs.cs" />
@@ -1010,7 +1010,7 @@
     <EmbeddedResource Include="Measurement\LensDistortion\FormCalibrateDistortion.resx">
       <DependentUpon>FormCalibrateDistortion.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\Controls\KeyframeCommentBox.resx">
+    <EmbeddedResource Include="PlayerScreen\Controls\SidePanels\KeyframeCommentBox.resx">
       <DependentUpon>KeyframeCommentBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\Controls\SidePanels\SidePanelKeyframes.resx">

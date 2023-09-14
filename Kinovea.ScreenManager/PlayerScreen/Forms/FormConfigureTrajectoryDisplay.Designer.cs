@@ -35,8 +35,6 @@ namespace Kinovea.ScreenManager
       this.grpConfig = new System.Windows.Forms.GroupBox();
       this.cmbMarker = new System.Windows.Forms.ComboBox();
       this.lblMarker = new System.Windows.Forms.Label();
-      this.cmbMeasureLabelType = new System.Windows.Forms.ComboBox();
-      this.lblExtra = new System.Windows.Forms.Label();
       this.grpIdentification = new System.Windows.Forms.GroupBox();
       this.grpTracking = new System.Windows.Forms.GroupBox();
       this.label2 = new System.Windows.Forms.Label();
@@ -81,9 +79,9 @@ namespace Kinovea.ScreenManager
       // 
       // grpAppearance
       // 
-      this.grpAppearance.Location = new System.Drawing.Point(12, 232);
+      this.grpAppearance.Location = new System.Drawing.Point(12, 142);
       this.grpAppearance.Name = "grpAppearance";
-      this.grpAppearance.Size = new System.Drawing.Size(297, 128);
+      this.grpAppearance.Size = new System.Drawing.Size(297, 218);
       this.grpAppearance.TabIndex = 29;
       this.grpAppearance.TabStop = false;
       this.grpAppearance.Text = "Generic_Appearance";
@@ -102,11 +100,9 @@ namespace Kinovea.ScreenManager
       // 
       this.grpConfig.Controls.Add(this.cmbMarker);
       this.grpConfig.Controls.Add(this.lblMarker);
-      this.grpConfig.Controls.Add(this.cmbMeasureLabelType);
-      this.grpConfig.Controls.Add(this.lblExtra);
       this.grpConfig.Location = new System.Drawing.Point(12, 74);
       this.grpConfig.Name = "grpConfig";
-      this.grpConfig.Size = new System.Drawing.Size(297, 152);
+      this.grpConfig.Size = new System.Drawing.Size(297, 62);
       this.grpConfig.TabIndex = 51;
       this.grpConfig.TabStop = false;
       this.grpConfig.Text = "Generic_Configuration";
@@ -130,26 +126,6 @@ namespace Kinovea.ScreenManager
       this.lblMarker.Size = new System.Drawing.Size(46, 13);
       this.lblMarker.TabIndex = 50;
       this.lblMarker.Text = "Marker :";
-      // 
-      // cmbMeasureLabelType
-      // 
-      this.cmbMeasureLabelType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.cmbMeasureLabelType.FormattingEnabled = true;
-      this.cmbMeasureLabelType.Location = new System.Drawing.Point(146, 51);
-      this.cmbMeasureLabelType.Name = "cmbMeasureLabelType";
-      this.cmbMeasureLabelType.Size = new System.Drawing.Size(138, 21);
-      this.cmbMeasureLabelType.TabIndex = 46;
-      this.cmbMeasureLabelType.SelectedIndexChanged += new System.EventHandler(this.CmbMeasureLabelType_SelectedIndexChanged);
-      // 
-      // lblExtra
-      // 
-      this.lblExtra.AutoSize = true;
-      this.lblExtra.Location = new System.Drawing.Point(21, 56);
-      this.lblExtra.Name = "lblExtra";
-      this.lblExtra.Size = new System.Drawing.Size(77, 13);
-      this.lblExtra.TabIndex = 45;
-      this.lblExtra.Text = "Measurement :";
       // 
       // grpIdentification
       // 
@@ -309,8 +285,6 @@ namespace Kinovea.ScreenManager
       this.ResumeLayout(false);
 
         }
-        private System.Windows.Forms.Label lblExtra;
-        private System.Windows.Forms.ComboBox cmbMeasureLabelType;
         private System.Windows.Forms.GroupBox grpAppearance;
 
         #endregion

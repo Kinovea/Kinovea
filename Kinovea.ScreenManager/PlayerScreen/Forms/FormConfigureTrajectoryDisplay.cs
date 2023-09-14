@@ -87,7 +87,6 @@ namespace Kinovea.ScreenManager
             track.DrawingStyle.Memorize();
 
             InitMarkerCombo();
-            InitMeasureLabelTypeCombo();
             InitTrackParameters();
             SetupStyleControls();
             SetCurrentOptions();
@@ -100,22 +99,6 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Init
-        private void InitMeasureLabelTypeCombo()
-        {
-            // Combo must be filled in the order of the enum.
-            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.None));
-            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.Name));
-            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.Position));
-            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.TravelDistance));
-            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.TotalHorizontalDisplacement));
-            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.TotalVerticalDisplacement));
-            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.Speed));
-            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.HorizontalVelocity));
-            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.VerticalVelocity));
-            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.Acceleration));
-            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.HorizontalAcceleration));
-            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.VerticalAcceleration));
-        }
         private void InitMarkerCombo()
         {
             cmbMarker.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_MarkerCross);
@@ -138,9 +121,6 @@ namespace Kinovea.ScreenManager
                 elements.Add(pair.Value);
             }
 
-            if (elements.Count != 3)
-                return;
-            
             int editorsLeft = 200;
             int lastEditorBottom = 10;
             Size editorSize = new Size(60,20);
@@ -176,7 +156,6 @@ namespace Kinovea.ScreenManager
         private void SetCurrentOptions()
         {
             tbLabel.Text = track.Name;
-            cmbMeasureLabelType.SelectedIndex = (int)track.MeasureLabelType;
             cmbMarker.SelectedIndex = (int)track.Marker;
         }
         private void InitCulture()
@@ -186,9 +165,7 @@ namespace Kinovea.ScreenManager
             grpIdentification.Text = ScreenManagerLang.dlgConfigureDrawing_Name;
 
             grpConfig.Text = ScreenManagerLang.Generic_Configuration;
-
             lblMarker.Text = ScreenManagerLang.dlgConfigureTrajectory_LabelMarker;
-            lblExtra.Text = ScreenManagerLang.dlgConfigureTrajectory_LabelExtraData;
             
             grpAppearance.Text = ScreenManagerLang.Generic_Appearance;
 
@@ -236,12 +213,6 @@ namespace Kinovea.ScreenManager
             if(invalidate != null) 
                 invalidate();
         }
-        private void CmbMeasureLabelType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            track.MeasureLabelType = (MeasureLabelType)cmbMeasureLabelType.SelectedIndex;
-            if(invalidate != null) 
-                invalidate();
-        }
         private void CmbMarker_SelectedIndexChanged(object sender, EventArgs e)
         {
             track.Marker = (TrackMarker)cmbMarker.SelectedIndex;
@@ -253,6 +224,9 @@ namespace Kinovea.ScreenManager
         {
             if(invalidate != null) 
                 invalidate();
+
+            // Signal the style change to handle label size.
+            track.UpdateKeyframeLabels();
         }
 
         private void tbBlockWidth_TextChanged(object sender, EventArgs e)

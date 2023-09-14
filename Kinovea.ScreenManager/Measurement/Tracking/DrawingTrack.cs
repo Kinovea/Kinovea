@@ -308,7 +308,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public DrawingTrack(PointF p, long start, long averageTimeStampsPerFrame, DrawingStyle preset)
+        public DrawingTrack(PointF p, long start, long averageTimeStampsPerFrame)
         {
             tracker = new TrackerBlock2(GetTrackerParameters(new Size(800, 600)));
             positions.Add(new TrackPointBlock(p.X, p.Y, start));
@@ -326,23 +326,32 @@ namespace Kinovea.ScreenManager
             infosFading.FadingFrames = allowedFramesOver;
             infosFading.UseDefault = false;
 
-            styleHelper.Color = Color.Black;
-            styleHelper.LineSize = 3;
-            styleHelper.TrackShape = TrackShape.Dash;
-            styleHelper.ValueChanged += StyleHelper_ValueChanged;
-            if (preset != null)
-            {
-                style = preset.Clone();
-                BindStyle();
-            }
-
+            SetupStyle();
             InitializeMenus();
         }
 
         public DrawingTrack(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
-            : this(PointF.Empty, 0, 1, null)
+            : this(PointF.Empty, 0, 1)
         {
             ReadXml(xmlReader, scale, timestampMapper);
+        }
+
+        private void SetupStyle()
+        {
+            Color color = TrackColorCycler.Next();
+            style = new DrawingStyle();
+            style.Elements.Add("color", new StyleElementColor(color));
+            style.Elements.Add("line size", new StyleElementLineSize(3));
+            style.Elements.Add("track shape", new StyleElementTrackShape(TrackShape.Solid));
+            style.Elements.Add("label size", new StyleElementFontSize(8, "Label size"));
+
+            styleHelper.Color = color;
+            styleHelper.LineSize = 3;
+            styleHelper.TrackShape = TrackShape.Solid;
+            styleHelper.Font = new Font("Arial", 8, FontStyle.Bold);
+            styleHelper.ValueChanged += StyleHelper_ValueChanged;
+            
+            BindStyle();
         }
 
         private void InitializeMenus()
@@ -1533,7 +1542,8 @@ namespace Kinovea.ScreenManager
                         ParseTrackPointList(xmlReader, scale, timestampMapper);
                         break;
                     case "DrawingStyle":
-                        style = new DrawingStyle(xmlReader);
+                        DrawingStyle styleXML = new DrawingStyle(xmlReader);
+                        style.Import(styleXML);
                         BindStyle();
                         break;
                     case "MainLabel":
@@ -1723,6 +1733,7 @@ namespace Kinovea.ScreenManager
                         //keyframesLabels[iKnown].SetText(parentMetadata[i].Title);
                         keyframeLabels[iKnown].Name = parentMetadata[i].Name;
                         keyframeLabels[iKnown].BackColor = useKeyframeColors ? parentMetadata[i].Color : styleHelper.Color;
+                        keyframeLabels[iKnown].FontSize = (int)styleHelper.Font.Size;
                     }
                     else
                     {
@@ -1733,7 +1744,8 @@ namespace Kinovea.ScreenManager
                         kfl.Timestamp = positions[kfl.AttachIndex].T;
                         kfl.Name = parentMetadata[i].Name;
                         kfl.BackColor = useKeyframeColors ? parentMetadata[i].Color : styleHelper.Color;
-                        
+                        kfl.FontSize = (int)styleHelper.Font.Size;
+
                         keyframeLabels.Add(kfl);
                     }
                 }
@@ -1911,6 +1923,7 @@ namespace Kinovea.ScreenManager
             style.Bind(styleHelper, "Color", "color");
             style.Bind(styleHelper, "LineSize", "line size");
             style.Bind(styleHelper, "TrackShape", "track shape");
+            style.Bind(styleHelper, "Font", "label size");
         }
 
         private void StyleHelper_ValueChanged(object sender, EventArgs e)

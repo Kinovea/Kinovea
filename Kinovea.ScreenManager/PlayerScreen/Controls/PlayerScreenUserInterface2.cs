@@ -4473,10 +4473,12 @@ namespace Kinovea.ScreenManager
         {
             // A keyframe core data was updated from a keyframe control.
             // This is only raised when we change the name, color or comment from the side panel.
-            // Update the corresponding thumbnail box.
+            // Update whatever is impacted by this.
             UpdateKeyframeBox(e.Value);
-
             UpdateFramesMarkers();
+            m_FrameServer.Metadata.UpdateTrajectoriesKeyframeLabels();
+            
+            Invalidate();
         }
 
         /// <summary>
@@ -4660,13 +4662,7 @@ namespace Kinovea.ScreenManager
             // m_DescaledMouse would have been set during the MouseDown event.
             CheckCustomDecodingSize(true);
 
-            Color color = TrackColorCycler.Next();
-            DrawingStyle style = new DrawingStyle();
-            style.Elements.Add("color", new StyleElementColor(color));
-            style.Elements.Add("line size", new StyleElementLineSize(3));
-            style.Elements.Add("track shape", new StyleElementTrackShape(TrackShape.Solid));
-
-            DrawingTrack track = new DrawingTrack(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame, style);
+            DrawingTrack track = new DrawingTrack(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
             track.Status = TrackStatus.Edit;
 
             if (DrawingAdding != null)
