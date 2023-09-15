@@ -64,7 +64,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="btnSync_ToolTip" xml:space="preserve"><value>مزامنة الفيديوهات مع الكادرات الحالية</value>
+  <data name="btnSync_ToolTip" xml:space="preserve"><value>مزامنة مقاطع الفيديو مع الاطارات الحالية</value>
   </data>
   <data name="buttonGotoFirst_ToolTip" xml:space="preserve"><value>العودة إلى بداية الفديوهين</value>
   </data>
@@ -953,5 +953,8 @@
   </data>
   <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
     <value>تعديل الرسم</value>
+  </data>
+  <data name="dlgCalibratePlane_AveragePixelSize" xml:space="preserve">
+    <value>معدل حجم البكسلات: {0}.</value>
   </data>
 </root>
