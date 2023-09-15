@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -66,10 +67,13 @@ namespace Kinovea.ScreenManager
         #region members
         private Size frameSize;
         private IWorkingZoneFramesContainer framesContainer;
-        private Metadata metadata;
+        private Metadata parentMetadata;
         private Bitmap mask;
+        private Stopwatch stopwatch = new Stopwatch();
+        private Random rnd = new Random();
 
         // Computed data
+        // frameIndices: reverse index from timestamps to frames indices.
         private Dictionary<long, int> frameIndices = new Dictionary<long, int>();
         private List<OpenCvSharp.KeyPoint[]> keypoints = new List<OpenCvSharp.KeyPoint[]>();
         private List<OpenCvSharp.Mat> descriptors = new List<OpenCvSharp.Mat>();
@@ -78,8 +82,8 @@ namespace Kinovea.ScreenManager
         private List<List<bool>> inlierStatus = new List<List<bool>>();
         private List<List<PointF>> inliers = new List<List<PointF>>();
         private List<OpenCvSharp.Mat> consecTransforms = new List<OpenCvSharp.Mat>();
-        private List<OpenCvSharp.Mat> forwardTransforms = new List<OpenCvSharp.Mat>();
-        private List<OpenCvSharp.Mat> backwardTransforms = new List<OpenCvSharp.Mat>();
+        //private List<OpenCvSharp.Mat> forwardTransforms = new List<OpenCvSharp.Mat>();
+        //private List<OpenCvSharp.Mat> backwardTransforms = new List<OpenCvSharp.Mat>();
 
         private List<DistortionParameters> intrinsics = new List<DistortionParameters>();
         private List<double[,]> extrinsics = new List<double[,]>();
@@ -96,10 +100,35 @@ namespace Kinovea.ScreenManager
 
         #region Menu
         private ToolStripMenuItem mnuConfigure = new ToolStripMenuItem();
+        
+        private ToolStripMenuItem mnuAction = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuRun = new ToolStripMenuItem();
         private ToolStripMenuItem mnuImportMask = new ToolStripMenuItem();
         private ToolStripMenuItem mnuImportColmap = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuRun = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuDeleteData = new ToolStripMenuItem();
+
+        private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuShowFeatures = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuShowMatches = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuShowTransforms = new ToolStripMenuItem();
+
         #endregion
+
+        // Decoration
+        private Pen penFeature = new Pen(Color.Yellow, 2.0f);
+        private Pen penFeatureInlier = new Pen(Color.Lime, 2.0f);
+        private Pen penMatchInlier = new Pen(Color.LimeGreen, 2.0f);
+        private Pen penMatchOutlier = new Pen(Color.FromArgb(128, 255, 0, 0), 2.0f);
+        // Precomputed list of unique colors to draw frames references.
+        // https://stackoverflow.com/questions/309149/generate-distinctly-different-rgb-colors-in-graphs
+        static string[] colorCycle = new string[] {
+            "00FF00", "0000FF", "FF0000", "01FFFE", "FFA6FE", "FFDB66", "006401", "010067", "95003A", "007DB5", "FF00F6",
+            "FFEEE8", "774D00", "90FB92", "0076FF", "D5FF00", "FF937E", "6A826C", "FF029D", "FE8900", "7A4782", "7E2DD2",
+            "85A900", "FF0056", "A42400", "00AE7E", "683D3B", "BDC6FF", "263400", "BDD393", "00B917", "9E008E", "001544",
+            "C28C9F", "FF74A3", "01D0FF", "004754", "E56FFE", "788231", "0E4CA1", "91D0CB", "BE9970", "968AE8", "BB8800",
+            "43002C", "DEFF74", "00FFC6", "FFE502", "620E00", "008F9C", "98FF52", "7544B1", "B500FF", "00FF78", "FF6E41",
+            "005F39", "6B6882", "5FAD4E", "A75740", "A5FFD2", "FFB167", "009BFF", "E85EBE",
+        };
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -107,7 +136,7 @@ namespace Kinovea.ScreenManager
         #region ctor/dtor
         public VideoFilterCameraMotion(Metadata metadata)
         {
-            this.metadata = metadata;
+            this.parentMetadata = metadata;
 
             InitializeMenus();
 
@@ -143,11 +172,35 @@ namespace Kinovea.ScreenManager
             mnuConfigure.Image = Properties.Drawings.configure;
             mnuConfigure.Click += MnuConfigure_Click;
 
+            mnuAction.Image = Properties.Resources.action;
+            mnuRun.Image = Properties.Drawings.trackingplay;
+            mnuDeleteData.Image = Properties.Resources.bin_empty;
+            mnuRun.Click += MnuRun_Click;
             mnuImportMask.Click += MnuImportMask_Click;
             mnuImportColmap.Click += MnuImportColmap_Click;
-            mnuRun.Click += MnuRun_Click;
-        }
+            mnuDeleteData.Click += MnuDeleteData_Click;
+            mnuAction.DropDownItems.AddRange(new ToolStripItem[] {
+                mnuRun,
+                new ToolStripSeparator(),
+                mnuImportMask,
+                mnuImportColmap,
+                new ToolStripSeparator(),
+                mnuDeleteData,
+            });
 
+            mnuOptions.Image = Properties.Resources.equalizer;
+            //mnuShowFeatures.Image
+            //mnuShowMatches.Image
+            //mnuShowTransforms.Image
+            mnuShowFeatures.Click += MnuShowFeatures_Click;
+            mnuShowMatches.Click += MnuShowMatches_Click;
+            mnuShowTransforms.Click += MnuShowTransforms_Click;
+            mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
+                mnuShowFeatures,
+                mnuShowMatches,
+                mnuShowTransforms,
+            });
+        }
         #endregion
 
         #region IVideoFilter methods
@@ -207,7 +260,7 @@ namespace Kinovea.ScreenManager
 
         public void ResetData()
         {
-            
+            ResetTrackingData();
         }
         public void WriteData(XmlWriter w)
         {
@@ -227,6 +280,8 @@ namespace Kinovea.ScreenManager
 
         #endregion
 
+        #region Context menu
+
         /// <summary>
         /// Get the context menu according to the mouse position, current time and locale.
         /// </summary>
@@ -238,10 +293,13 @@ namespace Kinovea.ScreenManager
             contextMenu.AddRange(new ToolStripItem[] {
                 mnuConfigure,
                 new ToolStripSeparator(),
-                mnuImportMask,
-                mnuImportColmap,
-                mnuRun,
+                mnuAction,
+                mnuOptions,
             });
+
+            mnuShowFeatures.Checked = showFeatures;
+            mnuShowMatches.Checked = showMatches;
+            mnuShowTransforms.Checked = showTransforms;
 
             return contextMenu;
         }
@@ -250,21 +308,156 @@ namespace Kinovea.ScreenManager
         {
             // Just in time localization.
             mnuConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
+
+            mnuAction.Text = ScreenManagerLang.mnuAction;
+            mnuRun.Text = "Run camera motion estimation";
             mnuImportMask.Text = "Import mask";
             mnuImportColmap.Text = "Import COLMAP";
-            mnuRun.Text = "Run camera motion estimation";
+            mnuDeleteData.Text = "Delete tracking data";
+
+            mnuOptions.Text = ScreenManagerLang.Generic_Options;
+            mnuShowFeatures.Text = "Show trackers";
+            mnuShowMatches.Text = "Show matches";
+            mnuShowTransforms.Text = "Show transforms";
         }
 
-        #region Private methods
         private void MnuConfigure_Click(object sender, EventArgs e)
         {
             
         }
 
+        private void MnuRun_Click(object sender, EventArgs e)
+        {
+            if (framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count < 1)
+                return;
+
+            ResetTrackingData();
+
+            stopwatch.Start();
+
+            var orb = OpenCvSharp.ORB.Create(featuresPerFrame);
+
+            // Import and convert mask if needed.
+            OpenCvSharp.Mat cvMaskGray = null;
+            bool hasMask = mask != null;
+            if (hasMask)
+            {
+                var cvMask = mask == null ? null : OpenCvSharp.Extensions.BitmapConverter.ToMat(mask);
+                cvMaskGray = new OpenCvSharp.Mat();
+                OpenCvSharp.Cv2.CvtColor(cvMask, cvMaskGray, OpenCvSharp.ColorConversionCodes.BGR2GRAY, 0);
+                cvMask.Dispose();
+                log.DebugFormat("Imported mask. {0} ms.", stopwatch.ElapsedMilliseconds);
+            }
+
+
+            // Find and describe features on each frame.
+            // TODO: try to run this through a parallel for if possible.
+            // Do we need frameIndices, keypoints and descriptors to be sequential?
+            // If so, prepare all the tables without the detection and then run the detection in parallel.
+            int frameIndex = 0;
+            foreach (var f in framesContainer.Frames)
+            {
+                if (frameIndices.ContainsKey(f.Timestamp))
+                    continue;
+
+                frameIndices.Add(f.Timestamp, frameIndex);
+
+                // Convert image to OpenCV and convert to grayscale.
+                var cvImage = OpenCvSharp.Extensions.BitmapConverter.ToMat(f.Image);
+                var cvImageGray = new OpenCvSharp.Mat();
+                OpenCvSharp.Cv2.CvtColor(cvImage, cvImageGray, OpenCvSharp.ColorConversionCodes.BGR2GRAY, 0);
+                cvImage.Dispose();
+
+                // Feature detection & description.
+                var desc = new OpenCvSharp.Mat();
+                orb.DetectAndCompute(cvImageGray, cvMaskGray, out var kp, desc);
+
+                keypoints.Add(kp);
+                descriptors.Add(desc);
+
+                cvImageGray.Dispose();
+
+                //log.DebugFormat("Feature detection - Frame [{0}]: {1} features.", keypoints.Count, keypoints[keypoints.Count - 1].Length);
+                frameIndex++;
+            }
+
+            if (hasMask)
+                cvMaskGray.Dispose();
+
+            orb.Dispose();
+
+            log.DebugFormat("Feature detection: {0} ms.", stopwatch.ElapsedMilliseconds);
+
+            // Match features in consecutive frames.
+            // TODO: match each frame with the n next frames where n depends on framerate.
+            var matcher = new OpenCvSharp.BFMatcher(OpenCvSharp.NormTypes.Hamming, crossCheck: true);
+            for (int i = 0; i < descriptors.Count - 1; i++)
+            {
+                var mm = matcher.Match(descriptors[i], descriptors[i + 1]);
+                matches.Add(mm);
+            }
+
+            matcher.Dispose();
+            log.DebugFormat("Feature matching: {0} ms.", stopwatch.ElapsedMilliseconds);
+
+            // Compute transforms between consecutive frames.
+            // TODO: bundle adjustment.
+            for (int i = 0; i < descriptors.Count - 1; i++)
+            {
+                var mm = matches[i];
+                var srcPoints = mm.Select(m => new OpenCvSharp.Point2d(keypoints[i][m.QueryIdx].Pt.X, keypoints[i][m.QueryIdx].Pt.Y));
+                var dstPoints = mm.Select(m => new OpenCvSharp.Point2d(keypoints[i + 1][m.TrainIdx].Pt.X, keypoints[i + 1][m.TrainIdx].Pt.Y));
+
+                OpenCvSharp.HomographyMethods method = (OpenCvSharp.HomographyMethods)OpenCvSharp.RobustEstimationAlgorithms.USAC_MAGSAC;
+                var mask = new List<byte>();
+                var homography = OpenCvSharp.Cv2.FindHomography(srcPoints, dstPoints, method, ransacReprojThreshold, OpenCvSharp.OutputArray.Create(mask));
+
+                // Collect inliers.
+                inlierStatus.Add(new List<bool>());
+                inliers.Add(new List<PointF>());
+                for (int j = 0; j < mask.Count; j++)
+                {
+                    bool inlier = mask[j] != 0;
+                    inlierStatus[i].Add(inlier);
+
+                    if (inlier)
+                    {
+                        PointF p = new PointF(keypoints[i][mm[j].QueryIdx].Pt.X, keypoints[i][mm[j].QueryIdx].Pt.Y);
+                        inliers[i].Add(p);
+                    }
+                }
+
+                //LogHomography(i, i + 1, homography);
+                consecTransforms.Add(homography);
+            }
+            
+            log.DebugFormat("Transforms computation: {0} ms.", stopwatch.ElapsedMilliseconds);
+
+            // Precompute all the transform matrices towards and back from the common frame of reference.
+            // For now we use the first frame as the global reference.
+            //var identity = OpenCvSharp.Mat.Eye(3, 3, OpenCvSharp.MatType.CV_64FC1);
+            //for (int i = 0; i < frameIndices.Count; i++)
+            //{
+            //    // Forward.
+            //    var mat = identity;
+            //    if (i > 0)
+            //    {
+            //        mat = forwardTransforms[i - 1] * consecTransforms[i - 1];
+            //    }
+
+            //    forwardTransforms.Add(mat);
+            //}
+
+            InvalidateFromMenu(sender);
+
+            // Commit transform data.
+            parentMetadata.SetCameraMotion(frameIndices, consecTransforms);
+        }
+
         private void MnuImportMask_Click(object sender, EventArgs e)
         {
             // Open image.
-            // Reject image if not of the same size.
+            // Reject if it's not the same size.
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = "Import mask";
             openFileDialog.RestoreDirectory = true;
@@ -318,130 +511,44 @@ namespace Kinovea.ScreenManager
             //metadata.SetCameraMotion(frameIndices, consecTransforms);
         }
 
-        private void MnuRun_Click(object sender, EventArgs e)
+        private void MnuDeleteData_Click(object sender, EventArgs e)
         {
-            if (framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count < 1)
-                return;
-
-            frameIndices.Clear();
-            keypoints.Clear();
-            descriptors.Clear();
-            imagePairs.Clear();
-            matches.Clear();
-            inlierStatus.Clear();
-            inliers.Clear();
-            consecTransforms.Clear();
-            forwardTransforms.Clear();
-            backwardTransforms.Clear();
-
-            var orb = OpenCvSharp.ORB.Create(featuresPerFrame);
-
-            // Import and convert mask if needed.
-            OpenCvSharp.Mat cvMaskGray = null;
-            bool hasMask = mask != null;
-            if (hasMask)
-            {
-                var cvMask = mask == null ? null : OpenCvSharp.Extensions.BitmapConverter.ToMat(mask);
-                cvMaskGray = new OpenCvSharp.Mat();
-                OpenCvSharp.Cv2.CvtColor(cvMask, cvMaskGray, OpenCvSharp.ColorConversionCodes.BGR2GRAY, 0);
-                cvMask.Dispose();
-            }
-            
-            // Find and describe features on each frame.
-            int frameIndex = 0;
-            foreach (var f in framesContainer.Frames)
-            {
-                if (frameIndices.ContainsKey(f.Timestamp))
-                    continue;
-
-                frameIndices.Add(f.Timestamp, frameIndex);
-                
-                // Convert image to OpenCV and convert to grayscale.
-                var cvImage = OpenCvSharp.Extensions.BitmapConverter.ToMat(f.Image);
-                var cvImageGray = new OpenCvSharp.Mat();
-                OpenCvSharp.Cv2.CvtColor(cvImage, cvImageGray, OpenCvSharp.ColorConversionCodes.BGR2GRAY, 0);
-                cvImage.Dispose();
-
-                // Feature detection & description.
-                var desc = new OpenCvSharp.Mat();
-                orb.DetectAndCompute(cvImageGray, cvMaskGray, out var kp, desc);
-                
-                keypoints.Add(kp);
-                descriptors.Add(desc);
-
-                cvImageGray.Dispose();
-
-                log.DebugFormat("Feature detection - Frame [{0}]: {1} features.", keypoints.Count, keypoints[keypoints.Count - 1].Length);
-                frameIndex++;
-            }
-
-            if (hasMask)
-                cvMaskGray.Dispose();
-            
-            orb.Dispose();
-
-            // Match features in consecutive frames.
-            // TODO: match each frame with the n next frames where n depends on framerate.
-            var matcher = new OpenCvSharp.BFMatcher(OpenCvSharp.NormTypes.Hamming, crossCheck: true);
-            for (int i = 0; i < descriptors.Count - 1; i++)
-            {
-                var mm = matcher.Match(descriptors[i], descriptors[i + 1]);
-                matches.Add(mm);
-            }
-
-            matcher.Dispose();
-
-            // Find transforms between frames.
-            // TODO: bundle adjustment.
-            for (int i = 0; i < descriptors.Count - 1; i++)
-            {
-                var mm = matches[i];
-                var srcPoints = mm.Select(m => new OpenCvSharp.Point2d(keypoints[i][m.QueryIdx].Pt.X, keypoints[i][m.QueryIdx].Pt.Y));
-                var dstPoints = mm.Select(m => new OpenCvSharp.Point2d(keypoints[i + 1][m.TrainIdx].Pt.X, keypoints[i + 1][m.TrainIdx].Pt.Y));
-                
-                OpenCvSharp.HomographyMethods method = (OpenCvSharp.HomographyMethods)OpenCvSharp.RobustEstimationAlgorithms.USAC_MAGSAC;
-                var mask = new List<byte>();
-                var homography = OpenCvSharp.Cv2.FindHomography(srcPoints, dstPoints, method, ransacReprojThreshold, OpenCvSharp.OutputArray.Create(mask));
-
-                // Collect inliers.
-                inlierStatus.Add(new List<bool>());
-                inliers.Add(new List<PointF>());
-                for (int j = 0; j < mask.Count; j++)
-                {
-                    bool inlier = mask[j] != 0;
-                    inlierStatus[i].Add(inlier);
-                 
-                    if (inlier)
-                    {
-                        PointF p = new PointF(keypoints[i][mm[j].QueryIdx].Pt.X, keypoints[i][mm[j].QueryIdx].Pt.Y);
-                        inliers[i].Add(p);        
-                    }
-                }
-
-                LogHomography(i, i + 1, homography);
-                consecTransforms.Add(homography);
-            }
-
-            // Precompute all the transform matrices towards and back from the common frame of reference.
-            // For now we use the first frame as the global reference.
-            //var identity = OpenCvSharp.Mat.Eye(3, 3, OpenCvSharp.MatType.CV_64FC1);
-            //for (int i = 0; i < frameIndices.Count; i++)
-            //{
-            //    // Forward.
-            //    var mat = identity;
-            //    if (i > 0)
-            //    {
-            //        mat = forwardTransforms[i - 1] * consecTransforms[i - 1];
-            //    }
-
-            //    forwardTransforms.Add(mat);
-            //}
-
+            //CaptureMemento();
+            ResetTrackingData();
+            //Update();
             InvalidateFromMenu(sender);
-
-            // Commit transform data.
-            metadata.SetCameraMotion(frameIndices, consecTransforms);
         }
+
+        private void MnuShowFeatures_Click(object sender, EventArgs e)
+        {
+            //CaptureMemento();
+
+            showFeatures = !mnuShowFeatures.Checked;
+
+            //Update();
+            InvalidateFromMenu(sender);
+        }
+
+        private void MnuShowMatches_Click(object sender, EventArgs e)
+        {
+            //CaptureMemento();
+
+            showMatches = !mnuShowMatches.Checked;
+
+            //Update();
+            InvalidateFromMenu(sender);
+        }
+
+        private void MnuShowTransforms_Click(object sender, EventArgs e)
+        {
+            //CaptureMemento();
+
+            showTransforms = !mnuShowTransforms.Checked;
+
+            //Update();
+            InvalidateFromMenu(sender);
+        }
+
 
         private void LogHomography(int index1, int index2, OpenCvSharp.Mat homography)
         {
@@ -482,6 +589,22 @@ namespace Kinovea.ScreenManager
                 return;
 
             host.InvalidateFromMenu();
+        }
+        #endregion
+
+        #region Private utilities
+        private void ResetTrackingData()
+        {
+            frameIndices.Clear();
+            keypoints.Clear();
+            descriptors.Clear();
+            imagePairs.Clear();
+            matches.Clear();
+            inlierStatus.Clear();
+            inliers.Clear();
+            consecTransforms.Clear();
+            //forwardTransforms.Clear();
+            //backwardTransforms.Clear();
         }
 
         /// <summary>
@@ -656,9 +779,14 @@ namespace Kinovea.ScreenManager
                 consecTransforms.Add(homography);
             }
         }
+        #endregion
 
+        #region Rendering
 
-        #region Drawing
+        /// <summary>
+        /// Draw a dot on each found feature.
+        /// These are all the features found, they may or may not end up being used in the motion estimation. 
+        /// </summary>
         private void DrawFeatures(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
         {
             if (keypoints.Count == 0) 
@@ -671,12 +799,16 @@ namespace Kinovea.ScreenManager
             {
                 PointF p = new PointF(kp.Pt.X, kp.Pt.Y);
                 p = transformer.Transform(p);
-
-                using (Pen pen = new Pen(Color.CornflowerBlue, 2.0f))
-                    canvas.DrawEllipse(pen, p.Box(3));
+                canvas.DrawEllipse(penFeature, p.Box(2));
             }
         }
 
+        /// <summary>
+        /// Draw matches and inliers.
+        /// Matches are drawn as a line connecting the feature in this frame with its supposed location
+        /// in the next frame.
+        /// The connector is drawn green for inliers and red for outliers.
+        /// </summary>
         private void DrawMatches(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
         {
             if (matches.Count == 0)
@@ -697,10 +829,8 @@ namespace Kinovea.ScreenManager
                 p2 = transformer.Transform(p2);
 
                 var inlier = inlierStatus[frameIndex][i];
-                Color c = inlier ? Color.LimeGreen : Color.Red;
-
-                using (Pen pen = new Pen(c, 2.0f))
-                    canvas.DrawLine(pen, p1, p2);
+                Pen pen = inlier ? penMatchInlier : penMatchOutlier;
+                canvas.DrawLine(pen, p1, p2);
             }
 
             DrawInliers(canvas, transformer, timestamp);
@@ -718,8 +848,7 @@ namespace Kinovea.ScreenManager
             foreach (var p in inliers[frameIndex])
             {
                 var p2 = transformer.Transform(p);
-                using (Pen pen = new Pen(Color.DarkGreen, 3.0f))
-                    canvas.DrawEllipse(pen, p2.Box(5));
+                canvas.DrawEllipse(penFeatureInlier, p2.Box(4));
             }
         }
 
@@ -731,14 +860,17 @@ namespace Kinovea.ScreenManager
             if (!frameIndices.ContainsKey(timestamp))
                 return;
 
-            // Transform a rectangle to show how the image is modified from one frame to the next.
-            Rectangle rect = new Rectangle(Point.Empty, frameSize);
+            // Transform an image space rectangle to show how the image is modified from one frame to the next.
+            float left = frameSize.Width * 0.1f;
+            float top = frameSize.Height * 0.1f;
+            float right = left + frameSize.Width * 0.8f;
+            float bottom = top + frameSize.Height * 0.8f;
             var bounds = new[]
             {
-                new OpenCvSharp.Point2f(rect.Left, rect.Top),
-                new OpenCvSharp.Point2f(rect.Right, rect.Top),
-                new OpenCvSharp.Point2f(rect.Right, rect.Bottom),
-                new OpenCvSharp.Point2f(rect.Left, rect.Bottom),
+                new OpenCvSharp.Point2f(left, top),
+                new OpenCvSharp.Point2f(right, top),
+                new OpenCvSharp.Point2f(right, bottom),
+                new OpenCvSharp.Point2f(left, bottom),
             };
 
             //if (frameIndices[timestamp] >= forwardTransforms.Count)
@@ -761,23 +893,35 @@ namespace Kinovea.ScreenManager
             //using (Pen pen = new Pen(Color.Yellow, 4.0f))
             //    canvas.DrawPolygon(pen, points4.ToArray());
 
-            //---------------------------------
-            // Draw the bounds of all the frames in all subsequent frames.
+            
             if (frameIndices[timestamp] >= consecTransforms.Count)
                 return;
-            
+
+            //---------------------------------
+            // Draw the bounds of all the past frames up to this one.
+            //---------------------------------
+
             for (int i = 0; i < frameIndices[timestamp]; i++)
             {
+                // `i` is the frame we are representing inside the current one.
+                // Apply the consecutive transform starting from it up to the current one.
+                // At the end of this we have the rectangle of that frame as seen from the current one.
                 var points = bounds;
                 for (int j = i; j < frameIndices[timestamp]; j++)
                 {
                     points = OpenCvSharp.Cv2.PerspectiveTransform(points, consecTransforms[j]);
                 }
 
+                // Convert back from OpenCV point to Drawing.PointF
+                // and transform to screen space.
                 var points3 = points.Select(p => new PointF(p.X, p.Y));
-
                 var points4 = transformer.Transform(points3);
-                using (Pen pen = new Pen(Color.Yellow, 1.0f))
+
+                // Get a random color that will be unique to the represented frame.
+                string str = "FF" + colorCycle[i % colorCycle.Length];
+                int colorInt = Convert.ToInt32(str, 16);
+                Color c = Color.FromArgb(colorInt);
+                using (Pen pen = new Pen(c, 1.0f))
                     canvas.DrawPolygon(pen, points4.ToArray());
             }
         }
@@ -812,6 +956,6 @@ namespace Kinovea.ScreenManager
             //dst.Dispose();
         }
         #endregion
-        #endregion
+        
     }
 }
