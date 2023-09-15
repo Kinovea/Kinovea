@@ -94,9 +94,10 @@ namespace Kinovea.ScreenManager
         private double ransacReprojThreshold = 1.5;
 
         // Display parameters
-        private bool showFeatures = true;
-        private bool showMatches = true;
-        private bool showTransforms = true;
+        private bool showFeatures = false;      // All the features found.
+        private bool showInliers = true;        // Features matched and used to estimate the final motion.
+        private bool showOutliers = false;      // Features matched but not used to estimate the final motion. 
+        private bool showTransforms = true;     // Frame transforms.
 
         #region Menu
         private ToolStripMenuItem mnuConfigure = new ToolStripMenuItem();
@@ -109,17 +110,20 @@ namespace Kinovea.ScreenManager
 
         private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowFeatures = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuShowMatches = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuShowOutliers = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuShowInliers = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowTransforms = new ToolStripMenuItem();
 
         #endregion
 
         // Decoration
         private Pen penFeature = new Pen(Color.Yellow, 2.0f);
+        private Pen penFeatureOutlier = new Pen(Color.Red, 2.0f);
         private Pen penFeatureInlier = new Pen(Color.Lime, 2.0f);
         private Pen penMatchInlier = new Pen(Color.LimeGreen, 2.0f);
         private Pen penMatchOutlier = new Pen(Color.FromArgb(128, 255, 0, 0), 2.0f);
-        // Precomputed list of unique colors to draw frames references.
+        private int maxTransformsFrames = 25;
+        // Precomputed list of unique colors to draw frame references.
         // https://stackoverflow.com/questions/309149/generate-distinctly-different-rgb-colors-in-graphs
         static string[] colorCycle = new string[] {
             "00FF00", "0000FF", "FF0000", "01FFFE", "FFA6FE", "FFDB66", "006401", "010067", "95003A", "007DB5", "FF00F6",
@@ -189,15 +193,17 @@ namespace Kinovea.ScreenManager
             });
 
             mnuOptions.Image = Properties.Resources.equalizer;
-            //mnuShowFeatures.Image
-            //mnuShowMatches.Image
-            //mnuShowTransforms.Image
+            mnuShowFeatures.Image = Properties.Drawings.bullet_orange;
+            mnuShowInliers.Image = Properties.Drawings.bullet_green;
+            mnuShowOutliers.Image = Properties.Drawings.bullet_red;
             mnuShowFeatures.Click += MnuShowFeatures_Click;
-            mnuShowMatches.Click += MnuShowMatches_Click;
+            mnuShowOutliers.Click += MnuShowOutliers_Click;
+            mnuShowInliers.Click += MnuShowInliers_Click;
             mnuShowTransforms.Click += MnuShowTransforms_Click;
             mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuShowFeatures,
-                mnuShowMatches,
+                mnuShowInliers,
+                mnuShowOutliers,
                 mnuShowTransforms,
             });
         }
@@ -238,11 +244,8 @@ namespace Kinovea.ScreenManager
             if (showFeatures)
                 DrawFeatures(canvas, transformer, timestamp);
 
-            if (showMatches)
+            if (showOutliers || showInliers)
                 DrawMatches(canvas, transformer, timestamp);
-
-            //if (showInliers)
-            //  DrawInliers(canvas, transformer, timestamp);
 
             if (showTransforms)
                 DrawTransforms(canvas, transformer, timestamp);
@@ -298,7 +301,8 @@ namespace Kinovea.ScreenManager
             });
 
             mnuShowFeatures.Checked = showFeatures;
-            mnuShowMatches.Checked = showMatches;
+            mnuShowInliers.Checked = showInliers;
+            mnuShowOutliers.Checked = showOutliers;
             mnuShowTransforms.Checked = showTransforms;
 
             return contextMenu;
@@ -316,8 +320,9 @@ namespace Kinovea.ScreenManager
             mnuDeleteData.Text = "Delete tracking data";
 
             mnuOptions.Text = ScreenManagerLang.Generic_Options;
-            mnuShowFeatures.Text = "Show trackers";
-            mnuShowMatches.Text = "Show matches";
+            mnuShowFeatures.Text = "Show points";
+            mnuShowInliers.Text = "Show inliers";
+            mnuShowOutliers.Text = "Show outliers";
             mnuShowTransforms.Text = "Show transforms";
         }
 
@@ -529,11 +534,21 @@ namespace Kinovea.ScreenManager
             InvalidateFromMenu(sender);
         }
 
-        private void MnuShowMatches_Click(object sender, EventArgs e)
+        private void MnuShowInliers_Click(object sender, EventArgs e)
         {
             //CaptureMemento();
 
-            showMatches = !mnuShowMatches.Checked;
+            showInliers = !mnuShowInliers.Checked;
+
+            //Update();
+            InvalidateFromMenu(sender);
+        }
+
+        private void MnuShowOutliers_Click(object sender, EventArgs e)
+        {
+            //CaptureMemento();
+
+            showOutliers = !mnuShowOutliers.Checked;
 
             //Update();
             InvalidateFromMenu(sender);
@@ -804,7 +819,7 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Draw matches and inliers.
+        /// Draw feature matches, outliers and/or inliers.
         /// Matches are drawn as a line connecting the feature in this frame with its supposed location
         /// in the next frame.
         /// The connector is drawn green for inliers and red for outliers.
@@ -829,26 +844,16 @@ namespace Kinovea.ScreenManager
                 p2 = transformer.Transform(p2);
 
                 var inlier = inlierStatus[frameIndex][i];
-                Pen pen = inlier ? penMatchInlier : penMatchOutlier;
-                canvas.DrawLine(pen, p1, p2);
-            }
-
-            DrawInliers(canvas, transformer, timestamp);
-        }
-
-        private void DrawInliers(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
-        {
-            if (inliers.Count == 0)
-                return;
-
-            if (!frameIndices.ContainsKey(timestamp) || frameIndices[timestamp] >= inliers.Count)
-                return;
-
-            int frameIndex = frameIndices[timestamp];
-            foreach (var p in inliers[frameIndex])
-            {
-                var p2 = transformer.Transform(p);
-                canvas.DrawEllipse(penFeatureInlier, p2.Box(4));
+                if (inlier && showInliers)
+                {
+                    canvas.DrawEllipse(penFeatureInlier, p1.Box(4));
+                    canvas.DrawLine(penMatchInlier, p1, p2);
+                }
+                else if (!inlier && showOutliers)
+                {
+                    canvas.DrawEllipse(penFeatureOutlier, p1.Box(4));
+                    canvas.DrawLine(penMatchOutlier, p1, p2);
+                }
             }
         }
 
@@ -900,8 +905,8 @@ namespace Kinovea.ScreenManager
             //---------------------------------
             // Draw the bounds of all the past frames up to this one.
             //---------------------------------
-
-            for (int i = 0; i < frameIndices[timestamp]; i++)
+            int start = Math.Max(frameIndices[timestamp] - maxTransformsFrames, 0);
+            for (int i = start; i < frameIndices[timestamp]; i++)
             {
                 // `i` is the frame we are representing inside the current one.
                 // Apply the consecutive transform starting from it up to the current one.
@@ -921,7 +926,7 @@ namespace Kinovea.ScreenManager
                 string str = "FF" + colorCycle[i % colorCycle.Length];
                 int colorInt = Convert.ToInt32(str, 16);
                 Color c = Color.FromArgb(colorInt);
-                using (Pen pen = new Pen(c, 1.0f))
+                using (Pen pen = new Pen(c, 2.0f))
                     canvas.DrawPolygon(pen, points4.ToArray());
             }
         }
