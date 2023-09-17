@@ -68,30 +68,10 @@ namespace Kinovea.ScreenManager
         private Size frameSize;
         private IWorkingZoneFramesContainer framesContainer;
         private Metadata parentMetadata;
-        private Bitmap mask;
         private Stopwatch stopwatch = new Stopwatch();
         private Random rnd = new Random();
 
-        // Computed data
-        // frameIndices: reverse index from timestamps to frames indices.
-        private Dictionary<long, int> frameIndices = new Dictionary<long, int>();
-        private List<OpenCvSharp.KeyPoint[]> keypoints = new List<OpenCvSharp.KeyPoint[]>();
-        private List<OpenCvSharp.Mat> descriptors = new List<OpenCvSharp.Mat>();
-        private List<Tuple<int, int>> imagePairs = new List<Tuple<int, int>>();
-        private List<OpenCvSharp.DMatch[]> matches = new List<OpenCvSharp.DMatch[]>();
-        private List<List<bool>> inlierStatus = new List<List<bool>>();
-        private List<List<PointF>> inliers = new List<List<PointF>>();
-        private List<OpenCvSharp.Mat> consecTransforms = new List<OpenCvSharp.Mat>();
-        //private List<OpenCvSharp.Mat> forwardTransforms = new List<OpenCvSharp.Mat>();
-        //private List<OpenCvSharp.Mat> backwardTransforms = new List<OpenCvSharp.Mat>();
-
-        private List<DistortionParameters> intrinsics = new List<DistortionParameters>();
-        private List<double[,]> extrinsics = new List<double[,]>();
-
-        // Core parameters
-        private CameraMotionParameters parameters = new CameraMotionParameters();
-        private int featuresPerFrame = 500;
-        private double ransacReprojThreshold = 1.5;
+        private CameraTracker tracker = new CameraTracker();
 
         // Display parameters
         private bool showFeatures = false;      // All the features found.
@@ -152,6 +132,9 @@ namespace Kinovea.ScreenManager
             Dispose(false);
         }
 
+        /// <summary>
+        /// Releases all resources used by this video filter.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
@@ -162,12 +145,7 @@ namespace Kinovea.ScreenManager
         {
             if (disposing)
             {
-                if (descriptors != null && descriptors.Count > 0)
-                    foreach (var desc in descriptors)
-                        desc.Dispose();
-
-                if (mask != null)
-                    mask.Dispose();
+                tracker.Dispose();
             }
         }
 
@@ -263,7 +241,7 @@ namespace Kinovea.ScreenManager
 
         public void ResetData()
         {
-            ResetTrackingData();
+            tracker.ResetTrackingData();
         }
         public void WriteData(XmlWriter w)
         {
@@ -336,127 +314,12 @@ namespace Kinovea.ScreenManager
             if (framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count < 1)
                 return;
 
-            ResetTrackingData();
-
-            stopwatch.Start();
-
-            var orb = OpenCvSharp.ORB.Create(featuresPerFrame);
-
-            // Import and convert mask if needed.
-            OpenCvSharp.Mat cvMaskGray = null;
-            bool hasMask = mask != null;
-            if (hasMask)
-            {
-                var cvMask = mask == null ? null : OpenCvSharp.Extensions.BitmapConverter.ToMat(mask);
-                cvMaskGray = new OpenCvSharp.Mat();
-                OpenCvSharp.Cv2.CvtColor(cvMask, cvMaskGray, OpenCvSharp.ColorConversionCodes.BGR2GRAY, 0);
-                cvMask.Dispose();
-                log.DebugFormat("Imported mask. {0} ms.", stopwatch.ElapsedMilliseconds);
-            }
-
-
-            // Find and describe features on each frame.
-            // TODO: try to run this through a parallel for if possible.
-            // Do we need frameIndices, keypoints and descriptors to be sequential?
-            // If so, prepare all the tables without the detection and then run the detection in parallel.
-            int frameIndex = 0;
-            foreach (var f in framesContainer.Frames)
-            {
-                if (frameIndices.ContainsKey(f.Timestamp))
-                    continue;
-
-                frameIndices.Add(f.Timestamp, frameIndex);
-
-                // Convert image to OpenCV and convert to grayscale.
-                var cvImage = OpenCvSharp.Extensions.BitmapConverter.ToMat(f.Image);
-                var cvImageGray = new OpenCvSharp.Mat();
-                OpenCvSharp.Cv2.CvtColor(cvImage, cvImageGray, OpenCvSharp.ColorConversionCodes.BGR2GRAY, 0);
-                cvImage.Dispose();
-
-                // Feature detection & description.
-                var desc = new OpenCvSharp.Mat();
-                orb.DetectAndCompute(cvImageGray, cvMaskGray, out var kp, desc);
-
-                keypoints.Add(kp);
-                descriptors.Add(desc);
-
-                cvImageGray.Dispose();
-
-                //log.DebugFormat("Feature detection - Frame [{0}]: {1} features.", keypoints.Count, keypoints[keypoints.Count - 1].Length);
-                frameIndex++;
-            }
-
-            if (hasMask)
-                cvMaskGray.Dispose();
-
-            orb.Dispose();
-
-            log.DebugFormat("Feature detection: {0} ms.", stopwatch.ElapsedMilliseconds);
-
-            // Match features in consecutive frames.
-            // TODO: match each frame with the n next frames where n depends on framerate.
-            var matcher = new OpenCvSharp.BFMatcher(OpenCvSharp.NormTypes.Hamming, crossCheck: true);
-            for (int i = 0; i < descriptors.Count - 1; i++)
-            {
-                var mm = matcher.Match(descriptors[i], descriptors[i + 1]);
-                matches.Add(mm);
-            }
-
-            matcher.Dispose();
-            log.DebugFormat("Feature matching: {0} ms.", stopwatch.ElapsedMilliseconds);
-
-            // Compute transforms between consecutive frames.
-            // TODO: bundle adjustment.
-            for (int i = 0; i < descriptors.Count - 1; i++)
-            {
-                var mm = matches[i];
-                var srcPoints = mm.Select(m => new OpenCvSharp.Point2d(keypoints[i][m.QueryIdx].Pt.X, keypoints[i][m.QueryIdx].Pt.Y));
-                var dstPoints = mm.Select(m => new OpenCvSharp.Point2d(keypoints[i + 1][m.TrainIdx].Pt.X, keypoints[i + 1][m.TrainIdx].Pt.Y));
-
-                OpenCvSharp.HomographyMethods method = (OpenCvSharp.HomographyMethods)OpenCvSharp.RobustEstimationAlgorithms.USAC_MAGSAC;
-                var mask = new List<byte>();
-                var homography = OpenCvSharp.Cv2.FindHomography(srcPoints, dstPoints, method, ransacReprojThreshold, OpenCvSharp.OutputArray.Create(mask));
-
-                // Collect inliers.
-                inlierStatus.Add(new List<bool>());
-                inliers.Add(new List<PointF>());
-                for (int j = 0; j < mask.Count; j++)
-                {
-                    bool inlier = mask[j] != 0;
-                    inlierStatus[i].Add(inlier);
-
-                    if (inlier)
-                    {
-                        PointF p = new PointF(keypoints[i][mm[j].QueryIdx].Pt.X, keypoints[i][mm[j].QueryIdx].Pt.Y);
-                        inliers[i].Add(p);
-                    }
-                }
-
-                //LogHomography(i, i + 1, homography);
-                consecTransforms.Add(homography);
-            }
+            tracker.Run(framesContainer);
             
-            log.DebugFormat("Transforms computation: {0} ms.", stopwatch.ElapsedMilliseconds);
-
-            // Precompute all the transform matrices towards and back from the common frame of reference.
-            // For now we use the first frame as the global reference.
-            //var identity = OpenCvSharp.Mat.Eye(3, 3, OpenCvSharp.MatType.CV_64FC1);
-            //for (int i = 0; i < frameIndices.Count; i++)
-            //{
-            //    // Forward.
-            //    var mat = identity;
-            //    if (i > 0)
-            //    {
-            //        mat = forwardTransforms[i - 1] * consecTransforms[i - 1];
-            //    }
-
-            //    forwardTransforms.Add(mat);
-            //}
-
             InvalidateFromMenu(sender);
 
             // Commit transform data.
-            parentMetadata.SetCameraMotion(frameIndices, consecTransforms);
+            parentMetadata.SetCameraMotion(tracker);
         }
 
         private void MnuImportMask_Click(object sender, EventArgs e)
@@ -475,11 +338,7 @@ namespace Kinovea.ScreenManager
             if (string.IsNullOrEmpty(filename) || !File.Exists(filename))
                 return;
 
-            if (mask != null)
-                mask.Dispose();
-            
-            mask = new Bitmap(filename);
-
+            tracker.SetMask(filename);
             openFileDialog.Dispose();
         }
 
@@ -519,7 +378,7 @@ namespace Kinovea.ScreenManager
         private void MnuDeleteData_Click(object sender, EventArgs e)
         {
             //CaptureMemento();
-            ResetTrackingData();
+            tracker.ResetTrackingData();
             //Update();
             InvalidateFromMenu(sender);
         }
@@ -564,16 +423,6 @@ namespace Kinovea.ScreenManager
             InvalidateFromMenu(sender);
         }
 
-
-        private void LogHomography(int index1, int index2, OpenCvSharp.Mat homography)
-        {
-            double[] m;
-            homography.GetArray<double>(out m);
-            string[] m2 = m.Select(v => v.ToString(CultureInfo.InvariantCulture)).ToArray();
-            string strHomography = string.Join(" ", m2);
-            log.DebugFormat("[{0} -> {1}]: {2}", index1, index2, strHomography);
-        }
-
         /// <summary>
         /// Concatenate two affine matrices, where 
         /// - a is already a 3x3 matrix of CV_64FC1, 
@@ -607,195 +456,6 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region Private utilities
-        private void ResetTrackingData()
-        {
-            frameIndices.Clear();
-            keypoints.Clear();
-            descriptors.Clear();
-            imagePairs.Clear();
-            matches.Clear();
-            inlierStatus.Clear();
-            inliers.Clear();
-            consecTransforms.Clear();
-            //forwardTransforms.Clear();
-            //backwardTransforms.Clear();
-        }
-
-        /// <summary>
-        /// Parse the camera intrinsic and extrinsic parameters calculated by COLMAP (exported as Text).
-        /// </summary>
-        private void ParseColmap(string folderName)
-        {
-            string camerasFile = Path.Combine(folderName, "cameras.txt");
-            string imagesFile = Path.Combine(folderName, "images.txt");
-            if (!File.Exists(camerasFile) || !File.Exists(imagesFile))
-                return;
-
-            float parse(string value)
-            {
-                return float.Parse(value, CultureInfo.InvariantCulture);
-            }
-
-            intrinsics.Clear();
-            extrinsics.Clear();
-
-            // Parse the camera file (intrinsic parameters).
-            // # Camera list with one line of data per camera:
-            // #   CAMERA_ID, MODEL, WIDTH, HEIGHT, PARAMS[]
-            foreach (var line in File.ReadLines(camerasFile))
-            {
-                // Examples:
-                // # 1 SIMPLE_RADIAL 2048 1536 1580.46 1024 768 0.0045691
-                // # 1 RADIAL 1920 1080 1665.1 960 540 0.0672856 -0.0761443
-                // # 1 OPENCV 3840 2160 3178.27 3182.09 1920 1080 0.159668 -0.231286 -0.00123982 0.00272224
-                if (line.StartsWith("#"))
-                    continue;
-
-                string[] split = line.Split(' ');
-                int width = (int)parse(split[2]);
-                int height = (int)parse(split[3]);
-                float fx = parse(split[4]);
-                float fy = fx;
-                float k1 = 0;
-                float k2 = 0;
-                float k3 = 0;
-                float p1 = 0;
-                float p2 = 0;
-                float cx = width / 2;
-                float cy = height / 2;
-
-                if (split[1] == "SIMPLE_RADIAL")
-                {
-                    cx = parse(split[5]);
-                    cy = parse(split[6]);
-                    k1 = parse(split[7]);
-                }
-                else if (split[1] == "RADIAL")
-                {
-                    cx = parse(split[5]);
-                    cy = parse(split[6]);
-                    k1 = parse(split[7]);
-                    k2 = parse(split[8]);
-                }
-                else if (split[1] == "OPENCV")
-                {
-                    fy = parse(split[5]);
-                    cx = parse(split[6]);
-                    cy = parse(split[7]);
-                    k1 = parse(split[8]);
-                    k2 = parse(split[9]);
-                    p1 = parse(split[10]);
-                    p2 = parse(split[11]);
-                }
-
-                // TODO: store to intrinsics list.
-                var parameters = new DistortionParameters(k1, k2, k3, p1, p2, fx, fy, cx, cy, new Size(width, height));
-                intrinsics.Add(parameters);
-            }
-
-            // Parse the image file (extrinsic parameters).
-            // # Image list with two lines of data per image:
-            // # IMAGE_ID, QW, QX, QY, QZ, TX, TY, TZ, CAMERA_ID, NAME
-            // # POINTS2D[] as (X, Y, POINT3D_ID)
-            int lineNumber = 0;
-            List<Dictionary<int, PointF>> points = new List<Dictionary<int, PointF>>();
-            foreach (var line in File.ReadLines(imagesFile))
-            {
-                if (line.StartsWith("#"))
-                    continue;
-
-                if (lineNumber % 2 == 0)
-                {
-                    // # IMAGE_ID, QW, QX, QY, QZ, TX, TY, TZ, CAMERA_ID, NAME
-                    string[] split = line.Split(' ');
-                    float qw, qx, qy, qz;
-                    qw = parse(split[1]);
-                    qx = parse(split[2]);
-                    qy = parse(split[3]);
-                    qz = parse(split[4]);
-                    float tx, ty, tz;
-                    tx = parse(split[5]);
-                    ty = parse(split[6]);
-                    tz = parse(split[7]);
-
-                    // Convert quaternion to rotation matrix.
-                    // Construct 4x4 matrix.
-                    // Invert.
-
-                    var cameraMatrix = new double[,] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } };
-                    extrinsics.Add(cameraMatrix);
-                }
-                else
-                {
-                    // # POINTS2D[] as (X, Y, POINT3D_ID)
-                    string[] split = line.Split(' ');
-                    Dictionary<int, PointF> dict = new Dictionary<int, PointF>();
-                    int count = split.Length / 3;
-                    for (int j = 0; j < count; j+=3)
-                    {
-                        int pId = (int)parse(split[j + 2]);
-                        if (pId == -1)
-                            continue;
-
-                        if (dict.ContainsKey(pId))
-                            continue;
-
-                        float x = parse(split[j + 0]);
-                        float y = parse(split[j + 1]);
-                        dict.Add(pId, new PointF(x, y));
-                    }
-
-                    points.Add(dict);
-                    log.DebugFormat("Image [{0}], valid points:{1}", lineNumber / 2, dict.Count);
-                }
-
-                lineNumber++;
-            }
-
-            // Recreate the list of consecutive homographies.
-            inlierStatus.Clear();
-            inliers.Clear();
-            consecTransforms.Clear();
-            for (int i = 0; i < points.Count - 1; i++)
-            {
-                // Find points visible on both frames.
-                List<OpenCvSharp.Point2d> srcPoints = new List<OpenCvSharp.Point2d>();
-                List<OpenCvSharp.Point2d> dstPoints = new List<OpenCvSharp.Point2d>();
-                foreach (var pair in points[i])
-                {
-                    if (points[i + 1].ContainsKey(pair.Key))
-                    {
-                        srcPoints.Add(new OpenCvSharp.Point2d(pair.Value.X, pair.Value.Y));
-                        dstPoints.Add(new OpenCvSharp.Point2d(points[i + 1][pair.Key].X, points[i + 1][pair.Key].Y));
-                    }
-                }
-
-                OpenCvSharp.HomographyMethods method = (OpenCvSharp.HomographyMethods)OpenCvSharp.RobustEstimationAlgorithms.USAC_MAGSAC;
-                var mask = new List<byte>();
-                var homography = OpenCvSharp.Cv2.FindHomography(srcPoints, dstPoints, method, ransacReprojThreshold, OpenCvSharp.OutputArray.Create(mask));
-
-                // Collect inliers.
-                inlierStatus.Add(new List<bool>());
-                inliers.Add(new List<PointF>());
-                for (int j = 0; j < mask.Count; j++)
-                {
-                    bool inlier = mask[j] != 0;
-                    inlierStatus[i].Add(inlier);
-
-                    if (inlier)
-                    {
-                        PointF p = new PointF((float)srcPoints[j].X, (float)srcPoints[j].Y);
-                        inliers[i].Add(p);
-                    }
-                }
-
-                LogHomography(i, i + 1, homography);
-                consecTransforms.Add(homography);
-            }
-        }
-        #endregion
-
         #region Rendering
 
         /// <summary>
@@ -804,13 +464,13 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void DrawFeatures(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
         {
-            if (keypoints.Count == 0) 
+            if (tracker.Keypoints.Count == 0) 
                 return;
 
-            if (!frameIndices.ContainsKey(timestamp) || frameIndices[timestamp] >= keypoints.Count)
+            if (!tracker.FrameIndices.ContainsKey(timestamp) || tracker.FrameIndices[timestamp] >= tracker.Keypoints.Count)
                 return;
 
-            foreach (var kp in keypoints[frameIndices[timestamp]])
+            foreach (var kp in tracker.Keypoints[tracker.FrameIndices[timestamp]])
             {
                 PointF p = new PointF(kp.Pt.X, kp.Pt.Y);
                 p = transformer.Transform(p);
@@ -826,30 +486,21 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void DrawMatches(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
         {
-            if (matches.Count == 0)
+            List<CameraMatch> matches = tracker.GetMatches(timestamp);
+            if (matches == null || matches.Count == 0)
                 return;
 
-            if (!frameIndices.ContainsKey(timestamp) || frameIndices[timestamp] >= matches.Count)
-                return;
-
-            int frameIndex = frameIndices[timestamp];
-            var frameMatches = matches[frameIndex];
-            
-            for (int i = 0; i < frameMatches.Length; i++)
+            foreach (var m in matches)
             {
-                var m = frameMatches[i];
-                PointF p1 = new PointF(keypoints[frameIndex][m.QueryIdx].Pt.X, keypoints[frameIndex][m.QueryIdx].Pt.Y);
-                PointF p2 = new PointF(keypoints[frameIndex + 1][m.TrainIdx].Pt.X, keypoints[frameIndex + 1][m.TrainIdx].Pt.Y);
-                p1 = transformer.Transform(p1);
-                p2 = transformer.Transform(p2);
+                PointF p1 = transformer.Transform(m.P1);
+                PointF p2 = transformer.Transform(m.P2);
 
-                var inlier = inlierStatus[frameIndex][i];
-                if (inlier && showInliers)
+                if (m.Inlier && showInliers)
                 {
                     canvas.DrawEllipse(penFeatureInlier, p1.Box(4));
                     canvas.DrawLine(penMatchInlier, p1, p2);
                 }
-                else if (!inlier && showOutliers)
+                else if (!m.Inlier && showOutliers)
                 {
                     canvas.DrawEllipse(penFeatureOutlier, p1.Box(4));
                     canvas.DrawLine(penMatchOutlier, p1, p2);
@@ -859,10 +510,10 @@ namespace Kinovea.ScreenManager
 
         private void DrawTransforms(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
         {
-            if (consecTransforms.Count == 0)
+            if (tracker.ConsecutiveTransforms.Count == 0)
                 return;
 
-            if (!frameIndices.ContainsKey(timestamp))
+            if (!tracker.FrameIndices.ContainsKey(timestamp))
                 return;
 
             // Transform an image space rectangle to show how the image is modified from one frame to the next.
@@ -899,22 +550,22 @@ namespace Kinovea.ScreenManager
             //    canvas.DrawPolygon(pen, points4.ToArray());
 
             
-            if (frameIndices[timestamp] >= consecTransforms.Count)
+            if (tracker.FrameIndices[timestamp] >= tracker.ConsecutiveTransforms.Count)
                 return;
 
             //---------------------------------
             // Draw the bounds of all the past frames up to this one.
             //---------------------------------
-            int start = Math.Max(frameIndices[timestamp] - maxTransformsFrames, 0);
-            for (int i = start; i < frameIndices[timestamp]; i++)
+            int start = Math.Max(tracker.FrameIndices[timestamp] - maxTransformsFrames, 0);
+            for (int i = start; i < tracker.FrameIndices[timestamp]; i++)
             {
                 // `i` is the frame we are representing inside the current one.
                 // Apply the consecutive transform starting from it up to the current one.
                 // At the end of this we have the rectangle of that frame as seen from the current one.
                 var points = bounds;
-                for (int j = i; j < frameIndices[timestamp]; j++)
+                for (int j = i; j < tracker.FrameIndices[timestamp]; j++)
                 {
-                    points = OpenCvSharp.Cv2.PerspectiveTransform(points, consecTransforms[j]);
+                    points = OpenCvSharp.Cv2.PerspectiveTransform(points, tracker.ConsecutiveTransforms[j]);
                 }
 
                 // Convert back from OpenCV point to Drawing.PointF

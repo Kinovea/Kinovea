@@ -1367,9 +1367,9 @@ namespace Kinovea.ScreenManager
                 AfterDrawingCreation(d);
         }
 
-        public void SetCameraMotion(Dictionary<long, int> frameIndices, List<OpenCvSharp.Mat> homographies)
+        public void SetCameraMotion(CameraTracker tracker)
         {
-            cameraTransformer.Initialize(frameIndices, homographies);
+            cameraTransformer.Initialize(tracker);
         }
 
         public void Reset()

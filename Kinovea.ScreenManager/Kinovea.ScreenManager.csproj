@@ -498,7 +498,7 @@
     <Compile Include="Metadata\Serialization\MeasuredDataTimeseries.cs" />
     <Compile Include="Metadata\Serialization\MeasuredDataUnits.cs" />
     <Compile Include="Metadata\Serialization\MeasurementSerializationHelper.cs" />
-    <Compile Include="CameraTransformer.cs" />
+    <Compile Include="Measurement\CameraMotion\CameraTransformer.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="PlayerScreen\Controls\KeyframeCommentBox.cs">
       <SubType>UserControl</SubType>
@@ -837,6 +837,8 @@
     </Compile>
     <Compile Include="Metadata\Magnifier.cs">
     </Compile>
+    <Compile Include="Measurement\CameraMotion\CameraTracker.cs" />
+    <Compile Include="Measurement\CameraMotion\CameraMatch.cs" />
     <Compile Include="VideoFilters\CameraMotion\VideoFilterCameraMotion.cs" />
     <Compile Include="VideoFilters\IVideoFilter.cs" />
     <Compile Include="VideoFilters\Kinogram\FormConfigureKinogram.cs">

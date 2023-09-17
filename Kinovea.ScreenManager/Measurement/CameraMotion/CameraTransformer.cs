@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// This class handles camera motion compensation, transforming image-space coordinates from one frame to another.
+    /// Exposes functions to transform coordinates from one frame to another, 
+    /// taking into account the camera motion.
     /// The camera motion must have already been estimated using the CameraMotion filter.
     /// </summary>
     public class CameraTransformer
@@ -27,10 +28,10 @@ namespace Kinovea.ScreenManager
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        public void Initialize(Dictionary<long, int> frameIndices, List<OpenCvSharp.Mat> homographies)
+        public void Initialize(CameraTracker tracker)
         {
-            this.frameIndices = frameIndices;
-            this.consecTransforms = homographies;
+            this.frameIndices = tracker.FrameIndices;
+            this.consecTransforms = tracker.ConsecutiveTransforms;
 
             initialized = true;
         }
