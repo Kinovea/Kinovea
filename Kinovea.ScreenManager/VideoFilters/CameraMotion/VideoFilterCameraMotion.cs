@@ -464,16 +464,13 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void DrawFeatures(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
         {
-            if (tracker.Keypoints.Count == 0) 
+            List<PointF> features = tracker.GetFeatures(timestamp);
+            if (features == null || features.Count == 0)
                 return;
 
-            if (!tracker.FrameIndices.ContainsKey(timestamp) || tracker.FrameIndices[timestamp] >= tracker.Keypoints.Count)
-                return;
-
-            foreach (var kp in tracker.Keypoints[tracker.FrameIndices[timestamp]])
+            foreach (var feature in features)
             {
-                PointF p = new PointF(kp.Pt.X, kp.Pt.Y);
-                p = transformer.Transform(p);
+                PointF p = transformer.Transform(feature);
                 canvas.DrawEllipse(penFeature, p.Box(2));
             }
         }

@@ -14,7 +14,7 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// This class performs the camera tracking.
-    /// Calls OpenCV functions and exposes the raw result.
+    /// It calls OpenCV functions and exposes the raw result.
     /// The result is then sent over to `CameraTransformer` which exposes functions 
     /// to transform coordinates from one frame to another.
     /// </summary>
@@ -27,22 +27,9 @@ namespace Kinovea.ScreenManager
         public Dictionary<long, int> FrameIndices { get { return frameIndices; } }
 
         /// <summary>
-        /// Lists of arrays of keypoints. 
-        /// The list is indexed by frame indices.
-        /// The arrays contains all key points found on that frame.
-        /// </summary>
-        public List<OpenCvSharp.KeyPoint[]> Keypoints { get { return keypoints; } }
-
-        /// <summary>
         /// Consecutive transforms going from frame i to frame i+1.
         /// </summary>
         public List<OpenCvSharp.Mat> ConsecutiveTransforms { get { return consecTransforms; } }
-
-        /// <summary>
-        /// List of arrays of matches.
-        /// A match is a link between two keypoints in two different frames.
-        /// </summary>
-        public List<OpenCvSharp.DMatch[]> Matches { get { return matches; } }
         #endregion
 
         #region Members
@@ -232,6 +219,26 @@ namespace Kinovea.ScreenManager
             //    forwardTransforms.Add(mat);
             //}
 
+        }
+
+        /// <summary>
+        /// Return features found on the frame at this timestamp.
+        /// </summary>
+        public List<PointF> GetFeatures(long timestamp)
+        {
+            if (keypoints.Count == 0)
+                return null;
+
+            if (!frameIndices.ContainsKey(timestamp) || frameIndices[timestamp] >= keypoints.Count)
+                return null;
+
+            List<PointF> features = new List<PointF>();
+            foreach (var kp in keypoints[frameIndices[timestamp]])
+            {
+                features.Add(new PointF(kp.Pt.X, kp.Pt.Y));
+            }
+
+            return features;
         }
 
         /// <summary>
