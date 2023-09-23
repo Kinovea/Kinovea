@@ -193,7 +193,15 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public bool Deinterlacing { get; set; }
 
-        public Color BackgroundColor { get; set; }
+        /// <summary>
+        /// Background color and alpha.
+        /// This is a layer drawn between the video and drawings.
+        /// </summary>
+        public Color BackgroundColor
+        {
+            get { return backgroundColor; }
+            set { backgroundColor = value; } 
+        }
 
         /// <summary>
         /// Path to the video file this metadata was created on.
@@ -450,6 +458,8 @@ namespace Kinovea.ScreenManager
         private int referenceHash;
         private bool kvaImporting;
         private bool captureKVA;
+        private static Color defaultBackgroundColor = Color.FromArgb(0, 255, 255, 255);
+        private Color backgroundColor = defaultBackgroundColor;
 
         // Folders
         private string videoPath;
@@ -1319,7 +1329,7 @@ namespace Kinovea.ScreenManager
                     break;
                 case TimecodeFormat.Microseconds:
                     outputTimeCode = String.Format("{0}", Math.Round(milliseconds * 1000000) / 1000);
-                    outputTimeCode += " �s";
+                    outputTimeCode += " µs";
                     break;
                 case TimecodeFormat.ClassicTime:
                 default:
@@ -1457,7 +1467,7 @@ namespace Kinovea.ScreenManager
             hash ^= Mirrored.GetHashCode();
             hash ^= Demosaicing.GetHashCode();
             hash ^= Deinterlacing.GetHashCode();
-            hash ^= BackgroundColor.GetHashCode();
+            hash ^= backgroundColor.GetHashCode();
             hash ^= selectionStart.GetHashCode();
             hash ^= selectionEnd.GetHashCode();
             hash ^= timeOrigin.GetHashCode();
@@ -1861,6 +1871,7 @@ namespace Kinovea.ScreenManager
             imageTransform.Reset();
             drawingCoordinateSystem.Visible = false;
             drawingTestGrid.Visible = false;
+            backgroundColor = defaultBackgroundColor;
 
             // Do not reset the calibration when loading new files in the same screen.
             // The existing calibration is as good the default one.
@@ -1875,8 +1886,7 @@ namespace Kinovea.ScreenManager
             Mirrored = false;
             Demosaicing = Demosaicing.None;
             Deinterlacing = false;
-            BackgroundColor = Color.Empty;
-
+            
             DeselectAll();
         }
         private bool DrawingsHitTest(int keyFrameIndex, PointF mouseLocation, long timestamp)
