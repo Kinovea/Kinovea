@@ -279,7 +279,8 @@ namespace Kinovea.ScreenManager
             if (currentTimestamp < visibleTimestamp)
                 return;
 
-            double opacityFactor = 1.0;
+            infosFading.MasterFactor = locked ? 0.75f : 1.0f;
+            double opacityFactor = infosFading.MasterFactor;
             if (currentTimestamp > invisibleTimestamp)
                 opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
 
