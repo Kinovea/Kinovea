@@ -52,6 +52,7 @@ namespace Kinovea.ScreenManager
                 int hash = text.GetHashCode();
                 hash ^= background.Rectangle.Location.GetHashCode();
                 hash ^= showArrow.GetHashCode();
+                hash ^= hasBackground.GetHashCode();
                 hash ^= arrowEnd.GetHashCode();
                 hash ^= styleHelper.ContentHash;
                 hash ^= infosFading.ContentHash;
@@ -83,6 +84,7 @@ namespace Kinovea.ScreenManager
                 });
 
                 mnuShowArrow.Checked = showArrow;
+                mnuHasBackground.Checked = hasBackground;
                 return contextMenu;
             }
         }
@@ -106,6 +108,7 @@ namespace Kinovea.ScreenManager
         private string text;
         private PointF arrowEnd;
         private bool showArrow;
+        private bool hasBackground;
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
         private InfosFading infosFading;
@@ -116,6 +119,7 @@ namespace Kinovea.ScreenManager
         #region Menus
         private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowArrow = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuHasBackground = new ToolStripMenuItem();
         #endregion
 
         private RoundedRectangle background = new RoundedRectangle();
@@ -133,6 +137,7 @@ namespace Kinovea.ScreenManager
             background.Rectangle = new RectangleF(p, SizeF.Empty);
             arrowEnd = p.Translate(-50, -50);
             showArrow = false;
+            hasBackground = true;
             
             styleHelper.Bicolor = new Bicolor(Color.Black);
             styleHelper.Font = new Font("Arial", defaultFontSize, FontStyle.Bold);
@@ -181,8 +186,10 @@ namespace Kinovea.ScreenManager
             mnuOptions.Image = Properties.Resources.equalizer;
             mnuShowArrow.Image = Properties.Drawings.arrow;
             mnuShowArrow.Click += mnuShowArrow_Click;
+            mnuHasBackground.Click += mnuHasBackground_Click;
             mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuShowArrow,
+                mnuHasBackground,
             });
         }
         #endregion
@@ -212,18 +219,26 @@ namespace Kinovea.ScreenManager
 
                 if (showArrow)
                 {
-                    float arrowWidth = fontText.Height / 4;
-                    PointF start = rect.Center();
+                    float arrowWidth = fontText.Height / 5;
                     PointF end = transformer.Transform(arrowEnd);
+                    PointF start = GeometryHelper.IntersectionRectangleCenter(rect, end);
                     DrawArrow(canvas, backgroundOpacity, brushBack.Color, arrowWidth, start, end);
                 }
 
-                // Background.
-                RoundedRectangle.Draw(canvas, rect, brushBack, roundingRadius, false, false, null);
-
-                // Text
-                if (!editing)
+                if (editing)
+                {
+                    // Only draw the background. The text is provided by the textbox control.
+                    RoundedRectangle.Draw(canvas, rect, brushBack, roundingRadius, false, false, null);
+                }
+                else if (hasBackground)
+                {
+                    RoundedRectangle.Draw(canvas, rect, brushBack, roundingRadius, false, false, null);
                     canvas.DrawString(text, fontText, brushText, rect.Location);
+                }
+                else
+                {
+                    canvas.DrawString(text, fontText, brushBack, rect.Location);
+                }
             }
         }
         private void DrawArrow(Graphics canvas, float opacity, Color color, float width, PointF start, PointF end)
@@ -319,6 +334,9 @@ namespace Kinovea.ScreenManager
                         PointF p = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
                         background.Rectangle = new RectangleF(p.Scale(scale.X, scale.Y), SizeF.Empty);
                         break;
+                    case "BackgroundVisible":
+                        hasBackground = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
+                        break;
                     case "ArrowVisible":
                         showArrow = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
@@ -348,6 +366,7 @@ namespace Kinovea.ScreenManager
             {
                 w.WriteElementString("Text", text);
                 w.WriteElementString("Position", XmlHelper.WritePointF(background.Rectangle.Location));
+                w.WriteElementString("BackgroundVisible", hasBackground.ToString().ToLower());
                 w.WriteElementString("ArrowVisible", showArrow.ToString().ToLower());
                 w.WriteElementString("ArrowEnd", XmlHelper.WritePointF(arrowEnd));
             }
@@ -372,6 +391,12 @@ namespace Kinovea.ScreenManager
         private void mnuShowArrow_Click(object sender, EventArgs e)
         {
             showArrow = !showArrow;
+            InvalidateFromMenu(sender);
+        }
+
+        private void mnuHasBackground_Click(object sender, EventArgs e)
+        {
+            hasBackground = !hasBackground;
             InvalidateFromMenu(sender);
         }
         #endregion
@@ -487,6 +512,7 @@ namespace Kinovea.ScreenManager
             // Options
             mnuOptions.Text = ScreenManagerLang.Generic_Options;
             mnuShowArrow.Text = ScreenManagerLang.mnuShowArrow;
+            mnuHasBackground.Text = "Background";
         }
         #endregion
     }

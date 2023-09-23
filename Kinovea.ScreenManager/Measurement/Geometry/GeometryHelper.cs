@@ -206,5 +206,47 @@ namespace Kinovea.ScreenManager
                 a.X * (1 - alpha) + b.X * alpha, 
                 a.Y * (1 - alpha) + b.Y * alpha);
         }
+
+        /// <summary>
+        /// Returns the intersection on the rectangle between the segment going from the center to point `end`.
+        /// The end point shouldn't be inside the rectangle.
+        /// </summary>
+        public static PointF IntersectionRectangleCenter(RectangleF rect, PointF end)
+        {
+            PointF center = rect.Center();
+            float slope = (end.Y - center.Y) / (end.X - center.X);
+
+            if (end.X <= center.X)
+            {
+                float y = center.Y + slope * (rect.Left - center.X);
+                if (y > rect.Top && y < rect.Bottom)
+                    return new PointF(rect.Left, y);
+            }
+
+            if (end.X >= center.X)
+            {
+                float y = center.Y + slope * (rect.Right - center.X);
+                if (y > rect.Top && y < rect.Bottom)
+                    return new PointF(rect.Right, y);
+            }
+
+            if (end.Y <= center.Y)
+            {
+                float x = center.X + (rect.Top - center.Y) / slope;
+                if (x > rect.Left && x < rect.Right)
+                    return new PointF(x, rect.Top);
+            }
+
+            if (end.Y >= center.Y)
+            {
+                float x = center.X + (rect.Bottom - center.Y) / slope;
+                if (x > rect.Left && x < rect.Right)
+                    return new PointF(x, rect.Bottom);
+            }
+
+            // Edge case
+            return end;
+
+        }
     }
 }
