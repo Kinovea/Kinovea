@@ -1405,6 +1405,11 @@ namespace Kinovea.ScreenManager
             foreach (DrawingTrack t in Tracks())
                 t.CalibrationChanged();
         }
+        public void UpdateTrajectoriesKeyframeLabels()
+        {
+            foreach (DrawingTrack t in Tracks())
+                t.UpdateKeyframeLabels();
+        }
         public void FixRelativeTrajectories()
         {
             foreach (DrawingTrack t in Tracks())

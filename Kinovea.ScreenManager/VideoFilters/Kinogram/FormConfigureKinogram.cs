@@ -72,10 +72,17 @@ namespace Kinovea.ScreenManager
         private void SetupStyle()
         {
             style = new DrawingStyle();
-            style.Elements.Add("border color", new StyleElementColor(parameters.BorderColor));
+            style.Elements.Add("borderColor", new StyleElementColor(parameters.BorderColor, "Border color"));
+            style.Elements.Add("labelColor", new StyleElementColor(parameters.LabelColor, "Label color"));
+            style.Elements.Add("labelSize", new StyleElementFontSize(parameters.LabelSize, "Label size"));
 
             styleHelper.Color = Color.Red;
-            style.Bind(styleHelper, "Color", "border color");
+            styleHelper.Bicolor = new Bicolor(Color.Black);
+            styleHelper.Font = new Font("Arial", 16, FontStyle.Bold);
+
+            style.Bind(styleHelper, "Color", "borderColor");
+            style.Bind(styleHelper, "Bicolor", "labelColor");
+            style.Bind(styleHelper, "Font", "labelSize");
         }
 
         private void SetupStyleControls()
@@ -88,6 +95,7 @@ namespace Kinovea.ScreenManager
             foreach (KeyValuePair<string, AbstractStyleElement> pair in style.Elements)
             {
                 AbstractStyleElement styleElement = pair.Value;
+                styleElement.ValueChanged += styleElement_ValueChanged;
 
                 Button btn = new Button();
                 btn.Image = styleElement.Icon;
@@ -99,6 +107,7 @@ namespace Kinovea.ScreenManager
 
                 Label lbl = new Label();
                 lbl.Text = styleElement.DisplayName;
+
                 lbl.AutoSize = true;
                 lbl.Location = new Point(btn.Right + 10, lastEditorBottom + 25);
 
@@ -112,6 +121,11 @@ namespace Kinovea.ScreenManager
                 grpConfig.Controls.Add(lbl);
                 grpConfig.Controls.Add(miniEditor);
             }
+        }
+
+        private void styleElement_ValueChanged(object sender, EventArgs e)
+        {
+            UpdateKinogram();
         }
 
         private void UpdateFrameInterval()
@@ -173,6 +187,8 @@ namespace Kinovea.ScreenManager
         private void UpdateKinogram()
         {
             parameters.BorderColor = styleHelper.Color;
+            parameters.LabelColor = styleHelper.Bicolor.Background;
+            parameters.LabelSize = (int)styleHelper.Font.Size;
             kinogram.ConfigurationChanged(true);
             hostView?.InvalidateFromMenu();
         }
@@ -187,6 +203,8 @@ namespace Kinovea.ScreenManager
         {
             // Import style values and commit the parameters object.
             parameters.BorderColor = styleHelper.Color;
+            parameters.LabelColor = styleHelper.Bicolor.Background;
+            parameters.LabelSize = (int)styleHelper.Font.Size;
 
             // Commit the original state to the undo history stack.
             kinogram.ParentMetadata.HistoryStack.PushNewCommand(memento);

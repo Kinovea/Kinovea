@@ -1885,8 +1885,16 @@ namespace Kinovea.ScreenManager
         {
             // MouseWheel was recorded on one of the controls.
             int steps = e.Delta * SystemInformation.MouseWheelScrollLines / 120;
+            bool isAlt = (ModifierKeys & Keys.Alt) == Keys.Alt;
+            bool isCtrl = (ModifierKeys & Keys.Control) == Keys.Control;
 
-            if ((ModifierKeys & Keys.Control) == Keys.Control)
+            if (videoFilterIsActive && isAlt)
+            {
+                PointF descaledMouse = m_FrameServer.ImageTransform.Untransform(e.Location);
+                m_FrameServer.Metadata.ActiveVideoFilter.Scroll(steps, descaledMouse, ModifierKeys);
+                DoInvalidate();
+            }
+            else if (isCtrl)
             {
                 if (steps > 0)
                     IncreaseDirectZoom(e.Location);
@@ -1894,7 +1902,7 @@ namespace Kinovea.ScreenManager
                     DecreaseDirectZoom(e.Location);
 
             }
-            else if ((ModifierKeys & Keys.Alt) == Keys.Alt)
+            else if (isAlt)
             {
                 if (steps > 0)
                     IncreaseSyncAlpha();
@@ -1934,6 +1942,8 @@ namespace Kinovea.ScreenManager
             trkFrame.UpdateMarkers(m_FrameServer.Metadata);
             UpdateCurrentPositionLabel();
             sidePanelKeyframes.UpdateTimecodes();
+            if (videoFilterIsActive)
+                m_FrameServer.Metadata.ActiveVideoFilter.UpdateTimeOrigin(m_FrameServer.Metadata.TimeOrigin);
 
             // This will update the timecode on keyframe boxes if the user hasn't changed the kf name.
             EnableDisableKeyframes();
@@ -3287,12 +3297,10 @@ namespace Kinovea.ScreenManager
             popMenu.Items.Clear();
 
 
+
             // Generic menus based on the drawing capabilities: configuration (style), visibility, tracking.
             if (!m_FrameServer.Metadata.DrawingInitializing)
                 PrepareDrawingContextMenuCapabilities(drawing, popMenu);
-
-            if (popMenu.Items.Count > 0)
-                popMenu.Items.Add(mnuSepDrawing);
 
             // Custom menu handlers implemented by the drawing itself.
             // These change the drawing core state. (ex: angle orientation, measurement display option, start/stop chrono, etc.).
@@ -3310,12 +3318,11 @@ namespace Kinovea.ScreenManager
             }
 
             // Below the custom menus and the goto keyframe we have the generic copy-paste and the delete menu.
-            // Some singleton drawings cannot be deleted nor copy-pasted, so they don't need the separator.
+            // Some singleton drawings cannot be deleted nor copy-pasted, so they don't need this.
             if (drawing is DrawingCoordinateSystem || drawing is DrawingTestGrid)
                 return;
 
-            if (hasExtraMenus)
-                popMenu.Items.Add(mnuSepDrawing2);
+            popMenu.Items.Add(mnuSepDrawing2);
 
             if (drawing.IsCopyPasteable)
             {
@@ -3339,6 +3346,8 @@ namespace Kinovea.ScreenManager
                     mnuSetStyleAsDefault.Text = ScreenManagerLang.mnuSetStyleAsDefault;
                     popMenu.Items.Add(mnuSetStyleAsDefault);
                 }
+
+                popMenu.Items.Add(mnuSepDrawing);
             }
 
             if (PreferencesManager.PlayerPreferences.DefaultFading.Enabled && ((drawing.Caps & DrawingCapabilities.Fading) == DrawingCapabilities.Fading))
@@ -3552,7 +3561,6 @@ namespace Kinovea.ScreenManager
             }
 
             // User is not moving anything: time-grab, filter interaction, pan.
-            // TODO: let filters delegate the handling to the normal mechanics.
             bool isAlt = (ModifierKeys & Keys.Alt) == Keys.Alt;
             bool isCtrl = (ModifierKeys & Keys.Control) == Keys.Control;
             if (isAlt)
@@ -4467,13 +4475,12 @@ namespace Kinovea.ScreenManager
         {
             // A keyframe core data was updated from a keyframe control.
             // This is only raised when we change the name, color or comment from the side panel.
-            // Update the corresponding thumbnail box.
+            // Update whatever is impacted by this.
             UpdateKeyframeBox(e.Value);
             UpdateFramesMarkers();
+            m_FrameServer.Metadata.UpdateTrajectoriesKeyframeLabels();
 
-            // Update all the tracks for the keyframe labels name and color.
-            m_FrameServer.Metadata.UpdateTrajectoriesForKeyframes();
-            DoInvalidate();
+            Invalidate();
         }
 
         /// <summary>
@@ -4657,13 +4664,7 @@ namespace Kinovea.ScreenManager
             // m_DescaledMouse would have been set during the MouseDown event.
             CheckCustomDecodingSize(true);
 
-            Color color = TrackColorCycler.Next();
-            DrawingStyle style = new DrawingStyle();
-            style.Elements.Add("color", new StyleElementColor(color));
-            style.Elements.Add("line size", new StyleElementLineSize(3));
-            style.Elements.Add("track shape", new StyleElementTrackShape(TrackShape.Solid));
-
-            DrawingTrack track = new DrawingTrack(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame, style);
+            DrawingTrack track = new DrawingTrack(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
             track.Status = TrackStatus.Edit;
 
             if (DrawingAdding != null)
@@ -4904,9 +4905,10 @@ namespace Kinovea.ScreenManager
             if (drawing == null || !drawing.IsCopyPasteable)
                 return;
 
-            // Note: the keyframe we used to copy from may not exist anymore. In this case we create a new keyframe.
             Guid managerId = m_FrameServer.Metadata.FindManagerId(drawing);
-            if (managerId == Guid.Empty && m_FrameServer.Metadata.IsAttachedDrawing(drawing))
+
+            // Create a new keyframe if needed.
+            if (m_FrameServer.Metadata.IsAttachedDrawing(drawing))
             {
                 AddKeyframe();
                 Keyframe kf = m_FrameServer.Metadata.HitKeyframe;

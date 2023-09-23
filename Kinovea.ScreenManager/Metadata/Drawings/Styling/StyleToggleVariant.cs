@@ -32,8 +32,5 @@ namespace Kinovea.ScreenManager
         /// Chrono: specialization for single time point clock.
         /// </summary>
         Clock,
-
-
-        Filled,
     }
 }

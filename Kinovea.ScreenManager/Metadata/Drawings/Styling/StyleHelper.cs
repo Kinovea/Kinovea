@@ -159,12 +159,6 @@ namespace Kinovea.ScreenManager
             get { return toggles["distanceGrid"]; }
             set { toggles["distanceGrid"] = value; }
         }
-        public bool Filled
-        {
-            get { return toggles["filled"]; }
-            set { toggles["filled"] = value; }
-        }
-
 
         public int ContentHash
         {
@@ -508,16 +502,6 @@ namespace Kinovea.ScreenManager
 
                         break;
                     }
-                case "Toggles/Filled":
-                    {
-                        if (value is bool)
-                        {
-                            toggles["filled"] = (bool)value;
-                            imported = true;
-                        }
-
-                        break;
-                    }
                 default:
                     {
                         log.DebugFormat("Unknown target property \"{0}\".", targetProperty);
@@ -702,16 +686,6 @@ namespace Kinovea.ScreenManager
                         if (targetType == typeof(bool))
                         {
                             result = toggles["distanceGrid"];
-                            converted = true;
-                        }
-
-                        break;
-                    }
-                case "Toggles/Filled":
-                    {
-                        if (targetType == typeof(bool))
-                        {
-                            result = toggles["filled"];
                             converted = true;
                         }
 

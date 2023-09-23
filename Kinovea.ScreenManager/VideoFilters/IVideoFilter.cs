@@ -117,6 +117,11 @@ namespace Kinovea.ScreenManager
         void UpdateTime(long timestamp);
 
         /// <summary>
+        /// Called when the time origin of the video changes.
+        /// </summary>
+        void UpdateTimeOrigin(long timestamp);
+
+        /// <summary>
         /// Called when the user starts a move action on the filter image.
         /// </summary>
         void StartMove(PointF p);
@@ -131,6 +136,11 @@ namespace Kinovea.ScreenManager
         /// dx and dy are relative to the previous call.
         /// </summary>
         void Move(float dx, float dy, Keys modifiers);
+
+        /// <summary>
+        /// Called when the user scrolls with Alt while the filter is active.
+        /// </summary>
+        void Scroll(int steps, PointF p, Keys modifiers);
 
         /// <summary>
         /// Draw extra graphics on top of the current image.

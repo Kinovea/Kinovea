@@ -29,6 +29,14 @@ namespace Kinovea.ScreenManager
     /// Host a list of style elements needed to decorate the drawing.
     /// To see the available elements and their keys for a particular tool, check the constructor of the tool.
     /// In the case of XML defined tools, the list is declared in the XML in the DefaultStyle tag.
+    /// 
+    /// There are 3 ways we create styles.
+    /// - from scratch in the code. For the default style of certain things (tracks, kinogram).
+    /// - from XML by reading the tool-level default style.
+    /// - from XML by reading an existing KVA file containing an instance of a drawing.
+    /// 
+    /// Since style elements may be added or removed between versions we should always import 
+    /// the styles read from KVA into a default reference style of the current version.
     /// </summary>
     public class DrawingStyle
     {
@@ -64,6 +72,23 @@ namespace Kinovea.ScreenManager
 
             return clone;
         }
+        
+        /// <summary>
+        /// Import an existing style into this one.
+        /// This is used to import styles stored in KVA XML into the default style for the tool.
+        /// </summary>
+        public void Import(DrawingStyle styleXML)
+        {
+            // Loop through the element in the stored style and consolidate them.
+            // Discard unknown elements.
+            // Keep existing value (default) for elements that were unknown at the time.
+            foreach (KeyValuePair<string, AbstractStyleElement> element in styleXML.styleElements)
+            {
+                if (styleElements.ContainsKey(element.Key))
+                    styleElements[element.Key] = element.Value;
+            }
+        }
+
         public void ReadXml(XmlReader xmlReader)
         {			
             styleElements.Clear();

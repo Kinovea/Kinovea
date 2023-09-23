@@ -202,6 +202,10 @@ namespace Kinovea.ScreenManager
         {
         }
 
+        public void UpdateTimeOrigin(long timestamp)
+        {
+        }
+
         public void StartMove(PointF p)
         {
         }
@@ -211,6 +215,10 @@ namespace Kinovea.ScreenManager
         }
 
         public void Move(float dx, float dy, Keys modifiers)
+        {
+        }
+
+        public void Scroll(int steps, PointF p, Keys modifiers)
         {
         }
 

@@ -50,6 +50,7 @@ namespace Kinovea.ScreenManager
             get 
             { 
                 int hash = quadImage.GetHashCode();
+                hash ^= filled.GetHashCode();
                 hash ^= styleHelper.ContentHash;
                 hash ^= infosFading.ContentHash;
                 return hash;
@@ -70,7 +71,18 @@ namespace Kinovea.ScreenManager
         }
         public override List<ToolStripItem> ContextMenu
         {
-            get { return null; }
+            get
+            {
+                List<ToolStripItem> contextMenu = new List<ToolStripItem>();
+                ReloadMenusCulture();
+
+                contextMenu.AddRange(new ToolStripItem[] {
+                    mnuOptions,
+                });
+
+                mnuFilled.Checked = filled;
+                return contextMenu;
+            }
         }
         public bool Initializing
         {
@@ -82,10 +94,18 @@ namespace Kinovea.ScreenManager
         // Core
         private QuadrilateralF quadImage = QuadrilateralF.GetUnitSquare();
         private bool initializing = true;
+
+        #region Menus
+        private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuFilled = new ToolStripMenuItem();
+        #endregion
+
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
         private InfosFading infosFading;
+        private bool filled = false;
+
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -97,7 +117,6 @@ namespace Kinovea.ScreenManager
             styleHelper.Color = Color.Empty;
             styleHelper.LineSize = 1;
             styleHelper.PenShape = PenShape.Solid;
-            styleHelper.Filled = false;
             if (preset == null)
                 preset = ToolManager.GetStylePreset("Rectangle");
             
@@ -105,11 +124,23 @@ namespace Kinovea.ScreenManager
             BindStyle();
 
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
+
+            InitializeMenus();
         }
         public DrawingRectangle(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
             : this(PointF.Empty, 0, 0)
         {
             ReadXml(xmlReader, scale, timestampMapper);
+        }
+        private void InitializeMenus()
+        {
+            // Options
+            mnuOptions.Image = Properties.Resources.equalizer;
+            mnuFilled.Image = Properties.Drawings.filled;
+            mnuFilled.Click += mnuFilled_Click;
+            mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
+                mnuFilled,
+            });
         }
         #endregion
 
@@ -120,26 +151,27 @@ namespace Kinovea.ScreenManager
             if(opacityFactor <= 0)
                 return;
 
-            Rectangle rect = transformer.Transform(quadImage.GetBoundingBox());
+            QuadrilateralF quad = transformer.Transform(quadImage);
 
             int alpha = (int)(opacityFactor * 255);
-            if (styleHelper.Filled)
-            {
-                using (SolidBrush b = styleHelper.GetBrush(alpha))
-                {
-                    canvas.FillRectangle(b, rect);
-                }
-            }
-            else
-            {
-                using (Pen p = styleHelper.GetPen(alpha, transformer.Scale))
+            using(Pen p = styleHelper.GetPen(alpha, transformer.Scale))
                 {
                     p.EndCap = LineCap.Square;
                     if (styleHelper.PenShape == PenShape.Dash)
                         p.DashStyle = DashStyle.Dash;
 
-                    canvas.DrawRectangle(p, rect);
-                }
+                canvas.DrawLine(p, quad.A, quad.B);
+                canvas.DrawLine(p, quad.B, quad.C);
+                canvas.DrawLine(p, quad.C, quad.D);
+                canvas.DrawLine(p, quad.D, quad.A);
+            }
+
+            if (filled)
+            {
+                RectangleF box = new RectangleF(quad.A.X, quad.A.Y, quad.B.X - quad.A.X, quad.C.Y - quad.A.Y);
+                using (SolidBrush b = styleHelper.GetBrush(alpha))
+                    //canvas.FillRectangle(b, box);
+                    canvas.FillPolygon(b, quad.ToArray());
             }
         }
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
@@ -257,6 +289,9 @@ namespace Kinovea.ScreenManager
                             quadImage.D = p.Scale(scale.X, scale.Y);
                             break;
                         }
+                    case "Filled":
+                        filled = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
+                        break;
                     case "DrawingStyle":
                         style = new DrawingStyle(xmlReader);
                         BindStyle();
@@ -282,6 +317,7 @@ namespace Kinovea.ScreenManager
                 w.WriteElementString("PointUpperRight", XmlHelper.WritePointF(quadImage.B));
                 w.WriteElementString("PointLowerRight", XmlHelper.WritePointF(quadImage.C));
                 w.WriteElementString("PointLowerLeft", XmlHelper.WritePointF(quadImage.D));
+                w.WriteElementString("Filled", XmlHelper.WriteBoolean(filled));
             }
 
             if (ShouldSerializeStyle(filter))
@@ -299,7 +335,16 @@ namespace Kinovea.ScreenManager
             }
         }
         #endregion
-        
+
+        #region Context menu
+        private void mnuFilled_Click(object sender, EventArgs e)
+        {
+            CaptureMemento(SerializationFilter.Core);
+            filled = !mnuFilled.Checked;
+            InvalidateFromMenu(sender);
+        }
+        #endregion
+
         #region IInitializable implementation
         public void InitializeMove(PointF point, Keys modifiers)
         {
@@ -323,7 +368,23 @@ namespace Kinovea.ScreenManager
             style.Bind(styleHelper, "Color", "color");
             style.Bind(styleHelper, "LineSize", "line size");
             style.Bind(styleHelper, "PenShape", "pen shape");
-            style.Bind(styleHelper, "Toggles/Filled", "filled");
+        }
+
+        /// <summary>
+        /// Capture the current state to the undo/redo stack.
+        /// </summary>
+        private void CaptureMemento(SerializationFilter filter)
+        {
+            Guid keyframeId = parentMetadata.FindAttachmentKeyframeId(this);
+            var memento = new HistoryMementoModifyDrawing(parentMetadata, keyframeId, this.Id, this.Name, filter);
+            parentMetadata.HistoryStack.PushNewCommand(memento);
+        }
+
+        private void ReloadMenusCulture()
+        {
+            // Options
+            mnuOptions.Text = ScreenManagerLang.Generic_Options;
+            mnuFilled.Text = "Filled";
         }
         #endregion
     }

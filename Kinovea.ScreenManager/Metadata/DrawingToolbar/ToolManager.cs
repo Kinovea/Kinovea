@@ -141,10 +141,11 @@ namespace Kinovea.ScreenManager
                                 DrawingStyle memo = tool.StylePreset.Clone();
                                 tool.StylePreset = ImportPreset(memo, preset);
                                 tool.StylePreset.Memorize(memo);
+                                //log.DebugFormat("Imported {0} tool preset.", key);
                             }
                             else
                             {
-                                log.ErrorFormat("The tool \"{0}\" was not found. Preset not imported.", key);
+                                log.ErrorFormat("Unknown tool: \"{0}\". Preset not imported.", key);
                             }
                         }
                     }
