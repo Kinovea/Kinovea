@@ -610,11 +610,11 @@
     <Compile Include="DualCapture\CommonControlsCapture.Designer.cs">
       <DependentUpon>CommonControlsCapture.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserInterface\FormForegroundColor.cs">
+    <Compile Include="UserInterface\FormBackground.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UserInterface\FormForegroundColor.Designer.cs">
-      <DependentUpon>FormForegroundColor.cs</DependentUpon>
+    <Compile Include="UserInterface\FormBackground.Designer.cs">
+      <DependentUpon>FormBackground.cs</DependentUpon>
     </Compile>
     <Compile Include="UserInterface\SliderLinear.cs">
       <SubType>Component</SubType>
@@ -1060,8 +1060,8 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Player.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="UserInterface\FormForegroundColor.resx">
-      <DependentUpon>FormForegroundColor.cs</DependentUpon>
+    <EmbeddedResource Include="UserInterface\FormBackground.resx">
+      <DependentUpon>FormBackground.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\Controls\FrameTracker.resx">
       <DependentUpon>FrameTracker.cs</DependentUpon>

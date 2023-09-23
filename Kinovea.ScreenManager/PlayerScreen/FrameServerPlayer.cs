@@ -228,9 +228,9 @@ namespace Kinovea.ScreenManager
             return VideoReader.ChangeDeinterlace(value);
         }
 
-        public bool ChangeForegroundColor(Color value)
+        public bool ChangeBackgroundColor(Color value)
         {
-            metadata.ForegroundColor = value;
+            metadata.BackgroundColor = value;
             return false;
         }
 
@@ -244,7 +244,7 @@ namespace Kinovea.ScreenManager
             ChangeMirror(metadata.Mirrored);
             ChangeDemosaicing(metadata.Demosaicing);
             ChangeDeinterlacing(metadata.Deinterlacing);
-            ChangeForegroundColor(metadata.ForegroundColor);
+            ChangeBackgroundColor(metadata.BackgroundColor);
         }
 
         /// <summary>

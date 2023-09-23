@@ -21,12 +21,12 @@ namespace Kinovea.ScreenManager
     /// to provide immediate feedback. The caller must backup the original value before starting this dialog, 
     /// and restore it if the dialog result is cancel.
     /// </summary>
-    public partial class FormForegroundColor : Form
+    public partial class FormBackgroundColor : Form
     {
         private Control surfaceScreen;
         private Metadata metadata;
 
-        public FormForegroundColor(Metadata metadata, Control screen)
+        public FormBackgroundColor(Metadata metadata, Control screen)
         {
             this.metadata = metadata;
             this.surfaceScreen = screen;
@@ -37,13 +37,13 @@ namespace Kinovea.ScreenManager
 
         private void Populate()
         {
-            this.Text = "Configure opacity and background color";
+            this.Text = "Background properties";
             lblOpaque.Text = "Opacity";
 
-            int a = metadata.ForegroundColor.A;
-            Color rgb = Color.FromArgb(metadata.ForegroundColor.R, metadata.ForegroundColor.G, metadata.ForegroundColor.B);
+            int a = metadata.BackgroundColor.A;
+            Color rgb = Color.FromArgb(metadata.BackgroundColor.R, metadata.BackgroundColor.G, metadata.BackgroundColor.B);
 
-            int opacityPercentage = (int)((1.0f - (a / 255.0f)) * 100.0f);
+            int opacityPercentage = (int)(a / 255.0f * 100.0f);
             nudOpaque.Value = (decimal)opacityPercentage;
 
             Control colorEditor = new Control();
@@ -58,17 +58,17 @@ namespace Kinovea.ScreenManager
         private void nudOpaque_ValueChanged(object sender, EventArgs e)
         {
             int opacity = (int)nudOpaque.Value;
-            int a = (int)((1.0f - (opacity / 100.0f)) * 255.0f);
+            int a = (int)(opacity / 100.0f * 255.0f);
 
-            Color rgb = Color.FromArgb(metadata.ForegroundColor.R, metadata.ForegroundColor.G, metadata.ForegroundColor.B);
-            metadata.ForegroundColor = Color.FromArgb(a, rgb);
+            Color rgb = Color.FromArgb(metadata.BackgroundColor.R, metadata.BackgroundColor.G, metadata.BackgroundColor.B);
+            metadata.BackgroundColor = Color.FromArgb(a, rgb);
 
             surfaceScreen.Invalidate();
         }
 
         private void colorEditor_Paint(object sender, PaintEventArgs e)
         {
-            Color rgb = Color.FromArgb(metadata.ForegroundColor.R, metadata.ForegroundColor.G, metadata.ForegroundColor.B);
+            Color rgb = Color.FromArgb(metadata.BackgroundColor.R, metadata.BackgroundColor.G, metadata.BackgroundColor.B);
             using (SolidBrush b = new SolidBrush(rgb))
             {
                 e.Graphics.FillRectangle(b, e.ClipRectangle);
@@ -77,8 +77,8 @@ namespace Kinovea.ScreenManager
         }
         private void colorEditor_Click(object sender, EventArgs e)
         {
-            int a = metadata.ForegroundColor.A;
-            Color rgb = Color.FromArgb(metadata.ForegroundColor.R, metadata.ForegroundColor.G, metadata.ForegroundColor.B);
+            int a = metadata.BackgroundColor.A;
+            Color rgb = Color.FromArgb(metadata.BackgroundColor.R, metadata.BackgroundColor.G, metadata.BackgroundColor.B);
             
             FormColorPicker picker = new FormColorPicker(rgb);
             FormsHelper.Locate(picker);
@@ -90,7 +90,7 @@ namespace Kinovea.ScreenManager
 
             picker.Dispose();
 
-            metadata.ForegroundColor = Color.FromArgb(a, rgb);
+            metadata.BackgroundColor = Color.FromArgb(a, rgb);
             surfaceScreen.Invalidate();
         }
     }

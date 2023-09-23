@@ -152,12 +152,12 @@ namespace Kinovea.ScreenManager
                 RefreshImage();
             }
         }
-        public Color ForegroundColor 
+        public Color BackgroundColor 
         {
-            get { return frameServer.Metadata.ForegroundColor; }
+            get { return frameServer.Metadata.BackgroundColor; }
             set
             {
-                frameServer.ChangeForegroundColor(value);
+                frameServer.ChangeBackgroundColor(value);
                 RefreshImage();
             }
         }

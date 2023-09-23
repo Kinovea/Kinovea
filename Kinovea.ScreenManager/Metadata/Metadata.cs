@@ -193,7 +193,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public bool Deinterlacing { get; set; }
 
-        public Color ForegroundColor { get; set; }
+        public Color BackgroundColor { get; set; }
 
         /// <summary>
         /// Path to the video file this metadata was created on.
@@ -1457,7 +1457,7 @@ namespace Kinovea.ScreenManager
             hash ^= Mirrored.GetHashCode();
             hash ^= Demosaicing.GetHashCode();
             hash ^= Deinterlacing.GetHashCode();
-            hash ^= ForegroundColor.GetHashCode();
+            hash ^= BackgroundColor.GetHashCode();
             hash ^= selectionStart.GetHashCode();
             hash ^= selectionEnd.GetHashCode();
             hash ^= timeOrigin.GetHashCode();
@@ -1875,7 +1875,7 @@ namespace Kinovea.ScreenManager
             Mirrored = false;
             Demosaicing = Demosaicing.None;
             Deinterlacing = false;
-            ForegroundColor = Color.Empty;
+            BackgroundColor = Color.Empty;
 
             DeselectAll();
         }

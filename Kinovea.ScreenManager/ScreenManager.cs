@@ -145,13 +145,13 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuRotation270 = new ToolStripMenuItem();
 
         private ToolStripMenuItem mnuMirror = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuForegroundColor = new ToolStripMenuItem();
 
         // Video
         private List<ToolStripMenuItem> filterMenus = new List<ToolStripMenuItem>();
 
         // Tools
         private ToolStripMenuItem mnuImportImage = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuBackground = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimeCalibration = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCoordinateSystem = new ToolStripMenuItem();
         private ToolStripMenuItem mnuLensDistortion = new ToolStripMenuItem();
@@ -565,17 +565,11 @@ namespace Kinovea.ScreenManager
             mnuMirror.Click += mnuMirror_Click;
             mnuMirror.MergeAction = MergeAction.Append;
 
-            mnuForegroundColor.Image = Properties.Resources.shading;
-            mnuForegroundColor.Click += mnuForegroundColor_Click;
-            mnuForegroundColor.MergeAction = MergeAction.Append;
-
-
             mnuCatchImage.DropDownItems.Add(mnuAspectRatio);
             mnuCatchImage.DropDownItems.Add(mnuRotation);
             mnuCatchImage.DropDownItems.Add(mnuMirror);
             mnuCatchImage.DropDownItems.Add(mnuDeinterlace);
             mnuCatchImage.DropDownItems.Add(mnuDemosaic);
-            mnuCatchImage.DropDownItems.Add(mnuForegroundColor);
             #endregion
 
             #region Video
@@ -599,6 +593,10 @@ namespace Kinovea.ScreenManager
             mnuImportImage.Image = Properties.Resources.image;
             mnuImportImage.Click += new EventHandler(mnuImportImage_OnClick);
             mnuImportImage.MergeAction = MergeAction.Append;
+
+            mnuBackground.Image = Properties.Resources.shading;
+            mnuBackground.Click += mnuForegroundColor_Click;
+            mnuBackground.MergeAction = MergeAction.Append;
 
             mnuTimeCalibration.Image = Properties.Drawings.clock_frame;
             mnuTimeCalibration.Click += new EventHandler(mnuTimebase_OnClick);
@@ -634,6 +632,7 @@ namespace Kinovea.ScreenManager
 
             mnuCatchTools.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuImportImage,
+                mnuBackground,
                 new ToolStripSeparator(),
                 mnuTimeCalibration,
                 mnuLensDistortion,
@@ -1124,8 +1123,6 @@ namespace Kinovea.ScreenManager
                     // Image
                     mnuDeinterlace.Enabled = player.FrameServer.VideoReader.CanChangeDeinterlacing;
                     mnuMirror.Enabled = true;
-                    mnuForegroundColor.Enabled = true;
-
                     mnuDeinterlace.Checked = player.Deinterlaced;
                     mnuMirror.Checked = activeScreen.Mirrored;
 
@@ -1147,6 +1144,7 @@ namespace Kinovea.ScreenManager
 
                     // Tools
                     mnuImportImage.Enabled = true;
+                    mnuBackground.Enabled = true;
                     mnuTimeCalibration.Enabled = true;
                     mnuCoordinateSystem.Enabled = true;
                     mnuLensDistortion.Enabled = true;
@@ -1180,8 +1178,6 @@ namespace Kinovea.ScreenManager
                     // Image
                     mnuDeinterlace.Enabled = false;
                     mnuMirror.Enabled = true;
-                    mnuForegroundColor.Enabled = false;
-
                     mnuDeinterlace.Checked = false;
                     mnuMirror.Checked = activeScreen.Mirrored;
 
@@ -1194,6 +1190,7 @@ namespace Kinovea.ScreenManager
 
                     // Tools
                     mnuImportImage.Enabled = false;
+                    mnuBackground.Enabled = false;
                     mnuTimeCalibration.Enabled = false;
                     mnuCoordinateSystem.Enabled = true;
                     mnuLensDistortion.Enabled = false;
@@ -1239,7 +1236,7 @@ namespace Kinovea.ScreenManager
                 mnuDeinterlace.Checked = false;
                 mnuMirror.Enabled = false;
                 mnuMirror.Checked = false;
-                mnuForegroundColor.Enabled = false;
+                mnuBackground.Enabled = false;
                 ConfigureImageFormatMenus(null);
                 ConfigureImageRotationMenus(null);
                 ConfigureImageDemosaicingMenus(null);
@@ -1572,12 +1569,12 @@ namespace Kinovea.ScreenManager
             mnuDemosaicGRBG.Text = "GRBG";
             mnuDemosaicGBRG.Text = "GBRG";
 
-            mnuForegroundColor.Text = "Opacity";
 
             RefreshCultureMenuFilters();
 
             // Tools
             mnuImportImage.Text = ScreenManagerLang.mnuImportImage;
+            mnuBackground.Text = "Background…";
             mnuTimeCalibration.Text = ScreenManagerLang.mnuTimeCalibration;
             mnuLensDistortion.Text = ScreenManagerLang.mnuLensCalibration;
             mnuCoordinateSystem.Text = ScreenManagerLang.mnuCoordinateSystem;
@@ -2339,17 +2336,17 @@ namespace Kinovea.ScreenManager
             PlayerScreen player = activeScreen as PlayerScreen;
             if (player != null)
             {
-                // Launch Opacity dialog.
-                Color memo = player.ForegroundColor;
-                FormForegroundColor ffc = new FormForegroundColor(player.FrameServer.Metadata, player.view);
-                ffc.StartPosition = FormStartPosition.CenterScreen;
-                ffc.ShowDialog();
-                if (ffc.DialogResult != DialogResult.OK)
+                // Launch Background color/opacity dialog.
+                Color memo = player.BackgroundColor;
+                FormBackgroundColor fbc = new FormBackgroundColor(player.FrameServer.Metadata, player.view);
+                fbc.StartPosition = FormStartPosition.CenterScreen;
+                fbc.ShowDialog();
+                if (fbc.DialogResult != DialogResult.OK)
                 {
-                    player.ForegroundColor = memo;
+                    player.BackgroundColor = memo;
                 }
 
-                ffc.Dispose();
+                fbc.Dispose();
             }
         }
 

@@ -1,6 +1,6 @@
 ﻿namespace Kinovea.ScreenManager
 {
-    partial class FormForegroundColor
+    partial class FormBackgroundColor
     {
         /// <summary>
         /// Required designer variable.
@@ -42,7 +42,7 @@
       // 
       this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.btnOK.Location = new System.Drawing.Point(111, 122);
+      this.btnOK.Location = new System.Drawing.Point(111, 128);
       this.btnOK.Name = "btnOK";
       this.btnOK.Size = new System.Drawing.Size(99, 24);
       this.btnOK.TabIndex = 33;
@@ -53,7 +53,7 @@
       // 
       this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.btnCancel.Location = new System.Drawing.Point(216, 122);
+      this.btnCancel.Location = new System.Drawing.Point(216, 128);
       this.btnCancel.Name = "btnCancel";
       this.btnCancel.Size = new System.Drawing.Size(99, 24);
       this.btnCancel.TabIndex = 34;
@@ -71,13 +71,13 @@
       this.grpConfig.Location = new System.Drawing.Point(12, 12);
       this.grpConfig.Name = "grpConfig";
       this.grpConfig.Padding = new System.Windows.Forms.Padding(3, 3, 20, 3);
-      this.grpConfig.Size = new System.Drawing.Size(303, 104);
+      this.grpConfig.Size = new System.Drawing.Size(303, 110);
       this.grpConfig.TabIndex = 35;
       this.grpConfig.TabStop = false;
       // 
       // nudOpaque
       // 
-      this.nudOpaque.Location = new System.Drawing.Point(228, 28);
+      this.nudOpaque.Location = new System.Drawing.Point(227, 67);
       this.nudOpaque.Name = "nudOpaque";
       this.nudOpaque.Size = new System.Drawing.Size(52, 20);
       this.nudOpaque.TabIndex = 26;
@@ -92,7 +92,7 @@
       // 
       this.lblOpaque.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.lblOpaque.Location = new System.Drawing.Point(17, 24);
+      this.lblOpaque.Location = new System.Drawing.Point(16, 63);
       this.lblOpaque.Name = "lblOpaque";
       this.lblOpaque.Size = new System.Drawing.Size(194, 25);
       this.lblOpaque.TabIndex = 24;
@@ -103,27 +103,27 @@
       // 
       this.lblColor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.lblColor.Location = new System.Drawing.Point(17, 61);
+      this.lblColor.Location = new System.Drawing.Point(16, 25);
       this.lblColor.Name = "lblColor";
       this.lblColor.Size = new System.Drawing.Size(153, 25);
       this.lblColor.TabIndex = 22;
       this.lblColor.Text = "Color:";
       this.lblColor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
-      // FormForegroundColor
+      // FormBackgroundColor
       // 
       this.AcceptButton = this.btnOK;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.CancelButton = this.btnCancel;
-      this.ClientSize = new System.Drawing.Size(327, 158);
+      this.ClientSize = new System.Drawing.Size(327, 164);
       this.Controls.Add(this.grpConfig);
       this.Controls.Add(this.btnOK);
       this.Controls.Add(this.btnCancel);
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
       this.MaximizeBox = false;
       this.MinimizeBox = false;
-      this.Name = "FormForegroundColor";
+      this.Name = "FormBackgroundColor";
       this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
       this.Text = "FormConfigureVisibility";
       this.grpConfig.ResumeLayout(false);

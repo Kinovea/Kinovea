@@ -340,6 +340,7 @@ namespace Kinovea.ScreenManager
         private ContextMenuStrip popMenu = new ContextMenuStrip();
         private ToolStripMenuItem mnuTimeOrigin = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDirectTrack = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuBackground = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCopyPic = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPastePic = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPasteDrawing = new ToolStripMenuItem();
@@ -1165,6 +1166,8 @@ namespace Kinovea.ScreenManager
             mnuTimeOrigin.Image = Properties.Resources.marker;
             mnuDirectTrack.Click += mnuDirectTrack_Click;
             mnuDirectTrack.Image = Properties.Drawings.track;
+            mnuBackground.Click += mnuBackground_Click;
+            mnuBackground.Image = Properties.Resources.shading;
             mnuCopyPic.Click += (s, e) => { CopyImageToClipboard(); };
             mnuCopyPic.Image = Properties.Resources.clipboard_block;
             mnuPastePic.Click += mnuPastePic_Click;
@@ -1193,7 +1196,7 @@ namespace Kinovea.ScreenManager
             mnuExitFilter.Image = Properties.Resources.exit_filter;
             popMenu.Items.AddRange(new ToolStripItem[]
             {
-                mnuTimeOrigin, mnuDirectTrack, new ToolStripSeparator(),
+                mnuTimeOrigin, mnuDirectTrack, mnuBackground, new ToolStripSeparator(),
                 mnuCopyPic, mnuPastePic, mnuPasteDrawing, new ToolStripSeparator(),
                 mnuOpenVideo, mnuOpenReplayWatcher, mnuOpenAnnotations, new ToolStripSeparator(),
                 mnuSaveAnnotations, mnuSaveAnnotationsAs, mnuExportVideo, mnuExportImage, new ToolStripSeparator(),
@@ -2804,6 +2807,7 @@ namespace Kinovea.ScreenManager
             // Background context menu.
             mnuTimeOrigin.Text = ScreenManagerLang.mnuMarkTimeAsOrigin;
             mnuDirectTrack.Text = ScreenManagerLang.mnuTrackTrajectory;
+            mnuBackground.Text = "Background…";
             mnuPasteDrawing.Text = ScreenManagerLang.mnuPasteDrawing;
             mnuPasteDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.PasteDrawing);
             mnuOpenVideo.Text = ScreenManagerLang.mnuOpenVideo;
@@ -3156,6 +3160,7 @@ namespace Kinovea.ScreenManager
 
                 mnuTimeOrigin.Enabled = false;
                 mnuDirectTrack.Enabled = false;
+                mnuBackground.Enabled = false;
                 mnuPasteDrawing.Enabled = false;
                 mnuPastePic.Enabled = false;
                 panelCenter.ContextMenuStrip = popMenu;
@@ -3259,6 +3264,8 @@ namespace Kinovea.ScreenManager
                     mnuTimeOrigin.Visible = true;
                     mnuDirectTrack.Visible = true;
                     mnuDirectTrack.Enabled = true;
+                    mnuBackground.Visible = true;
+                    mnuBackground.Visible = true;
                     mnuPasteDrawing.Visible = true;
                     mnuPasteDrawing.Enabled = DrawingClipboard.HasContent;
                     mnuPastePic.Visible = true;
@@ -3275,6 +3282,7 @@ namespace Kinovea.ScreenManager
             {
                         mnuTimeOrigin,
                         mnuDirectTrack,
+                        mnuBackground,
                         new ToolStripSeparator(),
                         mnuCopyPic,
                         mnuPastePic,
@@ -3841,11 +3849,11 @@ namespace Kinovea.ScreenManager
                 g.DrawImage(m_SyncMergeImage, rSyncDst, 0, 0, m_SyncMergeImage.Width, m_SyncMergeImage.Height, GraphicsUnit.Pixel, m_SyncMergeImgAttr);
             }
 
-            // Foreground opacity and color.
-            Color foregroundColor = m_FrameServer.Metadata.ForegroundColor;
-            if (foregroundColor.A != 0)
+            // Background color and alpha.
+            Color backgroundColor = m_FrameServer.Metadata.BackgroundColor;
+            if (backgroundColor.A != 0)
             {
-                using (SolidBrush brush = new SolidBrush(foregroundColor))
+                using (SolidBrush brush = new SolidBrush(backgroundColor))
                     g.FillRectangle(brush, rDst);
             }
 
@@ -3990,6 +3998,7 @@ namespace Kinovea.ScreenManager
         private void PanelCenter_MouseDown(object sender, MouseEventArgs e)
         {
             mnuDirectTrack.Enabled = false;
+            mnuBackground.Enabled = false;
             mnuPasteDrawing.Enabled = false;
             mnuPastePic.Enabled = false;
             panelCenter.ContextMenuStrip = popMenu;
@@ -4670,6 +4679,24 @@ namespace Kinovea.ScreenManager
             if (DrawingAdding != null)
                 DrawingAdding(this, new DrawingEventArgs(track, m_FrameServer.Metadata.TrackManager.Id));
         }
+
+        private void mnuBackground_Click(object sender, EventArgs e)
+        {
+            Color memo = m_FrameServer.Metadata.BackgroundColor;
+            FormBackgroundColor ffc = new FormBackgroundColor(m_FrameServer.Metadata, this);
+            ffc.StartPosition = FormStartPosition.CenterScreen;
+            ffc.ShowDialog();
+            if (ffc.DialogResult != DialogResult.OK)
+            {
+                m_FrameServer.ChangeBackgroundColor(memo);
+            }
+
+            ffc.Dispose();
+
+            DoInvalidate();
+        }
+
+
         private void mnuPastePic_Click(object sender, EventArgs e)
         {
             if (!Clipboard.ContainsImage())
@@ -5249,8 +5276,9 @@ namespace Kinovea.ScreenManager
             trkSelection.Enabled = enable;
             sldrSpeed.Enabled = enable;
 
-            mnuDirectTrack.Enabled = enable;
             mnuTimeOrigin.Enabled = enable;
+            mnuDirectTrack.Enabled = enable;
+            mnuBackground.Enabled = enable;
         }
         private void EnableDisableWorkingZoneControls(bool enable)
         {
