@@ -104,6 +104,9 @@ namespace Kinovea.ScreenManager
         private Dictionary<string, TrackablePoint> trackablePoints = new Dictionary<string, TrackablePoint>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
+        /// <summary>
+        /// Create a tracker for a trackable drawing and register all its points.
+        /// </summary>
         public DrawingTracker(ITrackable drawing, TrackingContext context, TrackerParameters parameters)
         {
             this.drawing = drawing;
@@ -131,6 +134,10 @@ namespace Kinovea.ScreenManager
             assigned = true;
         }
 
+        /// <summary>
+        /// Add a new point to an existing tracker.
+        /// This is used for drawings that have a dynamic list of trackable points like polyline.
+        /// </summary>
         public void AddPoint(TrackingContext context, TrackerParameters parameters, string key, PointF value)
         {
             // Some drawings like polyline have a dynamic list of trackable points.
@@ -141,7 +148,11 @@ namespace Kinovea.ScreenManager
         {
             trackablePoints.Remove(key);
         }
-  
+
+        /// <summary>
+        /// Track each trackable points in the current image, or use existing tracking data.
+        /// Update the point coordinate in the drawing.
+        /// </summary>
         public void Track(TrackingContext context)
         {
             // This is where we would spawn new threads for each tracking.
@@ -161,6 +172,9 @@ namespace Kinovea.ScreenManager
                 FixTimelineSync(insertionMap);
         }
         
+        /// <summary>
+        /// Set this drawing to actively tracking or not.
+        /// </summary>
         public void ToggleTracking()
         {
             isTracking = !isTracking;
@@ -179,42 +193,6 @@ namespace Kinovea.ScreenManager
             return trackablePoints[key].GetLocation(time);
         }
 
-        private void AfterToggleTracking()
-        {
-            Dictionary<string, bool> insertionMap = new Dictionary<string, bool>();
-            bool atLeastOneInserted = false;
-
-            foreach (KeyValuePair<string, TrackablePoint> pair in trackablePoints)
-            {
-                bool inserted = pair.Value.SetTracking(isTracking);
-                insertionMap[pair.Key] = inserted;
-                if (inserted)
-                    atLeastOneInserted = true;
-            }
-
-            if (atLeastOneInserted)
-                FixTimelineSync(insertionMap);
-        }
-
-        /// <summary>
-        /// For drawings containing multiple trackable points, make sure that if any one of them 
-        /// successfully tracked by template matching, we have a corresponding data point in the timeline 
-        /// of the other trackable points. 
-        /// Contract: caller must gather that at least one point has tracked, and only call in here if so.
-        /// </summary>
-        private void FixTimelineSync(Dictionary<string, bool> insertionMap)
-        {
-            foreach (KeyValuePair<string, TrackablePoint> pair in trackablePoints)
-            {
-                if (insertionMap[pair.Key])
-                    continue;
-
-                // Force insert using closest existing value.
-                pair.Value.ForceInsertClosestLocation();
-                drawing.SetTrackablePointValue(pair.Key, pair.Value.CurrentValue, pair.Value.TimeDifference);
-            }
-        }
-
         public void Reset()
         {
             foreach (TrackablePoint trackablePoint in trackablePoints.Values)
@@ -228,31 +206,6 @@ namespace Kinovea.ScreenManager
                         
             if (drawing != null)
                 drawing.TrackablePointMoved -= drawing_TrackablePointMoved;
-        }
-        
-        private void drawing_TrackablePointMoved(object sender, TrackablePointMovedEventArgs e)
-        {
-            if(!trackablePoints.ContainsKey(e.PointName))
-                throw new ArgumentException("This point is not bound.");
-            
-            bool inserted = trackablePoints[e.PointName].SetUserValue(e.Position);
-
-            // This is called when we manually move a point even though the object is not in tracking mode.
-            // In this case we may have added a new entry in the timeline. 
-            // We must ensure the other points have a data point at that time too. 
-            // This is also called programmatically when the origin of the coordinate system is updated for a moving system.
-            if (inserted)
-            {
-                foreach (KeyValuePair<string, TrackablePoint> pair in trackablePoints)
-                {
-                    if (pair.Key == e.PointName)
-                        continue;
-
-                    // Force insert using closest existing value.
-                    pair.Value.ForceInsertClosestLocation();
-                    drawing.SetTrackablePointValue(pair.Key, pair.Value.CurrentValue, pair.Value.TimeDifference);
-                }
-            }
         }
 
         /// <summary>
@@ -327,10 +280,73 @@ namespace Kinovea.ScreenManager
                 r.ReadEndElement();
         }
 
+        #region Private
+
+        private void AfterToggleTracking()
+        {
+            Dictionary<string, bool> insertionMap = new Dictionary<string, bool>();
+            bool atLeastOneInserted = false;
+
+            foreach (KeyValuePair<string, TrackablePoint> pair in trackablePoints)
+            {
+                bool inserted = pair.Value.SetTracking(isTracking);
+                insertionMap[pair.Key] = inserted;
+                if (inserted)
+                    atLeastOneInserted = true;
+            }
+
+            if (atLeastOneInserted)
+                FixTimelineSync(insertionMap);
+        }
+
+        /// <summary>
+        /// For drawings containing multiple trackable points, make sure that if any one of them 
+        /// successfully tracked by template matching, we have a corresponding data point in the timeline 
+        /// of the other trackable points. 
+        /// Contract: caller must gather that at least one point has tracked, and only call in here if so.
+        /// </summary>
+        private void FixTimelineSync(Dictionary<string, bool> insertionMap)
+        {
+            foreach (KeyValuePair<string, TrackablePoint> pair in trackablePoints)
+            {
+                if (insertionMap[pair.Key])
+                    continue;
+
+                // Force insert using closest existing value.
+                pair.Value.ForceInsertClosestLocation();
+                drawing.SetTrackablePointValue(pair.Key, pair.Value.CurrentValue, pair.Value.TimeDifference);
+            }
+        }
+
+        private void drawing_TrackablePointMoved(object sender, TrackablePointMovedEventArgs e)
+        {
+            if (!trackablePoints.ContainsKey(e.PointName))
+                throw new ArgumentException("This point is not bound.");
+
+            bool inserted = trackablePoints[e.PointName].SetUserValue(e.Position);
+
+            // This is called when we manually move a point even though the object is not in tracking mode.
+            // In this case we may have added a new entry in the timeline. 
+            // We must ensure the other points have a data point at that time too. 
+            // This is also called programmatically when the origin of the coordinate system is updated for a moving system.
+            if (inserted)
+            {
+                foreach (KeyValuePair<string, TrackablePoint> pair in trackablePoints)
+                {
+                    if (pair.Key == e.PointName)
+                        continue;
+
+                    // Force insert using closest existing value.
+                    pair.Value.ForceInsertClosestLocation();
+                    drawing.SetTrackablePointValue(pair.Key, pair.Value.CurrentValue, pair.Value.TimeDifference);
+                }
+            }
+        }
+
         private void ParseTrackablePoint(XmlReader r, PointF scale, TimestampMapper timeMapper)
         {
             string key = "";
-            
+
             bool isEmpty = r.IsEmptyElement;
 
             if (r.MoveToAttribute("key"))
@@ -339,5 +355,8 @@ namespace Kinovea.ScreenManager
             TrackablePoint point = new TrackablePoint(r, scale, timeMapper);
             trackablePoints.Add(key, point);
         }
+
+
+        #endregion
     }
 }

@@ -67,6 +67,9 @@ namespace Kinovea.ScreenManager
             this.imageSize = imageSize;
         }
 
+        /// <summary>
+        /// Add a tracker for a trackable drawing and register its points.
+        /// </summary>
         public void Add(ITrackable drawing, VideoFrame videoFrame)
         {
             if(trackers.ContainsKey(drawing.Id))
@@ -79,12 +82,23 @@ namespace Kinovea.ScreenManager
             trackers.Add(drawing.Id, new DrawingTracker(drawing, context, parameters));
         }
 
+        /// <summary>
+        /// Finds the tracker responsible for this drawing and assign the drawing to it.
+        /// When we load the KVA, the trackers and drawings are loaded independently.
+        /// At this point the tracker only knows the drawing id. 
+        /// This function re-inject the drawing instance into the tracker for convenience.
+        /// </summary>
         public void Assign(ITrackable drawing)
         {
             if (trackers.ContainsKey(drawing.Id) && !trackers[drawing.Id].Assigned)
                 trackers[drawing.Id].Assign(drawing);
         }
 
+        /// <summary>
+        /// Change the drawing id in the tracker.
+        /// This happens when a drawing changes id. This might happen for some drawings
+        /// like the coordinate system which is both a singleton drawing and trackable.
+        /// </summary>
         public void UpdateId(Guid oldId, Guid newId)
         {
             if (oldId == newId || !trackers.ContainsKey(oldId) || trackers.ContainsKey(newId))
@@ -94,6 +108,10 @@ namespace Kinovea.ScreenManager
             trackers.Remove(oldId);
         }
 
+        /// <summary>
+        /// Add a new point to an existing tracker.
+        /// This is used for drawings that have a dynamic list of trackable points like polyline.
+        /// </summary>
         public void AddPoint(ITrackable drawing, VideoFrame videoFrame, string key, PointF point)
         {
             if (!trackers.ContainsKey(drawing.Id))
@@ -115,6 +133,9 @@ namespace Kinovea.ScreenManager
             trackers[drawing.Id].RemovePoint(key);
         }
         
+        /// <summary>
+        /// Delete trackers that were not assigned a drawing.
+        /// </summary>
         public void CleanUnassigned()
         {
             HashSet<Guid> pruneList = new HashSet<Guid>();
@@ -131,6 +152,9 @@ namespace Kinovea.ScreenManager
                 trackers.Remove(key);
         }
 
+        /// <summary>
+        /// Delete all trackers.
+        /// </summary>
         public void Clear()
         {
             foreach(DrawingTracker tracker in trackers.Values)
@@ -139,6 +163,9 @@ namespace Kinovea.ScreenManager
             trackers.Clear();
         }
         
+        /// <summary>
+        /// Delete the tracker responsible for this drawing.
+        /// </summary>
         public void Remove(ITrackable drawing)
         {
             if(trackers.Count == 0 || !trackers.ContainsKey(drawing.Id))
@@ -148,6 +175,11 @@ namespace Kinovea.ScreenManager
             trackers.Remove(drawing.Id);
         }
 
+        /// <summary>
+        /// Perform tracking for the current image.
+        /// Track all points in all trackable drawings or use existing tracking data.
+        /// Update the point coordinates in the drawing.
+        /// </summary>
         public void Track(VideoFrame videoFrame)
         {
             TrackingContext context = new TrackingContext(videoFrame.Timestamp, videoFrame.Image);
@@ -182,6 +214,9 @@ namespace Kinovea.ScreenManager
             return trackers[id].HasData;
         }
         
+        /// <summary>
+        /// Set the drawing to actively tracking or not.
+        /// </summary>
         public void ToggleTracking(ITrackable drawing)
         {
             if(!SanityCheck(drawing.Id))
@@ -190,6 +225,10 @@ namespace Kinovea.ScreenManager
             trackers[drawing.Id].ToggleTracking();
         }
 
+        /// <summary>
+        /// Returns the list of trackable points for the drawing.
+        /// This is used by the kinematics forms.
+        /// </summary>
         public Dictionary<string, TrackablePoint> GetTrackablePoints(ITrackable drawing)
         {
             if (!SanityCheck(drawing.Id))
@@ -217,21 +256,6 @@ namespace Kinovea.ScreenManager
                 return PointF.Empty;
 
             return trackers[id].GetLocation(key, time);
-        }
-
-        private bool SanityCheck(Guid id)
-        {
-            bool contains = trackers.ContainsKey(id);
-            if(!contains)
-            {
-                log.Error("This drawing was not registered for tracking.");
-                
-                #if DEBUG
-                throw new ArgumentException("This drawing was not registered for tracking.");
-                #endif
-            }
-            
-            return contains;
         }
 
         /// <summary>
@@ -350,5 +374,22 @@ namespace Kinovea.ScreenManager
                 string unparsed = r.ReadOuterXml();
             }
         }
+
+
+        private bool SanityCheck(Guid id)
+        {
+            bool contains = trackers.ContainsKey(id);
+            if (!contains)
+            {
+                log.Error("This drawing was not registered for tracking.");
+
+#if DEBUG
+                throw new ArgumentException("This drawing was not registered for tracking.");
+#endif
+            }
+
+            return contains;
+        }
+
     }
 }

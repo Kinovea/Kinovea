@@ -25,13 +25,39 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
+
+    /// <summary>
+    /// Drawings that have points that are "volatile" and can change coordinates from outside the drawing, 
+    /// without user intervention, based on the current frame.
+    /// This change in coordinates can come from point tracking or camera tracking.
+    /// </summary>
     public interface ITrackable
     {
+        /// <summary>
+        /// Id of the drawing. This is used by tracking managers to keep a timeline of 
+        /// coordinates indexed by drawing id.
+        /// </summary>
         Guid Id { get; }
+        
+        /// <summary>
+        /// Name of the drawing. This is used by the kinematics diagrams.
+        /// </summary>
         string Name { get; }
+        
+        /// <summary>
+        /// Color of the drawing. This is used by the kinematics diagrams.
+        /// </summary>
         Color Color { get; }
+        
+        /// <summary>
+        /// Tracking parameters.
+        /// </summary>
         TrackingProfile CustomTrackingProfile { get; }
         
+        /// <summary>
+        /// Returns the list of trackable points.
+        /// </summary>
+        /// <returns></returns>
         Dictionary<string, PointF> GetTrackablePoints();
 
         // Note:
