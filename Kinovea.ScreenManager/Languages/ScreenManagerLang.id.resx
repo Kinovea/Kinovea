@@ -989,7 +989,7 @@
     <value>Ekspor ke spreadsheet</value>
   </data>
   <data name="mnuFormat" xml:space="preserve">
-    <value>Format gambar</value>
+    <value>Rasio Aspek</value>
   </data>
   <data name="mnuFormatAuto" xml:space="preserve">
     <value>Deteksi otomatis</value>
@@ -1001,7 +1001,7 @@
     <value>Paksa 16:9</value>
   </data>
   <data name="mnuRotation" xml:space="preserve">
-    <value>Rotasi gambar</value>
+    <value>Rotasi</value>
   </data>
   <data name="mnuRotation0" xml:space="preserve">
     <value>Tanpa rotasi</value>
