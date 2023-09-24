@@ -255,6 +255,15 @@ namespace Kinovea.ScreenManager
                 trackTimeline.Insert(context.Time, CreateTrackFrame(currentValue, PositionningSource.ForcedClosest));
         }
         
+        /// <summary>
+        /// Import the current value of the point from the drawing into the non-tracking value.
+        /// This is used in the context of camera tracking when we move the point manually.
+        /// </summary>
+        public void CommitNonTrackingValue(PointF value)
+        {
+            nonTrackingValue = value;
+        }
+
         public void Reset()
         {
             ClearTimeline();

@@ -30,6 +30,12 @@ namespace Kinovea.ScreenManager
 
         public void Initialize(CameraTracker tracker)
         {
+            if (tracker.FrameIndices.Count == 0 || tracker.ConsecutiveTransforms.Count == 0)
+            {
+                log.ErrorFormat("The camera tracker does not have transforms.");
+                return;
+            }
+
             this.frameIndices = tracker.FrameIndices;
             this.consecTransforms = tracker.ConsecutiveTransforms;
 
@@ -37,18 +43,24 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Takes a point with coordinates p in image src, returns the corresponding point in image dst.
+        /// Takes a point with coordinates p in the image at referenceTimestamp, 
+        /// returns the corresponding point in image at currentTimestamp.
+        /// Typically reference timestamp is the timestamp where the point was placed
+        /// on top of a world object in the video. This is the starting point 
+        /// of the transform stack.
         /// </summary>
-        public Point Transform(long src, long dst, Point p)
+        public Point Transform(long referenceTimestamp, long currentTimestamp, Point p)
         {
             if (!initialized)
                 return p;
 
+            if (!frameIndices.ContainsKey(referenceTimestamp) || !frameIndices.ContainsKey(currentTimestamp))
+                return p;
 
             // Pairs of conscutive frames transforms.
             // consecTransforms[i] transforms points in image I to their corresponding point in image I+1.
-            int startIndex = frameIndices[src];
-            int endIndex = frameIndices[dst];
+            int startIndex = frameIndices[referenceTimestamp];
+            int endIndex = frameIndices[currentTimestamp];
 
             if (startIndex == endIndex)
                 return p;

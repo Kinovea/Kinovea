@@ -107,9 +107,6 @@ namespace Kinovea.ScreenManager
         private DrawingStyle style;
         private InfosFading infosFading;
 
-        // TODO: move to abstract drawing and setup after KVA import.
-        private long creationTimestamp;
-
         #region Menus
         private ToolStripMenuItem mnuMeasurement = new ToolStripMenuItem();
         private Dictionary<MeasureLabelType, ToolStripMenuItem> mnuMeasureLabelTypes = new Dictionary<MeasureLabelType, ToolStripMenuItem>();
@@ -136,7 +133,6 @@ namespace Kinovea.ScreenManager
             BindStyle();
 
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
-            creationTimestamp = timestamp;
 
             InitializeMenus();
         }
@@ -169,8 +165,6 @@ namespace Kinovea.ScreenManager
 
             int iAlpha = (int)(opacityFactor * 255);
             Point c = points["0"].ToPoint();
-            if (cameraTransformer != null && cameraTransformer.Initialized)
-                c = cameraTransformer.Transform(creationTimestamp, currentTimestamp, c);
             c = transformer.Transform(c);
 
             using(Pen p = styleHelper.GetPen(iAlpha))

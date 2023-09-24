@@ -979,6 +979,10 @@ namespace Kinovea.ScreenManager
             return trackableDrawing;
         }
         
+        /// <summary>
+        /// Track trackable drawings in the current frame.
+        /// This updates the trackable points coordinates to the current frame.
+        /// </summary>
         private void TrackDrawings(VideoFrame frameToUse)
         {
             VideoFrame frame = frameToUse ?? frameServer.VideoReader.Current;

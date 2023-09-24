@@ -48,6 +48,15 @@ namespace Kinovea.ScreenManager
         /// Color of the drawing. This is used by the kinematics diagrams.
         /// </summary>
         Color Color { get; }
+
+        /// <summary>
+        /// The reference timestamp of the drawing.
+        /// This is the timestamp of the last time the user manually placed the drawing.
+        /// It is not necessarily the timestamp of the parent keyframe.
+        /// The user placed the object on top of world elements at this specific frame, 
+        /// so the camera transform must be relative to this frame.
+        /// </summary>
+        long ReferenceTimestamp { get; set; }
         
         /// <summary>
         /// Tracking parameters.
@@ -57,7 +66,6 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Returns the list of trackable points.
         /// </summary>
-        /// <returns></returns>
         Dictionary<string, PointF> GetTrackablePoints();
 
         // Note:

@@ -31,6 +31,7 @@ namespace Kinovea.ScreenManager
     /// <summary>
     /// Describes a generic drawing.
     /// All drawings must implement rendering and manipulation methods.
+    /// This class is used for attached drawings (e.g: angle) and detached drawings (e.g: chrono).
     /// </summary>
     public abstract class AbstractDrawing
     {
@@ -49,6 +50,20 @@ namespace Kinovea.ScreenManager
             get { return name; }
             set { name = value; }
         }
+
+        /// <summary>
+        /// The reference timestamp of the drawing.
+        /// This is the timestamp of the last time the user manually placed the drawing.
+        /// It is not necessarily the timestamp of the parent keyframe.
+        /// The user placed the object on top of world elements at this specific frame, 
+        /// so the camera transform must be relative to this frame.
+        /// </summary>
+        public long ReferenceTimestamp
+        {
+            get { return referenceTimestamp; }
+            set { referenceTimestamp = value; }
+        }
+
         public virtual bool IsValid
         {
             get { return true; }
@@ -115,6 +130,7 @@ namespace Kinovea.ScreenManager
         #region Concrete members
         protected Guid identifier = Guid.NewGuid();
         protected string name;
+        protected long referenceTimestamp;
         protected Metadata parentMetadata;
         #endregion
 

@@ -757,7 +757,7 @@ namespace Kinovea.ScreenManager
 
             // Post-init for the new drawings.
             foreach (AbstractDrawing ad in keyframe.Drawings)
-                AfterDrawingCreation(ad);
+                AfterDrawingCreation(ad, keyframe.Timestamp);
         }
         #endregion
 
@@ -918,6 +918,7 @@ namespace Kinovea.ScreenManager
 
             keyframe.AddDrawing(drawing);
             drawing.ParentMetadata = this;
+            drawing.ReferenceTimestamp = keyframe.Timestamp;
             drawing.InfosFading.ReferenceTimestamp = keyframe.Timestamp;
             drawing.InfosFading.AverageTimeStampsPerFrame = averageTimeStampsPerFrame;
             if (captureKVA)
@@ -929,7 +930,7 @@ namespace Kinovea.ScreenManager
             SelectKeyframe(keyframe);
             SelectDrawing(drawing);
 
-            AfterDrawingCreation(drawing);
+            AfterDrawingCreation(drawing, keyframe.Timestamp);
 
             if (DrawingAdded != null)
                 DrawingAdded(this, new DrawingEventArgs(drawing, keyframe.Id));
@@ -957,7 +958,7 @@ namespace Kinovea.ScreenManager
 
             hitDrawing = chrono;
 
-            AfterDrawingCreation(chrono);
+            AfterDrawingCreation(chrono, 0);
 
             if (DrawingAdded != null)
                 DrawingAdded(this, new DrawingEventArgs(chrono, chronoManager.Id));
@@ -978,7 +979,7 @@ namespace Kinovea.ScreenManager
 
             hitDrawing = track;
 
-            AfterDrawingCreation(track);
+            AfterDrawingCreation(track, 0);
 
             // The following is necessary for the "undo of deletion" case.
             track.UpdateKinematics();
@@ -1356,11 +1357,11 @@ namespace Kinovea.ScreenManager
             if (!initialized)
             {
                 foreach (AbstractDrawing d in singletonDrawingsManager.Drawings)
-                    AfterDrawingCreation(d);
+                    AfterDrawingCreation(d, 0);
             }
             else
             {
-                AfterDrawingCreation(drawingCoordinateSystem);
+                AfterDrawingCreation(drawingCoordinateSystem, 0);
             }
 
             CleanupHash();
@@ -1374,11 +1375,12 @@ namespace Kinovea.ScreenManager
             calibrationHelper.Initialize(imageSize, GetCalibrationOrigin, GetCalibrationQuad, HasTrackingData);
 
             foreach (AbstractDrawing d in singletonDrawingsManager.Drawings)
-                AfterDrawingCreation(d);
+                AfterDrawingCreation(d, 0);
         }
 
         public void SetCameraMotion(CameraTracker tracker)
         {
+            trackabilityManager.SetCameraMotion(tracker);
             cameraTransformer.Initialize(tracker);
         }
 
@@ -1501,7 +1503,7 @@ namespace Kinovea.ScreenManager
         {
             hitDrawing = drawing;
         }
-        private void AfterDrawingCreation(AbstractDrawing drawing)
+        private void AfterDrawingCreation(AbstractDrawing drawing, long timestamp)
         {
             // When passing here, it is possible that the drawing has already been initialized.
             // (for example, for undo of delete, paste or reload from KVA).
@@ -1510,12 +1512,16 @@ namespace Kinovea.ScreenManager
                 SetDrawingName(drawing);
 
             drawing.ParentMetadata = this;
-
+            
             if (drawing is IScalable)
                 ((IScalable)drawing).Scale(this.ImageSize);
 
             if (drawing is ITrackable && AddTrackableDrawingCommand != null)
-                AddTrackableDrawingCommand.Execute(drawing as ITrackable);
+            {
+                ITrackable trackableDrawing = drawing as ITrackable;
+                AddTrackableDrawingCommand.Execute(trackableDrawing);
+                trackableDrawing.ReferenceTimestamp = timestamp;
+            }
 
             if (drawing is IMeasurable)
             {

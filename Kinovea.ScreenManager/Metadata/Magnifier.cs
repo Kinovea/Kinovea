@@ -34,13 +34,13 @@ namespace Kinovea.ScreenManager
     {
         // TODO: save positions in the KVA.
         // TODO: support for rendering unscaled.
-        
+
         #region Events
-        public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved; 
+        public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved;
         #endregion
-        
+
         #region Properties
-        public MagnifierMode Mode 
+        public MagnifierMode Mode
         {
             get { return mode; }
             set { mode = value; }
@@ -49,11 +49,11 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Current magnification level.
         /// </summary>
-        public float Zoom 
+        public float Zoom
         {
             get { return zoom; }
         }
-        public Point Center 
+        public Point Center
         {
             get { return source.Rectangle.Center(); }
         }
@@ -61,7 +61,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Area of the image being magnified.
         /// </summary>
-        public Rectangle Source 
+        public Rectangle Source
         {
             get { return source.Rectangle; }
         }
@@ -77,9 +77,9 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// List of context menus specific to the magnifier.
         /// </summary>
-        public List<ToolStripMenuItem> ContextMenu 
-        { 
-            get 
+        public List<ToolStripMenuItem> ContextMenu
+        {
+            get
             {
                 return contextMenu;
             }
@@ -124,7 +124,7 @@ namespace Kinovea.ScreenManager
                 ToolStripMenuItem mnu = new ToolStripMenuItem();
                 mnu.Text = string.Format("{0:0.0}x", factor);
                 mnu.Click += (s, e) => {
-                    foreach (var m in contextMenu) 
+                    foreach (var m in contextMenu)
                         m.Checked = false;
 
                     zoom = factor;
@@ -217,9 +217,9 @@ namespace Kinovea.ScreenManager
         #region Draw, hit testing and manipulation.
         public void Draw(Bitmap bitmap, Graphics canvas, ImageTransform imageTransform, bool mirrored, Size referenceSize)
         {
-            if(mode == MagnifierMode.Inactive)
+            if (mode == MagnifierMode.Inactive)
                 return;
-            
+
             source.Draw(canvas, imageTransform.Transform(source.Rectangle), Pens.White, (SolidBrush)Brushes.White, 4);
             if (frozen)
                 DrawDestination(frozenBitmap, canvas, imageTransform, mirrored, referenceSize);
@@ -237,7 +237,7 @@ namespace Kinovea.ScreenManager
 
             if (mirrored)
                 srcRect = new Rectangle(bitmap.Width - srcRect.Left, srcRect.Top, -srcRect.Width, srcRect.Height);
-            
+
             canvas.DrawImage(bitmap, imageTransform.Transform(destination), srcRect, GraphicsUnit.Pixel);
             canvas.DrawRectangle(Pens.White, imageTransform.Transform(destination));
         }
@@ -311,6 +311,21 @@ namespace Kinovea.ScreenManager
         public Color Color
         {
             get { return Color.Black; }
+        }
+        public long ReferenceTimestamp 
+        {
+            // This value is used by camera tracking to move the underlying point.
+            // For the magnifier it's not clear if we want to support camera tracking.
+            // If we don't, we need to reset this to the current time or pass a flag in 
+            // SetTrackablePointValue.
+            get
+            { 
+                return 0; 
+            }
+
+            set 
+            { 
+            }
         }
         public TrackingProfile CustomTrackingProfile
         {

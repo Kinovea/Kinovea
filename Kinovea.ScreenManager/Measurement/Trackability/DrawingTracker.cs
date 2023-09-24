@@ -100,6 +100,8 @@ namespace Kinovea.ScreenManager
         private Guid drawingId;
         private bool isTracking;
         private bool assigned;
+        private long trackingTimestamp;
+        private bool isCameraTracking;
         private TrackerParameters parameters;
         private Dictionary<string, TrackablePoint> trackablePoints = new Dictionary<string, TrackablePoint>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -153,15 +155,27 @@ namespace Kinovea.ScreenManager
         /// Track each trackable points in the current image, or use existing tracking data.
         /// Update the point coordinate in the drawing.
         /// </summary>
-        public void Track(TrackingContext context)
+        public void Track(TrackingContext context, CameraTransformer cameraTransformer)
         {
+            // Backup the timestamp in case we move a point manually later.
+            trackingTimestamp = context.Time;
+            isCameraTracking = cameraTransformer.Initialized;
+
             // This is where we would spawn new threads for each tracking.
             Dictionary<string, bool> insertionMap = new Dictionary<string, bool>();
             bool atLeastOneInserted = false;
             foreach(KeyValuePair<string, TrackablePoint> pair in trackablePoints)
             {
                 bool inserted = pair.Value.Track(context);
-                drawing.SetTrackablePointValue(pair.Key, pair.Value.CurrentValue, pair.Value.TimeDifference);
+
+                PointF p = pair.Value.CurrentValue;
+
+                if (!isTracking && cameraTransformer.Initialized)
+                {
+                    p = cameraTransformer.Transform(drawing.ReferenceTimestamp, context.Time, p);
+                }
+
+                drawing.SetTrackablePointValue(pair.Key, p, pair.Value.TimeDifference);
 
                 insertionMap[pair.Key] = inserted;
                 if (inserted)
@@ -339,6 +353,23 @@ namespace Kinovea.ScreenManager
                     // Force insert using closest existing value.
                     pair.Value.ForceInsertClosestLocation();
                     drawing.SetTrackablePointValue(pair.Key, pair.Value.CurrentValue, pair.Value.TimeDifference);
+                }
+            }
+
+            // Update the object reference timestamp, for camera tracking.
+            // From now on when we paint this object it should be relative to this frame.
+            if (drawing.ReferenceTimestamp != trackingTimestamp)
+            {
+                drawing.ReferenceTimestamp = trackingTimestamp;
+
+                // This means all the points must be commited to their current location on this frame.
+                var sourcePoints = drawing.GetTrackablePoints();
+                foreach (KeyValuePair<string, PointF> sp in sourcePoints)
+                {
+                    if (trackablePoints.ContainsKey(sp.Key))
+                    {
+                        trackablePoints[sp.Key].CommitNonTrackingValue(sp.Value);
+                    }
                 }
             }
         }

@@ -46,6 +46,12 @@ namespace Kinovea.ScreenManager
         {
             get { return "Spotlight"; }
         }
+        public long ReferenceTimestamp
+        {
+            get { return referenceTimestamp; }
+            set { referenceTimestamp = value; }
+        }
+
         public override int ContentHash
         {
             get { return position.GetHashCode() ^ radius.GetHashCode() ^ points["o"].GetHashCode(); }
@@ -54,6 +60,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private long position;
+        private long referenceTimestamp;
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
         private long trackingTimestamps = -1;
         private int radius;
