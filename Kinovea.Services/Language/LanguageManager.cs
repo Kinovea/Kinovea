@@ -96,6 +96,7 @@ namespace Kinovea.Services
             // we do not include the language.
 
             // Reference: https://hosted.weblate.org/projects/kinovea/#languages
+            // Last check: 2023-09-24.
 
             // Languages with less than 50% translation coverage.
             languages.Remove("da"); // Danish.
