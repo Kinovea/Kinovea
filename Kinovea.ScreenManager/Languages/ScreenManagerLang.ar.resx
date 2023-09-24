@@ -64,7 +64,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="btnSync_ToolTip" xml:space="preserve"><value>مزامنة الفيديوهات مع الكادرات الحالية</value>
+  <data name="btnSync_ToolTip" xml:space="preserve"><value>مزامنة مقاطع الفيديو مع الاطارات الحالية</value>
   </data>
   <data name="buttonGotoFirst_ToolTip" xml:space="preserve"><value>العودة إلى بداية الفديوهين</value>
   </data>
@@ -506,7 +506,7 @@
   </data>
   <data name="mnuExportSpreadsheet" xml:space="preserve"><value>تصدير الي ورقة جدولية</value>
   </data>
-  <data name="mnuFormat" xml:space="preserve"><value>تنسيق الصورة</value>
+  <data name="mnuFormat" xml:space="preserve"><value>نسبة العرض إلى الارتفاع</value>
   </data>
   <data name="mnuFormatAuto" xml:space="preserve"><value>اكتشاف تلقائي</value>
   </data>
@@ -838,7 +838,7 @@
     <value>لا دوران</value>
   </data>
   <data name="mnuRotation" xml:space="preserve">
-    <value>تدوير الصورة</value>
+    <value>تدوير الشاشة</value>
   </data>
   <data name="mnuDrawingTrackingStop" xml:space="preserve">
     <value>توقف عن التتبع</value>
@@ -953,5 +953,53 @@
   </data>
   <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
     <value>تعديل الرسم</value>
+  </data>
+  <data name="dlgCalibratePlane_AveragePixelSize" xml:space="preserve">
+    <value>معدل حجم البكسلات: {0}.</value>
+  </data>
+  <data name="formConfigureKinogram_CropSize" xml:space="preserve">
+    <value>حجم القص:</value>
+  </data>
+  <data name="dlgCalibratePlane_HelpPlane" xml:space="preserve">
+    <value>أدخل طول كل جانب.</value>
+  </data>
+  <data name="formConfigureExport_SBS" xml:space="preserve">
+    <value>تصدير جنباً إلى جنب</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
+    <value>اعرض افضل حجم للدائرة</value>
+  </data>
+  <data name="lblConfig_ImageSize" xml:space="preserve">
+    <value>حجم الصورة:</value>
+  </data>
+  <data name="formConfigureExport_ImageSequence" xml:space="preserve">
+    <value>تصدير تسلسل الصور</value>
+  </data>
+  <data name="formConfigureKinogram_lblTotal" xml:space="preserve">
+    <value>الإطارات: {0}</value>
+  </data>
+  <data name="dlgCalibratePlane_HelpDistanceGrid" xml:space="preserve">
+    <value>أدخل المسافة من الأصل لكل علامة.</value>
+  </data>
+  <data name="filterName_Analysis" xml:space="preserve">
+    <value>تحليل</value>
+  </data>
+  <data name="formConfigureExport_SBS_Horizontal" xml:space="preserve">
+    <value>افقي</value>
+  </data>
+  <data name="filterName_Kinogram" xml:space="preserve">
+    <value>Kinogram</value>
+  </data>
+  <data name="formConfigureKinogram_Table" xml:space="preserve">
+    <value>الجدول:</value>
+  </data>
+  <data name="mnuAction" xml:space="preserve">
+    <value>الاجراء</value>
+  </data>
+  <data name="formConfigureExport_SBS_Vertical" xml:space="preserve">
+    <value>عمودي</value>
+  </data>
+  <data name="Generic_OK" xml:space="preserve">
+    <value>حسناً</value>
   </data>
 </root>
