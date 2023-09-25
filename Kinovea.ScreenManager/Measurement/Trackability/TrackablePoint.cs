@@ -84,6 +84,7 @@ namespace Kinovea.ScreenManager
         private TrackingContext context;
         private TrackerParameters trackerParameters;
         private Timeline<TrackFrame> trackTimeline = new Timeline<TrackFrame>();
+        private Dictionary<long, PointF> cameraTrackCache = new Dictionary<long, PointF>();
         private PointF nonTrackingValue;
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -128,6 +129,7 @@ namespace Kinovea.ScreenManager
             else
             {
                 nonTrackingValue = value;
+                cameraTrackCache.Clear();
             }
 
             return inserted;
@@ -140,7 +142,6 @@ namespace Kinovea.ScreenManager
         /// If some of them successfully track and some other don't, the one that didn't must insert the closest frame value.
         /// This way we ensure the timelines are always of the same length.
         /// </summary>
-        /// <param name="context"></param>
         public bool Track(TrackingContext context)
         {
             bool inserted = false;
@@ -237,6 +238,21 @@ namespace Kinovea.ScreenManager
             return inserted;
         }
 
+        public PointF CameraTrack(TrackingContext context, CameraTransformer cameraTransformer, long referenceTimestamp)
+        {
+            if (isTracking || !cameraTransformer.Initialized)
+                return currentValue;
+
+            if (!cameraTrackCache.ContainsKey(context.Time))
+            {
+                PointF p = cameraTransformer.Transform(referenceTimestamp, context.Time, currentValue);
+                cameraTrackCache[context.Time] = p;
+            }
+            
+            return cameraTrackCache[context.Time];
+        }
+
+
         public void ForceInsertClosestLocation()
         {
             // This function is used when a drawing containing multiple trackable points has some of the points failing 
@@ -258,10 +274,15 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Import the current value of the point from the drawing into the non-tracking value.
         /// This is used in the context of camera tracking when we move the point manually.
+        /// This means the reference timestamp has changed, so we should invalidate the cache.
         /// </summary>
         public void CommitNonTrackingValue(PointF value)
         {
+            if (nonTrackingValue == value)
+                return;
+
             nonTrackingValue = value;
+            cameraTrackCache.Clear();
         }
 
         public void Reset()
@@ -337,6 +358,7 @@ namespace Kinovea.ScreenManager
                     case "NonTrackingValue":
                         nonTrackingValue = XmlHelper.ParsePointF(r.ReadElementContentAsString());
                         nonTrackingValue = nonTrackingValue.Scale(scale.X, scale.Y);
+                        cameraTrackCache.Clear();
                         break;
                     case "CurrentValue":
                         currentValue = XmlHelper.ParsePointF(r.ReadElementContentAsString());

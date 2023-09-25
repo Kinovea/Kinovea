@@ -167,14 +167,7 @@ namespace Kinovea.ScreenManager
             foreach(KeyValuePair<string, TrackablePoint> pair in trackablePoints)
             {
                 bool inserted = pair.Value.Track(context);
-
-                PointF p = pair.Value.CurrentValue;
-
-                if (!isTracking && cameraTransformer.Initialized)
-                {
-                    p = cameraTransformer.Transform(drawing.ReferenceTimestamp, context.Time, p);
-                }
-
+                PointF p = pair.Value.CameraTrack(context, cameraTransformer, drawing.ReferenceTimestamp);
                 drawing.SetTrackablePointValue(pair.Key, p, pair.Value.TimeDifference);
 
                 insertionMap[pair.Key] = inserted;

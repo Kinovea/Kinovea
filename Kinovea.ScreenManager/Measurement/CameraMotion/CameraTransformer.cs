@@ -57,14 +57,14 @@ namespace Kinovea.ScreenManager
             if (!frameIndices.ContainsKey(referenceTimestamp) || !frameIndices.ContainsKey(currentTimestamp))
                 return p;
 
+            if (referenceTimestamp == currentTimestamp)
+                return p;
+
             // Pairs of conscutive frames transforms.
             // consecTransforms[i] transforms points in image I to their corresponding point in image I+1.
             int startIndex = frameIndices[referenceTimestamp];
             int endIndex = frameIndices[currentTimestamp];
 
-            if (startIndex == endIndex)
-                return p;
-            
             var p2 = new[] { new OpenCvSharp.Point2f(p.X, p.Y) };
             if (startIndex < endIndex)
             {
