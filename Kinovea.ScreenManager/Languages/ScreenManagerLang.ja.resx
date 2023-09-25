@@ -877,4 +877,43 @@
   <data name="LengthUnit_Percentage" xml:space="preserve">
     <value>パーセンテージ</value>
   </data>
+  <data name="dlgRafaleExport_ExportFrameDecimation" xml:space="preserve">
+    <value>{0}枚の画像ごとに1枚の画像をエクスポートします。</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
+    <value>最適な円を表示する</value>
+  </data>
+  <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve">
+    <value>{0:0}ミリ秒ごとに1枚の画像をエクスポートします。</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>サイズ</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>降順</value>
+  </data>
+  <data name="DrawingName_CSVL" xml:space="preserve">
+    <value>中央仙骨垂直線</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>昇順</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_CentripetalAcceleration" xml:space="preserve">
+    <value>向心加速度</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>名前</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>日付</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>並べ替え</value>
+  </data>
+  <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
+    <value>カメラ固有値</value>
+  </data>
+  <data name="dlgRafaleExport_ExportTimeDecimationSeconds" xml:space="preserve">
+    <value>{0:0.00}秒ごとに1枚の画像をエクスポートします。</value>
+  </data>
 </root>
