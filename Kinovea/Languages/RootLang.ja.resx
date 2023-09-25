@@ -72,9 +72,9 @@
   </data>
   <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>プレイバック</value>
   </data>
-  <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>イメージフォーマット:</value>
+  <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>画像フォーマット:</value>
   </data>
-  <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>ビデオフォーマット:</value>
+  <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>動画フォーマット:</value>
   </data>
   <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>年</value>
   </data>
@@ -92,11 +92,11 @@
   </data>
   <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>キャプチャバッファー用メモリー: {0} MB.</value>
   </data>
-  <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>ビデオ再生中にドローイングを表示する</value>
+  <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>動画再生中にドローイングを表示する</value>
   </data>
-  <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>新しいビデオを開くときはインターレースを解除する</value>
+  <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>新しい動画を開くときはインターレースを解除する</value>
   </data>
-  <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>ビデオを比較する際、スピードスライダーを連動させる</value>
+  <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>動画を比較する際、スピードスライダーを連動させる</value>
   </data>
   <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>分析モードに変更</value>
   </data>
@@ -250,5 +250,224 @@
   </data>
   <data name="TimeCodeFormat_Microseconds" xml:space="preserve">
     <value>合計マイクロ秒</value>
+  </data>
+  <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
+    <value>マクロ</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadiansPerSecond" xml:space="preserve">
+    <value>ラジアン毎秒({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegreesPerSecond" xml:space="preserve">
+    <value>度毎秒 ({0})</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
+    <value>受信フレームレート</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsFeetPerSecondSquared" xml:space="preserve">
+    <value>フィート毎秒毎秒 ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadians" xml:space="preserve">
+    <value>ラジアン ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_lblMemory" xml:space="preserve">
+    <value>各再生画面に割り当てられたキャッシュメモリ: {0} MB。</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
+    <value>キャプチャディレクトリ</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
+    <value>時間（秒）による録画の停止:</value>
+  </data>
+  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
+    <value>追跡</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnClear" xml:space="preserve">
+    <value>消去</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve">
+    <value>置換フレームレート (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
+    <value>キャプチャが停止したときにフレームを記録する。</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegreesPerSecondSquared" xml:space="preserve">
+    <value>度毎秒毎秒 ({0})</value>
+  </data>
+  <data name="dlgPreferences_Drawings_TabExport" xml:space="preserve">
+    <value>エクスポート</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAcceleration" xml:space="preserve">
+    <value>加速度:</value>
+  </data>
+  <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve">
+    <value>動画の命名</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
+    <value>アイドル時間（秒）:</value>
+  </data>
+  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
+    <value>コンテキスト</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve">
+    <value>座標フィルタリングの有効化</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportCalibrated" xml:space="preserve">
+    <value>キャリブレーションされた測定</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
+    <value>検索ウィンドウ:</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnApply" xml:space="preserve">
+    <value>適用</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsSpeed" xml:space="preserve">
+    <value>速度:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
+    <value>トリガーの閾値:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsMetersPerSecondSquared" xml:space="preserve">
+    <value>メートル毎秒毎秒 ({0})</value>
+  </data>
+  <data name="dlgPreferences_General_PathToPandoc" xml:space="preserve">
+    <value>pandoc へのパス:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngularVelocity" xml:space="preserve">
+    <value>角速度:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngle" xml:space="preserve">
+    <value>角度:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve">
+    <value>動画全体で表示</value>
+  </data>
+  <data name="dlgWorkspace_Title" xml:space="preserve">
+    <value>ワークスペース</value>
+  </data>
+  <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve">
+    <value>新しい図面のデフォルト不透明度:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVDelimiter" xml:space="preserve">
+    <value>CSVファイルの小数点セパレータ:</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
+    <value>カメラの別名</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
+    <value>録画後のコマンド:</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
+    <value>エスケープシーケンス</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVComma" xml:space="preserve">
+    <value>コンマ</value>
+  </data>
+  <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve">
+    <value>インスタンスにはそれぞれ独自の設定があります</value>
+  </data>
+  <data name="dlgPreferences_Drawing_CSVSystem" xml:space="preserve">
+    <value>システム({0})</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblCommands" xml:space="preserve">
+    <value>コマンド</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportPixels" xml:space="preserve">
+    <value>ピクセル</value>
+  </data>
+  <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve">
+    <value>カーソル移動中に画像を更新</value>
+  </data>
+  <data name="dlgPreferences_Capture_TriggerAction" xml:space="preserve">
+    <value>トリガーアクション:</value>
+  </data>
+  <data name="dlgPreferences_Capture_ImageNaming" xml:space="preserve">
+    <value>画像の命名</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
+    <value>パーセンテージ</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRevolutionsPerMinute" xml:space="preserve">
+    <value>回転毎分 ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngularAcceleration" xml:space="preserve">
+    <value>角加速度:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve">
+    <value>カスタムツールのデバッグモードの有効化</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve">
+    <value>デフォルト</value>
+  </data>
+  <data name="dlgPreferences_Capture_Root" xml:space="preserve">
+    <value>ルート:</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
+    <value>ピクセル</value>
+  </data>
+  <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve">
+    <value>画像シーケンスを動画としてインポートする</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportSpace" xml:space="preserve">
+    <value>エクスポートモード:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve">
+    <value>入力デバイス:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegrees" xml:space="preserve">
+    <value>度({0})</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
+    <value>設定されたフレームレート</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
+    <value>ファイルの上書き警告を無視する</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadiansPerSecondSquared" xml:space="preserve">
+    <value>ラジアン毎秒毎秒 ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
+    <value>カスタム長さ単位:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVPoint" xml:space="preserve">
+    <value>ポイント</value>
+  </data>
+  <data name="mnuTimeFormat" xml:space="preserve">
+    <value>時間</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitTime" xml:space="preserve">
+    <value>時間:</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
+    <value>日付と時刻（YYYYMMDD-HHMMSS）</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve">
+    <value>フレームレート置換の閾値 (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
+    <value>コンテキスト変数</value>
+  </data>
+  <data name="dlgWorkspace_ConfirmationMessage" xml:space="preserve">
+    <value>デフォルトのワークスペースが保存されました。</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
+    <value>キャプチャされたファイル名</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
+    <value>デフォルトの追跡パラメータ</value>
+  </data>
+  <data name="dlgPreferences_Player_tabUnits" xml:space="preserve">
+    <value>単位</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblHotkey" xml:space="preserve">
+    <value>{0}.{1}のホットキー</value>
+  </data>
+  <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve">
+    <value>Kinoveaの複数インスタンスを許可する</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
+    <value>カテゴリー</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
+    <value>オブジェクトウィンドウ:</value>
   </data>
 </root>
