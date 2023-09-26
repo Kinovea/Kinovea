@@ -74,7 +74,7 @@
   </data>
   <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>画像フォーマット:</value>
   </data>
-  <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>動画フォーマット:</value>
+  <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>ビデオフォーマット:</value>
   </data>
   <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>年</value>
   </data>
@@ -92,11 +92,11 @@
   </data>
   <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>キャプチャバッファー用メモリー: {0} MB.</value>
   </data>
-  <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>動画再生中にドローイングを表示する</value>
+  <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>ビデオ再生中にドローイングを表示する</value>
   </data>
-  <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>新しい動画を開くときはインターレースを解除する</value>
+  <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>新しいビデオを開くときはインターレースを解除する</value>
   </data>
-  <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>動画を比較する際、スピードスライダーを連動させる</value>
+  <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>ビデオを比較する際、スピードスライダーを連動させる</value>
   </data>
   <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>分析モードに変更</value>
   </data>
@@ -204,7 +204,7 @@
     <value>非圧縮形式で録画</value>
   </data>
   <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve">
-    <value>非圧縮動画フォーマット:</value>
+    <value>非圧縮ビデオフォーマット:</value>
   </data>
   <data name="dlgPreferences_Capture_Recording" xml:space="preserve">
     <value>録画</value>
@@ -300,7 +300,7 @@
     <value>加速度:</value>
   </data>
   <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve">
-    <value>動画の命名</value>
+    <value>ビデオの命名</value>
   </data>
   <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
     <value>アイドル時間（秒）:</value>
@@ -339,13 +339,13 @@
     <value>角度:</value>
   </data>
   <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve">
-    <value>動画全体で表示</value>
+    <value>ビデオ全体で表示</value>
   </data>
   <data name="dlgWorkspace_Title" xml:space="preserve">
     <value>ワークスペース</value>
   </data>
   <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve">
-    <value>新しい図面のデフォルト不透明度:</value>
+    <value>新しい描画のデフォルト不透明度:</value>
   </data>
   <data name="dlgPreferences_Drawings_CSVDelimiter" xml:space="preserve">
     <value>CSVファイルの小数点セパレータ:</value>
@@ -405,7 +405,7 @@
     <value>ピクセル</value>
   </data>
   <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve">
-    <value>画像シーケンスを動画としてインポートする</value>
+    <value>画像シーケンスをビデオとしてインポートする</value>
   </data>
   <data name="dlgPreferences_Drawings_ExportSpace" xml:space="preserve">
     <value>エクスポートモード:</value>
@@ -429,7 +429,7 @@
     <value>カスタム長さ単位:</value>
   </data>
   <data name="dlgPreferences_Drawings_CSVPoint" xml:space="preserve">
-    <value>ポイント</value>
+    <value>点</value>
   </data>
   <data name="mnuTimeFormat" xml:space="preserve">
     <value>時間</value>
