@@ -114,7 +114,7 @@
     <value>サイズ</value>
   </data>
   <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
-    <value>リプレイフォルダのオブザーバーとして開く</value>
+    <value>リプレイフォルダオブザーバーとして開く</value>
   </data>
   <data name="mnuSortBy_Descending" xml:space="preserve">
     <value>降順</value>
