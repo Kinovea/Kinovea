@@ -106,7 +106,7 @@
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve"><value>なし</value>
   </data>
-  <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>スピード</value>
+  <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>速度</value>
   </data>
   <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>セグメントの実際のサイズ:</value>
   </data>
