@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -58,7 +58,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="lblFolders" xml:space="preserve"><value>Fascikle</value>
+  <data name="lblFolders" xml:space="preserve"><value>Mape</value>
   </data>
   <data name="lblVideoFiles" xml:space="preserve"><value>Video datoteke</value>
   </data>
@@ -68,9 +68,9 @@
   </data>
   <data name="mnuDeleteShortcut" xml:space="preserve"><value>Izbriši prečicu</value>
   </data>
-  <data name="Generic_Cancel" xml:space="preserve"><value>Otkaži</value>
+  <data name="Generic_Cancel" xml:space="preserve"><value>Poništi</value>
   </data>
-  <data name="tabExplorer" xml:space="preserve"><value>Istraživač</value>
+  <data name="tabExplorer" xml:space="preserve"><value>Pretraživač</value>
   </data>
   <data name="tabShortcuts" xml:space="preserve"><value>Prečice</value>
   </data>
@@ -85,5 +85,47 @@
   </data>
   <data name="lblCameras" xml:space="preserve">
     <value>Kamere</value>
+  </data>
+  <data name="FormCameraWizard_Test" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="lblCaptureHistory" xml:space="preserve">
+    <value>Povijest snimanja</value>
+  </data>
+  <data name="mnuVideoLocate" xml:space="preserve">
+    <value>Lociraj u Windows Exploreru </value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Dimenzija</value>
+  </data>
+  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
+    <value>Otvori kao promatrač mape repriza</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>Silazni</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>Uzlazni</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>Naziv</value>
+  </data>
+  <data name="FormCameraWizard_CameraType" xml:space="preserve">
+    <value>Tip kamere</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="FormCameraWizard_Title" xml:space="preserve">
+    <value>Ručno povezivanje</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Sortiraj po</value>
+  </data>
+  <data name="ForgetCustomSettings" xml:space="preserve">
+    <value>Zaboravi prilagođene postavke</value>
+  </data>
+  <data name="FormCameraWizard_Create" xml:space="preserve">
+    <value>Napravi kameru</value>
   </data>
 </root>
