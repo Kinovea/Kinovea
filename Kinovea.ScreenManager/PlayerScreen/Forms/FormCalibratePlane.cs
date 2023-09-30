@@ -34,8 +34,8 @@ namespace Kinovea.ScreenManager
     {
         private CalibrationHelper calibrationHelper;
         private DrawingPlane drawingPlane;
-        private QuadrilateralF quadrilateral;
-        private QuadrilateralF miniQuadrilateral;
+        private QuadrilateralF quadImage;
+        private QuadrilateralF quadPanel;
         private bool isDistanceGrid;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
@@ -43,7 +43,7 @@ namespace Kinovea.ScreenManager
         {
             this.calibrationHelper = calibrationHelper;
             this.drawingPlane = drawingPlane;
-            this.quadrilateral = drawingPlane.QuadImage;
+            this.quadImage = drawingPlane.QuadImage;
             this.isDistanceGrid = drawingPlane.IsDistanceGrid;
             
             InitializeComponent();
@@ -135,7 +135,7 @@ namespace Kinovea.ScreenManager
             }
 
             // Prepare drawing.
-            RectangleF bbox = quadrilateral.GetBoundingBox();
+            RectangleF bbox = quadImage.GetBoundingBox();
             SizeF usableSize = new SizeF(pnlQuadrilateral.Width * 0.8f, pnlQuadrilateral.Height * 0.8f);
             float ratioWidth = bbox.Width / usableSize.Width;
             float ratioHeight = bbox.Height / usableSize.Height;
@@ -146,13 +146,13 @@ namespace Kinovea.ScreenManager
             float top = (pnlQuadrilateral.Height - height) / 2;
             float left = (pnlQuadrilateral.Width - width) / 2;
             
-            miniQuadrilateral = new QuadrilateralF();
+            quadPanel = new QuadrilateralF();
             for(int i = 0; i<4; i++)
             {
-                PointF p = quadrilateral[i].Translate(-bbox.Left, -bbox.Top);
+                PointF p = quadImage[i].Translate(-bbox.Left, -bbox.Top);
                 p = p.Scale(1/ratio, 1/ratio);
                 p = p.Translate(left, top);
-                miniQuadrilateral[i] = p;
+                quadPanel[i] = p;
             }
 
             UpdateTheoreticalPrecision();
@@ -263,8 +263,8 @@ namespace Kinovea.ScreenManager
                         return;
 
                     // Average between the near and far side.
-                    float ab = GeometryHelper.GetDistance(quadrilateral.A, quadrilateral.B);
-                    float cd = GeometryHelper.GetDistance(quadrilateral.C, quadrilateral.D);
+                    float ab = GeometryHelper.GetDistance(quadImage.A, quadImage.B);
+                    float cd = GeometryHelper.GetDistance(quadImage.C, quadImage.D);
                     float pixelLength = (ab + cd) / 2;
 
                     LengthUnit unit = LengthUnit.Pixels;
@@ -298,27 +298,50 @@ namespace Kinovea.ScreenManager
             
             // Edges
             Pen p = new Pen(pnlQuadrilateral.ForeColor);
-            canvas.DrawLine(p, miniQuadrilateral.A, miniQuadrilateral.B);
-            canvas.DrawLine(p, miniQuadrilateral.B, miniQuadrilateral.C);
-            canvas.DrawLine(p, miniQuadrilateral.C, miniQuadrilateral.D);
-            canvas.DrawLine(p, miniQuadrilateral.D, miniQuadrilateral.A);
-            
+            canvas.DrawLine(p, quadPanel.A, quadPanel.B);
+            canvas.DrawLine(p, quadPanel.B, quadPanel.C);
+            canvas.DrawLine(p, quadPanel.C, quadPanel.D);
+            canvas.DrawLine(p, quadPanel.D, quadPanel.A);
+
+            // Origin
+            canvas.DrawEllipse(p, quadPanel.D.Box(5));
+
+            // Direction vectors
+            PointF o = quadPanel.D;
+            PointF dirX = quadPanel.C.Subtract(quadPanel.D);
+            PointF dirY = quadPanel.A.Subtract(quadPanel.D);
+            PointF x = o.Add(dirX.Scale(0.15f));
+            PointF y = o.Add(dirY.Scale(0.15f));
+
+            using (Pen pX = new Pen(Color.Tomato))
+            using (Pen pY = new Pen(Color.YellowGreen))
+            {
+                ArrowHelper.Draw(canvas, Pens.Tomato, x, o);
+                ArrowHelper.Draw(canvas, Pens.YellowGreen, y, o);
+                
+                pX.Width = 2.0f;
+                pY.Width = 2.0f;
+                canvas.DrawLine(pX, o, x);
+                canvas.DrawLine(pY, o, y);
+            }
+
+
             // Indicators to identify lengths or coordinates.
             if (isDistanceGrid)
             {
-                DrawIndicator(canvas, " a ", miniQuadrilateral.D.Translate(0, 12));
-                DrawIndicator(canvas, " b ", miniQuadrilateral.C.Translate(0, 12));
+                DrawIndicator(canvas, " a ", quadPanel.D.Translate(0, 12));
+                DrawIndicator(canvas, " b ", quadPanel.C.Translate(0, 12));
                 p.DashStyle = DashStyle.Dash;
-                PointF midTop = GeometryHelper.GetMiddlePoint(miniQuadrilateral.A, miniQuadrilateral.B);
-                PointF midBot = GeometryHelper.GetMiddlePoint(miniQuadrilateral.D, miniQuadrilateral.C);
+                PointF midTop = GeometryHelper.GetMiddlePoint(quadPanel.A, quadPanel.B);
+                PointF midBot = GeometryHelper.GetMiddlePoint(quadPanel.D, quadPanel.C);
                 canvas.DrawLine(p, midTop, midBot);
             }
             else
             {
-                DrawIndicator(canvas, " b ", GeometryHelper.GetMiddlePoint(miniQuadrilateral.A, miniQuadrilateral.B));
-                DrawIndicator(canvas, " a ", GeometryHelper.GetMiddlePoint(miniQuadrilateral.B, miniQuadrilateral.C));
-                DrawIndicator(canvas, " b ", GeometryHelper.GetMiddlePoint(miniQuadrilateral.C, miniQuadrilateral.D));
-                DrawIndicator(canvas, " a ", GeometryHelper.GetMiddlePoint(miniQuadrilateral.D, miniQuadrilateral.A));
+                DrawIndicator(canvas, " b ", GeometryHelper.GetMiddlePoint(quadPanel.A, quadPanel.B));
+                DrawIndicator(canvas, " a ", GeometryHelper.GetMiddlePoint(quadPanel.B, quadPanel.C));
+                DrawIndicator(canvas, " b ", GeometryHelper.GetMiddlePoint(quadPanel.C, quadPanel.D));
+                DrawIndicator(canvas, " a ", GeometryHelper.GetMiddlePoint(quadPanel.D, quadPanel.A));
             }
 
             p.Dispose();

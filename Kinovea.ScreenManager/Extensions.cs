@@ -64,13 +64,21 @@ namespace Kinovea.ScreenManager
         {
             return new PointF(point.X + x, point.Y + y);
         }
-        public static PointF Scale(this PointF point, float scaleX, float scaleY)
+        public static PointF Add(this PointF p, PointF p2)
         {
-            return new PointF(point.X * scaleX, point.Y * scaleY);
+            return new PointF(p.X + p2.X, p.Y + p2.Y);
+        }
+        public static PointF Subtract(this PointF p, PointF p2)
+        {
+            return new PointF(p.X - p2.X, p.Y - p2.Y);
         }
         public static PointF Scale(this PointF point, float scale)
         {
             return new PointF(point.X * scale, point.Y * scale);
+        }
+        public static PointF Scale(this PointF point, float scaleX, float scaleY)
+        {
+            return new PointF(point.X * scaleX, point.Y * scaleY);
         }
         public static RectangleF Box(this PointF point, Size size)
         {
