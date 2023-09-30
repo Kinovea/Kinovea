@@ -135,7 +135,7 @@
     <value>Ponovno se poveži</value>
   </data>
   <data name="FormConfiguration_Properties_StreamFormat" xml:space="preserve">
-    <value>Format protoka videa:</value>
+    <value>Format video streama:</value>
   </data>
   <data name="FormConfiguration_DevicePropertyPages" xml:space="preserve">
     <value>Stranice s podacima uređaja</value>
