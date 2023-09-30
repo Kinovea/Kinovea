@@ -232,6 +232,7 @@ namespace Kinovea.ScreenManager
         public void SetOffset(PointF p)
         {
             calibrator.Offset = p;
+            AfterCalibrationChanged();
         }
 
         /// <summary>

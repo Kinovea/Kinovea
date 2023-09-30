@@ -36,7 +36,6 @@ namespace Kinovea.ScreenManager
         private DrawingPlane drawingPlane;
         private QuadrilateralF quadImage;
         private QuadrilateralF quadPanel;
-        private bool isDistanceGrid;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         public FormCalibratePlane(CalibrationHelper calibrationHelper, DrawingPlane drawingPlane)
@@ -44,7 +43,6 @@ namespace Kinovea.ScreenManager
             this.calibrationHelper = calibrationHelper;
             this.drawingPlane = drawingPlane;
             this.quadImage = drawingPlane.QuadImage;
-            this.isDistanceGrid = drawingPlane.IsDistanceGrid;
             
             InitializeComponent();
             LocalizeForm();
@@ -81,38 +79,9 @@ namespace Kinovea.ScreenManager
             if (calibrationHelper.IsCalibrated && calibrationHelper.CalibratorType == CalibratorType.Plane)
             {
                 SizeF size = calibrationHelper.CalibrationByPlane_GetRectangleSize();
-
-                if (isDistanceGrid)
-                {
-                    PointF offset = calibrationHelper.GetWorldOffset();
-                    float a = offset.X;
-                    float b = offset.X + size.Width;
-                    
-                    if (drawingPlane.DistanceLTR)
-                    {
-                        tbA.Text = String.Format("{0:0.00}", a);
-                        tbB.Text = String.Format("{0:0.00}", b);
-                    }
-                    else
-                    {
-                        tbA.Text = String.Format("{0:0.00}", b);
-                        tbB.Text = String.Format("{0:0.00}", a);
-                    }
-                }
-                else
-                {
-                    tbA.Text = String.Format("{0:0.00}", size.Height);
-                    tbB.Text = String.Format("{0:0.00}", size.Width);
-                }
-
+                tbA.Text = String.Format("{0:0.00}", size.Width);
+                tbB.Text = String.Format("{0:0.00}", size.Height);
                 cbUnit.SelectedIndex = (int)calibrationHelper.LengthUnit;
-            }
-            else if (isDistanceGrid)
-            {
-                // Default values for distance grid.
-                tbA.Text = "0";
-                tbB.Text = "4";
-                cbUnit.SelectedIndex = (int)LengthUnit.Meters;
             }
             else
             { 
@@ -122,18 +91,14 @@ namespace Kinovea.ScreenManager
                 cbUnit.SelectedIndex = (int)LengthUnit.Centimeters;
             }
 
-            // Help text.
-            if (isDistanceGrid)
-            {
-                lblSeparator.Text = ",";
-                lblHelpText.Text = ScreenManagerLang.dlgCalibratePlane_HelpDistanceGrid;
-            }
-            else
-            {
-                lblSeparator.Text = "×";
-                lblHelpText.Text = ScreenManagerLang.dlgCalibratePlane_HelpPlane;
-            }
+            PointF offset = calibrationHelper.GetWorldOffset();
+            tbOffsetX.Text = String.Format("{0:0.00}", offset.X);
+            tbOffsetY.Text = String.Format("{0:0.00}", offset.Y);
+            lblOffsetUnit.Text = UnitHelper.LengthAbbreviation(calibrationHelper.LengthUnit);
 
+            lblSeparator.Text = "×";
+            lblHelpText.Text = ScreenManagerLang.dlgCalibratePlane_HelpPlane;
+            
             // Prepare drawing.
             RectangleF bbox = quadImage.GetBoundingBox();
             SizeF usableSize = new SizeF(pnlQuadrilateral.Width * 0.8f, pnlQuadrilateral.Height * 0.8f);
@@ -183,6 +148,13 @@ namespace Kinovea.ScreenManager
         private void cbUnit_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateTheoreticalPrecision();
+
+            LengthUnit unit = LengthUnit.Pixels;
+            int selectedIndex = cbUnit.SelectedIndex;
+            if (selectedIndex >= 0)
+                unit = (LengthUnit)selectedIndex;
+
+            lblOffsetUnit.Text = UnitHelper.LengthAbbreviation(unit);
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -192,54 +164,33 @@ namespace Kinovea.ScreenManager
             
             try
             {
-                float a = float.Parse(tbA.Text);
-                float b = float.Parse(tbB.Text);
-                float offset = 0;
-                bool leftToRight = true;
-                SizeF size;
-                if (isDistanceGrid)
+                float width = float.Parse(tbA.Text);
+                float height = float.Parse(tbB.Text);
+                if (width <= 0 || height <= 0)
                 {
-                    if (a == b)
-                    {
-                        log.Error(String.Format("The markers coordinates cannot be identical. ({0}, {1}).", tbA.Text, tbB.Text));
-                        return;
-                    }
-
-                    if (a < b)
-                    {
-                        offset = a;
-                        leftToRight = true;
-                        size = new SizeF(b - a, 1);
-                    }
-                    else
-                    {
-                        offset = b;
-                        leftToRight = false;
-                        size = new SizeF(a - b, 1);
-                    }
-                }
-                else
-                {
-                    if (a <= 0 || b <= 0)
-                    {
-                        log.Error(String.Format("The side length cannot be zero or negative. ({0}x{1}).", tbA.Text, tbB.Text));
-                        return;
-                    }
-
-                    size = new SizeF(b, a);
+                    log.Error(String.Format("The side length cannot be zero or negative. ({0}x{1}).", tbA.Text, tbB.Text));
+                    return;
                 }
 
-                drawingPlane.UpdateMapping(size, leftToRight);
+                float offsetX = float.Parse(tbOffsetX.Text);
+                float offsetY = float.Parse(tbOffsetY.Text);
+
+                SizeF size = new SizeF(width, height);
+                PointF offset = new PointF(offsetX, offsetY);
+                
+                drawingPlane.UpdateMapping(size);
+
 
                 calibrationHelper.SetCalibratorFromType(CalibratorType.Plane);
                 calibrationHelper.CalibrationByPlane_Initialize(drawingPlane.Id, size, drawingPlane.QuadImage);
-                calibrationHelper.SetOffset(new PointF(offset, 0));
                 calibrationHelper.LengthUnit = (LengthUnit)cbUnit.SelectedIndex;
+                calibrationHelper.SetOffset(offset);
             }
             catch
             {
                 // Failed : do nothing.
-                log.Error(String.Format("Error while parsing size. ({0}x{1}).", tbA.Text, tbB.Text));
+                log.Error(String.Format("Error while parsing size or offset. size:{0}x{1}, offset:{2}×{3}.", 
+                    tbA.Text, tbB.Text, tbOffsetX, tbOffsetY));
             }
         }
         private void btnCancel_Click(object sender, EventArgs e)
@@ -252,36 +203,30 @@ namespace Kinovea.ScreenManager
             
             try
             {
-                float a = float.Parse(tbA.Text);
-                float b = float.Parse(tbB.Text);
-    
-                // Calculate the average pixel size.
-                if (isDistanceGrid)
-                {
-                    float worldLength = Math.Abs(a - b);
-                    if (worldLength == 0)
-                        return;
+                float worldA = float.Parse(tbA.Text);
+                float worldB = float.Parse(tbB.Text);
 
-                    // Average between the near and far side.
-                    float ab = GeometryHelper.GetDistance(quadImage.A, quadImage.B);
-                    float cd = GeometryHelper.GetDistance(quadImage.C, quadImage.D);
-                    float pixelLength = (ab + cd) / 2;
-
-                    LengthUnit unit = LengthUnit.Pixels;
-                    int selectedIndex = cbUnit.SelectedIndex;
-                    if (selectedIndex >= 0)
-                        unit = (LengthUnit)selectedIndex;
-
-                    string pixelSize = UnitHelper.GetPixelSize(worldLength, pixelLength, unit);
-
-                    lblPrecision.Text = string.Format(ScreenManagerLang.dlgCalibratePlane_AveragePixelSize, pixelSize);
-                    lblPrecision.Visible = true;
-                }
-                else
-                {
-                    // TODO: implement comparaison on areas.
+                if (worldA == 0 || worldB == 0)
                     return;
-                }
+
+                // Average between the near and far side.
+                float ab = GeometryHelper.GetDistance(quadImage.A, quadImage.B);
+                float dc = GeometryHelper.GetDistance(quadImage.D, quadImage.C);
+                float pixelA = (ab + dc) / 2;
+
+                float ad = GeometryHelper.GetDistance(quadImage.A, quadImage.D);
+                float bc = GeometryHelper.GetDistance(quadImage.B, quadImage.C);
+                float pixelB = (ad + bc) / 2;
+
+                LengthUnit unit = LengthUnit.Pixels;
+                int selectedIndex = cbUnit.SelectedIndex;
+                if (selectedIndex >= 0)
+                    unit = (LengthUnit)selectedIndex;
+
+                string pixelSize = UnitHelper.GetPixelSize(worldA, worldB, pixelA, pixelB, unit);
+
+                lblPrecision.Text = string.Format(ScreenManagerLang.dlgCalibratePlane_AveragePixelSize, pixelSize);
+                lblPrecision.Visible = true;
             }
             catch
             {
@@ -327,22 +272,22 @@ namespace Kinovea.ScreenManager
 
 
             // Indicators to identify lengths or coordinates.
-            if (isDistanceGrid)
-            {
-                DrawIndicator(canvas, " a ", quadPanel.D.Translate(0, 12));
-                DrawIndicator(canvas, " b ", quadPanel.C.Translate(0, 12));
-                p.DashStyle = DashStyle.Dash;
-                PointF midTop = GeometryHelper.GetMiddlePoint(quadPanel.A, quadPanel.B);
-                PointF midBot = GeometryHelper.GetMiddlePoint(quadPanel.D, quadPanel.C);
-                canvas.DrawLine(p, midTop, midBot);
-            }
-            else
-            {
-                DrawIndicator(canvas, " b ", GeometryHelper.GetMiddlePoint(quadPanel.A, quadPanel.B));
-                DrawIndicator(canvas, " a ", GeometryHelper.GetMiddlePoint(quadPanel.B, quadPanel.C));
-                DrawIndicator(canvas, " b ", GeometryHelper.GetMiddlePoint(quadPanel.C, quadPanel.D));
-                DrawIndicator(canvas, " a ", GeometryHelper.GetMiddlePoint(quadPanel.D, quadPanel.A));
-            }
+            //if (isDistanceGrid)
+            //{
+            //    DrawIndicator(canvas, " a ", quadPanel.D.Translate(0, 12));
+            //    DrawIndicator(canvas, " b ", quadPanel.C.Translate(0, 12));
+            //    p.DashStyle = DashStyle.Dash;
+            //    PointF midTop = GeometryHelper.GetMiddlePoint(quadPanel.A, quadPanel.B);
+            //    PointF midBot = GeometryHelper.GetMiddlePoint(quadPanel.D, quadPanel.C);
+            //    canvas.DrawLine(p, midTop, midBot);
+            //}
+            //else
+            //{
+                DrawIndicator(canvas, " a ", GeometryHelper.GetMiddlePoint(quadPanel.A, quadPanel.B));
+                DrawIndicator(canvas, " b ", GeometryHelper.GetMiddlePoint(quadPanel.B, quadPanel.C));
+                DrawIndicator(canvas, " a ", GeometryHelper.GetMiddlePoint(quadPanel.C, quadPanel.D));
+                DrawIndicator(canvas, " b ", GeometryHelper.GetMiddlePoint(quadPanel.D, quadPanel.A));
+            //}
 
             p.Dispose();
         }

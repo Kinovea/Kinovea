@@ -775,14 +775,12 @@ namespace Kinovea.ScreenManager
             quadImage = quadPlane.Clone();
         }
 
-        public void UpdateMapping(SizeF size, bool ltr)
+        public void UpdateMapping(SizeF size)
         {
             planeWidth = size.Width;
             planeHeight = size.Height;
             quadPlane = new QuadrilateralF(planeWidth, planeHeight);
 
-            distanceLTR = ltr;
-            
             projectiveMapping.Update(quadPlane, quadImage);
             UpdateTickMarks();
         }
@@ -901,7 +899,7 @@ namespace Kinovea.ScreenManager
             if (calibrationHelper.CalibrationDrawingId == this.Id)
                 size = calibrationHelper.CalibrationByPlane_GetRectangleSize();
                 
-            UpdateMapping(size, distanceLTR);
+            UpdateMapping(size);
         }
 
         /// <summary>
