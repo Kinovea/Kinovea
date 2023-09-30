@@ -50,8 +50,7 @@ namespace Kinovea.ScreenManager
         {
       this.grpConfig = new System.Windows.Forms.GroupBox();
       this.lblPrecision = new System.Windows.Forms.Label();
-      this.lblHelpText = new System.Windows.Forms.Label();
-      this.lblSeparator = new System.Windows.Forms.Label();
+      this.lblSizeHelp = new System.Windows.Forms.Label();
       this.tbB = new System.Windows.Forms.TextBox();
       this.label1 = new System.Windows.Forms.Label();
       this.cbUnit = new System.Windows.Forms.ComboBox();
@@ -61,11 +60,11 @@ namespace Kinovea.ScreenManager
       this.btnCancel = new System.Windows.Forms.Button();
       this.pnlQuadrilateral = new System.Windows.Forms.Panel();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
-      this.lblOffset = new System.Windows.Forms.Label();
+      this.label3 = new System.Windows.Forms.Label();
       this.label2 = new System.Windows.Forms.Label();
+      this.lblOffsetHelp = new System.Windows.Forms.Label();
       this.tbOffsetY = new System.Windows.Forms.TextBox();
       this.tbOffsetX = new System.Windows.Forms.TextBox();
-      this.lblOffsetUnit = new System.Windows.Forms.Label();
       this.grpConfig.SuspendLayout();
       this.groupBox1.SuspendLayout();
       this.SuspendLayout();
@@ -75,8 +74,7 @@ namespace Kinovea.ScreenManager
       this.grpConfig.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.grpConfig.Controls.Add(this.lblPrecision);
-      this.grpConfig.Controls.Add(this.lblHelpText);
-      this.grpConfig.Controls.Add(this.lblSeparator);
+      this.grpConfig.Controls.Add(this.lblSizeHelp);
       this.grpConfig.Controls.Add(this.tbB);
       this.grpConfig.Controls.Add(this.label1);
       this.grpConfig.Controls.Add(this.cbUnit);
@@ -100,26 +98,15 @@ namespace Kinovea.ScreenManager
       this.lblPrecision.Text = "Precision text";
       this.lblPrecision.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
       // 
-      // lblHelpText
+      // lblSizeHelp
       // 
-      this.lblHelpText.AutoSize = true;
-      this.lblHelpText.Location = new System.Drawing.Point(11, 29);
-      this.lblHelpText.Name = "lblHelpText";
-      this.lblHelpText.Size = new System.Drawing.Size(49, 13);
-      this.lblHelpText.TabIndex = 30;
-      this.lblHelpText.Text = "Help text";
-      this.lblHelpText.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
-      // 
-      // lblSeparator
-      // 
-      this.lblSeparator.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.lblSeparator.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblSeparator.Location = new System.Drawing.Point(97, 58);
-      this.lblSeparator.Name = "lblSeparator";
-      this.lblSeparator.Size = new System.Drawing.Size(12, 17);
-      this.lblSeparator.TabIndex = 29;
-      this.lblSeparator.Text = "×";
-      this.lblSeparator.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      this.lblSizeHelp.AutoSize = true;
+      this.lblSizeHelp.Location = new System.Drawing.Point(11, 29);
+      this.lblSizeHelp.Name = "lblSizeHelp";
+      this.lblSizeHelp.Size = new System.Drawing.Size(49, 13);
+      this.lblSizeHelp.TabIndex = 30;
+      this.lblSizeHelp.Text = "Help text";
+      this.lblSizeHelp.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
       // 
       // tbB
       // 
@@ -179,7 +166,7 @@ namespace Kinovea.ScreenManager
       // 
       this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.btnOK.Location = new System.Drawing.Point(152, 427);
+      this.btnOK.Location = new System.Drawing.Point(152, 465);
       this.btnOK.Name = "btnOK";
       this.btnOK.Size = new System.Drawing.Size(92, 24);
       this.btnOK.TabIndex = 4;
@@ -191,7 +178,7 @@ namespace Kinovea.ScreenManager
       // 
       this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.btnCancel.Location = new System.Drawing.Point(257, 427);
+      this.btnCancel.Location = new System.Drawing.Point(257, 465);
       this.btnCancel.Name = "btnCancel";
       this.btnCancel.Size = new System.Drawing.Size(92, 24);
       this.btnCancel.TabIndex = 4;
@@ -216,44 +203,55 @@ namespace Kinovea.ScreenManager
       this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.groupBox1.Controls.Add(this.lblOffsetUnit);
-      this.groupBox1.Controls.Add(this.lblOffset);
+      this.groupBox1.Controls.Add(this.label3);
       this.groupBox1.Controls.Add(this.label2);
+      this.groupBox1.Controls.Add(this.lblOffsetHelp);
       this.groupBox1.Controls.Add(this.tbOffsetY);
       this.groupBox1.Controls.Add(this.tbOffsetX);
       this.groupBox1.Location = new System.Drawing.Point(12, 349);
       this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(337, 62);
+      this.groupBox1.Size = new System.Drawing.Size(337, 100);
       this.groupBox1.TabIndex = 33;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Coordinates";
       // 
-      // lblOffset
+      // label3
       // 
-      this.lblOffset.AutoSize = true;
-      this.lblOffset.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblOffset.Location = new System.Drawing.Point(12, 28);
-      this.lblOffset.Name = "lblOffset";
-      this.lblOffset.Size = new System.Drawing.Size(38, 13);
-      this.lblOffset.TabIndex = 32;
-      this.lblOffset.Text = "Offset:";
-      this.lblOffset.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+      this.label3.AutoSize = true;
+      this.label3.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label3.Location = new System.Drawing.Point(106, 62);
+      this.label3.Name = "label3";
+      this.label3.Size = new System.Drawing.Size(25, 13);
+      this.label3.TabIndex = 32;
+      this.label3.Text = "Y =";
+      this.label3.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
       // 
       // label2
       // 
-      this.label2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.label2.AutoSize = true;
       this.label2.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.label2.Location = new System.Drawing.Point(119, 25);
+      this.label2.Location = new System.Drawing.Point(24, 62);
       this.label2.Name = "label2";
-      this.label2.Size = new System.Drawing.Size(12, 17);
-      this.label2.TabIndex = 30;
-      this.label2.Text = "×";
-      this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      this.label2.Size = new System.Drawing.Size(25, 13);
+      this.label2.TabIndex = 34;
+      this.label2.Text = "X =";
+      this.label2.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+      // 
+      // lblOffsetHelp
+      // 
+      this.lblOffsetHelp.AutoSize = true;
+      this.lblOffsetHelp.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblOffsetHelp.Location = new System.Drawing.Point(11, 29);
+      this.lblOffsetHelp.Name = "lblOffsetHelp";
+      this.lblOffsetHelp.Size = new System.Drawing.Size(145, 13);
+      this.lblOffsetHelp.TabIndex = 32;
+      this.lblOffsetHelp.Text = "Offset applied to coordinates.";
+      this.lblOffsetHelp.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
       // 
       // tbOffsetY
       // 
       this.tbOffsetY.AcceptsReturn = true;
-      this.tbOffsetY.Location = new System.Drawing.Point(137, 25);
+      this.tbOffsetY.Location = new System.Drawing.Point(137, 58);
       this.tbOffsetY.MaxLength = 10;
       this.tbOffsetY.Name = "tbOffsetY";
       this.tbOffsetY.Size = new System.Drawing.Size(40, 20);
@@ -264,7 +262,7 @@ namespace Kinovea.ScreenManager
       // tbOffsetX
       // 
       this.tbOffsetX.AcceptsReturn = true;
-      this.tbOffsetX.Location = new System.Drawing.Point(73, 25);
+      this.tbOffsetX.Location = new System.Drawing.Point(51, 58);
       this.tbOffsetX.MaxLength = 10;
       this.tbOffsetX.Name = "tbOffsetX";
       this.tbOffsetX.Size = new System.Drawing.Size(40, 20);
@@ -272,23 +270,12 @@ namespace Kinovea.ScreenManager
       this.tbOffsetX.TextChanged += new System.EventHandler(this.textBox_TextChanged);
       this.tbOffsetX.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_KeyPress);
       // 
-      // lblUnit
-      // 
-      this.lblOffsetUnit.AutoSize = true;
-      this.lblOffsetUnit.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblOffsetUnit.Location = new System.Drawing.Point(197, 28);
-      this.lblOffsetUnit.Name = "lblUnit";
-      this.lblOffsetUnit.Size = new System.Drawing.Size(24, 13);
-      this.lblOffsetUnit.TabIndex = 33;
-      this.lblOffsetUnit.Text = "unit";
-      this.lblOffsetUnit.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
-      // 
       // FormCalibratePlane
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.Color.White;
-      this.ClientSize = new System.Drawing.Size(361, 460);
+      this.ClientSize = new System.Drawing.Size(361, 498);
       this.Controls.Add(this.groupBox1);
       this.Controls.Add(this.pnlQuadrilateral);
       this.Controls.Add(this.grpConfig);
@@ -308,7 +295,6 @@ namespace Kinovea.ScreenManager
 
         }
         private System.Windows.Forms.Panel pnlQuadrilateral;
-        private System.Windows.Forms.Label lblSeparator;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox tbB;
         private System.Windows.Forms.Button btnCancel;
@@ -317,13 +303,13 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.TextBox tbA;
         private System.Windows.Forms.ComboBox cbUnit;
         private System.Windows.Forms.GroupBox grpConfig;
-        private System.Windows.Forms.Label lblHelpText;
+        private System.Windows.Forms.Label lblSizeHelp;
         private System.Windows.Forms.Label lblPrecision;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Label lblOffset;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblOffsetHelp;
         private System.Windows.Forms.TextBox tbOffsetY;
         private System.Windows.Forms.TextBox tbOffsetX;
-        private System.Windows.Forms.Label lblOffsetUnit;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label2;
     }
 }

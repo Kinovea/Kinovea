@@ -94,11 +94,10 @@ namespace Kinovea.ScreenManager
             PointF offset = calibrationHelper.GetWorldOffset();
             tbOffsetX.Text = String.Format("{0:0.00}", offset.X);
             tbOffsetY.Text = String.Format("{0:0.00}", offset.Y);
-            lblOffsetUnit.Text = UnitHelper.LengthAbbreviation(calibrationHelper.LengthUnit);
+            lblSizeHelp.Text = ScreenManagerLang.dlgCalibratePlane_HelpPlane;
+            lblOffsetHelp.Text = string.Format("Offset applied to coordinates ({0}).",
+                UnitHelper.LengthAbbreviation(calibrationHelper.LengthUnit));
 
-            lblSeparator.Text = "×";
-            lblHelpText.Text = ScreenManagerLang.dlgCalibratePlane_HelpPlane;
-            
             // Prepare drawing.
             RectangleF bbox = quadImage.GetBoundingBox();
             SizeF usableSize = new SizeF(pnlQuadrilateral.Width * 0.8f, pnlQuadrilateral.Height * 0.8f);
@@ -154,7 +153,8 @@ namespace Kinovea.ScreenManager
             if (selectedIndex >= 0)
                 unit = (LengthUnit)selectedIndex;
 
-            lblOffsetUnit.Text = UnitHelper.LengthAbbreviation(unit);
+            lblOffsetHelp.Text = string.Format("Offset applied to coordinates ({0}).",
+                UnitHelper.LengthAbbreviation(unit));
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -272,22 +272,10 @@ namespace Kinovea.ScreenManager
 
 
             // Indicators to identify lengths or coordinates.
-            //if (isDistanceGrid)
-            //{
-            //    DrawIndicator(canvas, " a ", quadPanel.D.Translate(0, 12));
-            //    DrawIndicator(canvas, " b ", quadPanel.C.Translate(0, 12));
-            //    p.DashStyle = DashStyle.Dash;
-            //    PointF midTop = GeometryHelper.GetMiddlePoint(quadPanel.A, quadPanel.B);
-            //    PointF midBot = GeometryHelper.GetMiddlePoint(quadPanel.D, quadPanel.C);
-            //    canvas.DrawLine(p, midTop, midBot);
-            //}
-            //else
-            //{
-                DrawIndicator(canvas, " a ", GeometryHelper.GetMiddlePoint(quadPanel.A, quadPanel.B));
-                DrawIndicator(canvas, " b ", GeometryHelper.GetMiddlePoint(quadPanel.B, quadPanel.C));
-                DrawIndicator(canvas, " a ", GeometryHelper.GetMiddlePoint(quadPanel.C, quadPanel.D));
-                DrawIndicator(canvas, " b ", GeometryHelper.GetMiddlePoint(quadPanel.D, quadPanel.A));
-            //}
+            DrawIndicator(canvas, "a", GeometryHelper.GetMiddlePoint(quadPanel.A, quadPanel.B));
+            DrawIndicator(canvas, "b", GeometryHelper.GetMiddlePoint(quadPanel.B, quadPanel.C));
+            DrawIndicator(canvas, "a", GeometryHelper.GetMiddlePoint(quadPanel.C, quadPanel.D));
+            DrawIndicator(canvas, "b", GeometryHelper.GetMiddlePoint(quadPanel.D, quadPanel.A));
 
             p.Dispose();
         }
@@ -297,14 +285,19 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void DrawIndicator(Graphics canvas, string label, PointF point)
         {
-            Font tempFont = new Font("Arial", 9, FontStyle.Regular);
+            Font tempFont = new Font("Consolas", 9, FontStyle.Regular);
             SolidBrush brushBack = new SolidBrush(pnlQuadrilateral.BackColor);
             SolidBrush brushFont = new SolidBrush(pnlQuadrilateral.ForeColor);
-            
             SizeF labelSize = canvas.MeasureString(label, tempFont);
-            PointF textOrigin = new PointF(point.X - labelSize.Width / 2, point.Y - labelSize.Height / 2);
-            canvas.FillRectangle(brushBack, textOrigin.X, textOrigin.Y, labelSize.Width, labelSize.Height);
-            canvas.DrawString(label, tempFont, brushFont, textOrigin);
+            
+            // Background
+            int radius = (int)(Math.Ceiling(Math.Max(labelSize.Width, labelSize.Height)) / 1.2f);
+            canvas.FillEllipse(brushBack, point.Box(radius));
+            canvas.DrawEllipse(Pens.White, point.Box(radius));
+
+            // Text
+            PointF topLeft = new PointF(point.X - labelSize.Width / 2, point.Y - labelSize.Height / 2);
+            canvas.DrawString(label, tempFont, brushFont, topLeft);
 
             tempFont.Dispose();
             brushBack.Dispose();
