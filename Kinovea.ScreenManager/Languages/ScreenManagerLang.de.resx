@@ -1091,4 +1091,22 @@
   <data name="DrawingName_Genu" xml:space="preserve">
     <value>Genu</value>
   </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Größe</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>Absteigend</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>Aufsteigend</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Sortiert nach</value>
+  </data>
 </root>
