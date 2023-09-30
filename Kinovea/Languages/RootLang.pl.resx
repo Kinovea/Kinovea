@@ -322,7 +322,7 @@
     <value>Ignoruj ostrzeżenia nadpisywania pliku</value>
   </data>
   <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve">
-    <value>zalokowana paięć dla bufora opuźnienia: {0} MB.</value>
+    <value>Pamięć przeznaczona na bufor opóźnienia: {0} MB.</value>
   </data>
   <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
     <value>Lidzba klatek na sekunde odbiornika</value>
@@ -352,10 +352,10 @@
     <value>Kamera: nagrywanie klatek w czasie reczywistym.</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve">
-    <value>Opuźnienie: nagrwanie opuźnionych klatek.</value>
+    <value>Opóźnienie: nagrywanie opóźnionych klatek.</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve">
-    <value>Nagrywanie trybu i opuźniena</value>
+    <value>Tryb nagrywania i opóźnienie</value>
   </data>
   <data name="dlgPreferences_Capture_Subdir" xml:space="preserve">
     <value>Podrzędny katalog:</value>
@@ -458,5 +458,41 @@
   </data>
   <data name="dlgAbout_Translation" xml:space="preserve">
     <value>Tłumaczenie</value>
+  </data>
+  <data name="dlgPreferences_Drawings_TabExport" xml:space="preserve">
+    <value>Eksportuj</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportCalibrated" xml:space="preserve">
+    <value>Skalibrowane pomiary</value>
+  </data>
+  <data name="dlgPreferences_General_PathToPandoc" xml:space="preserve">
+    <value>Ścieżka do pandoc:</value>
+  </data>
+  <data name="dlgWorkspace_Title" xml:space="preserve">
+    <value>Obszar roboczy</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVDelimiter" xml:space="preserve">
+    <value>Separator dziesiętny dla plików CSV:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVComma" xml:space="preserve">
+    <value>Przecinek</value>
+  </data>
+  <data name="dlgPreferences_Drawing_CSVSystem" xml:space="preserve">
+    <value>System ({0})</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportPixels" xml:space="preserve">
+    <value>Piksele</value>
+  </data>
+  <data name="dlgPreferences_Capture_TriggerAction" xml:space="preserve">
+    <value>Akcja uruchamiająca:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportSpace" xml:space="preserve">
+    <value>Tryb eksportu:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVPoint" xml:space="preserve">
+    <value>Kropka</value>
+  </data>
+  <data name="dlgWorkspace_ConfirmationMessage" xml:space="preserve">
+    <value>Domyślny obszar roboczy został zapisany.</value>
   </data>
 </root>

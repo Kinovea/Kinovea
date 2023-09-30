@@ -435,4 +435,13 @@
   <data name="TimeCodeFormat_Microseconds" xml:space="preserve">
     <value>총 마이크로초</value>
   </data>
+  <data name="dlgPreferences_Drawings_TabExport" xml:space="preserve">
+    <value>내보내기</value>
+  </data>
+  <data name="dlgWorkspace_Title" xml:space="preserve">
+    <value>작업 공간</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVComma" xml:space="preserve">
+    <value>쉼표</value>
+  </data>
 </root>

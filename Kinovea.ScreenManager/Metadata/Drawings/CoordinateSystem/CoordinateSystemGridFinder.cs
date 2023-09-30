@@ -185,7 +185,11 @@ namespace Kinovea.ScreenManager
                     }
 
                     if (clipWindow.Contains(a) && (orthogonal || TickMarkVisible((int)(x / step))))
-                        grid.TickMarks.Add(new TickMark(x, a, textAlignment));
+                    {
+                        PointF offset = calibrator.Offset;
+                        float value = x + offset.X;
+                        grid.TickMarks.Add(new TickMark(value, a, textAlignment));
+                    }
                 }
 
                 x += step;
@@ -249,7 +253,11 @@ namespace Kinovea.ScreenManager
                         grid.GridLines.Add(new GridLine(result.A, result.B));
 
                         if (clipWindow.Contains(a) && (orthogonal || TickMarkVisible((int)(y/step))))
-                            grid.TickMarks.Add(new TickMark(y, a, TextAlignment.Left));
+                        {
+                            PointF offset = calibrator.Offset;
+                            float value = y + offset.Y;
+                            grid.TickMarks.Add(new TickMark(value, a, TextAlignment.Left));
+                        }
                     }
                 }
 

@@ -72,7 +72,7 @@
   </data>
   <data name="dlgAbout_Citation" xml:space="preserve"><value>الاقتباس</value>
   </data>
-  <data name="dlgPreferences_tabCapture" xml:space="preserve"><value>تسجيل</value>
+  <data name="dlgPreferences_tabCapture" xml:space="preserve"><value>التقاط</value>
   </data>
   <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>عناصر الرسومات</value>
   </data>
@@ -382,5 +382,41 @@
   </data>
   <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve">
     <value>وضع التسجيل والتأخير</value>
+  </data>
+  <data name="dlgPreferences_Capture_TriggerAction" xml:space="preserve">
+    <value>عمل الزناد</value>
+  </data>
+  <data name="dlgPreferences_Drawings_TabExport" xml:space="preserve">
+    <value>تصدير</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportCalibrated" xml:space="preserve">
+    <value>قياسات معايرة</value>
+  </data>
+  <data name="dlgPreferences_General_PathToPandoc" xml:space="preserve">
+    <value>المسار لبرنامج Pandoc</value>
+  </data>
+  <data name="dlgWorkspace_Title" xml:space="preserve">
+    <value>مساحة العمل</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVDelimiter" xml:space="preserve">
+    <value>فاصل الأعداد العشرية لملفات CSV:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVComma" xml:space="preserve">
+    <value>فاصلة</value>
+  </data>
+  <data name="dlgPreferences_Drawing_CSVSystem" xml:space="preserve">
+    <value>النظام ({0})</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportPixels" xml:space="preserve">
+    <value>بكسلات</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportSpace" xml:space="preserve">
+    <value>وضع التصدير:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVPoint" xml:space="preserve">
+    <value>نقطة</value>
+  </data>
+  <data name="dlgWorkspace_ConfirmationMessage" xml:space="preserve">
+    <value>تم حفظ مساحة العمل الافتراضية.</value>
   </data>
 </root>

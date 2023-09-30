@@ -137,4 +137,22 @@
   <data name="FormConnectionWizard_URL" xml:space="preserve">
     <value>最終 URL</value>
   </data>
+  <data name="FormConfiguration_Properties_BayerFormatConversion" xml:space="preserve">
+    <value>ベイヤーフォーマット変換:</value>
+  </data>
+  <data name="FormConfiguration_Auto" xml:space="preserve">
+    <value>自動</value>
+  </data>
+  <data name="FormConfiguration_Properties_Gain" xml:space="preserve">
+    <value>ゲイン:</value>
+  </data>
+  <data name="FormConfiguration_DevicePropertyPages_Error" xml:space="preserve">
+    <value>デバイスのプロパティページを表示中にエラーが発生しました{0}。</value>
+  </data>
+  <data name="FormConfiguration_DevicePropertyPages" xml:space="preserve">
+    <value>デバイスのプロパティページ</value>
+  </data>
+  <data name="FormConfiguration_ImportParameters" xml:space="preserve">
+    <value>インポートパラメータ</value>
+  </data>
 </root>

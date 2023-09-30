@@ -38,6 +38,15 @@ Project:
 Changelog:
 ----------
 
+2023.2 - TBD
+    Improved - Annotations: Added "filled" option to rectangle and circle.
+    Improved - Annotations: Support changing font size for mini labels.
+    Improved - Annotations: Support transparent background on the text tool.
+    Improved - Kinogram: Support changing label color and font size.
+    Improved - Kinogram: Support moving tiles in time.
+    Fixed - Copy-pasting a drawing to a different time was not working.
+
+
 2023.1 - August 2023.
     Added - Kinogram mode to replace the Overview mode.
     Added - Side panel with key image comments.
