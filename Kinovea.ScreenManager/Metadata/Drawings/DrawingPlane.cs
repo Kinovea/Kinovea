@@ -58,11 +58,16 @@ namespace Kinovea.ScreenManager
         {
             get
             {
-                int iHash = 0;
-                iHash ^= quadImage.GetHashCode();
-                iHash ^= styleHelper.ContentHash;
-                iHash ^= infosFading.ContentHash;
-                return iHash;
+                int hash = 0;
+                hash ^= quadImage.GetHashCode();
+                hash ^= styleHelper.ContentHash;
+                hash ^= infosFading.ContentHash;
+                hash ^= showGrid.GetHashCode();
+                hash ^= showXLine.GetHashCode();
+                hash ^= showYLine.GetHashCode();
+                hash ^= xLineCoord.GetHashCode();
+                hash ^= yLineCoord.GetHashCode();
+                return hash;
             }
         }
         public DrawingStyle DrawingStyle
@@ -79,9 +84,18 @@ namespace Kinovea.ScreenManager
             get
             {
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
+                ReloadMenusCulture();
 
-                mnuCalibrate.Text = ScreenManagerLang.mnuCalibrate;
-                contextMenu.Add(mnuCalibrate);
+                contextMenu.AddRange(new ToolStripItem[] {
+                    mnuOptions,
+                    new ToolStripSeparator(),
+                    mnuCalibrate,
+                });
+
+                mnuShowGrid.Checked = showGrid;
+                mnuShowXLine.Checked = showXLine;
+                mnuShowYLine.Checked = showYLine;
+
 
                 return contextMenu;
             }
@@ -110,10 +124,6 @@ namespace Kinovea.ScreenManager
         { 
             get { return styleHelper.DistanceGrid; }
         }
-        public float DistanceOffset
-        {
-            get { return distanceOffset; }
-        }
         public bool DistanceLTR
         {
             get { return distanceLTR; }
@@ -127,11 +137,19 @@ namespace Kinovea.ScreenManager
         private float planeWidth;                                               // width and height of rectangle in plane system.
         private float planeHeight;
         private bool planeIsConvex = true;
+        
+        // Options
+        private bool showGrid = true;
+        private bool showXLine = false;
+        private bool showYLine = false;
 
         // Distance grid
-        private float distanceCoord = 0.5f;                                     // Normalized coordinate of the sliding line along the X axis.
-        private float distanceOffset = 0.0f;                                    // Start offset, in world space, for the distance grid, only used for displaying values.
-        private bool distanceLTR = true;                                        // Direction of the X-axis, only used for displaying values.
+        private float xLineCoord = 0.5f;        // Normalized coordinate of the sliding line along the X axis.
+        private float yLineCoord = 0.5f;        // Normalized coordinate of the sliding line along the Y axis.
+        private bool distanceLTR = true;        // Direction of the X-axis, only used for displaying values.
+        
+        private const float tickMarkLengthFactor = 1.0f/40.0f;    // Size of the tickmarks when not showing the grid, normalized to the size of the grid.
+
         private const int defaultBackgroundAlpha = 92;
         private const int textMargin = 20;
         private List<TickMark> tickMarks = new List<TickMark>();
@@ -146,7 +164,13 @@ namespace Kinovea.ScreenManager
 
         private bool initialized = false;
 
+        #region Context menu
+        private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuShowGrid = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuShowXLine = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuShowYLine = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCalibrate = new ToolStripMenuItem();
+        #endregion
 
         private static readonly int minimumSubdivisions = StyleElementGridDivisions.options[0];
         private static readonly int defaultSubdivisions = StyleElementGridDivisions.defaultValue;
@@ -162,7 +186,7 @@ namespace Kinovea.ScreenManager
             styleHelper.GridDivisions = 8;
             styleHelper.Perspective = true;
             styleHelper.DistanceGrid = false;
-            styleHelper.Font = new Font("Arial", 16, FontStyle.Bold);
+            styleHelper.Font = new Font("Arial", 8, FontStyle.Bold);
             styleHelper.ValueChanged += StyleHelper_ValueChanged;
             if (preset == null)
                 preset = ToolManager.GetStylePreset("Plane");
@@ -178,13 +202,33 @@ namespace Kinovea.ScreenManager
             planeHeight = 100;
             quadPlane = new QuadrilateralF(planeWidth, planeHeight);
 
-            mnuCalibrate.Click += mnuCalibrate_Click;
-            mnuCalibrate.Image = Properties.Drawings.coordinates_graduations;
+            InitializeMenus();
         }
         public DrawingPlane(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
             : this(PointF.Empty, 0, 0, ToolManager.GetStylePreset("Grid"))
         {
             ReadXml(xmlReader, scale, timestampMapper);
+        }
+
+        private void InitializeMenus()
+        {
+            mnuOptions.Image = Properties.Resources.equalizer;
+            mnuShowGrid.Image = Properties.Drawings.coordinates_grid;
+            mnuShowXLine.Image = Properties.Drawings.yline;
+            mnuShowYLine.Image = Properties.Drawings.xline;
+            mnuShowGrid.Click += mnuShowGrid_Click;
+            mnuShowXLine.Click += mnuShowXLine_Click;
+            mnuShowYLine.Click += mnuShowYLine_Click;
+
+            mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
+                mnuShowGrid,
+                mnuShowXLine,
+                mnuShowYLine,
+            });
+
+
+            mnuCalibrate.Click += mnuCalibrate_Click;
+            mnuCalibrate.Image = Properties.Drawings.coordinates_graduations;
         }
         #endregion
 
@@ -229,6 +273,7 @@ namespace Kinovea.ScreenManager
                     }
 
                     DrawGrid(canvas, penEdges, opacityFactor, projectiveMapping, distorter, transformer);
+                    DrawSlidingLines(canvas, penEdges, opacityFactor, projectiveMapping, distorter, transformer);
                 }
                 else
                 {
@@ -243,33 +288,7 @@ namespace Kinovea.ScreenManager
 
         private void DrawGrid(Graphics canvas, Pen pen, float opacity, ProjectiveMapping projectiveMapping, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
-            if (IsDistanceGrid)
-            {
-                // Draw the edges. and the secondary ticks.
-                DrawDistortedLine(canvas, pen, new PointF(0, 0), new PointF(planeWidth, 0), projectiveMapping, distorter, transformer);
-                DrawDistortedLine(canvas, pen, new PointF(0, planeHeight), new PointF(planeWidth, planeHeight), projectiveMapping, distorter, transformer);
-                DrawDistortedLine(canvas, pen, new PointF(0, 0), new PointF(0, planeHeight), projectiveMapping, distorter, transformer);
-                DrawDistortedLine(canvas, pen, new PointF(planeWidth, 0), new PointF(planeWidth, planeHeight), projectiveMapping, distorter, transformer);
-
-                // Sliding line and measurement marks.
-                if (planeIsConvex)
-                    DrawDistanceGrid(canvas, pen, opacity, projectiveMapping, distorter, transformer);
-
-                // Secondary ticks.
-                int start = 1;
-                int end = styleHelper.GridDivisions - 1;
-                float step = planeWidth / styleHelper.GridDivisions;
-                float halfLength = planeHeight / 20.0f;
-                for (int i = start; i <= end; i++)
-                {
-                    float h = step * i;
-                    DrawDistortedLine(canvas, pen, new PointF(h, -halfLength), new PointF(h, halfLength), projectiveMapping, distorter, transformer);
-                    DrawDistortedLine(canvas, pen, new PointF(h, planeHeight - halfLength), new PointF(h, planeHeight + halfLength), projectiveMapping, distorter, transformer);
-                }
-
-                return;
-            }
-            else
+            if (showGrid)
             {
                 // Draw vertical and horizontal lines crossing the full grid.
                 int start = 0;
@@ -291,35 +310,78 @@ namespace Kinovea.ScreenManager
                     DrawDistortedLine(canvas, pen, new PointF(h, 0), new PointF(h, planeHeight), projectiveMapping, distorter, transformer);
                 }
             }
+            else
+            {
+                // Draw the edges and secondary ticks only.
+            
+                // Edges.
+                DrawDistortedLine(canvas, pen, new PointF(0, 0), new PointF(planeWidth, 0), projectiveMapping, distorter, transformer);
+                DrawDistortedLine(canvas, pen, new PointF(0, planeHeight), new PointF(planeWidth, planeHeight), projectiveMapping, distorter, transformer);
+                DrawDistortedLine(canvas, pen, new PointF(0, 0), new PointF(0, planeHeight), projectiveMapping, distorter, transformer);
+                DrawDistortedLine(canvas, pen, new PointF(planeWidth, 0), new PointF(planeWidth, planeHeight), projectiveMapping, distorter, transformer);
+
+                // Secondary ticks.
+                int start = 1;
+                int end = styleHelper.GridDivisions - 1;
+
+                // Horizontals
+                float step = planeHeight / styleHelper.GridDivisions;
+                float halfLength = planeWidth * tickMarkLengthFactor;
+                for (int i = start; i <= end; i++)
+                {
+                    float v = step * i;
+                    DrawDistortedLine(canvas, pen, new PointF(-halfLength, v), new PointF(halfLength, v), projectiveMapping, distorter, transformer);
+                    DrawDistortedLine(canvas, pen, new PointF(planeWidth - halfLength, v), new PointF(planeWidth + halfLength, v), projectiveMapping, distorter, transformer);
+                }
+
+                // Verticals
+                step = planeWidth / styleHelper.GridDivisions;
+                halfLength = planeHeight * tickMarkLengthFactor;
+                for (int i = start; i <= end; i++)
+                {
+                    float h = step * i;
+                    DrawDistortedLine(canvas, pen, new PointF(h, -halfLength), new PointF(h, halfLength), projectiveMapping, distorter, transformer);
+                    DrawDistortedLine(canvas, pen, new PointF(h, planeHeight - halfLength), new PointF(h, planeHeight + halfLength), projectiveMapping, distorter, transformer);
+                }
+            }
         }
 
         /// <summary>
         /// Draw the sliding line and tickmarks for the distance grid.
         /// </summary>
-        private void DrawDistanceGrid(Graphics canvas, Pen pen, float opacity, ProjectiveMapping projectiveMapping, DistortionHelper distorter, IImageToViewportTransformer transformer)
+        private void DrawSlidingLines(Graphics canvas, Pen pen, float opacity, ProjectiveMapping projectiveMapping, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             // This should only be drawn if we are actually the one used for calibration.
             if (calibrationHelper.CalibrationDrawingId != this.Id)
                 return;
 
-            // Sliding line.
-            float x = distanceCoord * planeWidth;
-            DrawDistortedLine(canvas, pen, new PointF(x, 0), new PointF(x, planeHeight), projectiveMapping, distorter, transformer);
-            
-            // If we are zoomed in we are probably adjusting a corner or the distance line,
-            // don't show the measurement markers as they can obstruct important image details during this process.
-            if (transformer.Scale < 2)
+            if (showXLine)
             {
-                SolidBrush brushFill = styleHelper.GetBrush(defaultBackgroundAlpha);
-                Brush brushFont = pen.Color.GetBrightness() > 0.6 ? Brushes.Black : Brushes.White;
-
-                Font font = styleHelper.GetFont(1.0F);
-                foreach (TickMark tick in tickMarks)
-                    tick.Draw(canvas, distorter, transformer, brushFill, brushFont as SolidBrush, font, textMargin, true);
-            
-                font.Dispose();
-                brushFill.Dispose();
+                // Vertical sliding line.
+                float x = xLineCoord * planeWidth;
+                DrawDistortedLine(canvas, pen, new PointF(x, 0), new PointF(x, planeHeight), projectiveMapping, distorter, transformer);
             }
+
+            if (showYLine)
+            {
+                // Horizontal sliding line.
+                float y = yLineCoord * planeHeight;
+                DrawDistortedLine(canvas, pen, new PointF(0, y), new PointF(planeWidth, y), projectiveMapping, distorter, transformer);
+            }
+
+            if (!showXLine && !showYLine)
+                return;
+
+            // Graduation tick marks.
+            SolidBrush brushFill = styleHelper.GetBrush(defaultBackgroundAlpha);
+            Brush brushFont = pen.Color.GetBrightness() > 0.6 ? Brushes.Black : Brushes.White;
+
+            Font font = styleHelper.GetFont(1.0F);
+            foreach (TickMark tick in tickMarks)
+                tick.Draw(canvas, distorter, transformer, brushFill, brushFont as SolidBrush, font, textMargin, true);
+            
+            font.Dispose();
+            brushFill.Dispose();
         }
 
         /// <summary>
@@ -354,19 +416,30 @@ namespace Kinovea.ScreenManager
             // Mapping:
             // 0: hit anywhere inside the flat grid. Disabled for perspective grids.
             // 1-4: hit a corner.
-            // 5: hit the sliding line for the distance grid.
+            // 5: X line.
+            // 6: Y line.
 
-            if (IsDistanceGrid)
+            if (showXLine)
             {
                 // Reverse the mapping to find the location of the line in image space.
-                float h = planeWidth * distanceCoord;
+                float h = planeWidth * xLineCoord;
                 PointF a = projectiveMapping.Forward(new PointF(h, 0));
                 PointF b = projectiveMapping.Forward(new PointF(h, planeHeight));
                 if (HitTester.HitLine(point, a, b, distorter, transformer))
                     return 5;
             }
 
-            for(int i = 0; i < 4; i++)
+            if (showYLine)
+            {
+                // Reverse the mapping to find the location of the line in image space.
+                float v = planeHeight * yLineCoord;
+                PointF a = projectiveMapping.Forward(new PointF(0, v));
+                PointF b = projectiveMapping.Forward(new PointF(planeWidth, v));
+                if (HitTester.HitLine(point, a, b, distorter, transformer))
+                    return 6;
+            }
+
+            for (int i = 0; i < 4; i++)
             {
                 if (HitTester.HitPoint(point, quadImage[i], transformer))
                     return i+1;
@@ -406,11 +479,20 @@ namespace Kinovea.ScreenManager
         {
             if (handleNumber == 5)
             {
-                // Dragging the distance line.
+                // Dragging the X line.
                 // We get a point in image space, convert to a point in calibrated space and grab the x coord.
                 PointF p = projectiveMapping.Backward(point);
-                distanceCoord = p.X / planeWidth;
-                ClampSlidingLine();
+                xLineCoord = p.X / planeWidth;
+                xLineCoord = ClampSlidingLine(xLineCoord); 
+                UpdateTickMarks();
+            }
+            else if (handleNumber == 6)
+            {
+                // Dragging the Y line.
+                // We get a point in image space, convert to a point in calibrated space and grab the y coord.
+                PointF p = projectiveMapping.Backward(point);
+                yLineCoord = p.Y / planeHeight;
+                yLineCoord = ClampSlidingLine(yLineCoord);
                 UpdateTickMarks();
             }
             else
@@ -441,74 +523,89 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region IKvaSerializable
-        public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
+        public void ReadXml(XmlReader r, PointF scale, TimestampMapper timestampMapper)
         {
-            if (xmlReader.MoveToAttribute("id"))
-                identifier = new Guid(xmlReader.ReadContentAsString());
+            if (r.MoveToAttribute("id"))
+                identifier = new Guid(r.ReadContentAsString());
 
-            if (xmlReader.MoveToAttribute("name"))
-                name = xmlReader.ReadContentAsString();
+            if (r.MoveToAttribute("name"))
+                name = r.ReadContentAsString();
 
-            xmlReader.ReadStartElement();
+            r.ReadStartElement();
 
-            while(xmlReader.NodeType == XmlNodeType.Element)
+            while(r.NodeType == XmlNodeType.Element)
             {
-                switch(xmlReader.Name)
+                switch(r.Name)
                 {
                     case "PointUpperLeft":
                         {
-                            quadImage.A = ReadPoint(xmlReader, scale);
+                            quadImage.A = ReadPoint(r, scale);
                             break;
                         }
                     case "PointUpperRight":
                         {
-                            quadImage.B = ReadPoint(xmlReader, scale);
+                            quadImage.B = ReadPoint(r, scale);
                             break;
                         }
                     case "PointLowerRight":
                         {
-                            quadImage.C = ReadPoint(xmlReader, scale);
+                            quadImage.C = ReadPoint(r, scale);
                             break;
                         }
                     case "PointLowerLeft":
                         {
-                            quadImage.D = ReadPoint(xmlReader, scale);
+                            quadImage.D = ReadPoint(r, scale);
                             break;
                         }
-                    case "DistanceCoord":
+                    case "ShowGrid":
                         {
-                            bool read = float.TryParse(xmlReader.ReadElementContentAsString(), NumberStyles.Any, CultureInfo.InvariantCulture, out distanceCoord);
-                            if (!read)
-                                distanceCoord = 0.5f;
+                            showGrid = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
                             break;
                         }
-                    case "DistanceOffset":
+                    case "ShowXLine":
                         {
-                            bool read = float.TryParse(xmlReader.ReadElementContentAsString(), NumberStyles.Any, CultureInfo.InvariantCulture, out distanceOffset);
+                            showXLine = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
+                            break;
+                        }
+                    case "ShowYLine":
+                        {
+                            showYLine = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
+                            break;
+                        }
+                    case "XLineCoord":
+                        {
+                            bool read = float.TryParse(r.ReadElementContentAsString(), NumberStyles.Any, CultureInfo.InvariantCulture, out xLineCoord);
                             if (!read)
-                                distanceOffset = 0.0f;
+                                xLineCoord = 0.5f;
+                            break;
+                        }
+                    case "YLineCoord":
+                        {
+                            bool read = float.TryParse(r.ReadElementContentAsString(), NumberStyles.Any, CultureInfo.InvariantCulture, out yLineCoord);
+                            if (!read)
+                                yLineCoord = 0.5f;
                             break;
                         }
                     case "DistanceLTR":
                         {
-                            distanceLTR = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
+                            distanceLTR = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
                             break;
                         }
                     case "DrawingStyle":
-                        style = new DrawingStyle(xmlReader);
+                        style = new DrawingStyle(r);
                         BindStyle();
                         break;
                     case "InfosFading":
-                        infosFading.ReadXml(xmlReader);
+                        infosFading.ReadXml(r);
                         break;
                     default:
-                        string unparsed = xmlReader.ReadOuterXml();
+                        string unparsed = r.ReadOuterXml();
                         log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                         break;
                 }
             }
 
-            xmlReader.ReadEndElement();
+            r.ReadEndElement();
 
             if (!styleHelper.Perspective)
                 planeIsConvex = quadImage.IsConvex;
@@ -530,8 +627,13 @@ namespace Kinovea.ScreenManager
                 w.WriteElementString("PointUpperRight", XmlHelper.WritePointF(quadImage.B));
                 w.WriteElementString("PointLowerRight", XmlHelper.WritePointF(quadImage.C));
                 w.WriteElementString("PointLowerLeft", XmlHelper.WritePointF(quadImage.D));
-                w.WriteElementString("DistanceCoord", XmlHelper.WriteFloat(distanceCoord));
-                w.WriteElementString("DistanceOffset", XmlHelper.WriteFloat(distanceOffset));
+                w.WriteElementString("ShowGrid", XmlHelper.WriteBoolean(showGrid));
+                w.WriteElementString("ShowXLine", XmlHelper.WriteBoolean(showGrid));
+                w.WriteElementString("ShowYLine", XmlHelper.WriteBoolean(showGrid));
+
+                w.WriteElementString("XLineCoord", XmlHelper.WriteFloat(xLineCoord));
+                w.WriteElementString("YLineCoord", XmlHelper.WriteFloat(yLineCoord));
+                
                 w.WriteElementString("DistanceLTR", XmlHelper.WriteBoolean(distanceLTR));
             }
 
@@ -627,6 +729,43 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
+        #region Context menu
+
+        private void mnuShowGrid_Click(object sender, EventArgs e)
+        {
+            CaptureMemento(SerializationFilter.Core);
+            showGrid = !mnuShowGrid.Checked;
+            InvalidateFromMenu(sender);
+        }
+
+        private void mnuShowXLine_Click(object sender, EventArgs e)
+        {
+            CaptureMemento(SerializationFilter.Core);
+            showXLine = !mnuShowXLine.Checked;
+            UpdateTickMarks();
+            InvalidateFromMenu(sender);
+        }
+
+        private void mnuShowYLine_Click(object sender, EventArgs e)
+        {
+            CaptureMemento(SerializationFilter.Core);
+            showYLine = !mnuShowYLine.Checked;
+            UpdateTickMarks();
+            InvalidateFromMenu(sender);
+        }
+
+        private void mnuCalibrate_Click(object sender, EventArgs e)
+        {
+            FormCalibratePlane fcp = new FormCalibratePlane(CalibrationHelper, this);
+            FormsHelper.Locate(fcp);
+            fcp.ShowDialog();
+            fcp.Dispose();
+
+            InvalidateFromMenu(sender);
+        }
+        #endregion
+
+
         public void Reset()
         {
             // Used on metadata over load.
@@ -636,18 +775,14 @@ namespace Kinovea.ScreenManager
             quadImage = quadPlane.Clone();
         }
 
-        public void UpdateMapping(SizeF size, float offset, bool ltr)
+        public void UpdateMapping(SizeF size, bool ltr)
         {
             planeWidth = size.Width;
             planeHeight = size.Height;
             quadPlane = new QuadrilateralF(planeWidth, planeHeight);
 
-            if (IsDistanceGrid)
-            {
-                distanceOffset = offset;
-                distanceLTR = ltr;
-            }
-
+            distanceLTR = ltr;
+            
             projectiveMapping.Update(quadPlane, quadImage);
             UpdateTickMarks();
         }
@@ -676,48 +811,89 @@ namespace Kinovea.ScreenManager
             planeIsConvex = styleHelper.Perspective ? quadImage.IsConvex : true;
         }
 
-        private void mnuCalibrate_Click(object sender, EventArgs e)
-        {
-            FormCalibratePlane fcp = new FormCalibratePlane(CalibrationHelper, this);
-            FormsHelper.Locate(fcp);
-            fcp.ShowDialog();
-            fcp.Dispose();
-
-            InvalidateFromMenu(sender);
-        }
-
-        private void ClampSlidingLine()
+        private float ClampSlidingLine(float a)
         {
             // Limit the sliding line to a certain margin from the side.
-            distanceCoord = Math.Min(1.0f, Math.Max(0.0f, distanceCoord));
+            return Math.Min(1.0f, Math.Max(0.0f, a));
         }
 
+        /// <summary>
+        /// Pre-build the graduation tick marks locations and values. 
+        /// </summary>
         private void UpdateTickMarks()
         {
             // Update the placement of the six tickmarks.
             tickMarks.Clear();
 
-            if (!IsDistanceGrid)
-                return;
-
-            Action<float> addTickMarks = (value) => {
-
-                float displayValue = distanceLTR ? value + distanceOffset : planeWidth - value + distanceOffset;
-                PointF pTop = projectiveMapping.Forward(new PointF(value, 0));
-                PointF pBot = projectiveMapping.Forward(new PointF(value, planeHeight));
-                tickMarks.Add(new TickMark(displayValue, pTop, TextAlignment.Top));
-                tickMarks.Add(new TickMark(displayValue, pBot, TextAlignment.Bottom));
-            };
-
             // Hide the start/end markers when the sliding line is close to them to avoid overlap.
-            if (distanceCoord > 0.1)
-                addTickMarks(0);
+            if (showXLine)
+            {
+                if (xLineCoord > 0.1)
+                    AddTickMarks(0, true);
 
-            addTickMarks(distanceCoord * planeWidth);
-            
-            if (distanceCoord < 0.9)
-                addTickMarks(planeWidth);
+                if (xLineCoord < 0.9)
+                    AddTickMarks(planeWidth, true);
+
+                AddTickMarks(xLineCoord * planeWidth, true);
+            }
+
+            if (showYLine)
+            {
+                if (yLineCoord > 0.1)
+                    AddTickMarks(0, false);
+
+                if (yLineCoord < 0.9)
+                  AddTickMarks(planeHeight, false);
+
+                AddTickMarks(yLineCoord * planeHeight, false);
+            }
+
         }
+
+        /// <summary>
+        /// Takes a coordinate in Grid space along an axis, and create two tick marks 
+        /// on both sides of the grid with the corresponding values.
+        /// </summary>
+        private void AddTickMarks(float coord, bool isXAxis)
+        {
+            var calibrator = CalibrationHelper.CalibrationByPlane_GetCalibrator();
+
+            if (isXAxis)
+            {
+                // Coords in grid space.
+                PointF pTop = new PointF(coord, 0);
+                PointF pBottom = new PointF(coord, planeHeight);
+
+                // TODO: handle reversal of axis direction directly in CalibrationHelper/Calibrator.
+                float x = coord;
+                if (!distanceLTR)
+                    x = planeWidth - x;
+
+                float value = calibrator.GridToWorldWithOffset(new PointF(x, 0)).X;
+
+                // Grid to Image.
+                pTop = projectiveMapping.Forward(pTop);
+                pBottom = projectiveMapping.Forward(pBottom);
+
+                tickMarks.Add(new TickMark(value, pTop, TextAlignment.Top));
+                tickMarks.Add(new TickMark(value, pBottom, TextAlignment.Bottom));
+            }
+            else
+            {
+                PointF pLeft = new PointF(0, coord);
+                PointF pRight = new PointF(planeWidth, coord);
+                
+                float value = calibrator.GridToWorldWithOffset(pLeft).Y;
+
+                // Grid to Image.
+                pLeft = projectiveMapping.Forward(pLeft);
+                pRight = projectiveMapping.Forward(pRight);
+
+                tickMarks.Add(new TickMark(value, pLeft, TextAlignment.Left));
+                tickMarks.Add(new TickMark(value, pRight, TextAlignment.Right));
+            }
+        }
+
         public void CalibrationHelper_CalibrationChanged(object sender, EventArgs e)
         {
             // Update the projective mapping if we are the calibration drawing.
@@ -725,7 +901,25 @@ namespace Kinovea.ScreenManager
             if (calibrationHelper.CalibrationDrawingId == this.Id)
                 size = calibrationHelper.CalibrationByPlane_GetRectangleSize();
                 
-            UpdateMapping(size, distanceOffset, distanceLTR);
+            UpdateMapping(size, distanceLTR);
+        }
+
+        /// <summary>
+        /// Capture the current state to the undo/redo stack.
+        /// </summary>
+        private void CaptureMemento(SerializationFilter filter)
+        {
+            var memento = new HistoryMementoModifyDrawing(parentMetadata, parentMetadata.SingletonDrawingsManager.Id, this.Id, this.Name, filter);
+            parentMetadata.HistoryStack.PushNewCommand(memento);
+        }
+
+        private void ReloadMenusCulture()
+        {
+            mnuOptions.Text = ScreenManagerLang.Generic_Options;
+            mnuShowGrid.Text = ScreenManagerLang.mnuOptions_CoordinateSystem_ShowGrid;
+            mnuShowXLine.Text = "Show vertical line";
+            mnuShowYLine.Text = "Show horizontal line";
+            mnuCalibrate.Text = ScreenManagerLang.mnuCalibrate;
         }
         #endregion
     }

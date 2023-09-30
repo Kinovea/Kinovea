@@ -41,10 +41,10 @@ namespace Kinovea.ScreenManager
     ///                              homography
     /// 
     /// Details:
-    /// - Viewport space: coordinates on the screen including stretch, zoom and pan.
-    /// - Image space: coordinates based on the original video image size.
-    /// - Grid space: World coordinates with the origin at the bottom-left of the perspective grid used for calibration.
-    /// - World space: based on the "Coordinate system" object. By default it is aligned with the grid but the origin can be moved independently.
+    /// - Viewport space: coordinates on the screen including stretch, zoom and pan. Origin at top-left and Y-axis down.
+    /// - Image space: coordinates based on the original video image size. Origin at top-left and Y-axis down.
+    /// - Grid space: World coordinates based on the grid used for calibration. Origin at top-left and Y-axis down.
+    /// - World space: based on the "Coordinate system" object. By default it is aligned with the grid bottom-left. Y-axis up.
     /// - Offset space: an offset is applied to the values. This is like moving the coordinate system origin but the axes are visually kept in place.
     ///
     /// Grid to World
@@ -63,6 +63,7 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class CalibratorPlane
     {
+        #region Properties
         /// <summary>
         /// Image space quadrilateral.
         /// This is the projection of the reference rectangle on the image.
@@ -100,16 +101,19 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// This is an offset applied to world values on top of the transform stack.
+        /// Offset in world units applied to values on top of the transform stack.
         /// </summary>
         public PointF Offset
         {
             get { return offset; }
+            set { offset = value; }
         }
+        #endregion
 
         #region Members
         private SizeF size;         // Real world dimension of the reference rectangle.
         private PointF origin;      // Origin of the coordinate system object with regards to the grid.
+                                    // (= offset to the top-left of the grid, in world units).
         private PointF offset;      // Offset applied to values.
         private CalibrationAxis calibrationAxis = CalibrationAxis.LineHorizontal;
 
@@ -169,7 +173,7 @@ namespace Kinovea.ScreenManager
 
             return mapping.Forward(WorldToGrid(p, origin));
         }
-
+        
         /// <summary>
         /// Takes a point in real world coordinates and gives it back as an homogenous vector in the projective plane.
         /// </summary>
@@ -193,6 +197,14 @@ namespace Kinovea.ScreenManager
                 return;
 
             origin = mapping.Backward(p);
+        }
+
+        /// <summary>
+        /// Realign the coordinate system object with the bottom left corner of the grid.
+        /// </summary>
+        public void ResetOrigin()
+        {
+            origin = mapping.Backward(quadImage.D);
         }
 
         public Vector3 Project(Vector3 v)
@@ -282,6 +294,17 @@ namespace Kinovea.ScreenManager
         private PointF GridToWorldWithOffset(PointF p, PointF origin)
         {
             return new PointF(p.X - origin.X + offset.X, - p.Y + origin.Y + offset.Y);
+        }
+
+        /// <summary>
+        /// Takes a point from calibration-grid space and returns it in world space with offset.
+        /// Calibration-grid space is in world units but with origin at the bottom-left corner of the grid and Y-down.
+        /// The coordinate system object origin can be moved independently.
+        /// The extra custom offset is added to values.
+        /// </summary>
+        public PointF GridToWorldWithOffset(PointF p)
+        {
+            return GridToWorldWithOffset(p, origin);
         }
 
         /// <summary>

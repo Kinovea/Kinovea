@@ -84,8 +84,10 @@ namespace Kinovea.ScreenManager
 
                 if (isDistanceGrid)
                 {
-                    float a = drawingPlane.DistanceOffset;
-                    float b = drawingPlane.DistanceOffset + size.Width;
+                    PointF offset = calibrationHelper.GetWorldOffset();
+                    float a = offset.X;
+                    float b = offset.X + size.Width;
+                    
                     if (drawingPlane.DistanceLTR)
                     {
                         tbA.Text = String.Format("{0:0.00}", a);
@@ -227,9 +229,11 @@ namespace Kinovea.ScreenManager
                     size = new SizeF(b, a);
                 }
 
-                drawingPlane.UpdateMapping(size, offset, leftToRight);
+                drawingPlane.UpdateMapping(size, leftToRight);
+
                 calibrationHelper.SetCalibratorFromType(CalibratorType.Plane);
                 calibrationHelper.CalibrationByPlane_Initialize(drawingPlane.Id, size, drawingPlane.QuadImage);
+                calibrationHelper.SetOffset(new PointF(offset, 0));
                 calibrationHelper.LengthUnit = (LengthUnit)cbUnit.SelectedIndex;
             }
             catch

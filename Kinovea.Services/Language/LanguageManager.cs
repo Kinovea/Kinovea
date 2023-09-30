@@ -115,7 +115,6 @@ namespace Kinovea.Services
             languages.Remove("sv"); // Swedish.
             languages.Remove("th"); // Thai.
             //languages.Remove("tr"); // Turkish.
-
         }
 
         /// <summary>
