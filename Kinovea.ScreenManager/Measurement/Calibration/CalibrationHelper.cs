@@ -217,6 +217,14 @@ namespace Kinovea.ScreenManager
             AfterCalibrationChanged();
         }
 
+        /// <summary>
+        /// Returns the custom offset applied to world values on top of the transform.
+        /// </summary>
+        public PointF GetWorldOffset()
+        {
+            return calibrator.Offset;
+        }
+
         public void SetCalibratorFromType(CalibratorType type)
         {
             // Used by calibration dialogs to force a calibration method for further computations.
@@ -292,10 +300,7 @@ namespace Kinovea.ScreenManager
         {
             return calibrator;
         }
-        public ProjectiveMapping CalibrationByPlane_GetProjectiveMapping()
-        {
-            return calibrator.ProjectiveMapping;
-        }
+        
         public QuadrilateralF CalibrationByPlane_GetProjectedQuad()
         {
             // Projection of the reference rectangle onto image space.

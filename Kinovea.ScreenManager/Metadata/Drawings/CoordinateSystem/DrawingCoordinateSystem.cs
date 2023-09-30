@@ -448,16 +448,46 @@ namespace Kinovea.ScreenManager
         {
             style.Bind(styleHelper, "Bicolor", "line color");
         }
-        
+
+
+        /// <summary>
+        /// Move the horizontal axis to pass through the point.
+        /// This moves the system's origin.
+        /// </summary>
         private void MoveHorizontalAxis(PointF p)
         {
+            // Transform the point from image space to world space.
+            // This point is on the horizontal axis but not at the origin.
+            // The value has the custom offset applied, we need to discard it.
             PointF point = CalibrationHelper.GetPoint(p);
-            points["0"] = CalibrationHelper.GetImagePoint(new PointF(0, point.Y));
+            PointF offset = CalibrationHelper.GetWorldOffset();
+            point = point.Translate(-offset.X, -offset.Y);
+
+            // Recreate the corresponding origin in world space. 
+            PointF origin = new PointF(0, point.Y);
+
+            // Convert back to image space.
+            points["0"] = CalibrationHelper.GetImagePoint(origin);
         }
+
+        /// <summary>
+        /// Move the vertical axis to pass through the point.
+        /// This moves the system's origin.
+        /// </summary>
         private void MoveVerticalAxis(PointF p)
         {
+            // Transform the point from image space to world space.
+            // This point is on the vertical axis but not at the origin.
+            // The value has the custom offset applied we need to discard it.
             PointF point = CalibrationHelper.GetPoint(p);
-            points["0"] = CalibrationHelper.GetImagePoint(new PointF(point.X, 0));
+            PointF offset = CalibrationHelper.GetWorldOffset();
+            point = point.Translate(-offset.X, -offset.Y);
+
+            // Recreate the corresponding origin in world space. 
+            PointF origin = new PointF(point.X, 0);
+            
+            // Convert back to image space.
+            points["0"] = CalibrationHelper.GetImagePoint(origin);
         }
 
         /// <summary>

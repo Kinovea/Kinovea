@@ -28,17 +28,53 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// Converts coordinates and distances between image space and world space. 
-    /// This implements the calibration by plane (homography) and by line.
+    /// This implements both the calibration by plane and by line, using a homography (quad to quad mapping).
     /// 
-    /// We use a user-specified quadrilateral in the image matching a known rectangle in world space.
-    /// The homography maps the image coordinates in the quad with coordinates in the rectangle.
+    /// The user specifies a quadrilateral in the image corresponding to a rectangle of known size in world space.
+    /// This correspondance is done in the UI via Perspective grid > Calibrate. 
+    /// It is the main link between image space and world space. 
+    /// The homography contained in "ProjectiveMapping" maps coordinates in the image quad with coordinates in the grid in the world.
     ///
-    /// We keep a separate user-defined world origin expressed in world space.
+    /// Full transform stack: 
+    /// - Viewport space > Image space >>> Grid space > World space > Offset space.
+    ///                                 ↑
+    ///                              homography
+    /// 
+    /// Details:
+    /// - Viewport space: coordinates on the screen including stretch, zoom and pan.
+    /// - Image space: coordinates based on the original video image size.
+    /// - Grid space: World coordinates with the origin at the bottom-left of the perspective grid used for calibration.
+    /// - World space: based on the "Coordinate system" object. By default it is aligned with the grid but the origin can be moved independently.
+    /// - Offset space: an offset is applied to the values. This is like moving the coordinate system origin but the axes are visually kept in place.
+    ///
+    /// Grid to World
+    /// - We keep the offset of the coordinate system object origin. This is expressed in world units but in Grid space.
+    /// 
+    /// World to Offset:
+    /// - Offset is useful if the origin would be outside of the image.
+    /// 
+    /// Mapping update: 
+    /// - Any change in the corners of the grid object used for calibration redefines the mapping.
+    /// 
+    /// Tracking:
+    /// - Both the grid used for calibration and the coordinate system object can be tracked independently. 
+    /// - Since changes in the grid redefines the whole mapping, if both are tracked we give precedence to the grid.
+    /// 
     /// </summary>
     public class CalibratorPlane
     {
         /// <summary>
-        /// Real world dimension of the reference rectangle.
+        /// Image space quadrilateral.
+        /// This is the projection of the reference rectangle on the image.
+        /// </summary>
+        public QuadrilateralF QuadImage
+        {
+            get { return quadImage; }
+        }
+
+        /// <summary>
+        /// Real world dimensions of the reference rectangle.
+        /// The reference rectangle is represented by the Grid object used for calibration.
         /// </summary>
         public SizeF Size
         {
@@ -47,22 +83,12 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Image space quadrilateral.
-        /// This is the projection of the world space rectangle on the image.
+        /// Whether the calibration is valid.
+        /// A calibration can be invalid if the grid object used is not convex.
         /// </summary>
-        public QuadrilateralF QuadImage
-        {
-            get { return quadImage; }
-        }
-
         public bool Valid
         {
             get { return valid; }
-        }
-
-        public ProjectiveMapping ProjectiveMapping
-        {
-            get { return mapping; }
         }
 
         /// <summary>
@@ -72,54 +98,76 @@ namespace Kinovea.ScreenManager
         {
             get { return calibrationAxis; }
         }
+
+        /// <summary>
+        /// This is an offset applied to world values on top of the transform stack.
+        /// </summary>
+        public PointF Offset
+        {
+            get { return offset; }
+        }
+
+        #region Members
+        private SizeF size;         // Real world dimension of the reference rectangle.
+        private PointF origin;      // Origin of the coordinate system object with regards to the grid.
+        private PointF offset;      // Offset applied to values.
+        private CalibrationAxis calibrationAxis = CalibrationAxis.LineHorizontal;
+
+        private QuadrilateralF quadImage = new QuadrilateralF();
+        private ProjectiveMapping mapping = new ProjectiveMapping();
         
         private bool initialized;
-        private SizeF size;         // Real-world reference rectangle size.
-        private QuadrilateralF quadImage = new QuadrilateralF();
         private bool valid;
-        private bool perspective;
-        private ProjectiveMapping mapping = new ProjectiveMapping();
-        private PointF origin;      // User-defined origin, in calibrated plane coordinate system.
-        private CalibrationAxis calibrationAxis = CalibrationAxis.LineHorizontal;
+
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        
+        #endregion
+
         /// <summary>
-        /// Takes a point in image space and returns it world space, assuming static origin.
+        /// Takes a point in image space and returns it world space with offset. Assumes static origin.
+        /// If the coordinate system object is tracked, obtain the current origin for the requested time separately 
+        /// and then call the overload taking a custom origin.
         /// </summary>
         public PointF Transform(PointF p)
         {
             if (!initialized)
                 return p;
 
-            return CalibratedToWorld(mapping.Backward(p), origin);
+            return GridToWorldWithOffset(mapping.Backward(p), origin);
         }
 
         /// <summary>
-        /// Takes a point and origin in image space and returns it world space.
+        /// Takes a point and origin in image space and returns it world space with offset.
         /// </summary>
-        public PointF Transform(PointF p, PointF originImage)
+        public PointF Transform(PointF p, PointF originInImage)
         {
             if (!initialized)
                 return p;
 
-            PointF origin = mapping.Backward(originImage);
-            return CalibratedToWorld(mapping.Backward(p), origin);
+            PointF origin = mapping.Backward(originInImage);
+            return GridToWorldWithOffset(mapping.Backward(p), origin);
         }
 
         /// <summary>
-        /// Takes a point in real world coordinates and gives it back in image coordinates.
+        /// Takes a point in world coordinates (based on coordinate system object origin but without the extra offset),
+        /// and returns it in image coordinates. Assumes static origin.
+        /// If the coordinate system object is tracked, obtain the current origin for the requested time separately 
+        /// and then call the overload taking a custom origin.
         /// </summary>
         public PointF Untransform(PointF p)
         {
             return Untransform(p, origin);
         }
 
+        /// <summary>
+        /// Takes a point in world coordinates (based on coordinate system object origin but without the extra offset),
+        /// and returns it in image coordinates.
+        /// </summary>
         public PointF Untransform(PointF p, PointF origin)
         {
             if (!initialized)
                 return p;
 
-            return mapping.Forward(WorldToCalibrated(p, origin));
+            return mapping.Forward(WorldToGrid(p, origin));
         }
 
         /// <summary>
@@ -130,7 +178,7 @@ namespace Kinovea.ScreenManager
             if (!initialized)
                 return new Vector3(p.X, p.Y, 1.0f);
 
-            PointF c = WorldToCalibrated(p, origin);
+            PointF c = WorldToGrid(p, origin);
             Vector3 v = new Vector3(c.X, c.Y, 1.0f);
 
             return mapping.Forward(v);
@@ -171,7 +219,6 @@ namespace Kinovea.ScreenManager
             this.initialized = true;
 
             valid = quadImage.IsConvex;
-            perspective = !quadImage.IsAxisAlignedRectangle;
         }
 
         /// <summary>
@@ -186,7 +233,6 @@ namespace Kinovea.ScreenManager
             SizeF sizeWorld = new SizeF(lengthWorld, lengthWorld);
 
             Initialize(sizeWorld, quadImage);
-            perspective = false;
         }
 
         /// <summary>
@@ -226,12 +272,23 @@ namespace Kinovea.ScreenManager
             clone.calibrationAxis = calibrationAxis;
             return clone;
         }
-        private PointF CalibratedToWorld(PointF p, PointF origin)
+
+        /// <summary>
+        /// Takes a point from calibration-grid space and returns it in world space with offset.
+        /// Calibration-grid space is in world units but with origin at the bottom-left corner of the grid and Y-down.
+        /// The coordinate system object origin can be moved independently.
+        /// The extra custom offset is added to values.
+        /// </summary>
+        private PointF GridToWorldWithOffset(PointF p, PointF origin)
         {
-            return new PointF(p.X - origin.X, -p.Y + origin.Y);
+            return new PointF(p.X - origin.X + offset.X, - p.Y + origin.Y + offset.Y);
         }
 
-        private PointF WorldToCalibrated(PointF p, PointF origin)
+        /// <summary>
+        /// Takes a point in world space without offset and returns it in the system of 
+        /// the calibration-grid (origin anchored at the bottom-left corner and Y-down).
+        /// </summary>
+        private PointF WorldToGrid(PointF p, PointF origin)
         {
             return new PointF(origin.X + p.X, origin.Y - p.Y);
         }
@@ -295,6 +352,7 @@ namespace Kinovea.ScreenManager
             w.WriteEndElement();
 
             WritePointF(w, "Origin", origin);
+            WritePointF(w, "Offset", offset);
         }
 
         public void WriteLineXml(XmlWriter w)
@@ -307,6 +365,7 @@ namespace Kinovea.ScreenManager
             w.WriteEndElement();
 
             WritePointF(w, "Origin", origin);
+            WritePointF(w, "Offset", offset);
             w.WriteElementString("Axis", calibrationAxis.ToString());
         }
 
@@ -314,6 +373,7 @@ namespace Kinovea.ScreenManager
         {
             w.WriteElementString(name, XmlHelper.WritePointF(p));
         }
+
         public void ReadPlaneXml(XmlReader r, PointF scale)
         {
             r.ReadStartElement();
@@ -330,6 +390,9 @@ namespace Kinovea.ScreenManager
                         break;
                     case "Origin":
                         origin = XmlHelper.ParsePointF(r.ReadElementContentAsString());
+                        break;
+                    case "Offset":
+                        offset = XmlHelper.ParsePointF(r.ReadElementContentAsString());
                         break;
                     default:
                         string unparsed = r.ReadOuterXml();
