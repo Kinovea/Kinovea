@@ -279,7 +279,7 @@
     <value>Put do Pandoca:</value>
   </data>
   <data name="dlgPreferences_Player_UnitsAngularVelocity" xml:space="preserve">
-    <value>Brzina ugla:</value>
+    <value>Kutna brzina:</value>
   </data>
   <data name="dlgPreferences_Player_UnitsAngle" xml:space="preserve">
     <value>Ugao:</value>
@@ -363,7 +363,7 @@
     <value>Okretaja u minuti ({0})</value>
   </data>
   <data name="dlgPreferences_Player_UnitsAngularAcceleration" xml:space="preserve">
-    <value>Ugao ubrzanja:</value>
+    <value>Kutno ubrzanje:</value>
   </data>
   <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve">
     <value>Omogući custom alate za otklanjanje pogrešaka</value>
@@ -399,7 +399,7 @@
     <value>Konfiguriran broj kadrova u sekundi</value>
   </data>
   <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
-    <value>Zanemari upozorenje o prepisanju preko postojeće datoteke</value>
+    <value>Zanemari upozorenje o zamjeni preko postojeće datoteke</value>
   </data>
   <data name="dlgPreferences_Player_UnitsRadiansPerSecondSquared" xml:space="preserve">
     <value>Radijani u sekundi na kvadrat ({0})</value>
