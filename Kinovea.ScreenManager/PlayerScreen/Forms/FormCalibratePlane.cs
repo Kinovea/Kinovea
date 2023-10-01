@@ -46,6 +46,12 @@ namespace Kinovea.ScreenManager
             
             InitializeComponent();
             LocalizeForm();
+
+            NudHelper.FixNudScroll(nudA);
+            NudHelper.FixNudScroll(nudB);
+            NudHelper.FixNudScroll(nudOffsetX);
+            NudHelper.FixNudScroll(nudOffsetY);
+
             InitializeValues();
         }
         
@@ -83,21 +89,21 @@ namespace Kinovea.ScreenManager
             if (calibrationHelper.IsCalibrated && calibrationHelper.CalibratorType == CalibratorType.Plane)
             {
                 SizeF size = calibrationHelper.CalibrationByPlane_GetRectangleSize();
-                tbA.Text = String.Format("{0:0.00}", size.Width);
-                tbB.Text = String.Format("{0:0.00}", size.Height);
+                nudA.Value = (decimal)size.Width;
+                nudB.Value = (decimal)size.Height;
                 cbUnit.SelectedIndex = (int)calibrationHelper.LengthUnit;
             }
             else
             { 
                 // Default values for perspective and flat grid.
-                tbA.Text = "100";
-                tbB.Text = "100";
+                nudA.Value = 100;
+                nudB.Value = 100;
                 cbUnit.SelectedIndex = (int)LengthUnit.Centimeters;
             }
 
             PointF offset = calibrationHelper.GetWorldOffset();
-            tbOffsetX.Text = String.Format("{0:0.00}", offset.X);
-            tbOffsetY.Text = String.Format("{0:0.00}", offset.Y);
+            nudOffsetX.Value = (decimal)offset.X;
+            nudOffsetY.Value = (decimal)offset.Y;
             lblSizeHelp.Text = ScreenManagerLang.dlgCalibratePlane_HelpPlane;
             lblOffsetHelp.Text = string.Format("Offset applied to coordinates ({0}).",
                 UnitHelper.LengthAbbreviation(calibrationHelper.LengthUnit));
@@ -125,26 +131,9 @@ namespace Kinovea.ScreenManager
 
             UpdateTheoreticalPrecision();
         }
-        
-        private void textBox_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            // Only accept numbers, decimal separator and backspace.
-            // Note: when we pass here the text hasn't been updated yet.
-            // TODO: move to a helper.
-            
-            NumberFormatInfo nfi = Thread.CurrentThread.CurrentCulture.NumberFormat;
-            string decimalSeparator = nfi.NumberDecimalSeparator;
-            
-            char key = e.KeyChar;
-            if (((key < '0') || (key > '9')) && (key != decimalSeparator[0]) && (key != '\b'))
-            {
-                e.Handled = true;
-            }
-        }
 
-        private void textBox_TextChanged(object sender, EventArgs e)
+        private void nud_ValueChanged(object sender, EventArgs e)
         {
-            // This triggers after the text is changed.
             UpdateTheoreticalPrecision();
         }
 
@@ -163,27 +152,23 @@ namespace Kinovea.ScreenManager
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            if(tbA.Text.Length == 0 || tbB.Text.Length == 0)
-                return;
-            
             try
             {
-                float width = float.Parse(tbA.Text);
-                float height = float.Parse(tbB.Text);
+                float width = (float)nudA.Value;
+                float height = (float)nudB.Value;
                 if (width <= 0 || height <= 0)
                 {
-                    log.Error(String.Format("The side length cannot be zero or negative. ({0}x{1}).", tbA.Text, tbB.Text));
+                    log.Error(String.Format("The side length cannot be zero or negative. ({0}x{1}).", nudA.Value, nudB.Value));
                     return;
                 }
 
-                float offsetX = float.Parse(tbOffsetX.Text);
-                float offsetY = float.Parse(tbOffsetY.Text);
+                float offsetX = (float)nudOffsetX.Value;
+                float offsetY = (float)nudOffsetY.Value;
 
                 SizeF size = new SizeF(width, height);
                 PointF offset = new PointF(offsetX, offsetY);
                 
                 drawingPlane.UpdateMapping(size);
-
 
                 calibrationHelper.SetCalibratorFromType(CalibratorType.Plane);
                 calibrationHelper.CalibrationByPlane_Initialize(drawingPlane.Id, size, drawingPlane.QuadImage);
@@ -194,23 +179,26 @@ namespace Kinovea.ScreenManager
             {
                 // Failed : do nothing.
                 log.Error(String.Format("Error while parsing size or offset. size:{0}x{1}, offset:{2}×{3}.", 
-                    tbA.Text, tbB.Text, tbOffsetX, tbOffsetY));
+                    nudA.Value, nudB.Value, nudOffsetX.Value, nudOffsetY.Value));
             }
         }
         private void btnCancel_Click(object sender, EventArgs e)
         {
         }
         
+        /// <summary>
+        /// Compute the world size of the pixel in the middle of the grid.
+        /// </summary>
         private void UpdateTheoreticalPrecision()
         {
             lblPrecision.Visible = false;
             
             try
             {
-                float worldA = float.Parse(tbA.Text);
-                float worldB = float.Parse(tbB.Text);
+                float worldA = (float)nudA.Value;
+                float worldB = (float)nudB.Value;
 
-                if (worldA == 0 || worldB == 0)
+                if (worldA <= 0 || worldB <= 0)
                     return;
 
                 // Average between the near and far side.
@@ -275,7 +263,7 @@ namespace Kinovea.ScreenManager
             }
 
 
-            // Indicators to identify lengths or coordinates.
+            // Indicators to identify sides.
             DrawIndicator(canvas, "a", GeometryHelper.GetMiddlePoint(quadPanel.A, quadPanel.B));
             DrawIndicator(canvas, "b", GeometryHelper.GetMiddlePoint(quadPanel.B, quadPanel.C));
             DrawIndicator(canvas, "a", GeometryHelper.GetMiddlePoint(quadPanel.C, quadPanel.D));

@@ -1686,6 +1686,18 @@
   <ItemGroup>
     <None Include="Resources\flipy2.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flipx3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flipy3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flipy4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\rotate-system.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">
     <Message Text="Adjusting SDK tools directory to use x64 version of AL.EXE" />
