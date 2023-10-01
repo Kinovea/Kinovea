@@ -96,7 +96,6 @@ namespace Kinovea.ScreenManager
                 mnuShowXLine.Checked = showXLine;
                 mnuShowYLine.Checked = showYLine;
 
-
                 return contextMenu;
             }
         }
@@ -243,9 +242,10 @@ namespace Kinovea.ScreenManager
                     canvas.DrawLine(penEdges, p.X - defaultRadius, p.Y, p.X + defaultRadius, p.Y);
                     canvas.DrawLine(penEdges, p.X, p.Y - defaultRadius, p.X, p.Y + defaultRadius);
                 }
-                
-                // Origin
-                canvas.DrawEllipse(penEdges, quad.D.Box(5));
+
+                // Show origin if we are the driver for the coordinate system.
+                if (calibrationHelper.CalibrationDrawingId == this.Id)
+                    canvas.DrawEllipse(penEdges, quad.D.Box(5));
 
                 if (!drawEdgesOnly)
                 {
