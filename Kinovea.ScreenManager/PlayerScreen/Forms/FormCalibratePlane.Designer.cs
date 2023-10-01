@@ -48,6 +48,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void InitializeComponent()
         {
+      this.components = new System.ComponentModel.Container();
       this.grpConfig = new System.Windows.Forms.GroupBox();
       this.lblPrecision = new System.Windows.Forms.Label();
       this.lblSizeHelp = new System.Windows.Forms.Label();
@@ -65,6 +66,10 @@ namespace Kinovea.ScreenManager
       this.lblOffsetHelp = new System.Windows.Forms.Label();
       this.tbOffsetY = new System.Windows.Forms.TextBox();
       this.tbOffsetX = new System.Windows.Forms.TextBox();
+      this.btnRotate90 = new System.Windows.Forms.Button();
+      this.btnFlipY = new System.Windows.Forms.Button();
+      this.btnFlipX = new System.Windows.Forms.Button();
+      this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
       this.grpConfig.SuspendLayout();
       this.groupBox1.SuspendLayout();
       this.SuspendLayout();
@@ -80,7 +85,7 @@ namespace Kinovea.ScreenManager
       this.grpConfig.Controls.Add(this.cbUnit);
       this.grpConfig.Controls.Add(this.tbA);
       this.grpConfig.Controls.Add(this.lblRealSize);
-      this.grpConfig.Location = new System.Drawing.Point(12, 204);
+      this.grpConfig.Location = new System.Drawing.Point(12, 236);
       this.grpConfig.Name = "grpConfig";
       this.grpConfig.Size = new System.Drawing.Size(337, 139);
       this.grpConfig.TabIndex = 32;
@@ -166,7 +171,7 @@ namespace Kinovea.ScreenManager
       // 
       this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.btnOK.Location = new System.Drawing.Point(152, 465);
+      this.btnOK.Location = new System.Drawing.Point(152, 484);
       this.btnOK.Name = "btnOK";
       this.btnOK.Size = new System.Drawing.Size(92, 24);
       this.btnOK.TabIndex = 4;
@@ -178,7 +183,7 @@ namespace Kinovea.ScreenManager
       // 
       this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.btnCancel.Location = new System.Drawing.Point(257, 465);
+      this.btnCancel.Location = new System.Drawing.Point(257, 484);
       this.btnCancel.Name = "btnCancel";
       this.btnCancel.Size = new System.Drawing.Size(92, 24);
       this.btnCancel.TabIndex = 4;
@@ -208,9 +213,9 @@ namespace Kinovea.ScreenManager
       this.groupBox1.Controls.Add(this.lblOffsetHelp);
       this.groupBox1.Controls.Add(this.tbOffsetY);
       this.groupBox1.Controls.Add(this.tbOffsetX);
-      this.groupBox1.Location = new System.Drawing.Point(12, 349);
+      this.groupBox1.Location = new System.Drawing.Point(12, 381);
       this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(337, 100);
+      this.groupBox1.Size = new System.Drawing.Size(337, 97);
       this.groupBox1.TabIndex = 33;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Coordinates";
@@ -270,14 +275,56 @@ namespace Kinovea.ScreenManager
       this.tbOffsetX.TextChanged += new System.EventHandler(this.textBox_TextChanged);
       this.tbOffsetX.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_KeyPress);
       // 
+      // btnRotate90
+      // 
+      this.btnRotate90.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnRotate90.FlatAppearance.BorderSize = 0;
+      this.btnRotate90.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnRotate90.Image = global::Kinovea.ScreenManager.Properties.Resources.rotate;
+      this.btnRotate90.Location = new System.Drawing.Point(325, 206);
+      this.btnRotate90.Name = "btnRotate90";
+      this.btnRotate90.Size = new System.Drawing.Size(24, 24);
+      this.btnRotate90.TabIndex = 38;
+      this.btnRotate90.UseVisualStyleBackColor = true;
+      this.btnRotate90.Click += new System.EventHandler(this.btnRotate90_Click);
+      // 
+      // btnFlipY
+      // 
+      this.btnFlipY.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnFlipY.FlatAppearance.BorderSize = 0;
+      this.btnFlipY.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnFlipY.Image = global::Kinovea.ScreenManager.Properties.Resources.flipy;
+      this.btnFlipY.Location = new System.Drawing.Point(295, 206);
+      this.btnFlipY.Name = "btnFlipY";
+      this.btnFlipY.Size = new System.Drawing.Size(24, 24);
+      this.btnFlipY.TabIndex = 37;
+      this.btnFlipY.UseVisualStyleBackColor = true;
+      this.btnFlipY.Click += new System.EventHandler(this.btnFlipVert_Click);
+      // 
+      // btnFlipX
+      // 
+      this.btnFlipX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnFlipX.FlatAppearance.BorderSize = 0;
+      this.btnFlipX.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnFlipX.Image = global::Kinovea.ScreenManager.Properties.Resources.flipx;
+      this.btnFlipX.Location = new System.Drawing.Point(265, 206);
+      this.btnFlipX.Name = "btnFlipX";
+      this.btnFlipX.Size = new System.Drawing.Size(24, 24);
+      this.btnFlipX.TabIndex = 36;
+      this.btnFlipX.UseVisualStyleBackColor = true;
+      this.btnFlipX.Click += new System.EventHandler(this.btnFlipHorz_Click);
+      // 
       // FormCalibratePlane
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.Color.White;
-      this.ClientSize = new System.Drawing.Size(361, 498);
+      this.ClientSize = new System.Drawing.Size(361, 517);
+      this.Controls.Add(this.btnRotate90);
       this.Controls.Add(this.groupBox1);
+      this.Controls.Add(this.btnFlipY);
       this.Controls.Add(this.pnlQuadrilateral);
+      this.Controls.Add(this.btnFlipX);
       this.Controls.Add(this.grpConfig);
       this.Controls.Add(this.btnOK);
       this.Controls.Add(this.btnCancel);
@@ -311,5 +358,9 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.TextBox tbOffsetX;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button btnFlipX;
+        private System.Windows.Forms.Button btnRotate90;
+        private System.Windows.Forms.Button btnFlipY;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

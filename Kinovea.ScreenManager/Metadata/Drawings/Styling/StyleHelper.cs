@@ -134,31 +134,6 @@ namespace Kinovea.ScreenManager
             get { return toggles["clock"]; }
             set { toggles["clock"] = value; }
         }
-        public bool HorizontalAxis
-        {
-            get { return toggles["horizontalAxis"]; }
-            set { toggles["horizontalAxis"] = value; }
-        }
-        public bool VerticalAxis
-        {
-            get { return toggles["verticalAxis"]; }
-            set { toggles["verticalAxis"] = value; }
-        }
-        public bool Frame
-        {
-            get { return toggles["frame"]; }
-            set { toggles["frame"] = value; }
-        }
-        public bool Thirds
-        {
-            get { return toggles["thirds"]; }
-            set { toggles["thirds"] = value; }
-        }
-        public bool DistanceGrid
-        {
-            get { return toggles["distanceGrid"]; }
-            set { toggles["distanceGrid"] = value; }
-        }
 
         public int ContentHash
         {
@@ -205,11 +180,6 @@ namespace Kinovea.ScreenManager
             toggles.Add("curved", false);
             toggles.Add("perspective", false);
             toggles.Add("clock", false);
-            toggles.Add("horizontalAxis", false);
-            toggles.Add("verticalAxis", false);
-            toggles.Add("frame", false);
-            toggles.Add("thirds", false);
-            toggles.Add("distanceGrid", false);
         }
         #endregion
         
@@ -452,56 +422,6 @@ namespace Kinovea.ScreenManager
 
                         break;
                     }
-                case "Toggles/HorizontalAxis":
-                    {
-                        if (value is bool)
-                        {
-                            toggles["horizontalAxis"] = (bool)value;
-                            imported = true;
-                        }
-
-                        break;
-                    }
-                case "Toggles/VerticalAxis":
-                    {
-                        if (value is bool)
-                        {
-                            toggles["verticalAxis"] = (bool)value;
-                            imported = true;
-                        }
-
-                        break;
-                    }
-                case "Toggles/Frame":
-                    {
-                        if (value is bool)
-                        {
-                            toggles["frame"] = (bool)value;
-                            imported = true;
-                        }
-
-                        break;
-                    }
-                case "Toggles/Thirds":
-                    {
-                        if (value is bool)
-                        {
-                            toggles["thirds"] = (bool)value;
-                            imported = true;
-                        }
-
-                        break;
-                    }
-                case "Toggles/DistanceGrid":
-                    {
-                        if (value is bool)
-                        {
-                            toggles["distanceGrid"] = (bool)value;
-                            imported = true;
-                        }
-
-                        break;
-                    }
                 default:
                     {
                         log.DebugFormat("Unknown target property \"{0}\".", targetProperty);
@@ -635,56 +555,6 @@ namespace Kinovea.ScreenManager
                         if (targetType == typeof(bool))
                         {
                             result = toggles["clock"];
-                            converted = true;
-                        }
-
-                        break;
-                    }
-                case "Toggles/HorizontalAxis":
-                    {
-                        if (targetType == typeof(bool))
-                        {
-                            result = toggles["horizontalAxis"];
-                            converted = true;
-                        }
-
-                        break;
-                    }
-                case "Toggles/VerticalAxis":
-                    {
-                        if (targetType == typeof(bool))
-                        {
-                            result = toggles["verticalAxis"];
-                            converted = true;
-                        }
-
-                        break;
-                    }
-                case "Toggles/Frame":
-                    {
-                        if (targetType == typeof(bool))
-                        {
-                            result = toggles["frame"];
-                            converted = true;
-                        }
-
-                        break;
-                    }
-                case "Toggles/Thirds":
-                    {
-                        if (targetType == typeof(bool))
-                        {
-                            result = toggles["thirds"];
-                            converted = true;
-                        }
-
-                        break;
-                    }
-                case "Toggles/DistanceGrid":
-                    {
-                        if (targetType == typeof(bool))
-                        {
-                            result = toggles["distanceGrid"];
                             converted = true;
                         }
 

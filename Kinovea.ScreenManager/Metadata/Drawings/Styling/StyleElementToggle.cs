@@ -170,10 +170,6 @@ namespace Kinovea.ScreenManager
                     icon = Properties.Drawings.stopwatch;
                     displayName = ScreenManagerLang.Generic_Clock;
                     break;
-                case StyleToggleVariant.DistanceGrid:
-                    icon = Properties.Drawings.plane;
-                    displayName = "Distance grid";
-                    break;
                 case StyleToggleVariant.Curved:
                 default:
                     icon = Properties.Drawings.curve;

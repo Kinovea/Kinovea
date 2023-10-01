@@ -24,11 +24,6 @@ namespace Kinovea.ScreenManager
         Perspective,
 
         /// <summary>
-        /// Plane: tells whether this grid is used as a distance grid.
-        /// </summary>
-        DistanceGrid,
-
-        /// <summary>
         /// Chrono: specialization for single time point clock.
         /// </summary>
         Clock,

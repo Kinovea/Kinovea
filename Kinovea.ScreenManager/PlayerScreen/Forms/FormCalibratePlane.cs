@@ -73,6 +73,10 @@ namespace Kinovea.ScreenManager
             }
 
             cbUnit.Items.Add(customLengthUnit + " (" + customLengthAbbreviation + ")");
+
+            toolTip1.SetToolTip(btnFlipX, "Flip X axis");
+            toolTip1.SetToolTip(btnFlipY, "Flip Y axis");
+            toolTip1.SetToolTip(btnRotate90, "Rotate 90°");
         }
         private void InitializeValues()
         {
@@ -302,6 +306,32 @@ namespace Kinovea.ScreenManager
             tempFont.Dispose();
             brushBack.Dispose();
             brushFont.Dispose();
+        }
+
+        private void btnRotate90_Click(object sender, EventArgs e)
+        {
+            drawingPlane.Rotate90();
+            AfterPlaneOperation();
+        }
+
+        private void btnFlipVert_Click(object sender, EventArgs e)
+        {
+            drawingPlane.FlipVertical();
+            AfterPlaneOperation();
+        }
+
+        private void btnFlipHorz_Click(object sender, EventArgs e)
+        {
+            drawingPlane.FlipHorizontal();
+            AfterPlaneOperation();
+        }
+
+        private void AfterPlaneOperation()
+        {
+            quadImage = drawingPlane.QuadImage;
+            InitializeValues();
+
+            pnlQuadrilateral.Invalidate();
         }
     }
 }

@@ -211,6 +211,48 @@ namespace Kinovea.ScreenManager
                     break;
             }
         }
+
+        /// <summary>
+        /// Flip A with B and C with D.
+        /// </summary>
+        public void FlipHorizontal()
+        {
+            PointF temp = A;
+            A = B;
+            B = temp;
+
+            temp = C;
+            C = D;
+            D = temp;
+        }
+
+        /// <summary>
+        /// Flip A with D and C with B.
+        /// </summary>
+        public void FlipVertical()
+        {
+            PointF temp = A;
+            A = D;
+            D = temp;
+
+            temp = C;
+            C = B;
+            B = temp;
+        }
+
+        /// <summary>
+        /// Rotate corners 90° clockwise.
+        /// </summary>
+        public void Rotate90()
+        {
+            PointF temp = A;
+            A = B;
+            B = C;
+            C = D;
+            D = temp;
+        }
+
+
         public bool Contains(PointF point)
         {
             if (!IsQuadConvex())

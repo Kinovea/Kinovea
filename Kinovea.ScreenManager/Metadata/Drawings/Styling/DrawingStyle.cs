@@ -261,7 +261,6 @@ namespace Kinovea.ScreenManager
             switch (toggleType)
             {
                 case StyleToggleVariant.Perspective:
-                case StyleToggleVariant.DistanceGrid:
                 case StyleToggleVariant.Clock:
                     return true;
                 default:

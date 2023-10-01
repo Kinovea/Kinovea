@@ -120,14 +120,6 @@ namespace Kinovea.ScreenManager
                 calibrationHelper.CalibrationChanged += CalibrationHelper_CalibrationChanged;
             }
         }
-        public bool IsDistanceGrid 
-        { 
-            get { return styleHelper.DistanceGrid; }
-        }
-        public bool DistanceLTR
-        {
-            get { return distanceLTR; }
-        }
         #endregion
 
         #region Members
@@ -142,11 +134,9 @@ namespace Kinovea.ScreenManager
         private bool showGrid = true;
         private bool showXLine = false;
         private bool showYLine = false;
-
-        // Distance grid
+        
         private float xLineCoord = 0.5f;        // Normalized coordinate of the sliding line along the X axis.
         private float yLineCoord = 0.5f;        // Normalized coordinate of the sliding line along the Y axis.
-        private bool distanceLTR = true;        // Direction of the X-axis, only used for displaying values.
         
         private const float tickMarkLengthFactor = 1.0f/40.0f;    // Size of the tickmarks when not showing the grid, normalized to the size of the grid.
 
@@ -185,7 +175,6 @@ namespace Kinovea.ScreenManager
             styleHelper.Color = Color.Empty;
             styleHelper.GridDivisions = 8;
             styleHelper.Perspective = true;
-            styleHelper.DistanceGrid = false;
             styleHelper.Font = new Font("Arial", 8, FontStyle.Bold);
             styleHelper.ValueChanged += StyleHelper_ValueChanged;
             if (preset == null)
@@ -511,9 +500,8 @@ namespace Kinovea.ScreenManager
                     else
                         quadImage.MakeRectangle(corner);
                 }
-                
-                SignalAllTrackablePointsMoved();
-                CalibrationHelper.CalibrationByPlane_Update(Id, quadImage);
+
+                AfterQuadOp();
             }
         }
         public override PointF GetCopyPoint()
@@ -586,11 +574,6 @@ namespace Kinovea.ScreenManager
                                 yLineCoord = 0.5f;
                             break;
                         }
-                    case "DistanceLTR":
-                        {
-                            distanceLTR = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
-                            break;
-                        }
                     case "DrawingStyle":
                         style = new DrawingStyle(r);
                         BindStyle();
@@ -633,8 +616,6 @@ namespace Kinovea.ScreenManager
 
                 w.WriteElementString("XLineCoord", XmlHelper.WriteFloat(xLineCoord));
                 w.WriteElementString("YLineCoord", XmlHelper.WriteFloat(yLineCoord));
-                
-                w.WriteElementString("DistanceLTR", XmlHelper.WriteBoolean(distanceLTR));
             }
 
             if (ShouldSerializeStyle(filter))
@@ -765,7 +746,6 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-
         public void Reset()
         {
             // Used on metadata over load.
@@ -775,6 +755,25 @@ namespace Kinovea.ScreenManager
             quadImage = quadPlane.Clone();
         }
 
+        public void FlipHorizontal()
+        {
+            quadImage.FlipHorizontal();
+            AfterQuadOp();
+        }
+
+        public void FlipVertical()
+        {
+            quadImage.FlipVertical();
+            AfterQuadOp();
+        }
+
+        public void Rotate90()
+        {
+            quadImage.Rotate90();
+            AfterQuadOp();
+        }
+
+        
         public void UpdateMapping(SizeF size)
         {
             planeWidth = size.Width;
@@ -798,7 +797,6 @@ namespace Kinovea.ScreenManager
             style.Bind(styleHelper, "Color", "color");
             style.Bind(styleHelper, "GridDivisions", "divisions");
             style.Bind(styleHelper, "Toggles/Perspective", "perspective");
-            style.Bind(styleHelper, "Toggles/DistanceGrid", "distanceGrid");
         }
         private void StyleHelper_ValueChanged(object sender, EventArgs e)
         {
@@ -862,12 +860,7 @@ namespace Kinovea.ScreenManager
                 PointF pTop = new PointF(coord, 0);
                 PointF pBottom = new PointF(coord, planeHeight);
 
-                // TODO: handle reversal of axis direction directly in CalibrationHelper/Calibrator.
-                float x = coord;
-                if (!distanceLTR)
-                    x = planeWidth - x;
-
-                float value = calibrator.GridToWorldWithOffset(new PointF(x, 0)).X;
+                float value = calibrator.GridToWorldWithOffset(pTop).X;
 
                 // Grid to Image.
                 pTop = projectiveMapping.Forward(pTop);
@@ -890,6 +883,12 @@ namespace Kinovea.ScreenManager
                 tickMarks.Add(new TickMark(value, pLeft, TextAlignment.Left));
                 tickMarks.Add(new TickMark(value, pRight, TextAlignment.Right));
             }
+        }
+
+        private void AfterQuadOp()
+        {
+            SignalAllTrackablePointsMoved();
+            CalibrationHelper.CalibrationByPlane_Update(Id, quadImage);
         }
 
         public void CalibrationHelper_CalibrationChanged(object sender, EventArgs e)
