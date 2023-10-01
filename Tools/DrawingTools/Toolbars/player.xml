@@ -45,7 +45,6 @@
   </entry>
   <entry name="Plane">
     <subentry name="Grid" />
-    <subentry name="DistanceGrid" />
     <subentry name="DistortionGrid" />
   </entry>
   <entry name="Spotlight" />
