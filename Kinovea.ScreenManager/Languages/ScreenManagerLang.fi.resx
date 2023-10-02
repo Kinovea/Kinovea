@@ -1317,4 +1317,19 @@
   <data name="mnuPasteImage" xml:space="preserve">
     <value>Liitä kuva leikepöydältä</value>
   </data>
+  <data name="DataAnalysis_SaveToFile" xml:space="preserve">
+    <value>Tallenna tiedostoon</value>
+  </data>
+  <data name="DataAnalysis_CalibrationPlane" xml:space="preserve">
+    <value>Kalibrointitaso</value>
+  </data>
+  <data name="DataAnalysis_DataLabel" xml:space="preserve">
+    <value>Tiedot :</value>
+  </data>
+  <data name="DataAnalysis_TotalAngularDisplacement" xml:space="preserve">
+    <value>Kokonais-siirtymä</value>
+  </data>
+  <data name="DataAnalysis_TimeModel" xml:space="preserve">
+    <value>Aika :</value>
+  </data>
 </root>
