@@ -218,7 +218,7 @@
     <value>Suurnopeuskamerat</value>
   </data>
   <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
-    <value>Koodinvaihtomerkit</value>
+    <value>Koodinvaihtojakso</value>
   </data>
   <data name="dlgAbout_BuildingBlocks" xml:space="preserve">
     <value>Rakennuspalikat</value>
