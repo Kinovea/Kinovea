@@ -483,4 +483,28 @@
   <data name="dlgConfigureOpacity_lblOpaque" xml:space="preserve">
     <value>Läpinäkyvyyden kesto (kehyksinä)</value>
   </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Koko</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>Laskeva</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>Nouseva</value>
+  </data>
+  <data name="Generic_Open" xml:space="preserve">
+    <value>Avaa</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>Nimi</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Päiväys</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Järjestä</value>
+  </data>
+  <data name="FormIconPicker_Title" xml:space="preserve">
+    <value>Ikonit</value>
+  </data>
 </root>
