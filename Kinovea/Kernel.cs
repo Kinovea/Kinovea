@@ -75,6 +75,8 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuLanguages = new ToolStripMenuItem();
         private Dictionary<string, ToolStripMenuItem> languageMenus = new Dictionary<string, ToolStripMenuItem>();
+        private ToolStripMenuItem mnuTranslate1 = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuTranslate2 = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPreferences = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecode = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeClassic = new ToolStripMenuItem();
@@ -315,6 +317,7 @@ namespace Kinovea.Root
             mnuView.DropDownItems.AddRange(new ToolStripItem[] { mnuToggleFileExplorer, mnuFullScreen, new ToolStripSeparator() });
             #endregion
 
+
             #region Options
             mnuLanguages.Image = Properties.Resources.international;
             foreach(KeyValuePair<string, string> lang in LanguageManager.Languages)
@@ -325,7 +328,11 @@ namespace Kinovea.Root
                 languageMenus.Add(lang.Key, mnuLang);
                 mnuLanguages.DropDownItems.Add(mnuLang);
             }
-            
+            mnuTranslate1.Image = Properties.Resources.international;
+            mnuTranslate1.Click += (s, e) => Process.Start("https://hosted.weblate.org/engage/kinovea/");
+            mnuLanguages.DropDownItems.Add(new ToolStripSeparator());
+            mnuLanguages.DropDownItems.Add(mnuTranslate1);
+
             mnuPreferences.Image = Properties.Resources.wrench;
             mnuPreferences.Click += new EventHandler(mnuPreferencesOnClick);
             mnuTimecode.Image = Properties.Resources.time_edit;
@@ -354,20 +361,23 @@ namespace Kinovea.Root
             #region Help
             mnuHelpContents.Image = Properties.Resources.book_open;
             mnuHelpContents.ShortcutKeys = Keys.F1;
-            mnuHelpContents.Click += new EventHandler(mnuHelpContents_OnClick);
+            mnuTranslate2.Image = Properties.Resources.international;
             mnuApplicationFolder.Image = Properties.Resources.bug;
+            mnuWebsite.Image = Properties.Resources.website;
+            mnuAbout.Image = Properties.Resources.information;
+
+            mnuHelpContents.Click += mnuHelpContents_OnClick;
+            mnuTranslate2.Click += (s, e) => Process.Start("https://hosted.weblate.org/engage/kinovea/");
             mnuApplicationFolder.Click += (s, e) =>
             {
                 FilesystemHelper.LocateFile(Path.Combine(Software.SettingsDirectory, "log.txt"));
             };
-
-            mnuWebsite.Image = Properties.Resources.website;
             mnuWebsite.Click += (s,e) => Process.Start("https://www.kinovea.org");
-            mnuAbout.Image = Properties.Resources.information;
             mnuAbout.Click += new EventHandler(mnuAbout_OnClick);
 
             mnuHelp.DropDownItems.AddRange(new ToolStripItem[] { 
-                mnuHelpContents, 
+                mnuHelpContents,
+                mnuTranslate2,
                 new ToolStripSeparator(), 
                 mnuApplicationFolder, 
                 new ToolStripSeparator(),
@@ -431,6 +441,8 @@ namespace Kinovea.Root
             
             mnuOptions.Text = RootLang.mnuOptions;
             mnuLanguages.Text = RootLang.mnuLanguages;
+            mnuTranslate1.Text = "Translate Kinovea…";
+            mnuTranslate2.Text = "Translate Kinovea…";
             mnuPreferences.Text = RootLang.mnuPreferences;
             mnuTimecode.Text = RootLang.mnuTimeFormat;
 
