@@ -461,7 +461,7 @@
     <value>Pikanäppäimet {0}.{1}</value>
   </data>
   <data name="dlgPreferences_Capture_chkEnableAudioTrigger" xml:space="preserve">
-    <value>Äänilaukaisimen käyttöönotto</value>
+    <value>Aktivoi äänikäynnistys</value>
   </data>
   <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
     <value>Kategoriat</value>
