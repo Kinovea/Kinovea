@@ -248,6 +248,7 @@ namespace Kinovea.Services
                     hk(PlayerScreenCommands.ToggleDrawingsVisibility, Keys.None),
                     hk(PlayerScreenCommands.ChronometerStartStop, Keys.F5),
                     hk(PlayerScreenCommands.ChronometerSplit, Keys.F6),
+                    hk(PlayerScreenCommands.CadenceBeat, Keys.F7),
                     }
                 },
                 { "DualCapture", new HotkeyCommand[]{

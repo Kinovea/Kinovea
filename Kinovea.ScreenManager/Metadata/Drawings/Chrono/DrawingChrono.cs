@@ -566,6 +566,11 @@ namespace Kinovea.ScreenManager
             // Nothing to do, the basic chronometer doesn't support split times.
         }
 
+        public void Beat(long timestamp)
+        {
+            // Nothing to do.
+        }
+
         #endregion
 
         #region Tool-specific context menu
