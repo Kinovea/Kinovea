@@ -481,4 +481,40 @@
   <data name="dlgAbout_BuildingBlocks" xml:space="preserve">
     <value>Komponen utama</value>
   </data>
+  <data name="dlgPreferences_Drawings_TabExport" xml:space="preserve">
+    <value>Ekspor</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportCalibrated" xml:space="preserve">
+    <value>Pengukuran terkalibrasi</value>
+  </data>
+  <data name="dlgPreferences_General_PathToPandoc" xml:space="preserve">
+    <value>Jalur menuju pandoc:</value>
+  </data>
+  <data name="dlgWorkspace_Title" xml:space="preserve">
+    <value>Ruang kerja</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVDelimiter" xml:space="preserve">
+    <value>Pemisah desimal untuk berkas CSV:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVComma" xml:space="preserve">
+    <value>Koma</value>
+  </data>
+  <data name="dlgPreferences_Drawing_CSVSystem" xml:space="preserve">
+    <value>Sistem ({0})</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportPixels" xml:space="preserve">
+    <value>Piksel</value>
+  </data>
+  <data name="dlgPreferences_Capture_TriggerAction" xml:space="preserve">
+    <value>Tindakan pemicu:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportSpace" xml:space="preserve">
+    <value>Mode Ahli:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVPoint" xml:space="preserve">
+    <value>Titik</value>
+  </data>
+  <data name="dlgWorkspace_ConfirmationMessage" xml:space="preserve">
+    <value>Ruang kerja default disimpan.</value>
+  </data>
 </root>

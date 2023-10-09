@@ -116,6 +116,24 @@
     <value>Cari di Windows Explorer </value>
   </data>
   <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
-    <value>Buka sebagai pengamat folder tayangan ulang</value>
+    <value>Buka sebagai pengamat map tayangan ulang</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Ukuran</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>Turun</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>Naik</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>Nama</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Tanggal</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Urutkan berdasarkan</value>
   </data>
 </root>

@@ -491,7 +491,7 @@
     <value>Grid perspektif</value>
   </data>
   <data name="DrawingName_Grid" xml:space="preserve">
-    <value>Grid</value>
+    <value>Garis kisi</value>
   </data>
   <data name="DrawingName_TestGrid" xml:space="preserve">
     <value>Grid uji kamera</value>
@@ -527,7 +527,7 @@
     <value>Postur</value>
   </data>
   <data name="DrawingName_Goniometer" xml:space="preserve">
-    <value>Goniometer</value>
+    <value>Geniometer</value>
   </data>
   <data name="DrawingName_DistortionGrid" xml:space="preserve">
     <value>Grid distorsi</value>
@@ -542,7 +542,7 @@
     <value>Panah - Polyline berlekuk</value>
   </data>
   <data name="DrawingName_Polyline" xml:space="preserve">
-    <value>Polyline</value>
+    <value>Multi garis</value>
   </data>
   <data name="DrawingName_CSVL" xml:space="preserve">
     <value>Garis vertikal sakral sentral</value>
@@ -1178,7 +1178,7 @@
     <value>Buka video…</value>
   </data>
   <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
-    <value>Buka sebagai pengamat folder tayangan ulang…</value>
+    <value>Buka sebagai pengamat map tayangan ulang…</value>
   </data>
   <data name="ToolTip_DrawingToolAutonumbers" xml:space="preserve">
     <value>Nomor otomatis</value>
@@ -1266,5 +1266,275 @@
   </data>
   <data name="ToolTip_SideBySideVideo" xml:space="preserve">
     <value>Simpan kedua video menjadi video komposit</value>
+  </data>
+  <data name="formConfigureKinogram_CropSize" xml:space="preserve">
+    <value>Ukuran pangkas:</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowVerticalAxis" xml:space="preserve">
+    <value>Tampilkan sumbu vertikal</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveNextSplit" xml:space="preserve">
+    <value>Pindahkan titik pisah berikutnya ke bingkai ini</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetTile" xml:space="preserve">
+    <value>Setel ulang ubin ini</value>
+  </data>
+  <data name="mnuMeasure_Name" xml:space="preserve">
+    <value>Nama</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveCurrentEnd" xml:space="preserve">
+    <value>Pindahkan akhir bagian waktu saat ini ke bingkai ini</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetAllTiles" xml:space="preserve">
+    <value>Setel ulang semua ubin</value>
+  </data>
+  <data name="mnuMeasure_Label_None" xml:space="preserve">
+    <value>Tidak ada</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Cumul" xml:space="preserve">
+    <value>Waktu kumulatif</value>
+  </data>
+  <data name="mnuOptions_Kinogram_AutoInterpolate" xml:space="preserve">
+    <value>Interpolasi otomatis</value>
+  </data>
+  <data name="mnuThumbnail_MoveToCurrentTime" xml:space="preserve">
+    <value>Pindah ke waktu saat ini</value>
+  </data>
+  <data name="dlgCalibratePlane_HelpPlane" xml:space="preserve">
+    <value>Masukkan panjang setiap sisi.</value>
+  </data>
+  <data name="mnuTimeSections" xml:space="preserve">
+    <value>Bagian waktu</value>
+  </data>
+  <data name="mnuOptions_Chrono_Locked" xml:space="preserve">
+    <value>Terkunci</value>
+  </data>
+  <data name="formConfigureExport_SBS" xml:space="preserve">
+    <value>Ekspor berdampingan</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
+    <value>Tampilkan lingkaran yang paling cocok</value>
+  </data>
+  <data name="lblConfig_ImageSize" xml:space="preserve">
+    <value>Ukuran gambar:</value>
+  </data>
+  <data name="formConfigureExport_ImageSequence" xml:space="preserve">
+    <value>Ekspor urutan gambar</value>
+  </data>
+  <data name="formConfigureKinogram_lblTotal" xml:space="preserve">
+    <value>Bingkai: {0}</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Ukuran</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowHorizontalAxis" xml:space="preserve">
+    <value>Tampilkan sumbu horizontal</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveNextStart" xml:space="preserve">
+    <value>Pindahkan awal bagian selanjutnya ke bingkai ini</value>
+  </data>
+  <data name="mnuProperties" xml:space="preserve">
+    <value>Properti</value>
+  </data>
+  <data name="mnuMagnifierFreeze" xml:space="preserve">
+    <value>Bekukan</value>
+  </data>
+  <data name="mnuAction_Chrono_Start" xml:space="preserve">
+    <value>Mulai bagian waktu baru pada bingkai ini</value>
+  </data>
+  <data name="mnuAction_Chrono_DeleteSection" xml:space="preserve">
+    <value>Hapus bagian waktu saat ini</value>
+  </data>
+  <data name="dlgCalibratePlane_HelpDistanceGrid" xml:space="preserve">
+    <value>Masukkan jarak dari posisi asal untuk setiap penanda.</value>
+  </data>
+  <data name="mnuAction_Chrono_MovePrevSplit" xml:space="preserve">
+    <value>Pindahkan titik pisah sebelumnya ke bingkai ini</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>Turun</value>
+  </data>
+  <data name="mnuExport_Video_WithPauses" xml:space="preserve">
+    <value>Video dengan jeda…</value>
+  </data>
+  <data name="mnuMeasure_Clock" xml:space="preserve">
+    <value>Jam</value>
+  </data>
+  <data name="mnuOptions_Trajectory_UseKeyImageColors" xml:space="preserve">
+    <value>Gunakan warna gambar kunci</value>
+  </data>
+  <data name="mnuOptions_Kinogram_RightToLeft" xml:space="preserve">
+    <value>Kanan ke kiri</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>Naik</value>
+  </data>
+  <data name="mnuAction_Chrono_Stop" xml:space="preserve">
+    <value>Hentikan: mengakhiri bagian waktu saat ini pada bingkai ini</value>
+  </data>
+  <data name="toolTip_Speed" xml:space="preserve">
+    <value>Kecepatan</value>
+  </data>
+  <data name="filterName_Analysis" xml:space="preserve">
+    <value>Analisis</value>
+  </data>
+  <data name="mnuExport_Video_Video" xml:space="preserve">
+    <value>Video…</value>
+  </data>
+  <data name="mnuOptions_CoordinateSystem_ShowGraduations" xml:space="preserve">
+    <value>Tampilkan gradasi</value>
+  </data>
+  <data name="mnuExport_Video_SideBySide" xml:space="preserve">
+    <value>Berdampingan…</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetLabelPositions" xml:space="preserve">
+    <value>Setel ulang posisi label</value>
+  </data>
+  <data name="mnuExport_Spreadsheet_TrajectoryCSV" xml:space="preserve">
+    <value>CSV lintasan…</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>Nama</value>
+  </data>
+  <data name="formConfigureExport_SBS_Horizontal" xml:space="preserve">
+    <value>Horisontal</value>
+  </data>
+  <data name="formConfigureKinogram_lblFrameInterval" xml:space="preserve">
+    <value>Interval bingkai: {0:0.000} ms</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Tanggal</value>
+  </data>
+  <data name="filterName_Kinogram" xml:space="preserve">
+    <value>Kino gram</value>
+  </data>
+  <data name="mnuExport_Images_Keys" xml:space="preserve">
+    <value>Gambar kunci…</value>
+  </data>
+  <data name="mnuDemosaic" xml:space="preserve">
+    <value>Demosaisasi</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Tag" xml:space="preserve">
+    <value>Tandai</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Urutkan berdasarkan</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowFrame" xml:space="preserve">
+    <value>Tampilkan bingkai</value>
+  </data>
+  <data name="mnuExport_Spreadsheet_ChronoCSV" xml:space="preserve">
+    <value>CSV kronometer…</value>
+  </data>
+  <data name="mnuAction_Chrono_Split" xml:space="preserve">
+    <value>Pisahkan: mengakhiri bagian waktu saat ini pada bingkai ini dan memulai yang baru</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Menu" xml:space="preserve">
+    <value>Kolom</value>
+  </data>
+  <data name="mnuTimeCalibration" xml:space="preserve">
+    <value>Kalibrasi waktu…</value>
+  </data>
+  <data name="mnuAction_Kinogram_Interpolate" xml:space="preserve">
+    <value>Ubin interpolasi</value>
+  </data>
+  <data name="mnuOptions_Trajectory_SeeFuture" xml:space="preserve">
+    <value>Lihat masa depan</value>
+  </data>
+  <data name="mnuDemosaicNone" xml:space="preserve">
+    <value>Tidak ada</value>
+  </data>
+  <data name="mnuExport_Spreadsheet" xml:space="preserve">
+    <value>Ekspor spreadsheet</value>
+  </data>
+  <data name="mnuAction_Chrono_MovePrevEnd" xml:space="preserve">
+    <value>Pindahkan akhir bagian sebelumnya ke bingkai ini</value>
+  </data>
+  <data name="mnuExport_Images_Image" xml:space="preserve">
+    <value>Gambar…</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowKeyImageLabels" xml:space="preserve">
+    <value>Tampilkan label gambar kunci</value>
+  </data>
+  <data name="mnuMeasure_FrameNumber" xml:space="preserve">
+    <value>Nomor bingkai</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowThirds" xml:space="preserve">
+    <value>Tampilkan garis kisi 3x3</value>
+  </data>
+  <data name="mnuMeasure_Label_Menu" xml:space="preserve">
+    <value>Label</value>
+  </data>
+  <data name="formConfigureKinogram_Table" xml:space="preserve">
+    <value>Tabel:</value>
+  </data>
+  <data name="mnuAction" xml:space="preserve">
+    <value>Aksi</value>
+  </data>
+  <data name="mnuExitFilter" xml:space="preserve">
+    <value>Keluar {0}</value>
+  </data>
+  <data name="mnuMeasure_Stopwatch" xml:space="preserve">
+    <value>Penghitung waktu</value>
+  </data>
+  <data name="formConfigureExport_SBS_Vertical" xml:space="preserve">
+    <value>Vertikal</value>
+  </data>
+  <data name="mnuExport_Images_SideBySide" xml:space="preserve">
+    <value>Berdampingan…</value>
+  </data>
+  <data name="formConfigureKinogram_Title" xml:space="preserve">
+    <value>Konfigurasikan Kinogram</value>
+  </data>
+  <data name="mnuExport_Image" xml:space="preserve">
+    <value>Ekspor gambar</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveCurrentStart" xml:space="preserve">
+    <value>Pindahkan awal bagian waktu saat ini ke bingkai ini</value>
+  </data>
+  <data name="mnuOptions_Trajectory_Interactive" xml:space="preserve">
+    <value>Jalur interaktif</value>
+  </data>
+  <data name="mnuMeasure_Labels_Menu" xml:space="preserve">
+    <value>Label</value>
+  </data>
+  <data name="mnuExport_Document" xml:space="preserve">
+    <value>Ekspor dokumen</value>
+  </data>
+  <data name="mnuOptions_CoordinateSystem_ShowGrid" xml:space="preserve">
+    <value>Tampilkan garis kisi</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowTrackLabel" xml:space="preserve">
+    <value>Tampilkan label trek</value>
+  </data>
+  <data name="dlgCalibratePlane_AveragePixelSize" xml:space="preserve">
+    <value>Ukuran piksel rata-rata: {0}.</value>
+  </data>
+  <data name="mnuThumbnails" xml:space="preserve">
+    <value>Gambar mini</value>
+  </data>
+  <data name="mnuExport_Images_Sequence" xml:space="preserve">
+    <value>Urutan gambar…</value>
+  </data>
+  <data name="mnuAction_Chrono_DeleteTimes" xml:space="preserve">
+    <value>Hapus semua waktu</value>
+  </data>
+  <data name="mnuExport_Video_Slideshow" xml:space="preserve">
+    <value>Tayangan slide video…</value>
+  </data>
+  <data name="Generic_OK" xml:space="preserve">
+    <value>OKE</value>
+  </data>
+  <data name="mnuLensCalibration" xml:space="preserve">
+    <value>Kalibrasi lensa…</value>
+  </data>
+  <data name="mnuOptions_Kinogram_ShowBorder" xml:space="preserve">
+    <value>Tampilkan batas</value>
+  </data>
+  <data name="mnuMagnifierUnfreeze" xml:space="preserve">
+    <value>Cairkan</value>
+  </data>
+  <data name="mnuExport_Video" xml:space="preserve">
+    <value>Ekspor video</value>
   </data>
 </root>
