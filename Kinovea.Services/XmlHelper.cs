@@ -267,6 +267,17 @@ namespace Kinovea.Services
             return section;
         }
 
+        public static long ParseTimestamp(string str)
+        {
+            bool read = long.TryParse(str, NumberStyles.Any, CultureInfo.InvariantCulture, out long time);
+            if (read)
+                return time;
+            else
+                log.Error(String.Format("An error happened while parsing a timestamp value. ({0}).", str));
+
+            return 0;
+        }
+
         public static TEnum ParseEnum<TEnum>(string str, TEnum defaultValue) where TEnum : struct
         {
             TEnum result;
@@ -326,6 +337,11 @@ namespace Kinovea.Services
             long start = section.Start == long.MaxValue ? -1 : section.Start;
             long end = section.End == long.MaxValue ? -1 : section.End;
             return string.Format(CultureInfo.InvariantCulture, "{0};{1}", start, end);
+        }
+
+        public static string WriteTimestamp(long timestamp)
+        {
+            return string.Format(CultureInfo.InvariantCulture, "{0}", timestamp);
         }
     }
 }

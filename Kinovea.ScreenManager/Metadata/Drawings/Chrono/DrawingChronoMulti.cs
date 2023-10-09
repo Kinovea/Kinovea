@@ -111,10 +111,13 @@ namespace Kinovea.ScreenManager
         private long invisibleTimestamp;             	// chrono stops being visible.
         private List<ChronoSection> sections = new List<ChronoSection>(); 
         private long contextTimestamp;                  // timestamp for context-menu operations.
-        private bool showLabel;
         private string text;
-        private bool locked;
         private HashSet<ChronoColumns> visibleColumns = new HashSet<ChronoColumns>();
+
+        // Options
+        private bool showLabel;
+        private bool locked;
+
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
@@ -1059,6 +1062,11 @@ namespace Kinovea.ScreenManager
                 StopSection(sectionIndex, timestamp);
                 InsertSection(new VideoSection(timestamp, long.MaxValue));
             }
+        }
+
+        public void Beat(long timestamp)
+        {
+            // This tool does not respond to the beat command.
         }
 
         #endregion

@@ -1511,8 +1511,11 @@ namespace Kinovea.ScreenManager
                 case PlayerScreenCommands.ChronometerSplit:
                     ChronometerSplit();
                     break;
-                
-                
+                case PlayerScreenCommands.CadenceBeat:
+                    CadenceBeat();
+                    break;
+
+
 
                 default:
                     return base.ExecuteCommand(cmd);
@@ -1688,7 +1691,20 @@ namespace Kinovea.ScreenManager
             UpdateFramesMarkers();
         }
 
+        private void CadenceBeat()
+        {
+            foreach (var drawing in m_FrameServer.Metadata.ChronoManager.Drawings)
+            {
+                var timeable = drawing as ITimeable;
+                if (timeable == null)
+                    continue;
 
+                timeable.Beat(m_iCurrentPosition);
+            }
+
+            DoInvalidate();
+            UpdateFramesMarkers();
+        }
 
         /// <summary>
         /// Returns the physical time in microseconds for this timestamp.

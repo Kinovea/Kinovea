@@ -54,14 +54,15 @@ namespace Kinovea.ScreenManager
         {
             get
             {
-                int iHash = visibleTimestamp.GetHashCode();
-                iHash ^= invisibleTimestamp.GetHashCode();
-                iHash ^= sections.GetHashCode();
-                iHash ^= styleHelper.ContentHash;
-                iHash ^= showLabel.GetHashCode();
-                iHash ^= locked.GetHashCode();
+                int hash = visibleTimestamp.GetHashCode();
+                hash ^= invisibleTimestamp.GetHashCode();
+                hash ^= beats.GetHashCode();
+                hash ^= styleHelper.ContentHash;
+                hash ^= showLabel.GetHashCode();
+                hash ^= locked.GetHashCode();
+                hash ^= zeroBased.GetHashCode();
 
-                return iHash;
+                return hash;
             }
         }
         public DrawingStyle DrawingStyle
@@ -91,10 +92,6 @@ namespace Kinovea.ScreenManager
                 throw new InvalidProgramException();
             }
         }
-        public List<ChronoSection> Sections
-        {
-            get { return sections; }
-        }
         #endregion
 
         #region Members
@@ -102,12 +99,16 @@ namespace Kinovea.ScreenManager
 
         private long visibleTimestamp;               	// chrono becomes visible.
         private long invisibleTimestamp;             	// chrono stops being visible.
-        private List<ChronoSection> sections = new List<ChronoSection>(); 
+        private List<long> beats = new List<long>();
         private long contextTimestamp;                  // timestamp for context-menu operations.
-        private bool showLabel;
         private string text;
+        //private HashSet<ChronoColumns> visibleColumns = new HashSet<ChronoColumns>();
+        
+        // Options
+        private bool showLabel;
         private bool locked;
-        private HashSet<ChronoColumns> visibleColumns = new HashSet<ChronoColumns>();
+        private bool zeroBased;
+        
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
@@ -125,28 +126,21 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuShowAfter = new ToolStripMenuItem();
         
         private ToolStripMenuItem mnuAction = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuStart = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuStop = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuSplit = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuMoveCurrentStart = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuMoveCurrentEnd = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuMovePreviousEnd = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuMoveNextStart = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuMovePreviousSplit = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuMoveNextSplit = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuDeleteSection = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuDeleteTimes = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuAddBeat = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuDeleteBeat = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuDeleteBeats = new ToolStripMenuItem();
         
         private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowLabel = new ToolStripMenuItem();
         private ToolStripMenuItem mnuLocked = new ToolStripMenuItem();
-        
-        private ToolStripMenuItem mnuColumns = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuColumnName = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuColumnCumul = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuColumnTag = new ToolStripMenuItem();
-        
-        private ToolStripMenuItem mnuConfigureSections = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuZeroBased = new ToolStripMenuItem();
+
+        //private ToolStripMenuItem mnuColumns = new ToolStripMenuItem();
+        //private ToolStripMenuItem mnuColumnName = new ToolStripMenuItem();
+        //private ToolStripMenuItem mnuColumnCumul = new ToolStripMenuItem();
+        //private ToolStripMenuItem mnuColumnTag = new ToolStripMenuItem();
+
+        //private ToolStripMenuItem mnuConfigureSections = new ToolStripMenuItem();
         #endregion
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -180,12 +174,6 @@ namespace Kinovea.ScreenManager
             infosFading.UseDefault = false;
 
             InitializeMenus();
-
-            visibleColumns.Clear();
-            visibleColumns.Add(ChronoColumns.Name);
-            visibleColumns.Add(ChronoColumns.Duration);
-            visibleColumns.Add(ChronoColumns.Cumul);
-            visibleColumns.Add(ChronoColumns.Tag);
         }
 
         public DrawingCounter(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
@@ -215,54 +203,46 @@ namespace Kinovea.ScreenManager
 
             // Action
             mnuAction.Image = Properties.Resources.action;
-            mnuStart.Image = Properties.Drawings.chronostart;
-            mnuStop.Image = Properties.Drawings.chronostop;
-            mnuSplit.Image = Properties.Drawings.chrono_split;
-            mnuMoveCurrentStart.Image = Properties.Resources.chronosectionstart;
-            mnuMoveCurrentEnd.Image = Properties.Resources.chronosectionend;
-            mnuMovePreviousEnd.Image = Properties.Resources.chronosectionend;
-            mnuMoveNextStart.Image = Properties.Resources.chronosectionstart;
-            mnuMovePreviousSplit.Image = Properties.Resources.chronosectionstart;
-            mnuMoveNextSplit.Image = Properties.Resources.chronosectionend;
-            mnuDeleteSection.Image = Properties.Resources.bin_empty;
-            mnuDeleteTimes.Image = Properties.Resources.bin_empty;
-            mnuStart.Click += mnuStart_Click;
-            mnuStop.Click += mnuStop_Click;
-            mnuSplit.Click += mnuSplit_Click;
-            mnuMoveCurrentStart.Click += mnuMoveCurrentStart_Click;
-            mnuMoveCurrentEnd.Click += mnuMoveCurrentEnd_Click;
-            mnuMovePreviousEnd.Click += mnuMovePreviousEnd_Click;
-            mnuMoveNextStart.Click += mnuMoveNextStart_Click;
-            mnuMovePreviousSplit.Click += mnuMovePreviousSplit_Click;
-            mnuMoveNextSplit.Click += mnuMoveNextSplit_Click;
-            mnuDeleteSection.Click += mnuDeleteSection_Click;
-            mnuDeleteTimes.Click += mnuDeleteTimes_Click;
-
+            mnuAddBeat.Image = Properties.Drawings.monitor;
+            mnuDeleteBeat.Image = Properties.Resources.bin_empty;
+            mnuDeleteBeats.Image = Properties.Resources.bin_empty;
+            mnuAddBeat.Click += mnuAddBeat_Click;
+            mnuDeleteBeat.Click += mnuDeleteBeat_Click;
+            mnuDeleteBeats.Click += mnuDeleteBeats_Click;
+            mnuAction.DropDownItems.AddRange(new ToolStripItem[] {
+                mnuAddBeat,
+                new ToolStripSeparator(),
+                mnuDeleteBeat,
+                mnuDeleteBeats,
+            });
 
             // Options
             mnuOptions.Image = Properties.Resources.equalizer;
             mnuShowLabel.Image = Properties.Drawings.label;
             mnuLocked.Image = Properties.Drawings.padlock2;
+            mnuZeroBased.Image = Properties.Drawings.notification_counter;
             mnuShowLabel.Click += mnuShowLabel_Click;
             mnuLocked.Click += mnuLock_Click;
+            mnuZeroBased.Click += mnuZeroBased_Click;
             mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuShowLabel,
                 mnuLocked,
+                mnuZeroBased,
             });
 
             // Column and section management
-            mnuColumns.Image = Properties.Drawings.label;
-            mnuColumnName.Click += (s, e) => mnuColumn_Click(s, ChronoColumns.Name);
-            mnuColumnCumul.Click += (s, e) => mnuColumn_Click(s, ChronoColumns.Cumul);
-            mnuColumnTag.Click += (s, e) => mnuColumn_Click(s, ChronoColumns.Tag);
-            mnuColumns.DropDownItems.AddRange(new ToolStripItem[] {
-                mnuColumnName,
-                mnuColumnCumul,
-                mnuColumnTag 
-            });
+            //mnuColumns.Image = Properties.Drawings.label;
+            //mnuColumnName.Click += (s, e) => mnuColumn_Click(s, ChronoColumns.Name);
+            //mnuColumnCumul.Click += (s, e) => mnuColumn_Click(s, ChronoColumns.Cumul);
+            //mnuColumnTag.Click += (s, e) => mnuColumn_Click(s, ChronoColumns.Tag);
+            //mnuColumns.DropDownItems.AddRange(new ToolStripItem[] {
+            //    mnuColumnName,
+            //    mnuColumnCumul,
+            //    mnuColumnTag 
+            //});
 
-            mnuConfigureSections.Image = Properties.Resources.timetable;
-            mnuConfigureSections.Click += mnuConfigureSections_Click;
+            //mnuConfigureSections.Image = Properties.Resources.timetable;
+            //mnuConfigureSections.Click += mnuConfigureSections_Click;
         }
         #endregion
 
@@ -280,8 +260,9 @@ namespace Kinovea.ScreenManager
             if (opacityFactor <= 0)
                 return;
 
-            ChronoStringBuilder csb = new ChronoStringBuilder(sections, parentMetadata);
-            text = csb.Build(currentTimestamp, visibleColumns);
+            //ChronoStringBuilder csb = new ChronoStringBuilder(sections, parentMetadata);
+            //text = csb.Build(currentTimestamp, visibleColumns);
+            text = BuildText(currentTimestamp);
 
             using (SolidBrush brushBack = styleHelper.GetBackgroundBrush((int)(opacityFactor * backgroundOpacity)))
             using (SolidBrush brushText = styleHelper.GetForegroundBrush((int)(opacityFactor * 255)))
@@ -380,31 +361,23 @@ namespace Kinovea.ScreenManager
                 w.WriteElementString("Visible", (visibleTimestamp == long.MaxValue) ? "-1" : visibleTimestamp.ToString());
                 w.WriteElementString("Invisible", (invisibleTimestamp == long.MaxValue) ? "-1" : invisibleTimestamp.ToString());
                 
-                if (sections.Count > 0)
+                if (beats.Count > 0)
                 {
-                    w.WriteStartElement("Sections");
+                    w.WriteStartElement("Beats");
 
-                    for (int i = 0; i < sections.Count; i++)
+                    for (int i = 0; i < beats.Count; i++)
                     {
-                        VideoSection section = sections[i].Section;
-                        string name = sections[i].Name;
-                        string tag = sections[i].Tag;
-                        w.WriteStartElement("Section");
-                        if (!string.IsNullOrEmpty(name))
-                            w.WriteAttributeString("name", name);
-                        if (!string.IsNullOrEmpty(tag))
-                            w.WriteAttributeString("tag", tag);
-                        w.WriteString(XmlHelper.WriteVideoSection(section));
+                        w.WriteStartElement("Beat");
+                        w.WriteString(XmlHelper.WriteTimestamp(beats[i]));
                         w.WriteEndElement();
                     }
 
                     w.WriteEndElement();
                 }
 
+                // Options
                 w.WriteElementString("Locked", locked.ToString().ToLower());
-
-                string strVisibleColumns = string.Join(";", visibleColumns.ToArray());
-                w.WriteElementString("VisibleColumns", strVisibleColumns);
+                w.WriteElementString("ZeroBased", zeroBased.ToString().ToLower());
 
                 // </values>
                 w.WriteEndElement();
@@ -423,40 +396,40 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        public MeasuredDataTime CollectMeasuredData()
-        {
-            MeasuredDataTime mdt = new MeasuredDataTime();
-            mdt.Name = this.Name;
-            mdt.VisibleColumns = this.visibleColumns;
+        //public MeasuredDataTime CollectMeasuredData()
+        //{
+        //    MeasuredDataTime mdt = new MeasuredDataTime();
+        //    mdt.Name = this.Name;
+        //    mdt.VisibleColumns = this.visibleColumns;
 
-            long cumulTimestamps = 0;
-            for (int i = 0; i < sections.Count; i++)
-            {
-                if (sections[i].Section.End == long.MaxValue)
-                    continue;
+        //    long cumulTimestamps = 0;
+        //    for (int i = 0; i < sections.Count; i++)
+        //    {
+        //        if (sections[i].Section.End == long.MaxValue)
+        //            continue;
 
-                MeasuredDataTimeSection mdts = new MeasuredDataTimeSection();    
-                mdts.Name = string.IsNullOrEmpty(sections[i].Name) ? (i + 1).ToString() : sections[i].Name;
-                mdts.Tag = sections[i].Tag;
+        //        MeasuredDataTimeSection mdts = new MeasuredDataTimeSection();    
+        //        mdts.Name = string.IsNullOrEmpty(sections[i].Name) ? (i + 1).ToString() : sections[i].Name;
+        //        mdts.Tag = sections[i].Tag;
 
-                if (!string.IsNullOrEmpty(mdts.Tag))
-                    mdt.HasTags = true;
+        //        if (!string.IsNullOrEmpty(mdts.Tag))
+        //            mdt.HasTags = true;
 
-                var section = sections[i];
-                mdts.Start = parentMetadata.GetNumericalTime(section.Section.Start, TimeType.UserOrigin);
-                mdts.Stop = parentMetadata.GetNumericalTime(section.Section.End, TimeType.UserOrigin);
+        //        var section = sections[i];
+        //        mdts.Start = parentMetadata.GetNumericalTime(section.Section.Start, TimeType.UserOrigin);
+        //        mdts.Stop = parentMetadata.GetNumericalTime(section.Section.End, TimeType.UserOrigin);
 
-                long elapsedTimestamps = section.Section.End - section.Section.Start;
-                cumulTimestamps += elapsedTimestamps;
+        //        long elapsedTimestamps = section.Section.End - section.Section.Start;
+        //        cumulTimestamps += elapsedTimestamps;
 
-                mdts.Duration = parentMetadata.GetNumericalTime(elapsedTimestamps, TimeType.Absolute);
-                mdts.Cumul = parentMetadata.GetNumericalTime(cumulTimestamps, TimeType.Absolute);
+        //        mdts.Duration = parentMetadata.GetNumericalTime(elapsedTimestamps, TimeType.Absolute);
+        //        mdts.Cumul = parentMetadata.GetNumericalTime(cumulTimestamps, TimeType.Absolute);
 
-                mdt.Sections.Add(mdts);
-            }
+        //        mdt.Sections.Add(mdts);
+        //    }
 
-            return mdt;
-        }
+        //    return mdt;
+        //}
 
 
         public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
@@ -483,9 +456,6 @@ namespace Kinovea.ScreenManager
                     case "DrawingStyle":
                         style = new DrawingStyle(xmlReader);
                         BindStyle();
-                        break;
-                    case "Label":
-                        ParseLabel(xmlReader);
                         break;
                     default:
                         string unparsed = xmlReader.ReadOuterXml();
@@ -518,24 +488,14 @@ namespace Kinovea.ScreenManager
                         long hide = xmlReader.ReadElementContentAsLong();
                         invisibleTimestamp = (hide == -1) ? long.MaxValue : timestampMapper(hide);
                         break;
-                    case "Sections":
-                        ParseSections(xmlReader, timestampMapper);
+                    case "Beats":
+                        ParseBeats(xmlReader, timestampMapper);
                         break;
                     case "Locked":
                         locked = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
-                    case "VisibleColumns":
-                        visibleColumns.Clear();
-                        string str = xmlReader.ReadElementContentAsString();
-                        string[] a = str.Split(new char[] { ';' });
-                        foreach(var strCol in a)
-                        {
-                            ChronoColumns col;
-                            bool parsed = Enum.TryParse<ChronoColumns>(strCol, out col);
-                            if (parsed)
-                                visibleColumns.Add(col);
-                        }
-
+                    case "ZeroBased":
+                        zeroBased = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
                     default:
                         string unparsed = xmlReader.ReadOuterXml();
@@ -547,9 +507,9 @@ namespace Kinovea.ScreenManager
             xmlReader.ReadEndElement();
         }
 
-        private void ParseSections(XmlReader xmlReader, TimestampMapper timestampMapper)
+        private void ParseBeats(XmlReader xmlReader, TimestampMapper timestampMapper)
         {
-            sections.Clear();
+            beats.Clear();
 
             if (timestampMapper == null)
             {
@@ -563,22 +523,11 @@ namespace Kinovea.ScreenManager
             {
                 switch (xmlReader.Name)
                 {
-                    case "Section":
+                    case "Beat":
                         
-                        string sectionName = "";
-                        string sectionTag = "";
-                        if (xmlReader.MoveToAttribute("name"))
-                            sectionName = xmlReader.ReadContentAsString();
-                        
-                        if (xmlReader.MoveToAttribute("tag"))
-                            sectionTag = xmlReader.ReadContentAsString();
-
                         xmlReader.ReadStartElement();
-                        
-                        VideoSection section = XmlHelper.ParseVideoSection(xmlReader.ReadContentAsString());
-                        section = new VideoSection(timestampMapper(section.Start), timestampMapper(section.End));
-                        InsertSection(section, sectionName, sectionTag);
-
+                        long beat = XmlHelper.ParseTimestamp(xmlReader.ReadContentAsString());
+                        beats.Add(beat);
                         xmlReader.ReadEndElement();
                         break;
                     default:
@@ -595,26 +544,6 @@ namespace Kinovea.ScreenManager
             visibleTimestamp = Math.Max(visibleTimestamp, 0);
             invisibleTimestamp = Math.Max(invisibleTimestamp, 0);
         }
-        private void ParseLabel(XmlReader xmlReader)
-        {
-            xmlReader.ReadStartElement();
-
-            while(xmlReader.NodeType == XmlNodeType.Element)
-            {
-                switch(xmlReader.Name)
-                {
-                    case "Show":
-                        showLabel = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
-                        break;
-                    default:
-                        string unparsed = xmlReader.ReadOuterXml();
-                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-                        break;
-                }
-            }
-
-            xmlReader.ReadEndElement();
-        }
         #endregion
 
         #region Tool-specific context menu
@@ -630,68 +559,26 @@ namespace Kinovea.ScreenManager
             // Backup the time globally for use in the event handlers callbacks.
             contextTimestamp = timestamp;
 
-            // The context menu depends on whether we are on a live or dead section.
-            mnuAction.DropDownItems.Clear();
-            int sectionIndex = GetSectionIndex(sections, contextTimestamp);
-
-            if (sectionIndex >= 0)
-            {
-                // Live section.
-                // If the next event is a split point we move the split as a whole (current end and next start).
-                // Another option would be to allow moving the next start when we are on the boundary frame, this requires two actions to 
-                // move a split but it is the lowest level and allow detaching the end points making up the split.
-                //
-                // Rationale: the most common scenario for adjusting existing end points will be to respect the "type" (split vs disconnected).
-                // If the user really wants to disconnect a split they can always delete one of the sections and redo.
-                bool isPrevSplit = sectionIndex > 0 && sections[sectionIndex - 1].Section.End == sections[sectionIndex].Section.Start;
-                bool isNextSplit = sectionIndex < sections.Count - 1 && sections[sectionIndex + 1].Section.Start == sections[sectionIndex].Section.End;
-
-                mnuAction.DropDownItems.AddRange(new ToolStripItem[] {
-                    mnuStop,
-                    mnuSplit,
-                    new ToolStripSeparator(),
-                    isPrevSplit ? mnuMovePreviousSplit : mnuMoveCurrentStart,
-                    isNextSplit ? mnuMoveNextSplit : mnuMoveCurrentEnd,
-                    new ToolStripSeparator(),
-                    mnuDeleteSection,
-                    mnuDeleteTimes,
-                });
-            }
-            else
-            {
-                // Dead section.
-                // If we are on a dead section we already know the previous and next events aren't split points.
-                mnuAction.DropDownItems.AddRange(new ToolStripItem[] {
-                    mnuStart,
-                    new ToolStripSeparator(),
-                    mnuMovePreviousEnd,
-                    mnuMoveNextStart,
-                    new ToolStripSeparator(),
-                    mnuDeleteTimes,
-                });
-            }
-
-            // Corner-case dead sections.
-            mnuMovePreviousEnd.Enabled = !IsBeforeFirstSection(sectionIndex);
-            mnuMoveNextStart.Enabled = !IsAfterLastSection(sectionIndex);
-            mnuConfigureSections.Enabled = sections.Count > 0;
-            mnuDeleteTimes.Enabled = sections.Count > 0;
-
+            // Enable or disable the Add/Delete based on whether we are currently on a beat or not.
+            int beatIndex = GetBeatIndexExact(timestamp);
+            mnuAddBeat.Enabled = (beatIndex == -1);
+            bool isBeforeFirst = IsBeforeFirstBeat(timestamp);
+            mnuDeleteBeat.Enabled = !isBeforeFirst;
+            
             // Options
             mnuShowLabel.Checked = showLabel;
             mnuLocked.Checked = locked;
+            mnuZeroBased.Checked = zeroBased;
 
             // Columns and section management
-            mnuColumnName.Checked = visibleColumns.Contains(ChronoColumns.Name);
-            mnuColumnCumul.Checked = visibleColumns.Contains(ChronoColumns.Cumul);
-            mnuColumnTag.Checked = visibleColumns.Contains(ChronoColumns.Tag);
+            //mnuColumnName.Checked = visibleColumns.Contains(ChronoColumns.Name);
+            //mnuColumnCumul.Checked = visibleColumns.Contains(ChronoColumns.Cumul);
+            //mnuColumnTag.Checked = visibleColumns.Contains(ChronoColumns.Tag);
 
             contextMenu.AddRange(new ToolStripItem[] {
                 mnuVisibility,
                 mnuAction,
                 mnuOptions,
-                mnuColumns,
-                mnuConfigureSections,
             });
 
             return contextMenu;
@@ -709,34 +596,15 @@ namespace Kinovea.ScreenManager
             // Action
             mnuAction.Text = ScreenManagerLang.mnuAction;
 
-            // When we are on a live section.
-            mnuStop.Text = ScreenManagerLang.mnuAction_Chrono_Stop;
-            mnuSplit.Text = ScreenManagerLang.mnuAction_Chrono_Split;
-            mnuMoveCurrentStart.Text = ScreenManagerLang.mnuAction_Chrono_MoveCurrentStart;
-            mnuMoveCurrentEnd.Text = ScreenManagerLang.mnuAction_Chrono_MoveCurrentEnd;
-            mnuMovePreviousSplit.Text = ScreenManagerLang.mnuAction_Chrono_MovePrevSplit;
-            mnuMoveNextSplit.Text = ScreenManagerLang.mnuAction_Chrono_MoveNextSplit;
-            mnuDeleteSection.Text = ScreenManagerLang.mnuAction_Chrono_DeleteSection;
-
-            // When we are on a dead section.
-            mnuStart.Text = ScreenManagerLang.mnuAction_Chrono_Start;
-            mnuMovePreviousEnd.Text = ScreenManagerLang.mnuAction_Chrono_MovePrevEnd;
-            mnuMoveNextStart.Text = ScreenManagerLang.mnuAction_Chrono_MoveNextStart;
-            mnuDeleteTimes.Text = ScreenManagerLang.mnuAction_Chrono_DeleteTimes;
+            mnuAddBeat.Text = "Add beat";
+            mnuDeleteBeat.Text = "Delete beat";
+            mnuDeleteBeats.Text = "Delete all beats";
 
             // Options.
             mnuOptions.Text = ScreenManagerLang.Generic_Options;
             mnuShowLabel.Text = ScreenManagerLang.mnuShowLabel;
             mnuLocked.Text = ScreenManagerLang.mnuOptions_Chrono_Locked;
-
-            // Columns.
-            mnuColumns.Text = ScreenManagerLang.mnuMeasure_Chrono_Menu;
-            mnuColumnName.Text = ScreenManagerLang.mnuMeasure_Name;
-            mnuColumnCumul.Text = ScreenManagerLang.mnuMeasure_Chrono_Cumul;
-            mnuColumnTag.Text = ScreenManagerLang.mnuMeasure_Chrono_Tag;
-
-            // Sections.
-            mnuConfigureSections.Text = ScreenManagerLang.mnuTimeSections;
+            mnuZeroBased.Text = "Count cycles";
         }
 
         #region Visibility
@@ -771,164 +639,38 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        private void mnuStart_Click(object sender, EventArgs e)
+        private void mnuAddBeat_Click(object sender, EventArgs e)
         {
             // Start a new section here.
             CaptureMemento(SerializationFilter.Core);
             
-            InsertSection(new VideoSection(contextTimestamp, long.MaxValue));
+            InsertBeat(contextTimestamp);
             
             InvalidateFromMenu(sender);
             UpdateFramesMarkersFromMenu(sender);
         }
 
-        private void mnuStop_Click(object sender, EventArgs e)
+        private void mnuDeleteBeat_Click(object sender, EventArgs e)
         {
-            // Stop the current section here.
-            int sectionIndex = GetSectionIndex(sections, contextTimestamp);
-            if (sectionIndex < 0)
+            // Note: this is not equivalent to hitting F7 on an existing beat.
+            // This function will delete the beat we are on, or the previous beat if it exists.
+            int beatIndex = GetBeatIndexUpto(contextTimestamp);
+            if (beatIndex < 0)
                 return;
 
             CaptureMemento(SerializationFilter.Core);
 
-            StopSection(sectionIndex, contextTimestamp);
-
-            if (contextTimestamp > invisibleTimestamp)
-                invisibleTimestamp = contextTimestamp;
+            RemoveBeat(beatIndex);
 
             InvalidateFromMenu(sender);
             UpdateFramesMarkersFromMenu(sender);
         }
 
-        private void mnuSplit_Click(object sender, EventArgs e)
-        {
-            // Stop the current section here and start a new one.
-            int sectionIndex = GetSectionIndex(sections, contextTimestamp);
-            if (sectionIndex < 0)
-                return;
-
-            CaptureMemento(SerializationFilter.Core);
-            
-            StopSection(sectionIndex, contextTimestamp);
-            InsertSection(new VideoSection(contextTimestamp, long.MaxValue));
-
-            if (contextTimestamp > invisibleTimestamp)
-                invisibleTimestamp = contextTimestamp;
-
-            InvalidateFromMenu(sender);
-            UpdateFramesMarkersFromMenu(sender);
-        }
-        
-        private void mnuMoveCurrentStart_Click(object sender, EventArgs e)
-        {
-            int sectionIndex = GetSectionIndex(sections, contextTimestamp);
-            if (sectionIndex < 0)
-                return;
-
-            CaptureMemento(SerializationFilter.Core);
-
-            sections[sectionIndex].Section = new VideoSection(contextTimestamp, sections[sectionIndex].Section.End);
-
-            InvalidateFromMenu(sender);
-            UpdateFramesMarkersFromMenu(sender);
-        }
-
-        private void mnuMoveCurrentEnd_Click(object sender, EventArgs e)
-        {
-            // Technically "Move current end" is the same as "Stop", but we keep it for symmetry purposes.
-            int sectionIndex = GetSectionIndex(sections, contextTimestamp);
-            if (sectionIndex < 0)
-                return;
-
-            CaptureMemento(SerializationFilter.Core);
-
-            sections[sectionIndex].Section = new VideoSection(sections[sectionIndex].Section.Start, contextTimestamp);
-
-            InvalidateFromMenu(sender);
-            UpdateFramesMarkersFromMenu(sender);
-        }
-
-        private void mnuMovePreviousSplit_Click(object sender, EventArgs e)
-        {
-            int sectionIndex = GetSectionIndex(sections, contextTimestamp);
-            if (sectionIndex < 1)
-                return;
-
-            CaptureMemento(SerializationFilter.Core);
-
-            int prevIndex = sectionIndex - 1;
-            sections[prevIndex].Section = new VideoSection(sections[prevIndex].Section.Start, contextTimestamp);
-            sections[sectionIndex].Section = new VideoSection(contextTimestamp, sections[sectionIndex].Section.End);
-
-            InvalidateFromMenu(sender);
-            UpdateFramesMarkersFromMenu(sender);
-        }
-
-        private void mnuMoveNextSplit_Click(object sender, EventArgs e)
-        {
-            int sectionIndex = GetSectionIndex(sections, contextTimestamp);
-            if (sectionIndex < 0 || sectionIndex > sections.Count - 2)
-                return;
-
-            CaptureMemento(SerializationFilter.Core);
-
-            int nextIndex = sectionIndex + 1;
-            sections[sectionIndex].Section = new VideoSection(sections[sectionIndex].Section.Start, contextTimestamp);
-            sections[nextIndex].Section = new VideoSection(contextTimestamp, sections[nextIndex].Section.End);
-
-            InvalidateFromMenu(sender);
-            UpdateFramesMarkersFromMenu(sender);
-        }
-
-        private void mnuMovePreviousEnd_Click(object sender, EventArgs e)
-        {
-            int sectionIndex = GetSectionIndex(sections, contextTimestamp);
-            if (sectionIndex >= 0 || IsBeforeFirstSection(sectionIndex))
-                return;
-
-            CaptureMemento(SerializationFilter.Core);
-
-            int prevIndex = -(sectionIndex + 2);
-            sections[prevIndex].Section = new VideoSection(sections[prevIndex].Section.Start, contextTimestamp);
-
-            InvalidateFromMenu(sender);
-            UpdateFramesMarkersFromMenu(sender);
-        }
-
-        private void mnuMoveNextStart_Click(object sender, EventArgs e)
-        {
-            int sectionIndex = GetSectionIndex(sections, contextTimestamp);
-            if (sectionIndex >= 0 || IsAfterLastSection(sectionIndex))
-                return;
-
-            CaptureMemento(SerializationFilter.Core);
-
-            int nextIndex = -(sectionIndex + 1);
-            sections[nextIndex].Section = new VideoSection(contextTimestamp, sections[nextIndex].Section.End);
-
-            InvalidateFromMenu(sender);
-            UpdateFramesMarkersFromMenu(sender);
-        }
-
-        private void mnuDeleteSection_Click(object sender, EventArgs e)
-        {
-            int sectionIndex = GetSectionIndex(sections, contextTimestamp);
-            if (sectionIndex < 0)
-                return;
-
-            CaptureMemento(SerializationFilter.Core);
-
-            RemoveSection(sectionIndex);
-
-            InvalidateFromMenu(sender);
-            UpdateFramesMarkersFromMenu(sender);
-        }
-
-        private void mnuDeleteTimes_Click(object sender, EventArgs e)
+        private void mnuDeleteBeats_Click(object sender, EventArgs e)
         {
             CaptureMemento(SerializationFilter.Core);
 
-            sections.Clear();
+            beats.Clear();
             
             InvalidateFromMenu(sender);
             UpdateFramesMarkersFromMenu(sender);
@@ -948,13 +690,10 @@ namespace Kinovea.ScreenManager
             InvalidateFromMenu(sender);
         }
 
-        private void mnuColumn_Click(object sender, ChronoColumns column)
+        private void mnuZeroBased_Click(object sender, EventArgs e)
         {
-            if (visibleColumns.Contains(column))
-                visibleColumns.Remove(column);
-            else
-                visibleColumns.Add(column);
-
+            CaptureMemento(SerializationFilter.Core);
+            zeroBased = !mnuZeroBased.Checked;
             InvalidateFromMenu(sender);
         }
 
@@ -991,66 +730,31 @@ namespace Kinovea.ScreenManager
         #region ITimeable
         public void StartStop(long timestamp)
         {
-            if (locked || timestamp < visibleTimestamp || timestamp > invisibleTimestamp)
-                return;
-
-            // The commands are mapped to the start/stop menus, not the move menus.
-            // That is, we only support the creation of a new section or setting the end of the last section.
-            // No overwrite of existing data.
-            // Overwriting existing data is always ambiguous with a combo start/stop command.
-
-            // Determine if we are on a live or dead section.
-            int sectionIndex = GetSectionIndex(sections, timestamp);
-            if (sectionIndex < 0)
-            {
-                // Dead section.
-                if (IsAfterLastSection(sectionIndex))
-                {
-                    // Create a new section.
-                    CaptureMemento(SerializationFilter.Core);
-                    InsertSection(new VideoSection(timestamp, long.MaxValue));
-                }
-                else
-                {
-                    // There is already another section in the future.
-                    return;
-                }
-            }
-            else
-            {
-                // Live section.
-                if (sections[sectionIndex].Section.End == long.MaxValue)
-                {
-                    // Open-ended section.
-                    CaptureMemento(SerializationFilter.Core);
-                    StopSection(sectionIndex, timestamp);
-                }
-                else
-                {
-                    // This section already has an ending.
-                    return;
-                }
-            }
-
+            // Start/Stop of a time section is not supported in this tool.
         }
 
         public void Split(long timestamp)
         {
+            // Splitting of a time section is not supported in this tool.
+        }
+
+
+        public void Beat(long timestamp)
+        {
             if (locked || timestamp < visibleTimestamp || timestamp > invisibleTimestamp)
                 return;
 
-            // Determine if we are on a live or dead section.
-            int sectionIndex = GetSectionIndex(sections, timestamp);
-            if (sectionIndex < 0)
-                return;
-
-            // Live section.
-            if (sections[sectionIndex].Section.End == long.MaxValue)
+            // Insert a new beat at the passed time, 
+            // or remove it if there is already one.
+            CaptureMemento(SerializationFilter.Core);
+            int beatIndex = GetBeatIndexExact(timestamp);
+            if (beatIndex >= 0)
             {
-                // Open-ended section.
-                CaptureMemento(SerializationFilter.Core);
-                StopSection(sectionIndex, timestamp);
-                InsertSection(new VideoSection(timestamp, long.MaxValue));
+                RemoveBeat(beatIndex);
+            }
+            else
+            {
+                InsertBeat(timestamp);
             }
         }
 
@@ -1077,18 +781,16 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Insert a new section into the list.
+        /// Insert a new beat into the list.
         /// </summary>
-        private void InsertSection(VideoSection section, string name = "", string tag = "")
+        private void InsertBeat(long timestamp)
         {
-            // Find insertion point and insert the new section there.
-            ChronoSection chronoSection = new ChronoSection(section, name, tag);
-
+            // Find insertion point and insert the new beat there.
             bool found = false;
-            int i = 0;
-            for (i = 0; i < sections.Count; i++)
+            int i;
+            for (i = 0; i < beats.Count; i++)
             {
-                if (sections[i].Section.Start < section.Start)
+                if (beats[i] < timestamp)
                     continue;
 
                 found = true;
@@ -1097,41 +799,21 @@ namespace Kinovea.ScreenManager
 
             if (!found)
             {
-                sections.Add(chronoSection);
+                beats.Add(timestamp);
+            }
+            else if (beats[i] == timestamp)
+            {
+                // We already have it.
             }
             else
             {
-                sections.Insert(i, chronoSection);
+                beats.Insert(i, timestamp);
             }
         }
 
-        private void RemoveSection(int index)
+        private void RemoveBeat(int index)
         {
-            sections.RemoveAt(index);
-        }
-
-        /// <summary>
-        /// Update the end time of a specific section.
-        /// </summary>
-        private void StopSection(int index, long timestamp)
-        {
-            sections[index].Section = new VideoSection(sections[index].Section.Start, timestamp);
-        }
-
-        /// <summary>
-        /// Returns true if this dead-zone index is before the first section.
-        /// </summary>
-        private bool IsBeforeFirstSection(int index)
-        {
-            return index == -1;
-        }
-
-        /// <summary>
-        /// Returns true if this dead-zone index is after the last section.
-        /// </summary>
-        private bool IsAfterLastSection(int index)
-        {
-            return index == -(sections.Count + 1);
+            beats.RemoveAt(index);
         }
 
         /// <summary>
@@ -1142,41 +824,56 @@ namespace Kinovea.ScreenManager
             var memento = new HistoryMementoModifyDrawing(parentMetadata, parentMetadata.ChronoManager.Id, this.Id, this.Name, filter);
             parentMetadata.HistoryStack.PushNewCommand(memento);
         }
-        #endregion
+        private string BuildText(long timestamp)
+        {
+            int index = GetBeatIndexUpto(timestamp);
+            if (index == -1)
+                return "-";
+            
+            int value = zeroBased ? index : index + 1;
+            return string.Format("{0}", value);
+        }
+
+        private bool IsBeforeFirstBeat(long timestamp)
+        {
+            return (beats.Count == 0 || timestamp < beats[0]);
+        }
 
         /// <summary>
-        /// Returns the section index that timestamp is in. 
-        /// Otherwise returns a negative number based on the next section:
-        /// -1 if we are before the first live zone, 
-        /// -2 if we are after the first and before the second, 
-        /// -n if we are before the n-th section.
-        /// -(n+1) if we are after the last section.
-        /// 
-        /// In case of overlapping sections, returns the section with the earliest starting point.
-        /// An open-ended section contains all the timestamps after its start.
+        /// Returns the beat index we are on.
+        /// If we are not exactly on a beat returns -1.
         /// </summary>
-        public static int GetSectionIndex(List<ChronoSection> sections, long timestamp)
+        private int GetBeatIndexExact(long timestamp)
         {
-            int result = -1;
-            for (int i = 0; i < sections.Count; i++)
+            for (int i = 0; i < beats.Count; i++)
             {
-                // Before the start of this section. 
-                if (timestamp < sections[i].Section.Start)
-                    break;
-
-                // Between start and end of this section.
-                // The end of the section is part of the section.
-                if (timestamp <= sections[i].Section.End)
-                {
-                    result = i;
-                    break;
-                }
-
-                // After that section.
-                result--;
+                if (timestamp == beats[i])
+                    return i;
             }
 
-            return result;
+            return -1;
         }
+
+        /// <summary>
+        /// Returns the beat index we are on.
+        /// If we are not exactly on a beat returns the previous beat or -1.
+        /// </summary>
+        private int GetBeatIndexUpto(long timestamp)
+        {
+            if (IsBeforeFirstBeat(timestamp))
+                return -1;
+            
+            int i;
+            for (i = 0; i < beats.Count; i++)
+            {
+                if (timestamp < beats[i])
+                    break;
+            }
+
+            return i - 1;
+        }
+        #endregion
+
+
     }
 }
