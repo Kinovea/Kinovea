@@ -572,6 +572,9 @@ namespace Kinovea.ScreenManager
                         chronosMarks.Add(new Pair<Point, Color>(range, color));
                     }
                 }
+
+                // TODO: Counter & Cadence.
+
             }
 
             tracksMarks.Clear();

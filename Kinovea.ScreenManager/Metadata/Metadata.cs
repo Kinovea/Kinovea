@@ -633,7 +633,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public Guid FindManagerId(AbstractDrawing drawing)
         {
-            if (drawing is DrawingChrono || drawing is DrawingChronoMulti)
+            if (IsChronoLike(drawing))
             {
                 return chronoManager.Id;
             }
@@ -872,7 +872,7 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            if (chronoManager.Id == managerId && (drawing is DrawingChrono || drawing is DrawingChronoMulti))
+            if (chronoManager.Id == managerId && IsChronoLike(drawing))
             {
                 bool known = chronoManager.Drawings.Any(d => d.Id == drawing.Id);
                 if (!known)
@@ -1200,6 +1200,9 @@ namespace Kinovea.ScreenManager
                     if (mdt.Sections.Count > 0)
                         md.Times.Add(mdt);
                 }
+
+                // TODO: Counter & Cadence.
+
             }
             md.Times.Sort((a, b) => a.Sections[0].Start.CompareTo(b.Sections[0].Start));
             
@@ -1977,6 +1980,16 @@ namespace Kinovea.ScreenManager
             };
             
             drawingSpotlight.TrackableDrawingDeleted += (s, e) => DeleteTrackableDrawing(e.TrackableDrawing);
+        }
+
+        /// <summary>
+        /// Returns true if the drawing is managed by the ChronoManager.
+        /// </summary>
+        public bool IsChronoLike(AbstractDrawing drawing)
+        {
+            return drawing is DrawingChrono ||
+                drawing is DrawingChronoMulti ||
+                drawing is DrawingCounter;
         }
         private void CalibrationHelper_CalibrationChanged(object sender, EventArgs e)
         {
