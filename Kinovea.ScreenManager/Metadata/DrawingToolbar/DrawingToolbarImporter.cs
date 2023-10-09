@@ -90,7 +90,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                log.ErrorFormat("Cannot find {0}.", toolName);
+                log.ErrorFormat("The tool manager doesn't know the tool named {0}.", toolName);
             }
         }
     }

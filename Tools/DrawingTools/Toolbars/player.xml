@@ -43,6 +43,8 @@
     <subentry name="Clock" />
     <subentry name="TimeSegment" />
   </entry>
+  <entry name="Counter">
+  </entry>
   <entry name="Plane">
     <subentry name="Grid" />
     <subentry name="DistortionGrid" />

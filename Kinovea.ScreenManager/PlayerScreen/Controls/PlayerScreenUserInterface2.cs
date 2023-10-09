@@ -2978,7 +2978,8 @@ namespace Kinovea.ScreenManager
             }
             else if (m_ActiveTool == ToolManager.Tools["Chrono"] || 
                 m_ActiveTool == ToolManager.Tools["Clock"] || 
-                m_ActiveTool == ToolManager.Tools["ChronoMulti"])
+                m_ActiveTool == ToolManager.Tools["ChronoMulti"] || 
+                m_ActiveTool == ToolManager.Tools["Counter"])
             {
                 CreateNewDrawing(m_FrameServer.Metadata.ChronoManager.Id);
             }
@@ -3178,11 +3179,11 @@ namespace Kinovea.ScreenManager
             }
             else if ((hitDrawing = m_FrameServer.Metadata.IsOnDetachedDrawing(m_DescaledMouse, m_iCurrentPosition)) != null)
             {
-                // Unlike attached drawings, each extra drawing type has its own context menu for now.
-                // TODO: use the custom menus system to host these menus inside the drawing instead of here.
+                // Some extra drawing types have their own context menu for now.
+                // TODO: Always use the custom menus system to host these menus inside the drawing instead of here.
                 // Only the drawing itself knows what to do upon click anyway.
 
-                if (hitDrawing is DrawingChrono || hitDrawing is DrawingChronoMulti)
+                if (m_FrameServer.Metadata.IsChronoLike(hitDrawing))
                 {
                     AbstractDrawing drawing = hitDrawing;
                     PrepareDrawingContextMenu(drawing, popMenuDrawings);
@@ -3375,9 +3376,13 @@ namespace Kinovea.ScreenManager
         private bool AddDrawingCustomMenus(AbstractDrawing drawing, ToolStripItemCollection menuItems)
         {
             List<ToolStripItem> extraMenu;
-            
+
+            // FIXME: some drawings use the ContextMenu property and others have a GetContextMenu function.
+            // Generalize the usage of the function, it gives more room in the implementation.
             if (drawing is DrawingChronoMulti)
                 extraMenu = ((DrawingChronoMulti)drawing).GetContextMenu(m_iCurrentPosition);
+            else if (drawing is DrawingCounter)
+                extraMenu = ((DrawingCounter)drawing).GetContextMenu(m_iCurrentPosition);
             else
                 extraMenu = drawing.ContextMenu;
 
@@ -3690,7 +3695,7 @@ namespace Kinovea.ScreenManager
             }
             else if ((hitDrawing = m_FrameServer.Metadata.IsOnDetachedDrawing(m_DescaledMouse, m_iCurrentPosition)) != null)
             {
-                if (hitDrawing is DrawingChrono || hitDrawing is DrawingChronoMulti)
+                if (m_FrameServer.Metadata.IsChronoLike(hitDrawing))
                 {
                     mnuConfigureDrawing_Click(null, EventArgs.Empty);
                 }
