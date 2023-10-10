@@ -102,12 +102,15 @@ namespace Kinovea.ScreenManager
         private List<long> beats = new List<long>();
         private long contextTimestamp;                  // timestamp for context-menu operations.
         private string text;
-        //private HashSet<ChronoColumns> visibleColumns = new HashSet<ChronoColumns>();
-        
+        private bool measureInitialized;
+        private MeasureLabelType measureLabelType = MeasureLabelType.Count;
+
         // Options
         private bool showLabel;
         private bool locked;
         private bool zeroBased;
+        private bool doubleCadence;
+        private bool halfCadence;
         
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
@@ -134,6 +137,11 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuShowLabel = new ToolStripMenuItem();
         private ToolStripMenuItem mnuLocked = new ToolStripMenuItem();
         private ToolStripMenuItem mnuZeroBased = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuDoubleCadence = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuHalfCadence = new ToolStripMenuItem();
+
+        private ToolStripMenuItem mnuMeasurement = new ToolStripMenuItem();
+        private Dictionary<MeasureLabelType, ToolStripMenuItem> mnuMeasureLabelTypes = new Dictionary<MeasureLabelType, ToolStripMenuItem>();
 
         //private ToolStripMenuItem mnuColumns = new ToolStripMenuItem();
         //private ToolStripMenuItem mnuColumnName = new ToolStripMenuItem();
@@ -221,32 +229,38 @@ namespace Kinovea.ScreenManager
             mnuShowLabel.Image = Properties.Drawings.label;
             mnuLocked.Image = Properties.Drawings.padlock2;
             mnuZeroBased.Image = Properties.Drawings.notification_counter;
+            mnuHalfCadence.Image = Properties.Drawings.notification_counter;
+            mnuDoubleCadence.Image = Properties.Drawings.notification_counter;
             mnuShowLabel.Click += mnuShowLabel_Click;
             mnuLocked.Click += mnuLock_Click;
             mnuZeroBased.Click += mnuZeroBased_Click;
+            mnuHalfCadence.Click += mnuHalfCadence_Click;
+            mnuDoubleCadence.Click += mnuDoubleCadence_Click;
             mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuShowLabel,
                 mnuLocked,
                 mnuZeroBased,
+                mnuHalfCadence,
+                mnuDoubleCadence
             });
 
-            // Column and section management
-            //mnuColumns.Image = Properties.Drawings.label;
-            //mnuColumnName.Click += (s, e) => mnuColumn_Click(s, ChronoColumns.Name);
-            //mnuColumnCumul.Click += (s, e) => mnuColumn_Click(s, ChronoColumns.Cumul);
-            //mnuColumnTag.Click += (s, e) => mnuColumn_Click(s, ChronoColumns.Tag);
-            //mnuColumns.DropDownItems.AddRange(new ToolStripItem[] {
-            //    mnuColumnName,
-            //    mnuColumnCumul,
-            //    mnuColumnTag 
-            //});
-
-            //mnuConfigureSections.Image = Properties.Resources.timetable;
-            //mnuConfigureSections.Click += mnuConfigureSections_Click;
+            // Measurement menus.
+            mnuMeasurement.Image = Properties.Drawings.label;
+            mnuMeasurement.DropDownItems.Clear();
+            mnuMeasurement.DropDownItems.AddRange(new ToolStripItem[] {
+                CreateMeasureLabelTypeMenu(MeasureLabelType.Count),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.CountReverse),
+                new ToolStripSeparator(),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.CadenceInstant),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.CadenceAverage),
+                new ToolStripSeparator(),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.PeriodInstant),
+                CreateMeasureLabelTypeMenu(MeasureLabelType.PeriodAverage),
+            });
         }
         #endregion
 
-        #region AbstractDrawing Implementation
+            #region AbstractDrawing Implementation
         public override void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
             if (currentTimestamp < visibleTimestamp)
@@ -378,6 +392,12 @@ namespace Kinovea.ScreenManager
                 // Options
                 w.WriteElementString("Locked", locked.ToString().ToLower());
                 w.WriteElementString("ZeroBased", zeroBased.ToString().ToLower());
+                w.WriteElementString("DoubleCadence", doubleCadence.ToString().ToLower());
+                w.WriteElementString("HalfCadence", halfCadence.ToString().ToLower());
+
+                TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(MeasureLabelType));
+                string xmlMeasureLabelType = enumConverter.ConvertToString(measureLabelType);
+                w.WriteElementString("ExtraData", xmlMeasureLabelType);
 
                 // </values>
                 w.WriteEndElement();
@@ -453,6 +473,9 @@ namespace Kinovea.ScreenManager
                     case "Values":
                         ParseWorkingValues(xmlReader, timestampMapper);
                         break;
+                    case "ExtraData":
+                        measureLabelType = XmlHelper.ParseEnum<MeasureLabelType>(xmlReader.ReadElementContentAsString(), MeasureLabelType.None);
+                        break;
                     case "DrawingStyle":
                         style = new DrawingStyle(xmlReader);
                         BindStyle();
@@ -464,6 +487,7 @@ namespace Kinovea.ScreenManager
                 }
             }
 
+            measureInitialized = true;
             xmlReader.ReadEndElement();
             SanityCheckValues();
         }
@@ -496,6 +520,12 @@ namespace Kinovea.ScreenManager
                         break;
                     case "ZeroBased":
                         zeroBased = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
+                        break;
+                    case "HalfCadence":
+                        halfCadence = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
+                        break;
+                    case "DoubleCadence":
+                        doubleCadence = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
                     default:
                         string unparsed = xmlReader.ReadOuterXml();
@@ -569,6 +599,8 @@ namespace Kinovea.ScreenManager
             mnuShowLabel.Checked = showLabel;
             mnuLocked.Checked = locked;
             mnuZeroBased.Checked = zeroBased;
+            mnuHalfCadence.Checked = halfCadence;
+            mnuDoubleCadence.Checked = doubleCadence;
 
             // Columns and section management
             //mnuColumnName.Checked = visibleColumns.Contains(ChronoColumns.Name);
@@ -579,6 +611,7 @@ namespace Kinovea.ScreenManager
                 mnuVisibility,
                 mnuAction,
                 mnuOptions,
+                mnuMeasurement,
             });
 
             return contextMenu;
@@ -604,7 +637,19 @@ namespace Kinovea.ScreenManager
             mnuOptions.Text = ScreenManagerLang.Generic_Options;
             mnuShowLabel.Text = ScreenManagerLang.mnuShowLabel;
             mnuLocked.Text = ScreenManagerLang.mnuOptions_Chrono_Locked;
-            mnuZeroBased.Text = "Count cycles";
+            mnuZeroBased.Text = "Zero-based numbering";
+            mnuHalfCadence.Text = "Half";
+            mnuDoubleCadence.Text = "Double";
+
+            // Measurement
+            mnuMeasurement.Text = ScreenManagerLang.mnuMeasure_Label_Menu;
+            foreach (var pair in mnuMeasureLabelTypes)
+            {
+                ToolStripMenuItem tsmi = pair.Value;
+                MeasureLabelType measureLabelType = pair.Key;
+                tsmi.Text = GetMeasureLabelOptionText(measureLabelType);
+                tsmi.Checked = this.measureLabelType == measureLabelType;
+            }
         }
 
         #region Visibility
@@ -697,33 +742,22 @@ namespace Kinovea.ScreenManager
             InvalidateFromMenu(sender);
         }
 
-        private void mnuConfigureSections_Click(object sender, EventArgs e)
+        private void mnuHalfCadence_Click(object sender, EventArgs e)
         {
-            // The dialog is responsible for backing up and restoring the state in case of cancellation.
-            // When we exit the dialog the drawing has been modified or reverted to its original state,
-            // and in case of validation, the original state pushed to the history stack.
-            //if (sections.Count == 0)
-            //    return;
+            CaptureMemento(SerializationFilter.Core);
+            halfCadence = !mnuHalfCadence.Checked;
+            if (halfCadence)
+                doubleCadence = false;
+            InvalidateFromMenu(sender);
+        }
 
-            //int sectionIndex = GetSectionIndex(sections, contextTimestamp);
-
-            //ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
-            //if (tsmi == null)
-            //    return;
-
-            //IDrawingHostView host = tsmi.Tag as IDrawingHostView;
-
-            //try
-            //{
-            //    FormTimeSections fts = new FormTimeSections(this, sectionIndex, host);
-            //    FormsHelper.Locate(fts);
-            //    fts.ShowDialog();
-            //}
-            //catch
-            //{
-            //}
-
-            //InvalidateFromMenu(sender);
+        private void mnuDoubleCadence_Click(object sender, EventArgs e)
+        {
+            CaptureMemento(SerializationFilter.Core);
+            doubleCadence = !mnuDoubleCadence.Checked;
+            if (doubleCadence)
+                halfCadence = false;
+            InvalidateFromMenu(sender);
         }
         #endregion
 
@@ -759,6 +793,28 @@ namespace Kinovea.ScreenManager
         }
 
         #endregion
+
+        public void InitializeMeasurableData(MeasureLabelType measureLabelType)
+        {
+            if (measureInitialized)
+                return;
+
+            measureInitialized = true;
+
+            List<MeasureLabelType> supported = new List<MeasureLabelType>()
+            {
+                MeasureLabelType.Count,
+                MeasureLabelType.CountReverse,
+                MeasureLabelType.CadenceInstant,
+                MeasureLabelType.CadenceAverage,
+                MeasureLabelType.CadenceVariation,
+                MeasureLabelType.PeriodInstant,
+                MeasureLabelType.PeriodAverage,
+            };
+
+            MeasureLabelType defaultMeasureLabelType = MeasureLabelType.Count;
+            this.measureLabelType = supported.Contains(measureLabelType) ? measureLabelType : defaultMeasureLabelType;
+        }
 
         #region Lower level helpers
         private void BindStyle()
@@ -826,17 +882,110 @@ namespace Kinovea.ScreenManager
         }
         private string BuildText(long timestamp)
         {
+            string na = "*";
             int index = GetBeatIndexUpto(timestamp);
             if (index == -1)
-                return "-";
-            
-            int value = zeroBased ? index : index + 1;
-            return string.Format("{0}", value);
+                return na;
+
+            switch (measureLabelType)
+            {
+                case MeasureLabelType.Count:
+                    {
+                        float beatCount = zeroBased ? index : index + 1;
+                        if (halfCadence)
+                            beatCount /= 2.0f;
+                        else if (doubleCadence)
+                            beatCount *= 2.0f;
+
+                        return string.Format("{0}", beatCount);
+                    }
+                case MeasureLabelType.CountReverse:
+                    {
+                        float beatCount = beats.Count - 1 - index;
+                        beatCount = zeroBased ? beatCount : beatCount + 1;
+                        if (halfCadence)
+                            beatCount /= 2.0f;
+                        else if (doubleCadence)
+                            beatCount *= 2.0f;
+
+                        return string.Format("{0}", beatCount);
+                    }
+                case MeasureLabelType.CadenceInstant:
+                    {
+                        if (index == 0)
+                            return na;
+
+                        long duration = beats[index] - beats[index - 1];
+                        float cycles = 1.0f;
+                        if (halfCadence)
+                            cycles = 0.5f;
+                        else if (doubleCadence)
+                            cycles = 2.0f;
+
+                        string cadence = parentMetadata.GetCadence(cycles, duration);
+                        return cadence;
+                    }
+                case MeasureLabelType.CadenceAverage:
+                    {
+                        if (index == 0)
+                            return na;
+
+                        long duration = beats[beats.Count - 1] - beats[0];
+                        float cycles = beats.Count - 1;
+                        if (halfCadence)
+                            cycles /= 2.0f;
+                        else if (doubleCadence)
+                            cycles *= 2.0f;
+                        
+                        string cadence = parentMetadata.GetCadence(cycles, duration);
+                        return cadence;
+                    }
+
+                case MeasureLabelType.PeriodInstant:
+                    {
+                        if (index == 0)
+                            return na;
+
+                        long duration = beats[index] - beats[index - 1];
+                        if (halfCadence)
+                            duration *= 2;
+                        else if (doubleCadence)
+                            duration /= 2;
+
+                        string period = parentMetadata.TimeCodeBuilder(duration, TimeType.Absolute, TimecodeFormat.Unknown, true);
+                        return period;
+                    }
+                case MeasureLabelType.PeriodAverage:
+                    {
+                        if (index == 0)
+                            return na;
+
+                        long duration = beats[beats.Count - 1] - beats[0];
+                        float cycles = beats.Count - 1;
+                        if (halfCadence)
+                            cycles /= 2.0f;
+                        else if (doubleCadence)
+                            cycles *= 2.0f;
+
+                        long avgDuration = (long)(duration / cycles);
+                        string average = parentMetadata.TimeCodeBuilder(avgDuration, TimeType.Absolute, TimecodeFormat.Unknown, true);
+                        return average;
+                    }
+                default:
+                    {
+                        return na;
+                    }
+            }
         }
 
         private bool IsBeforeFirstBeat(long timestamp)
         {
             return (beats.Count == 0 || timestamp < beats[0]);
+        }
+
+        private bool IsAfterLastBeat(long timestamp)
+        {
+            return (beats.Count == 0 || timestamp > beats[beats.Count - 1]);
         }
 
         /// <summary>
@@ -871,6 +1020,51 @@ namespace Kinovea.ScreenManager
             }
 
             return i - 1;
+        }
+
+        private ToolStripMenuItem CreateMeasureLabelTypeMenu(MeasureLabelType measureLabelType)
+        {
+            ToolStripMenuItem mnu = new ToolStripMenuItem();
+            mnu.Click += mnuMeasureLabelType_Click;
+            mnuMeasureLabelTypes.Add(measureLabelType, mnu);
+            return mnu;
+        }
+        private void mnuMeasureLabelType_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
+            if (tsmi == null)
+                return;
+
+            MeasureLabelType measureLabelType = MeasureLabelType.None;
+            foreach (var pair in mnuMeasureLabelTypes)
+            {
+                if (pair.Value == tsmi)
+                {
+                    measureLabelType = pair.Key;
+                    break;
+                }
+            }
+
+            this.measureLabelType = measureLabelType;
+            InvalidateFromMenu(tsmi);
+
+            //if (ShowMeasurableInfoChanged != null)
+              //  ShowMeasurableInfoChanged(this, new EventArgs<MeasureLabelType>(measureLabelType));
+        }
+        private string GetMeasureLabelOptionText(MeasureLabelType data)
+        {
+            switch (data)
+            {
+                case MeasureLabelType.Count: return "Count";
+                case MeasureLabelType.CountReverse: return "Reverse count";
+                case MeasureLabelType.CadenceInstant: return "Cadence (instantaneous)";
+                case MeasureLabelType.CadenceAverage: return "Cadence (average)";
+                case MeasureLabelType.CadenceVariation: return "Cadence variation";
+                case MeasureLabelType.PeriodInstant: return "Period (instantaneous)";
+                case MeasureLabelType.PeriodAverage: return "Period (average)";
+            }
+
+            return "";
         }
         #endregion
 

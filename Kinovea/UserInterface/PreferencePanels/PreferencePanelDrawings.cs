@@ -79,6 +79,7 @@ namespace Kinovea.Root
         private AngularAccelerationUnit angularAccelerationUnit;
         private string customLengthUnit;
         private string customLengthAbbreviation;
+        private CadenceUnit cadenceUnit;
         private KeyframePresetsParameters keyframePresets;
         private CSVDecimalSeparator csvDecimalSeparator;
         private ExportSpace exportSpace;
@@ -128,6 +129,7 @@ namespace Kinovea.Root
             angularAccelerationUnit = PreferencesManager.PlayerPreferences.AngularAccelerationUnit;
             customLengthUnit = PreferencesManager.PlayerPreferences.CustomLengthUnit;
             customLengthAbbreviation = PreferencesManager.PlayerPreferences.CustomLengthAbbreviation;
+            cadenceUnit = PreferencesManager.PlayerPreferences.CadenceUnit;
             keyframePresets = PreferencesManager.PlayerPreferences.KeyframePresets;
             csvDecimalSeparator = PreferencesManager.PlayerPreferences.CSVDecimalSeparator;
             exportSpace = PreferencesManager.PlayerPreferences.ExportSpace;
@@ -241,6 +243,17 @@ namespace Kinovea.Root
 
             lblCustomLength.Text = RootLang.dlgPreferences_Player_UnitsCustom;
 
+            // enum Kinovea.Services.CadenceUnit.
+            lblCadenceUnit.Text = "Cadence";
+            cmbCadenceUnit.Items.Add(String.Format("Hertz ({0})", UnitHelper.FrequencyAbbreviation(CadenceUnit.Hertz)));
+            cmbCadenceUnit.Items.Add(String.Format("Cycles per second ({0})", UnitHelper.FrequencyAbbreviation(CadenceUnit.CyclesPerSecond)));
+            cmbCadenceUnit.Items.Add(String.Format("Cycles per minute ({0})", UnitHelper.FrequencyAbbreviation(CadenceUnit.CyclesPerMinute)));
+            cmbCadenceUnit.Items.Add(String.Format("Steps per second ({0})", UnitHelper.FrequencyAbbreviation(CadenceUnit.StepsPerSecond)));
+            cmbCadenceUnit.Items.Add(String.Format("Steps per minute ({0})", UnitHelper.FrequencyAbbreviation(CadenceUnit.StepsPerMinute)));
+            cmbCadenceUnit.Items.Add(String.Format("Strokes per second ({0})", UnitHelper.FrequencyAbbreviation(CadenceUnit.StrokesPerSecond)));
+            cmbCadenceUnit.Items.Add(String.Format("Strokes per minute ({0})", UnitHelper.FrequencyAbbreviation(CadenceUnit.StrokesPerMinute)));
+            cmbCadenceUnit.Items.Add(String.Format("Revolutions per minute ({0})", UnitHelper.FrequencyAbbreviation(CadenceUnit.RevolutionsPerMinute)));
+
             SelectCurrentUnits();
         }
         private void SelectCurrentUnits()
@@ -273,6 +286,10 @@ namespace Kinovea.Root
                 tbCustomLengthUnit.Text = customLengthUnit;
                 tbCustomLengthAb.Text = customLengthAbbreviation;
             }
+
+            int cadence = (int)cadenceUnit;
+            cmbCadenceUnit.SelectedIndex = cadence < cmbCadenceUnit.Items.Count ? cadence : 0;
+
         }
 
         private void InitTabPresets()
@@ -520,6 +537,10 @@ namespace Kinovea.Root
         {
             customLengthAbbreviation = tbCustomLengthAb.Text;
         }
+        private void cmbCadenceUnit_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            cadenceUnit = (CadenceUnit)cmbCadenceUnit.SelectedIndex;
+        }
         #endregion
 
         #region Export
@@ -572,6 +593,7 @@ namespace Kinovea.Root
             PreferencesManager.PlayerPreferences.AngleUnit = angleUnit;
             PreferencesManager.PlayerPreferences.AngularVelocityUnit = angularVelocityUnit;
             PreferencesManager.PlayerPreferences.AngularAccelerationUnit = angularAccelerationUnit;
+            PreferencesManager.PlayerPreferences.CadenceUnit = cadenceUnit;
             PreferencesManager.PlayerPreferences.KeyframePresets = keyframePresets;
             PreferencesManager.PlayerPreferences.CSVDecimalSeparator = csvDecimalSeparator;
             PreferencesManager.PlayerPreferences.ExportSpace = exportSpace;

@@ -142,6 +142,48 @@ namespace Kinovea.Services
         /// </summary>
         Circumference,
 
+        //-------------------------------------------------
+        // Counter/Cadence
+        //-------------------------------------------------
+
+        /// <summary>
+        /// Number of beats or cycles.
+        /// </summary>
+        Count,
+
+        /// <summary>
+        /// Number of beats or cycles to the last beat.
+        /// </summary>
+        CountReverse,
+        
+        /// <summary>
+        /// Beats per second in this inter-beat section.
+        /// If we are exactly on a beat this is based on the previous inter-beat section.
+        /// </summary>
+        CadenceInstant,
+
+        /// <summary>
+        /// Beats per second over a time section.
+        /// </summary>
+        CadenceAverage,
+
+        /// <summary>
+        /// Variation in beats per second squared.
+        /// aka: is the tempo accelerating or descelerating.
+        /// </summary>
+        CadenceVariation,
+
+        /// <summary>
+        /// Duration of this inter-beat section.
+        /// If we are exactly on a beat this is based on the previous inter-beat section.
+        /// </summary>
+        PeriodInstant,
+
+        /// <summary>
+        /// Average duration of inter-beat section over a time section.
+        /// </summary>
+        PeriodAverage,
+
 
         //-------------------------------------------------
         // Deviation from a model

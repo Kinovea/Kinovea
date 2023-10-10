@@ -605,7 +605,6 @@
     <Compile Include="Measurement\Calibration\CalibrationHelper.cs" />
     <Compile Include="Measurement\Calibration\CalibratorPlane.cs" />
     <Compile Include="Measurement\Calibration\CalibratorType.cs" />
-    <Compile Include="Measurement\Calibration\LengthUnit.cs" />
     <Compile Include="Measurement\Calibration\UnitHelper.cs" />
     <Compile Include="Metadata\Drawings\AbstractMultiDrawing.cs" />
     <Compile Include="Metadata\Drawings\DrawingNumberSequenceItem.cs" />

@@ -182,6 +182,42 @@ namespace Kinovea.ScreenManager
             return abbreviation;
         }
 
+        public static string FrequencyAbbreviation(CadenceUnit unit)
+        {
+            string abbr = "";
+            switch (unit)
+            {
+                case CadenceUnit.Hertz:
+                    abbr = "Hz";
+                    break;
+                case CadenceUnit.CyclesPerSecond:
+                    abbr = "cyc./s";
+                    break;
+                case CadenceUnit.CyclesPerMinute:
+                    abbr = "cyc./min";
+                    break;
+                case CadenceUnit.StepsPerSecond:
+                    abbr = "sps";
+                    break;
+                case CadenceUnit.StepsPerMinute:
+                    abbr = "spm";
+                    break;
+                case CadenceUnit.StrokesPerSecond:
+                    abbr = "sps";
+                    break;
+                case CadenceUnit.StrokesPerMinute:
+                    abbr = "spm";
+                    break;
+                case CadenceUnit.RevolutionsPerMinute:
+                    // https://en.wikipedia.org/wiki/Revolutions_per_minute
+                    // rpm, r/min, min−1
+                    abbr = "rpm";
+                    break;
+            }
+
+            return abbr;
+        }
+
         /// <summary>
         /// This returns a symbol for the timecode format.
         /// Non-numerical formats always get converted to seconds so this returns seconds here as well.
@@ -300,6 +336,37 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// Convert a frequency in hertz to the user-preferred cadence unit.
+        
+        /// </summary>
+        public static float ConvertFrequency(float hertz, CadenceUnit unit)
+        {
+            /// Note: by the time we come here the input value is already referring to the rigt kind of "events": 
+            /// beats/singular events, half cycles or full cycles.
+            /// We are just converting for the time base here.
+            float result = 0;
+
+            switch (unit)
+            {
+                case CadenceUnit.Hertz:
+                case CadenceUnit.CyclesPerSecond:
+                case CadenceUnit.StepsPerSecond:
+                case CadenceUnit.StrokesPerSecond:
+                    result = hertz;
+                    break;
+                case CadenceUnit.CyclesPerMinute:
+                case CadenceUnit.StepsPerMinute:
+                case CadenceUnit.StrokesPerMinute:
+                case CadenceUnit.RevolutionsPerMinute:
+                    result = hertz * 60;
+                    break;
+            }
+
+            return result;
+        }
+
+
+        /// <summary>
         /// Takes a value in speed unit and returns it in length unit.
         /// </summary>
         public static float ConvertForLengthUnit(float v, SpeedUnit speedUnits, LengthUnit lengthUnit)
@@ -342,11 +409,12 @@ namespace Kinovea.ScreenManager
             return (float)result;
         }
 
+        /// <summary>
+        /// Convert from one length unit to another, target unit is extracted from velocity unit.
+        /// We first convert from whatever unit into meters, then from meters to the output.
+        /// </summary>
         private static float ConvertLengthForSpeedUnit(float length, LengthUnit lengthUnit, SpeedUnit speedUnits)
         {
-            // Convert from one length unit to another, target unit is extracted from velocity unit.
-            // We first convert from whatever unit into meters, then from meters to the output.
-
             if (lengthUnit == LengthUnit.Pixels || lengthUnit == LengthUnit.Percentage)
                 return length;
 
@@ -379,11 +447,12 @@ namespace Kinovea.ScreenManager
             return (float)result;
         }
 
+        /// <summary>
+        /// Convert from one length unit to another, target unit is extracted from acceleration unit.
+        /// We first convert from whatever unit into meters, then from meters to the output.
+        /// </summary>
         private static float ConvertLengthForAccelerationUnit(float length, LengthUnit lengthUnit, AccelerationUnit accUnit)
         {
-            // Convert from one length unit to another, target unit is extracted from acceleration unit.
-            // We first convert from whatever unit into meters, then from meters to the output.
-
             // The scenario where the space is calibrated but the user wants the acceleration in pixels is not supported.
             if (lengthUnit == LengthUnit.Pixels || lengthUnit == LengthUnit.Percentage)
                 return length;
@@ -408,6 +477,9 @@ namespace Kinovea.ScreenManager
             return (float)result;
         }
 
+        /// <summary>
+        /// Convert from any length unit to meters.
+        /// </summary>
         private static float GetMeters(float length, LengthUnit unit)
         {
             double meters = 0;
@@ -437,6 +509,9 @@ namespace Kinovea.ScreenManager
             return (float)meters;
         }
 
+        /// <summary>
+        /// Extract length from speed and convert it to meters.
+        /// </summary>
         private static float GetMeters(float speed, SpeedUnit unit)
         {
             double meters = 0;
@@ -526,7 +601,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Limit the number of significant digits.
         /// </summary>
-        private static float MinimalDigits(float value)
+        public static float MinimalDigits(float value)
         {
             float result = value;
             float magnitude = (float)Math.Floor(Math.Log10(value));
