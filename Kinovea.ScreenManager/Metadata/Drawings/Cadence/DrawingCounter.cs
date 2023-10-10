@@ -61,6 +61,8 @@ namespace Kinovea.ScreenManager
                 hash ^= showLabel.GetHashCode();
                 hash ^= locked.GetHashCode();
                 hash ^= zeroBased.GetHashCode();
+                hash ^= halfCadence.GetHashCode();
+                hash ^= doubleCadence.GetHashCode();
 
                 return hash;
             }
@@ -104,13 +106,17 @@ namespace Kinovea.ScreenManager
         private string text;
         private bool measureInitialized;
         private MeasureLabelType measureLabelType = MeasureLabelType.Count;
+        
+        // We can't just show "0" when there is no value because zero is a valid value
+        // when using zero-based numbering.
+        private const string strNoValue = "*";
 
         // Options
         private bool showLabel;
         private bool locked;
         private bool zeroBased;
-        private bool doubleCadence;
         private bool halfCadence;
+        private bool doubleCadence;
         
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
@@ -137,18 +143,11 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuShowLabel = new ToolStripMenuItem();
         private ToolStripMenuItem mnuLocked = new ToolStripMenuItem();
         private ToolStripMenuItem mnuZeroBased = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuDoubleCadence = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHalfCadence = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuDoubleCadence = new ToolStripMenuItem();
 
         private ToolStripMenuItem mnuMeasurement = new ToolStripMenuItem();
         private Dictionary<MeasureLabelType, ToolStripMenuItem> mnuMeasureLabelTypes = new Dictionary<MeasureLabelType, ToolStripMenuItem>();
-
-        //private ToolStripMenuItem mnuColumns = new ToolStripMenuItem();
-        //private ToolStripMenuItem mnuColumnName = new ToolStripMenuItem();
-        //private ToolStripMenuItem mnuColumnCumul = new ToolStripMenuItem();
-        //private ToolStripMenuItem mnuColumnTag = new ToolStripMenuItem();
-
-        //private ToolStripMenuItem mnuConfigureSections = new ToolStripMenuItem();
         #endregion
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -163,7 +162,7 @@ namespace Kinovea.ScreenManager
             mainBackground.Rectangle = new RectangleF(p, SizeF.Empty);
             lblBackground.Rectangle = RectangleF.Empty;
 
-            text = "error";
+            text = strNoValue;
 
             styleHelper.Bicolor = new Bicolor(Color.Black);
             styleHelper.Font = new Font("Consolas", 16, FontStyle.Bold);
@@ -197,10 +196,10 @@ namespace Kinovea.ScreenManager
             mnuShowAfter.Image = Properties.Drawings.showafter;
             mnuHideBefore.Image = Properties.Drawings.hidebefore;
             mnuHideAfter.Image = Properties.Drawings.hideafter;
-            mnuShowBefore.Click += MnuShowBefore_Click;
-            mnuShowAfter.Click += MnuShowAfter_Click;
-            mnuHideBefore.Click += MnuHideBefore_Click;
-            mnuHideAfter.Click += MnuHideAfter_Click;
+            mnuShowBefore.Click += mnuShowBefore_Click;
+            mnuShowAfter.Click += mnuShowAfter_Click;
+            mnuHideBefore.Click += mnuHideBefore_Click;
+            mnuHideAfter.Click += mnuHideAfter_Click;
             mnuVisibility.Image = Properties.Drawings.persistence;
             mnuVisibility.DropDownItems.AddRange(new ToolStripItem[] { 
                 mnuShowBefore, 
@@ -229,8 +228,8 @@ namespace Kinovea.ScreenManager
             mnuShowLabel.Image = Properties.Drawings.label;
             mnuLocked.Image = Properties.Drawings.padlock2;
             mnuZeroBased.Image = Properties.Drawings.notification_counter;
-            mnuHalfCadence.Image = Properties.Drawings.notification_counter;
-            mnuDoubleCadence.Image = Properties.Drawings.notification_counter;
+            //mnuHalfCadence.Image = Properties.Drawings.notification_counter;
+            //mnuDoubleCadence.Image = Properties.Drawings.notification_counter;
             mnuShowLabel.Click += mnuShowLabel_Click;
             mnuLocked.Click += mnuLock_Click;
             mnuZeroBased.Click += mnuZeroBased_Click;
@@ -274,8 +273,6 @@ namespace Kinovea.ScreenManager
             if (opacityFactor <= 0)
                 return;
 
-            //ChronoStringBuilder csb = new ChronoStringBuilder(sections, parentMetadata);
-            //text = csb.Build(currentTimestamp, visibleColumns);
             text = BuildText(currentTimestamp);
 
             using (SolidBrush brushBack = styleHelper.GetBackgroundBrush((int)(opacityFactor * backgroundOpacity)))
@@ -392,8 +389,8 @@ namespace Kinovea.ScreenManager
                 // Options
                 w.WriteElementString("Locked", locked.ToString().ToLower());
                 w.WriteElementString("ZeroBased", zeroBased.ToString().ToLower());
-                w.WriteElementString("DoubleCadence", doubleCadence.ToString().ToLower());
                 w.WriteElementString("HalfCadence", halfCadence.ToString().ToLower());
+                w.WriteElementString("DoubleCadence", doubleCadence.ToString().ToLower());
 
                 TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(MeasureLabelType));
                 string xmlMeasureLabelType = enumConverter.ConvertToString(measureLabelType);
@@ -554,7 +551,6 @@ namespace Kinovea.ScreenManager
                 switch (xmlReader.Name)
                 {
                     case "Beat":
-                        
                         xmlReader.ReadStartElement();
                         long beat = XmlHelper.ParseTimestamp(xmlReader.ReadContentAsString());
                         beats.Add(beat);
@@ -602,11 +598,6 @@ namespace Kinovea.ScreenManager
             mnuHalfCadence.Checked = halfCadence;
             mnuDoubleCadence.Checked = doubleCadence;
 
-            // Columns and section management
-            //mnuColumnName.Checked = visibleColumns.Contains(ChronoColumns.Name);
-            //mnuColumnCumul.Checked = visibleColumns.Contains(ChronoColumns.Cumul);
-            //mnuColumnTag.Checked = visibleColumns.Contains(ChronoColumns.Tag);
-
             contextMenu.AddRange(new ToolStripItem[] {
                 mnuVisibility,
                 mnuAction,
@@ -653,14 +644,14 @@ namespace Kinovea.ScreenManager
         }
 
         #region Visibility
-        private void MnuShowBefore_Click(object sender, EventArgs e)
+        private void mnuShowBefore_Click(object sender, EventArgs e)
         {
             CaptureMemento(SerializationFilter.Core);
             visibleTimestamp = 0;
             InvalidateFromMenu(sender);
         }
 
-        private void MnuShowAfter_Click(object sender, EventArgs e)
+        private void mnuShowAfter_Click(object sender, EventArgs e)
         {
             CaptureMemento(SerializationFilter.Core);
             invisibleTimestamp = long.MaxValue;
@@ -668,14 +659,14 @@ namespace Kinovea.ScreenManager
             InvalidateFromMenu(sender);
         }
 
-        private void MnuHideBefore_Click(object sender, EventArgs e)
+        private void mnuHideBefore_Click(object sender, EventArgs e)
         {
             CaptureMemento(SerializationFilter.Core);
             visibleTimestamp = CurrentTimestampFromMenu(sender);
             InvalidateFromMenu(sender);
         }
 
-        private void MnuHideAfter_Click(object sender, EventArgs e)
+        private void mnuHideAfter_Click(object sender, EventArgs e)
         {
             CaptureMemento(SerializationFilter.Core);
             invisibleTimestamp = CurrentTimestampFromMenu(sender);
@@ -698,8 +689,8 @@ namespace Kinovea.ScreenManager
         private void mnuDeleteBeat_Click(object sender, EventArgs e)
         {
             // Note: this is not equivalent to hitting F7 on an existing beat.
-            // This function will delete the beat we are on, or the previous beat if it exists.
-            int beatIndex = GetBeatIndexUpto(contextTimestamp);
+            // This function will also delete the previous beat if it exists.
+            int beatIndex = GetBeatIndexInterval(contextTimestamp);
             if (beatIndex < 0)
                 return;
 
@@ -747,7 +738,10 @@ namespace Kinovea.ScreenManager
             CaptureMemento(SerializationFilter.Core);
             halfCadence = !mnuHalfCadence.Checked;
             if (halfCadence)
+            {
                 doubleCadence = false;
+                zeroBased = true;
+            }
             InvalidateFromMenu(sender);
         }
 
@@ -756,7 +750,10 @@ namespace Kinovea.ScreenManager
             CaptureMemento(SerializationFilter.Core);
             doubleCadence = !mnuDoubleCadence.Checked;
             if (doubleCadence)
+            {
                 halfCadence = false;
+                zeroBased = true;
+            }
             InvalidateFromMenu(sender);
         }
         #endregion
@@ -783,13 +780,9 @@ namespace Kinovea.ScreenManager
             CaptureMemento(SerializationFilter.Core);
             int beatIndex = GetBeatIndexExact(timestamp);
             if (beatIndex >= 0)
-            {
                 RemoveBeat(beatIndex);
-            }
             else
-            {
                 InsertBeat(timestamp);
-            }
         }
 
         #endregion
@@ -841,30 +834,18 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void InsertBeat(long timestamp)
         {
-            // Find insertion point and insert the new beat there.
-            bool found = false;
-            int i;
-            for (i = 0; i < beats.Count; i++)
+            // Index of inter-beat section we are in.
+            int index = GetBeatIndexInterval(timestamp);
+            if (index == -1)
             {
-                if (beats[i] < timestamp)
-                    continue;
-
-                found = true;
-                break;
+                beats.Insert(0, timestamp);
+                return;
             }
 
-            if (!found)
-            {
-                beats.Add(timestamp);
-            }
-            else if (beats[i] == timestamp)
-            {
-                // We already have it.
-            }
-            else
-            {
-                beats.Insert(i, timestamp);
-            }
+            if (beats[index] == timestamp)
+                return;
+
+            beats.Insert(index + 1, timestamp);
         }
 
         private void RemoveBeat(int index)
@@ -880,17 +861,49 @@ namespace Kinovea.ScreenManager
             var memento = new HistoryMementoModifyDrawing(parentMetadata, parentMetadata.ChronoManager.Id, this.Id, this.Name, filter);
             parentMetadata.HistoryStack.PushNewCommand(memento);
         }
+
+        /// <summary>
+        /// Returns the text to use for the main object display.
+        /// </summary>
         private string BuildText(long timestamp)
         {
-            string na = "*";
-            int index = GetBeatIndexUpto(timestamp);
+            //----------------------------------------------------
+            // Beats and Cycles
+            // - Count and reverse count are based on raw beats.
+            // - This is where zero-based numbering may be optional.
+            // - If we are only counting repetetions we don't want zero-based.
+            // - Cadence and Period are always based on cycles so zero-based numbering is implicit.
+            // - Reverse counting is also cycle based, we want the take-off to be zero.
+            // 
+            // Half and Double
+            // - This is interesting when annotating by full cycles (e.g: same leg/arm going down),
+            // but we are actually interested in the half-cycle metric. (or vice-versa).
+            // - It can be used for both beats and cycles but it only really makes sense for cycles,
+            // so when one of these is on, zero-based numbering should also be on. This is done 
+            // automatically in the event handler of the option.
+            // 
+            // Instantaneous metrics
+            // - When calculating instantaneous metrics we use the cycle the current frame is in.
+            // - That is, the instantaneous frequency is: 1 / current cycle duration in seconds.
+            // - If we are exactly on a beat, use the interval leading to it.
+            // 
+            // Average metrics
+            // - For average we always use the full series, not just the cycles up to where we are.
+            //----------------------------------------------------
+
+            // Index of inter-beat section we are in.
+            int index = GetBeatIndexInterval(timestamp);
+
+            // Bail out if we are before the first beat.
             if (index == -1)
-                return na;
+                return strNoValue;
 
             switch (measureLabelType)
             {
                 case MeasureLabelType.Count:
                     {
+                        // Number of beats. 
+                        // If zero-based is enabled this is the number of cycles.
                         float beatCount = zeroBased ? index : index + 1;
                         if (halfCadence)
                             beatCount /= 2.0f;
@@ -901,8 +914,9 @@ namespace Kinovea.ScreenManager
                     }
                 case MeasureLabelType.CountReverse:
                     {
+                        // Number of beats in reverse so that the last beat is 0.
+                        // This is typically used for approach run.
                         float beatCount = beats.Count - 1 - index;
-                        beatCount = zeroBased ? beatCount : beatCount + 1;
                         if (halfCadence)
                             beatCount /= 2.0f;
                         else if (doubleCadence)
@@ -911,54 +925,70 @@ namespace Kinovea.ScreenManager
                         return string.Format("{0}", beatCount);
                     }
                 case MeasureLabelType.CadenceInstant:
-                    {
-                        if (index == 0)
-                            return na;
-
-                        long duration = beats[index] - beats[index - 1];
-                        float cycles = 1.0f;
-                        if (halfCadence)
-                            cycles = 0.5f;
-                        else if (doubleCadence)
-                            cycles = 2.0f;
-
-                        string cadence = parentMetadata.GetCadence(cycles, duration);
-                        return cadence;
-                    }
-                case MeasureLabelType.CadenceAverage:
-                    {
-                        if (index == 0)
-                            return na;
-
-                        long duration = beats[beats.Count - 1] - beats[0];
-                        float cycles = beats.Count - 1;
-                        if (halfCadence)
-                            cycles /= 2.0f;
-                        else if (doubleCadence)
-                            cycles *= 2.0f;
-                        
-                        string cadence = parentMetadata.GetCadence(cycles, duration);
-                        return cadence;
-                    }
-
                 case MeasureLabelType.PeriodInstant:
                     {
-                        if (index == 0)
-                            return na;
+                        // For instant cadence/period, use the current inter-beat interval.
+                        long start = 0;
+                        long end = 0;
 
-                        long duration = beats[index] - beats[index - 1];
-                        if (halfCadence)
-                            duration *= 2;
-                        else if (doubleCadence)
-                            duration /= 2;
+                        if (timestamp == beats[index])
+                        {
+                            // We are exactly on a beat, use the interval leading to it. 
 
-                        string period = parentMetadata.TimeCodeBuilder(duration, TimeType.Absolute, TimecodeFormat.Unknown, true);
-                        return period;
+                            // Bail out if we are on the first beat.
+                            if (index == 0)
+                                return strNoValue;
+
+                            start = beats[index - 1];
+                            end = timestamp;
+                        }
+                        else
+                        {
+                            // We are between two beats or after the last.
+
+                            // Bail out if we are after the last one.
+                            if (index == beats.Count - 1)
+                                return strNoValue;
+
+                            start = beats[index];
+                            end = beats[index + 1];
+                        }
+
+                        long duration = end - start;
+                        if (measureLabelType == MeasureLabelType.CadenceInstant)
+                        {
+                            float cycles = 1.0f;
+                            if (halfCadence)
+                                cycles = 0.5f;
+                            else if (doubleCadence)
+                                cycles = 2.0f;
+
+                            string cadence = parentMetadata.GetCadence(cycles, duration);
+                            return cadence;
+                        }
+                        else if (measureLabelType == MeasureLabelType.PeriodInstant)
+                        {
+                            if (halfCadence)
+                                duration *= 2;
+                            else if (doubleCadence)
+                                duration /= 2;
+
+                            string period = parentMetadata.TimeCodeBuilder(duration, TimeType.Absolute, TimecodeFormat.Unknown, true);
+                            return period;
+                        }
+                        else
+                        {
+                            return strNoValue;
+                        }
                     }
+                case MeasureLabelType.CadenceAverage:
                 case MeasureLabelType.PeriodAverage:
                     {
-                        if (index == 0)
-                            return na;
+                        // For average cadence/period we always consider the whole list.
+                        
+                        // Bail out if there is only one beat.
+                        if (beats.Count == 1)
+                            return strNoValue;
 
                         long duration = beats[beats.Count - 1] - beats[0];
                         float cycles = beats.Count - 1;
@@ -967,13 +997,21 @@ namespace Kinovea.ScreenManager
                         else if (doubleCadence)
                             cycles *= 2.0f;
 
-                        long avgDuration = (long)(duration / cycles);
-                        string average = parentMetadata.TimeCodeBuilder(avgDuration, TimeType.Absolute, TimecodeFormat.Unknown, true);
-                        return average;
+                        if (measureLabelType == MeasureLabelType.CadenceAverage)
+                        {
+                            string cadence = parentMetadata.GetCadence(cycles, duration);
+                            return cadence;
+                        }
+                        else
+                        {
+                            long avgDuration = (long)(duration / cycles);
+                            string average = parentMetadata.TimeCodeBuilder(avgDuration, TimeType.Absolute, TimecodeFormat.Unknown, true);
+                            return average;
+                        }
                     }
                 default:
                     {
-                        return na;
+                        return strNoValue;
                     }
             }
         }
@@ -983,13 +1021,8 @@ namespace Kinovea.ScreenManager
             return (beats.Count == 0 || timestamp < beats[0]);
         }
 
-        private bool IsAfterLastBeat(long timestamp)
-        {
-            return (beats.Count == 0 || timestamp > beats[beats.Count - 1]);
-        }
-
         /// <summary>
-        /// Returns the beat index we are on.
+        /// Returns the exact beat index we are on.
         /// If we are not exactly on a beat returns -1.
         /// </summary>
         private int GetBeatIndexExact(long timestamp)
@@ -1004,14 +1037,12 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Returns the beat index we are on.
-        /// If we are not exactly on a beat returns the previous beat or -1.
+        /// Returns the beat index we are on or the previous one if between two.
+        /// This can also be used to get the index of the interval we are in.
+        /// If we are before the first one it returns -1.
         /// </summary>
-        private int GetBeatIndexUpto(long timestamp)
+        private int GetBeatIndexInterval(long timestamp)
         {
-            if (IsBeforeFirstBeat(timestamp))
-                return -1;
-            
             int i;
             for (i = 0; i < beats.Count; i++)
             {
@@ -1029,6 +1060,7 @@ namespace Kinovea.ScreenManager
             mnuMeasureLabelTypes.Add(measureLabelType, mnu);
             return mnu;
         }
+
         private void mnuMeasureLabelType_Click(object sender, EventArgs e)
         {
             ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
@@ -1047,9 +1079,6 @@ namespace Kinovea.ScreenManager
 
             this.measureLabelType = measureLabelType;
             InvalidateFromMenu(tsmi);
-
-            //if (ShowMeasurableInfoChanged != null)
-              //  ShowMeasurableInfoChanged(this, new EventArgs<MeasureLabelType>(measureLabelType));
         }
         private string GetMeasureLabelOptionText(MeasureLabelType data)
         {
