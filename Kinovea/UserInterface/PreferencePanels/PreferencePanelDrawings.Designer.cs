@@ -100,6 +100,8 @@ namespace Kinovea.Root
       this.lblExportSpace = new System.Windows.Forms.Label();
       this.cmbDelimiter = new System.Windows.Forms.ComboBox();
       this.lblCSVDelimiter = new System.Windows.Forms.Label();
+      this.cmbCadenceUnit = new System.Windows.Forms.ComboBox();
+      this.lblCadenceUnit = new System.Windows.Forms.Label();
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
       this.tabPersistence.SuspendLayout();
@@ -417,6 +419,8 @@ namespace Kinovea.Root
       // 
       // tabUnits
       // 
+      this.tabUnits.Controls.Add(this.cmbCadenceUnit);
+      this.tabUnits.Controls.Add(this.lblCadenceUnit);
       this.tabUnits.Controls.Add(this.tbCustomLengthAb);
       this.tabUnits.Controls.Add(this.tbCustomLengthUnit);
       this.tabUnits.Controls.Add(this.lblCustomLength);
@@ -442,7 +446,7 @@ namespace Kinovea.Root
       // 
       // tbCustomLengthAb
       // 
-      this.tbCustomLengthAb.Location = new System.Drawing.Point(358, 237);
+      this.tbCustomLengthAb.Location = new System.Drawing.Point(358, 223);
       this.tbCustomLengthAb.Name = "tbCustomLengthAb";
       this.tbCustomLengthAb.Size = new System.Drawing.Size(49, 20);
       this.tbCustomLengthAb.TabIndex = 59;
@@ -450,7 +454,7 @@ namespace Kinovea.Root
       // 
       // tbCustomLengthUnit
       // 
-      this.tbCustomLengthUnit.Location = new System.Drawing.Point(214, 237);
+      this.tbCustomLengthUnit.Location = new System.Drawing.Point(214, 223);
       this.tbCustomLengthUnit.Name = "tbCustomLengthUnit";
       this.tbCustomLengthUnit.Size = new System.Drawing.Size(138, 20);
       this.tbCustomLengthUnit.TabIndex = 58;
@@ -459,7 +463,7 @@ namespace Kinovea.Root
       // lblCustomLength
       // 
       this.lblCustomLength.AutoSize = true;
-      this.lblCustomLength.Location = new System.Drawing.Point(30, 241);
+      this.lblCustomLength.Location = new System.Drawing.Point(30, 227);
       this.lblCustomLength.Name = "lblCustomLength";
       this.lblCustomLength.Size = new System.Drawing.Size(100, 13);
       this.lblCustomLength.TabIndex = 57;
@@ -468,7 +472,7 @@ namespace Kinovea.Root
       // cmbAngularAccelerationUnit
       // 
       this.cmbAngularAccelerationUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbAngularAccelerationUnit.Location = new System.Drawing.Point(186, 195);
+      this.cmbAngularAccelerationUnit.Location = new System.Drawing.Point(186, 187);
       this.cmbAngularAccelerationUnit.Name = "cmbAngularAccelerationUnit";
       this.cmbAngularAccelerationUnit.Size = new System.Drawing.Size(221, 21);
       this.cmbAngularAccelerationUnit.TabIndex = 56;
@@ -477,7 +481,7 @@ namespace Kinovea.Root
       // lblAngularAcceleration
       // 
       this.lblAngularAcceleration.AutoSize = true;
-      this.lblAngularAcceleration.Location = new System.Drawing.Point(30, 200);
+      this.lblAngularAcceleration.Location = new System.Drawing.Point(30, 192);
       this.lblAngularAcceleration.Name = "lblAngularAcceleration";
       this.lblAngularAcceleration.Size = new System.Drawing.Size(110, 13);
       this.lblAngularAcceleration.TabIndex = 55;
@@ -486,7 +490,7 @@ namespace Kinovea.Root
       // cmbAngularVelocityUnit
       // 
       this.cmbAngularVelocityUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbAngularVelocityUnit.Location = new System.Drawing.Point(186, 161);
+      this.cmbAngularVelocityUnit.Location = new System.Drawing.Point(186, 153);
       this.cmbAngularVelocityUnit.Name = "cmbAngularVelocityUnit";
       this.cmbAngularVelocityUnit.Size = new System.Drawing.Size(221, 21);
       this.cmbAngularVelocityUnit.TabIndex = 54;
@@ -495,7 +499,7 @@ namespace Kinovea.Root
       // lblAngularVelocityUnit
       // 
       this.lblAngularVelocityUnit.AutoSize = true;
-      this.lblAngularVelocityUnit.Location = new System.Drawing.Point(30, 166);
+      this.lblAngularVelocityUnit.Location = new System.Drawing.Point(30, 158);
       this.lblAngularVelocityUnit.Name = "lblAngularVelocityUnit";
       this.lblAngularVelocityUnit.Size = new System.Drawing.Size(81, 13);
       this.lblAngularVelocityUnit.TabIndex = 53;
@@ -504,7 +508,7 @@ namespace Kinovea.Root
       // cmbAngleUnit
       // 
       this.cmbAngleUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbAngleUnit.Location = new System.Drawing.Point(186, 127);
+      this.cmbAngleUnit.Location = new System.Drawing.Point(186, 119);
       this.cmbAngleUnit.Name = "cmbAngleUnit";
       this.cmbAngleUnit.Size = new System.Drawing.Size(221, 21);
       this.cmbAngleUnit.TabIndex = 52;
@@ -513,7 +517,7 @@ namespace Kinovea.Root
       // lblAngleUnit
       // 
       this.lblAngleUnit.AutoSize = true;
-      this.lblAngleUnit.Location = new System.Drawing.Point(30, 132);
+      this.lblAngleUnit.Location = new System.Drawing.Point(30, 124);
       this.lblAngleUnit.Name = "lblAngleUnit";
       this.lblAngleUnit.Size = new System.Drawing.Size(40, 13);
       this.lblAngleUnit.TabIndex = 51;
@@ -522,7 +526,7 @@ namespace Kinovea.Root
       // cmbAccelerationUnit
       // 
       this.cmbAccelerationUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbAccelerationUnit.Location = new System.Drawing.Point(186, 93);
+      this.cmbAccelerationUnit.Location = new System.Drawing.Point(186, 85);
       this.cmbAccelerationUnit.Name = "cmbAccelerationUnit";
       this.cmbAccelerationUnit.Size = new System.Drawing.Size(221, 21);
       this.cmbAccelerationUnit.TabIndex = 50;
@@ -531,7 +535,7 @@ namespace Kinovea.Root
       // lblAccelerationUnit
       // 
       this.lblAccelerationUnit.AutoSize = true;
-      this.lblAccelerationUnit.Location = new System.Drawing.Point(30, 98);
+      this.lblAccelerationUnit.Location = new System.Drawing.Point(30, 90);
       this.lblAccelerationUnit.Name = "lblAccelerationUnit";
       this.lblAccelerationUnit.Size = new System.Drawing.Size(72, 13);
       this.lblAccelerationUnit.TabIndex = 49;
@@ -540,7 +544,7 @@ namespace Kinovea.Root
       // cmbSpeedUnit
       // 
       this.cmbSpeedUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbSpeedUnit.Location = new System.Drawing.Point(186, 59);
+      this.cmbSpeedUnit.Location = new System.Drawing.Point(186, 51);
       this.cmbSpeedUnit.Name = "cmbSpeedUnit";
       this.cmbSpeedUnit.Size = new System.Drawing.Size(221, 21);
       this.cmbSpeedUnit.TabIndex = 48;
@@ -549,7 +553,7 @@ namespace Kinovea.Root
       // lblSpeedUnit
       // 
       this.lblSpeedUnit.AutoSize = true;
-      this.lblSpeedUnit.Location = new System.Drawing.Point(30, 64);
+      this.lblSpeedUnit.Location = new System.Drawing.Point(30, 56);
       this.lblSpeedUnit.Name = "lblSpeedUnit";
       this.lblSpeedUnit.Size = new System.Drawing.Size(50, 13);
       this.lblSpeedUnit.TabIndex = 47;
@@ -558,7 +562,7 @@ namespace Kinovea.Root
       // cmbTimeCodeFormat
       // 
       this.cmbTimeCodeFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbTimeCodeFormat.Location = new System.Drawing.Point(186, 25);
+      this.cmbTimeCodeFormat.Location = new System.Drawing.Point(186, 17);
       this.cmbTimeCodeFormat.Name = "cmbTimeCodeFormat";
       this.cmbTimeCodeFormat.Size = new System.Drawing.Size(221, 21);
       this.cmbTimeCodeFormat.TabIndex = 46;
@@ -567,7 +571,7 @@ namespace Kinovea.Root
       // lblTimeMarkersFormat
       // 
       this.lblTimeMarkersFormat.AutoSize = true;
-      this.lblTimeMarkersFormat.Location = new System.Drawing.Point(30, 28);
+      this.lblTimeMarkersFormat.Location = new System.Drawing.Point(30, 20);
       this.lblTimeMarkersFormat.Name = "lblTimeMarkersFormat";
       this.lblTimeMarkersFormat.Size = new System.Drawing.Size(108, 13);
       this.lblTimeMarkersFormat.TabIndex = 45;
@@ -673,6 +677,24 @@ namespace Kinovea.Root
       this.lblCSVDelimiter.TabIndex = 66;
       this.lblCSVDelimiter.Text = "CSV Decimal symbol:";
       // 
+      // cmbCadenceUnit
+      // 
+      this.cmbCadenceUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cmbCadenceUnit.Location = new System.Drawing.Point(186, 259);
+      this.cmbCadenceUnit.Name = "cmbCadenceUnit";
+      this.cmbCadenceUnit.Size = new System.Drawing.Size(221, 21);
+      this.cmbCadenceUnit.TabIndex = 61;
+      this.cmbCadenceUnit.SelectedIndexChanged += new System.EventHandler(this.cmbCadenceUnit_SelectedIndexChanged);
+      // 
+      // lblCadenceUnit
+      // 
+      this.lblCadenceUnit.AutoSize = true;
+      this.lblCadenceUnit.Location = new System.Drawing.Point(30, 264);
+      this.lblCadenceUnit.Name = "lblCadenceUnit";
+      this.lblCadenceUnit.Size = new System.Drawing.Size(56, 13);
+      this.lblCadenceUnit.TabIndex = 60;
+      this.lblCadenceUnit.Text = "Cadence :";
+      // 
       // PreferencePanelDrawings
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -749,5 +771,7 @@ namespace Kinovea.Root
         private System.Windows.Forms.Label lblPandocPath;
         private System.Windows.Forms.TextBox tbPandocPath;
         private System.Windows.Forms.Button btnPandocPath;
+        private System.Windows.Forms.ComboBox cmbCadenceUnit;
+        private System.Windows.Forms.Label lblCadenceUnit;
     }
 }

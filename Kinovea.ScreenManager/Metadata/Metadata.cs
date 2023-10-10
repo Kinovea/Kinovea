@@ -1330,6 +1330,24 @@ namespace Kinovea.ScreenManager
             return outputTimeCode;
         }
 
+        /// <summary>
+        /// Returns the cadence in user-preferred unit.
+        /// </summary>
+        public string GetCadence(float cycles, long timestamps)
+        {
+            CadenceUnit unit = PreferencesManager.PlayerPreferences.CadenceUnit;
+
+            double seconds = timestamps / this.averageTimeStampsPerSecond;
+            float hertz = (float)(cycles / seconds);
+
+            float cadence = UnitHelper.ConvertFrequency(hertz, unit);
+            cadence = UnitHelper.MinimalDigits(cadence);
+            string abbr = UnitHelper.FrequencyAbbreviation(unit);
+
+            string result = string.Format("{0} {1}", cadence, abbr);
+            return result;
+        }
+
         public void PostSetup(bool init)
         {
             if (init)

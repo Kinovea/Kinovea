@@ -99,8 +99,8 @@ namespace Kinovea.ScreenManager
         #region Members
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
         private long trackingTimestamps = -1;
-        private bool measureInitialized;
         private MiniLabel miniLabel;
+        private bool measureInitialized;
         private MeasureLabelType measureLabelType = MeasureLabelType.None;
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
