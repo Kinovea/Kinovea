@@ -449,4 +449,10 @@
   <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
     <value>追溯：在捕获停止时记录帧。</value>
   </data>
+  <data name="dlgPreferences_General_PathToPandoc" xml:space="preserve">
+    <value>pandoc的路经：</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVComma" xml:space="preserve">
+    <value>逗号</value>
+  </data>
 </root>
