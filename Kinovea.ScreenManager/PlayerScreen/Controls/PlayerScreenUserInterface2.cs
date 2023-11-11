@@ -299,7 +299,7 @@ namespace Kinovea.ScreenManager
         private bool m_bManualSqueeze = true; // If it's allowed to manually reduce the rendering surface under the aspect ratio size.
         private static readonly Pen m_PenImageBorder = Pens.SteelBlue;
         private static readonly Size m_MinimalSize = new Size(160, 120);
-        private bool m_bEnableCustomDecodingSize = true;
+        private bool customDecodingSizeIsEnabled = true;
 
         // Selection and current position. All values in absolute timestamps.
         // trkSelection.minimum and maximum are also in absolute timestamps.
@@ -2341,7 +2341,7 @@ namespace Kinovea.ScreenManager
             
             // TODO: move this to a function on video readers.
             bool scalable = m_FrameServer.VideoReader.CanScaleIndefinitely || m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.PreBuffering;
-            bool canCustomDecodingSize = m_bEnableCustomDecodingSize && scalable;
+            bool canCustomDecodingSize = customDecodingSizeIsEnabled && scalable;
 
             bool rotatedCanvas = false;
             if (videoFilterIsActive)
@@ -2493,17 +2493,20 @@ namespace Kinovea.ScreenManager
             // Custom decoding size is not compatible with tracking.
             // The boolean will later be used each time we attempt to change decoding size in StretchSqueezeSurface.
             // This is not concerned with decoding mode (prebuffering, caching, etc.) as this will be checked inside the reader.
-            bool wasEnabled = m_bEnableCustomDecodingSize;
-            m_bEnableCustomDecodingSize = !_forceDisable && !m_FrameServer.Metadata.Tracking;
+            
+            bool wasEnabled = customDecodingSizeIsEnabled;
+            customDecodingSizeIsEnabled = !_forceDisable && !m_FrameServer.Metadata.Tracking;
 
-            if (wasEnabled && !m_bEnableCustomDecodingSize)
+            if (wasEnabled && !customDecodingSizeIsEnabled)
             {
                 m_FrameServer.VideoReader.DisableCustomDecodingSize();
                 ResizeUpdate(true);
+                log.DebugFormat("Custom decoding size: DISABLED");
             }
-            else if (!wasEnabled && m_bEnableCustomDecodingSize)
+            else if (!wasEnabled && customDecodingSizeIsEnabled)
             {
                 ResizeUpdate(true);
+                log.DebugFormat("Custom decoding size: ENABLED");
             }
         }
         #endregion
@@ -5347,12 +5350,16 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Called before we start exporting video.
+        /// Stop playing and disable custom decoding size.
         /// </summary>
         public void BeforeExportVideo()
         {
             StopPlaying();
             OnPauseAsked();
 
+            // Force disable custom decoding size as we want to export at the original size.
+            CheckCustomDecodingSize(true);
+            
             saveInProgress = true;
         }
 
@@ -5364,25 +5371,48 @@ namespace Kinovea.ScreenManager
             saveInProgress = false;
             dualSaveInProgress = false;
 
+            // Restore custom decoding size if possible.
+            CheckCustomDecodingSize(false);
+
             m_iFramesToDecode = 1;
             ShowNextFrame(m_iSelStart, true);
             ActivateKeyframe(m_iCurrentPosition, true);
         }
 
         /// <summary>
-        /// Returns the image currently on screen with all drawings flushed, including grids, magnifier, mirroring, etc.
-        /// This is used to export individual images or get images for dual export.
+        /// Get a new bitmap with the current display image, at the screen size.
+        /// This is used for copying to the clipboard.
         /// </summary>
         public Bitmap GetFlushedImage()
         {
             Bitmap output = new Bitmap(m_FrameServer.CurrentImage.Size.Width, m_FrameServer.CurrentImage.Size.Height, PixelFormat.Format24bppRgb);
             output.SetResolution(m_FrameServer.CurrentImage.HorizontalResolution, m_FrameServer.CurrentImage.VerticalResolution);
 
+            ImageTransform savingTransform = m_FrameServer.ImageTransform.Identity;
+
             int keyframeIndex = m_FrameServer.Metadata.GetKeyframeIndex(m_iCurrentPosition);
             using (Graphics canvas = Graphics.FromImage(output))
-                FlushOnGraphics(m_FrameServer.CurrentImage, canvas, output.Size, keyframeIndex, m_iCurrentPosition, m_FrameServer.ImageTransform);
+                FlushOnGraphics(m_FrameServer.CurrentImage, canvas, output.Size, keyframeIndex, m_iCurrentPosition, savingTransform);
             
             return output;
+        }
+
+        /// <summary>
+        /// Paint the current frame with all drawings flushed, at the reference size, onto the passed Bitmap.
+        /// </summary>
+        public void PaintFlushedImage(Bitmap output)
+        {
+            Size inputSize = m_FrameServer.VideoReader.Info.ReferenceSize;
+            if (inputSize != output.Size)
+            {
+                log.ErrorFormat("Exporting unscaled images: passed bitmap has the wrong size.");
+                return;
+            }
+
+            int keyframeIndex = m_FrameServer.Metadata.GetKeyframeIndex(m_iCurrentPosition);
+            
+            using (Graphics canvas = Graphics.FromImage(output))
+                FlushOnGraphics(m_FrameServer.CurrentImage, canvas, output.Size, keyframeIndex, m_iCurrentPosition, m_FrameServer.ImageTransform.Identity);
         }
 
         /// <summary>

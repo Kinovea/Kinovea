@@ -3,6 +3,7 @@ using Kinovea.Services;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,14 +20,21 @@ namespace Kinovea.ScreenManager
 
         public void Export(string file, PlayerScreen player)
         {
-            Bitmap outputImage = player.view.GetFlushedImage();
-            ImageHelper.Save(file, outputImage);
-            outputImage.Dispose();
+            player.view.BeforeExportVideo();
+            Size size = player.FrameServer.VideoReader.Info.ReferenceSize;
+            Bitmap bmp = new Bitmap(size.Width, size.Height, PixelFormat.Format24bppRgb);
+
+            player.view.PaintFlushedImage(bmp);
+            ImageHelper.Save(file, bmp);
+
+            bmp.Dispose();
 
             PreferencesManager.PlayerPreferences.ImageFormat = FilesystemHelper.GetImageFormat(file);
             PreferencesManager.Save();
 
-            player.FrameServer.AfterSave();
+            player.view.AfterExportVideo();
+
+            NotificationCenter.RaiseRefreshFileExplorer(this, false);
         }
     }
 }

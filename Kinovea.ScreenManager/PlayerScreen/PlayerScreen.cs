@@ -775,12 +775,12 @@ namespace Kinovea.ScreenManager
             view.UpdateTimeLabels();
             view.RefreshImage();
         }
-        
-        public Bitmap GetFlushedImage()
+
+        public void PaintFlushedImage(Bitmap output)
         {
-            return view.GetFlushedImage();
+            view.PaintFlushedImage(output);
         }
-        
+
         public void ShowCoordinateSystem()
         {
             frameServer.Metadata.ShowCoordinateSystem();
