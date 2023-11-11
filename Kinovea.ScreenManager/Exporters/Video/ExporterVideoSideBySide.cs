@@ -12,6 +12,8 @@ using System.Drawing;
 using Kinovea.Services;
 using Kinovea.Video;
 using Kinovea.Video.FFMpeg;
+using System.Diagnostics;
+using System.Drawing.Imaging;
 
 namespace Kinovea.ScreenManager
 {
@@ -32,7 +34,14 @@ namespace Kinovea.ScreenManager
         private CommonTimeline commonTimeline;
         private double fileFrameInterval;
         private bool cancelled;
-        
+
+        private Stopwatch stopwatch = new Stopwatch();
+
+        // Temporary variables filled for each output frame.
+        private Bitmap bmpComposite;
+        private Bitmap bmpLeft;
+        private Bitmap bmpRight;
+
         private VideoFileWriter videoFileWriter = new VideoFileWriter();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -82,18 +91,22 @@ namespace Kinovea.ScreenManager
             Thread.CurrentThread.Name = "VideoExporter";
             BackgroundWorker worker = sender as BackgroundWorker;
             SavingSettings s = e.Argument as SavingSettings;
+            int threadResult = 0;
 
+            // Stop playing and disable custom decoding size.
             leftPlayer.view.BeforeExportVideo();
             rightPlayer.view.BeforeExportVideo();
 
-            leftPlayer.FrameServer.VideoReader.BeforeFrameEnumeration();
-            rightPlayer.FrameServer.VideoReader.BeforeFrameEnumeration();
-            
-            int threadResult = 0;
-            
+            // Do not call VideoReader.BeforeFrameEnumeration here.
+            // We are not doing a frame enumeration, we are moving the playhead.
+            // We can keep pre-buffering.
+
+            // Prepare temporary bitmaps we'll use throughout.
+            PrepareBitmaps();
+
             // Get first frame outside the loop to set up the saving context.
             long currentTime = 0;
-            Bitmap bmpComposite = GetCompositeImage(currentTime);
+            PaintCompositeImage(currentTime);
             
             log.DebugFormat("Composite size: {0}.", bmpComposite.Size);
 
@@ -113,10 +126,11 @@ namespace Kinovea.ScreenManager
             }
 
             videoFileWriter.SaveFrame(bmpComposite);
-            bmpComposite.Dispose();
             
             while (currentTime < commonTimeline.LastTime && !cancelled)
             {
+                stopwatch.Restart();
+
                 currentTime += commonTimeline.FrameTime;
 
                 if (worker.CancellationPending)
@@ -126,10 +140,8 @@ namespace Kinovea.ScreenManager
                     break;
                 }
 
-                bmpComposite = GetCompositeImage(currentTime);
+                PaintCompositeImage(currentTime);
                 videoFileWriter.SaveFrame(bmpComposite);
-                bmpComposite.Dispose();
-
                 int percent = (int)((double)currentTime * 100 / commonTimeline.LastTime);
                 worker.ReportProgress(percent);
             }
@@ -140,40 +152,37 @@ namespace Kinovea.ScreenManager
             e.Result = threadResult;
         }
 
-        private Bitmap GetCompositeImage(long currentTime)
+        /// <summary>
+        /// Create the temporary bitmaps we'll use to gather the frames and paint the composite.
+        /// </summary>
+        private void PrepareBitmaps()
         {
-            Bitmap bmpComposite;
+            Size sizeLeft = leftPlayer.FrameServer.VideoReader.Info.ReferenceSize;
+            Size sizeRight = rightPlayer.FrameServer.VideoReader.Info.ReferenceSize;
+            Size sizeComp = ImageHelper.GetSideBySideCompositeSize(sizeLeft, sizeRight, true, merging, horizontal);
 
+            bmpLeft = new Bitmap(sizeLeft.Width, sizeLeft.Height, PixelFormat.Format24bppRgb);
+            bmpRight = new Bitmap(sizeRight.Width, sizeRight.Height, PixelFormat.Format24bppRgb);
+            bmpComposite = new Bitmap(sizeComp.Width, sizeComp.Height, bmpLeft.PixelFormat);
+        }
+
+        private void PaintCompositeImage(long currentTime)
+        {
             GotoTime(leftPlayer, currentTime);
             GotoTime(rightPlayer, currentTime);
 
-            Bitmap bmpLeft = leftPlayer.GetFlushedImage();
+            leftPlayer.PaintFlushedImage(bmpLeft);
 
             if (!merging)
             {
-                Bitmap bmpRight = rightPlayer.GetFlushedImage();
-                bmpComposite = ImageHelper.GetSideBySideComposite(bmpLeft, bmpRight, true, horizontal);
-                bmpRight.Dispose();
+                rightPlayer.PaintFlushedImage(bmpRight);
+                ImageHelper.PaintSideBySideComposite(bmpComposite, bmpLeft, bmpRight, horizontal);
             }
             else
             {
-                int height = bmpLeft.Height;
-                int width = bmpLeft.Width;
-
-                if (bmpLeft.Height % 2 != 0)
-                    height++;
-
-                if (width % 4 != 0)
-                    width += 4 - (width % 4);
-
-                bmpComposite = new Bitmap(width, height, bmpLeft.PixelFormat);
                 Graphics g = Graphics.FromImage(bmpComposite);
                 g.DrawImage(bmpLeft, Point.Empty);
             }
-
-            bmpLeft.Dispose();
-            
-            return bmpComposite;
         }
 
         private void GotoTime(PlayerScreen player, long commonTime)
@@ -193,7 +202,10 @@ namespace Kinovea.ScreenManager
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            
+            bmpLeft.Dispose();
+            bmpRight.Dispose();
+            bmpComposite.Dispose();
+
             formProgressBar.Close();
             formProgressBar.Dispose();
 
