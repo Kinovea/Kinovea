@@ -1087,4 +1087,22 @@
   <data name="mnuLoadAnalysis" xml:space="preserve">
     <value>주석 불러오기…</value>
   </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>크기</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>내림차순</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>오름차순</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>이름</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>날짜</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>정렬 기준</value>
+  </data>
 </root>

@@ -58,82 +58,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="mnuDeleteShortcut" xml:space="preserve">
-    <value>Hapus pintasan</value>
+  <data name="mnuCheckForUpdates" xml:space="preserve"><value>Ažuriraj softver…</value>
   </data>
-  <data name="FormCameraWizard_CameraType" xml:space="preserve">
-    <value>Jenis kamera</value>
+  <data name="Updater_Behind" xml:space="preserve"><value>Nova verzija je dostupna!</value>
   </data>
-  <data name="FormCameraWizard_Title" xml:space="preserve">
-    <value>Sambungan manual</value>
+  <data name="Updater_CurrentVersion" xml:space="preserve"><value>Trenutna verzija:</value>
   </data>
-  <data name="mnuVideoDelete" xml:space="preserve">
-    <value>Hapus berkas</value>
+  <data name="Updater_Download" xml:space="preserve"><value>Preuzeti</value>
   </data>
-  <data name="mnuAddToShortcuts" xml:space="preserve">
-    <value>Tambahkan ke pintasan</value>
+  <data name="Updater_InternetError" xml:space="preserve"><value>Došlo je do greške prilikom provjere ažuriranja. Molimo vas da osigurate dostupnost Internet veze.</value>
   </data>
-  <data name="mnuAddShortcut" xml:space="preserve">
-    <value>Tambah pintasan</value>
+  <data name="Updater_LblChangeLog" xml:space="preserve"><value>Evidencija promjena:</value>
   </data>
-  <data name="lblCaptureHistory" xml:space="preserve">
-    <value>Riwayat rekaman</value>
+  <data name="Updater_NewVersion" xml:space="preserve"><value>Nova verzija</value>
   </data>
-  <data name="lblVideoFiles" xml:space="preserve">
-    <value>Berkas video</value>
+  <data name="Updater_Quit" xml:space="preserve"><value>Odustani</value>
   </data>
-  <data name="FormCameraWizard_Create" xml:space="preserve">
-    <value>Buat kamera</value>
+  <data name="Updater_Title" xml:space="preserve"><value>Kinovea - Provjera za novu verziju.</value>
   </data>
-  <data name="FormCameraWizard_Test" xml:space="preserve">
-    <value>Tes</value>
-  </data>
-  <data name="FormCameraWizard_Parameters" xml:space="preserve">
-    <value>Parameter</value>
-  </data>
-  <data name="tabShortcuts" xml:space="preserve">
-    <value>Pintasan</value>
-  </data>
-  <data name="tabExplorer" xml:space="preserve">
-    <value>Penjelajah</value>
-  </data>
-  <data name="Generic_Open" xml:space="preserve">
-    <value>Buka</value>
-  </data>
-  <data name="Generic_Cancel" xml:space="preserve">
-    <value>Batal</value>
-  </data>
-  <data name="lblCameras" xml:space="preserve">
-    <value>Kamera</value>
-  </data>
-  <data name="lblFolders" xml:space="preserve">
-    <value>Map</value>
-  </data>
-  <data name="ForgetCustomSettings" xml:space="preserve">
-    <value>Lupakan pengaturan khusus</value>
-  </data>
-  <data name="mnuVideoLocate" xml:space="preserve">
-    <value>Cari di Windows Explorer </value>
-  </data>
-  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
-    <value>Buka sebagai pengamat map tayangan ulang</value>
-  </data>
-  <data name="mnuSortBy_Size" xml:space="preserve">
-    <value>Ukuran</value>
-  </data>
-  <data name="mnuSortBy_Descending" xml:space="preserve">
-    <value>Turun</value>
-  </data>
-  <data name="mnuSortBy_Ascending" xml:space="preserve">
-    <value>Naik</value>
-  </data>
-  <data name="mnuSortBy_Name" xml:space="preserve">
-    <value>Nama</value>
-  </data>
-  <data name="mnuSortBy_Date" xml:space="preserve">
-    <value>Tanggal</value>
-  </data>
-  <data name="mnuSortBy" xml:space="preserve">
-    <value>Urutkan berdasarkan</value>
+  <data name="Updater_UpToDate" xml:space="preserve"><value>Vaša verzija je ažurirana!</value>
   </data>
 </root>

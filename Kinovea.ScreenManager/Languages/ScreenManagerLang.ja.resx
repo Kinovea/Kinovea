@@ -106,7 +106,7 @@
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve"><value>なし</value>
   </data>
-  <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>スピード</value>
+  <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>速度</value>
   </data>
   <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>セグメントの実際のサイズ:</value>
   </data>
@@ -136,7 +136,7 @@
   </data>
   <data name="dlgRafaleExport_Title" xml:space="preserve"><value>イメージシーケンスを保存</value>
   </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>スローモーションをアカウントに追加 (Current =</value>
+  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>スローモーションをアカウントに追加 (Current = </value>
   </data>
   <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>メソッドを保存</value>
   </data>
@@ -172,11 +172,11 @@
   </data>
   <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>ファイルを上書きできません。\nターゲットフォルダに書き込む権利を有し、別の場所でファイルが使われていないことを確認して下さい。</value>
   </data>
-  <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - ビデオを保存できませんでした</value>
+  <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - ビデオを保存できませんでした。 </value>
   </data>
   <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>ビデオを保存できませんでした。\n別のフォーマットでもう一度試してみてください。</value>
   </data>
-  <data name="FormFileSave_Infos" xml:space="preserve"><value>進行中…</value>
+  <data name="FormFileSave_Infos" xml:space="preserve"><value>進行中:</value>
   </data>
   <data name="FormFramesExport_Infos" xml:space="preserve"><value>イメージエクスポート:</value>
   </data>
@@ -194,7 +194,7 @@
   </data>
   <data name="Generic_Close" xml:space="preserve"><value>閉じる</value>
   </data>
-  <data name="Generic_ColorPicker" xml:space="preserve"><value>色</value>
+  <data name="Generic_ColorPicker" xml:space="preserve"><value>色:</value>
   </data>
   <data name="Generic_Configuration" xml:space="preserve"><value>設定</value>
   </data>
@@ -230,7 +230,7 @@
   </data>
   <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>キーイメージが変更されました。\n終了する前にキーイメージを保存しますか？</value>
   </data>
-  <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>キーイメージは保存されませんでした。</value>
+  <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>キーイメージは保存されませんでした</value>
   </data>
   <data name="lblInfo_Text" xml:space="preserve"><value>共通コントロール:</value>
   </data>
@@ -262,7 +262,7 @@
   </data>
   <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>エラー: ファイルを開くことができませんでした : サポートされていないファイルタイプ。</value>
   </data>
-  <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea - ロードエラー</value>
+  <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea - ロードエラー。</value>
   </data>
   <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>エラー: ファイルを開くことができませんでした : ファイルが見つからなかったか、ファイルが空です。</value>
   </data>
@@ -290,7 +290,7 @@
   </data>
   <data name="mnuDeleteDrawing" xml:space="preserve"><value>削除</value>
   </data>
-  <data name="mnuDeleteEndOfTrajectory" xml:space="preserve"><value>このポイント以降の軌道を削除</value>
+  <data name="mnuDeleteEndOfTrajectory" xml:space="preserve"><value>この点より後の軌道を削除</value>
   </data>
   <data name="mnuDeleteTrajectory" xml:space="preserve"><value>すべての軌道を削除</value>
   </data>
@@ -302,7 +302,7 @@
   </data>
   <data name="mnuExportSpreadsheet" xml:space="preserve"><value>スプレッドシートにエクスポート</value>
   </data>
-  <data name="mnuFormat" xml:space="preserve"><value>イメージフォーマット</value>
+  <data name="mnuFormat" xml:space="preserve"><value>アスペクト比</value>
   </data>
   <data name="mnuFormatAuto" xml:space="preserve"><value>自動検出</value>
   </data>
@@ -336,7 +336,7 @@
   </data>
   <data name="mnuRestartTracking" xml:space="preserve"><value>軌道の最終地点を再設定</value>
   </data>
-  <data name="mnuOpenVideo" xml:space="preserve"><value>ビデオファイルを開く</value>
+  <data name="mnuOpenVideo" xml:space="preserve"><value>ビデオファイルを開く…</value>
   </data>
   <data name="mnuCalibrate" xml:space="preserve"><value>較正…</value>
   </data>
@@ -376,7 +376,7 @@
   </data>
   <data name="Toast_ImageSaved" xml:space="preserve"><value>イメージが保存されました</value>
   </data>
-  <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>キーイメージの追加</value>
+  <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>キー画像の追加</value>
   </data>
   <data name="ToolTip_Back" xml:space="preserve"><value>前のフレームへ移動</value>
   </data>
@@ -767,7 +767,7 @@
     <value>可視性</value>
   </data>
   <data name="Generic_ExportVideo" xml:space="preserve">
-    <value>動画を書き出す…</value>
+    <value>ビデオのエクスポート…</value>
   </data>
   <data name="Generic_File" xml:space="preserve">
     <value>ファイル</value>
@@ -876,5 +876,467 @@
   </data>
   <data name="LengthUnit_Percentage" xml:space="preserve">
     <value>パーセンテージ</value>
+  </data>
+  <data name="dlgRafaleExport_ExportFrameDecimation" xml:space="preserve">
+    <value>{0}枚の画像ごとに1枚の画像をエクスポートします。</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
+    <value>最適な円を表示する</value>
+  </data>
+  <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve">
+    <value>{0:0}ミリ秒ごとに1枚の画像をエクスポートします。</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>サイズ</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>降順</value>
+  </data>
+  <data name="DrawingName_CSVL" xml:space="preserve">
+    <value>中央仙骨垂直線</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>昇順</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_CentripetalAcceleration" xml:space="preserve">
+    <value>向心加速度</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>名前</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>日付</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>並べ替え</value>
+  </data>
+  <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
+    <value>カメラ固有値</value>
+  </data>
+  <data name="dlgRafaleExport_ExportTimeDecimationSeconds" xml:space="preserve">
+    <value>{0:0.00}秒ごとに1枚の画像をエクスポートします。</value>
+  </data>
+  <data name="mnuCopyDrawing" xml:space="preserve">
+    <value>描画をコピーする</value>
+  </data>
+  <data name="formConfigureKinogram_CropSize" xml:space="preserve">
+    <value>クロップサイズ:</value>
+  </data>
+  <data name="mnuPolyline_FinishHere" xml:space="preserve">
+    <value>ここでポリラインを終了する</value>
+  </data>
+  <data name="mnuSetStyleAsDefault" xml:space="preserve">
+    <value>スタイルをデフォルトとして設定</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowVerticalAxis" xml:space="preserve">
+    <value>縦軸の表示</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveNextSplit" xml:space="preserve">
+    <value>次の分割点をこのフレームに移動</value>
+  </data>
+  <data name="Toast_AudioLost" xml:space="preserve">
+    <value>オーディオデバイスが失われました</value>
+  </data>
+  <data name="mnuRotation180" xml:space="preserve">
+    <value>180°</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetTile" xml:space="preserve">
+    <value>このタイルをリセット</value>
+  </data>
+  <data name="mnuCopyImageToClipboard" xml:space="preserve">
+    <value>画像をクリップボードにコピー</value>
+  </data>
+  <data name="mnuDrawingTrackingStop" xml:space="preserve">
+    <value>追跡を止める</value>
+  </data>
+  <data name="mnuMeasure_Name" xml:space="preserve">
+    <value>名前</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveCurrentEnd" xml:space="preserve">
+    <value>現在の時間セクションの終了をこのフレームに移動</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetAllTiles" xml:space="preserve">
+    <value>すべてのタイルをリセット</value>
+  </data>
+  <data name="ToolTip_DisarmTrigger" xml:space="preserve">
+    <value>キャプチャトリガーの解除。現在の状態:作動済み。</value>
+  </data>
+  <data name="FormCrashRecovery_Date" xml:space="preserve">
+    <value>日付</value>
+  </data>
+  <data name="mnuMeasure_Label_None" xml:space="preserve">
+    <value>なし</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Cumul" xml:space="preserve">
+    <value>累積時間</value>
+  </data>
+  <data name="mnuHideAfter" xml:space="preserve">
+    <value>この点より後を非表示にする</value>
+  </data>
+  <data name="mnuOptions_Kinogram_AutoInterpolate" xml:space="preserve">
+    <value>自動補間</value>
+  </data>
+  <data name="mnuThumbnail_MoveToCurrentTime" xml:space="preserve">
+    <value>現在の時間へ移動</value>
+  </data>
+  <data name="dlgCalibratePlane_HelpPlane" xml:space="preserve">
+    <value>各辺の長さを入力してください。</value>
+  </data>
+  <data name="mnuTimeSections" xml:space="preserve">
+    <value>時間セクション</value>
+  </data>
+  <data name="mnuTimebase" xml:space="preserve">
+    <value>ビデオタイミングを設定する...</value>
+  </data>
+  <data name="mnuOptions_Chrono_Locked" xml:space="preserve">
+    <value>ロック中</value>
+  </data>
+  <data name="formConfigureExport_SBS" xml:space="preserve">
+    <value>並べてエクスポート</value>
+  </data>
+  <data name="lblConfig_ImageSize" xml:space="preserve">
+    <value>画像サイズ:</value>
+  </data>
+  <data name="mnuThumbnailRename" xml:space="preserve">
+    <value>名前変更</value>
+  </data>
+  <data name="ToolTip_PauseCamera" xml:space="preserve">
+    <value>カメラの一時停止</value>
+  </data>
+  <data name="mnuMarkTimeAsOrigin" xml:space="preserve">
+    <value>現在の時間を時間原点としてマークする</value>
+  </data>
+  <data name="FormCrashRecovery_Recover" xml:space="preserve">
+    <value>復元</value>
+  </data>
+  <data name="mnuShowAfter" xml:space="preserve">
+    <value>この点より後を表示にする</value>
+  </data>
+  <data name="formConfigureExport_ImageSequence" xml:space="preserve">
+    <value>画像シーケンスのエクスポート</value>
+  </data>
+  <data name="FormCrashRecovery_Title" xml:space="preserve">
+    <value>クラッシュリカバリ</value>
+  </data>
+  <data name="formConfigureKinogram_lblTotal" xml:space="preserve">
+    <value>フレーム:{0}</value>
+  </data>
+  <data name="ToolTip_ConfigureCamera" xml:space="preserve">
+    <value>カメラの設定</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowHorizontalAxis" xml:space="preserve">
+    <value>横軸の表示</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveNextStart" xml:space="preserve">
+    <value>次のセクションの開始をこのフレームに移動</value>
+  </data>
+  <data name="mnuProperties" xml:space="preserve">
+    <value>プロパティ</value>
+  </data>
+  <data name="mnuLoadAnalysis" xml:space="preserve">
+    <value>注釈を読み込む…</value>
+  </data>
+  <data name="mnuMagnifierFreeze" xml:space="preserve">
+    <value>フリーズ</value>
+  </data>
+  <data name="mnuAction_Chrono_Start" xml:space="preserve">
+    <value>このフレームで新しい時間セクションを開始する</value>
+  </data>
+  <data name="DrawingName_TestGrid" xml:space="preserve">
+    <value>カメラテストグリッド</value>
+  </data>
+  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
+    <value>リプレイフォルダオブザーバーとして開く…</value>
+  </data>
+  <data name="mnuAction_Chrono_DeleteSection" xml:space="preserve">
+    <value>現在の時間セクションの削除</value>
+  </data>
+  <data name="mnuSupplementaryAngle" xml:space="preserve">
+    <value>補角</value>
+  </data>
+  <data name="mnuThumbnailDelete" xml:space="preserve">
+    <value>削除</value>
+  </data>
+  <data name="dlgCalibratePlane_HelpDistanceGrid" xml:space="preserve">
+    <value>各マーカーの原点からの距離を入力してください。</value>
+  </data>
+  <data name="mnuAction_Chrono_MovePrevSplit" xml:space="preserve">
+    <value>前の分割点をこのフレームに移動</value>
+  </data>
+  <data name="mnuExport_Video_WithPauses" xml:space="preserve">
+    <value>一時停止のあるビデオ…</value>
+  </data>
+  <data name="mnuMeasure_Clock" xml:space="preserve">
+    <value>時計</value>
+  </data>
+  <data name="mnuOptions_Trajectory_UseKeyImageColors" xml:space="preserve">
+    <value>キー画像の色を使用</value>
+  </data>
+  <data name="mnuOptions_Kinogram_RightToLeft" xml:space="preserve">
+    <value>右から左</value>
+  </data>
+  <data name="Infobar_Player_Observing" xml:space="preserve">
+    <value>監視中のフォルダ:{0}</value>
+  </data>
+  <data name="FormCrashRecovery_File" xml:space="preserve">
+    <value>ファイル</value>
+  </data>
+  <data name="mnuCutDrawing" xml:space="preserve">
+    <value>描画をカットする</value>
+  </data>
+  <data name="mnuAction_Chrono_Stop" xml:space="preserve">
+    <value>停止:このフレームで現在の時間セクションを終了する</value>
+  </data>
+  <data name="mnuRotation" xml:space="preserve">
+    <value>回転</value>
+  </data>
+  <data name="mnuOpenReplayWatcher" xml:space="preserve">
+    <value>リプレイフォルダオブザーバーを開く…</value>
+  </data>
+  <data name="toolTip_Speed" xml:space="preserve">
+    <value>速度</value>
+  </data>
+  <data name="mnuVisibilityDefault" xml:space="preserve">
+    <value>デフォルトフェード</value>
+  </data>
+  <data name="filterName_Analysis" xml:space="preserve">
+    <value>分析</value>
+  </data>
+  <data name="mnuExport_Video_Video" xml:space="preserve">
+    <value>ビデオ…</value>
+  </data>
+  <data name="mnuShowCircleCenter" xml:space="preserve">
+    <value>円の中心を表示</value>
+  </data>
+  <data name="Toast_TriggerDisarmed" xml:space="preserve">
+    <value>キャプチャトリガーが解除されました</value>
+  </data>
+  <data name="mnuOptions_CoordinateSystem_ShowGraduations" xml:space="preserve">
+    <value>目盛の表示</value>
+  </data>
+  <data name="mnuExport_Video_SideBySide" xml:space="preserve">
+    <value>並べる…</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetLabelPositions" xml:space="preserve">
+    <value>ラベルの位置をリセット</value>
+  </data>
+  <data name="mnuExport_Spreadsheet_TrajectoryCSV" xml:space="preserve">
+    <value>軌跡CSV…</value>
+  </data>
+  <data name="ToolTip_ArmTrigger" xml:space="preserve">
+    <value>キャプチャトリガーの作動。現在の状態:解除済み。</value>
+  </data>
+  <data name="formConfigureExport_SBS_Horizontal" xml:space="preserve">
+    <value>横</value>
+  </data>
+  <data name="ToolTip_StartCamera" xml:space="preserve">
+    <value>カメラを起動する</value>
+  </data>
+  <data name="mnuThumbnailLocate" xml:space="preserve">
+    <value>Windowsエクスプローラでファイルを検索</value>
+  </data>
+  <data name="mnuDrawingTrackingStart" xml:space="preserve">
+    <value>追跡を開始する</value>
+  </data>
+  <data name="mnuPasteDrawing" xml:space="preserve">
+    <value>描画を貼り付ける</value>
+  </data>
+  <data name="mnuRotation0" xml:space="preserve">
+    <value>回転なし</value>
+  </data>
+  <data name="mnuHideBefore" xml:space="preserve">
+    <value>この点より前を非表示にする</value>
+  </data>
+  <data name="formConfigureKinogram_lblFrameInterval" xml:space="preserve">
+    <value>フレーム間隔:{0:0.000} ミリ秒</value>
+  </data>
+  <data name="Infobar_Player_StartWatcher" xml:space="preserve">
+    <value>フォルダの監視を開始する:{0}</value>
+  </data>
+  <data name="filterName_Kinogram" xml:space="preserve">
+    <value>キノグラム</value>
+  </data>
+  <data name="DrawingName_Bikefit" xml:space="preserve">
+    <value>バイクフィット</value>
+  </data>
+  <data name="mnuShowArrow" xml:space="preserve">
+    <value>矢印を表示</value>
+  </data>
+  <data name="mnuExport_Images_Keys" xml:space="preserve">
+    <value>キー画像…</value>
+  </data>
+  <data name="mnuDemosaic" xml:space="preserve">
+    <value>デモザイシング</value>
+  </data>
+  <data name="mnuSignedAngle" xml:space="preserve">
+    <value>符号付き角度</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Tag" xml:space="preserve">
+    <value>タグ</value>
+  </data>
+  <data name="mnuRotation270" xml:space="preserve">
+    <value>反時計回りに90°</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowFrame" xml:space="preserve">
+    <value>フレームの表示</value>
+  </data>
+  <data name="mnuThumbnailForget" xml:space="preserve">
+    <value>カスタム設定を忘れる</value>
+  </data>
+  <data name="mnuPolyline_FinishAtPrevious" xml:space="preserve">
+    <value>前の点でポリラインを終了する</value>
+  </data>
+  <data name="mnuExport_Spreadsheet_ChronoCSV" xml:space="preserve">
+    <value>クロノメーターCSV…</value>
+  </data>
+  <data name="mnuAction_Chrono_Split" xml:space="preserve">
+    <value>分割：このフレームで現在の時間セクションを終了し、新しい時間セクションを開始する</value>
+  </data>
+  <data name="mnuVisibilityConfigure" xml:space="preserve">
+    <value>カスタムフェードの設定</value>
+  </data>
+  <data name="mnuCopyToClipboard" xml:space="preserve">
+    <value>クリップボードにコピー</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Menu" xml:space="preserve">
+    <value>列</value>
+  </data>
+  <data name="mnuTimeCalibration" xml:space="preserve">
+    <value>時間キャリブレーション…</value>
+  </data>
+  <data name="mnuAction_Kinogram_Interpolate" xml:space="preserve">
+    <value>タイルの補間</value>
+  </data>
+  <data name="mnuOptions_Trajectory_SeeFuture" xml:space="preserve">
+    <value>未来を見る</value>
+  </data>
+  <data name="mnuDemosaicNone" xml:space="preserve">
+    <value>なし</value>
+  </data>
+  <data name="mnuExport_Spreadsheet" xml:space="preserve">
+    <value>スプレッドシートのエクスポート</value>
+  </data>
+  <data name="mnuAction_Chrono_MovePrevEnd" xml:space="preserve">
+    <value>前のセクションの終了をこのフレームに移動</value>
+  </data>
+  <data name="mnuExport_Images_Image" xml:space="preserve">
+    <value>画像…</value>
+  </data>
+  <data name="mnuShowBefore" xml:space="preserve">
+    <value>この点より前を表示する</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowKeyImageLabels" xml:space="preserve">
+    <value>キー画像ラベルの表示</value>
+  </data>
+  <data name="mnuMeasure_FrameNumber" xml:space="preserve">
+    <value>フレーム番号</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowThirds" xml:space="preserve">
+    <value>3x3グリッドの表示</value>
+  </data>
+  <data name="FormCrashRecovery_Info" xml:space="preserve">
+    <value>以下のプロジェクトは正しく保存されませんでしたが、復元できます。</value>
+  </data>
+  <data name="mnuMeasure_Label_Menu" xml:space="preserve">
+    <value>ラベル</value>
+  </data>
+  <data name="mnuShowLabel" xml:space="preserve">
+    <value>ラベルを表示する</value>
+  </data>
+  <data name="formConfigureKinogram_Table" xml:space="preserve">
+    <value>テーブル:</value>
+  </data>
+  <data name="mnuAction" xml:space="preserve">
+    <value>アクション</value>
+  </data>
+  <data name="mnuVisibilityCustom" xml:space="preserve">
+    <value>カスタムフェード</value>
+  </data>
+  <data name="mnuExitFilter" xml:space="preserve">
+    <value>終了{0}</value>
+  </data>
+  <data name="mnuMeasure_Stopwatch" xml:space="preserve">
+    <value>ストップウォッチ</value>
+  </data>
+  <data name="formConfigureExport_SBS_Vertical" xml:space="preserve">
+    <value>縦</value>
+  </data>
+  <data name="mnuRotation90" xml:space="preserve">
+    <value>時計回りに90°</value>
+  </data>
+  <data name="mnuCounterClockwise" xml:space="preserve">
+    <value>反時計回り</value>
+  </data>
+  <data name="mnuExport_Images_SideBySide" xml:space="preserve">
+    <value>並べる…</value>
+  </data>
+  <data name="mnuPolyline_CloseMenu" xml:space="preserve">
+    <value>このメニューを閉じる</value>
+  </data>
+  <data name="formConfigureKinogram_Title" xml:space="preserve">
+    <value>キノグラムの設定</value>
+  </data>
+  <data name="mnuMarkTimeAsOriginClock" xml:space="preserve">
+    <value>この時計の現在の時刻を時間原点としてマークする</value>
+  </data>
+  <data name="mnuExport_Image" xml:space="preserve">
+    <value>画像のエクスポート</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveCurrentStart" xml:space="preserve">
+    <value>現在の時間セクションの開始をこのフレームに移動</value>
+  </data>
+  <data name="mnuOptions_Trajectory_Interactive" xml:space="preserve">
+    <value>インタラクティブ検索</value>
+  </data>
+  <data name="mnuMeasure_Labels_Menu" xml:space="preserve">
+    <value>ラベル</value>
+  </data>
+  <data name="mnuExport_Document" xml:space="preserve">
+    <value>ドキュメントのエクスポート</value>
+  </data>
+  <data name="mnuOptions_CoordinateSystem_ShowGrid" xml:space="preserve">
+    <value>グリッドの表示</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowTrackLabel" xml:space="preserve">
+    <value>トラックラベルの表示</value>
+  </data>
+  <data name="dlgCalibratePlane_AveragePixelSize" xml:space="preserve">
+    <value>平均ピクセルサイズ:{0}。</value>
+  </data>
+  <data name="mnuThumbnails" xml:space="preserve">
+    <value>サムネイル</value>
+  </data>
+  <data name="mnuExport_Images_Sequence" xml:space="preserve">
+    <value>画像シーケンス…</value>
+  </data>
+  <data name="mnuAction_Chrono_DeleteTimes" xml:space="preserve">
+    <value>すべての時刻を削除</value>
+  </data>
+  <data name="mnuExport_Video_Slideshow" xml:space="preserve">
+    <value>ビデオスライドショー…</value>
+  </data>
+  <data name="Generic_OK" xml:space="preserve">
+    <value>了解</value>
+  </data>
+  <data name="mnuLensCalibration" xml:space="preserve">
+    <value>レンズキャリブレーション…</value>
+  </data>
+  <data name="Infobar_Player_StopWatcher" xml:space="preserve">
+    <value>フォルダの監視を止める:{0}</value>
+  </data>
+  <data name="Toast_TriggerArmed" xml:space="preserve">
+    <value>キャプチャトリガーが作動されました</value>
+  </data>
+  <data name="mnuOptions_Kinogram_ShowBorder" xml:space="preserve">
+    <value>ボーダーを表示</value>
+  </data>
+  <data name="mnuMagnifierUnfreeze" xml:space="preserve">
+    <value>フリーズ解除</value>
+  </data>
+  <data name="mnuExport_Video" xml:space="preserve">
+    <value>ビデオのエクスポート</value>
+  </data>
+  <data name="mnuPasteImage" xml:space="preserve">
+    <value>クリップボードから画像を貼り付け</value>
   </data>
 </root>
