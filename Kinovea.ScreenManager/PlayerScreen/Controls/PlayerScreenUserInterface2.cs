@@ -4904,9 +4904,10 @@ namespace Kinovea.ScreenManager
             if (drawing == null || !drawing.IsCopyPasteable)
                 return;
 
-            // Note: the keyframe we used to copy from may not exist anymore. In this case we create a new keyframe.
             Guid managerId = m_FrameServer.Metadata.FindManagerId(drawing);
-            if (managerId == Guid.Empty && m_FrameServer.Metadata.IsAttachedDrawing(drawing))
+
+            // Create a new keyframe if needed.
+            if (m_FrameServer.Metadata.IsAttachedDrawing(drawing))
             {
                 AddKeyframe();
                 Keyframe kf = m_FrameServer.Metadata.HitKeyframe;
