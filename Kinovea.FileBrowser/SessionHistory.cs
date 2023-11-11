@@ -57,9 +57,13 @@ namespace Kinovea.FileBrowser
 
             bool isCurrent = history.Count > 0 && index >= 0 && history[index].Path == item.Path;
             if (!isCurrent)
+            {
                 history.Add(item);
+                //log.DebugFormat("ADDED item to session history: {0}", item.Path);
+            }
 
             index = history.Count - 1;
+            DumpSessionHistory();
         }
 
         /// <summary>
@@ -72,6 +76,7 @@ namespace Kinovea.FileBrowser
 
             index--;
             navigating = true;
+            DumpSessionHistory();
         }
 
         /// <summary>
@@ -84,6 +89,16 @@ namespace Kinovea.FileBrowser
 
             index++;
             navigating = true;
+            DumpSessionHistory();
+        }
+
+        private void DumpSessionHistory()
+        {
+            log.DebugFormat("Session history:");
+            for (int i = 0; i < history.Count; i++)
+            {
+                log.DebugFormat("{0}{1}", i == index ? ">>> " : "", history[i].Path);
+            }
         }
     }
 }
