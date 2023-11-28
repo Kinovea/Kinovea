@@ -578,7 +578,7 @@
   </data>
   <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Export naar Spreadsheet</value>
   </data>
-  <data name="mnuFormat" xml:space="preserve"><value>Afbeeldingstype</value>
+  <data name="mnuFormat" xml:space="preserve"><value>Beeldverhouding</value>
   </data>
   <data name="mnuFormatAuto" xml:space="preserve"><value>Automatische detectie</value>
   </data>
@@ -899,5 +899,77 @@
   </data>
   <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
     <value>Maximum doorzichtigheid (%):</value>
+  </data>
+  <data name="formConfigureKinogram_CropSize" xml:space="preserve">
+    <value>Bijsnij grootte:</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveNextSplit" xml:space="preserve">
+    <value>Verplaats het volgende splitspunt naar dit frame</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveCurrentEnd" xml:space="preserve">
+    <value>Verplaats het einde van de huidige tijdsectie naar dit frame</value>
+  </data>
+  <data name="dlgCalibratePlane_HelpPlane" xml:space="preserve">
+    <value>Voer de lengte van elke zijde in.</value>
+  </data>
+  <data name="formConfigureExport_SBS" xml:space="preserve">
+    <value>Zij aan zij exporteren</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
+    <value>Toon best passende cirkel</value>
+  </data>
+  <data name="lblConfig_ImageSize" xml:space="preserve">
+    <value>Afbeeldingsgrootte:</value>
+  </data>
+  <data name="formConfigureExport_ImageSequence" xml:space="preserve">
+    <value>Afbeeldingsreeks exporteren</value>
+  </data>
+  <data name="formConfigureKinogram_lblTotal" xml:space="preserve">
+    <value>Frames: {0}</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveNextStart" xml:space="preserve">
+    <value>Verplaats het begin van de volgende sectie naar dit frame</value>
+  </data>
+  <data name="mnuAction_Chrono_DeleteSection" xml:space="preserve">
+    <value>Verwijder het huidige tijdgedeelte</value>
+  </data>
+  <data name="dlgCalibratePlane_HelpDistanceGrid" xml:space="preserve">
+    <value>Voer voor elke markering de afstand vanaf de oorsprong in.</value>
+  </data>
+  <data name="filterName_Analysis" xml:space="preserve">
+    <value>Analyse</value>
+  </data>
+  <data name="formConfigureExport_SBS_Horizontal" xml:space="preserve">
+    <value>Horizontaal</value>
+  </data>
+  <data name="formConfigureKinogram_lblFrameInterval" xml:space="preserve">
+    <value>Frame-interval: {0:0.000} ms</value>
+  </data>
+  <data name="mnuAction_Chrono_MovePrevEnd" xml:space="preserve">
+    <value>Verplaats het einde van de vorige sectie naar dit frame</value>
+  </data>
+  <data name="formConfigureKinogram_Table" xml:space="preserve">
+    <value>Tabel:</value>
+  </data>
+  <data name="mnuAction" xml:space="preserve">
+    <value>Actie</value>
+  </data>
+  <data name="formConfigureExport_SBS_Vertical" xml:space="preserve">
+    <value>Verticaal</value>
+  </data>
+  <data name="formConfigureKinogram_Title" xml:space="preserve">
+    <value>Configureer Kinogram</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveCurrentStart" xml:space="preserve">
+    <value>Verplaats het begin van het huidige tijdgedeelte naar dit frame</value>
+  </data>
+  <data name="dlgCalibratePlane_AveragePixelSize" xml:space="preserve">
+    <value>Gemiddelde pixel grootte: {0}.</value>
+  </data>
+  <data name="mnuAction_Chrono_DeleteTimes" xml:space="preserve">
+    <value>Verwijder alle tijden</value>
+  </data>
+  <data name="Generic_OK" xml:space="preserve">
+    <value>OK</value>
   </data>
 </root>
