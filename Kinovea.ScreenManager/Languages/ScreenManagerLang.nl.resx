@@ -972,4 +972,22 @@
   <data name="Generic_OK" xml:space="preserve">
     <value>OK</value>
   </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Grootte</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>Aflopend</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>Oplopend</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>Naam</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Sorteren op</value>
+  </data>
 </root>
