@@ -481,4 +481,7 @@
   <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
     <value>เวลาว่าง (s):</value>
   </data>
+  <data name="dlgPreferences_Drawings_TabExport" xml:space="preserve">
+    <value>ส่งออก</value>
+  </data>
 </root>
