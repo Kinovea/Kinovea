@@ -529,4 +529,40 @@
   <data name="DrawingName_DistanceHorizontal" xml:space="preserve">
     <value>ระยะทาง (แนวนอน)</value>
   </data>
+  <data name="DrawingName_Curve" xml:space="preserve">
+    <value>โค้ง</value>
+  </data>
+  <data name="DrawingName_Grid" xml:space="preserve">
+    <value>ตาราง</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowVerticalAxis" xml:space="preserve">
+    <value>แสดงแกนแนวตั้ง</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>ขนาด</value>
+  </data>
+  <data name="Error_Capture_FileExists_Title" xml:space="preserve">
+    <value>เขียนทับไฟล์</value>
+  </data>
+  <data name="Error_SaveMovie_Title" xml:space="preserve">
+    <value>Kinovea - ไม่สามารถบันทึกวิดีโอได้ </value>
+  </data>
+  <data name="DrawingName_Trajectory" xml:space="preserve">
+    <value>วิถี</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>ชื่อ</value>
+  </data>
+  <data name="DrawingName_Clock" xml:space="preserve">
+    <value>นาฬิกา</value>
+  </data>
+  <data name="Error_Capture_InvalidFile_Text" xml:space="preserve">
+    <value>ชื่อไฟล์มีอักษรต้องห้าม\n ชื่อไฟล์ต้องไม่มีอักษรต่อไปนี้:\n\/ : * ? “ &lt; &gt;</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>วันที่</value>
+  </data>
+  <data name="Error_Capture_InvalidFile_Title" xml:space="preserve">
+    <value>ชื่อไฟล์ไม่ถูกต้อง</value>
+  </data>
 </root>
