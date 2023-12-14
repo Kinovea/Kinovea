@@ -259,4 +259,13 @@
   <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve">
     <value>输入装置:</value>
   </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
+    <value>追溯：捕獲停止時記錄幀。</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve">
+    <value>延遲：記錄延遲的幀。</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
+    <value>觸發閾值：</value>
+  </data>
 </root>
