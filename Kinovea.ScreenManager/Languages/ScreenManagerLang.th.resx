@@ -526,4 +526,7 @@
   <data name="DrawingName_Archery" xml:space="preserve">
     <value>ยิงธนู</value>
   </data>
+  <data name="DrawingName_DistanceHorizontal" xml:space="preserve">
+    <value>ระยะทาง (แนวนอน)</value>
+  </data>
 </root>
