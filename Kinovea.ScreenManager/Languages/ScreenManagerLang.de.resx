@@ -1109,4 +1109,7 @@
   <data name="mnuSortBy" xml:space="preserve">
     <value>Sortiert nach</value>
   </data>
+  <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
+    <value>Den bestpassenden Kreis anzeigen</value>
+  </data>
 </root>
