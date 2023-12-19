@@ -436,4 +436,40 @@
   <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve">
     <value>Bild-Sequenzen als Videos importieren</value>
   </data>
+  <data name="dlgPreferences_Drawings_TabExport" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportCalibrated" xml:space="preserve">
+    <value>Kalibrierte Messungen</value>
+  </data>
+  <data name="dlgPreferences_General_PathToPandoc" xml:space="preserve">
+    <value>Pfad zu pandoc:</value>
+  </data>
+  <data name="dlgWorkspace_Title" xml:space="preserve">
+    <value>Arbeitsberecih</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVDelimiter" xml:space="preserve">
+    <value>Dezimalteilungszeichen für CSV-Dateien:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVComma" xml:space="preserve">
+    <value>Komma</value>
+  </data>
+  <data name="dlgPreferences_Drawing_CSVSystem" xml:space="preserve">
+    <value>System ({0})</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportPixels" xml:space="preserve">
+    <value>Pixel</value>
+  </data>
+  <data name="dlgPreferences_Capture_TriggerAction" xml:space="preserve">
+    <value>Auslösende Aktion:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportSpace" xml:space="preserve">
+    <value>Exportmodus:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVPoint" xml:space="preserve">
+    <value>Punkt</value>
+  </data>
+  <data name="dlgWorkspace_ConfirmationMessage" xml:space="preserve">
+    <value>Standardarbeitsbereich gespeichert.</value>
+  </data>
 </root>
