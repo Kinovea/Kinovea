@@ -162,10 +162,10 @@
     <value>自动化</value>
   </data>
   <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve">
-    <value>替换帧率（帧率）：</value>
+    <value>替换帧率（fps）：</value>
   </data>
   <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve">
-    <value>帧率替换阈值（帧率）：</value>
+    <value>帧率替换阈值（fps）：</value>
   </data>
   <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
     <value>高速摄像机</value>
@@ -195,16 +195,16 @@
     <value>日期（年月日）</value>
   </data>
   <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
-    <value>捕获的文件名</value>
+    <value>采集的文件名</value>
   </data>
   <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
-    <value>捕获目录</value>
+    <value>采集目录</value>
   </data>
   <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
     <value>转义序列</value>
   </data>
   <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
-    <value>接收帧率</value>
+    <value>接收的帧率</value>
   </data>
   <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
     <value>配置的帧率</value>
@@ -447,7 +447,7 @@
     <value>为延迟缓冲区分配的内存：{0} MB。</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
-    <value>追溯：在捕获停止时记录帧。</value>
+    <value>追溯：在采集停止时记录帧。</value>
   </data>
   <data name="dlgPreferences_General_PathToPandoc" xml:space="preserve">
     <value>pandoc的路经：</value>
