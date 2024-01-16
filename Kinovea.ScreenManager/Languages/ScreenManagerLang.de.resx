@@ -284,7 +284,7 @@
   </data>
   <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Als Tabelle exportieren</value>
   </data>
-  <data name="mnuFormat" xml:space="preserve"><value>Bildformat</value>
+  <data name="mnuFormat" xml:space="preserve"><value>Seitenverhältnis</value>
   </data>
   <data name="mnuFormatAuto" xml:space="preserve"><value>Automatische Erkennung</value>
   </data>
@@ -609,7 +609,7 @@
     <value>Keine Drehung</value>
   </data>
   <data name="mnuRotation" xml:space="preserve">
-    <value>Bilddrehung</value>
+    <value>Drehung</value>
   </data>
   <data name="mnuDrawingTrackingStop" xml:space="preserve">
     <value>Tracking anhalten</value>
@@ -1108,5 +1108,14 @@
   </data>
   <data name="mnuSortBy" xml:space="preserve">
     <value>Sortiert nach</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
+    <value>Den bestpassenden Kreis anzeigen</value>
+  </data>
+  <data name="dlgCalibratePlane_HelpDistanceGrid" xml:space="preserve">
+    <value>Bitte geben Sie die Distanzen vom Ursprung zur jeweiligen Markierung an.</value>
+  </data>
+  <data name="dlgCalibratePlane_AveragePixelSize" xml:space="preserve">
+    <value>Durschnittliche Pixelgröße: {0}.</value>
   </data>
 </root>

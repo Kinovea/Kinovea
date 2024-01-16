@@ -162,10 +162,10 @@
     <value>自动化</value>
   </data>
   <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve">
-    <value>替换帧率（帧率）：</value>
+    <value>替换帧率（fps）：</value>
   </data>
   <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve">
-    <value>帧率替换阈值（帧率）：</value>
+    <value>帧率替换阈值（fps）：</value>
   </data>
   <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
     <value>高速摄像机</value>
@@ -195,16 +195,16 @@
     <value>日期（年月日）</value>
   </data>
   <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
-    <value>捕获的文件名</value>
+    <value>采集的文件名</value>
   </data>
   <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
-    <value>捕获目录</value>
+    <value>采集目录</value>
   </data>
   <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
     <value>转义序列</value>
   </data>
   <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
-    <value>接收帧率</value>
+    <value>接收的帧率</value>
   </data>
   <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
     <value>配置的帧率</value>
@@ -447,6 +447,42 @@
     <value>为延迟缓冲区分配的内存：{0} MB。</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
-    <value>追溯：在捕获停止时记录帧。</value>
+    <value>追溯：在采集停止时记录帧。</value>
+  </data>
+  <data name="dlgPreferences_General_PathToPandoc" xml:space="preserve">
+    <value>pandoc的路经：</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVComma" xml:space="preserve">
+    <value>逗号</value>
+  </data>
+  <data name="dlgPreferences_Drawings_TabExport" xml:space="preserve">
+    <value>出口</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportCalibrated" xml:space="preserve">
+    <value>校准测量</value>
+  </data>
+  <data name="dlgWorkspace_Title" xml:space="preserve">
+    <value>工作区</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVDelimiter" xml:space="preserve">
+    <value>CSV文件的小数分隔符：</value>
+  </data>
+  <data name="dlgPreferences_Drawing_CSVSystem" xml:space="preserve">
+    <value>系统({0})</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportPixels" xml:space="preserve">
+    <value>像素</value>
+  </data>
+  <data name="dlgPreferences_Capture_TriggerAction" xml:space="preserve">
+    <value>触发动作：</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportSpace" xml:space="preserve">
+    <value>导出模式：</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVPoint" xml:space="preserve">
+    <value>指向</value>
+  </data>
+  <data name="dlgWorkspace_ConfirmationMessage" xml:space="preserve">
+    <value>已保存默认工作区。</value>
   </data>
 </root>

@@ -118,4 +118,13 @@
   <data name="lblCaptureHistory" xml:space="preserve">
     <value>บันทึกประวัติศาสตร์</value>
   </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>ขนาด</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>ชื่อ</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>วันที่</value>
+  </data>
 </root>
