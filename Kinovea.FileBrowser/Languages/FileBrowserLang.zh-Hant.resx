@@ -118,4 +118,16 @@
   <data name="FormCameraWizard_Create" xml:space="preserve">
     <value>建立攝影鏡頭</value>
   </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>排序</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>日期</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>姓名</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>尺寸</value>
+  </data>
 </root>
