@@ -205,4 +205,43 @@
   <data name="Generic_Quit" xml:space="preserve">
     <value>結束</value>
   </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>排序</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>日期</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>姓名</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>尺寸</value>
+  </data>
+  <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
+    <value>散布圖</value>
+  </data>
+  <data name="DataAnalysis_AngularKinematics" xml:space="preserve">
+    <value>角運動學</value>
+  </data>
+  <data name="DataAnalysis_PagePlot" xml:space="preserve">
+    <value>繪圖</value>
+  </data>
+  <data name="DataAnalysis_Labels" xml:space="preserve">
+    <value>標記</value>
+  </data>
+  <data name="DataAnalysis_Title" xml:space="preserve">
+    <value>標題：</value>
+  </data>
+  <data name="DataAnalysis_CalibrationPlane" xml:space="preserve">
+    <value>校正平面</value>
+  </data>
+  <data name="DataAnalysis_TotalAngularDisplacement" xml:space="preserve">
+    <value>總位移</value>
+  </data>
+  <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve">
+    <value>移除關鍵影格</value>
+  </data>
+  <data name="DataAnalysis_LinearKinematics" xml:space="preserve">
+    <value>線性運動學</value>
+  </data>
 </root>

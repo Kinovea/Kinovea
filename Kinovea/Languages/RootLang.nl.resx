@@ -386,4 +386,7 @@
   <data name="dlgWorkspace_ConfirmationMessage" xml:space="preserve">
     <value>Standaard werkruimte opgeslagen.</value>
   </data>
+  <data name="dlgPreferences_Capture_TriggerAction" xml:space="preserve">
+    <value>Activeer actie:</value>
+  </data>
 </root>
