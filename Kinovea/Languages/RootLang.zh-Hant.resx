@@ -83,10 +83,10 @@
     <value>年</value>
   </data>
   <data name="dlgPreferences_Capture_File" xml:space="preserve">
-    <value>檔案:</value>
+    <value>檔案：</value>
   </data>
   <data name="dlgPreferences_tabPlayback" xml:space="preserve">
-    <value>回放</value>
+    <value>播放</value>
   </data>
   <data name="dlgPreferences_tabKeyboard" xml:space="preserve">
     <value>鍵盤</value>
@@ -95,7 +95,7 @@
     <value>同時開多個Kinovea</value>
   </data>
   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
-    <value>顯示的FPS:</value>
+    <value>顯示擷取幀率:</value>
   </data>
   <data name="dlgPreferences_Capture_Right" xml:space="preserve">
     <value>右</value>
@@ -176,19 +176,19 @@
     <value>圖片名稱</value>
   </data>
   <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve">
-    <value>影像名稱</value>
+    <value>影片名稱</value>
   </data>
   <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve">
-    <value>圖片格式:</value>
+    <value>影像格式：</value>
   </data>
   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve">
-    <value>影像格式:</value>
+    <value>影片格式：</value>
   </data>
   <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve">
-    <value>未壓縮影像格式:</value>
+    <value>未壓縮影片格式：</value>
   </data>
   <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve">
-    <value>錄製未壓縮影像</value>
+    <value>錄製未壓縮影片</value>
   </data>
   <data name="dlgPreferences_Capture_Recording" xml:space="preserve">
     <value>錄製</value>
@@ -197,7 +197,7 @@
     <value>錄製模式與延遲</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
-    <value>攝影機:紀錄即時幀數.</value>
+    <value>攝影機：紀錄即時幀數。</value>
   </data>
   <data name="dlgAbout_Translation" xml:space="preserve">
     <value>翻譯</value>
@@ -218,19 +218,19 @@
     <value>離開序列</value>
   </data>
   <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
-    <value>捕抓目錄</value>
+    <value>擷取目錄</value>
   </data>
   <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
-    <value>捕抓檔名</value>
+    <value>擷取檔名</value>
   </data>
   <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
-    <value>日期(YYYYMMDD)</value>
+    <value>日期（YYYYMMDD）</value>
   </data>
   <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
-    <value>時間(HHMMSS)</value>
+    <value>時間（HHMMSS）</value>
   </data>
   <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
-    <value>日期及時間(YYYYMMDD-HHMMSS)</value>
+    <value>日期及時間（YYYYMMDD-HHMMSS）</value>
   </data>
   <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
     <value>內容變數</value>
@@ -254,18 +254,81 @@
     <value>自動化</value>
   </data>
   <data name="dlgPreferences_Capture_chkEnableAudioTrigger" xml:space="preserve">
-    <value>致能聲音觸發</value>
+    <value>啟動聲音觸發</value>
   </data>
   <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve">
-    <value>输入装置:</value>
+    <value>輸入装置：</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
-    <value>追溯：捕獲停止時記錄幀。</value>
+    <value>回溯：當拍攝結束時紀錄影格。</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve">
-    <value>延遲：記錄延遲的幀。</value>
+    <value>延遲：記錄延遲的影格。</value>
   </data>
   <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
     <value>觸發閾值：</value>
+  </data>
+  <data name="dlgPreferences_Title" xml:space="preserve">
+    <value>偏好設定</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitTime" xml:space="preserve">
+    <value>時間：</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsSpeed" xml:space="preserve">
+    <value>速度：</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAcceleration" xml:space="preserve">
+    <value>加速度：</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngle" xml:space="preserve">
+    <value>角度：</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngularVelocity" xml:space="preserve">
+    <value>角速度：</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
+    <value>設定長度停止錄影（秒）：</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
+    <value>完成錄影後指令：</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve">
+    <value>當影片播放時顯示繪圖</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve">
+    <value>啟動座標濾波器</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve">
+    <value>啟動客製化工具除錯模式</value>
+  </data>
+  <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve">
+    <value>預設新繪圖透明度：</value>
+  </data>
+  <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve">
+    <value>整個影片皆可見</value>
+  </data>
+  <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve">
+    <value>載入影像序列為影片</value>
+  </data>
+  <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve">
+    <value>開啟新影片時，使用去交錯模式</value>
+  </data>
+  <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve">
+    <value>在時間游標移動時更新影像</value>
+  </data>
+  <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve">
+    <value>當比較影片時，連結速度滑動塊</value>
+  </data>
+  <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve">
+    <value>歷史文件數量：</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
+    <value>閒置時間（秒）：</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngularAcceleration" xml:space="preserve">
+    <value>角加速度：</value>
+  </data>
+  <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
+    <value>預設標記檔案：</value>
   </data>
 </root>
