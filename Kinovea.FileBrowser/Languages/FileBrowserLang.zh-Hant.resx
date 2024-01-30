@@ -89,7 +89,7 @@
     <value>存至Windows資料夾 </value>
   </data>
   <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
-    <value>開啟重播資料夾</value>
+    <value>開啟為重播資料夾</value>
   </data>
   <data name="ForgetCustomSettings" xml:space="preserve">
     <value>放棄自訂選項</value>
@@ -101,7 +101,7 @@
     <value>瀏覽器</value>
   </data>
   <data name="tabShortcuts" xml:space="preserve">
-    <value>捷徑項</value>
+    <value>捷徑</value>
   </data>
   <data name="FormCameraWizard_Title" xml:space="preserve">
     <value>手動連接</value>
@@ -129,5 +129,11 @@
   </data>
   <data name="mnuSortBy_Size" xml:space="preserve">
     <value>尺寸</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>升冪</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>降冪</value>
   </data>
 </root>
