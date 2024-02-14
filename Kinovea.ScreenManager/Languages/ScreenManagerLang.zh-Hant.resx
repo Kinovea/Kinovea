@@ -403,4 +403,91 @@
   <data name="DataAnalysis_AngleAngleDiagrams" xml:space="preserve">
     <value>角度-角度圖</value>
   </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve">
+    <value>總距離</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_DistanceToOrigin" xml:space="preserve">
+    <value>與原點距離</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement" xml:space="preserve">
+    <value>相對水平位移</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalVerticalDisplacement" xml:space="preserve">
+    <value>相對垂直位移</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve">
+    <value>速度</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalVelocity" xml:space="preserve">
+    <value>垂直速度</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalVelocity" xml:space="preserve">
+    <value>水平速度</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Acceleration" xml:space="preserve">
+    <value>加速度</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalAcceleration" xml:space="preserve">
+    <value>垂直加速度</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
+    <value>水平加速度</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
+    <value>角位移</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
+    <value>角速度</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularAcceleration" xml:space="preserve">
+    <value>角加速度</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_CentripetalAcceleration" xml:space="preserve">
+    <value>向心加速度</value>
+  </data>
+  <data name="ExtraData_Center" xml:space="preserve">
+    <value>中心</value>
+  </data>
+  <data name="ExtraData_Radius" xml:space="preserve">
+    <value>半徑</value>
+  </data>
+  <data name="ExtraData_Diameter" xml:space="preserve">
+    <value>直徑</value>
+  </data>
+  <data name="ExtraData_Circumference" xml:space="preserve">
+    <value>圓周</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
+    <value>追蹤</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve">
+    <value>物件視窗：</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
+    <value>搜尋視窗：</value>
+  </data>
+  <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve">
+    <value>節段實際尺寸：</value>
+  </data>
+  <data name="dlgCalibrateLine_Title" xml:space="preserve">
+    <value>線校正</value>
+  </data>
+  <data name="dlgCalibrateLine_CoordinateSystemAlignment" xml:space="preserve">
+    <value>座標系統對齊：</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisVertical" xml:space="preserve">
+    <value>此線用於定義垂直軸</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisHorizontal" xml:space="preserve">
+    <value>此線用於定義水平軸</value>
+  </data>
+  <data name="dlgCalibrateLine_AxesImage" xml:space="preserve">
+    <value>與影像軸線對齊</value>
+  </data>
+  <data name="dlgCalibratePlane_Title" xml:space="preserve">
+    <value>平面校正</value>
+  </data>
+  <data name="ExtraData_Length" xml:space="preserve">
+    <value>長度</value>
+  </data>
 </root>
