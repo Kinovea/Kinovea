@@ -71,7 +71,7 @@
     <value>裝載使用者介面…</value>
   </data>
   <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
-    <value>目標視窗:</value>
+    <value>目標視窗：</value>
   </data>
   <data name="mnuTimeFormat" xml:space="preserve">
     <value>時間</value>
@@ -149,10 +149,10 @@
     <value>百分比</value>
   </data>
   <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
-    <value>搜尋視窗:</value>
+    <value>搜尋視窗：</value>
   </data>
   <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
-    <value>預設跟蹤規範</value>
+    <value>預設跟蹤參數</value>
   </data>
   <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
     <value>跟蹤</value>
@@ -330,5 +330,59 @@
   </data>
   <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
     <value>預設標記檔案：</value>
+  </data>
+  <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve">
+    <value>公尺/秒({0})</value>
+  </data>
+  <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve">
+    <value>公里/小時({0})</value>
+  </data>
+  <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve">
+    <value>呎/秒({0})</value>
+  </data>
+  <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve">
+    <value>英哩/小時({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsMetersPerSecondSquared" xml:space="preserve">
+    <value>公尺/平方秒 ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsFeetPerSecondSquared" xml:space="preserve">
+    <value>英呎/平方秒 ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRevolutionsPerMinute" xml:space="preserve">
+    <value>轉速/分鐘 ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegreesPerSecondSquared" xml:space="preserve">
+    <value>度/平方秒({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadiansPerSecond" xml:space="preserve">
+    <value>弧度/秒 ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadiansPerSecondSquared" xml:space="preserve">
+    <value>弧度/平方秒({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve">
+    <value>預設長寬比：</value>
+  </data>
+  <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve">
+    <value>語言：</value>
+  </data>
+  <data name="dlgPreferences_Player_lblMemory" xml:space="preserve">
+    <value>暫存記憶體用於每個播放螢幕： {0} MB。</value>
+  </data>
+  <data name="dlgPreferences_Player_tabUnits" xml:space="preserve">
+    <value>單位</value>
+  </data>
+  <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve">
+    <value>實例擁有其自身的偏好</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegrees" xml:space="preserve">
+    <value>度({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadians" xml:space="preserve">
+    <value>弧度 ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegreesPerSecond" xml:space="preserve">
+    <value>度/秒({0})</value>
   </data>
 </root>
