@@ -436,4 +436,10 @@
   <data name="dlgAbout_Translation" xml:space="preserve">
     <value>Traducere</value>
   </data>
+  <data name="dlgPreferences_Drawings_CSVPoint" xml:space="preserve">
+    <value>Punct</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVComma" xml:space="preserve">
+    <value>Virgulă</value>
+  </data>
 </root>
