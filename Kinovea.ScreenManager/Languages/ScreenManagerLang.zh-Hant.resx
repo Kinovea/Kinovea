@@ -244,4 +244,250 @@
   <data name="DataAnalysis_LinearKinematics" xml:space="preserve">
     <value>線性運動學</value>
   </data>
+  <data name="mnuLensCalibration" xml:space="preserve">
+    <value>鏡頭校正…</value>
+  </data>
+  <data name="mnuOptions_Trajectory_Interactive" xml:space="preserve">
+    <value>互動式追蹤</value>
+  </data>
+  <data name="mnuOptions_Kinogram_ShowBorder" xml:space="preserve">
+    <value>顯示邊緣</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>降冪</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowHorizontalAxis" xml:space="preserve">
+    <value>顯示水平軸</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowThirds" xml:space="preserve">
+    <value>顯示3x3網格</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowFrame" xml:space="preserve">
+    <value>顯示影格</value>
+  </data>
+  <data name="mnuTimeCalibration" xml:space="preserve">
+    <value>時間校正…</value>
+  </data>
+  <data name="dlgTimebase_InfoCapture" xml:space="preserve">
+    <value>此選項定義了影片速度及實際速度的差異。這會影響包含時間及運動學量測的標記。當你的影片是高速模式時，請使用這個選項。 </value>
+  </data>
+  <data name="dlgTimebase_lblFileFPS" xml:space="preserve">
+    <value>檔案影格幀率： {0:0.##} fps</value>
+  </data>
+  <data name="dlgTimebase_lblUserFPS" xml:space="preserve">
+    <value>影片幀率：</value>
+  </data>
+  <data name="dlgTimebase_InfoUser" xml:space="preserve">
+    <value>此選項定義了Kinovea影格頻率，用於播放影片。當你的影片包含了錯誤的影格頻率或Kinovea無法讀取時，使用這個選項。 </value>
+  </data>
+  <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve">
+    <value>重設</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
+    <value>設定軌跡工具</value>
+  </data>
+  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
+    <value>標記點：</value>
+  </data>
+  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
+    <value>交叉</value>
+  </data>
+  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
+    <value>圓</value>
+  </data>
+  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
+    <value>目標</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
+    <value>顯示最佳擬合圓</value>
+  </data>
+  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
+    <value>量測：</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
+    <value>無</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
+    <value>位置</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalPosition" xml:space="preserve">
+    <value>垂直位置</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalPosition" xml:space="preserve">
+    <value>水平位置</value>
+  </data>
+  <data name="mnuExport_Video_Video" xml:space="preserve">
+    <value>影片…</value>
+  </data>
+  <data name="mnuExport_Video_WithPauses" xml:space="preserve">
+    <value>影片包含停頓…</value>
+  </data>
+  <data name="mnuMeasure_Label_Menu" xml:space="preserve">
+    <value>標記</value>
+  </data>
+  <data name="mnuMeasure_Stopwatch" xml:space="preserve">
+    <value>碼表</value>
+  </data>
+  <data name="mnuMeasure_Name" xml:space="preserve">
+    <value>名字</value>
+  </data>
+  <data name="mnuMeasure_Labels_Menu" xml:space="preserve">
+    <value>標記</value>
+  </data>
+  <data name="mnuMeasure_FrameNumber" xml:space="preserve">
+    <value>影格數</value>
+  </data>
+  <data name="mnuMeasure_Clock" xml:space="preserve">
+    <value>時鐘</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Tag" xml:space="preserve">
+    <value>標注</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Menu" xml:space="preserve">
+    <value>欄</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Cumul" xml:space="preserve">
+    <value>累計時間</value>
+  </data>
+  <data name="mnuMagnifierUnfreeze" xml:space="preserve">
+    <value>解除凍結</value>
+  </data>
+  <data name="mnuMagnifierFreeze" xml:space="preserve">
+    <value>凍結</value>
+  </data>
+  <data name="mnuOptions_Trajectory_SeeFuture" xml:space="preserve">
+    <value>詳見未來</value>
+  </data>
+  <data name="mnuOptions_Kinogram_RightToLeft" xml:space="preserve">
+    <value>從右到左</value>
+  </data>
+  <data name="mnuOptions_Kinogram_AutoInterpolate" xml:space="preserve">
+    <value>自動內插</value>
+  </data>
+  <data name="mnuOptions_Chrono_Locked" xml:space="preserve">
+    <value>鎖定</value>
+  </data>
+  <data name="mnuMeasure_Label_None" xml:space="preserve">
+    <value>沒有</value>
+  </data>
+  <data name="mnuProperties" xml:space="preserve">
+    <value>特性</value>
+  </data>
+  <data name="mnuOptions_Trajectory_UseKeyImageColors" xml:space="preserve">
+    <value>使用關鍵影像顏色</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowTrackLabel" xml:space="preserve">
+    <value>顯示追蹤標記</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowKeyImageLabels" xml:space="preserve">
+    <value>顯示關鍵影像標記</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>升冪</value>
+  </data>
+  <data name="mnuThumbnails" xml:space="preserve">
+    <value>縮圖</value>
+  </data>
+  <data name="mnuOptions_CoordinateSystem_ShowGrid" xml:space="preserve">
+    <value>顯示格線</value>
+  </data>
+  <data name="toolTip_Speed" xml:space="preserve">
+    <value>速度</value>
+  </data>
+  <data name="mnuTimeSections" xml:space="preserve">
+    <value>時間區塊</value>
+  </data>
+  <data name="mnuThumbnail_MoveToCurrentTime" xml:space="preserve">
+    <value>移動到目前時間</value>
+  </data>
+  <data name="DataAnalysis_AngleAngleDiagrams" xml:space="preserve">
+    <value>角度-角度圖</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve">
+    <value>總距離</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_DistanceToOrigin" xml:space="preserve">
+    <value>與原點距離</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement" xml:space="preserve">
+    <value>相對水平位移</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalVerticalDisplacement" xml:space="preserve">
+    <value>相對垂直位移</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve">
+    <value>速度</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalVelocity" xml:space="preserve">
+    <value>垂直速度</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalVelocity" xml:space="preserve">
+    <value>水平速度</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Acceleration" xml:space="preserve">
+    <value>加速度</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalAcceleration" xml:space="preserve">
+    <value>垂直加速度</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
+    <value>水平加速度</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
+    <value>角位移</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
+    <value>角速度</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularAcceleration" xml:space="preserve">
+    <value>角加速度</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_CentripetalAcceleration" xml:space="preserve">
+    <value>向心加速度</value>
+  </data>
+  <data name="ExtraData_Center" xml:space="preserve">
+    <value>中心</value>
+  </data>
+  <data name="ExtraData_Radius" xml:space="preserve">
+    <value>半徑</value>
+  </data>
+  <data name="ExtraData_Diameter" xml:space="preserve">
+    <value>直徑</value>
+  </data>
+  <data name="ExtraData_Circumference" xml:space="preserve">
+    <value>圓周</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
+    <value>追蹤</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve">
+    <value>物件視窗：</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
+    <value>搜尋視窗：</value>
+  </data>
+  <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve">
+    <value>節段實際尺寸：</value>
+  </data>
+  <data name="dlgCalibrateLine_Title" xml:space="preserve">
+    <value>線校正</value>
+  </data>
+  <data name="dlgCalibrateLine_CoordinateSystemAlignment" xml:space="preserve">
+    <value>座標系統對齊：</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisVertical" xml:space="preserve">
+    <value>此線用於定義垂直軸</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisHorizontal" xml:space="preserve">
+    <value>此線用於定義水平軸</value>
+  </data>
+  <data name="dlgCalibrateLine_AxesImage" xml:space="preserve">
+    <value>與影像軸線對齊</value>
+  </data>
+  <data name="dlgCalibratePlane_Title" xml:space="preserve">
+    <value>平面校正</value>
+  </data>
+  <data name="ExtraData_Length" xml:space="preserve">
+    <value>長度</value>
+  </data>
 </root>
