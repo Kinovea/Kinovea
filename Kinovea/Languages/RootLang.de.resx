@@ -350,7 +350,7 @@
     <value>Kategorien</value>
   </data>
   <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
-    <value>Pixel</value>
+    <value>pixel</value>
   </data>
   <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
     <value>Prozent</value>
@@ -440,16 +440,16 @@
     <value>Export</value>
   </data>
   <data name="dlgPreferences_Drawings_ExportCalibrated" xml:space="preserve">
-    <value>Kalibrierte Messungen</value>
+    <value>Kalibrierte Abmessungen</value>
   </data>
   <data name="dlgPreferences_General_PathToPandoc" xml:space="preserve">
     <value>Pfad zu pandoc:</value>
   </data>
   <data name="dlgWorkspace_Title" xml:space="preserve">
-    <value>Arbeitsberecih</value>
+    <value>Arbeitsbereich</value>
   </data>
   <data name="dlgPreferences_Drawings_CSVDelimiter" xml:space="preserve">
-    <value>Dezimalteilungszeichen für CSV-Dateien:</value>
+    <value>Dezimal-Trennzeichen für CSV-Dateien:</value>
   </data>
   <data name="dlgPreferences_Drawings_CSVComma" xml:space="preserve">
     <value>Komma</value>
@@ -464,7 +464,7 @@
     <value>Auslösende Aktion:</value>
   </data>
   <data name="dlgPreferences_Drawings_ExportSpace" xml:space="preserve">
-    <value>Exportmodus:</value>
+    <value>Exportieren-Modus:</value>
   </data>
   <data name="dlgPreferences_Drawings_CSVPoint" xml:space="preserve">
     <value>Punkt</value>
