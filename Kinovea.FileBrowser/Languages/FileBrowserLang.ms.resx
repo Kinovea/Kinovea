@@ -118,4 +118,22 @@
   <data name="tabShortcuts" xml:space="preserve">
     <value>Pintasan</value>
   </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>Menaik</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>Nama</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Saiz</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>Menurun</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Disusun Mengikut</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Tarikh</value>
+  </data>
 </root>
