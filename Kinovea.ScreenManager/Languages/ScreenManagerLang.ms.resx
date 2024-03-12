@@ -256,4 +256,7 @@
   <data name="dlgTimebase_InfoUser" xml:space="preserve">
     <value>Pilihan ini menentukan kadar gambaran rujukan yang digunakan oleh Kinovea untuk memainkan video. Gunakan apabila video mengandungi kadar gambaran yang salah atau Kinovea tidak dapat membacanya. </value>
   </data>
+  <data name="CommandAddDrawing_FriendlyName" xml:space="preserve">
+    <value>Tambah lukisan</value>
+  </data>
 </root>
