@@ -80,13 +80,13 @@
     <value>Padam pintasan</value>
   </data>
   <data name="mnuVideoLocate" xml:space="preserve">
-    <value>Cari di Windows Explorer </value>
+    <value>Cari di Windows Explorer . </value>
   </data>
   <data name="mnuVideoDelete" xml:space="preserve">
     <value>Padam fail</value>
   </data>
   <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
-    <value>Buka sebagai pemerhati folder main semula</value>
+    <value>Buka sebagai folder pemerhati ulangan</value>
   </data>
   <data name="ForgetCustomSettings" xml:space="preserve">
     <value>Lupa tetapan tersuai</value>
