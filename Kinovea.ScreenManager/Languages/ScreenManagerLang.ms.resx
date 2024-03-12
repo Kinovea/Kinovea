@@ -95,10 +95,10 @@
     <value>Ubah suai lukisan</value>
   </data>
   <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve">
-    <value>Buang lukisan</value>
+    <value>Padam lukisan</value>
   </data>
   <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve">
-    <value>Alih keluar imej utama</value>
+    <value>Padam imej utama</value>
   </data>
   <data name="CommandExportVideo_FriendlyName" xml:space="preserve">
     <value>Eksport video</value>
@@ -258,5 +258,113 @@
   </data>
   <data name="CommandAddDrawing_FriendlyName" xml:space="preserve">
     <value>Tambah lukisan</value>
+  </data>
+  <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve">
+    <value>Set semula</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
+    <value>Konfigurasi alat trajektori</value>
+  </data>
+  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
+    <value>Penanda:</value>
+  </data>
+  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
+    <value>Cross</value>
+  </data>
+  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
+    <value>Bulat</value>
+  </data>
+  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
+    <value>Sasaran</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
+    <value>Tunjukkan bulatan paling sesuai</value>
+  </data>
+  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
+    <value>Ukuran:</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
+    <value>Tiada</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
+    <value>Posisi</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalPosition" xml:space="preserve">
+    <value>Posisi menegak</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve">
+    <value>Jumlah jarak</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_DistanceToOrigin" xml:space="preserve">
+    <value>Jarak ke asal</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement" xml:space="preserve">
+    <value>Anjakan relatif melintang</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalVerticalDisplacement" xml:space="preserve">
+    <value>Anjakan relatif menegak</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve">
+    <value>Kelajuan</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalVelocity" xml:space="preserve">
+    <value>Kelajuan menegak</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Acceleration" xml:space="preserve">
+    <value>Pecutan</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalAcceleration" xml:space="preserve">
+    <value>Pecutan menegak</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
+    <value>Pecutan melintang</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
+    <value>Anjakan bersudut</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
+    <value>Kelajuan sudut</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularAcceleration" xml:space="preserve">
+    <value>Pecutan sudut</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_CentripetalAcceleration" xml:space="preserve">
+    <value>Pecutan sentripetal</value>
+  </data>
+  <data name="ExtraData_Length" xml:space="preserve">
+    <value>Panjang</value>
+  </data>
+  <data name="ExtraData_Center" xml:space="preserve">
+    <value>Tengah</value>
+  </data>
+  <data name="ExtraData_Radius" xml:space="preserve">
+    <value>Jejari</value>
+  </data>
+  <data name="ExtraData_Diameter" xml:space="preserve">
+    <value>Diameter</value>
+  </data>
+  <data name="ExtraData_Circumference" xml:space="preserve">
+    <value>Ukur lilit</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
+    <value>Penjejakan</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve">
+    <value>Tetingkap objek:</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
+    <value>Tetingkap carian:</value>
+  </data>
+  <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve">
+    <value>Saiz sebenar segmen:</value>
+  </data>
+  <data name="dlgCalibrateLine_Title" xml:space="preserve">
+    <value>Garisan kalibrasi</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalPosition" xml:space="preserve">
+    <value>Posisi melintang</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalVelocity" xml:space="preserve">
+    <value>Kelajuan melintang</value>
   </data>
 </root>
