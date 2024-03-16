@@ -95,7 +95,7 @@
     <value>Paparan Kelajuan Frame (fps):</value>
   </data>
   <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve">
-    <value>Benarkan Contoh Pelbagai Kinovea</value>
+    <value>Benarkan contoh pelbagai Kinovea</value>
   </data>
   <data name="dlgPreferences_tabKeyboard" xml:space="preserve">
     <value>Papan Kekunci</value>
@@ -113,7 +113,7 @@
     <value>Tangkap</value>
   </data>
   <data name="dlgAbout_Citation" xml:space="preserve">
-    <value>Petikan</value>
+    <value>Rujukan</value>
   </data>
   <data name="dlgAbout_BuildingBlocks" xml:space="preserve">
     <value>Blok Bangunan</value>
@@ -179,7 +179,7 @@
     <value>Makro</value>
   </data>
   <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve">
-    <value>Memori yang diperuntukkan untuk penampan kelewatan: {0} MB.</value>
+    <value>Memori yang diperuntukkan untuk penangguhan penjana: {0} MB.</value>
   </data>
   <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
     <value>Abai amaran menulis ganti fail</value>
