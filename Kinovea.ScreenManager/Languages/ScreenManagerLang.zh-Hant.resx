@@ -490,4 +490,31 @@
   <data name="ExtraData_Length" xml:space="preserve">
     <value>長度</value>
   </data>
+  <data name="dlgExportSpreadsheet_Title" xml:space="preserve">
+    <value>儲存資料為試算表文件</value>
+  </data>
+  <data name="dlgImportReference_Title" xml:space="preserve">
+    <value>輸入參考影像</value>
+  </data>
+  <data name="dlgKeyframeComment_Title" xml:space="preserve">
+    <value>評論...</value>
+  </data>
+  <data name="dlgLoadAnalysis_Title" xml:space="preserve">
+    <value>讀取標記</value>
+  </data>
+  <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve">
+    <value>總共：{0:0} 影像。</value>
+  </data>
+  <data name="dlgRafaleExport_ExportAll" xml:space="preserve">
+    <value>輸出全部影像。</value>
+  </data>
+  <data name="dlgRafaleExport_ExportFrameDecimation" xml:space="preserve">
+    <value>每隔{0} 影像輸出為一張影像。</value>
+  </data>
+  <data name="dlgRafaleExport_ExportTimeDecimationSeconds" xml:space="preserve">
+    <value>每隔 {0:0.00}秒輸出一張影像。</value>
+  </data>
+  <data name="Generic_Save" xml:space="preserve">
+    <value>儲存</value>
+  </data>
 </root>
