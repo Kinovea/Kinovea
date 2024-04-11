@@ -83,13 +83,13 @@
     <value>播放或停止兩個影片</value>
   </data>
   <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
-    <value>修改圖繪</value>
+    <value>修改繪圖</value>
   </data>
   <data name="CommandAddDrawing_FriendlyName" xml:space="preserve">
-    <value>添加圖繪</value>
+    <value>添加繪圖</value>
   </data>
   <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve">
-    <value>刪除圖繪</value>
+    <value>刪除繪圖</value>
   </data>
   <data name="CommandExportVideo_FriendlyName" xml:space="preserve">
     <value>輸出影片</value>
