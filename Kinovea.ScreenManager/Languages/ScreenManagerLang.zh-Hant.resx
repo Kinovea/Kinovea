@@ -517,4 +517,904 @@
   <data name="Generic_Save" xml:space="preserve">
     <value>儲存</value>
   </data>
+  <data name="mnuCoordinateSystemHide" xml:space="preserve">
+    <value>隱藏</value>
+  </data>
+  <data name="mnuPolyline_FinishHere" xml:space="preserve">
+    <value>在此結束折線</value>
+  </data>
+  <data name="mnuPolyline_FinishAtPrevious" xml:space="preserve">
+    <value>在前一點結束折線</value>
+  </data>
+  <data name="mnuPolyline_CloseMenu" xml:space="preserve">
+    <value>關閉此目錄</value>
+  </data>
+  <data name="mnuCutDrawing" xml:space="preserve">
+    <value>剪下繪圖</value>
+  </data>
+  <data name="mnuCopyDrawing" xml:space="preserve">
+    <value>複製繪圖</value>
+  </data>
+  <data name="statusEmptyScreen" xml:space="preserve">
+    <value>空白檔案</value>
+  </data>
+  <data name="ToolTip_AddKeyframe" xml:space="preserve">
+    <value>添加關鍵影像</value>
+  </data>
+  <data name="ToolTip_Magnifier" xml:space="preserve">
+    <value>放大鏡</value>
+  </data>
+  <data name="ToolTip_Next" xml:space="preserve">
+    <value>轉到下一幀</value>
+  </data>
+  <data name="ToolTip_StartRecording" xml:space="preserve">
+    <value>開始錄製影片</value>
+  </data>
+  <data name="ToolTip_StopRecording" xml:space="preserve">
+    <value>停止錄製影片</value>
+  </data>
+  <data name="ToolTip_SavePausedVideo" xml:space="preserve">
+    <value>輸出影片，在每個關鍵影像上暫停</value>
+  </data>
+  <data name="ToolTip_SetHandlerLeft" xml:space="preserve">
+    <value>將工作區的第一幀設定為目前幀</value>
+  </data>
+  <data name="ToolTip_SetHandlerRight" xml:space="preserve">
+    <value>將工作區的最後一幀設定為目前幀</value>
+  </data>
+  <data name="ToolTip_ShowComments" xml:space="preserve">
+    <value>顯示評論</value>
+  </data>
+  <data name="ToolTip_SideBySideVideo" xml:space="preserve">
+    <value>將兩個影片儲存為一個合成影片</value>
+  </data>
+  <data name="ToolTip_trkSelection" xml:space="preserve">
+    <value>設定工作區</value>
+  </data>
+  <data name="FormCrashRecovery_Title" xml:space="preserve">
+    <value>故障恢復</value>
+  </data>
+  <data name="FormCrashRecovery_Recover" xml:space="preserve">
+    <value>恢復</value>
+  </data>
+  <data name="Infobar_Player_StartWatcher" xml:space="preserve">
+    <value>開始觀察資料夾：{0}</value>
+  </data>
+  <data name="dlgCalibratePlane_HelpPlane" xml:space="preserve">
+    <value>輸入每邊的長度。</value>
+  </data>
+  <data name="mnuAction_Chrono_DeleteTimes" xml:space="preserve">
+    <value>刪除所有時間</value>
+  </data>
+  <data name="mnuAction_Chrono_Start" xml:space="preserve">
+    <value>在此幀開始一個新的時間段</value>
+  </data>
+  <data name="mnuAction_Chrono_Stop" xml:space="preserve">
+    <value>停止：目前時間段在此幀結束</value>
+  </data>
+  <data name="mnuExport_Images_Sequence" xml:space="preserve">
+    <value>影像序列…</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowVerticalAxis" xml:space="preserve">
+    <value>顯示垂直軸</value>
+  </data>
+  <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve">
+    <value>每個關鍵影像的持續時間：{0}百分之一秒。</value>
+  </data>
+  <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve">
+    <value>每個關鍵影像的持續時間：{0:0.00}秒。</value>
+  </data>
+  <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve">
+    <value>每隔{0:0}毫秒輸出一張圖片。</value>
+  </data>
+  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
+    <value>考慮慢動作。 (目前 = </value>
+  </data>
+  <data name="dlgSaveAnalysisTitle" xml:space="preserve">
+    <value>儲存註釋</value>
+  </data>
+  <data name="dlgCameraCalibration_Title" xml:space="preserve">
+    <value>相機校正</value>
+  </data>
+  <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve">
+    <value>變形係數</value>
+  </data>
+  <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
+    <value>相機內部參數</value>
+  </data>
+  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
+    <value>校正相機</value>
+  </data>
+  <data name="DrawingName_ArrowCurve" xml:space="preserve">
+    <value>箭頭 – 曲線</value>
+  </data>
+  <data name="DrawingName_ArrowPolyline" xml:space="preserve">
+    <value>箭頭 – 折線</value>
+  </data>
+  <data name="DrawingName_ArrowPolylineDash" xml:space="preserve">
+    <value>箭頭 – 折線虛線</value>
+  </data>
+  <data name="DrawingName_ArrowPolylineSquiggly" xml:space="preserve">
+    <value>箭頭 – 折線波浪線</value>
+  </data>
+  <data name="DrawingName_CSVL" xml:space="preserve">
+    <value>中央骶骨垂直線</value>
+  </data>
+  <data name="DrawingName_Polyline" xml:space="preserve">
+    <value>折線</value>
+  </data>
+  <data name="DrawingName_DistortionGrid" xml:space="preserve">
+    <value>變形網格</value>
+  </data>
+  <data name="DrawingName_Goniometer" xml:space="preserve">
+    <value>量角器</value>
+  </data>
+  <data name="DrawingName_Posture" xml:space="preserve">
+    <value>姿勢</value>
+  </data>
+  <data name="DrawingName_Bikefit" xml:space="preserve">
+    <value>自行車適配</value>
+  </data>
+  <data name="DrawingName_Genu" xml:space="preserve">
+    <value>膝關節</value>
+  </data>
+  <data name="DrawingName_Archery" xml:space="preserve">
+    <value>射箭</value>
+  </data>
+  <data name="DrawingName_AngleToVertical" xml:space="preserve">
+    <value>與垂直線的角度</value>
+  </data>
+  <data name="DrawingName_AngleToHorizontal" xml:space="preserve">
+    <value>與水平線的角度</value>
+  </data>
+  <data name="DrawingName_DistanceHorizontal" xml:space="preserve">
+    <value>距離（水平）</value>
+  </data>
+  <data name="DrawingName_HumanModel" xml:space="preserve">
+    <value>人體模型</value>
+  </data>
+  <data name="DrawingName_HumanModel2" xml:space="preserve">
+    <value>人體模型（2）</value>
+  </data>
+  <data name="DrawingName_TestGrid" xml:space="preserve">
+    <value>相機測試網格</value>
+  </data>
+  <data name="DrawingName_Grid" xml:space="preserve">
+    <value>網格</value>
+  </data>
+  <data name="DrawingName_PerspectiveGrid" xml:space="preserve">
+    <value>透視網格</value>
+  </data>
+  <data name="DrawingName_Rectangle" xml:space="preserve">
+    <value>矩形</value>
+  </data>
+  <data name="DrawingName_Trajectory" xml:space="preserve">
+    <value>軌跡</value>
+  </data>
+  <data name="DrawingName_Curve" xml:space="preserve">
+    <value>曲線</value>
+  </data>
+  <data name="DrawingName_Clock" xml:space="preserve">
+    <value>時鐘</value>
+  </data>
+  <data name="Error_Capture_FileExists_Title" xml:space="preserve">
+    <value>文件覆寫</value>
+  </data>
+  <data name="Error_Capture_InvalidFile_Title" xml:space="preserve">
+    <value>文件名無效</value>
+  </data>
+  <data name="Error_Capture_InvalidFile_Text" xml:space="preserve">
+    <value>文件名包含無效字符。\n 文件名不能包含以下任何字符：\n \ / : * ? "" &lt; &gt;</value>
+  </data>
+  <data name="Error_Capture_DirectoryNotCreated_Title" xml:space="preserve">
+    <value>資料夾未建立</value>
+  </data>
+  <data name="Error_Capture_DirectoryNotCreated_Text" xml:space="preserve">
+    <value>無法建立擷取資料夾。\n檢查它是否指向有效的儲存位置。</value>
+  </data>
+  <data name="Error_SaveMovie_Title" xml:space="preserve">
+    <value>Kinovea - 無法儲存影片。 </value>
+  </data>
+  <data name="Error_SaveMovie_LowLevelError" xml:space="preserve">
+    <value>無法儲存影片。\n嘗試使用不同的格式再試一次。</value>
+  </data>
+  <data name="FormCameraAlias_Title" xml:space="preserve">
+    <value>重新命名相機</value>
+  </data>
+  <data name="FormCameraAlias_Alias" xml:space="preserve">
+    <value>別名：</value>
+  </data>
+  <data name="FormCameraAlias_Icon" xml:space="preserve">
+    <value>小圖示：</value>
+  </data>
+  <data name="FormFileSave_Infos" xml:space="preserve">
+    <value>進度：</value>
+  </data>
+  <data name="FormProgressBar_Title" xml:space="preserve">
+    <value>進度</value>
+  </data>
+  <data name="Generic_Appearance" xml:space="preserve">
+    <value>外觀</value>
+  </data>
+  <data name="Generic_ArrowPicker" xml:space="preserve">
+    <value>箭頭：</value>
+  </data>
+  <data name="Generic_Curved" xml:space="preserve">
+    <value>曲線：</value>
+  </data>
+  <data name="Generic_Perspective" xml:space="preserve">
+    <value>透視：</value>
+  </data>
+  <data name="Generic_Clock" xml:space="preserve">
+    <value>時鐘：</value>
+  </data>
+  <data name="Generic_Close" xml:space="preserve">
+    <value>關閉</value>
+  </data>
+  <data name="Generic_ColorPicker" xml:space="preserve">
+    <value>顏色：</value>
+  </data>
+  <data name="Generic_Configuration" xml:space="preserve">
+    <value>設定</value>
+  </data>
+  <data name="Generic_ConfigurationElipsis" xml:space="preserve">
+    <value>設定...</value>
+  </data>
+  <data name="Generic_Calibration" xml:space="preserve">
+    <value>校正</value>
+  </data>
+  <data name="Generic_GridDivisionsPicker" xml:space="preserve">
+    <value>網格尺寸：</value>
+  </data>
+  <data name="Generic_FontSizePicker" xml:space="preserve">
+    <value>字體大小：</value>
+  </data>
+  <data name="Generic_LineSizePicker" xml:space="preserve">
+    <value>寬度：</value>
+  </data>
+  <data name="Generic_Opacity" xml:space="preserve">
+    <value>不透明度</value>
+  </data>
+  <data name="Generic_Visibility" xml:space="preserve">
+    <value>可見性</value>
+  </data>
+  <data name="Generic_Options" xml:space="preserve">
+    <value>選項</value>
+  </data>
+  <data name="Generic_PenSizePicker" xml:space="preserve">
+    <value>大小：</value>
+  </data>
+  <data name="Generic_SaveKVA" xml:space="preserve">
+    <value>儲存註釋</value>
+  </data>
+  <data name="Generic_ExportVideo" xml:space="preserve">
+    <value>輸出影片…</value>
+  </data>
+  <data name="Generic_TrackShapePicker" xml:space="preserve">
+    <value>線條形狀：</value>
+  </data>
+  <data name="Generic_Image" xml:space="preserve">
+    <value>圖片</value>
+  </data>
+  <data name="Generic_Video" xml:space="preserve">
+    <value>影片</value>
+  </data>
+  <data name="Generic_SaveImage" xml:space="preserve">
+    <value>儲存圖片</value>
+  </data>
+  <data name="Generic_File" xml:space="preserve">
+    <value>文件</value>
+  </data>
+  <data name="Generic_Import" xml:space="preserve">
+    <value>輸入</value>
+  </data>
+  <data name="FileProperty_Size" xml:space="preserve">
+    <value>尺寸</value>
+  </data>
+  <data name="FileProperty_Framerate" xml:space="preserve">
+    <value>幀率</value>
+  </data>
+  <data name="FileProperty_Duration" xml:space="preserve">
+    <value>持續時間</value>
+  </data>
+  <data name="FileProperty_CreationTime" xml:space="preserve">
+    <value>建立時間</value>
+  </data>
+  <data name="FileProperty_HasKva" xml:space="preserve">
+    <value>Kva文件</value>
+  </data>
+  <data name="FileFilter_AllSupported" xml:space="preserve">
+    <value>所有支持的格式</value>
+  </data>
+  <data name="FileFilter_All" xml:space="preserve">
+    <value>所有文件</value>
+  </data>
+  <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve">
+    <value>註釋已被修改。\n您想儲存它們嗎？</value>
+  </data>
+  <data name="lblDelay_Text" xml:space="preserve">
+    <value>延遲（秒）：</value>
+  </data>
+  <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve">
+    <value>儲存變更</value>
+  </data>
+  <data name="lblInfo_Text" xml:space="preserve">
+    <value>關節控制：</value>
+  </data>
+  <data name="lblSelDuration_Text" xml:space="preserve">
+    <value>持續時間</value>
+  </data>
+  <data name="lblSelStartSelection_Text" xml:space="preserve">
+    <value>開始</value>
+  </data>
+  <data name="lblTimeCode_Text" xml:space="preserve">
+    <value>位置</value>
+  </data>
+  <data name="LengthUnit_Millimeters" xml:space="preserve">
+    <value>毫米</value>
+  </data>
+  <data name="LengthUnit_Centimeters" xml:space="preserve">
+    <value>公分</value>
+  </data>
+  <data name="LengthUnit_Meters" xml:space="preserve">
+    <value>公尺</value>
+  </data>
+  <data name="LengthUnit_Inches" xml:space="preserve">
+    <value>英吋</value>
+  </data>
+  <data name="LengthUnit_Feet" xml:space="preserve">
+    <value>英呎</value>
+  </data>
+  <data name="LengthUnit_Yards" xml:space="preserve">
+    <value>碼</value>
+  </data>
+  <data name="LengthUnit_Percentage" xml:space="preserve">
+    <value>百分比</value>
+  </data>
+  <data name="LoadMovie_CodecNotOpened" xml:space="preserve">
+    <value>打開檔案失敗：初始化解碼器時出現問題。</value>
+  </data>
+  <data name="LoadMovie_CodecNotSupported" xml:space="preserve">
+    <value>打開檔案失敗：不支援的檔案類型。</value>
+  </data>
+  <data name="LoadMovie_Error" xml:space="preserve">
+    <value>Kinovea – 讀取錯誤。</value>
+  </data>
+  <data name="LoadMovie_FileNotOpened" xml:space="preserve">
+    <value>打開檔案失敗：檔案未找到或為空白檔案。</value>
+  </data>
+  <data name="LoadMovie_InconsistantMovieError" xml:space="preserve">
+    <value>打開檔案失敗：發現不一致。請檢查編碼過程。</value>
+  </data>
+  <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve">
+    <value>打開檔案失敗：未找到影片串流資訊。</value>
+  </data>
+  <data name="LoadMovie_UnkownError" xml:space="preserve">
+    <value>打開檔案失敗：未知錯誤。</value>
+  </data>
+  <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve">
+    <value>打開檔案失敗：未找到影片串流。</value>
+  </data>
+  <data name="LockSelectionLock" xml:space="preserve">
+    <value>鎖定工作區邊界</value>
+  </data>
+  <data name="LockSelectionUnlock" xml:space="preserve">
+    <value>解鎖工作區邊界</value>
+  </data>
+  <data name="mnuChronoStart" xml:space="preserve">
+    <value>啟動碼表</value>
+  </data>
+  <data name="mnuChronoStop" xml:space="preserve">
+    <value>停止碼表</value>
+  </data>
+  <data name="mnuHideBefore" xml:space="preserve">
+    <value>在此點之前隱藏</value>
+  </data>
+  <data name="mnuShowBefore" xml:space="preserve">
+    <value>在此點之前顯示</value>
+  </data>
+  <data name="mnuHideAfter" xml:space="preserve">
+    <value>在此點之後隱藏</value>
+  </data>
+  <data name="mnuShowAfter" xml:space="preserve">
+    <value>在此點之後顯示</value>
+  </data>
+  <data name="mnuShowLabel" xml:space="preserve">
+    <value>顯示標籤</value>
+  </data>
+  <data name="mnuCloseScreen" xml:space="preserve">
+    <value>關閉此螢幕</value>
+  </data>
+  <data name="mnuCopyToClipboard" xml:space="preserve">
+    <value>複製到剪貼簿</value>
+  </data>
+  <data name="mnuCopyImageToClipboard" xml:space="preserve">
+    <value>將影像複製到剪貼簿</value>
+  </data>
+  <data name="mnuConfigureTrajectory" xml:space="preserve">
+    <value>設定路徑顯示</value>
+  </data>
+  <data name="mnuDeinterlace" xml:space="preserve">
+    <value>去交錯</value>
+  </data>
+  <data name="mnuDeleteDrawing" xml:space="preserve">
+    <value>刪除</value>
+  </data>
+  <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
+    <value>刪除此點之後的路徑</value>
+  </data>
+  <data name="mnuDeleteTrajectory" xml:space="preserve">
+    <value>刪除所有路徑</value>
+  </data>
+  <data name="mnuDrawingTrackingStart" xml:space="preserve">
+    <value>開始追蹤</value>
+  </data>
+  <data name="mnuDrawingTrackingStop" xml:space="preserve">
+    <value>停止追蹤</value>
+  </data>
+  <data name="mnuTwoCaptures" xml:space="preserve">
+    <value>兩個擷取螢幕</value>
+  </data>
+  <data name="mnuTwoMixed" xml:space="preserve">
+    <value>一個擷取螢幕和一個播放螢幕</value>
+  </data>
+  <data name="mnuTwoPlayers" xml:space="preserve">
+    <value>兩個播放螢幕</value>
+  </data>
+  <data name="mnuExportSpreadsheet" xml:space="preserve">
+    <value>輸出到試算表</value>
+  </data>
+  <data name="mnuFormat" xml:space="preserve">
+    <value>畫面比例</value>
+  </data>
+  <data name="mnuFormatAuto" xml:space="preserve">
+    <value>自動偵測</value>
+  </data>
+  <data name="mnuFormatForce43" xml:space="preserve">
+    <value>強制4：3</value>
+  </data>
+  <data name="mnuFormatForce169" xml:space="preserve">
+    <value>強制16：9</value>
+  </data>
+  <data name="mnuRotation" xml:space="preserve">
+    <value>旋轉</value>
+  </data>
+  <data name="mnuRotation0" xml:space="preserve">
+    <value>無旋轉</value>
+  </data>
+  <data name="mnuRotation90" xml:space="preserve">
+    <value>順時針90°</value>
+  </data>
+  <data name="mnuRotation180" xml:space="preserve">
+    <value>180°</value>
+  </data>
+  <data name="mnuRotation270" xml:space="preserve">
+    <value>逆時針90°</value>
+  </data>
+  <data name="mnuGotoKeyframe" xml:space="preserve">
+    <value>轉到關鍵影像</value>
+  </data>
+  <data name="mnuGridsHide" xml:space="preserve">
+    <value>隱藏</value>
+  </data>
+  <data name="mnuHome" xml:space="preserve">
+    <value>瀏覽器面板</value>
+  </data>
+  <data name="mnuImportImage" xml:space="preserve">
+    <value>輸入影像…</value>
+  </data>
+  <data name="mnuSignedAngle" xml:space="preserve">
+    <value>有向角</value>
+  </data>
+  <data name="mnuCounterClockwise" xml:space="preserve">
+    <value>逆時針</value>
+  </data>
+  <data name="mnuSupplementaryAngle" xml:space="preserve">
+    <value>補角</value>
+  </data>
+  <data name="mnuFlipHorizontally" xml:space="preserve">
+    <value>水平翻轉</value>
+  </data>
+  <data name="mnuFlipVertically" xml:space="preserve">
+    <value>垂直翻轉</value>
+  </data>
+  <data name="mnuMarkTimeAsOrigin" xml:space="preserve">
+    <value>將目前時間標記為時間原點</value>
+  </data>
+  <data name="mnuMarkTimeAsOriginClock" xml:space="preserve">
+    <value>將目前時間標記為此時鐘的時間原點</value>
+  </data>
+  <data name="mnuOpenVideo" xml:space="preserve">
+    <value>打開影片…</value>
+  </data>
+  <data name="mnuOpenReplayWatcher" xml:space="preserve">
+    <value>打開重播文件夾觀察者…</value>
+  </data>
+  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
+    <value>作為重播文件夾觀察者打開…</value>
+  </data>
+  <data name="mnuCalibrate" xml:space="preserve">
+    <value>校正...</value>
+  </data>
+  <data name="mnuTimebase" xml:space="preserve">
+    <value>設定影片時段...</value>
+  </data>
+  <data name="mnuSwapScreens" xml:space="preserve">
+    <value>交換螢幕</value>
+  </data>
+  <data name="mnuThumbnailDelete" xml:space="preserve">
+    <value>刪除</value>
+  </data>
+  <data name="mnuThumbnailForget" xml:space="preserve">
+    <value>忘記客製設置</value>
+  </data>
+  <data name="mnuThumbnailRename" xml:space="preserve">
+    <value>重新命名</value>
+  </data>
+  <data name="mnuThumbnailLocate" xml:space="preserve">
+    <value>在Windows瀏覽器中找尋文件</value>
+  </data>
+  <data name="mnuToggleCommonCtrls" xml:space="preserve">
+    <value>顯示/隱藏常用控制項</value>
+  </data>
+  <data name="mnuTrackTrajectory" xml:space="preserve">
+    <value>追蹤路徑</value>
+  </data>
+  <data name="mnuCoordinateSystem" xml:space="preserve">
+    <value>坐標系統</value>
+  </data>
+  <data name="mnuPasteDrawing" xml:space="preserve">
+    <value>貼上繪圖</value>
+  </data>
+  <data name="mnuVisibilityDefault" xml:space="preserve">
+    <value>預設淡出</value>
+  </data>
+  <data name="mnuSetStyleAsDefault" xml:space="preserve">
+    <value>將目前風格設為預設值</value>
+  </data>
+  <data name="mnuVisibilityCustom" xml:space="preserve">
+    <value>客製淡出</value>
+  </data>
+  <data name="mnuVisibilityConfigure" xml:space="preserve">
+    <value>設定客製淡出</value>
+  </data>
+  <data name="mnuPasteImage" xml:space="preserve">
+    <value>從剪貼簿貼上影像</value>
+  </data>
+  <data name="mnuShowCircleCenter" xml:space="preserve">
+    <value>顯示圓心</value>
+  </data>
+  <data name="mnuShowArrow" xml:space="preserve">
+    <value>顯示箭頭</value>
+  </data>
+  <data name="RecentlyUsedColors" xml:space="preserve">
+    <value>最近使用的顏色：</value>
+  </data>
+  <data name="Toast_Pause" xml:space="preserve">
+    <value>暫停</value>
+  </data>
+  <data name="Toast_StartRecord" xml:space="preserve">
+    <value>錄製開始</value>
+  </data>
+  <data name="Toast_StopRecord" xml:space="preserve">
+    <value>錄製停止</value>
+  </data>
+  <data name="Toast_ImageSaved" xml:space="preserve">
+    <value>圖片已儲存</value>
+  </data>
+  <data name="Toast_TriggerArmed" xml:space="preserve">
+    <value>擷取觸發器已啟動</value>
+  </data>
+  <data name="Toast_AudioLost" xml:space="preserve">
+    <value>音訊設備遺失</value>
+  </data>
+  <data name="ToolTip_Back" xml:space="preserve">
+    <value>轉到上一幀</value>
+  </data>
+  <data name="ToolTip_ColorProfile" xml:space="preserve">
+    <value>顏色設定文件</value>
+  </data>
+  <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve">
+    <value>禁用影像疊加</value>
+  </data>
+  <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve">
+    <value>啟用影像疊加</value>
+  </data>
+  <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve">
+    <value>角度</value>
+  </data>
+  <data name="ToolTip_DrawingToolChrono" xml:space="preserve">
+    <value>碼表</value>
+  </data>
+  <data name="ToolTip_DrawingToolCircle" xml:space="preserve">
+    <value>圓形</value>
+  </data>
+  <data name="ToolTip_DrawingToolCross2D" xml:space="preserve">
+    <value>標記</value>
+  </data>
+  <data name="ToolTip_DrawingToolPencil" xml:space="preserve">
+    <value>鉛筆</value>
+  </data>
+  <data name="ToolTip_DrawingToolPointer" xml:space="preserve">
+    <value>移動</value>
+  </data>
+  <data name="ToolTip_DrawingToolText" xml:space="preserve">
+    <value>文字</value>
+  </data>
+  <data name="ToolTip_DrawingToolSpotlight" xml:space="preserve">
+    <value>聚光燈</value>
+  </data>
+  <data name="ToolTip_DrawingToolAutonumbers" xml:space="preserve">
+    <value>自動編號</value>
+  </data>
+  <data name="ToolTip_First" xml:space="preserve">
+    <value>轉到開始</value>
+  </data>
+  <data name="ToolTip_Last" xml:space="preserve">
+    <value>轉到結束</value>
+  </data>
+  <data name="ToolTip_Rafale" xml:space="preserve">
+    <value>儲存影像序列</value>
+  </data>
+  <data name="ToolTip_PauseCamera" xml:space="preserve">
+    <value>暫停相機</value>
+  </data>
+  <data name="ToolTip_StartCamera" xml:space="preserve">
+    <value>啟動相機</value>
+  </data>
+  <data name="ToolTip_ConfigureCamera" xml:space="preserve">
+    <value>設定相機</value>
+  </data>
+  <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
+    <value>重設工作區</value>
+  </data>
+  <data name="ToolTip_RichText_Bold" xml:space="preserve">
+    <value>粗體</value>
+  </data>
+  <data name="ToolTip_RichText_Italic" xml:space="preserve">
+    <value>斜體</value>
+  </data>
+  <data name="ToolTip_RichText_Underline" xml:space="preserve">
+    <value>下劃線</value>
+  </data>
+  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
+    <value>刪除線</value>
+  </data>
+  <data name="ToolTip_RichText_ForeColor" xml:space="preserve">
+    <value>前景色</value>
+  </data>
+  <data name="ToolTip_RichText_BackColor" xml:space="preserve">
+    <value>背景色</value>
+  </data>
+  <data name="ToolTip_SaveDiaporama" xml:space="preserve">
+    <value>從關鍵影像輸出幻燈片</value>
+  </data>
+  <data name="ToolTip_SideBySideSnapshot" xml:space="preserve">
+    <value>將兩幅圖片儲存為一幅合成影像</value>
+  </data>
+  <data name="ToolTip_DisarmTrigger" xml:space="preserve">
+    <value>解除擷取觸發器。當前狀態：已啟動。</value>
+  </data>
+  <data name="ToolTip_ArmTrigger" xml:space="preserve">
+    <value>啟動擷取觸發器。當前狀態：未啟動。</value>
+  </data>
+  <data name="dlgCalibratePlane_AveragePixelSize" xml:space="preserve">
+    <value>平均像素尺寸：{0}。</value>
+  </data>
+  <data name="dlgCalibratePlane_HelpDistanceGrid" xml:space="preserve">
+    <value>輸入每個標記與原點的距離。</value>
+  </data>
+  <data name="formConfigureExport_ImageSequence" xml:space="preserve">
+    <value>輸出影像序列</value>
+  </data>
+  <data name="formConfigureExport_SBS" xml:space="preserve">
+    <value>並排輸出</value>
+  </data>
+  <data name="formConfigureExport_SBS_Horizontal" xml:space="preserve">
+    <value>水平</value>
+  </data>
+  <data name="formConfigureKinogram_CropSize" xml:space="preserve">
+    <value>裁剪大小：</value>
+  </data>
+  <data name="formConfigureKinogram_lblFrameInterval" xml:space="preserve">
+    <value>幀間隔：{0:0.000}毫秒</value>
+  </data>
+  <data name="formConfigureKinogram_lblTotal" xml:space="preserve">
+    <value>幀數：{0}</value>
+  </data>
+  <data name="formConfigureKinogram_Table" xml:space="preserve">
+    <value>表：</value>
+  </data>
+  <data name="formConfigureKinogram_Title" xml:space="preserve">
+    <value>設定運動分析圖</value>
+  </data>
+  <data name="Generic_OK" xml:space="preserve">
+    <value>確定</value>
+  </data>
+  <data name="lblConfig_ImageSize" xml:space="preserve">
+    <value>影像大小：</value>
+  </data>
+  <data name="mnuAction" xml:space="preserve">
+    <value>動作</value>
+  </data>
+  <data name="mnuAction_Chrono_DeleteSection" xml:space="preserve">
+    <value>刪除目前時間段</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveCurrentEnd" xml:space="preserve">
+    <value>將目前時間段的結束移動到此幀</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveCurrentStart" xml:space="preserve">
+    <value>將目前時間段的開始移動到此幀</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveNextSplit" xml:space="preserve">
+    <value>將下一個分割點移動到此幀</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveNextStart" xml:space="preserve">
+    <value>將下一段的開始移動到此幀</value>
+  </data>
+  <data name="mnuAction_Chrono_MovePrevEnd" xml:space="preserve">
+    <value>將上一段的結束移動到此幀</value>
+  </data>
+  <data name="mnuAction_Chrono_MovePrevSplit" xml:space="preserve">
+    <value>將前一個分割點移動到此幀</value>
+  </data>
+  <data name="mnuAction_Chrono_Split" xml:space="preserve">
+    <value>分割：目前時間段在此幀結束，並另開始一個新的</value>
+  </data>
+  <data name="mnuAction_Kinogram_Interpolate" xml:space="preserve">
+    <value>內插瓦片</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetAllTiles" xml:space="preserve">
+    <value>重設所有瓦片</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetLabelPositions" xml:space="preserve">
+    <value>重設標記位置</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetTile" xml:space="preserve">
+    <value>重設此瓦片</value>
+  </data>
+  <data name="mnuDemosaic" xml:space="preserve">
+    <value>去馬賽克</value>
+  </data>
+  <data name="mnuExitFilter" xml:space="preserve">
+    <value>離開{0}</value>
+  </data>
+  <data name="mnuDemosaicNone" xml:space="preserve">
+    <value>無</value>
+  </data>
+  <data name="mnuExport_Image" xml:space="preserve">
+    <value>輸出影像</value>
+  </data>
+  <data name="mnuExport_Document" xml:space="preserve">
+    <value>輸出文件</value>
+  </data>
+  <data name="mnuExport_Images_Image" xml:space="preserve">
+    <value>影像…</value>
+  </data>
+  <data name="mnuExport_Images_Keys" xml:space="preserve">
+    <value>關鍵影像…</value>
+  </data>
+  <data name="mnuExport_Images_SideBySide" xml:space="preserve">
+    <value>並排…</value>
+  </data>
+  <data name="mnuExport_Spreadsheet" xml:space="preserve">
+    <value>輸出試算表</value>
+  </data>
+  <data name="mnuExport_Spreadsheet_ChronoCSV" xml:space="preserve">
+    <value>碼表CSV…</value>
+  </data>
+  <data name="mnuExport_Spreadsheet_TrajectoryCSV" xml:space="preserve">
+    <value>軌跡CSV…</value>
+  </data>
+  <data name="mnuExport_Video" xml:space="preserve">
+    <value>輸出影片</value>
+  </data>
+  <data name="mnuExport_Video_SideBySide" xml:space="preserve">
+    <value>並排…</value>
+  </data>
+  <data name="mnuExport_Video_Slideshow" xml:space="preserve">
+    <value>影片幻燈片…</value>
+  </data>
+  <data name="mnuOptions_CoordinateSystem_ShowGraduations" xml:space="preserve">
+    <value>顯示刻度</value>
+  </data>
+  <data name="LoadMovie_CodecNotFound" xml:space="preserve">
+    <value>失敗：無法打開檔案，不支持的影片串流。</value>
+  </data>
+  <data name="mnuLoadAnalysis" xml:space="preserve">
+    <value>讀取註釋…</value>
+  </data>
+  <data name="mnuMagnifierDirect" xml:space="preserve">
+    <value>切換到直接縮放</value>
+  </data>
+  <data name="mnuMirror" xml:space="preserve">
+    <value>鏡像</value>
+  </data>
+  <data name="mnuOneCapture" xml:space="preserve">
+    <value>一個擷取螢幕</value>
+  </data>
+  <data name="mnuOnePlayer" xml:space="preserve">
+    <value>一個播放螢幕</value>
+  </data>
+  <data name="FormCrashRecovery_File" xml:space="preserve">
+    <value>文件</value>
+  </data>
+  <data name="FormCrashRecovery_Date" xml:space="preserve">
+    <value>日期</value>
+  </data>
+  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
+    <value>變形</value>
+  </data>
+  <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
+    <value>讀取相機校正檔案</value>
+  </data>
+  <data name="dlgCameraCalibration_SaveDialogTitle" xml:space="preserve">
+    <value>儲存相機校正檔案</value>
+  </data>
+  <data name="dlgCameraCalibration_lblSensorWidth" xml:space="preserve">
+    <value>感光元件寬度（毫米）：</value>
+  </data>
+  <data name="dlgCameraCalibration_lblFocalLength" xml:space="preserve">
+    <value>焦距（毫米）：</value>
+  </data>
+  <data name="DrawingName_Arrow" xml:space="preserve">
+    <value>箭頭</value>
+  </data>
+  <data name="DrawingName_ArrowDash" xml:space="preserve">
+    <value>箭頭 – 虛線</value>
+  </data>
+  <data name="DrawingName_ArrowSquiggly" xml:space="preserve">
+    <value>箭頭 – 波浪線</value>
+  </data>
+  <data name="Error_Capture_FileExists_Text" xml:space="preserve">
+    <value>文件{0}已經存在。\n您要替換它嗎？</value>
+  </data>
+  <data name="Error_SaveMovie_FileError" xml:space="preserve">
+    <value>無法寫入文件。\n確保您有權在目標資料夾中寫入並且文件目前未被使用。</value>
+  </data>
+  <data name="Generic_SaveKVAAs" xml:space="preserve">
+    <value>另存註釋為…</value>
+  </data>
+  <data name="Generic_Restore" xml:space="preserve">
+    <value>恢復預設值</value>
+  </data>
+  <data name="Generic_Paste" xml:space="preserve">
+    <value>貼上</value>
+  </data>
+  <data name="Generic_Cut" xml:space="preserve">
+    <value>剪下</value>
+  </data>
+  <data name="Generic_Copy" xml:space="preserve">
+    <value>複製</value>
+  </data>
+  <data name="Generic_PlayPause" xml:space="preserve">
+    <value>播放 | 暫停</value>
+  </data>
+  <data name="mnuMagnifierQuit" xml:space="preserve">
+    <value>關閉放大鏡</value>
+  </data>
+  <data name="Toast_TriggerDisarmed" xml:space="preserve">
+    <value>擷取觸發器已解除</value>
+  </data>
+  <data name="ToolTip_DrawingToolLine2D" xml:space="preserve">
+    <value>直線</value>
+  </data>
+  <data name="FormCrashRecovery_Info" xml:space="preserve">
+    <value>以下任務未正確儲存，但可以恢復：</value>
+  </data>
+  <data name="Infobar_Player_Observing" xml:space="preserve">
+    <value>觀察資料夾：{0}</value>
+  </data>
+  <data name="Infobar_Player_StopWatcher" xml:space="preserve">
+    <value>停止觀察資料夾：{0}</value>
+  </data>
+  <data name="filterName_Analysis" xml:space="preserve">
+    <value>分析</value>
+  </data>
+  <data name="filterName_Kinogram" xml:space="preserve">
+    <value>運動分析圖</value>
+  </data>
+  <data name="formConfigureExport_SBS_Vertical" xml:space="preserve">
+    <value>垂直</value>
+  </data>
 </root>
