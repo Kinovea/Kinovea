@@ -442,4 +442,34 @@
   <data name="dlgPreferences_Drawings_CSVComma" xml:space="preserve">
     <value>Virgulă</value>
   </data>
+  <data name="dlgPreferences_Drawings_ExportCalibrated" xml:space="preserve">
+    <value>Măsurători calibrate</value>
+  </data>
+  <data name="dlgPreferences_Drawings_TabExport" xml:space="preserve">
+    <value>Exportare</value>
+  </data>
+  <data name="dlgPreferences_Drawing_CSVSystem" xml:space="preserve">
+    <value>Sistem ({0})</value>
+  </data>
+  <data name="dlgPreferences_General_PathToPandoc" xml:space="preserve">
+    <value>Calea către pandoc:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVDelimiter" xml:space="preserve">
+    <value>Separatorul zecimal pentru fișierele CSV:</value>
+  </data>
+  <data name="dlgWorkspace_ConfirmationMessage" xml:space="preserve">
+    <value>Spațiul de lucru implicit a fost salvat.</value>
+  </data>
+  <data name="dlgWorkspace_Title" xml:space="preserve">
+    <value>Spațiu de lucru</value>
+  </data>
+  <data name="dlgPreferences_Capture_TriggerAction" xml:space="preserve">
+    <value>Declanșează acțiunea:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportPixels" xml:space="preserve">
+    <value>Pixeli</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportSpace" xml:space="preserve">
+    <value>Mod de export:</value>
+  </data>
 </root>
