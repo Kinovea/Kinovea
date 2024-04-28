@@ -385,4 +385,127 @@
   <data name="dlgPreferences_Player_UnitsDegreesPerSecond" xml:space="preserve">
     <value>度/秒({0})</value>
   </data>
+  <data name="dlgPreferences_Capture_TriggerAction" xml:space="preserve">
+    <value>觸發動作：</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVPoint" xml:space="preserve">
+    <value>點</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportSpace" xml:space="preserve">
+    <value>輸出模式：</value>
+  </data>
+  <data name="dlgPreferences_Drawing_CSVSystem" xml:space="preserve">
+    <value>系統 ({0})</value>
+  </data>
+  <data name="Generic_Save" xml:space="preserve">
+    <value>儲存</value>
+  </data>
+  <data name="mnuEdit" xml:space="preserve">
+    <value>編輯</value>
+  </data>
+  <data name="mnuFullScreen" xml:space="preserve">
+    <value>全螢幕</value>
+  </data>
+  <data name="mnuHelp" xml:space="preserve">
+    <value>幫助</value>
+  </data>
+  <data name="mnuHelpContents" xml:space="preserve">
+    <value>Kinovea幫助...</value>
+  </data>
+  <data name="mnuHistory" xml:space="preserve">
+    <value>最近</value>
+  </data>
+  <data name="mnuWorkspaceExport" xml:space="preserve">
+    <value>輸出工作區</value>
+  </data>
+  <data name="TimeCodeFormat_Frames" xml:space="preserve">
+    <value>影格數</value>
+  </data>
+  <data name="TimeCodeFormat_Milliseconds" xml:space="preserve">
+    <value>總毫秒</value>
+  </data>
+  <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve">
+    <value>百分之一分鐘</value>
+  </data>
+  <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve">
+    <value>十分之一小時</value>
+  </data>
+  <data name="dlgPreferences_General_PathToPandoc" xml:space="preserve">
+    <value>路徑指向pandoc：</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVDelimiter" xml:space="preserve">
+    <value>用於CSV檔案的小數點分隔符：</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportPixels" xml:space="preserve">
+    <value>像素</value>
+  </data>
+  <data name="dlgWorkspace_Title" xml:space="preserve">
+    <value>工作區</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
+    <value>類別</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblCommands" xml:space="preserve">
+    <value>指令</value>
+  </data>
+  <data name="mnuAbout" xml:space="preserve">
+    <value>關於Kinovea…</value>
+  </data>
+  <data name="mnuApplicationFolder" xml:space="preserve">
+    <value>開啟記錄資料夾…</value>
+  </data>
+  <data name="mnuPreferences" xml:space="preserve">
+    <value>偏好…</value>
+  </data>
+  <data name="mnuFile" xml:space="preserve">
+    <value>檔案</value>
+  </data>
+  <data name="mnuHistoryReset" xml:space="preserve">
+    <value>重設歷史紀錄</value>
+  </data>
+  <data name="mnuImage" xml:space="preserve">
+    <value>影像</value>
+  </data>
+  <data name="mnuVideo" xml:space="preserve">
+    <value>影片</value>
+  </data>
+  <data name="mnuLanguages" xml:space="preserve">
+    <value>語言</value>
+  </data>
+  <data name="mnuTools" xml:space="preserve">
+    <value>工具</value>
+  </data>
+  <data name="mnuOptions" xml:space="preserve">
+    <value>選項</value>
+  </data>
+  <data name="mnuWorkspace" xml:space="preserve">
+    <value>工作區</value>
+  </data>
+  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
+    <value>儲存為預設工作區</value>
+  </data>
+  <data name="mnuScreens" xml:space="preserve">
+    <value>查看</value>
+  </data>
+  <data name="mnuUndo" xml:space="preserve">
+    <value>上一步</value>
+  </data>
+  <data name="mnuRedo" xml:space="preserve">
+    <value>重做</value>
+  </data>
+  <data name="TimeCodeFormat_Microseconds" xml:space="preserve">
+    <value>總微秒</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportCalibrated" xml:space="preserve">
+    <value>校正測量</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVComma" xml:space="preserve">
+    <value>逗號</value>
+  </data>
+  <data name="dlgPreferences_Drawings_TabExport" xml:space="preserve">
+    <value>輸出</value>
+  </data>
+  <data name="dlgWorkspace_ConfirmationMessage" xml:space="preserve">
+    <value>預設工作區儲存。</value>
+  </data>
 </root>
