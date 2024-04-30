@@ -89,9 +89,20 @@ namespace Kinovea.ScreenManager
             if (calibrationHelper.IsCalibrated && calibrationHelper.CalibratorType == CalibratorType.Plane)
             {
                 SizeF size = calibrationHelper.CalibrationByPlane_GetRectangleSize();
-                nudA.Value = (decimal)size.Width;
-                nudB.Value = (decimal)size.Height;
                 cbUnit.SelectedIndex = (int)calibrationHelper.LengthUnit;
+                
+                bool valid = size.Width > 0 && size.Width <= (float)nudA.Maximum && size.Height > 0 && size.Height <= (float)nudB.Maximum;
+                if (!valid)
+                {
+                    log.ErrorFormat("Calibration out of range, reset to default.");
+                    nudA.Value = 100;
+                    nudB.Value = 100;
+                }
+                else
+                {
+                    nudA.Value = (decimal)size.Width;
+                    nudB.Value = (decimal)size.Height;
+                }
             }
             else
             { 

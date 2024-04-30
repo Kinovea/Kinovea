@@ -50,6 +50,7 @@ namespace Kinovea.ScreenManager
         {
       this.components = new System.ComponentModel.Container();
       this.grpConfig = new System.Windows.Forms.GroupBox();
+      this.nudB = new System.Windows.Forms.NumericUpDown();
       this.nudA = new System.Windows.Forms.NumericUpDown();
       this.lblPrecision = new System.Windows.Forms.Label();
       this.lblSizeHelp = new System.Windows.Forms.Label();
@@ -60,6 +61,8 @@ namespace Kinovea.ScreenManager
       this.btnCancel = new System.Windows.Forms.Button();
       this.pnlQuadrilateral = new System.Windows.Forms.Panel();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
+      this.nudOffsetY = new System.Windows.Forms.NumericUpDown();
+      this.nudOffsetX = new System.Windows.Forms.NumericUpDown();
       this.label3 = new System.Windows.Forms.Label();
       this.label2 = new System.Windows.Forms.Label();
       this.lblOffsetHelp = new System.Windows.Forms.Label();
@@ -67,15 +70,12 @@ namespace Kinovea.ScreenManager
       this.btnRotate90 = new System.Windows.Forms.Button();
       this.btnFlipY = new System.Windows.Forms.Button();
       this.btnFlipX = new System.Windows.Forms.Button();
-      this.nudB = new System.Windows.Forms.NumericUpDown();
-      this.nudOffsetX = new System.Windows.Forms.NumericUpDown();
-      this.nudOffsetY = new System.Windows.Forms.NumericUpDown();
       this.grpConfig.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.nudB)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudA)).BeginInit();
       this.groupBox1.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.nudB)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.nudOffsetX)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudOffsetY)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudOffsetX)).BeginInit();
       this.SuspendLayout();
       // 
       // grpConfig
@@ -96,12 +96,26 @@ namespace Kinovea.ScreenManager
       this.grpConfig.TabStop = false;
       this.grpConfig.Text = "Calibration";
       // 
+      // nudB
+      // 
+      this.nudB.DecimalPlaces = 2;
+      this.nudB.Location = new System.Drawing.Point(142, 59);
+      this.nudB.Maximum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            0});
+      this.nudB.Name = "nudB";
+      this.nudB.Size = new System.Drawing.Size(53, 20);
+      this.nudB.TabIndex = 33;
+      this.nudB.ValueChanged += new System.EventHandler(this.nud_ValueChanged);
+      // 
       // nudA
       // 
       this.nudA.DecimalPlaces = 2;
       this.nudA.Location = new System.Drawing.Point(51, 60);
       this.nudA.Maximum = new decimal(new int[] {
-            999,
+            1000000,
             0,
             0,
             0});
@@ -216,6 +230,44 @@ namespace Kinovea.ScreenManager
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Coordinates";
       // 
+      // nudOffsetY
+      // 
+      this.nudOffsetY.DecimalPlaces = 2;
+      this.nudOffsetY.Location = new System.Drawing.Point(142, 59);
+      this.nudOffsetY.Maximum = new decimal(new int[] {
+            999,
+            0,
+            0,
+            0});
+      this.nudOffsetY.Minimum = new decimal(new int[] {
+            999,
+            0,
+            0,
+            -2147483648});
+      this.nudOffsetY.Name = "nudOffsetY";
+      this.nudOffsetY.Size = new System.Drawing.Size(53, 20);
+      this.nudOffsetY.TabIndex = 36;
+      this.nudOffsetY.ValueChanged += new System.EventHandler(this.nud_ValueChanged);
+      // 
+      // nudOffsetX
+      // 
+      this.nudOffsetX.DecimalPlaces = 2;
+      this.nudOffsetX.Location = new System.Drawing.Point(51, 59);
+      this.nudOffsetX.Maximum = new decimal(new int[] {
+            999,
+            0,
+            0,
+            0});
+      this.nudOffsetX.Minimum = new decimal(new int[] {
+            999,
+            0,
+            0,
+            -2147483648});
+      this.nudOffsetX.Name = "nudOffsetX";
+      this.nudOffsetX.Size = new System.Drawing.Size(53, 20);
+      this.nudOffsetX.TabIndex = 35;
+      this.nudOffsetX.ValueChanged += new System.EventHandler(this.nud_ValueChanged);
+      // 
       // label3
       // 
       this.label3.AutoSize = true;
@@ -289,58 +341,6 @@ namespace Kinovea.ScreenManager
       this.btnFlipX.UseVisualStyleBackColor = true;
       this.btnFlipX.Click += new System.EventHandler(this.btnFlipHorz_Click);
       // 
-      // nudB
-      // 
-      this.nudB.DecimalPlaces = 2;
-      this.nudB.Location = new System.Drawing.Point(142, 59);
-      this.nudB.Maximum = new decimal(new int[] {
-            999,
-            0,
-            0,
-            0});
-      this.nudB.Name = "nudB";
-      this.nudB.Size = new System.Drawing.Size(53, 20);
-      this.nudB.TabIndex = 33;
-      this.nudB.ValueChanged += new System.EventHandler(this.nud_ValueChanged);
-      // 
-      // nudOffsetX
-      // 
-      this.nudOffsetX.DecimalPlaces = 2;
-      this.nudOffsetX.Location = new System.Drawing.Point(51, 59);
-      this.nudOffsetX.Maximum = new decimal(new int[] {
-            999,
-            0,
-            0,
-            0});
-      this.nudOffsetX.Minimum = new decimal(new int[] {
-            999,
-            0,
-            0,
-            -2147483648});
-      this.nudOffsetX.Name = "nudOffsetX";
-      this.nudOffsetX.Size = new System.Drawing.Size(53, 20);
-      this.nudOffsetX.TabIndex = 35;
-      this.nudOffsetX.ValueChanged += new System.EventHandler(this.nud_ValueChanged);
-      // 
-      // nudOffsetY
-      // 
-      this.nudOffsetY.DecimalPlaces = 2;
-      this.nudOffsetY.Location = new System.Drawing.Point(142, 59);
-      this.nudOffsetY.Maximum = new decimal(new int[] {
-            999,
-            0,
-            0,
-            0});
-      this.nudOffsetY.Minimum = new decimal(new int[] {
-            999,
-            0,
-            0,
-            -2147483648});
-      this.nudOffsetY.Name = "nudOffsetY";
-      this.nudOffsetY.Size = new System.Drawing.Size(53, 20);
-      this.nudOffsetY.TabIndex = 36;
-      this.nudOffsetY.ValueChanged += new System.EventHandler(this.nud_ValueChanged);
-      // 
       // FormCalibratePlane
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -363,12 +363,12 @@ namespace Kinovea.ScreenManager
       this.Text = "FormCalibratePlane";
       this.grpConfig.ResumeLayout(false);
       this.grpConfig.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.nudB)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudA)).EndInit();
       this.groupBox1.ResumeLayout(false);
       this.groupBox1.PerformLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.nudB)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.nudOffsetX)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudOffsetY)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudOffsetX)).EndInit();
       this.ResumeLayout(false);
 
         }
