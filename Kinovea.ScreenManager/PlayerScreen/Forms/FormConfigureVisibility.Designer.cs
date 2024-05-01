@@ -90,7 +90,7 @@
       // 
       this.nudFading.Location = new System.Drawing.Point(228, 105);
       this.nudFading.Maximum = new decimal(new int[] {
-            250,
+            1000000,
             0,
             0,
             0});
@@ -103,7 +103,7 @@
       // 
       this.nudOpaque.Location = new System.Drawing.Point(228, 70);
       this.nudOpaque.Maximum = new decimal(new int[] {
-            500,
+            1000000,
             0,
             0,
             0});
