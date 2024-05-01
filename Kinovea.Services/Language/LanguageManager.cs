@@ -77,6 +77,7 @@ namespace Kinovea.Services
             languages.Add("th", "ไทย");
             languages.Add("tr", "Türkçe");
             languages.Add("zh-CHS", "简体中文");
+            languages.Add("zh-CHT", "繁體中文");
 
             if (Debugger.IsAttached)
                 return;
