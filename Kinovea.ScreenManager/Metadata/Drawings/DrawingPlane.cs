@@ -611,8 +611,8 @@ namespace Kinovea.ScreenManager
                 w.WriteElementString("PointLowerRight", XmlHelper.WritePointF(quadImage.C));
                 w.WriteElementString("PointLowerLeft", XmlHelper.WritePointF(quadImage.D));
                 w.WriteElementString("ShowGrid", XmlHelper.WriteBoolean(showGrid));
-                w.WriteElementString("ShowXLine", XmlHelper.WriteBoolean(showGrid));
-                w.WriteElementString("ShowYLine", XmlHelper.WriteBoolean(showGrid));
+                w.WriteElementString("ShowXLine", XmlHelper.WriteBoolean(showXLine));
+                w.WriteElementString("ShowYLine", XmlHelper.WriteBoolean(showYLine));
 
                 w.WriteElementString("XLineCoord", XmlHelper.WriteFloat(xLineCoord));
                 w.WriteElementString("YLineCoord", XmlHelper.WriteFloat(yLineCoord));
