@@ -214,4 +214,22 @@
   <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve">
     <value>Λειτουργία εγγραφής και καθυστέρηση</value>
   </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
+    <value>Κάμερα: καταγράφει καρέ σε πραγματικό χρόνο.</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
+    <value>Αγνοήστε την προειδοποίηση αντικατάστασης αρχείου</value>
+  </data>
+  <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
+    <value>Κάμερες υψηλής ταχύτητας</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
+    <value>Ημερομηνία (YYYMMDD)</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
+    <value>Ώρα (HHMMSS)</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
+    <value>Ημερομηνία και ώρα (YYYYMMDD-HHMMSS)</value>
+  </data>
 </root>
