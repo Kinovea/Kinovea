@@ -75,7 +75,7 @@
     <value>Δοκιμή σύνδεσης</value>
   </data>
   <data name="FormHandshakeResult_Failure_Message" xml:space="preserve">
-    <value>Σφάλμα κατά την δοκιμή σύνδεσης</value>
+    <value>Σφάλμα κατά τη δοκιμή σύνδεσης.</value>
   </data>
   <data name="FormConfiguration_Title" xml:space="preserve">
     <value>Ρυθμίσεις κάμερας</value>
@@ -124,5 +124,11 @@
   </data>
   <data name="FormConfiguration_Reconnect" xml:space="preserve">
     <value>Επανασύνδεση</value>
+  </data>
+  <data name="FormConnectionWizard_Port" xml:space="preserve">
+    <value>Θύρα</value>
+  </data>
+  <data name="FormConnectionWizard_URL" xml:space="preserve">
+    <value>Τελική διεύθυνση URL</value>
   </data>
 </root>
