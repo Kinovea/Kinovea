@@ -108,7 +108,7 @@
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>Ταχύτητα</value>
   </data>
-  <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Πραγματικό μέγεθος του τμήματος</value>
+  <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Πραγματικό μέγεθος του τμήματος:</value>
   </data>
   <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Μέτρηση σφραγίδας</value>
   </data>
@@ -182,7 +182,7 @@
   </data>
   <data name="Generic_Apply" xml:space="preserve"><value>Εφαρμογή</value>
   </data>
-  <data name="Generic_Cancel" xml:space="preserve"><value>Ακύρωση</value>
+  <data name="Generic_Cancel" xml:space="preserve"><value>Άκυρο</value>
   </data>
   <data name="Generic_Close" xml:space="preserve"><value>Κλείσιμο</value>
   </data>
@@ -296,7 +296,7 @@
   </data>
   <data name="mnuHome" xml:space="preserve"><value>Εξερευνητής Αρχείων</value>
   </data>
-  <data name="mnuImportImage" xml:space="preserve"><value>Εισαγωγή εικόνας</value>
+  <data name="mnuImportImage" xml:space="preserve"><value>Εισαγωγή εικόνας…</value>
   </data>
   <data name="mnuMagnification" xml:space="preserve"><value>Μεγέθυνση x{0:0.00}</value>
   </data>
@@ -312,7 +312,7 @@
   </data>
   <data name="mnuRestartTracking" xml:space="preserve"><value>Επανεκκίνηση Έκδοσης Διαδρομής</value>
   </data>
-  <data name="mnuOpenVideo" xml:space="preserve"><value>Άνοιγμα Αρχείου Video</value>
+  <data name="mnuOpenVideo" xml:space="preserve"><value>Άνοιγμα βίντεο…</value>
   </data>
   <data name="mnuShowMeasure" xml:space="preserve"><value>Απεικόνιση Μέτρησης</value>
   </data>
@@ -344,7 +344,7 @@
   </data>
   <data name="ToolTip_Back" xml:space="preserve"><value>Πήγαινε στο προηγούμενο Πλαίσιο</value>
   </data>
-  <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Προφίλ Χρώματος…</value>
+  <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Προφίλ χρώματος</value>
   </data>
   <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>Απενεργοποίηση επαλληλίας εικόνων</value>
   </data>
@@ -469,7 +469,7 @@
     <value>Εξαγωγή δεδομένων</value>
   </data>
   <data name="DataAnalysis_DataSource" xml:space="preserve">
-    <value>Πήγη δεδομένων</value>
+    <value>Προέλευση δεδομένων</value>
   </data>
   <data name="DataAnalysis_DataLabel" xml:space="preserve">
     <value>Δεδομένα :</value>
@@ -485,5 +485,41 @@
   </data>
   <data name="DataAnalysis_AngularKinematics" xml:space="preserve">
     <value>Γωνιακές κινηματικές</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Absolute" xml:space="preserve">
+    <value>Απόλυτο</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Relative" xml:space="preserve">
+    <value>Σχετικό</value>
+  </data>
+  <data name="FormIconPicker_Title" xml:space="preserve">
+    <value>Εικονίδια</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Ημερομηνία</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Ταξινόμηση κατά</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>Αυξανόμενο</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>Μειούμενο</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>Όνομα</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Μέγεθος</value>
+  </data>
+  <data name="Generic_Quit" xml:space="preserve">
+    <value>Παραίτηση</value>
+  </data>
+  <data name="Generic_Open" xml:space="preserve">
+    <value>Άνοιγμα</value>
+  </data>
+  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+    <value>Όνομα</value>
   </data>
 </root>
