@@ -109,8 +109,7 @@
   <ItemGroup>
     <Reference Include="PylonC.NET, Version=4.2.0.0, Culture=neutral, PublicKeyToken=a77e8471c5919d5a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\Basler\Pylon-6.0\PylonC.NET\PylonC.NET.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\Refs\Basler\Pylon-6.1\PylonC.NET.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
