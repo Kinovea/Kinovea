@@ -30,11 +30,15 @@ namespace Kinovea.ScreenManager
             BuildContextMenus();
         }
 
-        public void UpdateValues(string path, string size, string fps)
+        public void UpdateValues(string path, string size, string fps, IVideoFilter videoFilter)
         {
             lblFilename.Text = Path.GetFileNameWithoutExtension(path);
             lblSize.Text = size;
             lblFps.Text = fps;
+
+            VideoFilterType filterType = videoFilter == null ? VideoFilterType.None : videoFilter.Type;
+            btnMode.Image = VideoFilterFactory.GetIcon(filterType);
+            lblMode.Text = VideoFilterFactory.GetFriendlyName(filterType);
 
             if (!string.IsNullOrEmpty(path))
                 parentFolder = Path.GetDirectoryName(path);

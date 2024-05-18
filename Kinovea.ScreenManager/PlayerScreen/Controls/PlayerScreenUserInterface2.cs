@@ -922,12 +922,14 @@ namespace Kinovea.ScreenManager
             CollapseKeyframePanel(true);
             m_fill = true;
             ResizeUpdate(true);
+            UpdateInfobar();
         }
         public void DeactivateVideoFilter()
         {
             videoFilterIsActive = false;
             StretchSqueezeSurface(true);
             DoInvalidate();
+            UpdateInfobar();
         }
 
         public void SetSyncMergeImage(Bitmap _SyncMergeImage, bool _bUpdateUI)
@@ -1146,7 +1148,7 @@ namespace Kinovea.ScreenManager
 
             infobar.Visible = true;
             infobar.Dock = DockStyle.Fill;
-            infobar.UpdateValues(m_FrameServer.VideoReader.FilePath, size, fps);
+            infobar.UpdateValues(m_FrameServer.VideoReader.FilePath, size, fps, m_FrameServer.Metadata.ActiveVideoFilter);
         }
         private void ShowHideRenderingSurface(bool _bShow)
         {
