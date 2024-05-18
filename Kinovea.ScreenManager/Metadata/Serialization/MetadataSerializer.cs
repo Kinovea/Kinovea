@@ -539,6 +539,10 @@ namespace Kinovea.ScreenManager
                 {
                     w.WriteStartElement("ChronoMulti");
                 }
+                else if (chrono is DrawingCounter)
+                {
+                    w.WriteStartElement("Counter");
+                }
 
                 w.WriteAttributeString("id", d.Id.ToString());
                 w.WriteAttributeString("name", d.Name);

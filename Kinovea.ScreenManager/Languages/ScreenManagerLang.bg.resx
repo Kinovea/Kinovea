@@ -76,7 +76,7 @@
   </data>
   <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Пусни | Пауза на клиповете</value>
   </data>
-  <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Добави снимка</value>
+  <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Добави рисунка</value>
   </data>
   <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Изтрии рисунката</value>
   </data>
@@ -86,7 +86,7 @@
   </data>
   <data name="DataAnalysis" xml:space="preserve"><value>Анализ на данните</value>
   </data>
-  <data name="DataAnalysis_ScatterDiagram" xml:space="preserve"><value>Диаграма</value>
+  <data name="DataAnalysis_ScatterDiagram" xml:space="preserve"><value>Точкова диаграма</value>
   </data>
   <data name="DataAnalysis_LinearKinematics" xml:space="preserve"><value>Линейна кинематика</value>
   </data>
@@ -94,7 +94,7 @@
   </data>
   <data name="DataAnalysis_AngleAngleDiagrams" xml:space="preserve"><value>Диаграма на ъгловата синкинезия</value>
   </data>
-  <data name="DataAnalysis_PagePlot" xml:space="preserve"><value>Участък</value>
+  <data name="DataAnalysis_PagePlot" xml:space="preserve"><value>Графика</value>
   </data>
   <data name="DataAnalysis_Labels" xml:space="preserve"><value>Заглавия</value>
   </data>
@@ -164,7 +164,7 @@
   </data>
   <data name="dlgTimebase_lblCapture" xml:space="preserve"><value>Честота на снимане:</value>
   </data>
-  <data name="dlgTimebase_InfoCapture" xml:space="preserve"><value>Тази опция свързва скоростта на видеото и реалното време. Отметките, съдържащи време и кинематични параметри, зависят от тази стойност. Регулирайте стойността, ако видеоклипът е заснет с високоскоростна камера. </value>
+  <data name="dlgTimebase_InfoCapture" xml:space="preserve"><value>Тази опция определя разликата между скоростта на видеото и реалното време. Отметките, съдържащи време и кинематични параметри, зависят от тази стойност. Регулирайте стойността, ако видеоклипът е заснет с високоскоростна камера. </value>
   </data>
   <data name="dlgTimebase_lblFileFPS" xml:space="preserve"><value>Честота за възпроизвеждане на видео: {0:0.##} кадри в секунда</value>
   </data>
@@ -526,19 +526,19 @@
   </data>
   <data name="mnuDeleteTrajectory" xml:space="preserve"><value>Изтрии изцяло пътя</value>
   </data>
-  <data name="mnuDrawingTrackingStart" xml:space="preserve"><value>Започнете преглеждането</value>
+  <data name="mnuDrawingTrackingStart" xml:space="preserve"><value>Започнете проследяването</value>
   </data>
-  <data name="mnuDrawingTrackingStop" xml:space="preserve"><value>Спрете преглеждането</value>
+  <data name="mnuDrawingTrackingStop" xml:space="preserve"><value>Спрете проследяването</value>
   </data>
-  <data name="mnuTwoCaptures" xml:space="preserve"><value>Два екрана за снимане</value>
+  <data name="mnuTwoCaptures" xml:space="preserve"><value>Два екрана за заснемане</value>
   </data>
-  <data name="mnuTwoMixed" xml:space="preserve"><value>Един екран за снимане и един екран за възпроизвеждане</value>
+  <data name="mnuTwoMixed" xml:space="preserve"><value>Един екран за запис и един екран за възпроизвеждане</value>
   </data>
   <data name="mnuTwoPlayers" xml:space="preserve"><value>Два екрана за възпроизвеждане</value>
   </data>
   <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Експортирай в електронна таблица</value>
   </data>
-  <data name="mnuFormat" xml:space="preserve"><value>Формат на изображението</value>
+  <data name="mnuFormat" xml:space="preserve"><value>Съотношение на картината</value>
   </data>
   <data name="mnuFormatAuto" xml:space="preserve"><value>Автоматично определяне</value>
   </data>
@@ -570,17 +570,17 @@
   </data>
   <data name="mnuSupplementaryAngle" xml:space="preserve"><value>Допълнителен ъгъл</value>
   </data>
-  <data name="mnuFlipHorizontally" xml:space="preserve"><value>Покажи хоризонтално</value>
+  <data name="mnuFlipHorizontally" xml:space="preserve"><value>Завърти хоризонтално</value>
   </data>
-  <data name="mnuFlipVertically" xml:space="preserve"><value>Покажи вертикално</value>
+  <data name="mnuFlipVertically" xml:space="preserve"><value>Завърти вертикално</value>
   </data>
   <data name="mnuMagnification" xml:space="preserve"><value>Приближаване х {0:0.00}</value>
   </data>
-  <data name="mnuMagnifierDirect" xml:space="preserve"><value>Превключване за увеличение</value>
+  <data name="mnuMagnifierDirect" xml:space="preserve"><value>Превключване към директно увеличение</value>
   </data>
   <data name="mnuMagnifierQuit" xml:space="preserve"><value>Затвори лупата</value>
   </data>
-  <data name="mnuMirror" xml:space="preserve"><value>Образец</value>
+  <data name="mnuMirror" xml:space="preserve"><value>Огледално</value>
   </data>
   <data name="mnuOneCapture" xml:space="preserve"><value>Снимане в един екран</value>
   </data>
@@ -590,9 +590,9 @@
   </data>
   <data name="mnuOpenVideo" xml:space="preserve"><value>Отвори видео файл…</value>
   </data>
-  <data name="mnuCalibrate" xml:space="preserve"><value>Калибровка….</value>
+  <data name="mnuCalibrate" xml:space="preserve"><value>Калибрирай….</value>
   </data>
-  <data name="mnuTimebase" xml:space="preserve"><value>Настройка на времето за видео…</value>
+  <data name="mnuTimebase" xml:space="preserve"><value>Конфигурирай тайминга на видео…</value>
   </data>
   <data name="mnuShowMeasure" xml:space="preserve"><value>Показване на размера</value>
   </data>
@@ -600,21 +600,21 @@
   </data>
   <data name="mnuSVGTools" xml:space="preserve"><value>Визуални ориентири</value>
   </data>
-  <data name="mnuSwapScreens" xml:space="preserve"><value>Инвертиране на видеото</value>
+  <data name="mnuSwapScreens" xml:space="preserve"><value>Размяна на екраните</value>
   </data>
   <data name="mnuThumbnailDelete" xml:space="preserve"><value>Изтрии</value>
   </data>
-  <data name="mnuThumbnailForget" xml:space="preserve"><value>Не ползвай потребителските настройки</value>
+  <data name="mnuThumbnailForget" xml:space="preserve"><value>Забрави ръчните настройки</value>
   </data>
   <data name="mnuThumbnailRename" xml:space="preserve"><value>Преименувай</value>
   </data>
-  <data name="mnuThumbnailLocate" xml:space="preserve"><value>Разположение на файла в Windows Explorer</value>
+  <data name="mnuThumbnailLocate" xml:space="preserve"><value>Покажи файла в Windows Explorer</value>
   </data>
   <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Покажи/скрии общите настройки</value>
   </data>
   <data name="mnuTrackTrajectory" xml:space="preserve"><value>Очертаване на треакторията</value>
   </data>
-  <data name="mnuCoordinateSystem" xml:space="preserve"><value>Система с координати</value>
+  <data name="mnuCoordinateSystem" xml:space="preserve"><value>Координатна система</value>
   </data>
   <data name="mnuCoordinateSystemShowAxis" xml:space="preserve"><value>Ос</value>
   </data>
@@ -624,13 +624,13 @@
   </data>
   <data name="mnuCoordinateSystemHide" xml:space="preserve"><value>Скрии</value>
   </data>
-  <data name="mnuPolyline_FinishHere" xml:space="preserve"><value>Получената прекъсната линия е тук</value>
+  <data name="mnuPolyline_FinishHere" xml:space="preserve"><value>Завърши полилинията тук</value>
   </data>
-  <data name="mnuPolyline_FinishAtPrevious" xml:space="preserve"><value>Показване прекъсната линия от предишна точка</value>
+  <data name="mnuPolyline_FinishAtPrevious" xml:space="preserve"><value>Завърши полилинията в предишна точка</value>
   </data>
   <data name="mnuPolyline_CloseMenu" xml:space="preserve"><value>Затвори това меню</value>
   </data>
-  <data name="RecentlyUsedColors" xml:space="preserve"><value>Скоро използвани цветове:</value>
+  <data name="RecentlyUsedColors" xml:space="preserve"><value>Последно използвани цветове:</value>
   </data>
   <data name="statusEmptyScreen" xml:space="preserve"><value>Празно</value>
   </data>
@@ -666,7 +666,7 @@
   </data>
   <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Молив</value>
   </data>
-  <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Движение</value>
+  <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Движи</value>
   </data>
   <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>Текст</value>
   </data>
@@ -749,5 +749,176 @@
   <data name="FormCrashRecovery_Date" xml:space="preserve"><value>Дата</value>
   </data>
   <data name="FormCrashRecovery_Info" xml:space="preserve"><value>Текущите проекти не бяха съхранени правилно, но могат да бъдат възстановени:</value>
+  </data>
+  <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
+    <value>Редактирай рисунката</value>
+  </data>
+  <data name="dlgCameraCalibration_lblSensorWidth" xml:space="preserve">
+    <value>Широчина на сензора (мм):</value>
+  </data>
+  <data name="dlgCameraCalibration_lblFocalLength" xml:space="preserve">
+    <value>Фокусно разстояние (мм):</value>
+  </data>
+  <data name="DrawingName_Trajectory" xml:space="preserve">
+    <value>Траектория</value>
+  </data>
+  <data name="DrawingName_Rectangle" xml:space="preserve">
+    <value>Правоъгълник</value>
+  </data>
+  <data name="DrawingName_Curve" xml:space="preserve">
+    <value>Крива</value>
+  </data>
+  <data name="DrawingName_Clock" xml:space="preserve">
+    <value>Часовник</value>
+  </data>
+  <data name="Error_Capture_DirectoryNotCreated_Title" xml:space="preserve">
+    <value>Директорията не беше създадена</value>
+  </data>
+  <data name="Error_Capture_DirectoryNotCreated_Text" xml:space="preserve">
+    <value>Директорията не беше създадена. \nПроверете дали води до налична локация.</value>
+  </data>
+  <data name="Generic_Perspective" xml:space="preserve">
+    <value>Перспектива:</value>
+  </data>
+  <data name="Generic_Clock" xml:space="preserve">
+    <value>Часовник:</value>
+  </data>
+  <data name="Generic_SaveKVA" xml:space="preserve">
+    <value>Запази анотациите</value>
+  </data>
+  <data name="Generic_SaveKVAAs" xml:space="preserve">
+    <value>Запази анотациите като…</value>
+  </data>
+  <data name="Generic_ExportVideo" xml:space="preserve">
+    <value>Експортирай видео…</value>
+  </data>
+  <data name="Generic_Cut" xml:space="preserve">
+    <value>Изрежи</value>
+  </data>
+  <data name="Generic_Copy" xml:space="preserve">
+    <value>Копирай</value>
+  </data>
+  <data name="Generic_Paste" xml:space="preserve">
+    <value>Постави</value>
+  </data>
+  <data name="FileFilter_AllSupported" xml:space="preserve">
+    <value>Всички поддържани формати</value>
+  </data>
+  <data name="mnuHideBefore" xml:space="preserve">
+    <value>Скрий преди тази точка</value>
+  </data>
+  <data name="mnuShowBefore" xml:space="preserve">
+    <value>Покажи преди тази точка</value>
+  </data>
+  <data name="mnuHideAfter" xml:space="preserve">
+    <value>Скрий след тази точка</value>
+  </data>
+  <data name="mnuShowAfter" xml:space="preserve">
+    <value>Покажи след тази точка</value>
+  </data>
+  <data name="mnuShowLabel" xml:space="preserve">
+    <value>Покажи заглавие</value>
+  </data>
+  <data name="mnuLoadAnalysis" xml:space="preserve">
+    <value>Зареди анотации…</value>
+  </data>
+  <data name="mnuMarkTimeAsOrigin" xml:space="preserve">
+    <value>Маркирай текущото време като начално време</value>
+  </data>
+  <data name="mnuCutDrawing" xml:space="preserve">
+    <value>Изрежи рисунката</value>
+  </data>
+  <data name="mnuCopyDrawing" xml:space="preserve">
+    <value>Копирай рисунката</value>
+  </data>
+  <data name="mnuPasteDrawing" xml:space="preserve">
+    <value>Постави рисунката</value>
+  </data>
+  <data name="mnuSetStyleAsDefault" xml:space="preserve">
+    <value>Запази стила по подразбиране</value>
+  </data>
+  <data name="mnuShowCircleCenter" xml:space="preserve">
+    <value>Покажи центъра на кръга</value>
+  </data>
+  <data name="Toast_AudioLost" xml:space="preserve">
+    <value>Изгубено е устройството за аудио</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Дата</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Размер</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>Име</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>Низходящ</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
+    <value>Максимална непрозрачност (%):</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblOpaque" xml:space="preserve">
+    <value>Продължителност на непрозрачността (кадри):</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_DistanceToOrigin" xml:space="preserve">
+    <value>Дистанция до началото</value>
+  </data>
+  <data name="ExtraData_Length" xml:space="preserve">
+    <value>Дължина</value>
+  </data>
+  <data name="ExtraData_Center" xml:space="preserve">
+    <value>Център</value>
+  </data>
+  <data name="ExtraData_Radius" xml:space="preserve">
+    <value>Радиус</value>
+  </data>
+  <data name="ExtraData_Diameter" xml:space="preserve">
+    <value>Диаметър</value>
+  </data>
+  <data name="ExtraData_Circumference" xml:space="preserve">
+    <value>Обиколка</value>
+  </data>
+  <data name="dlgCalibrateLine_CoordinateSystemAlignment" xml:space="preserve">
+    <value>Координирай подравняването на системата:</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisVertical" xml:space="preserve">
+    <value>Линията дефинира вертикалната ос</value>
+  </data>
+  <data name="dlgCalibrateLine_AxesImage" xml:space="preserve">
+    <value>Подравнено по оста на изображението</value>
+  </data>
+  <data name="mnuMarkTimeAsOriginClock" xml:space="preserve">
+    <value>Маркирай текущото време като начално за този часовник</value>
+  </data>
+  <data name="mnuPasteImage" xml:space="preserve">
+    <value>Постави изображение от клипборда</value>
+  </data>
+  <data name="mnuShowArrow" xml:space="preserve">
+    <value>Покажи стрелка</value>
+  </data>
+  <data name="dlgCalibratePlane_AveragePixelSize" xml:space="preserve">
+    <value>Средна големина на пикселите:{0}.</value>
+  </data>
+  <data name="dlgCalibratePlane_HelpDistanceGrid" xml:space="preserve">
+    <value>Въведи дистанцията от началото за всеки маркер.</value>
+  </data>
+  <data name="dlgCalibratePlane_HelpPlane" xml:space="preserve">
+    <value>Въведете дължината на всяка страна.</value>
+  </data>
+  <data name="filterName_Analysis" xml:space="preserve">
+    <value>Анализ</value>
+  </data>
+  <data name="filterName_Kinogram" xml:space="preserve">
+    <value>Кинограма</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>Възходящ</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Сортирай по</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisHorizontal" xml:space="preserve">
+    <value>Линията определя хоризонталната ос</value>
   </data>
 </root>

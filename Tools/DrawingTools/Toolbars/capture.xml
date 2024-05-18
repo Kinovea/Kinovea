@@ -34,10 +34,9 @@
   <entry name="Angle">
     <subentry name="Goniometer" />
     <subentry name="AngleToHorizontal" />
-    <subentry name="AngleToVertical" />    
+    <subentry name="AngleToVertical" />
   </entry>
   <entry name="Plane">
     <subentry name="Grid" />
-    <subentry name="DistanceGrid" />
   </entry>
 </KinoveaToolbar>

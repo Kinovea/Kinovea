@@ -96,9 +96,13 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="uEyeDotNet, Version=1.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="uEyeDotNet, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\IDS\4.94.00\uEyeDotNet.dll</HintPath>
+      <HintPath>..\Refs\IDS\4.96.1\uEyeDotNet.dll</HintPath>
+    </Reference>
+    <Reference Include="uEyeDotNetFramework, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\IDS\4.96.1\uEyeDotNetFramework.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -31,13 +31,13 @@ namespace Kinovea.Services
         public ThreePartsVersion() { }
         public ThreePartsVersion(string version)
         {
-            // version takes the form : "0.6.1"
+            // version takes the form : "2023.1" or "2023.1.1".
             if (version != null && version.Length > 0)
             {
                 string[] split = version.Split(new Char[] { '.' });
                 Major = int.Parse(split[0]);
                 Minor = int.Parse(split[1]);
-                Revision = int.Parse(split[2]);
+                Revision = split.Length > 2 ? int.Parse(split[2]) : 0;
             }
         }
 

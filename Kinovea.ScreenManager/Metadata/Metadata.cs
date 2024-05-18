@@ -651,7 +651,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public Guid FindManagerId(AbstractDrawing drawing)
         {
-            if (drawing is DrawingChrono || drawing is DrawingChronoMulti)
+            if (IsChronoLike(drawing))
             {
                 return chronoManager.Id;
             }
@@ -890,7 +890,7 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            if (chronoManager.Id == managerId && (drawing is DrawingChrono || drawing is DrawingChronoMulti))
+            if (chronoManager.Id == managerId && IsChronoLike(drawing))
             {
                 bool known = chronoManager.Drawings.Any(d => d.Id == drawing.Id);
                 if (!known)
@@ -1219,6 +1219,9 @@ namespace Kinovea.ScreenManager
                     if (mdt.Sections.Count > 0)
                         md.Times.Add(mdt);
                 }
+
+                // TODO: Counter & Cadence.
+
             }
             md.Times.Sort((a, b) => a.Sections[0].Start.CompareTo(b.Sections[0].Start));
 
@@ -1344,6 +1347,24 @@ namespace Kinovea.ScreenManager
             }
 
             return outputTimeCode;
+        }
+
+        /// <summary>
+        /// Returns the cadence in user-preferred unit.
+        /// </summary>
+        public string GetCadence(float cycles, long timestamps)
+        {
+            CadenceUnit unit = PreferencesManager.PlayerPreferences.CadenceUnit;
+
+            double seconds = timestamps / this.averageTimeStampsPerSecond;
+            float hertz = (float)(cycles / seconds);
+
+            float cadence = UnitHelper.ConvertFrequency(hertz, unit);
+            cadence = UnitHelper.MinimalDigits(cadence);
+            string abbr = UnitHelper.FrequencyAbbreviation(unit);
+
+            string result = string.Format("{0} {1}", cadence, abbr);
+            return result;
         }
 
         public void PostSetup(bool init)
@@ -2013,6 +2034,16 @@ namespace Kinovea.ScreenManager
             };
 
             drawingSpotlight.TrackableDrawingDeleted += (s, e) => DeleteTrackableDrawing(e.TrackableDrawing);
+        }
+
+        /// <summary>
+        /// Returns true if the drawing is managed by the ChronoManager.
+        /// </summary>
+        public bool IsChronoLike(AbstractDrawing drawing)
+        {
+            return drawing is DrawingChrono ||
+                drawing is DrawingChronoMulti ||
+                drawing is DrawingCounter;
         }
         private void CalibrationHelper_CalibrationChanged(object sender, EventArgs e)
         {

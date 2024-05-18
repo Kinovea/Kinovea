@@ -218,6 +218,24 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// Reset the origin of the coordinate system to align with the calibration object.
+        /// </summary>
+        public void ResetOrigin()
+        {
+            calibrator.ResetOrigin();
+            AfterCalibrationChanged();
+        }
+
+        /// <summary>
+        /// Set the custom offset, in world units, applied to values on top of the transform stack.
+        /// </summary>
+        public void SetOffset(PointF p)
+        {
+            calibrator.Offset = p;
+            AfterCalibrationChanged();
+        }
+
+        /// <summary>
         /// Returns the custom offset applied to world values on top of the transform.
         /// </summary>
         public PointF GetWorldOffset()

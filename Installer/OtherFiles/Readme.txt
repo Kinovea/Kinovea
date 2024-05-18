@@ -38,13 +38,20 @@ Project:
 Changelog:
 ----------
 
-2023.2 - TBD
+2024.1 - TBD
+    Added - Support for an extra offset applied to coordinates.
     Improved - Annotations: Added "filled" option to rectangle and circle.
     Improved - Annotations: Support changing font size for mini labels.
     Improved - Annotations: Support transparent background on the text tool.
-    Improved - Kinogram: Support changing label color and font size.
+    Improved - Annotations: Added more display options to the grid object.
+    Improved - Annotations: Increased max duration of opaque and fading.
+    Improved - Measurement: Support flipping axes and changing reference corner.
+    Improved - Measurement: Show average pixel size in world units on calibration dialog.
+    Improved - Measurement: Support resetting the alignment of the coordinate system to the grid.
     Improved - Kinogram: Support moving tiles in time.
+    Improved - Kinogram: Support changing label color and font size.
     Fixed - Copy-pasting a drawing to a different time was not working.
+    Removed - Distance grid tool.
 
 
 2023.1 - August 2023.

@@ -76,6 +76,12 @@ namespace Kinovea.Services
             get { return customLengthAbbreviation; }
             set { customLengthAbbreviation = value; }
         }
+
+        public CadenceUnit CadenceUnit
+        {
+            get { return cadenceUnit; }
+            set { cadenceUnit = value; }
+        }
         public ImageAspectRatio AspectRatio
         {
             get { return aspectRatio; }
@@ -220,6 +226,7 @@ namespace Kinovea.Services
         private AngularAccelerationUnit angularAccelerationUnit = AngularAccelerationUnit.DegreesPerSecondSquared;
         private string customLengthUnit = "";
         private string customLengthAbbreviation = "";
+        private CadenceUnit cadenceUnit = CadenceUnit.Hertz;
         private CSVDecimalSeparator csvDecimalSeparator = CSVDecimalSeparator.System;
         private ExportSpace exportSpace = ExportSpace.WorldSpace;
         private ImageAspectRatio aspectRatio = ImageAspectRatio.Auto;
@@ -263,6 +270,7 @@ namespace Kinovea.Services
             writer.WriteElementString("AngularAccelerationUnit", angularAccelerationUnit.ToString());
             writer.WriteElementString("CustomLengthUnit", customLengthUnit);
             writer.WriteElementString("CustomLengthAbbreviation", customLengthAbbreviation);
+            writer.WriteElementString("CadenceUnit", cadenceUnit.ToString());
             writer.WriteElementString("CSVDecimalSeparator", csvDecimalSeparator.ToString());
             writer.WriteElementString("ExportSpace", exportSpace.ToString());
             writer.WriteElementString("AspectRatio", aspectRatio.ToString());
@@ -351,6 +359,9 @@ namespace Kinovea.Services
                         break;
                     case "CustomLengthAbbreviation":
                         customLengthAbbreviation = reader.ReadElementContentAsString();
+                        break;
+                    case "CadenceUnit":
+                        cadenceUnit = XmlHelper.ParseEnum(reader.ReadElementContentAsString(), CadenceUnit.Hertz);
                         break;
                     case "CSVDecimalSeparator":
                         csvDecimalSeparator = (CSVDecimalSeparator)Enum.Parse(typeof(CSVDecimalSeparator), reader.ReadElementContentAsString());

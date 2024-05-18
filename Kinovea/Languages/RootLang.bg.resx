@@ -234,7 +234,7 @@
   </data>
   <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Зареди потребителски интерфейс…</value>
   </data>
-  <data name="Generic_Cancel" xml:space="preserve"><value>Отмени</value>
+  <data name="Generic_Cancel" xml:space="preserve"><value>Отмяна</value>
   </data>
   <data name="Generic_Quit" xml:space="preserve"><value>Излез</value>
   </data>
@@ -285,5 +285,44 @@
   <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Стотици минути</value>
   </data>
   <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Десет хилядни часа</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
+    <value>Покажи кадровата честота (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve">
+    <value>Некомпресиран видео формат:</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve">
+    <value>Запиши некомпресирано видео</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
+    <value>Камера: записва реално време на кадрите.</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
+    <value>Ретроактивно: записва кадри, след като записа приключи.</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
+    <value>Място на записване</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
+    <value>Име на записания файл</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
+    <value>Дата (ГГГГММДД)</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
+    <value>Време (ЧЧММСС)</value>
+  </data>
+  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
+    <value>Дата и време (ГГГГММДД-ЧЧММСС)</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
+    <value>Игнорирай предупреждението за презаписване на файл</value>
+  </data>
+  <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
+    <value>Високоскоростни камери</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve">
+    <value>Праг на замяна на кадрите (fps):</value>
   </data>
 </root>

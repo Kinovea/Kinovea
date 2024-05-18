@@ -25,6 +25,7 @@ using System.Drawing.Imaging;
 using System.Threading;
 using Kinovea.Pipeline;
 using Kinovea.Services;
+using static uEye.Extensions;
 
 namespace Kinovea.Camera.IDS
 {

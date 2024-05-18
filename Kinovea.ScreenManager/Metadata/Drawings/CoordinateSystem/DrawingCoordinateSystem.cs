@@ -82,6 +82,7 @@ namespace Kinovea.ScreenManager
                 ReloadMenusCulture();
 
                 contextMenu.AddRange(new ToolStripItem[] {
+                    mnuAction,
                     mnuOptions,
                     new ToolStripSeparator(),
                     mnuHide
@@ -107,9 +108,7 @@ namespace Kinovea.ScreenManager
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
 
-        
         private bool trackingUpdate;
-
 
         private const int axesAlpha = 255;
         private const int gridAlpha = (int)(255*0.5f);
@@ -117,6 +116,9 @@ namespace Kinovea.ScreenManager
         private const int textMargin = 8;
 
         #region Context menu
+        private ToolStripMenuItem mnuAction = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuAlign = new ToolStripMenuItem();
+
         private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowGrid = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowGraduations = new ToolStripMenuItem();
@@ -145,13 +147,20 @@ namespace Kinovea.ScreenManager
 
         private void InitializeMenus()
         {
+            // Action
+            mnuAction.Image = Properties.Resources.action;
+            mnuAlign.Image = Properties.Drawings.coordinates_axis;
+            mnuAlign.Click += mnuAlign_Click;
+            mnuAction.DropDownItems.AddRange(new ToolStripItem[] {
+                mnuAlign,
+            });
+
+            // Options
             mnuOptions.Image = Properties.Resources.equalizer;
             mnuShowGrid.Image = Properties.Drawings.coordinates_grid;
             mnuShowGraduations.Image = Properties.Drawings.label;
-            
             mnuShowGrid.Click += mnuShowGrid_Click;
             mnuShowGraduations.Click += mnuShowGraduations_Click;
-
             mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuShowGrid,
                 mnuShowGraduations,
@@ -334,8 +343,18 @@ namespace Kinovea.ScreenManager
             points["0"] = new Point(imageSize.Width / 2, imageSize.Height / 2);
         }
         #endregion
-        
+
         #region Custom menu handlers
+        private void mnuAlign_Click(object sender, EventArgs e)
+        {
+            CaptureMemento(SerializationFilter.Core);
+            
+            CalibrationHelper.ResetOrigin();
+            SignalTrackablePointMoved();
+
+            InvalidateFromMenu(sender);
+        }
+
         private void mnuShowGrid_Click(object sender, EventArgs e)
         {
             CaptureMemento(SerializationFilter.Core);
@@ -449,7 +468,6 @@ namespace Kinovea.ScreenManager
             style.Bind(styleHelper, "Bicolor", "line color");
         }
 
-
         /// <summary>
         /// Move the horizontal axis to pass through the point.
         /// This moves the system's origin.
@@ -501,6 +519,10 @@ namespace Kinovea.ScreenManager
 
         private void ReloadMenusCulture()
         {
+            mnuAction.Text = ScreenManagerLang.mnuAction;
+            mnuAlign.Text = "Align to calibration object";
+
+            // Options
             mnuOptions.Text = ScreenManagerLang.Generic_Options;
             mnuShowGrid.Text = ScreenManagerLang.mnuOptions_CoordinateSystem_ShowGrid;
             mnuShowGraduations.Text = ScreenManagerLang.mnuOptions_CoordinateSystem_ShowGraduations;

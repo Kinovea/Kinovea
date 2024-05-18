@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaDrawingTool>
+  <FormatVersion>1.0</FormatVersion>
+  <Id>42694435-9FCC-43C0-AC27-2FB09D8B6FDF</Id>
+  <Name>Counter</Name>
+  <DisplayName>ToolTip_DrawingToolCounter</DisplayName>
+  <Icon>counter999</Icon>
+  <DrawingClass>DrawingCounter</DrawingClass>
+  <Attached>false</Attached>
+  <KeepToolAfterDrawingCreation>false</KeepToolAfterDrawingCreation>
+  <KeepToolAfterFrameChange>false</KeepToolAfterFrameChange>
+  <DefaultStyle>
+    <Color Key="color">
+      <Value>255;0;0;0</Value>
+    </Color>
+    <FontSize Key="font size">
+      <Value>16</Value>
+    </FontSize>
+  </DefaultStyle>
+</KinoveaDrawingTool>

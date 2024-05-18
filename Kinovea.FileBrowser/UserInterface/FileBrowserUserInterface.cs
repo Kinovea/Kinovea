@@ -304,20 +304,19 @@ namespace Kinovea.FileBrowser
         private void NotificationCenter_FileOpened(object sender, FileActionEventArgs e)
         {
             // Create a virtual shortcut for the folder of the opened video and select it.
-            LoadFolderInShortcuts(Path.GetDirectoryName(e.File));
+            string pathFolder = Path.GetDirectoryName(e.File);
+            AddVirtualShortcut(pathFolder);
+            UpdateSessionHistory(pathFolder);
+            SelectVirtualShortcut();
         }
         private void NotificationCenter_FolderChangeAsked(object sender, FileActionEventArgs e)
         {
             // The thumbnail viewer is asking for a different folder to be shown.
-            // The path to the new folder is stored in the File property of the event arg.
-            if (activeTab == ActiveFileBrowserTab.Shortcuts)
-            {
-                LoadFolderInShortcuts(e.File);
-            }
-            else if (activeTab == ActiveFileBrowserTab.Explorer)
-            {
-                etExplorer.ExpandANode(e.File);
-            }
+            // Note: the path to the new folder is stored in the File property of the event arg.
+            string pathFolder = e.File;
+            AddVirtualShortcut(pathFolder);
+            UpdateSessionHistory(pathFolder);
+            SelectVirtualShortcut();
         }
 
         private void NotificationCenter_FolderNavigationAsked(object sender, EventArgs<FolderNavigationType> e)
@@ -332,58 +331,61 @@ namespace Kinovea.FileBrowser
                 sessionHistory.Forward();
             }
 
-            // Trigger an update of the file list.
-            // In shortcuts, update both, in explorer, update only the explorer.
-            if (activeTab == ActiveFileBrowserTab.Shortcuts)
-            {
-                LoadFolderInShortcuts(sessionHistory.Current.Path);
-            }
-            else if (activeTab == ActiveFileBrowserTab.Explorer)
-            {
-                etExplorer.ExpandANode(sessionHistory.Current);
-            }
+            AddVirtualShortcut(sessionHistory.Current.Path);
+            SelectVirtualShortcut();
 
             // End the navigating operation.
             sessionHistory.Navigating = false;
         }
 
         /// <summary>
-        /// Add the folder as a transient shortcut and select it.
-        /// This will also trigger the same folder to be selected in the explorer tab and and refreshes the thumbnails.
+        /// Add the passed folder as a virtual shortcut.
         /// </summary>
-        private void LoadFolderInShortcuts(string path)
+        private void AddVirtualShortcut(string pathFolder)
         {
-            lastOpenedDirectory = path;
+            lastOpenedDirectory = pathFolder;
 
             // If the shortcuts list is already on the right folder don't do anything.
-            if (activeTab == ActiveFileBrowserTab.Shortcuts && currentShortcutItem != null && currentShortcutItem.Path == lastOpenedDirectory)
-                return;
-            
-            if (path.StartsWith("."))
+            if (activeTab == ActiveFileBrowserTab.Shortcuts && currentShortcutItem != null && currentShortcutItem.Path == pathFolder)
                 return;
 
-            // Reload the list including the new last opened directory.
+            if (pathFolder.StartsWith("."))
+                return;
+
+            // Reload the shortcut tree with the virtual shortcut in it (via lastOpenedDirectory variable).
+            // This does not select any item in the tree and does not refresh the file list.
             ReloadShortcuts();
+        }
 
-            // Select the added folder.
-            if (activeTab == ActiveFileBrowserTab.Shortcuts)
-            {
-                // We can't currently add special directories to the the shortcuts, except the desktop.
-                // If the user adds special folders to the history stack the navigation is broken.
-                // We call "ExpandANode" but this will only work if the folder is already there,
-                // so at the moment it only works on the Desktop.
-                if (sessionHistory.Current != null && !sessionHistory.Current.IsFileSystem)
-                {
-                    etShortcuts.ExpandANode(sessionHistory.Current);
-                }
-                else
-                {
-                    etShortcuts.SelectNode(lastOpenedDirectory);
-                }
-            }
-            else if (activeTab == ActiveFileBrowserTab.Explorer && sessionHistory.Current != null)
+        private void UpdateSessionHistory(string pathFolder)
+        {
+            if (!Directory.Exists(pathFolder))
+                return;
+
+            CShItem item = new CShItem(pathFolder);
+            sessionHistory.Add(item);
+        }
+
+        /// <summary>
+        /// Select the folder in the shortcuts tab and synchronize explorer tab.
+        /// </summary>
+        private void SelectVirtualShortcut()
+        {
+            // Whether the active tab is the explorer or the shortcuts, we always 
+            // go through the shortcuts tree to select the folder, as we just added it to the shortcuts hierarchy.
+            // this will trigger the synchro with the explorer tab so both will be ready.
+            //
+            // The only issue here is that we can't currently add special directories to the the shortcuts, except the desktop.
+            // If the user adds special folders to the history stack the navigation is broken.
+            if (sessionHistory.Current != null && !sessionHistory.Current.IsFileSystem)
             {
                 etExplorer.ExpandANode(sessionHistory.Current);
+            }
+            else
+            {
+                // Normal case where the selected folder is a proper folder.
+                // This will trigger the synchronization with the explorer tab.
+                etShortcuts.SelectNode(lastOpenedDirectory);
             }
         }
 
@@ -477,18 +479,21 @@ namespace Kinovea.FileBrowser
         /// </summary>
         public void ReloadShortcuts()
         {
-            ArrayList shortcuts = GetShortcuts();
-            etShortcuts.SetShortcuts(shortcuts);
+            // Get the list as paths.
+            List<string> shortcuts = GetShortcuts();
+
+            // Create items out of the paths and populate the tree.
+            etShortcuts.SetShortcuts(new ArrayList(shortcuts));
+
             etShortcuts.StartUpDirectory = ExpTreeLib.ExpTree.StartDir.Desktop;
         }
 
         /// <summary>
-        /// Get a list of the saved shortcuts plus whatever the last opened directory is.
+        /// Get a list of the saved shortcut paths including the last opened directory.
         /// </summary>
-        /// <returns></returns>
-        private ArrayList GetShortcuts()
+        private List<string> GetShortcuts()
         {
-            ArrayList shortcuts = new ArrayList();
+            List<string> shortcuts = new List<string>();
             List<ShortcutFolder> savedShortcuts = PreferencesManager.FileExplorerPreferences.ShortcutFolders;
 
             // Since we are loading the list from filenames, we can't currently

@@ -33,11 +33,11 @@ namespace Kinovea.ScreenManager
         public static void Save(string filename, Bitmap image)
         {
             string directory = Path.GetDirectoryName(filename);
-            if(!Directory.Exists(directory))
+            if (!Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
-                
+
             string filenameToLower = filename.ToLower();
-            
+
             if (filenameToLower.EndsWith("jpg") || filenameToLower.EndsWith("jpeg"))
             {
                 Bitmap jpgImage = ImageHelper.ConvertToJPG(image, 100);
@@ -96,78 +96,81 @@ namespace Kinovea.ScreenManager
             return new Bitmap(memStr);
         }
 
+
+        /// <summary>
+        /// Compute the size of the final composite.
+        /// If `isVideo` is true, the final width and height may be extended by one to three pixels.
+        /// </summary>
+        public static Size GetSideBySideCompositeSize(Size left, Size right, bool isVideo, bool merging, bool horizontal)
+        {
+            int width;
+            int height;
+
+            if (merging)
+            {
+                width = left.Width;
+                height = left.Height;
+            }
+            else if (horizontal)
+            {
+                width = left.Width + right.Width;
+                height = Math.Max(left.Height, right.Height);
+            }
+            else
+            {
+                width = Math.Max(left.Width, right.Width);
+                height = left.Height + right.Height;
+            }
+
+            if (isVideo)
+            {
+                if (width % 4 != 0)
+                    width += 4 - (width % 4);
+                
+                if (height % 2 != 0)
+                    height++;
+            }
+
+            return new Size(width, height);
+        }
+
         /// <summary>
         /// Composite the two images side by side either horizontally or vertically.
-        /// If `isVideo` is true, the final width and height may be cropped to be a multiple of 4.
         /// </summary>
-        public static Bitmap GetSideBySideComposite(Bitmap leftImage, Bitmap rightImage, bool isVideo, bool horizontal)
+        public static void PaintSideBySideComposite(Bitmap composite, Bitmap leftImage, Bitmap rightImage, bool horizontal)
         {
-            Bitmap composite = null;
-            
+            Graphics g = Graphics.FromImage(composite);
+
             if (horizontal)
             {
-                // Create the output image.
-                int height = Math.Max(leftImage.Height, rightImage.Height);
-                int width = leftImage.Width + rightImage.Width;
-
-                if (isVideo)
-                {
-                    if (height % 2 != 0)
-                        height++;
-
-                    if (width % 4 != 0)
-                        width += 4 - (width % 4);
-                }
-
-                composite = new Bitmap(width, height, leftImage.PixelFormat);
-                
                 // Vertically center the shortest image.
                 int leftTop = 0;
-                if(leftImage.Height < height)
-                    leftTop = (height - leftImage.Height) / 2;
+                if(leftImage.Height < composite.Height)
+                    leftTop = (composite.Height - leftImage.Height) / 2;
 
                 int rightTop = 0;
-                if(rightImage.Height < height)
-                    rightTop = (height - rightImage.Height) / 2;
+                if(rightImage.Height < composite.Height)
+                    rightTop = (composite.Height - rightImage.Height) / 2;
                 
                 // Draw the images on the output.
-                Graphics g = Graphics.FromImage(composite);
                 g.DrawImage(leftImage, 0, leftTop);
                 g.DrawImage(rightImage, leftImage.Width, rightTop);
             }
             else
             {
-                // Create the output image.
-                int height = leftImage.Height + rightImage.Height;
-                int width = Math.Max(leftImage.Width, rightImage.Width);
-
-                if (isVideo)
-                {
-                    if (height % 2 != 0)
-                        height++;
-
-                    if (width % 4 != 0)
-                        width += 4 - (width % 4);
-                }
-
-                composite = new Bitmap(width, height, leftImage.PixelFormat);
-                
                 // Horizontally center the shortest image.
                 int firstLeft = 0;
-                if(leftImage.Width < width)
-                    firstLeft = (width - leftImage.Width) / 2;
+                if(leftImage.Width < composite.Width)
+                    firstLeft = (composite.Width - leftImage.Width) / 2;
 
                 int secondLeft = 0;
-                if(rightImage.Width < width)
-                    secondLeft = (width - rightImage.Width) / 2;
+                if(rightImage.Width < composite.Width)
+                    secondLeft = (composite.Width - rightImage.Width) / 2;
                 
                 // Draw the images on the output.
-                Graphics g = Graphics.FromImage(composite);
                 g.DrawImage(leftImage, firstLeft, 0);
                 g.DrawImage(rightImage, secondLeft, leftImage.Height);	
             }
-            
-            return composite;
         }
     }
 }

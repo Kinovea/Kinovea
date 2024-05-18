@@ -344,6 +344,7 @@
     <Compile Include="Measurement\Geometry\SVD.cs" />
     <Compile Include="Measurement\Geometry\Vector3.cs" />
     <Compile Include="Metadata\DrawingManager\DrawingManager`1.cs" />
+    <Compile Include="Metadata\Drawings\Chrono\DrawingChronoMulti.cs" />
     <Compile Include="Metadata\Drawings\Chrono\ChronoColumns.cs" />
     <Compile Include="Metadata\Drawings\Chrono\ChronoSection.cs" />
     <Compile Include="Metadata\Drawings\Chrono\ChronoStringBuilder.cs" />
@@ -629,7 +630,6 @@
     <Compile Include="Measurement\Calibration\CalibrationHelper.cs" />
     <Compile Include="Measurement\Calibration\CalibratorPlane.cs" />
     <Compile Include="Measurement\Calibration\CalibratorType.cs" />
-    <Compile Include="Measurement\Calibration\LengthUnit.cs" />
     <Compile Include="Measurement\Calibration\UnitHelper.cs" />
     <Compile Include="Metadata\Drawings\AbstractMultiDrawing.cs" />
     <Compile Include="Metadata\Drawings\DrawingNumberSequenceItem.cs" />
@@ -637,7 +637,7 @@
     <Compile Include="Metadata\Drawings\BoundingBox.cs" />
     <Compile Include="Metadata\Drawings\DrawingBitmap.cs" />
     <Compile Include="Metadata\Drawings\DrawingCapabilities.cs" />
-    <Compile Include="Metadata\Drawings\Chrono\DrawingChronoMulti.cs" />
+    <Compile Include="Metadata\Drawings\Cadence\DrawingCounter.cs" />
     <Compile Include="Metadata\Drawings\DrawingCircle.cs" />
     <Compile Include="Metadata\Drawings\CoordinateSystem\DrawingCoordinateSystem.cs" />
     <Compile Include="Metadata\Drawings\Styling\DrawingStyle.cs" />
@@ -1027,6 +1027,7 @@
     <EmbeddedResource Include="Languages\ScreenManagerLang.th.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.tr.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.zh-CHS.resx" />
+    <EmbeddedResource Include="Languages\ScreenManagerLang.zh-Hant.resx" />
     <EmbeddedResource Include="Measurement\Plotting\FormAngleAngleAnalysis.resx">
       <DependentUpon>FormAngleAngleAnalysis.cs</DependentUpon>
     </EmbeddedResource>
@@ -1704,6 +1705,51 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shape_square.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\xline.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\yline.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\arrow-circle-315.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flipx.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flipy2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flipx3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flipy3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flipy4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\rotate-system.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\counter-reset.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\cadence.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\counter-stop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\notification-counter.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\monitor.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\plus.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\bullet_green.png" />

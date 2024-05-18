@@ -109,15 +109,6 @@ namespace Kinovea.ScreenManager
                 AfterTrackStatusChanged();
             }
         }
-        public MeasureLabelType MeasureLabelType
-        {
-            get { return measureLabelType; }
-            set
-            {
-                measureLabelType = value;
-                UpdateKeyframeLabels();
-            }
-        }
         public TrackMarker Marker
         {
             get { return trackMarker; }
@@ -1781,6 +1772,9 @@ namespace Kinovea.ScreenManager
                         keyframeLabels[iKfl].SetText(GetMeasureLabelText(keyframeLabels[iKfl].AttachIndex));
                 }
             }
+
+            // We also use this to update the main label font.
+            miniLabel.FontSize = (int)styleHelper.Font.Size;
         }
         public void MemorizeState()
         {

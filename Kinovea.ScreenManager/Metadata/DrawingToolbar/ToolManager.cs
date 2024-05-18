@@ -396,19 +396,7 @@ namespace Kinovea.ScreenManager
             if (!valuePerspective)
                 return "Grid";
 
-            // Either perspective plane or distance grid.
-            if (!drawing.DrawingStyle.Elements.ContainsKey("distanceGrid"))
-                return "Plane";
-
-            StyleElementToggle elementDistanceGrid = drawing.DrawingStyle.Elements["distanceGrid"] as StyleElementToggle;
-            if (elementDistanceGrid == null)
-                return "Plane";
-
-            bool valueDistanceGrid = (bool)elementDistanceGrid.Value;
-            if (valueDistanceGrid)
-                return "DistanceGrid";
-            else
-                return "Plane";
+            return "Plane";
         }
 
         private static string GetChronoStyleVariant(DrawingChrono drawing)
