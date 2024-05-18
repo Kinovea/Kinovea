@@ -66,7 +66,7 @@
   </resheader>
   <data name="Generic_Apply" xml:space="preserve"><value>Приложи</value>
   </data>
-  <data name="Generic_Cancel" xml:space="preserve"><value>Отмени</value>
+  <data name="Generic_Cancel" xml:space="preserve"><value>Отмяна</value>
   </data>
   <data name="FormHandshakeResult_Title" xml:space="preserve"><value>Тест на свързване</value>
   </data>
@@ -119,5 +119,11 @@
   <data name="FormConnectionWizard_Password" xml:space="preserve"><value>Парола</value>
   </data>
   <data name="FormConnectionWizard_URL" xml:space="preserve"><value>Финален URL</value>
+  </data>
+  <data name="FormConfiguration_Reconnect" xml:space="preserve">
+    <value>Свържи се отново</value>
+  </data>
+  <data name="FormConfiguration_ImportParameters" xml:space="preserve">
+    <value>Импортирай параметри</value>
   </data>
 </root>

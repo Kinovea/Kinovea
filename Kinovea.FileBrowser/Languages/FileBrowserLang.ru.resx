@@ -108,4 +108,22 @@
   <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
     <value>Открыть как наблюдатель за каталогом реплеев</value>
   </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Сортировать</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Дата</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>По возрастанию</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Размер</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>По убыванию</value>
+  </data>
 </root>

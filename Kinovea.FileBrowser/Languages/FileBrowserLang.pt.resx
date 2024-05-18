@@ -108,12 +108,30 @@
     <value>Apagar ficheiro</value>
   </data>
   <data name="mnuVideoLocate" xml:space="preserve">
-    <value>Encontre no Windows Explorer </value>
+    <value>Localizar no Explorador do Windows </value>
   </data>
   <data name="lblCameras" xml:space="preserve">
     <value>Câmeras</value>
   </data>
   <data name="lblCaptureHistory" xml:space="preserve">
     <value>Histórico de captura</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>Ascendente</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>Descendente</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Tamanho</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Ordenar por</value>
   </data>
 </root>

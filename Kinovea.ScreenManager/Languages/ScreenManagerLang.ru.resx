@@ -448,7 +448,7 @@
   </data>
   <data name="FileProperty_CreationTime" xml:space="preserve"><value>Создать время</value>
   </data>
-  <data name="FileProperty_HasKva" xml:space="preserve"><value>KVA файл</value>
+  <data name="FileProperty_HasKva" xml:space="preserve"><value>KVA-файл</value>
   </data>
   <data name="FileFilter_All" xml:space="preserve"><value>Все файлы</value>
   </data>
@@ -929,5 +929,122 @@
   </data>
   <data name="DrawingName_CSVL" xml:space="preserve">
     <value>Центральная сакральная вертикальная линия</value>
+  </data>
+  <data name="dlgCalibratePlane_AveragePixelSize" xml:space="preserve">
+    <value>Средний размер пикселя: {0}.</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
+    <value>Показать вписанный круг</value>
+  </data>
+  <data name="dlgCalibratePlane_HelpDistanceGrid" xml:space="preserve">
+    <value>Введите расстояние до каждого маркера.</value>
+  </data>
+  <data name="dlgCalibratePlane_HelpPlane" xml:space="preserve">
+    <value>Введите длину каждой стороны.</value>
+  </data>
+  <data name="filterName_Analysis" xml:space="preserve">
+    <value>Анализ</value>
+  </data>
+  <data name="filterName_Kinogram" xml:space="preserve">
+    <value>Кинограмма</value>
+  </data>
+  <data name="formConfigureExport_ImageSequence" xml:space="preserve">
+    <value>Экспортировать последовательность изображений</value>
+  </data>
+  <data name="formConfigureExport_SBS" xml:space="preserve">
+    <value>Экспортировать "бок-о-бок"</value>
+  </data>
+  <data name="formConfigureKinogram_lblTotal" xml:space="preserve">
+    <value>Кадры: {0}</value>
+  </data>
+  <data name="formConfigureKinogram_Table" xml:space="preserve">
+    <value>Таблица:</value>
+  </data>
+  <data name="formConfigureKinogram_Title" xml:space="preserve">
+    <value>Настроить Кинограммы</value>
+  </data>
+  <data name="Generic_OK" xml:space="preserve">
+    <value>ОК</value>
+  </data>
+  <data name="lblConfig_ImageSize" xml:space="preserve">
+    <value>Размер изображения:</value>
+  </data>
+  <data name="formConfigureKinogram_lblFrameInterval" xml:space="preserve">
+    <value>Кадры, интервал: {0:0.000} ms</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveCurrentStart" xml:space="preserve">
+    <value>Переместить начало текущего раздела в текущий кадр</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveCurrentEnd" xml:space="preserve">
+    <value>Переместить конец текущего раздела в текущий кадр</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveNextStart" xml:space="preserve">
+    <value>Переместить начало следующего раздела в текущий кадр</value>
+  </data>
+  <data name="mnuAction_Chrono_MovePrevEnd" xml:space="preserve">
+    <value>Переместить конец предыдущего раздела в текущий кадр</value>
+  </data>
+  <data name="mnuAction_Chrono_MovePrevSplit" xml:space="preserve">
+    <value>Переместить предыдущий разрез в текущий кадр</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveNextSplit" xml:space="preserve">
+    <value>Перенести следующий разрез в текущий кадр</value>
+  </data>
+  <data name="mnuAction_Chrono_Split" xml:space="preserve">
+    <value>Разрез: завершение текущего раздела на текущем кадре и начало нового</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Сортировать</value>
+  </data>
+  <data name="mnuProperties" xml:space="preserve">
+    <value>Свойства</value>
+  </data>
+  <data name="mnuOptions_Kinogram_ShowBorder" xml:space="preserve">
+    <value>Показать границы</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>По возрастанию</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Дата</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Размер</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>По убыванию</value>
+  </data>
+  <data name="mnuOptions_CoordinateSystem_ShowGrid" xml:space="preserve">
+    <value>Показать сетку</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowFrame" xml:space="preserve">
+    <value>Показать кадр</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowHorizontalAxis" xml:space="preserve">
+    <value>Показать горизонтальную ось</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowThirds" xml:space="preserve">
+    <value>Показать сетку 3x3</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowVerticalAxis" xml:space="preserve">
+    <value>Показать вертикальную ось</value>
+  </data>
+  <data name="mnuOptions_CoordinateSystem_ShowGraduations" xml:space="preserve">
+    <value>Показать отметки шкалы</value>
+  </data>
+  <data name="toolTip_Speed" xml:space="preserve">
+    <value>Скорость</value>
+  </data>
+  <data name="mnuTimeSections" xml:space="preserve">
+    <value>Разделы (по времени)</value>
+  </data>
+  <data name="mnuTimeCalibration" xml:space="preserve">
+    <value>Калибровка времени…</value>
+  </data>
+  <data name="mnuThumbnails" xml:space="preserve">
+    <value>Значки-превью</value>
   </data>
 </root>

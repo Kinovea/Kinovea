@@ -1,12 +1,12 @@
 ﻿#region License
 /*
 Copyright © Joan Charmant 2011.
-jcharmant@gmail.com
-
+jcharmant@gmail.com 
+ 
 This file is part of Kinovea.
 
 Kinovea is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License version 2
+it under the terms of the GNU General Public License version 2 
 as published by the Free Software Foundation.
 
 Kinovea is distributed in the hope that it will be useful,
@@ -30,15 +30,15 @@ namespace Kinovea.Services
     {
         public static Dictionary<string, string> Languages
         {
-            get
-            {
+            get 
+            { 
                 return languages;
             }
         }
-
+        
         private static Dictionary<string, string> languages = null;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
+        
         static LanguageManager()
         {
             // Alphabetical order by native name. (Check Wikipedia order if in doubt).
@@ -77,6 +77,7 @@ namespace Kinovea.Services
             languages.Add("th", "ไทย");
             languages.Add("tr", "Türkçe");
             languages.Add("zh-CHS", "简体中文");
+            languages.Add("zh-CHT", "繁體中文");
 
             if (Debugger.IsAttached)
                 return;
@@ -86,18 +87,18 @@ namespace Kinovea.Services
             // Rationale:
             // It is frustrating and look unprofessional for users to select their language only to realize
             // that many parts of the interface are not actually translated.
-            //
+            // 
             // Criteria:
             // 1. > 85% translated in total -> kept.
             // 2. < 50% translated in total -> removed.
             // 3. For the remaining languages, we look at
-            // - the Root component (top level menu and preferences),
+            // - the Root component (top level menu and preferences), 
             // - how the front UI looks like, File, View and Image, and the UI of the player.
             // If there are too many untranslated strings directly visible in the menu and the player UI
             // we do not include the language.
 
             // Reference: https://hosted.weblate.org/projects/kinovea/#languages
-            // Last check: 2023-10-02.
+            // Last check: 2024-05-18.
 
             // Languages with less than 50% translation coverage.
             languages.Remove("da"); // Danish.
@@ -113,7 +114,6 @@ namespace Kinovea.Services
             languages.Remove("sv"); // Swedish.
             languages.Remove("th"); // Thai.
             //languages.Remove("tr"); // Turkish.
-
         }
 
         /// <summary>

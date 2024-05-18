@@ -62,19 +62,19 @@
     <value>Kembali ke permulaan kedua-dua video</value>
   </data>
   <data name="buttonGotoNext_ToolTip" xml:space="preserve">
-    <value>Pergi ke bingkai seterusnya untuk kedua-dua video</value>
+    <value>Pergi ke frame seterusnya untuk kedua-dua video</value>
   </data>
   <data name="buttonGotoPrevious_ToolTip" xml:space="preserve">
-    <value>Pergi ke bingkai sebelumnya untuk kedua-dua video</value>
+    <value>Pergi ke frame sebelumnya untuk kedua-dua video</value>
   </data>
   <data name="buttonPlay_ToolTip" xml:space="preserve">
-    <value>Main atau jeda kedua-dua video</value>
+    <value>Main atau hentikan kedua-dua video</value>
   </data>
   <data name="buttonGotoLast_ToolTip" xml:space="preserve">
-    <value>Kembali ke pengakhiran kedua-dua video</value>
+    <value>Pergi ke pengakhiran kedua-dua video</value>
   </data>
   <data name="btnSync_ToolTip" xml:space="preserve">
-    <value>Segerakkan video-video pada bingkai-bingkai semasa</value>
+    <value>Menyelaraskan video-video pada frame-frame semasa</value>
   </data>
   <data name="Generic_Cancel" xml:space="preserve">
     <value>Batal</value>
@@ -86,6 +86,285 @@
     <value>Buka</value>
   </data>
   <data name="Generic_Apply" xml:space="preserve">
-    <value>Gunapakai</value>
+    <value>Terapkan</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Saiz</value>
+  </data>
+  <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
+    <value>Ubah suai lukisan</value>
+  </data>
+  <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve">
+    <value>Padam lukisan</value>
+  </data>
+  <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve">
+    <value>Padam imej utama</value>
+  </data>
+  <data name="CommandExportVideo_FriendlyName" xml:space="preserve">
+    <value>Eksport video</value>
+  </data>
+  <data name="DataAnalysis" xml:space="preserve">
+    <value>Analisis data</value>
+  </data>
+  <data name="DataAnalysis_XaxisDefaultPoints" xml:space="preserve">
+    <value>Paksi X</value>
+  </data>
+  <data name="DataAnalysis_YaxisLabel" xml:space="preserve">
+    <value>Paksi Y:</value>
+  </data>
+  <data name="DataAnalysis_YaxisDefaultPoints" xml:space="preserve">
+    <value>Paksi Y</value>
+  </data>
+  <data name="DataAnalysis_TimeAxisMilliseconds" xml:space="preserve">
+    <value>Masa (ms)</value>
+  </data>
+  <data name="DataAnalysis_CalibrationPlane" xml:space="preserve">
+    <value>Satah penentukuran</value>
+  </data>
+  <data name="DataAnalysis_ExportGraph" xml:space="preserve">
+    <value>Eksport graf</value>
+  </data>
+  <data name="DataAnalysis_Pixels" xml:space="preserve">
+    <value>piksel</value>
+  </data>
+  <data name="DataAnalysis_SaveToFile" xml:space="preserve">
+    <value>Simpan ke fail</value>
+  </data>
+  <data name="DataAnalysis_ExportData" xml:space="preserve">
+    <value>Eksport data</value>
+  </data>
+  <data name="DataAnalysis_DataSource" xml:space="preserve">
+    <value>Sumber data</value>
+  </data>
+  <data name="DataAnalysis_DataLabel" xml:space="preserve">
+    <value>Data :</value>
+  </data>
+  <data name="DataAnalysis_TimeModel" xml:space="preserve">
+    <value>Masa :</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Absolute" xml:space="preserve">
+    <value>Mutlak</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Relative" xml:space="preserve">
+    <value>Relatif</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Normalized" xml:space="preserve">
+    <value>Dinormalisasi</value>
+  </data>
+  <data name="DataAnalysis_AngularPosition" xml:space="preserve">
+    <value>Sudut</value>
+  </data>
+  <data name="DataAnalysis_TotalAngularDisplacement" xml:space="preserve">
+    <value>Jumlah anjakan</value>
+  </data>
+  <data name="DataAnalysis_TangentialVelocity" xml:space="preserve">
+    <value>Halaju tangen</value>
+  </data>
+  <data name="DataAnalysis_ResultantLinearAcceleration" xml:space="preserve">
+    <value>Pecutan hasil</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
+    <value>Kelegapan maksimum (%):</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblOpaque" xml:space="preserve">
+    <value>Tempoh legap (frame):</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Tarikh</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>Menurun</value>
+  </data>
+  <data name="dlgColorProfile_Title" xml:space="preserve">
+    <value>Profil warna...</value>
+  </data>
+  <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve">
+    <value>Tetap semula kepada profil warna asal</value>
+  </data>
+  <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve">
+    <value>Muatkan profil warna</value>
+  </data>
+  <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve">
+    <value>Simpan profil warna</value>
+  </data>
+  <data name="dlgConfigureDrawing_Title" xml:space="preserve">
+    <value>Konfigurasi lukisan</value>
+  </data>
+  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+    <value>Nama</value>
+  </data>
+  <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve">
+    <value>Sentiasa kelihatan</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblFading" xml:space="preserve">
+    <value>Tempoh pemudaran (frame):</value>
+  </data>
+  <data name="dlgTimebase_Title" xml:space="preserve">
+    <value>Konfigurasi waktu video</value>
+  </data>
+  <data name="dlgTimebase_GroupCapture" xml:space="preserve">
+    <value>Kamera kelajuan tinggi</value>
+  </data>
+  <data name="dlgTimebase_lblCapture" xml:space="preserve">
+    <value>Kadar gambaran dirakam:</value>
+  </data>
+  <data name="dlgTimebase_InfoCapture" xml:space="preserve">
+    <value>Pilihan ini menentukan perbezaan antara kelajuan video dan masa sebenar. Ia memberi kesan kepada label yang mengandungi masa dan pengukuran kinematik. Gunakan apabila video dirakam dalam mod kelajuan tinggi. </value>
+  </data>
+  <data name="dlgTimebase_lblFileFPS" xml:space="preserve">
+    <value>Kadar frame dibaca dalam fail: {0:0.##} fps</value>
+  </data>
+  <data name="dlgTimebase_lblUserFPS" xml:space="preserve">
+    <value>Kadar frame video:</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>Nama</value>
+  </data>
+  <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
+    <value>Gambar rajah taburan</value>
+  </data>
+  <data name="DataAnalysis_LinearKinematics" xml:space="preserve">
+    <value>Kinematik linear</value>
+  </data>
+  <data name="DataAnalysis_AngularKinematics" xml:space="preserve">
+    <value>Kinematik sudut</value>
+  </data>
+  <data name="DataAnalysis_AngleAngleDiagrams" xml:space="preserve">
+    <value>Gambar rajah sudut-sudut</value>
+  </data>
+  <data name="DataAnalysis_PagePlot" xml:space="preserve">
+    <value>Plot</value>
+  </data>
+  <data name="DataAnalysis_Labels" xml:space="preserve">
+    <value>Label</value>
+  </data>
+  <data name="DataAnalysis_Title" xml:space="preserve">
+    <value>Tajuk:</value>
+  </data>
+  <data name="DataAnalysis_XaxisLabel" xml:space="preserve">
+    <value>Paksi X:</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>Menaik</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Disusun Mengikut</value>
+  </data>
+  <data name="DataAnalysis_TangentialAcceleration" xml:space="preserve">
+    <value>Pecutan Tangensial</value>
+  </data>
+  <data name="dlgTimebase_InfoUser" xml:space="preserve">
+    <value>Pilihan ini menentukan kadar gambaran rujukan yang digunakan oleh Kinovea untuk memainkan video. Gunakan apabila video mengandungi kadar gambaran yang salah atau Kinovea tidak dapat membacanya. </value>
+  </data>
+  <data name="CommandAddDrawing_FriendlyName" xml:space="preserve">
+    <value>Tambah lukisan</value>
+  </data>
+  <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve">
+    <value>Set semula</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
+    <value>Konfigurasi alat trajektori</value>
+  </data>
+  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
+    <value>Penanda:</value>
+  </data>
+  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
+    <value>Cross</value>
+  </data>
+  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
+    <value>Bulat</value>
+  </data>
+  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
+    <value>Sasaran</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
+    <value>Tunjukkan bulatan paling sesuai</value>
+  </data>
+  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
+    <value>Ukuran:</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
+    <value>Tiada</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
+    <value>Posisi</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalPosition" xml:space="preserve">
+    <value>Posisi menegak</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve">
+    <value>Jumlah jarak</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_DistanceToOrigin" xml:space="preserve">
+    <value>Jarak ke asal</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement" xml:space="preserve">
+    <value>Anjakan relatif melintang</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalVerticalDisplacement" xml:space="preserve">
+    <value>Anjakan relatif menegak</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve">
+    <value>Kelajuan</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalVelocity" xml:space="preserve">
+    <value>Kelajuan menegak</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Acceleration" xml:space="preserve">
+    <value>Pecutan</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalAcceleration" xml:space="preserve">
+    <value>Pecutan menegak</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
+    <value>Pecutan melintang</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
+    <value>Anjakan bersudut</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
+    <value>Kelajuan sudut</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularAcceleration" xml:space="preserve">
+    <value>Pecutan sudut</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_CentripetalAcceleration" xml:space="preserve">
+    <value>Pecutan sentripetal</value>
+  </data>
+  <data name="ExtraData_Length" xml:space="preserve">
+    <value>Panjang</value>
+  </data>
+  <data name="ExtraData_Center" xml:space="preserve">
+    <value>Tengah</value>
+  </data>
+  <data name="ExtraData_Radius" xml:space="preserve">
+    <value>Jejari</value>
+  </data>
+  <data name="ExtraData_Diameter" xml:space="preserve">
+    <value>Diameter</value>
+  </data>
+  <data name="ExtraData_Circumference" xml:space="preserve">
+    <value>Ukur lilit</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
+    <value>Penjejakan</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve">
+    <value>Tetingkap objek:</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
+    <value>Tetingkap carian:</value>
+  </data>
+  <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve">
+    <value>Saiz sebenar segmen:</value>
+  </data>
+  <data name="dlgCalibrateLine_Title" xml:space="preserve">
+    <value>Garisan kalibrasi</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalPosition" xml:space="preserve">
+    <value>Posisi melintang</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalVelocity" xml:space="preserve">
+    <value>Kelajuan melintang</value>
   </data>
 </root>

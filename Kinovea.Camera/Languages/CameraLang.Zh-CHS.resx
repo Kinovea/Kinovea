@@ -64,7 +64,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Generic_Apply" xml:space="preserve"><value>提交</value>
+  <data name="Generic_Apply" xml:space="preserve"><value>应用</value>
   </data>
   <data name="Generic_Cancel" xml:space="preserve"><value>取消</value>
   </data>
@@ -72,7 +72,7 @@
     <value>主机(IP地址)</value>
   </data>
   <data name="FormConfiguration_DevicePropertyPages_Error" xml:space="preserve">
-    <value>显示的设备属性页{0}时发生错误.</value>
+    <value>显示设备{0}属性页时发生错误.</value>
   </data>
   <data name="FormConfiguration_Properties_BayerFormatConversion" xml:space="preserve">
     <value>Bayer格式转换:</value>
@@ -135,7 +135,7 @@
     <value>重新连接</value>
   </data>
   <data name="FormConfiguration_DevicePropertyPages" xml:space="preserve">
-    <value>设备属性页面</value>
+    <value>设备属性页</value>
   </data>
   <data name="FormConfiguration_Auto" xml:space="preserve">
     <value>自动</value>

@@ -484,4 +484,7 @@
   <data name="DataAnalysis_TimeModel" xml:space="preserve">
     <value>Vreme :</value>
   </data>
+  <data name="Generic_Quit" xml:space="preserve">
+    <value>Odustani</value>
+  </data>
 </root>

@@ -78,7 +78,7 @@
   </data>
   <data name="FormConfiguration_Title" xml:space="preserve"><value>Camera configuratie</value>
   </data>
-  <data name="FormConfiguration_Properties_StreamFormat" xml:space="preserve"><value>Stream format:</value>
+  <data name="FormConfiguration_Properties_StreamFormat" xml:space="preserve"><value>Stream formaat:</value>
   </data>
   <data name="FormConfiguration_Properties_ImageSize" xml:space="preserve"><value>Afbeeldingsformaat:</value>
   </data>
@@ -96,7 +96,7 @@
   </data>
   <data name="FormConfiguration_Properties_Focus" xml:space="preserve"><value>Focus:</value>
   </data>
-  <data name="FormConfiguration_Properties_BayerFormatConversion" xml:space="preserve"><value>Bayer conversie format:</value>
+  <data name="FormConfiguration_Properties_BayerFormatConversion" xml:space="preserve"><value>Bayer conversie formaat:</value>
   </data>
   <data name="FormConfiguration_Auto" xml:space="preserve"><value>Auto</value>
   </data>
@@ -116,7 +116,7 @@
   </data>
   <data name="FormConnectionWizard_Port" xml:space="preserve"><value>Poort</value>
   </data>
-  <data name="FormConnectionWizard_Format" xml:space="preserve"><value>Format</value>
+  <data name="FormConnectionWizard_Format" xml:space="preserve"><value>Formaat</value>
   </data>
   <data name="FormConnectionWizard_Authentication" xml:space="preserve"><value>Authenticatie</value>
   </data>
