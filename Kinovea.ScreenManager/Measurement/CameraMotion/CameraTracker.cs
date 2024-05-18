@@ -13,7 +13,7 @@ using System.Globalization;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// This class performs the camera tracking.
+    /// This class performs the camera tracking for camera motion estimation.
     /// It calls OpenCV functions and exposes the raw result.
     /// The result is then sent over to `CameraTransformer` which exposes functions 
     /// to transform coordinates from one frame to another.

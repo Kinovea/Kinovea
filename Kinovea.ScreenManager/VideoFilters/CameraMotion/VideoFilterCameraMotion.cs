@@ -16,6 +16,14 @@ using System.Globalization;
 
 namespace Kinovea.ScreenManager
 {
+
+    /// <summary>
+    /// Camera motion subsystem.
+    /// The goal of this filter is to estimate the motion of the camera between frames.
+    /// The output is a series of frame-to-frame transforms that can be used to calculate 
+    /// the position of points in any frame based on their position in a reference frame.
+    /// The low level work is done by the CameraTracker class.
+    /// </summary>
     public class VideoFilterCameraMotion : IVideoFilter
     {
         #region Properties
@@ -80,8 +88,6 @@ namespace Kinovea.ScreenManager
         private bool showTransforms = true;     // Frame transforms.
 
         #region Menu
-        private ToolStripMenuItem mnuConfigure = new ToolStripMenuItem();
-        
         private ToolStripMenuItem mnuAction = new ToolStripMenuItem();
         private ToolStripMenuItem mnuRun = new ToolStripMenuItem();
         private ToolStripMenuItem mnuImportMask = new ToolStripMenuItem();
@@ -103,6 +109,7 @@ namespace Kinovea.ScreenManager
         private Pen penMatchInlier = new Pen(Color.LimeGreen, 2.0f);
         private Pen penMatchOutlier = new Pen(Color.FromArgb(128, 255, 0, 0), 2.0f);
         private int maxTransformsFrames = 25;
+
         // Precomputed list of unique colors to draw frame references.
         // https://stackoverflow.com/questions/309149/generate-distinctly-different-rgb-colors-in-graphs
         static string[] colorCycle = new string[] {
@@ -151,9 +158,6 @@ namespace Kinovea.ScreenManager
 
         private void InitializeMenus()
         {
-            mnuConfigure.Image = Properties.Drawings.configure;
-            mnuConfigure.Click += MnuConfigure_Click;
-
             mnuAction.Image = Properties.Resources.action;
             mnuRun.Image = Properties.Drawings.trackingplay;
             mnuDeleteData.Image = Properties.Resources.bin_empty;
@@ -280,8 +284,6 @@ namespace Kinovea.ScreenManager
             ReloadMenusCulture();
 
             contextMenu.AddRange(new ToolStripItem[] {
-                mnuConfigure,
-                new ToolStripSeparator(),
                 mnuAction,
                 mnuOptions,
             });
@@ -296,9 +298,6 @@ namespace Kinovea.ScreenManager
 
         private void ReloadMenusCulture()
         {
-            // Just in time localization.
-            mnuConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
-
             mnuAction.Text = ScreenManagerLang.mnuAction;
             mnuRun.Text = "Run camera motion estimation";
             mnuImportMask.Text = "Import mask";
@@ -312,16 +311,13 @@ namespace Kinovea.ScreenManager
             mnuShowTransforms.Text = "Show transforms";
         }
 
-        private void MnuConfigure_Click(object sender, EventArgs e)
-        {
-            
-        }
-
         private void MnuRun_Click(object sender, EventArgs e)
         {
             if (framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count < 1)
                 return;
 
+            // Perform the actual motion estimation.
+            // TODO: use a progress bar.
             tracker.Run(framesContainer);
             
             InvalidateFromMenu(sender);
