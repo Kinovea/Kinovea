@@ -25,8 +25,8 @@ namespace Kinovea.ScreenManager
         /// </summary>
         static VideoFilterFactory()
         {
-            info.Add(VideoFilterType.Kinogram, new VideoFilterInfo("Kinogram", "filterName_Kinogram", Properties.Resources.mosaic, false));
-            info.Add(VideoFilterType.CameraMotion, new VideoFilterInfo("CameraMotion", "filterName_CameraMotion", Properties.Resources.mosaic, false));
+            info.Add(VideoFilterType.Kinogram, new VideoFilterInfo("Kinogram", "filterName_Kinogram", Properties.Resources.kinogram, false));
+            info.Add(VideoFilterType.CameraMotion, new VideoFilterInfo("CameraMotion", "filterName_CameraMotion", Properties.Resources.motion_detector, false));
         }
 
         /// <summary>
