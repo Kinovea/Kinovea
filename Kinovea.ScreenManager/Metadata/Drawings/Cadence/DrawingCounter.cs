@@ -470,9 +470,6 @@ namespace Kinovea.ScreenManager
                     case "Values":
                         ParseWorkingValues(xmlReader, timestampMapper);
                         break;
-                    case "ExtraData":
-                        measureLabelType = XmlHelper.ParseEnum<MeasureLabelType>(xmlReader.ReadElementContentAsString(), MeasureLabelType.None);
-                        break;
                     case "DrawingStyle":
                         style = new DrawingStyle(xmlReader);
                         BindStyle();
@@ -523,6 +520,9 @@ namespace Kinovea.ScreenManager
                         break;
                     case "DoubleCadence":
                         doubleCadence = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
+                        break;
+                    case "ExtraData":
+                        measureLabelType = XmlHelper.ParseEnum<MeasureLabelType>(xmlReader.ReadElementContentAsString(), MeasureLabelType.None);
                         break;
                     default:
                         string unparsed = xmlReader.ReadOuterXml();
