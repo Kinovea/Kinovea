@@ -75,13 +75,14 @@ namespace Kinovea.ScreenManager
         private Metadata parentMetadata;
         private Stopwatch stopwatch = new Stopwatch();
         private long activeTimestamp;
-        // frameIndices: reverse index from timestamps to frames indices.
+        // frameIndices: reverse index from timestamps to frames indices,
+        // for the images actually used in the calibration (found corners).
         private Dictionary<long, int> frameIndices = new Dictionary<long, int>();
         private List<List<OpenCvSharp.Point2f>> imagePoints = new List<List<OpenCvSharp.Point2f>>();
         private DistortionParameters calibration;
 
         // Configuration
-        private int maxImages = 15;
+        private int maxImages = 12;
         private Size patternSize = new Size(9, 6);
         
         // Display parameters
@@ -177,14 +178,15 @@ namespace Kinovea.ScreenManager
         public void UpdateTime(long timestamp)
         {
             // Bind to the nearest frame used by calibration.
-            int total = framesContainer.Frames.Count;
-            int step = Math.Max(1, total / maxImages);
-            for (int i = 0; i < total; i += step)
+            bitmap = null;
+            List<int> indices = GetIndices(maxImages, framesContainer.Frames.Count);
+            for (int i = 0; i < indices.Count; i++)
             {
-                if (timestamp >= framesContainer.Frames[i].Timestamp)
+                int index = indices[i];
+                if (timestamp >= framesContainer.Frames[index].Timestamp)
                 {
-                    bitmap = framesContainer.Frames[i].Image;
-                    activeTimestamp = framesContainer.Frames[i].Timestamp;
+                    bitmap = framesContainer.Frames[index].Image;
+                    activeTimestamp = framesContainer.Frames[index].Timestamp;
                 }
             }
         }
@@ -214,7 +216,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void DrawExtra(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, long timestamp, bool export)
         {
-            // We do not use the passed timestamp which is from the player timeline.
+            // We do not use the passed timestamp from the player timeline.
             // We are only showing a few selected images, use the timestamp of the active image.
             if (showCorners)
                 DrawCorners(canvas, transformer, activeTimestamp);
@@ -320,19 +322,17 @@ namespace Kinovea.ScreenManager
             }
 
             // Find corners in images.
-            // FIXME: limit to 15 images equally spaced in the collection.
-            // TODO: Get number of images to use from configuration.
             frameIndices.Clear();
             imagePoints.Clear();
             List<List<OpenCvSharp.Point3f>> objectPoints = new List<List<OpenCvSharp.Point3f>>();
-            int total = framesContainer.Frames.Count;
-            int step = Math.Max(1, total / maxImages);
-            for (int i = 0; i < total; i += step)
+            List<int> indices = GetIndices(maxImages, framesContainer.Frames.Count);
+            for (int i = 0; i < indices.Count; i++)
             {
                 if (worker.CancellationPending)
                     break;
 
-                var f = framesContainer.Frames[i];
+                int index = indices[i];
+                var f = framesContainer.Frames[index];
 
                 // Convert image to OpenCV and convert to grayscale.
                 var cvImage = OpenCvSharp.Extensions.BitmapConverter.ToMat(f.Image);
@@ -347,7 +347,7 @@ namespace Kinovea.ScreenManager
                 if (!found)
                 {
                     cvImageGray.Dispose();
-                    worker.ReportProgress(i + 1, total);
+                    worker.ReportProgress(index + 1, framesContainer.Frames.Count);
                     continue;
                 }
             
@@ -358,7 +358,7 @@ namespace Kinovea.ScreenManager
                 objectPoints.Add(points);
                 imagePoints.Add(corners.ToArray().ToList());
 
-                worker.ReportProgress(i + 1, total);
+                worker.ReportProgress(index + 1, framesContainer.Frames.Count);
             }
 
             if (worker.CancellationPending)
@@ -508,5 +508,32 @@ namespace Kinovea.ScreenManager
 
         #endregion
 
+        /// <summary>
+        /// Get frame indices for image candidates to use in the calibration.
+        /// These are the images we display in this video filter mode
+        /// when the user browses the video.
+        /// 
+        /// The list used for calibration may not contain all of them 
+        /// if we can't find the corners in the image.
+        /// </summary>
+        private List<int> GetIndices(int count, int total)
+        {
+            List<int> indices = new List<int>();
+            if (count >= total)
+            {
+                for (int i = 0; i < total; i++)
+                    indices.Add(i);
+            }
+            else
+            {
+                for (int i = 0; i < count; i ++)
+                {
+                    float u = (float)i / count;
+                    indices.Add((int)Math.Round(u * total));
+                }
+            }
+
+            return indices;
+        }
     }
 }
