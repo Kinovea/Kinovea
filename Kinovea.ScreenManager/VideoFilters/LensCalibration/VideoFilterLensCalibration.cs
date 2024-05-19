@@ -486,7 +486,7 @@ namespace Kinovea.ScreenManager
             {
                 string str = "FF" + colorCycle[j % colorCycle.Length];
                 Color c = Color.FromArgb(Convert.ToInt32(str, 16));
-                using (Pen pen = new Pen(c, 2.0f))
+                using (Pen pen = new Pen(c, 3.0f))
                 {
                     for (int i = 0; i < patternSize.Width; i++)
                     {
