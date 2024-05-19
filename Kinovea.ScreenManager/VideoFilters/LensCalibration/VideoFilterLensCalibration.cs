@@ -75,16 +75,21 @@ namespace Kinovea.ScreenManager
         private Metadata parentMetadata;
         private Stopwatch stopwatch = new Stopwatch();
         private long activeTimestamp;
+        private bool calibrated = false;
         // frameIndices: reverse index from timestamps to frames indices,
         // for the images actually used in the calibration (found corners).
         private Dictionary<long, int> frameIndices = new Dictionary<long, int>();
         private List<List<OpenCvSharp.Point2f>> imagePoints = new List<List<OpenCvSharp.Point2f>>();
-        private DistortionParameters calibration;
 
         // Configuration
         private int maxImages = 12;
         private Size patternSize = new Size(9, 6);
-        
+        private int maxIterations = 30;
+        private float eps = 0.001f;
+
+        // Calibration results
+        private DistortionParameters calibration;
+
         // Display parameters
         private bool showCorners = true;
 
@@ -95,7 +100,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuShowCorners = new ToolStripMenuItem();
         #endregion
 
-        static string[] colorCycle = new string[] {
+        private static string[] colorCycle = new string[] {
             "FF0000", "FF6A00", "FFD800", "4CFF00", "00FFFF", "0094FF", "B200FF", "FF00DC",
         };
 
@@ -288,14 +293,16 @@ namespace Kinovea.ScreenManager
             if (framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count < 1)
                 return;
 
+            calibrated = false;
+
             formProgressBar2 fpb = new formProgressBar2(true, true, Worker_DoWork);
             fpb.ShowDialog();
             fpb.Dispose();
 
-            InvalidateFromMenu(sender);
+            if (calibrated)
+                parentMetadata.SetLensCalibration(calibration);
 
-            // Commit intrinsics data.
-            //parentMetadata.SetLensCalibration(calibration);
+            InvalidateFromMenu(sender);
         }
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
@@ -306,13 +313,14 @@ namespace Kinovea.ScreenManager
             
             stopwatch.Start();
 
+            // https://www.opencv.org.cn/opencvdoc/2.3.2/html/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html
             int cbWidth = patternSize.Width;
             int cbHeight = patternSize.Height;
             OpenCvSharp.Size cbSize = new OpenCvSharp.Size(cbWidth, cbHeight);
 
             // World space position of the corners.
             // The actual world dimension doesn't matter.
-            List<OpenCvSharp.Point3f> points = new List<OpenCvSharp.Point3f>(cbHeight * cbWidth);
+            List<OpenCvSharp.Point3f> points = new List<OpenCvSharp.Point3f>(cbWidth * cbHeight);
             for (int i = 0; i < cbHeight; i++)
             {
                 for (int j = 0; j < cbWidth; j++)
@@ -377,49 +385,53 @@ namespace Kinovea.ScreenManager
 
             // Compute the calibration.
             stopwatch.Restart();
-            calibration = Calibrate(objectPoints, imagePoints);
+            calibration = Calibrate(objectPoints, imagePoints, maxIterations, eps);
             log.DebugFormat("Calibration: {0:0.000} s", stopwatch.ElapsedMilliseconds / 1000.0f);
         }
 
-        private DistortionParameters Calibrate(List<List<OpenCvSharp.Point3f>> objectPoints, List<List<OpenCvSharp.Point2f>> imagePoints)
+        private DistortionParameters Calibrate(List<List<OpenCvSharp.Point3f>> objectPoints, List<List<OpenCvSharp.Point2f>> imagePoints, int maxIterations, float eps)
         {
             // TODO: move this back in CameraCalibrator.
             // Rename CameraCalibrator to LensCalibrator or something.
             
-            double[,] mat = new double[3, 3];
-            double[] dist = new double[5];
-            OpenCvSharp.CalibrationFlags flags = OpenCvSharp.CalibrationFlags.RationalModel;
+            double[,] cameraMatrix = new double[3, 3];
+            double[] distCoeffs = new double[5];
+            //OpenCvSharp.CalibrationFlags flags = OpenCvSharp.CalibrationFlags.RationalModel;
+            OpenCvSharp.CalibrationFlags flags = OpenCvSharp.CalibrationFlags.None;
             var termCriteriaType = OpenCvSharp.CriteriaTypes.MaxIter | OpenCvSharp.CriteriaTypes.Eps;
-            int maxIter = 30;
-            float eps = 0.001f;
-            var termCriteria = new OpenCvSharp.TermCriteria(termCriteriaType, maxIter, eps);
+            var termCriteria = new OpenCvSharp.TermCriteria(termCriteriaType, maxIterations, eps);
 
-            OpenCvSharp.Cv2.CalibrateCamera(
+            double error = OpenCvSharp.Cv2.CalibrateCamera(
                 objectPoints,
                 imagePoints,
                 new OpenCvSharp.Size(frameSize.Width, frameSize.Height),
-                mat,
-                dist,
+                cameraMatrix,
+                distCoeffs,
                 out var rotationVectors,
                 out var translationVectors,
                 flags,
                 termCriteria
             );
 
-            double k1 = dist[0];
-            double k2 = dist[1];
-            double k3 = dist[4];
-            double p1 = dist[2];
-            double p2 = dist[3];
-            double fx = mat[0, 0];
-            double fy = mat[1, 1];
-            double cx = mat[0, 2];
-            double cy = mat[1, 2];
+            
+            double k1 = distCoeffs[0];
+            double k2 = distCoeffs[1];
+            double k3 = distCoeffs[4];
+            double p1 = distCoeffs[2];
+            double p2 = distCoeffs[3];
+            double fx = cameraMatrix[0, 0];
+            double fy = cameraMatrix[1, 1];
+            double cx = cameraMatrix[0, 2];
+            double cy = cameraMatrix[1, 2];
 
-            var parameters = new DistortionParameters(k1, k2, k3, p1, p2, fx, fy, cx, cy, frameSize);
-            log.DebugFormat("Distortion coefficients: k1:{0:0.000}, k2:{1:0.000}, k3:{2:0.000}, p1:{3:0.000}, p2:{4:0.000}.", k1, k2, k3, p1, p2);
+            log.DebugFormat("Reprojection error: {0:0.000}", error);
             log.DebugFormat("Camera intrinsics: fx:{0:0.000}, fy:{1:0.000}, cx:{2:0.000}, cy:{3:0.000}", fx, fy, cx, cy);
+            float hfov = (float)(2 * Math.Atan(frameSize.Width / (2 * fx)) * 180 / Math.PI);
+            log.DebugFormat("HFOV: {0:0.000}", hfov);
+            log.DebugFormat("Distortion coefficients: k1:{0:0.000}, k2:{1:0.000}, k3:{2:0.000}, p1:{3:0.000}, p2:{4:0.000}.", k1, k2, k3, p1, p2);
 
+            calibrated = true;
+            var parameters = new DistortionParameters(k1, k2, k3, p1, p2, fx, fy, cx, cy, frameSize);
             return parameters;
         }
 

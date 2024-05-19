@@ -1405,6 +1405,12 @@ namespace Kinovea.ScreenManager
             cameraTransformer.Initialize(tracker);
         }
 
+        public void SetLensCalibration(DistortionParameters lensCalibration)
+        {
+            calibrationHelper.DistortionHelper.Initialize(lensCalibration, calibrationHelper.ImageSize);
+            calibrationHelper.AfterDistortionUpdated();
+        }
+
         public void Reset()
         {
             // Complete reset. (used when over loading a new video)

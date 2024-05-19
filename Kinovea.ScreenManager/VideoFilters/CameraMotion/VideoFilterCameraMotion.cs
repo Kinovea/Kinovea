@@ -321,11 +321,10 @@ namespace Kinovea.ScreenManager
             fpb.ShowDialog();
             fpb.Dispose();
             
-            InvalidateFromMenu(sender);
-
-            // Commit transform data.
             if (tracker.Tracked)
                 parentMetadata.SetCameraMotion(tracker);
+
+            InvalidateFromMenu(sender);
         }
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)

@@ -143,13 +143,8 @@
             0,
             196608});
       this.nudP2.Location = new System.Drawing.Point(134, 130);
-      this.nudP2.Maximum = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
       this.nudP2.Minimum = new decimal(new int[] {
-            2,
+            100,
             0,
             0,
             -2147483648});
@@ -167,13 +162,8 @@
             0,
             196608});
       this.nudP1.Location = new System.Drawing.Point(134, 104);
-      this.nudP1.Maximum = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
       this.nudP1.Minimum = new decimal(new int[] {
-            2,
+            100,
             0,
             0,
             -2147483648});
@@ -191,13 +181,8 @@
             0,
             196608});
       this.nudK3.Location = new System.Drawing.Point(134, 78);
-      this.nudK3.Maximum = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
       this.nudK3.Minimum = new decimal(new int[] {
-            2,
+            100,
             0,
             0,
             -2147483648});
@@ -215,13 +200,8 @@
             0,
             196608});
       this.nudK2.Location = new System.Drawing.Point(134, 52);
-      this.nudK2.Maximum = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
       this.nudK2.Minimum = new decimal(new int[] {
-            2,
+            100,
             0,
             0,
             -2147483648});
@@ -284,13 +264,8 @@
             0,
             196608});
       this.nudK1.Location = new System.Drawing.Point(134, 26);
-      this.nudK1.Maximum = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
       this.nudK1.Minimum = new decimal(new int[] {
-            2,
+            100,
             0,
             0,
             -2147483648});
