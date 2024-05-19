@@ -72,12 +72,10 @@ namespace Kinovea.ScreenManager
         // frameIndices: reverse index from timestamps to frames indices.
         private Dictionary<long, int> frameIndices = new Dictionary<long, int>();
         private List<List<OpenCvSharp.Point2f>> imagePoints = new List<List<OpenCvSharp.Point2f>>();
+        private Size patternSize = new Size(9, 6);
 
         // Display parameters
-        private bool showCorners = false;
-        //private bool showInliers = true;        // Features matched and used to estimate the final motion.
-        //private bool showOutliers = false;      // Features matched but not used to estimate the final motion. 
-        //private bool showTransforms = true;     // Frame transforms.
+        private bool showCorners = true;
 
         #region Menu
         private ToolStripMenuItem mnuAction = new ToolStripMenuItem();
@@ -99,6 +97,12 @@ namespace Kinovea.ScreenManager
         //private Pen penMatchInlier = new Pen(Color.LimeGreen, 2.0f);
         //private Pen penMatchOutlier = new Pen(Color.FromArgb(128, 255, 0, 0), 2.0f);
         //private int maxTransformsFrames = 25;
+
+
+        static string[] colorCycle = new string[] {
+            "FF0000", "FF6A00", "FFD800", "4CFF00", "00FFFF", "0094FF", "B200FF", "FF00DC",
+        };
+
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -278,8 +282,9 @@ namespace Kinovea.ScreenManager
 
             // http://docs.opencv.org/2.4/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html#calibratecamera
 
-            int cbWidth = 9;
-            int cbHeight = 6;
+            int cbWidth = patternSize.Width;
+            int cbHeight = patternSize.Height;
+            OpenCvSharp.Size cbSize = new OpenCvSharp.Size(cbWidth, cbHeight);
 
             // World space position of the corners.
             // The actual world dimension doesn't matter.
@@ -292,10 +297,9 @@ namespace Kinovea.ScreenManager
                 }
             }
 
-            OpenCvSharp.Size patternSize = new OpenCvSharp.Size(cbWidth, cbHeight);
-
             // Find corners in images.
             // FIXME: limit to 15 images equally spaced in the collection.
+            // TODO: Get number of images to use from configuration.
             frameIndices.Clear();
             imagePoints.Clear();
 
@@ -311,7 +315,7 @@ namespace Kinovea.ScreenManager
                 // Find checkerboard corners in the image.
                 var corners = new OpenCvSharp.Mat<OpenCvSharp.Point2f>();
                 var flags = OpenCvSharp.ChessboardFlags.AdaptiveThresh | OpenCvSharp.ChessboardFlags.FastCheck | OpenCvSharp.ChessboardFlags.NormalizeImage;
-                bool found = OpenCvSharp.Cv2.FindChessboardCorners(cvImageGray, patternSize, corners, flags);
+                bool found = OpenCvSharp.Cv2.FindChessboardCorners(cvImageGray, cbSize, corners, flags);
                 if (!found)
                 {
                     cvImageGray.Dispose();
@@ -326,6 +330,7 @@ namespace Kinovea.ScreenManager
                 imagePoints.Add(corners.ToArray().ToList());
             }
 
+            // Compute the calibration.
             DistortionParameters calib = Calibrate(objectPoints, imagePoints);
             InvalidateFromMenu(sender);
 
@@ -431,10 +436,30 @@ namespace Kinovea.ScreenManager
             if (corners.Count == 0)
                 return;
 
-            foreach (var corner in corners)
+            // Paint corners and connector lines.
+            int index = 0;
+            PointF prevPoint = PointF.Empty;
+            for (int j = 0; j < patternSize.Height; j++)
             {
-                PointF p = transformer.Transform(corner);
-                canvas.DrawEllipse(penCorner, p.Box(2));
+                string str = "FF" + colorCycle[j % colorCycle.Length];
+                Color c = Color.FromArgb(Convert.ToInt32(str, 16));
+                using (Pen pen = new Pen(c, 2.0f))
+                {
+                    for (int i = 0; i < patternSize.Width; i++)
+                    {
+                        PointF p = transformer.Transform(corners[index]);
+
+                        canvas.DrawEllipse(pen, p.Box(5));
+
+                        if (index != 0)
+                        {
+                            canvas.DrawLine(pen, prevPoint, p);
+                        }
+
+                        prevPoint = p;
+                        index++;
+                    }
+                }
             }
         }
 

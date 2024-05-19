@@ -558,8 +558,7 @@ namespace Kinovea.ScreenManager
 
                 // Get a random color that will be unique to the represented frame.
                 string str = "FF" + colorCycle[i % colorCycle.Length];
-                int colorInt = Convert.ToInt32(str, 16);
-                Color c = Color.FromArgb(colorInt);
+                Color c = Color.FromArgb(Convert.ToInt32(str, 16));
                 using (Pen pen = new Pen(c, 2.0f))
                     canvas.DrawPolygon(pen, points4.ToArray());
             }
