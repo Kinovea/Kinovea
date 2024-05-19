@@ -59,7 +59,7 @@ namespace Kinovea.ScreenManager
         private static readonly int defaultDuration = 1000;
         private static readonly int defaultFontSize = 24;
         private Brush foreBrush = new SolidBrush(Color.FromArgb(255, Color.White));
-        private Brush backBrush = new SolidBrush(Color.FromArgb(128, Color.Black));
+        private Brush backBrush = new SolidBrush(Color.FromArgb(200, Color.Black));
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         

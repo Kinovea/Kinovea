@@ -476,6 +476,7 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Unload();
             ResetData();
             videoFilterIsActive = false;
+            btnExitFilter.Visible = false;
 
             // 2. Reset all interface.
             ShowHideRenderingSurface(false);
@@ -923,6 +924,11 @@ namespace Kinovea.ScreenManager
             m_fill = true;
             ResizeUpdate(true);
             UpdateInfobar();
+            btnExitFilter.Visible = true;
+
+            string name = VideoFilterFactory.GetFriendlyName(m_FrameServer.Metadata.ActiveVideoFilter.Type);
+            m_MessageToaster.SetDuration(750);
+            m_MessageToaster.Show(name);
         }
         public void DeactivateVideoFilter()
         {
@@ -930,6 +936,11 @@ namespace Kinovea.ScreenManager
             StretchSqueezeSurface(true);
             DoInvalidate();
             UpdateInfobar();
+            btnExitFilter.Visible = false;
+
+            string name = VideoFilterFactory.GetFriendlyName(VideoFilterType.None);
+            m_MessageToaster.SetDuration(750);
+            m_MessageToaster.Show(name);
         }
 
         public void SetSyncMergeImage(Bitmap _SyncMergeImage, bool _bUpdateUI)
@@ -1573,6 +1584,13 @@ namespace Kinovea.ScreenManager
             if (CloseAsked != null)
                 CloseAsked(this, EventArgs.Empty);
         }
+        private void btnExitFilter_Click(object sender, EventArgs e)
+        {
+            m_FrameServer.DeactivateVideoFilter();
+            DeactivateVideoFilter();
+            FilterExited?.Invoke(this, EventArgs.Empty);
+        }
+
         private void PanelVideoControls_MouseEnter(object sender, EventArgs e)
         {
             // Set focus to enable mouse scroll

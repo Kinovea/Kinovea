@@ -77,6 +77,7 @@ namespace Kinovea.ScreenManager
       this.btnDockBottom = new System.Windows.Forms.Button();
       this.pnlThumbnails = new System.Windows.Forms.Panel();
       this.pictureBox1 = new System.Windows.Forms.PictureBox();
+      this.btnExitFilter = new System.Windows.Forms.Button();
       this.panelTop.SuspendLayout();
       this.panelVideoControls.SuspendLayout();
       this.panel1.SuspendLayout();
@@ -99,6 +100,7 @@ namespace Kinovea.ScreenManager
       // panelTop
       // 
       this.panelTop.BackColor = System.Drawing.Color.White;
+      this.panelTop.Controls.Add(this.btnExitFilter);
       this.panelTop.Controls.Add(this.btnClose);
       this.panelTop.Dock = System.Windows.Forms.DockStyle.Top;
       this.panelTop.Location = new System.Drawing.Point(0, 0);
@@ -248,7 +250,7 @@ namespace Kinovea.ScreenManager
       this.btnExportImage.Tag = "";
       this.btnExportImage.UseVisualStyleBackColor = false;
       // 
-      // btnPausedVideo
+      // btnExportVideoWithPauses
       // 
       this.btnExportVideoWithPauses.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.btnExportVideoWithPauses.BackColor = System.Drawing.Color.Transparent;
@@ -260,13 +262,13 @@ namespace Kinovea.ScreenManager
       this.btnExportVideoWithPauses.Image = global::Kinovea.ScreenManager.Properties.Resources.export_video_with_pauses;
       this.btnExportVideoWithPauses.Location = new System.Drawing.Point(148, 14);
       this.btnExportVideoWithPauses.MinimumSize = new System.Drawing.Size(25, 25);
-      this.btnExportVideoWithPauses.Name = "btnPausedVideo";
+      this.btnExportVideoWithPauses.Name = "btnExportVideoWithPauses";
       this.btnExportVideoWithPauses.Size = new System.Drawing.Size(30, 25);
       this.btnExportVideoWithPauses.TabIndex = 25;
       this.btnExportVideoWithPauses.Tag = "";
       this.btnExportVideoWithPauses.UseVisualStyleBackColor = false;
       // 
-      // btnSaveVideo
+      // btnExportVideo
       // 
       this.btnExportVideo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.btnExportVideo.BackColor = System.Drawing.Color.Transparent;
@@ -278,13 +280,13 @@ namespace Kinovea.ScreenManager
       this.btnExportVideo.Image = global::Kinovea.ScreenManager.Properties.Resources.export_video_video;
       this.btnExportVideo.Location = new System.Drawing.Point(88, 14);
       this.btnExportVideo.MinimumSize = new System.Drawing.Size(25, 25);
-      this.btnExportVideo.Name = "btnSaveVideo";
+      this.btnExportVideo.Name = "btnExportVideo";
       this.btnExportVideo.Size = new System.Drawing.Size(30, 25);
       this.btnExportVideo.TabIndex = 25;
       this.btnExportVideo.Tag = "";
       this.btnExportVideo.UseVisualStyleBackColor = false;
       // 
-      // btnDiaporama
+      // btnExportVideoSlideshow
       // 
       this.btnExportVideoSlideshow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.btnExportVideoSlideshow.BackColor = System.Drawing.Color.Transparent;
@@ -296,7 +298,7 @@ namespace Kinovea.ScreenManager
       this.btnExportVideoSlideshow.Image = global::Kinovea.ScreenManager.Properties.Resources.export_video_slideshow;
       this.btnExportVideoSlideshow.Location = new System.Drawing.Point(118, 14);
       this.btnExportVideoSlideshow.MinimumSize = new System.Drawing.Size(25, 25);
-      this.btnExportVideoSlideshow.Name = "btnDiaporama";
+      this.btnExportVideoSlideshow.Name = "btnExportVideoSlideshow";
       this.btnExportVideoSlideshow.Size = new System.Drawing.Size(30, 25);
       this.btnExportVideoSlideshow.TabIndex = 25;
       this.btnExportVideoSlideshow.Tag = "";
@@ -942,7 +944,7 @@ namespace Kinovea.ScreenManager
       this.pnlThumbnails.Controls.Add(this.pictureBox1);
       this.pnlThumbnails.Location = new System.Drawing.Point(0, 27);
       this.pnlThumbnails.Name = "pnlThumbnails";
-      this.pnlThumbnails.Size = new System.Drawing.Size(600, 162);
+      this.pnlThumbnails.Size = new System.Drawing.Size(600, 164);
       this.pnlThumbnails.TabIndex = 3;
       this.pnlThumbnails.DoubleClick += new System.EventHandler(this.pnlThumbnails_DoubleClick);
       this.pnlThumbnails.MouseEnter += new System.EventHandler(this.pnlThumbnails_MouseEnter);
@@ -956,6 +958,24 @@ namespace Kinovea.ScreenManager
       this.pictureBox1.TabIndex = 2;
       this.pictureBox1.TabStop = false;
       this.pictureBox1.Visible = false;
+      // 
+      // btnExitFilter
+      // 
+      this.btnExitFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnExitFilter.BackColor = System.Drawing.Color.Transparent;
+      this.btnExitFilter.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.exit_filter;
+      this.btnExitFilter.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+      this.btnExitFilter.Cursor = System.Windows.Forms.Cursors.Default;
+      this.btnExitFilter.FlatAppearance.BorderSize = 0;
+      this.btnExitFilter.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+      this.btnExitFilter.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+      this.btnExitFilter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnExitFilter.Location = new System.Drawing.Point(550, 2);
+      this.btnExitFilter.Name = "btnExitFilter";
+      this.btnExitFilter.Size = new System.Drawing.Size(20, 20);
+      this.btnExitFilter.TabIndex = 3;
+      this.btnExitFilter.UseVisualStyleBackColor = false;
+      this.btnExitFilter.Click += new System.EventHandler(this.btnExitFilter_Click);
       // 
       // PlayerScreenUserInterface
       // 
@@ -1052,5 +1072,6 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.ImageList imgListPropertyTabs;
+        private System.Windows.Forms.Button btnExitFilter;
     }
 }
