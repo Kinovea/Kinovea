@@ -134,7 +134,7 @@ namespace Kinovea.ScreenManager
         private void InitializeMenus()
         {
             mnuAction.Image = Properties.Resources.action;
-            mnuRun.Image = Properties.Drawings.trackingplay;
+            mnuRun.Image = Properties.Resources.checkerboard;
             //mnuDeleteData.Image = Properties.Resources.bin_empty;
             mnuRun.Click += MnuRun_Click;
             //mnuDeleteData.Click += MnuDeleteData_Click;

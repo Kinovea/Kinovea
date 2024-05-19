@@ -9,6 +9,7 @@ using Kinovea.Video;
 using Kinovea.Services;
 using System.IO;
 using System.Globalization;
+using System.ComponentModel;
 
 namespace Kinovea.ScreenManager
 {
@@ -21,6 +22,9 @@ namespace Kinovea.ScreenManager
     public class CameraTracker
     {
         #region Properties
+
+        public bool Tracked { get { return tracked; } }
+
         /// <summary>
         /// Reverse mapping going from timestamps to frames indices.
         /// </summary>
@@ -35,6 +39,7 @@ namespace Kinovea.ScreenManager
         #region Members
 
         private Bitmap mask;
+        private bool tracked = false;
 
         // Computed data
         // frameIndices: reverse index from timestamps to frames indices.
@@ -100,8 +105,9 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        public void Run(IWorkingZoneFramesContainer framesContainer)
+        public void Run(IWorkingZoneFramesContainer framesContainer, BackgroundWorker worker)
         {
+            // This runs in the background thread.
             ResetTrackingData();
 
             stopwatch.Start();
@@ -120,14 +126,17 @@ namespace Kinovea.ScreenManager
                 log.DebugFormat("Imported mask. {0} ms.", stopwatch.ElapsedMilliseconds);
             }
 
-
             // Find and describe features on each frame.
             // TODO: try to run this through a parallel for if possible.
             // Do we need frameIndices, keypoints and descriptors to be sequential?
             // If so, prepare all the tables without the detection and then run the detection in parallel.
             int frameIndex = 0;
-            foreach (var f in framesContainer.Frames)
+            for (int i = 0; i < framesContainer.Frames.Count; i++)
             {
+                if (worker.CancellationPending)
+                    break;
+
+                var f = framesContainer.Frames[i];
                 if (frameIndices.ContainsKey(f.Timestamp))
                     continue;
 
@@ -150,7 +159,9 @@ namespace Kinovea.ScreenManager
 
                 //log.DebugFormat("Feature detection - Frame [{0}]: {1} features.", keypoints.Count, keypoints[keypoints.Count - 1].Length);
                 frameIndex++;
+                worker.ReportProgress(i + 1, framesContainer.Frames.Count);
             }
+
 
             if (hasMask)
                 cvMaskGray.Dispose();
@@ -158,7 +169,13 @@ namespace Kinovea.ScreenManager
             orb.Dispose();
 
             log.DebugFormat("Feature detection: {0} ms.", stopwatch.ElapsedMilliseconds);
-
+            
+            if (worker.CancellationPending)
+            {
+                log.DebugFormat("Camera motion estimation cancelled.");
+                return;
+            }
+            
             // Match features in consecutive frames.
             // TODO: match each frame with the n next frames where n depends on framerate.
             var matcher = new OpenCvSharp.BFMatcher(OpenCvSharp.NormTypes.Hamming, crossCheck: true);
@@ -166,15 +183,25 @@ namespace Kinovea.ScreenManager
             {
                 var mm = matcher.Match(descriptors[i], descriptors[i + 1]);
                 matches.Add(mm);
+                worker.ReportProgress(i + 1, descriptors.Count - 1);
             }
 
             matcher.Dispose();
             log.DebugFormat("Feature matching: {0} ms.", stopwatch.ElapsedMilliseconds);
 
+            if (worker.CancellationPending)
+            {
+                log.DebugFormat("Camera motion estimation cancelled.");
+                return;
+            }
+
             // Compute transforms between consecutive frames.
             // TODO: bundle adjustment.
             for (int i = 0; i < descriptors.Count - 1; i++)
             {
+                if (worker.CancellationPending)
+                    break;
+
                 var mm = matches[i];
                 var srcPoints = mm.Select(m => new OpenCvSharp.Point2d(keypoints[i][m.QueryIdx].Pt.X, keypoints[i][m.QueryIdx].Pt.Y));
                 var dstPoints = mm.Select(m => new OpenCvSharp.Point2d(keypoints[i + 1][m.TrainIdx].Pt.X, keypoints[i + 1][m.TrainIdx].Pt.Y));
@@ -200,25 +227,17 @@ namespace Kinovea.ScreenManager
 
                 //LogHomography(i, i + 1, homography);
                 consecTransforms.Add(homography);
+                worker.ReportProgress(i + 1, descriptors.Count - 1);
+            }
+
+            if (worker.CancellationPending)
+            {
+                log.DebugFormat("Camera motion estimation cancelled.");
+                return;
             }
 
             log.DebugFormat("Transforms computation: {0} ms.", stopwatch.ElapsedMilliseconds);
-
-            // Precompute all the transform matrices towards and back from the common frame of reference.
-            // For now we use the first frame as the global reference.
-            //var identity = OpenCvSharp.Mat.Eye(3, 3, OpenCvSharp.MatType.CV_64FC1);
-            //for (int i = 0; i < frameIndices.Count; i++)
-            //{
-            //    // Forward.
-            //    var mat = identity;
-            //    if (i > 0)
-            //    {
-            //        mat = forwardTransforms[i - 1] * consecTransforms[i - 1];
-            //    }
-
-            //    forwardTransforms.Add(mat);
-            //}
-
+            tracked = true;
         }
 
         /// <summary>
@@ -272,6 +291,8 @@ namespace Kinovea.ScreenManager
 
         public void ResetTrackingData()
         {
+            tracked = false;
+            
             frameIndices.Clear();
             keypoints.Clear();
             descriptors.Clear();

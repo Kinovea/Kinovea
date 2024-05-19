@@ -13,6 +13,8 @@ using Kinovea.Services;
 using System.IO;
 //using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Globalization;
+using System.ComponentModel;
+using System.Threading;
 
 namespace Kinovea.ScreenManager
 {
@@ -158,7 +160,7 @@ namespace Kinovea.ScreenManager
         private void InitializeMenus()
         {
             mnuAction.Image = Properties.Resources.action;
-            mnuRun.Image = Properties.Drawings.trackingplay;
+            mnuRun.Image = Properties.Resources.motion_detector;
             mnuDeleteData.Image = Properties.Resources.bin_empty;
             mnuRun.Click += MnuRun_Click;
             mnuImportMask.Click += MnuImportMask_Click;
@@ -315,14 +317,24 @@ namespace Kinovea.ScreenManager
             if (framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count < 1)
                 return;
 
-            // Perform the actual motion estimation.
-            // TODO: use a progress bar.
-            tracker.Run(framesContainer);
+            formProgressBar2 fpb = new formProgressBar2(true, true, Worker_DoWork);
+            fpb.ShowDialog();
+            fpb.Dispose();
             
             InvalidateFromMenu(sender);
 
             // Commit transform data.
-            parentMetadata.SetCameraMotion(tracker);
+            if (tracker.Tracked)
+                parentMetadata.SetCameraMotion(tracker);
+        }
+
+        private void Worker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            // This runs in the background thread.
+            Thread.CurrentThread.Name = "CameraMotionEstimation";
+            BackgroundWorker worker = sender as BackgroundWorker;
+
+            tracker.Run(framesContainer, worker);
         }
 
         private void MnuImportMask_Click(object sender, EventArgs e)
