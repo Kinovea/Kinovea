@@ -62,6 +62,10 @@ namespace Kinovea.ScreenManager
         {
             get { return false; }
         }
+        public bool CanExportData
+        {
+            get { return true; }
+        }
         public int ContentHash
         {
             get { return 0; }
@@ -96,6 +100,7 @@ namespace Kinovea.ScreenManager
         #region Menu
         private ToolStripMenuItem mnuAction = new ToolStripMenuItem();
         private ToolStripMenuItem mnuRun = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuDeleteData = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSave = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowCorners = new ToolStripMenuItem();
@@ -142,31 +147,24 @@ namespace Kinovea.ScreenManager
         {
             mnuAction.Image = Properties.Resources.action;
             mnuRun.Image = Properties.Resources.checkerboard;
-            mnuSave.Image = Properties.Resources.save_calibration;
-            //mnuDeleteData.Image = Properties.Resources.bin_empty;
+            mnuDeleteData.Image = Properties.Resources.bin_empty;
             mnuRun.Click += MnuRun_Click;
-            mnuSave.Click += MnuSave_Click;
-            //mnuDeleteData.Click += MnuDeleteData_Click;
+            mnuDeleteData.Click += MnuDeleteData_Click;
             mnuAction.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuRun,
-                mnuSave,
-                //new ToolStripSeparator(),
-                //mnuDeleteData,
+                new ToolStripSeparator(),
+                mnuDeleteData,
             });
 
             mnuOptions.Image = Properties.Resources.equalizer;
             mnuShowCorners.Image = Properties.Drawings.bullet_green;
-            //mnuShowOutliers.Image = Properties.Drawings.bullet_red;
             mnuShowCorners.Click += MnuShowCorners_Click;
-            //mnuShowOutliers.Click += MnuShowOutliers_Click;
-            //mnuShowInliers.Click += MnuShowInliers_Click;
-            //mnuShowTransforms.Click += MnuShowTransforms_Click;
             mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuShowCorners,
-                //mnuShowInliers,
-                //mnuShowOutliers,
-                //mnuShowTransforms,
             });
+
+            mnuSave.Image = Properties.Resources.save_calibration;
+            mnuSave.Click += MnuSave_Click;
         }
         #endregion
 
@@ -279,19 +277,27 @@ namespace Kinovea.ScreenManager
             });
 
             mnuShowCorners.Checked = showCorners;
+            mnuDeleteData.Enabled = calibrated;
             mnuSave.Enabled = calibrated;
 
             return contextMenu;
+        }
+
+        public ToolStripItem GetExportDataMenu()
+        {
+            return mnuSave;
         }
 
         private void ReloadMenusCulture()
         {
             mnuAction.Text = ScreenManagerLang.mnuAction;
             mnuRun.Text = "Run lens calibration";
-            mnuSave.Text = "Save lens calibration";
+            mnuDeleteData.Text = "Delete calibration data";
 
             mnuOptions.Text = ScreenManagerLang.Generic_Options;
             mnuShowCorners.Text = "Show corners";
+
+            mnuSave.Text = "Save calibration data…";
         }
 
         private void MnuRun_Click(object sender, EventArgs e)
@@ -460,19 +466,15 @@ namespace Kinovea.ScreenManager
 
         private void MnuDeleteData_Click(object sender, EventArgs e)
         {
-            //CaptureMemento();
-            //tracker.ResetTrackingData();
-            //Update();
+            calibrated = false;
+            frameIndices.Clear();
+            imagePoints.Clear();
             InvalidateFromMenu(sender);
         }
 
         private void MnuShowCorners_Click(object sender, EventArgs e)
         {
-            //CaptureMemento();
-
             showCorners = !mnuShowCorners.Checked;
-
-            //Update();
             InvalidateFromMenu(sender);
         }
 
@@ -499,7 +501,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void DrawCorners(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
         {
-            if (imagePoints.Count == 0)
+            if (!calibrated || imagePoints.Count == 0)
                 return;
 
             if (!frameIndices.ContainsKey(timestamp) || frameIndices[timestamp] >= imagePoints.Count)

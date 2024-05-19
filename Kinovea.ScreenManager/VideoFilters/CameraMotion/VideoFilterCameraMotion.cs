@@ -36,7 +36,6 @@ namespace Kinovea.ScreenManager
         {
             get { return "filterName_CameraMotion"; }
         }
-
         public Bitmap Current
         {
             get { return null; }
@@ -64,6 +63,10 @@ namespace Kinovea.ScreenManager
             get { return false; }
         }
         public bool CanExportImage
+        {
+            get { return false; }
+        }
+        public bool CanExportData
         {
             get { return false; }
         }
@@ -295,6 +298,11 @@ namespace Kinovea.ScreenManager
             mnuShowTransforms.Checked = showTransforms;
 
             return contextMenu;
+        }
+
+        public ToolStripItem GetExportDataMenu()
+        {
+            throw new NotImplementedException();
         }
 
         private void ReloadMenusCulture()

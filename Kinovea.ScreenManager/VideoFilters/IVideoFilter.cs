@@ -89,6 +89,15 @@ namespace Kinovea.ScreenManager
         bool CanExportImage { get; }
 
         /// <summary>
+        /// Whether this filter is capable of exporting its data.
+        /// This only makes sense for filters whose data is not 
+        /// part of the KVA file, like lens calibration.
+        /// If this is true a custom save menu will be requested 
+        /// via GetExportDataMenu.
+        /// </summary>
+        bool CanExportData { get; }
+
+        /// <summary>
         /// A hash of the settings of the filter, used to detect changes and prompt user for saving.
         /// </summary>
         int ContentHash { get; }
@@ -103,6 +112,12 @@ namespace Kinovea.ScreenManager
         /// CanExportImage properties and the event handlers will call into ExportVideo and ExportImage.
         /// </summary>
         List<ToolStripItem> GetContextMenu(PointF pivot, long timestamp);
+
+
+        /// <summary>
+        /// Retrieve the menu item for exporting the filter data.
+        /// </summary>
+        ToolStripItem GetExportDataMenu();
 
         /// <summary>
         /// Called by the screen when the number or content of the frame buffer has changed.

@@ -85,6 +85,10 @@ namespace Kinovea.ScreenManager
         {
             get { return true; }
         }
+        public bool CanExportData
+        {
+            get { return false; }
+        }
         public KinogramParameters Parameters
         {
             get { return parameters; }
@@ -504,6 +508,11 @@ namespace Kinovea.ScreenManager
             mnuAutoInterpolate.Checked = parameters.AutoInterpolate;
 
             return contextMenu;
+        }
+
+        public ToolStripItem GetExportDataMenu()
+        {
+            throw new NotImplementedException();
         }
 
         private void ReloadMenusCulture()

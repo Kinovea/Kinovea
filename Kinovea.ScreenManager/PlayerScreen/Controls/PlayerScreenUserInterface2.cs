@@ -3281,6 +3281,10 @@ namespace Kinovea.ScreenManager
                     PrepareFilterContextMenu(m_FrameServer.Metadata.ActiveVideoFilter, popMenuFilter);
 
                     popMenuFilter.Items.Add(new ToolStripSeparator());
+                    
+                    if (m_FrameServer.Metadata.ActiveVideoFilter.CanExportData)
+                        popMenuFilter.Items.Add(m_FrameServer.Metadata.ActiveVideoFilter.GetExportDataMenu());
+
                     popMenuFilter.Items.Add(mnuSaveAnnotations);
                     popMenuFilter.Items.Add(mnuSaveAnnotationsAs);
 
