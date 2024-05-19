@@ -1533,6 +1533,16 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap save_calibration {
+            get {
+                object obj = ResourceManager.GetObject("save_calibration", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap saveblended {
             get {
                 object obj = ResourceManager.GetObject("saveblended", resourceCulture);

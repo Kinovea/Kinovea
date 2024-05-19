@@ -142,7 +142,7 @@ namespace Kinovea.ScreenManager
         {
             mnuAction.Image = Properties.Resources.action;
             mnuRun.Image = Properties.Resources.checkerboard;
-            mnuSave.Image = Properties.Resources.filesave;
+            mnuSave.Image = Properties.Resources.save_calibration;
             //mnuDeleteData.Image = Properties.Resources.bin_empty;
             mnuRun.Click += MnuRun_Click;
             mnuSave.Click += MnuSave_Click;
