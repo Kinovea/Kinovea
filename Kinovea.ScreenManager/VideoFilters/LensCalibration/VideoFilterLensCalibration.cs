@@ -8,6 +8,10 @@ using System.Xml;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Video;
 using Kinovea.Services;
+using System.Web;
+using SpreadsheetLight.Charts;
+using System.ComponentModel;
+using System.Threading;
 
 namespace Kinovea.ScreenManager
 {
@@ -29,7 +33,7 @@ namespace Kinovea.ScreenManager
 
         public Bitmap Current
         {
-            get { return null; }
+            get { return bitmap; }
         }
         public bool HasContextMenu
         {
@@ -65,6 +69,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region members
+        private Bitmap bitmap;
         private Size frameSize;
         private IWorkingZoneFramesContainer framesContainer;
         private Metadata parentMetadata;
@@ -72,37 +77,25 @@ namespace Kinovea.ScreenManager
         // frameIndices: reverse index from timestamps to frames indices.
         private Dictionary<long, int> frameIndices = new Dictionary<long, int>();
         private List<List<OpenCvSharp.Point2f>> imagePoints = new List<List<OpenCvSharp.Point2f>>();
-        private Size patternSize = new Size(9, 6);
+        private DistortionParameters calibration;
 
+        // Configuration
+        private int maxImages = 15;
+        private Size patternSize = new Size(9, 6);
+        
         // Display parameters
         private bool showCorners = true;
 
         #region Menu
         private ToolStripMenuItem mnuAction = new ToolStripMenuItem();
         private ToolStripMenuItem mnuRun = new ToolStripMenuItem();
-        //private ToolStripMenuItem mnuImportMask = new ToolStripMenuItem();
-        //private ToolStripMenuItem mnuImportColmap = new ToolStripMenuItem();
-        //private ToolStripMenuItem mnuDeleteData = new ToolStripMenuItem();
-
         private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowCorners = new ToolStripMenuItem();
-        //private ToolStripMenuItem mnuShowOutliers = new ToolStripMenuItem();
-        //private ToolStripMenuItem mnuShowInliers = new ToolStripMenuItem();
-        //private ToolStripMenuItem mnuShowTransforms = new ToolStripMenuItem();
         #endregion
-
-        // Decoration
-        private Pen penCorner = new Pen(Color.Lime, 2.0f);
-        //private Pen penFeatureOutlier = new Pen(Color.Red, 2.0f);
-        //private Pen penMatchInlier = new Pen(Color.LimeGreen, 2.0f);
-        //private Pen penMatchOutlier = new Pen(Color.FromArgb(128, 255, 0, 0), 2.0f);
-        //private int maxTransformsFrames = 25;
-
 
         static string[] colorCycle = new string[] {
             "FF0000", "FF6A00", "FFD800", "4CFF00", "00FFFF", "0094FF", "B200FF", "FF00DC",
         };
-
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -132,7 +125,8 @@ namespace Kinovea.ScreenManager
         {
             if (disposing)
             {
-                //tracker.Dispose();
+                if (bitmap != null)
+                    bitmap.Dispose();
             }
         }
 
@@ -275,12 +269,23 @@ namespace Kinovea.ScreenManager
             if (framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count < 1)
                 return;
 
-            // Perform the actual lens calibration.
-            // TODO: use a progress bar.
+            formProgressBar2 fpb = new formProgressBar2(true, true, Worker_DoWork);
+            fpb.ShowDialog();
+            fpb.Dispose();
 
+            InvalidateFromMenu(sender);
+
+            // Commit intrinsics data.
+            //parentMetadata.SetLensCalibration(calibration);
+        }
+
+        private void Worker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            // This runs in the background thread.
+            Thread.CurrentThread.Name = "LensCalibration";
+            BackgroundWorker worker = sender as BackgroundWorker;
+            
             stopwatch.Start();
-
-            // http://docs.opencv.org/2.4/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html#calibratecamera
 
             int cbWidth = patternSize.Width;
             int cbHeight = patternSize.Height;
@@ -302,10 +307,16 @@ namespace Kinovea.ScreenManager
             // TODO: Get number of images to use from configuration.
             frameIndices.Clear();
             imagePoints.Clear();
-
             List<List<OpenCvSharp.Point3f>> objectPoints = new List<List<OpenCvSharp.Point3f>>();
-            foreach (var f in framesContainer.Frames)
+            int total = framesContainer.Frames.Count;
+            int step = Math.Max(1, total / maxImages);
+            for (int i = 0; i < total; i += step)
             {
+                if (worker.CancellationPending)
+                    break;
+
+                var f = framesContainer.Frames[i];
+
                 // Convert image to OpenCV and convert to grayscale.
                 var cvImage = OpenCvSharp.Extensions.BitmapConverter.ToMat(f.Image);
                 var cvImageGray = new OpenCvSharp.Mat();
@@ -319,23 +330,38 @@ namespace Kinovea.ScreenManager
                 if (!found)
                 {
                     cvImageGray.Dispose();
+                    worker.ReportProgress(i + 1, total);
                     continue;
                 }
-
+            
                 // TODO: Refine the corner positions.
 
                 // Collect the point correspondances.
                 frameIndices.Add(f.Timestamp, imagePoints.Count);
                 objectPoints.Add(points);
                 imagePoints.Add(corners.ToArray().ToList());
+
+                worker.ReportProgress(i + 1, total);
+            }
+
+            if (worker.CancellationPending)
+            {
+                log.Debug("Lens calibration cancelled.");
+                return;
+            }
+
+            log.DebugFormat("Find corners: {0:0.000} s", stopwatch.ElapsedMilliseconds / 1000.0f);
+
+            if (imagePoints.Count < 2)
+            {
+                log.Debug("Lens calibration failure. Not enough images to calibrate.");
+                return;
             }
 
             // Compute the calibration.
-            DistortionParameters calib = Calibrate(objectPoints, imagePoints);
-            InvalidateFromMenu(sender);
-
-            // Commit intrinsics data.
-            //parentMetadata.SetLensCalibration(calib);
+            stopwatch.Restart();
+            calibration = Calibrate(objectPoints, imagePoints);
+            log.DebugFormat("Calibration: {0:0.000} s", stopwatch.ElapsedMilliseconds / 1000.0f);
         }
 
         private DistortionParameters Calibrate(List<List<OpenCvSharp.Point3f>> objectPoints, List<List<OpenCvSharp.Point2f>> imagePoints)
@@ -417,7 +443,7 @@ namespace Kinovea.ScreenManager
         #region Rendering
 
         /// <summary>
-        /// Draw a dot on each corner.
+        /// Draw a circle around each corner and connect them together.
         /// </summary>
         private void DrawCorners(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
         {
