@@ -11,5 +11,6 @@ namespace Kinovea.ScreenManager
         None,
         Kinogram,
         CameraMotion,
+        LensCalibration
     }
 }

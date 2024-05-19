@@ -2125,8 +2125,14 @@ namespace Kinovea.ScreenManager
 
         private void CreateVideoFilters()
         {
-            videoFilters.Add(VideoFilterType.Kinogram, VideoFilterFactory.CreateFilter(VideoFilterType.Kinogram, this));
-            videoFilters.Add(VideoFilterType.CameraMotion, VideoFilterFactory.CreateFilter(VideoFilterType.CameraMotion, this));
+            List<VideoFilterType> filters = new List<VideoFilterType>() {
+                VideoFilterType.Kinogram,
+                VideoFilterType.CameraMotion,
+                VideoFilterType.LensCalibration
+            };
+            
+            foreach (var type in filters)
+                videoFilters.Add(type, VideoFilterFactory.CreateFilter(type, this));
         }
 
         private void ResetVideoFilters()

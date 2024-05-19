@@ -212,6 +212,7 @@ namespace Kinovea.ScreenManager
             filterMenus.Add(CreateFilterMenu(VideoFilterType.None));
             filterMenus.Add(CreateFilterMenu(VideoFilterType.Kinogram));
             filterMenus.Add(CreateFilterMenu(VideoFilterType.CameraMotion));
+            filterMenus.Add(CreateFilterMenu(VideoFilterType.LensCalibration));
         }
 
         private ToolStripMenuItem CreateFilterMenu(VideoFilterType type)

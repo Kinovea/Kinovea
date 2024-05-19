@@ -972,6 +972,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="UIHelper.cs" />
+    <Compile Include="VideoFilters\LensCalibration\VideoFilterLensCalibration.cs" />
     <Compile Include="VideoFilters\VideoFilterType.cs" />
     <Compile Include="VideoFilters\VideoFilterFactory.cs" />
     <Compile Include="VideoFilters\VideoFilterInfo.cs" />

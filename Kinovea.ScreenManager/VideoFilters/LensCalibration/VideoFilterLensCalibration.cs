@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -11,28 +11,24 @@ using Kinovea.ScreenManager.Languages;
 using Kinovea.Video;
 using Kinovea.Services;
 using System.IO;
-//using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Globalization;
 
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// Camera motion subsystem.
-    /// The goal of this filter is to estimate the motion of the camera between frames.
-    /// The output is a series of frame-to-frame transforms that can be used to calculate 
-    /// the position of points in any frame based on their position in a reference frame.
-    /// The low level work is done by the CameraTracker class.
+    /// Lens calibration subsystem.
+    /// The goal of this filter is to estimate the intrinsics parameters of a camera.
     /// </summary>
-    public class VideoFilterCameraMotion : IVideoFilter
+    public class VideoFilterLensCalibration : IVideoFilter
     {
         #region Properties
         public VideoFilterType Type
         {
-            get { return VideoFilterType.CameraMotion; }
+            get { return VideoFilterType.LensCalibration; }
         }
         public string FriendlyNameResource
         {
-            get { return "filterName_CameraMotion"; }
+            get { return "filterName_LensCalibration"; }
         }
 
         public Bitmap Current
@@ -59,14 +55,15 @@ namespace Kinovea.ScreenManager
         }
         public bool CanExportVideo
         {
+            // It could be interesting to export the undistorted video from here.
             get { return false; }
         }
         public bool CanExportImage
         {
             get { return false; }
         }
-        public int ContentHash 
-        { 
+        public int ContentHash
+        {
             get { return 0; }
         }
         #endregion
@@ -124,7 +121,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region ctor/dtor
-        public VideoFilterCameraMotion(Metadata metadata)
+        public VideoFilterLensCalibration(Metadata metadata)
         {
             this.parentMetadata = metadata;
 
@@ -133,7 +130,7 @@ namespace Kinovea.ScreenManager
             //parameters = PreferencesManager.PlayerPreferences.CameraMotion;
         }
 
-        ~VideoFilterCameraMotion()
+        ~VideoFilterLensCalibration()
         {
             Dispose(false);
         }
@@ -256,7 +253,7 @@ namespace Kinovea.ScreenManager
         }
         public void WriteData(XmlWriter w)
         {
-            
+
         }
 
         public void ReadData(XmlReader r)
@@ -318,7 +315,7 @@ namespace Kinovea.ScreenManager
             // Perform the actual motion estimation.
             // TODO: use a progress bar.
             tracker.Run(framesContainer);
-            
+
             InvalidateFromMenu(sender);
 
             // Commit transform data.
@@ -549,7 +546,7 @@ namespace Kinovea.ScreenManager
             //using (Pen pen = new Pen(Color.Yellow, 4.0f))
             //    canvas.DrawPolygon(pen, points4.ToArray());
 
-            
+
             if (tracker.FrameIndices[timestamp] >= tracker.ConsecutiveTransforms.Count)
                 return;
 
@@ -612,6 +609,6 @@ namespace Kinovea.ScreenManager
             //dst.Dispose();
         }
         #endregion
-        
+
     }
 }

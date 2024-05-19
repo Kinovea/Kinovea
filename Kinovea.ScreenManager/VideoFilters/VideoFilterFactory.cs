@@ -27,6 +27,7 @@ namespace Kinovea.ScreenManager
         {
             info.Add(VideoFilterType.Kinogram, new VideoFilterInfo("Kinogram", "filterName_Kinogram", Properties.Resources.kinogram, false));
             info.Add(VideoFilterType.CameraMotion, new VideoFilterInfo("CameraMotion", "filterName_CameraMotion", Properties.Resources.motion_detector, false));
+            info.Add(VideoFilterType.LensCalibration, new VideoFilterInfo("LensCalibration", "filterName_LensCalibration", Properties.Resources.checkerboard, false));
         }
 
         /// <summary>
@@ -41,6 +42,8 @@ namespace Kinovea.ScreenManager
                     return new VideoFilterKinogram(metadata);
                 case VideoFilterType.CameraMotion:
                     return new VideoFilterCameraMotion(metadata);
+                case VideoFilterType.LensCalibration:
+                    return new VideoFilterLensCalibration(metadata);
                 default:
                     return null;
             }
@@ -64,6 +67,13 @@ namespace Kinovea.ScreenManager
         {
             if (type == VideoFilterType.None)
                 return ScreenManagerLang.filterName_Analysis;
+
+            // Special cases until the filter names are localized.
+            if (type == VideoFilterType.CameraMotion)
+                return "Camera motion estimation";
+
+            if (type == VideoFilterType.LensCalibration)
+                return "Lens calibration";
 
             string friendlyNameResource = info[type].FriendlyNameResource;
             if (string.IsNullOrEmpty(friendlyNameResource))
