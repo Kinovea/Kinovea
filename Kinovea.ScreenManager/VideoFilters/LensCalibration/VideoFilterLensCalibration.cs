@@ -96,6 +96,7 @@ namespace Kinovea.ScreenManager
         #region Menu
         private ToolStripMenuItem mnuAction = new ToolStripMenuItem();
         private ToolStripMenuItem mnuRun = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSave = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowCorners = new ToolStripMenuItem();
         #endregion
@@ -141,11 +142,14 @@ namespace Kinovea.ScreenManager
         {
             mnuAction.Image = Properties.Resources.action;
             mnuRun.Image = Properties.Resources.checkerboard;
+            mnuSave.Image = Properties.Resources.filesave;
             //mnuDeleteData.Image = Properties.Resources.bin_empty;
             mnuRun.Click += MnuRun_Click;
+            mnuSave.Click += MnuSave_Click;
             //mnuDeleteData.Click += MnuDeleteData_Click;
             mnuAction.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuRun,
+                mnuSave,
                 //new ToolStripSeparator(),
                 //mnuDeleteData,
             });
@@ -275,6 +279,7 @@ namespace Kinovea.ScreenManager
             });
 
             mnuShowCorners.Checked = showCorners;
+            mnuSave.Enabled = calibrated;
 
             return contextMenu;
         }
@@ -283,6 +288,7 @@ namespace Kinovea.ScreenManager
         {
             mnuAction.Text = ScreenManagerLang.mnuAction;
             mnuRun.Text = "Run lens calibration";
+            mnuSave.Text = "Save lens calibration";
 
             mnuOptions.Text = ScreenManagerLang.Generic_Options;
             mnuShowCorners.Text = "Show corners";
@@ -435,6 +441,23 @@ namespace Kinovea.ScreenManager
             return parameters;
         }
 
+        private void MnuSave_Click(object sender, EventArgs e)
+        {
+            if (!calibrated || calibration == null)
+                return;
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Title = ScreenManagerLang.dlgCameraCalibration_SaveDialogTitle;
+            saveFileDialog.Filter = FilesystemHelper.SaveXMLFilter();
+            saveFileDialog.FilterIndex = 1;
+            saveFileDialog.InitialDirectory = Software.CameraCalibrationDirectory;
+
+            if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))
+                return;
+
+            DistortionImporterKinovea.Export(saveFileDialog.FileName, calibration, frameSize);
+        }
+
         private void MnuDeleteData_Click(object sender, EventArgs e)
         {
             //CaptureMemento();
@@ -547,5 +570,6 @@ namespace Kinovea.ScreenManager
 
             return indices;
         }
+
     }
 }
