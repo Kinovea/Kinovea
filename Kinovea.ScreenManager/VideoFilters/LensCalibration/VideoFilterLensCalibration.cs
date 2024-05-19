@@ -3,15 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Video;
 using Kinovea.Services;
-using System.IO;
-using System.Globalization;
 
 namespace Kinovea.ScreenManager
 {
@@ -73,49 +69,36 @@ namespace Kinovea.ScreenManager
         private IWorkingZoneFramesContainer framesContainer;
         private Metadata parentMetadata;
         private Stopwatch stopwatch = new Stopwatch();
-        private Random rnd = new Random();
-
-        private CameraTracker tracker = new CameraTracker();
+        // frameIndices: reverse index from timestamps to frames indices.
+        private Dictionary<long, int> frameIndices = new Dictionary<long, int>();
+        private List<List<OpenCvSharp.Point2f>> imagePoints = new List<List<OpenCvSharp.Point2f>>();
 
         // Display parameters
-        private bool showFeatures = false;      // All the features found.
-        private bool showInliers = true;        // Features matched and used to estimate the final motion.
-        private bool showOutliers = false;      // Features matched but not used to estimate the final motion. 
-        private bool showTransforms = true;     // Frame transforms.
+        private bool showCorners = false;
+        //private bool showInliers = true;        // Features matched and used to estimate the final motion.
+        //private bool showOutliers = false;      // Features matched but not used to estimate the final motion. 
+        //private bool showTransforms = true;     // Frame transforms.
 
         #region Menu
         private ToolStripMenuItem mnuAction = new ToolStripMenuItem();
         private ToolStripMenuItem mnuRun = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuImportMask = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuImportColmap = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuDeleteData = new ToolStripMenuItem();
+        //private ToolStripMenuItem mnuImportMask = new ToolStripMenuItem();
+        //private ToolStripMenuItem mnuImportColmap = new ToolStripMenuItem();
+        //private ToolStripMenuItem mnuDeleteData = new ToolStripMenuItem();
 
         private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuShowFeatures = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuShowOutliers = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuShowInliers = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuShowTransforms = new ToolStripMenuItem();
-
+        private ToolStripMenuItem mnuShowCorners = new ToolStripMenuItem();
+        //private ToolStripMenuItem mnuShowOutliers = new ToolStripMenuItem();
+        //private ToolStripMenuItem mnuShowInliers = new ToolStripMenuItem();
+        //private ToolStripMenuItem mnuShowTransforms = new ToolStripMenuItem();
         #endregion
 
         // Decoration
-        private Pen penFeature = new Pen(Color.Yellow, 2.0f);
-        private Pen penFeatureOutlier = new Pen(Color.Red, 2.0f);
-        private Pen penFeatureInlier = new Pen(Color.Lime, 2.0f);
-        private Pen penMatchInlier = new Pen(Color.LimeGreen, 2.0f);
-        private Pen penMatchOutlier = new Pen(Color.FromArgb(128, 255, 0, 0), 2.0f);
-        private int maxTransformsFrames = 25;
-
-        // Precomputed list of unique colors to draw frame references.
-        // https://stackoverflow.com/questions/309149/generate-distinctly-different-rgb-colors-in-graphs
-        static string[] colorCycle = new string[] {
-            "00FF00", "0000FF", "FF0000", "01FFFE", "FFA6FE", "FFDB66", "006401", "010067", "95003A", "007DB5", "FF00F6",
-            "FFEEE8", "774D00", "90FB92", "0076FF", "D5FF00", "FF937E", "6A826C", "FF029D", "FE8900", "7A4782", "7E2DD2",
-            "85A900", "FF0056", "A42400", "00AE7E", "683D3B", "BDC6FF", "263400", "BDD393", "00B917", "9E008E", "001544",
-            "C28C9F", "FF74A3", "01D0FF", "004754", "E56FFE", "788231", "0E4CA1", "91D0CB", "BE9970", "968AE8", "BB8800",
-            "43002C", "DEFF74", "00FFC6", "FFE502", "620E00", "008F9C", "98FF52", "7544B1", "B500FF", "00FF78", "FF6E41",
-            "005F39", "6B6882", "5FAD4E", "A75740", "A5FFD2", "FFB167", "009BFF", "E85EBE",
-        };
+        private Pen penCorner = new Pen(Color.Lime, 2.0f);
+        //private Pen penFeatureOutlier = new Pen(Color.Red, 2.0f);
+        //private Pen penMatchInlier = new Pen(Color.LimeGreen, 2.0f);
+        //private Pen penMatchOutlier = new Pen(Color.FromArgb(128, 255, 0, 0), 2.0f);
+        //private int maxTransformsFrames = 25;
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -124,10 +107,7 @@ namespace Kinovea.ScreenManager
         public VideoFilterLensCalibration(Metadata metadata)
         {
             this.parentMetadata = metadata;
-
             InitializeMenus();
-
-            //parameters = PreferencesManager.PlayerPreferences.CameraMotion;
         }
 
         ~VideoFilterLensCalibration()
@@ -148,7 +128,7 @@ namespace Kinovea.ScreenManager
         {
             if (disposing)
             {
-                tracker.Dispose();
+                //tracker.Dispose();
             }
         }
 
@@ -156,33 +136,27 @@ namespace Kinovea.ScreenManager
         {
             mnuAction.Image = Properties.Resources.action;
             mnuRun.Image = Properties.Drawings.trackingplay;
-            mnuDeleteData.Image = Properties.Resources.bin_empty;
+            //mnuDeleteData.Image = Properties.Resources.bin_empty;
             mnuRun.Click += MnuRun_Click;
-            mnuImportMask.Click += MnuImportMask_Click;
-            mnuImportColmap.Click += MnuImportColmap_Click;
-            mnuDeleteData.Click += MnuDeleteData_Click;
+            //mnuDeleteData.Click += MnuDeleteData_Click;
             mnuAction.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuRun,
-                new ToolStripSeparator(),
-                mnuImportMask,
-                mnuImportColmap,
-                new ToolStripSeparator(),
-                mnuDeleteData,
+                //new ToolStripSeparator(),
+                //mnuDeleteData,
             });
 
             mnuOptions.Image = Properties.Resources.equalizer;
-            mnuShowFeatures.Image = Properties.Drawings.bullet_orange;
-            mnuShowInliers.Image = Properties.Drawings.bullet_green;
-            mnuShowOutliers.Image = Properties.Drawings.bullet_red;
-            mnuShowFeatures.Click += MnuShowFeatures_Click;
-            mnuShowOutliers.Click += MnuShowOutliers_Click;
-            mnuShowInliers.Click += MnuShowInliers_Click;
-            mnuShowTransforms.Click += MnuShowTransforms_Click;
+            mnuShowCorners.Image = Properties.Drawings.bullet_green;
+            //mnuShowOutliers.Image = Properties.Drawings.bullet_red;
+            mnuShowCorners.Click += MnuShowCorners_Click;
+            //mnuShowOutliers.Click += MnuShowOutliers_Click;
+            //mnuShowInliers.Click += MnuShowInliers_Click;
+            //mnuShowTransforms.Click += MnuShowTransforms_Click;
             mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
-                mnuShowFeatures,
-                mnuShowInliers,
-                mnuShowOutliers,
-                mnuShowTransforms,
+                mnuShowCorners,
+                //mnuShowInliers,
+                //mnuShowOutliers,
+                //mnuShowTransforms,
             });
         }
         #endregion
@@ -227,14 +201,8 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void DrawExtra(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, long timestamp, bool export)
         {
-            if (showFeatures)
-                DrawFeatures(canvas, transformer, timestamp);
-
-            if (showOutliers || showInliers)
-                DrawMatches(canvas, transformer, timestamp);
-
-            if (showTransforms)
-                DrawTransforms(canvas, transformer, timestamp);
+            if (showCorners)
+                DrawCorners(canvas, transformer, timestamp);
         }
 
         public void ExportVideo(IDrawingHostView host)
@@ -249,7 +217,7 @@ namespace Kinovea.ScreenManager
 
         public void ResetData()
         {
-            tracker.ResetTrackingData();
+            //tracker.ResetTrackingData();
         }
         public void WriteData(XmlWriter w)
         {
@@ -284,10 +252,7 @@ namespace Kinovea.ScreenManager
                 mnuOptions,
             });
 
-            mnuShowFeatures.Checked = showFeatures;
-            mnuShowInliers.Checked = showInliers;
-            mnuShowOutliers.Checked = showOutliers;
-            mnuShowTransforms.Checked = showTransforms;
+            mnuShowCorners.Checked = showCorners;
 
             return contextMenu;
         }
@@ -295,16 +260,10 @@ namespace Kinovea.ScreenManager
         private void ReloadMenusCulture()
         {
             mnuAction.Text = ScreenManagerLang.mnuAction;
-            mnuRun.Text = "Run camera motion estimation";
-            mnuImportMask.Text = "Import mask";
-            mnuImportColmap.Text = "Import COLMAP";
-            mnuDeleteData.Text = "Delete tracking data";
+            mnuRun.Text = "Run lens calibration";
 
             mnuOptions.Text = ScreenManagerLang.Generic_Options;
-            mnuShowFeatures.Text = "Show points";
-            mnuShowInliers.Text = "Show inliers";
-            mnuShowOutliers.Text = "Show outliers";
-            mnuShowTransforms.Text = "Show transforms";
+            mnuShowCorners.Text = "Show corners";
         }
 
         private void MnuRun_Click(object sender, EventArgs e)
@@ -312,133 +271,127 @@ namespace Kinovea.ScreenManager
             if (framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count < 1)
                 return;
 
-            // Perform the actual motion estimation.
+            // Perform the actual lens calibration.
             // TODO: use a progress bar.
-            tracker.Run(framesContainer);
 
+            stopwatch.Start();
+
+            // http://docs.opencv.org/2.4/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html#calibratecamera
+
+            int cbWidth = 9;
+            int cbHeight = 6;
+
+            // World space position of the corners.
+            // The actual world dimension doesn't matter.
+            List<OpenCvSharp.Point3f> points = new List<OpenCvSharp.Point3f>(cbHeight * cbWidth);
+            for (int i = 0; i < cbHeight; i++)
+            {
+                for (int j = 0; j < cbWidth; j++)
+                {
+                    points.Add(new OpenCvSharp.Point3f(j, i, 0));
+                }
+            }
+
+            OpenCvSharp.Size patternSize = new OpenCvSharp.Size(cbWidth, cbHeight);
+
+            // Find corners in images.
+            // FIXME: limit to 15 images equally spaced in the collection.
+            frameIndices.Clear();
+            imagePoints.Clear();
+
+            List<List<OpenCvSharp.Point3f>> objectPoints = new List<List<OpenCvSharp.Point3f>>();
+            foreach (var f in framesContainer.Frames)
+            {
+                // Convert image to OpenCV and convert to grayscale.
+                var cvImage = OpenCvSharp.Extensions.BitmapConverter.ToMat(f.Image);
+                var cvImageGray = new OpenCvSharp.Mat();
+                OpenCvSharp.Cv2.CvtColor(cvImage, cvImageGray, OpenCvSharp.ColorConversionCodes.BGR2GRAY, 0);
+                cvImage.Dispose();
+
+                // Find checkerboard corners in the image.
+                var corners = new OpenCvSharp.Mat<OpenCvSharp.Point2f>();
+                var flags = OpenCvSharp.ChessboardFlags.AdaptiveThresh | OpenCvSharp.ChessboardFlags.FastCheck | OpenCvSharp.ChessboardFlags.NormalizeImage;
+                bool found = OpenCvSharp.Cv2.FindChessboardCorners(cvImageGray, patternSize, corners, flags);
+                if (!found)
+                {
+                    cvImageGray.Dispose();
+                    continue;
+                }
+
+                // TODO: Refine the corner positions.
+
+                // Collect the point correspondances.
+                frameIndices.Add(f.Timestamp, imagePoints.Count);
+                objectPoints.Add(points);
+                imagePoints.Add(corners.ToArray().ToList());
+            }
+
+            DistortionParameters calib = Calibrate(objectPoints, imagePoints);
             InvalidateFromMenu(sender);
 
-            // Commit transform data.
-            parentMetadata.SetCameraMotion(tracker);
+            // Commit intrinsics data.
+            //parentMetadata.SetLensCalibration(calib);
         }
 
-        private void MnuImportMask_Click(object sender, EventArgs e)
+        private DistortionParameters Calibrate(List<List<OpenCvSharp.Point3f>> objectPoints, List<List<OpenCvSharp.Point2f>> imagePoints)
         {
-            // Open image.
-            // Reject if it's not the same size.
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Title = "Import mask";
-            openFileDialog.RestoreDirectory = true;
-            //openFileDialog.Filter = "";
-            //openFileDialog.FilterIndex = 0;
-            if (openFileDialog.ShowDialog() != DialogResult.OK)
-                return;
+            // TODO: move this back in CameraCalibrator.
+            // Rename CameraCalibrator to LensCalibrator or something.
+            
+            double[,] mat = new double[3, 3];
+            double[] dist = new double[5];
+            OpenCvSharp.CalibrationFlags flags = OpenCvSharp.CalibrationFlags.RationalModel;
+            var termCriteriaType = OpenCvSharp.CriteriaTypes.MaxIter | OpenCvSharp.CriteriaTypes.Eps;
+            int maxIter = 30;
+            float eps = 0.001f;
+            var termCriteria = new OpenCvSharp.TermCriteria(termCriteriaType, maxIter, eps);
 
-            string filename = openFileDialog.FileName;
-            if (string.IsNullOrEmpty(filename) || !File.Exists(filename))
-                return;
+            OpenCvSharp.Cv2.CalibrateCamera(
+                objectPoints,
+                imagePoints,
+                new OpenCvSharp.Size(frameSize.Width, frameSize.Height),
+                mat,
+                dist,
+                out var rotationVectors,
+                out var translationVectors,
+                flags,
+                termCriteria
+            );
 
-            tracker.SetMask(filename);
-            openFileDialog.Dispose();
-        }
+            double k1 = dist[0];
+            double k2 = dist[1];
+            double k3 = dist[4];
+            double p1 = dist[2];
+            double p2 = dist[3];
+            double fx = mat[0, 0];
+            double fy = mat[1, 1];
+            double cx = mat[0, 2];
+            double cy = mat[1, 2];
 
-        private void MnuImportColmap_Click(object sender, EventArgs e)
-        {
-            // Import camera intrinsics & extrinsics calculated by COLMAP.
-            // Point to folder containing text export.
-            //CommonOpenFileDialog dialog = new CommonOpenFileDialog();
-            //dialog.IsFolderPicker = true;
-            //dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            var parameters = new DistortionParameters(k1, k2, k3, p1, p2, fx, fy, cx, cy, frameSize);
+            log.DebugFormat("Distortion coefficients: k1:{0:0.000}, k2:{1:0.000}, k3:{2:0.000}, p1:{3:0.000}, p2:{4:0.000}.", k1, k2, k3, p1, p2);
+            log.DebugFormat("Camera intrinsics: fx:{0:0.000}, fy:{1:0.000}, cx:{2:0.000}, cy:{3:0.000}", fx, fy, cx, cy);
 
-            //string folderName = "";
-            //if (dialog.ShowDialog() == CommonFileDialogResult.Ok && !string.IsNullOrEmpty(dialog.FileName))
-            //    folderName = dialog.FileName;
-
-            //dialog.Dispose();
-            //if (string.IsNullOrEmpty(folderName))
-            //    return;
-
-            //ParseColmap(folderName);
-            //InvalidateFromMenu(sender);
-
-            //// Commit transform data.
-            //int frameIndex = 0;
-            //foreach (var f in framesContainer.Frames)
-            //{
-            //    if (frameIndices.ContainsKey(f.Timestamp))
-            //        continue;
-
-            //    frameIndices.Add(f.Timestamp, frameIndex);
-            //    frameIndex++;
-            //}
-
-            //metadata.SetCameraMotion(frameIndices, consecTransforms);
+            return parameters;
         }
 
         private void MnuDeleteData_Click(object sender, EventArgs e)
         {
             //CaptureMemento();
-            tracker.ResetTrackingData();
+            //tracker.ResetTrackingData();
             //Update();
             InvalidateFromMenu(sender);
         }
 
-        private void MnuShowFeatures_Click(object sender, EventArgs e)
+        private void MnuShowCorners_Click(object sender, EventArgs e)
         {
             //CaptureMemento();
 
-            showFeatures = !mnuShowFeatures.Checked;
+            showCorners = !mnuShowCorners.Checked;
 
             //Update();
             InvalidateFromMenu(sender);
         }
-
-        private void MnuShowInliers_Click(object sender, EventArgs e)
-        {
-            //CaptureMemento();
-
-            showInliers = !mnuShowInliers.Checked;
-
-            //Update();
-            InvalidateFromMenu(sender);
-        }
-
-        private void MnuShowOutliers_Click(object sender, EventArgs e)
-        {
-            //CaptureMemento();
-
-            showOutliers = !mnuShowOutliers.Checked;
-
-            //Update();
-            InvalidateFromMenu(sender);
-        }
-
-        private void MnuShowTransforms_Click(object sender, EventArgs e)
-        {
-            //CaptureMemento();
-
-            showTransforms = !mnuShowTransforms.Checked;
-
-            //Update();
-            InvalidateFromMenu(sender);
-        }
-
-        /// <summary>
-        /// Concatenate two affine matrices, where 
-        /// - a is already a 3x3 matrix of CV_64FC1, 
-        /// - b is a 2x3 matrix from OpenCV estimate affine 2D, also of CV_64FC1.
-        /// </summary>
-        //private OpenCvSharp.Mat ConcatAffine(OpenCvSharp.Mat a, OpenCvSharp.Mat b)
-        //{
-        //    OpenCvSharp.Mat temp = OpenCvSharp.Mat.Eye(3, 3, OpenCvSharp.MatType.CV_64FC1);
-        //    b.Row(0).CopyTo(temp.Row(0));
-        //    b.Row(1).CopyTo(temp.Row(1));
-
-        //    var result = a * temp;
-        //    temp.Dispose();
-
-        //    return result;
-        //}
 
         private void InvalidateFromMenu(object sender)
         {
@@ -459,155 +412,32 @@ namespace Kinovea.ScreenManager
         #region Rendering
 
         /// <summary>
-        /// Draw a dot on each found feature.
-        /// These are all the features found, they may or may not end up being used in the motion estimation. 
+        /// Draw a dot on each corner.
         /// </summary>
-        private void DrawFeatures(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
+        private void DrawCorners(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
         {
-            List<PointF> features = tracker.GetFeatures(timestamp);
-            if (features == null || features.Count == 0)
+            if (imagePoints.Count == 0)
                 return;
 
-            foreach (var feature in features)
+            if (!frameIndices.ContainsKey(timestamp) || frameIndices[timestamp] >= imagePoints.Count)
+                return;
+
+            List<PointF> corners = new List<PointF>();
+            foreach (var p in imagePoints[frameIndices[timestamp]])
             {
-                PointF p = transformer.Transform(feature);
-                canvas.DrawEllipse(penFeature, p.Box(2));
+                corners.Add(new PointF(p.X, p.Y));
+            }
+
+            if (corners.Count == 0)
+                return;
+
+            foreach (var corner in corners)
+            {
+                PointF p = transformer.Transform(corner);
+                canvas.DrawEllipse(penCorner, p.Box(2));
             }
         }
 
-        /// <summary>
-        /// Draw feature matches, outliers and/or inliers.
-        /// Matches are drawn as a line connecting the feature in this frame with its supposed location
-        /// in the next frame.
-        /// The connector is drawn green for inliers and red for outliers.
-        /// </summary>
-        private void DrawMatches(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
-        {
-            List<CameraMatch> matches = tracker.GetMatches(timestamp);
-            if (matches == null || matches.Count == 0)
-                return;
-
-            foreach (var m in matches)
-            {
-                PointF p1 = transformer.Transform(m.P1);
-                PointF p2 = transformer.Transform(m.P2);
-
-                if (m.Inlier && showInliers)
-                {
-                    canvas.DrawEllipse(penFeatureInlier, p1.Box(4));
-                    canvas.DrawLine(penMatchInlier, p1, p2);
-                }
-                else if (!m.Inlier && showOutliers)
-                {
-                    canvas.DrawEllipse(penFeatureOutlier, p1.Box(4));
-                    canvas.DrawLine(penMatchOutlier, p1, p2);
-                }
-            }
-        }
-
-        private void DrawTransforms(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
-        {
-            if (tracker.ConsecutiveTransforms.Count == 0)
-                return;
-
-            if (!tracker.FrameIndices.ContainsKey(timestamp))
-                return;
-
-            // Transform an image space rectangle to show how the image is modified from one frame to the next.
-            float left = frameSize.Width * 0.1f;
-            float top = frameSize.Height * 0.1f;
-            float right = left + frameSize.Width * 0.8f;
-            float bottom = top + frameSize.Height * 0.8f;
-            var bounds = new[]
-            {
-                new OpenCvSharp.Point2f(left, top),
-                new OpenCvSharp.Point2f(right, top),
-                new OpenCvSharp.Point2f(right, bottom),
-                new OpenCvSharp.Point2f(left, bottom),
-            };
-
-            //if (frameIndices[timestamp] >= forwardTransforms.Count)
-            //  return;
-
-            // Cumulative transforms.
-            //var transform = forwardTransforms[frameIndices[timestamp]];
-            //DrawTransformRectangle(canvas, transformer, transform, bounds, Color.Yellow);
-
-            // Draw the bounds of one reference frame in all subsequent frames.
-            //var points = bounds;
-            //for (int i = 30; i < frameIndices[timestamp]; i++)
-            //{
-            //    points = OpenCvSharp.Cv2.PerspectiveTransform(points, consecTransforms[i]);
-            //}
-
-            //var points3 = points.Select(p => new PointF((float)p.X, (float)p.Y));
-
-            //var points4 = transformer.Transform(points3);
-            //using (Pen pen = new Pen(Color.Yellow, 4.0f))
-            //    canvas.DrawPolygon(pen, points4.ToArray());
-
-
-            if (tracker.FrameIndices[timestamp] >= tracker.ConsecutiveTransforms.Count)
-                return;
-
-            //---------------------------------
-            // Draw the bounds of all the past frames up to this one.
-            //---------------------------------
-            int start = Math.Max(tracker.FrameIndices[timestamp] - maxTransformsFrames, 0);
-            for (int i = start; i < tracker.FrameIndices[timestamp]; i++)
-            {
-                // `i` is the frame we are representing inside the current one.
-                // Apply the consecutive transform starting from it up to the current one.
-                // At the end of this we have the rectangle of that frame as seen from the current one.
-                var points = bounds;
-                for (int j = i; j < tracker.FrameIndices[timestamp]; j++)
-                {
-                    points = OpenCvSharp.Cv2.PerspectiveTransform(points, tracker.ConsecutiveTransforms[j]);
-                }
-
-                // Convert back from OpenCV point to Drawing.PointF
-                // and transform to screen space.
-                var points3 = points.Select(p => new PointF(p.X, p.Y));
-                var points4 = transformer.Transform(points3);
-
-                // Get a random color that will be unique to the represented frame.
-                string str = "FF" + colorCycle[i % colorCycle.Length];
-                int colorInt = Convert.ToInt32(str, 16);
-                Color c = Color.FromArgb(colorInt);
-                using (Pen pen = new Pen(c, 2.0f))
-                    canvas.DrawPolygon(pen, points4.ToArray());
-            }
-        }
-
-        private void DrawTransformRectangle(Graphics canvas, IImageToViewportTransformer transformer, OpenCvSharp.Mat transform, OpenCvSharp.Point2f[] points, Color color)
-        {
-            // Homography
-            var points2 = OpenCvSharp.Cv2.PerspectiveTransform(points, transform);
-            var points3 = points2.Select(p => new PointF((float)p.X, (float)p.Y));
-            var points4 = transformer.Transform(points3);
-            using (Pen pen = new Pen(color, 4.0f))
-                canvas.DrawPolygon(pen, points4.ToArray());
-
-
-            // Affine
-            //var src = new OpenCvSharp.Mat(points.Length, 1, OpenCvSharp.MatType.CV_32FC2, points);
-            //var dst = new OpenCvSharp.Mat();
-            //OpenCvSharp.Cv2.Transform(src, dst, transform);
-
-            //var points2 = new List<PointF>();
-            //for (int i = 0; i < points.Length; i++)
-            //{
-            //    OpenCvSharp.Vec2f p = dst.Get<OpenCvSharp.Vec2f>(i);
-            //    points2.Add(new PointF(p[0], p[1]));
-            //}
-
-            //var points3 = transformer.Transform(points2);
-            //using (Pen pen = new Pen(color, 4.0f))
-            //    canvas.DrawPolygon(pen, points3.ToArray());
-
-            //src.Dispose();
-            //dst.Dispose();
-        }
         #endregion
 
     }

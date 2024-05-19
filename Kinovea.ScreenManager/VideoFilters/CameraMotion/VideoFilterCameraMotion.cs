@@ -426,23 +426,6 @@ namespace Kinovea.ScreenManager
             InvalidateFromMenu(sender);
         }
 
-        /// <summary>
-        /// Concatenate two affine matrices, where 
-        /// - a is already a 3x3 matrix of CV_64FC1, 
-        /// - b is a 2x3 matrix from OpenCV estimate affine 2D, also of CV_64FC1.
-        /// </summary>
-        //private OpenCvSharp.Mat ConcatAffine(OpenCvSharp.Mat a, OpenCvSharp.Mat b)
-        //{
-        //    OpenCvSharp.Mat temp = OpenCvSharp.Mat.Eye(3, 3, OpenCvSharp.MatType.CV_64FC1);
-        //    b.Row(0).CopyTo(temp.Row(0));
-        //    b.Row(1).CopyTo(temp.Row(1));
-
-        //    var result = a * temp;
-        //    temp.Dispose();
-
-        //    return result;
-        //}
-
         private void InvalidateFromMenu(object sender)
         {
             // Update the main viewport.
