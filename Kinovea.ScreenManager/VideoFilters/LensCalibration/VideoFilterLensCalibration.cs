@@ -74,6 +74,7 @@ namespace Kinovea.ScreenManager
         private IWorkingZoneFramesContainer framesContainer;
         private Metadata parentMetadata;
         private Stopwatch stopwatch = new Stopwatch();
+        private long activeTimestamp;
         // frameIndices: reverse index from timestamps to frames indices.
         private Dictionary<long, int> frameIndices = new Dictionary<long, int>();
         private List<List<OpenCvSharp.Point2f>> imagePoints = new List<List<OpenCvSharp.Point2f>>();
@@ -165,6 +166,9 @@ namespace Kinovea.ScreenManager
             this.framesContainer = framesContainer;
             if (framesContainer != null && framesContainer.Frames != null && framesContainer.Frames.Count > 0)
                 frameSize = framesContainer.Frames[0].Image.Size;
+
+            // TODO: maybe keep a cache?
+            bitmap = framesContainer.Frames[0].Image;
         }
         public void UpdateSize(Size size)
         {
@@ -172,6 +176,17 @@ namespace Kinovea.ScreenManager
 
         public void UpdateTime(long timestamp)
         {
+            // Bind to the nearest frame used by calibration.
+            int total = framesContainer.Frames.Count;
+            int step = Math.Max(1, total / maxImages);
+            for (int i = 0; i < total; i += step)
+            {
+                if (timestamp >= framesContainer.Frames[i].Timestamp)
+                {
+                    bitmap = framesContainer.Frames[i].Image;
+                    activeTimestamp = framesContainer.Frames[i].Timestamp;
+                }
+            }
         }
 
         public void UpdateTimeOrigin(long timestamp)
@@ -199,8 +214,10 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void DrawExtra(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, long timestamp, bool export)
         {
+            // We do not use the passed timestamp which is from the player timeline.
+            // We are only showing a few selected images, use the timestamp of the active image.
             if (showCorners)
-                DrawCorners(canvas, transformer, timestamp);
+                DrawCorners(canvas, transformer, activeTimestamp);
         }
 
         public void ExportVideo(IDrawingHostView host)
