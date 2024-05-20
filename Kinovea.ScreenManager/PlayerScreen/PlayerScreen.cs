@@ -808,6 +808,18 @@ namespace Kinovea.ScreenManager
             view.RefreshImage();
         }
 
+        public void ShowVDM()
+        {
+            var calibrationHelper = frameServer.Metadata.CalibrationHelper;
+            
+            FormVDM fvdm = new FormVDM(calibrationHelper);
+            FormsHelper.Locate(fvdm);
+            fvdm.ShowDialog();
+            fvdm.Dispose();
+
+            view.RefreshImage();
+        }
+
         public void ShowTrajectoryAnalysis()
         {
             FormMultiTrajectoryAnalysis f = new FormMultiTrajectoryAnalysis(frameServer.Metadata);

@@ -527,6 +527,12 @@
     <Compile Include="Metadata\Serialization\MetadataConverter.cs" />
     <Compile Include="Metadata\Serialization\MultiDrawingItemSerializer.cs" />
     <Compile Include="Metadata\Serialization\SerializationFilter.cs" />
+    <Compile Include="PlayerScreen\Forms\FormVDM.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\Forms\FormVDM.Designer.cs">
+      <DependentUpon>FormVDM.cs</DependentUpon>
+    </Compile>
     <Compile Include="PlayerScreen\ReplayWatcher.cs" />
     <Compile Include="PlayerScreen\TimeMapper.cs" />
     <Compile Include="PlayerScreen\TimeType.cs" />
@@ -1046,6 +1052,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\Controls\SidePanels\SidePanelKeyframes.resx">
       <DependentUpon>SidePanelKeyframes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\Forms\FormVDM.resx">
+      <DependentUpon>FormVDM.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\Forms\FormTimeSections.resx">
       <DependentUpon>FormTimeSections.cs</DependentUpon>

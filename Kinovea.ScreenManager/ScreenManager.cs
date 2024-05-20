@@ -156,6 +156,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuCoordinateSystem = new ToolStripMenuItem();
         private ToolStripMenuItem mnuLensDistortion = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTestGrid = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuVDM = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTrajectoryAnalysis = new ToolStripMenuItem();
         private ToolStripMenuItem mnuScatterDiagram = new ToolStripMenuItem();
         private ToolStripMenuItem mnuAngularAnalysis = new ToolStripMenuItem();
@@ -615,6 +616,10 @@ namespace Kinovea.ScreenManager
             mnuTestGrid.Click += mnuTestGrid_OnClick;
             mnuTestGrid.MergeAction = MergeAction.Append;
 
+            mnuVDM.Image = Properties.Resources.ruler_triangle;
+            mnuVDM.Click += mnuVDM_OnClick;
+            mnuVDM.MergeAction = MergeAction.Append;
+
             mnuScatterDiagram.Image = Properties.Resources.function;
             mnuScatterDiagram.Click += mnuScatterDiagram_OnClick;
             mnuScatterDiagram.MergeAction = MergeAction.Append;
@@ -639,6 +644,7 @@ namespace Kinovea.ScreenManager
                 mnuLensDistortion,
                 mnuCoordinateSystem,
                 mnuTestGrid,
+                mnuVDM,
                 new ToolStripSeparator(),
                 mnuScatterDiagram,
                 mnuTrajectoryAnalysis,
@@ -1150,6 +1156,7 @@ namespace Kinovea.ScreenManager
                     mnuCoordinateSystem.Enabled = true;
                     mnuLensDistortion.Enabled = true;
                     mnuTestGrid.Enabled = true;
+                    mnuVDM.Enabled = true;
                     mnuScatterDiagram.Enabled = true;
                     mnuTrajectoryAnalysis.Enabled = true;
                     mnuAngularAnalysis.Enabled = true;
@@ -1196,6 +1203,7 @@ namespace Kinovea.ScreenManager
                     mnuCoordinateSystem.Enabled = true;
                     mnuLensDistortion.Enabled = false;
                     mnuTestGrid.Enabled = true;
+                    mnuVDM.Enabled = true;
                     mnuScatterDiagram.Enabled = false;
                     mnuTrajectoryAnalysis.Enabled = false;
                     mnuAngularAnalysis.Enabled = false;
@@ -1251,6 +1259,7 @@ namespace Kinovea.ScreenManager
                 mnuCoordinateSystem.Enabled = false;
                 mnuLensDistortion.Enabled = false;
                 mnuTestGrid.Enabled = false;
+                mnuVDM.Enabled = false;
                 mnuScatterDiagram.Enabled = false;
                 mnuTrajectoryAnalysis.Enabled = false;
                 mnuAngularAnalysis.Enabled = false;
@@ -1580,6 +1589,7 @@ namespace Kinovea.ScreenManager
             mnuLensDistortion.Text = ScreenManagerLang.mnuLensCalibration;
             mnuCoordinateSystem.Text = ScreenManagerLang.mnuCoordinateSystem;
             mnuTestGrid.Text = ScreenManagerLang.DrawingName_TestGrid;
+            mnuVDM.Text = "Video distance measurement…";
             mnuScatterDiagram.Text = ScreenManagerLang.DataAnalysis_ScatterDiagram + "…";
             mnuTrajectoryAnalysis.Text = ScreenManagerLang.DataAnalysis_LinearKinematics + "…";
             mnuAngularAnalysis.Text = ScreenManagerLang.DataAnalysis_AngularKinematics + "…";
@@ -2387,6 +2397,15 @@ namespace Kinovea.ScreenManager
             mnuTestGrid.Checked = !mnuTestGrid.Checked;
             activeScreen.TestGridVisible = mnuTestGrid.Checked;
             activeScreen.RefreshImage();
+        }
+
+        private void mnuVDM_OnClick(object sender, EventArgs e)
+        {
+            PlayerScreen ps = activeScreen as PlayerScreen;
+            if (ps == null)
+                return;
+
+            ps.ShowVDM();
         }
 
         private void mnuLensDistortion_OnClick(object sender, EventArgs e)
