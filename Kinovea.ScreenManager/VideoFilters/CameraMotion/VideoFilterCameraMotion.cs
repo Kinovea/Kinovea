@@ -300,7 +300,7 @@ namespace Kinovea.ScreenManager
             return contextMenu;
         }
 
-        public ToolStripItem GetExportDataMenu()
+        public List<ToolStripItem> GetExportDataMenu()
         {
             throw new NotImplementedException();
         }

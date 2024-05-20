@@ -932,12 +932,15 @@ namespace Kinovea.ScreenManager
         }
         public void DeactivateVideoFilter()
         {
+            if (!videoFilterIsActive)
+                return;
+            
             videoFilterIsActive = false;
             StretchSqueezeSurface(true);
             DoInvalidate();
             UpdateInfobar();
             btnExitFilter.Visible = false;
-
+            
             string name = VideoFilterFactory.GetFriendlyName(VideoFilterType.None);
             m_MessageToaster.SetDuration(750);
             m_MessageToaster.Show(name);
@@ -3283,8 +3286,11 @@ namespace Kinovea.ScreenManager
                     popMenuFilter.Items.Add(new ToolStripSeparator());
                     
                     if (m_FrameServer.Metadata.ActiveVideoFilter.CanExportData)
-                        popMenuFilter.Items.Add(m_FrameServer.Metadata.ActiveVideoFilter.GetExportDataMenu());
-
+                    {
+                        List<ToolStripItem> items = m_FrameServer.Metadata.ActiveVideoFilter.GetExportDataMenu();
+                        popMenuFilter.Items.AddRange(items.ToArray());
+                    }
+                        
                     popMenuFilter.Items.Add(mnuSaveAnnotations);
                     popMenuFilter.Items.Add(mnuSaveAnnotationsAs);
 

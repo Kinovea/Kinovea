@@ -115,9 +115,10 @@ namespace Kinovea.ScreenManager
 
 
         /// <summary>
-        /// Retrieve the menu item for exporting the filter data.
+        /// Retrieve a collection of menus for exporting the filter data.
+        /// This will only be called if `CanExportData` is true.
         /// </summary>
-        ToolStripItem GetExportDataMenu();
+        List<ToolStripItem> GetExportDataMenu();
 
         /// <summary>
         /// Called by the screen when the number or content of the frame buffer has changed.

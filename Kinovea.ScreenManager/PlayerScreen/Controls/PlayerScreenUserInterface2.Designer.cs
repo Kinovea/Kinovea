@@ -19,6 +19,7 @@ namespace Kinovea.ScreenManager
       this.components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PlayerScreenUserInterface));
       this.panelTop = new System.Windows.Forms.Panel();
+      this.btnExitFilter = new System.Windows.Forms.Button();
       this.btnClose = new System.Windows.Forms.Button();
       this.lblSelDuration = new System.Windows.Forms.Label();
       this.panelVideoControls = new System.Windows.Forms.Panel();
@@ -77,7 +78,6 @@ namespace Kinovea.ScreenManager
       this.btnDockBottom = new System.Windows.Forms.Button();
       this.pnlThumbnails = new System.Windows.Forms.Panel();
       this.pictureBox1 = new System.Windows.Forms.PictureBox();
-      this.btnExitFilter = new System.Windows.Forms.Button();
       this.panelTop.SuspendLayout();
       this.panelVideoControls.SuspendLayout();
       this.panel1.SuspendLayout();
@@ -107,6 +107,25 @@ namespace Kinovea.ScreenManager
       this.panelTop.Name = "panelTop";
       this.panelTop.Size = new System.Drawing.Size(600, 25);
       this.panelTop.TabIndex = 0;
+      // 
+      // btnExitFilter
+      // 
+      this.btnExitFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnExitFilter.BackColor = System.Drawing.Color.Transparent;
+      this.btnExitFilter.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.exit_filter;
+      this.btnExitFilter.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+      this.btnExitFilter.Cursor = System.Windows.Forms.Cursors.Default;
+      this.btnExitFilter.FlatAppearance.BorderSize = 0;
+      this.btnExitFilter.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+      this.btnExitFilter.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+      this.btnExitFilter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnExitFilter.Location = new System.Drawing.Point(550, 2);
+      this.btnExitFilter.Name = "btnExitFilter";
+      this.btnExitFilter.Size = new System.Drawing.Size(20, 20);
+      this.btnExitFilter.TabIndex = 3;
+      this.btnExitFilter.UseVisualStyleBackColor = false;
+      this.btnExitFilter.Visible = false;
+      this.btnExitFilter.Click += new System.EventHandler(this.btnExitFilter_Click);
       // 
       // btnClose
       // 
@@ -944,7 +963,7 @@ namespace Kinovea.ScreenManager
       this.pnlThumbnails.Controls.Add(this.pictureBox1);
       this.pnlThumbnails.Location = new System.Drawing.Point(0, 27);
       this.pnlThumbnails.Name = "pnlThumbnails";
-      this.pnlThumbnails.Size = new System.Drawing.Size(600, 164);
+      this.pnlThumbnails.Size = new System.Drawing.Size(600, 166);
       this.pnlThumbnails.TabIndex = 3;
       this.pnlThumbnails.DoubleClick += new System.EventHandler(this.pnlThumbnails_DoubleClick);
       this.pnlThumbnails.MouseEnter += new System.EventHandler(this.pnlThumbnails_MouseEnter);
@@ -958,24 +977,6 @@ namespace Kinovea.ScreenManager
       this.pictureBox1.TabIndex = 2;
       this.pictureBox1.TabStop = false;
       this.pictureBox1.Visible = false;
-      // 
-      // btnExitFilter
-      // 
-      this.btnExitFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnExitFilter.BackColor = System.Drawing.Color.Transparent;
-      this.btnExitFilter.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.exit_filter;
-      this.btnExitFilter.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-      this.btnExitFilter.Cursor = System.Windows.Forms.Cursors.Default;
-      this.btnExitFilter.FlatAppearance.BorderSize = 0;
-      this.btnExitFilter.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-      this.btnExitFilter.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-      this.btnExitFilter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnExitFilter.Location = new System.Drawing.Point(550, 2);
-      this.btnExitFilter.Name = "btnExitFilter";
-      this.btnExitFilter.Size = new System.Drawing.Size(20, 20);
-      this.btnExitFilter.TabIndex = 3;
-      this.btnExitFilter.UseVisualStyleBackColor = false;
-      this.btnExitFilter.Click += new System.EventHandler(this.btnExitFilter_Click);
       // 
       // PlayerScreenUserInterface
       // 

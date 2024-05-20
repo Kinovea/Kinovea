@@ -12,6 +12,7 @@ using System.Web;
 using SpreadsheetLight.Charts;
 using System.ComponentModel;
 using System.Threading;
+using System.Text;
 
 namespace Kinovea.ScreenManager
 {
@@ -92,6 +93,9 @@ namespace Kinovea.ScreenManager
         private float eps = 0.001f;
 
         // Calibration results
+        private int usedImages;
+        private float reprojError;
+        private long duration;
         private DistortionParameters calibration;
 
         // Display parameters
@@ -101,9 +105,10 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuAction = new ToolStripMenuItem();
         private ToolStripMenuItem mnuRun = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDeleteData = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuSave = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowCorners = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuCopy = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSave = new ToolStripMenuItem();
         #endregion
 
         private static string[] colorCycle = new string[] {
@@ -163,6 +168,8 @@ namespace Kinovea.ScreenManager
                 mnuShowCorners,
             });
 
+            mnuCopy.Image = Properties.Resources.clipboard_block;
+            mnuCopy.Click += MnuCopy_Click;
             mnuSave.Image = Properties.Resources.save_calibration;
             mnuSave.Click += MnuSave_Click;
         }
@@ -278,14 +285,15 @@ namespace Kinovea.ScreenManager
 
             mnuShowCorners.Checked = showCorners;
             mnuDeleteData.Enabled = calibrated;
+            mnuCopy.Enabled = calibrated;
             mnuSave.Enabled = calibrated;
 
             return contextMenu;
         }
 
-        public ToolStripItem GetExportDataMenu()
+        public List<ToolStripItem> GetExportDataMenu()
         {
-            return mnuSave;
+            return new List<ToolStripItem>() { mnuCopy, mnuSave };
         }
 
         private void ReloadMenusCulture()
@@ -297,6 +305,7 @@ namespace Kinovea.ScreenManager
             mnuOptions.Text = ScreenManagerLang.Generic_Options;
             mnuShowCorners.Text = "Show corners";
 
+            mnuCopy.Text = "Copy calibration data";
             mnuSave.Text = "Save calibration data…";
         }
 
@@ -387,7 +396,9 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            log.DebugFormat("Find corners: {0:0.000} s", stopwatch.ElapsedMilliseconds / 1000.0f);
+            long findCornersTime = stopwatch.ElapsedMilliseconds;
+
+            log.DebugFormat("Find corners: {0:0.000} s", findCornersTime / 1000.0f);
 
             if (imagePoints.Count < 2)
             {
@@ -397,15 +408,14 @@ namespace Kinovea.ScreenManager
 
             // Compute the calibration.
             stopwatch.Restart();
-            calibration = Calibrate(objectPoints, imagePoints, maxIterations, eps);
-            log.DebugFormat("Calibration: {0:0.000} s", stopwatch.ElapsedMilliseconds / 1000.0f);
+            Calibrate(objectPoints, imagePoints, maxIterations, eps);
+            long calibrationTime = stopwatch.ElapsedMilliseconds;
+            log.DebugFormat("Calibration: {0:0.000} s", calibrationTime / 1000.0f);
+            duration = findCornersTime + calibrationTime;
         }
 
-        private DistortionParameters Calibrate(List<List<OpenCvSharp.Point3f>> objectPoints, List<List<OpenCvSharp.Point2f>> imagePoints, int maxIterations, float eps)
+        private void Calibrate(List<List<OpenCvSharp.Point3f>> objectPoints, List<List<OpenCvSharp.Point2f>> imagePoints, int maxIterations, float eps)
         {
-            // TODO: move this back in CameraCalibrator.
-            // Rename CameraCalibrator to LensCalibrator or something.
-            
             double[,] cameraMatrix = new double[3, 3];
             double[] distCoeffs = new double[5];
             OpenCvSharp.CalibrationFlags flags = OpenCvSharp.CalibrationFlags.None;
@@ -438,11 +448,29 @@ namespace Kinovea.ScreenManager
             log.DebugFormat("Camera intrinsics: fx:{0:0.000}, fy:{1:0.000}, cx:{2:0.000}, cy:{3:0.000}", fx, fy, cx, cy);
             float hfov = (float)(2 * Math.Atan(frameSize.Width / (2 * fx)) * 180 / Math.PI);
             log.DebugFormat("HFOV: {0:0.000}°", hfov);
-            log.DebugFormat("Distortion coefficients: k1:{0:0.000}, k2:{1:0.000}, k3:{2:0.000}, p1:{3:0.000}, p2:{4:0.000}.", k1, k2, k3, p1, p2);
+            log.DebugFormat("Coefficients: k1:{0:0.000}, k2:{1:0.000}, k3:{2:0.000}, p1:{3:0.000}, p2:{4:0.000}.", k1, k2, k3, p1, p2);
 
+            usedImages = imagePoints.Count;
+            reprojError = (float)error;
+            calibration = new DistortionParameters(k1, k2, k3, p1, p2, fx, fy, cx, cy, frameSize);
             calibrated = true;
-            var parameters = new DistortionParameters(k1, k2, k3, p1, p2, fx, fy, cx, cy, frameSize);
-            return parameters;
+        }
+
+        private void MnuCopy_Click(object sender, EventArgs e)
+        {
+            if (!calibrated || calibration == null)
+                return;
+
+            StringBuilder b = new StringBuilder();
+            b.AppendLine(string.Format("Lens calibration ({0:0.000} s)", duration / 1000.0f));
+            b.AppendLine(string.Format("Pattern: {0}x{1}, Image size:{2}x{3}", patternSize.Width, patternSize.Height, frameSize.Width, frameSize.Height));
+            b.AppendLine(string.Format("Images:{0}/{1}, reprojection error:{2:0.000}", usedImages, maxImages, reprojError));
+            b.AppendLine(string.Format("Intrinsics: fx:{0:0.000}, fy:{1:0.000}, cx:{2:0.000}, cy:{3:0.000}", calibration.Fx, calibration.Fy, calibration.Cx, calibration.Cy));
+            b.AppendLine(string.Format("Radial distortion: k1:{0:0.000}, k2:{1:0.000}, k3:{2:0.000}", calibration.K1, calibration.K2, calibration.K3));
+            b.AppendLine(string.Format("Tangential distortion: p1:{0:0.000}, p2:{1:0.000}", calibration.P1, calibration.P2));
+
+            string text = b.ToString();
+            Clipboard.SetText(text);
         }
 
         private void MnuSave_Click(object sender, EventArgs e)
