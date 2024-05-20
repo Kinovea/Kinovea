@@ -408,7 +408,6 @@ namespace Kinovea.ScreenManager
             
             double[,] cameraMatrix = new double[3, 3];
             double[] distCoeffs = new double[5];
-            //OpenCvSharp.CalibrationFlags flags = OpenCvSharp.CalibrationFlags.RationalModel;
             OpenCvSharp.CalibrationFlags flags = OpenCvSharp.CalibrationFlags.None;
             var termCriteriaType = OpenCvSharp.CriteriaTypes.MaxIter | OpenCvSharp.CriteriaTypes.Eps;
             var termCriteria = new OpenCvSharp.TermCriteria(termCriteriaType, maxIterations, eps);
