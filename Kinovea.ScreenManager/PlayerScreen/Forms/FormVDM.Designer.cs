@@ -31,9 +31,9 @@
       this.btnOK = new System.Windows.Forms.Button();
       this.btnCancel = new System.Windows.Forms.Button();
       this.grpIntrinsics = new System.Windows.Forms.GroupBox();
+      this.label1 = new System.Windows.Forms.Label();
       this.lblFocalLength = new System.Windows.Forms.Label();
       this.lblSensorWidth = new System.Windows.Forms.Label();
-      this.label1 = new System.Windows.Forms.Label();
       this.grpIntrinsics.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -72,6 +72,15 @@
       this.grpIntrinsics.TabStop = false;
       this.grpIntrinsics.Text = "Camera position";
       // 
+      // label1
+      // 
+      this.label1.AutoSize = true;
+      this.label1.Location = new System.Drawing.Point(18, 83);
+      this.label1.Name = "label1";
+      this.label1.Size = new System.Drawing.Size(82, 13);
+      this.label1.TabIndex = 51;
+      this.label1.Text = "Camera position";
+      // 
       // lblFocalLength
       // 
       this.lblFocalLength.AutoSize = true;
@@ -90,15 +99,6 @@
       this.lblSensorWidth.TabIndex = 48;
       this.lblSensorWidth.Text = "Lens calibration";
       // 
-      // label1
-      // 
-      this.label1.AutoSize = true;
-      this.label1.Location = new System.Drawing.Point(18, 83);
-      this.label1.Name = "label1";
-      this.label1.Size = new System.Drawing.Size(82, 13);
-      this.label1.TabIndex = 51;
-      this.label1.Text = "Camera position";
-      // 
       // FormVDM
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -108,10 +108,11 @@
       this.Controls.Add(this.grpIntrinsics);
       this.Controls.Add(this.btnOK);
       this.Controls.Add(this.btnCancel);
-      this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+      this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
       this.MaximizeBox = false;
       this.MinimizeBox = false;
       this.Name = "FormVDM";
+      this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
       this.Text = "FormVDM";
       this.grpIntrinsics.ResumeLayout(false);
       this.grpIntrinsics.PerformLayout();

@@ -15,7 +15,7 @@ namespace Kinovea.ScreenManager
     public partial class FormVDM : Form
     {
         private CalibrationHelper calibrationHelper;
-        
+        private bool ready;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public FormVDM(CalibrationHelper calibrationHelper)
@@ -24,7 +24,8 @@ namespace Kinovea.ScreenManager
             InitializeComponent();
             LocalizeForm();
 
-            ComputeCameraPosition();
+            if (ready)
+                ComputeCameraPosition();
         }
 
         private void LocalizeForm()
@@ -37,7 +38,7 @@ namespace Kinovea.ScreenManager
 
             bool hasLensCalibration = calibrationHelper.DistortionHelper != null && calibrationHelper.DistortionHelper.Initialized;
             bool hasPlaneCalibration = calibrationHelper.IsCalibrated && calibrationHelper.CalibratorType == CalibratorType.Plane;
-            bool ready = hasLensCalibration && hasPlaneCalibration;
+            ready = hasLensCalibration && hasPlaneCalibration;
 
             string lensCalibrationStatus = hasLensCalibration ? "found" : "missing";
             string planeCalibrationStatus = hasPlaneCalibration ? "found" : "missing";
@@ -54,9 +55,19 @@ namespace Kinovea.ScreenManager
 
         private void ComputeCameraPosition()
         {
-            // Call camera solver with distortion and plane homography matrix.
-            // Get camera position.
+            var calibrator = calibrationHelper.CalibratorPlane;
+            var quadWorld = new QuadrilateralF(calibrator.Size.Width, calibrator.Size.Height);
+            var quadImage = calibrator.QuadImage.Clone();
+            ProjectiveMapping mapping = new ProjectiveMapping();
+            mapping.Update(quadWorld, quadImage);
+            var lensCalib = calibrationHelper.DistortionHelper.Parameters;
 
+            // FIXME: we need to send the image points through un-distortion before using them.
+
+            CameraPoser poser = new CameraPoser();
+            Vector3 p = poser.Compute(quadWorld, quadImage, mapping, lensCalib, calibrationHelper.ImageSize);
+
+            label1.Text = string.Format("Camera position: {0}.", p);
         }
 
         private void btnOK_Click(object sender, EventArgs e)

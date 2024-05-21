@@ -96,6 +96,11 @@ namespace Kinovea.ScreenManager
             get { return calibratorType;}
         }
 
+        public CalibratorPlane CalibratorPlane
+        {
+            get { return calibrator; }
+        }
+
         /// <summary>
         /// The method used to map the calibration line to coordinate system axes.
         /// Only used when calibration is of type line.

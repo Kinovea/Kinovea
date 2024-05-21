@@ -27,7 +27,17 @@ namespace Kinovea.ScreenManager
         public const double RadiansToDegrees = 180 / Math.PI;
         public const double DegreesToRadians = Math.PI / 180;
         public const double SQRT2 = 1.4142135623730950488;
-        
+
+        public static float Degrees(float radians)
+        {
+            return (float)(radians * RadiansToDegrees);
+        }
+
+        public static float Radians(float degrees)
+        {
+            return (float)(degrees * DegreesToRadians);
+        }
+
         // Secant 
         public static double Sec(double x)
         {

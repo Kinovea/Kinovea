@@ -506,6 +506,11 @@ namespace Kinovea.ScreenManager
                 (Z == 0) ? 0 : 1.0f / Z);
         }
 
+        public Vector3 Negate()
+        {
+            return new Vector3(-X, -Y, -Z);
+        }
+
         /// <summary>
         /// Calculate absolute values of the vector.
         /// </summary>

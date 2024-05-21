@@ -339,6 +339,7 @@
     <Compile Include="FilePatterns\PatternContext.cs" />
     <Compile Include="FilePatterns\PatternSymbolsFile.cs" />
     <Compile Include="Measurement\Calibration\CalibrationAxis.cs" />
+    <Compile Include="Measurement\Calibration\CameraPoser.cs" />
     <Compile Include="Measurement\Geometry\Matrix3x3.cs" />
     <Compile Include="Measurement\Geometry\SegmentF.cs" />
     <Compile Include="Measurement\Geometry\SVD.cs" />
