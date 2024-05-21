@@ -81,6 +81,7 @@ namespace Kinovea.ScreenManager
         private Stopwatch stopwatch = new Stopwatch();
         private long activeTimestamp;
         private bool calibrated = false;
+        private string resultText;
         // frameIndices: reverse index from timestamps to frames indices,
         // for the images actually used in the calibration (found corners).
         private Dictionary<long, int> frameIndices = new Dictionary<long, int>();
@@ -111,9 +112,13 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuSave = new ToolStripMenuItem();
         #endregion
 
+        // Painting
         private static string[] colorCycle = new string[] {
             "FF0000", "FF6A00", "FFD800", "4CFF00", "00FFFF", "0094FF", "B200FF", "FF00DC",
         };
+        private SolidBrush brushBack = new SolidBrush(Color.FromArgb(192, Color.Black));
+        private SolidBrush brushText = new SolidBrush(Color.White);
+        private Font fontText = new Font("Consolas", 14, FontStyle.Bold);
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -230,10 +235,15 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void DrawExtra(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, long timestamp, bool export)
         {
+            if (!calibrated)
+                return;
+
             // We do not use the passed timestamp from the player timeline.
             // We are only showing a few selected images, use the timestamp of the active image.
             if (showCorners)
                 DrawCorners(canvas, transformer, activeTimestamp);
+
+            DrawResults(canvas, transformer);
         }
 
         public void ExportVideo(IDrawingHostView host)
@@ -412,6 +422,7 @@ namespace Kinovea.ScreenManager
             long calibrationTime = stopwatch.ElapsedMilliseconds;
             log.DebugFormat("Calibration: {0:0.000} s", calibrationTime / 1000.0f);
             duration = findCornersTime + calibrationTime;
+            resultText = GetResultsString();
         }
 
         private void Calibrate(List<List<OpenCvSharp.Point3f>> objectPoints, List<List<OpenCvSharp.Point2f>> imagePoints, int maxIterations, float eps)
@@ -461,16 +472,7 @@ namespace Kinovea.ScreenManager
             if (!calibrated || calibration == null)
                 return;
 
-            StringBuilder b = new StringBuilder();
-            b.AppendLine(string.Format("Lens calibration ({0:0.000} s)", duration / 1000.0f));
-            b.AppendLine(string.Format("Pattern: {0}x{1}, Image size:{2}x{3}", patternSize.Width, patternSize.Height, frameSize.Width, frameSize.Height));
-            b.AppendLine(string.Format("Images:{0}/{1}, reprojection error:{2:0.000}", usedImages, maxImages, reprojError));
-            b.AppendLine(string.Format("Intrinsics: fx:{0:0.000}, fy:{1:0.000}, cx:{2:0.000}, cy:{3:0.000}", calibration.Fx, calibration.Fy, calibration.Cx, calibration.Cy));
-            b.AppendLine(string.Format("Radial distortion: k1:{0:0.000}, k2:{1:0.000}, k3:{2:0.000}", calibration.K1, calibration.K2, calibration.K3));
-            b.AppendLine(string.Format("Tangential distortion: p1:{0:0.000}, p2:{1:0.000}", calibration.P1, calibration.P2));
-
-            string text = b.ToString();
-            Clipboard.SetText(text);
+            Clipboard.SetText(resultText);
         }
 
         private void MnuSave_Click(object sender, EventArgs e)
@@ -569,6 +571,22 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        private void DrawResults(Graphics canvas, IImageToViewportTransformer transformer)
+        {
+            // We don't care about the original image size, we draw in screen space.
+            SizeF textSize = canvas.MeasureString(resultText, fontText);
+            Point bgLocation = new Point(20, 20);
+            Size bgSize = new Size((int)textSize.Width, (int)textSize.Height);
+
+            // Background rounded rectangle.
+            Rectangle rect = new Rectangle(bgLocation, bgSize);
+            int roundingRadius = fontText.Height / 4;
+            RoundedRectangle.Draw(canvas, rect, brushBack, roundingRadius, false, false, null);
+
+            // Main text.
+            canvas.DrawString(resultText, fontText, brushText, rect.Location);
+        }
+
         #endregion
 
         /// <summary>
@@ -599,5 +617,20 @@ namespace Kinovea.ScreenManager
             return indices;
         }
 
+        /// <summary>
+        /// Return calibration results as text.
+        /// </summary>
+        private string GetResultsString()
+        {
+            StringBuilder b = new StringBuilder();
+            b.AppendLine(string.Format("Lens calibration ({0:0.000} s)", duration / 1000.0f));
+            b.AppendLine(string.Format("Pattern: {0}x{1}, Image size:{2}x{3}", patternSize.Width, patternSize.Height, frameSize.Width, frameSize.Height));
+            b.AppendLine(string.Format("Images:{0}/{1}.", usedImages, maxImages));
+            b.AppendLine(string.Format("Reprojection error: {0:0.000}", reprojError));
+            b.AppendLine(string.Format("Intrinsics: fx:{0:0.000}, fy:{1:0.000}, cx:{2:0.000}, cy:{3:0.000}", calibration.Fx, calibration.Fy, calibration.Cx, calibration.Cy));
+            b.AppendLine(string.Format("Radial distortion: k1:{0:0.000}, k2:{1:0.000}, k3:{2:0.000}", calibration.K1, calibration.K2, calibration.K3));
+            b.AppendLine(string.Format("Tangential distortion: p1:{0:0.000}, p2:{1:0.000}", calibration.P1, calibration.P2));
+            return b.ToString();
+        }
     }
 }

@@ -444,11 +444,7 @@ namespace Kinovea.ScreenManager
 
         public float ConvertAngle(float radians)
         {
-            return angleUnit == AngleUnit.Radian ? radians : (float)(radians * MathHelper.RadiansToDegrees);
-        }
-        public float ConvertAngleFromDegrees(float degrees)
-        {
-            return angleUnit == AngleUnit.Degree ? degrees : (float)(degrees * MathHelper.DegreesToRadians);
+            return angleUnit == AngleUnit.Radian ? radians : MathHelper.Degrees(radians);
         }
 
         public float ConvertAngularVelocity(float radiansPerSecond)

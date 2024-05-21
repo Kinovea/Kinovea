@@ -301,7 +301,7 @@ namespace Kinovea.ScreenManager
             switch (unit)
             {
                 case AngularVelocityUnit.DegreesPerSecond:
-                    result = radiansPerSecond * MathHelper.RadiansToDegrees;
+                    result = MathHelper.Degrees(radiansPerSecond);
                     break;
                 case AngularVelocityUnit.RadiansPerSecond:
                     result = radiansPerSecond;
@@ -325,7 +325,7 @@ namespace Kinovea.ScreenManager
             switch (unit)
             {
                 case AngularAccelerationUnit.DegreesPerSecondSquared:
-                    result = (float)(radiansPerSecondSquared * MathHelper.RadiansToDegrees);
+                    result = MathHelper.Degrees(radiansPerSecondSquared);
                     break;
                 case AngularAccelerationUnit.RadiansPerSecondSquared:
                     result = radiansPerSecondSquared;

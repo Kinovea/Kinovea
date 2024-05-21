@@ -237,7 +237,7 @@ namespace Kinovea.ScreenManager
                     float semiMajorAxis = transformer.Transform((int)ellipseInImage.SemiMajorAxis);
                     Ellipse ellipse = new Ellipse(ellipseCenter, semiMajorAxis, semiMinorAxis, ellipseInImage.Rotation);
                     RectangleF rect = new RectangleF(-ellipse.SemiMajorAxis, -ellipse.SemiMinorAxis, ellipse.SemiMajorAxis * 2, ellipse.SemiMinorAxis * 2);
-                    float angle = (float)(ellipse.Rotation * MathHelper.RadiansToDegrees);
+                    float angle = MathHelper.Degrees(ellipse.Rotation);
                     
                     canvas.TranslateTransform(ellipse.Center.X, ellipse.Center.Y);
                     canvas.RotateTransform(angle);
@@ -574,7 +574,7 @@ namespace Kinovea.ScreenManager
             if (CalibrationHelper.CalibratorType == CalibratorType.Plane)
             {
                 RectangleF rect = new RectangleF(-ellipseInImage.SemiMajorAxis, -ellipseInImage.SemiMinorAxis, ellipseInImage.SemiMajorAxis * 2, ellipseInImage.SemiMinorAxis * 2);
-                float angle = (float)(ellipseInImage.Rotation * MathHelper.RadiansToDegrees);
+                float angle = MathHelper.Degrees(ellipseInImage.Rotation);
 
                 areaPath.AddEllipse(rect);
 

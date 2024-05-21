@@ -211,9 +211,9 @@ namespace Kinovea.ScreenManager
             else
             {
                 if(a<c)
-                    rotation = 0.5 * MathHelper.Arccotan((a-c) / (2*b));
+                    rotation = 0.5 * Arccotan((a-c) / (2*b));
                 else
-                    rotation = Math.PI / 2 + 0.5 * MathHelper.Arccotan((a-c) / (2*b));
+                    rotation = Math.PI / 2 + 0.5 * Arccotan((a-c) / (2*b));
                 
                 // Hack to fix above formulas.
                 if(rotation > Math.PI / 4 && rotation < Math.PI / 2)
@@ -322,10 +322,9 @@ namespace Kinovea.ScreenManager
             return b;
         }
 
-        
-        
-        
-        
-        
+        private static double Arccotan(double x)
+        {
+            return 2 * Math.Atan(1) - Math.Atan(x);
+        }
     }
 }

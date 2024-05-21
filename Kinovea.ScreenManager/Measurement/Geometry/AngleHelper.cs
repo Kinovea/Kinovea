@@ -152,7 +152,7 @@ namespace Kinovea.ScreenManager
         {
             // The sweep is going clockwise in drawpie conventions so the y-axis is downwards, 
             // which is also the direction of the y-axis of the image so the y variable doesn't need to be inverted here.
-            double angle = (SweepAngle.Start + SweepAngle.Sweep / 2) * MathHelper.DegreesToRadians;
+            double angle = MathHelper.Radians(SweepAngle.Start + SweepAngle.Sweep / 2);
             double x = Math.Cos(angle) * textDistance;
             double y = Math.Sin(angle) * textDistance;
             

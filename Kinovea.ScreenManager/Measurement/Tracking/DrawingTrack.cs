@@ -827,7 +827,7 @@ namespace Kinovea.ScreenManager
             float semiMajorAxis = transformer.Transform((int)ellipseInImage.SemiMajorAxis);
             Ellipse ellipse = new Ellipse(ellipseCenter, semiMajorAxis, semiMinorAxis, ellipseInImage.Rotation);
             RectangleF rect = new RectangleF(-ellipse.SemiMajorAxis, -ellipse.SemiMinorAxis, ellipse.SemiMajorAxis * 2, ellipse.SemiMinorAxis * 2);
-            float angle = (float)(ellipse.Rotation * MathHelper.RadiansToDegrees);
+            float angle = (float)MathHelper.Degrees(ellipse.Rotation);
 
             using (Pen p = new Pen(Color.FromArgb((int)(fadingFactor * 255), styleHelper.Color)))
             {

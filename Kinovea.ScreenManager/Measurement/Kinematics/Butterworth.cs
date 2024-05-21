@@ -46,6 +46,7 @@ namespace Kinovea.ScreenManager
         private double b1, b2;
         private double x0, x1, x2, y0, y1, y2; 
         private double correctionFactor;
+        private const double SQRT2 = 1.4142135623730950488;
 
         /// <summary>
         /// Filter a list of samples and return a list of lists of filtered values at various test cutoff frequencies.
@@ -151,7 +152,7 @@ namespace Kinovea.ScreenManager
         {
             // Ref: Chapt. 2.2.4.4 of "Biomechanics and motor control of human movement".
             double o = Math.Tan(Math.PI * fc / fs) / correctionFactor;
-            double k1 = MathHelper.SQRT2 * o;
+            double k1 = SQRT2 * o;
             double k2 = o * o;
 
             a0 = k2 / (1 + k1 + k2);

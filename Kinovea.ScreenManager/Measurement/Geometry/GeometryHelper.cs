@@ -143,7 +143,7 @@ namespace Kinovea.ScreenManager
         public static PointF GetPointAtAngle(PointF pivot, PointF leg1, PointF point, float targetAngle)
         {
             float distance = GetDistance(pivot, point);
-            float angle = targetAngle * (float)MathHelper.DegreesToRadians;
+            float angle = MathHelper.Radians(targetAngle);
             PointF result = GetPointAtAngleAndDistance(pivot, leg1, angle, distance);
             return result;
         }

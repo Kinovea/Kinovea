@@ -131,7 +131,7 @@ namespace Kinovea.ScreenManager
             // CW angle in range [0..τ].
             double drawPieRadians = angle > 0 ? TAU - angle : - angle;
 
-            return (float)(drawPieRadians * MathHelper.RadiansToDegrees);
+            return (float)MathHelper.Degrees(drawPieRadians);
         }
 
         private void UpdateBoundingBox(PointF o, PointF a, PointF b, float radius)
