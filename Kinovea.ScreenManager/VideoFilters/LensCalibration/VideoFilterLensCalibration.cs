@@ -342,7 +342,7 @@ namespace Kinovea.ScreenManager
             Thread.CurrentThread.Name = "LensCalibration";
             BackgroundWorker worker = sender as BackgroundWorker;
             
-            stopwatch.Start();
+            stopwatch.Restart();
 
             // https://www.opencv.org.cn/opencvdoc/2.3.2/html/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html
             int cbWidth = patternSize.Width;
