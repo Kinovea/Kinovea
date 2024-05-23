@@ -38,24 +38,25 @@ namespace Kinovea.ScreenManager
         {
             StringBuilder sb = new StringBuilder();
 
-            if (filePaths.Count != metadata.Count)
-            {
-                log.ErrorFormat("Error while exporting document. Images and keyframes mismatch.");
-                return;
-            }
-
             // We are currently in the background thread, we need that control used for conversion to
             // also be on the background thread.
             RichTextBox rtb = new RichTextBox();
 
             sb.Append(Heading1Prefix + Path.GetFileNameWithoutExtension(metadata.VideoPath) + LineBreak);
             sb.Append(ParagraphBreak);
+            int current = 0;
             for (int i = 0; i < metadata.Keyframes.Count; i++)
             {
                 var keyframe = metadata.Keyframes[i];
+                
+                // Only include the keyframes that are within the selection to stay
+                // consistent with the images we just exported and with the way video/image export works.
+                if (keyframe.Timestamp < metadata.SelectionStart || keyframe.Timestamp > metadata.SelectionEnd)
+                    continue;
+
                 sb.Append(Heading2Prefix + keyframe.Name + LineBreak);
                 sb.Append(ItalicWrap + keyframe.TimeCode + ItalicWrap + ParagraphBreak);
-                sb.Append(string.Format("![]({0}){{width=100%}}", filePaths[i]) + ParagraphBreak);
+                sb.Append(string.Format("![]({0}){{width=100%}}", filePaths[current]) + ParagraphBreak);
 
                 // Extract comments from rich text to simple text.
                 rtb.Rtf = keyframe.Comments;
@@ -64,10 +65,10 @@ namespace Kinovea.ScreenManager
                 // Enforce Markdown linebreaks.
                 text = text.Replace("\n", LineBreak);
                 sb.Append(text + ParagraphBreak);
+                current++;
             }
 
             File.WriteAllText(path, sb.ToString());
         }
-
     }
 }
