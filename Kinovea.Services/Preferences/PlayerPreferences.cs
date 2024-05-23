@@ -199,6 +199,12 @@ namespace Kinovea.Services
             set { kinogramParameters = value; }
         }
 
+        public LensCalibrationParameters LensCalibration
+        {
+            get { return lensCalibrationParameters.Clone(); }
+            set { lensCalibrationParameters = value; }
+        }
+
         public KeyframePresetsParameters KeyframePresets
         {
             get { return keyframePresetsParameters.Clone(); }
@@ -250,6 +256,7 @@ namespace Kinovea.Services
         private int preloadKeyframes = 20;
         private string playbackKVA;
         private KinogramParameters kinogramParameters = new KinogramParameters();
+        private LensCalibrationParameters lensCalibrationParameters = new LensCalibrationParameters();
         private KeyframePresetsParameters keyframePresetsParameters = new KeyframePresetsParameters();
         private bool showCacheInTimeline = false;
         private string pandocPath = "";
@@ -318,6 +325,10 @@ namespace Kinovea.Services
 
             writer.WriteStartElement("Kinogram");
             kinogramParameters.WriteXml(writer);
+            writer.WriteEndElement();
+
+            writer.WriteStartElement("LensCalibration");
+            lensCalibrationParameters.WriteXml(writer);
             writer.WriteEndElement();
 
             writer.WriteStartElement("KeyframePresets");
@@ -432,6 +443,9 @@ namespace Kinovea.Services
                         break;
                     case "Kinogram":
                         kinogramParameters.ReadXml(reader);
+                        break;
+                    case "LensCalibration":
+                        lensCalibrationParameters.ReadXml(reader);
                         break;
                     case "KeyframePresets":
                         keyframePresetsParameters.ReadXml(reader);

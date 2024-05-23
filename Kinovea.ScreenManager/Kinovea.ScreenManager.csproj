@@ -979,6 +979,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="UIHelper.cs" />
+    <Compile Include="VideoFilters\LensCalibration\FormConfigureLensCalibration.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VideoFilters\LensCalibration\FormConfigureLensCalibration.Designer.cs">
+      <DependentUpon>FormConfigureLensCalibration.cs</DependentUpon>
+    </Compile>
     <Compile Include="VideoFilters\LensCalibration\VideoFilterLensCalibration.cs" />
     <Compile Include="VideoFilters\VideoFilterType.cs" />
     <Compile Include="VideoFilters\VideoFilterFactory.cs" />
@@ -1171,6 +1177,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="VideoFilters\Kinogram\FormExportKinogram.resx">
       <DependentUpon>FormExportKinogram.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VideoFilters\LensCalibration\FormConfigureLensCalibration.resx">
+      <DependentUpon>FormConfigureLensCalibration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

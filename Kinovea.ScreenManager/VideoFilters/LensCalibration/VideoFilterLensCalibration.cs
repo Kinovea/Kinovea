@@ -67,6 +67,11 @@ namespace Kinovea.ScreenManager
         {
             get { return true; }
         }
+        public LensCalibrationParameters Parameters
+        {
+            get { return parameters; }
+            set { parameters = value; }
+        }
         public int ContentHash
         {
             get { return 0; }
@@ -79,7 +84,8 @@ namespace Kinovea.ScreenManager
         private IWorkingZoneFramesContainer framesContainer;
         private Metadata parentMetadata;
         private Stopwatch stopwatch = new Stopwatch();
-        private long activeTimestamp;
+        private long requestTimestamp;  // Last timestamp requested by the player.
+        private long activeTimestamp;   // timestamp of the frame we are actually displaying. 
         private bool calibrated = false;
         private string resultText;
         // frameIndices: reverse index from timestamps to frames indices,
@@ -88,9 +94,7 @@ namespace Kinovea.ScreenManager
         private List<List<OpenCvSharp.Point2f>> imagePoints = new List<List<OpenCvSharp.Point2f>>();
 
         // Configuration
-        private int maxImages = 12;
-        private Size patternSize = new Size(9, 6);
-        private int maxIterations = 30;
+        private LensCalibrationParameters parameters = new LensCalibrationParameters();
         private float eps = 0.001f;
 
         // Calibration results
@@ -103,6 +107,7 @@ namespace Kinovea.ScreenManager
         private bool showCorners = true;
 
         #region Menu
+        private ToolStripMenuItem mnuConfigure = new ToolStripMenuItem();
         private ToolStripMenuItem mnuAction = new ToolStripMenuItem();
         private ToolStripMenuItem mnuRun = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDeleteData = new ToolStripMenuItem();
@@ -128,6 +133,7 @@ namespace Kinovea.ScreenManager
         {
             this.parentMetadata = metadata;
             InitializeMenus();
+            parameters = PreferencesManager.PlayerPreferences.LensCalibration;
         }
 
         ~VideoFilterLensCalibration()
@@ -155,6 +161,9 @@ namespace Kinovea.ScreenManager
 
         private void InitializeMenus()
         {
+            mnuConfigure.Image = Properties.Drawings.configure;
+            mnuConfigure.Click += MnuConfigure_Click;
+
             mnuAction.Image = Properties.Resources.action;
             mnuRun.Image = Properties.Resources.checkerboard;
             mnuDeleteData.Image = Properties.Resources.bin_empty;
@@ -197,8 +206,9 @@ namespace Kinovea.ScreenManager
         public void UpdateTime(long timestamp)
         {
             // Bind to the nearest frame used by calibration.
+            requestTimestamp = timestamp;
             bitmap = null;
-            List<int> indices = GetIndices(maxImages, framesContainer.Frames.Count);
+            List<int> indices = GetIndices(parameters.MaxImages, framesContainer.Frames.Count);
             for (int i = 0; i < indices.Count; i++)
             {
                 int index = indices[i];
@@ -235,13 +245,12 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void DrawExtra(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, long timestamp, bool export)
         {
-            if (!calibrated)
-                return;
-
-            // We do not use the passed timestamp from the player timeline.
-            // We are only showing a few selected images, use the timestamp of the active image.
-            if (showCorners)
+            if (calibrated && showCorners)
+            {
+                // We do not use the passed timestamp from the player timeline.
+                // We are only showing a few selected images, use the timestamp of the active image.
                 DrawCorners(canvas, transformer, activeTimestamp);
+            }
 
             DrawResults(canvas, transformer);
         }
@@ -258,7 +267,9 @@ namespace Kinovea.ScreenManager
 
         public void ResetData()
         {
-            //tracker.ResetTrackingData();
+            calibrated = false;
+            frameIndices.Clear();
+            imagePoints.Clear();
         }
         public void WriteData(XmlWriter w)
         {
@@ -289,6 +300,8 @@ namespace Kinovea.ScreenManager
             ReloadMenusCulture();
 
             contextMenu.AddRange(new ToolStripItem[] {
+                mnuConfigure,
+                new ToolStripSeparator(),
                 mnuAction,
                 mnuOptions,
             });
@@ -308,6 +321,9 @@ namespace Kinovea.ScreenManager
 
         private void ReloadMenusCulture()
         {
+            // Just in time localization.
+            mnuConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
+
             mnuAction.Text = ScreenManagerLang.mnuAction;
             mnuRun.Text = "Run lens calibration";
             mnuDeleteData.Text = "Delete calibration data";
@@ -317,6 +333,39 @@ namespace Kinovea.ScreenManager
 
             mnuCopy.Text = "Copy calibration data";
             mnuSave.Text = "Save calibration data…";
+        }
+
+        private void MnuConfigure_Click(object sender, EventArgs e)
+        {
+            // The dialog is responsible for handling undo/redo.
+
+            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
+            if (tsmi == null)
+                return;
+
+            int oldMaxImages = parameters.MaxImages;
+            Size oldSize = parameters.PatternSize;
+
+            FormConfigureLensCalibration fclc = new FormConfigureLensCalibration(this);
+            FormsHelper.Locate(fclc);
+            fclc.ShowDialog();
+
+            if (fclc.DialogResult == DialogResult.OK)
+            {
+                SaveAsDefaultParameters();
+
+                // If we changed the frame number or the pattern size we can't 
+                // draw the old results correctly anymore so reset the calibration.
+                if (oldMaxImages != parameters.MaxImages || oldSize != parameters.PatternSize)
+                {
+                    ResetData();
+                    UpdateTime(requestTimestamp);
+                }
+
+            }
+
+            fclc.Dispose();
+            InvalidateFromMenu(sender);
         }
 
         private void MnuRun_Click(object sender, EventArgs e)
@@ -334,137 +383,6 @@ namespace Kinovea.ScreenManager
                 parentMetadata.SetLensCalibration(calibration);
 
             InvalidateFromMenu(sender);
-        }
-
-        private void Worker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            // This runs in the background thread.
-            Thread.CurrentThread.Name = "LensCalibration";
-            BackgroundWorker worker = sender as BackgroundWorker;
-            
-            stopwatch.Restart();
-
-            // https://www.opencv.org.cn/opencvdoc/2.3.2/html/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html
-            int cbWidth = patternSize.Width;
-            int cbHeight = patternSize.Height;
-            OpenCvSharp.Size cbSize = new OpenCvSharp.Size(cbWidth, cbHeight);
-
-            // World space position of the corners.
-            // The actual world dimension doesn't matter.
-            List<OpenCvSharp.Point3f> points = new List<OpenCvSharp.Point3f>(cbWidth * cbHeight);
-            for (int i = 0; i < cbHeight; i++)
-            {
-                for (int j = 0; j < cbWidth; j++)
-                {
-                    points.Add(new OpenCvSharp.Point3f(j, i, 0));
-                }
-            }
-
-            // Find corners in images.
-            frameIndices.Clear();
-            imagePoints.Clear();
-            List<List<OpenCvSharp.Point3f>> objectPoints = new List<List<OpenCvSharp.Point3f>>();
-            List<int> indices = GetIndices(maxImages, framesContainer.Frames.Count);
-            for (int i = 0; i < indices.Count; i++)
-            {
-                if (worker.CancellationPending)
-                    break;
-
-                int index = indices[i];
-                var f = framesContainer.Frames[index];
-
-                // Convert image to OpenCV and convert to grayscale.
-                var cvImage = OpenCvSharp.Extensions.BitmapConverter.ToMat(f.Image);
-                var cvImageGray = new OpenCvSharp.Mat();
-                OpenCvSharp.Cv2.CvtColor(cvImage, cvImageGray, OpenCvSharp.ColorConversionCodes.BGR2GRAY, 0);
-                cvImage.Dispose();
-
-                // Find checkerboard corners in the image.
-                var corners = new OpenCvSharp.Mat<OpenCvSharp.Point2f>();
-                var flags = OpenCvSharp.ChessboardFlags.AdaptiveThresh | OpenCvSharp.ChessboardFlags.FastCheck | OpenCvSharp.ChessboardFlags.NormalizeImage;
-                bool found = OpenCvSharp.Cv2.FindChessboardCorners(cvImageGray, cbSize, corners, flags);
-                if (!found)
-                {
-                    cvImageGray.Dispose();
-                    worker.ReportProgress(index + 1, framesContainer.Frames.Count);
-                    continue;
-                }
-            
-                // TODO: Refine the corner positions.
-
-                // Collect the point correspondances.
-                frameIndices.Add(f.Timestamp, imagePoints.Count);
-                objectPoints.Add(points);
-                imagePoints.Add(corners.ToArray().ToList());
-
-                worker.ReportProgress(index + 1, framesContainer.Frames.Count);
-            }
-
-            if (worker.CancellationPending)
-            {
-                log.Debug("Lens calibration cancelled.");
-                return;
-            }
-
-            long findCornersTime = stopwatch.ElapsedMilliseconds;
-
-            log.DebugFormat("Find corners: {0:0.000} s", findCornersTime / 1000.0f);
-
-            if (imagePoints.Count < 2)
-            {
-                log.Debug("Lens calibration failure. Not enough images to calibrate.");
-                return;
-            }
-
-            // Compute the calibration.
-            stopwatch.Restart();
-            Calibrate(objectPoints, imagePoints, maxIterations, eps);
-            long calibrationTime = stopwatch.ElapsedMilliseconds;
-            log.DebugFormat("Calibration: {0:0.000} s", calibrationTime / 1000.0f);
-            duration = findCornersTime + calibrationTime;
-            resultText = GetResultsString();
-        }
-
-        private void Calibrate(List<List<OpenCvSharp.Point3f>> objectPoints, List<List<OpenCvSharp.Point2f>> imagePoints, int maxIterations, float eps)
-        {
-            double[,] cameraMatrix = new double[3, 3];
-            double[] distCoeffs = new double[5];
-            OpenCvSharp.CalibrationFlags flags = OpenCvSharp.CalibrationFlags.None;
-            var termCriteriaType = OpenCvSharp.CriteriaTypes.MaxIter | OpenCvSharp.CriteriaTypes.Eps;
-            var termCriteria = new OpenCvSharp.TermCriteria(termCriteriaType, maxIterations, eps);
-
-            double error = OpenCvSharp.Cv2.CalibrateCamera(
-                objectPoints,
-                imagePoints,
-                new OpenCvSharp.Size(frameSize.Width, frameSize.Height),
-                cameraMatrix,
-                distCoeffs,
-                out var rotationVectors,
-                out var translationVectors,
-                flags,
-                termCriteria
-            );
-
-            double k1 = distCoeffs[0];
-            double k2 = distCoeffs[1];
-            double k3 = distCoeffs[4];
-            double p1 = distCoeffs[2];
-            double p2 = distCoeffs[3];
-            double fx = cameraMatrix[0, 0];
-            double fy = cameraMatrix[1, 1];
-            double cx = cameraMatrix[0, 2];
-            double cy = cameraMatrix[1, 2];
-
-            log.DebugFormat("Reprojection err: {0:0.000}", error);
-            log.DebugFormat("Camera intrinsics: fx:{0:0.000}, fy:{1:0.000}, cx:{2:0.000}, cy:{3:0.000}", fx, fy, cx, cy);
-            float hfov = (float)(2 * Math.Atan(frameSize.Width / (2 * fx)) * 180 / Math.PI);
-            log.DebugFormat("HFOV: {0:0.000}°", hfov);
-            log.DebugFormat("Coefficients: k1:{0:0.000}, k2:{1:0.000}, k3:{2:0.000}, p1:{3:0.000}, p2:{4:0.000}.", k1, k2, k3, p1, p2);
-
-            usedImages = imagePoints.Count;
-            reprojError = (float)error;
-            calibration = new DistortionParameters(k1, k2, k3, p1, p2, fx, fy, cx, cy, frameSize);
-            calibrated = true;
         }
 
         private void MnuCopy_Click(object sender, EventArgs e)
@@ -494,9 +412,7 @@ namespace Kinovea.ScreenManager
 
         private void MnuDeleteData_Click(object sender, EventArgs e)
         {
-            calibrated = false;
-            frameIndices.Clear();
-            imagePoints.Clear();
+            ResetData();
             InvalidateFromMenu(sender);
         }
 
@@ -547,13 +463,13 @@ namespace Kinovea.ScreenManager
             // Paint corners and connector lines.
             int index = 0;
             PointF prevPoint = PointF.Empty;
-            for (int j = 0; j < patternSize.Height; j++)
+            for (int j = 0; j < parameters.PatternSize.Height - 1; j++)
             {
                 string str = "FF" + colorCycle[j % colorCycle.Length];
                 Color c = Color.FromArgb(Convert.ToInt32(str, 16));
                 using (Pen pen = new Pen(c, 3.0f))
                 {
-                    for (int i = 0; i < patternSize.Width; i++)
+                    for (int i = 0; i < parameters.PatternSize.Width - 1; i++)
                     {
                         PointF p = transformer.Transform(corners[index]);
 
@@ -573,8 +489,10 @@ namespace Kinovea.ScreenManager
 
         private void DrawResults(Graphics canvas, IImageToViewportTransformer transformer)
         {
+            string text = calibrated ? resultText : GetDefaultString();
+            
             // We don't care about the original image size, we draw in screen space.
-            SizeF textSize = canvas.MeasureString(resultText, fontText);
+            SizeF textSize = canvas.MeasureString(text, fontText);
             Point bgLocation = new Point(20, 20);
             Size bgSize = new Size((int)textSize.Width, (int)textSize.Height);
 
@@ -584,7 +502,7 @@ namespace Kinovea.ScreenManager
             RoundedRectangle.Draw(canvas, rect, brushBack, roundingRadius, false, false, null);
 
             // Main text.
-            canvas.DrawString(resultText, fontText, brushText, rect.Location);
+            canvas.DrawString(text, fontText, brushText, rect.Location);
         }
 
         #endregion
@@ -618,19 +536,180 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// Background worker function that finds corners in the images
+        /// and calls the calibration.
+        /// </summary>
+        private void Worker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            // This runs in the background thread.
+            Thread.CurrentThread.Name = "LensCalibration";
+            BackgroundWorker worker = sender as BackgroundWorker;
+
+            stopwatch.Restart();
+
+            // https://www.opencv.org.cn/opencvdoc/2.3.2/html/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html
+            // OpenCV will only look for the internal corners so subtract one from the number of squares.
+            int cbWidth = parameters.PatternSize.Width - 1;
+            int cbHeight = parameters.PatternSize.Height - 1;
+            OpenCvSharp.Size cbSize = new OpenCvSharp.Size(cbWidth, cbHeight);
+
+            // World space position of the corners.
+            // The actual world dimension doesn't matter.
+            List<OpenCvSharp.Point3f> points = new List<OpenCvSharp.Point3f>(cbWidth * cbHeight);
+            for (int i = 0; i < cbHeight; i++)
+            {
+                for (int j = 0; j < cbWidth; j++)
+                {
+                    points.Add(new OpenCvSharp.Point3f(j, i, 0));
+                }
+            }
+
+            // Find corners in images.
+            frameIndices.Clear();
+            imagePoints.Clear();
+            List<List<OpenCvSharp.Point3f>> objectPoints = new List<List<OpenCvSharp.Point3f>>();
+            List<int> indices = GetIndices(parameters.MaxImages, framesContainer.Frames.Count);
+            for (int i = 0; i < indices.Count; i++)
+            {
+                if (worker.CancellationPending)
+                    break;
+
+                int index = indices[i];
+                var f = framesContainer.Frames[index];
+
+                // Convert image to OpenCV and convert to grayscale.
+                var cvImage = OpenCvSharp.Extensions.BitmapConverter.ToMat(f.Image);
+                var cvImageGray = new OpenCvSharp.Mat();
+                OpenCvSharp.Cv2.CvtColor(cvImage, cvImageGray, OpenCvSharp.ColorConversionCodes.BGR2GRAY, 0);
+                cvImage.Dispose();
+
+                // Find checkerboard corners in the image.
+                var corners = new OpenCvSharp.Mat<OpenCvSharp.Point2f>();
+                var flags = OpenCvSharp.ChessboardFlags.AdaptiveThresh | OpenCvSharp.ChessboardFlags.FastCheck | OpenCvSharp.ChessboardFlags.NormalizeImage;
+                bool found = OpenCvSharp.Cv2.FindChessboardCorners(cvImageGray, cbSize, corners, flags);
+                if (!found)
+                {
+                    cvImageGray.Dispose();
+                    worker.ReportProgress(index + 1, framesContainer.Frames.Count);
+                    continue;
+                }
+
+                // TODO: Refine the corner positions.
+
+                // Collect the point correspondances.
+                frameIndices.Add(f.Timestamp, imagePoints.Count);
+                objectPoints.Add(points);
+                imagePoints.Add(corners.ToArray().ToList());
+
+                worker.ReportProgress(index + 1, framesContainer.Frames.Count);
+            }
+
+            if (worker.CancellationPending)
+            {
+                log.Debug("Lens calibration cancelled.");
+                return;
+            }
+
+            long findCornersTime = stopwatch.ElapsedMilliseconds;
+
+            log.DebugFormat("Find corners: {0:0.000} s", findCornersTime / 1000.0f);
+
+            if (imagePoints.Count < 2)
+            {
+                log.Debug("Lens calibration failure. Not enough images to calibrate.");
+                return;
+            }
+
+            // Compute the calibration.
+            stopwatch.Restart();
+            Calibrate(objectPoints, imagePoints, parameters.MaxIterations, eps);
+            long calibrationTime = stopwatch.ElapsedMilliseconds;
+            log.DebugFormat("Calibration: {0:0.000} s", calibrationTime / 1000.0f);
+            duration = findCornersTime + calibrationTime;
+            resultText = GetResultsString();
+        }
+
+        /// <summary>
+        /// Call OpenCV calibration with the collected corners.
+        /// </summary>
+        private void Calibrate(List<List<OpenCvSharp.Point3f>> objectPoints, List<List<OpenCvSharp.Point2f>> imagePoints, int maxIterations, float eps)
+        {
+            // This still runs in the background thread.
+            
+            double[,] cameraMatrix = new double[3, 3];
+            double[] distCoeffs = new double[5];
+            OpenCvSharp.CalibrationFlags flags = OpenCvSharp.CalibrationFlags.None;
+            var termCriteriaType = OpenCvSharp.CriteriaTypes.MaxIter | OpenCvSharp.CriteriaTypes.Eps;
+            var termCriteria = new OpenCvSharp.TermCriteria(termCriteriaType, maxIterations, eps);
+
+            double error = OpenCvSharp.Cv2.CalibrateCamera(
+                objectPoints,
+                imagePoints,
+                new OpenCvSharp.Size(frameSize.Width, frameSize.Height),
+                cameraMatrix,
+                distCoeffs,
+                out var rotationVectors,
+                out var translationVectors,
+                flags,
+                termCriteria
+            );
+
+            double k1 = distCoeffs[0];
+            double k2 = distCoeffs[1];
+            double k3 = distCoeffs[4];
+            double p1 = distCoeffs[2];
+            double p2 = distCoeffs[3];
+            double fx = cameraMatrix[0, 0];
+            double fy = cameraMatrix[1, 1];
+            double cx = cameraMatrix[0, 2];
+            double cy = cameraMatrix[1, 2];
+
+            log.DebugFormat("Reprojection err: {0:0.000}", error);
+            log.DebugFormat("Camera intrinsics: fx:{0:0.000}, fy:{1:0.000}, cx:{2:0.000}, cy:{3:0.000}", fx, fy, cx, cy);
+            float hfov = (float)(2 * Math.Atan(frameSize.Width / (2 * fx)) * 180 / Math.PI);
+            log.DebugFormat("HFOV: {0:0.000}°", hfov);
+            log.DebugFormat("Coefficients: k1:{0:0.000}, k2:{1:0.000}, k3:{2:0.000}, p1:{3:0.000}, p2:{4:0.000}.", k1, k2, k3, p1, p2);
+
+            usedImages = imagePoints.Count;
+            reprojError = (float)error;
+            calibration = new DistortionParameters(k1, k2, k3, p1, p2, fx, fy, cx, cy, frameSize);
+            calibrated = true;
+        }
+
+        /// <summary>
         /// Return calibration results as text.
         /// </summary>
         private string GetResultsString()
         {
             StringBuilder b = new StringBuilder();
             b.AppendLine(string.Format("Lens calibration ({0:0.000} s)", duration / 1000.0f));
-            b.AppendLine(string.Format("Pattern: {0}x{1}, Image size:{2}x{3}", patternSize.Width, patternSize.Height, frameSize.Width, frameSize.Height));
-            b.AppendLine(string.Format("Images:{0}/{1}.", usedImages, maxImages));
+            b.AppendLine(string.Format("Pattern: {0}x{1}, Image size:{2}x{3}", parameters.PatternSize.Width, parameters.PatternSize.Height, frameSize.Width, frameSize.Height));
+            b.AppendLine(string.Format("Images:{0}/{1}.", usedImages, parameters.MaxImages));
             b.AppendLine(string.Format("Reprojection error: {0:0.000}", reprojError));
             b.AppendLine(string.Format("Intrinsics: fx:{0:0.000}, fy:{1:0.000}, cx:{2:0.000}, cy:{3:0.000}", calibration.Fx, calibration.Fy, calibration.Cx, calibration.Cy));
             b.AppendLine(string.Format("Radial distortion: k1:{0:0.000}, k2:{1:0.000}, k3:{2:0.000}", calibration.K1, calibration.K2, calibration.K3));
             b.AppendLine(string.Format("Tangential distortion: p1:{0:0.000}, p2:{1:0.000}", calibration.P1, calibration.P2));
             return b.ToString();
+        }
+
+        /// <summary>
+        /// Return the string to show when calibration hasn't been completed.
+        /// </summary>
+        private string GetDefaultString()
+        {
+            StringBuilder b = new StringBuilder();
+            b.AppendLine(string.Format("Lens calibration"));
+            b.AppendLine(string.Format("Pattern: {0}x{1}, Image size:{2}x{3}", parameters.PatternSize.Width, parameters.PatternSize.Height, frameSize.Width, frameSize.Height));
+            return b.ToString();
+        }
+
+        /// <summary>
+        /// Save the configuration as the new preferred configuration.
+        /// </summary>
+        private void SaveAsDefaultParameters()
+        {
+            PreferencesManager.PlayerPreferences.LensCalibration = parameters.Clone();
+            PreferencesManager.Save();
         }
     }
 }

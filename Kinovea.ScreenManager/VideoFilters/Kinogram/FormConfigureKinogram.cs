@@ -14,7 +14,9 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// Configuration dialog for Kinogram.
-    /// OK/Cancel mechanics: we keep a backup of the original state and directly modify the object.
+    /// Note: this dialog needs to update the filter in real time when changing params.
+    /// OK/Cancel mechanics: 
+    /// - keep a backup of the original state and directly modify the object.
     /// - In case of cancel or close we perform an undo manually from here.
     /// - In case of OK we commit the original state to the undo stack.
     /// </summary>
