@@ -1,5 +1,5 @@
 
-Kinovea 2023.1 - 2023-08.
+Kinovea 2024.1 - TBD.
 
 Kinovea is a free and open source video annotation tool designed for motion analysis.
 It features utilities to capture, slow down, compare, annotate and measure motion in videos.
@@ -39,6 +39,8 @@ Changelog:
 ----------
 
 2024.1 - TBD
+	Added - New locales: Croatian, Traditional Chinese.
+	Added - Counter tool.
     Added - Support for an extra offset applied to coordinates.
     Improved - Annotations: Added "filled" option to rectangle and circle.
     Improved - Annotations: Support changing font size for mini labels.
@@ -51,6 +53,13 @@ Changelog:
     Improved - Kinogram: Support moving tiles in time.
     Improved - Kinogram: Support changing label color and font size.
     Fixed - Copy-pasting a drawing to a different time was not working.
+    Fixed - End caps on trajectory drawings.
+    Fixed - Problem when reading tool preset coming from a different version.
+    Fixed - Pasting a drawing to a different time.
+    Fixed - Slowness of side-by-side export.
+    Fixed - Synchronization between shortcuts and explorer when opening a file.
+    Fixed - Update of mini labels of trajectories after a change in the side panel.
+    Fixed - Markdown export was broken for files with keyframes out of the selection.
     Removed - Distance grid tool.
 
 
