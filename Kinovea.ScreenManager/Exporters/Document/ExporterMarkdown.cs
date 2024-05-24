@@ -37,7 +37,7 @@ namespace Kinovea.ScreenManager
         public void Export(string path, List<string> filePaths, Metadata metadata)
         {
             StringBuilder sb = new StringBuilder();
-
+            bool hasImages = filePaths.Count > 0;
             // We are currently in the background thread, we need that control used for conversion to
             // also be on the background thread.
             RichTextBox rtb = new RichTextBox();
@@ -56,7 +56,9 @@ namespace Kinovea.ScreenManager
 
                 sb.Append(Heading2Prefix + keyframe.Name + LineBreak);
                 sb.Append(ItalicWrap + keyframe.TimeCode + ItalicWrap + ParagraphBreak);
-                sb.Append(string.Format("![]({0}){{width=100%}}", filePaths[current]) + ParagraphBreak);
+
+                if (hasImages)
+                    sb.Append(string.Format("![]({0}){{width=100%}}", filePaths[current]) + ParagraphBreak);
 
                 // Extract comments from rich text to simple text.
                 rtb.Rtf = keyframe.Comments;

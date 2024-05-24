@@ -83,6 +83,7 @@ namespace Kinovea.Root
         private KeyframePresetsParameters keyframePresets;
         private CSVDecimalSeparator csvDecimalSeparator;
         private ExportSpace exportSpace;
+        private bool exportImagesInDocuments;
         private int presetsCount = 10;
         private string pandocPath;
         #endregion
@@ -133,6 +134,7 @@ namespace Kinovea.Root
             keyframePresets = PreferencesManager.PlayerPreferences.KeyframePresets;
             csvDecimalSeparator = PreferencesManager.PlayerPreferences.CSVDecimalSeparator;
             exportSpace = PreferencesManager.PlayerPreferences.ExportSpace;
+            exportImagesInDocuments = PreferencesManager.PlayerPreferences.ExportImagesInDocuments;
             pandocPath = PreferencesManager.PlayerPreferences.PandocPath;
         }
         private void InitPage()
@@ -396,6 +398,9 @@ namespace Kinovea.Root
             int option = (int)exportSpace;
             cmbExportSpace.SelectedIndex = option < cmbExportSpace.Items.Count ? option : 0;
 
+            cbExportImagesInDocs.Text = "Include images";
+            cbExportImagesInDocs.Checked = exportImagesInDocuments;
+
             lblPandocPath.Text = RootLang.dlgPreferences_General_PathToPandoc;
             tbPandocPath.Text = pandocPath;
         }
@@ -576,6 +581,11 @@ namespace Kinovea.Root
             if (dialog.ShowDialog() == DialogResult.OK)
                 tbPandocPath.Text = dialog.FileName;
         }
+
+        private void cbExportImagesInDocs_CheckedChanged(object sender, EventArgs e)
+        {
+            exportImagesInDocuments = cbExportImagesInDocs.Checked;
+        }
         #endregion
         #endregion
 
@@ -597,6 +607,7 @@ namespace Kinovea.Root
             PreferencesManager.PlayerPreferences.KeyframePresets = keyframePresets;
             PreferencesManager.PlayerPreferences.CSVDecimalSeparator = csvDecimalSeparator;
             PreferencesManager.PlayerPreferences.ExportSpace = exportSpace;
+            PreferencesManager.PlayerPreferences.ExportImagesInDocuments = exportImagesInDocuments;
             PreferencesManager.PlayerPreferences.PandocPath = pandocPath;
 
             // Special case for the custom unit length.
