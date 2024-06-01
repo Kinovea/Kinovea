@@ -131,4 +131,7 @@
   <data name="FormConnectionWizard_URL" xml:space="preserve">
     <value>Τελική διεύθυνση URL</value>
   </data>
+  <data name="FormConfiguration_Properties_Exposure" xml:space="preserve">
+    <value>Έκθεση:</value>
+  </data>
 </root>
