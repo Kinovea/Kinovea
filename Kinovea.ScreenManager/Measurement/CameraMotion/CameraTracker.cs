@@ -189,23 +189,14 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Run all steps of the process in batch.
+        /// Match features from frame to frame and find the homography transforming
+        /// each frame to the next.
         /// </summary>
-        public void Run(IWorkingZoneFramesContainer framesContainer, BackgroundWorker worker)
+        public void MatchFeatures(IWorkingZoneFramesContainer framesContainer, BackgroundWorker worker)
         {
-            // This runs in the background thread.
-            ResetTrackingData();
+            stopwatch.Restart();
 
-            FindFeatures(framesContainer, worker);
-
-            if (worker.CancellationPending)
-            {
-                log.DebugFormat("Camera motion estimation cancelled.");
-                return;
-            }
-            
             // Match features in consecutive frames.
-            // TODO: match each frame with the n next frames where n depends on framerate.
             var matcher = new OpenCvSharp.BFMatcher(OpenCvSharp.NormTypes.Hamming, crossCheck: true);
             for (int i = 0; i < descriptors.Count - 1; i++)
             {
@@ -224,7 +215,8 @@ namespace Kinovea.ScreenManager
             }
 
             // Compute transforms between consecutive frames.
-            // TODO: bundle adjustment.
+            // This finds a first rough registration.
+            stopwatch.Restart();
             for (int i = 0; i < descriptors.Count - 1; i++)
             {
                 if (worker.CancellationPending)
@@ -258,13 +250,32 @@ namespace Kinovea.ScreenManager
                 worker.ReportProgress(i + 1, descriptors.Count - 1);
             }
 
+            log.DebugFormat("Transforms computation: {0} ms.", stopwatch.ElapsedMilliseconds);
+        }
+
+        /// <summary>
+        /// Run all steps of the process in batch.
+        /// </summary>
+        public void Run(IWorkingZoneFramesContainer framesContainer, BackgroundWorker worker)
+        {
+            // This runs in the background thread.
+            ResetTrackingData();
+
+            string cancellationText = "Camera motion estimation cancelled.";
+            FindFeatures(framesContainer, worker);
             if (worker.CancellationPending)
             {
-                log.DebugFormat("Camera motion estimation cancelled.");
+                log.DebugFormat(cancellationText);
                 return;
             }
 
-            log.DebugFormat("Transforms computation: {0} ms.", stopwatch.ElapsedMilliseconds);
+            MatchFeatures(framesContainer, worker);
+            if (worker.CancellationPending)
+            {
+                log.DebugFormat(cancellationText);
+                return;
+            }
+
             tracked = true;
         }
 

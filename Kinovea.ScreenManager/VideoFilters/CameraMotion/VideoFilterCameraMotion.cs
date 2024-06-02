@@ -96,6 +96,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuAction = new ToolStripMenuItem();
         private ToolStripMenuItem mnuRun = new ToolStripMenuItem();
         private ToolStripMenuItem mnuFindFeatures = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuMatchFeatures = new ToolStripMenuItem();
 
         private ToolStripMenuItem mnuImportMask = new ToolStripMenuItem();
         private ToolStripMenuItem mnuImportColmap = new ToolStripMenuItem();
@@ -172,11 +173,12 @@ namespace Kinovea.ScreenManager
             mnuAction.Image = Properties.Resources.action;
             mnuRun.Image = Properties.Resources.motion_detector;
             mnuFindFeatures.Image = Properties.Drawings.bullet_orange;
+            mnuMatchFeatures.Image = Properties.Drawings.bullet_green;
             mnuDeleteData.Image = Properties.Resources.bin_empty;
             mnuRun.Click += MnuRun_Click;
             mnuFindFeatures.Click += MnuFindFeatures_Click;
+            mnuMatchFeatures.Click += MnuMatchFeatures_Click;
             mnuImportMask.Click += MnuImportMask_Click;
-            mnuImportColmap.Click += MnuImportColmap_Click;
             mnuDeleteData.Click += MnuDeleteData_Click;
             
             mnuOptions.Image = Properties.Resources.equalizer;
@@ -290,13 +292,16 @@ namespace Kinovea.ScreenManager
             List<ToolStripItem> contextMenu = new List<ToolStripItem>();
             ReloadMenusCulture();
 
-            
+
             // The content of the action menu depends on whether we are 
             // running each step individually or all at once.
             // step-by-step is useful for troubleshooting.
+            mnuAction.DropDownItems.Clear();
+
             if (tracker.Parameters.StepByStep)
             {
                 mnuAction.DropDownItems.Add(mnuFindFeatures);
+                mnuAction.DropDownItems.Add(mnuMatchFeatures);
             }
             else
             {
@@ -334,6 +339,7 @@ namespace Kinovea.ScreenManager
             mnuAction.Text = ScreenManagerLang.mnuAction;
             mnuRun.Text = "Run camera motion estimation";
             mnuFindFeatures.Text = "Find features";
+            mnuMatchFeatures.Text = "Match features";
             mnuImportMask.Text = "Import mask";
             mnuImportColmap.Text = "Import COLMAP";
             mnuDeleteData.Text = "Delete tracking data";
@@ -361,7 +367,29 @@ namespace Kinovea.ScreenManager
 
             step = CameraMotionStep.FindFeatures;
             StartProcess(sender);
+
+            // Force visualization options.
+            showFeatures = true;
+            showInliers = false;
+            showOutliers = false;
+            showTransforms = false;
         }
+
+        private void MnuMatchFeatures_Click(object sender, EventArgs e)
+        {
+            if (framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count < 1)
+                return;
+
+            step = CameraMotionStep.MatchFeatures;
+            StartProcess(sender);
+
+            // Force visualization options
+            showFeatures = false;
+            showInliers = true;
+            showOutliers = false;
+            showTransforms = true;
+        }
+
 
         private void StartProcess(object sender)
         {
@@ -413,44 +441,10 @@ namespace Kinovea.ScreenManager
             openFileDialog.Dispose();
         }
 
-        private void MnuImportColmap_Click(object sender, EventArgs e)
-        {
-            // Import camera intrinsics & extrinsics calculated by COLMAP.
-            // Point to folder containing text export.
-            //CommonOpenFileDialog dialog = new CommonOpenFileDialog();
-            //dialog.IsFolderPicker = true;
-            //dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-
-            //string folderName = "";
-            //if (dialog.ShowDialog() == CommonFileDialogResult.Ok && !string.IsNullOrEmpty(dialog.FileName))
-            //    folderName = dialog.FileName;
-
-            //dialog.Dispose();
-            //if (string.IsNullOrEmpty(folderName))
-            //    return;
-
-            //ParseColmap(folderName);
-            //InvalidateFromMenu(sender);
-
-            //// Commit transform data.
-            //int frameIndex = 0;
-            //foreach (var f in framesContainer.Frames)
-            //{
-            //    if (frameIndices.ContainsKey(f.Timestamp))
-            //        continue;
-
-            //    frameIndices.Add(f.Timestamp, frameIndex);
-            //    frameIndex++;
-            //}
-
-            //metadata.SetCameraMotion(frameIndices, consecTransforms);
-        }
-
         private void MnuDeleteData_Click(object sender, EventArgs e)
         {
             //CaptureMemento();
             tracker.ResetTrackingData();
-            //Update();
             InvalidateFromMenu(sender);
         }
 
@@ -658,16 +652,20 @@ namespace Kinovea.ScreenManager
             b.AppendLine(string.Format("Camera motion"));
 
             List<PointF> features = tracker.GetFeatures(timestamp);
-            if (features == null || features.Count == 0)
-                return b.ToString();
+            if (features != null && features.Count > 0)
+            {
+                // It typically finds the requested number of features but they might be very close to each other.
+                b.AppendLine(string.Format("Features: {0}/{1}", features.Count, tracker.Parameters.FeaturesPerFrame));
+            }
 
-            // It typically finds the requested number of features but they might be very close to each other.
-            b.AppendLine(string.Format("Features: {0}/{1}", features.Count, tracker.Parameters.FeaturesPerFrame));
-            //b.AppendLine(string.Format("Images:{0}/{1}.", usedImages, parameters.MaxImages));
-            //b.AppendLine(string.Format("Reprojection error: {0:0.000}", reprojError));
-            //b.AppendLine(string.Format("Intrinsics: fx:{0:0.000}, fy:{1:0.000}, cx:{2:0.000}, cy:{3:0.000}", calibration.Fx, calibration.Fy, calibration.Cx, calibration.Cy));
-            //b.AppendLine(string.Format("Radial distortion: k1:{0:0.000}, k2:{1:0.000}, k3:{2:0.000}", calibration.K1, calibration.K2, calibration.K3));
-            //b.AppendLine(string.Format("Tangential distortion: p1:{0:0.000}, p2:{1:0.000}", calibration.P1, calibration.P2));
+            List<CameraMatch> matches = tracker.GetMatches(timestamp);
+            if (matches != null && matches.Count > 0)
+            {
+                b.AppendLine(string.Format("Matches:{0}/{1}", matches.Count, features.Count));
+                int inliers = matches.Count(m => m.Inlier);
+                b.AppendLine(string.Format("Inliers:{0}/{1}", inliers, matches.Count));
+            }
+
             return b.ToString();
         }
     }
