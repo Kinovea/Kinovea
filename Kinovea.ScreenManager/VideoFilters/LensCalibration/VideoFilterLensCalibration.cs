@@ -252,7 +252,7 @@ namespace Kinovea.ScreenManager
                 DrawCorners(canvas, transformer, activeTimestamp);
             }
 
-            DrawResults(canvas, transformer);
+            DrawResults(canvas);
         }
 
         public void ExportVideo(IDrawingHostView host)
@@ -487,7 +487,7 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        private void DrawResults(Graphics canvas, IImageToViewportTransformer transformer)
+        private void DrawResults(Graphics canvas)
         {
             string text = calibrated ? resultText : GetDefaultString();
             

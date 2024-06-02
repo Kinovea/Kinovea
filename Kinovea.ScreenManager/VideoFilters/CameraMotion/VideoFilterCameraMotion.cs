@@ -20,7 +20,7 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// Camera motion subsystem.
-    /// The goal of this filter is to estimate the motion of the camera between frames.
+    /// The goal of this filter is to estimate the global motion of the camera during the sequence.
     /// The output is a series of frame-to-frame transforms that can be used to calculate 
     /// the position of points in any frame based on their position in a reference frame.
     /// The low level work is done by the CameraTracker class.
@@ -83,7 +83,8 @@ namespace Kinovea.ScreenManager
         private Stopwatch stopwatch = new Stopwatch();
         private Random rnd = new Random();
 
-        private CameraTracker tracker = new CameraTracker();
+        private CameraTracker tracker;
+        private CameraMotionStep step = CameraMotionStep.All;
 
         // Display parameters
         private bool showFeatures = false;      // All the features found.
@@ -94,6 +95,8 @@ namespace Kinovea.ScreenManager
         #region Menu
         private ToolStripMenuItem mnuAction = new ToolStripMenuItem();
         private ToolStripMenuItem mnuRun = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuFindFeatures = new ToolStripMenuItem();
+
         private ToolStripMenuItem mnuImportMask = new ToolStripMenuItem();
         private ToolStripMenuItem mnuImportColmap = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDeleteData = new ToolStripMenuItem();
@@ -124,6 +127,9 @@ namespace Kinovea.ScreenManager
             "43002C", "DEFF74", "00FFC6", "FFE502", "620E00", "008F9C", "98FF52", "7544B1", "B500FF", "00FF78", "FF6E41",
             "005F39", "6B6882", "5FAD4E", "A75740", "A5FFD2", "FFB167", "009BFF", "E85EBE",
         };
+        private SolidBrush brushBack = new SolidBrush(Color.FromArgb(192, Color.Black));
+        private SolidBrush brushText = new SolidBrush(Color.White);
+        private Font fontText = new Font("Consolas", 14, FontStyle.Bold);
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -132,7 +138,8 @@ namespace Kinovea.ScreenManager
         public VideoFilterCameraMotion(Metadata metadata)
         {
             this.parentMetadata = metadata;
-
+            CameraMotionParameters parameters = new CameraMotionParameters();
+            tracker = new CameraTracker(parameters);
             InitializeMenus();
 
             //parameters = PreferencesManager.PlayerPreferences.CameraMotion;
@@ -164,20 +171,14 @@ namespace Kinovea.ScreenManager
         {
             mnuAction.Image = Properties.Resources.action;
             mnuRun.Image = Properties.Resources.motion_detector;
+            mnuFindFeatures.Image = Properties.Drawings.bullet_orange;
             mnuDeleteData.Image = Properties.Resources.bin_empty;
             mnuRun.Click += MnuRun_Click;
+            mnuFindFeatures.Click += MnuFindFeatures_Click;
             mnuImportMask.Click += MnuImportMask_Click;
             mnuImportColmap.Click += MnuImportColmap_Click;
             mnuDeleteData.Click += MnuDeleteData_Click;
-            mnuAction.DropDownItems.AddRange(new ToolStripItem[] {
-                mnuRun,
-                new ToolStripSeparator(),
-                mnuImportMask,
-                mnuImportColmap,
-                new ToolStripSeparator(),
-                mnuDeleteData,
-            });
-
+            
             mnuOptions.Image = Properties.Resources.equalizer;
             mnuShowFeatures.Image = Properties.Drawings.bullet_orange;
             mnuShowInliers.Image = Properties.Drawings.bullet_green;
@@ -243,6 +244,8 @@ namespace Kinovea.ScreenManager
 
             if (showTransforms)
                 DrawTransforms(canvas, transformer, timestamp);
+
+            DrawResults(canvas, timestamp);
         }
 
         public void ExportVideo(IDrawingHostView host)
@@ -287,6 +290,27 @@ namespace Kinovea.ScreenManager
             List<ToolStripItem> contextMenu = new List<ToolStripItem>();
             ReloadMenusCulture();
 
+            
+            // The content of the action menu depends on whether we are 
+            // running each step individually or all at once.
+            // step-by-step is useful for troubleshooting.
+            if (tracker.Parameters.StepByStep)
+            {
+                mnuAction.DropDownItems.Add(mnuFindFeatures);
+            }
+            else
+            {
+                mnuAction.DropDownItems.Add(mnuRun);
+            }
+
+            mnuAction.DropDownItems.AddRange(new ToolStripItem[] {
+                new ToolStripSeparator(),
+                mnuImportMask,
+                //mnuImportColmap,
+                new ToolStripSeparator(),
+                mnuDeleteData,
+            });
+
             contextMenu.AddRange(new ToolStripItem[] {
                 mnuAction,
                 mnuOptions,
@@ -309,6 +333,7 @@ namespace Kinovea.ScreenManager
         {
             mnuAction.Text = ScreenManagerLang.mnuAction;
             mnuRun.Text = "Run camera motion estimation";
+            mnuFindFeatures.Text = "Find features";
             mnuImportMask.Text = "Import mask";
             mnuImportColmap.Text = "Import COLMAP";
             mnuDeleteData.Text = "Delete tracking data";
@@ -325,10 +350,25 @@ namespace Kinovea.ScreenManager
             if (framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count < 1)
                 return;
 
+            step = CameraMotionStep.All;
+            StartProcess(sender);
+        }
+
+        private void MnuFindFeatures_Click(object sender, EventArgs e)
+        {
+            if (framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count < 1)
+                return;
+
+            step = CameraMotionStep.FindFeatures;
+            StartProcess(sender);
+        }
+
+        private void StartProcess(object sender)
+        {
             formProgressBar2 fpb = new formProgressBar2(true, true, Worker_DoWork);
             fpb.ShowDialog();
             fpb.Dispose();
-            
+
             if (tracker.Tracked)
                 parentMetadata.SetCameraMotion(tracker);
 
@@ -341,7 +381,16 @@ namespace Kinovea.ScreenManager
             Thread.CurrentThread.Name = "CameraMotionEstimation";
             BackgroundWorker worker = sender as BackgroundWorker;
 
-            tracker.Run(framesContainer, worker);
+            switch (step)
+            {
+                case CameraMotionStep.FindFeatures:
+                    tracker.FindFeatures(framesContainer, worker);
+                    break;
+                case CameraMotionStep.All:
+                default:
+                    tracker.Run(framesContainer, worker);
+                    break;
+            }
         }
 
         private void MnuImportMask_Click(object sender, EventArgs e)
@@ -492,6 +541,8 @@ namespace Kinovea.ScreenManager
             if (matches == null || matches.Count == 0)
                 return;
 
+            //penMatchInlier.EndCap = System.Drawing.Drawing2D.LineCap.ArrowAnchor;
+
             foreach (var m in matches)
             {
                 PointF p1 = transformer.Transform(m.P1);
@@ -499,17 +550,20 @@ namespace Kinovea.ScreenManager
 
                 if (m.Inlier && showInliers)
                 {
-                    canvas.DrawEllipse(penFeatureInlier, p1.Box(4));
+                    canvas.DrawEllipse(penFeatureInlier, p1.Box(2));
                     canvas.DrawLine(penMatchInlier, p1, p2);
                 }
                 else if (!m.Inlier && showOutliers)
                 {
-                    canvas.DrawEllipse(penFeatureOutlier, p1.Box(4));
+                    canvas.DrawEllipse(penFeatureOutlier, p1.Box(2));
                     canvas.DrawLine(penMatchOutlier, p1, p2);
                 }
             }
         }
 
+        /// <summary>
+        /// Draw rectangles of the previous frames transformed into this frame space.
+        /// </summary>
         private void DrawTransforms(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
         {
             if (tracker.ConsecutiveTransforms.Count == 0)
@@ -531,27 +585,6 @@ namespace Kinovea.ScreenManager
                 new OpenCvSharp.Point2f(left, bottom),
             };
 
-            //if (frameIndices[timestamp] >= forwardTransforms.Count)
-            //  return;
-
-            // Cumulative transforms.
-            //var transform = forwardTransforms[frameIndices[timestamp]];
-            //DrawTransformRectangle(canvas, transformer, transform, bounds, Color.Yellow);
-
-            // Draw the bounds of one reference frame in all subsequent frames.
-            //var points = bounds;
-            //for (int i = 30; i < frameIndices[timestamp]; i++)
-            //{
-            //    points = OpenCvSharp.Cv2.PerspectiveTransform(points, consecTransforms[i]);
-            //}
-
-            //var points3 = points.Select(p => new PointF((float)p.X, (float)p.Y));
-
-            //var points4 = transformer.Transform(points3);
-            //using (Pen pen = new Pen(Color.Yellow, 4.0f))
-            //    canvas.DrawPolygon(pen, points4.ToArray());
-
-            
             if (tracker.FrameIndices[timestamp] >= tracker.ConsecutiveTransforms.Count)
                 return;
 
@@ -591,28 +624,51 @@ namespace Kinovea.ScreenManager
             var points4 = transformer.Transform(points3);
             using (Pen pen = new Pen(color, 4.0f))
                 canvas.DrawPolygon(pen, points4.ToArray());
+        }
 
+        /// <summary>
+        /// Draw various textual statistics.
+        /// </summary>
+        private void DrawResults(Graphics canvas, long timestamp)
+        {
+            string text = GetResultsString(timestamp);
 
-            // Affine
-            //var src = new OpenCvSharp.Mat(points.Length, 1, OpenCvSharp.MatType.CV_32FC2, points);
-            //var dst = new OpenCvSharp.Mat();
-            //OpenCvSharp.Cv2.Transform(src, dst, transform);
+            // We don't care about the original image size, we draw in screen space.
+            SizeF textSize = canvas.MeasureString(text, fontText);
+            Point bgLocation = new Point(20, 20);
+            Size bgSize = new Size((int)textSize.Width, (int)textSize.Height);
 
-            //var points2 = new List<PointF>();
-            //for (int i = 0; i < points.Length; i++)
-            //{
-            //    OpenCvSharp.Vec2f p = dst.Get<OpenCvSharp.Vec2f>(i);
-            //    points2.Add(new PointF(p[0], p[1]));
-            //}
+            // Background rounded rectangle.
+            Rectangle rect = new Rectangle(bgLocation, bgSize);
+            int roundingRadius = fontText.Height / 4;
+            RoundedRectangle.Draw(canvas, rect, brushBack, roundingRadius, false, false, null);
 
-            //var points3 = transformer.Transform(points2);
-            //using (Pen pen = new Pen(color, 4.0f))
-            //    canvas.DrawPolygon(pen, points3.ToArray());
-
-            //src.Dispose();
-            //dst.Dispose();
+            // Main text.
+            canvas.DrawString(text, fontText, brushText, rect.Location);
         }
         #endregion
-        
+
+        /// <summary>
+        /// Return camera motion results as text.
+        /// </summary>
+        private string GetResultsString(long timestamp)
+        {
+
+            StringBuilder b = new StringBuilder();
+            b.AppendLine(string.Format("Camera motion"));
+
+            List<PointF> features = tracker.GetFeatures(timestamp);
+            if (features == null || features.Count == 0)
+                return b.ToString();
+
+            // It typically finds the requested number of features but they might be very close to each other.
+            b.AppendLine(string.Format("Features: {0}/{1}", features.Count, tracker.Parameters.FeaturesPerFrame));
+            //b.AppendLine(string.Format("Images:{0}/{1}.", usedImages, parameters.MaxImages));
+            //b.AppendLine(string.Format("Reprojection error: {0:0.000}", reprojError));
+            //b.AppendLine(string.Format("Intrinsics: fx:{0:0.000}, fy:{1:0.000}, cx:{2:0.000}, cy:{3:0.000}", calibration.Fx, calibration.Fy, calibration.Cx, calibration.Cy));
+            //b.AppendLine(string.Format("Radial distortion: k1:{0:0.000}, k2:{1:0.000}, k3:{2:0.000}", calibration.K1, calibration.K2, calibration.K3));
+            //b.AppendLine(string.Format("Tangential distortion: p1:{0:0.000}, p2:{1:0.000}", calibration.P1, calibration.P2));
+            return b.ToString();
+        }
     }
 }

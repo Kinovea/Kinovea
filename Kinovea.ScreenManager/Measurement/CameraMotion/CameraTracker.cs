@@ -14,16 +14,24 @@ using System.ComponentModel;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// This class performs the camera tracking for camera motion estimation.
+    /// This class performs the steps to compute global camera motion and stores the results.
     /// It calls OpenCV functions and exposes the raw result.
-    /// The result is then sent over to `CameraTransformer` which exposes functions 
+    /// The result should then be sent to `CameraTransformer` which exposes functions 
     /// to transform coordinates from one frame to another.
     /// </summary>
     public class CameraTracker
     {
         #region Properties
 
+        /// <summary>
+        /// True if the whole process is completed.
+        /// </summary>
         public bool Tracked { get { return tracked; } }
+
+        /// <summary>
+        /// The parameters used for this camera motion process.
+        /// </summary>
+        public CameraMotionParameters Parameters { get {return parameters;} }
 
         /// <summary>
         /// Reverse mapping going from timestamps to frames indices.
@@ -43,7 +51,7 @@ namespace Kinovea.ScreenManager
 
         // Computed data
         // frameIndices: reverse index from timestamps to frames indices.
-        // keypoints: features found on the images.
+        // keypoints: arrays of features found on each image.
         // descriptors: feature descriptors for the keypoints.
         // matches: associations between keypoints in different images.
         // inlier status: whether a match at the corresponding index is an inlier or outlier.
@@ -65,17 +73,16 @@ namespace Kinovea.ScreenManager
         private List<double[,]> extrinsics = new List<double[,]>();
 
         // Core parameters
-        private CameraMotionParameters parameters = new CameraMotionParameters();
-        private int featuresPerFrame = 500;
-        private double ransacReprojThreshold = 1.5;
-
+        private CameraMotionParameters parameters;
+        
         private Stopwatch stopwatch = new Stopwatch();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        public CameraTracker()
+        #region ctor/dtor
+        public CameraTracker(CameraMotionParameters parameters)
         {
-
+            this.parameters = parameters;
         }
 
         ~CameraTracker()
@@ -104,17 +111,29 @@ namespace Kinovea.ScreenManager
                     mask.Dispose();
             }
         }
+        #endregion
 
-        public void Run(IWorkingZoneFramesContainer framesContainer, BackgroundWorker worker)
+        #region Camera motion estimation process steps
+
+        /// <summary>
+        /// Find features in all frames.
+        /// </summary>
+        public void FindFeatures(IWorkingZoneFramesContainer framesContainer, BackgroundWorker worker)
         {
-            // This runs in the background thread.
-            ResetTrackingData();
+            // Find and describe features on each frame.
+            // Fills the following global variables:
+            // - frameIndices: dictionary of timestamps to indices in the frame list.
+            // - keypoints: list of found features.
+            // - descriptors: descriptors for each feature.
 
-            stopwatch.Start();
+            // TODO: try to run this through a parallel-for if possible.
+            // Do we need frameIndices, keypoints and descriptors to be sequential?
+            // If so, prepare all the tables without the detection and then run the detection in parallel.
 
-            var orb = OpenCvSharp.ORB.Create(featuresPerFrame);
+            stopwatch.Restart();
 
-            // Import and convert mask if needed.
+            // Import and convert the mask if needed.
+            // This is a single shared mask for all frames, it is used to mask out static overlays like logos.
             OpenCvSharp.Mat cvMaskGray = null;
             bool hasMask = mask != null;
             if (hasMask)
@@ -126,10 +145,9 @@ namespace Kinovea.ScreenManager
                 log.DebugFormat("Imported mask. {0} ms.", stopwatch.ElapsedMilliseconds);
             }
 
-            // Find and describe features on each frame.
-            // TODO: try to run this through a parallel for if possible.
-            // Do we need frameIndices, keypoints and descriptors to be sequential?
-            // If so, prepare all the tables without the detection and then run the detection in parallel.
+
+            var orb = OpenCvSharp.ORB.Create(parameters.FeaturesPerFrame);
+
             int frameIndex = 0;
             for (int i = 0; i < framesContainer.Frames.Count; i++)
             {
@@ -162,14 +180,24 @@ namespace Kinovea.ScreenManager
                 worker.ReportProgress(i + 1, framesContainer.Frames.Count);
             }
 
+            orb.Dispose();
 
             if (hasMask)
                 cvMaskGray.Dispose();
 
-            orb.Dispose();
-
             log.DebugFormat("Feature detection: {0} ms.", stopwatch.ElapsedMilliseconds);
-            
+        }
+
+        /// <summary>
+        /// Run all steps of the process in batch.
+        /// </summary>
+        public void Run(IWorkingZoneFramesContainer framesContainer, BackgroundWorker worker)
+        {
+            // This runs in the background thread.
+            ResetTrackingData();
+
+            FindFeatures(framesContainer, worker);
+
             if (worker.CancellationPending)
             {
                 log.DebugFormat("Camera motion estimation cancelled.");
@@ -208,7 +236,7 @@ namespace Kinovea.ScreenManager
 
                 OpenCvSharp.HomographyMethods method = (OpenCvSharp.HomographyMethods)OpenCvSharp.RobustEstimationAlgorithms.USAC_MAGSAC;
                 var mask = new List<byte>();
-                var homography = OpenCvSharp.Cv2.FindHomography(srcPoints, dstPoints, method, ransacReprojThreshold, OpenCvSharp.OutputArray.Create(mask));
+                var homography = OpenCvSharp.Cv2.FindHomography(srcPoints, dstPoints, method, parameters.RansacReprojThreshold, OpenCvSharp.OutputArray.Create(mask));
 
                 // Collect inliers.
                 inlierStatus.Add(new List<bool>());
@@ -239,6 +267,10 @@ namespace Kinovea.ScreenManager
             log.DebugFormat("Transforms computation: {0} ms.", stopwatch.ElapsedMilliseconds);
             tracked = true;
         }
+
+        #endregion
+
+        #region Retrieve internal data
 
         /// <summary>
         /// Return features found on the frame at this timestamp.
@@ -288,7 +320,9 @@ namespace Kinovea.ScreenManager
 
             return result;
         }
+        #endregion
 
+        #region Other public helpers
         public void ResetTrackingData()
         {
             tracked = false;
@@ -464,7 +498,7 @@ namespace Kinovea.ScreenManager
 
                 OpenCvSharp.HomographyMethods method = (OpenCvSharp.HomographyMethods)OpenCvSharp.RobustEstimationAlgorithms.USAC_MAGSAC;
                 var mask = new List<byte>();
-                var homography = OpenCvSharp.Cv2.FindHomography(srcPoints, dstPoints, method, ransacReprojThreshold, OpenCvSharp.OutputArray.Create(mask));
+                var homography = OpenCvSharp.Cv2.FindHomography(srcPoints, dstPoints, method, parameters.RansacReprojThreshold, OpenCvSharp.OutputArray.Create(mask));
 
                 // Collect inliers.
                 inlierStatus.Add(new List<bool>());
@@ -485,7 +519,9 @@ namespace Kinovea.ScreenManager
                 consecTransforms.Add(homography);
             }
         }
+        #endregion 
 
+        #region Private helpers
         private void LogHomography(int index1, int index2, OpenCvSharp.Mat homography)
         {
             double[] m;
@@ -494,8 +530,6 @@ namespace Kinovea.ScreenManager
             string strHomography = string.Join(" ", m2);
             log.DebugFormat("[{0} -> {1}]: {2}", index1, index2, strHomography);
         }
-
-        
-
+        #endregion
     }
 }
