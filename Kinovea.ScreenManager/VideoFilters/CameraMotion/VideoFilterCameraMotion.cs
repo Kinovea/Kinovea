@@ -90,7 +90,8 @@ namespace Kinovea.ScreenManager
         private bool showFeatures = false;      // All the features found.
         private bool showInliers = true;        // Features matched and used to estimate the final motion.
         private bool showOutliers = false;      // Features matched but not used to estimate the final motion. 
-        private bool showTransforms = true;     // Frame transforms.
+        private bool showMotionField = false;   // Field of motion vectors.
+        private bool showTransforms = false;     // Frame transforms.
 
         #region Menu
         private ToolStripMenuItem mnuAction = new ToolStripMenuItem();
@@ -106,6 +107,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuShowFeatures = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowOutliers = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowInliers = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuShowMotionField = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowTransforms = new ToolStripMenuItem();
 
         #endregion
@@ -116,7 +118,9 @@ namespace Kinovea.ScreenManager
         private Pen penFeatureInlier = new Pen(Color.Lime, 2.0f);
         private Pen penMatchInlier = new Pen(Color.LimeGreen, 2.0f);
         private Pen penMatchOutlier = new Pen(Color.FromArgb(128, 255, 0, 0), 2.0f);
-        private int maxTransformsFrames = 25;
+        private Pen penMotionField = new Pen(Color.CornflowerBlue, 3.0f);
+        private int maxTransformsFrames = 25; 
+        private int motionFieldPoints = 25;     // Number of points in each dimension for the motion field visualization.
 
         // Precomputed list of unique colors to draw frame references.
         // https://stackoverflow.com/questions/309149/generate-distinctly-different-rgb-colors-in-graphs
@@ -188,11 +192,13 @@ namespace Kinovea.ScreenManager
             mnuShowFeatures.Click += MnuShowFeatures_Click;
             mnuShowOutliers.Click += MnuShowOutliers_Click;
             mnuShowInliers.Click += MnuShowInliers_Click;
+            mnuShowMotionField.Click += MnuShowMotionField_Click;
             mnuShowTransforms.Click += MnuShowTransforms_Click;
             mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuShowFeatures,
                 mnuShowInliers,
                 mnuShowOutliers,
+                mnuShowMotionField,
                 mnuShowTransforms,
             });
         }
@@ -246,6 +252,9 @@ namespace Kinovea.ScreenManager
 
             if (showTransforms)
                 DrawTransforms(canvas, transformer, timestamp);
+
+            if (showMotionField)
+                DrawMotionField(canvas, transformer, timestamp);
 
             DrawResults(canvas, timestamp);
         }
@@ -324,6 +333,7 @@ namespace Kinovea.ScreenManager
             mnuShowFeatures.Checked = showFeatures;
             mnuShowInliers.Checked = showInliers;
             mnuShowOutliers.Checked = showOutliers;
+            mnuShowMotionField.Checked = showMotionField;
             mnuShowTransforms.Checked = showTransforms;
 
             return contextMenu;
@@ -348,7 +358,8 @@ namespace Kinovea.ScreenManager
             mnuShowFeatures.Text = "Show points";
             mnuShowInliers.Text = "Show inliers";
             mnuShowOutliers.Text = "Show outliers";
-            mnuShowTransforms.Text = "Show transforms";
+            mnuShowMotionField.Text = "Show motion field";
+            mnuShowTransforms.Text = "Show frame transforms";
         }
 
         private void MnuRun_Click(object sender, EventArgs e)
@@ -372,6 +383,7 @@ namespace Kinovea.ScreenManager
             showFeatures = true;
             showInliers = false;
             showOutliers = false;
+            showMotionField = false;
             showTransforms = false;
         }
 
@@ -387,7 +399,8 @@ namespace Kinovea.ScreenManager
             showFeatures = false;
             showInliers = true;
             showOutliers = false;
-            showTransforms = true;
+            showMotionField = true;
+            showTransforms = false;
         }
 
 
@@ -478,6 +491,16 @@ namespace Kinovea.ScreenManager
             InvalidateFromMenu(sender);
         }
 
+        private void MnuShowMotionField_Click(object sender, EventArgs e)
+        {
+            //CaptureMemento();
+
+            showMotionField = !mnuShowMotionField.Checked;
+
+            //Update();
+            InvalidateFromMenu(sender);
+        }
+
         private void MnuShowTransforms_Click(object sender, EventArgs e)
         {
             //CaptureMemento();
@@ -556,6 +579,68 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// Draw a field of motion vectors based on the transform to the next frame.
+        /// This shows the computed global motion.
+        /// </summary>
+        private void DrawMotionField(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
+        {
+            if (tracker.ConsecutiveTransforms.Count == 0)
+                return;
+
+            if (!tracker.FrameIndices.ContainsKey(timestamp))
+                return;
+
+            if (tracker.FrameIndices[timestamp] >= tracker.ConsecutiveTransforms.Count)
+                return;
+
+            // Generate a field of points.
+            List<PointF> sources = new List<PointF>();
+            int cols = motionFieldPoints;
+            int rows = motionFieldPoints;
+            for (int i = 0; i < cols; i++)
+            {
+                float left = ((i + 0.5f) / cols) * frameSize.Width;
+
+                for (int j = 0; j < rows; j++)
+                {
+                    float top = ((j + 0.5f) / rows) * frameSize.Height;
+                    sources.Add(new PointF(left, top));
+                }
+            }
+            
+
+            // Convert the points to OpenCV.
+            var cvTargets = sources.Select(p => new OpenCvSharp.Point2f(p.X, p.Y));
+
+            // Apply the perspective transform to all the points.
+            int index = tracker.FrameIndices[timestamp];
+            cvTargets = OpenCvSharp.Cv2.PerspectiveTransform(cvTargets, tracker.ConsecutiveTransforms[index]);
+            
+            // Convert back to Drawing.PointF
+            var targets = cvTargets.Select(p => new PointF(p.X, p.Y));
+
+            // Transform to screen space.
+            var sourcesTransformed = transformer.Transform(sources);
+            var targetsTransformed = transformer.Transform(targets);
+
+            // Draw arrows pointing to the position of the points in the next frame.
+            penMotionField.EndCap = System.Drawing.Drawing2D.LineCap.ArrowAnchor;
+            for (int i = 0; i < sourcesTransformed.Count; i++)
+            {
+                PointF p1 = sourcesTransformed[i];
+                PointF p2 = targetsTransformed[i];
+                if (GeometryHelper.GetDistance(p1, p2) < 2.0f)
+                {
+                    canvas.DrawEllipse(penMotionField, p1.Box(4));
+                }
+                else
+                {
+                    canvas.DrawLine(penMotionField, p1, p2);
+                }
+            }
+        }
+
+        /// <summary>
         /// Draw rectangles of the previous frames transformed into this frame space.
         /// </summary>
         private void DrawTransforms(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
@@ -564,6 +649,9 @@ namespace Kinovea.ScreenManager
                 return;
 
             if (!tracker.FrameIndices.ContainsKey(timestamp))
+                return;
+
+            if (tracker.FrameIndices[timestamp] >= tracker.ConsecutiveTransforms.Count)
                 return;
 
             // Transform an image space rectangle to show how the image is modified from one frame to the next.
@@ -578,9 +666,6 @@ namespace Kinovea.ScreenManager
                 new OpenCvSharp.Point2f(right, bottom),
                 new OpenCvSharp.Point2f(left, bottom),
             };
-
-            if (tracker.FrameIndices[timestamp] >= tracker.ConsecutiveTransforms.Count)
-                return;
 
             //---------------------------------
             // Draw the bounds of all the past frames up to this one.
@@ -650,6 +735,12 @@ namespace Kinovea.ScreenManager
 
             StringBuilder b = new StringBuilder();
             b.AppendLine(string.Format("Camera motion"));
+
+            if (tracker.FrameIndices.Count > 0)
+            {
+                int index = tracker.FrameIndices[timestamp];
+                b.AppendLine(string.Format("Frame: {0}/{1}", index + 1, framesContainer.Frames.Count));
+            }
 
             List<PointF> features = tracker.GetFeatures(timestamp);
             if (features != null && features.Count > 0)
