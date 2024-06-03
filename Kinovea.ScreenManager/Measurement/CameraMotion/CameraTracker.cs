@@ -73,6 +73,7 @@ namespace Kinovea.ScreenManager
         private CameraMotionParameters parameters;
         private float distanceThresholdNormalized = 0.1f; // Matches spanning more than this fraction of the image width are filtered out.
         private bool prefilterSpuriousMatches = true;
+        private CameraMotionFeatureType featureType = CameraMotionFeatureType.ORB;
 
         private Stopwatch stopwatch = new Stopwatch();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -153,8 +154,13 @@ namespace Kinovea.ScreenManager
                 log.DebugFormat("Imported mask. {0} ms.", stopwatch.ElapsedMilliseconds);
             }
 
-            
-            var orb = OpenCvSharp.ORB.Create(parameters.FeaturesPerFrame);
+            OpenCvSharp.ORB orb = null;
+            OpenCvSharp.Features2D.SIFT sift = null;
+
+            if (featureType == CameraMotionFeatureType.ORB)
+                orb = OpenCvSharp.ORB.Create(parameters.FeaturesPerFrame);
+            else
+                sift = OpenCvSharp.Features2D.SIFT.Create(parameters.FeaturesPerFrame);
 
             int frameIndex = 0;
             for (int i = 0; i < framesContainer.Frames.Count; i++)
@@ -176,7 +182,11 @@ namespace Kinovea.ScreenManager
 
                 // Feature detection & description.
                 var desc = new OpenCvSharp.Mat();
-                orb.DetectAndCompute(cvImageGray, cvMaskGray, out var kp, desc);
+                OpenCvSharp.KeyPoint[] kp;
+                if (featureType == CameraMotionFeatureType.ORB)
+                    orb.DetectAndCompute(cvImageGray, cvMaskGray, out kp, desc);
+                else
+                    sift.DetectAndCompute(cvImageGray, cvMaskGray, out kp, desc);
 
                 keypoints.Add(kp);
                 descriptors.Add(desc);
@@ -188,7 +198,10 @@ namespace Kinovea.ScreenManager
                 worker.ReportProgress(i + 1, framesContainer.Frames.Count);
             }
 
-            orb.Dispose();
+            if (featureType == CameraMotionFeatureType.ORB)
+                orb.Dispose();
+             else
+                sift.Dispose();
 
             if (hasMask)
                 cvMaskGray.Dispose();
@@ -201,27 +214,46 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void MatchFeatures(IWorkingZoneFramesContainer framesContainer, BackgroundWorker worker)
         {
-            // See Chapter 4.2 from "Image Matching across Wide Baselines: From Paper to Practice".
+            // Ref: Chapter 4.2 of "Image Matching across Wide Baselines: From Paper to Practice".
             // There are 3 strategies:
             // - unidirectional: match features from i to i+1.
             // - bidirectional "both": match features from i to i+1 and from i+1 to i and keep the intersection.
             // - bidirectional "either": same but keep the union of all matches.
+            // Currently we only implement the unidirectional strategy.
+            if (descriptors.Count == 0)
+                return;
+
             stopwatch.Restart();
             matches.Clear();
             List<OpenCvSharp.DMatch[]> framesMatches = new List<OpenCvSharp.DMatch[]>();
-            var matcher = new OpenCvSharp.BFMatcher(OpenCvSharp.NormTypes.Hamming, crossCheck: true);
+
+            OpenCvSharp.BFMatcher bfMatcher = null;
+            OpenCvSharp.FlannBasedMatcher flannBasedMatcher = null;
+            if (featureType == CameraMotionFeatureType.ORB)
+                bfMatcher = new OpenCvSharp.BFMatcher(OpenCvSharp.NormTypes.Hamming, crossCheck: true);
+            else
+                flannBasedMatcher = new OpenCvSharp.FlannBasedMatcher();
+
             for (int i = 0; i < descriptors.Count - 1; i++)
             {
                 if (worker.CancellationPending)
                     break;
 
-                var mm = matcher.Match(descriptors[i], descriptors[i + 1]);
+                OpenCvSharp.DMatch[] mm = null;
+                if (featureType == CameraMotionFeatureType.ORB)
+                    mm = bfMatcher.Match(descriptors[i], descriptors[i + 1]);
+                else
+                    mm = flannBasedMatcher.Match(descriptors[i], descriptors[i + 1]);
+
                 framesMatches.Add(mm);
 
                 worker.ReportProgress(i + 1, descriptors.Count - 1);
             }
 
-            matcher.Dispose();
+            if (featureType == CameraMotionFeatureType.ORB)
+                bfMatcher.Dispose();
+            else
+                flannBasedMatcher.Dispose();
 
             if (prefilterSpuriousMatches)
             {
@@ -238,6 +270,10 @@ namespace Kinovea.ScreenManager
                     matches.Add(keepers.ToArray());
                 }
             }
+            else
+            {
+                matches = framesMatches;
+            }
 
             log.DebugFormat("Feature matching: {0} ms.", stopwatch.ElapsedMilliseconds);
         }
@@ -247,9 +283,20 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void FindHomographies(IWorkingZoneFramesContainer framesContainer, BackgroundWorker worker)
         {
-            // Ref: chapt. 5.1 and 5.2 in "Image Matching across Wide Baselines: From Paper to Practice".
+            // Ref: Chapter 5.1 and 5.2 of "Image Matching across Wide Baselines: From Paper to Practice".
+            // Parameters:
+            // - tau: confidence level in the estimate
+            // - eta: the outlier threshold. 
+            // - gamma: the maximum number of iterations.
+            // The paper reports optimal values of eta=1.25 px, gamma=10K iterations.
+            if (matches.Count == 0)
+                return;
 
+            double ransacReprojThreshold = 1.25;
+            int maxIter = 10000;
+            double confidence = 0.995;
 
+            
             stopwatch.Restart();
             consecTransforms.Clear();
             for (int i = 0; i < descriptors.Count - 1; i++)
@@ -263,7 +310,8 @@ namespace Kinovea.ScreenManager
 
                 OpenCvSharp.HomographyMethods method = (OpenCvSharp.HomographyMethods)OpenCvSharp.RobustEstimationAlgorithms.USAC_MAGSAC;
                 var mask = new List<byte>();
-                var homography = OpenCvSharp.Cv2.FindHomography(srcPoints, dstPoints, method, parameters.RansacReprojThreshold, OpenCvSharp.OutputArray.Create(mask));
+                var cvMask = OpenCvSharp.OutputArray.Create(mask);
+                var homography = OpenCvSharp.Cv2.FindHomography(srcPoints, dstPoints, method, ransacReprojThreshold, cvMask);
 
                 // Collect inliers.
                 inlierStatus.Add(new List<bool>());
@@ -286,6 +334,8 @@ namespace Kinovea.ScreenManager
             }
 
             log.DebugFormat("Transforms computation: {0} ms.", stopwatch.ElapsedMilliseconds);
+
+            tracked = true;
         }
 
         public void BundleAdjustment()

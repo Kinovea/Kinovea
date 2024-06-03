@@ -23,13 +23,13 @@ namespace Kinovea.Services
         /// <summary>
         /// Maximum number of features per frame.
         /// </summary>
-        public int FeaturesPerFrame { get; set; } = 500;
+        public int FeaturesPerFrame { get; set; } = 2048;
 
         /// <summary>
         /// Threshold to consider that a point is an inlier during 
         /// robust motion estimation.
         /// </summary>
-        public float RansacReprojThreshold { get; set; } = 1.5f;
+        public float RansacReprojThreshold { get; set; } = 1.25f;
         #endregion
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
