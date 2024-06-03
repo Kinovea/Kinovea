@@ -14,10 +14,11 @@ namespace Kinovea.ScreenManager
         // Find features in each frame.
         FindFeatures,
 
-        // Match features in consecutive frames and 
-        // find the homography transforming image planes
-        // between consecutive frames.
+        // Match features in consecutive frames and pre-filter out outliers. 
         MatchFeatures,
+
+        // Find the homographies transforming image planes between consecutive frames.
+        FindHomographies,
 
         // Register all images against a common coordinate system.
         BundleAdjustment,

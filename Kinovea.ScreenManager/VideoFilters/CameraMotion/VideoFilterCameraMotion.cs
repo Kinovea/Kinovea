@@ -98,6 +98,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuRun = new ToolStripMenuItem();
         private ToolStripMenuItem mnuFindFeatures = new ToolStripMenuItem();
         private ToolStripMenuItem mnuMatchFeatures = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuFindHomographies = new ToolStripMenuItem();
 
         private ToolStripMenuItem mnuImportMask = new ToolStripMenuItem();
         private ToolStripMenuItem mnuImportColmap = new ToolStripMenuItem();
@@ -144,6 +145,10 @@ namespace Kinovea.ScreenManager
         {
             this.parentMetadata = metadata;
             CameraMotionParameters parameters = new CameraMotionParameters();
+
+            // Tuning of the default parameters for testing
+            parameters.FeaturesPerFrame = 2048;
+
             tracker = new CameraTracker(parameters);
             InitializeMenus();
 
@@ -182,6 +187,7 @@ namespace Kinovea.ScreenManager
             mnuRun.Click += MnuRun_Click;
             mnuFindFeatures.Click += MnuFindFeatures_Click;
             mnuMatchFeatures.Click += MnuMatchFeatures_Click;
+            mnuFindHomographies.Click += MnuFindHomographies_Click;
             mnuImportMask.Click += MnuImportMask_Click;
             mnuDeleteData.Click += MnuDeleteData_Click;
             
@@ -311,6 +317,7 @@ namespace Kinovea.ScreenManager
             {
                 mnuAction.DropDownItems.Add(mnuFindFeatures);
                 mnuAction.DropDownItems.Add(mnuMatchFeatures);
+                mnuAction.DropDownItems.Add(mnuFindHomographies);
             }
             else
             {
@@ -350,6 +357,7 @@ namespace Kinovea.ScreenManager
             mnuRun.Text = "Run camera motion estimation";
             mnuFindFeatures.Text = "Find features";
             mnuMatchFeatures.Text = "Match features";
+            mnuFindHomographies.Text = "Find homographies";
             mnuImportMask.Text = "Import mask";
             mnuImportColmap.Text = "Import COLMAP";
             mnuDeleteData.Text = "Delete tracking data";
@@ -399,10 +407,25 @@ namespace Kinovea.ScreenManager
             showFeatures = false;
             showInliers = true;
             showOutliers = false;
-            showMotionField = true;
+            showMotionField = false;
             showTransforms = false;
         }
 
+        private void MnuFindHomographies_Click(object sender, EventArgs e)
+        {
+            if (framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count < 1)
+                return;
+
+            step = CameraMotionStep.FindHomographies;
+            StartProcess(sender);
+
+            // Force visualization options
+            showFeatures = false;
+            showInliers = false;
+            showOutliers = false;
+            showMotionField = true;
+            showTransforms = true;
+        }
 
         private void StartProcess(object sender)
         {
@@ -427,9 +450,15 @@ namespace Kinovea.ScreenManager
                 case CameraMotionStep.FindFeatures:
                     tracker.FindFeatures(framesContainer, worker);
                     break;
+                case CameraMotionStep.MatchFeatures:
+                    tracker.MatchFeatures(framesContainer, worker);
+                    break;
+                case CameraMotionStep.FindHomographies:
+                    tracker.FindHomographies(framesContainer, worker);
+                    break;
                 case CameraMotionStep.All:
                 default:
-                    tracker.Run(framesContainer, worker);
+                    tracker.RunAll(framesContainer, worker);
                     break;
             }
         }
@@ -695,16 +724,6 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        private void DrawTransformRectangle(Graphics canvas, IImageToViewportTransformer transformer, OpenCvSharp.Mat transform, OpenCvSharp.Point2f[] points, Color color)
-        {
-            // Homography
-            var points2 = OpenCvSharp.Cv2.PerspectiveTransform(points, transform);
-            var points3 = points2.Select(p => new PointF((float)p.X, (float)p.Y));
-            var points4 = transformer.Transform(points3);
-            using (Pen pen = new Pen(color, 4.0f))
-                canvas.DrawPolygon(pen, points4.ToArray());
-        }
-
         /// <summary>
         /// Draw various textual statistics.
         /// </summary>
@@ -732,7 +751,6 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private string GetResultsString(long timestamp)
         {
-
             StringBuilder b = new StringBuilder();
             b.AppendLine(string.Format("Camera motion"));
 

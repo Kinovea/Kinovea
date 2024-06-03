@@ -64,17 +64,16 @@ namespace Kinovea.ScreenManager
         private List<List<bool>> inlierStatus = new List<List<bool>>();
         private List<List<PointF>> inliers = new List<List<PointF>>();
         private List<OpenCvSharp.Mat> consecTransforms = new List<OpenCvSharp.Mat>();
-        //private List<Tuple<int, int>> imagePairs = new List<Tuple<int, int>>();
-        //private List<OpenCvSharp.Mat> forwardTransforms = new List<OpenCvSharp.Mat>();
-        //private List<OpenCvSharp.Mat> backwardTransforms = new List<OpenCvSharp.Mat>();
-
+        
         // The following are used when we import transforms from COLMAP.
         private List<DistortionParameters> intrinsics = new List<DistortionParameters>();
         private List<double[,]> extrinsics = new List<double[,]>();
 
         // Core parameters
         private CameraMotionParameters parameters;
-        
+        private float distanceThresholdNormalized = 0.1f; // Matches spanning more than this fraction of the image width are filtered out.
+        private bool prefilterSpuriousMatches = true;
+
         private Stopwatch stopwatch = new Stopwatch();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -126,11 +125,20 @@ namespace Kinovea.ScreenManager
             // - keypoints: list of found features.
             // - descriptors: descriptors for each feature.
 
+            // Parameters:
+            // - FeaturesPerFrame: the number of features has an influence on the quality of the result.
+            // In "Image Matching across Wide Baselines: From Paper to Practice",  2K features is considered
+            // low budget and 8K features is high budget.
+            // - Type of features (SIFT, ORB, AKAZE, etc.)
+
             // TODO: try to run this through a parallel-for if possible.
             // Do we need frameIndices, keypoints and descriptors to be sequential?
             // If so, prepare all the tables without the detection and then run the detection in parallel.
 
             stopwatch.Restart();
+            frameIndices.Clear();
+            keypoints.Clear();
+            descriptors.Clear();
 
             // Import and convert the mask if needed.
             // This is a single shared mask for all frames, it is used to mask out static overlays like logos.
@@ -145,7 +153,7 @@ namespace Kinovea.ScreenManager
                 log.DebugFormat("Imported mask. {0} ms.", stopwatch.ElapsedMilliseconds);
             }
 
-
+            
             var orb = OpenCvSharp.ORB.Create(parameters.FeaturesPerFrame);
 
             int frameIndex = 0;
@@ -189,34 +197,61 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Match features from frame to frame and find the homography transforming
-        /// each frame to the next.
+        /// Match features from frame to frame.
         /// </summary>
         public void MatchFeatures(IWorkingZoneFramesContainer framesContainer, BackgroundWorker worker)
         {
+            // See Chapter 4.2 from "Image Matching across Wide Baselines: From Paper to Practice".
+            // There are 3 strategies:
+            // - unidirectional: match features from i to i+1.
+            // - bidirectional "both": match features from i to i+1 and from i+1 to i and keep the intersection.
+            // - bidirectional "either": same but keep the union of all matches.
             stopwatch.Restart();
-
-            // Match features in consecutive frames.
+            matches.Clear();
+            List<OpenCvSharp.DMatch[]> framesMatches = new List<OpenCvSharp.DMatch[]>();
             var matcher = new OpenCvSharp.BFMatcher(OpenCvSharp.NormTypes.Hamming, crossCheck: true);
             for (int i = 0; i < descriptors.Count - 1; i++)
             {
+                if (worker.CancellationPending)
+                    break;
+
                 var mm = matcher.Match(descriptors[i], descriptors[i + 1]);
-                matches.Add(mm);
+                framesMatches.Add(mm);
+
                 worker.ReportProgress(i + 1, descriptors.Count - 1);
             }
 
             matcher.Dispose();
-            log.DebugFormat("Feature matching: {0} ms.", stopwatch.ElapsedMilliseconds);
 
-            if (worker.CancellationPending)
+            if (prefilterSpuriousMatches)
             {
-                log.DebugFormat("Camera motion estimation cancelled.");
-                return;
+                // We know we are tracking a video frame by frame so we can assume the motion vectors to be
+                // relatively small. Any match over a distance threshold can be eliminated right away.
+                // This will make the job of RANSAC easier.
+                Size imageSize = framesContainer.Frames[0].Image.Size;
+                float distanceThreshold = imageSize.Width * distanceThresholdNormalized;
+                for (int i = 0; i < descriptors.Count - 1; i++)
+                {
+                    var srcPoints = framesMatches[i].Select(m => new OpenCvSharp.Point2d(keypoints[i][m.QueryIdx].Pt.X, keypoints[i][m.QueryIdx].Pt.Y)).ToList();
+                    var dstPoints = framesMatches[i].Select(m => new OpenCvSharp.Point2d(keypoints[i + 1][m.TrainIdx].Pt.X, keypoints[i + 1][m.TrainIdx].Pt.Y)).ToList();
+                    var keepers = framesMatches[i].Where((match, index) => OpenCvSharp.Point2d.Distance(srcPoints[index], dstPoints[index]) < distanceThreshold);
+                    matches.Add(keepers.ToArray());
+                }
             }
 
-            // Compute transforms between consecutive frames.
-            // This finds a first rough registration.
+            log.DebugFormat("Feature matching: {0} ms.", stopwatch.ElapsedMilliseconds);
+        }
+
+        /// <summary>
+        /// Find homographies transforming the image plane between consecutive frames.
+        /// </summary>
+        public void FindHomographies(IWorkingZoneFramesContainer framesContainer, BackgroundWorker worker)
+        {
+            // Ref: chapt. 5.1 and 5.2 in "Image Matching across Wide Baselines: From Paper to Practice".
+
+
             stopwatch.Restart();
+            consecTransforms.Clear();
             for (int i = 0; i < descriptors.Count - 1; i++)
             {
                 if (worker.CancellationPending)
@@ -253,10 +288,16 @@ namespace Kinovea.ScreenManager
             log.DebugFormat("Transforms computation: {0} ms.", stopwatch.ElapsedMilliseconds);
         }
 
+        public void BundleAdjustment()
+        {
+
+        }
+
+
         /// <summary>
         /// Run all steps of the process in batch.
         /// </summary>
-        public void Run(IWorkingZoneFramesContainer framesContainer, BackgroundWorker worker)
+        public void RunAll(IWorkingZoneFramesContainer framesContainer, BackgroundWorker worker)
         {
             // This runs in the background thread.
             ResetTrackingData();
@@ -270,6 +311,13 @@ namespace Kinovea.ScreenManager
             }
 
             MatchFeatures(framesContainer, worker);
+            if (worker.CancellationPending)
+            {
+                log.DebugFormat(cancellationText);
+                return;
+            }
+
+            FindHomographies(framesContainer, worker);
             if (worker.CancellationPending)
             {
                 log.DebugFormat(cancellationText);
@@ -324,8 +372,8 @@ namespace Kinovea.ScreenManager
                 var m = frameMatches[i];
                 PointF p1 = new PointF(keypoints[frameIndex][m.QueryIdx].Pt.X, keypoints[frameIndex][m.QueryIdx].Pt.Y);
                 PointF p2 = new PointF(keypoints[frameIndex + 1][m.TrainIdx].Pt.X, keypoints[frameIndex + 1][m.TrainIdx].Pt.Y);
-                bool inlier = inlierStatus[frameIndex][i];
-                
+
+                bool inlier = inlierStatus.Count > 0 ? inlierStatus[frameIndex][i] : true;
                 result.Add(new CameraMatch(p1, p2, inlier));
             }
 
