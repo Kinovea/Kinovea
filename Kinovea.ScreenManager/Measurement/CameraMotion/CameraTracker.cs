@@ -74,6 +74,7 @@ namespace Kinovea.ScreenManager
         private float distanceThresholdNormalized = 0.1f; // Matches spanning more than this fraction of the image width are filtered out.
         private bool prefilterSpuriousMatches = true;
         private CameraMotionFeatureType featureType = CameraMotionFeatureType.ORB;
+        private bool distanceRatioTest = true;
 
         private Stopwatch stopwatch = new Stopwatch();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -214,46 +215,78 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void MatchFeatures(IWorkingZoneFramesContainer framesContainer, BackgroundWorker worker)
         {
-            // Ref: Chapter 4.2 of "Image Matching across Wide Baselines: From Paper to Practice".
-            // There are 3 strategies:
+            // Matching strategy and outlier pre-filtering
+            // References:
+            // - paragraph 4.2 of "Image Matching across Wide Baselines: From Paper to Practice".
+            // - paragraph 7.1 of "Distinctive Image Features from scale invariant key points", Lowe, 2004.
+            //
+            // Matcher type: Brute force (exact) or FLANN based. We use the BF matcher.
+            //
+            // There are 3 basic strategies:
             // - unidirectional: match features from i to i+1.
-            // - bidirectional "both": match features from i to i+1 and from i+1 to i and keep the intersection.
-            // - bidirectional "either": same but keep the union of all matches.
-            // Currently we only implement the unidirectional strategy.
+            // - bidirectional + "both": match features from i to i+1 and from i+1 to i and keep the intersection.
+            // - bidirectional + "either": same but keep the union of all matches.
+            //
+            // Using crossCheck = true in the BFMatcher constructor corresponds to strategy "both": it will only
+            // return pairs (i,j) such that for i-th query descriptor the j-th descriptor in the matcher's
+            // collection is the nearest and vice versa.
+            //
+            // Lowe's ratio test.
+            // -> Only keep matches where the nearest neighbor is much closer than the second nearest neighbor.
+            // Otherwise the match is not very discriminatory and it's likely to be a false positive.
+            bool crossCheck = !distanceRatioTest;
+            float r = 0.8f;
+
             if (descriptors.Count == 0)
                 return;
-
+            
             stopwatch.Restart();
             matches.Clear();
             List<OpenCvSharp.DMatch[]> framesMatches = new List<OpenCvSharp.DMatch[]>();
 
-            OpenCvSharp.BFMatcher bfMatcher = null;
-            OpenCvSharp.FlannBasedMatcher flannBasedMatcher = null;
+            // Matching distance: SIFT requires L1 norm.
+            OpenCvSharp.BFMatcher matcher = null;
             if (featureType == CameraMotionFeatureType.ORB)
-                bfMatcher = new OpenCvSharp.BFMatcher(OpenCvSharp.NormTypes.Hamming, crossCheck: true);
+                matcher = new OpenCvSharp.BFMatcher(OpenCvSharp.NormTypes.Hamming, crossCheck: crossCheck);
             else
-                flannBasedMatcher = new OpenCvSharp.FlannBasedMatcher();
+                matcher = new OpenCvSharp.BFMatcher(OpenCvSharp.NormTypes.L1, crossCheck: crossCheck);
 
             for (int i = 0; i < descriptors.Count - 1; i++)
             {
                 if (worker.CancellationPending)
                     break;
 
-                OpenCvSharp.DMatch[] mm = null;
-                if (featureType == CameraMotionFeatureType.ORB)
-                    mm = bfMatcher.Match(descriptors[i], descriptors[i + 1]);
-                else
-                    mm = flannBasedMatcher.Match(descriptors[i], descriptors[i + 1]);
+                if (distanceRatioTest)
+                {
+                    var mm = matcher.KnnMatch(descriptors[i], descriptors[i + 1], 2);
 
-                framesMatches.Add(mm);
+                    // Lowe's ratio test.
+                    List<OpenCvSharp.DMatch> keepers = new List<OpenCvSharp.DMatch>();
+                    foreach (var matches in mm)
+                    {
+                        if (matches.Count() < 2)
+                            continue;
+
+                        // Accept the match only if the nearest neighbor is much closer than
+                        // the second nearest neighbor.
+                        if (matches[0].Distance < (1.0f - r) * matches[1].Distance)
+                        {
+                            keepers.Add(matches[0]);
+                        }
+                    }
+
+                    framesMatches.Add(keepers.ToArray());
+                }
+                else
+                {
+                    OpenCvSharp.DMatch[] mm = matcher.Match(descriptors[i], descriptors[i + 1]);
+                    framesMatches.Add(mm);
+                }
 
                 worker.ReportProgress(i + 1, descriptors.Count - 1);
             }
 
-            if (featureType == CameraMotionFeatureType.ORB)
-                bfMatcher.Dispose();
-            else
-                flannBasedMatcher.Dispose();
+            matcher.Dispose();
 
             if (prefilterSpuriousMatches)
             {
@@ -328,19 +361,17 @@ namespace Kinovea.ScreenManager
                     }
                 }
 
-                //LogHomography(i, i + 1, homography);
                 consecTransforms.Add(homography);
                 worker.ReportProgress(i + 1, descriptors.Count - 1);
             }
 
             log.DebugFormat("Transforms computation: {0} ms.", stopwatch.ElapsedMilliseconds);
 
-            tracked = true;
         }
 
-        public void BundleAdjustment()
+        public void BundleAdjustment(IWorkingZoneFramesContainer framesContainer, BackgroundWorker worker)
         {
-
+            tracked = true;
         }
 
 
@@ -374,7 +405,12 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            tracked = true;
+            BundleAdjustment(framesContainer, worker);
+            if (worker.CancellationPending)
+            {
+                log.DebugFormat(cancellationText);
+                return;
+            }
         }
 
         #endregion

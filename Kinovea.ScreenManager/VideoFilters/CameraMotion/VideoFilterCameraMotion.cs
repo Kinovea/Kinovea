@@ -95,10 +95,11 @@ namespace Kinovea.ScreenManager
 
         #region Menu
         private ToolStripMenuItem mnuAction = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuRun = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuRunAll = new ToolStripMenuItem();
         private ToolStripMenuItem mnuFindFeatures = new ToolStripMenuItem();
         private ToolStripMenuItem mnuMatchFeatures = new ToolStripMenuItem();
         private ToolStripMenuItem mnuFindHomographies = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuBundleAdjustment = new ToolStripMenuItem();
 
         private ToolStripMenuItem mnuImportMask = new ToolStripMenuItem();
         private ToolStripMenuItem mnuImportColmap = new ToolStripMenuItem();
@@ -180,13 +181,14 @@ namespace Kinovea.ScreenManager
         private void InitializeMenus()
         {
             mnuAction.Image = Properties.Resources.action;
-            mnuRun.Image = Properties.Resources.motion_detector;
+            mnuRunAll.Image = Properties.Resources.motion_detector;
             mnuFindFeatures.Image = Properties.Drawings.bullet_orange;
             mnuMatchFeatures.Image = Properties.Drawings.bullet_green;
             mnuDeleteData.Image = Properties.Resources.bin_empty;
-            mnuRun.Click += MnuRun_Click;
+            mnuRunAll.Click += MnuRunAll_Click;
             mnuFindFeatures.Click += MnuFindFeatures_Click;
             mnuMatchFeatures.Click += MnuMatchFeatures_Click;
+            mnuBundleAdjustment.Click += MnuBundleAdjustment_Click;
             mnuFindHomographies.Click += MnuFindHomographies_Click;
             mnuImportMask.Click += MnuImportMask_Click;
             mnuDeleteData.Click += MnuDeleteData_Click;
@@ -318,16 +320,14 @@ namespace Kinovea.ScreenManager
                 mnuAction.DropDownItems.Add(mnuFindFeatures);
                 mnuAction.DropDownItems.Add(mnuMatchFeatures);
                 mnuAction.DropDownItems.Add(mnuFindHomographies);
+                mnuAction.DropDownItems.Add(mnuBundleAdjustment);
+                mnuAction.DropDownItems.Add(new ToolStripSeparator());
             }
-            else
-            {
-                mnuAction.DropDownItems.Add(mnuRun);
-            }
-
+            
+            mnuAction.DropDownItems.Add(mnuRunAll);
             mnuAction.DropDownItems.AddRange(new ToolStripItem[] {
                 new ToolStripSeparator(),
                 mnuImportMask,
-                //mnuImportColmap,
                 new ToolStripSeparator(),
                 mnuDeleteData,
             });
@@ -354,10 +354,11 @@ namespace Kinovea.ScreenManager
         private void ReloadMenusCulture()
         {
             mnuAction.Text = ScreenManagerLang.mnuAction;
-            mnuRun.Text = "Run camera motion estimation";
+            mnuRunAll.Text = "Run camera motion estimation";
             mnuFindFeatures.Text = "Find features";
             mnuMatchFeatures.Text = "Match features";
             mnuFindHomographies.Text = "Find homographies";
+            mnuBundleAdjustment.Text = "Bundle adjustment";
             mnuImportMask.Text = "Import mask";
             mnuImportColmap.Text = "Import COLMAP";
             mnuDeleteData.Text = "Delete tracking data";
@@ -370,7 +371,7 @@ namespace Kinovea.ScreenManager
             mnuShowTransforms.Text = "Show frame transforms";
         }
 
-        private void MnuRun_Click(object sender, EventArgs e)
+        private void MnuRunAll_Click(object sender, EventArgs e)
         {
             if (framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count < 1)
                 return;
@@ -427,6 +428,22 @@ namespace Kinovea.ScreenManager
             showTransforms = true;
         }
 
+        private void MnuBundleAdjustment_Click(object sender, EventArgs e)
+        {
+            if (framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count < 1)
+                return;
+
+            step = CameraMotionStep.BundleAdjustment;
+            StartProcess(sender);
+
+            // Force visualization options
+            showFeatures = false;
+            showInliers = false;
+            showOutliers = false;
+            showMotionField = true;
+            showTransforms = true;
+        }
+
         private void StartProcess(object sender)
         {
             formProgressBar2 fpb = new formProgressBar2(true, true, Worker_DoWork);
@@ -455,6 +472,9 @@ namespace Kinovea.ScreenManager
                     break;
                 case CameraMotionStep.FindHomographies:
                     tracker.FindHomographies(framesContainer, worker);
+                    break;
+                case CameraMotionStep.BundleAdjustment:
+                    tracker.BundleAdjustment(framesContainer, worker);
                     break;
                 case CameraMotionStep.All:
                 default:
