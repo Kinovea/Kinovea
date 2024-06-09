@@ -188,6 +188,9 @@ namespace Kinovea.ScreenManager
             mnuRunAll.Image = Properties.Resources.motion_detector;
             mnuFindFeatures.Image = Properties.Drawings.bullet_orange;
             mnuMatchFeatures.Image = Properties.Drawings.bullet_green;
+            mnuFindHomographies.Image = Properties.Resources.frame_transforms2;
+            mnuBuildTracks.Image = Properties.Resources.bullet_pink;
+            mnuImportMask.Image = Properties.Resources.layer_mask;
             mnuDeleteData.Image = Properties.Resources.bin_empty;
             mnuRunAll.Click += MnuRunAll_Click;
             mnuFindFeatures.Click += MnuFindFeatures_Click;
@@ -202,6 +205,9 @@ namespace Kinovea.ScreenManager
             mnuShowFeatures.Image = Properties.Drawings.bullet_orange;
             mnuShowInliers.Image = Properties.Drawings.bullet_green;
             mnuShowOutliers.Image = Properties.Drawings.bullet_red;
+            mnuShowTracks.Image = Properties.Resources.bullet_pink;
+            mnuShowTransforms.Image = Properties.Resources.frame_transforms2;
+            mnuShowMotionField.Image = Properties.Resources.motion_vectors;
             mnuShowFeatures.Click += MnuShowFeatures_Click;
             mnuShowOutliers.Click += MnuShowOutliers_Click;
             mnuShowInliers.Click += MnuShowInliers_Click;

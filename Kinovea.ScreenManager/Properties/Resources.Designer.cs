@@ -163,6 +163,16 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap bullet_pink {
+            get {
+                object obj = ResourceManager.GetObject("bullet_pink", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap bullet_white {
             get {
                 object obj = ResourceManager.GetObject("bullet_white", resourceCulture);
@@ -923,6 +933,16 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap frame_transforms2 {
+            get {
+                object obj = ResourceManager.GetObject("frame_transforms2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap function {
             get {
                 object obj = ResourceManager.GetObject("function", resourceCulture);
@@ -1133,6 +1153,16 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap layer_mask {
+            get {
+                object obj = ResourceManager.GetObject("layer_mask", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap liqbackdock {
             get {
                 object obj = ResourceManager.GetObject("liqbackdock", resourceCulture);
@@ -1276,6 +1306,16 @@ namespace Kinovea.ScreenManager.Properties {
         public static System.Drawing.Bitmap motion_detector {
             get {
                 object obj = ResourceManager.GetObject("motion_detector", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap motion_vectors {
+            get {
+                object obj = ResourceManager.GetObject("motion_vectors", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
