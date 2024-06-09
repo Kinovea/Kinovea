@@ -340,7 +340,7 @@
     <Compile Include="FilePatterns\PatternSymbolsFile.cs" />
     <Compile Include="Measurement\Calibration\CalibrationAxis.cs" />
     <Compile Include="Measurement\Calibration\CameraPoser.cs" />
-    <Compile Include="Measurement\CameraMotion\CameraMotionFeatureType.cs" />
+    <Compile Include="Measurement\CameraMotion\CameraMotionCameraParams.cs" />
     <Compile Include="Measurement\CameraMotion\CameraMotionStep.cs" />
     <Compile Include="Measurement\Geometry\Matrix3x3.cs" />
     <Compile Include="Measurement\Geometry\SegmentF.cs" />

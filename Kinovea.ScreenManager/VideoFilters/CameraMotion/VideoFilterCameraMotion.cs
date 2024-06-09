@@ -325,17 +325,18 @@ namespace Kinovea.ScreenManager
             // step-by-step is useful for troubleshooting.
             mnuAction.DropDownItems.Clear();
 
+            mnuAction.DropDownItems.Add(mnuRunAll);
+
             if (tracker.Parameters.StepByStep)
             {
+                mnuAction.DropDownItems.Add(new ToolStripSeparator());
                 mnuAction.DropDownItems.Add(mnuFindFeatures);
                 mnuAction.DropDownItems.Add(mnuMatchFeatures);
                 mnuAction.DropDownItems.Add(mnuFindHomographies);
                 mnuAction.DropDownItems.Add(mnuBundleAdjustment);
                 mnuAction.DropDownItems.Add(mnuBuildTracks);
-                mnuAction.DropDownItems.Add(new ToolStripSeparator());
             }
             
-            mnuAction.DropDownItems.Add(mnuRunAll);
             mnuAction.DropDownItems.AddRange(new ToolStripItem[] {
                 new ToolStripSeparator(),
                 mnuImportMask,

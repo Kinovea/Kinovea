@@ -75,11 +75,6 @@ namespace Kinovea.ScreenManager
 
         // Core parameters
         private CameraMotionParameters parameters;
-        private float distanceThresholdNormalized = 0.1f; // Matches spanning more than this fraction of the image width are filtered out.
-        private bool prefilterSpuriousMatches = true;
-        private CameraMotionFeatureType featureType = CameraMotionFeatureType.SIFT;
-        private bool distanceRatioTest = true;
-        private int minTrackLength = 6;
 
         private Stopwatch stopwatch = new Stopwatch();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -165,7 +160,7 @@ namespace Kinovea.ScreenManager
             OpenCvSharp.ORB orb = null;
             OpenCvSharp.Features2D.SIFT sift = null;
 
-            if (featureType == CameraMotionFeatureType.ORB)
+            if (parameters.FeatureType == CameraMotionFeatureType.ORB)
                 orb = OpenCvSharp.ORB.Create(parameters.FeaturesPerFrame);
             else
                 sift = OpenCvSharp.Features2D.SIFT.Create(parameters.FeaturesPerFrame);
@@ -192,7 +187,7 @@ namespace Kinovea.ScreenManager
                 // Feature detection & description.
                 var desc = new OpenCvSharp.Mat();
                 OpenCvSharp.KeyPoint[] kp;
-                if (featureType == CameraMotionFeatureType.ORB)
+                if (parameters.FeatureType == CameraMotionFeatureType.ORB)
                     orb.DetectAndCompute(cvImageGray, cvMaskGray, out kp, desc);
                 else
                     sift.DetectAndCompute(cvImageGray, cvMaskGray, out kp, desc);
@@ -207,7 +202,7 @@ namespace Kinovea.ScreenManager
                 worker.ReportProgress(i + 1, framesContainer.Frames.Count);
             }
 
-            if (featureType == CameraMotionFeatureType.ORB)
+            if (parameters.FeatureType == CameraMotionFeatureType.ORB)
                 orb.Dispose();
              else
                 sift.Dispose();
@@ -242,7 +237,7 @@ namespace Kinovea.ScreenManager
             // Lowe's ratio test.
             // -> Only keep matches where the nearest neighbor is much closer than the second nearest neighbor.
             // Otherwise the match is not very discriminatory and it's likely to be a false positive.
-            bool crossCheck = !distanceRatioTest;
+            bool crossCheck = !parameters.UseDistanceRatioTest;
             float r = 0.8f;
 
             if (descriptors.Count == 0)
@@ -254,7 +249,7 @@ namespace Kinovea.ScreenManager
 
             // Matching distance: SIFT requires L1 norm.
             OpenCvSharp.BFMatcher matcher = null;
-            if (featureType == CameraMotionFeatureType.ORB)
+            if (parameters.FeatureType == CameraMotionFeatureType.ORB)
                 matcher = new OpenCvSharp.BFMatcher(OpenCvSharp.NormTypes.Hamming, crossCheck: crossCheck);
             else
                 matcher = new OpenCvSharp.BFMatcher(OpenCvSharp.NormTypes.L1, crossCheck: crossCheck);
@@ -264,7 +259,7 @@ namespace Kinovea.ScreenManager
                 if (worker.CancellationPending)
                     break;
 
-                if (distanceRatioTest)
+                if (parameters.UseDistanceRatioTest)
                 {
                     var mm = matcher.KnnMatch(descriptors[i], descriptors[i + 1], 2);
 
@@ -296,13 +291,13 @@ namespace Kinovea.ScreenManager
 
             matcher.Dispose();
 
-            if (prefilterSpuriousMatches)
+            if (parameters.UseDistanceThreshold)
             {
                 // We know we are tracking a video frame by frame so we can assume the motion vectors to be
                 // relatively small. Any match over a distance threshold can be eliminated right away.
                 // This will make the job of RANSAC easier.
                 Size imageSize = framesContainer.Frames[0].Image.Size;
-                float distanceThreshold = imageSize.Width * distanceThresholdNormalized;
+                float distanceThreshold = imageSize.Width * parameters.DistanceThresholdNormalized;
                 for (int i = 0; i < descriptors.Count - 1; i++)
                 {
                     var srcPoints = framesMatches[i].Select(m => new OpenCvSharp.Point2d(keypoints[i][m.QueryIdx].Pt.X, keypoints[i][m.QueryIdx].Pt.Y)).ToList();
@@ -350,8 +345,7 @@ namespace Kinovea.ScreenManager
                 if (mm.Length < 4)
                 {
                     // We can't compute the homography.
-                    // TODO: Initialize with identity and continue, then use the 
-                    // average 
+                    // TODO: Initialize with identity and continue.
                     log.ErrorFormat("Not enough matches on frame {0}.", i);
                     break;
                 }
@@ -390,6 +384,50 @@ namespace Kinovea.ScreenManager
 
         public void BundleAdjustment(IWorkingZoneFramesContainer framesContainer, BackgroundWorker worker)
         {
+
+            if (matches.Count != inliersMasks.Count || matches.Count != inliers.Count)
+            {
+                // This indicates that there was an issue during FindHomographies
+                // and we don't have the required information to do bundle adjustment.
+                return;
+            }
+
+            // Steps:
+            // - Initial estimate of the focal length of all views.
+            // - Initial estimate of the rotation between image pairs.
+            // - Refinement using Bundle adjustment.
+
+            // First we need to convert the data to the format used in the stitching module of OpenCV.
+            //List<OpenCvSharp.Detail.ImageFeatures> features = new List<OpenCvSharp.Detail.ImageFeatures>();
+            //List<OpenCvSharp.Detail.MatchesInfo> matchesInfo = new List<OpenCvSharp.Detail.MatchesInfo>();
+            //OpenCvSharp.Size imageSize = new OpenCvSharp.Size(
+            //    framesContainer.Frames[0].Image.Size.Width,
+            //    framesContainer.Frames[0].Image.Size.Height
+            //);
+
+            //// Convert keypoints and descriptors to ImageFeatures.
+            //// https://docs.opencv.org/4.9.0/d4/db5/structcv_1_1detail_1_1ImageFeatures.html
+            //for (int i = 0; i < keypoints.Count; i++)
+            //{
+            //    OpenCvSharp.Detail.ImageFeatures f = new OpenCvSharp.Detail.ImageFeatures(i, imageSize, keypoints[i], descriptors[i]);
+            //    features.Add(f);
+            //}
+
+            //// Convert pair-wise matches to MatchesInfo.
+            //// https://docs.opencv.org/4.9.0/d2/d9a/structcv_1_1detail_1_1MatchesInfo.html
+            //for (int i = 0; i < matches.Count; i++)
+            //{
+            //    int srcImgIdx = i;                           // Images indices
+            //    int dstImgIdx = i + 1;                      
+            //    var mm = matches[i];                         // Matches.
+            //    var inliersMask = inliersMasks[i].ToArray(); // Geometrically consistent matches mask.
+            //    var numInliers = inliers[i].Count;           // Number of geometrically consistent matches.
+            //    OpenCvSharp.Mat H = consecTransforms[i];     // Estimated transformation
+            //    double confidence = 1.0;                     // Confidence two images are from the same panorama
+            //    OpenCvSharp.Detail.MatchesInfo m = new OpenCvSharp.Detail.MatchesInfo(srcImgIdx, dstImgIdx, mm, inliersMask, numInliers, H, confidence);
+            //    matchesInfo.Add(m);
+            //}
+
             tracked = true;
         }
 
@@ -513,7 +551,7 @@ namespace Kinovea.ScreenManager
             }
 
             // Remove short tracks
-            tracks.RemoveAll(t => t.Count < minTrackLength);
+            tracks.RemoveAll(t => t.Count < parameters.MinTrackLength);
 
             // Compute the average track length.
             float avg = (float)tracks.Average(t => t.Count);
