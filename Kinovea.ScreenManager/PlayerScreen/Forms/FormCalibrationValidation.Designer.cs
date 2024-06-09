@@ -1,6 +1,6 @@
 ﻿namespace Kinovea.ScreenManager
 {
-    partial class FormVDM
+    partial class FormCalibrationValidation
     {
         /// <summary>
         /// Required designer variable.

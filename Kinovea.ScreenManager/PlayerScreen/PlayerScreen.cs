@@ -808,14 +808,14 @@ namespace Kinovea.ScreenManager
             view.RefreshImage();
         }
 
-        public void ShowVDM()
+        public void ShowCalibrationValidation()
         {
             var calibrationHelper = frameServer.Metadata.CalibrationHelper;
             
-            FormVDM fvdm = new FormVDM(calibrationHelper);
-            FormsHelper.Locate(fvdm);
-            fvdm.ShowDialog();
-            fvdm.Dispose();
+            FormCalibrationValidation fcv = new FormCalibrationValidation(calibrationHelper);
+            FormsHelper.Locate(fcv);
+            fcv.ShowDialog();
+            fcv.Dispose();
 
             view.RefreshImage();
         }

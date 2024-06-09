@@ -12,13 +12,13 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public partial class FormVDM : Form
+    public partial class FormCalibrationValidation : Form
     {
         private CalibrationHelper calibrationHelper;
         private bool ready;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public FormVDM(CalibrationHelper calibrationHelper)
+        public FormCalibrationValidation(CalibrationHelper calibrationHelper)
         {
             this.calibrationHelper = calibrationHelper;
             InitializeComponent();
