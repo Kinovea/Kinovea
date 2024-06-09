@@ -472,9 +472,8 @@ namespace Kinovea.ScreenManager
             if (framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count < 1)
                 return;
 
-            // Building tracks is not a "step" of computing camera motion, 
-            // it's just a visual feedback help.
-            tracker.BuildTracks();
+            step = CameraMotionStep.BuildTracks;
+            StartProcess(sender);
 
             // Force visualization options
             showFeatures = false;
@@ -515,6 +514,9 @@ namespace Kinovea.ScreenManager
                     break;
                 case CameraMotionStep.BundleAdjustment:
                     tracker.BundleAdjustment(framesContainer, worker);
+                    break;
+                case CameraMotionStep.BuildTracks:
+                    tracker.BuildTracks(worker);
                     break;
                 case CameraMotionStep.All:
                 default:

@@ -22,5 +22,9 @@ namespace Kinovea.ScreenManager
 
         // Register all images against a common coordinate system.
         BundleAdjustment,
+
+        // Build multi-frame tracks.
+        // This step is optional and only used for visualization.
+        BuildTracks,
     }
 }

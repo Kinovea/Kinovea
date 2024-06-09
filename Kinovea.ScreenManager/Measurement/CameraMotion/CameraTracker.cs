@@ -423,7 +423,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Build the list of tracks (features tracked over multiple frames).
         /// </summary>
-        public void BuildTracks()
+        public void BuildTracks(BackgroundWorker worker)
         {
             if (matches.Count == 0)
                 return;
@@ -445,6 +445,9 @@ namespace Kinovea.ScreenManager
             // Process all the matches of all the frames.
             for (int f = 0; f < timestamps.Count - 1; f++)
             {
+                if (worker.CancellationPending)
+                    break;
+
                 int frameIndex = f;
                 for (int i = 0; i < matches[frameIndex].Length; i++)
                 {
@@ -490,6 +493,8 @@ namespace Kinovea.ScreenManager
                     lastIdx[trackIndex] = m.TrainIdx;
                     longest = Math.Max(longest, tracks[trackIndex].Count);
                 }
+
+                worker.ReportProgress(f + 1, timestamps.Count - 1);
             }
 
             // Remove short tracks
