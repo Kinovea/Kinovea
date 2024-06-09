@@ -67,6 +67,7 @@ namespace Kinovea.ScreenManager
         private List<List<PointF>> inliers = new List<List<PointF>>();
         private List<OpenCvSharp.Mat> consecTransforms = new List<OpenCvSharp.Mat>();
         private List<SortedDictionary<long, PointF>> tracks = new List<SortedDictionary<long, PointF>>();
+        private List<List<byte>> inliersMasks = new List<List<byte>>();
 
         // The following are used when we import transforms from COLMAP.
         private List<DistortionParameters> intrinsics = new List<DistortionParameters>();
@@ -346,6 +347,15 @@ namespace Kinovea.ScreenManager
                     break;
 
                 var mm = matches[i];
+                if (mm.Length < 4)
+                {
+                    // We can't compute the homography.
+                    // TODO: Initialize with identity and continue, then use the 
+                    // average 
+                    log.ErrorFormat("Not enough matches on frame {0}.", i);
+                    break;
+                }
+
                 var srcPoints = mm.Select(m => new OpenCvSharp.Point2d(keypoints[i][m.QueryIdx].Pt.X, keypoints[i][m.QueryIdx].Pt.Y));
                 var dstPoints = mm.Select(m => new OpenCvSharp.Point2d(keypoints[i + 1][m.TrainIdx].Pt.X, keypoints[i + 1][m.TrainIdx].Pt.Y));
 
@@ -354,7 +364,9 @@ namespace Kinovea.ScreenManager
                 var cvMask = OpenCvSharp.OutputArray.Create(mask);
                 var homography = OpenCvSharp.Cv2.FindHomography(srcPoints, dstPoints, method, ransacReprojThreshold, cvMask);
 
-                // Collect inliers.
+                inliersMasks.Add(mask);
+                
+                // Collect inliers in more usable formats: a list of bools and a list of only inlier points.
                 inlierStatus.Add(new List<bool>());
                 inliers.Add(new List<PointF>());
                 for (int j = 0; j < mask.Count; j++)
@@ -426,6 +438,9 @@ namespace Kinovea.ScreenManager
         public void BuildTracks(BackgroundWorker worker)
         {
             if (matches.Count == 0)
+                return;
+
+            if (matches.Count > inlierStatus.Count)
                 return;
 
             stopwatch.Restart();
@@ -555,7 +570,9 @@ namespace Kinovea.ScreenManager
                 PointF p1 = new PointF(cvPt1.X, cvPt1.Y);
                 PointF p2 = new PointF(cvPt2.X, cvPt2.Y);
 
-                bool inlier = inlierStatus.Count > 0 ? inlierStatus[frameIndex][i] : true;
+                // Note: inlier status is from find homography which may have failed or not run yet.
+                bool hasInliers = inlierStatus.Count > frameIndex && inlierStatus[frameIndex].Count > i;
+                bool inlier = hasInliers ? inlierStatus[frameIndex][i] : true;
                 result.Add(new CameraMatch(p1, p2, inlier));
             }
 
