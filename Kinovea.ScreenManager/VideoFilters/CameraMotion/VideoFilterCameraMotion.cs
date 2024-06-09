@@ -91,7 +91,8 @@ namespace Kinovea.ScreenManager
         private bool showInliers = true;        // Features matched and used to estimate the final motion.
         private bool showOutliers = false;      // Features matched but not used to estimate the final motion. 
         private bool showMotionField = false;   // Field of motion vectors.
-        private bool showTransforms = false;     // Frame transforms.
+        private bool showTransforms = false;    // Frame transforms.
+        private bool showTracks = false;        // Features tracked over multiple frames.
 
         #region Menu
         private ToolStripMenuItem mnuAction = new ToolStripMenuItem();
@@ -100,6 +101,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuMatchFeatures = new ToolStripMenuItem();
         private ToolStripMenuItem mnuFindHomographies = new ToolStripMenuItem();
         private ToolStripMenuItem mnuBundleAdjustment = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuBuildTracks = new ToolStripMenuItem();
 
         private ToolStripMenuItem mnuImportMask = new ToolStripMenuItem();
         private ToolStripMenuItem mnuImportColmap = new ToolStripMenuItem();
@@ -111,6 +113,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuShowInliers = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowMotionField = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowTransforms = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuShowTracks = new ToolStripMenuItem();
 
         #endregion
 
@@ -121,6 +124,7 @@ namespace Kinovea.ScreenManager
         private Pen penMatchInlier = new Pen(Color.LimeGreen, 2.0f);
         private Pen penMatchOutlier = new Pen(Color.FromArgb(128, 255, 0, 0), 2.0f);
         private Pen penMotionField = new Pen(Color.CornflowerBlue, 3.0f);
+        private Pen penTracks = new Pen(Color.Fuchsia, 2.0f);
         private int maxTransformsFrames = 25; 
         private int motionFieldPoints = 25;     // Number of points in each dimension for the motion field visualization.
 
@@ -188,8 +192,9 @@ namespace Kinovea.ScreenManager
             mnuRunAll.Click += MnuRunAll_Click;
             mnuFindFeatures.Click += MnuFindFeatures_Click;
             mnuMatchFeatures.Click += MnuMatchFeatures_Click;
-            mnuBundleAdjustment.Click += MnuBundleAdjustment_Click;
             mnuFindHomographies.Click += MnuFindHomographies_Click;
+            mnuBundleAdjustment.Click += MnuBundleAdjustment_Click;
+            mnuBuildTracks.Click += MnuBuildTracks_Click;
             mnuImportMask.Click += MnuImportMask_Click;
             mnuDeleteData.Click += MnuDeleteData_Click;
             
@@ -202,12 +207,14 @@ namespace Kinovea.ScreenManager
             mnuShowInliers.Click += MnuShowInliers_Click;
             mnuShowMotionField.Click += MnuShowMotionField_Click;
             mnuShowTransforms.Click += MnuShowTransforms_Click;
+            mnuShowTracks.Click += MnuShowTracks_Click;
             mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuShowFeatures,
                 mnuShowInliers,
                 mnuShowOutliers,
                 mnuShowMotionField,
                 mnuShowTransforms,
+                mnuShowTracks,
             });
         }
         #endregion
@@ -263,6 +270,9 @@ namespace Kinovea.ScreenManager
 
             if (showMotionField)
                 DrawMotionField(canvas, transformer, timestamp);
+
+            if (showTracks)
+                DrawTracks(canvas, transformer, timestamp);
 
             DrawResults(canvas, timestamp);
         }
@@ -321,6 +331,7 @@ namespace Kinovea.ScreenManager
                 mnuAction.DropDownItems.Add(mnuMatchFeatures);
                 mnuAction.DropDownItems.Add(mnuFindHomographies);
                 mnuAction.DropDownItems.Add(mnuBundleAdjustment);
+                mnuAction.DropDownItems.Add(mnuBuildTracks);
                 mnuAction.DropDownItems.Add(new ToolStripSeparator());
             }
             
@@ -342,6 +353,7 @@ namespace Kinovea.ScreenManager
             mnuShowOutliers.Checked = showOutliers;
             mnuShowMotionField.Checked = showMotionField;
             mnuShowTransforms.Checked = showTransforms;
+            mnuShowTracks.Checked = showTracks;
 
             return contextMenu;
         }
@@ -359,6 +371,7 @@ namespace Kinovea.ScreenManager
             mnuMatchFeatures.Text = "Match features";
             mnuFindHomographies.Text = "Find homographies";
             mnuBundleAdjustment.Text = "Bundle adjustment";
+            mnuBuildTracks.Text = "Build tracks";
             mnuImportMask.Text = "Import mask";
             mnuImportColmap.Text = "Import COLMAP";
             mnuDeleteData.Text = "Delete tracking data";
@@ -369,6 +382,7 @@ namespace Kinovea.ScreenManager
             mnuShowOutliers.Text = "Show outliers";
             mnuShowMotionField.Text = "Show motion field";
             mnuShowTransforms.Text = "Show frame transforms";
+            mnuShowTracks.Text = "Show tracks";
         }
 
         private void MnuRunAll_Click(object sender, EventArgs e)
@@ -378,6 +392,7 @@ namespace Kinovea.ScreenManager
 
             step = CameraMotionStep.All;
             StartProcess(sender);
+            InvalidateFromMenu(sender);
         }
 
         private void MnuFindFeatures_Click(object sender, EventArgs e)
@@ -394,6 +409,8 @@ namespace Kinovea.ScreenManager
             showOutliers = false;
             showMotionField = false;
             showTransforms = false;
+            showTracks = false;
+            InvalidateFromMenu(sender);
         }
 
         private void MnuMatchFeatures_Click(object sender, EventArgs e)
@@ -410,6 +427,8 @@ namespace Kinovea.ScreenManager
             showOutliers = false;
             showMotionField = false;
             showTransforms = false;
+            showTracks = false;
+            InvalidateFromMenu(sender);
         }
 
         private void MnuFindHomographies_Click(object sender, EventArgs e)
@@ -426,6 +445,8 @@ namespace Kinovea.ScreenManager
             showOutliers = false;
             showMotionField = true;
             showTransforms = true;
+            showTracks = false;
+            InvalidateFromMenu(sender);
         }
 
         private void MnuBundleAdjustment_Click(object sender, EventArgs e)
@@ -442,6 +463,27 @@ namespace Kinovea.ScreenManager
             showOutliers = false;
             showMotionField = true;
             showTransforms = true;
+            showTracks = false;
+            InvalidateFromMenu(sender);
+        }
+
+        private void MnuBuildTracks_Click(object sender, EventArgs e)
+        {
+            if (framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count < 1)
+                return;
+
+            // Building tracks is not a "step" of computing camera motion, 
+            // it's just a visual feedback help.
+            tracker.BuildTracks();
+
+            // Force visualization options
+            showFeatures = false;
+            showInliers = true;
+            showOutliers = false;
+            showMotionField = false;
+            showTransforms = false;
+            showTracks = true;
+            InvalidateFromMenu(sender);
         }
 
         private void StartProcess(object sender)
@@ -452,8 +494,6 @@ namespace Kinovea.ScreenManager
 
             if (tracker.Tracked)
                 parentMetadata.SetCameraMotion(tracker);
-
-            InvalidateFromMenu(sender);
         }
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
@@ -560,6 +600,16 @@ namespace Kinovea.ScreenManager
             InvalidateFromMenu(sender);
         }
 
+        private void MnuShowTracks_Click(object sender, EventArgs e)
+        {
+            //CaptureMemento();
+
+            showTracks = !mnuShowTracks.Checked;
+
+            //Update();
+            InvalidateFromMenu(sender);
+        }
+
         private void InvalidateFromMenu(object sender)
         {
             // Update the main viewport.
@@ -606,8 +656,6 @@ namespace Kinovea.ScreenManager
             List<CameraMatch> matches = tracker.GetMatches(timestamp);
             if (matches == null || matches.Count == 0)
                 return;
-
-            //penMatchInlier.EndCap = System.Drawing.Drawing2D.LineCap.ArrowAnchor;
 
             foreach (var m in matches)
             {
@@ -744,6 +792,48 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        private void DrawTracks(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
+        {
+            if (tracker.ConsecutiveTransforms.Count == 0)
+                return;
+
+            if (!tracker.FrameIndices.ContainsKey(timestamp))
+                return;
+
+            if (tracker.FrameIndices[timestamp] >= tracker.ConsecutiveTransforms.Count)
+                return;
+
+            // Follow the feature over multiple frames.
+            var tracks = tracker.GetTracks();
+
+            for (int i = 0; i < tracks.Count; i++)
+            {
+                var track = tracks[i];
+                long start = track.First().Key;
+                long end = track.Last().Key;
+                if (timestamp < start || timestamp > end)
+                    continue;
+
+                // Collect the points of the track
+                // and draw their position.
+                List<PointF> points = new List<PointF>();
+                foreach (var entry in track)
+                {
+                    long t = entry.Key;
+                    PointF p = transformer.Transform(entry.Value);
+                    points.Add(p);
+
+                    if (entry.Key == timestamp)
+                        canvas.DrawRectangle(penTracks, p.Box(4).ToRectangle());
+                    else
+                        canvas.DrawEllipse(penTracks, p.Box(2));
+                }
+
+                // Draw the track.
+                canvas.DrawLines(penTracks, points.ToArray());
+            }
+        }
+
         /// <summary>
         /// Draw various textual statistics.
         /// </summary>
@@ -780,19 +870,25 @@ namespace Kinovea.ScreenManager
                 b.AppendLine(string.Format("Frame: {0}/{1}", index + 1, framesContainer.Frames.Count));
             }
 
-            List<PointF> features = tracker.GetFeatures(timestamp);
+            var features = tracker.GetFeatures(timestamp);
             if (features != null && features.Count > 0)
             {
                 // It typically finds the requested number of features but they might be very close to each other.
                 b.AppendLine(string.Format("Features: {0}/{1}", features.Count, tracker.Parameters.FeaturesPerFrame));
             }
 
-            List<CameraMatch> matches = tracker.GetMatches(timestamp);
+            var matches = tracker.GetMatches(timestamp);
             if (matches != null && matches.Count > 0)
             {
                 b.AppendLine(string.Format("Matches:{0}/{1}", matches.Count, features.Count));
                 int inliers = matches.Count(m => m.Inlier);
                 b.AppendLine(string.Format("Inliers:{0}/{1}", inliers, matches.Count));
+            }
+
+            var tracks = tracker.GetTracks();
+            if (tracks != null && tracks.Count > 0)
+            {
+                b.AppendLine(string.Format("Tracks:{0}", tracks.Count));
             }
 
             return b.ToString();

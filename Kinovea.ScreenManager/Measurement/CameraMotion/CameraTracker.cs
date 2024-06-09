@@ -57,14 +57,17 @@ namespace Kinovea.ScreenManager
         // inlier status: whether a match at the corresponding index is an inlier or outlier.
         // inliers: list of inlier matches.
         // consecTransforms: transform matrices going from frame i to i+1.
+        // tracks: timelines of features followed over multiple frames.
         private Dictionary<long, int> frameIndices = new Dictionary<long, int>();
+        private List<long> timestamps = new List<long>();
         private List<OpenCvSharp.KeyPoint[]> keypoints = new List<OpenCvSharp.KeyPoint[]>();
         private List<OpenCvSharp.Mat> descriptors = new List<OpenCvSharp.Mat>();
         private List<OpenCvSharp.DMatch[]> matches = new List<OpenCvSharp.DMatch[]>();
         private List<List<bool>> inlierStatus = new List<List<bool>>();
         private List<List<PointF>> inliers = new List<List<PointF>>();
         private List<OpenCvSharp.Mat> consecTransforms = new List<OpenCvSharp.Mat>();
-        
+        private List<SortedDictionary<long, PointF>> tracks = new List<SortedDictionary<long, PointF>>();
+
         // The following are used when we import transforms from COLMAP.
         private List<DistortionParameters> intrinsics = new List<DistortionParameters>();
         private List<double[,]> extrinsics = new List<double[,]>();
@@ -73,8 +76,9 @@ namespace Kinovea.ScreenManager
         private CameraMotionParameters parameters;
         private float distanceThresholdNormalized = 0.1f; // Matches spanning more than this fraction of the image width are filtered out.
         private bool prefilterSpuriousMatches = true;
-        private CameraMotionFeatureType featureType = CameraMotionFeatureType.ORB;
+        private CameraMotionFeatureType featureType = CameraMotionFeatureType.SIFT;
         private bool distanceRatioTest = true;
+        private int minTrackLength = 6;
 
         private Stopwatch stopwatch = new Stopwatch();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -124,6 +128,7 @@ namespace Kinovea.ScreenManager
             // Find and describe features on each frame.
             // Fills the following global variables:
             // - frameIndices: dictionary of timestamps to indices in the frame list.
+            // - timestamps: frame timestamps.
             // - keypoints: list of found features.
             // - descriptors: descriptors for each feature.
 
@@ -139,6 +144,7 @@ namespace Kinovea.ScreenManager
 
             stopwatch.Restart();
             frameIndices.Clear();
+            timestamps.Clear();
             keypoints.Clear();
             descriptors.Clear();
 
@@ -174,6 +180,7 @@ namespace Kinovea.ScreenManager
                     continue;
 
                 frameIndices.Add(f.Timestamp, frameIndex);
+                timestamps.Add(f.Timestamp);
 
                 // Convert image to OpenCV and convert to grayscale.
                 var cvImage = OpenCvSharp.Extensions.BitmapConverter.ToMat(f.Image);
@@ -332,6 +339,7 @@ namespace Kinovea.ScreenManager
             
             stopwatch.Restart();
             consecTransforms.Clear();
+
             for (int i = 0; i < descriptors.Count - 1; i++)
             {
                 if (worker.CancellationPending)
@@ -366,7 +374,6 @@ namespace Kinovea.ScreenManager
             }
 
             log.DebugFormat("Transforms computation: {0} ms.", stopwatch.ElapsedMilliseconds);
-
         }
 
         public void BundleAdjustment(IWorkingZoneFramesContainer framesContainer, BackgroundWorker worker)
@@ -413,6 +420,88 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        /// <summary>
+        /// Build the list of tracks (features tracked over multiple frames).
+        /// </summary>
+        public void BuildTracks()
+        {
+            if (matches.Count == 0)
+                return;
+
+            stopwatch.Restart();
+            tracks.Clear();
+
+            // Process all the matches and identify keypoints (features) that are
+            // tracked over multiple consecutive frames.
+            // Each "match" is a pair of feature from two consecutive frames
+            // each feature in the pair points to the index of the feature
+            // in the corresponding frame.
+
+            // Keep the index of the last added keypoint to each track to identify
+            // which track a given match should be added to.
+            List<int> lastIdx = new List<int>();
+            int longest = 0;
+
+            // Process all the matches of all the frames.
+            for (int f = 0; f < timestamps.Count - 1; f++)
+            {
+                int frameIndex = f;
+                for (int i = 0; i < matches[frameIndex].Length; i++)
+                {
+                    if (!inlierStatus[frameIndex][i])
+                        continue;
+
+                    // Get the keypoints and their index in their respective frame.
+                    var m = matches[frameIndex][i];
+                    OpenCvSharp.Point2f cvPt1 = keypoints[frameIndex][m.QueryIdx].Pt;
+                    OpenCvSharp.Point2f cvPt2 = keypoints[frameIndex + 1][m.TrainIdx].Pt;
+                    PointF p1 = new PointF(cvPt1.X, cvPt1.Y);
+                    PointF p2 = new PointF(cvPt2.X, cvPt2.Y);
+
+                    // See if the first keypoint of the match is already in a track.
+                    int trackIndex = -1;
+                    for (int j = 0; j < tracks.Count; j++)
+                    {
+                        // Make sure we don't match the keypoint to a track that 
+                        // we just added in the current loop. Anything we just added
+                        // will already have a timestmap corresponding to frameIndex + 1.
+                        if (lastIdx[j] == m.QueryIdx && tracks[j].Last().Key == timestamps[frameIndex])
+                        {
+                            trackIndex = j;
+                            break;
+                        }
+                    }
+
+                    // If we couldn't find an existing track with that keypoint
+                    // create a new one starting here.
+                    if (trackIndex == -1)
+                    {
+                        var track = new SortedDictionary<long, PointF>();
+                        track.Add(timestamps[frameIndex], p1);
+
+                        tracks.Add(track);
+                        lastIdx.Add(-1);
+
+                        trackIndex = tracks.Count - 1;
+                    }
+
+                    // Extend the identified track with the match's second keypoint.
+                    tracks[trackIndex].Add(timestamps[frameIndex + 1], p2);
+                    lastIdx[trackIndex] = m.TrainIdx;
+                    longest = Math.Max(longest, tracks[trackIndex].Count);
+                }
+            }
+
+            // Remove short tracks
+            tracks.RemoveAll(t => t.Count < minTrackLength);
+
+            // Compute the average track length.
+            float avg = (float)tracks.Average(t => t.Count);
+            
+            log.DebugFormat("Build tracks: {0} ms.", stopwatch.ElapsedMilliseconds);
+            log.DebugFormat("Average track length: {0} frames", avg);
+            log.DebugFormat("Longest track length: {0} frames", longest);
+        }
         #endregion
 
         #region Retrieve internal data
@@ -456,14 +545,24 @@ namespace Kinovea.ScreenManager
             for (int i = 0; i < frameMatches.Length; i++)
             {
                 var m = frameMatches[i];
-                PointF p1 = new PointF(keypoints[frameIndex][m.QueryIdx].Pt.X, keypoints[frameIndex][m.QueryIdx].Pt.Y);
-                PointF p2 = new PointF(keypoints[frameIndex + 1][m.TrainIdx].Pt.X, keypoints[frameIndex + 1][m.TrainIdx].Pt.Y);
+                OpenCvSharp.Point2f cvPt1 = keypoints[frameIndex][m.QueryIdx].Pt;
+                OpenCvSharp.Point2f cvPt2 = keypoints[frameIndex + 1][m.TrainIdx].Pt;
+                PointF p1 = new PointF(cvPt1.X, cvPt1.Y);
+                PointF p2 = new PointF(cvPt2.X, cvPt2.Y);
 
                 bool inlier = inlierStatus.Count > 0 ? inlierStatus[frameIndex][i] : true;
                 result.Add(new CameraMatch(p1, p2, inlier));
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Return features tracked over multiple frames.
+        /// </summary>
+        public List<SortedDictionary<long, PointF>> GetTracks()
+        {
+            return tracks;
         }
         #endregion
 
@@ -473,15 +572,14 @@ namespace Kinovea.ScreenManager
             tracked = false;
             
             frameIndices.Clear();
+            timestamps.Clear();
             keypoints.Clear();
             descriptors.Clear();
-            //imagePairs.Clear();
             matches.Clear();
             inlierStatus.Clear();
             inliers.Clear();
             consecTransforms.Clear();
-            //forwardTransforms.Clear();
-            //backwardTransforms.Clear();
+            tracks.Clear();
         }
 
         public void SetMask(string filename)
