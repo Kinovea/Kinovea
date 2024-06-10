@@ -6,7 +6,7 @@ REM forfiles /p "." /m Kinovea-Portable-*-x64.exe /c "@file"
 Kinovea-Portable-2024.1.0.exe
 
 REM Delete the installer.
-del Kinovea-Portable-2023.4.0.exe /q
+del Kinovea-Portable-2024.1.0.exe /q
 
 REM Zip the content.
 cd Kinovea-2024.1.0

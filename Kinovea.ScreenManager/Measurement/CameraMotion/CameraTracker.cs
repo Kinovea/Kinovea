@@ -67,7 +67,7 @@ namespace Kinovea.ScreenManager
         private List<List<PointF>> inliers = new List<List<PointF>>();
         private List<OpenCvSharp.Mat> consecTransforms = new List<OpenCvSharp.Mat>();
         private List<SortedDictionary<long, PointF>> tracks = new List<SortedDictionary<long, PointF>>();
-        private List<List<byte>> inliersMasks = new List<List<byte>>();
+        //private List<List<byte>> inliersMasks = new List<List<byte>>();
 
         // The following are used when we import transforms from COLMAP.
         private List<DistortionParameters> intrinsics = new List<DistortionParameters>();
@@ -329,11 +329,12 @@ namespace Kinovea.ScreenManager
                 return;
 
             double ransacReprojThreshold = 1.25;
-            int maxIter = 10000;
+            int maxIter = 2000;
             double confidence = 0.995;
-
             
             stopwatch.Restart();
+            inliers.Clear();
+            inlierStatus.Clear();
             consecTransforms.Clear();
 
             for (int i = 0; i < descriptors.Count - 1; i++)
@@ -352,14 +353,31 @@ namespace Kinovea.ScreenManager
 
                 var srcPoints = mm.Select(m => new OpenCvSharp.Point2d(keypoints[i][m.QueryIdx].Pt.X, keypoints[i][m.QueryIdx].Pt.Y));
                 var dstPoints = mm.Select(m => new OpenCvSharp.Point2d(keypoints[i + 1][m.TrainIdx].Pt.X, keypoints[i + 1][m.TrainIdx].Pt.Y));
+                
+                //OpenCvSharp.HomographyMethods method = (OpenCvSharp.HomographyMethods)OpenCvSharp.RobustEstimationAlgorithms.USAC_MAGSAC;
+                OpenCvSharp.HomographyMethods method = OpenCvSharp.HomographyMethods.USAC_MAGSAC;
 
-                OpenCvSharp.HomographyMethods method = (OpenCvSharp.HomographyMethods)OpenCvSharp.RobustEstimationAlgorithms.USAC_MAGSAC;
                 var mask = new List<byte>();
                 var cvMask = OpenCvSharp.OutputArray.Create(mask);
-                var homography = OpenCvSharp.Cv2.FindHomography(srcPoints, dstPoints, method, ransacReprojThreshold, cvMask);
 
-                inliersMasks.Add(mask);
-                
+                //var homography = OpenCvSharp.Cv2.FindHomography(
+                //    srcPoints,
+                //    dstPoints,
+                //    method,
+                //    ransacReprojThreshold,
+                //    cvMask);
+
+                var homography = OpenCvSharp.Cv2.FindHomography(
+                    srcPoints,
+                    dstPoints,
+                    method,
+                    ransacReprojThreshold,
+                    cvMask,
+                    maxIter,
+                    confidence);
+
+                //inliersMasks.Add(mask);
+
                 // Collect inliers in more usable formats: a list of bools and a list of only inlier points.
                 inlierStatus.Add(new List<bool>());
                 inliers.Add(new List<PointF>());
@@ -385,12 +403,12 @@ namespace Kinovea.ScreenManager
         public void BundleAdjustment(IWorkingZoneFramesContainer framesContainer, BackgroundWorker worker)
         {
 
-            if (matches.Count != inliersMasks.Count || matches.Count != inliers.Count)
-            {
-                // This indicates that there was an issue during FindHomographies
-                // and we don't have the required information to do bundle adjustment.
-                return;
-            }
+            //if (matches.Count != inliersMasks.Count || matches.Count != inliers.Count)
+            //{
+            //    This indicates that there was an issue during FindHomographies
+            //    and we don't have the required information to do bundle adjustment.
+            //    return;
+            //}
 
             // Steps:
             // - Initial estimate of the focal length of all views.
@@ -475,10 +493,8 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void BuildTracks(BackgroundWorker worker)
         {
-            if (matches.Count == 0)
-                return;
-
-            if (matches.Count > inlierStatus.Count)
+            // Bail out if feature matching or find homography haven't run yet.
+            if (matches.Count == 0 || inlierStatus.Count == 0)
                 return;
 
             stopwatch.Restart();
@@ -496,19 +512,22 @@ namespace Kinovea.ScreenManager
             int longest = 0;
 
             // Process all the matches of all the frames.
-            for (int f = 0; f < timestamps.Count - 1; f++)
+            for (int frameIndex = 0; frameIndex < timestamps.Count - 1; frameIndex++)
             {
                 if (worker.CancellationPending)
                     break;
 
-                int frameIndex = f;
-                for (int i = 0; i < matches[frameIndex].Length; i++)
+                if (matches[frameIndex].Length !=inlierStatus[frameIndex].Count)
+                    throw new InvalidProgramException("Number of matches and inlier status don't match.");
+
+                for (int matchIndex = 0; matchIndex < matches[frameIndex].Length; matchIndex++)
                 {
-                    if (!inlierStatus[frameIndex][i])
+                    // Do not build tracks with keypoints not part of the global motion.
+                    if (!inlierStatus[frameIndex][matchIndex])
                         continue;
 
-                    // Get the keypoints and their index in their respective frame.
-                    var m = matches[frameIndex][i];
+                    // Get the matching keypoints and their index in their respective frame.
+                    var m = matches[frameIndex][matchIndex];
                     OpenCvSharp.Point2f cvPt1 = keypoints[frameIndex][m.QueryIdx].Pt;
                     OpenCvSharp.Point2f cvPt2 = keypoints[frameIndex + 1][m.TrainIdx].Pt;
                     PointF p1 = new PointF(cvPt1.X, cvPt1.Y);
@@ -547,7 +566,7 @@ namespace Kinovea.ScreenManager
                     longest = Math.Max(longest, tracks[trackIndex].Count);
                 }
 
-                worker.ReportProgress(f + 1, timestamps.Count - 1);
+                worker.ReportProgress(frameIndex + 1, timestamps.Count - 1);
             }
 
             // Remove short tracks
