@@ -223,7 +223,8 @@ namespace Kinovea.ScreenManager
             // - paragraph 4.2 of "Image Matching across Wide Baselines: From Paper to Practice".
             // - paragraph 7.1 of "Distinctive Image Features from scale invariant key points", Lowe, 2004.
             //
-            // Matcher type: Brute force (exact) or FLANN based. We use the BF matcher.
+            // Matcher type: Brute force (exact) or FLANN based.
+            // -> We always use the BF matcher.
             //
             // There are 3 basic strategies:
             // - unidirectional: match features from i to i+1.
@@ -231,8 +232,7 @@ namespace Kinovea.ScreenManager
             // - bidirectional + "either": same but keep the union of all matches.
             //
             // Using crossCheck = true in the BFMatcher constructor corresponds to strategy "both": it will only
-            // return pairs (i,j) such that for i-th query descriptor the j-th descriptor in the matcher's
-            // collection is the nearest and vice versa.
+            // return pairs where both features have the other one as their nearest neighbor.
             //
             // Lowe's ratio test.
             // -> Only keep matches where the nearest neighbor is much closer than the second nearest neighbor.
@@ -353,19 +353,9 @@ namespace Kinovea.ScreenManager
 
                 var srcPoints = mm.Select(m => new OpenCvSharp.Point2d(keypoints[i][m.QueryIdx].Pt.X, keypoints[i][m.QueryIdx].Pt.Y));
                 var dstPoints = mm.Select(m => new OpenCvSharp.Point2d(keypoints[i + 1][m.TrainIdx].Pt.X, keypoints[i + 1][m.TrainIdx].Pt.Y));
-                
-                //OpenCvSharp.HomographyMethods method = (OpenCvSharp.HomographyMethods)OpenCvSharp.RobustEstimationAlgorithms.USAC_MAGSAC;
                 OpenCvSharp.HomographyMethods method = OpenCvSharp.HomographyMethods.USAC_MAGSAC;
-
                 var mask = new List<byte>();
                 var cvMask = OpenCvSharp.OutputArray.Create(mask);
-
-                //var homography = OpenCvSharp.Cv2.FindHomography(
-                //    srcPoints,
-                //    dstPoints,
-                //    method,
-                //    ransacReprojThreshold,
-                //    cvMask);
 
                 var homography = OpenCvSharp.Cv2.FindHomography(
                     srcPoints,
