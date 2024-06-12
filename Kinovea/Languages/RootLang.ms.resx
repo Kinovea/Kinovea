@@ -250,4 +250,7 @@
   <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve">
     <value>Kelihatan untuk keseluruhan video</value>
   </data>
+  <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve">
+    <value>User_0095</value>
+  </data>
 </root>
