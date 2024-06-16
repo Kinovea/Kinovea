@@ -49,7 +49,7 @@ namespace Kinovea.ScreenManager
         /// on top of a world object in the video. This is the starting point 
         /// of the transform stack.
         /// </summary>
-        public Point Transform(long referenceTimestamp, long currentTimestamp, Point p)
+        public PointF Transform(long referenceTimestamp, long currentTimestamp, PointF p)
         {
             if (!initialized)
                 return p;
@@ -83,12 +83,7 @@ namespace Kinovea.ScreenManager
                 }
             }
 
-            return new Point((int)p2[0].X, (int)p2[0].Y);
-        }
-
-        public Point Transform(long src, long dst, PointF p)
-        {
-            return Transform(src, dst, p.ToPoint());
+            return new PointF(p2[0].X, p2[0].Y);
         }
     }
 }
