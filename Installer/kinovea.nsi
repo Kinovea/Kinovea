@@ -19,11 +19,11 @@
     ; Rebuild
     !ifdef REBUILD
         !ifdef X86
-            !system 'devenv "D:\dev\Joan\Multimedia\Video\Kinovea\Source\Kinovea2\Kinovea.VS2019.sln" /clean "Release|x86" /project "Kinovea\Kinovea.csproj" /projectconfig "Release|x86"' = 0
-            !system 'devenv "D:\dev\Joan\Multimedia\Video\Kinovea\Source\Kinovea2\Kinovea.VS2019.sln" /rebuild "Release|x86" /project "Kinovea\Kinovea.csproj" /projectconfig "Release|x86"' = 0
+            !system 'devenv "D:\dev\video\kinovea\Source\Kinovea2\Kinovea.VS2019.sln" /clean "Release|x86" /project "Kinovea\Kinovea.csproj" /projectconfig "Release|x86"' = 0
+            !system 'devenv "D:\dev\video\kinovea\Source\Kinovea2\Kinovea.VS2019.sln" /rebuild "Release|x86" /project "Kinovea\Kinovea.csproj" /projectconfig "Release|x86"' = 0
          !else
-            !system 'devenv "D:\dev\Joan\Multimedia\Video\Kinovea\Source\Kinovea2\Kinovea.VS2019.sln" /clean "Release|x64" /project "Kinovea\Kinovea.csproj" /projectconfig "Release|x64"' = 0
-            !system 'devenv "D:\dev\Joan\Multimedia\Video\Kinovea\Source\Kinovea2\Kinovea.VS2019.sln" /rebuild "Release|x64" /project "Kinovea\Kinovea.csproj" /projectconfig "Release|x64"' = 0
+            !system 'devenv "D:\dev\video\kinovea\Source\Kinovea2\Kinovea.VS2019.sln" /clean "Release|x64" /project "Kinovea\Kinovea.csproj" /projectconfig "Release|x64"' = 0
+            !system 'devenv "D:\dev\video\kinovea\Source\Kinovea2\Kinovea.VS2019.sln" /rebuild "Release|x64" /project "Kinovea\Kinovea.csproj" /projectconfig "Release|x64"' = 0
         !endif
     !endif
 
@@ -259,12 +259,6 @@ Section ""
     !insertmacro CopyDirectoryContent "${BUILDDIR}" "$INSTDIR" "guides" "svg"
     !insertmacro CopyDirectoryContent "${BUILDDIR}" "$INSTDIR" "DrawingTools" "xml"
 
-    !ifdef X86
-        !insertmacro CopyDirectoryContent "${BUILDDIR}" "$INSTDIR" "x86" "dll"
-    !else
-        !insertmacro CopyDirectoryContent "${BUILDDIR}" "$INSTDIR" "x64" "dll"
-    !endif
-
     !ifdef PORTABLE
         CreateDirectory "$INSTDIR\AppData"
     !endif
@@ -365,9 +359,9 @@ FunctionEnd
         !insertmacro RemoveDirectory "$INSTDIR\ColorProfiles"
 
         !ifdef X86
-            !insertmacro RemoveDirectory "$INSTDIR\x86"
+            !insertmacro RemoveDirectory "$INSTDIR\x86" ; prior to 2024.1
         !else
-            !insertmacro RemoveDirectory "$INSTDIR\x64"
+            !insertmacro RemoveDirectory "$INSTDIR\x64" ; prior to 2024.1
         !endif
 
         RMDir "$INSTDIR"
