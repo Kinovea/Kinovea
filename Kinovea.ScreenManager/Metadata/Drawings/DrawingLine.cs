@@ -187,10 +187,8 @@ namespace Kinovea.ScreenManager
             if(opacityFactor <= 0)
                 return;
 
-            PointF start = points["a"];
-            PointF end = points["b"];
-            start = transformer.Transform(start);
-            end = transformer.Transform(end);
+            PointF start = transformer.Transform(points["a"]);
+            PointF end = transformer.Transform(points["b"]);
 
             using (Pen penEdges = styleHelper.GetPen(opacityFactor, transformer.Scale))
             using (Brush brush = styleHelper.GetBrush(opacityFactor))

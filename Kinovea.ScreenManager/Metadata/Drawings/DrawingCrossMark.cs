@@ -164,8 +164,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             int iAlpha = (int)(opacityFactor * 255);
-            Point c = points["0"].ToPoint();
-            c = transformer.Transform(c);
+            Point c = transformer.Transform(points["0"]);
 
             using(Pen p = styleHelper.GetPen(iAlpha))
             using(SolidBrush b = styleHelper.GetBrush((int)(opacityFactor * defaultBackgroundAlpha)))
