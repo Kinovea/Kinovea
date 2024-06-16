@@ -63,18 +63,14 @@ namespace Kinovea.ScreenManager
 
         private void ComputeCameraPosition()
         {
+            // Rebuild a projective mapper with the same homography as the one
+            // set up for calibration but without the custom origin and offset.
             var calibrator = calibrationHelper.CalibratorPlane;
-            var quadWorld = new QuadrilateralF(calibrator.Size.Width, calibrator.Size.Height);
-            var quadImage = calibrator.QuadImage.Clone();
-            ProjectiveMapping mapping = new ProjectiveMapping();
-            mapping.Update(quadWorld, quadImage);
+            var quadWorld = calibrator.QuadWorld;
+            var mapper = calibrationHelper.CalibratorPlane.Mapper;
             var lensCalib = calibrationHelper.DistortionHelper.Parameters;
-
-            // FIXME: we need to send the image points through un-distortion before using them.
-
-            CameraPoser poser = new CameraPoser();
-            eye = poser.Compute(quadWorld, quadImage, mapping, lensCalib, calibrationHelper.ImageSize);
-
+            eye = CameraPoser.Compute(quadWorld, mapper, lensCalib);
+            
             label1.Text = string.Format("Camera position in 3D: {0}.", eye);
         }
 

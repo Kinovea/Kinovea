@@ -34,7 +34,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Gets the 3D position of the camera in the space of the calibration rectangle.
         /// </summary>
-        public Vector3 Compute(QuadrilateralF plane, QuadrilateralF image, ProjectiveMapping mapping, DistortionParameters lensCalib, Size imageSize)
+        public static Vector3 Compute(QuadrilateralF plane, ProjectiveMapper mapping, DistortionParameters lensCalib)
         {
             // Based on: MONOCULAR RECTANGLE RECONSTRUCTION. Wefelscheid, 2011.
             // Paragraph 3.1 - Geometric method.

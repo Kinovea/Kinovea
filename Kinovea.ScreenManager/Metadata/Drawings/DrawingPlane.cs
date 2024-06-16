@@ -124,7 +124,7 @@ namespace Kinovea.ScreenManager
         #region Members
         private QuadrilateralF quadImage = QuadrilateralF.GetUnitSquare();      // Quadrilateral defined by user in image space.
         private QuadrilateralF quadPlane;                                       // Corresponding rectangle in plane system.
-        private ProjectiveMapping projectiveMapping = new ProjectiveMapping();  // maps quadImage to quadPlane and back.
+        private ProjectiveMapper projectiveMapping = new ProjectiveMapper();  // maps quadImage to quadPlane and back.
         private float planeWidth;                                               // width and height of rectangle in plane system.
         private float planeHeight;
         private bool planeIsConvex = true;
@@ -275,7 +275,7 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        private void DrawGrid(Graphics canvas, Pen pen, float opacity, ProjectiveMapping projectiveMapping, DistortionHelper distorter, IImageToViewportTransformer transformer)
+        private void DrawGrid(Graphics canvas, Pen pen, float opacity, ProjectiveMapper projectiveMapping, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             if (showGrid)
             {
@@ -338,7 +338,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Draw the sliding line and tickmarks for the distance grid.
         /// </summary>
-        private void DrawSlidingLines(Graphics canvas, Pen pen, float opacity, ProjectiveMapping projectiveMapping, DistortionHelper distorter, IImageToViewportTransformer transformer)
+        private void DrawSlidingLines(Graphics canvas, Pen pen, float opacity, ProjectiveMapper projectiveMapping, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             // This should only be drawn if we are actually the one used for calibration.
             if (calibrationHelper.CalibrationDrawingId != this.Id)
@@ -376,7 +376,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Takes a line segment by its endpoints in world space and draw it.
         /// </summary>
-        private void DrawDistortedLine(Graphics canvas, Pen pen, PointF a, PointF b, ProjectiveMapping projectiveMapping, DistortionHelper distorter, IImageToViewportTransformer transformer)
+        private void DrawDistortedLine(Graphics canvas, Pen pen, PointF a, PointF b, ProjectiveMapper projectiveMapping, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             a = projectiveMapping.Forward(a);
             b = projectiveMapping.Forward(b);
@@ -689,6 +689,9 @@ namespace Kinovea.ScreenManager
             quadImage[p] = new PointF(value.X, value.Y);
             this.trackingTimestamps = trackingTimestamps;
 
+            // FIXME: this should use rectified image space.
+            // CalibrationByPlane_Update will take care of the distortion, why do we 
+            // need to keep a separate projectiveMapper here?
             projectiveMapping.Update(quadPlane, quadImage);
             CalibrationHelper.CalibrationByPlane_Update(Id, quadImage);
             planeIsConvex = quadImage.IsConvex;
@@ -780,6 +783,7 @@ namespace Kinovea.ScreenManager
             planeHeight = size.Height;
             quadPlane = new QuadrilateralF(planeWidth, planeHeight);
 
+            // FIXME: should use rectified image-space coordinates.
             projectiveMapping.Update(quadPlane, quadImage);
             UpdateTickMarks();
         }

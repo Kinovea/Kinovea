@@ -29,7 +29,8 @@ namespace Kinovea.ScreenManager
     /// CalibrationHelper encapsulates information used for pixels-to-real-world transformation.
     /// This contains:
     /// - Camera extrinsics (As Kinovea is 2D this is only a homography, not a full camera pose).
-    /// - Camera intrinsics.
+    /// - Camera intrinsics (focal length, principal point).
+    /// - Lens distortion.
     /// - Capture framerate.
     /// </summary>
     public class CalibrationHelper
@@ -323,11 +324,13 @@ namespace Kinovea.ScreenManager
         {
             return calibrator;
         }
-        
+
+        /// <summary>
+        /// Projection of the reference rectangle onto rectified image space. 
+        /// </summary>
+        /// <returns></returns>
         public QuadrilateralF CalibrationByPlane_GetProjectedQuad()
         {
-            // Projection of the reference rectangle onto image space.
-            // This is the quadrilateral defined by the user.
             return calibrator.QuadImage;
         }
         #endregion
@@ -580,8 +583,8 @@ namespace Kinovea.ScreenManager
             PointF d = GetImagePoint(center.Translate(-radius, radius));
             QuadrilateralF quadImage = new QuadrilateralF(a, b, c, d);
 
-            ProjectiveMapping mapping = new ProjectiveMapping();
-            mapping.Update(QuadrilateralF.CenteredUnitSquare, quadImage);
+            // FIXME: the returned ellipse is in rectified image space but the caller expects image space.
+            ProjectiveMapper mapping = new ProjectiveMapper(QuadrilateralF.CenteredUnitSquare, quadImage);
             return mapping.Ellipse();
         }
 
@@ -617,9 +620,9 @@ namespace Kinovea.ScreenManager
             PointF c = GetImagePoint(centerInWorld.Translate(radiusInWorld, radiusInWorld));
             PointF d = GetImagePoint(centerInWorld.Translate(-radiusInWorld, radiusInWorld));
             QuadrilateralF quadImage = new QuadrilateralF(a, b, c, d);
-            
-            ProjectiveMapping mapping = new ProjectiveMapping();
-            mapping.Update(QuadrilateralF.CenteredUnitSquare, quadImage);
+
+            // FIXME: the returned ellipse is in rectified image space but the caller expects image space.
+            ProjectiveMapper mapping = new ProjectiveMapper(QuadrilateralF.CenteredUnitSquare, quadImage);
             return mapping.Ellipse();
         }
         #endregion

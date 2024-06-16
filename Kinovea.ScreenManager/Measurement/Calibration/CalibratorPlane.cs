@@ -33,20 +33,25 @@ namespace Kinovea.ScreenManager
     /// The user specifies a quadrilateral in the image corresponding to a rectangle of known size in world space.
     /// This correspondance is done in the UI via Perspective grid > Calibrate. 
     /// It is the main link between image space and world space. 
-    /// The homography contained in "ProjectiveMapping" maps coordinates in the image quad with coordinates in the grid in the world.
+    /// The homography contained in the "ProjectiveMapper" maps coordinates in the rectified image space 
+    /// to coordinates in the grid in the world.
     ///
     /// Full transform stack: 
-    /// - Viewport space > Image space >>> Grid space > World space > Offset space.
-    ///                                 ↑
-    ///                              homography
+    /// - Viewport space > Image space > Rectified image space >>> Grid space > World space > Offset space.
+    ///                                                         ↑
+    ///                                                     homography
     /// 
     /// Details:
     /// - Viewport space: coordinates on the screen including stretch, zoom and pan. Origin at top-left and Y-axis down.
-    /// - Image space: coordinates based on the original video image size. Origin at top-left and Y-axis down.
-    /// - Grid space: World coordinates based on the grid used for calibration. Origin at top-left and Y-axis down.
+    /// - Image space: coordinates based on the original video image size. Top-left, Y down.
+    /// - Rectified image space: coordinates passed through radial distortion correction. Top-left, Y down.
+    /// - Grid space: World coordinates based on the grid used for calibration. Top-left, Y down.
     /// - World space: based on the "Coordinate system" object. By default it is aligned with the grid bottom-left. Y-axis up.
     /// - Offset space: an offset is applied to the values. This is like moving the coordinate system origin but the axes are visually kept in place.
     ///
+    /// Rectified image space
+    /// - Anything image point or quad coming into this class should already be in rectified image space (undistorted).
+    /// 
     /// Grid to World
     /// - We keep the offset of the coordinate system object origin. This is expressed in world units but in Grid space.
     /// 
@@ -65,22 +70,51 @@ namespace Kinovea.ScreenManager
     {
         #region Properties
         /// <summary>
-        /// Image space quadrilateral.
-        /// This is the projection of the reference rectangle on the image.
-        /// </summary>
-        public QuadrilateralF QuadImage
-        {
-            get { return quadImage; }
-        }
-
-        /// <summary>
         /// Real world dimensions of the reference rectangle.
         /// The reference rectangle is represented by the Grid object used for calibration.
         /// </summary>
         public SizeF Size
         {
             get { return size; }
-            set { size = value;}
+            set { size = value; }
+        }
+
+        /// <summary>
+        /// World space quadrilateral (rectangle).
+        /// Returns a copy.
+        /// </summary>
+        public QuadrilateralF QuadWorld
+        {
+            get { return quadWorld.Clone(); }
+        }
+
+        /// <summary>
+        /// Rectified image space quadrilateral.
+        /// Returns a copy.
+        /// </summary>
+        public QuadrilateralF QuadImage
+        {
+            get { return quadImage.Clone(); }
+        }
+
+        /// <summary>
+        /// The core projective mapping used to transfom points 
+        /// from rectified image space to world space and back.
+        /// This does not take into account the custom origin and value offset.
+        /// This should not be modified directly, use Initialize() instead.
+        /// </summary>
+        public ProjectiveMapper Mapper
+        {
+            get { return mapping; }
+        }
+
+        /// <summary>
+        /// Offset in world units applied to values on top of the transform stack.
+        /// </summary>
+        public PointF Offset
+        {
+            get { return offset; }
+            set { offset = value; }
         }
 
         /// <summary>
@@ -99,15 +133,6 @@ namespace Kinovea.ScreenManager
         {
             get { return calibrationAxis; }
         }
-
-        /// <summary>
-        /// Offset in world units applied to values on top of the transform stack.
-        /// </summary>
-        public PointF Offset
-        {
-            get { return offset; }
-            set { offset = value; }
-        }
         #endregion
 
         #region Members
@@ -117,8 +142,9 @@ namespace Kinovea.ScreenManager
         private PointF offset;      // Offset applied to values.
         private CalibrationAxis calibrationAxis = CalibrationAxis.LineHorizontal;
 
+        private QuadrilateralF quadWorld = new QuadrilateralF();
         private QuadrilateralF quadImage = new QuadrilateralF();
-        private ProjectiveMapping mapping = new ProjectiveMapping();
+        private ProjectiveMapper mapping = new ProjectiveMapper();
         
         private bool initialized;
         private bool valid;
@@ -128,8 +154,9 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Takes a point in image space and returns it world space with offset. Assumes static origin.
-        /// If the coordinate system object is tracked, obtain the current origin for the requested time separately 
-        /// and then call the overload taking a custom origin.
+        /// If the coordinate system object is tracked, you should first obtain the current origin 
+        /// for the requested time separately and then call the overload taking a custom origin.
+        /// The point coordinates should be in rectified image space.
         /// </summary>
         public PointF Transform(PointF p)
         {
@@ -141,6 +168,7 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Takes a point and origin in image space and returns it world space with offset.
+        /// The point and origin coordinates should be in rectified image space.
         /// </summary>
         public PointF Transform(PointF p, PointF originInImage)
         {
@@ -153,9 +181,10 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Takes a point in world coordinates (based on coordinate system object origin but without the extra offset),
-        /// and returns it in image coordinates. Assumes static origin.
-        /// If the coordinate system object is tracked, obtain the current origin for the requested time separately 
-        /// and then call the overload taking a custom origin.
+        /// and returns it in rectified image space. Assumes static origin.
+        /// If the coordinate system object is tracked, you should obtain the current origin 
+        /// for the requested time separately and then call the overload taking a custom origin.
+        /// The returned point is in rectified image space.
         /// </summary>
         public PointF Untransform(PointF p)
         {
@@ -164,7 +193,7 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Takes a point in world coordinates (based on coordinate system object origin but without the extra offset),
-        /// and returns it in image coordinates.
+        /// and returns it in rectified image space.
         /// </summary>
         public PointF Untransform(PointF p, PointF origin)
         {
@@ -189,7 +218,7 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Takes a point in image coordinates to act as the origin of the current coordinate system.
+        /// Takes a point in rectified image space to act as the origin of the current coordinate system.
         /// </summary>
         public void SetOrigin(PointF p)
         {
@@ -218,16 +247,19 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Initialize the projective mapping from a quadrilateral.
         /// size: Real world dimension of the reference rectangle.
-        /// quadImage: Image coordinates of the reference rectangle.
+        /// quadImage: Rectified image space coordinates of the rectangle.
         /// </summary>
         public void Initialize(SizeF sizeWorld, QuadrilateralF quadImage)
         {
             PointF originImage = quadImage.D;
             
             this.size = sizeWorld;
+            this.quadWorld = new QuadrilateralF(size.Width, size.Height);
             this.quadImage = quadImage.Clone();
-            mapping.Update(new QuadrilateralF(size.Width, size.Height), quadImage);
+
+            mapping.Update(quadWorld, quadImage);
             origin = mapping.Backward(originImage);
+            offset = PointF.Empty;
             this.initialized = true;
 
             valid = quadImage.IsConvex;
@@ -236,7 +268,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Initialize the projective mapping from a line.
         /// length: Real world length of the line.
-        /// a, b: Image coordinates of the line vertices.
+        /// a, b: Rectified image space coordinates of the line vertices.
         /// </summary>
         public void Initialize(float lengthWorld, PointF startImage, PointF endImage, CalibrationAxis calibrationAxis)
         {
@@ -248,8 +280,10 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Updates the calibration coordinate system without changing the real-world scale of the rectangle or the user-defined origin.
+        /// Updates the calibration coordinate system without changing the real-world scale of the rectangle
+        /// nor the user-defined origin.
         /// Quadrilateral variant.
+        /// The quadrilateral should be in rectified image space (undistorted).
         /// </summary>
         public void Update(QuadrilateralF quadImage)
         {
@@ -260,13 +294,15 @@ namespace Kinovea.ScreenManager
             }
 
             this.quadImage = quadImage.Clone();
-            mapping.Update(new QuadrilateralF(size.Width, size.Height), quadImage);
+            mapping.Update(quadWorld, quadImage);
             valid = quadImage.IsConvex;
         }
 
         /// <summary>
-        /// Updates the calibration coordinate system without changing the real-world scale of the rectangle or the user-defined origin.
+        /// Updates the calibration coordinate system without changing the real-world scale of the rectangle 
+        /// nor the user-defined origin.
         /// Line variant.
+        /// The points should be in rectified image space (undistorted).
         /// </summary>
         public void Update(PointF startImage, PointF endImage)
         {
