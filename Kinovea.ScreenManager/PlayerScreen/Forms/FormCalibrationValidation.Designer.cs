@@ -35,10 +35,10 @@
       this.lblFocalLength = new System.Windows.Forms.Label();
       this.lblSensorWidth = new System.Windows.Forms.Label();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
-      this.olvSections = new BrightIdeasSoftware.ObjectListView();
+      this.olvControlPoints = new BrightIdeasSoftware.ObjectListView();
       this.grpIntrinsics.SuspendLayout();
       this.groupBox1.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.olvSections)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.olvControlPoints)).BeginInit();
       this.SuspendLayout();
       // 
       // btnOK
@@ -110,7 +110,7 @@
       this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.groupBox1.Controls.Add(this.olvSections);
+      this.groupBox1.Controls.Add(this.olvControlPoints);
       this.groupBox1.Location = new System.Drawing.Point(20, 129);
       this.groupBox1.Name = "groupBox1";
       this.groupBox1.Size = new System.Drawing.Size(408, 211);
@@ -118,26 +118,28 @@
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Control points";
       // 
-      // olvSections
+      // olvControlPoints
       // 
-      this.olvSections.AlternateRowBackColor = System.Drawing.Color.Gainsboro;
-      this.olvSections.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+      this.olvControlPoints.AlternateRowBackColor = System.Drawing.Color.Gainsboro;
+      this.olvControlPoints.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.olvSections.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClickAlways;
-      this.olvSections.CellEditUseWholeCell = false;
-      this.olvSections.Cursor = System.Windows.Forms.Cursors.Default;
-      this.olvSections.GridLines = true;
-      this.olvSections.HeaderFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.olvSections.HideSelection = false;
-      this.olvSections.Location = new System.Drawing.Point(17, 34);
-      this.olvSections.Name = "olvSections";
-      this.olvSections.ShowSortIndicators = false;
-      this.olvSections.Size = new System.Drawing.Size(374, 156);
-      this.olvSections.TabIndex = 26;
-      this.olvSections.UseCompatibleStateImageBehavior = false;
-      this.olvSections.View = System.Windows.Forms.View.Details;
-      this.olvSections.CellEditFinished += new BrightIdeasSoftware.CellEditEventHandler(this.olvSections_CellEditFinished);
+      this.olvControlPoints.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClickAlways;
+      this.olvControlPoints.CellEditUseWholeCell = false;
+      this.olvControlPoints.Cursor = System.Windows.Forms.Cursors.Default;
+      this.olvControlPoints.GridLines = true;
+      this.olvControlPoints.HeaderFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.olvControlPoints.HideSelection = false;
+      this.olvControlPoints.Location = new System.Drawing.Point(17, 34);
+      this.olvControlPoints.Name = "olvControlPoints";
+      this.olvControlPoints.ShowSortIndicators = false;
+      this.olvControlPoints.Size = new System.Drawing.Size(374, 156);
+      this.olvControlPoints.TabIndex = 26;
+      this.olvControlPoints.UseCompatibleStateImageBehavior = false;
+      this.olvControlPoints.View = System.Windows.Forms.View.Details;
+      this.olvControlPoints.CellEditFinished += new BrightIdeasSoftware.CellEditEventHandler(this.olvSections_CellEditFinished);
+      this.olvControlPoints.FormatCell += new System.EventHandler<BrightIdeasSoftware.FormatCellEventArgs>(this.olvControlPoints_FormatCell);
+      this.olvControlPoints.FormatRow += new System.EventHandler<BrightIdeasSoftware.FormatRowEventArgs>(this.olvControlPoints_FormatRow);
       // 
       // FormCalibrationValidation
       // 
@@ -158,7 +160,7 @@
       this.grpIntrinsics.ResumeLayout(false);
       this.grpIntrinsics.PerformLayout();
       this.groupBox1.ResumeLayout(false);
-      ((System.ComponentModel.ISupportInitialize)(this.olvSections)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.olvControlPoints)).EndInit();
       this.ResumeLayout(false);
 
         }
@@ -172,6 +174,6 @@
         private System.Windows.Forms.Label lblSensorWidth;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox groupBox1;
-        private BrightIdeasSoftware.ObjectListView olvSections;
+        private BrightIdeasSoftware.ObjectListView olvControlPoints;
     }
 }

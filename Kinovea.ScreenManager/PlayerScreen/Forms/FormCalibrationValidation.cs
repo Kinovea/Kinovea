@@ -10,7 +10,6 @@ using Kinovea.ScreenManager.Languages;
 using System.Drawing.Drawing2D;
 using Kinovea.Services;
 using BrightIdeasSoftware;
-using DocumentFormat.OpenXml.Drawing;
 
 namespace Kinovea.ScreenManager
 {
@@ -18,10 +17,15 @@ namespace Kinovea.ScreenManager
     {
         private Metadata metadata;
         private CalibrationHelper calibrationHelper;
-        private List<NamedPoint> points = new List<NamedPoint>();
-        private List<PointF> pointsOnGrid = new List<PointF>();
+        private List<DrawingCrossMark> markers = new List<DrawingCrossMark>(); 
+        private List<PointF> pointsOnGrid = new List<PointF>();     // 2D points extracted from drawings.
+        private List<NamedPoint> namedPoints = new List<NamedPoint>();   // 3D points + drawing name.
+        private List<int> fixedComponent = new List<int>(); // Index of fixed component.
         private Vector3 eye;
         private bool ready;
+        private Font fontRegular = new Font("Consolas", 9, FontStyle.Regular);
+        private Font fontBold = new Font("Consolas", 9, FontStyle.Bold);
+        private Font fontItalic = new Font("Consolas", 9, FontStyle.Italic);
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public FormCalibrationValidation(Metadata metadata, CalibrationHelper calibrationHelper)
@@ -81,17 +85,27 @@ namespace Kinovea.ScreenManager
 
         private void PopulateControlPoints()
         {
+            // Allow formatting of single cells
+            // ref: https://objectlistview.sourceforge.net/cs/recipes.html#recipe-formatter
+            olvControlPoints.UseCellFormatEvents = true;
+            olvControlPoints.Font = fontRegular;
+
             // Extract the relevant data from the marker objects.
-            points.Clear();
+            namedPoints.Clear();
             pointsOnGrid.Clear();
-            foreach (var marker in metadata.CrossMarks())
+            markers = metadata.CrossMarks().ToList();
+            foreach (var marker in markers)
             {
                 // By default we assume the point is on the calibrated plane.
                 // Also remember this value to always recompute from the same reference.
                 var p = calibrationHelper.GetPoint(marker.Location);
                 pointsOnGrid.Add(p);
+
                 var namedPoint = new NamedPoint(marker.Name, p.X, p.Y, 0);
-                points.Add(namedPoint);
+                namedPoints.Add(namedPoint);
+
+                // Init with no fixed component.
+                fixedComponent.Add(-1);
             }
             
             var colName = new OLVColumn();
@@ -120,14 +134,14 @@ namespace Kinovea.ScreenManager
             colY.Text = "Y";
             colZ.Text = "Z";
 
-            olvSections.AllColumns.AddRange(new OLVColumn[] {
+            olvControlPoints.AllColumns.AddRange(new OLVColumn[] {
                 colName,
                 colX,
                 colY,
                 colZ,
                 });
 
-            olvSections.Columns.AddRange(new ColumnHeader[] {
+            olvControlPoints.Columns.AddRange(new ColumnHeader[] {
                 colName,
                 colX,
                 colY,
@@ -135,7 +149,11 @@ namespace Kinovea.ScreenManager
                 });
 
             // Populate the grid.
-            olvSections.SetObjects(points);
+            olvControlPoints.SetObjects(namedPoints);
+            
+            // This is required to trigger the formatting.
+            foreach (var np in namedPoints)
+                olvControlPoints.RefreshObject(np);
         }
 
         private void SetupColumn(OLVColumn col)
@@ -154,8 +172,6 @@ namespace Kinovea.ScreenManager
 
         private void olvSections_CellEditFinished(object sender, CellEditEventArgs e)
         {
-            log.DebugFormat("cell edit finished.");
-
             var index = e.ListViewItem.Index;
             var target = new Vector3(pointsOnGrid[index].X, pointsOnGrid[index].Y, 0);
 
@@ -188,13 +204,39 @@ namespace Kinovea.ScreenManager
                 p = new Vector3(x, y, z);
             }
 
+            fixedComponent[index] = e.SubItemIndex - 1;
+
             NamedPoint np = (NamedPoint)e.RowObject;
             np.X = p.X;
             np.Y = p.Y;
             np.Z = p.Z;
 
-            olvSections.RefreshObject(np);
-            points[e.ListViewItem.Index] = np;
+            //namedPoints[e.ListViewItem.Index] = np;
+            olvControlPoints.RefreshObject(np);
+        }
+
+        private void olvControlPoints_FormatCell(object sender, FormatCellEventArgs e)
+        {
+            if (e.ColumnIndex == 0)
+            {
+                // Paint the name according to the drawing object color.
+                var marker = markers[e.RowIndex];
+                var bicolor = new Bicolor(marker.Color);
+                e.SubItem.ForeColor = bicolor.Foreground;
+                e.SubItem.BackColor = bicolor.Background;
+                e.SubItem.Font = new Font(e.SubItem.Font, FontStyle.Bold);
+            }
+            else
+            {
+                bool isFixed = fixedComponent[e.RowIndex] == e.ColumnIndex - 1;
+                e.SubItem.Font = new Font(e.SubItem.Font, isFixed ? FontStyle.Bold : FontStyle.Italic);
+            }
+            
+        }
+
+        private void olvControlPoints_FormatRow(object sender, FormatRowEventArgs e)
+        {
+            log.DebugFormat("format row");
         }
     }
 }
