@@ -63,14 +63,19 @@ namespace Kinovea.ScreenManager
 
         private void ComputeCameraPosition()
         {
-            // Rebuild a projective mapper with the same homography as the one
-            // set up for calibration but without the custom origin and offset.
+            // Compute the 3D position of the camera in grid space.
             var calibrator = calibrationHelper.CalibratorPlane;
             var quadWorld = calibrator.QuadWorld;
             var mapper = calibrationHelper.CalibratorPlane.Mapper;
             var lensCalib = calibrationHelper.DistortionHelper.Parameters;
             eye = CameraPoser.Compute(quadWorld, mapper, lensCalib);
-            
+
+            // Note: the resulting point is relative to the grid origin, not to
+            // the user's custom origin if they moved the coordinate system axes, 
+            // and it also doesn't take into account the custom value offset either.
+            // It should take into account the rotation and mirroring of the 
+            // calibration plane as this is baked directly in the quadImage coordinates.
+
             label1.Text = string.Format("Camera position in 3D: {0}.", eye);
         }
 

@@ -28,19 +28,17 @@ namespace Kinovea.ScreenManager
     /// Used to process points through the perspective-grid-defined plane and get their 2D coordinates on this plane.
     /// Code mostly extracted from AForge.NET QuadTransformationCalcs.
     /// Based on Paul Heckbert "Projective Mappings for Image Warping".
+    /// Image points passed to this should be in rectified image space.
     /// </summary>
     public class ProjectiveMapper
     {
         #region Members
         private const double TOLERANCE = 1e-13;
 
-        // 3x3 homography matrices.
+        // 3x3 homography matrix and reverse.
+        // The API uses floats but internally we keep doubles for better precision.
         private double[,] mapMatrix;
         private double[,] unmapMatrix;
-
-        private Matrix3x3 matrix;
-        private Matrix3x3 adjugate;
-        //private Matrix3x3 inverse;
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -52,7 +50,7 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Compute the homography between the two quadrilaterals.
-        /// The image space quadrilateral should be undistorted first.
+        /// The image space quadrilateral should be in rectified image space.
         /// </summary>
         /// <param name="plane">World space quadrilateral on a plane.</param>
         /// <param name="image">Rectified image space quadrilateral.</param>
@@ -63,7 +61,7 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Updates the homography with new quadrilaterals.
-        /// The image space quadrilateral should be undistorted first.
+        /// The image space quadrilateral should be in rectified image space.
         /// </summary>
         /// <param name="plane">World space quadrilateral on a plane.</param>
         /// <param name="image">Rectified image space quadrilateral.</param>
@@ -77,23 +75,6 @@ namespace Kinovea.ScreenManager
 
             mapMatrix = MultiplyMatrix(squareToOutput, AdjugateMatrix(squareToInput));
             unmapMatrix = AdjugateMatrix(mapMatrix);
-
-            // TODO: don't use these single-precision helpers.
-            Vector3 row0 = new Vector3((float)mapMatrix[0, 0], (float)mapMatrix[0, 1], (float)mapMatrix[0, 2]);
-            Vector3 row1 = new Vector3((float)mapMatrix[1, 0], (float)mapMatrix[1, 1], (float)mapMatrix[1, 2]);
-            Vector3 row2 = new Vector3((float)mapMatrix[2, 0], (float)mapMatrix[2, 1], (float)mapMatrix[2, 2]);
-            matrix = Matrix3x3.CreateFromRows(row0, row1, row2);
-            adjugate = matrix.Adjugate();
-
-            //try
-            //{
-            //    inverse = matrix.Inverse();
-            //}
-            //catch
-            //{
-            //    // Singular matrix.
-            //    inverse = Matrix3x3.Identity;
-            //}
         }
         
         /// <summary>
@@ -147,19 +128,25 @@ namespace Kinovea.ScreenManager
         #region Homogenous coordinates
 
         /// <summary>
-        /// Maps a vector from plane coordinates to image coordinates.
+        /// Maps a point from plane coordinates to image coordinates.
         /// </summary>
         public Vector3 Forward(Vector3 p)
         {
-            return Matrix3x3.Multiply(matrix, p);
+            double x = mapMatrix[0, 0] * p.X + mapMatrix[0, 1] * p.Y + mapMatrix[0, 2] * p.Z;
+            double y = mapMatrix[1, 0] * p.X + mapMatrix[1, 1] * p.Y + mapMatrix[1, 2] * p.Z;
+            double z = mapMatrix[2, 0] * p.X + mapMatrix[2, 1] * p.Y + mapMatrix[2, 2] * p.Z;
+            return new Vector3((float)x, (float)y, (float)z);
         }
 
         /// <summary>
-        /// Maps a vector from image coordinates to plane coordinates.
+        /// Maps a point from image coordinates to plane coordinates.
         /// </summary>
         public Vector3 Backward(Vector3 p)
         {
-            return Matrix3x3.Multiply(adjugate, p);
+            double x = unmapMatrix[0, 0] * p.X + unmapMatrix[0, 1] * p.Y + unmapMatrix[0, 2] * p.Z;
+            double y = unmapMatrix[1, 0] * p.X + unmapMatrix[1, 1] * p.Y + mapMatrix[1, 2] * p.Z;
+            double z = unmapMatrix[2, 0] * p.X + unmapMatrix[2, 1] * p.Y + unmapMatrix[2, 2] * p.Z;
+            return new Vector3((float)x, (float)y, (float)z);
         }
         
         #endregion
@@ -315,7 +302,7 @@ namespace Kinovea.ScreenManager
 
             return c;
         }
-        
+
         // Calculates adjugate 3x3 matrix
         private static double[,] AdjugateMatrix(double[,] a )
         {

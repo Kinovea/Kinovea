@@ -205,6 +205,7 @@ namespace Kinovea.ScreenManager
         
         /// <summary>
         /// Takes a point in real world coordinates and gives it back as an homogenous vector in the projective plane.
+        /// Does not take the value offset into account.
         /// </summary>
         public Vector3 Project(PointF p)
         {
