@@ -34,14 +34,18 @@
       this.label1 = new System.Windows.Forms.Label();
       this.lblFocalLength = new System.Windows.Forms.Label();
       this.lblSensorWidth = new System.Windows.Forms.Label();
+      this.groupBox1 = new System.Windows.Forms.GroupBox();
+      this.olvSections = new BrightIdeasSoftware.ObjectListView();
       this.grpIntrinsics.SuspendLayout();
+      this.groupBox1.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.olvSections)).BeginInit();
       this.SuspendLayout();
       // 
       // btnOK
       // 
       this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.btnOK.Location = new System.Drawing.Point(102, 193);
+      this.btnOK.Location = new System.Drawing.Point(224, 350);
       this.btnOK.Name = "btnOK";
       this.btnOK.Size = new System.Drawing.Size(99, 24);
       this.btnOK.TabIndex = 31;
@@ -53,7 +57,7 @@
       // 
       this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.btnCancel.Location = new System.Drawing.Point(207, 193);
+      this.btnCancel.Location = new System.Drawing.Point(329, 350);
       this.btnCancel.Name = "btnCancel";
       this.btnCancel.Size = new System.Drawing.Size(99, 24);
       this.btnCancel.TabIndex = 32;
@@ -62,24 +66,26 @@
       // 
       // grpIntrinsics
       // 
+      this.grpIntrinsics.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.grpIntrinsics.Controls.Add(this.label1);
       this.grpIntrinsics.Controls.Add(this.lblFocalLength);
       this.grpIntrinsics.Controls.Add(this.lblSensorWidth);
       this.grpIntrinsics.Location = new System.Drawing.Point(16, 12);
       this.grpIntrinsics.Name = "grpIntrinsics";
-      this.grpIntrinsics.Size = new System.Drawing.Size(289, 162);
+      this.grpIntrinsics.Size = new System.Drawing.Size(408, 111);
       this.grpIntrinsics.TabIndex = 36;
       this.grpIntrinsics.TabStop = false;
-      this.grpIntrinsics.Text = "Camera position";
+      this.grpIntrinsics.Text = "Camera";
       // 
       // label1
       // 
       this.label1.AutoSize = true;
       this.label1.Location = new System.Drawing.Point(18, 83);
       this.label1.Name = "label1";
-      this.label1.Size = new System.Drawing.Size(82, 13);
+      this.label1.Size = new System.Drawing.Size(110, 13);
       this.label1.TabIndex = 51;
-      this.label1.Text = "Camera position";
+      this.label1.Text = "Camera position in 3D";
       // 
       // lblFocalLength
       // 
@@ -99,23 +105,60 @@
       this.lblSensorWidth.TabIndex = 48;
       this.lblSensorWidth.Text = "Lens calibration";
       // 
-      // FormVDM
+      // groupBox1
+      // 
+      this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.groupBox1.Controls.Add(this.olvSections);
+      this.groupBox1.Location = new System.Drawing.Point(20, 129);
+      this.groupBox1.Name = "groupBox1";
+      this.groupBox1.Size = new System.Drawing.Size(408, 211);
+      this.groupBox1.TabIndex = 52;
+      this.groupBox1.TabStop = false;
+      this.groupBox1.Text = "Control points";
+      // 
+      // olvSections
+      // 
+      this.olvSections.AlternateRowBackColor = System.Drawing.Color.Gainsboro;
+      this.olvSections.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.olvSections.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClickAlways;
+      this.olvSections.CellEditUseWholeCell = false;
+      this.olvSections.Cursor = System.Windows.Forms.Cursors.Default;
+      this.olvSections.GridLines = true;
+      this.olvSections.HeaderFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.olvSections.HideSelection = false;
+      this.olvSections.Location = new System.Drawing.Point(17, 34);
+      this.olvSections.Name = "olvSections";
+      this.olvSections.ShowSortIndicators = false;
+      this.olvSections.Size = new System.Drawing.Size(374, 156);
+      this.olvSections.TabIndex = 26;
+      this.olvSections.UseCompatibleStateImageBehavior = false;
+      this.olvSections.View = System.Windows.Forms.View.Details;
+      this.olvSections.CellEditFinished += new BrightIdeasSoftware.CellEditEventHandler(this.olvSections_CellEditFinished);
+      // 
+      // FormCalibrationValidation
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.Color.White;
-      this.ClientSize = new System.Drawing.Size(314, 229);
+      this.ClientSize = new System.Drawing.Size(436, 386);
+      this.Controls.Add(this.groupBox1);
       this.Controls.Add(this.grpIntrinsics);
       this.Controls.Add(this.btnOK);
       this.Controls.Add(this.btnCancel);
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
       this.MaximizeBox = false;
       this.MinimizeBox = false;
-      this.Name = "FormVDM";
+      this.Name = "FormCalibrationValidation";
       this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
       this.Text = "FormVDM";
       this.grpIntrinsics.ResumeLayout(false);
       this.grpIntrinsics.PerformLayout();
+      this.groupBox1.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.olvSections)).EndInit();
       this.ResumeLayout(false);
 
         }
@@ -128,5 +171,7 @@
         private System.Windows.Forms.Label lblFocalLength;
         private System.Windows.Forms.Label lblSensorWidth;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private BrightIdeasSoftware.ObjectListView olvSections;
     }
 }

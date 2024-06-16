@@ -812,7 +812,7 @@ namespace Kinovea.ScreenManager
         {
             var calibrationHelper = frameServer.Metadata.CalibrationHelper;
             
-            FormCalibrationValidation fcv = new FormCalibrationValidation(calibrationHelper);
+            FormCalibrationValidation fcv = new FormCalibrationValidation(frameServer.Metadata, calibrationHelper);
             FormsHelper.Locate(fcv);
             fcv.ShowDialog();
             fcv.Dispose();
