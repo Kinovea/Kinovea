@@ -15,3 +15,9 @@ Smoke tests:
 - Version number
 - Open a small file, add some drawings, save as new file with drawings muxed in separate stream, reopen and check.
 - Check new stuff.
+
+Error "missing RuntimeIdentifier"
+https://stackoverflow.com/questions/52182158/vs-15-8-2-broke-build-tools-missing-runtimeidentifier
+
+works:
+Get-ChildItem -Recurse -include bin,obj | Where-Object {$_.FullName -notMatch "Refs"} | foreach ($_) { remove-item $_.fullname -Force -Recurse }
