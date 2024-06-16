@@ -35,9 +35,13 @@
       this.lblFocalLength = new System.Windows.Forms.Label();
       this.lblSensorWidth = new System.Windows.Forms.Label();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
+      this.gpValidationMode = new System.Windows.Forms.GroupBox();
+      this.rbFix3D = new System.Windows.Forms.RadioButton();
+      this.rbFix1D = new System.Windows.Forms.RadioButton();
       this.olvControlPoints = new BrightIdeasSoftware.ObjectListView();
       this.grpIntrinsics.SuspendLayout();
       this.groupBox1.SuspendLayout();
+      this.gpValidationMode.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.olvControlPoints)).BeginInit();
       this.SuspendLayout();
       // 
@@ -45,7 +49,7 @@
       // 
       this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.btnOK.Location = new System.Drawing.Point(224, 350);
+      this.btnOK.Location = new System.Drawing.Point(315, 477);
       this.btnOK.Name = "btnOK";
       this.btnOK.Size = new System.Drawing.Size(99, 24);
       this.btnOK.TabIndex = 31;
@@ -57,7 +61,7 @@
       // 
       this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.btnCancel.Location = new System.Drawing.Point(329, 350);
+      this.btnCancel.Location = new System.Drawing.Point(420, 477);
       this.btnCancel.Name = "btnCancel";
       this.btnCancel.Size = new System.Drawing.Size(99, 24);
       this.btnCancel.TabIndex = 32;
@@ -73,7 +77,7 @@
       this.grpIntrinsics.Controls.Add(this.lblSensorWidth);
       this.grpIntrinsics.Location = new System.Drawing.Point(16, 12);
       this.grpIntrinsics.Name = "grpIntrinsics";
-      this.grpIntrinsics.Size = new System.Drawing.Size(408, 111);
+      this.grpIntrinsics.Size = new System.Drawing.Size(499, 111);
       this.grpIntrinsics.TabIndex = 36;
       this.grpIntrinsics.TabStop = false;
       this.grpIntrinsics.Text = "Camera";
@@ -110,13 +114,51 @@
       this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.groupBox1.Controls.Add(this.gpValidationMode);
       this.groupBox1.Controls.Add(this.olvControlPoints);
       this.groupBox1.Location = new System.Drawing.Point(20, 129);
       this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(408, 211);
+      this.groupBox1.Size = new System.Drawing.Size(499, 338);
       this.groupBox1.TabIndex = 52;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Control points";
+      // 
+      // gpValidationMode
+      // 
+      this.gpValidationMode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.gpValidationMode.Controls.Add(this.rbFix3D);
+      this.gpValidationMode.Controls.Add(this.rbFix1D);
+      this.gpValidationMode.Location = new System.Drawing.Point(17, 25);
+      this.gpValidationMode.Name = "gpValidationMode";
+      this.gpValidationMode.Size = new System.Drawing.Size(465, 85);
+      this.gpValidationMode.TabIndex = 27;
+      this.gpValidationMode.TabStop = false;
+      this.gpValidationMode.Text = "Validation mode";
+      // 
+      // rbFix3D
+      // 
+      this.rbFix3D.AutoSize = true;
+      this.rbFix3D.Location = new System.Drawing.Point(22, 52);
+      this.rbFix3D.Name = "rbFix3D";
+      this.rbFix3D.Size = new System.Drawing.Size(350, 17);
+      this.rbFix3D.TabIndex = 1;
+      this.rbFix3D.TabStop = true;
+      this.rbFix3D.Text = "Fix all three coordinates, verify the location of the marker in the image";
+      this.rbFix3D.UseVisualStyleBackColor = true;
+      this.rbFix3D.CheckedChanged += new System.EventHandler(this.validationMode_Changed);
+      // 
+      // rbFix1D
+      // 
+      this.rbFix1D.AutoSize = true;
+      this.rbFix1D.Location = new System.Drawing.Point(22, 25);
+      this.rbFix1D.Name = "rbFix1D";
+      this.rbFix1D.Size = new System.Drawing.Size(208, 17);
+      this.rbFix1D.TabIndex = 0;
+      this.rbFix1D.TabStop = true;
+      this.rbFix1D.Text = "Fix one coordinate, verify the other two";
+      this.rbFix1D.UseVisualStyleBackColor = true;
+      this.rbFix1D.CheckedChanged += new System.EventHandler(this.validationMode_Changed);
       // 
       // olvControlPoints
       // 
@@ -130,10 +172,10 @@
       this.olvControlPoints.GridLines = true;
       this.olvControlPoints.HeaderFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.olvControlPoints.HideSelection = false;
-      this.olvControlPoints.Location = new System.Drawing.Point(17, 34);
+      this.olvControlPoints.Location = new System.Drawing.Point(17, 116);
       this.olvControlPoints.Name = "olvControlPoints";
       this.olvControlPoints.ShowSortIndicators = false;
-      this.olvControlPoints.Size = new System.Drawing.Size(374, 156);
+      this.olvControlPoints.Size = new System.Drawing.Size(465, 201);
       this.olvControlPoints.TabIndex = 26;
       this.olvControlPoints.UseCompatibleStateImageBehavior = false;
       this.olvControlPoints.View = System.Windows.Forms.View.Details;
@@ -146,7 +188,7 @@
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.Color.White;
-      this.ClientSize = new System.Drawing.Size(436, 386);
+      this.ClientSize = new System.Drawing.Size(527, 513);
       this.Controls.Add(this.groupBox1);
       this.Controls.Add(this.grpIntrinsics);
       this.Controls.Add(this.btnOK);
@@ -160,6 +202,8 @@
       this.grpIntrinsics.ResumeLayout(false);
       this.grpIntrinsics.PerformLayout();
       this.groupBox1.ResumeLayout(false);
+      this.gpValidationMode.ResumeLayout(false);
+      this.gpValidationMode.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.olvControlPoints)).EndInit();
       this.ResumeLayout(false);
 
@@ -175,5 +219,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox groupBox1;
         private BrightIdeasSoftware.ObjectListView olvControlPoints;
+        private System.Windows.Forms.GroupBox gpValidationMode;
+        private System.Windows.Forms.RadioButton rbFix3D;
+        private System.Windows.Forms.RadioButton rbFix1D;
     }
 }

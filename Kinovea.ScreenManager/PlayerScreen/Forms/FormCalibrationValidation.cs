@@ -10,6 +10,7 @@ using Kinovea.ScreenManager.Languages;
 using System.Drawing.Drawing2D;
 using Kinovea.Services;
 using BrightIdeasSoftware;
+using Kinovea.Services.Types;
 
 namespace Kinovea.ScreenManager
 {
@@ -17,10 +18,12 @@ namespace Kinovea.ScreenManager
     {
         private Metadata metadata;
         private CalibrationHelper calibrationHelper;
+        private Action invalidator;
         private List<DrawingCrossMark> markers = new List<DrawingCrossMark>(); 
         private List<PointF> pointsOnGrid = new List<PointF>();     // 2D points extracted from drawings.
         private List<NamedPoint> namedPoints = new List<NamedPoint>();   // 3D points + drawing name.
         private List<int> fixedComponent = new List<int>(); // Index of fixed component.
+        private CalibrationValidationMode validationMode = CalibrationValidationMode.Fix3D;
         private Vector3 eye;
         private bool ready;
         private Font fontRegular = new Font("Consolas", 9, FontStyle.Regular);
@@ -28,10 +31,11 @@ namespace Kinovea.ScreenManager
         private Font fontItalic = new Font("Consolas", 9, FontStyle.Italic);
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public FormCalibrationValidation(Metadata metadata, CalibrationHelper calibrationHelper)
+        public FormCalibrationValidation(Metadata metadata, CalibrationHelper calibrationHelper, Action invalidator)
         {
             this.metadata = metadata;
             this.calibrationHelper = calibrationHelper;
+            this.invalidator = invalidator;
             InitializeComponent();
             LocalizeForm();
             PopulateControlPoints();
@@ -85,6 +89,9 @@ namespace Kinovea.ScreenManager
 
         private void PopulateControlPoints()
         {
+            rbFix1D.Checked = validationMode == CalibrationValidationMode.Fix1D;
+            rbFix3D.Checked = validationMode == CalibrationValidationMode.Fix3D;
+
             // Allow formatting of single cells
             // ref: https://objectlistview.sourceforge.net/cs/recipes.html#recipe-formatter
             olvControlPoints.UseCellFormatEvents = true;
@@ -173,46 +180,106 @@ namespace Kinovea.ScreenManager
         private void olvSections_CellEditFinished(object sender, CellEditEventArgs e)
         {
             var index = e.ListViewItem.Index;
-            var target = new Vector3(pointsOnGrid[index].X, pointsOnGrid[index].Y, 0);
+            var componentIndex = e.SubItemIndex - 1;
+            float newValue = (float)(double)e.NewValue;
+            NamedPoint np = (NamedPoint)e.RowObject;
 
-            // When the user fixes a component they are saying the point is at
-            // the intersection of the ray and the plane they are fixing.
-            var p = new Vector3(0, 0, 0);
-            var view = target - eye;
-            if (e.SubItemIndex == 1)
+            if (validationMode == CalibrationValidationMode.Fix1D)
             {
-                float x = (float)(double)e.NewValue;
+                // The user fixed one coordinate, we recompute the other two,
+                // and update the values in the table.
+                Vector3 p = GetPoint(index, componentIndex, newValue);
+                np.X = p.X;
+                np.Y = p.Y;
+                np.Z = p.Z;
+                fixedComponent[index] = componentIndex;
+            }
+            else
+            {
+                // The user fixed one coordinate but all 3 are considered 
+                // valid, we recompute the projection of the point on the 
+                // plane at z=0, then we update the marker object with it.
+                MoveMarker(index, np, componentIndex, newValue);
+            }
+            
+            
+            olvControlPoints.RefreshObject(np);
+            
+        }
+
+        private Vector3 GetPoint(int index, int componentIndex, float newValue)
+        {
+            // We assume the marker value at z=0 is correct, so there is a ray
+            // going from the camera point to the marker on the calibrated plane.
+            // Intersect this ray with the plane specified by the user fixing
+            // one coordinate.
+            var target = new Vector3(pointsOnGrid[index].X, pointsOnGrid[index].Y, 0);
+            var view = target - eye;
+            var p = new Vector3(0, 0, 0);
+            if (componentIndex == 0)
+            {
+                float x = newValue;
                 float r = (x - eye.X) / view.X;
                 float y = eye.Y + r * view.Y;
                 float z = eye.Z + r * view.Z;
                 p = new Vector3(x, y, z);
             }
-            else if (e.SubItemIndex == 2)
+            else if (componentIndex == 1)
             {
-                float y = (float)(double)e.NewValue;
+                float y = newValue;
                 float r = (y - eye.Y) / view.Y;
                 float x = eye.X + r * view.X;
                 float z = eye.Z + r * view.Z;
                 p = new Vector3(x, y, z);
             }
-            else if (e.SubItemIndex == 3)
+            else if (componentIndex == 2)
             {
-                float z = (float)(double)e.NewValue;
+                float z = newValue;
                 float r = (z - eye.Z) / view.Z;
                 float x = eye.X + r * view.X;
                 float y = eye.Y + r * view.Y;
                 p = new Vector3(x, y, z);
             }
 
-            fixedComponent[index] = e.SubItemIndex - 1;
+            return p;
+        }
 
-            NamedPoint np = (NamedPoint)e.RowObject;
-            np.X = p.X;
-            np.Y = p.Y;
-            np.Z = p.Z;
+        private void MoveMarker(int index, NamedPoint np, int componentIndex, float newValue)
+        {
+            // This time we assume the 3D point in the table is correct.
+            // Trace the ray going from the camera to this point and intersect
+            // it with the calibrated plane to get the new 2D coordinates.
+            
+            // Rebuild the new value.
+            if (componentIndex == 0)
+            {
+                np.X = newValue;
+            }
+            else if (componentIndex == 1)
+            {
+                np.Y = newValue;
+            }
+            else if (componentIndex == 2)
+            {
+                np.Z = newValue;
+            }
 
-            //namedPoints[e.ListViewItem.Index] = np;
-            olvControlPoints.RefreshObject(np);
+            // Project the point on the calibrated grid.
+            float r = (np.Z - eye.Z) / (-eye.Z);
+            float x = eye.X + (np.X - eye.X) / r;
+            float y = eye.Y + (np.Y - eye.Y) / r;
+            PointF pointOnGrid = new PointF(x, y);
+
+            // Transform to image space (including radial distortion).
+            PointF p = calibrationHelper.GetImagePoint(pointOnGrid);
+            
+            // Move the object and refresh the view.
+            markers[index].MovePoint(p);
+            if (invalidator != null)
+                invalidator();
+
+            // Update our local copy.
+            pointsOnGrid[index] = pointOnGrid;
         }
 
         private void olvControlPoints_FormatCell(object sender, FormatCellEventArgs e)
@@ -237,6 +304,11 @@ namespace Kinovea.ScreenManager
         private void olvControlPoints_FormatRow(object sender, FormatRowEventArgs e)
         {
             log.DebugFormat("format row");
+        }
+
+        private void validationMode_Changed(object sender, EventArgs e)
+        {
+            validationMode = rbFix1D.Checked ? CalibrationValidationMode.Fix1D : CalibrationValidationMode.Fix3D;
         }
     }
 }

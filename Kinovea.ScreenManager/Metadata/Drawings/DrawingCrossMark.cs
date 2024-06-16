@@ -358,6 +358,19 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
+        /// <summary>
+        /// Force move the point from the outside.
+        /// This is currently only used by the calibration validation window, 
+        /// when the user sets the 3D location of the point and we recompute 
+        /// the corresponding image location.
+        /// </summary>
+        public void MovePoint(PointF p)
+        {
+            points["0"] = p;
+            SignalTrackablePointMoved();
+            miniLabel.SetAttach(points["0"], true);
+        }
+
         #region Lower level helpers
         private void BindStyle()
         {

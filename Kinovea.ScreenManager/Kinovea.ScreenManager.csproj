@@ -345,6 +345,7 @@
     <Compile Include="Measurement\CameraMotion\CameraMotionCameraParams.cs" />
     <Compile Include="Measurement\CameraMotion\CameraMotionStep.cs" />
     <Compile Include="Measurement\Geometry\Matrix3x3.cs" />
+    <Compile Include="Measurement\Geometry\NamedPoint.cs" />
     <Compile Include="Measurement\Geometry\SegmentF.cs" />
     <Compile Include="Measurement\Geometry\SVD.cs" />
     <Compile Include="Measurement\Geometry\Vector3.cs" />
@@ -737,7 +738,7 @@
     <Compile Include="Measurement\Geometry\GeometryHelper.cs" />
     <Compile Include="Measurement\Geometry\MathHelper.cs" />
     <Compile Include="Measurement\Geometry\PointLinePosition.cs" />
-    <Compile Include="Measurement\Geometry\ProjectiveMapping.cs" />
+    <Compile Include="Measurement\Geometry\ProjectiveMapper.cs" />
     <Compile Include="Measurement\Geometry\QuadrilateralF.cs" />
     <Compile Include="Measurement\Geometry\Vector.cs" />
     <Compile Include="Metadata\DrawingManager\Keyframe.cs" />
