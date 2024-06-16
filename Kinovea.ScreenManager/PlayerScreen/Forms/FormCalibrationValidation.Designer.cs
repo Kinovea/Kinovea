@@ -139,24 +139,24 @@
       // rbFix3D
       // 
       this.rbFix3D.AutoSize = true;
-      this.rbFix3D.Location = new System.Drawing.Point(22, 52);
+      this.rbFix3D.Location = new System.Drawing.Point(23, 25);
       this.rbFix3D.Name = "rbFix3D";
-      this.rbFix3D.Size = new System.Drawing.Size(350, 17);
+      this.rbFix3D.Size = new System.Drawing.Size(290, 17);
       this.rbFix3D.TabIndex = 1;
       this.rbFix3D.TabStop = true;
-      this.rbFix3D.Text = "Fix all three coordinates, verify the location of the marker in the image";
+      this.rbFix3D.Text = "Fix all axes, verify the location of the marker in the image";
       this.rbFix3D.UseVisualStyleBackColor = true;
       this.rbFix3D.CheckedChanged += new System.EventHandler(this.validationMode_Changed);
       // 
       // rbFix1D
       // 
       this.rbFix1D.AutoSize = true;
-      this.rbFix1D.Location = new System.Drawing.Point(22, 25);
+      this.rbFix1D.Location = new System.Drawing.Point(23, 50);
       this.rbFix1D.Name = "rbFix1D";
-      this.rbFix1D.Size = new System.Drawing.Size(208, 17);
+      this.rbFix1D.Size = new System.Drawing.Size(176, 17);
       this.rbFix1D.TabIndex = 0;
       this.rbFix1D.TabStop = true;
-      this.rbFix1D.Text = "Fix one coordinate, verify the other two";
+      this.rbFix1D.Text = "Fix one axis, verify the other two";
       this.rbFix1D.UseVisualStyleBackColor = true;
       this.rbFix1D.CheckedChanged += new System.EventHandler(this.validationMode_Changed);
       // 
