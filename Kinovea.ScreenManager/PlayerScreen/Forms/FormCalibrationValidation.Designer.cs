@@ -34,13 +34,13 @@
       this.label1 = new System.Windows.Forms.Label();
       this.lblFocalLength = new System.Windows.Forms.Label();
       this.lblSensorWidth = new System.Windows.Forms.Label();
-      this.groupBox1 = new System.Windows.Forms.GroupBox();
+      this.gpControlPoints = new System.Windows.Forms.GroupBox();
       this.gpValidationMode = new System.Windows.Forms.GroupBox();
       this.rbFix3D = new System.Windows.Forms.RadioButton();
       this.rbFix1D = new System.Windows.Forms.RadioButton();
       this.olvControlPoints = new BrightIdeasSoftware.ObjectListView();
       this.grpIntrinsics.SuspendLayout();
-      this.groupBox1.SuspendLayout();
+      this.gpControlPoints.SuspendLayout();
       this.gpValidationMode.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.olvControlPoints)).BeginInit();
       this.SuspendLayout();
@@ -109,19 +109,19 @@
       this.lblSensorWidth.TabIndex = 48;
       this.lblSensorWidth.Text = "Lens calibration";
       // 
-      // groupBox1
+      // gpControlPoints
       // 
-      this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+      this.gpControlPoints.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.groupBox1.Controls.Add(this.gpValidationMode);
-      this.groupBox1.Controls.Add(this.olvControlPoints);
-      this.groupBox1.Location = new System.Drawing.Point(20, 129);
-      this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(499, 338);
-      this.groupBox1.TabIndex = 52;
-      this.groupBox1.TabStop = false;
-      this.groupBox1.Text = "Control points";
+      this.gpControlPoints.Controls.Add(this.gpValidationMode);
+      this.gpControlPoints.Controls.Add(this.olvControlPoints);
+      this.gpControlPoints.Location = new System.Drawing.Point(16, 129);
+      this.gpControlPoints.Name = "gpControlPoints";
+      this.gpControlPoints.Size = new System.Drawing.Size(499, 338);
+      this.gpControlPoints.TabIndex = 52;
+      this.gpControlPoints.TabStop = false;
+      this.gpControlPoints.Text = "Control points";
       // 
       // gpValidationMode
       // 
@@ -189,7 +189,7 @@
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.Color.White;
       this.ClientSize = new System.Drawing.Size(527, 513);
-      this.Controls.Add(this.groupBox1);
+      this.Controls.Add(this.gpControlPoints);
       this.Controls.Add(this.grpIntrinsics);
       this.Controls.Add(this.btnOK);
       this.Controls.Add(this.btnCancel);
@@ -201,7 +201,7 @@
       this.Text = "FormVDM";
       this.grpIntrinsics.ResumeLayout(false);
       this.grpIntrinsics.PerformLayout();
-      this.groupBox1.ResumeLayout(false);
+      this.gpControlPoints.ResumeLayout(false);
       this.gpValidationMode.ResumeLayout(false);
       this.gpValidationMode.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.olvControlPoints)).EndInit();
@@ -217,7 +217,7 @@
         private System.Windows.Forms.Label lblFocalLength;
         private System.Windows.Forms.Label lblSensorWidth;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox gpControlPoints;
         private BrightIdeasSoftware.ObjectListView olvControlPoints;
         private System.Windows.Forms.GroupBox gpValidationMode;
         private System.Windows.Forms.RadioButton rbFix3D;

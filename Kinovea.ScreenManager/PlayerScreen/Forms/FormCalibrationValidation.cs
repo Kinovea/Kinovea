@@ -41,7 +41,17 @@ namespace Kinovea.ScreenManager
             PopulateControlPoints();
 
             if (ready)
+            {
                 ComputeCameraPosition();
+                
+                // Note: the resulting point is relative to the grid origin, not to
+                // the user's custom origin if they moved the coordinate system axes, 
+                // and it also doesn't take into account the custom value offset either.
+                // It should already take into account the rotation and mirroring of the 
+                // calibration plane as this is baked directly in the quadImage coordinates.
+                label1.Text = string.Format("Camera position ({0}): X:{1:0.000}, Y:{2:0.000}, Z:{3:0.000}.", 
+                    calibrationHelper.GetLengthAbbreviation(), eye.X, eye.Y, eye.Z);
+            }
         }
 
         private void LocalizeForm()
@@ -66,7 +76,13 @@ namespace Kinovea.ScreenManager
             lblFocalLength.ForeColor = hasPlaneCalibration ? Color.Green : Color.Red;
 
             label1.Enabled = ready;
-            label1.Text = "Camera position in 3D: unknown";
+            label1.Text = "Camera position: unknown";
+
+            gpControlPoints.Enabled = ready;
+            gpControlPoints.Text = "Control points";
+            gpValidationMode.Text = "Validation mode";
+            rbFix3D.Text = "Fix all axes: verify the location of the marker in the image";
+            rbFix1D.Text = "Fix one axis and the marker: verify the other two axes";
         }
 
         private void ComputeCameraPosition()
@@ -77,14 +93,6 @@ namespace Kinovea.ScreenManager
             var mapper = calibrationHelper.CalibratorPlane.Mapper;
             var lensCalib = calibrationHelper.DistortionHelper.Parameters;
             eye = CameraPoser.Compute(quadWorld, mapper, lensCalib);
-
-            // Note: the resulting point is relative to the grid origin, not to
-            // the user's custom origin if they moved the coordinate system axes, 
-            // and it also doesn't take into account the custom value offset either.
-            // It should take into account the rotation and mirroring of the 
-            // calibration plane as this is baked directly in the quadImage coordinates.
-
-            label1.Text = string.Format("Camera position in 3D: {0}.", eye);
         }
 
         private void PopulateControlPoints()
