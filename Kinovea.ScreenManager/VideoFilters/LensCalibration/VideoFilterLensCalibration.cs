@@ -9,7 +9,6 @@ using Kinovea.ScreenManager.Languages;
 using Kinovea.Video;
 using Kinovea.Services;
 using System.Web;
-using SpreadsheetLight.Charts;
 using System.ComponentModel;
 using System.Threading;
 using System.Text;
@@ -92,6 +91,8 @@ namespace Kinovea.ScreenManager
         // for the images actually used in the calibration (found corners).
         private Dictionary<long, int> frameIndices = new Dictionary<long, int>();
         private List<List<OpenCvSharp.Point2f>> imagePoints = new List<List<OpenCvSharp.Point2f>>();
+        private List<List<OpenCvSharp.Point2f>> reprojPoints = new List<List<OpenCvSharp.Point2f>>();
+
 
         // Configuration
         private LensCalibrationParameters parameters = new LensCalibrationParameters();
@@ -104,7 +105,8 @@ namespace Kinovea.ScreenManager
         private DistortionParameters calibration;
 
         // Display parameters
-        private bool showCorners = true;
+        private bool showDetectedCorners = true;
+        private bool showReprojCorners = true;
 
         #region Menu
         private ToolStripMenuItem mnuConfigure = new ToolStripMenuItem();
@@ -112,7 +114,8 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuRun = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDeleteData = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuShowCorners = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuShowDetectedCorners = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuShowReprojCorners = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCopy = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSave = new ToolStripMenuItem();
         #endregion
@@ -176,10 +179,13 @@ namespace Kinovea.ScreenManager
             });
 
             mnuOptions.Image = Properties.Resources.equalizer;
-            mnuShowCorners.Image = Properties.Drawings.bullet_green;
-            mnuShowCorners.Click += MnuShowCorners_Click;
+            mnuShowDetectedCorners.Image = Properties.Drawings.bullet_green;
+            mnuShowReprojCorners.Image = Properties.Drawings.bullet_orange;
+            mnuShowDetectedCorners.Click += MnuShowCorners_Click;
+            mnuShowReprojCorners.Click += MnuShowReprojCorners_Click;
             mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
-                mnuShowCorners,
+                mnuShowDetectedCorners,
+                mnuShowReprojCorners,
             });
 
             mnuCopy.Image = Properties.Resources.clipboard_block;
@@ -245,11 +251,15 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void DrawExtra(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, long timestamp, bool export)
         {
-            if (calibrated && showCorners)
+            if (calibrated && (showDetectedCorners || showReprojCorners))
             {
                 // We do not use the passed timestamp from the player timeline.
                 // We are only showing a few selected images, use the timestamp of the active image.
-                DrawCorners(canvas, transformer, activeTimestamp);
+                if (showDetectedCorners)
+                    DrawCorners(canvas, imagePoints, transformer, activeTimestamp);
+
+                if (showReprojCorners)
+                    DrawCorners(canvas, reprojPoints, transformer, activeTimestamp);
             }
 
             DrawResults(canvas);
@@ -306,7 +316,8 @@ namespace Kinovea.ScreenManager
                 mnuOptions,
             });
 
-            mnuShowCorners.Checked = showCorners;
+            mnuShowDetectedCorners.Checked = showDetectedCorners;
+            mnuShowReprojCorners.Checked = showReprojCorners;
             mnuDeleteData.Enabled = calibrated;
             mnuCopy.Enabled = calibrated;
             mnuSave.Enabled = calibrated;
@@ -329,7 +340,8 @@ namespace Kinovea.ScreenManager
             mnuDeleteData.Text = "Delete calibration data";
 
             mnuOptions.Text = ScreenManagerLang.Generic_Options;
-            mnuShowCorners.Text = "Show corners";
+            mnuShowDetectedCorners.Text = "Show detected corners";
+            mnuShowReprojCorners.Text = "Show reprojected corners";
 
             mnuCopy.Text = "Copy calibration data";
             mnuSave.Text = "Save calibration data…";
@@ -418,7 +430,13 @@ namespace Kinovea.ScreenManager
 
         private void MnuShowCorners_Click(object sender, EventArgs e)
         {
-            showCorners = !mnuShowCorners.Checked;
+            showDetectedCorners = !mnuShowDetectedCorners.Checked;
+            InvalidateFromMenu(sender);
+        }
+
+        private void MnuShowReprojCorners_Click(object sender, EventArgs e)
+        {
+            showReprojCorners = !mnuShowReprojCorners.Checked;
             InvalidateFromMenu(sender);
         }
 
@@ -443,16 +461,16 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Draw a circle around each corner and connect them together.
         /// </summary>
-        private void DrawCorners(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
+        private void DrawCorners(Graphics canvas, List<List<OpenCvSharp.Point2f>> points, IImageToViewportTransformer transformer, long timestamp)
         {
-            if (!calibrated || imagePoints.Count == 0)
+            if (!calibrated || points.Count == 0)
                 return;
 
-            if (!frameIndices.ContainsKey(timestamp) || frameIndices[timestamp] >= imagePoints.Count)
+            if (!frameIndices.ContainsKey(timestamp) || frameIndices[timestamp] >= points.Count)
                 return;
 
             List<PointF> corners = new List<PointF>();
-            foreach (var p in imagePoints[frameIndices[timestamp]])
+            foreach (var p in points[frameIndices[timestamp]])
             {
                 corners.Add(new PointF(p.X, p.Y));
             }
@@ -467,7 +485,7 @@ namespace Kinovea.ScreenManager
             {
                 string str = "FF" + colorCycle[j % colorCycle.Length];
                 Color c = Color.FromArgb(Convert.ToInt32(str, 16));
-                using (Pen pen = new Pen(c, 3.0f))
+                using (Pen pen = new Pen(c, 2.0f))
                 {
                     for (int i = 0; i < parameters.PatternSize.Width - 1; i++)
                     {
@@ -567,6 +585,7 @@ namespace Kinovea.ScreenManager
             // Find corners in images.
             frameIndices.Clear();
             imagePoints.Clear();
+            reprojPoints.Clear();
             List<List<OpenCvSharp.Point3f>> objectPoints = new List<List<OpenCvSharp.Point3f>>();
             List<int> indices = GetIndices(parameters.MaxImages, framesContainer.Frames.Count);
             for (int i = 0; i < indices.Count; i++)
@@ -642,14 +661,17 @@ namespace Kinovea.ScreenManager
             var termCriteriaType = OpenCvSharp.CriteriaTypes.MaxIter | OpenCvSharp.CriteriaTypes.Eps;
             var termCriteria = new OpenCvSharp.TermCriteria(termCriteriaType, maxIterations, eps);
 
+            OpenCvSharp.Vec3d[] rotationVectors;
+            OpenCvSharp.Vec3d[] translationVectors;
+
             double error = OpenCvSharp.Cv2.CalibrateCamera(
                 objectPoints,
                 imagePoints,
                 new OpenCvSharp.Size(frameSize.Width, frameSize.Height),
                 cameraMatrix,
                 distCoeffs,
-                out var rotationVectors,
-                out var translationVectors,
+                out rotationVectors,
+                out translationVectors,
                 flags,
                 termCriteria
             );
@@ -674,6 +696,31 @@ namespace Kinovea.ScreenManager
             reprojError = (float)error;
             calibration = new DistortionParameters(k1, k2, k3, p1, p2, fx, fy, cx, cy, frameSize);
             calibrated = true;
+
+            // Now compute the reprojection error for each image.
+            // Based on https://docs.opencv.org/4.x/d4/d94/tutorial_camera_calibration.html
+            for (int i = 0; i < objectPoints.Count; i++)
+            {
+                // Convert types and project the object points on this image.
+                double[] rvec = new double[3] { rotationVectors[i][0], rotationVectors[i][1], rotationVectors[i][2] };
+                double[] tvec = new double[3] { translationVectors[i][0], translationVectors[i][1], translationVectors[i][2] };
+                OpenCvSharp.Point2f[] imagePoints2;
+                double[,] jacobian = new double[3, 3];
+                OpenCvSharp.Cv2.ProjectPoints(objectPoints[i], rvec, tvec, cameraMatrix, distCoeffs, out imagePoints2, out jacobian);
+
+                // Store the reprojected points for visualization.
+                reprojPoints.Add(new List<OpenCvSharp.Point2f>(imagePoints2));
+
+                // Compute the reprojection error.
+                OpenCvSharp.Mat ipMat = new OpenCvSharp.Mat(1, imagePoints[i].Count, OpenCvSharp.MatType.CV_32FC2, imagePoints[i].ToArray());
+                OpenCvSharp.Mat ip2Mat = new OpenCvSharp.Mat(1, imagePoints2.Length, OpenCvSharp.MatType.CV_32FC2, imagePoints2.ToArray());
+                double err = OpenCvSharp.Cv2.Norm(ipMat, ip2Mat, OpenCvSharp.NormTypes.L2SQR);
+                err = Math.Sqrt(err / objectPoints[i].Count);
+
+                log.DebugFormat("Reprojection error for frame [{0}]: {1:0.000}", i, err);
+                ipMat.Dispose();
+                ip2Mat.Dispose();
+            }
         }
 
         /// <summary>

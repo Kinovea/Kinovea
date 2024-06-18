@@ -303,7 +303,6 @@ namespace Kinovea.ScreenManager
 
         private void olvControlPoints_FormatRow(object sender, FormatRowEventArgs e)
         {
-            log.DebugFormat("format row");
         }
 
         private void validationMode_Changed(object sender, EventArgs e)
