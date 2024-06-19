@@ -134,4 +134,7 @@
   <data name="FormConfiguration_Properties_Exposure" xml:space="preserve">
     <value>Έκθεση:</value>
   </data>
+  <data name="FormConfiguration_DevicePropertyPages" xml:space="preserve">
+    <value>Σελίδες ιδιοτήτων συσκευής</value>
+  </data>
 </root>
