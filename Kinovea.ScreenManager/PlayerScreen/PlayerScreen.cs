@@ -808,10 +808,11 @@ namespace Kinovea.ScreenManager
             view.RefreshImage();
         }
 
-        public void ShowCalibrationValidation()
+        public void ShowCalibrationValidation(PlayerScreen otherScreen)
         {
-            var calibrationHelper = frameServer.Metadata.CalibrationHelper;
-            FormCalibrationValidation fcv = new FormCalibrationValidation(frameServer.Metadata, calibrationHelper, view.DoInvalidate);
+            var otherMetadata = otherScreen?.frameServer.Metadata;
+
+            FormCalibrationValidation fcv = new FormCalibrationValidation(frameServer.Metadata, otherMetadata, view.DoInvalidate);
             FormsHelper.Locate(fcv);
             fcv.ShowDialog();
             fcv.Dispose();

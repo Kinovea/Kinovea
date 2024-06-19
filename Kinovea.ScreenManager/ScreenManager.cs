@@ -2401,11 +2401,29 @@ namespace Kinovea.ScreenManager
 
         private void mnuCalibrationValidation_OnClick(object sender, EventArgs e)
         {
-            PlayerScreen ps = activeScreen as PlayerScreen;
-            if (ps == null)
+            // Collect the metadata of both screens for 3D validation when available.
+            PlayerScreen thisScreen = null;
+            PlayerScreen otherScreen = null;
+            foreach (AbstractScreen screen in screenList)
+            {
+                var ps = screen as PlayerScreen;
+                if (ps == null)
+                    continue;
+
+                if (ps == activeScreen)
+                {
+                    thisScreen = ps;
+                }
+                else
+                {
+                    otherScreen = ps;
+                }
+            }
+
+            if (thisScreen == null)
                 return;
 
-            ps.ShowCalibrationValidation();
+            thisScreen.ShowCalibrationValidation(otherScreen);
         }
 
         private void mnuLensDistortion_OnClick(object sender, EventArgs e)

@@ -36,9 +36,11 @@
       this.lblSensorWidth = new System.Windows.Forms.Label();
       this.gpControlPoints = new System.Windows.Forms.GroupBox();
       this.gpValidationMode = new System.Windows.Forms.GroupBox();
+      this.rbCompute3D = new System.Windows.Forms.RadioButton();
       this.rbFix3D = new System.Windows.Forms.RadioButton();
       this.rbFix1D = new System.Windows.Forms.RadioButton();
       this.olvControlPoints = new BrightIdeasSoftware.ObjectListView();
+      this.btnCSV = new System.Windows.Forms.Button();
       this.grpIntrinsics.SuspendLayout();
       this.gpControlPoints.SuspendLayout();
       this.gpValidationMode.SuspendLayout();
@@ -49,7 +51,7 @@
       // 
       this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.btnOK.Location = new System.Drawing.Point(315, 477);
+      this.btnOK.Location = new System.Drawing.Point(293, 489);
       this.btnOK.Name = "btnOK";
       this.btnOK.Size = new System.Drawing.Size(99, 24);
       this.btnOK.TabIndex = 31;
@@ -61,7 +63,7 @@
       // 
       this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.btnCancel.Location = new System.Drawing.Point(420, 477);
+      this.btnCancel.Location = new System.Drawing.Point(398, 489);
       this.btnCancel.Name = "btnCancel";
       this.btnCancel.Size = new System.Drawing.Size(99, 24);
       this.btnCancel.TabIndex = 32;
@@ -77,7 +79,7 @@
       this.grpIntrinsics.Controls.Add(this.lblSensorWidth);
       this.grpIntrinsics.Location = new System.Drawing.Point(16, 12);
       this.grpIntrinsics.Name = "grpIntrinsics";
-      this.grpIntrinsics.Size = new System.Drawing.Size(499, 111);
+      this.grpIntrinsics.Size = new System.Drawing.Size(477, 111);
       this.grpIntrinsics.TabIndex = 36;
       this.grpIntrinsics.TabStop = false;
       this.grpIntrinsics.Text = "Camera";
@@ -118,7 +120,7 @@
       this.gpControlPoints.Controls.Add(this.olvControlPoints);
       this.gpControlPoints.Location = new System.Drawing.Point(16, 129);
       this.gpControlPoints.Name = "gpControlPoints";
-      this.gpControlPoints.Size = new System.Drawing.Size(499, 338);
+      this.gpControlPoints.Size = new System.Drawing.Size(477, 354);
       this.gpControlPoints.TabIndex = 52;
       this.gpControlPoints.TabStop = false;
       this.gpControlPoints.Text = "Control points";
@@ -127,14 +129,27 @@
       // 
       this.gpValidationMode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.gpValidationMode.Controls.Add(this.rbCompute3D);
       this.gpValidationMode.Controls.Add(this.rbFix3D);
       this.gpValidationMode.Controls.Add(this.rbFix1D);
       this.gpValidationMode.Location = new System.Drawing.Point(17, 25);
       this.gpValidationMode.Name = "gpValidationMode";
-      this.gpValidationMode.Size = new System.Drawing.Size(465, 85);
+      this.gpValidationMode.Size = new System.Drawing.Size(443, 108);
       this.gpValidationMode.TabIndex = 27;
       this.gpValidationMode.TabStop = false;
       this.gpValidationMode.Text = "Validation mode";
+      // 
+      // rbCompute3D
+      // 
+      this.rbCompute3D.AutoSize = true;
+      this.rbCompute3D.Location = new System.Drawing.Point(23, 73);
+      this.rbCompute3D.Name = "rbCompute3D";
+      this.rbCompute3D.Size = new System.Drawing.Size(128, 17);
+      this.rbCompute3D.TabIndex = 2;
+      this.rbCompute3D.TabStop = true;
+      this.rbCompute3D.Text = "Compute 3D positions";
+      this.rbCompute3D.UseVisualStyleBackColor = true;
+      this.rbCompute3D.CheckedChanged += new System.EventHandler(this.validationMode_Changed);
       // 
       // rbFix3D
       // 
@@ -151,7 +166,7 @@
       // rbFix1D
       // 
       this.rbFix1D.AutoSize = true;
-      this.rbFix1D.Location = new System.Drawing.Point(23, 50);
+      this.rbFix1D.Location = new System.Drawing.Point(23, 48);
       this.rbFix1D.Name = "rbFix1D";
       this.rbFix1D.Size = new System.Drawing.Size(176, 17);
       this.rbFix1D.TabIndex = 0;
@@ -172,10 +187,10 @@
       this.olvControlPoints.GridLines = true;
       this.olvControlPoints.HeaderFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.olvControlPoints.HideSelection = false;
-      this.olvControlPoints.Location = new System.Drawing.Point(17, 116);
+      this.olvControlPoints.Location = new System.Drawing.Point(17, 139);
       this.olvControlPoints.Name = "olvControlPoints";
       this.olvControlPoints.ShowSortIndicators = false;
-      this.olvControlPoints.Size = new System.Drawing.Size(465, 201);
+      this.olvControlPoints.Size = new System.Drawing.Size(443, 197);
       this.olvControlPoints.TabIndex = 26;
       this.olvControlPoints.UseCompatibleStateImageBehavior = false;
       this.olvControlPoints.View = System.Windows.Forms.View.Details;
@@ -183,12 +198,24 @@
       this.olvControlPoints.FormatCell += new System.EventHandler<BrightIdeasSoftware.FormatCellEventArgs>(this.olvControlPoints_FormatCell);
       this.olvControlPoints.FormatRow += new System.EventHandler<BrightIdeasSoftware.FormatRowEventArgs>(this.olvControlPoints_FormatRow);
       // 
+      // btnCSV
+      // 
+      this.btnCSV.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnCSV.Location = new System.Drawing.Point(16, 489);
+      this.btnCSV.Name = "btnCSV";
+      this.btnCSV.Size = new System.Drawing.Size(99, 24);
+      this.btnCSV.TabIndex = 53;
+      this.btnCSV.Text = "Copy to clipboard";
+      this.btnCSV.UseVisualStyleBackColor = true;
+      this.btnCSV.Click += new System.EventHandler(this.btnCSV_Click);
+      // 
       // FormCalibrationValidation
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.Color.White;
-      this.ClientSize = new System.Drawing.Size(527, 513);
+      this.ClientSize = new System.Drawing.Size(505, 525);
+      this.Controls.Add(this.btnCSV);
       this.Controls.Add(this.gpControlPoints);
       this.Controls.Add(this.grpIntrinsics);
       this.Controls.Add(this.btnOK);
@@ -222,5 +249,7 @@
         private System.Windows.Forms.GroupBox gpValidationMode;
         private System.Windows.Forms.RadioButton rbFix3D;
         private System.Windows.Forms.RadioButton rbFix1D;
+        private System.Windows.Forms.RadioButton rbCompute3D;
+        private System.Windows.Forms.Button btnCSV;
     }
 }
