@@ -76,10 +76,7 @@ namespace Kinovea.ScreenManager
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
                 ReloadMenusCulture();
 
-                contextMenu.AddRange(new ToolStripItem[] {
-                    mnuOptions,
-                });
-
+                contextMenu.Add(mnuOptions);
                 mnuFilled.Checked = filled;
                 return contextMenu;
             }

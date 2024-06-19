@@ -46,9 +46,9 @@ namespace Kinovea.ScreenManager
         {
             return new Point(p.X - p2.X, p.Y - p2.Y);
         }
-        public static Rectangle Box(this Point point, int radius)
+        public static Rectangle Box(this Point point, float radius)
         {
-            return new Rectangle(point.X - radius, point.Y - radius, radius * 2, radius * 2);
+            return new Rectangle((int)(point.X - radius), (int)(point.Y - radius), (int)(radius * 2), (int)(radius * 2));
         }
         public static Rectangle Box(this Point point, Size size)
         {

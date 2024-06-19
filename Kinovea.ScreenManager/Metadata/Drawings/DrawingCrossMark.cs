@@ -85,7 +85,9 @@ namespace Kinovea.ScreenManager
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
                 ReloadMenusCulture();
 
+                contextMenu.Add(mnuOptions);
                 contextMenu.Add(mnuMeasurement);
+                mnuShowAsDot.Checked = showAsDot;
                 return contextMenu;
             }
         }
@@ -102,14 +104,18 @@ namespace Kinovea.ScreenManager
         private MiniLabel miniLabel;
         private bool measureInitialized;
         private MeasureLabelType measureLabelType = MeasureLabelType.None;
+        
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
         private InfosFading infosFading;
+        private bool showAsDot = false;
 
         #region Menus
         private ToolStripMenuItem mnuMeasurement = new ToolStripMenuItem();
         private Dictionary<MeasureLabelType, ToolStripMenuItem> mnuMeasureLabelTypes = new Dictionary<MeasureLabelType, ToolStripMenuItem>();
+        private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuShowAsDot = new ToolStripMenuItem();
         #endregion
 
         private const int defaultBackgroundAlpha = 64;
@@ -143,6 +149,14 @@ namespace Kinovea.ScreenManager
         }
         private void InitializeMenus()
         {
+            // Options
+            mnuOptions.Image = Properties.Resources.equalizer;
+            mnuShowAsDot.Image = Properties.Drawings.bullet_red;
+            mnuShowAsDot.Click += mnuShowAsDot_Click;
+            mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
+                mnuShowAsDot,
+            });
+
             // Measurement.
             mnuMeasurement.Image = Properties.Drawings.label;
             mnuMeasurement.DropDownItems.Clear();
@@ -169,9 +183,18 @@ namespace Kinovea.ScreenManager
             using(Pen p = styleHelper.GetPen(iAlpha))
             using(SolidBrush b = styleHelper.GetBrush((int)(opacityFactor * defaultBackgroundAlpha)))
             {
-                canvas.DrawLine(p, c.X - defaultRadius, c.Y, c.X + defaultRadius, c.Y);
-                canvas.DrawLine(p, c.X, c.Y - defaultRadius, c.X, c.Y + defaultRadius);
-                canvas.FillEllipse(b, c.Box(defaultRadius + 1));
+                if (showAsDot)
+                {
+                    // 2x2 pixel block. Also tested with 1x1 but it's really hard to see.
+                    canvas.DrawRectangle(p, c.Box(0.5f));
+                }
+                else
+                {
+                    // Cross with disc background.
+                    canvas.DrawLine(p, c.X - defaultRadius, c.Y, c.X + defaultRadius, c.Y);
+                    canvas.DrawLine(p, c.X, c.Y - defaultRadius, c.X, c.Y + defaultRadius);
+                    canvas.FillEllipse(b, c.Box(defaultRadius + 1));
+                }
             }
 
             if (measureLabelType != MeasureLabelType.None)
@@ -246,6 +269,9 @@ namespace Kinovea.ScreenManager
                         style = new DrawingStyle(xmlReader);
                         BindStyle();
                         break;
+                    case "ShowAsDot":
+                        showAsDot = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
+                        break;
                     case "InfosFading":
                         infosFading.ReadXml(xmlReader);
                         break;
@@ -274,7 +300,7 @@ namespace Kinovea.ScreenManager
                 TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(MeasureLabelType));
                 string xmlMeasureLabelType = enumConverter.ConvertToString(measureLabelType);
                 w.WriteElementString("ExtraData", xmlMeasureLabelType);
-
+                w.WriteElementString("ShowAsDot", XmlHelper.WriteBoolean(showAsDot));
                 w.WriteStartElement("MeasureLabel");
                 miniLabel.WriteXml(w);
                 w.WriteEndElement();
@@ -358,6 +384,15 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
+        #region Context menu
+        private void mnuShowAsDot_Click(object sender, EventArgs e)
+        {
+            CaptureMemento(SerializationFilter.Core);
+            showAsDot = !mnuShowAsDot.Checked;
+            InvalidateFromMenu(sender);
+        }
+        #endregion
+
         /// <summary>
         /// Force move the point from the outside.
         /// This is currently only used by the calibration validation window, 
@@ -383,8 +418,22 @@ namespace Kinovea.ScreenManager
             miniLabel.BackColor = styleHelper.Color;
         }
 
+        /// <summary>
+        /// Capture the current state to the undo/redo stack.
+        /// </summary>
+        private void CaptureMemento(SerializationFilter filter)
+        {
+            Guid keyframeId = parentMetadata.FindAttachmentKeyframeId(this);
+            var memento = new HistoryMementoModifyDrawing(parentMetadata, keyframeId, this.Id, this.Name, filter);
+            parentMetadata.HistoryStack.PushNewCommand(memento);
+        }
+
         private void ReloadMenusCulture()
         {
+            // Options
+            mnuOptions.Text = ScreenManagerLang.Generic_Options;
+            mnuShowAsDot.Text = "Dot";
+
             // Measurement
             mnuMeasurement.Text = ScreenManagerLang.mnuMeasure_Label_Menu;
             foreach (var pair in mnuMeasureLabelTypes)
@@ -464,6 +513,5 @@ namespace Kinovea.ScreenManager
             return displayText;
         }
         #endregion
-
     }
 }
