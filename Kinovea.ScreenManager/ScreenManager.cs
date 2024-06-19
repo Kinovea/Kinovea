@@ -1625,6 +1625,7 @@ namespace Kinovea.ScreenManager
             var calibHelper = player.FrameServer.Metadata.CalibrationHelper;
             calibHelper.DistortionHelper.Uninitialize();
             calibHelper.AfterDistortionUpdated();
+            player.RefreshImage();
         }
 
         private bool ImportLensCalibration(string xmlFile)
@@ -1640,6 +1641,7 @@ namespace Kinovea.ScreenManager
             {
                 calibHelper.DistortionHelper.Initialize(dp, calibHelper.ImageSize);
                 calibHelper.AfterDistortionUpdated();
+                player.RefreshImage();
             }
 
             return loaded;
