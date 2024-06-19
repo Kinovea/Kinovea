@@ -105,9 +105,9 @@ namespace Kinovea.ScreenManager
             gpControlPoints.Enabled = hasFullCalibration;
             gpControlPoints.Text = "Control points";
             gpValidationMode.Text = "Validation mode";
-            rbFix3D.Text = "Fix all axes: verify the location of the marker in the image";
-            rbFix1D.Text = "Fix one axis and the marker: verify the other two axes";
-            rbCompute3D.Text = "Compute 3D positions from two views";
+            rbFix3D.Text = "Change all axes and verify the location of the marker in the image";
+            rbFix1D.Text = "Change one axis and verify the other two axes";
+            rbCompute3D.Text = "3D positions computed from the two views";
 
             rbCompute3D.Enabled = otherMetadata != null;
 
@@ -179,6 +179,7 @@ namespace Kinovea.ScreenManager
             pointsOnGrid.Clear();
             fixedComponent.Clear();
             markers.Clear();
+            AlphanumComparator alphaNumComparator = new AlphanumComparator();
 
             if (validationMode == CalibrationValidationMode.Fix1D || validationMode == CalibrationValidationMode.Fix3D)
             {
@@ -186,6 +187,8 @@ namespace Kinovea.ScreenManager
                 // location on the grid (z=0). The location may change later from user input and the cells
                 // are bound to the NamedPoint objects.
                 markers = metadata.CrossMarks().ToList();
+                markers.Sort((a, b) => alphaNumComparator.Compare(a.Name, b.Name));
+
                 foreach (var marker in markers)
                 {
                     var p = calibrationHelper.GetPoint(marker.Location);
@@ -205,6 +208,8 @@ namespace Kinovea.ScreenManager
             {
                 // Match markers in both views and only add these.
                 var markers1 = metadata.CrossMarks().ToList();
+                markers1.Sort((a, b) => alphaNumComparator.Compare(a.Name, b.Name));
+
                 var markers2 = otherMetadata.CrossMarks().ToList();
                 var matches = new Dictionary<int, int>();
                 for (int i = 0; i < markers1.Count; i++) 
