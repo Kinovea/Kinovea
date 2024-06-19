@@ -49,7 +49,6 @@ namespace Kinovea.ScreenManager
 
             mnuOpen.Click += (s, e) => Open();
             mnuSave.Click += (s, e) => Save();
-            mnuImportAgisoft.Click += (s, e) => ImportAgisoft();
             mnuDefault.Click += (s, e) => RestoreDefaults();
             mnuQuit.Click += (s, e) => Close();
 
@@ -71,11 +70,9 @@ namespace Kinovea.ScreenManager
             mnuFile.Text = ScreenManagerLang.Generic_File;
             mnuOpen.Text = ScreenManagerLang.Generic_Open;
             mnuSave.Text = ScreenManagerLang.Generic_Save;
-            mnuImport.Text = ScreenManagerLang.Generic_Import;
             mnuDefault.Text = ScreenManagerLang.Generic_Restore;
             mnuQuit.Text = ScreenManagerLang.Generic_Quit;
-            mnuImportAgisoft.Text = "Agisoft Lens";
-
+            
             grpDistortionCoefficients.Text = ScreenManagerLang.dlgCameraCalibration_DistortionCoefficients;
             grpIntrinsics.Text = ScreenManagerLang.dlgCameraCalibration_CameraIntrinsics;
             grpAppearance.Text = ScreenManagerLang.Generic_Appearance;
@@ -231,30 +228,6 @@ namespace Kinovea.ScreenManager
                 return;
 
             DistortionImporterKinovea.Export(saveFileDialog.FileName, distorter.Parameters, calibrationHelper.ImageSize);
-        }
-
-        private void ImportAgisoft()
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Title = ScreenManagerLang.dlgCameraCalibration_OpenDialogTitle;
-            openFileDialog.Filter = FilesystemHelper.OpenXMLFilter();
-            openFileDialog.FilterIndex = 1;
-            openFileDialog.InitialDirectory = Software.CameraCalibrationDirectory;
-
-            if (openFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(openFileDialog.FileName))
-                return;
-
-            DistortionParameters dp = DistortionImporterAgisoft.Import(openFileDialog.FileName, calibrationHelper.ImageSize);
-            if (dp != null)
-            {
-                distortionParameters = dp;
-                distorter.Initialize(distortionParameters, calibrationHelper.ImageSize);
-
-                AfterImport();
-                PopulatePhysicalParameters();
-                PopulateValues();
-                UpdateDistortionGrid();
-            }
         }
 
         private void pnlPreview_Paint(object sender, PaintEventArgs e)

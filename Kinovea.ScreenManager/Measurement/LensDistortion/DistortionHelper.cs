@@ -48,6 +48,11 @@ namespace Kinovea.ScreenManager
             initialized = true;
         }
 
+        public void Uninitialize()
+        {
+            initialized = false;
+        }
+
         /// <summary>
         /// Given coordinates in distorted space, returns the point in undistorted space.
         /// </summary>

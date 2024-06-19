@@ -45,13 +45,13 @@ namespace Kinovea.ScreenManager
         }
         public bool DrawAttachedDrawings
         {
-            // Don't draw the normal drawings, this is a technical filter, it is not 
-            // supposed to be used as a playback mode.
-            get { return false; }
+            // This video mode isn't supposed to received any annotations
+            // but it doesn't hurt to draw them.
+            get { return true; }
         }
         public bool DrawDetachedDrawings
         {
-            get { return false; }
+            get { return true; }
         }
         public bool CanExportVideo
         {

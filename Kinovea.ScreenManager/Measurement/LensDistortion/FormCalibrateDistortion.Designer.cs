@@ -59,8 +59,6 @@
       this.mnuFile = new System.Windows.Forms.ToolStripMenuItem();
       this.mnuOpen = new System.Windows.Forms.ToolStripMenuItem();
       this.mnuSave = new System.Windows.Forms.ToolStripMenuItem();
-      this.mnuImport = new System.Windows.Forms.ToolStripMenuItem();
-      this.mnuImportAgisoft = new System.Windows.Forms.ToolStripMenuItem();
       this.mnuDefault = new System.Windows.Forms.ToolStripMenuItem();
       this.mnuQuit = new System.Windows.Forms.ToolStripMenuItem();
       this.grpAppearance = new System.Windows.Forms.GroupBox();
@@ -463,7 +461,6 @@
       this.mnuFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuOpen,
             this.mnuSave,
-            this.mnuImport,
             this.mnuDefault,
             this.mnuQuit});
       this.mnuFile.Name = "mnuFile";
@@ -475,7 +472,7 @@
       this.mnuOpen.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
       this.mnuOpen.Image = global::Kinovea.ScreenManager.Properties.Resources.folder;
       this.mnuOpen.Name = "mnuOpen";
-      this.mnuOpen.Size = new System.Drawing.Size(153, 22);
+      this.mnuOpen.Size = new System.Drawing.Size(180, 22);
       this.mnuOpen.Text = "Open";
       // 
       // mnuSave
@@ -483,36 +480,21 @@
       this.mnuSave.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
       this.mnuSave.Image = global::Kinovea.ScreenManager.Properties.Resources.filesave;
       this.mnuSave.Name = "mnuSave";
-      this.mnuSave.Size = new System.Drawing.Size(153, 22);
+      this.mnuSave.Size = new System.Drawing.Size(180, 22);
       this.mnuSave.Text = "Save";
-      // 
-      // mnuImport
-      // 
-      this.mnuImport.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuImportAgisoft});
-      this.mnuImport.Name = "mnuImport";
-      this.mnuImport.Size = new System.Drawing.Size(153, 22);
-      this.mnuImport.Text = "Import";
-      // 
-      // mnuImportAgisoft
-      // 
-      this.mnuImportAgisoft.Image = global::Kinovea.ScreenManager.Properties.Resources.ruler_triangle;
-      this.mnuImportAgisoft.Name = "mnuImportAgisoft";
-      this.mnuImportAgisoft.Size = new System.Drawing.Size(139, 22);
-      this.mnuImportAgisoft.Text = "Agisoft Lens";
       // 
       // mnuDefault
       // 
       this.mnuDefault.Image = global::Kinovea.ScreenManager.Properties.Resources.bin_empty;
       this.mnuDefault.Name = "mnuDefault";
-      this.mnuDefault.Size = new System.Drawing.Size(153, 22);
+      this.mnuDefault.Size = new System.Drawing.Size(180, 22);
       this.mnuDefault.Text = "Restore default";
       // 
       // mnuQuit
       // 
       this.mnuQuit.Image = global::Kinovea.ScreenManager.Properties.Resources.quit2;
       this.mnuQuit.Name = "mnuQuit";
-      this.mnuQuit.Size = new System.Drawing.Size(153, 22);
+      this.mnuQuit.Size = new System.Drawing.Size(180, 22);
       this.mnuQuit.Text = "Quit";
       // 
       // grpAppearance
@@ -599,8 +581,6 @@
         private System.Windows.Forms.ToolStripMenuItem mnuFile;
         private System.Windows.Forms.ToolStripMenuItem mnuOpen;
         private System.Windows.Forms.ToolStripMenuItem mnuSave;
-        private System.Windows.Forms.ToolStripMenuItem mnuImport;
-        private System.Windows.Forms.ToolStripMenuItem mnuImportAgisoft;
         private System.Windows.Forms.ToolStripMenuItem mnuDefault;
         private System.Windows.Forms.ToolStripMenuItem mnuQuit;
         private System.Windows.Forms.NumericUpDown nudK1;

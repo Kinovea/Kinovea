@@ -155,7 +155,11 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuTestGrid = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimeCalibration = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCoordinateSystem = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuLensDistortion = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuLensCalibration = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuLensCalibrationOpen = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuLensCalibrationMode = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuLensCalibrationManual = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuLensCalibrationNone = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCalibrationValidation = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTrajectoryAnalysis = new ToolStripMenuItem();
         private ToolStripMenuItem mnuScatterDiagram = new ToolStripMenuItem();
@@ -608,9 +612,18 @@ namespace Kinovea.ScreenManager
             mnuTimeCalibration.Click += new EventHandler(mnuTimebase_OnClick);
             mnuTimeCalibration.MergeAction = MergeAction.Append;
 
-            mnuLensDistortion.Image = Properties.Resources.checkerboard;
-            mnuLensDistortion.Click += mnuLensDistortion_OnClick;
-            mnuLensDistortion.MergeAction = MergeAction.Append;
+            mnuLensCalibration.Image = Properties.Resources.checkerboard;
+            mnuLensCalibration.MergeAction = MergeAction.Append;
+            mnuLensCalibrationOpen.Image = Properties.Resources.folder;
+            mnuLensCalibrationMode.Image = Properties.Resources.checkerboard;
+            mnuLensCalibrationManual.Image = Properties.Resources.border_all;
+            mnuLensCalibrationNone.Image = Properties.Resources.bin_empty;
+            mnuLensCalibrationOpen.Click += mnuLensCalibrationOpen_OnClick;
+            mnuLensCalibrationMode.Click += mnuLensCalibrationMode_OnClick;
+            mnuLensCalibrationManual.Click += mnuLensDistortion_OnClick;
+            mnuLensCalibrationNone.Click += mnuLensCalibrationNone_OnClick;
+
+            BuildLensCalibrationMenu();
 
             mnuCoordinateSystem.Image = Properties.Resources.coordinate_axis;
             mnuCoordinateSystem.Click += mnuCoordinateSystem_OnClick;
@@ -643,7 +656,7 @@ namespace Kinovea.ScreenManager
                 new ToolStripSeparator(),
                 mnuTimeCalibration,
                 mnuCoordinateSystem,
-                mnuLensDistortion,
+                mnuLensCalibration,
                 mnuCalibrationValidation,
                 new ToolStripSeparator(),
                 mnuScatterDiagram,
@@ -1088,11 +1101,6 @@ namespace Kinovea.ScreenManager
         {
             DoOrganizeMenu();
         }
-        private void AddImportImageMenu(ToolStripMenuItem menu)
-        {
-            menu.DropDownItems.Add(mnuImportImage);
-            menu.DropDownItems.Add(new ToolStripSeparator());
-        }
         private void DoOrganizeMenu()
         {
             // Enable / disable menus depending on state of active screen
@@ -1155,7 +1163,7 @@ namespace Kinovea.ScreenManager
                     mnuTestGrid.Enabled = true;
                     mnuTimeCalibration.Enabled = true;
                     mnuCoordinateSystem.Enabled = true;
-                    mnuLensDistortion.Enabled = true;
+                    mnuLensCalibration.Enabled = true;
                     mnuCalibrationValidation.Enabled = true;
                     mnuScatterDiagram.Enabled = true;
                     mnuTrajectoryAnalysis.Enabled = true;
@@ -1202,7 +1210,7 @@ namespace Kinovea.ScreenManager
                     mnuTestGrid.Enabled = true;
                     mnuTimeCalibration.Enabled = false;
                     mnuCoordinateSystem.Enabled = true;
-                    mnuLensDistortion.Enabled = false;
+                    mnuLensCalibration.Enabled = false;
                     mnuCalibrationValidation.Enabled = true;
                     mnuScatterDiagram.Enabled = false;
                     mnuTrajectoryAnalysis.Enabled = false;
@@ -1258,7 +1266,7 @@ namespace Kinovea.ScreenManager
                 mnuImportImage.Enabled = false;
                 mnuTestGrid.Enabled = false;
                 mnuCoordinateSystem.Enabled = false;
-                mnuLensDistortion.Enabled = false;
+                mnuLensCalibration.Enabled = false;
                 mnuCalibrationValidation.Enabled = false;
                 mnuScatterDiagram.Enabled = false;
                 mnuTrajectoryAnalysis.Enabled = false;
@@ -1491,6 +1499,151 @@ namespace Kinovea.ScreenManager
                 mnuPasteDrawing.Enabled = false;
             }
         }
+
+        private void BuildLensCalibrationMenu()
+        {
+            mnuLensCalibration.DropDownItems.Clear();
+            mnuLensCalibration.DropDownItems.Add(mnuLensCalibrationOpen);
+            mnuLensCalibration.DropDownItems.Add(mnuLensCalibrationMode);
+            mnuLensCalibration.DropDownItems.Add(mnuLensCalibrationManual);
+            mnuLensCalibration.DropDownItems.Add(new ToolStripSeparator());
+            int count = AddLensCalibrationMenus(Software.CameraCalibrationDirectory, mnuLensCalibration);
+            if (count > 0)
+                mnuLensCalibration.DropDownItems.Add(new ToolStripSeparator());
+
+            mnuLensCalibration.DropDownItems.Add(mnuLensCalibrationNone);
+        }
+
+        /// <summary>
+        /// Recursively browse the passed directory for lens calibration xml files.
+        /// Adds sub-directories as drop-down menus and files as leaf menus.
+        /// </summary>
+        private int AddLensCalibrationMenus(string dir, ToolStripMenuItem menu)
+        {
+            if (!Directory.Exists(dir))
+                return 0;
+
+            int count = 0;
+            
+            // Loop sub directories.
+            string[] subDirs = Directory.GetDirectories(dir);
+            foreach (string subDir in subDirs)
+            {
+                // Create a menu
+                ToolStripMenuItem mnuSubDir = new ToolStripMenuItem();
+                mnuSubDir.Text = Path.GetFileName(subDir);
+                mnuSubDir.Image = Properties.Resources.folder;
+                mnuSubDir.MergeAction = MergeAction.Append;
+
+                // Build sub tree.
+                AddLensCalibrationMenus(subDir, mnuSubDir);
+
+                // Add to parent if non-empty.
+                if (mnuSubDir.HasDropDownItems)
+                {
+                    menu.DropDownItems.Add(mnuSubDir);
+                    count += mnuSubDir.DropDownItems.Count;
+                }
+            }
+
+            // Loop files within the sub directory.
+            foreach (string file in Directory.GetFiles(dir))
+            {
+                if (!Path.GetExtension(file).ToLower().Equals(".xml"))
+                    continue;
+
+                // Create a menu. 
+                ToolStripMenuItem mnuLensCalibrationFile = new ToolStripMenuItem();
+                mnuLensCalibrationFile.Text = Path.GetFileNameWithoutExtension(file);
+                mnuLensCalibrationFile.Tag = file;
+                mnuLensCalibrationFile.Image = Properties.Resources.vector;
+                mnuLensCalibrationFile.Click += new EventHandler(mnuLensCalibrationFile_OnClick);
+                mnuLensCalibrationFile.MergeAction = MergeAction.Append;
+
+                // Add to parent.
+                menu.DropDownItems.Add(mnuLensCalibrationFile);
+                count++;
+            }
+
+            return count;
+        }
+        private void mnuLensCalibrationFile_OnClick(object sender, EventArgs e)
+        {
+            // One of the dynamically added lens calibration file menu has been clicked.
+            ToolStripMenuItem menu = sender as ToolStripMenuItem;
+            if (menu != null)
+            {
+                string xmlFile = menu.Tag as string;
+
+                bool loaded = ImportLensCalibration(xmlFile);
+                // TODO: Alert if couldn't be loaded.
+                // TODO: Toast if successfuly loaded.
+            }
+        }
+
+        private void mnuLensCalibrationOpen_OnClick(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = ScreenManagerLang.dlgCameraCalibration_OpenDialogTitle;
+            openFileDialog.Filter = FilesystemHelper.OpenXMLFilter();
+            openFileDialog.FilterIndex = 1;
+            openFileDialog.InitialDirectory = Software.CameraCalibrationDirectory;
+
+            if (openFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(openFileDialog.FileName))
+                return;
+
+            string path = openFileDialog.FileName;
+            bool loaded = ImportLensCalibration(path);
+            // TODO: Alert if couldn't be loaded.
+            // TODO: Toast if successfuly loaded.
+
+            // Copy this file to the special folder if it doesn't exist yet,
+            // this way it will be available directly from the menu from now on.
+            string target = Path.Combine(Software.CameraCalibrationDirectory, Path.GetFileName(path));
+            if (loaded && !File.Exists(target))
+            {
+                File.Copy(path, target);
+                BuildLensCalibrationMenu();
+            }
+        }
+
+        private void mnuLensCalibrationMode_OnClick(object sender, EventArgs e)
+        {
+            PlayerScreen player = activeScreen as PlayerScreen;
+            if (player == null || !player.FrameServer.Loaded)
+                return;
+
+            player.ActivateVideoFilter(VideoFilterType.LensCalibration);
+        }
+
+        private void mnuLensCalibrationNone_OnClick(object sender, EventArgs e)
+        {
+            PlayerScreen player = activeScreen as PlayerScreen;
+            if (player == null || !player.FrameServer.Loaded)
+                return;
+
+            var calibHelper = player.FrameServer.Metadata.CalibrationHelper;
+            calibHelper.DistortionHelper.Uninitialize();
+            calibHelper.AfterDistortionUpdated();
+        }
+
+        private bool ImportLensCalibration(string xmlFile)
+        {
+            PlayerScreen player = activeScreen as PlayerScreen;
+            if (player == null || !player.FrameServer.Loaded)
+                return false;
+
+            var calibHelper = player.FrameServer.Metadata.CalibrationHelper;
+            DistortionParameters dp = DistortionImporterKinovea.Import(xmlFile, calibHelper.ImageSize);
+            bool loaded = dp != null;
+            if (loaded)
+            {
+                calibHelper.DistortionHelper.Initialize(dp, calibHelper.ImageSize);
+                calibHelper.AfterDistortionUpdated();
+            }
+
+            return loaded;
+        }
         #endregion
 
         #region Culture
@@ -1587,7 +1740,11 @@ namespace Kinovea.ScreenManager
             mnuBackground.Text = "Background…";
             mnuTestGrid.Text = ScreenManagerLang.DrawingName_TestGrid;
             mnuTimeCalibration.Text = ScreenManagerLang.mnuTimeCalibration;
-            mnuLensDistortion.Text = ScreenManagerLang.mnuLensCalibration;
+            mnuLensCalibration.Text = "Lens calibration";
+            mnuLensCalibrationOpen.Text = "Import…";
+            mnuLensCalibrationMode.Text = "Lens calibration mode";
+            mnuLensCalibrationManual.Text = "Manual estimation…";
+            mnuLensCalibrationNone.Text = "None";
             mnuCoordinateSystem.Text = ScreenManagerLang.mnuCoordinateSystem;
             mnuCalibrationValidation.Text = "Calibration validation…";
             mnuScatterDiagram.Text = ScreenManagerLang.DataAnalysis_ScatterDiagram + "…";
