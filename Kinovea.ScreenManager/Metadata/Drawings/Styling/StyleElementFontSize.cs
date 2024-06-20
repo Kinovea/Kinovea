@@ -42,7 +42,7 @@ namespace Kinovea.ScreenManager
             get { return value; }
             set 
             { 
-                value = (value is int) ? (int)value : defaultValue;
+                this.value = (value is int) ? (int)value : defaultValue;
                 RaiseValueChanged();
             }
         }

@@ -88,9 +88,29 @@ namespace Kinovea.ScreenManager
         #region Public Methods
         public abstract Control GetEditor();
         public abstract AbstractStyleElement Clone();
+        
+        /// <summary>
+        /// Save the style element to XML.
+        /// This is always in the context of saving a drawing so 
+        /// this should only writes the value, not the metadata like
+        /// display name and min/max values.
+        /// </summary>
         public abstract void WriteXml(XmlWriter xmlWriter);
+
+        /// <summary>
+        /// Import the style element from XML.
+        /// There are two contexts in which we read a style element from XML.
+        /// 1. We are importing the tool itself, in this case we need 
+        /// to read the metadata like display name and min/max values.
+        /// 2. We are importing a preset or a drawing. In this case we are only 
+        /// interested in the value.
+        /// </summary>
         public abstract void ReadXML(XmlReader xmlReader);
         
+        /// <summary>
+        /// Create a link between this style element and a property in 
+        /// a style helper.
+        /// </summary>
         public void Bind(StyleHelper target, string targetProperty)
         {
             bindTarget = target;

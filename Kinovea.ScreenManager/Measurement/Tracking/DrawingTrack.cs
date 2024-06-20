@@ -1544,7 +1544,7 @@ namespace Kinovea.ScreenManager
                         break;
                     case "DrawingStyle":
                         DrawingStyle styleXML = new DrawingStyle(xmlReader);
-                        style.Import(styleXML);
+                        style.ImportValues(styleXML);
                         BindStyle();
                         break;
                     case "MainLabel":

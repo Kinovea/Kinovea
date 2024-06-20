@@ -235,7 +235,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Builds a full scale image with a distorted grid pattern.
         /// </summary>
-        public Bitmap GetDistortionGrid(Color color, int lineSize, int divisions)
+        public Bitmap GetDistortionGrid(Color color, int lineSize, int cols, int rows)
         {
             Bitmap bmp = new Bitmap(imageSize.Width, imageSize.Height, PixelFormat.Format32bppPArgb);
             
@@ -249,11 +249,11 @@ namespace Kinovea.ScreenManager
             
             Pen p = new Pen(color, lineSize);
 
-            float stepWidth = (float)imageSize.Width / divisions;
-            float stepHeight = (float)imageSize.Height / divisions;
+            float stepWidth = (float)imageSize.Width / cols;
+            float stepHeight = (float)imageSize.Height / rows;
 
             // Verticals
-            for (int i = 0; i <= divisions; i++)
+            for (int i = 0; i <= cols; i++)
             {
                 int col = (int)Math.Min(imageSize.Width - 1, Math.Round(i * stepWidth));
 
@@ -265,7 +265,7 @@ namespace Kinovea.ScreenManager
             }
 
             // Horizontals
-            for (int i = 0; i <= divisions; i++)
+            for (int i = 0; i <= rows; i++)
             {
                 int row = (int)Math.Min(imageSize.Height - 1, Math.Round(i * stepHeight));
                 

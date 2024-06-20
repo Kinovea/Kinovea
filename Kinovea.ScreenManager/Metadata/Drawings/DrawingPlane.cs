@@ -161,9 +161,9 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuCalibrate = new ToolStripMenuItem();
         #endregion
 
-        private static readonly int minimumSubdivisions = StyleElementGridDivisions.options[0];
-        private static readonly int defaultSubdivisions = StyleElementGridDivisions.defaultValue;
-        private static readonly int maximumSubdivisions = StyleElementGridDivisions.options[StyleElementGridDivisions.options.Count - 1];
+        private static readonly int minimumSubdivisions = 1;
+        private static readonly int defaultSubdivisions = 10;
+        private static readonly int maximumSubdivisions = 50;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -172,7 +172,8 @@ namespace Kinovea.ScreenManager
         {
             // Decoration
             styleHelper.Color = Color.Empty;
-            styleHelper.GridDivisions = 8;
+            styleHelper.GridCols = 10;
+            styleHelper.GridRows = 10;
             styleHelper.Perspective = true;
             styleHelper.Font = new Font("Arial", 8, FontStyle.Bold);
             styleHelper.ValueChanged += StyleHelper_ValueChanged;
@@ -281,19 +282,20 @@ namespace Kinovea.ScreenManager
             {
                 // Draw vertical and horizontal lines crossing the full grid.
                 int start = 0;
-                int end = styleHelper.GridDivisions;
+                int cols = styleHelper.GridCols;
+                int rows = styleHelper.GridRows;
 
                 // Horizontals
-                float step = planeHeight / styleHelper.GridDivisions;
-                for (int i = start; i <= end; i++)
+                float step = planeHeight / rows;
+                for (int i = start; i <= rows; i++)
                 {
                     float v = step * i;
                     DrawDistortedLine(canvas, pen, new PointF(0, v), new PointF(planeWidth, v), projectiveMapping, distorter, transformer);
                 }
 
                 // Verticals
-                step = planeWidth / styleHelper.GridDivisions;
-                for (int i = start; i <= end; i++)
+                step = planeWidth / cols;
+                for (int i = start; i <= cols; i++)
                 {
                     float h = step * i;
                     DrawDistortedLine(canvas, pen, new PointF(h, 0), new PointF(h, planeHeight), projectiveMapping, distorter, transformer);
@@ -311,12 +313,13 @@ namespace Kinovea.ScreenManager
 
                 // Secondary ticks.
                 int start = 1;
-                int end = styleHelper.GridDivisions - 1;
+                int cols = styleHelper.GridCols - 1;
+                int rows = styleHelper.GridRows - 1;
 
                 // Horizontals
-                float step = planeHeight / styleHelper.GridDivisions;
+                float step = planeHeight / styleHelper.GridRows;
                 float halfLength = planeWidth * tickMarkLengthFactor;
-                for (int i = start; i <= end; i++)
+                for (int i = start; i <= rows; i++)
                 {
                     float v = step * i;
                     DrawDistortedLine(canvas, pen, new PointF(-halfLength, v), new PointF(halfLength, v), projectiveMapping, distorter, transformer);
@@ -324,9 +327,9 @@ namespace Kinovea.ScreenManager
                 }
 
                 // Verticals
-                step = planeWidth / styleHelper.GridDivisions;
+                step = planeWidth / styleHelper.GridCols;
                 halfLength = planeHeight * tickMarkLengthFactor;
-                for (int i = start; i <= end; i++)
+                for (int i = start; i <= cols; i++)
                 {
                     float h = step * i;
                     DrawDistortedLine(canvas, pen, new PointF(h, -halfLength), new PointF(h, halfLength), projectiveMapping, distorter, transformer);
@@ -450,8 +453,10 @@ namespace Kinovea.ScreenManager
             if ((modifierKeys & Keys.Alt) == Keys.Alt)
             {
                 // Change the number of divisions.
-                styleHelper.GridDivisions = styleHelper.GridDivisions + (int)((dx - dy)/4);
-                styleHelper.GridDivisions = Math.Min(Math.Max(styleHelper.GridDivisions, minimumSubdivisions), maximumSubdivisions);
+                styleHelper.GridCols = styleHelper.GridCols + (int)((dx - dy)/4);
+                styleHelper.GridRows = styleHelper.GridRows + (int)((dx - dy) / 4);
+                styleHelper.GridCols = Math.Min(Math.Max(styleHelper.GridCols, minimumSubdivisions), maximumSubdivisions);
+                styleHelper.GridRows = Math.Min(Math.Max(styleHelper.GridRows, minimumSubdivisions), maximumSubdivisions);
             }
             else
             {
@@ -575,7 +580,17 @@ namespace Kinovea.ScreenManager
                             break;
                         }
                     case "DrawingStyle":
-                        style = new DrawingStyle(r);
+                        DrawingStyle styleXML = new DrawingStyle(r);
+
+                        // Special case to convert grid divisions into cols x rows.
+                        if (styleXML.Elements.ContainsKey("divisions"))
+                        {
+                            styleXML.Elements.Add("cols", new StyleElementInt((int)styleXML.Elements["divisions"].Value));
+                            styleXML.Elements.Add("rows", new StyleElementInt((int)styleXML.Elements["divisions"].Value));
+                            styleXML.Elements.Remove("divisions");
+                        }
+
+                        style.ImportValues(styleXML);
                         BindStyle();
                         break;
                     case "InfosFading":
@@ -799,7 +814,8 @@ namespace Kinovea.ScreenManager
         {
             DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("Plane"));
             style.Bind(styleHelper, "Color", "color");
-            style.Bind(styleHelper, "GridDivisions", "divisions");
+            style.Bind(styleHelper, "GridCols", "cols");
+            style.Bind(styleHelper, "GridRows", "rows");
             style.Bind(styleHelper, "Toggles/Perspective", "perspective");
         }
         private void StyleHelper_ValueChanged(object sender, EventArgs e)

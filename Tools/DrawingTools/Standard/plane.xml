@@ -13,9 +13,16 @@
     <Color Key="color">
       <Value>255;150;149;237</Value>
     </Color>
-    <GridDivisions Key="divisions">
-      <Value>8</Value>
-    </GridDivisions>
+    <Int Key="cols" DisplayName="Columns">
+      <Min>1</Min>
+      <Max>50</Max>
+      <Value>10</Value>
+    </Int>
+    <Int Key="rows" DisplayName="Rows">
+      <Min>1</Min>
+      <Max>50</Max>
+      <Value>10</Value>
+    </Int>
     <Toggle Key="perspective">
       <Value>true</Value>
       <Variant>Perspective</Variant>

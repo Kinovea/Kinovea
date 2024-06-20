@@ -366,6 +366,7 @@
     <Compile Include="Exporters\Spreadsheet\ExporterCSVTrajectory.cs" />
     <Compile Include="Exporters\Spreadsheet\ExporterJSON.cs" />
     <Compile Include="Exporters\Spreadsheet\ExporterXSLX.cs" />
+    <Compile Include="Metadata\Drawings\Styling\StyleElementFontSize.cs" />
     <Compile Include="Metadata\Interfaces\IDrawingHostView.cs" />
     <Compile Include="Measurement\Geometry\AngleOptions.cs" />
     <Compile Include="Measurement\Geometry\Circle.cs" />
@@ -713,7 +714,7 @@
     <Compile Include="Metadata\Drawings\DrawingSpotlight.cs" />
     <Compile Include="Metadata\Drawings\Styling\AbstractStyleElement.cs" />
     <Compile Include="Metadata\Drawings\Styling\StyleElementColor.cs" />
-    <Compile Include="Metadata\Drawings\Styling\StyleElementFontSize.cs" />
+    <Compile Include="Metadata\Drawings\Styling\StyleElementInt.cs" />
     <Compile Include="Metadata\Drawings\Styling\StyleElementGridDivisions.cs" />
     <Compile Include="Metadata\Drawings\Styling\StyleElementLineEnding.cs" />
     <Compile Include="Metadata\Drawings\Styling\StyleElementLineSize.cs" />

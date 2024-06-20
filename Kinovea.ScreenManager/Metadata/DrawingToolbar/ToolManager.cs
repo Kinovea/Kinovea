@@ -275,30 +275,18 @@ namespace Kinovea.ScreenManager
         {
             // This is used when importing the presets from XML.
             // Styling options may be added or removed between releases.
-            // Compare the drawing's style elements with the elements in the default preset.
-            // TODO: this should be done for KVA too.
-            
-            // Add options unknown to the preset.
-            foreach(KeyValuePair<string, AbstractStyleElement> pair in defaultStyle.Elements)
+            // The default style is coming from the tool and may have extra metadata like min/max values.
+            // We start with the default style and import values from the saved preset.
+
+            // Start by making a deep copy of the default style from the tool.
+            DrawingStyle result = new DrawingStyle();
+            foreach (string key in defaultStyle.Elements.Keys)
             {
-                if(!preset.Elements.ContainsKey(pair.Key))
-                    preset.Elements.Add(pair.Key, pair.Value);
+                result.Elements.Add(key, defaultStyle.Elements[key].Clone());
             }
 
-            // Remove options unknown to the default.
-            HashSet<string> keysToRemove = new HashSet<string>();
-            foreach(KeyValuePair<string, AbstractStyleElement> pair in preset.Elements)
-            {
-                if(!defaultStyle.Elements.ContainsKey(pair.Key))
-                {
-                    keysToRemove.Add(pair.Key);
-                }
-            }
-
-            foreach (string key in keysToRemove)
-                preset.Elements.Remove(key);
-
-            return preset;
+            result.ImportValues(preset);
+            return result;
         }
         
         private static void ImportExternalTools()

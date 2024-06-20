@@ -55,13 +55,26 @@ namespace Kinovea.ScreenManager
         
         #region Constructor
         public DrawingStyle(){}
-        public DrawingStyle(XmlReader xmlReader)
+
+        /// <summary>
+        /// Create the sytle by reading all the style elements from XML.
+        /// This can be called in the context of a tool, a preset or a saved drawing.
+        /// For a drawing this should be followed by a call to Import(), 
+        /// to import the XML parsed values into a reference style cloned 
+        /// from the drawing tool's default or from a preset.
+        /// </summary>
+        public DrawingStyle(XmlReader xmlReader, bool full = false)
         {
-            ReadXml(xmlReader);
+            ReadXml(xmlReader, full);
         }
         #endregion
         
         #region Public Methods
+        
+        /// <summary>
+        /// Deep clone of the style elements.
+        /// This includes any metadata like min/max.
+        /// </summary>
         public DrawingStyle Clone()
         {
             DrawingStyle clone = new DrawingStyle();
@@ -74,22 +87,23 @@ namespace Kinovea.ScreenManager
         }
         
         /// <summary>
-        /// Import an existing style into this one.
-        /// This is used to import styles stored in KVA XML into the default style for the tool.
+        /// Import the values of a style into this one.
+        /// This is used to import styles stored in KVA XML into an existing style.
+        /// The existing style should be a copy of the default style or preset for the tool.
         /// </summary>
-        public void Import(DrawingStyle styleXML)
+        public void ImportValues(DrawingStyle other)
         {
-            // Loop through the element in the stored style and consolidate them.
-            // Discard unknown elements.
-            // Keep existing value (default) for elements that were unknown at the time.
-            foreach (KeyValuePair<string, AbstractStyleElement> element in styleXML.styleElements)
+            foreach (KeyValuePair<string, AbstractStyleElement> element in other.styleElements)
             {
                 if (styleElements.ContainsKey(element.Key))
-                    styleElements[element.Key] = element.Value;
+                    styleElements[element.Key].Value = element.Value.Value;
             }
         }
 
-        public void ReadXml(XmlReader xmlReader)
+        /// <summary>
+        /// Read a drawing style from XML.
+        /// </summary>
+        public void ReadXml(XmlReader xmlReader, bool full)
         {			
             styleElements.Clear();
             
@@ -98,8 +112,8 @@ namespace Kinovea.ScreenManager
             {
                 AbstractStyleElement styleElement = null;
                 string key = xmlReader.GetAttribute("Key");
-                
-                switch(xmlReader.Name)
+
+                switch (xmlReader.Name)
                 {
                     case "Color":
                         styleElement = new StyleElementColor(xmlReader);
@@ -127,6 +141,9 @@ namespace Kinovea.ScreenManager
                         break;
                     case "GridDivisions":
                         styleElement = new StyleElementGridDivisions(xmlReader);
+                        break;
+                    case "Int":
+                        styleElement = new StyleElementInt(xmlReader);
                         break;
                     case "Toggle":
                         styleElement = new StyleElementToggle(xmlReader);

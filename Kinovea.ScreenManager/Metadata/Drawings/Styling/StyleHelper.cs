@@ -114,10 +114,20 @@ namespace Kinovea.ScreenManager
             get { return penShape; }
             set { penShape = value; }
         }
-        public int GridDivisions
+        //public int GridDivisions
+        //{
+        //    get { return gridDivisions;}
+        //    set { gridDivisions = value;}
+        //}
+        public int GridCols
         {
-            get { return gridDivisions;}
-            set { gridDivisions = value;}
+            get { return gridCols; }
+            set { gridCols = value; }
+        }
+        public int GridRows
+        {
+            get { return gridRows; }
+            set { gridRows = value; }
         }
         public bool Curved
         {
@@ -149,6 +159,8 @@ namespace Kinovea.ScreenManager
                 hash ^= trackShape.GetHashCode();
                 hash ^= penShape.GetHashCode();
                 hash ^= gridDivisions.GetHashCode();
+                hash ^= gridCols.GetHashCode();
+                hash ^= gridRows.GetHashCode();
                 hash ^= toggles.GetHashCode();
                 return hash;
             }
@@ -166,6 +178,8 @@ namespace Kinovea.ScreenManager
         private PenShape penShape = PenShape.Solid;
         private Dictionary<string, bool> toggles = new Dictionary<string, bool>();
         private int gridDivisions;
+        private int gridCols;
+        private int gridRows;
         private int minFontSize = 8;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -392,6 +406,24 @@ namespace Kinovea.ScreenManager
                         }
                         break;
                     }
+                case "GridCols":
+                    {
+                        if (value is int)
+                        {
+                            gridCols = (int)value;
+                            imported = true;
+                        }
+                        break;
+                    }
+                case "GridRows":
+                    {
+                        if (value is int)
+                        {
+                            gridRows = (int)value;
+                            imported = true;
+                        }
+                        break;
+                    }
                 case "Toggles/Curved":
                     {
                         if (value is bool)
@@ -526,6 +558,24 @@ namespace Kinovea.ScreenManager
                         if (targetType == typeof(int))
                         {
                             result = gridDivisions;
+                            converted = true;
+                        }
+                        break;
+                    }
+                case "GridCols":
+                    {
+                        if (targetType == typeof(int))
+                        {
+                            result = gridCols;
+                            converted = true;
+                        }
+                        break;
+                    }
+                case "GridRows":
+                    {
+                        if (targetType == typeof(int))
+                        {
+                            result = gridRows;
                             converted = true;
                         }
                         break;
