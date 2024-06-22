@@ -90,6 +90,20 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public Cursor GetManipulationCursor(AbstractDrawing drawing)
         {
+            // For some drawings that require extreme precision we don't even show the cursor.
+            // The object itself is already acting as a cursor anyway.
+            if (drawing is DrawingCrossMark || drawing is DrawingPlane)
+            {
+                Size size = new Size(1, 1);
+                if (bitmap != null)
+                {
+                    bitmap.Dispose();
+                    bitmap = new Bitmap(1, 1);
+                }
+
+                return CursorFromBitmap(bitmap);
+            }
+            
             IDecorable decorable = drawing as IDecorable;
             if (decorable == null)
                 return GetCursorPrecision(null, false);
@@ -117,7 +131,10 @@ namespace Kinovea.ScreenManager
                 return Cursors.Cross;
 
             if (bitmap.Width != tool.Icon.Width || bitmap.Height != tool.Icon.Height)
+            {
+                bitmap.Dispose();
                 bitmap = new Bitmap(tool.Icon.Width, tool.Icon.Height);
+            }
 
             Graphics g = Graphics.FromImage(bitmap);
             g.DrawImage(tool.Icon, 0, 0);
@@ -148,7 +165,10 @@ namespace Kinovea.ScreenManager
             Pen p = new Pen(c, 1);
             int bmpSize = Math.Max((int)crossSize, circleSize);
             if (bitmap.Width != bmpSize || bitmap.Height != bmpSize)
+            {
+                bitmap.Dispose();
                 bitmap = new Bitmap(bmpSize, bmpSize);
+            }
 
             Graphics g = Graphics.FromImage(bitmap);
             g.Clear(Color.Transparent);
@@ -181,7 +201,10 @@ namespace Kinovea.ScreenManager
             Pen p = new Pen(c, 1);
             int size = 9;
             if (bitmap.Width != size || bitmap.Height != size)
+            {
+                bitmap.Dispose();
                 bitmap = new Bitmap(size, size);
+            }
             
             Graphics g = Graphics.FromImage(bitmap);
             g.Clear(Color.Transparent);
@@ -233,7 +256,10 @@ namespace Kinovea.ScreenManager
             Pen p = new Pen(color, 1);
             int size = 15;
             if (bitmap.Width != size || bitmap.Height != size)
+            {
+                bitmap.Dispose();
                 bitmap = new Bitmap(size, size);
+            }
 
             Graphics g = Graphics.FromImage(bitmap);
             g.Clear(Color.Transparent);
