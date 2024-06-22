@@ -28,6 +28,7 @@ using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
+using System.Xaml;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -425,7 +426,7 @@ namespace Kinovea.ScreenManager
                         showGraduations = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
                         break;
                     case "DrawingStyle":
-                        style = new DrawingStyle(r);
+                        style.ImportXML(r);
                         BindStyle();
                         break;
                     default:

@@ -1543,8 +1543,7 @@ namespace Kinovea.ScreenManager
                         ParseTrackPointList(xmlReader, scale, timestampMapper);
                         break;
                     case "DrawingStyle":
-                        DrawingStyle styleXML = new DrawingStyle(xmlReader);
-                        style.ImportValues(styleXML);
+                        style.ImportXML(xmlReader);
                         BindStyle();
                         break;
                     case "MainLabel":

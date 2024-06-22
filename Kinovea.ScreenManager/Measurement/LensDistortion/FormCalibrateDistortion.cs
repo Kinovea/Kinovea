@@ -52,7 +52,6 @@ namespace Kinovea.ScreenManager
             mnuDefault.Click += (s, e) => RestoreDefaults();
             mnuQuit.Click += (s, e) => Close();
 
-            btnCalibrate.Enabled = calibrator.Valid;
             AfterImport();
             PopulatePhysicalParameters();
             PopulateValues();
@@ -63,7 +62,6 @@ namespace Kinovea.ScreenManager
         {
             this.Text = ScreenManagerLang.dlgCameraCalibration_Title;
             
-            btnCalibrate.Text = ScreenManagerLang.dlgCameraCalibration_CalibrateCamera;
             btnOK.Text = ScreenManagerLang.Generic_Apply;
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
             
@@ -162,20 +160,6 @@ namespace Kinovea.ScreenManager
             }
 
             manualUpdate = false;
-        }
-
-        private void btnCalibrate_Click(object sender, EventArgs e)
-        {
-            if (!calibrator.Valid)
-                return;
-
-            distortionParameters = calibrator.Calibrate();
-            distorter.Initialize(distortionParameters, calibrationHelper.ImageSize);
-
-            AfterImport();
-            PopulatePhysicalParameters();
-            PopulateValues();
-            UpdateDistortionGrid();
         }
 
         private void btnOK_Click(object sender, EventArgs e)

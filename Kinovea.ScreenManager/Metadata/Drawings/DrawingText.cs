@@ -344,7 +344,7 @@ namespace Kinovea.ScreenManager
                         arrowEnd = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
                         break;
                     case "DrawingStyle":
-                        style = new DrawingStyle(xmlReader);
+                        style.ImportXML(xmlReader);
                         BindStyle();
                         break;
                     case "InfosFading":

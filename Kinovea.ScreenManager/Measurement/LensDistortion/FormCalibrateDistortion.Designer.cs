@@ -30,7 +30,6 @@
         {
       this.btnOK = new System.Windows.Forms.Button();
       this.btnCancel = new System.Windows.Forms.Button();
-      this.btnCalibrate = new System.Windows.Forms.Button();
       this.grpDistortionCoefficients = new System.Windows.Forms.GroupBox();
       this.nudP2 = new System.Windows.Forms.NumericUpDown();
       this.nudP1 = new System.Windows.Forms.NumericUpDown();
@@ -83,7 +82,7 @@
       // 
       this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.btnOK.Location = new System.Drawing.Point(796, 574);
+      this.btnOK.Location = new System.Drawing.Point(796, 610);
       this.btnOK.Name = "btnOK";
       this.btnOK.Size = new System.Drawing.Size(99, 24);
       this.btnOK.TabIndex = 31;
@@ -95,23 +94,12 @@
       // 
       this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.btnCancel.Location = new System.Drawing.Point(901, 574);
+      this.btnCancel.Location = new System.Drawing.Point(901, 610);
       this.btnCancel.Name = "btnCancel";
       this.btnCancel.Size = new System.Drawing.Size(99, 24);
       this.btnCancel.TabIndex = 32;
       this.btnCancel.Text = "Cancel";
       this.btnCancel.UseVisualStyleBackColor = true;
-      // 
-      // btnCalibrate
-      // 
-      this.btnCalibrate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.btnCalibrate.Location = new System.Drawing.Point(16, 575);
-      this.btnCalibrate.Name = "btnCalibrate";
-      this.btnCalibrate.Size = new System.Drawing.Size(115, 23);
-      this.btnCalibrate.TabIndex = 33;
-      this.btnCalibrate.Text = "Calibrate camera";
-      this.btnCalibrate.UseVisualStyleBackColor = true;
-      this.btnCalibrate.Click += new System.EventHandler(this.btnCalibrate_Click);
       // 
       // grpDistortionCoefficients
       // 
@@ -472,7 +460,7 @@
       this.mnuOpen.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
       this.mnuOpen.Image = global::Kinovea.ScreenManager.Properties.Resources.folder;
       this.mnuOpen.Name = "mnuOpen";
-      this.mnuOpen.Size = new System.Drawing.Size(180, 22);
+      this.mnuOpen.Size = new System.Drawing.Size(153, 22);
       this.mnuOpen.Text = "Open";
       // 
       // mnuSave
@@ -480,28 +468,28 @@
       this.mnuSave.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
       this.mnuSave.Image = global::Kinovea.ScreenManager.Properties.Resources.filesave;
       this.mnuSave.Name = "mnuSave";
-      this.mnuSave.Size = new System.Drawing.Size(180, 22);
+      this.mnuSave.Size = new System.Drawing.Size(153, 22);
       this.mnuSave.Text = "Save";
       // 
       // mnuDefault
       // 
       this.mnuDefault.Image = global::Kinovea.ScreenManager.Properties.Resources.bin_empty;
       this.mnuDefault.Name = "mnuDefault";
-      this.mnuDefault.Size = new System.Drawing.Size(180, 22);
+      this.mnuDefault.Size = new System.Drawing.Size(153, 22);
       this.mnuDefault.Text = "Restore default";
       // 
       // mnuQuit
       // 
       this.mnuQuit.Image = global::Kinovea.ScreenManager.Properties.Resources.quit2;
       this.mnuQuit.Name = "mnuQuit";
-      this.mnuQuit.Size = new System.Drawing.Size(180, 22);
+      this.mnuQuit.Size = new System.Drawing.Size(153, 22);
       this.mnuQuit.Text = "Quit";
       // 
       // grpAppearance
       // 
       this.grpAppearance.Location = new System.Drawing.Point(16, 426);
       this.grpAppearance.Name = "grpAppearance";
-      this.grpAppearance.Size = new System.Drawing.Size(219, 141);
+      this.grpAppearance.Size = new System.Drawing.Size(219, 178);
       this.grpAppearance.TabIndex = 47;
       this.grpAppearance.TabStop = false;
       this.grpAppearance.Text = "Appearance";
@@ -514,7 +502,7 @@
       this.pnlPreview.BackColor = System.Drawing.Color.DimGray;
       this.pnlPreview.Location = new System.Drawing.Point(241, 43);
       this.pnlPreview.Name = "pnlPreview";
-      this.pnlPreview.Size = new System.Drawing.Size(759, 525);
+      this.pnlPreview.Size = new System.Drawing.Size(759, 561);
       this.pnlPreview.TabIndex = 48;
       this.pnlPreview.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlPreview_Paint);
       this.pnlPreview.Resize += new System.EventHandler(this.pnlPreview_Resize);
@@ -524,12 +512,11 @@
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.Color.White;
-      this.ClientSize = new System.Drawing.Size(1008, 610);
+      this.ClientSize = new System.Drawing.Size(1008, 646);
       this.Controls.Add(this.pnlPreview);
       this.Controls.Add(this.grpAppearance);
       this.Controls.Add(this.grpIntrinsics);
       this.Controls.Add(this.grpDistortionCoefficients);
-      this.Controls.Add(this.btnCalibrate);
       this.Controls.Add(this.btnOK);
       this.Controls.Add(this.btnCancel);
       this.Controls.Add(this.menuStrip1);
@@ -565,7 +552,6 @@
 
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Button btnCalibrate;
         private System.Windows.Forms.GroupBox grpDistortionCoefficients;
         private System.Windows.Forms.Label lblP2;
         private System.Windows.Forms.Label lblP1;

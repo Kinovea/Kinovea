@@ -316,7 +316,7 @@ namespace Kinovea.ScreenManager
                             xmlReader.ReadOuterXml();
                         break;
                    case "DrawingStyle":
-                        style = new DrawingStyle(xmlReader);
+                        style.ImportXML(xmlReader);
                         BindStyle();
                         break;
                     case "InfosFading":

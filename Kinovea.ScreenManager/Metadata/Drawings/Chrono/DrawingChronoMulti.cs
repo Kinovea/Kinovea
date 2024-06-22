@@ -491,7 +491,7 @@ namespace Kinovea.ScreenManager
                         ParseWorkingValues(xmlReader, timestampMapper);
                         break;
                     case "DrawingStyle":
-                        style = new DrawingStyle(xmlReader);
+                        style.ImportXML(xmlReader);
                         BindStyle();
                         break;
                     case "Label":

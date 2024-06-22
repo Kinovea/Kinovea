@@ -313,7 +313,7 @@ namespace Kinovea.ScreenManager
                         showThirds = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
                         break;
                     case "DrawingStyle":
-                        style = new DrawingStyle(r);
+                        style.ImportXML(r);
                         BindStyle();
                         break;
                     default:

@@ -59,13 +59,14 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Create the sytle by reading all the style elements from XML.
         /// This can be called in the context of a tool, a preset or a saved drawing.
+        /// 
         /// For a drawing this should be followed by a call to Import(), 
         /// to import the XML parsed values into a reference style cloned 
         /// from the drawing tool's default or from a preset.
         /// </summary>
-        public DrawingStyle(XmlReader xmlReader, bool full = false)
+        public DrawingStyle(XmlReader xmlReader)
         {
-            ReadXml(xmlReader, full);
+            ReadXml(xmlReader);
         }
         #endregion
         
@@ -88,8 +89,6 @@ namespace Kinovea.ScreenManager
         
         /// <summary>
         /// Import the values of a style into this one.
-        /// This is used to import styles stored in KVA XML into an existing style.
-        /// The existing style should be a copy of the default style or preset for the tool.
         /// </summary>
         public void ImportValues(DrawingStyle other)
         {
@@ -101,9 +100,19 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// Read a drawing style from XML and import the values into this style.
+        /// This is used to import styles stored in KVA XML into an existing style.
+        /// The existing style should be a copy of the default style or preset for the tool.
+        public void ImportXML(XmlReader xmlReader)
+        {
+            DrawingStyle style = new DrawingStyle(xmlReader);
+            ImportValues(style);
+        }
+
+        /// <summary>
         /// Read a drawing style from XML.
         /// </summary>
-        public void ReadXml(XmlReader xmlReader, bool full)
+        public void ReadXml(XmlReader xmlReader)
         {			
             styleElements.Clear();
             
@@ -263,6 +272,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public static void SanityCheck(DrawingStyle input, DrawingStyle preset)
         {
+            // This shouldn't be necessary anymore.
             foreach (string key in preset.Elements.Keys)
             {
                 if (!input.Elements.ContainsKey(key))

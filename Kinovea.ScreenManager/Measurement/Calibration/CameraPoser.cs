@@ -33,18 +33,18 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Gets the 3D position of the camera in the space of the calibration rectangle.
+        /// Plane is the calibration rectangle in world space.
         /// </summary>
         public static Vector3 Compute(QuadrilateralF plane, ProjectiveMapper mapping, DistortionParameters lensCalib)
         {
             // Based on: MONOCULAR RECTANGLE RECONSTRUCTION. Wefelscheid, 2011.
             // Paragraph 3.1 - Geometric method.
 
-            // Note: at this point the points are assumed to be undistorted already.
-
             // Get the mid points of the rectangle edges in homogenous coordinates,
             // that is on the image plane at z=1. In the paper this part is calculated
             // using the vanishing points but we don't need that since we already have the homography.
             // This covers equations 1 to 4 of the paper.
+            // First get the mid points in world space then project them to the image plane.
             PointF p12 = new PointF((plane.A.X + plane.B.X) / 2, (plane.A.Y + plane.B.Y) / 2);
             PointF p23 = new PointF((plane.B.X + plane.C.X) / 2, (plane.B.Y + plane.C.Y) / 2);
             PointF p34 = new PointF((plane.C.X + plane.D.X) / 2, (plane.C.Y + plane.D.Y) / 2);

@@ -197,7 +197,7 @@ namespace Kinovea.ScreenManager
                 switch(r.Name)
                 {
                     case "DrawingStyle":
-                        style = new DrawingStyle(r);
+                        style.ImportXML(r);
                         BindStyle();
                         break;
                     case "AutoNumber":

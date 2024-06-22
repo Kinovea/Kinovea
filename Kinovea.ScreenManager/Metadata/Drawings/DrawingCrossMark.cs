@@ -266,7 +266,7 @@ namespace Kinovea.ScreenManager
                             break;
                         }
                     case "DrawingStyle":
-                        style = new DrawingStyle(xmlReader);
+                        style.ImportXML(xmlReader);
                         BindStyle();
                         break;
                     case "ShowAsDot":
