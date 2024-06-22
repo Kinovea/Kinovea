@@ -31,7 +31,7 @@
       this.btnOK = new System.Windows.Forms.Button();
       this.btnCancel = new System.Windows.Forms.Button();
       this.grpIntrinsics = new System.Windows.Forms.GroupBox();
-      this.label1 = new System.Windows.Forms.Label();
+      this.lblCameraPosition = new System.Windows.Forms.Label();
       this.lblFocalLength = new System.Windows.Forms.Label();
       this.lblSensorWidth = new System.Windows.Forms.Label();
       this.gpControlPoints = new System.Windows.Forms.GroupBox();
@@ -41,6 +41,7 @@
       this.rbFix1D = new System.Windows.Forms.RadioButton();
       this.olvControlPoints = new BrightIdeasSoftware.ObjectListView();
       this.btnCSV = new System.Windows.Forms.Button();
+      this.lblCameraDistance = new System.Windows.Forms.Label();
       this.grpIntrinsics.SuspendLayout();
       this.gpControlPoints.SuspendLayout();
       this.gpValidationMode.SuspendLayout();
@@ -51,7 +52,7 @@
       // 
       this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.btnOK.Location = new System.Drawing.Point(293, 489);
+      this.btnOK.Location = new System.Drawing.Point(293, 526);
       this.btnOK.Name = "btnOK";
       this.btnOK.Size = new System.Drawing.Size(99, 24);
       this.btnOK.TabIndex = 31;
@@ -63,7 +64,7 @@
       // 
       this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.btnCancel.Location = new System.Drawing.Point(398, 489);
+      this.btnCancel.Location = new System.Drawing.Point(398, 526);
       this.btnCancel.Name = "btnCancel";
       this.btnCancel.Size = new System.Drawing.Size(99, 24);
       this.btnCancel.TabIndex = 32;
@@ -74,24 +75,25 @@
       // 
       this.grpIntrinsics.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.grpIntrinsics.Controls.Add(this.label1);
+      this.grpIntrinsics.Controls.Add(this.lblCameraDistance);
+      this.grpIntrinsics.Controls.Add(this.lblCameraPosition);
       this.grpIntrinsics.Controls.Add(this.lblFocalLength);
       this.grpIntrinsics.Controls.Add(this.lblSensorWidth);
       this.grpIntrinsics.Location = new System.Drawing.Point(16, 12);
       this.grpIntrinsics.Name = "grpIntrinsics";
-      this.grpIntrinsics.Size = new System.Drawing.Size(477, 111);
+      this.grpIntrinsics.Size = new System.Drawing.Size(477, 153);
       this.grpIntrinsics.TabIndex = 36;
       this.grpIntrinsics.TabStop = false;
       this.grpIntrinsics.Text = "Camera";
       // 
       // label1
       // 
-      this.label1.AutoSize = true;
-      this.label1.Location = new System.Drawing.Point(18, 83);
-      this.label1.Name = "label1";
-      this.label1.Size = new System.Drawing.Size(110, 13);
-      this.label1.TabIndex = 51;
-      this.label1.Text = "Camera position in 3D";
+      this.lblCameraPosition.AutoSize = true;
+      this.lblCameraPosition.Location = new System.Drawing.Point(18, 83);
+      this.lblCameraPosition.Name = "label1";
+      this.lblCameraPosition.Size = new System.Drawing.Size(110, 13);
+      this.lblCameraPosition.TabIndex = 51;
+      this.lblCameraPosition.Text = "Camera position in 3D";
       // 
       // lblFocalLength
       // 
@@ -118,9 +120,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
       this.gpControlPoints.Controls.Add(this.gpValidationMode);
       this.gpControlPoints.Controls.Add(this.olvControlPoints);
-      this.gpControlPoints.Location = new System.Drawing.Point(16, 129);
+      this.gpControlPoints.Location = new System.Drawing.Point(16, 171);
       this.gpControlPoints.Name = "gpControlPoints";
-      this.gpControlPoints.Size = new System.Drawing.Size(477, 354);
+      this.gpControlPoints.Size = new System.Drawing.Size(477, 349);
       this.gpControlPoints.TabIndex = 52;
       this.gpControlPoints.TabStop = false;
       this.gpControlPoints.Text = "Control points";
@@ -190,7 +192,7 @@
       this.olvControlPoints.Location = new System.Drawing.Point(17, 139);
       this.olvControlPoints.Name = "olvControlPoints";
       this.olvControlPoints.ShowSortIndicators = false;
-      this.olvControlPoints.Size = new System.Drawing.Size(443, 197);
+      this.olvControlPoints.Size = new System.Drawing.Size(443, 192);
       this.olvControlPoints.TabIndex = 26;
       this.olvControlPoints.UseCompatibleStateImageBehavior = false;
       this.olvControlPoints.View = System.Windows.Forms.View.Details;
@@ -201,7 +203,7 @@
       // btnCSV
       // 
       this.btnCSV.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnCSV.Location = new System.Drawing.Point(16, 489);
+      this.btnCSV.Location = new System.Drawing.Point(16, 526);
       this.btnCSV.Name = "btnCSV";
       this.btnCSV.Size = new System.Drawing.Size(99, 24);
       this.btnCSV.TabIndex = 53;
@@ -209,12 +211,21 @@
       this.btnCSV.UseVisualStyleBackColor = true;
       this.btnCSV.Click += new System.EventHandler(this.btnCSV_Click);
       // 
+      // lblCameraDistance
+      // 
+      this.lblCameraDistance.AutoSize = true;
+      this.lblCameraDistance.Location = new System.Drawing.Point(18, 113);
+      this.lblCameraDistance.Name = "lblCameraDistance";
+      this.lblCameraDistance.Size = new System.Drawing.Size(86, 13);
+      this.lblCameraDistance.TabIndex = 52;
+      this.lblCameraDistance.Text = "Camera distance";
+      // 
       // FormCalibrationValidation
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.Color.White;
-      this.ClientSize = new System.Drawing.Size(505, 525);
+      this.ClientSize = new System.Drawing.Size(505, 562);
       this.Controls.Add(this.btnCSV);
       this.Controls.Add(this.gpControlPoints);
       this.Controls.Add(this.grpIntrinsics);
@@ -243,7 +254,7 @@
         private System.Windows.Forms.GroupBox grpIntrinsics;
         private System.Windows.Forms.Label lblFocalLength;
         private System.Windows.Forms.Label lblSensorWidth;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblCameraPosition;
         private System.Windows.Forms.GroupBox gpControlPoints;
         private BrightIdeasSoftware.ObjectListView olvControlPoints;
         private System.Windows.Forms.GroupBox gpValidationMode;
@@ -251,5 +262,6 @@
         private System.Windows.Forms.RadioButton rbFix1D;
         private System.Windows.Forms.RadioButton rbCompute3D;
         private System.Windows.Forms.Button btnCSV;
+        private System.Windows.Forms.Label lblCameraDistance;
     }
 }

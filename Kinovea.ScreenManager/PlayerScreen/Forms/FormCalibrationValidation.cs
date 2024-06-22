@@ -24,9 +24,20 @@ namespace Kinovea.ScreenManager
         private CalibrationHelper otherCalibrationHelper;
         private Action invalidator;
 
-        private List<DrawingCrossMark> markers = new List<DrawingCrossMark>(); 
-        private List<PointF> pointsOnGrid = new List<PointF>();     // 2D points extracted from drawings.
-        private List<NamedPoint> namedPoints = new List<NamedPoint>();   // 3D points + drawing name.
+        // List of markers used for the table, in order.
+        // In the case of dual view this only contains the matching markers.
+        private List<DrawingCrossMark> markers = new List<DrawingCrossMark>();
+
+        // pointsOnGrid: Original coordinates at z=0 in world space.
+        // Extracted from the drawing.
+        // Includes world offset, stored at full precision.
+        private List<PointF> pointsOnGrid = new List<PointF>();     
+
+        // namedPoints: Calculated coordinates, possibly in 3D.
+        // This is updated by calculation or user input.
+        // Includes world offset, stored at display precision.
+        private List<NamedPoint> namedPoints = new List<NamedPoint>();
+
         private List<int> fixedComponent = new List<int>(); // Index of fixed component.
         private CalibrationValidationMode validationMode = CalibrationValidationMode.Fix3D;
         private Vector3 eye;
@@ -54,14 +65,24 @@ namespace Kinovea.ScreenManager
             if (hasFullCalibration)
             {
                 eye = ComputeCameraPosition(calibrationHelper);
-                
+
                 // Note: the resulting point is relative to the grid origin, not to
-                // the user's custom origin if they moved the coordinate system axes, 
-                // and it also doesn't take into account the custom value offset either.
+                // the user's custom origin if they moved the coordinate system axes. 
                 // It should already take into account the rotation and mirroring of the 
                 // calibration plane as this is baked directly in the quadImage coordinates.
-                label1.Text = string.Format("Camera position ({0}): X:{1:0.00000}, Y:{2:0.00000}, Z:{3:0.00000}.", 
-                    calibrationHelper.GetLengthAbbreviation(), eye.X, eye.Y, eye.Z);
+                // Add the world offset for display.
+                PointF offset = calibrationHelper.GetWorldOffset();
+                Vector3 eyeDisplay = new Vector3(eye.X + offset.X, eye.Y + offset.Y, eye.Z);
+                eyeDisplay = RoundVector(eyeDisplay);
+                lblCameraPosition.Text = string.Format("Camera position ({0}): X:{1}, Y:{2}, Z:{3}.", 
+                    calibrationHelper.GetLengthAbbreviation(), 
+                    eyeDisplay.X, eyeDisplay.Y, eyeDisplay.Z);
+
+                // Distance to origin.
+                float distance = eyeDisplay.Norm;
+                lblCameraDistance.Text = string.Format("Distance to origin ({0}): {1}", 
+                    calibrationHelper.GetLengthAbbreviation(),
+                    Math.Round(distance, precision));
 
                 // Compute the camera position of the other screen if possible.
                 if (otherMetadata != null && otherCalibrationHelper != null)
@@ -100,8 +121,8 @@ namespace Kinovea.ScreenManager
             lblSensorWidth.ForeColor = hasLensCalibration ? Color.Green : Color.Red;
             lblFocalLength.ForeColor = hasPlaneCalibration ? Color.Green : Color.Red;
 
-            label1.Enabled = hasFullCalibration;
-            label1.Text = "Camera position: unknown";
+            lblCameraPosition.Enabled = hasFullCalibration;
+            lblCameraPosition.Text = "Camera position: unknown";
 
             gpControlPoints.Enabled = hasFullCalibration;
             gpControlPoints.Text = "Control points";
@@ -287,6 +308,7 @@ namespace Kinovea.ScreenManager
                 // The user fixed one coordinate, we recompute the other two,
                 // and update the values in the table.
                 Vector3 p = GetPoint(index, componentIndex, newValue);
+                p = RoundVector(p);
                 np.X = p.X;
                 np.Y = p.Y;
                 np.Z = p.Z;
@@ -384,24 +406,32 @@ namespace Kinovea.ScreenManager
             // going from the camera point to the marker on the calibrated plane.
             // Intersect this ray with the plane specified by the user fixing
             // one coordinate.
-            var target = new Vector3(pointsOnGrid[index].X, pointsOnGrid[index].Y, 0);
+
+            // The user provides coordinates with the world offset.
+            // We must subtract it before computing the new point, and add it back after.
+            // The eye point does not contain the offset.
+            // pointsOnGrid (stores the original coordinate at z=0 in full precision) also
+            // contains the offset and must be adjusted.
+            PointF offset = calibrationHelper.GetWorldOffset();
+
+            var target = new Vector3(pointsOnGrid[index].X - offset.X, pointsOnGrid[index].Y - offset.Y, 0);
             var view = target - eye;
             var p = new Vector3(0, 0, 0);
             if (componentIndex == 0)
             {
-                float x = newValue;
+                float x = newValue - offset.X;
                 float r = (x - eye.X) / view.X;
                 float y = eye.Y + r * view.Y;
                 float z = eye.Z + r * view.Z;
-                p = new Vector3(x, y, z);
+                p = new Vector3(x + offset.X, y + offset.Y, z);
             }
             else if (componentIndex == 1)
             {
-                float y = newValue;
+                float y = newValue - offset.Y;
                 float r = (y - eye.Y) / view.Y;
                 float x = eye.X + r * view.X;
                 float z = eye.Z + r * view.Z;
-                p = new Vector3(x, y, z);
+                p = new Vector3(x + offset.X, y + offset.Y, z);
             }
             else if (componentIndex == 2)
             {
@@ -409,7 +439,7 @@ namespace Kinovea.ScreenManager
                 float r = (z - eye.Z) / view.Z;
                 float x = eye.X + r * view.X;
                 float y = eye.Y + r * view.Y;
-                p = new Vector3(x, y, z);
+                p = new Vector3(x + offset.X, y + offset.Y, z);
             }
 
             return p;
@@ -438,17 +468,21 @@ namespace Kinovea.ScreenManager
                 np.Z = newValue;
             }
 
+            // User provides point with offset, we must remove it before any computation.
+            PointF offset = calibrationHelper.GetWorldOffset();
+            Vector3 p = new Vector3(np.X - offset.X, np.Y - offset.Y, np.Z);
+
             // Project the point on the calibrated grid.
-            float r = (np.Z - eye.Z) / (-eye.Z);
-            float x = eye.X + (np.X - eye.X) / r;
-            float y = eye.Y + (np.Y - eye.Y) / r;
+            float r = (p.Z - eye.Z) / (-eye.Z);
+            float x = eye.X + (p.X - eye.X) / r;
+            float y = eye.Y + (p.Y - eye.Y) / r;
             PointF pointOnGrid = new PointF(x, y);
 
             // Transform to image space (including radial distortion).
-            PointF p = calibrationHelper.GetImagePoint(pointOnGrid);
+            PointF p2 = calibrationHelper.GetImagePoint(pointOnGrid);
 
             // Move the object and refresh the view.
-            markers[index].MovePoint(p);
+            markers[index].MovePoint(p2);
             if (invalidator != null)
                 invalidator();
 
