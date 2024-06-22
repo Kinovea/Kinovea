@@ -24,12 +24,13 @@ namespace Kinovea.ScreenManager
         private CalibrationHelper otherCalibrationHelper;
         private Action invalidator;
 
-        // List of markers used for the table, in order.
+        // List of markers used for the table, in alphabetical order.
         // In the case of dual view this only contains the matching markers.
+        // The other lists are in sync with this one.
         private List<DrawingCrossMark> markers = new List<DrawingCrossMark>();
 
         // pointsOnGrid: Original coordinates at z=0 in world space.
-        // Extracted from the drawing.
+        // Extracted from the drawing pixel coordinates.
         // Includes world offset, stored at full precision.
         private List<PointF> pointsOnGrid = new List<PointF>();     
 
@@ -38,13 +39,14 @@ namespace Kinovea.ScreenManager
         // Includes world offset, stored at display precision.
         private List<NamedPoint> namedPoints = new List<NamedPoint>();
 
-        private List<int> fixedComponent = new List<int>(); // Index of fixed component.
         private CalibrationValidationMode validationMode = CalibrationValidationMode.Fix3D;
-        private Vector3 eye;
-        private Vector3 eye2;
+        private List<int> fixedComponent = new List<int>(); // Index of axis fixed by user for Fix1D mode.
+        private Vector3 eye;    // Computed camera position, without world offset at full precision.
+        private Vector3 eye2;   
         private int precision = 5;
         private bool hasFullCalibration;
         private bool hasOtherFullCalibration = false;
+
         private Font fontRegular = new Font("Consolas", 9, FontStyle.Regular);
         private Font fontBold = new Font("Consolas", 9, FontStyle.Bold);
         private Font fontItalic = new Font("Consolas", 9, FontStyle.Italic);
