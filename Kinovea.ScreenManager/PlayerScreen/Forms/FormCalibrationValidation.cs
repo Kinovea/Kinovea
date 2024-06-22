@@ -31,6 +31,7 @@ namespace Kinovea.ScreenManager
         private CalibrationValidationMode validationMode = CalibrationValidationMode.Fix3D;
         private Vector3 eye;
         private Vector3 eye2;
+        private int precision = 5;
         private bool hasFullCalibration;
         private bool hasOtherFullCalibration = false;
         private Font fontRegular = new Font("Consolas", 9, FontStyle.Regular);
@@ -59,7 +60,7 @@ namespace Kinovea.ScreenManager
                 // and it also doesn't take into account the custom value offset either.
                 // It should already take into account the rotation and mirroring of the 
                 // calibration plane as this is baked directly in the quadImage coordinates.
-                label1.Text = string.Format("Camera position ({0}): X:{1:0.000}, Y:{2:0.000}, Z:{3:0.000}.", 
+                label1.Text = string.Format("Camera position ({0}): X:{1:0.00000}, Y:{2:0.00000}, Z:{3:0.00000}.", 
                     calibrationHelper.GetLengthAbbreviation(), eye.X, eye.Y, eye.Z);
 
                 // Compute the camera position of the other screen if possible.
@@ -192,7 +193,7 @@ namespace Kinovea.ScreenManager
                 foreach (var marker in markers)
                 {
                     var p = calibrationHelper.GetPoint(marker.Location);
-                    var p2 = Round3(new Vector3(p.X, p.Y, 0));
+                    var p2 = RoundVector(new Vector3(p.X, p.Y, 0));
 
                     var namedPoint = new NamedPoint(marker.Name, p2.X, p2.Y, p2.Z);
                     namedPoints.Add(namedPoint);
@@ -238,7 +239,7 @@ namespace Kinovea.ScreenManager
                     var p1 = calibrationHelper.GetPoint(markers1[i].Location);
                     var p2 = otherCalibrationHelper.GetPoint(markers2[j].Location);
                     var p = Compute3D(eye, p1, eye2, p2);
-                    p = Round3(p);
+                    p = RoundVector(p);
 
                     // Build the named point, this is what's used by the table.
                     var namedPoint = new NamedPoint(markers1[i].Name, p.X, p.Y, p.Z);
@@ -522,11 +523,11 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Round a vector3 to 3 decimal places.
+        /// Round a vector3 to the configured precision.
         /// </summary>
-        private Vector3 Round3(Vector3 p)
+        private Vector3 RoundVector(Vector3 p)
         {
-            return new Vector3((float)Math.Round(p.X, 3), (float)Math.Round(p.Y, 3), (float)Math.Round(p.Z, 3));
+            return new Vector3((float)Math.Round(p.X, precision), (float)Math.Round(p.Y, precision), (float)Math.Round(p.Z, precision));
         }
         #endregion
     }
