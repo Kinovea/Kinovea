@@ -257,13 +257,11 @@ namespace Kinovea.ScreenManager
             this.size = sizeWorld;
             this.quadWorld = new QuadrilateralF(size.Width, size.Height);
             this.quadImage = quadImage.Clone();
-
             mapping.Update(quadWorld, quadImage);
             origin = mapping.Backward(originImage);
             offset = PointF.Empty;
-            this.initialized = true;
-
             valid = quadImage.IsConvex;
+            this.initialized = true;
         }
 
         /// <summary>
@@ -462,8 +460,10 @@ namespace Kinovea.ScreenManager
             }
             
             r.ReadEndElement();
-            
-            mapping.Update(new QuadrilateralF(size.Width, size.Height), quadImage);
+
+            // Semi-initialize (do not reset origin and offset).
+            quadWorld = new QuadrilateralF(size.Width, size.Height);
+            mapping.Update(quadWorld, quadImage);
             valid = quadImage.IsConvex;
             initialized = true;
         }
@@ -519,11 +519,11 @@ namespace Kinovea.ScreenManager
 
             r.ReadEndElement();
 
-            // Update mapping.
+            // Semi-initialize (do not reset origin and offset).
             size = new SizeF(length, length);
+            quadWorld = new QuadrilateralF(size.Width, size.Height);
             quadImage = MakeQuad(line.Start, line.End, calibrationAxis);
-
-            mapping.Update(new QuadrilateralF(size.Width, size.Height), quadImage);
+            mapping.Update(quadWorld, quadImage);
             valid = quadImage.IsConvex;
             initialized = true;
         }
