@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -22,11 +23,8 @@ namespace Kinovea.ScreenManager
         public void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer,
             SolidBrush brushFill, SolidBrush fontBrush, Font font, int margin, bool precise)
         {
-            string label = "";
-            if (precise)
-                label = String.Format("{0:0.000}", Value);
-            else
-                label = String.Format("{0}", Math.Round(Value, 3));
+            int dp = PreferencesManager.PlayerPreferences.DecimalPlaces;
+            string label = String.Format("{0}", Math.Round(Value, dp));
 
             PointF location;
             if (distorter != null && distorter.Initialized)

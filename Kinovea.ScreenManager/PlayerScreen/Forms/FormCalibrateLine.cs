@@ -91,7 +91,7 @@ namespace Kinovea.ScreenManager
             bool calibrated = false;
             if(calibrationHelper.IsCalibrated && calibrationHelper.CalibratorType == CalibratorType.Line)
             {
-                string text = calibrationHelper.GetLengthText(line.A, line.B, true, false);
+                string text = calibrationHelper.GetLengthText(line.A, line.B, false);
                 float value;
                 bool parsed = float.TryParse(text, out value);
                 if (parsed)

@@ -668,7 +668,7 @@ namespace Kinovea.ScreenManager
                     displayText = name;
                     break;
                 case MeasureLabelType.TravelDistance:
-                    displayText = CalibrationHelper.GetLengthText(points["a"], points["b"], true, true);
+                    displayText = CalibrationHelper.GetLengthText(points["a"], points["b"], true);
                     break;
                 default:
                     break;

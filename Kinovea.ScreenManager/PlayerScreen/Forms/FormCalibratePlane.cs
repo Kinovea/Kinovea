@@ -51,6 +51,7 @@ namespace Kinovea.ScreenManager
             NudHelper.FixNudScroll(nudB);
             NudHelper.FixNudScroll(nudOffsetX);
             NudHelper.FixNudScroll(nudOffsetY);
+            NudHelper.FixNudScroll(nudDecimalPlaces);
 
             InitializeValues();
         }
@@ -83,6 +84,8 @@ namespace Kinovea.ScreenManager
             toolTip1.SetToolTip(btnFlipX, "Flip X axis");
             toolTip1.SetToolTip(btnFlipY, "Flip Y axis");
             toolTip1.SetToolTip(btnRotate90, "Rotate 90°");
+
+            lblDecimalPlaces.Text = "Decimal places";
         }
         private void InitializeValues()
         {
@@ -116,7 +119,7 @@ namespace Kinovea.ScreenManager
             nudOffsetX.Value = (decimal)offset.X;
             nudOffsetY.Value = (decimal)offset.Y;
             lblSizeHelp.Text = ScreenManagerLang.dlgCalibratePlane_HelpPlane;
-            lblOffsetHelp.Text = string.Format("Offset applied to coordinates ({0}).",
+            lblOffsetHelp.Text = string.Format("Offset applied to coordinates ({0})",
                 UnitHelper.LengthAbbreviation(calibrationHelper.LengthUnit));
 
             // Prepare drawing.
@@ -141,6 +144,8 @@ namespace Kinovea.ScreenManager
             }
 
             UpdateTheoreticalPrecision();
+
+            nudDecimalPlaces.Value = PreferencesManager.PlayerPreferences.DecimalPlaces;
         }
 
         private void nud_ValueChanged(object sender, EventArgs e)
@@ -185,6 +190,8 @@ namespace Kinovea.ScreenManager
                 calibrationHelper.CalibrationByPlane_Initialize(drawingPlane.Id, size, drawingPlane.QuadImage);
                 calibrationHelper.LengthUnit = (LengthUnit)cbUnit.SelectedIndex;
                 calibrationHelper.SetOffset(offset);
+
+                PreferencesManager.PlayerPreferences.DecimalPlaces = (int)nudDecimalPlaces.Value;
             }
             catch
             {

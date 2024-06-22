@@ -853,7 +853,7 @@ namespace Kinovea.ScreenManager
                 
                 PointF untransformedA = distance.Point1 >= 0 ? genericPosture.PointList[distance.Point1] : GetUntransformedComputedPoint(distance.Point1);
                 PointF untransformedB = distance.Point2 >= 0 ? genericPosture.PointList[distance.Point2] : GetUntransformedComputedPoint(distance.Point2);
-                string label = CalibrationHelper.GetLengthText(untransformedA, untransformedB, true, true);
+                string label = CalibrationHelper.GetLengthText(untransformedA, untransformedB, true);
                 
                 if(!string.IsNullOrEmpty(distance.Symbol))
                     label = string.Format("{0} = {1}", distance.Symbol, label);
@@ -875,7 +875,7 @@ namespace Kinovea.ScreenManager
                     continue;
                 
                 PointF untransformedP = position.Point >= 0 ? genericPosture.PointList[position.Point] : GetUntransformedComputedPoint(position.Point);
-                string label = CalibrationHelper.GetPointText(untransformedP, true, true, infosFading.ReferenceTimestamp);
+                string label = CalibrationHelper.GetPointText(untransformedP, true, infosFading.ReferenceTimestamp);
                 
                 if(!string.IsNullOrEmpty(position.Symbol))
                     label = string.Format("{0} = {1}", position.Symbol, label);

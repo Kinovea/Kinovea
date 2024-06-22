@@ -292,6 +292,9 @@ namespace Kinovea.ScreenManager
             return calibrator;
         }
 
+        /// <summary>
+        /// Initialize the calibration with a new drawing id, world rectangle size and image quadrilateral.
+        /// </summary>
         public void CalibrationByPlane_Initialize(Guid id, SizeF size, QuadrilateralF quadImage)
         {
             calibrationDrawingId = id;
@@ -300,6 +303,9 @@ namespace Kinovea.ScreenManager
             AfterCalibrationChanged();
         }
 
+        /// <summary>
+        /// Updates the calibration coordinate system without changing the real-world rectangle nor the user-defined origin.
+        /// </summary>
         public void CalibrationByPlane_Update(Guid id, QuadrilateralF quadImage)
         {
             if (calibratorType != CalibratorType.Plane || id != calibrationDrawingId)
@@ -462,12 +468,11 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Value as text
-        public string GetPointText(PointF p, bool precise, bool abbreviation, long time)
+        public string GetPointText(PointF p, bool abbreviation, long time)
         {
             PointF a = GetPointAtTime(p, time);
-            
-            string valueTemplate = precise ? "{0:0.00} ; {1:0.00}" : "{0:0} ; {1:0}";
-            string text = String.Format(valueTemplate, a.X, a.Y);
+            int precision = PreferencesManager.PlayerPreferences.DecimalPlaces;
+            string text = String.Format("{0} ; {1}", Math.Round(a.X, precision), Math.Round(a.Y, precision));
             
             if (abbreviation)
                 text = text + " " + String.Format("{0}", UnitHelper.LengthAbbreviation(lengthUnit));
@@ -478,12 +483,12 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Takes two points in image coordinates and return the length of the segment in real world units.
         /// </summary>
-        public string GetLengthText(PointF p1, PointF p2, bool precise, bool abbreviation)
+        public string GetLengthText(PointF p1, PointF p2, bool abbreviation)
         {
+            int precision = PreferencesManager.PlayerPreferences.DecimalPlaces;
             float length = GeometryHelper.GetDistance(GetPoint(p1), GetPoint(p2));
-            string valueTemplate = precise ? "{0:0.00}" : "{0:0}";
-            string text = String.Format(valueTemplate, length);
-            
+            string text = String.Format("{0}", Math.Round(length, precision));
+
             if (abbreviation)
                 text = text + " " + String.Format("{0}", UnitHelper.LengthAbbreviation(lengthUnit));
             
@@ -495,11 +500,12 @@ namespace Kinovea.ScreenManager
         /// that is along the X-axis in world space.
         /// Returns the circumference in world units.
         /// </summary>
-        public string GetCircumferenceText(PointF p1, PointF p2, bool precise, bool abbreviation)
+        public string GetCircumferenceText(PointF p1, PointF p2, bool abbreviation)
         {
+            int precision = PreferencesManager.PlayerPreferences.DecimalPlaces;
             float length = GeometryHelper.GetDistance(GetPoint(p1), GetPoint(p2));
-            string valueTemplate = precise ? "{0:0.00}" : "{0:0}";
-            string text = String.Format(valueTemplate, 2 * Math.PI * length);
+            double circ = 2 * Math.PI * length;
+            string text = String.Format("{0}", Math.Round(circ, precision));
 
             if (abbreviation)
                 text = text + " " + String.Format("{0}", UnitHelper.LengthAbbreviation(lengthUnit));

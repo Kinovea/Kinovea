@@ -70,12 +70,15 @@ namespace Kinovea.ScreenManager
       this.btnRotate90 = new System.Windows.Forms.Button();
       this.btnFlipY = new System.Windows.Forms.Button();
       this.btnFlipX = new System.Windows.Forms.Button();
+      this.lblDecimalPlaces = new System.Windows.Forms.Label();
+      this.nudDecimalPlaces = new System.Windows.Forms.NumericUpDown();
       this.grpConfig.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudB)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudA)).BeginInit();
       this.groupBox1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudOffsetY)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudOffsetX)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudDecimalPlaces)).BeginInit();
       this.SuspendLayout();
       // 
       // grpConfig
@@ -91,7 +94,7 @@ namespace Kinovea.ScreenManager
       this.grpConfig.Controls.Add(this.lblRealSize);
       this.grpConfig.Location = new System.Drawing.Point(12, 236);
       this.grpConfig.Name = "grpConfig";
-      this.grpConfig.Size = new System.Drawing.Size(350, 139);
+      this.grpConfig.Size = new System.Drawing.Size(401, 139);
       this.grpConfig.TabIndex = 32;
       this.grpConfig.TabStop = false;
       this.grpConfig.Text = "Calibration";
@@ -99,7 +102,7 @@ namespace Kinovea.ScreenManager
       // nudB
       // 
       this.nudB.DecimalPlaces = 2;
-      this.nudB.Location = new System.Drawing.Point(142, 59);
+      this.nudB.Location = new System.Drawing.Point(152, 60);
       this.nudB.Maximum = new decimal(new int[] {
             1000000,
             0,
@@ -149,7 +152,7 @@ namespace Kinovea.ScreenManager
       // 
       this.label1.AutoSize = true;
       this.label1.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.label1.Location = new System.Drawing.Point(115, 62);
+      this.label1.Location = new System.Drawing.Point(125, 63);
       this.label1.Name = "label1";
       this.label1.Size = new System.Drawing.Size(25, 13);
       this.label1.TabIndex = 26;
@@ -160,9 +163,9 @@ namespace Kinovea.ScreenManager
       // 
       this.cbUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.cbUnit.FormattingEnabled = true;
-      this.cbUnit.Location = new System.Drawing.Point(213, 58);
+      this.cbUnit.Location = new System.Drawing.Point(243, 58);
       this.cbUnit.Name = "cbUnit";
-      this.cbUnit.Size = new System.Drawing.Size(120, 21);
+      this.cbUnit.Size = new System.Drawing.Size(144, 21);
       this.cbUnit.TabIndex = 3;
       this.cbUnit.SelectedIndexChanged += new System.EventHandler(this.cbUnit_SelectedIndexChanged);
       // 
@@ -181,7 +184,7 @@ namespace Kinovea.ScreenManager
       // 
       this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.btnOK.Location = new System.Drawing.Point(165, 484);
+      this.btnOK.Location = new System.Drawing.Point(216, 492);
       this.btnOK.Name = "btnOK";
       this.btnOK.Size = new System.Drawing.Size(92, 24);
       this.btnOK.TabIndex = 4;
@@ -193,7 +196,7 @@ namespace Kinovea.ScreenManager
       // 
       this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.btnCancel.Location = new System.Drawing.Point(270, 484);
+      this.btnCancel.Location = new System.Drawing.Point(321, 492);
       this.btnCancel.Name = "btnCancel";
       this.btnCancel.Size = new System.Drawing.Size(92, 24);
       this.btnCancel.TabIndex = 4;
@@ -209,7 +212,7 @@ namespace Kinovea.ScreenManager
       this.pnlQuadrilateral.ForeColor = System.Drawing.Color.White;
       this.pnlQuadrilateral.Location = new System.Drawing.Point(12, 12);
       this.pnlQuadrilateral.Name = "pnlQuadrilateral";
-      this.pnlQuadrilateral.Size = new System.Drawing.Size(350, 186);
+      this.pnlQuadrilateral.Size = new System.Drawing.Size(401, 186);
       this.pnlQuadrilateral.TabIndex = 34;
       this.pnlQuadrilateral.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlQuadrilateral_Paint);
       // 
@@ -218,6 +221,8 @@ namespace Kinovea.ScreenManager
       this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.groupBox1.Controls.Add(this.nudDecimalPlaces);
+      this.groupBox1.Controls.Add(this.lblDecimalPlaces);
       this.groupBox1.Controls.Add(this.nudOffsetY);
       this.groupBox1.Controls.Add(this.nudOffsetX);
       this.groupBox1.Controls.Add(this.label3);
@@ -225,7 +230,7 @@ namespace Kinovea.ScreenManager
       this.groupBox1.Controls.Add(this.lblOffsetHelp);
       this.groupBox1.Location = new System.Drawing.Point(12, 381);
       this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(350, 97);
+      this.groupBox1.Size = new System.Drawing.Size(401, 105);
       this.groupBox1.TabIndex = 33;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Coordinates";
@@ -233,7 +238,7 @@ namespace Kinovea.ScreenManager
       // nudOffsetY
       // 
       this.nudOffsetY.DecimalPlaces = 2;
-      this.nudOffsetY.Location = new System.Drawing.Point(142, 59);
+      this.nudOffsetY.Location = new System.Drawing.Point(334, 27);
       this.nudOffsetY.Maximum = new decimal(new int[] {
             999,
             0,
@@ -252,7 +257,7 @@ namespace Kinovea.ScreenManager
       // nudOffsetX
       // 
       this.nudOffsetX.DecimalPlaces = 2;
-      this.nudOffsetX.Location = new System.Drawing.Point(51, 59);
+      this.nudOffsetX.Location = new System.Drawing.Point(243, 27);
       this.nudOffsetX.Maximum = new decimal(new int[] {
             999,
             0,
@@ -272,7 +277,7 @@ namespace Kinovea.ScreenManager
       // 
       this.label3.AutoSize = true;
       this.label3.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.label3.Location = new System.Drawing.Point(115, 62);
+      this.label3.Location = new System.Drawing.Point(307, 30);
       this.label3.Name = "label3";
       this.label3.Size = new System.Drawing.Size(25, 13);
       this.label3.TabIndex = 32;
@@ -283,7 +288,7 @@ namespace Kinovea.ScreenManager
       // 
       this.label2.AutoSize = true;
       this.label2.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.label2.Location = new System.Drawing.Point(24, 62);
+      this.label2.Location = new System.Drawing.Point(216, 30);
       this.label2.Name = "label2";
       this.label2.Size = new System.Drawing.Size(25, 13);
       this.label2.TabIndex = 34;
@@ -296,9 +301,9 @@ namespace Kinovea.ScreenManager
       this.lblOffsetHelp.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.lblOffsetHelp.Location = new System.Drawing.Point(11, 29);
       this.lblOffsetHelp.Name = "lblOffsetHelp";
-      this.lblOffsetHelp.Size = new System.Drawing.Size(145, 13);
+      this.lblOffsetHelp.Size = new System.Drawing.Size(142, 13);
       this.lblOffsetHelp.TabIndex = 32;
-      this.lblOffsetHelp.Text = "Offset applied to coordinates.";
+      this.lblOffsetHelp.Text = "Offset applied to coordinates";
       this.lblOffsetHelp.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
       // 
       // btnRotate90
@@ -307,7 +312,7 @@ namespace Kinovea.ScreenManager
       this.btnRotate90.FlatAppearance.BorderSize = 0;
       this.btnRotate90.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnRotate90.Image = global::Kinovea.ScreenManager.Properties.Resources.rotate_system;
-      this.btnRotate90.Location = new System.Drawing.Point(338, 206);
+      this.btnRotate90.Location = new System.Drawing.Point(389, 206);
       this.btnRotate90.Name = "btnRotate90";
       this.btnRotate90.Size = new System.Drawing.Size(24, 24);
       this.btnRotate90.TabIndex = 38;
@@ -321,7 +326,7 @@ namespace Kinovea.ScreenManager
       this.btnFlipY.FlatAppearance.BorderSize = 0;
       this.btnFlipY.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnFlipY.Image = global::Kinovea.ScreenManager.Properties.Resources.flipy3;
-      this.btnFlipY.Location = new System.Drawing.Point(308, 206);
+      this.btnFlipY.Location = new System.Drawing.Point(359, 206);
       this.btnFlipY.Name = "btnFlipY";
       this.btnFlipY.Size = new System.Drawing.Size(24, 24);
       this.btnFlipY.TabIndex = 37;
@@ -334,19 +339,52 @@ namespace Kinovea.ScreenManager
       this.btnFlipX.FlatAppearance.BorderSize = 0;
       this.btnFlipX.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnFlipX.Image = global::Kinovea.ScreenManager.Properties.Resources.flipx3;
-      this.btnFlipX.Location = new System.Drawing.Point(278, 206);
+      this.btnFlipX.Location = new System.Drawing.Point(329, 206);
       this.btnFlipX.Name = "btnFlipX";
       this.btnFlipX.Size = new System.Drawing.Size(24, 24);
       this.btnFlipX.TabIndex = 36;
       this.btnFlipX.UseVisualStyleBackColor = true;
       this.btnFlipX.Click += new System.EventHandler(this.btnFlipHorz_Click);
       // 
+      // lblDecimalPlaces
+      // 
+      this.lblDecimalPlaces.AutoSize = true;
+      this.lblDecimalPlaces.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblDecimalPlaces.Location = new System.Drawing.Point(12, 65);
+      this.lblDecimalPlaces.Name = "lblDecimalPlaces";
+      this.lblDecimalPlaces.Size = new System.Drawing.Size(126, 13);
+      this.lblDecimalPlaces.TabIndex = 37;
+      this.lblDecimalPlaces.Text = "Decimal places to display";
+      this.lblDecimalPlaces.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+      // 
+      // nudDecimalPlaces
+      // 
+      this.nudDecimalPlaces.Location = new System.Drawing.Point(243, 63);
+      this.nudDecimalPlaces.Maximum = new decimal(new int[] {
+            6,
+            0,
+            0,
+            0});
+      this.nudDecimalPlaces.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+      this.nudDecimalPlaces.Name = "nudDecimalPlaces";
+      this.nudDecimalPlaces.Size = new System.Drawing.Size(53, 20);
+      this.nudDecimalPlaces.TabIndex = 38;
+      this.nudDecimalPlaces.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+      // 
       // FormCalibratePlane
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.Color.White;
-      this.ClientSize = new System.Drawing.Size(374, 517);
+      this.ClientSize = new System.Drawing.Size(425, 525);
       this.Controls.Add(this.btnRotate90);
       this.Controls.Add(this.groupBox1);
       this.Controls.Add(this.btnFlipY);
@@ -369,6 +407,7 @@ namespace Kinovea.ScreenManager
       this.groupBox1.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudOffsetY)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudOffsetX)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudDecimalPlaces)).EndInit();
       this.ResumeLayout(false);
 
         }
@@ -393,5 +432,7 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.NumericUpDown nudB;
         private System.Windows.Forms.NumericUpDown nudOffsetY;
         private System.Windows.Forms.NumericUpDown nudOffsetX;
+        private System.Windows.Forms.NumericUpDown nudDecimalPlaces;
+        private System.Windows.Forms.Label lblDecimalPlaces;
     }
 }

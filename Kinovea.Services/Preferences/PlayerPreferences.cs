@@ -36,6 +36,11 @@ namespace Kinovea.Services
         {
             get { return "Player"; }
         }
+        public int DecimalPlaces
+        {
+            get { return decimalPlaces; }
+            set { decimalPlaces = value; }
+        }
         public TimecodeFormat TimecodeFormat
         {
             get { return timecodeFormat; }
@@ -224,6 +229,7 @@ namespace Kinovea.Services
 
         #endregion
 
+        private int decimalPlaces = 2;
         private TimecodeFormat timecodeFormat = TimecodeFormat.ClassicTime;
         private SpeedUnit speedUnit = SpeedUnit.MetersPerSecond;
         private AccelerationUnit accelerationUnit = AccelerationUnit.MetersPerSecondSquared;
@@ -269,6 +275,7 @@ namespace Kinovea.Services
         
         public void WriteXML(XmlWriter writer)
         {
+            writer.WriteElementString("DecimalPlaces", decimalPlaces.ToString());
             writer.WriteElementString("TimecodeFormat", timecodeFormat.ToString());
             writer.WriteElementString("SpeedUnit", speedUnit.ToString());
             writer.WriteElementString("AccelerationUnit", accelerationUnit.ToString());
@@ -347,6 +354,9 @@ namespace Kinovea.Services
             {
                 switch(reader.Name)
                 {
+                    case "DecimalPlaces":
+                        decimalPlaces = reader.ReadElementContentAsInt();
+                        break;
                     case "TimecodeFormat":
                         timecodeFormat = (TimecodeFormat) Enum.Parse(typeof(TimecodeFormat), reader.ReadElementContentAsString());
                         break;

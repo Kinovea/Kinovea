@@ -501,10 +501,10 @@ namespace Kinovea.ScreenManager
 
                 case MeasureLabelType.Distance:
                     PointF o = CalibrationHelper.GetOrigin();
-                    displayText = CalibrationHelper.GetLengthText(o, points["0"], true, true);
+                    displayText = CalibrationHelper.GetLengthText(o, points["0"], true);
                     break;
                 case MeasureLabelType.Position:
-                    displayText = CalibrationHelper.GetPointText(points["0"], true, true, timestamp);
+                    displayText = CalibrationHelper.GetPointText(points["0"], true, timestamp);
                     break;
                 default:
                     break;

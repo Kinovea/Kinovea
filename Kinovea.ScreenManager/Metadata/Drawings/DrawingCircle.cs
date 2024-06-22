@@ -674,16 +674,16 @@ namespace Kinovea.ScreenManager
                     break;
 
                 case MeasureLabelType.Center:
-                    displayText = CalibrationHelper.GetPointText(center, true, true, timestamp);
+                    displayText = CalibrationHelper.GetPointText(center, true, timestamp);
                     break;
                 case MeasureLabelType.Radius:
-                    displayText = CalibrationHelper.GetLengthText(center, radiusRightInImage, true, true);
+                    displayText = CalibrationHelper.GetLengthText(center, radiusRightInImage, true);
                     break;
                 case MeasureLabelType.Diameter:
-                    displayText = CalibrationHelper.GetLengthText(radiusLeftInImage, radiusRightInImage, true, true);
+                    displayText = CalibrationHelper.GetLengthText(radiusLeftInImage, radiusRightInImage, true);
                     break;
                 case MeasureLabelType.Circumference:
-                    displayText = CalibrationHelper.GetCircumferenceText(center, radiusRightInImage, true, true);
+                    displayText = CalibrationHelper.GetCircumferenceText(center, radiusRightInImage, true);
                     break;
                 default:
                     break;
