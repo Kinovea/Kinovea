@@ -51,6 +51,7 @@ namespace Kinovea.ScreenManager
         public void Uninitialize()
         {
             initialized = false;
+            parameters = null;
         }
 
         /// <summary>

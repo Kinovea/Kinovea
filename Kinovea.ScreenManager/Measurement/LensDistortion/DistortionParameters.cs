@@ -8,6 +8,7 @@ namespace Kinovea.ScreenManager
 {
     public class DistortionParameters
     {
+        #region Properties
         // Camera intrinsics.
         public double Fx
         {
@@ -59,6 +60,14 @@ namespace Kinovea.ScreenManager
         }
 
         public double PixelsPerMillimeter { get; set; }
+        
+        /// <summary>
+        /// Path of the file used to load these parameters.
+        /// This is only used for feedback in the menu to indicate which calibration 
+        /// is currently selected.
+        /// </summary>
+        public string Path { get; set; }
+        #endregion
 
         public double[,] cameraMatrix = new double[,] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } };
         public double[] distCoeffs = new double[5];

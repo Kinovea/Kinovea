@@ -37,6 +37,7 @@ namespace Kinovea.ScreenManager
             write("P2", p.P2);
 
             write("PixelsPerMM", p.PixelsPerMillimeter);
+            w.WriteElementString("Path", p.Path);
 
             w.WriteEndElement();
         }
@@ -56,6 +57,7 @@ namespace Kinovea.ScreenManager
             double k3 = 0;
             double p1 = 0;
             double p2 = 0;
+            string path = "";
 
             while (r.NodeType == XmlNodeType.Element)
             {
@@ -94,6 +96,9 @@ namespace Kinovea.ScreenManager
                     case "P2":
                         p2 = r.ReadElementContentAsDouble();
                         break;
+                    case "Path":
+                        path = r.ReadElementContentAsString();
+                        break;
                     default:
                         string unparsed = r.ReadOuterXml();
                         log.DebugFormat("Unparsed content in Camera calibration: {0}", unparsed);
@@ -118,6 +123,7 @@ namespace Kinovea.ScreenManager
             }
 
             DistortionParameters parameters = new DistortionParameters(k1, k2, k3, p1, p2, fx, fy, cx, cy, pixelsPerMillimeter);
+            parameters.Path = path;
             return parameters;
         }
 

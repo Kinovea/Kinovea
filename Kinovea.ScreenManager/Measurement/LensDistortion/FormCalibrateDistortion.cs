@@ -24,6 +24,7 @@ namespace Kinovea.ScreenManager
         private DrawingStyle style = new DrawingStyle();
         private StyleHelper styleHelper = new StyleHelper();
         private DistortionParameters distortionParameters;
+        private string pathSpecial = "::Manual"; // Special path to indicate manual changes.
         private double sensorWidth = DistortionParameters.defaultSensorWidth;
         private double focalLength = DistortionParameters.defaultFocalLength;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -183,6 +184,7 @@ namespace Kinovea.ScreenManager
             if (dp != null)
             {
                 distortionParameters = dp;
+                dp.Path = openFileDialog.FileName;
                 distorter.Initialize(distortionParameters, calibrationHelper.ImageSize);
 
                 AfterImport();
@@ -214,6 +216,7 @@ namespace Kinovea.ScreenManager
             if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))
                 return;
 
+            distorter.Parameters.Path = saveFileDialog.FileName;
             DistortionImporterKinovea.Export(saveFileDialog.FileName, distorter.Parameters, calibrationHelper.ImageSize);
         }
 
@@ -252,6 +255,7 @@ namespace Kinovea.ScreenManager
             distortionParameters.Cx = (double)nudCx.Value;
             distortionParameters.Cy = (double)nudCy.Value;
 
+            distortionParameters.Path = pathSpecial;
             UpdateDistortionGrid();
         }
 
@@ -277,6 +281,7 @@ namespace Kinovea.ScreenManager
             nudFy.Value = (decimal)distortionParameters.Fy;
             manualUpdate = false;
 
+            distortionParameters.Path = pathSpecial;
             UpdateDistortionGrid();
         }
 
@@ -289,6 +294,7 @@ namespace Kinovea.ScreenManager
             focalLength = distortionParameters.Fx / distortionParameters.PixelsPerMillimeter;
 
             PopulatePhysicalParameters();
+            distortionParameters.Path = pathSpecial;
             UpdateDistortionGrid();
         }
 

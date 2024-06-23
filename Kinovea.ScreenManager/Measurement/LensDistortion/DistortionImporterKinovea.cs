@@ -33,6 +33,7 @@ namespace Kinovea.ScreenManager
                 {
                     r.MoveToContent();
                     parameters = DistortionSerializer.Deserialize(r, imageSize);
+                    parameters.Path = path;
                 }
             }
             catch

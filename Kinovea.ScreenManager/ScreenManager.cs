@@ -620,7 +620,7 @@ namespace Kinovea.ScreenManager
             mnuLensCalibrationNone.Image = Properties.Resources.bin_empty;
             mnuLensCalibrationOpen.Click += mnuLensCalibrationOpen_OnClick;
             mnuLensCalibrationMode.Click += mnuLensCalibrationMode_OnClick;
-            mnuLensCalibrationManual.Click += mnuLensDistortion_OnClick;
+            mnuLensCalibrationManual.Click += mnuLensCalibrationManual_OnClick;
             mnuLensCalibrationNone.Click += mnuLensCalibrationNone_OnClick;
 
             BuildLensCalibrationMenu();
@@ -1164,6 +1164,7 @@ namespace Kinovea.ScreenManager
                     mnuTimeCalibration.Enabled = true;
                     mnuCoordinateSystem.Enabled = true;
                     mnuLensCalibration.Enabled = true;
+                    ConfigureLensCalibrationMenus(player);
                     mnuCalibrationValidation.Enabled = true;
                     mnuScatterDiagram.Enabled = true;
                     mnuTrajectoryAnalysis.Enabled = true;
@@ -1500,6 +1501,61 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        private void ConfigureLensCalibrationMenus(PlayerScreen player)
+        {
+            // Note: the menu contains entries that are not calibration files,
+            // like the menu for manual estimation, the menu for "None" or even separators.
+            // We still treat them collectively and check for the "Tag" property
+            // containing the filename if any. If other menus in this drop down ever
+            // need to have a check or have a Tag containing a file name, we'll need
+            // to identify them and ignore them.
+
+            // Default state: all unchecked except "None".
+            foreach (object m in mnuLensCalibration.DropDownItems)
+            {
+                ToolStripMenuItem item = m as ToolStripMenuItem;
+                if (item != null)
+                    item.Checked = false;
+            }
+
+            // Bail out if we don't have a lens calibration.
+            DistortionParameters parameters = player?.FrameServer?.Metadata?.CalibrationHelper?.DistortionHelper?.Parameters;
+            if (parameters == null)
+            {
+                mnuLensCalibrationNone.Checked = true;
+                return;
+            }
+
+            // The parameters themselves may or may not come from a specific file.
+            if (string.IsNullOrEmpty(parameters.Path))
+            {
+                mnuLensCalibrationNone.Checked = true;
+                return;
+            }
+
+            // Special case for manual calibration. This is when we use the Manual estimation and 
+            // the file isn't saved yet.
+            if (parameters.Path == "::Manual")
+            {
+                mnuLensCalibrationManual.Checked = true;
+                return;
+            }
+            
+            // Otherwise see if there is a lens calibration menu corresponding to the currently loaded file.
+            foreach (object m in mnuLensCalibration.DropDownItems)
+            {
+                ToolStripMenuItem item = m as ToolStripMenuItem;
+                if (item == null)
+                    continue;
+
+                if ((string)item.Tag == parameters.Path)
+                {
+                    item.Checked = true;
+                    break;
+                }
+            }
+        }
+
         private void BuildLensCalibrationMenu()
         {
             mnuLensCalibration.DropDownItems.Clear();
@@ -1567,66 +1623,6 @@ namespace Kinovea.ScreenManager
 
             return count;
         }
-        private void mnuLensCalibrationFile_OnClick(object sender, EventArgs e)
-        {
-            // One of the dynamically added lens calibration file menu has been clicked.
-            ToolStripMenuItem menu = sender as ToolStripMenuItem;
-            if (menu != null)
-            {
-                string xmlFile = menu.Tag as string;
-
-                bool loaded = ImportLensCalibration(xmlFile);
-                // TODO: Alert if couldn't be loaded.
-                // TODO: Toast if successfuly loaded.
-            }
-        }
-
-        private void mnuLensCalibrationOpen_OnClick(object sender, EventArgs e)
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Title = ScreenManagerLang.dlgCameraCalibration_OpenDialogTitle;
-            openFileDialog.Filter = FilesystemHelper.OpenXMLFilter();
-            openFileDialog.FilterIndex = 1;
-            openFileDialog.InitialDirectory = Software.CameraCalibrationDirectory;
-
-            if (openFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(openFileDialog.FileName))
-                return;
-
-            string path = openFileDialog.FileName;
-            bool loaded = ImportLensCalibration(path);
-            // TODO: Alert if couldn't be loaded.
-            // TODO: Toast if successfuly loaded.
-
-            // Copy this file to the special folder if it doesn't exist yet,
-            // this way it will be available directly from the menu from now on.
-            string target = Path.Combine(Software.CameraCalibrationDirectory, Path.GetFileName(path));
-            if (loaded && !File.Exists(target))
-            {
-                File.Copy(path, target);
-                BuildLensCalibrationMenu();
-            }
-        }
-
-        private void mnuLensCalibrationMode_OnClick(object sender, EventArgs e)
-        {
-            PlayerScreen player = activeScreen as PlayerScreen;
-            if (player == null || !player.FrameServer.Loaded)
-                return;
-
-            player.ActivateVideoFilter(VideoFilterType.LensCalibration);
-        }
-
-        private void mnuLensCalibrationNone_OnClick(object sender, EventArgs e)
-        {
-            PlayerScreen player = activeScreen as PlayerScreen;
-            if (player == null || !player.FrameServer.Loaded)
-                return;
-
-            var calibHelper = player.FrameServer.Metadata.CalibrationHelper;
-            calibHelper.DistortionHelper.Uninitialize();
-            calibHelper.AfterDistortionUpdated();
-            player.RefreshImage();
-        }
 
         private bool ImportLensCalibration(string xmlFile)
         {
@@ -1644,6 +1640,7 @@ namespace Kinovea.ScreenManager
                 player.RefreshImage();
             }
 
+            ConfigureLensCalibrationMenus(player);
             return loaded;
         }
         #endregion
@@ -2585,15 +2582,6 @@ namespace Kinovea.ScreenManager
             thisScreen.ShowCalibrationValidation(otherScreen);
         }
 
-        private void mnuLensDistortion_OnClick(object sender, EventArgs e)
-        {
-            PlayerScreen ps = activeScreen as PlayerScreen;
-            if (ps == null)
-                return;
-
-            ps.ShowCameraCalibration();
-        }
-
         private void mnuTrajectoryAnalysis_OnClick(object sender, EventArgs e)
         {
             PlayerScreen ps = activeScreen as PlayerScreen;
@@ -2634,6 +2622,79 @@ namespace Kinovea.ScreenManager
             PlayerScreen ps = activeScreen as PlayerScreen;
             if (ps != null)
                 ps.ConfigureTimebase();
+        }
+
+        private void mnuLensCalibrationFile_OnClick(object sender, EventArgs e)
+        {
+            // One of the dynamically added lens calibration file menu has been clicked.
+            ToolStripMenuItem menu = sender as ToolStripMenuItem;
+            if (menu != null)
+            {
+                string xmlFile = menu.Tag as string;
+
+                bool loaded = ImportLensCalibration(xmlFile);
+                // TODO: Alert if couldn't be loaded.
+                // TODO: Toast if successfuly loaded.
+            }
+        }
+
+        private void mnuLensCalibrationOpen_OnClick(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = ScreenManagerLang.dlgCameraCalibration_OpenDialogTitle;
+            openFileDialog.Filter = FilesystemHelper.OpenXMLFilter();
+            openFileDialog.FilterIndex = 1;
+            openFileDialog.InitialDirectory = Software.CameraCalibrationDirectory;
+
+            if (openFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(openFileDialog.FileName))
+                return;
+
+            string path = openFileDialog.FileName;
+            bool loaded = ImportLensCalibration(path);
+            // TODO: Alert if couldn't be loaded.
+            // TODO: Toast if successfuly loaded.
+
+            // Copy this file to the special folder if it doesn't exist yet,
+            // this way it will be available directly from the menu from now on.
+            string target = Path.Combine(Software.CameraCalibrationDirectory, Path.GetFileName(path));
+            if (loaded && !File.Exists(target))
+            {
+                File.Copy(path, target);
+                BuildLensCalibrationMenu();
+                OrganizeMenus();
+            }
+        }
+
+        private void mnuLensCalibrationManual_OnClick(object sender, EventArgs e)
+        {
+            PlayerScreen ps = activeScreen as PlayerScreen;
+            if (ps == null)
+                return;
+
+            ps.ShowCameraCalibration();
+            ConfigureLensCalibrationMenus(ps);
+        }
+
+        private void mnuLensCalibrationMode_OnClick(object sender, EventArgs e)
+        {
+            PlayerScreen player = activeScreen as PlayerScreen;
+            if (player == null || !player.FrameServer.Loaded)
+                return;
+
+            player.ActivateVideoFilter(VideoFilterType.LensCalibration);
+        }
+
+        private void mnuLensCalibrationNone_OnClick(object sender, EventArgs e)
+        {
+            PlayerScreen player = activeScreen as PlayerScreen;
+            if (player == null || !player.FrameServer.Loaded)
+                return;
+
+            var calibHelper = player.FrameServer.Metadata.CalibrationHelper;
+            calibHelper.DistortionHelper.Uninitialize();
+            calibHelper.AfterDistortionUpdated();
+            player.RefreshImage();
+            ConfigureLensCalibrationMenus(player);
         }
         #endregion
         #endregion
