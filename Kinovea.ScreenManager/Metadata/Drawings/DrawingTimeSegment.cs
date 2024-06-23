@@ -158,9 +158,8 @@ namespace Kinovea.ScreenManager
             }
             
             // Attached mini label.
-            string text = GetTimeText();
-            miniLabel.SetText(text);
             miniLabel.SetAttach(GetTimePoint(), true);
+            miniLabel.SetText(GetTimeText(), transformer);
             miniLabel.Draw(canvas, transformer, opacityFactor);
         }
         public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
@@ -172,7 +171,7 @@ namespace Kinovea.ScreenManager
             {
                 // Give priority to the mini label and the middle point to guarantee
                 // we can always move them out of the way of the end points if needed.
-                if (miniLabel.HitTest(point, transformer))
+                if (miniLabel.HitTest(point))
                     result = 4;
                 else if (HitTester.HitPoint(point, c, transformer))
                     result = 3;

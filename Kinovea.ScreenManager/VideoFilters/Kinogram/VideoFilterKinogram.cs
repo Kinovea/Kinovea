@@ -256,7 +256,7 @@ namespace Kinovea.ScreenManager
             {
                 for (int i = 0; i < frameLabels.Count; i++)
                 {
-                    if (frameLabels[i].HitTest(p, parentMetadata.ImageTransform))
+                    if (frameLabels[i].HitTest(p))
                     {
                         movingLabel = i;
                         hitFrameLabel = true;

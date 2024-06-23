@@ -37,12 +37,13 @@ namespace Kinovea.ScreenManager
     /// A class to encapsulate a mini label.
     /// Mainly used for Keyframe labels on the trajectory and the measure labels on measurable objects.
     /// 
-    /// The object is comprised of an attach point and the mini label itself.
+    /// The object comprises an attach point and the mini label itself.
     /// The label can be moved relatively to the attach point from the container drawing tool.
     /// 
     /// The mini label position is expressed in absolute coordinates. (previously was relative to the attach).
     /// 
     /// The text to display is actually reset just before we need to draw it.
+    /// Order of operations: 1. SetText, 2. Draw, 3. HitTest.
     /// </summary>
     public class MiniLabel
     {
@@ -109,6 +110,7 @@ namespace Kinovea.ScreenManager
         private PointF attachLocation; // The point we are attached to (image coordinates).
         private bool showConnector = true; // Whether to draw the connection between the label and the attach point.
         private StyleHelper styleHelper = new StyleHelper();
+        private IImageToViewportTransformer transformer;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -121,6 +123,7 @@ namespace Kinovea.ScreenManager
             int ty = -50;
             if (transformer != null)
             {
+                this.transformer = transformer;
                 tx = transformer.Untransform(-20);
                 ty = transformer.Untransform(-50);
             }
@@ -137,7 +140,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Public methods
-        public bool HitTest(PointF point, IImageToViewportTransformer transformer)
+        public bool HitTest(PointF point)
         {
             return (background.HitTest(point, false, 0, transformer) > -1);
         }
@@ -150,6 +153,8 @@ namespace Kinovea.ScreenManager
         }
         public void Draw(Graphics canvas, IImageToViewportTransformer transformer, double opacity)
         {
+            this.transformer = transformer;
+
             using(SolidBrush fillBrush = styleHelper.GetBackgroundBrush((int)(opacity*255)))
             using(Pen p = styleHelper.GetBackgroundPen((int)(opacity*64)))
             using(Font f = styleHelper.GetFont((float)transformer.Scale))
@@ -179,6 +184,12 @@ namespace Kinovea.ScreenManager
                 canvas.DrawString(text, f, fontBrush, rect.Location);
             }
         }    
+
+        /// <summary>
+        /// Set the attach point to the passed point.
+        /// If moveLabel is true we also move the label itself so the 
+        /// relative position of the label is preserved.
+        /// </summary>
         public void SetAttach(PointF p, bool moveLabel)
         {
             float dx = p.X - attachLocation.X;
@@ -197,13 +208,21 @@ namespace Kinovea.ScreenManager
         {
             background.Move(dx, dy);
         }
-        public void SetText(string text)
+
+        /// <summary>
+        /// Change the text of the label and update the size of the background rectangle.
+        /// </summary>
+        public void SetText(string text, IImageToViewportTransformer transformer = null)
         {
             this.text = text;
+            this.transformer = transformer;
             
             using(Font f = styleHelper.GetFont(1F))
             {
                 SizeF textSize = TextHelper.MeasureString(text, f);
+                if (transformer != null)
+                    textSize = transformer.Untransform(textSize);
+                
                 background.Rectangle = new RectangleF(background.Rectangle.Location, textSize);
             }
         }

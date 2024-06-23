@@ -202,7 +202,7 @@ namespace Kinovea.ScreenManager
             if(measureLabelType != MeasureLabelType.None)
             {
                 string text = GetMeasureLabelText();
-                miniLabel.SetText(text);
+                miniLabel.SetText(text, transformer);
                 miniLabel.Draw(canvas, transformer, opacityFactor);
             }
         }
@@ -292,7 +292,7 @@ namespace Kinovea.ScreenManager
             double opacityFactor = infosFading.GetOpacityTrackable(trackingTimestamps, currentTimestamp);
             if (opacityFactor > 0)
             {
-                if(measureLabelType != MeasureLabelType.None && miniLabel.HitTest(point, transformer))
+                if(measureLabelType != MeasureLabelType.None && miniLabel.HitTest(point))
                     result = 3;
                 else if (HitTester.HitPoint(point, points["a"], transformer))
                     result = 1;

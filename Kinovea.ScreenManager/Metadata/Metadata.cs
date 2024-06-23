@@ -1486,7 +1486,7 @@ namespace Kinovea.ScreenManager
             // Happens when mouse up and editing a track.
             DrawingTrack t = hitDrawing as DrawingTrack;
             if(t != null && (t.Status == TrackStatus.Edit || t.Status == TrackStatus.Configuration))
-                t.UpdateTrackPoint(bitmap);
+                t.UpdateTrackPoint(bitmap, imageTransform);
         }
         public int GetContentHash()
         {

@@ -455,6 +455,10 @@ namespace Kinovea.ScreenManager
                     trackStatus == TrackStatus.Interactive &&
                     measureLabelType != MeasureLabelType.None;
 
+                // Transform all points in the trajectory from their XYT coordinate to image coordinate at the current time.
+                // TODO: this should be done during Track() step like for other drawings.
+                List<PointF> points = GetPoints(distorter, cameraTransformer, currentTimestamp);
+
                 // Trajectory and keyframe labels.
                 int first = GetFirstVisiblePoint();
                 int last = GetLastVisiblePoint();
@@ -463,23 +467,23 @@ namespace Kinovea.ScreenManager
                 {
                     // Past and present section.
                     opacity = GetOpacity(trackStatus, (float)opacityFactor, true);
-                    DrawTrajectory(canvas, first, currentPointIndex, opacity, cameraTransformer, transformer, currentTimestamp);
+                    DrawTrajectory(canvas, points, first, currentPointIndex, opacity, transformer, currentTimestamp);
 
                     if (seeFuture)
                     {
                         opacity = GetOpacity(trackStatus, (float)opacityFactor, false);
-                        DrawTrajectory(canvas, currentPointIndex, last, opacity, cameraTransformer, transformer, currentTimestamp);
+                        DrawTrajectory(canvas, points, currentPointIndex, last, opacity, transformer, currentTimestamp);
                     }
 
                     // TODO: camera motion for keyframe labels attach points.
                     if (drawKeyframeLabels)
-                        DrawKeyframesLabels(canvas, (float)opacityFactor, transformer);
+                        DrawKeyframesLabels(canvas, points, (float)opacityFactor, transformer);
 
                 }
                 else if (trackStatus == TrackStatus.Edit)
                 {
                     opacity = GetOpacity(trackStatus, (float)opacityFactor, false);
-                    DrawTrajectory(canvas, first, last, opacity, cameraTransformer, transformer, currentTimestamp);
+                    DrawTrajectory(canvas, points, first, last, opacity, transformer, currentTimestamp);
                 }
 
                 // Do not show the track path when configuring the tracking parameters.
@@ -496,7 +500,7 @@ namespace Kinovea.ScreenManager
                     DrawBestFitCircle(canvas, currentPointIndex, opacityFactor, transformer);
 
                 // Track cursor.
-                if (opacityFactor == 1.0)
+                if (opacityFactor == 1.0 && currentTimestamp <= positions[positions.Count - 1].T)
                     DrawMarker(canvas, opacityFactor, transformer);
 
                 if (opacityFactor == 1.0)
@@ -666,20 +670,12 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Drawing routines
-        private void DrawTrajectory(Graphics canvas, int start, int end, float opacity, CameraTransformer cameraTransformer, IImageToViewportTransformer transformer, long currentTimestamp)
+        private void DrawTrajectory(Graphics canvas, List<PointF> points, int start, int end, float opacity, IImageToViewportTransformer transformer, long currentTimestamp)
         {
-            Point[] points = new Point[end - start + 1];
-            for (int i = 0; i <= end - start; i++)
-            {
-                var tp = positions[start + i];
-                PointF p = tp.Point;
-                if (cameraTransformer != null && cameraTransformer.Initialized)
-                    p = cameraTransformer.Transform(tp.T, currentTimestamp, p);
-
-                points[i] = transformer.Transform(p);
-            }
-
-            if (points.Length <= 1)
+            // Transform from image coordinate in this frame to viewport coordinates.
+            var viewPoints = points.GetRange(start, end - start + 1).Select(p => transformer.Transform(p)).ToArray();
+            
+            if (viewPoints.Length <= 1)
                 return;
 
             using (Pen trackPen = styleHelper.GetPen(opacity, 1.0))
@@ -693,20 +689,20 @@ namespace Kinovea.ScreenManager
                 if (trackStatus == TrackStatus.Edit)
                 {
                     trackPen.Width = 1.0f;
-                    canvas.DrawCurve(trackPen, points, tension);
-                    foreach (Point p in points)
+                    canvas.DrawCurve(trackPen, viewPoints, tension);
+                    foreach (PointF p in viewPoints)
                         canvas.DrawEllipse(trackPen, p.Box(3));
                 }
                 else
                 {
-                    canvas.DrawCurve(trackPen, points, tension);
+                    canvas.DrawCurve(trackPen, viewPoints, tension);
 
                     if (styleHelper.TrackShape.ShowSteps)
                     {
                         using (Pen stepPen = new Pen(trackPen.Color, 2.0f))
                         {
                             int margin = (int)(trackPen.Width * 1.5);
-                            foreach (Point p in points)
+                            foreach (Point p in viewPoints)
                                 canvas.DrawEllipse(stepPen, p.Box(margin));
                         }
                     }
@@ -781,7 +777,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        private void DrawKeyframesLabels(Graphics canvas, float baselineOpacity, IImageToViewportTransformer transformer)
+        private void DrawKeyframesLabels(Graphics canvas, List<PointF> points, float baselineOpacity, IImageToViewportTransformer transformer)
         {
             //------------------------------------------------------------
             // Draw the keyframes labels
@@ -796,18 +792,22 @@ namespace Kinovea.ScreenManager
             float opacityFuture = GetOpacity(trackStatus, baselineOpacity, false);
             long currentTimestamp = positions[currentPointIndex].T;
 
-            foreach (MiniLabel kl in keyframeLabels)
+            // FIXME: use the points position translated by camera motion.
+
+            foreach (MiniLabel kfl in keyframeLabels)
             {
-                bool isFuture = kl.Timestamp > currentTimestamp;
+                bool isFuture = kfl.Timestamp > currentTimestamp;
                 float opacity = isFuture ? opacityFuture : opacityPast;
                 if (!isFuture || seeFuture)
                 {
-                    kl.Draw(canvas, transformer, opacity);
+                    kfl.Draw(canvas, transformer, opacity);
                 }
             }
         }
         private void DrawBestFitCircle(Graphics canvas, int currentPoint, double fadingFactor, IImageToViewportTransformer transformer)
         {
+            // TODO: add support for camera motion.
+
             Circle circle = filteredTrajectory.BestFitCircle;
 
             if (circle.Center == PointF.Empty)
@@ -853,10 +853,10 @@ namespace Kinovea.ScreenManager
             if (opacityFactor != 1.0f || trackStatus == TrackStatus.Configuration)
                 return;
 
+            // The main label is always only attached to the current frame so 
+            // there is no camera motion transform involved.
             miniLabel.SetAttach(positions[currentPoint].Point, true);
-
-            string text = GetMeasureLabelText(currentPoint);
-            miniLabel.SetText(text);
+            miniLabel.SetText(GetMeasureLabelText(currentPoint), transformer);
             miniLabel.Draw(canvas, transformer, opacityFactor);
         }
         private float GetOpacity(TrackStatus status, float baselineOpacity, bool isPast)
@@ -1072,7 +1072,7 @@ namespace Kinovea.ScreenManager
 
             if (showTrackLabel)
             {
-                if (miniLabel.HitTest(point, transformer))
+                if (miniLabel.HitTest(point))
                     return 2;
             }
 
@@ -1084,7 +1084,7 @@ namespace Kinovea.ScreenManager
                 bool isFuture = keyframeLabels[i].Timestamp > currentTimestamp;
                 if (!isFuture || seeFuture)
                 {
-                    if (keyframeLabels[i].HitTest(point, transformer))
+                    if (keyframeLabels[i].HitTest(point))
                     {
                         return i + 3;
                     }
@@ -1092,6 +1092,40 @@ namespace Kinovea.ScreenManager
             }
 
             return -1;
+        }
+
+        /// <summary>
+        /// Transform all points in the trajectory from their XYT coordinate to image coordinate at the current time.
+        /// Updates the keyframe minilabels with the matching point location.
+        /// </summary>
+        private List<PointF> GetPoints(DistortionHelper distorter, CameraTransformer cameraTransformer, long currentTimestamp)
+        {
+            var points = new List<PointF>(new PointF[positions.Count]);
+            for (int i = 0; i < positions.Count; i++)
+            {
+                var tp = positions[i];
+                PointF p = tp.Point;
+
+                if (distorter != null && distorter.Initialized)
+                    p = distorter.Undistort(p);
+
+                if (cameraTransformer != null && cameraTransformer.Initialized)
+                    p = cameraTransformer.Transform(tp.T, currentTimestamp, p);
+
+                points[i] = p;
+
+                // Find if there is a mini label attached to this point and update the attach point.
+                for (int j = 0; j < keyframeLabels.Count; j++)
+                {
+                    if (keyframeLabels[j].Timestamp == tp.T)
+                    {
+                        keyframeLabels[j].SetAttach(p, true);
+                        break;
+                    }
+                }
+            }
+
+            return points;
         }
         private int GetFirstVisiblePoint()
         {
@@ -1319,7 +1353,7 @@ namespace Kinovea.ScreenManager
             UpdateKeyframeLabels();
         }
 
-        public void UpdateTrackPoint(Bitmap currentImage)
+        public void UpdateTrackPoint(Bitmap currentImage, IImageToViewportTransformer transformer)
         {
             // The user moved a point that had been previously placed.
             // We need to reconstruct tracking data stored in the point, for later tracking.
@@ -1335,14 +1369,14 @@ namespace Kinovea.ScreenManager
             if (atp != null)
                 positions[currentPointIndex] = atp;
 
-            // Update the main mini label (attach, position of label, and text).
+            // Update the mini labels (attach, position of label, and text).
             for (int i = 0; i < keyframeLabels.Count; i++)
             {
                 if (keyframeLabels[i].Timestamp == current.T)
                 {
                     keyframeLabels[i].SetAttach(current.Point, true);
                     if (measureLabelType != MeasureLabelType.None)
-                        keyframeLabels[i].SetText(GetMeasureLabelText(keyframeLabels[i].AttachIndex));
+                        keyframeLabels[i].SetText(GetMeasureLabelText(keyframeLabels[i].AttachIndex), transformer);
 
                     break;
                 }
@@ -1587,8 +1621,7 @@ namespace Kinovea.ScreenManager
             {
                 endTimeStamp = positions.Last().T;
                 miniLabel.SetAttach(positions[0].Point, false);
-                miniLabel.SetText(name);
-
+                
                 if (positions.Count > 1 ||
                    positions[0].X != 0 ||
                    positions[0].Y != 0 ||
@@ -1766,9 +1799,9 @@ namespace Kinovea.ScreenManager
                 for (int iKfl = 0; iKfl < keyframeLabels.Count; iKfl++)
                 {
                     if (measureLabelType == MeasureLabelType.Name)
-                        keyframeLabels[iKfl].SetText(keyframeLabels[iKfl].Name);
+                        keyframeLabels[iKfl].SetText(keyframeLabels[iKfl].Name, transformer);
                     else
-                        keyframeLabels[iKfl].SetText(GetMeasureLabelText(keyframeLabels[iKfl].AttachIndex));
+                        keyframeLabels[iKfl].SetText(GetMeasureLabelText(keyframeLabels[iKfl].AttachIndex), transformer);
                 }
             }
 

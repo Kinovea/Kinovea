@@ -51,7 +51,7 @@ namespace Kinovea.ScreenManager
         #region Members
         public float X;
         public float Y;
-        public long T;          // timestamp relative to the first time stamp of the track
+        public long T;
         #endregion
         
         #region Abstract Methods
