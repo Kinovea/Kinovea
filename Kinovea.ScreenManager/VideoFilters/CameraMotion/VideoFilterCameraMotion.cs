@@ -11,8 +11,6 @@ using Kinovea.ScreenManager.Languages;
 using Kinovea.Video;
 using Kinovea.Services;
 using System.IO;
-//using Microsoft.WindowsAPICodePack.Dialogs;
-using System.Globalization;
 using System.ComponentModel;
 using System.Threading;
 
@@ -70,6 +68,11 @@ namespace Kinovea.ScreenManager
         {
             get { return false; }
         }
+        public CameraMotionParameters Parameters
+        {
+            get { return parameters; }
+            set { parameters = value; }
+        }
         public int ContentHash 
         { 
             get { return 0; }
@@ -82,9 +85,11 @@ namespace Kinovea.ScreenManager
         private Metadata parentMetadata;
         private Stopwatch stopwatch = new Stopwatch();
         private Random rnd = new Random();
-
         private CameraTracker tracker;
         private CameraMotionStep step = CameraMotionStep.All;
+
+        // Configuration
+        private CameraMotionParameters parameters;
 
         // Display parameters
         private bool showFeatures = false;      // All the features found.
@@ -95,6 +100,8 @@ namespace Kinovea.ScreenManager
         private bool showTracks = false;        // Features tracked over multiple frames.
 
         #region Menu
+        private ToolStripMenuItem mnuConfigure = new ToolStripMenuItem();
+
         private ToolStripMenuItem mnuAction = new ToolStripMenuItem();
         private ToolStripMenuItem mnuRunAll = new ToolStripMenuItem();
         private ToolStripMenuItem mnuFindFeatures = new ToolStripMenuItem();
@@ -149,15 +156,9 @@ namespace Kinovea.ScreenManager
         public VideoFilterCameraMotion(Metadata metadata)
         {
             this.parentMetadata = metadata;
-            CameraMotionParameters parameters = new CameraMotionParameters();
-
-            // Tuning of the default parameters for testing
-            parameters.FeaturesPerFrame = 2048;
-
+            parameters = PreferencesManager.PlayerPreferences.CameraMotionParameters;
             tracker = new CameraTracker(parameters);
             InitializeMenus();
-
-            //parameters = PreferencesManager.PlayerPreferences.CameraMotion;
         }
 
         ~VideoFilterCameraMotion()
@@ -184,6 +185,9 @@ namespace Kinovea.ScreenManager
 
         private void InitializeMenus()
         {
+            mnuConfigure.Image = Properties.Drawings.configure;
+            mnuConfigure.Click += MnuConfigure_Click;
+
             mnuAction.Image = Properties.Resources.action;
             mnuRunAll.Image = Properties.Resources.motion_detector;
             mnuFindFeatures.Image = Properties.Drawings.bullet_orange;
@@ -299,11 +303,13 @@ namespace Kinovea.ScreenManager
         }
         public void WriteData(XmlWriter w)
         {
-            
+            // This filter does not save anything to KVA files.
         }
 
         public void ReadData(XmlReader r)
         {
+            // This filter does not load anything from KVA files.
+            // Configuration parameters are loaded from the preferences.
             bool isEmpty = r.IsEmptyElement;
             r.ReadStartElement();
 
@@ -324,7 +330,6 @@ namespace Kinovea.ScreenManager
         {
             List<ToolStripItem> contextMenu = new List<ToolStripItem>();
             ReloadMenusCulture();
-
 
             // The content of the action menu depends on whether we are 
             // running each step individually or all at once.
@@ -351,6 +356,8 @@ namespace Kinovea.ScreenManager
             });
 
             contextMenu.AddRange(new ToolStripItem[] {
+                mnuConfigure,
+                new ToolStripSeparator(),
                 mnuAction,
                 mnuOptions,
             });
@@ -372,6 +379,8 @@ namespace Kinovea.ScreenManager
 
         private void ReloadMenusCulture()
         {
+            mnuConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
+
             mnuAction.Text = ScreenManagerLang.mnuAction;
             mnuRunAll.Text = "Run camera motion estimation";
             mnuFindFeatures.Text = "Find features";
@@ -390,6 +399,28 @@ namespace Kinovea.ScreenManager
             mnuShowMotionField.Text = "Show motion field";
             mnuShowTransforms.Text = "Show frame transforms";
             mnuShowTracks.Text = "Show tracks";
+        }
+
+        private void MnuConfigure_Click(object sender, EventArgs e)
+        {
+            // The dialog is responsible for handling undo/redo.
+
+            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
+            if (tsmi == null)
+                return;
+
+            FormConfigureCameraMotion fccm = new FormConfigureCameraMotion(this);
+            FormsHelper.Locate(fccm);
+            fccm.ShowDialog();
+
+            if (fccm.DialogResult == DialogResult.OK)
+            {
+                SaveAsDefaultParameters();
+                ResetData();
+            }
+
+            fccm.Dispose();
+            InvalidateFromMenu(sender);
         }
 
         private void MnuRunAll_Click(object sender, EventArgs e)
@@ -901,6 +932,15 @@ namespace Kinovea.ScreenManager
             }
 
             return b.ToString();
+        }
+
+        /// <summary>
+        /// Save the configuration as the new preferred configuration.
+        /// </summary>
+        private void SaveAsDefaultParameters()
+        {
+            PreferencesManager.PlayerPreferences.CameraMotionParameters = parameters.Clone();
+            PreferencesManager.Save();
         }
     }
 }

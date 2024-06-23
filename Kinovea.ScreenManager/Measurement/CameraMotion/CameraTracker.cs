@@ -160,10 +160,12 @@ namespace Kinovea.ScreenManager
             OpenCvSharp.ORB orb = null;
             OpenCvSharp.Features2D.SIFT sift = null;
 
+            int featuresPerFrame = Math.Max(100, parameters.FeaturesPerFrame);
+
             if (parameters.FeatureType == CameraMotionFeatureType.ORB)
-                orb = OpenCvSharp.ORB.Create(parameters.FeaturesPerFrame);
+                orb = OpenCvSharp.ORB.Create(featuresPerFrame);
             else
-                sift = OpenCvSharp.Features2D.SIFT.Create(parameters.FeaturesPerFrame);
+                sift = OpenCvSharp.Features2D.SIFT.Create(featuresPerFrame);
 
             int frameIndex = 0;
             for (int i = 0; i < framesContainer.Frames.Count; i++)

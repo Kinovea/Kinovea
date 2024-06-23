@@ -283,11 +283,13 @@ namespace Kinovea.ScreenManager
         }
         public void WriteData(XmlWriter w)
         {
-
+            // This filter does not save anything to KVA files.
         }
 
         public void ReadData(XmlReader r)
         {
+            // This filter does not load anything from KVA files.
+            // Configuration parameters are loaded from the preferences.
             bool isEmpty = r.IsEmptyElement;
             r.ReadStartElement();
 

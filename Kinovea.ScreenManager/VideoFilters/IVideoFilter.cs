@@ -182,14 +182,14 @@ namespace Kinovea.ScreenManager
         void ResetData();
 
         /// <summary>
-        /// Called during serialization.
-        /// The filter should export its configuration to an XML fragment.
+        /// Save filter data to KVA file.
+        /// The filter should also have a parameters object with its own serialization mechanism
+        /// for saving the default configuration to the preferences.
         /// </summary>
         void WriteData(XmlWriter w);
 
         /// <summary>
-        /// Called during deserialization.
-        /// The filter should configure itself from the current XML fragment.
+        /// Called when loading filter data saved in KVA.
         /// </summary>
         void ReadData(XmlReader r);
         #endregion

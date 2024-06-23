@@ -22,7 +22,12 @@ namespace Kinovea.Services
         public bool StepByStep { get; set; } = true;
 
         /// <summary>
-        /// Maximum number of features found per frame.
+        /// Type of feature to track and match.
+        /// </summary>
+        public CameraMotionFeatureType FeatureType { get; set; } = CameraMotionFeatureType.SIFT;
+
+        /// <summary>
+        /// Maximum number of features used per frame.
         /// </summary>
         public int FeaturesPerFrame { get; set; } = 2048;
 
@@ -34,7 +39,7 @@ namespace Kinovea.Services
 
         /// <summary>
         /// If true, filter out matches where the feature jumps over a large distance.
-        /// The distance is distanceThresholdNormalized * image width.
+        /// The distance is d = distanceThresholdNormalized * image width.
         /// </summary>
         public bool UseDistanceThreshold { get; set; } = true;
 
@@ -45,13 +50,8 @@ namespace Kinovea.Services
         public float DistanceThresholdNormalized { get; set; } = 0.1f;
 
         /// <summary>
-        /// Type of feature to track and match.
-        /// </summary>
-        public CameraMotionFeatureType FeatureType { get; set; } = CameraMotionFeatureType.SIFT;
-
-        /// <summary>
         /// If true, matches are filtered out if the distance ratio between 
-        /// the best and second best match is too small.
+        /// the best and second best match is too small (Lowe's distance ratio test).
         /// If false, matches are filtered based on the "cross-check" test
         /// where both features must have the other one as its nearest neighbor.
         /// </summary>
@@ -70,11 +70,11 @@ namespace Kinovea.Services
         {
             CameraMotionParameters clone = new CameraMotionParameters();
             clone.StepByStep = this.StepByStep;
+            clone.FeatureType = this.FeatureType;
             clone.FeaturesPerFrame = this.FeaturesPerFrame;
             clone.RansacReprojThreshold = this.RansacReprojThreshold;
             clone.UseDistanceThreshold = this.UseDistanceThreshold;
             clone.DistanceThresholdNormalized = this.DistanceThresholdNormalized;
-            clone.FeatureType = this.FeatureType;
             clone.UseDistanceRatioTest = this.UseDistanceRatioTest;
             clone.MinTrackLength = this.MinTrackLength;
             return clone;
@@ -84,11 +84,11 @@ namespace Kinovea.Services
         {
             int hash = 0;
             hash ^= StepByStep.GetHashCode();
+            hash ^= FeatureType.GetHashCode();
             hash ^= FeaturesPerFrame.GetHashCode();
             hash ^= RansacReprojThreshold.GetHashCode();
             hash ^= UseDistanceThreshold.GetHashCode();
             hash ^= DistanceThresholdNormalized.GetHashCode();
-            hash ^= FeatureType.GetHashCode();
             hash ^= UseDistanceRatioTest.GetHashCode();
             hash ^= MinTrackLength.GetHashCode();
             return hash;
@@ -106,6 +106,9 @@ namespace Kinovea.Services
                     case "StepByStep":
                         StepByStep = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
                         break;
+                    case "FeatureType":
+                        FeatureType = XmlHelper.ParseEnum<CameraMotionFeatureType>(r.ReadElementContentAsString(), CameraMotionFeatureType.SIFT);
+                        break;
                     case "FeaturesPerFrame":
                         FeaturesPerFrame = int.Parse(r.ReadElementContentAsString(), CultureInfo.InvariantCulture);
                         break;
@@ -117,9 +120,6 @@ namespace Kinovea.Services
                         break;
                     case "DistanceThresholdNormalized":
                         DistanceThresholdNormalized = XmlHelper.ParseFloat(r.ReadElementContentAsString());
-                        break;
-                    case "FeatureType":
-                        FeatureType = XmlHelper.ParseEnum<CameraMotionFeatureType>(r.ReadElementContentAsString(), CameraMotionFeatureType.SIFT);
                         break;
                     case "UseDistanceRatioTest":
                         UseDistanceRatioTest = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
@@ -140,15 +140,15 @@ namespace Kinovea.Services
         public void WriteXml(XmlWriter w)
         {
             w.WriteElementString("StepByStep", XmlHelper.WriteBoolean(StepByStep));
+            
+            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(CameraMotionFeatureType));
+            string xmlFeatureType = enumConverter.ConvertToString(FeatureType);
+            w.WriteElementString("FeatureType", xmlFeatureType);
+            
             w.WriteElementString("FeaturesPerFrame", FeaturesPerFrame.ToString(CultureInfo.InvariantCulture));
             w.WriteElementString("RansacReprojThreshold", XmlHelper.WriteFloat(RansacReprojThreshold));
             w.WriteElementString("UseDistanceThreshold", XmlHelper.WriteBoolean(UseDistanceThreshold));
             w.WriteElementString("DistanceThresholdNormalized", XmlHelper.WriteFloat(DistanceThresholdNormalized));
-
-            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(CameraMotionFeatureType));
-            string xmlFeatureType = enumConverter.ConvertToString(FeatureType);
-            w.WriteElementString("FeatureType", xmlFeatureType);
-
             w.WriteElementString("UseDistanceRatioTest", XmlHelper.WriteBoolean(UseDistanceRatioTest));
             w.WriteElementString("MinTrackLength", MinTrackLength.ToString(CultureInfo.InvariantCulture));
         }
