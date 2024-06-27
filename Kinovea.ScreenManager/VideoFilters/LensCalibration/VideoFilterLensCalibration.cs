@@ -714,8 +714,8 @@ namespace Kinovea.ScreenManager
                 reprojPoints.Add(new List<OpenCvSharp.Point2f>(imagePoints2));
 
                 // Compute the reprojection error.
-                OpenCvSharp.Mat ipMat = new OpenCvSharp.Mat(1, imagePoints[i].Count, OpenCvSharp.MatType.CV_32FC2, imagePoints[i].ToArray());
-                OpenCvSharp.Mat ip2Mat = new OpenCvSharp.Mat(1, imagePoints2.Length, OpenCvSharp.MatType.CV_32FC2, imagePoints2.ToArray());
+                OpenCvSharp.Mat ipMat = OpenCvSharp.Mat.FromPixelData(1, imagePoints[i].Count, OpenCvSharp.MatType.CV_32FC2, imagePoints[i].ToArray());
+                OpenCvSharp.Mat ip2Mat = OpenCvSharp.Mat.FromPixelData(1, imagePoints2.Length, OpenCvSharp.MatType.CV_32FC2, imagePoints2.ToArray());
                 double err = OpenCvSharp.Cv2.Norm(ipMat, ip2Mat, OpenCvSharp.NormTypes.L2SQR);
                 err = Math.Sqrt(err / objectPoints[i].Count);
 

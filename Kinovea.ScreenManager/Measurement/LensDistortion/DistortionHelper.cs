@@ -62,10 +62,10 @@ namespace Kinovea.ScreenManager
             if (!initialized)
                 return point;
 
-            var src = new OpenCvSharp.Mat(1, 1, OpenCvSharp.MatType.CV_32FC2, new float[] { point.X, point.Y });
+            var src = OpenCvSharp.Mat.FromPixelData(1, 1, OpenCvSharp.MatType.CV_32FC2, new float[] { point.X, point.Y });
             var dst = new OpenCvSharp.Mat(1, 1, OpenCvSharp.MatType.CV_32FC2);
-            var matCameraMatrix = new OpenCvSharp.Mat(3, 3, OpenCvSharp.MatType.CV_64FC1, parameters.cameraMatrix);
-            var matDistCoeffs = new OpenCvSharp.Mat(5, 1, OpenCvSharp.MatType.CV_64FC1, parameters.distCoeffs);
+            var matCameraMatrix = OpenCvSharp.Mat.FromPixelData(3, 3, OpenCvSharp.MatType.CV_64FC1, parameters.cameraMatrix);
+            var matDistCoeffs = OpenCvSharp.Mat.FromPixelData(5, 1, OpenCvSharp.MatType.CV_64FC1, parameters.distCoeffs);
 
             OpenCvSharp.Cv2.UndistortPoints(
                 src,
