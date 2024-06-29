@@ -503,9 +503,9 @@ namespace Kinovea.ScreenManager
             // fallback algorithm anyway.
             // We precompute it here and avoid all the extra work.
             double focal = imageSize.Width + imageSize.Height;  // <- fallback focal length estimation.
-            double aspect = imageSize.Width / imageSize.Height;
-            double ppx = imageSize.Width / 2;
-            double ppy = imageSize.Height / 2;
+            double aspect = (double)imageSize.Width / imageSize.Height;
+            double ppx = imageSize.Width / 2.0f;
+            double ppy = imageSize.Height / 2.0f;
             List<OpenCvSharp.Detail.CameraParams> cameras = new List<OpenCvSharp.Detail.CameraParams>();
             for (int i = 0; i < keypoints.Count; i++)
             {
@@ -520,8 +520,25 @@ namespace Kinovea.ScreenManager
 
             bool isFocalsEstimated = true;
             OpenCvSharp.Detail.HomographyBasedEstimator estimator = new OpenCvSharp.Detail.HomographyBasedEstimator(isFocalsEstimated);
+            bool estimated = estimator.Apply(features, matchesInfo, cameras);
 
-            bool ret = estimator.Apply(features, matchesInfo, cameras);
+            if (!estimated)
+            {
+                log.ErrorFormat("Failure during rotation estimation.");
+                return;
+            }
+
+            // Dump the estimated rotation matrices.
+            //for (int i = 0; i < cameras.Count; i++)
+            //{
+            //    log.DebugFormat("Camera {0} rotation matrix:", i);
+            //    log.DebugFormat("{0:0.000} {1:0.000} {2:0.000}", cameras[i].R.Get<double>(0, 0), cameras[i].R.Get<double>(0, 1), cameras[i].R.Get<double>(0, 2));
+            //    log.DebugFormat("{0:0.000} {1:0.000} {2:0.000}", cameras[i].R.Get<double>(1, 0), cameras[i].R.Get<double>(1, 1), cameras[i].R.Get<double>(1, 2));
+            //    log.DebugFormat("{0:0.000} {1:0.000} {2:0.000}", cameras[i].R.Get<double>(2, 0), cameras[i].R.Get<double>(2, 1), cameras[i].R.Get<double>(2, 2));
+            //}
+
+
+
             tracked = true;
         }
 
