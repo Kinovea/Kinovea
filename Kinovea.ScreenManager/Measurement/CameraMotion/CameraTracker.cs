@@ -67,7 +67,7 @@ namespace Kinovea.ScreenManager
         private List<List<PointF>> inliers = new List<List<PointF>>();
         private List<OpenCvSharp.Mat> consecTransforms = new List<OpenCvSharp.Mat>();
         private List<SortedDictionary<long, PointF>> tracks = new List<SortedDictionary<long, PointF>>();
-        //private List<List<byte>> inliersMasks = new List<List<byte>>();
+        private List<List<byte>> inliersMasks = new List<List<byte>>();
 
         // The following are used when we import transforms from COLMAP.
         private List<DistortionParameters> intrinsics = new List<DistortionParameters>();
@@ -368,7 +368,7 @@ namespace Kinovea.ScreenManager
                     maxIter,
                     confidence);
 
-                //inliersMasks.Add(mask);
+                inliersMasks.Add(mask);
 
                 // Collect inliers in more usable formats: a list of bools and a list of only inlier points.
                 inlierStatus.Add(new List<bool>());
@@ -394,53 +394,136 @@ namespace Kinovea.ScreenManager
 
         public void BundleAdjustment(IWorkingZoneFramesContainer framesContainer, BackgroundWorker worker)
         {
+            if (matches.Count != inlierStatus.Count)
+            {
+                // This indicates that there was an issue during FindHomographies
+                // and we don't have the required information to do bundle adjustment.
+                return;
+            }
 
-            //if (matches.Count != inliersMasks.Count || matches.Count != inliers.Count)
-            //{
-            //    This indicates that there was an issue during FindHomographies
-            //    and we don't have the required information to do bundle adjustment.
-            //    return;
-            //}
+            // High level steps:
+            // - convert data to be used by OpenCV stitching module low level API.
+            // - rough estimate of rotation with a first Homography based estimator.
+            // - refine estimate of rotation with bundle adjustment.
 
-            // Steps:
-            // - Initial estimate of the focal length of all views.
-            // - Initial estimate of the rotation between image pairs.
-            // - Refinement using Bundle adjustment.
+            OpenCvSharp.Size imageSize = new OpenCvSharp.Size(
+                framesContainer.Frames[0].Image.Size.Width,
+                framesContainer.Frames[0].Image.Size.Height
+            );
 
-            // First we need to convert the data to the format used in the stitching module of OpenCV.
-            //List<OpenCvSharp.Detail.ImageFeatures> features = new List<OpenCvSharp.Detail.ImageFeatures>();
-            //List<OpenCvSharp.Detail.MatchesInfo> matchesInfo = new List<OpenCvSharp.Detail.MatchesInfo>();
-            //OpenCvSharp.Size imageSize = new OpenCvSharp.Size(
-            //    framesContainer.Frames[0].Image.Size.Width,
-            //    framesContainer.Frames[0].Image.Size.Height
-            //);
+            // Convert keypoints and descriptors to ImageFeatures.
+            // ImageFeatures: https://docs.opencv.org/4.9.0/d4/db5/structcv_1_1detail_1_1ImageFeatures.html
+            List<OpenCvSharp.Detail.ImageFeatures> features = new List<OpenCvSharp.Detail.ImageFeatures>();
+            for (int i = 0; i < keypoints.Count; i++)
+            {
+                OpenCvSharp.Detail.ImageFeatures f = new OpenCvSharp.Detail.ImageFeatures(i, imageSize, keypoints[i], descriptors[i]);
+                features.Add(f);
+            }
 
-            //// Convert keypoints and descriptors to ImageFeatures.
-            //// https://docs.opencv.org/4.9.0/d4/db5/structcv_1_1detail_1_1ImageFeatures.html
-            //for (int i = 0; i < keypoints.Count; i++)
-            //{
-            //    OpenCvSharp.Detail.ImageFeatures f = new OpenCvSharp.Detail.ImageFeatures(i, imageSize, keypoints[i], descriptors[i]);
-            //    features.Add(f);
-            //}
+            // Convert matches between consecutive frames and the calculated homographies to MatchesInfo.
+            // MatchesInfo: https://docs.opencv.org/4.9.0/d2/d9a/structcv_1_1detail_1_1MatchesInfo.html
+            //
+            // Array of pairwise matches in OpenCV:
+            // The code in opencv stitching module is made for panoramas and assumes we have matches for 
+            // all possible pairs of images, not just consecutives frames.
+            // It is expecting a 2D array of matches flattened into a 1D array, where missing matches
+            // have their homography set to empty. (See motion_estimator.cpp and autocalib.cpp).
+            int numMatchesInfo = keypoints.Count * keypoints.Count;
+            List<OpenCvSharp.Detail.MatchesInfo> matchesInfo = new List<OpenCvSharp.Detail.MatchesInfo>(numMatchesInfo);
+            for (int i = 0; i < keypoints.Count; i++)
+            {
+                for (int j = 0; j < keypoints.Count; j++)
+                {
+                    int index = i * keypoints.Count + j;
 
-            //// Convert pair-wise matches to MatchesInfo.
-            //// https://docs.opencv.org/4.9.0/d2/d9a/structcv_1_1detail_1_1MatchesInfo.html
-            //for (int i = 0; i < matches.Count; i++)
-            //{
-            //    int srcImgIdx = i;                           // Images indices
-            //    int dstImgIdx = i + 1;                      
-            //    var mm = matches[i];                         // Matches.
-            //    var inliersMask = inliersMasks[i].ToArray(); // Geometrically consistent matches mask.
-            //    var numInliers = inliers[i].Count;           // Number of geometrically consistent matches.
-            //    OpenCvSharp.Mat H = consecTransforms[i];     // Estimated transformation
-            //    double confidence = 1.0;                     // Confidence two images are from the same panorama
-            //    OpenCvSharp.Detail.MatchesInfo m = new OpenCvSharp.Detail.MatchesInfo(srcImgIdx, dstImgIdx, mm, inliersMask, numInliers, H, confidence);
-            //    matchesInfo.Add(m);
-            //}
+                    int srcImgIdx = i;
+                    int dstImgIdx = j;
 
+                    if (j == i+1)
+                    {
+                        // Match between i and i+1.
+                        // Use the data from the MatchFeatures and FindHomographies steps.
+                        var mm = matches[i];                            // Matches.
+                        var inliersMask = inliersMasks[i].ToArray();    // Geometrically consistent matches mask.
+                        var numInliers = inliers[i].Count;              // Number of geometrically consistent matches.
+                        OpenCvSharp.Mat H = consecTransforms[i];        // Estimated transformation
+                        double confidence = 1.0;                        // Confidence two images are from the same panorama
+
+                        OpenCvSharp.Detail.MatchesInfo m = new OpenCvSharp.Detail.MatchesInfo(
+                            srcImgIdx, dstImgIdx, mm, inliersMask, numInliers, H, confidence);
+
+                        matchesInfo.Add(m);
+                    }
+                    else if (j == i-1)
+                    {
+                        // Match between i and i-1.
+                        // OpenCV will expect this match to exist when it creates the graph of image pairs.
+                        // Use the data we have but use the previous frame as the reference.
+                        var mm = matches[i-1];
+                        var inliersMask = inliersMasks[i-1].ToArray();
+                        var numInliers = inliers[i-1].Count;  
+                        OpenCvSharp.Mat H = consecTransforms[i-1].Inv();
+                        double confidence = 1.0;
+
+                        OpenCvSharp.Detail.MatchesInfo m = new OpenCvSharp.Detail.MatchesInfo(
+                            srcImgIdx, dstImgIdx, mm, inliersMask, numInliers, H, confidence);
+
+                        matchesInfo.Add(m);
+                    }
+                    else
+                    {
+                        // Not a match between consecutive frames.
+                        // Create a dummy match info with empty homography and zero confidence.
+                        // Both these members are used in opencv to identify missing data between the two frames.
+                        var mm = new OpenCvSharp.DMatch[0];
+                        var inliersMask = new byte[0];
+                        var numInliers = 0;
+                        OpenCvSharp.Mat H = new OpenCvSharp.Mat();
+                        double confidence = 0.0;
+
+                        OpenCvSharp.Detail.MatchesInfo m = new OpenCvSharp.Detail.MatchesInfo(
+                            srcImgIdx, dstImgIdx, mm, inliersMask, numInliers, H, confidence);
+
+                        matchesInfo.Add(m);
+                    }
+                }
+            }
+
+            //------------------------------------------------------------
+            // Prepare the list of cameras which will contain the result.
+            // CameraParams: https://docs.opencv.org/4.9.0/d4/d0a/structcv_1_1detail_1_1CameraParams.html
+            // This is always an in/out parameter.
+            //
+            // Use an arbitrary value for focal length, do not use autocalib algorithm.
+            // This is based on the fallback implemented in autocalib.cpp > estimateFocal().
+            // When going through the normal operation of estimateFocal() it finds wildly different focal lengths
+            // for each frame even if the video doesn't change focal, and in the end it doesn't work 
+            // because not all homographies are suitable for its algorithm and it requires that there be at least
+            // as many focals calculated as source frames, so in the end it still computes the focal from the
+            // fallback algorithm anyway.
+            // We precompute it here and avoid all the extra work.
+            double focal = imageSize.Width + imageSize.Height;  // <- fallback focal length estimation.
+            double aspect = imageSize.Width / imageSize.Height;
+            double ppx = imageSize.Width / 2;
+            double ppy = imageSize.Height / 2;
+            List<OpenCvSharp.Detail.CameraParams> cameras = new List<OpenCvSharp.Detail.CameraParams>();
+            for (int i = 0; i < keypoints.Count; i++)
+            {
+                // Initialize the rotation matrix to identity.
+                // This is important because one of the image is going to be picked as the reference by 
+                // opencv (middle frame) and it will use its rotation matrix without setting it itself.
+                OpenCvSharp.Mat r = OpenCvSharp.Mat.Eye(3, 3, OpenCvSharp.MatType.CV_64FC1);
+                OpenCvSharp.Mat t = new OpenCvSharp.Mat();
+                OpenCvSharp.Detail.CameraParams camera = new OpenCvSharp.Detail.CameraParams(focal, aspect, ppx, ppy, r, t);
+                cameras.Add(camera);
+            }
+
+            bool isFocalsEstimated = true;
+            OpenCvSharp.Detail.HomographyBasedEstimator estimator = new OpenCvSharp.Detail.HomographyBasedEstimator(isFocalsEstimated);
+
+            bool ret = estimator.Apply(features, matchesInfo, cameras);
             tracked = true;
         }
-
 
         /// <summary>
         /// Run all steps of the process in batch.
@@ -482,6 +565,8 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Build the list of tracks (features tracked over multiple frames).
+        /// This is not strictly necessary for the camera motion, it is for 
+        /// visual feedback / debugging.
         /// </summary>
         public void BuildTracks(BackgroundWorker worker)
         {
