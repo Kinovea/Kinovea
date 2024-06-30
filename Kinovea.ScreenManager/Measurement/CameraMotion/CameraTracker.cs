@@ -42,6 +42,12 @@ namespace Kinovea.ScreenManager
         /// Consecutive transforms going from frame i to frame i+1.
         /// </summary>
         public List<OpenCvSharp.Mat> ConsecutiveTransforms { get { return consecTransforms; } }
+
+        /// <summary>
+        /// Camera parameters for each frame.
+        /// Includes intrinsic parameters and rotation matrix.
+        /// </summary>
+        public List<OpenCvSharp.Detail.CameraParams> CameraParams { get { return cameraParams; } }
         #endregion
 
         #region Members
@@ -68,6 +74,7 @@ namespace Kinovea.ScreenManager
         private List<OpenCvSharp.Mat> consecTransforms = new List<OpenCvSharp.Mat>();
         private List<SortedDictionary<long, PointF>> tracks = new List<SortedDictionary<long, PointF>>();
         private List<List<byte>> inliersMasks = new List<List<byte>>();
+        private List<OpenCvSharp.Detail.CameraParams> cameraParams = new List<OpenCvSharp.Detail.CameraParams>();
 
         // The following are used when we import transforms from COLMAP.
         private List<DistortionParameters> intrinsics = new List<DistortionParameters>();
@@ -401,6 +408,9 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
+            //tracked = true;
+            //return;
+
             // High level steps:
             // - convert data to be used by OpenCV stitching module low level API.
             // - rough estimate of rotation with a first Homography based estimator.
@@ -506,21 +516,21 @@ namespace Kinovea.ScreenManager
             double aspect = (double)imageSize.Width / imageSize.Height;
             double ppx = imageSize.Width / 2.0f;
             double ppy = imageSize.Height / 2.0f;
-            List<OpenCvSharp.Detail.CameraParams> cameras = new List<OpenCvSharp.Detail.CameraParams>();
+            //List<OpenCvSharp.Detail.CameraParams> cameras = new List<OpenCvSharp.Detail.CameraParams>();
             for (int i = 0; i < keypoints.Count; i++)
             {
                 // Initialize the rotation matrix to identity.
-                // This is important because one of the image is going to be picked as the reference by 
+                // This is important because one of the frames is going to be picked as the reference by 
                 // opencv (middle frame) and it will use its rotation matrix without setting it itself.
                 OpenCvSharp.Mat r = OpenCvSharp.Mat.Eye(3, 3, OpenCvSharp.MatType.CV_64FC1);
                 OpenCvSharp.Mat t = new OpenCvSharp.Mat();
                 OpenCvSharp.Detail.CameraParams camera = new OpenCvSharp.Detail.CameraParams(focal, aspect, ppx, ppy, r, t);
-                cameras.Add(camera);
+                cameraParams.Add(camera);
             }
 
             bool isFocalsEstimated = true;
             OpenCvSharp.Detail.HomographyBasedEstimator estimator = new OpenCvSharp.Detail.HomographyBasedEstimator(isFocalsEstimated);
-            bool estimated = estimator.Apply(features, matchesInfo, cameras);
+            bool estimated = estimator.Apply(features, matchesInfo, cameraParams);
 
             if (!estimated)
             {
@@ -536,8 +546,6 @@ namespace Kinovea.ScreenManager
             //    log.DebugFormat("{0:0.000} {1:0.000} {2:0.000}", cameras[i].R.Get<double>(1, 0), cameras[i].R.Get<double>(1, 1), cameras[i].R.Get<double>(1, 2));
             //    log.DebugFormat("{0:0.000} {1:0.000} {2:0.000}", cameras[i].R.Get<double>(2, 0), cameras[i].R.Get<double>(2, 1), cameras[i].R.Get<double>(2, 2));
             //}
-
-
 
             tracked = true;
         }

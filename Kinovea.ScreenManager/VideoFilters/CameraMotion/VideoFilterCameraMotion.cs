@@ -48,9 +48,9 @@ namespace Kinovea.ScreenManager
         }
         public bool DrawAttachedDrawings
         {
-            // Don't draw the normal drawings, this is a technical filter, it is not 
-            // supposed to be used as a playback mode.
-            get { return false; }
+            // Allow drawings in this mode.
+            // This lets us immediately validate the quality of the tracking.
+            get { return true; }
         }
         public bool DrawDetachedDrawings
         {
@@ -132,8 +132,10 @@ namespace Kinovea.ScreenManager
         private Pen penMatchOutlier = new Pen(Color.FromArgb(128, 255, 0, 0), 2.0f);
         private Pen penMotionField = new Pen(Color.CornflowerBlue, 3.0f);
         private Pen penTracks = new Pen(Color.Fuchsia, 2.0f);
-        private int maxTransformsFrames = 25; 
-        private int motionFieldPoints = 25;     // Number of points in each dimension for the motion field visualization.
+        private int maxAgeTransformFrames = 25;         // Age of the oldest frame to show in the transforms visualization.
+        private bool showSingleTransformFrame = true;   // Show the transform from the oldest frame to the current frame.
+        private float penWidthTransformFrames = 1.0f;
+        private int motionFieldPoints = 25;             // Number of points in each dimension for the motion field visualization.
 
         // Precomputed list of unique colors to draw frame references.
         // https://stackoverflow.com/questions/309149/generate-distinctly-different-rgb-colors-in-graphs
@@ -804,35 +806,86 @@ namespace Kinovea.ScreenManager
                 new OpenCvSharp.Point2f(left, bottom),
             };
 
-            //---------------------------------
-            // Draw the bounds of all the past frames up to this one.
-            //---------------------------------
-            int start = Math.Max(tracker.FrameIndices[timestamp] - maxTransformsFrames, 0);
-            for (int i = start; i < tracker.FrameIndices[timestamp]; i++)
+            DrawFramesBounds(canvas, transformer, timestamp, bounds);
+            DrawFramesBounds2(canvas, transformer, timestamp, bounds);
+        }
+
+        /// <summary>
+        /// Draw the bounds of past frames into this one.
+        /// </summary>
+        private void DrawFramesBounds(Graphics canvas, IImageToViewportTransformer transformer, long timestamp, OpenCvSharp.Point2f[] points)
+        {
+            // This version iteratively transform the points using each frame-to-frame homography
+            // from the source image up to the current image.
+
+            // first and last represent the range of frames we are representing into the current one.
+            int current = tracker.FrameIndices[timestamp];
+            int first = Math.Max(tracker.FrameIndices[timestamp] - maxAgeTransformFrames, 0);
+            int last = showSingleTransformFrame ? first + 1 : current;
+
+            for (int i = first; i < last; i++)
             {
                 // `i` is the frame we are representing inside the current one.
-                // Apply the consecutive transform starting from it up to the current one.
-                // At the end of this we have the rectangle of that frame as seen from the current one.
-                var points = bounds;
-                for (int j = i; j < tracker.FrameIndices[timestamp]; j++)
+                // Iteratively apply the frame-to-frame consecutive transforms, up to the current one.
+                // At the end of this we have the rectangle of frame i, seen from the current frame.
+                for (int j = i; j < current; j++)
                 {
                     points = OpenCvSharp.Cv2.PerspectiveTransform(points, tracker.ConsecutiveTransforms[j]);
                 }
 
-                // Convert back from OpenCV point to Drawing.PointF
-                // and transform to screen space.
-                var points3 = points.Select(p => new PointF(p.X, p.Y));
-                var points4 = transformer.Transform(points3);
-
-                // Get a random color that will be unique to the represented frame.
-                string str = "FF" + colorCycle[i % colorCycle.Length];
-                Color c = Color.FromArgb(Convert.ToInt32(str, 16));
-                using (Pen pen = new Pen(c, 2.0f))
-                    canvas.DrawPolygon(pen, points4.ToArray());
+                DrawSingleFrameBounds(canvas, transformer, points, i);
             }
         }
 
-        private void DrawTracks(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
+        /// <summary>
+        /// Draw the bounds of past frames into this one.
+        /// </summary>
+        private void DrawFramesBounds2(Graphics canvas, IImageToViewportTransformer transformer, long timestamp, OpenCvSharp.Point2f[] points)
+        {
+            // This version pre-computes the homography going from the source frame to the current frame.
+            // This is mainly to see how it diverges from the iterative method which is the ground truth.
+            // Result: we can start to see differences with the iterative method when using age=25 frames.
+
+            // first and last represent the range of frames we are representing into the current one.
+            int current = tracker.FrameIndices[timestamp];
+            int first = Math.Max(tracker.FrameIndices[timestamp] - maxAgeTransformFrames, 0);
+            int last = showSingleTransformFrame ? first + 1 : current;
+
+            for (int i = first; i < last; i++)
+            {
+                // Pre-compute the homography going from first to current.
+                var homography = OpenCvSharp.Mat.Eye(3, 3, OpenCvSharp.MatType.CV_64FC1);
+                for (int j = i; j < current; j++)
+                {
+                    homography = homography * tracker.ConsecutiveTransforms[j];
+                }
+
+                // Apply the combined homography.
+                points = OpenCvSharp.Cv2.PerspectiveTransform(points, homography);
+                homography.Dispose();
+
+                DrawSingleFrameBounds(canvas, transformer, points, i);
+            }
+        }
+        
+        /// <summary>
+        /// Draw the bounds of a single previous frame using a random color.
+        /// </summary>
+        private void DrawSingleFrameBounds(Graphics canvas, IImageToViewportTransformer transformer, OpenCvSharp.Point2f[] points, int id)
+        {
+            // Convert back from OpenCV point to Drawing.PointF and transform to screen space.
+            var points3 = points.Select(p => new PointF(p.X, p.Y));
+            var points4 = transformer.Transform(points3);
+
+            // Get a random color that will be unique to the represented frame.
+            string str = "FF" + colorCycle[id % colorCycle.Length];
+            Color c = Color.FromArgb(Convert.ToInt32(str, 16));
+            using (Pen pen = new Pen(c, penWidthTransformFrames))
+                canvas.DrawPolygon(pen, points4.ToArray());
+        }
+
+
+private void DrawTracks(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
         {
             if (tracker.ConsecutiveTransforms.Count == 0)
                 return;
