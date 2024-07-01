@@ -133,7 +133,7 @@ namespace Kinovea.ScreenManager
         private Pen penMotionField = new Pen(Color.CornflowerBlue, 3.0f);
         private Pen penTracks = new Pen(Color.Fuchsia, 2.0f);
         private int maxAgeTransformFrames = 25;         // Age of the oldest frame to show in the transforms visualization.
-        private bool showSingleTransformFrame = true;   // Show the transform from the oldest frame to the current frame.
+        private bool showSingleTransformFrame = false;  // If true we only show the transform of the oldest.
         private float penWidthTransformFrames = 1.0f;
         private int motionFieldPoints = 25;             // Number of points in each dimension for the motion field visualization.
 
@@ -807,7 +807,8 @@ namespace Kinovea.ScreenManager
             };
 
             DrawFramesBounds(canvas, transformer, timestamp, bounds);
-            DrawFramesBounds2(canvas, transformer, timestamp, bounds);
+            //DrawFramesBounds2(canvas, transformer, timestamp, bounds);
+            DrawFramesBounds3(canvas, transformer, timestamp, bounds);
         }
 
         /// <summary>
@@ -822,18 +823,18 @@ namespace Kinovea.ScreenManager
             int current = tracker.FrameIndices[timestamp];
             int first = Math.Max(tracker.FrameIndices[timestamp] - maxAgeTransformFrames, 0);
             int last = showSingleTransformFrame ? first + 1 : current;
-
             for (int i = first; i < last; i++)
             {
+                var points2 = points;
                 // `i` is the frame we are representing inside the current one.
                 // Iteratively apply the frame-to-frame consecutive transforms, up to the current one.
                 // At the end of this we have the rectangle of frame i, seen from the current frame.
                 for (int j = i; j < current; j++)
                 {
-                    points = OpenCvSharp.Cv2.PerspectiveTransform(points, tracker.ConsecutiveTransforms[j]);
+                    points2 = OpenCvSharp.Cv2.PerspectiveTransform(points2, tracker.ConsecutiveTransforms[j]);
                 }
 
-                DrawSingleFrameBounds(canvas, transformer, points, i);
+                DrawSingleFrameBounds(canvas, transformer, points2, i);
             }
         }
 
@@ -853,6 +854,8 @@ namespace Kinovea.ScreenManager
 
             for (int i = first; i < last; i++)
             {
+                var points2 = points;
+
                 // Pre-compute the homography going from first to current.
                 var homography = OpenCvSharp.Mat.Eye(3, 3, OpenCvSharp.MatType.CV_64FC1);
                 for (int j = i; j < current; j++)
@@ -861,15 +864,133 @@ namespace Kinovea.ScreenManager
                 }
 
                 // Apply the combined homography.
-                points = OpenCvSharp.Cv2.PerspectiveTransform(points, homography);
+                points2 = OpenCvSharp.Cv2.PerspectiveTransform(points2, homography);
                 homography.Dispose();
 
-                DrawSingleFrameBounds(canvas, transformer, points, i);
+                DrawSingleFrameBounds(canvas, transformer, points2, i);
             }
         }
-        
+
+        /// <summary>
+        /// Draw the bounds of past frames into this one.
+        /// </summary>
+        private void DrawFramesBounds3(Graphics canvas, IImageToViewportTransformer transformer, long timestamp, OpenCvSharp.Point2f[] points)
+        {
+            // This version uses the global rotation matrices.
+            int refFrame = 62;
+            int current = tracker.FrameIndices[timestamp];
+            int first = Math.Max(tracker.FrameIndices[timestamp] - maxAgeTransformFrames, 0);
+            int last = showSingleTransformFrame ? first + 1 : current;
+            for (int i = first; i < last; i++)
+            {
+                var points2 = Unproject(points, i);
+                var points3 = RotateToRef(points2, i, refFrame);
+                var points4 = RotateFromRef(points3, current, refFrame);
+                var points5 = Project(points4, refFrame);
+
+                DrawSingleFrameBounds(canvas, transformer, points5, i);
+            }
+        }
+
+        /// <summary>
+        /// Go from image space to camera space of the specified frame.
+        /// </summary>
+        private OpenCvSharp.Point3f[] Unproject(OpenCvSharp.Point2f[] pp, int frameId)
+        {
+            // Apply the inverse of the projection matrix.
+            var pp2 = new List<OpenCvSharp.Point3f>();
+            for (int i = 0; i < pp.Length; i++)
+            {
+                double x = (pp[i].X - tracker.CameraParams[frameId].PpX) / tracker.CameraParams[frameId].Focal;
+                double y = (pp[i].Y - tracker.CameraParams[frameId].PpY) / (tracker.CameraParams[frameId].Focal * tracker.CameraParams[frameId].Aspect);
+                pp2.Add(new OpenCvSharp.Point3f((float)x, (float)y, 1.0f));
+            }
+
+            return pp2.ToArray();
+        }
+
+        /// <summary>
+        /// Go from camera space to image space of the specified frame.
+        /// </summary>
+        private OpenCvSharp.Point2f[] Project(OpenCvSharp.Point3f[] pp, int frameId)
+        {
+            // Apply the projection matrix.
+            var pp2 = new List<OpenCvSharp.Point2f>();
+            for (int i = 0; i < pp.Length; i++)
+            {
+                double x = (pp[i].X * tracker.CameraParams[frameId].Focal) + tracker.CameraParams[frameId].PpX;
+                double y = (pp[i].Y * (tracker.CameraParams[frameId].Focal * tracker.CameraParams[frameId].Aspect)) + tracker.CameraParams[frameId].PpY;
+                pp2.Add(new OpenCvSharp.Point2f((float)x, (float)y));
+            }
+
+            return pp2.ToArray();
+        }
+
+        /// <summary>
+        /// Rotate points from camera space of the specified frame into the camera space of the reference frame.
+        /// </summary>
+        private OpenCvSharp.Point3f[] RotateToRef(OpenCvSharp.Point3f[] pp, int frameId, int refFrame)
+        {
+            if (frameId == refFrame)
+                return pp;
+
+            if (tracker.CameraParams[frameId].R.Empty())
+            {
+                log.Error("Empty rotation matrix.");
+                throw new InvalidDataException();
+                return pp;
+            }
+
+            // Apply the rotation matrix.
+            // Note: these rotation matrices are already built from the *inverses* of
+            // the consecutive homographies going from the reference frame to the considered frame.
+            // So they are already transforming points from the source frame to the
+            // reference frame, we don't need to invert it.
+            // see: motion_estimators.cpp > CalcRotation > operator().
+            // (the breadth-first graph walk starts at the reference frame and goes outwards).
+            // Mat R = K_from.inv() * pairwise_matches[pair_idx].H.inv() * K_to;
+            var srcMat = OpenCvSharp.Mat.FromArray(pp);
+            var dstMat = new OpenCvSharp.Mat<OpenCvSharp.Point3f>(pp.Length, 1);
+            OpenCvSharp.Cv2.Transform(srcMat, dstMat, tracker.CameraParams[frameId].R);
+            
+            var result = dstMat.ToArray();
+            dstMat.Dispose();
+            srcMat.Dispose();
+
+            return result;
+        }
+
+        /// <summary>
+        /// Rotate points from camera space of the reference frame into the camera space of the specified frame.
+        /// </summary>
+        private OpenCvSharp.Point3f[] RotateFromRef(OpenCvSharp.Point3f[] pp, int frameId, int refFrame)
+        {
+            if (frameId == refFrame)
+                return pp;
+
+            if (tracker.CameraParams[frameId].R.Empty())
+            {
+                log.Error("Empty rotation matrix.");
+                return pp;
+            }
+
+            // Apply the inverse of the rotation matrix.
+            var invRot = tracker.CameraParams[frameId].R.Inv();
+            var srcMat = OpenCvSharp.Mat.FromArray(pp);
+            var dstMat = new OpenCvSharp.Mat<OpenCvSharp.Point3f>(pp.Length, 1);
+            OpenCvSharp.Cv2.Transform(srcMat, dstMat, invRot);
+
+            var result = dstMat.ToArray();
+            dstMat.Dispose();
+            srcMat.Dispose();
+            //invRot.Dispose();
+
+            return result;
+        }
+
         /// <summary>
         /// Draw the bounds of a single previous frame using a random color.
+        /// The frame id is only used to pick the random color.
         /// </summary>
         private void DrawSingleFrameBounds(Graphics canvas, IImageToViewportTransformer transformer, OpenCvSharp.Point2f[] points, int id)
         {
@@ -884,8 +1005,7 @@ namespace Kinovea.ScreenManager
                 canvas.DrawPolygon(pen, points4.ToArray());
         }
 
-
-private void DrawTracks(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
+        private void DrawTracks(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
         {
             if (tracker.ConsecutiveTransforms.Count == 0)
                 return;

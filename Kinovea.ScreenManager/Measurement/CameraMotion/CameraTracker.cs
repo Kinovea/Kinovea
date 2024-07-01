@@ -19,7 +19,7 @@ namespace Kinovea.ScreenManager
     /// The result should then be sent to `CameraTransformer` which exposes functions 
     /// to transform coordinates from one frame to another.
     /// </summary>
-    public class CameraTracker
+    public class CameraTracker : IDisposable
     {
         #region Properties
 
@@ -112,11 +112,18 @@ namespace Kinovea.ScreenManager
             if (disposing)
             {
                 if (descriptors != null && descriptors.Count > 0)
+                {
                     foreach (var desc in descriptors)
                         desc.Dispose();
 
+                }
+
                 if (mask != null)
                     mask.Dispose();
+
+                ClearCameraParams();
+                // TODO: dispose all other native resources.
+
             }
         }
         #endregion
@@ -516,7 +523,8 @@ namespace Kinovea.ScreenManager
             double aspect = (double)imageSize.Width / imageSize.Height;
             double ppx = imageSize.Width / 2.0f;
             double ppy = imageSize.Height / 2.0f;
-            //List<OpenCvSharp.Detail.CameraParams> cameras = new List<OpenCvSharp.Detail.CameraParams>();
+
+            List<OpenCvSharp.Detail.CameraParams> cameras = new List<OpenCvSharp.Detail.CameraParams>();
             for (int i = 0; i < keypoints.Count; i++)
             {
                 // Initialize the rotation matrix to identity.
@@ -525,29 +533,56 @@ namespace Kinovea.ScreenManager
                 OpenCvSharp.Mat r = OpenCvSharp.Mat.Eye(3, 3, OpenCvSharp.MatType.CV_64FC1);
                 OpenCvSharp.Mat t = new OpenCvSharp.Mat();
                 OpenCvSharp.Detail.CameraParams camera = new OpenCvSharp.Detail.CameraParams(focal, aspect, ppx, ppy, r, t);
-                cameraParams.Add(camera);
+                cameras.Add(camera);
             }
 
             bool isFocalsEstimated = true;
             OpenCvSharp.Detail.HomographyBasedEstimator estimator = new OpenCvSharp.Detail.HomographyBasedEstimator(isFocalsEstimated);
-            bool estimated = estimator.Apply(features, matchesInfo, cameraParams);
-
+            bool estimated = estimator.Apply(features, matchesInfo, cameras);
             if (!estimated)
             {
                 log.ErrorFormat("Failure during rotation estimation.");
                 return;
             }
 
-            // Dump the estimated rotation matrices.
-            //for (int i = 0; i < cameras.Count; i++)
-            //{
-            //    log.DebugFormat("Camera {0} rotation matrix:", i);
-            //    log.DebugFormat("{0:0.000} {1:0.000} {2:0.000}", cameras[i].R.Get<double>(0, 0), cameras[i].R.Get<double>(0, 1), cameras[i].R.Get<double>(0, 2));
-            //    log.DebugFormat("{0:0.000} {1:0.000} {2:0.000}", cameras[i].R.Get<double>(1, 0), cameras[i].R.Get<double>(1, 1), cameras[i].R.Get<double>(1, 2));
-            //    log.DebugFormat("{0:0.000} {1:0.000} {2:0.000}", cameras[i].R.Get<double>(2, 0), cameras[i].R.Get<double>(2, 1), cameras[i].R.Get<double>(2, 2));
-            //}
+            // Make a deep copy of the matrices. For some reason if we don't they get disposed at next GC.
+            ClearCameraParams();
+            for (int i = 0; i < cameras.Count; i++)
+            {
+                OpenCvSharp.Mat r = new OpenCvSharp.Mat();
+                cameras[i].R.CopyTo(r);
+                OpenCvSharp.Mat t = new OpenCvSharp.Mat();
+                OpenCvSharp.Detail.CameraParams camera = new OpenCvSharp.Detail.CameraParams(cameras[i].Focal, aspect, ppx, ppy, r, t);
+                cameraParams.Add(camera);
+            }
 
+            // TODO: Bundle adjustment.
+
+            GC.Collect(2);
             tracked = true;
+        }
+
+        private void DumpRotationMatrices()
+        {
+            // Dump the estimated rotation matrices.
+            for (int i = 0; i < cameraParams.Count; i++)
+            {
+                log.DebugFormat("Camera {0} rotation matrix:", i);
+                log.DebugFormat("{0:0.000} {1:0.000} {2:0.000}", cameraParams[i].R.Get<double>(0, 0), cameraParams[i].R.Get<double>(0, 1), cameraParams[i].R.Get<double>(0, 2));
+                log.DebugFormat("{0:0.000} {1:0.000} {2:0.000}", cameraParams[i].R.Get<double>(1, 0), cameraParams[i].R.Get<double>(1, 1), cameraParams[i].R.Get<double>(1, 2));
+                log.DebugFormat("{0:0.000} {1:0.000} {2:0.000}", cameraParams[i].R.Get<double>(2, 0), cameraParams[i].R.Get<double>(2, 1), cameraParams[i].R.Get<double>(2, 2));
+            }
+        }
+
+        private void ClearCameraParams()
+        {
+            if (cameraParams.Count == 0)
+                return;
+
+            for (int i = cameraParams.Count - 1; i >= 0; i--)
+                cameraParams[i].Dispose();
+            
+            cameraParams.Clear();
         }
 
         /// <summary>
