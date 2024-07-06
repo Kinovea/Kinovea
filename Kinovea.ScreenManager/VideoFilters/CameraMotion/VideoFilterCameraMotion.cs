@@ -808,7 +808,7 @@ namespace Kinovea.ScreenManager
 
             DrawFramesBounds(canvas, transformer, timestamp, bounds);
             //DrawFramesBounds2(canvas, transformer, timestamp, bounds);
-            DrawFramesBounds3(canvas, transformer, timestamp, bounds);
+            //DrawFramesBounds3(canvas, transformer, timestamp, bounds);
         }
 
         /// <summary>

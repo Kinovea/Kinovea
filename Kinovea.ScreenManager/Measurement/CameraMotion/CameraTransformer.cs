@@ -43,27 +43,40 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Takes a point with coordinates p in the image at referenceTimestamp, 
-        /// returns the corresponding point in image at currentTimestamp.
+        /// Takes a point with coordinates p in the image at sourceTimestamp, 
+        /// returns the corresponding point in image at targetTimestamp.
         /// Typically reference timestamp is the timestamp where the point was placed
         /// on top of a world object in the video. This is the starting point 
         /// of the transform stack.
         /// </summary>
-        public PointF Transform(long referenceTimestamp, long currentTimestamp, PointF p)
+        public PointF Transform(long sourceTimestamp, long targetTimestamp, PointF p)
         {
             if (!initialized)
                 return p;
 
-            if (!frameIndices.ContainsKey(referenceTimestamp) || !frameIndices.ContainsKey(currentTimestamp))
+            if (!frameIndices.ContainsKey(sourceTimestamp) || !frameIndices.ContainsKey(targetTimestamp))
                 return p;
 
-            if (referenceTimestamp == currentTimestamp)
+            if (sourceTimestamp == targetTimestamp)
                 return p;
 
-            // Pairs of conscutive frames transforms.
+            //--------------------------------------------------------------------------------
+            // Note on the tranform stack.
+            // Ideally we want to have one reference frame serving as the world coordinate
+            // system, and then a series of rotation matrices that transform points from the
+            // other frames into that global coordinate system.
+            // This is not implemented yet.
+            // What we have now is a series of consecutive transforms, each one transforming
+            // points from one frame to the next.
+            // We also can't pre-compute the transforms going from a given frame to the reference frame
+            // or vice-versa, there is too much loss of precision.
+            // The only way for now is to pass the point successively through each pairwise transform.
+            // This process happens below for points pertaining to drawings.
+            //--------------------------------------------------------------------------------
+
             // consecTransforms[i] transforms points in image I to their corresponding point in image I+1.
-            int startIndex = frameIndices[referenceTimestamp];
-            int endIndex = frameIndices[currentTimestamp];
+            int startIndex = frameIndices[sourceTimestamp];
+            int endIndex = frameIndices[targetTimestamp];
 
             var p2 = new[] { new OpenCvSharp.Point2f(p.X, p.Y) };
             if (startIndex < endIndex)

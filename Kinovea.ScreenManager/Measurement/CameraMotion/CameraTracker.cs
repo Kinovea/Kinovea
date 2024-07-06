@@ -406,6 +406,9 @@ namespace Kinovea.ScreenManager
             log.DebugFormat("Transforms computation: {0} ms.", stopwatch.ElapsedMilliseconds);
         }
 
+        /// <summary>
+        /// Rotation estimation and bundle adjustment.
+        /// </summary>
         public void BundleAdjustment(IWorkingZoneFramesContainer framesContainer, BackgroundWorker worker)
         {
             if (matches.Count != inlierStatus.Count)
@@ -415,9 +418,13 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            //tracked = true;
-            //return;
+            // Disable the whole rotation estimation and bundle adjustment for now.
+            // The interface with OpenCV is not working as expected.
+            tracked = true;
+            return;
 
+
+            //------------------------------------------------------------
             // High level steps:
             // - convert data to be used by OpenCV stitching module low level API.
             // - rough estimate of rotation with a first Homography based estimator.
@@ -511,13 +518,13 @@ namespace Kinovea.ScreenManager
             // CameraParams: https://docs.opencv.org/4.9.0/d4/d0a/structcv_1_1detail_1_1CameraParams.html
             // This is always an in/out parameter.
             //
-            // Use an arbitrary value for focal length, do not use autocalib algorithm.
+            // Use an arbitrary value for focal length, do not use opencv autocalib algorithm.
             // This is based on the fallback implemented in autocalib.cpp > estimateFocal().
-            // When going through the normal operation of estimateFocal() it finds wildly different focal lengths
-            // for each frame even if the video doesn't change focal, and in the end it doesn't work 
-            // because not all homographies are suitable for its algorithm and it requires that there be at least
-            // as many focals calculated as source frames, so in the end it still computes the focal from the
-            // fallback algorithm anyway.
+            // When running through opencv autocalib estimateFocal() it finds wildly different focal lengths
+            // for each frame even if the video doesn't change zoom, and in the end it doesn't work 
+            // because not all homographies are suitable for its algorithm but it requires that there
+            // be at least as many focals calculated as source frames.
+            // So in the end it still computes the focal from the fallback algorithm anyway.
             // We precompute it here and avoid all the extra work.
             double focal = imageSize.Width + imageSize.Height;  // <- fallback focal length estimation.
             double aspect = (double)imageSize.Width / imageSize.Height;
@@ -536,29 +543,68 @@ namespace Kinovea.ScreenManager
                 cameras.Add(camera);
             }
 
+            // Perform the first rough estimation pass, based on fake focal length and homographies.
             bool isFocalsEstimated = true;
             OpenCvSharp.Detail.HomographyBasedEstimator estimator = new OpenCvSharp.Detail.HomographyBasedEstimator(isFocalsEstimated);
             bool estimated = estimator.Apply(features, matchesInfo, cameras);
             if (!estimated)
             {
-                log.ErrorFormat("Failure during rotation estimation.");
+                log.ErrorFormat("Failure during rotation estimation - Homography based estimator.");
                 return;
             }
 
-            // Make a deep copy of the matrices. For some reason if we don't they get disposed at next GC.
+            // At this point we have a rotation matrix for each frame going to the reference frame,
+            // but it is poor quality and not as good as the homography matrices.
+
+            // Convert the rotation matrices from double to float for Bundle adjustment.
+            // See: opencv > Stitcher::estimateCameraParams.
+            for (int i = 0; i < cameras.Count; i++)
+            {
+                OpenCvSharp.Mat r = new OpenCvSharp.Mat();
+                cameras[i].R.ConvertTo(r, OpenCvSharp.MatType.CV_32F);
+                OpenCvSharp.Detail.CameraParams camera = new OpenCvSharp.Detail.CameraParams(
+                    cameras[i].Focal,
+                    aspect,
+                    cameras[i].PpX,
+                    cameras[i].PpY,
+                    r,
+                    new OpenCvSharp.Mat());
+                cameras[i] = camera;
+            }
+
+            // Perform the bundle adjustment pass that refines the rotation matrices and focal lengths
+            // of all cameras at once.
+            OpenCvSharp.Detail.BundleAdjusterRay adjuster = new OpenCvSharp.Detail.BundleAdjusterRay();
+            estimated = adjuster.Apply(features, matchesInfo, cameras);
+            if (!estimated)
+            {
+                log.ErrorFormat("Failure during rotation estimation - Bundle adjustment.");
+                return;
+            }
+
+            // Make a deep copy of the calculated camera params.
+            // The underlying native resources get disposed at next GC for some reason.
             ClearCameraParams();
             for (int i = 0; i < cameras.Count; i++)
             {
                 OpenCvSharp.Mat r = new OpenCvSharp.Mat();
                 cameras[i].R.CopyTo(r);
-                OpenCvSharp.Mat t = new OpenCvSharp.Mat();
-                OpenCvSharp.Detail.CameraParams camera = new OpenCvSharp.Detail.CameraParams(cameras[i].Focal, aspect, ppx, ppy, r, t);
+                //OpenCvSharp.Mat t = ;
+                OpenCvSharp.Detail.CameraParams camera = new OpenCvSharp.Detail.CameraParams(
+                    cameras[i].Focal,
+                    aspect,
+                    cameras[i].PpX,
+                    cameras[i].PpY,
+                    r,
+                    new OpenCvSharp.Mat());
+
                 cameraParams.Add(camera);
             }
 
-            // TODO: Bundle adjustment.
 
             GC.Collect(2);
+
+
             tracked = true;
         }
 
