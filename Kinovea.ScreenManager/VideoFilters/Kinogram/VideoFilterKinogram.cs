@@ -104,6 +104,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region members
+        private bool hasData; // True if the user visited this filter during this or a previous session.
         private Bitmap bitmap;
         private List<Bitmap> cache = new List<Bitmap>();    // cache of the original images we are using, at the right size for unscaled draw.
         private Size inputFrameSize;         // Size of input images.
@@ -236,6 +237,9 @@ namespace Kinovea.ScreenManager
                 inputFrameSize = framesContainer.Frames[0].Image.Size;
                 UpdateSize(inputFrameSize);
             }
+
+            // From this point forward on we will save the Kinogram configuration to the KVA.
+            hasData = true;
         }
 
         public void UpdateTime(long timestamp)
@@ -398,12 +402,15 @@ namespace Kinovea.ScreenManager
 
         public void WriteData(XmlWriter w)
         {
-            parameters.WriteXml(w);
+            if (hasData)
+                parameters.WriteXml(w);
         }
 
         public void ReadData(XmlReader r)
         {
             parameters.ReadXml(r);
+            hasData = true;
+
             AfterTileCountChange();
             Update();
         }

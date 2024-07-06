@@ -1874,6 +1874,13 @@ namespace Kinovea.ScreenManager
                     continue;
                 }
 
+                bool isFilterEmpty = r.IsEmptyElement;
+                if (isFilterEmpty)
+                {
+                    r.ReadStartElement();
+                    continue;
+                }
+                    
                 videoFilters[type].ReadData(r);
             }
 
