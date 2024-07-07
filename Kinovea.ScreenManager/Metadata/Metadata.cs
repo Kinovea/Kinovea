@@ -1845,6 +1845,9 @@ namespace Kinovea.ScreenManager
         {
             foreach (var pair in videoFilters)
             {
+                if (!pair.Value.HasKVAData)
+                    continue;
+                
                 string xmlName = VideoFilterFactory.GetName(pair.Key);
                 w.WriteStartElement(xmlName);
                 pair.Value.WriteData(w);

@@ -51,6 +51,13 @@ namespace Kinovea.ScreenManager
         Bitmap Current { get; }
 
         /// <summary>
+        /// Whether this filter has data that should be saved to KVA.
+        /// This is true when 1. the filter has been visited by the user,
+        /// and 2. the filter should save its data to KVA in the first place.
+        /// </summary>
+        bool HasKVAData { get; }
+
+        /// <summary>
         /// Whether this filter has a set of custom context menus.
         /// They will then be retrieved from GetContextMenu.
         /// </summary>
@@ -89,7 +96,8 @@ namespace Kinovea.ScreenManager
         bool CanExportImage { get; }
 
         /// <summary>
-        /// Whether this filter is capable of exporting its data.
+        /// Whether this filter is capable of exporting its data 
+        /// to external files (not KVA).
         /// This only makes sense for filters whose data is not 
         /// part of the KVA file, like lens calibration.
         /// If this is true a custom save menu will be requested 
@@ -185,6 +193,7 @@ namespace Kinovea.ScreenManager
         /// Save filter data to KVA file.
         /// The filter should also have a parameters object with its own serialization mechanism
         /// for saving the default configuration to the preferences.
+        /// This will only be called if HasKVAData is true.
         /// </summary>
         void WriteData(XmlWriter w);
 

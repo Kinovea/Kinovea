@@ -54,6 +54,10 @@ namespace Kinovea.ScreenManager
         {
             get { return bitmap; }
         }
+        public bool HasKVAData
+        {
+            get { return hasData; }
+        }
         public bool HasContextMenu
         {
             get { return true; }

@@ -25,7 +25,7 @@ using System.Drawing;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// Computes the camera 3D position from the plane-based calibration.
+    /// Computes the camera 3D position from the plane-based calibration and lens calibration.
     /// </summary>
     public class CameraPoser
     {

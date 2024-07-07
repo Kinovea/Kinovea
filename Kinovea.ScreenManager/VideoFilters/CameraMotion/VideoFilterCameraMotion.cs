@@ -17,11 +17,17 @@ using System.Threading;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// Camera motion subsystem.
-    /// The goal of this filter is to estimate the global motion of the camera during the sequence.
-    /// The output is a series of frame-to-frame transforms that can be used to calculate 
+    /// Camera motion estimation.
+    /// 
+    /// The goal of this filter is to estimate the global motion of the camera 
+    /// over the sequence of frames in the working zone.
+    /// The output is a series of transforms that can be used to calculate 
     /// the position of points in any frame based on their position in a reference frame.
     /// The low level work is done by the CameraTracker class.
+    /// 
+    /// This is a "technical" or "helper" filter.
+    /// The results are sent to CameraTransformer where they are used
+    /// to transform the position of drawings points.
     /// </summary>
     public class VideoFilterCameraMotion : IVideoFilter
     {
@@ -37,6 +43,13 @@ namespace Kinovea.ScreenManager
         public Bitmap Current
         {
             get { return null; }
+        }
+        public bool HasKVAData
+        {
+            // This is a technical filter, the result of its execution
+            // are sent to the CameraTransformer which is responsible 
+            // for KVA serialization.
+            get { return false; }
         }
         public bool HasContextMenu
         {
@@ -312,6 +325,7 @@ namespace Kinovea.ScreenManager
         {
             // This filter does not load anything from KVA files.
             // Configuration parameters are loaded from the preferences.
+            // Camera transforms are loaded as part of CameraTransformer.
             bool isEmpty = r.IsEmptyElement;
             r.ReadStartElement();
 

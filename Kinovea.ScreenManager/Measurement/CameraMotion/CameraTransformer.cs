@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace Kinovea.ScreenManager
 {
@@ -11,10 +13,15 @@ namespace Kinovea.ScreenManager
     /// Exposes functions to transform coordinates from one frame to another, 
     /// taking into account the camera motion.
     /// The camera motion must have already been estimated using the CameraMotion filter.
+    /// 
+    /// This class is also responsible for the serialization of the transforms to KVA.
     /// </summary>
     public class CameraTransformer
     {
         #region Properties
+        /// <summary>
+        /// Whether the transformer has been initialized with a list of frame transforms.
+        /// </summary>
         public bool Initialized 
         {
             get { return initialized; }
@@ -98,5 +105,46 @@ namespace Kinovea.ScreenManager
 
             return new PointF(p2[0].X, p2[0].Y);
         }
+
+        #region KVA serialization
+        /// <summary>
+        /// Save camera transforms to KVA.
+        /// </summary>
+        public void WriteXml(XmlWriter w)
+        {
+            if (consecTransforms.Count != frameIndices.Count - 1)
+            {
+                log.ErrorFormat("The number of transforms does not match the number of frame indices.");
+                return;
+            }
+
+            // This tells whether we are saving consecutive homographies or global rotations.
+            w.WriteElementString("Type", "Homographies");
+            w.WriteStartElement("Transforms");
+
+            foreach (var kvp in frameIndices)
+            {
+                w.WriteStartElement("Frame");
+                w.WriteAttributeString("Timestamp", kvp.Key.ToString());
+                w.WriteAttributeString("Index", kvp.Value.ToString());
+                w.WriteString(WriteMatrix(consecTransforms[kvp.Value]));
+                w.WriteEndElement();
+            }
+        }
+
+        private string WriteMatrix(OpenCvSharp.Mat mat)
+        {
+            List<string> elements = new List<string>();
+            for (int i = 0; i < mat.Rows; i++)
+            {
+                for (int j = 0; j < mat.Cols; j++)
+                {
+                    elements.Add(string.Format(CultureInfo.InvariantCulture, "{0}", mat.At<double>(i, j)));
+                }
+            }
+            
+            return string.Join(";", elements);
+        }
+        #endregion
     }
 }

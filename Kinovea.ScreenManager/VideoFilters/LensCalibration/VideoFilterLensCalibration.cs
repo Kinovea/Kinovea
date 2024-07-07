@@ -16,8 +16,17 @@ using System.Text;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// Lens calibration subsystem.
-    /// The goal of this filter is to estimate the intrinsics parameters of a camera.
+    /// Lens calibration estimation.
+    /// 
+    /// The goal of this filter is to estimate the intrinsics parameters and 
+    /// distortion coefficients of the camera that filmed the current video.
+    /// The output is an object with camera intrinsics (focal length and central point)
+    /// and distortion coefficients (radial and tangential).
+    /// 
+    /// This is a "technical" or "helper" filter.
+    /// The results are sent to DistortionHelper where they are used to
+    /// distort/undistort the position of drawing points, and to the CameraPoser to recompute 
+    /// the 3D position of the camera.
     /// </summary>
     public class VideoFilterLensCalibration : IVideoFilter
     {
@@ -35,6 +44,12 @@ namespace Kinovea.ScreenManager
         {
             get { return bitmap; }
         }
+        public bool HasKVAData 
+        {
+            // This is a technical filter, the result of its execution is sent to the DistortionHelper.
+            // Ultimately the DistortionSerializer is responsible for KVA serialization.
+            get { return false; }
+        }
         public bool HasContextMenu
         {
             get { return true; }
@@ -45,7 +60,7 @@ namespace Kinovea.ScreenManager
         }
         public bool DrawAttachedDrawings
         {
-            // This video mode isn't supposed to received any annotations
+            // This video mode isn't supposed to receive any annotations
             // but it doesn't hurt to draw them.
             get { return true; }
         }

@@ -7,9 +7,11 @@ using System.Drawing.Drawing2D;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// The main utility class for lens distortion conversion routines.
-    /// The calibration must have been done already, here we just convert from
-    /// distorted space to undistorted space and back.
+    /// The main utility class for converting between points from image space (distorted) to ideal image space (rectified).
+    /// This uses the focal distance, projection center and radial distortion.
+    /// 
+    /// The lens calibration must have been done already and stored passed in the DistortionParameters object, 
+    /// here we just convert from distorted space to rectified space and back.
     /// </summary>
     public class DistortionHelper
     {

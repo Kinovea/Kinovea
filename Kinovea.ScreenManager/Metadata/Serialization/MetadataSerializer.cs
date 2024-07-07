@@ -460,13 +460,19 @@ namespace Kinovea.ScreenManager
         {
             // Convert the metadata to KVA XML.
             w.WriteStartElement("KinoveaVideoAnalysis");
-            
             WriteGeneralInformation(w);
+
+            // Calibration (including lens parameters if available).
+            WriteCalibration(w);
+
+            // Keyframes and attached drawings.
             WriteKeyframes(w, SerializationFilter.KVA);
             
+            // Detached drawings.
             WriteChronos(w, SerializationFilter.KVA);
             WriteTracks(w, SerializationFilter.KVA);
 
+            // Singleton drawings.
             WriteSpotlights(w);
             WriteNumberSequence(w);
             WriteCoordinateSystem(w);
@@ -474,6 +480,7 @@ namespace Kinovea.ScreenManager
 
             WriteTrackablePoints(w);
             WriteVideoFilters(w);
+            WriteCameraMotion(w);
 
             w.WriteEndElement();
         }
@@ -490,6 +497,7 @@ namespace Kinovea.ScreenManager
 
             w.WriteElementString("ImageSize", metadata.ImageSize.Width + ";" + metadata.ImageSize.Height);
             
+            // Image aspect
             w.WriteElementString("Aspect", metadata.ImageAspect.ToString());
             w.WriteElementString("Rotation", metadata.ImageRotation.ToString());
             w.WriteElementString("Mirror", metadata.Mirrored.ToString().ToLower());
@@ -497,6 +505,7 @@ namespace Kinovea.ScreenManager
             w.WriteElementString("Deinterlacing", metadata.Deinterlacing.ToString().ToLower());
             w.WriteElementString("BackgroundColor", XmlHelper.WriteColor(metadata.BackgroundColor, true));
 
+            // Timing information
             w.WriteElementString("AverageTimeStampsPerFrame", metadata.AverageTimeStampsPerFrame.ToString());
             w.WriteElementString("CaptureFramerate", string.Format(CultureInfo.InvariantCulture, "{0}", metadata.CalibrationHelper.CaptureFramesPerSecond));
             w.WriteElementString("UserFramerate", string.Format(CultureInfo.InvariantCulture, "{0}", 1000 / metadata.BaselineFrameInterval));
@@ -504,8 +513,6 @@ namespace Kinovea.ScreenManager
             w.WriteElementString("SelectionStart", metadata.SelectionStart.ToString());
             w.WriteElementString("SelectionEnd", metadata.SelectionEnd.ToString());
             w.WriteElementString("TimeOrigin", metadata.TimeOrigin.ToString());
-
-            WriteCalibrationHelp(w);
         }
 
         private void WriteKeyframes(XmlWriter w, SerializationFilter filter)
@@ -604,8 +611,17 @@ namespace Kinovea.ScreenManager
             metadata.DrawingTestGrid.WriteXml(w, SerializationFilter.KVA);
             w.WriteEndElement();
         }
-        private void WriteCalibrationHelp(XmlWriter w)
+        private void WriteCalibration(XmlWriter w)
         {
+            // This comprises the calibration object, intrinsics and distortion.
+            // - image space and world space coordinates used to rebuild the homography transform,
+            // - custom origin of the coordinate system,
+            // - units used, coordinates offset.
+            // - id of the drawing used to drive the calibration
+            // - Lens intrinsics and distortion.
+            // Not saved here:
+            // - The 3D camera position is not saved, it is recalculated on the fly from the rest.
+            // - The number of decimal places to use is saved in global preferences.
             w.WriteStartElement("Calibration");
             metadata.CalibrationHelper.WriteXml(w);
             w.WriteEndElement();
@@ -624,6 +640,15 @@ namespace Kinovea.ScreenManager
                 w.WriteAttributeString("active", name);
             
             metadata.WriteVideoFilters(w);
+            w.WriteEndElement();
+        }
+        private void WriteCameraMotion(XmlWriter w)
+        {
+            if (!metadata.CameraTransformer.Initialized)
+                return;
+
+            w.WriteStartElement("CameraMotion");
+            metadata.CameraTransformer.WriteXml(w);
             w.WriteEndElement();
         }
         #endregion

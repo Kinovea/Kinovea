@@ -634,6 +634,10 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Serialization
+
+        /// <summary>
+        /// Write the calibration data to KVA.
+        /// </summary>
         public void WriteXml(XmlWriter w)
         {
             if(calibratorType == CalibratorType.Line)

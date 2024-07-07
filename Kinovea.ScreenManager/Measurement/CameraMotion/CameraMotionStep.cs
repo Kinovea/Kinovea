@@ -8,7 +8,7 @@ namespace Kinovea.ScreenManager
 {
     public enum CameraMotionStep
     {
-        // All the steps below in order.
+        // All the steps below in order (except BuildTracks).
         All,
 
         // Find features in each frame.

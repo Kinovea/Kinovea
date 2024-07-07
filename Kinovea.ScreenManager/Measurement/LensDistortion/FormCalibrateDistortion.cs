@@ -14,7 +14,6 @@ namespace Kinovea.ScreenManager
 {
     public partial class FormCalibrateDistortion : Form
     {
-        private CameraCalibrator calibrator;
         private DistortionHelper distorter = new DistortionHelper();
         private Bitmap bmpCurrentImage;
         private Bitmap bmpGrid;
@@ -40,8 +39,7 @@ namespace Kinovea.ScreenManager
                 distortionParameters = calibrationHelper.DistortionHelper.Parameters;
 
             distorter.Initialize(distortionParameters, calibrationHelper.ImageSize);
-            calibrator = new CameraCalibrator(points, calibrationHelper.ImageSize);
-
+            
             InitializeComponent();
             LocalizeForm();
 

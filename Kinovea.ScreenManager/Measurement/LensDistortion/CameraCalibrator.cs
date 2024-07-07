@@ -7,10 +7,13 @@ using System.Drawing;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// Finds distortion coefficients and intrinsic parameters from image points of pattern.
+    /// Finds intsinsic parameters and distortion coefficients from image points of pattern.
     ///
+    /// DEPRECATED: this class was used to process the "distortion grid" drawing.
+    /// From 2024.1 forward we use the Lens calibration filter instead which is much 
+    /// more flexible and automated.
+    /// 
     /// References:
-    ///
     /// Background and original implementation:
     /// http://www.vision.caltech.edu/bouguetj/calib_doc/
     /// http://docs.opencv.org/doc/tutorials/calib3d/camera_calibration/camera_calibration.html
