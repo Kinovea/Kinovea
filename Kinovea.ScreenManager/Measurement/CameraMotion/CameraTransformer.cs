@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace Kinovea.ScreenManager
@@ -114,23 +113,103 @@ namespace Kinovea.ScreenManager
         {
             if (consecTransforms.Count != frameIndices.Count - 1)
             {
-                log.ErrorFormat("The number of transforms does not match the number of frame indices.");
+                log.ErrorFormat("The number of transforms does not match the number of frames.");
                 return;
             }
 
             // This tells whether we are saving consecutive homographies or global rotations.
-            w.WriteElementString("Type", "Homographies");
-            w.WriteStartElement("Transforms");
+            w.WriteAttributeString("type", "Homographies");
 
+            // Note: we are writing the last frame entry which doesn't have an actual transform.
             foreach (var kvp in frameIndices)
             {
                 w.WriteStartElement("Frame");
-                w.WriteAttributeString("Timestamp", kvp.Key.ToString());
-                w.WriteAttributeString("Index", kvp.Value.ToString());
-                w.WriteString(WriteMatrix(consecTransforms[kvp.Value]));
+                w.WriteAttributeString("timestamp", kvp.Key.ToString());
+                w.WriteAttributeString("index", kvp.Value.ToString());
+                
+                if (kvp.Value < consecTransforms.Count)
+                    w.WriteString(WriteMatrix(consecTransforms[kvp.Value]));
+
                 w.WriteEndElement();
             }
         }
+
+        public void ReadXml(XmlReader r)
+        {
+            // Note:
+            // This function must be a complete alternative to Initialize().
+
+            bool isEmpty = r.IsEmptyElement;
+
+            bool homographies = true;
+            if (r.MoveToAttribute("type"))
+            {
+                string type = r.ReadContentAsString();
+                homographies = type == "Homographies";
+            }
+
+            r.ReadStartElement();
+
+            if (isEmpty)
+                return;
+
+            while (r.NodeType == XmlNodeType.Element)
+            {
+                if (r.Name != "Frame")
+                {
+                    log.DebugFormat("Unsupported content in CameraMotion KVA: {0}", r.Name);
+                    r.ReadOuterXml();
+                    continue;
+                }
+
+                bool isEmptyFrame = r.IsEmptyElement;
+
+                // Read attributes.
+                bool hasTimestamp = r.MoveToAttribute("timestamp");
+                if (!hasTimestamp)
+                {
+                    log.ErrorFormat("Missing timestamp in CameraMotion KVA.");
+                    r.ReadOuterXml();
+                    continue;
+                }
+
+                long timestamp = r.ReadContentAsLong();
+
+                bool hasIndex = r.MoveToAttribute("index");
+                if (!hasIndex)
+                {
+                    log.ErrorFormat("Missing index in CameraMotion KVA.");
+                    r.ReadOuterXml();
+                    continue;
+                }
+
+                int index = r.ReadContentAsInt();
+                if (frameIndices.ContainsKey(timestamp))
+                {
+                    log.ErrorFormat("Duplicate timestamp in CameraMotion KVA.");
+                    r.ReadOuterXml();
+                    continue;
+                }
+
+                frameIndices.Add(timestamp, index);
+
+                if (isEmptyFrame)
+                {
+                    // This is the empty frame corresponding to the last frame index
+                    // which doesn't have a transform to the "next" frame.
+                    r.ReadStartElement();
+                    continue;
+                }
+                else
+                {
+                    consecTransforms.Add(ReadMatrix(r));
+                }
+            }
+
+            r.ReadEndElement();
+
+            initialized = true;
+    }
 
         private string WriteMatrix(OpenCvSharp.Mat mat)
         {
@@ -142,8 +221,22 @@ namespace Kinovea.ScreenManager
                     elements.Add(string.Format(CultureInfo.InvariantCulture, "{0}", mat.At<double>(i, j)));
                 }
             }
-            
+
             return string.Join(";", elements);
+        }
+
+        private OpenCvSharp.Mat ReadMatrix(XmlReader r)
+        {
+            r.ReadStartElement();
+            string matrix = r.ReadContentAsString();
+            string[] elements = matrix.Split(';');
+            double[] values = elements.Select(e => double.Parse(e, CultureInfo.InvariantCulture)).ToArray();
+            r.ReadEndElement();
+
+            if (values.Length != 9)
+                throw new InvalidDataException("Invalid matrix size.");
+
+            return OpenCvSharp.Mat.FromPixelData(3, 3, OpenCvSharp.MatType.CV_64FC1, values);
         }
         #endregion
     }

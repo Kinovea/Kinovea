@@ -146,7 +146,7 @@ namespace Kinovea.ScreenManager
             set
             {
                 imageSize = value;
-                trackabilityManager.Initialize(imageSize);
+                trackabilityManager.Initialize(imageSize, cameraTransformer);
                 calibrationHelper.Initialize(imageSize, GetCalibrationOrigin, GetCalibrationQuad, HasTrackingData);
             }
         }
@@ -1371,7 +1371,7 @@ namespace Kinovea.ScreenManager
         {
             if (init)
             {
-                trackabilityManager.Initialize(imageSize);
+                trackabilityManager.Initialize(imageSize, cameraTransformer);
                 calibrationHelper.Initialize(imageSize, GetCalibrationOrigin, GetCalibrationQuad, HasTrackingData);
             }
 
@@ -1392,7 +1392,7 @@ namespace Kinovea.ScreenManager
         public void PostSetupCapture()
         {
             captureKVA = true;
-            trackabilityManager.Initialize(imageSize);
+            trackabilityManager.Initialize(imageSize, cameraTransformer);
             calibrationHelper.Initialize(imageSize, GetCalibrationOrigin, GetCalibrationQuad, HasTrackingData);
 
             foreach (AbstractDrawing d in singletonDrawingsManager.Drawings)
@@ -1401,7 +1401,6 @@ namespace Kinovea.ScreenManager
 
         public void SetCameraMotion(CameraTracker tracker)
         {
-            trackabilityManager.SetCameraMotion(tracker);
             cameraTransformer.Initialize(tracker);
         }
 

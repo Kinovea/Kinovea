@@ -343,6 +343,9 @@ namespace Kinovea.ScreenManager
                     case "VideoFilters":
                         metadata.ReadVideoFilters(r);
                         break;
+                    case "CameraMotion":
+                        metadata.CameraTransformer.ReadXml(r);
+                        break;
                     default:
                         // Skip the unparsed nodes.
                         string unparsed = r.ReadOuterXml();

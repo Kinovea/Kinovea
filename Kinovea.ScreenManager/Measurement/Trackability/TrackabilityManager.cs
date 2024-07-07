@@ -59,18 +59,14 @@ namespace Kinovea.ScreenManager
         #region Members
         private Dictionary<Guid, DrawingTracker> trackers = new Dictionary<Guid, DrawingTracker>();
         private Size imageSize;
-        private CameraTransformer cameraTransformer = new CameraTransformer();
+        private CameraTransformer cameraTransformer;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        public void Initialize(Size imageSize)
+        public void Initialize(Size imageSize, CameraTransformer cameraTransformer)
         {
             this.imageSize = imageSize;
-        }
-
-        public void SetCameraMotion(CameraTracker cameraTracker)
-        {
-            cameraTransformer.Initialize(cameraTracker);
+            this.cameraTransformer = cameraTransformer;
         }
 
         /// <summary>
