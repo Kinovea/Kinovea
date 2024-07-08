@@ -19,15 +19,11 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
-using System.ComponentModel;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
 using System.Globalization;
-using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
-using System.Xaml;
 
 namespace Kinovea.ScreenManager
 {
@@ -47,10 +43,6 @@ namespace Kinovea.ScreenManager
                 RaiseValueChanged();
             }
         }
-        //public override void Import(object value)
-        //{
-        //    this.value = (value is int) ? (int)value : defaultValue;
-        //}
         public override Bitmap Icon
         {
             get { return Properties.Drawings.coordinates_grid;}

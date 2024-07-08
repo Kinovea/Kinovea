@@ -61,6 +61,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// An index into a list of points owned by the drawing.
         /// This is used to contextualize the displayed information based on the reference point.
+        /// Used when there are multiple mini labels like for trajectory or kinogram.
         /// </summary>
         public int AttachIndex
         {
@@ -226,10 +227,29 @@ namespace Kinovea.ScreenManager
                 background.Rectangle = new RectangleF(background.Rectangle.Location, textSize);
             }
         }
+
         public void WriteXml(XmlWriter xmlWriter)
         {
             xmlWriter.WriteElementString("SpacePosition", String.Format(CultureInfo.InvariantCulture, "{0};{1}", background.X, background.Y));
             xmlWriter.WriteElementString("TimePosition", timestamp.ToString());
+        }
+
+        /// <summary>
+        /// Write the mini label to KVA.
+        /// referenceAttach is the attach point at the reference timestamp of the parent drawing.
+        /// The mini label should be stored based on this point.
+        /// </summary>
+        public void WriteXml(XmlWriter xmlWriter, PointF referenceAttach)
+        {
+            // Move the label based on the reference attach point before saving the data.
+            float dx = referenceAttach.X - attachLocation.X;
+            float dy = referenceAttach.Y - attachLocation.Y;
+            background.Move(dx, dy);
+
+            WriteXml(xmlWriter);
+            
+            // Restore the location for the current frame.
+            background.Move(-dx, -dy);
         }
         public void ReadXml(XmlReader xmlReader, PointF scale)
         {

@@ -23,9 +23,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Globalization;
-using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
@@ -550,6 +548,11 @@ namespace Kinovea.ScreenManager
                             quadImage.D = ReadPoint(r, scale);
                             break;
                         }
+                    case "ReferenceTimestamp":
+                        {
+                            referenceTimestamp = XmlHelper.ParseTimestamp(r.ReadElementContentAsString());
+                            break;
+                        }
                     case "ShowGrid":
                         {
                             showGrid = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
@@ -621,10 +624,16 @@ namespace Kinovea.ScreenManager
         {
             if (ShouldSerializeCore(filter))
             {
-                w.WriteElementString("PointUpperLeft", XmlHelper.WritePointF(quadImage.A));
-                w.WriteElementString("PointUpperRight", XmlHelper.WritePointF(quadImage.B));
-                w.WriteElementString("PointLowerRight", XmlHelper.WritePointF(quadImage.C));
-                w.WriteElementString("PointLowerLeft", XmlHelper.WritePointF(quadImage.D));
+                PointF a = parentMetadata.TrackabilityManager.GetReferenceValue(Id, "0");
+                PointF b = parentMetadata.TrackabilityManager.GetReferenceValue(Id, "1");
+                PointF c = parentMetadata.TrackabilityManager.GetReferenceValue(Id, "2");
+                PointF d = parentMetadata.TrackabilityManager.GetReferenceValue(Id, "3");
+                w.WriteElementString("PointUpperLeft", XmlHelper.WritePointF(a));
+                w.WriteElementString("PointUpperRight", XmlHelper.WritePointF(b));
+                w.WriteElementString("PointLowerRight", XmlHelper.WritePointF(c));
+                w.WriteElementString("PointLowerLeft", XmlHelper.WritePointF(d));
+                w.WriteElementString("ReferenceTimestamp", XmlHelper.WriteTimestamp(referenceTimestamp));
+
                 w.WriteElementString("ShowGrid", XmlHelper.WriteBoolean(showGrid));
                 w.WriteElementString("ShowXLine", XmlHelper.WriteBoolean(showXLine));
                 w.WriteElementString("ShowYLine", XmlHelper.WriteBoolean(showYLine));

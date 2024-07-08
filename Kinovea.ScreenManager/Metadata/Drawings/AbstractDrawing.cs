@@ -57,6 +57,7 @@ namespace Kinovea.ScreenManager
         /// It is not necessarily the timestamp of the parent keyframe.
         /// The user placed the object on top of world elements at this specific frame, 
         /// so the camera transform must be relative to this frame.
+        /// This MUST be saved to KVA by the trackable drawings.
         /// </summary>
         public long ReferenceTimestamp
         {
@@ -130,7 +131,11 @@ namespace Kinovea.ScreenManager
         #region Concrete members
         protected Guid identifier = Guid.NewGuid();
         protected string name;
-        protected long referenceTimestamp;
+        // Set default reference timestamp to -1 so we can tell when this drawing
+        // is being created from scratch and should take the keyframe timestamp vs
+        // when it's being copied or loaded from KVA.
+        // This happens in Metadata.AfterDrawingCreation().
+        protected long referenceTimestamp = -1;
         protected Metadata parentMetadata;
         #endregion
 

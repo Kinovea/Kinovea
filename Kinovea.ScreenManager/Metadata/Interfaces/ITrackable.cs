@@ -75,10 +75,10 @@ namespace Kinovea.ScreenManager
         // This is used to handle opacity for tracked drawings.
 
         /// <summary>
-        /// Called by the trackability manager after a Track() call.
-        /// The value of the trackable point should be updated inside the drawing so the 
-        /// drawing reflects the new coordinate.
-        /// trackingTimestamps indicates the distance between the current video time and the closest entry in the timeline.
+        /// Called by the trackability manager during the Track() step at video time change.
+        /// The value of the trackable point must be updated to reflect the tracked coordinate.
+        /// trackingTimestamps indicates the distance between the current video time 
+        /// and the closest entry in the timeline.
         /// </summary>
         void SetTrackablePointValue(string name, PointF value, long trackingTimestamps);
         

@@ -47,6 +47,15 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// Reference position set by the user. It is only valid at the 
+        /// reference timestamp that was active when the user set it.
+        /// </summary>
+        public PointF ReferenceValue
+        {
+            get { return nonTrackingValue; }
+        }
+
+        /// <summary>
         /// Distance in timestamps between the current video time and the time of the closest tracked value.
         /// This is used by drawings to change opacity based on whether the drawing has tracking data at this time or not.
         /// </summary>
@@ -80,12 +89,12 @@ namespace Kinovea.ScreenManager
         
         private bool isTracking;
         private PointF currentValue;
+        private PointF nonTrackingValue;
         private long timeDifference = -1;
         private TrackingContext context;
         private TrackerParameters trackerParameters;
         private Timeline<TrackFrame> trackTimeline = new Timeline<TrackFrame>();
         private Dictionary<long, PointF> cameraTrackCache = new Dictionary<long, PointF>();
-        private PointF nonTrackingValue;
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -245,6 +254,8 @@ namespace Kinovea.ScreenManager
 
             if (!cameraTrackCache.ContainsKey(context.Time))
             {
+                // Since the point is not actively tracked currentValue is still the value at the reference timestamp.
+                // (even if the user moves the point while on a different frame ?)
                 PointF p = cameraTransformer.Transform(referenceTimestamp, context.Time, currentValue);
                 cameraTrackCache[context.Time] = p;
             }
@@ -321,6 +332,14 @@ namespace Kinovea.ScreenManager
 
             TrackFrame closestFrame = trackTimeline.ClosestFrom(time);
             return closestFrame.Location;
+        }
+
+        /// <summary>
+        /// Returns the position of the point suitable for KVA storage.
+        /// </summary>
+        public PointF GetNonTrackingValue()
+        {
+            return nonTrackingValue;
         }
 
         public void WriteXml(XmlWriter w)

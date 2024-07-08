@@ -377,6 +377,11 @@ namespace Kinovea.ScreenManager
                             points["b"] = p.Scale(scale.X, scale.Y);
                             break;
                         }
+                    case "ReferenceTimestamp":
+                        {
+                            referenceTimestamp = XmlHelper.ParseTimestamp(xmlReader.ReadElementContentAsString());
+                            break;
+                        }
                     case "ExtraData":
                         {
                             measureLabelType = XmlHelper.ParseEnum<MeasureLabelType>(xmlReader.ReadElementContentAsString(), MeasureLabelType.None);
@@ -415,15 +420,22 @@ namespace Kinovea.ScreenManager
         {
             if (ShouldSerializeCore(filter))
             {
-                w.WriteElementString("Start", XmlHelper.WritePointF(points["a"]));
-                w.WriteElementString("End", XmlHelper.WritePointF(points["b"]));
+                // In case of tracking or camera motion, the current time at the moment of the write call
+                // is not necessarily the reference time of the drawing (last manual placement),
+                // and the points coordinates are those based off the last track step (video time change).
+                // Get the right values at the reference time.
+                PointF a = parentMetadata.TrackabilityManager.GetReferenceValue(Id, "a");
+                PointF b = parentMetadata.TrackabilityManager.GetReferenceValue(Id, "b");
+                w.WriteElementString("Start", XmlHelper.WritePointF(a));
+                w.WriteElementString("End", XmlHelper.WritePointF(b));
+                w.WriteElementString("ReferenceTimestamp", XmlHelper.WriteTimestamp(referenceTimestamp));
 
                 TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(MeasureLabelType));
                 string xmlMeasureLabelType = enumConverter.ConvertToString(measureLabelType);
                 w.WriteElementString("ExtraData", xmlMeasureLabelType);
 
                 w.WriteStartElement("MeasureLabel");
-                miniLabel.WriteXml(w);
+                miniLabel.WriteXml(w, GeometryHelper.GetMiddlePoint(a, b));
                 w.WriteEndElement();
             }
 

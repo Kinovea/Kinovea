@@ -260,6 +260,14 @@ namespace Kinovea.ScreenManager
             return trackers[id].GetLocation(key, time);
         }
 
+        public PointF GetReferenceValue(Guid id, string key)
+        {
+            if (!SanityCheck(id))
+                return PointF.Empty;
+
+            return trackers[id].GetReferenceValue(key);
+        }
+
         /// <summary>
         /// Collect the data used for spreadsheet export.
         /// Updates the passed list.

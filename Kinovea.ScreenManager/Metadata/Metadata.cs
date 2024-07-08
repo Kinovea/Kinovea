@@ -1546,7 +1546,11 @@ namespace Kinovea.ScreenManager
             {
                 ITrackable trackableDrawing = drawing as ITrackable;
                 AddTrackableDrawingCommand.Execute(trackableDrawing);
-                trackableDrawing.ReferenceTimestamp = timestamp;
+
+                // If the reference timestamp is already set we shouldn't change it.
+                // This happens when the drawing is being copied or loaded from KVA.
+                if (trackableDrawing.ReferenceTimestamp < 0)
+                    trackableDrawing.ReferenceTimestamp = timestamp;
             }
 
             if (drawing is IMeasurable)

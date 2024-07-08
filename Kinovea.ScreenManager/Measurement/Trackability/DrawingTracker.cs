@@ -200,6 +200,18 @@ namespace Kinovea.ScreenManager
             return trackablePoints[key].GetLocation(time);
         }
 
+        /// <summary>
+        /// Returns the position of the point suitable for storage.
+        /// This is the location at the reference time.
+        /// </summary>
+        public PointF GetReferenceValue(string key)
+        {
+            if (!trackablePoints.ContainsKey(key))
+                return PointF.Empty;
+
+            return trackablePoints[key].ReferenceValue;
+        }
+
         public void Reset()
         {
             foreach (TrackablePoint trackablePoint in trackablePoints.Values)

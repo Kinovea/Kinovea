@@ -1427,8 +1427,6 @@ namespace Kinovea.ScreenManager
                 string xmlTrackMarker = enumConverter.ConvertToString(trackMarker);
                 w.WriteElementString("Marker", xmlTrackMarker);
 
-
-
                 w.WriteStartElement("TrackerParameters");
                 tracker.Parameters.WriteXml(w);
                 w.WriteEndElement();
@@ -1438,15 +1436,9 @@ namespace Kinovea.ScreenManager
                 w.WriteStartElement("MainLabel");
                 w.WriteAttributeString("Text", name);
 
-                // Reset to first point.
-                if (positions.Count > 0)
-                    miniLabel.SetAttach(positions[0].Point, true);
-
-                miniLabel.WriteXml(w);
+                // Save all mini labels with regards to the first point.
+                miniLabel.WriteXml(w, positions[0].Point);
                 w.WriteEndElement();
-
-                if (positions.Count > 0 && currentPointIndex < positions.Count)
-                    miniLabel.SetAttach(positions[currentPointIndex].Point, true);
 
                 if (keyframeLabels.Count > 0)
                 {
@@ -1456,7 +1448,9 @@ namespace Kinovea.ScreenManager
                     foreach (MiniLabel kfl in keyframeLabels)
                     {
                         w.WriteStartElement("KeyframeLabel");
-                        kfl.WriteXml(w);
+
+                        // Save the mini label relatively to its reference point.
+                        kfl.WriteXml(w, positions[kfl.AttachIndex].Point);
                         w.WriteEndElement();
                     }
 

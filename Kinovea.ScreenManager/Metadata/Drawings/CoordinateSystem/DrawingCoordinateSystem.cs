@@ -23,12 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Globalization;
-using System.Reflection;
-using System.Resources;
-using System.Threading;
 using System.Windows.Forms;
-using System.Xaml;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -381,7 +376,10 @@ namespace Kinovea.ScreenManager
         {
             if (ShouldSerializeCore(filter))
             {
-                w.WriteElementString("Position", XmlHelper.WritePointF(points["0"]));
+                PointF p = parentMetadata.TrackabilityManager.GetReferenceValue(Id, "0");
+                w.WriteElementString("Position", XmlHelper.WritePointF(p));
+                w.WriteElementString("ReferenceTimestamp", XmlHelper.WriteTimestamp(referenceTimestamp));
+
                 w.WriteElementString("Visible", XmlHelper.WriteBoolean(Visible));
                 w.WriteElementString("ShowGrid", XmlHelper.WriteBoolean(showGrid));
                 w.WriteElementString("ShowGraduations", XmlHelper.WriteBoolean(showGraduations));
@@ -416,6 +414,9 @@ namespace Kinovea.ScreenManager
                         PointF p = XmlHelper.ParsePointF(r.ReadElementContentAsString());
                         points["0"] = p;
                         break;
+                    case "ReferenceTimestamp":
+                        referenceTimestamp = XmlHelper.ParseTimestamp(r.ReadElementContentAsString());
+                        break;
                     case "Visible":
                         Visible = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
                         break;
@@ -435,6 +436,10 @@ namespace Kinovea.ScreenManager
                 }
             }
 
+            // FIXME: calling this breaks camera motion.
+            // The point we just read is only valid in the reference frame.
+            // We should wait until after we have reloaded the camera transforms
+            // and compute the location of the coordinate system in 3D.
             CalibrationHelper.SetOrigin(points["0"]);
             SignalTrackablePointMoved();
 

@@ -100,7 +100,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
-        private long trackingTimestamps = -1;
+        private long trackingTimestamps = -1; // timestamp of the last time we did a global track() step.
         private MiniLabel miniLabel;
         private bool measureInitialized;
         private MeasureLabelType measureLabelType = MeasureLabelType.None;
@@ -255,6 +255,9 @@ namespace Kinovea.ScreenManager
                         PointF p = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
                         points["0"] = p.Scale(scale.X, scale.Y);
                         break;
+                    case "ReferenceTimestamp":
+                        referenceTimestamp = XmlHelper.ParseTimestamp(xmlReader.ReadElementContentAsString());
+                        break;
                     case "ExtraData":
                         {
                             measureLabelType = XmlHelper.ParseEnum<MeasureLabelType>(xmlReader.ReadElementContentAsString(), MeasureLabelType.None);
@@ -295,14 +298,18 @@ namespace Kinovea.ScreenManager
         {
             if (ShouldSerializeCore(filter))
             {
-                w.WriteElementString("CenterPoint", XmlHelper.WritePointF(points["0"]));
+                PointF p = parentMetadata.TrackabilityManager.GetReferenceValue(Id, "0");
+                w.WriteElementString("CenterPoint", XmlHelper.WritePointF(p));
+                w.WriteElementString("ReferenceTimestamp", XmlHelper.WriteTimestamp(referenceTimestamp));
 
                 TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(MeasureLabelType));
                 string xmlMeasureLabelType = enumConverter.ConvertToString(measureLabelType);
                 w.WriteElementString("ExtraData", xmlMeasureLabelType);
                 w.WriteElementString("ShowAsDot", XmlHelper.WriteBoolean(showAsDot));
+
                 w.WriteStartElement("MeasureLabel");
-                miniLabel.WriteXml(w);
+                // Save the mini label relatively to the reference frame.
+                miniLabel.WriteXml(w, p);
                 w.WriteEndElement();
             }
 
