@@ -3801,7 +3801,7 @@ namespace Kinovea.ScreenManager
                 {
                     log.Error("Error while painting image. Object is currently in use elsewhere.");
                 }
-                catch (Exception exp)
+                catch
                 {
                     log.Error("Error while painting image.");
                 }

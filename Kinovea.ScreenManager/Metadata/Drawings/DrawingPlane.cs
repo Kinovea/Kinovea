@@ -160,7 +160,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         private static readonly int minimumSubdivisions = 1;
-        private static readonly int defaultSubdivisions = 10;
         private static readonly int maximumSubdivisions = 50;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
