@@ -998,6 +998,9 @@ namespace Kinovea.ScreenManager
         private void TrackDrawings(VideoFrame frameToUse)
         {
             VideoFrame frame = frameToUse ?? frameServer.VideoReader.Current;
+            if (frame.Image == null)
+                return;
+
             frameServer.Metadata.TrackabilityManager.Track(frame);
         }
     }
