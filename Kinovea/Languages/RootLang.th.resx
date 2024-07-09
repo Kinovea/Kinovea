@@ -263,7 +263,7 @@
     <value>พื้นที่ทำงาน</value>
   </data>
   <data name="mnuPreferences" xml:space="preserve">
-    <value>ค่ากำหนด…</value>
+    <value>การตั้งค่า…</value>
   </data>
   <data name="mnuOptions" xml:space="preserve">
     <value>ตัวเลือก</value>
