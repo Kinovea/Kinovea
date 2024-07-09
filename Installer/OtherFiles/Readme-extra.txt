@@ -39,9 +39,9 @@ Changelog:
 ----------
 
 2024.1 - TBD
-    Added - Camera motion estimation video mode. Computes the global motion of the camera.
-    Added - Lens calibration video mode. Computes the intrinsics and distortion parameters.
-    Added - Calibration validation window, with 3D camera position and 3D control points.
+    Added - Camera motion estimation video mode.
+    Added - Lens calibration video mode.
+    Added - Calibration validation window, with 3D camera position and control points.
     Added - Support for an extra offset applied to coordinates.
 	Added - Counter tool.
     Added - Background layer with color and opacity, between video and drawings.
@@ -68,7 +68,6 @@ Changelog:
     Fixed - Copy-pasting a drawing to a different time was not working.
     Fixed - End caps on trajectory drawings.
     Fixed - Problem when reading tool preset coming from a different version.
-    Fixed - Pasting a drawing to a different time.
     Fixed - Slowness of side-by-side export.
     Fixed - Synchronization between shortcuts and explorer when opening a file.
     Fixed - Update of mini labels of trajectories after a change in the side panel.

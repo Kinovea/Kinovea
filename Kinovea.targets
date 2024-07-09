@@ -43,7 +43,7 @@
     
     <Copy SourceFiles="..\Refs\TurboJpeg\$(Platform)\turbojpeg.dll" DestinationFolder="$(TargetDir)"/>
 
-    <Copy SourceFiles="D:\dev\vision\opencvsharp\src\Release\x64\OpenCvSharpExtern.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\packages\OpenCvSharp4.runtime.win.4.10.0.20240616\runtimes\win-x64\native\OpenCvSharpExtern.dll" DestinationFolder="$(TargetDir)"/>
 
   </Target>
 

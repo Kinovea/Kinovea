@@ -430,194 +430,194 @@ namespace Kinovea.ScreenManager
             // - rough estimate of rotation with a first Homography based estimator.
             // - refine estimate of rotation with bundle adjustment.
 
-            OpenCvSharp.Size imageSize = new OpenCvSharp.Size(
-                framesContainer.Frames[0].Image.Size.Width,
-                framesContainer.Frames[0].Image.Size.Height
-            );
+            //OpenCvSharp.Size imageSize = new OpenCvSharp.Size(
+            //    framesContainer.Frames[0].Image.Size.Width,
+            //    framesContainer.Frames[0].Image.Size.Height
+            //);
 
-            // Convert keypoints and descriptors to ImageFeatures.
-            // ImageFeatures: https://docs.opencv.org/4.9.0/d4/db5/structcv_1_1detail_1_1ImageFeatures.html
-            List<OpenCvSharp.Detail.ImageFeatures> features = new List<OpenCvSharp.Detail.ImageFeatures>();
-            for (int i = 0; i < keypoints.Count; i++)
-            {
-                OpenCvSharp.Detail.ImageFeatures f = new OpenCvSharp.Detail.ImageFeatures(i, imageSize, keypoints[i], descriptors[i]);
-                features.Add(f);
-            }
+            //// Convert keypoints and descriptors to ImageFeatures.
+            //// ImageFeatures: https://docs.opencv.org/4.9.0/d4/db5/structcv_1_1detail_1_1ImageFeatures.html
+            //List<OpenCvSharp.Detail.ImageFeatures> features = new List<OpenCvSharp.Detail.ImageFeatures>();
+            //for (int i = 0; i < keypoints.Count; i++)
+            //{
+            //    OpenCvSharp.Detail.ImageFeatures f = new OpenCvSharp.Detail.ImageFeatures(i, imageSize, keypoints[i], descriptors[i]);
+            //    features.Add(f);
+            //}
 
-            // Convert matches between consecutive frames and the calculated homographies to MatchesInfo.
-            // MatchesInfo: https://docs.opencv.org/4.9.0/d2/d9a/structcv_1_1detail_1_1MatchesInfo.html
-            //
-            // Array of pairwise matches in OpenCV:
-            // The code in opencv stitching module is made for panoramas and assumes we have matches for 
-            // all possible pairs of images, not just consecutives frames.
-            // It is expecting a 2D array of matches flattened into a 1D array, where missing matches
-            // have their homography set to empty. (See motion_estimator.cpp and autocalib.cpp).
-            int numMatchesInfo = keypoints.Count * keypoints.Count;
-            List<OpenCvSharp.Detail.MatchesInfo> matchesInfo = new List<OpenCvSharp.Detail.MatchesInfo>(numMatchesInfo);
-            for (int i = 0; i < keypoints.Count; i++)
-            {
-                for (int j = 0; j < keypoints.Count; j++)
-                {
-                    int index = i * keypoints.Count + j;
+            //// Convert matches between consecutive frames and the calculated homographies to MatchesInfo.
+            //// MatchesInfo: https://docs.opencv.org/4.9.0/d2/d9a/structcv_1_1detail_1_1MatchesInfo.html
+            ////
+            //// Array of pairwise matches in OpenCV:
+            //// The code in opencv stitching module is made for panoramas and assumes we have matches for 
+            //// all possible pairs of images, not just consecutives frames.
+            //// It is expecting a 2D array of matches flattened into a 1D array, where missing matches
+            //// have their homography set to empty. (See motion_estimator.cpp and autocalib.cpp).
+            //int numMatchesInfo = keypoints.Count * keypoints.Count;
+            //List<OpenCvSharp.Detail.MatchesInfo> matchesInfo = new List<OpenCvSharp.Detail.MatchesInfo>(numMatchesInfo);
+            //for (int i = 0; i < keypoints.Count; i++)
+            //{
+            //    for (int j = 0; j < keypoints.Count; j++)
+            //    {
+            //        int index = i * keypoints.Count + j;
 
-                    int srcImgIdx = i;
-                    int dstImgIdx = j;
+            //        int srcImgIdx = i;
+            //        int dstImgIdx = j;
 
-                    if (j == i+1)
-                    {
-                        // Match between i and i+1.
-                        // Use the data from the MatchFeatures and FindHomographies steps.
-                        var mm = matches[i];                            // Matches.
-                        var inliersMask = inliersMasks[i].ToArray();    // Geometrically consistent matches mask.
-                        var numInliers = inliers[i].Count;              // Number of geometrically consistent matches.
-                        OpenCvSharp.Mat H = consecTransforms[i];        // Estimated transformation
-                        double confidence = 1.0;                        // Confidence two images are from the same panorama
+            //        if (j == i+1)
+            //        {
+            //            // Match between i and i+1.
+            //            // Use the data from the MatchFeatures and FindHomographies steps.
+            //            var mm = matches[i];                            // Matches.
+            //            var inliersMask = inliersMasks[i].ToArray();    // Geometrically consistent matches mask.
+            //            var numInliers = inliers[i].Count;              // Number of geometrically consistent matches.
+            //            OpenCvSharp.Mat H = consecTransforms[i];        // Estimated transformation
+            //            double confidence = 1.0;                        // Confidence two images are from the same panorama
 
-                        OpenCvSharp.Detail.MatchesInfo m = new OpenCvSharp.Detail.MatchesInfo(
-                            srcImgIdx, dstImgIdx, mm, inliersMask, numInliers, H, confidence);
+            //            OpenCvSharp.Detail.MatchesInfo m = new OpenCvSharp.Detail.MatchesInfo(
+            //                srcImgIdx, dstImgIdx, mm, inliersMask, numInliers, H, confidence);
 
-                        matchesInfo.Add(m);
-                    }
-                    else if (j == i-1)
-                    {
-                        // Match between i and i-1.
-                        // OpenCV will expect this match to exist when it creates the graph of image pairs.
-                        // Use the data we have but use the previous frame as the reference.
-                        var mm = matches[i-1];
-                        var inliersMask = inliersMasks[i-1].ToArray();
-                        var numInliers = inliers[i-1].Count;  
-                        OpenCvSharp.Mat H = consecTransforms[i-1].Inv();
-                        double confidence = 1.0;
+            //            matchesInfo.Add(m);
+            //        }
+            //        else if (j == i-1)
+            //        {
+            //            // Match between i and i-1.
+            //            // OpenCV will expect this match to exist when it creates the graph of image pairs.
+            //            // Use the data we have but use the previous frame as the reference.
+            //            var mm = matches[i-1];
+            //            var inliersMask = inliersMasks[i-1].ToArray();
+            //            var numInliers = inliers[i-1].Count;  
+            //            OpenCvSharp.Mat H = consecTransforms[i-1].Inv();
+            //            double confidence = 1.0;
 
-                        OpenCvSharp.Detail.MatchesInfo m = new OpenCvSharp.Detail.MatchesInfo(
-                            srcImgIdx, dstImgIdx, mm, inliersMask, numInliers, H, confidence);
+            //            OpenCvSharp.Detail.MatchesInfo m = new OpenCvSharp.Detail.MatchesInfo(
+            //                srcImgIdx, dstImgIdx, mm, inliersMask, numInliers, H, confidence);
 
-                        matchesInfo.Add(m);
-                    }
-                    else
-                    {
-                        // Not a match between consecutive frames.
-                        // Create a dummy match info with empty homography and zero confidence.
-                        // Both these members are used in opencv to identify missing data between the two frames.
-                        var mm = new OpenCvSharp.DMatch[0];
-                        var inliersMask = new byte[0];
-                        var numInliers = 0;
-                        OpenCvSharp.Mat H = new OpenCvSharp.Mat();
-                        double confidence = 0.0;
+            //            matchesInfo.Add(m);
+            //        }
+            //        else
+            //        {
+            //            // Not a match between consecutive frames.
+            //            // Create a dummy match info with empty homography and zero confidence.
+            //            // Both these members are used in opencv to identify missing data between the two frames.
+            //            var mm = new OpenCvSharp.DMatch[0];
+            //            var inliersMask = new byte[0];
+            //            var numInliers = 0;
+            //            OpenCvSharp.Mat H = new OpenCvSharp.Mat();
+            //            double confidence = 0.0;
 
-                        OpenCvSharp.Detail.MatchesInfo m = new OpenCvSharp.Detail.MatchesInfo(
-                            srcImgIdx, dstImgIdx, mm, inliersMask, numInliers, H, confidence);
+            //            OpenCvSharp.Detail.MatchesInfo m = new OpenCvSharp.Detail.MatchesInfo(
+            //                srcImgIdx, dstImgIdx, mm, inliersMask, numInliers, H, confidence);
 
-                        matchesInfo.Add(m);
-                    }
-                }
-            }
+            //            matchesInfo.Add(m);
+            //        }
+            //    }
+            //}
 
-            //------------------------------------------------------------
-            // Prepare the list of cameras which will contain the result.
-            // CameraParams: https://docs.opencv.org/4.9.0/d4/d0a/structcv_1_1detail_1_1CameraParams.html
-            // This is always an in/out parameter.
-            //
-            // Use an arbitrary value for focal length, do not use opencv autocalib algorithm.
-            // This is based on the fallback implemented in autocalib.cpp > estimateFocal().
-            // When running through opencv autocalib estimateFocal() it finds wildly different focal lengths
-            // for each frame even if the video doesn't change zoom, and in the end it doesn't work 
-            // because not all homographies are suitable for its algorithm but it requires that there
-            // be at least as many focals calculated as source frames.
-            // So in the end it still computes the focal from the fallback algorithm anyway.
-            // We precompute it here and avoid all the extra work.
-            double focal = imageSize.Width + imageSize.Height;  // <- fallback focal length estimation.
-            double aspect = (double)imageSize.Width / imageSize.Height;
-            double ppx = imageSize.Width / 2.0f;
-            double ppy = imageSize.Height / 2.0f;
+            ////------------------------------------------------------------
+            //// Prepare the list of cameras which will contain the result.
+            //// CameraParams: https://docs.opencv.org/4.9.0/d4/d0a/structcv_1_1detail_1_1CameraParams.html
+            //// This is always an in/out parameter.
+            ////
+            //// Use an arbitrary value for focal length, do not use opencv autocalib algorithm.
+            //// This is based on the fallback implemented in autocalib.cpp > estimateFocal().
+            //// When running through opencv autocalib estimateFocal() it finds wildly different focal lengths
+            //// for each frame even if the video doesn't change zoom, and in the end it doesn't work 
+            //// because not all homographies are suitable for its algorithm but it requires that there
+            //// be at least as many focals calculated as source frames.
+            //// So in the end it still computes the focal from the fallback algorithm anyway.
+            //// We precompute it here and avoid all the extra work.
+            //double focal = imageSize.Width + imageSize.Height;  // <- fallback focal length estimation.
+            //double aspect = (double)imageSize.Width / imageSize.Height;
+            //double ppx = imageSize.Width / 2.0f;
+            //double ppy = imageSize.Height / 2.0f;
 
-            List<OpenCvSharp.Detail.CameraParams> cameras = new List<OpenCvSharp.Detail.CameraParams>();
-            for (int i = 0; i < keypoints.Count; i++)
-            {
-                // Initialize the rotation matrix to identity.
-                // This is important because one of the frames is going to be picked as the reference by 
-                // opencv (middle frame) and it will use its rotation matrix without setting it itself.
-                OpenCvSharp.Mat r = OpenCvSharp.Mat.Eye(3, 3, OpenCvSharp.MatType.CV_64FC1);
-                OpenCvSharp.Mat t = new OpenCvSharp.Mat();
-                OpenCvSharp.Detail.CameraParams camera = new OpenCvSharp.Detail.CameraParams(focal, aspect, ppx, ppy, r, t);
-                cameras.Add(camera);
-            }
+            //List<OpenCvSharp.Detail.CameraParams> cameras = new List<OpenCvSharp.Detail.CameraParams>();
+            //for (int i = 0; i < keypoints.Count; i++)
+            //{
+            //    // Initialize the rotation matrix to identity.
+            //    // This is important because one of the frames is going to be picked as the reference by 
+            //    // opencv (middle frame) and it will use its rotation matrix without setting it itself.
+            //    OpenCvSharp.Mat r = OpenCvSharp.Mat.Eye(3, 3, OpenCvSharp.MatType.CV_64FC1);
+            //    OpenCvSharp.Mat t = new OpenCvSharp.Mat();
+            //    OpenCvSharp.Detail.CameraParams camera = new OpenCvSharp.Detail.CameraParams(focal, aspect, ppx, ppy, r, t);
+            //    cameras.Add(camera);
+            //}
 
-            // Perform the first rough estimation pass, based on fake focal length and homographies.
-            bool isFocalsEstimated = true;
-            OpenCvSharp.Detail.HomographyBasedEstimator estimator = new OpenCvSharp.Detail.HomographyBasedEstimator(isFocalsEstimated);
-            bool estimated = estimator.Apply(features, matchesInfo, cameras);
-            if (!estimated)
-            {
-                log.ErrorFormat("Failure during rotation estimation - Homography based estimator.");
-                return;
-            }
+            //// Perform the first rough estimation pass, based on fake focal length and homographies.
+            //bool isFocalsEstimated = true;
+            //OpenCvSharp.Detail.HomographyBasedEstimator estimator = new OpenCvSharp.Detail.HomographyBasedEstimator(isFocalsEstimated);
+            //bool estimated = estimator.Apply(features, matchesInfo, cameras);
+            //if (!estimated)
+            //{
+            //    log.ErrorFormat("Failure during rotation estimation - Homography based estimator.");
+            //    return;
+            //}
 
-            // At this point we have a rotation matrix for each frame going to the reference frame,
-            // but it is poor quality and not as good as the homography matrices.
+            //// At this point we have a rotation matrix for each frame going to the reference frame,
+            //// but it is poor quality and not as good as the homography matrices.
 
-            // Convert the rotation matrices from double to float for Bundle adjustment.
-            // See: opencv > Stitcher::estimateCameraParams.
-            for (int i = 0; i < cameras.Count; i++)
-            {
-                OpenCvSharp.Mat r = new OpenCvSharp.Mat();
-                cameras[i].R.ConvertTo(r, OpenCvSharp.MatType.CV_32F);
-                OpenCvSharp.Detail.CameraParams camera = new OpenCvSharp.Detail.CameraParams(
-                    cameras[i].Focal,
-                    aspect,
-                    cameras[i].PpX,
-                    cameras[i].PpY,
-                    r,
-                    new OpenCvSharp.Mat());
-                cameras[i] = camera;
-            }
+            //// Convert the rotation matrices from double to float for Bundle adjustment.
+            //// See: opencv > Stitcher::estimateCameraParams.
+            //for (int i = 0; i < cameras.Count; i++)
+            //{
+            //    OpenCvSharp.Mat r = new OpenCvSharp.Mat();
+            //    cameras[i].R.ConvertTo(r, OpenCvSharp.MatType.CV_32F);
+            //    OpenCvSharp.Detail.CameraParams camera = new OpenCvSharp.Detail.CameraParams(
+            //        cameras[i].Focal,
+            //        aspect,
+            //        cameras[i].PpX,
+            //        cameras[i].PpY,
+            //        r,
+            //        new OpenCvSharp.Mat());
+            //    cameras[i] = camera;
+            //}
 
-            // Perform the bundle adjustment pass that refines the rotation matrices and focal lengths
-            // of all cameras at once.
-            OpenCvSharp.Detail.BundleAdjusterRay adjuster = new OpenCvSharp.Detail.BundleAdjusterRay();
-            estimated = adjuster.Apply(features, matchesInfo, cameras);
-            if (!estimated)
-            {
-                log.ErrorFormat("Failure during rotation estimation - Bundle adjustment.");
-                return;
-            }
+            //// Perform the bundle adjustment pass that refines the rotation matrices and focal lengths
+            //// of all cameras at once.
+            //OpenCvSharp.Detail.BundleAdjusterRay adjuster = new OpenCvSharp.Detail.BundleAdjusterRay();
+            //estimated = adjuster.Apply(features, matchesInfo, cameras);
+            //if (!estimated)
+            //{
+            //    log.ErrorFormat("Failure during rotation estimation - Bundle adjustment.");
+            //    return;
+            //}
 
-            // Make a deep copy of the calculated camera params.
-            // The underlying native resources get disposed at next GC for some reason.
-            ClearCameraParams();
-            for (int i = 0; i < cameras.Count; i++)
-            {
-                OpenCvSharp.Mat r = new OpenCvSharp.Mat();
-                cameras[i].R.CopyTo(r);
-                //OpenCvSharp.Mat t = ;
-                OpenCvSharp.Detail.CameraParams camera = new OpenCvSharp.Detail.CameraParams(
-                    cameras[i].Focal,
-                    aspect,
-                    cameras[i].PpX,
-                    cameras[i].PpY,
-                    r,
-                    new OpenCvSharp.Mat());
+            //// Make a deep copy of the calculated camera params.
+            //// The underlying native resources get disposed at next GC for some reason.
+            //ClearCameraParams();
+            //for (int i = 0; i < cameras.Count; i++)
+            //{
+            //    OpenCvSharp.Mat r = new OpenCvSharp.Mat();
+            //    cameras[i].R.CopyTo(r);
+            //    //OpenCvSharp.Mat t = ;
+            //    OpenCvSharp.Detail.CameraParams camera = new OpenCvSharp.Detail.CameraParams(
+            //        cameras[i].Focal,
+            //        aspect,
+            //        cameras[i].PpX,
+            //        cameras[i].PpY,
+            //        r,
+            //        new OpenCvSharp.Mat());
 
-                cameraParams.Add(camera);
-            }
-
-
-            GC.Collect(2);
+            //    cameraParams.Add(camera);
+            //}
 
 
-            tracked = true;
+            //GC.Collect(2);
+
+
+            //tracked = true;
         }
 
         private void DumpRotationMatrices()
         {
             // Dump the estimated rotation matrices.
-            for (int i = 0; i < cameraParams.Count; i++)
-            {
-                log.DebugFormat("Camera {0} rotation matrix:", i);
-                log.DebugFormat("{0:0.000} {1:0.000} {2:0.000}", cameraParams[i].R.Get<double>(0, 0), cameraParams[i].R.Get<double>(0, 1), cameraParams[i].R.Get<double>(0, 2));
-                log.DebugFormat("{0:0.000} {1:0.000} {2:0.000}", cameraParams[i].R.Get<double>(1, 0), cameraParams[i].R.Get<double>(1, 1), cameraParams[i].R.Get<double>(1, 2));
-                log.DebugFormat("{0:0.000} {1:0.000} {2:0.000}", cameraParams[i].R.Get<double>(2, 0), cameraParams[i].R.Get<double>(2, 1), cameraParams[i].R.Get<double>(2, 2));
-            }
+            //for (int i = 0; i < cameraParams.Count; i++)
+            //{
+            //    log.DebugFormat("Camera {0} rotation matrix:", i);
+            //    log.DebugFormat("{0:0.000} {1:0.000} {2:0.000}", cameraParams[i].R.Get<double>(0, 0), cameraParams[i].R.Get<double>(0, 1), cameraParams[i].R.Get<double>(0, 2));
+            //    log.DebugFormat("{0:0.000} {1:0.000} {2:0.000}", cameraParams[i].R.Get<double>(1, 0), cameraParams[i].R.Get<double>(1, 1), cameraParams[i].R.Get<double>(1, 2));
+            //    log.DebugFormat("{0:0.000} {1:0.000} {2:0.000}", cameraParams[i].R.Get<double>(2, 0), cameraParams[i].R.Get<double>(2, 1), cameraParams[i].R.Get<double>(2, 2));
+            //}
         }
 
         private void ClearCameraParams()
@@ -625,8 +625,8 @@ namespace Kinovea.ScreenManager
             if (cameraParams.Count == 0)
                 return;
 
-            for (int i = cameraParams.Count - 1; i >= 0; i--)
-                cameraParams[i].Dispose();
+            //for (int i = cameraParams.Count - 1; i >= 0; i--)
+            //    cameraParams[i].Dispose();
             
             cameraParams.Clear();
         }
