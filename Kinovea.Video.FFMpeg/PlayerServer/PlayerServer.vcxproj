@@ -200,7 +200,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <Reference Include="log4net">
-      <HintPath>..\..\packages\log4net.2.0.14\lib\net45\log4net.dll</HintPath>
+      <HintPath>..\..\packages\log4net.2.0.17\lib\net45\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -239,9 +239,6 @@
     <ProjectReference Include="..\..\Kinovea.Video\Kinovea.Video.csproj">
       <Project>{4cbb8462-00a7-4814-ad3b-07c82eeeb0de}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
