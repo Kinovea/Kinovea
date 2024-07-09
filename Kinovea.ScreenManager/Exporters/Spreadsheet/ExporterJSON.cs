@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Kinovea.Services;
 using System.Text;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
@@ -81,6 +82,7 @@ namespace Kinovea.ScreenManager
         {
             w.WritePropertyName("keyframes");
             w.WriteStartArray();
+            RichTextBox rtb = new RichTextBox();
 
             foreach (var kf in md.Keyframes)
             {
@@ -92,7 +94,9 @@ namespace Kinovea.ScreenManager
                 w.WriteValue(md.Units.TimeSymbol);
                 w.WritePropertyName("time");
                 w.WriteValue(kf.Time);
-                
+                w.WritePropertyName("comment");
+                rtb.Rtf = kf.Comment;
+                w.WriteValue(rtb.Text);
                 
                 w.WriteEndObject();
             }

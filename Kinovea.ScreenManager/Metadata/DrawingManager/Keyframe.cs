@@ -252,6 +252,7 @@ namespace Kinovea.ScreenManager
             MeasuredDataKeyframe md = new MeasuredDataKeyframe();
             md.Name = Name;
             md.Time = parentMetadata.GetNumericalTime(timestamp, TimeType.UserOrigin);
+            md.Comment = comments;
             return md;
         }
 
