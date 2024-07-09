@@ -102,6 +102,11 @@ namespace Kinovea.Services
             get { return exportSpace; }
             set { exportSpace = value; }
         }
+        public bool ExportImagesInDocuments
+        {
+            get { return exportImagesInDocuments; }
+            set { exportImagesInDocuments = value; }
+        }
         public bool DeinterlaceByDefault
         {
             get { return deinterlaceByDefault; }
@@ -247,6 +252,8 @@ namespace Kinovea.Services
         private CadenceUnit cadenceUnit = CadenceUnit.Hertz;
         private CSVDecimalSeparator csvDecimalSeparator = CSVDecimalSeparator.System;
         private ExportSpace exportSpace = ExportSpace.WorldSpace;
+        private bool exportImagesInDocuments = true;
+        private string pandocPath = "";
         private ImageAspectRatio aspectRatio = ImageAspectRatio.Auto;
         private bool deinterlaceByDefault;
         private bool interactiveFrameTracker = true;
@@ -272,7 +279,7 @@ namespace Kinovea.Services
         private CameraMotionParameters cameraMotionParameters = new CameraMotionParameters();
         private KeyframePresetsParameters keyframePresetsParameters = new KeyframePresetsParameters();
         private bool showCacheInTimeline = false;
-        private string pandocPath = "";
+        
         private bool sideBySideHorizontal = true;
 
         public void AddRecentColor(Color _color)
@@ -294,6 +301,7 @@ namespace Kinovea.Services
             writer.WriteElementString("CadenceUnit", cadenceUnit.ToString());
             writer.WriteElementString("CSVDecimalSeparator", csvDecimalSeparator.ToString());
             writer.WriteElementString("ExportSpace", exportSpace.ToString());
+            writer.WriteElementString("ExportImagesInDocuments", exportSpace.ToString());
             writer.WriteElementString("AspectRatio", aspectRatio.ToString());
             writer.WriteElementString("DeinterlaceByDefault", XmlHelper.WriteBoolean(deinterlaceByDefault));
             writer.WriteElementString("InteractiveFrameTracker", XmlHelper.WriteBoolean(interactiveFrameTracker));
@@ -400,6 +408,9 @@ namespace Kinovea.Services
                         break;
                     case "ExportSpace":
                         exportSpace = (ExportSpace)Enum.Parse(typeof(ExportSpace), reader.ReadElementContentAsString());
+                        break;
+                    case "ExportImagesInDocuments":
+                        exportImagesInDocuments = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     case "AspectRatio":
                         aspectRatio = (ImageAspectRatio) Enum.Parse(typeof(ImageAspectRatio), reader.ReadElementContentAsString());

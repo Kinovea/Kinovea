@@ -136,41 +136,42 @@ namespace Kinovea.ScreenManager
             //-----------------
             // Markdown export.
             //-----------------
-
-            // Get the key image enumerator.
-            player.FrameServer.VideoReader.BeforeFrameEnumeration();
-            IEnumerable<Bitmap> images = player.FrameServer.EnumerateImages(s);
-
-            //string assetsDir = Path.GetFileNameWithoutExtension(s.File) + "_images";
-            string assetsDir = "images";
-            string assetsPath = Path.Combine(Path.GetDirectoryName(s.File), assetsDir);
-            if (!Directory.Exists(assetsPath))
-                Directory.CreateDirectory(assetsPath);
-
-            // Enumerate and save the images. Collect the relative filenames for later.
             List<string> filePathsRelative = new List<string>();
-            int magnitude = (int)Math.Ceiling(Math.Log10(s.TotalFrameCount));
-            int i = 0;
-            foreach (var image in images)
+            if (PreferencesManager.PlayerPreferences.ExportImagesInDocuments)
             {
-                if (worker.CancellationPending)
-                    break;
+                // Get the key image enumerator.
+                player.FrameServer.VideoReader.BeforeFrameEnumeration();
+                IEnumerable<Bitmap> images = player.FrameServer.EnumerateImages(s);
 
-                string filename = string.Format("{0}.png", i.ToString("D" + magnitude));
-                filePathsRelative.Add(Path.Combine(assetsDir, filename));
+                string assetsDir = "images";
+                string assetsPath = Path.Combine(Path.GetDirectoryName(s.File), assetsDir);
+                if (!Directory.Exists(assetsPath))
+                    Directory.CreateDirectory(assetsPath);
+
+                // Enumerate and save the images. Collect the relative filenames for later.
+                int magnitude = (int)Math.Ceiling(Math.Log10(s.TotalFrameCount));
+                int i = 0;
+                foreach (var image in images)
+                {
+                    if (worker.CancellationPending)
+                        break;
+
+                    string filename = string.Format("{0}.png", i.ToString("D" + magnitude));
+                    filePathsRelative.Add(Path.Combine(assetsDir, filename));
                 
-                string filePath = Path.Combine(assetsPath, filename);
-                image.Save(filePath);
+                    string filePath = Path.Combine(assetsPath, filename);
+                    image.Save(filePath);
 
-                i++;
-                worker.ReportProgress(i, s.TotalFrameCount);
+                    i++;
+                    worker.ReportProgress(i, s.TotalFrameCount);
+                }
+
+                player.FrameServer.VideoReader.AfterFrameEnumeration();
             }
-
-            player.FrameServer.VideoReader.AfterFrameEnumeration();
-
+            
             if (worker.CancellationPending)
                 return; 
-            
+
             ExporterMarkdown exporterMarkdown = new ExporterMarkdown();
             exporterMarkdown.Export(s.File, filePathsRelative, metadata);
 
