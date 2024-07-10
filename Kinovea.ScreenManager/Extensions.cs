@@ -84,6 +84,9 @@ namespace Kinovea.ScreenManager
         {
             return new RectangleF(point.X - size.Width / 2, point.Y - size.Height / 2, size.Width, size.Height);
         }
+        /// <summary>
+        /// Create a square centered on the point, with a side length of 2*radius.
+        /// </summary>
         public static RectangleF Box(this PointF point, int radius)
         {
             return new RectangleF(point.X - radius, point.Y - radius, radius * 2, radius * 2);

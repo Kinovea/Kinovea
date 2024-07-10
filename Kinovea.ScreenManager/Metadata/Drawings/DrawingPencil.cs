@@ -151,7 +151,20 @@ namespace Kinovea.ScreenManager
                     if (styleHelper.PenShape == PenShape.Dash)
                         penLine.DashStyle = DashStyle.Dash;
 
-                    canvas.DrawCurve(penLine, points, 0.5f);
+                    // Sanity check that the point will be visible.
+                    using (GraphicsPath path = new GraphicsPath())
+                    {
+                        path.AddCurve(points, 0.5f);
+                        RectangleF bounds = path.GetBounds();
+                        if (bounds.IsEmpty)
+                        {
+                            canvas.DrawLine(penLine, points[0], points[0].Translate(1, 0));
+                        }
+                        else
+                        {
+                            canvas.DrawCurve(penLine, points, 0.5f);
+                        }
+                    }
                 }
             }
         }
@@ -314,10 +327,6 @@ namespace Kinovea.ScreenManager
             using(GraphicsPath path = new GraphicsPath())
             {
                 path.AddCurve(pointList.ToArray(), 0.5f);
-                RectangleF bounds = path.GetBounds();
-                if (bounds.IsEmpty)
-                    return false;
-
                 return HitTester.HitPath(point, path, styleHelper.LineSize, false, transformer);
             }
         }
