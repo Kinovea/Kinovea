@@ -487,7 +487,7 @@ namespace Kinovea.ScreenManager
             EnableDisableAllPlayingControls(true);
             EnableDisableDrawingTools(true);
             EnableDisableExportButtons(true);
-            buttonPlay.Image = Player.flatplay;
+            buttonPlay.Image = Resources.flatplay;
             sldrSpeed.Enabled = false;
             m_KeyframeCommentsHub.Hide();
             m_LaunchDescription = null;
@@ -1897,7 +1897,7 @@ namespace Kinovea.ScreenManager
                 // Pause playback.
                 StopPlaying();
                 OnPauseAsked();
-                buttonPlay.Image = Player.flatplay;
+                buttonPlay.Image = Resources.flatplay;
                 ActivateKeyframe(m_iCurrentPosition);
             }
             else
@@ -2812,7 +2812,7 @@ namespace Kinovea.ScreenManager
 
             if (_bAllowUIUpdate)
             {
-                buttonPlay.Image = Player.flatplay;
+                buttonPlay.Image = Resources.flatplay;
                 DoInvalidate();
                 UpdatePositionUI();
             }

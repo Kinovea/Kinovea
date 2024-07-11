@@ -622,11 +622,6 @@
     <Compile Include="PlayerScreen\Controls\PanelDoubleBuffer.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Properties\Player.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Player.resx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -905,11 +900,6 @@
     </Compile>
     <Compile Include="VideoFilters\Kinogram\VideoFilterKinogram.cs" />
     <Compile Include="PlayerScreen\ViewportManipulator.cs" />
-    <Compile Include="Properties\Backgrounds.Designer.cs">
-      <DependentUpon>Backgrounds.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Include="Properties\Capture.Designer.cs">
       <DependentUpon>Capture.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -1118,10 +1108,6 @@
     <EmbeddedResource Include="PlayerScreen\Controls\InfobarPlayer.resx">
       <DependentUpon>InfobarPlayer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Player.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Player.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\FormBackground.resx">
       <DependentUpon>FormBackground.cs</DependentUpon>
     </EmbeddedResource>
@@ -1158,10 +1144,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\Forms\FormToolPresets.resx">
       <DependentUpon>FormToolPresets.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Backgrounds.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Backgrounds.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Capture.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -1322,9 +1304,6 @@
     <None Include="Resources\play3.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\end.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\next.png" />
   </ItemGroup>
   <ItemGroup>
@@ -1471,9 +1450,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\arrow_inout.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\capturedock4.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\capturedock5.png" />
@@ -1846,6 +1822,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\layer-mask.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flatplay40x301.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">

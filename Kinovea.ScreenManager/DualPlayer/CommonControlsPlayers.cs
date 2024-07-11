@@ -298,7 +298,7 @@ namespace Kinovea.ScreenManager
         #region Lower level helpers
         private void RefreshPlayButton()
         {
-            buttonPlay.Image = playing ? Resources.flatpause3b : Player.flatplay;
+            buttonPlay.Image = playing ? Resources.flatpause3b : Resources.flatplay;
         }
         private void RefreshMergeTooltip()
         {

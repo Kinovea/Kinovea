@@ -194,7 +194,7 @@ namespace Kinovea.ScreenManager
       this.buttonPlay.FlatAppearance.BorderSize = 0;
       this.buttonPlay.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.buttonPlay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.buttonPlay.Image = global::Kinovea.ScreenManager.Properties.Player.flatplay;
+      this.buttonPlay.Image = global::Kinovea.ScreenManager.Properties.Resources.flatplay;
       this.buttonPlay.Location = new System.Drawing.Point(174, 7);
       this.buttonPlay.MinimumSize = new System.Drawing.Size(30, 25);
       this.buttonPlay.Name = "buttonPlay";
