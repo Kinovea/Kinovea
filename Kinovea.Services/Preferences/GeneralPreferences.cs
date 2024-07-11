@@ -29,6 +29,7 @@ namespace Kinovea.Services
 {
     public class GeneralPreferences : IPreferenceSerializer
     {
+        #region Properties
         public string Name
         {
             get { return "General"; }
@@ -88,6 +89,14 @@ namespace Kinovea.Services
             set { preferencePage = value; }
         }
 
+        public string PointerKey
+        {
+            get { return pointerKey; }
+            set { pointerKey = value; }
+        }
+        #endregion
+
+        #region Members
         private string uiCultureName;
         private bool explorerVisible = true;
         private float explorerSplitterRatio = 0.2f;
@@ -98,6 +107,8 @@ namespace Kinovea.Services
         private bool allowMultipleInstances = true;
         private bool instancesOwnPreferences = true;
         private int preferencePage;
+        private string pointerKey = "::default";
+        #endregion
 
         public GeneralPreferences()
         {
@@ -142,6 +153,7 @@ namespace Kinovea.Services
             writer.WriteElementString("AllowMultipleInstances", allowMultipleInstances ? "true" : "false");
             writer.WriteElementString("InstancesOwnPreferences", instancesOwnPreferences ? "true" : "false");
             writer.WriteElementString("PreferencesPage", preferencePage.ToString());
+            writer.WriteElementString("Pointer", pointerKey);
         }
 
         public void ReadXML(XmlReader reader)
@@ -181,6 +193,9 @@ namespace Kinovea.Services
                         break;
                     case "PreferencesPage":
                         preferencePage = reader.ReadElementContentAsInt();
+                        break;
+                    case "Pointer":
+                        pointerKey = reader.ReadElementContentAsString();
                         break;
                     default:
                         reader.ReadOuterXml();

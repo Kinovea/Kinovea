@@ -429,7 +429,8 @@
     <Compile Include="Measurement\Plotting\TimeModel.cs" />
     <Compile Include="Measurement\Plotting\TimeSeriesPlotData.cs" />
     <Compile Include="Measurement\Plotting\TimeSeriesPlotSpecification.cs" />
-    <Compile Include="CursorManager.cs" />
+    <Compile Include="PointerManager.cs" />
+    <Compile Include="ScreenPointerManager.cs" />
     <Compile Include="Metadata\Drawings\DrawingRectangle.cs" />
     <Compile Include="Metadata\Drawings\DrawingTestGrid.cs" />
     <Compile Include="Metadata\Drawings\DrawingToolTestGrid.cs" />
@@ -1825,6 +1826,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\flatplay40x301.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\big_cursor_arrow2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\big_cursor_hand2.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">

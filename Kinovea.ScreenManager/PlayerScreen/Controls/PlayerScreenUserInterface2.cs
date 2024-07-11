@@ -334,7 +334,7 @@ namespace Kinovea.ScreenManager
         private MessageToaster m_MessageToaster;
         private bool m_Constructed;
         private bool workingZoneLoaded;
-        private CursorManager cursorManager = new CursorManager();
+        private ScreenPointerManager cursorManager = new ScreenPointerManager();
 
         #region Context Menus
         private ContextMenuStrip popMenu = new ContextMenuStrip();

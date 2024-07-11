@@ -40,6 +40,8 @@ namespace Kinovea.Services
         public static string ColorProfileDirectory { get; private set; }
         public static string CameraCalibrationDirectory { get; private set; }
         public static string CameraPluginsDirectory { get; private set; }
+
+        public static string PointersDirectory { get; private set; }
         public static string PreferencesFile
         {
             get
@@ -82,19 +84,20 @@ namespace Kinovea.Services
             else
                 SettingsDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ApplicationName) + "\\";
             
-            ColorProfileDirectory = SettingsDirectory + "ColorProfiles\\";
-            CameraCalibrationDirectory = SettingsDirectory + "CameraCalibration\\";
-            TempDirectory = SettingsDirectory + "Temp\\";
-            CameraProfilesDirectory = Path.Combine(SettingsDirectory, "CameraProfiles");
-            CameraPluginsDirectory = Path.Combine(SettingsDirectory, "Plugins", "Camera");
+            CameraCalibrationDirectory  = Path.Combine(SettingsDirectory, "CameraCalibration");
+            CameraProfilesDirectory     = Path.Combine(SettingsDirectory, "CameraProfiles");
+            ColorProfileDirectory       = Path.Combine(SettingsDirectory, "ColorProfiles");
+            CameraPluginsDirectory      = Path.Combine(SettingsDirectory, "Plugins", "Camera");
+            PointersDirectory           = Path.Combine(SettingsDirectory, "Pointers");
+            TempDirectory               = Path.Combine(SettingsDirectory, "Temp");
 
-            HelpVideosDirectory = applicationDirectory + "HelpVideos\\";
-            ManualsDirectory = applicationDirectory + "Manuals\\";
-            XSLTDirectory = applicationDirectory + "xslt\\";
-            LocalHelpIndex = applicationDirectory + "HelpIndex.xml";
-            ToolbarsDirectory = applicationDirectory + "\\DrawingTools\\Toolbars\\";
-            CustomToolsDirectory = applicationDirectory + "\\DrawingTools\\Custom\\";
-            StandardToolsDirectory = applicationDirectory + "\\DrawingTools\\Standard\\";
+            HelpVideosDirectory     = Path.Combine(applicationDirectory, "HelpVideos");
+            ManualsDirectory        = Path.Combine(applicationDirectory, "Manuals");
+            XSLTDirectory           = Path.Combine(applicationDirectory, "xslt");
+            LocalHelpIndex          = Path.Combine(applicationDirectory, "HelpIndex.xml");
+            ToolbarsDirectory       = Path.Combine(applicationDirectory, "DrawingTools", "Toolbars");
+            CustomToolsDirectory    = Path.Combine(applicationDirectory, "DrawingTools", "Custom");
+            StandardToolsDirectory  = Path.Combine(applicationDirectory, "DrawingTools", "Standard");
 
             RemoteHelpIndex = Experimental ? "http://www.kinovea.org/setup/updatebeta.xml" : "http://www.kinovea.org/setup/update.xml";
         }
@@ -124,10 +127,11 @@ namespace Kinovea.Services
         public static void SanityCheckDirectories()
         {
             CreateDirectory(SettingsDirectory);
-            CreateDirectory(ColorProfileDirectory);
             CreateDirectory(CameraCalibrationDirectory);
             CreateDirectory(CameraProfilesDirectory);
+            CreateDirectory(ColorProfileDirectory);
             CreateDirectory(CameraPluginsDirectory);
+            CreateDirectory(PointersDirectory);
             CreateDirectory(TempDirectory);
         }
 

@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -114,7 +115,6 @@ namespace Kinovea.ScreenManager
         private Point directZoomTopLeft;
         private int resizingHandle;
         private Size imgSize;
-        private Cursor cursorHandOpen;
         private Cursor cursorHandClose;
         private int lastCursorType = 0;
         #endregion
@@ -256,17 +256,17 @@ namespace Kinovea.ScreenManager
         }
         public Cursor GetCursor()
         {
-            return manipulationType == ManipulationType.None ? cursorHandOpen : cursorHandClose;
+            return manipulationType == ManipulationType.None ? PointerManager.Cursor : cursorHandClose;
         }
         public Cursor GetCursor(int type)
         {
             // 0: Open hand, 1: Closed hand, -1: same as last time.
             
-            Cursor cur = cursorHandOpen;
+            Cursor cur = PointerManager.Cursor;
             switch(type)
             {
                 case -1:
-                    cur = lastCursorType == 0 ? cursorHandOpen : cursorHandClose;
+                    cur = lastCursorType == 0 ? PointerManager.Cursor : cursorHandClose;
                     break;
                 case 1:
                     cur = cursorHandClose;
@@ -481,11 +481,8 @@ namespace Kinovea.ScreenManager
         #region Helpers
         private void SetupHandCursors()
         {
-            // Hand cursor.
-            Bitmap bmpOpen = Kinovea.ScreenManager.Properties.Drawings.handopen24c;
-            cursorHandOpen = new Cursor(bmpOpen.GetHicon());
-            
-            Bitmap bmpClose = Kinovea.ScreenManager.Properties.Drawings.handclose24b;
+            // Closed hand cursor when moving the image while zoomed in.
+            Bitmap bmpClose = Properties.Drawings.handclose24b;
             cursorHandClose = new Cursor(bmpClose.GetHicon());
 
             lastCursorType = 0;

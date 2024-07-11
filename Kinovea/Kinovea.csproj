@@ -562,6 +562,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="kinovea-256x256.ico" />
+    <None Include="Resources\image.png" />
+    <None Include="Resources\pointer-pointing-hand.png" />
+    <None Include="Resources\pointer-arrow.png" />
+    <None Include="Resources\handopen24c.png" />
     <None Include="Resources\disk2.png" />
     <None Include="Resources\quit2.png" />
     <None Include="Resources\replaywatcher4.png" />

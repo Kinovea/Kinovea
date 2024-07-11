@@ -113,6 +113,26 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap big_cursor_arrow2 {
+            get {
+                object obj = ResourceManager.GetObject("big_cursor_arrow2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap big_cursor_hand2 {
+            get {
+                object obj = ResourceManager.GetObject("big_cursor_hand2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap bin_empty {
             get {
                 object obj = ResourceManager.GetObject("bin_empty", resourceCulture);

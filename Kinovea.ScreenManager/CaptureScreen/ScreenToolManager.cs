@@ -47,7 +47,7 @@ namespace Kinovea.ScreenManager
         private DrawingToolPointer handTool;
         private Cursor cursor;
         private bool invalidateCursor = true;
-        private CursorManager cursorManager = new CursorManager();
+        private ScreenPointerManager cursorManager = new ScreenPointerManager();
         private List<AbstractDrawingTool> tools = new List<AbstractDrawingTool>();
         
         public ScreenToolManager()

@@ -88,6 +88,7 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuWorkspace = new ToolStripMenuItem();
         private ToolStripMenuItem mnuWorkspaceSaveAsDefault = new ToolStripMenuItem();
         private ToolStripMenuItem mnuWorkspaceExport = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuPointer = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHelp = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHelpContents = new ToolStripMenuItem();
         private ToolStripMenuItem mnuApplicationFolder = new ToolStripMenuItem();
@@ -123,6 +124,9 @@ namespace Kinovea.Root
 
             log.Debug("Loading tools.");
             ToolManager.LoadTools();
+
+            log.Debug("Loading cursors.");
+            PointerManager.LoadPointers();
 
             BuildSubTree();
             mainWindow = new KinoveaMainWindow(this);
@@ -335,27 +339,41 @@ namespace Kinovea.Root
 
             mnuPreferences.Image = Properties.Resources.wrench;
             mnuPreferences.Click += new EventHandler(mnuPreferencesOnClick);
-            mnuTimecode.Image = Properties.Resources.time_edit;
             
+            mnuTimecode.Image = Properties.Resources.time_edit;
             mnuTimecodeClassic.Click += new EventHandler(mnuTimecodeClassic_OnClick);
             mnuTimecodeFrames.Click += new EventHandler(mnuTimecodeFrames_OnClick);
             mnuTimecodeMilliseconds.Click += new EventHandler(mnuTimecodeMilliseconds_OnClick);
             mnuTimecodeMicroseconds.Click += new EventHandler(mnuTimecodeMicroseconds_OnClick);
             mnuTimecodeTimeAndFrames.Click += new EventHandler(mnuTimecodeTimeAndFrames_OnClick);
             mnuTimecodeNormalized.Click += new EventHandler(mnuTimecodeNormalized_OnClick);
-
-            mnuTimecode.DropDownItems.AddRange(new ToolStripItem[] { mnuTimecodeClassic, mnuTimecodeFrames, mnuTimecodeMilliseconds, mnuTimecodeMicroseconds, mnuTimecodeTimeAndFrames});
+            mnuTimecode.DropDownItems.AddRange(new ToolStripItem[] { 
+                mnuTimecodeClassic, 
+                mnuTimecodeFrames, 
+                mnuTimecodeMilliseconds, 
+                mnuTimecodeMicroseconds, 
+                mnuTimecodeTimeAndFrames});
 
             mnuWorkspaceSaveAsDefault.Click += MnuWorkspaceSaveAsDefault_Click;
             mnuWorkspaceExport.Click += MnuWorkspaceExport_Click;
-            mnuWorkspace.DropDownItems.AddRange(new ToolStripItem[] { mnuWorkspaceSaveAsDefault, mnuWorkspaceExport });
+            mnuWorkspace.DropDownItems.AddRange(new ToolStripItem[] { 
+                mnuWorkspaceSaveAsDefault, 
+                mnuWorkspaceExport});
 
+            mnuPointer.Image = Properties.Resources.handopen24c;
+            BuildPointerMenus();
+            
             mnuOptions.DropDownItems.AddRange(new ToolStripItem[] { 
                 mnuLanguages, 
                 mnuTimecode, 
                 mnuWorkspace,
+                mnuPointer,
                 new ToolStripSeparator(), 
                 mnuPreferences});
+
+
+
+
             #endregion
 
             #region Help
@@ -462,6 +480,10 @@ namespace Kinovea.Root
             mnuWorkspaceSaveAsDefault.Image = Properties.Resources.filesave;
             mnuWorkspaceExport.Text = RootLang.mnuWorkspaceExport;
             mnuWorkspaceExport.Image = Properties.Resources.file_txt;
+
+            mnuPointer.Text = "Pointer";
+
+
 
             mnuHelp.Text = RootLang.mnuHelp;
             mnuHelpContents.Text = RootLang.mnuHelpContents;
@@ -863,6 +885,70 @@ namespace Kinovea.Root
             
             // Propagates the call to screens.
             screenManager.FullScreen(mainWindow.FullScreen);
+        }
+        
+        private void BuildPointerMenus()
+        {
+            mnuPointer.DropDownItems.Clear();
+
+            // Standard menus.
+            ToolStripMenuItem mnuHand = new ToolStripMenuItem();
+            mnuHand.Text = "Default";
+            mnuHand.Image = Properties.Resources.handopen24c;
+            mnuHand.Tag = "::default";
+            mnuHand.Click += mnuPointer_OnClick;
+
+            ToolStripMenuItem mnuBigHand = new ToolStripMenuItem();
+            mnuBigHand.Text = "Big pointing hand";
+            mnuBigHand.Image = Properties.Resources.pointer_pointing_hand;
+            mnuBigHand.Tag = "::bigHand";
+            mnuBigHand.Click += mnuPointer_OnClick;
+
+            ToolStripMenuItem mnuBigArrow = new ToolStripMenuItem();
+            mnuBigArrow.Text = "Big arrow";
+            mnuBigArrow.Image = Properties.Resources.pointer_arrow;
+            mnuBigArrow.Tag = "::bigArrow";
+            mnuBigArrow.Click += mnuPointer_OnClick;
+
+            mnuPointer.DropDownItems.Add(mnuHand);
+            mnuPointer.DropDownItems.Add(new ToolStripSeparator());
+            mnuPointer.DropDownItems.Add(mnuBigHand);
+            mnuPointer.DropDownItems.Add(mnuBigArrow);
+
+            // Custom menus from special directory.
+            if (!Directory.Exists(Software.PointersDirectory))
+                return;
+
+            bool addedSeparator = false;
+            foreach (string file in Directory.GetFiles(Software.PointersDirectory))
+            {
+                if (!addedSeparator)
+                {
+                    mnuPointer.DropDownItems.Add(new ToolStripSeparator());
+                    addedSeparator = true;
+                }
+                
+                ToolStripMenuItem mnuCustomPointer = new ToolStripMenuItem();
+                mnuCustomPointer.Text = Path.GetFileNameWithoutExtension(file);
+                mnuCustomPointer.Tag = Path.GetFileNameWithoutExtension(file);
+                mnuCustomPointer.Image = Properties.Resources.image;
+                mnuCustomPointer.Click += mnuPointer_OnClick;
+
+                mnuPointer.DropDownItems.Add(mnuCustomPointer);
+            }
+        }
+
+        private void mnuPointer_OnClick(object sender, EventArgs e)
+        {
+            ToolStripMenuItem menu = sender as ToolStripMenuItem;
+            if (menu == null)
+                return;
+
+            string tag = menu.Tag as string;
+            if (string.IsNullOrEmpty(tag))
+                return;
+
+            PointerManager.SetCursor(tag);
         }
         #endregion
     }
