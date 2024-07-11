@@ -31,8 +31,8 @@ namespace Kinovea.ScreenManager
         {
             // Built-in pointers.
             pointers.Add("::default", Properties.Drawings.handopen24c);
-            pointers.Add("::bigHand", Properties.Resources.big_cursor_hand2);
-            pointers.Add("::bigArrow", Properties.Resources.big_cursor_arrow2);
+            pointers.Add("::bigHand", Properties.Resources.big_hand_128);
+            pointers.Add("::bigArrow", Properties.Resources.big_arrow_128);
 
             // Custom pointers.
             if (!Directory.Exists(Software.PointersDirectory))

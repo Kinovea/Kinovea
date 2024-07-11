@@ -1828,10 +1828,10 @@
     <None Include="Resources\flatplay40x301.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\big_cursor_arrow2.png" />
+    <None Include="Resources\big_arrow-128.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\big_cursor_hand2.png" />
+    <None Include="Resources\big_hand_128.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">

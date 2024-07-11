@@ -1854,10 +1854,10 @@
   <data name="flatplay" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\flatplay40x301.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="big_cursor_arrow2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\big_cursor_arrow2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="big_arrow_128" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\big_arrow-128.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="big_cursor_hand2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\big_cursor_hand2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="big_hand_128" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\big_hand_128.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
