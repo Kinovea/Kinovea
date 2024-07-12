@@ -1,5 +1,5 @@
 
-Kinovea 2024.1 - TBD.
+Kinovea 2024.1 - July 2024.
 
 Kinovea is a free and open source video annotation tool designed for motion analysis.
 It features utilities to capture, slow down, compare, annotate and measure motion in videos.
@@ -38,28 +38,44 @@ Project:
 Changelog:
 ----------
 
-2024.1 - TBD
-	Added - New locales: Croatian, Traditional Chinese.
-	Added - Counter tool.
+2024.1 - July 2024
+    Added - Camera motion estimation video mode.
+    Added - Lens calibration video mode.
+    Added - Calibration validation window, with 3D camera position and control points.
     Added - Support for an extra offset applied to coordinates.
+	Added - Counter tool.
+    Added - Background layer with color and opacity, between video and drawings.
+    Added - Alternate pointers.
+	Added - New locales: Croatian, Traditional Chinese.
+    Improved - Player: better feedback regarding the active video mode.
     Improved - Annotations: Added "filled" option to rectangle and circle.
     Improved - Annotations: Support changing font size for mini labels.
     Improved - Annotations: Support transparent background on the text tool.
     Improved - Annotations: Added more display options to the grid object.
+    Improved - Annotations: Support setting the number of rows and columns separately in grid object.
     Improved - Annotations: Increased max duration of opaque and fading.
+    Improved - Annotations: Support setting markers as single dot.
+    Improved - Annotations: Hide cursor completely when moving markers and grid corners.
+    Improved - Measurement: Direct menu to import a lens calibration file.
+    Improved - Measurement: Direct menus for existing lens calibration files.
+    Improved - Measurement: Direct menu to reset the lens calibration.
+    Improved - Measurement: Support setting the number of decimal places to use for display.
     Improved - Measurement: Support flipping axes and changing reference corner.
     Improved - Measurement: Show average pixel size in world units on calibration dialog.
     Improved - Measurement: Support resetting the alignment of the coordinate system to the grid.
+    Improved - Measurement: In the plane/grid tool, support setting the number of rows and columns separately.
     Improved - Kinogram: Support moving tiles in time.
     Improved - Kinogram: Support changing label color and font size.
+    Improved - Export: Export comments in JSON export.
     Fixed - Copy-pasting a drawing to a different time was not working.
     Fixed - End caps on trajectory drawings.
     Fixed - Problem when reading tool preset coming from a different version.
-    Fixed - Pasting a drawing to a different time.
     Fixed - Slowness of side-by-side export.
     Fixed - Synchronization between shortcuts and explorer when opening a file.
     Fixed - Update of mini labels of trajectories after a change in the side panel.
     Fixed - Markdown export was broken for files with keyframes out of the selection.
+    Fixed - Marker objects were drawn aliased to the image pixel grid.
+    Fixed - Pencil drawing with a single point was invisible or could not be deleted.
     Removed - Distance grid tool.
 
 
