@@ -44,13 +44,13 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private static Dictionary<string, AbstractDrawingTool> tools = null;
+        private static Dictionary<string, AbstractDrawingTool> tools = new Dictionary<string, AbstractDrawingTool>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         public static void LoadTools()
         {
-            tools = new Dictionary<string, AbstractDrawingTool>();
+            tools.Clear();
 
             // Singleton tools and magnifier.
             tools.Add("NumberSequence", new DrawingToolNumberSequence());

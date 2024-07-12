@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Management;
+using System.Reflection;
 
 namespace Kinovea.Services
 {
     public static class WMI
     {
         private static UInt64 gigabyte = 1024 * 1024 * 1024;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public static List<string> Processor_MaxClockSpeed()
         {
@@ -129,6 +131,35 @@ namespace Kinovea.Services
                 result.Add(o[field].ToString());
 
             return result;
+        }
+
+        public static void DumpOS()
+        {
+            var wmi =
+                new ManagementObjectSearcher("SELECT * from Win32_OperatingSystem")
+                .Get()
+                .Cast<ManagementObject>()
+                .First();
+
+            log.DebugFormat("OS Name: " + ((string)wmi["Caption"]).Trim());
+            log.DebugFormat("OS Version: " + (string)wmi["Version"]);
+            log.DebugFormat("OS Build: {0}", (string)wmi["BuildNumber"]);
+            log.DebugFormat("OS Architecture: " + (string)wmi["OSArchitecture"]);
+        }
+
+        public static void DumpCPU()
+        {
+            var cpu =
+                new ManagementObjectSearcher("SELECT * from Win32_Processor")
+                .Get()
+                .Cast<ManagementObject>()
+                .First();
+
+            log.DebugFormat("CPU Name: {0}", (string)cpu["Name"]);
+            log.DebugFormat("CPU Description: {0}", (string)cpu["Caption"]);
+            log.DebugFormat("CPU Architecture: {0}", (ushort)cpu["Architecture"]);
+            log.DebugFormat("CPU SpeedMHz: {0}", (uint)cpu["MaxClockSpeed"]);
+            log.DebugFormat("CPU Cores: {0}", (uint)cpu["NumberOfCores"]);
         }
 
         public static void Test()

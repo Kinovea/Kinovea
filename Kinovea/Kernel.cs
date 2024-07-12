@@ -105,28 +105,45 @@ namespace Kinovea.Root
         #region Constructor
         public RootKernel()
         {
-            log.Debug("Loading video readers.");
-            List<Type> videoReaders = new List<Type>();
-            videoReaders.Add(typeof(Video.Bitmap.VideoReaderBitmap));
-            videoReaders.Add(typeof(Video.FFMpeg.VideoReaderFFMpeg));
-            videoReaders.Add(typeof(Video.GIF.VideoReaderGIF));
-            videoReaders.Add(typeof(Video.SVG.VideoReaderSVG));
-            videoReaders.Add(typeof(Video.Synthetic.VideoReaderSynthetic));
-            VideoTypeManager.LoadVideoReaders(videoReaders);
+            bool enableVideoReaders = true;
+            bool enableCameraManagers = true;
+            bool enableTools = true;
+            bool enableCursors = true;
 
-            log.Debug("Loading built-in camera managers.");
-            CameraTypeManager.LoadCameraManager(typeof(Camera.DirectShow.CameraManagerDirectShow));
-            CameraTypeManager.LoadCameraManager(typeof(Camera.HTTP.CameraManagerHTTP));
-            CameraTypeManager.LoadCameraManager(typeof(Camera.FrameGenerator.CameraManagerFrameGenerator));
+            if (enableVideoReaders)
+            {
+                List<Type> videoReaders = new List<Type>();
+                log.Debug("Loading video readers.");
+                videoReaders.Add(typeof(Video.Bitmap.VideoReaderBitmap));
+                videoReaders.Add(typeof(Video.FFMpeg.VideoReaderFFMpeg));
+                videoReaders.Add(typeof(Video.GIF.VideoReaderGIF));
+                videoReaders.Add(typeof(Video.SVG.VideoReaderSVG));
+                videoReaders.Add(typeof(Video.Synthetic.VideoReaderSynthetic));
+                VideoTypeManager.LoadVideoReaders(videoReaders);
+            }
 
-            log.Debug("Loading camera managers plugins.");
-            CameraTypeManager.LoadCameraManagersPlugins();
+            if (enableCameraManagers)
+            {
+                log.Debug("Loading built-in camera managers.");
+                CameraTypeManager.LoadCameraManager(typeof(Camera.DirectShow.CameraManagerDirectShow));
+                CameraTypeManager.LoadCameraManager(typeof(Camera.HTTP.CameraManagerHTTP));
+                CameraTypeManager.LoadCameraManager(typeof(Camera.FrameGenerator.CameraManagerFrameGenerator));
 
-            log.Debug("Loading tools.");
-            ToolManager.LoadTools();
+                log.Debug("Loading camera managers plugins.");
+                CameraTypeManager.LoadCameraManagersPlugins();
+            }
 
-            log.Debug("Loading cursors.");
-            PointerManager.LoadPointers();
+            if (enableTools)
+            {
+                log.Debug("Loading tools.");
+                ToolManager.LoadTools();
+            }
+            
+            if (enableCursors)
+            {
+                log.Debug("Loading cursors.");
+                PointerManager.LoadPointers();
+            }
 
             BuildSubTree();
             mainWindow = new KinoveaMainWindow(this);
