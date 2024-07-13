@@ -26,20 +26,62 @@ namespace Kinovea.Camera
 {
     /// <summary>
     /// This class contains the necessary info to represent, identify and connect to a camera.
-    /// It has a pointer to its manager and a blob of manager specific data.
+    /// It has a pointer to its manager and a blob of manager-specific data.
     /// </summary>
     public class CameraSummary
     {
+        #region Properties
+        /// <summary>
+        /// User defined alias for the device.
+        /// </summary>
         public string Alias { get; private set;}
+        
+        /// <summary>
+        /// Vendor defined name of the device, typically the model.
+        /// </summary>
         public string Name { get; private set;}
+        
+        /// <summary>
+        /// Unique string identifying the device.
+        /// </summary>
         public string Identifier { get; private set;}
+        
+        /// <summary>
+        /// Custom icon assigned to the device.
+        /// </summary>
         public Bitmap Icon { get; private set; }
+        
+        /// <summary>
+        /// Where to paint the camera image in the viewport.
+        /// </summary>
         public Rectangle DisplayRectangle { get; set; }
+        
+        /// <summary>
+        /// Custom aspect ratio to display images at.
+        /// </summary>
         public CaptureAspectRatio AspectRatio { get; private set; }
+        
+        /// <summary>
+        /// Whether to rotate the image.
+        /// </summary>
         public ImageRotation Rotation { get; private set; }
+        
+        /// <summary>
+        /// Whether we should mirror the image horizontally.
+        /// </summary>
         public bool Mirror { get; private set; }
+        
+        /// <summary>
+        /// Opaque dada structure specific to the camera type.
+        /// This contains user values for camera properties. 
+        /// </summary>
         public object Specific { get; private set;}
+        
+        /// <summary>
+        /// Parent camera manager that discovered this device.
+        /// </summary>
         public CameraManager Manager { get; private set;}
+        #endregion
 
         /// <summary>
         /// Build a full camera summary.
@@ -128,7 +170,5 @@ namespace Kinovea.Camera
         {
             this.Specific = specific;
         }
-        
-        
     }
 }

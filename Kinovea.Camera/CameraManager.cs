@@ -77,7 +77,7 @@ namespace Kinovea.Camera
         public abstract bool HasConnectionWizard { get; }
 
         /// <summary>
-        /// Checks that the necessary component are available for the manager to work.
+        /// Checks that the necessary components are available for the manager to work.
         /// This function will be called once, if it returns false the manager will be discarded.
         /// </summary>
         public abstract bool SanityCheck();
@@ -90,6 +90,7 @@ namespace Kinovea.Camera
 
         /// <summary>
         /// Invalidate the camera reference from any cache held in the module.
+        /// It should be discovered again at the next DiscoverCameras step.
         /// </summary>
         public abstract void ForgetCamera(CameraSummary summary);
 
@@ -112,12 +113,12 @@ namespace Kinovea.Camera
         public abstract void StopAllThumbnails();
 
         /// <summary>
-        /// Extract a camera blurb (used for XML persistence) from a camera summary.
+        /// Extract a camera blurb (used for KVA persistence) from a camera summary.
         /// </summary>
         public abstract CameraBlurb BlurbFromSummary(CameraSummary summary);
         
         /// <summary>
-        /// Connect to a camera and return the frame grabbing object.
+        /// Create a frame grabbing object that will let us connect to and grab the camera.
         /// </summary>
         public abstract ICaptureSource CreateCaptureSource(CameraSummary summary);
         
@@ -153,7 +154,7 @@ namespace Kinovea.Camera
         }
 
         /// <summary>
-        /// Called after the user personalize a camera. Should persist the customized information.
+        /// Called after the user personalizes a camera. Should persist the customized information.
         /// </summary>
         public void UpdatedCameraSummary(CameraSummary summary)
         {
