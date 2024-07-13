@@ -1,0 +1,34 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  
+  <PropertyGroup>
+    <BuildDependsOn>
+      $(BuildDependsOn);
+      CopyNativeDependencies;
+    </BuildDependsOn>
+  </PropertyGroup>
+
+  <Target Name="CopyNativeDependencies">
+
+    <Message Text="Copying native dependencies."/>
+    
+    <Copy SourceFiles="..\Refs\Baumer\2.11.0\bgapi2_ext_sc.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\Baumer\2.11.0\bgapi2_genicam.dll" DestinationFolder="$(TargetDir)" />
+    <Copy SourceFiles="..\Refs\Baumer\2.11.0\bgapi2_genicam_dotnet.dll" DestinationFolder="$(TargetDir)" />
+    <Copy SourceFiles="..\Refs\Baumer\2.11.0\bgapi2_gige.cti" DestinationFolder="$(TargetDir)" />
+    <Copy SourceFiles="..\Refs\Baumer\2.11.0\bgapi2_img.dll" DestinationFolder="$(TargetDir)" />
+    <Copy SourceFiles="..\Refs\Baumer\2.11.0\bgapi2_usb.cti" DestinationFolder="$(TargetDir)" />
+    <Copy SourceFiles="..\Refs\Baumer\2.11.0\bopfdrvctl.dll" DestinationFolder="$(TargetDir)" />
+    <Copy SourceFiles="..\Refs\Baumer\2.11.0\concrt140.dll" DestinationFolder="$(TargetDir)" />
+    <Copy SourceFiles="..\Refs\Baumer\2.11.0\GCBase_MD_VC141_v3_2.dll" DestinationFolder="$(TargetDir)" />
+    <Copy SourceFiles="..\Refs\Baumer\2.11.0\GenApi_MD_VC141_v3_2.dll" DestinationFolder="$(TargetDir)" />
+    <Copy SourceFiles="..\Refs\Baumer\2.11.0\Log_MD_VC141_v3_2.dll" DestinationFolder="$(TargetDir)" />
+    <Copy SourceFiles="..\Refs\Baumer\2.11.0\log4cpp_MD_VC141_v3_2.dll" DestinationFolder="$(TargetDir)" />
+    <Copy SourceFiles="..\Refs\Baumer\2.11.0\MathParser_MD_VC141_v3_2.dll" DestinationFolder="$(TargetDir)" />
+    <Copy SourceFiles="..\Refs\Baumer\2.11.0\msvcp140.dll" DestinationFolder="$(TargetDir)" />
+    <Copy SourceFiles="..\Refs\Baumer\2.11.0\NodeMapData_MD_VC141_v3_2.dll" DestinationFolder="$(TargetDir)" />
+    <Copy SourceFiles="..\Refs\Baumer\2.11.0\vcruntime140.dll" DestinationFolder="$(TargetDir)" />
+    <Copy SourceFiles="..\Refs\Baumer\2.11.0\XmlParser_MD_VC141_v3_2.dll" DestinationFolder="$(TargetDir)" />
+
+  </Target>
+
+</Project>
