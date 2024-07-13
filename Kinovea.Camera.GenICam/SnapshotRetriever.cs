@@ -93,7 +93,7 @@ namespace Kinovea.Camera.GenICam
             log.DebugFormat("Starting {0} for thumbnail.", summary.Alias);
 
             SpecificInfo specific = summary.Specific as SpecificInfo;
-            bool opened = genicamProvider.Open(specific.SystemKey, specific.InterfaceKey, specific.DeviceKey);
+            bool opened = genicamProvider.Open(specific.Device);
 
             if (!opened)
             {

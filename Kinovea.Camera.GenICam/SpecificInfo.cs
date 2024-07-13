@@ -31,10 +31,7 @@ namespace Kinovea.Camera.GenICam
     /// </summary>
     public class SpecificInfo
     {
-        // Temporary info used to find and open the camera.
-        public string SystemKey;
-        public string InterfaceKey;
-        public string DeviceKey;
+        // The device member is not serialized. It is set by the manager when the camera is discovered.
         public Device Device;
         
         public string StreamFormat { get; set; }

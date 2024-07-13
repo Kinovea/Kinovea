@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
-using BGAPI2;
 using System.Drawing.Imaging;
 using System.Threading;
+using BGAPI2;
 
 namespace Kinovea.Camera.GenICam
 {
@@ -18,6 +18,7 @@ namespace Kinovea.Camera.GenICam
     {
         public event EventHandler<BufferEventArgs> BufferProduced;
 
+        #region Properties
         public bool IsOpen 
         {
             get { return opened; }
@@ -27,10 +28,10 @@ namespace Kinovea.Camera.GenICam
         {
             get { return device; }
         }
+        #endregion
 
+        #region Members
         private ulong bufferFilledTimeoutMS = 1000;
-        private BGAPI2.System system;
-        private Interface interf;
         private Device device;
         private DataStream dataStream;
         private BufferList bufferList;
@@ -39,68 +40,28 @@ namespace Kinovea.Camera.GenICam
         private bool grabThreadRun = true;
         private Thread grabThread;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        #endregion
 
-        /// <summary>
-        /// Open a specific device and allocate buffers.
-        /// </summary>
-        public bool Open(string systemKey, string interfaceKey, string deviceKey)
+
+        public bool Open(Device device)
         {
             Close();
 
             try
             {
-                // Look for the device.
-                SystemList systemList = SystemList.Instance;
-                systemList.Refresh();
-                foreach (KeyValuePair<string, BGAPI2.System> systemPair in systemList)
-                {
-                    if (systemPair.Key != systemKey)
-                        continue;
-
-                    system = systemPair.Value;
-                    if (!system.IsOpen)
-                        system.Open();
-
-                    break;
-                }
-
-                if (system == null || !system.IsOpen)
+                this.device = device;
+                if (device == null)
                     return false;
 
-                system.Interfaces.Refresh(100);
-                foreach (KeyValuePair<string, BGAPI2.Interface> interfacePair in system.Interfaces)
-                {
-                    if (interfacePair.Key != interfaceKey)
-                        continue;
+                if (!device.IsOpen)
+                    device.Open();
 
-                    interf = interfacePair.Value;
-                    if (!interf.IsOpen)
-                        interf.Open();
-                    break;
-                }
-
-                if (interf == null || !interf.IsOpen)
-                    return false;
-                
-
-                interf.Devices.Refresh(100);
-                foreach (KeyValuePair<string, BGAPI2.Device> devicePair in interf.Devices)
-                {
-                    if (devicePair.Key != deviceKey)
-                        continue;
-
-                    device = devicePair.Value;
-                    if (!device.IsOpen)
-                        device.Open();
-                    break;
-                }
-
-                if (device == null || !device.IsOpen)
+                if (!device.IsOpen)
                     return false;
 
                 DataStreamList dataStreamList = device.DataStreams;
                 dataStreamList.Refresh();
-                foreach (KeyValuePair<string, BGAPI2.DataStream> dataStreamPair in dataStreamList)
+                foreach (KeyValuePair<string, DataStream> dataStreamPair in dataStreamList)
                 {
                     if (string.IsNullOrEmpty(dataStreamPair.Key))
                         continue;
@@ -123,8 +84,6 @@ namespace Kinovea.Camera.GenICam
                 {
                     BGAPI2.Buffer buffer = new BGAPI2.Buffer();
                     bufferList.Add(buffer);
-                    //ulong memSize = buffer.MemSize;
-                    //log.DebugFormat("Buffer mem size: {0}", memSize);
                 }
 
                 // Make buffers available to the producer.
@@ -143,12 +102,13 @@ namespace Kinovea.Camera.GenICam
                 CloseDataStream();
                 CloseDevice();
             }
-
+            
             return opened;
         }
 
         /// <summary>
         /// Close the currently opened device and deallocate buffers.
+        /// Does not close the corresponding interface and system.
         /// </summary>
         public void Close()
         {
@@ -163,8 +123,6 @@ namespace Kinovea.Camera.GenICam
             DiscardBuffers();
             CloseDataStream();
             CloseDevice();
-            //CloseInterface();
-            //CloseSystem();
         }
 
         /// <summary>
@@ -255,7 +213,7 @@ namespace Kinovea.Camera.GenICam
                 while (grabThreadRun)
                 {
                     // Wait for the next buffer.
-                    BGAPI2.Buffer bufferFilled = dataStream.GetFilledBuffer(1000);
+                    BGAPI2.Buffer bufferFilled = dataStream.GetFilledBuffer(bufferFilledTimeoutMS);
                     if (bufferFilled == null || bufferFilled.IsIncomplete || bufferFilled.MemPtr == IntPtr.Zero)
                     {
                         // Grab timeout or error.
@@ -266,7 +224,7 @@ namespace Kinovea.Camera.GenICam
                     if (BufferProduced != null)
                         BufferProduced(this, new BufferEventArgs(bufferFilled));
 
-                    // Make the buffer available to Baumer internals again.
+                    // Make the buffer available to be filled again.
                     bufferFilled.QueueBuffer();
                 }
 
@@ -333,42 +291,6 @@ namespace Kinovea.Camera.GenICam
                         device.Close();
 
                     device = null;
-                }
-            }
-            catch (Exception e)
-            {
-                log.Error(e.Message);
-            }
-        }
-
-        private void CloseInterface()
-        {
-            try
-            {
-                if (interf != null)
-                {
-                    if (interf.IsOpen)
-                        interf.Close();
-
-                    interf = null;
-                }
-            }
-            catch (Exception e)
-            {
-                log.Error(e.Message);
-            }
-        }
-
-        private void CloseSystem()
-        {
-            try
-            {
-                if (system != null)
-                {
-                    if (system.IsOpen)
-                        system.Close();
-
-                    system = null;
                 }
             }
             catch (Exception e)

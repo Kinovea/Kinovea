@@ -227,7 +227,7 @@ namespace Kinovea.Camera.GenICam
 
             try
             {
-                genicamProvider.Open(specific.SystemKey, specific.InterfaceKey, specific.DeviceKey);
+                genicamProvider.Open(specific.Device);
             }
             catch (Exception e)
             {

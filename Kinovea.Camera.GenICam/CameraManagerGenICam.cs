@@ -43,27 +43,33 @@ namespace Kinovea.Camera.GenICam
         #endregion
 
         #region Members
-        private List<SnapshotRetriever> snapshotting = new List<SnapshotRetriever>();
-        private Dictionary<string, CameraSummary> cache = new Dictionary<string, CameraSummary>();
         private Bitmap defaultIcon;
-        private SystemList systemList;
-        private Dictionary<string, BGAPI2.System> systems = new Dictionary<string, BGAPI2.System>();
-        private Dictionary<string, uint> deviceIndices = new Dictionary<string, uint>();
+        // List of currently active snapshot retrievers, to avoid starting one on the same camera.
+        private List<SnapshotRetriever> snapshotting = new List<SnapshotRetriever>();
+        // Cache of discovered devices.
+        private Dictionary<string, CameraSummary> cache = new Dictionary<string, CameraSummary>();
+        // Cache of known interfaces, to speed up discovery we don't search systems and interfaces each time.
+        private Dictionary<string, Interface> interfaces = new Dictionary<string, Interface>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
+        #region Public methods - CameraManager implementation
+        
+        /// <summary>
+        /// Constructor. This is called dynamically from introspection.
+        /// </summary>
         public CameraManagerGenICam()
         {
             defaultIcon = IconLibrary.GetIcon("baumer");
         }
 
-        #region Public methods - CameraManager implementation
         public override bool SanityCheck()
         {
             bool result = false;
             try
             {
-                systemList = SystemList.Instance;
+                // This should trigger the loading of bgapi2_genicam_dotnet.dll assembly and the native dependencies.
+                var systemList = SystemList.Instance;
                 result = true;
             }
             catch (Exception e)
@@ -77,131 +83,94 @@ namespace Kinovea.Camera.GenICam
 
         public override List<CameraSummary> DiscoverCameras(IEnumerable<CameraBlurb> blurbs)
         {
-            List<CameraSummary> summaries = new List<CameraSummary>();
-            List<CameraSummary> found = new List<CameraSummary>();
-
-            //---------------------------------------------
-            // Lifecycles of objects in the Baumer API:
-            // - systemList: entire application.
-            // - system: entire application. Should be kept open.
-            // - interface: entire application. Allow listing of devices even if they are opened by another application.
-            // - device: camera session.
-            //---------------------------------------------
-
-            if (systems.Count == 0)
+            // We only check the list of systems and interfaces once at application startup.
+            // These are found from the .cti files (DLLs) loaded by the Baumer API.
+            // They are searched for in the plugin directory and the GENICAM_GENTL64_PATH env variable. 
+            if (interfaces.Count == 0)
             {
-                systemList.Refresh();
-                foreach (KeyValuePair<string, BGAPI2.System> systemPair in systemList)
-                {
-                    BGAPI2.System system = systemPair.Value;
-                    if (string.IsNullOrEmpty(system.Id))
-                        continue;
-
-                    try
-                    {
-                        if (!system.IsOpen)
-                            system.Open();
-                    
-                        systems.Add(systemPair.Key, system);
-                        log.DebugFormat("Opened system {0} ({1}).", systemPair.Value.DisplayName, systemPair.Value.Vendor);
-                    }
-                    catch
-                    {
-                        log.DebugFormat("Error while opening system {0} ({1}).", systemPair.Value.DisplayName, systemPair.Value.Vendor);
-                    }
-                }
+                RefreshInterfaces();
             }
 
+            List<CameraSummary> summaries = new List<CameraSummary>();
+            if (interfaces.Count == 0)
+                return summaries;
+
+            // Search for devices.
             try
             {
-                foreach (KeyValuePair<string, BGAPI2.System> systemPair in systems)
+                foreach (KeyValuePair<string, Interface> interfacePair in interfaces)
                 {
-                    var system = systemPair.Value;
-                    
-                    if (string.IsNullOrEmpty(system.Id))
+                    var interf = interfacePair.Value;
+                    if (string.IsNullOrEmpty(interf.Id))
                         continue;
 
-                    if (!system.IsOpen)
-                        continue;
-
-                    system.Interfaces.Refresh(200);
-                    foreach (KeyValuePair<string, Interface> interfacePair in system.Interfaces)
-                    {
-                        var interf = interfacePair.Value;
-                        //log.DebugFormat("Opening interface {0}", iface.DisplayName);
-                        if (!interf.IsOpen)
-                            interf.Open();
+                    if (!interf.IsOpen)
+                        interf.Open();
                         
-                        if (string.IsNullOrEmpty(interf.Id))
-                            continue;
-
-                        interf.Devices.Refresh(200);
-                        foreach (KeyValuePair<string, Device> devicePair in interf.Devices)
-                        {
-                            var device = devicePair.Value;
-                            //log.DebugFormat("Found device: {0} ({1})", device.DisplayName, device.Vendor);
+                    interf.Devices.Refresh(200);
+                    foreach (KeyValuePair<string, Device> devicePair in interf.Devices)
+                    {
+                        var device = devicePair.Value;
+                        //log.DebugFormat("Found device: {0} ({1})", device.DisplayName, device.Vendor);
                             
-                            string identifier = device.SerialNumber;
-                            bool cached = cache.ContainsKey(identifier);
-                            if (cached)
-                            {
-                                // We've already seen this camera in the current Kinovea session.
-                                //deviceIds[identifier] = device.GetDeviceID();
-                                //log.DebugFormat("Known device from current session.");
-                                summaries.Add(cache[identifier]);
-                                found.Add(cache[identifier]);
-                                continue;
-                            }
-
-                            string alias = device.DisplayName;
-                            Bitmap icon = null;
-                            SpecificInfo specific = new SpecificInfo();
-                            Rectangle displayRectangle = Rectangle.Empty;
-                            CaptureAspectRatio aspectRatio = CaptureAspectRatio.Auto;
-                            ImageRotation rotation = ImageRotation.Rotate0;
-                            bool mirror = false;
-
-                            // Check if we already know this camera from a previous Kinovea session.
-                            if (blurbs != null)
-                            {
-                                foreach (CameraBlurb blurb in blurbs)
-                                {
-                                    if (blurb.CameraType != this.CameraType || blurb.Identifier != identifier)
-                                        continue;
-
-                                    // We know this camera from a previous Kinovea session, restore the user custom values.
-                                    log.DebugFormat("Known device from previous session.");
-                                    alias = blurb.Alias;
-                                    icon = blurb.Icon ?? defaultIcon;
-                                    displayRectangle = blurb.DisplayRectangle;
-                                    if (!string.IsNullOrEmpty(blurb.AspectRatio))
-                                        aspectRatio = (CaptureAspectRatio)Enum.Parse(typeof(CaptureAspectRatio), blurb.AspectRatio);
-                                    if (!string.IsNullOrEmpty(blurb.Rotation))
-                                        rotation = (ImageRotation)Enum.Parse(typeof(ImageRotation), blurb.Rotation);
-                                    mirror = blurb.Mirror;
-                                    specific = SpecificInfoDeserialize(blurb.Specific);
-                                    break;
-                                }
-                            }
-
-                            // Keep temporary info in order to find it back later.
-                            specific.SystemKey = systemPair.Key;
-                            specific.InterfaceKey = interfacePair.Key;
-                            specific.DeviceKey = devicePair.Key;
-                            specific.Device = null;
-
-                            icon = icon ?? defaultIcon;
-                            CameraSummary summary = new CameraSummary(alias, device.DisplayName, identifier, icon, displayRectangle, aspectRatio, rotation, mirror, specific, this);
-
-                            summaries.Add(summary);
-                            found.Add(summary);
-                            cache.Add(identifier, summary);
+                        string identifier = device.SerialNumber;
+                        bool cached = cache.ContainsKey(identifier);
+                        if (cached)
+                        {
+                            // We've already seen this camera in the current Kinovea session.
+                            summaries.Add(cache[identifier]);
+                            continue;
                         }
 
-                        //iface.Close();
-                    }
+                        string alias = device.DisplayName;
+                        Bitmap icon = null;
+                        SpecificInfo specific = new SpecificInfo();
+                        Rectangle displayRectangle = Rectangle.Empty;
+                        CaptureAspectRatio aspectRatio = CaptureAspectRatio.Auto;
+                        ImageRotation rotation = ImageRotation.Rotate0;
+                        bool mirror = false;
 
-                    //system.Close();
+                        // Check if we already know this camera from a previous Kinovea session.
+                        if (blurbs != null)
+                        {
+                            foreach (CameraBlurb blurb in blurbs)
+                            {
+                                if (blurb.CameraType != this.CameraType || blurb.Identifier != identifier)
+                                    continue;
+
+                                // We know this camera from a previous Kinovea session, restore the user custom values.
+                                log.DebugFormat("Known device from previous session.");
+                                alias = blurb.Alias;
+                                icon = blurb.Icon ?? defaultIcon;
+                                displayRectangle = blurb.DisplayRectangle;
+                                if (!string.IsNullOrEmpty(blurb.AspectRatio))
+                                    aspectRatio = (CaptureAspectRatio)Enum.Parse(typeof(CaptureAspectRatio), blurb.AspectRatio);
+                                if (!string.IsNullOrEmpty(blurb.Rotation))
+                                    rotation = (ImageRotation)Enum.Parse(typeof(ImageRotation), blurb.Rotation);
+                                mirror = blurb.Mirror;
+                                specific = SpecificInfoDeserialize(blurb.Specific);
+                                break;
+                            }
+                        }
+
+                        specific.Device = device;
+
+                        icon = icon ?? defaultIcon;
+                        CameraSummary summary = new CameraSummary(
+                            alias, 
+                            device.DisplayName, 
+                            identifier, 
+                            icon, 
+                            displayRectangle, 
+                            aspectRatio, 
+                            rotation, 
+                            mirror, 
+                            specific, 
+                            this);
+
+                        summaries.Add(summary);
+                        cache.Add(identifier, summary);
+                    }
                 }
             }
             catch (Exception e)
@@ -212,7 +181,7 @@ namespace Kinovea.Camera.GenICam
             List<CameraSummary> lost = new List<CameraSummary>();
             foreach (CameraSummary summary in cache.Values)
             {
-                if (!found.Contains(summary))
+                if (!summaries.Contains(summary))
                     lost.Add(summary);
             }
 
@@ -272,8 +241,7 @@ namespace Kinovea.Camera.GenICam
 
         public override ICaptureSource CreateCaptureSource(CameraSummary summary)
         {
-            FrameGrabber grabber = new FrameGrabber(summary);
-            return grabber;
+            return new FrameGrabber(summary);
         }
 
         public override bool Configure(CameraSummary summary)
@@ -351,6 +319,46 @@ namespace Kinovea.Camera.GenICam
         #endregion
 
         #region Private methods
+        private void RefreshInterfaces()
+        {
+            log.DebugFormat("Searching GenICam systems and interfaces.");
+            var systemList = SystemList.Instance;
+            systemList.Refresh();
+            foreach (KeyValuePair<string, BGAPI2.System> systemPair in systemList)
+            {
+                BGAPI2.System system = systemPair.Value;
+                if (string.IsNullOrEmpty(system.Id))
+                    continue;
+
+                try
+                {
+                    if (!system.IsOpen)
+                        system.Open();
+
+                    log.DebugFormat("Opened system {0} ({1}).", system.DisplayName, system.Vendor);
+                    //systems.Add(systemPair.Key, system);
+
+                    system.Interfaces.Refresh(200);
+                    foreach (KeyValuePair<string, Interface> interfacePair in system.Interfaces)
+                    {
+                        var interf = interfacePair.Value;
+                        if (string.IsNullOrEmpty(interf.Id))
+                            continue;
+
+                        if (!interf.IsOpen)
+                            interf.Open();
+
+                        log.DebugFormat("Opened interface {0}.", interf.DisplayName);
+                        interfaces.Add(interfacePair.Key, interf);
+                    }
+                }
+                catch
+                {
+                    log.DebugFormat("Error while opening system {0} ({1}).", systemPair.Value.DisplayName, systemPair.Value.Vendor);
+                }
+            }
+        }
+
         private void SnapshotRetriever_CameraThumbnailProduced(object sender, CameraThumbnailProducedEventArgs e)
         {
             Invoke((Action)delegate { ProcessThumbnail(sender, e); });
