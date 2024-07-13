@@ -62,29 +62,7 @@ namespace Kinovea.Camera.Baumer
             try
             {
                 systemList = SystemList.Instance;
-                //systemList = SystemList.CreateInstanceFromPath("");
-
-                // Collect usable systems.
-                // FIXME: This lists all systems and initializes them, including non Baumer GenAPI implementations.
-                // This prevents other modules based on GenAPI from initializing properly.
-                // We need a way to uninitialize the other systems without uninitializing the Baumer systems.
-                systemList.Refresh();
-                foreach (KeyValuePair<string, BGAPI2.System> systemPair in systemList)
-                {
-                    BGAPI2.System system = systemPair.Value;
-                    if (!system.Vendor.Contains("Baumer"))
-                        continue;
-
-                    if (!system.IsOpen)
-                        system.Open();
-                    
-                    if (string.IsNullOrEmpty(system.Id))
-                        continue;
-
-                    systems.Add(systemPair.Key, system);
-                }
-
-                result = systems.Count > 0;
+                result = true;
             }
             catch (Exception e)
             {
@@ -102,43 +80,69 @@ namespace Kinovea.Camera.Baumer
 
             //---------------------------------------------
             // Lifecycles of objects in the Baumer API:
-            // - systemList: entire application. Will initialize all systems, not clear how to uninitialize non Baumer systems.
+            // - systemList: entire application.
             // - system: entire application. Should be kept open.
             // - interface: entire application. Allow listing of devices even if they are opened by another application.
             // - device: camera session.
             //---------------------------------------------
 
+            if (systems.Count == 0)
+            {
+                systemList.Refresh();
+                foreach (KeyValuePair<string, BGAPI2.System> systemPair in systemList)
+                {
+                    BGAPI2.System system = systemPair.Value;
+                    if (string.IsNullOrEmpty(system.Id))
+                        continue;
+
+                    try
+                    {
+                        if (!system.Vendor.Contains("Baumer"))
+                            continue;
+
+                        if (!system.IsOpen)
+                            system.Open();
+                    
+                        systems.Add(systemPair.Key, system);
+                        log.DebugFormat("Opened system {0} ({1}).", systemPair.Value.DisplayName, systemPair.Value.Vendor);
+                    }
+                    catch
+                    {
+                        log.DebugFormat("Error while opening system {0} ({1}).", systemPair.Value.DisplayName, systemPair.Value.Vendor);
+                    }
+                }
+            }
+
             try
             {
                 foreach (KeyValuePair<string, BGAPI2.System> systemPair in systems)
                 {
-                    BGAPI2.System system = systemPair.Value;
+                    var system = systemPair.Value;
                     if (!system.Vendor.Contains("Baumer"))
-                        continue;
-
-                    if (!system.IsOpen)
-                        system.Open();
-
+                      continue;
+                    
                     if (string.IsNullOrEmpty(system.Id))
                         continue;
 
+                    if (!system.IsOpen)
+                        continue;
+
                     system.Interfaces.Refresh(200);
-                    foreach (KeyValuePair<string, BGAPI2.Interface> interfacePair in system.Interfaces)
+                    foreach (KeyValuePair<string, Interface> interfacePair in system.Interfaces)
                     {
-                        BGAPI2.Interface iface = interfacePair.Value;
+                        var interf = interfacePair.Value;
                         //log.DebugFormat("Opening interface {0}", iface.DisplayName);
-                        if (!iface.IsOpen)
-                            iface.Open();
+                        if (!interf.IsOpen)
+                            interf.Open();
                         
-                        if (string.IsNullOrEmpty(iface.Id))
+                        if (string.IsNullOrEmpty(interf.Id))
                             continue;
 
-                        iface.Devices.Refresh(200);
-                        //log.DebugFormat("Devices found in interface {0}: {1}.", iface.DisplayName, iface.Devices.Count);
-                        foreach (KeyValuePair<string, BGAPI2.Device> devicePair in iface.Devices)
+                        interf.Devices.Refresh(200);
+                        foreach (KeyValuePair<string, Device> devicePair in interf.Devices)
                         {
-                            BGAPI2.Device device = devicePair.Value;
-                            //log.DebugFormat("Found device: {0} ({1})", device.DisplayName, device.SerialNumber);
+                            var device = devicePair.Value;
+                            //log.DebugFormat("Found device: {0} ({1})", device.DisplayName, device.Vendor);
                             
                             string identifier = device.SerialNumber;
                             bool cached = cache.ContainsKey(identifier);
