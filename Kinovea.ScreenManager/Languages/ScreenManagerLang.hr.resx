@@ -881,7 +881,7 @@
     <value>Mreža za provjeru kamere</value>
   </data>
   <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
-    <value>Otvori kao mapu za ponovnu reprodukciju…</value>
+    <value>Otvori kao promatrač mape repriza …</value>
   </data>
   <data name="mnuAction_Chrono_DeleteSection" xml:space="preserve">
     <value>Izbriši trenutni vremenski segment</value>
