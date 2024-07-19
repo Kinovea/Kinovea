@@ -66,7 +66,7 @@
   </resheader>
   <data name="btnSync_ToolTip" xml:space="preserve"><value>Синхронизировать видео и текущие кадры</value>
   </data>
-  <data name="buttonGotoFirst_ToolTip" xml:space="preserve"><value>Воспроизводить в обратном порядке к началу обоих видео</value>
+  <data name="buttonGotoFirst_ToolTip" xml:space="preserve"><value>Вернуться к началу обоих видео</value>
   </data>
   <data name="buttonGotoLast_ToolTip" xml:space="preserve"><value>Перейти к концу обоих видео</value>
   </data>
@@ -322,7 +322,7 @@
   </data>
   <data name="DrawingName_Goniometer" xml:space="preserve"><value>Гониометр</value>
   </data>
-  <data name="DrawingName_Posture" xml:space="preserve"><value>Поза</value>
+  <data name="DrawingName_Posture" xml:space="preserve"><value>Положение</value>
   </data>
   <data name="DrawingName_Bikefit" xml:space="preserve"><value>Велосипед</value>
   </data>
@@ -538,7 +538,7 @@
   </data>
   <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Экспортировать в электронную таблицу</value>
   </data>
-  <data name="mnuFormat" xml:space="preserve"><value>Формат изображения</value>
+  <data name="mnuFormat" xml:space="preserve"><value>Соотношение сторон</value>
   </data>
   <data name="mnuFormatAuto" xml:space="preserve"><value>Автоматическое определение</value>
   </data>
@@ -546,7 +546,7 @@
   </data>
   <data name="mnuFormatForce169" xml:space="preserve"><value>Отношение 16:9</value>
   </data>
-  <data name="mnuRotation" xml:space="preserve"><value>Вращение изображения</value>
+  <data name="mnuRotation" xml:space="preserve"><value>Вращение</value>
   </data>
   <data name="mnuRotation0" xml:space="preserve"><value>Баз вращения изображения</value>
   </data>
@@ -1000,7 +1000,7 @@
     <value>Свойства</value>
   </data>
   <data name="mnuOptions_Kinogram_ShowBorder" xml:space="preserve">
-    <value>Показать границы</value>
+    <value>Отобразить границы</value>
   </data>
   <data name="mnuSortBy_Ascending" xml:space="preserve">
     <value>По возрастанию</value>
@@ -1033,18 +1033,171 @@
     <value>Показать вертикальную ось</value>
   </data>
   <data name="mnuOptions_CoordinateSystem_ShowGraduations" xml:space="preserve">
-    <value>Показать отметки шкалы</value>
+    <value>Показать метки шкалы</value>
   </data>
   <data name="toolTip_Speed" xml:space="preserve">
     <value>Скорость</value>
   </data>
   <data name="mnuTimeSections" xml:space="preserve">
-    <value>Разделы (по времени)</value>
+    <value>Временные рамки</value>
   </data>
   <data name="mnuTimeCalibration" xml:space="preserve">
     <value>Калибровка времени…</value>
   </data>
   <data name="mnuThumbnails" xml:space="preserve">
-    <value>Значки-превью</value>
+    <value>Миниатюры</value>
+  </data>
+  <data name="mnuAction_Chrono_Start" xml:space="preserve">
+    <value>Начать новый отсчет ремени в этом кадре</value>
+  </data>
+  <data name="mnuAction_Chrono_Stop" xml:space="preserve">
+    <value>Стоп: завершить текущий временной интервал в этом кадре</value>
+  </data>
+  <data name="mnuExport_Images_Image" xml:space="preserve">
+    <value>Изображение…</value>
+  </data>
+  <data name="mnuExport_Images_Keys" xml:space="preserve">
+    <value>Ключевые изображения…</value>
+  </data>
+  <data name="mnuExport_Images_Sequence" xml:space="preserve">
+    <value>Последовательность изображений…</value>
+  </data>
+  <data name="mnuExport_Video_SideBySide" xml:space="preserve">
+    <value>Рядом…</value>
+  </data>
+  <data name="mnuExport_Video_Slideshow" xml:space="preserve">
+    <value>Видео слайд-шоу…</value>
+  </data>
+  <data name="mnuLensCalibration" xml:space="preserve">
+    <value>Калибровка объектива…</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Menu" xml:space="preserve">
+    <value>Столбцы</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Tag" xml:space="preserve">
+    <value>Ярлык</value>
+  </data>
+  <data name="mnuMeasure_Clock" xml:space="preserve">
+    <value>Часы</value>
+  </data>
+  <data name="mnuMeasure_FrameNumber" xml:space="preserve">
+    <value>Номер кадра</value>
+  </data>
+  <data name="mnuOptions_Kinogram_AutoInterpolate" xml:space="preserve">
+    <value>Автоматическая интерполяция</value>
+  </data>
+  <data name="mnuOptions_Kinogram_RightToLeft" xml:space="preserve">
+    <value>Справа налево</value>
+  </data>
+  <data name="formConfigureExport_SBS_Horizontal" xml:space="preserve">
+    <value>Горизонтально</value>
+  </data>
+  <data name="formConfigureExport_SBS_Vertical" xml:space="preserve">
+    <value>Вертикально</value>
+  </data>
+  <data name="formConfigureKinogram_CropSize" xml:space="preserve">
+    <value>Размер кадрирования:</value>
+  </data>
+  <data name="mnuAction" xml:space="preserve">
+    <value>Дейтвие</value>
+  </data>
+  <data name="mnuAction_Chrono_DeleteSection" xml:space="preserve">
+    <value>Удалить раздел текущего времени</value>
+  </data>
+  <data name="mnuAction_Chrono_DeleteTimes" xml:space="preserve">
+    <value>Удалить все отображения времени</value>
+  </data>
+  <data name="mnuAction_Kinogram_Interpolate" xml:space="preserve">
+    <value>Интерполяция сегментов</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetLabelPositions" xml:space="preserve">
+    <value>Сбросить расположение меток</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetAllTiles" xml:space="preserve">
+    <value>Сбросить все сегменты</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetTile" xml:space="preserve">
+    <value>Сбросить этот сегмент</value>
+  </data>
+  <data name="mnuDemosaic" xml:space="preserve">
+    <value>Демозаикизация</value>
+  </data>
+  <data name="mnuDemosaicNone" xml:space="preserve">
+    <value>Ничего</value>
+  </data>
+  <data name="mnuExitFilter" xml:space="preserve">
+    <value>Выход {0}</value>
+  </data>
+  <data name="mnuExport_Image" xml:space="preserve">
+    <value>Экспорт изображения</value>
+  </data>
+  <data name="mnuExport_Document" xml:space="preserve">
+    <value>Экспорт документа</value>
+  </data>
+  <data name="mnuExport_Images_SideBySide" xml:space="preserve">
+    <value>Рядом…</value>
+  </data>
+  <data name="mnuExport_Spreadsheet" xml:space="preserve">
+    <value>Экспорт таблицы</value>
+  </data>
+  <data name="mnuExport_Spreadsheet_ChronoCSV" xml:space="preserve">
+    <value>Хрономерт CSV…</value>
+  </data>
+  <data name="mnuExport_Spreadsheet_TrajectoryCSV" xml:space="preserve">
+    <value>Траектория CSV…</value>
+  </data>
+  <data name="mnuExport_Video" xml:space="preserve">
+    <value>Экспорт видео</value>
+  </data>
+  <data name="mnuExport_Video_Video" xml:space="preserve">
+    <value>Видео…</value>
+  </data>
+  <data name="mnuExport_Video_WithPauses" xml:space="preserve">
+    <value>Видео с паузами…</value>
+  </data>
+  <data name="mnuMagnifierFreeze" xml:space="preserve">
+    <value>Закрепить</value>
+  </data>
+  <data name="mnuMagnifierUnfreeze" xml:space="preserve">
+    <value>Открепить</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Cumul" xml:space="preserve">
+    <value>Сумарное время</value>
+  </data>
+  <data name="mnuMeasure_Name" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="mnuMeasure_Labels_Menu" xml:space="preserve">
+    <value>Метки</value>
+  </data>
+  <data name="mnuMeasure_Stopwatch" xml:space="preserve">
+    <value>Секундомер</value>
+  </data>
+  <data name="mnuMeasure_Label_Menu" xml:space="preserve">
+    <value>Метка</value>
+  </data>
+  <data name="mnuMeasure_Label_None" xml:space="preserve">
+    <value>Ничего</value>
+  </data>
+  <data name="mnuOptions_Chrono_Locked" xml:space="preserve">
+    <value>Зблокировано</value>
+  </data>
+  <data name="mnuOptions_Trajectory_Interactive" xml:space="preserve">
+    <value>Интерактивный трек</value>
+  </data>
+  <data name="mnuOptions_Trajectory_SeeFuture" xml:space="preserve">
+    <value>Предпросмотр</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowKeyImageLabels" xml:space="preserve">
+    <value>Показать ключевые подписи к изображениям</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowTrackLabel" xml:space="preserve">
+    <value>Показать метку трека</value>
+  </data>
+  <data name="mnuOptions_Trajectory_UseKeyImageColors" xml:space="preserve">
+    <value>Использовать ключевые цвета изображения</value>
+  </data>
+  <data name="mnuThumbnail_MoveToCurrentTime" xml:space="preserve">
+    <value>Переход к текущему времени</value>
   </data>
 </root>
