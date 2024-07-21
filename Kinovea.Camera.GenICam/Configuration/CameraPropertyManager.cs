@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Globalization;
+using System.Xml;
 using BGAPI2;
+using Kinovea.Services;
 
 namespace Kinovea.Camera.GenICam
 {
@@ -14,7 +16,12 @@ namespace Kinovea.Camera.GenICam
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static Dictionary<string, CameraProperty> Read(Device device, string fullName)
+        #region Read high level
+
+        /// <summary>
+        /// Read all supported properties and return them.
+        /// </summary>
+        public static Dictionary<string, CameraProperty> ReadAll(Device device, string fullName)
         {
             Dictionary<string, CameraProperty> properties = new Dictionary<string, CameraProperty>();
 
@@ -23,11 +30,9 @@ namespace Kinovea.Camera.GenICam
 
             try
             {
-                properties.Add("width", ReadIntegerProperty(device, "Width", "WidthMax"));
-                properties.Add("height", ReadIntegerProperty(device, "Height", "HeightMax"));
-
                 // Camera properties in Kinovea combine the value and the "auto" flag.
-                // We potentially need to read several properties to create one Kinovea camera property.
+                // We potentially need to read several GenICam properties to create one Kinovea camera property.
+                ReadSize(device, properties);
                 ReadFramerate(device, properties);
                 ReadExposure(device, properties);
                 ReadGain(device, properties);
@@ -40,6 +45,406 @@ namespace Kinovea.Camera.GenICam
 
             return properties;
         }
+
+        private static void ReadSize(Device device, Dictionary<string, CameraProperty> properties)
+        {
+            properties.Add("width", ReadIntegerProperty(device, "Width", "WidthMax"));
+            properties.Add("height", ReadIntegerProperty(device, "Height", "HeightMax"));
+        }
+        
+        
+        /// <summary>
+        /// Read the exposure property and add it to the dictionary.
+        /// </summary>
+        private static void ReadExposure(Device device, Dictionary<string, CameraProperty> properties)
+        {
+            string key = "exposure";
+
+            CameraProperty p = ReadFloatProperty(device, "ExposureTime");
+            if (!p.Supported)
+                p = ReadFloatProperty(device, "ExposureTimeAbs");
+
+            string autoIdentifier = "ExposureAuto";
+            p.AutomaticIdentifier = autoIdentifier;
+            p.CanBeAutomatic = false;
+            p.Automatic = false;
+            bool autoReadable = NodeIsReadable(device, p.AutomaticIdentifier);
+            if (autoReadable)
+            {
+                p.CanBeAutomatic = true;
+                string autoValue = ReadString(device, p.AutomaticIdentifier);
+                p.Automatic = autoValue == GetAutoTrue(autoIdentifier);
+            }
+
+            properties.Add(key, p);
+        }
+
+        /// <summary>
+        /// Read the gain property and add it to the dictionary.
+        /// </summary>
+        private static void ReadGain(Device device, Dictionary<string, CameraProperty> properties)
+        {
+            string key = "gain";
+
+            CameraProperty p = ReadFloatProperty(device, "Gain");
+            if (!p.Supported)
+                p = ReadIntegerProperty(device, "GainRaw", null);
+
+            string autoIdentifier = "GainAuto";
+            p.AutomaticIdentifier = autoIdentifier;
+            p.CanBeAutomatic = false;
+            p.Automatic = false;
+            bool autoReadable = NodeIsReadable(device, p.AutomaticIdentifier);
+            if (autoReadable)
+            {
+                p.CanBeAutomatic = true;
+                string autoValue = ReadString(device, p.AutomaticIdentifier);
+                p.Automatic = autoValue == GetAutoTrue(autoIdentifier);
+            }
+
+            properties.Add(key, p);
+        }
+
+        private static void ReadCompressionQuality(Device device, Dictionary<string, CameraProperty> properties)
+        {
+            // This property is found on Baumer cameras that support hardware JPEG compression.
+            string key = "compressionQuality";
+
+            CameraProperty p = ReadIntegerProperty(device, "ImageCompressionQuality", "");
+
+            p.AutomaticIdentifier = "";
+            p.CanBeAutomatic = false;
+            p.Automatic = false;
+
+            properties.Add(key, p);
+        }
+        #endregion
+
+        #region Frame rate
+        /// <summary>
+        /// Read the frame rate property and add it to the dictionary.
+        /// </summary>
+        private static void ReadFramerate(Device device, Dictionary<string, CameraProperty> properties)
+        {
+            // Verified working on: Basler, Baumer.
+
+            string key = "framerate";
+
+            CameraProperty p = new CameraProperty();
+            p.Identifier = "AcquisitionFrameRate";
+            p.Supported = false;
+            p.Type = CameraPropertyType.Float;
+
+            bool present = device.RemoteNodeList.GetNodePresent(p.Identifier);
+            if (!present)
+            {
+                p.Identifier = "AcquisitionFrameRateAbs";
+                present = device.RemoteNodeList.GetNodePresent(p.Identifier);
+                if (!present)
+                    return;
+            }
+
+            Node node = device.RemoteNodeList[p.Identifier];
+            if (!node.IsImplemented || !node.IsAvailable || !node.IsReadable)
+                return;
+
+            p.ReadOnly = false;
+            p.Supported = true;
+
+            double currentValue = node.Value;
+            double min = node.Min;
+            double max = node.Max;
+            double step = 1.0;
+            min = Math.Max(1.0, min);
+
+            p.Minimum = min.ToString(CultureInfo.InvariantCulture);
+            p.Maximum = max.ToString(CultureInfo.InvariantCulture);
+            p.CurrentValue = currentValue.ToString(CultureInfo.InvariantCulture);
+            p.Step = step.ToString(CultureInfo.InvariantCulture);
+
+            // Fix values that should be log.
+            bool highRange = (Math.Log10(max) - Math.Log10(min)) >= 4.0;
+            p.Representation = highRange ? CameraPropertyRepresentation.LogarithmicSlider : CameraPropertyRepresentation.LinearSlider;
+
+            // Auto flag.
+            // AcquisitionFrameRateEnable=false: the framerate is automatically set to the max value possible (auto = true).
+            // AcquisitionFrameRateEnable=true: use the custom framerate set by the user in AcquisitionFrameRate (auto = false).
+
+            string autoIdentifier = "AcquisitionFrameRateEnable";
+            p.AutomaticIdentifier = autoIdentifier;
+            p.Automatic = false;
+            p.CanBeAutomatic = false;
+            Node autoNode = null;
+            bool autoPresent = device.RemoteNodeList.GetNodePresent(p.AutomaticIdentifier);
+            if (autoPresent)
+            {
+                autoNode = device.RemoteNodeList[p.AutomaticIdentifier];
+                p.CanBeAutomatic = autoNode.IsWriteable;
+            }
+
+            if (p.CanBeAutomatic)
+            {
+                string currentAutoValue = ((bool)autoNode.Value).ToString(CultureInfo.InvariantCulture).ToLower();
+                p.Automatic = currentAutoValue == GetAutoTrue(autoIdentifier);
+            }
+
+            if (properties != null)
+                properties.Add(key, p);
+
+            return;
+        }
+
+        /// <summary>
+        /// Get the maximum possible framerate based on current image size, exposure and target frame rate value.
+        /// Note: The resulting value is only correct when using grayscale output.
+        /// </summary>
+        public static float GetResultingFramerate(Device device)
+        {
+            if (device == null || !device.IsOpen)
+                return 0;
+
+            float resultingFramerate = 0;
+
+            try
+            {
+                Node nodeReadOut = GetNode(device.RemoteNodeList, "ReadOutTime");
+                Node nodeExposure = GetNode(device.RemoteNodeList, "ExposureTime");
+                if (nodeReadOut == null || !nodeReadOut.IsAvailable || !nodeReadOut.IsReadable ||
+                    nodeExposure == null || !nodeExposure.IsAvailable || !nodeExposure.IsReadable)
+                    return resultingFramerate;
+
+                double framerateReadout = 1000000.0 / nodeReadOut.Value;
+                double framerateExposure = 1000000.0 / nodeExposure.Value;
+                resultingFramerate = (float)Math.Min(framerateReadout, framerateExposure);
+
+                Node nodeFramerate = GetNode(device.RemoteNodeList, "AcquisitionFrameRate");
+                Node nodeFramerateEnable = GetNode(device.RemoteNodeList, "AcquisitionFrameRateEnable");
+                if (nodeFramerate == null || !nodeFramerate.IsAvailable || !nodeFramerate.IsReadable ||
+                    nodeFramerateEnable == null || !nodeFramerateEnable.IsAvailable || !nodeFramerateEnable.IsReadable)
+                    return resultingFramerate;
+
+                double framerateSelected = nodeFramerate.Value;
+                bool framerateEnabled = nodeFramerateEnable.Value;
+                if (!framerateEnabled)
+                    return resultingFramerate;
+
+                resultingFramerate = (float)Math.Min(resultingFramerate, framerateSelected);
+            }
+            catch (Exception e)
+            {
+                log.ErrorFormat("Error while computing resulting framerate. {0}", e.Message);
+            }
+
+            return resultingFramerate;
+        }
+        #endregion
+
+
+
+        #region Read low level
+        /// <summary>
+        /// Read an Integer property.
+        /// Optionally the Max value can come from another property.
+        /// </summary>
+        private static CameraProperty ReadIntegerProperty(Device device, string symbol, string symbolMax)
+        {
+            CameraProperty p = new CameraProperty();
+            p.Identifier = symbol;
+
+            bool readable = NodeIsReadable(device, symbol);
+            if (!readable)
+            {
+                log.WarnFormat("Could not read GenICam property {0}: the property is not supported.", symbol);
+                return p;
+            }
+
+            p.Supported = true;
+            p.Type = CameraPropertyType.Integer;
+            p.ReadOnly = false;
+
+            Node node = device.RemoteNodeList[symbol];
+            int currentValue = (int)node.Value;
+            int min = (int)node.Min;
+            int max = (int)node.Max;
+            int step = (int)node.Inc;
+
+            // Get the real max from another property if needed. 
+            // This happens for width and height where the max of the primary property is dynamic based on the offset.
+            if (!string.IsNullOrEmpty(symbolMax))
+            {
+                bool isMaxReadable = NodeIsReadable(device, symbolMax);
+                if (isMaxReadable)
+                    max = (int)device.RemoteNodeList[symbolMax].Value;
+            }
+
+            // Check if the value should be on a logarithmic scale.
+            // We override the representation provided by the property.
+            bool highRange = (Math.Log10(max) - Math.Log10(min)) > 4;
+            CameraPropertyRepresentation repr = highRange ? CameraPropertyRepresentation.LogarithmicSlider : CameraPropertyRepresentation.LinearSlider;
+            p.Representation = repr;
+
+            p.Minimum = min.ToString(CultureInfo.InvariantCulture);
+            p.Maximum = max.ToString(CultureInfo.InvariantCulture);
+            p.Step = step.ToString(CultureInfo.InvariantCulture);
+            p.CurrentValue = currentValue.ToString(CultureInfo.InvariantCulture);
+
+            log.DebugFormat("Read GenICam property {0}", p);
+
+            return p;
+        }
+
+        /// <summary>
+        /// Read a Float property.
+        /// </summary>
+        private static CameraProperty ReadFloatProperty(Device device, string symbol)
+        {
+            CameraProperty p = new CameraProperty();
+            p.Identifier = symbol;
+
+            bool readable = NodeIsReadable(device, symbol);
+            if (!readable)
+            {
+                log.WarnFormat("Could not read GenICam property {0}: the property is not supported.", symbol);
+                return p;
+            }
+
+            p.Supported = true;
+            p.Type = CameraPropertyType.Float;
+            p.ReadOnly = false;
+
+            Node node = device.RemoteNodeList[symbol];
+            double currentValue = node.Value;
+            double min = node.Min;
+            double max = node.Max;
+            string repr = node.Representation;
+
+            // We don't support a dedicated control for "pure numbers" just use the regular slider.
+            if (repr == "PureNumber")
+                repr = "Linear";
+
+            // Fix values that should be log.
+            if ((Math.Log10(max) - Math.Log10(min)) > 4.0)
+                repr = "Logarithmic";
+
+            p.Minimum = min.ToString(CultureInfo.InvariantCulture);
+            p.Maximum = max.ToString(CultureInfo.InvariantCulture);
+            p.Representation = ConvertRepresentation(repr);
+            p.CurrentValue = currentValue.ToString(CultureInfo.InvariantCulture);
+
+            log.DebugFormat("Read GenICam property {0}", p);
+
+            return p;
+        }
+        
+        /// <summary>
+        /// Read an integer value with no error checking.
+        /// Should only be used for width or height.
+        /// </summary>
+        public static int ReadInteger(Device device, string symbol)
+        {
+            return (int)device.RemoteNodeList[symbol].Value;
+        }
+
+        /// <summary>
+        /// Read a string property with no error checking.
+        /// </summary>
+        public static string ReadString(Device device, string symbol)
+        {
+            return (string)device.RemoteNodeList[symbol].Value;
+        }
+
+        /// <summary>
+        /// Read the auto property value and put it into a boolean.
+        /// </summary>
+        private static bool ReadAuto(Node node, string identifier)
+        {
+            switch (identifier)
+            {
+                case "AcquisitionFrameRateEnable":
+                    {
+                        string currentAutoValue = ((bool)node.Value).ToString(CultureInfo.InvariantCulture).ToLower();
+                        return currentAutoValue == GetAutoTrue(identifier);
+                    }
+                case "GainAuto":
+                case "ExposureAuto":
+                default:
+                    {
+                        string currentAutoValue = node.Value;
+                        return currentAutoValue == GetAutoTrue(identifier);
+                    }
+            }
+        }
+
+        /// <summary>
+        /// Returns a string representation of the value of the auto property corresponding to when the main property IS automatically set.
+        /// </summary>
+        private static string GetAutoTrue(string identifier)
+        {
+            switch (identifier)
+            {
+                case "AcquisitionFrameRateEnable":
+                    return "false";
+                case "GainAuto":
+                case "ExposureAuto":
+                default:
+                    return "Continuous";
+            }
+        }
+
+        /// <summary>
+        /// Returns a string representation of the value of the auto property corresponding to when the main property is NOT automatically set.
+        /// </summary>
+        private static string GetAutoFalse(string identifier)
+        {
+            switch (identifier)
+            {
+                case "AcquisitionFrameRateEnable":
+                    return "true";
+                case "GainAuto":
+                case "ExposureAuto":
+                default:
+                    return "Off";
+            }
+        }
+
+        /// <summary>
+        /// Return true if the node exists and is readable.
+        /// </summary>
+        public static bool NodeIsReadable(Device device, string name)
+        {
+            if (device == null)
+                throw new InvalidProgramException();
+
+            if (!device.IsOpen)
+                return false;
+
+            bool present = device.RemoteNodeList.GetNodePresent(name);
+            if (!present)
+                return false;
+
+            Node node = device.RemoteNodeList[name];
+            if (!node.IsImplemented || !node.IsAvailable)
+                return false;
+
+            return node.IsReadable;
+        }
+
+        /// <summary>
+        /// Get a handle to a specific GenICam node in the passed NodeMap.
+        /// </summary>
+        public static Node GetNode(NodeMap map, string name)
+        {
+            bool present = map.GetNodePresent(name);
+            if (!present)
+                return null;
+
+            Node node = map[name];
+            if (!node.IsImplemented || !node.IsAvailable)
+                return null;
+
+            return node;
+        }
+        #endregion
 
         /// <summary>
         /// Commit value of properties that can be written during streaming and don't require a reconnect to be applied.
@@ -117,203 +522,7 @@ namespace Kinovea.Camera.GenICam
             }
         }
 
-        private static CameraProperty ReadFramerate(Device device, Dictionary<string, CameraProperty> properties)
-        {
-            CameraProperty p = new CameraProperty();
-            p.Identifier = "AcquisitionFrameRate";
-            p.Supported = false;
-            p.Type = CameraPropertyType.Float;
-
-            bool present = device.RemoteNodeList.GetNodePresent(p.Identifier);
-            if (!present)
-            {
-                p.Identifier = "AcquisitionFrameRateAbs";
-                present = device.RemoteNodeList.GetNodePresent(p.Identifier);
-                if (!present)
-                    return p;
-            }
-
-            Node node = device.RemoteNodeList[p.Identifier];
-            if (!node.IsImplemented || !node.IsAvailable || !node.IsReadable)
-                return p;
-
-            p.ReadOnly = false;
-            p.Supported = true;
-
-            double currentValue = node.Value;
-            double min = node.Min;
-            double max = node.Max;
-            double step = 1.0;
-            min = Math.Max(1.0, min);
-            
-            p.Minimum = min.ToString(CultureInfo.InvariantCulture);
-            p.Maximum = max.ToString(CultureInfo.InvariantCulture);
-            p.CurrentValue = currentValue.ToString(CultureInfo.InvariantCulture);
-            p.Step = step.ToString(CultureInfo.InvariantCulture);
-
-            // Fix values that should be log.
-            bool highRange = (Math.Log10(max) - Math.Log10(min)) >= 4.0;
-            p.Representation = highRange ? CameraPropertyRepresentation.LogarithmicSlider : CameraPropertyRepresentation.LinearSlider;
-
-            // AcquisitionFrameRateEnable=false: the framerate is automatically set to the max value possible (auto = true).
-            // AcquisitionFrameRateEnable=true: use the custom framerate set by the user in AcquisitionFrameRate (auto = false).
-
-            string autoIdentifier = "AcquisitionFrameRateEnable";
-            p.AutomaticIdentifier = autoIdentifier;
-            p.Automatic = false;
-            p.CanBeAutomatic = false;
-            Node autoNode = null;
-            bool autoPresent = device.RemoteNodeList.GetNodePresent(p.AutomaticIdentifier);
-            if (autoPresent)
-            {
-                autoNode = device.RemoteNodeList[p.AutomaticIdentifier];
-                p.CanBeAutomatic = autoNode.IsWriteable;
-            }
- 
-            if (p.CanBeAutomatic)
-            {
-                string currentAutoValue = ((bool)autoNode.Value).ToString(CultureInfo.InvariantCulture).ToLower();
-                p.Automatic = currentAutoValue == GetAutoTrue(autoIdentifier);
-            }
-
-            if (properties != null)
-                properties.Add("framerate", p);
-
-            return p;
-        }
-
-        private static void ReadExposure(Device device, Dictionary<string, CameraProperty> properties)
-        {
-            CameraProperty p = ReadFloatProperty(device, "ExposureTime");
-            if (!p.Supported)
-                p = ReadFloatProperty(device, "ExposureTimeAbs");
-
-            string autoIdentifier = "ExposureAuto";
-            p.AutomaticIdentifier = autoIdentifier;
-            p.CanBeAutomatic = false;
-            p.Automatic = false;
-            bool autoReadable = GenICamHelper.NodeIsReadable(device, p.AutomaticIdentifier);
-            if (autoReadable)
-            {
-                p.CanBeAutomatic = true;
-                string autoValue = GenICamHelper.GetString(device, p.AutomaticIdentifier);
-                p.Automatic = autoValue == GetAutoTrue(autoIdentifier);
-            }
-
-            properties.Add("exposure", p);
-        }
-
-        private static void ReadGain(Device device, Dictionary<string, CameraProperty> properties)
-        {
-            CameraProperty p = ReadFloatProperty(device, "Gain");
-            if (!p.Supported)
-                p = ReadIntegerProperty(device, "GainRaw", null);
-
-            string autoIdentifier = "GainAuto";
-            p.AutomaticIdentifier = autoIdentifier;
-            p.CanBeAutomatic = false;
-            p.Automatic = false;
-            bool autoReadable = GenICamHelper.NodeIsReadable(device, p.AutomaticIdentifier);
-            if (autoReadable)
-            {
-                p.CanBeAutomatic = true;
-                string autoValue = GenICamHelper.GetString(device, p.AutomaticIdentifier);
-                p.Automatic = autoValue == GetAutoTrue(autoIdentifier);
-            }
-
-            properties.Add("gain", p);
-        }
-
-        private static void ReadCompressionQuality(Device device, Dictionary<string, CameraProperty> properties)
-        {
-            CameraProperty p = ReadIntegerProperty(device, "ImageCompressionQuality", "");
-
-            p.AutomaticIdentifier = "";
-            p.CanBeAutomatic = false;
-            p.Automatic = false;
-
-            properties.Add("compressionQuality", p);
-        }
-
-        private static CameraProperty ReadIntegerProperty(Device device, string symbol, string symbolMax)
-        {
-            CameraProperty p = new CameraProperty();
-            p.Identifier = symbol;
-
-            bool readable = GenICamHelper.NodeIsReadable(device, symbol);
-            if (!readable)
-            {
-                log.WarnFormat("Could not read GenICam property {0}: the property is not supported.", symbol);
-                return p;
-            }
-
-            p.Supported = true;
-            p.Type = CameraPropertyType.Integer;
-            p.ReadOnly = false;
-
-            Node node = device.RemoteNodeList[symbol];
-            int currentValue = (int)node.Value;
-            int min = (int)node.Min;
-            int max = (int)node.Max;
-            int step = (int)node.Inc;
-
-            // Get the real max from another property, the bare max depends on the current offset.
-            if (!string.IsNullOrEmpty(symbolMax))
-            {
-                bool maxReadable = GenICamHelper.NodeIsReadable(device, symbolMax);
-                if (maxReadable)
-                    max = (int)device.RemoteNodeList[symbolMax].Value;
-            }
-
-            bool highRange = (Math.Log10(max) - Math.Log10(min)) > 4;
-            
-            p.Minimum = min.ToString(CultureInfo.InvariantCulture);
-            p.Maximum = max.ToString(CultureInfo.InvariantCulture);
-            p.Step = step.ToString(CultureInfo.InvariantCulture);
-            p.Representation = highRange ? CameraPropertyRepresentation.LogarithmicSlider : CameraPropertyRepresentation.LinearSlider;
-            p.CurrentValue = currentValue.ToString(CultureInfo.InvariantCulture);
-
-            return p;
-        }
-
-        private static CameraProperty ReadFloatProperty(Device device, string symbol)
-        {
-            CameraProperty p = new CameraProperty();
-            p.Identifier = symbol;
-
-            bool readable = GenICamHelper.NodeIsReadable(device, symbol);
-            if (!readable)
-            {
-                log.WarnFormat("Could not read GenICam property {0}: the property is not supported.", symbol);
-                return p;
-            }
-
-            p.Supported = true;
-            p.Type = CameraPropertyType.Float;
-            p.ReadOnly = false;
-
-            Node node = device.RemoteNodeList[symbol];
-            double min = node.Min;
-            double max = node.Max;
-            string repr = node.Representation;
-            double currentValue = node.Value;
-            
-            // We don't support a dedicated control for "pure numbers" just use the regular slider.
-            if (repr == "PureNumber")
-                repr = "Linear";
-
-            // Fix values that should be log.
-            if ((Math.Log10(max) - Math.Log10(min)) > 4.0)
-                repr = "Logarithmic";
-
-            p.Minimum = min.ToString(CultureInfo.InvariantCulture);
-            p.Maximum = max.ToString(CultureInfo.InvariantCulture);
-            p.Representation = ConvertRepresentation(repr);
-            p.CurrentValue = currentValue.ToString(CultureInfo.InvariantCulture);
-
-            return p;
-        }
-
+   
         /// <summary>
         /// Write either width or height as a centered region of interest.
         /// </summary>
@@ -323,7 +532,7 @@ namespace Kinovea.Camera.GenICam
                 return;
 
             NodeMap nodemap = device.RemoteNodeList;
-            Node node = GenICamHelper.GetNode(nodemap, property.Identifier);
+            Node node = GetNode(nodemap, property.Identifier);
             if (node == null || !node.IsReadable || !node.IsWriteable)
                 return;
             
@@ -341,7 +550,7 @@ namespace Kinovea.Camera.GenICam
             // Some cameras have a CenterX/CenterY property.
             // When it is set, the offset is automatic and becomes read-only.
             // If the offset can be written we use the normal computation.
-            Node nodeOffset = GenICamHelper.GetNode(nodemap, identifierOffset);
+            Node nodeOffset = GetNode(nodemap, identifierOffset);
             bool setOffset = nodeOffset != null && node.IsReadable && node.IsWriteable;
             if (setOffset)
             {
@@ -386,7 +595,7 @@ namespace Kinovea.Camera.GenICam
             // Switch OFF the auto flag if needed, to be able to write the main property.
             if (!string.IsNullOrEmpty(property.AutomaticIdentifier))
             {
-                Node nodeAuto = GenICamHelper.GetNode(nodeMap, property.AutomaticIdentifier);
+                Node nodeAuto = GetNode(nodeMap, property.AutomaticIdentifier);
                 if (nodeAuto != null)
                 {
                     bool writeable = nodeAuto.IsWriteable;
@@ -397,7 +606,7 @@ namespace Kinovea.Camera.GenICam
             }
 
             // At this point the auto flag is off. Write the main property.
-            Node node = GenICamHelper.GetNode(nodeMap, property.Identifier);
+            Node node = GetNode(nodeMap, property.Identifier);
             if (node == null)
                 return;
 
@@ -445,7 +654,7 @@ namespace Kinovea.Camera.GenICam
             // Finally, switch ON the auto flag if needed.
             if (!string.IsNullOrEmpty(property.AutomaticIdentifier))
             {
-                Node nodeAuto = GenICamHelper.GetNode(nodeMap, property.AutomaticIdentifier);
+                Node nodeAuto = GetNode(nodeMap, property.AutomaticIdentifier);
                 if (nodeAuto != null && nodeAuto.IsWriteable && property.CanBeAutomatic && property.Automatic)
                     WriteAuto(nodeAuto, property.AutomaticIdentifier, true);
             }
@@ -485,29 +694,7 @@ namespace Kinovea.Camera.GenICam
                     return CameraPropertyRepresentation.Undefined;
             }
         }
-
-        /// <summary>
-        /// Read the auto property value and put it into a boolean.
-        /// </summary>
-        private static bool ReadAuto(Node node, string identifier)
-        {
-            switch (identifier)
-            {
-                case "AcquisitionFrameRateEnable":
-                    {
-                        string currentAutoValue = ((bool)node.Value).ToString(CultureInfo.InvariantCulture).ToLower();
-                        return currentAutoValue == GetAutoTrue(identifier);
-                    }
-                case "GainAuto":
-                case "ExposureAuto":
-                default:
-                    {
-                        string currentAutoValue = node.Value;
-                        return currentAutoValue == GetAutoTrue(identifier);
-                    }
-            }
-        }
-
+        
         /// <summary>
         /// Takes a boolean of whether auto is ON or OFF, convert it to the correct representation and write it in the auto property.
         /// </summary>
@@ -534,35 +721,124 @@ namespace Kinovea.Camera.GenICam
         }
 
         /// <summary>
-        /// Returns a string representation of the value of the auto property corresponding to when the main property IS automatically set.
+        /// Write the value into an enum property.
         /// </summary>
-        private static string GetAutoTrue(string identifier)
+        public static void WriteEnum(Device device, string enumName, string enumValue)
         {
-            switch (identifier)
-            {
-                case "AcquisitionFrameRateEnable":
-                    return "false";
-                case "GainAuto":
-                case "ExposureAuto":
-                default:
-                    return "Continuous";
-            }
+            if (device == null || !device.IsOpen)
+                throw new InvalidProgramException();
+
+            bool present = device.RemoteNodeList.GetNodePresent(enumName);
+            if (!present)
+                return;
+
+            Node node = device.RemoteNodeList[enumName];
+            if (!node.IsImplemented || !node.IsAvailable)
+                return;
+
+            node.Value = enumValue;
+        }
+
+
+        #region lower level
+
+        
+        #endregion
+
+        #region Pixel format
+        /// <summary>
+        /// Return true if the input buffer format is already grayscale 8-bit per pixel.
+        /// This means it can directly be put into the Y800 output frame witohut conversion.
+        /// </summary>
+        public static bool IsY800(string pixelFormat)
+        {
+            return pixelFormat == "Mono8" ||
+                pixelFormat == "BayerBG8" ||
+                pixelFormat == "BayerGB8" ||
+                pixelFormat == "BayerGR8" ||
+                pixelFormat == "BayerRG8";
+        }
+
+        public static bool IsBayer(string pixelFormat)
+        {
+            return pixelFormat.StartsWith("Bayer");
         }
 
         /// <summary>
-        /// Returns a string representation of the value of the auto property corresponding to when the main property is NOT automatically set.
+        /// Takes a Baumer pixel format and determines the output image format.
         /// </summary>
-        private static string GetAutoFalse(string identifier)
+        public static ImageFormat ConvertImageFormat(string pixelFormat, bool compression, bool demosaicing)
         {
-            switch (identifier)
+            if (compression)
+                return ImageFormat.JPEG;
+
+            if (pixelFormat.StartsWith("Bayer"))
             {
-                case "AcquisitionFrameRateEnable":
-                    return "true";
-                case "GainAuto":
-                case "ExposureAuto":
-                default:
-                    return "Off";
+                if (!demosaicing)
+                    return ImageFormat.Y800;
+                else
+                    return ImageFormat.RGB24;
+            }
+            else if (pixelFormat.StartsWith("Mono"))
+            {
+                return ImageFormat.Y800;
+            }
+            else
+            {
+                return ImageFormat.RGB24;
             }
         }
+
+        #endregion
+
+        #region JPEG Hardware compression (Baumer)
+        /// <summary>
+        /// Whether the device supports hardware JPEG compression.
+        /// Tested for Baumer cameras.
+        /// </summary>
+        public static bool SupportsJPEG(Device device)
+        {
+            if (device == null)
+                return false;
+
+            bool isReadable = NodeIsReadable(device, "ImageCompressionMode");
+            if (!isReadable)
+                return false;
+
+            NodeMap enumCompression = device.RemoteNodeList["ImageCompressionMode"].EnumNodeList;
+            return enumCompression.GetNodePresent("JPEG");
+        }
+
+        /// <summary>
+        /// Whether the pixel format is compatible with hardware compression.
+        /// </summary>
+        public static bool FormatCanCompress(Device device, string pixelFormat)
+        {
+            return pixelFormat == "Mono8" || pixelFormat == "YCbCr422_8";
+        }
+
+        /// <summary>
+        /// Enable or disable JPEG compression.
+        /// </summary>
+        public static void SetJPEG(Device device, bool enable)
+        {
+            if (enable)
+                device.RemoteNodeList["ImageCompressionMode"].Value = "JPEG";
+            else
+                device.RemoteNodeList["ImageCompressionMode"].Value = "Off";
+        }
+
+        /// <summary>
+        /// Reads the current value of JPEG compression.
+        /// </summary>
+        public static bool GetJPEG(Device device)
+        {
+            if (!SupportsJPEG(device))
+                return false;
+
+            return device.RemoteNodeList["ImageCompressionMode"].Value == "JPEG";
+        }
+        #endregion
+
     }
 }

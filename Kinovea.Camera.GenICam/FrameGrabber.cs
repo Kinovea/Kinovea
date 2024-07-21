@@ -76,19 +76,19 @@ namespace Kinovea.Camera.GenICam
             Device device = genicamProvider.Device;
 
             // Get the configured framerate for recording support.
-            resultingFramerate = GenICamHelper.GetResultingFramerate(device);
+            resultingFramerate = CameraPropertyManager.GetResultingFramerate(device);
 
-            bool hasWidth = GenICamHelper.NodeIsReadable(device, "Width");
-            bool hasHeight = GenICamHelper.NodeIsReadable(device, "Height");
-            bool hasPixelFormat = GenICamHelper.NodeIsReadable(device, "PixelFormat");
+            bool hasWidth = CameraPropertyManager.NodeIsReadable(device, "Width");
+            bool hasHeight = CameraPropertyManager.NodeIsReadable(device, "Height");
+            bool hasPixelFormat = CameraPropertyManager.NodeIsReadable(device, "PixelFormat");
             bool canComputeImageDescriptor = hasWidth && hasHeight && hasPixelFormat;
 
             if (!canComputeImageDescriptor)
                 return ImageDescriptor.Invalid;
 
-            int width = GenICamHelper.GetInteger(device, "Width");
-            int height = GenICamHelper.GetInteger(device, "Height");
-            string pixelFormat = GenICamHelper.GetString(device, "PixelFormat");
+            int width = CameraPropertyManager.ReadInteger(device, "Width");
+            int height = CameraPropertyManager.ReadInteger(device, "Height");
+            string pixelFormat = CameraPropertyManager.ReadString(device, "PixelFormat");
 
             // We output in three possible formats: Y800, RGB24 or JPEG.
             // The output format depends on the stream format and the options.
@@ -96,15 +96,15 @@ namespace Kinovea.Camera.GenICam
             
             // Camera-side JPEG compression.
             compression = specific.Compression;
-            if (GenICamHelper.SupportsJPEG(device))
+            if (CameraPropertyManager.SupportsJPEG(device))
             {
-                if (GenICamHelper.FormatCanCompress(device, pixelFormat))
+                if (CameraPropertyManager.FormatCanCompress(device, pixelFormat))
                 {
-                    GenICamHelper.SetJPEG(device, compression);
+                    CameraPropertyManager.SetJPEG(device, compression);
                 }
                 else
                 {
-                    GenICamHelper.SetJPEG(device, false);
+                    CameraPropertyManager.SetJPEG(device, false);
                     compression = false;
                 }
             }
@@ -128,7 +128,7 @@ namespace Kinovea.Camera.GenICam
                 }
             }
             
-            imageFormat = GenICamHelper.ConvertImageFormat(pixelFormat, compression, demosaicing);
+            imageFormat = CameraPropertyManager.ConvertImageFormat(pixelFormat, compression, demosaicing);
             frameBufferSize = ImageFormatHelper.ComputeBufferSize(width, height, imageFormat);
             frameBuffer = new byte[frameBufferSize];
 
@@ -243,7 +243,7 @@ namespace Kinovea.Camera.GenICam
             specific.Device = genicamProvider.Device;
 
             if (!string.IsNullOrEmpty(specific.StreamFormat))
-                GenICamHelper.WriteEnum(specific.Device, "PixelFormat", specific.StreamFormat);
+                CameraPropertyManager.WriteEnum(specific.Device, "PixelFormat", specific.StreamFormat);
 
             if (firstOpen)
             {
@@ -253,7 +253,7 @@ namespace Kinovea.Camera.GenICam
                 // We merge the values saved in the XML into the properties.
                 // (The restoration from the XML doesn't create fully formed properties, it just contains the values).
                 // Then commit the properties to the camera.
-                Dictionary<string, CameraProperty> cameraProperties = CameraPropertyManager.Read(specific.Device, summary.Identifier);
+                Dictionary<string, CameraProperty> cameraProperties = CameraPropertyManager.ReadAll(specific.Device, summary.Identifier);
                 CameraPropertyManager.MergeProperties(cameraProperties, specific.CameraProperties);
                 specific.CameraProperties = cameraProperties;
                 CameraPropertyManager.WriteCriticalProperties(specific.Device, specific.CameraProperties);
@@ -292,7 +292,7 @@ namespace Kinovea.Camera.GenICam
 
             // Wrap the buffer in an image, convert if needed.
             BGAPI2.Image image = imgProcessor.CreateImage((uint)buffer.Width, (uint)buffer.Height, buffer.PixelFormat, buffer.MemPtr, buffer.MemSize);
-            bool ready = imageFormat == ImageFormat.JPEG || (imageFormat == ImageFormat.Y800 && GenICamHelper.IsY800(image.PixelFormat));
+            bool ready = imageFormat == ImageFormat.JPEG || (imageFormat == ImageFormat.Y800 && CameraPropertyManager.IsY800(image.PixelFormat));
             if (!ready)
             {
                 // Color conversion is required.
@@ -300,7 +300,7 @@ namespace Kinovea.Camera.GenICam
                 image.Release();
                 image = transformedImage;
 
-                int bpp = GenICamHelper.IsY800(image.PixelFormat) ? 1 : 3;
+                int bpp = CameraPropertyManager.IsY800(image.PixelFormat) ? 1 : 3;
                 payloadLength = (int)(image.Width * image.Height * bpp);
             }
 

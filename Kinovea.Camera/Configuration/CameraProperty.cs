@@ -31,11 +31,23 @@ namespace Kinovea.Camera
         public CameraPropertyType Type { get; set; }
 
         /// <summary>
-        /// The range a value can take.
+        /// Minimum value of the property.
         /// </summary>
         public string Minimum { get; set; }
+
+        /// <summary>
+        /// Maximum value of the property.
+        /// </summary>
         public string Maximum { get; set; }
+
+        /// <summary>
+        /// Step size.
+        /// </summary>
         public string Step { get; set; }
+
+        /// <summary>
+        /// Whether the property can be set to automatic mode.
+        /// </summary>
         public bool CanBeAutomatic { get; set; }
 
         /// <summary>
@@ -81,6 +93,12 @@ namespace Kinovea.Camera
             Automatic = false;
             AutomaticIdentifier = "";
             Specific = "";
+        }
+
+        public override string ToString()
+        {
+            return string.Format("id:{0}, support:{1}, readOnly:{2}, type:{3}, repr:{4}, min:{5}, max:{6}, step:{7}, value:{8}, canBeAuto:{9}, auto:{10}",
+                Identifier, Supported, ReadOnly, Type, Representation, Minimum, Maximum, Step, CurrentValue, CanBeAutomatic, Automatic);
         }
     }
 }

@@ -105,7 +105,7 @@ namespace Kinovea.Camera.GenICam
                 return;
 
             device = specific.Device;
-            cameraProperties = CameraPropertyManager.Read(device, summary.Identifier);
+            cameraProperties = CameraPropertyManager.ReadAll(device, summary.Identifier);
             if (cameraProperties.Count != specific.CameraProperties.Count)
                 specificChanged = true;
 
@@ -154,7 +154,7 @@ namespace Kinovea.Camera.GenICam
         {
             lblColorSpace.Text = CameraLang.FormConfiguration_Properties_StreamFormat;
 
-            bool readable = GenICamHelper.NodeIsReadable(device, "PixelFormat");
+            bool readable = CameraPropertyManager.NodeIsReadable(device, "PixelFormat");
             if (!readable)
             {
                 cmbFormat.Enabled = false;
@@ -180,7 +180,7 @@ namespace Kinovea.Camera.GenICam
             // The selection is based on the string itself, not its index in the list.
             streamFormats.Sort(new AlphanumComparator());
 
-            string currentValue = GenICamHelper.GetString(device, "PixelFormat");
+            string currentValue = CameraPropertyManager.ReadString(device, "PixelFormat");
             cmbFormat.Items.Clear();
             foreach (var streamFormat in streamFormats)
             {
@@ -207,8 +207,8 @@ namespace Kinovea.Camera.GenICam
 
         private void SetExtraOptionsVisibility()
         {
-            cbDebayering.Enabled = GenICamHelper.IsBayer(selectedStreamFormat);
-            cbCompression.Enabled = GenICamHelper.SupportsJPEG(device) && GenICamHelper.FormatCanCompress(device, selectedStreamFormat);
+            cbDebayering.Enabled = CameraPropertyManager.IsBayer(selectedStreamFormat);
+            cbCompression.Enabled = CameraPropertyManager.SupportsJPEG(device) && CameraPropertyManager.FormatCanCompress(device, selectedStreamFormat);
         }
 
         private void PopulateCameraControls()
@@ -337,7 +337,7 @@ namespace Kinovea.Camera.GenICam
                 return;
 
             device = specific.Device;
-            cameraProperties = CameraPropertyManager.Read(device, summary.Identifier);
+            cameraProperties = CameraPropertyManager.ReadAll(device, summary.Identifier);
 
             RemoveCameraControls();
             
@@ -351,7 +351,7 @@ namespace Kinovea.Camera.GenICam
 
         private void UpdateResultingFramerate()
         {
-            float resultingFramerate = GenICamHelper.GetResultingFramerate(device);
+            float resultingFramerate = CameraPropertyManager.GetResultingFramerate(device);
             lblResultingFramerateValue.Text = string.Format("{0:0.##}", resultingFramerate);
 
             bool discrepancy = false;

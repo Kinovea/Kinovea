@@ -298,7 +298,7 @@ namespace Kinovea.Camera.GenICam
                     string format = info.StreamFormat;
                     int width = int.Parse(info.CameraProperties["width"].CurrentValue, CultureInfo.InvariantCulture);
                     int height = int.Parse(info.CameraProperties["height"].CurrentValue, CultureInfo.InvariantCulture);
-                    double framerate = GenICamHelper.GetResultingFramerate(info.Device);
+                    double framerate = CameraPropertyManager.GetResultingFramerate(info.Device);
                     if (framerate == 0)
                         framerate = double.Parse(info.CameraProperties["framerate"].CurrentValue, CultureInfo.InvariantCulture);
 
@@ -330,6 +330,9 @@ namespace Kinovea.Camera.GenICam
                 if (string.IsNullOrEmpty(system.Id))
                     continue;
 
+                //if (system.Vendor != "GenTL Producer")
+                  //  continue;
+
                 try
                 {
                     if (!system.IsOpen)
@@ -348,7 +351,7 @@ namespace Kinovea.Camera.GenICam
                         if (!interf.IsOpen)
                             interf.Open();
 
-                        log.DebugFormat("Opened interface {0}.", interf.DisplayName);
+                        log.DebugFormat("\t\tOpened interface {0}.", interf.DisplayName);
                         interfaces.Add(interfacePair.Key, interf);
                     }
                 }

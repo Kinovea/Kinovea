@@ -107,9 +107,9 @@ namespace Kinovea.Camera.GenICam
             genicamProvider.BufferProduced += GenICamProducer_BufferProduced;
 
             // Do not use JPEG compression for the thumbnail.
-            wasJpegEnabled = GenICamHelper.GetJPEG(genicamProvider.Device);
+            wasJpegEnabled = CameraPropertyManager.GetJPEG(genicamProvider.Device);
             if (wasJpegEnabled)
-                GenICamHelper.SetJPEG(genicamProvider.Device, false);
+                CameraPropertyManager.SetJPEG(genicamProvider.Device, false);
 
             try
             {
@@ -131,7 +131,7 @@ namespace Kinovea.Camera.GenICam
                     genicamProvider.BufferProduced -= GenICamProducer_BufferProduced;
                     genicamProvider.Stop();
                     if (wasJpegEnabled)
-                        GenICamHelper.SetJPEG(genicamProvider.Device, true);
+                        CameraPropertyManager.SetJPEG(genicamProvider.Device, true);
                     
                     Close();
                     log.DebugFormat("{0} closed.", summary.Alias);
@@ -154,7 +154,7 @@ namespace Kinovea.Camera.GenICam
                 genicamProvider.BufferProduced -= GenICamProducer_BufferProduced;
                 genicamProvider.Stop();
                 if (wasJpegEnabled)
-                    GenICamHelper.SetJPEG(genicamProvider.Device, true);
+                    CameraPropertyManager.SetJPEG(genicamProvider.Device, true);
 
                 Close();
 
