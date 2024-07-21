@@ -448,6 +448,28 @@ namespace Kinovea.Camera.GenICam
         }
 
         /// <summary>
+        /// Convert from GenICam property representation to our own.
+        /// </summary>
+        private static CameraPropertyRepresentation ConvertRepresentation(string representation)
+        {
+            switch (representation)
+            {
+                case "Linear":
+                    return CameraPropertyRepresentation.LinearSlider;
+                case "Logarithmic":
+                    return CameraPropertyRepresentation.LogarithmicSlider;
+                case "Boolean":
+                    return CameraPropertyRepresentation.Checkbox;
+                case "PureNumber":
+                    return CameraPropertyRepresentation.EditBox;
+                case "HexNumber":
+                case "_UndefinedRepresentation":
+                default:
+                    return CameraPropertyRepresentation.Undefined;
+            }
+        }
+
+        /// <summary>
         /// Return true if the node exists and is readable.
         /// </summary>
         public static bool NodeIsReadable(Device device, string name)
@@ -561,7 +583,6 @@ namespace Kinovea.Camera.GenICam
                 log.ErrorFormat("Error while writing GenICam property. {0}", e.Message);
             }
         }
-
    
         /// <summary>
         /// Write either width or height as a centered region of interest.
@@ -715,26 +736,7 @@ namespace Kinovea.Camera.GenICam
         {
             return Math.Min(max, Math.Max(min, value));
         }
-
-        private static CameraPropertyRepresentation ConvertRepresentation(string representation)
-        {
-            switch (representation)
-            {
-                case "Linear":
-                    return CameraPropertyRepresentation.LinearSlider;
-                case "Logarithmic":
-                    return CameraPropertyRepresentation.LogarithmicSlider;
-                case "Boolean":
-                    return CameraPropertyRepresentation.Checkbox;
-                case "PureNumber":
-                    return CameraPropertyRepresentation.EditBox;
-                case "HexNumber":
-                case "_UndefinedRepresentation":
-                default:
-                    return CameraPropertyRepresentation.Undefined;
-            }
-        }
-        
+ 
         /// <summary>
         /// Takes a boolean of whether auto is ON or OFF, convert it to the correct representation and write it in the auto property.
         /// </summary>
@@ -778,12 +780,6 @@ namespace Kinovea.Camera.GenICam
 
             node.Value = enumValue;
         }
-
-
-        #region lower level
-
-        
-        #endregion
 
         #region Pixel format
         /// <summary>
@@ -838,11 +834,10 @@ namespace Kinovea.Camera.GenICam
         #region JPEG Hardware compression (Baumer)
         /// <summary>
         /// Whether the device supports hardware JPEG compression.
-        /// Tested for Baumer cameras.
         /// </summary>
         public static bool SupportsJPEG(Device device)
         {
-            if (device == null)
+            if (device == null || device.Vendor != "Baumer")
                 return false;
 
             bool isReadable = NodeIsReadable(device, "ImageCompressionMode");
@@ -858,6 +853,9 @@ namespace Kinovea.Camera.GenICam
         /// </summary>
         public static bool FormatCanCompress(Device device, string pixelFormat)
         {
+            if (device == null || device.Vendor != "Baumer")
+                return false;
+
             return pixelFormat == "Mono8" || pixelFormat == "YCbCr422_8";
         }
 
