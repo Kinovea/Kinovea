@@ -196,13 +196,27 @@ namespace Kinovea.Camera.GenICam
 
         /// <summary>
         /// Get the maximum possible framerate based on current image size, exposure and target frame rate value.
-        /// Note: The resulting value is only correct when using grayscale output.
         /// </summary>
         public static float GetResultingFramerate(Device device)
         {
             if (device == null || !device.IsOpen)
                 return 0;
 
+            if (device.Vendor == "Baumer")
+                return GetResultingFramerateBaumer(device);
+            else if (device.Vendor == "Basler")
+                return GetResultingFramerateBasler(device);
+            else
+                return 0;
+        }
+
+        /// <summary>
+        /// Get the maximum frame rate for a Baumer camera.
+        /// </summary>
+        private static float GetResultingFramerateBaumer(Device device)
+        {
+            // FIXME: The resulting value is only correct when using grayscale output.
+            
             float resultingFramerate = 0;
 
             try
@@ -237,9 +251,32 @@ namespace Kinovea.Camera.GenICam
 
             return resultingFramerate;
         }
+
+        /// <summary>
+        /// Get the maximum frame rate for a Basler camera.
+        /// </summary>
+        private static float GetResultingFramerateBasler(Device device)
+        {
+            // Basler cameras have a dedicated property for the resulting framerate.
+
+            try
+            {
+                Node node = GetNode(device.RemoteNodeList, "ResultingFrameRateAbs");
+                if (node != null && node.IsReadable)
+                    return (float)node.Value;
+
+                node = GetNode(device.RemoteNodeList, "ResultingFrameRate");
+                if (node != null && node.IsReadable)
+                    return (float)node.Value;
+            }
+            catch (Exception e)
+            {
+                log.ErrorFormat("Error while computing resulting framerate. {0}", e.Message);
+            }
+
+            return 0;
+        }
         #endregion
-
-
 
         #region Read low level
         /// <summary>
