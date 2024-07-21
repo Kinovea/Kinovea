@@ -49,6 +49,8 @@ namespace Kinovea.Camera.GenICam
         private void InitializeComponent()
         {
       this.gbProperties = new System.Windows.Forms.GroupBox();
+      this.cmbBayer8Conversion = new System.Windows.Forms.ComboBox();
+      this.lblBayerConversion = new System.Windows.Forms.Label();
       this.cbCompression = new System.Windows.Forms.CheckBox();
       this.cbDebayering = new System.Windows.Forms.CheckBox();
       this.lblResultingFramerateValue = new System.Windows.Forms.Label();
@@ -71,6 +73,8 @@ namespace Kinovea.Camera.GenICam
       this.gbProperties.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.gbProperties.Controls.Add(this.cmbBayer8Conversion);
+      this.gbProperties.Controls.Add(this.lblBayerConversion);
       this.gbProperties.Controls.Add(this.cbCompression);
       this.gbProperties.Controls.Add(this.cbDebayering);
       this.gbProperties.Controls.Add(this.lblResultingFramerateValue);
@@ -83,6 +87,30 @@ namespace Kinovea.Camera.GenICam
       this.gbProperties.Size = new System.Drawing.Size(434, 373);
       this.gbProperties.TabIndex = 80;
       this.gbProperties.TabStop = false;
+      // 
+      // cmbBayer8Conversion
+      // 
+      this.cmbBayer8Conversion.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.cmbBayer8Conversion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cmbBayer8Conversion.FormattingEnabled = true;
+      this.cmbBayer8Conversion.Location = new System.Drawing.Point(214, 108);
+      this.cmbBayer8Conversion.Name = "cmbBayer8Conversion";
+      this.cmbBayer8Conversion.Size = new System.Drawing.Size(144, 21);
+      this.cmbBayer8Conversion.TabIndex = 108;
+      this.cmbBayer8Conversion.SelectedIndexChanged += new System.EventHandler(this.cmbBayerConversion_SelectedIndexChanged);
+      // 
+      // lblBayerConversion
+      // 
+      this.lblBayerConversion.BackColor = System.Drawing.Color.Transparent;
+      this.lblBayerConversion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblBayerConversion.ForeColor = System.Drawing.Color.Black;
+      this.lblBayerConversion.Location = new System.Drawing.Point(21, 108);
+      this.lblBayerConversion.Name = "lblBayerConversion";
+      this.lblBayerConversion.Size = new System.Drawing.Size(187, 23);
+      this.lblBayerConversion.TabIndex = 109;
+      this.lblBayerConversion.Text = "Bayer format conversion:";
+      this.lblBayerConversion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // cbCompression
       // 
@@ -219,7 +247,7 @@ namespace Kinovea.Camera.GenICam
       this.btnIcon.Size = new System.Drawing.Size(16, 16);
       this.btnIcon.TabIndex = 51;
       this.btnIcon.UseVisualStyleBackColor = false;
-      this.btnIcon.Click += new System.EventHandler(this.BtnIconClick);
+      this.btnIcon.Click += new System.EventHandler(this.BtnIcon_OnClick);
       // 
       // btnApply
       // 
@@ -280,5 +308,7 @@ namespace Kinovea.Camera.GenICam
         private System.Windows.Forms.Label lblResultingFramerate;
         private System.Windows.Forms.CheckBox cbDebayering;
         private System.Windows.Forms.CheckBox cbCompression;
+        private System.Windows.Forms.ComboBox cmbBayer8Conversion;
+        private System.Windows.Forms.Label lblBayerConversion;
     }
 }

@@ -258,16 +258,17 @@ namespace Kinovea.Camera.GenICam
         private static float GetResultingFramerateBasler(Device device)
         {
             // Basler cameras have a dedicated property for the resulting framerate.
-
+            // Note: it looks like casting a double to float is broken in the Baumer API, 
+            // it results in an integer. Make sure we first cast to double.
             try
             {
                 Node node = GetNode(device.RemoteNodeList, "ResultingFrameRateAbs");
                 if (node != null && node.IsReadable)
-                    return (float)node.Value;
+                    return (float)(double)node.Value;
 
                 node = GetNode(device.RemoteNodeList, "ResultingFrameRate");
                 if (node != null && node.IsReadable)
-                    return (float)node.Value;
+                    return (float)(double)node.Value;
             }
             catch (Exception e)
             {
@@ -349,6 +350,8 @@ namespace Kinovea.Camera.GenICam
             p.Type = CameraPropertyType.Float;
             p.ReadOnly = false;
 
+            // Note: it's important to read these as `double` and not `float` otherwise they
+            // get casted to `int` for some reason.
             Node node = device.RemoteNodeList[symbol];
             double currentValue = node.Value;
             double min = node.Min;
@@ -799,6 +802,15 @@ namespace Kinovea.Camera.GenICam
         public static bool IsBayer(string pixelFormat)
         {
             return pixelFormat.StartsWith("Bayer");
+        }
+
+        public static bool IsBayer8(string pixelFormat)
+        {
+            // This function is tuned for Basler which has BayerRG8 or BayerRG12.
+            return pixelFormat == "BayerBG8" ||
+                   pixelFormat == "BayerGB8" ||
+                   pixelFormat == "BayerGR8" ||
+                   pixelFormat == "BayerRG8";
         }
 
         /// <summary>

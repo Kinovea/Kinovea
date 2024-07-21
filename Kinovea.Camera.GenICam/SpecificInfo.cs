@@ -31,13 +31,35 @@ namespace Kinovea.Camera.GenICam
     /// </summary>
     public class SpecificInfo
     {
-        // The device member is not serialized. It is set by the manager when the camera is discovered.
+        /// <summary>
+        /// Handle to the device. 
+        /// This is not serialized, it is set by the manager on discovery.
+        /// </summary>
         public Device Device;
         
+        /// <summary>
+        /// Name of the selected stream format.
+        /// </summary>
         public string StreamFormat { get; set; }
+        
+        /// <summary>
+        /// For Baumer cameras, whether to use hardware debayering.
+        /// </summary>
         public bool Demosaicing { get; set; }
+        
+        /// <summary>
+        /// For Baumer cameras, whether to use hardware JPEG compression.
+        /// </summary>
         public bool Compression { get; set; }
 
+        /// <summary>
+        /// For Basler cameras, whether to use hardware debayering and what type.
+        /// </summary>
+        public BayerConversion BayerConversion { get; set; }
+
+        /// <summary>
+        /// Complete dictionary of camera properties we handle.
+        /// </summary>
         public Dictionary<string, CameraProperty> CameraProperties { get; set; }
 
         public SpecificInfo()
@@ -45,6 +67,7 @@ namespace Kinovea.Camera.GenICam
             CameraProperties = new Dictionary<string, CameraProperty>();
             Demosaicing = false;
             Compression = false;
+            BayerConversion = BayerConversion.Raw;
         }
     }
 }

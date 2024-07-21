@@ -268,6 +268,7 @@ namespace Kinovea.Camera.GenICam
                     info.StreamFormat = form.SelectedStreamFormat;
                     info.Demosaicing = form.Demosaicing;
                     info.Compression = form.Compression;
+                    info.BayerConversion = form.BayerConversion;
                     info.CameraProperties = form.CameraProperties;
 
                     summary.UpdateDisplayRectangle(Rectangle.Empty);
@@ -395,6 +396,9 @@ namespace Kinovea.Camera.GenICam
 
                 info = new SpecificInfo();
 
+                //------------------------
+                // Non-generic properties.
+                //------------------------
                 string streamFormat = "";
                 XmlNode xmlStreamFormat = doc.SelectSingleNode("/GenICam/StreamFormat");
                 if (xmlStreamFormat != null)
@@ -410,6 +414,19 @@ namespace Kinovea.Camera.GenICam
                 if (xmlCompression != null)
                     compression = XmlHelper.ParseBoolean(xmlCompression.InnerText);
 
+                BayerConversion bayerConversion = BayerConversion.Raw;
+                XmlNode xmlBayerConversion = doc.SelectSingleNode("/GenICam/BayerConversion");
+                if (xmlBayerConversion != null)
+                    bayerConversion = (BayerConversion)Enum.Parse(typeof(BayerConversion), xmlBayerConversion.InnerText);
+
+                info.StreamFormat = streamFormat;
+                info.Demosaicing = demosaicing;
+                info.Compression = compression;
+                info.BayerConversion = bayerConversion;
+
+                //------------------------
+                // Generic properties.
+                //------------------------
                 Dictionary<string, CameraProperty> cameraProperties = new Dictionary<string, CameraProperty>();
 
                 XmlNodeList props = doc.SelectNodes("/GenICam/CameraProperties/CameraProperty");
@@ -438,9 +455,6 @@ namespace Kinovea.Camera.GenICam
                     cameraProperties.Add(key, property);
                 }
 
-                info.StreamFormat = streamFormat;
-                info.Demosaicing = demosaicing;
-                info.Compression = compression;
                 info.CameraProperties = cameraProperties;
             }
             catch (Exception e)
@@ -460,6 +474,9 @@ namespace Kinovea.Camera.GenICam
             XmlDocument doc = new XmlDocument();
             XmlElement xmlRoot = doc.CreateElement("GenICam");
 
+            //------------------------
+            // Non-generic properties.
+            //------------------------
             XmlElement xmlStreamFormat = doc.CreateElement("StreamFormat");
             xmlStreamFormat.InnerText = info.StreamFormat;
             xmlRoot.AppendChild(xmlStreamFormat);
@@ -472,8 +489,14 @@ namespace Kinovea.Camera.GenICam
             xmlCompression.InnerText = info.Compression.ToString().ToLowerInvariant();
             xmlRoot.AppendChild(xmlCompression);
 
-            XmlElement xmlCameraProperties = doc.CreateElement("CameraProperties");
+            XmlElement xmlBayerConversion = doc.CreateElement("BayerConversion");
+            xmlBayerConversion.InnerText = info.BayerConversion.ToString();
+            xmlRoot.AppendChild(xmlBayerConversion);
 
+            //------------------------
+            // Generic properties.
+            //------------------------
+            XmlElement xmlCameraProperties = doc.CreateElement("CameraProperties");
             foreach (KeyValuePair<string, CameraProperty> pair in info.CameraProperties)
             {
                 if (pair.Value == null)
