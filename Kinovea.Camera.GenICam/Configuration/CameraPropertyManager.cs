@@ -16,6 +16,25 @@ namespace Kinovea.Camera.GenICam
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
+        public static void AfterOpen(Device device)
+        {
+            if (device == null || !device.IsOpen)
+                return;
+
+            if (device.Vendor == "Daheng Imaging")
+            {
+                WriteEnum(device, "AcquisitionMode", "Continuous");
+                WriteEnum(device, "TriggerMode", "Off");
+
+                // Force white balance at least once.
+                ContinuousOrOnce(device, "BalanceWhiteAuto");
+
+                // Make the camera send the max bandwidth it can, possibly saturating the link.
+                WriteEnum(device, "DeviceLinkThroughputLimitMode", "Off");
+            }
+        }
+
+
         #region Read high level
 
         /// <summary>
@@ -52,6 +71,8 @@ namespace Kinovea.Camera.GenICam
             properties.Add("height", ReadIntegerProperty(device, "Height", "HeightMax"));
         }
         
+
+
         
         /// <summary>
         /// Read the exposure property and add it to the dictionary.
@@ -108,6 +129,9 @@ namespace Kinovea.Camera.GenICam
         private static void ReadCompressionQuality(Device device, Dictionary<string, CameraProperty> properties)
         {
             // This property is found on Baumer cameras that support hardware JPEG compression.
+            if (device.Vendor != "Baumer")
+                return;
+
             string key = "compressionQuality";
 
             CameraProperty p = ReadIntegerProperty(device, "ImageCompressionQuality", "");
@@ -167,13 +191,22 @@ namespace Kinovea.Camera.GenICam
             p.Representation = highRange ? CameraPropertyRepresentation.LogarithmicSlider : CameraPropertyRepresentation.LinearSlider;
 
             // Auto flag.
+            // Basler & Baumer use a boolean property.
             // AcquisitionFrameRateEnable=false: the framerate is automatically set to the max value possible (auto = true).
             // AcquisitionFrameRateEnable=true: use the custom framerate set by the user in AcquisitionFrameRate (auto = false).
+            // Daheng uses a string property:
+            // AcquisitionFrameRateMode="Off": the framerate is automatically set to the max value possible.
+            // AcquisitionFrameRateMode="On": use the custom framerate set by the user in AcquisitionFrameRate.
 
             string autoIdentifier = "AcquisitionFrameRateEnable";
+            if (device.Vendor.Contains("Daheng"))
+            {
+                autoIdentifier = "AcquisitionFrameRateMode";
+            }
+
             p.AutomaticIdentifier = autoIdentifier;
-            p.Automatic = false;
             p.CanBeAutomatic = false;
+            p.Automatic = false;
             Node autoNode = null;
             bool autoPresent = device.RemoteNodeList.GetNodePresent(p.AutomaticIdentifier);
             if (autoPresent)
@@ -184,7 +217,12 @@ namespace Kinovea.Camera.GenICam
 
             if (p.CanBeAutomatic)
             {
-                string currentAutoValue = ((bool)autoNode.Value).ToString(CultureInfo.InvariantCulture).ToLower();
+                string currentAutoValue = autoNode.Value;
+                if (device.Vendor == "Baumer" || device.Vendor == "Basler")
+                {
+                    currentAutoValue = BoolValueToString(autoNode.Value);
+                }
+                 
                 p.Automatic = currentAutoValue == GetAutoTrue(autoIdentifier);
             }
 
@@ -206,6 +244,8 @@ namespace Kinovea.Camera.GenICam
                 return GetResultingFramerateBaumer(device);
             else if (device.Vendor == "Basler")
                 return GetResultingFramerateBasler(device);
+            else if (device.Vendor == "Daheng Imaging")
+                return GetResultingFramerateDaheng(device);
             else
                 return 0;
         }
@@ -276,6 +316,24 @@ namespace Kinovea.Camera.GenICam
             }
 
             return 0;
+        }
+        
+        private static float GetResultingFramerateDaheng(Device device)
+        {
+            // Dedicated property.
+            try
+            {
+                Node node = GetNode(device.RemoteNodeList, "CurrentAcquisitionFrameRate");
+                if (node != null && node.IsReadable)
+                    return (float)(double)node.Value;
+            }
+            catch (Exception e)
+            {
+                log.ErrorFormat("Error while computing resulting framerate. {0}", e.Message);
+            }
+
+            return 0;
+
         }
         #endregion
 
@@ -424,6 +482,11 @@ namespace Kinovea.Camera.GenICam
             {
                 case "AcquisitionFrameRateEnable":
                     return "false";
+                
+                case "AcquisitionFrameRateMode":
+                    // Daheng-specific.
+                    return "Off";
+
                 case "GainAuto":
                 case "ExposureAuto":
                 default:
@@ -440,6 +503,11 @@ namespace Kinovea.Camera.GenICam
             {
                 case "AcquisitionFrameRateEnable":
                     return "true";
+                
+                case "AcquisitionFrameRateMode":
+                    // Daheng-specific.
+                    return "On";
+
                 case "GainAuto":
                 case "ExposureAuto":
                 default:
@@ -508,6 +576,7 @@ namespace Kinovea.Camera.GenICam
         }
         #endregion
 
+        #region Write
         /// <summary>
         /// Commit value of properties that can be written during streaming and don't require a reconnect to be applied.
         /// This is used by the configuration, to update the image while configuring.
@@ -762,6 +831,11 @@ namespace Kinovea.Camera.GenICam
             }
         }
 
+        private static string BoolValueToString(object value)
+        {
+            return ((bool)value).ToString(CultureInfo.InvariantCulture).ToLower();
+        }
+
         /// <summary>
         /// Write the value into an enum property.
         /// </summary>
@@ -775,11 +849,37 @@ namespace Kinovea.Camera.GenICam
                 return;
 
             Node node = device.RemoteNodeList[enumName];
-            if (!node.IsImplemented || !node.IsAvailable)
+            if (!node.IsImplemented || !node.IsAvailable || !node.IsWriteable)
                 return;
 
             node.Value = enumValue;
         }
+
+        /// <summary>
+        /// Make sure the feature is triggered at least once, 
+        /// either it's currently in continuous mode or we trigger it manually.
+        /// </summary>
+        private static void ContinuousOrOnce(Device device, string identifier)
+        {
+            if (device == null || !device.IsOpen)
+                throw new InvalidProgramException();
+
+            bool present = device.RemoteNodeList.GetNodePresent(identifier);
+            if (!present)
+                return;
+
+            Node node = device.RemoteNodeList[identifier];
+            if (!node.IsImplemented || !node.IsAvailable || !node.IsWriteable)
+                return;
+
+            // These nodes are either on "Off" or "Continuous".
+            if (node.Value == "Off")
+            {
+                node.Value = "Once";
+            }
+        }
+        #endregion
+
 
         #region Pixel format
         /// <summary>

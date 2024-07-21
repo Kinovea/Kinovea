@@ -239,6 +239,7 @@ namespace Kinovea.Camera.GenICam
             try
             {
                 genicamProvider.Open(specific.Device);
+                CameraPropertyManager.AfterOpen(genicamProvider.Device);
             }
             catch (Exception e)
             {
