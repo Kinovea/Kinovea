@@ -788,40 +788,36 @@ namespace Kinovea.Camera.GenICam
         #region Pixel format
         /// <summary>
         /// Return true if the input buffer format is already grayscale 8-bit per pixel.
-        /// This means it can directly be put into the Y800 output frame witohut conversion.
+        /// This means it may directly be put into the Y800 output frame witohut conversion.
+        /// This is used by the "image processor" to produce the output frame.
         /// </summary>
         public static bool IsY800(string pixelFormat)
         {
-            return pixelFormat == "Mono8" ||
+            // HDR Bayer is not Y800, it needs to be converted.
+            return pixelFormat == "Mono8" || 
                 pixelFormat == "BayerBG8" ||
                 pixelFormat == "BayerGB8" ||
                 pixelFormat == "BayerGR8" ||
                 pixelFormat == "BayerRG8";
         }
 
+        /// <summary>
+        /// Returns true if the format is a Bayer format.
+        /// </summary>
         public static bool IsBayer(string pixelFormat)
         {
             return pixelFormat.StartsWith("Bayer");
         }
 
-        public static bool IsBayer8(string pixelFormat)
-        {
-            // This function is tuned for Basler which has BayerRG8 or BayerRG12.
-            return pixelFormat == "BayerBG8" ||
-                   pixelFormat == "BayerGB8" ||
-                   pixelFormat == "BayerGR8" ||
-                   pixelFormat == "BayerRG8";
-        }
-
         /// <summary>
-        /// Takes a Baumer pixel format and determines the output image format.
+        /// Takes a pixel format and determines the output image format.
         /// </summary>
         public static ImageFormat ConvertImageFormat(string pixelFormat, bool compression, bool demosaicing)
         {
             if (compression)
                 return ImageFormat.JPEG;
 
-            if (pixelFormat.StartsWith("Bayer"))
+            if (IsBayer(pixelFormat))
             {
                 if (!demosaicing)
                     return ImageFormat.Y800;
@@ -837,7 +833,6 @@ namespace Kinovea.Camera.GenICam
                 return ImageFormat.RGB24;
             }
         }
-
         #endregion
 
         #region JPEG Hardware compression (Baumer)

@@ -67,12 +67,7 @@ namespace Kinovea.Camera.GenICam
         {
             get { return compression; }
         }
-
-        public BayerConversion BayerConversion
-        {
-            get { return bayerConversion; }
-        }
-
+                
         public Dictionary<string, CameraProperty> CameraProperties
         {
             get { return cameraProperties; }
@@ -93,7 +88,6 @@ namespace Kinovea.Camera.GenICam
         private string selectedStreamFormat;
         private bool demosaicing;
         private bool compression;
-        private BayerConversion bayerConversion;
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -124,8 +118,7 @@ namespace Kinovea.Camera.GenICam
 
             demosaicing = specific.Demosaicing;
             compression = specific.Compression;
-            bayerConversion = specific.BayerConversion;
-
+            
             Populate();
             this.Text = CameraLang.FormConfiguration_Title;
             btnApply.Text = CameraLang.Generic_Apply;
@@ -207,57 +200,15 @@ namespace Kinovea.Camera.GenICam
         /// </summary>
         private void PopulateFormatExtraOptions()
         {
-            // Hide everything by default as these are vendor dependent.
-            cbDebayering.Visible = false;
-            cbCompression.Visible = false;
-            lblBayerConversion.Visible = false;
-            cmbBayer8Conversion.Visible = false;
+            // Enable/Disable
+            cbDebayering.Enabled = CameraPropertyManager.IsBayer(selectedStreamFormat);
+            bool supportsJPEG = CameraPropertyManager.SupportsJPEG(device);
+            bool canCompress = CameraPropertyManager.FormatCanCompress(device, selectedStreamFormat);
+            cbCompression.Enabled = supportsJPEG && canCompress;
 
-            switch (device.Vendor)
-            {
-                case "Baumer":
-                    
-                    // Visibility
-                    cbDebayering.Visible = true;
-                    cbCompression.Visible = true;
-                    cbDebayering.Top = 64;
-                    cbCompression.Top = 88;
-
-                    // Enable/Disable
-                    cbDebayering.Enabled = CameraPropertyManager.IsBayer(selectedStreamFormat);
-                    bool supportsJPEG = CameraPropertyManager.SupportsJPEG(device);
-                    bool canCompress = CameraPropertyManager.FormatCanCompress(device, selectedStreamFormat);
-                    cbCompression.Enabled = supportsJPEG && canCompress; 
-
-                    // Current values.
-                    cbDebayering.Checked = demosaicing;
-                    cbCompression.Checked = compression;
-                    break;
-
-                case "Basler":
-
-                    // Visibility
-                    lblBayerConversion.Visible = true;
-                    cmbBayer8Conversion.Visible = true;
-                    lblBayerConversion.Top = 64;
-                    cmbBayer8Conversion.Top = 64;
-
-                    // Enable/Disable
-                    bool isBayer8 = CameraPropertyManager.IsBayer8(selectedStreamFormat);
-                    lblBayerConversion.Enabled = isBayer8;
-                    cmbBayer8Conversion.Enabled = isBayer8;
-
-                    // Values
-                    cmbBayer8Conversion.Items.Clear();
-                    lblBayerConversion.Text = CameraLang.FormConfiguration_Properties_BayerFormatConversion;
-                    cmbBayer8Conversion.Items.Add("Raw");
-                    cmbBayer8Conversion.Items.Add("Mono");
-                    cmbBayer8Conversion.Items.Add("Color");
-
-                    // Current value
-                    cmbBayer8Conversion.SelectedIndex = (int)bayerConversion;
-                    break;
-            }
+            // Current values.
+            cbDebayering.Checked = demosaicing;
+            cbCompression.Checked = compression;
         }
 
         private void PopulateCameraControls()
@@ -363,21 +314,6 @@ namespace Kinovea.Camera.GenICam
             UpdateResultingFramerate();
         }
 
-        private void cmbBayerConversion_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Handler specific to Basler cameras.
-
-            bool isBayer8 = CameraPropertyManager.IsBayer8(selectedStreamFormat);
-
-            BayerConversion selected = (BayerConversion)cmbBayer8Conversion.SelectedIndex;
-            if (selected == bayerConversion)
-                return;
-
-            bayerConversion = (BayerConversion)cmbBayer8Conversion.SelectedIndex;
-            specificChanged = true;
-            UpdateResultingFramerate();
-        }
-
         private void BtnReconnect_Click(object sender, EventArgs e)
         {
             if (SelectedStreamFormat == null)
@@ -393,7 +329,6 @@ namespace Kinovea.Camera.GenICam
             info.StreamFormat = selectedStreamFormat;
             info.Demosaicing = demosaicing;
             info.Compression = compression;
-            info.BayerConversion = bayerConversion;
             info.CameraProperties = cameraProperties;
 
             summary.UpdateDisplayRectangle(Rectangle.Empty);

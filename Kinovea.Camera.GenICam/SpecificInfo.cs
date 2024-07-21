@@ -43,19 +43,14 @@ namespace Kinovea.Camera.GenICam
         public string StreamFormat { get; set; }
         
         /// <summary>
-        /// For Baumer cameras, whether to use hardware debayering.
+        /// Whether to use software debayering.
         /// </summary>
         public bool Demosaicing { get; set; }
         
         /// <summary>
-        /// For Baumer cameras, whether to use hardware JPEG compression.
+        /// Whether to use hardware JPEG compression.
         /// </summary>
         public bool Compression { get; set; }
-
-        /// <summary>
-        /// For Basler cameras, whether to use hardware debayering and what type.
-        /// </summary>
-        public BayerConversion BayerConversion { get; set; }
 
         /// <summary>
         /// Complete dictionary of camera properties we handle.
@@ -67,7 +62,6 @@ namespace Kinovea.Camera.GenICam
             CameraProperties = new Dictionary<string, CameraProperty>();
             Demosaicing = false;
             Compression = false;
-            BayerConversion = BayerConversion.Raw;
         }
     }
 }

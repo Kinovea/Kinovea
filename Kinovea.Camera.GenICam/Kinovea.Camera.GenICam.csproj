@@ -51,7 +51,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\BayerConversion.cs" />
     <Compile Include="GenICamProvider.cs" />
     <Compile Include="BufferEventArgs.cs" />
     <Compile Include="CameraManagerGenICam.cs" />

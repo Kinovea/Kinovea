@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using BGAPI2;
 using Kinovea.Pipeline;
 using Kinovea.Services;
-using BGAPI2;
+using System.Diagnostics.SymbolStore;
 
 namespace Kinovea.Camera.GenICam
 {
@@ -38,8 +39,8 @@ namespace Kinovea.Camera.GenICam
         private SpecificInfo specific;
         private GenICamProvider genicamProvider = new GenICamProvider();
         ImageProcessor imgProcessor = new ImageProcessor();
-        private bool demosaicing = true;
-        private bool compression = true;
+        private bool demosaicing = false;
+        private bool compression = false;
         private ImageFormat imageFormat = ImageFormat.None;
         private bool grabbing;
         private bool firstOpen = true;
@@ -91,44 +92,10 @@ namespace Kinovea.Camera.GenICam
             string pixelFormat = CameraPropertyManager.ReadString(device, "PixelFormat");
 
             // We output in three possible formats: Y800, RGB24 or JPEG.
-            // The output format depends on the stream format and the options.
-            // Mono or raw -> Y800, Otherwise -> RGB24.
-            
-            // Camera-side JPEG compression.
-            compression = specific.Compression;
-            if (CameraPropertyManager.SupportsJPEG(device))
-            {
-                if (CameraPropertyManager.FormatCanCompress(device, pixelFormat))
-                {
-                    CameraPropertyManager.SetJPEG(device, compression);
-                }
-                else
-                {
-                    CameraPropertyManager.SetJPEG(device, false);
-                    compression = false;
-                }
-            }
-            else
-            {
-                compression = false;
-            }
-            
-            // Debayering.
-            demosaicing = specific.Demosaicing;
-            if (demosaicing)
-            {
-                if (imgProcessor.NodeList.GetNodePresent("DemosaicingMethod"))
-                {
-                    // Options: NearestNeighbor, Bilinear3x3, Baumer5x5
-                    imgProcessor.NodeList["DemosaicingMethod"].Value = "NearestNeighbor";
-                }
-                else
-                {
-                    demosaicing = false;
-                }
-            }
-            
-            imageFormat = CameraPropertyManager.ConvertImageFormat(pixelFormat, compression, demosaicing);
+            // The output format depends on the stream format and debayering options.
+            // This switch will update the `imageFormat` global variable.
+            SetImageFormat(device, pixelFormat);
+
             frameBufferSize = ImageFormatHelper.ComputeBufferSize(width, height, imageFormat);
             frameBuffer = new byte[frameBufferSize];
 
@@ -142,6 +109,50 @@ namespace Kinovea.Camera.GenICam
             int outgoingBufferSize = ImageFormatHelper.ComputeBufferSize(width, height, imageFormat);
             bool topDown = true;
             return new ImageDescriptor(imageFormat, width, height, topDown, outgoingBufferSize);
+        }
+
+        private void SetImageFormat(Device device, string pixelFormat)
+        {
+            if (device.Vendor == "Baumer")
+            {
+                // Hardware JPEG compression.
+                compression = specific.Compression;
+                if (CameraPropertyManager.SupportsJPEG(device))
+                {
+                    if (CameraPropertyManager.FormatCanCompress(device, pixelFormat))
+                    {
+                        CameraPropertyManager.SetJPEG(device, compression);
+                    }
+                    else
+                    {
+                        CameraPropertyManager.SetJPEG(device, false);
+                        compression = false;
+                    }
+                }
+                else
+                {
+                    compression = false;
+                }
+            }
+
+            // Software debayering.
+            demosaicing = specific.Demosaicing;
+            if (demosaicing)
+            {
+                // This property is on the "image processor", at the SDK level.
+                // We can use it independently of the camera vendor.
+                if (imgProcessor.NodeList.GetNodePresent("DemosaicingMethod"))
+                {
+                    // Options: NearestNeighbor, Bilinear3x3, Baumer5x5
+                    imgProcessor.NodeList["DemosaicingMethod"].Value = "NearestNeighbor";
+                }
+                else
+                {
+                    demosaicing = false;
+                }
+            }
+
+            imageFormat = CameraPropertyManager.ConvertImageFormat(pixelFormat, compression, demosaicing);
         }
 
         /// <summary>
@@ -295,7 +306,7 @@ namespace Kinovea.Camera.GenICam
             bool ready = imageFormat == ImageFormat.JPEG || (imageFormat == ImageFormat.Y800 && CameraPropertyManager.IsY800(image.PixelFormat));
             if (!ready)
             {
-                // Color conversion is required.
+                // Conversion required.
                 BGAPI2.Image transformedImage = GetTransformedImage(image);
                 image.Release();
                 image = transformedImage;
@@ -369,6 +380,9 @@ namespace Kinovea.Camera.GenICam
         /// </summary>
         private unsafe void CopyFrame(Image image, int length)
         {
+            if (frameBuffer.Length < length)
+                return;
+
             // At this point the image is either in Mono8, Bayer**8 or BGR8.
             fixed (byte* p = frameBuffer)
             {

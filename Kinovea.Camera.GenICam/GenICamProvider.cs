@@ -13,6 +13,7 @@ namespace Kinovea.Camera.GenICam
     /// <summary>
     /// Helper class to wrap GenICam camera (Based on Baumer API).
     /// Provide open/close and acquisition once / acquisition continuous in a separate thread.
+    /// Get the buffers and raise BufferProduced event.
     /// </summary>
     public class GenICamProvider
     {

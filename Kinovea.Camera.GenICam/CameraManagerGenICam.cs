@@ -268,7 +268,6 @@ namespace Kinovea.Camera.GenICam
                     info.StreamFormat = form.SelectedStreamFormat;
                     info.Demosaicing = form.Demosaicing;
                     info.Compression = form.Compression;
-                    info.BayerConversion = form.BayerConversion;
                     info.CameraProperties = form.CameraProperties;
 
                     summary.UpdateDisplayRectangle(Rectangle.Empty);
@@ -414,15 +413,9 @@ namespace Kinovea.Camera.GenICam
                 if (xmlCompression != null)
                     compression = XmlHelper.ParseBoolean(xmlCompression.InnerText);
 
-                BayerConversion bayerConversion = BayerConversion.Raw;
-                XmlNode xmlBayerConversion = doc.SelectSingleNode("/GenICam/BayerConversion");
-                if (xmlBayerConversion != null)
-                    bayerConversion = (BayerConversion)Enum.Parse(typeof(BayerConversion), xmlBayerConversion.InnerText);
-
                 info.StreamFormat = streamFormat;
                 info.Demosaicing = demosaicing;
                 info.Compression = compression;
-                info.BayerConversion = bayerConversion;
 
                 //------------------------
                 // Generic properties.
@@ -488,10 +481,6 @@ namespace Kinovea.Camera.GenICam
             XmlElement xmlCompression = doc.CreateElement("Compression");
             xmlCompression.InnerText = info.Compression.ToString().ToLowerInvariant();
             xmlRoot.AppendChild(xmlCompression);
-
-            XmlElement xmlBayerConversion = doc.CreateElement("BayerConversion");
-            xmlBayerConversion.InnerText = info.BayerConversion.ToString();
-            xmlRoot.AppendChild(xmlBayerConversion);
 
             //------------------------
             // Generic properties.
