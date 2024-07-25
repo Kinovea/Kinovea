@@ -116,4 +116,22 @@
   <data name="FormCameraWizard_Parameters" xml:space="preserve">
     <value>Параметри</value>
   </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Сортирај по</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>Опаѓачки</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>Име</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>Растечки</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Датум</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Големина</value>
+  </data>
 </root>
