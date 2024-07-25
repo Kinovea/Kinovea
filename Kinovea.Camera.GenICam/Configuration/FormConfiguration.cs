@@ -27,6 +27,7 @@ using Kinovea.Camera;
 using Kinovea.Services;
 using Kinovea.Camera.Languages;
 using BGAPI2;
+using System.IO;
 
 namespace Kinovea.Camera.GenICam
 {
@@ -368,6 +369,31 @@ namespace Kinovea.Camera.GenICam
             }
 
             lblResultingFramerateValue.ForeColor = discrepancy ? Color.Red : Color.Black;
+        }
+
+
+        /// <summary>
+        /// Get the GenICam XML file on the device and save it somewhere.
+        /// </summary>
+        private void btnGenicam_Click(object sender, EventArgs e)
+        {
+            if (device == null || !device.IsOpen)
+                return;
+
+            string xml = device.RemoteConfigurationFile;
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Title = "Export device GenICam XML file";
+            saveFileDialog.RestoreDirectory = true;
+            saveFileDialog.FileName = summary.Name;
+            saveFileDialog.Filter = FilesystemHelper.SaveXMLFilter();
+            saveFileDialog.FilterIndex = 1;
+
+            if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))
+                return;
+
+            File.WriteAllText(saveFileDialog.FileName, xml);
+            log.DebugFormat("GenICam XML file exported to {0}", saveFileDialog.FileName);
         }
     }
 }

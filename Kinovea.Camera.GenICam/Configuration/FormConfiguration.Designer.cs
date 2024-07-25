@@ -62,6 +62,7 @@ namespace Kinovea.Camera.GenICam
       this.btnIcon = new System.Windows.Forms.Button();
       this.btnApply = new System.Windows.Forms.Button();
       this.btnReconnect = new System.Windows.Forms.Button();
+      this.btnGenicam = new System.Windows.Forms.Button();
       this.gbProperties.SuspendLayout();
       this.groupBox2.SuspendLayout();
       this.SuspendLayout();
@@ -243,12 +244,24 @@ namespace Kinovea.Camera.GenICam
       this.btnReconnect.UseVisualStyleBackColor = true;
       this.btnReconnect.Click += new System.EventHandler(this.BtnReconnect_Click);
       // 
+      // btnGenicam
+      // 
+      this.btnGenicam.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnGenicam.Location = new System.Drawing.Point(12, 473);
+      this.btnGenicam.Name = "btnGenicam";
+      this.btnGenicam.Size = new System.Drawing.Size(122, 24);
+      this.btnGenicam.TabIndex = 204;
+      this.btnGenicam.Text = "GenICam XML";
+      this.btnGenicam.UseVisualStyleBackColor = true;
+      this.btnGenicam.Click += new System.EventHandler(this.btnGenicam_Click);
+      // 
       // FormConfiguration
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.Color.White;
       this.ClientSize = new System.Drawing.Size(458, 509);
+      this.Controls.Add(this.btnGenicam);
       this.Controls.Add(this.btnReconnect);
       this.Controls.Add(this.btnApply);
       this.Controls.Add(this.groupBox2);
@@ -280,5 +293,6 @@ namespace Kinovea.Camera.GenICam
         private System.Windows.Forms.Label lblResultingFramerate;
         private System.Windows.Forms.CheckBox cbDebayering;
         private System.Windows.Forms.CheckBox cbCompression;
+        private System.Windows.Forms.Button btnGenicam;
     }
 }

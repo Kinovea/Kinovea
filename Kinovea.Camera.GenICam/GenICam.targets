@@ -27,6 +27,7 @@
     <Copy SourceFiles="..\Refs\Baumer\2.11.0\msvcp140.dll" DestinationFolder="$(TargetDir)" />
     <Copy SourceFiles="..\Refs\Baumer\2.11.0\NodeMapData_MD_VC141_v3_2.dll" DestinationFolder="$(TargetDir)" />
     <Copy SourceFiles="..\Refs\Baumer\2.11.0\vcruntime140.dll" DestinationFolder="$(TargetDir)" />
+    <Copy SourceFiles="..\Refs\Baumer\2.11.0\vcruntime140_1.dll" DestinationFolder="$(TargetDir)" />
     <Copy SourceFiles="..\Refs\Baumer\2.11.0\XmlParser_MD_VC141_v3_2.dll" DestinationFolder="$(TargetDir)" />
 
   </Target>

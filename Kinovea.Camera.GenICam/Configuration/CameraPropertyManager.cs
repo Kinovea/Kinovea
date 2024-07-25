@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Globalization;
-using System.Xml;
 using BGAPI2;
 using Kinovea.Services;
+using static BGAPI2.Node;
 
 namespace Kinovea.Camera.GenICam
 {
@@ -33,8 +31,6 @@ namespace Kinovea.Camera.GenICam
                 WriteEnum(device, "DeviceLinkThroughputLimitMode", "Off");
             }
         }
-
-
         #region Read high level
 
         /// <summary>
@@ -831,7 +827,7 @@ namespace Kinovea.Camera.GenICam
             }
         }
 
-        private static string BoolValueToString(object value)
+        private static string BoolValueToString(SmartValue value)
         {
             return ((bool)value).ToString(CultureInfo.InvariantCulture).ToLower();
         }
