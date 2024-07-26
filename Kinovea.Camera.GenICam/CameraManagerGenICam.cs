@@ -96,9 +96,10 @@ namespace Kinovea.Camera.GenICam
                 return summaries;
 
             // Search for devices.
-            try
+            foreach (KeyValuePair<string, Interface> interfacePair in interfaces)
             {
-                foreach (KeyValuePair<string, Interface> interfacePair in interfaces)
+
+                try
                 {
                     var interf = interfacePair.Value;
                     if (string.IsNullOrEmpty(interf.Id))
@@ -107,6 +108,9 @@ namespace Kinovea.Camera.GenICam
                     if (!interf.IsOpen)
                         interf.Open();
                         
+                    if (!interf.IsOpen)
+                        continue;
+
                     interf.Devices.Refresh(200);
                     foreach (KeyValuePair<string, Device> devicePair in interf.Devices)
                     {
@@ -172,10 +176,23 @@ namespace Kinovea.Camera.GenICam
                         cache.Add(identifier, summary);
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                log.ErrorFormat("Error while scanning for devices. {0}", e.Message);
+                catch (BGAPI2.Exceptions.ErrorException e)
+                {
+                    log.ErrorFormat("ErrorException while scanning for devices on interface: {0}", interfacePair.Value.DisplayName);
+                    log.ErrorFormat("Description: {0}", e.GetErrorDescription());
+                    log.ErrorFormat("Function name: {0}", e.GetFunctionName());
+                }
+                catch (BGAPI2.Exceptions.LowLevelException e)
+                {
+                    log.ErrorFormat("LowLevelException while scanning for devices on interface: {0}", interfacePair.Value.DisplayName);
+                    log.ErrorFormat("Description: {0}", e.GetErrorDescription());
+                    log.ErrorFormat("Function name: {0}", e.GetFunctionName());
+                }
+                catch (Exception e)
+                {
+                    log.ErrorFormat("Exception while scanning for devices on interface: {0}", interfacePair.Value.DisplayName);
+                    log.ErrorFormat("Description: {0}", e.Message);
+                }
             }
             
             List<CameraSummary> lost = new List<CameraSummary>();
@@ -338,10 +355,17 @@ namespace Kinovea.Camera.GenICam
                     if (!system.IsOpen)
                         system.Open();
 
+                    if (!system.IsOpen)
+                    {
+                        log.DebugFormat("Could not open system {0} ({1}).", system.DisplayName, system.Vendor);
+                        continue;
+                    }
+
                     log.DebugFormat("Opened system {0} ({1}).", system.DisplayName, system.Vendor);
                     //systems.Add(systemPair.Key, system);
 
                     system.Interfaces.Refresh(200);
+                    int foundInterfaces = 0;
                     foreach (KeyValuePair<string, Interface> interfacePair in system.Interfaces)
                     {
                         var interf = interfacePair.Value;
@@ -353,11 +377,30 @@ namespace Kinovea.Camera.GenICam
 
                         log.DebugFormat("\t\tOpened interface {0}.", interf.DisplayName);
                         interfaces.Add(interfacePair.Key, interf);
+                        foundInterfaces++;
+                    }
+
+                    if (foundInterfaces == 0)
+                    {
+                        system.Close();
                     }
                 }
-                catch
+                catch (BGAPI2.Exceptions.ErrorException e)
                 {
-                    log.DebugFormat("Error while opening system {0} ({1}).", systemPair.Value.DisplayName, systemPair.Value.Vendor);
+                    log.ErrorFormat("Error while listing interfaces on GenICam system {0}", system.DisplayName);
+                    log.ErrorFormat("Description: {0}", e.GetErrorDescription());
+                    log.ErrorFormat("Function name: {0}", e.GetFunctionName());
+                }
+                catch (BGAPI2.Exceptions.LowLevelException e)
+                {
+                    log.ErrorFormat("LowLevelException while listing interfaces on GenICam system: {0}", system.DisplayName);
+                    log.ErrorFormat("Description: {0}", e.GetErrorDescription());
+                    log.ErrorFormat("Function name: {0}", e.GetFunctionName());
+                }
+                catch (Exception e)
+                {
+                    log.ErrorFormat("Exception while listing interfaces on GenICam system: {0}", system.DisplayName);
+                    log.ErrorFormat("Description: {0}", e.Message);
                 }
             }
         }

@@ -139,7 +139,7 @@ namespace Kinovea.Camera.GenICam
 
             dataStream.StartAcquisition();
             //device.RemoteNodeList["AcquisitionMode"].Value = "Continuous";
-            device.RemoteNodeList["AcquisitionStart"].Execute();
+            CameraPropertyManager.ExecuteCommand(device, "AcquisitionStart");
             started = true;
 
             // Wait for one frame.
@@ -172,9 +172,9 @@ namespace Kinovea.Camera.GenICam
 
             // setup
             dataStream.StartAcquisition();
-            device.RemoteNodeList["AcquisitionMode"].Value = "Continuous";
-            device.RemoteNodeList["AcquisitionStart"].Execute();
-
+            if (device.RemoteNodeList.GetNodePresent("AcquisitionMode"))
+                device.RemoteNodeList["AcquisitionMode"].Value = "Continuous";
+            CameraPropertyManager.ExecuteCommand(device, "AcquisitionStart");
             started = true;
 
             // TODO: use ThreadPool instead ?
@@ -194,10 +194,8 @@ namespace Kinovea.Camera.GenICam
                 grabThread.Join();
             }
 
-            if (device.RemoteNodeList.GetNodePresent("AcquisitionAbort"))
-                device.RemoteNodeList["AcquisitionAbort"].Execute();
-
-            device.RemoteNodeList["AcquisitionStop"].Execute();
+            CameraPropertyManager.ExecuteCommand(device, "AcquisitionAbort");
+            CameraPropertyManager.ExecuteCommand(device, "AcquisitionStop");
             dataStream.StopAcquisition();
         }
         

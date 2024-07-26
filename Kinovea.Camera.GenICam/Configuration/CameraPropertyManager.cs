@@ -431,19 +431,30 @@ namespace Kinovea.Camera.GenICam
         }
         
         /// <summary>
-        /// Read an integer value with no error checking.
-        /// Should only be used for width or height.
+        /// Read an integer value directly.
         /// </summary>
         public static int ReadInteger(Device device, string symbol)
         {
+            bool readable = NodeIsReadable(device, symbol);
+            if (!readable)
+            {
+                return default;
+            }
+
             return (int)device.RemoteNodeList[symbol].Value;
         }
 
         /// <summary>
-        /// Read a string property with no error checking.
+        /// Read a string property directly.
         /// </summary>
         public static string ReadString(Device device, string symbol)
         {
+            bool readable = NodeIsReadable(device, symbol);
+            if (!readable)
+            {
+                return default;
+            }
+
             return (string)device.RemoteNodeList[symbol].Value;
         }
 
@@ -557,6 +568,7 @@ namespace Kinovea.Camera.GenICam
 
         /// <summary>
         /// Get a handle to a specific GenICam node in the passed NodeMap.
+        /// Returns null if the node wasn't found, is not implemented or is not available.
         /// </summary>
         public static Node GetNode(NodeMap map, string name)
         {
@@ -569,6 +581,51 @@ namespace Kinovea.Camera.GenICam
                 return null;
 
             return node;
+        }
+
+        /// <summary>
+        /// Execute a command property.
+        /// Return true if the command was executed.
+        /// </summary>
+        public static bool ExecuteCommand(Device device, string command)
+        {
+            if (device == null || !device.IsOpen)
+                return false;
+
+            if (!device.RemoteNodeList.GetNodePresent(command))
+                return false;
+
+            Node node = device.RemoteNodeList[command];
+         
+            // FIXME: check this node is of type command.
+            if (!node.IsImplemented || !node.IsAvailable)
+                return false;
+
+            bool result = false;
+            try
+            {
+                node.Execute();
+                result = true;
+            }
+            catch (BGAPI2.Exceptions.ErrorException e)
+            {
+                log.ErrorFormat("ErrorException while executing command: {0}", command);
+                log.ErrorFormat("Description: {0}", e.GetErrorDescription());
+                log.ErrorFormat("Function name: {0}", e.GetFunctionName());
+            }
+            catch (BGAPI2.Exceptions.LowLevelException e)
+            {
+                log.ErrorFormat("LowLevelException while executing command: {0}", command);
+                log.ErrorFormat("Description: {0}", e.GetErrorDescription());
+                log.ErrorFormat("Function name: {0}", e.GetFunctionName());
+            }
+            catch (Exception e)
+            {
+                log.ErrorFormat("Exception while executing command: {0}", command);
+                log.ErrorFormat("Description: {0}", e.Message);
+            }
+
+            return result;
         }
         #endregion
 
