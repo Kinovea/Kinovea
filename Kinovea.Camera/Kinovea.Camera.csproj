@@ -227,6 +227,7 @@
     <EmbeddedResource Include="Languages\CameraLang.sv.resx" />
     <EmbeddedResource Include="Languages\CameraLang.th.resx" />
     <EmbeddedResource Include="Languages\CameraLang.tr.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.uk.resx" />
     <EmbeddedResource Include="Languages\CameraLang.Zh-CHS.resx" />
     <EmbeddedResource Include="Languages\CameraLang.zh-Hant.resx" />
     <EmbeddedResource Include="Properties\Icons.resx">

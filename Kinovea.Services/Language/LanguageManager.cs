@@ -76,6 +76,7 @@ namespace Kinovea.Services
             languages.Add("sv", "Svenska");
             languages.Add("th", "ไทย");
             languages.Add("tr", "Türkçe");
+            languages.Add("uk", "Українська");
             languages.Add("zh-CHS", "简体中文");
             languages.Add("zh-CHT", "繁體中文");
 
@@ -98,22 +99,23 @@ namespace Kinovea.Services
             // we do not include the language.
 
             // Reference: https://hosted.weblate.org/projects/kinovea/#languages
-            // Last check: 2024-05-18.
+            // Last check: 2024-07-27.
 
             // Languages with less than 50% translation coverage.
-            languages.Remove("da"); // Danish.
-            languages.Remove("el"); // Greek.
-            languages.Remove("ms"); // Malay.
-            languages.Remove("no"); // Norwegian.
+            languages.Remove("da");         // Danish.
+            languages.Remove("el");         // Greek.
+            languages.Remove("ms");         // Malay.
+            languages.Remove("no");         // Norwegian.
             languages.Remove("sr-Latn-RS"); // Serbo-croatian.
+            languages.Remove("uk");         // Ukrainian.
 
             // Languages between 50% and 85%.
-            //languages.Remove("bg"); // Bulgarian.
-            //languages.Remove("fa"); // Farsi.
+            //languages.Remove("bg");       // Bulgarian.
+            //languages.Remove("fa");       // Farsi.
             languages.Remove("sr-Cyrl-RS"); // Serbian.
-            languages.Remove("sv"); // Swedish.
-            languages.Remove("th"); // Thai.
-            //languages.Remove("tr"); // Turkish.
+            languages.Remove("sv");         // Swedish.
+            languages.Remove("th");         // Thai.
+            //languages.Remove("tr");       // Turkish.
         }
 
         /// <summary>
