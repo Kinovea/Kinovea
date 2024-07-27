@@ -302,7 +302,7 @@
   </data>
   <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Експорт во табеларен приказ</value>
   </data>
-  <data name="mnuFormat" xml:space="preserve"><value>Формат на сликата</value>
+  <data name="mnuFormat" xml:space="preserve"><value>Сооднос на аспект</value>
   </data>
   <data name="mnuFormatAuto" xml:space="preserve"><value>Автоматско пронаоѓање</value>
   </data>
@@ -677,7 +677,7 @@
     <value>Крива:</value>
   </data>
   <data name="mnuRotation" xml:space="preserve">
-    <value>Ротација на сликата</value>
+    <value>Ротација</value>
   </data>
   <data name="mnuThumbnailDelete" xml:space="preserve">
     <value>Отстрани</value>
@@ -1071,5 +1071,275 @@
   </data>
   <data name="Infobar_Player_StartWatcher" xml:space="preserve">
     <value>Започни го набљудувањето на каталогот: {0}</value>
+  </data>
+  <data name="mnuAction_Chrono_Start" xml:space="preserve">
+    <value>Започнете нов временски интервал на овој кадар</value>
+  </data>
+  <data name="mnuAction_Chrono_Stop" xml:space="preserve">
+    <value>Стоп: завршете го тековниот временски интервал на овој кадар</value>
+  </data>
+  <data name="mnuExport_Video" xml:space="preserve">
+    <value>Извези видео</value>
+  </data>
+  <data name="mnuExport_Video_SideBySide" xml:space="preserve">
+    <value>Едно до друго…</value>
+  </data>
+  <data name="mnuMeasure_Clock" xml:space="preserve">
+    <value>Час</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Сортирај по</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
+    <value>Прикажи круг што најдобро одговара</value>
+  </data>
+  <data name="dlgCalibratePlane_AveragePixelSize" xml:space="preserve">
+    <value>Просечна големина на пиксели: {0}.</value>
+  </data>
+  <data name="dlgCalibratePlane_HelpPlane" xml:space="preserve">
+    <value>Внесете ја должината на секоја страна.</value>
+  </data>
+  <data name="formConfigureExport_ImageSequence" xml:space="preserve">
+    <value>Извезете секвенца на слики</value>
+  </data>
+  <data name="formConfigureExport_SBS" xml:space="preserve">
+    <value>Извезете едно до друго</value>
+  </data>
+  <data name="formConfigureExport_SBS_Horizontal" xml:space="preserve">
+    <value>Хоризонтално</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveCurrentEnd" xml:space="preserve">
+    <value>Поместете го крајот на тековниот временски сегмент на овој кадар</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveNextSplit" xml:space="preserve">
+    <value>Поместете ја следната точка на поделба на овој кадар</value>
+  </data>
+  <data name="mnuAction_Chrono_Split" xml:space="preserve">
+    <value>Точка на раздвојување: завршете го тековниот временски интервал на овој кадар и започнете нов</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetAllTiles" xml:space="preserve">
+    <value>Ресетирај ги сите ќелии</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetLabelPositions" xml:space="preserve">
+    <value>Ресетирај ги позициите на етикетите</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetTile" xml:space="preserve">
+    <value>Ресетирај ја оваа ќелија</value>
+  </data>
+  <data name="mnuDemosaic" xml:space="preserve">
+    <value>Демосирање</value>
+  </data>
+  <data name="mnuDemosaicNone" xml:space="preserve">
+    <value>Ништо</value>
+  </data>
+  <data name="mnuExitFilter" xml:space="preserve">
+    <value>Излез {0}</value>
+  </data>
+  <data name="mnuExport_Document" xml:space="preserve">
+    <value>Експортирај документ</value>
+  </data>
+  <data name="mnuExport_Image" xml:space="preserve">
+    <value>Експортирај слики</value>
+  </data>
+  <data name="mnuExport_Images_Image" xml:space="preserve">
+    <value>Слика…</value>
+  </data>
+  <data name="mnuExport_Images_Sequence" xml:space="preserve">
+    <value>Редоследот на слики…</value>
+  </data>
+  <data name="mnuExport_Images_SideBySide" xml:space="preserve">
+    <value>Едно до друго…</value>
+  </data>
+  <data name="mnuExport_Spreadsheet_ChronoCSV" xml:space="preserve">
+    <value>Хронометар CSV…</value>
+  </data>
+  <data name="mnuExport_Video_Slideshow" xml:space="preserve">
+    <value>Видео слајдшоу…</value>
+  </data>
+  <data name="mnuExport_Video_Video" xml:space="preserve">
+    <value>Видео…</value>
+  </data>
+  <data name="mnuExport_Video_WithPauses" xml:space="preserve">
+    <value>Видео со паузи…</value>
+  </data>
+  <data name="mnuLensCalibration" xml:space="preserve">
+    <value>Калибрација на објективот…</value>
+  </data>
+  <data name="mnuMagnifierFreeze" xml:space="preserve">
+    <value>Замрзни</value>
+  </data>
+  <data name="mnuMagnifierUnfreeze" xml:space="preserve">
+    <value>Одмрзни</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Cumul" xml:space="preserve">
+    <value>Кумулативно време</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Menu" xml:space="preserve">
+    <value>Колони</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Tag" xml:space="preserve">
+    <value>Означете</value>
+  </data>
+  <data name="mnuOptions_Chrono_Locked" xml:space="preserve">
+    <value>Заклучено</value>
+  </data>
+  <data name="mnuOptions_Kinogram_AutoInterpolate" xml:space="preserve">
+    <value>Автоматска интерполација</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowKeyImageLabels" xml:space="preserve">
+    <value>Прикажи клучни етикети на слики</value>
+  </data>
+  <data name="mnuOptions_Trajectory_UseKeyImageColors" xml:space="preserve">
+    <value>Користете клучни бои на сликата</value>
+  </data>
+  <data name="mnuProperties" xml:space="preserve">
+    <value>Својства</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>Растечки</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Датум</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>Опаѓачки</value>
+  </data>
+  <data name="mnuThumbnails" xml:space="preserve">
+    <value>Сликички</value>
+  </data>
+  <data name="mnuThumbnail_MoveToCurrentTime" xml:space="preserve">
+    <value>Премести во тековното време</value>
+  </data>
+  <data name="mnuTimeCalibration" xml:space="preserve">
+    <value>Калибрација на време…</value>
+  </data>
+  <data name="mnuTimeSections" xml:space="preserve">
+    <value>Временски делови</value>
+  </data>
+  <data name="toolTip_Speed" xml:space="preserve">
+    <value>Брзина</value>
+  </data>
+  <data name="mnuOptions_CoordinateSystem_ShowGrid" xml:space="preserve">
+    <value>Прикажи решетка</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowFrame" xml:space="preserve">
+    <value>Прикажи кадар</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowHorizontalAxis" xml:space="preserve">
+    <value>Прикажи хоризонтална оска</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowThirds" xml:space="preserve">
+    <value>Прикажи 3x3 мрежа</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowVerticalAxis" xml:space="preserve">
+    <value>Прикажи вертикална оска</value>
+  </data>
+  <data name="dlgCalibratePlane_HelpDistanceGrid" xml:space="preserve">
+    <value>Внесете го растојанието од потеклото за секој маркер.</value>
+  </data>
+  <data name="filterName_Kinogram" xml:space="preserve">
+    <value>Кинограм</value>
+  </data>
+  <data name="filterName_Analysis" xml:space="preserve">
+    <value>Анализа</value>
+  </data>
+  <data name="formConfigureKinogram_CropSize" xml:space="preserve">
+    <value>Големина на сечењето:</value>
+  </data>
+  <data name="formConfigureExport_SBS_Vertical" xml:space="preserve">
+    <value>Вертикално</value>
+  </data>
+  <data name="lblConfig_ImageSize" xml:space="preserve">
+    <value>Големина на слика:</value>
+  </data>
+  <data name="mnuAction_Chrono_DeleteSection" xml:space="preserve">
+    <value>Избришете го тековниот временски сегмент</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveCurrentStart" xml:space="preserve">
+    <value>Поместете го почетокот на тековниот временски сегмент на овој кадар</value>
+  </data>
+  <data name="formConfigureKinogram_lblFrameInterval" xml:space="preserve">
+    <value>Интервал на кадри: {0:0.000} ms</value>
+  </data>
+  <data name="formConfigureKinogram_lblTotal" xml:space="preserve">
+    <value>Кадри: {0}</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveNextStart" xml:space="preserve">
+    <value>Поместете го почетокот на следниот дел во овој кадар</value>
+  </data>
+  <data name="mnuAction_Kinogram_Interpolate" xml:space="preserve">
+    <value>Вметни ќелија</value>
+  </data>
+  <data name="Generic_OK" xml:space="preserve">
+    <value>Ок</value>
+  </data>
+  <data name="formConfigureKinogram_Table" xml:space="preserve">
+    <value>Табела:</value>
+  </data>
+  <data name="mnuAction_Chrono_MovePrevEnd" xml:space="preserve">
+    <value>Поместете го крајот на претходниот дел на овој кадар</value>
+  </data>
+  <data name="mnuAction_Chrono_MovePrevSplit" xml:space="preserve">
+    <value>Преместете ја претходната точка на поделба на овој кадар</value>
+  </data>
+  <data name="formConfigureKinogram_Title" xml:space="preserve">
+    <value>Конфигурирајте го кинограмот</value>
+  </data>
+  <data name="mnuAction" xml:space="preserve">
+    <value>Акција</value>
+  </data>
+  <data name="mnuAction_Chrono_DeleteTimes" xml:space="preserve">
+    <value>Избришете ги сите времиња</value>
+  </data>
+  <data name="mnuExport_Images_Keys" xml:space="preserve">
+    <value>Клучни слики…</value>
+  </data>
+  <data name="mnuExport_Spreadsheet" xml:space="preserve">
+    <value>Извези табела</value>
+  </data>
+  <data name="mnuExport_Spreadsheet_TrajectoryCSV" xml:space="preserve">
+    <value>Траекторија CSV…</value>
+  </data>
+  <data name="mnuMeasure_Name" xml:space="preserve">
+    <value>Име</value>
+  </data>
+  <data name="mnuMeasure_Label_Menu" xml:space="preserve">
+    <value>Етикета</value>
+  </data>
+  <data name="mnuMeasure_Label_None" xml:space="preserve">
+    <value>Ништо</value>
+  </data>
+  <data name="mnuMeasure_Labels_Menu" xml:space="preserve">
+    <value>Етикети</value>
+  </data>
+  <data name="mnuMeasure_FrameNumber" xml:space="preserve">
+    <value>Број на кадар</value>
+  </data>
+  <data name="mnuMeasure_Stopwatch" xml:space="preserve">
+    <value>Штоперица</value>
+  </data>
+  <data name="mnuOptions_Kinogram_ShowBorder" xml:space="preserve">
+    <value>Прикажи граница</value>
+  </data>
+  <data name="mnuOptions_Trajectory_SeeFuture" xml:space="preserve">
+    <value>Види иднина</value>
+  </data>
+  <data name="mnuOptions_Kinogram_RightToLeft" xml:space="preserve">
+    <value>Од десно кон лево</value>
+  </data>
+  <data name="mnuOptions_Trajectory_Interactive" xml:space="preserve">
+    <value>Интерактивна траекторија</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>Име</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowTrackLabel" xml:space="preserve">
+    <value>Прикажи етикета на траекторија</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Големина</value>
+  </data>
+  <data name="mnuOptions_CoordinateSystem_ShowGraduations" xml:space="preserve">
+    <value>Прикажи градација</value>
   </data>
 </root>

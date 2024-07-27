@@ -64,11 +64,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="dlgAbout_Translation" xml:space="preserve"><value>Трансляция</value>
+  <data name="dlgAbout_Translation" xml:space="preserve"><value>Перевод</value>
   </data>
   <data name="dlgAbout_License" xml:space="preserve"><value>Лицензия</value>
   </data>
-  <data name="dlgAbout_BuildingBlocks" xml:space="preserve"><value>Фрагменты</value>
+  <data name="dlgAbout_BuildingBlocks" xml:space="preserve"><value>Структурные блоки</value>
   </data>
   <data name="dlgAbout_Citation" xml:space="preserve"><value>Цитаты</value>
   </data>
