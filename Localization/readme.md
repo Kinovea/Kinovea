@@ -19,8 +19,23 @@
 - New point releases are made with the updated translations.
 - At the end of the dev cycle, in Weblate, LOCK the translation.
 - Collect all the new strings from the code and add them to English locale.
-- On Weblate, translate the new strings to French, Spanish, Italian.
-- Merge and verify translations in context.
+
+
+## Adding new strings
+
+- Weblate: Lock
+- VS: add new entries to the assembly resx reference file, ex: RootLang.resx
+- VS: replace the string literals with the newly created resources.
+- git: Commit + push.
+- Weblate: Manage > Repository maintenance > Update.
+- At this point the new strings should be visible and other languages should be marked as less than 100%.
+- Weblate: translate the new strings to French, Spanish, Italian.
+- Weblate: commit + push.
+- git: merge Weblate PR.
+- Pull and verify translations in context.
+- Weblate: unlock.
+
+
 
 
 
