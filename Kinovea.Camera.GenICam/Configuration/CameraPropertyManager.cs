@@ -379,8 +379,8 @@ namespace Kinovea.Camera.GenICam
             p.Maximum = max.ToString(CultureInfo.InvariantCulture);
             p.Step = step.ToString(CultureInfo.InvariantCulture);
             p.CurrentValue = currentValue.ToString(CultureInfo.InvariantCulture);
-
-            log.DebugFormat("Read GenICam property {0}", p);
+            
+            log.DebugFormat("Read GenICam property: \"{0}\"", symbol);
 
             return p;
         }
@@ -425,7 +425,7 @@ namespace Kinovea.Camera.GenICam
             p.Representation = ConvertRepresentation(repr);
             p.CurrentValue = currentValue.ToString(CultureInfo.InvariantCulture);
 
-            log.DebugFormat("Read GenICam property {0}", p);
+            log.DebugFormat("Read GenICam property: \"{0}\"", symbol);
 
             return p;
         }
@@ -605,6 +605,7 @@ namespace Kinovea.Camera.GenICam
             try
             {
                 node.Execute();
+                log.DebugFormat("Executed command: \"{0}\"", command);
                 result = true;
             }
             catch (BGAPI2.Exceptions.ErrorException e)

@@ -109,6 +109,7 @@
   <ItemGroup>
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.14\lib\net45\log4net.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="PylonC.NET, Version=4.2.0.0, Culture=neutral, PublicKeyToken=a77e8471c5919d5a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
