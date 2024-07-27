@@ -475,9 +475,11 @@ namespace Kinovea.ScreenManager
                         DrawTrajectory(canvas, points, currentPointIndex, last, opacity, transformer, currentTimestamp);
                     }
 
-                    // TODO: camera motion for keyframe labels attach points.
                     if (drawKeyframeLabels)
                         DrawKeyframesLabels(canvas, points, (float)opacityFactor, transformer);
+
+                    if (showTrackLabel)
+                        DrawMainLabel(canvas, currentPointIndex, opacityFactor, transformer);
 
                 }
                 else if (trackStatus == TrackStatus.Edit)
@@ -505,9 +507,6 @@ namespace Kinovea.ScreenManager
 
                 if (opacityFactor == 1.0)
                     DrawTrackerHelp(canvas, transformer, styleHelper.Color, opacityFactor);
-
-                if (trackStatus == TrackStatus.Interactive && showTrackLabel)
-                    DrawMainLabel(canvas, currentPointIndex, opacityFactor, transformer);
             }
         }
         public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
@@ -792,8 +791,7 @@ namespace Kinovea.ScreenManager
             float opacityFuture = GetOpacity(trackStatus, baselineOpacity, false);
             long currentTimestamp = positions[currentPointIndex].T;
 
-            // FIXME: use the points position translated by camera motion.
-
+            // The point positions are already up to date with regards to camera motion.
             foreach (MiniLabel kfl in keyframeLabels)
             {
                 bool isFuture = kfl.Timestamp > currentTimestamp;
@@ -847,16 +845,14 @@ namespace Kinovea.ScreenManager
                 canvas.TranslateTransform(-ellipse.Center.X, -ellipse.Center.Y);
             }
         }
-        private void DrawMainLabel(Graphics canvas, int currentPoint, double opacityFactor, IImageToViewportTransformer transformer)
+        private void DrawMainLabel(Graphics canvas, int currentPointIndex, double opacityFactor, IImageToViewportTransformer transformer)
         {
             // Draw the main label and its connector to the current point.
             if (opacityFactor != 1.0f || trackStatus == TrackStatus.Configuration)
                 return;
 
-            // The main label is always only attached to the current frame so 
-            // there is no camera motion transform involved.
-            miniLabel.SetAttach(positions[currentPoint].Point, true);
-            miniLabel.SetText(GetMeasureLabelText(currentPoint), transformer);
+            // The attach position is already up to date with regards to camera motion.
+            miniLabel.SetText(GetMeasureLabelText(currentPointIndex), transformer);
             miniLabel.Draw(canvas, transformer, opacityFactor);
         }
         private float GetOpacity(TrackStatus status, float baselineOpacity, bool isPast)
@@ -1122,6 +1118,15 @@ namespace Kinovea.ScreenManager
                         keyframeLabels[j].SetAttach(p, true);
                         break;
                     }
+                }
+                
+                // Update the attach point of the main mini label.
+                // If we are outside the trajectory range stick it to the first or last point.
+                if ((currentTimestamp < positions[0].T && i == 0) || 
+                    (currentTimestamp > positions[positions.Count - 1].T && i == positions.Count - 1) || 
+                    (currentTimestamp == tp.T))
+                {
+                    miniLabel.SetAttach(p, true);
                 }
             }
 
