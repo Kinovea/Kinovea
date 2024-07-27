@@ -316,7 +316,6 @@ namespace Kinovea.ScreenManager
         private int m_iActiveKeyFrameIndex = -1;	// The index of the keyframe we are on, or -1 if not a KF.
         private AbstractDrawingTool m_ActiveTool;
         private DrawingToolPointer m_PointerTool;
-        private formKeyframeComments m_KeyframeCommentsHub;
         private bool m_bKeyframePanelCollapsed = true;
         private bool m_bKeyframePanelCollapsedManual = false;
         private bool m_bTextEdit;
@@ -442,7 +441,6 @@ namespace Kinovea.ScreenManager
             this.Dock = DockStyle.Fill;
             ShowHideRenderingSurface(false);
             SetupPrimarySelectionPanel();
-            SetupKeyframeCommentsHub();
             pnlThumbnails.Controls.Clear();
             keyframeBoxes.Clear();
             CollapseKeyframePanel(true);
@@ -489,7 +487,6 @@ namespace Kinovea.ScreenManager
             EnableDisableExportButtons(true);
             buttonPlay.Image = Resources.flatplay;
             sldrSpeed.Enabled = false;
-            m_KeyframeCommentsHub.Hide();
             m_LaunchDescription = null;
             infobar.Visible = false;
 
@@ -597,7 +594,6 @@ namespace Kinovea.ScreenManager
             zoomHelper.Value = 1.0f;
             m_PointerTool.SetZoomLocation(new Point(-1, -1));
             SetUpForNewMovie();
-            m_KeyframeCommentsHub.UserActivated = false;
 
             // Check for launch description and startup kva.
             bool recoveredMetadata = false;
@@ -898,7 +894,6 @@ namespace Kinovea.ScreenManager
             ReloadTooltipsCulture();
             ReloadToolsCulture();
             ReloadMenusCulture();
-            m_KeyframeCommentsHub.RefreshUICulture();
             for (int i = 0; i < keyframeBoxes.Count; i++)
                 keyframeBoxes[i].RefreshUICulture();
 
@@ -1138,11 +1133,6 @@ namespace Kinovea.ScreenManager
         private void SetUpForNewMovie()
         {
             OnPoke();
-        }
-        private void SetupKeyframeCommentsHub()
-        {
-            m_KeyframeCommentsHub = new formKeyframeComments(this);
-            FormsHelper.MakeTopmost(m_KeyframeCommentsHub);
         }
         private void LookForLinkedAnalysis(string file)
         {
@@ -1545,10 +1535,6 @@ namespace Kinovea.ScreenManager
 
         public void AfterClose()
         {
-            m_KeyframeCommentsHub.Owner = null;
-            m_KeyframeCommentsHub.Dispose();
-            m_KeyframeCommentsHub = null;
-
             m_DeselectionTimer.Tick -= DeselectionTimer_OnTick;
             m_DeselectionTimer.Dispose();
         }
@@ -1580,9 +1566,6 @@ namespace Kinovea.ScreenManager
         #region Misc Events
         private void btnClose_Click(object sender, EventArgs e)
         {
-            if (m_KeyframeCommentsHub.Visible)
-                m_KeyframeCommentsHub.CommitChanges();
-
             // Propagate to PlayerScreen which will report to ScreenManager.
             if (CloseAsked != null)
                 CloseAsked(this, EventArgs.Empty);
@@ -4172,19 +4155,6 @@ namespace Kinovea.ScreenManager
                     if (_bAllowUIUpdate)
                         keyframeBoxes[i].DisplayAsSelected(false);
                 }
-            }
-
-            if (_bAllowUIUpdate && m_KeyframeCommentsHub.UserActivated && m_iActiveKeyFrameIndex >= 0)
-            {
-                m_KeyframeCommentsHub.UpdateContent(m_FrameServer.Metadata[m_iActiveKeyFrameIndex]);
-                m_KeyframeCommentsHub.Visible = true;
-            }
-            else
-            {
-                if (m_KeyframeCommentsHub.Visible)
-                    m_KeyframeCommentsHub.CommitChanges();
-
-                m_KeyframeCommentsHub.Visible = false;
             }
         }
         private void EnableDisableKeyframes()

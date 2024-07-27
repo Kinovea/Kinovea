@@ -863,12 +863,6 @@
     <Compile Include="PlayerScreen\Forms\FormConfigureTrajectoryDisplay.Designer.cs">
       <DependentUpon>FormConfigureTrajectoryDisplay.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\Forms\FormKeyframeComments.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\Forms\FormKeyframeComments.Designer.cs">
-      <DependentUpon>FormKeyframeComments.cs</DependentUpon>
-    </Compile>
     <Compile Include="PlayerScreen\Forms\FormProgressBar.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1268,10 +1262,6 @@
     <EmbeddedResource Include="PlayerScreen\Forms\FormConfigureTrajectoryDisplay.resx">
       <SubType>Designer</SubType>
       <DependentUpon>FormConfigureTrajectoryDisplay.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\Forms\FormKeyframeComments.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>FormKeyframeComments.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
