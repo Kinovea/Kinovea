@@ -476,8 +476,8 @@ namespace Kinovea.Root
             
             mnuOptions.Text = RootLang.mnuOptions;
             mnuLanguages.Text = RootLang.mnuLanguages;
-            mnuTranslate1.Text = "Translate Kinovea…";
-            mnuTranslate2.Text = "Translate Kinovea…";
+            mnuTranslate1.Text = RootLang.mnuTranslate;
+            mnuTranslate2.Text = RootLang.mnuTranslate;
             mnuPreferences.Text = RootLang.mnuPreferences;
             mnuTimecode.Text = RootLang.mnuTimeFormat;
 
@@ -498,9 +498,7 @@ namespace Kinovea.Root
             mnuWorkspaceExport.Text = RootLang.mnuWorkspaceExport;
             mnuWorkspaceExport.Image = Properties.Resources.file_txt;
 
-            mnuPointer.Text = "Pointer";
-
-
+            mnuPointer.Text = RootLang.mnuPointer;
 
             mnuHelp.Text = RootLang.mnuHelp;
             mnuHelpContents.Text = RootLang.mnuHelpContents;
@@ -909,25 +907,25 @@ namespace Kinovea.Root
             mnuPointer.DropDownItems.Clear();
 
             // Standard menus.
-            ToolStripMenuItem mnuHand = new ToolStripMenuItem();
-            mnuHand.Text = "Default";
-            mnuHand.Image = Properties.Resources.handopen24c;
-            mnuHand.Tag = "::default";
-            mnuHand.Click += mnuPointer_OnClick;
+            ToolStripMenuItem mnuDefaultPointer = new ToolStripMenuItem();
+            mnuDefaultPointer.Text = RootLang.mnuDefaultPointer;
+            mnuDefaultPointer.Image = Properties.Resources.handopen24c;
+            mnuDefaultPointer.Tag = "::default";
+            mnuDefaultPointer.Click += mnuPointer_OnClick;
 
             ToolStripMenuItem mnuBigHand = new ToolStripMenuItem();
-            mnuBigHand.Text = "Big pointing hand";
+            mnuBigHand.Text = RootLang.mnuBigHand;
             mnuBigHand.Image = Properties.Resources.pointer_pointing_hand;
             mnuBigHand.Tag = "::bigHand";
             mnuBigHand.Click += mnuPointer_OnClick;
 
             ToolStripMenuItem mnuBigArrow = new ToolStripMenuItem();
-            mnuBigArrow.Text = "Big arrow";
+            mnuBigArrow.Text = RootLang.mnuBigArrow;
             mnuBigArrow.Image = Properties.Resources.pointer_arrow;
             mnuBigArrow.Tag = "::bigArrow";
             mnuBigArrow.Click += mnuPointer_OnClick;
 
-            mnuPointer.DropDownItems.Add(mnuHand);
+            mnuPointer.DropDownItems.Add(mnuDefaultPointer);
             mnuPointer.DropDownItems.Add(new ToolStripSeparator());
             mnuPointer.DropDownItems.Add(mnuBigHand);
             mnuPointer.DropDownItems.Add(mnuBigArrow);

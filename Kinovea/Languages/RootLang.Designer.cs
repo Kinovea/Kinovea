@@ -19,7 +19,7 @@ namespace Kinovea.Root.Languages {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class RootLang {
@@ -1177,6 +1177,33 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Big arrow.
+        /// </summary>
+        internal static string mnuBigArrow {
+            get {
+                return ResourceManager.GetString("mnuBigArrow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Big pointing hand.
+        /// </summary>
+        internal static string mnuBigHand {
+            get {
+                return ResourceManager.GetString("mnuBigHand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default.
+        /// </summary>
+        internal static string mnuDefaultPointer {
+            get {
+                return ResourceManager.GetString("mnuDefaultPointer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit.
         /// </summary>
         internal static string mnuEdit {
@@ -1267,6 +1294,15 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pointer.
+        /// </summary>
+        internal static string mnuPointer {
+            get {
+                return ResourceManager.GetString("mnuPointer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Preferences….
         /// </summary>
         internal static string mnuPreferences {
@@ -1308,6 +1344,15 @@ namespace Kinovea.Root.Languages {
         internal static string mnuTools {
             get {
                 return ResourceManager.GetString("mnuTools", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Translate Kinovea….
+        /// </summary>
+        internal static string mnuTranslate {
+            get {
+                return ResourceManager.GetString("mnuTranslate", resourceCulture);
             }
         }
         
