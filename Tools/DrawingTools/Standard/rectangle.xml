@@ -19,9 +19,5 @@
     <PenShape Key="pen shape">
       <Value>Solid</Value>
     </PenShape>
-    <Toggle Key="filled">
-      <Value>false</Value>
-      <Variant>Filled</Variant>
-    </Toggle>
   </DefaultStyle>
 </KinoveaDrawingTool>
