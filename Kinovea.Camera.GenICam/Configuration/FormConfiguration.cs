@@ -100,13 +100,13 @@ namespace Kinovea.Camera.GenICam
             this.connect = connect;
 
             InitializeComponent();
+            Localize();
+
             tbAlias.AutoSize = false;
             tbAlias.Height = 20;
-            
             tbAlias.Text = summary.Alias;
             lblSystemName.Text = summary.Name;
             btnIcon.BackgroundImage = summary.Icon;
-            btnReconnect.Text = CameraLang.FormConfiguration_Reconnect;
 
             SpecificInfo specific = summary.Specific as SpecificInfo;
             if (specific == null || specific.Device == null || specific.Device.Id == null || !specific.Device.IsOpen)
@@ -121,9 +121,20 @@ namespace Kinovea.Camera.GenICam
             compression = specific.Compression;
             
             Populate();
-            this.Text = CameraLang.FormConfiguration_Title;
-            btnApply.Text = CameraLang.Generic_Apply;
             UpdateResultingFramerate();
+        }
+
+        private void Localize()
+        {
+            this.Text = CameraLang.FormConfiguration_Title;
+            lblStreamFormat.Text = CameraLang.FormConfiguration_Properties_StreamFormat;
+            cbCompression.Text = "Enable hardware compression";
+            cbDebayering.Text = "Enable software demosaicing";
+            lblAuto.Text = "Auto";
+            lblResultingFramerate.Text = "Resulting framerate:";
+            btnGenicam.Text = "GenICam XML";
+            btnReconnect.Text = CameraLang.FormConfiguration_Reconnect;
+            btnApply.Text = CameraLang.Generic_Apply;
         }
         
         private void Populate()
@@ -155,8 +166,6 @@ namespace Kinovea.Camera.GenICam
 
         private void PopulateStreamFormat()
         {
-            lblColorSpace.Text = CameraLang.FormConfiguration_Properties_StreamFormat;
-
             bool readable = CameraPropertyManager.NodeIsReadable(device, "PixelFormat");
             if (!readable)
             {

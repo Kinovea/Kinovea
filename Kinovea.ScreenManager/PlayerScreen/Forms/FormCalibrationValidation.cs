@@ -138,6 +138,9 @@ namespace Kinovea.ScreenManager
             rbFix3D.Checked = validationMode == CalibrationValidationMode.Fix3D;
             rbFix1D.Checked = validationMode == CalibrationValidationMode.Fix1D;
             rbCompute3D.Checked = validationMode == CalibrationValidationMode.Compute3D;
+
+            btnCSV.Text = "Copy to clipboard";
+            lblCameraDistance.Text = "Camera distance";
         }
 
         /// <summary>

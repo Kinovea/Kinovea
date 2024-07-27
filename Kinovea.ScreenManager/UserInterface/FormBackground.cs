@@ -39,6 +39,9 @@ namespace Kinovea.ScreenManager
         {
             this.Text = "Background properties";
             lblOpaque.Text = "Opacity";
+            lblColor.Text = "Color";
+            btnCancel.Text = "Cancel";
+            btnOK.Text = "OK";
 
             int a = metadata.BackgroundColor.A;
             Color rgb = Color.FromArgb(metadata.BackgroundColor.R, metadata.BackgroundColor.G, metadata.BackgroundColor.B);

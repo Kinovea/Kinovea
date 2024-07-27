@@ -55,7 +55,7 @@ namespace Kinovea.Camera.GenICam
       this.lblResultingFramerate = new System.Windows.Forms.Label();
       this.lblAuto = new System.Windows.Forms.Label();
       this.cmbFormat = new System.Windows.Forms.ComboBox();
-      this.lblColorSpace = new System.Windows.Forms.Label();
+      this.lblStreamFormat = new System.Windows.Forms.Label();
       this.groupBox2 = new System.Windows.Forms.GroupBox();
       this.tbAlias = new System.Windows.Forms.TextBox();
       this.lblSystemName = new System.Windows.Forms.Label();
@@ -78,7 +78,7 @@ namespace Kinovea.Camera.GenICam
       this.gbProperties.Controls.Add(this.lblResultingFramerate);
       this.gbProperties.Controls.Add(this.lblAuto);
       this.gbProperties.Controls.Add(this.cmbFormat);
-      this.gbProperties.Controls.Add(this.lblColorSpace);
+      this.gbProperties.Controls.Add(this.lblStreamFormat);
       this.gbProperties.Location = new System.Drawing.Point(12, 94);
       this.gbProperties.Name = "gbProperties";
       this.gbProperties.Size = new System.Drawing.Size(434, 373);
@@ -161,15 +161,15 @@ namespace Kinovea.Camera.GenICam
       // 
       // lblColorSpace
       // 
-      this.lblColorSpace.BackColor = System.Drawing.Color.Transparent;
-      this.lblColorSpace.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblColorSpace.ForeColor = System.Drawing.Color.Black;
-      this.lblColorSpace.Location = new System.Drawing.Point(21, 26);
-      this.lblColorSpace.Name = "lblColorSpace";
-      this.lblColorSpace.Size = new System.Drawing.Size(187, 23);
-      this.lblColorSpace.TabIndex = 101;
-      this.lblColorSpace.Text = "Stream format:";
-      this.lblColorSpace.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      this.lblStreamFormat.BackColor = System.Drawing.Color.Transparent;
+      this.lblStreamFormat.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblStreamFormat.ForeColor = System.Drawing.Color.Black;
+      this.lblStreamFormat.Location = new System.Drawing.Point(21, 26);
+      this.lblStreamFormat.Name = "lblColorSpace";
+      this.lblStreamFormat.Size = new System.Drawing.Size(187, 23);
+      this.lblStreamFormat.TabIndex = 101;
+      this.lblStreamFormat.Text = "Stream format:";
+      this.lblStreamFormat.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // groupBox2
       // 
@@ -285,7 +285,7 @@ namespace Kinovea.Camera.GenICam
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox gbProperties;
         private System.Windows.Forms.ComboBox cmbFormat;
-        private System.Windows.Forms.Label lblColorSpace;
+        private System.Windows.Forms.Label lblStreamFormat;
         private System.Windows.Forms.Label lblAuto;
         private System.Windows.Forms.Button btnApply;
         private System.Windows.Forms.Button btnReconnect;
