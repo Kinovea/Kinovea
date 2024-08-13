@@ -38,10 +38,10 @@
       this.btnSpacer2 = new System.Windows.Forms.Button();
       this.btnFPS = new System.Windows.Forms.Button();
       this.lblFps = new System.Windows.Forms.Label();
-      this.toolTips = new System.Windows.Forms.ToolTip(this.components);
+      this.btnSpacer3 = new System.Windows.Forms.Button();
       this.btnMode = new System.Windows.Forms.Button();
       this.lblMode = new System.Windows.Forms.Label();
-      this.btnSpacer3 = new System.Windows.Forms.Button();
+      this.toolTips = new System.Windows.Forms.ToolTip(this.components);
       this.flowLayoutPanel1.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -77,7 +77,7 @@
       this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 2);
       this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
       this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-      this.flowLayoutPanel1.Size = new System.Drawing.Size(527, 21);
+      this.flowLayoutPanel1.Size = new System.Drawing.Size(800, 21);
       this.flowLayoutPanel1.TabIndex = 2;
       this.flowLayoutPanel1.WrapContents = false;
       // 
@@ -181,6 +181,19 @@
       this.lblFps.Text = "50.00 fps";
       this.lblFps.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
+      // btnSpacer3
+      // 
+      this.btnSpacer3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+      this.btnSpacer3.FlatAppearance.BorderSize = 0;
+      this.btnSpacer3.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+      this.btnSpacer3.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+      this.btnSpacer3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnSpacer3.Location = new System.Drawing.Point(334, 3);
+      this.btnSpacer3.Name = "btnSpacer3";
+      this.btnSpacer3.Size = new System.Drawing.Size(12, 18);
+      this.btnSpacer3.TabIndex = 11;
+      this.btnSpacer3.UseVisualStyleBackColor = true;
+      // 
       // btnMode
       // 
       this.btnMode.FlatAppearance.BorderSize = 0;
@@ -208,19 +221,6 @@
       this.lblMode.Text = "Analysis";
       this.lblMode.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
-      // btnSpacer3
-      // 
-      this.btnSpacer3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-      this.btnSpacer3.FlatAppearance.BorderSize = 0;
-      this.btnSpacer3.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-      this.btnSpacer3.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-      this.btnSpacer3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnSpacer3.Location = new System.Drawing.Point(334, 3);
-      this.btnSpacer3.Name = "btnSpacer3";
-      this.btnSpacer3.Size = new System.Drawing.Size(12, 18);
-      this.btnSpacer3.TabIndex = 11;
-      this.btnSpacer3.UseVisualStyleBackColor = true;
-      // 
       // InfobarPlayer
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -229,7 +229,7 @@
       this.BackColor = System.Drawing.Color.Transparent;
       this.Controls.Add(this.flowLayoutPanel1);
       this.Name = "InfobarPlayer";
-      this.Size = new System.Drawing.Size(830, 27);
+      this.Size = new System.Drawing.Size(807, 27);
       this.flowLayoutPanel1.ResumeLayout(false);
       this.flowLayoutPanel1.PerformLayout();
       this.ResumeLayout(false);
