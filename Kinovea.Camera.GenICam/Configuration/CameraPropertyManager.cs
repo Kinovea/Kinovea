@@ -358,8 +358,8 @@ namespace Kinovea.Camera.GenICam
             int currentValue = (int)node.Value;
             int min = (int)node.Min;
             int max = (int)node.Max;
-            int step = (int)node.Inc;
-
+            int step = node.HasInc ? (int)node.Inc : 1;
+                
             // Get the real max from another property if needed. 
             // This happens for width and height where the max of the primary property is dynamic based on the offset.
             if (!string.IsNullOrEmpty(symbolMax))
@@ -722,7 +722,7 @@ namespace Kinovea.Camera.GenICam
             
             long value = long.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
             long min = node.Min;
-            long step = node.Inc;
+            long step = node.HasInc ? node.Inc : 1;
 
             // Do not clamp on max, the max is based on the offset instead of the true max.
             value = Math.Max(value, min);
@@ -742,7 +742,7 @@ namespace Kinovea.Camera.GenICam
                 long max = currentValue + nodeOffset.Max;
                 long offset = (max - value) / 2;
                 long minOffset = nodeOffset.Min;
-                long stepOffset = nodeOffset.Inc;
+                long stepOffset = nodeOffset.HasInc ? nodeOffset.Inc : 1;
                 
                 long remainderOffset = (offset - minOffset) % stepOffset;
                 if (remainderOffset != 0)
@@ -806,7 +806,7 @@ namespace Kinovea.Camera.GenICam
                             long value = long.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
                             long min = node.Min;
                             long max = node.Max;
-                            long step = node.Inc;
+                            long step = node.HasInc ? node.Inc : 1;
                             value = FixValue(value, min, max, step);
                             node.Value = value;
                             break;

@@ -342,7 +342,7 @@ namespace Kinovea.Camera.GenICam
 
         private void LogError(Exception e, string additionalErrorMessage)
         {
-            log.ErrorFormat("Error during Baumer camera operation. {0}", summary.Alias);
+            log.ErrorFormat("Error during GenICam camera operation. {0}", summary.Alias);
             log.Error(e.ToString());
             log.Error(additionalErrorMessage);
         }
