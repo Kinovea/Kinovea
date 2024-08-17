@@ -172,8 +172,7 @@ namespace Kinovea.Camera.GenICam
 
             // setup
             dataStream.StartAcquisition();
-            if (device.RemoteNodeList.GetNodePresent("AcquisitionMode"))
-                device.RemoteNodeList["AcquisitionMode"].Value = "Continuous";
+            CameraPropertyManager.WriteEnum(device, "AcquisitionMode", "Continuous");
             CameraPropertyManager.ExecuteCommand(device, "AcquisitionStart");
             started = true;
 
