@@ -347,9 +347,6 @@ namespace Kinovea.Camera.GenICam
                 if (string.IsNullOrEmpty(system.Id))
                     continue;
 
-                //if (system.Vendor != "GenTL Producer")
-                  //  continue;
-
                 try
                 {
                     if (!system.IsOpen)

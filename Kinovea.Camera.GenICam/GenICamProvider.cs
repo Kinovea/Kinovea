@@ -138,7 +138,6 @@ namespace Kinovea.Camera.GenICam
                 Stop();
 
             dataStream.StartAcquisition();
-            //device.RemoteNodeList["AcquisitionMode"].Value = "Continuous";
             CameraPropertyManager.ExecuteCommand(device, "AcquisitionStart");
             started = true;
 
