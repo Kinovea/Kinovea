@@ -70,9 +70,6 @@
   <data name="btnSync_ToolTip" xml:space="preserve">
     <value>ซิงโครไนซ์วิดีโอกับเฟรมปัจจุบัน</value>
   </data>
-  <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve">
-    <value>ส่งออกภาพคีย์</value>
-  </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>โหดข้อมูลอัตโนมัติ</value>
   </data>
@@ -84,15 +81,6 @@
   </data>
   <data name="dlgExportSpreadsheet_Title" xml:space="preserve">
     <value>บันทึกข้อมูลลงในเอกสารสเปรดชีท</value>
-  </data>
-  <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve">
-    <value>ชนิดของวีดีโอ</value>
-  </data>
-  <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve">
-    <value>การแสดงสไลด์ของวีดีโอจะแสดงเฉพาะภาพคีย์</value>
-  </data>
-  <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve">
-    <value>วีดีโอต้นฉบับจะหยุดในแต่ละภาพคีย์</value>
   </data>
   <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve">
     <value>ระยะทางของภาพคีย์: {0} มิลลิวินาที</value>
@@ -196,9 +184,6 @@
   <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
     <value>การวัด:</value>
   </data>
-  <data name="dlgConfigureTrajectory_CheckDisplayRotationCircle" xml:space="preserve">
-    <value>แสดงวงกลมการหมุน</value>
-  </data>
   <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
     <value>เป้าหมาย</value>
   </data>
@@ -207,15 +192,6 @@
   </data>
   <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
     <value>มาร์คเกอร์:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_VisibilityLabelOnly" xml:space="preserve">
-    <value>ป้ายกำกับเท่านั้น</value>
-  </data>
-  <data name="dlgConfigureTrajectory_VisibilityOneSecond" xml:space="preserve">
-    <value>1 วินาที</value>
-  </data>
-  <data name="dlgConfigureTrajectory_VisibilityComplete" xml:space="preserve">
-    <value>เสร็จสมบูรณ์</value>
   </data>
   <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
     <value>ปรับตั้งค่าเครื่องมือที่เกี่ยวข้องกับทิศทาง</value>
@@ -273,9 +249,6 @@
   </data>
   <data name="dlgColorProfile_Title" xml:space="preserve">
     <value>รูปแบบสี</value>
-  </data>
-  <data name="dlgColorPicker_Title" xml:space="preserve">
-    <value>สี</value>
   </data>
   <data name="DataAnalysis_ResultantLinearAcceleration" xml:space="preserve">
     <value>ผลรวมของความเร่ง</value>
@@ -403,32 +376,14 @@
   <data name="dlgCameraCalibration_Title" xml:space="preserve">
     <value>ทำการสอบเทียบกล้อง</value>
   </data>
-  <data name="dlgSaveSequenceTitle" xml:space="preserve">
-    <value>บันทึกลำดับ</value>
-  </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>บันทึกคำอธิบายประกอบ</value>
-  </data>
-  <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve">
-    <value>ส่งออกคำอธิบายประกอบแบบถาวรจะถูกแทรกลงในวีดีโอ</value>
-  </data>
-  <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve">
-    <value>คำอธิบายประกอบเท่านั้นที่ถูกบันทึก #ไฟล์สามารถนำเข้าวีดีโอภายหลังได้</value>
   </data>
   <data name="dlgRafaleExport_ExportFrameDecimation" xml:space="preserve">
     <value>ส่งออก 1 ภาพทุก {0} ภาพ</value>
   </data>
-  <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve">
-    <value>บันทึกคำอธิบายประกอบเท่านั้น</value>
-  </data>
-  <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve">
-    <value>กระบวนการบันทึกข้อมูล</value>
-  </data>
   <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
     <value>ถ่ายภาพช้าลงในบัญชี (ปัจจุบัน= </value>
-  </data>
-  <data name="dlgRafaleExport_Title" xml:space="preserve">
-    <value>บันทึกภาพต่อเนื่อง</value>
   </data>
   <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve">
     <value>ส่งออก 1 ภาพทุก {0:0} มิลลิวินาที</value>
@@ -478,9 +433,6 @@
   <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
     <value>โหลดโปรไฟล์การปรับเทียบกล้อง</value>
   </data>
-  <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve">
-    <value>คำอธิบายประกอบจะปรากฏในผู้เล่นทุกคนแต่ไม่สามารถแก้ไขได้#ความคิดเห็นเพิ่มเติมที่แนบมากับรูปภาพหลักจะไม่ถูกบันทึก</value>
-  </data>
   <data name="ExtraData_Center" xml:space="preserve">
     <value>ศูนย์กลาง</value>
   </data>
@@ -513,9 +465,6 @@
   </data>
   <data name="DrawingName_Bikefit" xml:space="preserve">
     <value>ฟิตติ้งจักรยาน</value>
-  </data>
-  <data name="DrawingName_Profile" xml:space="preserve">
-    <value>รูปแบบ</value>
   </data>
   <data name="DrawingName_CSVL" xml:space="preserve">
     <value>เส้นกึ่งกลางกระดูกเชิงกรานแนวตั้ง</value>
