@@ -19,7 +19,7 @@ namespace Kinovea.Camera.Languages {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class CameraLang {
@@ -84,6 +84,33 @@ namespace Kinovea.Camera.Languages {
         public static string FormConfiguration_DevicePropertyPages_Error {
             get {
                 return ResourceManager.GetString("FormConfiguration_DevicePropertyPages_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable hardware compression.
+        /// </summary>
+        public static string FormConfiguration_EnableHardwareCompression {
+            get {
+                return ResourceManager.GetString("FormConfiguration_EnableHardwareCompression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable software demosaicing.
+        /// </summary>
+        public static string FormConfiguration_EnableSoftwareDemosaicing {
+            get {
+                return ResourceManager.GetString("FormConfiguration_EnableSoftwareDemosaicing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export device GenICam XML file.
+        /// </summary>
+        public static string FormConfiguration_ExportDeviceGenICamXMLFile {
+            get {
+                return ResourceManager.GetString("FormConfiguration_ExportDeviceGenICamXMLFile", resourceCulture);
             }
         }
         
@@ -192,6 +219,15 @@ namespace Kinovea.Camera.Languages {
         public static string FormConfiguration_Reconnect {
             get {
                 return ResourceManager.GetString("FormConfiguration_Reconnect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resulting framerate:.
+        /// </summary>
+        public static string FormConfiguration_ResultingFramerate {
+            get {
+                return ResourceManager.GetString("FormConfiguration_ResultingFramerate", resourceCulture);
             }
         }
         

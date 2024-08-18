@@ -128,10 +128,10 @@ namespace Kinovea.Camera.GenICam
         {
             this.Text = CameraLang.FormConfiguration_Title;
             lblStreamFormat.Text = CameraLang.FormConfiguration_Properties_StreamFormat;
-            cbCompression.Text = "Enable hardware compression";
-            cbDebayering.Text = "Enable software demosaicing";
-            lblAuto.Text = "Auto";
-            lblResultingFramerate.Text = "Resulting framerate:";
+            cbCompression.Text = CameraLang.FormConfiguration_EnableHardwareCompression;
+            cbDebayering.Text = CameraLang.FormConfiguration_EnableSoftwareDemosaicing;
+            lblAuto.Text = CameraLang.FormConfiguration_Auto;
+            lblResultingFramerate.Text = CameraLang.FormConfiguration_ResultingFramerate;
             btnGenicam.Text = "GenICam XML";
             btnReconnect.Text = CameraLang.FormConfiguration_Reconnect;
             btnApply.Text = CameraLang.Generic_Apply;
@@ -392,7 +392,7 @@ namespace Kinovea.Camera.GenICam
             string xml = device.RemoteConfigurationFile;
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Title = "Export device GenICam XML file";
+            saveFileDialog.Title = CameraLang.FormConfiguration_ExportDeviceGenICamXMLFile;
             saveFileDialog.RestoreDirectory = true;
             saveFileDialog.FileName = summary.Name;
             saveFileDialog.Filter = FilesystemHelper.SaveXMLFilter();

@@ -217,7 +217,7 @@
     <EmbeddedResource Include="Languages\CameraLang.pl.resx" />
     <EmbeddedResource Include="Languages\CameraLang.pt.resx" />
     <EmbeddedResource Include="Languages\CameraLang.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>CameraLang.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Languages\CameraLang.ro.resx" />
