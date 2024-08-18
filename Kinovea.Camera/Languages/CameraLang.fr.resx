@@ -135,4 +135,7 @@
   <data name="FormConfiguration_EnableSoftwareDemosaicing" xml:space="preserve">
     <value>Activer le dématriçage logiciel</value>
   </data>
+  <data name="FormConfiguration_ExportDeviceGenICamXMLFile" xml:space="preserve">
+    <value>Exporter le fichier XML GenICam</value>
+  </data>
 </root>
