@@ -32,7 +32,7 @@ namespace Kinovea.Root
 {
     public partial class FormAbout : Form
     {
-        private string year = "2023";
+        private string year = "2024";
         private Font fontHeader = new Font("Microsoft Sans Serif", 10, FontStyle.Bold);
         private Font fontText = new Font("Microsoft Sans Serif", 9, FontStyle.Regular);
 

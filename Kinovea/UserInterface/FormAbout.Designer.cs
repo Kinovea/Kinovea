@@ -135,10 +135,10 @@ namespace Kinovea.Root
       // 
       this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.tabControl.Controls.Add(this.pageTranslation);
       this.tabControl.Controls.Add(this.pageLicense);
       this.tabControl.Controls.Add(this.pageBuildingBlocks);
       this.tabControl.Controls.Add(this.pageCitation);
+      this.tabControl.Controls.Add(this.pageTranslation);
       this.tabControl.Location = new System.Drawing.Point(13, 186);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
