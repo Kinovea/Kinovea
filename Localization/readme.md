@@ -25,6 +25,7 @@
 
 - Weblate: Lock
 - VS: use ResXManager: https://marketplace.visualstudio.com/items?itemName=TomEnglert.ResXManager
+- VS: View > Other window > ResXManager
 - VS: Identify all new strings litterals and do right click > Move to resource.
 - git: Commit + push.
 - Weblate: Manage > Repository maintenance > Update.

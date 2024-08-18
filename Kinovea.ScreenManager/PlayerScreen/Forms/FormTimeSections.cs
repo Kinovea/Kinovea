@@ -125,7 +125,7 @@ namespace Kinovea.ScreenManager
 
             // Displayed column name.
             colCurrent.Text = "";
-            colName.Text = ScreenManagerLang.FormTimeSections_Name;
+            colName.Text = ScreenManagerLang.mnuMeasure_Name;
             colStart.Text = ScreenManagerLang.FormTimeSections_Start;
             colEnd.Text = ScreenManagerLang.FormTimeSections_End;
             colDuration.Text = ScreenManagerLang.FormTimeSections_Duration;

@@ -124,7 +124,14 @@ namespace Kinovea.ScreenManager
             lblFocalLength.ForeColor = hasPlaneCalibration ? Color.Green : Color.Red;
 
             lblCameraPosition.Enabled = hasFullCalibration;
-            lblCameraPosition.Text = ScreenManagerLang.FormCalibrationValidation_CameraPositionUnknown;
+            lblCameraPosition.Text = string.Format(ScreenManagerLang.FormCalibrationValidation_CameraPositionXYZ,
+                calibrationHelper.GetLengthAbbreviation(),
+                "-", "-", "-");
+
+            lblCameraDistance.Enabled = hasFullCalibration;
+            lblCameraDistance.Text = string.Format(ScreenManagerLang.FormCalibrationValidation_DistanceToOrigin,
+                calibrationHelper.GetLengthAbbreviation(),
+                "-");
 
             gpControlPoints.Enabled = hasFullCalibration;
             gpControlPoints.Text = ScreenManagerLang.FormCalibrationValidation_ControlPoints;
@@ -139,8 +146,7 @@ namespace Kinovea.ScreenManager
             rbFix1D.Checked = validationMode == CalibrationValidationMode.Fix1D;
             rbCompute3D.Checked = validationMode == CalibrationValidationMode.Compute3D;
 
-            btnCSV.Text = ScreenManagerLang.FormCalibrationValidation_CopyToClipboard;
-            lblCameraDistance.Text = ScreenManagerLang.FormCalibrationValidation_CameraDistance;
+            btnCSV.Text = ScreenManagerLang.Generic_Copy;
         }
 
         /// <summary>
@@ -175,7 +181,7 @@ namespace Kinovea.ScreenManager
             colZ.AspectName = "Z";
 
             // Displayed column name.
-            colName.Text = ScreenManagerLang.FormCalibrationValidation_Table_Name;
+            colName.Text = ScreenManagerLang.mnuMeasure_Name;
             colX.Text = "X";
             colY.Text = "Y";
             colZ.Text = "Z";

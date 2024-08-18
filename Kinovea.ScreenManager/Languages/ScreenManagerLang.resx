@@ -1503,26 +1503,11 @@
   <data name="FormCalibrationValidation_Compute3D" xml:space="preserve">
     <value>3D positions computed from the two views</value>
   </data>
-  <data name="FormCalibrationValidation_CopyToClipboard" xml:space="preserve">
-    <value>Copy to clipboard</value>
-  </data>
-  <data name="FormCalibrationValidation_CameraDistance" xml:space="preserve">
-    <value>Camera distance</value>
-  </data>
   <data name="FormCalibrationValidation_CameraPositionXYZ" xml:space="preserve">
-    <value>Camera position ({0}): X:{1}, Y:{2}, Z:{3}.</value>
+    <value>Camera position ({0}): X:{1}, Y:{2}, Z:{3}</value>
   </data>
   <data name="FormCalibrationValidation_DistanceToOrigin" xml:space="preserve">
     <value>Distance to origin ({0}): {1}</value>
-  </data>
-  <data name="FormCalibrationValidation_CameraPositionUnknown" xml:space="preserve">
-    <value>Camera position: unknown</value>
-  </data>
-  <data name="FormCalibrationValidation_Table_Name" xml:space="preserve">
-    <value>Name</value>
-  </data>
-  <data name="FormTimeSections_Name" xml:space="preserve">
-    <value>Name</value>
   </data>
   <data name="FormTimeSections_Start" xml:space="preserve">
     <value>Start</value>
