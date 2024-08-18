@@ -61,10 +61,10 @@ namespace Kinovea.ScreenManager
 
         private void InitCulture()
         {
-            this.Text = "Configure camera motion estimation";
+            this.Text = ScreenManagerLang.FormConfigureCameraMotion_ConfigureCameraMotionEstimation;
             grpConfig.Text = ScreenManagerLang.Generic_Configuration;
-            lblFeatureType.Text = "Feature type:";
-            lblFeaturesPerFrame.Text = "Features per frame:";
+            lblFeatureType.Text = ScreenManagerLang.FormConfigureCameraMotion_FeatureType;
+            lblFeaturesPerFrame.Text = ScreenManagerLang.FormConfigureCameraMotion_FeaturesPerFrame;
             btnOK.Text = ScreenManagerLang.Generic_OK;
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
         }

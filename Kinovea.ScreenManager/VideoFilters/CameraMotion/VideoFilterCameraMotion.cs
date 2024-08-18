@@ -124,7 +124,6 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuBuildTracks = new ToolStripMenuItem();
 
         private ToolStripMenuItem mnuImportMask = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuImportColmap = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDeleteData = new ToolStripMenuItem();
 
         private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
@@ -398,23 +397,22 @@ namespace Kinovea.ScreenManager
             mnuConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
 
             mnuAction.Text = ScreenManagerLang.mnuAction;
-            mnuRunAll.Text = "Run camera motion estimation";
-            mnuFindFeatures.Text = "Find features";
-            mnuMatchFeatures.Text = "Match features";
-            mnuFindHomographies.Text = "Find homographies";
-            mnuBundleAdjustment.Text = "Bundle adjustment";
-            mnuBuildTracks.Text = "Build tracks";
-            mnuImportMask.Text = "Import mask";
-            mnuImportColmap.Text = "Import COLMAP";
-            mnuDeleteData.Text = "Delete tracking data";
+            mnuRunAll.Text = ScreenManagerLang.VideoFilterCameraMotion_RunCameraMotionEstimation;
+            mnuFindFeatures.Text = ScreenManagerLang.VideoFilterCameraMotion_FindFeatures;
+            mnuMatchFeatures.Text = ScreenManagerLang.VideoFilterCameraMotion_MatchFeatures;
+            mnuFindHomographies.Text = ScreenManagerLang.VideoFilterCameraMotion_FindHomographies;
+            mnuBundleAdjustment.Text = ScreenManagerLang.VideoFilterCameraMotion_BundleAdjustment;
+            mnuBuildTracks.Text = ScreenManagerLang.VideoFilterCameraMotion_BuildTracks;
+            mnuImportMask.Text = ScreenManagerLang.VideoFilterCameraMotion_ImportMask;
+            mnuDeleteData.Text = ScreenManagerLang.VideoFilterCameraMotion_DeleteTrackingData;
 
             mnuOptions.Text = ScreenManagerLang.Generic_Options;
-            mnuShowFeatures.Text = "Show points";
-            mnuShowInliers.Text = "Show inliers";
-            mnuShowOutliers.Text = "Show outliers";
-            mnuShowMotionField.Text = "Show motion field";
-            mnuShowTransforms.Text = "Show frame transforms";
-            mnuShowTracks.Text = "Show tracks";
+            mnuShowFeatures.Text = ScreenManagerLang.VideoFilterCameraMotion_ShowPoints;
+            mnuShowInliers.Text = ScreenManagerLang.VideoFilterCameraMotion_ShowInliers;
+            mnuShowOutliers.Text = ScreenManagerLang.VideoFilterCameraMotion_ShowOutliers;
+            mnuShowMotionField.Text = ScreenManagerLang.VideoFilterCameraMotion_ShowMotionField;
+            mnuShowTransforms.Text = ScreenManagerLang.VideoFilterCameraMotion_ShowFrameTransforms;
+            mnuShowTracks.Text = ScreenManagerLang.VideoFilterCameraMotion_ShowTracks;
         }
 
         private void MnuConfigure_Click(object sender, EventArgs e)

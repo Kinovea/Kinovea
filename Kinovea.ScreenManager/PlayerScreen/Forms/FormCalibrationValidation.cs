@@ -76,13 +76,13 @@ namespace Kinovea.ScreenManager
                 PointF offset = calibrationHelper.GetWorldOffset();
                 Vector3 eyeDisplay = new Vector3(eye.X + offset.X, eye.Y + offset.Y, eye.Z);
                 eyeDisplay = RoundVector(eyeDisplay);
-                lblCameraPosition.Text = string.Format("Camera position ({0}): X:{1}, Y:{2}, Z:{3}.", 
+                lblCameraPosition.Text = string.Format(ScreenManagerLang.FormCalibrationValidation_CameraPositionXYZ, 
                     calibrationHelper.GetLengthAbbreviation(), 
                     eyeDisplay.X, eyeDisplay.Y, eyeDisplay.Z);
 
                 // Distance to origin.
                 float distance = eyeDisplay.Norm;
-                lblCameraDistance.Text = string.Format("Distance to origin ({0}): {1}", 
+                lblCameraDistance.Text = string.Format(ScreenManagerLang.FormCalibrationValidation_DistanceToOrigin, 
                     calibrationHelper.GetLengthAbbreviation(),
                     Math.Round(distance, precision));
 
@@ -104,34 +104,34 @@ namespace Kinovea.ScreenManager
 
         private void LocalizeForm()
         {
-            this.Text = "Calibration validation";
+            this.Text = ScreenManagerLang.FormCalibrationValidation_CalibrationValidation;
             
             btnOK.Text = ScreenManagerLang.Generic_Apply;
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
-            grpIntrinsics.Text = "Camera";
+            grpIntrinsics.Text = ScreenManagerLang.FormCalibrationValidation_Camera;
 
             bool hasLensCalibration = calibrationHelper.DistortionHelper != null && calibrationHelper.DistortionHelper.Initialized;
             bool hasPlaneCalibration = calibrationHelper.IsCalibrated && calibrationHelper.CalibratorType == CalibratorType.Plane;
             hasFullCalibration = hasLensCalibration && hasPlaneCalibration;
 
-            string lensCalibrationStatus = hasLensCalibration ? "found" : "missing";
-            string planeCalibrationStatus = hasPlaneCalibration ? "found" : "missing";
+            string lensCalibrationStatus = hasLensCalibration ? ScreenManagerLang.FormCalibrationValidation_Found : ScreenManagerLang.FormCalibrationValidation_Missing;
+            string planeCalibrationStatus = hasPlaneCalibration ? ScreenManagerLang.FormCalibrationValidation_Found : ScreenManagerLang.FormCalibrationValidation_Missing;
 
-            lblSensorWidth.Text = string.Format("Lens calibration: {0}", lensCalibrationStatus);
-            lblFocalLength.Text = string.Format("Plane calibration: {0}", planeCalibrationStatus);
+            lblSensorWidth.Text = string.Format(ScreenManagerLang.FormCalibrationValidation_LensCalibration, lensCalibrationStatus);
+            lblFocalLength.Text = string.Format(ScreenManagerLang.FormCalibrationValidation_PlaneCalibration, planeCalibrationStatus);
 
             lblSensorWidth.ForeColor = hasLensCalibration ? Color.Green : Color.Red;
             lblFocalLength.ForeColor = hasPlaneCalibration ? Color.Green : Color.Red;
 
             lblCameraPosition.Enabled = hasFullCalibration;
-            lblCameraPosition.Text = "Camera position: unknown";
+            lblCameraPosition.Text = ScreenManagerLang.FormCalibrationValidation_CameraPositionUnknown;
 
             gpControlPoints.Enabled = hasFullCalibration;
-            gpControlPoints.Text = "Control points";
-            gpValidationMode.Text = "Validation mode";
-            rbFix3D.Text = "Change all axes and verify the location of the marker in the image";
-            rbFix1D.Text = "Change one axis and verify the other two axes";
-            rbCompute3D.Text = "3D positions computed from the two views";
+            gpControlPoints.Text = ScreenManagerLang.FormCalibrationValidation_ControlPoints;
+            gpValidationMode.Text = ScreenManagerLang.FormCalibrationValidation_ValidationMode;
+            rbFix3D.Text = ScreenManagerLang.FormCalibrationValidation_Fix3D;
+            rbFix1D.Text = ScreenManagerLang.FormCalibrationValidation_Fix1D;
+            rbCompute3D.Text = ScreenManagerLang.FormCalibrationValidation_Compute3D;
 
             rbCompute3D.Enabled = otherMetadata != null;
 
@@ -139,8 +139,8 @@ namespace Kinovea.ScreenManager
             rbFix1D.Checked = validationMode == CalibrationValidationMode.Fix1D;
             rbCompute3D.Checked = validationMode == CalibrationValidationMode.Compute3D;
 
-            btnCSV.Text = "Copy to clipboard";
-            lblCameraDistance.Text = "Camera distance";
+            btnCSV.Text = ScreenManagerLang.FormCalibrationValidation_CopyToClipboard;
+            lblCameraDistance.Text = ScreenManagerLang.FormCalibrationValidation_CameraDistance;
         }
 
         /// <summary>
@@ -175,7 +175,7 @@ namespace Kinovea.ScreenManager
             colZ.AspectName = "Z";
 
             // Displayed column name.
-            colName.Text = "Name";
+            colName.Text = ScreenManagerLang.FormCalibrationValidation_Table_Name;
             colX.Text = "X";
             colY.Text = "Y";
             colZ.Text = "Z";

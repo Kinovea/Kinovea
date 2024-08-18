@@ -1123,6 +1123,87 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Filled.
+        /// </summary>
+        public static string DrawingCircle_Filled {
+            get {
+                return ResourceManager.GetString("DrawingCircle_Filled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Align to calibration object.
+        /// </summary>
+        public static string DrawingCoordinateSystem_AlignToCalibrationObject {
+            get {
+                return ResourceManager.GetString("DrawingCoordinateSystem_AlignToCalibrationObject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add beat.
+        /// </summary>
+        public static string DrawingCounter_AddBeat {
+            get {
+                return ResourceManager.GetString("DrawingCounter_AddBeat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete all beats.
+        /// </summary>
+        public static string DrawingCounter_DeleteAllBeats {
+            get {
+                return ResourceManager.GetString("DrawingCounter_DeleteAllBeats", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete beat.
+        /// </summary>
+        public static string DrawingCounter_DeleteBeat {
+            get {
+                return ResourceManager.GetString("DrawingCounter_DeleteBeat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Double.
+        /// </summary>
+        public static string DrawingCounter_Double {
+            get {
+                return ResourceManager.GetString("DrawingCounter_Double", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Half.
+        /// </summary>
+        public static string DrawingCounter_Half {
+            get {
+                return ResourceManager.GetString("DrawingCounter_Half", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zero-based numbering.
+        /// </summary>
+        public static string DrawingCounter_ZeroBasedNumbering {
+            get {
+                return ResourceManager.GetString("DrawingCounter_ZeroBasedNumbering", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dot.
+        /// </summary>
+        public static string DrawingCrossMark_Dot {
+            get {
+                return ResourceManager.GetString("DrawingCrossMark_Dot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Angle to horizontal.
         /// </summary>
         public static string DrawingName_AngleToHorizontal {
@@ -1366,6 +1447,33 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show horizontal line.
+        /// </summary>
+        public static string DrawingPlane_ShowHorizontalLine {
+            get {
+                return ResourceManager.GetString("DrawingPlane_ShowHorizontalLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show vertical line.
+        /// </summary>
+        public static string DrawingPlane_ShowVerticalLine {
+            get {
+                return ResourceManager.GetString("DrawingPlane_ShowVerticalLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Background.
+        /// </summary>
+        public static string DrawingText_Background {
+            get {
+                return ResourceManager.GetString("DrawingText_Background", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The capture directory could not be created.\nCheck that it points to a valid storage location..
         /// </summary>
         public static string Error_Capture_DirectoryNotCreated_Text {
@@ -1573,6 +1681,222 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Background properties.
+        /// </summary>
+        public static string FormBackgroundColor_BackgroundProperties {
+            get {
+                return ResourceManager.GetString("FormBackgroundColor_BackgroundProperties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Coordinates.
+        /// </summary>
+        public static string FormCalibratePlane_Coordinates {
+            get {
+                return ResourceManager.GetString("FormCalibratePlane_Coordinates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Decimal places.
+        /// </summary>
+        public static string FormCalibratePlane_DecimalPlaces {
+            get {
+                return ResourceManager.GetString("FormCalibratePlane_DecimalPlaces", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flip X axis.
+        /// </summary>
+        public static string FormCalibratePlane_FlipXAxis {
+            get {
+                return ResourceManager.GetString("FormCalibratePlane_FlipXAxis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flip Y axis.
+        /// </summary>
+        public static string FormCalibratePlane_FlipYAxis {
+            get {
+                return ResourceManager.GetString("FormCalibratePlane_FlipYAxis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Offset applied to coordinates ({0}).
+        /// </summary>
+        public static string FormCalibratePlane_OffsetAppliedToCoordinates {
+            get {
+                return ResourceManager.GetString("FormCalibratePlane_OffsetAppliedToCoordinates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rotate 90°.
+        /// </summary>
+        public static string FormCalibratePlane_Rotate90 {
+            get {
+                return ResourceManager.GetString("FormCalibratePlane_Rotate90", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Calibration validation.
+        /// </summary>
+        public static string FormCalibrationValidation_CalibrationValidation {
+            get {
+                return ResourceManager.GetString("FormCalibrationValidation_CalibrationValidation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera.
+        /// </summary>
+        public static string FormCalibrationValidation_Camera {
+            get {
+                return ResourceManager.GetString("FormCalibrationValidation_Camera", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera distance.
+        /// </summary>
+        public static string FormCalibrationValidation_CameraDistance {
+            get {
+                return ResourceManager.GetString("FormCalibrationValidation_CameraDistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera position: unknown.
+        /// </summary>
+        public static string FormCalibrationValidation_CameraPositionUnknown {
+            get {
+                return ResourceManager.GetString("FormCalibrationValidation_CameraPositionUnknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera position ({0}): X:{1}, Y:{2}, Z:{3}..
+        /// </summary>
+        public static string FormCalibrationValidation_CameraPositionXYZ {
+            get {
+                return ResourceManager.GetString("FormCalibrationValidation_CameraPositionXYZ", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 3D positions computed from the two views.
+        /// </summary>
+        public static string FormCalibrationValidation_Compute3D {
+            get {
+                return ResourceManager.GetString("FormCalibrationValidation_Compute3D", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Control points.
+        /// </summary>
+        public static string FormCalibrationValidation_ControlPoints {
+            get {
+                return ResourceManager.GetString("FormCalibrationValidation_ControlPoints", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy to clipboard.
+        /// </summary>
+        public static string FormCalibrationValidation_CopyToClipboard {
+            get {
+                return ResourceManager.GetString("FormCalibrationValidation_CopyToClipboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Distance to origin ({0}): {1}.
+        /// </summary>
+        public static string FormCalibrationValidation_DistanceToOrigin {
+            get {
+                return ResourceManager.GetString("FormCalibrationValidation_DistanceToOrigin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change one axis and verify the other two axes.
+        /// </summary>
+        public static string FormCalibrationValidation_Fix1D {
+            get {
+                return ResourceManager.GetString("FormCalibrationValidation_Fix1D", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change all axes and verify the location of the marker in the image.
+        /// </summary>
+        public static string FormCalibrationValidation_Fix3D {
+            get {
+                return ResourceManager.GetString("FormCalibrationValidation_Fix3D", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to found.
+        /// </summary>
+        public static string FormCalibrationValidation_Found {
+            get {
+                return ResourceManager.GetString("FormCalibrationValidation_Found", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lens calibration: {0}.
+        /// </summary>
+        public static string FormCalibrationValidation_LensCalibration {
+            get {
+                return ResourceManager.GetString("FormCalibrationValidation_LensCalibration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to missing.
+        /// </summary>
+        public static string FormCalibrationValidation_Missing {
+            get {
+                return ResourceManager.GetString("FormCalibrationValidation_Missing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Plane calibration: {0}.
+        /// </summary>
+        public static string FormCalibrationValidation_PlaneCalibration {
+            get {
+                return ResourceManager.GetString("FormCalibrationValidation_PlaneCalibration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string FormCalibrationValidation_Table_Name {
+            get {
+                return ResourceManager.GetString("FormCalibrationValidation_Table_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Validation mode.
+        /// </summary>
+        public static string FormCalibrationValidation_ValidationMode {
+            get {
+                return ResourceManager.GetString("FormCalibrationValidation_ValidationMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Alias:.
         /// </summary>
         public static string FormCameraAlias_Alias {
@@ -1596,6 +1920,33 @@ namespace Kinovea.ScreenManager.Languages {
         public static string FormCameraAlias_Title {
             get {
                 return ResourceManager.GetString("FormCameraAlias_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configure camera motion estimation.
+        /// </summary>
+        public static string FormConfigureCameraMotion_ConfigureCameraMotionEstimation {
+            get {
+                return ResourceManager.GetString("FormConfigureCameraMotion_ConfigureCameraMotionEstimation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Features per frame:.
+        /// </summary>
+        public static string FormConfigureCameraMotion_FeaturesPerFrame {
+            get {
+                return ResourceManager.GetString("FormConfigureCameraMotion_FeaturesPerFrame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Feature type:.
+        /// </summary>
+        public static string FormConfigureCameraMotion_FeatureType {
+            get {
+                return ResourceManager.GetString("FormConfigureCameraMotion_FeatureType", resourceCulture);
             }
         }
         
@@ -1681,6 +2032,42 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Configure lens calibration.
+        /// </summary>
+        public static string FormConfigureLensCalibration_ConfigureLensCalibration {
+            get {
+                return ResourceManager.GetString("FormConfigureLensCalibration_ConfigureLensCalibration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max images:.
+        /// </summary>
+        public static string FormConfigureLensCalibration_MaxImages {
+            get {
+                return ResourceManager.GetString("FormConfigureLensCalibration_MaxImages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max iterations:.
+        /// </summary>
+        public static string FormConfigureLensCalibration_MaxIterations {
+            get {
+                return ResourceManager.GetString("FormConfigureLensCalibration_MaxIterations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pattern size:.
+        /// </summary>
+        public static string FormConfigureLensCalibration_PatternSize {
+            get {
+                return ResourceManager.GetString("FormConfigureLensCalibration_PatternSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Date.
         /// </summary>
         public static string FormCrashRecovery_Date {
@@ -1753,6 +2140,60 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cumulative.
+        /// </summary>
+        public static string FormTimeSections_Cumulative {
+            get {
+                return ResourceManager.GetString("FormTimeSections_Cumulative", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Duration.
+        /// </summary>
+        public static string FormTimeSections_Duration {
+            get {
+                return ResourceManager.GetString("FormTimeSections_Duration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End.
+        /// </summary>
+        public static string FormTimeSections_End {
+            get {
+                return ResourceManager.GetString("FormTimeSections_End", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string FormTimeSections_Name {
+            get {
+                return ResourceManager.GetString("FormTimeSections_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start.
+        /// </summary>
+        public static string FormTimeSections_Start {
+            get {
+                return ResourceManager.GetString("FormTimeSections_Start", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tag.
+        /// </summary>
+        public static string FormTimeSections_Tag {
+            get {
+                return ResourceManager.GetString("FormTimeSections_Tag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Appearance.
         /// </summary>
         public static string Generic_Appearance {
@@ -1812,6 +2253,15 @@ namespace Kinovea.ScreenManager.Languages {
         public static string Generic_Close {
             get {
                 return ResourceManager.GetString("Generic_Close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Color.
+        /// </summary>
+        public static string Generic_Color {
+            get {
+                return ResourceManager.GetString("Generic_Color", resourceCulture);
             }
         }
         
@@ -3670,6 +4120,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Background….
+        /// </summary>
+        public static string PlayerScreenUserInterface_Background {
+            get {
+                return ResourceManager.GetString("PlayerScreenUserInterface_Background", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Recently used colors:.
         /// </summary>
         public static string RecentlyUsedColors {
@@ -3679,11 +4138,92 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Lens calibration.
+        /// </summary>
+        public static string ScreenManagerKernel_LensCalibration {
+            get {
+                return ResourceManager.GetString("ScreenManagerKernel_LensCalibration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Calibration validation….
+        /// </summary>
+        public static string ScreenManagerKernel_LensCalibration_CalibrationValidation {
+            get {
+                return ResourceManager.GetString("ScreenManagerKernel_LensCalibration_CalibrationValidation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import….
+        /// </summary>
+        public static string ScreenManagerKernel_LensCalibration_Import {
+            get {
+                return ResourceManager.GetString("ScreenManagerKernel_LensCalibration_Import", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lens calibration mode.
+        /// </summary>
+        public static string ScreenManagerKernel_LensCalibration_LensCalibrationMode {
+            get {
+                return ResourceManager.GetString("ScreenManagerKernel_LensCalibration_LensCalibrationMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manual estimation….
+        /// </summary>
+        public static string ScreenManagerKernel_LensCalibration_ManualEstimation {
+            get {
+                return ResourceManager.GetString("ScreenManagerKernel_LensCalibration_ManualEstimation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None.
+        /// </summary>
+        public static string ScreenManagerKernel_LensCalibration_None {
+            get {
+                return ResourceManager.GetString("ScreenManagerKernel_LensCalibration_None", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Empty.
         /// </summary>
         public static string statusEmptyScreen {
             get {
                 return ResourceManager.GetString("statusEmptyScreen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Border color.
+        /// </summary>
+        public static string StyleElement_Color_BorderColor {
+            get {
+                return ResourceManager.GetString("StyleElement_Color_BorderColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Label color.
+        /// </summary>
+        public static string StyleElement_Color_LabelColor {
+            get {
+                return ResourceManager.GetString("StyleElement_Color_LabelColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Label size.
+        /// </summary>
+        public static string StyleElement_FontSize_LabelSize {
+            get {
+                return ResourceManager.GetString("StyleElement_FontSize_LabelSize", resourceCulture);
             }
         }
         
@@ -4134,6 +4674,186 @@ namespace Kinovea.ScreenManager.Languages {
         public static string ToolTip_trkSelection {
             get {
                 return ResourceManager.GetString("ToolTip_trkSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Build tracks.
+        /// </summary>
+        public static string VideoFilterCameraMotion_BuildTracks {
+            get {
+                return ResourceManager.GetString("VideoFilterCameraMotion_BuildTracks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bundle adjustment.
+        /// </summary>
+        public static string VideoFilterCameraMotion_BundleAdjustment {
+            get {
+                return ResourceManager.GetString("VideoFilterCameraMotion_BundleAdjustment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete tracking data.
+        /// </summary>
+        public static string VideoFilterCameraMotion_DeleteTrackingData {
+            get {
+                return ResourceManager.GetString("VideoFilterCameraMotion_DeleteTrackingData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find features.
+        /// </summary>
+        public static string VideoFilterCameraMotion_FindFeatures {
+            get {
+                return ResourceManager.GetString("VideoFilterCameraMotion_FindFeatures", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find homographies.
+        /// </summary>
+        public static string VideoFilterCameraMotion_FindHomographies {
+            get {
+                return ResourceManager.GetString("VideoFilterCameraMotion_FindHomographies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import mask.
+        /// </summary>
+        public static string VideoFilterCameraMotion_ImportMask {
+            get {
+                return ResourceManager.GetString("VideoFilterCameraMotion_ImportMask", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Match features.
+        /// </summary>
+        public static string VideoFilterCameraMotion_MatchFeatures {
+            get {
+                return ResourceManager.GetString("VideoFilterCameraMotion_MatchFeatures", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run camera motion estimation.
+        /// </summary>
+        public static string VideoFilterCameraMotion_RunCameraMotionEstimation {
+            get {
+                return ResourceManager.GetString("VideoFilterCameraMotion_RunCameraMotionEstimation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show frame transforms.
+        /// </summary>
+        public static string VideoFilterCameraMotion_ShowFrameTransforms {
+            get {
+                return ResourceManager.GetString("VideoFilterCameraMotion_ShowFrameTransforms", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show inliers.
+        /// </summary>
+        public static string VideoFilterCameraMotion_ShowInliers {
+            get {
+                return ResourceManager.GetString("VideoFilterCameraMotion_ShowInliers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show motion field.
+        /// </summary>
+        public static string VideoFilterCameraMotion_ShowMotionField {
+            get {
+                return ResourceManager.GetString("VideoFilterCameraMotion_ShowMotionField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show outliers.
+        /// </summary>
+        public static string VideoFilterCameraMotion_ShowOutliers {
+            get {
+                return ResourceManager.GetString("VideoFilterCameraMotion_ShowOutliers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show points.
+        /// </summary>
+        public static string VideoFilterCameraMotion_ShowPoints {
+            get {
+                return ResourceManager.GetString("VideoFilterCameraMotion_ShowPoints", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show tracks.
+        /// </summary>
+        public static string VideoFilterCameraMotion_ShowTracks {
+            get {
+                return ResourceManager.GetString("VideoFilterCameraMotion_ShowTracks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy calibration data.
+        /// </summary>
+        public static string VideoFilterLensCalibration_CopyCalibrationData {
+            get {
+                return ResourceManager.GetString("VideoFilterLensCalibration_CopyCalibrationData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete calibration data.
+        /// </summary>
+        public static string VideoFilterLensCalibration_DeleteCalibrationData {
+            get {
+                return ResourceManager.GetString("VideoFilterLensCalibration_DeleteCalibrationData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run lens calibration.
+        /// </summary>
+        public static string VideoFilterLensCalibration_RunLensCalibration {
+            get {
+                return ResourceManager.GetString("VideoFilterLensCalibration_RunLensCalibration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save calibration data….
+        /// </summary>
+        public static string VideoFilterLensCalibration_SaveCalibrationData {
+            get {
+                return ResourceManager.GetString("VideoFilterLensCalibration_SaveCalibrationData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show detected corners.
+        /// </summary>
+        public static string VideoFilterLensCalibration_ShowDetectedCorners {
+            get {
+                return ResourceManager.GetString("VideoFilterLensCalibration_ShowDetectedCorners", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show reprojected corners.
+        /// </summary>
+        public static string VideoFilterLensCalibration_ShowReprojectedCorners {
+            get {
+                return ResourceManager.GetString("VideoFilterLensCalibration_ShowReprojectedCorners", resourceCulture);
             }
         }
     }

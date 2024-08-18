@@ -334,7 +334,7 @@ namespace Kinovea.ScreenManager
             style.Elements.Add("color", new StyleElementColor(color));
             style.Elements.Add("line size", new StyleElementLineSize(3));
             style.Elements.Add("track shape", new StyleElementTrackShape(TrackShape.Solid));
-            style.Elements.Add("label size", new StyleElementFontSize(8, "Label size"));
+            style.Elements.Add("label size", new StyleElementFontSize(8, ScreenManagerLang.StyleElement_FontSize_LabelSize));
 
             styleHelper.Color = color;
             styleHelper.LineSize = 3;

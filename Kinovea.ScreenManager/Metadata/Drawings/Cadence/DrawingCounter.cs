@@ -620,17 +620,17 @@ namespace Kinovea.ScreenManager
             // Action
             mnuAction.Text = ScreenManagerLang.mnuAction;
 
-            mnuAddBeat.Text = "Add beat";
-            mnuDeleteBeat.Text = "Delete beat";
-            mnuDeleteBeats.Text = "Delete all beats";
+            mnuAddBeat.Text = ScreenManagerLang.DrawingCounter_AddBeat;
+            mnuDeleteBeat.Text = ScreenManagerLang.DrawingCounter_DeleteBeat;
+            mnuDeleteBeats.Text = ScreenManagerLang.DrawingCounter_DeleteAllBeats;
 
             // Options.
             mnuOptions.Text = ScreenManagerLang.Generic_Options;
             mnuShowLabel.Text = ScreenManagerLang.mnuShowLabel;
             mnuLocked.Text = ScreenManagerLang.mnuOptions_Chrono_Locked;
-            mnuZeroBased.Text = "Zero-based numbering";
-            mnuHalfCadence.Text = "Half";
-            mnuDoubleCadence.Text = "Double";
+            mnuZeroBased.Text = ScreenManagerLang.DrawingCounter_ZeroBasedNumbering;
+            mnuHalfCadence.Text = ScreenManagerLang.DrawingCounter_Half;
+            mnuDoubleCadence.Text = ScreenManagerLang.DrawingCounter_Double;
 
             // Measurement
             mnuMeasurement.Text = ScreenManagerLang.mnuMeasure_Label_Menu;

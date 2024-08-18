@@ -1411,6 +1411,15 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Include images.
+        /// </summary>
+        internal static string PreferencePanelDrawings_InitTabExport_IncludeImages {
+            get {
+                return ResourceManager.GetString("PreferencePanelDrawings_InitTabExport_IncludeImages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cycles per minute ({0}).
         /// </summary>
         internal static string PreferencePanelDrawings_InitTabUnits_CyclesPerMinute {

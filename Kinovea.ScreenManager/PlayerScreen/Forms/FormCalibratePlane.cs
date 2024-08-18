@@ -62,7 +62,8 @@ namespace Kinovea.ScreenManager
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
             btnOK.Text = ScreenManagerLang.Generic_Apply;
             grpConfig.Text = ScreenManagerLang.Generic_Calibration;
-            
+            lblSizeHelp.Text = ScreenManagerLang.dlgCalibratePlane_HelpPlane;
+
             // Combo Units (MUST be filled in the order of the enum)
             cbUnit.Items.Add(ScreenManagerLang.LengthUnit_Millimeters + " (" + UnitHelper.LengthAbbreviation(LengthUnit.Millimeters) + ")");
             cbUnit.Items.Add(ScreenManagerLang.LengthUnit_Centimeters + " (" + UnitHelper.LengthAbbreviation(LengthUnit.Centimeters) + ")");
@@ -81,11 +82,12 @@ namespace Kinovea.ScreenManager
 
             cbUnit.Items.Add(customLengthUnit + " (" + customLengthAbbreviation + ")");
 
-            toolTip1.SetToolTip(btnFlipX, "Flip X axis");
-            toolTip1.SetToolTip(btnFlipY, "Flip Y axis");
-            toolTip1.SetToolTip(btnRotate90, "Rotate 90°");
+            toolTip1.SetToolTip(btnFlipX, ScreenManagerLang.FormCalibratePlane_FlipXAxis);
+            toolTip1.SetToolTip(btnFlipY, ScreenManagerLang.FormCalibratePlane_FlipYAxis);
+            toolTip1.SetToolTip(btnRotate90, ScreenManagerLang.FormCalibratePlane_Rotate90);
 
-            lblDecimalPlaces.Text = "Decimal places";
+            grpCoordinates.Text = ScreenManagerLang.FormCalibratePlane_Coordinates;
+            lblDecimalPlaces.Text = ScreenManagerLang.FormCalibratePlane_DecimalPlaces;
         }
         private void InitializeValues()
         {
@@ -118,8 +120,7 @@ namespace Kinovea.ScreenManager
             PointF offset = calibrationHelper.GetWorldOffset();
             nudOffsetX.Value = (decimal)offset.X;
             nudOffsetY.Value = (decimal)offset.Y;
-            lblSizeHelp.Text = ScreenManagerLang.dlgCalibratePlane_HelpPlane;
-            lblOffsetHelp.Text = string.Format("Offset applied to coordinates ({0})",
+            lblOffsetHelp.Text = string.Format(ScreenManagerLang.FormCalibratePlane_OffsetAppliedToCoordinates,
                 UnitHelper.LengthAbbreviation(calibrationHelper.LengthUnit));
 
             // Prepare drawing.
@@ -162,7 +163,7 @@ namespace Kinovea.ScreenManager
             if (selectedIndex >= 0)
                 unit = (LengthUnit)selectedIndex;
 
-            lblOffsetHelp.Text = string.Format("Offset applied to coordinates ({0}).",
+            lblOffsetHelp.Text = string.Format(ScreenManagerLang.FormCalibratePlane_OffsetAppliedToCoordinates,
                 UnitHelper.LengthAbbreviation(unit));
         }
 

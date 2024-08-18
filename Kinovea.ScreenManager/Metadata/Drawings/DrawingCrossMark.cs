@@ -439,7 +439,7 @@ namespace Kinovea.ScreenManager
         {
             // Options
             mnuOptions.Text = ScreenManagerLang.Generic_Options;
-            mnuShowAsDot.Text = "Dot";
+            mnuShowAsDot.Text = ScreenManagerLang.DrawingCrossMark_Dot;
 
             // Measurement
             mnuMeasurement.Text = ScreenManagerLang.mnuMeasure_Label_Menu;

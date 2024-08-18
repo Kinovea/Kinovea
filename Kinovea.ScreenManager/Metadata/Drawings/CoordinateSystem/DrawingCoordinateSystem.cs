@@ -526,7 +526,7 @@ namespace Kinovea.ScreenManager
         private void ReloadMenusCulture()
         {
             mnuAction.Text = ScreenManagerLang.mnuAction;
-            mnuAlign.Text = "Align to calibration object";
+            mnuAlign.Text = ScreenManagerLang.DrawingCoordinateSystem_AlignToCalibrationObject;
 
             // Options
             mnuOptions.Text = ScreenManagerLang.Generic_Options;

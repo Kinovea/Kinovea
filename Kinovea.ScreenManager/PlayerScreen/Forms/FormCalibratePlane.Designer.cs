@@ -60,7 +60,9 @@ namespace Kinovea.ScreenManager
       this.btnOK = new System.Windows.Forms.Button();
       this.btnCancel = new System.Windows.Forms.Button();
       this.pnlQuadrilateral = new System.Windows.Forms.Panel();
-      this.groupBox1 = new System.Windows.Forms.GroupBox();
+      this.grpCoordinates = new System.Windows.Forms.GroupBox();
+      this.nudDecimalPlaces = new System.Windows.Forms.NumericUpDown();
+      this.lblDecimalPlaces = new System.Windows.Forms.Label();
       this.nudOffsetY = new System.Windows.Forms.NumericUpDown();
       this.nudOffsetX = new System.Windows.Forms.NumericUpDown();
       this.label3 = new System.Windows.Forms.Label();
@@ -70,15 +72,13 @@ namespace Kinovea.ScreenManager
       this.btnRotate90 = new System.Windows.Forms.Button();
       this.btnFlipY = new System.Windows.Forms.Button();
       this.btnFlipX = new System.Windows.Forms.Button();
-      this.lblDecimalPlaces = new System.Windows.Forms.Label();
-      this.nudDecimalPlaces = new System.Windows.Forms.NumericUpDown();
       this.grpConfig.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudB)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudA)).BeginInit();
-      this.groupBox1.SuspendLayout();
+      this.grpCoordinates.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.nudDecimalPlaces)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudOffsetY)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudOffsetX)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.nudDecimalPlaces)).BeginInit();
       this.SuspendLayout();
       // 
       // grpConfig
@@ -216,24 +216,57 @@ namespace Kinovea.ScreenManager
       this.pnlQuadrilateral.TabIndex = 34;
       this.pnlQuadrilateral.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlQuadrilateral_Paint);
       // 
-      // groupBox1
+      // grpCoordinates
       // 
-      this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+      this.grpCoordinates.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.groupBox1.Controls.Add(this.nudDecimalPlaces);
-      this.groupBox1.Controls.Add(this.lblDecimalPlaces);
-      this.groupBox1.Controls.Add(this.nudOffsetY);
-      this.groupBox1.Controls.Add(this.nudOffsetX);
-      this.groupBox1.Controls.Add(this.label3);
-      this.groupBox1.Controls.Add(this.label2);
-      this.groupBox1.Controls.Add(this.lblOffsetHelp);
-      this.groupBox1.Location = new System.Drawing.Point(12, 381);
-      this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(401, 105);
-      this.groupBox1.TabIndex = 33;
-      this.groupBox1.TabStop = false;
-      this.groupBox1.Text = "Coordinates";
+      this.grpCoordinates.Controls.Add(this.nudDecimalPlaces);
+      this.grpCoordinates.Controls.Add(this.lblDecimalPlaces);
+      this.grpCoordinates.Controls.Add(this.nudOffsetY);
+      this.grpCoordinates.Controls.Add(this.nudOffsetX);
+      this.grpCoordinates.Controls.Add(this.label3);
+      this.grpCoordinates.Controls.Add(this.label2);
+      this.grpCoordinates.Controls.Add(this.lblOffsetHelp);
+      this.grpCoordinates.Location = new System.Drawing.Point(12, 381);
+      this.grpCoordinates.Name = "grpCoordinates";
+      this.grpCoordinates.Size = new System.Drawing.Size(401, 105);
+      this.grpCoordinates.TabIndex = 33;
+      this.grpCoordinates.TabStop = false;
+      this.grpCoordinates.Text = "Coordinates";
+      // 
+      // nudDecimalPlaces
+      // 
+      this.nudDecimalPlaces.Location = new System.Drawing.Point(243, 63);
+      this.nudDecimalPlaces.Maximum = new decimal(new int[] {
+            6,
+            0,
+            0,
+            0});
+      this.nudDecimalPlaces.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+      this.nudDecimalPlaces.Name = "nudDecimalPlaces";
+      this.nudDecimalPlaces.Size = new System.Drawing.Size(53, 20);
+      this.nudDecimalPlaces.TabIndex = 38;
+      this.nudDecimalPlaces.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+      // 
+      // lblDecimalPlaces
+      // 
+      this.lblDecimalPlaces.AutoSize = true;
+      this.lblDecimalPlaces.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblDecimalPlaces.Location = new System.Drawing.Point(12, 65);
+      this.lblDecimalPlaces.Name = "lblDecimalPlaces";
+      this.lblDecimalPlaces.Size = new System.Drawing.Size(126, 13);
+      this.lblDecimalPlaces.TabIndex = 37;
+      this.lblDecimalPlaces.Text = "Decimal places to display";
+      this.lblDecimalPlaces.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
       // 
       // nudOffsetY
       // 
@@ -346,39 +379,6 @@ namespace Kinovea.ScreenManager
       this.btnFlipX.UseVisualStyleBackColor = true;
       this.btnFlipX.Click += new System.EventHandler(this.btnFlipHorz_Click);
       // 
-      // lblDecimalPlaces
-      // 
-      this.lblDecimalPlaces.AutoSize = true;
-      this.lblDecimalPlaces.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblDecimalPlaces.Location = new System.Drawing.Point(12, 65);
-      this.lblDecimalPlaces.Name = "lblDecimalPlaces";
-      this.lblDecimalPlaces.Size = new System.Drawing.Size(126, 13);
-      this.lblDecimalPlaces.TabIndex = 37;
-      this.lblDecimalPlaces.Text = "Decimal places to display";
-      this.lblDecimalPlaces.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
-      // 
-      // nudDecimalPlaces
-      // 
-      this.nudDecimalPlaces.Location = new System.Drawing.Point(243, 63);
-      this.nudDecimalPlaces.Maximum = new decimal(new int[] {
-            6,
-            0,
-            0,
-            0});
-      this.nudDecimalPlaces.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-      this.nudDecimalPlaces.Name = "nudDecimalPlaces";
-      this.nudDecimalPlaces.Size = new System.Drawing.Size(53, 20);
-      this.nudDecimalPlaces.TabIndex = 38;
-      this.nudDecimalPlaces.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-      // 
       // FormCalibratePlane
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -386,7 +386,7 @@ namespace Kinovea.ScreenManager
       this.BackColor = System.Drawing.Color.White;
       this.ClientSize = new System.Drawing.Size(425, 525);
       this.Controls.Add(this.btnRotate90);
-      this.Controls.Add(this.groupBox1);
+      this.Controls.Add(this.grpCoordinates);
       this.Controls.Add(this.btnFlipY);
       this.Controls.Add(this.pnlQuadrilateral);
       this.Controls.Add(this.btnFlipX);
@@ -403,11 +403,11 @@ namespace Kinovea.ScreenManager
       this.grpConfig.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudB)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudA)).EndInit();
-      this.groupBox1.ResumeLayout(false);
-      this.groupBox1.PerformLayout();
+      this.grpCoordinates.ResumeLayout(false);
+      this.grpCoordinates.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.nudDecimalPlaces)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudOffsetY)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudOffsetX)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.nudDecimalPlaces)).EndInit();
       this.ResumeLayout(false);
 
         }
@@ -420,7 +420,7 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.GroupBox grpConfig;
         private System.Windows.Forms.Label lblSizeHelp;
         private System.Windows.Forms.Label lblPrecision;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox grpCoordinates;
         private System.Windows.Forms.Label lblOffsetHelp;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;

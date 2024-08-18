@@ -381,7 +381,7 @@ namespace Kinovea.ScreenManager
         {
             // Options
             mnuOptions.Text = ScreenManagerLang.Generic_Options;
-            mnuFilled.Text = "Filled";
+            mnuFilled.Text = ScreenManagerLang.DrawingCircle_Filled;
         }
         #endregion
     }

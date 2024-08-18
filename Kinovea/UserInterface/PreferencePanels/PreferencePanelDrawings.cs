@@ -398,7 +398,7 @@ namespace Kinovea.Root
             int option = (int)exportSpace;
             cmbExportSpace.SelectedIndex = option < cmbExportSpace.Items.Count ? option : 0;
 
-            cbExportImagesInDocs.Text = "Include images";
+            cbExportImagesInDocs.Text = RootLang.PreferencePanelDrawings_InitTabExport_IncludeImages;
             cbExportImagesInDocs.Checked = exportImagesInDocuments;
 
             lblPandocPath.Text = RootLang.dlgPreferences_General_PathToPandoc;

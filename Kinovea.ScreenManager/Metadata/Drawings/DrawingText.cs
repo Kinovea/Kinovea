@@ -512,7 +512,7 @@ namespace Kinovea.ScreenManager
             // Options
             mnuOptions.Text = ScreenManagerLang.Generic_Options;
             mnuShowArrow.Text = ScreenManagerLang.mnuShowArrow;
-            mnuHasBackground.Text = "Background";
+            mnuHasBackground.Text = ScreenManagerLang.DrawingText_Background;
         }
         #endregion
     }

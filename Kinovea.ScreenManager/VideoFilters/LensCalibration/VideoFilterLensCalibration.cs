@@ -353,15 +353,15 @@ namespace Kinovea.ScreenManager
             mnuConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
 
             mnuAction.Text = ScreenManagerLang.mnuAction;
-            mnuRun.Text = "Run lens calibration";
-            mnuDeleteData.Text = "Delete calibration data";
+            mnuRun.Text = ScreenManagerLang.VideoFilterLensCalibration_RunLensCalibration;
+            mnuDeleteData.Text = ScreenManagerLang.VideoFilterLensCalibration_DeleteCalibrationData;
 
             mnuOptions.Text = ScreenManagerLang.Generic_Options;
-            mnuShowDetectedCorners.Text = "Show detected corners";
-            mnuShowReprojCorners.Text = "Show reprojected corners";
+            mnuShowDetectedCorners.Text = ScreenManagerLang.VideoFilterLensCalibration_ShowDetectedCorners;
+            mnuShowReprojCorners.Text = ScreenManagerLang.VideoFilterLensCalibration_ShowReprojectedCorners;
 
-            mnuCopy.Text = "Copy calibration data";
-            mnuSave.Text = "Save calibration data…";
+            mnuCopy.Text = ScreenManagerLang.VideoFilterLensCalibration_CopyCalibrationData;
+            mnuSave.Text = ScreenManagerLang.VideoFilterLensCalibration_SaveCalibrationData;
         }
 
         private void MnuConfigure_Click(object sender, EventArgs e)

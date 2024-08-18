@@ -600,4 +600,7 @@
   <data name="PreferencePanelDrawings_InitTabUnits_StrokesPerMinute" xml:space="preserve">
     <value>Strokes per minute ({0})</value>
   </data>
+  <data name="PreferencePanelDrawings_InitTabExport_IncludeImages" xml:space="preserve">
+    <value>Include images</value>
+  </data>
 </root>

@@ -49,7 +49,7 @@ namespace Kinovea.ScreenManager
 
         private void Populate()
         {
-            this.Text = "Time sections";
+            this.Text = ScreenManagerLang.mnuTimeSections;
 
             Metadata metadata = drawing.ParentMetadata;
             List<ChronoSection> sections = drawing.Sections;
@@ -89,6 +89,7 @@ namespace Kinovea.ScreenManager
             var colCumul = new OLVColumn();
             var colTag = new OLVColumn();
 
+            // Name of properties used to get the data from the objects.
             colCurrent.AspectName = "IsCurrent";
             colName.AspectName = "Name";
             colStart.AspectName = "Start";
@@ -122,13 +123,14 @@ namespace Kinovea.ScreenManager
             colTag.FillsFreeSpace = true;
             colTag.FreeSpaceProportion = 1;
 
+            // Displayed column name.
             colCurrent.Text = "";
-            colName.Text = "Name";
-            colStart.Text = "Start";
-            colEnd.Text = "End";
-            colDuration.Text = "Duration";
-            colCumul.Text = "Cumulative";
-            colTag.Text = "Tag";
+            colName.Text = ScreenManagerLang.FormTimeSections_Name;
+            colStart.Text = ScreenManagerLang.FormTimeSections_Start;
+            colEnd.Text = ScreenManagerLang.FormTimeSections_End;
+            colDuration.Text = ScreenManagerLang.FormTimeSections_Duration;
+            colCumul.Text = ScreenManagerLang.FormTimeSections_Cumulative;
+            colTag.Text = ScreenManagerLang.FormTimeSections_Tag;
 
             colName.TextAlign = HorizontalAlignment.Left;
             colTag.TextAlign = HorizontalAlignment.Left;

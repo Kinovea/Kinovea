@@ -2832,7 +2832,7 @@ namespace Kinovea.ScreenManager
             // Background context menu.
             mnuTimeOrigin.Text = ScreenManagerLang.mnuMarkTimeAsOrigin;
             mnuDirectTrack.Text = ScreenManagerLang.mnuTrackTrajectory;
-            mnuBackground.Text = "Background…";
+            mnuBackground.Text = ScreenManagerLang.PlayerScreenUserInterface_Background;
             mnuPasteDrawing.Text = ScreenManagerLang.mnuPasteDrawing;
             mnuPasteDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.PasteDrawing);
             mnuOpenVideo.Text = ScreenManagerLang.mnuOpenVideo;

@@ -1736,16 +1736,16 @@ namespace Kinovea.ScreenManager
 
             // Tools
             mnuImportImage.Text = ScreenManagerLang.mnuImportImage;
-            mnuBackground.Text = "Background…";
+            mnuBackground.Text = ScreenManagerLang.PlayerScreenUserInterface_Background;
             mnuTestGrid.Text = ScreenManagerLang.DrawingName_TestGrid;
             mnuTimeCalibration.Text = ScreenManagerLang.mnuTimeCalibration;
-            mnuLensCalibration.Text = "Lens calibration";
-            mnuLensCalibrationOpen.Text = "Import…";
-            mnuLensCalibrationMode.Text = "Lens calibration mode";
-            mnuLensCalibrationManual.Text = "Manual estimation…";
-            mnuLensCalibrationNone.Text = "None";
+            mnuLensCalibration.Text = ScreenManagerLang.ScreenManagerKernel_LensCalibration;
+            mnuLensCalibrationOpen.Text = ScreenManagerLang.ScreenManagerKernel_LensCalibration_Import;
+            mnuLensCalibrationMode.Text = ScreenManagerLang.ScreenManagerKernel_LensCalibration_LensCalibrationMode;
+            mnuLensCalibrationManual.Text = ScreenManagerLang.ScreenManagerKernel_LensCalibration_ManualEstimation;
+            mnuLensCalibrationNone.Text = ScreenManagerLang.ScreenManagerKernel_LensCalibration_None;
             mnuCoordinateSystem.Text = ScreenManagerLang.mnuCoordinateSystem;
-            mnuCalibrationValidation.Text = "Calibration validation…";
+            mnuCalibrationValidation.Text = ScreenManagerLang.ScreenManagerKernel_LensCalibration_CalibrationValidation;
             mnuScatterDiagram.Text = ScreenManagerLang.DataAnalysis_ScatterDiagram + "…";
             mnuTrajectoryAnalysis.Text = ScreenManagerLang.DataAnalysis_LinearKinematics + "…";
             mnuAngularAnalysis.Text = ScreenManagerLang.DataAnalysis_AngularKinematics + "…";

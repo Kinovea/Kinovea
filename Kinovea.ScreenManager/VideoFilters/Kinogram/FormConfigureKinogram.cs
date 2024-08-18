@@ -74,9 +74,9 @@ namespace Kinovea.ScreenManager
         private void SetupStyle()
         {
             style = new DrawingStyle();
-            style.Elements.Add("borderColor", new StyleElementColor(parameters.BorderColor, "Border color"));
-            style.Elements.Add("labelColor", new StyleElementColor(parameters.LabelColor, "Label color"));
-            style.Elements.Add("labelSize", new StyleElementFontSize(parameters.LabelSize, "Label size"));
+            style.Elements.Add("borderColor", new StyleElementColor(parameters.BorderColor, ScreenManagerLang.StyleElement_Color_BorderColor));
+            style.Elements.Add("labelColor", new StyleElementColor(parameters.LabelColor, ScreenManagerLang.StyleElement_Color_LabelColor));
+            style.Elements.Add("labelSize", new StyleElementFontSize(parameters.LabelSize, ScreenManagerLang.StyleElement_FontSize_LabelSize));
 
             styleHelper.Color = Color.Red;
             styleHelper.Bicolor = new Bicolor(Color.Black);

@@ -37,11 +37,11 @@ namespace Kinovea.ScreenManager
 
         private void Populate()
         {
-            this.Text = "Background properties";
-            lblOpaque.Text = "Opacity";
-            lblColor.Text = "Color";
-            btnCancel.Text = "Cancel";
-            btnOK.Text = "OK";
+            this.Text = ScreenManagerLang.FormBackgroundColor_BackgroundProperties;
+            lblOpaque.Text = ScreenManagerLang.Generic_Opacity;
+            lblColor.Text = ScreenManagerLang.Generic_Color;
+            btnCancel.Text = ScreenManagerLang.Generic_Cancel;
+            btnOK.Text = ScreenManagerLang.Generic_OK;
 
             int a = metadata.BackgroundColor.A;
             Color rgb = Color.FromArgb(metadata.BackgroundColor.R, metadata.BackgroundColor.G, metadata.BackgroundColor.B);

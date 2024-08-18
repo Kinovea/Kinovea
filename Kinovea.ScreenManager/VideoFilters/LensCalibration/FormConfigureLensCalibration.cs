@@ -52,11 +52,11 @@ namespace Kinovea.ScreenManager
 
         private void InitCulture()
         {
-            this.Text = "Configure lens calibration";
+            this.Text = ScreenManagerLang.FormConfigureLensCalibration_ConfigureLensCalibration;
             grpConfig.Text = ScreenManagerLang.Generic_Configuration;
-            lblMaxImages.Text = "Max images:";
-            lblPatternSize.Text = "Pattern size:";
-            lblMaxIterations.Text = "Max iterations:";
+            lblMaxImages.Text = ScreenManagerLang.FormConfigureLensCalibration_MaxImages;
+            lblPatternSize.Text = ScreenManagerLang.FormConfigureLensCalibration_PatternSize;
+            lblMaxIterations.Text = ScreenManagerLang.FormConfigureLensCalibration_MaxIterations;
             btnOK.Text = ScreenManagerLang.Generic_OK;
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
         }

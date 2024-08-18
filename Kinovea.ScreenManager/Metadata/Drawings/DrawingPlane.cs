@@ -942,8 +942,8 @@ namespace Kinovea.ScreenManager
         {
             mnuOptions.Text = ScreenManagerLang.Generic_Options;
             mnuShowGrid.Text = ScreenManagerLang.mnuOptions_CoordinateSystem_ShowGrid;
-            mnuShowXLine.Text = "Show vertical line";
-            mnuShowYLine.Text = "Show horizontal line";
+            mnuShowXLine.Text = ScreenManagerLang.DrawingPlane_ShowVerticalLine;
+            mnuShowYLine.Text = ScreenManagerLang.DrawingPlane_ShowHorizontalLine;
             mnuCalibrate.Text = ScreenManagerLang.mnuCalibrate;
         }
         #endregion

@@ -614,7 +614,7 @@ namespace Kinovea.ScreenManager
             // Options
             mnuOptions.Text = ScreenManagerLang.Generic_Options;
             mnuShowCenter.Text = ScreenManagerLang.mnuShowCircleCenter;
-            mnuFilled.Text = "Filled";
+            mnuFilled.Text = ScreenManagerLang.DrawingCircle_Filled;
         }
 
         private ToolStripMenuItem CreateMeasureLabelTypeMenu(MeasureLabelType measureLabelType)
