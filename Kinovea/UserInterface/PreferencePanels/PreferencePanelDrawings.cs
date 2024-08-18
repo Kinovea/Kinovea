@@ -246,15 +246,15 @@ namespace Kinovea.Root
             lblCustomLength.Text = RootLang.dlgPreferences_Player_UnitsCustom;
 
             // enum Kinovea.Services.CadenceUnit.
-            lblCadenceUnit.Text = "Cadence";
-            cmbCadenceUnit.Items.Add(String.Format("Hertz ({0})", UnitHelper.FrequencyAbbreviation(CadenceUnit.Hertz)));
-            cmbCadenceUnit.Items.Add(String.Format("Cycles per second ({0})", UnitHelper.FrequencyAbbreviation(CadenceUnit.CyclesPerSecond)));
-            cmbCadenceUnit.Items.Add(String.Format("Cycles per minute ({0})", UnitHelper.FrequencyAbbreviation(CadenceUnit.CyclesPerMinute)));
-            cmbCadenceUnit.Items.Add(String.Format("Steps per second ({0})", UnitHelper.FrequencyAbbreviation(CadenceUnit.StepsPerSecond)));
-            cmbCadenceUnit.Items.Add(String.Format("Steps per minute ({0})", UnitHelper.FrequencyAbbreviation(CadenceUnit.StepsPerMinute)));
-            cmbCadenceUnit.Items.Add(String.Format("Strokes per second ({0})", UnitHelper.FrequencyAbbreviation(CadenceUnit.StrokesPerSecond)));
-            cmbCadenceUnit.Items.Add(String.Format("Strokes per minute ({0})", UnitHelper.FrequencyAbbreviation(CadenceUnit.StrokesPerMinute)));
-            cmbCadenceUnit.Items.Add(String.Format("Revolutions per minute ({0})", UnitHelper.FrequencyAbbreviation(CadenceUnit.RevolutionsPerMinute)));
+            lblCadenceUnit.Text = ScreenManagerLang.Cadence;
+            cmbCadenceUnit.Items.Add(String.Format(RootLang.dlgPreferences_Player_UnitsHertz, UnitHelper.FrequencyAbbreviation(CadenceUnit.Hertz)));
+            cmbCadenceUnit.Items.Add(String.Format(RootLang.PreferencePanelDrawings_InitTabUnits_CyclesPerSecond, UnitHelper.FrequencyAbbreviation(CadenceUnit.CyclesPerSecond)));
+            cmbCadenceUnit.Items.Add(String.Format(RootLang.PreferencePanelDrawings_InitTabUnits_CyclesPerMinute, UnitHelper.FrequencyAbbreviation(CadenceUnit.CyclesPerMinute)));
+            cmbCadenceUnit.Items.Add(String.Format(RootLang.PreferencePanelDrawings_InitTabUnits_StepsPerSecond, UnitHelper.FrequencyAbbreviation(CadenceUnit.StepsPerSecond)));
+            cmbCadenceUnit.Items.Add(String.Format(RootLang.PreferencePanelDrawings_InitTabUnits_StepsPerMinute, UnitHelper.FrequencyAbbreviation(CadenceUnit.StepsPerMinute)));
+            cmbCadenceUnit.Items.Add(String.Format(RootLang.PreferencePanelDrawings_InitTabUnits_StrokesPerSecond, UnitHelper.FrequencyAbbreviation(CadenceUnit.StrokesPerSecond)));
+            cmbCadenceUnit.Items.Add(String.Format(RootLang.PreferencePanelDrawings_InitTabUnits_StrokesPerMinute, UnitHelper.FrequencyAbbreviation(CadenceUnit.StrokesPerMinute)));
+            cmbCadenceUnit.Items.Add(String.Format(RootLang.dlgPreferences_Player_UnitsRevolutionsPerMinute, UnitHelper.FrequencyAbbreviation(CadenceUnit.RevolutionsPerMinute)));
 
             SelectCurrentUnits();
         }

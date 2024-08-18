@@ -961,6 +961,15 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hertz ({0}).
+        /// </summary>
+        internal static string dlgPreferences_Player_UnitsHertz {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_UnitsHertz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Meters per second squared ({0}).
         /// </summary>
         internal static string dlgPreferences_Player_UnitsMetersPerSecondSquared {
@@ -1398,6 +1407,60 @@ namespace Kinovea.Root.Languages {
         internal static string mnuWorkspaceSaveAsDefault {
             get {
                 return ResourceManager.GetString("mnuWorkspaceSaveAsDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cycles per minute ({0}).
+        /// </summary>
+        internal static string PreferencePanelDrawings_InitTabUnits_CyclesPerMinute {
+            get {
+                return ResourceManager.GetString("PreferencePanelDrawings_InitTabUnits_CyclesPerMinute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cycles per second ({0}).
+        /// </summary>
+        internal static string PreferencePanelDrawings_InitTabUnits_CyclesPerSecond {
+            get {
+                return ResourceManager.GetString("PreferencePanelDrawings_InitTabUnits_CyclesPerSecond", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Steps per minute ({0}).
+        /// </summary>
+        internal static string PreferencePanelDrawings_InitTabUnits_StepsPerMinute {
+            get {
+                return ResourceManager.GetString("PreferencePanelDrawings_InitTabUnits_StepsPerMinute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Steps per second ({0}).
+        /// </summary>
+        internal static string PreferencePanelDrawings_InitTabUnits_StepsPerSecond {
+            get {
+                return ResourceManager.GetString("PreferencePanelDrawings_InitTabUnits_StepsPerSecond", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Strokes per minute ({0}).
+        /// </summary>
+        internal static string PreferencePanelDrawings_InitTabUnits_StrokesPerMinute {
+            get {
+                return ResourceManager.GetString("PreferencePanelDrawings_InitTabUnits_StrokesPerMinute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Strokes per second ({0}).
+        /// </summary>
+        internal static string PreferencePanelDrawings_InitTabUnits_StrokesPerSecond {
+            get {
+                return ResourceManager.GetString("PreferencePanelDrawings_InitTabUnits_StrokesPerSecond", resourceCulture);
             }
         }
         

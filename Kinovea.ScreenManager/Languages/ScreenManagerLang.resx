@@ -1473,4 +1473,7 @@
   <data name="mnuOptions_TestGrid_ShowVerticalAxis" xml:space="preserve">
     <value>Show vertical axis</value>
   </data>
+  <data name="Cadence" xml:space="preserve">
+    <value>Cadence</value>
+  </data>
 </root>
