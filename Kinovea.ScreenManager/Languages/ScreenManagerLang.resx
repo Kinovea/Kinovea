@@ -553,7 +553,7 @@
     <value>The capture directory could not be created.\nCheck that it points to a valid storage location.</value>
   </data>
   <data name="Error_SaveMovie_FileError" xml:space="preserve">
-    <value>Unable to write file.\nMake sure you have the rights to write in the target folder and that the file not be currently used.</value>
+    <value>Unable to write file.\nMake sure you have the rights to write in the target folder and that the file is not currently used.</value>
   </data>
   <data name="Error_SaveMovie_Title" xml:space="preserve">
     <value>Kinovea - Unable to save video. </value>
