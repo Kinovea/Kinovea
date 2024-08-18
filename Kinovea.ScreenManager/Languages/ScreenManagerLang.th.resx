@@ -73,9 +73,6 @@
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>โหดข้อมูลอัตโนมัติ</value>
   </data>
-  <data name="dlgKeyframeComment_Title" xml:space="preserve">
-    <value>ข้อคิดเห็น</value>
-  </data>
   <data name="dlgImportReference_Title" xml:space="preserve">
     <value>นำเข้าภาพเพื่อเป็นการอ้างอิง</value>
   </data>
@@ -177,12 +174,6 @@
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>ตำแหน่ง</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
-    <value>ไม่มี</value>
-  </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
-    <value>การวัด:</value>
   </data>
   <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
     <value>เป้าหมาย</value>
@@ -331,9 +322,6 @@
   <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
     <value>แผนภาพแสดงการกระจาย</value>
   </data>
-  <data name="DataAnalysis" xml:space="preserve">
-    <value>วิเคราะห์ข้อมูล</value>
-  </data>
   <data name="CommandExportVideo_FriendlyName" xml:space="preserve">
     <value>ส่งวีดีโอออก</value>
   </data>
@@ -361,12 +349,6 @@
   <data name="buttonGotoLast_ToolTip" xml:space="preserve">
     <value>ไปยังตำแหน่งสิ้นสุดของวีดีโอทั้งสอง</value>
   </data>
-  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
-    <value>การบิดเบือน (ความคลาดเคลื่อน)</value>
-  </data>
-  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
-    <value>ทำการสอบเทียบความแม่นยำของกล้อง</value>
-  </data>
   <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
     <value>ข้อมูลของกล้อง</value>
   </data>
@@ -381,9 +363,6 @@
   </data>
   <data name="dlgRafaleExport_ExportFrameDecimation" xml:space="preserve">
     <value>ส่งออก 1 ภาพทุก {0} ภาพ</value>
-  </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
-    <value>ถ่ายภาพช้าลงในบัญชี (ปัจจุบัน= </value>
   </data>
   <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve">
     <value>ส่งออก 1 ภาพทุก {0:0} มิลลิวินาที</value>
@@ -435,9 +414,6 @@
   </data>
   <data name="ExtraData_Center" xml:space="preserve">
     <value>ศูนย์กลาง</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
-    <value>การกระจัดเชิงมุม</value>
   </data>
   <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
     <value>ข้าม</value>

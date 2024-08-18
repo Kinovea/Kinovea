@@ -1739,8 +1739,8 @@ namespace Kinovea.ScreenManager
             mnuBackground.Text = ScreenManagerLang.PlayerScreenUserInterface_Background;
             mnuTestGrid.Text = ScreenManagerLang.DrawingName_TestGrid;
             mnuTimeCalibration.Text = ScreenManagerLang.mnuTimeCalibration;
-            mnuLensCalibration.Text = ScreenManagerLang.ScreenManagerKernel_LensCalibration;
-            mnuLensCalibrationOpen.Text = ScreenManagerLang.ScreenManagerKernel_LensCalibration_Import;
+            mnuLensCalibration.Text = ScreenManagerLang.mnuLensCalibration;
+            mnuLensCalibrationOpen.Text = ScreenManagerLang.Generic_Import;
             mnuLensCalibrationMode.Text = ScreenManagerLang.ScreenManagerKernel_LensCalibration_LensCalibrationMode;
             mnuLensCalibrationManual.Text = ScreenManagerLang.ScreenManagerKernel_LensCalibration_ManualEstimation;
             mnuLensCalibrationNone.Text = ScreenManagerLang.ScreenManagerKernel_LensCalibration_None;

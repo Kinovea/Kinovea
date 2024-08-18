@@ -95,9 +95,6 @@
   <data name="CommandExportVideo_FriendlyName" xml:space="preserve">
     <value>Сохранить видео</value>
   </data>
-  <data name="DataAnalysis" xml:space="preserve">
-    <value>Анализ данных</value>
-  </data>
   <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
     <value>Диаграмма</value>
   </data>
@@ -242,12 +239,6 @@
   <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
     <value>Цель</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
-    <value>Измерения:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
-    <value>Отсутствует</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>Позиция</value>
   </data>
@@ -283,9 +274,6 @@
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
     <value>Горизонтальное ускорение</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
-    <value>Угловое перемещение</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
     <value>Угловая скорость</value>
@@ -326,9 +314,6 @@
   <data name="dlgImportReference_Title" xml:space="preserve">
     <value>Импортировать изображение как ссылку</value>
   </data>
-  <data name="dlgKeyframeComment_Title" xml:space="preserve">
-    <value>Комментарии…</value>
-  </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>Загрузить данные по ключевым кадрам</value>
   </data>
@@ -347,9 +332,6 @@
   <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve">
     <value>Экспортировать по одному кадру каждые {0:0.00} мс.</value>
   </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
-    <value>Значения замедленной съемки (Текущее = </value>
-  </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>Сохранить ключевые кадры</value>
   </data>
@@ -361,12 +343,6 @@
   </data>
   <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
     <value>Внутренние настройки камеры</value>
-  </data>
-  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
-    <value>Калибровка камеры</value>
-  </data>
-  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
-    <value>Искажение</value>
   </data>
   <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
     <value>Загрузить профиль калибровки камеры</value>
@@ -671,9 +647,6 @@
   <data name="mnuCopyImageToClipboard" xml:space="preserve">
     <value>Копировать изображение в буфер обмена</value>
   </data>
-  <data name="mnuConfigureTrajectory" xml:space="preserve">
-    <value>Конфигурация отображения пути</value>
-  </data>
   <data name="mnuDeinterlace" xml:space="preserve">
     <value>Деинтерлейсинг</value>
   </data>
@@ -682,9 +655,6 @@
   </data>
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>Удалить путь после этой точки</value>
-  </data>
-  <data name="mnuDeleteTrajectory" xml:space="preserve">
-    <value>Удалить путь целиком</value>
   </data>
   <data name="mnuDrawingTrackingStart" xml:space="preserve">
     <value>Начать отслеживание</value>
@@ -700,9 +670,6 @@
   </data>
   <data name="mnuTwoPlayers" xml:space="preserve">
     <value>Два экрана воспроизведения</value>
-  </data>
-  <data name="mnuExportSpreadsheet" xml:space="preserve">
-    <value>Экспортировать в электронную таблицу</value>
   </data>
   <data name="mnuFormat" xml:space="preserve">
     <value>Соотношение сторон</value>
@@ -778,9 +745,6 @@
   </data>
   <data name="mnuCalibrate" xml:space="preserve">
     <value>Калибровка….</value>
-  </data>
-  <data name="mnuTimebase" xml:space="preserve">
-    <value>Конфигурация времени видео…</value>
   </data>
   <data name="mnuSwapScreens" xml:space="preserve">
     <value>Обратить видео</value>
@@ -913,24 +877,6 @@
   </data>
   <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
     <value>Сброс исследуемого интервала</value>
-  </data>
-  <data name="ToolTip_RichText_Bold" xml:space="preserve">
-    <value>Жирный</value>
-  </data>
-  <data name="ToolTip_RichText_Italic" xml:space="preserve">
-    <value>Курсив</value>
-  </data>
-  <data name="ToolTip_RichText_Underline" xml:space="preserve">
-    <value>Подчеркнутый</value>
-  </data>
-  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
-    <value>Зачеркнутый</value>
-  </data>
-  <data name="ToolTip_RichText_ForeColor" xml:space="preserve">
-    <value>Передний фон</value>
-  </data>
-  <data name="ToolTip_RichText_BackColor" xml:space="preserve">
-    <value>Задний фон</value>
   </data>
   <data name="ToolTip_SaveDiaporama" xml:space="preserve">
     <value>Сохранить слайдшоу из ключевых кадров</value>
@@ -1156,9 +1102,6 @@
   </data>
   <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
     <value>Показать вписанный круг</value>
-  </data>
-  <data name="dlgCalibratePlane_HelpDistanceGrid" xml:space="preserve">
-    <value>Введите расстояние до каждого маркера.</value>
   </data>
   <data name="dlgCalibratePlane_HelpPlane" xml:space="preserve">
     <value>Введите длину каждой стороны.</value>

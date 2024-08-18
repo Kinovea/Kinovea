@@ -119,12 +119,6 @@
   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve">
     <value>Nulstil</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
-    <value>Måling:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
-    <value>Ingen</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve">
     <value>Hastighed</value>
   </data>
@@ -149,14 +143,8 @@
   <data name="dlgImportReference_Title" xml:space="preserve">
     <value>Importer et referencebillede</value>
   </data>
-  <data name="dlgKeyframeComment_Title" xml:space="preserve">
-    <value>Kommentarer…</value>
-  </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>Indlæs nøglebilleders data</value>
-  </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
-    <value>Tag hensyn til slowmotion. (Aktuelt = </value>
   </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>Gem data for nøglebilleder</value>
@@ -329,9 +317,6 @@
   <data name="mnuCloseScreen" xml:space="preserve">
     <value>Luk denne skærm</value>
   </data>
-  <data name="mnuConfigureTrajectory" xml:space="preserve">
-    <value>Konfigurer visning af spor</value>
-  </data>
   <data name="mnuDeinterlace" xml:space="preserve">
     <value>Deinterlace</value>
   </data>
@@ -341,9 +326,6 @@
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>Slet spor efter dette punkt</value>
   </data>
-  <data name="mnuDeleteTrajectory" xml:space="preserve">
-    <value>Slet hele sporet</value>
-  </data>
   <data name="mnuTwoCaptures" xml:space="preserve">
     <value>To optageskærme</value>
   </data>
@@ -352,9 +334,6 @@
   </data>
   <data name="mnuTwoPlayers" xml:space="preserve">
     <value>To afspilningsskærme</value>
-  </data>
-  <data name="mnuExportSpreadsheet" xml:space="preserve">
-    <value>Eksporter til regneark</value>
   </data>
   <data name="mnuFormat" xml:space="preserve">
     <value>Billedformat</value>
@@ -487,24 +466,6 @@
   </data>
   <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
     <value>Nulstil arbejdsområde til hele videoen</value>
-  </data>
-  <data name="ToolTip_RichText_Bold" xml:space="preserve">
-    <value>Frenhævet</value>
-  </data>
-  <data name="ToolTip_RichText_Italic" xml:space="preserve">
-    <value>Kursiv</value>
-  </data>
-  <data name="ToolTip_RichText_Underline" xml:space="preserve">
-    <value>Understreget</value>
-  </data>
-  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
-    <value>Gennemstreget</value>
-  </data>
-  <data name="ToolTip_RichText_ForeColor" xml:space="preserve">
-    <value>Forgrundsfarve</value>
-  </data>
-  <data name="ToolTip_RichText_BackColor" xml:space="preserve">
-    <value>Baggrundsfarve</value>
   </data>
   <data name="ToolTip_SaveDiaporama" xml:space="preserve">
     <value>Gem nøglebilleder som slide show</value>

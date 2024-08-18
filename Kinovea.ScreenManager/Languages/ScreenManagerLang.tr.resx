@@ -119,12 +119,6 @@
   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve">
     <value>Sıfırla</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
-    <value>Ölçüm:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
-    <value>Hiçbiri</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve">
     <value>Hız</value>
   </data>
@@ -146,14 +140,8 @@
   <data name="dlgImportReference_Title" xml:space="preserve">
     <value>Bir imajı referans olarak import et</value>
   </data>
-  <data name="dlgKeyframeComment_Title" xml:space="preserve">
-    <value>Yorumlar...</value>
-  </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>Anahtar İmaj Verisi Yükle</value>
-  </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
-    <value>Slow Motion'ı hesaba kat. (Geçerli = </value>
   </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>Anahtar İmaj Verisini Kaydet</value>
@@ -314,9 +302,6 @@
   <data name="mnuCloseScreen" xml:space="preserve">
     <value>Bu Ekranı Kapa</value>
   </data>
-  <data name="mnuConfigureTrajectory" xml:space="preserve">
-    <value>Yol Görünümünü Ayarla</value>
-  </data>
   <data name="mnuDeinterlace" xml:space="preserve">
     <value>Görüntü ayrıştırma</value>
   </data>
@@ -326,9 +311,6 @@
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>Bu noktadan sonraki Yolu Sil</value>
   </data>
-  <data name="mnuDeleteTrajectory" xml:space="preserve">
-    <value>Tüm Yolları sil</value>
-  </data>
   <data name="mnuTwoCaptures" xml:space="preserve">
     <value>İki Görüntü Yakalama Ekranı</value>
   </data>
@@ -337,9 +319,6 @@
   </data>
   <data name="mnuTwoPlayers" xml:space="preserve">
     <value>İki Oynatma Ekranı</value>
-  </data>
-  <data name="mnuExportSpreadsheet" xml:space="preserve">
-    <value>Spreadsheet'e export et</value>
   </data>
   <data name="mnuFormat" xml:space="preserve">
     <value>En boy oranı</value>
@@ -473,24 +452,6 @@
   <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
     <value>Çalışma Alanını Tam Videoya Geri Ayarla</value>
   </data>
-  <data name="ToolTip_RichText_Bold" xml:space="preserve">
-    <value>Koyu</value>
-  </data>
-  <data name="ToolTip_RichText_Italic" xml:space="preserve">
-    <value>İtalik</value>
-  </data>
-  <data name="ToolTip_RichText_Underline" xml:space="preserve">
-    <value>Altını çiz</value>
-  </data>
-  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
-    <value>Belirginleştir</value>
-  </data>
-  <data name="ToolTip_RichText_ForeColor" xml:space="preserve">
-    <value>Önplan rengi</value>
-  </data>
-  <data name="ToolTip_RichText_BackColor" xml:space="preserve">
-    <value>Arkaplan rengi</value>
-  </data>
   <data name="ToolTip_SaveDiaporama" xml:space="preserve">
     <value>Anahtar İmajlardan bir slayt gösterimi kaydet</value>
   </data>
@@ -610,9 +571,6 @@
   </data>
   <data name="DataAnalysis_XaxisLabel" xml:space="preserve">
     <value>X ekseni:</value>
-  </data>
-  <data name="DataAnalysis" xml:space="preserve">
-    <value>Veri analizi</value>
   </data>
   <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
     <value>Çizimi Düzenle</value>
@@ -902,12 +860,6 @@
   <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
     <value>Kamera kalibrasyon profilini yükle</value>
   </data>
-  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
-    <value>Çarpıtma</value>
-  </data>
-  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
-    <value>kamerayı kalibre et</value>
-  </data>
   <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
     <value>Kamera özellikleri</value>
   </data>
@@ -979,9 +931,6 @@
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
     <value>Açısal hız</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
-    <value>açısal yer değiştirme</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
     <value>Yatay ivme</value>

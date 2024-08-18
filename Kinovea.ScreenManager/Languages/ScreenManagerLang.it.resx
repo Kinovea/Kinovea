@@ -119,12 +119,6 @@
   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve">
     <value>Azzera</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
-    <value>Misurazione:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
-    <value>Nessuna</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve">
     <value>Velocità</value>
   </data>
@@ -146,14 +140,8 @@
   <data name="dlgImportReference_Title" xml:space="preserve">
     <value>Importa un'immagine come riferimento</value>
   </data>
-  <data name="dlgKeyframeComment_Title" xml:space="preserve">
-    <value>Commenti...</value>
-  </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>Carica le immagini chiave ed i loro dati</value>
-  </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
-    <value>Nel salvataggio tieni conto del rallentatore. (Attuale = </value>
   </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>Salva annotazioni</value>
@@ -314,9 +302,6 @@
   <data name="mnuCloseScreen" xml:space="preserve">
     <value>Chiudi questo schermo</value>
   </data>
-  <data name="mnuConfigureTrajectory" xml:space="preserve">
-    <value>Configura vista Traiettoria</value>
-  </data>
   <data name="mnuDeinterlace" xml:space="preserve">
     <value>Deinterlaccia</value>
   </data>
@@ -326,9 +311,6 @@
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>Cancella la traiettoria dopo questo punto</value>
   </data>
-  <data name="mnuDeleteTrajectory" xml:space="preserve">
-    <value>Cancella tutta la traiettoria</value>
-  </data>
   <data name="mnuTwoCaptures" xml:space="preserve">
     <value>Due schermi di cattura</value>
   </data>
@@ -337,9 +319,6 @@
   </data>
   <data name="mnuTwoPlayers" xml:space="preserve">
     <value>Due schermi di riproduzione</value>
-  </data>
-  <data name="mnuExportSpreadsheet" xml:space="preserve">
-    <value>Esporta su foglio di calcolo</value>
   </data>
   <data name="mnuFormat" xml:space="preserve">
     <value>Rapporto d'aspetto</value>
@@ -473,24 +452,6 @@
   <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
     <value>Ripristina la zona di lavoro al video intero</value>
   </data>
-  <data name="ToolTip_RichText_Bold" xml:space="preserve">
-    <value>Grassetto</value>
-  </data>
-  <data name="ToolTip_RichText_Italic" xml:space="preserve">
-    <value>Italico</value>
-  </data>
-  <data name="ToolTip_RichText_Underline" xml:space="preserve">
-    <value>Sottolineato</value>
-  </data>
-  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
-    <value>Barrato</value>
-  </data>
-  <data name="ToolTip_RichText_ForeColor" xml:space="preserve">
-    <value>Colore carattere</value>
-  </data>
-  <data name="ToolTip_RichText_BackColor" xml:space="preserve">
-    <value>Colore di sfondo</value>
-  </data>
   <data name="ToolTip_SaveDiaporama" xml:space="preserve">
     <value>Salva una videopresentazione delle immagini chiave</value>
   </data>
@@ -605,9 +566,6 @@
   <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
     <value>Diagramma a dispersione</value>
   </data>
-  <data name="DataAnalysis" xml:space="preserve">
-    <value>Analisi dei dati</value>
-  </data>
   <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
     <value>Modifica disegno</value>
   </data>
@@ -671,9 +629,6 @@
   <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
     <value>Accelerazione orizzontale</value>
   </data>
-  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
-    <value>Spostamento angolare</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
     <value>Velocità angolare</value>
   </data>
@@ -720,7 +675,7 @@
     <value>Allineato con gli assi dell'immagine</value>
   </data>
   <data name="Generic_Import" xml:space="preserve">
-    <value>Importa</value>
+    <value>Importa…</value>
   </data>
   <data name="DrawingName_Arrow" xml:space="preserve">
     <value>Freccia</value>
@@ -905,9 +860,6 @@
   <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
     <value>Caratteristiche intrinseche della fotocamera</value>
   </data>
-  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
-    <value>Distorsione</value>
-  </data>
   <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
     <value>Carica un profilo di calibrazione della fotocamera</value>
   </data>
@@ -1004,9 +956,6 @@
   <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
     <value>Apri come osservatore della cartella di replay…</value>
   </data>
-  <data name="mnuTimebase" xml:space="preserve">
-    <value>Configura il timing video...</value>
-  </data>
   <data name="mnuCoordinateSystem" xml:space="preserve">
     <value>Sistema di coordinate</value>
   </data>
@@ -1078,9 +1027,6 @@
   </data>
   <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve">
     <value>Coefficienti di distorsione</value>
-  </data>
-  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
-    <value>Calibra la fotocamera</value>
   </data>
   <data name="DrawingName_CSVL" xml:space="preserve">
     <value>Linea verticale sacrale centrale</value>
@@ -1214,9 +1160,6 @@
   <data name="dlgCalibratePlane_AveragePixelSize" xml:space="preserve">
     <value>Dimensione media dei pixel: {0}.</value>
   </data>
-  <data name="dlgCalibratePlane_HelpDistanceGrid" xml:space="preserve">
-    <value>Inserire la distanza dall'origine per ogni marcatore.</value>
-  </data>
   <data name="dlgCalibratePlane_HelpPlane" xml:space="preserve">
     <value>Inserire le dimensioni di ogni lato.</value>
   </data>
@@ -1314,7 +1257,7 @@
     <value>Esporta un documento</value>
   </data>
   <data name="mnuLensCalibration" xml:space="preserve">
-    <value>Calibrazione ottica…</value>
+    <value>Calibrazione ottica</value>
   </data>
   <data name="mnuMagnifierFreeze" xml:space="preserve">
     <value>Congelare</value>

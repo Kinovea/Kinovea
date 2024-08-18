@@ -119,12 +119,6 @@
   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve">
     <value>Resetare</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
-    <value>Măsurare:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
-    <value>Lipsă</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve">
     <value>Viteză</value>
   </data>
@@ -146,14 +140,8 @@
   <data name="dlgImportReference_Title" xml:space="preserve">
     <value>Importare imagine ca referinţă</value>
   </data>
-  <data name="dlgKeyframeComment_Title" xml:space="preserve">
-    <value>Comentarii...</value>
-  </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>Încărcare adnotări</value>
-  </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
-    <value>Ţine cont de mişcarea încetinită. (Curent = </value>
   </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>Salvare adnotări</value>
@@ -314,9 +302,6 @@
   <data name="mnuCloseScreen" xml:space="preserve">
     <value>Închide acest ecran</value>
   </data>
-  <data name="mnuConfigureTrajectory" xml:space="preserve">
-    <value>Configurează afişarea traiectoriei</value>
-  </data>
   <data name="mnuDeinterlace" xml:space="preserve">
     <value>Deîntreţesere</value>
   </data>
@@ -326,9 +311,6 @@
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>Şterge traiectoria după acest punct</value>
   </data>
-  <data name="mnuDeleteTrajectory" xml:space="preserve">
-    <value>Şterge toată traiectoria</value>
-  </data>
   <data name="mnuTwoCaptures" xml:space="preserve">
     <value>Două ecrane de captură video</value>
   </data>
@@ -337,9 +319,6 @@
   </data>
   <data name="mnuTwoPlayers" xml:space="preserve">
     <value>Două ecrane de redare</value>
-  </data>
-  <data name="mnuExportSpreadsheet" xml:space="preserve">
-    <value>Exporta în foaie de calcul</value>
   </data>
   <data name="mnuFormat" xml:space="preserve">
     <value>Format de imagine</value>
@@ -472,24 +451,6 @@
   </data>
   <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
     <value>Resetare zonă de lucru</value>
-  </data>
-  <data name="ToolTip_RichText_Bold" xml:space="preserve">
-    <value>Bold</value>
-  </data>
-  <data name="ToolTip_RichText_Italic" xml:space="preserve">
-    <value>Italic</value>
-  </data>
-  <data name="ToolTip_RichText_Underline" xml:space="preserve">
-    <value>Subliniat</value>
-  </data>
-  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
-    <value>Tăiat</value>
-  </data>
-  <data name="ToolTip_RichText_ForeColor" xml:space="preserve">
-    <value>Culoare text</value>
-  </data>
-  <data name="ToolTip_RichText_BackColor" xml:space="preserve">
-    <value>Culoare fundal</value>
   </data>
   <data name="ToolTip_SaveDiaporama" xml:space="preserve">
     <value>Salvează o prezentare din cadrele cheie</value>
@@ -625,9 +586,6 @@
   </data>
   <data name="mnuThumbnailDelete" xml:space="preserve">
     <value>Șterge</value>
-  </data>
-  <data name="mnuTimebase" xml:space="preserve">
-    <value>Configurează timpul video...</value>
   </data>
   <data name="mnuCalibrate" xml:space="preserve">
     <value>Calibrează…</value>
@@ -890,12 +848,6 @@
   <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
     <value>Încarcă profilul de calibrare a camerei</value>
   </data>
-  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
-    <value>Distorsiune</value>
-  </data>
-  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
-    <value>Calibrează camera</value>
-  </data>
   <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
     <value>Valori intrinseci ale camerei</value>
   </data>
@@ -967,9 +919,6 @@
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
     <value>Viteză unghiulară</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
-    <value>Deplasare unghiulară</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
     <value>Accelerare orizontală</value>
@@ -1135,9 +1084,6 @@
   </data>
   <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
     <value>Diagramă de împrăștiere</value>
-  </data>
-  <data name="DataAnalysis" xml:space="preserve">
-    <value>Analiză date</value>
   </data>
   <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
     <value>Modificare desen</value>

@@ -119,12 +119,6 @@
   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve">
     <value>초기화</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
-    <value>측정:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
-    <value>아무것도 아님</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve">
     <value>속력</value>
   </data>
@@ -146,14 +140,8 @@
   <data name="dlgImportReference_Title" xml:space="preserve">
     <value>한 이미지를 참조로 가져옴</value>
   </data>
-  <data name="dlgKeyframeComment_Title" xml:space="preserve">
-    <value>주석…</value>
-  </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>키 이미지'자료 가져오기</value>
-  </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
-    <value>느린 재생을 고려하세요. (현재= </value>
   </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>키 이미지'자료 저장</value>
@@ -326,9 +314,6 @@
   <data name="mnuCloseScreen" xml:space="preserve">
     <value>이 화면 닫음</value>
   </data>
-  <data name="mnuConfigureTrajectory" xml:space="preserve">
-    <value>경로 표시 구성</value>
-  </data>
   <data name="mnuDeinterlace" xml:space="preserve">
     <value>디인터레이스</value>
   </data>
@@ -338,9 +323,6 @@
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>이 점 이후의 궤도 지우기</value>
   </data>
-  <data name="mnuDeleteTrajectory" xml:space="preserve">
-    <value>모든 궤도 지우기</value>
-  </data>
   <data name="mnuTwoCaptures" xml:space="preserve">
     <value>두 개의 캡처 화면</value>
   </data>
@@ -349,9 +331,6 @@
   </data>
   <data name="mnuTwoPlayers" xml:space="preserve">
     <value>두 개의 재생 화면</value>
-  </data>
-  <data name="mnuExportSpreadsheet" xml:space="preserve">
-    <value>표 계산 프로그램으로 내보내기</value>
   </data>
   <data name="mnuFormat" xml:space="preserve">
     <value>이미지 형식(format)</value>
@@ -482,24 +461,6 @@
   <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
     <value>작업영역을 전체로 초기화</value>
   </data>
-  <data name="ToolTip_RichText_Bold" xml:space="preserve">
-    <value>굵게</value>
-  </data>
-  <data name="ToolTip_RichText_Italic" xml:space="preserve">
-    <value>이태릭체로</value>
-  </data>
-  <data name="ToolTip_RichText_Underline" xml:space="preserve">
-    <value>밑줄</value>
-  </data>
-  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
-    <value>줄 쳐서 지우기</value>
-  </data>
-  <data name="ToolTip_RichText_ForeColor" xml:space="preserve">
-    <value>전경 색상</value>
-  </data>
-  <data name="ToolTip_RichText_BackColor" xml:space="preserve">
-    <value>배경 색상</value>
-  </data>
   <data name="ToolTip_SaveDiaporama" xml:space="preserve">
     <value>주요 이미지에서 슬라이드쇼 내보내기</value>
   </data>
@@ -526,9 +487,6 @@
   </data>
   <data name="DataAnalysis_ResultantLinearAcceleration" xml:space="preserve">
     <value>합성 가속도</value>
-  </data>
-  <data name="DataAnalysis" xml:space="preserve">
-    <value>데이터 분석</value>
   </data>
   <data name="DataAnalysis_ExportData" xml:space="preserve">
     <value>데이터 내보내기</value>
@@ -676,12 +634,6 @@
   </data>
   <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve">
     <value>왜곡 계수</value>
-  </data>
-  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
-    <value>카메라 보정</value>
-  </data>
-  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
-    <value>왜곡</value>
   </data>
   <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
     <value>카메라 보정 프로파일 불러오기</value>
@@ -911,9 +863,6 @@
   <data name="mnuOpenReplayWatcher" xml:space="preserve">
     <value>재생 폴더 관찰자 열기…</value>
   </data>
-  <data name="mnuTimebase" xml:space="preserve">
-    <value>비디오 타이밍 구성...</value>
-  </data>
   <data name="mnuThumbnailDelete" xml:space="preserve">
     <value>삭제</value>
   </data>
@@ -997,9 +946,6 @@
   </data>
   <data name="Infobar_Player_StartWatcher" xml:space="preserve">
     <value>관찰 폴더 시작: {0}</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
-    <value>각 변위</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
     <value>각속도</value>

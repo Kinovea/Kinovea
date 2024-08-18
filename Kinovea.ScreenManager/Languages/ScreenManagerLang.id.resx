@@ -88,9 +88,6 @@
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>Muat anotasi</value>
   </data>
-  <data name="dlgKeyframeComment_Title" xml:space="preserve">
-    <value>Komentar...</value>
-  </data>
   <data name="ExtraData_Diameter" xml:space="preserve">
     <value>Garis tengah</value>
   </data>
@@ -123,12 +120,6 @@
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>Posisi</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
-    <value>Tidak ada</value>
-  </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
-    <value>Pengukuran:</value>
   </data>
   <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
     <value>Sasaran</value>
@@ -226,15 +217,6 @@
   <data name="ToolTip_Last" xml:space="preserve">
     <value>Ke bagian akhir</value>
   </data>
-  <data name="ToolTip_RichText_Underline" xml:space="preserve">
-    <value>Garis bawah</value>
-  </data>
-  <data name="ToolTip_RichText_Italic" xml:space="preserve">
-    <value>Miring</value>
-  </data>
-  <data name="ToolTip_RichText_Bold" xml:space="preserve">
-    <value>Tebal</value>
-  </data>
   <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
     <value>Atur Ulang Zona Kerja</value>
   </data>
@@ -306,9 +288,6 @@
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
     <value>Kecepatan angular</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
-    <value>Perpindahan angular</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
     <value>Percepatan horizontal</value>
@@ -405,9 +384,6 @@
   </data>
   <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
     <value>Diagram menyebar</value>
-  </data>
-  <data name="DataAnalysis" xml:space="preserve">
-    <value>Analisis data</value>
   </data>
   <data name="CommandExportVideo_FriendlyName" xml:space="preserve">
     <value>Ekspor video</value>
@@ -544,12 +520,6 @@
   <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
     <value>Muat profil kalibrasi kamera</value>
   </data>
-  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
-    <value>Distorsi</value>
-  </data>
-  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
-    <value>Kalibrasikan kamera</value>
-  </data>
   <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
     <value>Intrinsik kamera</value>
   </data>
@@ -561,9 +531,6 @@
   </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>Simpan anotasi</value>
-  </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
-    <value>Pertimbangkan juga gerak lambat. (Current = </value>
   </data>
   <data name="dlgImportReference_Title" xml:space="preserve">
     <value>Impor gambar sebagai referensi</value>
@@ -886,14 +853,8 @@
   <data name="mnuHideAfter" xml:space="preserve">
     <value>Sembunyikan setelah titik ini</value>
   </data>
-  <data name="mnuConfigureTrajectory" xml:space="preserve">
-    <value>Konfigurasikan tampilan jalur</value>
-  </data>
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>Hapus jalur setelah titik ini</value>
-  </data>
-  <data name="mnuDeleteTrajectory" xml:space="preserve">
-    <value>Hapus semua jalur</value>
   </data>
   <data name="mnuDrawingTrackingStart" xml:space="preserve">
     <value>Mulai pelacakan</value>
@@ -909,9 +870,6 @@
   </data>
   <data name="mnuTwoPlayers" xml:space="preserve">
     <value>Dua layar pemutaran</value>
-  </data>
-  <data name="mnuExportSpreadsheet" xml:space="preserve">
-    <value>Ekspor ke spreadsheet</value>
   </data>
   <data name="mnuFormat" xml:space="preserve">
     <value>Rasio Aspek</value>
@@ -1057,15 +1015,6 @@
   <data name="ToolTip_DrawingToolSpotlight" xml:space="preserve">
     <value>Penyorot</value>
   </data>
-  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
-    <value>Coret</value>
-  </data>
-  <data name="ToolTip_RichText_ForeColor" xml:space="preserve">
-    <value>Warna latar depan</value>
-  </data>
-  <data name="ToolTip_RichText_BackColor" xml:space="preserve">
-    <value>Warna latar belakang</value>
-  </data>
   <data name="ToolTip_SaveDiaporama" xml:space="preserve">
     <value>Ekspor tayangan slide dari gambar utama</value>
   </data>
@@ -1095,9 +1044,6 @@
   </data>
   <data name="mnuOpenReplayWatcher" xml:space="preserve">
     <value>Buka pengamat folder tayangan ulang…</value>
-  </data>
-  <data name="mnuTimebase" xml:space="preserve">
-    <value>Konfigurasi waktu video...</value>
   </data>
   <data name="mnuToggleCommonCtrls" xml:space="preserve">
     <value>Tampilkan/Sembunyikan kontrol umum</value>
@@ -1221,9 +1167,6 @@
   </data>
   <data name="mnuAction_Chrono_DeleteSection" xml:space="preserve">
     <value>Hapus bagian waktu saat ini</value>
-  </data>
-  <data name="dlgCalibratePlane_HelpDistanceGrid" xml:space="preserve">
-    <value>Masukkan jarak dari posisi asal untuk setiap penanda.</value>
   </data>
   <data name="mnuAction_Chrono_MovePrevSplit" xml:space="preserve">
     <value>Pindahkan titik pisah sebelumnya ke bingkai ini</value>

@@ -98,9 +98,6 @@
   <data name="CommandExportVideo_FriendlyName" xml:space="preserve">
     <value>ذخیره ویدئو</value>
   </data>
-  <data name="DataAnalysis" xml:space="preserve">
-    <value>تحلیل داده ها</value>
-  </data>
   <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
     <value>نمودار پراکندگی</value>
   </data>
@@ -245,12 +242,6 @@
   <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
     <value>هدف</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
-    <value>اندازه گیری:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
-    <value>هیچ یک</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>موقعیت</value>
   </data>
@@ -286,9 +277,6 @@
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
     <value>شتاب افقی</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
-    <value>جابجایی زاویه‌ای</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
     <value>سرعت زاویه‌ای</value>
@@ -344,9 +332,6 @@
   <data name="dlgImportReference_Title" xml:space="preserve">
     <value>وارد کردن یک تصویر به عنوان مرجع</value>
   </data>
-  <data name="dlgKeyframeComment_Title" xml:space="preserve">
-    <value>توضیحات...</value>
-  </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>بارگذاری اطلاعات داده‌های تصاویر</value>
   </data>
@@ -365,9 +350,6 @@
   <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve">
     <value>استخراج یک تصویر در هر {0: 0.00} میلی ثانیه.</value>
   </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
-    <value>در نظر گرفتن حرکت آهسته در حساب (جاری = </value>
-  </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>ذخیره اطلاعات داده‌های تصاویر</value>
   </data>
@@ -379,12 +361,6 @@
   </data>
   <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
     <value>متغیرهای دوربین</value>
-  </data>
-  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
-    <value>کالیبر وربین</value>
-  </data>
-  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
-    <value>اعوجاج</value>
   </data>
   <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
     <value>بارگزاری مشخصات کالیبراسیون دوربین</value>
@@ -716,9 +692,6 @@
   <data name="mnuCopyImageToClipboard" xml:space="preserve">
     <value>رونوشت تصویر به کلیپ بورد</value>
   </data>
-  <data name="mnuConfigureTrajectory" xml:space="preserve">
-    <value>پیکربندی نمایش مسیر</value>
-  </data>
   <data name="mnuDeinterlace" xml:space="preserve">
     <value>کاهش تصویر مشبک</value>
   </data>
@@ -727,9 +700,6 @@
   </data>
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>مسیر را بعد از این نقطه حذف کنید</value>
-  </data>
-  <data name="mnuDeleteTrajectory" xml:space="preserve">
-    <value>حذف تمام مسیر</value>
   </data>
   <data name="mnuDrawingTrackingStart" xml:space="preserve">
     <value>شروع ردیابی</value>
@@ -745,9 +715,6 @@
   </data>
   <data name="mnuTwoPlayers" xml:space="preserve">
     <value>دو صفحه پخش</value>
-  </data>
-  <data name="mnuExportSpreadsheet" xml:space="preserve">
-    <value>استخراج به صفحه گسترده</value>
   </data>
   <data name="mnuFormat" xml:space="preserve">
     <value>قالب تصویر</value>
@@ -823,9 +790,6 @@
   </data>
   <data name="mnuCalibrate" xml:space="preserve">
     <value>کالیبراسیون ...</value>
-  </data>
-  <data name="mnuTimebase" xml:space="preserve">
-    <value>پیکربندی زمانی ویدئو ...</value>
   </data>
   <data name="mnuSwapScreens" xml:space="preserve">
     <value>موقعیت فیلم‌های معکوس</value>
@@ -976,24 +940,6 @@
   </data>
   <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
     <value>تنظیم مجدد منطقه کاری در ویدیو</value>
-  </data>
-  <data name="ToolTip_RichText_Bold" xml:space="preserve">
-    <value>ضخیم</value>
-  </data>
-  <data name="ToolTip_RichText_Italic" xml:space="preserve">
-    <value>کج</value>
-  </data>
-  <data name="ToolTip_RichText_Underline" xml:space="preserve">
-    <value>خط تاکید</value>
-  </data>
-  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
-    <value>خط زدن</value>
-  </data>
-  <data name="ToolTip_RichText_ForeColor" xml:space="preserve">
-    <value>رنگ پیش زمینه</value>
-  </data>
-  <data name="ToolTip_RichText_BackColor" xml:space="preserve">
-    <value>رنگ پس زمینه</value>
   </data>
   <data name="ToolTip_SaveDiaporama" xml:space="preserve">
     <value>ذخیره نمایش پرده‌ای از دادده تصاویر</value>

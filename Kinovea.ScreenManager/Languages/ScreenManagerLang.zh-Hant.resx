@@ -94,9 +94,6 @@
   <data name="CommandExportVideo_FriendlyName" xml:space="preserve">
     <value>輸出影片</value>
   </data>
-  <data name="DataAnalysis" xml:space="preserve">
-    <value>資料分析</value>
-  </data>
   <data name="buttonGotoFirst_ToolTip" xml:space="preserve">
     <value>回到兩個影片的起點</value>
   </data>
@@ -298,12 +295,6 @@
   <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
     <value>顯示最佳擬合圓</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
-    <value>量測：</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
-    <value>無</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>位置</value>
   </data>
@@ -430,9 +421,6 @@
   <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
     <value>水平加速度</value>
   </data>
-  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
-    <value>角位移</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
     <value>角速度</value>
   </data>
@@ -492,9 +480,6 @@
   </data>
   <data name="dlgImportReference_Title" xml:space="preserve">
     <value>輸入參考影像</value>
-  </data>
-  <data name="dlgKeyframeComment_Title" xml:space="preserve">
-    <value>評論...</value>
   </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>讀取標記</value>
@@ -604,9 +589,6 @@
   <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve">
     <value>每隔{0:0}毫秒輸出一張圖片。</value>
   </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
-    <value>考慮慢動作。 (目前 = </value>
-  </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>儲存註釋</value>
   </data>
@@ -618,9 +600,6 @@
   </data>
   <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
     <value>相機內部參數</value>
-  </data>
-  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
-    <value>校正相機</value>
   </data>
   <data name="DrawingName_ArrowCurve" xml:space="preserve">
     <value>箭頭 – 曲線</value>
@@ -928,9 +907,6 @@
   <data name="mnuCopyImageToClipboard" xml:space="preserve">
     <value>將影像複製到剪貼簿</value>
   </data>
-  <data name="mnuConfigureTrajectory" xml:space="preserve">
-    <value>設定路徑顯示</value>
-  </data>
   <data name="mnuDeinterlace" xml:space="preserve">
     <value>去交錯</value>
   </data>
@@ -939,9 +915,6 @@
   </data>
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>刪除此點之後的路徑</value>
-  </data>
-  <data name="mnuDeleteTrajectory" xml:space="preserve">
-    <value>刪除所有路徑</value>
   </data>
   <data name="mnuDrawingTrackingStart" xml:space="preserve">
     <value>開始追蹤</value>
@@ -957,9 +930,6 @@
   </data>
   <data name="mnuTwoPlayers" xml:space="preserve">
     <value>兩個播放螢幕</value>
-  </data>
-  <data name="mnuExportSpreadsheet" xml:space="preserve">
-    <value>輸出到試算表</value>
   </data>
   <data name="mnuFormat" xml:space="preserve">
     <value>畫面比例</value>
@@ -1032,9 +1002,6 @@
   </data>
   <data name="mnuCalibrate" xml:space="preserve">
     <value>校正...</value>
-  </data>
-  <data name="mnuTimebase" xml:space="preserve">
-    <value>設定影片時段...</value>
   </data>
   <data name="mnuSwapScreens" xml:space="preserve">
     <value>交換螢幕</value>
@@ -1165,24 +1132,6 @@
   <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
     <value>重設工作區</value>
   </data>
-  <data name="ToolTip_RichText_Bold" xml:space="preserve">
-    <value>粗體</value>
-  </data>
-  <data name="ToolTip_RichText_Italic" xml:space="preserve">
-    <value>斜體</value>
-  </data>
-  <data name="ToolTip_RichText_Underline" xml:space="preserve">
-    <value>下劃線</value>
-  </data>
-  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
-    <value>刪除線</value>
-  </data>
-  <data name="ToolTip_RichText_ForeColor" xml:space="preserve">
-    <value>前景色</value>
-  </data>
-  <data name="ToolTip_RichText_BackColor" xml:space="preserve">
-    <value>背景色</value>
-  </data>
   <data name="ToolTip_SaveDiaporama" xml:space="preserve">
     <value>從關鍵影像輸出幻燈片</value>
   </data>
@@ -1197,9 +1146,6 @@
   </data>
   <data name="dlgCalibratePlane_AveragePixelSize" xml:space="preserve">
     <value>平均像素尺寸：{0}。</value>
-  </data>
-  <data name="dlgCalibratePlane_HelpDistanceGrid" xml:space="preserve">
-    <value>輸入每個標記與原點的距離。</value>
   </data>
   <data name="formConfigureExport_ImageSequence" xml:space="preserve">
     <value>輸出影像序列</value>
@@ -1338,9 +1284,6 @@
   </data>
   <data name="FormCrashRecovery_Date" xml:space="preserve">
     <value>日期</value>
-  </data>
-  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
-    <value>變形</value>
   </data>
   <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
     <value>讀取相機校正檔案</value>

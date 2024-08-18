@@ -119,12 +119,6 @@
   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve">
     <value>Återställning</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
-    <value>Mätning:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
-    <value>Inget</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve">
     <value>Hastighet</value>
   </data>
@@ -146,14 +140,8 @@
   <data name="dlgImportReference_Title" xml:space="preserve">
     <value>Importera bild som referens</value>
   </data>
-  <data name="dlgKeyframeComment_Title" xml:space="preserve">
-    <value>Kommentarer...</value>
-  </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>Ladda nyckelbildsdata</value>
-  </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
-    <value>Ta hänsyn till slow motion. (Nuvarande = </value>
   </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>Spara nyckelbilds data</value>
@@ -314,9 +302,6 @@
   <data name="mnuCloseScreen" xml:space="preserve">
     <value>Stäng detta fönster</value>
   </data>
-  <data name="mnuConfigureTrajectory" xml:space="preserve">
-    <value>Konfigurera visning av banan</value>
-  </data>
   <data name="mnuDeinterlace" xml:space="preserve">
     <value>Uppflätning</value>
   </data>
@@ -326,9 +311,6 @@
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>Radera banan efter den här punkten</value>
   </data>
-  <data name="mnuDeleteTrajectory" xml:space="preserve">
-    <value>Radera hela banan</value>
-  </data>
   <data name="mnuTwoCaptures" xml:space="preserve">
     <value>Två inspelningsfönster</value>
   </data>
@@ -337,9 +319,6 @@
   </data>
   <data name="mnuTwoPlayers" xml:space="preserve">
     <value>Två uppspelningsfönster</value>
-  </data>
-  <data name="mnuExportSpreadsheet" xml:space="preserve">
-    <value>Exportera till kalkylblad</value>
   </data>
   <data name="mnuFormat" xml:space="preserve">
     <value>Bildformat</value>
@@ -473,24 +452,6 @@
   <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
     <value>Återställ arbetszonen till hel video</value>
   </data>
-  <data name="ToolTip_RichText_Bold" xml:space="preserve">
-    <value>Fet</value>
-  </data>
-  <data name="ToolTip_RichText_Italic" xml:space="preserve">
-    <value>Kursiv</value>
-  </data>
-  <data name="ToolTip_RichText_Underline" xml:space="preserve">
-    <value>Understruken</value>
-  </data>
-  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
-    <value>Överstruken</value>
-  </data>
-  <data name="ToolTip_RichText_ForeColor" xml:space="preserve">
-    <value>Frontfärg</value>
-  </data>
-  <data name="ToolTip_RichText_BackColor" xml:space="preserve">
-    <value>Bakgrundsfärg</value>
-  </data>
   <data name="ToolTip_SaveDiaporama" xml:space="preserve">
     <value>Spara nyckelbilder som bildspel</value>
   </data>
@@ -596,9 +557,6 @@
   <data name="DataAnalysis_ResultantLinearAcceleration" xml:space="preserve">
     <value>Resulterande accelerering</value>
   </data>
-  <data name="DataAnalysis" xml:space="preserve">
-    <value>Data-analys</value>
-  </data>
   <data name="DataAnalysis_TimeModel" xml:space="preserve">
     <value>Tid :</value>
   </data>
@@ -680,9 +638,6 @@
   <data name="ExtraData_Circumference" xml:space="preserve">
     <value>Omkrets</value>
   </data>
-  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
-    <value>Vinkelförskjutning</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_AngularAcceleration" xml:space="preserve">
     <value>Vinkelaccelerering</value>
   </data>
@@ -697,9 +652,6 @@
   </data>
   <data name="dlgCameraCalibration_Title" xml:space="preserve">
     <value>Kalibrering av kameran</value>
-  </data>
-  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
-    <value>Kalibrera kameran</value>
   </data>
   <data name="dlgCameraCalibration_lblSensorWidth" xml:space="preserve">
     <value>Sensorbredd (mm):</value>
@@ -718,9 +670,6 @@
   </data>
   <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve">
     <value>Exportera en bild varje {0:0}ms.</value>
-  </data>
-  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
-    <value>Förvrängning</value>
   </data>
   <data name="dlgCameraCalibration_SaveDialogTitle" xml:space="preserve">
     <value>Spara kamerans kalibreringsprofil</value>

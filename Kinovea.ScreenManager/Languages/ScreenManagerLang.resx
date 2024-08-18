@@ -150,9 +150,6 @@
   <data name="CommandExportVideo_FriendlyName" xml:space="preserve">
     <value>Export video</value>
   </data>
-  <data name="DataAnalysis" xml:space="preserve">
-    <value>Data analysis</value>
-  </data>
   <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
     <value>Scatter diagram</value>
   </data>
@@ -309,12 +306,6 @@
   <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
     <value>Show best fit circle</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
-    <value>Measurement:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
-    <value>None</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>Position</value>
   </data>
@@ -353,9 +344,6 @@
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
     <value>Horizontal acceleration</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
-    <value>Angular displacement</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
     <value>Angular velocity</value>
@@ -423,9 +411,6 @@
   <data name="dlgImportReference_Title" xml:space="preserve">
     <value>Import an image as reference</value>
   </data>
-  <data name="dlgKeyframeComment_Title" xml:space="preserve">
-    <value>Comments...</value>
-  </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>Load annotations</value>
   </data>
@@ -444,9 +429,6 @@
   <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve">
     <value>Export one image every {0:0}ms.</value>
   </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
-    <value>Take slow motion into account. (Current = </value>
-  </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>Save annotations</value>
   </data>
@@ -458,12 +440,6 @@
   </data>
   <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
     <value>Camera intrinsics</value>
-  </data>
-  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
-    <value>Calibrate camera</value>
-  </data>
-  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
-    <value>Distortion</value>
   </data>
   <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
     <value>Load camera calibration profile</value>
@@ -691,7 +667,7 @@
     <value>Open</value>
   </data>
   <data name="Generic_Import" xml:space="preserve">
-    <value>Import</value>
+    <value>Import…</value>
   </data>
   <data name="Generic_Restore" xml:space="preserve">
     <value>Restore default</value>
@@ -837,9 +813,6 @@
   <data name="mnuCopyImageToClipboard" xml:space="preserve">
     <value>Copy image to Clipboard</value>
   </data>
-  <data name="mnuConfigureTrajectory" xml:space="preserve">
-    <value>Configure path display</value>
-  </data>
   <data name="mnuDeinterlace" xml:space="preserve">
     <value>Deinterlace</value>
   </data>
@@ -848,9 +821,6 @@
   </data>
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>Delete the path after this point</value>
-  </data>
-  <data name="mnuDeleteTrajectory" xml:space="preserve">
-    <value>Delete all the path</value>
   </data>
   <data name="mnuDrawingTrackingStart" xml:space="preserve">
     <value>Start tracking</value>
@@ -866,9 +836,6 @@
   </data>
   <data name="mnuTwoPlayers" xml:space="preserve">
     <value>Two playback screens</value>
-  </data>
-  <data name="mnuExportSpreadsheet" xml:space="preserve">
-    <value>Export to spreadsheet</value>
   </data>
   <data name="mnuFormat" xml:space="preserve">
     <value>Aspect ratio</value>
@@ -959,9 +926,6 @@
   </data>
   <data name="mnuCalibrate" xml:space="preserve">
     <value>Calibrate...</value>
-  </data>
-  <data name="mnuTimebase" xml:space="preserve">
-    <value>Configure video timing...</value>
   </data>
   <data name="mnuSwapScreens" xml:space="preserve">
     <value>Swap screens</value>
@@ -1134,24 +1098,6 @@
   <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
     <value>Reset the Working Zone</value>
   </data>
-  <data name="ToolTip_RichText_Bold" xml:space="preserve">
-    <value>Bold</value>
-  </data>
-  <data name="ToolTip_RichText_Italic" xml:space="preserve">
-    <value>Italic</value>
-  </data>
-  <data name="ToolTip_RichText_Underline" xml:space="preserve">
-    <value>Underline</value>
-  </data>
-  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
-    <value>Strikeout</value>
-  </data>
-  <data name="ToolTip_RichText_ForeColor" xml:space="preserve">
-    <value>Foreground color</value>
-  </data>
-  <data name="ToolTip_RichText_BackColor" xml:space="preserve">
-    <value>Background color</value>
-  </data>
   <data name="ToolTip_SaveDiaporama" xml:space="preserve">
     <value>Export a slideshow from key images</value>
   </data>
@@ -1208,9 +1154,6 @@
   </data>
   <data name="dlgCalibratePlane_AveragePixelSize" xml:space="preserve">
     <value>Average pixel size: {0}.</value>
-  </data>
-  <data name="dlgCalibratePlane_HelpDistanceGrid" xml:space="preserve">
-    <value>Enter the distance from the origin for each marker.</value>
   </data>
   <data name="dlgCalibratePlane_HelpPlane" xml:space="preserve">
     <value>Enter the length of each side.</value>
@@ -1354,7 +1297,7 @@
     <value>Video with pauses…</value>
   </data>
   <data name="mnuLensCalibration" xml:space="preserve">
-    <value>Lens calibration…</value>
+    <value>Lens calibration</value>
   </data>
   <data name="mnuMagnifierFreeze" xml:space="preserve">
     <value>Freeze</value>
@@ -1596,12 +1539,6 @@
   <data name="FormTimeSections_Tag" xml:space="preserve">
     <value>Tag</value>
   </data>
-  <data name="ScreenManagerKernel_LensCalibration" xml:space="preserve">
-    <value>Lens calibration</value>
-  </data>
-  <data name="ScreenManagerKernel_LensCalibration_Import" xml:space="preserve">
-    <value>Import…</value>
-  </data>
   <data name="ScreenManagerKernel_LensCalibration_LensCalibrationMode" xml:space="preserve">
     <value>Lens calibration mode</value>
   </data>
@@ -1715,5 +1652,14 @@
   </data>
   <data name="FormCalibratePlane_Coordinates" xml:space="preserve">
     <value>Coordinates</value>
+  </data>
+  <data name="FormConfigureExportVideo_UseCurrentPlaybackSpeed" xml:space="preserve">
+    <value>Use current playback speed: {0:0.00}</value>
+  </data>
+  <data name="filterName_CameraMotion" xml:space="preserve">
+    <value>Camera motion estimation</value>
+  </data>
+  <data name="filterName_LensCalibration" xml:space="preserve">
+    <value>Lens calibration</value>
   </data>
 </root>

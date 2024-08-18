@@ -119,12 +119,6 @@
   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve">
     <value>重设</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
-    <value>测量:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
-    <value>无</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve">
     <value>速度</value>
   </data>
@@ -143,14 +137,8 @@
   <data name="dlgExportSpreadsheet_Title" xml:space="preserve">
     <value>保存数据为电子表格</value>
   </data>
-  <data name="dlgKeyframeComment_Title" xml:space="preserve">
-    <value>注释...</value>
-  </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>载入关键图像数据</value>
-  </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
-    <value>考虑慢动作. (Current = </value>
   </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>保存关键图像数据</value>
@@ -293,9 +281,6 @@
   <data name="mnuCloseScreen" xml:space="preserve">
     <value>关闭这个屏幕</value>
   </data>
-  <data name="mnuConfigureTrajectory" xml:space="preserve">
-    <value>配置路径显示</value>
-  </data>
   <data name="mnuDeinterlace" xml:space="preserve">
     <value>反交错</value>
   </data>
@@ -305,9 +290,6 @@
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>删除这点后的路径</value>
   </data>
-  <data name="mnuDeleteTrajectory" xml:space="preserve">
-    <value>删除所有路径</value>
-  </data>
   <data name="mnuTwoCaptures" xml:space="preserve">
     <value>双摄像头采集模式</value>
   </data>
@@ -316,9 +298,6 @@
   </data>
   <data name="mnuTwoPlayers" xml:space="preserve">
     <value>双屏幕显示模式</value>
-  </data>
-  <data name="mnuExportSpreadsheet" xml:space="preserve">
-    <value>导出至电子表格</value>
   </data>
   <data name="mnuFormat" xml:space="preserve">
     <value>纵横比</value>
@@ -476,9 +455,6 @@
   <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
     <value>角速度</value>
   </data>
-  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
-    <value>角度位移</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
     <value>水平加速度</value>
   </data>
@@ -617,9 +593,6 @@
   <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
     <value>散点图</value>
   </data>
-  <data name="DataAnalysis" xml:space="preserve">
-    <value>数据分析</value>
-  </data>
   <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
     <value>修改绘制</value>
   </data>
@@ -631,9 +604,6 @@
   </data>
   <data name="Generic_Open" xml:space="preserve">
     <value>打开</value>
-  </data>
-  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
-    <value>畸變</value>
   </data>
   <data name="Generic_Copy" xml:space="preserve">
     <value>复制</value>
@@ -673,24 +643,6 @@
   </data>
   <data name="ToolTip_SideBySideSnapshot" xml:space="preserve">
     <value>将两个图像保存为合成图像</value>
-  </data>
-  <data name="ToolTip_RichText_BackColor" xml:space="preserve">
-    <value>背景颜色</value>
-  </data>
-  <data name="ToolTip_RichText_ForeColor" xml:space="preserve">
-    <value>前景色</value>
-  </data>
-  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
-    <value>删除线字体</value>
-  </data>
-  <data name="ToolTip_RichText_Underline" xml:space="preserve">
-    <value>下划线字体</value>
-  </data>
-  <data name="ToolTip_RichText_Italic" xml:space="preserve">
-    <value>斜体</value>
-  </data>
-  <data name="ToolTip_RichText_Bold" xml:space="preserve">
-    <value>粗体</value>
   </data>
   <data name="ToolTip_ConfigureCamera" xml:space="preserve">
     <value>配置相机</value>
@@ -796,9 +748,6 @@
   </data>
   <data name="mnuThumbnailDelete" xml:space="preserve">
     <value>删除</value>
-  </data>
-  <data name="mnuTimebase" xml:space="preserve">
-    <value>配置视频定时...</value>
   </data>
   <data name="mnuCalibrate" xml:space="preserve">
     <value>校准...</value>
@@ -1079,9 +1028,6 @@
   <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
     <value>加载相机校准配置文件</value>
   </data>
-  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
-    <value>校准相机</value>
-  </data>
   <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
     <value>相机内在函数</value>
   </data>
@@ -1219,9 +1165,6 @@
   </data>
   <data name="mnuAction_Chrono_DeleteSection" xml:space="preserve">
     <value>删除当前时间区段</value>
-  </data>
-  <data name="dlgCalibratePlane_HelpDistanceGrid" xml:space="preserve">
-    <value>输入每一个标志到原点的距离。</value>
   </data>
   <data name="mnuAction_Chrono_MovePrevSplit" xml:space="preserve">
     <value>移动上一个分割点到当前帧</value>

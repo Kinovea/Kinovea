@@ -116,14 +116,8 @@
   <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve">
     <value>Czas trwania każdego diapozytywu : {0:0.00} sekund.</value>
   </data>
-  <data name="dlgKeyframeComment_Title" xml:space="preserve">
-    <value>Komentarze...</value>
-  </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>Wczytaj kluczowe Obrazy</value>
-  </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
-    <value>Weź pod uwagę zwolnienia. (Aktualne= </value>
   </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>Zapisz dane kluczowych obrazów</value>
@@ -356,9 +350,6 @@
   <data name="dlgCameraCalibration_Title" xml:space="preserve">
     <value>Kalibracja kamery</value>
   </data>
-  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
-    <value>Kalibracja kamery</value>
-  </data>
   <data name="DataAnalysis_Labels" xml:space="preserve">
     <value>Etykiety</value>
   </data>
@@ -416,9 +407,6 @@
   <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
     <value>Prętkość kątowa</value>
   </data>
-  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
-    <value>Przemieszczenie Kątowe</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
     <value>Przyspieszenie poziome</value>
   </data>
@@ -451,12 +439,6 @@
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>Pozycja</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
-    <value>Nic</value>
-  </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
-    <value>Pomiar:</value>
   </data>
   <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
     <value>Okręg</value>
@@ -532,9 +514,6 @@
   </data>
   <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
     <value>Wykres Punktowy</value>
-  </data>
-  <data name="DataAnalysis" xml:space="preserve">
-    <value>Analiza Danych</value>
   </data>
   <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
     <value>Modyfikacja Rysowania</value>
@@ -710,24 +689,6 @@
   <data name="ToolTip_SavePausedVideo" xml:space="preserve">
     <value>Eksportuj wideo z pauzą na każdym kluczowym obrazie</value>
   </data>
-  <data name="ToolTip_RichText_BackColor" xml:space="preserve">
-    <value>Kolor tła</value>
-  </data>
-  <data name="ToolTip_RichText_ForeColor" xml:space="preserve">
-    <value>Kolor pierwszego planu</value>
-  </data>
-  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
-    <value>Przekreślenie</value>
-  </data>
-  <data name="ToolTip_RichText_Underline" xml:space="preserve">
-    <value>Podkreślenie</value>
-  </data>
-  <data name="ToolTip_RichText_Italic" xml:space="preserve">
-    <value>Kursywa</value>
-  </data>
-  <data name="ToolTip_RichText_Bold" xml:space="preserve">
-    <value>Pogrubienie</value>
-  </data>
   <data name="ToolTip_ConfigureCamera" xml:space="preserve">
     <value>Skonfiguruj kamerę</value>
   </data>
@@ -787,9 +748,6 @@
   </data>
   <data name="mnuThumbnailDelete" xml:space="preserve">
     <value>Usuń</value>
-  </data>
-  <data name="mnuTimebase" xml:space="preserve">
-    <value>Konfiguracja trwania film...</value>
   </data>
   <data name="mnuCalibrate" xml:space="preserve">
     <value>Kalibracja...</value>
@@ -866,9 +824,6 @@
   <data name="mnuFormat" xml:space="preserve">
     <value>Format obrazu</value>
   </data>
-  <data name="mnuExportSpreadsheet" xml:space="preserve">
-    <value>Eksportuj do arkusza kalkulacyjnego</value>
-  </data>
   <data name="mnuTwoMixed" xml:space="preserve">
     <value>Jeden ekran przechwytywania i jeden ekran odtwarzania</value>
   </data>
@@ -878,17 +833,11 @@
   <data name="mnuDrawingTrackingStart" xml:space="preserve">
     <value>Rozpocznij śledzenie</value>
   </data>
-  <data name="mnuDeleteTrajectory" xml:space="preserve">
-    <value>Usuń całą ścieżkę</value>
-  </data>
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>Usuń ścieżkę za punktem</value>
   </data>
   <data name="mnuDeinterlace" xml:space="preserve">
     <value>Usuń przeplot</value>
-  </data>
-  <data name="mnuConfigureTrajectory" xml:space="preserve">
-    <value>Skonfiguruj wyświetlanie ścieżki</value>
   </data>
   <data name="mnuCopyImageToClipboard" xml:space="preserve">
     <value>Skopiuj obraz do schowka</value>
@@ -1102,9 +1051,6 @@
   </data>
   <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
     <value>Wczytaj profil kalibracji kamery</value>
-  </data>
-  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
-    <value>Zniekształcenie</value>
   </data>
   <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
     <value>Funkcje aparatu</value>

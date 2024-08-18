@@ -95,9 +95,6 @@
   <data name="CommandExportVideo_FriendlyName" xml:space="preserve">
     <value>تصدير فيديو</value>
   </data>
-  <data name="DataAnalysis" xml:space="preserve">
-    <value>تحليل البيانات</value>
-  </data>
   <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
     <value>مخطط نقاط متناثرة</value>
   </data>
@@ -209,12 +206,6 @@
   <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
     <value>علامة التصويب</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
-    <value>القياس:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
-    <value>لا يوجد</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>الموضع</value>
   </data>
@@ -244,9 +235,6 @@
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
     <value>التسارع الأفقي</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
-    <value>الإزاحة الزاوية</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
     <value>السرعة الزاوية</value>
@@ -287,9 +275,6 @@
   <data name="dlgImportReference_Title" xml:space="preserve">
     <value>استيراد صورة كمرجع</value>
   </data>
-  <data name="dlgKeyframeComment_Title" xml:space="preserve">
-    <value>تعليقات...</value>
-  </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>تحميل بيانات الصورة الرئيسيه</value>
   </data>
@@ -308,9 +293,6 @@
   <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve">
     <value>تصدير صورة واحدة كل {0: 0} مللي ثانية.</value>
   </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
-    <value>أخذ الحركة البطيئة بعين الاعتبار. (الحالي = </value>
-  </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>حفظ بيانات الصور الرئيسية</value>
   </data>
@@ -322,12 +304,6 @@
   </data>
   <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
     <value>متغيرات الكاميرا</value>
-  </data>
-  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
-    <value>معايرة الكاميرا</value>
-  </data>
-  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
-    <value>الإعوجاج</value>
   </data>
   <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
     <value>تحميل بروفايل معايرة الكاميرا</value>
@@ -629,9 +605,6 @@
   <data name="mnuCopyImageToClipboard" xml:space="preserve">
     <value>نسخ صورة إلى الحافظة</value>
   </data>
-  <data name="mnuConfigureTrajectory" xml:space="preserve">
-    <value>اعدادات عرض المسار</value>
-  </data>
   <data name="mnuDeinterlace" xml:space="preserve">
     <value>فك التداخل</value>
   </data>
@@ -641,9 +614,6 @@
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>حذف المسار بعد هذه نقطة</value>
   </data>
-  <data name="mnuDeleteTrajectory" xml:space="preserve">
-    <value>حذف المسار بالكامل</value>
-  </data>
   <data name="mnuTwoCaptures" xml:space="preserve">
     <value>شاشتين للإلتقاط</value>
   </data>
@@ -652,9 +622,6 @@
   </data>
   <data name="mnuTwoPlayers" xml:space="preserve">
     <value>شاشتين للعرض</value>
-  </data>
-  <data name="mnuExportSpreadsheet" xml:space="preserve">
-    <value>تصدير الي ورقة جدولية</value>
   </data>
   <data name="mnuFormat" xml:space="preserve">
     <value>نسبة العرض إلى الارتفاع</value>
@@ -706,9 +673,6 @@
   </data>
   <data name="mnuCalibrate" xml:space="preserve">
     <value>معايرة...</value>
-  </data>
-  <data name="mnuTimebase" xml:space="preserve">
-    <value>إعدادات توقيت الفيديو ...</value>
   </data>
   <data name="mnuSwapScreens" xml:space="preserve">
     <value>تبديل مواضع الفيديو</value>
@@ -841,24 +805,6 @@
   </data>
   <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
     <value>إعادة ضبط منطقة العمل لكامل الفيديو</value>
-  </data>
-  <data name="ToolTip_RichText_Bold" xml:space="preserve">
-    <value>ثقيل</value>
-  </data>
-  <data name="ToolTip_RichText_Italic" xml:space="preserve">
-    <value>مائل</value>
-  </data>
-  <data name="ToolTip_RichText_Underline" xml:space="preserve">
-    <value>تحته خط</value>
-  </data>
-  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
-    <value>شطب</value>
-  </data>
-  <data name="ToolTip_RichText_ForeColor" xml:space="preserve">
-    <value>اللون الأمامي</value>
-  </data>
-  <data name="ToolTip_RichText_BackColor" xml:space="preserve">
-    <value>اللون الخلفي</value>
   </data>
   <data name="ToolTip_SaveDiaporama" xml:space="preserve">
     <value>تصدير شرائح من الصور الرئيسية</value>
@@ -1174,9 +1120,6 @@
   </data>
   <data name="formConfigureKinogram_lblTotal" xml:space="preserve">
     <value>الإطارات: {0}</value>
-  </data>
-  <data name="dlgCalibratePlane_HelpDistanceGrid" xml:space="preserve">
-    <value>أدخل المسافة من الأصل لكل علامة.</value>
   </data>
   <data name="filterName_Analysis" xml:space="preserve">
     <value>تحليل</value>

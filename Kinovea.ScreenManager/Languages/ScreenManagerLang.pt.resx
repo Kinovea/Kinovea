@@ -119,12 +119,6 @@
   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve">
     <value>Resetar</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
-    <value>Medida:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
-    <value>Nenhum(a)</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve">
     <value>Velocidade</value>
   </data>
@@ -146,17 +140,11 @@
   <data name="dlgImportReference_Title" xml:space="preserve">
     <value>Importar uma imagem como referência</value>
   </data>
-  <data name="dlgKeyframeComment_Title" xml:space="preserve">
-    <value>Comentários...</value>
-  </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>Carregar Dados dos Quadros de Imagem</value>
   </data>
   <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve">
     <value>Total : {0:0} imagens.</value>
-  </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
-    <value>Gravar Slow Motion. (Atual = </value>
   </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>Salvar Dados dos Quadros de Imagens</value>
@@ -317,9 +305,6 @@
   <data name="mnuCloseScreen" xml:space="preserve">
     <value>Fechar esta janela</value>
   </data>
-  <data name="mnuConfigureTrajectory" xml:space="preserve">
-    <value>Configurar Exibição da Trajetória</value>
-  </data>
   <data name="mnuDeinterlace" xml:space="preserve">
     <value>Desentrelaçar</value>
   </data>
@@ -329,9 +314,6 @@
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>Apagar a trajetória a partir deste ponto</value>
   </data>
-  <data name="mnuDeleteTrajectory" xml:space="preserve">
-    <value>Apagar todas as trajetórias</value>
-  </data>
   <data name="mnuTwoCaptures" xml:space="preserve">
     <value>Dois ecrãs de captura</value>
   </data>
@@ -340,9 +322,6 @@
   </data>
   <data name="mnuTwoPlayers" xml:space="preserve">
     <value>Dois ecrãs de reprodução</value>
-  </data>
-  <data name="mnuExportSpreadsheet" xml:space="preserve">
-    <value>Exportar para Planilha</value>
   </data>
   <data name="mnuFormat" xml:space="preserve">
     <value>Rácio da imagem</value>
@@ -475,24 +454,6 @@
   </data>
   <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
     <value>Resetar a Zona de Trabalho ao comprimento do Vídeo</value>
-  </data>
-  <data name="ToolTip_RichText_Bold" xml:space="preserve">
-    <value>Negrito</value>
-  </data>
-  <data name="ToolTip_RichText_Italic" xml:space="preserve">
-    <value>Itálico</value>
-  </data>
-  <data name="ToolTip_RichText_Underline" xml:space="preserve">
-    <value>Sublinhado</value>
-  </data>
-  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
-    <value>Traçado</value>
-  </data>
-  <data name="ToolTip_RichText_ForeColor" xml:space="preserve">
-    <value>Cor do Primeiro Plano</value>
-  </data>
-  <data name="ToolTip_RichText_BackColor" xml:space="preserve">
-    <value>Cor do Segundo Plano</value>
   </data>
   <data name="ToolTip_SaveDiaporama" xml:space="preserve">
     <value>Salvar Slideshow a partir dos Quadros de Imagens</value>
@@ -629,9 +590,6 @@
   <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
     <value>Diagrama de Dispersão</value>
   </data>
-  <data name="DataAnalysis" xml:space="preserve">
-    <value>Análise de Dados</value>
-  </data>
   <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
     <value>Modificar desenho</value>
   </data>
@@ -748,9 +706,6 @@
   </data>
   <data name="mnuThumbnailDelete" xml:space="preserve">
     <value>Apagar</value>
-  </data>
-  <data name="mnuTimebase" xml:space="preserve">
-    <value>Configurar o tempo de vídeo...</value>
   </data>
   <data name="mnuCalibrate" xml:space="preserve">
     <value>Calibrar...</value>
@@ -1019,12 +974,6 @@
   <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
     <value>Carregar o perfil de calibração da câmera</value>
   </data>
-  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
-    <value>Distorção</value>
-  </data>
-  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
-    <value>Calibrar a câmera</value>
-  </data>
   <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
     <value>Detalhes da câmera</value>
   </data>
@@ -1093,9 +1042,6 @@
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
     <value>Velocidade angular</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
-    <value>Deslocamento angular</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
     <value>Aceleração horizontal</value>
@@ -1327,9 +1273,6 @@
   </data>
   <data name="dlgCalibratePlane_AveragePixelSize" xml:space="preserve">
     <value>Tamanho médio do pixel: {0}.</value>
-  </data>
-  <data name="dlgCalibratePlane_HelpDistanceGrid" xml:space="preserve">
-    <value>Introduza a distância da origem para cada marcador.</value>
   </data>
   <data name="dlgCalibratePlane_HelpPlane" xml:space="preserve">
     <value>Introduza o comprimento de cada lado.</value>

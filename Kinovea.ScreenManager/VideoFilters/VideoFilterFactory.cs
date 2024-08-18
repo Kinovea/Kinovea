@@ -68,13 +68,6 @@ namespace Kinovea.ScreenManager
             if (type == VideoFilterType.None)
                 return ScreenManagerLang.filterName_Analysis;
 
-            // Special cases until the filter names are localized.
-            if (type == VideoFilterType.CameraMotion)
-                return "Camera motion estimation";
-
-            if (type == VideoFilterType.LensCalibration)
-                return "Lens calibration";
-
             string friendlyNameResource = info[type].FriendlyNameResource;
             if (string.IsNullOrEmpty(friendlyNameResource))
                 return info[type].Name;

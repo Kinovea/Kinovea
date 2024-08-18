@@ -119,12 +119,6 @@
   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve">
     <value>Tilbakestill</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
-    <value>Måling:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
-    <value>Ingen måling</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve">
     <value>Fart</value>
   </data>
@@ -143,14 +137,8 @@
   <data name="dlgExportSpreadsheet_Title" xml:space="preserve">
     <value>Lagre data som et regneark dokument</value>
   </data>
-  <data name="dlgKeyframeComment_Title" xml:space="preserve">
-    <value>Kommentarer...</value>
-  </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>Last inn nøkkelbilde data</value>
-  </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
-    <value>Ta høyde for slow motion (Current =</value>
   </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>Lagre nøkkelbilde data</value>
@@ -293,9 +281,6 @@
   <data name="mnuCloseScreen" xml:space="preserve">
     <value>Lukk vindu</value>
   </data>
-  <data name="mnuConfigureTrajectory" xml:space="preserve">
-    <value>Konfigurer banevisning</value>
-  </data>
   <data name="mnuDeinterlace" xml:space="preserve">
     <value>Oppløsing</value>
   </data>
@@ -305,9 +290,6 @@
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>Slett etter dette punktet</value>
   </data>
-  <data name="mnuDeleteTrajectory" xml:space="preserve">
-    <value>Slett alle baner</value>
-  </data>
   <data name="mnuTwoCaptures" xml:space="preserve">
     <value>To opptaksvinduer</value>
   </data>
@@ -316,9 +298,6 @@
   </data>
   <data name="mnuTwoPlayers" xml:space="preserve">
     <value>To avspillingsvinduer</value>
-  </data>
-  <data name="mnuExportSpreadsheet" xml:space="preserve">
-    <value>Eksporter til regneark</value>
   </data>
   <data name="mnuFormat" xml:space="preserve">
     <value>Bildeformat</value>
@@ -493,9 +472,6 @@
   </data>
   <data name="DataAnalysis_Labels" xml:space="preserve">
     <value>Etiketter</value>
-  </data>
-  <data name="DataAnalysis" xml:space="preserve">
-    <value>Dataanalyse</value>
   </data>
   <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
     <value>Endre tegning</value>

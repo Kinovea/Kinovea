@@ -98,9 +98,6 @@
   <data name="CommandExportVideo_FriendlyName" xml:space="preserve">
     <value>Exporteer video</value>
   </data>
-  <data name="DataAnalysis" xml:space="preserve">
-    <value>Gegevens analyse</value>
-  </data>
   <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
     <value>Spreidings diagram</value>
   </data>
@@ -245,12 +242,6 @@
   <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
     <value>Doel</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
-    <value>Meting:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
-    <value>Geen meting</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>Positie</value>
   </data>
@@ -289,9 +280,6 @@
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
     <value>Horizontale versnelling</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
-    <value>Hoekverplaatsing</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
     <value>Hoeksnelheid</value>
@@ -347,9 +335,6 @@
   <data name="dlgImportReference_Title" xml:space="preserve">
     <value>Importeer een afbeelding als referentie</value>
   </data>
-  <data name="dlgKeyframeComment_Title" xml:space="preserve">
-    <value>Commentaar…</value>
-  </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>Laad de kernbeeldgegevens</value>
   </data>
@@ -368,9 +353,6 @@
   <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve">
     <value>Exporteer één afbeelding iedere {0:0}ms.</value>
   </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
-    <value>Houdt rekening met Slow Motion. (Huidig = </value>
-  </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>Bewaar annotaties</value>
   </data>
@@ -382,12 +364,6 @@
   </data>
   <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
     <value>Intrinsieke parameters van de camera</value>
-  </data>
-  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
-    <value>Kalibreer de camera</value>
-  </data>
-  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
-    <value>Vervorming</value>
   </data>
   <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
     <value>Laad het camera kalibratie profiel</value>
@@ -731,9 +707,6 @@
   <data name="mnuCopyImageToClipboard" xml:space="preserve">
     <value>Kopieer afbeelding naar klembord</value>
   </data>
-  <data name="mnuConfigureTrajectory" xml:space="preserve">
-    <value>Configureer Trajectpad beeldscherm</value>
-  </data>
   <data name="mnuDeinterlace" xml:space="preserve">
     <value>De-interlace</value>
   </data>
@@ -742,9 +715,6 @@
   </data>
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>Verwijder Trajectpad vanaf dit punt</value>
-  </data>
-  <data name="mnuDeleteTrajectory" xml:space="preserve">
-    <value>Verwijder alle Trajectpaden</value>
   </data>
   <data name="mnuDrawingTrackingStart" xml:space="preserve">
     <value>Start volgen</value>
@@ -760,9 +730,6 @@
   </data>
   <data name="mnuTwoPlayers" xml:space="preserve">
     <value>Twee afspeel schermen</value>
-  </data>
-  <data name="mnuExportSpreadsheet" xml:space="preserve">
-    <value>Export naar Spreadsheet</value>
   </data>
   <data name="mnuFormat" xml:space="preserve">
     <value>Beeldverhouding</value>
@@ -847,9 +814,6 @@
   </data>
   <data name="mnuCalibrate" xml:space="preserve">
     <value>Calibreer…</value>
-  </data>
-  <data name="mnuTimebase" xml:space="preserve">
-    <value>Configureer de videotiming…</value>
   </data>
   <data name="mnuSwapScreens" xml:space="preserve">
     <value>Draai Video posities om</value>
@@ -1003,24 +967,6 @@
   </data>
   <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
     <value>Herstel het werkgebied naar volledige video</value>
-  </data>
-  <data name="ToolTip_RichText_Bold" xml:space="preserve">
-    <value>Vet</value>
-  </data>
-  <data name="ToolTip_RichText_Italic" xml:space="preserve">
-    <value>Cursief</value>
-  </data>
-  <data name="ToolTip_RichText_Underline" xml:space="preserve">
-    <value>Onderstrepen</value>
-  </data>
-  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
-    <value>Doorhalen</value>
-  </data>
-  <data name="ToolTip_RichText_ForeColor" xml:space="preserve">
-    <value>Voorgrondkleur</value>
-  </data>
-  <data name="ToolTip_RichText_BackColor" xml:space="preserve">
-    <value>Achtergrondkleur</value>
   </data>
   <data name="ToolTip_SaveDiaporama" xml:space="preserve">
     <value>Bewaar een diashow van de kernafbeeldingen</value>
@@ -1183,9 +1129,6 @@
   </data>
   <data name="mnuAction_Chrono_DeleteSection" xml:space="preserve">
     <value>Verwijder het huidige tijdgedeelte</value>
-  </data>
-  <data name="dlgCalibratePlane_HelpDistanceGrid" xml:space="preserve">
-    <value>Voer voor elke markering de afstand vanaf de oorsprong in.</value>
   </data>
   <data name="filterName_Analysis" xml:space="preserve">
     <value>Analyse</value>

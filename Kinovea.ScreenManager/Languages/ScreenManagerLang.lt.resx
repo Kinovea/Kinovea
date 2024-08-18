@@ -119,12 +119,6 @@
   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve">
     <value>Atkurti</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
-    <value>Matas :</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
-    <value>Nieko</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve">
     <value>Greitis</value>
   </data>
@@ -146,14 +140,8 @@
   <data name="dlgImportReference_Title" xml:space="preserve">
     <value>Importuoti kaip vaizdo nuorodą</value>
   </data>
-  <data name="dlgKeyframeComment_Title" xml:space="preserve">
-    <value>Komentarai...</value>
-  </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>Įkelti pagrindinio kadro duomenis</value>
-  </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
-    <value>Naudoti sulėtintą judesį. (Esamas = </value>
   </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>Išsaugoti pagrindinius kadrus</value>
@@ -314,9 +302,6 @@
   <data name="mnuCloseScreen" xml:space="preserve">
     <value>Uždaryti ekraną</value>
   </data>
-  <data name="mnuConfigureTrajectory" xml:space="preserve">
-    <value>Nustatyti kelio rodymą</value>
-  </data>
   <data name="mnuDeinterlace" xml:space="preserve">
     <value>Neperpinti</value>
   </data>
@@ -326,9 +311,6 @@
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>Trinti kelią nuo šio taško</value>
   </data>
-  <data name="mnuDeleteTrajectory" xml:space="preserve">
-    <value>Trinti visą kelią</value>
-  </data>
   <data name="mnuTwoCaptures" xml:space="preserve">
     <value>Du įrašymo ekranai</value>
   </data>
@@ -337,9 +319,6 @@
   </data>
   <data name="mnuTwoPlayers" xml:space="preserve">
     <value>Du peržiūros ekranai</value>
-  </data>
-  <data name="mnuExportSpreadsheet" xml:space="preserve">
-    <value>Eksportuoti į skaičiuoklę</value>
   </data>
   <data name="mnuFormat" xml:space="preserve">
     <value>Vaizdo formatas</value>
@@ -473,24 +452,6 @@
   <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
     <value>Iš naujo nustatykite darbo zoną</value>
   </data>
-  <data name="ToolTip_RichText_Bold" xml:space="preserve">
-    <value>Paryškinti</value>
-  </data>
-  <data name="ToolTip_RichText_Italic" xml:space="preserve">
-    <value>Kursyvas</value>
-  </data>
-  <data name="ToolTip_RichText_Underline" xml:space="preserve">
-    <value>Pabraukti</value>
-  </data>
-  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
-    <value>Perbraukti</value>
-  </data>
-  <data name="ToolTip_RichText_ForeColor" xml:space="preserve">
-    <value>Priekinio plano spalva</value>
-  </data>
-  <data name="ToolTip_RichText_BackColor" xml:space="preserve">
-    <value>Fono spalva</value>
-  </data>
   <data name="ToolTip_SaveDiaporama" xml:space="preserve">
     <value>Išsaugoti pagrindinių kadrų demonstraciją</value>
   </data>
@@ -517,9 +478,6 @@
   </data>
   <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
     <value>Sklaidos diagrama</value>
-  </data>
-  <data name="DataAnalysis" xml:space="preserve">
-    <value>Duomenų analizė</value>
   </data>
   <data name="DataAnalysis_AngularKinematics" xml:space="preserve">
     <value>Kampinė kinematika</value>
@@ -650,9 +608,6 @@
   <data name="dlgConfigureTrajectory_ExtraData_VerticalAcceleration" xml:space="preserve">
     <value>Vertikalus pagreitis</value>
   </data>
-  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
-    <value>Kampinis pagreitis</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_CentripetalAcceleration" xml:space="preserve">
     <value>Centripetalinis pagreitis</value>
   </data>
@@ -697,9 +652,6 @@
   </data>
   <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve">
     <value>Iškreipimo koeficientai</value>
-  </data>
-  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
-    <value>Iškreipimas</value>
   </data>
   <data name="dlgCameraCalibration_lblSensorWidth" xml:space="preserve">
     <value>Jutiklio plotis (mm):</value>
@@ -980,9 +932,6 @@
   <data name="Generic_Curved" xml:space="preserve">
     <value>Kreivė:</value>
   </data>
-  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
-    <value>Fotoaparato kalibravimas</value>
-  </data>
   <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
     <value>Įkelti kameros kalibravimo profilį</value>
   </data>
@@ -1087,9 +1036,6 @@
   </data>
   <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
     <value>Atidaryti kaip pakartotinio aplanko stebėtoją …</value>
-  </data>
-  <data name="mnuTimebase" xml:space="preserve">
-    <value>Konfigūruoti vaizdo įrašo laiką ...</value>
   </data>
   <data name="mnuThumbnailLocate" xml:space="preserve">
     <value>Rinkmenos vieta Windows Explorer</value>

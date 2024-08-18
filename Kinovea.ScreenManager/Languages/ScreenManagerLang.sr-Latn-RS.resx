@@ -119,12 +119,6 @@
   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve">
     <value>Poništiti</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
-    <value>Merenje:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
-    <value>Nijedan</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve">
     <value>Brzina</value>
   </data>
@@ -149,14 +143,8 @@
   <data name="dlgImportReference_Title" xml:space="preserve">
     <value>Uvezi sliku kao referencu</value>
   </data>
-  <data name="dlgKeyframeComment_Title" xml:space="preserve">
-    <value>Komentari...</value>
-  </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>Učitati podatke ključne slike</value>
-  </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
-    <value>Uzmi u obzir usporeni snimak. (Aktuelno = </value>
   </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>Sačuvaj podatke ključne slike</value>
@@ -338,9 +326,6 @@
   <data name="mnuCloseScreen" xml:space="preserve">
     <value>Zatvori ovaj ekran</value>
   </data>
-  <data name="mnuConfigureTrajectory" xml:space="preserve">
-    <value>Konfiguriši prikaz putanje</value>
-  </data>
   <data name="mnuDeinterlace" xml:space="preserve">
     <value>Raspleti</value>
   </data>
@@ -350,9 +335,6 @@
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>Izbriši put posle ove tačke</value>
   </data>
-  <data name="mnuDeleteTrajectory" xml:space="preserve">
-    <value>Obriši sve putanje</value>
-  </data>
   <data name="mnuTwoCaptures" xml:space="preserve">
     <value>Dva ekrana za snimanje</value>
   </data>
@@ -361,9 +343,6 @@
   </data>
   <data name="mnuTwoPlayers" xml:space="preserve">
     <value>Dva ekrana za reprodukovanje</value>
-  </data>
-  <data name="mnuExportSpreadsheet" xml:space="preserve">
-    <value>Izvezi u tabele</value>
   </data>
   <data name="mnuFormat" xml:space="preserve">
     <value>Grafički format</value>
@@ -518,24 +497,6 @@
   <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
     <value>Vrati Radnu zonu na videozapis u celosti</value>
   </data>
-  <data name="ToolTip_RichText_Bold" xml:space="preserve">
-    <value>Podebljano</value>
-  </data>
-  <data name="ToolTip_RichText_Italic" xml:space="preserve">
-    <value>Kurziv</value>
-  </data>
-  <data name="ToolTip_RichText_Underline" xml:space="preserve">
-    <value>Podvučeno</value>
-  </data>
-  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
-    <value>Precrtano</value>
-  </data>
-  <data name="ToolTip_RichText_ForeColor" xml:space="preserve">
-    <value>Boja prednjeg plana</value>
-  </data>
-  <data name="ToolTip_RichText_BackColor" xml:space="preserve">
-    <value>Boja prednjeg plana</value>
-  </data>
   <data name="ToolTip_SaveDiaporama" xml:space="preserve">
     <value>Sačuvaj projekciju slajdova ključnih slika</value>
   </data>
@@ -559,9 +520,6 @@
   </data>
   <data name="ToolTip_trkSelection" xml:space="preserve">
     <value>Postavi radnu zonu</value>
-  </data>
-  <data name="DataAnalysis" xml:space="preserve">
-    <value>Analiza podataka</value>
   </data>
   <data name="DataAnalysis_TimeAxisMilliseconds" xml:space="preserve">
     <value>Vreme (ms)</value>

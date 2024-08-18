@@ -98,9 +98,6 @@
   <data name="CommandExportVideo_FriendlyName" xml:space="preserve">
     <value>Exporter la vidéo</value>
   </data>
-  <data name="DataAnalysis" xml:space="preserve">
-    <value>Analyse de données</value>
-  </data>
   <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
     <value>Nuage de points</value>
   </data>
@@ -254,12 +251,6 @@
   <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
     <value>Cible</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
-    <value>Mesure :</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
-    <value>Aucune</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>Position</value>
   </data>
@@ -298,9 +289,6 @@
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
     <value>Accélération horizontale</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
-    <value>Déplacement angulaire</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
     <value>Vitesse angulaire</value>
@@ -368,9 +356,6 @@
   <data name="dlgImportReference_Title" xml:space="preserve">
     <value>Importer une image comme référence</value>
   </data>
-  <data name="dlgKeyframeComment_Title" xml:space="preserve">
-    <value>Commentaires...</value>
-  </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>Charger des annotations</value>
   </data>
@@ -389,9 +374,6 @@
   <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve">
     <value>Exporter une image toutes les {0:0}ms.</value>
   </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
-    <value>Tenir compte du ralentit pour l'enregistrement. (Actuel = </value>
-  </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>Enregistrer les annotations</value>
   </data>
@@ -403,12 +385,6 @@
   </data>
   <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
     <value>Paramètres intrinsèques</value>
-  </data>
-  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
-    <value>Calibrer la caméra</value>
-  </data>
-  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
-    <value>Distorsion</value>
   </data>
   <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
     <value>Charger un profil de calibration</value>
@@ -636,7 +612,7 @@
     <value>Ouvrir</value>
   </data>
   <data name="Generic_Import" xml:space="preserve">
-    <value>Importer</value>
+    <value>Importer…</value>
   </data>
   <data name="Generic_Restore" xml:space="preserve">
     <value>Remise à zéro</value>
@@ -782,9 +758,6 @@
   <data name="mnuCopyImageToClipboard" xml:space="preserve">
     <value>Copier l'image vers le Presse-Papier</value>
   </data>
-  <data name="mnuConfigureTrajectory" xml:space="preserve">
-    <value>Configurer l'affichage de la trajectoire</value>
-  </data>
   <data name="mnuDeinterlace" xml:space="preserve">
     <value>Désentrelacer</value>
   </data>
@@ -793,9 +766,6 @@
   </data>
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>Effacer la trajectoire après ce point</value>
-  </data>
-  <data name="mnuDeleteTrajectory" xml:space="preserve">
-    <value>Effacer toute la trajectoire</value>
   </data>
   <data name="mnuDrawingTrackingStart" xml:space="preserve">
     <value>Démarrer le suivi</value>
@@ -811,9 +781,6 @@
   </data>
   <data name="mnuTwoPlayers" xml:space="preserve">
     <value>Deux écrans de lecture</value>
-  </data>
-  <data name="mnuExportSpreadsheet" xml:space="preserve">
-    <value>Export tableur</value>
   </data>
   <data name="mnuFormat" xml:space="preserve">
     <value>Rapport de forme</value>
@@ -904,9 +871,6 @@
   </data>
   <data name="mnuCalibrate" xml:space="preserve">
     <value>Calibrer…</value>
-  </data>
-  <data name="mnuTimebase" xml:space="preserve">
-    <value>Configurer le timing de la vidéo…</value>
   </data>
   <data name="mnuSwapScreens" xml:space="preserve">
     <value>Échanger les écrans</value>
@@ -1079,24 +1043,6 @@
   <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
     <value>Remise à zéro de la Zone de Travail</value>
   </data>
-  <data name="ToolTip_RichText_Bold" xml:space="preserve">
-    <value>Gras</value>
-  </data>
-  <data name="ToolTip_RichText_Italic" xml:space="preserve">
-    <value>Italique</value>
-  </data>
-  <data name="ToolTip_RichText_Underline" xml:space="preserve">
-    <value>Souligné</value>
-  </data>
-  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
-    <value>Barré</value>
-  </data>
-  <data name="ToolTip_RichText_ForeColor" xml:space="preserve">
-    <value>Couleur du texte</value>
-  </data>
-  <data name="ToolTip_RichText_BackColor" xml:space="preserve">
-    <value>Couleur du fond</value>
-  </data>
   <data name="ToolTip_SaveDiaporama" xml:space="preserve">
     <value>Enregistrer un diaporama des images clés</value>
   </data>
@@ -1177,9 +1123,6 @@
   </data>
   <data name="dlgCalibratePlane_AveragePixelSize" xml:space="preserve">
     <value>Taille moyenne des pixels : {0}.</value>
-  </data>
-  <data name="dlgCalibratePlane_HelpDistanceGrid" xml:space="preserve">
-    <value>Entrer la distance depuis l'origine pour chaque marqueur.</value>
   </data>
   <data name="filterName_Kinogram" xml:space="preserve">
     <value>Kinogramme</value>
@@ -1317,7 +1260,7 @@
     <value>Vidéo…</value>
   </data>
   <data name="mnuLensCalibration" xml:space="preserve">
-    <value>Calibration optique…</value>
+    <value>Calibration optique</value>
   </data>
   <data name="mnuMagnifierFreeze" xml:space="preserve">
     <value>Arrêt sur image</value>

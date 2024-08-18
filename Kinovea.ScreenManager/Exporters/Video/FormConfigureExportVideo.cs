@@ -53,7 +53,7 @@ namespace Kinovea.ScreenManager
             else
                 inputOutputRate = string.Format("{0:0.##}x", player.view.SpeedPercentage / 100.0);
 
-            checkSlowMotion.Text = string.Format("Use current playback speed: {0:0.00}", inputOutputRate);
+            checkSlowMotion.Text = string.Format(ScreenManagerLang.FormConfigureExportVideo_UseCurrentPlaybackSpeed, inputOutputRate);
 
             bool isNominal = player.view.SpeedPercentage == 100;
             checkSlowMotion.Checked = isNominal;

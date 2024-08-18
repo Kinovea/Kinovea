@@ -103,9 +103,6 @@
   <data name="CommandExportVideo_FriendlyName" xml:space="preserve">
     <value>Eksport video</value>
   </data>
-  <data name="DataAnalysis" xml:space="preserve">
-    <value>Analisis data</value>
-  </data>
   <data name="DataAnalysis_XaxisDefaultPoints" xml:space="preserve">
     <value>Paksi X</value>
   </data>
@@ -280,12 +277,6 @@
   <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
     <value>Tunjukkan bulatan paling sesuai</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
-    <value>Ukuran:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
-    <value>Tiada</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>Posisi</value>
   </data>
@@ -318,9 +309,6 @@
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
     <value>Pecutan melintang</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
-    <value>Anjakan bersudut</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
     <value>Kelajuan sudut</value>

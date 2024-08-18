@@ -98,9 +98,6 @@
   <data name="CommandExportVideo_FriendlyName" xml:space="preserve">
     <value>Desar el vídeo</value>
   </data>
-  <data name="DataAnalysis" xml:space="preserve">
-    <value>Anàlisi de ddades</value>
-  </data>
   <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
     <value>Diagrama de dispersió</value>
   </data>
@@ -245,12 +242,6 @@
   <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
     <value>Objectiu</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
-    <value>Mesura:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
-    <value>Cap</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>Posició</value>
   </data>
@@ -289,9 +280,6 @@
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
     <value>Acceleració horitzontal</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
-    <value>Desplaçament angular</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
     <value>Velocitat angular</value>
@@ -347,9 +335,6 @@
   <data name="dlgImportReference_Title" xml:space="preserve">
     <value>Importar una imatge com a referència</value>
   </data>
-  <data name="dlgKeyframeComment_Title" xml:space="preserve">
-    <value>Comentaris...</value>
-  </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>Carregar dades de imatges clau</value>
   </data>
@@ -368,9 +353,6 @@
   <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve">
     <value>Exportar una imatge cada {0:0}ms.</value>
   </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
-    <value>Tenir en compte l'Slow Motion (Actual =</value>
-  </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>Desar les dades de les imatges clau</value>
   </data>
@@ -382,12 +364,6 @@
   </data>
   <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
     <value>Paràmetres intrínsecs</value>
-  </data>
-  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
-    <value>Calibrar la càmera</value>
-  </data>
-  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
-    <value>Distorsió</value>
   </data>
   <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
     <value>Carregar un perfil de calibratge</value>
@@ -731,9 +707,6 @@
   <data name="mnuCopyImageToClipboard" xml:space="preserve">
     <value>Copiar l'imatge al porta-retalls</value>
   </data>
-  <data name="mnuConfigureTrajectory" xml:space="preserve">
-    <value>Configurar la visualització de la trajectòria</value>
-  </data>
   <data name="mnuDeinterlace" xml:space="preserve">
     <value>Des-entrellaçar</value>
   </data>
@@ -742,9 +715,6 @@
   </data>
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>Esborrar la trajectòria després d'aquest Punt.</value>
-  </data>
-  <data name="mnuDeleteTrajectory" xml:space="preserve">
-    <value>Esborrar tota la trajectòria</value>
   </data>
   <data name="mnuDrawingTrackingStart" xml:space="preserve">
     <value>Iniciar seguiment</value>
@@ -760,9 +730,6 @@
   </data>
   <data name="mnuTwoPlayers" xml:space="preserve">
     <value>Dues pantalles de reproducció</value>
-  </data>
-  <data name="mnuExportSpreadsheet" xml:space="preserve">
-    <value>Exporta Graella</value>
   </data>
   <data name="mnuFormat" xml:space="preserve">
     <value>Format d'imatge</value>
@@ -847,9 +814,6 @@
   </data>
   <data name="mnuCalibrate" xml:space="preserve">
     <value>Calibrar...</value>
-  </data>
-  <data name="mnuTimebase" xml:space="preserve">
-    <value>Configurar la velocitat del video</value>
   </data>
   <data name="mnuSwapScreens" xml:space="preserve">
     <value>Inverteix la posició dels vídeos</value>
@@ -1003,24 +967,6 @@
   </data>
   <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
     <value>Restablir la zona de treball a tot el vídeo</value>
-  </data>
-  <data name="ToolTip_RichText_Bold" xml:space="preserve">
-    <value>Negreta</value>
-  </data>
-  <data name="ToolTip_RichText_Italic" xml:space="preserve">
-    <value>Cursiva</value>
-  </data>
-  <data name="ToolTip_RichText_Underline" xml:space="preserve">
-    <value>Subratllat</value>
-  </data>
-  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
-    <value>Tatxat</value>
-  </data>
-  <data name="ToolTip_RichText_ForeColor" xml:space="preserve">
-    <value>Color primer pla</value>
-  </data>
-  <data name="ToolTip_RichText_BackColor" xml:space="preserve">
-    <value>Color de fons</value>
   </data>
   <data name="ToolTip_SaveDiaporama" xml:space="preserve">
     <value>Desar una presentació de fotogrames clau</value>

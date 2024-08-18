@@ -119,12 +119,6 @@
   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve">
     <value>Reset</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
-    <value>Měření:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
-    <value>Žádný</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve">
     <value>Rychlost</value>
   </data>
@@ -146,14 +140,8 @@
   <data name="dlgImportReference_Title" xml:space="preserve">
     <value>Importovat obraz jako referenci</value>
   </data>
-  <data name="dlgKeyframeComment_Title" xml:space="preserve">
-    <value>Komentář…</value>
-  </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>Nahrát data klíčových pozic</value>
-  </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
-    <value>Berte do úvahy zpomalený pohyb. (Stávající = </value>
   </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>Uložit data klíčových pozic</value>
@@ -326,9 +314,6 @@
   <data name="mnuCloseScreen" xml:space="preserve">
     <value>Zavřít tuto obrazovku</value>
   </data>
-  <data name="mnuConfigureTrajectory" xml:space="preserve">
-    <value>Konfigurovat zobrazení trasy</value>
-  </data>
   <data name="mnuDeinterlace" xml:space="preserve">
     <value>Deinterlace</value>
   </data>
@@ -338,9 +323,6 @@
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>Vymazat trasu za tímto bodem</value>
   </data>
-  <data name="mnuDeleteTrajectory" xml:space="preserve">
-    <value>Vymazat všechny trasy</value>
-  </data>
   <data name="mnuTwoCaptures" xml:space="preserve">
     <value>2 snímací obrazovky</value>
   </data>
@@ -349,9 +331,6 @@
   </data>
   <data name="mnuTwoPlayers" xml:space="preserve">
     <value>2 obrazovky pro přehrávání</value>
-  </data>
-  <data name="mnuExportSpreadsheet" xml:space="preserve">
-    <value>Export do tabulkového procesoru</value>
   </data>
   <data name="mnuFormat" xml:space="preserve">
     <value>Formát obrazu</value>
@@ -485,21 +464,6 @@
   <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
     <value>Přenastavit procovní oblast na celý rozsah videa</value>
   </data>
-  <data name="ToolTip_RichText_Bold" xml:space="preserve">
-    <value>Tučně</value>
-  </data>
-  <data name="ToolTip_RichText_Italic" xml:space="preserve">
-    <value>Kurzíva</value>
-  </data>
-  <data name="ToolTip_RichText_Underline" xml:space="preserve">
-    <value>Podtrženo</value>
-  </data>
-  <data name="ToolTip_RichText_ForeColor" xml:space="preserve">
-    <value>Barva popředí</value>
-  </data>
-  <data name="ToolTip_RichText_BackColor" xml:space="preserve">
-    <value>Barva pozadí</value>
-  </data>
   <data name="ToolTip_SaveDiaporama" xml:space="preserve">
     <value>Uložit slideshow z klíčových pozic</value>
   </data>
@@ -563,9 +527,6 @@
   <data name="ToolTip_StartCamera" xml:space="preserve">
     <value>Spustit kameru</value>
   </data>
-  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
-    <value>Strikeout</value>
-  </data>
   <data name="ToolTip_ArmTrigger" xml:space="preserve">
     <value>Zajistit spoušť zachycení. Aktuální stav: odjištěno.</value>
   </data>
@@ -577,9 +538,6 @@
   </data>
   <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
     <value>Změnit kresbu</value>
-  </data>
-  <data name="DataAnalysis" xml:space="preserve">
-    <value>Analýza dat</value>
   </data>
   <data name="DataAnalysis_SaveToFile" xml:space="preserve">
     <value>Uložit do souboru</value>
@@ -743,9 +701,6 @@
   <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
     <value>Horizontální zrychlení</value>
   </data>
-  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
-    <value>Úhlové posunutí</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
     <value>Úhlová rychlost</value>
   </data>
@@ -835,12 +790,6 @@
   </data>
   <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve">
     <value>Koeficienty zkreslení</value>
-  </data>
-  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
-    <value>Kalibrace fotoaparátu</value>
-  </data>
-  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
-    <value>Zkreslení</value>
   </data>
   <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
     <value>Načtení kalibračního profilu kamery</value>
@@ -1036,9 +985,6 @@
   </data>
   <data name="mnuCalibrate" xml:space="preserve">
     <value>Kalibrace...</value>
-  </data>
-  <data name="mnuTimebase" xml:space="preserve">
-    <value>Konfigurace časování videa...</value>
   </data>
   <data name="mnuThumbnailDelete" xml:space="preserve">
     <value>Odstranit</value>

@@ -95,9 +95,6 @@
   <data name="CommandExportVideo_FriendlyName" xml:space="preserve">
     <value>Сачувај видео</value>
   </data>
-  <data name="DataAnalysis" xml:space="preserve">
-    <value>Анализа података</value>
-  </data>
   <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
     <value>Дијаграм расипања</value>
   </data>
@@ -209,12 +206,6 @@
   <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
     <value>Мета</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
-    <value>Мерење:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
-    <value>Ниједан</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>Позиција</value>
   </data>
@@ -244,9 +235,6 @@
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
     <value>Хоризонтално убрзање</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
-    <value>Угаони померај</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
     <value>Уну</value>
@@ -287,9 +275,6 @@
   <data name="dlgImportReference_Title" xml:space="preserve">
     <value>Увези слику као референцу</value>
   </data>
-  <data name="dlgKeyframeComment_Title" xml:space="preserve">
-    <value>Коментари...</value>
-  </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>Учитати податке кључне слике</value>
   </data>
@@ -308,9 +293,6 @@
   <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve">
     <value>Извези једну слику на сваку {0:0}ms.</value>
   </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
-    <value>Узми у обзир успорени снимак. (Актуелно = </value>
-  </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>Сачувај податке кључне слике</value>
   </data>
@@ -322,12 +304,6 @@
   </data>
   <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
     <value>Унутрашњи параметри камере</value>
-  </data>
-  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
-    <value>Изврши калибрацију камере</value>
-  </data>
-  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
-    <value>Закривљеност</value>
   </data>
   <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
     <value>Учитај профил калибрације камере</value>
@@ -632,9 +608,6 @@
   <data name="mnuCopyImageToClipboard" xml:space="preserve">
     <value>Копирај слику у привремену меморију</value>
   </data>
-  <data name="mnuConfigureTrajectory" xml:space="preserve">
-    <value>Конфигуриши приказ путање</value>
-  </data>
   <data name="mnuDeinterlace" xml:space="preserve">
     <value>Расплети</value>
   </data>
@@ -644,9 +617,6 @@
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>Избриши пут после ове тачке</value>
   </data>
-  <data name="mnuDeleteTrajectory" xml:space="preserve">
-    <value>Обриши све путање</value>
-  </data>
   <data name="mnuTwoCaptures" xml:space="preserve">
     <value>Два екрана за снимање</value>
   </data>
@@ -655,9 +625,6 @@
   </data>
   <data name="mnuTwoPlayers" xml:space="preserve">
     <value>Два екрана за репродуковање</value>
-  </data>
-  <data name="mnuExportSpreadsheet" xml:space="preserve">
-    <value>Извези у табеле</value>
   </data>
   <data name="mnuFormat" xml:space="preserve">
     <value>Графички формат</value>
@@ -709,9 +676,6 @@
   </data>
   <data name="mnuCalibrate" xml:space="preserve">
     <value>Калибриши...</value>
-  </data>
-  <data name="mnuTimebase" xml:space="preserve">
-    <value>Подеси време видео записа...</value>
   </data>
   <data name="mnuSwapScreens" xml:space="preserve">
     <value>Обрни видео позиције</value>
@@ -844,24 +808,6 @@
   </data>
   <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
     <value>Врати Радну зону на видеозапис у целости</value>
-  </data>
-  <data name="ToolTip_RichText_Bold" xml:space="preserve">
-    <value>Подебљано</value>
-  </data>
-  <data name="ToolTip_RichText_Italic" xml:space="preserve">
-    <value>Курзив</value>
-  </data>
-  <data name="ToolTip_RichText_Underline" xml:space="preserve">
-    <value>Подвучено</value>
-  </data>
-  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
-    <value>Прецртано</value>
-  </data>
-  <data name="ToolTip_RichText_ForeColor" xml:space="preserve">
-    <value>Боја предњег плана</value>
-  </data>
-  <data name="ToolTip_RichText_BackColor" xml:space="preserve">
-    <value>Боја предњег плана</value>
   </data>
   <data name="ToolTip_SaveDiaporama" xml:space="preserve">
     <value>Сачувај пројекцију слајдова кључних слика</value>

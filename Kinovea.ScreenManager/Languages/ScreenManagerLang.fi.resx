@@ -119,12 +119,6 @@
   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve">
     <value>Palauta</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
-    <value>Mittaus:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
-    <value>Puuttuu</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve">
     <value>Nopeus</value>
   </data>
@@ -146,14 +140,8 @@
   <data name="dlgImportReference_Title" xml:space="preserve">
     <value>Tuo kuva referenssinä</value>
   </data>
-  <data name="dlgKeyframeComment_Title" xml:space="preserve">
-    <value>Kommentit...</value>
-  </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>Lataa avainkuvien tiedot</value>
-  </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
-    <value>Huomioi videon hidastus. (Nykyinen = </value>
   </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>Tallenna avainkuvien tiedot</value>
@@ -314,9 +302,6 @@
   <data name="mnuCloseScreen" xml:space="preserve">
     <value>Sulje tämä näyttö</value>
   </data>
-  <data name="mnuConfigureTrajectory" xml:space="preserve">
-    <value>Konfiguroi liikeradan näyttöä</value>
-  </data>
   <data name="mnuDeinterlace" xml:space="preserve">
     <value>Poista kuvien limitys</value>
   </data>
@@ -326,9 +311,6 @@
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>Poista liikerata pisteestä eteenpäin</value>
   </data>
-  <data name="mnuDeleteTrajectory" xml:space="preserve">
-    <value>Poista liikerata</value>
-  </data>
   <data name="mnuTwoCaptures" xml:space="preserve">
     <value>Kaksi kuvausnäyttöä</value>
   </data>
@@ -337,9 +319,6 @@
   </data>
   <data name="mnuTwoPlayers" xml:space="preserve">
     <value>Kaksi video/analyysinäyttöä</value>
-  </data>
-  <data name="mnuExportSpreadsheet" xml:space="preserve">
-    <value>Vie taulukko-ohjelmaan</value>
   </data>
   <data name="mnuFormat" xml:space="preserve">
     <value>Kuvasuhde</value>
@@ -472,24 +451,6 @@
   </data>
   <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
     <value>Palauta työstöjakso koko videon mittaiseksi</value>
-  </data>
-  <data name="ToolTip_RichText_Bold" xml:space="preserve">
-    <value>Lihavoitu</value>
-  </data>
-  <data name="ToolTip_RichText_Italic" xml:space="preserve">
-    <value>Kursivoitu</value>
-  </data>
-  <data name="ToolTip_RichText_Underline" xml:space="preserve">
-    <value>Alleviivattu</value>
-  </data>
-  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
-    <value>Ylilyönti</value>
-  </data>
-  <data name="ToolTip_RichText_ForeColor" xml:space="preserve">
-    <value>Edustan väritys</value>
-  </data>
-  <data name="ToolTip_RichText_BackColor" xml:space="preserve">
-    <value>Taustan väritys</value>
   </data>
   <data name="ToolTip_SaveDiaporama" xml:space="preserve">
     <value>Tallenna diaesitys avainkuvista</value>
@@ -707,9 +668,6 @@
   <data name="mnuTimeSections" xml:space="preserve">
     <value>Aika osiot</value>
   </data>
-  <data name="mnuTimebase" xml:space="preserve">
-    <value>Määritä videon ajoitus...</value>
-  </data>
   <data name="mnuOptions_Chrono_Locked" xml:space="preserve">
     <value>Lukittu</value>
   </data>
@@ -848,9 +806,6 @@
   <data name="DrawingName_HumanModel2" xml:space="preserve">
     <value>Ihmismalli (2)</value>
   </data>
-  <data name="dlgCalibratePlane_HelpDistanceGrid" xml:space="preserve">
-    <value>Syötä kunkin merkin etäisyys origosta.</value>
-  </data>
   <data name="mnuAction_Chrono_MovePrevSplit" xml:space="preserve">
     <value>Siirrä edellinen jakopiste tähän kehykseen</value>
   </data>
@@ -913,9 +868,6 @@
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
     <value>Vaakasuuntainen kiihtyvyys</value>
-  </data>
-  <data name="DataAnalysis" xml:space="preserve">
-    <value>Tietojen analysointi</value>
   </data>
   <data name="mnuCutDrawing" xml:space="preserve">
     <value>Leikkaa piirustus</value>
@@ -1043,9 +995,6 @@
   <data name="formConfigureKinogram_lblFrameInterval" xml:space="preserve">
     <value>Kuvaväli: {0:0.000} ms</value>
   </data>
-  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
-    <value>Vääristymä</value>
-  </data>
   <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve">
     <value>Vääristymiskertoimet</value>
   </data>
@@ -1096,9 +1045,6 @@
   </data>
   <data name="mnuDemosaic" xml:space="preserve">
     <value>Demosaisointi</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
-    <value>Kulmasiirto</value>
   </data>
   <data name="mnuSignedAngle" xml:space="preserve">
     <value>Merkitty kulma</value>
@@ -1312,9 +1258,6 @@
   </data>
   <data name="mnuOptions_Trajectory_ShowTrackLabel" xml:space="preserve">
     <value>Näytä raidan tarra</value>
-  </data>
-  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
-    <value>Kalibroi kamera</value>
   </data>
   <data name="dlgCalibratePlane_AveragePixelSize" xml:space="preserve">
     <value>Keskimääräinen pikselin koko: {0}.</value>

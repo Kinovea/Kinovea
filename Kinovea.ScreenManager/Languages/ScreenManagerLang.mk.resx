@@ -119,12 +119,6 @@
   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve">
     <value>Ресетирање</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
-    <value>Мерки:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
-    <value>Никој</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve">
     <value>Брзина</value>
   </data>
@@ -149,14 +143,8 @@
   <data name="dlgImportReference_Title" xml:space="preserve">
     <value>Внеси слика како референца</value>
   </data>
-  <data name="dlgKeyframeComment_Title" xml:space="preserve">
-    <value>Коментари...</value>
-  </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>Вчитај податок за клучните слики</value>
-  </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
-    <value>Вредностите на забавеното снимање. (Current = </value>
   </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>Зачувај ги податоците од клучните слики</value>
@@ -338,9 +326,6 @@
   <data name="mnuCloseScreen" xml:space="preserve">
     <value>Затвори го овој екран</value>
   </data>
-  <data name="mnuConfigureTrajectory" xml:space="preserve">
-    <value>Конфигурарај го патот на прикажување</value>
-  </data>
   <data name="mnuDeinterlace" xml:space="preserve">
     <value>Расплетување</value>
   </data>
@@ -350,9 +335,6 @@
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>Ибриши го патот после оваа точка</value>
   </data>
-  <data name="mnuDeleteTrajectory" xml:space="preserve">
-    <value>Избриши ги сите патеки</value>
-  </data>
   <data name="mnuTwoCaptures" xml:space="preserve">
     <value>Два екрани за снимање</value>
   </data>
@@ -361,9 +343,6 @@
   </data>
   <data name="mnuTwoPlayers" xml:space="preserve">
     <value>Два екрани за репродукција</value>
-  </data>
-  <data name="mnuExportSpreadsheet" xml:space="preserve">
-    <value>Експорт во табеларен приказ</value>
   </data>
   <data name="mnuFormat" xml:space="preserve">
     <value>Сооднос на аспект</value>
@@ -518,24 +497,6 @@
   <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
     <value>Ресетирај ја работната зона на цело видео</value>
   </data>
-  <data name="ToolTip_RichText_Bold" xml:space="preserve">
-    <value>Задебелено</value>
-  </data>
-  <data name="ToolTip_RichText_Italic" xml:space="preserve">
-    <value>Закосено</value>
-  </data>
-  <data name="ToolTip_RichText_Underline" xml:space="preserve">
-    <value>Подвлечено</value>
-  </data>
-  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
-    <value>Прецртано</value>
-  </data>
-  <data name="ToolTip_RichText_ForeColor" xml:space="preserve">
-    <value>Боја на преднината</value>
-  </data>
-  <data name="ToolTip_RichText_BackColor" xml:space="preserve">
-    <value>Боја на заднината</value>
-  </data>
   <data name="ToolTip_SaveDiaporama" xml:space="preserve">
     <value>Зачувај слајдшоу од клучните слики</value>
   </data>
@@ -571,9 +532,6 @@
   </data>
   <data name="DataAnalysis_XaxisLabel" xml:space="preserve">
     <value>X оска:</value>
-  </data>
-  <data name="DataAnalysis" xml:space="preserve">
-    <value>Анализа на податоци</value>
   </data>
   <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
     <value>Дијаграм на расејување</value>
@@ -716,9 +674,6 @@
   <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
     <value>Внатрешни параметри на камерата</value>
   </data>
-  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
-    <value>Калибрација на камерата</value>
-  </data>
   <data name="dlgCameraCalibration_lblFocalLength" xml:space="preserve">
     <value>Фокусно растојание (мм):</value>
   </data>
@@ -775,9 +730,6 @@
   </data>
   <data name="mnuCopyDrawing" xml:space="preserve">
     <value>Копирај го цртежот</value>
-  </data>
-  <data name="mnuTimebase" xml:space="preserve">
-    <value>Подесување на времето на видеото…</value>
   </data>
   <data name="mnuPasteDrawing" xml:space="preserve">
     <value>Вметни го цртежот</value>
@@ -859,9 +811,6 @@
   </data>
   <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
     <value>Круг</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
-    <value>Аголно поместување</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
     <value>Аголна брзина</value>
@@ -958,9 +907,6 @@
   </data>
   <data name="DrawingName_CSVL" xml:space="preserve">
     <value>Централна сакрална вертикална линија</value>
-  </data>
-  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
-    <value>Искривување</value>
   </data>
   <data name="dlgCameraCalibration_SaveDialogTitle" xml:space="preserve">
     <value>Зачувај го профилот за калибрација на камерата</value>
@@ -1312,9 +1258,6 @@
   </data>
   <data name="mnuOptions_TestGrid_ShowVerticalAxis" xml:space="preserve">
     <value>Прикажи вертикална оска</value>
-  </data>
-  <data name="dlgCalibratePlane_HelpDistanceGrid" xml:space="preserve">
-    <value>Внесете го растојанието од потеклото за секој маркер.</value>
   </data>
   <data name="filterName_Kinogram" xml:space="preserve">
     <value>Кинограм</value>

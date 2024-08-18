@@ -119,12 +119,6 @@
   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve">
     <value>リセット</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve">
-    <value>計測:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve">
-    <value>なし</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve">
     <value>速度</value>
   </data>
@@ -149,14 +143,8 @@
   <data name="dlgImportReference_Title" xml:space="preserve">
     <value>参照イメージをインポート</value>
   </data>
-  <data name="dlgKeyframeComment_Title" xml:space="preserve">
-    <value>コメント…</value>
-  </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>キーイメージデータを開く</value>
-  </data>
-  <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve">
-    <value>スローモーションをアカウントに追加 (Current = </value>
   </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>キーイメージデータの保存</value>
@@ -338,9 +326,6 @@
   <data name="mnuCloseScreen" xml:space="preserve">
     <value>このスクリーンを閉じる</value>
   </data>
-  <data name="mnuConfigureTrajectory" xml:space="preserve">
-    <value>軌道表示設定</value>
-  </data>
   <data name="mnuDeinterlace" xml:space="preserve">
     <value>インターランス解除</value>
   </data>
@@ -350,9 +335,6 @@
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>この点より後の軌道を削除</value>
   </data>
-  <data name="mnuDeleteTrajectory" xml:space="preserve">
-    <value>すべての軌道を削除</value>
-  </data>
   <data name="mnuTwoCaptures" xml:space="preserve">
     <value>二つのキャプチャスクリーン</value>
   </data>
@@ -361,9 +343,6 @@
   </data>
   <data name="mnuTwoPlayers" xml:space="preserve">
     <value>二つのプレイバックスクリーン</value>
-  </data>
-  <data name="mnuExportSpreadsheet" xml:space="preserve">
-    <value>スプレッドシートにエクスポート</value>
   </data>
   <data name="mnuFormat" xml:space="preserve">
     <value>アスペクト比</value>
@@ -518,24 +497,6 @@
   <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
     <value>作業範囲をビデオ全体にリセット</value>
   </data>
-  <data name="ToolTip_RichText_Bold" xml:space="preserve">
-    <value>太字</value>
-  </data>
-  <data name="ToolTip_RichText_Italic" xml:space="preserve">
-    <value>イタリック</value>
-  </data>
-  <data name="ToolTip_RichText_Underline" xml:space="preserve">
-    <value>下線</value>
-  </data>
-  <data name="ToolTip_RichText_Strikeout" xml:space="preserve">
-    <value>取り消し線</value>
-  </data>
-  <data name="ToolTip_RichText_ForeColor" xml:space="preserve">
-    <value>前景の色</value>
-  </data>
-  <data name="ToolTip_RichText_BackColor" xml:space="preserve">
-    <value>背景の色</value>
-  </data>
   <data name="ToolTip_SaveDiaporama" xml:space="preserve">
     <value>キーイメージからスライドショーを保存</value>
   </data>
@@ -590,9 +551,6 @@
   <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
     <value>水平加速度</value>
   </data>
-  <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve">
-    <value>角変位</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
     <value>角速度</value>
   </data>
@@ -622,9 +580,6 @@
   </data>
   <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
     <value>ドローイングの編集</value>
-  </data>
-  <data name="DataAnalysis" xml:space="preserve">
-    <value>データ分析</value>
   </data>
   <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
     <value>散布図</value>
@@ -754,12 +709,6 @@
   </data>
   <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve">
     <value>歪み係数</value>
-  </data>
-  <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve">
-    <value>カメラのキャリブレーション</value>
-  </data>
-  <data name="dlgCameraCalibration_Distortion" xml:space="preserve">
-    <value>歪み</value>
   </data>
   <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
     <value>カメラキャリブレーションプロファイルの読み込み</value>
@@ -1067,9 +1016,6 @@
   <data name="mnuTimeSections" xml:space="preserve">
     <value>時間セクション</value>
   </data>
-  <data name="mnuTimebase" xml:space="preserve">
-    <value>ビデオタイミングを設定する...</value>
-  </data>
   <data name="mnuOptions_Chrono_Locked" xml:space="preserve">
     <value>ロック中</value>
   </data>
@@ -1138,9 +1084,6 @@
   </data>
   <data name="mnuThumbnailDelete" xml:space="preserve">
     <value>削除</value>
-  </data>
-  <data name="dlgCalibratePlane_HelpDistanceGrid" xml:space="preserve">
-    <value>各マーカーの原点からの距離を入力してください。</value>
   </data>
   <data name="mnuAction_Chrono_MovePrevSplit" xml:space="preserve">
     <value>前の分割点をこのフレームに移動</value>
