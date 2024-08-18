@@ -58,111 +58,152 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="dlgPreferences_tabCapture" xml:space="preserve"><value>Uhvati</value>
+  <data name="dlgPreferences_tabCapture" xml:space="preserve">
+    <value>Uhvati</value>
   </data>
-  <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>Crteži</value>
+  <data name="dlgPreferences_tabDrawings" xml:space="preserve">
+    <value>Crteži</value>
   </data>
-  <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>Općenito</value>
+  <data name="dlgPreferences_tabGeneral" xml:space="preserve">
+    <value>Općenito</value>
   </data>
-  <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>Reprodukcija</value>
+  <data name="dlgPreferences_tabPlayback" xml:space="preserve">
+    <value>Reprodukcija</value>
   </data>
-  <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Grafički format:</value>
+  <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve">
+    <value>Grafički format:</value>
   </data>
-  <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Video format:</value>
+  <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve">
+    <value>Video format:</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Godina</value>
+  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve">
+    <value>Godina</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Mjesec</value>
+  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve">
+    <value>Mjesec</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Dan</value>
+  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve">
+    <value>Dan</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve"><value>Sat</value>
+  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve">
+    <value>Sat</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve"><value>Minuta</value>
+  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve">
+    <value>Minuta</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve"><value>Sekunda</value>
+  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve">
+    <value>Sekunda</value>
   </data>
-  <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Memorija</value>
+  <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
+    <value>Memorija</value>
   </data>
-  <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Memorija rezervirana za hvatanje buffera: {0} MB.</value>
+  <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve">
+    <value>Memorija rezervirana za hvatanje buffera: {0} MB.</value>
   </data>
-  <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Prikaži crteže tokom video reprodukcije</value>
+  <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve">
+    <value>Prikaži crteže tokom video reprodukcije</value>
   </data>
-  <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Uvijek odvoji pri otvaranju novog videa</value>
+  <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve">
+    <value>Uvijek odvoji pri otvaranju novog videa</value>
   </data>
-  <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Poveži brze klizače kada upoređuješ video zapise</value>
+  <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve">
+    <value>Poveži brze klizače kada upoređuješ video zapise</value>
   </data>
-  <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Prebaci na režim za analizu</value>
+  <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve">
+    <value>Broj datoteka u povijesti:</value>
   </data>
-  <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Broj datoteka u povijesti:</value>
+  <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve">
+    <value>Zadani omjer slike:</value>
   </data>
-  <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Zadani omjer slike:</value>
+  <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve">
+    <value>Jezik:</value>
   </data>
-  <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Jezik:</value>
+  <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve">
+    <value>Metara u sekundi ({0})</value>
   </data>
-  <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>I</value>
+  <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve">
+    <value>Kilometara na sat ({0})</value>
   </data>
-  <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Podrazumevano, crteži će ostati vidljivi za {0} slika oko ključne slike.</value>
+  <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve">
+    <value>Stopa u sekundi ({0})</value>
   </data>
-  <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Metara u sekundi ({0})</value>
+  <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve">
+    <value>Milja na sat ({0})</value>
   </data>
-  <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Kilometara na sat ({0})</value>
+  <data name="dlgPreferences_Title" xml:space="preserve">
+    <value>Željene opcije</value>
   </data>
-  <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Stopa u sekundi ({0})</value>
+  <data name="Generic_Cancel" xml:space="preserve">
+    <value>Poništi</value>
   </data>
-  <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Milja na sat ({0})</value>
+  <data name="Generic_Quit" xml:space="preserve">
+    <value>Odustani</value>
   </data>
-  <data name="dlgPreferences_Title" xml:space="preserve"><value>Željene opcije</value>
+  <data name="Generic_Save" xml:space="preserve">
+    <value>Spremi</value>
   </data>
-  <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Učitavanje korisničkog interfejsa...</value>
+  <data name="mnuAbout" xml:space="preserve">
+    <value>O Kinovea…</value>
   </data>
-  <data name="Generic_Cancel" xml:space="preserve"><value>Poništi</value>
+  <data name="mnuApplicationFolder" xml:space="preserve">
+    <value>Otvori mapu evidencija…</value>
   </data>
-  <data name="Generic_Quit" xml:space="preserve"><value>Odustani</value>
+  <data name="mnuEdit" xml:space="preserve">
+    <value>Uredi</value>
   </data>
-  <data name="Generic_Save" xml:space="preserve"><value>Spremi</value>
+  <data name="mnuFile" xml:space="preserve">
+    <value>Datoteka</value>
   </data>
-  <data name="mnuAbout" xml:space="preserve"><value>O Kinovea…</value>
+  <data name="mnuFullScreen" xml:space="preserve">
+    <value>Puni zaslon</value>
   </data>
-  <data name="mnuApplicationFolder" xml:space="preserve"><value>Otvori mapu evidencija…</value>
+  <data name="mnuHelp" xml:space="preserve">
+    <value>Pomoć</value>
   </data>
-  <data name="mnuEdit" xml:space="preserve"><value>Uredi</value>
+  <data name="mnuHelpContents" xml:space="preserve">
+    <value>Kinovea pomoć...</value>
   </data>
-  <data name="mnuFile" xml:space="preserve"><value>Datoteka</value>
+  <data name="mnuHistory" xml:space="preserve">
+    <value>Nedavno</value>
   </data>
-  <data name="mnuFullScreen" xml:space="preserve"><value>Puni zaslon</value>
+  <data name="mnuHistoryReset" xml:space="preserve">
+    <value>Vrati povijest</value>
   </data>
-  <data name="mnuHelp" xml:space="preserve"><value>Pomoć</value>
+  <data name="mnuImage" xml:space="preserve">
+    <value>Slika</value>
   </data>
-  <data name="mnuHelpContents" xml:space="preserve"><value>Kinovea pomoć...</value>
+  <data name="mnuLanguages" xml:space="preserve">
+    <value>Jezik</value>
   </data>
-  <data name="mnuHistory" xml:space="preserve"><value>Nedavno</value>
+  <data name="mnuVideo" xml:space="preserve">
+    <value>Video</value>
   </data>
-  <data name="mnuHistoryReset" xml:space="preserve"><value>Vrati povijest</value>
+  <data name="mnuOptions" xml:space="preserve">
+    <value>Opcije</value>
   </data>
-  <data name="mnuImage" xml:space="preserve"><value>Slika</value>
+  <data name="mnuPreferences" xml:space="preserve">
+    <value>Željene opcije…</value>
   </data>
-  <data name="mnuLanguages" xml:space="preserve"><value>Jezik</value>
+  <data name="mnuScreens" xml:space="preserve">
+    <value>Prikaz</value>
   </data>
-  <data name="mnuVideo" xml:space="preserve"><value>Video</value>
+  <data name="mnuUndo" xml:space="preserve">
+    <value>Poništi</value>
   </data>
-  <data name="mnuOptions" xml:space="preserve"><value>Opcije</value>
+  <data name="mnuRedo" xml:space="preserve">
+    <value>Ponoviti</value>
   </data>
-  <data name="mnuPreferences" xml:space="preserve"><value>Željene opcije…</value>
+  <data name="TimeCodeFormat_Frames" xml:space="preserve">
+    <value>Broj kadrova u sekundi</value>
   </data>
-  <data name="mnuScreens" xml:space="preserve"><value>Prikaz</value>
+  <data name="TimeCodeFormat_Milliseconds" xml:space="preserve">
+    <value>Ukupno milisekundi</value>
   </data>
-  <data name="mnuUndo" xml:space="preserve"><value>Poništi</value>
+  <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve">
+    <value>Stoti dio minute</value>
   </data>
-  <data name="mnuRedo" xml:space="preserve"><value>Ponoviti</value>
-  </data>
-  <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Broj kadrova u sekundi</value>
-  </data>
-  <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Ukupno milisekundi</value>
-  </data>
-  <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Stoti dio minute</value>
-  </data>
-  <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Deset stotinki sata</value>
+  <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve">
+    <value>Deset stotinki sata</value>
   </data>
   <data name="dlgAbout_Citation" xml:space="preserve">
     <value>Referenca</value>

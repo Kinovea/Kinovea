@@ -67,9 +67,6 @@
   <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve">
     <value>分鐘</value>
   </data>
-  <data name="dlgSplash_LoadInfos" xml:space="preserve">
-    <value>裝載使用者介面…</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
     <value>目標視窗：</value>
   </data>

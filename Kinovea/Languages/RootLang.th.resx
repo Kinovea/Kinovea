@@ -313,9 +313,6 @@
   <data name="Generic_Quit" xml:space="preserve">
     <value>ล้มเลิก</value>
   </data>
-  <data name="dlgSplash_LoadInfos" xml:space="preserve">
-    <value>กำลังโหลดอินเทอร์เฟซผู้ใช้…</value>
-  </data>
   <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve">
     <value>ค่าเริ่มต้น</value>
   </data>
@@ -421,14 +418,8 @@
   <data name="dlgPreferences_Player_tabUnits" xml:space="preserve">
     <value>หน่วย</value>
   </data>
-  <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve">
-    <value>ตามค่าเริ่มต้น ภาพวาดจะยังมองเห็นได้สำหรับรูปภาพ {0} ภาพรอบๆ รูปภาพหลัก</value>
-  </data>
   <data name="dlgPreferences_Player_lblMemory" xml:space="preserve">
     <value>หน่วยความจำแคชที่จัดสรรให้กับแต่ละหน้าจอการเล่น: {0} MB</value>
-  </data>
-  <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve">
-    <value>และ</value>
   </data>
   <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve">
     <value>ภาษา:</value>
@@ -441,9 +432,6 @@
   </data>
   <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve">
     <value>จำนวนไฟล์ในประวัติ:</value>
-  </data>
-  <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve">
-    <value>เปลี่ยนเป็นโหมดการวิเคราะห์</value>
   </data>
   <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
     <value>ไฟล์คำอธิบายประกอบเริ่มต้น:</value>

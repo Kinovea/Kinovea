@@ -244,14 +244,8 @@
   <data name="dlgPreferences_Capture_Context" xml:space="preserve">
     <value>Konteks</value>
   </data>
-  <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve">
-    <value>Secara default, gambar akan tetap terlihat sebanyak {0} gambar dari seluruh Gambar Utama.</value>
-  </data>
   <data name="dlgPreferences_Player_lblMemory" xml:space="preserve">
     <value>Memori cache yang dialokasikan untuk setiap layar putar ulang: {0} MB.</value>
-  </data>
-  <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve">
-    <value>Dan</value>
   </data>
   <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve">
     <value>Bahasa:</value>
@@ -264,9 +258,6 @@
   </data>
   <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve">
     <value>Jumlah file dalam histori:</value>
-  </data>
-  <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve">
-    <value>Beralih ke mode Analisa</value>
   </data>
   <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
     <value>File anotasi default:</value>
@@ -384,9 +375,6 @@
   </data>
   <data name="Generic_Quit" xml:space="preserve">
     <value>Keluar</value>
-  </data>
-  <data name="dlgSplash_LoadInfos" xml:space="preserve">
-    <value>Memuat antarmuka pengguna…</value>
   </data>
   <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve">
     <value>Bawaan</value>
