@@ -12,24 +12,24 @@
 
 ## Translation cycle
 
-- During development of the new version, strings are added in the code as literals. 
-- The English locale is kept stable during the entire dev cycle.
-- During this time translations are contributed and merged into master.
-- Occasionally these translations are consolidated back to the branch of the released version.
-- New point releases are made with the updated translations.
-- At the end of the dev cycle, in Weblate, LOCK the translation.
-- Collect all the new strings from the code and add them to English locale.
+- Code: during development of the new version, strings are added as literals. 
+- Weblate: the English locale is kept stable during the entire dev cycle.
+- Weblate/git: during this time translations are contributed and merged into master.
+- git: Occasionally these translations are consolidated back to the branch of the released version.
+- git: New point releases are made with the updated translations.
+- Weblate: At the end of the dev cycle, in Weblate, LOCK the translation.
+- Code: Collect all the new strings from the code and add them to English locale.
 
 
 ## Adding new strings
 
 - Weblate: Lock
-- VS: add new entries to the assembly resx reference file, ex: RootLang.resx
-- VS: replace the string literals with the newly created resources.
+- VS: use ResXManager: https://marketplace.visualstudio.com/items?itemName=TomEnglert.ResXManager
+- VS: Identify all new strings litterals and do right click > Move to resource.
 - git: Commit + push.
 - Weblate: Manage > Repository maintenance > Update.
-- At this point the new strings should be visible and other languages should be marked as less than 100%.
-- Weblate: translate the new strings to French, Spanish, Italian.
+- Weblate: At this point the new strings should be visible and other languages should be marked as less than 100%.
+- Weblate: Translate the new strings to French, Spanish, Italian.
 - Weblate: commit + push.
 - git: merge Weblate PR.
 - Pull and verify translations in context.
