@@ -499,6 +499,8 @@ namespace Kinovea.Root
             mnuWorkspaceExport.Image = Properties.Resources.file_txt;
 
             mnuPointer.Text = RootLang.mnuPointer;
+            // Rebuild the whole pointer menu to get the correct text.
+            BuildPointerMenus();
 
             mnuHelp.Text = RootLang.mnuHelp;
             mnuHelpContents.Text = RootLang.mnuHelpContents;
