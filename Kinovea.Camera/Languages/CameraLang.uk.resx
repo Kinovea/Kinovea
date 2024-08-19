@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -58,4 +58,109 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="FormConfiguration_EnableHardwareCompression" xml:space="preserve">
+    <value>Увімкнути апаратне стиснення</value>
+  </data>
+  <data name="FormConfiguration_ResultingFramerate" xml:space="preserve">
+    <value>Отримана частота кадрів:</value>
+  </data>
+  <data name="FormConfiguration_EnableSoftwareDemosaicing" xml:space="preserve">
+    <value>Увімкнути демозаїку програмного забезпечення</value>
+  </data>
+  <data name="FormConfiguration_ExportDeviceGenICamXMLFile" xml:space="preserve">
+    <value>Експортувати XML-файл пристрою GenICam</value>
+  </data>
+  <data name="Generic_Apply" xml:space="preserve">
+    <value>Застосувати</value>
+  </data>
+  <data name="Generic_Cancel" xml:space="preserve">
+    <value>Відміна</value>
+  </data>
+  <data name="FormHandshakeResult_Title" xml:space="preserve">
+    <value>Тест підключення</value>
+  </data>
+  <data name="FormHandshakeResult_Failure_Title" xml:space="preserve">
+    <value>Помилка перевірки з'єднання</value>
+  </data>
+  <data name="FormHandshakeResult_Failure_Message" xml:space="preserve">
+    <value>Під час перевірки з'єднання сталася помилка.</value>
+  </data>
+  <data name="FormIconPicker_Title" xml:space="preserve">
+    <value>Значки</value>
+  </data>
+  <data name="FormConfiguration_Title" xml:space="preserve">
+    <value>Налаштування камери</value>
+  </data>
+  <data name="FormConfiguration_Properties_StreamFormat" xml:space="preserve">
+    <value>Формат потоку:</value>
+  </data>
+  <data name="FormConfiguration_Properties_ImageSize" xml:space="preserve">
+    <value>Розмір зображення:</value>
+  </data>
+  <data name="FormConfiguration_Properties_ImageWidth" xml:space="preserve">
+    <value>Ширина:</value>
+  </data>
+  <data name="FormConfiguration_Properties_ImageHeight" xml:space="preserve">
+    <value>Висота:</value>
+  </data>
+  <data name="FormConfiguration_Properties_Framerate" xml:space="preserve">
+    <value>Частота кадрів:</value>
+  </data>
+  <data name="FormConfiguration_Properties_Exposure" xml:space="preserve">
+    <value>Експозиція:</value>
+  </data>
+  <data name="FormConfiguration_Properties_ExposureMicro" xml:space="preserve">
+    <value>Експозиція (µs):</value>
+  </data>
+  <data name="FormConfiguration_Properties_Gain" xml:space="preserve">
+    <value>Збільшення:</value>
+  </data>
+  <data name="FormConfiguration_Properties_Focus" xml:space="preserve">
+    <value>Фокус:</value>
+  </data>
+  <data name="FormConfiguration_Properties_BayerFormatConversion" xml:space="preserve">
+    <value>Перетворення формату Bayer:</value>
+  </data>
+  <data name="FormConfiguration_Auto" xml:space="preserve">
+    <value>Автоматично</value>
+  </data>
+  <data name="FormConfiguration_DevicePropertyPages" xml:space="preserve">
+    <value>Сторінки властивостей пристрою</value>
+  </data>
+  <data name="FormConfiguration_DevicePropertyPages_Error" xml:space="preserve">
+    <value>При спробі відобразити сторінку властивостей пристрою для сталася помилка {0}.</value>
+  </data>
+  <data name="FormConfiguration_Reconnect" xml:space="preserve">
+    <value>Повторне підключення</value>
+  </data>
+  <data name="FormConfiguration_ImportParameters" xml:space="preserve">
+    <value>Параметри імпорту</value>
+  </data>
+  <data name="FormConfiguration_Test" xml:space="preserve">
+    <value>Тест</value>
+  </data>
+  <data name="FormConnectionWizard_Network" xml:space="preserve">
+    <value>Мережа</value>
+  </data>
+  <data name="FormConnectionWizard_Host" xml:space="preserve">
+    <value>Хост (IP address)</value>
+  </data>
+  <data name="FormConnectionWizard_Port" xml:space="preserve">
+    <value>Порт</value>
+  </data>
+  <data name="FormConnectionWizard_Format" xml:space="preserve">
+    <value>Формат</value>
+  </data>
+  <data name="FormConnectionWizard_Authentication" xml:space="preserve">
+    <value>Аутентифікація</value>
+  </data>
+  <data name="FormConnectionWizard_User" xml:space="preserve">
+    <value>Користувач</value>
+  </data>
+  <data name="FormConnectionWizard_Password" xml:space="preserve">
+    <value>Пароль</value>
+  </data>
+  <data name="FormConnectionWizard_URL" xml:space="preserve">
+    <value>Кінцева URL-адреса</value>
+  </data>
 </root>
