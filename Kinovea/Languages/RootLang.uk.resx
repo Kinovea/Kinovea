@@ -359,7 +359,7 @@
     <value>Очистити</value>
   </data>
   <data name="Generic_Cancel" xml:space="preserve">
-    <value>Скасувати</value>
+    <value>Відміна</value>
   </data>
   <data name="Generic_Quit" xml:space="preserve">
     <value>Вийти</value>
@@ -504,5 +504,44 @@
   </data>
   <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve">
     <value>Відображати креслення під час відтворення відео</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_CyclesPerSecond" xml:space="preserve">
+    <value>Циклів за секунду ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StepsPerSecond" xml:space="preserve">
+    <value>Кроків за секунду ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StepsPerMinute" xml:space="preserve">
+    <value>Кроків за хвилину ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsHertz" xml:space="preserve">
+    <value>Герц ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_CyclesPerMinute" xml:space="preserve">
+    <value>Циклів за хвилину ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StrokesPerSecond" xml:space="preserve">
+    <value>Ударів за секунду ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StrokesPerMinute" xml:space="preserve">
+    <value>Ударів за хвилину ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabExport_IncludeImages" xml:space="preserve">
+    <value>Додати зображення</value>
+  </data>
+  <data name="mnuBigArrow" xml:space="preserve">
+    <value>Велика стрілка</value>
+  </data>
+  <data name="mnuBigHand" xml:space="preserve">
+    <value>Велика вказівна рука</value>
+  </data>
+  <data name="mnuDefaultPointer" xml:space="preserve">
+    <value>За замовчуванням</value>
+  </data>
+  <data name="mnuPointer" xml:space="preserve">
+    <value>Покажчик</value>
+  </data>
+  <data name="mnuTranslate" xml:space="preserve">
+    <value>Перекласти Kinovea…</value>
   </data>
 </root>
