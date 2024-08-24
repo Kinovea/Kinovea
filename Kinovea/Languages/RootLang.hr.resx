@@ -505,4 +505,13 @@
   <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
     <value>Spremi kao zadani radni prostor</value>
   </data>
+  <data name="mnuBigArrow" xml:space="preserve">
+    <value>Velika strelica</value>
+  </data>
+  <data name="mnuBigHand" xml:space="preserve">
+    <value>Velika ruka koja pokazuje</value>
+  </data>
+  <data name="mnuPointer" xml:space="preserve">
+    <value>Pokazivač</value>
+  </data>
 </root>

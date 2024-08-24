@@ -126,4 +126,16 @@
   </data>
   <data name="FormConnectionWizard_URL" xml:space="preserve"><value>URL finale</value>
   </data>
+  <data name="FormConfiguration_EnableHardwareCompression" xml:space="preserve">
+    <value>Activer la compression hardware</value>
+  </data>
+  <data name="FormConfiguration_ResultingFramerate" xml:space="preserve">
+    <value>Fréquence d'image résultante :</value>
+  </data>
+  <data name="FormConfiguration_EnableSoftwareDemosaicing" xml:space="preserve">
+    <value>Activer le dématriçage logiciel</value>
+  </data>
+  <data name="FormConfiguration_ExportDeviceGenICamXMLFile" xml:space="preserve">
+    <value>Exporter le fichier XML GenICam</value>
+  </data>
 </root>

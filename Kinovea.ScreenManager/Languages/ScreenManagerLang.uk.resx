@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -58,4 +58,1534 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="dlgConfigureDrawing_Title" xml:space="preserve">
+    <value>Налаштування креслень</value>
+  </data>
+  <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve">
+    <value>Завжди видимий</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
+    <value>Максимальна непрозорість (%):</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblOpaque" xml:space="preserve">
+    <value>Непрозора тривалість (кадрів):</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblFading" xml:space="preserve">
+    <value>Тривалість згасання (кадрів):</value>
+  </data>
+  <data name="dlgTimebase_Title" xml:space="preserve">
+    <value>Налаштувати хронометраж відео</value>
+  </data>
+  <data name="dlgTimebase_lblFileFPS" xml:space="preserve">
+    <value>Частота кадрів у файлі: {0:0.##} fps</value>
+  </data>
+  <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve">
+    <value>Скинути</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
+    <value>Налаштувати інструмент траєкторії</value>
+  </data>
+  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
+    <value>Маркер:</value>
+  </data>
+  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
+    <value>Хрест</value>
+  </data>
+  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
+    <value>Коло</value>
+  </data>
+  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
+    <value>Ціль</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
+    <value>Показати вписане коло</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
+    <value>Позиція</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalPosition" xml:space="preserve">
+    <value>Вертикальна позиція</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalPosition" xml:space="preserve">
+    <value>Горизонтальна позиція</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve">
+    <value>Загальна відстань</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_DistanceToOrigin" xml:space="preserve">
+    <value>Відстань до початкової точки</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement" xml:space="preserve">
+    <value>Відносне горизонтальне зміщення</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalVerticalDisplacement" xml:space="preserve">
+    <value>Відносне вертикальне зміщення</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve">
+    <value>Швидкість</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalVelocity" xml:space="preserve">
+    <value>Вертикальна швидкість</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_CentripetalAcceleration" xml:space="preserve">
+    <value>Доцентрове прискорення</value>
+  </data>
+  <data name="ExtraData_Length" xml:space="preserve">
+    <value>Довжина</value>
+  </data>
+  <data name="ExtraData_Center" xml:space="preserve">
+    <value>Центр</value>
+  </data>
+  <data name="ExtraData_Radius" xml:space="preserve">
+    <value>Радіус</value>
+  </data>
+  <data name="ExtraData_Diameter" xml:space="preserve">
+    <value>Діаметр</value>
+  </data>
+  <data name="ExtraData_Circumference" xml:space="preserve">
+    <value>Окружність</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
+    <value>Відстеження</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve">
+    <value>Вікно об'єкта:</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
+    <value>Вікно пошуку:</value>
+  </data>
+  <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve">
+    <value>Реальний розмір відрізка:</value>
+  </data>
+  <data name="dlgCalibrateLine_Title" xml:space="preserve">
+    <value>Лінійне калібрування</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisVertical" xml:space="preserve">
+    <value>Лінія визначає вертикальну вісь</value>
+  </data>
+  <data name="dlgCalibrateLine_AxesImage" xml:space="preserve">
+    <value>Вирівняно за осями зображення</value>
+  </data>
+  <data name="dlgCalibratePlane_Title" xml:space="preserve">
+    <value>Калібрування площини</value>
+  </data>
+  <data name="FormIconPicker_Title" xml:space="preserve">
+    <value>Значки</value>
+  </data>
+  <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve">
+    <value>Тривалість кожного ключового зображення: {0:0,00} секунд.</value>
+  </data>
+  <data name="dlgExportSpreadsheet_Title" xml:space="preserve">
+    <value>Збережіть дані в таблицю</value>
+  </data>
+  <data name="dlgImportReference_Title" xml:space="preserve">
+    <value>Імпорт зображення як посилання</value>
+  </data>
+  <data name="dlgLoadAnalysis_Title" xml:space="preserve">
+    <value>Завантажити анотації</value>
+  </data>
+  <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve">
+    <value>Усього: {0:0} зображень.</value>
+  </data>
+  <data name="dlgRafaleExport_ExportAll" xml:space="preserve">
+    <value>Експорт всіх зображень.</value>
+  </data>
+  <data name="dlgRafaleExport_ExportFrameDecimation" xml:space="preserve">
+    <value>Експорт одного зображення кожні {0} зображень.</value>
+  </data>
+  <data name="dlgRafaleExport_ExportTimeDecimationSeconds" xml:space="preserve">
+    <value>Експорт одного зображення кожні {0:0.00} с.</value>
+  </data>
+  <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve">
+    <value>Експорт одного зображення кожні {0:0.00} мс.</value>
+  </data>
+  <data name="FormFileSave_Infos" xml:space="preserve">
+    <value>Прогрес:</value>
+  </data>
+  <data name="FormProgressBar_Title" xml:space="preserve">
+    <value>Прогрес</value>
+  </data>
+  <data name="Generic_Cancel" xml:space="preserve">
+    <value>Відміна</value>
+  </data>
+  <data name="Generic_Appearance" xml:space="preserve">
+    <value>Вигляд</value>
+  </data>
+  <data name="Generic_ArrowPicker" xml:space="preserve">
+    <value>Стрілки:</value>
+  </data>
+  <data name="Generic_Curved" xml:space="preserve">
+    <value>Крива:</value>
+  </data>
+  <data name="Generic_Perspective" xml:space="preserve">
+    <value>Перспектива:</value>
+  </data>
+  <data name="Generic_Clock" xml:space="preserve">
+    <value>Годинник:</value>
+  </data>
+  <data name="Generic_ColorPicker" xml:space="preserve">
+    <value>Колір:</value>
+  </data>
+  <data name="LengthUnit_Inches" xml:space="preserve">
+    <value>Дюйми</value>
+  </data>
+  <data name="LengthUnit_Feet" xml:space="preserve">
+    <value>Фути</value>
+  </data>
+  <data name="LengthUnit_Yards" xml:space="preserve">
+    <value>Ярди</value>
+  </data>
+  <data name="LengthUnit_Percentage" xml:space="preserve">
+    <value>Відсотки</value>
+  </data>
+  <data name="LoadMovie_CodecNotFound" xml:space="preserve">
+    <value>Помилка: неможливо відкрити файл, відеопотік не підтримується.</value>
+  </data>
+  <data name="LoadMovie_FileNotOpened" xml:space="preserve">
+    <value>Не вдалося відкрити файл: файл не знайдено або він порожній.</value>
+  </data>
+  <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve">
+    <value>Не вдалося відкрити файл: інформацію про потік не знайдено.</value>
+  </data>
+  <data name="LoadMovie_UnkownError" xml:space="preserve">
+    <value>Не вдалося відкрити файл: невідома помилка.</value>
+  </data>
+  <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve">
+    <value>Не вдалося відкрити файл: відеопотік не знайдено.</value>
+  </data>
+  <data name="LockSelectionUnlock" xml:space="preserve">
+    <value>Розблокувати межі робочої зони</value>
+  </data>
+  <data name="mnuChronoStart" xml:space="preserve">
+    <value>Запуск секундоміру</value>
+  </data>
+  <data name="mnuChronoStop" xml:space="preserve">
+    <value>Зупинка секундоміру</value>
+  </data>
+  <data name="mnuHideBefore" xml:space="preserve">
+    <value>Приховати до цієї точки</value>
+  </data>
+  <data name="mnuShowBefore" xml:space="preserve">
+    <value>Відобразити до цієї точки</value>
+  </data>
+  <data name="mnuHideAfter" xml:space="preserve">
+    <value>Приховати після цієї точки</value>
+  </data>
+  <data name="mnuShowAfter" xml:space="preserve">
+    <value>Відобразити після цієї точки</value>
+  </data>
+  <data name="mnuShowLabel" xml:space="preserve">
+    <value>Відобразити мітку</value>
+  </data>
+  <data name="mnuCloseScreen" xml:space="preserve">
+    <value>Закрийте цей екран</value>
+  </data>
+  <data name="mnuCopyToClipboard" xml:space="preserve">
+    <value>Копіювати в буфер обміну</value>
+  </data>
+  <data name="mnuCopyImageToClipboard" xml:space="preserve">
+    <value>Копіювати зображення в буфер обміну</value>
+  </data>
+  <data name="mnuDeinterlace" xml:space="preserve">
+    <value>Деінтерлейсинг</value>
+  </data>
+  <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
+    <value>Видалити шлях після цієї точки</value>
+  </data>
+  <data name="mnuDrawingTrackingStart" xml:space="preserve">
+    <value>Почати відстеження</value>
+  </data>
+  <data name="mnuDrawingTrackingStop" xml:space="preserve">
+    <value>Зупинити відстеження</value>
+  </data>
+  <data name="mnuTwoPlayers" xml:space="preserve">
+    <value>Два екрани відтворення</value>
+  </data>
+  <data name="mnuFormat" xml:space="preserve">
+    <value>Співвідношення сторін</value>
+  </data>
+  <data name="mnuOpenVideo" xml:space="preserve">
+    <value>Відкрити відео…</value>
+  </data>
+  <data name="mnuOpenReplayWatcher" xml:space="preserve">
+    <value>Відкрити спостерігач папки відтворення…</value>
+  </data>
+  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
+    <value>Відкрити як спостерігач папки повторів…</value>
+  </data>
+  <data name="mnuSwapScreens" xml:space="preserve">
+    <value>Поміняти екрани</value>
+  </data>
+  <data name="mnuThumbnailForget" xml:space="preserve">
+    <value>Забути спеціальні налаштування</value>
+  </data>
+  <data name="mnuThumbnailLocate" xml:space="preserve">
+    <value>Розташування файлу у провіднику Windows</value>
+  </data>
+  <data name="mnuToggleCommonCtrls" xml:space="preserve">
+    <value>Показати/сховати загальні елементи керування</value>
+  </data>
+  <data name="mnuCoordinateSystem" xml:space="preserve">
+    <value>Система координат</value>
+  </data>
+  <data name="mnuCoordinateSystemHide" xml:space="preserve">
+    <value>Приховати</value>
+  </data>
+  <data name="mnuPolyline_FinishAtPrevious" xml:space="preserve">
+    <value>Закінчити ламану лінію на попередній точці</value>
+  </data>
+  <data name="mnuPolyline_CloseMenu" xml:space="preserve">
+    <value>Закрийте це меню</value>
+  </data>
+  <data name="mnuPasteDrawing" xml:space="preserve">
+    <value>Вставити креслення</value>
+  </data>
+  <data name="mnuVisibilityCustom" xml:space="preserve">
+    <value>Спеціальне згасання</value>
+  </data>
+  <data name="mnuVisibilityConfigure" xml:space="preserve">
+    <value>Налаштувати власне згасання</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>Ім'я</value>
+  </data>
+  <data name="ToolTip_StartRecording" xml:space="preserve">
+    <value>Почати запис відео</value>
+  </data>
+  <data name="ToolTip_StopRecording" xml:space="preserve">
+    <value>Зупинити запис відео</value>
+  </data>
+  <data name="ToolTip_StartCamera" xml:space="preserve">
+    <value>Запустити камеру</value>
+  </data>
+  <data name="mnuExport_Video_SideBySide" xml:space="preserve">
+    <value>Поруч…</value>
+  </data>
+  <data name="mnuMeasure_Labels_Menu" xml:space="preserve">
+    <value>Мітка</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowThirds" xml:space="preserve">
+    <value>Показати сітку 3x3</value>
+  </data>
+  <data name="Cadence" xml:space="preserve">
+    <value>Каденція</value>
+  </data>
+  <data name="DrawingCounter_AddBeat" xml:space="preserve">
+    <value>Додати коливання</value>
+  </data>
+  <data name="DrawingCounter_DeleteBeat" xml:space="preserve">
+    <value>Видалити коливання</value>
+  </data>
+  <data name="DrawingCounter_DeleteAllBeats" xml:space="preserve">
+    <value>Видалити всі коливання</value>
+  </data>
+  <data name="DrawingCounter_ZeroBasedNumbering" xml:space="preserve">
+    <value>Нумерація від нуля</value>
+  </data>
+  <data name="DrawingCounter_Half" xml:space="preserve">
+    <value>Половина</value>
+  </data>
+  <data name="FormCalibratePlane_DecimalPlaces" xml:space="preserve">
+    <value>Десяткові знаки</value>
+  </data>
+  <data name="FormCalibrationValidation_CalibrationValidation" xml:space="preserve">
+    <value>Перевірка калібрування</value>
+  </data>
+  <data name="FormCalibrationValidation_Camera" xml:space="preserve">
+    <value>Камера</value>
+  </data>
+  <data name="FormCalibrationValidation_Found" xml:space="preserve">
+    <value>знайдено</value>
+  </data>
+  <data name="FormCalibrationValidation_Missing" xml:space="preserve">
+    <value>відсутнє</value>
+  </data>
+  <data name="FormCalibrationValidation_ValidationMode" xml:space="preserve">
+    <value>Режим перевірки</value>
+  </data>
+  <data name="FormCalibrationValidation_Fix1D" xml:space="preserve">
+    <value>Змінити одну вісь і перевірити дві інші осі</value>
+  </data>
+  <data name="FormCalibrationValidation_Compute3D" xml:space="preserve">
+    <value>3D позиції, обчислені з двох видів</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_ManualEstimation" xml:space="preserve">
+    <value>Оцінка вручну…</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_None" xml:space="preserve">
+    <value>Нічого</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_CalibrationValidation" xml:space="preserve">
+    <value>Перевірка калібрування…</value>
+  </data>
+  <data name="FormBackgroundColor_BackgroundProperties" xml:space="preserve">
+    <value>Властивості фону</value>
+  </data>
+  <data name="FormCalibrationValidation_CameraPositionXYZ" xml:space="preserve">
+    <value>Положення камери ({0}): X:{1}, Y:{2}, Z:{3}</value>
+  </data>
+  <data name="FormCalibrationValidation_DistanceToOrigin" xml:space="preserve">
+    <value>Відстань до місця відправлення ({0}): {1}</value>
+  </data>
+  <data name="FormTimeSections_Start" xml:space="preserve">
+    <value>Старт</value>
+  </data>
+  <data name="FormTimeSections_End" xml:space="preserve">
+    <value>Кінець</value>
+  </data>
+  <data name="FormTimeSections_Duration" xml:space="preserve">
+    <value>Тривалість</value>
+  </data>
+  <data name="FormTimeSections_Cumulative" xml:space="preserve">
+    <value>Кумулятивний</value>
+  </data>
+  <data name="FormTimeSections_Tag" xml:space="preserve">
+    <value>Тег</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_LensCalibrationMode" xml:space="preserve">
+    <value>Режим калібрування об'єктива</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ImportMask" xml:space="preserve">
+    <value>Імпорт маски</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowPoints" xml:space="preserve">
+    <value>Показати точки</value>
+  </data>
+  <data name="VideoFilterCameraMotion_FindFeatures" xml:space="preserve">
+    <value>Знайти особливості</value>
+  </data>
+  <data name="VideoFilterCameraMotion_MatchFeatures" xml:space="preserve">
+    <value>Збіг особливостей</value>
+  </data>
+  <data name="VideoFilterCameraMotion_FindHomographies" xml:space="preserve">
+    <value>Знайти омографії</value>
+  </data>
+  <data name="VideoFilterCameraMotion_BundleAdjustment" xml:space="preserve">
+    <value>Регулювання пучка</value>
+  </data>
+  <data name="VideoFilterCameraMotion_BuildTracks" xml:space="preserve">
+    <value>Побудова доріжок</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowTracks" xml:space="preserve">
+    <value>Показати треки</value>
+  </data>
+  <data name="FormConfigureLensCalibration_ConfigureLensCalibration" xml:space="preserve">
+    <value>Налаштувати калібрування об'єктива</value>
+  </data>
+  <data name="FormConfigureLensCalibration_MaxImages" xml:space="preserve">
+    <value>Максимальна кількість зображень:</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowMotionField" xml:space="preserve">
+    <value>Показати поле руху</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowFrameTransforms" xml:space="preserve">
+    <value>Показати кадрові трансформації</value>
+  </data>
+  <data name="VideoFilterLensCalibration_CopyCalibrationData" xml:space="preserve">
+    <value>Копіювати дані калібрування</value>
+  </data>
+  <data name="VideoFilterLensCalibration_SaveCalibrationData" xml:space="preserve">
+    <value>Зберегти дані калібрування…</value>
+  </data>
+  <data name="VideoFilterLensCalibration_ShowDetectedCorners" xml:space="preserve">
+    <value>Показати виявлені кути</value>
+  </data>
+  <data name="VideoFilterLensCalibration_ShowReprojectedCorners" xml:space="preserve">
+    <value>Показати повторно спроектовані кути</value>
+  </data>
+  <data name="Generic_Color" xml:space="preserve">
+    <value>Колір</value>
+  </data>
+  <data name="FormConfigureCameraMotion_ConfigureCameraMotionEstimation" xml:space="preserve">
+    <value>Налаштування оцінки руху камери</value>
+  </data>
+  <data name="FormConfigureCameraMotion_FeaturesPerFrame" xml:space="preserve">
+    <value>Особливості кадру:</value>
+  </data>
+  <data name="VideoFilterCameraMotion_DeleteTrackingData" xml:space="preserve">
+    <value>Видалити дані відстеження</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowInliers" xml:space="preserve">
+    <value>Показати вкладки</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowOutliers" xml:space="preserve">
+    <value>Показати викиди</value>
+  </data>
+  <data name="FormConfigureLensCalibration_PatternSize" xml:space="preserve">
+    <value>Розмір моделі:</value>
+  </data>
+  <data name="FormConfigureLensCalibration_MaxIterations" xml:space="preserve">
+    <value>Максимальна кількість ітерацій:</value>
+  </data>
+  <data name="VideoFilterLensCalibration_DeleteCalibrationData" xml:space="preserve">
+    <value>Видалення даних калібрування</value>
+  </data>
+  <data name="FormCalibratePlane_OffsetAppliedToCoordinates" xml:space="preserve">
+    <value>Зміщення, застосоване до координат ({0})</value>
+  </data>
+  <data name="StyleElement_FontSize_LabelSize" xml:space="preserve">
+    <value>Розмір мітки</value>
+  </data>
+  <data name="StyleElement_Color_BorderColor" xml:space="preserve">
+    <value>Колір рамки</value>
+  </data>
+  <data name="StyleElement_Color_LabelColor" xml:space="preserve">
+    <value>Колір мітки</value>
+  </data>
+  <data name="FormConfigureExportVideo_UseCurrentPlaybackSpeed" xml:space="preserve">
+    <value>Використовувати поточну швидкість відтворення: {0:0.00}</value>
+  </data>
+  <data name="filterName_CameraMotion" xml:space="preserve">
+    <value>Оцінка руху камери</value>
+  </data>
+  <data name="Generic_Apply" xml:space="preserve">
+    <value>Застосувати</value>
+  </data>
+  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+    <value>Ім'я</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Дата</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>Низхідний</value>
+  </data>
+  <data name="DataAnalysis_SaveToFile" xml:space="preserve">
+    <value>Зберегти в файл</value>
+  </data>
+  <data name="dlgTimebase_lblCapture" xml:space="preserve">
+    <value>Частота кадрів захоплення:</value>
+  </data>
+  <data name="dlgTimebase_GroupCapture" xml:space="preserve">
+    <value>Високошвидкісна камера</value>
+  </data>
+  <data name="dlgTimebase_InfoCapture" xml:space="preserve">
+    <value>Цей параметр визначає різницю між швидкістю відео та реальним часом. Це впливає на мітки, що містять вимірювання часу та кінематики. Використовуйте його, коли відео було знято у високошвидкісному режимі. </value>
+  </data>
+  <data name="dlgTimebase_lblUserFPS" xml:space="preserve">
+    <value>Частота кадрів відео:</value>
+  </data>
+  <data name="dlgTimebase_InfoUser" xml:space="preserve">
+    <value>Цей параметр визначає еталонну частоту кадрів, яку використовує Kinovea для відтворення відео. Використовуйте його, якщо відео містить неправильну частоту кадрів або Kinovea не може його прочитати. </value>
+  </data>
+  <data name="dlgCalibrateLine_CoordinateSystemAlignment" xml:space="preserve">
+    <value>Вирівнювання системи координат:</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisHorizontal" xml:space="preserve">
+    <value>Лінія визначає горизонтальну вісь</value>
+  </data>
+  <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve">
+    <value>Тривалість кожного ключового зображення: {0} соті секунди.</value>
+  </data>
+  <data name="DrawingCounter_Double" xml:space="preserve">
+    <value>Подвійний</value>
+  </data>
+  <data name="DrawingCircle_Filled" xml:space="preserve">
+    <value>Заповнений</value>
+  </data>
+  <data name="DrawingCrossMark_Dot" xml:space="preserve">
+    <value>Крапка</value>
+  </data>
+  <data name="DrawingPlane_ShowVerticalLine" xml:space="preserve">
+    <value>Показати вертикальну лінію</value>
+  </data>
+  <data name="DrawingPlane_ShowHorizontalLine" xml:space="preserve">
+    <value>Показати горизонтальну лінію</value>
+  </data>
+  <data name="DrawingText_Background" xml:space="preserve">
+    <value>Фон</value>
+  </data>
+  <data name="DrawingCoordinateSystem_AlignToCalibrationObject" xml:space="preserve">
+    <value>Вирівняти за об’єктом калібрування</value>
+  </data>
+  <data name="PlayerScreenUserInterface_Background" xml:space="preserve">
+    <value>Фон…</value>
+  </data>
+  <data name="FormCalibratePlane_FlipYAxis" xml:space="preserve">
+    <value>Відобразити по осі Y</value>
+  </data>
+  <data name="FormCalibratePlane_FlipXAxis" xml:space="preserve">
+    <value>Відобразити по осі X</value>
+  </data>
+  <data name="FormCalibratePlane_Rotate90" xml:space="preserve">
+    <value>Поворот на 90°</value>
+  </data>
+  <data name="FormCalibrationValidation_LensCalibration" xml:space="preserve">
+    <value>Калібрування об'єктива: {0}</value>
+  </data>
+  <data name="FormCalibrationValidation_PlaneCalibration" xml:space="preserve">
+    <value>Калібрування площини: {0}</value>
+  </data>
+  <data name="FormCalibrationValidation_ControlPoints" xml:space="preserve">
+    <value>Контрольні точки</value>
+  </data>
+  <data name="FormCalibrationValidation_Fix3D" xml:space="preserve">
+    <value>Змінити усі осі та перевірити розташування маркера на зображенні</value>
+  </data>
+  <data name="FormCalibratePlane_Coordinates" xml:space="preserve">
+    <value>Координати</value>
+  </data>
+  <data name="VideoFilterCameraMotion_RunCameraMotionEstimation" xml:space="preserve">
+    <value>Запуск оцінки руху камери</value>
+  </data>
+  <data name="FormConfigureCameraMotion_FeatureType" xml:space="preserve">
+    <value>Тип функції:</value>
+  </data>
+  <data name="Generic_Close" xml:space="preserve">
+    <value>Закрити</value>
+  </data>
+  <data name="mnuDeleteDrawing" xml:space="preserve">
+    <value>Видалити</value>
+  </data>
+  <data name="mnuTwoCaptures" xml:space="preserve">
+    <value>Два екрани захоплення</value>
+  </data>
+  <data name="mnuTwoMixed" xml:space="preserve">
+    <value>Один екран захоплення та один екран відтворення</value>
+  </data>
+  <data name="LengthUnit_Centimeters" xml:space="preserve">
+    <value>Сантиметри</value>
+  </data>
+  <data name="LoadMovie_CodecNotOpened" xml:space="preserve">
+    <value>Не вдається відкрити файл: проблема під час ініціалізації декодера.</value>
+  </data>
+  <data name="LoadMovie_Error" xml:space="preserve">
+    <value>Kinovea – помилка завантаження.</value>
+  </data>
+  <data name="LengthUnit_Meters" xml:space="preserve">
+    <value>Метри</value>
+  </data>
+  <data name="LoadMovie_CodecNotSupported" xml:space="preserve">
+    <value>Не вдалося відкрити файл: тип файлу не підтримується.</value>
+  </data>
+  <data name="LoadMovie_InconsistantMovieError" xml:space="preserve">
+    <value>Не вдалося відкрити файл: виявлено невідповідності. Будь ласка, перевірте процес кодування.</value>
+  </data>
+  <data name="LockSelectionLock" xml:space="preserve">
+    <value>Фіксація межі робочої зони</value>
+  </data>
+  <data name="mnuCalibrate" xml:space="preserve">
+    <value>Калібрування...</value>
+  </data>
+  <data name="mnuMarkTimeAsOriginClock" xml:space="preserve">
+    <value>Позначити поточний час як початок часу для цього годинника</value>
+  </data>
+  <data name="VideoFilterLensCalibration_RunLensCalibration" xml:space="preserve">
+    <value>Запуск калібрування об'єктива</value>
+  </data>
+  <data name="mnuThumbnailDelete" xml:space="preserve">
+    <value>Видалити</value>
+  </data>
+  <data name="mnuThumbnailRename" xml:space="preserve">
+    <value>Перейменувати</value>
+  </data>
+  <data name="mnuTrackTrajectory" xml:space="preserve">
+    <value>Промальовка шляху</value>
+  </data>
+  <data name="mnuPolyline_FinishHere" xml:space="preserve">
+    <value>Закінчити ламану лінію тут</value>
+  </data>
+  <data name="mnuCutDrawing" xml:space="preserve">
+    <value>Вирізати креслення</value>
+  </data>
+  <data name="mnuCopyDrawing" xml:space="preserve">
+    <value>Копіювати креслення</value>
+  </data>
+  <data name="mnuSetStyleAsDefault" xml:space="preserve">
+    <value>Установити стиль за замовчуванням</value>
+  </data>
+  <data name="mnuVisibilityDefault" xml:space="preserve">
+    <value>Згасання за замовчуванням</value>
+  </data>
+  <data name="ToolTip_PauseCamera" xml:space="preserve">
+    <value>Призупинити камеру</value>
+  </data>
+  <data name="filterName_LensCalibration" xml:space="preserve">
+    <value>Калібрування об'єктива</value>
+  </data>
+  <data name="DataAnalysis_ExportGraph" xml:space="preserve">
+    <value>Експерт графіки</value>
+  </data>
+  <data name="DataAnalysis_Pixels" xml:space="preserve">
+    <value>пікселі</value>
+  </data>
+  <data name="DataAnalysis_PagePlot" xml:space="preserve">
+    <value>Сюжет</value>
+  </data>
+  <data name="DataAnalysis_Labels" xml:space="preserve">
+    <value>Позначення</value>
+  </data>
+  <data name="DataAnalysis_XaxisDefaultPoints" xml:space="preserve">
+    <value>Вісь X</value>
+  </data>
+  <data name="DataAnalysis_YaxisLabel" xml:space="preserve">
+    <value>Вісь Y:</value>
+  </data>
+  <data name="DataAnalysis_YaxisDefaultPoints" xml:space="preserve">
+    <value>Вісь Y</value>
+  </data>
+  <data name="DataAnalysis_TimeAxisMilliseconds" xml:space="preserve">
+    <value>Час (ms)</value>
+  </data>
+  <data name="btnSync_ToolTip" xml:space="preserve">
+    <value>Синхронізувати відео на поточних кадрах</value>
+  </data>
+  <data name="buttonGotoFirst_ToolTip" xml:space="preserve">
+    <value>Повернутись на початок обох відео</value>
+  </data>
+  <data name="buttonGotoLast_ToolTip" xml:space="preserve">
+    <value>Перейти на кінець обох відео</value>
+  </data>
+  <data name="buttonGotoNext_ToolTip" xml:space="preserve">
+    <value>Перейти до наступного кадру для обох відео</value>
+  </data>
+  <data name="buttonGotoPrevious_ToolTip" xml:space="preserve">
+    <value>Перейти до попереднього кадру для обох відео</value>
+  </data>
+  <data name="buttonPlay_ToolTip" xml:space="preserve">
+    <value>Відтворити або призупинити обидва відео</value>
+  </data>
+  <data name="CommandAddDrawing_FriendlyName" xml:space="preserve">
+    <value>Додати креслення</value>
+  </data>
+  <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
+    <value>Змінити креслення</value>
+  </data>
+  <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve">
+    <value>Видалити креслення</value>
+  </data>
+  <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve">
+    <value>Видалити ключовий кадр</value>
+  </data>
+  <data name="CommandExportVideo_FriendlyName" xml:space="preserve">
+    <value>Експорт відео</value>
+  </data>
+  <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
+    <value>Точкова діаграма</value>
+  </data>
+  <data name="DataAnalysis_LinearKinematics" xml:space="preserve">
+    <value>Лінійна кінематика</value>
+  </data>
+  <data name="DataAnalysis_AngularKinematics" xml:space="preserve">
+    <value>Кутова кінематика</value>
+  </data>
+  <data name="DataAnalysis_AngleAngleDiagrams" xml:space="preserve">
+    <value>Діаграма кут-кут</value>
+  </data>
+  <data name="DataAnalysis_Title" xml:space="preserve">
+    <value>Назва:</value>
+  </data>
+  <data name="DataAnalysis_XaxisLabel" xml:space="preserve">
+    <value>Вісь X:</value>
+  </data>
+  <data name="DataAnalysis_CalibrationPlane" xml:space="preserve">
+    <value>Калібрувальна площина</value>
+  </data>
+  <data name="DataAnalysis_ExportData" xml:space="preserve">
+    <value>Експорт даних</value>
+  </data>
+  <data name="DataAnalysis_DataSource" xml:space="preserve">
+    <value>Джерело даних</value>
+  </data>
+  <data name="DataAnalysis_DataLabel" xml:space="preserve">
+    <value>Дані :</value>
+  </data>
+  <data name="DataAnalysis_TimeModel" xml:space="preserve">
+    <value>Час :</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Absolute" xml:space="preserve">
+    <value>Повний</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Relative" xml:space="preserve">
+    <value>Відносна</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Normalized" xml:space="preserve">
+    <value>Унормований</value>
+  </data>
+  <data name="DataAnalysis_AngularPosition" xml:space="preserve">
+    <value>Кут</value>
+  </data>
+  <data name="DataAnalysis_TotalAngularDisplacement" xml:space="preserve">
+    <value>Загальне зміщення</value>
+  </data>
+  <data name="DataAnalysis_TangentialVelocity" xml:space="preserve">
+    <value>Тангенціальна швидкість</value>
+  </data>
+  <data name="DataAnalysis_TangentialAcceleration" xml:space="preserve">
+    <value>Тангенціальне прискорення</value>
+  </data>
+  <data name="DataAnalysis_ResultantLinearAcceleration" xml:space="preserve">
+    <value>Результативне прискорення</value>
+  </data>
+  <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve">
+    <value>Скинути колірний профіль за замовчуванням</value>
+  </data>
+  <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve">
+    <value>Завантажити колірний профіль</value>
+  </data>
+  <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve">
+    <value>Зберегти колірний профіль</value>
+  </data>
+  <data name="dlgColorProfile_Title" xml:space="preserve">
+    <value>Колірний профіль...</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalVelocity" xml:space="preserve">
+    <value>Горизонтальна швидкість</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Acceleration" xml:space="preserve">
+    <value>Прискорення</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalAcceleration" xml:space="preserve">
+    <value>Вертикальне прискорення</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
+    <value>Горизонтальне прискорення</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
+    <value>Кутова швидкість</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularAcceleration" xml:space="preserve">
+    <value>Кутове прискорення</value>
+  </data>
+  <data name="dlgCameraCalibration_lblSensorWidth" xml:space="preserve">
+    <value>Ширина датчика (mm):</value>
+  </data>
+  <data name="dlgCameraCalibration_lblFocalLength" xml:space="preserve">
+    <value>Фокальна відстань (mm):</value>
+  </data>
+  <data name="DrawingName_Arrow" xml:space="preserve">
+    <value>Стрілка</value>
+  </data>
+  <data name="dlgSaveAnalysisTitle" xml:space="preserve">
+    <value>Зберегти анотації</value>
+  </data>
+  <data name="dlgCameraCalibration_Title" xml:space="preserve">
+    <value>Калібрування камери</value>
+  </data>
+  <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve">
+    <value>Коефіцієнти спотворення</value>
+  </data>
+  <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
+    <value>Внутрішні елементи камери</value>
+  </data>
+  <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
+    <value>Завантажити профіль калібрування камери</value>
+  </data>
+  <data name="dlgCameraCalibration_SaveDialogTitle" xml:space="preserve">
+    <value>Зберегти профіль калібрування камери</value>
+  </data>
+  <data name="DrawingName_ArrowCurve" xml:space="preserve">
+    <value>Стрілка – Крива</value>
+  </data>
+  <data name="DrawingName_ArrowPolylineSquiggly" xml:space="preserve">
+    <value>Стрілка – Хвиляста ламана лінія</value>
+  </data>
+  <data name="DrawingName_ArrowSquiggly" xml:space="preserve">
+    <value>Стрілка - Звивиста</value>
+  </data>
+  <data name="DrawingName_ArrowPolyline" xml:space="preserve">
+    <value>Стрілка – Ламана лінія</value>
+  </data>
+  <data name="DrawingName_ArrowPolylineDash" xml:space="preserve">
+    <value>Стрілка – Ламана пунктир</value>
+  </data>
+  <data name="DrawingName_ArrowDash" xml:space="preserve">
+    <value>Стрілка – Пунктир</value>
+  </data>
+  <data name="DrawingName_CSVL" xml:space="preserve">
+    <value>Центральна крижова вертикаль</value>
+  </data>
+  <data name="DrawingName_Polyline" xml:space="preserve">
+    <value>Ламана лінія</value>
+  </data>
+  <data name="DrawingName_DistortionGrid" xml:space="preserve">
+    <value>Сітка спотворення</value>
+  </data>
+  <data name="DrawingName_AngleToHorizontal" xml:space="preserve">
+    <value>Кут до горизонталі</value>
+  </data>
+  <data name="DrawingName_DistanceHorizontal" xml:space="preserve">
+    <value>Дистанція (горизонталь)</value>
+  </data>
+  <data name="DrawingName_HumanModel" xml:space="preserve">
+    <value>Модель людини</value>
+  </data>
+  <data name="DrawingName_Goniometer" xml:space="preserve">
+    <value>Гоніометр</value>
+  </data>
+  <data name="DrawingName_Posture" xml:space="preserve">
+    <value>Положення</value>
+  </data>
+  <data name="DrawingName_Bikefit" xml:space="preserve">
+    <value>Велосипед</value>
+  </data>
+  <data name="DrawingName_Genu" xml:space="preserve">
+    <value>Коліно</value>
+  </data>
+  <data name="DrawingName_Archery" xml:space="preserve">
+    <value>Лук</value>
+  </data>
+  <data name="DrawingName_AngleToVertical" xml:space="preserve">
+    <value>Кут до вертикалі</value>
+  </data>
+  <data name="DrawingName_HumanModel2" xml:space="preserve">
+    <value>Модель людини (2)</value>
+  </data>
+  <data name="DrawingName_TestGrid" xml:space="preserve">
+    <value>Сітка тестування камери</value>
+  </data>
+  <data name="DrawingName_Grid" xml:space="preserve">
+    <value>Сітка</value>
+  </data>
+  <data name="DrawingName_PerspectiveGrid" xml:space="preserve">
+    <value>Сітка перспективи</value>
+  </data>
+  <data name="DrawingName_Rectangle" xml:space="preserve">
+    <value>Прямокутник</value>
+  </data>
+  <data name="DrawingName_Trajectory" xml:space="preserve">
+    <value>Траекторія</value>
+  </data>
+  <data name="DrawingName_Curve" xml:space="preserve">
+    <value>Крива</value>
+  </data>
+  <data name="DrawingName_Clock" xml:space="preserve">
+    <value>Годинник</value>
+  </data>
+  <data name="Error_Capture_FileExists_Title" xml:space="preserve">
+    <value>Перезапис файлу</value>
+  </data>
+  <data name="Error_Capture_FileExists_Text" xml:space="preserve">
+    <value>Файл {0} вже існує.\n Бажаєте його замінити?</value>
+  </data>
+  <data name="Error_Capture_InvalidFile_Title" xml:space="preserve">
+    <value>Недійсне ім'я файлу</value>
+  </data>
+  <data name="Error_Capture_InvalidFile_Text" xml:space="preserve">
+    <value>Ім'я файлу містить неприпустимі символи.\n Ім'я файлу не може містити жоден із таких символів:\n \ / : * ? " &lt; &gt;</value>
+  </data>
+  <data name="Error_Capture_DirectoryNotCreated_Title" xml:space="preserve">
+    <value>Каталог не створений</value>
+  </data>
+  <data name="Error_Capture_DirectoryNotCreated_Text" xml:space="preserve">
+    <value>Не вдалося створити каталог захоплення.\nПеревірте, чи він вказує на дійсне місце зберігання.</value>
+  </data>
+  <data name="Error_SaveMovie_FileError" xml:space="preserve">
+    <value>Не вдається записати файл.\nПереконайтеся, що у вас є права на запис у цільовій папці та що файл наразі не використовується.</value>
+  </data>
+  <data name="Error_SaveMovie_Title" xml:space="preserve">
+    <value>Kinovea - Не вдалося зберегти відео. </value>
+  </data>
+  <data name="Error_SaveMovie_LowLevelError" xml:space="preserve">
+    <value>Не вдалося зберегти відео.\nПовторіть спробу в іншому форматі.</value>
+  </data>
+  <data name="FormCameraAlias_Title" xml:space="preserve">
+    <value>Перейменувати камеру</value>
+  </data>
+  <data name="FormCameraAlias_Alias" xml:space="preserve">
+    <value>Іменування:</value>
+  </data>
+  <data name="FormCameraAlias_Icon" xml:space="preserve">
+    <value>Значок:</value>
+  </data>
+  <data name="Generic_Configuration" xml:space="preserve">
+    <value>Конфігурація</value>
+  </data>
+  <data name="Generic_GridDivisionsPicker" xml:space="preserve">
+    <value>Поділ:</value>
+  </data>
+  <data name="Generic_ConfigurationElipsis" xml:space="preserve">
+    <value>Конфігурація...</value>
+  </data>
+  <data name="Generic_Calibration" xml:space="preserve">
+    <value>Калібрування</value>
+  </data>
+  <data name="Generic_FontSizePicker" xml:space="preserve">
+    <value>Розмір шрифту:</value>
+  </data>
+  <data name="Generic_LineSizePicker" xml:space="preserve">
+    <value>Ширина:</value>
+  </data>
+  <data name="Generic_Opacity" xml:space="preserve">
+    <value>Непрозорість</value>
+  </data>
+  <data name="Generic_Visibility" xml:space="preserve">
+    <value>Видимість</value>
+  </data>
+  <data name="Generic_Options" xml:space="preserve">
+    <value>Опції</value>
+  </data>
+  <data name="Generic_PenSizePicker" xml:space="preserve">
+    <value>Розмір:</value>
+  </data>
+  <data name="Generic_Save" xml:space="preserve">
+    <value>Зберегти</value>
+  </data>
+  <data name="Generic_SaveKVA" xml:space="preserve">
+    <value>Зберегти анотації</value>
+  </data>
+  <data name="Generic_SaveKVAAs" xml:space="preserve">
+    <value>Зберегти анотації як…</value>
+  </data>
+  <data name="Generic_ExportVideo" xml:space="preserve">
+    <value>Експорт відео…</value>
+  </data>
+  <data name="Generic_SaveImage" xml:space="preserve">
+    <value>Зберегти зображення</value>
+  </data>
+  <data name="Generic_Open" xml:space="preserve">
+    <value>Відкрити</value>
+  </data>
+  <data name="Generic_TrackShapePicker" xml:space="preserve">
+    <value>Вигляд лінії:</value>
+  </data>
+  <data name="Generic_Image" xml:space="preserve">
+    <value>Зображення</value>
+  </data>
+  <data name="Generic_Video" xml:space="preserve">
+    <value>Відео</value>
+  </data>
+  <data name="Generic_File" xml:space="preserve">
+    <value>Файл</value>
+  </data>
+  <data name="Generic_Import" xml:space="preserve">
+    <value>Імпорт…</value>
+  </data>
+  <data name="Generic_Restore" xml:space="preserve">
+    <value>Відновити за замовчуванням</value>
+  </data>
+  <data name="Generic_Quit" xml:space="preserve">
+    <value>Вийти</value>
+  </data>
+  <data name="Generic_Cut" xml:space="preserve">
+    <value>Вирізати</value>
+  </data>
+  <data name="Generic_Copy" xml:space="preserve">
+    <value>Копіювати</value>
+  </data>
+  <data name="Generic_Paste" xml:space="preserve">
+    <value>Вставити</value>
+  </data>
+  <data name="Generic_PlayPause" xml:space="preserve">
+    <value>Відтворення | Пауза</value>
+  </data>
+  <data name="FileProperty_HasKva" xml:space="preserve">
+    <value>Kva файл</value>
+  </data>
+  <data name="FileFilter_AllSupported" xml:space="preserve">
+    <value>Усі підтримувані формати</value>
+  </data>
+  <data name="FileFilter_All" xml:space="preserve">
+    <value>Усі файли</value>
+  </data>
+  <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve">
+    <value>Анотації змінено.\nЗберегти їх?</value>
+  </data>
+  <data name="FileProperty_Size" xml:space="preserve">
+    <value>Розмір</value>
+  </data>
+  <data name="FileProperty_Framerate" xml:space="preserve">
+    <value>Частота кадрів</value>
+  </data>
+  <data name="FileProperty_Duration" xml:space="preserve">
+    <value>Тривалість</value>
+  </data>
+  <data name="FileProperty_CreationTime" xml:space="preserve">
+    <value>Час відтворення</value>
+  </data>
+  <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve">
+    <value>Зберегти зміни</value>
+  </data>
+  <data name="lblDelay_Text" xml:space="preserve">
+    <value>Затримка (s):</value>
+  </data>
+  <data name="lblInfo_Text" xml:space="preserve">
+    <value>Спільний контроль:</value>
+  </data>
+  <data name="lblSelDuration_Text" xml:space="preserve">
+    <value>Тривалість</value>
+  </data>
+  <data name="lblSelStartSelection_Text" xml:space="preserve">
+    <value>Старт</value>
+  </data>
+  <data name="lblTimeCode_Text" xml:space="preserve">
+    <value>Позиція</value>
+  </data>
+  <data name="LengthUnit_Millimeters" xml:space="preserve">
+    <value>Міліметри</value>
+  </data>
+  <data name="mnuFormatAuto" xml:space="preserve">
+    <value>Автоматичне визначення</value>
+  </data>
+  <data name="mnuFormatForce43" xml:space="preserve">
+    <value>Співвідношення 4:3</value>
+  </data>
+  <data name="mnuFormatForce169" xml:space="preserve">
+    <value>Співвідношення 16:9</value>
+  </data>
+  <data name="mnuRotation" xml:space="preserve">
+    <value>Обертання</value>
+  </data>
+  <data name="mnuRotation0" xml:space="preserve">
+    <value>Без обертання</value>
+  </data>
+  <data name="mnuRotation90" xml:space="preserve">
+    <value>90° за годинниковою стрілкою</value>
+  </data>
+  <data name="mnuRotation180" xml:space="preserve">
+    <value>180°</value>
+  </data>
+  <data name="mnuRotation270" xml:space="preserve">
+    <value>90° проти годинникової стрілки</value>
+  </data>
+  <data name="mnuGotoKeyframe" xml:space="preserve">
+    <value>Перейти до ключового зображення</value>
+  </data>
+  <data name="mnuGridsHide" xml:space="preserve">
+    <value>Приховати</value>
+  </data>
+  <data name="mnuHome" xml:space="preserve">
+    <value>Панель провідника</value>
+  </data>
+  <data name="mnuImportImage" xml:space="preserve">
+    <value>Імпорт зображення…</value>
+  </data>
+  <data name="mnuSignedAngle" xml:space="preserve">
+    <value>Значення кута</value>
+  </data>
+  <data name="mnuCounterClockwise" xml:space="preserve">
+    <value>Проти годинникової стрілки</value>
+  </data>
+  <data name="mnuSupplementaryAngle" xml:space="preserve">
+    <value>Додатковий кут</value>
+  </data>
+  <data name="mnuFlipHorizontally" xml:space="preserve">
+    <value>Відобразити горизонтально</value>
+  </data>
+  <data name="mnuFlipVertically" xml:space="preserve">
+    <value>Відобразити вертикально</value>
+  </data>
+  <data name="mnuLoadAnalysis" xml:space="preserve">
+    <value>Завантажити анотації…</value>
+  </data>
+  <data name="mnuMagnifierDirect" xml:space="preserve">
+    <value>Переключитися на пряме масштабування</value>
+  </data>
+  <data name="mnuMagnifierQuit" xml:space="preserve">
+    <value>Закрити лупу</value>
+  </data>
+  <data name="mnuMirror" xml:space="preserve">
+    <value>Дзеркально</value>
+  </data>
+  <data name="mnuOneCapture" xml:space="preserve">
+    <value>Один екран захоплення</value>
+  </data>
+  <data name="mnuOnePlayer" xml:space="preserve">
+    <value>Один екран відтворення</value>
+  </data>
+  <data name="mnuMarkTimeAsOrigin" xml:space="preserve">
+    <value>Позначити поточний час як початок часу</value>
+  </data>
+  <data name="Toast_StartRecord" xml:space="preserve">
+    <value>Початок запису</value>
+  </data>
+  <data name="Toast_StopRecord" xml:space="preserve">
+    <value>Зупинка запису</value>
+  </data>
+  <data name="Toast_ImageSaved" xml:space="preserve">
+    <value>Зображення збережено</value>
+  </data>
+  <data name="Toast_TriggerArmed" xml:space="preserve">
+    <value>Тригер захоплення активований</value>
+  </data>
+  <data name="mnuPasteImage" xml:space="preserve">
+    <value>Вставити зображення з буфера обміну</value>
+  </data>
+  <data name="mnuShowArrow" xml:space="preserve">
+    <value>Показати стрілку</value>
+  </data>
+  <data name="mnuShowCircleCenter" xml:space="preserve">
+    <value>Показати центр кола</value>
+  </data>
+  <data name="RecentlyUsedColors" xml:space="preserve">
+    <value>Нещодавно використані кольори:</value>
+  </data>
+  <data name="statusEmptyScreen" xml:space="preserve">
+    <value>Порожній</value>
+  </data>
+  <data name="Toast_Pause" xml:space="preserve">
+    <value>Пауза</value>
+  </data>
+  <data name="Toast_TriggerDisarmed" xml:space="preserve">
+    <value>Тригер захоплення вимкнено</value>
+  </data>
+  <data name="Toast_AudioLost" xml:space="preserve">
+    <value>Аудіопристрій втрачено</value>
+  </data>
+  <data name="ToolTip_AddKeyframe" xml:space="preserve">
+    <value>Додайте ключове зображення</value>
+  </data>
+  <data name="ToolTip_Back" xml:space="preserve">
+    <value>Перейти до попереднього кадру</value>
+  </data>
+  <data name="ToolTip_ColorProfile" xml:space="preserve">
+    <value>Колірний профіль</value>
+  </data>
+  <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve">
+    <value>Вимкнути накладання зображень</value>
+  </data>
+  <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve">
+    <value>Увімкнути накладання зображень</value>
+  </data>
+  <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve">
+    <value>Кут</value>
+  </data>
+  <data name="ToolTip_DrawingToolSpotlight" xml:space="preserve">
+    <value>Прожектор</value>
+  </data>
+  <data name="ToolTip_DrawingToolAutonumbers" xml:space="preserve">
+    <value>Автоматична нумерація</value>
+  </data>
+  <data name="ToolTip_First" xml:space="preserve">
+    <value>Перейти до початку</value>
+  </data>
+  <data name="ToolTip_Last" xml:space="preserve">
+    <value>Перейти до кінця</value>
+  </data>
+  <data name="ToolTip_Magnifier" xml:space="preserve">
+    <value>Лупа</value>
+  </data>
+  <data name="ToolTip_Next" xml:space="preserve">
+    <value>Перейти до наступного кадру</value>
+  </data>
+  <data name="ToolTip_Rafale" xml:space="preserve">
+    <value>Зберегти послідовність зображень</value>
+  </data>
+  <data name="ToolTip_DrawingToolChrono" xml:space="preserve">
+    <value>Секундомір</value>
+  </data>
+  <data name="ToolTip_DrawingToolCircle" xml:space="preserve">
+    <value>Коло</value>
+  </data>
+  <data name="ToolTip_DrawingToolCross2D" xml:space="preserve">
+    <value>Маркер</value>
+  </data>
+  <data name="ToolTip_DrawingToolLine2D" xml:space="preserve">
+    <value>Лінія</value>
+  </data>
+  <data name="ToolTip_DrawingToolPencil" xml:space="preserve">
+    <value>Олівець</value>
+  </data>
+  <data name="ToolTip_DrawingToolPointer" xml:space="preserve">
+    <value>Рух</value>
+  </data>
+  <data name="ToolTip_DrawingToolText" xml:space="preserve">
+    <value>Текст</value>
+  </data>
+  <data name="ToolTip_ConfigureCamera" xml:space="preserve">
+    <value>Налаштувати камеру</value>
+  </data>
+  <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
+    <value>Скинути робочу зону</value>
+  </data>
+  <data name="ToolTip_SaveDiaporama" xml:space="preserve">
+    <value>Експортувати слайд-шоу з ключових зображень</value>
+  </data>
+  <data name="ToolTip_SavePausedVideo" xml:space="preserve">
+    <value>Експортувати відео з паузою на кожному ключовому зображенні</value>
+  </data>
+  <data name="ToolTip_SetHandlerLeft" xml:space="preserve">
+    <value>Встановити перший кадр робочої зони на поточний кадр</value>
+  </data>
+  <data name="ToolTip_SetHandlerRight" xml:space="preserve">
+    <value>Встановити останній кадр робочої зони на поточний кадр</value>
+  </data>
+  <data name="ToolTip_ShowComments" xml:space="preserve">
+    <value>Показати коментарі</value>
+  </data>
+  <data name="ToolTip_SideBySideVideo" xml:space="preserve">
+    <value>Зберегти обидва відео в складене відео</value>
+  </data>
+  <data name="ToolTip_SideBySideSnapshot" xml:space="preserve">
+    <value>Зберегти обидва зображення в складене зображення</value>
+  </data>
+  <data name="ToolTip_trkSelection" xml:space="preserve">
+    <value>Встановити робочу зону</value>
+  </data>
+  <data name="FormCrashRecovery_File" xml:space="preserve">
+    <value>Файл</value>
+  </data>
+  <data name="FormCrashRecovery_Date" xml:space="preserve">
+    <value>Дата</value>
+  </data>
+  <data name="FormCrashRecovery_Info" xml:space="preserve">
+    <value>Наступні проекти не були збережені належним чином, але їх можливо відновити:</value>
+  </data>
+  <data name="ToolTip_DisarmTrigger" xml:space="preserve">
+    <value>Зняти тригер захоплення. Поточний стан: активований.</value>
+  </data>
+  <data name="ToolTip_ArmTrigger" xml:space="preserve">
+    <value>Тригер захоплення рукою. Поточний стан: деактивовано.</value>
+  </data>
+  <data name="FormCrashRecovery_Title" xml:space="preserve">
+    <value>Відновлення після збою</value>
+  </data>
+  <data name="FormCrashRecovery_Recover" xml:space="preserve">
+    <value>Відновити</value>
+  </data>
+  <data name="Infobar_Player_Observing" xml:space="preserve">
+    <value>Папка спостереження: {0}</value>
+  </data>
+  <data name="Infobar_Player_StopWatcher" xml:space="preserve">
+    <value>Припинити спостереження за папкою: {0}</value>
+  </data>
+  <data name="Infobar_Player_StartWatcher" xml:space="preserve">
+    <value>Розпочати спостереження за папкою: {0}</value>
+  </data>
+  <data name="dlgCalibratePlane_AveragePixelSize" xml:space="preserve">
+    <value>Середній розмір пікселів: {0}.</value>
+  </data>
+  <data name="dlgCalibratePlane_HelpPlane" xml:space="preserve">
+    <value>Введіть довжину кожної сторони.</value>
+  </data>
+  <data name="filterName_Analysis" xml:space="preserve">
+    <value>Аналіз</value>
+  </data>
+  <data name="filterName_Kinogram" xml:space="preserve">
+    <value>Кінограма</value>
+  </data>
+  <data name="formConfigureExport_ImageSequence" xml:space="preserve">
+    <value>Експорт послідовності зображень</value>
+  </data>
+  <data name="formConfigureExport_SBS" xml:space="preserve">
+    <value>Експорт поруч</value>
+  </data>
+  <data name="formConfigureExport_SBS_Horizontal" xml:space="preserve">
+    <value>Горизонтально</value>
+  </data>
+  <data name="formConfigureExport_SBS_Vertical" xml:space="preserve">
+    <value>Вертикально</value>
+  </data>
+  <data name="formConfigureKinogram_CropSize" xml:space="preserve">
+    <value>Розмір кадрування:</value>
+  </data>
+  <data name="formConfigureKinogram_lblFrameInterval" xml:space="preserve">
+    <value>Інтервал кадрів: {0:0.000} ms</value>
+  </data>
+  <data name="formConfigureKinogram_lblTotal" xml:space="preserve">
+    <value>Кадри: {0}</value>
+  </data>
+  <data name="formConfigureKinogram_Table" xml:space="preserve">
+    <value>Таблиця:</value>
+  </data>
+  <data name="formConfigureKinogram_Title" xml:space="preserve">
+    <value>Налаштувати кінограму</value>
+  </data>
+  <data name="Generic_OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="lblConfig_ImageSize" xml:space="preserve">
+    <value>Розмір зображення:</value>
+  </data>
+  <data name="mnuAction" xml:space="preserve">
+    <value>Дія</value>
+  </data>
+  <data name="mnuAction_Chrono_DeleteSection" xml:space="preserve">
+    <value>Видалити розділ поточного часу</value>
+  </data>
+  <data name="mnuAction_Chrono_DeleteTimes" xml:space="preserve">
+    <value>Видалити всі значення часу</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveNextStart" xml:space="preserve">
+    <value>Перемістити початок наступного розділу на цей кадр</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveCurrentEnd" xml:space="preserve">
+    <value>Перемістити кінець поточного часового відрізку на цей кадр</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveCurrentStart" xml:space="preserve">
+    <value>Перемістити початок поточного часового відрізку на цей кадр</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveNextSplit" xml:space="preserve">
+    <value>Перемістити наступну точку поділу на цей кадр</value>
+  </data>
+  <data name="mnuAction_Chrono_Stop" xml:space="preserve">
+    <value>Зупинити: завершити поточний відрізок часу на цьому кадрі</value>
+  </data>
+  <data name="mnuAction_Kinogram_Interpolate" xml:space="preserve">
+    <value>Інтерполяція пікселів</value>
+  </data>
+  <data name="mnuAction_Chrono_MovePrevEnd" xml:space="preserve">
+    <value>Перемістити кінець попереднього розділу на цей кадр</value>
+  </data>
+  <data name="mnuAction_Chrono_MovePrevSplit" xml:space="preserve">
+    <value>Перемістити попередню точку поділу на цей кадр</value>
+  </data>
+  <data name="mnuAction_Chrono_Split" xml:space="preserve">
+    <value>Розділити: завершити поточний часовий відрізок на цьому кадрі та почати новий</value>
+  </data>
+  <data name="mnuAction_Chrono_Start" xml:space="preserve">
+    <value>Почати новий часовий відрізок на цьому кадрі</value>
+  </data>
+  <data name="mnuExport_Images_Image" xml:space="preserve">
+    <value>Зображення…</value>
+  </data>
+  <data name="mnuExport_Images_Keys" xml:space="preserve">
+    <value>Ключові зображення…</value>
+  </data>
+  <data name="mnuExport_Images_Sequence" xml:space="preserve">
+    <value>Послідовність зображень…</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetAllTiles" xml:space="preserve">
+    <value>Скинути всі пікселі</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetLabelPositions" xml:space="preserve">
+    <value>Скинути положення міток</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetTile" xml:space="preserve">
+    <value>Скинути цей піксель</value>
+  </data>
+  <data name="mnuDemosaic" xml:space="preserve">
+    <value>Демозаїка</value>
+  </data>
+  <data name="mnuDemosaicNone" xml:space="preserve">
+    <value>Нічого</value>
+  </data>
+  <data name="mnuExitFilter" xml:space="preserve">
+    <value>Вихід {0}</value>
+  </data>
+  <data name="mnuExport_Document" xml:space="preserve">
+    <value>Експорт документу</value>
+  </data>
+  <data name="mnuExport_Image" xml:space="preserve">
+    <value>Експорт зображення</value>
+  </data>
+  <data name="mnuExport_Spreadsheet_ChronoCSV" xml:space="preserve">
+    <value>Хронометр CSV…</value>
+  </data>
+  <data name="mnuExport_Spreadsheet_TrajectoryCSV" xml:space="preserve">
+    <value>Траекторія CSV…</value>
+  </data>
+  <data name="mnuExport_Video" xml:space="preserve">
+    <value>Експорт відео</value>
+  </data>
+  <data name="mnuExport_Images_SideBySide" xml:space="preserve">
+    <value>Поруч…</value>
+  </data>
+  <data name="mnuExport_Spreadsheet" xml:space="preserve">
+    <value>Експорт таблиці</value>
+  </data>
+  <data name="mnuExport_Video_Slideshow" xml:space="preserve">
+    <value>Відео слайд-шоу…</value>
+  </data>
+  <data name="mnuExport_Video_Video" xml:space="preserve">
+    <value>Відео…</value>
+  </data>
+  <data name="mnuExport_Video_WithPauses" xml:space="preserve">
+    <value>Відео з паузами…</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Tag" xml:space="preserve">
+    <value>Тег</value>
+  </data>
+  <data name="mnuMeasure_Clock" xml:space="preserve">
+    <value>Годинник</value>
+  </data>
+  <data name="mnuMeasure_FrameNumber" xml:space="preserve">
+    <value>Номер кадру</value>
+  </data>
+  <data name="mnuLensCalibration" xml:space="preserve">
+    <value>Калібрування об'єктива</value>
+  </data>
+  <data name="mnuMagnifierFreeze" xml:space="preserve">
+    <value>Закріпити</value>
+  </data>
+  <data name="mnuMagnifierUnfreeze" xml:space="preserve">
+    <value>Відкріпити</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Cumul" xml:space="preserve">
+    <value>Кумулятивний час</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Menu" xml:space="preserve">
+    <value>Стовпці</value>
+  </data>
+  <data name="mnuMeasure_Name" xml:space="preserve">
+    <value>Ім'я</value>
+  </data>
+  <data name="mnuMeasure_Stopwatch" xml:space="preserve">
+    <value>Секундомір</value>
+  </data>
+  <data name="mnuMeasure_Label_Menu" xml:space="preserve">
+    <value>Мітка</value>
+  </data>
+  <data name="mnuMeasure_Label_None" xml:space="preserve">
+    <value>Нічого</value>
+  </data>
+  <data name="mnuOptions_Chrono_Locked" xml:space="preserve">
+    <value>Заблоковано</value>
+  </data>
+  <data name="mnuOptions_Kinogram_AutoInterpolate" xml:space="preserve">
+    <value>Автоматична інтерполяція</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowTrackLabel" xml:space="preserve">
+    <value>Показати мітку доріжки</value>
+  </data>
+  <data name="mnuOptions_Trajectory_UseKeyImageColors" xml:space="preserve">
+    <value>Використати ключові кольори зображення</value>
+  </data>
+  <data name="mnuProperties" xml:space="preserve">
+    <value>Властивості</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>Висхідний</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Сортувати за</value>
+  </data>
+  <data name="mnuOptions_Kinogram_RightToLeft" xml:space="preserve">
+    <value>Справа наліво</value>
+  </data>
+  <data name="mnuOptions_Kinogram_ShowBorder" xml:space="preserve">
+    <value>Показати межу</value>
+  </data>
+  <data name="mnuOptions_Trajectory_Interactive" xml:space="preserve">
+    <value>Інтерактивна доріжка</value>
+  </data>
+  <data name="mnuOptions_Trajectory_SeeFuture" xml:space="preserve">
+    <value>Попередній огляд</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowKeyImageLabels" xml:space="preserve">
+    <value>Показати ключові мітки зображень</value>
+  </data>
+  <data name="mnuOptions_CoordinateSystem_ShowGraduations" xml:space="preserve">
+    <value>Показати шкалу</value>
+  </data>
+  <data name="mnuOptions_CoordinateSystem_ShowGrid" xml:space="preserve">
+    <value>Показати сітку</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowFrame" xml:space="preserve">
+    <value>Показати кадр</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowHorizontalAxis" xml:space="preserve">
+    <value>Показати горизонтальну вісь</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Розмір</value>
+  </data>
+  <data name="mnuThumbnails" xml:space="preserve">
+    <value>Мініатюри</value>
+  </data>
+  <data name="mnuThumbnail_MoveToCurrentTime" xml:space="preserve">
+    <value>Перейти до поточного часу</value>
+  </data>
+  <data name="mnuTimeCalibration" xml:space="preserve">
+    <value>Калібрування часу…</value>
+  </data>
+  <data name="mnuTimeSections" xml:space="preserve">
+    <value>Часові розрізи</value>
+  </data>
+  <data name="toolTip_Speed" xml:space="preserve">
+    <value>Швидкість</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowVerticalAxis" xml:space="preserve">
+    <value>Показати вертикальну вісь</value>
+  </data>
 </root>
