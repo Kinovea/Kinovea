@@ -239,7 +239,7 @@
     <value>線性運動學</value>
   </data>
   <data name="mnuLensCalibration" xml:space="preserve">
-    <value>鏡頭校正…</value>
+    <value>鏡頭校正</value>
   </data>
   <data name="mnuOptions_Trajectory_Interactive" xml:space="preserve">
     <value>互動式追蹤</value>
@@ -782,7 +782,7 @@
     <value>文件</value>
   </data>
   <data name="Generic_Import" xml:space="preserve">
-    <value>輸入</value>
+    <value>匯入…</value>
   </data>
   <data name="FileProperty_Size" xml:space="preserve">
     <value>尺寸</value>
@@ -1356,5 +1356,77 @@
   </data>
   <data name="formConfigureExport_SBS_Vertical" xml:space="preserve">
     <value>垂直</value>
+  </data>
+  <data name="Cadence" xml:space="preserve">
+    <value>節奏</value>
+  </data>
+  <data name="DrawingCounter_ZeroBasedNumbering" xml:space="preserve">
+    <value>從零開始編號</value>
+  </data>
+  <data name="DrawingCounter_Half" xml:space="preserve">
+    <value>一半</value>
+  </data>
+  <data name="DrawingCoordinateSystem_AlignToCalibrationObject" xml:space="preserve">
+    <value>與校準物件對齊</value>
+  </data>
+  <data name="DrawingPlane_ShowVerticalLine" xml:space="preserve">
+    <value>顯示垂直線</value>
+  </data>
+  <data name="DrawingPlane_ShowHorizontalLine" xml:space="preserve">
+    <value>顯示水平線</value>
+  </data>
+  <data name="DrawingText_Background" xml:space="preserve">
+    <value>背景</value>
+  </data>
+  <data name="PlayerScreenUserInterface_Background" xml:space="preserve">
+    <value>背景…</value>
+  </data>
+  <data name="FormCalibratePlane_FlipXAxis" xml:space="preserve">
+    <value>翻轉 X 軸</value>
+  </data>
+  <data name="FormCalibratePlane_FlipYAxis" xml:space="preserve">
+    <value>翻轉 Y 軸</value>
+  </data>
+  <data name="FormCalibratePlane_Rotate90" xml:space="preserve">
+    <value>旋轉 90°</value>
+  </data>
+  <data name="FormCalibrationValidation_CalibrationValidation" xml:space="preserve">
+    <value>校準驗證</value>
+  </data>
+  <data name="FormCalibrationValidation_Camera" xml:space="preserve">
+    <value>相機</value>
+  </data>
+  <data name="FormCalibrationValidation_ControlPoints" xml:space="preserve">
+    <value>控制點</value>
+  </data>
+  <data name="FormCalibrationValidation_ValidationMode" xml:space="preserve">
+    <value>驗證模式</value>
+  </data>
+  <data name="FormCalibrationValidation_CameraPositionXYZ" xml:space="preserve">
+    <value>相機位置（{0}）：X:{1}、Y:{2}、Z:{3}</value>
+  </data>
+  <data name="FormTimeSections_Start" xml:space="preserve">
+    <value>開始</value>
+  </data>
+  <data name="FormTimeSections_End" xml:space="preserve">
+    <value>結束</value>
+  </data>
+  <data name="FormBackgroundColor_BackgroundProperties" xml:space="preserve">
+    <value>背景屬性</value>
+  </data>
+  <data name="Generic_Color" xml:space="preserve">
+    <value>顏色</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_None" xml:space="preserve">
+    <value>無</value>
+  </data>
+  <data name="FormTimeSections_Duration" xml:space="preserve">
+    <value>持續時間</value>
+  </data>
+  <data name="FormTimeSections_Cumulative" xml:space="preserve">
+    <value>累計</value>
+  </data>
+  <data name="FormTimeSections_Tag" xml:space="preserve">
+    <value>標籤</value>
   </data>
 </root>
