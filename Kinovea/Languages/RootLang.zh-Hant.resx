@@ -505,4 +505,10 @@
   <data name="dlgWorkspace_ConfirmationMessage" xml:space="preserve">
     <value>預設工作區儲存。</value>
   </data>
+  <data name="PreferencePanelDrawings_InitTabExport_IncludeImages" xml:space="preserve">
+    <value>包含影像</value>
+  </data>
+  <data name="mnuDefaultPointer" xml:space="preserve">
+    <value>預設</value>
+  </data>
 </root>
