@@ -269,7 +269,7 @@
     <value>Izbriši</value>
   </data>
   <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve">
-    <value>Brzina smjene kadrova u sekundi (fps):</value>
+    <value>Zamjenski broj kadrova u sekundi (fps):</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
     <value>Retroaktivnost: snima kadrove kada se snimanje zaustavi.</value>
