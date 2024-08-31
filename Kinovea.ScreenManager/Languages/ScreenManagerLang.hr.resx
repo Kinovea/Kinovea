@@ -59,7 +59,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="btnSync_ToolTip" xml:space="preserve">
-    <value>Sinkroniziraj video na trenutnom okviru</value>
+    <value>Sinkroniziraj video na trenutačnim kadrovima</value>
   </data>
   <data name="buttonGotoFirst_ToolTip" xml:space="preserve">
     <value>Nazad na početak za oba video zapisa</value>
@@ -68,10 +68,10 @@
     <value>Prebaci se na kraj za oba video zapisa</value>
   </data>
   <data name="buttonGotoNext_ToolTip" xml:space="preserve">
-    <value>Idi na sljedeći kadar za oba video zapisa</value>
+    <value>Idi na sljedeći kadar za oba videa</value>
   </data>
   <data name="buttonGotoPrevious_ToolTip" xml:space="preserve">
-    <value>Idi na prethodni kadar za oba video zapisa</value>
+    <value>Idi na prethodni kadar za oba videa</value>
   </data>
   <data name="buttonPlay_ToolTip" xml:space="preserve">
     <value>Reproduciraj | zaustavi oba video zapisa</value>
@@ -110,7 +110,7 @@
     <value>Uvijek vidljivo</value>
   </data>
   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve">
-    <value>Poništiti</value>
+    <value>Resetiraj</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve">
     <value>Brzina</value>
@@ -122,7 +122,7 @@
     <value>Linija kalibracije</value>
   </data>
   <data name="dlgCalibratePlane_Title" xml:space="preserve">
-    <value>Ravna kalibracija</value>
+    <value>Kalibracija sloja</value>
   </data>
   <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve">
     <value>Trajanje svake ključne slike: {0} stotinki sekunde.</value>
@@ -161,7 +161,7 @@
     <value>Ime datoteke sadrži neodgovarajuće znakove.\nIme datoteke ne može sadržavati bilo koji od sljedećih znakova: \n \ / : * ? " &lt; &gt;</value>
   </data>
   <data name="Error_SaveMovie_FileError" xml:space="preserve">
-    <value>Nije moguće zapisati datoteku.\nBudite sigurni da imate prava pisati u željenoj mapi i da se ta datoteka trenutno ne koristi.</value>
+    <value>Nije moguće zapisati datoteku.\nProvjeri tvoja prava za pisanje u željenu mapu i da se ta datoteka trenutačno ne koristi.</value>
   </data>
   <data name="Error_SaveMovie_Title" xml:space="preserve">
     <value>Kinovea - Nije moguće sačuvati video. </value>
@@ -326,7 +326,7 @@
     <value>Izbriši</value>
   </data>
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
-    <value>Izbriši put poslije ove točke</value>
+    <value>Izbriši putanju nakon ove točke</value>
   </data>
   <data name="mnuTwoCaptures" xml:space="preserve">
     <value>Dva ekrana za snimanje</value>
@@ -482,19 +482,19 @@
     <value>Spremi redoslijed slika</value>
   </data>
   <data name="ToolTip_StartRecording" xml:space="preserve">
-    <value>Počni snimanje video zapisa</value>
+    <value>Počni snimanje videa</value>
   </data>
   <data name="ToolTip_StopRecording" xml:space="preserve">
-    <value>Zaustavi snimanje video zapisa</value>
+    <value>Prekini snimanje videa</value>
   </data>
   <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
-    <value>Vrati radni interval na videozapis u cijelosti</value>
+    <value>Resetiraj radnu zonu</value>
   </data>
   <data name="ToolTip_SaveDiaporama" xml:space="preserve">
-    <value>Spremi projekciju slajdova ključnih slika</value>
+    <value>Izvezi slideshow ključnih slika</value>
   </data>
   <data name="ToolTip_SavePausedVideo" xml:space="preserve">
-    <value>Sačuvaj video s pauzom na svakoj ključnoj slici</value>
+    <value>Izvezi video s pauzom na svakoj ključnoj slici</value>
   </data>
   <data name="ToolTip_SetHandlerLeft" xml:space="preserve">
     <value>Postavi prvi kadar radne zone u trenutni kadar</value>
@@ -569,10 +569,10 @@
     <value>Grafički podaci</value>
   </data>
   <data name="DataAnalysis_XaxisDefaultPoints" xml:space="preserve">
-    <value>X os</value>
+    <value>Os x</value>
   </data>
   <data name="mnuSortBy_Size" xml:space="preserve">
-    <value>Dimenzija</value>
+    <value>Veličina</value>
   </data>
   <data name="DataAnalysis_TangentialVelocity" xml:space="preserve">
     <value>Tangencijalna brzina</value>
@@ -593,7 +593,7 @@
     <value>Apsolutni</value>
   </data>
   <data name="mnuSortBy_Descending" xml:space="preserve">
-    <value>Silazni</value>
+    <value>Silazno</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve">
     <value>Ukupna udaljenost</value>
@@ -602,7 +602,7 @@
     <value>Ova opcija definira razliku između brzine videa i realnog vremena. Ona utječe na oznake koje sadrže vrijeme i kinematske mjere. Koristi ga kada je video sniman kamerom velike brzine. </value>
   </data>
   <data name="mnuSortBy_Ascending" xml:space="preserve">
-    <value>Uzlazni</value>
+    <value>Uzlazno</value>
   </data>
   <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
     <value>Izmijeni crtež</value>
@@ -617,7 +617,7 @@
     <value>Centar</value>
   </data>
   <data name="DataAnalysis_YaxisLabel" xml:space="preserve">
-    <value>Y os:</value>
+    <value>Os y:</value>
   </data>
   <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
     <value>Praćenje</value>
@@ -638,7 +638,7 @@
     <value>Kut-kut dijagram</value>
   </data>
   <data name="mnuSortBy_Name" xml:space="preserve">
-    <value>Naziv</value>
+    <value>Ime</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_TotalVerticalDisplacement" xml:space="preserve">
     <value>Relativni vertikalni pomak</value>
@@ -647,13 +647,13 @@
     <value>Odustani</value>
   </data>
   <data name="dlgConfigureOpacity_lblOpaque" xml:space="preserve">
-    <value>Trajanje neprozračnosti (kadrovi):</value>
+    <value>Trajanje neprozirnosti (kadrovi):</value>
   </data>
   <data name="DataAnalysis_Labels" xml:space="preserve">
     <value>Oznake</value>
   </data>
   <data name="DataAnalysis_CalibrationPlane" xml:space="preserve">
-    <value>Kalibracijska ravnina</value>
+    <value>Sloj kalibracije</value>
   </data>
   <data name="DataAnalysis_DataLabel" xml:space="preserve">
     <value>Podaci:</value>
@@ -680,16 +680,16 @@
     <value>Vertikalno ubrzanje</value>
   </data>
   <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
-    <value>Maksimalna prozračnost (%):</value>
+    <value>Maksimalna neprozirnost (%):</value>
   </data>
   <data name="dlgConfigureDrawing_Name" xml:space="preserve">
-    <value>Naziv</value>
+    <value>Ime</value>
   </data>
   <data name="dlgTimebase_lblUserFPS" xml:space="preserve">
     <value>Broj kadrova u sekundi videa:</value>
   </data>
   <data name="dlgConfigureOpacity_lblFading" xml:space="preserve">
-    <value>Trajanje blijeđenja (kadrovi):</value>
+    <value>Trajanje prijelaza (kadrovi):</value>
   </data>
   <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
     <value>Dijagram rasipanja</value>
@@ -701,7 +701,7 @@
     <value>Pozicija</value>
   </data>
   <data name="DataAnalysis_XaxisLabel" xml:space="preserve">
-    <value>X os:</value>
+    <value>Os x:</value>
   </data>
   <data name="DataAnalysis_TotalAngularDisplacement" xml:space="preserve">
     <value>Ukupni pomak</value>
@@ -710,7 +710,7 @@
     <value>Izvor podataka</value>
   </data>
   <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
-    <value>Marker:</value>
+    <value>Oznaka:</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
     <value>Kutna brzina</value>
@@ -719,7 +719,7 @@
     <value>Izvezi graf</value>
   </data>
   <data name="DataAnalysis_YaxisDefaultPoints" xml:space="preserve">
-    <value>Y os</value>
+    <value>Os y</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_DistanceToOrigin" xml:space="preserve">
     <value>Udaljenost od ishodišta</value>
@@ -785,7 +785,7 @@
     <value>Kopiraj sliku u Clipboard</value>
   </data>
   <data name="mnuDrawingTrackingStop" xml:space="preserve">
-    <value>Zaustavi praćenje</value>
+    <value>Prekini praćenje</value>
   </data>
   <data name="mnuMeasure_Name" xml:space="preserve">
     <value>Ime</value>
@@ -824,7 +824,7 @@
     <value>Auto interpolacija</value>
   </data>
   <data name="mnuThumbnail_MoveToCurrentTime" xml:space="preserve">
-    <value>Prebaci na trenutno vrijeme</value>
+    <value>Prijeđi na trenutačno vrijeme</value>
   </data>
   <data name="DrawingName_Rectangle" xml:space="preserve">
     <value>Pravokutnik</value>
@@ -854,7 +854,7 @@
     <value>Preimenuj</value>
   </data>
   <data name="ToolTip_PauseCamera" xml:space="preserve">
-    <value>Pauziraj kameru</value>
+    <value>Zaustavi kameru</value>
   </data>
   <data name="mnuMarkTimeAsOrigin" xml:space="preserve">
     <value>Označi trenutno vrijeme kao početno vrijeme</value>
@@ -869,7 +869,7 @@
     <value>Oporaviti</value>
   </data>
   <data name="mnuShowAfter" xml:space="preserve">
-    <value>Pokaži poslije ove točke</value>
+    <value>Prikaži nakon ove točke</value>
   </data>
   <data name="formConfigureExport_ImageSequence" xml:space="preserve">
     <value>Izvezi sekvencu slika</value>
@@ -959,7 +959,7 @@
     <value>Direktorija nije kreirana</value>
   </data>
   <data name="mnuOptions_Trajectory_UseKeyImageColors" xml:space="preserve">
-    <value>Koristi važne boje slike</value>
+    <value>Koristi boje ključne slike</value>
   </data>
   <data name="mnuOptions_Kinogram_RightToLeft" xml:space="preserve">
     <value>S desna na lijevo</value>
@@ -1016,7 +1016,7 @@
     <value>Video…</value>
   </data>
   <data name="mnuShowCircleCenter" xml:space="preserve">
-    <value>Pokaži centar kruga</value>
+    <value>Prikaži središte kruga</value>
   </data>
   <data name="Toast_TriggerDisarmed" xml:space="preserve">
     <value>Okidač ispisa ekrana neaktivan</value>
@@ -1103,7 +1103,7 @@
     <value>Vrijeme izrade</value>
   </data>
   <data name="mnuShowArrow" xml:space="preserve">
-    <value>Pokaži strelicu</value>
+    <value>Prikaži strelicu</value>
   </data>
   <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve">
     <value>Ukupno: {0:0} slika.</value>
@@ -1121,7 +1121,7 @@
     <value>Značenje kuta</value>
   </data>
   <data name="mnuMeasure_Chrono_Tag" xml:space="preserve">
-    <value>Tag</value>
+    <value>Oznaka</value>
   </data>
   <data name="mnuRotation270" xml:space="preserve">
     <value>90° suprotno od smjera kazaljke na satu</value>
@@ -1154,7 +1154,7 @@
     <value>Stupci</value>
   </data>
   <data name="mnuTimeCalibration" xml:space="preserve">
-    <value>Kalibracija vremena…</value>
+    <value>Kalibracija vremena …</value>
   </data>
   <data name="mnuAction_Kinogram_Interpolate" xml:space="preserve">
     <value>Umetni ćeliju</value>
@@ -1181,7 +1181,7 @@
     <value>Slika…</value>
   </data>
   <data name="mnuShowBefore" xml:space="preserve">
-    <value>Pokaži do ove točke</value>
+    <value>Prikaži do ove točke</value>
   </data>
   <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
     <value>Unutrašnji parametri kamere</value>
@@ -1190,7 +1190,7 @@
     <value>Vidljivost</value>
   </data>
   <data name="mnuOptions_Trajectory_ShowKeyImageLabels" xml:space="preserve">
-    <value>Pokaži ključne oznake slike</value>
+    <value>Prikaži oznake ključne slike</value>
   </data>
   <data name="mnuMeasure_FrameNumber" xml:space="preserve">
     <value>Broj kadrova</value>
@@ -1202,7 +1202,7 @@
     <value>Direktorija uhvaćenih fotografija se ne može kreirati.\nProvjeri pokazuje li na valjanu lokaciju za pohranu.</value>
   </data>
   <data name="mnuOptions_TestGrid_ShowThirds" xml:space="preserve">
-    <value>Prikaži rešetku 3x3</value>
+    <value>Prikaži rešetku 3 × 3</value>
   </data>
   <data name="dlgRafaleExport_ExportAll" xml:space="preserve">
     <value>Izvezi sve slike.</value>
@@ -1217,7 +1217,7 @@
     <value>Izmijeni ime kamere</value>
   </data>
   <data name="mnuShowLabel" xml:space="preserve">
-    <value>Pokaži oznaku</value>
+    <value>Prikaži oznaku</value>
   </data>
   <data name="formConfigureKinogram_Table" xml:space="preserve">
     <value>Tablica:</value>
@@ -1274,7 +1274,7 @@
     <value>Pomakni početak trenutnog vremenskog segmenta na ovaj kadar</value>
   </data>
   <data name="mnuOptions_Trajectory_Interactive" xml:space="preserve">
-    <value>Interaktivna trajektorija</value>
+    <value>Interaktivna putanja</value>
   </data>
   <data name="mnuMeasure_Labels_Menu" xml:space="preserve">
     <value>Oznake</value>
@@ -1289,7 +1289,7 @@
     <value>Prikaži rešetku</value>
   </data>
   <data name="mnuOptions_Trajectory_ShowTrackLabel" xml:space="preserve">
-    <value>Prikaži oznaku trajektorije</value>
+    <value>Prikaži oznaku putanje</value>
   </data>
   <data name="dlgCalibratePlane_AveragePixelSize" xml:space="preserve">
     <value>Prosječna veličina piksela: {0}.</value>
@@ -1298,7 +1298,7 @@
     <value>Linija definira horizontalnu os</value>
   </data>
   <data name="mnuThumbnails" xml:space="preserve">
-    <value>Minijatura</value>
+    <value>Minijature</value>
   </data>
   <data name="mnuExport_Images_Sequence" xml:space="preserve">
     <value>Sekvenca slike…</value>
@@ -1337,7 +1337,7 @@
     <value>Okidač ispisa ekrana aktivan</value>
   </data>
   <data name="mnuOptions_Kinogram_ShowBorder" xml:space="preserve">
-    <value>Pokaži rub</value>
+    <value>Prikaži rub</value>
   </data>
   <data name="mnuMagnifierUnfreeze" xml:space="preserve">
     <value>Odmrznuti</value>
@@ -1391,9 +1391,186 @@
     <value>Kalibracija leće: {0}</value>
   </data>
   <data name="FormCalibrationValidation_PlaneCalibration" xml:space="preserve">
-    <value>Kalibracija ploče: {0}</value>
+    <value>Kalibracija sloja: {0}</value>
   </data>
   <data name="filterName_LensCalibration" xml:space="preserve">
     <value>Kalibracija leće</value>
+  </data>
+  <data name="DrawingCoordinateSystem_AlignToCalibrationObject" xml:space="preserve">
+    <value>Poravnaj na objekt kalibracije</value>
+  </data>
+  <data name="DrawingCounter_Half" xml:space="preserve">
+    <value>Pola</value>
+  </data>
+  <data name="DrawingCounter_Double" xml:space="preserve">
+    <value>Dvostruko</value>
+  </data>
+  <data name="Cadence" xml:space="preserve">
+    <value>Kadenca</value>
+  </data>
+  <data name="DrawingCounter_AddBeat" xml:space="preserve">
+    <value>Dodaj ritam</value>
+  </data>
+  <data name="DrawingCounter_DeleteBeat" xml:space="preserve">
+    <value>Izbriši ritam</value>
+  </data>
+  <data name="DrawingCounter_DeleteAllBeats" xml:space="preserve">
+    <value>Izbriši sve ritmove</value>
+  </data>
+  <data name="DrawingCounter_ZeroBasedNumbering" xml:space="preserve">
+    <value>Numeriranje od nule</value>
+  </data>
+  <data name="FormCalibrationValidation_ControlPoints" xml:space="preserve">
+    <value>Kontrolne točke</value>
+  </data>
+  <data name="FormCalibrationValidation_ValidationMode" xml:space="preserve">
+    <value>Validacija</value>
+  </data>
+  <data name="FormCalibrationValidation_Fix1D" xml:space="preserve">
+    <value>Promijeni jednu os i provjeri druge dvije osi</value>
+  </data>
+  <data name="FormCalibrationValidation_Compute3D" xml:space="preserve">
+    <value>3D položaji izračunati iz dva prikaza</value>
+  </data>
+  <data name="FormCalibrationValidation_CameraPositionXYZ" xml:space="preserve">
+    <value>Položaj kamere ({0}): x:{1}, y:{2}, z:{3}</value>
+  </data>
+  <data name="FormTimeSections_Start" xml:space="preserve">
+    <value>Početak</value>
+  </data>
+  <data name="DrawingPlane_ShowHorizontalLine" xml:space="preserve">
+    <value>Prikaži horizontalnu liniju</value>
+  </data>
+  <data name="DrawingCircle_Filled" xml:space="preserve">
+    <value>Ispunjeno</value>
+  </data>
+  <data name="DrawingCrossMark_Dot" xml:space="preserve">
+    <value>Točka</value>
+  </data>
+  <data name="DrawingPlane_ShowVerticalLine" xml:space="preserve">
+    <value>Prikaži vertikalnu liniju</value>
+  </data>
+  <data name="FormCalibrationValidation_Fix3D" xml:space="preserve">
+    <value>Promijeni sve osi i provjeri položaj oznaka na slici</value>
+  </data>
+  <data name="FormConfigureCameraMotion_ConfigureCameraMotionEstimation" xml:space="preserve">
+    <value>Konfiguriraj procjenu kretanja kamere</value>
+  </data>
+  <data name="FormConfigureCameraMotion_FeatureType" xml:space="preserve">
+    <value>Vrsta funkcije:</value>
+  </data>
+  <data name="FormConfigureCameraMotion_FeaturesPerFrame" xml:space="preserve">
+    <value>Broj funkcija po kadru:</value>
+  </data>
+  <data name="VideoFilterCameraMotion_RunCameraMotionEstimation" xml:space="preserve">
+    <value>Pokreni procjenu kretanja kamere</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowTracks" xml:space="preserve">
+    <value>Prikaži snimke</value>
+  </data>
+  <data name="FormConfigureLensCalibration_PatternSize" xml:space="preserve">
+    <value>Veličina mustre:</value>
+  </data>
+  <data name="StyleElement_Color_BorderColor" xml:space="preserve">
+    <value>Boja ruba</value>
+  </data>
+  <data name="FormTimeSections_End" xml:space="preserve">
+    <value>Kraj</value>
+  </data>
+  <data name="FormTimeSections_Duration" xml:space="preserve">
+    <value>Trajanje</value>
+  </data>
+  <data name="FormTimeSections_Cumulative" xml:space="preserve">
+    <value>Kumulativno</value>
+  </data>
+  <data name="FormTimeSections_Tag" xml:space="preserve">
+    <value>Oznaka</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_ManualEstimation" xml:space="preserve">
+    <value>Ručna procjena …</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_None" xml:space="preserve">
+    <value>Ništa</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_LensCalibrationMode" xml:space="preserve">
+    <value>Kalibracija leće</value>
+  </data>
+  <data name="Generic_Color" xml:space="preserve">
+    <value>Boja</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ImportMask" xml:space="preserve">
+    <value>Uvezi masku</value>
+  </data>
+  <data name="VideoFilterCameraMotion_DeleteTrackingData" xml:space="preserve">
+    <value>Izbriši podatke praćenja</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowPoints" xml:space="preserve">
+    <value>Prikaži točke</value>
+  </data>
+  <data name="VideoFilterCameraMotion_BuildTracks" xml:space="preserve">
+    <value>Izradi snimke</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowMotionField" xml:space="preserve">
+    <value>Prikaži polje kretanja</value>
+  </data>
+  <data name="FormConfigureLensCalibration_ConfigureLensCalibration" xml:space="preserve">
+    <value>Konfiguriraj kalibraciju leće</value>
+  </data>
+  <data name="FormConfigureLensCalibration_MaxImages" xml:space="preserve">
+    <value>Maks. broj slika:</value>
+  </data>
+  <data name="FormConfigureLensCalibration_MaxIterations" xml:space="preserve">
+    <value>Maks. broj ponavljanja:</value>
+  </data>
+  <data name="VideoFilterLensCalibration_DeleteCalibrationData" xml:space="preserve">
+    <value>Izbriši podatke kalibracije</value>
+  </data>
+  <data name="VideoFilterLensCalibration_CopyCalibrationData" xml:space="preserve">
+    <value>Kopiraj podatke kalibracije</value>
+  </data>
+  <data name="VideoFilterLensCalibration_SaveCalibrationData" xml:space="preserve">
+    <value>Spremi podatke kalibracije …</value>
+  </data>
+  <data name="StyleElement_FontSize_LabelSize" xml:space="preserve">
+    <value>Veličina oznake</value>
+  </data>
+  <data name="filterName_CameraMotion" xml:space="preserve">
+    <value>Procjena kretanja kamere</value>
+  </data>
+  <data name="FormCalibrationValidation_DistanceToOrigin" xml:space="preserve">
+    <value>Udaljenost od izvora ({0}): {1}</value>
+  </data>
+  <data name="StyleElement_Color_LabelColor" xml:space="preserve">
+    <value>Boja oznake</value>
+  </data>
+  <data name="FormCalibratePlane_Coordinates" xml:space="preserve">
+    <value>Koordinate</value>
+  </data>
+  <data name="FormConfigureExportVideo_UseCurrentPlaybackSpeed" xml:space="preserve">
+    <value>Koristi trenutačnu brzinu reprodukcije: {0:0.00}</value>
+  </data>
+  <data name="VideoFilterCameraMotion_FindFeatures" xml:space="preserve">
+    <value>Pronađi funkcije</value>
+  </data>
+  <data name="VideoFilterLensCalibration_RunLensCalibration" xml:space="preserve">
+    <value>Pokreni kalibraciju leće</value>
+  </data>
+  <data name="VideoFilterLensCalibration_ShowDetectedCorners" xml:space="preserve">
+    <value>Prikaži otkrivene kutove</value>
+  </data>
+  <data name="VideoFilterLensCalibration_ShowReprojectedCorners" xml:space="preserve">
+    <value>Prikaži ponovo projicirane kutove</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_CalibrationValidation" xml:space="preserve">
+    <value>Validacija kalibracije …</value>
+  </data>
+  <data name="FormBackgroundColor_BackgroundProperties" xml:space="preserve">
+    <value>Svojstva pozadine</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowFrameTransforms" xml:space="preserve">
+    <value>Prikaži transformacije kadrova</value>
+  </data>
+  <data name="FormCalibratePlane_OffsetAppliedToCoordinates" xml:space="preserve">
+    <value>Primijenjeni odmak na koordinate ({0})</value>
   </data>
 </root>
