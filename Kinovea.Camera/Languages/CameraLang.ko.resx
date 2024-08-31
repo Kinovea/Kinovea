@@ -155,4 +155,16 @@
   <data name="FormConnectionWizard_URL" xml:space="preserve">
     <value>최종 URL</value>
   </data>
+  <data name="FormConfiguration_EnableHardwareCompression" xml:space="preserve">
+    <value>하드웨어 압축 활성화</value>
+  </data>
+  <data name="FormConfiguration_EnableSoftwareDemosaicing" xml:space="preserve">
+    <value>소프트웨어 디모자이킹 활성화</value>
+  </data>
+  <data name="FormConfiguration_ResultingFramerate" xml:space="preserve">
+    <value>결과 프레임 속도:</value>
+  </data>
+  <data name="FormConfiguration_ExportDeviceGenICamXMLFile" xml:space="preserve">
+    <value>장치 GenICam XML 파일 내보내기</value>
+  </data>
 </root>
