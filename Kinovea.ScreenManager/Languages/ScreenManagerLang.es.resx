@@ -1546,4 +1546,52 @@
   <data name="filterName_LensCalibration" xml:space="preserve">
     <value>Calibración de lente</value>
   </data>
+  <data name="DrawingCounter_AddBeat" xml:space="preserve">
+    <value>Añadir ritmo</value>
+  </data>
+  <data name="DrawingCounter_DeleteBeat" xml:space="preserve">
+    <value>Borrar ritmo</value>
+  </data>
+  <data name="DrawingCounter_DeleteAllBeats" xml:space="preserve">
+    <value>Eliminar todos los ritmos</value>
+  </data>
+  <data name="DrawingCounter_Half" xml:space="preserve">
+    <value>Medio</value>
+  </data>
+  <data name="DrawingCounter_Double" xml:space="preserve">
+    <value>Doble</value>
+  </data>
+  <data name="DrawingCoordinateSystem_AlignToCalibrationObject" xml:space="preserve">
+    <value>Alinear con el objeto de calibración</value>
+  </data>
+  <data name="DrawingText_Background" xml:space="preserve">
+    <value>Fondo</value>
+  </data>
+  <data name="PlayerScreenUserInterface_Background" xml:space="preserve">
+    <value>Fondo…</value>
+  </data>
+  <data name="FormBackgroundColor_BackgroundProperties" xml:space="preserve">
+    <value>Propiedades del fondo</value>
+  </data>
+  <data name="FormConfigureCameraMotion_FeatureType" xml:space="preserve">
+    <value>Tipo de elemento:</value>
+  </data>
+  <data name="FormConfigureCameraMotion_FeaturesPerFrame" xml:space="preserve">
+    <value>Características por cuadro:</value>
+  </data>
+  <data name="VideoFilterCameraMotion_FindFeatures" xml:space="preserve">
+    <value>Buscar funciones</value>
+  </data>
+  <data name="VideoFilterCameraMotion_MatchFeatures" xml:space="preserve">
+    <value>Características de la partida</value>
+  </data>
+  <data name="VideoFilterCameraMotion_BundleAdjustment" xml:space="preserve">
+    <value>Ajuste del paquete</value>
+  </data>
+  <data name="VideoFilterCameraMotion_BuildTracks" xml:space="preserve">
+    <value>Construir pistas</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowInliers" xml:space="preserve">
+    <value>Mostrar elementos internos</value>
+  </data>
 </root>
