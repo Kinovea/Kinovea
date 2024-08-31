@@ -578,7 +578,7 @@
     <value>Tangencijalna brzina</value>
   </data>
   <data name="dlgTimebase_lblCapture" xml:space="preserve">
-    <value>Brzina snimanja kadrova:</value>
+    <value>Snimljen broj kadrova u sekundi:</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement" xml:space="preserve">
     <value>Relativni horizontalni pomak</value>
@@ -686,7 +686,7 @@
     <value>Naziv</value>
   </data>
   <data name="dlgTimebase_lblUserFPS" xml:space="preserve">
-    <value>Broj kadrova u sekundi video zapisa:</value>
+    <value>Broj kadrova u sekundi videa:</value>
   </data>
   <data name="dlgConfigureOpacity_lblFading" xml:space="preserve">
     <value>Trajanje blijeđenja (kadrovi):</value>
@@ -848,7 +848,7 @@
     <value>Strelica - Isprekidana</value>
   </data>
   <data name="Generic_Import" xml:space="preserve">
-    <value>Uvezi</value>
+    <value>Uvoz …</value>
   </data>
   <data name="mnuThumbnailRename" xml:space="preserve">
     <value>Preimenuj</value>
@@ -1316,7 +1316,7 @@
     <value>Alias:</value>
   </data>
   <data name="mnuLensCalibration" xml:space="preserve">
-    <value>Kalibracija leća…</value>
+    <value>Kalibracija leće</value>
   </data>
   <data name="DrawingName_ArrowPolylineDash" xml:space="preserve">
     <value>Strelica - Višelinijska isprekidana linija</value>
@@ -1356,5 +1356,44 @@
   </data>
   <data name="mnuPasteImage" xml:space="preserve">
     <value>Zalijepi sliku iz Clipboarda</value>
+  </data>
+  <data name="DrawingText_Background" xml:space="preserve">
+    <value>Pozadina</value>
+  </data>
+  <data name="PlayerScreenUserInterface_Background" xml:space="preserve">
+    <value>Pozadina …</value>
+  </data>
+  <data name="FormCalibratePlane_FlipXAxis" xml:space="preserve">
+    <value>Preokreni os x</value>
+  </data>
+  <data name="FormCalibratePlane_FlipYAxis" xml:space="preserve">
+    <value>Preokreni os y</value>
+  </data>
+  <data name="FormCalibratePlane_Rotate90" xml:space="preserve">
+    <value>Okreni za 90 °</value>
+  </data>
+  <data name="FormCalibratePlane_DecimalPlaces" xml:space="preserve">
+    <value>Broj decimala</value>
+  </data>
+  <data name="FormCalibrationValidation_CalibrationValidation" xml:space="preserve">
+    <value>Validiranje kalibracije</value>
+  </data>
+  <data name="FormCalibrationValidation_Camera" xml:space="preserve">
+    <value>Kamera</value>
+  </data>
+  <data name="FormCalibrationValidation_Found" xml:space="preserve">
+    <value>pronađeno</value>
+  </data>
+  <data name="FormCalibrationValidation_Missing" xml:space="preserve">
+    <value>nedostaje</value>
+  </data>
+  <data name="FormCalibrationValidation_LensCalibration" xml:space="preserve">
+    <value>Kalibracija leće: {0}</value>
+  </data>
+  <data name="FormCalibrationValidation_PlaneCalibration" xml:space="preserve">
+    <value>Kalibracija ploče: {0}</value>
+  </data>
+  <data name="filterName_LensCalibration" xml:space="preserve">
+    <value>Kalibracija leće</value>
   </data>
 </root>

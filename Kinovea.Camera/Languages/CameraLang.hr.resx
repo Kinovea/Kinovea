@@ -149,4 +149,16 @@
   <data name="FormIconPicker_Title" xml:space="preserve">
     <value>Ikone</value>
   </data>
+  <data name="FormConfiguration_EnableHardwareCompression" xml:space="preserve">
+    <value>Aktiviraj hardversko komprimiranje</value>
+  </data>
+  <data name="FormConfiguration_EnableSoftwareDemosaicing" xml:space="preserve">
+    <value>Aktiviraj softversko demosaiciranje</value>
+  </data>
+  <data name="FormConfiguration_ResultingFramerate" xml:space="preserve">
+    <value>Rezultirajući broj kadrova u sekundi:</value>
+  </data>
+  <data name="FormConfiguration_ExportDeviceGenICamXMLFile" xml:space="preserve">
+    <value>Izvezi XML datoteku GenICam uređaja</value>
+  </data>
 </root>

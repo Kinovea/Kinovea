@@ -251,7 +251,7 @@
     <value>Posición horizontal</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve">
-    <value>distancia total</value>
+    <value>Distancia total</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_DistanceToOrigin" xml:space="preserve">
     <value>Distancia al origen</value>
@@ -470,7 +470,7 @@
     <value>El directorio de captura no se ha podido crear.\nCompruebe que apunta a un dispositivo de almacenamiento correcto.</value>
   </data>
   <data name="Error_SaveMovie_FileError" xml:space="preserve">
-    <value>El fichero no ha podido escribirse.\nAsegurese de tener derechos de escritura en la carpeta y que el fichero no está siendo utilizado.</value>
+    <value>El fichero no ha podido escribirse.\nAsegúrese de tener permisos para escribir en la carpeta de destino y que el fichero no está siendo utilizado.</value>
   </data>
   <data name="Error_SaveMovie_Title" xml:space="preserve">
     <value>Kinovea – Fue imposible guardar el vídeo </value>
@@ -1362,5 +1362,188 @@
   </data>
   <data name="mnuOptions_TestGrid_ShowVerticalAxis" xml:space="preserve">
     <value>Mostrar el eje vertical</value>
+  </data>
+  <data name="Cadence" xml:space="preserve">
+    <value>Cadencia</value>
+  </data>
+  <data name="DrawingCounter_ZeroBasedNumbering" xml:space="preserve">
+    <value>Numeración basada en ceros</value>
+  </data>
+  <data name="DrawingCircle_Filled" xml:space="preserve">
+    <value>Relleno</value>
+  </data>
+  <data name="DrawingCrossMark_Dot" xml:space="preserve">
+    <value>Punto</value>
+  </data>
+  <data name="DrawingPlane_ShowVerticalLine" xml:space="preserve">
+    <value>Mostrar línea vertical</value>
+  </data>
+  <data name="DrawingPlane_ShowHorizontalLine" xml:space="preserve">
+    <value>Mostrar línea horizontal</value>
+  </data>
+  <data name="FormCalibratePlane_FlipXAxis" xml:space="preserve">
+    <value>Girar eje X</value>
+  </data>
+  <data name="FormCalibratePlane_FlipYAxis" xml:space="preserve">
+    <value>Girar eje Y</value>
+  </data>
+  <data name="FormCalibrationValidation_Missing" xml:space="preserve">
+    <value>no encontrado</value>
+  </data>
+  <data name="FormCalibrationValidation_LensCalibration" xml:space="preserve">
+    <value>Calibración de lente: {0}</value>
+  </data>
+  <data name="FormCalibrationValidation_Fix1D" xml:space="preserve">
+    <value>Cambiar un eje y verificar los otros dos ejes</value>
+  </data>
+  <data name="FormCalibrationValidation_Compute3D" xml:space="preserve">
+    <value>Posiciones 3D calculadas a partir de las dos vistas</value>
+  </data>
+  <data name="FormCalibrationValidation_CameraPositionXYZ" xml:space="preserve">
+    <value>Posición de cámara ({0}): X:{1}, Y:{2}, Z:{3}</value>
+  </data>
+  <data name="FormCalibrationValidation_DistanceToOrigin" xml:space="preserve">
+    <value>Distancia al origen ({0}): {1}</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowTracks" xml:space="preserve">
+    <value>Mostrar pistas</value>
+  </data>
+  <data name="VideoFilterLensCalibration_SaveCalibrationData" xml:space="preserve">
+    <value>Guardar datos de calibración…</value>
+  </data>
+  <data name="FormTimeSections_Start" xml:space="preserve">
+    <value>Inicio</value>
+  </data>
+  <data name="FormTimeSections_End" xml:space="preserve">
+    <value>Final</value>
+  </data>
+  <data name="FormTimeSections_Duration" xml:space="preserve">
+    <value>Duración</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_None" xml:space="preserve">
+    <value>Ninguno</value>
+  </data>
+  <data name="Generic_Color" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="VideoFilterCameraMotion_RunCameraMotionEstimation" xml:space="preserve">
+    <value>Ejecutar estimación de movimiento de cámara</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ImportMask" xml:space="preserve">
+    <value>Importar máscara</value>
+  </data>
+  <data name="VideoFilterCameraMotion_DeleteTrackingData" xml:space="preserve">
+    <value>Eliminar datos de seguimiento</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowPoints" xml:space="preserve">
+    <value>Mostrar puntos</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowFrameTransforms" xml:space="preserve">
+    <value>Mostrar transformaciones de fotogramas</value>
+  </data>
+  <data name="VideoFilterLensCalibration_CopyCalibrationData" xml:space="preserve">
+    <value>Copiar datos de calibración</value>
+  </data>
+  <data name="FormCalibratePlane_Rotate90" xml:space="preserve">
+    <value>Rotar 90°</value>
+  </data>
+  <data name="FormCalibratePlane_DecimalPlaces" xml:space="preserve">
+    <value>Números decimales</value>
+  </data>
+  <data name="FormCalibrationValidation_CalibrationValidation" xml:space="preserve">
+    <value>Validación de calibración</value>
+  </data>
+  <data name="FormCalibrationValidation_Camera" xml:space="preserve">
+    <value>Cámara</value>
+  </data>
+  <data name="FormCalibrationValidation_Found" xml:space="preserve">
+    <value>encontrado</value>
+  </data>
+  <data name="FormCalibrationValidation_PlaneCalibration" xml:space="preserve">
+    <value>Calibración de plano: {0}</value>
+  </data>
+  <data name="FormCalibrationValidation_ControlPoints" xml:space="preserve">
+    <value>Puntos de control</value>
+  </data>
+  <data name="FormCalibrationValidation_ValidationMode" xml:space="preserve">
+    <value>Modo validación</value>
+  </data>
+  <data name="FormCalibrationValidation_Fix3D" xml:space="preserve">
+    <value>Cambiar todos los ejes y verificar la posición del marcador en la imagen</value>
+  </data>
+  <data name="FormTimeSections_Cumulative" xml:space="preserve">
+    <value>Acumulado</value>
+  </data>
+  <data name="FormTimeSections_Tag" xml:space="preserve">
+    <value>Etiqueta</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_LensCalibrationMode" xml:space="preserve">
+    <value>Modo de calibración de lente</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_ManualEstimation" xml:space="preserve">
+    <value>Estimación manual…</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_CalibrationValidation" xml:space="preserve">
+    <value>Validación de calibración…</value>
+  </data>
+  <data name="FormConfigureCameraMotion_ConfigureCameraMotionEstimation" xml:space="preserve">
+    <value>Configurar estimación de movimiento de cámara</value>
+  </data>
+  <data name="VideoFilterCameraMotion_FindHomographies" xml:space="preserve">
+    <value>Buscar homografías</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowOutliers" xml:space="preserve">
+    <value>Mostrar valores atípicos</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowMotionField" xml:space="preserve">
+    <value>Mostrar campo de movimiento</value>
+  </data>
+  <data name="FormConfigureLensCalibration_ConfigureLensCalibration" xml:space="preserve">
+    <value>Configurar calibración de lente</value>
+  </data>
+  <data name="FormConfigureLensCalibration_MaxImages" xml:space="preserve">
+    <value>Imágenes máximas:</value>
+  </data>
+  <data name="FormConfigureLensCalibration_PatternSize" xml:space="preserve">
+    <value>Tamaño de patrón:</value>
+  </data>
+  <data name="FormConfigureLensCalibration_MaxIterations" xml:space="preserve">
+    <value>Repeticiones máximas:</value>
+  </data>
+  <data name="VideoFilterLensCalibration_RunLensCalibration" xml:space="preserve">
+    <value>Ejecutar calibración de lente</value>
+  </data>
+  <data name="VideoFilterLensCalibration_DeleteCalibrationData" xml:space="preserve">
+    <value>Eliminar datos de calibración</value>
+  </data>
+  <data name="VideoFilterLensCalibration_ShowDetectedCorners" xml:space="preserve">
+    <value>Mostrar las esquinas detectadas</value>
+  </data>
+  <data name="VideoFilterLensCalibration_ShowReprojectedCorners" xml:space="preserve">
+    <value>Mostrar las esquinas reproyectadas</value>
+  </data>
+  <data name="FormCalibratePlane_OffsetAppliedToCoordinates" xml:space="preserve">
+    <value>Desviación aplicada a las coordenadas ({0})</value>
+  </data>
+  <data name="StyleElement_FontSize_LabelSize" xml:space="preserve">
+    <value>Tamaño de etiqueta</value>
+  </data>
+  <data name="StyleElement_Color_BorderColor" xml:space="preserve">
+    <value>Color de borde</value>
+  </data>
+  <data name="StyleElement_Color_LabelColor" xml:space="preserve">
+    <value>Color de etiqueta</value>
+  </data>
+  <data name="FormCalibratePlane_Coordinates" xml:space="preserve">
+    <value>Coordenadas</value>
+  </data>
+  <data name="FormConfigureExportVideo_UseCurrentPlaybackSpeed" xml:space="preserve">
+    <value>Utilizar la velocidad de reproducción actual: {0:0.00}</value>
+  </data>
+  <data name="filterName_CameraMotion" xml:space="preserve">
+    <value>Estimación del movimiento de la cámara</value>
+  </data>
+  <data name="filterName_LensCalibration" xml:space="preserve">
+    <value>Calibración de lente</value>
   </data>
 </root>
