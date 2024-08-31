@@ -99,22 +99,29 @@ namespace Kinovea.Services
             // we do not include the language.
 
             // Reference: https://hosted.weblate.org/projects/kinovea/#languages
-            // Last check: 2024-07-27.
+            // Last check: 2024-08-25.
 
             // Languages with less than 50% translation coverage.
             languages.Remove("da");         // Danish.
             languages.Remove("el");         // Greek.
             languages.Remove("ms");         // Malay.
             languages.Remove("no");         // Norwegian.
-            languages.Remove("sr-Latn-RS"); // Serbo-croatian.
-            languages.Remove("uk");         // Ukrainian.
+            languages.Remove("sr-Latn-RS"); // Serbian (latin)
+            languages.Remove("th");         // Thai.
 
             // Languages between 50% and 85%.
+            //languages.Remove("ca");       // Catalan.
+            //languages.Remove("ar");       // Arabic.
             //languages.Remove("bg");       // Bulgarian.
-            //languages.Remove("fa");       // Farsi.
-            languages.Remove("sr-Cyrl-RS"); // Serbian.
+            //languages.Remove("cs");       // Czech
+            //languages.Remove("de");       // German
+            //languages.Remove("ko");       // Korean
+            //languages.Remove("lt");       // Lithuanian
+            languages.Remove("fa");       // Farsi.
+            //languages.Remove("pl");       // Polish
+            //languages.Remove("ro");       // Romanian
+            languages.Remove("sr-Cyrl-RS"); // Serbian (cyrillic).
             languages.Remove("sv");         // Swedish.
-            languages.Remove("th");         // Thai.
             //languages.Remove("tr");       // Turkish.
         }
 

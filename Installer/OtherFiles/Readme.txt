@@ -1,5 +1,5 @@
 
-Kinovea 2024.1 - July 2024.
+Kinovea 2024.1 - August 2024.
 
 Kinovea is a free and open source video annotation tool designed for motion analysis.
 It features utilities to capture, slow down, compare, annotate and measure motion in videos.
@@ -38,7 +38,7 @@ Project:
 Changelog:
 ----------
 
-2024.1 - July 2024
+2024.1 - August 2024
     Added - Camera motion estimation video mode.
     Added - Lens calibration video mode.
     Added - Calibration validation window, with 3D camera position and control points.
@@ -46,7 +46,7 @@ Changelog:
 	Added - Counter tool.
     Added - Background layer with color and opacity, between video and drawings.
     Added - Alternate pointers.
-	Added - New locales: Croatian, Traditional Chinese.
+	Added - New locales: Croatian, Traditional Chinese, Ukrainian.
     Improved - Player: better feedback regarding the active video mode.
     Improved - Annotations: Added "filled" option to rectangle and circle.
     Improved - Annotations: Support changing font size for mini labels.
