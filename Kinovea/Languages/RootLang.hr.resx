@@ -317,7 +317,7 @@
     <value>Metara u sekundi na kvadrat ({0})</value>
   </data>
   <data name="dlgPreferences_General_PathToPandoc" xml:space="preserve">
-    <value>Put do Pandoca:</value>
+    <value>Putanja do Pandoca:</value>
   </data>
   <data name="dlgPreferences_Player_UnitsAngularVelocity" xml:space="preserve">
     <value>Kutna brzina:</value>
@@ -482,7 +482,7 @@
     <value>Naziv snimljene datoteke</value>
   </data>
   <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
-    <value>Zadana vrijednost parametara za praćenje</value>
+    <value>Zadani parametri za praćenje</value>
   </data>
   <data name="dlgPreferences_Player_tabUnits" xml:space="preserve">
     <value>Jedinice</value>
@@ -513,5 +513,17 @@
   </data>
   <data name="mnuPointer" xml:space="preserve">
     <value>Pokazivač</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsHertz" xml:space="preserve">
+    <value>Hertz ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabExport_IncludeImages" xml:space="preserve">
+    <value>Uključi slike</value>
+  </data>
+  <data name="mnuDefaultPointer" xml:space="preserve">
+    <value>Zadano</value>
+  </data>
+  <data name="mnuTranslate" xml:space="preserve">
+    <value>Prevedi Kinovea …</value>
   </data>
 </root>
