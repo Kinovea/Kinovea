@@ -355,4 +355,10 @@
   <data name="dlgConfigureTrajectory_ExtraData_HorizontalVelocity" xml:space="preserve">
     <value>Kelajuan melintang</value>
   </data>
+  <data name="Generic_Save" xml:space="preserve">
+    <value>Simpan</value>
+  </data>
+  <data name="Generic_Quit" xml:space="preserve">
+    <value>Keluar</value>
+  </data>
 </root>
