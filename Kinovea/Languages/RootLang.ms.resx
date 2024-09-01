@@ -253,4 +253,289 @@
   <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve">
     <value>User_0095</value>
   </data>
+  <data name="dlgPreferences_Capture_TriggerAction" xml:space="preserve">
+    <value>Pencetus tindakan:</value>
+  </data>
+  <data name="dlgPreferences_General_PathToPandoc" xml:space="preserve">
+    <value>Laluan ke pandoc:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportPixels" xml:space="preserve">
+    <value>Piksel</value>
+  </data>
+  <data name="dlgPreferences_Drawings_TabExport" xml:space="preserve">
+    <value>Eksport</value>
+  </data>
+  <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve">
+    <value>Nombor fail dalam sejarah:</value>
+  </data>
+  <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve">
+    <value>Import urutan gambar sebagai video</value>
+  </data>
+  <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
+    <value>Anotasi fail lalai:</value>
+  </data>
+  <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve">
+    <value>Sentiasa nyahjalin apabila membuka video baharu</value>
+  </data>
+  <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve">
+    <value>Pautkan peluncur kelajuan apabila membandingkan video</value>
+  </data>
+  <data name="mnuHistoryReset" xml:space="preserve">
+    <value>Set semula sejarah</value>
+  </data>
+  <data name="mnuImage" xml:space="preserve">
+    <value>Imej</value>
+  </data>
+  <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve">
+    <value>Nisbah aspek lalai:</value>
+  </data>
+  <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve">
+    <value>Bahasa:</value>
+  </data>
+  <data name="dlgPreferences_Player_lblMemory" xml:space="preserve">
+    <value>Memori cache diperuntukkan kepada setiap skrin main balik: {0} MB.</value>
+  </data>
+  <data name="dlgPreferences_Player_tabUnits" xml:space="preserve">
+    <value>Unit</value>
+  </data>
+  <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve">
+    <value>Meter sesaat ({0})</value>
+  </data>
+  <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve">
+    <value>Kilometer sejam ({0})</value>
+  </data>
+  <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve">
+    <value>Kaki sesaat ({0})</value>
+  </data>
+  <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve">
+    <value>Batu sejam ({0})</value>
+  </data>
+  <data name="dlgPreferences_Title" xml:space="preserve">
+    <value>Keutamaan</value>
+  </data>
+  <data name="mnuTimeFormat" xml:space="preserve">
+    <value>Masa</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitTime" xml:space="preserve">
+    <value>Masa:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsSpeed" xml:space="preserve">
+    <value>Kelajuan:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAcceleration" xml:space="preserve">
+    <value>Pecutan:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngle" xml:space="preserve">
+    <value>Sudut:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngularVelocity" xml:space="preserve">
+    <value>Kelajuan sudut:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngularAcceleration" xml:space="preserve">
+    <value>Pecutan sudut:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsMetersPerSecondSquared" xml:space="preserve">
+    <value>Meter sesaat kuasa dua ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsFeetPerSecondSquared" xml:space="preserve">
+    <value>Kaki sesaat kuasa dua ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegrees" xml:space="preserve">
+    <value>Darjah ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadians" xml:space="preserve">
+    <value>Radian ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegreesPerSecond" xml:space="preserve">
+    <value>Darjah sesaat ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadiansPerSecond" xml:space="preserve">
+    <value>Radian sesaat ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRevolutionsPerMinute" xml:space="preserve">
+    <value>Revolusi seminit ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegreesPerSecondSquared" xml:space="preserve">
+    <value>Darjah sesaat kuasa dua ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadiansPerSecondSquared" xml:space="preserve">
+    <value>Radian sesaat kuasa dua ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
+    <value>Unit panjang tersuai:</value>
+  </data>
+  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
+    <value>Penjejakan</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
+    <value>Parameter penjejak lalai</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
+    <value>Tetingkap objek:</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
+    <value>Tetingkap carian:</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
+    <value>Peratusan</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
+    <value>Piksel</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
+    <value>Kategori</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblCommands" xml:space="preserve">
+    <value>Arahan</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnApply" xml:space="preserve">
+    <value>Mohon</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnClear" xml:space="preserve">
+    <value>Padam</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve">
+    <value>Lalai</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblHotkey" xml:space="preserve">
+    <value>Kekunci pintas untuk {0}.{1}</value>
+  </data>
+  <data name="Generic_Quit" xml:space="preserve">
+    <value>Keluar</value>
+  </data>
+  <data name="Generic_Save" xml:space="preserve">
+    <value>Simpan</value>
+  </data>
+  <data name="mnuAbout" xml:space="preserve">
+    <value>Tentang Kinovea…</value>
+  </data>
+  <data name="mnuApplicationFolder" xml:space="preserve">
+    <value>Buka folder log…</value>
+  </data>
+  <data name="mnuEdit" xml:space="preserve">
+    <value>Sunting</value>
+  </data>
+  <data name="mnuFile" xml:space="preserve">
+    <value>Fail</value>
+  </data>
+  <data name="mnuFullScreen" xml:space="preserve">
+    <value>Skrin penuh</value>
+  </data>
+  <data name="mnuHelp" xml:space="preserve">
+    <value>Bantuan</value>
+  </data>
+  <data name="mnuHelpContents" xml:space="preserve">
+    <value>Bantu Kinovea...</value>
+  </data>
+  <data name="mnuHistory" xml:space="preserve">
+    <value>Baru-baru ini</value>
+  </data>
+  <data name="mnuLanguages" xml:space="preserve">
+    <value>Bahasa</value>
+  </data>
+  <data name="mnuVideo" xml:space="preserve">
+    <value>Video</value>
+  </data>
+  <data name="mnuTools" xml:space="preserve">
+    <value>Peralatan</value>
+  </data>
+  <data name="mnuOptions" xml:space="preserve">
+    <value>Pilihan</value>
+  </data>
+  <data name="mnuPreferences" xml:space="preserve">
+    <value>Keutamaan…</value>
+  </data>
+  <data name="mnuWorkspace" xml:space="preserve">
+    <value>Ruang kerja</value>
+  </data>
+  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
+    <value>Simpan sebagai ruang kerja</value>
+  </data>
+  <data name="mnuWorkspaceExport" xml:space="preserve">
+    <value>Eksport ruang kerja</value>
+  </data>
+  <data name="mnuScreens" xml:space="preserve">
+    <value>Lihat</value>
+  </data>
+  <data name="mnuRedo" xml:space="preserve">
+    <value>Buat semula</value>
+  </data>
+  <data name="mnuUndo" xml:space="preserve">
+    <value>Undur semula</value>
+  </data>
+  <data name="TimeCodeFormat_Milliseconds" xml:space="preserve">
+    <value>Jumlah millisaat</value>
+  </data>
+  <data name="TimeCodeFormat_Frames" xml:space="preserve">
+    <value>Nombor bingkai</value>
+  </data>
+  <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve">
+    <value>Seperseratus minit</value>
+  </data>
+  <data name="TimeCodeFormat_Microseconds" xml:space="preserve">
+    <value>Jumlah mikrosaat</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVComma" xml:space="preserve">
+    <value>Koma</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVDelimiter" xml:space="preserve">
+    <value>Pemisah perpuluhan untuk fail CSV:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVPoint" xml:space="preserve">
+    <value>Titik</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportCalibrated" xml:space="preserve">
+    <value>Menentukur ukuran</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportSpace" xml:space="preserve">
+    <value>Mod eksport:</value>
+  </data>
+  <data name="dlgPreferences_Drawing_CSVSystem" xml:space="preserve">
+    <value>Sistem ({0})</value>
+  </data>
+  <data name="dlgWorkspace_ConfirmationMessage" xml:space="preserve">
+    <value>Ruang kerja lalai disimpan.</value>
+  </data>
+  <data name="dlgWorkspace_Title" xml:space="preserve">
+    <value>Ruang kerja</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsHertz" xml:space="preserve">
+    <value>Hertz ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_CyclesPerSecond" xml:space="preserve">
+    <value>Kitaran sesaat ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_CyclesPerMinute" xml:space="preserve">
+    <value>Kitaran seminit ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StepsPerSecond" xml:space="preserve">
+    <value>Langkah sesaat ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StrokesPerSecond" xml:space="preserve">
+    <value>Strok sesaat ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StrokesPerMinute" xml:space="preserve">
+    <value>Strok seminit ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabExport_IncludeImages" xml:space="preserve">
+    <value>Imej disertai</value>
+  </data>
+  <data name="mnuBigArrow" xml:space="preserve">
+    <value>Anak panah besar</value>
+  </data>
+  <data name="mnuBigHand" xml:space="preserve">
+    <value>Penunjuk besar</value>
+  </data>
+  <data name="mnuDefaultPointer" xml:space="preserve">
+    <value>Lalai</value>
+  </data>
+  <data name="mnuPointer" xml:space="preserve">
+    <value>Penunjuk</value>
+  </data>
+  <data name="mnuTranslate" xml:space="preserve">
+    <value>Terjemah Kinovea…</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StepsPerMinute" xml:space="preserve">
+    <value>Langkah seminit ({0})</value>
+  </data>
 </root>
