@@ -122,7 +122,7 @@
     <value>Linija kalibracije</value>
   </data>
   <data name="dlgCalibratePlane_Title" xml:space="preserve">
-    <value>Kalibracija sloja</value>
+    <value>Kalibracija plohe</value>
   </data>
   <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve">
     <value>Trajanje svake ključne slike: {0} stotinki sekunde.</value>
@@ -653,7 +653,7 @@
     <value>Oznake</value>
   </data>
   <data name="DataAnalysis_CalibrationPlane" xml:space="preserve">
-    <value>Sloj kalibracije</value>
+    <value>Ploha kalibracije</value>
   </data>
   <data name="DataAnalysis_DataLabel" xml:space="preserve">
     <value>Podaci:</value>
@@ -1391,7 +1391,7 @@
     <value>Kalibracija leće: {0}</value>
   </data>
   <data name="FormCalibrationValidation_PlaneCalibration" xml:space="preserve">
-    <value>Kalibracija sloja: {0}</value>
+    <value>Kalibracija plohe: {0}</value>
   </data>
   <data name="filterName_LensCalibration" xml:space="preserve">
     <value>Kalibracija leće</value>
