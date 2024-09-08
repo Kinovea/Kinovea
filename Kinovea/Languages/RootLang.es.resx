@@ -538,4 +538,16 @@
   <data name="PreferencePanelDrawings_InitTabUnits_StepsPerMinute" xml:space="preserve">
     <value>Pasos por minuto ({0})</value>
   </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_CyclesPerSecond" xml:space="preserve">
+    <value>Ciclos por segundo ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_CyclesPerMinute" xml:space="preserve">
+    <value>Ciclos por minuto ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StrokesPerSecond" xml:space="preserve">
+    <value>Pulsaciones por segundo ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StrokesPerMinute" xml:space="preserve">
+    <value>Pulsaciones por minuto ({0})</value>
+  </data>
 </root>
