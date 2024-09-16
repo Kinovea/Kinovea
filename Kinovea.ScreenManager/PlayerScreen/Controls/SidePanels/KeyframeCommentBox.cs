@@ -53,6 +53,7 @@ namespace Kinovea.ScreenManager
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
+        #region Constructor
         public KeyframeCommentBox()
         {
             InitializeComponent();
@@ -68,18 +69,7 @@ namespace Kinovea.ScreenManager
 
             AfterColorChange();
         }
-
-        private void RtbComment_MouseWheel(object sender, MouseEventArgs e)
-        {
-            ((HandledMouseEventArgs)e).Handled = true;
-            this.OnMouseWheel(e);
-        }
-
-        private void KeyframeCommentBox_Paint(object sender, PaintEventArgs e)
-        {
-            Rectangle rect = new Rectangle(0, 0, this.ClientRectangle.Width - 1, this.ClientRectangle.Height - 1);
-            e.Graphics.DrawRectangle(penBorder, rect);
-        }
+        #endregion
 
         #region Public methods
 
@@ -101,7 +91,6 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Update the highlight status based on the current timestamp.
         /// </summary>
-        /// <param name="timestamp"></param>
         public void UpdateHighlight(long timestamp)
         {
             if (keyframe == null)
@@ -126,7 +115,7 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Update title, color or comments after an external change.
+        /// Update title, color or comments after an external change to the underlying keyframe.
         /// </summary>
         public void UpdateContent()
         {
@@ -153,6 +142,19 @@ namespace Kinovea.ScreenManager
             CaptureCurrentState();
         }
         #endregion
+
+
+        private void RtbComment_MouseWheel(object sender, MouseEventArgs e)
+        {
+            ((HandledMouseEventArgs)e).Handled = true;
+            this.OnMouseWheel(e);
+        }
+
+        private void KeyframeCommentBox_Paint(object sender, PaintEventArgs e)
+        {
+            Rectangle rect = new Rectangle(0, 0, this.ClientRectangle.Width - 1, this.ClientRectangle.Height - 1);
+            e.Graphics.DrawRectangle(penBorder, rect);
+        }
 
         private void btnColor_Click(object sender, EventArgs e)
         {
@@ -200,24 +202,6 @@ namespace Kinovea.ScreenManager
             AfterStateChanged();
         }
 
-        private void AfterNameChange()
-        {
-            Size size = TextRenderer.MeasureText(tbName.Text, tbName.Font);
-            tbName.Width = size.Width;
-            tbName.Height = size.Height;
-        }
-
-        private void AfterColorChange()
-        {
-            if (keyframe == null)
-                return;
-            
-            btnColor.Invalidate();
-            btnSidebar.BackColor = isSelected ? keyframe.Color : this.BackColor;
-            btnSidebar.FlatAppearance.MouseDownBackColor = btnSidebar.BackColor;
-            btnSidebar.FlatAppearance.MouseOverBackColor = btnSidebar.BackColor;
-        }
-
         private void rtbComment_TextChanged(object sender, EventArgs e)
         {
             UpdateTextHeight();
@@ -229,6 +213,24 @@ namespace Kinovea.ScreenManager
             RaiseUpdated();
 
             AfterStateChanged();
+        }
+
+        private void AfterNameChange()
+        {
+            Size size = TextRenderer.MeasureText(tbName.Text, tbName.Font);
+            tbName.Width = size.Width;
+            tbName.Height = size.Height;
+        }
+
+        private void AfterColorChange()
+        {
+            if (keyframe == null)
+                return;
+
+            btnColor.Invalidate();
+            btnSidebar.BackColor = isSelected ? keyframe.Color : this.BackColor;
+            btnSidebar.FlatAppearance.MouseDownBackColor = btnSidebar.BackColor;
+            btnSidebar.FlatAppearance.MouseOverBackColor = btnSidebar.BackColor;
         }
 
         /// <summary>

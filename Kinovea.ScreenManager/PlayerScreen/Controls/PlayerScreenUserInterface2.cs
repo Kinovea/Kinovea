@@ -387,11 +387,11 @@ namespace Kinovea.ScreenManager
         private ContextMenuStrip popMenuFilter = new ContextMenuStrip();
         #endregion
 
-        private ToolStripButton m_btnAddKeyFrame;
-        private ToolStripButton m_btnShowComments;
-        private ToolStripButton m_btnToolPresets;
+        private ToolStripButton btnAddKeyFrame;
+        private ToolStripButton btnToggleSidePanel;
+        private ToolStripButton btnToolPresets;
         private InfobarPlayer infobar = new InfobarPlayer();
-        private bool showPropertiesPanel;
+        private bool isSidePanelVisible;
         private SidePanelKeyframes sidePanelKeyframes = new SidePanelKeyframes();
 
         private DropWatcher m_DropWatcher = new DropWatcher();
@@ -1013,7 +1013,7 @@ namespace Kinovea.ScreenManager
             sidePanelKeyframes.KeyframeUpdated += KeyframeControl_KeyframeUpdated;
 
             // Hide work-in-progress panels.
-            tabControl.TabPages.RemoveAt(1);
+            //tabControl.TabPages.RemoveAt(1);
 
             splitViewport_Properties.Panel2Collapsed = true;
         }
@@ -1029,18 +1029,18 @@ namespace Kinovea.ScreenManager
             drawingToolbarPresenter.AddToolButton(m_PointerTool, drawingTool_Click);
 
             // Create key image.
-            m_btnAddKeyFrame = CreateToolButton();
-            m_btnAddKeyFrame.Image = Resources.createkeyframe;
-            m_btnAddKeyFrame.Click += btnAddKeyframe_Click;
-            m_btnAddKeyFrame.ToolTipText = ScreenManagerLang.ToolTip_AddKeyframe;
-            drawingToolbarPresenter.AddSpecialButton(m_btnAddKeyFrame);
+            btnAddKeyFrame = CreateToolButton();
+            btnAddKeyFrame.Image = Resources.createkeyframe;
+            btnAddKeyFrame.Click += btnAddKeyframe_Click;
+            btnAddKeyFrame.ToolTipText = ScreenManagerLang.ToolTip_AddKeyframe;
+            drawingToolbarPresenter.AddSpecialButton(btnAddKeyFrame);
 
             // Side panel toggle.
-            m_btnShowComments = CreateToolButton();
-            m_btnShowComments.Image = Resources.sidepanel;
-            m_btnShowComments.Click += btnShowSidePanel_Click;
-            m_btnShowComments.ToolTipText = ScreenManagerLang.ToolTip_ShowComments;
-            drawingToolbarPresenter.AddSpecialButton(m_btnShowComments);
+            btnToggleSidePanel = CreateToolButton();
+            btnToggleSidePanel.Image = Resources.sidepanel;
+            btnToggleSidePanel.Click += (s, e) => ToggleSidePanelVisibility();
+            btnToggleSidePanel.ToolTipText = ScreenManagerLang.ToolTip_ShowComments;
+            drawingToolbarPresenter.AddSpecialButton(btnToggleSidePanel);
 
             drawingToolbarPresenter.AddSeparator();
 
@@ -1051,11 +1051,11 @@ namespace Kinovea.ScreenManager
             drawingToolbarPresenter.AddToolButton(ToolManager.Tools["Magnifier"], btnMagnifier_Click);
 
             // Special button: Tool presets
-            m_btnToolPresets = CreateToolButton();
-            m_btnToolPresets.Image = Resources.SwatchIcon3;
-            m_btnToolPresets.Click += btnColorProfile_Click;
-            m_btnToolPresets.ToolTipText = ScreenManagerLang.ToolTip_ColorProfile;
-            drawingToolbarPresenter.AddSpecialButton(m_btnToolPresets);
+            btnToolPresets = CreateToolButton();
+            btnToolPresets.Image = Resources.SwatchIcon3;
+            btnToolPresets.Click += btnColorProfile_Click;
+            btnToolPresets.ToolTipText = ScreenManagerLang.ToolTip_ColorProfile;
+            drawingToolbarPresenter.AddSpecialButton(btnToolPresets);
 
             stripDrawingTools.Left = 3;
         }
@@ -2952,9 +2952,9 @@ namespace Kinovea.ScreenManager
                 }
             }
 
-            m_btnAddKeyFrame.ToolTipText = ScreenManagerLang.ToolTip_AddKeyframe;
-            m_btnShowComments.ToolTipText = ScreenManagerLang.ToolTip_ShowComments;
-            m_btnToolPresets.ToolTipText = ScreenManagerLang.ToolTip_ColorProfile;
+            btnAddKeyFrame.ToolTipText = ScreenManagerLang.ToolTip_AddKeyframe;
+            btnToggleSidePanel.ToolTipText = ScreenManagerLang.ToolTip_ShowComments;
+            btnToolPresets.ToolTipText = ScreenManagerLang.ToolTip_ColorProfile;
         }
         #endregion
 
@@ -4497,11 +4497,8 @@ namespace Kinovea.ScreenManager
         private void KeyframeControl_ShowCommentsAsked(object sender, EventArgs e)
         {
             // Make sure the properties panel is visible.
-            if (showPropertiesPanel)
-                return;
-
-            splitViewport_Properties.Panel2Collapsed = false;
-            showPropertiesPanel = true;
+            if (!isSidePanelVisible)
+                ToggleSidePanelVisibility();
         }
 
         private void KeyframeControl_KeyframeUpdated(object sender, EventArgs<Guid> e)
@@ -4642,16 +4639,15 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        private void btnShowSidePanel_Click(object sender, EventArgs e)
+        private void ToggleSidePanelVisibility()
         {
             OnPoke();
 
             if (!m_FrameServer.Loaded)
                 return;
 
-            // Toggle between showing and hiding the properties panel.
-            showPropertiesPanel = !showPropertiesPanel;
-            splitViewport_Properties.Panel2Collapsed = !showPropertiesPanel;
+            isSidePanelVisible = !isSidePanelVisible;
+            splitViewport_Properties.Panel2Collapsed = !isSidePanelVisible;
         }
         private void btnColorProfile_Click(object sender, EventArgs e)
         {
