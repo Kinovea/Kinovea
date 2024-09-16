@@ -85,7 +85,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private StyleHelper styleHelper = new StyleHelper();
+        private StyleMaster styleHelper = new StyleMaster();
         private DrawingStyle style;
         private const int defaultFontSize = 16;
         private List<DrawingNumberSequenceItem> numberSequence = new List<DrawingNumberSequenceItem>();

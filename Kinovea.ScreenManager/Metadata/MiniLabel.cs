@@ -110,7 +110,7 @@ namespace Kinovea.ScreenManager
         private int attachIndex; // The index of the reference point in the track points list.
         private PointF attachLocation; // The point we are attached to (image coordinates).
         private bool showConnector = true; // Whether to draw the connection between the label and the attach point.
-        private StyleHelper styleHelper = new StyleHelper();
+        private StyleMaster styleHelper = new StyleMaster();
         private IImageToViewportTransformer transformer;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion

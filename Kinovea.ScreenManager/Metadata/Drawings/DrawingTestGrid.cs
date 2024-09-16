@@ -96,7 +96,7 @@ namespace Kinovea.ScreenManager
         #region Members
         private SizeF imageSize;
         
-        private StyleHelper styleHelper = new StyleHelper();
+        private StyleMaster styleHelper = new StyleMaster();
         private DrawingStyle style;
         private Dictionary<string, GridLine> gridLines = new Dictionary<string, GridLine>();
 

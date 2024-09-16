@@ -27,7 +27,7 @@ namespace Kinovea.ScreenManager
         private HistoryMementoModifyVideoFilter memento;
         private KinogramParameters parameters;
         private bool manualUpdate;
-        private StyleHelper styleHelper = new StyleHelper();
+        private StyleMaster styleHelper = new StyleMaster();
         private DrawingStyle style;
         private IDrawingHostView hostView;
         #endregion

@@ -101,7 +101,7 @@ namespace Kinovea.ScreenManager
         private Size imageSize;
 
         // Decoration
-        private StyleHelper styleHelper = new StyleHelper();
+        private StyleMaster styleHelper = new StyleMaster();
         private DrawingStyle style;
 
         private bool trackingUpdate;

@@ -105,7 +105,7 @@ namespace Kinovea.ScreenManager
         private bool initializing = true;
 
         // Decoration
-        private StyleHelper styleHelper = new StyleHelper();
+        private StyleMaster styleHelper = new StyleMaster();
         private DrawingStyle style;
         private InfosFading infosFading;
 

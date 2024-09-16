@@ -117,7 +117,7 @@ namespace Kinovea.ScreenManager
         private bool measureInitialized;
 
         // Decoration
-        private StyleHelper styleHelper = new StyleHelper();
+        private StyleMaster styleHelper = new StyleMaster();
         private DrawingStyle style;
         private MiniLabel miniLabel = new MiniLabel();
         private MeasureLabelType measureLabelType = MeasureLabelType.None;

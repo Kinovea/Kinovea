@@ -144,7 +144,7 @@ namespace Kinovea.ScreenManager
         private long trackingTimestamps = -1;
 
         private InfosFading infosFading;
-        private StyleHelper styleHelper = new StyleHelper();
+        private StyleMaster styleHelper = new StyleMaster();
         private DrawingStyle style;
         private Pen penEdges = Pens.White;
         private CalibrationHelper calibrationHelper;

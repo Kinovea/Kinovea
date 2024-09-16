@@ -85,7 +85,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private List<PointF> pointList = new List<PointF>();
-        private StyleHelper styleHelper = new StyleHelper();
+        private StyleMaster styleHelper = new StyleMaster();
         private DrawingStyle style;
         private InfosFading infosFading;
         private bool initializing = true;

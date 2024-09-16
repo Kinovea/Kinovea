@@ -243,7 +243,7 @@ namespace Kinovea.ScreenManager
         private int currentPointIndex;
 
         // Decoration
-        private StyleHelper styleHelper = new StyleHelper();
+        private StyleMaster styleHelper = new StyleMaster();
         private DrawingStyle style;
 
         // Opacity

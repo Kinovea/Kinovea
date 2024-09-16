@@ -98,7 +98,7 @@ namespace Kinovea.ScreenManager
         private List<PointF> points = new List<PointF>();
         
         private InfosFading infosFading;
-        private StyleHelper styleHelper = new StyleHelper();
+        private StyleMaster styleHelper = new StyleMaster();
         private DrawingStyle style;
         private Pen penEdges = Pens.White;
 

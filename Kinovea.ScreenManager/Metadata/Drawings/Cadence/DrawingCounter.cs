@@ -119,7 +119,7 @@ namespace Kinovea.ScreenManager
         private bool doubleCadence;
         
         // Decoration
-        private StyleHelper styleHelper = new StyleHelper();
+        private StyleMaster styleHelper = new StyleMaster();
         private DrawingStyle style;
         private InfosFading infosFading;
         private static readonly int allowedFramesOver = 12;  // Number of frames the chrono stays visible after the 'Hiding' point.

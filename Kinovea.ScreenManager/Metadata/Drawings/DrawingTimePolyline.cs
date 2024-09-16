@@ -84,7 +84,7 @@ namespace Kinovea.ScreenManager
         #region Members
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
         private Dictionary<string, long> times = new Dictionary<string, long>();
-        private StyleHelper styleHelper = new StyleHelper();
+        private StyleMaster styleHelper = new StyleMaster();
         private DrawingStyle style;
         private InfosFading infosFading;
         // TODO: move to abstract drawing and setup after KVA import.

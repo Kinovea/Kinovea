@@ -106,7 +106,7 @@ namespace Kinovea.ScreenManager
         
         private AngleHelper angleHelper = new AngleHelper();
         private DrawingStyle style;
-        private StyleHelper styleHelper = new StyleHelper();
+        private StyleMaster styleHelper = new StyleMaster();
         private InfosFading infosFading;
         private bool signedAngle = true;
         private bool counterClockwise = true;

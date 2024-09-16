@@ -135,7 +135,7 @@ namespace Kinovea.ScreenManager
 
 
         private DrawingStyle style;
-        private StyleHelper styleHelper = new StyleHelper();
+        private StyleMaster styleHelper = new StyleMaster();
         private InfosFading infosFading;
         private const int defaultBackgroundAlpha = 92;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
