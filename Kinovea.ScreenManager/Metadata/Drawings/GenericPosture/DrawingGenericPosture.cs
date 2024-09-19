@@ -150,7 +150,7 @@ namespace Kinovea.ScreenManager
                 InitOptionMenus();
             
             // Decoration and binding to mini editors.
-            styleData.BackgroundColor = new Bicolor(Color.Empty);
+            styleData.BackgroundColor = Color.Black;
             styleData.Font = new Font("Arial", 12, FontStyle.Bold);
 
             if (stylePreset == null)

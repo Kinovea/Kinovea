@@ -139,7 +139,7 @@ namespace Kinovea.ScreenManager
             showArrow = false;
             hasBackground = true;
             
-            styleData.BackgroundColor = new Bicolor(Color.Black);
+            styleData.BackgroundColor = Color.Black;
             styleData.Font = new Font("Arial", defaultFontSize, FontStyle.Bold);
             if (preset == null)
                 preset = ToolManager.GetDefaultStyleElements("Label");

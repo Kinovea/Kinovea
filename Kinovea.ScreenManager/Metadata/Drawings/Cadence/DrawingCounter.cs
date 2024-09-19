@@ -164,7 +164,8 @@ namespace Kinovea.ScreenManager
 
             text = strNoValue;
 
-            styleData.BackgroundColor = new Bicolor(Color.Black);
+            // Initialize style
+            styleData.BackgroundColor = Color.Black;
             styleData.Font = new Font("Consolas", 16, FontStyle.Bold);
             styleData.Clock = false;
             if (preset == null)

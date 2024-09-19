@@ -27,8 +27,8 @@ namespace Kinovea.ScreenManager
         private HistoryMementoModifyVideoFilter memento;
         private KinogramParameters parameters;
         private bool manualUpdate;
-        private StyleData styleHelper = new StyleData();
-        private StyleElements style;
+        private StyleData styleData = new StyleData();
+        private StyleElements styleElements;
         private IDrawingHostView hostView;
         #endregion
 
@@ -73,18 +73,18 @@ namespace Kinovea.ScreenManager
 
         private void SetupStyle()
         {
-            style = new StyleElements();
-            style.Elements.Add("borderColor", new StyleElementColor(parameters.BorderColor, ScreenManagerLang.StyleElement_Color_BorderColor));
-            style.Elements.Add("labelColor", new StyleElementColor(parameters.LabelColor, ScreenManagerLang.StyleElement_Color_LabelColor));
-            style.Elements.Add("labelSize", new StyleElementFontSize(parameters.LabelSize, ScreenManagerLang.StyleElement_FontSize_LabelSize));
+            styleElements = new StyleElements();
+            styleElements.Elements.Add("borderColor", new StyleElementColor(parameters.BorderColor, ScreenManagerLang.StyleElement_Color_BorderColor));
+            styleElements.Elements.Add("labelColor", new StyleElementColor(parameters.LabelColor, ScreenManagerLang.StyleElement_Color_LabelColor));
+            styleElements.Elements.Add("labelSize", new StyleElementFontSize(parameters.LabelSize, ScreenManagerLang.StyleElement_FontSize_LabelSize));
 
-            styleHelper.Color = Color.Red;
-            styleHelper.BackgroundColor = new Bicolor(Color.Black);
-            styleHelper.Font = new Font("Arial", 16, FontStyle.Bold);
+            styleData.Color = Color.Red;
+            styleData.BackgroundColor = Color.Black;
+            styleData.Font = new Font("Arial", 16, FontStyle.Bold);
 
-            style.Bind(styleHelper, "Color", "borderColor");
-            style.Bind(styleHelper, "Bicolor", "labelColor");
-            style.Bind(styleHelper, "Font", "labelSize");
+            styleElements.Bind(styleData, "Color", "borderColor");
+            styleElements.Bind(styleData, "Bicolor", "labelColor");
+            styleElements.Bind(styleData, "Font", "labelSize");
         }
 
         private void SetupStyleControls()
@@ -94,7 +94,7 @@ namespace Kinovea.ScreenManager
             int lastEditorBottom = lblCropSize.Bottom;
             Size editorSize = new Size(60, 20);
 
-            foreach (KeyValuePair<string, AbstractStyleElement> pair in style.Elements)
+            foreach (KeyValuePair<string, AbstractStyleElement> pair in styleElements.Elements)
             {
                 AbstractStyleElement styleElement = pair.Value;
                 styleElement.ValueChanged += styleElement_ValueChanged;
@@ -188,9 +188,9 @@ namespace Kinovea.ScreenManager
 
         private void UpdateKinogram()
         {
-            parameters.BorderColor = styleHelper.Color;
-            parameters.LabelColor = styleHelper.GetBackgroundColor();
-            parameters.LabelSize = (int)styleHelper.Font.Size;
+            parameters.BorderColor = styleData.Color;
+            parameters.LabelColor = styleData.GetBackgroundColor();
+            parameters.LabelSize = (int)styleData.Font.Size;
             kinogram.ConfigurationChanged(true);
             hostView?.InvalidateFromMenu();
         }
@@ -204,9 +204,9 @@ namespace Kinovea.ScreenManager
         private void btnOK_Click(object sender, EventArgs e)
         {
             // Import style values and commit the parameters object.
-            parameters.BorderColor = styleHelper.Color;
-            parameters.LabelColor = styleHelper.GetBackgroundColor();
-            parameters.LabelSize = (int)styleHelper.Font.Size;
+            parameters.BorderColor = styleData.Color;
+            parameters.LabelColor = styleData.GetBackgroundColor();
+            parameters.LabelSize = (int)styleData.Font.Size;
 
             // Commit the original state to the undo history stack.
             kinogram.ParentMetadata.HistoryStack.PushNewCommand(memento);

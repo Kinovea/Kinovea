@@ -430,7 +430,6 @@
     <Compile Include="Measurement\Plotting\TimeSeriesPlotSpecification.cs" />
     <Compile Include="Metadata\Styling\AbstractStyleElement.cs" />
     <Compile Include="Metadata\Drawings\Helpers\ArrowHelper.cs" />
-    <Compile Include="Metadata\Styling\Types\Bicolor.cs" />
     <Compile Include="Metadata\Styling\StyleElements.cs" />
     <Compile Include="Metadata\Styling\Types\LineEnding.cs" />
     <Compile Include="Metadata\Styling\Types\LineShape.cs" />

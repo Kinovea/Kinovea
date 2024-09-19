@@ -70,7 +70,7 @@ namespace Kinovea.ScreenManager
         /// The main color of the object.
         /// This is not the foreground color of objects that are defined by their background color.
         /// For these objects (labels, chrono) the foreground color is computed on the fly in the helpers.
-        /// See GetForegroundPen, GetForegroundBrush.
+        /// See GetForegroundColor, GetForegroundPen, GetForegroundBrush, etc.
         /// </summary>
         public Color Color
         {
@@ -82,11 +82,37 @@ namespace Kinovea.ScreenManager
         /// The background color.
         /// The foreground color (black or white) is computed automatically by the helpers.
         /// </summary>
-        public Bicolor BackgroundColor
+        public Color BackgroundColor
         {
             get { return backgroundColor; }
             set { backgroundColor = value; }
 
+        }
+
+        /// <summary>
+        /// The Font used for text.
+        /// </summary>
+        public Font Font
+        {
+            get { return font; }
+            set
+            {
+                if (value != null)
+                {
+                    // We make temp copies of the variables because we call .Dispose() but
+                    // it's possible that input value was pointing to the same reference.
+                    string fontName = value.Name;
+                    FontStyle fontStyle = value.Style;
+                    float fontSize = value.Size;
+                    font.Dispose();
+                    font = new Font(fontName, fontSize, fontStyle);
+                }
+                else
+                {
+                    font.Dispose();
+                    font = null;
+                }
+            }
         }
 
         /// <summary>
@@ -114,32 +140,6 @@ namespace Kinovea.ScreenManager
         {
             get { return lineEnding; }
             set { lineEnding = value;}
-        }
-
-        /// <summary>
-        /// The Font used for text.
-        /// </summary>
-        public Font Font
-        {
-            get { return font; }
-            set
-            {
-                if(value != null)
-                {
-                    // We make temp copies of the variables because we call .Dispose() but
-                    // it's possible that input value was pointing to the same reference.
-                    string fontName = value.Name;
-                    FontStyle fontStyle = value.Style;
-                    float fontSize = value.Size;
-                    font.Dispose();
-                    font = new Font(fontName, fontSize, fontStyle);
-                }
-                else
-                {
-                    font.Dispose();
-                    font = null;
-                }
-            }
         }
 
         /// <summary>
@@ -214,7 +214,7 @@ namespace Kinovea.ScreenManager
             {
                 int hash = 0;
                 hash ^= color.GetHashCode();
-                hash ^= backgroundColor.ContentHash;
+                hash ^= backgroundColor.GetHashCode();
                 hash ^= lineSize.GetHashCode();
                 hash ^= lineShape.GetHashCode();
                 hash ^= lineEnding.GetHashCode();
@@ -231,7 +231,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private Color color = Color.Black;
-        private Bicolor backgroundColor;
+        private Color backgroundColor;
         private int lineSize = 1;
         private LineShape lineShape = LineShape.Solid;
         private Font font = new Font("Arial", 12, FontStyle.Regular);
@@ -282,7 +282,7 @@ namespace Kinovea.ScreenManager
                     {
                         if (value is Color)
                         {
-                            backgroundColor.Background = (Color)value;
+                            backgroundColor = (Color)value;
                             imported = true;
                         }
                         break;
@@ -440,7 +440,7 @@ namespace Kinovea.ScreenManager
                     {
                         if (targetType == typeof(Color))
                         {
-                            result = backgroundColor.Background;
+                            result = backgroundColor;
                             converted = true;
                         }
                         break;
@@ -650,8 +650,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public Color GetBackgroundColor(int alpha = 255)
         {
-            Color background = backgroundColor.Background;
-            Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, background) : background;
+            Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, backgroundColor) : backgroundColor;
             return c;
         }
 
@@ -689,7 +688,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public Color GetForegroundColor(int alpha = 255)
         {
-            Color foreground = GetForegroundColor(backgroundColor.Background);
+            Color foreground = GetForegroundColor(backgroundColor);
             Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, foreground) : foreground;
             return c;
         }

@@ -130,7 +130,7 @@ namespace Kinovea.ScreenManager
             points["0"] = origin;
             
             // Decoration & binding with editors
-            styleData.BackgroundColor = new Bicolor(Color.Empty);
+            styleData.BackgroundColor = Color.Black;
             styleData.Font = new Font("Arial", 8, FontStyle.Bold);
 
             // TODO: get preset from tool manager if not found.

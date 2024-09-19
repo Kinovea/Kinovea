@@ -447,7 +447,7 @@ namespace Kinovea.ScreenManager
         {
             // Initialize style data in case we don't import some values.
             // These are the properties we need to paint this drawing.
-            styleData.BackgroundColor = new Bicolor(Color.Empty);
+            styleData.BackgroundColor = Color.Black;
             styleData.Font = new Font("Arial", 12, FontStyle.Bold);
             
             // Fallback preset in case we don't have one.

@@ -174,7 +174,7 @@ namespace Kinovea.ScreenManager
 
             timecode = "error";
 
-            styleData.BackgroundColor = new Bicolor(Color.Black);
+            styleData.BackgroundColor = Color.Black;
             styleData.Font = new Font("Arial", 16, FontStyle.Bold);
             styleData.Clock = false;
             if (preset == null)

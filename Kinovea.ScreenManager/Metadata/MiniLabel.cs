@@ -84,7 +84,7 @@ namespace Kinovea.ScreenManager
         public Color BackColor
         {
             get { return styleData.GetBackgroundColor(); }
-            set { styleData.BackgroundColor = new Bicolor(value); }
+            set { styleData.BackgroundColor = value; }
         }
 
         /// <summary>
@@ -130,8 +130,8 @@ namespace Kinovea.ScreenManager
             }
 
             background.Rectangle = new Rectangle(attachPoint.Translate(tx, ty).ToPoint(), Size.Empty);
+            styleData.BackgroundColor = Color.FromArgb(160, color);
             styleData.Font = new Font("Arial", 8, FontStyle.Bold);
-            styleData.BackgroundColor = new Bicolor(Color.FromArgb(160, color));
         }
         public MiniLabel(XmlReader xmlReader, PointF scale)
             : this(PointF.Empty, Color.Black, null)
