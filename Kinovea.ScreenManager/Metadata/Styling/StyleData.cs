@@ -40,6 +40,10 @@ namespace Kinovea.ScreenManager
     /// The binding is between a specific property here and the wrapped value field 
     /// in the style element.
     /// 
+    /// The C# properties exposed here are for when the caller knows exactly 
+    /// what property should be used at compile time. A more typical usage is through
+    /// Get(propName, type) and Set(propName, value).
+    /// 
     /// Operations
     /// - Init tool: default style elements (code or xml), no binding.
     /// - Create drawing: copy the drawing's parent tool elements and bind to data fields.
@@ -215,10 +219,10 @@ namespace Kinovea.ScreenManager
                 int hash = 0;
                 hash ^= color.GetHashCode();
                 hash ^= backgroundColor.GetHashCode();
+                hash ^= font.GetHashCode();
                 hash ^= lineSize.GetHashCode();
                 hash ^= lineShape.GetHashCode();
                 hash ^= lineEnding.GetHashCode();
-                hash ^= font.GetHashCode();
                 hash ^= trackShape.GetHashCode();
                 hash ^= penShape.GetHashCode();
                 hash ^= gridCols.GetHashCode();
@@ -230,19 +234,19 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private Color color = Color.Black;
-        private Color backgroundColor;
-        private int lineSize = 1;
-        private LineShape lineShape = LineShape.Solid;
-        private Font font = new Font("Arial", 12, FontStyle.Regular);
-        private LineEnding lineEnding = LineEnding.None;
-        private TrackShape trackShape = TrackShape.Solid;
-        private PenShape penShape = PenShape.Solid;
-        private int gridCols;
-        private int gridRows;
+        private Color color             = Color.Black;
+        private Color backgroundColor   = Color.Black;
+        private Font font               = new Font("Arial", 12, FontStyle.Regular);
+        private int lineSize            = 1;
+        private LineShape lineShape     = LineShape.Solid;
+        private LineEnding lineEnding   = LineEnding.None;
+        private TrackShape trackShape   = TrackShape.Solid;
+        private PenShape penShape       = PenShape.Solid;
+        private int gridCols            = 4;
+        private int gridRows            = 4;
         private Dictionary<string, bool> toggles = new Dictionary<string, bool>();
 
-        // Absolute minimum font size in screen space used for drawing text.
+        // Absolute minimum font size in screen space used for painting text.
         private static readonly int minFontSize = 8;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -260,7 +264,151 @@ namespace Kinovea.ScreenManager
         #region Public Methods
 
         /// <summary>
-        /// Update a property with a style element value.
+        /// Retrieve the value of a property as a target data type.
+        /// </summary>
+        public object Get(string sourceProperty, Type targetType)
+        {
+            bool converted = false;
+            object result = null;
+            switch (sourceProperty)
+            {
+                case "Color":
+                    {
+                        if (targetType == typeof(Color))
+                        {
+                            result = color;
+                            converted = true;
+                        }
+                        break;
+                    }
+                case "Bicolor":
+                    {
+                        if (targetType == typeof(Color))
+                        {
+                            result = backgroundColor;
+                            converted = true;
+                        }
+                        break;
+                    }
+                case "Font":
+                    {
+                        if (targetType == typeof(int))
+                        {
+                            result = (int)font.Size;
+                            converted = true;
+                        }
+                        break;
+                    }
+                case "LineSize":
+                    {
+                        if (targetType == typeof(int))
+                        {
+                            result = lineSize;
+                            converted = true;
+                        }
+                        break;
+                    }
+                case "LineShape":
+                    {
+                        if (targetType == typeof(LineShape))
+                        {
+                            result = lineShape;
+                            converted = true;
+                        }
+                        break;
+                    }
+                case "LineEnding":
+                    {
+                        if (targetType == typeof(LineEnding))
+                        {
+                            result = lineEnding;
+                            converted = true;
+                        }
+                        break;
+                    }
+                case "TrackShape":
+                    {
+                        if (targetType == typeof(TrackShape))
+                        {
+                            result = trackShape;
+                            converted = true;
+                        }
+                        break;
+                    }
+                case "PenShape":
+                    {
+                        if (targetType == typeof(PenShape))
+                        {
+                            result = penShape;
+                            converted = true;
+                        }
+                        break;
+                    }
+                case "GridCols":
+                    {
+                        if (targetType == typeof(int))
+                        {
+                            result = gridCols;
+                            converted = true;
+                        }
+                        break;
+                    }
+                case "GridRows":
+                    {
+                        if (targetType == typeof(int))
+                        {
+                            result = gridRows;
+                            converted = true;
+                        }
+                        break;
+                    }
+                case "Toggles/Curved":
+                    {
+                        if (targetType == typeof(bool))
+                        {
+                            result = toggles["curved"];
+                            converted = true;
+                        }
+
+                        break;
+                    }
+                case "Toggles/Perspective":
+                    {
+                        if (targetType == typeof(bool))
+                        {
+                            result = toggles["perspective"];
+                            converted = true;
+                        }
+
+                        break;
+                    }
+                case "Toggles/Clock":
+                    {
+                        if (targetType == typeof(bool))
+                        {
+                            result = toggles["clock"];
+                            converted = true;
+                        }
+
+                        break;
+                    }
+                default:
+                    {
+                        log.DebugFormat("Unknown source property \"{0}\".", sourceProperty);
+                        break;
+                    }
+            }
+
+            if (!converted)
+            {
+                log.DebugFormat("Could not convert property \"{0}\" to update value \"{1}\".", sourceProperty, targetType);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Update a property from a style element value.
         /// </summary>
         public void Set(string targetProperty, object value)
         {
@@ -278,11 +426,24 @@ namespace Kinovea.ScreenManager
                         break;
                     }
                 case "Bicolor":
-                case "BackgroundColor":
                     {
                         if (value is Color)
                         {
                             backgroundColor = (Color)value;
+                            imported = true;
+                        }
+                        break;
+                    }
+                case "Font":
+                    {
+                        // TODO: have a styleElementFont wrapping a FontSpec type. 
+                        if (value is int)
+                        {
+                            // Recreate the font changing just the size.
+                            string fontName = font.Name;
+                            FontStyle fontStyle = font.Style;
+                            font.Dispose();
+                            font = new Font(fontName, (int)value, fontStyle);
                             imported = true;
                         }
                         break;
@@ -335,21 +496,6 @@ namespace Kinovea.ScreenManager
                             imported = true;
                         }
 
-                        break;
-                    }
-                case "Font":
-                    {
-                        // TODO: have a styleElementFont 
-                        // with all the aspects of the font.
-                        if (value is int)
-                        {
-                            // Recreate the font changing just the size.
-                            string fontName = font.Name;
-                            FontStyle fontStyle = font.Style;
-                            font.Dispose();
-                            font = new Font(fontName, (int)value, fontStyle);
-                            imported = true;
-                        }
                         break;
                     }
                 case "GridCols":
@@ -416,150 +562,6 @@ namespace Kinovea.ScreenManager
             {
                 log.DebugFormat("Could not import value \"{0}\" into property \"{1}\".", value.ToString(), targetProperty);
             }
-        }
-
-        /// <summary>
-        /// Export a data field to a target data type for the value of a style element.
-        /// </summary>
-        public object Get(string sourceProperty, Type targetType)
-        {
-            bool converted = false;
-            object result = null;
-            switch (sourceProperty)
-            {
-                case "Color":
-                    {
-                        if (targetType == typeof(Color))
-                        {
-                            result = color;
-                            converted = true;
-                        }
-                        break;
-                    }
-                case "Bicolor":
-                    {
-                        if (targetType == typeof(Color))
-                        {
-                            result = backgroundColor;
-                            converted = true;
-                        }
-                        break;
-                    }
-                case "LineSize":
-                    {
-                        if (targetType == typeof(int))
-                        {
-                            result = lineSize;
-                            converted = true;
-                        }
-                        break;
-                    }
-                case "LineShape":
-                    {
-                        if (targetType == typeof(LineShape))
-                        {
-                            result = lineShape;
-                            converted = true;
-                        }
-                        break;
-                    }
-                case "LineEnding":
-                    {
-                        if (targetType == typeof(LineEnding))
-                        {
-                            result = lineEnding;
-                            converted = true;
-                        }
-                        break;
-                    }
-                case "TrackShape":
-                    {
-                        if (targetType == typeof(TrackShape))
-                        {
-                            result = trackShape;
-                            converted = true;
-                        }
-                        break;
-                    }
-                case "PenShape":
-                    {
-                        if (targetType == typeof(PenShape))
-                        {
-                            result = penShape;
-                            converted = true;
-                        }
-                        break;
-                    }
-                case "Font":
-                    {
-                        if (targetType == typeof(int))
-                        {
-                            result = (int)font.Size;
-                            converted = true;
-                        }
-                        break;
-                    }
-                case "GridCols":
-                    {
-                        if (targetType == typeof(int))
-                        {
-                            result = gridCols;
-                            converted = true;
-                        }
-                        break;
-                    }
-                case "GridRows":
-                    {
-                        if (targetType == typeof(int))
-                        {
-                            result = gridRows;
-                            converted = true;
-                        }
-                        break;
-                    }
-                case "Toggles/Curved":
-                    {
-                        if (targetType == typeof(bool))
-                        {
-                            result = toggles["curved"];
-                            converted = true;
-                        }
-
-                        break;
-                    }
-                case "Toggles/Perspective":
-                    {
-                        if (targetType == typeof(bool))
-                        {
-                            result = toggles["perspective"];
-                            converted = true;
-                        }
-
-                        break;
-                    }
-                case "Toggles/Clock":
-                    {
-                        if (targetType == typeof(bool))
-                        {
-                            result = toggles["clock"];
-                            converted = true;
-                        }
-
-                        break;
-                    }
-                default:
-                    {
-                        log.DebugFormat("Unknown source property \"{0}\".", sourceProperty);
-                        break;
-                    }
-            }
-
-            if (!converted)
-            {
-                log.DebugFormat("Could not convert property \"{0}\" to update value \"{1}\".", sourceProperty, targetType);
-            }
-
-            return result;
         }
 
         #region Pen and Brushes using the main color and line size properties
