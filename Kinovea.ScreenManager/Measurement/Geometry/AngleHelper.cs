@@ -86,7 +86,7 @@ namespace Kinovea.ScreenManager
             CalibratedAngle = ComputeCalibratedAngle(o, a, b, signed, ccw, calibration);
         }
 
-        public void DrawText(Graphics canvas, double opacity, SolidBrush brushFill, PointF o, IImageToViewportTransformer transformer, CalibrationHelper calibrationHelper, StyleData styleHelper)
+        public void DrawText(Graphics canvas, double opacity, SolidBrush brushFill, PointF o, IImageToViewportTransformer transformer, CalibrationHelper calibrationHelper, StyleData sytleData)
         {
             float value = calibrationHelper.ConvertAngle(CalibratedAngle);
 
@@ -99,12 +99,12 @@ namespace Kinovea.ScreenManager
             if (!string.IsNullOrEmpty(symbol))
                 label = string.Format("{0} = {1}", symbol, label);
 
-            SolidBrush fontBrush = styleHelper.GetForegroundBrush((int)(opacity * 255));
+            SolidBrush fontBrush = sytleData.GetForegroundBrush((int)(opacity * 255));
             
-            Font tempFont = styleHelper.GetFont(1.0F);
+            Font tempFont = sytleData.GetFont(1.0F);
             SizeF labelSize = canvas.MeasureString(label, tempFont);
 
-            Font tempFontTransformed = styleHelper.GetFont((float)transformer.Scale);
+            Font tempFontTransformed = sytleData.GetFont((float)transformer.Scale);
             SizeF labelSizeTransformed = canvas.MeasureString(label, tempFontTransformed);
 
             // Background

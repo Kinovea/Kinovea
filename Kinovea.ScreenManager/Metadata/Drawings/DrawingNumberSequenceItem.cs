@@ -82,16 +82,16 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Public methods
-        public void Draw(Graphics canvas, IImageToViewportTransformer transformer, long timestamp, StyleData styleHelper)
+        public void Draw(Graphics canvas, IImageToViewportTransformer transformer, long timestamp, StyleData styleData)
         {
             double opacityFactor = infosFading.GetOpacityFactor(timestamp);
             if(opacityFactor <= 0)
                 return;
         
-            using(SolidBrush brushBack = styleHelper.GetBackgroundBrush((int)(opacityFactor * 255)))
-            using(SolidBrush brushText = styleHelper.GetForegroundBrush((int)(opacityFactor * 255)))
-            using(Font fontText = styleHelper.GetFont((float)transformer.Scale))
-            using(Pen penContour = styleHelper.GetForegroundPen((int)(opacityFactor * 255)))
+            using(SolidBrush brushBack = styleData.GetBackgroundBrush((int)(opacityFactor * 255)))
+            using(SolidBrush brushText = styleData.GetForegroundBrush((int)(opacityFactor * 255)))
+            using(Font fontText = styleData.GetFont((float)transformer.Scale))
+            using(Pen penContour = styleData.GetForegroundPen((int)(opacityFactor * 255)))
             {
                 // Note: recompute background size in case the font floored.
                 string text = value.ToString();
@@ -172,22 +172,6 @@ namespace Kinovea.ScreenManager
                 w.WriteElementString("Time", timestamp.ToString());
                 w.WriteElementString("Location", XmlHelper.WritePointF(background.Rectangle.Location));
                 w.WriteElementString("Value", value.ToString());
-            }
-        }
-        #endregion
-        
-        #region Private methods
-        private void SetText(StyleData styleHelper)
-        {
-            string text = value.ToString();
-            
-            using(Font f = styleHelper.GetFont(1.0F))
-            {
-                SizeF textSize = TextHelper.MeasureString(text, f);
-                
-                float width = value < 10 ? textSize.Height : textSize.Width;
-                float height = textSize.Height;
-                background.Rectangle = new RectangleF(background.Rectangle.Location, new SizeF(width, height));
             }
         }
         #endregion

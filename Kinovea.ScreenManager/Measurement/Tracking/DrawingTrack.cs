@@ -745,10 +745,6 @@ namespace Kinovea.ScreenManager
             {
                 tracker.Draw(canvas, positions[currentPointIndex], transformer, styleData.Color, opacity);
             }
-            /*else if (trackStatus == TrackStatus.Interactive)
-            {
-                tracker.Draw(canvas, positions[currentPoint], transformer, styleHelper.Color, opacity);
-            }*/
             else if (trackStatus == TrackStatus.Configuration)
             {
                 Point location = transformer.Transform(positions[currentPointIndex].Point);
@@ -1815,8 +1811,8 @@ namespace Kinovea.ScreenManager
         public void RecallState()
         {
             // Used when the user cancels his modifications on formConfigureTrajectory.
-            // styleHelper has been reverted already as part of style elements framework.
-            // The minilabels should have been reverted through the main styleHelper value changed event.
+            // styleData has been reverted already as part of style elements mechanics.
+            // The minilabels should have been reverted through the main styleData ValueChanged event.
             name = memoLabel;
         }
 

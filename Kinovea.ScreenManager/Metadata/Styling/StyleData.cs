@@ -56,9 +56,9 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Event raised when the value is changed dynamically through binding.
-        /// This may be useful if the Drawing has several StyleHelper that must be linked somehow.
+        /// This may be useful if the Drawing has several StyleData objects that must be linked somehow.
         /// An example use is when we change the main color of the track, we need to propagate the change
-        /// to the small label attached (for the Label following mode).
+        /// to the mini label.
         /// </summary>
         /// <remarks>The event is not raised when the value is changed manually through a property setter</remarks>
         public event EventHandler ValueChanged;

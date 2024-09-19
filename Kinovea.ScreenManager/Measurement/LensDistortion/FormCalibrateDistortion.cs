@@ -20,8 +20,8 @@ namespace Kinovea.ScreenManager
         private CalibrationHelper calibrationHelper;
         private Rectangle rect;
         private bool manualUpdate;
-        private StyleElements style = new StyleElements();
-        private StyleData styleHelper = new StyleData();
+        private StyleElements styleElements = new StyleElements();
+        private StyleData styleData = new StyleData();
         private DistortionParameters distortionParameters;
         private string pathSpecial = "::Manual"; // Special path to indicate manual changes.
         private double sensorWidth = DistortionParameters.defaultSensorWidth;
@@ -81,22 +81,22 @@ namespace Kinovea.ScreenManager
         private void SetupStyle()
         {
             // Helper with typed accessors.
-            styleHelper.Color = Color.Red;
-            styleHelper.LineSize = 2;
-            styleHelper.GridCols = 10;
-            styleHelper.GridRows = 10;
+            styleData.Color = Color.Red;
+            styleData.LineSize = 2;
+            styleData.GridCols = 10;
+            styleData.GridRows = 10;
 
             // The collection of UI elements.
-            style.Elements.Add("color", new StyleElementColor(Color.Red));
-            style.Elements.Add("line size", new StyleElementLineSize(2));
-            style.Elements.Add("cols", new StyleElementInt(1, 50, 10, "Columns"));
-            style.Elements.Add("rows", new StyleElementInt(1, 50, 10, "Rows"));
+            styleElements.Elements.Add("color", new StyleElementColor(Color.Red));
+            styleElements.Elements.Add("line size", new StyleElementLineSize(2));
+            styleElements.Elements.Add("cols", new StyleElementInt(1, 50, 10, "Columns"));
+            styleElements.Elements.Add("rows", new StyleElementInt(1, 50, 10, "Rows"));
 
             // Binding.
-            style.Bind(styleHelper, "Color", "color");
-            style.Bind(styleHelper, "LineSize", "line size");
-            style.Bind(styleHelper, "GridCols", "cols");
-            style.Bind(styleHelper, "GridRows", "rows");
+            styleElements.Bind(styleData, "Color", "color");
+            styleElements.Bind(styleData, "LineSize", "line size");
+            styleElements.Bind(styleData, "GridCols", "cols");
+            styleElements.Bind(styleData, "GridRows", "rows");
         }
         
         private void PopulateStyleElements()
@@ -104,7 +104,7 @@ namespace Kinovea.ScreenManager
             int editorsLeft = 100;
             Size editorSize = new Size(70, 20);
             int lastEditorBottom = 10;
-            foreach (AbstractStyleElement styleElement in style.Elements.Values)
+            foreach (AbstractStyleElement styleElement in styleElements.Elements.Values)
             {
                 styleElement.ValueChanged += styleElement_ValueChanged;
 
@@ -315,10 +315,10 @@ namespace Kinovea.ScreenManager
         {
             // Update the grid bitmap and the preview.
             bmpGrid = distorter.GetDistortionGrid(
-                styleHelper.Color, 
-                styleHelper.LineSize, 
-                styleHelper.GridCols, 
-                styleHelper.GridRows);
+                styleData.Color, 
+                styleData.LineSize, 
+                styleData.GridCols, 
+                styleData.GridRows);
             pnlPreview.Invalidate();
         }
     }

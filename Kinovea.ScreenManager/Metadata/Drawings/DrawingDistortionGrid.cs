@@ -56,14 +56,14 @@ namespace Kinovea.ScreenManager
                 foreach (PointF p in points)
                     iHash ^= p.GetHashCode();
 
-                iHash ^= styleHelper.ContentHash;
+                iHash ^= styleData.ContentHash;
                 iHash ^= infosFading.ContentHash;
                 return iHash;
             }
         }
         public StyleElements StyleElements
         {
-            get { return style; }
+            get { return styleElements; }
         }
         public override InfosFading InfosFading
         {
@@ -98,8 +98,8 @@ namespace Kinovea.ScreenManager
         private List<PointF> points = new List<PointF>();
         
         private InfosFading infosFading;
-        private StyleData styleHelper = new StyleData();
-        private StyleElements style;
+        private StyleElements styleElements = new StyleElements();
+        private StyleData styleData = new StyleData();
         private Pen penEdges = Pens.White;
 
         private bool initialized = false;
@@ -116,11 +116,11 @@ namespace Kinovea.ScreenManager
         #region Constructor
         public DrawingDistortionGrid(PointF point, long timestamp, long averageTimeStampsPerFrame, StyleElements preset = null)
         {
-            styleHelper.Color = Color.Empty;
+            styleData.Color = Color.Empty;
             if (preset == null)
                 preset = ToolManager.GetDefaultStyleElements("DistortionGrid");
             
-            style = preset.Clone();
+            styleElements = preset.Clone();
             BindStyle();
             
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
@@ -146,7 +146,7 @@ namespace Kinovea.ScreenManager
 
             List<Point> screenPoints = transformer.Transform(points);
 
-            using (penEdges = styleHelper.GetPen(opacityFactor, 1.0))
+            using (penEdges = styleData.GetPen(opacityFactor, 1.0))
             {
                 int rows = subdivisions + 1;
                 int cols = rows;
@@ -234,7 +234,7 @@ namespace Kinovea.ScreenManager
                             break;
                         }
                     case "DrawingStyle":
-                        style.ImportXML(xmlReader);
+                        styleElements.ImportXML(xmlReader);
                         BindStyle();
                         break;
                     case "InfosFading":
@@ -298,7 +298,7 @@ namespace Kinovea.ScreenManager
             if (ShouldSerializeStyle(filter))
             {
                 w.WriteStartElement("DrawingStyle");
-                style.WriteXml(w);
+                styleElements.WriteXml(w);
                 w.WriteEndElement();
             }
 
@@ -348,8 +348,8 @@ namespace Kinovea.ScreenManager
         #region Private methods
         private void BindStyle()
         {
-            StyleElements.SanityCheck(style, ToolManager.GetDefaultStyleElements("DistortionGrid"));
-            style.Bind(styleHelper, "Color", "color");
+            StyleElements.SanityCheck(styleElements, ToolManager.GetDefaultStyleElements("DistortionGrid"));
+            styleElements.Bind(styleData, "Color", "color");
         }
 
         private void mnuCalibrate_Click(object sender, EventArgs e)
