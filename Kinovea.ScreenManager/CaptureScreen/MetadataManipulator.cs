@@ -266,17 +266,11 @@ namespace Kinovea.ScreenManager
                     metadata.HistoryStack.PushNewCommand(memento);
                 }
 
-                // If this was a singleton drawing also update the tool-level preset.
-                if (metadata.HitDrawing is DrawingCoordinateSystem)
-                {
-                    ToolManager.SetToolStyleFromDrawing("CoordinateSystem", ((DrawingCoordinateSystem)metadata.HitDrawing).StyleElements);
-                    ToolManager.SavePresets();
-                }
-                else if (metadata.HitDrawing is DrawingTestGrid)
-                {
-                    ToolManager.SetToolStyleFromDrawing("TestGrid", ((DrawingTestGrid)metadata.HitDrawing).StyleElements);
-                    ToolManager.SavePresets();
-                }
+                // Update the style preset for the parent tool of this drawing
+                // so the next time we use this tool it will have the style we just set.
+                ToolManager.SetToolStyleFromDrawing(metadata.HitDrawing, decorable.StyleElements);
+                ToolManager.SavePresets();
+                InvalidateCursor();
             }
 
             fcd.Dispose();
