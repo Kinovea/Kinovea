@@ -72,7 +72,7 @@ namespace Kinovea.ScreenManager
         }
         public Color Color
         {
-            get { return styleData.GetBackgroundColor(255); }
+            get { return styleData.GetBackgroundColor(); }
         }
         public override InfosFading  InfosFading
         {
@@ -174,7 +174,7 @@ namespace Kinovea.ScreenManager
 
             timecode = "error";
 
-            styleData.Bicolor = new Bicolor(Color.Black);
+            styleData.BackgroundColor = new Bicolor(Color.Black);
             styleData.Font = new Font("Arial", 16, FontStyle.Bold);
             styleData.Clock = false;
             if (preset == null)

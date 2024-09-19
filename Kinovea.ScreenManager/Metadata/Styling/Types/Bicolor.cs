@@ -35,34 +35,28 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public struct Bicolor
     {
-        public Color Foreground
-        {
-            get { return foreground; }
-        }
         public Color Background
         {
             get { return background; }
             set
             {
                 background = value;
-                foreground = value.GetBrightness() >= 0.5 ? Color.Black : Color.White;
             }
         }
+
         public int ContentHash
         {
             get
             {
-                return background.GetHashCode() ^ foreground.GetHashCode();
+                return background.GetHashCode();
             }
         }
 
-        private Color foreground;
         private Color background;
 
         public Bicolor(Color backColor)
         {
             background = backColor;
-            foreground = backColor.GetBrightness() >= 0.5 ? Color.Black : Color.White;
         }
     }
 }

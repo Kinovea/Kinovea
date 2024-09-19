@@ -82,10 +82,11 @@ namespace Kinovea.ScreenManager
         /// The background color.
         /// The foreground color (black or white) is computed automatically by the helpers.
         /// </summary>
-        public Bicolor Bicolor
+        public Bicolor BackgroundColor
         {
-            get { return bicolor; }
-            set { bicolor = value; }
+            get { return backgroundColor; }
+            set { backgroundColor = value; }
+
         }
 
         /// <summary>
@@ -213,7 +214,7 @@ namespace Kinovea.ScreenManager
             {
                 int hash = 0;
                 hash ^= color.GetHashCode();
-                hash ^= bicolor.ContentHash;
+                hash ^= backgroundColor.ContentHash;
                 hash ^= lineSize.GetHashCode();
                 hash ^= lineShape.GetHashCode();
                 hash ^= lineEnding.GetHashCode();
@@ -230,7 +231,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private Color color = Color.Black;
-        private Bicolor bicolor;
+        private Bicolor backgroundColor;
         private int lineSize = 1;
         private LineShape lineShape = LineShape.Solid;
         private Font font = new Font("Arial", 12, FontStyle.Regular);
@@ -277,10 +278,11 @@ namespace Kinovea.ScreenManager
                         break;
                     }
                 case "Bicolor":
+                case "BackgroundColor":
                     {
                         if (value is Color)
                         {
-                            bicolor.Background = (Color)value;
+                            backgroundColor.Background = (Color)value;
                             imported = true;
                         }
                         break;
@@ -438,7 +440,7 @@ namespace Kinovea.ScreenManager
                     {
                         if (targetType == typeof(Color))
                         {
-                            result = bicolor.Background;
+                            result = backgroundColor.Background;
                             converted = true;
                         }
                         break;
@@ -646,9 +648,9 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Return the background color at the specified alpha.
         /// </summary>
-        public Color GetBackgroundColor(int alpha)
+        public Color GetBackgroundColor(int alpha = 255)
         {
-            Color background = bicolor.Background;
+            Color background = backgroundColor.Background;
             Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, background) : background;
             return c;
         }
@@ -672,11 +674,22 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// Static helper returning the foreground color (black or white) 
+        /// from the background color.
+        /// </summary>
+        public static Color GetForegroundColor(Color backgroundColor)
+        {
+            return (backgroundColor.GetBrightness() >= 0.5)
+                ? Color.Black
+                : Color.White;
+        }
+
+        /// <summary>
         /// Returns the foreground color (black or white) at the specified alpha.
         /// </summary>
-        public Color GetForegroundColor(int alpha)
+        public Color GetForegroundColor(int alpha = 255)
         {
-            Color foreground = bicolor.Background.GetBrightness() >= 0.5 ? Color.Black : Color.White;
+            Color foreground = GetForegroundColor(backgroundColor.Background);
             Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, foreground) : foreground;
             return c;
         }

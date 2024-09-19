@@ -342,9 +342,8 @@ namespace Kinovea.ScreenManager
             {
                 // Paint the name according to the drawing object color.
                 var marker = markers[e.RowIndex];
-                var bicolor = new Bicolor(marker.Color);
-                e.SubItem.ForeColor = bicolor.Foreground;
-                e.SubItem.BackColor = bicolor.Background;
+                e.SubItem.BackColor = marker.Color;
+                e.SubItem.ForeColor = StyleData.GetForegroundColor(marker.Color);
                 e.SubItem.Font = new Font(e.SubItem.Font, FontStyle.Bold);
             }
             else

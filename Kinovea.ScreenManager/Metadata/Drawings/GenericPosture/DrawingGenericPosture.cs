@@ -150,7 +150,7 @@ namespace Kinovea.ScreenManager
                 InitOptionMenus();
             
             // Decoration and binding to mini editors.
-            styleData.Bicolor = new Bicolor(Color.Empty);
+            styleData.BackgroundColor = new Bicolor(Color.Empty);
             styleData.Font = new Font("Arial", 12, FontStyle.Bold);
 
             if (stylePreset == null)
@@ -532,7 +532,7 @@ namespace Kinovea.ScreenManager
         #region ITrackable implementation and support.
         public Color Color
         {
-            get { return styleData.Bicolor.Background; }
+            get { return styleData.GetBackgroundColor(); }
         }
         public TrackingProfile CustomTrackingProfile
         {
@@ -906,8 +906,8 @@ namespace Kinovea.ScreenManager
             SizeF labelSize = canvas.MeasureString(label, tempFont);
             PointF textOrigin = new PointF(location.X - (labelSize.Width / 2) + offset.X, location.Y - (labelSize.Height / 2) + offset.Y);
             
-            Bicolor bicolor = new Bicolor(brushFill.Color);
-            SolidBrush fontBrush = new SolidBrush(Color.FromArgb((int)(opacity*255), bicolor.Foreground));
+            Color foregroundColor = StyleData.GetForegroundColor(brushFill.Color);
+            SolidBrush fontBrush = new SolidBrush(Color.FromArgb((int)(opacity*255), foregroundColor));
 
             RectangleF backRectangle = new RectangleF(textOrigin, labelSize);
             RoundedRectangle.Draw(canvas, backRectangle, brushFill, tempFont.Height/4, false, false, null);

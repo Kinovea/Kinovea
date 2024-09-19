@@ -370,7 +370,7 @@ namespace Kinovea.ScreenManager
         #region ITrackable implementation and support.
         public Color Color
         {
-            get { return styleData.Bicolor.Background; }
+            get { return styleData.GetBackgroundColor(); }
         }
         public TrackingProfile CustomTrackingProfile
         {
@@ -447,7 +447,7 @@ namespace Kinovea.ScreenManager
         {
             // Initialize style data in case we don't import some values.
             // These are the properties we need to paint this drawing.
-            styleData.Bicolor = new Bicolor(Color.Empty);
+            styleData.BackgroundColor = new Bicolor(Color.Empty);
             styleData.Font = new Font("Arial", 12, FontStyle.Bold);
             
             // Fallback preset in case we don't have one.

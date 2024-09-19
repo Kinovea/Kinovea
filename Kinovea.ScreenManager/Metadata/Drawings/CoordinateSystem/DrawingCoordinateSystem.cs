@@ -130,7 +130,7 @@ namespace Kinovea.ScreenManager
             points["0"] = origin;
             
             // Decoration & binding with editors
-            styleData.Bicolor = new Bicolor(Color.Empty);
+            styleData.BackgroundColor = new Bicolor(Color.Empty);
             styleData.Font = new Font("Arial", 8, FontStyle.Bold);
 
             // TODO: get preset from tool manager if not found.
@@ -296,7 +296,7 @@ namespace Kinovea.ScreenManager
         #region ITrackable implementation and support.
         public Color Color
         {
-            get { return styleData.Bicolor.Background; }
+            get { return styleData.GetBackgroundColor(); }
         }
         public TrackingProfile CustomTrackingProfile
         {

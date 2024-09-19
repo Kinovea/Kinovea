@@ -95,7 +95,7 @@ namespace Kinovea.ScreenManager
 
         public DrawingNumberSequence(StyleElements preset)
         {
-            styleData.Bicolor = new Bicolor(Color.Black);
+            styleData.BackgroundColor = new Bicolor(Color.Black);
             styleData.Font = new Font("Arial", defaultFontSize, FontStyle.Bold);
             if(preset != null)
             {

@@ -79,7 +79,7 @@ namespace Kinovea.ScreenManager
             style.Elements.Add("labelSize", new StyleElementFontSize(parameters.LabelSize, ScreenManagerLang.StyleElement_FontSize_LabelSize));
 
             styleHelper.Color = Color.Red;
-            styleHelper.Bicolor = new Bicolor(Color.Black);
+            styleHelper.BackgroundColor = new Bicolor(Color.Black);
             styleHelper.Font = new Font("Arial", 16, FontStyle.Bold);
 
             style.Bind(styleHelper, "Color", "borderColor");
@@ -189,7 +189,7 @@ namespace Kinovea.ScreenManager
         private void UpdateKinogram()
         {
             parameters.BorderColor = styleHelper.Color;
-            parameters.LabelColor = styleHelper.Bicolor.Background;
+            parameters.LabelColor = styleHelper.GetBackgroundColor();
             parameters.LabelSize = (int)styleHelper.Font.Size;
             kinogram.ConfigurationChanged(true);
             hostView?.InvalidateFromMenu();
@@ -205,7 +205,7 @@ namespace Kinovea.ScreenManager
         {
             // Import style values and commit the parameters object.
             parameters.BorderColor = styleHelper.Color;
-            parameters.LabelColor = styleHelper.Bicolor.Background;
+            parameters.LabelColor = styleHelper.GetBackgroundColor();
             parameters.LabelSize = (int)styleHelper.Font.Size;
 
             // Commit the original state to the undo history stack.

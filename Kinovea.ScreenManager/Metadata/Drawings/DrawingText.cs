@@ -139,7 +139,7 @@ namespace Kinovea.ScreenManager
             showArrow = false;
             hasBackground = true;
             
-            styleData.Bicolor = new Bicolor(Color.Black);
+            styleData.BackgroundColor = new Bicolor(Color.Black);
             styleData.Font = new Font("Arial", defaultFontSize, FontStyle.Bold);
             if (preset == null)
                 preset = ToolManager.GetDefaultStyleElements("Label");
@@ -419,8 +419,8 @@ namespace Kinovea.ScreenManager
             if (editing)
             {
                 RelocateEditbox(); // This is needed because the container top-left corner may have changed 
-                textBox.BackColor = styleData.Bicolor.Background;
-                textBox.ForeColor = styleData.Bicolor.Foreground;
+                textBox.BackColor = styleData.GetBackgroundColor();
+                textBox.ForeColor = styleData.GetForegroundColor();
                 
                 try
                 {
