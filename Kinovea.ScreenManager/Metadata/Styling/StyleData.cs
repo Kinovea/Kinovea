@@ -65,26 +65,59 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Properties
+        
+        /// <summary>
+        /// The main color of the object.
+        /// This is not the foreground color of objects that are defined by their background color.
+        /// For these objects (labels, chrono) the foreground color is computed on the fly in the helpers.
+        /// See GetForegroundPen, GetForegroundBrush.
+        /// </summary>
         public Color Color
         {
             get { return color; }
             set { color = value; }
         }
+
+        /// <summary>
+        /// The background color.
+        /// The foreground color (black or white) is computed automatically by the helpers.
+        /// </summary>
+        public Bicolor Bicolor
+        {
+            get { return bicolor; }
+            set { bicolor = value; }
+        }
+
+        /// <summary>
+        /// The width of lines.
+        /// </summary>
         public int LineSize
         {
             get { return lineSize; }
             set { lineSize = value;}
         }
+
+        /// <summary>
+        /// The shape of lines for straight lines (solid, dashed, squiggly).
+        /// </summary>
         public LineShape LineShape
         {
             get { return lineShape; }
             set { lineShape = value; }
         }
+
+        /// <summary>
+        /// The ending of lines for straight lines (round or arrows).
+        /// </summary>
         public LineEnding LineEnding
         {
             get { return lineEnding; }
             set { lineEnding = value;}
         }
+
+        /// <summary>
+        /// The Font used for text.
+        /// </summary>
         public Font Font
         {
             get { return font; }
@@ -107,41 +140,67 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        public Bicolor Bicolor
-        {
-            get { return bicolor; }
-            set { bicolor = value; }
-        }
+
+        /// <summary>
+        /// The shape of the line for trajectories. 
+        /// (solid or dashed and with markers or not).
+        /// </summary>
         public TrackShape TrackShape
         {
             get { return trackShape; }
             set { trackShape = value;}
         }
+
+        /// <summary>
+        /// The shape of the line for the pencil tool and other 
+        /// tools that don't need squiggly lines like circle and rectangle.
+        /// (solid or dashed).
+        /// </summary>
         public PenShape PenShape
         {
             get { return penShape; }
             set { penShape = value; }
         }
+
+        /// <summary>
+        /// Number of columns in the grid.
+        /// </summary>
         public int GridCols
         {
             get { return gridCols; }
             set { gridCols = value; }
         }
+
+        /// <summary>
+        /// Number of rows in the grid.
+        /// </summary>
         public int GridRows
         {
             get { return gridRows; }
             set { gridRows = value; }
         }
+
+        /// <summary>
+        /// Whether the polyline is a spline or not.
+        /// </summary>
         public bool Curved
         {
             get { return toggles["curved"]; }
             set { toggles["curved"] = value; }
         }
+
+        /// <summary>
+        /// Whether the grid is flat or perspective.
+        /// </summary>
         public bool Perspective
         {
             get { return toggles["perspective"]; }
             set { toggles["perspective"] = value; }
         }
+
+        /// <summary>
+        /// Chronometer or Clock.
+        /// </summary>
         public bool Clock
         {
             get { return toggles["clock"]; }
@@ -154,14 +213,13 @@ namespace Kinovea.ScreenManager
             {
                 int hash = 0;
                 hash ^= color.GetHashCode();
+                hash ^= bicolor.ContentHash;
                 hash ^= lineSize.GetHashCode();
                 hash ^= lineShape.GetHashCode();
                 hash ^= lineEnding.GetHashCode();
                 hash ^= font.GetHashCode();
-                hash ^= bicolor.ContentHash;
                 hash ^= trackShape.GetHashCode();
                 hash ^= penShape.GetHashCode();
-                hash ^= gridDivisions.GetHashCode();
                 hash ^= gridCols.GetHashCode();
                 hash ^= gridRows.GetHashCode();
                 hash ^= toggles.GetHashCode();
@@ -172,18 +230,19 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private Color color = Color.Black;
+        private Bicolor bicolor;
         private int lineSize = 1;
         private LineShape lineShape = LineShape.Solid;
         private Font font = new Font("Arial", 12, FontStyle.Regular);
-        private Bicolor bicolor;
         private LineEnding lineEnding = LineEnding.None;
         private TrackShape trackShape = TrackShape.Solid;
         private PenShape penShape = PenShape.Solid;
-        private Dictionary<string, bool> toggles = new Dictionary<string, bool>();
-        private int gridDivisions;
         private int gridCols;
         private int gridRows;
-        private int minFontSize = 8;
+        private Dictionary<string, bool> toggles = new Dictionary<string, bool>();
+
+        // Absolute minimum font size in screen space used for drawing text.
+        private static readonly int minFontSize = 8;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -213,6 +272,15 @@ namespace Kinovea.ScreenManager
                         if (value is Color)
                         {
                             color = (Color)value;
+                            imported = true;
+                        }
+                        break;
+                    }
+                case "Bicolor":
+                    {
+                        if (value is Color)
+                        {
+                            bicolor.Background = (Color)value;
                             imported = true;
                         }
                         break;
@@ -278,15 +346,6 @@ namespace Kinovea.ScreenManager
                             FontStyle fontStyle = font.Style;
                             font.Dispose();
                             font = new Font(fontName, (int)value, fontStyle);
-                            imported = true;
-                        }
-                        break;
-                    }
-                case "Bicolor":
-                    {
-                        if (value is Color)
-                        {
-                            bicolor.Background = (Color)value;
                             imported = true;
                         }
                         break;
@@ -375,6 +434,15 @@ namespace Kinovea.ScreenManager
                         }
                         break;
                     }
+                case "Bicolor":
+                    {
+                        if (targetType == typeof(Color))
+                        {
+                            result = bicolor.Background;
+                            converted = true;
+                        }
+                        break;
+                    }
                 case "LineSize":
                     {
                         if (targetType == typeof(int))
@@ -425,24 +493,6 @@ namespace Kinovea.ScreenManager
                         if (targetType == typeof(int))
                         {
                             result = (int)font.Size;
-                            converted = true;
-                        }
-                        break;
-                    }
-                case "Bicolor":
-                    {
-                        if (targetType == typeof(Color))
-                        {
-                            result = bicolor.Background;
-                            converted = true;
-                        }
-                        break;
-                    }
-                case "GridDivisions":
-                    {
-                        if (targetType == typeof(int))
-                        {
-                            result = gridDivisions;
                             converted = true;
                         }
                         break;
@@ -510,63 +560,69 @@ namespace Kinovea.ScreenManager
             return result;
         }
 
-        #region Get Pen and Brushes using Color and LineSize properties
+        #region Pen and Brushes using the main color and line size properties
         /// <summary>
-        /// Returns a Pen object suitable to draw a background or color only contour.
-        /// The pen object will only integrate the color property and be of width 1.
+        /// Returns a Pen object of width = 1 with the main color.
+        /// Used by marker and test grid.
+        /// Can also be useful if we only care about the opacity and we will 
+        /// override the width and color in the caller.
         /// </summary>
-        /// <param name="alpha">Alpha value to multiply the color with</param>
-        /// <returns>Pen object initialized with the current value of color and width = 1.0</returns>
         public Pen GetPen(int alpha)
         {
             Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, color) : color;
-
             return NormalPen(new Pen(c, 1.0f));
         }
-        public Pen GetPen(double opacity)
+
+        /// <summary>
+        /// Returns a pen of width = 1 with the main color.
+        /// </summary>
+        public Pen GetPen(float opacity)
         {
             return GetPen((int)(opacity * 255));
         }
 
         /// <summary>
-        /// Returns a Pen object suitable to draw a line or contour.
-        /// The pen object will integrate the color, line size.
-        /// Line shape is drawn in the drawing to accomodate for squiggly lines.
+        /// Returns a Pen to draw a straight line or contour.
+        /// Integrates the main color, line size and solid vs dash.
+        /// Line shape is finalized in the drawing itself for squiggly lines.
         /// Line ending is drawn in the drawing to have better arrows that what is provided by the Pen class.
         /// </summary>
-        /// <param name="alpha">Alpha value to multiply the color with</param>
-        /// <param name="stretchFactor">zoom value to multiply the line size with</param>
-        /// <returns>Pen object initialized with the current value of color and line size properties</returns>
         public Pen GetPen(int alpha, double stretchFactor)
         {
             Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, color) : color;
-            float penWidth = (float)((double)lineSize * stretchFactor);
-            if (penWidth < 1)
-                penWidth = 1;
-
+            float penWidth = (float)(lineSize * stretchFactor);
+            penWidth = Math.Max(penWidth, 1.0f);
+            
             Pen p = new Pen(c, penWidth);
             p.LineJoin = LineJoin.Round;
-
             p.DashStyle = trackShape.DashStyle;
 
             return p;
         }
+
+        /// <summary>
+        /// Returns a Pen to draw a straight line or contour.
+        /// Integrates the main color, line size and solid vs dash.
+        /// </summary>
         public Pen GetPen(double opacity, double stretchFactor)
         {
             return GetPen((int)(opacity * 255), stretchFactor);
         }
 
         /// <summary>
-        /// Returns a Brush object suitable to draw a background or colored area.
+        /// Returns a Brush of the main color.
         /// Only use the color property.
         /// </summary>
-        /// <param name="alpha">Alpha value to multiply the color with</param>
-        /// <returns>Brush object initialized with the current value of color property</returns>
         public SolidBrush GetBrush(int alpha)
         {
             Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, color) : color;
             return new SolidBrush(c);
         }
+
+        /// <summary>
+        /// Returns a Brush of the main color.
+        /// </summary>
+        /// </summary>
         public SolidBrush GetBrush(double opacity)
         {
             return GetBrush((int)(opacity * 255));
@@ -585,36 +641,62 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region Bicolor property
-        public Color GetForegroundColor(int alpha)
-        {
-            Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, bicolor.Foreground) : bicolor.Foreground;
-            return c;
-        }
-        public SolidBrush GetForegroundBrush(int alpha)
-        {
-            Color c = GetForegroundColor(alpha);
-            return new SolidBrush(c);
-        }
-        public Pen GetForegroundPen(int alpha)
-        {
-            Color c = GetForegroundColor(alpha);
-            return NormalPen(new Pen(c, 1.0f));
-        }
+        #region Background color with auto foreground color
+
+        /// <summary>
+        /// Return the background color at the specified alpha.
+        /// </summary>
         public Color GetBackgroundColor(int alpha)
         {
-            Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, bicolor.Background) : bicolor.Background;
+            Color background = bicolor.Background;
+            Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, background) : background;
             return c;
         }
+
+        /// <summary>
+        /// Get a Pen of the background color.
+        /// </summary>
+        public Pen GetBackgroundPen(int alpha)
+        {
+            Color c = GetBackgroundColor(alpha);
+            return NormalPen(new Pen(c, 1.0f));
+        }
+
+        /// <summary>
+        /// Get a brush of the background color.
+        /// </summary>
         public SolidBrush GetBackgroundBrush(int alpha)
         {
             Color c = GetBackgroundColor(alpha);
             return new SolidBrush(c);
         }
-        public Pen GetBackgroundPen(int alpha)
+
+        /// <summary>
+        /// Returns the foreground color (black or white) at the specified alpha.
+        /// </summary>
+        public Color GetForegroundColor(int alpha)
         {
-            Color c = GetBackgroundColor(alpha);
+            Color foreground = bicolor.Background.GetBrightness() >= 0.5 ? Color.Black : Color.White;
+            Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, foreground) : foreground;
+            return c;
+        }
+
+        /// <summary>
+        /// Get a Pen of the foreground color (black or white).
+        /// </summary>
+        public Pen GetForegroundPen(int alpha)
+        {
+            Color c = GetForegroundColor(alpha);
             return NormalPen(new Pen(c, 1.0f));
+        }
+
+        /// <summary>
+        /// Get a brush of the foreground color (black or white).
+        /// </summary>
+        public SolidBrush GetForegroundBrush(int alpha)
+        {
+            Color c = GetForegroundColor(alpha);
+            return new SolidBrush(c);
         }
         #endregion
 
@@ -624,7 +706,9 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Get the strecthed font size.
         /// The final font size returned here may be out of the allowed range.
-        /// This is used for drawing.
+        /// The allowed range is in image space whereas the result here is for
+        /// drawing so it is in screen space.
+        /// Hard minimum of 8.
         /// </summary>
         private float GetRescaledFontSize(float stretchFactor)
         {
@@ -634,7 +718,7 @@ namespace Kinovea.ScreenManager
         }
         
         /// <summary>
-        /// Decorate the passed pen object with round start/end caps.
+        /// Set up a pen object with round start/end caps.
         /// </summary>
         private Pen NormalPen(Pen p)
         {
