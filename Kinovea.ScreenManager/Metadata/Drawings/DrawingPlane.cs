@@ -212,7 +212,6 @@ namespace Kinovea.ScreenManager
                 mnuShowYLine,
             });
 
-
             mnuCalibrate.Click += mnuCalibrate_Click;
             mnuCalibrate.Image = Properties.Drawings.coordinates_graduations;
         }

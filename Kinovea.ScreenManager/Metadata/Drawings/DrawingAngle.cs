@@ -55,9 +55,12 @@ namespace Kinovea.ScreenManager
             {
                 int hash = 0;
 
-                // The hash of positions will be taken into account by trackability manager.
+                // The hash of the points positions will be taken into account by trackability manager.
                 hash ^= styleData.ContentHash;
                 hash ^= infosFading.ContentHash;
+                hash ^= signedAngle.GetHashCode();
+                hash ^= counterClockwise.GetHashCode();
+                hash ^= supplementaryAngle.GetHashCode();
                 return hash; 
             }
         } 
@@ -79,12 +82,16 @@ namespace Kinovea.ScreenManager
             get 
             {
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
+                ReloadMenusCulture();
 
-                mnuSignedAngle.Text = ScreenManagerLang.mnuSignedAngle;
-                mnuCounterClockwise.Text = ScreenManagerLang.mnuCounterClockwise;
-                mnuSupplementaryAngle.Text = ScreenManagerLang.mnuSupplementaryAngle;
-                contextMenu.AddRange(new ToolStripItem[] { mnuSignedAngle, mnuCounterClockwise, mnuSupplementaryAngle});
-                
+                contextMenu.AddRange(new ToolStripItem[] {
+                    mnuOptions
+                });
+
+                mnuSignedAngle.Checked = signedAngle;
+                mnuCounterClockwise.Checked = counterClockwise;
+                mnuSupplementaryAngle.Checked = supplementaryAngle;
+
                 return contextMenu; 
             }
         }
@@ -108,15 +115,20 @@ namespace Kinovea.ScreenManager
         private StyleElements styleElements = new StyleElements();
         private StyleData styleData = new StyleData();
         private InfosFading infosFading;
+
+        // Options
         private bool signedAngle = true;
         private bool counterClockwise = true;
         private bool supplementaryAngle = false;
-        
+
+        #region Context menu
+        private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSignedAngle = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCounterClockwise = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSupplementaryAngle = new ToolStripMenuItem();
+        #endregion
 
-        private const int defaultBackgroundAlpha = 92;
+        private static readonly int defaultBackgroundAlpha = 92;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -136,17 +148,28 @@ namespace Kinovea.ScreenManager
             // Fading
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
 
-            mnuSignedAngle.Click += mnuSignedAngle_Click;
-            mnuSignedAngle.Checked = signedAngle;
-            mnuCounterClockwise.Click += mnuCounterClockwise_Click;
-            mnuCounterClockwise.Checked = counterClockwise;
-            mnuSupplementaryAngle.Click += mnuSupplementaryAngle_Click;
-            mnuSupplementaryAngle.Checked = supplementaryAngle;
+            InitializeMenus();
         }
         public DrawingAngle(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
             : this(PointF.Empty, 0, 0)
         {
             ReadXml(xmlReader, scale, timestampMapper);
+        }
+
+        private void InitializeMenus()
+        {
+            mnuOptions.Image = Properties.Resources.equalizer;
+            // TODO: images.
+
+            mnuSignedAngle.Click += mnuSignedAngle_Click;
+            mnuCounterClockwise.Click += mnuCounterClockwise_Click;
+            mnuSupplementaryAngle.Click += mnuSupplementaryAngle_Click;
+
+            mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
+                mnuSignedAngle,
+                mnuCounterClockwise,
+                mnuSupplementaryAngle,
+            });
         }
         #endregion
 
@@ -409,29 +432,32 @@ namespace Kinovea.ScreenManager
         
         private void mnuSignedAngle_Click(object sender, EventArgs e)
         {
-            mnuSignedAngle.Checked = !mnuSignedAngle.Checked;
-
-            signedAngle = mnuSignedAngle.Checked;
+            CaptureMemento(SerializationFilter.Core);
+            signedAngle = !mnuSignedAngle.Checked;
             SignalAllTrackablePointsMoved();
             InvalidateFromMenu(sender);
+
+            mnuSignedAngle.Checked = signedAngle;
         }
 
         private void mnuCounterClockwise_Click(object sender, EventArgs e)
         {
-            mnuCounterClockwise.Checked = !mnuCounterClockwise.Checked;
-
-            counterClockwise = mnuCounterClockwise.Checked;
+            CaptureMemento(SerializationFilter.Core);
+            counterClockwise = !mnuCounterClockwise.Checked;
             SignalAllTrackablePointsMoved();
             InvalidateFromMenu(sender);
+            
+            mnuCounterClockwise.Checked = counterClockwise;
         }
 
         private void mnuSupplementaryAngle_Click(object sender, EventArgs e)
         {
-            mnuSupplementaryAngle.Checked = !mnuSupplementaryAngle.Checked;
-
-            supplementaryAngle = mnuSupplementaryAngle.Checked;
+            CaptureMemento(SerializationFilter.Core);
+            supplementaryAngle = !mnuSupplementaryAngle.Checked;
             SignalAllTrackablePointsMoved();
             InvalidateFromMenu(sender);
+
+            mnuSupplementaryAngle.Checked = supplementaryAngle;
         }
 
         #endregion
@@ -487,6 +513,21 @@ namespace Kinovea.ScreenManager
         private bool IsPointInObject(PointF point)
         {
             return angleHelper.SweepAngle.Hit(point);
+        }
+        /// <summary>
+        /// Capture the current state to the undo/redo stack.
+        /// </summary>
+        private void CaptureMemento(SerializationFilter filter)
+        {
+            var memento = new HistoryMementoModifyDrawing(parentMetadata, parentMetadata.SingletonDrawingsManager.Id, this.Id, this.Name, filter);
+            parentMetadata.HistoryStack.PushNewCommand(memento);
+        }
+        private void ReloadMenusCulture()
+        {
+            mnuOptions.Text = ScreenManagerLang.Generic_Options;
+            mnuSignedAngle.Text = ScreenManagerLang.mnuSignedAngle;
+            mnuCounterClockwise.Text = ScreenManagerLang.mnuCounterClockwise;
+            mnuSupplementaryAngle.Text = ScreenManagerLang.mnuSupplementaryAngle;
         }
         #endregion
     } 
