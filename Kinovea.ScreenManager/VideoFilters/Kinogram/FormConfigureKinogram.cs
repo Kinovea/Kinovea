@@ -27,8 +27,8 @@ namespace Kinovea.ScreenManager
         private HistoryMementoModifyVideoFilter memento;
         private KinogramParameters parameters;
         private bool manualUpdate;
-        private StyleMaster styleHelper = new StyleMaster();
-        private DrawingStyle style;
+        private StyleData styleHelper = new StyleData();
+        private StyleElements style;
         private IDrawingHostView hostView;
         #endregion
 
@@ -73,7 +73,7 @@ namespace Kinovea.ScreenManager
 
         private void SetupStyle()
         {
-            style = new DrawingStyle();
+            style = new StyleElements();
             style.Elements.Add("borderColor", new StyleElementColor(parameters.BorderColor, ScreenManagerLang.StyleElement_Color_BorderColor));
             style.Elements.Add("labelColor", new StyleElementColor(parameters.LabelColor, ScreenManagerLang.StyleElement_Color_LabelColor));
             style.Elements.Add("labelSize", new StyleElementFontSize(parameters.LabelSize, ScreenManagerLang.StyleElement_FontSize_LabelSize));

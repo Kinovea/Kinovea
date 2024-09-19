@@ -30,10 +30,10 @@ using Kinovea.ScreenManager.Languages;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// Style element to represent pen shape.
+    /// Style element to represent line shape.
     /// Editor: owner drawn combo box.
     /// </summary>
-    public class StyleElementPenShape : AbstractStyleElement
+    public class StyleElementLineShape : AbstractStyleElement
     {
         #region Properties
         public override object Value
@@ -41,8 +41,8 @@ namespace Kinovea.ScreenManager
             get { return value; }
             set
             {
-                this.value = (value is PenShape) ? (PenShape)value : defaultValue;
-                RaiseValueChanged();
+                this.value = (value is LineShape) ? (LineShape)value : defaultValue;
+                ExportValueToData();
             }
         }
         public override Bitmap Icon
@@ -55,25 +55,25 @@ namespace Kinovea.ScreenManager
         }
         public override string XmlName
         {
-            get { return "PenShape"; }
+            get { return "LineShape"; }
         }
         #endregion
 
-        public static readonly List<PenShape> options = new List<PenShape>() { PenShape.Solid, PenShape.Dash };
-        public static readonly PenShape defaultValue = PenShape.Solid;
+        public static readonly List<LineShape> options = new List<LineShape>() { LineShape.Solid, LineShape.Dash, LineShape.Squiggle };
+        public static readonly LineShape defaultValue = LineShape.Solid;
 
         #region Members
-        private PenShape value;
+        private LineShape value;
         private static readonly int lineWidth = 3;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
-        public StyleElementPenShape(PenShape initialValue)
+        public StyleElementLineShape(LineShape initialValue)
         {
             value = options.IndexOf(initialValue) >= 0 ? initialValue : defaultValue;
         }
-        public StyleElementPenShape(XmlReader xmlReader)
+        public StyleElementLineShape(XmlReader xmlReader)
         {
             ReadXML(xmlReader);
         }
@@ -103,8 +103,8 @@ namespace Kinovea.ScreenManager
         }
         public override AbstractStyleElement Clone()
         {
-            AbstractStyleElement clone = new StyleElementPenShape(value);
-            clone.Bind(this);
+            AbstractStyleElement clone = new StyleElementLineShape(value);
+            clone.BindClone(this);
             return clone;
         }
         public override void ReadXML(XmlReader xmlReader)
@@ -112,15 +112,15 @@ namespace Kinovea.ScreenManager
             xmlReader.ReadStartElement();
             string s = xmlReader.ReadElementContentAsString("Value", "");
 
-            PenShape value = PenShape.Solid;
+            LineShape value = LineShape.Solid;
             try
             {
-                TypeConverter converter = TypeDescriptor.GetConverter(typeof(PenShape));
-                value = (PenShape)converter.ConvertFromString(s);
+                TypeConverter converter = TypeDescriptor.GetConverter(typeof(LineShape));
+                value = (LineShape)converter.ConvertFromString(s);
             }
             catch (Exception)
             {
-                log.ErrorFormat("An error happened while parsing XML for pen shape. {0}", s);
+                log.ErrorFormat("An error happened while parsing XML for Track shape. {0}", s);
             }
 
             this.value = options.IndexOf(value) >= 0 ? value : defaultValue;
@@ -152,15 +152,18 @@ namespace Kinovea.ScreenManager
             Pen p = new Pen(Color.Black, lineWidth);
             switch (options[e.Index])
             {
-                case PenShape.Solid:
+                case LineShape.Solid:
                     e.Graphics.DrawLine(p, e.Bounds.Left, e.Bounds.Top + top, e.Bounds.Left + e.Bounds.Width, e.Bounds.Top + top);
                     break;
-                case PenShape.Dash:
+                case LineShape.Dash:
                     p.DashStyle = DashStyle.Dash;
                     e.Graphics.DrawLine(p, e.Bounds.Left, e.Bounds.Top + top, e.Bounds.Left + e.Bounds.Width, e.Bounds.Top + top);
                     break;
+                case LineShape.Squiggle:
+                    e.Graphics.DrawSquigglyLine(p, e.Bounds.Left - 20, e.Bounds.Top + top, e.Bounds.Left + e.Bounds.Width + 20, e.Bounds.Top + top);
+                    break;
             }
-
+            
             p.Dispose();
         }
         private void editor_SelectedIndexChanged(object sender, EventArgs e)
@@ -173,7 +176,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             value = options[editor.SelectedIndex];
-            RaiseValueChanged();
+            ExportValueToData();
         }
         #endregion
     }

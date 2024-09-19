@@ -25,8 +25,17 @@ using System.Xml;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// Represents the styling elements of a drawing or drawing tool preset.
-    /// Host a list of style elements needed to decorate the drawing.
+    /// Collect the style elements of one drawing or one drawing tool (default style).
+    /// 
+    /// A style element is a brigde between the UI and the style data.
+    /// The style data contains the union of all possible style properties of drawings.
+    /// 
+    /// A given style element/style data pair may be indexed by 
+    /// different keys compared to another drawing.
+    /// 
+    /// A style element is linked to one particular property and manages a 
+    /// UI control that exposes that property to the UI.
+    /// 
     /// To see the available elements and their keys for a particular tool, check the constructor of the tool.
     /// In the case of XML defined tools, the list is declared in the XML in the DefaultStyle tag.
     /// 
@@ -38,7 +47,7 @@ namespace Kinovea.ScreenManager
     /// Since style elements may be added or removed between versions we should always import 
     /// the styles read from KVA into a default reference style of the current version.
     /// </summary>
-    public class DrawingStyle
+    public class StyleElements
     {
         #region Properties
         public Dictionary<string, AbstractStyleElement> Elements
@@ -54,7 +63,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Constructor
-        public DrawingStyle(){}
+        public StyleElements(){}
 
         /// <summary>
         /// Create the sytle by reading all the style elements from XML.
@@ -64,7 +73,7 @@ namespace Kinovea.ScreenManager
         /// to import the XML parsed values into a reference style cloned 
         /// from the drawing tool's default or from a preset.
         /// </summary>
-        public DrawingStyle(XmlReader xmlReader)
+        public StyleElements(XmlReader xmlReader)
         {
             ReadXml(xmlReader);
         }
@@ -74,11 +83,11 @@ namespace Kinovea.ScreenManager
         
         /// <summary>
         /// Deep clone of the style elements.
-        /// This includes any metadata like min/max.
+        /// This includes any metadata like min/max and display name.
         /// </summary>
-        public DrawingStyle Clone()
+        public StyleElements Clone()
         {
-            DrawingStyle clone = new DrawingStyle();
+            StyleElements clone = new StyleElements();
             foreach(KeyValuePair<string, AbstractStyleElement> element in styleElements)
             {
                 clone.Elements.Add(element.Key, element.Value.Clone());
@@ -88,9 +97,9 @@ namespace Kinovea.ScreenManager
         }
         
         /// <summary>
-        /// Import the values of a style into this one.
+        /// Import the values of a style into this collection, by key.
         /// </summary>
-        public void ImportValues(DrawingStyle other)
+        public void ImportValues(StyleElements other)
         {
             foreach (KeyValuePair<string, AbstractStyleElement> element in other.styleElements)
             {
@@ -100,12 +109,12 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Read a drawing style from XML and import the values into this style.
-        /// This is used to import styles stored in KVA XML into an existing style.
+        /// Read style elements from XML and import the values into our elements.
+        /// This is used to import drawings from KVA.
         /// The existing style should be a copy of the default style or preset for the tool.
         public void ImportXML(XmlReader xmlReader)
         {
-            DrawingStyle style = new DrawingStyle(xmlReader);
+            StyleElements style = new StyleElements(xmlReader);
             ImportValues(style);
         }
 
@@ -176,49 +185,52 @@ namespace Kinovea.ScreenManager
                 xmlWriter.WriteEndElement();
             }
         }
-        
+
         /// <summary>
-        /// Binds a property in the style helper to an editable style element.
-        /// Once bound, each time the element is edited in the UI, the property is updated,
-        /// so the actual drawing automatically changes its style.
+        /// Binds the value in a style element to a data property in the style data union.
+        /// Initialize the data with the current value of the style element.
         /// 
-        /// Style elements and properties need not be of the same type. The style helper knows how to
-        /// map a FontSize element to its own Font property for example.
+        /// Style element values and data properties are not necessarily of the same type. 
+        /// For example we could have an style element wrapping an int and 
+        /// push it into the font size of the Font property.
         /// 
-        /// This binding goes style -> stylehelper. When a style helper is modified directly, style.readvalue() should be called
+        /// This binding goes styleElement -> styleData. 
+        /// When the styleData is modified directly, ImportValueFromData() should be called
         /// to trigger the backwards binding.
         /// </summary>
-        /// <param name="target">The drawing's style helper object</param>
-        /// <param name="targetProperty">The name of the property in the style helper that needs automatic update</param>
-        /// <param name="source">The style element that will push its change to the property</param>
-        public void Bind(StyleMaster target, string targetProperty, string source)
+        public void Bind(StyleData targetStyleData, string targetProperty, string elementKey)
         {
-            AbstractStyleElement elem;
-            bool found = styleElements.TryGetValue(source, out elem);
-            if(found && elem != null)
-                elem.Bind(target, targetProperty);
-            else
-                log.ErrorFormat("The element \"{0}\" was not found.", source);
-        }
-        public void RaiseValueChanged()
-        {
-            foreach(KeyValuePair<string, AbstractStyleElement> element in styleElements)
+            AbstractStyleElement styleElement;
+            bool found = styleElements.TryGetValue(elementKey, out styleElement);
+            if(found && styleElement != null)
             {
-                element.Value.RaiseValueChanged();
+                styleElement.SetBindTarget(targetStyleData, targetProperty);
+
+                // Immediately push value to the data property.
+                styleElement.ExportValueToData();
+            }
+            else
+            {
+                log.ErrorFormat("The element \"{0}\" was not found.", elementKey);
             }
         }
 
         /// <summary>
-        /// Signals that a value stored in the style element has been modified manually.
-        /// This will re-import the value into the style union.
+        /// Re-import the data into the style element values.
+        /// Used when the data is modified directly.
         /// </summary>
-        public void ReadValue()
+        public void ImportValuesFromData()
         {
             foreach(KeyValuePair<string, AbstractStyleElement> element in styleElements)
             {
-                element.Value.ReadValue();
+                element.Value.ImportValueFromData();
             }
         }
+
+        /// <summary>
+        /// Memorize the current state of the style elements before a change.
+        /// This state may be restored by calling Restore().
+        /// </summary>
         public void Memorize()
         {
             memo.Clear();
@@ -227,25 +239,44 @@ namespace Kinovea.ScreenManager
                 memo.Add(element.Key, element.Value.Clone());
             }
         }
-        public void Memorize(DrawingStyle drawingStyleMemo)
+
+        /// <summary>
+        /// Memorize the state of the passed style elements before a change.
+        /// This is used when the whole DrawingStyle has been recreated and we want it to 
+        /// remember its state before the recreation.
+        /// Used for style presets to carry the memo after XML load.
+        /// </summary>
+        public void Memorize(StyleElements drawingStyleMemo)
         {
-            // This is used when the whole DrawingStyle has been recreated and we want it to 
-            // remember its state before the recreation.
-            // Used for style presets to carry the memo after XML load.
             memo.Clear();
             foreach(KeyValuePair<string, AbstractStyleElement> element in drawingStyleMemo.Elements)
             {
                 memo.Add(element.Key, element.Value.Clone());
             }
         }
-        public void Revert()
+
+        /// <summary>
+        /// Restore the previously saved state into the style elements
+        /// and update the underlying style data.
+        /// </summary>
+        public void Restore()
         {
             styleElements.Clear();
             foreach(KeyValuePair<string, AbstractStyleElement> element in memo)
             {
                 styleElements.Add(element.Key, element.Value.Clone());
             }
+
+            // Force write from style elements to style data.
+            foreach (KeyValuePair<string, AbstractStyleElement> element in styleElements)
+            {
+                element.Value.ExportValueToData();
+            }
         }
+
+        /// <summary>
+        /// Dump the current values of style elements and the memo.
+        /// </summary>
         public void Dump()
         {
             foreach(KeyValuePair<string, AbstractStyleElement> element in styleElements)
@@ -267,7 +298,7 @@ namespace Kinovea.ScreenManager
         /// We generally don't try to match the tool variant in these case, the important thing is that the 
         /// style elements are correct so we can at least change them later.
         /// </summary>
-        public static void SanityCheck(DrawingStyle input, DrawingStyle preset)
+        public static void SanityCheck(StyleElements input, StyleElements preset)
         {
             // This shouldn't be necessary anymore.
             foreach (string key in preset.Elements.Keys)

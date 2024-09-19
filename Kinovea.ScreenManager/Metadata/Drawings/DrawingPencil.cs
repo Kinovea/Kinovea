@@ -54,15 +54,15 @@ namespace Kinovea.ScreenManager
                 foreach (PointF p in pointList)
                     hash ^= p.GetHashCode();
             
-                hash ^= styleHelper.ContentHash;
+                hash ^= styleData.ContentHash;
                 hash ^= infosFading.ContentHash;
 
                 return hash;
             }
         } 
-        public DrawingStyle DrawingStyle
+        public StyleElements StyleElements
         {
-            get { return style;}
+            get { return styleElements;}
         }
         public override InfosFading InfosFading
         {
@@ -85,8 +85,8 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private List<PointF> pointList = new List<PointF>();
-        private StyleMaster styleHelper = new StyleMaster();
-        private DrawingStyle style;
+        private StyleElements styleElements = new StyleElements();
+        private StyleData styleData = new StyleData();
         private InfosFading infosFading;
         private bool initializing = true;
         private bool debugMode = false;
@@ -94,23 +94,23 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingPencil(PointF origin, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null, IImageToViewportTransformer transformer = null)
+        public DrawingPencil(PointF origin, long timestamp, long averageTimeStampsPerFrame, StyleElements preset = null, IImageToViewportTransformer transformer = null)
         {
             pointList.Add(origin);
             pointList.Add(origin.Translate(1, 0));
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
 
-            styleHelper.Color = Color.Black;
-            styleHelper.LineSize = 1;
-            styleHelper.PenShape = PenShape.Solid;
+            styleData.Color = Color.Black;
+            styleData.LineSize = 1;
+            styleData.PenShape = PenShape.Solid;
             if (preset == null)
-                preset = ToolManager.GetStylePreset("Pencil");
+                preset = ToolManager.GetDefaultStyleElements("Pencil");
 
-            style = preset.Clone();
+            styleElements = preset.Clone();
             BindStyle();
         }
         public DrawingPencil(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(PointF.Empty, 0, 0, ToolManager.GetStylePreset("Pencil"))
+            : this(PointF.Empty, 0, 0, ToolManager.GetDefaultStyleElements("Pencil"))
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }
@@ -123,7 +123,7 @@ namespace Kinovea.ScreenManager
             if(opacityFactor <= 0)
                 return;
             
-            using(Pen penLine = styleHelper.GetPen(opacityFactor, transformer.Scale))
+            using(Pen penLine = styleData.GetPen(opacityFactor, transformer.Scale))
             {
                 Point[] points = transformer.Transform(pointList).ToArray();
 
@@ -148,7 +148,7 @@ namespace Kinovea.ScreenManager
                     penLine.EndCap = LineCap.Round;
                     penLine.StartCap = LineCap.Round;
 
-                    if (styleHelper.PenShape == PenShape.Dash)
+                    if (styleData.PenShape == PenShape.Dash)
                         penLine.DashStyle = DashStyle.Dash;
 
                     // Sanity check that the point will be visible.
@@ -209,7 +209,7 @@ namespace Kinovea.ScreenManager
                         ParsePointList(xmlReader, scale);
                         break;
                     case "DrawingStyle":
-                        style.ImportXML(xmlReader);
+                        styleElements.ImportXML(xmlReader);
                         BindStyle();
                         break;
                     case "InfosFading":
@@ -263,7 +263,7 @@ namespace Kinovea.ScreenManager
             if (ShouldSerializeStyle(filter))
             {
                 w.WriteStartElement("DrawingStyle");
-                style.WriteXml(w);
+                styleElements.WriteXml(w);
                 w.WriteEndElement();
             }
 
@@ -295,10 +295,10 @@ namespace Kinovea.ScreenManager
         #region Lower level helpers
         private void BindStyle()
         {
-            DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("Pencil"));
-            style.Bind(styleHelper, "Color", "color");
-            style.Bind(styleHelper, "LineSize", "pen size");
-            style.Bind(styleHelper, "PenShape", "pen shape");
+            StyleElements.SanityCheck(styleElements, ToolManager.GetDefaultStyleElements("Pencil"));
+            styleElements.Bind(styleData, "Color", "color");
+            styleElements.Bind(styleData, "LineSize", "pen size");
+            styleElements.Bind(styleData, "PenShape", "pen shape");
         }
         private void AddPoint(PointF point, Keys modifiers)
         {
@@ -327,7 +327,7 @@ namespace Kinovea.ScreenManager
             using(GraphicsPath path = new GraphicsPath())
             {
                 path.AddCurve(pointList.ToArray(), 0.5f);
-                return HitTester.HitPath(point, path, styleHelper.LineSize, false, transformer);
+                return HitTester.HitPath(point, path, styleData.LineSize, false, transformer);
             }
         }
         #endregion

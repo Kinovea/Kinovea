@@ -59,14 +59,14 @@ namespace Kinovea.ScreenManager
             {
                 int hash = 0;
                 hash ^= miniLabel.GetHashCode();
-                hash ^= styleHelper.ContentHash;
+                hash ^= styleData.ContentHash;
                 hash ^= infosFading.ContentHash;
                 return hash;
             }
         }
-        public DrawingStyle DrawingStyle
+        public StyleElements StyleElements
         {
-            get { return style;}
+            get { return styleElements;}
         }
         public override InfosFading InfosFading
         {
@@ -93,9 +93,9 @@ namespace Kinovea.ScreenManager
         private bool initializing = true;
 
         // Decoration
-        private StyleMaster styleHelper = new StyleMaster();
+        private StyleData styleData = new StyleData();
+        private StyleElements styleElements = new StyleElements();
         private int lineSize = 1;
-        private DrawingStyle style;
         private MiniLabel miniLabel = new MiniLabel();
         private InfosFading infosFading;
 
@@ -104,17 +104,17 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingTimeSegment(PointF origin, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null, IImageToViewportTransformer transformer = null)
+        public DrawingTimeSegment(PointF origin, long timestamp, long averageTimeStampsPerFrame, StyleElements preset = null, IImageToViewportTransformer transformer = null)
         {
             points["a"] = origin;
             points["b"] = origin.Translate(10, 0);
             
-            styleHelper.Color = Color.DarkSlateGray;
-            styleHelper.ValueChanged += StyleHelper_ValueChanged;
+            styleData.Color = Color.DarkSlateGray;
+            styleData.ValueChanged += StyleHelper_ValueChanged;
             if (preset == null)
-                preset = ToolManager.GetStylePreset("TimeSegment");
+                preset = ToolManager.GetDefaultStyleElements("TimeSegment");
             
-            style = preset.Clone();
+            styleElements = preset.Clone();
             BindStyle();
             
             // Fading
@@ -148,8 +148,8 @@ namespace Kinovea.ScreenManager
 
             // Distortion: this tool's target use-case is to be used at the center of the image, with very short lines,
             // thus there should not be any distortion.
-            using (Pen penEdges = styleHelper.GetPen(opacityFactor, transformer.Scale))
-            using (Brush brush = styleHelper.GetBrush(opacityFactor))
+            using (Pen penEdges = styleData.GetPen(opacityFactor, transformer.Scale))
+            using (Brush brush = styleData.GetBrush(opacityFactor))
             {
                 // Force line width to 1 at all zoom levels. This tool is all about pixel-perfect precision.
                 penEdges.Width = 1;
@@ -273,7 +273,7 @@ namespace Kinovea.ScreenManager
                         }
                     case "DrawingStyle":
                         {
-                            style.ImportXML(xmlReader);
+                            styleElements.ImportXML(xmlReader);
                             BindStyle();
                             break;
                         }
@@ -299,7 +299,7 @@ namespace Kinovea.ScreenManager
             xmlReader.ReadEndElement();
             initializing = false;
             miniLabel.SetAttach(GetTimePoint(), false);
-            miniLabel.BackColor = styleHelper.Color;
+            miniLabel.BackColor = styleData.Color;
         }
         public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
@@ -317,7 +317,7 @@ namespace Kinovea.ScreenManager
             if (ShouldSerializeStyle(filter))
             {
                 w.WriteStartElement("DrawingStyle");
-                style.WriteXml(w);
+                styleElements.WriteXml(w);
                 w.WriteEndElement();
             }
 
@@ -358,12 +358,12 @@ namespace Kinovea.ScreenManager
         #region Lower level helpers
         private void BindStyle()
         {
-            DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("TimeSegment"));
-            style.Bind(styleHelper, "Color", "color");
+            StyleElements.SanityCheck(styleElements, ToolManager.GetDefaultStyleElements("TimeSegment"));
+            styleElements.Bind(styleData, "Color", "color");
         }
         private void StyleHelper_ValueChanged(object sender, EventArgs e)
         {
-            miniLabel.BackColor = styleHelper.Color;
+            miniLabel.BackColor = styleData.Color;
         }
         private bool IsPointInObject(PointF point, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {

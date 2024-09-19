@@ -20,15 +20,18 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Drawing;
-using System.Reflection;
 using System.Windows.Forms;
 using System.Xml;
 
 namespace Kinovea.ScreenManager
-{   
+{
     /// <summary>
     /// A styling property for a drawing / drawing tool.
-    /// Concrete style elements related to a drawing are then collected in a DrawingStyle object.
+    /// Concrete style elements are wrappers for a particular data type.
+    /// Style elements wraps the value, metadata like min/max and display name,
+    /// and give access to an editor that can update the value.
+    /// These elements are bound to properties of the style data. 
+    /// The style data is a union of all styling properties possible.
     /// </summary>
     /// <remarks>
     /// If two variables are needed to represent a style element, consider creating a composite style.
@@ -40,6 +43,7 @@ namespace Kinovea.ScreenManager
     public abstract class AbstractStyleElement
     {
         #region Properties
+        
         /// <summary>
         /// The current value of the style element.
         /// </summary>
@@ -76,74 +80,109 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Event raised when the value is changed. (call RaiseValueChanged() to trigger)
         /// The mini editor container will hook to this and update main screen accordingly to enable real time update.
+        /// By the time this event is raised the underlying data has been updated already.
         /// </summary>
         public event EventHandler ValueChanged;
         #endregion
         
         #region Members
-        protected internal StyleMaster bindTarget;		// An object containing a property that needs to be updated each time the style element value change.
-        private string bindTargetProperty;	// Name of the property to update when the style element value changes.
+
+        // The style data object that the style element is bound to.
+        protected internal StyleData styleData;
+
+        // The name of the property inside the style data object that we are bound to.
+        private string targetProperty;
         #endregion
         
         #region Public Methods
+        
+        /// <summary>
+        /// This should return a mini editor.
+        /// Any change in the editor should trigger the binding mechanics
+        /// to update the corresponding data field in the style data.
+        /// </summary>
+        /// <returns></returns>
         public abstract Control GetEditor();
+        
+        /// <summary>
+        /// Deep clone of the full style element.
+        /// This should include value and metadata.
+        /// </summary>
         public abstract AbstractStyleElement Clone();
         
         /// <summary>
         /// Save the style element to XML.
-        /// This is always in the context of saving a drawing so 
-        /// this should only writes the value, not the metadata like
-        /// display name and min/max values.
+        /// This is always in the context of saving a drawing or 
+        /// a preset so this should only writes the value, 
+        /// not the metadata like min/max and display name.
         /// </summary>
         public abstract void WriteXml(XmlWriter xmlWriter);
 
         /// <summary>
         /// Import the style element from XML.
-        /// There are two contexts in which we read a style element from XML.
+        /// There are several contexts where we read a style element from XML.
         /// 1. We are importing the tool itself, in this case we need 
         /// to read the metadata like display name and min/max values.
-        /// 2. We are importing a preset or a drawing. In this case we are only 
+        /// 2. We are importing a drawing or a preset. In this case we are only 
         /// interested in the value.
         /// </summary>
         public abstract void ReadXML(XmlReader xmlReader);
         
         /// <summary>
-        /// Create a link between this style element and a property in 
-        /// a style helper.
+        /// Create a link between this style element and a particular 
+        /// property in a style data object.
         /// </summary>
-        public void Bind(StyleMaster target, string targetProperty)
+        public void SetBindTarget(StyleData styleData, string targetProperty)
         {
-            bindTarget = target;
-            bindTargetProperty = targetProperty;
-            
-            // On bind, we push the style element value to the internal property.
-            RaiseValueChanged();
+            this.styleData = styleData;
+            this.targetProperty = targetProperty;
         }
-        public void Bind(AbstractStyleElement original)
+
+        /// <summary>
+        /// Bind this style element to the same target data than the 
+        /// passed style element.
+        /// This is used in the context of cloning.
+        /// </summary>
+        public void BindClone(AbstractStyleElement original)
         {
-            // This function is used in the context of cloning, to clone the target data.
-            bindTarget = original.bindTarget;
-            bindTargetProperty = original.bindTargetProperty;
+            styleData = original.styleData;
+            targetProperty = original.targetProperty;
         }
-        public void RaiseValueChanged()
+
+        /// <summary>
+        /// Update the underlying style data from this style element.
+        /// Signal the update to any listeners.
+        /// </summary>
+        public void ExportValueToData()
         {
-            if (bindTarget != null && bindTarget.BindWrite != null && !string.IsNullOrEmpty(bindTargetProperty))
-                bindTarget.BindWrite(bindTargetProperty, Value);
+            if (styleData == null || string.IsNullOrEmpty(targetProperty))
+                return;
+
+            styleData.Set(targetProperty, Value);
             
             if (ValueChanged != null) 
                 ValueChanged(null, EventArgs.Empty);
         }
-        public void ReadValue()
+
+        /// <summary>
+        /// Import style data into style element.
+        /// </summary>
+        public void ImportValueFromData()
         {
-            // Update in case the value has been modified externally.
+            if (styleData == null || string.IsNullOrEmpty(targetProperty))
+                return;
+
             // Caveat: affecting Value will raise back BindWrite().
-            if (bindTarget != null && bindTarget.BindRead != null && !string.IsNullOrEmpty(bindTargetProperty))
-                Value = bindTarget.BindRead(bindTargetProperty, Value.GetType());
+            Value = styleData.Get(targetProperty, Value.GetType());
         }
+
+        /// <summary>
+        /// Format the value and its target prop to a string.
+        /// </summary>
         public override string ToString()
         {
             return String.Format("{0} Bound to:{1}",
-                Value.ToString(), string.IsNullOrEmpty(bindTargetProperty) ? "Nothing" : bindTargetProperty);
+                Value.ToString(), string.IsNullOrEmpty(targetProperty) ? "Nothing" : targetProperty);
         }
         #endregion
     }

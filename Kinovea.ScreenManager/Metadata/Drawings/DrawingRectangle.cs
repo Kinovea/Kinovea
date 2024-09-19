@@ -51,14 +51,14 @@ namespace Kinovea.ScreenManager
             { 
                 int hash = quadImage.GetHashCode();
                 hash ^= filled.GetHashCode();
-                hash ^= styleHelper.ContentHash;
+                hash ^= styleData.ContentHash;
                 hash ^= infosFading.ContentHash;
                 return hash;
             }
         } 
-        public DrawingStyle DrawingStyle
+        public StyleElements StyleElements
         {
-            get { return style;}
+            get { return styleElements;}
         }
         public override InfosFading InfosFading
         {
@@ -98,8 +98,8 @@ namespace Kinovea.ScreenManager
         #endregion
 
         // Decoration
-        private StyleMaster styleHelper = new StyleMaster();
-        private DrawingStyle style;
+        private StyleElements styleElements = new StyleElements();
+        private StyleData styleData = new StyleData();
         private InfosFading infosFading;
         private bool filled = false;
 
@@ -107,17 +107,17 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Constructor
-        public DrawingRectangle(PointF origin, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null, IImageToViewportTransformer transformer = null)
+        public DrawingRectangle(PointF origin, long timestamp, long averageTimeStampsPerFrame, StyleElements preset = null, IImageToViewportTransformer transformer = null)
         {
             quadImage = new QuadrilateralF(origin, origin.Translate(50, 0), origin.Translate(50, 50), origin.Translate(0, 50));
 
-            styleHelper.Color = Color.Empty;
-            styleHelper.LineSize = 1;
-            styleHelper.PenShape = PenShape.Solid;
+            styleData.Color = Color.Empty;
+            styleData.LineSize = 1;
+            styleData.PenShape = PenShape.Solid;
             if (preset == null)
-                preset = ToolManager.GetStylePreset("Rectangle");
+                preset = ToolManager.GetDefaultStyleElements("Rectangle");
             
-            style = preset.Clone();
+            styleElements = preset.Clone();
             BindStyle();
 
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
@@ -151,10 +151,10 @@ namespace Kinovea.ScreenManager
             QuadrilateralF quad = transformer.Transform(quadImage);
 
             int alpha = (int)(opacityFactor * 255);
-            using(Pen p = styleHelper.GetPen(alpha, transformer.Scale))
+            using(Pen p = styleData.GetPen(alpha, transformer.Scale))
                 {
                     p.EndCap = LineCap.Square;
-                    if (styleHelper.PenShape == PenShape.Dash)
+                    if (styleData.PenShape == PenShape.Dash)
                         p.DashStyle = DashStyle.Dash;
 
                 canvas.DrawLine(p, quad.A, quad.B);
@@ -166,7 +166,7 @@ namespace Kinovea.ScreenManager
             if (filled)
             {
                 RectangleF box = new RectangleF(quad.A.X, quad.A.Y, quad.B.X - quad.A.X, quad.C.Y - quad.A.Y);
-                using (SolidBrush b = styleHelper.GetBrush(alpha))
+                using (SolidBrush b = styleData.GetBrush(alpha))
                     //canvas.FillRectangle(b, box);
                     canvas.FillPolygon(b, quad.ToArray());
             }
@@ -230,7 +230,7 @@ namespace Kinovea.ScreenManager
                     if (!p1.NearlyCoincideWith(p2))
                     {
                         path.AddLine(p1, p2);
-                        if (HitTester.HitPath(point, path, styleHelper.LineSize, false, transformer))
+                        if (HitTester.HitPath(point, path, styleData.LineSize, false, transformer))
                             return i + 5;
                     }
                 }
@@ -290,7 +290,7 @@ namespace Kinovea.ScreenManager
                         filled = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
                     case "DrawingStyle":
-                        style.ImportXML(xmlReader);
+                        styleElements.ImportXML(xmlReader);
                         BindStyle();
                         break;
                     case "InfosFading":
@@ -320,7 +320,7 @@ namespace Kinovea.ScreenManager
             if (ShouldSerializeStyle(filter))
             {
                 w.WriteStartElement("DrawingStyle");
-                style.WriteXml(w);
+                styleElements.WriteXml(w);
                 w.WriteEndElement();
             }
 
@@ -361,10 +361,10 @@ namespace Kinovea.ScreenManager
         #region Lower level helpers
         private void BindStyle()
         {
-            DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("Rectangle"));
-            style.Bind(styleHelper, "Color", "color");
-            style.Bind(styleHelper, "LineSize", "line size");
-            style.Bind(styleHelper, "PenShape", "pen shape");
+            StyleElements.SanityCheck(styleElements, ToolManager.GetDefaultStyleElements("Rectangle"));
+            styleElements.Bind(styleData, "Color", "color");
+            styleElements.Bind(styleData, "LineSize", "line size");
+            styleElements.Bind(styleData, "PenShape", "pen shape");
         }
 
         /// <summary>

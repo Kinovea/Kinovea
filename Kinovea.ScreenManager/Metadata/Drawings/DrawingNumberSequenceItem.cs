@@ -82,7 +82,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Public methods
-        public void Draw(Graphics canvas, IImageToViewportTransformer transformer, long timestamp, StyleMaster styleHelper)
+        public void Draw(Graphics canvas, IImageToViewportTransformer transformer, long timestamp, StyleData styleHelper)
         {
             double opacityFactor = infosFading.GetOpacityFactor(timestamp);
             if(opacityFactor <= 0)
@@ -177,7 +177,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Private methods
-        private void SetText(StyleMaster styleHelper)
+        private void SetText(StyleData styleHelper)
         {
             string text = value.ToString();
             

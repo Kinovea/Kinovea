@@ -58,14 +58,14 @@ namespace Kinovea.ScreenManager
         {
             get { return keepToolAfterFrameChange; }
         }
-        public override DrawingStyle StylePreset
+        public override StyleElements StyleElements
         {
-            get { return currentStyle; }
-            set { currentStyle = value; }
+            get { return currentStyleElements; }
+            set { currentStyleElements = value; }
         }
-        public override DrawingStyle DefaultStylePreset
+        public override StyleElements DefaultStyleElements
         {
-            get { return defaultStyle; }
+            get { return defaultStyleElements; }
         }
         public Type DrawingType
         {
@@ -82,12 +82,12 @@ namespace Kinovea.ScreenManager
         private bool attached;
         private bool keepToolAfterDrawingCreation;
         private bool keepToolAfterFrameChange;
-        private DrawingStyle currentStyle;
-        private DrawingStyle defaultStyle;
+        private StyleElements currentStyleElements;
+        private StyleElements defaultStyleElements;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        public DrawingTool(Guid id, string name, string displayName, Bitmap icon, Type drawingType, bool attached, bool keepToolAfterDrawingCreation, bool keepToolAfterFrameChange, DrawingStyle defaultStyle)
+        public DrawingTool(Guid id, string name, string displayName, Bitmap icon, Type drawingType, bool attached, bool keepToolAfterDrawingCreation, bool keepToolAfterFrameChange, StyleElements defaultStyle)
         {
             this.id = id;
             this.name = name;
@@ -97,9 +97,9 @@ namespace Kinovea.ScreenManager
             this.attached = attached;
             this.keepToolAfterDrawingCreation = keepToolAfterDrawingCreation;
             this.keepToolAfterFrameChange = keepToolAfterFrameChange;
-            this.defaultStyle = defaultStyle;
+            this.defaultStyleElements = defaultStyle;
             
-            this.currentStyle = defaultStyle.Clone();
+            this.currentStyleElements = defaultStyle.Clone();
         }
 
         public override AbstractDrawing GetNewDrawing(PointF origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
@@ -110,18 +110,18 @@ namespace Kinovea.ScreenManager
             // Exemple for 1: DrawingAngle.
             // Exemple for 2: DrawingText.
 
-            ConstructorInfo ci = drawingType.GetConstructor(new[] { typeof(PointF), typeof(long), typeof(long), typeof(DrawingStyle), typeof(IImageToViewportTransformer) });
+            ConstructorInfo ci = drawingType.GetConstructor(new[] { typeof(PointF), typeof(long), typeof(long), typeof(StyleElements), typeof(IImageToViewportTransformer) });
             if (ci != null)
             {
-                object[] parameters = new object[] { origin, timestamp, averageTimeStampsPerFrame, currentStyle, transformer };
+                object[] parameters = new object[] { origin, timestamp, averageTimeStampsPerFrame, currentStyleElements, transformer };
                 AbstractDrawing drawing = (AbstractDrawing)Activator.CreateInstance(drawingType, parameters);
                 return drawing;
             }
             
-            ci = drawingType.GetConstructor(new[] { typeof(PointF), typeof(long), typeof(long), typeof(DrawingStyle)});
+            ci = drawingType.GetConstructor(new[] { typeof(PointF), typeof(long), typeof(long), typeof(StyleElements)});
             if (ci != null)
             {
-                object[] parameters = new object[] { origin, timestamp, averageTimeStampsPerFrame, currentStyle};
+                object[] parameters = new object[] { origin, timestamp, averageTimeStampsPerFrame, currentStyleElements};
                 AbstractDrawing drawing = (AbstractDrawing)Activator.CreateInstance(drawingType, parameters);
                 return drawing;
             }
@@ -175,7 +175,7 @@ namespace Kinovea.ScreenManager
             bool attached = true;
             bool keepToolAfterDrawingCreation = false;
             bool keepToolAfterFrameChange = false;
-            DrawingStyle style = null;
+            StyleElements style = null;
             
             while (r.NodeType == XmlNodeType.Element)
             {
@@ -209,7 +209,7 @@ namespace Kinovea.ScreenManager
                         keepToolAfterFrameChange = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
                         break;
                     case "DefaultStyle":
-                        style = new DrawingStyle(r);
+                        style = new StyleElements(r);
                         break;
                     default:
                         string unparsed = r.ReadOuterXml();

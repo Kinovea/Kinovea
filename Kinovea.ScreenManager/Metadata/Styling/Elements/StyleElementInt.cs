@@ -40,7 +40,7 @@ namespace Kinovea.ScreenManager
             set 
             { 
                 this.value = (value is int) ? (int)value : defaultValue;
-                RaiseValueChanged();
+                ExportValueToData();
             }
         }
         public override Bitmap Icon
@@ -103,7 +103,7 @@ namespace Kinovea.ScreenManager
         public override AbstractStyleElement Clone()
         {
             AbstractStyleElement clone = new StyleElementInt(min, max, value, displayName);
-            clone.Bind(this);
+            clone.BindClone(this);
             return clone;
         }
         public override void ReadXML(XmlReader reader)
@@ -162,7 +162,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             value = (int)editor.Value;
-            RaiseValueChanged();
+            ExportValueToData();
         }
         #endregion
     }

@@ -51,9 +51,9 @@ namespace Kinovea.ScreenManager
                 return numberSequence.Aggregate(0, (a, n) => a ^ n.GetHashCode());
             }
         }
-        public DrawingStyle DrawingStyle
+        public StyleElements StyleElements
         {
-            get { return style;}
+            get { return styleElements;}
         }
         public override AbstractMultiDrawingItem SelectedItem {
             get
@@ -85,21 +85,21 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private StyleMaster styleHelper = new StyleMaster();
-        private DrawingStyle style;
+        private StyleElements styleElements = new StyleElements();
+        private StyleData styleData = new StyleData();
         private const int defaultFontSize = 16;
         private List<DrawingNumberSequenceItem> numberSequence = new List<DrawingNumberSequenceItem>();
         private int selected = -1;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        public DrawingNumberSequence(DrawingStyle preset)
+        public DrawingNumberSequence(StyleElements preset)
         {
-            styleHelper.Bicolor = new Bicolor(Color.Black);
-            styleHelper.Font = new Font("Arial", defaultFontSize, FontStyle.Bold);
+            styleData.Bicolor = new Bicolor(Color.Black);
+            styleData.Font = new Font("Arial", defaultFontSize, FontStyle.Bold);
             if(preset != null)
             {
-                style = preset.Clone();
+                styleElements = preset.Clone();
                 BindStyle();
             }
         }
@@ -108,7 +108,7 @@ namespace Kinovea.ScreenManager
         public override void Draw(Graphics canvas, DistortionHelper distorter, CameraTransformer cameraTransformer, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
             foreach(DrawingNumberSequenceItem number in numberSequence)
-                number.Draw(canvas, transformer, currentTimestamp, styleHelper);
+                number.Draw(canvas, transformer, currentTimestamp, styleData);
         }
         public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
         {
@@ -197,7 +197,7 @@ namespace Kinovea.ScreenManager
                 switch(r.Name)
                 {
                     case "DrawingStyle":
-                        style.ImportXML(r);
+                        styleElements.ImportXML(r);
                         BindStyle();
                         break;
                     case "AutoNumber":
@@ -229,7 +229,7 @@ namespace Kinovea.ScreenManager
             if (ShouldSerializeStyle(filter))
             {
                 w.WriteStartElement("DrawingStyle");
-                style.WriteXml(w);
+                styleElements.WriteXml(w);
                 w.WriteEndElement();
             }
         }
@@ -253,8 +253,8 @@ namespace Kinovea.ScreenManager
 
         private void BindStyle()
         {
-            style.Bind(styleHelper, "Bicolor", "back color");
-            style.Bind(styleHelper, "Font", "font size");
+            styleElements.Bind(styleData, "Bicolor", "back color");
+            styleElements.Bind(styleData, "Font", "font size");
         }
         private int NextValue(long position)
         {

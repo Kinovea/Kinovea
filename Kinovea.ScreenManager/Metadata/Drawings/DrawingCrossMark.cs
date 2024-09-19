@@ -60,14 +60,14 @@ namespace Kinovea.ScreenManager
                     hash ^= p.GetHashCode();
                 hash ^= measureLabelType.GetHashCode();
                 hash ^= miniLabel.GetHashCode();
-                hash ^= styleHelper.ContentHash;
+                hash ^= styleData.ContentHash;
                 hash ^= infosFading.ContentHash;
                 return hash;
             }
         }
-        public DrawingStyle DrawingStyle
+        public StyleElements StyleElements
         {
-            get { return style;}
+            get { return styleElements;}
         }
         public override InfosFading InfosFading
         {
@@ -106,8 +106,8 @@ namespace Kinovea.ScreenManager
         private MeasureLabelType measureLabelType = MeasureLabelType.None;
         
         // Decoration
-        private StyleMaster styleHelper = new StyleMaster();
-        private DrawingStyle style;
+        private StyleElements styleElements = new StyleElements();
+        private StyleData styleData = new StyleData();
         private InfosFading infosFading;
         private bool showAsDot = false;
 
@@ -124,18 +124,18 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingCrossMark(PointF center, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null, IImageToViewportTransformer transformer = null)
+        public DrawingCrossMark(PointF center, long timestamp, long averageTimeStampsPerFrame, StyleElements preset = null, IImageToViewportTransformer transformer = null)
         {
             points["0"] = center;
             miniLabel = new MiniLabel(points["0"], Color.Black, transformer);
 
             // Decoration & binding with editors
-            styleHelper.Color = Color.CornflowerBlue;
-            styleHelper.ValueChanged += StyleHelper_ValueChanged;
+            styleData.Color = Color.CornflowerBlue;
+            styleData.ValueChanged += StyleHelper_ValueChanged;
             if (preset == null)
-                preset = ToolManager.GetStylePreset("CrossMark");
+                preset = ToolManager.GetDefaultStyleElements("CrossMark");
 
-            style = preset.Clone();
+            styleElements = preset.Clone();
             BindStyle();
 
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
@@ -180,8 +180,8 @@ namespace Kinovea.ScreenManager
             int iAlpha = (int)(opacityFactor * 255);
             Point c = transformer.Transform(points["0"]);
 
-            using(Pen p = styleHelper.GetPen(iAlpha))
-            using(SolidBrush b = styleHelper.GetBrush((int)(opacityFactor * defaultBackgroundAlpha)))
+            using(Pen p = styleData.GetPen(iAlpha))
+            using(SolidBrush b = styleData.GetBrush((int)(opacityFactor * defaultBackgroundAlpha)))
             {
                 if (showAsDot)
                 {
@@ -269,7 +269,7 @@ namespace Kinovea.ScreenManager
                             break;
                         }
                     case "DrawingStyle":
-                        style.ImportXML(xmlReader);
+                        styleElements.ImportXML(xmlReader);
                         BindStyle();
                         break;
                     case "ShowAsDot":
@@ -291,7 +291,7 @@ namespace Kinovea.ScreenManager
             xmlReader.ReadEndElement();
             measureInitialized = true;
             miniLabel.SetAttach(points["0"], false);
-            miniLabel.BackColor = styleHelper.Color;
+            miniLabel.BackColor = styleData.Color;
             SignalTrackablePointMoved();
         }
         public void WriteXml(XmlWriter w, SerializationFilter filter)
@@ -316,7 +316,7 @@ namespace Kinovea.ScreenManager
             if (ShouldSerializeStyle(filter))
             {
                 w.WriteStartElement("DrawingStyle");
-                style.WriteXml(w);
+                styleElements.WriteXml(w);
                 w.WriteEndElement();
             }
 
@@ -336,7 +336,7 @@ namespace Kinovea.ScreenManager
         #region ITrackable implementation and support.
         public Color Color
         {
-            get { return styleHelper.Color; }
+            get { return styleData.Color; }
         }
         public TrackingProfile CustomTrackingProfile
         {
@@ -416,13 +416,13 @@ namespace Kinovea.ScreenManager
         #region Lower level helpers
         private void BindStyle()
         {
-            DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("CrossMark"));
-            style.Bind(styleHelper, "Color", "back color");
+            StyleElements.SanityCheck(styleElements, ToolManager.GetDefaultStyleElements("CrossMark"));
+            styleElements.Bind(styleData, "Color", "back color");
         }
 
         private void StyleHelper_ValueChanged(object sender, EventArgs e)
         {
-            miniLabel.BackColor = styleHelper.Color;
+            miniLabel.BackColor = styleData.Color;
         }
 
         /// <summary>

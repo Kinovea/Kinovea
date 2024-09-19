@@ -58,14 +58,14 @@ namespace Kinovea.ScreenManager
                 foreach(PointF p in genericPosture.PointList)
                     hash ^= p.GetHashCode();
                 
-                hash ^= styleHelper.ContentHash;
+                hash ^= styleData.ContentHash;
                 hash ^= infosFading.ContentHash;
                 return hash;
             }
         } 
-        public DrawingStyle DrawingStyle
+        public StyleElements StyleElements
         {
-          get { return style; }
+          get { return styleElements; }
         }
         public override InfosFading InfosFading
         {
@@ -134,14 +134,14 @@ namespace Kinovea.ScreenManager
         #endregion
 
 
-        private DrawingStyle style;
-        private StyleMaster styleHelper = new StyleMaster();
+        private StyleElements styleElements = new StyleElements();
+        private StyleData styleData = new StyleData();
         private InfosFading infosFading;
         private const int defaultBackgroundAlpha = 92;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        public DrawingGenericPosture(Guid toolId, PointF origin, GenericPosture posture, long timestamp, long averageTimeStampsPerFrame, DrawingStyle stylePreset)
+        public DrawingGenericPosture(Guid toolId, PointF origin, GenericPosture posture, long timestamp, long averageTimeStampsPerFrame, StyleElements stylePreset)
         {
             this.toolId = toolId;
             this.origin = origin;
@@ -150,16 +150,16 @@ namespace Kinovea.ScreenManager
                 InitOptionMenus();
             
             // Decoration and binding to mini editors.
-            styleHelper.Bicolor = new Bicolor(Color.Empty);
-            styleHelper.Font = new Font("Arial", 12, FontStyle.Bold);
+            styleData.Bicolor = new Bicolor(Color.Empty);
+            styleData.Font = new Font("Arial", 12, FontStyle.Bold);
 
             if (stylePreset == null)
             {
-                stylePreset = new DrawingStyle();
+                stylePreset = new StyleElements();
                 stylePreset.Elements.Add("line color", new StyleElementColor(Color.DarkOliveGreen));
             }
             
-            style = stylePreset.Clone();
+            styleElements = stylePreset.Clone();
             BindStyle();
             
             // Fading
@@ -202,9 +202,9 @@ namespace Kinovea.ScreenManager
             int alphaBackground = (int)(opacity * defaultBackgroundAlpha);
             alphaBackground = Math.Max(0, Math.Min(255, alphaBackground));
             
-            using(Pen penEdge = styleHelper.GetBackgroundPen(alpha))
-            using(SolidBrush brushHandle = styleHelper.GetBackgroundBrush(alpha))
-            using(SolidBrush brushFill = styleHelper.GetBackgroundBrush(alphaBackground))
+            using(Pen penEdge = styleData.GetBackgroundPen(alpha))
+            using(SolidBrush brushHandle = styleData.GetBackgroundBrush(alpha))
+            using(SolidBrush brushFill = styleData.GetBackgroundBrush(alphaBackground))
             {
                 Color basePenEdgeColor = penEdge.Color;
                 Color baseBrushHandleColor = brushHandle.Color;
@@ -316,7 +316,7 @@ namespace Kinovea.ScreenManager
                             xmlReader.ReadOuterXml();
                         break;
                    case "DrawingStyle":
-                        style.ImportXML(xmlReader);
+                        styleElements.ImportXML(xmlReader);
                         BindStyle();
                         break;
                     case "InfosFading":
@@ -388,7 +388,7 @@ namespace Kinovea.ScreenManager
             if (ShouldSerializeStyle(filter))
             {
                 w.WriteStartElement("DrawingStyle");
-                style.WriteXml(w);
+                styleElements.WriteXml(w);
                 w.WriteEndElement();
             }
 
@@ -532,7 +532,7 @@ namespace Kinovea.ScreenManager
         #region ITrackable implementation and support.
         public Color Color
         {
-            get { return styleHelper.Bicolor.Background; }
+            get { return styleData.Bicolor.Background; }
         }
         public TrackingProfile CustomTrackingProfile
         {
@@ -791,7 +791,7 @@ namespace Kinovea.ScreenManager
 
                 if (!PreferencesManager.PlayerPreferences.EnableCustomToolsDebugMode)
                 {
-                    angleHelper.DrawText(canvas, opacity, brushFill, origin, transformer, CalibrationHelper, styleHelper);
+                    angleHelper.DrawText(canvas, opacity, brushFill, origin, transformer, CalibrationHelper, styleData);
                 }
                 else
                 {
@@ -902,7 +902,7 @@ namespace Kinovea.ScreenManager
         }
         private void DrawTextOnBackground(PointF location, PointF offset, string label, Graphics canvas, double opacity, IImageToViewportTransformer transformer, SolidBrush brushFill)
         {
-            Font tempFont = styleHelper.GetFont(Math.Max((float)transformer.Scale, 1.0F));
+            Font tempFont = styleData.GetFont(Math.Max((float)transformer.Scale, 1.0F));
             SizeF labelSize = canvas.MeasureString(label, tempFont);
             PointF textOrigin = new PointF(location.X - (labelSize.Width / 2) + offset.X, location.Y - (labelSize.Height / 2) + offset.Y);
             
@@ -932,7 +932,7 @@ namespace Kinovea.ScreenManager
 
         private void DrawSimpleText(PointF location, string label, Graphics canvas, double opacity, IImageToViewportTransformer transformer, SolidBrush brush)
         {
-            Font tempFont = styleHelper.GetFont(Math.Max((float)transformer.Scale, 1.0F));
+            Font tempFont = styleData.GetFont(Math.Max((float)transformer.Scale, 1.0F));
             SizeF labelSize = canvas.MeasureString(label, tempFont);
             PointF textOrigin = new PointF(location.X - labelSize.Width / 2, location.Y - labelSize.Height / 2);
             canvas.DrawString(label, tempFont, brush, textOrigin);
@@ -1038,7 +1038,7 @@ namespace Kinovea.ScreenManager
         }
         private void BindStyle()
         {
-            style.Bind(styleHelper, "Bicolor", "line color");
+            styleElements.Bind(styleData, "Bicolor", "line color");
         }
         
         private bool IsActive(string value)

@@ -71,7 +71,7 @@ namespace Kinovea.ScreenManager
                 return iHash;
             }
         }
-        public DrawingStyle DrawingStyle
+        public StyleElements StyleElements
         {
             get { return style;}
         }
@@ -119,8 +119,8 @@ namespace Kinovea.ScreenManager
         private bool locked;
 
         // Decoration
-        private StyleMaster styleHelper = new StyleMaster();
-        private DrawingStyle style;
+        private StyleData styleHelper = new StyleData();
+        private StyleElements style;
         private InfosFading infosFading;
         private static readonly int allowedFramesOver = 12;  // Number of frames the chrono stays visible after the 'Hiding' point.
         private RoundedRectangle mainBackground = new RoundedRectangle();
@@ -163,7 +163,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingChronoMulti(PointF p, long start, long averageTimeStampsPerFrame, DrawingStyle preset = null)
+        public DrawingChronoMulti(PointF p, long start, long averageTimeStampsPerFrame, StyleElements preset = null)
         {
             // Core
             visibleTimestamp = 0;
@@ -177,7 +177,7 @@ namespace Kinovea.ScreenManager
             styleHelper.Font = new Font("Consolas", 16, FontStyle.Bold);
             styleHelper.Clock = false;
             if (preset == null)
-                preset = ToolManager.GetStylePreset("ChronoMulti");
+                preset = ToolManager.GetDefaultStyleElements("ChronoMulti");
 
             style = preset.Clone();
             BindStyle();
@@ -1074,7 +1074,7 @@ namespace Kinovea.ScreenManager
         #region Lower level helpers
         private void BindStyle()
         {
-            DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("ChronoMulti"));
+            StyleElements.SanityCheck(style, ToolManager.GetDefaultStyleElements("ChronoMulti"));
             style.Bind(styleHelper, "Bicolor", "color");
             style.Bind(styleHelper, "Font", "font size");
         }

@@ -20,33 +20,39 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.Design.Serialization;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Globalization;
-using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// This class contains the union of all the style properties drawings can use.
-    /// 
-    /// Role: expose the final values used by the drawing routines to render the drawing.
     /// Each drawing tool is using a subset of the properties exposed here.
-    /// The values are converted from bound style elements (editors).
-    /// For example a style element of type StyleElementFontSize will be exposed here as an actual Font object.
+    /// 
+    /// This class exposes drawing-ready values.
     ///
-    /// This class also exposes utilities to get the objects according to requested opacity and scale.
-    ///
-    /// The properties can be bound to a style element (editable in the UI) through the Bind() method on the
-    /// style element, passing the name of the property. The binding will be effective only if types are compatible.
+    /// The data fields are bound to style element values (editable in the UI) through 
+    /// the Bind() method on the style element, passing the name of the property. 
+    /// The binding will only work if types are compatible.
+    /// 
+    /// Difference between the style element type and the data field type:
+    /// the style element contains metadata like min/max/step and the display name.
+    /// The binding is between a specific property here and the wrapped value field 
+    /// in the style element.
+    /// 
+    /// Operations
+    /// - Init tool: default style elements (code or xml), no binding.
+    /// - Create drawing: copy the drawing's parent tool elements and bind to data fields.
+    /// - Import drawing from kva: import values into style elements created from tool.
+    /// - Export drawing to kva: export value.
+    /// - Import from prefs (presets): import style elements, values and metadata.
+    /// - Export to prefs (presets): export values only.
+    /// - Update style: export value to kva snippet for undo.
+    /// - Undo style change: restore value from kva snippet.
     /// </summary>
-    public class StyleMaster
+    public class StyleData
     {
         #region Exposed function delegates
-        public BindWriter BindWrite;
-        public BindReader BindRead;
 
         /// <summary>
         /// Event raised when the value is changed dynamically through binding.
@@ -182,11 +188,8 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public StyleMaster()
+        public StyleData()
         {
-            BindWrite = DoBindWrite;
-            BindRead = DoBindRead;
-
             // Initialize toggles.
             toggles.Add("curved", false);
             toggles.Add("perspective", false);
@@ -196,118 +199,10 @@ namespace Kinovea.ScreenManager
 
         #region Public Methods
 
-        #region Color and LineSize properties
         /// <summary>
-        /// Returns a Pen object suitable to draw a background or color only contour.
-        /// The pen object will only integrate the color property and be of width 1.
+        /// Update a property with a style element value.
         /// </summary>
-        /// <param name="alpha">Alpha value to multiply the color with</param>
-        /// <returns>Pen object initialized with the current value of color and width = 1.0</returns>
-        public Pen GetPen(int alpha)
-        {
-            Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, color) : color;
-
-            return NormalPen(new Pen(c, 1.0f));
-        }
-        public Pen GetPen(double opacity)
-        {
-            return GetPen((int)(opacity * 255));
-        }
-
-        /// <summary>
-        /// Returns a Pen object suitable to draw a line or contour.
-        /// The pen object will integrate the color, line size.
-        /// Line shape is drawn in the drawing to accomodate for squiggly lines.
-        /// Line ending is drawn in the drawing to have better arrows that what is provided by the Pen class.
-        /// </summary>
-        /// <param name="alpha">Alpha value to multiply the color with</param>
-        /// <param name="stretchFactor">zoom value to multiply the line size with</param>
-        /// <returns>Pen object initialized with the current value of color and line size properties</returns>
-        public Pen GetPen(int alpha, double stretchFactor)
-        {
-            Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, color) : color;
-            float penWidth = (float)((double)lineSize * stretchFactor);
-            if (penWidth < 1)
-                penWidth = 1;
-
-            Pen p = new Pen(c, penWidth);
-            p.LineJoin = LineJoin.Round;
-
-            p.DashStyle = trackShape.DashStyle;
-
-            return p;
-        }
-        public Pen GetPen(double opacity, double stretchFactor)
-        {
-            return GetPen((int)(opacity * 255), stretchFactor);
-        }
-
-        /// <summary>
-        /// Returns a Brush object suitable to draw a background or colored area.
-        /// Only use the color property.
-        /// </summary>
-        /// <param name="alpha">Alpha value to multiply the color with</param>
-        /// <returns>Brush object initialized with the current value of color property</returns>
-        public SolidBrush GetBrush(int alpha)
-        {
-            Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, color) : color;
-            return new SolidBrush(c);
-        }
-        public SolidBrush GetBrush(double opacity)
-        {
-            return GetBrush((int)(opacity * 255));
-        }
-        #endregion
-
-        #region Font property
-        public Font GetFont(float stretchFactor)
-        {
-            float fFontSize = GetRescaledFontSize(stretchFactor);
-            return new Font(font.Name, fFontSize, font.Style);
-        }
-        public Font GetFontDefaultSize(int fontSize)
-        {
-            return new Font(font.Name, fontSize, font.Style);
-        }
-        #endregion
-
-        #region Bicolor property
-        public Color GetForegroundColor(int alpha)
-        {
-            Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, bicolor.Foreground) : bicolor.Foreground;
-            return c;
-        }
-        public SolidBrush GetForegroundBrush(int alpha)
-        {
-            Color c = GetForegroundColor(alpha);
-            return new SolidBrush(c);
-        }
-        public Pen GetForegroundPen(int alpha)
-        {
-            Color c = GetForegroundColor(alpha);
-            return NormalPen(new Pen(c, 1.0f));
-        }
-        public Color GetBackgroundColor(int alpha)
-        {
-            Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, bicolor.Background) : bicolor.Background;
-            return c;
-        }
-        public SolidBrush GetBackgroundBrush(int alpha)
-        {
-            Color c = GetBackgroundColor(alpha);
-            return new SolidBrush(c);
-        }
-        public Pen GetBackgroundPen(int alpha)
-        {
-            Color c = GetBackgroundColor(alpha);
-            return NormalPen(new Pen(c, 1.0f));
-        }
-        #endregion
-
-        #endregion
-
-        #region Private Methods
-        private void DoBindWrite(string targetProperty, object value)
+        public void Set(string targetProperty, object value)
         {
             // Check type and import value if compatible with the target prop.
             bool imported = false;
@@ -374,6 +269,8 @@ namespace Kinovea.ScreenManager
                     }
                 case "Font":
                     {
+                        // TODO: have a styleElementFont 
+                        // with all the aspects of the font.
                         if (value is int)
                         {
                             // Recreate the font changing just the size.
@@ -390,15 +287,6 @@ namespace Kinovea.ScreenManager
                         if (value is Color)
                         {
                             bicolor.Background = (Color)value;
-                            imported = true;
-                        }
-                        break;
-                    }
-                case "GridDivisions":
-                    {
-                        if (value is int)
-                        {
-                            gridDivisions = (int)value;
                             imported = true;
                         }
                         break;
@@ -458,22 +346,22 @@ namespace Kinovea.ScreenManager
                     }
             }
 
-            if(imported)
+            if (imported)
             {
-                if(ValueChanged != null)
+                if (ValueChanged != null)
                     ValueChanged(null, EventArgs.Empty);
             }
             else
             {
-                log.DebugFormat("Could not import value \"{0}\" to property \"{1}\"." , value.ToString(), targetProperty);
+                log.DebugFormat("Could not import value \"{0}\" into property \"{1}\".", value.ToString(), targetProperty);
             }
-
         }
-        private object DoBindRead(string sourceProperty, Type targetType)
+
+        /// <summary>
+        /// Export a data field to a target data type for the value of a style element.
+        /// </summary>
+        public object Get(string sourceProperty, Type targetType)
         {
-            // Take the local property and extract something of the required type.
-            // This function is used by style elements to stay up to date in case the bound property has been modified externally.
-            // The style element might be of an entirely different type than the property.
             bool converted = false;
             object result = null;
             switch (sourceProperty)
@@ -614,22 +502,140 @@ namespace Kinovea.ScreenManager
                     }
             }
 
-            if(!converted)
+            if (!converted)
             {
-                log.DebugFormat("Could not convert property \"{0}\" to update value \"{1}\"." , sourceProperty, targetType);
+                log.DebugFormat("Could not convert property \"{0}\" to update value \"{1}\".", sourceProperty, targetType);
             }
 
             return result;
         }
+
+        #region Get Pen and Brushes using Color and LineSize properties
+        /// <summary>
+        /// Returns a Pen object suitable to draw a background or color only contour.
+        /// The pen object will only integrate the color property and be of width 1.
+        /// </summary>
+        /// <param name="alpha">Alpha value to multiply the color with</param>
+        /// <returns>Pen object initialized with the current value of color and width = 1.0</returns>
+        public Pen GetPen(int alpha)
+        {
+            Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, color) : color;
+
+            return NormalPen(new Pen(c, 1.0f));
+        }
+        public Pen GetPen(double opacity)
+        {
+            return GetPen((int)(opacity * 255));
+        }
+
+        /// <summary>
+        /// Returns a Pen object suitable to draw a line or contour.
+        /// The pen object will integrate the color, line size.
+        /// Line shape is drawn in the drawing to accomodate for squiggly lines.
+        /// Line ending is drawn in the drawing to have better arrows that what is provided by the Pen class.
+        /// </summary>
+        /// <param name="alpha">Alpha value to multiply the color with</param>
+        /// <param name="stretchFactor">zoom value to multiply the line size with</param>
+        /// <returns>Pen object initialized with the current value of color and line size properties</returns>
+        public Pen GetPen(int alpha, double stretchFactor)
+        {
+            Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, color) : color;
+            float penWidth = (float)((double)lineSize * stretchFactor);
+            if (penWidth < 1)
+                penWidth = 1;
+
+            Pen p = new Pen(c, penWidth);
+            p.LineJoin = LineJoin.Round;
+
+            p.DashStyle = trackShape.DashStyle;
+
+            return p;
+        }
+        public Pen GetPen(double opacity, double stretchFactor)
+        {
+            return GetPen((int)(opacity * 255), stretchFactor);
+        }
+
+        /// <summary>
+        /// Returns a Brush object suitable to draw a background or colored area.
+        /// Only use the color property.
+        /// </summary>
+        /// <param name="alpha">Alpha value to multiply the color with</param>
+        /// <returns>Brush object initialized with the current value of color property</returns>
+        public SolidBrush GetBrush(int alpha)
+        {
+            Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, color) : color;
+            return new SolidBrush(c);
+        }
+        public SolidBrush GetBrush(double opacity)
+        {
+            return GetBrush((int)(opacity * 255));
+        }
+        #endregion
+
+        #region Get Font object
+        public Font GetFont(float stretchFactor)
+        {
+            float fFontSize = GetRescaledFontSize(stretchFactor);
+            return new Font(font.Name, fFontSize, font.Style);
+        }
+        public Font GetFontDefaultSize(int fontSize)
+        {
+            return new Font(font.Name, fontSize, font.Style);
+        }
+        #endregion
+
+        #region Bicolor property
+        public Color GetForegroundColor(int alpha)
+        {
+            Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, bicolor.Foreground) : bicolor.Foreground;
+            return c;
+        }
+        public SolidBrush GetForegroundBrush(int alpha)
+        {
+            Color c = GetForegroundColor(alpha);
+            return new SolidBrush(c);
+        }
+        public Pen GetForegroundPen(int alpha)
+        {
+            Color c = GetForegroundColor(alpha);
+            return NormalPen(new Pen(c, 1.0f));
+        }
+        public Color GetBackgroundColor(int alpha)
+        {
+            Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, bicolor.Background) : bicolor.Background;
+            return c;
+        }
+        public SolidBrush GetBackgroundBrush(int alpha)
+        {
+            Color c = GetBackgroundColor(alpha);
+            return new SolidBrush(c);
+        }
+        public Pen GetBackgroundPen(int alpha)
+        {
+            Color c = GetBackgroundColor(alpha);
+            return NormalPen(new Pen(c, 1.0f));
+        }
+        #endregion
+
+        #endregion
+
+        #region Private Methods
+        /// <summary>
+        /// Get the strecthed font size.
+        /// The final font size returned here may be out of the allowed range.
+        /// This is used for drawing.
+        /// </summary>
         private float GetRescaledFontSize(float stretchFactor)
         {
-            // Get the strecthed font size.
-            // The final font size returned here may not be part of the allowed font sizes
-            // and may exeed the max allowed font size, because it's just for rendering purposes.
             float fontSize = (float)(font.Size * stretchFactor);
             fontSize = Math.Max(fontSize, minFontSize);
             return fontSize;
         }
+        
+        /// <summary>
+        /// Decorate the passed pen object with round start/end caps.
+        /// </summary>
         private Pen NormalPen(Pen p)
         {
             p.StartCap = LineCap.Round;

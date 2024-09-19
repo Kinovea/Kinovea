@@ -54,27 +54,27 @@ namespace Kinovea.ScreenManager
         {
             get { return false; }
         }
-        public override DrawingStyle StylePreset
+        public override StyleElements StyleElements
         {
-            get { return stylePreset;}
-            set { stylePreset = value;}
+            get { return styleElements;}
+            set { styleElements = value;}
         }
-        public override DrawingStyle DefaultStylePreset
+        public override StyleElements DefaultStyleElements
         {
-            get { return defaultStylePreset;}
+            get { return defaultStyleElements;}
         }
         #endregion
         
         #region Members
-        private DrawingStyle defaultStylePreset = new DrawingStyle();
-        private DrawingStyle stylePreset;
+        private StyleElements defaultStyleElements = new StyleElements();
+        private StyleElements styleElements = new StyleElements();
         #endregion
         
         #region Public Methods
         public DrawingToolCoordinateSystem()
         {
-            defaultStylePreset.Elements.Add("line color", new StyleElementColor(Color.Red));
-            stylePreset = defaultStylePreset.Clone();
+            defaultStyleElements.Elements.Add("line color", new StyleElementColor(Color.Red));
+            styleElements = defaultStyleElements.Clone();
         }
         public override AbstractDrawing GetNewDrawing(PointF origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {

@@ -74,8 +74,8 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public int FontSize
         {
-            get { return (int)styleHelper.Font.Size; }
-            set { styleHelper.Font = new Font("Arial", value, FontStyle.Bold); }
+            get { return (int)styleData.Font.Size; }
+            set { styleData.Font = new Font("Arial", value, FontStyle.Bold); }
         }
 
         /// <summary>
@@ -83,8 +83,8 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public Color BackColor
         {
-            get { return styleHelper.Bicolor.Background; }
-            set { styleHelper.Bicolor = new Bicolor(value); }
+            get { return styleData.Bicolor.Background; }
+            set { styleData.Bicolor = new Bicolor(value); }
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace Kinovea.ScreenManager
         private int attachIndex; // The index of the reference point in the track points list.
         private PointF attachLocation; // The point we are attached to (image coordinates).
         private bool showConnector = true; // Whether to draw the connection between the label and the attach point.
-        private StyleMaster styleHelper = new StyleMaster();
+        private StyleData styleData = new StyleData();
         private IImageToViewportTransformer transformer;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -130,8 +130,8 @@ namespace Kinovea.ScreenManager
             }
 
             background.Rectangle = new Rectangle(attachPoint.Translate(tx, ty).ToPoint(), Size.Empty);
-            styleHelper.Font = new Font("Arial", 8, FontStyle.Bold);
-            styleHelper.Bicolor = new Bicolor(Color.FromArgb(160, color));
+            styleData.Font = new Font("Arial", 8, FontStyle.Bold);
+            styleData.Bicolor = new Bicolor(Color.FromArgb(160, color));
         }
         public MiniLabel(XmlReader xmlReader, PointF scale)
             : this(PointF.Empty, Color.Black, null)
@@ -149,17 +149,17 @@ namespace Kinovea.ScreenManager
         {
             int hash = 0;
             hash ^= background.Rectangle.Location.GetHashCode();
-            hash ^= styleHelper.ContentHash;
+            hash ^= styleData.ContentHash;
             return hash;
         }
         public void Draw(Graphics canvas, IImageToViewportTransformer transformer, double opacity)
         {
             this.transformer = transformer;
 
-            using(SolidBrush fillBrush = styleHelper.GetBackgroundBrush((int)(opacity*255)))
-            using(Pen p = styleHelper.GetBackgroundPen((int)(opacity*64)))
-            using(Font f = styleHelper.GetFont((float)transformer.Scale))
-            using(SolidBrush fontBrush = styleHelper.GetForegroundBrush((int)(opacity*255)))
+            using(SolidBrush fillBrush = styleData.GetBackgroundBrush((int)(opacity*255)))
+            using(Pen p = styleData.GetBackgroundPen((int)(opacity*64)))
+            using(Font f = styleData.GetFont((float)transformer.Scale))
+            using(SolidBrush fontBrush = styleData.GetForegroundBrush((int)(opacity*255)))
             {
                 SizeF textSize = canvas.MeasureString(text, f);
                 Point location = transformer.Transform(background.Rectangle.Location);
@@ -218,7 +218,7 @@ namespace Kinovea.ScreenManager
             this.text = text;
             this.transformer = transformer;
             
-            using(Font f = styleHelper.GetFont(1F))
+            using(Font f = styleData.GetFont(1F))
             {
                 SizeF textSize = TextHelper.MeasureString(text, f);
                 if (transformer != null)

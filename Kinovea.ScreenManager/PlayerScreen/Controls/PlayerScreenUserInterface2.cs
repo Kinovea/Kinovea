@@ -4745,7 +4745,7 @@ namespace Kinovea.ScreenManager
             Metadata metadata = m_FrameServer.Metadata;
             Keyframe kf = metadata.HitKeyframe;
             IDecorable drawing = metadata.HitDrawing as IDecorable;
-            if (drawing == null || drawing.DrawingStyle == null || drawing.DrawingStyle.Elements.Count == 0)
+            if (drawing == null || drawing.StyleElements == null || drawing.StyleElements.Elements.Count == 0)
                 return;
 
             var drawingId = metadata.HitDrawing.Id;
@@ -4764,17 +4764,17 @@ namespace Kinovea.ScreenManager
                 // If this was a singleton drawing also update the tool-level preset.
                 if (metadata.HitDrawing is DrawingCoordinateSystem)
                 {
-                    ToolManager.SetStylePreset("CoordinateSystem", ((DrawingCoordinateSystem)metadata.HitDrawing).DrawingStyle);
+                    ToolManager.SetToolStyleFromDrawing("CoordinateSystem", ((DrawingCoordinateSystem)metadata.HitDrawing).StyleElements);
                     ToolManager.SavePresets();
                 }
                 else if (metadata.HitDrawing is DrawingTestGrid)
                 {
-                    ToolManager.SetStylePreset("TestGrid", ((DrawingTestGrid)metadata.HitDrawing).DrawingStyle);
+                    ToolManager.SetToolStyleFromDrawing("TestGrid", ((DrawingTestGrid)metadata.HitDrawing).StyleElements);
                     ToolManager.SavePresets();
                 }
                 else if (metadata.HitDrawing is DrawingNumberSequence)
                 {
-                    ToolManager.SetStylePreset("NumberSequence", ((DrawingNumberSequence)metadata.HitDrawing).DrawingStyle);
+                    ToolManager.SetToolStyleFromDrawing("NumberSequence", ((DrawingNumberSequence)metadata.HitDrawing).StyleElements);
                     ToolManager.SavePresets();
                 }
             }
@@ -4788,10 +4788,10 @@ namespace Kinovea.ScreenManager
             // Assign the style of the active drawing to the drawing tool that generated it.
             Keyframe kf = m_FrameServer.Metadata.HitKeyframe;
             IDecorable drawing = m_FrameServer.Metadata.HitDrawing as IDecorable;
-            if (drawing == null || drawing.DrawingStyle == null || drawing.DrawingStyle.Elements.Count == 0)
+            if (drawing == null || drawing.StyleElements == null || drawing.StyleElements.Elements.Count == 0)
                 return;
 
-            ToolManager.SetStylePreset(m_FrameServer.Metadata.HitDrawing, drawing.DrawingStyle);
+            ToolManager.SetToolStyleFromDrawing(m_FrameServer.Metadata.HitDrawing, drawing.StyleElements);
             ToolManager.SavePresets();
 
             UpdateCursor();

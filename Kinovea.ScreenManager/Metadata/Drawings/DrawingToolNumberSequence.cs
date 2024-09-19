@@ -54,20 +54,20 @@ namespace Kinovea.ScreenManager
         {
             get { return true; }
         }
-        public override DrawingStyle StylePreset
+        public override StyleElements StyleElements
         {
             get { return stylePreset;}
             set { stylePreset = value;}
         }
-        public override DrawingStyle DefaultStylePreset
+        public override StyleElements DefaultStyleElements
         {
             get { return defaultStylePreset;}
         }
         #endregion
         
         #region Members
-        private DrawingStyle defaultStylePreset = new DrawingStyle();
-        private DrawingStyle stylePreset;
+        private StyleElements defaultStylePreset = new StyleElements();
+        private StyleElements stylePreset;
         #endregion
         
         #region Public Methods

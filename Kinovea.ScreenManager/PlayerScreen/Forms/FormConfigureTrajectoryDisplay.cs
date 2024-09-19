@@ -80,11 +80,11 @@ namespace Kinovea.ScreenManager
             InitializeDisplayRectangle(image.Size, timestamp);
             viewportController.Refresh();
 
-            track.DrawingStyle.ReadValue();
+            track.StyleElements.ImportValuesFromData();
             
             // Save the current state in case of cancel.
             track.MemorizeState();
-            track.DrawingStyle.Memorize();
+            track.StyleElements.Memorize();
 
             InitMarkerCombo();
             InitTrackParameters();
@@ -116,7 +116,7 @@ namespace Kinovea.ScreenManager
         {
             // Dynamic loading of track styles but only semi dynamic UI (restricted to 3) for simplicity.
             // Styles should be Color, LineSize and TrackShape.
-            foreach(KeyValuePair<string, AbstractStyleElement> pair in track.DrawingStyle.Elements)
+            foreach(KeyValuePair<string, AbstractStyleElement> pair in track.StyleElements.Elements)
             {
                 elements.Add(pair.Value);
             }
@@ -310,8 +310,7 @@ namespace Kinovea.ScreenManager
         private void Revert()
         {
             // Revert to memo and re-update data.
-            track.DrawingStyle.Revert();
-            track.DrawingStyle.RaiseValueChanged();
+            track.StyleElements.Restore();
             track.RecallState();
             if(invalidate != null) 
                 invalidate();

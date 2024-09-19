@@ -42,7 +42,7 @@ namespace Kinovea.ScreenManager
             set
             {
                 this.value = (value is Boolean) ? (Boolean)value : defaultValue;
-                RaiseValueChanged();
+                ExportValueToData();
             }
         }
         public override Bitmap Icon
@@ -63,7 +63,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public bool IsHidden
         {
-            get { return DrawingStyle.IsHiddenToggle(variant); }
+            get { return StyleElements.IsHiddenToggle(variant); }
         }
         #endregion
 
@@ -105,7 +105,7 @@ namespace Kinovea.ScreenManager
             clone.icon = icon;
             clone.displayName = displayName;
             clone.variant = variant;
-            clone.Bind(this);
+            clone.BindClone(this);
             return clone;
         }
         public override void ReadXML(XmlReader xmlReader)
@@ -155,7 +155,7 @@ namespace Kinovea.ScreenManager
         private void editor_CheckedChanged(object sender, EventArgs e)
         {
             value = ((CheckBox)sender).Checked;
-            RaiseValueChanged();
+            ExportValueToData();
         }
         private void UpdateVariant(StyleToggleVariant variant)
         {

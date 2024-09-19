@@ -76,7 +76,7 @@ namespace Kinovea.ScreenManager
             IEnumerable<AbstractDrawingTool> tools = ToolManager.Tools.Values.OrderBy(t => t.DisplayName);
             foreach(AbstractDrawingTool tool in tools)
             {
-                if (tool.StylePreset == null || tool.StylePreset.Elements.Count == 0)
+                if (tool.StyleElements == null || tool.StyleElements.Elements.Count == 0)
                     continue;
                 
                 iconList.Images.Add(tool.Name, tool.Icon);
@@ -84,7 +84,7 @@ namespace Kinovea.ScreenManager
                 item.Tag = tool;
 
                 if(memorize)
-                    tool.StylePreset.Memorize();
+                    tool.StyleElements.Memorize();
 
                 if(tool == preselect)
                     item.Selected = true;
@@ -116,7 +116,7 @@ namespace Kinovea.ScreenManager
             int mimimalHeight = grpConfig.Height;
             int lastEditorBottom = 10;
             
-            foreach(KeyValuePair<string, AbstractStyleElement> pair in preset.StylePreset.Elements)
+            foreach(KeyValuePair<string, AbstractStyleElement> pair in preset.StyleElements.Elements)
             {
                 AbstractStyleElement styleElement = pair.Value;
                 styleElements.Add(styleElement);
@@ -178,11 +178,11 @@ namespace Kinovea.ScreenManager
             // Reset all tools to their default preset.
             foreach(AbstractDrawingTool tool in ToolManager.Tools.Values)
             {
-                if(tool.StylePreset != null && tool.StylePreset.Elements.Count > 0)
+                if(tool.StyleElements != null && tool.StyleElements.Elements.Count > 0)
                 {
-                    DrawingStyle memo = tool.StylePreset.Clone();
+                    StyleElements memo = tool.StyleElements.Clone();
                     tool.ResetToDefaultStyle();
-                    tool.StylePreset.Memorize(memo);
+                    tool.StyleElements.Memorize(memo);
                 }
             }
             
@@ -239,9 +239,9 @@ namespace Kinovea.ScreenManager
             // Revert to memos
             foreach(AbstractDrawingTool tool in ToolManager.Tools.Values)
             {
-                if(tool.StylePreset != null && tool.StylePreset.Elements.Count > 0)
+                if(tool.StyleElements != null && tool.StyleElements.Elements.Count > 0)
                 {
-                    tool.StylePreset.Revert();
+                    tool.StyleElements.Restore();
                 }
             }
         }

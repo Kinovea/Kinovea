@@ -48,7 +48,7 @@ namespace Kinovea.ScreenManager
             get 
             {
                 int hash = Visible.GetHashCode();
-                hash ^= styleHelper.ContentHash;
+                hash ^= styleData.ContentHash;
                 hash ^= showHorizontalAxis.GetHashCode();
                 hash ^= showVerticalAxis.GetHashCode();
                 hash ^= showFraming.GetHashCode();
@@ -56,9 +56,9 @@ namespace Kinovea.ScreenManager
                 return hash; 
             }
         }
-        public DrawingStyle DrawingStyle
+        public StyleElements StyleElements
         {
-            get { return style; }
+            get { return styleElements; }
         }
         public override InfosFading InfosFading
         {
@@ -96,8 +96,8 @@ namespace Kinovea.ScreenManager
         #region Members
         private SizeF imageSize;
         
-        private StyleMaster styleHelper = new StyleMaster();
-        private DrawingStyle style;
+        private StyleElements styleElements = new StyleElements();
+        private StyleData styleData = new StyleData();
         private Dictionary<string, GridLine> gridLines = new Dictionary<string, GridLine>();
 
         // Options
@@ -118,15 +118,15 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public DrawingTestGrid(DrawingStyle preset = null)
+        public DrawingTestGrid(StyleElements preset = null)
         {
             CreateGridlines();
 
             // Decoration
-            styleHelper.Color = Color.Red;
+            styleData.Color = Color.Red;
             if (preset != null)
             {
-                style = preset.Clone();
+                styleElements = preset.Clone();
                 BindStyle();
             }
 
@@ -163,7 +163,7 @@ namespace Kinovea.ScreenManager
         private void DrawGrid(Graphics canvas, IImageToViewportTransformer transformer)
         {
             //Pen pen = new Pen(Color.Red, 1);
-            Pen p = styleHelper.GetPen(255);
+            Pen p = styleData.GetPen(255);
 
             if (showHorizontalAxis)
                 DrawLine(canvas, transformer, p, gridLines["horizontal"]);
@@ -275,7 +275,7 @@ namespace Kinovea.ScreenManager
             if (ShouldSerializeStyle(filter))
             {
                 w.WriteStartElement("DrawingStyle");
-                style.WriteXml(w);
+                styleElements.WriteXml(w);
                 w.WriteEndElement();
             }
         }
@@ -313,7 +313,7 @@ namespace Kinovea.ScreenManager
                         showThirds = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
                         break;
                     case "DrawingStyle":
-                        style.ImportXML(r);
+                        styleElements.ImportXML(r);
                         BindStyle();
                         break;
                     default:
@@ -375,8 +375,8 @@ namespace Kinovea.ScreenManager
         #region Private methods
         private void BindStyle()
         {
-            DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("TestGrid"));
-            style.Bind(styleHelper, "Color", "color");
+            StyleElements.SanityCheck(styleElements, ToolManager.GetDefaultStyleElements("TestGrid"));
+            styleElements.Bind(styleData, "Color", "color");
         }
         
 

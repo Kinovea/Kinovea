@@ -68,14 +68,14 @@ namespace Kinovea.ScreenManager
                     hash ^= p.GetHashCode();
                 hash ^= measureLabelType.GetHashCode();
                 hash ^= miniLabel.GetHashCode();
-                hash ^= styleHelper.ContentHash;
+                hash ^= styleData.ContentHash;
                 hash ^= infosFading.ContentHash;
                 return hash;
             }
         }
-        public DrawingStyle DrawingStyle
+        public StyleElements StyleElements
         {
-            get { return style;}
+            get { return styleElements;}
         }
         public override InfosFading InfosFading
         {
@@ -117,8 +117,8 @@ namespace Kinovea.ScreenManager
         private bool measureInitialized;
 
         // Decoration
-        private StyleMaster styleHelper = new StyleMaster();
-        private DrawingStyle style;
+        private StyleElements styleElements = new StyleElements();
+        private StyleData styleData = new StyleData();
         private MiniLabel miniLabel = new MiniLabel();
         private MeasureLabelType measureLabelType = MeasureLabelType.None;
         private InfosFading infosFading;
@@ -133,21 +133,21 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingLine(PointF origin, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null, IImageToViewportTransformer transformer = null)
+        public DrawingLine(PointF origin, long timestamp, long averageTimeStampsPerFrame, StyleElements preset = null, IImageToViewportTransformer transformer = null)
         {
             points["a"] = origin;
             points["b"] = origin.Translate(10, 0);
             miniLabel.SetAttach(GetMiddlePoint(), true);
             
-            styleHelper.Color = Color.DarkSlateGray;
-            styleHelper.LineSize = 1;
-            styleHelper.LineShape = LineShape.Solid;
-            styleHelper.LineEnding = LineEnding.None;
-            styleHelper.ValueChanged += StyleHelper_ValueChanged;
+            styleData.Color = Color.DarkSlateGray;
+            styleData.LineSize = 1;
+            styleData.LineShape = LineShape.Solid;
+            styleData.LineEnding = LineEnding.None;
+            styleData.ValueChanged += StyleHelper_ValueChanged;
             if (preset == null)
-                preset = ToolManager.GetStylePreset("Line");
+                preset = ToolManager.GetDefaultStyleElements("Line");
             
-            style = preset.Clone();
+            styleElements = preset.Clone();
             BindStyle();
             
             // Fading
@@ -190,10 +190,10 @@ namespace Kinovea.ScreenManager
             PointF start = transformer.Transform(points["a"]);
             PointF end = transformer.Transform(points["b"]);
 
-            using (Pen penEdges = styleHelper.GetPen(opacityFactor, transformer.Scale))
-            using (Brush brush = styleHelper.GetBrush(opacityFactor))
+            using (Pen penEdges = styleData.GetPen(opacityFactor, transformer.Scale))
+            using (Brush brush = styleData.GetBrush(opacityFactor))
             {
-                if (distorter != null && distorter.Initialized && styleHelper.LineShape != LineShape.Squiggle)
+                if (distorter != null && distorter.Initialized && styleData.LineShape != LineShape.Squiggle)
                     DrawDistorted(canvas, distorter, transformer, penEdges, brush, start, end);
                 else
                     DrawStraight(canvas, transformer, penEdges, brush, start, end);
@@ -219,20 +219,20 @@ namespace Kinovea.ScreenManager
 
             if (canDrawArrow)
             {
-                if (styleHelper.LineEnding == LineEnding.StartArrow || styleHelper.LineEnding == LineEnding.DoubleArrow)
+                if (styleData.LineEnding == LineEnding.StartArrow || styleData.LineEnding == LineEnding.DoubleArrow)
                 {
                     start = new PointF(start.X + arrowOffsetStart.X, start.Y + arrowOffsetStart.Y).ToPoint();
                     transformedCurve[0] = start.ToPoint();
                 }
 
-                if (styleHelper.LineEnding == LineEnding.EndArrow || styleHelper.LineEnding == LineEnding.DoubleArrow)
+                if (styleData.LineEnding == LineEnding.EndArrow || styleData.LineEnding == LineEnding.DoubleArrow)
                 {
                     end = new PointF(end.X + arrowOffsetEnd.X, end.Y + arrowOffsetEnd.Y).ToPoint();
                     transformedCurve[transformedCurve.Count - 1] = end.ToPoint();
                 }
             }
 
-            if (styleHelper.LineShape == LineShape.Dash)
+            if (styleData.LineShape == LineShape.Dash)
             {
                 DashStyle oldDashStyle = penEdges.DashStyle;
                 penEdges.DashStyle = DashStyle.Dash;
@@ -248,24 +248,24 @@ namespace Kinovea.ScreenManager
 
             if (canDrawArrow)
             {
-                if (styleHelper.LineEnding == LineEnding.StartArrow || styleHelper.LineEnding == LineEnding.DoubleArrow)
+                if (styleData.LineEnding == LineEnding.StartArrow || styleData.LineEnding == LineEnding.DoubleArrow)
                     ArrowHelper.Draw(canvas, penEdges, start, transformedCurve[1]);
 
-                if (styleHelper.LineEnding == LineEnding.EndArrow || styleHelper.LineEnding == LineEnding.DoubleArrow)
+                if (styleData.LineEnding == LineEnding.EndArrow || styleData.LineEnding == LineEnding.DoubleArrow)
                     ArrowHelper.Draw(canvas, penEdges, end, transformedCurve[transformedCurve.Count - 2]);
             }
         }
         private void DrawStraight(Graphics canvas, IImageToViewportTransformer transformer, Pen penEdges, Brush brush, PointF start, PointF end)
         {
-            bool startArrow = styleHelper.LineEnding == LineEnding.StartArrow  || styleHelper.LineEnding == LineEnding.DoubleArrow;
-            bool endArrow = styleHelper.LineEnding == LineEnding.EndArrow || styleHelper.LineEnding == LineEnding.DoubleArrow;
+            bool startArrow = styleData.LineEnding == LineEnding.StartArrow  || styleData.LineEnding == LineEnding.DoubleArrow;
+            bool endArrow = styleData.LineEnding == LineEnding.EndArrow || styleData.LineEnding == LineEnding.DoubleArrow;
             bool canDrawArrow = ArrowHelper.UpdateStartEnd(penEdges.Width, ref start, ref end, startArrow, endArrow);
             
-            if (styleHelper.LineShape == LineShape.Squiggle)
+            if (styleData.LineShape == LineShape.Squiggle)
             {
                 canvas.DrawSquigglyLine(penEdges, start, end);
             }
-            else if (styleHelper.LineShape == LineShape.Dash)
+            else if (styleData.LineShape == LineShape.Dash)
             {
                 penEdges.DashStyle = DashStyle.Dash;
                 canvas.DrawLine(penEdges, start, end);
@@ -393,7 +393,7 @@ namespace Kinovea.ScreenManager
                             break;
                         }
                     case "DrawingStyle":
-                        style.ImportXML(xmlReader);
+                        styleElements.ImportXML(xmlReader);
                         BindStyle();
                         break;
                     case "InfosFading":
@@ -413,7 +413,7 @@ namespace Kinovea.ScreenManager
             initializing = false;
             measureInitialized = true;
             miniLabel.SetAttach(GetMiddlePoint(), false);
-            miniLabel.BackColor = styleHelper.Color;
+            miniLabel.BackColor = styleData.Color;
             SignalAllTrackablePointsMoved();
         }
         public void WriteXml(XmlWriter w, SerializationFilter filter)
@@ -442,7 +442,7 @@ namespace Kinovea.ScreenManager
             if (ShouldSerializeStyle(filter))
             {
                 w.WriteStartElement("DrawingStyle");
-                style.WriteXml(w);
+                styleElements.WriteXml(w);
                 w.WriteEndElement();
             }
 
@@ -478,7 +478,7 @@ namespace Kinovea.ScreenManager
         #region ITrackable implementation and support.
         public Color Color
         {
-            get { return styleHelper.Color; }
+            get { return styleData.Color; }
         }
         public TrackingProfile CustomTrackingProfile
         {
@@ -563,15 +563,15 @@ namespace Kinovea.ScreenManager
         #region Lower level helpers
         private void BindStyle()
         {
-            DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("Line"));
-            style.Bind(styleHelper, "Color", "color");
-            style.Bind(styleHelper, "LineSize", "line size");
-            style.Bind(styleHelper, "LineShape", "line shape");
-            style.Bind(styleHelper, "LineEnding", "arrows");
+            StyleElements.SanityCheck(styleElements, ToolManager.GetDefaultStyleElements("Line"));
+            styleElements.Bind(styleData, "Color", "color");
+            styleElements.Bind(styleData, "LineSize", "line size");
+            styleElements.Bind(styleData, "LineShape", "line shape");
+            styleElements.Bind(styleData, "LineEnding", "arrows");
         }
         private void StyleHelper_ValueChanged(object sender, EventArgs e)
         {
-            miniLabel.BackColor = styleHelper.Color;
+            miniLabel.BackColor = styleData.Color;
         }
         private bool IsPointInObject(PointF point, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
@@ -594,7 +594,7 @@ namespace Kinovea.ScreenManager
                     }
                 }
 
-                return HitTester.HitPath(point, areaPath, styleHelper.LineSize, false, transformer);
+                return HitTester.HitPath(point, areaPath, styleData.LineSize, false, transformer);
             }
         }
         private PointF GetMiddlePoint()

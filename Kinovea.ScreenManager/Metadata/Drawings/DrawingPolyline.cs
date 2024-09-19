@@ -56,14 +56,14 @@ namespace Kinovea.ScreenManager
             get
             {
                 int iHash = 0;
-                iHash ^= styleHelper.ContentHash;
+                iHash ^= styleData.ContentHash;
                 iHash ^= infosFading.ContentHash;
                 return iHash;
             }
         }
-        public DrawingStyle DrawingStyle
+        public StyleElements StyleElements
         {
-            get { return style; }
+            get { return styleElements; }
         }
         public override InfosFading InfosFading
         {
@@ -105,8 +105,8 @@ namespace Kinovea.ScreenManager
         private bool initializing = true;
 
         // Decoration
-        private StyleMaster styleHelper = new StyleMaster();
-        private DrawingStyle style;
+        private StyleElements styleElements = new StyleElements();
+        private StyleData styleData = new StyleData();
         private InfosFading infosFading;
 
         // Context menu
@@ -118,15 +118,15 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingPolyline(PointF origin, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null)
+        public DrawingPolyline(PointF origin, long timestamp, long averageTimeStampsPerFrame, StyleElements preset = null)
         {
             points["0"] = origin;
             points["1"] = origin;
 
             if (preset == null)
-                preset = ToolManager.GetStylePreset("Polyline");
+                preset = ToolManager.GetDefaultStyleElements("Polyline");
 
-            style = preset.Clone();
+            styleElements = preset.Clone();
             BindStyle();
 
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
@@ -158,7 +158,7 @@ namespace Kinovea.ScreenManager
 
             Point[] pointList = transformer.Transform(points.Values).ToArray();
 
-            using (Pen penEdges = styleHelper.GetPen((int)(opacityFactor * 255), transformer.Scale))
+            using (Pen penEdges = styleData.GetPen((int)(opacityFactor * 255), transformer.Scale))
             {
                 PointF danglingStart;
                 PointF danglingEnd;
@@ -183,10 +183,10 @@ namespace Kinovea.ScreenManager
                     DrawPath(canvas, penEdges, path);
                 }
 
-                if (styleHelper.LineEnding == LineEnding.StartArrow || styleHelper.LineEnding == LineEnding.DoubleArrow)
+                if (styleData.LineEnding == LineEnding.StartArrow || styleData.LineEnding == LineEnding.DoubleArrow)
                     ArrowHelper.Draw(canvas, penEdges, pointList[0], pointList[1]);
 
-                if (styleHelper.LineEnding == LineEnding.EndArrow || styleHelper.LineEnding == LineEnding.DoubleArrow)
+                if (styleData.LineEnding == LineEnding.EndArrow || styleData.LineEnding == LineEnding.DoubleArrow)
                     ArrowHelper.Draw(canvas, penEdges, pointList[pointList.Length - 1], pointList[pointList.Length - 2]);
 
                 // Handlers
@@ -202,16 +202,16 @@ namespace Kinovea.ScreenManager
         private void DrawPath(Graphics canvas, Pen penEdges, Point[] path)
         {
             penEdges.EndCap = LineCap.NoAnchor;
-            penEdges.DashStyle = styleHelper.LineShape == LineShape.Dash ? DashStyle.Dash : DashStyle.Solid;
+            penEdges.DashStyle = styleData.LineShape == LineShape.Dash ? DashStyle.Dash : DashStyle.Solid;
 
-            switch (styleHelper.LineShape)
+            switch (styleData.LineShape)
             {
                 case LineShape.Squiggle:
                     canvas.DrawSquigglyLines(penEdges, path);
                     break;
                 case LineShape.Dash:
                 case LineShape.Solid:
-                    if (styleHelper.Curved)
+                    if (styleData.Curved)
                         canvas.DrawCurve(penEdges, path);
                     else
                         canvas.DrawLines(penEdges, path);
@@ -281,7 +281,7 @@ namespace Kinovea.ScreenManager
                         ParsePointList(xmlReader, scale);
                         break;
                     case "DrawingStyle":
-                        style.ImportXML(xmlReader);
+                        styleElements.ImportXML(xmlReader);
                         BindStyle();
                         break;
                     case "InfosFading":
@@ -352,7 +352,7 @@ namespace Kinovea.ScreenManager
             if (ShouldSerializeStyle(filter))
             {
                 w.WriteStartElement("DrawingStyle");
-                style.WriteXml(w);
+                styleElements.WriteXml(w);
                 w.WriteEndElement();
             }
 
@@ -412,7 +412,7 @@ namespace Kinovea.ScreenManager
         #region ITrackable implementation and support.
         public Color Color
         {
-            get { return styleHelper.Color; }
+            get { return styleData.Color; }
         }
         public TrackingProfile CustomTrackingProfile
         {
@@ -466,12 +466,12 @@ namespace Kinovea.ScreenManager
         #region Lower level helpers
         private void BindStyle()
         {
-            DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("Polyline"));
-            style.Bind(styleHelper, "Color", "color");
-            style.Bind(styleHelper, "LineSize", "line size");
-            style.Bind(styleHelper, "LineShape", "line shape");
-            style.Bind(styleHelper, "LineEnding", "arrows");
-            style.Bind(styleHelper, "Toggles/Curved", "curved");
+            StyleElements.SanityCheck(styleElements, ToolManager.GetDefaultStyleElements("Polyline"));
+            styleElements.Bind(styleData, "Color", "color");
+            styleElements.Bind(styleData, "LineSize", "line size");
+            styleElements.Bind(styleData, "LineShape", "line shape");
+            styleElements.Bind(styleData, "LineEnding", "arrows");
+            styleElements.Bind(styleData, "Toggles/Curved", "curved");
         }
         private bool IsPointInObject(PointF point, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
@@ -494,13 +494,13 @@ namespace Kinovea.ScreenManager
                             pp.Add(p);
                     }
 
-                    if (styleHelper.Curved)
+                    if (styleData.Curved)
                         path.AddCurve(pp.ToArray());
                     else
                         path.AddLines(pp.ToArray());
                 }
 
-                return HitTester.HitPath(point, path, styleHelper.LineSize, false, transformer);
+                return HitTester.HitPath(point, path, styleData.LineSize, false, transformer);
             }
         }
 

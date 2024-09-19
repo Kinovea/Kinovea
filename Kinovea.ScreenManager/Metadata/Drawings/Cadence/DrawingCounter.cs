@@ -57,7 +57,7 @@ namespace Kinovea.ScreenManager
                 int hash = visibleTimestamp.GetHashCode();
                 hash ^= invisibleTimestamp.GetHashCode();
                 hash ^= beats.GetHashCode();
-                hash ^= styleHelper.ContentHash;
+                hash ^= styleData.ContentHash;
                 hash ^= showLabel.GetHashCode();
                 hash ^= locked.GetHashCode();
                 hash ^= zeroBased.GetHashCode();
@@ -67,13 +67,13 @@ namespace Kinovea.ScreenManager
                 return hash;
             }
         }
-        public DrawingStyle DrawingStyle
+        public StyleElements StyleElements
         {
-            get { return style;}
+            get { return styleElements;}
         }
         public Color Color
         {
-            get { return styleHelper.GetBackgroundColor(255); }
+            get { return styleData.GetBackgroundColor(255); }
         }
         public override InfosFading  InfosFading
         {
@@ -97,8 +97,8 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
+        
         // Core
-
         private long visibleTimestamp;               	// chrono becomes visible.
         private long invisibleTimestamp;             	// chrono stops being visible.
         private List<long> beats = new List<long>();
@@ -119,8 +119,8 @@ namespace Kinovea.ScreenManager
         private bool doubleCadence;
         
         // Decoration
-        private StyleMaster styleHelper = new StyleMaster();
-        private DrawingStyle style;
+        private StyleElements styleElements = new StyleElements();
+        private StyleData styleData = new StyleData();
         private InfosFading infosFading;
         private static readonly int allowedFramesOver = 12;  // Number of frames the chrono stays visible after the 'Hiding' point.
         private RoundedRectangle mainBackground = new RoundedRectangle();
@@ -154,7 +154,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingCounter(PointF p, long start, long averageTimeStampsPerFrame, DrawingStyle preset = null)
+        public DrawingCounter(PointF p, long start, long averageTimeStampsPerFrame, StyleElements preset = null)
         {
             // Core
             visibleTimestamp = 0;
@@ -164,13 +164,13 @@ namespace Kinovea.ScreenManager
 
             text = strNoValue;
 
-            styleHelper.Bicolor = new Bicolor(Color.Black);
-            styleHelper.Font = new Font("Consolas", 16, FontStyle.Bold);
-            styleHelper.Clock = false;
+            styleData.Bicolor = new Bicolor(Color.Black);
+            styleData.Font = new Font("Consolas", 16, FontStyle.Bold);
+            styleData.Clock = false;
             if (preset == null)
-                preset = ToolManager.GetStylePreset("Counter");
+                preset = ToolManager.GetDefaultStyleElements("Counter");
 
-            style = preset.Clone();
+            styleElements = preset.Clone();
             BindStyle();
 
             // We use the InfosFading utility to fade the chrono away.
@@ -275,9 +275,9 @@ namespace Kinovea.ScreenManager
 
             text = BuildText(currentTimestamp);
 
-            using (SolidBrush brushBack = styleHelper.GetBackgroundBrush((int)(opacityFactor * backgroundOpacity)))
-            using (SolidBrush brushText = styleHelper.GetForegroundBrush((int)(opacityFactor * 255)))
-            using (Font fontText = styleHelper.GetFont((float)transformer.Scale))
+            using (SolidBrush brushBack = styleData.GetBackgroundBrush((int)(opacityFactor * backgroundOpacity)))
+            using (SolidBrush brushText = styleData.GetForegroundBrush((int)(opacityFactor * 255)))
+            using (Font fontText = styleData.GetFont((float)transformer.Scale))
             {
                 SizeF textSize = canvas.MeasureString(text, fontText);
 
@@ -300,7 +300,7 @@ namespace Kinovea.ScreenManager
                 // Drawing name.
                 if (showLabel && name.Length > 0)
                 {
-                    using (Font fontLabel = styleHelper.GetFont((float)transformer.Scale * 0.5f))
+                    using (Font fontLabel = styleData.GetFont((float)transformer.Scale * 0.5f))
                     {
                         // Note: the alignment here assumes fixed margins of the rounded rectangle class.
 
@@ -329,7 +329,7 @@ namespace Kinovea.ScreenManager
 
             if (currentTimestamp >= visibleTimestamp && currentTimestamp <= maxHitTimeStamps)
             {
-                using (Font fontText = styleHelper.GetFont(1.0f))
+                using (Font fontText = styleData.GetFont(1.0f))
                 {
                     int roundingRadius = fontText.Height / 4;
                     result = mainBackground.HitTest(point, true, (int)(roundingRadius * 1.8f), transformer);
@@ -345,8 +345,8 @@ namespace Kinovea.ScreenManager
         {
             // Invisible handler to change font size.
             int targetHeight = (int)(point.Y - mainBackground.Rectangle.Location.Y);
-            StyleElementFontSize elem = style.Elements["font size"] as StyleElementFontSize;
-            elem.ForceSize(targetHeight, text.TrimEnd(), styleHelper.Font);
+            StyleElementFontSize elem = styleElements.Elements["font size"] as StyleElementFontSize;
+            elem.ForceSize(targetHeight, text.TrimEnd(), styleData.Font);
             UpdateLabelRectangle();
         }
         public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
@@ -408,7 +408,7 @@ namespace Kinovea.ScreenManager
                 w.WriteEndElement();
 
                 w.WriteStartElement("DrawingStyle");
-                style.WriteXml(w);
+                styleElements.WriteXml(w);
                 w.WriteEndElement();
             }
         }
@@ -471,7 +471,7 @@ namespace Kinovea.ScreenManager
                         ParseWorkingValues(xmlReader, timestampMapper);
                         break;
                     case "DrawingStyle":
-                        style.ImportXML(xmlReader);
+                        styleElements.ImportXML(xmlReader);
                         BindStyle();
                         break;
                     default:
@@ -812,13 +812,13 @@ namespace Kinovea.ScreenManager
         #region Lower level helpers
         private void BindStyle()
         {
-            DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("Counter"));
-            style.Bind(styleHelper, "Bicolor", "color");
-            style.Bind(styleHelper, "Font", "font size");
+            StyleElements.SanityCheck(styleElements, ToolManager.GetDefaultStyleElements("Counter"));
+            styleElements.Bind(styleData, "Bicolor", "color");
+            styleElements.Bind(styleData, "Font", "font size");
         }
         private void UpdateLabelRectangle()
         {
-            using (Font f = styleHelper.GetFont(0.5f))
+            using (Font f = styleData.GetFont(0.5f))
             {
                 SizeF size = TextHelper.MeasureString(name, f);
                 lblBackground.Rectangle = new RectangleF(

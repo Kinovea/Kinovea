@@ -42,7 +42,7 @@ namespace Kinovea.ScreenManager
 			set 
 			{ 
 				this.value = (value is Color) ? (Color)value : defaultValue;
-				RaiseValueChanged();
+				ExportValueToData();
 			}
 		}
 		public override Bitmap Icon
@@ -94,7 +94,7 @@ namespace Kinovea.ScreenManager
 		public override AbstractStyleElement Clone()
 		{
 			AbstractStyleElement clone = new StyleElementColor(value);
-			clone.Bind(this);
+			clone.BindClone(this);
 			return clone;
 		}
 		public override void ReadXML(XmlReader xmlReader)
@@ -130,7 +130,7 @@ namespace Kinovea.ScreenManager
 			if (picker.ShowDialog() == DialogResult.OK)
 			{
 				value = picker.PickedColor;
-				RaiseValueChanged();
+				ExportValueToData();
 				((Control)sender).Invalidate();
 			}
 

@@ -61,7 +61,7 @@ namespace Kinovea.ScreenManager
                 return iHash;
             }
         }
-        public DrawingStyle DrawingStyle
+        public StyleElements StyleElements
         {
             get { return style; }
         }
@@ -98,8 +98,8 @@ namespace Kinovea.ScreenManager
         private List<PointF> points = new List<PointF>();
         
         private InfosFading infosFading;
-        private StyleMaster styleHelper = new StyleMaster();
-        private DrawingStyle style;
+        private StyleData styleHelper = new StyleData();
+        private StyleElements style;
         private Pen penEdges = Pens.White;
 
         private bool initialized = false;
@@ -114,11 +114,11 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public DrawingDistortionGrid(PointF point, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null)
+        public DrawingDistortionGrid(PointF point, long timestamp, long averageTimeStampsPerFrame, StyleElements preset = null)
         {
             styleHelper.Color = Color.Empty;
             if (preset == null)
-                preset = ToolManager.GetStylePreset("DistortionGrid");
+                preset = ToolManager.GetDefaultStyleElements("DistortionGrid");
             
             style = preset.Clone();
             BindStyle();
@@ -348,7 +348,7 @@ namespace Kinovea.ScreenManager
         #region Private methods
         private void BindStyle()
         {
-            DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("DistortionGrid"));
+            StyleElements.SanityCheck(style, ToolManager.GetDefaultStyleElements("DistortionGrid"));
             style.Bind(styleHelper, "Color", "color");
         }
 

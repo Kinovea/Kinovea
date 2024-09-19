@@ -54,14 +54,14 @@ namespace Kinovea.ScreenManager
                 hash ^= showArrow.GetHashCode();
                 hash ^= hasBackground.GetHashCode();
                 hash ^= arrowEnd.GetHashCode();
-                hash ^= styleHelper.ContentHash;
+                hash ^= styleData.ContentHash;
                 hash ^= infosFading.ContentHash;
                 return hash;
             }
         } 
-        public DrawingStyle DrawingStyle
+        public StyleElements StyleElements
         {
-            get { return style;}
+            get { return styleElements;}
         }
         public override InfosFading InfosFading
         {
@@ -109,8 +109,8 @@ namespace Kinovea.ScreenManager
         private PointF arrowEnd;
         private bool showArrow;
         private bool hasBackground;
-        private StyleMaster styleHelper = new StyleMaster();
-        private DrawingStyle style;
+        private StyleElements styleElements = new StyleElements();
+        private StyleData styleData = new StyleData();
         private InfosFading infosFading;
         private bool editing;
         private Font fontText;
@@ -131,7 +131,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingText(PointF p, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null)
+        public DrawingText(PointF p, long timestamp, long averageTimeStampsPerFrame, StyleElements preset = null)
         {
             text = "";
             background.Rectangle = new RectangleF(p, SizeF.Empty);
@@ -139,18 +139,18 @@ namespace Kinovea.ScreenManager
             showArrow = false;
             hasBackground = true;
             
-            styleHelper.Bicolor = new Bicolor(Color.Black);
-            styleHelper.Font = new Font("Arial", defaultFontSize, FontStyle.Bold);
+            styleData.Bicolor = new Bicolor(Color.Black);
+            styleData.Font = new Font("Arial", defaultFontSize, FontStyle.Bold);
             if (preset == null)
-                preset = ToolManager.GetStylePreset("Label");
+                preset = ToolManager.GetDefaultStyleElements("Label");
 
-            style = preset.Clone();
+            styleElements = preset.Clone();
             BindStyle();
             
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
             editing = false;
 
-            fontText = styleHelper.GetFontDefaultSize(defaultFontSize);
+            fontText = styleData.GetFontDefaultSize(defaultFontSize);
 
             textBox = new TextBox() {
                 Visible = false,
@@ -171,13 +171,13 @@ namespace Kinovea.ScreenManager
             InitializeMenus();
         }
         public DrawingText(PointF p, long timestamp, long averageTimeStampsPerFrame, string text)
-            : this(p, timestamp, averageTimeStampsPerFrame, ToolManager.GetStylePreset("Label"))
+            : this(p, timestamp, averageTimeStampsPerFrame, ToolManager.GetDefaultStyleElements("Label"))
         {
             this.text = TextHelper.FixMissingCarriageReturns(text);
             UpdateLabelRectangle();
         }
         public DrawingText(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(PointF.Empty, 0, 0, ToolManager.GetStylePreset("Label"))
+            : this(PointF.Empty, 0, 0, ToolManager.GetDefaultStyleElements("Label"))
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }
@@ -203,9 +203,9 @@ namespace Kinovea.ScreenManager
 
             //int backgroundOpacity = editing ? 255 : 192;
             int backgroundOpacity = 255;
-            using (SolidBrush brushBack = styleHelper.GetBackgroundBrush((int)(opacity * backgroundOpacity)))
-            using (SolidBrush brushText = styleHelper.GetForegroundBrush((int)(opacity * 255)))
-            using (Font fontText = styleHelper.GetFont((float)transformer.Scale))
+            using (SolidBrush brushBack = styleData.GetBackgroundBrush((int)(opacity * backgroundOpacity)))
+            using (SolidBrush brushText = styleData.GetForegroundBrush((int)(opacity * 255)))
+            using (Font fontText = styleData.GetFont((float)transformer.Scale))
             {
                 SizeF textSize = canvas.MeasureString(text, fontText);
                 Point bgLocation = transformer.Transform(background.Rectangle.Location);
@@ -243,7 +243,7 @@ namespace Kinovea.ScreenManager
         }
         private void DrawArrow(Graphics canvas, float opacity, Color color, float width, PointF start, PointF end)
         {
-            using (Pen pen = styleHelper.GetPen(opacity))
+            using (Pen pen = styleData.GetPen(opacity))
             {
                 pen.Color = color;
                 pen.Width = width;
@@ -273,7 +273,7 @@ namespace Kinovea.ScreenManager
             }
 
             // Compute the size of the hidden handle zone based on the font size.
-            using (Font fontText = styleHelper.GetFont(1.0f))
+            using (Font fontText = styleData.GetFont(1.0f))
             {
                 int roundingRadius = fontText.Height / 4;
                 return background.HitTest(point, true, (int)(roundingRadius * 1.8f), transformer);
@@ -289,8 +289,8 @@ namespace Kinovea.ScreenManager
             {
                 // Invisible handler to change font size.
                 int targetHeight = (int)(point.Y - background.Rectangle.Location.Y);
-                StyleElementFontSize elem = style.Elements["font size"] as StyleElementFontSize;
-                elem.ForceSize(targetHeight, text, styleHelper.Font);
+                StyleElementFontSize elem = styleElements.Elements["font size"] as StyleElementFontSize;
+                elem.ForceSize(targetHeight, text, styleData.Font);
                 UpdateLabelRectangle();
             }
         }
@@ -344,7 +344,7 @@ namespace Kinovea.ScreenManager
                         arrowEnd = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
                         break;
                     case "DrawingStyle":
-                        style.ImportXML(xmlReader);
+                        styleElements.ImportXML(xmlReader);
                         BindStyle();
                         break;
                     case "InfosFading":
@@ -374,7 +374,7 @@ namespace Kinovea.ScreenManager
             if (ShouldSerializeStyle(filter))
             {
                 w.WriteStartElement("DrawingStyle");
-                style.WriteXml(w);
+                styleElements.WriteXml(w);
                 w.WriteEndElement();
             }
 
@@ -419,14 +419,14 @@ namespace Kinovea.ScreenManager
             if (editing)
             {
                 RelocateEditbox(); // This is needed because the container top-left corner may have changed 
-                textBox.BackColor = styleHelper.Bicolor.Background;
-                textBox.ForeColor = styleHelper.Bicolor.Foreground;
+                textBox.BackColor = styleData.Bicolor.Background;
+                textBox.ForeColor = styleData.Bicolor.Foreground;
                 
                 try
                 {
                     Font oldFont = textBox.Font;
 
-                    fontText = styleHelper.GetFont((float)transformer.Scale);
+                    fontText = styleData.GetFont((float)transformer.Scale);
                     textBox.Font = fontText;
                     textBox.Text = text;
 
@@ -466,9 +466,9 @@ namespace Kinovea.ScreenManager
         #region Lower level helpers
         private void BindStyle()
         {
-            DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("Label"));
-            style.Bind(styleHelper, "Bicolor", "back color");
-            style.Bind(styleHelper, "Font", "font size");
+            StyleElements.SanityCheck(styleElements, ToolManager.GetDefaultStyleElements("Label"));
+            styleElements.Bind(styleData, "Bicolor", "back color");
+            styleElements.Bind(styleData, "Font", "font size");
         }
         private void TextBox_TextChanged(object sender, EventArgs e)
         {
@@ -482,7 +482,7 @@ namespace Kinovea.ScreenManager
         private void UpdateLabelRectangle()
         {
             // Text changed or font size changed.
-            using(Font f = styleHelper.GetFont(1F))
+            using(Font f = styleData.GetFont(1F))
             {
                 SizeF textSize = TextHelper.MeasureString(text, f);
                 background.Rectangle = new RectangleF(background.Rectangle.Location, textSize);
@@ -503,7 +503,7 @@ namespace Kinovea.ScreenManager
                 else
                     areaPath.AddLine(a, b);
 
-                return HitTester.HitPath(point, areaPath, styleHelper.LineSize, false, transformer);
+                return HitTester.HitPath(point, areaPath, styleData.LineSize, false, transformer);
             }
         }
 

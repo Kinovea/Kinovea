@@ -24,16 +24,18 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Xml;
+using System.Globalization;
 using System.Collections.Generic;
 using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// Style element to represent line endings (for arrows).
+    /// Style element to represent line size.
     /// Editor: owner drawn combo box.
+    /// Very similar to StyleElementPenSize, just the rendering changes. (lines vs circles)
     /// </summary>
-    public class StyleElementLineEnding : AbstractStyleElement
+    public class StyleElementLineSize : AbstractStyleElement
     {
         #region Properties
         public override object Value
@@ -41,39 +43,41 @@ namespace Kinovea.ScreenManager
             get { return value; }
             set 
             { 
-                this.value = (value is LineEnding) ? (LineEnding)value : defaultValue;
-                RaiseValueChanged();
+                this.value = (value is int) ? (int)value : defaultValue;
+                ExportValueToData();
             }
         }
         public override Bitmap Icon
         {
-            get { return Properties.Drawings.arrows;}
+            get { return Properties.Drawings.linesize;}
         }
         public override string DisplayName
         {
-            get { return ScreenManagerLang.Generic_ArrowPicker;}
+            get { return ScreenManagerLang.Generic_LineSizePicker;}
         }
         public override string XmlName
         {
-            get { return "Arrows";}
+            get { return "LineSize";}
         }
         #endregion
 
-        public static List<LineEnding> options = new List<LineEnding>() { LineEnding.None, LineEnding.StartArrow, LineEnding.EndArrow, LineEnding.DoubleArrow }; 
-        public static readonly LineEnding defaultValue = LineEnding.None;
-
+        public static readonly List<int> options = new List<int>() { 1, 2, 3, 4, 6, 8, 10, 12, 14, 18, 24, 30, 36 };
+        private static readonly int defaultValue = 3;
+        
         #region Members
-        private LineEnding value;
-        private static readonly int lineWidth = 6;
+        private int value;
+        private int itemHeight = 18;
+        private int textMargin = 20;
+        private static readonly Font font = new Font("Arial", 8, FontStyle.Bold);
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
         #region Constructor
-        public StyleElementLineEnding(LineEnding initialValue)
+        public StyleElementLineSize(int initialValue)
         {
-            value = options.IndexOf(initialValue) >= 0 ? initialValue : defaultValue;
+            value = options.PickAmong(initialValue);
         }
-        public StyleElementLineEnding(XmlReader xmlReader)
+        public StyleElementLineSize(XmlReader xmlReader)
         {
             ReadXML(xmlReader);
         }
@@ -84,7 +88,7 @@ namespace Kinovea.ScreenManager
         {
             ComboBox editor = new ComboBox();
             editor.DropDownStyle = ComboBoxStyle.DropDownList;
-            editor.ItemHeight = 15;
+            editor.ItemHeight = itemHeight;
             editor.DrawMode = DrawMode.OwnerDrawFixed;
 
             int selectedIndex = 0;
@@ -94,17 +98,17 @@ namespace Kinovea.ScreenManager
 
                 if (options[i] == value)
                     selectedIndex = i;
-            }
-
+            } 
+            
             editor.SelectedIndex = selectedIndex;
-            editor.DrawItem += new DrawItemEventHandler(editor_DrawItem);
-            editor.SelectedIndexChanged += new EventHandler(editor_SelectedIndexChanged);
+            editor.DrawItem += editor_DrawItem;
+            editor.SelectedIndexChanged += editor_SelectedIndexChanged;
             return editor;
         }
         public override AbstractStyleElement Clone()
         {
-            AbstractStyleElement clone = new StyleElementLineEnding(value);
-            clone.Bind(this);
+            AbstractStyleElement clone = new StyleElementLineSize(value);
+            clone.BindClone(this);
             return clone;
         }
         public override void ReadXML(XmlReader xmlReader)
@@ -112,65 +116,49 @@ namespace Kinovea.ScreenManager
             xmlReader.ReadStartElement();
             string s = xmlReader.ReadElementContentAsString("Value", "");
             
-            LineEnding value = LineEnding.None;
+            int value = defaultValue;
             try
             {
-                TypeConverter lineEndingConverter = TypeDescriptor.GetConverter(typeof(LineEnding));
-                value = (LineEnding)lineEndingConverter.ConvertFromString(s);
+                TypeConverter intConverter = TypeDescriptor.GetConverter(typeof(int));
+                value = (int)intConverter.ConvertFromString(s);
             }
             catch(Exception)
             {
-                log.ErrorFormat("An error happened while parsing XML for Line ending. {0}", s);
+                log.ErrorFormat("An error happened while parsing XML for Line size. {0}", s);
             }
 
-            this.value = options.IndexOf(value) >= 0 ? value : defaultValue;
+            this.value = options.PickAmong(value);
             xmlReader.ReadEndElement();
         }
         public override void WriteXml(XmlWriter xmlWriter)
         {
-            TypeConverter converter = TypeDescriptor.GetConverter(value);
-            string s = converter.ConvertToString(value);
-            xmlWriter.WriteElementString("Value", s);
+            xmlWriter.WriteElementString("Value", value.ToString(CultureInfo.InvariantCulture));
         }
         #endregion
-        
+
         #region Private Methods
+        
         private void editor_DrawItem(object sender, DrawItemEventArgs e)
         {
             if (e.Index < 0 || e.Index >= options.Count)
                 return;
-            
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            int top = e.Bounds.Height / 2;
 
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
+            // Draw a rectangle vertically centered, of the same height as the line weight.
+            // Also add the value as text in front of the line drawing.
+            int itemValue = options[e.Index];
+            int itemSize = Math.Min(itemValue, itemHeight - 2);
+            int top = (e.Bounds.Height - itemSize) / 2;
+
+            Brush foregroundBrush = Brushes.Black;
             Brush backgroundBrush = Brushes.White;
             if ((e.State & DrawItemState.Focus) != 0)
                 backgroundBrush = Brushes.LightSteelBlue;
 
             e.Graphics.FillRectangle(backgroundBrush, e.Bounds.Left, e.Bounds.Top, e.Bounds.Width, e.Bounds.Height);
-            
-            Pen p = new Pen(Color.Black, lineWidth);
-            switch(options[e.Index])
-            {
-                case LineEnding.None:
-                    e.Graphics.DrawLine(p, e.Bounds.Left, e.Bounds.Top + top, e.Bounds.Left + e.Bounds.Width, e.Bounds.Top + top);
-                    break;
-                case LineEnding.StartArrow:
-                    p.StartCap = LineCap.ArrowAnchor;
-                    e.Graphics.DrawLine(p, e.Bounds.Left, e.Bounds.Top + top, e.Bounds.Left + e.Bounds.Width, e.Bounds.Top + top);
-                    break;
-                case LineEnding.EndArrow:
-                    p.EndCap = LineCap.ArrowAnchor;
-                    e.Graphics.DrawLine(p, e.Bounds.Left, e.Bounds.Top + top, e.Bounds.Left + e.Bounds.Width, e.Bounds.Top + top);
-                    break;
-                case LineEnding.DoubleArrow:
-                    p.StartCap = LineCap.ArrowAnchor;
-                    p.EndCap = LineCap.ArrowAnchor;
-                    e.Graphics.DrawLine(p, e.Bounds.Left, e.Bounds.Top + top, e.Bounds.Left + e.Bounds.Width, e.Bounds.Top + top);
-                    break;
-            }
-            
-            p.Dispose();
+            e.Graphics.DrawString(itemValue.ToString(CultureInfo.InvariantCulture), font, foregroundBrush, e.Bounds.Left, e.Bounds.Top + 2);
+            e.Graphics.FillRectangle(foregroundBrush, e.Bounds.Left + textMargin, e.Bounds.Top + top, e.Bounds.Width - textMargin, itemSize);
         }
 
         private void editor_SelectedIndexChanged(object sender, EventArgs e)
@@ -183,7 +171,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             value = options[editor.SelectedIndex];
-            RaiseValueChanged();
+            ExportValueToData();
         }
         #endregion
     }

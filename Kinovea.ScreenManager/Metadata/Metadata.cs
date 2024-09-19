@@ -2032,9 +2032,9 @@ namespace Kinovea.ScreenManager
             // These drawings are unique and not attached to any particular key image.
 
             drawingSpotlight = new DrawingSpotlight();
-            drawingNumberSequence = new DrawingNumberSequence(ToolManager.GetStylePreset("NumberSequence"));
-            drawingCoordinateSystem = new DrawingCoordinateSystem(Point.Empty, ToolManager.GetStylePreset("CoordinateSystem"));
-            drawingTestGrid = new DrawingTestGrid(ToolManager.GetStylePreset("TestGrid"));
+            drawingNumberSequence = new DrawingNumberSequence(ToolManager.GetDefaultStyleElements("NumberSequence"));
+            drawingCoordinateSystem = new DrawingCoordinateSystem(Point.Empty, ToolManager.GetDefaultStyleElements("CoordinateSystem"));
+            drawingTestGrid = new DrawingTestGrid(ToolManager.GetDefaultStyleElements("TestGrid"));
 
             singletonDrawingsManager.AddDrawing(drawingSpotlight);
             singletonDrawingsManager.AddDrawing(drawingNumberSequence);

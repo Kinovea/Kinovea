@@ -86,7 +86,7 @@ namespace Kinovea.ScreenManager
             CalibratedAngle = ComputeCalibratedAngle(o, a, b, signed, ccw, calibration);
         }
 
-        public void DrawText(Graphics canvas, double opacity, SolidBrush brushFill, PointF o, IImageToViewportTransformer transformer, CalibrationHelper calibrationHelper, StyleMaster styleHelper)
+        public void DrawText(Graphics canvas, double opacity, SolidBrush brushFill, PointF o, IImageToViewportTransformer transformer, CalibrationHelper calibrationHelper, StyleData styleHelper)
         {
             float value = calibrationHelper.ConvertAngle(CalibratedAngle);
 

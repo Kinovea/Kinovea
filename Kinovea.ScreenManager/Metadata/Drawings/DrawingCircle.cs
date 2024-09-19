@@ -60,12 +60,12 @@ namespace Kinovea.ScreenManager
                 hash ^= filled.GetHashCode();
                 hash ^= measureLabelType.GetHashCode();
                 hash ^= miniLabel.GetHashCode();
-                hash ^= styleHelper.ContentHash;
+                hash ^= styleData.ContentHash;
                 hash ^= infosFading.ContentHash;
                 return hash;
             }
         } 
-        public DrawingStyle DrawingStyle
+        public StyleElements StyleElements
         {
             get { return style;}
         }
@@ -133,8 +133,8 @@ namespace Kinovea.ScreenManager
         #endregion
 
         // Decoration
-        private StyleMaster styleHelper = new StyleMaster();
-        private DrawingStyle style;
+        private StyleElements style = new StyleElements();
+        private StyleData styleData = new StyleData();
         private InfosFading infosFading;
         private CalibrationHelper calibrationHelper;
         private Ellipse ellipseInImage;
@@ -155,7 +155,7 @@ namespace Kinovea.ScreenManager
         //------------------------------------------------------
 
         #region Constructor
-        public DrawingCircle(PointF center, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null, IImageToViewportTransformer transformer = null)
+        public DrawingCircle(PointF center, long timestamp, long averageTimeStampsPerFrame, StyleElements preset = null, IImageToViewportTransformer transformer = null)
         {
             this.center = center;
             miniLabel.SetAttach(center, true);
@@ -166,12 +166,12 @@ namespace Kinovea.ScreenManager
             this.radius = Math.Min(radius, 10);
             this.infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
 
-            styleHelper.Color = Color.Empty;
-            styleHelper.LineSize = 1;
-            styleHelper.PenShape = PenShape.Solid;
-            styleHelper.ValueChanged += StyleHelper_ValueChanged;
+            styleData.Color = Color.Empty;
+            styleData.LineSize = 1;
+            styleData.PenShape = PenShape.Solid;
+            styleData.ValueChanged += StyleHelper_ValueChanged;
             if (preset == null)
-                preset = ToolManager.GetStylePreset("Circle");
+                preset = ToolManager.GetDefaultStyleElements("Circle");
             
             style = preset.Clone();
             BindStyle();
@@ -219,9 +219,9 @@ namespace Kinovea.ScreenManager
                 return;
             
             int alpha = (int)(opacityFactor * 255);
-            using(Pen p = styleHelper.GetPen(alpha, transformer.Scale))
+            using(Pen p = styleData.GetPen(alpha, transformer.Scale))
             {
-                if (styleHelper.PenShape == PenShape.Dash)
+                if (styleData.PenShape == PenShape.Dash)
                     p.DashStyle = DashStyle.Dash;
 
                 // The center of the original circle is still the correct center even in perspective.
@@ -245,7 +245,7 @@ namespace Kinovea.ScreenManager
                     canvas.DrawEllipse(p, rect);
                     if (filled)
                     {
-                        using (SolidBrush b = styleHelper.GetBrush(alpha))
+                        using (SolidBrush b = styleData.GetBrush(alpha))
                             canvas.FillEllipse(b, rect);
                     }
                     
@@ -258,7 +258,7 @@ namespace Kinovea.ScreenManager
                     canvas.DrawEllipse(p, boundingBox);
                     if (filled)
                     {
-                        using (SolidBrush b = styleHelper.GetBrush(alpha))
+                        using (SolidBrush b = styleData.GetBrush(alpha))
                             canvas.FillEllipse(b, boundingBox);
                     }
                 }
@@ -407,7 +407,7 @@ namespace Kinovea.ScreenManager
             initializing = false;
             measureInitialized = true;
             miniLabel.SetAttach(center, false);
-            miniLabel.BackColor = styleHelper.Color;
+            miniLabel.BackColor = styleData.Color;
         }
         public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
@@ -538,14 +538,14 @@ namespace Kinovea.ScreenManager
         #region Lower level helpers
         private void BindStyle()
         {
-            DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("Circle"));
-            style.Bind(styleHelper, "Color", "color");
-            style.Bind(styleHelper, "LineSize", "pen size");
-            style.Bind(styleHelper, "PenShape", "pen shape");
+            StyleElements.SanityCheck(style, ToolManager.GetDefaultStyleElements("Circle"));
+            style.Bind(styleData, "Color", "color");
+            style.Bind(styleData, "LineSize", "pen size");
+            style.Bind(styleData, "PenShape", "pen shape");
         }
         private void StyleHelper_ValueChanged(object sender, EventArgs e)
         {
-            miniLabel.BackColor = styleHelper.Color;
+            miniLabel.BackColor = styleData.Color;
         }
         private bool IsPointInObject(PointF point, IImageToViewportTransformer transformer)
         {
@@ -565,7 +565,7 @@ namespace Kinovea.ScreenManager
             using(GraphicsPath areaPath = new GraphicsPath())
             {
                 GetHitPath(areaPath);
-                return HitTester.HitPath(point, areaPath, styleHelper.LineSize, false, transformer);
+                return HitTester.HitPath(point, areaPath, styleData.LineSize, false, transformer);
             }
         }
 

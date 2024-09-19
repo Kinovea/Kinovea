@@ -82,7 +82,7 @@ namespace Kinovea.ScreenManager
                     hash ^= p.ContentHash;
 
                 hash ^= defaultCrossRadius.GetHashCode();
-                hash ^= styleHelper.ContentHash;
+                hash ^= styleData.ContentHash;
                 hash ^= miniLabel.GetHashCode();
 
                 foreach (MiniLabel kfl in keyframeLabels)
@@ -135,13 +135,13 @@ namespace Kinovea.ScreenManager
         {
             get { return endTimeStamp; }
         }
-        public DrawingStyle DrawingStyle
+        public StyleElements StyleElements
         {
-            get { return style; }
+            get { return styleElements; }
         }
         public Color MainColor
         {
-            get { return styleHelper.Color; }
+            get { return styleData.Color; }
         }
         public override Metadata ParentMetadata
         {
@@ -243,8 +243,8 @@ namespace Kinovea.ScreenManager
         private int currentPointIndex;
 
         // Decoration
-        private StyleMaster styleHelper = new StyleMaster();
-        private DrawingStyle style;
+        private StyleElements styleElements = new StyleElements();
+        private StyleData styleData = new StyleData();
 
         // Opacity
         private InfosFading infosFading = new InfosFading(long.MaxValue, 1);
@@ -330,17 +330,17 @@ namespace Kinovea.ScreenManager
         private void SetupStyle()
         {
             Color color = TrackColorCycler.Next();
-            style = new DrawingStyle();
-            style.Elements.Add("color", new StyleElementColor(color));
-            style.Elements.Add("line size", new StyleElementLineSize(3));
-            style.Elements.Add("track shape", new StyleElementTrackShape(TrackShape.Solid));
-            style.Elements.Add("label size", new StyleElementFontSize(8, ScreenManagerLang.StyleElement_FontSize_LabelSize));
+            styleElements = new StyleElements();
+            styleElements.Elements.Add("color", new StyleElementColor(color));
+            styleElements.Elements.Add("line size", new StyleElementLineSize(3));
+            styleElements.Elements.Add("track shape", new StyleElementTrackShape(TrackShape.Solid));
+            styleElements.Elements.Add("label size", new StyleElementFontSize(8, ScreenManagerLang.StyleElement_FontSize_LabelSize));
 
-            styleHelper.Color = color;
-            styleHelper.LineSize = 3;
-            styleHelper.TrackShape = TrackShape.Solid;
-            styleHelper.Font = new Font("Arial", 8, FontStyle.Bold);
-            styleHelper.ValueChanged += StyleHelper_ValueChanged;
+            styleData.Color = color;
+            styleData.LineSize = 3;
+            styleData.TrackShape = TrackShape.Solid;
+            styleData.Font = new Font("Arial", 8, FontStyle.Bold);
+            styleData.ValueChanged += StyleHelper_ValueChanged;
 
             BindStyle();
         }
@@ -506,7 +506,7 @@ namespace Kinovea.ScreenManager
                     DrawMarker(canvas, opacityFactor, transformer);
 
                 if (opacityFactor == 1.0)
-                    DrawTrackerHelp(canvas, transformer, styleHelper.Color, opacityFactor);
+                    DrawTrackerHelp(canvas, transformer, styleData.Color, opacityFactor);
             }
         }
         public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
@@ -641,7 +641,7 @@ namespace Kinovea.ScreenManager
                     RectangleF bounds = path.GetBounds();
                     if (!bounds.IsEmpty)
                     {
-                        bool hit = HitTester.HitPath(point, path, styleHelper.LineSize, false, transformer);
+                        bool hit = HitTester.HitPath(point, path, styleData.LineSize, false, transformer);
                         result = hit ? 0 : -1;
                     }
                 }
@@ -677,7 +677,7 @@ namespace Kinovea.ScreenManager
             if (viewPoints.Length <= 1)
                 return;
 
-            using (Pen trackPen = styleHelper.GetPen(opacity, 1.0))
+            using (Pen trackPen = styleData.GetPen(opacity, 1.0))
             {
                 // Tension of 0.5f creates a smooth curve.
                 float tension = PreferencesManager.PlayerPreferences.EnableFiltering ? 0.5f : 0.0f;
@@ -696,7 +696,7 @@ namespace Kinovea.ScreenManager
                 {
                     canvas.DrawCurve(trackPen, viewPoints, tension);
 
-                    if (styleHelper.TrackShape.ShowSteps)
+                    if (styleData.TrackShape.ShowSteps)
                     {
                         using (Pen stepPen = new Pen(trackPen.Color, 2.0f))
                         {
@@ -716,7 +716,7 @@ namespace Kinovea.ScreenManager
 
             if (trackMarker == TrackMarker.Cross || trackStatus == TrackStatus.Edit || trackStatus == TrackStatus.Configuration)
             {
-                using (Pen p = new Pen(Color.FromArgb((int)(fadingFactor * 255), styleHelper.Color)))
+                using (Pen p = new Pen(Color.FromArgb((int)(fadingFactor * 255), styleData.Color)))
                 {
                     canvas.DrawLine(p, location.X, location.Y - radius, location.X, location.Y + radius);
                     canvas.DrawLine(p, location.X - radius, location.Y, location.X + radius, location.Y);
@@ -724,7 +724,7 @@ namespace Kinovea.ScreenManager
             }
             else if (trackMarker == TrackMarker.Circle)
             {
-                using (Pen p = new Pen(Color.FromArgb((int)(fadingFactor * 255), styleHelper.Color)))
+                using (Pen p = new Pen(Color.FromArgb((int)(fadingFactor * 255), styleData.Color)))
                 {
                     canvas.DrawEllipse(p, location.Box(radius));
                 }
@@ -743,7 +743,7 @@ namespace Kinovea.ScreenManager
         {
             if (trackStatus == TrackStatus.Edit)
             {
-                tracker.Draw(canvas, positions[currentPointIndex], transformer, styleHelper.Color, opacity);
+                tracker.Draw(canvas, positions[currentPointIndex], transformer, styleData.Color, opacity);
             }
             /*else if (trackStatus == TrackStatus.Interactive)
             {
@@ -768,7 +768,7 @@ namespace Kinovea.ScreenManager
                 }
 
                 // Tool
-                using (Pen p = new Pen(Color.FromArgb(255, styleHelper.Color)))
+                using (Pen p = new Pen(Color.FromArgb(255, styleData.Color)))
                 using (SolidBrush b = new SolidBrush(p.Color))
                 {
                     searchWindow.Draw(canvas, searchBox, p, b, 4);
@@ -827,7 +827,7 @@ namespace Kinovea.ScreenManager
             RectangleF rect = new RectangleF(-ellipse.SemiMajorAxis, -ellipse.SemiMinorAxis, ellipse.SemiMajorAxis * 2, ellipse.SemiMinorAxis * 2);
             float angle = (float)MathHelper.Degrees(ellipse.Rotation);
 
-            using (Pen p = new Pen(Color.FromArgb((int)(fadingFactor * 255), styleHelper.Color)))
+            using (Pen p = new Pen(Color.FromArgb((int)(fadingFactor * 255), styleData.Color)))
             {
                 // Center and radius
                 p.Width = 2;
@@ -1473,7 +1473,7 @@ namespace Kinovea.ScreenManager
             if (ShouldSerializeStyle(filter))
             {
                 w.WriteStartElement("DrawingStyle");
-                style.WriteXml(w);
+                styleElements.WriteXml(w);
                 w.WriteEndElement();
             }
         }
@@ -1576,7 +1576,7 @@ namespace Kinovea.ScreenManager
                         ParseTrackPointList(xmlReader, scale, timestampMapper);
                         break;
                     case "DrawingStyle":
-                        style.ImportXML(xmlReader);
+                        styleElements.ImportXML(xmlReader);
                         BindStyle();
                         break;
                     case "MainLabel":
@@ -1764,8 +1764,8 @@ namespace Kinovea.ScreenManager
                         // Known Keyframe, import name and color.
                         //keyframesLabels[iKnown].SetText(parentMetadata[i].Title);
                         keyframeLabels[iKnown].Name = parentMetadata[i].Name;
-                        keyframeLabels[iKnown].BackColor = useKeyframeColors ? parentMetadata[i].Color : styleHelper.Color;
-                        keyframeLabels[iKnown].FontSize = (int)styleHelper.Font.Size;
+                        keyframeLabels[iKnown].BackColor = useKeyframeColors ? parentMetadata[i].Color : styleData.Color;
+                        keyframeLabels[iKnown].FontSize = (int)styleData.Font.Size;
                     }
                     else
                     {
@@ -1775,9 +1775,9 @@ namespace Kinovea.ScreenManager
                         kfl.SetAttach(positions[kfl.AttachIndex].Point, true);
                         kfl.Timestamp = positions[kfl.AttachIndex].T;
                         kfl.Name = parentMetadata[i].Name;
-                        kfl.BackColor = useKeyframeColors ? parentMetadata[i].Color : styleHelper.Color;
+                        kfl.BackColor = useKeyframeColors ? parentMetadata[i].Color : styleData.Color;
 
-                        kfl.FontSize = (int)styleHelper.Font.Size;
+                        kfl.FontSize = (int)styleData.Font.Size;
 
                         keyframeLabels.Add(kfl);
                     }
@@ -1805,7 +1805,7 @@ namespace Kinovea.ScreenManager
             }
 
             // We also use this to update the main label font.
-            miniLabel.FontSize = (int)styleHelper.Font.Size;
+            miniLabel.FontSize = (int)styleData.Font.Size;
         }
         public void MemorizeState()
         {
@@ -1956,10 +1956,10 @@ namespace Kinovea.ScreenManager
 
         private void BindStyle()
         {
-            style.Bind(styleHelper, "Color", "color");
-            style.Bind(styleHelper, "LineSize", "line size");
-            style.Bind(styleHelper, "TrackShape", "track shape");
-            style.Bind(styleHelper, "Font", "label size");
+            styleElements.Bind(styleData, "Color", "color");
+            styleElements.Bind(styleData, "LineSize", "line size");
+            styleElements.Bind(styleData, "TrackShape", "track shape");
+            styleElements.Bind(styleData, "Font", "label size");
         }
 
         private void StyleHelper_ValueChanged(object sender, EventArgs e)
@@ -1970,9 +1970,9 @@ namespace Kinovea.ScreenManager
         private void AfterMainStyleChange()
         {
             // Impact the style of mini labels based on the main color.
-            miniLabel.BackColor = styleHelper.Color;
+            miniLabel.BackColor = styleData.Color;
             foreach (MiniLabel kfl in keyframeLabels)
-                kfl.BackColor = styleHelper.Color;
+                kfl.BackColor = styleData.Color;
         }
         #endregion
     }

@@ -46,7 +46,7 @@ namespace Kinovea.ScreenManager
             {
                 // These are the standard tool but defined in XML.
                 // For these we try to use a precision cursor or a semantic one.
-                DrawingStyle style = ToolManager.GetStylePreset(tool.Name);
+                StyleElements style = ToolManager.GetDefaultStyleElements(tool.Name);
 
                 if (tool.Name == "Pencil")
                 {
@@ -76,7 +76,7 @@ namespace Kinovea.ScreenManager
             {
                 // Special internal tools. 
                 // Still nice to use a precision cursor with them, but the color might not make sense.
-                DrawingStyle style = ToolManager.GetStylePreset(tool.Name);
+                StyleElements style = ToolManager.GetDefaultStyleElements(tool.Name);
                 return GetCursorPrecision(style, false);
             }
             else
@@ -108,7 +108,7 @@ namespace Kinovea.ScreenManager
             if (decorable == null)
                 return GetCursorPrecision(null, false);
 
-            return GetCursorPrecision(decorable.DrawingStyle, false);
+            return GetCursorPrecision(decorable.StyleElements, false);
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Get the variable-size cursor for the pencil tool.
         /// </summary>
-        private Cursor GetCursorPencil(DrawingStyle style, double stretchFactor)
+        private Cursor GetCursorPencil(StyleElements style, double stretchFactor)
         {
             // Colored and sized circle with precision cross.
             string keyColor = "color";
@@ -190,7 +190,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Get the fixed-size cursor for the cross mark tool.
         /// </summary>
-        private Cursor GetCursorCrossMark(DrawingStyle style)
+        private Cursor GetCursorCrossMark(StyleElements style)
         {
             // Cross inside a semi transparent circle (same as drawing).
             string keyColor = "back color";
@@ -226,7 +226,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Get a fixed-size "precision cross" cursor.
         /// </summary>
-        private Cursor GetCursorPrecision(DrawingStyle style, bool invert)
+        private Cursor GetCursorPrecision(StyleElements style, bool invert)
         {
             // Try to find a color style element to use as the cursor color.
             Color color = Color.Empty;

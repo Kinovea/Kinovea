@@ -359,7 +359,7 @@ namespace Kinovea.ScreenManager
         private void mnuConfigureDrawing_Click(object sender, EventArgs e)
         {
             IDecorable drawing = metadataManipulator.HitDrawing as IDecorable;
-            if(drawing == null || drawing.DrawingStyle == null || drawing.DrawingStyle.Elements.Count == 0)
+            if(drawing == null || drawing.StyleElements == null || drawing.StyleElements.Elements.Count == 0)
                 return;
 
             metadataManipulator.ConfigureDrawing(metadataManipulator.HitDrawing, Refresh);

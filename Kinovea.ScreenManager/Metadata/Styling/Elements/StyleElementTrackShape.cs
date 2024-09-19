@@ -42,7 +42,7 @@ namespace Kinovea.ScreenManager
             set 
             { 
                 this.value = (value is TrackShape) ? (TrackShape)value : defaultValue;
-                RaiseValueChanged();
+                ExportValueToData();
             }
         }
         public override Bitmap Icon
@@ -104,7 +104,7 @@ namespace Kinovea.ScreenManager
         public override AbstractStyleElement Clone()
         {
             AbstractStyleElement clone = new StyleElementTrackShape(value);
-            clone.Bind(this);
+            clone.BindClone(this);
             return clone;
         }
         public override void ReadXML(XmlReader xmlReader)
@@ -175,7 +175,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             value = options[editor.SelectedIndex];
-            RaiseValueChanged();
+            ExportValueToData();
         }
         #endregion
     }

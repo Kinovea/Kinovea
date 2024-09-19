@@ -51,15 +51,15 @@ namespace Kinovea.ScreenManager
             get 
             { 
                 int hash = Visible.GetHashCode();
-                hash ^= styleHelper.ContentHash;
+                hash ^= styleData.ContentHash;
                 hash ^= showGrid.GetHashCode();
                 hash ^= showGraduations.GetHashCode();
                 return hash;
             }
         } 
-        public DrawingStyle DrawingStyle
+        public StyleElements StyleElements
         {
-            get { return style;}
+            get { return styleElements;}
         }
         public override InfosFading InfosFading
         {
@@ -101,8 +101,8 @@ namespace Kinovea.ScreenManager
         private Size imageSize;
 
         // Decoration
-        private StyleMaster styleHelper = new StyleMaster();
-        private DrawingStyle style;
+        private StyleElements styleElements = new StyleElements();
+        private StyleData styleData = new StyleData();
 
         private bool trackingUpdate;
 
@@ -125,16 +125,18 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingCoordinateSystem(Point origin, DrawingStyle stylePreset)
+        public DrawingCoordinateSystem(Point origin, StyleElements preset)
         {
             points["0"] = origin;
             
             // Decoration & binding with editors
-            styleHelper.Bicolor = new Bicolor(Color.Empty);
-            styleHelper.Font = new Font("Arial", 8, FontStyle.Bold);
-            if(stylePreset != null)
+            styleData.Bicolor = new Bicolor(Color.Empty);
+            styleData.Font = new Font("Arial", 8, FontStyle.Bold);
+
+            // TODO: get preset from tool manager if not found.
+            if(preset != null)
             {
-                style = stylePreset.Clone();
+                styleElements = preset.Clone();
                 BindStyle();
             }
 
@@ -180,7 +182,7 @@ namespace Kinovea.ScreenManager
             if (grid == null)
                 return;
 
-            using (Pen penLine = styleHelper.GetBackgroundPen(255))
+            using (Pen penLine = styleData.GetBackgroundPen(255))
             {
                 DrawGrid(canvas, distorter, transformer, grid);
             }
@@ -188,7 +190,7 @@ namespace Kinovea.ScreenManager
 
         private void DrawGrid(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, CoordinateSystemGrid grid)
         {
-            Pen pen = styleHelper.GetBackgroundPen(axesAlpha);
+            Pen pen = styleData.GetBackgroundPen(axesAlpha);
             
             // Axes
             pen.DashStyle = DashStyle.Solid;
@@ -212,9 +214,9 @@ namespace Kinovea.ScreenManager
 
             if (showGraduations)
             {
-                SolidBrush brushFill = styleHelper.GetBackgroundBrush(labelsAlpha);
-                SolidBrush fontBrush = styleHelper.GetForegroundBrush(255);
-                Font font = styleHelper.GetFont(1.0F);
+                SolidBrush brushFill = styleData.GetBackgroundBrush(labelsAlpha);
+                SolidBrush fontBrush = styleData.GetForegroundBrush(255);
+                Font font = styleData.GetFont(1.0F);
 
                 foreach (TickMark tick in grid.TickMarks)
                     tick.Draw(canvas, distorter, transformer, brushFill, fontBrush, font, textMargin, false);
@@ -294,7 +296,7 @@ namespace Kinovea.ScreenManager
         #region ITrackable implementation and support.
         public Color Color
         {
-            get { return styleHelper.Bicolor.Background; }
+            get { return styleData.Bicolor.Background; }
         }
         public TrackingProfile CustomTrackingProfile
         {
@@ -388,7 +390,7 @@ namespace Kinovea.ScreenManager
             if (ShouldSerializeStyle(filter))
             {
                 w.WriteStartElement("DrawingStyle");
-                style.WriteXml(w);
+                styleElements.WriteXml(w);
                 w.WriteEndElement();
             }
         }
@@ -427,7 +429,7 @@ namespace Kinovea.ScreenManager
                         showGraduations = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
                         break;
                     case "DrawingStyle":
-                        style.ImportXML(r);
+                        styleElements.ImportXML(r);
                         BindStyle();
                         break;
                     default:
@@ -471,7 +473,7 @@ namespace Kinovea.ScreenManager
         #region Lower level helpers
         private void BindStyle()
         {
-            style.Bind(styleHelper, "Bicolor", "line color");
+            styleElements.Bind(styleData, "Bicolor", "line color");
         }
 
         /// <summary>

@@ -78,7 +78,7 @@ namespace Kinovea.ScreenManager
     	/// <summary>
     	/// Current style preset
     	/// </summary>
-    	public abstract DrawingStyle StylePreset
+    	public abstract StyleElements StyleElements
     	{
     		get;
     		set;
@@ -87,7 +87,7 @@ namespace Kinovea.ScreenManager
     	/// <summary>
     	/// Default style preset
     	/// </summary>
-    	public abstract DrawingStyle DefaultStylePreset
+    	public abstract StyleElements DefaultStyleElements
     	{
     		get;
     	}
@@ -100,7 +100,7 @@ namespace Kinovea.ScreenManager
     	#region Public Concrete Methods
     	public void ResetToDefaultStyle()
     	{
-    		StylePreset = DefaultStylePreset.Clone();
+    		StyleElements = DefaultStyleElements.Clone();
     	}
     	public override string ToString()
     	{

@@ -20,8 +20,8 @@ namespace Kinovea.ScreenManager
         private CalibrationHelper calibrationHelper;
         private Rectangle rect;
         private bool manualUpdate;
-        private DrawingStyle style = new DrawingStyle();
-        private StyleMaster styleHelper = new StyleMaster();
+        private StyleElements style = new StyleElements();
+        private StyleData styleHelper = new StyleData();
         private DistortionParameters distortionParameters;
         private string pathSpecial = "::Manual"; // Special path to indicate manual changes.
         private double sensorWidth = DistortionParameters.defaultSensorWidth;

@@ -60,19 +60,19 @@ namespace Kinovea.ScreenManager
                 iHash ^= startCountingTimestamp.GetHashCode();
                 iHash ^= stopCountingTimestamp.GetHashCode();
                 iHash ^= clockOriginTimestamp.GetHashCode();
-                iHash ^= styleHelper.ContentHash;
+                iHash ^= styleData.ContentHash;
                 iHash ^= showLabel.GetHashCode();
 
                 return iHash;
             }
         }
-        public DrawingStyle DrawingStyle
+        public StyleElements StyleElements
         {
-            get { return style;}
+            get { return styleElements;}
         }
         public Color Color
         {
-            get { return styleHelper.GetBackgroundColor(255); }
+            get { return styleData.GetBackgroundColor(255); }
         }
         public override InfosFading  InfosFading
         {
@@ -92,7 +92,7 @@ namespace Kinovea.ScreenManager
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
                 ReloadMenusCulture();
 
-                if (styleHelper.Clock)
+                if (styleData.Clock)
                 {
                     contextMenu.AddRange(new ToolStripItem[] {
                     mnuVisibility,
@@ -137,8 +137,8 @@ namespace Kinovea.ScreenManager
         private string timecode;
         private bool showLabel;
         // Decoration
-        private StyleMaster styleHelper = new StyleMaster();
-        private DrawingStyle style;
+        private StyleElements styleElements = new StyleElements();
+        private StyleData styleData = new StyleData();
         private InfosFading infosFading;
         private static readonly int allowedFramesOver = 12;  // Number of frames the chrono stays visible after the 'Hiding' point.
         private RoundedRectangle mainBackground = new RoundedRectangle();
@@ -162,7 +162,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingChrono(PointF p, long start, long averageTimeStampsPerFrame, DrawingStyle preset = null)
+        public DrawingChrono(PointF p, long start, long averageTimeStampsPerFrame, StyleElements preset = null)
         {
             // Core
             visibleTimestamp = 0;
@@ -174,13 +174,13 @@ namespace Kinovea.ScreenManager
 
             timecode = "error";
 
-            styleHelper.Bicolor = new Bicolor(Color.Black);
-            styleHelper.Font = new Font("Arial", 16, FontStyle.Bold);
-            styleHelper.Clock = false;
+            styleData.Bicolor = new Bicolor(Color.Black);
+            styleData.Font = new Font("Arial", 16, FontStyle.Bold);
+            styleData.Clock = false;
             if (preset == null)
-                preset = ToolManager.GetStylePreset("Chrono");
+                preset = ToolManager.GetDefaultStyleElements("Chrono");
 
-            style = preset.Clone();
+            styleElements = preset.Clone();
             BindStyle();
 
             // We use the InfosFading utility to fade the chrono away.
@@ -243,9 +243,9 @@ namespace Kinovea.ScreenManager
             timecode = GetTimecode(currentTimestamp);
             string text = timecode;
 
-            using (SolidBrush brushBack = styleHelper.GetBackgroundBrush((int)(opacityFactor * backgroundOpacity)))
-            using (SolidBrush brushText = styleHelper.GetForegroundBrush((int)(opacityFactor * 255)))
-            using (Font fontText = styleHelper.GetFont((float)transformer.Scale))
+            using (SolidBrush brushBack = styleData.GetBackgroundBrush((int)(opacityFactor * backgroundOpacity)))
+            using (SolidBrush brushText = styleData.GetForegroundBrush((int)(opacityFactor * 255)))
+            using (Font fontText = styleData.GetFont((float)transformer.Scale))
             {
                 SizeF textSize = canvas.MeasureString(text, fontText);
                 Point bgLocation = transformer.Transform(mainBackground.Rectangle.Location);
@@ -261,7 +261,7 @@ namespace Kinovea.ScreenManager
 
                 if (showLabel && name.Length > 0)
                 {
-                    using (Font fontLabel = styleHelper.GetFont((float)transformer.Scale * 0.5f))
+                    using (Font fontLabel = styleData.GetFont((float)transformer.Scale * 0.5f))
                     {
                         // Note: the alignment here assumes fixed margins of the rounded rectangle class.
                         SizeF lblTextSize = canvas.MeasureString(name, fontLabel);
@@ -287,7 +287,7 @@ namespace Kinovea.ScreenManager
 
             if (currentTimestamp >= visibleTimestamp && currentTimestamp <= maxHitTimeStamps)
             {
-                using (Font fontText = styleHelper.GetFont(1.0f))
+                using (Font fontText = styleData.GetFont(1.0f))
                 {
                     int roundingRadius = fontText.Height / 4;
                     result = mainBackground.HitTest(point, true, (int)(roundingRadius * 1.8f), transformer);
@@ -303,8 +303,8 @@ namespace Kinovea.ScreenManager
         {
             // Invisible handler to change font size.
             int targetHeight = (int)(point.Y - mainBackground.Rectangle.Location.Y);
-            StyleElementFontSize elem = style.Elements["font size"] as StyleElementFontSize;
-            elem.ForceSize(targetHeight, timecode, styleHelper.Font);
+            StyleElementFontSize elem = styleElements.Elements["font size"] as StyleElementFontSize;
+            elem.ForceSize(targetHeight, timecode, styleData.Font);
             UpdateLabelRectangle();
         }
         public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
@@ -345,7 +345,7 @@ namespace Kinovea.ScreenManager
                 w.WriteEndElement();
 
                 w.WriteStartElement("DrawingStyle");
-                style.WriteXml(w);
+                styleElements.WriteXml(w);
                 w.WriteEndElement();
             }
         }
@@ -360,7 +360,7 @@ namespace Kinovea.ScreenManager
             MeasuredDataTimeSection mdts = new MeasuredDataTimeSection();
             mdts.Name = "";
 
-            if (!styleHelper.Clock && startCountingTimestamp != long.MaxValue && stopCountingTimestamp != long.MaxValue)
+            if (!styleData.Clock && startCountingTimestamp != long.MaxValue && stopCountingTimestamp != long.MaxValue)
             {
                 float userStart = parentMetadata.GetNumericalTime(startCountingTimestamp, TimeType.UserOrigin);
                 float userStop = parentMetadata.GetNumericalTime(stopCountingTimestamp, TimeType.UserOrigin);
@@ -371,7 +371,7 @@ namespace Kinovea.ScreenManager
                 mdts.Duration = userDuration;
                 mdts.Cumul = userDuration;
             }
-            else if (styleHelper.Clock)
+            else if (styleData.Clock)
             {
                 // For clocks using custom time origin return the time of that origin in the global time axis.
                 float userStart = 0;
@@ -411,7 +411,7 @@ namespace Kinovea.ScreenManager
                         ParseWorkingValues(xmlReader, timestampMapper);
                         break;
                     case "DrawingStyle":
-                        style.ImportXML(xmlReader);
+                        styleElements.ImportXML(xmlReader);
                         BindStyle();
                         break;
                     case "Label":
@@ -479,7 +479,7 @@ namespace Kinovea.ScreenManager
             startCountingTimestamp = Math.Max(startCountingTimestamp, 0);
             stopCountingTimestamp = Math.Max(stopCountingTimestamp, 0);
 
-            if (styleHelper.Clock)
+            if (styleData.Clock)
                 return;
 
             if (stopCountingTimestamp < startCountingTimestamp)
@@ -520,7 +520,7 @@ namespace Kinovea.ScreenManager
 
         public void StartStop(long timestamp)
         {
-            if (styleHelper.Clock)
+            if (styleData.Clock)
                 return;
 
             if (timestamp < visibleTimestamp || timestamp > invisibleTimestamp)
@@ -675,14 +675,14 @@ namespace Kinovea.ScreenManager
         #region Lower level helpers
         private void BindStyle()
         {
-            DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("Chrono"));
-            style.Bind(styleHelper, "Bicolor", "color");
-            style.Bind(styleHelper, "Font", "font size");
-            style.Bind(styleHelper, "Toggles/Clock", "clock");
+            StyleElements.SanityCheck(styleElements, ToolManager.GetDefaultStyleElements("Chrono"));
+            styleElements.Bind(styleData, "Bicolor", "color");
+            styleElements.Bind(styleData, "Font", "font size");
+            styleElements.Bind(styleData, "Toggles/Clock", "clock");
         }
         private void UpdateLabelRectangle()
         {
-            using(Font f = styleHelper.GetFont(0.5F))
+            using(Font f = styleData.GetFont(0.5F))
             {
                 SizeF size = TextHelper.MeasureString(name, f);
                 lblBackground.Rectangle = new RectangleF(
@@ -691,7 +691,7 @@ namespace Kinovea.ScreenManager
         }
         private string GetTimecode(long currentTimestamp)
         {
-            if (styleHelper.Clock)
+            if (styleData.Clock)
             {
                 // Relative clock mode: video time relative to origin.
                 // Origin is either the drawing-specific origin, or this hasn't been set yet, the video-wide origin.

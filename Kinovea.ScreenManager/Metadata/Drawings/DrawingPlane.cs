@@ -58,7 +58,7 @@ namespace Kinovea.ScreenManager
             {
                 int hash = 0;
                 hash ^= quadImage.GetHashCode();
-                hash ^= styleHelper.ContentHash;
+                hash ^= styleData.ContentHash;
                 hash ^= infosFading.ContentHash;
                 hash ^= showGrid.GetHashCode();
                 hash ^= showXLine.GetHashCode();
@@ -68,9 +68,9 @@ namespace Kinovea.ScreenManager
                 return hash;
             }
         }
-        public DrawingStyle DrawingStyle
+        public StyleElements StyleElements
         {
-            get { return style;}
+            get { return styleElements;}
         }
         public override InfosFading InfosFading
         {
@@ -144,8 +144,8 @@ namespace Kinovea.ScreenManager
         private long trackingTimestamps = -1;
 
         private InfosFading infosFading;
-        private StyleMaster styleHelper = new StyleMaster();
-        private DrawingStyle style;
+        private StyleElements styleElements = new StyleElements();
+        private StyleData styleData = new StyleData();
         private Pen penEdges = Pens.White;
         private CalibrationHelper calibrationHelper;
 
@@ -165,19 +165,19 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public DrawingPlane(PointF origin, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null)
+        public DrawingPlane(PointF origin, long timestamp, long averageTimeStampsPerFrame, StyleElements preset = null)
         {
             // Decoration
-            styleHelper.Color = Color.Empty;
-            styleHelper.GridCols = 10;
-            styleHelper.GridRows = 10;
-            styleHelper.Perspective = true;
-            styleHelper.Font = new Font("Arial", 8, FontStyle.Bold);
-            styleHelper.ValueChanged += StyleHelper_ValueChanged;
+            styleData.Color = Color.Empty;
+            styleData.GridCols = 10;
+            styleData.GridRows = 10;
+            styleData.Perspective = true;
+            styleData.Font = new Font("Arial", 8, FontStyle.Bold);
+            styleData.ValueChanged += StyleData_ValueChanged;
             if (preset == null)
-                preset = ToolManager.GetStylePreset("Plane");
+                preset = ToolManager.GetDefaultStyleElements("Plane");
 
-            style = preset.Clone();
+            styleElements = preset.Clone();
             BindStyle();
 
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
@@ -191,7 +191,7 @@ namespace Kinovea.ScreenManager
             InitializeMenus();
         }
         public DrawingPlane(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(PointF.Empty, 0, 0, ToolManager.GetStylePreset("Grid"))
+            : this(PointF.Empty, 0, 0, ToolManager.GetDefaultStyleElements("Grid"))
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }
@@ -227,12 +227,12 @@ namespace Kinovea.ScreenManager
 
             QuadrilateralF quad = transformer.Transform(quadImage);
 
-            bool drawEdgesOnly = !planeIsConvex || (!styleHelper.Perspective && !quadImage.IsAxisAlignedRectangle);
+            bool drawEdgesOnly = !planeIsConvex || (!styleData.Perspective && !quadImage.IsAxisAlignedRectangle);
 
             const int defaultRadius = 4;
 
-            using (penEdges = styleHelper.GetPen(opacityFactor, 1.0))
-            using(SolidBrush br = styleHelper.GetBrush(opacityFactor))
+            using (penEdges = styleData.GetPen(opacityFactor, 1.0))
+            using(SolidBrush br = styleData.GetBrush(opacityFactor))
             {
                 // Handles
                 foreach (PointF p in quad)
@@ -279,8 +279,8 @@ namespace Kinovea.ScreenManager
             {
                 // Draw vertical and horizontal lines crossing the full grid.
                 int start = 0;
-                int cols = styleHelper.GridCols;
-                int rows = styleHelper.GridRows;
+                int cols = styleData.GridCols;
+                int rows = styleData.GridRows;
 
                 // Horizontals
                 float step = planeHeight / rows;
@@ -310,11 +310,11 @@ namespace Kinovea.ScreenManager
 
                 // Secondary ticks.
                 int start = 1;
-                int cols = styleHelper.GridCols - 1;
-                int rows = styleHelper.GridRows - 1;
+                int cols = styleData.GridCols - 1;
+                int rows = styleData.GridRows - 1;
 
                 // Horizontals
-                float step = planeHeight / styleHelper.GridRows;
+                float step = planeHeight / styleData.GridRows;
                 float halfLength = planeWidth * tickMarkLengthFactor;
                 for (int i = start; i <= rows; i++)
                 {
@@ -324,7 +324,7 @@ namespace Kinovea.ScreenManager
                 }
 
                 // Verticals
-                step = planeWidth / styleHelper.GridCols;
+                step = planeWidth / styleData.GridCols;
                 halfLength = planeHeight * tickMarkLengthFactor;
                 for (int i = start; i <= cols; i++)
                 {
@@ -362,10 +362,10 @@ namespace Kinovea.ScreenManager
                 return;
 
             // Graduation tick marks.
-            SolidBrush brushFill = styleHelper.GetBrush(defaultBackgroundAlpha);
+            SolidBrush brushFill = styleData.GetBrush(defaultBackgroundAlpha);
             Brush brushFont = pen.Color.GetBrightness() > 0.6 ? Brushes.Black : Brushes.White;
 
-            Font font = styleHelper.GetFont(1.0F);
+            Font font = styleData.GetFont(1.0F);
             foreach (TickMark tick in tickMarks)
                 tick.Draw(canvas, distorter, transformer, brushFill, brushFont as SolidBrush, font, textMargin, true);
             
@@ -434,7 +434,7 @@ namespace Kinovea.ScreenManager
                     return i+1;
             }
 
-            if (!zooming && !styleHelper.Perspective && quadImage.Contains(point))
+            if (!zooming && !styleData.Perspective && quadImage.Contains(point))
                 return 0;
 
             return -1;
@@ -450,14 +450,14 @@ namespace Kinovea.ScreenManager
             if ((modifierKeys & Keys.Alt) == Keys.Alt)
             {
                 // Change the number of divisions.
-                styleHelper.GridCols = styleHelper.GridCols + (int)((dx - dy)/4);
-                styleHelper.GridRows = styleHelper.GridRows + (int)((dx - dy) / 4);
-                styleHelper.GridCols = Math.Min(Math.Max(styleHelper.GridCols, minimumSubdivisions), maximumSubdivisions);
-                styleHelper.GridRows = Math.Min(Math.Max(styleHelper.GridRows, minimumSubdivisions), maximumSubdivisions);
+                styleData.GridCols = styleData.GridCols + (int)((dx - dy)/4);
+                styleData.GridRows = styleData.GridRows + (int)((dx - dy) / 4);
+                styleData.GridCols = Math.Min(Math.Max(styleData.GridCols, minimumSubdivisions), maximumSubdivisions);
+                styleData.GridRows = Math.Min(Math.Max(styleData.GridRows, minimumSubdivisions), maximumSubdivisions);
             }
             else
             {
-                if (!styleHelper.Perspective)
+                if (!styleData.Perspective)
                 {
                     quadImage.Translate(dx, dy);
                     CalibrationHelper.CalibrationByPlane_Update(Id, quadImage);
@@ -491,7 +491,7 @@ namespace Kinovea.ScreenManager
                 int corner = handleNumber - 1;
                 quadImage[corner] = point;
 
-                if (styleHelper.Perspective)
+                if (styleData.Perspective)
                 {
                     planeIsConvex = quadImage.IsConvex;
                 }
@@ -582,7 +582,7 @@ namespace Kinovea.ScreenManager
                             break;
                         }
                     case "DrawingStyle":
-                        DrawingStyle styleXML = new DrawingStyle(r);
+                        StyleElements styleXML = new StyleElements(r);
 
                         // Special case to convert grid divisions into cols x rows.
                         if (styleXML.Elements.ContainsKey("divisions"))
@@ -592,7 +592,7 @@ namespace Kinovea.ScreenManager
                             styleXML.Elements.Remove("divisions");
                         }
 
-                        style.ImportValues(styleXML);
+                        styleElements.ImportValues(styleXML);
                         BindStyle();
                         break;
                     case "InfosFading":
@@ -607,7 +607,7 @@ namespace Kinovea.ScreenManager
 
             r.ReadEndElement();
 
-            if (!styleHelper.Perspective)
+            if (!styleData.Perspective)
                 planeIsConvex = quadImage.IsConvex;
 
             initialized = true;
@@ -644,7 +644,7 @@ namespace Kinovea.ScreenManager
             if (ShouldSerializeStyle(filter))
             {
                 w.WriteStartElement("DrawingStyle");
-                style.WriteXml(w);
+                styleElements.WriteXml(w);
                 w.WriteEndElement();
             }
 
@@ -668,7 +668,7 @@ namespace Kinovea.ScreenManager
                 int horzTenth = (int)(((double)imageSize.Width) / 10);
                 int vertTenth = (int)(((double)imageSize.Height) / 10);
 
-                if (styleHelper.Perspective)
+                if (styleData.Perspective)
                 {
                     // Initialize with a faked perspective.
                     quadImage.A = new Point(3 * horzTenth, 4 * vertTenth);
@@ -691,7 +691,7 @@ namespace Kinovea.ScreenManager
         #region ITrackable implementation and support.
         public Color Color
         {
-            get { return styleHelper.Color; }
+            get { return styleData.Color; }
         }
         public TrackingProfile CustomTrackingProfile
         {
@@ -820,19 +820,19 @@ namespace Kinovea.ScreenManager
         #region Private methods
         private void BindStyle()
         {
-            DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("Plane"));
-            style.Bind(styleHelper, "Color", "color");
-            style.Bind(styleHelper, "GridCols", "cols");
-            style.Bind(styleHelper, "GridRows", "rows");
-            style.Bind(styleHelper, "Toggles/Perspective", "perspective");
+            StyleElements.SanityCheck(styleElements, ToolManager.GetDefaultStyleElements("Plane"));
+            styleElements.Bind(styleData, "Color", "color");
+            styleElements.Bind(styleData, "GridCols", "cols");
+            styleElements.Bind(styleData, "GridRows", "rows");
+            styleElements.Bind(styleData, "Toggles/Perspective", "perspective");
         }
-        private void StyleHelper_ValueChanged(object sender, EventArgs e)
+        private void StyleData_ValueChanged(object sender, EventArgs e)
         {
             // Handle the case where we convert from a perspective plane to a grid.
             // Note: we cannot force rectangle here because this would change the actual points,
             // these points are not part of the "style" and so if we cancelled the style change we would not
             // be able to go back to the original quad.
-            planeIsConvex = styleHelper.Perspective ? quadImage.IsConvex : true;
+            planeIsConvex = styleData.Perspective ? quadImage.IsConvex : true;
         }
 
         private float ClampSlidingLine(float a)

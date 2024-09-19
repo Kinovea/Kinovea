@@ -67,12 +67,12 @@ namespace Kinovea.ScreenManager
         {
             get { return false; }
         }
-        public override DrawingStyle StylePreset
+        public override StyleElements StyleElements
         {
             get { return stylePreset;}
             set { stylePreset = value;}
         }
-        public override DrawingStyle DefaultStylePreset
+        public override StyleElements DefaultStyleElements
         {
             get { return defaultStylePreset;}
         }
@@ -83,8 +83,8 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Members
-        private DrawingStyle defaultStylePreset = new DrawingStyle();
-        private DrawingStyle stylePreset;
+        private StyleElements defaultStylePreset = new StyleElements();
+        private StyleElements stylePreset;
         private Guid id;
         private string name = "GenericPosture";
         private string displayName;
@@ -103,7 +103,7 @@ namespace Kinovea.ScreenManager
         public override AbstractDrawing GetNewDrawing(PointF origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
             if (ToolManager.Tools.ContainsKey(name))
-                stylePreset = ToolManager.GetStylePreset(name);
+                stylePreset = ToolManager.GetDefaultStyleElements(name);
             
             GenericPosture posture = GenericPostureManager.Instanciate(id, false);
             AbstractDrawing drawing = new DrawingGenericPosture(id, origin, posture, timestamp, averageTimeStampsPerFrame, stylePreset);

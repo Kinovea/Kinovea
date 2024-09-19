@@ -35,7 +35,7 @@ namespace Kinovea.ScreenManager
     {
         #region Members
         private IDecorable drawing;
-        private DrawingStyle style;
+        private StyleElements styleElements;
         private Action invalidator;
         private bool manualClose;
         private string oldName;
@@ -48,9 +48,9 @@ namespace Kinovea.ScreenManager
         {
             this.drawing = drawing;
             this.oldName = drawing.Name;
-            this.style = drawing.DrawingStyle;
-            this.style.ReadValue();
-            this.style.Memorize();
+            this.styleElements = drawing.StyleElements;
+            this.styleElements.ImportValuesFromData(); // TODO: is this needed?
+            this.styleElements.Memorize();
             this.invalidator = invalidator;
 
             InitializeComponent();
@@ -89,7 +89,7 @@ namespace Kinovea.ScreenManager
             
             int lastEditorBottom = 10;
             
-            foreach(KeyValuePair<string, AbstractStyleElement> pair in style.Elements)
+            foreach(KeyValuePair<string, AbstractStyleElement> pair in styleElements.Elements)
             {
                 AbstractStyleElement styleElement = pair.Value;
                 if (styleElement is StyleElementToggle && (((StyleElementToggle)styleElement).IsHidden))
@@ -181,8 +181,7 @@ namespace Kinovea.ScreenManager
             drawing.Name = oldName;
 
             // Revert to memo and re-update data.
-            style.Revert();
-            style.RaiseValueChanged();
+            styleElements.Restore();
             
             // Update main UI.
             if(invalidator != null) 

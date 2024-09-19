@@ -31,7 +31,7 @@ namespace Kinovea.ScreenManager
             set;
         }
         
-        DrawingStyle DrawingStyle
+        StyleElements StyleElements
         {
             get;
         }

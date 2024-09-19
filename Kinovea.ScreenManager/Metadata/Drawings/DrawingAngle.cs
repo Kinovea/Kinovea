@@ -56,14 +56,14 @@ namespace Kinovea.ScreenManager
                 int hash = 0;
 
                 // The hash of positions will be taken into account by trackability manager.
-                hash ^= styleHelper.ContentHash;
+                hash ^= styleData.ContentHash;
                 hash ^= infosFading.ContentHash;
                 return hash; 
             }
         } 
-        public DrawingStyle DrawingStyle
+        public StyleElements StyleElements
         {
-            get { return style;}
+            get { return styleElements;}
         }
         public override InfosFading InfosFading
         {
@@ -105,8 +105,8 @@ namespace Kinovea.ScreenManager
         private bool initializing = true;
         
         private AngleHelper angleHelper = new AngleHelper();
-        private DrawingStyle style;
-        private StyleMaster styleHelper = new StyleMaster();
+        private StyleElements styleElements = new StyleElements();
+        private StyleData styleData = new StyleData();
         private InfosFading infosFading;
         private bool signedAngle = true;
         private bool counterClockwise = true;
@@ -121,7 +121,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public DrawingAngle(PointF origin, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null, IImageToViewportTransformer transformer = null)
+        public DrawingAngle(PointF origin, long timestamp, long averageTimeStampsPerFrame, StyleElements preset = null, IImageToViewportTransformer transformer = null)
         {
             int length = 50;
             if (transformer != null)
@@ -131,13 +131,7 @@ namespace Kinovea.ScreenManager
             points.Add("a", origin.Translate(length, 0));
             points.Add("b", origin.Translate(0, -length));
 
-            styleHelper.Bicolor = new Bicolor(Color.Empty);
-            styleHelper.Font = new Font("Arial", 12, FontStyle.Bold);
-            if (preset == null)
-                preset = ToolManager.GetStylePreset("Angle");
-
-            style = preset.Clone();
-            BindStyle();
+            InitStyle(preset);
             
             // Fading
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
@@ -173,9 +167,9 @@ namespace Kinovea.ScreenManager
             if (boundingBox.Size == Size.Empty)
                 return;
 
-            using(Pen penEdges = styleHelper.GetBackgroundPen((int)(opacityFactor*255)))
-            using(SolidBrush brushEdges = styleHelper.GetBackgroundBrush((int)(opacityFactor*255)))
-            using(SolidBrush brushFill = styleHelper.GetBackgroundBrush((int)(opacityFactor*defaultBackgroundAlpha)))
+            using(Pen penEdges = styleData.GetBackgroundPen((int)(opacityFactor*255)))
+            using(SolidBrush brushEdges = styleData.GetBackgroundBrush((int)(opacityFactor*255)))
+            using(SolidBrush brushFill = styleData.GetBackgroundBrush((int)(opacityFactor*defaultBackgroundAlpha)))
             {
                 penEdges.Width = 2;
                 
@@ -194,7 +188,7 @@ namespace Kinovea.ScreenManager
                 canvas.FillEllipse(brushEdges, pointA.Box(3));
                 canvas.FillEllipse(brushEdges, pointB.Box(3));
 
-                angleHelper.DrawText(canvas, opacityFactor, brushFill, pointO, transformer, CalibrationHelper, styleHelper);
+                angleHelper.DrawText(canvas, opacityFactor, brushFill, pointO, transformer, CalibrationHelper, styleData);
             }
         }
         public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
@@ -295,7 +289,7 @@ namespace Kinovea.ScreenManager
                         supplementaryAngle = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
                     case "DrawingStyle":
-                        style.ImportXML(xmlReader);
+                        styleElements.ImportXML(xmlReader);
                         BindStyle();
                         break;
                     case "InfosFading":
@@ -339,7 +333,7 @@ namespace Kinovea.ScreenManager
             if (ShouldSerializeStyle(filter))
             {
                 w.WriteStartElement("DrawingStyle");
-                style.WriteXml(w);
+                styleElements.WriteXml(w);
                 w.WriteEndElement();
             }
 
@@ -376,7 +370,7 @@ namespace Kinovea.ScreenManager
         #region ITrackable implementation and support.
         public Color Color
         {
-            get { return styleHelper.Bicolor.Background; }
+            get { return styleData.Bicolor.Background; }
         }
         public TrackingProfile CustomTrackingProfile
         {
@@ -449,16 +443,35 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Lower level helpers
+        private void InitStyle(StyleElements preset)
+        {
+            // Initialize style data in case we don't import some values.
+            // These are the properties we need to paint this drawing.
+            styleData.Bicolor = new Bicolor(Color.Empty);
+            styleData.Font = new Font("Arial", 12, FontStyle.Bold);
+            
+            // Fallback preset in case we don't have one.
+            // (new tool but old prefs).
+            if (preset == null)
+                preset = ToolManager.GetDefaultStyleElements("Angle");
+
+            // Import full style elements (with metadata) from the tool.
+            styleElements = preset.Clone();
+
+            // Bind the style elements to the data fields and push the initial values.
+            BindStyle();
+        }
+
         private void BindStyle()
         {
-            DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("Angle"));
-            style.Bind(styleHelper, "Bicolor", "line color");
-            style.Bind(styleHelper, "Font", "font size");
+            StyleElements.SanityCheck(styleElements, ToolManager.GetDefaultStyleElements("Angle"));
+            styleElements.Bind(styleData, "Bicolor", "line color");
+            styleElements.Bind(styleData, "Font", "font size");
         }
         private void ComputeValues(IImageToViewportTransformer transformer)
         {
             FixIfNull(transformer);
-            angleHelper.UpdateTextDistance(styleHelper.Font.Size / 12.0f);
+            angleHelper.UpdateTextDistance(styleData.Font.Size / 12.0f);
             angleHelper.Update(points["o"], points["a"], points["b"], signedAngle, counterClockwise, supplementaryAngle, CalibrationHelper);
         }
         private void FixIfNull(IImageToViewportTransformer transformer)
