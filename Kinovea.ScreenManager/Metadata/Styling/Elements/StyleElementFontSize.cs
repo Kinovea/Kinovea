@@ -60,12 +60,12 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        private static readonly List<int> options = new List<int>() { 6, 7, 8, 9, 10, 11, 12, 14, 18, 24, 30, 36, 48, 60, 72, 96 };
-        private static readonly int defaultValue = 14;
-        
         #region Members
         private int value;
         private string displayName = ScreenManagerLang.Generic_FontSizePicker;
+
+        private static readonly List<int> options = new List<int>() { 6, 7, 8, 9, 10, 11, 12, 14, 18, 24, 30, 36, 48, 60, 72, 96 };
+        private static readonly int defaultValue = 14;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         

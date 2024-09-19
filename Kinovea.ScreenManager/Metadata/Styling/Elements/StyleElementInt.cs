@@ -57,13 +57,13 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        private static readonly int defaultValue = 10;
-
         #region Members
         private int min = 0;
         private int max = 100;
         private int value = 10;
         private string displayName = "StyleElementInt";
+
+        private static readonly int defaultValue = 10;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
