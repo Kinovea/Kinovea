@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 using System;
 
 namespace Kinovea.ScreenManager
@@ -38,6 +39,19 @@ namespace Kinovea.ScreenManager
         public static float Radians(float degrees)
         {
             return (float)(degrees * DegreesToRadians);
+        }
+
+        public static float Round(float value, int decimalPlaces)
+        {
+            if (decimalPlaces >= 0)
+            {
+                return (float)Math.Round(value, decimalPlaces);
+            }
+            else
+            {
+                int magnitude = (int)Math.Pow(10, -decimalPlaces);
+                return (float)(Math.Round(value / magnitude) * magnitude);
+            }
         }
     }
 }

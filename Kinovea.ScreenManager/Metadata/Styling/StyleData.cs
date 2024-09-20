@@ -186,6 +186,16 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// Number of decimal places to show for measurements.
+        /// Computations and export will always keep the full precision.
+        /// </summary>
+        public int DecimalPlaces
+        {
+            get { return decimalPlaces; }
+            set { decimalPlaces = value; }
+        }
+
+        /// <summary>
         /// Whether the polyline is a spline or not.
         /// </summary>
         public bool Curved
@@ -227,6 +237,7 @@ namespace Kinovea.ScreenManager
                 hash ^= penShape.GetHashCode();
                 hash ^= gridCols.GetHashCode();
                 hash ^= gridRows.GetHashCode();
+                hash ^= decimalPlaces.GetHashCode();
                 hash ^= toggles.GetHashCode();
                 return hash;
             }
@@ -244,6 +255,7 @@ namespace Kinovea.ScreenManager
         private PenShape penShape       = PenShape.Solid;
         private int gridCols            = 4;
         private int gridRows            = 4;
+        private int decimalPlaces       = 1;
         private Dictionary<string, bool> toggles = new Dictionary<string, bool>();
 
         // Absolute minimum font size in screen space used for painting text.
@@ -358,6 +370,15 @@ namespace Kinovea.ScreenManager
                         if (targetType == typeof(int))
                         {
                             result = gridRows;
+                            converted = true;
+                        }
+                        break;
+                    }
+                case "DecimalPlaces":
+                    {
+                        if (targetType == typeof(int))
+                        {
+                            result = decimalPlaces;
                             converted = true;
                         }
                         break;
@@ -512,6 +533,15 @@ namespace Kinovea.ScreenManager
                         if (value is int)
                         {
                             gridRows = (int)value;
+                            imported = true;
+                        }
+                        break;
+                    }
+                case "DecimalPlaces":
+                    {
+                        if (value is int)
+                        {
+                            decimalPlaces = (int)value;
                             imported = true;
                         }
                         break;

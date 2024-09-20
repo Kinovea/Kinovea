@@ -475,6 +475,7 @@ namespace Kinovea.ScreenManager
             // These are the properties we need to paint this drawing.
             styleData.BackgroundColor = Color.Black;
             styleData.Font = new Font("Arial", 12, FontStyle.Bold);
+            styleData.DecimalPlaces = 0;
 
             // Fallback preset in case we don't have one.
             // (new tool but old prefs).
@@ -493,6 +494,7 @@ namespace Kinovea.ScreenManager
             StyleElements.SanityCheck(styleElements, ToolManager.GetDefaultStyleElements("Angle"));
             styleElements.Bind(styleData, "Bicolor", "line color");
             styleElements.Bind(styleData, "Font", "font size");
+            styleElements.Bind(styleData, "DecimalPlaces", "DecimalPlaces");
         }
         private void ComputeValues(IImageToViewportTransformer transformer)
         {

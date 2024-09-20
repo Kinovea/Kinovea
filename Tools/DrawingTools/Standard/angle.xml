@@ -16,5 +16,10 @@
     <FontSize Key="font size">
       <Value>12</Value>
     </FontSize>
+    <Int Key="DecimalPlaces" DisplayName="Decimal places">
+      <Min>-1</Min>
+      <Max>6</Max>
+      <Value>0</Value>
+    </Int>
   </DefaultStyle>
 </KinoveaDrawingTool>
