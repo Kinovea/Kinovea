@@ -19,5 +19,8 @@
     <PenShape Key="pen shape">
       <Value>Solid</Value>
     </PenShape>
+    <FontSize Key="Font">
+      <Value>10</Value>
+    </FontSize>
   </DefaultStyle>
 </KinoveaDrawingTool>

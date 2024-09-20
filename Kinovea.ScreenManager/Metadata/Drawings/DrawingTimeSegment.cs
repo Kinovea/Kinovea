@@ -93,8 +93,8 @@ namespace Kinovea.ScreenManager
         private bool initializing = true;
 
         // Decoration
-        private StyleData styleData = new StyleData();
         private StyleElements styleElements = new StyleElements();
+        private StyleData styleData = new StyleData();
         private int lineSize = 1;
         private MiniLabel miniLabel = new MiniLabel();
         private InfosFading infosFading;
@@ -108,14 +108,8 @@ namespace Kinovea.ScreenManager
         {
             points["a"] = origin;
             points["b"] = origin.Translate(10, 0);
-            
-            styleData.Color = Color.DarkSlateGray;
-            styleData.ValueChanged += StyleHelper_ValueChanged;
-            if (preset == null)
-                preset = ToolManager.GetDefaultStyleElements("TimeSegment");
-            
-            styleElements = preset.Clone();
-            BindStyle();
+
+            SetupStyle(preset);
             
             // Fading
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
@@ -300,6 +294,7 @@ namespace Kinovea.ScreenManager
             initializing = false;
             miniLabel.SetAttach(GetTimePoint(), false);
             miniLabel.BackColor = styleData.Color;
+            miniLabel.FontSize = (int)styleData.Font.Size;
         }
         public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
@@ -356,14 +351,30 @@ namespace Kinovea.ScreenManager
         }
         
         #region Lower level helpers
+        private void SetupStyle(StyleElements preset)
+        {
+            styleData.Color = Color.DarkSlateGray;
+            styleData.Font = new Font("Arial", 8, FontStyle.Bold);
+
+            if (preset == null)
+                preset = ToolManager.GetDefaultStyleElements("TimeSegment");
+
+            styleElements = preset.Clone();
+            
+            styleData.ValueChanged += StyleHelper_ValueChanged;
+            BindStyle();
+
+        }
         private void BindStyle()
         {
             StyleElements.SanityCheck(styleElements, ToolManager.GetDefaultStyleElements("TimeSegment"));
             styleElements.Bind(styleData, "Color", "color");
+            styleElements.Bind(styleData, "Font", "Font");
         }
         private void StyleHelper_ValueChanged(object sender, EventArgs e)
         {
             miniLabel.BackColor = styleData.Color;
+            miniLabel.FontSize = (int)styleData.Font.Size;
         }
         private bool IsPointInObject(PointF point, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {

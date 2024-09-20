@@ -67,7 +67,7 @@ namespace Kinovea.ScreenManager
         } 
         public StyleElements StyleElements
         {
-            get { return style;}
+            get { return styleElements;}
         }
         public override InfosFading InfosFading
         {
@@ -133,7 +133,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         // Decoration
-        private StyleElements style = new StyleElements();
+        private StyleElements styleElements = new StyleElements();
         private StyleData styleData = new StyleData();
         private InfosFading infosFading;
         private CalibrationHelper calibrationHelper;
@@ -166,16 +166,7 @@ namespace Kinovea.ScreenManager
             this.radius = Math.Min(radius, 10);
             this.infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
 
-            styleData.Color = Color.Empty;
-            styleData.LineSize = 1;
-            styleData.PenShape = PenShape.Solid;
-            styleData.ValueChanged += StyleHelper_ValueChanged;
-            if (preset == null)
-                preset = ToolManager.GetDefaultStyleElements("Circle");
-            
-            style = preset.Clone();
-            BindStyle();
-
+            SetupStyle(preset);
             InitializeMenus();
         }
         public DrawingCircle(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
@@ -390,7 +381,7 @@ namespace Kinovea.ScreenManager
                         filled = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
                     case "DrawingStyle":
-                        style.ImportXML(xmlReader);
+                        styleElements.ImportXML(xmlReader);
                         BindStyle();
                         break;
                     case "InfosFading":
@@ -408,6 +399,7 @@ namespace Kinovea.ScreenManager
             measureInitialized = true;
             miniLabel.SetAttach(center, false);
             miniLabel.BackColor = styleData.Color;
+            miniLabel.FontSize = (int)styleData.Font.Size;
         }
         public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
@@ -431,7 +423,7 @@ namespace Kinovea.ScreenManager
             if (ShouldSerializeStyle(filter))
             {
                 w.WriteStartElement("DrawingStyle");
-                style.WriteXml(w);
+                styleElements.WriteXml(w);
                 w.WriteEndElement();
             }
 
@@ -536,16 +528,32 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Lower level helpers
+        private void SetupStyle(StyleElements preset)
+        {
+            styleData.Color = Color.Empty;
+            styleData.LineSize = 1;
+            styleData.PenShape = PenShape.Solid;
+            styleData.Font = new Font("Arial", 8, FontStyle.Bold);
+            
+            if (preset == null)
+                preset = ToolManager.GetDefaultStyleElements("Circle");
+
+            styleElements = preset.Clone();
+            styleData.ValueChanged += StyleHelper_ValueChanged;
+            BindStyle();
+        }
         private void BindStyle()
         {
-            StyleElements.SanityCheck(style, ToolManager.GetDefaultStyleElements("Circle"));
-            style.Bind(styleData, "Color", "color");
-            style.Bind(styleData, "LineSize", "pen size");
-            style.Bind(styleData, "PenShape", "pen shape");
+            StyleElements.SanityCheck(styleElements, ToolManager.GetDefaultStyleElements("Circle"));
+            styleElements.Bind(styleData, "Color", "color");
+            styleElements.Bind(styleData, "LineSize", "pen size");
+            styleElements.Bind(styleData, "PenShape", "pen shape");
+            styleElements.Bind(styleData, "Font", "Font");
         }
         private void StyleHelper_ValueChanged(object sender, EventArgs e)
         {
             miniLabel.BackColor = styleData.Color;
+            miniLabel.FontSize = (int)styleData.Font.Size;
         }
         private bool IsPointInObject(PointF point, IImageToViewportTransformer transformer)
         {

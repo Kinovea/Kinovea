@@ -143,7 +143,7 @@ namespace Kinovea.ScreenManager
             points.Add("a", origin.Translate(length, 0));
             points.Add("b", origin.Translate(0, -length));
 
-            InitStyle(preset);
+            SetupStyle(preset);
             
             // Fading
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
@@ -469,13 +469,13 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Lower level helpers
-        private void InitStyle(StyleElements preset)
+        private void SetupStyle(StyleElements preset)
         {
             // Initialize style data in case we don't import some values.
             // These are the properties we need to paint this drawing.
             styleData.BackgroundColor = Color.Black;
             styleData.Font = new Font("Arial", 12, FontStyle.Bold);
-            
+
             // Fallback preset in case we don't have one.
             // (new tool but old prefs).
             if (preset == null)

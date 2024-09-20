@@ -138,18 +138,9 @@ namespace Kinovea.ScreenManager
             points["a"] = origin;
             points["b"] = origin.Translate(10, 0);
             miniLabel.SetAttach(GetMiddlePoint(), true);
-            
-            styleData.Color = Color.DarkSlateGray;
-            styleData.LineSize = 1;
-            styleData.LineShape = LineShape.Solid;
-            styleData.LineEnding = LineEnding.None;
-            styleData.ValueChanged += StyleHelper_ValueChanged;
-            if (preset == null)
-                preset = ToolManager.GetDefaultStyleElements("Line");
-            
-            styleElements = preset.Clone();
-            BindStyle();
-            
+
+            SetupStyle(preset);
+
             // Fading
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
 
@@ -414,6 +405,7 @@ namespace Kinovea.ScreenManager
             measureInitialized = true;
             miniLabel.SetAttach(GetMiddlePoint(), false);
             miniLabel.BackColor = styleData.Color;
+            miniLabel.FontSize = (int)styleData.Font.Size;
             SignalAllTrackablePointsMoved();
         }
         public void WriteXml(XmlWriter w, SerializationFilter filter)
@@ -561,17 +553,39 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Lower level helpers
+        private void SetupStyle(StyleElements preset)
+        {
+            // Init data
+            styleData.Color = Color.DarkSlateGray;
+            styleData.LineSize = 1;
+            styleData.LineShape = LineShape.Solid;
+            styleData.LineEnding = LineEnding.None;
+            styleData.Font = new Font("Arial", 8, FontStyle.Bold);
+
+            if (preset == null)
+                preset = ToolManager.GetDefaultStyleElements("Line");
+
+            styleElements = preset.Clone();
+
+            // Listen to external changes of the style so we can update 
+            // the mini label color.
+            styleData.ValueChanged += StyleHelper_ValueChanged;
+            BindStyle();
+        }
         private void BindStyle()
         {
             StyleElements.SanityCheck(styleElements, ToolManager.GetDefaultStyleElements("Line"));
+            
             styleElements.Bind(styleData, "Color", "color");
             styleElements.Bind(styleData, "LineSize", "line size");
             styleElements.Bind(styleData, "LineShape", "line shape");
             styleElements.Bind(styleData, "LineEnding", "arrows");
+            styleElements.Bind(styleData, "Font", "Font");
         }
         private void StyleHelper_ValueChanged(object sender, EventArgs e)
         {
             miniLabel.BackColor = styleData.Color;
+            miniLabel.FontSize = (int)styleData.Font.Size;
         }
         private bool IsPointInObject(PointF point, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {

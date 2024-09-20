@@ -13,5 +13,8 @@
     <Color Key="back color">
       <Value>255;100;149;237</Value>
     </Color>
+    <FontSize Key="Font">
+      <Value>10</Value>
+    </FontSize>
   </DefaultStyle>
 </KinoveaDrawingTool>

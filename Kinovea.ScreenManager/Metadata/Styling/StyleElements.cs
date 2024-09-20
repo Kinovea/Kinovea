@@ -297,6 +297,7 @@ namespace Kinovea.ScreenManager
         /// In this case we push the default value of the tool.
         /// We generally don't try to match the tool variant in these case, the important thing is that the 
         /// style elements are correct so we can at least change them later.
+        /// This is also useful if the default style of a drawing variant is missing some elements.
         /// </summary>
         public static void SanityCheck(StyleElements input, StyleElements preset)
         {

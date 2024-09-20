@@ -340,6 +340,9 @@ namespace Kinovea.ScreenManager
             styleData.LineSize = 3;
             styleData.TrackShape = TrackShape.Solid;
             styleData.Font = new Font("Arial", 8, FontStyle.Bold);
+            
+            // Listen to external changes of the style so we can update 
+            // the mini label if needed (if using same color).
             styleData.ValueChanged += StyleHelper_ValueChanged;
 
             BindStyle();

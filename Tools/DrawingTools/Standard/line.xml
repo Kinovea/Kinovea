@@ -22,5 +22,8 @@
     <Arrows Key="arrows">
       <Value>None</Value>
     </Arrows>
+    <FontSize Key="Font">
+      <Value>10</Value>
+    </FontSize>
   </DefaultStyle>
 </KinoveaDrawingTool>

@@ -129,15 +129,7 @@ namespace Kinovea.ScreenManager
             points["0"] = center;
             miniLabel = new MiniLabel(points["0"], Color.Black, transformer);
 
-            // Decoration & binding with editors
-            styleData.Color = Color.CornflowerBlue;
-            styleData.ValueChanged += StyleHelper_ValueChanged;
-            if (preset == null)
-                preset = ToolManager.GetDefaultStyleElements("CrossMark");
-
-            styleElements = preset.Clone();
-            BindStyle();
-
+            SetupStyle(preset);
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
 
             InitializeMenus();
@@ -292,6 +284,7 @@ namespace Kinovea.ScreenManager
             measureInitialized = true;
             miniLabel.SetAttach(points["0"], false);
             miniLabel.BackColor = styleData.Color;
+            miniLabel.FontSize = (int)styleData.Font.Size;
             SignalTrackablePointMoved();
         }
         public void WriteXml(XmlWriter w, SerializationFilter filter)
@@ -414,15 +407,31 @@ namespace Kinovea.ScreenManager
         }
 
         #region Lower level helpers
+        private void SetupStyle(StyleElements preset)
+        {
+            styleData.Color = Color.CornflowerBlue;
+            styleData.Font = new Font("Arial", 8, FontStyle.Bold);
+
+            if (preset == null)
+                preset = ToolManager.GetDefaultStyleElements("CrossMark");
+
+            styleElements = preset.Clone();
+
+            styleData.ValueChanged += StyleHelper_ValueChanged;
+            BindStyle();
+
+        }
         private void BindStyle()
         {
             StyleElements.SanityCheck(styleElements, ToolManager.GetDefaultStyleElements("CrossMark"));
             styleElements.Bind(styleData, "Color", "back color");
+            styleElements.Bind(styleData, "Font", "Font");
         }
 
         private void StyleHelper_ValueChanged(object sender, EventArgs e)
         {
             miniLabel.BackColor = styleData.Color;
+            miniLabel.FontSize = (int)styleData.Font.Size;
         }
 
         /// <summary>
