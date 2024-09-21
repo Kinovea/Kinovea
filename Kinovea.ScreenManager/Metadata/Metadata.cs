@@ -865,6 +865,8 @@ namespace Kinovea.ScreenManager
                 manager = chronoManager;
             else if (managerId == trackManager.Id)
                 manager = trackManager;
+            else if (managerId == singletonDrawingsManager.Id)
+                manager = singletonDrawingsManager;
             else
                 manager = GetKeyframe(managerId);
 

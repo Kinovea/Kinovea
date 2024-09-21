@@ -257,11 +257,11 @@ namespace Kinovea.ScreenManager
             {
                 if (memento.IsSameState())
                 {
-                    log.Debug("same state while performing undo/redo. Ignore.");
+                    //log.Debug("Same state while performing undo/redo. Ignore.");
                     return;
                 }
 
-                log.Debug("Different state while performing undo/redo. Capture current state for later.");
+                //log.Debug("Different state while performing undo/redo. Capture current state for later.");
                 CaptureCurrentState();
                 return;
             }

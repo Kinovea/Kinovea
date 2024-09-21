@@ -3127,6 +3127,9 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void AfterDrawingModified(AbstractDrawing drawing)
         {
+            if (drawing == null)
+                return;
+
             UpdateFramesMarkers();
             RefreshImage();
 
