@@ -99,6 +99,9 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void Metadata_DrawingDeleted(object sender, EventArgs<Guid> e)
         {
+            if (drawing != null)
+                return;
+
             if (drawing.Id != e.Value)
                 return;
 
