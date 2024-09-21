@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaDrawingTool>
+  <FormatVersion>1.0</FormatVersion>
+  <Id>8d01f88f-f7ba-42a9-9e96-bd5a10a3e745</Id>
+  <Name>Sticker</Name>
+  <DisplayName>ToolTip_DrawingToolSticker</DisplayName>
+  <Icon>sticker</Icon>
+  <DrawingClass>DrawingBitmap</DrawingClass>
+  <Attached>true</Attached>
+  <KeepToolAfterDrawingCreation>false</KeepToolAfterDrawingCreation>
+  <KeepToolAfterFrameChange>false</KeepToolAfterFrameChange>
+</KinoveaDrawingTool>

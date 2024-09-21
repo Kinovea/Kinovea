@@ -3734,6 +3734,7 @@ namespace Kinovea.ScreenManager
 
             //------------------------------------------------------------------------------------
             // - If on text, switch to edit mode.
+            // - If on sticker, show sticker selector.
             // - If on other drawing, launch the configuration dialog.
             // - Otherwise -> Maximize/Reduce image.
             //------------------------------------------------------------------------------------
@@ -3747,6 +3748,22 @@ namespace Kinovea.ScreenManager
                     ((DrawingText)drawing).SetEditMode(true, m_DescaledMouse, m_FrameServer.ImageTransform);
                     m_ActiveTool = ToolManager.Tools["Label"];
                     m_bTextEdit = true;
+                }
+                else if (drawing is DrawingBitmap)
+                {
+                    DrawingBitmap db = drawing as DrawingBitmap;
+                    if (db.IsSticker)
+                    {
+                        // TODO: UNDO/REDO support.
+                        //var drawingId = metadata.HitDrawing.Id;
+                        //var managerId = metadata.FindManagerId(metadata.HitDrawing);
+                        //var memento = new HistoryMementoModifyDrawing(metadata, managerId, drawingId, metadata.HitDrawing.Name, SerializationFilter.Style);
+
+                        bool changed = db.SelectSticker();
+                        DoInvalidate();
+
+                        //m_FrameServer.HistoryStack.PushNewCommand(memento);
+                    }
                 }
                 else
                 {

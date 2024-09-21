@@ -11,7 +11,7 @@ using Kinovea.ScreenManager.Languages;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// A generic drawing tool (drawing factory) for tools defined in XML.
+    /// A generic drawing tool (factory for drawing objects) for tools defined in XML.
     /// This is mostly used to have several tools generating the same underlying drawing but providing different predefined style presets.
     /// As an example, the arrow and line tools are both generating DrawingLine, which has both capabilities.
     /// The fact that the endpoints display arrows or not is just a style attribute of the drawing.
@@ -99,7 +99,8 @@ namespace Kinovea.ScreenManager
             this.keepToolAfterFrameChange = keepToolAfterFrameChange;
             this.defaultStyleElements = defaultStyle;
             
-            this.currentStyleElements = defaultStyle.Clone();
+            if (defaultStyle != null)
+                this.currentStyleElements = defaultStyle.Clone();
         }
 
         public override AbstractDrawing GetNewDrawing(PointF origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
@@ -126,10 +127,19 @@ namespace Kinovea.ScreenManager
                 return drawing;
             }
 
+            log.ErrorFormat("Drawing type {0} does not have a valid constructor.", drawingType);
             return null;
         }
 
         #region Deserialization
+
+
+        /// <summary>
+        /// Create a drawing tool (factory for drawing objects) from an XML file.
+        /// This should be the normal case for all tools unless strictly necessary.
+        /// The tools are stored under Tools\DrawingTools\Standard.
+        /// This folder is deployed with the application.
+        /// </summary>
         public static DrawingTool CreateFromFile(string file)
         {
             DrawingTool result = null;
@@ -155,6 +165,10 @@ namespace Kinovea.ScreenManager
             return result;
         }
 
+        /// <summary>
+        /// Parse a drawing tool from XML.
+        /// Multiple tools can refer to the same drawing class and only differ by the style options.
+        /// </summary>
         private static DrawingTool ParseTool(XmlReader r)
         {
             r.MoveToContent();
@@ -228,6 +242,9 @@ namespace Kinovea.ScreenManager
             return tool;
         }
 
+        /// <summary>
+        /// Find the drawing class type.
+        /// </summary>
         private static Type FindType(string drawingClass)
         {
             // The actual drawing class should be in the current assembly.

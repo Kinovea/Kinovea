@@ -29,6 +29,7 @@ using System.Xml.Serialization;
 using System.Xml;
 using System;
 using System.IO;
+using Kinovea.ScreenManager.Properties;
 
 namespace Kinovea.ScreenManager
 {
@@ -67,6 +68,10 @@ namespace Kinovea.ScreenManager
         {
             get { return valid; }
         }
+        public bool IsSticker
+        {
+            get { return isSticker; }
+        }
         #endregion
 
         #region Members
@@ -82,6 +87,8 @@ namespace Kinovea.ScreenManager
         private ImageAttributes fadingImgAttr = new ImageAttributes();
         private Pen penBoundingBox;
         private SolidBrush brushBoundingBox;
+        private bool isSticker;
+        private string stickerRef = "_1f600";
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -98,6 +105,7 @@ namespace Kinovea.ScreenManager
             
             Initialize(timestamp, averageTimeStampsPerFrame);
         }
+
         public DrawingBitmap(long timestamp, long averageTimeStampsPerFrame, Bitmap bmp)
         {
             if (bmp != null)
@@ -106,6 +114,18 @@ namespace Kinovea.ScreenManager
             valid = bitmap != null;
             Initialize(timestamp, averageTimeStampsPerFrame);
         }
+
+        /// <summary>
+        /// Standard drawing tool constructor, used for the Sticker variant of the tool.
+        /// </summary>
+        public DrawingBitmap(PointF origin, long timestamp, long averageTimeStampsPerFrame, StyleElements preset = null, IImageToViewportTransformer transformer = null)
+        {
+            isSticker = true;
+            bitmap = Stickers.ResourceManager.GetObject(stickerRef) as Bitmap;
+            valid = bitmap != null;
+            Initialize(timestamp, averageTimeStampsPerFrame);
+        }
+
         public DrawingBitmap(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
             : this(0, 0, "")
         {
@@ -116,7 +136,7 @@ namespace Kinovea.ScreenManager
         #region AbstractDrawing Implementation
         public override void Draw(Graphics canvas, DistortionHelper distorter, CameraTransformer cameraTransformer, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
-            if (!valid)
+            if (!valid || bitmap == null)
                 return;
             
             double opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
@@ -127,8 +147,9 @@ namespace Kinovea.ScreenManager
 
             fadingColorMatrix.Matrix33 = (float)opacityFactor;
             fadingImgAttr.SetColorMatrix(fadingColorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-            canvas.DrawImage(bitmap, rect, 0, 0, bitmap.Width, bitmap.Height, GraphicsUnit.Pixel, fadingImgAttr);
 
+            canvas.DrawImage(bitmap, rect, 0, 0, bitmap.Width, bitmap.Height, GraphicsUnit.Pixel, fadingImgAttr);
+            
             if (selected)
             {
                 boundingBox.Draw(canvas, rect, penBoundingBox, brushBoundingBox, 4);
@@ -208,6 +229,13 @@ namespace Kinovea.ScreenManager
                         RectangleF rect = XmlHelper.ParseRectangleF(xmlReader.ReadElementContentAsString());
                         boundingBox.Rectangle = rect.ToRectangle();
                         break;
+                    case "Sticker":
+                        isSticker = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
+                        break;
+                    case "StickerReference":
+                        stickerRef = xmlReader.ReadElementContentAsString();
+                        bitmap = Stickers.ResourceManager.GetObject(stickerRef) as Bitmap;
+                        break;
                     case "Bitmap":
                         bitmap = XmlHelper.ParseImageFromBase64(xmlReader.ReadElementContentAsString());
                         break;
@@ -237,7 +265,16 @@ namespace Kinovea.ScreenManager
             {
                 w.WriteElementString("File", filename);
                 w.WriteElementString("BoundingBox", XmlHelper.WriteRectangleF(boundingBox.Rectangle));
-                w.WriteElementString("Bitmap", XmlHelper.WriteBitmap(bitmap));
+                w.WriteElementString("Sticker", XmlHelper.WriteBoolean(isSticker));
+
+                if (isSticker)
+                {
+                    w.WriteElementString("StickerReference", stickerRef);
+                }
+                else
+                {
+                    w.WriteElementString("Bitmap", XmlHelper.WriteBitmap(bitmap));
+                }
             }
 
             if (ShouldSerializeFading(filter))
@@ -249,6 +286,33 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
+        /// <summary>
+        /// Show sticker selection dialog and update the sticker reference.
+        /// </summary>
+        public bool SelectSticker()
+        {
+            if (!isSticker)
+                throw new InvalidProgramException();
+
+            bool changedSticker = false;
+            
+            FormStickerPicker fsp = new FormStickerPicker(stickerRef);
+            FormsHelper.Locate(fsp);
+            if (fsp.ShowDialog() == DialogResult.OK)
+            {
+                if (stickerRef != fsp.PickedStickerRef)
+                {
+                    stickerRef = fsp.PickedStickerRef;
+                    bitmap = Stickers.ResourceManager.GetObject(stickerRef) as Bitmap;
+                    changedSticker = true;
+                }
+
+            }
+
+            fsp.Dispose();
+            return changedSticker;
+        }
+
         private void Initialize(long timestamp, long averageTimeStampsPerFrame)
         {
             // Fading
