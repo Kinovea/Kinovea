@@ -101,6 +101,26 @@ namespace Kinovea.ScreenManager
             editor.SelectedIndexChanged += new EventHandler(editor_SelectedIndexChanged);
             return editor;
         }
+
+        public override void UpdateEditor(Control control)
+        {
+            ComboBox editor = control as ComboBox;
+            if (editor == null)
+                return;
+
+            int selectedIndex = 0;
+            for (int i = 0; i < options.Count; i++)
+            {
+                if (options[i] == value)
+                {
+                    selectedIndex = i;
+                    break;
+                }
+            }
+
+            editor.SelectedIndex = selectedIndex;
+        }
+
         public override AbstractStyleElement Clone()
         {
             AbstractStyleElement clone = new StyleElementLineEnding(value);

@@ -99,6 +99,16 @@ namespace Kinovea.ScreenManager
 
             return editor;
         }
+
+        public override void UpdateEditor(Control control)
+        {
+            CheckBox editor = control as CheckBox;
+            if (editor == null)
+                return;
+
+            editor.Checked = value;
+        }
+
         public override AbstractStyleElement Clone()
         {
             StyleElementToggle clone = new StyleElementToggle(value, variant);

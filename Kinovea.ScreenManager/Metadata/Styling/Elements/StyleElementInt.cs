@@ -100,6 +100,15 @@ namespace Kinovea.ScreenManager
             return editor;
         }
 
+        public override void UpdateEditor(Control control)
+        {
+            NumericUpDown editor = control as NumericUpDown;
+            if (editor == null)
+                return;
+
+            editor.Value = value;
+        }
+
         public override AbstractStyleElement Clone()
         {
             AbstractStyleElement clone = new StyleElementInt(min, max, value, displayName);

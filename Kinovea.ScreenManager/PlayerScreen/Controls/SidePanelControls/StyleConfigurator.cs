@@ -40,6 +40,7 @@ namespace Kinovea.ScreenManager
         private bool manualUpdate;
         private bool editing;
         private List<AbstractStyleElement> elementList = new List<AbstractStyleElement>();
+        private Dictionary<AbstractStyleElement, Control> miniEditors = new Dictionary<AbstractStyleElement, Control>();
         private Action invalidator;
         private HistoryMementoModifyDrawing memento;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -95,6 +96,7 @@ namespace Kinovea.ScreenManager
 
             elementList.Clear();
             grpConfig.Controls.Clear();
+            miniEditors.Clear();
             memento = null;
         }
         
@@ -111,6 +113,7 @@ namespace Kinovea.ScreenManager
 
             // Clean up
             grpConfig.Controls.Clear();
+            miniEditors.Clear();
 
             Size editorSize = new Size(60, 20);
 
@@ -163,6 +166,7 @@ namespace Kinovea.ScreenManager
                 grpConfig.Controls.Add(btn);
                 grpConfig.Controls.Add(lbl);
                 grpConfig.Controls.Add(miniEditor);
+                miniEditors.Add(styleElement, miniEditor);
             }
 
             // Recheck all mini editors for the left positionning.
@@ -205,7 +209,7 @@ namespace Kinovea.ScreenManager
             drawing.Name = tbName.Text;
             memento.UpdateCommandName(drawing.Name);
 
-            AfterStateChanged();
+            AfterStateChanged(sender);
         }
 
         /// <summary>
@@ -230,7 +234,8 @@ namespace Kinovea.ScreenManager
             }
 
             log.Debug(string.Format("Style element changed: {0}", e.Value));
-            AfterStateChanged();
+
+            AfterStateChanged(sender);
         }
 
         /// <summary>
@@ -238,7 +243,7 @@ namespace Kinovea.ScreenManager
         /// This should be called after making any undoable change to the data.
         /// Signal to the host that the drawing has been modified.
         /// </summary>
-        private void AfterStateChanged()
+        private void AfterStateChanged(object sender)
         {
             if (metadata == null || managerId == Guid.Empty || drawingId == Guid.Empty)
             {
@@ -276,6 +281,21 @@ namespace Kinovea.ScreenManager
                 // Signal to the host that the drawing has been modified.
                 // This is used to update the image, preset and cursor.
                 DrawingModified?.Invoke(this, new DrawingEventArgs(drawing, managerId));
+
+                // Make sure the mini editor has the right value, without retriggering the event.
+                // This is used to handle external changes to individual style elements, like
+                // changing the font size from the corner of the text label.
+                manualUpdate = true;
+
+                AbstractStyleElement elem = sender as AbstractStyleElement;
+                if (elem == null)
+                {
+                    manualUpdate = false;
+                    return;
+                }
+
+                elem.UpdateEditor(miniEditors[elem]);
+                manualUpdate = false;
             }
         }
 

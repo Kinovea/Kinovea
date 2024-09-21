@@ -104,6 +104,12 @@ namespace Kinovea.ScreenManager
         /// </summary>
         /// <returns></returns>
         public abstract Control GetEditor();
+
+        /// <summary>
+        /// The value was changed externally and the passed editor needs to be updated.
+        /// </summary>
+        public abstract void UpdateEditor(Control control);
+
         
         /// <summary>
         /// Deep clone of the full style element.
@@ -161,7 +167,7 @@ namespace Kinovea.ScreenManager
 
             bool updated = styleData.Set(targetProperty, Value);
             if (updated)
-                ValueChanged?.Invoke(null, new EventArgs<string>(string.Format("{0}={1}", targetProperty, Value.ToString())));
+                ValueChanged?.Invoke(this, new EventArgs<string>(string.Format("{0}={1}", targetProperty, Value.ToString())));
         }
 
         /// <summary>

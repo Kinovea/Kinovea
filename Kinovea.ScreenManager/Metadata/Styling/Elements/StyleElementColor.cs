@@ -91,7 +91,11 @@ namespace Kinovea.ScreenManager
 			editor.Paint += new PaintEventHandler(editor_Paint);
 			return editor;
 		}
-		public override AbstractStyleElement Clone()
+        public override void UpdateEditor(Control control)
+        {
+            control.Invalidate();
+        }
+        public override AbstractStyleElement Clone()
 		{
 			AbstractStyleElement clone = new StyleElementColor(value);
 			clone.BindClone(this);
