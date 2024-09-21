@@ -31,7 +31,6 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
-
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
@@ -52,6 +51,7 @@ namespace Kinovea.ScreenManager
                 int hash = text.GetHashCode();
                 hash ^= background.Rectangle.Location.GetHashCode();
                 hash ^= showArrow.GetHashCode();
+                hash ^= showCircle.GetHashCode();
                 hash ^= hasBackground.GetHashCode();
                 hash ^= arrowEnd.GetHashCode();
                 hash ^= styleData.ContentHash;
@@ -84,6 +84,7 @@ namespace Kinovea.ScreenManager
                 });
 
                 mnuShowArrow.Checked = showArrow;
+                mnuShowCircle.Checked = showCircle;
                 mnuHasBackground.Checked = hasBackground;
                 return contextMenu;
             }
@@ -107,8 +108,6 @@ namespace Kinovea.ScreenManager
         #region Members
         private string text;
         private PointF arrowEnd;
-        private bool showArrow;
-        private bool hasBackground;
         private StyleElements styleElements = new StyleElements();
         private StyleData styleData = new StyleData();
         private InfosFading infosFading;
@@ -119,8 +118,14 @@ namespace Kinovea.ScreenManager
         #region Menus
         private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowArrow = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuShowCircle = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHasBackground = new ToolStripMenuItem();
         #endregion
+
+        // Options
+        private bool showArrow;
+        private bool showCircle;
+        private bool hasBackground;
 
         private RoundedRectangle background = new RoundedRectangle();
         private TextBox textBox;
@@ -137,6 +142,7 @@ namespace Kinovea.ScreenManager
             background.Rectangle = new RectangleF(p, SizeF.Empty);
             arrowEnd = p.Translate(-50, -50);
             showArrow = false;
+            showCircle = false;
             hasBackground = true;
 
             SetupStyle(preset);
@@ -179,10 +185,14 @@ namespace Kinovea.ScreenManager
         {
             mnuOptions.Image = Properties.Resources.equalizer;
             mnuShowArrow.Image = Properties.Drawings.arrow;
+            mnuShowCircle.Image = Properties.Drawings.circle;
+            mnuHasBackground.Image = Properties.Drawings.filled;
             mnuShowArrow.Click += mnuShowArrow_Click;
+            mnuShowCircle.Click += mnuShowCircle_Click;
             mnuHasBackground.Click += mnuHasBackground_Click;
             mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuShowArrow,
+                mnuShowCircle,
                 mnuHasBackground,
             });
         }
@@ -217,6 +227,12 @@ namespace Kinovea.ScreenManager
                     PointF start = GeometryHelper.IntersectionRectangleCenter(rect, end);
                     DrawArrow(canvas, transformer, backgroundOpacity, brushBack.Color, start, end);
                 }
+                else if (showCircle)
+                {
+                    PointF end = transformer.Transform(arrowEnd);
+                    PointF start = GeometryHelper.IntersectionRectangleCenter(rect, end);
+                    DrawCircle(canvas, transformer, backgroundOpacity, brushBack.Color, start, end);
+                }
 
                 if (editing)
                 {
@@ -250,6 +266,27 @@ namespace Kinovea.ScreenManager
                 ArrowHelper.Draw(canvas, pen, end, start);
             }
         }
+
+        private void DrawCircle(Graphics canvas, IImageToViewportTransformer transformer, float opacity, Color color, PointF start, PointF end)
+        {
+            using (Pen pen = styleData.GetPen(opacity, transformer.Scale))
+            {
+                pen.Color = color;
+                pen.StartCap = LineCap.Round;
+
+                PointF center = end;
+                bool canDrawArrow = ArrowHelper.UpdateStartEnd(pen.Width, ref start, ref end, false, true);
+                if (!canDrawArrow)
+                    return;
+
+                canvas.DrawLine(pen, start, end);
+
+                // The center of the circle is 3 pen width away from the end of the line.
+                // This is based on the arrow drawing routine with the tip of the arrow at the original end point.
+                canvas.DrawEllipse(pen, center.Box((int)pen.Width*3));
+            }
+        }
+
         public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             double opacity = infosFading.GetOpacityFactor(currentTimestamp);
@@ -257,10 +294,16 @@ namespace Kinovea.ScreenManager
                 return -1;
 
             // Background label: 0, hidden resizer: 1, arrow end: 2.
-            if (showArrow)
+            if (showArrow || showCircle)
             {
-                if (HitTester.HitPoint(point, arrowEnd, transformer))
-                    return 2;
+                // Is point on the disc around the arrow end.
+                using (GraphicsPath areaPath = new GraphicsPath())
+                {
+                    // The circle radius is 3 line size.
+                    areaPath.AddEllipse(arrowEnd.Box(styleData.LineSize*3));
+                    if (HitTester.HitPath(point, areaPath, 0, true, transformer))
+                        return 2;
+                }
 
                 if (IsPointOnSegment(point, background.Rectangle.Center(), arrowEnd, transformer))
                     return 0;
@@ -335,6 +378,9 @@ namespace Kinovea.ScreenManager
                     case "ArrowVisible":
                         showArrow = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
+                    case "CircleVisible":
+                        showCircle = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
+                        break;
                     case "ArrowEnd":
                         arrowEnd = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
                         break;
@@ -363,6 +409,7 @@ namespace Kinovea.ScreenManager
                 w.WriteElementString("Position", XmlHelper.WritePointF(background.Rectangle.Location));
                 w.WriteElementString("BackgroundVisible", hasBackground.ToString().ToLower());
                 w.WriteElementString("ArrowVisible", showArrow.ToString().ToLower());
+                w.WriteElementString("CircleVisible", showCircle.ToString().ToLower());
                 w.WriteElementString("ArrowEnd", XmlHelper.WritePointF(arrowEnd));
             }
 
@@ -386,6 +433,18 @@ namespace Kinovea.ScreenManager
         private void mnuShowArrow_Click(object sender, EventArgs e)
         {
             showArrow = !showArrow;
+            if (showArrow)
+                showCircle = false;
+                
+            InvalidateFromMenu(sender);
+        }
+
+        private void mnuShowCircle_Click(object sender, EventArgs e)
+        {
+            showCircle = !showCircle;
+            if (showCircle)
+                showArrow = false;
+
             InvalidateFromMenu(sender);
         }
 
@@ -519,6 +578,7 @@ namespace Kinovea.ScreenManager
             // Options
             mnuOptions.Text = ScreenManagerLang.Generic_Options;
             mnuShowArrow.Text = ScreenManagerLang.mnuShowArrow;
+            mnuShowCircle.Text = "Show circle";
             mnuHasBackground.Text = ScreenManagerLang.DrawingText_Background;
         }
         #endregion
