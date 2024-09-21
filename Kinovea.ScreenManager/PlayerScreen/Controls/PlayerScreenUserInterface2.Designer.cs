@@ -19,6 +19,7 @@ namespace Kinovea.ScreenManager
       this.components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PlayerScreenUserInterface));
       this.panelTop = new System.Windows.Forms.Panel();
+      this.btnSidePanel = new System.Windows.Forms.Button();
       this.btnExitFilter = new System.Windows.Forms.Button();
       this.btnClose = new System.Windows.Forms.Button();
       this.lblSelDuration = new System.Windows.Forms.Label();
@@ -100,6 +101,7 @@ namespace Kinovea.ScreenManager
       // panelTop
       // 
       this.panelTop.BackColor = System.Drawing.Color.White;
+      this.panelTop.Controls.Add(this.btnSidePanel);
       this.panelTop.Controls.Add(this.btnExitFilter);
       this.panelTop.Controls.Add(this.btnClose);
       this.panelTop.Dock = System.Windows.Forms.DockStyle.Top;
@@ -107,6 +109,24 @@ namespace Kinovea.ScreenManager
       this.panelTop.Name = "panelTop";
       this.panelTop.Size = new System.Drawing.Size(600, 25);
       this.panelTop.TabIndex = 0;
+      // 
+      // btnSidePanel
+      // 
+      this.btnSidePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnSidePanel.BackColor = System.Drawing.Color.Transparent;
+      this.btnSidePanel.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.sidepanel;
+      this.btnSidePanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+      this.btnSidePanel.Cursor = System.Windows.Forms.Cursors.Default;
+      this.btnSidePanel.FlatAppearance.BorderSize = 0;
+      this.btnSidePanel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+      this.btnSidePanel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+      this.btnSidePanel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnSidePanel.Location = new System.Drawing.Point(550, 2);
+      this.btnSidePanel.Name = "btnSidePanel";
+      this.btnSidePanel.Size = new System.Drawing.Size(20, 20);
+      this.btnSidePanel.TabIndex = 28;
+      this.btnSidePanel.UseVisualStyleBackColor = false;
+      this.btnSidePanel.Click += new System.EventHandler(this.btnSidePanel_Click);
       // 
       // btnExitFilter
       // 
@@ -119,7 +139,7 @@ namespace Kinovea.ScreenManager
       this.btnExitFilter.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
       this.btnExitFilter.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
       this.btnExitFilter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnExitFilter.Location = new System.Drawing.Point(550, 2);
+      this.btnExitFilter.Location = new System.Drawing.Point(524, 2);
       this.btnExitFilter.Name = "btnExitFilter";
       this.btnExitFilter.Size = new System.Drawing.Size(20, 20);
       this.btnExitFilter.TabIndex = 3;
@@ -963,7 +983,7 @@ namespace Kinovea.ScreenManager
       this.pnlThumbnails.Controls.Add(this.pictureBox1);
       this.pnlThumbnails.Location = new System.Drawing.Point(0, 27);
       this.pnlThumbnails.Name = "pnlThumbnails";
-      this.pnlThumbnails.Size = new System.Drawing.Size(600, 168);
+      this.pnlThumbnails.Size = new System.Drawing.Size(600, 172);
       this.pnlThumbnails.TabIndex = 3;
       this.pnlThumbnails.DoubleClick += new System.EventHandler(this.pnlThumbnails_DoubleClick);
       this.pnlThumbnails.MouseEnter += new System.EventHandler(this.pnlThumbnails_MouseEnter);
@@ -1074,5 +1094,6 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.ImageList imgListPropertyTabs;
         private System.Windows.Forms.Button btnExitFilter;
+        private System.Windows.Forms.Button btnSidePanel;
     }
 }

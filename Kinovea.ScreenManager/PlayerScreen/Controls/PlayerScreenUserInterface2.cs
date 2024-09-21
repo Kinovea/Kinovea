@@ -1576,6 +1576,10 @@ namespace Kinovea.ScreenManager
             if (CloseAsked != null)
                 CloseAsked(this, EventArgs.Empty);
         }
+        private void btnSidePanel_Click(object sender, EventArgs e)
+        {
+            ToggleSidePanelVisibility();
+        }
         private void btnExitFilter_Click(object sender, EventArgs e)
         {
             m_FrameServer.DeactivateVideoFilter();
