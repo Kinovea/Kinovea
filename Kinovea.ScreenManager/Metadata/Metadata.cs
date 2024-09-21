@@ -58,9 +58,10 @@ namespace Kinovea.ScreenManager
         public EventHandler<KeyframeEventArgs> KeyframeAdded;
         public EventHandler<KeyframeEventArgs> KeyframeModified;
         public EventHandler KeyframeDeleted;
+        public EventHandler<DrawingEventArgs> DrawingSelected;
         public EventHandler<DrawingEventArgs> DrawingAdded;
         public EventHandler<DrawingEventArgs> DrawingModified;
-        public EventHandler DrawingDeleted;
+        public EventHandler<EventArgs<Guid>> DrawingDeleted;
         public EventHandler<MultiDrawingItemEventArgs> MultiDrawingItemAdded;
         public EventHandler MultiDrawingItemDeleted;
         public EventHandler CameraCalibrationAsked;
@@ -927,13 +928,12 @@ namespace Kinovea.ScreenManager
                 drawing.InfosFading.AlwaysVisible = true;
             }
 
-            SelectKeyframe(keyframe);
-            SelectDrawing(drawing);
-
             AfterDrawingCreation(drawing, keyframe.Timestamp);
-
-            if (DrawingAdded != null)
-                DrawingAdded(this, new DrawingEventArgs(drawing, keyframe.Id));
+            
+            DrawingAdded?.Invoke(this, new DrawingEventArgs(drawing, keyframe.Id));
+            
+            SelectDrawing(drawing, keyframe);
+            SelectKeyframe(keyframe);
         }
 
         /// <summary>
@@ -942,10 +942,10 @@ namespace Kinovea.ScreenManager
         public void AddMultidrawingItem(AbstractMultiDrawing multidrawing, AbstractMultiDrawingItem item)
         {
             multidrawing.Add(item);
-            SelectDrawing(multidrawing);
-
-            if (MultiDrawingItemAdded != null)
-                MultiDrawingItemAdded(this, new MultiDrawingItemEventArgs(item, multidrawing));
+            
+            MultiDrawingItemAdded?.Invoke(this, new MultiDrawingItemEventArgs(item, multidrawing));
+            
+            SelectSingletonDrawing(multidrawing);
         }
 
         /// <summary>
@@ -956,12 +956,14 @@ namespace Kinovea.ScreenManager
             chronoManager.AddDrawing(chrono);
             chrono.ParentMetadata = this;
 
-            hitDrawing = chrono;
+            //hitDrawing = chrono;
 
             AfterDrawingCreation(chrono, 0);
 
-            if (DrawingAdded != null)
-                DrawingAdded(this, new DrawingEventArgs(chrono, chronoManager.Id));
+            DrawingAdded?.Invoke(this, new DrawingEventArgs(chrono, chronoManager.Id));
+
+            SelectDrawing(chrono, chronoManager);
+            //DrawingSelected?.Invoke(this, new DrawingEventArgs(chrono, chronoManager.Id));
         }
 
         /// <summary>
@@ -977,7 +979,7 @@ namespace Kinovea.ScreenManager
 
             track.TrackerParametersChanged += Track_TrackerParametersChanged;
 
-            hitDrawing = track;
+            //hitDrawing = track;
 
             AfterDrawingCreation(track, 0);
 
@@ -985,8 +987,10 @@ namespace Kinovea.ScreenManager
             track.UpdateKinematics();
             track.UpdateKeyframeLabels();
 
-            if (DrawingAdded != null)
-                DrawingAdded(this, new DrawingEventArgs(track, trackManager.Id));
+            DrawingAdded?.Invoke(this, new DrawingEventArgs(track, trackManager.Id));
+
+            SelectDrawing(track, trackManager);
+            //DrawingSelected?.Invoke(this, new DrawingEventArgs(track, trackManager.Id));
         }
 
         /// <summary>
@@ -1048,8 +1052,7 @@ namespace Kinovea.ScreenManager
             manager.RemoveDrawing(drawingId);
             DeselectAll();
 
-            if (DrawingDeleted != null)
-                DrawingDeleted(this, EventArgs.Empty);
+            DrawingDeleted?.Invoke(this, new EventArgs<Guid>(drawingId));
         }
 
         public void DeleteMultiDrawingItem(AbstractMultiDrawing manager, Guid itemId)
@@ -1524,11 +1527,27 @@ namespace Kinovea.ScreenManager
             hitDrawingOwner = null;
             hitKeyframe = null;
             hitDrawing = null;
+            //DrawingSelected?.Invoke(this, new DrawingEventArgs(null, Guid.Empty));
         }
-        public void SelectDrawing(AbstractDrawing drawing)
+        public void SelectSingletonDrawing(AbstractDrawing drawing)
+        {
+            if (!SingletonDrawingsManager.Drawings.Contains(drawing))
+                return;
+            
+            hitDrawing = drawing;
+            hitDrawingOwner = SingletonDrawingsManager;
+
+            DrawingSelected?.Invoke(this, new DrawingEventArgs(drawing, SingletonDrawingsManager.Id));
+        }
+
+        public void SelectDrawing(AbstractDrawing drawing, AbstractDrawingManager manager)
         {
             hitDrawing = drawing;
+            hitDrawingOwner = manager;
+
+            DrawingSelected?.Invoke(this, new DrawingEventArgs(drawing, manager.Id));
         }
+
         private void AfterDrawingCreation(AbstractDrawing drawing, long timestamp)
         {
             // When passing here, it is possible that the drawing has already been initialized.
@@ -1962,9 +1981,8 @@ namespace Kinovea.ScreenManager
                 }
 
                 isOnDrawing = true;
-                SelectDrawing(drawing);
+                SelectDrawing(drawing, keyframe);
                 SelectKeyframe(keyframe);
-                SelectManager(keyframe);
             }
 
             return isOnDrawing;

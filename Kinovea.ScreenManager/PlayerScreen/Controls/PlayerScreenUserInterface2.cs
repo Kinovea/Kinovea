@@ -39,7 +39,6 @@ using Kinovea.Video;
 using Kinovea.Services;
 using System.Xml;
 using System.Text;
-
 #endregion
 
 namespace Kinovea.ScreenManager
@@ -329,7 +328,7 @@ namespace Kinovea.ScreenManager
         private ZoomHelper zoomHelper = new ZoomHelper();
         private const int m_MaxRenderingDrops = 6;
         private const int m_MaxDecodingDrops = 6;
-        private System.Windows.Forms.Timer m_DeselectionTimer = new System.Windows.Forms.Timer();
+        private System.Windows.Forms.Timer selectionTimer = new System.Windows.Forms.Timer();
         private MessageToaster m_MessageToaster;
         private bool m_Constructed;
         private bool workingZoneLoaded;
@@ -353,10 +352,8 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuCloseScreen = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExitFilter = new ToolStripMenuItem();
 
-
         private ContextMenuStrip popMenuDrawings = new ContextMenuStrip();
         private ToolStripMenuItem mnuConfigureDrawing = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuSetStyleAsDefault = new ToolStripMenuItem();
         private ToolStripMenuItem mnuVisibility = new ToolStripMenuItem();
         private ToolStripMenuItem mnuVisibilityAlways = new ToolStripMenuItem();
         private ToolStripMenuItem mnuVisibilityDefault = new ToolStripMenuItem();
@@ -393,6 +390,7 @@ namespace Kinovea.ScreenManager
         private InfobarPlayer infobar = new InfobarPlayer();
         private bool isSidePanelVisible;
         private SidePanelKeyframes sidePanelKeyframes = new SidePanelKeyframes();
+        private SidePanelDrawing sidePanelDrawing = new SidePanelDrawing();
 
         private DropWatcher m_DropWatcher = new DropWatcher();
         private TimeWatcher m_TimeWatcher = new TimeWatcher();
@@ -446,8 +444,8 @@ namespace Kinovea.ScreenManager
             CollapseKeyframePanel(true);
 
             m_TimerCallback = MultimediaTimer_Tick;
-            m_DeselectionTimer.Interval = 10000;
-            m_DeselectionTimer.Tick += DeselectionTimer_OnTick;
+            selectionTimer.Interval = 10000;
+            selectionTimer.Tick += SelectionTimer_OnTick;
 
             sldrSpeed.Minimum = 0;
             sldrSpeed.Maximum = 1000;
@@ -510,6 +508,7 @@ namespace Kinovea.ScreenManager
             }
 
             sidePanelKeyframes.Clear();
+            sidePanelDrawing.Clear();
         }
         public void EnableDisableActions(bool enable)
         {
@@ -1003,19 +1002,24 @@ namespace Kinovea.ScreenManager
             };
 
             // Create and add all the side panels.
-            TabControl tabControl =  splitViewport_Properties.Panel2.Controls[0] as TabControl;
-            if (tabControl == null)
+            TabControl tabContainer = splitViewport_Properties.Panel2.Controls[0] as TabControl;
+            if (tabContainer == null)
                 return;
 
-            tabControl.TabPages[0].Controls.Add(sidePanelKeyframes);
+            tabContainer.TabPages[0].Controls.Add(sidePanelKeyframes);
             sidePanelKeyframes.Dock = DockStyle.Fill;
             sidePanelKeyframes.KeyframeSelected += KeyframeControl_Selected;
             sidePanelKeyframes.KeyframeUpdated += KeyframeControl_KeyframeUpdated;
 
+            tabContainer.TabPages[1].Controls.Add(sidePanelDrawing);
+            sidePanelDrawing.Dock = DockStyle.Fill;
+            sidePanelDrawing.DrawingModified += DrawingControl_DrawingUpdated;
+            
             // Hide work-in-progress panels.
             //tabControl.TabPages.RemoveAt(1);
 
-            splitViewport_Properties.Panel2Collapsed = true;
+            isSidePanelVisible = PreferencesManager.GeneralPreferences.SidePanelVisible;
+            splitViewport_Properties.Panel2Collapsed = !isSidePanelVisible;
         }
 
         private void InitializeDrawingTools(DrawingToolbarPresenter drawingToolbarPresenter)
@@ -1212,9 +1216,7 @@ namespace Kinovea.ScreenManager
             // Drawings context menu (Configure, Delete, Tracking)
             mnuConfigureDrawing.Click += new EventHandler(mnuConfigureDrawing_Click);
             mnuConfigureDrawing.Image = Properties.Drawings.configure;
-            mnuSetStyleAsDefault.Click += new EventHandler(mnuSetStyleAsDefault_Click);
-            mnuSetStyleAsDefault.Image = Resources.SwatchIcon3;
-
+            
             mnuVisibility.Image = Properties.Drawings.persistence;
             mnuVisibilityAlways.Image = Properties.Drawings.persistence;
             mnuVisibilityDefault.Image = Properties.Drawings.persistence;
@@ -1338,7 +1340,7 @@ namespace Kinovea.ScreenManager
             if (keyframeBoxes.Any(t => t.Editing))
                 return false;
 
-            if (sidePanelKeyframes.Editing)
+            if (sidePanelKeyframes.Editing || sidePanelDrawing.Editing)
                 return false;
 
             if (!m_bSynched)
@@ -1535,8 +1537,8 @@ namespace Kinovea.ScreenManager
 
         public void AfterClose()
         {
-            m_DeselectionTimer.Tick -= DeselectionTimer_OnTick;
-            m_DeselectionTimer.Dispose();
+            selectionTimer.Tick -= SelectionTimer_OnTick;
+            selectionTimer.Dispose();
         }
 
         /// <summary>
@@ -2804,12 +2806,12 @@ namespace Kinovea.ScreenManager
         {
             return (int)Math.Round(timeMapper.GetInterval(sldrSpeed.Value));
         }
-        private void DeselectionTimer_OnTick(object sender, EventArgs e)
+        private void SelectionTimer_OnTick(object sender, EventArgs e)
         {
             if (m_FrameServer.Metadata.TextEditingInProgress)
             {
                 // Ignore the timer if we are editing text, so we don't close the text editor under the user.
-                m_DeselectionTimer.Stop();
+                selectionTimer.Stop();
                 return;
             }
 
@@ -2817,7 +2819,7 @@ namespace Kinovea.ScreenManager
             // This is used for drawings that must show extra stuff for being transformed, but we
             // don't want to show the extra stuff all the time for clarity.
             m_FrameServer.Metadata.DeselectAll();
-            m_DeselectionTimer.Stop();
+            selectionTimer.Stop();
             DoInvalidate();
             OnPoke();
         }
@@ -2850,7 +2852,6 @@ namespace Kinovea.ScreenManager
 
             // Drawings context menu.
             mnuConfigureDrawing.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
-            mnuSetStyleAsDefault.Text = ScreenManagerLang.mnuSetStyleAsDefault;
             mnuVisibility.Text = ScreenManagerLang.Generic_Visibility;
             mnuVisibilityAlways.Text = ScreenManagerLang.dlgConfigureFading_chkAlwaysVisible;
             mnuVisibilityDefault.Text = ScreenManagerLang.mnuVisibilityDefault;
@@ -2966,7 +2967,7 @@ namespace Kinovea.ScreenManager
             if (!m_FrameServer.Loaded)
                 return;
 
-            m_DeselectionTimer.Stop();
+            selectionTimer.Stop();
             m_DescaledMouse = m_FrameServer.ImageTransform.Untransform(e.Location);
 
             if (e.Button == MouseButtons.Left)
@@ -3120,10 +3121,24 @@ namespace Kinovea.ScreenManager
                 RefreshImage();
             }
         }
+
+        /// <summary>
+        /// A drawing was modified without user interaction (undo/redo).
+        /// </summary>
         private void AfterDrawingModified(AbstractDrawing drawing)
         {
             UpdateFramesMarkers();
             RefreshImage();
+
+            // Update the side panel.
+            // We don't really care if it's the same drawing or not.
+            // This means that when the restored state is for another drawing 
+            // that drawing will be pushed to the side panel. This feels natural 
+            // in the sense that it reverts the selection action itself.
+            var metadata = m_FrameServer.Metadata;
+            var drawingId = drawing.Id;
+            var managerId = metadata.FindManagerId(drawing);
+            sidePanelDrawing.SetDrawing(drawing, metadata, managerId, drawingId);
         }
         private void AfterVideoFilterModified()
         {
@@ -3380,14 +3395,6 @@ namespace Kinovea.ScreenManager
             {
                 mnuConfigureDrawing.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
                 popMenu.Items.Add(mnuConfigureDrawing);
-
-                bool isSingleton = drawing is DrawingCoordinateSystem || drawing is DrawingTestGrid || drawing is DrawingNumberSequence;
-                if (!isSingleton)
-                {
-                    mnuSetStyleAsDefault.Text = ScreenManagerLang.mnuSetStyleAsDefault;
-                    popMenu.Items.Add(mnuSetStyleAsDefault);
-                }
-
                 popMenu.Items.Add(mnuSepDrawing);
             }
 
@@ -3694,7 +3701,10 @@ namespace Kinovea.ScreenManager
             }
 
             if (m_FrameServer.Metadata.HitDrawing != null && !m_FrameServer.Metadata.DrawingInitializing)
-                m_DeselectionTimer.Start();
+            {
+                // A drawing was just selected.
+                selectionTimer.Start();
+            }
 
             DoInvalidate();
         }
@@ -4104,6 +4114,7 @@ namespace Kinovea.ScreenManager
             }
 
             sidePanelKeyframes.Reset(m_FrameServer.Metadata);
+            sidePanelDrawing.SetMetadata(m_FrameServer.Metadata);
             UpdateFramesMarkers();
             DoInvalidate(); // Because of trajectories with keyframes labels.
         }
@@ -4266,7 +4277,6 @@ namespace Kinovea.ScreenManager
             // A keyframe was modified from the outside. This happens on undo for example.
             // Update the UI version of the keyframe.
             sidePanelKeyframes.UpdateKeyframe(id);
-
             KeyframeControl_KeyframeUpdated(null, new EventArgs<Guid>(id));
         }
 
@@ -4501,16 +4511,37 @@ namespace Kinovea.ScreenManager
                 ToggleSidePanelVisibility();
         }
 
+        /// <summary>
+        /// A keyframe core data was updated from a keyframe control (side panel).
+        /// This is raised when we change the name, color or comment from the side panel.
+        /// Update whatever is impacted by this.
+        /// </summary>
         private void KeyframeControl_KeyframeUpdated(object sender, EventArgs<Guid> e)
         {
-            // A keyframe core data was updated from a keyframe control.
-            // This is only raised when we change the name, color or comment from the side panel.
-            // Update whatever is impacted by this.
             UpdateKeyframeBox(e.Value);
             UpdateFramesMarkers();
             m_FrameServer.Metadata.UpdateTrajectoriesKeyframeLabels();
 
             Invalidate();
+        }
+
+        /// <summary>
+        /// A drawing was modified from a drawing style configurator control (side panel).
+        /// Update the preset and the drawing on the screen.
+        /// </summary>
+        private void DrawingControl_DrawingUpdated(object sender, DrawingEventArgs e)
+        {
+            // Sanity check (invalid program if fails).
+            if (!(e.Drawing is IDecorable))
+                return;
+
+            // Auto save as new preset.
+            ToolManager.SetToolStyleFromDrawing(e.Drawing, ((IDecorable)e.Drawing).StyleElements);
+            ToolManager.SavePresets();
+            UpdateCursor();
+
+            // Update the image.
+            DoInvalidate();
         }
 
         /// <summary>
@@ -4648,6 +4679,8 @@ namespace Kinovea.ScreenManager
 
             isSidePanelVisible = !isSidePanelVisible;
             splitViewport_Properties.Panel2Collapsed = !isSidePanelVisible;
+            PreferencesManager.GeneralPreferences.SidePanelVisible = isSidePanelVisible;
+            PreferencesManager.Save();
         }
         private void btnColorProfile_Click(object sender, EventArgs e)
         {
@@ -4765,27 +4798,16 @@ namespace Kinovea.ScreenManager
                 // so the next time we use this tool it will have the style we just set.
                 ToolManager.SetToolStyleFromDrawing(metadata.HitDrawing, drawing.StyleElements);
                 ToolManager.SavePresets();
-
                 UpdateCursor();
+
+                sidePanelDrawing.SetDrawing(metadata.HitDrawing, metadata, managerId, drawingId);
             }
 
             fcd.Dispose();
             DoInvalidate();
             UpdateFramesMarkers();
         }
-        private void mnuSetStyleAsDefault_Click(object sender, EventArgs e)
-        {
-            // Assign the style of the active drawing to the drawing tool that generated it.
-            Keyframe kf = m_FrameServer.Metadata.HitKeyframe;
-            IDecorable drawing = m_FrameServer.Metadata.HitDrawing as IDecorable;
-            if (drawing == null || drawing.StyleElements == null || drawing.StyleElements.Elements.Count == 0)
-                return;
 
-            ToolManager.SetToolStyleFromDrawing(m_FrameServer.Metadata.HitDrawing, drawing.StyleElements);
-            ToolManager.SavePresets();
-
-            UpdateCursor();
-        }
         private void mnuVisibilityAlways_Click(object sender, EventArgs e)
         {
             if (mnuVisibilityAlways.Checked)

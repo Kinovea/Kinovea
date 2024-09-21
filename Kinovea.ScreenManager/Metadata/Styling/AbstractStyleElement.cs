@@ -22,6 +22,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -82,7 +83,7 @@ namespace Kinovea.ScreenManager
         /// The mini editor container will hook to this and update main screen accordingly to enable real time update.
         /// By the time this event is raised the underlying data has been updated already.
         /// </summary>
-        public event EventHandler ValueChanged;
+        public event EventHandler<EventArgs<string>> ValueChanged;
         #endregion
         
         #region Members
@@ -158,10 +159,9 @@ namespace Kinovea.ScreenManager
             if (styleData == null || string.IsNullOrEmpty(targetProperty))
                 return;
 
-            styleData.Set(targetProperty, Value);
-            
-            if (ValueChanged != null) 
-                ValueChanged(null, EventArgs.Empty);
+            bool updated = styleData.Set(targetProperty, Value);
+            if (updated)
+                ValueChanged?.Invoke(null, new EventArgs<string>(string.Format("{0}={1}", targetProperty, Value.ToString())));
         }
 
         /// <summary>

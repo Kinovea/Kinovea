@@ -5,6 +5,7 @@ using System.Text;
 using Kinovea.ScreenManager.Languages;
 using System.Drawing;
 using System.Xml;
+using DocumentFormat.OpenXml.ExtendedProperties;
 
 namespace Kinovea.ScreenManager
 {
@@ -59,6 +60,31 @@ namespace Kinovea.ScreenManager
         {
             drawingName = name;
             commandName = string.Format("{0} ({1})", ScreenManagerLang.CommandModifyDrawing_FriendlyName, drawingName);
+        }
+
+        /// <summary>
+        /// Check if the drawing still has the same state as when it was saved in the memento.
+        /// This is used to avoid creating unnecessary history commands.
+        /// </summary>
+        public bool IsSameState()
+        {
+            AbstractDrawingManager manager = metadata.GetDrawingManager(managerId);
+            if (manager == null)
+            {
+                return false;
+            }
+
+            string newData = DrawingSerializer.SerializeMemento(metadata, manager.GetDrawing(drawingId), filter, false);
+            return data == newData;
+        }
+
+        /// <summary>
+        /// Check if another memento was built with the same state as this one.
+        /// This is used to avoid creating unnecessary history commands.
+        /// </summary>
+        public bool IsSameState(HistoryMementoModifyDrawing other)
+        {
+            return data == other.data;
         }
     }
 }

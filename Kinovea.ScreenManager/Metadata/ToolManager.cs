@@ -181,7 +181,7 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Reset the style elements of a tool from the current elements of a drawing of this tool.
+        /// Reset the style elements of a tool (preset) from the current elements of a drawing of this tool.
         /// This overload is used for singleton tools like coordinate system, test grid, etc.
         /// </summary>
         public static void SetToolStyleFromDrawing(string tool, StyleElements styleElements)
@@ -193,7 +193,7 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Reset the style elements of a tool from the current elements of a drawing of this tool.
+        /// Reset the style elements of a tool (preset) from the current elements of a drawing of this tool.
         /// This is used for the "set style as default" feature.
         /// </summary>
         public static void SetToolStyleFromDrawing(AbstractDrawing drawing, StyleElements styleElements)

@@ -53,6 +53,12 @@ namespace Kinovea.Services
             set { sidePanelSplitterRatio = value; }
         }
 
+        public bool SidePanelVisible
+        {
+            get { return sidePanelVisible; }
+            set { sidePanelVisible = value; }
+        }
+
         public FormWindowState WindowState
         {
             get { return windowState; }
@@ -101,6 +107,7 @@ namespace Kinovea.Services
         private bool explorerVisible = true;
         private float explorerSplitterRatio = 0.2f;
         private float sidePanelSplitterRatio = 0.8f;
+        private bool sidePanelVisible = false;
         private FormWindowState windowState = FormWindowState.Maximized;
         private Rectangle windowRectangle;
         private Workspace workspace = new Workspace();
@@ -137,9 +144,10 @@ namespace Kinovea.Services
         public void WriteXML(XmlWriter writer)
         {
             writer.WriteElementString("Culture", uiCultureName);
-            writer.WriteElementString("ExplorerVisible", explorerVisible ? "true" : "false");
+            writer.WriteElementString("ExplorerVisible", XmlHelper.WriteBoolean(explorerVisible));
             writer.WriteElementString("ExplorerSplitterRatio", XmlHelper.WriteFloat(explorerSplitterRatio));
             writer.WriteElementString("SidePanelSplitterRatio", XmlHelper.WriteFloat(sidePanelSplitterRatio));
+            writer.WriteElementString("SidePanelVisible", XmlHelper.WriteBoolean(sidePanelVisible));
             writer.WriteElementString("WindowState", windowState.ToString());
             writer.WriteElementString("WindowRectangle", XmlHelper.WriteRectangleF(windowRectangle));
 
@@ -175,6 +183,9 @@ namespace Kinovea.Services
                         break;
                     case "SidePanelSplitterRatio":
                         sidePanelSplitterRatio = XmlHelper.ParseFloat(reader.ReadElementContentAsString());
+                        break;
+                    case "SidePanelVisible":
+                        sidePanelVisible = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     case "WindowState":
                         windowState = (FormWindowState)Enum.Parse(typeof(FormWindowState), reader.ReadElementContentAsString());

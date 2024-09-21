@@ -331,9 +331,8 @@ namespace Kinovea.ScreenManager
                 
                 isOnDrawing = true;
                 selectedObjectType = SelectedObjectType.Drawing;
-                metadata.SelectDrawing(kf.Drawings[currentDrawing]);
+                metadata.SelectDrawing(kf.Drawings[currentDrawing], kf);
                 metadata.SelectKeyframe(kf);
-                metadata.SelectManager(kf);
 
                 if (hitResult > 0)
                 {
@@ -361,8 +360,7 @@ namespace Kinovea.ScreenManager
 
                 isOnDrawing = true;
                 selectedObjectType = SelectedObjectType.SingletonDrawing;
-                metadata.SelectDrawing(drawing);
-                metadata.SelectManager(metadata.SingletonDrawingsManager);
+                metadata.SelectDrawing(drawing, metadata.SingletonDrawingsManager);
 
                 if (hitResult > 0)
                 {
@@ -398,8 +396,7 @@ namespace Kinovea.ScreenManager
 
                 isOnDrawing = true;
                 selectedObjectType = SelectedObjectType.Chrono;
-                metadata.SelectDrawing(drawing);
-                metadata.SelectManager(metadata.ChronoManager);
+                metadata.SelectDrawing(drawing, metadata.ChronoManager);
 
                 if (hitResult > 0)
                 {
@@ -441,8 +438,7 @@ namespace Kinovea.ScreenManager
 
                 isOnDrawing = true;
                 selectedObjectType = SelectedObjectType.Track;
-                metadata.SelectDrawing(drawing);
-                metadata.SelectManager(metadata.TrackManager);
+                metadata.SelectDrawing(drawing, metadata.TrackManager);
 
                 manipulationType = ManipulationType.Move;
 

@@ -287,15 +287,14 @@ namespace Kinovea.ScreenManager
             using (SolidBrush brush = new SolidBrush(keyframe.Color))
                 e.Graphics.FillEllipse(brush, rect);
         }
+        private void tbName_Enter(object sender, EventArgs e)
+        {
+            editingName = true;
+        }
 
         private void tbName_Leave(object sender, EventArgs e)
         {
             editingName = false;
-        }
-
-        private void tbName_Enter(object sender, EventArgs e)
-        {
-            editingName = true;
         }
 
         private void rtbComment_Enter(object sender, EventArgs e)

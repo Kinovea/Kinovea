@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -65,7 +66,7 @@ namespace Kinovea.ScreenManager
         /// to the mini label.
         /// </summary>
         /// <remarks>The event is not raised when the value is changed manually through a property setter</remarks>
-        public event EventHandler ValueChanged;
+        public event EventHandler<EventArgs<string>> ValueChanged;
         #endregion
 
         #region Properties
@@ -431,18 +432,23 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Update a property from a style element value.
         /// </summary>
-        public void Set(string targetProperty, object value)
+        public bool Set(string targetProperty, object value)
         {
             // Check type and import value if compatible with the target prop.
             bool imported = false;
+            bool updated = false;
             switch (targetProperty)
             {
                 case "Color":
                     {
                         if (value is Color)
                         {
-                            color = (Color)value;
                             imported = true;
+                            if (color != (Color)value)
+                            {
+                                color = (Color)value;
+                                updated = true;
+                            }
                         }
                         break;
                     }
@@ -450,8 +456,12 @@ namespace Kinovea.ScreenManager
                     {
                         if (value is Color)
                         {
-                            backgroundColor = (Color)value;
                             imported = true;
+                            if (backgroundColor != (Color)value)
+                            {
+                                backgroundColor = (Color)value;
+                                updated = true;
+                            }
                         }
                         break;
                     }
@@ -460,12 +470,16 @@ namespace Kinovea.ScreenManager
                         // TODO: have a styleElementFont wrapping a FontSpec type. 
                         if (value is int)
                         {
-                            // Recreate the font changing just the size.
-                            string fontName = font.Name;
-                            FontStyle fontStyle = font.Style;
-                            font.Dispose();
-                            font = new Font(fontName, (int)value, fontStyle);
                             imported = true;
+                            if (font.Size != (int)value)
+                            {
+                                // Recreate the font changing just the size.
+                                string fontName = font.Name;
+                                FontStyle fontStyle = font.Style;
+                                font.Dispose();
+                                font = new Font(fontName, (int)value, fontStyle);
+                                updated = true;
+                            }
                         }
                         break;
                     }
@@ -473,8 +487,12 @@ namespace Kinovea.ScreenManager
                     {
                         if (value is int)
                         {
-                            lineSize = (int)value;
                             imported = true;
+                            if (lineSize != (int)value)
+                            {
+                                lineSize = (int)value;
+                                updated = true;
+                            }
                         }
 
                         break;
@@ -483,8 +501,12 @@ namespace Kinovea.ScreenManager
                     {
                         if (value is LineShape)
                         {
-                            lineShape = (LineShape)value;
                             imported = true;
+                            if (lineShape != (LineShape)value)
+                            {
+                                lineShape = (LineShape)value;
+                                updated = true;
+                            }
                         }
 
                         break;
@@ -493,8 +515,12 @@ namespace Kinovea.ScreenManager
                     {
                         if (value is LineEnding)
                         {
-                            lineEnding = (LineEnding)value;
                             imported = true;
+                            if (lineEnding != (LineEnding)value)
+                            {
+                                lineEnding = (LineEnding)value;
+                                updated = true;
+                            }
                         }
 
                         break;
@@ -503,8 +529,12 @@ namespace Kinovea.ScreenManager
                     {
                         if (value is TrackShape)
                         {
-                            trackShape = (TrackShape)value;
                             imported = true;
+                            if (trackShape != (TrackShape)value)
+                            {
+                                trackShape = (TrackShape)value;
+                                updated = true;
+                            }
                         }
 
                         break;
@@ -513,8 +543,12 @@ namespace Kinovea.ScreenManager
                     {
                         if (value is PenShape)
                         {
-                            penShape = (PenShape)value;
                             imported = true;
+                            if (penShape != (PenShape)value)
+                            {
+                                penShape = (PenShape)value;
+                                updated = true;
+                            }
                         }
 
                         break;
@@ -523,8 +557,12 @@ namespace Kinovea.ScreenManager
                     {
                         if (value is int)
                         {
-                            gridCols = (int)value;
                             imported = true;
+                            if (gridCols != (int)value)
+                            {
+                                gridCols = (int)value;
+                                updated = true;
+                            }
                         }
                         break;
                     }
@@ -532,8 +570,12 @@ namespace Kinovea.ScreenManager
                     {
                         if (value is int)
                         {
-                            gridRows = (int)value;
                             imported = true;
+                            if (gridRows != (int)value)
+                            {
+                                gridRows = (int)value;
+                                updated = true;
+                            }
                         }
                         break;
                     }
@@ -541,8 +583,12 @@ namespace Kinovea.ScreenManager
                     {
                         if (value is int)
                         {
-                            decimalPlaces = (int)value;
                             imported = true;
+                            if (decimalPlaces != (int)value)
+                            {
+                                decimalPlaces = (int)value;
+                                updated = true;
+                            }
                         }
                         break;
                     }
@@ -550,8 +596,12 @@ namespace Kinovea.ScreenManager
                     {
                         if (value is bool)
                         {
-                            toggles["curved"] = (bool)value;
                             imported = true;
+                            if (toggles["curved"] != (bool)value)
+                            {
+                                toggles["curved"] = (bool)value;
+                                updated = true;
+                            }
                         }
 
                         break;
@@ -560,20 +610,26 @@ namespace Kinovea.ScreenManager
                     {
                         if (value is bool)
                         {
-                            toggles["perspective"] = (bool)value;
                             imported = true;
+                            if (toggles["perspective"] != (bool)value)
+                            {
+                                toggles["perspective"] = (bool)value;
+                                updated = true;
+                            }
                         }
-
                         break;
                     }
                 case "Toggles/Clock":
                     {
                         if (value is bool)
                         {
-                            toggles["clock"] = (bool)value;
                             imported = true;
+                            if (toggles["clock"] != (bool)value)
+                            {
+                                toggles["clock"] = (bool)value;
+                                updated = true;
+                            }
                         }
-
                         break;
                     }
                 default:
@@ -583,15 +639,18 @@ namespace Kinovea.ScreenManager
                     }
             }
 
-            if (imported)
+            if (!imported)
             {
-                if (ValueChanged != null)
-                    ValueChanged(null, EventArgs.Empty);
+                log.ErrorFormat("Could not import value \"{0}\" into property \"{1}\".", value.ToString(), targetProperty);
+                return false;
             }
-            else
+
+            if (updated)
             {
-                log.DebugFormat("Could not import value \"{0}\" into property \"{1}\".", value.ToString(), targetProperty);
+                ValueChanged?.Invoke(this, new EventArgs<string>(string.Format("{0}={1}", targetProperty, value.ToString())));
             }
+
+            return updated;
         }
 
         #region Pen and Brushes using the main color and line size properties

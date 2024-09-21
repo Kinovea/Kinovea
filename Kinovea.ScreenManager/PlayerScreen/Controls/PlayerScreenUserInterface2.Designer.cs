@@ -963,7 +963,7 @@ namespace Kinovea.ScreenManager
       this.pnlThumbnails.Controls.Add(this.pictureBox1);
       this.pnlThumbnails.Location = new System.Drawing.Point(0, 27);
       this.pnlThumbnails.Name = "pnlThumbnails";
-      this.pnlThumbnails.Size = new System.Drawing.Size(600, 166);
+      this.pnlThumbnails.Size = new System.Drawing.Size(600, 168);
       this.pnlThumbnails.TabIndex = 3;
       this.pnlThumbnails.DoubleClick += new System.EventHandler(this.pnlThumbnails_DoubleClick);
       this.pnlThumbnails.MouseEnter += new System.EventHandler(this.pnlThumbnails_MouseEnter);

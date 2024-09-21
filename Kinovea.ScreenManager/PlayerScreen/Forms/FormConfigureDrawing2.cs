@@ -30,6 +30,12 @@ namespace Kinovea.ScreenManager
     /// <summary>
     /// Dialog that let the user change the style of a specific drawing.
     /// Works on the original and revert to a copy in case of cancel.
+    /// 
+    /// Deprecated, replaced by side panel.
+    /// The side panel hooks itself to individual style elements and listens to their changes.
+    /// Any change creates a new history memento that can be undone.
+    /// This is fundamentally incompatible with the old behavior where the user could make
+    /// multiple changes in this dialog and cancel them all at once.
     /// </summary>
     public partial class FormConfigureDrawing2 : Form
     {

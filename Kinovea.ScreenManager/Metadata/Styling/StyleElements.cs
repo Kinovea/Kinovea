@@ -110,7 +110,7 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Read style elements from XML and import the values into our elements.
-        /// This is used to import drawings from KVA.
+        /// This is used to import drawings from KVA files (or KVA fragments for undo).
         /// The existing style should be a copy of the default style or preset for the tool.
         public void ImportXML(XmlReader xmlReader)
         {
