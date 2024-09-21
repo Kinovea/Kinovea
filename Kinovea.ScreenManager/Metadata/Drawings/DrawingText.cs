@@ -138,14 +138,8 @@ namespace Kinovea.ScreenManager
             arrowEnd = p.Translate(-50, -50);
             showArrow = false;
             hasBackground = true;
-            
-            styleData.BackgroundColor = Color.Black;
-            styleData.Font = new Font("Arial", defaultFontSize, FontStyle.Bold);
-            if (preset == null)
-                preset = ToolManager.GetDefaultStyleElements("Label");
 
-            styleElements = preset.Clone();
-            BindStyle();
+            SetupStyle(preset);
             
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
             editing = false;
@@ -219,10 +213,9 @@ namespace Kinovea.ScreenManager
 
                 if (showArrow)
                 {
-                    float arrowWidth = fontText.Height / 5;
                     PointF end = transformer.Transform(arrowEnd);
                     PointF start = GeometryHelper.IntersectionRectangleCenter(rect, end);
-                    DrawArrow(canvas, backgroundOpacity, brushBack.Color, arrowWidth, start, end);
+                    DrawArrow(canvas, transformer, backgroundOpacity, brushBack.Color, start, end);
                 }
 
                 if (editing)
@@ -241,14 +234,15 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        private void DrawArrow(Graphics canvas, float opacity, Color color, float width, PointF start, PointF end)
+        private void DrawArrow(Graphics canvas, IImageToViewportTransformer transformer, float opacity, Color color, PointF start, PointF end)
         {
-            using (Pen pen = styleData.GetPen(opacity))
+            
+            using (Pen pen = styleData.GetPen(opacity, transformer.Scale))
             {
                 pen.Color = color;
-                pen.Width = width;
+                pen.StartCap = LineCap.Round;
 
-                bool canDrawArrow = ArrowHelper.UpdateStartEnd(width, ref start, ref end, false, true);
+                bool canDrawArrow = ArrowHelper.UpdateStartEnd(pen.Width, ref start, ref end, false, true);
                 if (!canDrawArrow)
                     return;
                 
@@ -298,7 +292,8 @@ namespace Kinovea.ScreenManager
         {
             background.Move(dx, dy);
 
-            // The default behavior is to move the entire drawing as it is the standard thing to do for most calls of MoveDrawing.
+            // The default behavior is to move the entire drawing as it is the standard
+            // thing to do for most calls of MoveDrawing.
             // To allow for moving only the text label while keeping the arrow end, we listen to the CTRL key.
             if ((modifierKeys & Keys.Control) != Keys.Control)
                 arrowEnd = arrowEnd.Translate(dx, dy);
@@ -464,11 +459,23 @@ namespace Kinovea.ScreenManager
         }
 
         #region Lower level helpers
+        private void SetupStyle(StyleElements preset)
+        {
+            styleData.BackgroundColor = Color.Black;
+            styleData.Font = new Font("Arial", defaultFontSize, FontStyle.Bold);
+            styleData.LineSize = 2;
+            if (preset == null)
+                preset = ToolManager.GetDefaultStyleElements("Label");
+
+            styleElements = preset.Clone();
+            BindStyle();
+        }
         private void BindStyle()
         {
             StyleElements.SanityCheck(styleElements, ToolManager.GetDefaultStyleElements("Label"));
             styleElements.Bind(styleData, "Bicolor", "back color");
             styleElements.Bind(styleData, "Font", "font size");
+            styleElements.Bind(styleData, "LineSize", "LineSize");
         }
         private void TextBox_TextChanged(object sender, EventArgs e)
         {

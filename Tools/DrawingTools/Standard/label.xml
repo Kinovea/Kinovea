@@ -16,5 +16,8 @@
     <FontSize Key="font size">
       <Value>12</Value>
     </FontSize>
+    <LineSize Key="LineSize">
+      <Value>2</Value>
+    </LineSize>
   </DefaultStyle>
 </KinoveaDrawingTool>
