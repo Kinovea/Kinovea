@@ -478,6 +478,8 @@ namespace Kinovea.ScreenManager
             ShowHideRenderingSurface(false);
             SetupPrimarySelectionPanel();
             ClearKeyframeBoxes();
+            sidePanelKeyframes.Clear();
+            sidePanelDrawing.Clear();
             CollapseKeyframePanel(true);
             UpdateFramesMarkers();
             EnableDisableAllPlayingControls(true);
@@ -506,9 +508,6 @@ namespace Kinovea.ScreenManager
                 pnlThumbnails.Controls.Remove(box);
                 box.Dispose();
             }
-
-            sidePanelKeyframes.Clear();
-            sidePanelDrawing.Clear();
         }
         public void EnableDisableActions(bool enable)
         {
@@ -586,6 +585,9 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Metadata.TimeOrigin = m_iSelStart;
             m_PointerTool.SetImageSize(m_FrameServer.VideoReader.Info.ReferenceSize);
             m_viewportManipulator.Initialize(m_FrameServer.VideoReader);
+            
+            sidePanelKeyframes.Reset(m_FrameServer.Metadata);
+            sidePanelDrawing.SetMetadata(m_FrameServer.Metadata);
 
             // Screen position and size.
             m_FrameServer.ImageTransform.SetReferenceSize(m_FrameServer.VideoReader.Info.ReferenceSize);
@@ -1007,11 +1009,13 @@ namespace Kinovea.ScreenManager
                 return;
 
             tabContainer.TabPages[0].Controls.Add(sidePanelKeyframes);
+            sidePanelKeyframes.Reset(m_FrameServer.Metadata);
             sidePanelKeyframes.Dock = DockStyle.Fill;
             sidePanelKeyframes.KeyframeSelected += KeyframeControl_Selected;
             sidePanelKeyframes.KeyframeUpdated += KeyframeControl_KeyframeUpdated;
 
             tabContainer.TabPages[1].Controls.Add(sidePanelDrawing);
+            sidePanelDrawing.SetMetadata(m_FrameServer.Metadata);
             sidePanelDrawing.Dock = DockStyle.Fill;
             sidePanelDrawing.DrawingModified += DrawingControl_DrawingUpdated;
             
@@ -4083,6 +4087,7 @@ namespace Kinovea.ScreenManager
         {
             // Should only be called when adding/removing a Thumbnail
             ClearKeyframeBoxes();
+            sidePanelKeyframes.Clear();
 
             if (m_FrameServer.Metadata.Count > 0)
             {
@@ -4117,7 +4122,7 @@ namespace Kinovea.ScreenManager
             }
 
             sidePanelKeyframes.Reset(m_FrameServer.Metadata);
-            sidePanelDrawing.SetMetadata(m_FrameServer.Metadata);
+            
             UpdateFramesMarkers();
             DoInvalidate(); // Because of trajectories with keyframes labels.
         }

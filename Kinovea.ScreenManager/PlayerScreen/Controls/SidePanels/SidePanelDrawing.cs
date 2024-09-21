@@ -74,6 +74,7 @@ namespace Kinovea.ScreenManager
 
             parentMetadata.DrawingSelected -= Metadata_DrawingSelected;
             parentMetadata.DrawingDeleted -= Metadata_DrawingDeleted;
+            parentMetadata = null;
             SetDrawing(null, null, Guid.Empty, Guid.Empty);
         }
 
