@@ -19,6 +19,7 @@ namespace Kinovea.ScreenManager
         #region Events
         public event EventHandler<TimeEventArgs> KeyframeSelected;
         public event EventHandler<EventArgs<Guid>> KeyframeUpdated;
+        public event EventHandler<EventArgs<Guid>> KeyframeDeletionAsked;
         #endregion
 
         #region Properties
@@ -105,6 +106,7 @@ namespace Kinovea.ScreenManager
                 kfb.SetKeyframe(parentMetadata, kf);
                 kfb.Selected += (s, e) => KeyframeSelected?.Invoke(s, e);
                 kfb.Updated += (s, e) => KeyframeUpdated?.Invoke(s, e);
+                kfb.DeletionAsked += (s, e) => KeyframeDeletionAsked?.Invoke(s, e);
                 
                 kfcbs.Add(kf.Id, kfb);
                 flowKeyframes.Controls.Add(kfb);

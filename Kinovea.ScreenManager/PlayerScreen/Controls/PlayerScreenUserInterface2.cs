@@ -1013,6 +1013,7 @@ namespace Kinovea.ScreenManager
             sidePanelKeyframes.Dock = DockStyle.Fill;
             sidePanelKeyframes.KeyframeSelected += KeyframeControl_Selected;
             sidePanelKeyframes.KeyframeUpdated += KeyframeControl_KeyframeUpdated;
+            sidePanelKeyframes.KeyframeDeletionAsked += KeyframeControl_KeyframeDeletionAsked;
 
             tabContainer.TabPages[1].Controls.Add(sidePanelDrawing);
             sidePanelDrawing.SetMetadata(m_FrameServer.Metadata);
@@ -4552,6 +4553,14 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Metadata.UpdateTrajectoriesKeyframeLabels();
 
             Invalidate();
+        }
+
+        private void KeyframeControl_KeyframeDeletionAsked(object sender, EventArgs<Guid> e)
+        {
+            DeleteKeyframe(e.Value);
+
+            // Set as active screen is done after in case we don't have any keyframes left.
+            OnPoke();
         }
 
         /// <summary>

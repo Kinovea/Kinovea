@@ -303,6 +303,26 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap close_square {
+            get {
+                object obj = ResourceManager.GetObject("close_square", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap close_square_red {
+            get {
+                object obj = ResourceManager.GetObject("close_square_red", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap closegrey {
             get {
                 object obj = ResourceManager.GetObject("closegrey", resourceCulture);
@@ -1156,6 +1176,36 @@ namespace Kinovea.ScreenManager.Properties {
         public static System.Drawing.Bitmap json {
             get {
                 object obj = ResourceManager.GetObject("json", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap keyframe_bookmark {
+            get {
+                object obj = ResourceManager.GetObject("keyframe_bookmark", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap keyframe_comment {
+            get {
+                object obj = ResourceManager.GetObject("keyframe_comment", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap keyframe_time2 {
+            get {
+                object obj = ResourceManager.GetObject("keyframe_time2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -1860,4 +1860,19 @@
   <data name="big_hand_128" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\big_hand_128.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="close_square" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\close-square.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="close_square_red" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\close-square-red.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="keyframe_bookmark" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\keyframe-bookmark.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="keyframe_comment" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\keyframe-comment.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="keyframe_time2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\keyframe-time2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

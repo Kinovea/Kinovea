@@ -118,9 +118,10 @@ namespace Kinovea.ScreenManager
         private long timestamp = -1;            // Absolute timestamp.
         private string name;
         private string comments;
+        private Size thumbnailSize = new Size(245, 120); // Based on the min size of the picture box on the keyframe control.
         private Bitmap thumbnail;
         private Bitmap disabledThumbnail;
-        public static readonly Color defaultColor = Color.SteelBlue;
+        public static Color defaultColor = Color.FromArgb(51, 152, 255);
         private Color color = defaultColor;
         private List<AbstractDrawing> drawings = new List<AbstractDrawing>();
         private bool disabled;
@@ -170,7 +171,7 @@ namespace Kinovea.ScreenManager
             if (image == null)
                 return;
             
-            Rectangle rect = UIHelper.RatioStretch(image.Size, new Size(100, 75));
+            Rectangle rect = UIHelper.RatioStretch(image.Size, thumbnailSize);
             this.thumbnail = new Bitmap(image, rect.Width, rect.Height);
             this.disabledThumbnail = BitmapHelper.Grayscale(thumbnail);
         }

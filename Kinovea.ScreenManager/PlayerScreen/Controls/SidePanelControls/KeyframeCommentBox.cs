@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Kinovea.ScreenManager.Properties;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -27,7 +28,17 @@ namespace Kinovea.ScreenManager
         /// Asks the main timeline to move to the time of this keyframe.
         /// </summary>
         public event EventHandler<TimeEventArgs> Selected;
+
+        /// <summary>
+        /// Tells the main timeline that this keyframe was updated.
+        /// </summary>
         public event EventHandler<EventArgs<Guid>> Updated;
+
+        /// <summary>
+        /// Delete this keyframe.
+        /// </summary>
+        public event EventHandler<EventArgs<Guid>> DeletionAsked;
+        
         #endregion
 
         #region Properties
@@ -58,10 +69,9 @@ namespace Kinovea.ScreenManager
         {
             InitializeComponent();
             this.BackColor = Color.WhiteSmoke;
-            rtbComment.BackColor = this.BackColor;
-            btnColor.BackColor = this.BackColor;
-            btnColor.FlatAppearance.MouseDownBackColor = this.BackColor;
-            btnColor.FlatAppearance.MouseOverBackColor = this.BackColor;
+            HomogenizeBackColor();
+            pbThumbnail.SizeMode = PictureBoxSizeMode.CenterImage;
+            pbThumbnail.BackColor = Color.FromArgb(42, 42, 42);
 
             this.Paint += KeyframeCommentBox_Paint;
             btnColor.Paint += BtnColor_Paint;
@@ -99,6 +109,8 @@ namespace Kinovea.ScreenManager
             isSelected = keyframe.Timestamp == timestamp;
 
             AfterColorChange();
+            this.BackColor = isSelected ? Color.WhiteSmoke : Color.White;
+            HomogenizeBackColor();
             rtbComment.BackColor = isSelected ? Color.White : this.BackColor;
             pnlComment.BackColor = rtbComment.BackColor;
         }
@@ -132,9 +144,11 @@ namespace Kinovea.ScreenManager
             // Get rid of all formatting.
             string text = TextHelper.GetText(keyframe.Comments);
             rtbComment.Text = text;
+            btnComments.Visible = rtbComment.TextLength == 0;
             UpdateTextHeight();
 
             AfterColorChange();
+            pbThumbnail.Image = keyframe.Thumbnail;
 
             manualUpdate = false;
 
@@ -143,6 +157,14 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
+        private void HomogenizeBackColor()
+        {
+            rtbComment.BackColor = this.BackColor;
+            tbName.BackColor = this.BackColor;
+            btnColor.BackColor = this.BackColor;
+            btnColor.FlatAppearance.MouseDownBackColor = this.BackColor;
+            btnColor.FlatAppearance.MouseOverBackColor = this.BackColor;
+        }
 
         private void RtbComment_MouseWheel(object sender, MouseEventArgs e)
         {
@@ -210,6 +232,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             keyframe.Comments = rtbComment.Rtf;
+            btnComments.Visible = rtbComment.TextLength == 0;
             RaiseUpdated();
 
             AfterStateChanged();
@@ -222,15 +245,31 @@ namespace Kinovea.ScreenManager
             tbName.Height = size.Height;
         }
 
+        /// <summary>
+        /// The main keyframe color was changed.
+        /// </summary>
         private void AfterColorChange()
         {
             if (keyframe == null)
                 return;
 
             btnColor.Invalidate();
-            btnSidebar.BackColor = isSelected ? keyframe.Color : this.BackColor;
-            btnSidebar.FlatAppearance.MouseDownBackColor = btnSidebar.BackColor;
-            btnSidebar.FlatAppearance.MouseOverBackColor = btnSidebar.BackColor;
+            Color mainColor = isSelected ? keyframe.Color : this.BackColor;
+            btnSidebar.BackColor = mainColor;
+            btnSidebar.FlatAppearance.MouseDownBackColor = mainColor;
+            btnSidebar.FlatAppearance.MouseOverBackColor = mainColor;
+            
+            btnTopbar.BackColor = mainColor;
+            btnTopbar.FlatAppearance.MouseDownBackColor = mainColor;
+            btnTopbar.FlatAppearance.MouseOverBackColor = mainColor;
+            
+            btnRightBar.BackColor = mainColor;
+            btnRightBar.FlatAppearance.MouseDownBackColor = mainColor;
+            btnRightBar.FlatAppearance.MouseOverBackColor = mainColor;
+
+            btnBottomBar.BackColor = mainColor;
+            btnBottomBar.FlatAppearance.MouseDownBackColor = mainColor;
+            btnBottomBar.FlatAppearance.MouseOverBackColor = mainColor;
         }
 
         /// <summary>
@@ -272,8 +311,9 @@ namespace Kinovea.ScreenManager
             rtbComment.Height = (rtbComment.Font.Height + 3) * numLines + border;
 
             // Grow containers.
+            int paddingBottom = 6;
             pnlComment.Height = rtbComment.Top + rtbComment.Height + rtbComment.Margin.Bottom + padding;
-            this.Height = pnlComment.Top + pnlComment.Height + pnlComment.Margin.Bottom + padding;
+            this.Height = pnlComment.Top + pnlComment.Height + pnlComment.Margin.Bottom + padding + paddingBottom;
         }
 
         private void BtnColor_Paint(object sender, PaintEventArgs e)
@@ -300,11 +340,14 @@ namespace Kinovea.ScreenManager
         private void rtbComment_Enter(object sender, EventArgs e)
         {
             editingComment = true;
+
+            btnComments.Visible = false;
         }
 
         private void rtbComment_Leave(object sender, EventArgs e)
         {
             editingComment = false;
+            btnComments.Visible = rtbComment.TextLength == 0;
         }
 
         private void KeyframeCommentBox_Enter(object sender, EventArgs e)
@@ -314,6 +357,13 @@ namespace Kinovea.ScreenManager
 
         private void KeyframeCommentBox_Click(object sender, EventArgs e)
         {
+            RaiseSelected();
+        }
+
+        private void pbThumbnail_Click(object sender, EventArgs e)
+        {
+            // Take the focus out of the text boxes. Removes the annoying flashing caret.
+            pbThumbnail.Focus();
             RaiseSelected();
         }
 
@@ -337,6 +387,22 @@ namespace Kinovea.ScreenManager
             UpdateTextHeight();
 
             manualUpdate = false;
+        }
+
+        private void btnClose_MouseEnter(object sender, EventArgs e)
+        {
+            btnClose.BackgroundImage = Resources.close_square_red;
+        }
+
+        private void btnClose_MouseLeave(object sender, EventArgs e)
+        {
+            btnClose.BackgroundImage = Resources.close_square;
+        }
+
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            // Delete the keyframe.
+            DeletionAsked?.Invoke(this, new EventArgs<Guid>(keyframe.Id));
         }
     }
 }
