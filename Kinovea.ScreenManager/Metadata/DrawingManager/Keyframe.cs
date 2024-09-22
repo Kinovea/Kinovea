@@ -307,6 +307,7 @@ namespace Kinovea.ScreenManager
             // We wait for the complete keyframe to be parsed and ready, and then merge-insert it into the existing collection.
             // The drawing post-initialization will only be done at that point. 
             // This prevents doing post-initializations too early when the keyframe is not yet added to the metadata collection.
+            // Note this also runs in the context of Undo of "Delete keyframe" action.
 
             bool isEmpty = r.IsEmptyElement;
             
@@ -321,9 +322,12 @@ namespace Kinovea.ScreenManager
                 if (drawing == null || !drawing.IsValid || drawings.Any(d => d.Id == drawing.Id))
                     continue;
 
+                
                 AddDrawing(drawing);
+                drawing.ParentMetadata = this.parentMetadata;
+                drawing.ReferenceTimestamp = this.Timestamp;
                 drawing.InfosFading.ReferenceTimestamp = this.Timestamp;
-                drawing.InfosFading.AverageTimeStampsPerFrame = parentMetadata.AverageTimeStampsPerFrame;
+                drawing.InfosFading.AverageTimeStampsPerFrame = this.parentMetadata.AverageTimeStampsPerFrame;
             }
 
             r.ReadEndElement();

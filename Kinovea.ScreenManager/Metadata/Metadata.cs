@@ -877,7 +877,7 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// General method to add a drawing on a manager (keyframe-attched, chrono, track).
+        /// General method to add a drawing on a manager (keyframe-attached, chrono, track).
         /// </summary>
         public void AddDrawing(Guid managerId, AbstractDrawing drawing)
         {
@@ -1626,6 +1626,14 @@ namespace Kinovea.ScreenManager
 
             if (KVAImported != null)
                 KVAImported(this, EventArgs.Empty);
+        }
+        public void AfterUndoDeleteKeyframe(Keyframe keyframe)
+        {
+            SelectKeyframe(keyframe);
+            UpdateTrajectoriesForKeyframes();
+
+            if (KeyframeAdded != null)
+                KeyframeAdded(this, new KeyframeEventArgs(keyframe.Id));
         }
         public void AfterManualExport()
         {
