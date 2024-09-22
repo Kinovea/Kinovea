@@ -890,6 +890,8 @@ namespace Kinovea.ScreenManager
             lblSelDuration.AutoSize = true;
 
             UpdateTimeLabels();
+            sidePanelKeyframes.UpdateTimecodes();
+            
             trkFrame.ShowCacheInTimeline = PreferencesManager.PlayerPreferences.ShowCacheInTimeline;
 
             ReloadTooltipsCulture();
