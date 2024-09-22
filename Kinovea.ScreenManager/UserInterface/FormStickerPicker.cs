@@ -51,169 +51,188 @@ namespace Kinovea.ScreenManager
         #region Construction and Initialization
         public FormStickerPicker(string currentStickerRef)
         {
-            // TODO.
-
-            //this.currentColor = Color.Black;
             this.SuspendLayout();
             InitializeComponent();
             GenerateStickerPalette();
-            //colorPicker = new ColorPicker(currentColor);
-            //colorPicker.Top = 5;
-            //colorPicker.Left = 5;
-            //colorPicker.ColorPicked += colorPicker_ColorPicked;
-            
-            //Controls.Add(colorPicker);
             this.ResumeLayout();
-            
-            // Recent colors.
-            //recentColors = PreferencesManager.PlayerPreferences.RecentColors;
-            
-            //colorPicker.DisplayRecentColors(recentColors);
-            //this.Height = colorPicker.Bottom + 20;
         }
         #endregion
         
         private void GenerateStickerPalette()
         {
+            // Curated list of Emojis.
+            // https://github.com/twitter/twemoji
+            // https://twemoji.godi.se/
+            // https://twemoji-cheatsheet.vercel.app/
             // We want the stickers to appear in a specific order and not in alphanumeric order of their code point.
 
             List<List<string>> stickers = new List<List<string>>();
 
-            var row1 = new List<string>();
-            stickers.Add(row1);
-            row1.Add("_1f600");
-            row1.Add("_1f601");
-            row1.Add("_1f602");
-            row1.Add("_1f604");
-            row1.Add("_1f605");
-            row1.Add("_1f606");
-            row1.Add("_1f609");
-            row1.Add("_1f610");
-            row1.Add("_1f613");
-            row1.Add("_1f615");
-            row1.Add("_1f616");
-            row1.Add("_1f620");
+            // TODO: add one row for the recently used stickers.
 
-            var row2 = new List<string>();
-            stickers.Add(row2);
-            row2.Add("_1f621");
-            row2.Add("_1f622");
-            row2.Add("_1f623");
-            row2.Add("_1f624");
-            row2.Add("_1f625");
-            row2.Add("_1f626");
-            row2.Add("_1f629");
-            row2.Add("_1f631");
-            row2.Add("_1f632");
-            row2.Add("_1f634");
-            row2.Add("_1f635");
-            row2.Add("_1f641");
+            // Happy faces.
+            stickers.Add(new List<string>());
+            stickers[stickers.Count - 1].AddRange(new List<string>() {
+                "_1f600",
+                "_1f601",
+                "_1f602",
+                "_1f604",
+                "_1f605",
+                "_1f606",
+                "_1f609",
+                "_1f642",
+                "_1f643",
+                "_1f923",
+                "_1f929",
+                "_1f60e",
+            });
 
-            var row3 = new List<string>();
-            stickers.Add(row3);
-            row3.Add("_1f642");
-            row3.Add("_1f643");
-            row3.Add("_1f60b");
-            row3.Add("_1f60d");
-            row3.Add("_1f60e");
-            row3.Add("_1f61b");
-            row3.Add("_1f61f");
-            row3.Add("_1f62b");
-            row3.Add("_1f62c");
-            row3.Add("_1f62d");
-            row3.Add("_1f62e");
-            row3.Add("_1f62f");
+            // Sad faces.
+            stickers.Add(new List<string>());
+            stickers[stickers.Count - 1].AddRange(new List<string>() {
+                "_1f61f",
+                "_1f62b",
+                "_1f62d",
+                "_1f613",
+                "_1f615",
+                "_1f620",
+                "_1f621",
+                "_1f622",
+                "_1f623",
+                "_1f626",
+                "_1f629",
+                "_1f641",
+            });
 
-            var row4 = new List<string>();
-            stickers.Add(row4);
-            row4.Add("_1f913");
-            row4.Add("_1f914");
-            row4.Add("_1f915");
-            row4.Add("_1f921");
-            row4.Add("_1f923");
-            row4.Add("_1f928");
-            row4.Add("_1f929");
-            row4.Add("_1f971");
-            row4.Add("_1f973");
-            row4.Add("_1f974");
-            row4.Add("_1f975");
-            row4.Add("_1f979");
+            // Neutral, Thinking, Surprised.
+            stickers.Add(new List<string>());
+            stickers[stickers.Count - 1].AddRange(new List<string>() {
+                "_1f610",
+                "_1f611",
+                "_1f928",
+                "_1fae4",
+                "_1f62c",
+                "_1f62f",
+                "_1f914",
+                "_1f9d0",
+                "_1f92f",
+                "_1f631",
+                "_1f632",
+                "_1fae3",
+            });
 
-            var row5 = new List<string>();
-            stickers.Add(row5);
-            row5.Add("_1fae3");
-            row5.Add("_1fae4");
-            row5.Add("_1f9d0");
-            row5.Add("_1f3af"); // non-faces.
-            row5.Add("_1f3c5");
-            row5.Add("_1f4a4");
-            row5.Add("_1f4a5");
-            row5.Add("_1f4a9");
-            row5.Add("_1f4aa");
-            row5.Add("_1f4af");
-            row5.Add("_1f4cf");
-            row5.Add("_1f6a6");
+            // Angry, others
+            stickers.Add(new List<string>());
+            stickers[stickers.Count - 1].AddRange(new List<string>() {
+                "_1f92c",
+                "_1f92e",
+                "_1f616",
+                "_1f624",
+                "_1f625",
+                "_1f634",
+                "_1f635",
+                "_1f915",
+                "_1f971",
+                "_1f974",
+                "_1f975",
+                "_1f4a9",
+            });
 
-            var row6 = new List<string>();
-            stickers.Add(row6);
-            row6.Add("_1f6ab");
-            row6.Add("_1f6d1");
-            row6.Add("_1f9b4");
-            row6.Add("_1f9b5");
-            row6.Add("_1f9b6");
-            row6.Add("_1f9e0");
-            row6.Add("_1f40c");
-            row6.Add("_1f44b");
-            row6.Add("_1f44c");
-            row6.Add("_1f44d");
-            row6.Add("_1f44e");
-            row6.Add("_1f44f");
+            // Misc faces
+            stickers.Add(new List<string>());
+            stickers[stickers.Count - 1].AddRange(new List<string>() {
+                "_1f61b",
+                "_1f60d",
+                "_1f60b",
+                "_1f913",
+                "_1f973",
+                "_1f979",
+                "_1f921",
+                "_1f64f",
+                "_1f680",
+                "_1f40c",
+                "_1faab",
+                "_1f4a4",
+            });
 
-            var row7 = new List<string>();
-            stickers.Add(row7);
-            row7.Add("_1f64c");
-            row7.Add("_1f64f");
-            row7.Add("_1f91a");
-            row7.Add("_1f91d");
-            row7.Add("_1f389");
-            row7.Add("_1f440");
-            row7.Add("_1f445");
-            row7.Add("_1f446");
-            row7.Add("_1f447");
-            row7.Add("_1f448");
-            row7.Add("_1f449");
-            row7.Add("_1f463");
+            // Hand gestures
+            stickers.Add(new List<string>());
+            stickers[stickers.Count - 1].AddRange(new List<string>() {
+                "_1f44b",
+                "_1f44c",
+                "_1f44d",
+                "_1f44e",
+                "_1f44f",
+                "_1f91a",
+                "_1f91d",
+                "_1f446",
+                "_1f447",
+                "_1f448",
+                "_1f449",
+                "_270b",
+            });
 
-            var row8 = new List<string>();
-            stickers.Add(row8);
-            row8.Add("_1f480");
-            row8.Add("_1f496");
-            row8.Add("_1f500");
-            row8.Add("_1f503");
-            row8.Add("_1f504");
-            row8.Add("_1f514");
-            row8.Add("_1f525");
-            row8.Add("_1f680");
-            row8.Add("_1faab");
-            row8.Add("_1fac1");
-            row8.Add("_2b50");
-            row8.Add("_21a9");
+            // Commentary
+            stickers.Add(new List<string>());
+            stickers[stickers.Count - 1].AddRange(new List<string>() {
+                "_2764",
+                "_1f496",
+                "_1f3af",
+                "_1f3c5",
+                "_1f64c",
+                "_1f4af",
+                "_1f389",
+                "_1f525",
+                "_2b50",
+                "_26a1",
+                "_2728",
+                "_1f4a5",
+            });
 
-            var row9 = new List<string>();
-            stickers.Add(row9);
-            row9.Add("_21aa");
-            row9.Add("_26a0");
-            row9.Add("_26a1");
-            row9.Add("_26d4");
-            row9.Add("_203c");
-            row9.Add("_270b");
-            row9.Add("_274c");
-            row9.Add("_2049");
-            row9.Add("_2705");
-            row9.Add("_2728");
-            row9.Add("_2753");
-            row9.Add("_2757");
+            // Body parts
+            stickers.Add(new List<string>());
+            stickers[stickers.Count - 1].AddRange(new List<string>() {
+                "_1f9e0",
+                "_1fac0",
+                "_1fac1",
+                "_1f440",
+                "_1f445",
+                "_1f463",
+                "_1f480",
+                "_1f9b4",
+                "_1f4aa",
+                "_1f9b5",
+                "_1f9b6",
+            });
 
+            // Signs
+            stickers.Add(new List<string>());
+            stickers[stickers.Count - 1].AddRange(new List<string>() {
+                "_2705",
+                "_274c",
+                "_2757",
+                "_203c",
+                "_2049",
+                "_2753",
+                "_26a0",
+                "_1f514",
+                "_1f6a6",
+                "_1f6d1",
+                "_1f6ab",
+                "_26d4",
+            });
+
+            // Arrows
+            stickers.Add(new List<string>());
+            stickers[stickers.Count - 1].AddRange(new List<string>() {
+                "_1f500",
+                "_1f503",
+                "_1f504",
+                "_21a9",
+                "_21aa",
+                "_2934",
+                "_2935",
+            });
 
             int left = 0;
             int top = 0;
@@ -222,7 +241,7 @@ namespace Kinovea.ScreenManager
             for (int row = 0; row < stickers.Count; row++)
             {
                 left = 0;
-                for (int col = 0; col < row1.Count; col++)
+                for (int col = 0; col < stickers[row].Count; col++)
                 {
                     buttons.Add(CreateStickerButton(stickers[row][col], left, top));
                     left += buttonSize + margin;
@@ -248,6 +267,7 @@ namespace Kinovea.ScreenManager
             b.TabStop = false;
             b.Tag = stickerRef;
             b.BackgroundImageLayout = ImageLayout.Stretch;
+            
 
             object resource = Stickers.ResourceManager.GetObject(stickerRef);
             if (resource != null && resource is Bitmap)
@@ -255,16 +275,7 @@ namespace Kinovea.ScreenManager
                 b.BackgroundImage = resource as Bitmap;
             }
 
-            //if (currentColorButton == null && currentColor == color)
-            //{
-            //    b.FlatAppearance.BorderSize = 1;
-            //    currentColorButton = b;
-            //}
-
             b.Click += stickerButton_Click;
-            //b.MouseEnter += stickerButton_MouseEnter;
-            //b.MouseLeave += stickerButton_MouseLeave;
-
             return b;
         }
 
@@ -279,15 +290,6 @@ namespace Kinovea.ScreenManager
             DialogResult = DialogResult.OK;
             Close();
         }
-
-        //private void colorPicker_ColorPicked(object sender, System.EventArgs e)
-        //{
-        //    pickedColor = colorPicker.PickedColor;
-        //    PreferencesManager.PlayerPreferences.AddRecentColor(colorPicker.PickedColor);
-        //    PreferencesManager.Save();
-        //    DialogResult = DialogResult.OK;
-        //    Close();
-        //}
         #endregion
     }
 }
