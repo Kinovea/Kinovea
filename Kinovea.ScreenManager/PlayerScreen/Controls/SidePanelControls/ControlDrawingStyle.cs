@@ -201,6 +201,11 @@ namespace Kinovea.ScreenManager
 
             log.Debug(string.Format("Style element changed: {0}", e.Value));
 
+            if (drawing is DrawingTrack)
+            {
+                ((DrawingTrack)drawing).UpdateKeyframeLabels();
+            }
+
             // Signal to the parent panel.
             // This will decide to push the memento to the history stack or not
             // and propagate the change to the player screen.
