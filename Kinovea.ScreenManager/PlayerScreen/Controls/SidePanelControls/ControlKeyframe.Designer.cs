@@ -1,7 +1,7 @@
 ﻿
 namespace Kinovea.ScreenManager
 {
-    partial class KeyframeCommentBox
+    partial class ControlKeyframe
     {
         /// <summary> 
         /// Required designer variable.

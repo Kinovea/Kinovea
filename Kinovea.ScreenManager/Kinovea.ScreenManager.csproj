@@ -454,11 +454,23 @@
     <Compile Include="PlayerScreen\Controls\SidePanelControls\ControlDrawingName.Designer.cs">
       <DependentUpon>ControlDrawingName.cs</DependentUpon>
     </Compile>
+    <Compile Include="PlayerScreen\Controls\SidePanelControls\ControlDrawingTrackingSetup.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\Controls\SidePanelControls\ControlDrawingTrackingSetup.Designer.cs">
+      <DependentUpon>ControlDrawingTrackingSetup.cs</DependentUpon>
+    </Compile>
     <Compile Include="PlayerScreen\Controls\SidePanelControls\ControlDrawingStyle.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="PlayerScreen\Controls\SidePanelControls\ControlDrawingStyle.Designer.cs">
       <DependentUpon>ControlDrawingStyle.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\Controls\SidePanels\SidePanelTracking.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\Controls\SidePanels\SidePanelTracking.Designer.cs">
+      <DependentUpon>SidePanelTracking.cs</DependentUpon>
     </Compile>
     <Compile Include="PlayerScreen\Controls\SidePanels\SidePanelDrawing.cs">
       <SubType>UserControl</SubType>
@@ -571,11 +583,11 @@
     <Compile Include="Metadata\Serialization\MeasurementSerializationHelper.cs" />
     <Compile Include="Measurement\CameraMotion\CameraTransformer.cs" />
     <Compile Include="NativeMethods.cs" />
-    <Compile Include="PlayerScreen\Controls\SidePanelControls\KeyframeCommentBox.cs">
+    <Compile Include="PlayerScreen\Controls\SidePanelControls\ControlKeyframe.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\Controls\SidePanelControls\KeyframeCommentBox.Designer.cs">
-      <DependentUpon>KeyframeCommentBox.cs</DependentUpon>
+    <Compile Include="PlayerScreen\Controls\SidePanelControls\ControlKeyframe.Designer.cs">
+      <DependentUpon>ControlKeyframe.cs</DependentUpon>
     </Compile>
     <Compile Include="PlayerScreen\Events\KeyframeAddEventArgs.cs" />
     <Compile Include="PlayerScreen\Events\TimeEventArgs.cs" />
@@ -1113,11 +1125,17 @@
     <EmbeddedResource Include="PlayerScreen\Controls\SidePanelControls\ControlDrawingName.resx">
       <DependentUpon>ControlDrawingName.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\Controls\SidePanelControls\ControlDrawingTrackingSetup.resx">
+      <DependentUpon>ControlDrawingTrackingSetup.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\Controls\SidePanelControls\ControlDrawingStyle.resx">
       <DependentUpon>ControlDrawingStyle.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\Controls\SidePanelControls\KeyframeCommentBox.resx">
-      <DependentUpon>KeyframeCommentBox.cs</DependentUpon>
+    <EmbeddedResource Include="PlayerScreen\Controls\SidePanelControls\ControlKeyframe.resx">
+      <DependentUpon>ControlKeyframe.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\Controls\SidePanels\SidePanelTracking.resx">
+      <DependentUpon>SidePanelTracking.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\Controls\SidePanels\SidePanelDrawing.resx">
       <DependentUpon>SidePanelDrawing.cs</DependentUpon>
@@ -2241,6 +2259,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\keyframe-id.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\quadrants.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">

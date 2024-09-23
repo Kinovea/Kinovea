@@ -31,7 +31,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private Metadata parentMetadata;
-        private Dictionary<Guid, KeyframeCommentBox> kfcbs = new Dictionary<Guid, KeyframeCommentBox>();
+        private Dictionary<Guid, ControlKeyframe> kfcbs = new Dictionary<Guid, ControlKeyframe>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -101,7 +101,7 @@ namespace Kinovea.ScreenManager
             // The vertical margin between cards is defined in the KeyframeCommentBox control.
             foreach (var kf in parentMetadata.Keyframes)
             {
-                KeyframeCommentBox kfb = new KeyframeCommentBox();
+                ControlKeyframe kfb = new ControlKeyframe();
                 kfb.SetKeyframe(parentMetadata, kf);
                 kfb.Selected += (s, e) => KeyframeSelected?.Invoke(s, e);
                 kfb.Updated += (s, e) => KeyframeUpdated?.Invoke(s, e);

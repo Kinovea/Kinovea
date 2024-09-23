@@ -391,6 +391,7 @@ namespace Kinovea.ScreenManager
         private bool isSidePanelVisible;
         private SidePanelKeyframes sidePanelKeyframes = new SidePanelKeyframes();
         private SidePanelDrawing sidePanelDrawing = new SidePanelDrawing();
+        private SidePanelTracking sidePanelTracking = new SidePanelTracking();
 
         private DropWatcher m_DropWatcher = new DropWatcher();
         private TimeWatcher m_TimeWatcher = new TimeWatcher();
@@ -480,6 +481,7 @@ namespace Kinovea.ScreenManager
             ClearKeyframeBoxes();
             sidePanelKeyframes.Clear();
             sidePanelDrawing.ClearMetadata();
+            sidePanelTracking.ClearMetadata();
             CollapseKeyframePanel(true);
             UpdateFramesMarkers();
             EnableDisableAllPlayingControls(true);
@@ -588,6 +590,7 @@ namespace Kinovea.ScreenManager
             
             sidePanelKeyframes.Reset(m_FrameServer.Metadata);
             sidePanelDrawing.SetMetadata(m_FrameServer.Metadata);
+            sidePanelTracking.SetMetadata(m_FrameServer.Metadata);
 
             // Screen position and size.
             m_FrameServer.ImageTransform.SetReferenceSize(m_FrameServer.VideoReader.Info.ReferenceSize);
@@ -1021,9 +1024,11 @@ namespace Kinovea.ScreenManager
             sidePanelDrawing.SetMetadata(m_FrameServer.Metadata);
             sidePanelDrawing.Dock = DockStyle.Fill;
             sidePanelDrawing.DrawingModified += DrawingControl_DrawingUpdated;
-            
-            // Hide work-in-progress panels.
-            //tabControl.TabPages.RemoveAt(1);
+
+            tabContainer.TabPages[2].Controls.Add(sidePanelTracking);
+            sidePanelTracking.SetMetadata(m_FrameServer.Metadata);
+            sidePanelTracking.Dock = DockStyle.Fill;
+            sidePanelTracking.DrawingModified += DrawingControl_DrawingUpdated;
 
             isSidePanelVisible = PreferencesManager.GeneralPreferences.SidePanelVisible;
             splitViewport_Properties.Panel2Collapsed = !isSidePanelVisible;
@@ -1347,7 +1352,7 @@ namespace Kinovea.ScreenManager
             if (keyframeBoxes.Any(t => t.Editing))
                 return false;
 
-            if (sidePanelKeyframes.Editing || sidePanelDrawing.Editing)
+            if (sidePanelKeyframes.Editing || sidePanelDrawing.Editing || sidePanelTracking.Editing)
                 return false;
 
             if (!m_bSynched)
@@ -3157,6 +3162,7 @@ namespace Kinovea.ScreenManager
             var metadata = m_FrameServer.Metadata;
             var managerId = metadata.FindManagerId(drawing);
             sidePanelDrawing.SetDrawing(drawing, managerId, drawingId);
+            sidePanelTracking.SetDrawing(drawing, managerId, drawingId);
         }
         private void AfterVideoFilterModified()
         {
@@ -3773,18 +3779,18 @@ namespace Kinovea.ScreenManager
                 }
                 else
                 {
-                    ShowSidePanelDrawing();
+                    ShowSidePanel(1);
                 }
             }
             else if ((hitDrawing = m_FrameServer.Metadata.IsOnDetachedDrawing(m_DescaledMouse, m_iCurrentPosition)) != null)
             {
                 if (m_FrameServer.Metadata.IsChronoLike(hitDrawing))
                 {
-                    ShowSidePanelDrawing();
+                    ShowSidePanel(1);
                 }
                 else if (hitDrawing is DrawingTrack)
                 {
-                    ShowSidePanelDrawing();
+                    ShowSidePanel(2);
                 }
             }
             else
@@ -4582,14 +4588,25 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void DrawingControl_DrawingUpdated(object sender, DrawingEventArgs e)
         {
-            // Sanity check (invalid program if fails).
+            // Sanity check (should be invalid program if fails).
             if (!(e.Drawing is IDecorable))
                 return;
 
-            // Auto save as new preset.
-            ToolManager.SetToolStyleFromDrawing(e.Drawing, ((IDecorable)e.Drawing).StyleElements);
-            ToolManager.SavePresets();
-            UpdateCursor();
+            // The sender is either the drawing side panel or the tracking side panel.
+            // They both can change the drawing name so make sure they are updated.
+            if (sender == sidePanelDrawing)
+            {
+                // Auto save style as new preset.
+                ToolManager.SetToolStyleFromDrawing(e.Drawing, ((IDecorable)e.Drawing).StyleElements);
+                ToolManager.SavePresets();
+                UpdateCursor();
+                sidePanelTracking.UpdateName();
+            }
+            else
+            {
+                // TODO: save tracking config as new preset.
+                sidePanelDrawing.UpdateName();
+            }
 
             // Update the image.
             DoInvalidate();
@@ -4735,14 +4752,15 @@ namespace Kinovea.ScreenManager
         }
         /// <summary>
         /// Force show the side panel at the drawing properties tab.
+        /// 0: keyframes, 1: drawings, 2: tracking.
         /// </summary>
-        private void ShowSidePanelDrawing()
+        private void ShowSidePanel(int index)
         {
             if (!isSidePanelVisible)
                 ToggleSidePanelVisibility();
 
             TabControl tabContainer = splitViewport_Properties.Panel2.Controls[0] as TabControl;
-            tabContainer.SelectedIndex = 1;
+            tabContainer.SelectedIndex = index;
         }
         private void btnColorProfile_Click(object sender, EventArgs e)
         {
@@ -4863,6 +4881,7 @@ namespace Kinovea.ScreenManager
                 UpdateCursor();
 
                 sidePanelDrawing.SetDrawing(metadata.HitDrawing, managerId, drawingId);
+                sidePanelTracking.SetDrawing(metadata.HitDrawing, managerId, drawingId);
             }
 
             fcd.Dispose();

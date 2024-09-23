@@ -16,7 +16,7 @@ namespace Kinovea.ScreenManager
     /// <summary>
     /// Panel containing the name and style configuration for the active drawing.
     /// </summary>
-    public partial class SidePanelDrawing : UserControl
+    public partial class SidePanelTracking : UserControl
     {
         #region Events
         public event EventHandler<DrawingEventArgs> DrawingModified;
@@ -30,7 +30,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public bool Editing
         {
-            get { return controlDrawingStyle.Editing || controlDrawingName.Editing; }
+            get { return controlDrawingTrackingSetup.Editing || controlDrawingName.Editing; }
         }
         #endregion
 
@@ -44,11 +44,11 @@ namespace Kinovea.ScreenManager
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        public SidePanelDrawing()
+        public SidePanelTracking()
         {
             InitializeComponent();
             controlDrawingName.DrawingModified += Control_DrawingModified;
-            controlDrawingStyle.DrawingModified += Control_DrawingModified;
+            controlDrawingTrackingSetup.DrawingModified += Control_DrawingModified;
         }
 
         #region Public methods
@@ -96,7 +96,7 @@ namespace Kinovea.ScreenManager
                 CaptureCurrentState();
 
             controlDrawingName.SetDrawing(drawing, metadata, managerId, drawingId);
-            controlDrawingStyle.SetDrawing(drawing, metadata, managerId, drawingId);
+            controlDrawingTrackingSetup.SetDrawing(drawing, metadata, managerId, drawingId);
         }
 
         /// <summary>

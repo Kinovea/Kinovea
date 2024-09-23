@@ -21,7 +21,7 @@ namespace Kinovea.ScreenManager
     /// After any change or re-init, capture the new state to a global memento.
     /// When making a new change, push the memento containing the previous state to the history stack.
     /// </summary>
-    public partial class KeyframeCommentBox : UserControl
+    public partial class ControlKeyframe : UserControl
     {
         #region Events
         /// <summary>
@@ -65,7 +65,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public KeyframeCommentBox()
+        public ControlKeyframe()
         {
             InitializeComponent();
             this.BackColor = Color.WhiteSmoke;
