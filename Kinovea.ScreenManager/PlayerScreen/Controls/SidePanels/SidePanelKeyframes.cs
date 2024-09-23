@@ -98,8 +98,7 @@ namespace Kinovea.ScreenManager
             if (parentMetadata == null || parentMetadata.Count == 0)
                 return;
 
-            int top = 0;
-            int margin = 5;
+            // The vertical margin between cards is defined in the KeyframeCommentBox control.
             foreach (var kf in parentMetadata.Keyframes)
             {
                 KeyframeCommentBox kfb = new KeyframeCommentBox();
@@ -110,8 +109,6 @@ namespace Kinovea.ScreenManager
                 
                 kfcbs.Add(kf.Id, kfb);
                 flowKeyframes.Controls.Add(kfb);
-                
-                top += kfb.Height + margin;
             }
         }
 

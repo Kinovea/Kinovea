@@ -35,6 +35,7 @@ namespace Kinovea.ScreenManager
       this.rtbComment = new System.Windows.Forms.RichTextBox();
       this.btnSidebar = new System.Windows.Forms.Button();
       this.pnlComment = new System.Windows.Forms.Panel();
+      this.btnComments = new System.Windows.Forms.Button();
       this.btnTopbar = new System.Windows.Forms.Button();
       this.btnRightBar = new System.Windows.Forms.Button();
       this.btnBottomBar = new System.Windows.Forms.Button();
@@ -42,7 +43,6 @@ namespace Kinovea.ScreenManager
       this.button1 = new System.Windows.Forms.Button();
       this.btnClose = new System.Windows.Forms.Button();
       this.pbThumbnail = new System.Windows.Forms.PictureBox();
-      this.btnComments = new System.Windows.Forms.Button();
       this.pnlComment.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pbThumbnail)).BeginInit();
       this.SuspendLayout();
@@ -132,6 +132,22 @@ namespace Kinovea.ScreenManager
       this.pnlComment.Name = "pnlComment";
       this.pnlComment.Size = new System.Drawing.Size(245, 90);
       this.pnlComment.TabIndex = 92;
+      // 
+      // btnComments
+      // 
+      this.btnComments.BackColor = System.Drawing.Color.Transparent;
+      this.btnComments.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.keyframe_comment;
+      this.btnComments.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+      this.btnComments.Cursor = System.Windows.Forms.Cursors.Default;
+      this.btnComments.FlatAppearance.BorderSize = 0;
+      this.btnComments.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+      this.btnComments.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+      this.btnComments.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnComments.Location = new System.Drawing.Point(3, 3);
+      this.btnComments.Name = "btnComments";
+      this.btnComments.Size = new System.Drawing.Size(20, 20);
+      this.btnComments.TabIndex = 100;
+      this.btnComments.UseVisualStyleBackColor = false;
       // 
       // btnTopbar
       // 
@@ -235,22 +251,6 @@ namespace Kinovea.ScreenManager
       this.pbThumbnail.TabStop = false;
       this.pbThumbnail.Click += new System.EventHandler(this.pbThumbnail_Click);
       // 
-      // btnComments
-      // 
-      this.btnComments.BackColor = System.Drawing.Color.Transparent;
-      this.btnComments.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.keyframe_comment;
-      this.btnComments.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-      this.btnComments.Cursor = System.Windows.Forms.Cursors.Default;
-      this.btnComments.FlatAppearance.BorderSize = 0;
-      this.btnComments.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-      this.btnComments.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-      this.btnComments.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnComments.Location = new System.Drawing.Point(3, 3);
-      this.btnComments.Name = "btnComments";
-      this.btnComments.Size = new System.Drawing.Size(20, 20);
-      this.btnComments.TabIndex = 100;
-      this.btnComments.UseVisualStyleBackColor = false;
-      // 
       // KeyframeCommentBox
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -270,7 +270,7 @@ namespace Kinovea.ScreenManager
       this.Controls.Add(this.btnColor);
       this.DoubleBuffered = true;
       this.ForeColor = System.Drawing.Color.Gray;
-      this.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+      this.Margin = new System.Windows.Forms.Padding(3, 10, 3, 10);
       this.Name = "KeyframeCommentBox";
       this.Size = new System.Drawing.Size(271, 286);
       this.Click += new System.EventHandler(this.KeyframeCommentBox_Click);

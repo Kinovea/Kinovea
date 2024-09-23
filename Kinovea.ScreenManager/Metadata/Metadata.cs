@@ -57,7 +57,7 @@ namespace Kinovea.ScreenManager
         public EventHandler KVAImported;
         public EventHandler<KeyframeEventArgs> KeyframeAdded;
         public EventHandler<KeyframeEventArgs> KeyframeModified;
-        public EventHandler KeyframeDeleted;
+        public EventHandler<KeyframeEventArgs> KeyframeDeleted;
         public EventHandler<DrawingEventArgs> DrawingSelected;
         public EventHandler<DrawingEventArgs> DrawingAdded;
         public EventHandler<DrawingEventArgs> DrawingModified;
@@ -1997,9 +1997,13 @@ namespace Kinovea.ScreenManager
 
             return isOnDrawing;
         }
-        private void SetDrawingName(AbstractDrawing drawing)
+
+        /// <summary>
+        /// Set the drawing name to a unique value based on the drawing type
+        /// and other drawings in the collection.
+        /// </summary>
+        public void SetDrawingName(AbstractDrawing drawing)
         {
-            // Use a unique name based on drawing type.
             string toolDisplayName = drawing.ToolDisplayName;
             int index = 1;
             bool done = false;

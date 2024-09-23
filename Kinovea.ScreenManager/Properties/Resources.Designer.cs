@@ -1203,6 +1203,16 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap keyframe_id {
+            get {
+                object obj = ResourceManager.GetObject("keyframe_id", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap keyframe_time2 {
             get {
                 object obj = ResourceManager.GetObject("keyframe_time2", resourceCulture);

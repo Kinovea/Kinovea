@@ -448,11 +448,17 @@
     <Compile Include="Metadata\Styling\StyleToggleVariant.cs" />
     <Compile Include="Metadata\Styling\Types\TrackShape.cs" />
     <Compile Include="Metadata\Styling\Types\TrackShapeConverter.cs" />
-    <Compile Include="PlayerScreen\Controls\SidePanelControls\StyleConfigurator.cs">
+    <Compile Include="PlayerScreen\Controls\SidePanelControls\ControlDrawingName.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\Controls\SidePanelControls\StyleConfigurator.Designer.cs">
-      <DependentUpon>StyleConfigurator.cs</DependentUpon>
+    <Compile Include="PlayerScreen\Controls\SidePanelControls\ControlDrawingName.Designer.cs">
+      <DependentUpon>ControlDrawingName.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\Controls\SidePanelControls\ControlDrawingStyle.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\Controls\SidePanelControls\ControlDrawingStyle.Designer.cs">
+      <DependentUpon>ControlDrawingStyle.cs</DependentUpon>
     </Compile>
     <Compile Include="PlayerScreen\Controls\SidePanels\SidePanelDrawing.cs">
       <SubType>UserControl</SubType>
@@ -1104,8 +1110,11 @@
     <EmbeddedResource Include="Measurement\LensDistortion\FormCalibrateDistortion.resx">
       <DependentUpon>FormCalibrateDistortion.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\Controls\SidePanelControls\StyleConfigurator.resx">
-      <DependentUpon>StyleConfigurator.cs</DependentUpon>
+    <EmbeddedResource Include="PlayerScreen\Controls\SidePanelControls\ControlDrawingName.resx">
+      <DependentUpon>ControlDrawingName.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\Controls\SidePanelControls\ControlDrawingStyle.resx">
+      <DependentUpon>ControlDrawingStyle.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\Controls\SidePanelControls\KeyframeCommentBox.resx">
       <DependentUpon>KeyframeCommentBox.cs</DependentUpon>
@@ -2229,6 +2238,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\keyframe-comment.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\keyframe-id.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">

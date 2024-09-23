@@ -94,7 +94,6 @@ namespace Kinovea.ScreenManager
                 return;
 
             UpdateContent();
-
             CaptureCurrentState();
         }
 
@@ -220,7 +219,6 @@ namespace Kinovea.ScreenManager
 
             RaiseUpdated();
             AfterNameChange();
-
             AfterStateChanged();
         }
 
@@ -234,7 +232,6 @@ namespace Kinovea.ScreenManager
             keyframe.Comments = rtbComment.Rtf;
             btnComments.Visible = rtbComment.TextLength == 0;
             RaiseUpdated();
-
             AfterStateChanged();
         }
 

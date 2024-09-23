@@ -479,7 +479,7 @@ namespace Kinovea.ScreenManager
             SetupPrimarySelectionPanel();
             ClearKeyframeBoxes();
             sidePanelKeyframes.Clear();
-            sidePanelDrawing.Clear();
+            sidePanelDrawing.ClearMetadata();
             CollapseKeyframePanel(true);
             UpdateFramesMarkers();
             EnableDisableAllPlayingControls(true);
@@ -3149,10 +3149,10 @@ namespace Kinovea.ScreenManager
             // This means that when the restored state is for another drawing 
             // that drawing will be pushed to the side panel. This feels natural 
             // in the sense that it reverts the selection action itself.
-            var metadata = m_FrameServer.Metadata;
             var drawingId = drawing.Id;
+            var metadata = m_FrameServer.Metadata;
             var managerId = metadata.FindManagerId(drawing);
-            sidePanelDrawing.SetDrawing(drawing, metadata, managerId, drawingId);
+            sidePanelDrawing.SetDrawing(drawing, managerId, drawingId);
         }
         private void AfterVideoFilterModified()
         {
@@ -3764,24 +3764,23 @@ namespace Kinovea.ScreenManager
 
                         bool changed = db.SelectSticker();
                         DoInvalidate();
-
                         //m_FrameServer.HistoryStack.PushNewCommand(memento);
                     }
                 }
                 else
                 {
-                    mnuConfigureDrawing_Click(null, EventArgs.Empty);
+                    ShowSidePanelDrawing();
                 }
             }
             else if ((hitDrawing = m_FrameServer.Metadata.IsOnDetachedDrawing(m_DescaledMouse, m_iCurrentPosition)) != null)
             {
                 if (m_FrameServer.Metadata.IsChronoLike(hitDrawing))
                 {
-                    mnuConfigureDrawing_Click(null, EventArgs.Empty);
+                    ShowSidePanelDrawing();
                 }
                 else if (hitDrawing is DrawingTrack)
                 {
-                    mnuConfigureTrajectory_Click(null, EventArgs.Empty);
+                    ShowSidePanelDrawing();
                 }
             }
             else
@@ -4722,6 +4721,17 @@ namespace Kinovea.ScreenManager
             PreferencesManager.GeneralPreferences.SidePanelVisible = isSidePanelVisible;
             PreferencesManager.Save();
         }
+        /// <summary>
+        /// Force show the side panel at the drawing properties tab.
+        /// </summary>
+        private void ShowSidePanelDrawing()
+        {
+            if (!isSidePanelVisible)
+                ToggleSidePanelVisibility();
+
+            TabControl tabContainer = splitViewport_Properties.Panel2.Controls[0] as TabControl;
+            tabContainer.SelectedIndex = 1;
+        }
         private void btnColorProfile_Click(object sender, EventArgs e)
         {
             OnPoke();
@@ -4840,7 +4850,7 @@ namespace Kinovea.ScreenManager
                 ToolManager.SavePresets();
                 UpdateCursor();
 
-                sidePanelDrawing.SetDrawing(metadata.HitDrawing, metadata, managerId, drawingId);
+                sidePanelDrawing.SetDrawing(metadata.HitDrawing, managerId, drawingId);
             }
 
             fcd.Dispose();
