@@ -1843,6 +1843,7 @@ namespace Kinovea.ScreenManager
             if (!m_FrameServer.Loaded)
                 return;
 
+            bool wasPlaying = m_bIsCurrentlyPlaying;
             StopPlaying();
             OnPauseAsked();
             m_iFramesToDecode = 1;
@@ -1860,6 +1861,9 @@ namespace Kinovea.ScreenManager
 
             UpdatePositionUI();
             ActivateKeyframe(m_iCurrentPosition);
+
+            if (wasPlaying)
+                EnsurePlaying();
         }
         public void buttonGotoLast_Click(object sender, EventArgs e)
         {
@@ -1908,7 +1912,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Make sure we are playing.
         /// Does not raise the play asked event.
-        /// Used for synchronization.
+        /// Used for continuing playback after a jump or synchronization.
         /// </summary>
         public void EnsurePlaying()
         {
@@ -4220,6 +4224,7 @@ namespace Kinovea.ScreenManager
             if (m_FrameServer.Metadata.Count == 0)
                 return;
 
+            bool wasPlaying = m_bIsCurrentlyPlaying;
             int next = -1;
             for (int i = 0; i < m_FrameServer.Metadata.Count; i++)
             {
@@ -4232,12 +4237,16 @@ namespace Kinovea.ScreenManager
 
             if (next >= 0 && m_FrameServer.Metadata[next].Timestamp <= m_iSelEnd)
                 KeyframeControl_Selected(null, new TimeEventArgs(m_FrameServer.Metadata[next].Timestamp));
+
+            if (wasPlaying)
+                EnsurePlaying();
         }
         public void GotoPreviousKeyframe()
         {
             if (m_FrameServer.Metadata.Count == 0)
                 return;
 
+            bool wasPlaying = m_bIsCurrentlyPlaying;
             int prev = -1;
             for (int i = m_FrameServer.Metadata.Count - 1; i >= 0; i--)
             {
@@ -4250,6 +4259,9 @@ namespace Kinovea.ScreenManager
 
             if (prev >= 0 && m_FrameServer.Metadata[prev].Timestamp >= m_iSelStart)
                 KeyframeControl_Selected(null, new TimeEventArgs(m_FrameServer.Metadata[prev].Timestamp));
+
+            if (wasPlaying)
+                EnsurePlaying();
         }
 
         public void AddKeyframe()
