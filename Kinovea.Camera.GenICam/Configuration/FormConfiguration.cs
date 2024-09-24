@@ -404,8 +404,18 @@ namespace Kinovea.Camera.GenICam
 
             string xml = device.RemoteConfigurationFile;
 
+            string title = "";
+            if (string.Compare(Software.Version, "2024.1") < 0)
+            {
+                title = "Export device GenICam XML file";
+            }
+            else
+            {
+                title = CameraLang.ResourceManager.GetString("FormConfiguration_ExportDeviceGenICamXMLFile", CameraLang.Culture);
+            }
+
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Title = CameraLang.FormConfiguration_ExportDeviceGenICamXMLFile;
+            saveFileDialog.Title = title;
             saveFileDialog.RestoreDirectory = true;
             saveFileDialog.FileName = summary.Name;
             saveFileDialog.Filter = FilesystemHelper.SaveXMLFilter();

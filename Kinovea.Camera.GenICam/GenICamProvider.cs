@@ -214,6 +214,7 @@ namespace Kinovea.Camera.GenICam
                     if (bufferFilled == null || bufferFilled.IsIncomplete || bufferFilled.MemPtr == IntPtr.Zero)
                     {
                         // Grab timeout or error.
+                        log.Error("A grab timeout or error occurred");
                         throw new Exception("A grab timeout or error occurred.");
                     }
 

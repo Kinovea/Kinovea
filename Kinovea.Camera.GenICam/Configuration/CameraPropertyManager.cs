@@ -282,7 +282,7 @@ namespace Kinovea.Camera.GenICam
             }
             catch (Exception e)
             {
-                log.ErrorFormat("Error while computing resulting framerate. {0}", e.Message);
+                log.ErrorFormat("Error while computing resulting framerate (Baumer). {0}", e.Message);
             }
 
             return resultingFramerate;
@@ -299,16 +299,29 @@ namespace Kinovea.Camera.GenICam
             try
             {
                 Node node = GetNode(device.RemoteNodeList, "ResultingFrameRateAbs");
-                if (node != null && node.IsReadable)
+                if (node != null && node.IsAvailable && node.IsReadable)
                     return (float)(double)node.Value;
 
                 node = GetNode(device.RemoteNodeList, "ResultingFrameRate");
-                if (node != null && node.IsReadable)
+                if (node != null && node.IsAvailable && node.IsReadable)
                     return (float)(double)node.Value;
+            }
+            catch (BGAPI2.Exceptions.ErrorException e)
+            {
+                log.ErrorFormat("ErrorException while computing resulting framerate on Basler");
+                log.ErrorFormat("Description: {0}", e.GetErrorDescription());
+                log.ErrorFormat("Function name: {0}", e.GetFunctionName());
+            }
+            catch (BGAPI2.Exceptions.LowLevelException e)
+            {
+                log.ErrorFormat("ErrorException while computing resulting framerate on Basler");
+                log.ErrorFormat("Description: {0}", e.GetErrorDescription());
+                log.ErrorFormat("Function name: {0}", e.GetFunctionName());
             }
             catch (Exception e)
             {
-                log.ErrorFormat("Error while computing resulting framerate. {0}", e.Message);
+                log.ErrorFormat("ErrorException while computing resulting framerate on Basler");
+                log.ErrorFormat("Description: {0}", e.Message);
             }
 
             return 0;
@@ -325,7 +338,7 @@ namespace Kinovea.Camera.GenICam
             }
             catch (Exception e)
             {
-                log.ErrorFormat("Error while computing resulting framerate. {0}", e.Message);
+                log.ErrorFormat("Error while computing resulting framerate (Daheng Imaging). {0}", e.Message);
             }
 
             return 0;
@@ -592,18 +605,18 @@ namespace Kinovea.Camera.GenICam
             if (device == null || !device.IsOpen)
                 return false;
 
-            if (!device.RemoteNodeList.GetNodePresent(command))
-                return false;
-
-            Node node = device.RemoteNodeList[command];
-         
-            // FIXME: check this node is of type command.
-            if (!node.IsImplemented || !node.IsAvailable)
-                return false;
-
             bool result = false;
             try
             {
+                if (!device.RemoteNodeList.GetNodePresent(command))
+                    return false;
+
+                Node node = device.RemoteNodeList[command];
+         
+                // FIXME: check that this node is of type command.
+                if (!node.IsImplemented || !node.IsAvailable)
+                    return false;
+
                 node.Execute();
                 log.DebugFormat("Executed command: \"{0}\"", command);
                 result = true;

@@ -11,6 +11,7 @@ using System.Threading;
 using System.Globalization;
 using Kinovea.Services;
 using BGAPI2;
+using System.Diagnostics;
 
 namespace Kinovea.Camera.GenICam
 {
@@ -84,6 +85,8 @@ namespace Kinovea.Camera.GenICam
 
         public override List<CameraSummary> DiscoverCameras(IEnumerable<CameraBlurb> blurbs)
         {
+            bool verbose = false;
+
             // We only check the list of systems and interfaces once at application startup.
             // These are found from the .cti files (DLLs) loaded by the Baumer API.
             // They are searched for in the plugin directory and the GENICAM_GENTL64_PATH env variable. 
@@ -97,10 +100,15 @@ namespace Kinovea.Camera.GenICam
                 return summaries;
 
             // Search for devices on the known interfaces.
+            // Unfortunately the same interfaces are seen differently by each vendor
+            // so we can't skip the discovery of devices on interfaces we know are already
+            // used by a device from a different vendor.
+            Stopwatch stopwatch = Stopwatch.StartNew();
             foreach (KeyValuePair<string, Interface> interfacePair in interfaces)
             {
                 try
                 {
+                    stopwatch.Restart();
                     if (blackListInterfaces.Contains(interfacePair.Value))
                         continue;
 
@@ -116,11 +124,24 @@ namespace Kinovea.Camera.GenICam
 
                     // Search for devices.
                     interf.Devices.Refresh(200);
+
+                    if (verbose)
+                    {
+                        log.DebugFormat("Listing devices for {0} > {1}: {2} ms", interf.Parent.Vendor, interf.DisplayName, stopwatch.ElapsedMilliseconds);
+                    }
+                    
                     foreach (KeyValuePair<string, Device> devicePair in interf.Devices)
                     {
                         var device = devicePair.Value;
-                        //log.DebugFormat("Found device: {0} ({1})", device.DisplayName, device.Vendor);
+                        if (verbose) 
+                        {
+                            log.DebugFormat("Found device: {0} ({1})", device.DisplayName, device.Vendor);
+                        }
                             
+                        // Only keep the device if it's from the right vendor.
+                        if (device.Vendor != interf.Parent.Vendor)
+                            continue;
+
                         string identifier = device.SerialNumber;
                         bool cached = cache.ContainsKey(identifier);
                         if (cached)
@@ -129,6 +150,8 @@ namespace Kinovea.Camera.GenICam
                             summaries.Add(cache[identifier]);
                             continue;
                         }
+
+                        log.DebugFormat("Found new device.");
 
                         string alias = device.DisplayName;
                         Bitmap icon = null;
@@ -147,7 +170,7 @@ namespace Kinovea.Camera.GenICam
                                     continue;
 
                                 // We know this camera from a previous Kinovea session, restore the user custom values.
-                                log.DebugFormat("Known device from previous session.");
+                                log.DebugFormat("Recognized device from previous session, importing data.");
                                 alias = blurb.Alias;
                                 icon = blurb.Icon ?? defaultIcon;
                                 displayRectangle = blurb.DisplayRectangle;
@@ -178,6 +201,7 @@ namespace Kinovea.Camera.GenICam
 
                         summaries.Add(summary);
                         cache.Add(identifier, summary);
+                        log.DebugFormat("Added new device to cache: {0}", stopwatch.ElapsedMilliseconds);
                     }
                 }
                 catch (BGAPI2.Exceptions.ErrorException e)
@@ -204,7 +228,7 @@ namespace Kinovea.Camera.GenICam
                     blackListInterfaces.Add(interfacePair.Value);
                 }
             }
-            
+
             List<CameraSummary> lost = new List<CameraSummary>();
             foreach (CameraSummary summary in cache.Values)
             {
