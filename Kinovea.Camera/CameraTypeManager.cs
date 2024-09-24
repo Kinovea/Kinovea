@@ -26,6 +26,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using System.Linq;
 using Kinovea.Services;
+using System.Diagnostics;
 
 namespace Kinovea.Camera
 {
@@ -57,6 +58,7 @@ namespace Kinovea.Camera
         private static List<CameraManager> cameraManagers = new List<CameraManager>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static Timer timerDiscovery = new Timer();
+        private static int defaultDiscoveryInterval = 1000;
         #endregion
 
         #region Public methods
@@ -161,7 +163,8 @@ namespace Kinovea.Camera
             if(timerDiscovery.Enabled)
                 timerDiscovery.Enabled = false;
 
-            timerDiscovery.Interval = 1000;
+            // Discovery interval will be adjusted based on the actual time taken.
+            timerDiscovery.Interval = defaultDiscoveryInterval;
             timerDiscovery.Tick += timerDiscovery_Tick;
             timerDiscovery.Enabled = true;
             CheckCameras();
@@ -277,7 +280,11 @@ namespace Kinovea.Camera
         
         private static void timerDiscovery_Tick(object sender, EventArgs e)
         {
+            // Prevent overload in case the process is slow.
+            // CheckCameras will adjust the time interval.
+            timerDiscovery.Enabled = false;
             CheckCameras();
+            timerDiscovery.Enabled = true;
         }
 
         /// <summary>
@@ -287,14 +294,32 @@ namespace Kinovea.Camera
         /// </summary>
         private static void CheckCameras()
         {
+            Stopwatch stopwatch = new Stopwatch();
             IEnumerable<CameraBlurb> cameraBlurbs = PreferencesManager.CapturePreferences.CameraBlurbs;
             
             List<CameraSummary> summaries = new List<CameraSummary>();
+            List<string> stats = new List<string>();
+            long totalTime = 0;
             foreach(CameraManager manager in cameraManagers)
-                summaries.AddRange(manager.DiscoverCameras(cameraBlurbs));
-            
-            if(CamerasDiscovered != null)
+            {
+                stopwatch.Restart();
+                var s = manager.DiscoverCameras(cameraBlurbs);
+                summaries.AddRange(s);
+                long ellapsed = stopwatch.ElapsedMilliseconds;
+                totalTime += ellapsed;
+                stats.Add(string.Format("{0}: {1} ({2} ms)", 
+                    manager.CameraTypeFriendlyName, s.Count, ellapsed));
+            }
+
+            // Dump stats
+            string camStats = string.Join(", ", stats);
+            log.DebugFormat("Discovered {0} cameras in {1} ms. ({2}).",
+                    summaries.Count, totalTime, camStats);
+
+            if (CamerasDiscovered != null)
                 CamerasDiscovered(null, new CamerasDiscoveredEventArgs(summaries));
+
+            timerDiscovery.Interval = Math.Max(defaultDiscoveryInterval, (int)(2 * totalTime));
         }
 
         /// <summary>
