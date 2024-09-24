@@ -50,6 +50,7 @@ namespace Kinovea.Camera.GenICam
         private Dictionary<string, CameraSummary> cache = new Dictionary<string, CameraSummary>();
         // Cache of known interfaces, to speed up discovery we don't search systems and interfaces each time.
         private Dictionary<string, Interface> interfaces = new Dictionary<string, Interface>();
+        private List<Interface> blackListInterfaces = new List<Interface>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -95,12 +96,14 @@ namespace Kinovea.Camera.GenICam
             if (interfaces.Count == 0)
                 return summaries;
 
-            // Search for devices.
+            // Search for devices on the known interfaces.
             foreach (KeyValuePair<string, Interface> interfacePair in interfaces)
             {
-
                 try
                 {
+                    if (blackListInterfaces.Contains(interfacePair.Value))
+                        continue;
+
                     var interf = interfacePair.Value;
                     if (string.IsNullOrEmpty(interf.Id))
                         continue;
@@ -111,6 +114,7 @@ namespace Kinovea.Camera.GenICam
                     if (!interf.IsOpen)
                         continue;
 
+                    // Search for devices.
                     interf.Devices.Refresh(200);
                     foreach (KeyValuePair<string, Device> devicePair in interf.Devices)
                     {
@@ -181,17 +185,23 @@ namespace Kinovea.Camera.GenICam
                     log.ErrorFormat("ErrorException while scanning for devices on interface: {0}", interfacePair.Value.DisplayName);
                     log.ErrorFormat("Description: {0}", e.GetErrorDescription());
                     log.ErrorFormat("Function name: {0}", e.GetFunctionName());
+
+                    blackListInterfaces.Add(interfacePair.Value);
                 }
                 catch (BGAPI2.Exceptions.LowLevelException e)
                 {
                     log.ErrorFormat("LowLevelException while scanning for devices on interface: {0}", interfacePair.Value.DisplayName);
                     log.ErrorFormat("Description: {0}", e.GetErrorDescription());
                     log.ErrorFormat("Function name: {0}", e.GetFunctionName());
+
+                    blackListInterfaces.Add(interfacePair.Value);
                 }
                 catch (Exception e)
                 {
                     log.ErrorFormat("Exception while scanning for devices on interface: {0}", interfacePair.Value.DisplayName);
                     log.ErrorFormat("Description: {0}", e.Message);
+
+                    blackListInterfaces.Add(interfacePair.Value);
                 }
             }
             
@@ -358,7 +368,8 @@ namespace Kinovea.Camera.GenICam
                         continue;
                     }
 
-                    log.DebugFormat("Opened system {0} ({1}).", system.DisplayName, system.Vendor);
+                    log.DebugFormat("Opened system {0}: {1} (Vendor={2}, TLType={3}, Version={4}).", 
+                        system.FileName, system.DisplayName, system.Vendor, system.TLType, system.Version);
                     //systems.Add(systemPair.Key, system);
 
                     system.Interfaces.Refresh(200);
@@ -369,12 +380,40 @@ namespace Kinovea.Camera.GenICam
                         if (string.IsNullOrEmpty(interf.Id))
                             continue;
 
-                        if (!interf.IsOpen)
-                            interf.Open();
+                        try
+                        {
+                            if (!interf.IsOpen)
+                                interf.Open();
 
-                        log.DebugFormat("\t\tOpened interface {0}.", interf.DisplayName);
-                        interfaces.Add(interfacePair.Key, interf);
-                        foundInterfaces++;
+                            log.DebugFormat("\t\tOpened interface {1}.", system.FileName, interf.DisplayName);
+                            string key = string.Format("{0}/{1}", system.FileName, interfacePair.Key);
+                            interfaces.Add(key, interf);
+                            foundInterfaces++;
+                        }
+                        catch (BGAPI2.Exceptions.ErrorException e)
+                        {
+                            log.ErrorFormat("ErrorException while opening interface: {0}", interfacePair.Value.DisplayName);
+                            log.ErrorFormat("Description: {0}", e.GetErrorDescription());
+                            log.ErrorFormat("Function name: {0}", e.GetFunctionName());
+
+                            blackListInterfaces.Add(interfacePair.Value);
+                        }
+                        catch (BGAPI2.Exceptions.LowLevelException e)
+                        {
+                            log.ErrorFormat("LowLevelException while scanning for devices on interface: {0}", interfacePair.Value.DisplayName);
+                            log.ErrorFormat("Description: {0}", e.GetErrorDescription());
+                            log.ErrorFormat("Function name: {0}", e.GetFunctionName());
+
+                            blackListInterfaces.Add(interfacePair.Value);
+                        }
+                        catch (Exception e)
+                        {
+                            log.ErrorFormat("Exception while scanning for devices on interface: {0}", interfacePair.Value.DisplayName);
+                            log.ErrorFormat("Description: {0}", e.Message);
+
+                            blackListInterfaces.Add(interfacePair.Value);
+                        }
+
                     }
 
                     if (foundInterfaces == 0)

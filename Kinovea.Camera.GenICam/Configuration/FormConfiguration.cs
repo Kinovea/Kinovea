@@ -128,10 +128,23 @@ namespace Kinovea.Camera.GenICam
         {
             this.Text = CameraLang.FormConfiguration_Title;
             lblStreamFormat.Text = CameraLang.FormConfiguration_Properties_StreamFormat;
-            cbCompression.Text = CameraLang.FormConfiguration_EnableHardwareCompression;
-            cbDebayering.Text = CameraLang.FormConfiguration_EnableSoftwareDemosaicing;
+
+            // Make sure the plugin doesn't crash when loaded in 2023.1 before these strings existed as resources.
+            if (string.Compare(Software.Version, "2024.1") < 0)
+            {
+                cbCompression.Text = "Enable hardware compression";
+                cbDebayering.Text = "Enable software demosaicing";
+                lblResultingFramerate.Text = "Resulting framerate";
+            }
+            else
+            {
+                // We can't use the properties directly as they might not exist in the assembly.
+                cbCompression.Text = CameraLang.ResourceManager.GetString("FormConfiguration_EnableHardwareCompression", CameraLang.Culture);
+                cbDebayering.Text = CameraLang.ResourceManager.GetString("FormConfiguration_EnableSoftwareDemosaicing", CameraLang.Culture);
+                lblResultingFramerate.Text = CameraLang.ResourceManager.GetString("FormConfiguration_ResultingFramerate", CameraLang.Culture);
+            }
+
             lblAuto.Text = CameraLang.FormConfiguration_Auto;
-            lblResultingFramerate.Text = CameraLang.FormConfiguration_ResultingFramerate;
             btnGenicam.Text = "GenICam XML";
             btnReconnect.Text = CameraLang.FormConfiguration_Reconnect;
             btnApply.Text = CameraLang.Generic_Apply;
