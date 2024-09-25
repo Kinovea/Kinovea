@@ -221,6 +221,17 @@ namespace Kinovea.ScreenManager
         }
 
         #region IDrawingHostView
+        public long CurrentTimestamp
+        {
+            //get { return 0; }
+            get { return timestamp; }
+        }
+
+        public Bitmap CurrentImage
+        {
+            get { return bitmap; }
+        }
+
         public void DoInvalidate()
         {
             Refresh();
@@ -235,11 +246,6 @@ namespace Kinovea.ScreenManager
                 return;
 
             metadataManipulator.InitializeEndFromMenu(cancelLastPoint);
-        }
-
-        public long CurrentTimestamp
-        {
-            get { return 0; }
         }
 
         public void UpdateFramesMarkers()

@@ -168,6 +168,11 @@ namespace Kinovea.ScreenManager
             get { return m_iCurrentPosition; }
         }
 
+        public Bitmap CurrentImage 
+        {
+            get { return m_FrameServer?.CurrentImage; }
+        }
+
         public bool Synched
         {
             //get { return m_bSynched; }
@@ -306,7 +311,7 @@ namespace Kinovea.ScreenManager
         private long m_iSelStart;
         private long m_iSelEnd = 99;
         private long m_iSelDuration = 100;
-        private long m_iCurrentPosition;
+        private long m_iCurrentPosition;    // Current timestamp.
         private long m_iStartingPosition;   // Timestamp of the first decoded frame of video.
         private bool m_bHandlersLocked;
 
@@ -391,7 +396,7 @@ namespace Kinovea.ScreenManager
         private bool isSidePanelVisible;
         private SidePanelKeyframes sidePanelKeyframes = new SidePanelKeyframes();
         private SidePanelDrawing sidePanelDrawing = new SidePanelDrawing();
-        private SidePanelTracking sidePanelTracking = new SidePanelTracking();
+        private SidePanelTracking sidePanelTracking;
 
         private DropWatcher m_DropWatcher = new DropWatcher();
         private TimeWatcher m_TimeWatcher = new TimeWatcher();
@@ -1025,6 +1030,7 @@ namespace Kinovea.ScreenManager
             sidePanelDrawing.Dock = DockStyle.Fill;
             sidePanelDrawing.DrawingModified += DrawingControl_DrawingUpdated;
 
+            sidePanelTracking = new SidePanelTracking(this);
             tabContainer.TabPages[2].Controls.Add(sidePanelTracking);
             sidePanelTracking.SetMetadata(m_FrameServer.Metadata);
             sidePanelTracking.Dock = DockStyle.Fill;
@@ -4601,8 +4607,14 @@ namespace Kinovea.ScreenManager
                 ToolManager.SavePresets();
                 UpdateCursor();
                 sidePanelTracking.UpdateName();
+
+                if (e.Drawing is DrawingTrack)
+                {
+                    // Update track color in main slider.
+                    UpdateFramesMarkers();
+                }
             }
-            else
+            else if (sender == sidePanelTracking)
             {
                 // TODO: save tracking config as new preset.
                 sidePanelDrawing.UpdateName();

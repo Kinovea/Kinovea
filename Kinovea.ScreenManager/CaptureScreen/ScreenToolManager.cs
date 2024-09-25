@@ -55,7 +55,17 @@ namespace Kinovea.ScreenManager
             handTool = new DrawingToolPointer();
             activeTool = handTool;
         }
-        
+
+        /// <summary>
+        /// Enable solo mode for a drawing.
+        /// The hit tests will only work for this drawing.
+        /// This is used for special rendering surfaces like tracking configuration.
+        /// </summary>
+        public void SetSoloMode(bool isSolo, Guid soloId, bool configureTracking)
+        {
+            handTool.SetSoloMode(isSolo, soloId, configureTracking);
+        }
+
         public void SetActiveTool(AbstractDrawingTool tool)
         {
             activeTool = tool ?? handTool;

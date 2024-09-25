@@ -1881,4 +1881,19 @@
   <data name="quadrants" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\quadrants.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="sport_tennis" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\sport-tennis.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="circular_marker" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\circular_marker.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="circ_marker" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\circ_marker.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="image_blur" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\image-blur.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="quadrants_padded" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\quadrants-padded.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

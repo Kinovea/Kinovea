@@ -1,14 +1,12 @@
-﻿using System;
+﻿using Kinovea.Services;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Kinovea.Services;
+
 
 namespace Kinovea.ScreenManager
 {
@@ -24,7 +22,8 @@ namespace Kinovea.ScreenManager
 
         #region Properties
         /// <summary>
-        /// Returns true if the name field or any mini editor is being edited.
+        /// Returns true if any text editor is being edited.
+        /// This must be consulted before triggering a shortcut that would conflict with text input.
         /// </summary>
         public bool Editing
         {
@@ -36,14 +35,23 @@ namespace Kinovea.ScreenManager
         private AbstractDrawing drawing;
         private Metadata metadata;
         private Guid managerId;
-        //private Guid drawingId;
         private bool manualUpdate;
         private bool editing;
-        private List<AbstractStyleElement> elementList = new List<AbstractStyleElement>();
-        private Dictionary<AbstractStyleElement, Control> miniEditors = new Dictionary<AbstractStyleElement, Control>();
         private Pen penBorder = Pens.Silver;
-        //private Action invalidator;
-        //private HistoryMementoModifyDrawing memento;
+        public static readonly List<TrackingAlgorithm> options = new List<TrackingAlgorithm>() { 
+            TrackingAlgorithm.Correlation,
+            TrackingAlgorithm.CircularMarker,
+            TrackingAlgorithm.QuadrantMarker,
+        };
+
+        // Viewport
+        private ViewportController viewportController = new ViewportController();
+        private MetadataRenderer metadataRenderer;
+        private MetadataManipulator metadataManipulator;
+        private ScreenToolManager screenToolManager = new ScreenToolManager();
+        private System.Windows.Forms.Timer interactionTimer = new System.Windows.Forms.Timer();
+        private IDrawingHostView hostView;
+
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -52,24 +60,44 @@ namespace Kinovea.ScreenManager
         {
             InitializeComponent();
             this.Paint += Control_Paint;
+
+            pnlViewport.Controls.Add(viewportController.View);
+            viewportController.View.Dock = DockStyle.Fill;
         }
         #endregion
 
         #region Public methods
+        public void SetHostView(IDrawingHostView hostView)
+        {
+            this.hostView = hostView;
+        }
+
         /// <summary>
         /// Set the drawing this control is managing.
         /// </summary>
         public void SetDrawing(AbstractDrawing drawing, Metadata metadata, Guid managerId, Guid drawingId)
         {
-            manualUpdate = true;
-            
-            // TODO: check if same drawing?
+            // Bail out if same drawing.
             if (this.drawing != null && drawing != null && this.drawing.Id == drawing.Id)
             {
-                log.DebugFormat("Set drawing of the same drawing.");
-            }
+                // Updating the image and timestamp causes some issues.
+                // Investigate.
 
-            Clear();
+                //metadataManipulator.SetFixedTimestamp(hostView.CurrentTimestamp);
+                //metadataRenderer.SetSoloMode(true, drawing.Id, true);
+                //screenToolManager.SetSoloMode(true, drawing.Id, true);
+
+                //Bitmap newBitmap = BitmapHelper.Copy(hostView.CurrentImage);
+                //viewportController.Bitmap = newBitmap;
+                //viewportController.Timestamp = hostView.CurrentTimestamp;
+                //// Do not recenter in this case, as the select may come from the panel itself.
+                ////InitializeDisplayRectangle(newBitmap.Size, hostView.CurrentTimestamp);
+                //viewportController.Refresh();
+                return;
+            }
+            
+            manualUpdate = true;
+            ForgetDrawing();
 
             this.drawing = drawing;
             this.metadata = metadata;
@@ -81,161 +109,134 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            SetupMiniEditors();
+            metadataRenderer = new MetadataRenderer(metadata, true);
+            metadataRenderer.SetSoloMode(true, drawing.Id, true);
+            screenToolManager.SetSoloMode(true, drawing.Id, true);
+            
+            metadataManipulator = new MetadataManipulator(metadata, screenToolManager);
+            metadataManipulator.SetFixedTimestamp(hostView.CurrentTimestamp);
+            metadataManipulator.SetFixedKeyframe(-1);
+
+            // The bitmap will soon be disposed by the host view, make our own copy.
+            // We could also consider continually updating the image based on the player
+            // but for tracking setup it might be interesting to keep it as a reference.
+            // Maybe have a button to "refresh" the image and timestamp.
+            Bitmap bitmap = BitmapHelper.Copy(hostView.CurrentImage);
+            viewportController.Bitmap = bitmap;
+            viewportController.Timestamp = hostView.CurrentTimestamp;
+            viewportController.MetadataRenderer = metadataRenderer;
+            viewportController.MetadataManipulator = metadataManipulator;
+            InitializeDisplayRectangle(bitmap.Size, hostView.CurrentTimestamp);
+            viewportController.Refresh();
+
+            // Interaction timer for the viewport.
+            interactionTimer.Interval = 15;
+            interactionTimer.Tick += InteractionTimer_Tick;
+            interactionTimer.Start();
+
+            SetupControls();
             
             manualUpdate = false;
         }
         #endregion
 
-        private void Clear()
+        private void ForgetDrawing()
         {
-            foreach (AbstractStyleElement element in elementList)
-            {
-                element.ValueChanged -= element_ValueChanged;
-            }
+            drawing = null;
+            metadata = null;
+            managerId = Guid.Empty;
 
-            elementList.Clear();
-            pnlConfig.Controls.Clear();
-            miniEditors.Clear();
-        }
-        
-        /// <summary>
-        /// Set up the mini editors for the style elements.
-        /// </summary>
-        private void SetupMiniEditors()
-        {
-            // Dynamic layout:
-            // Any number of mini editor lines. (must scale vertically)
-            // High dpi vs normal dpi (scales vertically and horizontally)
-            // Verbose languages (scales horizontally)
-            // All the dynamic layout is confined to the grpConfig box, it is possible to add elements before it.
-
-            // Clean up
-            pnlConfig.Controls.Clear();
-            miniEditors.Clear();
-
-            Size editorSize = new Size(60, 20);
-
-            // Initialize the horizontal layout with a minimal value, 
-            // it will be fixed later if some of the entries have long text.
-            //int minimalWidth = btnOK.Width + btnCancel.Width + 10;
-            //int editorsLeft = minimalWidth - 20 - editorSize.Width;
-            int editorsLeft = 10;
-            int lastEditorBottom = 0;
-
-            IDecorable decorable = drawing as IDecorable;
-            StyleElements styleElements = decorable.StyleElements;
-
-            foreach (KeyValuePair<string, AbstractStyleElement> pair in styleElements.Elements)
-            {
-                AbstractStyleElement styleElement = pair.Value;
-                if (styleElement is StyleElementToggle && (((StyleElementToggle)styleElement).IsHidden))
-                    continue;
-
-                elementList.Add(styleElement);
-                styleElement.ValueChanged += element_ValueChanged;
-
-                Button btn = new Button();
-                btn.Image = styleElement.Icon;
-                btn.Size = new Size(20, 20);
-                btn.Location = new Point(10, lastEditorBottom + 15);
-                btn.FlatStyle = FlatStyle.Flat;
-                btn.FlatAppearance.BorderSize = 0;
-                btn.BackColor = Color.Transparent;
-
-                Label lbl = new Label();
-                lbl.Text = styleElement.DisplayName;
-                lbl.AutoSize = true;
-                lbl.Location = new Point(btn.Right + 10, lastEditorBottom + 20);
-
-                SizeF labelSize = TextHelper.MeasureString(lbl.Text, lbl.Font);
-
-                // dynamic horizontal layout for high dpi and verbose languages.
-                int editorLeftMargin = 50;
-                if (lbl.Left + labelSize.Width + editorLeftMargin > editorsLeft)
-                    editorsLeft = (int)(lbl.Left + labelSize.Width + editorLeftMargin);
-
-                Control miniEditor = styleElement.GetEditor();
-                miniEditor.Size = editorSize;
-                miniEditor.Location = new Point(editorsLeft, btn.Top);
-                miniEditor.Enter += (s, e) => { editing = true; };
-                miniEditor.Leave += (s, e) => { editing = false; };
-
-                lastEditorBottom = miniEditor.Bottom;
-
-                pnlConfig.Controls.Add(btn);
-                pnlConfig.Controls.Add(lbl);
-                pnlConfig.Controls.Add(miniEditor);
-                miniEditors.Add(styleElement, miniEditor);
-            }
-
-            // Recheck all mini editors for the left positionning.
-            foreach (Control c in pnlConfig.Controls)
-            {
-                if (!(c is Label) && !(c is Button))
-                {
-                    if (c.Left < editorsLeft)
-                        c.Left = editorsLeft;
-                }
-            }
-
-            pnlConfig.Height = lastEditorBottom + 20;
-            this.Height = this.Height - this.ClientRectangle.Height + pnlConfig.Height + 10;
+            interactionTimer.Tick -= InteractionTimer_Tick;
         }
 
-        /// <summary>
-        /// A style element has been changed either here or externally.
-        /// This may be called as part of undo/redo mechanics.
-        /// </summary>
-        private void element_ValueChanged(object sender, EventArgs<string> e)
+        private void InteractionTimer_Tick(object sender, EventArgs e)
         {
-            if (drawing == null)
+            viewportController.Refresh();
+        }
+
+        private void SetupControls()
+        {
+            // Tracking algorithm combo-box.
+            cbTrackingAlgorithm.Items.Clear();
+            cbTrackingAlgorithm.ItemHeight = 21;
+            int selectedIndex = 0;
+            for (int i = 0; i < options.Count; i++)
             {
-                throw new InvalidProgramException();
+                cbTrackingAlgorithm.Items.Add(new object());
+                //if (cbTrackingAlgorithm[i] == value)
+                //    selectedIndex = i;
             }
+
+            cbTrackingAlgorithm.SelectedIndex = selectedIndex;
+            cbTrackingAlgorithm.DrawItem += new DrawItemEventHandler(cbTrackingAlgorithm_DrawItem);
+            //cbTrackingAlgorithm.SelectedIndexChanged += new EventHandler(editor_SelectedIndexChanged);
             
-            if (manualUpdate)
-            {
-                return;
-            }
+            this.Height = this.Height - this.ClientRectangle.Height + grpTracking.Bottom + 10;
+        }
 
-            log.Debug(string.Format("Style element changed: {0}", e.Value));
-
+        private void InitializeDisplayRectangle(Size imgSize, long timestamp)
+        {
+            // Find an appropriate point to center the mini editor.
+            PointF center = PointF.Empty;
             if (drawing is DrawingTrack)
             {
-                ((DrawingTrack)drawing).UpdateKeyframeLabels();
+                center = ((DrawingTrack)drawing).GetPosition(timestamp);
             }
 
-            // Signal to the parent panel.
-            // This will decide to push the memento to the history stack or not
-            // and propagate the change to the player screen.
-            DrawingModified?.Invoke(this, new DrawingEventArgs(drawing, managerId));
-
-            // Make sure the mini editor has the right value, without retriggering the event.
-            // This is used to handle external changes to individual style elements, like
-            // changing the font size from the corner of the text label.
-            if (!metadata.HistoryStack.IsPerformingUndoRedo)
-            {
-                manualUpdate = true;
-
-                AbstractStyleElement elem = sender as AbstractStyleElement;
-                if (elem == null)
-                {
-                    manualUpdate = false;
-                    return;
-                }
-
-                elem.UpdateEditor(miniEditors[elem]);
-                manualUpdate = false;
-            }
+            // Default zoom of 2x.
+            int scale = 2;
+            PointF normalizedPosition = new PointF(center.X / imgSize.Width, center.Y / imgSize.Height);
+            SizeF normalizedHostSize = new SizeF((float)pnlViewport.Width / imgSize.Width, (float)pnlViewport.Height / imgSize.Height);
+            PointF normalizedHostCenter = new PointF(normalizedHostSize.Width / 2, normalizedHostSize.Height / 2);
+            PointF normalizedDisplayLocation = new PointF(normalizedHostCenter.X - (normalizedPosition.X * scale), normalizedHostCenter.Y - (normalizedPosition.Y * scale));
+            PointF topLeft = new PointF(normalizedDisplayLocation.X * imgSize.Width, normalizedDisplayLocation.Y * imgSize.Height);
+            Size fullSize = new Size(imgSize.Width * scale, imgSize.Height * scale);
+            Rectangle display = new Rectangle((int)topLeft.X, (int)topLeft.Y, fullSize.Width, fullSize.Height);
+            viewportController.InitializeDisplayRectangle(display, imgSize);
         }
 
-        /// <summary>
-        /// Force focus on click to make it easier to unfocus any text fields.
-        /// </summary>
-        private void pnlConfig_Click(object sender, EventArgs e)
+        private void cbTrackingAlgorithm_DrawItem(object sender, DrawItemEventArgs e)
         {
-            pnlConfig.Focus();
+            if (e.Index < 0 || e.Index >= options.Count)
+                return;
+
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            int top = e.Bounds.Height / 2;
+
+            Brush backgroundBrush = Brushes.White;
+            if ((e.State & DrawItemState.Focus) != 0)
+                backgroundBrush = Brushes.LightSteelBlue;
+
+            e.Graphics.FillRectangle(backgroundBrush, e.Bounds.Left, e.Bounds.Top, e.Bounds.Width, e.Bounds.Height);
+
+            //e.Graphics.DrawRectangle(Pens.Red, new Rectangle(e.Bounds.Location, new Size(16, 16)));
+            Point topLeft = new Point(e.Bounds.Left + 2, e.Bounds.Top + 2);
+            Size size = new Size(16, 16);
+            Rectangle rect = new Rectangle(topLeft, size);
+            PointF textTopLeft = new PointF(e.Bounds.Left + 20, e.Bounds.Top + 2);
+            //Pen p = new Pen(Color.Black, lineWidth);
+            switch (options[e.Index])
+            {
+                case TrackingAlgorithm.Correlation:
+                    {
+                        e.Graphics.DrawImage(Properties.Resources.image_blur, rect);
+                        e.Graphics.DrawString("Correlation", e.Font, Brushes.Black, textTopLeft);
+                        break;
+                    }
+                case TrackingAlgorithm.CircularMarker:
+                    {
+                        e.Graphics.DrawImage(Properties.Resources.circular_marker, rect);
+                        e.Graphics.DrawString("Circle", e.Font, Brushes.Black, textTopLeft);
+
+                        break;
+                    }
+                case TrackingAlgorithm.QuadrantMarker:
+                    {
+                        e.Graphics.DrawImage(Properties.Resources.quadrants_padded, rect);
+                        e.Graphics.DrawString("Quadrants", e.Font, Brushes.Black, textTopLeft);
+                        break;
+                    }
+            }
         }
 
         /// <summary>
@@ -243,8 +244,6 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void Control_Paint(object sender, PaintEventArgs e)
         {
-            Rectangle rect = new Rectangle(0, 0, this.ClientRectangle.Width - 1, this.ClientRectangle.Height - 1);
-            e.Graphics.DrawRectangle(penBorder, rect);
         }
     }
 }

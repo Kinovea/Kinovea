@@ -24,7 +24,8 @@ namespace Kinovea.ScreenManager
 
         #region Properties
         /// <summary>
-        /// Returns true if the name field or any mini editor is being edited.
+        /// Returns true if any text editor is being edited.
+        /// This must be consulted before triggering a shortcut that would conflict with text input.
         /// </summary>
         public bool Editing
         {
@@ -36,14 +37,11 @@ namespace Kinovea.ScreenManager
         private AbstractDrawing drawing;
         private Metadata metadata;
         private Guid managerId;
-        //private Guid drawingId;
         private bool manualUpdate;
         private bool editing;
         private List<AbstractStyleElement> elementList = new List<AbstractStyleElement>();
         private Dictionary<AbstractStyleElement, Control> miniEditors = new Dictionary<AbstractStyleElement, Control>();
         private Pen penBorder = Pens.Silver;
-        //private Action invalidator;
-        //private HistoryMementoModifyDrawing memento;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -61,15 +59,14 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void SetDrawing(AbstractDrawing drawing, Metadata metadata, Guid managerId, Guid drawingId)
         {
-            manualUpdate = true;
-            
-            // TODO: check if same drawing?
+            // Bail out if same drawing.
             if (this.drawing != null && drawing != null && this.drawing.Id == drawing.Id)
             {
-                log.DebugFormat("Set drawing of the same drawing.");
+                return;
             }
 
-            Clear();
+            manualUpdate = true;
+            ForgetDrawing();
 
             this.drawing = drawing;
             this.metadata = metadata;
@@ -87,7 +84,7 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        private void Clear()
+        private void ForgetDrawing()
         {
             foreach (AbstractStyleElement element in elementList)
             {

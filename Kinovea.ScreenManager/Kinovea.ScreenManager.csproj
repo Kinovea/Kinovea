@@ -380,6 +380,7 @@
     <Compile Include="Measurement\Geometry\SegmentF.cs" />
     <Compile Include="Measurement\Geometry\SVD.cs" />
     <Compile Include="Measurement\Geometry\Vector3.cs" />
+    <Compile Include="Measurement\Tracking\TrackingAlgorithm.cs" />
     <Compile Include="Metadata\DrawingManager\DrawingManager`1.cs" />
     <Compile Include="Metadata\Drawings\Chrono\DrawingChronoMulti.cs" />
     <Compile Include="Metadata\Drawings\Chrono\ChronoColumns.cs" />
@@ -2262,6 +2263,21 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\quadrants.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\sport-tennis.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\image-blur.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\circ_marker.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\quadrants-padded.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\circular_marker.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">

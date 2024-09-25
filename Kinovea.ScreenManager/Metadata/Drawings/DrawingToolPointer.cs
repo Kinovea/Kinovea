@@ -117,6 +117,11 @@ namespace Kinovea.ScreenManager
         private Size imgSize;
         private Cursor cursorHandClose;
         private int lastCursorType = 0;
+
+        // Solo mode
+        private bool isSolo = false;
+        private Guid soloId = Guid.Empty;
+        private bool configureTracking = false;
         #endregion
 
         #region Constructor
@@ -142,6 +147,18 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Public Interface
+        /// <summary>
+        /// Enable solo mode for a drawing.
+        /// The hit tests will only work for this drawing.
+        /// This is used for special rendering surfaces like tracking configuration.
+        /// </summary>
+        public void SetSoloMode(bool isSolo, Guid soloId, bool configureTracking)
+        {
+            this.isSolo = isSolo;
+            this.soloId = soloId;
+            this.configureTracking = configureTracking;
+        }
+
         public bool OnMouseDown(Metadata metadata, int activeKeyFrameIndex, PointF mouseCoordinates, long currentTimeStamp, bool allFrames)
         {
             //--------------------------------------------------------------------------------------
@@ -205,6 +222,19 @@ namespace Kinovea.ScreenManager
             if (deltaX == 0 && deltaY == 0)
                 return false;
 
+            bool changedTrackStatus = false;
+            TrackStatus oldTrackStatus = TrackStatus.Interactive;
+            if (isSolo && configureTracking && metadata.HitDrawing != null && soloId == metadata.HitDrawing.Id)
+            {
+                if (metadata.HitDrawing is DrawingTrack)
+                {
+                    DrawingTrack track = metadata.HitDrawing as DrawingTrack;
+                    oldTrackStatus = track.Status;
+                    changedTrackStatus = track.Status != TrackStatus.Configuration;
+                    track.Status = TrackStatus.Configuration;
+                }
+            }
+
             switch (manipulationType)
             {
                 case ManipulationType.Move:
@@ -238,6 +268,13 @@ namespace Kinovea.ScreenManager
                 default:
                     movedObject = false;
                     break;
+            }
+
+
+            if (changedTrackStatus)
+            {
+                DrawingTrack track = metadata.HitDrawing as DrawingTrack;
+                track.Status = oldTrackStatus;
             }
             
             return movedObject;
@@ -278,6 +315,11 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Objects hit testing
+
+
+        /// <summary>
+        /// Test if we hit a drawing of any key frame.
+        /// </summary>
         private bool IsOnDrawing(Metadata metadata, int activeKeyFrameIndex, PointF mouseCoordinates, long currentTimeStamp, bool allFrames)
         {
             if (metadata.Keyframes.Count == 0)
@@ -312,6 +354,11 @@ namespace Kinovea.ScreenManager
 
             return isOnDrawing;
         }
+
+
+        /// <summary>
+        /// Test if we hit a drawing of a key frame.
+        /// </summary>
         private bool DrawingHitTest(Metadata metadata, int keyFrameIndex, PointF mouseCoordinates, long currentTimeStamp, DistortionHelper distorter, ImageTransform transformer)
         {
             bool isOnDrawing = false;
@@ -321,12 +368,27 @@ namespace Kinovea.ScreenManager
             Keyframe kf = metadata.Keyframes[keyFrameIndex];
             while (hitResult < 0 && currentDrawing < kf.Drawings.Count)
             {
+                // Bail out if not the solo drawing.
+                if (isSolo && soloId != kf.Drawings[currentDrawing].Id)
+                {
+                    currentDrawing++;
+                    continue;
+                }
+
                 hitResult = kf.Drawings[currentDrawing].HitTest(mouseCoordinates, currentTimeStamp, distorter, transformer, transformer.Zooming);
 
                 if (hitResult < 0)
                 {
-                    currentDrawing++;
-                    continue;
+                    if (isSolo && soloId == kf.Drawings[currentDrawing].Id)
+                    {
+                        // We are soloing this drawing but got no hit, no need to test further.
+                        break;
+                    }
+                    else
+                    {
+                        currentDrawing++;
+                        continue;
+                    }
                 }
                 
                 isOnDrawing = true;
@@ -343,6 +405,9 @@ namespace Kinovea.ScreenManager
                 {
                     manipulationType = ManipulationType.Move;
                 }
+
+                // We got a hit, no need to test further.
+                break;
             }
 
             return isOnDrawing;
@@ -430,11 +495,42 @@ namespace Kinovea.ScreenManager
             {
                 DrawingTrack track = drawing as DrawingTrack;
                 if (track == null)
+                {
                     continue;
+                }
 
-                int hitResult = drawing.HitTest(mouseCoordinates, currentTimeStamp, metadata.CalibrationHelper.DistortionHelper, metadata.ImageTransform, metadata.ImageTransform.Zooming);
-                if (hitResult < 0)
+                // Bail out if not the solo drawing.
+                if (isSolo && soloId != track.Id)
+                {
                     continue;
+                }
+
+                int hitResult = 0;
+
+                if (isSolo && soloId == track.Id && configureTracking)
+                {
+                    TrackStatus oldStatus = track.Status;
+                    track.Status = TrackStatus.Configuration;
+                    hitResult = drawing.HitTest(mouseCoordinates, currentTimeStamp, metadata.CalibrationHelper.DistortionHelper, metadata.ImageTransform, metadata.ImageTransform.Zooming);
+                    track.Status = oldStatus;
+                }
+                else
+                {
+                    hitResult = drawing.HitTest(mouseCoordinates, currentTimeStamp, metadata.CalibrationHelper.DistortionHelper, metadata.ImageTransform, metadata.ImageTransform.Zooming);
+                }
+
+                if (hitResult < 0)
+                {
+                    if (isSolo && soloId == track.Id)
+                    {
+                        // We are soloing this drawing but got no hit, no need to test further.
+                        break;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
 
                 isOnDrawing = true;
                 selectedObjectType = SelectedObjectType.Track;
@@ -442,7 +538,13 @@ namespace Kinovea.ScreenManager
 
                 manipulationType = ManipulationType.Move;
 
-                switch (track.Status)
+                TrackStatus workingStatus = track.Status;
+                if (isSolo && soloId == track.Id && configureTracking)
+                {
+                    workingStatus = TrackStatus.Configuration;
+                }
+
+                switch (workingStatus)
                 {
                     case TrackStatus.Interactive:
                         if (hitResult == 0 || hitResult == 1)
@@ -460,6 +562,7 @@ namespace Kinovea.ScreenManager
                         break;
                 }
 
+                // We got a hit, no need to test further. 
                 break;
             }
 

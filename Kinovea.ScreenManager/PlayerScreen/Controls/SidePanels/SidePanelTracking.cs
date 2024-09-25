@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using DocumentFormat.OpenXml.ExtendedProperties;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Kinovea.Services;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Kinovea.ScreenManager
 {
@@ -41,14 +42,18 @@ namespace Kinovea.ScreenManager
         private Guid drawingId;
         private Action invalidator;
         private HistoryMementoModifyDrawing memento;
+        private IDrawingHostView hostView;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        public SidePanelTracking()
+        public SidePanelTracking(IDrawingHostView hostView)
         {
+            this.hostView = hostView;
+
             InitializeComponent();
             controlDrawingName.DrawingModified += Control_DrawingModified;
             controlDrawingTrackingSetup.DrawingModified += Control_DrawingModified;
+            controlDrawingTrackingSetup.SetHostView(hostView);
         }
 
         #region Public methods
@@ -104,17 +109,16 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void UpdateName()
         {
-
             controlDrawingName.UpdateName();
         }
+        #endregion
 
         /// <summary>
-        /// The drawing data was modified from one of the controls.
+        /// The drawing data was modified from one of the child controls.
         /// Push the prepared memento with the original state to the history stack, 
         /// and capture the new current state for later.
         /// Signal to the host that the drawing has been modified to update image.
         /// </summary>
-
         private void Control_DrawingModified(object sender, DrawingEventArgs e)
         {
             
@@ -165,7 +169,7 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// A drawing was just selected in the player, update the content to show it.
+        /// A drawing was selected in the player, update the content to show it.
         /// </summary>
         private void Metadata_DrawingSelected(object sender, DrawingEventArgs e)
         {
@@ -180,7 +184,7 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// A drawing was just deleted.
+        /// A drawing was deleted in the player.
         /// If it's the drawing we were handling clear the contents.
         /// </summary>
         private void Metadata_DrawingDeleted(object sender, EventArgs<Guid> e)
@@ -195,8 +199,8 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// A keyframe was just deleted.
-        /// If it contains the drawing we were handling clear the contents.
+        /// A keyframe was deleted.
+        /// If it contained the drawing we were handling clear the contents.
         /// </summary>
         private void Metadata_KeyframeDeleted(object sender, KeyframeEventArgs e)
         {
@@ -226,6 +230,5 @@ namespace Kinovea.ScreenManager
             // At the time we capture the state we don't know what kind of change will be made.
             memento = new HistoryMementoModifyDrawing(metadata, managerId, drawingId, drawing.Name, SerializationFilter.Style);
         }
-        #endregion
     }
 }

@@ -46,6 +46,11 @@ namespace Kinovea.ScreenManager
         {
             get { return keyframe; }
         }
+
+        /// <summary>
+        /// Returns true if any text editor is being edited.
+        /// This must be consulted before triggering a shortcut that would conflict with text input.
+        /// </summary>
         public bool Editing
         {
             get { return editingName || editingComment; }

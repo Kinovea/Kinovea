@@ -33,11 +33,25 @@ namespace Kinovea.ScreenManager
     {
         private Metadata metadata;
         private bool renderTimedDrawings = true;
+        private bool isSolo = false;
+        private Guid soloId = Guid.Empty;
+        private bool configureTracking = false;
 
         public MetadataRenderer(Metadata metadata, bool renderTimedDrawings)
         {
             this.metadata = metadata;
             this.renderTimedDrawings = renderTimedDrawings;
+        }
+
+        /// <summary>
+        /// Enable solo mode for a drawing.
+        /// The renderer will only draw this drawing.
+        /// </summary>
+        public void SetSoloMode(bool isSolo, Guid soloId, bool configureTracking)
+        {
+            this.isSolo = isSolo;
+            this.soloId = soloId;
+            this.configureTracking = configureTracking;
         }
 
         public void Render(Graphics viewportCanvas, Point imageLocation, float imageZoom, long timestamp)
@@ -58,28 +72,32 @@ namespace Kinovea.ScreenManager
             DistortionHelper distorter = null;
             CameraTransformer camTransformer = null;
 
-            metadata.DrawingCoordinateSystem.Draw(canvas, distorter, camTransformer, transformer, false, timestamp);
-            metadata.DrawingTestGrid.Draw(canvas, distorter, camTransformer, transformer, false, timestamp);
+            // Coordinate system and capture test grid.
+            RenderDrawing(metadata.DrawingCoordinateSystem, canvas, distorter, camTransformer, transformer, false, timestamp);
+            RenderDrawing(metadata.DrawingTestGrid, canvas, distorter, camTransformer, transformer, false, timestamp);
 
             if (renderTimedDrawings)
             {
-                metadata.DrawingSpotlight.Draw(canvas, distorter, camTransformer, transformer, false, timestamp);
-                metadata.DrawingNumberSequence.Draw(canvas, distorter, camTransformer, transformer, false, timestamp);
-            }
+                // Spotlights
+                if (!isSolo || (isSolo && soloId == metadata.DrawingSpotlight.Id))
+                {
+                    metadata.DrawingSpotlight.Draw(canvas, distorter, camTransformer, transformer, false, timestamp);
+                }
 
-            if (renderTimedDrawings)
-            {
+                // Numbers
+                if (!isSolo || (isSolo && soloId == metadata.DrawingNumberSequence.Id))
+                {
+                    metadata.DrawingNumberSequence.Draw(canvas, distorter, camTransformer, transformer, false, timestamp);
+                }
+
+                // Chronometers
                 foreach (AbstractDrawing ad in metadata.ChronoManager.Drawings)
-                    ad.Draw(canvas, distorter, camTransformer, transformer, false, timestamp);
-            }
+                    RenderDrawing(ad, canvas, distorter, camTransformer, transformer, false, timestamp);
 
-            if (renderTimedDrawings)
-            {
+                // Trajectories
                 foreach (AbstractDrawing ad in metadata.TrackManager.Drawings)
-                    ad.Draw(canvas, distorter, camTransformer, transformer, false, timestamp);
+                    RenderDrawing(ad, canvas, distorter, camTransformer, transformer, false, timestamp);
             }
-
-
         }
 
         private void RenderDrawings(Metadata metadata, long timestamp, Graphics canvas, IImageToViewportTransformer transformer)
@@ -89,7 +107,34 @@ namespace Kinovea.ScreenManager
 
             foreach (Keyframe keyframe in metadata.Keyframes)
                 foreach (AbstractDrawing drawing in keyframe.Drawings)
-                    drawing.Draw(canvas, distorter, camTransformer, transformer, drawing == metadata.HitDrawing, timestamp);
+                    RenderDrawing(drawing, canvas, distorter, camTransformer, transformer, drawing == metadata.HitDrawing, timestamp);
+        }
+
+        private void RenderDrawing(AbstractDrawing drawing, Graphics canvas, DistortionHelper distorter, CameraTransformer cameraTransformer, IImageToViewportTransformer transformer, bool selected, long timestamp)
+        {
+            if (!isSolo || (isSolo && soloId == drawing.Id))
+            {
+                if (isSolo && configureTracking)
+                {
+                    if (drawing is DrawingTrack)
+                    {
+                        DrawingTrack track = drawing as DrawingTrack;
+                        TrackStatus oldStatus = track.Status;
+                        track.Status = TrackStatus.Configuration;
+                        track.Draw(canvas, distorter, cameraTransformer, transformer, false, timestamp);
+                        track.Status = oldStatus;
+                    }
+                    else
+                    {
+                        // TODO: set trackable drawings to configuration mode.
+                        drawing.Draw(canvas, distorter, cameraTransformer, transformer, false, timestamp);
+                    }
+                }
+                else
+                {
+                    drawing.Draw(canvas, distorter, cameraTransformer, transformer, false, timestamp);
+                }
+            }
         }
     }
 }

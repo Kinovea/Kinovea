@@ -94,15 +94,13 @@ namespace Kinovea.ScreenManager
             // TODO: Handle magnifier.
             // TODO: see if this could handle whole image manipulation as well, but at the moment the resizers are stored in the viewport.
 
-            bool handled = false;
             // Get the mouse point in image space.
             IImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
             PointF imagePoint = transformer.Untransform(e.Location);
 
             metadata.AllDrawingTextToNormalMode();
 
-
-
+            bool handled = false;
             if (screenToolManager.IsUsingHandTool || e.Button == MouseButtons.Middle)
             {
                 // TODO: Change cursor.
@@ -130,11 +128,11 @@ namespace Kinovea.ScreenManager
             if(metadata == null || screenToolManager == null)
                 return false;
 
-            bool handled = false;
             // Get the mouse point in image space.
             IImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
             PointF imagePoint = transformer.Untransform(e.Location);
 
+            bool handled = false;
             if (e.Button == MouseButtons.None && metadata.DrawingInitializing)
             {
                 IInitializable initializableDrawing = metadata.HitDrawing as IInitializable;

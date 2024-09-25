@@ -54,7 +54,7 @@ namespace Kinovea.ScreenManager
       this.controlDrawingTrackingSetup.Location = new System.Drawing.Point(3, 64);
       this.controlDrawingTrackingSetup.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
       this.controlDrawingTrackingSetup.Name = "controlDrawingTrackingSetup";
-      this.controlDrawingTrackingSetup.Size = new System.Drawing.Size(271, 244);
+      this.controlDrawingTrackingSetup.Size = new System.Drawing.Size(269, 244);
       this.controlDrawingTrackingSetup.TabIndex = 2;
       // 
       // SidePanelTracking

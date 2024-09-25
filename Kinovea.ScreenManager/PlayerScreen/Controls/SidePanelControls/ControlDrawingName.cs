@@ -25,7 +25,8 @@ namespace Kinovea.ScreenManager
 
         #region Properties
         /// <summary>
-        /// Returns true if the name field or any mini editor is being edited.
+        /// Returns true if any text editor is being edited.
+        /// This must be consulted before triggering a shortcut that would conflict with text input.
         /// </summary>
         public bool Editing
         {
@@ -161,6 +162,9 @@ namespace Kinovea.ScreenManager
             editing = false;
         }
 
+        /// <summary>
+        /// Custom outline color.
+        /// </summary>
         private void Control_Paint(object sender, PaintEventArgs e)
         {
             Rectangle rect = new Rectangle(0, 0, this.ClientRectangle.Width - 1, this.ClientRectangle.Height - 1);
