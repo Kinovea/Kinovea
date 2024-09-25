@@ -32,10 +32,11 @@ namespace Kinovea.Camera.GenICam
         #endregion
 
         #region Members
-        private ulong bufferFilledTimeoutMS = 1000;
         private Device device;
         private DataStream dataStream;
         private BufferList bufferList;
+        private int bufferCount = 16;
+        private ulong bufferFilledTimeoutMS = 1000;
         private bool opened;
         private bool started;
         private bool grabThreadRun = true;
@@ -80,15 +81,14 @@ namespace Kinovea.Camera.GenICam
 
                 // Use buffers internal to the API.
                 bufferList = dataStream.BufferList;
-                int countBuffers = 4;
-                for (int i = 0; i < countBuffers; i++)
+                for (int i = 0; i < bufferCount; i++)
                 {
                     BGAPI2.Buffer buffer = new BGAPI2.Buffer();
                     bufferList.Add(buffer);
                 }
 
                 // Make buffers available to the producer.
-                if (bufferList != null && bufferList.Count == countBuffers)
+                if (bufferList != null && bufferList.Count == bufferCount)
                 {
                     foreach (KeyValuePair<string, BGAPI2.Buffer> bufferPair in bufferList)
                         bufferPair.Value.QueueBuffer();
@@ -203,6 +203,7 @@ namespace Kinovea.Camera.GenICam
         private void Grab()
         {
             // raise event start grabbing.
+            log.DebugFormat("Start grabbing thread.");
             try
             {
                 // setup.
@@ -210,20 +211,50 @@ namespace Kinovea.Camera.GenICam
                 while (grabThreadRun)
                 {
                     // Wait for the next buffer.
-                    BGAPI2.Buffer bufferFilled = dataStream.GetFilledBuffer(bufferFilledTimeoutMS);
-                    if (bufferFilled == null || bufferFilled.IsIncomplete || bufferFilled.MemPtr == IntPtr.Zero)
+                    BGAPI2.Buffer buffer = dataStream.GetFilledBuffer(bufferFilledTimeoutMS);
+                    if (buffer == null)
                     {
-                        // Grab timeout or error.
-                        log.Error("A grab timeout or error occurred");
-                        throw new Exception("A grab timeout or error occurred.");
+                        // Timeout to get the buffer.
+                        //log.Error("A grab timeout or error occurred");
+                        //throw new Exception("A grab timeout or error occurred.");
+
+                        log.ErrorFormat("Null: Queued:{0}, Started:{1}, AwaitDelivery:{2}, Delivered:{3}, Underrun:{4}",
+                            bufferList.QueuedCount, bufferList.StartedCount, bufferList.AwaitDeliveryCount, bufferList.DeliveredCount, bufferList.UnderrunCount);
+
+                        // Requeue all the buffers.
+                        //bufferList.DiscardAllBuffers();
+                        //foreach (KeyValuePair<string, BGAPI2.Buffer> bufferPair in bufferList)
+                        //    bufferPair.Value.QueueBuffer();
+                        bufferList.FlushAllToInputQueue();
                     }
+                    else if (buffer.MemPtr == IntPtr.Zero)
+                    {
+                        log.Warn("Buffer pointing to invalid memory.");
+                        buffer.QueueBuffer();
+                    }
+                    else if (buffer.IsIncomplete)
+                    {
+                        log.WarnFormat("Incomplete: Queued:{0}, Started:{1}, AwaitDelivery:{2}, Delivered:{3}, Underrun:{4}",
+                            bufferList.QueuedCount, bufferList.StartedCount, bufferList.AwaitDeliveryCount, bufferList.DeliveredCount, bufferList.UnderrunCount);
 
-                    // Post image event.
-                    if (BufferProduced != null)
-                        BufferProduced(this, new BufferEventArgs(bufferFilled));
+                        // This situation is generally critical, requeue all the buffers.
+                        //bufferList.DiscardAllBuffers();
+                        //foreach (KeyValuePair<string, BGAPI2.Buffer> bufferPair in bufferList)
+                        //    bufferPair.Value.QueueBuffer();
+                        bufferList.FlushAllToInputQueue();
+                    }
+                    else
+                    {
+                        //log.DebugFormat("Received: Queued:{0}, Started:{1}, AwaitDelivery:{2}, Delivered:{3}, Underrun:{4}",
+                        //        bufferList.QueuedCount, bufferList.StartedCount, bufferList.AwaitDeliveryCount, bufferList.DeliveredCount, bufferList.UnderrunCount);
 
-                    // Make the buffer available to be filled again.
-                    bufferFilled.QueueBuffer();
+                        // Post image event.
+                        if (BufferProduced != null)
+                            BufferProduced(this, new BufferEventArgs(buffer));
+                        
+                        // Make the buffer available to be filled again.
+                        buffer.QueueBuffer();
+                    }
                 }
 
                 // Normal cancellation of the grabbing thread.
