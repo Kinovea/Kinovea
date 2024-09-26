@@ -65,6 +65,7 @@ namespace Kinovea.ScreenManager
       this.pnlViewport.Name = "pnlViewport";
       this.pnlViewport.Size = new System.Drawing.Size(362, 270);
       this.pnlViewport.TabIndex = 53;
+      this.pnlViewport.Resize += new System.EventHandler(this.pnlViewport_Resize);
       // 
       // grpTracking
       // 

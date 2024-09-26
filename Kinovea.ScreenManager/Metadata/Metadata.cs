@@ -1083,6 +1083,17 @@ namespace Kinovea.ScreenManager
                 return;
 
             lastUsedTrackerParameters = track.TrackerParameters;
+
+            TrackingProfile profile = new TrackingProfile();
+            profile.SimilarityThreshold = track.TrackerParameters.SimilarityThreshold;
+            profile.TemplateUpdateThreshold = track.TrackerParameters.TemplateUpdateThreshold;
+            profile.RefinementNeighborhood = track.TrackerParameters.RefinementNeighborhood;
+            profile.SearchWindow = track.TrackerParameters.SearchWindow;
+            profile.SearchWindowUnit = TrackerParameterUnit.Pixels;
+            profile.BlockWindow = track.TrackerParameters.BlockWindow;
+            profile.BlockWindowUnit = TrackerParameterUnit.Pixels;
+            //profile.ResetOnMove = ?
+            PreferencesManager.PlayerPreferences.TrackingProfile = profile;
         }
 
         public void InitializeCommit(VideoFrame videoFrame, PointF point)

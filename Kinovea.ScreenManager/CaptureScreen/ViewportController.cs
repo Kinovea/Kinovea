@@ -92,6 +92,7 @@ namespace Kinovea.ScreenManager
         private Rectangle displayRectangle;
         private MetadataRenderer metadataRenderer;
         private MetadataManipulator metadataManipulator;
+        private bool allowContextMenu = true;
 
         private ContextMenuStrip popMenu = new ContextMenuStrip();
         private ToolStripMenuItem mnuConfigureDrawing = new ToolStripMenuItem();
@@ -99,9 +100,10 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuDeleteDrawing = new ToolStripMenuItem();
         #endregion
 
-        public ViewportController()
+        public ViewportController(bool allowContextMenu = true, bool dblClickZoom = true)
         {
-            view = new Viewport(this);
+            view = new Viewport(this, dblClickZoom);
+            this.allowContextMenu = allowContextMenu;
             InitializeContextMenu();
         }
 
@@ -199,6 +201,9 @@ namespace Kinovea.ScreenManager
                 return;
 
             Poke();
+            if (!allowContextMenu)
+                return;
+
             metadataManipulator.HitTest(mouse, imageLocation, imageZoom);
             PrepareContextMenu();
             view.SetContextMenu(popMenu);

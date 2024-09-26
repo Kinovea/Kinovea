@@ -44,7 +44,7 @@ namespace Kinovea.ScreenManager
         private Action invalidate;
         private DrawingTrack track;
         private List<AbstractStyleElement> elements = new List<AbstractStyleElement>();
-        private ViewportController viewportController = new ViewportController();
+        private ViewportController viewportController = new ViewportController(false, false);
         private MetadataRenderer metadataRenderer;
         private MetadataManipulator metadataManipulator;
         private ScreenToolManager screenToolManager = new ScreenToolManager();

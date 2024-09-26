@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Web;
 using System.Windows.Forms;
 
 
@@ -40,12 +41,12 @@ namespace Kinovea.ScreenManager
         private Pen penBorder = Pens.Silver;
         public static readonly List<TrackingAlgorithm> options = new List<TrackingAlgorithm>() { 
             TrackingAlgorithm.Correlation,
-            TrackingAlgorithm.CircularMarker,
+            TrackingAlgorithm.RoundMarker,
             TrackingAlgorithm.QuadrantMarker,
         };
 
         // Viewport
-        private ViewportController viewportController = new ViewportController();
+        private ViewportController viewportController = new ViewportController(false, false);
         private MetadataRenderer metadataRenderer;
         private MetadataManipulator metadataManipulator;
         private ScreenToolManager screenToolManager = new ScreenToolManager();
@@ -62,6 +63,7 @@ namespace Kinovea.ScreenManager
             this.Paint += Control_Paint;
 
             pnlViewport.Controls.Add(viewportController.View);
+            viewportController.View.DoubleClick += pnlViewport_DoubleClick;
             viewportController.View.Dock = DockStyle.Fill;
         }
         #endregion
@@ -129,6 +131,12 @@ namespace Kinovea.ScreenManager
             InitializeDisplayRectangle(bitmap.Size, hostView.CurrentTimestamp);
             viewportController.Refresh();
 
+            if (drawing is DrawingTrack)
+            {
+                DrawingTrack track = (DrawingTrack)drawing;
+                track.TrackerParametersChanged += Track_TrackerParametersChanged;
+            }
+
             // Interaction timer for the viewport.
             interactionTimer.Interval = 15;
             interactionTimer.Tick += InteractionTimer_Tick;
@@ -137,6 +145,20 @@ namespace Kinovea.ScreenManager
             SetupControls();
             
             manualUpdate = false;
+        }
+
+        /// <summary>
+        /// The timestamp or bitmap or tracking params were updated from the main player.
+        /// Update and recenter.
+        /// </summary>
+        public void UpdateContent()
+        {
+            metadataManipulator.SetFixedTimestamp(hostView.CurrentTimestamp);
+            Bitmap bitmap = BitmapHelper.Copy(hostView.CurrentImage);
+            viewportController.Bitmap = bitmap;
+            viewportController.Timestamp = hostView.CurrentTimestamp;
+            InitializeDisplayRectangle(bitmap.Size, hostView.CurrentTimestamp);
+            viewportController.Refresh();
         }
         #endregion
 
@@ -177,24 +199,43 @@ namespace Kinovea.ScreenManager
         private void InitializeDisplayRectangle(Size imgSize, long timestamp)
         {
             // Find an appropriate point to center the mini editor.
-            PointF center = PointF.Empty;
+            PointF center = imgSize.Center();
             if (drawing is DrawingTrack)
             {
                 center = ((DrawingTrack)drawing).GetPosition(timestamp);
             }
 
-            // Default zoom of 2x.
-            int scale = 2;
+            // Scale such that the search window fits in the viewport.
+            float scale = 1.0f;
+            if (drawing is DrawingTrack)
+            {
+                Size searchSize = ((DrawingTrack)drawing).TrackerParameters.SearchWindow;
+                float scaleX = (float)pnlViewport.Width / searchSize.Width;
+                float scaleY = (float)pnlViewport.Height / searchSize.Height;
+                scale = Math.Min(scaleX, scaleY) * 0.9f;
+            }
+    
             PointF normalizedPosition = new PointF(center.X / imgSize.Width, center.Y / imgSize.Height);
             SizeF normalizedHostSize = new SizeF((float)pnlViewport.Width / imgSize.Width, (float)pnlViewport.Height / imgSize.Height);
             PointF normalizedHostCenter = new PointF(normalizedHostSize.Width / 2, normalizedHostSize.Height / 2);
             PointF normalizedDisplayLocation = new PointF(normalizedHostCenter.X - (normalizedPosition.X * scale), normalizedHostCenter.Y - (normalizedPosition.Y * scale));
             PointF topLeft = new PointF(normalizedDisplayLocation.X * imgSize.Width, normalizedDisplayLocation.Y * imgSize.Height);
-            Size fullSize = new Size(imgSize.Width * scale, imgSize.Height * scale);
+            Size fullSize = new Size((int)(imgSize.Width * scale), (int)(imgSize.Height * scale));
             Rectangle display = new Rectangle((int)topLeft.X, (int)topLeft.Y, fullSize.Width, fullSize.Height);
             viewportController.InitializeDisplayRectangle(display, imgSize);
         }
 
+        /// <summary>
+        /// The parameters were changed via the NUDs or via the mini editor.
+        /// </summary>
+        private void Track_TrackerParametersChanged(object sender, EventArgs e)
+        {
+            DrawingModified?.Invoke(this, new DrawingEventArgs(drawing, managerId));
+        }
+
+        /// <summary>
+        /// Draw one item of the tracking algorithm combo-box.
+        /// </summary>
         private void cbTrackingAlgorithm_DrawItem(object sender, DrawItemEventArgs e)
         {
             if (e.Index < 0 || e.Index >= options.Count)
@@ -209,12 +250,10 @@ namespace Kinovea.ScreenManager
 
             e.Graphics.FillRectangle(backgroundBrush, e.Bounds.Left, e.Bounds.Top, e.Bounds.Width, e.Bounds.Height);
 
-            //e.Graphics.DrawRectangle(Pens.Red, new Rectangle(e.Bounds.Location, new Size(16, 16)));
             Point topLeft = new Point(e.Bounds.Left + 2, e.Bounds.Top + 2);
             Size size = new Size(16, 16);
             Rectangle rect = new Rectangle(topLeft, size);
             PointF textTopLeft = new PointF(e.Bounds.Left + 20, e.Bounds.Top + 2);
-            //Pen p = new Pen(Color.Black, lineWidth);
             switch (options[e.Index])
             {
                 case TrackingAlgorithm.Correlation:
@@ -223,10 +262,10 @@ namespace Kinovea.ScreenManager
                         e.Graphics.DrawString("Correlation", e.Font, Brushes.Black, textTopLeft);
                         break;
                     }
-                case TrackingAlgorithm.CircularMarker:
+                case TrackingAlgorithm.RoundMarker:
                     {
                         e.Graphics.DrawImage(Properties.Resources.circular_marker, rect);
-                        e.Graphics.DrawString("Circle", e.Font, Brushes.Black, textTopLeft);
+                        e.Graphics.DrawString("Round", e.Font, Brushes.Black, textTopLeft);
 
                         break;
                     }
@@ -244,6 +283,28 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void Control_Paint(object sender, PaintEventArgs e)
         {
+        }
+
+        private void pnlViewport_Resize(object sender, EventArgs e)
+        {
+            if (drawing == null)
+                return;
+
+            // Refit and recenter.
+            Size imgSize = viewportController.Bitmap.Size;
+            long timestamp = viewportController.Timestamp;
+            InitializeDisplayRectangle(imgSize, timestamp);
+        }
+
+        private void pnlViewport_DoubleClick(object sender, EventArgs e)
+        {
+            if (drawing == null)
+                return;
+
+            // Refit and recenter.
+            Size imgSize = viewportController.Bitmap.Size;
+            long timestamp = viewportController.Timestamp;
+            InitializeDisplayRectangle(imgSize, timestamp);
         }
     }
 }

@@ -104,6 +104,12 @@ namespace Kinovea.ScreenManager
             controlDrawingTrackingSetup.SetDrawing(drawing, metadata, managerId, drawingId);
         }
 
+        public void UpdateContent()
+        {
+            if (drawing != null)
+                controlDrawingTrackingSetup.UpdateContent();
+        }
+
         /// <summary>
         /// The name was changed from outside. Make sure we reflect it.
         /// </summary>

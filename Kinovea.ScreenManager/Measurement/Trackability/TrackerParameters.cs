@@ -58,11 +58,17 @@ namespace Kinovea.ScreenManager
             get { return refinementNeighborhood; }
         }
 
+        /// <summary>
+        /// Size of the search window.
+        /// </summary>
         public Size SearchWindow
         {
             get { return searchWindow; }
         }
 
+        /// <summary>
+        /// Size of the pattern block we are matching.
+        /// </summary>
         public Size BlockWindow
         {
             get { return blockWindow; }

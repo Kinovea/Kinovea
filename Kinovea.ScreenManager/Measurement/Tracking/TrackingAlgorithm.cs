@@ -21,7 +21,7 @@ namespace Kinovea.ScreenManager
         /// Finds a circle in the search window and use the center as the point.
         /// This is also used for tracking balls.
         /// </summary>
-        CircularMarker,
+        RoundMarker,
 
         /// <summary>
         /// Finds the central corner of a "quadrant" marker and use it as the point.

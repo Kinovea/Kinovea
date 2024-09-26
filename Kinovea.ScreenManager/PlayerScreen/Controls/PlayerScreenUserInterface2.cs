@@ -2724,8 +2724,12 @@ namespace Kinovea.ScreenManager
         }
         private void ComputeOrStopTracking(bool _contiguous)
         {
+            
             if (!m_FrameServer.Metadata.Tracking)
+            {
+                sidePanelTracking.UpdateContent();
                 return;
+            }
 
             // Fixme: Tracking only supports contiguous frames,
             // but this should be the responsibility of the track tool anyway.
@@ -2734,6 +2738,7 @@ namespace Kinovea.ScreenManager
             else
                 m_FrameServer.Metadata.PerformTracking(m_FrameServer.VideoReader.Current);
 
+            sidePanelTracking.UpdateContent();
             UpdateFramesMarkers();
             CheckCustomDecodingSize(false);
         }
@@ -2783,7 +2788,14 @@ namespace Kinovea.ScreenManager
 
                 bool contiguous = _iSeekTarget < 0 && m_iFramesToDecode <= 1;
                 if (!refreshInPlace)
+                {
                     ComputeOrStopTracking(contiguous);
+                }
+                else
+                {
+                    // Not sure why when manually navigating refresh in place is true.
+                    sidePanelTracking.UpdateContent();
+                }
 
                 if (_bAllowUIUpdate)
                     DoInvalidate();

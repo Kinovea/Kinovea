@@ -61,7 +61,9 @@ namespace Kinovea.ScreenManager
 
             IImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
 
+            viewportCanvas.PixelOffsetMode = PixelOffsetMode.HighSpeed;
             viewportCanvas.SmoothingMode = SmoothingMode.AntiAlias;
+
             RenderExtraDrawings(metadata, timestamp, viewportCanvas, transformer);
             RenderDrawings(metadata, timestamp, viewportCanvas, transformer);
             //RenderMagnifier();

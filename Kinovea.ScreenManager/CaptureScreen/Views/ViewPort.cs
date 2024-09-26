@@ -36,10 +36,10 @@ namespace Kinovea.ScreenManager
     {
         #region Members
         private ViewportController controller;
+        private bool dblClickZoom = true;
         private Size referenceSize;             // Original image size after optional rotation.
         private Rectangle displayRectangle;     // Position and size of the region of the viewport where we draw the image.
         private ImageManipulator imageManipulator = new ImageManipulator();
-        
         
         private ZoomHelper zoomHelper = new ZoomHelper();
         private List<EmbeddedButton> resizers = new List<EmbeddedButton>();
@@ -47,15 +47,17 @@ namespace Kinovea.ScreenManager
         private static int resizerOffset = resizerBitmap.Width / 2;
         private int resizerIndex = -1;
 
+        private bool enableDoubleClickZoom = true;
         private RecordingStatus recordingStatus;
         private float recordingStatusProgress = 1.0f;
         private MessageToaster toaster;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
-        public Viewport(ViewportController controller)
+        public Viewport(ViewportController controller, bool dblClickZoom = true)
         {
             this.controller = controller;
+            this.dblClickZoom = dblClickZoom;
             this.BackColor = Color.FromArgb(255, 44, 44, 44);
             this.DoubleBuffered = true;
             this.MouseWheel += Viewport_MouseWheel;
@@ -292,6 +294,10 @@ namespace Kinovea.ScreenManager
                 return;
                 
             base.OnDoubleClick(e);
+
+            if (!dblClickZoom)
+                return;
+            
             Point mouse = this.PointToClient(Control.MousePosition);
             if(displayRectangle.Contains(mouse))
             {

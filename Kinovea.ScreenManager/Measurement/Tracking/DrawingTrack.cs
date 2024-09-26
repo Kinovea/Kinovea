@@ -518,7 +518,6 @@ namespace Kinovea.ScreenManager
         }
         public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
         {
-            //log.DebugFormat("Move drawing, status={0}", trackStatus);
             if (trackStatus == TrackStatus.Interactive && movingHandler > 1)
             {
                 MoveLabelTo(dx, dy, movingHandler);
@@ -531,7 +530,12 @@ namespace Kinovea.ScreenManager
                 positions[hitPointIndex].Y += dy;
 
                 if (trackStatus == TrackStatus.Configuration)
+                {
                     UpdateBoundingBoxes();
+                    if (TrackerParametersChanged != null)
+                        TrackerParametersChanged(this, EventArgs.Empty);
+                }
+
                 return;
             }
         }
@@ -1326,26 +1330,41 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Tracking
+
+        /// <summary>
+        /// Close the tracking. The points are now read only until tracking is started again.
+        /// </summary>
         public void StopTracking()
         {
             trackStatus = TrackStatus.Interactive;
             AfterTrackStatusChanged();
         }
 
+        /// <summary>
+        /// Perform tracking at the current frame.
+        /// </summary>
         public void TrackCurrentPosition(VideoFrame current, OpenCvSharp.Mat cvImage)
         {
             // Match the previous point in current image.
             // New points to trajectories are always created from here.
 
-            TrackPointBlock closestFrame = positions.Last() as TrackPointBlock;
-            if (closestFrame == null || current.Timestamp <= closestFrame.T)
+            // Retrieve the last tracked point before the passed frame.
+            TrackPointBlock closestPoint = positions.Last() as TrackPointBlock;
+            if (closestPoint == null || current.Timestamp <= closestPoint.T)
                 return;
 
-            if (closestFrame.Template == null)
+            // If the existing tracked point doesn't have a template it means
+            // we are re-opening and continuing a track that was imported from KVA (The KVA doesn't store
+            // the algorithm specific part like the template, only the result).
+            // We must rebuild the point and extract the template before proceeding.
+            if (closestPoint.Template == null)
             {
-                // Contiuning a track that was imported through kva.
-                PointF location = new PointF(closestFrame.X, closestFrame.Y);
-                AbstractTrackPoint trackPoint = tracker.CreateTrackPoint(true, location, 1.0f, closestFrame.T, current.Image, positions);
+                PointF location = new PointF(closestPoint.X, closestPoint.Y);
+
+                // The user re-opened the track here so we restart as if this point had been manually placed.
+                bool manual = true;
+                double simi = 1.0;
+                AbstractTrackPoint trackPoint = tracker.CreateTrackPoint(manual, location, simi, closestPoint.T, current.Image, positions);
                 positions[positions.Count - 1] = trackPoint;
             }
 
@@ -1368,10 +1387,12 @@ namespace Kinovea.ScreenManager
             UpdateKeyframeLabels();
         }
 
+        /// <summary>
+        /// The user manually moved a point that had been previously placed.
+        /// Reconstruct tracking data (template) stored in the point, for tracking following points.
+        /// </summary>
         public void UpdateTrackPoint(Bitmap currentImage, IImageToViewportTransformer transformer)
         {
-            // The user moved a point that had been previously placed.
-            // We need to reconstruct tracking data stored in the point, for later tracking.
             // The coordinate of the point have already been updated during the mouse move.
             if (currentImage == null || positions.Count < 1 || drawPointIndex < 0)
                 return;
@@ -1397,6 +1418,10 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
+
+        /// <summary>
+        /// Get the tracking parameters that should be used for tracking, based on preferences.
+        /// </summary>
         private TrackerParameters GetTrackerParameters(Size size)
         {
             TrackingProfile profile = PreferencesManager.PlayerPreferences.TrackingProfile;
