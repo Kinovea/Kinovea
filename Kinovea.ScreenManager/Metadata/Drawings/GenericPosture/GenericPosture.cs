@@ -44,24 +44,76 @@ namespace Kinovea.ScreenManager
         public string DisplayName { get; private set;}
         public Bitmap Icon { get; private set;}
         
+        /// <summary>
+        /// The low level list of points that make up the drawing.
+        /// These may or may not be drawn or manipulatable.
+        /// In the new system this is built from the Points.
+        /// </summary>
         public List<PointF> PointList { get; private set; }
 
+        /// <summary>
+        /// List of sub-drawings similar to the marker tool.
+        /// Points are drawn but not necessarily movable.
+        /// To be movable there needs to be a handle referencing it.
+        /// </summary>
         public List<GenericPosturePoint> Points { get; private set; }
+
+        /// <summary>
+        /// List of sub-drawings similar to the line tool.
+        /// </summary>
         public List<GenericPostureSegment> Segments { get; private set;}
 
+        /// <summary>
+        /// List of sub-drawings similar to the poly line tool.
+        /// </summary>
         public List<GenericPosturePolyline> Polylines { get; private set; }
-        
+
+        /// <summary>
+        /// List of sub-drawings similar to the circle tool.
+        /// </summary>
         public List<GenericPostureCircle> Circles { get; private set;}
+
+        /// <summary>
+        /// List of sub-drawings similar to the angle tool.
+        /// </summary>
         public List<GenericPostureAngle> Angles { get; private set;}
 
+        /// <summary>
+        /// List of handles to manipulate various parts of the drawing 
+        /// </summary>
         public List<GenericPostureHandle> Handles { get; private set; }
+        
+        /// <summary>
+        /// List of polygons that define hit areas for moving the whole drawing at once
+        /// as opposed to moving individual points or lines.
+        /// </summary>
         public List<GenericPostureAbstractHitZone> HitZones { get; private set;}
 
+        /// <summary>
+        /// List of defined distances declared by the posture.
+        /// This will show up as a mini label attached to the underlying segment.
+        /// </summary>
         public List<GenericPostureDistance> Distances { get; private set;}
+        
+        /// <summary>
+        /// List of defined positions.
+        /// </summary>
         public List<GenericPosturePosition> Positions { get; private set;}
+        
+        /// <summary>
+        /// List of points computed by weighted average of other points.
+        /// </summary>
         public List<GenericPostureComputedPoint> ComputedPoints { get; private set;}
 
+        /// <summary>
+        /// Generic capabilities supported by the drawing like flipping.
+        /// </summary>
         public GenericPostureCapabilities Capabilities { get; private set;}
+        
+        /// <summary>
+        /// List of options declared by the drawing.
+        /// Options enable/disable visibility and constraints on certain parts of the drawing.
+        /// </summary>
         public Dictionary<string, GenericPostureOption> Options { get; private set; }
 
         public bool HasNonHiddenOptions { get; private set; }
@@ -673,6 +725,24 @@ namespace Kinovea.ScreenManager
                 SignalTrackablePointMoved(handleIndex, trackablePointMoved);
         }
         #endregion
+
+        /// <summary>
+        /// Assign a new value to a point by the name of the handle.
+        /// This is used internally when setting up the posture from a file.
+        /// For the normal user-interaction see GenericPostureConstraintEngine > MovePointHandle().
+        /// </summary>
+        public void AssignValue(string pointName, PointF value)
+        {
+            // Find the point by the name of the handle.
+            for (int i = 0; i < Handles.Count; i++)
+            {
+                if (Handles[i].Name == pointName)
+                {
+                    PointList[Handles[i].Reference] = value;
+                    return;
+                }
+            }
+        }
 
         public void FlipHorizontal()
         {

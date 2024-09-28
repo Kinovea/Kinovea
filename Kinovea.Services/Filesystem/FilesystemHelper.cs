@@ -375,11 +375,12 @@ namespace Kinovea.Services
 
         public static string OpenKVAFilter(string labelAllSupported)
         {
-            string all = labelAllSupported + "|*.kva;*.srt;*.json;*.xml";
+            string all = labelAllSupported + "|*.kva;*.trc;*.srt;*.json;*.xml";
             string kva = "Kinovea|*.kva";
-            string srt = "SubRip Subtitle|*.srt";
+            string trc = "Sports2D TRC|*.trc";
             string openPose = "OpenPose|*.json";
-            string totalFilter = string.Join("|", new string[] { all, kva, srt, openPose });
+            string srt = "SubRip Subtitle|*.srt";
+            string totalFilter = string.Join("|", new string[] { all, kva, trc, openPose, srt});
             return totalFilter;
         }
 

@@ -371,6 +371,7 @@
     <Compile Include="FilePatterns\Filenamer.cs" />
     <Compile Include="FilePatterns\PatternContext.cs" />
     <Compile Include="FilePatterns\PatternSymbolsFile.cs" />
+    <Compile Include="Importers\TRC\MetadataImporterSports2D.cs" />
     <Compile Include="Measurement\Calibration\CalibrationAxis.cs" />
     <Compile Include="Measurement\Calibration\CameraPoser.cs" />
     <Compile Include="Measurement\CameraMotion\CameraMotionCameraParams.cs" />

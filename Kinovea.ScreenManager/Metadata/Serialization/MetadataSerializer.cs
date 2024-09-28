@@ -55,6 +55,10 @@ namespace Kinovea.ScreenManager
             {
                 MetadataImporterOpenPose.Import(metadata, source, isFile);
             }
+            else if (extension == ".trc")
+            {
+                MetadataImporterSports2D.Import(metadata, source, isFile);
+            }
 
             metadata.AfterKVAImport();
         }
@@ -191,7 +195,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public static List<string> SupportedFileFormats()
         {
-            return new List<string>() { ".kva", ".srt", ".xml", ".json" };
+            return new List<string>() { ".kva", ".trc", ".srt", ".json", ".xml" };
         }
 
 
