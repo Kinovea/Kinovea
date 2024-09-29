@@ -97,7 +97,7 @@ namespace Kinovea.ScreenManager
       // 
       // nudTolerance
       // 
-      this.nudTolerance.Location = new System.Drawing.Point(175, 80);
+      this.nudTolerance.Location = new System.Drawing.Point(175, 138);
       this.nudTolerance.Name = "nudTolerance";
       this.nudTolerance.Size = new System.Drawing.Size(40, 20);
       this.nudTolerance.TabIndex = 64;
@@ -106,7 +106,7 @@ namespace Kinovea.ScreenManager
       // 
       this.label7.AutoSize = true;
       this.label7.ForeColor = System.Drawing.SystemColors.ControlText;
-      this.label7.Location = new System.Drawing.Point(25, 82);
+      this.label7.Location = new System.Drawing.Point(25, 140);
       this.label7.Name = "label7";
       this.label7.Size = new System.Drawing.Size(58, 13);
       this.label7.TabIndex = 63;
@@ -114,35 +114,99 @@ namespace Kinovea.ScreenManager
       // 
       // nudSearchWindowHeight
       // 
-      this.nudSearchWindowHeight.Location = new System.Drawing.Point(243, 187);
+      this.nudSearchWindowHeight.Location = new System.Drawing.Point(243, 70);
+      this.nudSearchWindowHeight.Maximum = new decimal(new int[] {
+            400,
+            0,
+            0,
+            0});
+      this.nudSearchWindowHeight.Minimum = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
       this.nudSearchWindowHeight.Name = "nudSearchWindowHeight";
       this.nudSearchWindowHeight.Size = new System.Drawing.Size(40, 20);
       this.nudSearchWindowHeight.TabIndex = 62;
+      this.nudSearchWindowHeight.Value = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+      this.nudSearchWindowHeight.ValueChanged += new System.EventHandler(this.nudSearchWindow_ValueChanged);
       // 
       // nudObjWindowHeight
       // 
-      this.nudObjWindowHeight.Location = new System.Drawing.Point(243, 161);
+      this.nudObjWindowHeight.Location = new System.Drawing.Point(243, 102);
+      this.nudObjWindowHeight.Maximum = new decimal(new int[] {
+            400,
+            0,
+            0,
+            0});
+      this.nudObjWindowHeight.Minimum = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
       this.nudObjWindowHeight.Name = "nudObjWindowHeight";
       this.nudObjWindowHeight.Size = new System.Drawing.Size(40, 20);
       this.nudObjWindowHeight.TabIndex = 61;
+      this.nudObjWindowHeight.Value = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+      this.nudObjWindowHeight.ValueChanged += new System.EventHandler(this.nudObjWindow_ValueChanged);
       // 
       // nudSearchWindowWidth
       // 
-      this.nudSearchWindowWidth.Location = new System.Drawing.Point(175, 187);
+      this.nudSearchWindowWidth.Location = new System.Drawing.Point(175, 70);
+      this.nudSearchWindowWidth.Maximum = new decimal(new int[] {
+            400,
+            0,
+            0,
+            0});
+      this.nudSearchWindowWidth.Minimum = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
       this.nudSearchWindowWidth.Name = "nudSearchWindowWidth";
       this.nudSearchWindowWidth.Size = new System.Drawing.Size(40, 20);
       this.nudSearchWindowWidth.TabIndex = 60;
+      this.nudSearchWindowWidth.Value = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+      this.nudSearchWindowWidth.ValueChanged += new System.EventHandler(this.nudSearchWindow_ValueChanged);
       // 
       // nudObjWindowWidth
       // 
-      this.nudObjWindowWidth.Location = new System.Drawing.Point(175, 161);
+      this.nudObjWindowWidth.Location = new System.Drawing.Point(175, 102);
+      this.nudObjWindowWidth.Maximum = new decimal(new int[] {
+            400,
+            0,
+            0,
+            0});
+      this.nudObjWindowWidth.Minimum = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
       this.nudObjWindowWidth.Name = "nudObjWindowWidth";
       this.nudObjWindowWidth.Size = new System.Drawing.Size(40, 20);
       this.nudObjWindowWidth.TabIndex = 59;
+      this.nudObjWindowWidth.Value = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+      this.nudObjWindowWidth.ValueChanged += new System.EventHandler(this.nudObjWindow_ValueChanged);
       // 
       // nudKeepAlive
       // 
-      this.nudKeepAlive.Location = new System.Drawing.Point(175, 106);
+      this.nudKeepAlive.Location = new System.Drawing.Point(175, 164);
       this.nudKeepAlive.Name = "nudKeepAlive";
       this.nudKeepAlive.Size = new System.Drawing.Size(40, 20);
       this.nudKeepAlive.TabIndex = 58;
@@ -151,7 +215,7 @@ namespace Kinovea.ScreenManager
       // 
       this.label6.AutoSize = true;
       this.label6.ForeColor = System.Drawing.SystemColors.ControlText;
-      this.label6.Location = new System.Drawing.Point(25, 108);
+      this.label6.Location = new System.Drawing.Point(25, 166);
       this.label6.Name = "label6";
       this.label6.Size = new System.Drawing.Size(100, 13);
       this.label6.TabIndex = 57;
@@ -182,7 +246,7 @@ namespace Kinovea.ScreenManager
       // 
       this.label2.AutoSize = true;
       this.label2.ForeColor = System.Drawing.SystemColors.ControlText;
-      this.label2.Location = new System.Drawing.Point(295, 189);
+      this.label2.Location = new System.Drawing.Point(295, 72);
       this.label2.Name = "label2";
       this.label2.Size = new System.Drawing.Size(18, 13);
       this.label2.TabIndex = 54;
@@ -192,7 +256,7 @@ namespace Kinovea.ScreenManager
       // 
       this.label1.AutoSize = true;
       this.label1.ForeColor = System.Drawing.SystemColors.ControlText;
-      this.label1.Location = new System.Drawing.Point(295, 164);
+      this.label1.Location = new System.Drawing.Point(295, 105);
       this.label1.Name = "label1";
       this.label1.Size = new System.Drawing.Size(18, 13);
       this.label1.TabIndex = 53;
@@ -202,7 +266,7 @@ namespace Kinovea.ScreenManager
       // 
       this.label5.AutoSize = true;
       this.label5.ForeColor = System.Drawing.SystemColors.ControlText;
-      this.label5.Location = new System.Drawing.Point(221, 190);
+      this.label5.Location = new System.Drawing.Point(221, 73);
       this.label5.Name = "label5";
       this.label5.Size = new System.Drawing.Size(13, 13);
       this.label5.TabIndex = 51;
@@ -212,7 +276,7 @@ namespace Kinovea.ScreenManager
       // 
       this.lblSearchWindow.AutoSize = true;
       this.lblSearchWindow.ForeColor = System.Drawing.SystemColors.ControlText;
-      this.lblSearchWindow.Location = new System.Drawing.Point(25, 191);
+      this.lblSearchWindow.Location = new System.Drawing.Point(25, 74);
       this.lblSearchWindow.Name = "lblSearchWindow";
       this.lblSearchWindow.Size = new System.Drawing.Size(83, 13);
       this.lblSearchWindow.TabIndex = 47;
@@ -222,7 +286,7 @@ namespace Kinovea.ScreenManager
       // 
       this.label4.AutoSize = true;
       this.label4.ForeColor = System.Drawing.SystemColors.ControlText;
-      this.label4.Location = new System.Drawing.Point(221, 164);
+      this.label4.Location = new System.Drawing.Point(221, 105);
       this.label4.Name = "label4";
       this.label4.Size = new System.Drawing.Size(13, 13);
       this.label4.TabIndex = 45;
@@ -232,7 +296,7 @@ namespace Kinovea.ScreenManager
       // 
       this.lblObjectWindow.AutoSize = true;
       this.lblObjectWindow.ForeColor = System.Drawing.SystemColors.ControlText;
-      this.lblObjectWindow.Location = new System.Drawing.Point(25, 164);
+      this.lblObjectWindow.Location = new System.Drawing.Point(25, 105);
       this.lblObjectWindow.Name = "lblObjectWindow";
       this.lblObjectWindow.Size = new System.Drawing.Size(80, 13);
       this.lblObjectWindow.TabIndex = 43;

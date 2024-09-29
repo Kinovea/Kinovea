@@ -1735,6 +1735,7 @@ namespace Kinovea.ScreenManager
                 result = chrono;
                 hitDrawing = chrono;
                 hitDrawingOwner = chronoManager;
+                DrawingSelected?.Invoke(this, new DrawingEventArgs(chrono, chronoManager.Id));
                 break;
             }
 
@@ -1750,6 +1751,7 @@ namespace Kinovea.ScreenManager
                 result = track;
                 hitDrawing = track;
                 hitDrawingOwner = trackManager;
+                DrawingSelected?.Invoke(this, new DrawingEventArgs(track, trackManager.Id));
                 break;
             }
 
@@ -1765,6 +1767,7 @@ namespace Kinovea.ScreenManager
                 result = drawing;
                 hitDrawing = drawing;
                 hitDrawingOwner = singletonDrawingsManager;
+                DrawingSelected?.Invoke(this, new DrawingEventArgs(drawing, singletonDrawingsManager.Id));
             }
 
             return result;

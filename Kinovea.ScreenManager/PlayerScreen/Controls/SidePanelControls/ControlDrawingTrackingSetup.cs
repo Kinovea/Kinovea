@@ -65,6 +65,13 @@ namespace Kinovea.ScreenManager
             pnlViewport.Controls.Add(viewportController.View);
             viewportController.View.DoubleClick += pnlViewport_DoubleClick;
             viewportController.View.Dock = DockStyle.Fill;
+
+            NudHelper.FixNudScroll(nudSearchWindowWidth);
+            NudHelper.FixNudScroll(nudSearchWindowHeight);
+            NudHelper.FixNudScroll(nudObjWindowWidth);
+            NudHelper.FixNudScroll(nudObjWindowHeight);
+            NudHelper.FixNudScroll(nudTolerance);
+            NudHelper.FixNudScroll(nudKeepAlive);
         }
         #endregion
 
@@ -192,7 +199,9 @@ namespace Kinovea.ScreenManager
             cbTrackingAlgorithm.SelectedIndex = selectedIndex;
             cbTrackingAlgorithm.DrawItem += new DrawItemEventHandler(cbTrackingAlgorithm_DrawItem);
             //cbTrackingAlgorithm.SelectedIndexChanged += new EventHandler(editor_SelectedIndexChanged);
-            
+
+            UpdateTrackingParameters();
+
             this.Height = this.Height - this.ClientRectangle.Height + grpTracking.Bottom + 10;
         }
 
@@ -226,11 +235,34 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// The parameters were changed via the NUDs or via the mini editor.
+        /// The parameters were changed via the mini editor.
         /// </summary>
         private void Track_TrackerParametersChanged(object sender, EventArgs e)
         {
+            UpdateTrackingParameters();
+
             DrawingModified?.Invoke(this, new DrawingEventArgs(drawing, managerId));
+        }
+
+        /// <summary>
+        /// Update the tracking nuds with values from the drawing.
+        /// </summary>
+        private void UpdateTrackingParameters()
+        {
+            manualUpdate = true;
+
+            
+            if (drawing is DrawingTrack)
+            {
+                DrawingTrack track = (DrawingTrack)drawing;
+                TrackingParameters tp = track.TrackerParameters;
+                nudSearchWindowWidth.Value = tp.SearchWindow.Width;
+                nudSearchWindowHeight.Value = tp.SearchWindow.Height;
+                nudObjWindowWidth.Value = tp.BlockWindow.Width;
+                nudObjWindowHeight.Value = tp.BlockWindow.Height;
+            }
+
+            manualUpdate = false;
         }
 
         /// <summary>
@@ -305,6 +337,34 @@ namespace Kinovea.ScreenManager
             Size imgSize = viewportController.Bitmap.Size;
             long timestamp = viewportController.Timestamp;
             InitializeDisplayRectangle(imgSize, timestamp);
+        }
+
+        private void nudSearchWindow_ValueChanged(object sender, EventArgs e)
+        {
+            if (manualUpdate)
+                return;
+
+            int width = (int)nudSearchWindowWidth.Value;
+            int height = (int)nudSearchWindowHeight.Value;
+            if (drawing is DrawingTrack)
+            {
+                DrawingTrack track = (DrawingTrack)drawing;
+                track.TrackerParameters.SearchWindow = new Size(width, height);
+            }
+        }
+
+        private void nudObjWindow_ValueChanged(object sender, EventArgs e)
+        {
+            if (manualUpdate)
+                return;
+
+            int width = (int)nudObjWindowWidth.Value;
+            int height = (int)nudObjWindowHeight.Value;
+            if (drawing is DrawingTrack)
+            {
+                DrawingTrack track = (DrawingTrack)drawing;
+                track.TrackerParameters.BlockWindow = new Size(width, height);
+            }
         }
     }
 }
