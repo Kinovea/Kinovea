@@ -117,15 +117,6 @@ namespace Kinovea.ScreenManager
         public TrackingParameters TrackerParameters
         {
             get { return tracker.Parameters; }
-            //set { tracker.Parameters = value; }
-            //set
-            //{
-            //    //if (scalingDone)
-            //    //    return;
-
-            //    tracker.Parameters = value;
-            //    UpdateBoundingBoxes();
-            //}
         }
 
         public long BeginTimeStamp

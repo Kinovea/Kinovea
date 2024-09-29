@@ -624,9 +624,9 @@
     <Compile Include="Measurement\Kinematics\LinearKinematics.cs" />
     <Compile Include="Measurement\Kinematics\StatsHelper.cs" />
     <Compile Include="Measurement\Kinematics\TimedPoint.cs" />
-    <Compile Include="Measurement\Tracking\TrackColorCycler.cs" />
-    <Compile Include="Measurement\Tracking\TrackMarker.cs" />
-    <Compile Include="Measurement\Tracking\TrackStatus.cs" />
+    <Compile Include="Tracking\Tracking\TrackColorCycler.cs" />
+    <Compile Include="Tracking\Tracking\TrackMarker.cs" />
+    <Compile Include="Tracking\Tracking\TrackStatus.cs" />
     <Compile Include="Measurement\LensDistortion\FormCalibrateDistortion.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -814,19 +814,19 @@
     <Compile Include="PlayerScreen\MemoPlayerScreen.cs" />
     <Compile Include="Metadata\Metadata.cs" />
     <Compile Include="Metadata\Timeline.cs" />
-    <Compile Include="Measurement\Trackability\DrawingTracker.cs" />
-    <Compile Include="Measurement\Trackability\PositionningSource.cs" />
-    <Compile Include="Measurement\Trackability\Tracker.cs" />
-    <Compile Include="Measurement\Trackability\TrackabilityManager.cs" />
-    <Compile Include="Measurement\Trackability\TrackablePoint.cs" />
-    <Compile Include="Measurement\Trackability\TrackFrame.cs" />
-    <Compile Include="Measurement\Trackability\TrackingContext.cs" />
-    <Compile Include="Measurement\Trackability\TrackResult.cs" />
-    <Compile Include="Measurement\Tracking\AbstractTracker.cs" />
-    <Compile Include="Measurement\Tracking\AbstractTrackPoint.cs" />
-    <Compile Include="Measurement\Tracking\DrawingTrack.cs" />
-    <Compile Include="Measurement\Tracking\TrackerBlock2.cs" />
-    <Compile Include="Measurement\Tracking\TrackPointBlock.cs" />
+    <Compile Include="Tracking\Trackability\DrawingTracker.cs" />
+    <Compile Include="Tracking\Trackability\PositionningSource.cs" />
+    <Compile Include="Tracking\Trackability\Tracker.cs" />
+    <Compile Include="Tracking\Trackability\TrackabilityManager.cs" />
+    <Compile Include="Tracking\Trackability\TrackablePoint.cs" />
+    <Compile Include="Tracking\Trackability\TrackFrame.cs" />
+    <Compile Include="Tracking\Trackability\TrackingContext.cs" />
+    <Compile Include="Tracking\Trackability\TrackResult.cs" />
+    <Compile Include="Tracking\Tracking\AbstractTracker.cs" />
+    <Compile Include="Tracking\Tracking\AbstractTrackPoint.cs" />
+    <Compile Include="Tracking\Tracking\DrawingTrack.cs" />
+    <Compile Include="Tracking\Tracking\TrackerBlock2.cs" />
+    <Compile Include="Tracking\Tracking\TrackPointBlock.cs" />
     <Compile Include="UserInterface\DropDownMenuContainer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -2278,9 +2278,7 @@
   <ItemGroup>
     <None Include="Resources\circular_marker.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Tracking\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">
     <Message Text="Adjusting SDK tools directory to use x64 version of AL.EXE" />
