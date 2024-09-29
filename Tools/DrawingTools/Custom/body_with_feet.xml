@@ -35,26 +35,26 @@
     <Point name="LWrist" value="458.8911;264.5565" color="#990066" />
   </Points>
   <Segments>
-    <Segment name="Neck" point1="13" point2="14" style="Solid" width="1" color="#FF0033" />
-    <Segment name="RClavicle" point1="13" point2="16" style="Solid" width="1" color="#FF0F00" />
-    <Segment name="RArm" point1="16" point2="17" style="Solid" width="1" color="#E16200" />
-    <Segment name="RForearm" point1="17" point2="18" style="Solid" width="1" color="#B4B400" />
-    <Segment name="LClavicle" point1="13" point2="19" style="Solid" width="1" color="#4BCA00" />
-    <Segment name="LArm" point1="19" point2="20" style="Solid" width="1" color="#00E100" />
-    <Segment name="LForearm" point1="20" point2="21" style="Solid" width="1" color="#00F900" />
-    <Segment name="Trunk" point1="0" point2="13" style="Solid" width="1" color="#FF0000" />
-    <Segment name="RHip" point1="0" point2="1" style="Solid" width="1" color="#00F000" />
-    <Segment name="RThigh" point1="1" point2="2" style="Solid" width="1" color="#00E767" />
-    <Segment name="RLowerLeg" point1="2" point2="3" style="Solid" width="1" color="#00DEDE" />
-    <Segment name="LHip" point1="0" point2="7" style="Solid" width="1" color="#008BFF" />
-    <Segment name="LThigh" point1="7" point2="8" style="Solid" width="1" color="#0039FF" />
-    <Segment name="LLowerLeg" point1="8" point2="9" style="Solid" width="1" color="#0000FF" />
-    <Segment name="RFoot" point1="3" point2="4" style="Solid" width="1" color="#00DEDE" />
-    <Segment name="RHeel" point1="3" point2="6" style="Solid" width="1" color="#00DEDE" />
-    <Segment name="RToes" point1="6" point2="4" style="Solid" width="1" color="#00DEDE" />
-    <Segment name="LFoot" point1="9" point2="10" style="Solid" width="1" color="#0000FF" />
-    <Segment name="LHeel" point1="9" point2="12" style="Solid" width="1" color="#0000FF" />
-    <Segment name="LToes" point1="12" point2="10" style="Solid" width="1" color="#0000FF" />
+    <Segment name="Neck" point1="13" point2="14" style="Solid" width="3" color="#FF0033" />
+    <Segment name="RClavicle" point1="13" point2="16" style="Solid" width="3" color="#FF0F00" />
+    <Segment name="RArm" point1="16" point2="17" style="Solid" width="3" color="#E16200" />
+    <Segment name="RForearm" point1="17" point2="18" style="Solid" width="3" color="#B4B400" />
+    <Segment name="LClavicle" point1="13" point2="19" style="Solid" width="3" color="#4BCA00" />
+    <Segment name="LArm" point1="19" point2="20" style="Solid" width="3" color="#00E100" />
+    <Segment name="LForearm" point1="20" point2="21" style="Solid" width="3" color="#00F900" />
+    <Segment name="Trunk" point1="0" point2="13" style="Solid" width="3" color="#FF0000" />
+    <Segment name="RHip" point1="0" point2="1" style="Solid" width="3" color="#00F000" />
+    <Segment name="RThigh" point1="1" point2="2" style="Solid" width="3" color="#00E767" />
+    <Segment name="RLowerLeg" point1="2" point2="3" style="Solid" width="3" color="#00DEDE" />
+    <Segment name="LHip" point1="0" point2="7" style="Solid" width="3" color="#008BFF" />
+    <Segment name="LThigh" point1="7" point2="8" style="Solid" width="3" color="#0039FF" />
+    <Segment name="LLowerLeg" point1="8" point2="9" style="Solid" width="3" color="#0000FF" />
+    <Segment name="RFoot" point1="3" point2="4" style="Solid" width="3" color="#00DEDE" />
+    <Segment name="RHeel" point1="3" point2="6" style="Solid" width="3" color="#00DEDE" />
+    <Segment name="RToes" point1="6" point2="4" style="Solid" width="3" color="#00DEDE" />
+    <Segment name="LFoot" point1="9" point2="10" style="Solid" width="3" color="#0000FF" />
+    <Segment name="LHeel" point1="9" point2="12" style="Solid" width="3" color="#0000FF" />
+    <Segment name="LToes" point1="12" point2="10" style="Solid" width="3" color="#0000FF" />
   </Segments>
 
   <!-- Interaction -->

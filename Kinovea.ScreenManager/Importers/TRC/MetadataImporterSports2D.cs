@@ -15,6 +15,8 @@ namespace Kinovea.ScreenManager
     /// sports2d --video_input "video.mp4" --filter False --display_angle_values_on None 
     /// --filter False: is important to get the stick figure to match the video, the filtering will be done in Kinovea.
     /// --display_angle_values_on None: just to avoid cluttering the resulting video for comparison purposes.
+    /// - Do not use multiperson=False unless there is really only one person throughout the video, 
+    /// otherwise it will jump from one person to another.
     /// </summary>
     public static class MetadataImporterSports2D
     {
@@ -66,7 +68,7 @@ namespace Kinovea.ScreenManager
                 // Create a drawing.
                 // Fixme: create only one drawing and fill its tracking timeline.
 
-                // BodyWithFeet from HALPE_26 (full-body without hands, for RTMPose, AlphaPose, MMPose, etc.)
+                // Model: BodyWithFeet from HALPE_26 (full-body without hands, for RTMPose, AlphaPose, MMPose, etc.)
                 // https://github.com/MVIG-SJTU/AlphaPose/blob/master/docs/MODEL_ZOO.md
                 // https://github.com/open-mmlab/mmpose/tree/main/projects/rtmpose
                 string toolName = "BodyWithFeet";
