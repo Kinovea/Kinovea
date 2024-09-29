@@ -534,9 +534,9 @@ namespace Kinovea.ScreenManager
         {
             get { return styleData.GetBackgroundColor(); }
         }
-        public TrackingProfile CustomTrackingProfile
+        public TrackingParameters CustomTrackingParameters
         {
-            get { return genericPosture.CustomTrackingProfile; }
+            get { return genericPosture.CustomTrackingParameters; }
         }
         public Dictionary<string, PointF> GetTrackablePoints()
         {

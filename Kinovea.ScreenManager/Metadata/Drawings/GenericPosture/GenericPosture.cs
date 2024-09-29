@@ -118,7 +118,7 @@ namespace Kinovea.ScreenManager
 
         public bool HasNonHiddenOptions { get; private set; }
 
-        public TrackingProfile CustomTrackingProfile { get; private set; }
+        public TrackingParameters CustomTrackingParameters { get; private set; }
         public bool Trackable { get; private set;}
         public bool FromKVA { get; private set;}
         #endregion
@@ -155,7 +155,7 @@ namespace Kinovea.ScreenManager
             Capabilities = GenericPostureCapabilities.None;
             Options = new Dictionary<string, GenericPostureOption>();
 
-            CustomTrackingProfile = new TrackingProfile();
+            CustomTrackingParameters = new TrackingParameters();
             
             if(string.IsNullOrEmpty(descriptionFile))
                 return;
@@ -312,8 +312,8 @@ namespace Kinovea.ScreenManager
     						break;
                             
                         // Extra
-                        case "TrackingProfile":
-                            CustomTrackingProfile.ReadXml(r);
+                        case "TrackingParameters":
+                            CustomTrackingParameters.ReadXml(r);
                             break;
 
                         default:

@@ -349,8 +349,8 @@ namespace Kinovea.ScreenManager
         }
         private void PushTrackerParameters(Size block, Size search)
         {
-            TrackerParameters old = track.TrackerParameters;
-            track.TrackerParameters = new TrackerParameters(old.SimilarityThreshold, old.TemplateUpdateThreshold, old.RefinementNeighborhood, search, block, old.ResetOnMove); ;
+            track.TrackerParameters.SearchWindow = search;
+            track.TrackerParameters.BlockWindow = block;
             viewportController.Refresh();
         }
 

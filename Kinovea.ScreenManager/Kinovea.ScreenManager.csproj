@@ -381,7 +381,6 @@
     <Compile Include="Measurement\Geometry\SegmentF.cs" />
     <Compile Include="Measurement\Geometry\SVD.cs" />
     <Compile Include="Measurement\Geometry\Vector3.cs" />
-    <Compile Include="Measurement\Tracking\TrackingAlgorithm.cs" />
     <Compile Include="Metadata\DrawingManager\DrawingManager`1.cs" />
     <Compile Include="Metadata\Drawings\Chrono\DrawingChronoMulti.cs" />
     <Compile Include="Metadata\Drawings\Chrono\ChronoColumns.cs" />
@@ -820,7 +819,6 @@
     <Compile Include="Measurement\Trackability\Tracker.cs" />
     <Compile Include="Measurement\Trackability\TrackabilityManager.cs" />
     <Compile Include="Measurement\Trackability\TrackablePoint.cs" />
-    <Compile Include="Measurement\Trackability\TrackerParameters.cs" />
     <Compile Include="Measurement\Trackability\TrackFrame.cs" />
     <Compile Include="Measurement\Trackability\TrackingContext.cs" />
     <Compile Include="Measurement\Trackability\TrackResult.cs" />
@@ -2279,6 +2277,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\circular_marker.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Tracking\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">

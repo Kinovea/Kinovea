@@ -68,9 +68,9 @@ namespace Kinovea.ScreenManager
         #endregion
 
         public BoundingBox(){}
-        public BoundingBox(int side)
+        public BoundingBox(int minSide)
         {
-            minimalSize = new Size(side, side);
+            minimalSize = new Size(minSide, minSide);
         }
 
         public void Draw(Graphics canvas, Rectangle rect, Pen pen, SolidBrush brush, int widen)

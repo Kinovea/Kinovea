@@ -489,7 +489,6 @@ namespace Kinovea.ScreenManager
         // The magnifier is not a regular drawing.
         private Magnifier magnifier = new Magnifier();
 
-        private TrackerParameters lastUsedTrackerParameters;
         private MeasureLabelType mesureLabelType;
         private TrackabilityManager trackabilityManager = new TrackabilityManager();
 
@@ -973,11 +972,8 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void AddTrack(DrawingTrack track)
         {
-            trackManager.AddDrawing(track);
             track.ParentMetadata = this;
-
-            if (lastUsedTrackerParameters != null)
-                track.TrackerParameters = lastUsedTrackerParameters;
+            trackManager.AddDrawing(track);
 
             track.TrackerParametersChanged += Track_TrackerParametersChanged;
 
@@ -1082,18 +1078,7 @@ namespace Kinovea.ScreenManager
             if (track == null)
                 return;
 
-            lastUsedTrackerParameters = track.TrackerParameters;
-
-            TrackingProfile profile = new TrackingProfile();
-            profile.SimilarityThreshold = track.TrackerParameters.SimilarityThreshold;
-            profile.TemplateUpdateThreshold = track.TrackerParameters.TemplateUpdateThreshold;
-            profile.RefinementNeighborhood = track.TrackerParameters.RefinementNeighborhood;
-            profile.SearchWindow = track.TrackerParameters.SearchWindow;
-            profile.SearchWindowUnit = TrackerParameterUnit.Pixels;
-            profile.BlockWindow = track.TrackerParameters.BlockWindow;
-            profile.BlockWindowUnit = TrackerParameterUnit.Pixels;
-            //profile.ResetOnMove = ?
-            PreferencesManager.PlayerPreferences.TrackingProfile = profile;
+            PreferencesManager.PlayerPreferences.TrackingParameters = track.TrackerParameters.Clone();
         }
 
         public void InitializeCommit(VideoFrame videoFrame, PointF point)

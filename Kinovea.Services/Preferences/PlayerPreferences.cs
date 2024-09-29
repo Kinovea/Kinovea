@@ -163,10 +163,10 @@ namespace Kinovea.Services
             get { return videoFormat; }
             set { videoFormat = value; }
         }
-        public TrackingProfile TrackingProfile
+        public TrackingParameters TrackingParameters
         {
-            get { return trackingProfile; }
-            set { trackingProfile = value; }
+            get { return trackingParameters; }
+            set { trackingParameters = value; }
         }
         public bool EnableFiltering
         {
@@ -266,7 +266,7 @@ namespace Kinovea.Services
         private bool syncByMotion = false;
         private KinoveaImageFormat imageFormat = KinoveaImageFormat.JPG;
         private KinoveaVideoFormat videoFormat = KinoveaVideoFormat.MKV;
-        private TrackingProfile trackingProfile = new TrackingProfile();
+        private TrackingParameters trackingParameters = new TrackingParameters();
         private bool enableFiltering = true;
         private bool enableHighSpeedDerivativesSmoothing = true;
         private bool enableCustomToolsDebugMode = false;
@@ -334,8 +334,8 @@ namespace Kinovea.Services
             
             writer.WriteElementString("MaxRecentColors", maxRecentColors.ToString());
 
-            writer.WriteStartElement("TrackingProfile");
-            trackingProfile.WriteXml(writer);
+            writer.WriteStartElement("TrackingParameters");
+            trackingParameters.WriteXml(writer);
             writer.WriteEndElement();
 
             writer.WriteElementString("EnableFiltering", enableFiltering ? "true" : "false");
@@ -451,8 +451,8 @@ namespace Kinovea.Services
                     case "MaxRecentColors":
                         maxRecentColors = reader.ReadElementContentAsInt();
                         break;
-                    case "TrackingProfile":
-                        trackingProfile.ReadXml(reader);
+                    case "TrackingParameters":
+                        trackingParameters.ReadXml(reader);
                         break;
                     case "EnableFiltering":
                         enableFiltering = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());

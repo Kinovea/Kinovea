@@ -692,7 +692,7 @@ namespace Kinovea.ScreenManager
         {
             get { return styleData.Color; }
         }
-        public TrackingProfile CustomTrackingProfile
+        public TrackingParameters CustomTrackingParameters
         {
             get { return null; }
         }

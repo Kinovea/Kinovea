@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Kinovea.ScreenManager
+﻿
+namespace Kinovea.Services
 {
     /// <summary>
-    /// Algorithm used to track a given point.
+    /// Algorithm used to track a given point or object.
     /// </summary>
     public enum TrackingAlgorithm
     {
@@ -18,8 +13,7 @@ namespace Kinovea.ScreenManager
         Correlation,
 
         /// <summary>
-        /// Finds a circle in the search window and use the center as the point.
-        /// This is also used for tracking balls.
+        /// Finds a matching circle in the search window and use the center as the point.
         /// </summary>
         RoundMarker,
 

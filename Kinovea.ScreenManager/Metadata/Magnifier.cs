@@ -327,7 +327,7 @@ namespace Kinovea.ScreenManager
             { 
             }
         }
-        public TrackingProfile CustomTrackingProfile
+        public TrackingParameters CustomTrackingParameters
         {
             get { return null; }
         }

@@ -273,6 +273,8 @@
     <Compile Include="Types\LensCalibrationParameters.cs" />
     <Compile Include="Types\MeasureLabelType.cs" />
     <Compile Include="Types\Pair.cs" />
+    <Compile Include="Types\TrackingAlgorithm.cs" />
+    <Compile Include="Types\TrackingParameters.cs" />
     <Compile Include="Types\Units\CadenceUnit.cs" />
     <Compile Include="Types\Units\AccelerationUnit.cs" />
     <Compile Include="Types\Units\AngleUnit.cs" />
@@ -289,8 +291,6 @@
     <Compile Include="Types\PhotofinishConfiguration.cs" />
     <Compile Include="Preferences\PreferenceTab.cs" />
     <Compile Include="Types\KeyframePreset.cs" />
-    <Compile Include="Types\TrackerParameterUnit.cs" />
-    <Compile Include="Types\TrackingProfile.cs" />
     <Compile Include="Infrastructure\TimestampMapper.cs" />
     <Compile Include="Types\Units\LengthUnit.cs" />
     <Compile Include="Types\VideoSection.cs" />

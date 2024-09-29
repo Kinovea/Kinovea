@@ -18,7 +18,6 @@ namespace Kinovea.Services
 
         Drawings_General,
         Drawings_Opacity,
-        Drawings_Tracking,
         Drawings_Units,
         Drawings_Presets,
         Drawings_Export,

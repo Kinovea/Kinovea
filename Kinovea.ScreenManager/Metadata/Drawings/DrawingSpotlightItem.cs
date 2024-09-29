@@ -159,7 +159,7 @@ namespace Kinovea.ScreenManager
         {
             get { return Color.Black; }
         }
-        public TrackingProfile CustomTrackingProfile
+        public TrackingParameters CustomTrackingParameters
         {
             get { return null; }
         }

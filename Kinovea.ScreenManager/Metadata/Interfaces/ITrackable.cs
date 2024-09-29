@@ -61,7 +61,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Tracking parameters.
         /// </summary>
-        TrackingProfile CustomTrackingProfile { get; }
+        TrackingParameters CustomTrackingParameters { get; }
         
         /// <summary>
         /// Returns the list of trackable points.

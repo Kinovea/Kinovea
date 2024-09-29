@@ -63,18 +63,6 @@ namespace Kinovea.Root
       this.lblFading = new System.Windows.Forms.Label();
       this.lblMax = new System.Windows.Forms.Label();
       this.lblDefaultOpacity = new System.Windows.Forms.Label();
-      this.tabTracking = new System.Windows.Forms.TabPage();
-      this.lblDescription = new System.Windows.Forms.Label();
-      this.cmbSearchWindowUnit = new System.Windows.Forms.ComboBox();
-      this.cmbBlockWindowUnit = new System.Windows.Forms.ComboBox();
-      this.tbSearchHeight = new System.Windows.Forms.TextBox();
-      this.label5 = new System.Windows.Forms.Label();
-      this.tbSearchWidth = new System.Windows.Forms.TextBox();
-      this.tbBlockHeight = new System.Windows.Forms.TextBox();
-      this.lblSearchWindow = new System.Windows.Forms.Label();
-      this.label4 = new System.Windows.Forms.Label();
-      this.tbBlockWidth = new System.Windows.Forms.TextBox();
-      this.lblObjectWindow = new System.Windows.Forms.Label();
       this.tabUnits = new System.Windows.Forms.TabPage();
       this.cmbCadenceUnit = new System.Windows.Forms.ComboBox();
       this.lblCadenceUnit = new System.Windows.Forms.Label();
@@ -95,34 +83,32 @@ namespace Kinovea.Root
       this.lblTimeMarkersFormat = new System.Windows.Forms.Label();
       this.tabPresets = new System.Windows.Forms.TabPage();
       this.tabExport = new System.Windows.Forms.TabPage();
+      this.gbSpreadsheet = new System.Windows.Forms.GroupBox();
+      this.lblCSVDelimiter = new System.Windows.Forms.Label();
+      this.cmbDelimiter = new System.Windows.Forms.ComboBox();
+      this.cmbExportSpace = new System.Windows.Forms.ComboBox();
+      this.lblExportSpace = new System.Windows.Forms.Label();
+      this.gbDocuments = new System.Windows.Forms.GroupBox();
+      this.cbExportImagesInDocs = new System.Windows.Forms.CheckBox();
       this.lblPandocPath = new System.Windows.Forms.Label();
       this.tbPandocPath = new System.Windows.Forms.TextBox();
       this.btnPandocPath = new System.Windows.Forms.Button();
-      this.cmbExportSpace = new System.Windows.Forms.ComboBox();
-      this.lblExportSpace = new System.Windows.Forms.Label();
-      this.cmbDelimiter = new System.Windows.Forms.ComboBox();
-      this.lblCSVDelimiter = new System.Windows.Forms.Label();
-      this.cbExportImagesInDocs = new System.Windows.Forms.CheckBox();
-      this.gbDocuments = new System.Windows.Forms.GroupBox();
-      this.gbSpreadsheet = new System.Windows.Forms.GroupBox();
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
       this.tabPersistence.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudFading)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudOpaque)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudMax)).BeginInit();
-      this.tabTracking.SuspendLayout();
       this.tabUnits.SuspendLayout();
       this.tabExport.SuspendLayout();
-      this.gbDocuments.SuspendLayout();
       this.gbSpreadsheet.SuspendLayout();
+      this.gbDocuments.SuspendLayout();
       this.SuspendLayout();
       // 
       // tabSubPages
       // 
       this.tabSubPages.Controls.Add(this.tabGeneral);
       this.tabSubPages.Controls.Add(this.tabPersistence);
-      this.tabSubPages.Controls.Add(this.tabTracking);
       this.tabSubPages.Controls.Add(this.tabUnits);
       this.tabSubPages.Controls.Add(this.tabPresets);
       this.tabSubPages.Controls.Add(this.tabExport);
@@ -305,122 +291,6 @@ namespace Kinovea.Root
       this.lblDefaultOpacity.TabIndex = 56;
       this.lblDefaultOpacity.Text = "Default opacity of new drawings:";
       this.lblDefaultOpacity.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      // 
-      // tabTracking
-      // 
-      this.tabTracking.Controls.Add(this.lblDescription);
-      this.tabTracking.Controls.Add(this.cmbSearchWindowUnit);
-      this.tabTracking.Controls.Add(this.cmbBlockWindowUnit);
-      this.tabTracking.Controls.Add(this.tbSearchHeight);
-      this.tabTracking.Controls.Add(this.label5);
-      this.tabTracking.Controls.Add(this.tbSearchWidth);
-      this.tabTracking.Controls.Add(this.tbBlockHeight);
-      this.tabTracking.Controls.Add(this.lblSearchWindow);
-      this.tabTracking.Controls.Add(this.label4);
-      this.tabTracking.Controls.Add(this.tbBlockWidth);
-      this.tabTracking.Controls.Add(this.lblObjectWindow);
-      this.tabTracking.Location = new System.Drawing.Point(4, 22);
-      this.tabTracking.Name = "tabTracking";
-      this.tabTracking.Padding = new System.Windows.Forms.Padding(3);
-      this.tabTracking.Size = new System.Drawing.Size(482, 296);
-      this.tabTracking.TabIndex = 2;
-      this.tabTracking.Text = "Tracking";
-      this.tabTracking.UseVisualStyleBackColor = true;
-      // 
-      // lblDescription
-      // 
-      this.lblDescription.AutoSize = true;
-      this.lblDescription.Location = new System.Drawing.Point(16, 13);
-      this.lblDescription.Name = "lblDescription";
-      this.lblDescription.Size = new System.Drawing.Size(137, 13);
-      this.lblDescription.TabIndex = 67;
-      this.lblDescription.Text = "Default tracking parameters";
-      // 
-      // cmbSearchWindowUnit
-      // 
-      this.cmbSearchWindowUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbSearchWindowUnit.Location = new System.Drawing.Point(288, 72);
-      this.cmbSearchWindowUnit.Name = "cmbSearchWindowUnit";
-      this.cmbSearchWindowUnit.Size = new System.Drawing.Size(116, 21);
-      this.cmbSearchWindowUnit.TabIndex = 66;
-      this.cmbSearchWindowUnit.SelectedIndexChanged += new System.EventHandler(this.cmbSearchWindowUnit_SelectedIndexChanged);
-      // 
-      // cmbBlockWindowUnit
-      // 
-      this.cmbBlockWindowUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbBlockWindowUnit.Location = new System.Drawing.Point(288, 45);
-      this.cmbBlockWindowUnit.Name = "cmbBlockWindowUnit";
-      this.cmbBlockWindowUnit.Size = new System.Drawing.Size(116, 21);
-      this.cmbBlockWindowUnit.TabIndex = 65;
-      this.cmbBlockWindowUnit.SelectedIndexChanged += new System.EventHandler(this.cmbBlockWindowUnit_SelectedIndexChanged);
-      // 
-      // tbSearchHeight
-      // 
-      this.tbSearchHeight.Location = new System.Drawing.Point(241, 72);
-      this.tbSearchHeight.Name = "tbSearchHeight";
-      this.tbSearchHeight.Size = new System.Drawing.Size(30, 20);
-      this.tbSearchHeight.TabIndex = 62;
-      this.tbSearchHeight.TextChanged += new System.EventHandler(this.tbSearchHeight_TextChanged);
-      // 
-      // label5
-      // 
-      this.label5.AutoSize = true;
-      this.label5.Location = new System.Drawing.Point(222, 75);
-      this.label5.Name = "label5";
-      this.label5.Size = new System.Drawing.Size(13, 13);
-      this.label5.TabIndex = 61;
-      this.label5.Text = "×";
-      // 
-      // tbSearchWidth
-      // 
-      this.tbSearchWidth.Location = new System.Drawing.Point(182, 72);
-      this.tbSearchWidth.Name = "tbSearchWidth";
-      this.tbSearchWidth.Size = new System.Drawing.Size(30, 20);
-      this.tbSearchWidth.TabIndex = 60;
-      this.tbSearchWidth.TextChanged += new System.EventHandler(this.tbSearchWidth_TextChanged);
-      // 
-      // tbBlockHeight
-      // 
-      this.tbBlockHeight.Location = new System.Drawing.Point(241, 46);
-      this.tbBlockHeight.Name = "tbBlockHeight";
-      this.tbBlockHeight.Size = new System.Drawing.Size(30, 20);
-      this.tbBlockHeight.TabIndex = 59;
-      this.tbBlockHeight.TextChanged += new System.EventHandler(this.tbBlockHeight_TextChanged);
-      // 
-      // lblSearchWindow
-      // 
-      this.lblSearchWindow.AutoSize = true;
-      this.lblSearchWindow.Location = new System.Drawing.Point(52, 76);
-      this.lblSearchWindow.Name = "lblSearchWindow";
-      this.lblSearchWindow.Size = new System.Drawing.Size(86, 13);
-      this.lblSearchWindow.TabIndex = 58;
-      this.lblSearchWindow.Text = "Search window :";
-      // 
-      // label4
-      // 
-      this.label4.AutoSize = true;
-      this.label4.Location = new System.Drawing.Point(222, 49);
-      this.label4.Name = "label4";
-      this.label4.Size = new System.Drawing.Size(13, 13);
-      this.label4.TabIndex = 57;
-      this.label4.Text = "×";
-      // 
-      // tbBlockWidth
-      // 
-      this.tbBlockWidth.Location = new System.Drawing.Point(182, 46);
-      this.tbBlockWidth.Name = "tbBlockWidth";
-      this.tbBlockWidth.Size = new System.Drawing.Size(30, 20);
-      this.tbBlockWidth.TabIndex = 55;
-      this.tbBlockWidth.TextChanged += new System.EventHandler(this.tbBlockWidth_TextChanged);
-      // 
-      // lblObjectWindow
-      // 
-      this.lblObjectWindow.AutoSize = true;
-      this.lblObjectWindow.Location = new System.Drawing.Point(52, 49);
-      this.lblObjectWindow.Name = "lblObjectWindow";
-      this.lblObjectWindow.Size = new System.Drawing.Size(83, 13);
-      this.lblObjectWindow.TabIndex = 56;
-      this.lblObjectWindow.Text = "Object window :";
       // 
       // tabUnits
       // 
@@ -622,6 +492,83 @@ namespace Kinovea.Root
       this.tabExport.Text = "Export";
       this.tabExport.UseVisualStyleBackColor = true;
       // 
+      // gbSpreadsheet
+      // 
+      this.gbSpreadsheet.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.gbSpreadsheet.Controls.Add(this.lblCSVDelimiter);
+      this.gbSpreadsheet.Controls.Add(this.cmbDelimiter);
+      this.gbSpreadsheet.Controls.Add(this.cmbExportSpace);
+      this.gbSpreadsheet.Controls.Add(this.lblExportSpace);
+      this.gbSpreadsheet.Location = new System.Drawing.Point(6, 15);
+      this.gbSpreadsheet.Name = "gbSpreadsheet";
+      this.gbSpreadsheet.Size = new System.Drawing.Size(461, 103);
+      this.gbSpreadsheet.TabIndex = 75;
+      this.gbSpreadsheet.TabStop = false;
+      this.gbSpreadsheet.Text = "Spreadsheet";
+      // 
+      // lblCSVDelimiter
+      // 
+      this.lblCSVDelimiter.AutoSize = true;
+      this.lblCSVDelimiter.Location = new System.Drawing.Point(28, 67);
+      this.lblCSVDelimiter.Name = "lblCSVDelimiter";
+      this.lblCSVDelimiter.Size = new System.Drawing.Size(107, 13);
+      this.lblCSVDelimiter.TabIndex = 66;
+      this.lblCSVDelimiter.Text = "CSV Decimal symbol:";
+      // 
+      // cmbDelimiter
+      // 
+      this.cmbDelimiter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cmbDelimiter.Location = new System.Drawing.Point(287, 64);
+      this.cmbDelimiter.Name = "cmbDelimiter";
+      this.cmbDelimiter.Size = new System.Drawing.Size(116, 21);
+      this.cmbDelimiter.TabIndex = 67;
+      this.cmbDelimiter.SelectedIndexChanged += new System.EventHandler(this.cmbDelimiter_SelectedIndexChanged);
+      // 
+      // cmbExportSpace
+      // 
+      this.cmbExportSpace.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cmbExportSpace.Location = new System.Drawing.Point(287, 25);
+      this.cmbExportSpace.Name = "cmbExportSpace";
+      this.cmbExportSpace.Size = new System.Drawing.Size(116, 21);
+      this.cmbExportSpace.TabIndex = 69;
+      this.cmbExportSpace.SelectedIndexChanged += new System.EventHandler(this.cmbExportSpace_SelectedIndexChanged);
+      // 
+      // lblExportSpace
+      // 
+      this.lblExportSpace.AutoSize = true;
+      this.lblExportSpace.Location = new System.Drawing.Point(28, 28);
+      this.lblExportSpace.Name = "lblExportSpace";
+      this.lblExportSpace.Size = new System.Drawing.Size(71, 13);
+      this.lblExportSpace.TabIndex = 68;
+      this.lblExportSpace.Text = "Export metric:";
+      // 
+      // gbDocuments
+      // 
+      this.gbDocuments.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.gbDocuments.Controls.Add(this.cbExportImagesInDocs);
+      this.gbDocuments.Controls.Add(this.lblPandocPath);
+      this.gbDocuments.Controls.Add(this.tbPandocPath);
+      this.gbDocuments.Controls.Add(this.btnPandocPath);
+      this.gbDocuments.Location = new System.Drawing.Point(6, 124);
+      this.gbDocuments.Name = "gbDocuments";
+      this.gbDocuments.Size = new System.Drawing.Size(461, 109);
+      this.gbDocuments.TabIndex = 74;
+      this.gbDocuments.TabStop = false;
+      this.gbDocuments.Text = "Documents";
+      // 
+      // cbExportImagesInDocs
+      // 
+      this.cbExportImagesInDocs.AutoSize = true;
+      this.cbExportImagesInDocs.Location = new System.Drawing.Point(31, 32);
+      this.cbExportImagesInDocs.Name = "cbExportImagesInDocs";
+      this.cbExportImagesInDocs.Size = new System.Drawing.Size(92, 17);
+      this.cbExportImagesInDocs.TabIndex = 73;
+      this.cbExportImagesInDocs.Text = "Export images";
+      this.cbExportImagesInDocs.UseVisualStyleBackColor = true;
+      this.cbExportImagesInDocs.CheckedChanged += new System.EventHandler(this.cbExportImagesInDocs_CheckedChanged);
+      // 
       // lblPandocPath
       // 
       this.lblPandocPath.AutoSize = true;
@@ -659,83 +606,6 @@ namespace Kinovea.Root
       this.btnPandocPath.UseVisualStyleBackColor = true;
       this.btnPandocPath.Click += new System.EventHandler(this.btnPandocPath_Click);
       // 
-      // cmbExportSpace
-      // 
-      this.cmbExportSpace.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbExportSpace.Location = new System.Drawing.Point(287, 25);
-      this.cmbExportSpace.Name = "cmbExportSpace";
-      this.cmbExportSpace.Size = new System.Drawing.Size(116, 21);
-      this.cmbExportSpace.TabIndex = 69;
-      this.cmbExportSpace.SelectedIndexChanged += new System.EventHandler(this.cmbExportSpace_SelectedIndexChanged);
-      // 
-      // lblExportSpace
-      // 
-      this.lblExportSpace.AutoSize = true;
-      this.lblExportSpace.Location = new System.Drawing.Point(28, 28);
-      this.lblExportSpace.Name = "lblExportSpace";
-      this.lblExportSpace.Size = new System.Drawing.Size(71, 13);
-      this.lblExportSpace.TabIndex = 68;
-      this.lblExportSpace.Text = "Export metric:";
-      // 
-      // cmbDelimiter
-      // 
-      this.cmbDelimiter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbDelimiter.Location = new System.Drawing.Point(287, 64);
-      this.cmbDelimiter.Name = "cmbDelimiter";
-      this.cmbDelimiter.Size = new System.Drawing.Size(116, 21);
-      this.cmbDelimiter.TabIndex = 67;
-      this.cmbDelimiter.SelectedIndexChanged += new System.EventHandler(this.cmbDelimiter_SelectedIndexChanged);
-      // 
-      // lblCSVDelimiter
-      // 
-      this.lblCSVDelimiter.AutoSize = true;
-      this.lblCSVDelimiter.Location = new System.Drawing.Point(28, 67);
-      this.lblCSVDelimiter.Name = "lblCSVDelimiter";
-      this.lblCSVDelimiter.Size = new System.Drawing.Size(107, 13);
-      this.lblCSVDelimiter.TabIndex = 66;
-      this.lblCSVDelimiter.Text = "CSV Decimal symbol:";
-      // 
-      // cbExportImagesInDocs
-      // 
-      this.cbExportImagesInDocs.AutoSize = true;
-      this.cbExportImagesInDocs.Location = new System.Drawing.Point(31, 32);
-      this.cbExportImagesInDocs.Name = "cbExportImagesInDocs";
-      this.cbExportImagesInDocs.Size = new System.Drawing.Size(92, 17);
-      this.cbExportImagesInDocs.TabIndex = 73;
-      this.cbExportImagesInDocs.Text = "Export images";
-      this.cbExportImagesInDocs.UseVisualStyleBackColor = true;
-      this.cbExportImagesInDocs.CheckedChanged += new System.EventHandler(this.cbExportImagesInDocs_CheckedChanged);
-      // 
-      // gbDocuments
-      // 
-      this.gbDocuments.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.gbDocuments.Controls.Add(this.cbExportImagesInDocs);
-      this.gbDocuments.Controls.Add(this.lblPandocPath);
-      this.gbDocuments.Controls.Add(this.tbPandocPath);
-      this.gbDocuments.Controls.Add(this.btnPandocPath);
-      this.gbDocuments.Location = new System.Drawing.Point(6, 124);
-      this.gbDocuments.Name = "gbDocuments";
-      this.gbDocuments.Size = new System.Drawing.Size(461, 109);
-      this.gbDocuments.TabIndex = 74;
-      this.gbDocuments.TabStop = false;
-      this.gbDocuments.Text = "Documents";
-      // 
-      // gbSpreadsheet
-      // 
-      this.gbSpreadsheet.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.gbSpreadsheet.Controls.Add(this.lblCSVDelimiter);
-      this.gbSpreadsheet.Controls.Add(this.cmbDelimiter);
-      this.gbSpreadsheet.Controls.Add(this.cmbExportSpace);
-      this.gbSpreadsheet.Controls.Add(this.lblExportSpace);
-      this.gbSpreadsheet.Location = new System.Drawing.Point(6, 15);
-      this.gbSpreadsheet.Name = "gbSpreadsheet";
-      this.gbSpreadsheet.Size = new System.Drawing.Size(461, 103);
-      this.gbSpreadsheet.TabIndex = 75;
-      this.gbSpreadsheet.TabStop = false;
-      this.gbSpreadsheet.Text = "Spreadsheet";
-      // 
       // PreferencePanelDrawings
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -751,15 +621,13 @@ namespace Kinovea.Root
       ((System.ComponentModel.ISupportInitialize)(this.nudFading)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudOpaque)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudMax)).EndInit();
-      this.tabTracking.ResumeLayout(false);
-      this.tabTracking.PerformLayout();
       this.tabUnits.ResumeLayout(false);
       this.tabUnits.PerformLayout();
       this.tabExport.ResumeLayout(false);
-      this.gbDocuments.ResumeLayout(false);
-      this.gbDocuments.PerformLayout();
       this.gbSpreadsheet.ResumeLayout(false);
       this.gbSpreadsheet.PerformLayout();
+      this.gbDocuments.ResumeLayout(false);
+      this.gbDocuments.PerformLayout();
       this.ResumeLayout(false);
 
 		}
@@ -767,18 +635,6 @@ namespace Kinovea.Root
 		private System.Windows.Forms.TabPage tabGeneral;
 		private System.Windows.Forms.TabPage tabPersistence;
 		private System.Windows.Forms.CheckBox chkDrawOnPlay;
-        private System.Windows.Forms.TabPage tabTracking;
-        private System.Windows.Forms.TextBox tbSearchHeight;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox tbSearchWidth;
-        private System.Windows.Forms.TextBox tbBlockHeight;
-        private System.Windows.Forms.Label lblSearchWindow;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox tbBlockWidth;
-        private System.Windows.Forms.Label lblObjectWindow;
-        private System.Windows.Forms.ComboBox cmbSearchWindowUnit;
-        private System.Windows.Forms.ComboBox cmbBlockWindowUnit;
-        private System.Windows.Forms.Label lblDescription;
         private System.Windows.Forms.Label lblDefaultOpacity;
         private System.Windows.Forms.CheckBox chkEnableFiltering;
         private System.Windows.Forms.CheckBox chkCustomToolsDebug;

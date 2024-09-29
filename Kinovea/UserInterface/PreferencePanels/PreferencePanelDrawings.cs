@@ -60,7 +60,6 @@ namespace Kinovea.Root
         private List<PreferenceTab> tabs = new List<PreferenceTab> { 
             PreferenceTab.Drawings_General, 
             PreferenceTab.Drawings_Opacity, 
-            PreferenceTab.Drawings_Tracking,
             PreferenceTab.Drawings_Units,
             PreferenceTab.Drawings_Presets,
             PreferenceTab.Drawings_Export,
@@ -70,7 +69,6 @@ namespace Kinovea.Root
         private bool enableFiltering;
         private bool enableHighSpeedDerivativesSmoothing;
         private bool enableCustomToolsDebug;
-        private TrackingProfile trackingProfile;
         private TimecodeFormat timecodeFormat;
         private SpeedUnit speedUnit;
         private AccelerationUnit accelerationUnit;
@@ -121,7 +119,6 @@ namespace Kinovea.Root
             enableHighSpeedDerivativesSmoothing = PreferencesManager.PlayerPreferences.EnableHighSpeedDerivativesSmoothing;
             enableCustomToolsDebug = PreferencesManager.PlayerPreferences.EnableCustomToolsDebugMode;
             defaultFading = new InfosFading(0, 0);
-            trackingProfile = PreferencesManager.PlayerPreferences.TrackingProfile;
             timecodeFormat = PreferencesManager.PlayerPreferences.TimecodeFormat;
             speedUnit = PreferencesManager.PlayerPreferences.SpeedUnit;
             accelerationUnit = PreferencesManager.PlayerPreferences.AccelerationUnit;
@@ -141,7 +138,6 @@ namespace Kinovea.Root
         {
             InitTabGeneral();
             InitTabOpacity();
-            InitTabTracking();
             InitTabUnits();
             InitTabPresets();
             InitTabExport();
@@ -176,26 +172,6 @@ namespace Kinovea.Root
             NudHelper.FixNudScroll(nudMax);
             NudHelper.FixNudScroll(nudOpaque);
             NudHelper.FixNudScroll(nudFading);
-        }
-        private void InitTabTracking()
-        {
-            tabTracking.Text = RootLang.dlgPreferences_Player_Tracking;
-            lblDescription.Text = RootLang.dlgPreferences_Player_TrackingDescription;
-            lblObjectWindow.Text = RootLang.dlgPreferences_Player_TrackingObjectWindow;
-            lblSearchWindow.Text = RootLang.dlgPreferences_Player_TrackingSearchWindow;
-            cmbBlockWindowUnit.Items.Add(RootLang.dlgPreferences_Player_TrackingPercentage);
-            cmbBlockWindowUnit.Items.Add(RootLang.dlgPreferences_Player_TrackingPixels);
-            cmbSearchWindowUnit.Items.Add(RootLang.dlgPreferences_Player_TrackingPercentage);
-            cmbSearchWindowUnit.Items.Add(RootLang.dlgPreferences_Player_TrackingPixels);
-
-            int blockWindowUnit = (int)trackingProfile.BlockWindowUnit;
-            cmbBlockWindowUnit.SelectedIndex = blockWindowUnit < cmbBlockWindowUnit.Items.Count ? blockWindowUnit : 0;
-            int searchWindowUnit = (int)trackingProfile.SearchWindowUnit;
-            cmbSearchWindowUnit.SelectedIndex = searchWindowUnit < cmbSearchWindowUnit.Items.Count ? searchWindowUnit : 0;
-            tbBlockWidth.Text = trackingProfile.BlockWindow.Width.ToString();
-            tbBlockHeight.Text = trackingProfile.BlockWindow.Height.ToString();
-            tbSearchWidth.Text = trackingProfile.SearchWindow.Width.ToString();
-            tbSearchHeight.Text = trackingProfile.SearchWindow.Height.ToString();
         }
         private void InitTabUnits()
         {
@@ -448,67 +424,6 @@ namespace Kinovea.Root
         }
         #endregion
 
-        #region Tracking
-        private void tbBlockWidth_TextChanged(object sender, EventArgs e)
-        {
-            int width;
-            bool parsed = ExtractTrackerParameter(tbBlockWidth, out width);
-            if (!parsed)
-                return;
-
-            trackingProfile.BlockWindow = new Size(width, trackingProfile.BlockWindow.Height);
-        }
-
-        private void tbBlockHeight_TextChanged(object sender, EventArgs e)
-        {
-            int height;
-            bool parsed = ExtractTrackerParameter(tbBlockHeight, out height);
-            if (!parsed)
-                return;
-
-            trackingProfile.BlockWindow = new Size(trackingProfile.BlockWindow.Width, height);
-        }
-
-        private void tbSearchWidth_TextChanged(object sender, EventArgs e)
-        {
-            int width;
-            bool parsed = ExtractTrackerParameter(tbSearchWidth, out width);
-            if (!parsed)
-                return;
-
-            trackingProfile.SearchWindow = new Size(width, trackingProfile.SearchWindow.Height);
-        }
-
-        private void tbSearchHeight_TextChanged(object sender, EventArgs e)
-        {
-            int height;
-            bool parsed = ExtractTrackerParameter(tbSearchHeight, out height);
-            if (!parsed)
-                return;
-
-            trackingProfile.SearchWindow = new Size(trackingProfile.SearchWindow.Width, height);
-        }
-
-        private bool ExtractTrackerParameter(TextBox tb, out int value)
-        {
-            int v;
-            bool parsed = int.TryParse(tb.Text, out v);
-            tbBlockWidth.ForeColor = parsed ? Color.Black : Color.Red;
-            value = parsed ? v : 10;
-            return parsed;
-        }
-
-        private void cmbBlockWindowUnit_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            trackingProfile.BlockWindowUnit = (TrackerParameterUnit)cmbBlockWindowUnit.SelectedIndex;
-        }
-
-        private void cmbSearchWindowUnit_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            trackingProfile.SearchWindowUnit = (TrackerParameterUnit)cmbSearchWindowUnit.SelectedIndex;
-        }
-        #endregion
-
         #region Units
         private void cmbTimeCodeFormat_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -596,7 +511,6 @@ namespace Kinovea.Root
             PreferencesManager.PlayerPreferences.EnableHighSpeedDerivativesSmoothing = enableHighSpeedDerivativesSmoothing;
             PreferencesManager.PlayerPreferences.EnableCustomToolsDebugMode = enableCustomToolsDebug;
             PreferencesManager.PlayerPreferences.DefaultFading.FromInfosFading(defaultFading);
-            PreferencesManager.PlayerPreferences.TrackingProfile = trackingProfile;
             PreferencesManager.PlayerPreferences.TimecodeFormat = timecodeFormat;
             PreferencesManager.PlayerPreferences.SpeedUnit = speedUnit;
             PreferencesManager.PlayerPreferences.AccelerationUnit = accelerationUnit;

@@ -4628,8 +4628,10 @@ namespace Kinovea.ScreenManager
             }
             else if (sender == sidePanelTracking)
             {
-                // TODO: save tracking config as new preset.
                 sidePanelDrawing.UpdateName();
+
+                // TODO: save tracking config as new preset.
+
             }
 
             // Update the image.
