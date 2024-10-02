@@ -109,8 +109,19 @@ namespace Kinovea.Camera.GenICam
             btnIcon.BackgroundImage = summary.Icon;
 
             SpecificInfo specific = summary.Specific as SpecificInfo;
-            if (specific == null || specific.Device == null || specific.Device.Id == null || !specific.Device.IsOpen)
+            if (specific == null || specific.Device == null || specific.Device.Id == null)
                 return;
+
+            if (!specific.Device.IsOpen)
+            {
+                connect();
+            }
+
+            if (!specific.Device.IsOpen)
+            {
+                // TODO: indicate the problem to the user.
+                return;
+            }
 
             device = specific.Device;
             cameraProperties = CameraPropertyManager.ReadAll(device, summary.Identifier);
