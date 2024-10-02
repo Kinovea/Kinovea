@@ -382,6 +382,23 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        /// <summary>
+        /// Import a drawing tracker from outside.
+        /// This is used by non-KVA importers.
+        /// </summary>
+        public void ImportTracker(DrawingTracker tracker)
+        {
+            if (trackers.ContainsKey(tracker.ID))
+            {
+                trackers[tracker.ID].Dispose();
+                trackers[tracker.ID] = tracker;
+            }
+            else
+            {
+                trackers.Add(tracker.ID, tracker);
+            }
+        }
+
 
         private bool SanityCheck(Guid id)
         {

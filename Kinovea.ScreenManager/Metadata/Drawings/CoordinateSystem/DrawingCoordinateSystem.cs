@@ -313,8 +313,12 @@ namespace Kinovea.ScreenManager
             /// drawing reflects the new coordinate.
             if (!points.ContainsKey(name))
                 throw new ArgumentException("This point is not bound.");
-            
+
+            var oldValue = points[name];
             points[name] = value;
+
+            if (value == oldValue)
+                return;
 
             trackingUpdate = true;
             CalibrationHelper.SetOrigin(value);

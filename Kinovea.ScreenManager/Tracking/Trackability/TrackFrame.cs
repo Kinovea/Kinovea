@@ -76,6 +76,19 @@ namespace Kinovea.ScreenManager
             this.positionningSource = positionningSource;
         }
 
+        /// <summary>
+        /// Create a track frame from scratch. This is used by non-KVA importers.
+        /// </summary>
+        public TrackFrame(long time, PointF location, PositionningSource positionningSource)
+        {
+            this.time = time;
+            this.location = location;
+            this.positionningSource = positionningSource;
+        }
+
+        /// <summary>
+        /// Create a track frame from XML. This is used for KVA import.
+        /// </summary>
         public TrackFrame(XmlReader r, PointF scale, TimestampMapper timestampMapper)
         {
             bool isEmpty = r.IsEmptyElement;

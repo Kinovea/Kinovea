@@ -731,17 +731,31 @@ namespace Kinovea.ScreenManager
         /// This is used internally when setting up the posture from a file.
         /// For the normal user-interaction see GenericPostureConstraintEngine > MovePointHandle().
         /// </summary>
-        public void AssignValue(string pointName, PointF value)
+        public void AssignValue(string handleName, PointF value)
+        {
+            // Find the point by the name of the handle.
+            for (int i = 0; i < Handles.Count; i++)
+            {
+                if (Handles[i].Name == handleName)
+                {
+                    PointList[Handles[i].Reference] = value;
+                    return;
+                }
+            }
+        }
+
+        public PointF GetValue(string pointName)
         {
             // Find the point by the name of the handle.
             for (int i = 0; i < Handles.Count; i++)
             {
                 if (Handles[i].Name == pointName)
                 {
-                    PointList[Handles[i].Reference] = value;
-                    return;
+                    return PointList[Handles[i].Reference];
                 }
             }
+
+            return PointF.Empty;
         }
 
         public void FlipHorizontal()

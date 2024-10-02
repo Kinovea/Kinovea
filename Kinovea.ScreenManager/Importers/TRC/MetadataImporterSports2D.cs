@@ -1,9 +1,10 @@
-﻿using Kinovea.ScreenManager.Properties;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Text;
+using Kinovea.ScreenManager.Properties;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -59,53 +60,74 @@ namespace Kinovea.ScreenManager
                 markers.Add(head4[i+2]);
             }
 
+            // Create a drawing.
+            // Model: BodyWithFeet from HALPE_26 (full-body without hands, for RTMPose, AlphaPose, MMPose, etc.)
+            // https://github.com/MVIG-SJTU/AlphaPose/blob/master/docs/MODEL_ZOO.md
+            // https://github.com/open-mmlab/mmpose/tree/main/projects/rtmpose
+            string toolName = "BodyWithFeet";
+            DrawingToolGenericPosture tool = ToolManager.Tools[toolName] as DrawingToolGenericPosture;
+            if (tool == null)
+            {
+                throw new InvalidProgramException();
+            }
+
+            DrawingGenericPosture drawing = null;
+            Dictionary<string, Timeline<TrackFrame>> timelines = new Dictionary<string, Timeline<TrackFrame>>();
+            foreach (string marker in markers)
+            {
+                timelines.Add(marker, new Timeline<TrackFrame>());
+            }
+
+            // Parse the data into the drawing.
             // Each row of data contains a frame number followed by a time value followed by the (x, y, z) coordinates of each marker.
             for (int i = 5; i < numFrames; i++)
             {
                 int frameIndex = i - 5;
                 long timestamp = metadata.FirstTimeStamp + (frameIndex * metadata.AverageTimeStampsPerFrame);
 
-                // Create a drawing.
-                // Fixme: create only one drawing and fill its tracking timeline.
-
-                // Model: BodyWithFeet from HALPE_26 (full-body without hands, for RTMPose, AlphaPose, MMPose, etc.)
-                // https://github.com/MVIG-SJTU/AlphaPose/blob/master/docs/MODEL_ZOO.md
-                // https://github.com/open-mmlab/mmpose/tree/main/projects/rtmpose
-                string toolName = "BodyWithFeet";
-                DrawingToolGenericPosture tool = ToolManager.Tools[toolName] as DrawingToolGenericPosture;
-                if (tool == null)
-                    continue;
-
-                // Parse the data into the drawing.
                 GenericPosture posture = GenericPostureManager.Instanciate(tool.ToolId, true);
                 ParsePosture(posture, allLines[i], markers);
+                
+                if (frameIndex == 0)
+                {
+                    drawing = new DrawingGenericPosture(tool.ToolId, PointF.Empty, posture, timestamp, metadata.AverageTimeStampsPerFrame, ToolManager.GetDefaultStyleElements(toolName));
+                    drawing.Name = "Human";
 
-                DrawingGenericPosture drawing = new DrawingGenericPosture(tool.ToolId, PointF.Empty, posture, timestamp, metadata.AverageTimeStampsPerFrame, ToolManager.GetDefaultStyleElements(toolName));
-                drawing.Name = "Human";
+                    // Add key frame.
+                    Guid id = Guid.NewGuid();
+                    long position = timestamp;
+                    string title = null;
+                    Color color = Keyframe.DefaultColor;
+                    string comments = "";
+                    Keyframe keyframe = new Keyframe(id, position, title, color, comments, new List<AbstractDrawing>() { drawing }, metadata);
+                    metadata.MergeInsertKeyframe(keyframe);
+                    
+                    // At this point the drawing should be added to the trackability manager.
+                }
 
-                // Disable onion skinning.
-                drawing.InfosFading.UseDefault = false;
-                drawing.InfosFading.ReferenceTimestamp = timestamp;
-                drawing.InfosFading.AverageTimeStampsPerFrame = metadata.AverageTimeStampsPerFrame;
-                drawing.InfosFading.AlwaysVisible = false;
-                drawing.InfosFading.OpaqueFrames = 1;
-                drawing.InfosFading.FadingFrames = 0;
-
-
-                // Add key frame.
-                // FIXME: just add entry in tracking timeline of the drawing.
-                // Create a keyframe and add the drawings to it.
-                Guid id = Guid.NewGuid();
-                long position = timestamp;
-                string title = null;
-                Color color = Keyframe.DefaultColor;
-                string comments = "";
-                Keyframe keyframe = new Keyframe(id, position, title, color, comments, new List<AbstractDrawing>(){ drawing }, metadata);
-
-                metadata.MergeInsertKeyframe(keyframe);
-
+                foreach (var marker in markers)
+                {
+                    PointF value = posture.GetValue(marker);
+                    TrackFrame frame = new TrackFrame(timestamp, value, PositionningSource.TemplateMatching);
+                    timelines[marker].Insert(timestamp, frame);
+                }
             }
 
+            // Create the trackable points from the timelines.
+            TrackingParameters trackingParameters = PreferencesManager.PlayerPreferences.TrackingParameters.Clone();
+            Dictionary<string, TrackablePoint> trackablePoints = new Dictionary<string, TrackablePoint>();
+            int index = 0;
+            foreach (var marker in markers)
+            {
+                PointF currentValue = timelines[marker].ClosestFrom(0).Location;
+                TrackablePoint trackablePoint = new TrackablePoint(trackingParameters, currentValue, timelines[marker]);
+                trackablePoints.Add(index.ToString(), trackablePoint);
+                index++;
+            }
+
+            // Import the trackable points into a tracker and add the tracker to the manager.
+            DrawingTracker drawingTracker = new DrawingTracker(drawing, trackablePoints);
+            metadata.TrackabilityManager.ImportTracker(drawingTracker);
         }
 
         private static void ParsePosture(GenericPosture posture, string line, List<string> markers)

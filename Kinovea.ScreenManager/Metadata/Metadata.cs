@@ -530,9 +530,8 @@ namespace Kinovea.ScreenManager
             this.historyStack = historyStack;
             this.timecodeBuilder = timecodeBuilder;
 
-            calibrationHelper.CalibrationChanged += CalibrationHelper_CalibrationChanged;
-
             autoSaver = new AutoSaver(this);
+            calibrationHelper.CalibrationChanged += CalibrationHelper_CalibrationChanged;
 
             CreateSingletonDrawings();
             CreateVideoFilters();
@@ -540,8 +539,7 @@ namespace Kinovea.ScreenManager
             SetupTempDirectory(id);
 
             calibrationChangedTemporizer = new Temporizer(200, TracksCalibrationChanged);
-
-            log.Debug("Constructing new Metadata object.");
+            log.Debug("Constructed new Metadata object.");
         }
         public Metadata(string kvaString,  VideoInfo info, HistoryStack historyStack, TimeCodeBuilder timecodeBuilder)
             : this(historyStack, timecodeBuilder)

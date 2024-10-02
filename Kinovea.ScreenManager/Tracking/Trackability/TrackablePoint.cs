@@ -50,6 +50,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Reference position set by the user. It is only valid at the 
         /// reference timestamp that was active when the user set it.
+        /// This supports camera motion on drawings that are not enabled for tracking.
         /// </summary>
         public PointF ReferenceValue
         {
@@ -105,6 +106,17 @@ namespace Kinovea.ScreenManager
             this.trackerParameters = trackerParameters;
             this.currentValue = value;
             this.nonTrackingValue = value;
+        }
+
+        /// <summary>
+        /// Importing from outside for non-KVA importers.
+        /// </summary>
+        public TrackablePoint(TrackingParameters trackerParameters, PointF value, Timeline<TrackFrame> trackTimeline)
+        {
+            this.trackerParameters = trackerParameters;
+            this.currentValue = value;
+            this.nonTrackingValue = value;
+            this.trackTimeline = trackTimeline;
         }
         
         /// <summary>

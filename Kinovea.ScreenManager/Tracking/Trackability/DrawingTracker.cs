@@ -123,6 +123,20 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// Import data from the outside.
+        /// This is used by non-KVA importers.
+        /// </summary>
+        public DrawingTracker(ITrackable drawing, Dictionary<string, TrackablePoint> trackablePoints)
+        {
+            this.drawing = drawing;
+            this.drawingId = drawing.Id;
+            this.parameters = PreferencesManager.PlayerPreferences.TrackingParameters.Clone();
+            this.trackablePoints = trackablePoints;
+            drawing.TrackablePointMoved += drawing_TrackablePointMoved;
+            assigned = true;
+        }
+
+        /// <summary>
         /// Register the drawing this tracker is responsible for.
         /// </summary>
         public void Assign(ITrackable drawing)
