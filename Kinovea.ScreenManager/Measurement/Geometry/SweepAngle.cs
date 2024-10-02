@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
@@ -62,11 +63,32 @@ namespace Kinovea.ScreenManager
             get { return boundingBox; }
         }
 
+        /// <summary>
+        /// Pointy end of the arrow.
+        /// The arrow always goes from the reference leg to the measure leg.
+        /// It does not indicate the rotation direction (cw vs ccw).
+        /// </summary>
+        public PointF ArrowEnd
+        {
+            get { return arrowEnd; }
+        }
+
+        /// <summary>
+        /// Start of the segment that should be used to draw the arrow.
+        /// This should only be used to get a direction.
+        /// </summary>
+        public PointF ArrowStart
+        {
+           get { return arrowStart; }
+        }
+
         private const double TAU = Math.PI * 2;
         private float start = 270;
         private float sweep = 90;
         private PointF origin = PointF.Empty;
         private Rectangle boundingBox = Rectangle.Empty;
+        private PointF arrowEnd = PointF.Empty;
+        private PointF arrowStart = PointF.Empty;
         private Region hitRegion;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -98,14 +120,16 @@ namespace Kinovea.ScreenManager
 
             start = oa;
             sweep = ob > oa ? ob - oa : (360 - oa) + ob;
+            bool neg = false;
 
             if (signed && sweep > 180)
             {
                 start = ob;
                 sweep = 360 - sweep;
+                neg = true;
             }
 
-            UpdateBoundingBox(o, a, b, radius);
+            UpdateBoundingBox(o, a, b, radius, ccw, neg);
             UpdateHitRegion();
         }
 
@@ -134,18 +158,38 @@ namespace Kinovea.ScreenManager
             return (float)MathHelper.Degrees(drawPieRadians);
         }
 
-        private void UpdateBoundingBox(PointF o, PointF a, PointF b, float radius)
+        private void UpdateBoundingBox(PointF o, PointF a, PointF b, float radius, bool ccw, bool neg)
         {
             // If the radius is negative we count it from the end of the smallest segment.
             if (radius <= 0)
             {
                 // Anything between 0 and -10 is aliased to -10 for backward compat.
                 radius = Math.Min(radius, -10);
-
+                
                 float oa = new Vector(o, a).Norm();
                 float ob = new Vector(o, b).Norm();
                 float smallest = Math.Min(oa, ob);
                 radius = smallest + radius > 0 ? smallest + radius : Math.Min(smallest, 10);
+                
+                // Truncate the radius to match .NET behavior.
+                radius = (float)(int)radius;
+                
+                Vector vob = new Vector(o, b);
+                arrowEnd = o + vob.Normalized() * radius;
+
+                // For the origin direction of the arrow, if we use the end of the tangent it looks offset.
+                // take a point at a small arc along the circle instead.
+                float radians = MathHelper.Radians(10);
+                if ((ccw && neg) || (!ccw && !neg))
+                    radians = -radians;
+
+                double cx = Math.Cos(radians);
+                double cy = Math.Sin(radians);
+                Vector dirX = vob.Normalized() * radius;
+                Vector dirY = new Vector(-dirX.Y, dirX.X);
+                arrowStart = o + dirX * (float)cx + dirY * (float)cy;
+                Vector arrowDir = new Vector(arrowEnd, arrowStart);
+                arrowStart = arrowEnd + arrowDir.Normalized() * 100;
             }
 
             boundingBox = o.Box((int)radius).ToRectangle();

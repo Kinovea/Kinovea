@@ -187,6 +187,9 @@ namespace Kinovea.ScreenManager
             Point pointB = transformer.Transform(points["b"]);
             Rectangle boundingBox = transformer.Transform(angleHelper.SweepAngle.BoundingBox);
 
+            Point arrowStart = transformer.Transform(angleHelper.SweepAngle.ArrowStart);
+            Point arrowEnd = transformer.Transform(angleHelper.SweepAngle.ArrowEnd);
+
             if (boundingBox.Size == Size.Empty)
                 return;
 
@@ -211,6 +214,13 @@ namespace Kinovea.ScreenManager
                 canvas.FillEllipse(brushEdges, pointA.Box(3));
                 canvas.FillEllipse(brushEdges, pointB.Box(3));
 
+                // Arrow
+                //canvas.DrawLine(penEdges, arrowStart, arrowEnd);
+                PointF arrowOffsetEnd = ArrowHelper.GetOffset(penEdges.Width, arrowEnd, arrowStart);
+                arrowEnd = new PointF(arrowEnd.X + arrowOffsetEnd.X, arrowEnd.Y + arrowOffsetEnd.Y).ToPoint();
+                ArrowHelper.Draw(canvas, penEdges, arrowEnd, arrowStart);
+
+                // Value
                 angleHelper.DrawText(canvas, opacityFactor, brushFill, pointO, transformer, CalibrationHelper, styleData);
             }
         }

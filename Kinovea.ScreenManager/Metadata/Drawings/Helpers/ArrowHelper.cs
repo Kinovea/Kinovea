@@ -11,6 +11,8 @@ namespace Kinovea.ScreenManager
     {
         /// <summary>
         /// Draws an arrow at the "a" endpoint of segment [ab].
+        /// The base of the arrow is 1 pen width inside the segment.
+        /// The pointy end is 3 pen widths beyond the segment.
         /// </summary>
         public static void Draw(Graphics canvas, Pen penEdges, PointF a, PointF b)
         {
