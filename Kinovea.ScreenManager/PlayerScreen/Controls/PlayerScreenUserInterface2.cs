@@ -1077,7 +1077,7 @@ namespace Kinovea.ScreenManager
             btnToolPresets.Image = Resources.SwatchIcon3;
             btnToolPresets.Click += btnColorProfile_Click;
             btnToolPresets.ToolTipText = ScreenManagerLang.ToolTip_ColorProfile;
-            drawingToolbarPresenter.AddSpecialButton(btnToolPresets);
+            //drawingToolbarPresenter.AddSpecialButton(btnToolPresets);
 
             stripDrawingTools.Left = 3;
         }

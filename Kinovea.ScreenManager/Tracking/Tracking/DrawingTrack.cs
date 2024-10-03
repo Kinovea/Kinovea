@@ -333,17 +333,20 @@ namespace Kinovea.ScreenManager
             Color color = TrackColorCycler.Next();
             styleElements = new StyleElements();
             styleElements.Elements.Add("color", new StyleElementColor(color));
-            styleElements.Elements.Add("line size", new StyleElementLineSize(3));
             styleElements.Elements.Add("track shape", new StyleElementTrackShape(TrackShape.Solid));
+            styleElements.Elements.Add("line size", new StyleElementLineSize(3));
+            styleElements.Elements.Add("TrackPointSize", new StyleElementPenSize(3));
             styleElements.Elements.Add("label size", new StyleElementFontSize(8, ScreenManagerLang.StyleElement_FontSize_LabelSize));
 
             styleData.Color = color;
             styleData.LineSize = 3;
             styleData.TrackShape = TrackShape.Solid;
             styleData.Font = new Font("Arial", 8, FontStyle.Bold);
+            styleData.TrackPointSize = 1;
             
             // Listen to external changes of the style so we can update 
-            // the mini label if needed (if using same color).
+            // the mini label if needed (relevant only if showing the main label
+            // or key frame labels and using same color as main track).
             styleData.ValueChanged += StyleHelper_ValueChanged;
 
             BindStyle();
@@ -422,12 +425,15 @@ namespace Kinovea.ScreenManager
             mnuIsInteractiveTrack.Click += MnuIsInteractiveTrack_Click;
             mnuShowRotationCircle.Click += MnuShowRotationCircle_Click;
 
+            // Hide the "interactive track option" it's causing all sorts of difficulties 
+            // when there are multiple tracks in the same frame it makes it very hard to
+            // select the right one.
             mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuSeeFuture,
                 mnuShowTrackLabel,
                 mnuShowKeyframeLabel,
                 mnuUseKeyframeColor,
-                mnuIsInteractiveTrack,
+                //mnuIsInteractiveTrack,
                 mnuShowRotationCircle,
             });
         }
@@ -629,7 +635,7 @@ namespace Kinovea.ScreenManager
         }
         private int HitTestInteractive(PointF point, long currentTimestamp, int hitPointIndex, IImageToViewportTransformer transformer)
         {
-            // 0: track, 1: current point on track, 2: main label, 3+: keyframe label.
+            // -1: no hit, 0: track, 1: current point on track, 2: main label, 3+: keyframe label.
             int result = HitTestKeyframesLabels(point, currentTimestamp, transformer);
             if (result >= 0)
                 return result;
@@ -714,19 +720,25 @@ namespace Kinovea.ScreenManager
                     trackPen.Width = 1.0f;
                     canvas.DrawCurve(trackPen, viewPoints, tension);
                     foreach (PointF p in viewPoints)
+                    {
                         canvas.DrawEllipse(trackPen, p.Box(3));
+                    }
                 }
                 else
                 {
+
+                    // Trajectory line.
                     canvas.DrawCurve(trackPen, viewPoints, tension);
 
                     if (styleData.TrackShape.ShowSteps)
                     {
-                        using (Pen stepPen = new Pen(trackPen.Color, 2.0f))
+                        int trackPointSize = styleData.TrackPointSize;
+                        using (Brush stepBrush = new SolidBrush(trackPen.Color))
                         {
-                            int margin = (int)(trackPen.Width * 1.5);
                             foreach (Point p in viewPoints)
-                                canvas.DrawEllipse(stepPen, p.Box(margin));
+                            {
+                                canvas.FillEllipse(stepBrush, p.Box(trackPointSize));
+                            }
                         }
                     }
                 }
@@ -789,7 +801,7 @@ namespace Kinovea.ScreenManager
                     canvas.FillPath(brushBackground, backgroundPath);
                 }
 
-                // Draw boxes
+                // Draw search and template boxes
                 using (Pen p = new Pen(Color.FromArgb(255, styleData.Color)))
                 using (SolidBrush b = new SolidBrush(p.Color))
                 {
@@ -2015,8 +2027,9 @@ namespace Kinovea.ScreenManager
         private void BindStyle()
         {
             styleElements.Bind(styleData, "Color", "color");
-            styleElements.Bind(styleData, "LineSize", "line size");
             styleElements.Bind(styleData, "TrackShape", "track shape");
+            styleElements.Bind(styleData, "LineSize", "line size");
+            styleElements.Bind(styleData, "TrackPointSize", "TrackPointSize");
             styleElements.Bind(styleData, "Font", "label size");
         }
 

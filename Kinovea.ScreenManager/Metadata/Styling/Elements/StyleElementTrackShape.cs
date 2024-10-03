@@ -175,12 +175,12 @@ namespace Kinovea.ScreenManager
                 
             if(options[e.Index].ShowSteps)
             {
-                Pen stepPen = new Pen(Color.Black, 2);
+                Brush stepBrush = new SolidBrush(Color.Black);
                 int margin = (int)(lineWidth * 1.5);
                 int diameter = margin *2;
                 int left = e.Bounds.Width / 2;
-                e.Graphics.DrawEllipse(stepPen, e.Bounds.Left + left - margin, e.Bounds.Top + top - margin, diameter, diameter);
-                stepPen.Dispose();
+                e.Graphics.FillEllipse(stepBrush, e.Bounds.Left + left - margin, e.Bounds.Top + top - margin, diameter, diameter);
+                stepBrush.Dispose();
             }
                 
             p.Dispose();

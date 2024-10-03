@@ -158,6 +158,15 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// The radius of the track breadcrumbs.
+        /// </summary>
+        public int TrackPointSize
+        {
+            get { return trackPointSize; }
+            set { trackPointSize = value; }
+        }
+
+        /// <summary>
         /// The shape of the line for the pencil tool and other 
         /// tools that don't need squiggly lines like circle and rectangle.
         /// (solid or dashed).
@@ -235,6 +244,7 @@ namespace Kinovea.ScreenManager
                 hash ^= lineShape.GetHashCode();
                 hash ^= lineEnding.GetHashCode();
                 hash ^= trackShape.GetHashCode();
+                hash ^= trackPointSize.GetHashCode();
                 hash ^= penShape.GetHashCode();
                 hash ^= gridCols.GetHashCode();
                 hash ^= gridRows.GetHashCode();
@@ -253,6 +263,7 @@ namespace Kinovea.ScreenManager
         private LineShape lineShape     = LineShape.Solid;
         private LineEnding lineEnding   = LineEnding.None;
         private TrackShape trackShape   = TrackShape.Solid;
+        private int trackPointSize      = 1;
         private PenShape penShape       = PenShape.Solid;
         private int gridCols            = 4;
         private int gridRows            = 4;
@@ -344,6 +355,15 @@ namespace Kinovea.ScreenManager
                         if (targetType == typeof(TrackShape))
                         {
                             result = trackShape;
+                            converted = true;
+                        }
+                        break;
+                    }
+                case "TrackPointSize":
+                    {
+                        if (targetType == typeof(int))
+                        {
+                            result = trackPointSize;
                             converted = true;
                         }
                         break;
@@ -533,6 +553,20 @@ namespace Kinovea.ScreenManager
                             if (trackShape != (TrackShape)value)
                             {
                                 trackShape = (TrackShape)value;
+                                updated = true;
+                            }
+                        }
+
+                        break;
+                    }
+                case "TrackPointSize":
+                    {
+                        if (value is int)
+                        {
+                            imported = true;
+                            if (trackPointSize != (int)value)
+                            {
+                                trackPointSize = (int)value;
                                 updated = true;
                             }
                         }

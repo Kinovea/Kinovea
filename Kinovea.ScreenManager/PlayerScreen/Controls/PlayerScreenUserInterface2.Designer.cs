@@ -74,12 +74,12 @@ namespace Kinovea.ScreenManager
       this.tabProperties = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.tabPage2 = new System.Windows.Forms.TabPage();
+      this.tabPage3 = new System.Windows.Forms.TabPage();
       this.imgListPropertyTabs = new System.Windows.Forms.ImageList(this.components);
       this.stripDrawingTools = new System.Windows.Forms.ToolStrip();
       this.btnDockBottom = new System.Windows.Forms.Button();
       this.pnlThumbnails = new System.Windows.Forms.Panel();
       this.pictureBox1 = new System.Windows.Forms.PictureBox();
-      this.tabPage3 = new System.Windows.Forms.TabPage();
       this.panelTop.SuspendLayout();
       this.panelVideoControls.SuspendLayout();
       this.panel1.SuspendLayout();
@@ -936,13 +936,23 @@ namespace Kinovea.ScreenManager
       this.tabPage2.TabIndex = 1;
       this.tabPage2.UseVisualStyleBackColor = true;
       // 
+      // tabPage3
+      // 
+      this.tabPage3.ImageKey = "track.png";
+      this.tabPage3.Location = new System.Drawing.Point(4, 28);
+      this.tabPage3.Name = "tabPage3";
+      this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+      this.tabPage3.Size = new System.Drawing.Size(143, 199);
+      this.tabPage3.TabIndex = 2;
+      this.tabPage3.UseVisualStyleBackColor = true;
+      // 
       // imgListPropertyTabs
       // 
       this.imgListPropertyTabs.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgListPropertyTabs.ImageStream")));
       this.imgListPropertyTabs.TransparentColor = System.Drawing.Color.Transparent;
       this.imgListPropertyTabs.Images.SetKeyName(0, "comments2.png");
       this.imgListPropertyTabs.Images.SetKeyName(1, "colorswatch2.png");
-      this.imgListPropertyTabs.Images.SetKeyName(2, "quadrants.png");
+      this.imgListPropertyTabs.Images.SetKeyName(2, "track.png");
       // 
       // stripDrawingTools
       // 
@@ -986,7 +996,7 @@ namespace Kinovea.ScreenManager
       this.pnlThumbnails.Controls.Add(this.pictureBox1);
       this.pnlThumbnails.Location = new System.Drawing.Point(0, 27);
       this.pnlThumbnails.Name = "pnlThumbnails";
-      this.pnlThumbnails.Size = new System.Drawing.Size(600, 174);
+      this.pnlThumbnails.Size = new System.Drawing.Size(600, 176);
       this.pnlThumbnails.TabIndex = 3;
       this.pnlThumbnails.DoubleClick += new System.EventHandler(this.pnlThumbnails_DoubleClick);
       this.pnlThumbnails.MouseEnter += new System.EventHandler(this.pnlThumbnails_MouseEnter);
@@ -1000,16 +1010,6 @@ namespace Kinovea.ScreenManager
       this.pictureBox1.TabIndex = 2;
       this.pictureBox1.TabStop = false;
       this.pictureBox1.Visible = false;
-      // 
-      // tabPage3
-      // 
-      this.tabPage3.ImageKey = "quadrants.png";
-      this.tabPage3.Location = new System.Drawing.Point(4, 28);
-      this.tabPage3.Name = "tabPage3";
-      this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage3.Size = new System.Drawing.Size(143, 199);
-      this.tabPage3.TabIndex = 2;
-      this.tabPage3.UseVisualStyleBackColor = true;
       // 
       // PlayerScreenUserInterface
       // 
