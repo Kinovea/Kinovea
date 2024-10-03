@@ -4629,7 +4629,7 @@ namespace Kinovea.ScreenManager
             else if (sender == sidePanelTracking)
             {
                 sidePanelDrawing.UpdateName();
-
+                UpdateFramesMarkers();
                 // TODO: save tracking config as new preset.
 
             }

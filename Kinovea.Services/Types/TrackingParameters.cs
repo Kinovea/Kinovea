@@ -54,7 +54,7 @@ namespace Kinovea.Services
             get { return searchWindow; }
             set 
             { 
-                searchWindow = value;
+                searchWindow = ClampSize(value);
                 FitBlockWindow();
             }
         }
@@ -68,7 +68,7 @@ namespace Kinovea.Services
             get { return blockWindow; }
             set 
             { 
-                blockWindow = value;
+                blockWindow = ClampSize(value);
                 FitBlockWindow();
             }
         }
@@ -80,6 +80,7 @@ namespace Kinovea.Services
         public double SimilarityThreshold
         {
             get { return similarityThreshold; }
+            set { similarityThreshold = value; }
         }
 
         /// <summary>
@@ -91,6 +92,7 @@ namespace Kinovea.Services
         public double TemplateUpdateThreshold
         {
             get { return templateUpdateThreshold; }
+            set { templateUpdateThreshold = value; }
         }
 
         /// <summary>
@@ -132,6 +134,7 @@ namespace Kinovea.Services
         private double templateUpdateThreshold = 0.8; // using CCORR : 0.90 or 0.95, when using CCOEFF : 0.80.
         private int refinementNeighborhood = 1;
         private bool resetOnMove = true;
+        private int maxWindowSize = 400;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -198,6 +201,14 @@ namespace Kinovea.Services
             r.ReadEndElement();
         }
     
+
+        private Size ClampSize(Size size)
+        {
+            return new Size(
+                Math.Min(size.Width, maxWindowSize), 
+                Math.Min(size.Height, maxWindowSize));
+        }
+
         /// <summary>
         /// Make sure the search window is at least as large as the template window.
         /// </summary>

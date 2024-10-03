@@ -1076,7 +1076,11 @@ namespace Kinovea.ScreenManager
             if (track == null)
                 return;
 
+            if (PreferencesManager.PlayerPreferences.TrackingParameters.ContentHash == track.TrackerParameters.ContentHash)
+                return;
+
             PreferencesManager.PlayerPreferences.TrackingParameters = track.TrackerParameters.Clone();
+            PreferencesManager.Save();
         }
 
         public void InitializeCommit(VideoFrame videoFrame, PointF point)

@@ -529,8 +529,7 @@ namespace Kinovea.ScreenManager
                 if (trackStatus == TrackStatus.Configuration)
                 {
                     UpdateBoundingBoxes();
-                    if (TrackerParametersChanged != null)
-                        TrackerParametersChanged(this, EventArgs.Empty);
+                    TrackerParametersChanged?.Invoke(this, EventArgs.Empty);
                 }
 
                 return;
@@ -560,8 +559,7 @@ namespace Kinovea.ScreenManager
                 tracker.Parameters.BlockWindow = blockBox.Rectangle.Size;
 
                 UpdateBoundingBoxes();
-                if (TrackerParametersChanged != null)
-                    TrackerParametersChanged(this, EventArgs.Empty);
+                TrackerParametersChanged?.Invoke(this, EventArgs.Empty);
             }
         }
         public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
@@ -776,25 +774,28 @@ namespace Kinovea.ScreenManager
                 Point location = transformer.Transform(positions[drawPointIndex].Point);
                 Size searchSize = transformer.Transform(tracker.Parameters.SearchWindow);
                 Size blockSize = transformer.Transform(tracker.Parameters.BlockWindow);
-                Rectangle searchBox = location.Box(searchSize);
+                
+                Rectangle rectSearch = location.Box(searchSize);
+                Rectangle rectBlock = location.Box(blockSize);
 
                 // Dim background.
                 GraphicsPath backgroundPath = new GraphicsPath();
                 backgroundPath.AddRectangle(canvas.ClipBounds);
                 GraphicsPath searchBoxPath = new GraphicsPath();
-                searchBoxPath.AddRectangle(searchBox);
+                searchBoxPath.AddRectangle(rectSearch);
                 backgroundPath.AddPath(searchBoxPath, false);
                 using (SolidBrush brushBackground = new SolidBrush(Color.FromArgb(160, Color.Black)))
                 {
                     canvas.FillPath(brushBackground, backgroundPath);
                 }
 
-                // Tool
+                // Draw boxes
                 using (Pen p = new Pen(Color.FromArgb(255, styleData.Color)))
                 using (SolidBrush b = new SolidBrush(p.Color))
                 {
-                    this.searchBox.Draw(canvas, searchBox, p, b, 4);
-                    blockBox.Draw(canvas, location.Box(blockSize), p, b, 3);
+                    searchBox.Draw(canvas, rectSearch, p, b, 4);
+                    blockBox.Draw(canvas, rectBlock, p, b, 3);
+                    canvas.DrawEllipse(p, rectBlock);
                 }
             }
         }
@@ -1224,9 +1225,7 @@ namespace Kinovea.ScreenManager
 
         private void MnuTrackingStart_Click(object sender, EventArgs e)
         {
-            CheckCustomDecodingSize(true);
-            trackStatus = TrackStatus.Edit;
-            AfterTrackStatusChanged();
+            StartTracking();
             InvalidateFromMenu(sender);
         }
 
@@ -1244,25 +1243,15 @@ namespace Kinovea.ScreenManager
 
             host.UpdateFramesMarkers();
 
-            CheckCustomDecodingSize(false);
+            
             InvalidateFromMenu(sender);
         }
-
+        
         private void MnuTrackingTrim_Click(object sender, EventArgs e)
         {
-            CaptureMemento(SerializationFilter.Core);
-
             long timestamp = CurrentTimestampFromMenu(sender);
-
-            // Delete end of track.
-            drawPointIndex = FindClosestPoint(timestamp);
-            if (drawPointIndex < positions.Count - 1)
-                positions.RemoveRange(drawPointIndex + 1, positions.Count - drawPointIndex - 1);
-
-            endTimeStamp = positions[positions.Count - 1].T;
-
-            UpdateKinematics();
-            UpdateKeyframeLabels();
+            Trim(timestamp);
+            
             UpdateFramesMarkersFromMenu(sender);
             InvalidateFromMenu(sender);
         }
@@ -1339,13 +1328,52 @@ namespace Kinovea.ScreenManager
 
         #region Tracking
 
+        public void ToggleTracking()
+        {
+            if (trackStatus == TrackStatus.Interactive)
+            {
+                StartTracking();
+            }
+            else
+            {
+                StopTracking();
+            }
+        }
+
+        public void StartTracking()
+        {
+            CheckCustomDecodingSize(true);
+            trackStatus = TrackStatus.Edit;
+            AfterTrackStatusChanged();
+            TrackerParametersChanged?.Invoke(this, EventArgs.Empty);
+        }
         /// <summary>
         /// Close the tracking. The points are now read only until tracking is started again.
         /// </summary>
         public void StopTracking()
         {
             trackStatus = TrackStatus.Interactive;
+            CheckCustomDecodingSize(false);
             AfterTrackStatusChanged();
+            TrackerParametersChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Trim the end of the track after the specified timestamp.
+        /// </summary>
+        public void Trim(long timestamp)
+        {
+            CaptureMemento(SerializationFilter.Core);
+
+            // Delete end of track.
+            drawPointIndex = FindClosestPoint(timestamp);
+            if (drawPointIndex < positions.Count - 1)
+                positions.RemoveRange(drawPointIndex + 1, positions.Count - drawPointIndex - 1);
+
+            endTimeStamp = positions[positions.Count - 1].T;
+
+            UpdateKinematics();
+            UpdateKeyframeLabels();
         }
 
         /// <summary>

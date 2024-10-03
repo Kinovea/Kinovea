@@ -1,12 +1,9 @@
-﻿using Kinovea.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Web;
 using System.Windows.Forms;
+using Kinovea.Services;
 
 
 namespace Kinovea.ScreenManager
@@ -39,7 +36,7 @@ namespace Kinovea.ScreenManager
         private bool manualUpdate;
         private bool editing;
         private Pen penBorder = Pens.Silver;
-        public static readonly List<TrackingAlgorithm> options = new List<TrackingAlgorithm>() { 
+        public static readonly List<TrackingAlgorithm> options = new List<TrackingAlgorithm>() {
             TrackingAlgorithm.Correlation,
             TrackingAlgorithm.RoundMarker,
             TrackingAlgorithm.QuadrantMarker,
@@ -70,8 +67,11 @@ namespace Kinovea.ScreenManager
             NudHelper.FixNudScroll(nudSearchWindowHeight);
             NudHelper.FixNudScroll(nudObjWindowWidth);
             NudHelper.FixNudScroll(nudObjWindowHeight);
-            NudHelper.FixNudScroll(nudTolerance);
-            NudHelper.FixNudScroll(nudKeepAlive);
+            NudHelper.FixNudScroll(nudMatchTreshold);
+            NudHelper.FixNudScroll(nudUpdateThreshold);
+
+            btnStartStop.Image = Properties.Drawings.trackingplay;
+            btnStartStop.ImageAlign = ContentAlignment.MiddleLeft;
         }
         #endregion
 
@@ -104,7 +104,7 @@ namespace Kinovea.ScreenManager
                 //viewportController.Refresh();
                 return;
             }
-            
+
             manualUpdate = true;
             ForgetDrawing();
 
@@ -121,7 +121,7 @@ namespace Kinovea.ScreenManager
             metadataRenderer = new MetadataRenderer(metadata, true);
             metadataRenderer.SetSoloMode(true, drawing.Id, true);
             screenToolManager.SetSoloMode(true, drawing.Id, true);
-            
+
             metadataManipulator = new MetadataManipulator(metadata, screenToolManager);
             metadataManipulator.SetFixedTimestamp(hostView.CurrentTimestamp);
             metadataManipulator.SetFixedKeyframe(-1);
@@ -150,7 +150,7 @@ namespace Kinovea.ScreenManager
             interactionTimer.Start();
 
             SetupControls();
-            
+
             manualUpdate = false;
         }
 
@@ -212,6 +212,8 @@ namespace Kinovea.ScreenManager
             if (drawing is DrawingTrack)
             {
                 center = ((DrawingTrack)drawing).GetPosition(timestamp);
+                if (float.IsNaN(center.X) || float.IsNaN(center.Y) || center.IsEmpty)
+                    center = imgSize.Center();
             }
 
             // Scale such that the search window fits in the viewport.
@@ -223,7 +225,7 @@ namespace Kinovea.ScreenManager
                 float scaleY = (float)pnlViewport.Height / searchSize.Height;
                 scale = Math.Min(scaleX, scaleY) * 0.9f;
             }
-    
+
             PointF normalizedPosition = new PointF(center.X / imgSize.Width, center.Y / imgSize.Height);
             SizeF normalizedHostSize = new SizeF((float)pnlViewport.Width / imgSize.Width, (float)pnlViewport.Height / imgSize.Height);
             PointF normalizedHostCenter = new PointF(normalizedHostSize.Width / 2, normalizedHostSize.Height / 2);
@@ -235,13 +237,12 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// The parameters were changed via the mini editor.
+        /// The parameters were changed via the mini viewport.
         /// </summary>
         private void Track_TrackerParametersChanged(object sender, EventArgs e)
         {
             UpdateTrackingParameters();
-
-            DrawingModified?.Invoke(this, new DrawingEventArgs(drawing, managerId));
+            RaiseDrawingModified();
         }
 
         /// <summary>
@@ -251,7 +252,7 @@ namespace Kinovea.ScreenManager
         {
             manualUpdate = true;
 
-            
+
             if (drawing is DrawingTrack)
             {
                 DrawingTrack track = (DrawingTrack)drawing;
@@ -260,9 +261,24 @@ namespace Kinovea.ScreenManager
                 nudSearchWindowHeight.Value = tp.SearchWindow.Height;
                 nudObjWindowWidth.Value = tp.BlockWindow.Width;
                 nudObjWindowHeight.Value = tp.BlockWindow.Height;
+                nudMatchTreshold.Value = (decimal)tp.SimilarityThreshold;
+                nudUpdateThreshold.Value = (decimal)tp.TemplateUpdateThreshold;
+                UpdateStartStopButton(track.Status);
             }
 
             manualUpdate = false;
+        }
+
+        private void UpdateStartStopButton(TrackStatus status)
+        {
+            btnStartStop.Image = status == TrackStatus.Interactive ? Properties.Drawings.trackingplay : Properties.Drawings.trackstop;
+            btnStartStop.Text = status == TrackStatus.Interactive ? "Start tracking" : "Stop tracking";
+        }
+
+        private void RaiseDrawingModified()
+        {
+            if (drawing != null)
+                DrawingModified?.Invoke(this, new DrawingEventArgs(drawing, managerId));
         }
 
         /// <summary>
@@ -350,6 +366,7 @@ namespace Kinovea.ScreenManager
             {
                 DrawingTrack track = (DrawingTrack)drawing;
                 track.TrackerParameters.SearchWindow = new Size(width, height);
+                RaiseDrawingModified();
             }
         }
 
@@ -364,6 +381,50 @@ namespace Kinovea.ScreenManager
             {
                 DrawingTrack track = (DrawingTrack)drawing;
                 track.TrackerParameters.BlockWindow = new Size(width, height);
+                RaiseDrawingModified();
+            }
+        }
+
+        private void nudThresholds_ValueChanged(object sender, EventArgs e)
+        {
+            if (manualUpdate)
+                return;
+
+            double matchThreshold = (double)nudMatchTreshold.Value;
+            double updateThreshold = (double)nudUpdateThreshold.Value;
+            if (drawing is DrawingTrack)
+            {
+                DrawingTrack track = (DrawingTrack)drawing;
+                track.TrackerParameters.SimilarityThreshold = matchThreshold;
+                track.TrackerParameters.TemplateUpdateThreshold = updateThreshold;
+                RaiseDrawingModified();
+            }
+        }
+
+        private void grpTracking_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnStartStop_Click(object sender, EventArgs e)
+        {
+            // Toggle tracking.
+            if (drawing is DrawingTrack)
+            {
+                DrawingTrack track = (DrawingTrack)drawing;
+                track.ToggleTracking();
+                UpdateStartStopButton(track.Status);
+                RaiseDrawingModified();
+            }
+        }
+
+        private void btnTrimTrack_Click(object sender, EventArgs e)
+        {
+            if (drawing is DrawingTrack)
+            {
+                DrawingTrack track = (DrawingTrack)drawing;
+                track.Trim(viewportController.Timestamp);
+                RaiseDrawingModified();
             }
         }
     }

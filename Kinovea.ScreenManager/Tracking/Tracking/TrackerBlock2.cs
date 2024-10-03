@@ -27,6 +27,7 @@ using System.IO;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using Kinovea.Services;
+using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
@@ -42,14 +43,18 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class TrackerBlock2 : AbstractTracker
     {
+        #region Properties
         public override TrackingParameters Parameters
         {
             get { return parameters; }
         }
+        #endregion
 
         #region Members
         private TrackingParameters parameters = new TrackingParameters();
-        
+        private Bitmap mask;
+        private OpenCvSharp.Mat cvMaskGray = new OpenCvSharp.Mat();
+
         // Monitoring, debugging.
         private static readonly bool monitoring = false;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -94,9 +99,28 @@ namespace Kinovea.ScreenManager
                 int resWidth = searchZone.Width - lastTrackPoint.Template.Width + 1;
                 int resHeight = searchZone.Height - lastTrackPoint.Template.Height + 1;
 
-                // From camera motion.
+                
+                // Make a mask to avoid matching on the background.
+                System.Drawing.Size tplSize = new System.Drawing.Size(cvTemplate.Width, cvTemplate.Height);
+                if (mask == null || mask.Width != tplSize.Width || mask.Height != tplSize.Height)
+                {
+                    if (mask != null)
+                    {
+                        mask.Dispose();
+                    }
+
+                    // Paint a white ellipse on a blank template.
+                    // Store it in cvMaskGray.
+                    mask = new Bitmap(tplSize.Width, tplSize.Height);
+                    Graphics g = Graphics.FromImage(mask);
+                    g.FillEllipse(Brushes.White, new Rectangle(System.Drawing.Point.Empty, tplSize));
+                    var cvMask = OpenCvSharp.Extensions.BitmapConverter.ToMat(mask);
+                    OpenCvSharp.Cv2.CvtColor(cvMask, cvMaskGray, OpenCvSharp.ColorConversionCodes.BGR2GRAY, 0);
+                    cvMask.Dispose();
+                }
+
                 Mat similarityMap = new Mat(new OpenCvSharp.Size(resWidth, resHeight), MatType.CV_32FC1);
-                Cv2.MatchTemplate(cvImageROI, cvTemplate, similarityMap, TemplateMatchModes.CCoeffNormed);
+                Cv2.MatchTemplate(cvImageROI, cvTemplate, similarityMap, TemplateMatchModes.CCoeffNormed, cvMaskGray);
 
                 // Find max
                 double bestScore = 0;
@@ -127,13 +151,16 @@ namespace Kinovea.ScreenManager
                 //if(monitoring)
                 //{
                 //    // Save the similarity map to file.
-                //    Image<Gray, Byte> mapNormalized = new Image<Gray, Byte>(similarityMap.Width, similarityMap.Height);
-                //    CvInvoke.cvNormalize(similarityMap.Ptr, mapNormalized.Ptr, 0, 255, NORM_TYPE.CV_MINMAX, IntPtr.Zero);
+                //    //Mat mapNormalized = new Mat(new OpenCvSharp.Size(resWidth, resHeight), MatType.CV_32FC1);
+                //    //Image<Gray, Byte> mapNormalized = new Image<Gray, Byte>(similarityMap.Width, similarityMap.Height);
+                //    //CvInvoke.cvNormalize(similarityMap.Ptr, mapNormalized.Ptr, 0, 255, NORM_TYPE.CV_MINMAX, IntPtr.Zero);
+                //    Mat map8u = new Mat(new OpenCvSharp.Size(resWidth, resHeight), MatType.CV_8U);
+                //    //similarityMap.ConvertTo(map8u, MatType.CV_8U);
+                //    Cv2.Normalize(similarityMap, map8u, 0, 255, NormTypes.MinMax, MatType.CV_8U);
 
-                //    Bitmap bmpMap = mapNormalized.ToBitmap();
-
-                //    string tplDirectory = @"C:\Users\Joan\Videos\Kinovea\Video Testing\Tracking\simimap";
-                //    bmpMap.Save(tplDirectory + String.Format(@"\simiMap-{0:000}-{1:0.00}.bmp", previousPoints.Count, bestScore));
+                //    Bitmap bmpMap = map8u.ToBitmap();
+                //    string tplDirectory = @"G:\temp\simimap";
+                //    bmpMap.Save(tplDirectory + string.Format(@"\simiMap-{0:000}-{1:0.00}.png", previousPoints.Count, bestScore));
                 //}
                 #endregion
 
@@ -148,8 +175,8 @@ namespace Kinovea.ScreenManager
                 else
                 {
                     // No match. Create the point at the center of the search window (whatever that might be).
-                    currentPoint = CreateTrackPoint(false, lastPoint, 0.0f, time, currentImage, previousPoints);
-                    log.Debug("Track failed. No block over the similarity treshold in the search window.");
+                    currentPoint = CreateTrackPoint(false, lastPoint, max, time, currentImage, previousPoints);
+                    log.DebugFormat("Track failed. Best candidate: {0} < {1}.", max, parameters.SimilarityThreshold);
 
                     // from master.
                     //currentPoint = CreateTrackPoint(false, lastPoint, 0.0f, position, img, previousPoints);
@@ -251,18 +278,18 @@ namespace Kinovea.ScreenManager
             if(monitoring && updateWithCurrentImage)
             {
                 // Save current template to file, to visually monitor the drift.
-                string tplDirectory = @"";
-                if(previousPoints.Count <= 1)
-                {
-                    // Clean up folder.
-                    string[] tplFiles = Directory.GetFiles(tplDirectory, "*.bmp");
-                    foreach (string f in tplFiles)
-                    {
-                        File.Delete(f);
-                    }
-                }
-                String iFileName = String.Format("{0}\\tpl-{1:000}.bmp", tplDirectory, previousPoints.Count);
-                tpl.Save(iFileName);
+                //string tplDirectory = @"";
+                //if(previousPoints.Count <= 1)
+                //{
+                //    // Clean up folder.
+                //    string[] tplFiles = Directory.GetFiles(tplDirectory, "*.bmp");
+                //    foreach (string f in tplFiles)
+                //    {
+                //        File.Delete(f);
+                //    }
+                //}
+                //String iFileName = String.Format("{0}\\tpl-{1:000}.bmp", tplDirectory, previousPoints.Count);
+                //tpl.Save(iFileName);
             }
             #endregion
 
@@ -286,28 +313,30 @@ namespace Kinovea.ScreenManager
         {
             // Draw the search and template boxes around the point.
             var p = transformer.Transform(point.Point);
-            Rectangle search = p.Box(transformer.Transform(parameters.SearchWindow));
+            Rectangle rectSearch = p.Box(transformer.Transform(parameters.SearchWindow));
+            Rectangle rectTemplate = p.Box(transformer.Transform(parameters.BlockWindow));
 
             using(Pen pen = new Pen(Color.FromArgb((int)(opacityFactor * 192), color)))
             {
-                canvas.DrawRectangle(pen, search);
-                canvas.DrawRectangle(pen, p.Box(transformer.Transform(parameters.BlockWindow)));
+                canvas.DrawRectangle(pen, rectSearch);
+                canvas.DrawRectangle(pen, rectTemplate);
+                canvas.DrawEllipse(pen, rectTemplate);
 
-                //DrawDebugInfo(canvas, point, search);
+                DrawDebugInfo(canvas, point, rectSearch, color);
             }
         }
 
-        private void DrawDebugInfo(Graphics canvas, AbstractTrackPoint point, RectangleF search)
+        private void DrawDebugInfo(Graphics canvas, AbstractTrackPoint point, RectangleF search, Color color)
         {
             TrackPointBlock tpb = point as TrackPointBlock;
 
             if (tpb == null)
                 return;
 
-            Font f = new Font("Consolas", 8, FontStyle.Bold);
-            string text = string.Format("simi:{0:0.000}, age:{1}, pos:{2:0.000}×{3:0.000}", tpb.Similarity, tpb.TemplateAge, tpb.Point.X, tpb.Point.Y);
-            Brush b = tpb.Similarity > parameters.TemplateUpdateThreshold ? Brushes.Green : Brushes.Red;
-            canvas.DrawString(text, f, b, search.Location.Translate(0, -25));
+            Font f = new Font("Consolas", 10, FontStyle.Bold);
+            string text = string.Format("{0:0.000} ({1})", tpb.Similarity, tpb.TemplateAge);
+            using (Brush b = new SolidBrush(color))
+                canvas.DrawString(text, f, b, search.Location.Translate(0, -25));
 
             f.Dispose();
         }
