@@ -58,7 +58,10 @@ namespace Kinovea.ScreenManager
             get { return sweep; }
         }
 
-        public Rectangle BoundingBox
+        /// <summary>
+        /// The bounding box of the full circle.
+        /// </summary>
+        public RectangleF BoundingBox
         {
             get { return boundingBox; }
         }
@@ -86,7 +89,7 @@ namespace Kinovea.ScreenManager
         private float start = 270;
         private float sweep = 90;
         private PointF origin = PointF.Empty;
-        private Rectangle boundingBox = Rectangle.Empty;
+        private RectangleF boundingBox = RectangleF.Empty;
         private PointF arrowEnd = PointF.Empty;
         private PointF arrowStart = PointF.Empty;
         private Region hitRegion;
@@ -177,34 +180,45 @@ namespace Kinovea.ScreenManager
                 Vector vob = new Vector(o, b);
                 arrowEnd = o + vob.Normalized() * radius;
 
-                // For the origin direction of the arrow, if we use the end of the tangent it looks offset.
-                // take a point at a small arc along the circle instead.
-                float radians = MathHelper.Radians(10);
-                if ((ccw && neg) || (!ccw && !neg))
-                    radians = -radians;
+                // For the origin direction of the arrow, if we use the tangent it looks offset
+                // for some reason. Take a point at a small arc along the circle instead.
+                bool useTangent = false;
+                if (useTangent)
+                {
+                    if ((ccw && neg) || (!ccw && !neg))
+                        arrowStart = arrowEnd + new Vector(vob.Y, -vob.X).Normalized() * 100;
+                    else 
+                        arrowStart = arrowEnd + new Vector(-vob.Y, vob.X).Normalized() * 100;
+                }
+                else
+                {
+                    float radians = MathHelper.Radians(1);
+                    if ((ccw && neg) || (!ccw && !neg))
+                        radians = -radians;
 
-                double cx = Math.Cos(radians);
-                double cy = Math.Sin(radians);
-                Vector dirX = vob.Normalized() * radius;
-                Vector dirY = new Vector(-dirX.Y, dirX.X);
-                arrowStart = o + dirX * (float)cx + dirY * (float)cy;
-                Vector arrowDir = new Vector(arrowEnd, arrowStart);
-                arrowStart = arrowEnd + arrowDir.Normalized() * 100;
+                    double cx = Math.Cos(radians);
+                    double cy = Math.Sin(radians);
+                    Vector dirX = vob.Normalized() * radius;
+                    Vector dirY = new Vector(-dirX.Y, dirX.X);
+                    arrowStart = o + dirX * (float)cx + dirY * (float)cy;
+                    Vector arrowDir = new Vector(arrowEnd, arrowStart);
+                    arrowStart = arrowEnd + arrowDir.Normalized() * 100;
+                }
             }
 
-            boundingBox = o.Box((int)radius).ToRectangle();
+            boundingBox = o.Box((int)radius);
         }
 
         private void UpdateHitRegion()
         {
-            if (boundingBox.Size == Size.Empty)
+            if (boundingBox.Size == SizeF.Empty)
                 return;
 
             try
             {
                 using (GraphicsPath path = new GraphicsPath())
                 {
-                    path.AddPie(boundingBox, start, sweep);
+                    path.AddPie(boundingBox.ToRectangle(), start, sweep);
 
                     if (hitRegion != null)
                         hitRegion.Dispose();

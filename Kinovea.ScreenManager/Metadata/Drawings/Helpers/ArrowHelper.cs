@@ -18,14 +18,14 @@ namespace Kinovea.ScreenManager
         {
             Vector v = new Vector(a, b);
             float norm = v.Norm();
-            
+
             // The arrow is drawn at the start point of the segment, so the vector [ab] can be used to get relative segments.
             // All dimensions are relative to the segment width.
             // Left and Right are to be understood as when the arrow is pointing downwards.
 
             float refLength = penEdges.Width;
             refLength = Math.Max(refLength, 4);
-            
+
             // 1. Point along the segment, inside the segment.
             float triangleBaseRatio = refLength / norm;
             Vector triangleBaseRelative = v * triangleBaseRatio;
@@ -45,6 +45,11 @@ namespace Kinovea.ScreenManager
             PointF triangleRight = new PointF(triangleBase.X + triangleRightRelative.X, triangleBase.Y + triangleRightRelative.Y);
 
             FillTriangle(canvas, penEdges.Color, triangleTop, triangleLeft, triangleRight);
+            
+            // Debug
+            //canvas.DrawLine(Pens.Black, triangleTop, triangleLeft);
+            //canvas.DrawLine(Pens.Black, triangleTop, triangleRight);
+            //canvas.DrawLine(Pens.Black, triangleLeft, triangleRight);
         }
 
         /// <summary>

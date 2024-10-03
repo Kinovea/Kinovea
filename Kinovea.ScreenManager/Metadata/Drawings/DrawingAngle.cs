@@ -61,6 +61,7 @@ namespace Kinovea.ScreenManager
                 hash ^= signedAngle.GetHashCode();
                 hash ^= counterClockwise.GetHashCode();
                 hash ^= supplementaryAngle.GetHashCode();
+                hash ^= showCircle.GetHashCode();
                 return hash; 
             }
         } 
@@ -91,6 +92,7 @@ namespace Kinovea.ScreenManager
                 mnuSignedAngle.Checked = signedAngle;
                 mnuCounterClockwise.Checked = counterClockwise;
                 mnuSupplementaryAngle.Checked = supplementaryAngle;
+                mnuShowCircle.Checked = showCircle;
 
                 return contextMenu; 
             }
@@ -120,12 +122,14 @@ namespace Kinovea.ScreenManager
         private bool signedAngle = true;
         private bool counterClockwise = true;
         private bool supplementaryAngle = false;
+        private bool showCircle = false;
 
         #region Context menu
         private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSignedAngle = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCounterClockwise = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSupplementaryAngle = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuShowCircle = new ToolStripMenuItem();
         #endregion
 
         private static readonly int defaultBackgroundAlpha = 92;
@@ -161,14 +165,18 @@ namespace Kinovea.ScreenManager
             mnuOptions.Image = Properties.Resources.equalizer;
             // TODO: images.
 
+            mnuShowCircle.Image = Properties.Drawings.circle;
+
             mnuSignedAngle.Click += mnuSignedAngle_Click;
             mnuCounterClockwise.Click += mnuCounterClockwise_Click;
             mnuSupplementaryAngle.Click += mnuSupplementaryAngle_Click;
+            mnuShowCircle.Click += mnuShowCircle_Click;
 
             mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuSignedAngle,
                 mnuCounterClockwise,
                 mnuSupplementaryAngle,
+                mnuShowCircle,
             });
         }
         #endregion
@@ -187,8 +195,8 @@ namespace Kinovea.ScreenManager
             Point pointB = transformer.Transform(points["b"]);
             Rectangle boundingBox = transformer.Transform(angleHelper.SweepAngle.BoundingBox);
 
-            Point arrowStart = transformer.Transform(angleHelper.SweepAngle.ArrowStart);
-            Point arrowEnd = transformer.Transform(angleHelper.SweepAngle.ArrowEnd);
+            PointF arrowStart = transformer.Transform(angleHelper.SweepAngle.ArrowStart);
+            PointF arrowEnd = transformer.Transform(angleHelper.SweepAngle.ArrowEnd);
 
             if (boundingBox.Size == Size.Empty)
                 return;
@@ -197,28 +205,49 @@ namespace Kinovea.ScreenManager
             using(SolidBrush brushEdges = styleData.GetBackgroundBrush((int)(opacityFactor*255)))
             using(SolidBrush brushFill = styleData.GetBackgroundBrush((int)(opacityFactor*defaultBackgroundAlpha)))
             {
-                penEdges.Width = 2;
+                penEdges.Width = 2.0f;
                 
                 // Disk section
                 canvas.FillPie(brushFill, boundingBox, angleHelper.SweepAngle.Start, angleHelper.SweepAngle.Sweep);
-                canvas.DrawArc(penEdges, boundingBox, angleHelper.SweepAngle.Start, angleHelper.SweepAngle.Sweep);
 
-                // Edges
+                // Arc or full circle.
+                if (showCircle)
+                {
+                    canvas.DrawEllipse(penEdges, boundingBox);
+                }
+                else
+                {
+                    canvas.DrawArc(penEdges, boundingBox, angleHelper.SweepAngle.Start, angleHelper.SweepAngle.Sweep);
+                    //canvas.DrawArc(Pens.Red, boundingBox, angleHelper.SweepAngle.Start, angleHelper.SweepAngle.Sweep);
+                }
+                
+                // Debug: reference plane.
+                //canvas.DrawRectangle(Pens.Violet, boundingBox);
+
+                // Reference leg.
                 penEdges.DashStyle = DashStyle.Dash;
                 canvas.DrawLine(penEdges, pointO, pointA);
+
+                // Measurement leg.
                 penEdges.DashStyle = DashStyle.Solid;
                 canvas.DrawLine(penEdges, pointO, pointB);
     
-                // Handlers
+                // Handlers.
                 canvas.DrawEllipse(penEdges, pointO.Box(3));
                 canvas.FillEllipse(brushEdges, pointA.Box(3));
                 canvas.FillEllipse(brushEdges, pointB.Box(3));
 
                 // Arrow
-                //canvas.DrawLine(penEdges, arrowStart, arrowEnd);
-                PointF arrowOffsetEnd = ArrowHelper.GetOffset(penEdges.Width, arrowEnd, arrowStart);
-                arrowEnd = new PointF(arrowEnd.X + arrowOffsetEnd.X, arrowEnd.Y + arrowOffsetEnd.Y).ToPoint();
-                ArrowHelper.Draw(canvas, penEdges, arrowEnd, arrowStart);
+                if (boundingBox.Size.Width > 100)
+                {
+                    //Debug: arrow dir
+                    //canvas.DrawLine(Pens.Blue, arrowStart, arrowEnd);
+                    PointF arrowOffsetEnd = ArrowHelper.GetOffset(penEdges.Width, arrowEnd, arrowStart);
+                    arrowEnd = new PointF(arrowEnd.X + arrowOffsetEnd.X, arrowEnd.Y + arrowOffsetEnd.Y);
+                    ArrowHelper.Draw(canvas, penEdges, arrowEnd, arrowStart);
+                    // Debug: arrow dir
+                    //canvas.DrawLine(Pens.Red, arrowStart, arrowEnd);
+                }
 
                 // Value
                 angleHelper.DrawText(canvas, opacityFactor, brushFill, pointO, transformer, CalibrationHelper, styleData);
@@ -321,6 +350,9 @@ namespace Kinovea.ScreenManager
                     case "Supplementary":
                         supplementaryAngle = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
+                    case "ShowCircle":
+                        showCircle = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
+                        break;
                     case "DrawingStyle":
                         styleElements.ImportXML(xmlReader);
                         BindStyle();
@@ -361,6 +393,7 @@ namespace Kinovea.ScreenManager
                 w.WriteElementString("Signed", XmlHelper.WriteBoolean(signedAngle));
                 w.WriteElementString("CCW", XmlHelper.WriteBoolean(counterClockwise));
                 w.WriteElementString("Supplementary", XmlHelper.WriteBoolean(supplementaryAngle));
+                w.WriteElementString("ShowCircle", XmlHelper.WriteBoolean(showCircle));
             }
 
             if (ShouldSerializeStyle(filter))
@@ -446,8 +479,6 @@ namespace Kinovea.ScreenManager
             signedAngle = !mnuSignedAngle.Checked;
             SignalAllTrackablePointsMoved();
             InvalidateFromMenu(sender);
-
-            mnuSignedAngle.Checked = signedAngle;
         }
 
         private void mnuCounterClockwise_Click(object sender, EventArgs e)
@@ -456,8 +487,6 @@ namespace Kinovea.ScreenManager
             counterClockwise = !mnuCounterClockwise.Checked;
             SignalAllTrackablePointsMoved();
             InvalidateFromMenu(sender);
-            
-            mnuCounterClockwise.Checked = counterClockwise;
         }
 
         private void mnuSupplementaryAngle_Click(object sender, EventArgs e)
@@ -466,8 +495,13 @@ namespace Kinovea.ScreenManager
             supplementaryAngle = !mnuSupplementaryAngle.Checked;
             SignalAllTrackablePointsMoved();
             InvalidateFromMenu(sender);
+        }
 
-            mnuSupplementaryAngle.Checked = supplementaryAngle;
+        private void mnuShowCircle_Click(object sender, EventArgs e)
+        {
+            CaptureMemento(SerializationFilter.Core);
+            showCircle = !mnuShowCircle.Checked;
+            InvalidateFromMenu(sender);
         }
 
         #endregion
@@ -540,6 +574,7 @@ namespace Kinovea.ScreenManager
             mnuSignedAngle.Text = ScreenManagerLang.mnuSignedAngle;
             mnuCounterClockwise.Text = ScreenManagerLang.mnuCounterClockwise;
             mnuSupplementaryAngle.Text = ScreenManagerLang.mnuSupplementaryAngle;
+            mnuShowCircle.Text = "Show circle";
         }
         #endregion
     } 
