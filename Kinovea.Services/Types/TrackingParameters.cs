@@ -74,8 +74,9 @@ namespace Kinovea.Services
         }
 
         /// <summary>
-        /// The similarity value above which we consider a match.
-        /// Used by template matching.
+        /// Threshold for "fair" matches.
+        /// If the match is "fair" but not "good" we update the template to reflect the change.
+        /// If a match is not even "fair" we consider it a tracking failure.
         /// </summary>
         public double SimilarityThreshold
         {
@@ -84,10 +85,8 @@ namespace Kinovea.Services
         }
 
         /// <summary>
-        /// The similarity value under which we update the reference template with the current template.
-        /// Used by template matching.
-        /// Above this value the template is not considered very different 
-        /// so we keep the reference one for next matching.
+        /// Threshold for "good" matches.
+        /// For matches above this value we don't update the template.
         /// </summary>
         public double TemplateUpdateThreshold
         {

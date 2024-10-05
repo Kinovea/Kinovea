@@ -509,7 +509,7 @@ namespace Kinovea.ScreenManager
                 case TrackingAlgorithm.Correlation:
                     {
                         e.Graphics.DrawImage(Properties.Resources.image_blur, rect);
-                        e.Graphics.DrawString("Correlation", e.Font, Brushes.Black, textTopLeft);
+                        e.Graphics.DrawString("Template matching", e.Font, Brushes.Black, textTopLeft);
                         break;
                     }
                 case TrackingAlgorithm.RoundMarker:

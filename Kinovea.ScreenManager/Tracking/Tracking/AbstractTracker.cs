@@ -65,11 +65,10 @@ namespace Kinovea.ScreenManager
         public abstract AbstractTrackPoint CreateOrphanTrackPoint(PointF p, long t);
 
         /// <summary>
-        /// Draw a visual representation of the tracking taking place.
-        /// This may only make sense for users having an idea of how the tracking works.
+        /// Draw the tracker gizmo.
         /// </summary>
-        public abstract void Draw(Graphics canvas, AbstractTrackPoint point, IImageToViewportTransformer transformer, Color color, double opacityFactor);
-        
+        public abstract void Draw(Graphics canvas, AbstractTrackPoint point, IImageToViewportTransformer transformer, Color color, double opacityFactor, bool isConfiguring);
+
         #endregion
     }
 }

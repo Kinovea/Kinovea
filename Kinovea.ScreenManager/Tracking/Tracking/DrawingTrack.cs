@@ -739,7 +739,6 @@ namespace Kinovea.ScreenManager
                 }
                 else
                 {
-
                     // Trajectory line.
                     canvas.DrawCurve(trackPen, viewPoints, tension);
 
@@ -790,38 +789,9 @@ namespace Kinovea.ScreenManager
         }
         private void DrawTrackerHelp(Graphics canvas, IImageToViewportTransformer transformer, Color color, double opacity)
         {
-            if (isConfiguring)
+            if (isConfiguring || trackStatus == TrackStatus.Edit)
             {
-                Point location = transformer.Transform(positions[drawPointIndex].Point);
-                Size searchSize = transformer.Transform(tracker.Parameters.SearchWindow);
-                Size blockSize = transformer.Transform(tracker.Parameters.BlockWindow);
-                
-                Rectangle rectSearch = location.Box(searchSize);
-                Rectangle rectBlock = location.Box(blockSize);
-
-                // Dim background.
-                GraphicsPath backgroundPath = new GraphicsPath();
-                backgroundPath.AddRectangle(canvas.ClipBounds);
-                GraphicsPath searchBoxPath = new GraphicsPath();
-                searchBoxPath.AddRectangle(rectSearch);
-                backgroundPath.AddPath(searchBoxPath, false);
-                using (SolidBrush brushBackground = new SolidBrush(Color.FromArgb(160, Color.Black)))
-                {
-                    canvas.FillPath(brushBackground, backgroundPath);
-                }
-
-                // Draw search and template boxes
-                using (Pen p = new Pen(Color.FromArgb(255, styleData.Color)))
-                using (SolidBrush b = new SolidBrush(p.Color))
-                {
-                    searchBox.Draw(canvas, rectSearch, p, b, 4);
-                    blockBox.Draw(canvas, rectBlock, p, b, 3);
-                    canvas.DrawEllipse(p, rectBlock);
-                }
-            }
-            else if (trackStatus == TrackStatus.Edit)
-            {
-                tracker.Draw(canvas, positions[drawPointIndex], transformer, styleData.Color, opacity);
+                tracker.Draw(canvas, positions[drawPointIndex], transformer, styleData.Color, opacity, isConfiguring);
             }
         }
         private void DrawKeyframesLabels(Graphics canvas, List<PointF> points, float baselineOpacity, IImageToViewportTransformer transformer)
@@ -1436,6 +1406,8 @@ namespace Kinovea.ScreenManager
                 bool manual = true;
                 double simi = 1.0;
                 AbstractTrackPoint trackPoint = tracker.CreateTrackPoint(manual, location, simi, closestPoint.T, current.Image, positions);
+                
+
                 positions[positions.Count - 1] = trackPoint;
             }
 

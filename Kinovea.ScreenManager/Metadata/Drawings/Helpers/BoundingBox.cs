@@ -76,10 +76,12 @@ namespace Kinovea.ScreenManager
         public void Draw(Graphics canvas, Rectangle rect, Pen pen, SolidBrush brush, int widen)
         {
             canvas.DrawRectangle(pen, rect);
-            canvas.FillEllipse(brush, rect.Left - widen, rect.Top - widen, widen * 2, widen * 2);
-            canvas.FillEllipse(brush, rect.Left - widen, rect.Bottom - widen, widen * 2, widen * 2);
-            canvas.FillEllipse(brush, rect.Right - widen, rect.Top - widen, widen * 2, widen * 2);
-            canvas.FillEllipse(brush, rect.Right - widen, rect.Bottom - widen, widen * 2, widen * 2);
+            
+            int size = widen * 2;
+            canvas.FillEllipse(brush, rect.Left - widen, rect.Top - widen, size, size);
+            canvas.FillEllipse(brush, rect.Left - widen, rect.Bottom - widen, size, size);
+            canvas.FillEllipse(brush, rect.Right - widen, rect.Top - widen, size, size);
+            canvas.FillEllipse(brush, rect.Right - widen, rect.Bottom - widen, size, size);
         }
 
         /// <summary>
