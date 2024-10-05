@@ -398,6 +398,7 @@
     <Compile Include="Exporters\Spreadsheet\ExporterCSVTrajectory.cs" />
     <Compile Include="Exporters\Spreadsheet\ExporterJSON.cs" />
     <Compile Include="Exporters\Spreadsheet\ExporterXSLX.cs" />
+    <Compile Include="Metadata\Events\DrawingAction.cs" />
     <Compile Include="Metadata\Interfaces\IDrawingHostView.cs" />
     <Compile Include="Measurement\Geometry\AngleOptions.cs" />
     <Compile Include="Measurement\Geometry\Circle.cs" />

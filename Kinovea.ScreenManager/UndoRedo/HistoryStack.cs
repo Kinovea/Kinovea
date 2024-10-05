@@ -57,19 +57,17 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void PushNewCommand(HistoryMemento value)
         {
-            //// Prevent duplicated commands being pushed to the undo stack.
-            //// This may happen when several parts of the UI independently prepare themselves for changes.
-            //// Commented out: there is currently no scenario where this happens.
-            //// In particular the memento created by the select action contains the core data while the one 
-            //// created by the side panel contains style data.
-            //if (value is HistoryMementoModifyDrawing && undoStack.Count > 0 && undoStack[undoStack.Count - 1] is HistoryMementoModifyDrawing)
-            //{
-            //    if (((HistoryMementoModifyDrawing)value).IsSameState(((HistoryMementoModifyDrawing)undoStack[undoStack.Count - 1])))
-            //    {
-            //        log.Debug("Ignore history memento with the same state as the top of the undo stack.");
-            //        return;
-            //    }
-            //}
+            // Prevent duplicated commands being pushed to the undo stack.
+            // This may happen when several parts of the UI independently prepare themselves for changes.
+            // May also happen for changes triggered by mouse events like resize.
+            if (value is HistoryMementoModifyDrawing && undoStack.Count > 0 && undoStack[undoStack.Count - 1] is HistoryMementoModifyDrawing)
+            {
+                if (((HistoryMementoModifyDrawing)value).IsSameState(((HistoryMementoModifyDrawing)undoStack[undoStack.Count - 1])))
+                {
+                    //log.Debug("Ignore history memento with the same state as the top of the undo stack.");
+                    return;
+                }
+            }
             
             // Invalidate the redo stack.
             if (redoStack.Count > 0)

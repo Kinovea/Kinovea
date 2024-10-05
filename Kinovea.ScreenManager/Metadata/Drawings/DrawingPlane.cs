@@ -395,7 +395,7 @@ namespace Kinovea.ScreenManager
             }
         }
         
-        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             double opacity = infosFading.GetOpacityTrackable(trackingTimestamps, currentTimestamp);
             if (opacity <= 0)
@@ -433,37 +433,12 @@ namespace Kinovea.ScreenManager
                     return i+1;
             }
 
-            if (!zooming && !styleData.Perspective && quadImage.Contains(point))
-                return 0;
-
             return -1;
         }
-        public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys modifierKeys)
         {
-            if (zooming)
-                return;
-
-            if (CalibrationHelper == null)
-                return;
-
-            if ((modifierKeys & Keys.Alt) == Keys.Alt)
-            {
-                // Change the number of divisions.
-                styleData.GridCols = styleData.GridCols + (int)((dx - dy)/4);
-                styleData.GridRows = styleData.GridRows + (int)((dx - dy) / 4);
-                styleData.GridCols = Math.Min(Math.Max(styleData.GridCols, minimumSubdivisions), maximumSubdivisions);
-                styleData.GridRows = Math.Min(Math.Max(styleData.GridRows, minimumSubdivisions), maximumSubdivisions);
-            }
-            else
-            {
-                if (!styleData.Perspective)
-                {
-                    quadImage.Translate(dx, dy);
-                    CalibrationHelper.CalibrationByPlane_Update(Id, quadImage);
-                }
-            }
-
-            SignalAllTrackablePointsMoved();
+            // Move drawing is actually impossible on grids.
+            log.ErrorFormat("Move drawing on grid not supported.");
         }
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {

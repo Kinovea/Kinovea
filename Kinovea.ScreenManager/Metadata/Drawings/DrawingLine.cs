@@ -277,7 +277,7 @@ namespace Kinovea.ScreenManager
                     ArrowHelper.Draw(canvas, penEdges, end, start);
             }
         }
-        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             int result = -1;
             double opacityFactor = infosFading.GetOpacityTrackable(trackingTimestamps, currentTimestamp);
@@ -325,7 +325,7 @@ namespace Kinovea.ScreenManager
             if (CalibrationHelper != null)
                 CalibrationHelper.CalibrationByLine_Update(Id, points["a"], points["b"]);
         }
-        public override void MoveDrawing(float dx, float dy, Keys modifiers, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys modifiers)
         {
             points["a"] = points["a"].Translate(dx, dy);
             points["b"] = points["b"].Translate(dx, dy);

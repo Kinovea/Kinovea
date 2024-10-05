@@ -35,7 +35,7 @@ namespace Kinovea.ScreenManager
     /// - stretching: the rectangle where the image is displayed may be stretched or squeezed relative to the original size.
     /// - zooming and panning: the region of interest may be a sub window of the original image.
     ///
-    /// Note: mirroring is not handled here but explicitly at rendering time. Mirroring only concerns the image not drawings.
+    /// Note: mirroring is not handled here but explicitly at rendering time. Mirroring only concerns the image, not drawings.
     ///
     /// All drawings coordinates are kept in the system of the reference size.
     /// For actually drawing them on screen we ask the transformation here.

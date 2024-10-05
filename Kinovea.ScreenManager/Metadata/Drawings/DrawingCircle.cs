@@ -308,7 +308,7 @@ namespace Kinovea.ScreenManager
                 UpdateEllipseInImage();
             }
         }
-        public override void MoveDrawing(float dx, float dy, Keys modifiers, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys modifiers)
         {
             center = center.Translate(dx, dy);
             if (CalibrationHelper == null)
@@ -316,7 +316,7 @@ namespace Kinovea.ScreenManager
 
             UpdateEllipseInImage();
         }
-        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             // Convention: miss = -1, object = 0, handle = n.
             // We do not need a special case to hit the radius or diameter line as they are inside the circle and 

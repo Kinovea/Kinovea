@@ -44,7 +44,7 @@ namespace Kinovea.ScreenManager
         private Action invalidate;
         private DrawingTrack track;
         private List<AbstractStyleElement> elements = new List<AbstractStyleElement>();
-        private ViewportController viewportController = new ViewportController(false, false);
+        private ViewportController viewportController = new ViewportController(false, false, false);
         private MetadataRenderer metadataRenderer;
         private MetadataManipulator metadataManipulator;
         private ScreenToolManager screenToolManager = new ScreenToolManager();
@@ -61,8 +61,9 @@ namespace Kinovea.ScreenManager
          
             this.track = track;
             memoStatus = track.Status;
-            track.Status = TrackStatus.Configuration;
-            track.TrackerParametersChanged += new EventHandler(track_TrackParametersChanged);
+            //track.Status = TrackStatus.Configuration;
+            //track.TrackingBoxCornerMoved += new EventHandler(track_TrackParametersChanged);
+
             this.invalidate = invalidate;
             this.timestamp = timestamp;
 
@@ -107,10 +108,10 @@ namespace Kinovea.ScreenManager
         }
         private void InitTrackParameters()
         {
-            tbBlockWidth.Text = string.Format("{0}", track.TrackerParameters.BlockWindow.Width);
-            tbBlockHeight.Text = string.Format("{0}", track.TrackerParameters.BlockWindow.Height);
-            tbSearchWidth.Text = string.Format("{0}", track.TrackerParameters.SearchWindow.Width);
-            tbSearchHeight.Text = string.Format("{0}", track.TrackerParameters.SearchWindow.Height);
+            tbBlockWidth.Text = string.Format("{0}", track.TrackingParameters.BlockWindow.Width);
+            tbBlockHeight.Text = string.Format("{0}", track.TrackingParameters.BlockWindow.Height);
+            tbSearchWidth.Text = string.Format("{0}", track.TrackingParameters.SearchWindow.Width);
+            tbSearchHeight.Text = string.Format("{0}", track.TrackingParameters.SearchWindow.Height);
         }
         private void SetupStyleControls()
         {
@@ -239,8 +240,8 @@ namespace Kinovea.ScreenManager
             if (!parsed)
                 return;
 
-            Size blockSize = new Size(width, track.TrackerParameters.BlockWindow.Height);
-            Size searchSize = track.TrackerParameters.SearchWindow;
+            Size blockSize = new Size(width, track.TrackingParameters.BlockWindow.Height);
+            Size searchSize = track.TrackingParameters.SearchWindow;
             PushTrackerParameters(blockSize, searchSize);
         }
         private void tbBlockHeight_TextChanged(object sender, EventArgs e)
@@ -253,8 +254,8 @@ namespace Kinovea.ScreenManager
             if (!parsed)
                 return;
 
-            Size blockSize = new Size(track.TrackerParameters.BlockWindow.Width, height);
-            Size searchSize = track.TrackerParameters.SearchWindow;
+            Size blockSize = new Size(track.TrackingParameters.BlockWindow.Width, height);
+            Size searchSize = track.TrackingParameters.SearchWindow;
             PushTrackerParameters(blockSize, searchSize);
         }
         private void tbSearchWidth_TextChanged(object sender, EventArgs e)
@@ -267,8 +268,8 @@ namespace Kinovea.ScreenManager
             if (!parsed)
                 return;
 
-            Size blockSize = track.TrackerParameters.BlockWindow;
-            Size searchSize = new Size(width, track.TrackerParameters.SearchWindow.Height);
+            Size blockSize = track.TrackingParameters.BlockWindow;
+            Size searchSize = new Size(width, track.TrackingParameters.SearchWindow.Height);
             PushTrackerParameters(blockSize, searchSize);
         }
         private void tbSearchHeight_TextChanged(object sender, EventArgs e)
@@ -281,8 +282,8 @@ namespace Kinovea.ScreenManager
             if (!parsed)
                 return;
 
-            Size blockSize = track.TrackerParameters.BlockWindow;
-            Size searchSize = new Size(track.TrackerParameters.SearchWindow.Width, height);
+            Size blockSize = track.TrackingParameters.BlockWindow;
+            Size searchSize = new Size(track.TrackingParameters.SearchWindow.Width, height);
             PushTrackerParameters(blockSize, searchSize);
         }
         #endregion
@@ -349,8 +350,8 @@ namespace Kinovea.ScreenManager
         }
         private void PushTrackerParameters(Size block, Size search)
         {
-            track.TrackerParameters.SearchWindow = search;
-            track.TrackerParameters.BlockWindow = block;
+            track.TrackingParameters.SearchWindow = search;
+            track.TrackingParameters.BlockWindow = block;
             viewportController.Refresh();
         }
 

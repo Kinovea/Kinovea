@@ -201,13 +201,13 @@ namespace Kinovea.ScreenManager
             if(handleNumber == 1)
                 miniLabel.SetCenter(point);
         }
-        public override void MoveDrawing(float dx, float dy, Keys modifiers, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys modifiers)
         {
             points["0"] = points["0"].Translate(dx, dy);
             SignalTrackablePointMoved();
             miniLabel.SetAttach(points["0"], true);
         }
-        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             // Convention: miss = -1, object = 0, handle = n.
             int result = -1;

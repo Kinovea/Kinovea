@@ -29,6 +29,16 @@ namespace Kinovea.ScreenManager
 {
     public class DrawingToolPointer : AbstractDrawingTool
     {
+        #region Events
+        /// <summary>
+        /// This event is raised while the drawing is being manipulated with the hand tool.
+        /// The DrawingAction contains the motion type:
+        /// - Moving, Resizing: while actively moving (repeated events).
+        /// - Moved, Resized: on mouse up (single event).
+        /// </summary>
+        public EventHandler<DrawingEventArgs> DrawingModified;
+        #endregion
+
         #region Enum
         private enum SelectedObjectType
         {
@@ -122,6 +132,7 @@ namespace Kinovea.ScreenManager
         private bool isSolo = false;
         private Guid soloId = Guid.Empty;
         private bool configureTracking = false;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
@@ -159,7 +170,7 @@ namespace Kinovea.ScreenManager
             this.configureTracking = configureTracking;
         }
 
-        public bool OnMouseDown(Metadata metadata, int activeKeyFrameIndex, PointF mouseCoordinates, long currentTimeStamp, bool allFrames)
+        public bool OnMouseDown(Metadata metadata, IImageToViewportTransformer transformer, int activeKeyFrameIndex, PointF mouseCoordinates, long currentTimeStamp, bool allFrames)
         {
             //--------------------------------------------------------------------------------------
             // Change the ManipulationType if we are on a Drawing, Track, etc.
@@ -182,7 +193,7 @@ namespace Kinovea.ScreenManager
             if (IsOnDrawing(metadata, activeKeyFrameIndex, mouseCoordinates, currentTimeStamp, allFrames))
                 return true;
 
-            if (IsOnTrack(metadata, mouseCoordinates, currentTimeStamp))
+            if (IsOnTrack(metadata, transformer, mouseCoordinates, currentTimeStamp))
                 return true;
 
             if (IsOnChronometer(metadata, mouseCoordinates, currentTimeStamp))
@@ -222,17 +233,14 @@ namespace Kinovea.ScreenManager
             if (deltaX == 0 && deltaY == 0)
                 return false;
 
-            bool changedTrackStatus = false;
-            TrackStatus oldTrackStatus = TrackStatus.Interactive;
-            if (isSolo && configureTracking && metadata.HitDrawing != null && soloId == metadata.HitDrawing.Id)
+            // Temporary switch the track to configuration mode if it is being manipulated 
+            // from a dedicated configuration viewport.
+            bool isConfiguringTrack = false;
+            if (isSolo && configureTracking && metadata.HitDrawing != null && soloId == metadata.HitDrawing.Id && metadata.HitDrawing is DrawingTrack)
             {
-                if (metadata.HitDrawing is DrawingTrack)
-                {
-                    DrawingTrack track = metadata.HitDrawing as DrawingTrack;
-                    oldTrackStatus = track.Status;
-                    changedTrackStatus = track.Status != TrackStatus.Configuration;
-                    track.Status = TrackStatus.Configuration;
-                }
+                DrawingTrack track = metadata.HitDrawing as DrawingTrack;
+                track.SetConfiguring(true);
+                isConfiguringTrack = true;
             }
 
             switch (manipulationType)
@@ -246,7 +254,10 @@ namespace Kinovea.ScreenManager
                                 break;
                             default:
                                 if (metadata.HitDrawing != null)
-                                    metadata.HitDrawing.MoveDrawing(deltaX, deltaY, modifiers, metadata.ImageTransform.Zooming);
+                                {
+                                    metadata.HitDrawing.MoveDrawing(deltaX, deltaY, modifiers);
+                                    DrawingModified?.Invoke(this, new DrawingEventArgs(metadata.HitDrawing, metadata.HitDrawingOwner.Id, DrawingAction.Moving));
+                                }
                                 break;
                         }
                     }
@@ -260,7 +271,10 @@ namespace Kinovea.ScreenManager
                                 break;
                             default:
                                 if (metadata.HitDrawing != null)
+                                {
                                     metadata.HitDrawing.MoveHandle(mouseLocation, resizingHandle, modifiers);
+                                    DrawingModified?.Invoke(this, new DrawingEventArgs(metadata.HitDrawing, metadata.HitDrawingOwner.Id, DrawingAction.Resizing));
+                                }
                                 break;
                         }
                     }
@@ -271,16 +285,28 @@ namespace Kinovea.ScreenManager
             }
 
 
-            if (changedTrackStatus)
+            if (isConfiguringTrack)
             {
                 DrawingTrack track = metadata.HitDrawing as DrawingTrack;
-                track.Status = oldTrackStatus;
+                track.SetConfiguring(false);
             }
             
             return movedObject;
         }
-        public void OnMouseUp()
+        public void OnMouseUp(Metadata metadata)
         {
+            if (metadata.HitDrawing != null)
+            {
+                if (manipulationType == ManipulationType.Move)
+                {
+                    DrawingModified?.Invoke(this, new DrawingEventArgs(metadata.HitDrawing, metadata.HitDrawingOwner.Id, DrawingAction.Moved));
+                }
+                else if (manipulationType == ManipulationType.Resize)
+                {
+                    DrawingModified?.Invoke(this, new DrawingEventArgs(metadata.HitDrawing, metadata.HitDrawingOwner.Id, DrawingAction.Resized));
+                }
+            }
+
             manipulationType = ManipulationType.None;
         }
         public void SetImageSize(Size newSize)
@@ -375,7 +401,7 @@ namespace Kinovea.ScreenManager
                     continue;
                 }
 
-                hitResult = kf.Drawings[currentDrawing].HitTest(mouseCoordinates, currentTimeStamp, distorter, transformer, transformer.Zooming);
+                hitResult = kf.Drawings[currentDrawing].HitTest(mouseCoordinates, currentTimeStamp, distorter, transformer);
 
                 if (hitResult < 0)
                 {
@@ -419,7 +445,7 @@ namespace Kinovea.ScreenManager
             bool isOnDrawing = false;
             foreach (AbstractDrawing drawing in metadata.SingletonDrawingsManager.Drawings)
             {
-                int hitResult = drawing.HitTest(mouseCoordinates, currentTimestamp, metadata.CalibrationHelper.DistortionHelper, metadata.ImageTransform, metadata.ImageTransform.Zooming);
+                int hitResult = drawing.HitTest(mouseCoordinates, currentTimestamp, metadata.CalibrationHelper.DistortionHelper, metadata.ImageTransform);
                 if (hitResult < 0)
                     continue;
 
@@ -455,7 +481,7 @@ namespace Kinovea.ScreenManager
             bool isOnDrawing = false;
             foreach (AbstractDrawing drawing in metadata.ChronoManager.Drawings)
             {
-                int hitResult = drawing.HitTest(point, currentTimestamp, metadata.CalibrationHelper.DistortionHelper, metadata.ImageTransform, metadata.ImageTransform.Zooming);
+                int hitResult = drawing.HitTest(point, currentTimestamp, metadata.CalibrationHelper.DistortionHelper, metadata.ImageTransform);
                 if (hitResult < 0)
                     continue;
 
@@ -487,7 +513,7 @@ namespace Kinovea.ScreenManager
 
             return isOnDrawing;
         }
-        private bool IsOnTrack(Metadata metadata, PointF mouseCoordinates, long currentTimeStamp)
+        private bool IsOnTrack(Metadata metadata, IImageToViewportTransformer transformer, PointF mouseCoordinates, long currentTimeStamp)
         {
             // Track have their own special hit test because we need to differenciate the interactive case from the edit case.
             bool isOnDrawing = false;
@@ -509,14 +535,13 @@ namespace Kinovea.ScreenManager
 
                 if (isSolo && soloId == track.Id && configureTracking)
                 {
-                    TrackStatus oldStatus = track.Status;
-                    track.Status = TrackStatus.Configuration;
-                    hitResult = drawing.HitTest(mouseCoordinates, currentTimeStamp, metadata.CalibrationHelper.DistortionHelper, metadata.ImageTransform, metadata.ImageTransform.Zooming);
-                    track.Status = oldStatus;
+                    track.SetConfiguring(true);
+                    hitResult = drawing.HitTest(mouseCoordinates, currentTimeStamp, metadata.CalibrationHelper.DistortionHelper, transformer);
+                    track.SetConfiguring(false);
                 }
                 else
                 {
-                    hitResult = drawing.HitTest(mouseCoordinates, currentTimeStamp, metadata.CalibrationHelper.DistortionHelper, metadata.ImageTransform, metadata.ImageTransform.Zooming);
+                    hitResult = drawing.HitTest(mouseCoordinates, currentTimeStamp, metadata.CalibrationHelper.DistortionHelper, transformer);
                 }
 
                 if (hitResult < 0)
@@ -538,28 +563,22 @@ namespace Kinovea.ScreenManager
 
                 manipulationType = ManipulationType.Move;
 
-                TrackStatus workingStatus = track.Status;
+                // TODO: document this. Is this for interactive moving along the track?
                 if (isSolo && soloId == track.Id && configureTracking)
                 {
-                    workingStatus = TrackStatus.Configuration;
+                    if (hitResult > 1)
+                    {
+                        manipulationType = ManipulationType.Resize;
+                        resizingHandle = hitResult;
+                    }
                 }
-
-                switch (workingStatus)
+                else if (track.Status == TrackStatus.Interactive)
                 {
-                    case TrackStatus.Interactive:
-                        if (hitResult == 0 || hitResult == 1)
-                        {
-                            manipulationType = ManipulationType.Resize;
-                            resizingHandle = hitResult;
-                        }
-                        break;
-                    case TrackStatus.Configuration:
-                        if (hitResult > 1)
-                        {
-                            manipulationType = ManipulationType.Resize;
-                            resizingHandle = hitResult;
-                        }
-                        break;
+                    if (hitResult == 0 || hitResult == 1)
+                    {
+                        manipulationType = ManipulationType.Resize;
+                        resizingHandle = hitResult;
+                    }
                 }
 
                 // We got a hit, no need to test further. 

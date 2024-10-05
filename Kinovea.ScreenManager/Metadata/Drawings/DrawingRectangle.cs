@@ -204,11 +204,11 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        public override void MoveDrawing(float dx, float dy, Keys modifiers, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys modifiers)
         {
             quadImage.Translate(dx, dy);
         }
-        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             // Convention: miss = -1, object = 0, handle = n.
             double opacity = infosFading.GetOpacityFactor(currentTimestamp);

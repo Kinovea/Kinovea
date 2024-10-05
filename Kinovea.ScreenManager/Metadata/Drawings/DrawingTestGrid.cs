@@ -194,7 +194,7 @@ namespace Kinovea.ScreenManager
             canvas.DrawLine(pen, transformer.Transform(Map(gridLine.Start)), transformer.Transform(Map(gridLine.End)));
         }
 
-        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             if (!Visible)
                 return -1;
@@ -240,7 +240,7 @@ namespace Kinovea.ScreenManager
             
             return hit ? 0 : -1;
         }
-        public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys modifierKeys)
         {
         }
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)

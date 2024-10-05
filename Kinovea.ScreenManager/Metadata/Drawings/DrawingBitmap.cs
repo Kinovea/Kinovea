@@ -155,7 +155,7 @@ namespace Kinovea.ScreenManager
                 boundingBox.Draw(canvas, rect, penBoundingBox, brushBoundingBox, 4);
             }
         }
-        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             if (!valid)
                 return -1;
@@ -165,7 +165,7 @@ namespace Kinovea.ScreenManager
             
             return boundingBox.HitTest(point, transformer);
         }
-        public override void MoveDrawing(float dx, float dy, Keys _ModifierKeys, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys _ModifierKeys)
         {
             boundingBox.Move(dx, dy);
         }

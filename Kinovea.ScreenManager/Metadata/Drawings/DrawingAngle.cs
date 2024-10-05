@@ -253,7 +253,7 @@ namespace Kinovea.ScreenManager
                 angleHelper.DrawText(canvas, opacityFactor, brushFill, pointO, transformer, CalibrationHelper, styleData);
             }
         }
-        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             // Convention: miss = -1, object = 0, handle = n.
             int result = -1;
@@ -301,7 +301,7 @@ namespace Kinovea.ScreenManager
                     break;
             }
         }
-        public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys modifierKeys)
         {
             points["o"] = points["o"].Translate(dx, dy);
             points["a"] = points["a"].Translate(dx, dy);

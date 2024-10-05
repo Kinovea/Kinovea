@@ -245,7 +245,7 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             // -1: miss
             // 0: not bound.
@@ -284,7 +284,7 @@ namespace Kinovea.ScreenManager
             CalibrationHelper.SetOrigin(points["0"]);
             SignalTrackablePointMoved();
         }
-        public override void MoveDrawing(float dx, float dy, Keys _ModifierKeys, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys _ModifierKeys)
         {
         }
         public override PointF GetCopyPoint()

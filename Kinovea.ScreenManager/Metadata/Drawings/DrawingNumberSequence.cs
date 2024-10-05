@@ -110,7 +110,7 @@ namespace Kinovea.ScreenManager
             foreach(DrawingNumberSequenceItem number in numberSequence)
                 number.Draw(canvas, transformer, currentTimestamp, styleData);
         }
-        public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys modifierKeys)
         {
             if (selected < 0 || selected >= numberSequence.Count)
                 return;
@@ -129,7 +129,7 @@ namespace Kinovea.ScreenManager
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
         }
-        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             int currentNumber = 0;
             int handle = -1;

@@ -224,7 +224,7 @@ namespace Kinovea.ScreenManager
                     DrawDebug(opacity, canvas, transformer, points);
             }
         }
-        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             // Convention: miss = -1, object = 0, handle = n.
             int result = -1;
@@ -276,7 +276,7 @@ namespace Kinovea.ScreenManager
             GenericPostureConstraintEngine.MoveHandle(genericPosture, CalibrationHelper, index, point, modifiers);
             SignalTrackablePointMoved(index);
         }
-        public override void MoveDrawing(float dx, float dy, Keys modifiers, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys modifiers)
         {
             for(int i = 0;i<genericPosture.PointList.Count;i++)
                 genericPosture.PointList[i] = genericPosture.PointList[i].Translate(dx, dy);

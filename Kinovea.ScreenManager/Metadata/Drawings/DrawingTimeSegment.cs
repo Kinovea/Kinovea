@@ -156,7 +156,7 @@ namespace Kinovea.ScreenManager
             miniLabel.SetText(GetTimeText(), transformer);
             miniLabel.Draw(canvas, transformer, opacityFactor);
         }
-        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             int result = -1;
             double opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
@@ -216,7 +216,7 @@ namespace Kinovea.ScreenManager
             if (GeometryHelper.GetDistance(points["a"], points["b"]) < 10)
                 points["b"] = points["a"].Translate(10, 0);
         }
-        public override void MoveDrawing(float dx, float dy, Keys modifiers, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys modifiers)
         {
             points["a"] = points["a"].Translate(dx, dy);
             points["b"] = points["b"].Translate(dx, dy);

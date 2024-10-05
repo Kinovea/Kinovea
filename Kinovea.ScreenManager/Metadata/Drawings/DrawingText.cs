@@ -287,7 +287,7 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             double opacity = infosFading.GetOpacityFactor(currentTimestamp);
             if (opacity <= 0)
@@ -331,7 +331,7 @@ namespace Kinovea.ScreenManager
                 UpdateLabelRectangle();
             }
         }
-        public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys modifierKeys)
         {
             background.Move(dx, dy);
 

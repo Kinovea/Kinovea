@@ -35,6 +35,11 @@ namespace Kinovea.ScreenManager
         #region Events
         public event EventHandler DisplayRectangleUpdated;
         public event EventHandler Poked;
+
+        /// <summary>
+        /// Event raised when we are moving an object from this viewport.
+        /// </summary>
+        public event EventHandler Moving;
         #endregion
 
         #region Properties
@@ -100,9 +105,9 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuDeleteDrawing = new ToolStripMenuItem();
         #endregion
 
-        public ViewportController(bool allowContextMenu = true, bool dblClickZoom = true)
+        public ViewportController(bool allowContextMenu = true, bool dblClickZoom = true, bool showRecordingIndicator = true)
         {
-            view = new Viewport(this, dblClickZoom);
+            view = new Viewport(this, dblClickZoom, showRecordingIndicator);
             this.allowContextMenu = allowContextMenu;
             InitializeContextMenu();
         }
@@ -183,7 +188,10 @@ namespace Kinovea.ScreenManager
             if (metadataManipulator == null)
                 return false;
 
-            return metadataManipulator.ContinueMove(e, modifiers, imageLocation, imageZoom);
+            bool handled = metadataManipulator.ContinueMove(e, modifiers, imageLocation, imageZoom);
+            Moving?.Invoke(this, EventArgs.Empty);
+            
+            return handled;
         }
 
         public void OnMouseUp(MouseEventArgs e, Keys modifiers, Point imageLocation, float imageZoom)

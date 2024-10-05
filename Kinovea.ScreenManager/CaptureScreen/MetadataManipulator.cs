@@ -29,6 +29,7 @@ namespace Kinovea.ScreenManager
     {
         #region Events
         public event EventHandler<DrawingEventArgs> LabelAdded;
+        public event EventHandler<DrawingEventArgs> DrawingModified;
         #endregion
 
         #region Properties
@@ -64,6 +65,7 @@ namespace Kinovea.ScreenManager
         {
             this.metadata = metadata;
             this.screenToolManager = screenToolManager;
+            this.screenToolManager.HandTool.DrawingModified += (s, e) => DrawingModified?.Invoke(s, e);
         }
 
         public void SetFixedTimestamp(long timestamp)
@@ -104,7 +106,7 @@ namespace Kinovea.ScreenManager
             if (screenToolManager.IsUsingHandTool || e.Button == MouseButtons.Middle)
             {
                 // TODO: Change cursor.
-                handled = screenToolManager.HandTool.OnMouseDown(metadata, fixedKeyframe, imagePoint, fixedTimestamp, true);
+                handled = screenToolManager.HandTool.OnMouseDown(metadata, transformer, fixedKeyframe, imagePoint, fixedTimestamp, true);
             }
             else if (!metadata.DrawingInitializing)
             {
@@ -189,7 +191,7 @@ namespace Kinovea.ScreenManager
             {
                 metadata.AllDrawingTextToNormalMode();
                 metadata.UpdateTrackPoint(bitmap);
-                screenToolManager.HandTool.OnMouseUp();
+                screenToolManager.HandTool.OnMouseUp(metadata);
             }
 
             ImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
@@ -311,7 +313,7 @@ namespace Kinovea.ScreenManager
             bool hitExisting = false;
             foreach(DrawingText label in metadata.Labels())
             {
-                int hit = label.HitTest(imagePoint, currentTimestamp, metadata.CalibrationHelper.DistortionHelper, transformer, metadata.ImageTransform.Zooming);
+                int hit = label.HitTest(imagePoint, currentTimestamp, metadata.CalibrationHelper.DistortionHelper, transformer);
                 if(hit >= 0)
                 {
                     hitExisting = true;

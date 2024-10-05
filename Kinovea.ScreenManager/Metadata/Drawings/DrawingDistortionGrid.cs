@@ -184,7 +184,7 @@ namespace Kinovea.ScreenManager
                     canvas.DrawEllipse(penEdges, p.Box(4));
             }
         }
-        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             // Convention: miss = -1, object = 0, handle = n.
 
@@ -199,7 +199,7 @@ namespace Kinovea.ScreenManager
 
             return -1;
         }
-        public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys modifierKeys)
         {
         }
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)

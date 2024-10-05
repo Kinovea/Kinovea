@@ -68,6 +68,7 @@ namespace Kinovea.ScreenManager
             metadata.DrawingSelected += Metadata_DrawingSelected;
             metadata.DrawingDeleted += Metadata_DrawingDeleted;
             metadata.KeyframeDeleted += Metadata_KeyframeDeleted;
+            controlDrawingTrackingSetup.SetMetadata(metadata);
         }
 
         /// <summary>
@@ -138,18 +139,42 @@ namespace Kinovea.ScreenManager
                 throw new InvalidProgramException();
             }
 
-            memento.UpdateCommandName(drawing.Name);
+            if (e.DrawingAction == DrawingAction.TrackingStatusChanged)
+            {
+                // Note: tracking status is a transient state that's not saved to KVA (incl. for undo/redo).
+                // so it passes the IsSameState() test, but we still need it to update the main viewport.
+                DrawingModified?.Invoke(this, e);
+                return;
+            }
 
-            // As part of undo mechanics this is called for every style element 
-            // when importing from the saved KVA fragment and rebiding.
-            // Detect this and ignore.
+            if (memento.IsSameState())
+            {
+                return;
+            }
+
+            if (e.DrawingAction == DrawingAction.Unknown)
+            {
+                memento.UpdateCommandName(drawing.Name);
+            }
+            else
+            {
+                // TODO: convert drawing action to a localized string.
+                string commandName = string.Format("{0} - {1}", drawing.Name, e.DrawingAction);
+                memento.UpdateCommandName(commandName);
+            }
+
+            
             if (metadata.HistoryStack.IsPerformingUndoRedo)
             {
-                if (memento.IsSameState())
-                {
-                    //log.Debug("Same state while performing undo/redo. Ignore.");
-                    return;
-                }
+                // As part of undo mechanics this is called for every style element 
+                // when importing from the saved KVA fragment in the undo memento and rebiding.
+                // Detect this and ignore.
+                // Already handled above.
+                //if (memento.IsSameState())
+                //{
+                //    //log.Debug("Same state while performing undo/redo. Ignore.");
+                //    return;
+                //}
 
                 // Normal case of having made some changes to the object in the style
                 // editor or elsewhere and undoing them.
@@ -170,7 +195,8 @@ namespace Kinovea.ScreenManager
 
                 // Signal to the host that the drawing has been modified.
                 // This is used to update the image, preset and cursor.
-                DrawingModified?.Invoke(this, new DrawingEventArgs(drawing, managerId));
+                // Change the sender of the event so it can match on panel type.
+                DrawingModified?.Invoke(this, e);
             }
         }
 
@@ -234,7 +260,7 @@ namespace Kinovea.ScreenManager
             // FIXME: when this panel handles other parts of the drawing like visibility
             // we'll want to set a more general serialization filter.
             // At the time we capture the state we don't know what kind of change will be made.
-            memento = new HistoryMementoModifyDrawing(metadata, managerId, drawingId, drawing.Name, SerializationFilter.Style);
+            memento = new HistoryMementoModifyDrawing(metadata, managerId, drawingId, drawing.Name, SerializationFilter.Core | SerializationFilter.Style);
         }
     }
 }

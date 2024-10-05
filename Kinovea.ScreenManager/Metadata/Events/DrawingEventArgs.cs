@@ -23,7 +23,7 @@ using System;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    ///  Simple event args for Added, Removed type of events.
+    ///  Simple event args for Added, Removed, Modified type of events.
     /// </summary>
     public class DrawingEventArgs : EventArgs
     {
@@ -37,13 +37,20 @@ namespace Kinovea.ScreenManager
             get { return managerId; }
         }
 
+        public DrawingAction DrawingAction
+        {
+            get { return drawingAction; }
+        }
+
         private readonly AbstractDrawing drawing;
         private readonly Guid managerId;
+        private readonly DrawingAction drawingAction;
                 
-        public DrawingEventArgs(AbstractDrawing drawing, Guid managerId)
+        public DrawingEventArgs(AbstractDrawing drawing, Guid managerId, DrawingAction action = DrawingAction.Unknown)
         {
             this.drawing = drawing;
             this.managerId = managerId;
+            this.drawingAction = action;
         }
     }
 }

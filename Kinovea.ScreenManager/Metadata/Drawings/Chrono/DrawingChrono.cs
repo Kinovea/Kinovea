@@ -277,7 +277,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             // Convention: miss = -1, object = 0, handle = n.
             int result = -1;
@@ -307,7 +307,7 @@ namespace Kinovea.ScreenManager
             elem.ForceSize(targetHeight, timecode, styleData.Font);
             UpdateLabelRectangle();
         }
-        public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys modifierKeys)
         {
             mainBackground.Move(dx, dy);
             lblBackground.Move(dx, dy);

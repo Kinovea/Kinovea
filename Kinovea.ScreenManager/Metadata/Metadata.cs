@@ -154,6 +154,9 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// A helper used to transform from image space coordinates to viewport coordinates.
+        /// FIXME: the same video and metadata can be rendered on two different viewports 
+        /// at the same time so this should never be part of metadata but always be 
+        /// coming from the viewport handler.
         /// </summary>
         public ImageTransform ImageTransform
         {
@@ -973,8 +976,6 @@ namespace Kinovea.ScreenManager
             track.ParentMetadata = this;
             trackManager.AddDrawing(track);
 
-            track.TrackerParametersChanged += Track_TrackerParametersChanged;
-
             //hitDrawing = track;
 
             AfterDrawingCreation(track, 0);
@@ -1067,20 +1068,6 @@ namespace Kinovea.ScreenManager
         private void DeleteTrackableDrawing(ITrackable drawing)
         {
             trackabilityManager.Remove(drawing);
-        }
-
-        private void Track_TrackerParametersChanged(object sender, EventArgs e)
-        {
-            // Remember these track parameters to bootstrap the next trackable.
-            DrawingTrack track = sender as DrawingTrack;
-            if (track == null)
-                return;
-
-            if (PreferencesManager.PlayerPreferences.TrackingParameters.ContentHash == track.TrackerParameters.ContentHash)
-                return;
-
-            PreferencesManager.PlayerPreferences.TrackingParameters = track.TrackerParameters.Clone();
-            PreferencesManager.Save();
         }
 
         public void InitializeCommit(VideoFrame videoFrame, PointF point)
@@ -1486,10 +1473,11 @@ namespace Kinovea.ScreenManager
         public void UpdateTrackPoint(Bitmap bitmap)
         {
             // Happens when mouse up and editing a track.
-            DrawingTrack t = hitDrawing as DrawingTrack;
-            if(t != null && (t.Status == TrackStatus.Edit || t.Status == TrackStatus.Configuration))
-                t.UpdateTrackPoint(bitmap, imageTransform);
+            DrawingTrack track = hitDrawing as DrawingTrack;
+            if(track != null && (track.Status == TrackStatus.Edit))
+                track.UpdateTrackPoint(bitmap, imageTransform);
         }
+
         public int GetContentHash()
         {
             int hash = 0;
@@ -1730,7 +1718,7 @@ namespace Kinovea.ScreenManager
 
             foreach (AbstractDrawing chrono in chronoManager.Drawings)
             {
-                int hit = chrono.HitTest(point, timestamp, calibrationHelper.DistortionHelper, imageTransform, imageTransform.Zooming);
+                int hit = chrono.HitTest(point, timestamp, calibrationHelper.DistortionHelper, imageTransform);
                 if (hit < 0)
                     continue;
 
@@ -1746,7 +1734,7 @@ namespace Kinovea.ScreenManager
 
             foreach (DrawingTrack track in trackManager.Drawings)
             {
-                int hit = track.HitTest(point, timestamp, calibrationHelper.DistortionHelper, imageTransform, imageTransform.Zooming);
+                int hit = track.HitTest(point, timestamp, calibrationHelper.DistortionHelper, imageTransform);
                 if (hit < 0)
                     continue;
 
@@ -1762,7 +1750,7 @@ namespace Kinovea.ScreenManager
 
             foreach (AbstractDrawing drawing in singletonDrawingsManager.Drawings)
             {
-                int hit = drawing.HitTest(point, timestamp, calibrationHelper.DistortionHelper, imageTransform, imageTransform.Zooming);
+                int hit = drawing.HitTest(point, timestamp, calibrationHelper.DistortionHelper, imageTransform);
                 if (hit < 0)
                     continue;
 
@@ -1983,7 +1971,7 @@ namespace Kinovea.ScreenManager
             while (hitResult < 0 && currentDrawing < keyframe.Drawings.Count)
             {
                 AbstractDrawing drawing = keyframe.Drawings[currentDrawing];
-                hitResult = drawing.HitTest(mouseLocation, timestamp, calibrationHelper.DistortionHelper, imageTransform, imageTransform.Zooming);
+                hitResult = drawing.HitTest(mouseLocation, timestamp, calibrationHelper.DistortionHelper, imageTransform);
 
                 if (hitResult < 0)
                 {

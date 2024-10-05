@@ -31,6 +31,8 @@ namespace Kinovea.ScreenManager
         {
       this.pnlViewport = new System.Windows.Forms.Panel();
       this.grpTracking = new System.Windows.Forms.GroupBox();
+      this.btnTrimTrack = new System.Windows.Forms.Button();
+      this.btnStartStop = new System.Windows.Forms.Button();
       this.nudUpdateThreshold = new System.Windows.Forms.NumericUpDown();
       this.label6 = new System.Windows.Forms.Label();
       this.nudMatchTreshold = new System.Windows.Forms.NumericUpDown();
@@ -47,8 +49,6 @@ namespace Kinovea.ScreenManager
       this.lblSearchWindow = new System.Windows.Forms.Label();
       this.label4 = new System.Windows.Forms.Label();
       this.lblObjectWindow = new System.Windows.Forms.Label();
-      this.btnStartStop = new System.Windows.Forms.Button();
-      this.btnTrimTrack = new System.Windows.Forms.Button();
       this.grpTracking.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudUpdateThreshold)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudMatchTreshold)).BeginInit();
@@ -98,7 +98,31 @@ namespace Kinovea.ScreenManager
       this.grpTracking.TabIndex = 54;
       this.grpTracking.TabStop = false;
       this.grpTracking.Text = "Tracking";
-      this.grpTracking.Enter += new System.EventHandler(this.grpTracking_Enter);
+      // 
+      // btnTrimTrack
+      // 
+      this.btnTrimTrack.ForeColor = System.Drawing.Color.Black;
+      this.btnTrimTrack.Image = global::Kinovea.ScreenManager.Properties.Resources.bin_empty;
+      this.btnTrimTrack.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      this.btnTrimTrack.Location = new System.Drawing.Point(28, 208);
+      this.btnTrimTrack.Name = "btnTrimTrack";
+      this.btnTrimTrack.Size = new System.Drawing.Size(157, 27);
+      this.btnTrimTrack.TabIndex = 68;
+      this.btnTrimTrack.Text = "Delete end of track";
+      this.btnTrimTrack.UseVisualStyleBackColor = true;
+      this.btnTrimTrack.Click += new System.EventHandler(this.btnTrimTrack_Click);
+      // 
+      // btnStartStop
+      // 
+      this.btnStartStop.AutoSize = true;
+      this.btnStartStop.ForeColor = System.Drawing.Color.Black;
+      this.btnStartStop.Location = new System.Drawing.Point(28, 179);
+      this.btnStartStop.Name = "btnStartStop";
+      this.btnStartStop.Size = new System.Drawing.Size(157, 23);
+      this.btnStartStop.TabIndex = 67;
+      this.btnStartStop.Text = "Start tracking";
+      this.btnStartStop.UseVisualStyleBackColor = true;
+      this.btnStartStop.Click += new System.EventHandler(this.btnStartStop_Click);
       // 
       // nudUpdateThreshold
       // 
@@ -330,31 +354,6 @@ namespace Kinovea.ScreenManager
       this.lblObjectWindow.Size = new System.Drawing.Size(80, 13);
       this.lblObjectWindow.TabIndex = 43;
       this.lblObjectWindow.Text = "Object window:";
-      // 
-      // btnStartStopTracking
-      // 
-      this.btnStartStop.AutoSize = true;
-      this.btnStartStop.ForeColor = System.Drawing.Color.Black;
-      this.btnStartStop.Location = new System.Drawing.Point(28, 179);
-      this.btnStartStop.Name = "btnStartStopTracking";
-      this.btnStartStop.Size = new System.Drawing.Size(157, 23);
-      this.btnStartStop.TabIndex = 67;
-      this.btnStartStop.Text = "Start tracking";
-      this.btnStartStop.UseVisualStyleBackColor = true;
-      this.btnStartStop.Click += new System.EventHandler(this.btnStartStop_Click);
-      // 
-      // btnTrimTrack
-      // 
-      this.btnTrimTrack.ForeColor = System.Drawing.Color.Black;
-      this.btnTrimTrack.Image = global::Kinovea.ScreenManager.Properties.Resources.bin_empty;
-      this.btnTrimTrack.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      this.btnTrimTrack.Location = new System.Drawing.Point(28, 208);
-      this.btnTrimTrack.Name = "btnTrimTrack";
-      this.btnTrimTrack.Size = new System.Drawing.Size(157, 27);
-      this.btnTrimTrack.TabIndex = 68;
-      this.btnTrimTrack.Text = "Delete end of track";
-      this.btnTrimTrack.UseVisualStyleBackColor = true;
-      this.btnTrimTrack.Click += new System.EventHandler(this.btnTrimTrack_Click);
       // 
       // ControlDrawingTrackingSetup
       // 

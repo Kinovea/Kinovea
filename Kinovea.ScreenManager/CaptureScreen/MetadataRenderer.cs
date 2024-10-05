@@ -121,10 +121,9 @@ namespace Kinovea.ScreenManager
                     if (drawing is DrawingTrack)
                     {
                         DrawingTrack track = drawing as DrawingTrack;
-                        TrackStatus oldStatus = track.Status;
-                        track.Status = TrackStatus.Configuration;
+                        track.SetConfiguring(true);
                         track.Draw(canvas, distorter, cameraTransformer, transformer, false, timestamp);
-                        track.Status = oldStatus;
+                        track.SetConfiguring(false);
                     }
                     else
                     {

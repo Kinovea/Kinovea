@@ -37,6 +37,7 @@ namespace Kinovea.ScreenManager
         #region Members
         private ViewportController controller;
         private bool dblClickZoom = true;
+        private bool showRecordingIndicator = true;
         private Size referenceSize;             // Original image size after optional rotation.
         private Rectangle displayRectangle;     // Position and size of the region of the viewport where we draw the image.
         private ImageManipulator imageManipulator = new ImageManipulator();
@@ -54,10 +55,12 @@ namespace Kinovea.ScreenManager
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
-        public Viewport(ViewportController controller, bool dblClickZoom = true)
+        public Viewport(ViewportController controller, bool dblClickZoom = true, bool showRecordingIndicator = true)
         {
             this.controller = controller;
             this.dblClickZoom = dblClickZoom;
+            this.showRecordingIndicator = showRecordingIndicator;
+
             this.BackColor = Color.FromArgb(255, 44, 44, 44);
             this.DoubleBuffered = true;
             this.MouseWheel += Viewport_MouseWheel;
@@ -119,7 +122,9 @@ namespace Kinovea.ScreenManager
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            DrawRecordingIndicator(e.Graphics);
+
+            if (showRecordingIndicator)
+                DrawRecordingIndicator(e.Graphics);
             
             if(controller.Bitmap == null)
                 return;
@@ -368,7 +373,7 @@ namespace Kinovea.ScreenManager
         }
         
         /// <summary>
-        /// Implicit zoom change (resizers).
+        /// Implicit zoom change (resizers or auto fit).
         /// </summary>
         private void ForceZoomValue()
         {

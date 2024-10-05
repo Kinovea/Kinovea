@@ -3078,7 +3078,9 @@ namespace Kinovea.ScreenManager
 
         private void HandToolDown()
         {
-            m_PointerTool.OnMouseDown(m_FrameServer.Metadata, m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition, PreferencesManager.PlayerPreferences.DefaultFading.Enabled);
+            IImageToViewportTransformer transformer = m_FrameServer.Metadata.ImageTransform;
+
+            m_PointerTool.OnMouseDown(m_FrameServer.Metadata, transformer, m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition, PreferencesManager.PlayerPreferences.DefaultFading.Enabled);
 
             if (m_FrameServer.Metadata.HitDrawing != null)
             {
@@ -3107,7 +3109,6 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Metadata.DeselectAll();
 
             IImageToViewportTransformer transformer = m_FrameServer.Metadata.ImageTransform;
-            bool zooming = m_FrameServer.Metadata.ImageTransform.Zooming;
             DistortionHelper distorter = m_FrameServer.Metadata.CalibrationHelper.DistortionHelper;
 
             // Special case for the text tool: if we hit on another label we go into edit mode instead of adding a new one on top of it.
@@ -3116,7 +3117,7 @@ namespace Kinovea.ScreenManager
             {
                 foreach (DrawingText label in m_FrameServer.Metadata.Labels())
                 {
-                    int hit = label.HitTest(m_DescaledMouse, m_iCurrentPosition, distorter, transformer, zooming);
+                    int hit = label.HitTest(m_DescaledMouse, m_iCurrentPosition, distorter, transformer);
                     if (hit < 0)
                         continue;
 
@@ -3732,7 +3733,7 @@ namespace Kinovea.ScreenManager
             if (m_ActiveTool == m_PointerTool)
             {
                 SetCursor(m_PointerTool.GetCursor(0));
-                m_PointerTool.OnMouseUp();
+                m_PointerTool.OnMouseUp(m_FrameServer.Metadata);
                 m_FrameServer.Metadata.Magnifier.OnMouseUp();
 
                 // If we were resizing an SVG drawing, trigger a render.
@@ -4069,6 +4070,7 @@ namespace Kinovea.ScreenManager
         {
             // This function should be the single point where we call for rendering.
             // Here we can decide to render directly on the surface, go through the Windows message pump, force the refresh, etc.
+            //log.DebugFormat("DoInvalidate main viewport.");
 
             // Invalidate is asynchronous and several Invalidate calls will be grouped together. (Only one repaint will be done).
             pbSurfaceScreen.Invalidate();
@@ -4614,24 +4616,53 @@ namespace Kinovea.ScreenManager
             // They both can change the drawing name so make sure they are updated.
             if (sender == sidePanelDrawing)
             {
-                // Auto save style as new preset.
+                // Auto save the drawing style as the new preset (for this drawing tool).
                 ToolManager.SetToolStyleFromDrawing(e.Drawing, ((IDecorable)e.Drawing).StyleElements);
                 ToolManager.SavePresets();
+
+                // Possibly update cursor color.
                 UpdateCursor();
-                sidePanelTracking.UpdateName();
 
                 if (e.Drawing is DrawingTrack)
                 {
-                    // Update track color in main slider.
+                    // Synchronize with the tracking panel.
+                    sidePanelTracking.UpdateName();
+
+                    // Update track color in main navbar.
                     UpdateFramesMarkers();
                 }
             }
             else if (sender == sidePanelTracking)
             {
-                sidePanelDrawing.UpdateName();
-                UpdateFramesMarkers();
-                // TODO: save tracking config as new preset.
+                if (e.DrawingAction == DrawingAction.StateChanged)
+                {
+                    // Synchronize with the style panel.
+                    sidePanelDrawing.UpdateName();
 
+                    // Update track length in main navbar.
+                    UpdateFramesMarkers();
+                }
+                else if (e.DrawingAction == DrawingAction.Resized)
+                {
+                    // Auto save the tracking parameters as the new preset.
+                    if (e.Drawing is DrawingTrack)
+                    {
+                        DrawingTrack track = e.Drawing as DrawingTrack;
+                        if (PreferencesManager.PlayerPreferences.TrackingParameters.ContentHash != track.TrackingParameters.ContentHash)
+                        {
+                            PreferencesManager.PlayerPreferences.TrackingParameters = track.TrackingParameters.Clone();
+
+                            // Don't save the preferences file as this is triggered on every mouse move while dragging the box corners.
+                            // It will get saved eventually, worse case scenario when quitting the application.
+                            // If it's lost to a crash it's not the end of the world, this is an implicit preference anyway.
+                            //PreferencesManager.Save();
+                        }
+                    }
+                }
+                else 
+                {
+                    // Moving, Moved, etc. nothing else to do, just invalidate the viewport.
+                }
             }
 
             // Update the image.
@@ -5088,7 +5119,7 @@ namespace Kinovea.ScreenManager
                 // Relocate the drawing under the mouse based on relative motion since the "copy" or "cut" action.
                 float dx = m_DescaledMouse.X - DrawingClipboard.Position.X;
                 float dy = m_DescaledMouse.Y - DrawingClipboard.Position.Y;
-                drawing.MoveDrawing(dx, dy, Keys.None, m_FrameServer.Metadata.ImageTransform.Zooming);
+                drawing.MoveDrawing(dx, dy, Keys.None);
                 log.DebugFormat("Pasted drawing [{0}] under the mouse.", DrawingClipboard.Name);
             }
             else

@@ -36,6 +36,7 @@ using System.Windows.Forms;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 using Kinovea.Video;
+using System.Diagnostics;
 
 namespace Kinovea.ScreenManager
 {
@@ -54,12 +55,15 @@ namespace Kinovea.ScreenManager
     public class DrawingTrack : AbstractDrawing, IDecorable, IKvaSerializable
     {
         #region Events
-        public event EventHandler TrackerParametersChanged;
+        /// <summary>
+        /// Event raised when the tracking status is changed from active to inactive or vice versa.
+        /// </summary>
+        public event EventHandler TrackingStatusChanged;
         #endregion
 
         #region Delegates
         // The track object has some peculiar needs with regards to updating the UI, they are injected here.
-        // Ask the UI to display the frame closest to selected pos.
+        // Ask the UI to display the frame closest to selected pos. Used for the interactive track feature.
         public DisplayClosestFrame DisplayClosestFrame;
         // Ask the UI to enable or disable custom decoding size, which is incompatible with tracking.
         public CheckCustomDecodingSize CheckCustomDecodingSize;
@@ -100,13 +104,18 @@ namespace Kinovea.ScreenManager
                 return hash;
             }
         }
+
+        /// <summary>
+        /// Manually change the tracking status.
+        /// Does not raise the tracking status changed event.
+        /// </summary>
         public TrackStatus Status
         {
             get { return trackStatus; }
             set
             {
                 trackStatus = value;
-                AfterTrackStatusChanged();
+                AfterTrackingStatusChanged();
             }
         }
         public TrackMarker Marker
@@ -114,7 +123,7 @@ namespace Kinovea.ScreenManager
             get { return trackMarker; }
             set { trackMarker = value; }
         }
-        public TrackingParameters TrackerParameters
+        public TrackingParameters TrackingParameters
         {
             get { return tracker.Parameters; }
         }
@@ -208,7 +217,7 @@ namespace Kinovea.ScreenManager
         #region Members
         // Current state.
         private TrackStatus trackStatus = TrackStatus.Interactive;
-        private TrackMarker trackMarker = TrackMarker.Cross;
+        private bool isConfiguring = false;
         private int movingHandler = -1;
         private bool invalid;                                 // Used for XML import.
         private bool scalingDone;
@@ -239,6 +248,7 @@ namespace Kinovea.ScreenManager
         private int hitPointIndex;
 
         // Decoration
+        private TrackMarker trackMarker = TrackMarker.Cross;
         private StyleElements styleElements = new StyleElements();
         private StyleData styleData = new StyleData();
 
@@ -290,7 +300,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         private string memoLabel;
-
+        private Stopwatch stopwatch = new Stopwatch();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -458,8 +468,8 @@ namespace Kinovea.ScreenManager
             drawPointIndex = FindClosestPoint(currentTimestamp);
 
             // Draw various elements depending on combination of status and display options.
-
-            if (positions.Count > 1)
+            // Do not show the track path when configuring the tracking parameters.
+            if (!isConfiguring && positions.Count > 1)
             {
                 bool drawKeyframeLabels = showKeyframeLabels &&
                     trackStatus == TrackStatus.Interactive &&
@@ -498,7 +508,7 @@ namespace Kinovea.ScreenManager
                     DrawTrajectory(canvas, points, first, last, opacity, transformer, currentTimestamp);
                 }
 
-                // Do not show the track path when configuring the tracking parameters.
+                
             }
 
             if (positions.Count > 0)
@@ -508,7 +518,7 @@ namespace Kinovea.ScreenManager
                     opacityFactor = GetOpacity(trackStatus, (float)opacityFactor, false);
 
                 // Angular motion
-                if (showRotationCircle && trackStatus == TrackStatus.Interactive)
+                if (showRotationCircle && trackStatus == TrackStatus.Interactive && !isConfiguring)
                     DrawBestFitCircle(canvas, drawPointIndex, opacityFactor, transformer);
 
                 // Track cursor.
@@ -519,23 +529,22 @@ namespace Kinovea.ScreenManager
                     DrawTrackerHelp(canvas, transformer, styleData.Color, opacityFactor);
             }
         }
-        public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys modifierKeys)
         {
-            if (trackStatus == TrackStatus.Interactive && movingHandler > 1)
+            if (!isConfiguring && trackStatus == TrackStatus.Interactive && movingHandler > 1)
             {
                 MoveLabelTo(dx, dy, movingHandler);
                 return;
             }
 
-            if (movingHandler == 1 && (trackStatus == TrackStatus.Edit || trackStatus == TrackStatus.Configuration))
+            if (movingHandler == 1 && (isConfiguring || trackStatus == TrackStatus.Edit))
             {
                 positions[hitPointIndex].X += dx;
                 positions[hitPointIndex].Y += dy;
 
-                if (trackStatus == TrackStatus.Configuration)
+                if (isConfiguring)
                 {
                     UpdateBoundingBoxes();
-                    TrackerParametersChanged?.Invoke(this, EventArgs.Empty);
                 }
 
                 return;
@@ -543,32 +552,28 @@ namespace Kinovea.ScreenManager
         }
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
-            //log.DebugFormat("Move handle, status={0}", trackStatus);
-            if (trackStatus == TrackStatus.Interactive && (handleNumber == 0 || handleNumber == 1))
-            {
-                MoveCursor(point.X, point.Y);
-            }
-            else if (trackStatus == TrackStatus.Configuration)
+            if (isConfiguring)
             {
                 if (movingHandler > 1 && movingHandler < 6)
+                {
                     searchBox.MoveHandleKeepSymmetry(point.ToPoint(), movingHandler - 1, positions[hitPointIndex].Point);
+                }
                 else if (movingHandler >= 6 && movingHandler < 11)
+                {
                     blockBox.MoveHandleKeepSymmetry(point.ToPoint(), movingHandler - 5, positions[hitPointIndex].Point);
-
-                //TrackingParameters old = tracker.Parameters;
-                //TrackingParameters newParams = old.Clone();
-                //newParams.SearchWindow = searchBox.Rectangle.Size;
-                //newParams.BlockWindow = blockBox.Rectangle.Size;
-                //tracker.Parameters = newParams;
+                }
 
                 tracker.Parameters.SearchWindow = searchBox.Rectangle.Size;
                 tracker.Parameters.BlockWindow = blockBox.Rectangle.Size;
 
                 UpdateBoundingBoxes();
-                TrackerParametersChanged?.Invoke(this, EventArgs.Empty);
+            }
+            else if (trackStatus == TrackStatus.Interactive && (handleNumber == 0 || handleNumber == 1))
+            {
+                MoveCursor(point.X, point.Y);
             }
         }
-        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             //log.DebugFormat("Hit test, status={0}", trackStatus);
             long maxHitTimeStamps = invisibleTimestamp;
@@ -586,17 +591,22 @@ namespace Kinovea.ScreenManager
             hitPointIndex = FindClosestPoint(currentTimestamp);
 
             int result = -1;
-            switch (trackStatus)
+
+            if (isConfiguring)
             {
-                case TrackStatus.Edit:
-                    result = HitTestEdit(point, hitPointIndex, transformer);
-                    break;
-                case TrackStatus.Configuration:
-                    result = HitTestConfiguration(point, transformer);
-                    break;
-                case TrackStatus.Interactive:
-                    result = HitTestInteractive(point, currentTimestamp, hitPointIndex, transformer);
-                    break;
+                result = HitTestConfiguration(point, transformer);
+            }
+            else
+            {
+                switch (trackStatus)
+                {
+                    case TrackStatus.Edit:
+                        result = HitTestEdit(point, hitPointIndex, transformer);
+                        break;
+                    case TrackStatus.Interactive:
+                        result = HitTestInteractive(point, currentTimestamp, hitPointIndex, transformer);
+                        break;
+                }
             }
 
             movingHandler = result;
@@ -701,6 +711,9 @@ namespace Kinovea.ScreenManager
         #region Drawing routines
         private void DrawTrajectory(Graphics canvas, List<PointF> points, int start, int end, float opacity, IImageToViewportTransformer transformer, long currentTimestamp)
         {
+            if (isConfiguring)
+                return;
+
             // Transform from image coordinate in this frame to viewport coordinates.
             var viewPoints = points.GetRange(start, end - start + 1).Select(p => transformer.Transform(p)).ToArray();
             
@@ -750,7 +763,7 @@ namespace Kinovea.ScreenManager
             int radius = defaultCrossRadius;
             Point location = transformer.Transform(positions[drawPointIndex].Point);
 
-            if (trackMarker == TrackMarker.Cross || trackStatus == TrackStatus.Edit || trackStatus == TrackStatus.Configuration)
+            if (isConfiguring || trackStatus == TrackStatus.Edit || trackMarker == TrackMarker.Cross)
             {
                 using (Pen p = new Pen(Color.FromArgb((int)(fadingFactor * 255), styleData.Color)))
                 {
@@ -777,11 +790,7 @@ namespace Kinovea.ScreenManager
         }
         private void DrawTrackerHelp(Graphics canvas, IImageToViewportTransformer transformer, Color color, double opacity)
         {
-            if (trackStatus == TrackStatus.Edit)
-            {
-                tracker.Draw(canvas, positions[drawPointIndex], transformer, styleData.Color, opacity);
-            }
-            else if (trackStatus == TrackStatus.Configuration)
+            if (isConfiguring)
             {
                 Point location = transformer.Transform(positions[drawPointIndex].Point);
                 Size searchSize = transformer.Transform(tracker.Parameters.SearchWindow);
@@ -810,6 +819,10 @@ namespace Kinovea.ScreenManager
                     canvas.DrawEllipse(p, rectBlock);
                 }
             }
+            else if (trackStatus == TrackStatus.Edit)
+            {
+                tracker.Draw(canvas, positions[drawPointIndex], transformer, styleData.Color, opacity);
+            }
         }
         private void DrawKeyframesLabels(Graphics canvas, List<PointF> points, float baselineOpacity, IImageToViewportTransformer transformer)
         {
@@ -819,7 +832,7 @@ namespace Kinovea.ScreenManager
             // Each label is connected to the TrackPosition point.
             // Rescaling for the current image size has already been done.
             //------------------------------------------------------------
-            if (baselineOpacity < 0 || trackStatus == TrackStatus.Configuration)
+            if (baselineOpacity < 0 || isConfiguring)
                 return;
 
             float opacityPast = GetOpacity(trackStatus, baselineOpacity, true);
@@ -883,7 +896,7 @@ namespace Kinovea.ScreenManager
         private void DrawMainLabel(Graphics canvas, int drawPointIndex, double opacityFactor, IImageToViewportTransformer transformer)
         {
             // Draw the main label and its connector to the current point.
-            if (opacityFactor != 1.0f || trackStatus == TrackStatus.Configuration)
+            if (opacityFactor != 1.0f || isConfiguring)
                 return;
 
             // The attach position is already up to date with regards to camera motion.
@@ -1058,6 +1071,9 @@ namespace Kinovea.ScreenManager
         #region User manipulation
         private void MoveCursor(float dx, float dy)
         {
+            if (isConfiguring)
+                return;
+
             if (trackStatus == TrackStatus.Edit)
             {
                 // Move the current point.
@@ -1354,20 +1370,27 @@ namespace Kinovea.ScreenManager
 
         public void StartTracking()
         {
+            if (trackStatus == TrackStatus.Edit)
+                return;
+
             CheckCustomDecodingSize(true);
             trackStatus = TrackStatus.Edit;
-            AfterTrackStatusChanged();
-            TrackerParametersChanged?.Invoke(this, EventArgs.Empty);
+            AfterTrackingStatusChanged();
+            TrackingStatusChanged?.Invoke(this, EventArgs.Empty);
         }
         /// <summary>
         /// Close the tracking. The points are now read only until tracking is started again.
         /// </summary>
         public void StopTracking()
         {
+            if (trackStatus == TrackStatus.Interactive)
+                return;
+
             trackStatus = TrackStatus.Interactive;
             CheckCustomDecodingSize(false);
-            AfterTrackStatusChanged();
-            TrackerParametersChanged?.Invoke(this, EventArgs.Empty);
+            AfterTrackingStatusChanged();
+            //TrackerParametersChanged?.Invoke(this, EventArgs.Empty);
+            TrackingStatusChanged?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -1466,16 +1489,6 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-
-        /// <summary>
-        /// Get the tracking parameters that should be used for tracking, based on preferences.
-        /// </summary>
-        //private TrackingParameters GetTrackerParameters(Size size)
-        //{
-            
-
-          //  return parameters;
-        //}
         #endregion
 
         #region KVA Serialization
@@ -1529,7 +1542,7 @@ namespace Kinovea.ScreenManager
                 w.WriteElementString("ShowTrackLabel", XmlHelper.WriteBoolean(showTrackLabel));
                 w.WriteElementString("ShowKeyframeLabels", XmlHelper.WriteBoolean(showKeyframeLabels));
                 w.WriteElementString("UseKeyframeColors", XmlHelper.WriteBoolean(useKeyframeColors));
-                w.WriteElementString("IsInteractiveTrack", XmlHelper.WriteBoolean(useKeyframeColors));
+                w.WriteElementString("IsInteractiveTrack", XmlHelper.WriteBoolean(isInteractiveTrack));
                 w.WriteElementString("ShowRotationCircle", XmlHelper.WriteBoolean(showRotationCircle));
             }
 
@@ -1635,11 +1648,6 @@ namespace Kinovea.ScreenManager
                     case "TrackerParameters":
                         tracker.Parameters.ReadXml(xmlReader);
                         tracker.Parameters.ResetOnMove = false;
-
-                        //TrackingParameters trackingParameters = new TrackingParameters();
-                        //trackingParameters.ReadXml(xmlReader);
-                        //trackingParameters.ResetOnMove = false;
-                        //tracker.Parameters = trackingParameters;
                         UpdateBoundingBoxes();
                         break;
                     case "TrackPointList":
@@ -1769,28 +1777,35 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        //#region IScalable implementation
-        //public void Scale(Size imageSize)
-        //{
-        //    if (scalingDone)
-        //        return;
-
-        //    TrackingParameters parameters = GetTrackerParameters(imageSize);
-        //    tracker = new TrackerBlock2(parameters);
-        //}
-        //#endregion
-
         #region Miscellaneous public methods
         public void CalibrationChanged()
         {
             UpdateKinematics();
             UpdateKeyframeLabels();
         }
+
+        /// <summary>
+        /// Toggle the flag telling if the rendering, hit test and move/resize should 
+        /// are in the context of configuration or not.
+        /// This should be used when the track is displayed in a secondary viewport
+        /// dedicated to configuration. It should be set back to false as soon as 
+        /// the rendering or interaction test is over.
+        /// This replaces the old `TrackStatus.Configuration`.
+        /// </summary>
+        public void SetConfiguring(bool isConfiguring)
+        {
+            this.isConfiguring = isConfiguring;
+            if (isConfiguring)
+                UpdateBoundingBoxes();
+        }
+
         public void UpdateKinematics()
         {
+            stopwatch.Restart();
             List<TimedPoint> samples = positions.Select(p => new TimedPoint(p.X, p.Y, p.T)).ToList();
             filteredTrajectory.Initialize(samples, parentMetadata.CalibrationHelper);
             timeSeriesCollection = linearKinematics.BuildKinematics(filteredTrajectory, parentMetadata.CalibrationHelper);
+            log.DebugFormat("Updated Kinematics for {0}: {1} ms", this.name, stopwatch.ElapsedMilliseconds);
         }
         public void Clear()
         {
@@ -1988,13 +2003,22 @@ namespace Kinovea.ScreenManager
             UpdateKeyframeLabels();
             InvalidateFromMenu(tsmi);
         }
-        private void AfterTrackStatusChanged()
+        private void AfterTrackingStatusChanged()
         {
-            if (trackStatus == TrackStatus.Interactive)
-                UpdateKinematics();
-            else if (trackStatus == TrackStatus.Configuration)
+            if (isConfiguring)
+            {
                 UpdateBoundingBoxes();
+            }
+
+            if (trackStatus == TrackStatus.Interactive)
+            {
+                UpdateKinematics();
+            }
         }
+
+        /// <summary>
+        /// Update the size and location of the bounding boxes used to draw the search and template boxes.
+        /// </summary>
         private void UpdateBoundingBoxes()
         {
             searchBox.Rectangle = positions[drawPointIndex].Point.Box(tracker.Parameters.SearchWindow).ToRectangle();

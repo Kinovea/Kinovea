@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -9,8 +10,24 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// This controls holds the name and style configuration editors for the active drawing.
+    /// This controls exposes Tracking UI for the active track.
     /// It is used in the side panel.
+    /// 
+    /// This control contains a mini viewport with a track in "solo mode".
+    /// It must handle the following events gracefully and sync with the main viewport.
+    /// - drawing selected
+    /// - drawing deleted
+    /// - tracking status changed
+    /// - tracking parameters changed, incl. search/template boxes and thresholds.
+    /// - search box is moving
+    /// - current point was moved.
+    /// Some of these events come from the outside, some can be triggered in the 
+    /// control itself, either in the mini viewport, nuds or buttons.
+    /// 
+    /// Some of these events are raised by the drawing itself, others by a container (metadata, viewport).
+    /// We have two viewports handling the same drawing at the same time.
+    /// 
+    /// Must handle undo/redo gracefully.
     /// </summary>
     public partial class ControlDrawingTrackingSetup : UserControl
     {
@@ -31,6 +48,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private AbstractDrawing drawing;
+        private DrawingTrack track;
         private Metadata metadata;
         private Guid managerId;
         private bool manualUpdate;
@@ -43,13 +61,12 @@ namespace Kinovea.ScreenManager
         };
 
         // Viewport
-        private ViewportController viewportController = new ViewportController(false, false);
+        private ViewportController viewportController = new ViewportController(false, false, false);
         private MetadataRenderer metadataRenderer;
         private MetadataManipulator metadataManipulator;
         private ScreenToolManager screenToolManager = new ScreenToolManager();
         private System.Windows.Forms.Timer interactionTimer = new System.Windows.Forms.Timer();
         private IDrawingHostView hostView;
-
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -60,8 +77,10 @@ namespace Kinovea.ScreenManager
             this.Paint += Control_Paint;
 
             pnlViewport.Controls.Add(viewportController.View);
-            viewportController.View.DoubleClick += pnlViewport_DoubleClick;
             viewportController.View.Dock = DockStyle.Fill;
+            viewportController.View.DoubleClick += pnlViewport_DoubleClick;
+            viewportController.View.MouseEnter += miniViewport_MouseEnter;
+            viewportController.View.MouseLeave += miniViewport_MouseLeave;
 
             NudHelper.FixNudScroll(nudSearchWindowWidth);
             NudHelper.FixNudScroll(nudSearchWindowHeight);
@@ -81,27 +100,45 @@ namespace Kinovea.ScreenManager
             this.hostView = hostView;
         }
 
+        public void SetMetadata(Metadata metadata)
+        {
+            ForgetMetadata();
+            this.metadata = metadata;
+
+            metadataRenderer = new MetadataRenderer(metadata, true);
+
+            metadataManipulator = new MetadataManipulator(metadata, screenToolManager);
+            metadataManipulator.SetFixedTimestamp(hostView.CurrentTimestamp);
+            metadataManipulator.SetFixedKeyframe(-1);
+            metadataManipulator.DrawingModified += MetadataManipulator_DrawingModified;
+
+            viewportController.MetadataRenderer = metadataRenderer;
+            viewportController.MetadataManipulator = metadataManipulator;
+        }
+
         /// <summary>
         /// Set the drawing this control is managing.
+        /// This is called when a drawing is selected or "nothing" is selected.
         /// </summary>
         public void SetDrawing(AbstractDrawing drawing, Metadata metadata, Guid managerId, Guid drawingId)
         {
-            // Bail out if same drawing.
+            if (metadata != null && metadata != this.metadata)
+            {
+                SetMetadata(metadata);
+            }
+            
+            // Bail out if deselected.
+            if (drawing == null)
+            {
+                manualUpdate = true;
+                ForgetDrawing();
+                manualUpdate = false;
+                return;
+            }
+
+            // Bail out if it's the same drawing we are already managing.
             if (this.drawing != null && drawing != null && this.drawing.Id == drawing.Id)
             {
-                // Updating the image and timestamp causes some issues.
-                // Investigate.
-
-                //metadataManipulator.SetFixedTimestamp(hostView.CurrentTimestamp);
-                //metadataRenderer.SetSoloMode(true, drawing.Id, true);
-                //screenToolManager.SetSoloMode(true, drawing.Id, true);
-
-                //Bitmap newBitmap = BitmapHelper.Copy(hostView.CurrentImage);
-                //viewportController.Bitmap = newBitmap;
-                //viewportController.Timestamp = hostView.CurrentTimestamp;
-                //// Do not recenter in this case, as the select may come from the panel itself.
-                ////InitializeDisplayRectangle(newBitmap.Size, hostView.CurrentTimestamp);
-                //viewportController.Refresh();
                 return;
             }
 
@@ -109,7 +146,7 @@ namespace Kinovea.ScreenManager
             ForgetDrawing();
 
             this.drawing = drawing;
-            this.metadata = metadata;
+            this.track = drawing as DrawingTrack;
             this.managerId = managerId;
 
             if (drawing == null || !(drawing is IDecorable))
@@ -118,34 +155,21 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            metadataRenderer = new MetadataRenderer(metadata, true);
             metadataRenderer.SetSoloMode(true, drawing.Id, true);
             screenToolManager.SetSoloMode(true, drawing.Id, true);
 
-            metadataManipulator = new MetadataManipulator(metadata, screenToolManager);
-            metadataManipulator.SetFixedTimestamp(hostView.CurrentTimestamp);
-            metadataManipulator.SetFixedKeyframe(-1);
+            UpdateContent();
 
-            // The bitmap will soon be disposed by the host view, make our own copy.
-            // We could also consider continually updating the image based on the player
-            // but for tracking setup it might be interesting to keep it as a reference.
-            // Maybe have a button to "refresh" the image and timestamp.
-            Bitmap bitmap = BitmapHelper.Copy(hostView.CurrentImage);
-            viewportController.Bitmap = bitmap;
-            viewportController.Timestamp = hostView.CurrentTimestamp;
-            viewportController.MetadataRenderer = metadataRenderer;
-            viewportController.MetadataManipulator = metadataManipulator;
-            InitializeDisplayRectangle(bitmap.Size, hostView.CurrentTimestamp);
-            viewportController.Refresh();
-
-            if (drawing is DrawingTrack)
+            if (track != null)
             {
-                DrawingTrack track = (DrawingTrack)drawing;
-                track.TrackerParametersChanged += Track_TrackerParametersChanged;
+                track.TrackingStatusChanged += Track_TrackingStatusChanged;
             }
-
-            // Interaction timer for the viewport.
-            interactionTimer.Interval = 15;
+            
+            // Interaction timer for the mini viewport.
+            // Right now this is constantly turned on. 
+            // Maybe we can enable this only when mouse is over the mini viewport.
+            // but we also want to update when the object is moved from the main viewport.
+            interactionTimer.Interval = 40; // 25 fps.
             interactionTimer.Tick += InteractionTimer_Tick;
             interactionTimer.Start();
 
@@ -155,8 +179,8 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// The timestamp or bitmap or tracking params were updated from the main player.
-        /// Update and recenter.
+        /// The timestamp, bitmap or tracking parameters were updated from the main viewport.
+        /// Update video image and recenter.
         /// </summary>
         public void UpdateContent()
         {
@@ -164,23 +188,34 @@ namespace Kinovea.ScreenManager
             Bitmap bitmap = BitmapHelper.Copy(hostView.CurrentImage);
             viewportController.Bitmap = bitmap;
             viewportController.Timestamp = hostView.CurrentTimestamp;
+
             InitializeDisplayRectangle(bitmap.Size, hostView.CurrentTimestamp);
             viewportController.Refresh();
         }
         #endregion
 
+        private void ForgetMetadata()
+        {
+            if (metadata == null)
+                return;
+
+            metadataManipulator.DrawingModified -= MetadataManipulator_DrawingModified;
+            metadata = null;
+        }
+
         private void ForgetDrawing()
         {
+
+            if (track != null)
+            {
+                track.TrackingStatusChanged -= Track_TrackingStatusChanged;
+            }
+
             drawing = null;
-            metadata = null;
+            track = null;
             managerId = Guid.Empty;
 
             interactionTimer.Tick -= InteractionTimer_Tick;
-        }
-
-        private void InteractionTimer_Tick(object sender, EventArgs e)
-        {
-            viewportController.Refresh();
         }
 
         private void SetupControls()
@@ -201,26 +236,35 @@ namespace Kinovea.ScreenManager
             //cbTrackingAlgorithm.SelectedIndexChanged += new EventHandler(editor_SelectedIndexChanged);
 
             UpdateTrackingParameters();
+            UpdateStartStopButton();
 
             this.Height = this.Height - this.ClientRectangle.Height + grpTracking.Bottom + 10;
+        }
+
+        private void FitSearchBox()
+        {
+            // Refit and recenter.
+            Size imgSize = viewportController.Bitmap.Size;
+            long timestamp = viewportController.Timestamp;
+            InitializeDisplayRectangle(imgSize, timestamp);
         }
 
         private void InitializeDisplayRectangle(Size imgSize, long timestamp)
         {
             // Find an appropriate point to center the mini editor.
             PointF center = imgSize.Center();
-            if (drawing is DrawingTrack)
+            if (track != null)
             {
-                center = ((DrawingTrack)drawing).GetPosition(timestamp);
+                center = track.GetPosition(timestamp);
                 if (float.IsNaN(center.X) || float.IsNaN(center.Y) || center.IsEmpty)
                     center = imgSize.Center();
             }
 
             // Scale such that the search window fits in the viewport.
             float scale = 1.0f;
-            if (drawing is DrawingTrack)
+            if (track != null)
             {
-                Size searchSize = ((DrawingTrack)drawing).TrackerParameters.SearchWindow;
+                Size searchSize = track.TrackingParameters.SearchWindow;
                 float scaleX = (float)pnlViewport.Width / searchSize.Width;
                 float scaleY = (float)pnlViewport.Height / searchSize.Height;
                 scale = Math.Min(scaleX, scaleY) * 0.9f;
@@ -237,48 +281,206 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// The parameters were changed via the mini viewport.
-        /// </summary>
-        private void Track_TrackerParametersChanged(object sender, EventArgs e)
-        {
-            UpdateTrackingParameters();
-            RaiseDrawingModified();
-        }
-
-        /// <summary>
         /// Update the tracking nuds with values from the drawing.
         /// </summary>
         private void UpdateTrackingParameters()
         {
             manualUpdate = true;
 
-
-            if (drawing is DrawingTrack)
+            if (track != null)
             {
-                DrawingTrack track = (DrawingTrack)drawing;
-                TrackingParameters tp = track.TrackerParameters;
+                TrackingParameters tp = track.TrackingParameters;
                 nudSearchWindowWidth.Value = tp.SearchWindow.Width;
                 nudSearchWindowHeight.Value = tp.SearchWindow.Height;
                 nudObjWindowWidth.Value = tp.BlockWindow.Width;
                 nudObjWindowHeight.Value = tp.BlockWindow.Height;
                 nudMatchTreshold.Value = (decimal)tp.SimilarityThreshold;
                 nudUpdateThreshold.Value = (decimal)tp.TemplateUpdateThreshold;
-                UpdateStartStopButton(track.Status);
             }
 
             manualUpdate = false;
         }
 
-        private void UpdateStartStopButton(TrackStatus status)
+        /// <summary>
+        /// Update the start/stop button to reflect the current tracking status.
+        /// </summary>
+        private void UpdateStartStopButton()
         {
-            btnStartStop.Image = status == TrackStatus.Interactive ? Properties.Drawings.trackingplay : Properties.Drawings.trackstop;
-            btnStartStop.Text = status == TrackStatus.Interactive ? "Start tracking" : "Stop tracking";
+            if (track != null)
+            {
+                btnStartStop.Image = track.Status == TrackStatus.Interactive ? Properties.Drawings.trackingplay : Properties.Drawings.trackstop;
+                btnStartStop.Text = track.Status == TrackStatus.Interactive ? "Start tracking" : "Stop tracking";
+            }
         }
 
-        private void RaiseDrawingModified()
+        /// <summary>
+        /// Force turn tracking ON if it's not the case already.
+        /// This should be called for any change done via the panel (controls or mini viewport).
+        /// This makes things coherent and improves perfs as the main 
+        /// viewport will only draw a subset of the track in this case.
+        /// </summary>
+        private void EnsureTracking()
+        {
+            if (track == null)
+                return;
+
+            if (track.Status == TrackStatus.Interactive)
+                track.StartTracking();
+        }
+
+        private void RaiseDrawingModified(DrawingAction action)
         {
             if (drawing != null)
-                DrawingModified?.Invoke(this, new DrawingEventArgs(drawing, managerId));
+            {
+                DrawingModified?.Invoke(this, new DrawingEventArgs(drawing, managerId, action));
+            }
+        }
+
+        #region Data events
+
+        /// <summary>
+        /// The tracking status (active vs inactive) was changed.
+        /// This may originate from our own button or from the context menu on the drawing.
+        /// Does not raise the DrawingModified event. Should it though?
+        /// </summary>
+        private void Track_TrackingStatusChanged(object sender, EventArgs e)
+        {
+            // Update local UI.
+            UpdateStartStopButton();
+        }
+
+        private void Metadata_DrawingModified(object sender, DrawingEventArgs e)
+        {
+            log.DebugFormat("Non track drawing modified from the outside.");
+            // A non-track drawing was modified from the outside.
+            //if (drawing != null && drawing.Id == e.Drawing.Id)
+            //    UpdateContent();
+        }
+        #endregion
+
+        #region UI events to modify the data
+
+        private void nudSearchWindow_ValueChanged(object sender, EventArgs e)
+        {
+            if (manualUpdate)
+                return;
+
+            int width = (int)nudSearchWindowWidth.Value;
+            int height = (int)nudSearchWindowHeight.Value;
+            if (track != null)
+            {
+                // Update the data.
+                track.TrackingParameters.SearchWindow = new Size(width, height);
+                EnsureTracking();
+
+                // Update local UI.
+                FitSearchBox();
+                viewportController.Refresh();
+
+                // Update other controllers.
+                RaiseDrawingModified(DrawingAction.Resized);
+            }
+        }
+
+        private void nudObjWindow_ValueChanged(object sender, EventArgs e)
+        {
+            if (manualUpdate)
+                return;
+
+            int width = (int)nudObjWindowWidth.Value;
+            int height = (int)nudObjWindowHeight.Value;
+            if (track != null)
+            {
+                // Update the data.
+                track.TrackingParameters.BlockWindow = new Size(width, height);
+                EnsureTracking();
+
+                // Update local UI.
+                viewportController.Refresh();
+
+                // Update other controllers.
+                RaiseDrawingModified(DrawingAction.Resized);
+            }
+        }
+
+        private void nudThresholds_ValueChanged(object sender, EventArgs e)
+        {
+            if (manualUpdate)
+                return;
+
+            double matchThreshold = (double)nudMatchTreshold.Value;
+            double updateThreshold = (double)nudUpdateThreshold.Value;
+            if (track != null)
+            {
+                // Update the data.
+                track.TrackingParameters.SimilarityThreshold = matchThreshold;
+                track.TrackingParameters.TemplateUpdateThreshold = updateThreshold;
+                EnsureTracking();
+
+                // Update local UI.
+                viewportController.Refresh();
+
+                // Update other controllers.
+                RaiseDrawingModified(DrawingAction.StateChanged);
+            }
+        }
+
+        private void btnStartStop_Click(object sender, EventArgs e)
+        {
+            if (track != null)
+            {
+                // Update the data.
+                track.ToggleTracking();
+                
+                // Update local UI.
+                // Already handled since we listen to tracking status change events.
+
+                // Update other controllers.
+                RaiseDrawingModified(DrawingAction.TrackingStatusChanged);
+            }
+        }
+
+        private void btnTrimTrack_Click(object sender, EventArgs e)
+        {
+            if (track != null)
+            {
+                // Update the data.
+                track.Trim(viewportController.Timestamp);
+                
+                // Do not force open tracking. One scenario of trimming is 
+                // when the tracking is closed and we go back to the last 
+                // good point and trim the rest.
+
+                // Update local UI.
+                // Nothing to do.
+                // TODO: have a control with the number of tracked frames.
+
+                // Update other controllers.
+                RaiseDrawingModified(DrawingAction.StateChanged);
+            }
+        }
+        #endregion
+
+        #region Misc UI events
+        private void InteractionTimer_Tick(object sender, EventArgs e)
+        {
+            viewportController.Refresh();
+        }
+
+        private void pnlViewport_Resize(object sender, EventArgs e)
+        {
+            if (drawing == null)
+                return;
+
+            FitSearchBox();
+        }
+
+        private void pnlViewport_DoubleClick(object sender, EventArgs e)
+        {
+            if (drawing == null)
+                return;
+
+            FitSearchBox();
         }
 
         /// <summary>
@@ -332,100 +534,47 @@ namespace Kinovea.ScreenManager
         private void Control_Paint(object sender, PaintEventArgs e)
         {
         }
-
-        private void pnlViewport_Resize(object sender, EventArgs e)
+        private void miniViewport_MouseEnter(object sender, EventArgs e)
         {
-            if (drawing == null)
+            //interactionTimer.Start();
+        }
+
+        private void miniViewport_MouseLeave(object sender, EventArgs e)
+        {
+            //interactionTimer.Stop();
+        }
+
+        /// <summary>
+        /// The track is being moved from the mini viewport.
+        /// </summary>
+        private void miniViewport_Moving(object sender, EventArgs e)
+        {
+            EnsureTracking();
+
+            // Signal to the main viewport for invalidation.
+            RaiseDrawingModified(DrawingAction.Moving);
+        }
+
+        private void MetadataManipulator_DrawingModified(object sender, DrawingEventArgs e)
+        {
+            if (track == null || track.Id != e.Drawing.Id)
                 return;
 
-            // Refit and recenter.
-            Size imgSize = viewportController.Bitmap.Size;
-            long timestamp = viewportController.Timestamp;
-            InitializeDisplayRectangle(imgSize, timestamp);
-        }
-
-        private void pnlViewport_DoubleClick(object sender, EventArgs e)
-        {
-            if (drawing == null)
-                return;
-
-            // Refit and recenter.
-            Size imgSize = viewportController.Bitmap.Size;
-            long timestamp = viewportController.Timestamp;
-            InitializeDisplayRectangle(imgSize, timestamp);
-        }
-
-        private void nudSearchWindow_ValueChanged(object sender, EventArgs e)
-        {
-            if (manualUpdate)
-                return;
-
-            int width = (int)nudSearchWindowWidth.Value;
-            int height = (int)nudSearchWindowHeight.Value;
-            if (drawing is DrawingTrack)
+            if (e.DrawingAction == DrawingAction.Resizing)
             {
-                DrawingTrack track = (DrawingTrack)drawing;
-                track.TrackerParameters.SearchWindow = new Size(width, height);
-                RaiseDrawingModified();
+                // Keep the nuds up to date but don't trigger invalidation of the main viewport
+                // as this is raised for every mouse move while dragging the corners.
+                UpdateTrackingParameters();
+            }
+            else if (e.DrawingAction == DrawingAction.Resized || e.DrawingAction == DrawingAction.Moved)
+            {
+                FitSearchBox();
+                EnsureTracking();
+
+                // Update other controllers.
+                RaiseDrawingModified(DrawingAction.Resized);
             }
         }
-
-        private void nudObjWindow_ValueChanged(object sender, EventArgs e)
-        {
-            if (manualUpdate)
-                return;
-
-            int width = (int)nudObjWindowWidth.Value;
-            int height = (int)nudObjWindowHeight.Value;
-            if (drawing is DrawingTrack)
-            {
-                DrawingTrack track = (DrawingTrack)drawing;
-                track.TrackerParameters.BlockWindow = new Size(width, height);
-                RaiseDrawingModified();
-            }
-        }
-
-        private void nudThresholds_ValueChanged(object sender, EventArgs e)
-        {
-            if (manualUpdate)
-                return;
-
-            double matchThreshold = (double)nudMatchTreshold.Value;
-            double updateThreshold = (double)nudUpdateThreshold.Value;
-            if (drawing is DrawingTrack)
-            {
-                DrawingTrack track = (DrawingTrack)drawing;
-                track.TrackerParameters.SimilarityThreshold = matchThreshold;
-                track.TrackerParameters.TemplateUpdateThreshold = updateThreshold;
-                RaiseDrawingModified();
-            }
-        }
-
-        private void grpTracking_Enter(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnStartStop_Click(object sender, EventArgs e)
-        {
-            // Toggle tracking.
-            if (drawing is DrawingTrack)
-            {
-                DrawingTrack track = (DrawingTrack)drawing;
-                track.ToggleTracking();
-                UpdateStartStopButton(track.Status);
-                RaiseDrawingModified();
-            }
-        }
-
-        private void btnTrimTrack_Click(object sender, EventArgs e)
-        {
-            if (drawing is DrawingTrack)
-            {
-                DrawingTrack track = (DrawingTrack)drawing;
-                track.Trim(viewportController.Timestamp);
-                RaiseDrawingModified();
-            }
-        }
+        #endregion
     }
 }
