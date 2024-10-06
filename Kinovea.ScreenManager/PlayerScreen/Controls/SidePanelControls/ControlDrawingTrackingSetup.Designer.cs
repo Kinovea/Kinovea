@@ -128,10 +128,10 @@ namespace Kinovea.ScreenManager
       // 
       this.nudUpdateThreshold.DecimalPlaces = 2;
       this.nudUpdateThreshold.Increment = new decimal(new int[] {
-            1,
+            5,
             0,
             0,
-            65536});
+            131072});
       this.nudUpdateThreshold.Location = new System.Drawing.Point(175, 147);
       this.nudUpdateThreshold.Maximum = new decimal(new int[] {
             1,
@@ -157,10 +157,10 @@ namespace Kinovea.ScreenManager
       // 
       this.nudMatchTreshold.DecimalPlaces = 2;
       this.nudMatchTreshold.Increment = new decimal(new int[] {
-            1,
+            5,
             0,
             0,
-            65536});
+            131072});
       this.nudMatchTreshold.Location = new System.Drawing.Point(175, 116);
       this.nudMatchTreshold.Maximum = new decimal(new int[] {
             1,
