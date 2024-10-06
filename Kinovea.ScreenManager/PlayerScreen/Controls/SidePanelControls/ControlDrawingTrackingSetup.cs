@@ -572,7 +572,7 @@ namespace Kinovea.ScreenManager
                 EnsureTracking();
 
                 // Update other controllers.
-                RaiseDrawingModified(DrawingAction.Resized);
+                RaiseDrawingModified(e.DrawingAction);
             }
         }
         #endregion

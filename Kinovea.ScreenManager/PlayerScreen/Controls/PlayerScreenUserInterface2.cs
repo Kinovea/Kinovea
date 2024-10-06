@@ -4651,11 +4651,7 @@ namespace Kinovea.ScreenManager
                         if (PreferencesManager.PlayerPreferences.TrackingParameters.ContentHash != track.TrackingParameters.ContentHash)
                         {
                             PreferencesManager.PlayerPreferences.TrackingParameters = track.TrackingParameters.Clone();
-
-                            // Don't save the preferences file as this is triggered on every mouse move while dragging the box corners.
-                            // It will get saved eventually, worse case scenario when quitting the application.
-                            // If it's lost to a crash it's not the end of the world, this is an implicit preference anyway.
-                            //PreferencesManager.Save();
+                            PreferencesManager.Save();
                         }
                     }
                 }
