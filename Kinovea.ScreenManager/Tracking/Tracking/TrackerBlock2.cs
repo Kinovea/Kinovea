@@ -28,6 +28,9 @@ using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using Kinovea.Services;
 using System.Drawing.Drawing2D;
+using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics;
+
 
 namespace Kinovea.ScreenManager
 {
@@ -91,14 +94,12 @@ namespace Kinovea.ScreenManager
                 return false;
             }
 
-            // The template matching is aligned with the pixel grid.
-            // This means the point we are tracking is not necessarily at the center of
-            // the template/search boxes used for matching.
-            // We match aligned with the grid and re-inject the offset at the end.
+            // The template matching itself is aligned with the pixel grid. 
+            // The output, user-placed or tracked, has sub-pixel accuracy.
+            // We match against the closest alignment.
+            // Do not re-inject this offset at the end, the result is the sub-pixel location from the refinement.
             PointF lastPoint = lastTrackPoint.Point;
-            PointF lastPointAligned = new PointF((int)lastPoint.X, (int)lastPoint.Y);
-            PointF pixelFract = new PointF(lastPoint.X - lastPointAligned.X, lastPoint.Y - lastPointAligned.Y);
-            //log.DebugFormat("lastPoint:{0}, lastPointAligned:{1}, pixelFract:{2}", lastPoint, lastPointAligned, pixelFract);
+            PointF lastPointAligned = new PointF((int)Math.Round(lastPoint.X), (int)Math.Round(lastPoint.Y));
 
             // The boxes themselves may have odd or even sizes.
             System.Drawing.Size srchSize = parameters.SearchWindow;
@@ -117,8 +118,7 @@ namespace Kinovea.ScreenManager
             var cvTemplate = BitmapConverter.ToMat(lastTrackPoint.Template);
             var cvImageROI = cvImage[srchRect.Y, srchRect.Y + srchRect.Height, srchRect.X, srchRect.X + srchRect.Width];
                 
-            // Make a mask to avoid matching on the background.
-                
+            // Make an ellipse mask to avoid matching on the background.
             currentPoint = null;
             if (mask == null || mask.Width != tmplSize.Width || mask.Height != tmplSize.Height)
             {
@@ -135,7 +135,7 @@ namespace Kinovea.ScreenManager
                 g.FillEllipse(Brushes.White, new Rectangle(System.Drawing.Point.Empty, tmplSize));
 
                 //mask.Save(@"G:\temp\mask\mask.png");
-
+                
                 var cvMask = OpenCvSharp.Extensions.BitmapConverter.ToMat(mask);
                 OpenCvSharp.Cv2.CvtColor(cvMask, cvMaskGray, OpenCvSharp.ColorConversionCodes.BGR2GRAY, 0);
                 cvMask.Dispose();
@@ -149,16 +149,23 @@ namespace Kinovea.ScreenManager
             // Perform the actual template matching.
             // This fills the map with the score at each candidate location.
             Cv2.MatchTemplate(cvImageROI, cvTemplate, cvSimiMap, TemplateMatchModes.CCoeffNormed, cvMaskGray);
+            //Cv2.MatchTemplate(cvImageROI, cvTemplate, cvSimiMap, TemplateMatchModes.SqDiffNormed, cvMaskGray);
+            //Cv2.MatchTemplate(cvImageROI, cvTemplate, cvSimiMap, TemplateMatchModes.SqDiffNormed);
 
-            // Find the top value.
+            // Find the best value.
             double min = 0;
             double max = 0;
             OpenCvSharp.Point minLoc;
             OpenCvSharp.Point maxLoc;
             Cv2.MinMaxLoc(cvSimiMap, out min, out max, out minLoc, out maxLoc);
+            //log.DebugFormat("With mask: maxloc:{0}, max:{1}", maxLoc, max);
+
+            //Scalar avgDiffSq = Cv2.Mean(cvSimiMap);
+            //double avg = avgDiffSq.Val0 + avgDiffSq.Val1 + avgDiffSq.Val2 / 3;
+            //double peakHeight = avg / min - 1;
+            //log.DebugFormat("avg:{0}, min:{1}, peakHeight:{2}, minLoc:{3}", avg, min, peakHeight, minLoc);
 
             // For some reason the map may contain Infinity values near the edges (only with masking?).
-            //log.DebugFormat("With mask: maxloc:{0}, max:{1}", maxLoc, max);
             if (double.IsInfinity(max) || max > 1.0)
             {
                 // Retry without the mask.
@@ -167,7 +174,6 @@ namespace Kinovea.ScreenManager
                 //log.DebugFormat("No mask: maxloc:{0}, max:{1}", maxLoc, max);
             }
 
-            
             #region Monitoring
             //if(monitoring)
             //{
@@ -195,42 +201,55 @@ namespace Kinovea.ScreenManager
             else
             { 
                 // Tracking success. Try to refine the best location based on neighbors scores.
+                bool doRefine = true;
                 PointF loc = PointF.Empty;
-
-                bool doRefine = false;
 
                 // If the best candidate is on the edge, there is no point trying to refine it.
                 // This is very suspicious and likely a failure case.
-                // If the best score is 1.0 (how?) we also don't refine.
+                // If the best score is 1.0 (pixel-perfect static image?) we also don't refine.
+                //if (!doRefine || double.IsInfinity(peakHeight) || minLoc.X == 0 || minLoc.X == cvSimiMap.Width - 1 || minLoc.Y == 0 || minLoc.Y == cvSimiMap.Height - 1)
                 if (!doRefine || max == 1.0 || maxLoc.X == 0 || maxLoc.X == cvSimiMap.Width - 1 || maxLoc.Y == 0 || maxLoc.Y == cvSimiMap.Height - 1)
                 {
                     loc = new PointF(maxLoc.X, maxLoc.Y);
+                    //loc = new PointF(minLoc.X, minLoc.Y);
                     //log.DebugFormat("Non refined location: {0}", loc);
                 }
                 else
                 {
+                    // Approach 0: no refinement.
+                    //loc = new PointF(maxLoc.X, maxLoc.Y);
+
+                    // Approach 1: center of gravity of values in the 3x3 neighborhood of the best candidate.
                     // If the top result is over the "good" threshold, only consider other good matches in the neighborhood.
                     // Otherwise consider all "fair" matches.
                     // Don't consider matches that wouldn't have passed the threshold, they are just adding noise.
-                    float threshold = max >= parameters.TemplateUpdateThreshold ? (float)parameters.TemplateUpdateThreshold : (float)parameters.SimilarityThreshold;
-                    loc = RefineLocation(cvSimiMap, maxLoc, threshold);
+                    //float threshold = max >= parameters.TemplateUpdateThreshold ? (float)parameters.TemplateUpdateThreshold : (float)parameters.SimilarityThreshold;
+                    //loc = RefineLocationCOG(cvSimiMap, maxLoc, threshold);
+
+                    // Approach 2: Fit parabolas along the x and y axes.
+                    loc = RefineLocationParabola(cvSimiMap, maxLoc, (float)max);
+                    //loc = RefineLocationParabola(cvSimiMap, minLoc, (float)min);
+
                     //log.DebugFormat("Refined location: {0}", loc);
                 }
 
                 // What we have at this point is the location of the top left of the template within the search window.
                 // Find back the actual center point based on truncated half size.
-                // And reinject the sub-pixel offset of the original position into the result since
-                // the template matching was done on the integer pixel grid.
+                // DO NOT re-inject the sub-pixel offset of the original position into the result. 
+                // The goal is to match the reference template in this frame, sub-pixel results of previous frames are irrelevant.
                 PointF bestCandidate = new PointF(
-                    srchRect.X + loc.X + (int)(cvTemplate.Width / 2.0f)  + pixelFract.X, 
-                    srchRect.Y + loc.Y + (int)(cvTemplate.Height / 2.0f) + pixelFract.Y);
-                //log.DebugFormat("Final point: {0}", bestCandidate);
+                    srchRect.X + loc.X + (int)(cvTemplate.Width / 2.0f), 
+                    srchRect.Y + loc.Y + (int)(cvTemplate.Height / 2.0f));
+                //log.DebugFormat("Tracking, Final point: {0}", bestCandidate);
 
                 PointF offset = new PointF(bestCandidate.X - lastPoint.X, bestCandidate.Y - lastPoint.Y);
-                log.DebugFormat("Tracking: Offset: {0}, Score:{1:.0.000}", offset, max);
+                //log.DebugFormat("Tracking, Point: {0}, Offset: {1}, Score:{2:.0.000}{3}", bestCandidate, offset, max, max >= parameters.TemplateUpdateThreshold ? "" : " <<<< Template update");
+                //log.DebugFormat("Tracking, Point: {0}, Offset: {1}, Peak height:{2:.0.000}", bestCandidate, offset, peakHeight);
 
                 currentPoint = CreateTrackPoint(false, bestCandidate, max, time, currentImage, previousPoints);
                 ((TrackPointBlock)currentPoint).Similarity = max;
+                //currentPoint = CreateTrackPoint(false, bestCandidate, 1.0, time, currentImage, previousPoints);
+                //((TrackPointBlock)currentPoint).Similarity = 1.0;
             }
 
             cvImageROI.Dispose();
@@ -239,75 +258,54 @@ namespace Kinovea.ScreenManager
 
             return true;
         }
+
+
         /// <summary>
-        /// Computes the center of mass of the similarity scores in the vicinity of the best candidate.
-        /// Finds a floating point location for the best match.
+        /// Creates a track point at the specified location.
+        /// Implements the template update logic and captures the new template if needed.
+        /// This is called for both auto-tracking and manual placement (canonical template).
         /// </summary>
-        private PointF RefineLocation(Mat map, OpenCvSharp.Point loc, float threshold)
-        {
-            // At this point we should never be on the edge of the image so we can take ±1 locations safely.
-
-            // Center of gravity of the 3x3 neighborhood.
-            float x = 0.0f;
-            float y = 0.0f;
-            float sum = 0.0f;
-            int count = 0;
-            for (int i = -1; i < 2; i++)
-            {
-                for (int j = -1; j < 2; j++)
-                {
-                    float value = map.Get<float>(loc.Y + j, loc.X + i);
-                    
-                    //log.DebugFormat("value at i:{0}, j:{1} = {2} {3}", i, j, value, value >= threshold ? "<-" : "");
-
-                    // Bail out if the map contains garbage.
-                    if (float.IsInfinity(value) || float.IsNaN(value))
-                        return new PointF(loc.X, loc.Y);
-
-                    // Only consider candidates that would pass the threshold on their own, 
-                    // otherwise we are just adding noise.
-                    if (value < threshold)
-                        continue;
-
-
-                    x += (i * value);
-                    y += (j * value);
-                    sum += value;
-                    count++;
-                }
-            }
-
-            return new PointF(loc.X + x / sum, loc.Y + y / sum);
-        }
-
-        public override AbstractTrackPoint CreateTrackPoint(bool manual, PointF p, double similarity, long time, Bitmap currentImage, List<AbstractTrackPoint> previousPoints)
+        public override AbstractTrackPoint CreateTrackPoint(bool manuallyPlaced, PointF point, double similarity, long time, Bitmap currentImage, List<AbstractTrackPoint> previousPoints)
         {
             // Creates a TrackPoint from the input image at the given coordinates.
-            // Stores algorithm internal data in the point, to help next match.
-            // time is in relative timestamps from the first point.
-
-            // Copy the template from the image into its own Bitmap.
+            // The template is captured at the nearest whole pixel location (rounding).
+            // It is important that the matching also uses the same rounding.
 
             Bitmap tpl = new Bitmap(parameters.BlockWindow.Width, parameters.BlockWindow.Height, PixelFormat.Format32bppPArgb);
             int age = 0;
 
-            bool updateWithCurrentImage = true;
-
-            if(!manual && previousPoints.Count > 0 && similarity > parameters.TemplateUpdateThreshold || similarity < parameters.SimilarityThreshold)
+            // Template update algorithm:
+            // - If the user moved the point manually we update the template.
+            // - If the match is "poor" we don't update.
+            // - If the match is "good", we also don't update, maintain the reference. This avoids drift.
+            // - If the match is only "fair" but still considered a match, we update the template.
+            // After lots of experiment this approach seems to give good results.
+            // Another approach used in e.g Tracker is to constantly evolve the template by blending with 
+            // the reference. But this still causes drift, just slower. Then they reblend the reference
+            // on top of the evolved template to combat drift.
+            // The approach used here is more similar to what we do manually, the reference is good enough until it isn't.
+            // The failure mode is that instead of a slow drift we might hook onto a false positive or a shift.
+            bool captureTemplate = true;
+            if(!manuallyPlaced && previousPoints.Count > 0 && (similarity > parameters.TemplateUpdateThreshold || similarity < parameters.SimilarityThreshold))
             {
-                // Do not update the template if it's not that different.
+                // The match is either manual, very good or very bad: do not update.
+                // FIXME: we don't need to save the template inside each point, just keep a global one.
                 TrackPointBlock prevBlock = previousPoints[previousPoints.Count - 1] as TrackPointBlock;
                 if(prevBlock != null && prevBlock.Template != null)
                 {
                     tpl = BitmapHelper.Copy(prevBlock.Template);
-                    updateWithCurrentImage = false;
+                    captureTemplate = false;
                     age = prevBlock.TemplateAge + 1;
                 }
             }
 
-
-            if(updateWithCurrentImage)
+            if(captureTemplate)
             {
+                // The object has changed appearance enough to mandate an update.
+                // The way we round or truncate the point coordinates is important and sould be coherent between capture and matching.
+                PointF pointAligned = new PointF((int)Math.Round(point.X), (int)Math.Round(point.Y));
+                //PointF pointAligned = new PointF((int)point.X, (int)point.Y);
+
                 BitmapData imageData = currentImage.LockBits( new Rectangle( 0, 0, currentImage.Width, currentImage.Height ), ImageLockMode.ReadOnly, currentImage.PixelFormat );
                 BitmapData templateData = tpl.LockBits(new Rectangle( 0, 0, tpl.Width, tpl.Height ), ImageLockMode.ReadWrite, tpl.PixelFormat );
 
@@ -321,9 +319,10 @@ namespace Kinovea.ScreenManager
                 int imageWidthInBytes = currentImage.Width * pixelSize;
                 int imgOffset = imgStride - (currentImage.Width * pixelSize) + imageWidthInBytes - templateWidthInBytes;
 
-                int startY = (int)(p.Y - ((int)(parameters.BlockWindow.Height / 2.0f)));
-                int startX = (int)(p.X - ((int)(parameters.BlockWindow.Width / 2.0f)));
+                int startX = (int)(pointAligned.X - ((int)(parameters.BlockWindow.Width / 2.0f)));
+                int startY = (int)(pointAligned.Y - ((int)(parameters.BlockWindow.Height / 2.0f)));
 
+                // This might happen if the user place the point so that the template is partially outside the image boundaries.
                 if(startX < 0)
                     startX = 0;
 
@@ -360,7 +359,7 @@ namespace Kinovea.ScreenManager
             }
 
             #region Monitoring
-            if(monitoring && updateWithCurrentImage)
+            if(monitoring && captureTemplate)
             {
                 // Save current template to file, to visually monitor the drift.
                 //string tplDirectory = @"";
@@ -378,23 +377,28 @@ namespace Kinovea.ScreenManager
             }
             #endregion
 
-            TrackPointBlock tpb = new TrackPointBlock(p.X, p.Y, time, tpl);
-            //TrackPointBlock tpb = new TrackPointBlock(p.X, p.Y, t, tpl);
+            // Store the full precision value in the point.
+            TrackPointBlock tpb = new TrackPointBlock(point.X, point.Y, time, tpl);
             tpb.TemplateAge = age;
-            tpb.IsReferenceBlock = manual;
-            tpb.Similarity = manual ? 1.0f : similarity;
+            tpb.IsReferenceBlock = manuallyPlaced;
+            tpb.Similarity = manuallyPlaced ? 1.0f : similarity;
 
             return tpb;
         }
+
+        /// <summary>
+        /// Create a track point at the specified location without any template update logic.
+        /// This is used only in the case of importing existing track data from xml.
+        /// </summary>
         public override AbstractTrackPoint CreateOrphanTrackPoint(PointF p, long t)
         {
-            // This creates a bare bone TrackPoint.
-            // This is used only in the case of importing from xml.
             // The TrackPoint can't be used as-is to track the next one because it's missing the algo internal data (block).
             // We'll need to reconstruct it when we have the corresponding image.
             return new TrackPointBlock(p.X, p.Y, t);
         }
+        #endregion
 
+        #region Drawing gizmo
         /// <summary>
         /// Draw the tracker gizmo for the main viewport during open tracking or for the configuration mini viewport.
         /// </summary>
@@ -403,7 +407,9 @@ namespace Kinovea.ScreenManager
             // The template matching algorithm works aligned to the pixel grid so we do all the math
             // in the original image space and convert at the end.
             // Otherwise we are showing misleading sub-pixel-aligned boxes which makes it harder to position them on top of the video.
-            PointF locationAligned = point.Point.ToPoint();
+            //PointF locationAligned = point.Point.ToPoint();
+            PointF locationAligned = new PointF((int)Math.Round(point.X), (int)Math.Round(point.Y));
+
             System.Drawing.Size srchSize = parameters.SearchWindow;
             System.Drawing.Size tmplSize = parameters.BlockWindow;
             PointF srchTopLeft = new PointF(locationAligned.X - (int)(srchSize.Width / 2.0f), locationAligned.Y - (int)(srchSize.Height / 2.0f));
@@ -412,7 +418,6 @@ namespace Kinovea.ScreenManager
             Rectangle tmplRect = new Rectangle((int)tmplTopLeft.X, (int)tmplTopLeft.Y, tmplSize.Width, tmplSize.Height);
             srchRect = transformer.Transform(srchRect);
             tmplRect = transformer.Transform(tmplRect);
-
 
             if (isConfiguring)
             {
@@ -484,6 +489,79 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-       
+        /// <summary>
+        /// Computes the center of mass of the similarity scores in the 3x3 neighborhood of the best candidate.
+        /// Returns the center of mass as the refined point.
+        /// </summary>
+        private PointF RefineLocationCOG(Mat map, OpenCvSharp.Point loc, float threshold)
+        {
+            // At this point we should never be on the edge of the image so we can take ±1 locations safely.
+
+            // Center of gravity of the 3x3 neighborhood.
+            float x = 0.0f;
+            float y = 0.0f;
+            float sum = 0.0f;
+            int count = 0;
+            for (int i = -1; i < 2; i++)
+            {
+                for (int j = -1; j < 2; j++)
+                {
+                    float value = map.Get<float>(loc.Y + j, loc.X + i);
+
+                    //log.DebugFormat("value at i:{0}, j:{1} = {2} {3}", i, j, value, value >= threshold ? "<-" : "");
+
+                    // Bail out if the map contains garbage.
+                    if (float.IsInfinity(value) || float.IsNaN(value))
+                        return new PointF(loc.X, loc.Y);
+
+                    // Only consider candidates that would pass the threshold on their own, 
+                    // otherwise we are just adding noise.
+                    if (value < threshold)
+                        continue;
+
+
+                    x += (i * value);
+                    y += (j * value);
+                    sum += value;
+                    count++;
+                }
+            }
+
+            return new PointF(loc.X + x / sum, loc.Y + y / sum);
+        }
+
+        /// <summary>
+        /// Fit parabolas along the x and y axes using the immediate neighbors on each side.
+        /// Returns the peak of the parabola as the refined point.
+        /// </summary>
+        private PointF RefineLocationParabola(Mat map, OpenCvSharp.Point loc, float centralValue)
+        {
+            double[] xValues = new double[3];
+            double[] yValues = new double[3];
+            xValues[1] = yValues[1] = centralValue;
+            for (int i = -1; i < 2; i+=2)
+            {
+                xValues[i+1] = map.Get<float>(loc.Y, loc.X + i);
+                yValues[i+1] = map.Get<float>(loc.Y + i, loc.X);
+            }
+
+            // Fit parabola.
+            double[] xs = new double[3] { -1, 0, +1};
+            double[] cx = Fit.Polynomial(xs, xValues, 2);
+            double[] cy = Fit.Polynomial(xs, yValues, 2);
+            
+            // Find peak (-b/2a).
+            // Note that the internal representation is y=a+bx+cx² rather than y=ax²+bx+c so the indices are swapped.
+            // A further possibility would be to take the width of the parabola to alter the score.
+            double dx = -cx[1] / (2 * cx[2]); 
+            double dy = -cy[1] / (2 * cy[2]);
+
+            //log.DebugFormat("xs: {0:0.000}, {1:0.000}, {2:0.000}, dx: {3:0.000}", xValues[0], xValues[1], xValues[2], dx);
+            //log.DebugFormat("ys: {0:0.000}, {1:0.000}, {2:0.000}, dy: {3:0.000}", yValues[0], yValues[1], yValues[2], dy);
+            //log.DebugFormat("Parabola fit X: a:{0}, b:{1}, c:{2}", cx[0], cx[1], cx[2]);
+            //log.DebugFormat("Parabola fit: {0}, {1}", dx, dy);
+
+            return new PointF((float)(loc.X + dx), (float)(loc.Y + dy));
+        }
     }
 }
