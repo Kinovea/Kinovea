@@ -15,7 +15,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>C:\Users\joan\AppData\Roaming\Kinovea\Plugins\Camera\GenICam\</OutputPath>
+    <OutputPath>%AppData%\Kinovea\Plugins\Camera\GenICam\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
