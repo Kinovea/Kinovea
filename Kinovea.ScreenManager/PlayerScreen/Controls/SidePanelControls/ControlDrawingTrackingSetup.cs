@@ -378,7 +378,7 @@ namespace Kinovea.ScreenManager
                 viewportController.Refresh();
 
                 // Update other controllers.
-                RaiseDrawingModified(DrawingAction.Resized);
+                RaiseDrawingModified(DrawingAction.TrackingParametersChanged);
             }
         }
 
@@ -399,7 +399,7 @@ namespace Kinovea.ScreenManager
                 viewportController.Refresh();
 
                 // Update other controllers.
-                RaiseDrawingModified(DrawingAction.Resized);
+                RaiseDrawingModified(DrawingAction.TrackingParametersChanged);
             }
         }
 
@@ -421,7 +421,7 @@ namespace Kinovea.ScreenManager
                 viewportController.Refresh();
 
                 // Update other controllers.
-                RaiseDrawingModified(DrawingAction.StateChanged);
+                RaiseDrawingModified(DrawingAction.TrackingParametersChanged);
             }
         }
 

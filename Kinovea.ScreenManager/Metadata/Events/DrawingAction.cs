@@ -18,6 +18,7 @@ namespace Kinovea.ScreenManager
         StateChanged,
         StyleChanged,
         TrackingStatusChanged,
+        TrackingParametersChanged,
         Moving,
         Moved,
         Resizing,

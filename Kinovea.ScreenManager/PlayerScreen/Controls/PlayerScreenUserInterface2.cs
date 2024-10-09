@@ -4642,7 +4642,7 @@ namespace Kinovea.ScreenManager
                     // Update track length in main navbar.
                     UpdateFramesMarkers();
                 }
-                else if (e.DrawingAction == DrawingAction.Resized)
+                else if (e.DrawingAction == DrawingAction.Resized || e.DrawingAction == DrawingAction.TrackingParametersChanged)
                 {
                     // Auto save the tracking parameters as the new preset.
                     if (e.Drawing is DrawingTrack)
