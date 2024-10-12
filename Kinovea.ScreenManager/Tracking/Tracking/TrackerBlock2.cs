@@ -28,7 +28,6 @@ using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using Kinovea.Services;
 using System.Drawing.Drawing2D;
-using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics;
 
 
@@ -58,8 +57,8 @@ namespace Kinovea.ScreenManager
         private Bitmap mask;
         private OpenCvSharp.Mat cvMaskGray = new OpenCvSharp.Mat();
 
-        // Monitoring, debugging.
-        private static readonly bool monitoring = false;
+        // Debugging.
+        private static readonly bool debugging = false;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -174,21 +173,13 @@ namespace Kinovea.ScreenManager
                 //log.DebugFormat("No mask: maxloc:{0}, max:{1}", maxLoc, max);
             }
 
-            #region Monitoring
-            //if(monitoring)
-            //{
-            //    // Save the similarity map to file.
-            //    //Mat mapNormalized = new Mat(new OpenCvSharp.Size(resWidth, resHeight), MatType.CV_32FC1);
-            //    //Image<Gray, Byte> mapNormalized = new Image<Gray, Byte>(similarityMap.Width, similarityMap.Height);
-            //    //CvInvoke.cvNormalize(similarityMap.Ptr, mapNormalized.Ptr, 0, 255, NORM_TYPE.CV_MINMAX, IntPtr.Zero);
-            //    Mat map8u = new Mat(new OpenCvSharp.Size(resWidth, resHeight), MatType.CV_8U);
-            //    //similarityMap.ConvertTo(map8u, MatType.CV_8U);
-            //    Cv2.Normalize(similarityMap, map8u, 0, 255, NormTypes.MinMax, MatType.CV_8U);
-
-            //    Bitmap bmpMap = map8u.ToBitmap();
-            //    string tplDirectory = @"G:\temp\simimap";
-            //    bmpMap.Save(tplDirectory + string.Format(@"\simiMap-{0:000}-{1:0.00}.png", previousPoints.Count, bestScore));
-            //}
+            #region Debugging
+            // Save the similarity map to file.
+            //Mat cvSimiMap8u = new Mat(cvSimiMap.Size(), MatType.CV_8U);
+            //Cv2.Normalize(cvSimiMap, cvSimiMap8u, 0, 255, NormTypes.MinMax, MatType.CV_8U);
+            //Bitmap bmpSimiMap = cvSimiMap8u.ToBitmap();
+            //string tplDirectory = @"G:\temp\simimap";
+            //bmpSimiMap.Save(tplDirectory + string.Format(@"\simiMap-{0:000}-{1:0.00}.png", previousPoints.Count, max));
             #endregion
 
             if (double.IsInfinity(max) || max < parameters.SimilarityThreshold)
@@ -357,25 +348,6 @@ namespace Kinovea.ScreenManager
                 currentImage.UnlockBits( imageData );
                 tpl.UnlockBits( templateData );
             }
-
-            #region Monitoring
-            if(monitoring && captureTemplate)
-            {
-                // Save current template to file, to visually monitor the drift.
-                //string tplDirectory = @"";
-                //if(previousPoints.Count <= 1)
-                //{
-                //    // Clean up folder.
-                //    string[] tplFiles = Directory.GetFiles(tplDirectory, "*.bmp");
-                //    foreach (string f in tplFiles)
-                //    {
-                //        File.Delete(f);
-                //    }
-                //}
-                //String iFileName = String.Format("{0}\\tpl-{1:000}.bmp", tplDirectory, previousPoints.Count);
-                //tpl.Save(iFileName);
-            }
-            #endregion
 
             // Store the full precision value in the point.
             TrackPointBlock tpb = new TrackPointBlock(point.X, point.Y, time, tpl);

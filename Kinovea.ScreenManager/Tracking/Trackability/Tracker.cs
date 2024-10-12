@@ -29,7 +29,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Tracks a reference template in the given image. Returns similarity score and position of best candidate.
         /// </summary>
-        public static TrackResult Track(Size searchWindow, TrackFrame reference, TrackingContext context)
+        public static TrackResult Track(Size searchWindow, TrackingTemplate reference, TrackingContext context)
         {
             if(context.CVImage == null || reference.Template == null)
                 throw new ArgumentException("image");

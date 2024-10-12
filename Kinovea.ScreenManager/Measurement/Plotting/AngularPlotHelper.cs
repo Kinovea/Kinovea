@@ -32,7 +32,7 @@ namespace Kinovea.ScreenManager
 
                 foreach (string key in trackablePoints.Keys)
                 {
-                    Timeline<TrackFrame> timeline = trackablePoints[key].Timeline;
+                    Timeline<TrackingTemplate> timeline = trackablePoints[key].Timeline;
                     if (timeline.Count == 0)
                     {
                         tracked = false;
@@ -71,7 +71,7 @@ namespace Kinovea.ScreenManager
 
                 foreach (string key in trackablePoints.Keys)
                 {
-                    Timeline<TrackFrame> timeline = trackablePoints[key].Timeline;
+                    Timeline<TrackingTemplate> timeline = trackablePoints[key].Timeline;
 
                     if (timeline.Count == 0)
                     {

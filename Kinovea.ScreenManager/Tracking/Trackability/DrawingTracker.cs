@@ -251,7 +251,7 @@ namespace Kinovea.ScreenManager
                 return null;
             
             KeyValuePair<string, TrackablePoint> pair = trackablePoints.First();
-            Timeline<TrackFrame> timeline = pair.Value.Timeline;
+            Timeline<TrackingTemplate> timeline = pair.Value.Timeline;
             if (!timeline.HasData() || timeline.Times == null)
                 return null;
 

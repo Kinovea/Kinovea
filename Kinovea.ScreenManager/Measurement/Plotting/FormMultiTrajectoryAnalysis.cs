@@ -83,7 +83,7 @@ namespace Kinovea.ScreenManager
                 foreach (var pair in trackablePoints)
                 {
                     TrackablePoint tp = pair.Value;
-                    Timeline<TrackFrame> timeline = pair.Value.Timeline;
+                    Timeline<TrackingTemplate> timeline = pair.Value.Timeline;
                     if (timeline.Count == 0)
                         continue;
 

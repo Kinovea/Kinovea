@@ -72,7 +72,7 @@ namespace Kinovea.ScreenManager
                 int hash = 0;
                 hash ^= trackerParameters.ContentHash;
                 hash ^= nonTrackingValue.GetHashCode();
-                foreach (TrackFrame frame in trackTimeline.Enumerate())
+                foreach (TrackingTemplate frame in trackTimeline.Enumerate())
                     hash ^= frame.ContentHash;
 
                 return hash;
@@ -83,7 +83,7 @@ namespace Kinovea.ScreenManager
             get { return trackTimeline.Count == 0; }
         }
 
-        public Timeline<TrackFrame> Timeline
+        public Timeline<TrackingTemplate> Timeline
         {
             get { return trackTimeline; }
         }
@@ -95,7 +95,7 @@ namespace Kinovea.ScreenManager
         private long timeDifference = -1;
         private TrackingContext context;
         private TrackingParameters trackerParameters = new TrackingParameters();
-        private Timeline<TrackFrame> trackTimeline = new Timeline<TrackFrame>();
+        private Timeline<TrackingTemplate> trackTimeline = new Timeline<TrackingTemplate>();
         private Dictionary<long, PointF> cameraTrackCache = new Dictionary<long, PointF>();
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -111,7 +111,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Importing from outside for non-KVA importers.
         /// </summary>
-        public TrackablePoint(TrackingParameters trackerParameters, PointF value, Timeline<TrackFrame> trackTimeline)
+        public TrackablePoint(TrackingParameters trackerParameters, PointF value, Timeline<TrackingTemplate> trackTimeline)
         {
             this.trackerParameters = trackerParameters;
             this.currentValue = value;
@@ -145,7 +145,7 @@ namespace Kinovea.ScreenManager
             // This is the tricky case, but if we don't update the timeline the move is lost.
             if (isTracking || trackTimeline.HasData())
             {
-                trackTimeline.Insert(context.Time, CreateTrackFrame(value, PositionningSource.Manual));
+                trackTimeline.Insert(context.Time, CreateTrackFrame(value, 1.0f, PositionningSource.Manual));
                 inserted = true;
             }
             else
@@ -179,14 +179,14 @@ namespace Kinovea.ScreenManager
                 if (isTracking)
                 {
                     // Use the current user-set position as a first tracked point.
-                    trackTimeline.Insert(context.Time, CreateTrackFrame(currentValue, PositionningSource.Manual));
+                    trackTimeline.Insert(context.Time, CreateTrackFrame(currentValue, 1.0f, PositionningSource.Manual));
                     timeDifference = 0;
                 }
                 
                 return isTracking;
             }
 
-            TrackFrame closestFrame = trackTimeline.ClosestFrom(context.Time);
+            TrackingTemplate closestFrame = trackTimeline.ClosestFrom(context.Time);
             if (closestFrame.Template == null)
             {
                 // This point has entries in the timeline but doesn't have the corresponding image pattern.
@@ -205,7 +205,7 @@ namespace Kinovea.ScreenManager
                     // If they moved it manually before changing frame, it will be handled in SetUserValue.
                     // If not, it means they are content with the position it has and thus this insertion is correct.
                     PositionningSource source = timeDifference == 0 ? closestFrame.PositionningSource : PositionningSource.ForcedClosest;
-                    trackTimeline.Insert(context.Time, CreateTrackFrame(closestFrame.Location, source));
+                    trackTimeline.Insert(context.Time, CreateTrackFrame(closestFrame.Location, 1.0f, source));
                     timeDifference = 0;
                 }
 
@@ -239,12 +239,12 @@ namespace Kinovea.ScreenManager
                 if(result.Similarity > trackerParameters.TemplateUpdateThreshold)
                 {
                     Bitmap template = BitmapHelper.Copy(closestFrame.Template);
-                    TrackFrame newFrame = new TrackFrame(context.Time, result.Location, template, PositionningSource.TemplateMatching);
+                    TrackingTemplate newFrame = new TrackingTemplate(context.Time, result.Location, (float)result.Similarity, template, PositionningSource.TemplateMatching);
                     trackTimeline.Insert(context.Time, newFrame);
                 }
                 else
                 {
-                    trackTimeline.Insert(context.Time, CreateTrackFrame(result.Location, PositionningSource.TemplateMatching));  
+                    trackTimeline.Insert(context.Time, CreateTrackFrame(result.Location, (float)result.Similarity, PositionningSource.TemplateMatching));  
                 }
 
                 inserted = true;
@@ -283,7 +283,7 @@ namespace Kinovea.ScreenManager
             // the template matching and others succeeding, or when a point that wasn't in the timeline range is moved manually.
             // We must always keep the same number of entries in the timelines of all trackable points of a given drawing.
             // In this function we force the points that failed tracking to insert a dummy value in their timeline.
-            TrackFrame closestFrame = trackTimeline.ClosestFrom(context.Time);
+            TrackingTemplate closestFrame = trackTimeline.ClosestFrom(context.Time);
             if (closestFrame == null)
                 return;
 
@@ -292,7 +292,7 @@ namespace Kinovea.ScreenManager
 
             // If time difference is zero, we actually already had an entry at that time, so nothing more to do here.
             if (timeDifference > 0)
-                trackTimeline.Insert(context.Time, CreateTrackFrame(currentValue, PositionningSource.ForcedClosest));
+                trackTimeline.Insert(context.Time, CreateTrackFrame(currentValue, 1.0f, PositionningSource.ForcedClosest));
         }
         
         /// <summary>
@@ -343,7 +343,7 @@ namespace Kinovea.ScreenManager
             if (trackTimeline.Count == 0)
                 return currentValue;
 
-            TrackFrame closestFrame = trackTimeline.ClosestFrom(time);
+            TrackingTemplate closestFrame = trackTimeline.ClosestFrom(time);
             return closestFrame.Location;
         }
 
@@ -365,7 +365,7 @@ namespace Kinovea.ScreenManager
             w.WriteElementString("CurrentValue", XmlHelper.WritePointF(currentValue));
 
             w.WriteStartElement("Timeline");
-            foreach (TrackFrame frame in trackTimeline.Enumerate())
+            foreach (TrackingTemplate frame in trackTimeline.Enumerate())
             {
                 w.WriteStartElement("Frame");
                 w.WriteAttributeString("time", frame.Time.ToString());
@@ -421,7 +421,7 @@ namespace Kinovea.ScreenManager
                 switch (r.Name)
                 {
                     case "Frame":
-                        TrackFrame frame = new TrackFrame(r, scale, timeMapper);
+                        TrackingTemplate frame = new TrackingTemplate(r, scale, timeMapper);
                         trackTimeline.Insert(frame.Time, frame);
                         break;
                     default:
@@ -439,11 +439,11 @@ namespace Kinovea.ScreenManager
         /// Does not perform any tracking.
         /// Extracts the pattern from the image.
         /// </summary>
-        private TrackFrame CreateTrackFrame(PointF location, PositionningSource positionningSource)
+        private TrackingTemplate CreateTrackFrame(PointF location, float score, PositionningSource positionningSource)
         {
             Rectangle region = location.Box(trackerParameters.BlockWindow).ToRectangle();
             Bitmap template = context.Image.ExtractTemplate(region);
-            return new TrackFrame(context.Time, location, template, positionningSource);
+            return new TrackingTemplate(context.Time, location, score, template, positionningSource);
         }
 
         private void ClearTimeline()

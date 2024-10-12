@@ -72,10 +72,10 @@ namespace Kinovea.ScreenManager
             }
 
             DrawingGenericPosture drawing = null;
-            Dictionary<string, Timeline<TrackFrame>> timelines = new Dictionary<string, Timeline<TrackFrame>>();
+            Dictionary<string, Timeline<TrackingTemplate>> timelines = new Dictionary<string, Timeline<TrackingTemplate>>();
             foreach (string marker in markers)
             {
-                timelines.Add(marker, new Timeline<TrackFrame>());
+                timelines.Add(marker, new Timeline<TrackingTemplate>());
             }
 
             // Parse the data into the drawing.
@@ -108,7 +108,7 @@ namespace Kinovea.ScreenManager
                 foreach (var marker in markers)
                 {
                     PointF value = posture.GetValue(marker);
-                    TrackFrame frame = new TrackFrame(timestamp, value, PositionningSource.TemplateMatching);
+                    TrackingTemplate frame = new TrackingTemplate(timestamp, value, PositionningSource.TemplateMatching);
                     timelines[marker].Insert(timestamp, frame);
                 }
             }
