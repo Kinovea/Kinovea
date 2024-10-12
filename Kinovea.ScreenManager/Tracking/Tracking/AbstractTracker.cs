@@ -36,6 +36,12 @@ namespace Kinovea.ScreenManager
 
 
         #region Abstract Methods
+
+        /// <summary>
+        /// Returns true if the tracker is ready to track.
+        /// </summary>
+        public abstract bool IsReady();
+
         /// <summary>
         /// Performs the tracking. 
         /// Finds the coordinate in current image of the point tracked, using data from previous matches. 

@@ -24,41 +24,16 @@ using System.Drawing;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// TrackPointBlock is the representation of a point tracked from Block Matching.
-    /// This class must be used in conjonction with TrackerBlock.
+    /// Refactoring in progress.
+    /// This class should be replaced by TimedPoint.
     /// </summary>
     public class TrackPointBlock : AbstractTrackPoint
     {
-
-        public Bitmap Template { get; set; }
-
-        public bool IsReferenceBlock;
-        public double Similarity;
-        public int TemplateAge;
-        
         public TrackPointBlock(float x, float y, long t)
-            : this(x, y, t, null)
-        {
-        }
-        public TrackPointBlock(float x, float y, long t, Bitmap img)
         {
             this.X = x;
             this.Y = y;
             this.T = t;
-            Template = img;
-            TemplateAge = 0;
-        }
-        
-        public override void ResetTrackData()
-        {
-            IsReferenceBlock = false;
-            Similarity = 1.0;
-            TemplateAge = 0;
-
-            if (Template != null)
-                Template.Dispose();
-
-            Template = null;
         }
     }
 }

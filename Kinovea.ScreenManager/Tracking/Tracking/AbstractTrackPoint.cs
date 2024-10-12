@@ -54,14 +54,6 @@ namespace Kinovea.ScreenManager
         public long T;
         #endregion
         
-        #region Abstract Methods
-        /// <summary>
-        /// Reset data. This is used when the user manually moves a point.
-        /// Dispose any unmanaged resource.
-        /// </summary>
-        public abstract void ResetTrackData();
-        #endregion
-        
         #region Concrete Constructor
         protected AbstractTrackPoint()
         {

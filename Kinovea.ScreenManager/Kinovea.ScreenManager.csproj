@@ -822,7 +822,7 @@
     <Compile Include="Tracking\Trackability\TrackablePoint.cs" />
     <Compile Include="Tracking\Trackability\TrackingTemplate.cs" />
     <Compile Include="Tracking\Trackability\TrackingContext.cs" />
-    <Compile Include="Tracking\Tracking\TrackResult.cs" />
+    <Compile Include="Tracking\Tracking\TemplateMatchResult.cs" />
     <Compile Include="Tracking\Tracking\AbstractTracker.cs" />
     <Compile Include="Tracking\Tracking\AbstractTrackPoint.cs" />
     <Compile Include="Tracking\Tracking\DrawingTrack.cs" />

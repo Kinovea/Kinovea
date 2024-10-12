@@ -23,7 +23,10 @@ using System.Drawing;
 
 namespace Kinovea.ScreenManager
 {
-    public struct TrackResult
+    /// <summary>
+    /// Result info data of a template match operation.
+    /// </summary>
+    public struct TemplateMatchResult
     {
         public float Similarity
         {
@@ -38,7 +41,7 @@ namespace Kinovea.ScreenManager
         private float similarity;
         private PointF location;
         
-        public TrackResult(float similarity, PointF location)
+        public TemplateMatchResult(float similarity, PointF location)
         {
             this.similarity = similarity;
             this.location = location;

@@ -1414,9 +1414,9 @@ namespace Kinovea.ScreenManager
             if (lastTrackedPoint == null || current.Timestamp <= lastTrackedPoint.T)
                 return;
 
-            if (lastTrackedPoint.Template == null)
+            if (!tracker.IsReady())
             {
-                // Recreate a point for the last position if we don't have it yet.
+                // Recreate a point from the last position if we don't have it yet.
                 var trackPoint = tracker.CreateTrackPointReference(lastTrackedPoint.Point, lastTrackedPoint.T, current.Image);
 
                 // This happens when we are re-opening and continuing a track that was imported from KVA
@@ -1458,8 +1458,6 @@ namespace Kinovea.ScreenManager
                 return;
 
             AbstractTrackPoint current = positions[drawPointIndex];
-
-            current.ResetTrackData();
             AbstractTrackPoint atp = tracker.CreateTrackPointReference(current.Point, current.T, currentImage);
 
             if (atp != null)
