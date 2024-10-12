@@ -1260,7 +1260,7 @@ namespace Kinovea.ScreenManager
             mnuDrawingTrackingConfigure.Click += mnuDrawingTrackingConfigure_Click;
             mnuDrawingTrackingConfigure.Image = Properties.Drawings.configure;
             mnuDrawingTrackingStart.Click += mnuDrawingTrackingToggle_Click;
-            mnuDrawingTrackingStart.Image = Properties.Drawings.play_green_16;
+            mnuDrawingTrackingStart.Image = Properties.Drawings.play_green2;
             mnuDrawingTrackingStop.Click += mnuDrawingTrackingToggle_Click;
             mnuDrawingTrackingStop.Image = Properties.Drawings.stop_16;
             mnuDrawingTracking.DropDownItems.AddRange(new ToolStripItem[] {

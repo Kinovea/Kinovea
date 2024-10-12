@@ -393,7 +393,7 @@ namespace Kinovea.ScreenManager
 
             // Tracking
             mnuTracking.Image = Properties.Resources.point3_16;
-            mnuTrackingStart.Image = Properties.Drawings.play_green_16;
+            mnuTrackingStart.Image = Properties.Drawings.play_green2;
             mnuTrackingStop.Image = Properties.Drawings.stop_16;
             mnuTrackingTrim.Image = Properties.Resources.bin_empty;
             mnuTrackingStart.Click += MnuTrackingStart_Click;

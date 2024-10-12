@@ -89,7 +89,7 @@ namespace Kinovea.ScreenManager
             NudHelper.FixNudScroll(nudMatchTreshold);
             NudHelper.FixNudScroll(nudUpdateThreshold);
 
-            btnStartStop.Image = Properties.Drawings.play_green_16;
+            btnStartStop.Image = Properties.Drawings.play_green2;
             btnStartStop.ImageAlign = ContentAlignment.MiddleLeft;
         }
         #endregion
@@ -308,7 +308,7 @@ namespace Kinovea.ScreenManager
         {
             if (track != null)
             {
-                btnStartStop.Image = track.Status == TrackStatus.Interactive ? Properties.Drawings.play_green_16 : Properties.Drawings.stop_16;
+                btnStartStop.Image = track.Status == TrackStatus.Interactive ? Properties.Drawings.play_green2 : Properties.Drawings.stop_16;
                 btnStartStop.Text = track.Status == TrackStatus.Interactive ? "Start tracking" : "Stop tracking";
             }
         }
