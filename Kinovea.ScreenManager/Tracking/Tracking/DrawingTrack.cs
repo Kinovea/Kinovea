@@ -320,7 +320,7 @@ namespace Kinovea.ScreenManager
             // Create the tracker.
             TrackingParameters parameters = PreferencesManager.PlayerPreferences.TrackingParameters.Clone();
             parameters.ResetOnMove = false;
-            tracker = new TrackerBlock2(parameters);
+            tracker = new TrackerTemplateMatching(parameters);
             
             // Add the first point.
             positions.Add(new TrackPointBlock(p.X, p.Y, start));
@@ -1409,29 +1409,28 @@ namespace Kinovea.ScreenManager
             // New points to trajectories are always created from here.
 
             // Retrieve the last tracked point before the passed frame.
-            TrackPointBlock closestPoint = positions.Last() as TrackPointBlock;
-            if (closestPoint == null || current.Timestamp <= closestPoint.T)
+            TrackPointBlock lastTrackedPoint = positions.Last() as TrackPointBlock;
+            if (lastTrackedPoint == null || current.Timestamp <= lastTrackedPoint.T)
                 return;
 
-            // If the existing tracked point doesn't have a template it means
-            // we are re-opening and continuing a track that was imported from KVA (The KVA doesn't store
-            // the algorithm specific part like the template, only the result).
-            // We must rebuild the point and extract the template before proceeding.
-            if (closestPoint.Template == null)
+            if (lastTrackedPoint.Template == null)
             {
-                PointF location = new PointF(closestPoint.X, closestPoint.Y);
-
+                // If the existing tracked point doesn't have a template it means
+                // We are re-opening and continuing a track that was imported from KVA
+                // (The KVA doesn't store the algorithm specific part like the template, only the result).
+                // We must rebuild the point and extract the template before proceeding.
+                // We don't have the image to create the template for the last tracked point,
+                // we create it out of the current image.
                 // The user re-opened the track here so we restart as if this point had been manually placed.
                 bool manual = true;
                 double simi = 1.0;
-                AbstractTrackPoint trackPoint = tracker.CreateTrackPoint(manual, location, simi, closestPoint.T, current.Image, positions);
+                AbstractTrackPoint trackPoint = tracker.CreateTrackPoint(manual, lastTrackedPoint.Point, simi, lastTrackedPoint.T, current.Image, positions);
                 
-
                 positions[positions.Count - 1] = trackPoint;
             }
 
             AbstractTrackPoint p = null;
-            bool bMatched = tracker.Track(positions, current.Image, cvImage, current.Timestamp, out p);
+            bool bMatched = tracker.TrackStep(positions, current.Image, cvImage, current.Timestamp, out p);
 
             if (p == null)
             {

@@ -28,7 +28,7 @@ namespace Kinovea.ScreenManager
     /// <summary>
     /// Wrapper for the template to be matched in following frames.
     /// </summary>
-    public class TrackingTemplate
+    public class TrackingTemplate : IDisposable
     {
         #region Properties
 
@@ -154,6 +154,25 @@ namespace Kinovea.ScreenManager
             this.score = 1.0f;
             this.positionningSource = source;
         }
-        
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~TrackingTemplate()
+        {
+            Dispose(false);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (template != null)
+                    template.Dispose();
+            }
+        }
     }
 }

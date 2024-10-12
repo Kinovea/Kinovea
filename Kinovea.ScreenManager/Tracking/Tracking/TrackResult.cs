@@ -30,15 +30,15 @@ namespace Kinovea.ScreenManager
             get { return similarity; }
         }
 
-        public Point Location
+        public PointF Location
         {
             get { return location; }
         }
 
         private double similarity;
-        private Point location;
+        private PointF location;
         
-        public TrackResult(double similarity, Point location)
+        public TrackResult(double similarity, PointF location)
         {
             this.similarity = similarity;
             this.location = location;

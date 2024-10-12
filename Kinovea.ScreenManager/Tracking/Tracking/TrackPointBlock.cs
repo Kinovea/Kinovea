@@ -52,8 +52,8 @@ namespace Kinovea.ScreenManager
             IsReferenceBlock = false;
             Similarity = 1.0;
             TemplateAge = 0;
-            
-            if(Template != null)
+
+            if (Template != null)
                 Template.Dispose();
 
             Template = null;

@@ -108,6 +108,57 @@ namespace Kinovea.Services
 
             return dst;
         }
+        
+        /// <summary>
+        /// Copy a region of interest from src into dst.
+        /// The ROI rectangle is taken from the top-left point, the width and height should already be 
+        /// set in the destination image size.
+        /// </summary>
+        public unsafe static void CopyROI(Bitmap src, Bitmap dst, Point topLeft)
+        {
+            BitmapData imageData = src.LockBits(new Rectangle(0, 0, src.Width, src.Height), ImageLockMode.ReadOnly, src.PixelFormat);
+            BitmapData templateData = dst.LockBits(new Rectangle(0, 0, dst.Width, dst.Height), ImageLockMode.ReadWrite, dst.PixelFormat);
+
+            int pixelSize = 4;
+
+            int tplStride = templateData.Stride;
+            int templateWidthInBytes = dst.Width * pixelSize;
+            int tplOffset = tplStride - templateWidthInBytes;
+
+            int imgStride = imageData.Stride;
+            int imageWidthInBytes = src.Width * pixelSize;
+            int imgOffset = imgStride - (src.Width * pixelSize) + imageWidthInBytes - templateWidthInBytes;
+
+            unsafe
+            {
+                byte* pTpl = (byte*)templateData.Scan0.ToPointer();
+                byte* pImg = (byte*)imageData.Scan0.ToPointer() + (imgStride * topLeft.Y) + (pixelSize * topLeft.X);
+
+                for (int row = 0; row < dst.Height; row++)
+                {
+                    if (topLeft.Y + row > imageData.Height - 1)
+                    {
+                        break;
+                    }
+
+                    for (int col = 0; col < templateWidthInBytes; col++, pTpl++, pImg++)
+                    {
+                        if (topLeft.X * pixelSize + col < imageWidthInBytes)
+                        {
+                            *pTpl = *pImg;
+                        }
+                    }
+
+                    pTpl += tplOffset;
+                    pImg += imgOffset;
+                }
+            }
+
+            src.UnlockBits(imageData);
+            dst.UnlockBits(templateData);
+        }
+        
+        
         #endregion
 
         #region Copy a byte buffer into a Bitmap

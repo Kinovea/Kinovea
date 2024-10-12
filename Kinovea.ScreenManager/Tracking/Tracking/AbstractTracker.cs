@@ -36,7 +36,6 @@ namespace Kinovea.ScreenManager
 
 
         #region Abstract Methods
-
         /// <summary>
         /// Performs the tracking. 
         /// Finds the coordinate in current image of the point tracked, using data from previous matches. 
@@ -47,7 +46,7 @@ namespace Kinovea.ScreenManager
         /// <param name="timestamp">The current timestamp to create the TrackPoint.</param>
         /// <param name="currentPoint">The resulting point that should be added to the list.</param>
         /// <returns>true if the tracking is reliable, false if the point couldn't be found.</returns>
-        public abstract bool Track(List<AbstractTrackPoint> previousPoints, Bitmap currentImage, OpenCvSharp.Mat cvImage, long time, out AbstractTrackPoint currentPoint);
+        public abstract bool TrackStep(List<AbstractTrackPoint> previousPoints, Bitmap currentImage, OpenCvSharp.Mat cvImage, long time, out AbstractTrackPoint currentPoint);
         
         /// <summary>
         /// Creates a TrackPoint nearest possible of the spatial position passed in parameter.
