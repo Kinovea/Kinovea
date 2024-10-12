@@ -82,7 +82,7 @@ namespace Kinovea.ScreenManager
         public static Bitmap GetIcon(VideoFilterType type)
         {
             if (type == VideoFilterType.None)
-                return Properties.Drawings.track;
+                return Properties.Resources.microscope_16;
 
             return info[type].Icon;
         }

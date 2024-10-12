@@ -4,7 +4,8 @@
   <Id>f4d64ad5-4983-49b3-85ad-264a99cbd536</Id>
   <Name>Canis</Name>
   <DisplayName>DrawingName_canis</DisplayName>
-
+  <Icon>dog_16</Icon>
+  
   <!-- Data -->
   <Points>
     <Point name="Scapula" value="93;48" color="#FF170F" />

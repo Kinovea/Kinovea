@@ -4,7 +4,7 @@
   <Id>06bed28a-9e9f-45b2-bb50-125f5ed68cf0</Id>
   <Name>Genu</Name>
   <DisplayName>DrawingName_Genu</DisplayName>
-  
+  <Icon>leg_16</Icon>
   <!-- Data -->
   <Points>
     <Point value="100;100" />

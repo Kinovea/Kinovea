@@ -962,4 +962,76 @@
   <data name="sticker" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\sticker.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="archery_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\archery-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="clock_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\clock-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="counter_6" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\counter-6.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="cycling_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\cycling-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dog_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\dog-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="drawing_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\drawing-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="golf_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\golf-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="horse_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\horse-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="leg_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\leg-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="merge_vertical_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\merge-vertical-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="muscle_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\muscle-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="running_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\running-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="squats_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\squats-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="time_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\time-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="track_and_field_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\track-and-field-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="walking_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\walking-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="weightlifting_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\weightlifting-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="leg_right_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\leg-right-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="next_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\next-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="no_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\no-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="play_green_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\play-green-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="point3_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\point3-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="stop2_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\stop2-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="stop_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\stop-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

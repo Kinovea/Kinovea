@@ -83,6 +83,13 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
+            if (toolName == "%separator%")
+            {
+                AbstractDrawingTool tool = new DrawingToolSeparator();
+                list.Add(tool);
+                return;
+            }
+
             if (ToolManager.Tools.ContainsKey(toolName))
             {
                 AbstractDrawingTool tool = ToolManager.Tools[toolName];

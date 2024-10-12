@@ -350,9 +350,19 @@ namespace Kinovea.ScreenManager
         #region Header
         private void ParseIcon(XmlReader r)
         {
-            string base64 = r.ReadElementContentAsString();
-            byte[] bytes = Convert.FromBase64String(base64);
-            Icon = (Bitmap)Image.FromStream(new MemoryStream(bytes));
+            // First try to read the icon value as a known resource,
+            // otherwise assume it's base64 for the icon.
+            string value = r.ReadElementContentAsString();
+            if (Properties.Drawings.ResourceManager.GetObject(value) != null)
+            {
+                Icon = (Bitmap)Properties.Drawings.ResourceManager.GetObject(value);
+                return;
+            }
+            else
+            {
+                byte[] bytes = Convert.FromBase64String(value);
+                Icon = (Bitmap)Image.FromStream(new MemoryStream(bytes));
+            }
         }
 
         #endregion

@@ -4,7 +4,7 @@
   <Id>42694435-9FCC-43C0-AC27-2FB09D8B6FDF</Id>
   <Name>Counter</Name>
   <DisplayName>ToolTip_DrawingToolCounter</DisplayName>
-  <Icon>counter</Icon>
+  <Icon>counter_6</Icon>
   <DrawingClass>DrawingCounter</DrawingClass>
   <Attached>false</Attached>
   <KeepToolAfterDrawingCreation>false</KeepToolAfterDrawingCreation>

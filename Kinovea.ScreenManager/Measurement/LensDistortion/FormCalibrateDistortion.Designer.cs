@@ -473,7 +473,7 @@
       // 
       // mnuDefault
       // 
-      this.mnuDefault.Image = global::Kinovea.ScreenManager.Properties.Resources.bin_empty;
+      this.mnuDefault.Image = global::Kinovea.ScreenManager.Properties.Resources.null_symbol_16;
       this.mnuDefault.Name = "mnuDefault";
       this.mnuDefault.Size = new System.Drawing.Size(153, 22);
       this.mnuDefault.Text = "Restore default";

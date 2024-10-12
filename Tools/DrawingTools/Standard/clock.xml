@@ -4,7 +4,7 @@
   <Id>fe07fc65-624f-4cce-8a4f-e166624c6deb</Id>
   <Name>Clock</Name>
   <DisplayName>DrawingName_Clock</DisplayName>
-  <Icon>clock_frame</Icon>
+  <Icon>clock_16</Icon>
   <DrawingClass>DrawingChrono</DrawingClass>
   <Attached>false</Attached>
   <KeepToolAfterDrawingCreation>false</KeepToolAfterDrawingCreation>

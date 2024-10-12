@@ -552,7 +552,7 @@ namespace Kinovea.ScreenManager
             mnuAspectRatioForce169.Image = Properties.Resources.format169;
             mnuAspectRatioForce169.Click += mnuFormatForce169OnClick;
             mnuAspectRatioForce169.MergeAction = MergeAction.Append;
-            mnuAspectRatio.Image = Properties.Resources.shape_formats;
+            mnuAspectRatio.Image = Properties.Resources.picture_in_picture_16;
             mnuAspectRatio.MergeAction = MergeAction.Append;
             mnuAspectRatio.DropDownItems.AddRange(new ToolStripItem[] { mnuAspectRatioAuto, new ToolStripSeparator(), mnuAspectRatioForce43, mnuAspectRatioForce169});
 
@@ -563,7 +563,7 @@ namespace Kinovea.ScreenManager
             mnuRotation180.Click += mnuRotation180_Click;
             mnuRotation270.Image = Properties.Resources.rotate270;
             mnuRotation270.Click += mnuRotation270_Click;
-            mnuRotation.Image = Properties.Resources.imagerotate;
+            mnuRotation.Image = Properties.Resources.tilt_16;
             mnuRotation.MergeAction = MergeAction.Append;
             mnuRotation.DropDownItems.AddRange(new ToolStripItem[] { mnuRotation0, mnuRotation90, mnuRotation270, mnuRotation180 });
 
@@ -575,7 +575,7 @@ namespace Kinovea.ScreenManager
 
             mnuStabilization.Image = Properties.Resources.pin;
             mnuStabilization.MergeAction = MergeAction.Append;
-            mnuStabilizationTrackNone.Image = Properties.Resources.bin_empty;
+            mnuStabilizationTrackNone.Image = Properties.Resources.null_symbol_16;
             mnuStabilizationTrackNone.Tag = Guid.Empty;
             mnuStabilizationTrackNone.Checked = true;
             mnuStabilizationTrackNone.Click += mnuStabilizationTrack_OnClick;
@@ -631,7 +631,7 @@ namespace Kinovea.ScreenManager
             mnuLensCalibrationOpen.Image = Properties.Resources.folder;
             mnuLensCalibrationMode.Image = Properties.Resources.checkerboard;
             mnuLensCalibrationManual.Image = Properties.Resources.border_all;
-            mnuLensCalibrationNone.Image = Properties.Resources.bin_empty;
+            mnuLensCalibrationNone.Image = Properties.Resources.null_symbol_16;
             mnuLensCalibrationOpen.Click += mnuLensCalibrationOpen_OnClick;
             mnuLensCalibrationMode.Click += mnuLensCalibrationMode_OnClick;
             mnuLensCalibrationManual.Click += mnuLensCalibrationManual_OnClick;
@@ -647,19 +647,19 @@ namespace Kinovea.ScreenManager
             mnuCalibrationValidation.Click += mnuCalibrationValidation_OnClick;
             mnuCalibrationValidation.MergeAction = MergeAction.Append;
 
-            mnuScatterDiagram.Image = Properties.Resources.function;
+            mnuScatterDiagram.Image = Properties.Resources.scatter_plot_16;
             mnuScatterDiagram.Click += mnuScatterDiagram_OnClick;
             mnuScatterDiagram.MergeAction = MergeAction.Append;
 
-            mnuTrajectoryAnalysis.Image = Properties.Resources.function;
+            mnuTrajectoryAnalysis.Image = Properties.Resources.plot_16;
             mnuTrajectoryAnalysis.Click += mnuTrajectoryAnalysis_OnClick;
             mnuTrajectoryAnalysis.MergeAction = MergeAction.Append;
 
-            mnuAngularAnalysis.Image = Properties.Resources.function;
+            mnuAngularAnalysis.Image = Properties.Resources.sine_16;
             mnuAngularAnalysis.Click += mnuAngularAnalysis_OnClick;
             mnuAngularAnalysis.MergeAction = MergeAction.Append;
 
-            mnuAngleAngleAnalysis.Image = Properties.Resources.function;
+            mnuAngleAngleAnalysis.Image = Properties.Resources.plot_16;
             mnuAngleAngleAnalysis.Click += mnuAngleAngleAnalysis_OnClick;
             mnuAngleAngleAnalysis.MergeAction = MergeAction.Append;
 

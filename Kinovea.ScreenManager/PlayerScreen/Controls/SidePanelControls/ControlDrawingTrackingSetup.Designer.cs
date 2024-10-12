@@ -116,9 +116,9 @@ namespace Kinovea.ScreenManager
       // 
       this.btnStartStop.AutoSize = true;
       this.btnStartStop.ForeColor = System.Drawing.Color.Black;
-      this.btnStartStop.Location = new System.Drawing.Point(28, 179);
+      this.btnStartStop.Location = new System.Drawing.Point(28, 175);
       this.btnStartStop.Name = "btnStartStop";
-      this.btnStartStop.Size = new System.Drawing.Size(157, 23);
+      this.btnStartStop.Size = new System.Drawing.Size(157, 27);
       this.btnStartStop.TabIndex = 67;
       this.btnStartStop.Text = "Start tracking";
       this.btnStartStop.UseVisualStyleBackColor = true;

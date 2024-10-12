@@ -392,9 +392,9 @@ namespace Kinovea.ScreenManager
                 mnuHideAfter });
 
             // Tracking
-            mnuTracking.Image = Properties.Drawings.track;
-            mnuTrackingStart.Image = Properties.Drawings.trackingplay;
-            mnuTrackingStop.Image = Properties.Drawings.trackstop;
+            mnuTracking.Image = Properties.Resources.point3_16;
+            mnuTrackingStart.Image = Properties.Drawings.play_green_16;
+            mnuTrackingStop.Image = Properties.Drawings.stop_16;
             mnuTrackingTrim.Image = Properties.Resources.bin_empty;
             mnuTrackingStart.Click += MnuTrackingStart_Click;
             mnuTrackingStop.Click += MnuTrackingStop_Click;

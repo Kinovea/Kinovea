@@ -389,6 +389,7 @@
     <Compile Include="Metadata\Drawings\Chrono\DrawingChrono.cs" />
     <Compile Include="Metadata\Drawings\DrawingLine.cs" />
     <Compile Include="Metadata\Drawings\DrawingTimePolyline.cs" />
+    <Compile Include="Metadata\Drawings\DrawingToolSeparator.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPostureOption.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPosturePolyline.cs" />
     <Compile Include="Exporters\Document\DocumentExporter.cs" />
@@ -2277,6 +2278,111 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\pin.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\center-of-gravity-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\microscope-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\navigation-pane-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\plot-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\sine-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\clock-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\drawing-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\merge-vertical-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\scatter-plot-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\time-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\counter-6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\weightlifting-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\walking-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\track-and-field-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\golf-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\cycling-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dog-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\muscle-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\horse-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\leg-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\squats-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\running-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\archery-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\leg-right-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\stop2-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\next-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\stop-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\play-green-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\point3-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\no-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\rotation-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\caliper-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tilt-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\picture-in-picture-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\null-symbol-16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">

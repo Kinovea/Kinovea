@@ -1193,7 +1193,7 @@ namespace Kinovea.ScreenManager
             mnuTimeOrigin.Click += mnuTimeOrigin_Click;
             mnuTimeOrigin.Image = Properties.Resources.marker;
             mnuDirectTrack.Click += mnuDirectTrack_Click;
-            mnuDirectTrack.Image = Properties.Drawings.track;
+            mnuDirectTrack.Image = Properties.Resources.point3_16;
             mnuBackground.Click += mnuBackground_Click;
             mnuBackground.Image = Properties.Resources.shading;
             mnuCopyPic.Click += (s, e) => { CopyImageToClipboard(); };
@@ -1256,13 +1256,13 @@ namespace Kinovea.ScreenManager
             mnuGotoKeyframe.Click += new EventHandler(mnuGotoKeyframe_Click);
             mnuGotoKeyframe.Image = Properties.Resources.page_white_go;
 
-            mnuDrawingTracking.Image = Properties.Drawings.track;
+            mnuDrawingTracking.Image = Properties.Resources.point3_16;
             mnuDrawingTrackingConfigure.Click += mnuDrawingTrackingConfigure_Click;
             mnuDrawingTrackingConfigure.Image = Properties.Drawings.configure;
             mnuDrawingTrackingStart.Click += mnuDrawingTrackingToggle_Click;
-            mnuDrawingTrackingStart.Image = Properties.Drawings.trackingplay;
+            mnuDrawingTrackingStart.Image = Properties.Drawings.play_green_16;
             mnuDrawingTrackingStop.Click += mnuDrawingTrackingToggle_Click;
-            mnuDrawingTrackingStop.Image = Properties.Drawings.trackstop;
+            mnuDrawingTrackingStop.Image = Properties.Drawings.stop_16;
             mnuDrawingTracking.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuDrawingTrackingStart,
                 mnuDrawingTrackingStop
@@ -1285,7 +1285,7 @@ namespace Kinovea.ScreenManager
             mnuMagnifierFreeze.Click += mnuMagnifierFreeze_Click;
             mnuMagnifierFreeze.Image = Properties.Resources.image;
             mnuMagnifierTrack.Click += mnuMagnifierTrack_Click;
-            mnuMagnifierTrack.Image = Properties.Drawings.track;
+            mnuMagnifierTrack.Image = Properties.Resources.point3_16;
             mnuMagnifierDirect.Click += mnuMagnifierDirect_Click;
             mnuMagnifierDirect.Image = Properties.Resources.arrow_out;
             mnuMagnifierQuit.Click += mnuMagnifierQuit_Click;

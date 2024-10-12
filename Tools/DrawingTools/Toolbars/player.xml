@@ -10,47 +10,53 @@
   <entry name="Pencil" />
   <entry name="HumanModel">
     <subentry name="HumanModel2" />
-    <subentry name="Bikefit" />
-    <subentry name="Archery" />
+    <subentry name="%separator%" />
     <subentry name="Profile" />
     <subentry name="Genu" />
-    <subentry name="Posture" />
     <subentry name="CSVL" />
+    <subentry name="%separator%" />
+    <subentry name="Bikefit" />
+    <subentry name="Archery" />
+    <subentry name="%separator%" />
     <subentry name="Canis" />
     <subentry name="Equus" />
   </entry>
   <entry name="Line">
     <subentry name="Curve" />
     <subentry name="Polyline" />
+    <subentry name="%separator%" />
     <subentry name="Rectangle" />
     <subentry name="Circle" />
+    <subentry name="%separator%" />
     <subentry name="HorizontalDistance" />
   </entry>
   <entry name="Arrow">
     <subentry name="ArrowDash" />
     <subentry name="ArrowSquiggly" />
+    <subentry name="%separator%" />
     <subentry name="ArrowCurve" />
+    <subentry name="%separator%" />
     <subentry name="ArrowPolyline" />
     <subentry name="ArrowPolylineDash" />
     <subentry name="ArrowPolylineSquiggly" />
   </entry>
   <entry name="CrossMark">
-    <subentry name="TimePolyline" />
   </entry>
   <entry name="Angle">
     <subentry name="Goniometer" />
+    <subentry name="%separator%" />
     <subentry name="AngleToHorizontal" />
     <subentry name="AngleToVertical" />
   </entry>
   <entry name="ChronoMulti">
     <subentry name="Clock" />
+    <subentry name="%separator%" />
     <subentry name="TimeSegment" />
   </entry>
   <entry name="Counter">
   </entry>
   <entry name="Plane">
     <subentry name="Grid" />
-    <subentry name="DistortionGrid" />
   </entry>
   <entry name="Spotlight" />
 </KinoveaToolbar>

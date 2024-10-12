@@ -4,6 +4,7 @@
   <Id>2cb37792-a7c9-4bc6-b2ef-dfc79f8371b7</Id>
   <Name>Equus</Name>
   <DisplayName>DrawingName_equus</DisplayName>
+  <Icon>horse_16</Icon>
   
   <!-- Data -->
   <Points>

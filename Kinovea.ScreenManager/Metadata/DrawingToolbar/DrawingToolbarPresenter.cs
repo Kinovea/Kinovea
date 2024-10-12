@@ -80,18 +80,28 @@ namespace Kinovea.ScreenManager
             for(int i = tools.Length-1; i >= 0; i--)
             {
                 AbstractDrawingTool tool = tools[i];
-                ToolStripMenuItem item = new ToolStripMenuItem();
-                item.Image = tool.Icon;
-                item.Text = tool.DisplayName;
-                item.Tag = tool;
-                int indexClosure = tools.Length - 1 - i;
-                item.Click += (s,e) =>
+                
+
+                if (tool is DrawingToolSeparator)
                 {
-                    button.SelectedIndex = indexClosure;
-                    handler(s,e);
-                };
+                    ToolStripSeparator separator = new ToolStripSeparator();
+                    button.DropDownItems.Add(separator);
+                }
+                else
+                {
+                    ToolStripMenuItem item = new ToolStripMenuItem();
+                    item.Image = tool.Icon;
+                    item.Text = tool.DisplayName;
+                    item.Tag = tool;
+                    int indexClosure = tools.Length - 1 - i;
+                    item.Click += (s,e) =>
+                    {
+                        button.SelectedIndex = indexClosure;
+                        handler(s,e);
+                    };
+                    button.DropDownItems.Add(item);
+                }
         
-                button.DropDownItems.Add(item);
             }
         
             button.SelectedIndex = tools.Length - 1 - selectedIndex;

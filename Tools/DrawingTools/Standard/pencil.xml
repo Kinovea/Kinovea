@@ -4,7 +4,7 @@
   <Id>26989429-b003-426d-b754-203855b94eeb</Id>
   <Name>Pencil</Name>
   <DisplayName>ToolTip_DrawingToolPencil</DisplayName>
-  <Icon>pencil</Icon>
+  <Icon>drawing_16</Icon>
   <DrawingClass>DrawingPencil</DrawingClass>
   <Attached>true</Attached>
   <KeepToolAfterDrawingCreation>true</KeepToolAfterDrawingCreation>

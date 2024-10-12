@@ -203,6 +203,16 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap caliper_16 {
+            get {
+                object obj = ResourceManager.GetObject("caliper_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap camera_speed {
             get {
                 object obj = ResourceManager.GetObject("camera_speed", resourceCulture);
@@ -1413,6 +1423,16 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap microscope_16 {
+            get {
+                object obj = ResourceManager.GetObject("microscope_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap mosaic {
             get {
                 object obj = ResourceManager.GetObject("mosaic", resourceCulture);
@@ -1463,9 +1483,39 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap navigation_pane_16 {
+            get {
+                object obj = ResourceManager.GetObject("navigation_pane_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap navup {
             get {
                 object obj = ResourceManager.GetObject("navup", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap no_16 {
+            get {
+                object obj = ResourceManager.GetObject("no_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap null_symbol_16 {
+            get {
+                object obj = ResourceManager.GetObject("null_symbol_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1496,6 +1546,16 @@ namespace Kinovea.ScreenManager.Properties {
         public static System.Drawing.Bitmap pdfexport {
             get {
                 object obj = ResourceManager.GetObject("pdfexport", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap picture_in_picture_16 {
+            get {
+                object obj = ResourceManager.GetObject("picture_in_picture_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1536,6 +1596,26 @@ namespace Kinovea.ScreenManager.Properties {
         public static System.Drawing.Bitmap playmodeonce {
             get {
                 object obj = ResourceManager.GetObject("playmodeonce", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap plot_16 {
+            get {
+                object obj = ResourceManager.GetObject("plot_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap point3_16 {
+            get {
+                object obj = ResourceManager.GetObject("point3_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1703,6 +1783,16 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap rotation_16 {
+            get {
+                object obj = ResourceManager.GetObject("rotation_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap rtl {
             get {
                 object obj = ResourceManager.GetObject("rtl", resourceCulture);
@@ -1783,6 +1873,16 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap scatter_plot_16 {
+            get {
+                object obj = ResourceManager.GetObject("scatter_plot_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap section_fold {
             get {
                 object obj = ResourceManager.GetObject("section_fold", resourceCulture);
@@ -1846,6 +1946,16 @@ namespace Kinovea.ScreenManager.Properties {
         public static System.Drawing.Bitmap signal {
             get {
                 object obj = ResourceManager.GetObject("signal", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap sine_16 {
+            get {
+                object obj = ResourceManager.GetObject("sine_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2013,9 +2123,29 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap tilt_16 {
+            get {
+                object obj = ResourceManager.GetObject("tilt_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap timetable {
             get {
                 object obj = ResourceManager.GetObject("timetable", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap tracking {
+            get {
+                object obj = ResourceManager.GetObject("tracking", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

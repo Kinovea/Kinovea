@@ -47,14 +47,27 @@ namespace Kinovea.ScreenManager
             for(int i = 0; i<contextMenuStrip.Items.Count;i++)
             {
                 ToolStripMenuItem menuItem = contextMenuStrip.Items[i] as ToolStripMenuItem;
+                if (menuItem == null)
+                    continue;
+
                 menuItem.Checked = i == selectedIndex;
             }
         }
         private int GetHeight()
         {
             int result = 0;
-            foreach(ToolStripMenuItem tsmi in contextMenuStrip.Items)
-                result += tsmi.Height;
+            foreach(var item in contextMenuStrip.Items)
+            {
+                if (item is ToolStripMenuItem)
+                {
+                    result += ((ToolStripMenuItem)item).Height;
+                }
+
+                if (item is ToolStripSeparator)
+                {
+                    result += ((ToolStripSeparator)item).Height;
+                }
+            }
 
             return result;
         }
