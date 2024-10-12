@@ -106,6 +106,15 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// Whether this track is visible.
+        /// </summary>
+        public bool IsVisible
+        {
+           get { return isVisible; }
+           set { isVisible = value; }
+        }
+
+        /// <summary>
         /// Manually change the tracking status.
         /// Does not raise the tracking status changed event.
         /// </summary>
@@ -221,6 +230,7 @@ namespace Kinovea.ScreenManager
         private int movingHandler = -1;
         private bool invalid;                                 // Used for XML import.
         private bool scalingDone;
+        private bool isVisible = true;
 
         // Tracker tool.
         private AbstractTracker tracker;
@@ -452,7 +462,7 @@ namespace Kinovea.ScreenManager
         #region AbstractDrawing implementation
         public override void Draw(Graphics canvas, DistortionHelper distorter, CameraTransformer cameraTransformer, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
-            if (currentTimestamp < visibleTimestamp)
+            if (!isVisible || currentTimestamp < visibleTimestamp)
                 return;
 
             this.transformer = transformer;
@@ -531,6 +541,9 @@ namespace Kinovea.ScreenManager
         }
         public override void MoveDrawing(float dx, float dy, Keys modifierKeys)
         {
+            if (!isVisible)
+                return;
+
             if (!isConfiguring && trackStatus == TrackStatus.Interactive && movingHandler > 1)
             {
                 MoveLabelTo(dx, dy, movingHandler);
@@ -552,6 +565,9 @@ namespace Kinovea.ScreenManager
         }
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
+            if (!isVisible)
+                return;
+
             if (isConfiguring)
             {
                 if (movingHandler > 1 && movingHandler < 6)
@@ -575,6 +591,9 @@ namespace Kinovea.ScreenManager
         }
         public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
+            if (!isVisible)
+                return -1;
+
             //log.DebugFormat("Hit test, status={0}", trackStatus);
             long maxHitTimeStamps = invisibleTimestamp;
             if (maxHitTimeStamps != long.MaxValue)
@@ -1469,6 +1488,11 @@ namespace Kinovea.ScreenManager
             if (ShouldSerializeCore(filter))
             {
                 w.WriteElementString("TimePosition", beginTimeStamp.ToString());
+
+                // Visible/Invisible mark the start/end of the track visibility.
+                // IsVisible is a more general property of whether the track is visible at all, it's used when
+                // the track is only a support for another function and should not be rendered at all.
+                w.WriteElementString("IsVisible", XmlHelper.WriteBoolean(isVisible));
                 w.WriteElementString("Visible", (visibleTimestamp == long.MaxValue) ? "-1" : visibleTimestamp.ToString());
                 w.WriteElementString("Invisible", (invisibleTimestamp == long.MaxValue) ? "-1" : invisibleTimestamp.ToString());
 
@@ -1599,12 +1623,15 @@ namespace Kinovea.ScreenManager
                     case "TimePosition":
                         beginTimeStamp = timestampMapper(xmlReader.ReadElementContentAsLong());
                         break;
+                    case "IsVisible":
+                        isVisible = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
+                        break;
                     case "Visible":
                         visibleTimestamp = timestampMapper(xmlReader.ReadElementContentAsLong());
                         break;
                     case "Invisible":
-                        long hide = xmlReader.ReadElementContentAsLong();
-                        invisibleTimestamp = (hide == -1) ? long.MaxValue : timestampMapper(hide);
+                        long hideTime = xmlReader.ReadElementContentAsLong();
+                        invisibleTimestamp = (hideTime == -1) ? long.MaxValue : timestampMapper(hideTime);
                         break;
                     case "ExtraData":
                         {
@@ -1752,12 +1779,15 @@ namespace Kinovea.ScreenManager
         #region Miscellaneous public methods
         public void CalibrationChanged()
         {
+            if (!isVisible)
+                return;
+
             UpdateKinematics();
             UpdateKeyframeLabels();
         }
 
         /// <summary>
-        /// Toggle the flag telling if the rendering, hit test and move/resize should 
+        /// Toggle the flag telling if the rendering, hit test and move/resize 
         /// are in the context of configuration or not.
         /// This should be used when the track is displayed in a secondary viewport
         /// dedicated to configuration. It should be set back to false as soon as 
@@ -1773,19 +1803,27 @@ namespace Kinovea.ScreenManager
 
         public void UpdateKinematics()
         {
+            if (!isVisible)
+                return;
+
             stopwatch.Restart();
             List<TimedPoint> samples = positions.Select(p => new TimedPoint(p.X, p.Y, p.T)).ToList();
             filteredTrajectory.Initialize(samples, parentMetadata.CalibrationHelper);
             timeSeriesCollection = linearKinematics.BuildKinematics(filteredTrajectory, parentMetadata.CalibrationHelper);
             log.DebugFormat("Updated Kinematics for {0}: {1} ms", this.name, stopwatch.ElapsedMilliseconds);
         }
+
         public void Clear()
         {
             positions.Clear();
             keyframeLabels.Clear();
         }
+        
         public void UpdateKeyframeLabels()
         {
+            if (!isVisible)
+                return;
+
             //-----------------------------------------------------------------------------------
             // The Keyframes list changed (add/remove/comments)
             // Reconstruct the Keyframes Labels, but don't completely reset those we already have
@@ -1864,11 +1902,13 @@ namespace Kinovea.ScreenManager
             // We also use this to update the main label font.
             miniLabel.FontSize = (int)styleData.Font.Size;
         }
+        
         public void MemorizeState()
         {
             // Used by formConfigureTrajectory to be able to modify the trajectory in real time.
             memoLabel = name;
         }
+        
         public void RecallState()
         {
             // Used when the user cancels his modifications on formConfigureTrajectory.
@@ -1890,10 +1930,26 @@ namespace Kinovea.ScreenManager
 
             endTimeStamp += beginTimeStamp;
         }
+
         public PointF GetPosition(long timestamp)
         {
             int index = FindClosestPoint(timestamp);
             return positions[index].Point;
+        }
+
+        /// <summary>
+        /// Extract the track data to a list of timed points.
+        /// </summary>
+        public List<TimedPoint> GetTimedPoints()
+        {
+            List<TimedPoint> ttpp = new List<TimedPoint>();
+            foreach (AbstractTrackPoint atp in positions)
+            {
+                TimedPoint tp = new TimedPoint(atp.X, atp.Y, atp.T);
+                ttpp.Add(tp);
+            }
+
+            return ttpp;
         }
         #endregion
 

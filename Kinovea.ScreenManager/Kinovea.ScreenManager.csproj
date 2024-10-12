@@ -283,8 +283,8 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.IO.Packaging, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.IO.Packaging.8.0.0\lib\net462\System.IO.Packaging.dll</HintPath>
+    <Reference Include="System.IO.Packaging, Version=8.0.0.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Packaging.8.0.1\lib\net462\System.IO.Packaging.dll</HintPath>
     </Reference>
     <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
@@ -624,7 +624,6 @@
     <Compile Include="Measurement\Kinematics\FilteringResult.cs" />
     <Compile Include="Measurement\Kinematics\LinearKinematics.cs" />
     <Compile Include="Measurement\Kinematics\StatsHelper.cs" />
-    <Compile Include="Measurement\Kinematics\TimedPoint.cs" />
     <Compile Include="Tracking\Tracking\TrackColorCycler.cs" />
     <Compile Include="Tracking\Tracking\TrackMarker.cs" />
     <Compile Include="Tracking\Tracking\TrackStatus.cs" />
@@ -2241,9 +2240,6 @@
     <None Include="Resources\1f632.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\close-round.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\close-square.png" />
   </ItemGroup>
   <ItemGroup>
@@ -2279,7 +2275,9 @@
   <ItemGroup>
     <None Include="Resources\circular_marker.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\pin.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">
     <Message Text="Adjusting SDK tools directory to use x64 version of AL.EXE" />

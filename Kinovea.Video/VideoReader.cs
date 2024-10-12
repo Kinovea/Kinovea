@@ -119,6 +119,11 @@ namespace Kinovea.Video
         {
             get { return (Flags & VideoCapabilities.CanScaleIndefinitely) != 0; }
         }
+        public bool CanStabilize
+        {
+            get { return (Flags & VideoCapabilities.CanStabilize) != 0; }
+        }
+        
         #endregion
 
         #region Members
@@ -254,7 +259,17 @@ namespace Kinovea.Video
             // Does nothing by default. Override to implement.
             return false;
         }
-        
+
+        /// <summary>
+        /// Pass stabilization data to the reader.
+        /// </summary>
+        /// <returns>returns true if the cache has been invalidated by the operation</returns>
+        public virtual bool SetStabilizationData(List<TimedPoint> points)
+        {
+            // Does nothing by default. Override to implement.
+            return false;
+        }
+
         /// <summary>
         /// Ask the reader to provide its images at a specific size.
         /// Not necessarily honored by the reader.

@@ -145,6 +145,8 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuRotation270 = new ToolStripMenuItem();
 
         private ToolStripMenuItem mnuMirror = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuStabilization = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuStabilizationTrackNone = new ToolStripMenuItem();
 
         // Video
         private List<ToolStripMenuItem> filterMenus = new List<ToolStripMenuItem>();
@@ -571,11 +573,23 @@ namespace Kinovea.ScreenManager
             mnuMirror.Click += mnuMirror_Click;
             mnuMirror.MergeAction = MergeAction.Append;
 
+            mnuStabilization.Image = Properties.Resources.pin;
+            mnuStabilization.MergeAction = MergeAction.Append;
+            mnuStabilizationTrackNone.Image = Properties.Resources.bin_empty;
+            mnuStabilizationTrackNone.Tag = Guid.Empty;
+            mnuStabilizationTrackNone.Checked = true;
+            mnuStabilizationTrackNone.Click += mnuStabilizationTrack_OnClick;
+            // The drop down items are rebuilt on the fly.
+            mnuStabilization.DropDownItems.Clear();
+            mnuStabilization.DropDownItems.Add(mnuStabilizationTrackNone);
+
             mnuCatchImage.DropDownItems.Add(mnuAspectRatio);
             mnuCatchImage.DropDownItems.Add(mnuRotation);
             mnuCatchImage.DropDownItems.Add(mnuMirror);
             mnuCatchImage.DropDownItems.Add(mnuDeinterlace);
             mnuCatchImage.DropDownItems.Add(mnuDemosaic);
+            mnuCatchImage.DropDownItems.Add(mnuStabilization);
+
             #endregion
 
             #region Video
@@ -601,7 +615,7 @@ namespace Kinovea.ScreenManager
             mnuImportImage.MergeAction = MergeAction.Append;
 
             mnuBackground.Image = Properties.Resources.shading;
-            mnuBackground.Click += mnuForegroundColor_Click;
+            mnuBackground.Click += mnuBackgroundColor_Click;
             mnuBackground.MergeAction = MergeAction.Append;
 
             mnuTestGrid.Image = Properties.Resources.grid2;
@@ -1138,6 +1152,7 @@ namespace Kinovea.ScreenManager
                     // Image
                     mnuDeinterlace.Enabled = player.FrameServer.VideoReader.CanChangeDeinterlacing;
                     mnuMirror.Enabled = true;
+                    mnuStabilization.Enabled = true;
                     mnuDeinterlace.Checked = player.Deinterlaced;
                     mnuMirror.Checked = activeScreen.Mirrored;
 
@@ -1146,12 +1161,14 @@ namespace Kinovea.ScreenManager
                         ConfigureImageFormatMenus(activeScreen);
                         ConfigureImageRotationMenus(activeScreen);
                         ConfigureImageDemosaicingMenus(activeScreen);
+                        ConfigureImageStabilizationMenus(activeScreen);
                     }
                     else
                     {
                         ConfigureImageFormatMenus(null);
                         ConfigureImageRotationMenus(null);
                         ConfigureImageDemosaicingMenus(null);
+                        ConfigureImageStabilizationMenus(null);
                     }
 
                     // Video
@@ -1201,6 +1218,7 @@ namespace Kinovea.ScreenManager
                     ConfigureImageFormatMenus(activeScreen);
                     ConfigureImageRotationMenus(activeScreen);
                     ConfigureImageDemosaicingMenus(activeScreen);
+                    ConfigureImageStabilizationMenus(activeScreen);
 
                     // Video
                     ConfigureVideoFilterMenus(null);
@@ -1258,6 +1276,7 @@ namespace Kinovea.ScreenManager
                 ConfigureImageFormatMenus(null);
                 ConfigureImageRotationMenus(null);
                 ConfigureImageDemosaicingMenus(null);
+                ConfigureImageStabilizationMenus(null);
 
                 // Video
                 ConfigureVideoFilterMenus(null);
@@ -1466,6 +1485,55 @@ namespace Kinovea.ScreenManager
             mnuRotation90.Checked = screen.ImageRotation == ImageRotation.Rotate90;
             mnuRotation180.Checked = screen.ImageRotation == ImageRotation.Rotate180;
             mnuRotation270.Checked = screen.ImageRotation == ImageRotation.Rotate270;
+        }
+
+
+        private void ConfigureImageStabilizationMenus(AbstractScreen screen)
+        {
+
+            bool canStabilize = screen != null && screen.Full && screen is PlayerScreen && ((PlayerScreen)screen).FrameServer.VideoReader.CanStabilize;
+            mnuStabilization.Enabled = canStabilize;
+            if (!canStabilize)
+                return;
+
+            // Rebuild the menu on the fly since it's dependent on the metadata content.
+            mnuStabilization.DropDownItems.Clear();
+
+            // Add available tracks to the sub-menu.
+            var metadata = ((PlayerScreen)screen).FrameServer.Metadata;
+            IEnumerable<DrawingTrack> tracks = metadata.Tracks();
+            bool found = false;
+            foreach (var track in tracks)
+            {
+                // Add one track menu.
+                ToolStripMenuItem mnuStabilizationTrack = new ToolStripMenuItem();
+                mnuStabilizationTrack.Text = track.Name;
+                mnuStabilizationTrack.Tag = track.Id;
+                //mnuStabilizationTrack.Image = Properties.Resources.vector;
+                mnuStabilizationTrack.Click += mnuStabilizationTrack_OnClick;
+                mnuStabilizationTrack.MergeAction = MergeAction.Append;
+
+                if (metadata.StabilizationTrack == track.Id)
+                {
+                    mnuStabilizationTrack.Checked = true;
+                    found = true;
+                }
+
+                // Add to parent.
+                mnuStabilization.DropDownItems.Add(mnuStabilizationTrack);
+            }
+
+            if (mnuStabilization.DropDownItems.Count > 0)
+            {
+                // Add a separator and the menu entry to forget stabilization.
+                mnuStabilization.DropDownItems.Add(new ToolStripSeparator());
+                mnuStabilization.DropDownItems.Add(mnuStabilizationTrackNone);
+                mnuStabilizationTrackNone.Checked = !found;
+            }
+            else
+            {
+                mnuStabilization.Enabled = false;
+            }
         }
 
         private void ConfigureClipboardMenus(AbstractScreen screen)
@@ -1731,6 +1799,8 @@ namespace Kinovea.ScreenManager
             mnuDemosaicGRBG.Text = "GRBG";
             mnuDemosaicGBRG.Text = "GBRG";
 
+            mnuStabilization.Text = "Stabilization";
+            mnuStabilizationTrackNone.Text = ScreenManagerLang.ScreenManagerKernel_LensCalibration_None;
 
             RefreshCultureMenuFilters();
 
@@ -2497,7 +2567,21 @@ namespace Kinovea.ScreenManager
             activeScreen.Mirrored = mnuMirror.Checked;
         }
 
-        private void mnuForegroundColor_Click(object sender, EventArgs e)
+        private void mnuStabilizationTrack_OnClick(object sender, EventArgs e)
+        {
+            PlayerScreen player = activeScreen as PlayerScreen;
+            if (player == null)
+                return;
+
+            ToolStripMenuItem menu = sender as ToolStripMenuItem;
+            if (menu == null)
+                return;
+
+            Guid id = (Guid)menu.Tag;
+            player.StabilizationTrack = id;
+        }
+
+        private void mnuBackgroundColor_Click(object sender, EventArgs e)
         {
             // TODO: implement for both Playback and Capture screen.
             PlayerScreen player = activeScreen as PlayerScreen;

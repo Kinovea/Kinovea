@@ -130,6 +130,20 @@ namespace Kinovea.ScreenManager
                 RefreshImage();
             }
         }
+        public Guid StabilizationTrack
+        {
+            get { return frameServer.Metadata.StabilizationTrack; }
+
+            set 
+            {
+                bool uncached = frameServer.SetStabilizationTrack(value);
+
+                if (uncached && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
+                    view.UpdateWorkingZone(true);
+
+                RefreshImage();
+            }
+        }
         public override bool Mirrored
         {
             get { return frameServer.Metadata.Mirrored; }

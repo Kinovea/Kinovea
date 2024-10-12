@@ -148,6 +148,11 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        /// <summary>
+        /// This is called when the screen is about to be emptied, 
+        /// we are about to load a new video in the same screen,
+        /// or the video failed to load correctly.
+        /// </summary>
         public void Unload()
         {
             // Prepare the FrameServer for a new video by resetting everything.
@@ -234,6 +239,56 @@ namespace Kinovea.ScreenManager
             return false;
         }
 
+        public bool SetStabilizationTrack(Guid id)
+        {
+            if (!VideoReader.CanStabilize)
+                return false;
+
+            // This function is called either when selecting a track in the 
+            // Image > Stabilization menu, or when reloading a KVA file.
+            // In the case of loading the following assignation is redundant.
+            metadata.StabilizationTrack = id;
+
+            if (id == Guid.Empty)
+            {
+                VideoReader.SetStabilizationData(null);
+            }
+            else
+            {
+                // Find the track object.
+                var drawing = metadata.GetDrawing(metadata.TrackManager.Id, id);
+                DrawingTrack track = drawing as DrawingTrack;
+                if (track == null)
+                {
+                    log.ErrorFormat("Stabilization track not found: {0}", id);
+                    return false;
+                }
+
+                List<TimedPoint> points = track.GetTimedPoints();
+                VideoReader.SetStabilizationData(points);
+            }
+
+            return true;
+            // Find the track object.
+            //var drawing = frameServer.Metadata.GetDrawing(frameServer.Metadata.TrackManager.Id, trackId);
+            //DrawingTrack track2 = drawing as DrawingTrack;
+            //if (track2 == null)
+            //{
+            //    throw new InvalidProgramException();
+            //}
+
+            //// Tell the metadata that we are stabilizing on this track.
+            //metadata.StabilizationTrack = track2.Id;
+            
+            //// Hide the track.
+            //track.IsVisible = false;
+
+            //bool uncached = frameServer.VideoReader.SetStabilizationData(points);
+
+            //if (uncached && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
+            //    view.UpdateWorkingZone(true);
+        }
+
         /// <summary>
         /// Consolidate image options after metadata import.
         /// </summary>
@@ -245,6 +300,7 @@ namespace Kinovea.ScreenManager
             ChangeDemosaicing(metadata.Demosaicing);
             ChangeDeinterlacing(metadata.Deinterlacing);
             ChangeBackgroundColor(metadata.BackgroundColor);
+            SetStabilizationTrack(metadata.StabilizationTrack);
         }
 
         /// <summary>

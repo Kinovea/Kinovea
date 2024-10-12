@@ -668,7 +668,7 @@ namespace Kinovea.ScreenManager
         {
             InitializeKeyframes();
 
-            // Restore things like aspect ratio, image rotation, deinterlacing, etc.
+            // Restore things like aspect ratio, image rotation, deinterlacing, stabilization, etc.
             m_FrameServer.RestoreImageOptions();
 
             // Restore selection.

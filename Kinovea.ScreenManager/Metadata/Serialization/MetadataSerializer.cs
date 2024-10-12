@@ -247,6 +247,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             PointF scaling = PointF.Empty;
+            Guid stabilizationTrack = Guid.Empty;
 
             r.ReadStartElement();
             r.ReadElementContentAsString("FormatVersion", "");
@@ -287,6 +288,9 @@ namespace Kinovea.ScreenManager
                         break;
                     case "Deinterlacing":
                         metadata.Deinterlacing = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
+                        break;
+                    case "StabilizationTrack":
+                        stabilizationTrack = new Guid(r.ReadElementContentAsString());
                         break;
                     case "BackgroundColor":
                         metadata.BackgroundColor = XmlHelper.ParseColor(r.ReadElementContentAsString(), Color.Empty);
@@ -360,6 +364,9 @@ namespace Kinovea.ScreenManager
 
             if (IsSameContext())
                 metadata.TimeOrigin = inputTimeOrigin;
+
+            // Assign the stabilization track at the end once the tracks have been read.
+            metadata.StabilizationTrack = stabilizationTrack;
 
             r.ReadEndElement();
         }
@@ -510,6 +517,7 @@ namespace Kinovea.ScreenManager
             w.WriteElementString("Mirror", metadata.Mirrored.ToString().ToLower());
             w.WriteElementString("Demosaicing", metadata.Demosaicing.ToString());
             w.WriteElementString("Deinterlacing", metadata.Deinterlacing.ToString().ToLower());
+            w.WriteElementString("StabilizationTrack", metadata.StabilizationTrack.ToString());
             w.WriteElementString("BackgroundColor", XmlHelper.WriteColor(metadata.BackgroundColor, true));
 
             // Timing information

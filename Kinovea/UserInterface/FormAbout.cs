@@ -72,24 +72,7 @@ namespace Kinovea.Root
         private void PopulateBuildingBlocks()
         {
             pageBuildingBlocks.Text = RootLang.dlgAbout_BuildingBlocks;
-         
-            rtbBuildingBlocks.AppendText(" FFmpeg - https://www.ffmpeg.org/\n");
-            rtbBuildingBlocks.AppendText(" OpenCV - http://opencv.org/.\n");
-            rtbBuildingBlocks.AppendText(" AForge - http://www.aforgenet.com/\n");
-            rtbBuildingBlocks.AppendText(" EmguCV - http://www.emgu.com/\n");
-            rtbBuildingBlocks.AppendText(" OxyPlot - https://oxyplot.github.io/\n");
-            rtbBuildingBlocks.AppendText(" Sharp Vector Graphics - http://sourceforge.net/projects/svgdomcsharp/\n");
-            
-            rtbBuildingBlocks.AppendText(" NAudio - https://github.com/naudio/NAudio\n");
-            rtbBuildingBlocks.AppendText(" Math.Net Numerics- https://numerics.mathdotnet.com/\n");
-            rtbBuildingBlocks.AppendText(" SharpZipLib - https://github.com/icsharpcode/SharpZipLib\n");
-            rtbBuildingBlocks.AppendText(" Json.NET - https://www.newtonsoft.com/json\n");
-            rtbBuildingBlocks.AppendText(" SpreadsheetLight - https://spreadsheetlight.com/\n");
-
-            rtbBuildingBlocks.AppendText(" ExpTree - http://www.codeproject.com/Articles/8546/\n");
-            rtbBuildingBlocks.AppendText(" log4Net - https://logging.apache.org/log4net/\n");
-            rtbBuildingBlocks.AppendText(" Silk Icon set - http://www.famfamfam.com/lab/icons/silk/\n");
-            rtbBuildingBlocks.AppendText(" Fugue Icon set - http://p.yusukekamiyamane.com/\n");
+            rtbBuildingBlocks.Rtf = Properties.Resources.building_blocks;
         }
 
         private void PopulateCitation()

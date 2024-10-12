@@ -273,6 +273,7 @@
     <Compile Include="Types\LensCalibrationParameters.cs" />
     <Compile Include="Types\MeasureLabelType.cs" />
     <Compile Include="Types\Pair.cs" />
+    <Compile Include="Types\TimedPoint.cs" />
     <Compile Include="Types\TrackingAlgorithm.cs" />
     <Compile Include="Types\TrackingParameters.cs" />
     <Compile Include="Types\Units\CadenceUnit.cs" />

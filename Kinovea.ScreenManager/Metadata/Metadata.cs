@@ -43,8 +43,8 @@ namespace Kinovea.ScreenManager
     /// Main class representing the annotations added to the video.
     /// This contains the drawings, calibration information, comments, tracking data, etc.
     /// This is what gets serialized to KVA xml.
-    /// This also contains video import options like image rotation, demosaicing, deinterlacing,
-    /// and rendering options like mirroring.
+    /// This also contains image-level info like rotation, demosaicing, deinterlacing, mirroring.
+    /// and video-level filters like kinogram.
     ///
     /// We have essentially 3 types of drawings:
     /// - attached to a keyframe (ex: a line or angle object),
@@ -196,6 +196,40 @@ namespace Kinovea.ScreenManager
         /// Import mode for deinterlacing.
         /// </summary>
         public bool Deinterlacing { get; set; }
+
+        /// <summary>
+        /// Id of the track used for stabilization or Guid.Empty if none.
+        /// </summary>
+        public Guid StabilizationTrack 
+        {
+            get { return stabilizationTrack; }
+            set
+            {
+                // Here we might consider un-applying the old offset and applying the new one
+                // to all coordinates of all drawings. This would make it possible to switch 
+                // stabilization between tracks that were created with different active stabilization.
+                // Otherwise anything that has been created in the context of one stabilization 
+                // will look wrong in the new one.
+
+                if (stabilizationTrack != value && stabilizationTrack != Guid.Empty)
+                {
+                    // Unhide the track.
+                    var prev = GetDrawing(trackManager.Id, stabilizationTrack) as DrawingTrack;
+                    if (prev != null)
+                        prev.IsVisible = true;
+                }
+
+                var next = GetDrawing(trackManager.Id, value) as DrawingTrack;
+                if (next != null)
+                {
+                    next.StopTracking();
+                    next.IsVisible = false;
+                }
+                
+                // This might be called during metadata loading when the track doesn't exist yet.
+                stabilizationTrack = value;
+            }
+        }
 
         /// <summary>
         /// Background color and alpha.
@@ -463,6 +497,7 @@ namespace Kinovea.ScreenManager
         private bool kvaImporting;
         private bool captureKVA;
         private static Color defaultBackgroundColor = Color.FromArgb(0, 255, 255, 255);
+        private Guid stabilizationTrack = Guid.Empty;
         private Color backgroundColor = defaultBackgroundColor;
 
         // Folders
@@ -1400,11 +1435,14 @@ namespace Kinovea.ScreenManager
             calibrationHelper.AfterDistortionUpdated();
         }
 
+        /// <summary>
+        /// We are about to load a new video in the same screen.
+        /// </summary>
         public void Reset()
         {
-            // Complete reset. (used when over loading a new video)
             log.Debug("Metadata Reset.");
 
+            // File-level data.
             globalTitle = "";
             imageSize = new Size(0, 0);
             videoPath = "";
@@ -1412,7 +1450,10 @@ namespace Kinovea.ScreenManager
             averageTimeStampsPerFrame = 1;
             firstTimeStamp = 0;
 
+            // Drawings, calibration, image filters, video filters.
             ResetCoreContent();
+
+            // House keeping.
             autoSaver.Stop();
             EmptyTempDirectory();
             CleanupHash();
@@ -1486,6 +1527,7 @@ namespace Kinovea.ScreenManager
             hash ^= Mirrored.GetHashCode();
             hash ^= Demosaicing.GetHashCode();
             hash ^= Deinterlacing.GetHashCode();
+            hash ^= StabilizationTrack.GetHashCode();
             hash ^= backgroundColor.GetHashCode();
             hash ^= selectionStart.GetHashCode();
             hash ^= selectionEnd.GetHashCode();
@@ -1915,9 +1957,15 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Lower level Helpers
+
+        /// <summary>
+        /// This is called when we are about to load a new video in the same screen.
+        /// </summary>
         private void ResetCoreContent()
         {
-            // Semi reset: we keep Image size and AverageTimeStampsPerFrame
+            DeselectAll();
+            
+            // Drawings and tracking
             trackabilityManager.Clear();
             keyframes.Clear();
             ClearTracking();
@@ -1932,10 +1980,10 @@ namespace Kinovea.ScreenManager
             }
 
             magnifier.ResetData();
-            imageTransform.Reset();
             drawingCoordinateSystem.Visible = false;
             drawingTestGrid.Visible = false;
-            backgroundColor = defaultBackgroundColor;
+            
+            imageTransform.Reset();
 
             // Do not reset the calibration when loading new files in the same screen.
             // The existing calibration is as good the default one.
@@ -1943,16 +1991,22 @@ namespace Kinovea.ScreenManager
             // without having to save and load a dedicated KVA file for it.
             // If the new file has its own calibration in the KVA it will still be loaded correctly later.
 
-            ResetVideoFilters();
+            // Do reset camera tracking.
+            cameraTransformer.Deinitialize();
 
+            // Image filters.
             ImageAspect = ImageAspectRatio.Auto;
             ImageRotation = ImageRotation.Rotate0;
             Mirrored = false;
             Demosaicing = Demosaicing.None;
             Deinterlacing = false;
-            
-            DeselectAll();
+            StabilizationTrack = Guid.Empty;
+            backgroundColor = defaultBackgroundColor;
+
+            // Video filters.
+            ResetVideoFilters();
         }
+
         private bool DrawingsHitTest(int keyFrameIndex, PointF mouseLocation, long timestamp)
         {
             // Look for a hit in all drawings of a particular Key Frame.

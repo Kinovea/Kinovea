@@ -32,6 +32,7 @@ using namespace System::Collections::Generic;
 using namespace System::Threading;
 using namespace msclr;
 
+using namespace Kinovea::Services;
 using namespace Kinovea::Video::FFMpeg;
 
 VideoReaderFFMpeg::VideoReaderFFMpeg()
@@ -342,6 +343,27 @@ bool VideoReaderFFMpeg::ChangeDeinterlace(bool _deint)
     m_FramesContainer->Clear();
     return true;
 }
+bool VideoReaderFFMpeg::SetStabilizationData(List<Kinovea::Services::TimedPoint^>^ points)
+{
+    // Precompute the list of frame offsets with regards to the first point of the track.
+    stabOffsets->Clear();
+    m_FramesContainer->Clear();
+    
+    if (points == nullptr)
+        return true;
+
+    for (size_t i = 0; i < points->Count; i++)
+    {
+        if (stabOffsets->ContainsKey(points[i]->T))
+            continue;
+
+        TimedPoint^ p = gcnew TimedPoint(points[i]->X - points[0]->X, points[i]->Y - points[0]->Y, points[i]->T);
+        stabOffsets->Add(points[i]->T, p);
+    }
+
+    return true;
+}
+
 
 // Should return true if we are going to use this size.
 bool VideoReaderFFMpeg::ChangeDecodingSize(Size _size)
@@ -1075,8 +1097,10 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ _filePath, bool _forSummary)
         }
         else if (m_bIsVeryShort)
         {
-            m_Capabilities = VideoCapabilities::CanCache;
-            m_Capabilities = m_Capabilities | VideoCapabilities::CanChangeImageRotation;
+            m_Capabilities = 
+                VideoCapabilities::CanCache | 
+                VideoCapabilities::CanChangeImageRotation |
+                VideoCapabilities::CanStabilize;
 
             if (m_pCodecCtx->codec_id == AV_CODEC_ID_RAWVIDEO)
                 m_Capabilities = m_Capabilities | VideoCapabilities::CanChangeDemosaicing;
@@ -1086,9 +1110,16 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ _filePath, bool _forSummary)
         }
         else
         {
-            m_Capabilities = VideoCapabilities::CanDecodeOnDemand | VideoCapabilities::CanPreBuffer | VideoCapabilities::CanCache;
-            m_Capabilities = m_Capabilities | VideoCapabilities::CanChangeAspectRatio | VideoCapabilities::CanChangeImageRotation | VideoCapabilities::CanChangeDeinterlacing;
-            m_Capabilities = m_Capabilities | VideoCapabilities::CanChangeWorkingZone | VideoCapabilities::CanChangeDecodingSize;
+            m_Capabilities = 
+                VideoCapabilities::CanDecodeOnDemand | 
+                VideoCapabilities::CanPreBuffer | 
+                VideoCapabilities::CanCache | 
+                VideoCapabilities::CanChangeAspectRatio | 
+                VideoCapabilities::CanChangeImageRotation | 
+                VideoCapabilities::CanChangeDeinterlacing | 
+                VideoCapabilities::CanChangeWorkingZone | 
+                VideoCapabilities::CanChangeDecodingSize |
+                VideoCapabilities::CanStabilize;
 
             if (m_pCodecCtx->codec_id == AV_CODEC_ID_RAWVIDEO)
                 m_Capabilities = m_Capabilities | VideoCapabilities::CanChangeDemosaicing;
@@ -1356,7 +1387,27 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t _iTimeStampToSeekTo, int _iFrame
                 // Import ffmpeg buffer into a .NET bitmap.
                 int imageStride = pFinalAVFrame->linesize[0];
                 IntPtr scan0 = IntPtr((void*)pFinalAVFrame->data[0]);
-                Bitmap^ bmp = gcnew Bitmap(m_DecodingSize.Width, m_DecodingSize.Height, imageStride, DecodingPixelFormat, scan0);
+                Bitmap^ bmp = nullptr;
+                if (stabOffsets->ContainsKey(m_TimestampInfo.CurrentTimestamp))
+                {
+                    // Image stabilization. Paint the image with the offset applied.
+                    // Prepare output bitmap.
+                    bmp = gcnew Bitmap(m_DecodingSize.Width, m_DecodingSize.Height, DecodingPixelFormat);
+
+                    // Get the decoded frame in a bitmap and paint it over the output.
+                    Bitmap^ bmp2 = gcnew Bitmap(m_DecodingSize.Width, m_DecodingSize.Height, imageStride, DecodingPixelFormat, scan0);
+                    Graphics^ g = Graphics::FromImage(bmp);
+                    float dx = stabOffsets[m_TimestampInfo.CurrentTimestamp]->X;
+                    float dy = stabOffsets[m_TimestampInfo.CurrentTimestamp]->Y;
+                    // TODO: handle scaling (decoding size).
+                    g->DrawImageUnscaled(bmp2, -dx, -dy);
+                    delete g;
+                    delete bmp2;
+                }
+                else
+                {
+                    bmp = gcnew Bitmap(m_DecodingSize.Width, m_DecodingSize.Height, imageStride, DecodingPixelFormat, scan0);
+                }
 
                 // Rotation is handled after scaling and aspect ratio fix for simplicity.
                 // In later versions of FFMpeg there are rotation routines built in, that might be simpler and faster.

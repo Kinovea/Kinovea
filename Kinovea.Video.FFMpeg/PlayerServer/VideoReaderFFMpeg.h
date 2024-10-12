@@ -66,6 +66,7 @@ extern "C" {
 #include "SavingContext.h"
 
 using namespace System;
+using namespace System::Collections::Generic;
 using namespace System::ComponentModel;
 using namespace System::Reflection;
 using namespace System::Threading;
@@ -154,6 +155,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         virtual bool ChangeDemosaicing(Demosaicing demosaicing) override;
         virtual bool ChangeDeinterlace(bool _deint) override;
         virtual bool ChangeDecodingSize(Size _size) override;
+        virtual bool SetStabilizationData(List<TimedPoint^>^ points) override;
         virtual void DisableCustomDecodingSize() override;
         virtual void BeforePlayloop() override;
         virtual void BeforeFrameEnumeration() override;
@@ -186,6 +188,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         Size m_DecodingSize;
         bool m_CanDrawUnscaled;
         bool m_Verbose = true;
+        Dictionary<long, TimedPoint^>^ stabOffsets = gcnew Dictionary<long, TimedPoint^>();
 
         // Frame containers
         IVideoFramesContainer^ m_FramesContainer;

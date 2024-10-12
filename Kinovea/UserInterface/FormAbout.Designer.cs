@@ -36,19 +36,19 @@ namespace Kinovea.Root
       this.lnkKinovea = new System.Windows.Forms.LinkLabel();
       this.rtbTranslators = new System.Windows.Forms.RichTextBox();
       this.tabControl = new System.Windows.Forms.TabControl();
-      this.pageTranslation = new System.Windows.Forms.TabPage();
       this.pageLicense = new System.Windows.Forms.TabPage();
       this.rtbLicense = new System.Windows.Forms.RichTextBox();
       this.pageBuildingBlocks = new System.Windows.Forms.TabPage();
       this.rtbBuildingBlocks = new System.Windows.Forms.RichTextBox();
       this.pageCitation = new System.Windows.Forms.TabPage();
       this.rtbCitation = new System.Windows.Forms.RichTextBox();
+      this.pageTranslation = new System.Windows.Forms.TabPage();
       ((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).BeginInit();
       this.tabControl.SuspendLayout();
-      this.pageTranslation.SuspendLayout();
       this.pageLicense.SuspendLayout();
       this.pageBuildingBlocks.SuspendLayout();
       this.pageCitation.SuspendLayout();
+      this.pageTranslation.SuspendLayout();
       this.SuspendLayout();
       // 
       // logoPictureBox
@@ -145,17 +145,6 @@ namespace Kinovea.Root
       this.tabControl.Size = new System.Drawing.Size(581, 349);
       this.tabControl.TabIndex = 27;
       // 
-      // pageTranslation
-      // 
-      this.pageTranslation.Controls.Add(this.rtbTranslators);
-      this.pageTranslation.Location = new System.Drawing.Point(4, 22);
-      this.pageTranslation.Name = "pageTranslation";
-      this.pageTranslation.Padding = new System.Windows.Forms.Padding(3);
-      this.pageTranslation.Size = new System.Drawing.Size(573, 323);
-      this.pageTranslation.TabIndex = 0;
-      this.pageTranslation.Text = "Translators";
-      this.pageTranslation.UseVisualStyleBackColor = true;
-      // 
       // pageLicense
       // 
       this.pageLicense.Controls.Add(this.rtbLicense);
@@ -238,6 +227,17 @@ namespace Kinovea.Root
       this.rtbCitation.TabIndex = 28;
       this.rtbCitation.Text = "";
       // 
+      // pageTranslation
+      // 
+      this.pageTranslation.Controls.Add(this.rtbTranslators);
+      this.pageTranslation.Location = new System.Drawing.Point(4, 22);
+      this.pageTranslation.Name = "pageTranslation";
+      this.pageTranslation.Padding = new System.Windows.Forms.Padding(3);
+      this.pageTranslation.Size = new System.Drawing.Size(573, 323);
+      this.pageTranslation.TabIndex = 0;
+      this.pageTranslation.Text = "Translators";
+      this.pageTranslation.UseVisualStyleBackColor = true;
+      // 
       // FormAbout
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -261,10 +261,10 @@ namespace Kinovea.Root
       this.Text = "    About Kinovea";
       ((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).EndInit();
       this.tabControl.ResumeLayout(false);
-      this.pageTranslation.ResumeLayout(false);
       this.pageLicense.ResumeLayout(false);
       this.pageBuildingBlocks.ResumeLayout(false);
       this.pageCitation.ResumeLayout(false);
+      this.pageTranslation.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
