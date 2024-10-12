@@ -38,7 +38,7 @@ namespace Kinovea.ScreenManager
     /// Tracker using template matching.
     /// Each track has its own tracker instance.
     /// </summary>
-    public class TrackerTemplateMatching : AbstractTracker
+    public class TrackerTemplateMatching : AbstractTracker, IDisposable
     {
         #region Properties
         public override TrackingParameters Parameters
@@ -49,6 +49,8 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private TrackingParameters parameters = new TrackingParameters();
+        
+        private List<TrackingTemplate> trackingTemplates = new List<TrackingTemplate>();
 
         // Mask used during template matching. Only changes when the template size changes.
         private Bitmap mask;
@@ -64,14 +66,36 @@ namespace Kinovea.ScreenManager
         {
             this.parameters = parameters;
         }
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        ~TrackerTemplateMatching()
+        {
+            Dispose(false);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                for (int i = trackingTemplates.Count - 1; i >= 0; i--)
+                {
+                    trackingTemplates[i].Dispose();
+                }
+             
+                trackingTemplates.Clear();
+            }
+        }
+
         #endregion
 
         #region AbstractTracker Implementation
-        
+
         /// <summary>
         /// Perform a tracking step.
         /// </summary>
-        public override bool TrackStep(List<AbstractTrackPoint> timeline, Bitmap currentImage, Mat cvImage, long time, out AbstractTrackPoint currentPoint)
+        public override bool TrackStep(List<AbstractTrackPoint> timeline, long time, Bitmap currentImage, Mat cvImage, out AbstractTrackPoint currentPoint)
         {
             //---------------------------------------------------------------------
             // The input informations we have at hand are:
@@ -88,7 +112,7 @@ namespace Kinovea.ScreenManager
             {
                 // No image or wrong image size.
                 // Create the point at the last point location.
-                currentPoint = CreateTrackPoint(false, lastTrackPoint.Point, 0.0f, time, currentImage, timeline);
+                currentPoint = CreateTrackPoint(lastTrackPoint.Point, time, 0.0f, currentImage, timeline);
                 log.Debug("Track failed. No input image, or last point doesn't have any cached block image.");
 
                 return false;
@@ -102,20 +126,20 @@ namespace Kinovea.ScreenManager
             {
                 // Program failure.
                 // Keep the point at the previous location.
-                currentPoint = CreateTrackPoint(false, lastTrackPoint.Point, 0.0f, time, currentImage, timeline);
+                currentPoint = CreateTrackPoint(lastTrackPoint.Point, time, 0.0f, currentImage, timeline);
                 log.DebugFormat("Tracking failed.");
             }
             else if (result.Similarity < parameters.SimilarityThreshold)
             {
                 // Tracking failure.
                 // Keep the point at the previous location.
-                currentPoint = CreateTrackPoint(false, lastTrackPoint.Point, 0.0f, time, currentImage, timeline);
+                currentPoint = CreateTrackPoint(lastTrackPoint.Point, time, 0.0f, currentImage, timeline);
                 log.DebugFormat("Tracking failed. Best candidate: {0} < {1}.", result.Similarity, parameters.SimilarityThreshold);
             }
             else
             {
                 // Tracking success, apply template update algorithm.
-                currentPoint = CreateTrackPoint(false, result.Location, result.Similarity, time, currentImage, timeline);
+                currentPoint = CreateTrackPoint(result.Location, time, result.Similarity, currentImage, timeline);
                 ((TrackPointBlock)currentPoint).Similarity = result.Similarity;
             }
 
@@ -124,23 +148,28 @@ namespace Kinovea.ScreenManager
 
 
         /// <summary>
-        /// Creates a track point at the specified location.
-        /// Implements the template update logic and captures the new template if needed.
-        /// This is called for both auto-tracking and manual placement (reference template).
+        /// Creates a track point from auto-tracking.
+        /// Performs the template update algorithm.
         /// </summary>
-        public override AbstractTrackPoint CreateTrackPoint(bool manuallyPlaced, PointF point, double similarity, long time, Bitmap currentImage, List<AbstractTrackPoint> previousPoints)
+        public override AbstractTrackPoint CreateTrackPoint(PointF point, long time, float similarity, Bitmap currentImage, List<AbstractTrackPoint> previousPoints)
         {
+            // WIP Refactoring in progress.
+            // Currently we store the template inside each point in the timeline.
+            // It should be possible to store just the time and location and keep the current template
+            // as state inside the tracker.
+            // The template is not stored to KVA anyway.
+            // This is necessary to make the tracking timeline more agnostic of the tracking algorithm.
+
             log.DebugFormat("Create track point.");
 
             // Creates a TrackPoint from the input image at the given coordinates.
             // The template is captured at the nearest whole pixel location (rounding).
             // It is important that the matching also uses the same rounding.
-
+            TrackingTemplate trackingTemplate = null;
             Bitmap bmpTemplate = new Bitmap(parameters.BlockWindow.Width, parameters.BlockWindow.Height, PixelFormat.Format32bppPArgb);
             int age = 0;
 
             // Template update algorithm:
-            // - If the user moved the point manually we update the template.
             // - If the match is "poor" we don't update.
             // - If the match is "good", we also don't update, maintain the reference. This avoids drift.
             // - If the match is only "fair" but still considered a match, we update the template.
@@ -151,7 +180,7 @@ namespace Kinovea.ScreenManager
             // The approach used here is more similar to what we do manually, the reference is good enough until it isn't.
             // The drawback is that instead of a slow drift we may hook onto a false positive or a shift.
             bool captureTemplate = true;
-            if(!manuallyPlaced && previousPoints.Count > 0 && (similarity > parameters.TemplateUpdateThreshold || similarity < parameters.SimilarityThreshold))
+            if(previousPoints.Count > 0 && (similarity > parameters.TemplateUpdateThreshold || similarity < parameters.SimilarityThreshold))
             {
                 // The match is either very good or very bad: do not update.
                 // FIXME: we don't need to save the template inside each point, just keep a global one.
@@ -161,6 +190,9 @@ namespace Kinovea.ScreenManager
                     bmpTemplate = BitmapHelper.Copy(prevBlock.Template);
                     captureTemplate = false;
                     age = prevBlock.TemplateAge + 1;
+
+                    PositionningSource source = PositionningSource.TemplateMatching;
+                    trackingTemplate = new TrackingTemplate(time, point, similarity, bmpTemplate, source);
                 }
             }
 
@@ -178,14 +210,58 @@ namespace Kinovea.ScreenManager
                 startY = Math.Max(startY, 0);
 
                 BitmapHelper.CopyROI(currentImage, bmpTemplate, new System.Drawing.Point(startX, startY));
+
+                PositionningSource source = PositionningSource.TemplateMatching;
+                trackingTemplate = new TrackingTemplate(time, point, (float)similarity, bmpTemplate, source);
             }
 
             // Store the full precision value in the point.
             TrackPointBlock tpb = new TrackPointBlock(point.X, point.Y, time, bmpTemplate);
             tpb.TemplateAge = age;
-            tpb.IsReferenceBlock = manuallyPlaced;
-            tpb.Similarity = manuallyPlaced ? 1.0f : similarity;
+            tpb.IsReferenceBlock = false;
+            tpb.Similarity = similarity;
 
+            // Refactoring: store the templates in the tracker, not in the timeline of points.
+            trackingTemplates.Add(trackingTemplate);
+
+            return tpb;
+        }
+
+        /// <summary>
+        /// Creates a Track point from a user-provided location.
+        /// Always update the template.
+        /// </summary>
+        public override AbstractTrackPoint CreateTrackPointReference(PointF point, long time, Bitmap currentImage)
+        {
+            log.DebugFormat("Create track point reference.");
+
+            TrackingTemplate trackingTemplate = null;
+            Bitmap bmpTemplate = new Bitmap(parameters.BlockWindow.Width, parameters.BlockWindow.Height, PixelFormat.Format32bppPArgb);
+            int age = 0;
+
+            // We are establishing a new reference template.    
+            // The way we round or truncate the point coordinates is important and sould be coherent between capture and matching.
+            PointF pointAligned = new PointF((int)Math.Round(point.X), (int)Math.Round(point.Y));
+            int startX = (int)(pointAligned.X - ((int)(bmpTemplate.Width / 2.0f)));
+            int startY = (int)(pointAligned.Y - ((int)(bmpTemplate.Height / 2.0f)));
+
+            // This might happen if the user place the point so that the template is partially outside the image boundaries.
+            startX = Math.Max(startX, 0);
+            startY = Math.Max(startY, 0);
+
+            BitmapHelper.CopyROI(currentImage, bmpTemplate, new System.Drawing.Point(startX, startY));
+
+            // Store to tracker state.
+            PositionningSource source = PositionningSource.Manual;
+            trackingTemplate = new TrackingTemplate(time, point, 1.0f, bmpTemplate, source);
+            trackingTemplates.Add(trackingTemplate);
+        
+            // Return a new track point.
+            // TODO: this should return a TimedPoint or some other algorithm agnostic structure.
+            TrackPointBlock tpb = new TrackPointBlock(point.X, point.Y, time, bmpTemplate);
+            tpb.TemplateAge = age;
+            tpb.IsReferenceBlock = true;
+            tpb.Similarity = 1.0f;
             return tpb;
         }
 
@@ -193,11 +269,11 @@ namespace Kinovea.ScreenManager
         /// Create a track point at the specified location without any template update logic.
         /// This is used only in the case of importing existing track data from xml.
         /// </summary>
-        public override AbstractTrackPoint CreateOrphanTrackPoint(PointF p, long t)
+        public override AbstractTrackPoint CreateOrphanTrackPoint(PointF point, long time)
         {
             // The TrackPoint can't be used as-is to track the next one because it's missing the algo internal data (block).
             // We'll need to reconstruct it when we have the corresponding image.
-            return new TrackPointBlock(p.X, p.Y, t);
+            return new TrackPointBlock(point.X, point.Y, time);
         }
         #endregion
 
@@ -294,9 +370,10 @@ namespace Kinovea.ScreenManager
 
         #region Private
 
-
         /// <summary>
-        /// Perform the template matching
+        /// Performs the template matching.
+        /// This function returns a TrackResult which is just the location and score.
+        /// It is the responsibility of the caller to update the template or not.
         /// </summary>
         private TrackResult MatchTemplate(Mat cvImage, Bitmap template, PointF lastPoint)
         {
@@ -397,7 +474,7 @@ namespace Kinovea.ScreenManager
             else if (max < parameters.SimilarityThreshold)
             {
                 // Tracking failure.
-                result = new TrackResult(max, lastPoint);
+                result = new TrackResult((float)max, lastPoint);
             }
             else
             {
@@ -448,7 +525,7 @@ namespace Kinovea.ScreenManager
                 //log.DebugFormat("Tracking, Point: {0}, Offset: {1}, Peak height:{2:.0.000}", bestCandidate, offset, peakHeight);
 
                 // At this point we have the match location.
-                result = new TrackResult(max, bestCandidate);
+                result = new TrackResult((float)max, bestCandidate);
             }
 
             cvImageROI.Dispose();

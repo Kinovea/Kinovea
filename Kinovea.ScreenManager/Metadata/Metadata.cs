@@ -1496,7 +1496,7 @@ namespace Kinovea.ScreenManager
                 foreach(DrawingTrack t in Tracks())
                 {
                     if (t.Status == TrackStatus.Edit)
-                        t.TrackCurrentPosition(videoframe, cvImage);
+                        t.TrackStep(videoframe, cvImage);
                 }
             }
         }

@@ -672,7 +672,8 @@ namespace Kinovea.ScreenManager
             if (HitTester.HitPoint(point, positions[hitPointIndex].Point, transformer))
                 return 1;
 
-            result = HitTestTrajectory(point, hitPointIndex, transformer);
+            if (positions.Count > 1)
+                result = HitTestTrajectory(point, hitPointIndex, transformer);
 
             if (result == 0)
               MoveCursor(point.X, point.Y);
@@ -1403,7 +1404,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Perform tracking at the current frame.
         /// </summary>
-        public void TrackCurrentPosition(VideoFrame current, OpenCvSharp.Mat cvImage)
+        public void TrackStep(VideoFrame current, OpenCvSharp.Mat cvImage)
         {
             // Match the previous point in current image.
             // New points to trajectories are always created from here.
@@ -1415,30 +1416,28 @@ namespace Kinovea.ScreenManager
 
             if (lastTrackedPoint.Template == null)
             {
-                // If the existing tracked point doesn't have a template it means
-                // We are re-opening and continuing a track that was imported from KVA
+                // Recreate a point for the last position if we don't have it yet.
+                var trackPoint = tracker.CreateTrackPointReference(lastTrackedPoint.Point, lastTrackedPoint.T, current.Image);
+
+                // This happens when we are re-opening and continuing a track that was imported from KVA
                 // (The KVA doesn't store the algorithm specific part like the template, only the result).
                 // We must rebuild the point and extract the template before proceeding.
                 // We don't have the image to create the template for the last tracked point,
                 // we create it out of the current image.
                 // The user re-opened the track here so we restart as if this point had been manually placed.
-                bool manual = true;
-                double simi = 1.0;
-                AbstractTrackPoint trackPoint = tracker.CreateTrackPoint(manual, lastTrackedPoint.Point, simi, lastTrackedPoint.T, current.Image, positions);
-                
                 positions[positions.Count - 1] = trackPoint;
             }
 
-            AbstractTrackPoint p = null;
-            bool bMatched = tracker.TrackStep(positions, current.Image, cvImage, current.Timestamp, out p);
+            AbstractTrackPoint atp = null;
+            bool bMatched = tracker.TrackStep(positions, current.Timestamp, current.Image, cvImage, out atp);
 
-            if (p == null)
+            if (atp == null)
             {
                 StopTracking();
                 return;
             }
 
-            positions.Add(p);
+            positions.Add(atp);
 
             if (!bMatched)
                 StopTracking();
@@ -1461,7 +1460,7 @@ namespace Kinovea.ScreenManager
             AbstractTrackPoint current = positions[drawPointIndex];
 
             current.ResetTrackData();
-            AbstractTrackPoint atp = tracker.CreateTrackPoint(true, current.Point, 1.0f, current.T, currentImage, positions);
+            AbstractTrackPoint atp = tracker.CreateTrackPointReference(current.Point, current.T, currentImage);
 
             if (atp != null)
                 positions[drawPointIndex] = atp;

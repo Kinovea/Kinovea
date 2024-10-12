@@ -29,7 +29,9 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class TrackPointBlock : AbstractTrackPoint
     {
-        public Bitmap Template;
+
+        public Bitmap Template { get; set; }
+
         public bool IsReferenceBlock;
         public double Similarity;
         public int TemplateAge;

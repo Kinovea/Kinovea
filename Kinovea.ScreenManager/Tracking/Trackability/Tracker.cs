@@ -65,7 +65,7 @@ namespace Kinovea.ScreenManager
 
             Point location = new Point(searchZone.Left + maxLoc.X + template.Width / 2, searchZone.Top + maxLoc.Y + template.Height / 2);
             
-            return new TrackResult(max, location);
+            return new TrackResult((float)max, location);
         }
     }
 }

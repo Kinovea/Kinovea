@@ -25,7 +25,7 @@ namespace Kinovea.ScreenManager
 {
     public struct TrackResult
     {
-        public double Similarity
+        public float Similarity
         {
             get { return similarity; }
         }
@@ -35,10 +35,10 @@ namespace Kinovea.ScreenManager
             get { return location; }
         }
 
-        private double similarity;
+        private float similarity;
         private PointF location;
         
-        public TrackResult(double similarity, PointF location)
+        public TrackResult(float similarity, PointF location)
         {
             this.similarity = similarity;
             this.location = location;
