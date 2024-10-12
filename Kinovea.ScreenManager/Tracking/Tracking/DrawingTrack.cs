@@ -82,7 +82,7 @@ namespace Kinovea.ScreenManager
                 int hash = 0;
                 hash ^= visibleTimestamp.GetHashCode();
                 hash ^= invisibleTimestamp.GetHashCode();
-                foreach (AbstractTrackPoint p in positions)
+                foreach (TimedPoint p in positions)
                     hash ^= p.ContentHash;
 
                 hash ^= defaultCrossRadius.GetHashCode();
@@ -241,7 +241,7 @@ namespace Kinovea.ScreenManager
         private const int focusFrameCount = 30;    // Number of frames of the focus section.
 
         // Internal data.
-        private List<AbstractTrackPoint> positions = new List<AbstractTrackPoint>();
+        private List<TimedPoint> positions = new List<TimedPoint>();
         private FilteredTrajectory filteredTrajectory = new FilteredTrajectory();
         private TimeSeriesCollection timeSeriesCollection;
         private LinearKinematics linearKinematics = new LinearKinematics();
@@ -323,7 +323,7 @@ namespace Kinovea.ScreenManager
             tracker = new TrackerTemplateMatching(parameters);
             
             // Add the first point.
-            positions.Add(new TrackPointBlock(p.X, p.Y, start));
+            positions.Add(new TimedPoint(p.X, p.Y, start));
             miniLabel.SetAttach(p, true);
 
             // Visibility
@@ -1410,7 +1410,7 @@ namespace Kinovea.ScreenManager
             // New points to trajectories are always created from here.
 
             // Retrieve the last tracked point before the passed frame.
-            TrackPointBlock lastTrackedPoint = positions.Last() as TrackPointBlock;
+            TimedPoint lastTrackedPoint = positions.Last();
             if (lastTrackedPoint == null || current.Timestamp <= lastTrackedPoint.T)
                 return;
 
@@ -1428,16 +1428,16 @@ namespace Kinovea.ScreenManager
                 positions[positions.Count - 1] = trackPoint;
             }
 
-            AbstractTrackPoint atp = null;
-            bool bMatched = tracker.TrackStep(positions, current.Timestamp, current.Image, cvImage, out atp);
+            TimedPoint tp = null;
+            bool bMatched = tracker.TrackStep(positions, current.Timestamp, current.Image, cvImage, out tp);
 
-            if (atp == null)
+            if (tp == null)
             {
                 StopTracking();
                 return;
             }
 
-            positions.Add(atp);
+            positions.Add(tp);
 
             if (!bMatched)
                 StopTracking();
@@ -1457,11 +1457,11 @@ namespace Kinovea.ScreenManager
             if (currentImage == null || positions.Count < 1 || drawPointIndex < 0)
                 return;
 
-            AbstractTrackPoint current = positions[drawPointIndex];
-            AbstractTrackPoint atp = tracker.CreateTrackPointReference(current.Point, current.T, currentImage);
+            TimedPoint current = positions[drawPointIndex];
+            TimedPoint tp = tracker.CreateTrackPointReference(current.Point, current.T, currentImage);
 
-            if (atp != null)
-                positions[drawPointIndex] = atp;
+            if (tp != null)
+                positions[drawPointIndex] = tp;
 
             // Update the mini labels (attach, position of label, and text).
             for (int i = 0; i < keyframeLabels.Count; i++)
@@ -1552,7 +1552,7 @@ namespace Kinovea.ScreenManager
 
             if (positions.Count > 0)
             {
-                foreach (AbstractTrackPoint tp in positions)
+                foreach (TimedPoint tp in positions)
                 {
                     w.WriteStartElement("TrackPoint");
                     tp.WriteXml(w);
@@ -1568,7 +1568,7 @@ namespace Kinovea.ScreenManager
             MeasuredDataTimeseries mdt = new MeasuredDataTimeseries();
             mdt.Name = name;
             mdt.Times = new List<float>();
-            foreach (AbstractTrackPoint tp in positions)
+            foreach (TimedPoint tp in positions)
             {
                 float time = parentMetadata.GetNumericalTime(tp.T, TimeType.UserOrigin);
                 mdt.Times.Add(time);
@@ -1576,7 +1576,7 @@ namespace Kinovea.ScreenManager
 
             mdt.Data = new Dictionary<string, List<PointF>>();
             List<PointF> coords = new List<PointF>();
-            foreach (AbstractTrackPoint tp in positions)
+            foreach (TimedPoint tp in positions)
             {
                 PointF p = tp.Point;
                 if (PreferencesManager.PlayerPreferences.ExportSpace == ExportSpace.WorldSpace)
@@ -1717,11 +1717,11 @@ namespace Kinovea.ScreenManager
             {
                 if (xmlReader.Name == "TrackPoint")
                 {
-                    AbstractTrackPoint tp = tracker.CreateOrphanTrackPoint(PointF.Empty, 0);
+                    TimedPoint tp = new TimedPoint(0, 0, 0);
                     tp.ReadXml(xmlReader);
 
                     // Time is stored in absolute timestamps.
-                    AbstractTrackPoint adapted = tracker.CreateOrphanTrackPoint(tp.Point.Scale(scale.X, scale.Y), timestampMapper(tp.T));
+                    TimedPoint adapted = tracker.CreateOrphanTrackPoint(tp.Point.Scale(scale.X, scale.Y), timestampMapper(tp.T));
 
                     positions.Add(adapted);
                 }
@@ -1938,14 +1938,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public List<TimedPoint> GetTimedPoints()
         {
-            List<TimedPoint> ttpp = new List<TimedPoint>();
-            foreach (AbstractTrackPoint atp in positions)
-            {
-                TimedPoint tp = new TimedPoint(atp.X, atp.Y, atp.T);
-                ttpp.Add(tp);
-            }
-
-            return ttpp;
+            return positions;
         }
         #endregion
 
@@ -2052,7 +2045,7 @@ namespace Kinovea.ScreenManager
         {
             return FindClosestPoint(currentTimestamp, positions);
         }
-        private int FindClosestPoint(long currentTimestamp, List<AbstractTrackPoint> positions)
+        private int FindClosestPoint(long currentTimestamp, List<TimedPoint> positions)
         {
             // Find the closest registered timestamp
             // Parameter is given in absolute timestamp.

@@ -52,17 +52,17 @@ namespace Kinovea.ScreenManager
         /// <param name="timestamp">The current timestamp to create the TrackPoint.</param>
         /// <param name="currentPoint">The resulting point that should be added to the list.</param>
         /// <returns>true if the tracking is reliable, false if the point couldn't be found.</returns>
-        public abstract bool TrackStep(List<AbstractTrackPoint> previousPoints, long time, Bitmap bmpImage, OpenCvSharp.Mat cvImage, out AbstractTrackPoint currentPoint);
+        public abstract bool TrackStep(List<TimedPoint> previousPoints, long time, Bitmap bmpImage, OpenCvSharp.Mat cvImage, out TimedPoint currentPoint);
         
         /// <summary>
         /// Creates a track point from auto-tracking.
         /// </summary>
-        public abstract AbstractTrackPoint CreateTrackPoint(PointF p, long time, float similarity, Bitmap image, List<AbstractTrackPoint> previousPoints);
+        public abstract TimedPoint CreateTrackPoint(PointF p, long time, float similarity, Bitmap image, List<TimedPoint> previousPoints);
 
         /// <summary>
         /// Creates a Track point from a user-provided location.
         /// </summary>
-        public abstract AbstractTrackPoint CreateTrackPointReference(PointF point, long time, Bitmap image);
+        public abstract TimedPoint CreateTrackPointReference(PointF point, long time, Bitmap image);
 
 
         /// <summary>
@@ -71,12 +71,12 @@ namespace Kinovea.ScreenManager
         /// Can't be used to track the next point. 
         /// Will have to be updated later with algo related info.
         /// </summary>
-        public abstract AbstractTrackPoint CreateOrphanTrackPoint(PointF point, long time);
+        public abstract TimedPoint CreateOrphanTrackPoint(PointF point, long time);
 
         /// <summary>
         /// Draw the tracker gizmo.
         /// </summary>
-        public abstract void Draw(Graphics canvas, AbstractTrackPoint point, IImageToViewportTransformer transformer, Color color, double opacityFactor, bool isConfiguring);
+        public abstract void Draw(Graphics canvas, TimedPoint point, IImageToViewportTransformer transformer, Color color, double opacityFactor, bool isConfiguring);
 
         #endregion
     }

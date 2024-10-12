@@ -104,7 +104,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Perform a tracking step.
         /// </summary>
-        public override bool TrackStep(List<AbstractTrackPoint> timeline, long time, Bitmap currentImage, Mat cvImage, out AbstractTrackPoint currentPoint)
+        public override bool TrackStep(List<TimedPoint> timeline, long time, Bitmap currentImage, Mat cvImage, out TimedPoint currentPoint)
         {
             //---------------------------------------------------------------------
             // The input informations we have at hand are:
@@ -112,7 +112,7 @@ namespace Kinovea.ScreenManager
             // - The coordinates of all the previous points tracked.
             // - Previous tracking scores, stored in the TrackPoints tracked so far.
             //---------------------------------------------------------------------
-            TrackPointBlock lastTrackPoint = timeline.Last() as TrackPointBlock;
+            TimedPoint lastTrackPoint = timeline.Last();
             TrackingTemplate lastTemplate = trackingTemplates.Last();
 
             log.DebugFormat("Track step. last track point at {0}, last template at {1}.", lastTrackPoint.T, lastTemplate.Time);
@@ -162,7 +162,7 @@ namespace Kinovea.ScreenManager
         /// Creates a track point from auto-tracking.
         /// Performs the template update algorithm.
         /// </summary>
-        public override AbstractTrackPoint CreateTrackPoint(PointF point, long time, float similarity, Bitmap currentImage, List<AbstractTrackPoint> previousPoints)
+        public override TimedPoint CreateTrackPoint(PointF point, long time, float similarity, Bitmap currentImage, List<TimedPoint> previousPoints)
         {
             // WIP Refactoring in progress.
             // Currently we store the template inside each point in the timeline.
@@ -192,7 +192,7 @@ namespace Kinovea.ScreenManager
             {
                 // The match is either very good or very bad: do not update.
                 // FIXME: we don't need to save the template inside each point, just keep a global one.
-                TrackPointBlock prevBlock = previousPoints.Last() as TrackPointBlock;
+                TimedPoint prevBlock = previousPoints.Last();
                 TrackingTemplate prevTemplate = trackingTemplates.Last();
 
                 if(prevBlock != null && prevTemplate.Template != null)
@@ -224,20 +224,16 @@ namespace Kinovea.ScreenManager
                 trackingTemplate = new TrackingTemplate(time, point, (float)similarity, bmpTemplate, source);
             }
 
-            // Store the full precision value in the point.
-            TrackPointBlock tpb = new TrackPointBlock(point.X, point.Y, time);
-
-            // Refactoring: store the templates in the tracker, not in the timeline of points.
             trackingTemplates.Add(trackingTemplate);
-
-            return tpb;
+            
+            return new TimedPoint(point.X, point.Y, time);
         }
 
         /// <summary>
         /// Creates a Track point from a user-provided location.
         /// Always updates the template.
         /// </summary>
-        public override AbstractTrackPoint CreateTrackPointReference(PointF point, long time, Bitmap currentImage)
+        public override TimedPoint CreateTrackPointReference(PointF point, long time, Bitmap currentImage)
         {
             log.DebugFormat("Create track point reference.");
 
@@ -279,19 +275,18 @@ namespace Kinovea.ScreenManager
 
             // Return a new track point.
             // TODO: this should return a TimedPoint or some other algorithm agnostic structure.
-            TrackPointBlock tpb = new TrackPointBlock(point.X, point.Y, time);
-            return tpb;
+            return new TimedPoint(point.X, point.Y, time);
         }
 
         /// <summary>
         /// Create a track point at the specified location without any template update logic.
         /// This is used only in the case of importing existing track data from xml.
         /// </summary>
-        public override AbstractTrackPoint CreateOrphanTrackPoint(PointF point, long time)
+        public override TimedPoint CreateOrphanTrackPoint(PointF point, long time)
         {
             // The TrackPoint can't be used as-is to track the next one because it's missing the algo internal data (block).
             // We'll need to reconstruct it when we have the corresponding image.
-            return new TrackPointBlock(point.X, point.Y, time);
+            return new TimedPoint(point.X, point.Y, time);
         }
         #endregion
 
@@ -299,7 +294,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Draw the tracker gizmo for the main viewport during open tracking or for the configuration mini viewport.
         /// </summary>
-        public override void Draw(Graphics canvas, AbstractTrackPoint point, IImageToViewportTransformer transformer, Color color, double opacityFactor, bool isConfiguring)
+        public override void Draw(Graphics canvas, TimedPoint point, IImageToViewportTransformer transformer, Color color, double opacityFactor, bool isConfiguring)
         {
             // The template matching algorithm works aligned to the pixel grid so we do all the math
             // in the original image space and convert at the end.
@@ -370,7 +365,7 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        private void DrawDebugInfo(Graphics canvas, AbstractTrackPoint point, RectangleF search, Color color)
+        private void DrawDebugInfo(Graphics canvas, TimedPoint point, RectangleF search, Color color)
         {
             //TrackPointBlock tpb = point as TrackPointBlock;
 

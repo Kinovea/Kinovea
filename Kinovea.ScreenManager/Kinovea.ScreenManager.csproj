@@ -824,10 +824,8 @@
     <Compile Include="Tracking\Trackability\TrackingContext.cs" />
     <Compile Include="Tracking\Tracking\TemplateMatchResult.cs" />
     <Compile Include="Tracking\Tracking\AbstractTracker.cs" />
-    <Compile Include="Tracking\Tracking\AbstractTrackPoint.cs" />
     <Compile Include="Tracking\Tracking\DrawingTrack.cs" />
     <Compile Include="Tracking\Tracking\TrackerTemplateMatching.cs" />
-    <Compile Include="Tracking\Tracking\TrackPointBlock.cs" />
     <Compile Include="UserInterface\DropDownMenuContainer.cs">
       <SubType>Form</SubType>
     </Compile>

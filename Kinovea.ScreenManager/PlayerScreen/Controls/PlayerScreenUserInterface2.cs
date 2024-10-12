@@ -5190,7 +5190,7 @@ namespace Kinovea.ScreenManager
             DoInvalidate();
             UpdateFramesMarkers();
         }
-        private void DisplayClosestFrame(Point p, List<AbstractTrackPoint> trackPoints, float timeScale, bool use3D)
+        private void DisplayClosestFrame(Point p, List<TimedPoint> trackPoints, float timeScale, bool use3D)
         {
             //--------------------------------------------------------------------------
             // This is where the interactivity of the trajectory is done.
