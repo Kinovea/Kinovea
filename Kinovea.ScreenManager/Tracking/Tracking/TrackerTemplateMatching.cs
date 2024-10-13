@@ -298,6 +298,8 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public override void Trim(long time)
         {
+            if (trackingTemplates.Count == 0)
+                return;
 
             int startIndex = trackingTemplates.Count - 1;
             int count = 0;
