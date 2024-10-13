@@ -62,16 +62,17 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Creates a Track point from a user-provided location.
         /// </summary>
-        public abstract TimedPoint CreateTrackPointReference(PointF point, long time, Bitmap image);
-
+        public abstract void CreateReferenceTrackPoint(PointF point, long time, Bitmap image);
 
         /// <summary>
-        /// Creates a bare bone TrackPoint.
-        /// This is used only in the case of importing from xml.
-        /// Can't be used to track the next point. 
-        /// Will have to be updated later with algo related info.
+        /// Trim internal data related to points after the passed time.
         /// </summary>
-        public abstract TimedPoint CreateOrphanTrackPoint(PointF point, long time);
+        public abstract void Trim(long time);
+
+        /// <summary>
+        /// Clear any internal state data.
+        /// </summary>
+        public abstract void Clear();
 
         /// <summary>
         /// Draw the tracker gizmo.

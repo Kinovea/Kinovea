@@ -1393,7 +1393,14 @@ namespace Kinovea.ScreenManager
             // Delete end of track.
             drawPointIndex = FindClosestPoint(timestamp);
             if (drawPointIndex < positions.Count - 1)
+            {
                 positions.RemoveRange(drawPointIndex + 1, positions.Count - drawPointIndex - 1);
+
+                // Synchronize internal tracker state.
+                // This is not captured by the memento so if we redo it will be like opening
+                // a KVA file with the tracker missing its internal data.
+                tracker.Trim(positions[drawPointIndex].T);
+            }
 
             endTimeStamp = positions[positions.Count - 1].T;
 
@@ -1411,25 +1418,35 @@ namespace Kinovea.ScreenManager
 
             // Retrieve the last tracked point before the passed frame.
             TimedPoint lastTrackedPoint = positions.Last();
-            if (lastTrackedPoint == null || current.Timestamp <= lastTrackedPoint.T)
-                return;
 
+            // This should never happen, the trajectory always has at least one point from 
+            // when it's created.
+            if (lastTrackedPoint == null)
+            {
+                log.Error("Tracking impossible: trajectory doesn't have a first point.");
+                return;
+            }
+
+            // Bail out if we are on a frame that was already tracked.
+            // The track is dense and can only be extended by the end.
+            if (current.Timestamp <= lastTrackedPoint.T)
+            {
+                return;
+            }
+
+            // Check if the tracker is ready to track.
             if (!tracker.IsReady())
             {
-                // Recreate a point from the last position if we don't have it yet.
-                var trackPoint = tracker.CreateTrackPointReference(lastTrackedPoint.Point, lastTrackedPoint.T, current.Image);
-
-                // This happens when we are re-opening and continuing a track that was imported from KVA
-                // (The KVA doesn't store the algorithm specific part like the template, only the result).
-                // We must rebuild the point and extract the template before proceeding.
-                // We don't have the image to create the template for the last tracked point,
-                // we create it out of the current image.
-                // The user re-opened the track here so we restart as if this point had been manually placed.
-                positions[positions.Count - 1] = trackPoint;
+                // Recreate algorithm-specific data from the last position if we don't have it yet.
+                // The user re-opened the track so the last point is considered reference now.
+                // FIXME: we are associating a template extracted from the current image 
+                // at the location of the match in the previous frame so the template won't be 
+                // correctly aligned with the object of interest.
+                tracker.CreateReferenceTrackPoint(lastTrackedPoint.Point, lastTrackedPoint.T, current.Image);
             }
 
             TimedPoint tp = null;
-            bool bMatched = tracker.TrackStep(positions, current.Timestamp, current.Image, cvImage, out tp);
+            bool matched = tracker.TrackStep(positions, current.Timestamp, current.Image, cvImage, out tp);
 
             if (tp == null)
             {
@@ -1439,8 +1456,12 @@ namespace Kinovea.ScreenManager
 
             positions.Add(tp);
 
-            if (!bMatched)
-                StopTracking();
+            // Do not stop the tracking on matching failure.
+            // The tracker should have kept the position the same, we'll just hope to 
+            // recover the tracking at some later time.
+            // In the meantime we'll keep trying to match on the reference.
+            //if (!matched)
+            //    StopTracking();
 
             // Adjust internal data.
             endTimeStamp = positions.Last().T;
@@ -1457,11 +1478,9 @@ namespace Kinovea.ScreenManager
             if (currentImage == null || positions.Count < 1 || drawPointIndex < 0)
                 return;
 
+            // Update internal tracker state.
             TimedPoint current = positions[drawPointIndex];
-            TimedPoint tp = tracker.CreateTrackPointReference(current.Point, current.T, currentImage);
-
-            if (tp != null)
-                positions[drawPointIndex] = tp;
+            tracker.CreateReferenceTrackPoint(current.Point, current.T, currentImage);
 
             // Update the mini labels (attach, position of label, and text).
             for (int i = 0; i < keyframeLabels.Count; i++)
@@ -1711,6 +1730,7 @@ namespace Kinovea.ScreenManager
         public void ParseTrackPointList(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {
             positions.Clear();
+            tracker.Clear();
             xmlReader.ReadStartElement();
 
             while (xmlReader.NodeType == XmlNodeType.Element)
@@ -1721,9 +1741,9 @@ namespace Kinovea.ScreenManager
                     tp.ReadXml(xmlReader);
 
                     // Time is stored in absolute timestamps.
-                    TimedPoint adapted = tracker.CreateOrphanTrackPoint(tp.Point.Scale(scale.X, scale.Y), timestampMapper(tp.T));
-
-                    positions.Add(adapted);
+                    PointF point = tp.Point.Scale(scale.X, scale.Y);
+                    long time = timestampMapper(tp.T);
+                    positions.Add(new TimedPoint(point.X, point.Y, time));
                 }
                 else
                 {
@@ -1811,6 +1831,7 @@ namespace Kinovea.ScreenManager
 
         public void Clear()
         {
+            tracker.Clear();
             positions.Clear();
             keyframeLabels.Clear();
         }
@@ -1929,6 +1950,9 @@ namespace Kinovea.ScreenManager
 
         public PointF GetPosition(long timestamp)
         {
+            if (positions.Count == 0)
+                return PointF.Empty;
+
             int index = FindClosestPoint(timestamp);
             return positions[index].Point;
         }

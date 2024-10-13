@@ -1082,6 +1082,7 @@ namespace Kinovea.ScreenManager
             BeforeDrawingDeletion(drawing);
 
             manager.RemoveDrawing(drawingId);
+
             DeselectAll();
 
             DrawingDeleted?.Invoke(this, new EventArgs<Guid>(drawingId));
@@ -1630,6 +1631,9 @@ namespace Kinovea.ScreenManager
 
             if (drawing is DrawingDistortionGrid)
                 ((DrawingDistortionGrid)drawing).LensCalibrationAsked -= LensCalibrationAsked;
+
+            if (drawing is DrawingTrack)
+                ((DrawingTrack)drawing).Clear();
         }
 
         public void BeforeKVAImport()
