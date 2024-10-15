@@ -64,6 +64,7 @@ namespace Kinovea.Camera.DirectShow
         private Regex idsPattern = new Regex(@"^UI\d{3,4}");
         private Regex baslerPattern = new Regex(@"^Basler GenICam");
         private Regex dahengPattern = new Regex(@"^Daheng Imaging");
+        private Regex idsPeakPattern = new Regex(@"^peak");
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -330,6 +331,14 @@ namespace Kinovea.Camera.DirectShow
             // IDS uEye.
             Match matchIDS = idsPattern.Match(name);
             if (matchIDS.Success)
+            {
+                blacklist.Add(name);
+                return true;
+            }
+
+            // IDS peak.
+            Match matchIDSPeak = idsPeakPattern.Match(name);
+            if (matchIDSPeak.Success)
             {
                 blacklist.Add(name);
                 return true;
