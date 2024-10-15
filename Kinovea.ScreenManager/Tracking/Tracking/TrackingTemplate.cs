@@ -71,7 +71,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Whether the point was placed manually or automatically tracked.
         /// </summary>
-        public PositionningSource PositionningSource
+        public TrackingSource PositionningSource
         {
             get { return positionningSource; }
         }
@@ -97,9 +97,9 @@ namespace Kinovea.ScreenManager
         private PointF location;
         private float score;
         private Bitmap template;
-        private PositionningSource positionningSource;
+        private TrackingSource positionningSource;
                 
-        public TrackingTemplate(long time, PointF location, float score, Bitmap template, PositionningSource positionningSource)
+        public TrackingTemplate(long time, PointF location, float score, Bitmap template, TrackingSource positionningSource)
         {
             this.time = time;
             this.location = location;
@@ -112,7 +112,7 @@ namespace Kinovea.ScreenManager
         /// Create a track frame from scratch. This is used by non-KVA importers.
         /// FIXME: Refactoring in progress: importers should directly create timed points.
         /// </summary>
-        public TrackingTemplate(long time, PointF location, PositionningSource positionningSource)
+        public TrackingTemplate(long time, PointF location, TrackingSource positionningSource)
         {
             this.time = time;
             this.location = location;
@@ -129,14 +129,14 @@ namespace Kinovea.ScreenManager
             bool isEmpty = r.IsEmptyElement;
 
             long time = 0;
-            PositionningSource source = PositionningSource.Manual;
+            TrackingSource source = TrackingSource.Manual;
             PointF location = PointF.Empty;
 
             if (r.MoveToAttribute("time"))
                 time = timestampMapper(r.ReadContentAsLong());
 
             if (r.MoveToAttribute("source"))
-                source = (PositionningSource)Enum.Parse(typeof(PositionningSource), r.ReadContentAsString());
+                source = (TrackingSource)Enum.Parse(typeof(TrackingSource), r.ReadContentAsString());
 
             if (r.MoveToAttribute("location"))
             {

@@ -87,7 +87,6 @@ namespace Kinovea.ScreenManager
             track.MemorizeState();
             track.StyleElements.Memorize();
 
-            InitMarkerCombo();
             InitTrackParameters();
             SetupStyleControls();
             SetCurrentOptions();
@@ -100,12 +99,6 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Init
-        private void InitMarkerCombo()
-        {
-            cmbMarker.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_MarkerCross);
-            cmbMarker.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_MarkerCircle);
-            cmbMarker.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_MarkerTarget);
-        }
         private void InitTrackParameters()
         {
             tbBlockWidth.Text = string.Format("{0}", track.TrackingParameters.BlockWindow.Width);
@@ -157,17 +150,12 @@ namespace Kinovea.ScreenManager
         private void SetCurrentOptions()
         {
             tbLabel.Text = track.Name;
-            cmbMarker.SelectedIndex = (int)track.Marker;
         }
         private void InitCulture()
         {
             this.Text = "   " + ScreenManagerLang.dlgConfigureTrajectory_Title;
 
             grpIdentification.Text = ScreenManagerLang.dlgConfigureDrawing_Name;
-
-            grpConfig.Text = ScreenManagerLang.Generic_Configuration;
-            lblMarker.Text = ScreenManagerLang.dlgConfigureTrajectory_LabelMarker;
-            
             grpAppearance.Text = ScreenManagerLang.Generic_Appearance;
 
             grpTracking.Text = ScreenManagerLang.dlgConfigureTrajectory_Tracking;
@@ -216,9 +204,6 @@ namespace Kinovea.ScreenManager
         }
         private void CmbMarker_SelectedIndexChanged(object sender, EventArgs e)
         {
-            track.Marker = (TrackMarker)cmbMarker.SelectedIndex;
-            if (invalidate != null) 
-                invalidate();
         }
 
         private void element_ValueChanged(object sender, EventArgs e)

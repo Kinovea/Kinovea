@@ -127,11 +127,6 @@ namespace Kinovea.ScreenManager
                 AfterTrackingStatusChanged();
             }
         }
-        public TrackMarker Marker
-        {
-            get { return trackMarker; }
-            set { trackMarker = value; }
-        }
         public TrackingParameters TrackingParameters
         {
             get { return tracker.Parameters; }
@@ -258,7 +253,6 @@ namespace Kinovea.ScreenManager
         private int hitPointIndex;
 
         // Decoration
-        private TrackMarker trackMarker = TrackMarker.Cross;
         private StyleElements styleElements = new StyleElements();
         private StyleData styleData = new StyleData();
 
@@ -309,6 +303,20 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuShowRotationCircle = new ToolStripMenuItem();
         #endregion
 
+        #region Color cycler
+        // Precomputed list of unique colors to draw frame references.
+        // https://stackoverflow.com/questions/309149/generate-distinctly-different-rgb-colors-in-graphs
+        static string[] colorCycle = new string[] {
+            "00FF00", "0000FF", "FF0000", "01FFFE", "FFA6FE", "FFDB66", "006401", "010067", "95003A", "007DB5", "FF00F6",
+            "FFEEE8", "774D00", "90FB92", "0076FF", "D5FF00", "FF937E", "6A826C", "FF029D", "FE8900", "7A4782", "7E2DD2",
+            "85A900", "FF0056", "A42400", "00AE7E", "683D3B", "BDC6FF", "263400", "BDD393", "00B917", "9E008E", "001544",
+            "C28C9F", "FF74A3", "01D0FF", "004754", "E56FFE", "788231", "0E4CA1", "91D0CB", "BE9970", "968AE8", "BB8800",
+            "43002C", "DEFF74", "00FFC6", "FFE502", "620E00", "008F9C", "98FF52", "7544B1", "B500FF", "00FF78", "FF6E41",
+            "005F39", "6B6882", "5FAD4E", "A75740", "A5FFD2", "FFB167", "009BFF", "E85EBE",
+        };
+        static int colorCycleIndex = 0;
+        #endregion
+
         private string memoLabel;
         private Stopwatch stopwatch = new Stopwatch();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -350,7 +358,9 @@ namespace Kinovea.ScreenManager
 
         private void SetupStyle()
         {
-            Color color = TrackColorCycler.Next();
+            colorCycleIndex++;
+            string str = "FF" + colorCycle[colorCycleIndex % colorCycle.Length];
+            Color color = Color.FromArgb(Convert.ToInt32(str, 16));
             styleElements = new StyleElements();
             styleElements.Elements.Add("color", new StyleElementColor(color));
             styleElements.Elements.Add("track shape", new StyleElementTrackShape(TrackShape.Solid));
@@ -782,29 +792,10 @@ namespace Kinovea.ScreenManager
             int radius = defaultCrossRadius;
             Point location = transformer.Transform(positions[drawPointIndex].Point);
 
-            if (isConfiguring || trackStatus == TrackStatus.Edit || trackMarker == TrackMarker.Cross)
+            using (Pen p = new Pen(Color.FromArgb((int)(fadingFactor * 255), styleData.Color)))
             {
-                using (Pen p = new Pen(Color.FromArgb((int)(fadingFactor * 255), styleData.Color)))
-                {
-                    canvas.DrawLine(p, location.X, location.Y - radius, location.X, location.Y + radius);
-                    canvas.DrawLine(p, location.X - radius, location.Y, location.X + radius, location.Y);
-                }
-            }
-            else if (trackMarker == TrackMarker.Circle)
-            {
-                using (Pen p = new Pen(Color.FromArgb((int)(fadingFactor * 255), styleData.Color)))
-                {
-                    canvas.DrawEllipse(p, location.Box(radius));
-                }
-            }
-            else if (trackMarker == TrackMarker.Target)
-            {
-                int diameter = radius * 2;
-                canvas.FillPie(Brushes.Black, location.X - radius, location.Y - radius, diameter, diameter, 0, 90);
-                canvas.FillPie(Brushes.White, location.X - radius, location.Y - radius, diameter, diameter, 90, 90);
-                canvas.FillPie(Brushes.Black, location.X - radius, location.Y - radius, diameter, diameter, 180, 90);
-                canvas.FillPie(Brushes.White, location.X - radius, location.Y - radius, diameter, diameter, 270, 90);
-                canvas.DrawEllipse(Pens.White, location.Box(radius + 2));
+                canvas.DrawLine(p, location.X, location.Y - radius, location.X, location.Y + radius);
+                canvas.DrawLine(p, location.X - radius, location.Y, location.X + radius, location.Y);
             }
         }
         private void DrawTrackerHelp(Graphics canvas, IImageToViewportTransformer transformer, Color color, double opacity)
@@ -1515,10 +1506,6 @@ namespace Kinovea.ScreenManager
                 string xmlMeasureLabelType = enumConverter.ConvertToString(measureLabelType);
                 w.WriteElementString("ExtraData", xmlMeasureLabelType);
 
-                enumConverter = TypeDescriptor.GetConverter(typeof(TrackMarker));
-                string xmlTrackMarker = enumConverter.ConvertToString(trackMarker);
-                w.WriteElementString("Marker", xmlTrackMarker);
-
                 w.WriteStartElement("TrackerParameters");
                 tracker.Parameters.WriteXml(w);
                 w.WriteEndElement();
@@ -1651,12 +1638,6 @@ namespace Kinovea.ScreenManager
                     case "ExtraData":
                         {
                             measureLabelType = XmlHelper.ParseEnum<MeasureLabelType>(xmlReader.ReadElementContentAsString(), MeasureLabelType.None);
-                            break;
-                        }
-                    case "Marker":
-                        {
-                            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(TrackMarker));
-                            trackMarker = (TrackMarker)enumConverter.ConvertFromString(xmlReader.ReadElementContentAsString());
                             break;
                         }
                     case "TrackerParameters":

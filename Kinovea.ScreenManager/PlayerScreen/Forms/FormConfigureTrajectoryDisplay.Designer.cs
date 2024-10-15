@@ -32,9 +32,6 @@ namespace Kinovea.ScreenManager
       this.btnCancel = new System.Windows.Forms.Button();
       this.grpAppearance = new System.Windows.Forms.GroupBox();
       this.tbLabel = new System.Windows.Forms.TextBox();
-      this.grpConfig = new System.Windows.Forms.GroupBox();
-      this.cmbMarker = new System.Windows.Forms.ComboBox();
-      this.lblMarker = new System.Windows.Forms.Label();
       this.grpIdentification = new System.Windows.Forms.GroupBox();
       this.grpTracking = new System.Windows.Forms.GroupBox();
       this.label2 = new System.Windows.Forms.Label();
@@ -48,7 +45,6 @@ namespace Kinovea.ScreenManager
       this.tbBlockWidth = new System.Windows.Forms.TextBox();
       this.lblObjectWindow = new System.Windows.Forms.Label();
       this.pnlViewport = new System.Windows.Forms.Panel();
-      this.grpConfig.SuspendLayout();
       this.grpIdentification.SuspendLayout();
       this.grpTracking.SuspendLayout();
       this.SuspendLayout();
@@ -79,9 +75,9 @@ namespace Kinovea.ScreenManager
       // 
       // grpAppearance
       // 
-      this.grpAppearance.Location = new System.Drawing.Point(12, 142);
+      this.grpAppearance.Location = new System.Drawing.Point(12, 74);
       this.grpAppearance.Name = "grpAppearance";
-      this.grpAppearance.Size = new System.Drawing.Size(297, 218);
+      this.grpAppearance.Size = new System.Drawing.Size(297, 286);
       this.grpAppearance.TabIndex = 29;
       this.grpAppearance.TabStop = false;
       this.grpAppearance.Text = "Generic_Appearance";
@@ -95,37 +91,6 @@ namespace Kinovea.ScreenManager
       this.tbLabel.Size = new System.Drawing.Size(260, 20);
       this.tbLabel.TabIndex = 30;
       this.tbLabel.TextChanged += new System.EventHandler(this.tbLabel_TextChanged);
-      // 
-      // grpConfig
-      // 
-      this.grpConfig.Controls.Add(this.cmbMarker);
-      this.grpConfig.Controls.Add(this.lblMarker);
-      this.grpConfig.Location = new System.Drawing.Point(12, 74);
-      this.grpConfig.Name = "grpConfig";
-      this.grpConfig.Size = new System.Drawing.Size(297, 62);
-      this.grpConfig.TabIndex = 51;
-      this.grpConfig.TabStop = false;
-      this.grpConfig.Text = "Generic_Configuration";
-      // 
-      // cmbMarker
-      // 
-      this.cmbMarker.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.cmbMarker.FormattingEnabled = true;
-      this.cmbMarker.Location = new System.Drawing.Point(146, 24);
-      this.cmbMarker.Name = "cmbMarker";
-      this.cmbMarker.Size = new System.Drawing.Size(138, 21);
-      this.cmbMarker.TabIndex = 51;
-      this.cmbMarker.SelectedIndexChanged += new System.EventHandler(this.CmbMarker_SelectedIndexChanged);
-      // 
-      // lblMarker
-      // 
-      this.lblMarker.AutoSize = true;
-      this.lblMarker.Location = new System.Drawing.Point(21, 29);
-      this.lblMarker.Name = "lblMarker";
-      this.lblMarker.Size = new System.Drawing.Size(46, 13);
-      this.lblMarker.TabIndex = 50;
-      this.lblMarker.Text = "Marker :";
       // 
       // grpIdentification
       // 
@@ -262,7 +227,6 @@ namespace Kinovea.ScreenManager
       this.Controls.Add(this.pnlViewport);
       this.Controls.Add(this.grpTracking);
       this.Controls.Add(this.grpIdentification);
-      this.Controls.Add(this.grpConfig);
       this.Controls.Add(this.grpAppearance);
       this.Controls.Add(this.btnOK);
       this.Controls.Add(this.btnCancel);
@@ -276,8 +240,6 @@ namespace Kinovea.ScreenManager
       this.Text = "   Configure trajectory tool";
       this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form_FormClosing);
       this.Load += new System.EventHandler(this.formConfigureTrajectoryDisplay_Load);
-      this.grpConfig.ResumeLayout(false);
-      this.grpConfig.PerformLayout();
       this.grpIdentification.ResumeLayout(false);
       this.grpIdentification.PerformLayout();
       this.grpTracking.ResumeLayout(false);
@@ -291,10 +253,7 @@ namespace Kinovea.ScreenManager
 
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.GroupBox grpConfig;
         private System.Windows.Forms.TextBox tbLabel;
-        private System.Windows.Forms.ComboBox cmbMarker;
-        private System.Windows.Forms.Label lblMarker;
         private System.Windows.Forms.GroupBox grpIdentification;
         private System.Windows.Forms.GroupBox grpTracking;
         private System.Windows.Forms.TextBox tbSearchHeight;

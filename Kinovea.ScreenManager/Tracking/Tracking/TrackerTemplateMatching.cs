@@ -217,7 +217,7 @@ namespace Kinovea.ScreenManager
                     // In theory we shouldn't need to copy the template here.
                     // Keep just the reference ones in a timeline structure.
                     bmpTemplate = BitmapHelper.Copy(prevTemplate.Template);
-                    PositionningSource source = PositionningSource.TemplateMatching;
+                    TrackingSource source = TrackingSource.Auto;
                     trackingTemplate = new TrackingTemplate(time, point, similarity, bmpTemplate, source);
 
                     updateTemplate = false;
@@ -239,7 +239,7 @@ namespace Kinovea.ScreenManager
 
                 BitmapHelper.CopyROI(currentImage, bmpTemplate, new System.Drawing.Point(startX, startY));
 
-                PositionningSource source = PositionningSource.TemplateMatching;
+                TrackingSource source = TrackingSource.Auto;
                 trackingTemplate = new TrackingTemplate(time, point, (float)similarity, bmpTemplate, source);
             }
 
@@ -270,7 +270,7 @@ namespace Kinovea.ScreenManager
             BitmapHelper.CopyROI(currentImage, bmpTemplate, new System.Drawing.Point(startX, startY));
 
             // Store the template to tracker state.
-            PositionningSource source = PositionningSource.Manual;
+            TrackingSource source = TrackingSource.Manual;
             trackingTemplate = new TrackingTemplate(time, point, 1.0f, bmpTemplate, source);
             
             // This is not necessarily the last entry in the timeline.
@@ -384,7 +384,7 @@ namespace Kinovea.ScreenManager
             long offset = point.T - tt.Time;
             if (offset == 0)
             {
-                string text = string.Format("{0:0.000} ({1})", tt.Score, tt.PositionningSource == PositionningSource.Manual ? "M" : "A");
+                string text = string.Format("{0:0.000} ({1})", tt.Score, tt.PositionningSource == TrackingSource.Manual ? "M" : "A");
                 using (Font f = new Font("Consolas", 10, FontStyle.Bold))
                 using (Brush b = new SolidBrush(color))
                 {

@@ -22,21 +22,25 @@ using System;
 
 namespace Kinovea.ScreenManager
 {
-    public enum PositionningSource
+    /// <summary>
+    /// Source of tracking data (manual or auto).
+    /// </summary>
+    public enum TrackingSource
     {
         /// <summary>
-        /// The placement of the object was done by the user.
+        /// Point moved manually by the user.
         /// </summary>
         Manual,
 
         /// <summary>
-        /// The placement of the object was done by template matching tracking.
+        /// Point found by a tracking algorithm.
         /// </summary>
-        TemplateMatching,
+        Auto,
 
         /// <summary>
-        /// The template matching failed but we need the data if the tracked point is 
-        /// part of a bigger drawing that has other points that successfully matched.
+        /// The tracking algorithm failed but we needed the data 
+        /// (for example if the tracked point is part of a bigger drawing 
+        /// that has other points that successfully tracked).
         /// In this case the placement reuses old data.
         /// </summary>
         ForcedClosest

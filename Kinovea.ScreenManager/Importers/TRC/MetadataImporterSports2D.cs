@@ -108,7 +108,7 @@ namespace Kinovea.ScreenManager
                 foreach (var marker in markers)
                 {
                     PointF value = posture.GetValue(marker);
-                    TrackingTemplate frame = new TrackingTemplate(timestamp, value, PositionningSource.TemplateMatching);
+                    TrackingTemplate frame = new TrackingTemplate(timestamp, value, TrackingSource.Auto);
                     timelines[marker].Insert(timestamp, frame);
                 }
             }
