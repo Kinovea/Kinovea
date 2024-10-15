@@ -57,7 +57,7 @@ namespace Kinovea.ScreenManager
         // This list is only updated when tracking is active.
         // When the timeline is reconstructed from KVA it will contain entries for which 
         // we don't have data. The necessary data for tracking is rebuilt on the fly.
-        private List<TrackingTemplate> trackingTemplates = new List<TrackingTemplate>();
+        private Timeline<TrackingTemplate> trackingTemplates = new Timeline<TrackingTemplate>();
 
         // Mask used during template matching. Only changes when the template size changes.
         private Bitmap mask;
@@ -243,7 +243,7 @@ namespace Kinovea.ScreenManager
                 trackingTemplate = new TrackingTemplate(time, point, (float)similarity, bmpTemplate, source);
             }
 
-            trackingTemplates.Add(trackingTemplate);
+            trackingTemplates.Insert(time, trackingTemplate);
             
             return new TimedPoint(point.X, point.Y, time);
         }
@@ -275,21 +275,7 @@ namespace Kinovea.ScreenManager
             
             // This is not necessarily the last entry in the timeline.
             // We might be on an existing time that the user is manually moving.
-            bool found = false;
-            for (int i = 0; i < trackingTemplates.Count; i++)
-            {
-                if (trackingTemplates[i].Time == time)
-                {
-                    trackingTemplates[i] = trackingTemplate;
-                    found = true;
-                    break;
-                }
-            }
-         
-            if (!found)
-            {
-                trackingTemplates.Add(trackingTemplate);
-            }
+            trackingTemplates.Insert(time, trackingTemplate);
         }
 
 
@@ -301,19 +287,7 @@ namespace Kinovea.ScreenManager
             if (trackingTemplates.Count == 0)
                 return;
 
-            int startIndex = trackingTemplates.Count - 1;
-            int count = 0;
-            for (int i = trackingTemplates.Count - 1; i >= 0; i--)
-            {
-                if (trackingTemplates[i].Time > time)
-                {
-                    trackingTemplates[i].Dispose();
-                    startIndex = i;
-                    count++;
-                }
-            }
-
-            trackingTemplates.RemoveRange(startIndex, count);
+            trackingTemplates.Trim(time);
         }
 
         /// <summary>
@@ -321,12 +295,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public override void Clear()
         {
-            for (int i = trackingTemplates.Count - 1; i >= 0; i--)
-            {
-                trackingTemplates[i].Dispose();
-            }
-
-            trackingTemplates.Clear();
+            trackingTemplates.Clear(tt => tt.Dispose());
         }
 
         #endregion
@@ -408,17 +377,20 @@ namespace Kinovea.ScreenManager
 
         private void DrawDebugInfo(Graphics canvas, TimedPoint point, RectangleF search, Color color)
         {
-            //TrackPointBlock tpb = point as TrackPointBlock;
+            if (trackingTemplates.Count == 0)
+                return;
 
-            //if (tpb == null)
-            //    return;
-
-            //Font f = new Font("Consolas", 10, FontStyle.Bold);
-            //string text = string.Format("{0:0.000} ({1})", tpb.Similarity, tpb.TemplateAge);
-            //using (Brush b = new SolidBrush(color))
-            //    canvas.DrawString(text, f, b, search.Location.Translate(0, -25));
-
-            //f.Dispose();
+            var tt = trackingTemplates.ClosestFrom(point.T);
+            long offset = point.T - tt.Time;
+            if (offset == 0)
+            {
+                string text = string.Format("{0:0.000} ({1})", tt.Score, tt.PositionningSource == PositionningSource.Manual ? "M" : "A");
+                using (Font f = new Font("Consolas", 10, FontStyle.Bold))
+                using (Brush b = new SolidBrush(color))
+                {
+                    canvas.DrawString(text, f, b, search.Location.Translate(0, -25));
+                }
+            }
         }
         #endregion
 

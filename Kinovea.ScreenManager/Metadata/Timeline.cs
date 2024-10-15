@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace Kinovea.ScreenManager
 {
@@ -40,7 +41,7 @@ namespace Kinovea.ScreenManager
             if(frames.ContainsKey(time))
                 frames[time] = value;
             else
-                frames.Add(time, value);    
+                frames.Add(time, value);
         }
         
         /// <summary>
@@ -75,6 +76,17 @@ namespace Kinovea.ScreenManager
         }
         
         /// <summary>
+        /// Returns the last element of the timeline.
+        /// </summary>
+        public T Last()
+        {
+            if (frames.Count == 0)
+                throw new InvalidOperationException();
+            
+            return frames.Values.Last();
+        }
+
+        /// <summary>
         /// Return true if there is at least one entry in the timeline.
         /// </summary>
         public bool HasData()
@@ -93,6 +105,28 @@ namespace Kinovea.ScreenManager
                 disposer(frame);
             
             frames.Clear();
+        }
+
+        /// <summary>
+        /// Remove all entries with a time strictly greater than the specified time.
+        /// Call Dispose() on the entries if they implement IDisposable.
+        /// </summary>
+        public void Trim(long time)
+        {
+            List<long> keysToRemove = new List<long>();
+            foreach (var key in frames.Keys)
+            {
+                if (key > time)
+                    keysToRemove.Add(key);
+            }
+
+            foreach (long key in keysToRemove)
+            {
+                if (frames[key] is IDisposable)
+                    ((IDisposable)frames[key]).Dispose();
+                    
+                frames.Remove(key);
+            }
         }
    
         public IEnumerable<T> Enumerate()
