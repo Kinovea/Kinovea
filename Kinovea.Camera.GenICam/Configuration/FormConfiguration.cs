@@ -28,6 +28,7 @@ using Kinovea.Services;
 using Kinovea.Camera.Languages;
 using BGAPI2;
 using System.IO;
+using System.Data.Common;
 
 namespace Kinovea.Camera.GenICam
 {
@@ -89,6 +90,9 @@ namespace Kinovea.Camera.GenICam
         private string selectedStreamFormat;
         private bool demosaicing;
         private bool compression;
+
+        // Layout
+        private int top;
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -247,13 +251,14 @@ namespace Kinovea.Camera.GenICam
 
         private void PopulateCameraControls()
         {
-            int top = lblAuto.Bottom;
-            AddCameraProperty("width", CameraLang.FormConfiguration_Properties_ImageWidth, top);
-            AddCameraProperty("height", CameraLang.FormConfiguration_Properties_ImageHeight, top + 30);
-            AddCameraProperty("framerate", CameraLang.FormConfiguration_Properties_Framerate, top + 60);
-            AddCameraProperty("exposure", CameraLang.FormConfiguration_Properties_ExposureMicro, top + 90);
-            AddCameraProperty("gain", CameraLang.FormConfiguration_Properties_Gain, top + 120);
-            AddCameraProperty("compressionQuality", "Compression quality:", top + 150);
+            top = lblAuto.Bottom;
+            AddCameraProperty("width", CameraLang.FormConfiguration_Properties_ImageWidth);
+            AddCameraProperty("height", CameraLang.FormConfiguration_Properties_ImageHeight);
+            AddCameraProperty("framerate", CameraLang.FormConfiguration_Properties_Framerate);
+            AddCameraProperty("exposure", CameraLang.FormConfiguration_Properties_ExposureMicro);
+            AddCameraProperty("gain", CameraLang.FormConfiguration_Properties_Gain);
+            AddCameraProperty("compressionQuality", "Compression quality:");
+            AddCameraProperty("clock", "Clock frequency (Hz):");
         }
 
         private void RemoveCameraControls()
@@ -267,7 +272,7 @@ namespace Kinovea.Camera.GenICam
             propertiesControls.Clear();
         }
 
-        private void AddCameraProperty(string key, string text, int top)
+        private void AddCameraProperty(string key, string text)
         {
             if (!cameraProperties.ContainsKey(key))
                 return;
@@ -301,6 +306,21 @@ namespace Kinovea.Camera.GenICam
             control.Top = top;
             gbProperties.Controls.Add(control);
             propertiesControls.Add(key, control);
+
+            top += 30;
+        }
+
+        /// <summary>
+        /// Reload a property in case the range or current value changed
+        /// automatically after another property was changed.
+        /// </summary>
+        private void ReloadProperty(string key)
+        {
+            if (!propertiesControls.ContainsKey(key) || !cameraProperties.ContainsKey(key))
+                return;
+
+            CameraPropertyManager.Reload(device, cameraProperties, key);
+            propertiesControls[key].Repopulate(cameraProperties[key]);
         }
 
         private void cpvCameraControl_ValueChanged(object sender, EventArgs e)
@@ -314,6 +334,23 @@ namespace Kinovea.Camera.GenICam
                 return;
 
             CameraPropertyManager.Write(device, cameraProperties[key]);
+
+            // Handle dependencies.
+            if (key == "width" || key == "height")
+            {
+                ReloadProperty("framerate");
+                ReloadProperty("exposure");
+            }
+            else if (key == "framerate")
+            {
+                ReloadProperty("exposure");
+            }
+            else if (key == "clock")
+            {
+                ReloadProperty("framerate");
+                ReloadProperty("exposure");
+            }
+
             UpdateResultingFramerate();
             specificChanged = true;
         }

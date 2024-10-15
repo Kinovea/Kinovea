@@ -94,6 +94,7 @@ namespace Kinovea.Camera.GenICam
                         bufferPair.Value.QueueBuffer();
                 }
 
+                log.DebugFormat("Opened device: {0} ({1})", device.DisplayName, device.Vendor);
                 opened = true;
             }
             catch (Exception e)
@@ -317,8 +318,11 @@ namespace Kinovea.Camera.GenICam
                 if (device != null)
                 {
                     if (device.IsOpen)
+                    {
                         device.Close();
-
+                        log.DebugFormat("Closed device: {0} ({1})", device.DisplayName, device.Vendor);
+                    }
+                    
                     device = null;
                 }
             }

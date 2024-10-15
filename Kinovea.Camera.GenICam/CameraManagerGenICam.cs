@@ -138,9 +138,13 @@ namespace Kinovea.Camera.GenICam
                             log.DebugFormat("Found device: {0} ({1})", device.DisplayName, device.Vendor);
                         }
                             
-                        // Only keep the device if it's from the right vendor.
+                        // We would like to only load the device through the right vendor system.
+                        // The problem is that the vendor name at the device level is not always the
+                        // same as the vendor name at the system level.
                         if (device.Vendor != interf.Parent.Vendor)
-                            continue;
+                        {
+                            log.WarnFormat("Device vendor:{0}, System vendor:{1}", device.Vendor, interf.Parent.Vendor);
+                        }
 
                         string identifier = device.SerialNumber;
                         bool cached = cache.ContainsKey(identifier);
@@ -370,6 +374,11 @@ namespace Kinovea.Camera.GenICam
         #endregion
 
         #region Private methods
+
+        /// <summary>
+        /// Search for all GenICam systems and interfaces.
+        /// This is fairly long so we only do it once on the first discover step.
+        /// </summary>
         private void RefreshInterfaces()
         {
             log.DebugFormat("Searching GenICam systems and interfaces.");

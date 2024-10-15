@@ -52,6 +52,7 @@ namespace Kinovea.Camera.GenICam
                 ReadExposure(device, properties);
                 ReadGain(device, properties);
                 ReadCompressionQuality(device, properties);
+                ReadDeviceClock(device, properties);
             }
             catch (Exception e)
             {
@@ -61,14 +62,23 @@ namespace Kinovea.Camera.GenICam
             return properties;
         }
 
+        /// <summary>
+        /// Read a single property and return it.
+        /// This is used in the context of dependent properties, to update the master list with new values.
+        /// </summary>
+        public static void Reload(Device device, Dictionary<string, CameraProperty> properties, string key)
+        {
+            if (key == "framerate")
+                ReadFramerate(device, properties);
+            else if (key == "exposure")
+                ReadExposure(device, properties);
+        }
+
         private static void ReadSize(Device device, Dictionary<string, CameraProperty> properties)
         {
             properties.Add("width", ReadIntegerProperty(device, "Width", "WidthMax"));
             properties.Add("height", ReadIntegerProperty(device, "Height", "HeightMax"));
         }
-        
-
-
         
         /// <summary>
         /// Read the exposure property and add it to the dictionary.
@@ -93,7 +103,13 @@ namespace Kinovea.Camera.GenICam
                 p.Automatic = autoValue == GetAutoTrue(autoIdentifier);
             }
 
-            properties.Add(key, p);
+            if (properties != null)
+            {
+                if (properties.ContainsKey(key))
+                    properties[key] = p;
+                else
+                    properties.Add(key, p);
+            }
         }
 
         /// <summary>
@@ -140,7 +156,7 @@ namespace Kinovea.Camera.GenICam
         }
         #endregion
 
-        #region Frame rate
+        #region Frame rate & clock
         /// <summary>
         /// Read the frame rate property and add it to the dictionary.
         /// </summary>
@@ -223,7 +239,12 @@ namespace Kinovea.Camera.GenICam
             }
 
             if (properties != null)
-                properties.Add(key, p);
+            {
+                if (properties.ContainsKey(key))
+                    properties[key] = p;
+                else
+                    properties.Add(key, p);
+            }
 
             return;
         }
@@ -343,6 +364,57 @@ namespace Kinovea.Camera.GenICam
 
             return 0;
 
+        }
+
+
+        private static void ReadDeviceClock(Device device, Dictionary<string, CameraProperty> properties)
+        {
+            // This property is found on IDS cameras.
+            if (device.Vendor != "IDS")
+                return;
+
+            string key = "clock";
+
+            CameraProperty p = new CameraProperty();
+            p.Identifier = "DeviceClockFrequency";
+            p.Supported = false;
+            p.Type = CameraPropertyType.Float;
+
+            bool present = device.RemoteNodeList.GetNodePresent(p.Identifier);
+            if (!present)
+                return;
+
+            Node node = device.RemoteNodeList[p.Identifier];
+            if (!node.IsImplemented || !node.IsAvailable || !node.IsReadable)
+                return;
+
+            p.ReadOnly = false;
+            p.Supported = true;
+
+            // FIXME: find a way to expose MHz instead of Hz.
+            double currentValue = node.Value;
+            double min = node.Min;
+            double max = node.Max;
+            double step = 1000000.0;
+            min = Math.Max(1.0, min);
+
+            p.Minimum = min.ToString(CultureInfo.InvariantCulture);
+            p.Maximum = max.ToString(CultureInfo.InvariantCulture);
+            p.CurrentValue = currentValue.ToString(CultureInfo.InvariantCulture);
+            p.Step = step.ToString(CultureInfo.InvariantCulture);
+
+            // Fix values that should be log.
+            bool highRange = (Math.Log10(max) - Math.Log10(min)) >= 4.0;
+            p.Representation = highRange ? CameraPropertyRepresentation.LogarithmicSlider : CameraPropertyRepresentation.LinearSlider;
+
+            p.AutomaticIdentifier = "";
+            p.CanBeAutomatic = false;
+            p.Automatic = false;
+
+            if (properties != null)
+                properties.Add(key, p);
+
+            return;
         }
         #endregion
 
@@ -664,6 +736,7 @@ namespace Kinovea.Camera.GenICam
                     case "Gain":
                     case "GainRaw":
                     case "ImageCompressionQuality":
+                    case "DeviceClockFrequency":
                         WriteProperty(device, property);
                         break;
                     case "Width":
