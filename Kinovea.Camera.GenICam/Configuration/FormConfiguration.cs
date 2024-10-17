@@ -258,7 +258,7 @@ namespace Kinovea.Camera.GenICam
             AddCameraProperty("exposure", CameraLang.FormConfiguration_Properties_ExposureMicro);
             AddCameraProperty("gain", CameraLang.FormConfiguration_Properties_Gain);
             AddCameraProperty("compressionQuality", "Compression quality:");
-            AddCameraProperty("clock", "Clock frequency (Hz):");
+            AddCameraProperty("clock", "Clock frequency:");
         }
 
         private void RemoveCameraControls()

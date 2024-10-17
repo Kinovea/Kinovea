@@ -465,7 +465,7 @@ namespace Kinovea.Camera.GenICam
             p.Step = step.ToString(CultureInfo.InvariantCulture);
             p.CurrentValue = currentValue.ToString(CultureInfo.InvariantCulture);
             
-            log.DebugFormat("Read GenICam property: \"{0}\"", symbol);
+            log.DebugFormat("Read GenICam property: \"{0}\" = {1}", symbol, p.CurrentValue);
 
             return p;
         }
@@ -510,7 +510,7 @@ namespace Kinovea.Camera.GenICam
             p.Representation = ConvertRepresentation(repr);
             p.CurrentValue = currentValue.ToString(CultureInfo.InvariantCulture);
 
-            log.DebugFormat("Read GenICam property: \"{0}\"", symbol);
+            log.DebugFormat("Read GenICam property: \"{0}\" = {1}", symbol, p.CurrentValue);
 
             return p;
         }
@@ -777,8 +777,30 @@ namespace Kinovea.Camera.GenICam
 
             try
             {
+                // IDS specific.
+                // It seems the DeviceClock property is used to calculate other properties.
+                // Basically it looks like the IDS system is expecting that the exposure and
+                // frame rate properties are written as if the clock was at its nominal value
+                // and when a different value is written it automatically recalculates the
+                // exposure and frame rate.
+                // Since we store the actual absolute user value, it creates a situation where 
+                // every time we connect the camera and write the custom device clock, 
+                // it changes the user value to something else, repeatedly.
+                // The Peak Cockpit doesn't see this problem because every time 
+                // the camera is connected it resets the device clock value to its 
+                // nominal value anyway, which is arguably even worse.
+                // The solution is to write the device clock first, it will change the 
+                // other properties, but then we overwrite them with the wanted user values.
+                if (device.Vendor == "IDS" && properties.ContainsKey("clock"))
+                {
+                    WriteProperty(device, properties["clock"]);
+                }
+
                 foreach (var pair in properties)
                 {
+                    if (device.Vendor == "IDS" && pair.Key == "clock")
+                        continue;
+
                     if (pair.Key == "width")
                         WriteSize(device, pair.Value, "OffsetX");
                     else if (pair.Key == "height")
@@ -895,6 +917,7 @@ namespace Kinovea.Camera.GenICam
                             long step = node.HasInc ? node.Inc : 1;
                             value = FixValue(value, min, max, step);
                             node.Value = value;
+                            log.DebugFormat("Wrote GenICam property \"{0}\"={1}", property.Identifier, value);
                             break;
                         }
                     case CameraPropertyType.Float:
@@ -904,12 +927,14 @@ namespace Kinovea.Camera.GenICam
                             double max = node.Max;
                             value = FixValue(value, min, max);
                             node.Value = value;
+                            log.DebugFormat("Wrote GenICam property \"{0}\"={1}", property.Identifier, value);
                             break;
                         }
                     case CameraPropertyType.Boolean:
                         {
                             bool value = bool.Parse(property.CurrentValue);
                             node.Value = value;
+                            log.DebugFormat("Wrote GenICam property \"{0}\"={1}", property.Identifier, value);
                             break;
                         }
                     default:
