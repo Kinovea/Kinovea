@@ -13,9 +13,9 @@ namespace Kinovea.Services
         Correlation,
 
         /// <summary>
-        /// Finds a matching circle in the search window and use the center as the point.
+        /// Finds circles in the pattern window and match reference by size.
         /// </summary>
-        RoundMarker,
+        Circle,
 
         /// <summary>
         /// Finds the central corner of a "quadrant" marker and use it as the point.

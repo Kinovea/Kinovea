@@ -56,7 +56,7 @@ namespace Kinovea.ScreenManager
         private Pen penBorder = Pens.Silver;
         public static readonly List<TrackingAlgorithm> options = new List<TrackingAlgorithm>() {
             TrackingAlgorithm.Correlation,
-            TrackingAlgorithm.RoundMarker,
+            TrackingAlgorithm.Circle,
             TrackingAlgorithm.QuadrantMarker,
         };
 
@@ -75,12 +75,14 @@ namespace Kinovea.ScreenManager
         {
             InitializeComponent();
             this.Paint += Control_Paint;
+            cbTrackingAlgorithm.DrawItem += cbTrackingAlgorithm_DrawItem;
 
             pnlViewport.Controls.Add(viewportController.View);
             viewportController.View.Dock = DockStyle.Fill;
             viewportController.View.DoubleClick += pnlViewport_DoubleClick;
             viewportController.View.MouseEnter += miniViewport_MouseEnter;
             viewportController.View.MouseLeave += miniViewport_MouseLeave;
+
 
             NudHelper.FixNudScroll(nudSearchWindowWidth);
             NudHelper.FixNudScroll(nudSearchWindowHeight);
@@ -227,14 +229,12 @@ namespace Kinovea.ScreenManager
             for (int i = 0; i < options.Count; i++)
             {
                 cbTrackingAlgorithm.Items.Add(new object());
-                //if (cbTrackingAlgorithm[i] == value)
-                //    selectedIndex = i;
+                if (track != null && i == (int)track.TrackingParameters.TrackingAlgorithm)
+                    selectedIndex = i;
             }
 
             cbTrackingAlgorithm.SelectedIndex = selectedIndex;
-            cbTrackingAlgorithm.DrawItem += new DrawItemEventHandler(cbTrackingAlgorithm_DrawItem);
-            //cbTrackingAlgorithm.SelectedIndexChanged += new EventHandler(editor_SelectedIndexChanged);
-
+            
             UpdateTrackingParameters();
             UpdateStartStopButton();
 
@@ -512,10 +512,10 @@ namespace Kinovea.ScreenManager
                         e.Graphics.DrawString("Template matching", e.Font, Brushes.Black, textTopLeft);
                         break;
                     }
-                case TrackingAlgorithm.RoundMarker:
+                case TrackingAlgorithm.Circle:
                     {
                         e.Graphics.DrawImage(Properties.Resources.circular_marker, rect);
-                        e.Graphics.DrawString("Round", e.Font, Brushes.Black, textTopLeft);
+                        e.Graphics.DrawString("Circle", e.Font, Brushes.Black, textTopLeft);
 
                         break;
                     }
@@ -526,6 +526,15 @@ namespace Kinovea.ScreenManager
                         break;
                     }
             }
+        }
+
+        private void cbTrackingAlgorithm_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (track == null)
+                return;
+
+            TrackingAlgorithm ta = (TrackingAlgorithm)cbTrackingAlgorithm.SelectedIndex;
+            track.SetTrackingAlgorithm(ta);
         }
 
         /// <summary>

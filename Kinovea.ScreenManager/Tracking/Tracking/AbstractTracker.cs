@@ -40,7 +40,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Returns true if the tracker is ready to track.
         /// </summary>
-        public abstract bool IsReady();
+        public abstract bool IsReady(TimedPoint lastTrackedPoint);
 
         /// <summary>
         /// Performs the tracking. 
@@ -57,12 +57,12 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Creates a track point from auto-tracking.
         /// </summary>
-        public abstract TimedPoint CreateTrackPoint(PointF p, long time, float similarity, Bitmap image, List<TimedPoint> previousPoints);
+        public abstract TimedPoint CreateTrackPoint(object trackingResult, long time, Bitmap image, List<TimedPoint> previousPoints);
 
         /// <summary>
         /// Creates a Track point from a user-provided location.
         /// </summary>
-        public abstract void CreateReferenceTrackPoint(PointF point, long time, Bitmap image);
+        public abstract void CreateReferenceTrackPoint(TimedPoint point, Bitmap image);
 
         /// <summary>
         /// Trim internal data related to points after the passed time.

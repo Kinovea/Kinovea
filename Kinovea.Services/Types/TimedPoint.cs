@@ -42,9 +42,19 @@ namespace Kinovea.Services
             set { t = value; }
         }
 
+        /// <summary>
+        /// Gets or sets the radius.
+        /// </summary>
+        public float R
+        {
+            get { return r; }
+            set { r = value; }
+        }
+
         private float x;
         private float y;
         private long t;
+        private float r;
 
         public int ContentHash
         {
@@ -52,7 +62,8 @@ namespace Kinovea.Services
             { 
                 return x.GetHashCode() ^ 
                        y.GetHashCode() ^ 
-                       t.GetHashCode(); 
+                       t.GetHashCode() ^
+                       r.GetHashCode(); 
             }
         }
 
@@ -61,11 +72,20 @@ namespace Kinovea.Services
             this.x = x;
             this.y = y;
             this.t = t;
+            this.r = 0;
+        }
+
+        public TimedPoint(float x, float y, long t, float r)
+        {
+            this.x = x;
+            this.y = y;
+            this.t = t;
+            this.r = r;
         }
 
         public void WriteXml(XmlWriter xmlWriter)
         {
-            xmlWriter.WriteString(String.Format(CultureInfo.InvariantCulture, "{0};{1};{2}", x, y, t));
+            xmlWriter.WriteString(String.Format(CultureInfo.InvariantCulture, "{0};{1};{2};{3}", x, y, t, r));
         }
         public void ReadXml(XmlReader xmlReader)
         {
@@ -76,11 +96,16 @@ namespace Kinovea.Services
                 x = float.Parse(split[0], CultureInfo.InvariantCulture);
                 y = float.Parse(split[1], CultureInfo.InvariantCulture);
                 t = long.Parse(split[2], CultureInfo.InvariantCulture);
+
+                if (split.Length > 3)
+                    r = float.Parse(split[3], CultureInfo.InvariantCulture);
+                else 
+                    r = 0;
             }
             catch (Exception)
             {
                 // Conversion issue
-                // will default to {0,0,0}.
+                // will default to {0,0,0,0}.
             }
         }
     }

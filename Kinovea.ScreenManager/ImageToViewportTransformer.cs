@@ -66,7 +66,11 @@ namespace Kinovea.ScreenManager
         }
         public int Transform(int distance)
         {
-            return (int)(distance * scale);
+            return Transform((float)distance);
+        }
+        public int Transform(float distance)
+        {
+            return (int)Math.Round(distance * scale);
         }
         public Size Transform(Size size)
         {

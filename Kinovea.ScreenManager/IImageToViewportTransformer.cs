@@ -38,6 +38,7 @@ namespace Kinovea.ScreenManager
         Point Transform(PointF point);
         List<Point> Transform(IEnumerable<PointF> points);
         int Transform(int distance);
+        int Transform(float distance);
         Size Transform(Size size);
         Size Transform(SizeF size);
         Rectangle Transform(Rectangle rectangle);

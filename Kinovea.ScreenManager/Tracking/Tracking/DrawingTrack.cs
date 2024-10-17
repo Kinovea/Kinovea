@@ -520,7 +520,6 @@ namespace Kinovea.ScreenManager
 
                     if (showTrackLabel)
                         DrawMainLabel(canvas, drawPointIndex, opacityFactor, transformer);
-
                 }
                 else if (trackStatus == TrackStatus.Edit)
                 {
@@ -543,7 +542,10 @@ namespace Kinovea.ScreenManager
 
                 // Track cursor.
                 if (opacityFactor == 1.0 && currentTimestamp <= positions[positions.Count - 1].T)
+                {
                     DrawMarker(canvas, opacityFactor, transformer);
+                    DrawTrackedCircle(canvas, drawPointIndex, opacityFactor, transformer);
+                }
 
                 if (opacityFactor == 1.0)
                     DrawTrackerHelp(canvas, transformer, styleData.Color, opacityFactor);
@@ -884,6 +886,21 @@ namespace Kinovea.ScreenManager
             miniLabel.SetText(GetMeasureLabelText(drawPointIndex), transformer);
             miniLabel.Draw(canvas, transformer, opacityFactor);
         }
+
+        private void DrawTrackedCircle(Graphics canvas, int drawPointIndex, double opacityFactor, IImageToViewportTransformer transformer)
+        {
+            if (opacityFactor != 1.0f || isConfiguring)
+                return;
+
+            Point location = transformer.Transform(positions[drawPointIndex].Point);
+            float radius = transformer.Transform(positions[drawPointIndex].R);
+            Rectangle rect = location.Box(radius);
+            using (Pen trackPen = styleData.GetPen(opacityFactor, 1.0))
+            {
+                canvas.DrawEllipse(trackPen, rect);
+            }
+        }
+        
         private float GetOpacity(TrackStatus status, float baselineOpacity, bool isPast)
         {
             if (status == TrackStatus.Edit)
@@ -1426,14 +1443,14 @@ namespace Kinovea.ScreenManager
             }
 
             // Check if the tracker is ready to track.
-            if (!tracker.IsReady())
+            if (!tracker.IsReady(lastTrackedPoint))
             {
                 // Recreate algorithm-specific data from the last position if we don't have it yet.
                 // The user re-opened the track so the last point is considered reference now.
                 // FIXME: we are associating a template extracted from the current image 
                 // at the location of the match in the previous frame so the template won't be 
                 // correctly aligned with the object of interest.
-                tracker.CreateReferenceTrackPoint(lastTrackedPoint.Point, lastTrackedPoint.T, current.Image);
+                tracker.CreateReferenceTrackPoint(lastTrackedPoint, current.Image);
             }
 
             TimedPoint tp = null;
@@ -1471,7 +1488,7 @@ namespace Kinovea.ScreenManager
 
             // Update internal tracker state.
             TimedPoint current = positions[drawPointIndex];
-            tracker.CreateReferenceTrackPoint(current.Point, current.T, currentImage);
+            tracker.CreateReferenceTrackPoint(current, currentImage);
 
             // Update the mini labels (attach, position of label, and text).
             for (int i = 0; i < keyframeLabels.Count; i++)
@@ -1601,7 +1618,7 @@ namespace Kinovea.ScreenManager
         public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {
             invalid = true;
-            //tracker = new TrackerBlock2(GetTrackerParameters(new Size(800, 600)));
+            TrackingParameters trackingParameters = new TrackingParameters();
 
             if (timestampMapper == null)
             {
@@ -1641,9 +1658,7 @@ namespace Kinovea.ScreenManager
                             break;
                         }
                     case "TrackerParameters":
-                        tracker.Parameters.ReadXml(xmlReader);
-                        tracker.Parameters.ResetOnMove = false;
-                        UpdateBoundingBoxes();
+                        trackingParameters.ReadXml(xmlReader);
                         break;
                     case "TrackPointList":
                         ParseTrackPointList(xmlReader, scale, timestampMapper);
@@ -1689,6 +1704,24 @@ namespace Kinovea.ScreenManager
             xmlReader.ReadEndElement();
             scalingDone = true;
 
+            // Initialize the tracker.
+            switch (trackingParameters.TrackingAlgorithm)
+            {
+                case TrackingAlgorithm.Correlation:
+                    tracker = new TrackerTemplateMatching(trackingParameters);
+                    break;
+                case TrackingAlgorithm.Circle:
+                    tracker = new TrackerCircle(trackingParameters);
+                    break;
+                default:
+                    tracker = new TrackerTemplateMatching(trackingParameters);
+                    break;
+            }
+            
+            tracker.Parameters.ResetOnMove = false;
+            UpdateBoundingBoxes();
+            
+
             if (positions.Count > 0)
             {
                 endTimeStamp = positions.Last().T;
@@ -1718,13 +1751,14 @@ namespace Kinovea.ScreenManager
             {
                 if (xmlReader.Name == "TrackPoint")
                 {
-                    TimedPoint tp = new TimedPoint(0, 0, 0);
+                    TimedPoint tp = new TimedPoint(0, 0, 0, 0);
                     tp.ReadXml(xmlReader);
 
                     // Time is stored in absolute timestamps.
                     PointF point = tp.Point.Scale(scale.X, scale.Y);
+                    float radius = tp.R * scale.X;
                     long time = timestampMapper(tp.T);
-                    positions.Add(new TimedPoint(point.X, point.Y, time));
+                    positions.Add(new TimedPoint(point.X, point.Y, time, radius));
                 }
                 else
                 {
@@ -1944,6 +1978,28 @@ namespace Kinovea.ScreenManager
         public List<TimedPoint> GetTimedPoints()
         {
             return positions;
+        }
+        
+        
+        public void SetTrackingAlgorithm(TrackingAlgorithm algorithm)
+        {
+            // Grab the parameters from the current tracker.
+            TrackingParameters parameters = tracker.Parameters.Clone();
+            if (parameters.TrackingAlgorithm == algorithm)
+                return;
+
+            tracker.Clear();
+            parameters.TrackingAlgorithm = algorithm;
+            parameters.ResetOnMove = false;
+            switch (algorithm)
+            {
+                case TrackingAlgorithm.Correlation:
+                    tracker = new TrackerTemplateMatching(parameters);
+                    break;
+                case TrackingAlgorithm.Circle:
+                    tracker = new TrackerCircle(parameters);
+                    break;
+            }
         }
         #endregion
 

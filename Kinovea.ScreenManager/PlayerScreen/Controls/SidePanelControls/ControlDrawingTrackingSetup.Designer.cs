@@ -294,6 +294,7 @@ namespace Kinovea.ScreenManager
       this.cbTrackingAlgorithm.Name = "cbTrackingAlgorithm";
       this.cbTrackingAlgorithm.Size = new System.Drawing.Size(154, 22);
       this.cbTrackingAlgorithm.TabIndex = 52;
+      this.cbTrackingAlgorithm.SelectedIndexChanged += new System.EventHandler(this.cbTrackingAlgorithm_SelectedIndexChanged);
       // 
       // label2
       // 

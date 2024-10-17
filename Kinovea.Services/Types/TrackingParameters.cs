@@ -43,6 +43,7 @@ namespace Kinovea.Services
         public TrackingAlgorithm TrackingAlgorithm
         {
             get { return trackingAlgorithm; }
+            set { trackingAlgorithm = value;}
         }
 
         /// <summary>
@@ -94,16 +95,6 @@ namespace Kinovea.Services
             set { templateUpdateThreshold = value; }
         }
 
-        /// <summary>
-        /// Number of surrounding pixels taken into account in each direction to refine the location of best match.
-        /// Used by template matching.
-        /// </summary>
-        public int RefinementNeighborhood
-        {
-            get { return refinementNeighborhood; }
-        }
-
-        
         public bool ResetOnMove
         {
             get { return resetOnMove; }
@@ -161,7 +152,6 @@ namespace Kinovea.Services
             w.WriteElementString("BlockWindow", XmlHelper.WriteSize(blockWindow));
             w.WriteElementString("SimilarityThreshold", XmlHelper.WriteFloat((float)similarityThreshold));
             w.WriteElementString("TemplateUpdateThreshold", XmlHelper.WriteFloat((float)templateUpdateThreshold));
-            w.WriteElementString("RefinementNeighborhood", string.Format(CultureInfo.InvariantCulture, "{0}", refinementNeighborhood));
         }
 
         public void ReadXml(XmlReader r)
@@ -186,9 +176,6 @@ namespace Kinovea.Services
                         break;
                     case "TemplateUpdateThreshold":
                         templateUpdateThreshold = r.ReadElementContentAsDouble();
-                        break;
-                    case "RefinementNeighborhood":
-                        refinementNeighborhood = r.ReadElementContentAsInt();
                         break;
                     default:
                         string outerXml = r.ReadOuterXml();
