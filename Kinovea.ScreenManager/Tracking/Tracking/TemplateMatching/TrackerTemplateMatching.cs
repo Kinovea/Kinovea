@@ -50,14 +50,15 @@ namespace Kinovea.ScreenManager
         #region Members
         private TrackingParameters parameters = new TrackingParameters();
         
-        // List of templates gathered so far.
+        // List of templates gathered so far during the tracking session.
+        // This is live state, not stored to KVA.
         // Currently we keep one template per frame even if the template is not updated.
         // Technically we probably only need the last one.
         // Note that this list isn't fully synchronized with the list of tracked positions.
         // This list is only updated when tracking is active.
         // When the timeline is reconstructed from KVA it will contain entries for which 
         // we don't have data. The necessary data for tracking is rebuilt on the fly.
-        private Timeline<TrackingTemplate> trackingTemplates = new Timeline<TrackingTemplate>();
+        private Timeline<TrackingTemplate> trackedTemplates = new Timeline<TrackingTemplate>();
 
         // Mask used during template matching. Only changes when the template size changes.
         private Bitmap mask;
@@ -108,10 +109,10 @@ namespace Kinovea.ScreenManager
             // This happens when we are re-opening a KVA file and continuing the track.
             // The KVA doesn't store the algorithm specific part like the template, only the result.
             // We must re-capture the template before proceeding.
-            if (trackingTemplates.Count == 0)
+            if (trackedTemplates.Count == 0)
                 return false;
 
-            var lastTemplate = trackingTemplates.Last();
+            var lastTemplate = trackedTemplates.Last();
             if (lastTemplate.Template == null)
                 return false;
 
@@ -132,7 +133,7 @@ namespace Kinovea.ScreenManager
         public override bool TrackStep(List<TimedPoint> timeline, long time, Bitmap currentImage, Mat cvImage, out TimedPoint currentPoint)
         {
             TimedPoint lastTrackPoint = timeline.Last();
-            TrackingTemplate lastTemplate = trackingTemplates.Last();
+            TrackingTemplate lastTemplate = trackedTemplates.Last();
 
             //log.DebugFormat("Track step. last track point at {0}, last template at {1}.", lastTrackPoint.T, lastTemplate.Time);
             if (currentImage == null)
@@ -218,7 +219,7 @@ namespace Kinovea.ScreenManager
             {
                 // The match is either very good or very bad: do not update.
                 TimedPoint prevPoint = previousPoints.Last();
-                TrackingTemplate prevTemplate = trackingTemplates.Last();
+                TrackingTemplate prevTemplate = trackedTemplates.Last();
 
                 if(prevPoint != null && prevTemplate.Template != null)
                 {
@@ -251,7 +252,7 @@ namespace Kinovea.ScreenManager
                 trackingTemplate = new TrackingTemplate(time, point, (float)similarity, bmpTemplate, source);
             }
 
-            trackingTemplates.Insert(time, trackingTemplate);
+            trackedTemplates.Insert(time, trackingTemplate);
             
             return new TimedPoint(point.X, point.Y, time);
         }
@@ -283,7 +284,7 @@ namespace Kinovea.ScreenManager
             
             // This is not necessarily the last entry in the timeline.
             // We might be on an existing time that the user is manually moving.
-            trackingTemplates.Insert(point.T, trackingTemplate);
+            trackedTemplates.Insert(point.T, trackingTemplate);
         }
 
 
@@ -292,10 +293,10 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public override void Trim(long time)
         {
-            if (trackingTemplates.Count == 0)
+            if (trackedTemplates.Count == 0)
                 return;
 
-            trackingTemplates.Trim(time);
+            trackedTemplates.Trim(time);
         }
 
         /// <summary>
@@ -303,7 +304,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public override void Clear()
         {
-            trackingTemplates.Clear(tt => tt.Dispose());
+            trackedTemplates.Clear(tt => tt.Dispose());
         }
 
         #endregion
@@ -385,10 +386,10 @@ namespace Kinovea.ScreenManager
 
         private void DrawDebugInfo(Graphics canvas, TimedPoint point, RectangleF search, Color color)
         {
-            if (trackingTemplates.Count == 0)
+            if (trackedTemplates.Count == 0)
                 return;
 
-            var tt = trackingTemplates.ClosestFrom(point.T);
+            var tt = trackedTemplates.ClosestFrom(point.T);
             long offset = point.T - tt.Time;
             if (offset == 0)
             {

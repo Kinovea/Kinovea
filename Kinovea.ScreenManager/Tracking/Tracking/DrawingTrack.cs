@@ -327,8 +327,7 @@ namespace Kinovea.ScreenManager
         {
             // Create the tracker.
             TrackingParameters parameters = PreferencesManager.PlayerPreferences.TrackingParameters.Clone();
-            parameters.ResetOnMove = false;
-            tracker = new TrackerTemplateMatching(parameters);
+            InitializeTracker(parameters);
             
             // Add the first point.
             positions.Add(new TimedPoint(p.X, p.Y, start));
@@ -1704,21 +1703,7 @@ namespace Kinovea.ScreenManager
             xmlReader.ReadEndElement();
             scalingDone = true;
 
-            // Initialize the tracker.
-            switch (trackingParameters.TrackingAlgorithm)
-            {
-                case TrackingAlgorithm.Correlation:
-                    tracker = new TrackerTemplateMatching(trackingParameters);
-                    break;
-                case TrackingAlgorithm.Circle:
-                    tracker = new TrackerCircle(trackingParameters);
-                    break;
-                default:
-                    tracker = new TrackerTemplateMatching(trackingParameters);
-                    break;
-            }
-            
-            tracker.Parameters.ResetOnMove = false;
+            InitializeTracker(trackingParameters);
             UpdateBoundingBoxes();
             
 
@@ -1983,23 +1968,34 @@ namespace Kinovea.ScreenManager
         
         public void SetTrackingAlgorithm(TrackingAlgorithm algorithm)
         {
+            if (tracker.Parameters.TrackingAlgorithm == algorithm)
+                return;
+            
             // Grab the parameters from the current tracker.
             TrackingParameters parameters = tracker.Parameters.Clone();
-            if (parameters.TrackingAlgorithm == algorithm)
-                return;
-
             tracker.Clear();
+
             parameters.TrackingAlgorithm = algorithm;
-            parameters.ResetOnMove = false;
-            switch (algorithm)
+            InitializeTracker(parameters);
+        }
+
+        private void InitializeTracker(TrackingParameters trackingParameters)
+        {
+            // Initialize the tracker.
+            switch (trackingParameters.TrackingAlgorithm)
             {
                 case TrackingAlgorithm.Correlation:
-                    tracker = new TrackerTemplateMatching(parameters);
+                    tracker = new TrackerTemplateMatching(trackingParameters);
                     break;
                 case TrackingAlgorithm.Circle:
-                    tracker = new TrackerCircle(parameters);
+                    tracker = new TrackerCircle(trackingParameters);
+                    break;
+                default:
+                    tracker = new TrackerTemplateMatching(trackingParameters);
                     break;
             }
+
+            tracker.Parameters.ResetOnMove = false;
         }
         #endregion
 

@@ -27,6 +27,9 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// Wrapper for the template to be matched in following frames.
+    /// The template matching tracker keeps a timeline of these live during 
+    /// a tracking session. This is not saved to KVA it is reconstructed 
+    /// dynamically on the fly.
     /// </summary>
     public class TrackingTemplate : IDisposable
     {

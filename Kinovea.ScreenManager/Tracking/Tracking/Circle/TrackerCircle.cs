@@ -48,20 +48,28 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private TrackingParameters parameters = new TrackingParameters();
-        //private Timeline<TrackedCircle> trackedCircles = new Timeline<TrackedCircle>();
 
-        // Unlike template matching which keeps around templates for tracking, 
-        // the circle tracking is stateless and only works from the passed 
-        // points radius.
-        // We might later keep around a list of tracking result just to display the votes
-        // in the UI.
+        // Set of reference times during the tracking session.
+        // This is not stored to KVA.
+        // This is used to limit the averaging window to the last reference radius.
+        // Apart from that the Circle tracker is mostly stateless, unlike the
+        // template matching tracker.
+        SortedSet<long> referenceTimes = new SortedSet<long>();
 
-        // Number of points taken into account to establish the reference radius.
-        // Lower number for balls going towards or away from the camera.
-        // Higher number for things moving in the plane perpendicular to the camera axis.
+        // Max number of points taken into account to establish the reference radius.
+        // TODO: move this to parameters.
+        // Guidelines:
+        // - Lower number for objects moving towards or away from the camera.
+        // - Higher number for objects moving in the plane perpendicular to the camera axis.
         // We note that the use-case of tracking a ball moving towards can't be used for 
         // measurements so we optimize for the other case.
-        int averageWindow = 4;
+        int averagingWindow = 4;
+
+        // Extra parameters.
+        bool blurROI = false;
+        int blurKernelSize = 5;
+        int maxGuessVoteThreshold = 50;
+        int guessVoteThresholdStep = 2;
 
         // Debugging.
         private static readonly bool debugging = false;
@@ -104,7 +112,7 @@ namespace Kinovea.ScreenManager
             // switching from a trajectory tracked with a different algorithm.
             // In this case we need to go through CreateReferenceTrackPoint to 
             // set the initial reference radius.
-            if (lastTrackedPoint.R == 0)
+            if (lastTrackedPoint.R == 0 || referenceTimes.Count == 0)
                 return false;
 
             return true;
@@ -135,8 +143,16 @@ namespace Kinovea.ScreenManager
                 return false;
             }
 
-            int samples = Math.Min(averageWindow, timeline.Count);
+            // Calculate the reference radius.
+            // We want to average samples up to the averaging window but not past the last reference
+            // otherwise when the user trims and tunes a point manually, the next tracking 
+            // step would not use the exact user-tuned radius.
+            // Get a list of the tracked circles that are after the last reference time.
+            long lastReferenceTime = referenceTimes.Last();
+            List<TimedPoint> afterLastRef = timeline.SkipWhile(p => p.T < lastReferenceTime).ToList();
+            int samples = Math.Min(averagingWindow, afterLastRef.Count());
             float averageRadius = timeline.Skip(timeline.Count - samples).Average(p => p.R);
+            log.DebugFormat("Reference radius: {0:0.000} ({1} samples)", averageRadius, samples);
 
             // Perform the circle matching.
             Pair<Circle, int> circleResult = MatchCircle(cvImage, averageRadius, lastTrackPoint.Point);
@@ -185,9 +201,11 @@ namespace Kinovea.ScreenManager
         public override void CreateReferenceTrackPoint(TimedPoint point, Bitmap currentImage)
         {
             // Modify the radius of the passed timed point with the current parameters.
-
             float radius = parameters.BlockWindow.Width / 2.0f;
             point.R = radius;
+
+            // Add the point to the reference timeline.
+            referenceTimes.Add(point.T);
         }
 
 
@@ -196,6 +214,11 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public override void Trim(long time)
         {
+            if (referenceTimes.Count == 0)
+                return;
+
+            // Remove all reference points after the passed time.
+            referenceTimes.RemoveWhere(t => t > time);
         }
 
         /// <summary>
@@ -203,6 +226,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public override void Clear()
         {
+            referenceTimes.Clear();
         }
 
         #endregion
@@ -341,14 +365,10 @@ namespace Kinovea.ScreenManager
             //----------------------------------
             Mat cvRoiGray = new OpenCvSharp.Mat();
             Cv2.CvtColor(cvImageROI, cvRoiGray, OpenCvSharp.ColorConversionCodes.BGR2GRAY, 0);
-            Cv2.MedianBlur(cvRoiGray, cvRoiGray, 5);
-
-
-            //CircleSegment[] circles = new CircleSegment[0];
-            //int minRadius = 10;
-            //int maxRadius = Math.Min(cvRoiGray.Rows / 2, cvRoiGray.Cols / 2);
-            //int radiusPlusMinus = 1;
-            //int radiusStep = 1;
+            if (blurROI)
+            {
+                Cv2.MedianBlur(cvRoiGray, cvRoiGray, blurKernelSize);
+            }
 
             //------------------------------------------------------------------------------
             // Circle matching algorithm
@@ -361,7 +381,6 @@ namespace Kinovea.ScreenManager
             //------------------------------------------------------------------------------
             int minVotes = 4;
             result = FindBestCircleAtRadius(cvRoiGray, refRadius, srchTopLeft, lastPoint, minVotes);
-
             log.DebugFormat("Baseline circle at radius: {0:0.0}, votes:{1}.", refRadius, result.Second);
 
             // If we found multiple circles at the baseline radius we still test up and down to try to find 
@@ -448,11 +467,9 @@ namespace Kinovea.ScreenManager
             HoughModes mode = HoughModes.Gradient;
             double guessDp = 1.0; // Inverse ratio of resolution (1=full res, 2=half res, etc)
             double minDist = Math.Max(cvRoiGray.Cols / 16, 8);
-            double param1 = 50; // For the canny edge transform.
+            double param1 = 50; // Used for the canny edge transform.
 
             // Quantity of votes to qualify for a circle.
-            int maxGuessVoteThreshold = 50;
-            int guessVoteThresholdStep = 2;
             int guessVoteThreshold = maxGuessVoteThreshold;
             CircleSegment[] circles;
 
