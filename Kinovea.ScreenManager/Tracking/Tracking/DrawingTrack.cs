@@ -543,7 +543,10 @@ namespace Kinovea.ScreenManager
                 if (opacityFactor == 1.0 && currentTimestamp <= positions[positions.Count - 1].T)
                 {
                     DrawMarker(canvas, opacityFactor, transformer);
-                    DrawTrackedCircle(canvas, drawPointIndex, opacityFactor, transformer);
+                    if (tracker.Parameters.TrackingAlgorithm == TrackingAlgorithm.Circle)
+                    {
+                        DrawTrackedCircle(canvas, drawPointIndex, opacityFactor, transformer);
+                    }
                 }
 
                 if (opacityFactor == 1.0)
@@ -583,11 +586,12 @@ namespace Kinovea.ScreenManager
             {
                 if (movingHandler > 1 && movingHandler < 6)
                 {
-                    searchBox.MoveHandleKeepSymmetry(point.ToPoint(), movingHandler - 1, positions[hitPointIndex].Point);
+                    searchBox.MoveHandleKeepSymmetry(point.ToPoint(), movingHandler - 1, positions[hitPointIndex].Point, false);
                 }
                 else if (movingHandler >= 6 && movingHandler < 11)
                 {
-                    blockBox.MoveHandleKeepSymmetry(point.ToPoint(), movingHandler - 5, positions[hitPointIndex].Point);
+                    bool keepSquare = tracker.Parameters.TrackingAlgorithm == TrackingAlgorithm.Circle;
+                    blockBox.MoveHandleKeepSymmetry(point.ToPoint(), movingHandler - 5, positions[hitPointIndex].Point, keepSquare);
                 }
 
                 tracker.Parameters.SearchWindow = searchBox.Rectangle.Size;
@@ -1978,7 +1982,9 @@ namespace Kinovea.ScreenManager
             parameters.TrackingAlgorithm = algorithm;
             InitializeTracker(parameters);
         }
+        #endregion
 
+        #region Miscellaneous private methods
         private void InitializeTracker(TrackingParameters trackingParameters)
         {
             // Initialize the tracker.
@@ -1997,9 +2003,6 @@ namespace Kinovea.ScreenManager
 
             tracker.Parameters.ResetOnMove = false;
         }
-        #endregion
-
-        #region Miscellaneous private methods
 
         /// <summary>
         /// Capture the current state and push it to the undo/redo stack.

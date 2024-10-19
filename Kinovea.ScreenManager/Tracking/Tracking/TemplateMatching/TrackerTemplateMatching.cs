@@ -393,7 +393,8 @@ namespace Kinovea.ScreenManager
             long offset = point.T - tt.Time;
             if (offset == 0)
             {
-                string text = string.Format("CCORR - {0:0.000} ({1})", tt.Score, tt.PositionningSource == TrackingSource.Manual ? "M" : "A");
+                bool manual = tt.PositionningSource == TrackingSource.Manual;
+                string text = string.Format("TMPL - {0:0.000} ({1})", tt.Score, manual ? "M" : "A");
                 using (Font f = new Font("Consolas", 10, FontStyle.Bold))
                 using (Brush b = new SolidBrush(color))
                 {

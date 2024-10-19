@@ -66,7 +66,9 @@ namespace Kinovea.ScreenManager
         int averagingWindow = 4;
 
         // Extra parameters.
-        bool blurROI = false;
+        // Whether to blur the search window prior to circle detection.
+        // Not blurring is found to be more robust to partial occlusions.
+        bool blurROI = false; 
         int blurKernelSize = 5;
         int maxGuessVoteThreshold = 50;
         int guessVoteThresholdStep = 2;
@@ -201,7 +203,7 @@ namespace Kinovea.ScreenManager
         public override void CreateReferenceTrackPoint(TimedPoint point, Bitmap currentImage)
         {
             // Modify the radius of the passed timed point with the current parameters.
-            float radius = parameters.BlockWindow.Width / 2.0f;
+            float radius = Math.Max(parameters.BlockWindow.Width / 2.0f, parameters.BlockWindow.Height/ 2.0f);
             point.R = radius;
 
             // Add the point to the reference timeline.
@@ -317,7 +319,8 @@ namespace Kinovea.ScreenManager
 
         private void DrawDebugInfo(Graphics canvas, TimedPoint point, RectangleF search, Color color)
         {
-            string text = string.Format("BALL - {0:0.000}", point.R);
+            bool manual = referenceTimes.Contains(point.T);
+            string text = string.Format("CIRC - {0:0.000} ({1})", point.R, manual ? "M" : "A");
             using (Font f = new Font("Consolas", 10, FontStyle.Bold))
             using (Brush b = new SolidBrush(color))
             {

@@ -360,6 +360,26 @@ namespace Kinovea.ScreenManager
 
         #region UI events to modify the data
 
+        private void cbTrackingAlgorithm_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (manualUpdate)
+                return;
+
+            if (track == null)
+                return;
+
+            // Update the data.
+            TrackingAlgorithm ta = (TrackingAlgorithm)cbTrackingAlgorithm.SelectedIndex;
+            track.SetTrackingAlgorithm(ta);
+            EnsureTracking();
+
+            // Update local UI.
+            viewportController.Refresh();
+
+            // Update other controllers.
+            RaiseDrawingModified(DrawingAction.TrackingParametersChanged);
+        }
+
         private void nudSearchWindow_ValueChanged(object sender, EventArgs e)
         {
             if (manualUpdate)
@@ -387,20 +407,37 @@ namespace Kinovea.ScreenManager
             if (manualUpdate)
                 return;
 
+            if (track == null)
+                return;
+
+            // For circle tracking make sure the other dimension is in sync.
+            if (track.TrackingParameters.TrackingAlgorithm == TrackingAlgorithm.Circle)
+            {
+                manualUpdate = true;
+                if (sender == nudObjWindowWidth)
+                    nudObjWindowHeight.Value = nudObjWindowWidth.Value;
+                else if (sender == nudObjWindowHeight)
+                    nudObjWindowWidth.Value = nudObjWindowHeight.Value;
+                manualUpdate = false;
+            }
+
             int width = (int)nudObjWindowWidth.Value;
             int height = (int)nudObjWindowHeight.Value;
-            if (track != null)
-            {
-                // Update the data.
-                track.TrackingParameters.BlockWindow = new Size(width, height);
-                EnsureTracking();
+            
+            // Update the data.
+            track.TrackingParameters.BlockWindow = new Size(width, height);
+            EnsureTracking();
 
-                // Update local UI.
-                viewportController.Refresh();
+            // Make sure the current point is updated with the new block size or radius.
+            // The update call only works if the track is the currently selected object.
+            metadata.SelectDrawing(track, metadata.TrackManager);
+            metadata.UpdateTrackPoint(hostView.CurrentImage);
 
-                // Update other controllers.
-                RaiseDrawingModified(DrawingAction.TrackingParametersChanged);
-            }
+            // Update local UI.
+            viewportController.Refresh();
+
+            // Update other controllers.
+            RaiseDrawingModified(DrawingAction.TrackingParametersChanged);
         }
 
         private void nudThresholds_ValueChanged(object sender, EventArgs e)
@@ -526,15 +563,6 @@ namespace Kinovea.ScreenManager
                         break;
                     }
             }
-        }
-
-        private void cbTrackingAlgorithm_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (track == null)
-                return;
-
-            TrackingAlgorithm ta = (TrackingAlgorithm)cbTrackingAlgorithm.SelectedIndex;
-            track.SetTrackingAlgorithm(ta);
         }
 
         /// <summary>

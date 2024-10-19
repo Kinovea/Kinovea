@@ -217,27 +217,24 @@ namespace Kinovea.ScreenManager
                     break;
             }
         }
-        public void MoveHandleKeepSymmetry(Point point, int handleNumber, PointF center)
+        
+        
+        /// <summary>
+        /// Move a corner handle to a new location.
+        /// Automatically moves the other corners to keep the bounding box centered.
+        /// </summary>
+        public void MoveHandleKeepSymmetry(Point point, int handleNumber, PointF center, bool square)
         {
-            Rectangle target = Rectangle.Empty;
-            Vector shift = new Vector(point, center);
-
-            switch (handleNumber)
-            {
-                case 1:
-                    target = new Rectangle(point.X, point.Y, (int)(shift.X * 2), (int)(shift.Y * 2));
-                    break;
-                case 2:
-                    target = new Rectangle(point.X + (int)(-shift.X * 2), point.Y, (int)(-shift.X * 2), (int)(shift.Y * 2));
-                    break;
-                case 3:
-                    target = new Rectangle(point.X + (int)(-shift.X * 2), point.Y + (int)(-shift.Y * 2), (int)(-shift.X * 2), (int)(-shift.Y * 2));
-                    break;
-                case 4:
-                    target = new Rectangle(point.X, point.Y + (int)(shift.X * 2), (int)(shift.X * 2), (int)(-shift.Y * 2));
-                    break;
-            }
+            float dx = Math.Abs(center.X - point.X);
+            float dy = Math.Abs(center.Y - point.Y);
             
+            if (square)
+            {
+                float d = Math.Max(dx, dy);
+                dx = dy = d;
+            }
+
+            Rectangle target = new RectangleF(center.X - dx, center.Y - dy, dx * 2, dy * 2).ToRectangle();
             ApplyWithConstraints(target);
         }
         private void MoveHandleFree(PointF point, int handleNumber)
