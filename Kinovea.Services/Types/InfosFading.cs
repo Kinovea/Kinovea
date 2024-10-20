@@ -230,6 +230,22 @@ namespace Kinovea.Services
         #endregion
 
         /// <summary>
+        /// Disable the Always visible flag that may have been 
+        /// set from default preferences. 
+        /// This should be used for detached drawings when the user 
+        /// makes a manual adjustment to visibility.
+        /// </summary>
+        public void DisableAlwaysVisible()
+        {
+            // If the drawing is created while the user has the "always visible" option 
+            // enabled in the default visibility preferences, we need to explicitly disable
+            // it when the user change any visibility option. 
+            // This is for drawings that don't have an explicit "custom parameters" dialog.
+            useDefault = false;
+            alwaysVisible = false;
+        }
+
+        /// <summary>
         /// Returns the opacity based on the fading configuration and the drawing insertion time.
         /// </summary>
         public double GetOpacityFactor(long timestamp)

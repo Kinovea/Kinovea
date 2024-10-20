@@ -649,6 +649,7 @@ namespace Kinovea.ScreenManager
         {
             CaptureMemento(SerializationFilter.Core);
             visibleTimestamp = 0;
+            infosFading.DisableAlwaysVisible();
             InvalidateFromMenu(sender);
         }
 
@@ -656,6 +657,7 @@ namespace Kinovea.ScreenManager
         {
             CaptureMemento(SerializationFilter.Core);
             invisibleTimestamp = long.MaxValue;
+            infosFading.DisableAlwaysVisible();
             infosFading.ReferenceTimestamp = invisibleTimestamp;
             InvalidateFromMenu(sender);
         }
@@ -664,6 +666,7 @@ namespace Kinovea.ScreenManager
         {
             CaptureMemento(SerializationFilter.Core);
             visibleTimestamp = CurrentTimestampFromMenu(sender);
+            infosFading.DisableAlwaysVisible();
             InvalidateFromMenu(sender);
         }
 
@@ -671,6 +674,7 @@ namespace Kinovea.ScreenManager
         {
             CaptureMemento(SerializationFilter.Core);
             invisibleTimestamp = CurrentTimestampFromMenu(sender);
+            infosFading.DisableAlwaysVisible();
             infosFading.ReferenceTimestamp = invisibleTimestamp;
             InvalidateFromMenu(sender);
         }
