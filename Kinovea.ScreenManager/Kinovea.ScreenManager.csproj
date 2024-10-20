@@ -626,7 +626,6 @@
     <Compile Include="Measurement\Kinematics\LinearKinematics.cs" />
     <Compile Include="Measurement\Kinematics\StatsHelper.cs" />
     <Compile Include="Tracking\Tracking\Circle\TrackerCircle.cs" />
-    <Compile Include="Tracking\Tracking\Circle\TrackedCircle.cs" />
     <Compile Include="Tracking\Tracking\TrackStatus.cs" />
     <Compile Include="Measurement\LensDistortion\FormCalibrateDistortion.cs">
       <SubType>Form</SubType>

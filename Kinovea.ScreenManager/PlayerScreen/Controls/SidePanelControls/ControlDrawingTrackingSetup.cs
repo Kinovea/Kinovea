@@ -562,7 +562,7 @@ namespace Kinovea.ScreenManager
                 case TrackingAlgorithm.Correlation:
                     {
                         e.Graphics.DrawImage(Properties.Resources.image_blur, rect);
-                        e.Graphics.DrawString("Template matching", e.Font, Brushes.Black, textTopLeft);
+                        e.Graphics.DrawString("Correlation", e.Font, Brushes.Black, textTopLeft);
                         break;
                     }
                 case TrackingAlgorithm.Circle:
@@ -575,7 +575,7 @@ namespace Kinovea.ScreenManager
                 case TrackingAlgorithm.QuadrantMarker:
                     {
                         e.Graphics.DrawImage(Properties.Resources.quadrants_padded, rect);
-                        e.Graphics.DrawString("Quadrants", e.Font, Brushes.Black, textTopLeft);
+                        e.Graphics.DrawString("Checkerboard", e.Font, Brushes.Black, textTopLeft);
                         break;
                     }
             }

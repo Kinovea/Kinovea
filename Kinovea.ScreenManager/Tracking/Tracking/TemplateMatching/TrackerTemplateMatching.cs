@@ -394,7 +394,7 @@ namespace Kinovea.ScreenManager
             if (offset == 0)
             {
                 bool manual = tt.PositionningSource == TrackingSource.Manual;
-                string text = string.Format("TMPL - {0:0.000} ({1})", tt.Score, manual ? "M" : "A");
+                string text = string.Format("CORR - {0:0.000} ({1})", tt.Score, manual ? "M" : "A");
                 using (Font f = new Font("Consolas", 10, FontStyle.Bold))
                 using (Brush b = new SolidBrush(color))
                 {
