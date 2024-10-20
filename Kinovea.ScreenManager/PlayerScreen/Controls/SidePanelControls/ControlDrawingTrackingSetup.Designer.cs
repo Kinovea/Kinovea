@@ -34,20 +34,20 @@ namespace Kinovea.ScreenManager
       this.btnTrimTrack = new System.Windows.Forms.Button();
       this.btnStartStop = new System.Windows.Forms.Button();
       this.nudUpdateThreshold = new System.Windows.Forms.NumericUpDown();
-      this.label6 = new System.Windows.Forms.Label();
+      this.lblUpdateThreshold = new System.Windows.Forms.Label();
       this.nudMatchTreshold = new System.Windows.Forms.NumericUpDown();
-      this.label7 = new System.Windows.Forms.Label();
+      this.lblMatchThreshold = new System.Windows.Forms.Label();
       this.nudSearchWindowHeight = new System.Windows.Forms.NumericUpDown();
       this.nudObjWindowHeight = new System.Windows.Forms.NumericUpDown();
       this.nudSearchWindowWidth = new System.Windows.Forms.NumericUpDown();
       this.nudObjWindowWidth = new System.Windows.Forms.NumericUpDown();
       this.label3 = new System.Windows.Forms.Label();
       this.cbTrackingAlgorithm = new System.Windows.Forms.ComboBox();
-      this.label2 = new System.Windows.Forms.Label();
-      this.label1 = new System.Windows.Forms.Label();
-      this.label5 = new System.Windows.Forms.Label();
+      this.lblSearchWindowPixels = new System.Windows.Forms.Label();
+      this.lblObjectWindowPixels = new System.Windows.Forms.Label();
+      this.lblSearchWindowX = new System.Windows.Forms.Label();
       this.lblSearchWindow = new System.Windows.Forms.Label();
-      this.label4 = new System.Windows.Forms.Label();
+      this.lblObjectWindowX = new System.Windows.Forms.Label();
       this.lblObjectWindow = new System.Windows.Forms.Label();
       this.grpTracking.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudUpdateThreshold)).BeginInit();
@@ -77,20 +77,20 @@ namespace Kinovea.ScreenManager
       this.grpTracking.Controls.Add(this.btnTrimTrack);
       this.grpTracking.Controls.Add(this.btnStartStop);
       this.grpTracking.Controls.Add(this.nudUpdateThreshold);
-      this.grpTracking.Controls.Add(this.label6);
+      this.grpTracking.Controls.Add(this.lblUpdateThreshold);
       this.grpTracking.Controls.Add(this.nudMatchTreshold);
-      this.grpTracking.Controls.Add(this.label7);
+      this.grpTracking.Controls.Add(this.lblMatchThreshold);
       this.grpTracking.Controls.Add(this.nudSearchWindowHeight);
       this.grpTracking.Controls.Add(this.nudObjWindowHeight);
       this.grpTracking.Controls.Add(this.nudSearchWindowWidth);
       this.grpTracking.Controls.Add(this.nudObjWindowWidth);
       this.grpTracking.Controls.Add(this.label3);
       this.grpTracking.Controls.Add(this.cbTrackingAlgorithm);
-      this.grpTracking.Controls.Add(this.label2);
-      this.grpTracking.Controls.Add(this.label1);
-      this.grpTracking.Controls.Add(this.label5);
+      this.grpTracking.Controls.Add(this.lblSearchWindowPixels);
+      this.grpTracking.Controls.Add(this.lblObjectWindowPixels);
+      this.grpTracking.Controls.Add(this.lblSearchWindowX);
       this.grpTracking.Controls.Add(this.lblSearchWindow);
-      this.grpTracking.Controls.Add(this.label4);
+      this.grpTracking.Controls.Add(this.lblObjectWindowX);
       this.grpTracking.Controls.Add(this.lblObjectWindow);
       this.grpTracking.Location = new System.Drawing.Point(0, 276);
       this.grpTracking.Name = "grpTracking";
@@ -143,15 +143,15 @@ namespace Kinovea.ScreenManager
       this.nudUpdateThreshold.TabIndex = 66;
       this.nudUpdateThreshold.ValueChanged += new System.EventHandler(this.nudThresholds_ValueChanged);
       // 
-      // label6
+      // lblUpdateThreshold
       // 
-      this.label6.AutoSize = true;
-      this.label6.ForeColor = System.Drawing.SystemColors.ControlText;
-      this.label6.Location = new System.Drawing.Point(25, 149);
-      this.label6.Name = "label6";
-      this.label6.Size = new System.Drawing.Size(91, 13);
-      this.label6.TabIndex = 65;
-      this.label6.Text = "Update threshold:";
+      this.lblUpdateThreshold.AutoSize = true;
+      this.lblUpdateThreshold.ForeColor = System.Drawing.SystemColors.ControlText;
+      this.lblUpdateThreshold.Location = new System.Drawing.Point(25, 149);
+      this.lblUpdateThreshold.Name = "lblUpdateThreshold";
+      this.lblUpdateThreshold.Size = new System.Drawing.Size(91, 13);
+      this.lblUpdateThreshold.TabIndex = 65;
+      this.lblUpdateThreshold.Text = "Update threshold:";
       // 
       // nudMatchTreshold
       // 
@@ -172,15 +172,15 @@ namespace Kinovea.ScreenManager
       this.nudMatchTreshold.TabIndex = 64;
       this.nudMatchTreshold.ValueChanged += new System.EventHandler(this.nudThresholds_ValueChanged);
       // 
-      // label7
+      // lblMatchThreshold
       // 
-      this.label7.AutoSize = true;
-      this.label7.ForeColor = System.Drawing.SystemColors.ControlText;
-      this.label7.Location = new System.Drawing.Point(25, 118);
-      this.label7.Name = "label7";
-      this.label7.Size = new System.Drawing.Size(86, 13);
-      this.label7.TabIndex = 63;
-      this.label7.Text = "Match threshold:";
+      this.lblMatchThreshold.AutoSize = true;
+      this.lblMatchThreshold.ForeColor = System.Drawing.SystemColors.ControlText;
+      this.lblMatchThreshold.Location = new System.Drawing.Point(25, 118);
+      this.lblMatchThreshold.Name = "lblMatchThreshold";
+      this.lblMatchThreshold.Size = new System.Drawing.Size(86, 13);
+      this.lblMatchThreshold.TabIndex = 63;
+      this.lblMatchThreshold.Text = "Match threshold:";
       // 
       // nudSearchWindowHeight
       // 
@@ -296,35 +296,35 @@ namespace Kinovea.ScreenManager
       this.cbTrackingAlgorithm.TabIndex = 52;
       this.cbTrackingAlgorithm.SelectedIndexChanged += new System.EventHandler(this.cbTrackingAlgorithm_SelectedIndexChanged);
       // 
-      // label2
+      // lblSearchWindowPixels
       // 
-      this.label2.AutoSize = true;
-      this.label2.ForeColor = System.Drawing.SystemColors.ControlText;
-      this.label2.Location = new System.Drawing.Point(311, 55);
-      this.label2.Name = "label2";
-      this.label2.Size = new System.Drawing.Size(18, 13);
-      this.label2.TabIndex = 54;
-      this.label2.Text = "px";
+      this.lblSearchWindowPixels.AutoSize = true;
+      this.lblSearchWindowPixels.ForeColor = System.Drawing.SystemColors.ControlText;
+      this.lblSearchWindowPixels.Location = new System.Drawing.Point(311, 55);
+      this.lblSearchWindowPixels.Name = "lblSearchWindowPixels";
+      this.lblSearchWindowPixels.Size = new System.Drawing.Size(18, 13);
+      this.lblSearchWindowPixels.TabIndex = 54;
+      this.lblSearchWindowPixels.Text = "px";
       // 
-      // label1
+      // lblObjectWindowPixels
       // 
-      this.label1.AutoSize = true;
-      this.label1.ForeColor = System.Drawing.SystemColors.ControlText;
-      this.label1.Location = new System.Drawing.Point(311, 88);
-      this.label1.Name = "label1";
-      this.label1.Size = new System.Drawing.Size(18, 13);
-      this.label1.TabIndex = 53;
-      this.label1.Text = "px";
+      this.lblObjectWindowPixels.AutoSize = true;
+      this.lblObjectWindowPixels.ForeColor = System.Drawing.SystemColors.ControlText;
+      this.lblObjectWindowPixels.Location = new System.Drawing.Point(311, 88);
+      this.lblObjectWindowPixels.Name = "lblObjectWindowPixels";
+      this.lblObjectWindowPixels.Size = new System.Drawing.Size(18, 13);
+      this.lblObjectWindowPixels.TabIndex = 53;
+      this.lblObjectWindowPixels.Text = "px";
       // 
-      // label5
+      // lblSearchWindowX
       // 
-      this.label5.AutoSize = true;
-      this.label5.ForeColor = System.Drawing.SystemColors.ControlText;
-      this.label5.Location = new System.Drawing.Point(237, 56);
-      this.label5.Name = "label5";
-      this.label5.Size = new System.Drawing.Size(13, 13);
-      this.label5.TabIndex = 51;
-      this.label5.Text = "×";
+      this.lblSearchWindowX.AutoSize = true;
+      this.lblSearchWindowX.ForeColor = System.Drawing.SystemColors.ControlText;
+      this.lblSearchWindowX.Location = new System.Drawing.Point(237, 56);
+      this.lblSearchWindowX.Name = "lblSearchWindowX";
+      this.lblSearchWindowX.Size = new System.Drawing.Size(13, 13);
+      this.lblSearchWindowX.TabIndex = 51;
+      this.lblSearchWindowX.Text = "×";
       // 
       // lblSearchWindow
       // 
@@ -336,15 +336,15 @@ namespace Kinovea.ScreenManager
       this.lblSearchWindow.TabIndex = 47;
       this.lblSearchWindow.Text = "Search window:";
       // 
-      // label4
+      // lblObjectWindowX
       // 
-      this.label4.AutoSize = true;
-      this.label4.ForeColor = System.Drawing.SystemColors.ControlText;
-      this.label4.Location = new System.Drawing.Point(237, 88);
-      this.label4.Name = "label4";
-      this.label4.Size = new System.Drawing.Size(13, 13);
-      this.label4.TabIndex = 45;
-      this.label4.Text = "×";
+      this.lblObjectWindowX.AutoSize = true;
+      this.lblObjectWindowX.ForeColor = System.Drawing.SystemColors.ControlText;
+      this.lblObjectWindowX.Location = new System.Drawing.Point(237, 88);
+      this.lblObjectWindowX.Name = "lblObjectWindowX";
+      this.lblObjectWindowX.Size = new System.Drawing.Size(13, 13);
+      this.lblObjectWindowX.TabIndex = 45;
+      this.lblObjectWindowX.Text = "×";
       // 
       // lblObjectWindow
       // 
@@ -384,11 +384,11 @@ namespace Kinovea.ScreenManager
 
         private System.Windows.Forms.Panel pnlViewport;
         private System.Windows.Forms.GroupBox grpTracking;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label lblSearchWindowPixels;
+        private System.Windows.Forms.Label lblObjectWindowPixels;
+        private System.Windows.Forms.Label lblSearchWindowX;
         private System.Windows.Forms.Label lblSearchWindow;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblObjectWindowX;
         private System.Windows.Forms.Label lblObjectWindow;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox cbTrackingAlgorithm;
@@ -396,10 +396,10 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.NumericUpDown nudSearchWindowWidth;
         private System.Windows.Forms.NumericUpDown nudObjWindowWidth;
         private System.Windows.Forms.NumericUpDown nudMatchTreshold;
-        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label lblMatchThreshold;
         private System.Windows.Forms.NumericUpDown nudSearchWindowHeight;
         private System.Windows.Forms.NumericUpDown nudUpdateThreshold;
-        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label lblUpdateThreshold;
         private System.Windows.Forms.Button btnTrimTrack;
         private System.Windows.Forms.Button btnStartStop;
     }

@@ -296,6 +296,21 @@ namespace Kinovea.ScreenManager
                 nudObjWindowHeight.Value = tp.BlockWindow.Height;
                 nudMatchTreshold.Value = (decimal)tp.SimilarityThreshold;
                 nudUpdateThreshold.Value = (decimal)tp.TemplateUpdateThreshold;
+
+                if (tp.TrackingAlgorithm == TrackingAlgorithm.Circle)
+                {
+                    lblMatchThreshold.Visible = false;
+                    lblUpdateThreshold.Visible = false;
+                    nudMatchTreshold.Visible = false;
+                    nudUpdateThreshold.Visible = false;
+                }
+                else
+                {
+                    lblMatchThreshold.Visible = true;
+                    lblUpdateThreshold.Visible = true;
+                    nudMatchTreshold.Visible = true;
+                    nudUpdateThreshold.Visible = true;
+                }
             }
 
             manualUpdate = false;
@@ -375,6 +390,7 @@ namespace Kinovea.ScreenManager
 
             // Update local UI.
             viewportController.Refresh();
+            UpdateTrackingParameters();
 
             // Update other controllers.
             RaiseDrawingModified(DrawingAction.TrackingParametersChanged);

@@ -72,6 +72,7 @@ namespace Kinovea.ScreenManager
         int blurKernelSize = 5;
         int maxGuessVoteThreshold = 50;
         int guessVoteThresholdStep = 2;
+        double houghParam1 = 50; // Used for the canny edge transform.
 
         // Debugging.
         private static readonly bool debugging = false;
@@ -154,7 +155,7 @@ namespace Kinovea.ScreenManager
             List<TimedPoint> afterLastRef = timeline.SkipWhile(p => p.T < lastReferenceTime).ToList();
             int samples = Math.Min(averagingWindow, afterLastRef.Count());
             float averageRadius = timeline.Skip(timeline.Count - samples).Average(p => p.R);
-            log.DebugFormat("Reference radius: {0:0.000} ({1} samples)", averageRadius, samples);
+            //log.DebugFormat("Reference radius: {0:0.000} ({1} samples)", averageRadius, samples);
 
             // Perform the circle matching.
             Pair<Circle, int> circleResult = MatchCircle(cvImage, averageRadius, lastTrackPoint.Point);
@@ -375,27 +376,40 @@ namespace Kinovea.ScreenManager
 
             //------------------------------------------------------------------------------
             // Circle matching algorithm
-            // We already have a good guess for the radius from the previous frame.
-            // We will scan a range of possible radiuses starting from that guess outwards (up and down).
-            // For each candidate radius, we look for the best circle by scanning the vote space from high to low.
-            // In the radius vs vote spectrum, we give priority to circles at the same radius as the previous frame.
-            // So we start by establishing what kind of support votes we have for the initial guess radius.
+            // 
+            // The Hough Transform function will find all circles in a radius range that pass 
+            // a certain vote threshold (vote = supporting evidence for the circle).
+            // The vote threshold is highly dependent on the video source.
+            // A naive call at a low threshold produces too many false circles to be useful.
+            // The general approach is to start at a high threshold and run the call in a loop 
+            // lowering the threshold until we find a circle.
+            //
+            // Algo #1: scan radius space up or down. That is, for each vote threshold,
+            // go through all possible radiuses and see if there is any at that vote level.
+            // Change radius until we find a circle.
+            // This fails with ball that have circular patterns on them for example.
+            // This gives priority to small or large circles depending on the direction of the scan.
+            // 
+            // Algo #2: We already have a good guess for the radius from the previous frames.
+            // Give priority to circles with similar radius as the previous few frames.
+            // Start by establishing what kind of support we have for the initial guess radius.
             // Then we move up and down in radius space but only as long as the vote count is higher than the baseline.
+            // This works quite well when the object doesn't change size too much between two frames.
+            // This fails if the object is moving towards or away from the camera at a high rate,
+            // it locks into a local maximum of votes. The detectable circles obviously
+            // doesn't follow a gaussian distribution, either there is a circle of that radius or not.
+            // This approach relies on detecting false circles at radiuses between the previous and the true one.
+            //
+            // Algo #3: find all circles in a range around a baseline guess radius.
+            // Give priority to circles with high vote count. 
+            // This can be done by linear or binary search in radius space.
             //------------------------------------------------------------------------------
             int minVotes = 4;
-            result = FindBestCircleAtRadius(cvRoiGray, refRadius, srchTopLeft, lastPoint, minVotes);
-            log.DebugFormat("Baseline circle at radius: {0:0.0}, votes:{1}.", refRadius, result.Second);
 
-            // If we found multiple circles at the baseline radius we still test up and down to try to find 
-            // something better.
-
-            //if (result.Second == 0)
-            //{
-            //    log.WarnFormat("No circle found at the baseline radius.");
-            //    cvRoiGray.Dispose();
-            //    cvImageROI.Dispose();
-            //    return result;
-            //}
+            // Algo #2.
+            result = FindBestCircleAtRadius(cvRoiGray, refRadius, refRadius + 1, srchTopLeft, lastPoint, minVotes);
+            log.DebugFormat("Baseline circle around reference radius of {0:0.000}: r:{1:0.000}, votes:{1}.",
+                refRadius, result.First.Radius, result.Second);
 
             // Scan radius space down.
             float minRadius = refRadius / 1.5f;
@@ -404,7 +418,7 @@ namespace Kinovea.ScreenManager
             minVotes = Math.Max(minVotes, result.Second);
             while (true)
             {
-                Pair<Circle, int> candidate = FindBestCircleAtRadius(cvRoiGray, guessRadius, srchTopLeft, lastPoint, minVotes);
+                Pair<Circle, int> candidate = FindBestCircleAtRadius(cvRoiGray, guessRadius, guessRadius + 1, srchTopLeft, lastPoint, minVotes);
 
                 if (candidate.Second > result.Second)
                 {
@@ -428,7 +442,7 @@ namespace Kinovea.ScreenManager
             guessRadius = refRadius + 1;
             while (true)
             {
-                Pair<Circle, int> candidate = FindBestCircleAtRadius(cvRoiGray, guessRadius, srchTopLeft, lastPoint, minVotes);
+                Pair<Circle, int> candidate = FindBestCircleAtRadius(cvRoiGray, guessRadius, guessRadius + 1, srchTopLeft, lastPoint, minVotes);
 
                 // Only consider the candidate if it's closer in radius than the current best.
                 // This can happen if we find better than the baseline on both sides.
@@ -447,6 +461,13 @@ namespace Kinovea.ScreenManager
                 }
             }
 
+            // Algo #3.
+            //float minRadius = refRadius * 0.85f;
+            //float maxRadius = refRadius * 1.15f;
+            //result = FindBestCircleAtRadius(cvRoiGray, minRadius, maxRadius, srchTopLeft, lastPoint, minVotes);
+            //log.DebugFormat("Baseline circle around reference radius of {0:0.000}: r:{1:0.000}, votes:{2}.",
+            //    refRadius, result.First.Radius, result.Second);
+
             cvRoiGray.Dispose();
             cvImageROI.Dispose();
 
@@ -459,7 +480,7 @@ namespace Kinovea.ScreenManager
         /// This detects circles in the passed image that pass a given vote threshold.
         /// To get the best possible circle we start at a high threshold and lower it until we find a circle.
         /// </summary>
-        private Pair<Circle, int> FindBestCircleAtRadius(Mat cvRoiGray, float radius, PointF srchTopLeft, PointF lastPoint, int minVotes)
+        private Pair<Circle, int> FindBestCircleAtRadius(Mat cvRoiGray, float minRadius, float maxRadius, PointF srchTopLeft, PointF lastPoint, int minVotes)
         {
             // Scan the vote space from high to low to make sure we find the best possible circle.
             // Typically this will go from 0 to 1 circle found when the threshold is lowered.
@@ -470,7 +491,6 @@ namespace Kinovea.ScreenManager
             HoughModes mode = HoughModes.Gradient;
             double guessDp = 1.0; // Inverse ratio of resolution (1=full res, 2=half res, etc)
             double minDist = Math.Max(cvRoiGray.Cols / 16, 8);
-            double param1 = 50; // Used for the canny edge transform.
 
             // Quantity of votes to qualify for a circle.
             int guessVoteThreshold = maxGuessVoteThreshold;
@@ -484,10 +504,10 @@ namespace Kinovea.ScreenManager
                        mode,
                        guessDp,
                        minDist,
-                       param1,
+                       houghParam1,
                        guessVoteThreshold,
-                       (int)radius,
-                       (int)(radius + 1));
+                       (int)minRadius,
+                       (int)maxRadius);
 
                 if (circles.Length > 0)
                 {
