@@ -543,7 +543,7 @@ namespace Kinovea.ScreenManager
                 if (opacityFactor == 1.0 && currentTimestamp <= positions[positions.Count - 1].T)
                 {
                     DrawMarker(canvas, opacityFactor, transformer);
-                    if (tracker.Parameters.TrackingAlgorithm == TrackingAlgorithm.Circle)
+                    if (tracker.Parameters.TrackingAlgorithm != TrackingAlgorithm.Correlation)
                     {
                         DrawTrackedCircle(canvas, drawPointIndex, opacityFactor, transformer);
                     }
@@ -590,7 +590,7 @@ namespace Kinovea.ScreenManager
                 }
                 else if (movingHandler >= 6 && movingHandler < 11)
                 {
-                    bool keepSquare = tracker.Parameters.TrackingAlgorithm == TrackingAlgorithm.Circle;
+                    bool keepSquare = tracker.Parameters.TrackingAlgorithm != TrackingAlgorithm.Correlation;
                     blockBox.MoveHandleKeepSymmetry(point.ToPoint(), movingHandler - 5, positions[hitPointIndex].Point, keepSquare);
                 }
 
@@ -1442,6 +1442,10 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
+            // Some trackers need the image to draw configuration feedback, 
+            // for HSV thresholding for example.
+            tracker.UpdateImage(current.Timestamp, cvImage, positions);
+
             // Bail out if we are on a frame that was already tracked.
             // The track is dense and can only be extended by the end.
             if (current.Timestamp <= lastTrackedPoint.T)
@@ -2000,6 +2004,12 @@ namespace Kinovea.ScreenManager
                 case TrackingAlgorithm.Circle:
                     tracker = new TrackerCircle(trackingParameters);
                     break;
+                case TrackingAlgorithm.Blob:
+                    tracker = new TrackerBlob(trackingParameters);
+                    break;
+                //case TrackingAlgorithm.QuadrantMarker:
+                //    tracker = new TrackerQuadrant(trackingParameters);
+                //    break;
                 default:
                     tracker = new TrackerTemplateMatching(trackingParameters);
                     break;

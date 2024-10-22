@@ -54,7 +54,7 @@ namespace Kinovea.ScreenManager
         // This is used to limit the averaging window to the last reference radius.
         // Apart from that the Circle tracker is mostly stateless, unlike the
         // template matching tracker.
-        SortedSet<long> referenceTimes = new SortedSet<long>();
+        private SortedSet<long> referenceTimes = new SortedSet<long>();
 
         // Max number of points taken into account to establish the reference radius.
         // TODO: move this to parameters.
@@ -63,16 +63,16 @@ namespace Kinovea.ScreenManager
         // - Higher number for objects moving in the plane perpendicular to the camera axis.
         // We note that the use-case of tracking a ball moving towards can't be used for 
         // measurements so we optimize for the other case.
-        int averagingWindow = 4;
+        private int averagingWindow = 4;
 
         // Extra parameters.
         // Whether to blur the search window prior to circle detection.
         // Not blurring is found to be more robust to partial occlusions.
-        bool blurROI = false; 
-        int blurKernelSize = 5;
-        int maxGuessVoteThreshold = 50;
-        int guessVoteThresholdStep = 2;
-        double houghParam1 = 50; // Used for the canny edge transform.
+        private bool blurROI = false;
+        private int blurKernelSize = 5;
+        private int maxGuessVoteThreshold = 50;
+        private int guessVoteThresholdStep = 2;
+        private double houghParam1 = 50; // Used for the canny edge transform.
 
         // Debugging.
         private static readonly bool debugging = false;
@@ -224,6 +224,10 @@ namespace Kinovea.ScreenManager
             referenceTimes.RemoveWhere(t => t > time);
         }
 
+        public override void UpdateImage(long time, Mat cvImage, List<TimedPoint> previousPoints)
+        {
+        }
+
         /// <summary>
         /// Clear all internal data.
         /// </summary>
@@ -298,9 +302,6 @@ namespace Kinovea.ScreenManager
                     canvas.FillEllipse(brush, tmplRect.Right - widen, tmplRect.Bottom - widen, size, size);
                 }
 
-                // Draw the ellipse representing the mask.
-                //canvas.DrawEllipse(pen, tmplRect);
-
                 // Extra info
                 if (!isConfiguring)
                 {
@@ -341,37 +342,26 @@ namespace Kinovea.ScreenManager
         {
             Pair<Circle, int> result = new Pair<Circle, int>();
 
-            // The template matching itself is aligned with the pixel grid. 
-            // The output, user-placed or tracked, has sub-pixel coordinates.
-            // We match against the closest alignment.
-            // Do not re-inject this sub-pixel offset at the end, the result is the location from the refinement.
             PointF lastPointAligned = new PointF((int)Math.Round(lastPoint.X), (int)Math.Round(lastPoint.Y));
 
             // The boxes themselves may have odd or even sizes.
             System.Drawing.Size srchSize = parameters.SearchWindow;
-            System.Drawing.Size tmplSize = parameters.BlockWindow;
             PointF srchTopLeft = new PointF(lastPointAligned.X - (int)(srchSize.Width / 2.0f), lastPointAligned.Y - (int)(srchSize.Height / 2.0f));
-            PointF tmplTopLeft = new PointF(lastPointAligned.X - (int)(tmplSize.Width / 2.0f), lastPointAligned.Y - (int)(tmplSize.Height / 2.0f));
-
-            // Current best guess for the integer location of the template within the search window.
-            PointF lastLoc = new PointF(tmplTopLeft.X - srchTopLeft.X, tmplTopLeft.Y - srchTopLeft.Y);
-            //log.DebugFormat("srchTopLeft:{0}, tmplTopLeft:{1}, lastLoc:{2}", srchTopLeft, tmplTopLeft, lastLoc);
-
             Rectangle srchRect = new Rectangle((int)srchTopLeft.X, (int)srchTopLeft.Y, srchSize.Width, srchSize.Height);
-            //log.DebugFormat("srchRect:{0}", srchRect);
-
             srchRect.Intersect(new Rectangle(0, 0, cvImage.Width, cvImage.Height));
             srchTopLeft = srchRect.Location;
-            var cvImageROI = cvImage[srchRect.Y, srchRect.Y + srchRect.Height, srchRect.X, srchRect.X + srchRect.Width];
+
+            // Extract the ROI
+            Mat cvImageROI = cvImage[srchRect.Y, srchRect.Y + srchRect.Height, srchRect.X, srchRect.X + srchRect.Width];
 
             //----------------------------------
             // Circle tracking.
             //----------------------------------
-            Mat cvRoiGray = new OpenCvSharp.Mat();
-            Cv2.CvtColor(cvImageROI, cvRoiGray, OpenCvSharp.ColorConversionCodes.BGR2GRAY, 0);
+            Mat cvWorking = new OpenCvSharp.Mat();
+            Cv2.CvtColor(cvImageROI, cvWorking, OpenCvSharp.ColorConversionCodes.BGR2GRAY, 0);
             if (blurROI)
             {
-                Cv2.MedianBlur(cvRoiGray, cvRoiGray, blurKernelSize);
+                Cv2.MedianBlur(cvWorking, cvWorking, blurKernelSize);
             }
 
             //------------------------------------------------------------------------------
@@ -407,7 +397,7 @@ namespace Kinovea.ScreenManager
             int minVotes = 4;
 
             // Algo #2.
-            result = FindBestCircleAtRadius(cvRoiGray, refRadius, refRadius + 1, srchTopLeft, lastPoint, minVotes);
+            result = FindBestCircleAtRadius(cvWorking, refRadius, refRadius + 1, srchTopLeft, lastPoint, minVotes);
             log.DebugFormat("Baseline circle around reference radius of {0:0.000}: r:{1:0.000}, votes:{1}.",
                 refRadius, result.First.Radius, result.Second);
 
@@ -418,7 +408,7 @@ namespace Kinovea.ScreenManager
             minVotes = Math.Max(minVotes, result.Second);
             while (true)
             {
-                Pair<Circle, int> candidate = FindBestCircleAtRadius(cvRoiGray, guessRadius, guessRadius + 1, srchTopLeft, lastPoint, minVotes);
+                Pair<Circle, int> candidate = FindBestCircleAtRadius(cvWorking, guessRadius, guessRadius + 1, srchTopLeft, lastPoint, minVotes);
 
                 if (candidate.Second > result.Second)
                 {
@@ -442,7 +432,7 @@ namespace Kinovea.ScreenManager
             guessRadius = refRadius + 1;
             while (true)
             {
-                Pair<Circle, int> candidate = FindBestCircleAtRadius(cvRoiGray, guessRadius, guessRadius + 1, srchTopLeft, lastPoint, minVotes);
+                Pair<Circle, int> candidate = FindBestCircleAtRadius(cvWorking, guessRadius, guessRadius + 1, srchTopLeft, lastPoint, minVotes);
 
                 // Only consider the candidate if it's closer in radius than the current best.
                 // This can happen if we find better than the baseline on both sides.
@@ -468,7 +458,7 @@ namespace Kinovea.ScreenManager
             //log.DebugFormat("Baseline circle around reference radius of {0:0.000}: r:{1:0.000}, votes:{2}.",
             //    refRadius, result.First.Radius, result.Second);
 
-            cvRoiGray.Dispose();
+            cvWorking.Dispose();
             cvImageROI.Dispose();
 
             return result;

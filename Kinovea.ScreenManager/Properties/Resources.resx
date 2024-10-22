@@ -1881,9 +1881,6 @@
   <data name="quadrants" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\quadrants.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="sport_tennis" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\sport-tennis.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="circular_marker" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\circular_marker.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -1937,5 +1934,14 @@
   </data>
   <data name="null_symbol_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\null-symbol-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bring_forward_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bring-forward-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="circle3_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\circle3-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ellipse_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ellipse-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

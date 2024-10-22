@@ -31,6 +31,18 @@ namespace Kinovea.ScreenManager
         {
       this.pnlViewport = new System.Windows.Forms.Panel();
       this.grpTracking = new System.Windows.Forms.GroupBox();
+      this.nudErode = new System.Windows.Forms.NumericUpDown();
+      this.nudDilate = new System.Windows.Forms.NumericUpDown();
+      this.lblDilateErode = new System.Windows.Forms.Label();
+      this.nudValMax = new System.Windows.Forms.NumericUpDown();
+      this.nudValMin = new System.Windows.Forms.NumericUpDown();
+      this.lblValue = new System.Windows.Forms.Label();
+      this.nudSatMax = new System.Windows.Forms.NumericUpDown();
+      this.nudSatMin = new System.Windows.Forms.NumericUpDown();
+      this.lblSat = new System.Windows.Forms.Label();
+      this.nudHueMax = new System.Windows.Forms.NumericUpDown();
+      this.nudHueMin = new System.Windows.Forms.NumericUpDown();
+      this.lblHue = new System.Windows.Forms.Label();
       this.btnTrimTrack = new System.Windows.Forms.Button();
       this.btnStartStop = new System.Windows.Forms.Button();
       this.nudUpdateThreshold = new System.Windows.Forms.NumericUpDown();
@@ -50,6 +62,14 @@ namespace Kinovea.ScreenManager
       this.lblObjectWindowX = new System.Windows.Forms.Label();
       this.lblObjectWindow = new System.Windows.Forms.Label();
       this.grpTracking.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.nudErode)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudDilate)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudValMax)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudValMin)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudSatMax)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudSatMin)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudHueMax)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudHueMin)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudUpdateThreshold)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudMatchTreshold)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudSearchWindowHeight)).BeginInit();
@@ -74,6 +94,18 @@ namespace Kinovea.ScreenManager
       this.grpTracking.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.grpTracking.BackColor = System.Drawing.Color.White;
+      this.grpTracking.Controls.Add(this.nudErode);
+      this.grpTracking.Controls.Add(this.nudDilate);
+      this.grpTracking.Controls.Add(this.lblDilateErode);
+      this.grpTracking.Controls.Add(this.nudValMax);
+      this.grpTracking.Controls.Add(this.nudValMin);
+      this.grpTracking.Controls.Add(this.lblValue);
+      this.grpTracking.Controls.Add(this.nudSatMax);
+      this.grpTracking.Controls.Add(this.nudSatMin);
+      this.grpTracking.Controls.Add(this.lblSat);
+      this.grpTracking.Controls.Add(this.nudHueMax);
+      this.grpTracking.Controls.Add(this.nudHueMin);
+      this.grpTracking.Controls.Add(this.lblHue);
       this.grpTracking.Controls.Add(this.btnTrimTrack);
       this.grpTracking.Controls.Add(this.btnStartStop);
       this.grpTracking.Controls.Add(this.nudUpdateThreshold);
@@ -94,17 +126,177 @@ namespace Kinovea.ScreenManager
       this.grpTracking.Controls.Add(this.lblObjectWindow);
       this.grpTracking.Location = new System.Drawing.Point(0, 276);
       this.grpTracking.Name = "grpTracking";
-      this.grpTracking.Size = new System.Drawing.Size(362, 254);
+      this.grpTracking.Size = new System.Drawing.Size(362, 367);
       this.grpTracking.TabIndex = 54;
       this.grpTracking.TabStop = false;
       this.grpTracking.Text = "Tracking";
       // 
+      // nudErode
+      // 
+      this.nudErode.Location = new System.Drawing.Point(259, 260);
+      this.nudErode.Maximum = new decimal(new int[] {
+            40,
+            0,
+            0,
+            0});
+      this.nudErode.Name = "nudErode";
+      this.nudErode.Size = new System.Drawing.Size(46, 20);
+      this.nudErode.TabIndex = 81;
+      this.nudErode.ValueChanged += new System.EventHandler(this.nudHSVRange_ValueChanged);
+      // 
+      // nudDilate
+      // 
+      this.nudDilate.Location = new System.Drawing.Point(175, 260);
+      this.nudDilate.Maximum = new decimal(new int[] {
+            40,
+            0,
+            0,
+            0});
+      this.nudDilate.Name = "nudDilate";
+      this.nudDilate.Size = new System.Drawing.Size(46, 20);
+      this.nudDilate.TabIndex = 80;
+      this.nudDilate.ValueChanged += new System.EventHandler(this.nudHSVRange_ValueChanged);
+      // 
+      // lblDilateErode
+      // 
+      this.lblDilateErode.AutoSize = true;
+      this.lblDilateErode.ForeColor = System.Drawing.SystemColors.ControlText;
+      this.lblDilateErode.Location = new System.Drawing.Point(25, 262);
+      this.lblDilateErode.Name = "lblDilateErode";
+      this.lblDilateErode.Size = new System.Drawing.Size(70, 13);
+      this.lblDilateErode.TabIndex = 79;
+      this.lblDilateErode.Text = "Dilate/Erode:";
+      // 
+      // nudValMax
+      // 
+      this.nudValMax.Location = new System.Drawing.Point(259, 234);
+      this.nudValMax.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+      this.nudValMax.Name = "nudValMax";
+      this.nudValMax.Size = new System.Drawing.Size(46, 20);
+      this.nudValMax.TabIndex = 78;
+      this.nudValMax.Value = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+      this.nudValMax.ValueChanged += new System.EventHandler(this.nudHSVRange_ValueChanged);
+      // 
+      // nudValMin
+      // 
+      this.nudValMin.Location = new System.Drawing.Point(175, 234);
+      this.nudValMin.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+      this.nudValMin.Name = "nudValMin";
+      this.nudValMin.Size = new System.Drawing.Size(46, 20);
+      this.nudValMin.TabIndex = 77;
+      this.nudValMin.ValueChanged += new System.EventHandler(this.nudHSVRange_ValueChanged);
+      // 
+      // lblValue
+      // 
+      this.lblValue.AutoSize = true;
+      this.lblValue.ForeColor = System.Drawing.SystemColors.ControlText;
+      this.lblValue.Location = new System.Drawing.Point(25, 236);
+      this.lblValue.Name = "lblValue";
+      this.lblValue.Size = new System.Drawing.Size(37, 13);
+      this.lblValue.TabIndex = 76;
+      this.lblValue.Text = "Value:";
+      // 
+      // nudSatMax
+      // 
+      this.nudSatMax.Location = new System.Drawing.Point(259, 208);
+      this.nudSatMax.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+      this.nudSatMax.Name = "nudSatMax";
+      this.nudSatMax.Size = new System.Drawing.Size(46, 20);
+      this.nudSatMax.TabIndex = 75;
+      this.nudSatMax.Value = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+      this.nudSatMax.ValueChanged += new System.EventHandler(this.nudHSVRange_ValueChanged);
+      // 
+      // nudSatMin
+      // 
+      this.nudSatMin.Location = new System.Drawing.Point(175, 208);
+      this.nudSatMin.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+      this.nudSatMin.Name = "nudSatMin";
+      this.nudSatMin.Size = new System.Drawing.Size(46, 20);
+      this.nudSatMin.TabIndex = 74;
+      this.nudSatMin.ValueChanged += new System.EventHandler(this.nudHSVRange_ValueChanged);
+      // 
+      // lblSat
+      // 
+      this.lblSat.AutoSize = true;
+      this.lblSat.ForeColor = System.Drawing.SystemColors.ControlText;
+      this.lblSat.Location = new System.Drawing.Point(25, 210);
+      this.lblSat.Name = "lblSat";
+      this.lblSat.Size = new System.Drawing.Size(58, 13);
+      this.lblSat.TabIndex = 73;
+      this.lblSat.Text = "Saturation:";
+      // 
+      // nudHueMax
+      // 
+      this.nudHueMax.Location = new System.Drawing.Point(259, 182);
+      this.nudHueMax.Maximum = new decimal(new int[] {
+            360,
+            0,
+            0,
+            0});
+      this.nudHueMax.Name = "nudHueMax";
+      this.nudHueMax.Size = new System.Drawing.Size(46, 20);
+      this.nudHueMax.TabIndex = 72;
+      this.nudHueMax.Value = new decimal(new int[] {
+            360,
+            0,
+            0,
+            0});
+      this.nudHueMax.ValueChanged += new System.EventHandler(this.nudHSVRange_ValueChanged);
+      // 
+      // nudHueMin
+      // 
+      this.nudHueMin.Location = new System.Drawing.Point(175, 182);
+      this.nudHueMin.Maximum = new decimal(new int[] {
+            360,
+            0,
+            0,
+            0});
+      this.nudHueMin.Name = "nudHueMin";
+      this.nudHueMin.Size = new System.Drawing.Size(46, 20);
+      this.nudHueMin.TabIndex = 71;
+      this.nudHueMin.ValueChanged += new System.EventHandler(this.nudHSVRange_ValueChanged);
+      // 
+      // lblHue
+      // 
+      this.lblHue.AutoSize = true;
+      this.lblHue.ForeColor = System.Drawing.SystemColors.ControlText;
+      this.lblHue.Location = new System.Drawing.Point(25, 184);
+      this.lblHue.Name = "lblHue";
+      this.lblHue.Size = new System.Drawing.Size(30, 13);
+      this.lblHue.TabIndex = 70;
+      this.lblHue.Text = "Hue:";
+      // 
       // btnTrimTrack
       // 
+      this.btnTrimTrack.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.btnTrimTrack.ForeColor = System.Drawing.Color.Black;
       this.btnTrimTrack.Image = global::Kinovea.ScreenManager.Properties.Resources.bin_empty;
       this.btnTrimTrack.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      this.btnTrimTrack.Location = new System.Drawing.Point(28, 208);
+      this.btnTrimTrack.Location = new System.Drawing.Point(28, 329);
       this.btnTrimTrack.Name = "btnTrimTrack";
       this.btnTrimTrack.Size = new System.Drawing.Size(157, 27);
       this.btnTrimTrack.TabIndex = 68;
@@ -114,9 +306,10 @@ namespace Kinovea.ScreenManager
       // 
       // btnStartStop
       // 
+      this.btnStartStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.btnStartStop.AutoSize = true;
       this.btnStartStop.ForeColor = System.Drawing.Color.Black;
-      this.btnStartStop.Location = new System.Drawing.Point(28, 175);
+      this.btnStartStop.Location = new System.Drawing.Point(28, 296);
       this.btnStartStop.Name = "btnStartStop";
       this.btnStartStop.Size = new System.Drawing.Size(157, 27);
       this.btnStartStop.TabIndex = 67;
@@ -367,9 +560,17 @@ namespace Kinovea.ScreenManager
       this.ForeColor = System.Drawing.Color.Gray;
       this.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
       this.Name = "ControlDrawingTrackingSetup";
-      this.Size = new System.Drawing.Size(362, 533);
+      this.Size = new System.Drawing.Size(362, 644);
       this.grpTracking.ResumeLayout(false);
       this.grpTracking.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.nudErode)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudDilate)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudValMax)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudValMin)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudSatMax)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudSatMin)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudHueMax)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudHueMin)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudUpdateThreshold)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudMatchTreshold)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudSearchWindowHeight)).EndInit();
@@ -402,5 +603,17 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Label lblUpdateThreshold;
         private System.Windows.Forms.Button btnTrimTrack;
         private System.Windows.Forms.Button btnStartStop;
+        private System.Windows.Forms.Label lblHue;
+        private System.Windows.Forms.NumericUpDown nudHueMin;
+        private System.Windows.Forms.NumericUpDown nudHueMax;
+        private System.Windows.Forms.NumericUpDown nudValMax;
+        private System.Windows.Forms.NumericUpDown nudValMin;
+        private System.Windows.Forms.Label lblValue;
+        private System.Windows.Forms.NumericUpDown nudSatMax;
+        private System.Windows.Forms.NumericUpDown nudSatMin;
+        private System.Windows.Forms.Label lblSat;
+        private System.Windows.Forms.NumericUpDown nudErode;
+        private System.Windows.Forms.NumericUpDown nudDilate;
+        private System.Windows.Forms.Label lblDilateErode;
     }
 }

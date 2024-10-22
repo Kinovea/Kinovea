@@ -75,6 +75,13 @@ namespace Kinovea.ScreenManager
         public abstract void Clear();
 
         /// <summary>
+        /// Pass the current image to the tracker.
+        /// This may be used by trackers that need to show a modified version of the image
+        /// for feedback. (ex: HSV filtering).
+        /// </summary>
+        public abstract void UpdateImage(long timestamp, OpenCvSharp.Mat cvImage, List<TimedPoint> previousPoints);
+
+        /// <summary>
         /// Draw the tracker gizmo.
         /// </summary>
         public abstract void Draw(Graphics canvas, TimedPoint point, IImageToViewportTransformer transformer, Color color, double opacityFactor, bool isConfiguring);

@@ -95,6 +95,29 @@ namespace Kinovea.Services
             set { templateUpdateThreshold = value; }
         }
 
+        /// <summary>
+        /// HSV filter range.
+        /// Used for blob detection.
+        /// </summary>
+        public HSVRange HSVRange
+        {
+            get { return hsvRange; }
+            set { hsvRange = value; }
+        }
+
+        public int Dilate         
+        {
+            get { return dilate; }
+            set { dilate = value; }
+        }
+
+        public int Erode
+        {
+            get { return erode; }
+            set { erode = value; }
+        }
+        
+
         public bool ResetOnMove
         {
             get { return resetOnMove; }
@@ -111,6 +134,9 @@ namespace Kinovea.Services
                 hash ^= blockWindow.GetHashCode();
                 hash ^= similarityThreshold.GetHashCode();
                 hash ^= templateUpdateThreshold.GetHashCode();
+                hash ^= hsvRange.ContentHash;
+                hash ^= dilate.GetHashCode();
+                hash ^= erode.GetHashCode();
                 return hash;
             }
         }
@@ -125,6 +151,9 @@ namespace Kinovea.Services
         private int refinementNeighborhood = 1;
         private bool resetOnMove = true;
         private int maxWindowSize = 400;
+        private HSVRange hsvRange = new HSVRange();
+        private int dilate = 0;
+        private int erode = 0;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -141,6 +170,9 @@ namespace Kinovea.Services
             clone.similarityThreshold = this.similarityThreshold;
             clone.templateUpdateThreshold = this.templateUpdateThreshold;
             clone.refinementNeighborhood = this.refinementNeighborhood;
+            clone.hsvRange = this.hsvRange.Clone();
+            clone.dilate = this.dilate;
+            clone.erode = this.erode;
             clone.resetOnMove = this.resetOnMove;
             return clone;
         }
@@ -152,6 +184,11 @@ namespace Kinovea.Services
             w.WriteElementString("BlockWindow", XmlHelper.WriteSize(blockWindow));
             w.WriteElementString("SimilarityThreshold", XmlHelper.WriteFloat((float)similarityThreshold));
             w.WriteElementString("TemplateUpdateThreshold", XmlHelper.WriteFloat((float)templateUpdateThreshold));
+            w.WriteStartElement("HSVRange");
+            hsvRange.WriteXml(w);
+            w.WriteEndElement();
+            w.WriteElementString("Dilate", dilate.ToString());
+            w.WriteElementString("Erode", erode.ToString());
         }
 
         public void ReadXml(XmlReader r)
@@ -176,6 +213,15 @@ namespace Kinovea.Services
                         break;
                     case "TemplateUpdateThreshold":
                         templateUpdateThreshold = r.ReadElementContentAsDouble();
+                        break;
+                    case "HSVRange":
+                        hsvRange.ReadXml(r);
+                        break;
+                    case "Dilate":
+                        dilate = r.ReadElementContentAsInt();
+                        break;
+                    case "Erode":
+                        erode = r.ReadElementContentAsInt();
                         break;
                     default:
                         string outerXml = r.ReadOuterXml();

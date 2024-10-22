@@ -625,6 +625,7 @@
     <Compile Include="Measurement\Kinematics\FilteringResult.cs" />
     <Compile Include="Measurement\Kinematics\LinearKinematics.cs" />
     <Compile Include="Measurement\Kinematics\StatsHelper.cs" />
+    <Compile Include="Tracking\Tracking\Blob\TrackerBlob.cs" />
     <Compile Include="Tracking\Tracking\Circle\TrackerCircle.cs" />
     <Compile Include="Tracking\Tracking\TrackStatus.cs" />
     <Compile Include="Measurement\LensDistortion\FormCalibrateDistortion.cs">
@@ -2383,6 +2384,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\play-green2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ellipse-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\circle3-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bring-forward-16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">

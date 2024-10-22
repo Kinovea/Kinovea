@@ -7,18 +7,23 @@ namespace Kinovea.Services
     public enum TrackingAlgorithm
     {
         /// <summary>
-        /// Pattern matching with cross-correlation over the whole pattern window.
+        /// Template matching with cross-correlation.
         /// Compute a correlation score at each possible location in the search window.
         /// </summary>
         Correlation,
 
         /// <summary>
-        /// Finds circles in the pattern window and match reference by size.
+        /// Finds blobs within a range of HSV values.
+        /// </summary>
+        Blob,
+
+        /// <summary>
+        /// Finds circles and match by size.
         /// </summary>
         Circle,
 
         /// <summary>
-        /// Finds the central corner of a "quadrant" marker and use it as the point.
+        /// Finds the central corner of a 2x2 checkerboard marker.
         /// </summary>
         QuadrantMarker,
     }

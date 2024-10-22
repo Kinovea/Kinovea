@@ -230,6 +230,7 @@
     <Compile Include="Types\CameraMotionParameters.cs" />
     <Compile Include="Types\CSVDecimalSeparator.cs" />
     <Compile Include="Types\ExportSpace.cs" />
+    <Compile Include="Types\HSVRange.cs" />
     <Compile Include="Types\KeyframePresetsParameters.cs" />
     <Compile Include="Types\KinogramParameters.cs" />
     <Compile Include="Infrastructure\NativeMethods.cs" />

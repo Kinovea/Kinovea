@@ -185,7 +185,6 @@ namespace Kinovea.ScreenManager
             return matched;
         }
 
-
         /// <summary>
         /// Creates a track point from auto-tracking.
         /// Performs the template update algorithm.
@@ -287,7 +286,6 @@ namespace Kinovea.ScreenManager
             trackedTemplates.Insert(point.T, trackingTemplate);
         }
 
-
         /// <summary>
         /// Trim internal data related to points after the passed time.
         /// </summary>
@@ -297,6 +295,10 @@ namespace Kinovea.ScreenManager
                 return;
 
             trackedTemplates.Trim(time);
+        }
+
+        public override void UpdateImage(long time, Mat cvImage, List<TimedPoint> previousPoints)
+        {
         }
 
         /// <summary>
