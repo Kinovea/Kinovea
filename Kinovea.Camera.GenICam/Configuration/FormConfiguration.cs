@@ -106,6 +106,8 @@ namespace Kinovea.Camera.GenICam
             InitializeComponent();
             Localize();
 
+            btnGenicam.Visible = false;
+
             tbAlias.AutoSize = false;
             tbAlias.Height = 20;
             tbAlias.Text = summary.Alias;
@@ -427,6 +429,20 @@ namespace Kinovea.Camera.GenICam
         private void UpdateResultingFramerate()
         {
             float resultingFramerate = CameraPropertyManager.GetResultingFramerate(device);
+
+            // Hide the label and bail out if this is not supported.
+            if (resultingFramerate == 0)
+            {
+                lblResultingFramerate.Visible = false;
+                lblResultingFramerateValue.Visible = false;
+                return;
+            }
+            else
+            {
+                lblResultingFramerate.Visible = true;
+                lblResultingFramerateValue.Visible = true;
+            }
+
             lblResultingFramerateValue.Text = string.Format("{0:0.##}", resultingFramerate);
 
             bool discrepancy = false;
