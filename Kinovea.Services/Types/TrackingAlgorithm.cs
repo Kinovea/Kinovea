@@ -13,18 +13,18 @@ namespace Kinovea.Services
         Correlation,
 
         /// <summary>
-        /// Finds blobs within a range of HSV values.
-        /// </summary>
-        Blob,
-
-        /// <summary>
         /// Finds circles and match by size.
         /// </summary>
         Circle,
 
         /// <summary>
+        /// Finds blobs.
+        /// </summary>
+        //Blob,
+
+        /// <summary>
         /// Finds the central corner of a 2x2 checkerboard marker.
         /// </summary>
-        QuadrantMarker,
+        //QuadrantMarker,
     }
 }

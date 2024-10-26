@@ -1998,18 +1998,10 @@ namespace Kinovea.ScreenManager
             // Initialize the tracker.
             switch (trackingParameters.TrackingAlgorithm)
             {
-                case TrackingAlgorithm.Correlation:
-                    tracker = new TrackerTemplateMatching(trackingParameters);
-                    break;
                 case TrackingAlgorithm.Circle:
                     tracker = new TrackerCircle(trackingParameters);
                     break;
-                case TrackingAlgorithm.Blob:
-                    tracker = new TrackerBlob(trackingParameters);
-                    break;
-                //case TrackingAlgorithm.QuadrantMarker:
-                //    tracker = new TrackerQuadrant(trackingParameters);
-                //    break;
+                case TrackingAlgorithm.Correlation:
                 default:
                     tracker = new TrackerTemplateMatching(trackingParameters);
                     break;

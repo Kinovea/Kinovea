@@ -238,12 +238,6 @@ namespace Kinovea.Services
             set { sideBySideHorizontal = value; }
         }
 
-        public bool EnableBlobTracking
-        {
-            get { return enableBlobTracking; }
-            set { enableBlobTracking = value; }
-        }
-
         #endregion
 
         private int decimalPlaces = 2;
@@ -285,7 +279,6 @@ namespace Kinovea.Services
         private CameraMotionParameters cameraMotionParameters = new CameraMotionParameters();
         private KeyframePresetsParameters keyframePresetsParameters = new KeyframePresetsParameters();
         private bool showCacheInTimeline = false;
-        private bool enableBlobTracking = false;
         private bool sideBySideHorizontal = true;
 
         public void AddRecentColor(Color _color)
@@ -369,7 +362,6 @@ namespace Kinovea.Services
 
             writer.WriteElementString("PandocPath", pandocPath);
             writer.WriteElementString("SideBySideHorizontal", XmlHelper.WriteBoolean(SideBySideHorizontal));
-            writer.WriteElementString("EnableBlobTracking", XmlHelper.WriteBoolean(enableBlobTracking));
         }
         
         public void ReadXML(XmlReader reader)
@@ -497,9 +489,6 @@ namespace Kinovea.Services
                         break;
                     case "SideBySideHorizontal":
                         SideBySideHorizontal = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
-                        break;
-                    case "EnableBlobTracking":
-                        enableBlobTracking = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     default:
                         reader.ReadOuterXml();

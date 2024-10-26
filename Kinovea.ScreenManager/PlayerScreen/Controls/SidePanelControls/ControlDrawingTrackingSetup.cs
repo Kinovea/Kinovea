@@ -56,9 +56,7 @@ namespace Kinovea.ScreenManager
         private Pen penBorder = Pens.Silver;
         public static readonly List<TrackingAlgorithm> options = new List<TrackingAlgorithm>() {
             TrackingAlgorithm.Correlation,
-            TrackingAlgorithm.Blob,
             TrackingAlgorithm.Circle,
-            TrackingAlgorithm.QuadrantMarker,
         };
 
         // Viewport
@@ -78,17 +76,6 @@ namespace Kinovea.ScreenManager
             this.Paint += Control_Paint;
             cbTrackingAlgorithm.DrawItem += cbTrackingAlgorithm_DrawItem;
 
-            if (PreferencesManager.PlayerPreferences.EnableBlobTracking)
-            {
-                // Height allowing for the 4 extra rows of controls.
-                grpTracking.Height = 367;
-            }
-            else
-            {
-                grpTracking.Height = 250;
-            }
-            this.Height = grpTracking.Bottom + 5;
-
             pnlViewport.Controls.Add(viewportController.View);
             viewportController.View.Dock = DockStyle.Fill;
             viewportController.View.DoubleClick += pnlViewport_DoubleClick;
@@ -101,14 +88,6 @@ namespace Kinovea.ScreenManager
             NudHelper.FixNudScroll(nudObjWindowHeight);
             NudHelper.FixNudScroll(nudMatchTreshold);
             NudHelper.FixNudScroll(nudUpdateThreshold);
-            NudHelper.FixNudScroll(nudHueMin);
-            NudHelper.FixNudScroll(nudHueMax);
-            NudHelper.FixNudScroll(nudSatMin);
-            NudHelper.FixNudScroll(nudSatMax);
-            NudHelper.FixNudScroll(nudValMin);
-            NudHelper.FixNudScroll(nudValMax);
-            NudHelper.FixNudScroll(nudDilate);
-            NudHelper.FixNudScroll(nudErode);
 
             btnStartStop.Image = Properties.Drawings.play_green2;
             btnStartStop.ImageAlign = ContentAlignment.MiddleLeft;
@@ -247,14 +226,10 @@ namespace Kinovea.ScreenManager
             int selectedIndex = 0;
             for (int i = 0; i < options.Count; i++)
             {
-                if (i != (int)TrackingAlgorithm.Blob ||
-                    PreferencesManager.PlayerPreferences.EnableBlobTracking)
-                {
-                    // Use the enum value as the item.
-                    cbTrackingAlgorithm.Items.Add(options[i]);
-                    if (track != null && options[i] == track.TrackingParameters.TrackingAlgorithm)
-                        selectedIndex = cbTrackingAlgorithm.Items.Count - 1;
-                }
+                // Use the enum value as the item.
+                cbTrackingAlgorithm.Items.Add(options[i]);
+                if (track != null && options[i] == track.TrackingParameters.TrackingAlgorithm)
+                    selectedIndex = cbTrackingAlgorithm.Items.Count - 1;
             }
 
             cbTrackingAlgorithm.SelectedIndex = selectedIndex;
@@ -320,38 +295,12 @@ namespace Kinovea.ScreenManager
                 nudObjWindowHeight.Value = tp.BlockWindow.Height;
                 nudMatchTreshold.Value = (decimal)tp.SimilarityThreshold;
                 nudUpdateThreshold.Value = (decimal)tp.TemplateUpdateThreshold;
-                nudHueMin.Value = (decimal)tp.HSVRange.HueMin;
-                nudHueMax.Value = (decimal)tp.HSVRange.HueMax;
-                nudSatMin.Value = (decimal)tp.HSVRange.SaturationMin;
-                nudSatMax.Value = (decimal)tp.HSVRange.SaturationMax;
-                nudValMin.Value = (decimal)tp.HSVRange.ValueMin;
-                nudValMax.Value = (decimal)tp.HSVRange.ValueMax;
-                nudDilate.Value = (decimal)tp.Dilate;
-                nudErode.Value = (decimal)tp.Erode;
 
-                // Search window and object window are always visible.
-
-                // Show correlation thresholds controls only for correlation.
-                bool showThreshold = tp.TrackingAlgorithm == TrackingAlgorithm.Correlation;
-                lblMatchThreshold.Visible = showThreshold;
-                lblUpdateThreshold.Visible = showThreshold;
-                nudMatchTreshold.Visible = showThreshold;
-                nudUpdateThreshold.Visible = showThreshold;
-
-                // Show HSV controls only for blob.
-                bool showHSV = tp.TrackingAlgorithm == TrackingAlgorithm.Blob;
-                lblHue.Visible = showHSV;
-                lblSat.Visible = showHSV;
-                lblValue.Visible = showHSV;
-                lblDilateErode.Visible = showHSV;
-                nudHueMin.Visible = showHSV;
-                nudHueMax.Visible = showHSV;
-                nudSatMin.Visible = showHSV;
-                nudSatMax.Visible = showHSV;
-                nudValMin.Visible = showHSV;
-                nudValMax.Visible = showHSV;
-                nudDilate.Visible = showHSV;
-                nudErode.Visible = showHSV;
+                bool enableThresholds = tp.TrackingAlgorithm == TrackingAlgorithm.Correlation;
+                lblMatchThreshold.Enabled = enableThresholds;
+                lblUpdateThreshold.Enabled = enableThresholds;
+                nudMatchTreshold.Enabled = enableThresholds;
+                nudUpdateThreshold.Enabled = enableThresholds;
             }
 
             manualUpdate = false;
@@ -510,43 +459,6 @@ namespace Kinovea.ScreenManager
             RaiseDrawingModified(DrawingAction.TrackingParametersChanged);
         }
 
-        private void nudHSVRange_ValueChanged(object sender, EventArgs e)
-        {
-            if (manualUpdate || track == null)
-                return;
-
-            float hmin = (float)nudHueMin.Value;
-            float hmax = (float)nudHueMax.Value;
-            float smin = (float)nudSatMin.Value;
-            float smax = (float)nudSatMax.Value;
-            float vmin = (float)nudValMin.Value;
-            float vmax = (float)nudValMax.Value;
-            var hsvRange = new HSVRange(hmin, hmax, smin, smax, vmin, vmax);
-            track.TrackingParameters.HSVRange = hsvRange;
-            track.TrackingParameters.Dilate = (int)nudDilate.Value;
-            track.TrackingParameters.Erode = (int)nudErode.Value;
-            EnsureTracking();
-
-            viewportController.Refresh();
-            RaiseDrawingModified(DrawingAction.TrackingParametersChanged);
-        }
-
-        //private void tbHue_ValueChanged(object sender, EventArgs e)
-        //{
-        //    if (manualUpdate || track == null)
-        //        return;
-
-        //    int hue = tbHue.Value;
-        //    int hueRadius = (int)nudHueMin.Value;
-        //    //var hsvRange = track.TrackingParameters.HSVRange;
-        //    var hsvRange = new HSVRange(hue - hueRadius, hue + hueRadius, 0, 255, 0, 255);
-        //    track.TrackingParameters.HSVRange = hsvRange;
-        //    EnsureTracking();
-
-        //    viewportController.Refresh();
-        //    RaiseDrawingModified(DrawingAction.TrackingParametersChanged);
-        //}
-
         private void btnStartStop_Click(object sender, EventArgs e)
         {
             if (track != null)
@@ -638,24 +550,11 @@ namespace Kinovea.ScreenManager
                         e.Graphics.DrawString("Correlation", e.Font, Brushes.Black, textTopLeft);
                         break;
                     }
-                case TrackingAlgorithm.Blob:
-                    {
-                        e.Graphics.DrawImage(Properties.Resources.ellipse_16, rect);
-                        e.Graphics.DrawString("Blob", e.Font, Brushes.Black, textTopLeft);
-
-                        break;
-                    }
                 case TrackingAlgorithm.Circle:
                     {
                         e.Graphics.DrawImage(Properties.Resources.circle3_16, rect);
                         e.Graphics.DrawString("Circle", e.Font, Brushes.Black, textTopLeft);
 
-                        break;
-                    }
-                case TrackingAlgorithm.QuadrantMarker:
-                    {
-                        e.Graphics.DrawImage(Properties.Resources.quadrants_padded, rect);
-                        e.Graphics.DrawString("Checkerboard", e.Font, Brushes.Black, textTopLeft);
                         break;
                     }
             }
