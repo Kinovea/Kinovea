@@ -257,15 +257,63 @@ namespace Kinovea.Camera.GenICam
             if (device == null || !device.IsOpen)
                 return 0;
 
-            if (device.Vendor == "Baumer")
-                return GetResultingFramerateBaumer(device);
-            else if (device.Vendor == "Basler")
-                return GetResultingFramerateBasler(device);
-            else if (device.Vendor == "Daheng Imaging")
-                return GetResultingFramerateDaheng(device);
-            else
-                return 0;
+            switch (device.Vendor)
+            {
+                case "Baumer":
+                    return GetResultingFramerateBaumer(device);
+                case "Basler":
+                case "Daheng Imaging":
+                case "Vision Datum":
+                default:
+                    return GetResultingFramerateCommon(device);
+            }
         }
+
+        /// <summary>
+        /// Get the maximum frame rate for a Basler camera.
+        /// </summary>
+        private static float GetResultingFramerateCommon(Device device)
+        {
+            // Some cameras have a dedicated property for the resulting framerate.
+            // Note: it looks like casting a double to float is broken in the Baumer API, 
+            // it results in an integer. Make sure we first cast to double.
+            try
+            {
+                // Basler, Vision Datum
+                Node node = GetNode(device.RemoteNodeList, "ResultingFrameRateAbs");
+                if (node != null && node.IsAvailable && node.IsReadable)
+                    return (float)(double)node.Value;
+
+                node = GetNode(device.RemoteNodeList, "ResultingFrameRate");
+                if (node != null && node.IsAvailable && node.IsReadable)
+                    return (float)(double)node.Value;
+
+                // Daheng Imaging
+                node = GetNode(device.RemoteNodeList, "CurrentAcquisitionFrameRate");
+                if (node != null && node.IsReadable)
+                    return (float)(double)node.Value;
+            }
+            catch (BGAPI2.Exceptions.ErrorException e)
+            {
+                log.ErrorFormat("ErrorException while reading resulting frame rate");
+                log.ErrorFormat("Description: {0}", e.GetErrorDescription());
+                log.ErrorFormat("Function name: {0}", e.GetFunctionName());
+            }
+            catch (BGAPI2.Exceptions.LowLevelException e)
+            {
+                log.ErrorFormat("ErrorException while reading resulting frame rate");
+                log.ErrorFormat("Description: {0}", e.GetErrorDescription());
+                log.ErrorFormat("Function name: {0}", e.GetFunctionName());
+            }
+            catch (Exception e)
+            {
+                log.ErrorFormat("ErrorException while reading resulting frame rate");
+                log.ErrorFormat("Description: {0}", e.Message);
+            }
+
+            return 0;
+        }
+
 
         /// <summary>
         /// Get the maximum frame rate for a Baumer camera.
@@ -273,7 +321,7 @@ namespace Kinovea.Camera.GenICam
         private static float GetResultingFramerateBaumer(Device device)
         {
             // FIXME: The resulting value is only correct when using grayscale output.
-            
+
             float resultingFramerate = 0;
 
             try
@@ -308,64 +356,6 @@ namespace Kinovea.Camera.GenICam
 
             return resultingFramerate;
         }
-
-        /// <summary>
-        /// Get the maximum frame rate for a Basler camera.
-        /// </summary>
-        private static float GetResultingFramerateBasler(Device device)
-        {
-            // Basler cameras have a dedicated property for the resulting framerate.
-            // Note: it looks like casting a double to float is broken in the Baumer API, 
-            // it results in an integer. Make sure we first cast to double.
-            try
-            {
-                Node node = GetNode(device.RemoteNodeList, "ResultingFrameRateAbs");
-                if (node != null && node.IsAvailable && node.IsReadable)
-                    return (float)(double)node.Value;
-
-                node = GetNode(device.RemoteNodeList, "ResultingFrameRate");
-                if (node != null && node.IsAvailable && node.IsReadable)
-                    return (float)(double)node.Value;
-            }
-            catch (BGAPI2.Exceptions.ErrorException e)
-            {
-                log.ErrorFormat("ErrorException while computing resulting framerate on Basler");
-                log.ErrorFormat("Description: {0}", e.GetErrorDescription());
-                log.ErrorFormat("Function name: {0}", e.GetFunctionName());
-            }
-            catch (BGAPI2.Exceptions.LowLevelException e)
-            {
-                log.ErrorFormat("ErrorException while computing resulting framerate on Basler");
-                log.ErrorFormat("Description: {0}", e.GetErrorDescription());
-                log.ErrorFormat("Function name: {0}", e.GetFunctionName());
-            }
-            catch (Exception e)
-            {
-                log.ErrorFormat("ErrorException while computing resulting framerate on Basler");
-                log.ErrorFormat("Description: {0}", e.Message);
-            }
-
-            return 0;
-        }
-        
-        private static float GetResultingFramerateDaheng(Device device)
-        {
-            // Dedicated property.
-            try
-            {
-                Node node = GetNode(device.RemoteNodeList, "CurrentAcquisitionFrameRate");
-                if (node != null && node.IsReadable)
-                    return (float)(double)node.Value;
-            }
-            catch (Exception e)
-            {
-                log.ErrorFormat("Error while computing resulting framerate (Daheng Imaging). {0}", e.Message);
-            }
-
-            return 0;
-
-        }
-
 
         private static void ReadDeviceClock(Device device, Dictionary<string, CameraProperty> properties)
         {
