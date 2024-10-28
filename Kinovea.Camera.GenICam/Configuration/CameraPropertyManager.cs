@@ -1039,7 +1039,7 @@ namespace Kinovea.Camera.GenICam
         #region Pixel format
         /// <summary>
         /// Return true if the input buffer format is already grayscale 8-bit per pixel.
-        /// This means it may directly be put into the Y800 output frame witohut conversion.
+        /// This means it may directly be put into the Y800 output frame without conversion.
         /// This is used by the "image processor" to produce the output frame.
         /// </summary>
         public static bool IsY800(string pixelFormat)

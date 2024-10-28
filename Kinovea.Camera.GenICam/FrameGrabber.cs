@@ -46,11 +46,13 @@ namespace Kinovea.Camera.GenICam
         private bool firstOpen = true;
         private float resultingFramerate = 0;
         private Finishline finishline = new Finishline();
-        private Stopwatch swDataRate = new Stopwatch();
-        private Averager dataRateAverager = new Averager(0.02);
         private const double megabyte = 1024 * 1024;
         private int frameBufferSize = 0;
         private byte[] frameBuffer;
+
+        // Diagnostics & debug.
+        private Stopwatch swDataRate = new Stopwatch();
+        private Averager dataRateAverager = new Averager(0.02);
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         #endregion
@@ -98,7 +100,7 @@ namespace Kinovea.Camera.GenICam
 
             frameBufferSize = ImageFormatHelper.ComputeBufferSize(width, height, imageFormat);
             frameBuffer = new byte[frameBufferSize];
-
+            
             finishline.Prepare(width, height, imageFormat, resultingFramerate);
             if (finishline.Enabled)
             {
@@ -253,7 +255,7 @@ namespace Kinovea.Camera.GenICam
 
             // Store the device into the specific info so that we can retrieve device informations from the configuration dialog.
             specific.Device = genicamProvider.Device;
-
+            
             if (!string.IsNullOrEmpty(specific.StreamFormat))
                 CameraPropertyManager.WriteEnum(specific.Device, "PixelFormat", specific.StreamFormat);
 
@@ -286,39 +288,39 @@ namespace Kinovea.Camera.GenICam
         #endregion
 
         #region device event handlers
-        //private void imageProvider_GrabbingStartedEvent()
-        //{
-        //    grabbing = true;
-
-        //    if (GrabbingStatusChanged != null)
-        //        GrabbingStatusChanged(this, EventArgs.Empty);
-        //}
-
         private void GenICamProvider_BufferProduced(object sender, BufferEventArgs e)
         {
             BGAPI2.Buffer buffer = e.Buffer;
             if (buffer == null || buffer.IsIncomplete || buffer.MemPtr == IntPtr.Zero)
-                return;
-
-            int payloadLength = (int)buffer.SizeFilled;
-
-            // Wrap the buffer in an image, convert if needed.
-            BGAPI2.Image image = imgProcessor.CreateImage((uint)buffer.Width, (uint)buffer.Height, buffer.PixelFormat, buffer.MemPtr, buffer.MemSize);
-            bool ready = imageFormat == ImageFormat.JPEG || (imageFormat == ImageFormat.Y800 && CameraPropertyManager.IsY800(image.PixelFormat));
-            if (!ready)
             {
-                // Conversion required.
-                BGAPI2.Image transformedImage = GetTransformedImage(image);
-                image.Release();
-                image = transformedImage;
-
-                int bpp = CameraPropertyManager.IsY800(image.PixelFormat) ? 1 : 3;
-                payloadLength = (int)(image.Width * image.Height * bpp);
+                return;
             }
 
-            CopyFrame(image, payloadLength);
-            image.Release();
+            int payloadLength = (int)buffer.SizeFilled;
+            
+            // Convert the buffer if needed.
+            // The buffer is always sent raw as either JPEG, Mono or Bayer.
+            // If we receive 10-bit or 12-bit mono we still need to convert to 8-bit mono.
+            bool ready = imageFormat == ImageFormat.JPEG || (imageFormat == ImageFormat.Y800 && CameraPropertyManager.IsY800(buffer.PixelFormat));
+            if (ready)
+            {
+                CopyBuffer(buffer);
+            }
+            else
+            {
+                // Conversion required.
+                // FIXME: CreateImage seems to be slow (> 1 ms even for small image size), prepare the image in advance.
+                BGAPI2.Image image = imgProcessor.CreateImage((uint)buffer.Width, (uint)buffer.Height, buffer.PixelFormat, buffer.MemPtr, buffer.MemSize);
+                BGAPI2.Image transformedImage = GetTransformedImage(image);
+                image.Release();
 
+                int bpp = CameraPropertyManager.IsY800(transformedImage.PixelFormat) ? 1 : 3;
+                payloadLength = (int)(transformedImage.Width * transformedImage.Height * bpp);
+                CopyImage(transformedImage, payloadLength);
+                transformedImage.Release();
+            }
+
+            // At this point we have the payload in our frameBuffer variable.
             if (imageFormat != ImageFormat.JPEG && finishline.Enabled)
             {
                 bool flush = finishline.Consolidate(frameBuffer);
@@ -348,6 +350,9 @@ namespace Kinovea.Camera.GenICam
         }
         #endregion
 
+        /// <summary>
+        /// Get an image in the output pixel format.
+        /// </summary>
         private Image GetTransformedImage(Image image)
         {
             Image transformedImage = null;
@@ -379,7 +384,7 @@ namespace Kinovea.Camera.GenICam
         /// <summary>
         /// Takes a converted input buffer and copy it into the output buffer.
         /// </summary>
-        private unsafe void CopyFrame(Image image, int length)
+        private unsafe void CopyImage(Image image, int length)
         {
             if (frameBuffer.Length < length)
                 return;
@@ -391,6 +396,22 @@ namespace Kinovea.Camera.GenICam
                 NativeMethods.memcpy(ptrDst.ToPointer(), image.Buffer.ToPointer(), length);
             }
         }
+
+        /// <summary>
+        /// Takes the raw input buffer and copy it into the output buffer.
+        /// </summary>
+        private unsafe void CopyBuffer(BGAPI2.Buffer buffer)
+        {
+            if ((ulong)frameBuffer.Length < buffer.SizeFilled)
+                return;
+
+            fixed (byte* p = frameBuffer)
+            {
+                IntPtr ptrDst = (IntPtr)p;
+                NativeMethods.memcpy(ptrDst.ToPointer(), buffer.MemPtr.ToPointer(), (int)buffer.SizeFilled);
+            }
+        }
+
     }
 }
 
