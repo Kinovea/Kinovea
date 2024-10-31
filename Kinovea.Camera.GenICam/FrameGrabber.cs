@@ -187,6 +187,9 @@ namespace Kinovea.Camera.GenICam
             try
             {
                 genicamProvider.AcquireContinuous();
+
+                grabbing = true;
+                GrabbingStatusChanged?.Invoke(this, EventArgs.Empty);
             }
             catch (Exception e)
             {
@@ -212,8 +215,7 @@ namespace Kinovea.Camera.GenICam
             }
 
             grabbing = false;
-            if (GrabbingStatusChanged != null)
-                GrabbingStatusChanged(this, EventArgs.Empty);
+            GrabbingStatusChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void Close()
