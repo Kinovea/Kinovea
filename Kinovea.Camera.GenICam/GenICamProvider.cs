@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.Threading;
 using BGAPI2;
 
@@ -79,20 +75,7 @@ namespace Kinovea.Camera.GenICam
                     return false;
                 }
 
-                // Use buffers internal to the API.
-                bufferList = dataStream.BufferList;
-                for (int i = 0; i < bufferCount; i++)
-                {
-                    BGAPI2.Buffer buffer = new BGAPI2.Buffer();
-                    bufferList.Add(buffer);
-                }
-
-                // Make buffers available to the producer.
-                if (bufferList != null && bufferList.Count == bufferCount)
-                {
-                    foreach (KeyValuePair<string, BGAPI2.Buffer> bufferPair in bufferList)
-                        bufferPair.Value.QueueBuffer();
-                }
+                QueueBuffers();
 
                 log.DebugFormat("Opened device: {0} ({1})", device.DisplayName, device.Vendor);
                 opened = true;
@@ -175,7 +158,7 @@ namespace Kinovea.Camera.GenICam
             CameraPropertyManager.WriteEnum(device, "AcquisitionMode", "Continuous");
             CameraPropertyManager.ExecuteCommand(device, "AcquisitionStart");
             started = true;
-
+            
             // TODO: use ThreadPool instead ?
             grabThreadRun = true;
             grabThread = new Thread(Grab);
@@ -197,7 +180,7 @@ namespace Kinovea.Camera.GenICam
             CameraPropertyManager.ExecuteCommand(device, "AcquisitionStop");
             dataStream.StopAcquisition();
         }
-        
+
         /// <summary>
         /// Thread method.
         /// </summary>
@@ -290,6 +273,20 @@ namespace Kinovea.Camera.GenICam
             catch (Exception e)
             {
                 log.Error(e.Message);
+            }
+        }
+
+        private void QueueBuffers()
+        {
+            // Allocate buffers.
+            // These buffers are always allocated at the full image resolution of 
+            // the camera and will be partially filled if we use a smaller resolution.
+            bufferList = dataStream.BufferList;
+            for (int i = 0; i < bufferCount; i++)
+            {
+                BGAPI2.Buffer buffer = new BGAPI2.Buffer();
+                bufferList.Add(buffer);
+                buffer.QueueBuffer();
             }
         }
 

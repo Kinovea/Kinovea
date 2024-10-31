@@ -7,7 +7,6 @@ using System.Diagnostics;
 using BGAPI2;
 using Kinovea.Pipeline;
 using Kinovea.Services;
-using System.Diagnostics.SymbolStore;
 
 namespace Kinovea.Camera.GenICam
 {
@@ -38,21 +37,21 @@ namespace Kinovea.Camera.GenICam
         private CameraSummary summary;
         private SpecificInfo specific;
         private GenICamProvider genicamProvider = new GenICamProvider();
-        ImageProcessor imgProcessor = new ImageProcessor();
         private bool demosaicing = false;
-        private bool compression = false;
+        private bool isJpeg = false;
         private ImageFormat imageFormat = ImageFormat.None;
         private bool grabbing;
         private bool firstOpen = true;
         private float resultingFramerate = 0;
         private Finishline finishline = new Finishline();
-        private const double megabyte = 1024 * 1024;
         private int frameBufferSize = 0;
         private byte[] frameBuffer;
+        private BufferProcessor bufferProcessor = new BufferProcessor();
 
         // Diagnostics & debug.
         private Stopwatch swDataRate = new Stopwatch();
         private Averager dataRateAverager = new Averager(0.02);
+        private const double megabyte = 1024 * 1024;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         #endregion
@@ -97,6 +96,7 @@ namespace Kinovea.Camera.GenICam
             // The output format depends on the stream format and debayering options.
             // This switch will update the `imageFormat` global variable.
             SetImageFormat(device, pixelFormat);
+            bufferProcessor.Prepare();
 
             frameBufferSize = ImageFormatHelper.ComputeBufferSize(width, height, imageFormat);
             frameBuffer = new byte[frameBufferSize];
@@ -118,43 +118,28 @@ namespace Kinovea.Camera.GenICam
             if (device.Vendor == "Baumer")
             {
                 // Hardware JPEG compression.
-                compression = specific.Compression;
+                isJpeg = specific.Compression;
                 if (CameraPropertyManager.SupportsJPEG(device))
                 {
                     if (CameraPropertyManager.FormatCanCompress(device, pixelFormat))
                     {
-                        CameraPropertyManager.SetJPEG(device, compression);
+                        CameraPropertyManager.SetJPEG(device, isJpeg);
                     }
                     else
                     {
                         CameraPropertyManager.SetJPEG(device, false);
-                        compression = false;
+                        isJpeg = false;
                     }
                 }
                 else
                 {
-                    compression = false;
+                    isJpeg = false;
                 }
             }
 
             // Software debayering.
             demosaicing = specific.Demosaicing;
-            if (demosaicing)
-            {
-                // This property is on the "image processor", at the SDK level.
-                // We can use it independently of the camera vendor.
-                if (imgProcessor.NodeList.GetNodePresent("DemosaicingMethod"))
-                {
-                    // Options: NearestNeighbor, Bilinear3x3, Baumer5x5
-                    imgProcessor.NodeList["DemosaicingMethod"].Value = "NearestNeighbor";
-                }
-                else
-                {
-                    demosaicing = false;
-                }
-            }
-
-            imageFormat = CameraPropertyManager.ConvertImageFormat(pixelFormat, compression, demosaicing);
+            imageFormat = BufferProcessor.GetImageFormat(pixelFormat, isJpeg, demosaicing);
         }
 
         /// <summary>
@@ -298,29 +283,12 @@ namespace Kinovea.Camera.GenICam
                 return;
             }
 
+            // Initialize the payload length with the incoming buffer size.
+            // It may be updated up or down if we do a pixel format conversion.
             int payloadLength = (int)buffer.SizeFilled;
-            
-            // Convert the buffer if needed.
-            // The buffer is always sent raw as either JPEG, Mono or Bayer.
-            // If we receive 10-bit or 12-bit mono we still need to convert to 8-bit mono.
-            bool ready = imageFormat == ImageFormat.JPEG || (imageFormat == ImageFormat.Y800 && CameraPropertyManager.IsY800(buffer.PixelFormat));
-            if (ready)
-            {
-                CopyBuffer(buffer);
-            }
-            else
-            {
-                // Conversion required.
-                // FIXME: CreateImage seems to be slow (> 1 ms even for small image size), prepare the image in advance.
-                BGAPI2.Image image = imgProcessor.CreateImage((uint)buffer.Width, (uint)buffer.Height, buffer.PixelFormat, buffer.MemPtr, buffer.MemSize);
-                BGAPI2.Image transformedImage = GetTransformedImage(image);
-                image.Release();
 
-                int bpp = CameraPropertyManager.IsY800(transformedImage.PixelFormat) ? 1 : 3;
-                payloadLength = (int)(transformedImage.Width * transformedImage.Height * bpp);
-                CopyImage(transformedImage, payloadLength);
-                transformedImage.Release();
-            }
+            // Fill our byte buffer from BGAPI buffer
+            bufferProcessor.Process(frameBuffer, imageFormat, buffer, out payloadLength);
 
             // At this point we have the payload in our frameBuffer variable.
             if (imageFormat != ImageFormat.JPEG && finishline.Enabled)
@@ -351,69 +319,6 @@ namespace Kinovea.Camera.GenICam
             log.Error(additionalErrorMessage);
         }
         #endregion
-
-        /// <summary>
-        /// Get an image in the output pixel format.
-        /// </summary>
-        private Image GetTransformedImage(Image image)
-        {
-            Image transformedImage = null;
-            if (!demosaicing && image.PixelFormat.StartsWith("Bayer"))
-            {
-                // HDR Bayer. Convert to 8-bit while retaining the format.
-                // Transformation from a bayer pattern to another is not supported by the API.
-                if (image.PixelFormat.StartsWith("BayerBG"))
-                    transformedImage = imgProcessor.CreateTransformedImage(image, "BayerBG8");
-                else if (image.PixelFormat.StartsWith("BayerGB"))
-                    transformedImage = imgProcessor.CreateTransformedImage(image, "BayerGB8");
-                else if (image.PixelFormat.StartsWith("BayerGR"))
-                    transformedImage = imgProcessor.CreateTransformedImage(image, "BayerGR8");
-                else
-                    transformedImage = imgProcessor.CreateTransformedImage(image, "BayerRG8");
-            }
-            else
-            {
-                // HDR Mono and all other cases (RGB & YUV).
-                if (image.PixelFormat.StartsWith("Mono"))
-                    transformedImage = imgProcessor.CreateTransformedImage(image, "Mono8");
-                else
-                    transformedImage = imgProcessor.CreateTransformedImage(image, "BGR8");
-            }
-
-            return transformedImage;
-        }
-
-        /// <summary>
-        /// Takes a converted input buffer and copy it into the output buffer.
-        /// </summary>
-        private unsafe void CopyImage(Image image, int length)
-        {
-            if (frameBuffer.Length < length)
-                return;
-
-            // At this point the image is either in Mono8, Bayer**8 or BGR8.
-            fixed (byte* p = frameBuffer)
-            {
-                IntPtr ptrDst = (IntPtr)p;
-                NativeMethods.memcpy(ptrDst.ToPointer(), image.Buffer.ToPointer(), length);
-            }
-        }
-
-        /// <summary>
-        /// Takes the raw input buffer and copy it into the output buffer.
-        /// </summary>
-        private unsafe void CopyBuffer(BGAPI2.Buffer buffer)
-        {
-            if ((ulong)frameBuffer.Length < buffer.SizeFilled)
-                return;
-
-            fixed (byte* p = frameBuffer)
-            {
-                IntPtr ptrDst = (IntPtr)p;
-                NativeMethods.memcpy(ptrDst.ToPointer(), buffer.MemPtr.ToPointer(), (int)buffer.SizeFilled);
-            }
-        }
-
     }
 }
 

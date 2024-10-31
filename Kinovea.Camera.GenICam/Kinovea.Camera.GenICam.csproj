@@ -42,6 +42,10 @@
       <HintPath>..\packages\log4net.2.0.14\lib\net45\log4net.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="OpenCvSharp">
+      <HintPath>..\packages\OpenCvSharp4.4.10.0.20240616\lib\net48\OpenCvSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -54,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BufferProcessor.cs" />
     <Compile Include="GenICamProvider.cs" />
     <Compile Include="BufferEventArgs.cs" />
     <Compile Include="CameraManagerGenICam.cs" />
@@ -96,6 +101,14 @@
     <EmbeddedResource Include="Configuration\FormConfiguration.resx">
       <DependentUpon>FormConfiguration.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="OpenCvSharp4">
+      <Version>4.10.0.20240616</Version>
+    </PackageReference>
+    <PackageReference Include="OpenCvSharp4.runtime.win">
+      <Version>4.10.0.20240616</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="GenICam.targets" />

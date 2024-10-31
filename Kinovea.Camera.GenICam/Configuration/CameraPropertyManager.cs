@@ -731,7 +731,9 @@ namespace Kinovea.Camera.GenICam
                         break;
                     case "Width":
                     case "Height":
-                        // Do nothing. These properties must be changed from WriteCriticalProperties below.
+                        // Do nothing, these properties can't be changed while the
+                        // camera is streaming.
+                        // We write them via WriteCriticalProperties below.
                         break;
                     default:
                         log.ErrorFormat("GenICam property not supported: {0}.", property.Identifier);
@@ -779,7 +781,7 @@ namespace Kinovea.Camera.GenICam
                 // The Peak Cockpit doesn't see this problem because every time 
                 // the camera is connected it resets the device clock value to its 
                 // nominal value anyway, which is arguably even worse.
-                // The solution is to write the device clock first, it will change the 
+                // The solution is to write the device clock first, it will still change the 
                 // other properties, but then we overwrite them with the wanted user values.
                 if (device.Vendor == "IDS" && properties.ContainsKey("clock"))
                 {
@@ -1031,57 +1033,6 @@ namespace Kinovea.Camera.GenICam
             if (node.Value == "Off")
             {
                 node.Value = "Once";
-            }
-        }
-        #endregion
-
-
-        #region Pixel format
-        /// <summary>
-        /// Return true if the input buffer format is already grayscale 8-bit per pixel.
-        /// This means it may directly be put into the Y800 output frame without conversion.
-        /// This is used by the "image processor" to produce the output frame.
-        /// </summary>
-        public static bool IsY800(string pixelFormat)
-        {
-            // HDR Bayer is not Y800, it needs to be converted.
-            return pixelFormat == "Mono8" || 
-                pixelFormat == "BayerBG8" ||
-                pixelFormat == "BayerGB8" ||
-                pixelFormat == "BayerGR8" ||
-                pixelFormat == "BayerRG8";
-        }
-
-        /// <summary>
-        /// Returns true if the format is a Bayer format.
-        /// </summary>
-        public static bool IsBayer(string pixelFormat)
-        {
-            return pixelFormat.StartsWith("Bayer");
-        }
-
-        /// <summary>
-        /// Takes a pixel format and determines the output image format.
-        /// </summary>
-        public static ImageFormat ConvertImageFormat(string pixelFormat, bool compression, bool demosaicing)
-        {
-            if (compression)
-                return ImageFormat.JPEG;
-
-            if (IsBayer(pixelFormat))
-            {
-                if (!demosaicing)
-                    return ImageFormat.Y800;
-                else
-                    return ImageFormat.RGB24;
-            }
-            else if (pixelFormat.StartsWith("Mono"))
-            {
-                return ImageFormat.Y800;
-            }
-            else
-            {
-                return ImageFormat.RGB24;
             }
         }
         #endregion

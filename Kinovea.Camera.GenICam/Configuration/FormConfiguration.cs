@@ -241,7 +241,7 @@ namespace Kinovea.Camera.GenICam
         private void PopulateFormatExtraOptions()
         {
             // Enable/Disable
-            cbDebayering.Enabled = CameraPropertyManager.IsBayer(selectedStreamFormat);
+            cbDebayering.Enabled = BufferProcessor.IsBayer(selectedStreamFormat);
             bool supportsJPEG = CameraPropertyManager.SupportsJPEG(device);
             bool canCompress = CameraPropertyManager.FormatCanCompress(device, selectedStreamFormat);
             cbCompression.Enabled = supportsJPEG && canCompress;
