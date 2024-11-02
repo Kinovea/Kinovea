@@ -265,6 +265,9 @@ namespace Kinovea.Camera.GenICam
         /// </summary>
         private unsafe void FillBufferFromMat(byte[] dst, OpenCvSharp.Mat src, int length)
         {
+            if (dst.Length < length)
+                return;
+
             try
             {
                 Marshal.Copy(src.Data, dst, 0, length);
