@@ -5589,7 +5589,10 @@ namespace Kinovea.ScreenManager
             int keyframeIndex = m_FrameServer.Metadata.GetKeyframeIndex(m_iCurrentPosition);
             
             using (Graphics canvas = Graphics.FromImage(output))
+            {
+                canvas.Clear(Color.Black);
                 FlushOnGraphics(m_FrameServer.CurrentImage, canvas, output.Size, keyframeIndex, m_iCurrentPosition, m_FrameServer.ImageTransform.Identity);
+            }
         }
 
         /// <summary>
@@ -5613,7 +5616,10 @@ namespace Kinovea.ScreenManager
             TrackDrawingsCommand.Execute(vf);
 
             using (Graphics canvas = Graphics.FromImage(output))
+            {
+                canvas.Clear(Color.Black);
                 FlushOnGraphics(vf.Image, canvas, output.Size, keyframeIndex, vf.Timestamp, m_FrameServer.ImageTransform.Identity);
+            }
 
             return keyframeIndex != -1;
         }
