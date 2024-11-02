@@ -152,13 +152,9 @@ namespace Kinovea.Camera.GenICam
             NativeMethods.memcpy(mat.Data.ToPointer(), src.MemPtr.ToPointer(), (int)src.SizeFilled);
 
             // Convert HDR to LDR (Mono and Bayer)
-            if (src.PixelFormat.EndsWith("10"))
+            if (bpp == 2)
             {
-                mat.ConvertTo(mat, MatType.CV_8UC1, 1.0 / 4.0);
-            }
-            else if (src.PixelFormat.EndsWith("12"))
-            {
-                mat.ConvertTo(mat, MatType.CV_8UC1, 1.0 / 16.0);
+                ToLDR(src.PixelFormat, mat);
             }
 
             if (dstFormat == ImageFormat.Y800)
@@ -183,7 +179,6 @@ namespace Kinovea.Camera.GenICam
                 // https://docs.opencv.org/3.4/d8/d01/group__imgproc__color__conversions.html
                 // https://github.com/opencv/opencv/issues/19629
 
-                // Bayer LDR 
                 if (src.PixelFormat.StartsWith("BayerRG"))
                 {
                     mat = mat.CvtColor(ColorConversionCodes.BayerBG2BGR);
@@ -228,6 +223,29 @@ namespace Kinovea.Camera.GenICam
             //{
             //    log.DebugFormat("Frame: {0}, Avg: {1} ms", frameCount, averager.Average);
             //}
+        }
+
+        /// <summary>
+        /// Convert HDR to LDR for Mono and Bayer formats.
+        /// </summary>
+        private void ToLDR(string pixelFormat, OpenCvSharp.Mat mat)
+        {
+            if (pixelFormat.EndsWith("10"))
+            {
+                mat.ConvertTo(mat, MatType.CV_8UC1, 1.0 / 4.0);
+            }
+            else if (pixelFormat.EndsWith("12"))
+            {
+                mat.ConvertTo(mat, MatType.CV_8UC1, 1.0 / 16.0);
+            }
+            else if (pixelFormat.EndsWith("14"))
+            {
+                mat.ConvertTo(mat, MatType.CV_8UC1, 1.0 / 64.0);
+            }
+            else if (pixelFormat.EndsWith("16"))
+            {
+                mat.ConvertTo(mat, MatType.CV_8UC1, 1.0 / 256.0);
+            }
         }
 
         /// <summary>
