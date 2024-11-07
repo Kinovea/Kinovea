@@ -1501,6 +1501,11 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
+        public void StartAllTracking()
+        {
+            foreach (DrawingTrack t in Tracks())
+                t.StartTracking();
+        }
         public void StopAllTracking()
         {
             foreach(DrawingTrack t in Tracks())

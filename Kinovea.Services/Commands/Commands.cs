@@ -115,6 +115,7 @@ namespace Kinovea.Services
         ChronometerStartStop,
         ChronometerSplit,
         CadenceBeat,
+        StartAllTracking,
     }
 
     public enum DualCaptureCommands

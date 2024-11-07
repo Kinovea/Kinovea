@@ -1544,9 +1544,9 @@ namespace Kinovea.ScreenManager
                 case PlayerScreenCommands.CadenceBeat:
                     CadenceBeat();
                     break;
-
-
-
+                case PlayerScreenCommands.StartAllTracking:
+                    StartAllTracking();
+                    break;
                 default:
                     return base.ExecuteCommand(cmd);
             }
@@ -1738,6 +1738,15 @@ namespace Kinovea.ScreenManager
 
             DoInvalidate();
             UpdateFramesMarkers();
+        }
+
+        private void StartAllTracking()
+        {
+            if (!m_FrameServer.Loaded)
+                return;
+            
+            m_FrameServer.Metadata.StartAllTracking();
+            DoInvalidate();
         }
 
         /// <summary>
