@@ -52,17 +52,17 @@ namespace Kinovea.ScreenManager
         /// <param name="timestamp">The current timestamp to create the TrackPoint.</param>
         /// <param name="currentPoint">The resulting point that should be added to the list.</param>
         /// <returns>true if the tracking is reliable, false if the point couldn't be found.</returns>
-        public abstract bool TrackStep(List<TimedPoint> previousPoints, long time, Bitmap bmpImage, OpenCvSharp.Mat cvImage, out TimedPoint currentPoint);
+        public abstract bool TrackStep(List<TimedPoint> previousPoints, long time, OpenCvSharp.Mat cvImage, out TimedPoint currentPoint);
         
         /// <summary>
         /// Creates a track point from auto-tracking.
         /// </summary>
-        public abstract TimedPoint CreateTrackPoint(object trackingResult, long time, Bitmap image, List<TimedPoint> previousPoints);
+        public abstract TimedPoint CreateTrackPoint(object trackingResult, long time, OpenCvSharp.Mat cvImage, List<TimedPoint> previousPoints);
 
         /// <summary>
         /// Creates a Track point from a user-provided location.
         /// </summary>
-        public abstract void CreateReferenceTrackPoint(TimedPoint point, Bitmap image);
+        public abstract void CreateReferenceTrackPoint(TimedPoint point, OpenCvSharp.Mat cvImage);
 
         /// <summary>
         /// Trim internal data related to points after the passed time.

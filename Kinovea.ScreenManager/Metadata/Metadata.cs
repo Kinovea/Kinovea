@@ -36,6 +36,7 @@ using System.Xml.Xsl;
 using System.Linq;
 using Kinovea.Services;
 using Kinovea.Video;
+using System.Threading.Tasks;
 
 namespace Kinovea.ScreenManager
 {
@@ -1494,11 +1495,12 @@ namespace Kinovea.ScreenManager
         {
             using (var cvImage = OpenCvSharp.Extensions.BitmapConverter.ToMat(videoframe.Image))
             {
-                foreach(DrawingTrack t in Tracks())
+                List<DrawingTrack> tt = Tracks().ToList();
+                Parallel.ForEach(tt, t =>
                 {
                     if (t.Status == TrackStatus.Edit)
                         t.TrackStep(videoframe, cvImage);
-                }
+                });
             }
         }
         public void StartAllTracking()
@@ -1520,9 +1522,12 @@ namespace Kinovea.ScreenManager
         public void UpdateTrackPoint(Bitmap bitmap)
         {
             // Happens when mouse up and editing a track.
-            DrawingTrack track = hitDrawing as DrawingTrack;
-            if(track != null && (track.Status == TrackStatus.Edit))
-                track.UpdateTrackPoint(bitmap, imageTransform);
+            using (var cvImage = OpenCvSharp.Extensions.BitmapConverter.ToMat(bitmap))
+            {
+                DrawingTrack track = hitDrawing as DrawingTrack;
+                if (track != null && (track.Status == TrackStatus.Edit))
+                    track.UpdateTrackPoint(cvImage, imageTransform);
+            }
         }
 
         public int GetContentHash()

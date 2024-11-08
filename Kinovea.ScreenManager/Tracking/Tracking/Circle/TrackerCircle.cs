@@ -124,16 +124,16 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Perform a tracking step.
         /// </summary>
-        public override bool TrackStep(List<TimedPoint> timeline, long time, Bitmap currentImage, Mat cvImage, out TimedPoint currentPoint)
+        public override bool TrackStep(List<TimedPoint> timeline, long time, Mat cvImage, out TimedPoint currentPoint)
         {
             TimedPoint lastTrackPoint = timeline.Last();
             
             //log.DebugFormat("Track step. last track point at {0}, last tracked circle at {1}.", lastTrackPoint.T, lastTrackedCircle.Time);
-            if (currentImage == null)
+            if (cvImage == null)
             {
                 // Unrecoverable issue.
                 Circle dummy = new Circle(lastTrackPoint.Point, lastTrackPoint.R);
-                currentPoint = CreateTrackPoint(dummy, time, currentImage, timeline);
+                currentPoint = CreateTrackPoint(dummy, time, cvImage, timeline);
                 log.Error("Tracking impossible: no input image.");
                 return false;
             }
@@ -141,7 +141,7 @@ namespace Kinovea.ScreenManager
             if (lastTrackPoint.R == 0)
             {
                 Circle dummy = new Circle(lastTrackPoint.Point, lastTrackPoint.R);
-                currentPoint = CreateTrackPoint(dummy, time, currentImage, timeline);
+                currentPoint = CreateTrackPoint(dummy, time, cvImage, timeline);
                 log.Error("Tracking impossible: tracker is not ready.");
                 return false;
             }
@@ -169,13 +169,13 @@ namespace Kinovea.ScreenManager
                 // Tracking failure.
                 // Keep the point at the previous location.
                 Circle dummy = new Circle(lastTrackPoint.Point, lastTrackPoint.R);
-                currentPoint = CreateTrackPoint(dummy, time, currentImage, timeline);
+                currentPoint = CreateTrackPoint(dummy, time, cvImage, timeline);
                 log.DebugFormat("Circle tracking failed.");
             }
             else
             {
                 // Tracking success.
-                currentPoint = CreateTrackPoint(circle, time, currentImage, timeline);
+                currentPoint = CreateTrackPoint(circle, time, cvImage, timeline);
                 matched = true;
             }
 
@@ -186,7 +186,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Creates a track point from auto-tracking.
         /// </summary>
-        public override TimedPoint CreateTrackPoint(object trackingResult, long time, Bitmap currentImage, List<TimedPoint> previousPoints)
+        public override TimedPoint CreateTrackPoint(object trackingResult, long time, OpenCvSharp.Mat cvImage, List<TimedPoint> previousPoints)
         {
             if (!(trackingResult is Circle))
                 throw new InvalidProgramException();
@@ -201,7 +201,7 @@ namespace Kinovea.ScreenManager
         /// Always updates the template.
         /// This does not return a timed point since it will always be the same as the passed input.
         /// </summary>
-        public override void CreateReferenceTrackPoint(TimedPoint point, Bitmap currentImage)
+        public override void CreateReferenceTrackPoint(TimedPoint point, OpenCvSharp.Mat cvImage)
         {
             // Modify the radius of the passed timed point with the current parameters.
             float radius = Math.Max(parameters.BlockWindow.Width / 2.0f, parameters.BlockWindow.Height/ 2.0f);

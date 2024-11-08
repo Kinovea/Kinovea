@@ -1461,11 +1461,11 @@ namespace Kinovea.ScreenManager
                 // FIXME: we are associating a template extracted from the current image 
                 // at the location of the match in the previous frame so the template won't be 
                 // correctly aligned with the object of interest.
-                tracker.CreateReferenceTrackPoint(lastTrackedPoint, current.Image);
+                tracker.CreateReferenceTrackPoint(lastTrackedPoint, cvImage);
             }
 
             TimedPoint tp = null;
-            bool matched = tracker.TrackStep(positions, current.Timestamp, current.Image, cvImage, out tp);
+            bool matched = tracker.TrackStep(positions, current.Timestamp, cvImage, out tp);
 
             if (tp == null)
             {
@@ -1491,15 +1491,15 @@ namespace Kinovea.ScreenManager
         /// The user manually moved a point that had been previously placed.
         /// Reconstruct tracking data (template) stored in the point, for tracking following points.
         /// </summary>
-        public void UpdateTrackPoint(Bitmap currentImage, IImageToViewportTransformer transformer)
+        public void UpdateTrackPoint(OpenCvSharp.Mat cvImage, IImageToViewportTransformer transformer)
         {
             // The coordinate of the point have already been updated during the mouse move.
-            if (currentImage == null || positions.Count < 1 || drawPointIndex < 0)
+            if (cvImage == null || positions.Count < 1 || drawPointIndex < 0)
                 return;
 
             // Update internal tracker state.
             TimedPoint current = positions[drawPointIndex];
-            tracker.CreateReferenceTrackPoint(current, currentImage);
+            tracker.CreateReferenceTrackPoint(current, cvImage);
 
             // Update the mini labels (attach, position of label, and text).
             for (int i = 0; i < keyframeLabels.Count; i++)

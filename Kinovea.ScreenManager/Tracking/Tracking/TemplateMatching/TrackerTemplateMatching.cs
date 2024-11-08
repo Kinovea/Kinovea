@@ -31,7 +31,6 @@ using System.Drawing.Drawing2D;
 using MathNet.Numerics;
 using System.Linq;
 
-
 namespace Kinovea.ScreenManager
 {
     /// <summary>
@@ -130,16 +129,16 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Perform a tracking step.
         /// </summary>
-        public override bool TrackStep(List<TimedPoint> timeline, long time, Bitmap currentImage, Mat cvImage, out TimedPoint currentPoint)
+        public override bool TrackStep(List<TimedPoint> timeline, long time, Mat cvImage, out TimedPoint currentPoint)
         {
             TimedPoint lastTrackPoint = timeline.Last();
             TrackingTemplate lastTemplate = trackedTemplates.Last();
 
             //log.DebugFormat("Track step. last track point at {0}, last template at {1}.", lastTrackPoint.T, lastTemplate.Time);
-            if (currentImage == null)
+            if (cvImage == null)
             {
                 // Unrecoverable issue.
-                currentPoint = CreateTrackPoint(lastTrackPoint.Point, time, currentImage, timeline);
+                currentPoint = CreateTrackPoint(lastTrackPoint.Point, time, cvImage, timeline);
                 log.Error("Tracking impossible: no input image.");
                 return false;
             }
@@ -149,7 +148,7 @@ namespace Kinovea.ScreenManager
                 lastTemplate.Template.Height != parameters.BlockWindow.Height)
             {
                 // InvalidProgram: this should have been caught by IsReady().
-                currentPoint = CreateTrackPoint(lastTrackPoint.Point, time, currentImage, timeline);
+                currentPoint = CreateTrackPoint(lastTrackPoint.Point, time, cvImage, timeline);
                 log.Error("Tracking impossible: tracker is not ready.");
                 return false;
             }
@@ -164,7 +163,7 @@ namespace Kinovea.ScreenManager
                 // Program failure.
                 // Keep the point at the previous location.
                 TemplateMatchResult dummy = new TemplateMatchResult(0, lastTrackPoint.Point);
-                currentPoint = CreateTrackPoint(dummy, time, currentImage, timeline);
+                currentPoint = CreateTrackPoint(dummy, time, cvImage, timeline);
                 log.DebugFormat("Tracking failed.");
             }
             else if (result.Similarity < parameters.SimilarityThreshold)
@@ -172,13 +171,13 @@ namespace Kinovea.ScreenManager
                 // Tracking failure.
                 // Keep the point at the previous location.
                 TemplateMatchResult dummy = new TemplateMatchResult(0, lastTrackPoint.Point);
-                currentPoint = CreateTrackPoint(dummy, time, currentImage, timeline);
+                currentPoint = CreateTrackPoint(dummy, time, cvImage, timeline);
                 log.DebugFormat("Tracking failed. Best candidate: {0} < {1}.", result.Similarity, parameters.SimilarityThreshold);
             }
             else
             {
                 // Tracking success, apply template update algorithm.
-                currentPoint = CreateTrackPoint(result, time, currentImage, timeline);
+                currentPoint = CreateTrackPoint(result, time, cvImage, timeline);
                 matched = true;
             }
 
@@ -189,7 +188,7 @@ namespace Kinovea.ScreenManager
         /// Creates a track point from auto-tracking.
         /// Performs the template update algorithm.
         /// </summary>
-        public override TimedPoint CreateTrackPoint(object trackingResult, long time, Bitmap currentImage, List<TimedPoint> previousPoints)
+        public override TimedPoint CreateTrackPoint(object trackingResult, long time, OpenCvSharp.Mat cvImage, List<TimedPoint> previousPoints)
         {
             if (!(trackingResult is TemplateMatchResult))
                 throw new InvalidProgramException();
@@ -241,11 +240,15 @@ namespace Kinovea.ScreenManager
                 int startX = (int)(pointAligned.X - ((int)(bmpTemplate.Width / 2.0f)));
                 int startY = (int)(pointAligned.Y - ((int)(bmpTemplate.Height / 2.0f)));
 
-                // This might happen if the user place the point so that the template is partially outside the image boundaries.
+                // Copy ROI
+                // Make sure the template isn't outside the image boundaries.
                 startX = Math.Max(startX, 0);
                 startY = Math.Max(startY, 0);
-
-                BitmapHelper.CopyROI(currentImage, bmpTemplate, new System.Drawing.Point(startX, startY));
+                int width = Math.Min(bmpTemplate.Width, cvImage.Width - startX);
+                int height = Math.Min(bmpTemplate.Height, cvImage.Height - startY);
+                var cvROI = cvImage[startY, startY + height, startX, startX + width];
+                Bitmap bmpROI = cvROI.ToBitmap();
+                BitmapHelper.Copy(bmpROI, bmpTemplate, new Rectangle(0, 0, bmpROI.Width, bmpROI.Height));
 
                 TrackingSource source = TrackingSource.Auto;
                 trackingTemplate = new TrackingTemplate(time, point, (float)similarity, bmpTemplate, source);
@@ -261,7 +264,7 @@ namespace Kinovea.ScreenManager
         /// Always updates the template.
         /// This does not return a timed point since it will always be the same as the passed input.
         /// </summary>
-        public override void CreateReferenceTrackPoint(TimedPoint point, Bitmap currentImage)
+        public override void CreateReferenceTrackPoint(TimedPoint point, OpenCvSharp.Mat cvImage)
         {
             TrackingTemplate trackingTemplate = null;
             Bitmap bmpTemplate = new Bitmap(parameters.BlockWindow.Width, parameters.BlockWindow.Height, PixelFormat.Format32bppPArgb);
@@ -272,10 +275,15 @@ namespace Kinovea.ScreenManager
             int startX = (int)(pointAligned.X - ((int)(bmpTemplate.Width / 2.0f)));
             int startY = (int)(pointAligned.Y - ((int)(bmpTemplate.Height / 2.0f)));
 
-            // This might happen if the user place the point so that the template is partially outside the image boundaries.
+            // Copy ROI
+            // Make sure the template isn't outside the image boundaries.
             startX = Math.Max(startX, 0);
             startY = Math.Max(startY, 0);
-            BitmapHelper.CopyROI(currentImage, bmpTemplate, new System.Drawing.Point(startX, startY));
+            int width = Math.Min(bmpTemplate.Width, cvImage.Width - startX);
+            int height = Math.Min(bmpTemplate.Height, cvImage.Height - startY);
+            var cvROI = cvImage[startY, startY + height, startX, startX + width];
+            Bitmap bmpROI = cvROI.ToBitmap();
+            BitmapHelper.Copy(bmpROI, bmpTemplate, new Rectangle(0, 0, bmpROI.Width, bmpROI.Height));
 
             // Store the template to tracker state.
             TrackingSource source = TrackingSource.Manual;
