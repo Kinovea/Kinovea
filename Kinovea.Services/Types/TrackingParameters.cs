@@ -96,6 +96,16 @@ namespace Kinovea.Services
         }
 
         /// <summary>
+        /// Whether to use an ellipse-shaped mask for template matching.
+        /// Avoids picking background in the corners but significantly slower.
+        /// </summary>
+        public bool UseMask
+        {
+            get { return useMask; }
+            set { useMask = value; }
+        }
+
+        /// <summary>
         /// HSV filter range.
         /// Used for blob detection.
         /// </summary>
@@ -134,6 +144,7 @@ namespace Kinovea.Services
                 hash ^= blockWindow.GetHashCode();
                 hash ^= similarityThreshold.GetHashCode();
                 hash ^= templateUpdateThreshold.GetHashCode();
+                hash ^= useMask.GetHashCode();
                 hash ^= hsvRange.ContentHash;
                 hash ^= dilate.GetHashCode();
                 hash ^= erode.GetHashCode();
@@ -148,7 +159,7 @@ namespace Kinovea.Services
         private Size blockWindow = new Size(20, 20);
         private double similarityThreshold = 0.5;
         private double templateUpdateThreshold = 0.8; // using CCORR : 0.90 or 0.95, when using CCOEFF : 0.80.
-        private int refinementNeighborhood = 1;
+        private bool useMask = false;
         private bool resetOnMove = true;
         private int maxWindowSize = 400;
         private HSVRange hsvRange = new HSVRange();
@@ -169,7 +180,7 @@ namespace Kinovea.Services
             clone.blockWindow = this.blockWindow;
             clone.similarityThreshold = this.similarityThreshold;
             clone.templateUpdateThreshold = this.templateUpdateThreshold;
-            clone.refinementNeighborhood = this.refinementNeighborhood;
+            clone.useMask = this.useMask;
             clone.hsvRange = this.hsvRange.Clone();
             clone.dilate = this.dilate;
             clone.erode = this.erode;
@@ -184,6 +195,7 @@ namespace Kinovea.Services
             w.WriteElementString("BlockWindow", XmlHelper.WriteSize(blockWindow));
             w.WriteElementString("SimilarityThreshold", XmlHelper.WriteFloat((float)similarityThreshold));
             w.WriteElementString("TemplateUpdateThreshold", XmlHelper.WriteFloat((float)templateUpdateThreshold));
+            w.WriteElementString("UseMask", XmlHelper.WriteBoolean(useMask));
             w.WriteStartElement("HSVRange");
             hsvRange.WriteXml(w);
             w.WriteEndElement();
@@ -213,6 +225,9 @@ namespace Kinovea.Services
                         break;
                     case "TemplateUpdateThreshold":
                         templateUpdateThreshold = r.ReadElementContentAsDouble();
+                        break;
+                    case "UseMask":
+                        useMask = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
                         break;
                     case "HSVRange":
                         hsvRange.ReadXml(r);

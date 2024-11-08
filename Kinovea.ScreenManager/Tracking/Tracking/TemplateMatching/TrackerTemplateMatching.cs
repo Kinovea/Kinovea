@@ -60,6 +60,7 @@ namespace Kinovea.ScreenManager
         private Timeline<TrackingTemplate> trackedTemplates = new Timeline<TrackingTemplate>();
 
         // Mask used during template matching. Only changes when the template size changes.
+        // Actual usage is controlled by parameters.UseMask.
         private Bitmap mask;
         private OpenCvSharp.Mat cvMaskGray = new OpenCvSharp.Mat();
 
@@ -449,7 +450,7 @@ namespace Kinovea.ScreenManager
             var cvImageROI = cvImage[srchRect.Y, srchRect.Y + srchRect.Height, srchRect.X, srchRect.X + srchRect.Width];
 
             // Make an ellipse mask to avoid matching on the background.
-            if (mask == null || mask.Width != tmplSize.Width || mask.Height != tmplSize.Height)
+            if (parameters.UseMask && (mask == null || mask.Width != tmplSize.Width || mask.Height != tmplSize.Height))
             {
                 if (mask != null)
                 {

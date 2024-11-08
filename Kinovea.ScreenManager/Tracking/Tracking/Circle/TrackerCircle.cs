@@ -398,8 +398,8 @@ namespace Kinovea.ScreenManager
 
             // Algo #2.
             result = FindBestCircleAtRadius(cvWorking, refRadius, refRadius + 1, srchTopLeft, lastPoint, minVotes);
-            log.DebugFormat("Baseline circle around reference radius of {0:0.000}: r:{1:0.000}, votes:{1}.",
-                refRadius, result.First.Radius, result.Second);
+            //log.DebugFormat("Baseline circle around reference radius of {0:0.000}: r:{1:0.000}, votes:{2}.",
+            //    refRadius, result.First.Radius, result.Second);
 
             // Scan radius space down.
             float minRadius = refRadius / 1.5f;
@@ -414,7 +414,7 @@ namespace Kinovea.ScreenManager
                 {
                     result = candidate;
                     bestRadiusDiff = Math.Abs(guessRadius - refRadius);
-                    log.DebugFormat("Found better circle at radius {0}, Votes:{1}", guessRadius, candidate.Second);
+                    //log.DebugFormat("Found better circle at radius {0}, Votes:{1}", guessRadius, candidate.Second);
                     guessRadius--;
                     if (guessRadius < minRadius)
                         break;
@@ -440,7 +440,7 @@ namespace Kinovea.ScreenManager
                 if (candidate.Second > result.Second || (candidate.Second == result.Second && radiusDiff < bestRadiusDiff))
                 {
                     result = candidate;
-                    log.DebugFormat("Found better circle at radius {0}, Votes:{1}", guessRadius, candidate.Second);
+                    //log.DebugFormat("Found better circle at radius {0}, Votes:{1}", guessRadius, candidate.Second);
                     guessRadius++;
                     if (guessRadius > maxRadius)
                         break;
