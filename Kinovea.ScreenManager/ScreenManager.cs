@@ -100,7 +100,9 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuExportXLSX = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportCSVTrajectory = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportCSVChronometer = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportTXTTrajectory = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportJSON = new ToolStripMenuItem();
+
 
         private ToolStripMenuItem mnuExportDocument = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportODT = new ToolStripMenuItem();
@@ -392,16 +394,19 @@ namespace Kinovea.ScreenManager
             mnuExportXLSX.Image = Properties.Resources.file_xls;
             mnuExportCSVTrajectory.Image = Properties.Resources.file_csv;
             mnuExportCSVChronometer.Image = Properties.Resources.file_csv;
+            mnuExportTXTTrajectory.Image = Properties.Resources.file_txt;
             mnuExportJSON.Image = Properties.Resources.json;
             mnuExportODS.Click += (s, e) => ExportSpreadsheet(SpreadsheetExportFormat.ODS);
             mnuExportXLSX.Click += (s, e) => ExportSpreadsheet(SpreadsheetExportFormat.XLSX);
             mnuExportCSVTrajectory.Click += (s, e) => ExportSpreadsheet(SpreadsheetExportFormat.CSVTrajectory);
             mnuExportCSVChronometer.Click += (s, e) => ExportSpreadsheet(SpreadsheetExportFormat.CSVChronometer);
+            mnuExportTXTTrajectory.Click += (s, e) => ExportSpreadsheet(SpreadsheetExportFormat.TXTTrajectory);
             mnuExportJSON.Click += (s, e) => ExportSpreadsheet(SpreadsheetExportFormat.JSON);
             mnuExportSpreadsheet.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuExportODS,
                 mnuExportXLSX,
                 mnuExportCSVTrajectory,
+                mnuExportTXTTrajectory,
                 mnuExportCSVChronometer,
                 new ToolStripSeparator(),
                 mnuExportJSON,
@@ -1750,6 +1755,7 @@ namespace Kinovea.ScreenManager
             mnuExportXLSX.Text = "Microsoft Excel…";
             mnuExportCSVTrajectory.Text = ScreenManagerLang.mnuExport_Spreadsheet_TrajectoryCSV;
             mnuExportCSVChronometer.Text = ScreenManagerLang.mnuExport_Spreadsheet_ChronoCSV;
+            mnuExportTXTTrajectory.Text = "Trajectory text…";
             mnuExportJSON.Text = "JSON…";
 
 

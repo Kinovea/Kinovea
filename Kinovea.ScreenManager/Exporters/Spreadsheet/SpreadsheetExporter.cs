@@ -36,6 +36,9 @@ namespace Kinovea.ScreenManager
                 case SpreadsheetExportFormat.JSON:
                     saveFileDialog.Filter = "JSON|*.json";
                     break;
+                case SpreadsheetExportFormat.TXTTrajectory:
+                    saveFileDialog.Filter = "TXT|*.txt";
+                    break;
                 default:
                     break;
             }
@@ -79,6 +82,10 @@ namespace Kinovea.ScreenManager
                 case SpreadsheetExportFormat.CSVChronometer:
                     ExporterCSVChrono exporterChronoCSV = new ExporterCSVChrono();
                     exporterChronoCSV.Export(file, measuredData);
+                    break;
+                case SpreadsheetExportFormat.TXTTrajectory:
+                    ExporterTXTTrajectory exporterTrajectoryTXT = new ExporterTXTTrajectory();
+                    exporterTrajectoryTXT.Export(file, measuredData);
                     break;
                 case SpreadsheetExportFormat.JSON:
                     ExporterJSON exporterJSON = new ExporterJSON();

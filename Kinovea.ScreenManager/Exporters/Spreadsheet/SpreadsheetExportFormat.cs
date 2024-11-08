@@ -7,5 +7,6 @@
         CSVTrajectory,
         CSVChronometer,
         JSON,
+        TXTTrajectory,
     }
 }
