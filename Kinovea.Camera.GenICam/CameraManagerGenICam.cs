@@ -138,14 +138,6 @@ namespace Kinovea.Camera.GenICam
                             log.DebugFormat("Found device: {0} ({1})", device.DisplayName, device.Vendor);
                         }
                             
-                        // We would like to only load the device through the right vendor system.
-                        // The problem is that the vendor name at the device level is not always the
-                        // same as the vendor name at the system level.
-                        if (device.Vendor != interf.Parent.Vendor)
-                        {
-                            log.WarnFormat("Device vendor:{0}, System vendor:{1}", device.Vendor, interf.Parent.Vendor);
-                        }
-
                         string identifier = device.SerialNumber;
                         bool cached = cache.ContainsKey(identifier);
                         if (cached)

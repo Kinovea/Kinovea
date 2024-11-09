@@ -77,7 +77,9 @@ namespace Kinovea.Camera.GenICam
 
                 QueueBuffers();
 
-                log.DebugFormat("Opened device: {0} ({1})", device.DisplayName, device.Vendor);
+                log.DebugFormat("Opened device: {0} ({1}) via {2} ({3})", 
+                    device.DisplayName, device.Vendor, device.Parent.Parent.DisplayName, device.Parent.Parent.Vendor);
+
                 opened = true;
             }
             catch (Exception e)

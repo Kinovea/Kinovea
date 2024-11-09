@@ -29,6 +29,7 @@ using Kinovea.Camera.Languages;
 using BGAPI2;
 using System.IO;
 using System.Data.Common;
+using System.Linq;
 
 namespace Kinovea.Camera.GenICam
 {
@@ -106,8 +107,11 @@ namespace Kinovea.Camera.GenICam
             InitializeComponent();
             Localize();
 
+#if DEBUG
+            btnGenicam.Visible = true;
+#else
             btnGenicam.Visible = false;
-
+#endif
             tbAlias.AutoSize = false;
             tbAlias.Height = 20;
             tbAlias.Text = summary.Alias;
@@ -221,6 +225,7 @@ namespace Kinovea.Camera.GenICam
             // Sort correctly so that for example "Mono8" appears before "Mono10".
             // The selection is based on the string itself, not its index in the list.
             streamFormats.Sort(new AlphanumComparator());
+            log.DebugFormat("Available stream formats: {0}", string.Join(", ", streamFormats));
 
             string currentValue = CameraPropertyManager.ReadString(device, "PixelFormat");
             cmbFormat.Items.Clear();
