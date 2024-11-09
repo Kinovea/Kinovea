@@ -30,6 +30,10 @@ namespace Kinovea.Services
             return rtb.Text;
         }
 
+        /// <summary>
+        /// Measure the passed string when drawn with the passed font.
+        /// This function is NOT thread safe.
+        /// </summary>
         public static SizeF MeasureString(string text, Font font)
         {
             return dummyGraphics.MeasureString(text, font);

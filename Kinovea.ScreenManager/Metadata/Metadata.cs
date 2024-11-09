@@ -1495,6 +1495,7 @@ namespace Kinovea.ScreenManager
         {
             using (var cvImage = OpenCvSharp.Extensions.BitmapConverter.ToMat(videoframe.Image))
             {
+                // Run tracking in parallel.
                 List<DrawingTrack> tt = Tracks().ToList();
                 Parallel.ForEach(tt, t =>
                 {

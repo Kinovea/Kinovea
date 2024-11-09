@@ -1428,6 +1428,8 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void TrackStep(VideoFrame current, OpenCvSharp.Mat cvImage)
         {
+            // Threading: this runs in a parallel-for.
+
             // Match the previous point in current image.
             // New points to trajectories are always created from here.
 
@@ -1484,7 +1486,11 @@ namespace Kinovea.ScreenManager
 
             // Adjust internal data.
             endTimeStamp = positions.Last().T;
-            UpdateKeyframeLabels();
+
+            // Do not update kinematics or keyframe labels here.
+            // 1. we are in tracking mode we don't draw the labels.
+            // 2. the mini labels use text measurement which is done in a helper tool 
+            // that is not thread safe.
         }
 
         /// <summary>
@@ -2096,6 +2102,7 @@ namespace Kinovea.ScreenManager
             if (trackStatus == TrackStatus.Interactive)
             {
                 UpdateKinematics();
+                UpdateKeyframeLabels();
             }
         }
 
