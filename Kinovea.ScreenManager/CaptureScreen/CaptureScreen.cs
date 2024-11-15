@@ -295,10 +295,10 @@ namespace Kinovea.ScreenManager
             
             switch (PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.TriggerAction)
             {
-                case AudioTriggerAction.SaveSnapshot:
+                case CaptureTriggerAction.SaveSnapshot:
                     MakeSnapshot();
                     break;
-                case AudioTriggerAction.RecordVideo:
+                case CaptureTriggerAction.RecordVideo:
                 default:
                     ToggleRecording();
                     break;
@@ -535,8 +535,10 @@ namespace Kinovea.ScreenManager
         public void View_ToggleArmingTrigger()
         {
             // Manual toggle.
-            if (PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger)
+            if (IsTriggerEnabled())
+            {
                 ToggleArmingTrigger(true, true);
+            }
         }
         #endregion
         #endregion
@@ -973,13 +975,22 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// Returns true if any software trigger method is enabled.
+        /// </summary>
+        /// <returns></returns>
+        private bool IsTriggerEnabled()
+        {
+            return PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger ||
+                   PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableUDPTrigger;
+        }
+        /// <summary>
         /// Update the arming button based on preferences.
         /// Does not raise toast message.
         /// This should be used at the screen creation or after preferences changes.
         /// </summary>
         private void UpdateArmableTrigger()
         {
-            if (!PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger)
+            if (!IsTriggerEnabled())
             {
                 // Already disarmed.
                 if (!triggerArmed)
@@ -1009,11 +1020,10 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void StartQuietPeriod()
         {
-            if (PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger && 
-                PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioQuietPeriod > 0)
+            if (PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.TriggerQuietPeriod > 0)
             {
                 // We will monitor the end of the quiet period in the slow tick event.
-                AudioInputLevelMonitor.StartQuietPeriod();
+                QuietPeriodHelper.StartQuietPeriod();
                 inQuietPeriod = true;
                 if (triggerArmed)
                     ToggleArmingTrigger(false, false);
@@ -1025,7 +1035,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void CheckQuietPeriod()
         {
-            float quietProgress = AudioInputLevelMonitor.QuietProgress();
+            float quietProgress = QuietPeriodHelper.QuietProgress();
             if (quietProgress < 1.0f)
             {
                 if (!manualArmed)
@@ -1047,7 +1057,7 @@ namespace Kinovea.ScreenManager
             inQuietPeriod = false;
             UpdateRecordingIndicator();
 
-            if (!PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger)
+            if (!IsTriggerEnabled())
                 return;
 
             if (!manualArmed)

@@ -234,7 +234,7 @@
     <Compile Include="Types\KeyframePresetsParameters.cs" />
     <Compile Include="Types\KinogramParameters.cs" />
     <Compile Include="Infrastructure\NativeMethods.cs" />
-    <Compile Include="Types\AudioTriggerAction.cs" />
+    <Compile Include="Types\CaptureTriggerAction.cs" />
     <Compile Include="Types\CameraManagerPluginInfo.cs" />
     <Compile Include="Types\Demosaicing.cs" />
     <Compile Include="Types\ImageAspectRatio.cs" />

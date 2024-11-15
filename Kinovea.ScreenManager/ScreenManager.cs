@@ -74,6 +74,7 @@ namespace Kinovea.ScreenManager
         private bool launchLoadingInProgress;
         private List<string> camerasToDiscover = new List<string>();
         private AudioInputLevelMonitor audioInputLevelMonitor = new AudioInputLevelMonitor();
+        private UDPMonitor udpMonitor = new UDPMonitor();
 
         #region Menus
 
@@ -203,8 +204,12 @@ namespace Kinovea.ScreenManager
 
             audioInputLevelMonitor.Enabled = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger;
             audioInputLevelMonitor.Threshold = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioTriggerThreshold;
-            audioInputLevelMonitor.ThresholdPassed += (s, e) => TriggerCapture();
+            audioInputLevelMonitor.Triggered += (s, e) => TriggerCapture();
             audioInputLevelMonitor.DeviceLost += (s, e) => AudioDeviceLost();
+
+            udpMonitor.Enabled = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableUDPTrigger;
+            udpMonitor.Port = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.UDPPort;
+            udpMonitor.Triggered += (s, e) => TriggerCapture();
 
             InitializeVideoFilters();
 
@@ -798,12 +803,23 @@ namespace Kinovea.ScreenManager
 
             audioInputLevelMonitor.Enabled = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger;
             audioInputLevelMonitor.Threshold = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioTriggerThreshold;
+            udpMonitor.Enabled = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableUDPTrigger;
+            udpMonitor.Port = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.UDPPort;
 
             // We may have changed the preferred audio input device.
-            if (captureScreens.Count() > 0 && audioInputLevelMonitor.Enabled)
+            if (captureScreens.Count() > 0)
             {
-                string id = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioInputDevice;
-                audioInputLevelMonitor.Start(id);
+                if (audioInputLevelMonitor.Enabled)
+                {
+                    string id = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioInputDevice;
+                    audioInputLevelMonitor.Start(id);
+                }
+
+                if (udpMonitor.Enabled)
+                {
+                    int port = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.UDPPort;
+                    udpMonitor.Start(port);
+                }
             }
 
             RefreshUICulture();
@@ -1026,14 +1042,32 @@ namespace Kinovea.ScreenManager
             for (int i = 0; i < screenList.Count; i++)
                 screenList[i].Identify(i);
 
-            if (captureScreens.Count() > 0 && audioInputLevelMonitor.Enabled)
+            if (captureScreens.Count() == 0)
             {
-                string id = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioInputDevice;
-                audioInputLevelMonitor.Start(id);
+                audioInputLevelMonitor.Stop();
+                udpMonitor.Stop();
             }
             else
             {
-                audioInputLevelMonitor.Stop();
+                if (audioInputLevelMonitor.Enabled)
+                {
+                    string id = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioInputDevice;
+                    audioInputLevelMonitor.Start(id);
+                }
+                else
+                {
+                   audioInputLevelMonitor.Stop();
+                }
+
+                if (udpMonitor.Enabled)
+                {
+                    int port = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.UDPPort;
+                    udpMonitor.Start(port);
+                }
+                else
+                {
+                    udpMonitor.Stop();
+                }
             }
         }
 
@@ -2928,6 +2962,7 @@ namespace Kinovea.ScreenManager
         private void NotificationCenter_PreferencesOpened(object source, EventArgs e)
         {
             audioInputLevelMonitor.Enabled = false;
+            udpMonitor.Enabled = false;
         }
 
         private void NotificationCenter_ExternalCommand(object source, ExternalCommandEventArgs e)

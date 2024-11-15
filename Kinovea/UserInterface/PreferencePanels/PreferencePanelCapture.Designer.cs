@@ -75,6 +75,24 @@ namespace Kinovea.Root
       this.rbRecordingDelayed = new System.Windows.Forms.RadioButton();
       this.rbRecordingScheduled = new System.Windows.Forms.RadioButton();
       this.rbRecordingCamera = new System.Windows.Forms.RadioButton();
+      this.tabTrigger = new System.Windows.Forms.TabPage();
+      this.groupBox1 = new System.Windows.Forms.GroupBox();
+      this.nudUDPPort = new System.Windows.Forms.NumericUpDown();
+      this.chkEnableUDPTrigger = new System.Windows.Forms.CheckBox();
+      this.lblUDPPort = new System.Windows.Forms.Label();
+      this.lblUDPTriggerHits = new System.Windows.Forms.Label();
+      this.cmbTriggerAction = new System.Windows.Forms.ComboBox();
+      this.gbAudioTrigger = new System.Windows.Forms.GroupBox();
+      this.nudAudioTriggerThreshold = new System.Windows.Forms.NumericUpDown();
+      this.chkEnableAudioTrigger = new System.Windows.Forms.CheckBox();
+      this.lblAudioTriggerThreshold = new System.Windows.Forms.Label();
+      this.lblInputDevice = new System.Windows.Forms.Label();
+      this.vumeter = new Kinovea.Services.VolumeMeterThreshold();
+      this.cmbInputDevice = new System.Windows.Forms.ComboBox();
+      this.lblAudioTriggerHits = new System.Windows.Forms.Label();
+      this.lblTriggerAction = new System.Windows.Forms.Label();
+      this.lblQuietPeriod = new System.Windows.Forms.Label();
+      this.nudQuietPeriod = new System.Windows.Forms.NumericUpDown();
       this.tabImageNaming = new System.Windows.Forms.TabPage();
       this.grpRightImage = new System.Windows.Forms.GroupBox();
       this.btnRightImageFile = new System.Windows.Forms.Button();
@@ -118,21 +136,9 @@ namespace Kinovea.Root
       this.lblLeftVideoRoot = new System.Windows.Forms.Label();
       this.tbLeftVideoRoot = new System.Windows.Forms.TextBox();
       this.tabAutomation = new System.Windows.Forms.TabPage();
-      this.cmbTriggerAction = new System.Windows.Forms.ComboBox();
-      this.lblTriggerAction = new System.Windows.Forms.Label();
       this.label1 = new System.Windows.Forms.Label();
       this.nudRecordingTime = new System.Windows.Forms.NumericUpDown();
       this.chkIgnoreOverwriteWarning = new System.Windows.Forms.CheckBox();
-      this.gbAudioTrigger = new System.Windows.Forms.GroupBox();
-      this.nudQuietPeriod = new System.Windows.Forms.NumericUpDown();
-      this.nudAudioTriggerThreshold = new System.Windows.Forms.NumericUpDown();
-      this.lblQuietPeriod = new System.Windows.Forms.Label();
-      this.chkEnableAudioTrigger = new System.Windows.Forms.CheckBox();
-      this.lblAudioTriggerThreshold = new System.Windows.Forms.Label();
-      this.lblInputDevice = new System.Windows.Forms.Label();
-      this.vumeter = new Kinovea.Services.VolumeMeterThreshold();
-      this.cmbInputDevice = new System.Windows.Forms.ComboBox();
-      this.lblAudioTriggerHits = new System.Windows.Forms.Label();
       this.btnPostRecordCommand = new System.Windows.Forms.Button();
       this.lblPostRecordCommand = new System.Windows.Forms.Label();
       this.tbPostRecordCommand = new System.Windows.Forms.TextBox();
@@ -146,6 +152,12 @@ namespace Kinovea.Root
       ((System.ComponentModel.ISupportInitialize)(this.nudReplacementFramerate)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudReplacementThreshold)).BeginInit();
       this.grpRecordingMode.SuspendLayout();
+      this.tabTrigger.SuspendLayout();
+      this.groupBox1.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.nudUDPPort)).BeginInit();
+      this.gbAudioTrigger.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.nudAudioTriggerThreshold)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudQuietPeriod)).BeginInit();
       this.tabImageNaming.SuspendLayout();
       this.grpRightImage.SuspendLayout();
       this.grpLeftImage.SuspendLayout();
@@ -154,9 +166,6 @@ namespace Kinovea.Root
       this.grpLeftVideo.SuspendLayout();
       this.tabAutomation.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudRecordingTime)).BeginInit();
-      this.gbAudioTrigger.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.nudQuietPeriod)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.nudAudioTriggerThreshold)).BeginInit();
       this.SuspendLayout();
       // 
       // tabSubPages
@@ -164,6 +173,7 @@ namespace Kinovea.Root
       this.tabSubPages.Controls.Add(this.tabGeneral);
       this.tabSubPages.Controls.Add(this.tabMemory);
       this.tabSubPages.Controls.Add(this.tabRecording);
+      this.tabSubPages.Controls.Add(this.tabTrigger);
       this.tabSubPages.Controls.Add(this.tabImageNaming);
       this.tabSubPages.Controls.Add(this.tabVideoNaming);
       this.tabSubPages.Controls.Add(this.tabAutomation);
@@ -199,7 +209,7 @@ namespace Kinovea.Root
       // lblCaptureKVA
       // 
       this.lblCaptureKVA.AutoSize = true;
-      this.lblCaptureKVA.Location = new System.Drawing.Point(19, 204);
+      this.lblCaptureKVA.Location = new System.Drawing.Point(19, 211);
       this.lblCaptureKVA.Name = "lblCaptureKVA";
       this.lblCaptureKVA.Size = new System.Drawing.Size(121, 13);
       this.lblCaptureKVA.TabIndex = 58;
@@ -209,7 +219,7 @@ namespace Kinovea.Root
       // 
       this.tbCaptureKVA.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.tbCaptureKVA.Location = new System.Drawing.Point(262, 202);
+      this.tbCaptureKVA.Location = new System.Drawing.Point(262, 209);
       this.tbCaptureKVA.Name = "tbCaptureKVA";
       this.tbCaptureKVA.Size = new System.Drawing.Size(175, 20);
       this.tbCaptureKVA.TabIndex = 59;
@@ -224,7 +234,7 @@ namespace Kinovea.Root
       this.btnCaptureKVA.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnCaptureKVA.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnCaptureKVA.Image = global::Kinovea.Root.Properties.Resources.folder;
-      this.btnCaptureKVA.Location = new System.Drawing.Point(443, 201);
+      this.btnCaptureKVA.Location = new System.Drawing.Point(443, 208);
       this.btnCaptureKVA.MinimumSize = new System.Drawing.Size(20, 20);
       this.btnCaptureKVA.Name = "btnCaptureKVA";
       this.btnCaptureKVA.Size = new System.Drawing.Size(20, 20);
@@ -248,7 +258,7 @@ namespace Kinovea.Root
       // 
       this.cmbUncompressedVideoFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.cmbUncompressedVideoFormat.FormattingEnabled = true;
-      this.cmbUncompressedVideoFormat.Location = new System.Drawing.Point(262, 160);
+      this.cmbUncompressedVideoFormat.Location = new System.Drawing.Point(262, 167);
       this.cmbUncompressedVideoFormat.Name = "cmbUncompressedVideoFormat";
       this.cmbUncompressedVideoFormat.Size = new System.Drawing.Size(52, 21);
       this.cmbUncompressedVideoFormat.TabIndex = 43;
@@ -257,7 +267,7 @@ namespace Kinovea.Root
       // lblUncompressedVideoFormat
       // 
       this.lblUncompressedVideoFormat.AutoSize = true;
-      this.lblUncompressedVideoFormat.Location = new System.Drawing.Point(19, 160);
+      this.lblUncompressedVideoFormat.Location = new System.Drawing.Point(19, 167);
       this.lblUncompressedVideoFormat.Name = "lblUncompressedVideoFormat";
       this.lblUncompressedVideoFormat.Size = new System.Drawing.Size(145, 13);
       this.lblUncompressedVideoFormat.TabIndex = 42;
@@ -266,7 +276,7 @@ namespace Kinovea.Root
       // lblFramerate
       // 
       this.lblFramerate.AutoSize = true;
-      this.lblFramerate.Location = new System.Drawing.Point(19, 55);
+      this.lblFramerate.Location = new System.Drawing.Point(19, 62);
       this.lblFramerate.Name = "lblFramerate";
       this.lblFramerate.Size = new System.Drawing.Size(117, 13);
       this.lblFramerate.TabIndex = 41;
@@ -274,7 +284,7 @@ namespace Kinovea.Root
       // 
       // tbFramerate
       // 
-      this.tbFramerate.Location = new System.Drawing.Point(262, 55);
+      this.tbFramerate.Location = new System.Drawing.Point(262, 62);
       this.tbFramerate.Name = "tbFramerate";
       this.tbFramerate.Size = new System.Drawing.Size(30, 20);
       this.tbFramerate.TabIndex = 40;
@@ -284,7 +294,7 @@ namespace Kinovea.Root
       // 
       this.cmbVideoFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.cmbVideoFormat.FormattingEnabled = true;
-      this.cmbVideoFormat.Location = new System.Drawing.Point(262, 130);
+      this.cmbVideoFormat.Location = new System.Drawing.Point(262, 137);
       this.cmbVideoFormat.Name = "cmbVideoFormat";
       this.cmbVideoFormat.Size = new System.Drawing.Size(52, 21);
       this.cmbVideoFormat.TabIndex = 41;
@@ -293,7 +303,7 @@ namespace Kinovea.Root
       // lblVideoFormat
       // 
       this.lblVideoFormat.AutoSize = true;
-      this.lblVideoFormat.Location = new System.Drawing.Point(19, 130);
+      this.lblVideoFormat.Location = new System.Drawing.Point(19, 137);
       this.lblVideoFormat.Name = "lblVideoFormat";
       this.lblVideoFormat.Size = new System.Drawing.Size(72, 13);
       this.lblVideoFormat.TabIndex = 40;
@@ -303,7 +313,7 @@ namespace Kinovea.Root
       // 
       this.cmbImageFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.cmbImageFormat.FormattingEnabled = true;
-      this.cmbImageFormat.Location = new System.Drawing.Point(262, 100);
+      this.cmbImageFormat.Location = new System.Drawing.Point(262, 107);
       this.cmbImageFormat.Name = "cmbImageFormat";
       this.cmbImageFormat.Size = new System.Drawing.Size(52, 21);
       this.cmbImageFormat.TabIndex = 5;
@@ -312,7 +322,7 @@ namespace Kinovea.Root
       // lblImageFormat
       // 
       this.lblImageFormat.AutoSize = true;
-      this.lblImageFormat.Location = new System.Drawing.Point(19, 100);
+      this.lblImageFormat.Location = new System.Drawing.Point(19, 107);
       this.lblImageFormat.Name = "lblImageFormat";
       this.lblImageFormat.Size = new System.Drawing.Size(74, 13);
       this.lblImageFormat.TabIndex = 2;
@@ -482,6 +492,226 @@ namespace Kinovea.Root
       this.rbRecordingCamera.Text = "Camera: records real time frames on the fly.";
       this.rbRecordingCamera.UseVisualStyleBackColor = true;
       this.rbRecordingCamera.CheckedChanged += new System.EventHandler(this.radioRecordingMode_CheckedChanged);
+      // 
+      // tabTrigger
+      // 
+      this.tabTrigger.Controls.Add(this.groupBox1);
+      this.tabTrigger.Controls.Add(this.cmbTriggerAction);
+      this.tabTrigger.Controls.Add(this.gbAudioTrigger);
+      this.tabTrigger.Controls.Add(this.lblTriggerAction);
+      this.tabTrigger.Controls.Add(this.lblQuietPeriod);
+      this.tabTrigger.Controls.Add(this.nudQuietPeriod);
+      this.tabTrigger.Location = new System.Drawing.Point(4, 22);
+      this.tabTrigger.Name = "tabTrigger";
+      this.tabTrigger.Padding = new System.Windows.Forms.Padding(3);
+      this.tabTrigger.Size = new System.Drawing.Size(482, 296);
+      this.tabTrigger.TabIndex = 6;
+      this.tabTrigger.Text = "Trigger";
+      this.tabTrigger.UseVisualStyleBackColor = true;
+      // 
+      // groupBox1
+      // 
+      this.groupBox1.Controls.Add(this.nudUDPPort);
+      this.groupBox1.Controls.Add(this.chkEnableUDPTrigger);
+      this.groupBox1.Controls.Add(this.lblUDPPort);
+      this.groupBox1.Controls.Add(this.lblUDPTriggerHits);
+      this.groupBox1.Location = new System.Drawing.Point(10, 118);
+      this.groupBox1.Name = "groupBox1";
+      this.groupBox1.Size = new System.Drawing.Size(466, 75);
+      this.groupBox1.TabIndex = 57;
+      this.groupBox1.TabStop = false;
+      // 
+      // nudUDPPort
+      // 
+      this.nudUDPPort.Location = new System.Drawing.Point(195, 41);
+      this.nudUDPPort.Maximum = new decimal(new int[] {
+            49151,
+            0,
+            0,
+            0});
+      this.nudUDPPort.Minimum = new decimal(new int[] {
+            1024,
+            0,
+            0,
+            0});
+      this.nudUDPPort.Name = "nudUDPPort";
+      this.nudUDPPort.Size = new System.Drawing.Size(50, 20);
+      this.nudUDPPort.TabIndex = 52;
+      this.nudUDPPort.Value = new decimal(new int[] {
+            1024,
+            0,
+            0,
+            0});
+      this.nudUDPPort.ValueChanged += new System.EventHandler(this.nudUDPPort_ValueChanged);
+      // 
+      // chkEnableUDPTrigger
+      // 
+      this.chkEnableUDPTrigger.AutoSize = true;
+      this.chkEnableUDPTrigger.Location = new System.Drawing.Point(10, 16);
+      this.chkEnableUDPTrigger.Name = "chkEnableUDPTrigger";
+      this.chkEnableUDPTrigger.Size = new System.Drawing.Size(117, 17);
+      this.chkEnableUDPTrigger.TabIndex = 44;
+      this.chkEnableUDPTrigger.Text = "Enable UDP trigger";
+      this.chkEnableUDPTrigger.UseVisualStyleBackColor = true;
+      this.chkEnableUDPTrigger.CheckedChanged += new System.EventHandler(this.chkEnableUDPTrigger_CheckedChanged);
+      // 
+      // lblUDPPort
+      // 
+      this.lblUDPPort.AutoSize = true;
+      this.lblUDPPort.Location = new System.Drawing.Point(37, 43);
+      this.lblUDPPort.Name = "lblUDPPort";
+      this.lblUDPPort.Size = new System.Drawing.Size(55, 13);
+      this.lblUDPPort.TabIndex = 47;
+      this.lblUDPPort.Text = "UDP Port:";
+      // 
+      // lblUDPTriggerHits
+      // 
+      this.lblUDPTriggerHits.AutoSize = true;
+      this.lblUDPTriggerHits.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblUDPTriggerHits.Location = new System.Drawing.Point(433, 41);
+      this.lblUDPTriggerHits.Name = "lblUDPTriggerHits";
+      this.lblUDPTriggerHits.Size = new System.Drawing.Size(14, 16);
+      this.lblUDPTriggerHits.TabIndex = 49;
+      this.lblUDPTriggerHits.Text = "0";
+      // 
+      // cmbTriggerAction
+      // 
+      this.cmbTriggerAction.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cmbTriggerAction.FormattingEnabled = true;
+      this.cmbTriggerAction.Location = new System.Drawing.Point(205, 213);
+      this.cmbTriggerAction.Name = "cmbTriggerAction";
+      this.cmbTriggerAction.Size = new System.Drawing.Size(254, 21);
+      this.cmbTriggerAction.TabIndex = 60;
+      this.cmbTriggerAction.SelectedIndexChanged += new System.EventHandler(this.cmbTriggerAction_SelectedIndexChanged);
+      // 
+      // gbAudioTrigger
+      // 
+      this.gbAudioTrigger.Controls.Add(this.nudAudioTriggerThreshold);
+      this.gbAudioTrigger.Controls.Add(this.chkEnableAudioTrigger);
+      this.gbAudioTrigger.Controls.Add(this.lblAudioTriggerThreshold);
+      this.gbAudioTrigger.Controls.Add(this.lblInputDevice);
+      this.gbAudioTrigger.Controls.Add(this.vumeter);
+      this.gbAudioTrigger.Controls.Add(this.cmbInputDevice);
+      this.gbAudioTrigger.Controls.Add(this.lblAudioTriggerHits);
+      this.gbAudioTrigger.Location = new System.Drawing.Point(10, 6);
+      this.gbAudioTrigger.Name = "gbAudioTrigger";
+      this.gbAudioTrigger.Size = new System.Drawing.Size(466, 106);
+      this.gbAudioTrigger.TabIndex = 56;
+      this.gbAudioTrigger.TabStop = false;
+      // 
+      // nudAudioTriggerThreshold
+      // 
+      this.nudAudioTriggerThreshold.DecimalPlaces = 1;
+      this.nudAudioTriggerThreshold.Location = new System.Drawing.Point(195, 70);
+      this.nudAudioTriggerThreshold.Maximum = new decimal(new int[] {
+            60,
+            0,
+            0,
+            0});
+      this.nudAudioTriggerThreshold.Name = "nudAudioTriggerThreshold";
+      this.nudAudioTriggerThreshold.Size = new System.Drawing.Size(42, 20);
+      this.nudAudioTriggerThreshold.TabIndex = 52;
+      this.nudAudioTriggerThreshold.Value = new decimal(new int[] {
+            59,
+            0,
+            0,
+            0});
+      this.nudAudioTriggerThreshold.ValueChanged += new System.EventHandler(this.NudAudioTriggerThreshold_ValueChanged);
+      // 
+      // chkEnableAudioTrigger
+      // 
+      this.chkEnableAudioTrigger.AutoSize = true;
+      this.chkEnableAudioTrigger.Location = new System.Drawing.Point(10, 16);
+      this.chkEnableAudioTrigger.Name = "chkEnableAudioTrigger";
+      this.chkEnableAudioTrigger.Size = new System.Drawing.Size(120, 17);
+      this.chkEnableAudioTrigger.TabIndex = 44;
+      this.chkEnableAudioTrigger.Text = "Enable audio trigger";
+      this.chkEnableAudioTrigger.UseVisualStyleBackColor = true;
+      this.chkEnableAudioTrigger.CheckedChanged += new System.EventHandler(this.chkEnableAudioTrigger_CheckedChanged);
+      // 
+      // lblAudioTriggerThreshold
+      // 
+      this.lblAudioTriggerThreshold.AutoSize = true;
+      this.lblAudioTriggerThreshold.Location = new System.Drawing.Point(37, 74);
+      this.lblAudioTriggerThreshold.Name = "lblAudioTriggerThreshold";
+      this.lblAudioTriggerThreshold.Size = new System.Drawing.Size(115, 13);
+      this.lblAudioTriggerThreshold.TabIndex = 46;
+      this.lblAudioTriggerThreshold.Text = "Audio trigger threshold:";
+      // 
+      // lblInputDevice
+      // 
+      this.lblInputDevice.AutoSize = true;
+      this.lblInputDevice.Location = new System.Drawing.Point(37, 43);
+      this.lblInputDevice.Name = "lblInputDevice";
+      this.lblInputDevice.Size = new System.Drawing.Size(114, 13);
+      this.lblInputDevice.TabIndex = 47;
+      this.lblInputDevice.Text = "Preferred input device:";
+      // 
+      // vumeter
+      // 
+      this.vumeter.Amplitude = 0F;
+      this.vumeter.BackColor = System.Drawing.Color.White;
+      this.vumeter.DecibelRange = 60F;
+      this.vumeter.Location = new System.Drawing.Point(249, 70);
+      this.vumeter.Name = "vumeter";
+      this.vumeter.Size = new System.Drawing.Size(175, 21);
+      this.vumeter.TabIndex = 51;
+      this.vumeter.Text = "volumeMeterThreshold1";
+      this.vumeter.Threshold = 0.001F;
+      this.vumeter.ThresholdLinear = 0F;
+      this.vumeter.ThresholdChanged += new System.EventHandler(this.Vumeter_ThresholdChanged);
+      // 
+      // cmbInputDevice
+      // 
+      this.cmbInputDevice.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cmbInputDevice.FormattingEnabled = true;
+      this.cmbInputDevice.Location = new System.Drawing.Point(195, 40);
+      this.cmbInputDevice.Name = "cmbInputDevice";
+      this.cmbInputDevice.Size = new System.Drawing.Size(254, 21);
+      this.cmbInputDevice.TabIndex = 48;
+      this.cmbInputDevice.SelectedIndexChanged += new System.EventHandler(this.cmbInputDevice_SelectedIndexChanged);
+      // 
+      // lblAudioTriggerHits
+      // 
+      this.lblAudioTriggerHits.AutoSize = true;
+      this.lblAudioTriggerHits.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblAudioTriggerHits.Location = new System.Drawing.Point(433, 72);
+      this.lblAudioTriggerHits.Name = "lblAudioTriggerHits";
+      this.lblAudioTriggerHits.Size = new System.Drawing.Size(14, 16);
+      this.lblAudioTriggerHits.TabIndex = 49;
+      this.lblAudioTriggerHits.Text = "0";
+      // 
+      // lblTriggerAction
+      // 
+      this.lblTriggerAction.AutoSize = true;
+      this.lblTriggerAction.Location = new System.Drawing.Point(17, 216);
+      this.lblTriggerAction.Name = "lblTriggerAction";
+      this.lblTriggerAction.Size = new System.Drawing.Size(75, 13);
+      this.lblTriggerAction.TabIndex = 58;
+      this.lblTriggerAction.Text = "Trigger action:";
+      // 
+      // lblQuietPeriod
+      // 
+      this.lblQuietPeriod.AutoSize = true;
+      this.lblQuietPeriod.Location = new System.Drawing.Point(17, 247);
+      this.lblQuietPeriod.Name = "lblQuietPeriod";
+      this.lblQuietPeriod.Size = new System.Drawing.Size(84, 13);
+      this.lblQuietPeriod.TabIndex = 58;
+      this.lblQuietPeriod.Text = "Quiet period (s) :";
+      // 
+      // nudQuietPeriod
+      // 
+      this.nudQuietPeriod.DecimalPlaces = 1;
+      this.nudQuietPeriod.Location = new System.Drawing.Point(205, 245);
+      this.nudQuietPeriod.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+      this.nudQuietPeriod.Name = "nudQuietPeriod";
+      this.nudQuietPeriod.Size = new System.Drawing.Size(42, 20);
+      this.nudQuietPeriod.TabIndex = 59;
+      this.nudQuietPeriod.ValueChanged += new System.EventHandler(this.nudQuietPeriod_ValueChanged);
       // 
       // tabImageNaming
       // 
@@ -1016,7 +1246,6 @@ namespace Kinovea.Root
       this.tabAutomation.Controls.Add(this.label1);
       this.tabAutomation.Controls.Add(this.nudRecordingTime);
       this.tabAutomation.Controls.Add(this.chkIgnoreOverwriteWarning);
-      this.tabAutomation.Controls.Add(this.gbAudioTrigger);
       this.tabAutomation.Controls.Add(this.btnPostRecordCommand);
       this.tabAutomation.Controls.Add(this.lblPostRecordCommand);
       this.tabAutomation.Controls.Add(this.tbPostRecordCommand);
@@ -1028,31 +1257,12 @@ namespace Kinovea.Root
       this.tabAutomation.Text = "Automation";
       this.tabAutomation.UseVisualStyleBackColor = true;
       // 
-      // cmbTriggerAction
-      // 
-      this.cmbTriggerAction.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbTriggerAction.FormattingEnabled = true;
-      this.cmbTriggerAction.Location = new System.Drawing.Point(194, 100);
-      this.cmbTriggerAction.Name = "cmbTriggerAction";
-      this.cmbTriggerAction.Size = new System.Drawing.Size(254, 21);
-      this.cmbTriggerAction.TabIndex = 60;
-      this.cmbTriggerAction.SelectedIndexChanged += new System.EventHandler(this.cmbTriggerAction_SelectedIndexChanged);
-      // 
-      // lblTriggerAction
-      // 
-      this.lblTriggerAction.AutoSize = true;
-      this.lblTriggerAction.Location = new System.Drawing.Point(37, 103);
-      this.lblTriggerAction.Name = "lblTriggerAction";
-      this.lblTriggerAction.Size = new System.Drawing.Size(75, 13);
-      this.lblTriggerAction.TabIndex = 58;
-      this.lblTriggerAction.Text = "Trigger action:";
-      // 
       // label1
       // 
       this.label1.AutoSize = true;
       this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.label1.ForeColor = System.Drawing.Color.Gray;
-      this.label1.Location = new System.Drawing.Point(206, 240);
+      this.label1.Location = new System.Drawing.Point(206, 81);
       this.label1.Name = "label1";
       this.label1.Size = new System.Drawing.Size(219, 12);
       this.label1.TabIndex = 57;
@@ -1061,7 +1271,7 @@ namespace Kinovea.Root
       // nudRecordingTime
       // 
       this.nudRecordingTime.DecimalPlaces = 1;
-      this.nudRecordingTime.Location = new System.Drawing.Point(208, 181);
+      this.nudRecordingTime.Location = new System.Drawing.Point(208, 22);
       this.nudRecordingTime.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -1075,137 +1285,13 @@ namespace Kinovea.Root
       // chkIgnoreOverwriteWarning
       // 
       this.chkIgnoreOverwriteWarning.AutoSize = true;
-      this.chkIgnoreOverwriteWarning.Location = new System.Drawing.Point(19, 263);
+      this.chkIgnoreOverwriteWarning.Location = new System.Drawing.Point(19, 104);
       this.chkIgnoreOverwriteWarning.Name = "chkIgnoreOverwriteWarning";
       this.chkIgnoreOverwriteWarning.Size = new System.Drawing.Size(142, 17);
       this.chkIgnoreOverwriteWarning.TabIndex = 56;
       this.chkIgnoreOverwriteWarning.Text = "Ignore overwrite warning";
       this.chkIgnoreOverwriteWarning.UseVisualStyleBackColor = true;
       this.chkIgnoreOverwriteWarning.CheckedChanged += new System.EventHandler(this.chkIgnoreOverwriteWarning_CheckedChanged);
-      // 
-      // gbAudioTrigger
-      // 
-      this.gbAudioTrigger.Controls.Add(this.cmbTriggerAction);
-      this.gbAudioTrigger.Controls.Add(this.lblTriggerAction);
-      this.gbAudioTrigger.Controls.Add(this.nudQuietPeriod);
-      this.gbAudioTrigger.Controls.Add(this.nudAudioTriggerThreshold);
-      this.gbAudioTrigger.Controls.Add(this.lblQuietPeriod);
-      this.gbAudioTrigger.Controls.Add(this.chkEnableAudioTrigger);
-      this.gbAudioTrigger.Controls.Add(this.lblAudioTriggerThreshold);
-      this.gbAudioTrigger.Controls.Add(this.lblInputDevice);
-      this.gbAudioTrigger.Controls.Add(this.vumeter);
-      this.gbAudioTrigger.Controls.Add(this.cmbInputDevice);
-      this.gbAudioTrigger.Controls.Add(this.lblAudioTriggerHits);
-      this.gbAudioTrigger.Location = new System.Drawing.Point(13, 2);
-      this.gbAudioTrigger.Name = "gbAudioTrigger";
-      this.gbAudioTrigger.Size = new System.Drawing.Size(455, 162);
-      this.gbAudioTrigger.TabIndex = 55;
-      this.gbAudioTrigger.TabStop = false;
-      // 
-      // nudQuietPeriod
-      // 
-      this.nudQuietPeriod.DecimalPlaces = 1;
-      this.nudQuietPeriod.Location = new System.Drawing.Point(195, 132);
-      this.nudQuietPeriod.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-      this.nudQuietPeriod.Name = "nudQuietPeriod";
-      this.nudQuietPeriod.Size = new System.Drawing.Size(42, 20);
-      this.nudQuietPeriod.TabIndex = 59;
-      this.nudQuietPeriod.ValueChanged += new System.EventHandler(this.nudQuietPeriod_ValueChanged);
-      // 
-      // nudAudioTriggerThreshold
-      // 
-      this.nudAudioTriggerThreshold.DecimalPlaces = 1;
-      this.nudAudioTriggerThreshold.Location = new System.Drawing.Point(195, 70);
-      this.nudAudioTriggerThreshold.Maximum = new decimal(new int[] {
-            60,
-            0,
-            0,
-            0});
-      this.nudAudioTriggerThreshold.Name = "nudAudioTriggerThreshold";
-      this.nudAudioTriggerThreshold.Size = new System.Drawing.Size(42, 20);
-      this.nudAudioTriggerThreshold.TabIndex = 52;
-      this.nudAudioTriggerThreshold.Value = new decimal(new int[] {
-            59,
-            0,
-            0,
-            0});
-      this.nudAudioTriggerThreshold.ValueChanged += new System.EventHandler(this.NudAudioTriggerThreshold_ValueChanged);
-      // 
-      // lblQuietPeriod
-      // 
-      this.lblQuietPeriod.AutoSize = true;
-      this.lblQuietPeriod.Location = new System.Drawing.Point(37, 134);
-      this.lblQuietPeriod.Name = "lblQuietPeriod";
-      this.lblQuietPeriod.Size = new System.Drawing.Size(84, 13);
-      this.lblQuietPeriod.TabIndex = 58;
-      this.lblQuietPeriod.Text = "Quiet period (s) :";
-      // 
-      // chkEnableAudioTrigger
-      // 
-      this.chkEnableAudioTrigger.AutoSize = true;
-      this.chkEnableAudioTrigger.Location = new System.Drawing.Point(10, 16);
-      this.chkEnableAudioTrigger.Name = "chkEnableAudioTrigger";
-      this.chkEnableAudioTrigger.Size = new System.Drawing.Size(120, 17);
-      this.chkEnableAudioTrigger.TabIndex = 44;
-      this.chkEnableAudioTrigger.Text = "Enable audio trigger";
-      this.chkEnableAudioTrigger.UseVisualStyleBackColor = true;
-      this.chkEnableAudioTrigger.CheckedChanged += new System.EventHandler(this.chkEnableAudioTrigger_CheckedChanged);
-      // 
-      // lblAudioTriggerThreshold
-      // 
-      this.lblAudioTriggerThreshold.AutoSize = true;
-      this.lblAudioTriggerThreshold.Location = new System.Drawing.Point(37, 74);
-      this.lblAudioTriggerThreshold.Name = "lblAudioTriggerThreshold";
-      this.lblAudioTriggerThreshold.Size = new System.Drawing.Size(115, 13);
-      this.lblAudioTriggerThreshold.TabIndex = 46;
-      this.lblAudioTriggerThreshold.Text = "Audio trigger threshold:";
-      // 
-      // lblInputDevice
-      // 
-      this.lblInputDevice.AutoSize = true;
-      this.lblInputDevice.Location = new System.Drawing.Point(37, 43);
-      this.lblInputDevice.Name = "lblInputDevice";
-      this.lblInputDevice.Size = new System.Drawing.Size(114, 13);
-      this.lblInputDevice.TabIndex = 47;
-      this.lblInputDevice.Text = "Preferred input device:";
-      // 
-      // vumeter
-      // 
-      this.vumeter.Amplitude = 0F;
-      this.vumeter.BackColor = System.Drawing.Color.White;
-      this.vumeter.DecibelRange = 60F;
-      this.vumeter.Location = new System.Drawing.Point(249, 70);
-      this.vumeter.Name = "vumeter";
-      this.vumeter.Size = new System.Drawing.Size(175, 21);
-      this.vumeter.TabIndex = 51;
-      this.vumeter.Text = "volumeMeterThreshold1";
-      this.vumeter.Threshold = 0.001F;
-      this.vumeter.ThresholdLinear = 0F;
-      this.vumeter.ThresholdChanged += new System.EventHandler(this.Vumeter_ThresholdChanged);
-      // 
-      // cmbInputDevice
-      // 
-      this.cmbInputDevice.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbInputDevice.FormattingEnabled = true;
-      this.cmbInputDevice.Location = new System.Drawing.Point(195, 40);
-      this.cmbInputDevice.Name = "cmbInputDevice";
-      this.cmbInputDevice.Size = new System.Drawing.Size(254, 21);
-      this.cmbInputDevice.TabIndex = 48;
-      this.cmbInputDevice.SelectedIndexChanged += new System.EventHandler(this.cmbInputDevice_SelectedIndexChanged);
-      // 
-      // lblAudioTriggerHits
-      // 
-      this.lblAudioTriggerHits.AutoSize = true;
-      this.lblAudioTriggerHits.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblAudioTriggerHits.Location = new System.Drawing.Point(433, 72);
-      this.lblAudioTriggerHits.Name = "lblAudioTriggerHits";
-      this.lblAudioTriggerHits.Size = new System.Drawing.Size(15, 16);
-      this.lblAudioTriggerHits.TabIndex = 49;
-      this.lblAudioTriggerHits.Text = "0";
       // 
       // btnPostRecordCommand
       // 
@@ -1215,7 +1301,7 @@ namespace Kinovea.Root
       this.btnPostRecordCommand.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnPostRecordCommand.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnPostRecordCommand.Image = global::Kinovea.Root.Properties.Resources.percent;
-      this.btnPostRecordCommand.Location = new System.Drawing.Point(441, 213);
+      this.btnPostRecordCommand.Location = new System.Drawing.Point(441, 54);
       this.btnPostRecordCommand.MinimumSize = new System.Drawing.Size(20, 20);
       this.btnPostRecordCommand.Name = "btnPostRecordCommand";
       this.btnPostRecordCommand.Size = new System.Drawing.Size(20, 20);
@@ -1226,7 +1312,7 @@ namespace Kinovea.Root
       // 
       // lblPostRecordCommand
       // 
-      this.lblPostRecordCommand.Location = new System.Drawing.Point(16, 217);
+      this.lblPostRecordCommand.Location = new System.Drawing.Point(16, 58);
       this.lblPostRecordCommand.Name = "lblPostRecordCommand";
       this.lblPostRecordCommand.Size = new System.Drawing.Size(186, 42);
       this.lblPostRecordCommand.TabIndex = 52;
@@ -1234,7 +1320,7 @@ namespace Kinovea.Root
       // 
       // tbPostRecordCommand
       // 
-      this.tbPostRecordCommand.Location = new System.Drawing.Point(208, 214);
+      this.tbPostRecordCommand.Location = new System.Drawing.Point(208, 55);
       this.tbPostRecordCommand.Name = "tbPostRecordCommand";
       this.tbPostRecordCommand.Size = new System.Drawing.Size(227, 20);
       this.tbPostRecordCommand.TabIndex = 53;
@@ -1243,7 +1329,7 @@ namespace Kinovea.Root
       // lblRecordingTime
       // 
       this.lblRecordingTime.AutoSize = true;
-      this.lblRecordingTime.Location = new System.Drawing.Point(16, 183);
+      this.lblRecordingTime.Location = new System.Drawing.Point(16, 24);
       this.lblRecordingTime.Name = "lblRecordingTime";
       this.lblRecordingTime.Size = new System.Drawing.Size(98, 13);
       this.lblRecordingTime.TabIndex = 43;
@@ -1269,6 +1355,15 @@ namespace Kinovea.Root
       ((System.ComponentModel.ISupportInitialize)(this.nudReplacementThreshold)).EndInit();
       this.grpRecordingMode.ResumeLayout(false);
       this.grpRecordingMode.PerformLayout();
+      this.tabTrigger.ResumeLayout(false);
+      this.tabTrigger.PerformLayout();
+      this.groupBox1.ResumeLayout(false);
+      this.groupBox1.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.nudUDPPort)).EndInit();
+      this.gbAudioTrigger.ResumeLayout(false);
+      this.gbAudioTrigger.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.nudAudioTriggerThreshold)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudQuietPeriod)).EndInit();
       this.tabImageNaming.ResumeLayout(false);
       this.grpRightImage.ResumeLayout(false);
       this.grpRightImage.PerformLayout();
@@ -1282,10 +1377,6 @@ namespace Kinovea.Root
       this.tabAutomation.ResumeLayout(false);
       this.tabAutomation.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudRecordingTime)).EndInit();
-      this.gbAudioTrigger.ResumeLayout(false);
-      this.gbAudioTrigger.PerformLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.nudQuietPeriod)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.nudAudioTriggerThreshold)).EndInit();
       this.ResumeLayout(false);
 
 		}
@@ -1350,18 +1441,10 @@ namespace Kinovea.Root
         private System.Windows.Forms.Label lblUncompressedVideoFormat;
         private System.Windows.Forms.TabPage tabAutomation;
         private System.Windows.Forms.Label lblRecordingTime;
-        private System.Windows.Forms.Label lblAudioTriggerThreshold;
-        private System.Windows.Forms.CheckBox chkEnableAudioTrigger;
-        private System.Windows.Forms.ComboBox cmbInputDevice;
-        private System.Windows.Forms.Label lblInputDevice;
-        private System.Windows.Forms.Label lblAudioTriggerHits;
-        private Services.VolumeMeterThreshold vumeter;
         private System.Windows.Forms.Button btnPostRecordCommand;
         private System.Windows.Forms.Label lblPostRecordCommand;
         private System.Windows.Forms.TextBox tbPostRecordCommand;
         private System.Windows.Forms.RadioButton rbRecordingScheduled;
-        private System.Windows.Forms.GroupBox gbAudioTrigger;
-        private System.Windows.Forms.NumericUpDown nudAudioTriggerThreshold;
         private System.Windows.Forms.CheckBox chkUncompressedVideo;
         private System.Windows.Forms.CheckBox chkIgnoreOverwriteWarning;
         private System.Windows.Forms.GroupBox gbHighspeedCameras;
@@ -1374,9 +1457,23 @@ namespace Kinovea.Root
         private System.Windows.Forms.Label lblCaptureKVA;
         private System.Windows.Forms.TextBox tbCaptureKVA;
         private System.Windows.Forms.Button btnCaptureKVA;
-        private System.Windows.Forms.NumericUpDown nudQuietPeriod;
-        private System.Windows.Forms.Label lblQuietPeriod;
+        private System.Windows.Forms.TabPage tabTrigger;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.NumericUpDown nudUDPPort;
+        private System.Windows.Forms.CheckBox chkEnableUDPTrigger;
+        private System.Windows.Forms.Label lblUDPPort;
+        private System.Windows.Forms.Label lblUDPTriggerHits;
         private System.Windows.Forms.ComboBox cmbTriggerAction;
+        private System.Windows.Forms.GroupBox gbAudioTrigger;
+        private System.Windows.Forms.NumericUpDown nudAudioTriggerThreshold;
+        private System.Windows.Forms.CheckBox chkEnableAudioTrigger;
+        private System.Windows.Forms.Label lblAudioTriggerThreshold;
+        private System.Windows.Forms.Label lblInputDevice;
+        private Services.VolumeMeterThreshold vumeter;
+        private System.Windows.Forms.ComboBox cmbInputDevice;
+        private System.Windows.Forms.Label lblAudioTriggerHits;
         private System.Windows.Forms.Label lblTriggerAction;
+        private System.Windows.Forms.Label lblQuietPeriod;
+        private System.Windows.Forms.NumericUpDown nudQuietPeriod;
     }
 }

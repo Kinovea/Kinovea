@@ -13,11 +13,12 @@ namespace Kinovea.Services
     public class CaptureAutomationConfiguration
     {
         public bool EnableAudioTrigger { get; set; }
-
         public string AudioInputDevice { get; set; }
         public float AudioTriggerThreshold { get; set; }
-        public float AudioQuietPeriod { get; set; }
-        public AudioTriggerAction TriggerAction { get; set; }
+        public bool EnableUDPTrigger { get; set; }
+        public int UDPPort { get; set; }
+        public float TriggerQuietPeriod { get; set; }
+        public CaptureTriggerAction TriggerAction { get; set; }
         public float RecordingSeconds { get; set; }
         public bool IgnoreOverwrite { get; set; }
 
@@ -29,8 +30,10 @@ namespace Kinovea.Services
             EnableAudioTrigger = false;
             AudioInputDevice = Guid.Empty.ToString();
             AudioTriggerThreshold = 0.9f;
-            AudioQuietPeriod = 0.0f;
-            TriggerAction = AudioTriggerAction.RecordVideo;
+            EnableUDPTrigger = false;
+            UDPPort = 8875;
+            TriggerQuietPeriod = 0.0f;
+            TriggerAction = CaptureTriggerAction.RecordVideo;
             RecordingSeconds = 0;
             IgnoreOverwrite = false;
         }
@@ -63,12 +66,18 @@ namespace Kinovea.Services
                         string strAudioTreshold = r.ReadElementContentAsString();
                         AudioTriggerThreshold = float.Parse(strAudioTreshold, CultureInfo.InvariantCulture);
                         break;
+                    case "EnableUDPTrigger":
+                        EnableUDPTrigger = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
+                        break;
+                    case "UDPPort":
+                        UDPPort = r.ReadElementContentAsInt();
+                        break;
                     case "AudioQuietPeriod":
                         string strAudioQuietPeriod = r.ReadElementContentAsString();
-                        AudioQuietPeriod = float.Parse(strAudioQuietPeriod, CultureInfo.InvariantCulture);
+                        TriggerQuietPeriod = float.Parse(strAudioQuietPeriod, CultureInfo.InvariantCulture);
                         break;
                     case "TriggerAction":
-                        TriggerAction = (AudioTriggerAction)Enum.Parse(typeof(AudioTriggerAction), r.ReadElementContentAsString());
+                        TriggerAction = (CaptureTriggerAction)Enum.Parse(typeof(CaptureTriggerAction), r.ReadElementContentAsString());
                         break;
                     case "RecordingSeconds":
                         string strRecordingSeconds = r.ReadElementContentAsString();
@@ -89,13 +98,15 @@ namespace Kinovea.Services
 
         public void WriteXml(XmlWriter w)
         {
-            w.WriteElementString("EnableAudioTrigger", EnableAudioTrigger ? "true" : "false");
+            w.WriteElementString("EnableAudioTrigger", XmlHelper.WriteBoolean(EnableAudioTrigger));
             w.WriteElementString("AudioInputDevice", AudioInputDevice);
             w.WriteElementString("AudioTriggerThreshold", AudioTriggerThreshold.ToString("0.000", CultureInfo.InvariantCulture));
-            w.WriteElementString("AudioQuietPeriod", AudioQuietPeriod.ToString("0.000", CultureInfo.InvariantCulture));
+            w.WriteElementString("EnableUDPTrigger", XmlHelper.WriteBoolean(EnableUDPTrigger));
+            w.WriteElementString("UDPPort", UDPPort.ToString());
+            w.WriteElementString("AudioQuietPeriod", TriggerQuietPeriod.ToString("0.000", CultureInfo.InvariantCulture));
             w.WriteElementString("TriggerAction", TriggerAction.ToString());
             w.WriteElementString("RecordingSeconds", RecordingSeconds.ToString("0.000", CultureInfo.InvariantCulture));
-            w.WriteElementString("IgnoreOverwriteWarning", IgnoreOverwrite ? "true" : "false");
+            w.WriteElementString("IgnoreOverwriteWarning", XmlHelper.WriteBoolean(IgnoreOverwrite));
         }
     }
 }

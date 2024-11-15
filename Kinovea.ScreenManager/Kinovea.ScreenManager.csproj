@@ -319,8 +319,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractScreen.cs" />
-    <Compile Include="AudioInputDevice.cs" />
-    <Compile Include="AudioInputLevelMonitor.cs" />
+    <Compile Include="CaptureScreen\Trigger\AudioInputDevice.cs" />
+    <Compile Include="CaptureScreen\Trigger\AudioInputLevelMonitor.cs" />
     <Compile Include="CaptureScreen\ConsumerDelayer.cs" />
     <Compile Include="CaptureScreen\ConsumerDisplay.cs" />
     <Compile Include="CaptureScreen\ConsumerRealtime.cs" />
@@ -328,6 +328,8 @@
     <Compile Include="CaptureScreen\LoadStatus.cs" />
     <Compile Include="CaptureScreen\PipelineManager.cs" />
     <Compile Include="CaptureScreen\RecordingStatus.cs" />
+    <Compile Include="CaptureScreen\Trigger\QuietPeriodHelper.cs" />
+    <Compile Include="CaptureScreen\Trigger\UDPMonitor.cs" />
     <Compile Include="CaptureScreen\Views\InfobarCapture.cs">
       <SubType>UserControl</SubType>
     </Compile>

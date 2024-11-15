@@ -57,36 +57,54 @@ namespace Kinovea.Root
         private List<PreferenceTab> tabs = new List<PreferenceTab> { 
             PreferenceTab.Capture_General, 
             PreferenceTab.Capture_Memory, 
-            PreferenceTab.Capture_Recording, 
+            PreferenceTab.Capture_Recording,
+            PreferenceTab.Capture_Trigger,
             PreferenceTab.Capture_ImageNaming, 
             PreferenceTab.Capture_VideoNaming, 
             PreferenceTab.Capture_Automation
         };
-        private CapturePathConfiguration capturePathConfiguration = new CapturePathConfiguration();
-        private Dictionary<CaptureVariable, TextBox> namingTextBoxes = new Dictionary<CaptureVariable, TextBox>();
-        private double displaySynchronizationFramerate;
-        private CaptureRecordingMode recordingMode;
+        
+        // General
         private bool saveUncompressedVideo;
+        private double displaySynchronizationFramerate;
+        private string captureKVA;
+
+        // Memory
         private int memoryBuffer;
-        private FilenameHelper filenameHelper = new FilenameHelper();
-        private FormPatterns formPatterns;
-        private bool formPatternsVisible;
+
+        // Recording
+        private CaptureRecordingMode recordingMode;
+        private float replacementFramerateThreshold;
+        private float replacementFramerate;
+
+        // Trigger
         private bool enableAudioTrigger;
         private float audioTriggerThreshold;
-        private float audioQuietPeriod;
-        private AudioTriggerAction triggerAction;
-        private float recordingSeconds;
-        private bool ignoreOverwriteWarning;
+        private float triggerQuietPeriod;
         private string audioInputDevice;
         private int audioTriggerHits = 0;
         private List<AudioInputDevice> audioInputDevices;
-        private AudioInputLevelMonitor inputMonitor = new AudioInputLevelMonitor();
+        private AudioInputLevelMonitor audioMonitor = new AudioInputLevelMonitor();
         private int thresholdFactor;
         private int decibelRange;
+        private bool enableUDPTrigger;
+        private int udpPort = 8875;
+        private int udpTriggerHits = 0;
+        private UDPMonitor udpMonitor = new UDPMonitor();
+        private CaptureTriggerAction triggerAction;
+
+        // Naming and formats
+        private CapturePathConfiguration capturePathConfiguration = new CapturePathConfiguration();
+        private Dictionary<CaptureVariable, TextBox> namingTextBoxes = new Dictionary<CaptureVariable, TextBox>();
+        private FilenameHelper filenameHelper = new FilenameHelper();
+        private FormPatterns formPatterns;
+        private bool formPatternsVisible;
+
+        // Automation
+        private float recordingSeconds;
+        private bool ignoreOverwriteWarning;
         private string postRecordCommand;
-        private float replacementFramerateThreshold;
-        private float replacementFramerate;
-        private string captureKVA;
+
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -107,7 +125,7 @@ namespace Kinovea.Root
             thresholdFactor = (int)Math.Pow(10, decibelRange / 20);
 
             ImportPreferences();
-            InitInputMonitor();
+            InitTriggerMonitors();
             InitPage();
         }
 
@@ -122,35 +140,54 @@ namespace Kinovea.Root
 
         public void Close()
         {
-            inputMonitor.Stop();
-            inputMonitor.Dispose();
+            audioMonitor.Stop();
+            audioMonitor.Dispose();
+            udpMonitor.Stop();
+            udpMonitor.Dispose();
         }
 
         private void ImportPreferences()
         {
+            // General
             saveUncompressedVideo = PreferencesManager.CapturePreferences.SaveUncompressedVideo;
             displaySynchronizationFramerate = PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate;
-            capturePathConfiguration = PreferencesManager.CapturePreferences.CapturePathConfiguration.Clone();
             captureKVA = PreferencesManager.CapturePreferences.CaptureKVA;
+            
+            // Memory
             memoryBuffer = PreferencesManager.CapturePreferences.CaptureMemoryBuffer;
+            
+            // Recording
             recordingMode = PreferencesManager.CapturePreferences.RecordingMode;
             replacementFramerateThreshold = PreferencesManager.CapturePreferences.HighspeedRecordingFramerateThreshold;
             replacementFramerate = PreferencesManager.CapturePreferences.HighspeedRecordingFramerateOutput;
+
+            // Trigger
             enableAudioTrigger = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger;
             audioInputDevice = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioInputDevice;
             audioTriggerThreshold = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioTriggerThreshold;
-            audioQuietPeriod = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioQuietPeriod;
+            enableUDPTrigger = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableUDPTrigger;
+            udpPort = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.UDPPort;
+            triggerQuietPeriod = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.TriggerQuietPeriod;
             triggerAction = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.TriggerAction;
+
+            // Naming and formats
+            capturePathConfiguration = PreferencesManager.CapturePreferences.CapturePathConfiguration.Clone();
+            
+            // Automation
             recordingSeconds = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.RecordingSeconds;
             postRecordCommand = PreferencesManager.CapturePreferences.PostRecordCommand;
             ignoreOverwriteWarning = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.IgnoreOverwrite;
         }
-        private void InitInputMonitor()
+        private void InitTriggerMonitors()
         {
-            inputMonitor.Enabled = true;
-            inputMonitor.Threshold = audioTriggerThreshold;
-            inputMonitor.LevelChanged += InputMonitor_LevelChanged;
-            inputMonitor.ThresholdPassed += InputMonitor_ThresholdPassed;
+            audioMonitor.Enabled = true;
+            audioMonitor.Threshold = audioTriggerThreshold;
+            audioMonitor.LevelChanged += AudioMonitor_LevelChanged;
+            audioMonitor.Triggered += AudioMonitor_Triggered;
+
+            udpMonitor.Enabled = true;
+            udpMonitor.Port = udpPort;
+            udpMonitor.Triggered += UDPMonitor_Triggered;
         }
 
         private void InitPage()
@@ -158,6 +195,7 @@ namespace Kinovea.Root
             InitTabGeneral();
             InitTabMemory();
             InitTabRecording();
+            InitTabTrigger();
             InitTabImageNaming();
             InitTabVideoNaming();
             InitTabAutomation();
@@ -235,6 +273,66 @@ namespace Kinovea.Root
             // Tooltip: Starting at this capture framerate, videos will be created with the replacement framerate in their metadata.
         }
 
+        private void InitTabTrigger()
+        {
+            tabTrigger.Text = "Trigger";
+
+            // Audio trigger
+            chkEnableAudioTrigger.Text = RootLang.dlgPreferences_Capture_chkEnableAudioTrigger;
+            chkEnableAudioTrigger.Checked = enableAudioTrigger;
+
+            lblInputDevice.Text = RootLang.dlgPreferences_Capture_lblInputDevice;
+            audioInputDevices = AudioInputLevelMonitor.GetDevices();
+            if (audioInputDevices.Count > 0)
+            {
+                int preferredIndex = -1;
+                for (int i = 0; i < audioInputDevices.Count; i++)
+                {
+                    cmbInputDevice.Items.Add(audioInputDevices[i]);
+
+                    var wic = audioInputDevices[i].WaveInCapabilities;
+                    log.DebugFormat("{0}: ProductGuid:{1}, ProductName:{2}", i, wic.ProductGuid, wic.ProductName);
+
+                    if (wic.ProductName == audioInputDevice)
+                        preferredIndex = i;
+                }
+
+                if (preferredIndex >= 0)
+                    cmbInputDevice.SelectedIndex = preferredIndex;
+                else
+                    cmbInputDevice.SelectedIndex = 0;
+            }
+
+            lblAudioTriggerThreshold.Text = RootLang.dlgPreferences_Capture_lblTriggerThreshold;
+            vumeter.Threshold = audioTriggerThreshold;
+            vumeter.DecibelRange = decibelRange;
+            nudAudioTriggerThreshold.Value = (decimal)vumeter.ThresholdLinear * decibelRange;
+            nudAudioTriggerThreshold.Maximum = decibelRange;
+            NudHelper.FixNudScroll(nudAudioTriggerThreshold);
+
+            EnableDisableAudioTrigger();
+
+            // UDP trigger
+            chkEnableUDPTrigger.Text = "Enable UDP trigger";
+            chkEnableUDPTrigger.Checked = enableUDPTrigger;
+            
+            lblUDPPort.Text = "UDP port:";
+            nudUDPPort.Value = Math.Max(Math.Min(nudUDPPort.Maximum, udpPort), nudUDPPort.Minimum);
+            NudHelper.FixNudScroll(nudUDPPort);
+
+            EnableDisableUDPTrigger();
+
+            // Common
+            lblQuietPeriod.Text = RootLang.dlgPreferences_Capture_lblIdleTime;
+            nudQuietPeriod.Value = (decimal)triggerQuietPeriod;
+            NudHelper.FixNudScroll(nudQuietPeriod);
+
+            lblTriggerAction.Text = RootLang.dlgPreferences_Capture_TriggerAction;
+            cmbTriggerAction.Items.Add(ScreenManagerLang.ToolTip_StartRecording);
+            cmbTriggerAction.Items.Add(ScreenManagerLang.Generic_SaveImage);
+            cmbTriggerAction.SelectedIndex = ((int)triggerAction < cmbTriggerAction.Items.Count) ? (int)triggerAction : 0;
+        }
+
         private void InitTabImageNaming()
         {
             tabImageNaming.Text = RootLang.dlgPreferences_Capture_ImageNaming;
@@ -282,52 +380,10 @@ namespace Kinovea.Root
         private void InitTabAutomation()
         {
             tabAutomation.Text = RootLang.dlgPreferences_Capture_tabAutomation; 
-            chkEnableAudioTrigger.Text = RootLang.dlgPreferences_Capture_chkEnableAudioTrigger;
-            lblInputDevice.Text = RootLang.dlgPreferences_Capture_lblInputDevice;
-
-            audioInputDevices = AudioInputLevelMonitor.GetDevices();
-            if (audioInputDevices.Count > 0)
-            {
-                int preferredIndex = -1;
-                for (int i = 0; i < audioInputDevices.Count; i++)
-                {
-                    cmbInputDevice.Items.Add(audioInputDevices[i]);
-
-                    var wic = audioInputDevices[i].WaveInCapabilities;
-                    log.DebugFormat("{0}: ProductGuid:{1}, ProductName:{2}", i, wic.ProductGuid, wic.ProductName);
-
-                    if (wic.ProductName == audioInputDevice)
-                        preferredIndex = i;
-                }
-
-                if (preferredIndex >= 0)
-                    cmbInputDevice.SelectedIndex = preferredIndex;
-                else
-                    cmbInputDevice.SelectedIndex = 0;
-            }
-
-            lblAudioTriggerThreshold.Text = RootLang.dlgPreferences_Capture_lblTriggerThreshold;
-            vumeter.Threshold = audioTriggerThreshold;
-            vumeter.DecibelRange = decibelRange;
-            nudAudioTriggerThreshold.Value = (decimal)vumeter.ThresholdLinear * decibelRange;
-            nudAudioTriggerThreshold.Maximum = decibelRange;
-            NudHelper.FixNudScroll(nudAudioTriggerThreshold);
-
-            lblQuietPeriod.Text = RootLang.dlgPreferences_Capture_lblIdleTime;
-            nudQuietPeriod.Value = (decimal)audioQuietPeriod;
-            NudHelper.FixNudScroll(nudQuietPeriod);
-
-            lblTriggerAction.Text = RootLang.dlgPreferences_Capture_TriggerAction;
-            cmbTriggerAction.Items.Add(ScreenManagerLang.ToolTip_StartRecording);
-            cmbTriggerAction.Items.Add(ScreenManagerLang.Generic_SaveImage);
-            cmbTriggerAction.SelectedIndex = ((int)triggerAction < cmbTriggerAction.Items.Count) ? (int)triggerAction : 0;
-
+            
             lblRecordingTime.Text = RootLang.dlgPreferences_Capture_lblStopRecordingByDuration;
             nudRecordingTime.Value = (decimal)recordingSeconds;
             NudHelper.FixNudScroll(nudRecordingTime);
-
-            chkEnableAudioTrigger.Checked = enableAudioTrigger;
-            EnableDisableAudioTrigger();
 
             lblPostRecordCommand.Text = RootLang.dlgPreferences_Capture_lblPostRecordingCommand; 
             tbPostRecordCommand.Text = postRecordCommand;
@@ -539,7 +595,7 @@ namespace Kinovea.Root
         }
         #endregion
 
-        #region Tab Automation
+        #region Tab Trigger
         private void chkEnableAudioTrigger_CheckedChanged(object sender, EventArgs e)
         {
             enableAudioTrigger = chkEnableAudioTrigger.Checked;
@@ -553,13 +609,13 @@ namespace Kinovea.Root
             if (selected != null)
             {
                 audioInputDevice = selected.WaveInCapabilities.ProductName;
-                
+
                 if (enableAudioTrigger)
-                    inputMonitor.Start(audioInputDevice);
+                    audioMonitor.Start(audioInputDevice);
             }
             else
             {
-                inputMonitor.Stop();
+                audioMonitor.Stop();
             }
 
             audioTriggerHits = 0;
@@ -569,24 +625,46 @@ namespace Kinovea.Root
         {
             vumeter.ThresholdLinear = (float)nudAudioTriggerThreshold.Value / decibelRange;
             audioTriggerThreshold = vumeter.Threshold;
-            inputMonitor.Threshold = audioTriggerThreshold;
+            audioMonitor.Threshold = audioTriggerThreshold;
             audioTriggerHits = 0;
             UpdateHits();
         }
         private void Vumeter_ThresholdChanged(object sender, EventArgs e)
         {
             audioTriggerThreshold = vumeter.Threshold;
-            inputMonitor.Threshold = audioTriggerThreshold;
+            audioMonitor.Threshold = audioTriggerThreshold;
             nudAudioTriggerThreshold.Text = string.Format("{0:0.0}", vumeter.ThresholdLinear * decibelRange);
             audioTriggerHits = 0;
+            UpdateHits();
+        }
+        private void chkEnableUDPTrigger_CheckedChanged(object sender, EventArgs e)
+        {
+            enableUDPTrigger = chkEnableUDPTrigger.Checked;
+            EnableDisableUDPTrigger();
+            udpTriggerHits = 0;
+            UpdateHits();
+        }
+        private void nudUDPPort_ValueChanged(object sender, EventArgs e)
+        {
+            udpPort = (int)nudUDPPort.Value;
+            if (enableUDPTrigger)
+                udpMonitor.Start(udpPort);
+
+            udpTriggerHits = 0;
             UpdateHits();
         }
 
         private void nudQuietPeriod_ValueChanged(object sender, EventArgs e)
         {
-            audioQuietPeriod = (float)nudQuietPeriod.Value;
+            triggerQuietPeriod = (float)nudQuietPeriod.Value;
         }
+        private void cmbTriggerAction_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            triggerAction = (CaptureTriggerAction)cmbTriggerAction.SelectedIndex;
+        }
+        #endregion
 
+        #region Tab Automation
         private void NudRecordingTime_ValueChanged(object sender, EventArgs e)
         {
             recordingSeconds = (float)nudRecordingTime.Value;
@@ -617,29 +695,22 @@ namespace Kinovea.Root
         {
             ignoreOverwriteWarning = chkIgnoreOverwriteWarning.Checked;
         }
-
-        private void cmbTriggerAction_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            triggerAction = (AudioTriggerAction)cmbTriggerAction.SelectedIndex;
-        }
-
         #endregion
         #endregion
 
-        #region Audio monitor event handlers
-        private void InputMonitor_ThresholdPassed(object sender, EventArgs e)
+        #region Trigger monitors
+        private void AudioMonitor_Triggered(object sender, EventArgs e)
         {
             audioTriggerHits++;
             UpdateHits();
         }
 
-        private void InputMonitor_LevelChanged(object sender, float e)
+        private void AudioMonitor_LevelChanged(object sender, float e)
         {
             int level = (int)(e * 100);
             vumeter.Amplitude = e;
         }
-
-        #endregion
+        
         private void EnableDisableAudioTrigger()
         {
             bool enabled = enableAudioTrigger && audioInputDevices != null && audioInputDevices.Count > 0;
@@ -650,38 +721,71 @@ namespace Kinovea.Root
             lblAudioTriggerThreshold.Enabled = enabled;
             nudAudioTriggerThreshold.Enabled = enabled;
             vumeter.Enabled = enabled;
-            lblQuietPeriod.Enabled = enabled;
-            nudQuietPeriod.Enabled = enabled;
 
             if (!enabled)
-                inputMonitor.Stop();
+                audioMonitor.Stop();
             else
-                inputMonitor.Start(audioInputDevice);
+                audioMonitor.Start(audioInputDevice);
+        }
+
+        private void UDPMonitor_Triggered(object sender, EventArgs e)
+        {
+            udpTriggerHits++;
+            UpdateHits();
+        }
+
+        private void EnableDisableUDPTrigger()
+        {
+            bool enabled = enableUDPTrigger;
+
+            nudUDPPort.Enabled = enabled;
+            lblUDPPort.Enabled = enabled;
+            lblUDPTriggerHits.Enabled = enabled;
+
+            if (!enabled)
+                udpMonitor.Stop();
+            else
+                udpMonitor.Start(udpPort);
         }
 
         private void UpdateHits()
         {
             lblAudioTriggerHits.Text = audioTriggerHits.ToString();
+            lblUDPTriggerHits.Text = udpTriggerHits.ToString();
         }
+        #endregion
 
         public void CommitChanges()
         {
+            // General
             PreferencesManager.CapturePreferences.SaveUncompressedVideo = saveUncompressedVideo;
             PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate = displaySynchronizationFramerate;
-            PreferencesManager.CapturePreferences.CapturePathConfiguration = capturePathConfiguration;
+            PreferencesManager.CapturePreferences.CaptureKVA = captureKVA;
+
+            // Memory
             PreferencesManager.CapturePreferences.CaptureMemoryBuffer = memoryBuffer;
+
+            // Recording
             PreferencesManager.CapturePreferences.RecordingMode = recordingMode;
             PreferencesManager.CapturePreferences.HighspeedRecordingFramerateThreshold = replacementFramerateThreshold;
             PreferencesManager.CapturePreferences.HighspeedRecordingFramerateOutput = replacementFramerate;
+
+            // Trigger
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger = enableAudioTrigger;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioInputDevice = audioInputDevice;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioTriggerThreshold = audioTriggerThreshold;
-            PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioQuietPeriod = audioQuietPeriod;
+            PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableUDPTrigger = enableUDPTrigger;
+            PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.UDPPort = udpPort;
+            PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.TriggerQuietPeriod = triggerQuietPeriod;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.TriggerAction = triggerAction;
+
+            // Naming and formats
+            PreferencesManager.CapturePreferences.CapturePathConfiguration = capturePathConfiguration;
+
+            // Automation
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.RecordingSeconds = recordingSeconds;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.IgnoreOverwrite = ignoreOverwriteWarning;
             PreferencesManager.CapturePreferences.PostRecordCommand = postRecordCommand;
-            PreferencesManager.CapturePreferences.CaptureKVA = captureKVA;
         }
 
         private void formPatterns_FormClosed(object sender, FormClosedEventArgs e)
