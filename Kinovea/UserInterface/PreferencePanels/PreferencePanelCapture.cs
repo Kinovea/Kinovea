@@ -538,7 +538,7 @@ namespace Kinovea.Root
                 initialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
             string path = FilesystemHelper.OpenFolderBrowserDialog(initialDirectory);
-            if (string.IsNullOrEmpty(path))
+            if (!string.IsNullOrEmpty(path))
                 tb.Text = path;
         }
 
