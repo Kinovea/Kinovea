@@ -514,4 +514,7 @@
   <data name="mnuDefaultPointer" xml:space="preserve">
     <value>デフォルト</value>
   </data>
+  <data name="mnuPointer" xml:space="preserve">
+    <value>ポインター</value>
+  </data>
 </root>
