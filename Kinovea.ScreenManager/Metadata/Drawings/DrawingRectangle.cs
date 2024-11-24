@@ -85,6 +85,14 @@ namespace Kinovea.ScreenManager
         {
             get { return initializing; }
         }
+
+        /// <summary>
+        /// The rectangle in image space.
+        /// </summary>
+        public QuadrilateralF QuadImage
+        {
+            get { return quadImage; }
+        }
         #endregion
 
         #region Members

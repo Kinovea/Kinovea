@@ -123,7 +123,6 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuBundleAdjustment = new ToolStripMenuItem();
         private ToolStripMenuItem mnuBuildTracks = new ToolStripMenuItem();
 
-        private ToolStripMenuItem mnuImportMask = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDeleteData = new ToolStripMenuItem();
 
         private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
@@ -208,7 +207,6 @@ namespace Kinovea.ScreenManager
             mnuMatchFeatures.Image = Properties.Drawings.bullet_green;
             mnuFindHomographies.Image = Properties.Resources.frame_transforms2;
             mnuBuildTracks.Image = Properties.Resources.bullet_pink;
-            mnuImportMask.Image = Properties.Resources.layer_mask;
             mnuDeleteData.Image = Properties.Resources.bin_empty;
             mnuRunAll.Click += MnuRunAll_Click;
             mnuFindFeatures.Click += MnuFindFeatures_Click;
@@ -216,7 +214,7 @@ namespace Kinovea.ScreenManager
             mnuFindHomographies.Click += MnuFindHomographies_Click;
             mnuBundleAdjustment.Click += MnuBundleAdjustment_Click;
             mnuBuildTracks.Click += MnuBuildTracks_Click;
-            mnuImportMask.Click += MnuImportMask_Click;
+            
             mnuDeleteData.Click += MnuDeleteData_Click;
             
             mnuOptions.Image = Properties.Resources.equalizer;
@@ -365,8 +363,6 @@ namespace Kinovea.ScreenManager
             
             mnuAction.DropDownItems.AddRange(new ToolStripItem[] {
                 new ToolStripSeparator(),
-                mnuImportMask,
-                new ToolStripSeparator(),
                 mnuDeleteData,
             });
 
@@ -403,7 +399,6 @@ namespace Kinovea.ScreenManager
             mnuFindHomographies.Text = ScreenManagerLang.VideoFilterCameraMotion_FindHomographies;
             mnuBundleAdjustment.Text = ScreenManagerLang.VideoFilterCameraMotion_BundleAdjustment;
             mnuBuildTracks.Text = ScreenManagerLang.VideoFilterCameraMotion_BuildTracks;
-            mnuImportMask.Text = ScreenManagerLang.VideoFilterCameraMotion_ImportMask;
             mnuDeleteData.Text = ScreenManagerLang.VideoFilterCameraMotion_DeleteTrackingData;
 
             mnuOptions.Text = ScreenManagerLang.Generic_Options;
@@ -556,6 +551,7 @@ namespace Kinovea.ScreenManager
             switch (step)
             {
                 case CameraMotionStep.FindFeatures:
+                    MakeMask();
                     tracker.FindFeatures(framesContainer, worker);
                     break;
                 case CameraMotionStep.MatchFeatures:
@@ -572,29 +568,10 @@ namespace Kinovea.ScreenManager
                     break;
                 case CameraMotionStep.All:
                 default:
+                    MakeMask();
                     tracker.RunAll(framesContainer, worker);
                     break;
             }
-        }
-
-        private void MnuImportMask_Click(object sender, EventArgs e)
-        {
-            // Open image.
-            // Reject if it's not the same size.
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Title = "Import mask";
-            openFileDialog.RestoreDirectory = true;
-            //openFileDialog.Filter = "";
-            //openFileDialog.FilterIndex = 0;
-            if (openFileDialog.ShowDialog() != DialogResult.OK)
-                return;
-
-            string filename = openFileDialog.FileName;
-            if (string.IsNullOrEmpty(filename) || !File.Exists(filename))
-                return;
-
-            tracker.SetMask(filename);
-            openFileDialog.Dispose();
         }
 
         private void MnuDeleteData_Click(object sender, EventArgs e)
@@ -1131,6 +1108,39 @@ namespace Kinovea.ScreenManager
         {
             PreferencesManager.PlayerPreferences.CameraMotionParameters = parameters.Clone();
             PreferencesManager.Save();
+        }
+
+        /// <summary>
+        /// Create a binary mask from rectangles in the image to ignore static areas.
+        /// </summary>
+        private void MakeMask()
+        {
+            // Collect rectangle objects in the video.
+            List<RectangleF> rr = new List<RectangleF>();
+            foreach (var d in parentMetadata.AttachedDrawings())
+            {
+                if (d is DrawingRectangle)
+                {
+                    DrawingRectangle dr = d as DrawingRectangle;
+                    rr.Add(dr.QuadImage.GetBoundingBox());
+                }
+            }
+
+            if (rr.Count == 0)
+                return;
+
+            // Create the mask and send it to the tracker.
+            Bitmap mask = new Bitmap(frameSize.Width, frameSize.Height);
+            using (Graphics g = Graphics.FromImage(mask))
+            {
+                g.Clear(Color.White);
+                foreach (var r in rr)
+                {
+                    g.FillRectangle(Brushes.Black, r);
+                }
+            }
+
+            tracker.SetMask(mask);
         }
     }
 }

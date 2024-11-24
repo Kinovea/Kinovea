@@ -844,12 +844,12 @@ namespace Kinovea.ScreenManager
             tracks.Clear();
         }
 
-        public void SetMask(string filename)
+        public void SetMask(Bitmap mask)
         {
-            if (mask != null)
-                mask.Dispose();
+            if (this.mask != null)
+                this.mask.Dispose();
 
-            mask = new Bitmap(filename);
+            this.mask = mask;
         }
 
         /// <summary>
