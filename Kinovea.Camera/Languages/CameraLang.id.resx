@@ -151,4 +151,7 @@
   <data name="FormConfiguration_Properties_ExposureMicro" xml:space="preserve">
     <value>Eksposur (µs):</value>
   </data>
+  <data name="FormConfiguration_ResultingFramerate" xml:space="preserve">
+    <value>Frame rate yang dihasilkan:</value>
+  </data>
 </root>
