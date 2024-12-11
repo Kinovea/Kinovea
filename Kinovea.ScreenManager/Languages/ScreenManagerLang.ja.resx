@@ -1363,4 +1363,13 @@
   <data name="mnuPasteImage" xml:space="preserve">
     <value>クリップボードから画像を貼り付け</value>
   </data>
+  <data name="DrawingCrossMark_Dot" xml:space="preserve">
+    <value>点</value>
+  </data>
+  <data name="DrawingPlane_ShowVerticalLine" xml:space="preserve">
+    <value>縦線を表示</value>
+  </data>
+  <data name="DrawingPlane_ShowHorizontalLine" xml:space="preserve">
+    <value>横線を表示</value>
+  </data>
 </root>

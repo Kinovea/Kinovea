@@ -428,7 +428,7 @@
     <value>Название файла содержит недопустимые символы.\n Название не должно содержать следующие символы:\n \ / : * ? " &lt; &gt;</value>
   </data>
   <data name="Error_SaveMovie_FileError" xml:space="preserve">
-    <value>Невозможно записать файл. \n Убедитесь, что вы имеете право записи в данной папке, а файла не используется другими приложениями.</value>
+    <value>Невозможно записать файл. \nУбедитесь, что вы имеете право записи в данной папке и этот файл не используется другими приложениями.</value>
   </data>
   <data name="Error_SaveMovie_Title" xml:space="preserve">
     <value>Kinovea - невозможно сохранить видео. </value>
@@ -527,7 +527,7 @@
     <value>Открыть</value>
   </data>
   <data name="Generic_Import" xml:space="preserve">
-    <value>Импорт</value>
+    <value>Импорт…</value>
   </data>
   <data name="Generic_Restore" xml:space="preserve">
     <value>Восстановить умолчание</value>
@@ -1232,7 +1232,7 @@
     <value>Видео слайд-шоу…</value>
   </data>
   <data name="mnuLensCalibration" xml:space="preserve">
-    <value>Калибровка объектива…</value>
+    <value>Калибровка объектива</value>
   </data>
   <data name="mnuMeasure_Chrono_Menu" xml:space="preserve">
     <value>Столбцы</value>
@@ -1362,5 +1362,77 @@
   </data>
   <data name="mnuThumbnail_MoveToCurrentTime" xml:space="preserve">
     <value>Переход к текущему времени</value>
+  </data>
+  <data name="Cadence" xml:space="preserve">
+    <value>Шаг</value>
+  </data>
+  <data name="DrawingCoordinateSystem_AlignToCalibrationObject" xml:space="preserve">
+    <value>Выровнять по объекту калибровки</value>
+  </data>
+  <data name="DrawingPlane_ShowHorizontalLine" xml:space="preserve">
+    <value>Показать горизонтальную линию</value>
+  </data>
+  <data name="DrawingPlane_ShowVerticalLine" xml:space="preserve">
+    <value>Показать вертикальную линию</value>
+  </data>
+  <data name="FormCalibratePlane_Rotate90" xml:space="preserve">
+    <value>Повернуть на 90°</value>
+  </data>
+  <data name="FormCalibratePlane_FlipYAxis" xml:space="preserve">
+    <value>Перевернуть по оси Y</value>
+  </data>
+  <data name="FormCalibratePlane_FlipXAxis" xml:space="preserve">
+    <value>Перевернуть по оси X</value>
+  </data>
+  <data name="FormCalibrationValidation_ControlPoints" xml:space="preserve">
+    <value>Контрольные точки</value>
+  </data>
+  <data name="FormCalibrationValidation_ValidationMode" xml:space="preserve">
+    <value>Режим проверки</value>
+  </data>
+  <data name="FormCalibrationValidation_CameraPositionXYZ" xml:space="preserve">
+    <value>Позиция камеры ({0}): X:{1}, Y:{2}, Z:{3}</value>
+  </data>
+  <data name="FormTimeSections_Start" xml:space="preserve">
+    <value>Начало</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_LensCalibrationMode" xml:space="preserve">
+    <value>Режим калибровки объектива</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_ManualEstimation" xml:space="preserve">
+    <value>Ручная оценка…</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_None" xml:space="preserve">
+    <value>Нет</value>
+  </data>
+  <data name="FormCalibrationValidation_DistanceToOrigin" xml:space="preserve">
+    <value>Расстояние до объекта ({0}): {1}</value>
+  </data>
+  <data name="FormTimeSections_End" xml:space="preserve">
+    <value>Конец</value>
+  </data>
+  <data name="FormTimeSections_Duration" xml:space="preserve">
+    <value>Длительность</value>
+  </data>
+  <data name="FormTimeSections_Cumulative" xml:space="preserve">
+    <value>Суммарно</value>
+  </data>
+  <data name="FormTimeSections_Tag" xml:space="preserve">
+    <value>Тэг</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_CalibrationValidation" xml:space="preserve">
+    <value>Проверка калибровки…</value>
+  </data>
+  <data name="FormBackgroundColor_BackgroundProperties" xml:space="preserve">
+    <value>Свойства фона</value>
+  </data>
+  <data name="Generic_Color" xml:space="preserve">
+    <value>Цвет</value>
+  </data>
+  <data name="VideoFilterCameraMotion_RunCameraMotionEstimation" xml:space="preserve">
+    <value>Запустить оценку движения камеры</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ImportMask" xml:space="preserve">
+    <value>Импорт маски</value>
   </data>
 </root>

@@ -155,4 +155,7 @@
   <data name="FormConfiguration_DevicePropertyPages_Error" xml:space="preserve">
     <value>Wystąpił błąd podczas próby wyświetlenia strony właściwości urządzenia dla {0}.</value>
   </data>
+  <data name="FormConfiguration_EnableHardwareCompression" xml:space="preserve">
+    <value>Włącz sprzętową kompresję</value>
+  </data>
 </root>

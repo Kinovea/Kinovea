@@ -151,4 +151,16 @@
   <data name="FormConfiguration_Properties_ExposureMicro" xml:space="preserve">
     <value>Eksposur (µs):</value>
   </data>
+  <data name="FormConfiguration_ResultingFramerate" xml:space="preserve">
+    <value>Frame rate yang dihasilkan:</value>
+  </data>
+  <data name="FormConfiguration_EnableHardwareCompression" xml:space="preserve">
+    <value>Aktifkan kompresi perangkat keras</value>
+  </data>
+  <data name="FormConfiguration_EnableSoftwareDemosaicing" xml:space="preserve">
+    <value>Aktifkan de-mosaik perangkat lunak</value>
+  </data>
+  <data name="FormConfiguration_ExportDeviceGenICamXMLFile" xml:space="preserve">
+    <value>Ekspor perangkat file XML GenICam</value>
+  </data>
 </root>

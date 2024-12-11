@@ -1573,4 +1573,7 @@
   <data name="FormCalibratePlane_OffsetAppliedToCoordinates" xml:space="preserve">
     <value>Primijenjeni odmak na koordinate ({0})</value>
   </data>
+  <data name="VideoFilterCameraMotion_FindHomographies" xml:space="preserve">
+    <value>Pronađi homografije</value>
+  </data>
 </root>
