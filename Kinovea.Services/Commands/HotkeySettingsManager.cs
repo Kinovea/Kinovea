@@ -27,10 +27,14 @@ namespace Kinovea.Services
             return result;
         }
 
-        public static bool IsHandler(string category, Keys keys)
+        /// <summary>
+        /// Returns the command corresponding to the passed keyboard shortcut for a specific context.
+        /// Returns null if this context doesn't handle the shortcut.
+        /// </summary>
+        public static HotkeyCommand FindCommand(string category, Keys keys)
         {
             HotkeyCommand[] handledHotkeys = HotkeySettingsManager.LoadHotkeys(category);
-            return handledHotkeys.Any(hk => hk != null && hk.KeyData == keys);
+            return handledHotkeys.FirstOrDefault(hk => hk != null && hk.KeyData == keys);
         }
 
         public static void Import(Dictionary<string, HotkeyCommand[]> imported)

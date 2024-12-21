@@ -400,7 +400,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Commands
-        protected override bool ExecuteCommand(int cmd)
+        protected override bool ExecuteCommand(int commandCode)
         {
             if (fnbImage.Focused || fnbVideo.Focused)
                 return false;
@@ -408,24 +408,28 @@ namespace Kinovea.ScreenManager
             if (capturedFilesView.Editing)
                 return false;
 
-            if (!presenter.Synched)
-                return ExecuteScreenCommand(cmd);
+            // If we are not in a dual screen context just run the command for this screen.
+            if (!presenter.Synched || DualCommandReceived == null)
+                return ExecuteScreenCommand(commandCode);
 
-            // If we are in dual capture mode, check if the command is handled by the common controls.
-            HotkeyCommand command = Hotkeys.FirstOrDefault(h => h != null && h.CommandCode == cmd);
+            // Try to see if that command is handled by the dual capture controller.
+            // At this point the command code is still the one from the single screen context.
+            // Get the full command with the target shortcut key.
+            HotkeyCommand command = Hotkeys.FirstOrDefault(h => h != null && h.CommandCode == commandCode);
             if (command == null)
                 return false;
 
-            bool dualCaptureHandled = HotkeySettingsManager.IsHandler("DualCapture", command.KeyData);
-
-            if (dualCaptureHandled && DualCommandReceived != null)
+            // Look for a matching handler in the dual capture context.
+            HotkeyCommand command2 = HotkeySettingsManager.FindCommand("DualCapture", command.KeyData);
+            if (command2 == null)
             {
-                DualCommandReceived(this, new EventArgs<HotkeyCommand>(command));
-                return true;
+                // The shortcut isn't handled at the dual screen level, run it normally.
+                return ExecuteScreenCommand(commandCode);
             }
             else
             {
-                return ExecuteScreenCommand(cmd);
+                DualCommandReceived(this, new EventArgs<HotkeyCommand>(command2));
+                return true;
             }
         }
 
@@ -533,9 +537,6 @@ namespace Kinovea.ScreenManager
 
             return true;
         }
-
-
-
         #endregion
     }
 }
