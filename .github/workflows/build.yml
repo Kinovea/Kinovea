@@ -2,43 +2,41 @@ name: Build Kinovea
 
 on:
   push:
-    branches: [ "master" ] # or your main branch
+    branches:
+      - master
   pull_request:
-    branches: [ "master" ]
+    branches:
+      - master
 
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Visual Studio Build Tools
-        uses: actions/setup-msbuild@v2   #or setup-visualstudio, test both
-        with:
-          vs-version: '2019' # or '16.0'
-          msbuild-architecture: 'x64' # Optional, but good to specify
-          include-prereleases: false  # Or 'true' if needed for a very specific VS version
-          # If setup-visualstudio, try these too
-          #components: Microsoft.Component.MSBuild
-          #vs-prerelease: false
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1.3.1
 
-      - name: Install .NET Framework 4.8
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '4.8'  #This might also not be necessary, test without it first
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v2
 
       - name: Restore NuGet packages
         run: nuget restore Kinovea.sln
 
-      - name: Build Solution
-        run: |
-          msbuild Kinovea.sln /p:Configuration=Release /p:Platform="Any CPU"
+      - name: Setup Visual Studio
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
 
-      - name: Upload Artifact
+      - name: Build Solution
+        run: msbuild Kinovea.sln /p:Configuration=Release /p:Platform="x64"
+
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: Kinovea-Build
-          path: Kinovea/bin/Release # Adjust this path if needed.  Find the actual output directory.
-          if-no-files-found: error
+          path: |
+            **/bin/Release/
+            **/bin/x64/Release/
