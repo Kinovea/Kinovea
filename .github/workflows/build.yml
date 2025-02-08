@@ -2,9 +2,9 @@ name: Build Kinovea
 
 on:
   push:
-    branches: [ "main" ] # or your main branch
+    branches: [ "master" ] # or your main branch
   pull_request:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 jobs:
   build:
