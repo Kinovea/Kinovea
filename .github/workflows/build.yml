@@ -23,7 +23,7 @@ jobs:
         uses: NuGet/setup-nuget@v2
 
       - name: Restore NuGet packages
-        run: nuget restore Kinovea.sln
+        run: nuget restore Kinovea.VS2019.sln
 
       - name: Setup Visual Studio
         uses: ilammy/msvc-dev-cmd@v1
@@ -31,7 +31,7 @@ jobs:
           arch: x64
 
       - name: Build Solution
-        run: msbuild Kinovea.sln /p:Configuration=Release /p:Platform="x64"
+        run: msbuild Kinovea.VS2019.sln /p:Configuration=Release /p:Platform="x64"
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
