@@ -1,64 +1,56 @@
-name: Kinovea Build
+name: Build Kinovea
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: windows-2019  # Using Windows 2019 for better compatibility with .NET Framework 4.8
+    runs-on: windows-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.1
-    
-    - name: Setup Visual Studio components
-      uses: microsoft/setup-msbuild@v1.1
+      uses: microsoft/setup-msbuild@v1.3.1
+      
+    - name: Setup Visual Studio Components
+      uses: microsoft/setup-msbuild@v1.3.1
       with:
         vs-version: '[16.11,16.12)'  # VS 2019
         vs-prerelease: false
+        msbuild-architecture: x64
     
-    - name: Setup .NET Framework
-      uses: microsoft/setup-dotnet@v3
-      with:
-        dotnet-version: '4.8.x'
-    
-    - name: Install Visual Studio components
+    - name: Install Visual Studio dependencies
       shell: powershell
       run: |
-        # Install VS components using vsconfig
-        $vsconfig = @{
-          "version" = "1.0"
-          "components" = @(
-            "Microsoft.VisualStudio.Component.Desktop.Development",
-            "Microsoft.Net.Component.4.8.SDK",
-            "Microsoft.VisualStudio.Component.Windows.Desktop",
-            "Microsoft.VisualStudio.Component.VC.CLI.Support",
-            "Microsoft.VisualStudio.ComponentGroup.NativeDesktop.Core"
-          )
-        }
-        $vsconfig | ConvertTo-Json | Out-File ".vsconfig"
-        
-        # Install components using VS installer
+        # Install VS components using vs_installer.exe
         Start-Process -Wait -FilePath "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vs_installer.exe" `
-          -ArgumentList "modify --installPath ""C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise"" --quiet --norestart --includeRecommended --config .vsconfig"
+          -ArgumentList "modify --installPath ""C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise"" `
+            --add Microsoft.VisualStudio.Workload.ManagedDesktop `
+            --add Microsoft.VisualStudio.Workload.NativeDesktop `
+            --add Microsoft.Net.Component.4.8.SDK `
+            --add Microsoft.Net.Component.4.8.TargetingPack `
+            --add Microsoft.VisualStudio.Component.VC.CLI.Support `
+            --quiet --norestart"
     
     - name: Restore NuGet packages
       run: nuget restore Kinovea.sln
     
     - name: Build Solution
       run: |
-        msbuild /p:Configuration=Release /p:Platform="Any CPU" Kinovea.sln
+        msbuild.exe Kinovea.sln /p:Configuration=Release /p:Platform="Any CPU" /m
     
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
       with:
-        name: Kinovea-build
+        name: kinovea-build
         path: |
-          **/bin/Release/*.exe
-          **/bin/Release/*.dll
-          **/bin/Release/*.config
+          Kinovea/bin/Release/*.exe
+          Kinovea/bin/Release/*.dll
+          Kinovea/bin/Release/*.config
+        compression: zip
+        retention-days: 90
