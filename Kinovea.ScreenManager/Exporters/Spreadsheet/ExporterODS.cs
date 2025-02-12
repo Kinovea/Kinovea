@@ -531,6 +531,7 @@ namespace Kinovea.ScreenManager
                     WriteCell(w, pointName, "valueHeader", 2);
                     WriteCell(w, "", "valueHeader");
                 }
+                WriteCell(w, "", "valueHeader");
                 w.WriteEndElement();
 
                 // Third row of headers: Time and Coordinates.
@@ -541,6 +542,7 @@ namespace Kinovea.ScreenManager
                     WriteCell(w, string.Format("X ({0})", md.Units.LengthSymbol), "valueHeader");
                     WriteCell(w, string.Format("Y ({0})", md.Units.LengthSymbol), "valueHeader");
                 }
+                WriteCell(w, string.Format("Angle ({0})", md.Units.AngleSymbol), "valueHeader");
                 w.WriteEndElement();
 
                 // Write data.
@@ -553,6 +555,20 @@ namespace Kinovea.ScreenManager
                     {
                         WriteCell(w, pointValues[i].X, "number");
                         WriteCell(w, pointValues[i].Y, "number");
+                    }
+                    for (int j = 0; j < md.Angles.Count; j++)
+                    {
+                        if (timeline.Name == md.Angles[j].Name)
+                        {
+                            if (md.Angles[j].Value < 0)
+                            {
+                                WriteCell(w, -Math.Abs((float)Math.Round(GeometryHelper.GetAngle(timeline.Data["o"][i], timeline.Data["a"][i], timeline.Data["b"][i]) * (180 / Math.PI), 2)), "number");
+                            }
+                            else
+                            {
+                                WriteCell(w, Math.Abs((float)Math.Round(GeometryHelper.GetAngle(timeline.Data["o"][i], timeline.Data["a"][i], timeline.Data["b"][i]) * (180 / Math.PI), 2)), "number");
+                            }
+                        }
                     }
                     w.WriteEndElement();
                 }
