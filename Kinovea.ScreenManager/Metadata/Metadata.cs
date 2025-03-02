@@ -2252,14 +2252,32 @@ namespace Kinovea.ScreenManager
 
         private void SetupTempDirectory(Guid id)
         {
-            tempFolder = Path.Combine(Software.TempDirectory, id.ToString());
-            if (!Directory.Exists(tempFolder))
-                Directory.CreateDirectory(tempFolder);
+            try
+            {
+                tempFolder = Path.Combine(Software.TempDirectory, id.ToString());
+                if (!Directory.Exists(tempFolder))
+                    Directory.CreateDirectory(tempFolder);
+            }
+            catch (Exception ex)
+            {
+                log.Error("Failed to create temp directory.", ex);
+            }
         }
         private void DeleteTempDirectory()
         {
-            if (Directory.Exists(tempFolder))
-                Directory.Delete(tempFolder, true);
+            // If the folder is inside a synchronized OneDrive directory this may fail,
+            // even though we created the folder ourselves earlier.
+            // Appears to be a bug in OneDrive since September 2024.
+            // https://learn.microsoft.com/en-us/answers/questions/2084726/access-denied-trying-to-delete-local-folders-sync
+            try
+            {
+                if (Directory.Exists(tempFolder))
+                    Directory.Delete(tempFolder, true);
+            }
+            catch (Exception ex)
+            {
+                log.Error("Failed to delete temp directory.", ex);
+            }
         }
         private void EmptyTempDirectory()
         {
@@ -2267,9 +2285,16 @@ namespace Kinovea.ScreenManager
         }
         private void DeleteAutosaveFile()
         {
-            string autosaveFile = Path.Combine(tempFolder, "autosave.kva");
-            if (File.Exists(autosaveFile))
-                File.Delete(autosaveFile);
+            try
+            {
+                string autosaveFile = Path.Combine(tempFolder, "autosave.kva");
+                if (File.Exists(autosaveFile))
+                    File.Delete(autosaveFile);
+            }
+            catch (Exception ex)
+            {
+                log.Error("Failed to delete autosave file.", ex);
+            }
         }
         private void LensCalibrationAsked(object sender, EventArgs e)
         {
