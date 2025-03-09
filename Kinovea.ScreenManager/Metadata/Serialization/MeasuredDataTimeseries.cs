@@ -34,6 +34,11 @@ namespace Kinovea.ScreenManager
         /// This is only used for sorting for consistency of export and should not be exposed to users.
         /// </summary>
         public long FirstTimestamp { get; set; } = 0;
+
+        /// <summary>
+        /// List of pre-computed angle values.
+        /// This is only used for angle objects.
+        /// </summary>
         public List<float> AngleValues { get; set; }
     }
 }

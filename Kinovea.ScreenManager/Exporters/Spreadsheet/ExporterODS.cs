@@ -7,7 +7,6 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Xml.Xsl;
-using DocumentFormat.OpenXml.Drawing.Diagrams;
 using ICSharpCode.SharpZipLib.Zip;
 using Kinovea.Services;
 
@@ -520,7 +519,8 @@ namespace Kinovea.ScreenManager
             {
                 // Write the main header.
                 w.WriteStartElement("table:table-row");
-                if (timeline.Data.Count == 3 && timeline.AngleValues != null) //only show angle values column if timeline is using 3 point angle markers and anglue values is not null
+                //only show angle values column if timeline is using 3 point angle markers and anglue values is not null
+                if (timeline.Data.Count == 3 && timeline.AngleValues != null)
                 {
                     WriteCell(w, timeline.Name, "trackHeader", timeline.Data.Keys.Count * 2 + 2);
                 }
@@ -553,7 +553,8 @@ namespace Kinovea.ScreenManager
                     WriteCell(w, string.Format("X ({0})", md.Units.LengthSymbol), "valueHeader");
                     WriteCell(w, string.Format("Y ({0})", md.Units.LengthSymbol), "valueHeader");
                 }
-                if (timeline.Data.Count == 3 && timeline.AngleValues != null) //only show angle values column if timeline is using 3 point angle markers and anglue values is not null
+
+                if (timeline.Data.Count == 3 && timeline.AngleValues != null)
                 {
                     WriteCell(w, string.Format("Angle ({0})", md.Units.AngleSymbol), "valueHeader");
                 }
@@ -571,7 +572,8 @@ namespace Kinovea.ScreenManager
                         WriteCell(w, pointValues[i].X, "number");
                         WriteCell(w, pointValues[i].Y, "number");
                     }
-                    if (timeline.Data.Count == 3 && timeline.AngleValues != null) //only show angle values if timeline is using 3 point angle markers and anglue values is not null
+
+                    if (timeline.Data.Count == 3 && timeline.AngleValues != null)
                     {
                         WriteCell(w, timeline.AngleValues[i], "number");
                     }
