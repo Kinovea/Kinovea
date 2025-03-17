@@ -519,7 +519,15 @@ namespace Kinovea.ScreenManager
             {
                 // Write the main header.
                 w.WriteStartElement("table:table-row");
-                WriteCell(w, timeline.Name, "trackHeader", timeline.Data.Keys.Count * 2 + 1);
+                //only show angle values column if timeline is using 3 point angle markers and anglue values is not null
+                if (timeline.Data.Count == 3 && timeline.AngleValues != null)
+                {
+                    WriteCell(w, timeline.Name, "trackHeader", timeline.Data.Keys.Count * 2 + 2);
+                }
+                else
+                {
+                    WriteCell(w, timeline.Name, "trackHeader", timeline.Data.Keys.Count * 2 + 1);
+                }
                 w.WriteEndElement();
 
                 // Write second row of headers: point names.
@@ -529,6 +537,10 @@ namespace Kinovea.ScreenManager
                 foreach (var pointName in timeline.Data.Keys)
                 {
                     WriteCell(w, pointName, "valueHeader", 2);
+                    WriteCell(w, "", "valueHeader");
+                }
+                if (timeline.Data.Count == 3 && timeline.AngleValues != null) //only show angle values column if timeline is using 3 point angle markers and anglue values is not null
+                {
                     WriteCell(w, "", "valueHeader");
                 }
                 w.WriteEndElement();
@@ -541,6 +553,12 @@ namespace Kinovea.ScreenManager
                     WriteCell(w, string.Format("X ({0})", md.Units.LengthSymbol), "valueHeader");
                     WriteCell(w, string.Format("Y ({0})", md.Units.LengthSymbol), "valueHeader");
                 }
+
+                if (timeline.Data.Count == 3 && timeline.AngleValues != null)
+                {
+                    WriteCell(w, string.Format("Angle ({0})", md.Units.AngleSymbol), "valueHeader");
+                }
+
                 w.WriteEndElement();
 
                 // Write data.
@@ -553,6 +571,11 @@ namespace Kinovea.ScreenManager
                     {
                         WriteCell(w, pointValues[i].X, "number");
                         WriteCell(w, pointValues[i].Y, "number");
+                    }
+
+                    if (timeline.Data.Count == 3 && timeline.AngleValues != null)
+                    {
+                        WriteCell(w, timeline.AngleValues[i], "number");
                     }
                     w.WriteEndElement();
                 }

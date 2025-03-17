@@ -320,6 +320,64 @@ namespace Kinovea.ScreenManager
                     mdt.Data.Add(name, value);
                 }
 
+                if (drawing is DrawingAngle drawingAngle)
+                {
+                    //retrieve the angleOptions from drawing
+                    AngleOptions angleOptions = drawingAngle.AngleOptions;
+
+                    //retrieve all trackable points from drawing
+                    Dictionary<string, TrackablePoint> trackablePoints = this.GetTrackablePoints(drawingAngle);
+                    if (trackablePoints == null || trackablePoints.Count != 3) //if the number of tracked points doesn't match, skip the code
+                        continue;
+
+                    //store angle keys
+                    List<string> keys = new List<string>{"o", "a", "b"};
+
+                    //the Timeline data of each key is save to a TrackingTemplate object
+                    Timeline<TrackingTemplate> timelineO = trackablePoints[keys[0]].Timeline;
+                    Timeline<TrackingTemplate> timelineA = trackablePoints[keys[1]].Timeline;
+                    Timeline<TrackingTemplate> timelineB = trackablePoints[keys[2]].Timeline;
+
+                    //lists of TimedPoint samples from the raw timelines is created
+                    List<TimedPoint> samplesO = new List<TimedPoint>();
+                    List<TimedPoint> samplesA = new List<TimedPoint>();
+                    List<TimedPoint> samplesB = new List<TimedPoint>();
+                    //now populate each individual sample with the X & Y coordinates and timestamp with its corresponding entry
+                    foreach (var entry in timelineO.Enumerate())
+                        samplesO.Add(new TimedPoint(entry.Location.X, entry.Location.Y, entry.Time));
+                    foreach (var entry in timelineA.Enumerate())
+                        samplesA.Add(new TimedPoint(entry.Location.X, entry.Location.Y, entry.Time));
+                    foreach (var entry in timelineB.Enumerate())
+                        samplesB.Add(new TimedPoint(entry.Location.X, entry.Location.Y, entry.Time));
+
+                    //create a new FilteredTrajectory for each point and call Initialize with samples and calibration settings
+                    FilteredTrajectory trajO = new FilteredTrajectory();
+                    trajO.Initialize(samplesO, metadata.CalibrationHelper);
+                    FilteredTrajectory trajA = new FilteredTrajectory();
+                    trajA.Initialize(samplesA, metadata.CalibrationHelper);
+                    FilteredTrajectory trajB = new FilteredTrajectory();
+                    trajB.Initialize(samplesB, metadata.CalibrationHelper);
+
+                    //dictionary maps keys to their FilteredTrajectory instances
+                    Dictionary<string, FilteredTrajectory> trajs = new Dictionary<string, FilteredTrajectory>()
+                    {
+                        {"o", trajO},
+                        {"a", trajA},
+                        {"b", trajB}
+                    };
+
+                    //BuildKinematics is called and an angular position of each frame is calculated
+                    //this returns the exact same angle data that is returned when calling from dedicated angle functions
+                    AngularKinematics angularKinematics = new AngularKinematics();
+                    TimeSeriesCollection tsc = angularKinematics.BuildKinematics(trajs, angleOptions, metadata.CalibrationHelper);
+
+                    //the mdt.AngleValues is populated with the computed angular position values
+                    mdt.AngleValues = new List<float>(tsc.Length);
+                    for (int i = 0; i < tsc.Length; i++)
+                    {
+                        mdt.AngleValues.Add((float)tsc[Kinematics.AngularPosition][i]);
+                    }
+                }
                 timelines.Add(mdt);
             }
         }
