@@ -30,6 +30,10 @@
 #error missing -D__STDC_CONSTANT_MACROS / #define __STDC_CONSTANT_MACROS
 #endif
 
+#ifndef UINT64_C
+#   define UINT64_C(value) value##ULL
+#endif
+
 #include <errno.h>
 #include <inttypes.h>
 #include <limits.h>

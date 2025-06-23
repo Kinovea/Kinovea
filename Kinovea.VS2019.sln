@@ -75,6 +75,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinovea.Camera.Baumer", "Ki
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinovea.Camera.GenICam", "Kinovea.Camera.GenICam\Kinovea.Camera.GenICam.csproj", "{8EB42BF8-6F1F-45D9-A993-4CD9B5168D10}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{36410D34-ABFE-44BF-A76A-7C147035C94E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinovea.ApiGetway", "Kinovea.ApiGetway\Kinovea.ApiGetway.csproj", "{C6BBD2C9-9EFC-42B3-BD18-14A87DDF57E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinovea.VideoService", "Kinovea.VideoService\Kinovea.VideoService.csproj", "{5957D13A-03D3-4067-8249-734D62233C73}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -331,6 +337,30 @@ Global
 		{8EB42BF8-6F1F-45D9-A993-4CD9B5168D10}.DebugExternals|x86.ActiveCfg = Debug|x64
 		{8EB42BF8-6F1F-45D9-A993-4CD9B5168D10}.Release|x64.ActiveCfg = Release|x64
 		{8EB42BF8-6F1F-45D9-A993-4CD9B5168D10}.Release|x86.ActiveCfg = Release|x64
+		{C6BBD2C9-9EFC-42B3-BD18-14A87DDF57E2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C6BBD2C9-9EFC-42B3-BD18-14A87DDF57E2}.Debug|x64.Build.0 = Debug|Any CPU
+		{C6BBD2C9-9EFC-42B3-BD18-14A87DDF57E2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C6BBD2C9-9EFC-42B3-BD18-14A87DDF57E2}.Debug|x86.Build.0 = Debug|Any CPU
+		{C6BBD2C9-9EFC-42B3-BD18-14A87DDF57E2}.DebugExternals|x64.ActiveCfg = Debug|Any CPU
+		{C6BBD2C9-9EFC-42B3-BD18-14A87DDF57E2}.DebugExternals|x64.Build.0 = Debug|Any CPU
+		{C6BBD2C9-9EFC-42B3-BD18-14A87DDF57E2}.DebugExternals|x86.ActiveCfg = Debug|Any CPU
+		{C6BBD2C9-9EFC-42B3-BD18-14A87DDF57E2}.DebugExternals|x86.Build.0 = Debug|Any CPU
+		{C6BBD2C9-9EFC-42B3-BD18-14A87DDF57E2}.Release|x64.ActiveCfg = Release|Any CPU
+		{C6BBD2C9-9EFC-42B3-BD18-14A87DDF57E2}.Release|x64.Build.0 = Release|Any CPU
+		{C6BBD2C9-9EFC-42B3-BD18-14A87DDF57E2}.Release|x86.ActiveCfg = Release|Any CPU
+		{C6BBD2C9-9EFC-42B3-BD18-14A87DDF57E2}.Release|x86.Build.0 = Release|Any CPU
+		{5957D13A-03D3-4067-8249-734D62233C73}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5957D13A-03D3-4067-8249-734D62233C73}.Debug|x64.Build.0 = Debug|Any CPU
+		{5957D13A-03D3-4067-8249-734D62233C73}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5957D13A-03D3-4067-8249-734D62233C73}.Debug|x86.Build.0 = Debug|Any CPU
+		{5957D13A-03D3-4067-8249-734D62233C73}.DebugExternals|x64.ActiveCfg = Debug|Any CPU
+		{5957D13A-03D3-4067-8249-734D62233C73}.DebugExternals|x64.Build.0 = Debug|Any CPU
+		{5957D13A-03D3-4067-8249-734D62233C73}.DebugExternals|x86.ActiveCfg = Debug|Any CPU
+		{5957D13A-03D3-4067-8249-734D62233C73}.DebugExternals|x86.Build.0 = Debug|Any CPU
+		{5957D13A-03D3-4067-8249-734D62233C73}.Release|x64.ActiveCfg = Release|Any CPU
+		{5957D13A-03D3-4067-8249-734D62233C73}.Release|x64.Build.0 = Release|Any CPU
+		{5957D13A-03D3-4067-8249-734D62233C73}.Release|x86.ActiveCfg = Release|Any CPU
+		{5957D13A-03D3-4067-8249-734D62233C73}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -352,6 +382,7 @@ Global
 		{92CFEB6D-11FB-48BB-A5F9-E2BFB6F8B29F} = {58D505DA-544D-4DCD-B3DB-6562E446E6C4}
 		{0AAB56AE-86C4-45B0-974A-885EFFB4904F} = {58D505DA-544D-4DCD-B3DB-6562E446E6C4}
 		{8EB42BF8-6F1F-45D9-A993-4CD9B5168D10} = {58D505DA-544D-4DCD-B3DB-6562E446E6C4}
+		{5957D13A-03D3-4067-8249-734D62233C73} = {36410D34-ABFE-44BF-A76A-7C147035C94E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D785C0EB-022A-45B5-AF9E-BB711582DB19}
