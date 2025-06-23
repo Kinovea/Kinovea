@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace Kinovea.ApiGetway.Controllers
+namespace Kinovea.CameraService.Controllers
 {
     [ApiController]
     [Route("[controller]")]

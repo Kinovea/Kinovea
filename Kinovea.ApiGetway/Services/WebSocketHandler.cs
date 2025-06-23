@@ -1,5 +1,11 @@
-﻿namespace Kinovea.ApiGetway.Services
+﻿using System.Collections.Concurrent;
+using System.Net.WebSockets;
+
+namespace Kinovea.ApiGetway.Services
 {
+    /// <summary>
+    /// WebSocket处理程序
+    /// </summary>
     public class WebSocketHandler
     {
         private readonly ILogger<WebSocketHandler> _logger;
@@ -10,6 +16,12 @@
             _logger = logger;
         }
 
+        /// <summary>
+        /// 处理WebSocket连接
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="webSocket"></param>
+        /// <returns></returns>
         public async Task HandleWebSocket(HttpContext context, WebSocket webSocket)
         {
             var socketId = Guid.NewGuid().ToString();
@@ -17,7 +29,7 @@
 
             try
             {
-                await ProcessWebSocketMessages(socketId, webSocket);
+                //await ProcessWebSocketMessages(socketId, webSocket);
             }
             catch (Exception ex)
             {

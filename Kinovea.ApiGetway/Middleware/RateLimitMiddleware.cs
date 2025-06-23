@@ -30,6 +30,36 @@ namespace Kinovea.ApiGetway.Middleware
             await _next(context);
         }
 
+        private async Task<bool> IsRateLimitExceeded(string key)
+        {
+            // 获取当前请求计数
+            var countBytes = await _cache.GetAsync(key);
+            int currentCount = 0;
+
+            if (countBytes != null)
+            {
+                currentCount = BitConverter.ToInt32(countBytes);
+            }
+
+            // 增加计数并设置过期时间
+            currentCount++;
+            await _cache.SetAsync(
+                key,
+                BitConverter.GetBytes(currentCount),
+                new DistributedCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1) // 1分钟过期
+                });
+
+            // 检查是否超过限制 (这里设置为每分钟100次请求)
+            int rateLimit = 100;
+
+            // 记录日志
+            _logger.LogDebug($"Rate limit for {key}: {currentCount}/{rateLimit}");
+
+            return currentCount > rateLimit;
+        }
+
         private string GetRateLimitKey(HttpContext context)
         {
             return $"ratelimit_{context.Request.Path}_{context.Connection.RemoteIpAddress}";
