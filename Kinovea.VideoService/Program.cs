@@ -7,10 +7,15 @@ namespace Kinovea.VideoService
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            var configuration = builder.Configuration;
+            var port = configuration.GetValue<int>("Kestrel:Endpoints:Http:Port", 5001);
+
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                options.ListenAnyIP(port);
+            });
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
