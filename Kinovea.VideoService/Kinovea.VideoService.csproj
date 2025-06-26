@@ -10,4 +10,10 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Kinovea.Services\Kinovea.Services.csproj" />
+    <ProjectReference Include="..\Kinovea.Video.FFMpeg\PlayerServer\PlayerServer.vcxproj" />
+    <ProjectReference Include="..\Kinovea.Video\Kinovea.Video.csproj" />
+  </ItemGroup>
+
 </Project>

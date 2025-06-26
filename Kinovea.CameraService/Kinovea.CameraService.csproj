@@ -10,4 +10,16 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Kinovea.Camera.Basler\Kinovea.Camera.Basler.csproj" />
+    <ProjectReference Include="..\Kinovea.Camera.Baumer\Kinovea.Camera.Baumer.csproj" />
+    <ProjectReference Include="..\Kinovea.Camera.Daheng\Kinovea.Camera.Daheng.csproj" />
+    <ProjectReference Include="..\Kinovea.Camera.DirectShow\Kinovea.Camera.DirectShow.csproj" />
+    <ProjectReference Include="..\Kinovea.Camera.FrameGenerator\Kinovea.Camera.FrameGenerator.csproj" />
+    <ProjectReference Include="..\Kinovea.Camera.GenICam\Kinovea.Camera.GenICam.csproj" />
+    <ProjectReference Include="..\Kinovea.Camera.HTTP\Kinovea.Camera.HTTP.csproj" />
+    <ProjectReference Include="..\Kinovea.Camera.IDS\Kinovea.Camera.IDS.csproj" />
+    <ProjectReference Include="..\Kinovea.Camera\Kinovea.Camera.csproj" />
+  </ItemGroup>
+
 </Project>

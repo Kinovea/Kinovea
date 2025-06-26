@@ -22,6 +22,9 @@ using System;
 
 namespace Kinovea.Video
 {
+    /// <summary>
+    /// 当视频源不支持所请求的功能时抛出的异常。
+    /// </summary>
     public class CapabilityNotSupportedException : Exception
     {
         public CapabilityNotSupportedException()

@@ -1,0 +1,19 @@
+[
+  {
+    "Name": "新建配置文件",
+    "Projects": [
+      {
+        "Path": "Kinovea.ApiGetway\\Kinovea.ApiGetway.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "Kinovea.VideoService\\Kinovea.VideoService.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "Kinovea.CameraService\\Kinovea.CameraService.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

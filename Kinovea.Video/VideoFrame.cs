@@ -23,6 +23,9 @@ using System.Drawing;
 
 namespace Kinovea.Video
 {
+    /// <summary>
+    /// 视频帧类，包含时间戳和图像。
+    /// </summary>
     public class VideoFrame
     {
         public long Timestamp;

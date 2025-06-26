@@ -23,6 +23,16 @@ using System.Drawing;
 
 namespace Kinovea.Video
 {
+    /// <summary>
+    /// 用于处理视频帧的委托
+    /// </summary>
+    /// <param name="frame"></param>
     public delegate void VideoFrameDisposer(VideoFrame frame);
+    /// <summary>
+    /// 用于从视频帧中检索图像的委托
+    /// </summary>
+    /// <param name="frame">视频帧</param>
+    /// <param name="output">输出的位图</param>
+    /// <returns></returns>
     public delegate bool ImageRetriever(VideoFrame frame, Bitmap output);
 }

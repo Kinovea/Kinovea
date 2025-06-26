@@ -1,3 +1,7 @@
+using Kinovea.VideoService.Models;
+using Kinovea.VideoService.Services.Implementations;
+using Kinovea.VideoService.Services.Interfaces;
+using Microsoft.Extensions.Options;
 
 namespace Kinovea.VideoService
 {
@@ -19,6 +23,8 @@ namespace Kinovea.VideoService
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            ConfigureServices(builder.Services);
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -30,10 +36,26 @@ namespace Kinovea.VideoService
 
             app.UseAuthorization();
 
-
             app.MapControllers();
 
             app.Run();
         }
+
+        public static void ConfigureServices(IServiceCollection services)
+        {
+            // 注册视频服务
+            services.AddSingleton<IVideoReaderFactory, VideoReaderFactory>();
+            services.AddScoped<FFmpegVideoReader>();
+            // 配置 FFmpeg
+            // 配置 FFmpeg 选项
+            services.Configure<FFmpegOptions>(options =>
+            {
+                options.FFmpegPath = Path.Combine(AppContext.BaseDirectory, "ffmpeg");
+                options.TempPath = Path.Combine(AppContext.BaseDirectory, "temp");
+                options.EnableHardwareAcceleration = true;
+            });
+        }
     }
+
+   
 }

@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  # API 网关
+  apigateway:
+    image: kinovea/apigateway
+    build:
+      context: .
+      dockerfile: Kinovea.ApiGetway/Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - cameraservice
+      - videoservice
+    networks:
+      - kinovea-network
+
+  # 摄像头服务
+  cameraservice:
+    image: kinovea/cameraservice
+    build:
+      context: .
+      dockerfile: Kinovea.CameraService/Dockerfile
+    ports:
+      - "5002:5002"
+    networks:
+      - kinovea-network
+
+  # 视频服务
+  videoservice:
+    image: kinovea/videoservice
+    build:
+      context: .
+      dockerfile: Kinovea.VideoService/Dockerfile
+    ports:
+      - "5001:5001"
+    networks:
+      - kinovea-network
+
+  # Consul 服务发现
+  consul:
+    image: consul:1.15
+    ports:
+      - "8500:8500"
+    networks:
+      - kinovea-network
+
+networks:
+  kinovea-network:
+    name: kinovea-network
+    driver: bridge

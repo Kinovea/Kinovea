@@ -1,0 +1,17 @@
+﻿# Kinovea.CameraService/docker-compose.yml
+version: '3.8'
+
+services:
+  cameraservice:
+    image: kinovea/cameraservice
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5002:5002"
+    networks:
+      - kinovea-network
+
+networks:
+  kinovea-network:
+    external: true

@@ -1,13 +1,13 @@
-using HealthChecks.UI.Client;
+using Kinovea.ApiGetway.Extensions;
 using Kinovea.ApiGetway.Middleware;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.Hosting;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using Prometheus;
+using System;
+using System.Reflection;
 
 namespace Kinovea.ApiGetway
 {
@@ -15,139 +15,91 @@ namespace Kinovea.ApiGetway
     {
         public static void Main(string[] args)
         {
+            AppContext.SetSwitch("Microsoft.AspNetCore.Http.UseSystemWeb", true);
+
             var builder = WebApplication.CreateBuilder(args);
 
-            // 健康检查配置
-            builder.Services.AddHealthChecks()
-                            .AddCheck("self", () => HealthCheckResult.Healthy())
-                            .AddUrlGroup(new Uri("http://localhost:5001/health"), name: "video-service")
-                            .AddUrlGroup(new Uri("http://localhost:5002/health"), name: "camera-service");
-
-            // 健康检查UI配置
-            builder.Services.AddHealthChecksUI()
-                            .AddInMemoryStorage();
-
-            // Swagger配置
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen(c =>
+            try
             {
-                c.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Title = "Kinovea API Gateway",
-                    Version = "v1"
-                });
+                // 基础配置
+                builder.Configuration
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+                    .AddJsonFile("ocelot.json", optional: false, reloadOnChange: true)
+                    .AddEnvironmentVariables();
 
-                // 修改为正确的 OpenApiInfo 类型
-                c.SwaggerDoc("video-service", new OpenApiInfo
+                // 添加选项配置
+                builder.Services.AddConfigurationServices(builder.Configuration);
+
+                // 添加Ocelot服务
+                builder.Services
+                                 .AddOcelot(builder.Configuration)
+                                 .AddDelegatingHandler<OcelotLoggingHandler>(true);
+
+                // 添加健康检查
+                builder.Services.AddCustomHealthChecks(builder.Configuration);
+
+                // 添加Swagger
+                builder.Services.AddCustomSwagger(builder.Configuration);
+
+                // 添加分布式缓存
+                builder.Services.AddDistributedMemoryCache();
+
+                // 添加CORS
+                builder.Services.AddCors(options =>
                 {
-                    Title = "Video Service API",
-                    Version = "v1",
-                    Description = "API for managing video services in Kinovea",
-                    Contact = new OpenApiContact
+                    options.AddPolicy("AllowAll", cors =>
                     {
-                        Name = "Video Service Team",
-                        Email = "video@kinovea.org"
-                    },
-                    License = new OpenApiLicense
-                    {
-                        Name = "GNU GPLv2",
-                        Url = new Uri("http://www.gnu.org/licenses/")
-                    }
+                        cors.AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader();
+                    });
                 });
 
-                c.SwaggerDoc("camera-service", new OpenApiInfo
+                var app = builder.Build();
+                var lifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
+
+                // 开发环境配置
+                if (app.Environment.IsDevelopment())
                 {
-                    Title = "Camera Service API",
-                    Version = "v1",
-                    Description = "API for managing camera services in Kinovea",
-                    Contact = new OpenApiContact
-                    {
-                        Name = "Camera Service Team",
-                        Email = "camera@kinovea.org"
-                    },
-                    License = new OpenApiLicense
-                    {
-                        Name = "GNU GPLv2",
-                        Url = new Uri("http://www.gnu.org/licenses/")
-                    }
-                });
+                    app.UseDeveloperExceptionPage();
+                    app.UseCustomSwaggerUI();
+                }
 
-                // 添加服务器配置
-                c.AddServer(new OpenApiServer
-                {
-                    Url = "http://localhost:5001",
-                    Description = "Video Service"
-                });
+                // 配置健康检查端点
+                app.UseCustomHealthChecks();
 
-                c.AddServer(new OpenApiServer
-                {
-                    Url = "http://localhost:5002",
-                    Description = "Camera Service"
-                });
-            });
+                // 配置指标监控
+                app.UseMetricServer();
+                app.UseHttpMetrics();
 
-            // 其他服务配置
-            builder.Services.AddMetrics();
-            builder.Services.AddDistributedMemoryCache();
+                // 应用中间件
+                app.UseMiddleware<LoggingMiddleware>(); // 使用ASP.NET Core日志中间件
+                app.UseCors("AllowAll");
+                app.UseHttpsRedirection();
 
-            // Ocelot 配置
-            builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
-            builder.Services.AddOcelot(builder.Configuration);
+                // 使用Ocelot
+                app.UseOcelot().Wait();
 
-            // CORS 配置
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAll", builder =>
-                {
-                    builder.AllowAnyOrigin()
-                           .AllowAnyMethod()
-                           .AllowAnyHeader();
-                });
-            });
-
-            var app = builder.Build();
-
-            // 配置中间件管道
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Kinovea API Gateway v1");
-                    c.SwaggerEndpoint("/swagger/video-service/swagger.json", "Video Service API v1");
-                    c.SwaggerEndpoint("/swagger/camera-service/swagger.json", "Camera Service API v1");
-
-                    // 配置 Swagger UI
-                    c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
-                    c.DefaultModelsExpandDepth(-1); // 隐藏 Models 部分
-                    c.RoutePrefix = "swagger"; // 可以通过 /swagger 访问
-                });
+                app.Run();
             }
-
-            // 健康检查端点
-            app.MapHealthChecks("/health", new HealthCheckOptions
+            catch (ReflectionTypeLoadException ex)
             {
-                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-            });
-
-            app.MapHealthChecksUI(options =>
+                Console.WriteLine("Ocelot加载类型时出错:");
+                foreach (var loaderException in ex.LoaderExceptions)
+                {
+                    Console.WriteLine($"加载错误: {loaderException.Message}");
+                    Console.WriteLine($"堆栈跟踪: {loaderException.StackTrace}");
+                }
+                throw;
+            }
+            catch (Exception ex)
             {
-                options.UIPath = "/health-ui";
-                options.ApiPath = "/health-api";
-            });
-
-            // 其他中间件配置
-            app.UseMetricServer();
-            app.UseHttpMetrics();
-            app.UseMiddleware<LoggingMiddleware>();
-            app.UseCors("AllowAll");
-            app.UseMiddleware<RateLimitMiddleware>();
-            app.UseHttpsRedirection();
-
-            // Ocelot 中间件
-            app.UseOcelot().Wait();
-
-            app.Run();
+                Console.WriteLine($"程序启动时出错: {ex.Message}");
+                Console.WriteLine($"堆栈跟踪: {ex.StackTrace}");
+                throw;
+            }
         }
     }
 }
