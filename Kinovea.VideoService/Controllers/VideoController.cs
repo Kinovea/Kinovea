@@ -10,21 +10,21 @@ namespace Kinovea.VideoService.Controllers
     /// 视频控制器
     /// </summary>
     [ApiController]
-    [Route("api/[controller]")]
-    public class videoController : ControllerBase
+    [Route("api/video")]
+    public class VideoController : ControllerBase
     {
         private readonly IVideoFileOperations _videoFileOperations;
         private readonly IVideoPlayback _videoPlayback;
         private readonly IMinioService _minioService;
-        private readonly ILogger<videoController> _logger;
+        private readonly ILogger<VideoController> _logger;
         private readonly IVideoTypeManagerService _videoTypeManager;
 
-        public videoController(
+        public VideoController(
             IVideoTypeManagerService videoTypeManager,
             IVideoFileOperations videoFileOperations,
             IVideoPlayback videoPlayback,
             IMinioService minioService,
-            ILogger<videoController> logger)
+            ILogger<VideoController> logger)
         {
             _videoTypeManager = videoTypeManager;
             _videoFileOperations = videoFileOperations;
