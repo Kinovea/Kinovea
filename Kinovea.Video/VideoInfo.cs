@@ -24,9 +24,14 @@ using Kinovea.Services;
 
 namespace Kinovea.Video
 {
- 
+
     // TODO: hide those items that are implementation details.
-    
+    //将那些属于实现细节的项目隐藏起来。
+    /// <summary>
+    /// Information about a video file.
+    /// 有关视频文件的信息。
+    /// </summary>
+
     public struct VideoInfo
     {
         /// <summary>
@@ -36,6 +41,7 @@ namespace Kinovea.Video
 
         /// <summary>
         /// Whether a separate KVA metadata file has been loaded for this video.
+        /// 是否已为该视频加载了单独的 KVA 元数据文件。
         /// </summary>
         public bool HasKva;
 
@@ -46,13 +52,17 @@ namespace Kinovea.Video
 
         /// <summary>
         /// Image size after aspect ratio fix (either from pixel aspect ratio or by user configuration).
+        /// 经过比例调整后的图像尺寸（无论是基于像素比例还是根据用户设置确定的）。
         /// Padded to 4 bytes along rotated width.
+        /// 沿旋转后的宽度扩展至 4 个字节。
         /// </summary>
         public Size AspectRatioSize;
 
         /// <summary>
         /// Image size after aspect ratio fix and rotation.
+        /// 经过比例调整和旋转后的图像尺寸。
         /// This is the unscaled image size, the images might be decoded at a smaller size still.
+        /// 这是未缩放的图像尺寸，这些图像可能还能进一步被缩小处理以获得更小的尺寸。
         /// </summary>
         public Size ReferenceSize;
         public double PixelAspectRatio;
@@ -61,7 +71,9 @@ namespace Kinovea.Video
 
         /// <summary>
         /// Image rotation to use for decoding images.
+        /// 用于解码图像的图像旋转方式。
         /// Either from video internal metadata or user configuration.
+        /// 要么来自视频内部的元数据，要么来自用户设置。
         /// </summary>
         public ImageRotation ImageRotation;
 

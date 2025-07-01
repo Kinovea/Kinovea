@@ -2,6 +2,7 @@ using Kinovea.VideoService.Models;
 using Kinovea.VideoService.Services.Implementations;
 using Kinovea.VideoService.Services.Interfaces;
 using Microsoft.Extensions.Options;
+using System.Reflection;
 
 namespace Kinovea.VideoService
 {
@@ -9,6 +10,11 @@ namespace Kinovea.VideoService
     {
         public static void Main(string[] args)
         {
+            // 配置log4net
+            var logRepository = log4net.LogManager.GetRepository(Assembly.GetEntryAssembly());
+            log4net.Config.XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
+
+
             var builder = WebApplication.CreateBuilder(args);
 
             var configuration = builder.Configuration;
@@ -43,19 +49,17 @@ namespace Kinovea.VideoService
 
         public static void ConfigureServices(IServiceCollection services)
         {
+            // 注册MinIO服务
+            services.AddScoped<IMinioService, MinioService>();
+
             // 注册视频服务
-            services.AddSingleton<IVideoReaderFactory, VideoReaderFactory>();
-            services.AddScoped<FFmpegVideoReader>();
-            // 配置 FFmpeg
-            // 配置 FFmpeg 选项
-            services.Configure<FFmpegOptions>(options =>
-            {
-                options.FFmpegPath = Path.Combine(AppContext.BaseDirectory, "ffmpeg");
-                options.TempPath = Path.Combine(AppContext.BaseDirectory, "temp");
-                options.EnableHardwareAcceleration = true;
-            });
+            services.AddScoped<BasicVideoReader>();
+            services.AddScoped<IVideoFileOperations>(provider => provider.GetRequiredService<BasicVideoReader>());
+            services.AddScoped<IVideoPlayback>(provider => provider.GetRequiredService<BasicVideoReader>());
+
+            // 添加VideoTypeManager初始化
+            services.AddSingleton<IVideoTypeManagerService, VideoTypeManagerService>();
+
         }
     }
-
-   
 }

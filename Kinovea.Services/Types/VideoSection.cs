@@ -24,9 +24,13 @@ namespace Kinovea.Services
 {
     /// <summary>
     /// A section of the video, defined by sentinel timestamps.
+    /// 一段由监控时间戳界定的视频片段。
     /// Can be used to describe the whole video, the working zone, the cache segment or any other section.
+    /// 可用于描述整个视频、工作区域、缓存段或者任何其他部分。
     /// Note that the [0;0] section is valid. It describes a one-frame segment at timestamp 0.
+    /// 请注意，[0;0] 这一部分是有效的。它描述的是在时间戳为 0 时的一帧片段。
     /// Negative timestamps are invalid and used to denote uninitialized section.
+    /// 负时间戳是无效的，用于表示未初始化的段。
     /// </summary>
     public struct VideoSection : IComparable, IEquatable<VideoSection>
     {
@@ -55,7 +59,9 @@ namespace Kinovea.Services
 
         /// <summary>
         /// Returns true if this timestamp is contained in the section.
+        /// 如果此时间戳存在于该段落中，则返回真。
         /// The bounds are part of the section.
+        /// 这些界限是该部分的一部分。
         /// </summary>
         public bool Contains(long timestamp)
         {
@@ -65,6 +71,7 @@ namespace Kinovea.Services
 
         /// <summary>
         /// Returns true if the passed section is entirely contained in this section.
+        /// 如果传入的段落完全包含于当前段落内，则返回真值。
         /// </summary>
         public bool Contains(VideoSection _other)
         {
@@ -78,15 +85,16 @@ namespace Kinovea.Services
                 return string.Format("[{0} --> {1}]", Start, End);
         }
 
-        
-        #region Equality and comparison
+
+        #region Equality and comparison(平等与比较)
         public int CompareTo(object _other)
         {
             if (!(_other is VideoSection))
                 throw new ArgumentException();
-            
+
             // To be "less than", a section must be entirely enclosed in another and smaller.
-            
+            // 要成为“较小的部分”，该部分必须完全被另一个更小的部分所包围。
+
             VideoSection other = (VideoSection)_other;
             
             if(this.Start == other.Start && this.End == other.End) 

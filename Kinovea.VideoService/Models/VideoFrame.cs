@@ -1,3 +1,5 @@
+using System.Drawing;
+
 namespace Kinovea.VideoService.Models
 {
     /// <summary>
@@ -6,23 +8,23 @@ namespace Kinovea.VideoService.Models
     public class VideoFrame
     {
         /// <summary>
-        /// 帧数据
+        /// 帧图像
         /// </summary>
-        public byte[] Data { get; set; }
+        public Bitmap Image { get; set; }
 
         /// <summary>
-        /// 时间戳
+        /// 时间戳(毫秒)
         /// </summary>
-        public TimeSpan Timestamp { get; set; }
+        public long Timestamp { get; set; }
 
         /// <summary>
         /// 帧索引
         /// </summary>
-        public long Index { get; set; }
+        public int FrameIndex { get; set; }
 
         /// <summary>
-        /// 图像格式
+        /// 是否为关键帧
         /// </summary>
-        public string Format { get; set; }
+        public bool IsKeyFrame { get; set; }
     }
 }

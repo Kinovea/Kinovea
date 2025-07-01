@@ -1,6 +1,6 @@
 #pragma region License
 /*
-Copyright © Joan Charmant 2014.
+Copyright ?Joan Charmant 2014.
 jcharmant@gmail.com 
  
 This file is part of Kinovea.

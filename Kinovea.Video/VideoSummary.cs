@@ -26,7 +26,8 @@ using System.IO;
 namespace Kinovea.Video
 {
     /// <summary>
-    /// Summary of the video. Provides support for animated thumbnails in the integrated explorer.
+    /// Summary of the video. Provides support for animated thumbnails in the integrated explorer..
+    /// 视频摘要。在集成资源管理器中为动画缩略图提供支持。
     /// </summary>
     public class VideoSummary
     {

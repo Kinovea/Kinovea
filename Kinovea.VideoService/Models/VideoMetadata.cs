@@ -6,14 +6,19 @@ namespace Kinovea.VideoService.Models
     public class VideoMetadata
     {
         /// <summary>
-        /// 视频时长
+        /// 视频编码格式
         /// </summary>
-        public TimeSpan Duration { get; set; }
+        public string Codec { get; set; }
 
         /// <summary>
-        /// 帧率
+        /// 视频帧率
         /// </summary>
         public double FrameRate { get; set; }
+
+        /// <summary>
+        /// 视频时长(毫秒)
+        /// </summary>
+        public long Duration { get; set; }
 
         /// <summary>
         /// 视频宽度
@@ -26,13 +31,13 @@ namespace Kinovea.VideoService.Models
         public int Height { get; set; }
 
         /// <summary>
-        /// 视频编码格式
+        /// 视频总帧数
         /// </summary>
-        public string Codec { get; set; }
+        public long FrameCount { get; set; }
 
         /// <summary>
-        /// 视频容器格式
+        /// 比特率(bps)
         /// </summary>
-        public string Container { get; set; }
+        public int BitRate { get; set; }
     }
 }

@@ -25,6 +25,7 @@ namespace Kinovea.Video
 {
     /// <summary>
     /// Settings used by exporters using video frames (video, images, documents).
+    /// 用于使用视频帧（视频、图像、文档）的导出者的设置。
     /// </summary>
     public class SavingSettings
     {
@@ -35,6 +36,7 @@ namespace Kinovea.Video
 
         /// <summary>
         /// Section of the video to get the images from.
+        /// 视频中用于获取图像的部分。
         /// </summary>
         public VideoSection Section = VideoSection.MakeEmpty();
 

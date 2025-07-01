@@ -10,7 +10,7 @@ using namespace System::Resources;
 [assembly:AssemblyConfigurationAttribute("")];
 [assembly:AssemblyCompanyAttribute("Kinovea")];
 [assembly:AssemblyProductAttribute("Kinovea")];
-[assembly:AssemblyCopyrightAttribute("Copyright © 2006-2021 Joan Charmant")];
+[assembly:AssemblyCopyrightAttribute("Copyright ?2006-2021 Joan Charmant")];
 [assembly:AssemblyTrademarkAttribute("")];
 [assembly:AssemblyCultureAttribute("")];
 [assembly:ComVisible(false)];

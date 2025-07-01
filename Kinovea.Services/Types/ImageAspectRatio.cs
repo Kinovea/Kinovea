@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Kinovea.Services
 {
+    /// <summary>
+    /// 图像宽高比枚举
+    /// </summary>
     public enum ImageAspectRatio
     {
         Auto,

@@ -1,5 +1,5 @@
 /*
-Copyright © Joan Charmant 2008.
+Copyright ?Joan Charmant 2008.
 jcharmant@gmail.com 
  
 This file is part of Kinovea.

@@ -25,6 +25,9 @@ namespace Kinovea.Video
 {
     public class VideoOptions
     {
+        /// <summary>
+        /// 图像宽高比
+        /// </summary>
         public ImageAspectRatio ImageAspectRatio { get; set; }
         public ImageRotation ImageRotation { get; set; }
         public Demosaicing Demosaicing { get; set; }
