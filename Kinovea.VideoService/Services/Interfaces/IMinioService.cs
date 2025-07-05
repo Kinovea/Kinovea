@@ -34,5 +34,15 @@
         /// </summary>
         /// <param name="filePath">临时文件路径</param>
         void CleanupTempFile(string filePath);
+
+
+        /// <summary>
+        /// 上传文件到MinIO
+        /// </summary>
+        /// <param name="bucketName"></param>
+        /// <param name="objectName"></param>
+        /// <param name="fileStream"></param>
+        /// <returns></returns>
+        Task<string> UploadFileAsync(string bucketName, string objectName, Stream fileStream);
     }
 }

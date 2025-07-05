@@ -190,5 +190,127 @@ namespace Kinovea.VideoService.Controllers
                 return StatusCode(500, "处理请求时发生错误");
             }
         }
+
+        /// <summary>
+        /// 上传视频文件到MinIO
+        /// </summary>
+        /// <param name="request">视频上传请求</param>
+        /// <returns>上传结果</returns>
+        [HttpPost("minio/upload")]
+        public async Task<ActionResult<string>> UploadVideoToMinioAsync([FromForm] MinioVideoUploadRequest request)
+        {
+            try
+            {
+                // 验证文件
+                if (request.File == null || request.File.Length == 0)
+                {
+                    return BadRequest("上传的文件不能为空");
+                }
+
+                // 验证参数
+                if (string.IsNullOrWhiteSpace(request.BucketName))
+                {
+                    return BadRequest("存储桶名称不能为空");
+                }
+
+                if (string.IsNullOrWhiteSpace(request.ObjectName))
+                {
+                    return BadRequest("对象名称不能为空");
+                }
+
+                // 去掉限制文件大小，应为专业的视频分析场景可能需要上传大文件
+                // 验证文件大小（例如：限制为 500MB）
+                //const long maxFileSize = 500 * 1024 * 1024; // 500MB
+                //if (request.File.Length > maxFileSize)
+                //{
+                //    return BadRequest($"文件大小超过限制 ({maxFileSize / (1024 * 1024)}MB)");
+                //}
+
+                // 验证文件扩展名
+                string extension = Path.GetExtension(request.File.FileName);
+                if (string.IsNullOrWhiteSpace(extension))
+                {
+                    extension = Path.GetExtension(request.ObjectName);
+                }
+
+                if (!_videoTypeManager.IsFormatSupported(extension))
+                {
+                    return BadRequest($"不支持的视频格式: {extension}");
+                }
+
+                // 保存的视频文件名规则为：用户名+时间戳+文件名+扩展名，用于避免文件名冲突，以及便于追踪
+                // 用户名暂时使用默认值 "anonymous"
+                string userName = "anonymous"; // 可以根据实际情况获取用户名
+                string timeStamp = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+                string fileName = $"{userName}_{timeStamp}_{request.ObjectName}{extension}";
+
+
+                // 记录上传开始
+                _logger.LogInformation("开始上传视频文件: {FileName} -> {BucketName}/{ObjectName}, 大小: {FileSize} bytes",
+                    request.File.FileName, request.BucketName, request.ObjectName, request.File.Length);
+
+                // 使用文件流直接上传到MinIO
+                using var fileStream = request.File.OpenReadStream();
+                string uploadResult = await _minioService.UploadFileAsync(
+                    request.BucketName,
+                    fileName, 
+                    fileStream);
+
+                // 记录上传成功
+                _logger.LogInformation("视频文件上传成功: {BucketName}/{ObjectName}, 上传结果: {UploadResult}",
+                    request.BucketName, fileName, uploadResult);
+
+                // 返回上传结果和文件信息
+                var result = new
+                {
+                    Message = "视频上传成功",
+                    request.BucketName,
+                    request.ObjectName,
+                    OriginalFileName = request.File.FileName,
+                    FileSize = request.File.Length,
+                    request.File.ContentType,
+                    UploadTime = DateTime.UtcNow,
+                    UploadResult = uploadResult
+                };
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "上传视频到MinIO时出错: {BucketName}/{ObjectName}",
+                    request.BucketName, request.ObjectName);
+                return StatusCode(500, $"上传视频文件时发生错误: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// 获取支持的视频格式列表
+        /// </summary>
+        /// <returns>支持的视频格式</returns>
+        [HttpGet("supported-formats")]
+        public ActionResult<object> GetSupportedFormats()
+        {
+            try
+            {
+                // 常见的视频格式扩展名
+                var commonVideoExtensions = new[] { ".mp4", ".avi", ".mov", ".mkv", ".wmv", ".flv", ".webm", ".m4v", ".3gp" };
+                
+                var supportedFormats = commonVideoExtensions
+                    .Where(ext => _videoTypeManager.IsFormatSupported(ext))
+                    .ToList();
+
+                return Ok(new
+                {
+                    SupportedFormats = supportedFormats,
+                    TotalCount = supportedFormats.Count,
+                    Message = "支持的视频格式列表"
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "获取支持的视频格式时出错");
+                return StatusCode(500, "获取支持格式时发生错误");
+            }
+        }
     }
 }

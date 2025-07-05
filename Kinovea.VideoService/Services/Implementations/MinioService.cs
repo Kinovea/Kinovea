@@ -39,7 +39,7 @@ namespace Kinovea.VideoService.Services.Implementations
                 .Build();
 
             // 从配置中获取临时目录基路径（可配置）
-            string baseTempPath = configuration["Minio:TempPath"] 
+            string baseTempPath = configuration["Minio:TempPath"]
                 ?? Path.GetTempPath();
 
             // 添加应用专属子目录
@@ -76,7 +76,7 @@ namespace Kinovea.VideoService.Services.Implementations
             }
         }
 
- 
+
         /// <summary>
         /// 从MinIO下载文件到本地临时目录
         /// </summary>
@@ -200,6 +200,42 @@ namespace Kinovea.VideoService.Services.Implementations
             }
         }
 
+        /// <summary>
+        /// 上传文件到MinIO
+        /// </summary>
+        /// <param name="bucketName"></param>
+        /// <param name="objectName"></param>
+        /// <param name="fileStream"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<string> UploadFileAsync(string bucketName, string objectName, Stream fileStream)
+        {
+            // TODO: 实现上传文件到MinIO的逻辑
+            // 生成文件名，实际情况为用户名+时间戳+guid+文件名+文件后缀
+            // 暂时为了简化，使用固定的用户名
+            string fileName = $"{DateTime.Now:yyyyMMddHHmmss}_{Guid.NewGuid()}{Path.GetExtension(objectName)}";
+            try
+            {
+                // 上传到MinIO
+                await _minioClient.PutObjectAsync(new PutObjectArgs()
+                                  .WithBucket(bucketName)
+                                  .WithObject(objectName)
+                                  .WithStreamData(fileStream)
+                                  .WithObjectSize(fileStream.Length)
+                                  .WithContentType("application/octet-stream"));
+                
+                _logger.LogInformation($"上传文件到MinIO成功: {bucketName}/{objectName}");
+
+                return objectName;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"上传文件到MinIO失败: {bucketName}/{objectName}");
+                throw;
+            }
+        }
+
+
         public void Dispose()
         {
             try
@@ -249,6 +285,8 @@ namespace Kinovea.VideoService.Services.Implementations
                 _logger.LogError(ex, "清理旧临时文件时出错");
             }
         }
+
+
         #endregion
     }
 }

@@ -26,13 +26,25 @@ namespace Kinovea.VideoService.Models.Requests
     }
     public class VideoFrameInfo
     {
+        /// <summary>
+        /// 帧位置（字节偏移）
+        /// </summary>
         public long Position { get; set; }
+        /// <summary>
+        /// 帧时间戳
+        /// </summary>
         public long Timestamp { get; set; }
     }
 
     public class VideoSessionRequest
     {
+        /// <summary>
+        /// 视频文件的存储桶名称
+        /// </summary>
         public required string BucketName { get; set; }
+        /// <summary>
+        /// 视频文件的对象名称
+        /// </summary>
         public required string ObjectName { get; set; }
     }
 }
