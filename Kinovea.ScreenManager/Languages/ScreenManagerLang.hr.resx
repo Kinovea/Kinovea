@@ -1576,4 +1576,10 @@
   <data name="VideoFilterCameraMotion_FindHomographies" xml:space="preserve">
     <value>Pronađi homografije</value>
   </data>
+  <data name="VideoFilterCameraMotion_MatchFeatures" xml:space="preserve">
+    <value>Podudaranje funkcija</value>
+  </data>
+  <data name="VideoFilterCameraMotion_BundleAdjustment" xml:space="preserve">
+    <value>Podešavanje snopa</value>
+  </data>
 </root>
