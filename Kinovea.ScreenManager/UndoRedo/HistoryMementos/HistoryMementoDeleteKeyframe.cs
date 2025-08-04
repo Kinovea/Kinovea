@@ -40,7 +40,8 @@ namespace Kinovea.ScreenManager
             redoMemento.CommandName = commandName;
 
             Keyframe keyframe = KeyframeSerializer.DeserializeMemento(data, metadata);
-            metadata.AddKeyframe(keyframe);
+            metadata.MergeInsertKeyframe(keyframe);
+            metadata.AfterUndoDeleteKeyframe(keyframe);
 
             return redoMemento;
         }
