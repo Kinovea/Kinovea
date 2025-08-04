@@ -1328,7 +1328,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Commands
-        protected override bool ExecuteCommand(int cmd)
+        protected override bool ExecuteCommand(int commandCode)
         {
             // Method called by KinoveaControl in the context of preprocessing hotkeys.
             // If the hotkey can be handled by the dual player, we defer to it instead.
@@ -1342,23 +1342,28 @@ namespace Kinovea.ScreenManager
             if (sidePanelKeyframes.Editing)
                 return false;
 
-            if (!m_bSynched)
-                return ExecuteScreenCommand(cmd);
+            // If we are not in a dual screen context just run the command for this screen.
+            if (!m_bSynched || DualCommandReceived == null)
+                return ExecuteScreenCommand(commandCode);
 
-            HotkeyCommand command = Hotkeys.FirstOrDefault(h => h != null && h.CommandCode == cmd);
+            // Try to see if that command is handled by the dual capture controller.
+            // At this point the command code is still the one from the single screen context.
+            // Get the full command with the target shortcut key.
+            HotkeyCommand command = Hotkeys.FirstOrDefault(h => h != null && h.CommandCode == commandCode);
             if (command == null)
                 return false;
 
-            bool dualPlayerHandled = HotkeySettingsManager.IsHandler("DualPlayer", command.KeyData);
-
-            if (dualPlayerHandled && DualCommandReceived != null)
+            // Look for a matching handler in the dual player context.
+            HotkeyCommand command2 = HotkeySettingsManager.FindCommand("DualPlayer", command.KeyData);
+            if (command2 == null)
             {
-                DualCommandReceived(this, new EventArgs<HotkeyCommand>(command));
-                return true;
+                // The shortcut isn't handled at the dual screen level, run it normally.
+                return ExecuteScreenCommand(commandCode);
             }
             else
             {
-                return ExecuteScreenCommand(cmd);
+                DualCommandReceived(this, new EventArgs<HotkeyCommand>(command2));
+                return true;
             }
         }
 
