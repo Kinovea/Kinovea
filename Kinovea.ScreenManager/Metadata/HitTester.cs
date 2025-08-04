@@ -45,7 +45,7 @@ namespace Kinovea.ScreenManager
                     using (Pen pathPen = new Pen(Color.Black, lineSize + enlarger))
                     {
                         RectangleF bounds = path.GetBounds();
-                        if (bounds.IsEmpty || path.PathPoints.Length == 1)
+                        if ((bounds.Width == 0 && bounds.Height == 0) || path.PathPoints.Length == 1)
                         {
                             int width = (int)Math.Max(5, pathPen.Width/2);
                             path.AddEllipse(path.PathPoints[0].Box(width));
