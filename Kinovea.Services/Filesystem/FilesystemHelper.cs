@@ -32,13 +32,16 @@ namespace Kinovea.Services
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
+        /// <summary>
+        /// Delete the file at the passed path.
+        /// </summary>
         public static void DeleteFile(string filepath)
         {
-            if(!File.Exists(filepath))
-                return;
-                
             try
             {
+                if(!File.Exists(filepath))
+                    return;
+
                 FileSystem.DeleteFile(filepath, UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
             }
             catch(OperationCanceledException)
@@ -51,6 +54,9 @@ namespace Kinovea.Services
             }
         }
         
+        /// <summary>
+        /// Launch Windows explorer at the passed directory.
+        /// </summary>
         public static void LocateDirectory(string path)
         {
             if (!Directory.Exists(path))
@@ -61,6 +67,9 @@ namespace Kinovea.Services
             System.Diagnostics.Process.Start("explorer.exe", arg);
         }
         
+        /// <summary>
+        /// Launch Windows explorer at the parent directory and select the file.
+        /// </summary>
         public static void LocateFile(string path)
         {
             if (!File.Exists(path))
@@ -70,6 +79,9 @@ namespace Kinovea.Services
             System.Diagnostics.Process.Start("explorer.exe", arg);
         }
         
+        /// <summary>
+        /// Rename a file.
+        /// </summary>
         public static void RenameFile(string oldFilePath, string newFilePath)
         {
             if(!File.Exists(oldFilePath) || File.Exists(newFilePath))
@@ -94,6 +106,9 @@ namespace Kinovea.Services
             }
         }
 
+        /// <summary>
+        /// Returns the 1-based index of the filter corresponding to the passed Image format.
+        /// </summary>
         public static int GetFilterIndex(string filter, KinoveaImageFormat format)
         {
             int defaultIndex = 1;
@@ -121,6 +136,9 @@ namespace Kinovea.Services
             return mapping.ContainsKey(format) ? mapping[format] : defaultIndex;
         }
 
+        /// <summary>
+        /// Returns the Image format based on the extension.
+        /// </summary>
         public static KinoveaImageFormat GetImageFormat(string filename)
         {
             KinoveaImageFormat format = KinoveaImageFormat.JPG;
@@ -134,7 +152,10 @@ namespace Kinovea.Services
 
             return format;
         }
-        
+
+        /// <summary>
+        /// Returns the 1-based index of the filter corresponding to the passed Video format.
+        /// </summary>
         public static int GetFilterIndex(string filter, KinoveaVideoFormat format)
         {
             int defaultIndex = 1;
@@ -162,6 +183,9 @@ namespace Kinovea.Services
             return mapping.ContainsKey(format) ? mapping[format] : defaultIndex;
         }
 
+        /// <summary>
+        /// Returns the Video format based on the extension.
+        /// </summary>
         public static KinoveaVideoFormat GetVideoFormat(string filename)
         {
             KinoveaVideoFormat format = KinoveaVideoFormat.MKV;
@@ -176,6 +200,9 @@ namespace Kinovea.Services
             return format;
         }
 
+        /// <summary>
+        /// Check if we can write to the file.
+        /// </summary>
         public static bool CanWrite(string filename)
         {
             // This may suffer from a race condition but should be fine as we mainly use this to test overwriting the file Open in Kinovea itself.
@@ -185,6 +212,9 @@ namespace Kinovea.Services
             return !IsFileLocked(filename, FileAccess.Write, FileShare.None);
         }
 
+        /// <summary>
+        /// Check if we can read the file.
+        /// </summary>
         public static bool CanRead(string filename)
         {
             if (!File.Exists(filename))
@@ -193,6 +223,9 @@ namespace Kinovea.Services
             return !IsFileLocked(filename, FileAccess.Read, FileShare.None);
         }
 
+        /// <summary>
+        /// Check if the file is locked.
+        /// </summary>
         private static bool IsFileLocked(string filename, FileAccess fileAccess, FileShare fileShare)
         {
             Stream s = null;
@@ -238,27 +271,39 @@ namespace Kinovea.Services
             return false;
         }
 
+        /// <summary>
+        /// Delete orphaned temporary files.
+        /// Called when the user cancels the recovery process or when it itself fails.
+        /// </summary>
         public static void DeleteOrphanFiles()
         {
-            // Delete orphaned temporary files.
-            // Called when the user cancels the recovery process or when it itself fails.
             // We do the recursion manually to avoid deleting and recreating the directory at each launch, 
             // especially since the normal case is that there's nothing in there.
             DeleteDirectoryContent(Software.TempDirectory);
         }
 
+        /// <summary>
+        /// Delete the content of a directory.
+        /// </summary>
         private static void DeleteDirectoryContent(string path)
         {
-            if (!Directory.Exists(path))
-                return;
-
-            foreach (string entry in Directory.GetFiles(path))
-                File.Delete(entry);
-
-            foreach (string entry in Directory.GetDirectories(path))
+            try
             {
-                DeleteDirectoryContent(entry);
-                Directory.Delete(entry);
+                if (!Directory.Exists(path))
+                    return;
+
+                foreach (string entry in Directory.GetFiles(path))
+                    File.Delete(entry);
+
+                foreach (string entry in Directory.GetDirectories(path))
+                {
+                    DeleteDirectoryContent(entry);
+                    Directory.Delete(entry);
+                }
+            }
+            catch (Exception e)
+            {
+                log.ErrorFormat("Error while deleting directory content. {0}", e.Message);
             }
         }
 

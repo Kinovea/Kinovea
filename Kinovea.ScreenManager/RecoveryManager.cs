@@ -17,14 +17,27 @@ namespace Kinovea.ScreenManager
                 return null;
 
             List<ScreenDescriptionPlayback> recoverables = new List<ScreenDescriptionPlayback>();
-            foreach (string dir in Directory.GetDirectories(Software.TempDirectory))
+            try
             {
-                ScreenDescriptionPlayback sdp = GetRecoverable(dir);
-                if (sdp != null)
-                    recoverables.Add(sdp);
-                else
-                    Directory.Delete(dir, true);
+                foreach (string dir in Directory.GetDirectories(Software.TempDirectory))
+                {
+                    ScreenDescriptionPlayback sdp = GetRecoverable(dir);
+                    if (sdp != null)
+                    {
+                        recoverables.Add(sdp);
+                    }
+                    else
+                    {
+                        Directory.Delete(dir, true);
+                    }
+                }
             }
+            catch (Exception e)
+            {
+                log.Error("An error happened while trying to get recoverable files.");
+                log.Error(e.ToString());
+            }
+
             return recoverables;
         }
 
@@ -61,13 +74,13 @@ namespace Kinovea.ScreenManager
                 }
                 else
                 {
-                    log.ErrorFormat("Recovery data were found but the referenced file couldn't be found.");
+                    log.Error("Recovery data were found but the referenced file couldn't be found.");
                 }
             }
             catch (Exception e)
             {
-                log.ErrorFormat("An error happened while trying to get description of autosaved file");
-                log.ErrorFormat(e.ToString());
+                log.Error("An error happened while trying to get description of autosaved file");
+                log.Error(e.ToString());
             }
 
             return sdp;
