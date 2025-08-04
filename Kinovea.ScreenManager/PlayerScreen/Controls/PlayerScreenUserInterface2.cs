@@ -310,6 +310,7 @@ namespace Kinovea.ScreenManager
         private long m_iCurrentPosition;
         private long m_iStartingPosition;   // Timestamp of the first decoded frame of video.
         private bool m_bHandlersLocked;
+        private long memoPosition;          // Used during export to backup/restore the current position.
 
         // Keyframes, Drawings, etc.
         private List<KeyframeBox> keyframeBoxes = new List<KeyframeBox>();
@@ -5391,12 +5392,13 @@ namespace Kinovea.ScreenManager
             if (!m_FrameServer.Loaded || m_FrameServer.CurrentImage == null)
                 return;
 
-            StopPlaying();
-            OnPauseAsked();
-
-            Bitmap outputImage = GetFlushedImage();
-            Clipboard.SetImage(outputImage);
-            outputImage.Dispose();
+            BeforeExportVideo();
+            Size size = m_FrameServer.VideoReader.Info.ReferenceSize;
+            Bitmap bmp = new Bitmap(size.Width, size.Height, PixelFormat.Format24bppRgb);
+            PaintFlushedImage(bmp);
+            Clipboard.SetImage(bmp);
+            bmp.Dispose();
+            AfterExportVideo();
         }
 
         /// <summary>
@@ -5410,7 +5412,7 @@ namespace Kinovea.ScreenManager
 
             // Force disable custom decoding size as we want to export at the original size.
             CheckCustomDecodingSize(true);
-            
+            memoPosition = m_iCurrentPosition;
             saveInProgress = true;
         }
 
@@ -5426,26 +5428,8 @@ namespace Kinovea.ScreenManager
             CheckCustomDecodingSize(false);
 
             m_iFramesToDecode = 1;
-            ShowNextFrame(m_iSelStart, true);
+            ShowNextFrame(memoPosition, true);
             ActivateKeyframe(m_iCurrentPosition, true);
-        }
-
-        /// <summary>
-        /// Get a new bitmap with the current display image, at the screen size.
-        /// This is used for copying to the clipboard.
-        /// </summary>
-        public Bitmap GetFlushedImage()
-        {
-            Bitmap output = new Bitmap(m_FrameServer.CurrentImage.Size.Width, m_FrameServer.CurrentImage.Size.Height, PixelFormat.Format24bppRgb);
-            output.SetResolution(m_FrameServer.CurrentImage.HorizontalResolution, m_FrameServer.CurrentImage.VerticalResolution);
-
-            ImageTransform savingTransform = m_FrameServer.ImageTransform.Identity;
-
-            int keyframeIndex = m_FrameServer.Metadata.GetKeyframeIndex(m_iCurrentPosition);
-            using (Graphics canvas = Graphics.FromImage(output))
-                FlushOnGraphics(m_FrameServer.CurrentImage, canvas, output.Size, keyframeIndex, m_iCurrentPosition, savingTransform);
-            
-            return output;
         }
 
         /// <summary>
