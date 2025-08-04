@@ -151,4 +151,16 @@
   <data name="FormConfiguration_Properties_ExposureMicro" xml:space="preserve">
     <value>Pendedahan (μs):</value>
   </data>
+  <data name="FormConfiguration_ExportDeviceGenICamXMLFile" xml:space="preserve">
+    <value>Eksport peranti GenICam fail XML</value>
+  </data>
+  <data name="FormConfiguration_EnableHardwareCompression" xml:space="preserve">
+    <value>Dayakan pemampatan perkakasan</value>
+  </data>
+  <data name="FormConfiguration_EnableSoftwareDemosaicing" xml:space="preserve">
+    <value>Dayakan demosaicing perisian</value>
+  </data>
+  <data name="FormConfiguration_ResultingFramerate" xml:space="preserve">
+    <value>Kadar bingkai dihasil:</value>
+  </data>
 </root>

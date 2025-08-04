@@ -689,7 +689,7 @@
     <value>Kembalikan ke semula</value>
   </data>
   <data name="Generic_Import" xml:space="preserve">
-    <value>Impor</value>
+    <value>Impor…</value>
   </data>
   <data name="Generic_File" xml:space="preserve">
     <value>Berkas</value>
@@ -1346,7 +1346,7 @@
     <value>OKE</value>
   </data>
   <data name="mnuLensCalibration" xml:space="preserve">
-    <value>Kalibrasi lensa…</value>
+    <value>Kalibrasi lensa</value>
   </data>
   <data name="mnuOptions_Kinogram_ShowBorder" xml:space="preserve">
     <value>Tampilkan batas</value>
@@ -1356,5 +1356,26 @@
   </data>
   <data name="mnuExport_Video" xml:space="preserve">
     <value>Ekspor video</value>
+  </data>
+  <data name="Cadence" xml:space="preserve">
+    <value>Irama</value>
+  </data>
+  <data name="DrawingCounter_AddBeat" xml:space="preserve">
+    <value>Tambah ketukan</value>
+  </data>
+  <data name="DrawingCounter_DeleteBeat" xml:space="preserve">
+    <value>Hapus ketukan</value>
+  </data>
+  <data name="DrawingCounter_DeleteAllBeats" xml:space="preserve">
+    <value>Hapus semua ketukan</value>
+  </data>
+  <data name="DrawingCounter_ZeroBasedNumbering" xml:space="preserve">
+    <value>Penomoran berbasis nol</value>
+  </data>
+  <data name="DrawingCounter_Half" xml:space="preserve">
+    <value>Setengah</value>
+  </data>
+  <data name="DrawingCounter_Double" xml:space="preserve">
+    <value>Ganda</value>
   </data>
 </root>

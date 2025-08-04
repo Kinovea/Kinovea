@@ -96,19 +96,19 @@
     <value>Lociraj u Windows Exploreru </value>
   </data>
   <data name="mnuSortBy_Size" xml:space="preserve">
-    <value>Dimenzija</value>
+    <value>Veličina</value>
   </data>
   <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
     <value>Otvori kao promatrač mape repriza</value>
   </data>
   <data name="mnuSortBy_Descending" xml:space="preserve">
-    <value>Silazni</value>
+    <value>Silazno</value>
   </data>
   <data name="mnuSortBy_Ascending" xml:space="preserve">
-    <value>Uzlazni</value>
+    <value>Uzlazno</value>
   </data>
   <data name="mnuSortBy_Name" xml:space="preserve">
-    <value>Naziv</value>
+    <value>Ime</value>
   </data>
   <data name="FormCameraWizard_CameraType" xml:space="preserve">
     <value>Tip kamere</value>

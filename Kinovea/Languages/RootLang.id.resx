@@ -505,4 +505,43 @@
   <data name="dlgWorkspace_ConfirmationMessage" xml:space="preserve">
     <value>Ruang kerja default disimpan.</value>
   </data>
+  <data name="dlgPreferences_Player_UnitsHertz" xml:space="preserve">
+    <value>Hertz ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_CyclesPerSecond" xml:space="preserve">
+    <value>Siklus per detik ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StepsPerMinute" xml:space="preserve">
+    <value>Langkah per menit ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_CyclesPerMinute" xml:space="preserve">
+    <value>Siklus per menit ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StepsPerSecond" xml:space="preserve">
+    <value>Langkah per detik ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StrokesPerSecond" xml:space="preserve">
+    <value>Stroke per detik ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StrokesPerMinute" xml:space="preserve">
+    <value>Stroke per menit ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabExport_IncludeImages" xml:space="preserve">
+    <value>Sertakan gambar</value>
+  </data>
+  <data name="mnuBigArrow" xml:space="preserve">
+    <value>Anak panah besar</value>
+  </data>
+  <data name="mnuBigHand" xml:space="preserve">
+    <value>Tangan menunjuk besar</value>
+  </data>
+  <data name="mnuDefaultPointer" xml:space="preserve">
+    <value>Bawaan</value>
+  </data>
+  <data name="mnuPointer" xml:space="preserve">
+    <value>Penunjuk</value>
+  </data>
+  <data name="mnuTranslate" xml:space="preserve">
+    <value>Terjemahkan Kinovea…</value>
+  </data>
 </root>

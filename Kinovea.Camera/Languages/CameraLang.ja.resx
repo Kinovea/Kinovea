@@ -155,4 +155,7 @@
   <data name="FormConfiguration_ImportParameters" xml:space="preserve">
     <value>インポートパラメータ</value>
   </data>
+  <data name="FormConfiguration_EnableHardwareCompression" xml:space="preserve">
+    <value>ハードウェア圧縮を有効化</value>
+  </data>
 </root>

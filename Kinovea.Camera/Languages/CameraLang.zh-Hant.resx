@@ -151,4 +151,16 @@
   <data name="FormConnectionWizard_URL" xml:space="preserve">
     <value>最後位址</value>
   </data>
+  <data name="FormConfiguration_EnableHardwareCompression" xml:space="preserve">
+    <value>啟用硬體壓縮</value>
+  </data>
+  <data name="FormConfiguration_EnableSoftwareDemosaicing" xml:space="preserve">
+    <value>啟用軟體去馬賽克</value>
+  </data>
+  <data name="FormConfiguration_ResultingFramerate" xml:space="preserve">
+    <value>結果幀率：</value>
+  </data>
+  <data name="FormConfiguration_ExportDeviceGenICamXMLFile" xml:space="preserve">
+    <value>匯出裝置 GenICam XML 檔案</value>
+  </data>
 </root>
