@@ -36,16 +36,31 @@ namespace Kinovea.ScreenManager
 
         public void Initialize(CameraTracker tracker)
         {
-            if (tracker.FrameIndices.Count == 0 || tracker.ConsecutiveTransforms.Count == 0)
+            if (!tracker.Tracked || tracker.FrameIndices.Count == 0 || tracker.ConsecutiveTransforms.Count == 0)
             {
-                log.ErrorFormat("The camera tracker does not have transforms.");
+                Deinitialize();
                 return;
             }
 
             this.frameIndices = tracker.FrameIndices;
             this.consecTransforms = tracker.ConsecutiveTransforms;
-
             initialized = true;
+        }
+
+        /// <summary>
+        /// Delete the transforms and reset the state of the transformer.
+        /// </summary>
+        public void Deinitialize()
+        {
+            log.DebugFormat("De-initializing the camera transformer.");
+
+            frameIndices.Clear();
+            foreach (var consec in consecTransforms)
+            {
+                consec.Dispose();
+            }
+            consecTransforms.Clear();
+            initialized = false;
         }
 
         /// <summary>

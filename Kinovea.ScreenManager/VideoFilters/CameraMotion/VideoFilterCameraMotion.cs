@@ -601,6 +601,9 @@ namespace Kinovea.ScreenManager
         {
             //CaptureMemento();
             tracker.ResetTrackingData();
+
+            parentMetadata.SetCameraMotion(tracker);
+
             InvalidateFromMenu(sender);
         }
 
