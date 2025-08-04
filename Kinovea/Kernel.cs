@@ -285,24 +285,27 @@ namespace Kinovea.Root
             mnuQuit.Image = Properties.Resources.quit2;
             mnuQuit.Click += new EventHandler(menuQuitOnClick);
 
+            // The indices are used by the other modules to insert their menus.
             mnuFile.DropDownItems.AddRange(new ToolStripItem[] {
-                mnuOpenFile,
-                mnuOpenReplayWatcher,
-                mnuHistory,
-                // Load annotations,
-                new ToolStripSeparator(),
-                // Save annotations,
-                // Save annotations as,
-                new ToolStripSeparator(),
-                // Export video,
-                // Export image,
-                // Export spreadsheet,
-                // Export document,
-                new ToolStripSeparator(),
-                // Close A,
-                // Close B,
-                new ToolStripSeparator(),
-                mnuQuit 
+                mnuOpenFile,                    // 0
+                mnuOpenReplayWatcher,           // 1
+                mnuHistory,                     // 2
+                new ToolStripSeparator(),       // 3
+                // Load annotations,            // 4
+                // Save annotations,            // 5
+                // Save annotations as,         // 6
+                // Save as default annotations, // 7
+                // Unload annotations,          // 8
+                new ToolStripSeparator(),       // 9
+                // Export video,                // 10
+                // Export image,                // 11
+                // Export spreadsheet,          // 12
+                // Export document,             // 13
+                new ToolStripSeparator(),       // 14
+                // Close A,                     // 15
+                // Close B,                     // 16
+                new ToolStripSeparator(),       // 17
+                mnuQuit                         // 18
                 });
             
             #endregion

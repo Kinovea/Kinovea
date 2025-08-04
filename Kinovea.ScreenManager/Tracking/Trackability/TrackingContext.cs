@@ -43,23 +43,34 @@ namespace Kinovea.ScreenManager
         private long time;
         private Bitmap image;
         private OpenCvSharp.Mat cvImage;
+        private bool hasImage = false;
 
         public TrackingContext(long time, Bitmap image)
         {
             this.time = time;
-            this.image = image;
 
-            cvImage = OpenCvSharp.Extensions.BitmapConverter.ToMat(image);
+            // Note: the image is allowed to be null, when using the trackability manager in capture context.
+            // We want to treat metadata in the same way between player and capture as much as possible.
+            if (image != null)
+            {
+                hasImage = true;
+                this.image = image;
+                cvImage = OpenCvSharp.Extensions.BitmapConverter.ToMat(image);
+            }
         }
         
         public void Dispose()
         {
-            cvImage.Dispose();
+            if (hasImage)
+                cvImage.Dispose();
         }
 
         public override string ToString()
         {
-            return string.Format("[TrackingContext] Time:{0}, Image Size:{1}", time, image.Size);
+            if (!hasImage)
+                return string.Format("[TrackingContext] Time:{0}, Image Size:None", time);
+            else
+                return string.Format("[TrackingContext] Time:{0}, Image Size:{1}", time, image.Size);
         }
 
     }

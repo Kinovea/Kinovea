@@ -58,32 +58,70 @@ namespace Kinovea.ScreenManager
                 invoker(this, e);
         }
         #endregion
-    
+
+        #region Properties
+
+        /// <summary>
+        /// Screen ID.
+        /// </summary>
         public abstract Guid Id
         {
             get;
             set;
         }
+
+        /// <summary>
+        /// Returns the screen view user control.
+        /// </summary>
+        public abstract UserControl UI
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Returns whether the screen is loaded with a video or camera.
+        /// </summary>
         public abstract bool Full
         {
         	get;
         }
-        public abstract UserControl UI
+        
+
+        /// <summary>
+        /// Returns the metadata associated with the screen.
+        /// </summary>
+        public abstract Metadata Metadata
         {
-        	get;
+            get;
         }
+
+        /// <summary>
+        /// Returns the file name component of the video file for loaded players 
+        /// or an empty string for capture screens and empty players. 
+        /// </summary>
         public abstract string FileName
         {
         	get;
         }
-        public abstract string Status
-        {
-        	get;
-        }
+
+        /// <summary>
+        /// Returns the full path to the video file for loaded players
+        /// or an empty string for capture screens and empty players.
+        /// </summary>
         public abstract string FilePath
         {
         	get;
         }
+
+        /// <summary>
+        /// Returns a string suitable for display in the status bar.
+        /// </summary>
+        public abstract string Status
+        {
+        	get;
+        }
+
+
         public abstract bool CapabilityDrawings
         {
         	get;
@@ -121,11 +159,16 @@ namespace Kinovea.ScreenManager
             set;
         }
         
+        /// <summary>
+        /// Get the undo/redo history stack for the screen.
+        /// </summary>
         public abstract HistoryStack HistoryStack
         {
             get;
         }
+        #endregion
 
+        #region Abstract methods
         public abstract void DisplayAsActiveScreen(bool active);
         public abstract void RefreshUICulture();
         public abstract void PreferencesUpdated();
@@ -139,5 +182,39 @@ namespace Kinovea.ScreenManager
         public abstract void ExecuteScreenCommand(int cmd);
         public abstract void LoadKVA(string path);
         public abstract IScreenDescription GetScreenDescription();
+        #endregion
+
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        /// <summary>
+        /// Trigger the save or save as dialog for the screen's metadata.
+        /// </summary>
+        public void SaveKVA()
+        {
+            if (this.Metadata == null)
+            {
+                log.Error("Save called on a screen with no metadata.");
+                return;
+            }
+
+            MetadataSerializer serializer = new MetadataSerializer();
+            serializer.UserSave(this.Metadata, this.FilePath);
+        }
+
+        /// <summary>
+        /// Trigger the save as dialog for the screen's metadata.
+        /// </summary>
+        public void SaveKVAAs()
+        {
+            if (this.Metadata == null)
+            {
+                log.Error("Save called on a screen with no metadata.");
+                return;
+            }
+
+            MetadataSerializer serializer = new MetadataSerializer();
+            serializer.UserSaveAs(this.Metadata, this.FilePath);
+        }
+
     }   
 }

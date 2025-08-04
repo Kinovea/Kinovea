@@ -20,7 +20,6 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using Kinovea.ScreenManager.Languages;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -29,7 +28,7 @@ using System.Reflection;
 using System.Resources;
 using System.Text;
 using System.Windows.Forms;
-
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 using Kinovea.Video;
 
@@ -68,21 +67,36 @@ namespace Kinovea.ScreenManager
             get { return id; }
             set { id = value; }
         }
+        public override Metadata Metadata
+        {
+            get 
+            { 
+                return frameServer.Loaded ? 
+                    frameServer.Metadata : 
+                    null;
+            }
+        }
         public override string FileName
         {
             get 
             { 
-                return frameServer.Loaded ? Path.GetFileName(frameServer.VideoReader.FilePath) :
-                                              ScreenManagerLang.statusEmptyScreen;
+                return frameServer.Loaded ? 
+                    Path.GetFileName(frameServer.VideoReader.FilePath) :
+                    string.Empty;
             }
-        }
-        public override string Status
-        {
-            get	{return FileName;}
         }
         public override string FilePath
         {
             get { return frameServer.VideoReader.FilePath; }
+        }
+        public override string Status
+        {
+            get	
+            {
+                return string.IsNullOrEmpty(FileName) ? 
+                    FileName :
+                    ScreenManagerLang.statusEmptyScreen;
+            }
         }
         public override bool CapabilityDrawings
         {
@@ -415,8 +429,8 @@ namespace Kinovea.ScreenManager
             // Commands
             view.ToggleTrackingCommand = new ToggleCommand(ToggleTracking, IsTracking);
             view.TrackDrawingsCommand = new RelayCommand<VideoFrame>(TrackDrawings);
-            
-            frameServer.Metadata.AddTrackableDrawingCommand = new RelayCommand<ITrackable>(AddTrackableDrawing);
+
+            frameServer.Metadata.TrackableDrawingAdded += (s, e) => AddTrackableDrawing(e.Value);
             frameServer.Metadata.CameraCalibrationAsked += (s, e) => ShowCameraCalibration();
         }
 
@@ -748,24 +762,6 @@ namespace Kinovea.ScreenManager
             view.SetSyncMergeImage(_SyncMergeImage, _bUpdateUI);
         }
         
-        /// <summary>
-        /// Save to the last saved KVA if any, otherwise ask for a target filename.
-        /// </summary>
-        public void Save()
-        {
-            MetadataSerializer serializer = new MetadataSerializer();
-            serializer.UserSave(frameServer.Metadata, frameServer.VideoReader.FilePath);
-        }
-
-        /// <summary>
-        /// Save the annotations with an explicit prompt for a filename.
-        /// </summary>
-        public void SaveAs()
-        {
-            MetadataSerializer serializer = new MetadataSerializer();
-            serializer.UserSaveAs(frameServer.Metadata, frameServer.VideoReader.FilePath);
-        }
-
         public void ConfigureTimebase()
         {
             if (!frameServer.Loaded)

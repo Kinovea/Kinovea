@@ -71,6 +71,7 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Add a tracker for a trackable drawing and register its points.
+        /// videoFrame can contain a null image if this is added from a capture screen.
         /// </summary>
         public void Add(ITrackable drawing, VideoFrame videoFrame)
         {
@@ -78,7 +79,8 @@ namespace Kinovea.ScreenManager
                return;
             
             TrackingParameters parameters = drawing.CustomTrackingParameters ?? PreferencesManager.PlayerPreferences.TrackingParameters.Clone();
-            
+
+
             TrackingContext context = new TrackingContext(videoFrame.Timestamp, videoFrame.Image);
             trackers.Add(drawing.Id, new DrawingTracker(drawing, context, parameters));
         }

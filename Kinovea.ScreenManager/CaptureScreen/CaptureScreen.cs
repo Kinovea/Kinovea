@@ -59,38 +59,43 @@ namespace Kinovea.ScreenManager
             get { return id; }
             set { id = value;}
         }
-        public override bool Full
-        {
-            get { return cameraLoaded; }
-        }
-        public override string FileName
-        {
-            get 
-            {
-                if(!cameraLoaded)
-                    return ScreenManagerLang.statusEmptyScreen;
-                else
-                    return cameraSummary.Alias;
-            }
-        }
-        public override string Status
-        {
-            get	{ return ""; /*frameServer.Status;*/}
-        }
         public override UserControl UI
         {
-            get 
-            { 
-                if(view is UserControl)
+            get
+            {
+                if (view is UserControl)
                     return view as UserControl;
                 else
                     return null;
             }
         }
+        public override bool Full
+        {
+            get { return cameraLoaded; }
+        }
+        public override Metadata Metadata
+        {
+            get { return metadata; }
+        }
+        public override string FileName
+        {
+            get { return string.Empty; }
+        }
         public override string FilePath
         {
-            get { return ""; }
+            get { return string.Empty; }
         }
+        public override string Status
+        {
+            get	
+            {
+                if (cameraLoaded)
+                    return cameraSummary.Alias; 
+                else
+                    return ScreenManagerLang.statusEmptyScreen;
+            }
+        }
+        
         public override bool CapabilityDrawings
         {
             get { return true;}
@@ -1307,7 +1312,8 @@ namespace Kinovea.ScreenManager
         private void InitializeMetadata()
         {
             metadata = new Metadata(historyStack, TimeStampsToTimecode);
-            // TODO: hook to events raised by metadata.
+            // Hook to events raised by metadata.
+            metadata.TrackableDrawingAdded += (s, e) => AddTrackableDrawing(e.Value);
             
             // Use microseconds as the general time scale.
             // This is used when importing keyframes from external KVA,
@@ -1323,6 +1329,15 @@ namespace Kinovea.ScreenManager
             viewportController.MetadataRenderer = metadataRenderer;
             viewportController.MetadataManipulator = metadataManipulator;
         }
+
+        public void AddTrackableDrawing(ITrackable trackableDrawing)
+        {
+            // We don't have a proper video frame but the trackability manager
+            // can work with that as long as we never ask for tracking.
+            VideoFrame videoFrame = new VideoFrame(0, null);
+            metadata.TrackabilityManager.Add(trackableDrawing, videoFrame);
+        }
+
         private void LoadCompanionKVA()
         {
             // Note: anything after the first keyframe will be ignored.

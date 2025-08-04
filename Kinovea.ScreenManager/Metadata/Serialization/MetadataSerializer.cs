@@ -91,32 +91,39 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Save to the last known storage location of this KVA if any, otherwise ask for a target filename.
+        /// Save to the last known storage location of this KVA if any, 
+        /// otherwise ask for a target filename.
+        /// Default path can be left empty for capture screens.
         /// </summary>
-        public void UserSave(Metadata metadata, string videoFile)
+        public void UserSave(Metadata metadata, string defaultFilePath)
         {
-            if (string.IsNullOrEmpty(metadata.LastKVAPath))
-            {
-                UserSaveAs(metadata, videoFile);
-            }
-            else
+            if (!string.IsNullOrEmpty(metadata.LastKVAPath))
             {
                 SaveToFile(metadata, metadata.LastKVAPath);
                 metadata.AfterManualExport();
             }
+            else
+            {
+                UserSaveAs(metadata, defaultFilePath);
+            }
         }
 
         /// <summary>
-        /// Ask for a filename and then save the metadata to this filename.
+        /// Ask for a file path and save the metadata to this file.
+        /// Default path can be left empty for capture screens.
         /// </summary>
-        public void UserSaveAs(Metadata metadata, string videoFile)
+        public void UserSaveAs(Metadata metadata, string defaultFilePath)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = ScreenManagerLang.dlgSaveAnalysisTitle;
 
             // Go to this video directory and suggest sidecar filename.
-            saveFileDialog.InitialDirectory = Path.GetDirectoryName(videoFile);
-            saveFileDialog.FileName = Path.GetFileNameWithoutExtension(videoFile);
+            if (!string.IsNullOrEmpty(defaultFilePath))
+            {
+                saveFileDialog.InitialDirectory = Path.GetDirectoryName(defaultFilePath);
+                saveFileDialog.FileName = Path.GetFileNameWithoutExtension(defaultFilePath);
+            }
+
             saveFileDialog.Filter = FilesystemHelper.SaveKVAFilter();
             saveFileDialog.FilterIndex = 1;
 

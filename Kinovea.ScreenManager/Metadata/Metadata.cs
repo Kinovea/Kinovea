@@ -61,15 +61,13 @@ namespace Kinovea.ScreenManager
         public EventHandler<KeyframeEventArgs> KeyframeDeleted;
         public EventHandler<DrawingEventArgs> DrawingSelected;
         public EventHandler<DrawingEventArgs> DrawingAdded;
+        public EventHandler<EventArgs<ITrackable>> TrackableDrawingAdded;
         public EventHandler<DrawingEventArgs> DrawingModified;
         public EventHandler<EventArgs<Guid>> DrawingDeleted;
         public EventHandler<MultiDrawingItemEventArgs> MultiDrawingItemAdded;
         public EventHandler MultiDrawingItemDeleted;
         public EventHandler CameraCalibrationAsked;
         public EventHandler VideoFilterModified;
-
-        public RelayCommand<ITrackable> AddTrackableDrawingCommand { get; set; }
-        public RelayCommand<ITrackable> DeleteTrackableDrawingCommand { get; set; }
         #endregion
 
         #region Properties
@@ -1603,10 +1601,10 @@ namespace Kinovea.ScreenManager
             if (drawing is IScalable)
                 ((IScalable)drawing).Scale(this.ImageSize);
 
-            if (drawing is ITrackable && AddTrackableDrawingCommand != null)
+            if (drawing is ITrackable)
             {
                 ITrackable trackableDrawing = drawing as ITrackable;
-                AddTrackableDrawingCommand.Execute(trackableDrawing);
+                TrackableDrawingAdded?.Invoke(this, new EventArgs<ITrackable>(trackableDrawing));
 
                 // If the reference timestamp is already set we shouldn't change it.
                 // This happens when the drawing is being copied or loaded from KVA.
@@ -2138,8 +2136,7 @@ namespace Kinovea.ScreenManager
             // Handle the children of the spotlight which are trackable.
             drawingSpotlight.TrackableDrawingAdded += (s, e) =>
             {
-                if(AddTrackableDrawingCommand != null)
-                    AddTrackableDrawingCommand.Execute(e.TrackableDrawing);
+                TrackableDrawingAdded?.Invoke(this, new EventArgs<ITrackable>(e.TrackableDrawing));
             };
 
             drawingSpotlight.TrackableDrawingDeleted += (s, e) => DeleteTrackableDrawing(e.TrackableDrawing);

@@ -82,7 +82,7 @@ namespace Kinovea.ScreenManager
                     return;
                 }
 
-                bool confirmed = manager.BeforeReplacingPlayerContent(targetScreen);
+                bool confirmed = manager.BeforeReplacingScreen(screen);
                 if (!confirmed)
                     return;
 

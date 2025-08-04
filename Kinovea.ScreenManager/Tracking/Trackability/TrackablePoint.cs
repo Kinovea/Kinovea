@@ -441,6 +441,9 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private TrackingTemplate CreateTrackFrame(PointF location, float score, TrackingSource positionningSource)
         {
+            if (context.Image == null)
+                throw new InvalidProgramException("Cannot create a tracking template without an image in context.");
+
             Rectangle region = location.Box(trackerParameters.BlockWindow).ToRectangle();
             Bitmap template = context.Image.ExtractTemplate(region);
             return new TrackingTemplate(context.Time, location, score, template, positionningSource);

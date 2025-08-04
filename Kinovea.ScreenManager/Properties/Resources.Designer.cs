@@ -493,6 +493,16 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap delete_notes {
+            get {
+                object obj = ResourceManager.GetObject("delete_notes", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap diaporama {
             get {
                 object obj = ResourceManager.GetObject("diaporama", resourceCulture);
@@ -1536,6 +1546,16 @@ namespace Kinovea.ScreenManager.Properties {
         public static System.Drawing.Bitmap no_16 {
             get {
                 object obj = ResourceManager.GetObject("no_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap notes2_16 {
+            get {
+                object obj = ResourceManager.GetObject("notes2_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -79,10 +79,11 @@ namespace Kinovea.ScreenManager
         #region Menus
 
         // File
-        private ToolStripMenuItem mnuLoadAnalysis = new ToolStripMenuItem();
-
+        private ToolStripMenuItem mnuLoadAnnotations = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSave = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSaveAs = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSaveAsDefault = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuUnloadAnnotations = new ToolStripMenuItem();
 
         private ToolStripMenuItem mnuExportVideo = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportVideoVideo = new ToolStripMenuItem();
@@ -308,35 +309,47 @@ namespace Kinovea.ScreenManager
             mnuCatchFile.MergeAction = MergeAction.MatchOnly;
 
             // Open video = 0
-            // Open instant replay = 1
-            int index = 2;
+            // Open replay observer = 1
+            // History = 2
 
-            // Load Analysis
-            mnuLoadAnalysis.Image = Properties.Resources.file_kva2;
-            mnuLoadAnalysis.Click += mnuLoadAnalysisOnClick;
-            mnuLoadAnalysis.MergeIndex = index;
-            mnuLoadAnalysis.MergeAction = MergeAction.Insert;
+            // ----
+            // Separator = 3
 
-            //----
-            // Recent = 3
-            // Separator = 4
+            int index = 4;
+            mnuLoadAnnotations.Image = Properties.Resources.notes2_16;
+            mnuLoadAnnotations.Click += mnuLoadAnnotationsOnClick;
+            mnuLoadAnnotations.MergeIndex = index;
+            mnuLoadAnnotations.MergeAction = MergeAction.Insert;
+
             index = 5;
             mnuSave.Image = Properties.Resources.filesave;
-            mnuSave.Click += new EventHandler(mnuSaveOnClick);
+            mnuSave.Click += mnuSaveOnClick;
             mnuSave.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S;
             mnuSave.MergeIndex = index;
             mnuSave.MergeAction = MergeAction.Insert;
 
             index = 6;
             mnuSaveAs.Image = Properties.Resources.filesave;
-            mnuSaveAs.Click += new EventHandler(mnuSaveAsOnClick);
+            mnuSaveAs.Click += mnuSaveAsOnClick;
             mnuSaveAs.MergeIndex = index;
             mnuSaveAs.MergeAction = MergeAction.Insert;
 
-            //----
-            // Separator = 7
+            index = 7;
+            mnuSaveAsDefault.Image = Properties.Resources.filesave;
+            //mnuSaveAsDefault.Click += mnuSaveAsDefaultOnClick;
+            mnuSaveAsDefault.MergeIndex = index;
+            mnuSaveAsDefault.MergeAction = MergeAction.Insert;
 
             index = 8;
+            mnuUnloadAnnotations.Image = Properties.Resources.delete_notes;
+            //mnuUnloadAnnotations.Click += mnuUnloadAnnotationsOnClick;
+            mnuUnloadAnnotations.MergeIndex = index;
+            mnuUnloadAnnotations.MergeAction = MergeAction.Insert;
+
+            //----
+            // Separator = 9
+
+            index = 10;
             mnuExportVideo.Image = Properties.Resources.film_save;
             mnuExportVideo.MergeIndex = index;
             mnuExportVideo.MergeAction = MergeAction.Insert;
@@ -355,7 +368,7 @@ namespace Kinovea.ScreenManager
                 mnuExportVideoSideBySide,
             });
 
-            index = 9;
+            index = 11;
             mnuExportImage.Image = Properties.Resources.picture_save;
             mnuExportImage.MergeIndex = index;
             mnuExportImage.MergeAction = MergeAction.Insert;
@@ -374,7 +387,7 @@ namespace Kinovea.ScreenManager
                 mnuExportImageSideBySide,
             });
 
-            index = 10;
+            index = 12;
             mnuExportDocument.Image = Properties.Resources.export_document;
             mnuExportDocument.MergeIndex = index;
             mnuExportDocument.MergeAction = MergeAction.Insert;
@@ -391,7 +404,7 @@ namespace Kinovea.ScreenManager
                 mnuExportMarkdown,
             });
 
-            index = 11;
+            index = 13;
             mnuExportSpreadsheet.Image = Properties.Resources.export_spreadsheet;
             mnuExportSpreadsheet.MergeIndex = index;
             mnuExportSpreadsheet.MergeAction = MergeAction.Insert;
@@ -418,16 +431,16 @@ namespace Kinovea.ScreenManager
             });
 
             //------------------------
-            // Separator = 12
+            // Separator = 14
 
-            index = 13;
+            index = 15;
             mnuCloseFile.Image = Properties.Resources.closeplayer;
             mnuCloseFile.Enabled = false;
             mnuCloseFile.Click += new EventHandler(mnuCloseFileOnClick);
             mnuCloseFile.MergeIndex = index;
             mnuCloseFile.MergeAction = MergeAction.Insert;
 
-            index = 14;
+            index = 16;
             mnuCloseFile2.Image = Properties.Resources.closeplayer;
             mnuCloseFile2.Enabled = false;
             mnuCloseFile2.Visible = false;
@@ -435,16 +448,20 @@ namespace Kinovea.ScreenManager
             mnuCloseFile2.MergeIndex = index;
             mnuCloseFile2.MergeAction = MergeAction.Insert;
 
-            //--------------------
+            //----
+            // Separator = 17.
+            // Quit = 18.
 
             ToolStripItem[] subFile = new ToolStripItem[] {
                 // Open file
                 // Open replay observer,
                 // Recent,
-                mnuLoadAnalysis,
                 // ----
+                mnuLoadAnnotations,
                 mnuSave,
                 mnuSaveAs,
+                mnuSaveAsDefault,
+                mnuUnloadAnnotations,
                 // ----
                 mnuExportVideo,
                 mnuExportImage,
@@ -886,7 +903,7 @@ namespace Kinovea.ScreenManager
         private void Player_OpenAnnotationsAsked(object sender, EventArgs e)
         {
             int index = sender == screenList[0] ? 0 : 1;
-            LoadAnalysis(index);
+            LoadAnnotations(index);
         }
         private void Player_Loaded(object sender, EventArgs e)
         {
@@ -1174,15 +1191,15 @@ namespace Kinovea.ScreenManager
                     // 1. Video is loaded : save-able and analysis is loadable.
 
                     // File
-                    mnuLoadAnalysis.Enabled = true;
+                    mnuLoadAnnotations.Enabled = true;
                     mnuSave.Enabled = true;
                     mnuSaveAs.Enabled = true;
+                    mnuSaveAsDefault.Enabled = true;
+                    mnuUnloadAnnotations.Enabled = true;
                     mnuExportVideo.Enabled = true;
                     mnuExportImage.Enabled = true;
                     mnuExportSpreadsheet.Enabled = player.FrameServer.Metadata.HasVisibleData;
                     mnuExportDocument.Enabled = true;
-
-                    toolSave.Enabled = true;
 
                     // Edit
                     HistoryMenuManager.SwitchContext(activeScreen.HistoryStack);
@@ -1229,20 +1246,25 @@ namespace Kinovea.ScreenManager
 
                     mnuCoordinateSystem.Checked = activeScreen.CoordinateSystemVisible;
                     mnuTestGrid.Checked = activeScreen.TestGridVisible;
+
+                    // Toolbar
+                    toolSave.Enabled = true;
                 }
                 else if(activeScreen is CaptureScreen)
                 {
                     CaptureScreen captureScreen = activeScreen as CaptureScreen;
 
                     // File
-                    mnuLoadAnalysis.Enabled = true;
-                    mnuSave.Enabled = false;
-                    mnuSaveAs.Enabled = false;
+                    mnuLoadAnnotations.Enabled = true;
+                    mnuSave.Enabled = true;
+                    mnuSaveAs.Enabled = true;
+                    mnuSaveAsDefault.Enabled = true;
+                    mnuUnloadAnnotations.Enabled = true;
+                    
                     mnuExportVideo.Enabled = false;
                     mnuExportImage.Enabled = false;
                     mnuExportSpreadsheet.Enabled = false;
                     mnuExportDocument.Enabled = false;
-                    toolSave.Enabled = false;
 
                     // Edit
                     HistoryMenuManager.SwitchContext(activeScreen.HistoryStack);
@@ -1277,6 +1299,9 @@ namespace Kinovea.ScreenManager
 
                     mnuCoordinateSystem.Checked = activeScreen.CoordinateSystemVisible;
                     mnuTestGrid.Checked = activeScreen.TestGridVisible;
+
+                    // Toolbar
+                    toolSave.Enabled = true;
                 }
                 else
                 {
@@ -1293,9 +1318,11 @@ namespace Kinovea.ScreenManager
             if (activeScreenIsEmpty)
             {
                 // File
-                mnuLoadAnalysis.Enabled = false;
+                mnuLoadAnnotations.Enabled = false;
                 mnuSave.Enabled = false;
                 mnuSaveAs.Enabled = false;
+                mnuSaveAsDefault.Enabled = false;
+                mnuUnloadAnnotations.Enabled = false;
                 mnuExportVideo.Enabled = false;
                 mnuExportImage.Enabled = false;
                 mnuExportSpreadsheet.Enabled = false;
@@ -1367,7 +1394,7 @@ namespace Kinovea.ScreenManager
                     }
                     else if(screenList[0] is PlayerScreen)
                     {
-                        // Only screen is an full PlayerScreen.
+                        // The only screen is a loaded PlayerScreen.
                         mnuCloseFile.Text = strClosingText + " - " + ((PlayerScreen)screenList[0]).FileName;
                         mnuCloseFile.Enabled = true;
                         mnuCloseFile.Visible = true;
@@ -1769,8 +1796,12 @@ namespace Kinovea.ScreenManager
             // File
             mnuCloseFile.Text = ScreenManagerLang.Generic_Close;
             mnuCloseFile2.Text = ScreenManagerLang.Generic_Close;
+
+            mnuLoadAnnotations.Text = ScreenManagerLang.mnuLoadAnalysis;
             mnuSave.Text = ScreenManagerLang.Generic_SaveKVA;
             mnuSaveAs.Text = ScreenManagerLang.Generic_SaveKVAAs;
+            mnuSaveAsDefault.Text = "Save as default annotations";
+            mnuUnloadAnnotations.Text = "Unload annotations";
 
             mnuExportVideo.Text = ScreenManagerLang.mnuExport_Video;
             mnuExportVideoVideo.Text = ScreenManagerLang.mnuExport_Video_Video;
@@ -1797,8 +1828,6 @@ namespace Kinovea.ScreenManager
             mnuExportODT.Text = "LibreOffice Writer…";
             mnuExportDOCX.Text = "Microsoft Word…";
             mnuExportMarkdown.Text = "Markdown…";
-
-            mnuLoadAnalysis.Text = ScreenManagerLang.mnuLoadAnalysis;
 
             // Edit
             mnuCutDrawing.Text = ScreenManagerLang.mnuCutDrawing;
@@ -1891,35 +1920,19 @@ namespace Kinovea.ScreenManager
             OrganizeCommonControls();
             OrganizeMenus();
         }
-        private void mnuSaveOnClick(object sender, EventArgs e)
-        {
-            PlayerScreen player = activeScreen as PlayerScreen;
-            if (player == null)
-                return;
-
-            DoStopPlaying();
-            player.Save();
-        }
-
-        private void mnuSaveAsOnClick(object sender, EventArgs e)
-        {
-            PlayerScreen player = activeScreen as PlayerScreen;
-            if (player == null)
-                return;
-
-            DoStopPlaying();
-            player.SaveAs();
-        }
-
-        private void mnuLoadAnalysisOnClick(object sender, EventArgs e)
+        private void mnuLoadAnnotationsOnClick(object sender, EventArgs e)
         {
             if (activeScreen != null)
             {
                 int index = activeScreen == screenList[0] ? 0 : 1;
-                LoadAnalysis(index);
+                LoadAnnotations(index);
             }
         }
-        private void LoadAnalysis(int targetScreen)
+
+        /// <summary>
+        /// Open a dialog box to select an annotation file.
+        /// </summary>
+        private void LoadAnnotations(int targetScreen)
         {
             if (screenList[targetScreen] == null)
                 return;
@@ -1935,6 +1948,26 @@ namespace Kinovea.ScreenManager
 
             screenList[targetScreen].LoadKVA(filename);
         }
+        private void mnuSaveOnClick(object sender, EventArgs e)
+        {
+            if (activeScreen == null)
+                return;
+
+            DoStopPlaying();
+            activeScreen.SaveKVA();
+        }
+
+        private void mnuSaveAsOnClick(object sender, EventArgs e)
+        {
+            if (activeScreen == null)
+                return;
+
+            DoStopPlaying();
+            activeScreen.SaveKVAAs();
+        }
+
+        // TODO: save as default.
+        // TODO: unload.
 
         private void ExportVideo(VideoExportFormat format)
         {
@@ -3072,32 +3105,33 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Asks the user for confirmation on replacing the current content.
-        /// Check if we are overloading on a non-empty screen and propose to save data.
+        /// Check if we can replace the current screen, ask the user for confirmation if needed.
         /// </summary>
-        /// <returns>true if the loading can go on</returns>
-        public bool BeforeReplacingPlayerContent(int targetScreen)
+        /// <returns>true if the screen can be replaced, false if the operation is cancelled</returns>
+        public bool BeforeReplacingScreen(AbstractScreen screenToRemove)
         {
-            PlayerScreen player = GetScreenAt(targetScreen) as PlayerScreen;
-            if (player == null || !player.FrameServer.Metadata.IsDirty)
+            if (screenToRemove.Metadata == null || !screenToRemove.Metadata.IsDirty)
+            {
+                // No metadata or metadata already saved, we can safely replace.
                 return true;
+            }
 
             DialogResult save = ShowConfirmDirtyDialog();
             if (save == DialogResult.No)
             {
-                // No: don't save.
+                // No: no need to save, can replace.
                 return true;
             }
             else if (save == DialogResult.Cancel)
             {
-                // Cancel: stop loading the new video.
+                // Cancel: do not save, do not replace.
                 return false;
             }
             else
             {
-                // Yes: save, then load the new video.
+                // Yes: save, then we can replace.
                 DoStopPlaying();
-                player.Save();
+                screenToRemove.SaveKVA();
                 return true;
             }
         }
