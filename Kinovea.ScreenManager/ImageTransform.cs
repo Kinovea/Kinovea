@@ -288,7 +288,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public int Untransform(int v)
         {
-            return (int)(v / stretch / zoom);
+            return (int)Math.Round(v / stretch / zoom);
         }
 
         /// <summary>
@@ -313,7 +313,7 @@ namespace Kinovea.ScreenManager
             float x = (point.X - directZoomWindow.Left) * zoom * stretch;
             float y = (point.Y - directZoomWindow.Top) * zoom * stretch;
 
-            return new Point((int)x, (int)y);
+            return new Point((int)Math.Round(x), (int)Math.Round(y));
         }
 
         /// <summary>
@@ -341,7 +341,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public int Transform(float length)
         {
-            return (int)(length * zoom * stretch);
+            return (int)Math.Round(length * zoom * stretch);
         }
 
         /// <summary>
