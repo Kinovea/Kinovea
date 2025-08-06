@@ -588,9 +588,7 @@ namespace Kinovea.ScreenManager
             // Other various infos.
             m_FrameServer.SetupMetadata(true);
             m_FrameServer.Metadata.VideoPath = m_FrameServer.VideoReader.FilePath;
-            m_FrameServer.Metadata.SelectionStart = m_iSelStart;
-            m_FrameServer.Metadata.SelectionEnd = m_iSelEnd;
-            m_FrameServer.Metadata.TimeOrigin = m_iSelStart;
+            m_FrameServer.Metadata.InitTime(m_iSelStart, m_iSelEnd, m_iSelStart);
             m_PointerTool.SetImageSize(m_FrameServer.VideoReader.Info.ReferenceSize);
             m_viewportManipulator.Initialize(m_FrameServer.VideoReader);
             
@@ -655,7 +653,7 @@ namespace Kinovea.ScreenManager
             sldrSpeed.Enabled = true;
 
             if (!recoveredMetadata)
-                m_FrameServer.Metadata.CleanupHash();
+                m_FrameServer.Metadata.ResetContentHash();
 
             m_FrameServer.Metadata.StartAutosave();
 
@@ -701,6 +699,7 @@ namespace Kinovea.ScreenManager
             UpdateTimebase();
 
             m_FrameServer.SetupMetadata(false);
+
             ImportEditboxes();
             m_PointerTool.SetImageSize(m_FrameServer.Metadata.ImageSize);
 

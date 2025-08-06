@@ -160,9 +160,35 @@ namespace Kinovea.ScreenManager
             trackablePoints.Add(key, new TrackablePoint(context, parameters, value));
         }
 
+        /// <summary>
+        /// Remove a point from an existing tracker.
+        /// </summary>
         public void RemovePoint(string key)
         {
             trackablePoints.Remove(key);
+        }
+
+        /// <summary>
+        /// Update the tracker with a new version of the drawing object.
+        /// This is used when the drawing is modified by other processes, not by the user nor tracking.
+        /// For example when merging a KVA file and the drawing already existed we swap it with 
+        /// the one coming from the new KVA.
+        /// The drawing object itself changed so we re-init everything.
+        /// </summary>
+        public void Reinitialize(ITrackable drawing, TrackingContext context, TrackingParameters parameters)
+        {
+            this.drawing.TrackablePointMoved -= drawing_TrackablePointMoved;
+
+            this.drawing = drawing;
+            this.drawingId = drawing.Id;
+            this.parameters = parameters;
+
+            trackablePoints.Clear();
+            foreach (KeyValuePair<string, PointF> pair in drawing.GetTrackablePoints())
+                trackablePoints.Add(pair.Key, new TrackablePoint(context, parameters, pair.Value));
+
+            drawing.TrackablePointMoved += drawing_TrackablePointMoved;
+            assigned = true;
         }
 
         /// <summary>
@@ -311,6 +337,11 @@ namespace Kinovea.ScreenManager
 
             if (!isEmpty)
                 r.ReadEndElement();
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0} ({1}), hasData:{2}, tracking:{3}", drawing.Name, drawing.Id, HasData, IsTracking);
         }
 
         #region Private

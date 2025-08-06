@@ -94,7 +94,7 @@ namespace Kinovea.ScreenManager
             int hash = metadata.GetContentHash();
             if (hash != referenceHash)
             {
-                log.DebugFormat("Autosave saving. - {0}", hash);
+                log.DebugFormat("Autosave saving. Content hash:{0}, Reference:{1}.", hash, referenceHash);
                 metadata.PerformAutosave();
                 referenceHash = hash;
             }

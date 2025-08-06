@@ -22,17 +22,9 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
-using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Windows.Forms;
 using System.Xml;
-using System.Xml.Serialization;
-using System.Xml.Xsl;
 using System.Linq;
 using Kinovea.Services;
 using Kinovea.Video;
@@ -162,6 +154,9 @@ namespace Kinovea.ScreenManager
             get { return imageTransform; }
         }
 
+        /// <summary>
+        /// Helper used to transform coordinates from one frame to another frame using camera tracking.
+        /// </summary>
         public CameraTransformer CameraTransformer
         {
             get { return cameraTransformer; }
@@ -242,6 +237,7 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Path to the video file this metadata was created on.
+        /// Only set by the video player.
         /// </summary>
         public string VideoPath
         {
@@ -396,7 +392,19 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        // General infos
+        // Non user-modifiable timing info
+        /// <summary>
+        /// The frame interval used as the baseline for the playback timer, in milliseconds.
+        /// Same as the video frame interval unless overriden by the user in time calibration.
+        /// Not affected by the slow motion slider.
+        /// </summary>
+        public double BaselineFrameInterval
+        {
+            get { return baselineFrameInterval; }
+            set { baselineFrameInterval = value; }
+        }
+
+
         public long AverageTimeStampsPerFrame
         {
             get { return averageTimeStampsPerFrame; }
@@ -412,11 +420,19 @@ namespace Kinovea.ScreenManager
             get { return firstTimeStamp; }
             set { firstTimeStamp = value; }
         }
+
+        /// <summary>
+        /// User-defined start of the working zone.
+        /// </summary>
         public long SelectionStart
         {
             get { return selectionStart; }
             set { selectionStart = value; }
         }
+
+        /// <summary>
+        /// User-defined end of the working zone.
+        /// </summary>
         public long SelectionEnd
         {
             get { return selectionEnd; }
@@ -431,6 +447,7 @@ namespace Kinovea.ScreenManager
             get { return timeOrigin; }
             set { timeOrigin = value; }
         }
+
         public bool TestGridVisible
         {
             get { return drawingTestGrid.Visible; }
@@ -447,17 +464,7 @@ namespace Kinovea.ScreenManager
             set { highSpeedFactor = value == 0 ? 1.0 : value; }
         }
 
-        /// <summary>
-        /// The frame interval used as the baseline for the playback timer, in milliseconds.
-        /// Same as the video frame interval unless overriden by the user in time calibration.
-        /// Not affected by the slow motion slider.
-        /// </summary>
-        public double BaselineFrameInterval
-        {
-            get { return baselineFrameInterval; }
-            set { baselineFrameInterval = value; }
-        }
-
+        
         public VideoFilterType ActiveVideoFilterType
         {
             get { return activeVideoFilterType; }
@@ -489,21 +496,46 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private Guid id = Guid.NewGuid();
-        private bool initialized;
+        private string tempFolder;
+
+        // Helpers injected by the screen.
         private TimeCodeBuilder timecodeBuilder;
         private HistoryStack historyStack;
-        private int referenceHash;
-        private bool kvaImporting;
-        private bool captureKVA;
-        private static Color defaultBackgroundColor = Color.FromArgb(0, 255, 255, 255);
-        private Guid stabilizationTrack = Guid.Empty;
-        private Color backgroundColor = defaultBackgroundColor;
 
-        // Folders
-        private string videoPath;
-        private string tempFolder;
+        // Other helpers
         private AutoSaver autoSaver;
+        private Temporizer calibrationChangedTemporizer;
+        private CalibrationHelper calibrationHelper = new CalibrationHelper();
+        private ImageTransform imageTransform = new ImageTransform();
+        private CameraTransformer cameraTransformer = new CameraTransformer();
+        private TrackabilityManager trackabilityManager = new TrackabilityManager();
+
+        // General state.
+        private bool initialized;
+        private bool isCaptureKVA;
+        private bool kvaImporting;
+        private int referenceHash;
         private string lastKVAPath;
+
+        // Video related info.
+        private string videoPath;
+        private string globalTitle;
+        private Size imageSize = new Size(0, 0);
+
+        // Non user-modifiable timing information.
+        private double baselineFrameInterval = 40;
+        private long averageTimeStampsPerFrame = 1;
+        private double averageTimeStampsPerSecond = 25;
+        private long firstTimeStamp = 0;
+
+        // User-modifiable timing information.
+        private long selectionStart = 0;
+        private long selectionEnd = 0;
+        private long timeOrigin = 0;
+        private long memoSelectionStart = 0;
+        private long memoSelectionEnd = 0;
+        private long memoTimeOrigin = 0;
+        private double highSpeedFactor = 1.0;
 
         // Keyframes & attached drawings.
         private List<Keyframe> keyframes = new List<Keyframe>();
@@ -523,34 +555,19 @@ namespace Kinovea.ScreenManager
         private DrawingTestGrid drawingTestGrid;
         private Guid memoCoordinateSystemId;
 
-        // The magnifier is not a regular drawing.
+        // Other annotations
+        private Guid stabilizationTrack = Guid.Empty;
+        private Color backgroundColor = defaultBackgroundColor;
         private Magnifier magnifier = new Magnifier();
-
         private MeasureLabelType mesureLabelType;
-        private TrackabilityManager trackabilityManager = new TrackabilityManager();
-
-        // Other info not related to drawings.
-        private string globalTitle;
-        private Size imageSize = new Size(0,0);
-        private CalibrationHelper calibrationHelper = new CalibrationHelper();
-        private Temporizer calibrationChangedTemporizer;
-        private ImageTransform imageTransform = new ImageTransform();
-        private CameraTransformer cameraTransformer = new CameraTransformer();
-
-        // Timing information
-        private long averageTimeStampsPerFrame = 1;
-        private double averageTimeStampsPerSecond = 25;
-        private long firstTimeStamp;
-        private long timeOrigin;
-        private double highSpeedFactor = 1.0;
-        private double baselineFrameInterval = 40;
-        private long selectionStart;
-        private long selectionEnd;
 
         // Video filters
         private Dictionary<VideoFilterType, IVideoFilter> videoFilters = new Dictionary<VideoFilterType, IVideoFilter>();
         private VideoFilterType activeVideoFilterType = VideoFilterType.None;
 
+        // Static
+        private static Guid staticKeyframeId = new Guid("02c9b2a8-dc78-422b-a5f1-359e063c597d");
+        private static Color defaultBackgroundColor = Color.FromArgb(0, 255, 255, 255);
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -568,11 +585,11 @@ namespace Kinovea.ScreenManager
             this.timecodeBuilder = timecodeBuilder;
 
             autoSaver = new AutoSaver(this);
-            calibrationHelper.CalibrationChanged += CalibrationHelper_CalibrationChanged;
+            calibrationHelper.CalibrationChanged += (s, e) => AfterCalibrationChanged();
 
             CreateSingletonDrawings();
             CreateVideoFilters();
-            CleanupHash();
+            ResetContentHash();
             SetupTempDirectory(id);
 
             calibrationChangedTemporizer = new Temporizer(200, TracksCalibrationChanged);
@@ -603,6 +620,7 @@ namespace Kinovea.ScreenManager
         {
             return keyframes.FirstOrDefault(kf => kf.Id == id);
         }
+
         public void AddKeyframe(Keyframe keyframe)
         {
             keyframes.Add(keyframe);
@@ -613,6 +631,24 @@ namespace Kinovea.ScreenManager
             if (KeyframeAdded != null)
                 KeyframeAdded(this, new KeyframeEventArgs(keyframe.Id));
         }
+
+        /// <summary>
+        /// For capture, make sure we have at least one keyframe, with a known id.
+        /// </summary>
+        public void AddCaptureKeyframe()
+        {
+            // Removal of all keyframes happens when unloading and when loading modified KVA from replay.
+            if (keyframes.Count == 0)
+            {
+                Keyframe kf = new Keyframe(0, "", Keyframe.DefaultColor, this);
+
+                // Force the id to a static value to avoid triggering content hash changes.
+                kf.Id = staticKeyframeId;
+
+                AddKeyframe(kf);
+            }
+        }
+
         public void DeleteKeyframe(Guid id)
         {
             foreach (Keyframe keyframe in keyframes)
@@ -630,16 +666,15 @@ namespace Kinovea.ScreenManager
             if (KeyframeDeleted != null)
                 KeyframeDeleted(this, new KeyframeEventArgs(id));
         }
+
         public void SelectKeyframe(Keyframe keyframe)
         {
             hitKeyframe = keyframe;
         }
 
-        public void SelectManager(AbstractDrawingManager manager)
-        {
-            hitDrawingOwner = manager;
-        }
-
+        /// <summary>
+        /// Flag key frames outside of the working zone as "disabled".
+        /// </summary>
         public void EnableDisableKeyframes()
         {
             foreach(Keyframe keyframe in keyframes)
@@ -647,6 +682,11 @@ namespace Kinovea.ScreenManager
                 keyframe.Disabled = keyframe.Timestamp < selectionStart || keyframe.Timestamp > selectionEnd;
             }
         }
+
+        /// <summary>
+        /// Returns the index of the keyframe at the current timestamp, 
+        /// or -1 if there is no keyframe.
+        /// </summary>
         public int GetKeyframeIndex(long position)
         {
             for (int i = 0; i < keyframes.Count; i++)
@@ -656,12 +696,17 @@ namespace Kinovea.ScreenManager
             return -1;
         }
 
+        /// <summary>
+        /// Returns true if this timestamp matches a key frame.
+        /// </summary>
         public bool IsKeyframe(long position)
         {
             return keyframes.Any(kf => kf.Timestamp == position);
         }
 
-
+        /// <summary>
+        /// Returns the Id of the keyframe at the passed index.
+        /// </summary>
         public Guid GetKeyframeId(int keyframeIndex)
         {
             return keyframes[keyframeIndex].Id;
@@ -747,26 +792,50 @@ namespace Kinovea.ScreenManager
 
             return null;
         }
-
-
-        public int GetKeyframeIndex(Guid id)
-        {
-            // Temporary function to accomodate clients of the old API where we used indices to reference keyframes and drawings.
-            for (int i = 0; i < keyframes.Count; i++)
-                if (keyframes[i].Id == id)
-                    return i;
-
-            return -1;
-        }
+        
+        /// <summary>
+        /// Merge or Insert a keyframe into the list.
+        /// </summary>
         public void MergeInsertKeyframe(Keyframe keyframe)
         {
             bool processed = false;
 
-            // If the keyframe is already known (by ID) we don't import nor merge it.
+            // Note: prior to version 2025.1 we did not import a kf if it had the same id.
+            // In general we try to make the newly loaded file "win" in case of conflicts.
+
+            // If the keyframe is already known by id merge its drawings.
+            // This can happen for the capture screen first keyframe or when reloading
+            // a modified kva in place.
             Keyframe known = keyframes.FirstOrDefault((kf) => kf.Id == keyframe.Id);
             if (known != null)
-                return;
+            {
+                // Use the new info.
+                known.Timestamp = keyframe.Timestamp;
+                known.Color = keyframe.Color;
+                known.Name = keyframe.Name;
+                known.Comments = keyframe.Comments;
 
+                // Add or replace drawings.
+                foreach (AbstractDrawing ad in keyframe.Drawings)
+                {
+                    int index = known.Drawings.FindIndex(d => d.Id == ad.Id);
+                    if (index == -1)
+                    {
+                        known.Drawings.Add(ad);
+                    }
+                    else
+                    { 
+                        known.Drawings[index] = ad;
+                    }
+                }
+
+                // Post-init for the incoming drawings.
+                keyframe.Drawings.ForEach(ad => AfterDrawingCreation(ad, keyframe.Timestamp));
+                return;
+            }
+            
+            // Unknown keyframe: merge if on the same time, insert otherwise.
+            // The drawings should be different at this point, even on keyframes at the same time.
             for (int i = 0; i < keyframes.Count; i++)
             {
                 Keyframe k = keyframes[i];
@@ -780,7 +849,14 @@ namespace Kinovea.ScreenManager
                 else if (keyframe.Timestamp == k.Timestamp)
                 {
                     foreach (AbstractDrawing ad in keyframe.Drawings)
+                    {
+                        // If the drawing has the same id don't import it.
+                        // This shouldn't happen.
+                        if (k.Drawings.Any(d => d.Id == ad.Id))
+                            continue;
+
                         k.Drawings.Add(ad);
+                    }
 
                     processed = true;
                     break;
@@ -790,9 +866,8 @@ namespace Kinovea.ScreenManager
             if (!processed)
                 keyframes.Add(keyframe);
 
-            // Post-init for the new drawings.
-            foreach (AbstractDrawing ad in keyframe.Drawings)
-                AfterDrawingCreation(ad, keyframe.Timestamp);
+            // Post-init for the incoming drawings.
+            keyframe.Drawings.ForEach(ad => AfterDrawingCreation(ad, keyframe.Timestamp));
         }
         #endregion
 
@@ -958,7 +1033,7 @@ namespace Kinovea.ScreenManager
             drawing.ReferenceTimestamp = keyframe.Timestamp;
             drawing.InfosFading.ReferenceTimestamp = keyframe.Timestamp;
             drawing.InfosFading.AverageTimeStampsPerFrame = averageTimeStampsPerFrame;
-            if (captureKVA)
+            if (isCaptureKVA)
             {
                 drawing.InfosFading.UseDefault = false;
                 drawing.InfosFading.AlwaysVisible = true;
@@ -1392,72 +1467,9 @@ namespace Kinovea.ScreenManager
             return result;
         }
 
-        public void PostSetup(bool init)
-        {
-            if (init)
-            {
-                trackabilityManager.Initialize(imageSize, cameraTransformer);
-                calibrationHelper.Initialize(imageSize, GetCalibrationOrigin, GetCalibrationQuad, HasTrackingData);
-            }
+        
 
-            if (!initialized)
-            {
-                foreach (AbstractDrawing d in singletonDrawingsManager.Drawings)
-                    AfterDrawingCreation(d, 0);
-            }
-            else
-            {
-                AfterDrawingCreation(drawingCoordinateSystem, 0);
-            }
-
-            CleanupHash();
-            initialized = true;
-        }
-
-        public void PostSetupCapture()
-        {
-            captureKVA = true;
-            trackabilityManager.Initialize(imageSize, cameraTransformer);
-            calibrationHelper.Initialize(imageSize, GetCalibrationOrigin, GetCalibrationQuad, HasTrackingData);
-
-            foreach (AbstractDrawing d in singletonDrawingsManager.Drawings)
-                AfterDrawingCreation(d, 0);
-        }
-
-        public void SetCameraMotion(CameraTracker tracker)
-        {
-            cameraTransformer.Initialize(tracker);
-        }
-
-        public void SetLensCalibration(DistortionParameters lensCalibration)
-        {
-            calibrationHelper.DistortionHelper.Initialize(lensCalibration, calibrationHelper.ImageSize);
-            calibrationHelper.AfterDistortionUpdated();
-        }
-
-        /// <summary>
-        /// We are about to load a new video in the same screen.
-        /// </summary>
-        public void Reset()
-        {
-            log.Debug("Metadata Reset.");
-
-            // File-level data.
-            globalTitle = "";
-            imageSize = new Size(0, 0);
-            videoPath = "";
-            lastKVAPath = "";
-            averageTimeStampsPerFrame = 1;
-            firstTimeStamp = 0;
-
-            // Drawings, calibration, image filters, video filters.
-            ResetCoreContent();
-
-            // House keeping.
-            autoSaver.Stop();
-            EmptyTempDirectory();
-            CleanupHash();
-        }
+        
         public void Close()
         {
             foreach (IVideoFilter filter in videoFilters.Values)
@@ -1469,6 +1481,8 @@ namespace Kinovea.ScreenManager
         {
             drawingCoordinateSystem.Visible = true;
         }
+
+        #region Tracking and trajectories
         public void UpdateTrajectoriesForKeyframes()
         {
             foreach (DrawingTrack t in Tracks())
@@ -1512,12 +1526,6 @@ namespace Kinovea.ScreenManager
             foreach(DrawingTrack t in Tracks())
                 t.StopTracking();
         }
-        public void ClearTracking()
-        {
-            foreach (DrawingTrack t in Tracks())
-                t.Clear();
-        }
-
         public void UpdateTrackPoint(Bitmap bitmap)
         {
             // Happens when mouse up and editing a track.
@@ -1528,37 +1536,15 @@ namespace Kinovea.ScreenManager
                     track.UpdateTrackPoint(cvImage, imageTransform);
             }
         }
+        #endregion
 
-        public int GetContentHash()
-        {
-            int hash = 0;
-            hash ^= ImageAspect.GetHashCode();
-            hash ^= ImageRotation.GetHashCode();
-            hash ^= Mirrored.GetHashCode();
-            hash ^= Demosaicing.GetHashCode();
-            hash ^= Deinterlacing.GetHashCode();
-            hash ^= StabilizationTrack.GetHashCode();
-            hash ^= backgroundColor.GetHashCode();
-            hash ^= selectionStart.GetHashCode();
-            hash ^= selectionEnd.GetHashCode();
-            hash ^= timeOrigin.GetHashCode();
-            hash ^= calibrationHelper.ContentHash;
-            hash ^= GetKeyframesContentHash();
-            hash ^= GetSingletonDrawingsContentHash();
-            hash ^= trackabilityManager.ContentHash;
-            hash ^= GetVideoFiltersContentHash();
-            return hash;
-        }
-        public void CleanupHash()
-        {
-            referenceHash = GetContentHash();
-            autoSaver.Clear();
-            log.Debug(String.Format("Metadata content hash reset:{0}.", referenceHash));
-        }
+        /// <summary>
+        /// Signal that a resizing of the video canvas is finished.
+        /// This can be used to trigger an update to drawings that do not
+        /// render in the same way when the user is resizing or not.
+        /// </summary>
         public void ResizeFinished()
         {
-            // This function can be used to trigger an update to drawings that do not
-            // render in the same way when the user is resizing the window or not.
             foreach(DrawingSVG svg in SVGs())
                 svg.ResizeFinished();
         }
@@ -1624,7 +1610,7 @@ namespace Kinovea.ScreenManager
             if (drawing is DrawingDistortionGrid)
             {
                 DrawingDistortionGrid d = drawing as DrawingDistortionGrid;
-                d.LensCalibrationAsked += LensCalibrationAsked;
+                d.LensCalibrationAsked += Drawing_LensCalibrationAsked;
             }
         }
 
@@ -1639,7 +1625,7 @@ namespace Kinovea.ScreenManager
                 measurableDrawing.ShowMeasurableInfoChanged -= MeasurableDrawing_ShowMeasurableInfoChanged;
 
             if (drawing is DrawingDistortionGrid)
-                ((DrawingDistortionGrid)drawing).LensCalibrationAsked -= LensCalibrationAsked;
+                ((DrawingDistortionGrid)drawing).LensCalibrationAsked -= Drawing_LensCalibrationAsked;
 
             if (drawing is DrawingTrack)
                 ((DrawingTrack)drawing).Clear();
@@ -1655,8 +1641,15 @@ namespace Kinovea.ScreenManager
         }
         public void AfterKVAImport()
         {
-            trackabilityManager.UpdateId(memoCoordinateSystemId, drawingCoordinateSystem.Id);
-
+            // Make sure the new coordinate system object is registered for trackability.
+            // This happens when we merge a KVA file.
+            // In the case of unload we must have done this already.
+            if (drawingCoordinateSystem.Id != memoCoordinateSystemId && 
+                trackabilityManager.IsAssigned(memoCoordinateSystemId))
+            {
+                trackabilityManager.UpdateId(memoCoordinateSystemId, drawingCoordinateSystem.Id);
+            }
+            
             foreach (ITrackable drawing in TrackableDrawings())
                 trackabilityManager.Assign(drawing);
 
@@ -1678,7 +1671,7 @@ namespace Kinovea.ScreenManager
         }
         public void AfterManualExport()
         {
-            CleanupHash();
+            ResetContentHash();
             DeleteAutosaveFile();
         }
         public bool Recover(Guid id)
@@ -1704,6 +1697,23 @@ namespace Kinovea.ScreenManager
                 points.Add(grid.Points);
 
             return points;
+        }
+
+        /// <summary>
+        /// Called when we run camera motion tracking.
+        /// </summary>
+        public void SetCameraMotion(CameraTracker tracker)
+        {
+            cameraTransformer.Initialize(tracker);
+        }
+
+        /// <summary>
+        /// Called when we run lens calibration.
+        /// </summary>
+        public void SetLensCalibration(DistortionParameters lensCalibration)
+        {
+            calibrationHelper.DistortionHelper.Initialize(lensCalibration, calibrationHelper.ImageSize);
+            calibrationHelper.AfterDistortionUpdated();
         }
 
         #region Autosave
@@ -1969,19 +1979,268 @@ namespace Kinovea.ScreenManager
 
         #endregion
 
-        #region Lower level Helpers
+        #region Init/Deinit
+
 
         /// <summary>
-        /// This is called when we are about to load a new video in the same screen.
+        /// Setup up the metadata after we load a video into the screen.
+        /// init: true if this is the first setup after loading a video, 
+        /// false if we just merged a KVA on the same video.
         /// </summary>
-        private void ResetCoreContent()
+        public void PostSetupVideo(bool init)
+        {
+            isCaptureKVA = false;
+
+            // By the time we call this function the caller already set up some properties.
+            // image level properties: size, aspect ratio, rotation, mirror, (stabil & background color ?)
+            // Non-modifiable time properties: baseline frame interval, first timestamp,
+            // avg timestamps per frame and per second,
+            // + calibration helper capture frames per second.
+            // The user-modifiable time info will be set later in InitTime().
+
+            if (init)
+            {
+                calibrationHelper.Initialize(imageSize, GetCalibrationOrigin, GetCalibrationQuad, HasTrackingData);
+                trackabilityManager.Initialize(imageSize, cameraTransformer);
+            }
+
+            if (!initialized)
+            {
+                foreach (AbstractDrawing d in singletonDrawingsManager.Drawings)
+                    AfterDrawingCreation(d, 0);
+            }
+            else
+            {
+                // Always re-add the coordinate system.
+                // This will trigger TrackableDrawingAdded which will make sure 
+                // the coordinate system is registered for trackability.
+                AfterDrawingCreation(drawingCoordinateSystem, 0);
+            }
+
+            ResetContentHash();
+            initialized = true;
+        }
+
+        /// <summary>
+        /// Setup the metadata after we connect a camera into the screen.
+        /// </summary>
+        public void PostSetupCamera()
+        {
+            isCaptureKVA = true;
+
+            // By the time we call this function the caller already set up some properties.
+            // image level properties: size, aspect, rotation, mirror, demosaicing, deinterlacing, stabil track, background color.
+            
+            calibrationHelper.Initialize(imageSize, GetCalibrationOrigin, GetCalibrationQuad, HasTrackingData);
+            trackabilityManager.Initialize(imageSize, cameraTransformer);
+
+            foreach (AbstractDrawing d in singletonDrawingsManager.Drawings)
+                AfterDrawingCreation(d, 0);
+
+            ResetContentHash();
+            initialized = true;
+        }
+
+        /// <summary>
+        /// Initialize the user-modifiable time information.
+        /// </summary>
+        public void InitTime(long start, long end, long origin)
+        {
+            selectionStart = start;
+            selectionEnd = end;
+            timeOrigin = origin;
+
+            // Remember these as the defaults in case we later unload the metadata off the video.
+            memoSelectionStart = start;
+            memoSelectionEnd = end;
+            memoTimeOrigin = origin;
+        }
+        
+        /// <summary>
+        /// We are about to unload the video of this screen.
+        /// Either to load a new one or because it failed to load.
+        /// Reset everything to default including video or camera data.
+        /// Does not reset the id and temp folder location.
+        /// </summary>
+        public void HardReset()
+        {
+            // The goal of this function is to fully reset the metadata so that 
+            // when we load the next video or camera nothing from this session remains.
+            log.Debug("Metadata hard reset.");
+
+            // Stop auto-save. It will be restarted by the player in PostLoadProcess.
+            autoSaver.Stop();
+            DeleteAutosaveFile();
+
+            // Some state doesn't change.
+            // - id: only set once in the ctor.
+            // - initialized: still true.
+            // - isCaptureKVA: basically read only.
+            // - kvaImporting: should be false at this point.
+
+            // calibration helper: not reset when loading a new video
+            // to allow reusing the same calibration for multiple videos of the same session.
+
+            ResetKVAPath();
+            ResetVideoOrCameraData();
+            ResetImageLevelProperties();
+            ResetTime();
+            ResetDrawings();
+            ResetVideoFilters();
+
+            if (isCaptureKVA)
+            {
+                AddCaptureKeyframe();
+            }
+
+            ResetContentHash();
+            
+            // Reset viewport.
+            imageTransform.Reset();
+            cameraTransformer.Deinitialize();
+
+            log.Debug("Metadata hard reset completed.");
+        }
+
+        /// <summary>
+        /// Reset the modifiable data but not the data related to the video or camera.
+        /// This is used when unloading the metadata to start afresh, in the same video/camera.
+        /// </summary>
+        public void Unload()
+        {
+            // The goal of this function is to reset the metadata to a state similar to 
+            // loading the video or camera for the first time. 
+            // We do not restore the default metadata.
+            log.Debug("Metadata unload.");
+            
+            // This is similar to load-over with a blank metadata,
+            // so we enclose it between before/after calls.
+            BeforeKVAImport();
+
+            // Stop auto-save.
+            // No need to delete the file.
+            if (!isCaptureKVA)
+                autoSaver.Stop();
+
+            // Do not reset non user-modifiable data (ResetVideoOrCameraData).
+            // This data is kept the same since we are not unloading the video itself.
+
+            // calibration helper should be reset?
+
+            // Reset modifiable data.
+            ResetKVAPath();
+            ResetImageLevelProperties();
+            ResetTime();
+            ResetDrawings();
+            ResetVideoFilters();
+
+            // Re-register the coordinate system to trackability.
+            // Do this before calculating the new content hash.
+            AfterDrawingCreation(drawingCoordinateSystem, 0);
+
+            imageTransform.Reset();
+            cameraTransformer.Deinitialize();
+
+            if (isCaptureKVA)
+            {
+                AddCaptureKeyframe();
+            }
+            
+            ResetContentHash();
+            AfterKVAImport();
+
+            // Restore coordinate system to trackability manager.
+            //trackabilityManager.UpdateId(memoCoordinateSystemId, drawingCoordinateSystem.Id);
+
+            // Restart auto-save.
+            // The reference hash has been reset already.
+            if (!isCaptureKVA)
+                autoSaver.Start();
+
+            log.Debug("Metadata unload completed.");
+        }
+
+        /// <summary>
+        /// Forget the KVA path (force "save as").
+        /// </summary>
+        private void ResetKVAPath()
+        {
+            lastKVAPath = string.Empty;
+        }
+
+        /// <summary>
+        /// Reset data that is normally set up based on video or camera info.
+        /// These should only be reset if we are completely unloading the video/camera, 
+        /// not when we are just unloading the annotations.
+        /// </summary>
+        private void ResetVideoOrCameraData()
+        {
+            // These are setup during video load or camera load, 
+            // in PostSetupVideo() or PostSetupCamera(), or before these are called.
+
+            // Common properties.
+            videoPath = string.Empty;
+            globalTitle = string.Empty;
+            imageSize = Size.Empty;
+
+            // TODO: imageTransform.SetReferenceSize()?
+
+            // Properties that can be modified by the user are not handled here.
+            // - Image level properties like aspect, rotation, mirror, stabil track, background color).
+            // - Time properties like selection start/end and time origin.
+            // These are handled by ResetImageLevelProperties() and ResetTime().
+
+            // Non modifiable time properties.
+            baselineFrameInterval = 40;
+            averageTimeStampsPerFrame = 1;
+            averageTimeStampsPerSecond = 25;
+            firstTimeStamp = 0;
+            //CalibrationHelper.Initialize() Needs image size.
+            //CalibrationHelper.Reset() Needs image size.
+            //CalibrationHelper.CaptureFramesPerSecond
+        }
+
+        /// <summary>
+        /// Reset properties corresponding to the image menu to their defaults.
+        /// Aspect ratio, rotation, mirror, demosaicing, deinterlacing, stabilization track.
+        /// </summary>
+        private void ResetImageLevelProperties()
+        {
+            // These correspond to the Image menu
+            ImageAspect = ImageAspectRatio.Auto;
+            ImageRotation = ImageRotation.Rotate0;
+            Mirrored = false;
+            Demosaicing = Demosaicing.None;
+            Deinterlacing = false;
+            StabilizationTrack = Guid.Empty;
+        }
+
+
+        /// <summary>
+        /// Reset the modifiable time properties.
+        /// Working zone start/end, time origin.
+        /// </summary>
+        private void ResetTime()
+        {
+            // Reset data to their default based on the source video.
+            if (!isCaptureKVA)
+            {
+                selectionStart = memoSelectionStart;
+                selectionEnd = memoSelectionEnd;
+                timeOrigin = memoTimeOrigin;
+            }
+        }
+
+        /// <summary>
+        /// Clear all content related to drawings, keyframes, tracks, chronos, etc.
+        /// Includes magnifier and coordinate system and test grid visibility.
+        /// </summary>
+        private void ResetDrawings()
         {
             DeselectAll();
-            
-            // Drawings and tracking
-            trackabilityManager.Clear();
+
             keyframes.Clear();
-            ClearTracking();
+            trackabilityManager.Clear();
             trackManager.Clear();
             chronoManager.Clear();
 
@@ -1992,34 +2251,130 @@ namespace Kinovea.ScreenManager
                     ((AbstractMultiDrawing)d).Clear();
             }
 
+            // Special case for the magnifier.
             magnifier.ResetData();
+
+            // State of tools from the tools menu.
             drawingCoordinateSystem.Visible = false;
             drawingTestGrid.Visible = false;
-            
-            imageTransform.Reset();
-
-            // Do not reset the calibration when loading new files in the same screen.
-            // The existing calibration is as good the default one.
-            // This supports the scenario of setting up the calibration in a dedicated video and using it in all videos of the same folder,
-            // without having to save and load a dedicated KVA file for it.
-            // If the new file has its own calibration in the KVA it will still be loaded correctly later.
-
-            // Do reset camera tracking.
-            cameraTransformer.Deinitialize();
-
-            // Image filters.
-            ImageAspect = ImageAspectRatio.Auto;
-            ImageRotation = ImageRotation.Rotate0;
-            Mirrored = false;
-            Demosaicing = Demosaicing.None;
-            Deinterlacing = false;
-            StabilizationTrack = Guid.Empty;
             backgroundColor = defaultBackgroundColor;
-
-            // Video filters.
-            ResetVideoFilters();
         }
 
+        /// <summary>
+        /// Clear all data held by video filters.
+        /// </summary>
+        private void ResetVideoFilters()
+        {
+            foreach (var filter in videoFilters.Values)
+                filter.ResetData();
+        }
+        #endregion
+
+        #region Content hash
+        /// <summary>
+        /// Get the content hash of the metadata. This is used to detect changes in state.
+        /// </summary>
+        public int GetContentHash()
+        {
+            int hash = 0;
+
+            // Image level properties
+            hash ^= ImageAspect.GetHashCode();
+            hash ^= ImageRotation.GetHashCode();
+            hash ^= Mirrored.GetHashCode();
+            hash ^= Demosaicing.GetHashCode();
+            hash ^= Deinterlacing.GetHashCode();
+            hash ^= StabilizationTrack.GetHashCode();
+            hash ^= backgroundColor.GetHashCode();
+
+            // Time
+            hash ^= selectionStart.GetHashCode();
+            hash ^= selectionEnd.GetHashCode();
+            hash ^= timeOrigin.GetHashCode();
+
+            // Drawings
+            hash ^= calibrationHelper.ContentHash;
+            hash ^= trackabilityManager.ContentHash;
+            hash ^= GetKeyframesContentHash();
+            hash ^= GetDetachedDrawingsContentHash();
+            hash ^= GetSingletonDrawingsContentHash();
+
+            // Video filters
+            hash ^= GetVideoFiltersContentHash();
+
+            if (hash != referenceHash)
+            {
+                log.Debug(string.Format("Metadata content hash DIRTY:{0} (was:{1}).", hash, referenceHash));
+            }
+
+            return hash;
+        }
+
+        /// <summary>
+        /// Resets the reference content hash to the current value.
+        /// </summary>
+        public void ResetContentHash()
+        {
+            referenceHash = GetContentHash();
+            autoSaver.Clear();
+            log.Debug(string.Format("Metadata content hash RESET:{0}.", referenceHash));
+        }
+
+        /// <summary>
+        /// Get content hash for keyframes and attached drawings.
+        /// </summary>
+        private int GetKeyframesContentHash()
+        {
+            int hash = 0;
+            foreach (Keyframe kf in keyframes)
+                hash ^= kf.ContentHash;
+
+            return hash;
+        }
+
+        /// <summary>
+        /// Get content hash for detached drawings (tracks & chronos)
+        /// </summary>
+        private int GetDetachedDrawingsContentHash()
+        {
+            int hash = 0;
+            foreach (AbstractDrawing chrono in chronoManager.Drawings)
+                hash ^= chrono.ContentHash;
+
+            foreach (DrawingTrack track in trackManager.Drawings)
+                hash ^= track.ContentHash;
+
+            return hash;
+        }
+
+        /// <summary>
+        /// Get content hash for singleton drawings.
+        /// </summary>
+        private int GetSingletonDrawingsContentHash()
+        {
+            int hash = 0;
+            foreach (AbstractDrawing d in singletonDrawingsManager.Drawings)
+                hash ^= d.ContentHash;
+
+            return hash;
+        }
+
+        /// <summary>
+        /// Get content hash for video filters.
+        /// </summary>
+        private int GetVideoFiltersContentHash()
+        {
+            int hash = 0;
+            hash ^= activeVideoFilterType.GetHashCode();
+            foreach (IVideoFilter filter in videoFilters.Values)
+                hash ^= filter.ContentHash;
+
+            return hash;
+        }
+        #endregion
+
+
+        #region Lower level Helpers
         private bool DrawingsHitTest(int keyFrameIndex, PointF mouseLocation, long timestamp)
         {
             // Look for a hit in all drawings of a particular Key Frame.
@@ -2075,6 +2430,10 @@ namespace Kinovea.ScreenManager
 
             drawing.Name = name;
         }
+        
+        /// <summary>
+        /// Returns true if there is already a drawing with this name.
+        /// </summary>
         private bool IsNameTaken(string name)
         {
             // Lookup all drawing names to find a match.
@@ -2082,43 +2441,13 @@ namespace Kinovea.ScreenManager
                    chronoManager.Drawings.Any(d => d.Name == name) ||
                    trackManager.Drawings.Any(d => d.Name == name);
         }
-        private int GetKeyframesContentHash()
-        {
-            int hash = 0;
-            foreach (Keyframe kf in keyframes)
-                hash ^= kf.ContentHash;
 
-            return hash;
-        }
-        private int GetSingletonDrawingsContentHash()
-        {
-            int hash = 0;
-            foreach (AbstractDrawing chrono in chronoManager.Drawings)
-                hash ^= chrono.ContentHash;
-
-            foreach (DrawingTrack track in trackManager.Drawings)
-                hash ^= track.ContentHash;
-
-            foreach (AbstractDrawing d in singletonDrawingsManager.Drawings)
-                hash ^= d.ContentHash;
-
-            return hash;
-        }
-
-        private int GetVideoFiltersContentHash()
-        {
-            int hash = 0;
-            hash ^= activeVideoFilterType.GetHashCode();
-            foreach (IVideoFilter filter in videoFilters.Values)
-                hash ^= filter.ContentHash;
-
-            return hash;
-        }
+        /// <summary>
+        /// Instantiate the singleton drawings.
+        /// These drawings are unique and not attached to any particular key image.
+        /// </summary>
         private void CreateSingletonDrawings()
         {
-            // Add the singleton drawings.
-            // These drawings are unique and not attached to any particular key image.
-
             drawingSpotlight = new DrawingSpotlight();
             drawingNumberSequence = new DrawingNumberSequence(ToolManager.GetDefaultStyleElements("NumberSequence"));
             drawingCoordinateSystem = new DrawingCoordinateSystem(Point.Empty, ToolManager.GetDefaultStyleElements("CoordinateSystem"));
@@ -2144,6 +2473,7 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Returns true if the drawing is managed by the ChronoManager.
+        /// True for Chronometers, Multi-chronometers and Counters.
         /// </summary>
         public bool IsChronoLike(AbstractDrawing drawing)
         {
@@ -2151,10 +2481,7 @@ namespace Kinovea.ScreenManager
                 drawing is DrawingChronoMulti ||
                 drawing is DrawingCounter;
         }
-        private void CalibrationHelper_CalibrationChanged(object sender, EventArgs e)
-        {
-            AfterCalibrationChanged();
-        }
+
         private void AfterCalibrationChanged()
         {
             if (drawingCoordinateSystem.CalibrationHelper == null)
@@ -2178,7 +2505,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private PointF GetCalibrationOrigin(long time)
         {
-            if (captureKVA)
+            if (isCaptureKVA)
                 return imageSize.Center();
 
             // When using CalibrationLine and a tracked coordinate system,
@@ -2191,7 +2518,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private QuadrilateralF GetCalibrationQuad(long time, CalibratorType calibratorType, Guid calibrationDrawingId)
         {
-            if (captureKVA)
+            if (isCaptureKVA)
                 return QuadrilateralF.GetUnitSquare();
 
             if (calibratorType == CalibratorType.None || calibrationDrawingId == Guid.Empty)
@@ -2241,12 +2568,6 @@ namespace Kinovea.ScreenManager
                 videoFilters.Add(type, VideoFilterFactory.CreateFilter(type, this));
         }
 
-        private void ResetVideoFilters()
-        {
-            foreach (var filter in videoFilters.Values)
-                filter.ResetData();
-        }
-
         private void SetupTempDirectory(Guid id)
         {
             try
@@ -2276,10 +2597,6 @@ namespace Kinovea.ScreenManager
                 log.Error("Failed to delete temp directory.", ex);
             }
         }
-        private void EmptyTempDirectory()
-        {
-            DeleteAutosaveFile();
-        }
         private void DeleteAutosaveFile()
         {
             try
@@ -2293,7 +2610,7 @@ namespace Kinovea.ScreenManager
                 log.Error("Failed to delete autosave file.", ex);
             }
         }
-        private void LensCalibrationAsked(object sender, EventArgs e)
+        private void Drawing_LensCalibrationAsked(object sender, EventArgs e)
         {
             if (CameraCalibrationAsked != null)
                 CameraCalibrationAsked(this, EventArgs.Empty);

@@ -160,7 +160,7 @@ namespace Kinovea.ScreenManager
                 videoReader.Close();
             
             if(metadata != null)
-                metadata.Reset();
+                metadata.HardReset();
         }
 
         /// <summary>
@@ -177,15 +177,17 @@ namespace Kinovea.ScreenManager
             if (init)
             {
                 metadata.ImageSize = videoReader.Info.ReferenceSize;
+                metadata.ImageRotation = videoReader.Info.ImageRotation;
+                // aspect and mirror ?
+
                 metadata.BaselineFrameInterval = videoReader.Info.FrameIntervalMilliseconds;
                 metadata.AverageTimeStampsPerFrame = videoReader.Info.AverageTimeStampsPerFrame;
                 metadata.AverageTimeStampsPerSecond = videoReader.Info.AverageTimeStampsPerSeconds;
-                metadata.CalibrationHelper.CaptureFramesPerSecond = videoReader.Info.FramesPerSeconds;
                 metadata.FirstTimeStamp = videoReader.Info.FirstTimeStamp;
-                metadata.ImageRotation = videoReader.Info.ImageRotation;
+                metadata.CalibrationHelper.CaptureFramesPerSecond = videoReader.Info.FramesPerSeconds;
             }
 
-            metadata.PostSetup(init);
+            metadata.PostSetupVideo(init);
             
             log.Debug("Setup metadata.");
         }
@@ -366,7 +368,7 @@ namespace Kinovea.ScreenManager
         {
             if(savingMetada)
             {
-                Metadata.CleanupHash();
+                Metadata.ResetContentHash();
                 savingMetada = false;
             }
 

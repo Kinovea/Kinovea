@@ -193,7 +193,7 @@ namespace Kinovea.ScreenManager
         {
             if (this.Metadata == null)
             {
-                log.Error("Save called on a screen with no metadata.");
+                log.Error("Screen with no metadata.");
                 return;
             }
 
@@ -208,12 +208,23 @@ namespace Kinovea.ScreenManager
         {
             if (this.Metadata == null)
             {
-                log.Error("Save called on a screen with no metadata.");
+                log.Error("Screen with no metadata.");
                 return;
             }
 
             MetadataSerializer serializer = new MetadataSerializer();
             serializer.UserSaveAs(this.Metadata, this.FilePath);
+        }
+
+        public void UnloadAnnotations()
+        {
+            if (this.Metadata == null)
+            {
+                log.Error("Screen with no metadata.");
+                return;
+            }
+
+            this.Metadata.Unload();
         }
 
     }   

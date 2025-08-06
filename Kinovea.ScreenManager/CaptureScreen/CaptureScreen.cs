@@ -207,6 +207,8 @@ namespace Kinovea.ScreenManager
         
         private HistoryStack historyStack = new HistoryStack();
         private string shortId;
+
+        // Static
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -440,7 +442,6 @@ namespace Kinovea.ScreenManager
             
             MetadataSerializer s = new MetadataSerializer();
             s.Load(metadata, path, true);
-            AfterLoadKVA();
         }
 
         private void MetadataWatcher_Changed(object sender, FileSystemEventArgs e)
@@ -461,22 +462,15 @@ namespace Kinovea.ScreenManager
                 return;
 
             // Reset the currently loaded metadata.
-            metadata.Keyframes.Clear();
-            
+            metadata.Unload();
             LoadKVA(path);
         }
 
-        private void AfterLoadKVA()
+        private void Metadata_KVAImported()
         {
-            if (metadata.Count == 0)
-            {
-                // Make sure we have at least one keyframe.
-                // This can happen when we reload the existing KVA after changes from the player side 
-                // and the user has deleted all keyframes.
-                Keyframe kf = new Keyframe(0, "", Keyframe.DefaultColor, metadata);
-                metadata.AddKeyframe(kf);
-            }
+            metadata.AddCaptureKeyframe();
         }
+
         #endregion
 
         #region Methods called from the view. These could also be events or commands.
@@ -763,7 +757,7 @@ namespace Kinovea.ScreenManager
             metadata.ImageAspect = Convert(cameraSummary.AspectRatio);
             metadata.ImageRotation = cameraSummary.Rotation;
             metadata.Mirrored = cameraSummary.Mirror;
-            metadata.PostSetupCapture();
+            metadata.PostSetupCamera();
 
             // Make sure the viewport will not use the bitmap allocated by the consumerDisplay as it is about to be disposed.
             viewportController.ForgetBitmap();
@@ -1312,9 +1306,12 @@ namespace Kinovea.ScreenManager
         private void InitializeMetadata()
         {
             metadata = new Metadata(historyStack, TimeStampsToTimecode);
+            metadata.AddCaptureKeyframe();
+
             // Hook to events raised by metadata.
-            metadata.TrackableDrawingAdded += (s, e) => AddTrackableDrawing(e.Value);
-            
+            metadata.TrackableDrawingAdded += (s, e) => Metadata_OnTrackableDrawingAdded(e.Value);
+            metadata.KVAImported += (s, e) => Metadata_KVAImported();
+
             // Use microseconds as the general time scale.
             // This is used when importing keyframes from external KVA,
             // and when exporting the KVA next to the saved videos.
@@ -1330,7 +1327,7 @@ namespace Kinovea.ScreenManager
             viewportController.MetadataManipulator = metadataManipulator;
         }
 
-        public void AddTrackableDrawing(ITrackable trackableDrawing)
+        public void Metadata_OnTrackableDrawingAdded(ITrackable trackableDrawing)
         {
             // We don't have a proper video frame but the trackability manager
             // can work with that as long as we never ask for tracking.
@@ -1338,6 +1335,9 @@ namespace Kinovea.ScreenManager
             metadata.TrackabilityManager.Add(trackableDrawing, videoFrame);
         }
 
+        /// <summary>
+        /// Load the default capture KVA if any.
+        /// </summary>
         private void LoadCompanionKVA()
         {
             // Note: anything after the first keyframe will be ignored.

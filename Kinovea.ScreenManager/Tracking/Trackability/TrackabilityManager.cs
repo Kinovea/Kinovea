@@ -75,14 +75,17 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void Add(ITrackable drawing, VideoFrame videoFrame)
         {
-            if(trackers.ContainsKey(drawing.Id))
-               return;
-            
             TrackingParameters parameters = drawing.CustomTrackingParameters ?? PreferencesManager.PlayerPreferences.TrackingParameters.Clone();
-
-
             TrackingContext context = new TrackingContext(videoFrame.Timestamp, videoFrame.Image);
-            trackers.Add(drawing.Id, new DrawingTracker(drawing, context, parameters));
+            
+            if(trackers.ContainsKey(drawing.Id))
+            {
+                trackers[drawing.Id].Reinitialize(drawing, context, parameters);
+            }
+            else
+            {
+                trackers.Add(drawing.Id, new DrawingTracker(drawing, context, parameters));
+            }
         }
 
         /// <summary>
@@ -95,6 +98,11 @@ namespace Kinovea.ScreenManager
         {
             if (trackers.ContainsKey(drawing.Id) && !trackers[drawing.Id].Assigned)
                 trackers[drawing.Id].Assign(drawing);
+        }
+
+        public bool IsAssigned(Guid id)
+        {
+            return trackers.ContainsKey(id);
         }
 
         /// <summary>
@@ -155,6 +163,8 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Delete all trackers.
+        /// Note: this also deletes the tracker for the coordinate system
+        /// so this has to be re-assigned later if needed.
         /// </summary>
         public void Clear()
         {
@@ -456,6 +466,20 @@ namespace Kinovea.ScreenManager
             else
             {
                 trackers.Add(tracker.ID, tracker);
+            }
+        }
+
+        public void LogTrackers()
+        {
+            if (trackers.Count == 0)
+            {
+                log.Debug("No trackers registered.");
+                return;
+            }
+            
+            foreach (KeyValuePair<Guid, DrawingTracker> pair in trackers)
+            {
+                log.DebugFormat("{0}", pair.Value.ToString());
             }
         }
 

@@ -342,7 +342,7 @@ namespace Kinovea.ScreenManager
 
             index = 8;
             mnuUnloadAnnotations.Image = Properties.Resources.delete_notes;
-            //mnuUnloadAnnotations.Click += mnuUnloadAnnotationsOnClick;
+            mnuUnloadAnnotations.Click += mnuUnloadAnnotationsOnClick;
             mnuUnloadAnnotations.MergeIndex = index;
             mnuUnloadAnnotations.MergeAction = MergeAction.Insert;
 
@@ -1929,6 +1929,25 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        private void mnuUnloadAnnotationsOnClick(object sender, EventArgs e)
+        {
+            if (activeScreen == null)
+                return;
+            
+            int index = activeScreen == screenList[0] ? 0 : 1;
+            if (screenList[index] is PlayerScreen)
+                DoStopPlaying();
+
+            // Since there is no undo of this, ask for confirmation.
+            // Even if the user is unloading it's possible they want to keep the data for later.
+            // Also a safety against misclicking the unload menu.
+            bool confirmed = BeforeUnloadingAnnotations(activeScreen);
+            if (!confirmed)
+                return;
+
+            screenList[index].UnloadAnnotations();
+        }
+
         /// <summary>
         /// Open a dialog box to select an annotation file.
         /// </summary>
@@ -3105,33 +3124,34 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Check if we can replace the current screen, ask the user for confirmation if needed.
+        /// Check if we can unload the metadata, ask the user to save it if they want.
+        /// This happens when replacing or closing a screen, or for unloading annotations.
         /// </summary>
-        /// <returns>true if the screen can be replaced, false if the operation is cancelled</returns>
-        public bool BeforeReplacingScreen(AbstractScreen screenToRemove)
+        /// <returns>true if the operation can carry on, false if the operation is cancelled</returns>
+        public bool BeforeUnloadingAnnotations(AbstractScreen screen)
         {
-            if (screenToRemove.Metadata == null || !screenToRemove.Metadata.IsDirty)
+            if (screen.Metadata == null || !screen.Metadata.IsDirty)
             {
-                // No metadata or metadata already saved, we can safely replace.
+                // No metadata or metadata already saved, we can safely carry on.
                 return true;
             }
 
             DialogResult save = ShowConfirmDirtyDialog();
             if (save == DialogResult.No)
             {
-                // No: no need to save, can replace.
+                // No: no need to save, can carry on.
                 return true;
             }
             else if (save == DialogResult.Cancel)
             {
-                // Cancel: do not save, do not replace.
+                // Cancel: do not save, do not carry on.
                 return false;
             }
             else
             {
-                // Yes: save, then we can replace.
+                // Yes: save first, then we can carry on.
                 DoStopPlaying();
-                screenToRemove.SaveKVA();
+                screen.SaveKVA();
                 return true;
             }
         }
