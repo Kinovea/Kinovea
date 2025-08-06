@@ -17,7 +17,8 @@ namespace Kinovea.ScreenManager
             Symbols = new Dictionary<PatternContext, string>
             {
                 { PatternContext.CaptureDirectory, "%directory" },
-                { PatternContext.CaptureFilename, "%filename" }
+                { PatternContext.CaptureFilename, "%filename" },
+                { PatternContext.CaptureKVA, "%kva" }
             };
 
         }

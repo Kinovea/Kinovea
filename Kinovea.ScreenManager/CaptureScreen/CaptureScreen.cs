@@ -2016,6 +2016,7 @@ namespace Kinovea.ScreenManager
             Dictionary<PatternContext, string> context = new Dictionary<PatternContext, string>();
             context.Add(PatternContext.CaptureDirectory, Path.GetDirectoryName(path));
             context.Add(PatternContext.CaptureFilename, Path.GetFileName(path));
+            context.Add(PatternContext.CaptureKVA, Path.GetFileNameWithoutExtension(path) + ".kva");
 
             string fullCommand = Filenamer.GetCommandLine(command, context);
 

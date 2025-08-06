@@ -31,5 +31,6 @@ namespace Kinovea.ScreenManager
 
         CaptureDirectory,
         CaptureFilename,
+        CaptureKVA,
     }
 }
