@@ -1,5 +1,5 @@
 
-Kinovea 2024.1 - August 2024.
+Kinovea 2025.1 - TBD.
 
 Kinovea is a free and open source video annotation tool designed for motion analysis.
 It features utilities to capture, slow down, compare, annotate and measure motion in videos.
@@ -37,6 +37,46 @@ Project:
 
 Changelog:
 ----------
+
+2025.1 - TBD
+    Added - Image stabilization from a track.
+    Added - Sticker tool.
+    Added - Styling side panel.
+    Added - Tracking side panel.
+    Added - Circle tracking algorithm.
+    Added - Command to start all trackers at once.
+    Added - Support importing .trc files from Sports2D.
+    Added - Capture trigger via UDP.
+    Added - Menu to unload annotations from the active video or camera screen.
+    Improved - Export: restored the export of trajectories to text in GnuPlot format.
+    Improved - Export: allow saving of annotations from the capture screen.
+    Improved - Player: continue playback after a jump if we were playing.
+    Improved - Tracking: improved performances with parallel tracking.
+    Improved - Tracking: fixed sub pixel precision in template matching algorithm.
+    Improved - Tracking: use parabolic fit for refinement in template matching algorithm.
+    Improved - Annotations: changing the style of a drawing now automatically changes the style preset for the tool.
+    Improved - Annotations: angle tool now has an option to show the full circle.
+    Improved - Annotations: angle tool now has an arrow showing the direction in which the angle is measured.
+    Improved - Annotations: angle tool now supports a custom number of decimal places.
+    Improved - Annotations: support custom font size in drawings with mini labels (arrow variants, circle, marker, line variants, time segment).
+    Improved - Annotations: better track style options.
+    Improved - Annotations: better user interface for the key frame cards in the side panel.
+    Improved - Annotations: button to toggle the side panel visibility.
+    Improved - Annotations: label tool option to show a circle instead of an arrow.
+    Improved - Annotations: label tool supports changing the line size independently of the font size.
+    Improved - Camera motion: automatically create masks from rectangle objects.
+    Improved - Capture: camera discovery now uses a dynamic interval.
+    Fixed - Loading annotations in the capture screen wasn't working correctly.
+    Fixed - Resucitated drawings after undo of delete of a keyframe were not properly registered for tracking.
+    Fixed - Grabbing of lines perfectly vertical or horizontal wasn't working.
+    Fixed - Positions of drawings during rendering wasn't accurate inside the pixel.
+    Fixed - Reset of camera motion data wasn't working.
+    Fixed - Copy image to clipboard wasn't working correctly.
+    Fixed - Timeline position wasn't restored correctly after an export operation.
+    Fixed - Capture folders selectors were not working.
+    Fixed - Keyboard shortcuts weren't working for dual screen commands when the focus is on an individual screen.
+    Fixed - Exception when using the portable version from within a synchronized OneDrive directory.
+
 
 2024.1 - August 2024
     Added - Camera motion estimation video mode.
