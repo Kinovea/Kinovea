@@ -383,7 +383,7 @@
     <value>Сотые минуты</value>
   </data>
   <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve">
-    <value>Десятитысячные часа</value>
+    <value>Десятитысячная часть часа</value>
   </data>
   <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve">
     <value>Запись несжатого видео</value>
@@ -540,5 +540,14 @@
   </data>
   <data name="mnuBigHand" xml:space="preserve">
     <value>Большой указатель Рука</value>
+  </data>
+  <data name="mnuTranslate" xml:space="preserve">
+    <value>Перевести Kinovea…</value>
+  </data>
+  <data name="mnuDefaultPointer" xml:space="preserve">
+    <value>По умолчанию</value>
+  </data>
+  <data name="mnuPointer" xml:space="preserve">
+    <value>Указатель</value>
   </data>
 </root>
