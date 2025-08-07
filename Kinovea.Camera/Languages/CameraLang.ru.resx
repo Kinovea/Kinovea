@@ -129,4 +129,16 @@
   <data name="FormConfiguration_Properties_BayerFormatConversion" xml:space="preserve">
     <value>Преобразование фильтра Байера:</value>
   </data>
+  <data name="FormConfiguration_EnableHardwareCompression" xml:space="preserve">
+    <value>Включить аппаратное сжатие</value>
+  </data>
+  <data name="FormConfiguration_EnableSoftwareDemosaicing" xml:space="preserve">
+    <value>Включить демозаику программного обеспечения</value>
+  </data>
+  <data name="FormConfiguration_ResultingFramerate" xml:space="preserve">
+    <value>Результирующая частота кадров:</value>
+  </data>
+  <data name="FormConfiguration_ExportDeviceGenICamXMLFile" xml:space="preserve">
+    <value>Экспортировать XML-файл устройства GenICam</value>
+  </data>
 </root>
