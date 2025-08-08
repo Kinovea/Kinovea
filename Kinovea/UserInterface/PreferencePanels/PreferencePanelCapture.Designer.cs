@@ -76,6 +76,8 @@ namespace Kinovea.Root
       this.rbRecordingScheduled = new System.Windows.Forms.RadioButton();
       this.rbRecordingCamera = new System.Windows.Forms.RadioButton();
       this.tabTrigger = new System.Windows.Forms.TabPage();
+      this.cmbDefaultTriggerState = new System.Windows.Forms.ComboBox();
+      this.lblDefaultTriggerState = new System.Windows.Forms.Label();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
       this.nudUDPPort = new System.Windows.Forms.NumericUpDown();
       this.chkEnableUDPTrigger = new System.Windows.Forms.CheckBox();
@@ -495,6 +497,8 @@ namespace Kinovea.Root
       // 
       // tabTrigger
       // 
+      this.tabTrigger.Controls.Add(this.cmbDefaultTriggerState);
+      this.tabTrigger.Controls.Add(this.lblDefaultTriggerState);
       this.tabTrigger.Controls.Add(this.groupBox1);
       this.tabTrigger.Controls.Add(this.cmbTriggerAction);
       this.tabTrigger.Controls.Add(this.gbAudioTrigger);
@@ -508,6 +512,25 @@ namespace Kinovea.Root
       this.tabTrigger.TabIndex = 6;
       this.tabTrigger.Text = "Trigger";
       this.tabTrigger.UseVisualStyleBackColor = true;
+      // 
+      // cmbDefaultTriggerState
+      // 
+      this.cmbDefaultTriggerState.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cmbDefaultTriggerState.FormattingEnabled = true;
+      this.cmbDefaultTriggerState.Location = new System.Drawing.Point(205, 202);
+      this.cmbDefaultTriggerState.Name = "cmbDefaultTriggerState";
+      this.cmbDefaultTriggerState.Size = new System.Drawing.Size(254, 21);
+      this.cmbDefaultTriggerState.TabIndex = 62;
+      this.cmbDefaultTriggerState.SelectedIndexChanged += new System.EventHandler(this.cmbDefaultTriggerState_SelectedIndexChanged);
+      // 
+      // lblDefaultTriggerState
+      // 
+      this.lblDefaultTriggerState.AutoSize = true;
+      this.lblDefaultTriggerState.Location = new System.Drawing.Point(17, 205);
+      this.lblDefaultTriggerState.Name = "lblDefaultTriggerState";
+      this.lblDefaultTriggerState.Size = new System.Drawing.Size(102, 13);
+      this.lblDefaultTriggerState.TabIndex = 61;
+      this.lblDefaultTriggerState.Text = "Default trigger state:";
       // 
       // groupBox1
       // 
@@ -578,7 +601,7 @@ namespace Kinovea.Root
       // 
       this.cmbTriggerAction.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.cmbTriggerAction.FormattingEnabled = true;
-      this.cmbTriggerAction.Location = new System.Drawing.Point(205, 213);
+      this.cmbTriggerAction.Location = new System.Drawing.Point(205, 235);
       this.cmbTriggerAction.Name = "cmbTriggerAction";
       this.cmbTriggerAction.Size = new System.Drawing.Size(254, 21);
       this.cmbTriggerAction.TabIndex = 60;
@@ -684,7 +707,7 @@ namespace Kinovea.Root
       // lblTriggerAction
       // 
       this.lblTriggerAction.AutoSize = true;
-      this.lblTriggerAction.Location = new System.Drawing.Point(17, 216);
+      this.lblTriggerAction.Location = new System.Drawing.Point(17, 238);
       this.lblTriggerAction.Name = "lblTriggerAction";
       this.lblTriggerAction.Size = new System.Drawing.Size(75, 13);
       this.lblTriggerAction.TabIndex = 58;
@@ -693,7 +716,7 @@ namespace Kinovea.Root
       // lblQuietPeriod
       // 
       this.lblQuietPeriod.AutoSize = true;
-      this.lblQuietPeriod.Location = new System.Drawing.Point(17, 247);
+      this.lblQuietPeriod.Location = new System.Drawing.Point(18, 268);
       this.lblQuietPeriod.Name = "lblQuietPeriod";
       this.lblQuietPeriod.Size = new System.Drawing.Size(84, 13);
       this.lblQuietPeriod.TabIndex = 58;
@@ -702,7 +725,7 @@ namespace Kinovea.Root
       // nudQuietPeriod
       // 
       this.nudQuietPeriod.DecimalPlaces = 1;
-      this.nudQuietPeriod.Location = new System.Drawing.Point(205, 245);
+      this.nudQuietPeriod.Location = new System.Drawing.Point(205, 266);
       this.nudQuietPeriod.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -1475,5 +1498,7 @@ namespace Kinovea.Root
         private System.Windows.Forms.Label lblTriggerAction;
         private System.Windows.Forms.Label lblQuietPeriod;
         private System.Windows.Forms.NumericUpDown nudQuietPeriod;
+        private System.Windows.Forms.ComboBox cmbDefaultTriggerState;
+        private System.Windows.Forms.Label lblDefaultTriggerState;
     }
 }

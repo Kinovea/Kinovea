@@ -52,7 +52,7 @@ namespace Kinovea.Services
             get { return recordingMode; }
             set { recordingMode = value; }
         }
-        
+
         public int CaptureMemoryBuffer
         {
             get { return memoryBuffer; }

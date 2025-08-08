@@ -91,7 +91,8 @@ namespace Kinovea.Root
         private int udpPort = 8875;
         private int udpTriggerHits = 0;
         private UDPMonitor udpMonitor = new UDPMonitor();
-        private CaptureTriggerAction triggerAction;
+        private CaptureTriggerAction triggerAction = CaptureTriggerAction.RecordVideo;
+        private bool defaultTriggerArmed = false;
 
         // Naming and formats
         private CapturePathConfiguration capturePathConfiguration = new CapturePathConfiguration();
@@ -169,6 +170,7 @@ namespace Kinovea.Root
             udpPort = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.UDPPort;
             triggerQuietPeriod = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.TriggerQuietPeriod;
             triggerAction = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.TriggerAction;
+            defaultTriggerArmed = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.DefaultTriggerArmed;
 
             // Naming and formats
             capturePathConfiguration = PreferencesManager.CapturePreferences.CapturePathConfiguration.Clone();
@@ -331,6 +333,11 @@ namespace Kinovea.Root
             cmbTriggerAction.Items.Add(ScreenManagerLang.ToolTip_StartRecording);
             cmbTriggerAction.Items.Add(ScreenManagerLang.Generic_SaveImage);
             cmbTriggerAction.SelectedIndex = ((int)triggerAction < cmbTriggerAction.Items.Count) ? (int)triggerAction : 0;
+
+            lblDefaultTriggerState.Text = "Default trigger state:";
+            cmbDefaultTriggerState.Items.Add("Armed");
+            cmbDefaultTriggerState.Items.Add("Disarmed");
+            cmbDefaultTriggerState.SelectedIndex = defaultTriggerArmed ? 0 : 1;
         }
 
         private void InitTabImageNaming()
@@ -662,6 +669,12 @@ namespace Kinovea.Root
         {
             triggerAction = (CaptureTriggerAction)cmbTriggerAction.SelectedIndex;
         }
+
+        private void cmbDefaultTriggerState_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int index = cmbDefaultTriggerState.SelectedIndex;
+            defaultTriggerArmed = index == 0;
+        }
         #endregion
 
         #region Tab Automation
@@ -778,6 +791,7 @@ namespace Kinovea.Root
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.UDPPort = udpPort;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.TriggerQuietPeriod = triggerQuietPeriod;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.TriggerAction = triggerAction;
+            PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.DefaultTriggerArmed = defaultTriggerArmed;
 
             // Naming and formats
             PreferencesManager.CapturePreferences.CapturePathConfiguration = capturePathConfiguration;

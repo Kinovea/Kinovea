@@ -21,6 +21,7 @@ namespace Kinovea.Services
         public CaptureTriggerAction TriggerAction { get; set; }
         public float RecordingSeconds { get; set; }
         public bool IgnoreOverwrite { get; set; }
+        public bool DefaultTriggerArmed { get; set; }
 
         private static CaptureAutomationConfiguration defaultConfiguration;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -36,6 +37,7 @@ namespace Kinovea.Services
             TriggerAction = CaptureTriggerAction.RecordVideo;
             RecordingSeconds = 0;
             IgnoreOverwrite = false;
+            DefaultTriggerArmed = false;
         }
 
         static CaptureAutomationConfiguration()
@@ -86,6 +88,9 @@ namespace Kinovea.Services
                     case "IgnoreOverwriteWarning":
                         IgnoreOverwrite = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
                         break;
+                    case "DefaultTriggerArmed":
+                        DefaultTriggerArmed = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
+                        break;
                     default:
                         string outerXml = r.ReadOuterXml();
                         log.DebugFormat("Unparsed content in XML: {0}", outerXml);
@@ -107,6 +112,7 @@ namespace Kinovea.Services
             w.WriteElementString("TriggerAction", TriggerAction.ToString());
             w.WriteElementString("RecordingSeconds", RecordingSeconds.ToString("0.000", CultureInfo.InvariantCulture));
             w.WriteElementString("IgnoreOverwriteWarning", XmlHelper.WriteBoolean(IgnoreOverwrite));
+            w.WriteElementString("DefaultTriggerArmed", XmlHelper.WriteBoolean(DefaultTriggerArmed));
         }
     }
 }
