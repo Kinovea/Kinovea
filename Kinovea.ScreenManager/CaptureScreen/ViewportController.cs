@@ -19,9 +19,11 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using Kinovea.ScreenManager.Languages;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -30,11 +32,19 @@ namespace Kinovea.ScreenManager
     /// The viewport is the piece of UI that contains the image and the drawings, and manages the main user interaction with them.
     /// (The drawings should be able to go outside the image).
     /// </summary>
-    public class ViewportController : IDrawingHostView
+    public class ViewportController : IDisposable, IDrawingHostView
     {
         #region Events
         public event EventHandler DisplayRectangleUpdated;
-        public event EventHandler Poked;
+        public event EventHandler Activated;
+        public event EventHandler LoadAnnotationsAsked;
+        public event EventHandler SaveAnnotationsAsked;
+        public event EventHandler SaveAnnotationsAsAsked;
+        public event EventHandler UnloadAnnotationsAsked;
+        public event EventHandler CloseAsked;
+        //public event EventHandler KVAImported;
+        //public event EventHandler ExportImageAsked;
+        //public event EventHandler ExportVideoAsked;
 
         /// <summary>
         /// Event raised when we are moving an object from this viewport.
@@ -65,6 +75,11 @@ namespace Kinovea.ScreenManager
             get { return displayRectangle; }
         }
 
+        public Metadata Metadata
+        {
+            get { return metadata; }
+            set { metadata = value; }
+        }
         public MetadataRenderer MetadataRenderer
         {
             get { return metadataRenderer; }
@@ -95,26 +110,69 @@ namespace Kinovea.ScreenManager
         private Bitmap bitmap;
         private long timestamp;
         private Rectangle displayRectangle;
+        private Metadata metadata;
         private MetadataRenderer metadataRenderer;
         private MetadataManipulator metadataManipulator;
         private bool allowContextMenu = true;
 
+        #region Context menu
         private ContextMenuStrip popMenu = new ContextMenuStrip();
+        //private ToolStripMenuItem mnuBackground = new ToolStripMenuItem();
+        //private ToolStripMenuItem mnuCopyPic = new ToolStripMenuItem();
+        //private ToolStripMenuItem mnuPastePic = new ToolStripMenuItem();
+        //private ToolStripMenuItem mnuPasteDrawing = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuLoadAnnotations = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSaveAnnotations = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSaveAnnotationsAs = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuUnloadAnnotations = new ToolStripMenuItem();
+        //private ToolStripMenuItem mnuExportVideo = new ToolStripMenuItem();
+        //private ToolStripMenuItem mnuExportImage = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuCloseScreen = new ToolStripMenuItem();
+
+        private ContextMenuStrip popMenuDrawings = new ContextMenuStrip();
         private ToolStripMenuItem mnuConfigureDrawing = new ToolStripMenuItem();
         private ToolStripMenuItem mnuConfigureOpacity = new ToolStripMenuItem();
+        private ToolStripSeparator mnuSepDrawing = new ToolStripSeparator();
+        private ToolStripSeparator mnuSepDrawing2 = new ToolStripSeparator();
+        private ToolStripSeparator mnuSepDrawing3 = new ToolStripSeparator();
+        //private ToolStripMenuItem mnuCutDrawing = new ToolStripMenuItem();
+        //private ToolStripMenuItem mnuCopyDrawing = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDeleteDrawing = new ToolStripMenuItem();
         #endregion
+        #endregion
 
+        #region Construction/Destruction
         public ViewportController(bool allowContextMenu = true, bool dblClickZoom = true, bool showRecordingIndicator = true)
         {
             view = new Viewport(this, dblClickZoom, showRecordingIndicator);
             this.allowContextMenu = allowContextMenu;
-            InitializeContextMenu();
+
+            BuildContextMenus();
         }
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        ~ViewportController()
+        {
+            Dispose(false);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                view.SetContextMenu(null);
+
+                popMenu.Dispose();
+                popMenuDrawings.Dispose();
+            }
+        }
+        #endregion
 
         public void ReloadUICulture()
         {
-            ReloadMenuCulture();
+            ReloadMenusCulture();
         }
 
         public void Refresh()
@@ -205,17 +263,71 @@ namespace Kinovea.ScreenManager
 
         public void OnMouseRightDown(Point mouse, Point imageLocation, float imageZoom)
         {
-            if (metadataManipulator == null)
+            // This is the equivalent of SurfaceScreen_RightDown in the player.
+
+            if (metadataManipulator == null || metadata == null)
                 return;
 
             Poke();
+
             if (!allowContextMenu)
                 return;
 
-            metadataManipulator.HitTest(mouse, imageLocation, imageZoom);
-            PrepareContextMenu();
-            view.SetContextMenu(popMenu);
+            metadata.DeselectAll();
+            AbstractDrawing hitDrawing = null;
+
+            IImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
+            PointF mouseInImage = transformer.Untransform(mouse);
+            int fixedKeyframe = 0;
+            long fixedTimestamp = 0;
+            
+            if (metadata.IsOnDrawing(fixedKeyframe, mouseInImage, fixedTimestamp))
+            {
+                AbstractDrawing drawing = metadata.HitDrawing;
+                PrepareDrawingContextMenu(drawing, popMenuDrawings);
+
+                popMenuDrawings.Items.Add(mnuDeleteDrawing);
+                view.SetContextMenu(popMenuDrawings);
+            }
+            else if ((hitDrawing = metadata.IsOnDetachedDrawing(mouseInImage, fixedTimestamp)) != null)
+            {
+                if (metadata.IsChronoLike(hitDrawing))
+                {
+                    // Unsupported.
+                }
+                else if (hitDrawing is DrawingTrack)
+                {
+                    // Unsupported.
+                }
+                else if (hitDrawing is DrawingCoordinateSystem || hitDrawing is DrawingTestGrid)
+                {
+                    PrepareDrawingContextMenu(hitDrawing, popMenuDrawings);
+                    view.SetContextMenu(popMenuDrawings);
+                }
+                else if (hitDrawing is AbstractMultiDrawing)
+                {
+                    // Unsupported for now.
+                }
+            }
+            else
+            {
+                PrepareBackgroundContextMenu(popMenu);
+
+                //mnuBackground.Visible = true;
+                //mnuBackground.Enabled = true;
+                //mnuPasteDrawing.Visible = true;
+                //mnuPasteDrawing.Enabled = DrawingClipboard.HasContent;
+                //mnuPastePic.Visible = true;
+                //mnuPastePic.Enabled = Clipboard.ContainsImage();
+
+                view.SetContextMenu(popMenu);
+            }
         }
+
+
+
+
+
 
         public Cursor GetCursor(float imageZoom)
         {
@@ -268,19 +380,57 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Private methods
-        private void InitializeContextMenu()
+        private void BuildContextMenus()
         {
+            // Attach the event handlers and build the menus.
+
+            // Background context menu.
+            mnuLoadAnnotations.Image = Properties.Resources.notes2_16;
+            mnuSaveAnnotations.Image = Properties.Resources.filesave;
+            mnuSaveAnnotationsAs.Image = Properties.Resources.filesave;
+            mnuUnloadAnnotations.Image = Properties.Resources.delete_notes;
+            mnuCloseScreen.Image = Properties.Resources.closeplayer;
+            
+            mnuLoadAnnotations.Click += (s, e) => LoadAnnotationsAsked?.Invoke(this, EventArgs.Empty);
+            mnuSaveAnnotations.Click += (s, e) => SaveAnnotationsAsked?.Invoke(this, EventArgs.Empty);
+            mnuSaveAnnotationsAs.Click += (s, e) => SaveAnnotationsAsAsked?.Invoke(this, EventArgs.Empty);
+            mnuUnloadAnnotations.Click += (s, e) => UnloadAnnotationsAsked?.Invoke(this, EventArgs.Empty);
+            mnuCloseScreen.Click += (s, e) => CloseAsked?.Invoke(this, EventArgs.Empty);
+            
+            // Drawings context menu.
             mnuConfigureDrawing.Click += mnuConfigureDrawing_Click;
             mnuConfigureDrawing.Image = Properties.Drawings.configure;
-            mnuConfigureOpacity.Click += mnuConfigureOpacity_Click;
-            mnuConfigureOpacity.Image = Properties.Drawings.persistence;
+            //mnuConfigureOpacity.Click += mnuConfigureOpacity_Click;
+            //mnuConfigureOpacity.Image = Properties.Drawings.persistence;
             mnuDeleteDrawing.Click += mnuDeleteDrawing_Click;
             mnuDeleteDrawing.Image = Properties.Drawings.delete;
-            ReloadMenuCulture();
+
+            // The right context menu and its content will be choosen on MouseDown.
+            view.SetContextMenu(popMenu);
+
+            // Load the menu labels.
+            ReloadMenusCulture();
         }
 
-        private void ReloadMenuCulture()
+        private void ReloadMenusCulture()
         {
+            // Background context menu
+            //mnuBackground.Text = ScreenManagerLang.PlayerScreenUserInterface_Background;
+            //mnuPasteDrawing.Text = ScreenManagerLang.mnuPasteDrawing;
+            //mnuPasteDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.PasteDrawing);
+            mnuLoadAnnotations.Text = ScreenManagerLang.mnuLoadAnalysis;
+            mnuSaveAnnotations.Text = ScreenManagerLang.Generic_SaveKVA;
+            mnuSaveAnnotationsAs.Text = ScreenManagerLang.Generic_SaveKVAAs;
+            mnuUnloadAnnotations.Text = "Unload annotations";
+            //mnuExportVideo.Text = ScreenManagerLang.Generic_ExportVideo;
+            //mnuExportImage.Text = ScreenManagerLang.Generic_SaveImage;
+            //mnuCopyPic.Text = ScreenManagerLang.mnuCopyImageToClipboard;
+            //mnuCopyPic.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.CopyImage);
+            //mnuPastePic.Text = ScreenManagerLang.mnuPasteImage;
+            mnuCloseScreen.Text = ScreenManagerLang.mnuCloseScreen;
+            mnuCloseScreen.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.Close);
+
+            // Drawings context menu
             mnuConfigureDrawing.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
             mnuConfigureOpacity.Text = ScreenManagerLang.Generic_Opacity;
             mnuDeleteDrawing.Text = ScreenManagerLang.mnuDeleteDrawing;
@@ -288,60 +438,96 @@ namespace Kinovea.ScreenManager
 
         private void Poke()
         {
-            if (Poked != null)
-                Poked(this, EventArgs.Empty);
+            if (Activated != null)
+                Activated(this, EventArgs.Empty);
         }
-        private void PrepareContextMenu()
+        
+        private void PrepareBackgroundContextMenu(ContextMenuStrip popMenu)
+        {
+            popMenu.Items.Clear();
+            popMenu.Items.AddRange(new ToolStripItem[]
+            {
+                //mnuBackground,
+                //new ToolStripSeparator(),
+                //mnuCopyPic,
+                //mnuPastePic,
+                //mnuPasteDrawing,
+                //new ToolStripSeparator(),
+                //new ToolStripSeparator(),
+                mnuLoadAnnotations,
+                mnuSaveAnnotations,
+                mnuSaveAnnotationsAs,
+                mnuUnloadAnnotations,
+                new ToolStripSeparator(),
+                //mnuExportVideo,
+                //mnuExportImage,
+                //new ToolStripSeparator(),
+                mnuCloseScreen
+            });
+        }
+
+        private void PrepareDrawingContextMenu(AbstractDrawing drawing, ContextMenuStrip popMenu)
         {
             popMenu.Items.Clear();
 
-            AbstractDrawing drawing = metadataManipulator.HitDrawing;
-            if (drawing == null)
-            {
-                // TODO: general context menu at screen level. (close, snapshot, settings.)
+            // Generic menus based on the drawing capabilities: configuration (style), visibility, tracking.
+            if (!metadata.DrawingInitializing)
+                PrepareDrawingContextMenuCapabilities(drawing, popMenu);
+
+            // Custom menu handlers implemented by the drawing itself.
+            // These change the drawing core state. (ex: angle orientation, measurement display option, start/stop chrono, etc.).
+            bool hasExtraMenus = AddDrawingCustomMenus(drawing, popMenu.Items);
+
+            // "Goto parent keyframe" menu: not implemented.
+
+            // Below the custom menus and the goto keyframe we have the generic copy-paste and the delete menu.
+            // Some singleton drawings cannot be deleted nor copy-pasted, so they don't need this.
+            if (drawing is DrawingCoordinateSystem || drawing is DrawingTestGrid)
                 return;
-            }
-            else
+
+            popMenu.Items.Add(mnuSepDrawing2);
+
+            if (drawing.IsCopyPasteable)
             {
-                PrepareContextMenuDrawing(drawing);
+                //popMenuDrawings.Items.Add(mnuCutDrawing);
+                //popMenuDrawings.Items.Add(mnuCopyDrawing);
+                //popMenuDrawings.Items.Add(mnuSepDrawing3);
             }
         }
 
-        private void PrepareContextMenuDrawing(AbstractDrawing drawing)
+        private void PrepareDrawingContextMenuCapabilities(AbstractDrawing drawing, ContextMenuStrip popMenu)
         {
-            if((drawing.Caps & DrawingCapabilities.ConfigureColor) == DrawingCapabilities.ConfigureColor ||
-               (drawing.Caps & DrawingCapabilities.ConfigureColorSize) == DrawingCapabilities.ConfigureColorSize)
+            if ((drawing.Caps & DrawingCapabilities.ConfigureColor) == DrawingCapabilities.ConfigureColor ||
+                   (drawing.Caps & DrawingCapabilities.ConfigureColorSize) == DrawingCapabilities.ConfigureColorSize)
             {
                 mnuConfigureDrawing.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
                 popMenu.Items.Add(mnuConfigureDrawing);
+                popMenu.Items.Add(mnuSepDrawing);
             }
-            
-            if((drawing.Caps & DrawingCapabilities.Opacity) == DrawingCapabilities.Opacity)
-                popMenu.Items.Add(mnuConfigureOpacity);
-            
-            popMenu.Items.Add(new ToolStripSeparator());
 
-            bool hasExtraMenus = AddDrawingCustomMenus(drawing, popMenu.Items);
-
-            if (metadataManipulator.HitKeyframe != null)
-            {
-                if (hasExtraMenus)
-                    popMenu.Items.Add(new ToolStripSeparator());
-
-                popMenu.Items.Add(mnuDeleteDrawing);
-            }
+            // The following are in the player but not currently implemented in capture.
+            // - Visibility menus for fading drawings.
+            // - Visibility for transparent drawings (bitmaps).
+            // - Tracking.
         }
+
         private bool AddDrawingCustomMenus(AbstractDrawing drawing, ToolStripItemCollection menuItems)
         {
-            bool hasExtraMenu = (drawing.ContextMenu != null && drawing.ContextMenu.Count > 0);
+            List<ToolStripItem> extraMenu = drawing.ContextMenu;
+
+            bool hasExtraMenu = (extraMenu != null && extraMenu.Count > 0);
             if (!hasExtraMenu)
                 return false;
 
             foreach (ToolStripItem tsmi in drawing.ContextMenu)
             {
                 ToolStripMenuItem menuItem = tsmi as ToolStripMenuItem;
-                
+
                 // Inject a dependency on this screen into the drawing.
+                // Since the drawing now owns a piece of the UI, it may need to call back into functions here.
+                // This is used to invalidate the view and complete operations that are normally handled here and
+                // require calls to other objects that the drawing itself doesn't have access to, like when the
+                // polyline drawing handles InitializeEnd and needs to remove the last point added to tracking.
                 tsmi.Tag = this;
 
                 // Also inject for all the sub menus.
@@ -359,11 +545,9 @@ namespace Kinovea.ScreenManager
 
             return true;
         }
+        
         private void LabelAdded(object sender, DrawingEventArgs e)
         {
-            //AbstractDrawing drawing, int keyframeIndex)
-            
-            
             DrawingText label = e.Drawing as DrawingText;
             if(label == null)
                 return;
@@ -373,36 +557,59 @@ namespace Kinovea.ScreenManager
             label.EditBox.BringToFront();
             label.EditBox.Focus();
         }
-        
+        #endregion
+
         #region Menu handlers
         private void mnuConfigureDrawing_Click(object sender, EventArgs e)
         {
-            IDecorable drawing = metadataManipulator.HitDrawing as IDecorable;
-            if(drawing == null || drawing.StyleElements == null || drawing.StyleElements.Elements.Count == 0)
+            IDecorable decorable = metadata.HitDrawing as IDecorable;
+            if(decorable == null || decorable.StyleElements == null || decorable.StyleElements.Elements.Count == 0)
                 return;
 
-            metadataManipulator.ConfigureDrawing(metadataManipulator.HitDrawing, Refresh);
-            
+            AbstractDrawing drawing = metadata.HitDrawing;
+            AbstractDrawingManager owner = metadata.HitDrawingOwner;
+            HistoryMementoModifyDrawing memento = null;
+            if (owner != null)
+                memento = new HistoryMementoModifyDrawing(metadata, owner.Id, drawing.Id, drawing.Name, SerializationFilter.Style);
+
+            FormConfigureDrawing2 fcd = new FormConfigureDrawing2(decorable, Refresh);
+            FormsHelper.Locate(fcd);
+            fcd.ShowDialog();
+
+            if (fcd.DialogResult == DialogResult.OK)
+            {
+                if (memento != null)
+                {
+                    memento.UpdateCommandName(drawing.Name);
+                    metadata.HistoryStack.PushNewCommand(memento);
+                }
+
+                // Update the style preset for the parent tool of this drawing
+                // so the next time we use this tool it will have the style we just set.
+                ToolManager.SetToolStyleFromDrawing(metadata.HitDrawing, decorable.StyleElements);
+                ToolManager.SavePresets();
+                InvalidateCursor();
+            }
+
+            fcd.Dispose();
+
             Refresh();
         }
-        private void mnuConfigureOpacity_Click(object sender, EventArgs e)
-        {
-            /*AbstractDrawing drawing = metadataManipulator.HitDrawing;
-            
-            formConfigureOpacity fco = new formConfigureOpacity(drawing, pbSurfaceScreen);
-            FormsHelper.Locate(fco);
-            fco.ShowDialog();
-            fco.Dispose();
-            Refresh();*/
-        }
+        
         private void mnuDeleteDrawing_Click(object sender, EventArgs e)
         {
-            metadataManipulator.DeleteHitDrawing();
+            Keyframe keyframe = metadata.HitKeyframe;
+            AbstractDrawing drawing = metadata.HitDrawing;
+
+            if (keyframe == null || drawing == null)
+                return;
+
+            HistoryMemento memento = new HistoryMementoDeleteDrawing(metadata, keyframe.Id, drawing.Id, drawing.Name);
+            metadata.DeleteDrawing(keyframe.Id, drawing.Id);
+            metadata.HistoryStack.PushNewCommand(memento);
+
             Refresh();
         }
-        #endregion
-        
-        
         #endregion
     }
 }

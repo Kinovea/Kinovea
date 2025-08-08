@@ -211,7 +211,7 @@ namespace Kinovea.ScreenManager
         // Static
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
-        
+
         public CaptureScreen()
         {
             // There are several nested lifetimes with symetric setup/teardown methods:
@@ -222,29 +222,27 @@ namespace Kinovea.ScreenManager
 
             log.Debug("Constructing a CaptureScreen.");
             view = new CaptureScreenView(this);
-            view.DualCommandReceived += OnDualCommandReceived;
-            
             viewportController = new ViewportController();
-            viewportController.DisplayRectangleUpdated += ViewportController_DisplayRectangleUpdated;
-            viewportController.Poked += viewportController_Poked;
+
+            BindCommands();
 
             view.SetViewport(viewportController.View);
             view.SetCapturedFilesView(capturedFiles.View);
-            
+
             InitializeCaptureFilenames();
-            InitializeTools();            
+            InitializeTools();
             InitializeMetadata();
 
             recordingMode = PreferencesManager.CapturePreferences.RecordingMode;
-            
+
             view.UpdateArmedStatus(triggerArmed);
             UpdateRecordingIndicator();
             UpdateArmableTrigger();
 
             view.SetToolbarView(drawingToolbarPresenter.View);
-            
+
             IntPtr forceHandleCreation = dummy.Handle; // Needed to show that the main thread "owns" this Control.
-            
+
             nonGrabbingInteractionTimer.Interval = 40;
             nonGrabbingInteractionTimer.Tick += NonGrabbingInteractionTimer_Tick;
             displayTimer.Tick += displayTimer_Tick;
@@ -253,6 +251,25 @@ namespace Kinovea.ScreenManager
             SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
 
             shortId = this.id.ToString().Substring(0, 4);
+        }
+
+        private void BindCommands()
+        {
+            // Forwarded to screen manager via AbstractScreen.
+            viewportController.Activated += (s, e) => RaiseActivated(e);
+            view.DualCommandReceived += (s, e) => RaiseDualCommandReceived(e);
+            viewportController.LoadAnnotationsAsked += (s, e) => RaiseLoadAnnotationsAsked(e);
+            viewportController.CloseAsked += (s, e) => RaiseCloseAsked(EventArgs.Empty);
+
+            // Forwarded to screen manager specifically from CaptureScreen.
+
+            // Implemented at AbstractScreen level.
+            viewportController.SaveAnnotationsAsked += (s, e) => SaveAnnotations();
+            viewportController.SaveAnnotationsAsAsked += (s, e) => SaveAnnotationsAs();
+            viewportController.UnloadAnnotationsAsked += (s, e) => UnloadAnnotations();
+
+            // Implemented locally.
+            viewportController.DisplayRectangleUpdated += ViewportController_DisplayRectangleUpdated;
         }
 
         private void SystemEvents_PowerModeChanged(object sender, PowerModeChangedEventArgs e)
@@ -381,7 +398,6 @@ namespace Kinovea.ScreenManager
 
             if (view != null)
             {
-                view.DualCommandReceived -= OnDualCommandReceived;
                 view.BeforeClose();
                 view = null;
             }
@@ -447,23 +463,32 @@ namespace Kinovea.ScreenManager
         private void MetadataWatcher_Changed(object sender, FileSystemEventArgs e)
         {
             // This runs in the watcher thread.
-
             if (dummy.InvokeRequired)
-                dummy.BeginInvoke((Action)delegate { ReloadKVA(e.FullPath); });
+                dummy.BeginInvoke((Action)delegate { ReloadKVA(); });
         }
 
-        private void ReloadKVA(string path)
+        /// <summary>
+        /// Unload the current annotations and replace them with the ones coming from
+        /// the last exported video.
+        /// This supports the scenario where the annotations for the next capture are
+        /// set up from the player screen.
+        /// This is not a merge but a full replacement.
+        /// </summary>
+        private void ReloadKVA()
         {
-            // Reload the KVA.
-            // This is in the context of exporting a KVA from capture and modifying it from the player.
-            // We detect the change and want to update the drawings here.
-            // This is not a merge but a replacement.
-            if (path != lastExportedMetadata)
+            if (!File.Exists(lastExportedMetadata))
                 return;
-
-            // Reset the currently loaded metadata.
+            
             metadata.Unload();
-            LoadKVA(path);
+            LoadKVA(lastExportedMetadata);
+
+            // Reset the metadata kva path to empty to force "save as".
+            // We don't want changes in the capture to overwrite those of the player side.
+            // Once the kva is loaded in capture it should live its own life.
+            metadata.LastKVAPath = string.Empty;
+
+            // TODO: verify we have done a reference content hash here.
+            // Closing the screen after reload from player should trigger save as.
         }
 
         private void Metadata_KVAImported()
@@ -474,20 +499,13 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Methods called from the view. These could also be events or commands.
-        public void View_SetAsActive()
-        {
-            OnActivated(EventArgs.Empty);
-        }
         public void View_Close()
         {
-            OnCloseAsked(EventArgs.Empty);
+            RaiseCloseAsked(EventArgs.Empty);
         }
         public void View_Configure()
         {
             ConfigureCamera();
-        }
-        public void View_ConfigureComposite()
-        {
         }
         public void View_ToggleGrabbing()
         {
@@ -614,7 +632,7 @@ namespace Kinovea.ScreenManager
             UpdateTitle();
             cameraLoaded = true;
 
-            OnActivated(EventArgs.Empty);
+            RaiseActivated(EventArgs.Empty);
 
             if (connect)
                 Connect();
@@ -956,10 +974,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Private methods
-        private void OnDualCommandReceived(object sender, EventArgs<HotkeyCommand> e)
-        {
-            OnDualCommandReceived(e);
-        }
         private void ToggleConnection()
         {
             if (cameraConnected)
@@ -982,6 +996,7 @@ namespace Kinovea.ScreenManager
             return PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger ||
                    PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableUDPTrigger;
         }
+        
         /// <summary>
         /// Update the arming button based on preferences.
         /// Does not raise toast message.
@@ -1298,11 +1313,6 @@ namespace Kinovea.ScreenManager
             CameraTypeManager.UpdatedCameraSummary(cameraSummary);
         }
 
-        private void viewportController_Poked(object sender, EventArgs e)
-        {
-            View_SetAsActive();
-        }
-
         private void InitializeMetadata()
         {
             metadata = new Metadata(historyStack, TimeStampsToTimecode);
@@ -1325,6 +1335,7 @@ namespace Kinovea.ScreenManager
             
             viewportController.MetadataRenderer = metadataRenderer;
             viewportController.MetadataManipulator = metadataManipulator;
+            viewportController.Metadata = metadata;
         }
 
         public void Metadata_OnTrackableDrawingAdded(ITrackable trackableDrawing)
@@ -1370,11 +1381,6 @@ namespace Kinovea.ScreenManager
             // refresh for cursor.
         }
         
-        private void MagnifierTool_Click(object sender, EventArgs e)
-        {
-        
-        }
-
         private double GetMonitorFramerate()
         {
             // Based on https://github.com/rickbrew/RefreshRateWpf/blob/master/RefreshRateWpfApp/MainWindow.xaml.cs
@@ -1814,10 +1820,15 @@ namespace Kinovea.ScreenManager
             PreferencesManager.FileExplorerPreferences.AddRecentCapturedFile(finalFilename);
             NotificationCenter.RaiseRefreshFileExplorer(this, false);
 
+            //--------------------------------------------
+            // FIXME: restore this option later.
+            // For now we disable the metadata watcher.
+            //--------------------------------------------
             // Start watching changes in the exported KVA.
             // We do this before running the post-recording command in case it wants to modify the data.
-            if (!string.IsNullOrEmpty(lastExportedMetadata))
-                metadataWatcher.Start(lastExportedMetadata);
+            //if (!string.IsNullOrEmpty(lastExportedMetadata))
+            //    metadataWatcher.Start(lastExportedMetadata);
+            //--------------------------------------------
 
             // Execute post-recording command.
             string command = PreferencesManager.CapturePreferences.PostRecordCommand;

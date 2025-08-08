@@ -39,7 +39,6 @@ namespace Kinovea.ScreenManager
         #region Events
         public event EventHandler OpenVideoAsked;
         public event EventHandler OpenReplayWatcherAsked;
-        public event EventHandler OpenAnnotationsAsked;
         public event EventHandler Loaded;
         public event EventHandler SpeedChanged;
         public event EventHandler HighSpeedFactorChanged;
@@ -387,23 +386,37 @@ namespace Kinovea.ScreenManager
         private void BindCommands()
         {
             // Provides implementation for behaviors triggered from the view, either as commands or as event handlers.
+
+            // Forwarded to screen manager via AbstractScreen.
+            view.SetAsActiveScreen += (s, e) => RaiseActivated(e);
+            view.DualCommandReceived += (s, e) => RaiseDualCommandReceived(e);
+            view.LoadAnnotationsAsked += (s, e) => RaiseLoadAnnotationsAsked(e);
+            view.CloseAsked += (s, e) => RaiseCloseAsked(e);
+
+            // Forwarded to screen manager specifically from PlayerScreen.
             view.OpenVideoAsked += (s, e) => OpenVideoAsked?.Invoke(this, e);
             view.OpenReplayWatcherAsked += (s, e) => OpenReplayWatcherAsked?.Invoke(this, e);
-            view.OpenAnnotationsAsked += (s, e) => OpenAnnotationsAsked?.Invoke(this, e);
-            view.CloseAsked += View_CloseAsked;
+            view.Loaded += (s, e) => Loaded?.Invoke(this, e);
+            view.SelectionChanged += (s, e) => SelectionChanged?.Invoke(this, e);
+            view.FilterExited += (s, e) => FilterExited?.Invoke(this, e);
+            view.ResetAsked += (s, e) => ResetAsked?.Invoke(this, e);
+
+            // Forwarded to dual player
+            view.ImageChanged += (s, e) => ImageChanged(this, e);
+
+            // Implemented at AbstractScreen level.
+            view.SaveAnnotationsAsked += (s, e) => SaveAnnotations();
+            view.SaveAnnotationsAsAsked += (s, e) => SaveAnnotationsAs();
+            view.UnloadAnnotationsAsked += (s, e) => UnloadAnnotations();
+
+            // Implemented locally.
             view.StopWatcherAsked += View_StopWatcherAsked;
             view.StartWatcherAsked += View_StartWatcherAsked;
-            view.SetAsActiveScreen += View_SetAsActiveScreen;
             view.SpeedChanged += View_SpeedChanged;
             view.TimeOriginChanged += View_TimeOriginChanged;
             view.KVAImported += View_KVAImported;
             view.PlayStarted += View_PlayStarted;
             view.PauseAsked += View_PauseAsked;
-            view.Loaded += (s, e) => Loaded?.Invoke(this, e);
-            view.SelectionChanged += (s, e) => SelectionChanged?.Invoke(this, e);
-            view.ImageChanged += View_ImageChanged;
-            view.ResetAsked += View_ResetAsked;
-            view.FilterExited += (s, e) => FilterExited?.Invoke(this, e);
 
             // Requests for metadata modification coming from the view.
             // These should push a memento on the history stack.
@@ -413,7 +426,6 @@ namespace Kinovea.ScreenManager
             view.DrawingDeleting += View_DrawingDeleting;
             view.MultiDrawingItemAdding += View_MultiDrawingItemAdding;
             view.MultiDrawingItemDeleting += View_MultiDrawingItemDeleting;
-            view.DualCommandReceived += (s, e) => OnDualCommandReceived(e);
 
             // Export requests coming from the view.
             view.ExportImageAsked += (s, e) => ExportImages(ImageExportFormat.Image);
@@ -435,11 +447,6 @@ namespace Kinovea.ScreenManager
         }
 
         #region General events handlers
-        private void View_CloseAsked(object sender, EventArgs e)
-        {
-            OnCloseAsked(EventArgs.Empty);
-        }
-
         private void View_StopWatcherAsked(object sender, EventArgs e)
         {
             if (!replayWatcher.IsEnabled)
@@ -472,12 +479,7 @@ namespace Kinovea.ScreenManager
 
             StartReplayWatcher(sdp, currentFile);
         }
-
-        public void View_SetAsActiveScreen(object sender, EventArgs e)
-        {
-            OnActivated(EventArgs.Empty);
-        }
-
+        
         public void View_SpeedChanged(object sender, EventArgs e)
         {
             if (SpeedChanged != null)
@@ -509,18 +511,6 @@ namespace Kinovea.ScreenManager
         {
             if (PauseAsked != null)
                 PauseAsked(this, EventArgs.Empty);
-        }
-        
-        public void View_ImageChanged(object sender, EventArgs<Bitmap> e)
-        {
-            if (ImageChanged != null)
-                ImageChanged(this, e);
-        }
-        
-        public void View_ResetAsked(object sender, EventArgs e)
-        {
-            if (ResetAsked != null)
-                ResetAsked(this, e);
         }
         #endregion
 
@@ -865,7 +855,7 @@ namespace Kinovea.ScreenManager
 
         public void AfterLoad()
         {
-            OnActivated(EventArgs.Empty);
+            RaiseActivated(EventArgs.Empty);
 
             // Note: player.StartReplayWatcher will update the launch descriptor with the current value of the speed slider.
             // This is to support carrying over user defined speed when swapping with the latest video.

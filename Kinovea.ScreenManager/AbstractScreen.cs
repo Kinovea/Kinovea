@@ -29,33 +29,27 @@ namespace Kinovea.ScreenManager
     {
         #region Events
         public event EventHandler Activated;
-        protected virtual void OnActivated(EventArgs e)
-        {
-            RaiseEvent(Activated, e);
-        }
-        
-        public event EventHandler CloseAsked;
-        protected virtual void OnCloseAsked(EventArgs e)
-        {
-            RaiseEvent(CloseAsked, e);
-        }
-
+        public event EventHandler LoadAnnotationsAsked;
         public event EventHandler<EventArgs<HotkeyCommand>> DualCommandReceived;
-        protected virtual void OnDualCommandReceived(EventArgs<HotkeyCommand> e)
+        public event EventHandler CloseAsked;
+
+        protected virtual void RaiseActivated(EventArgs e)
         {
-            RaiseEvent(DualCommandReceived, e);
+            Activated?.Invoke(this, e);
         }
 
-        private void RaiseEvent(EventHandler invoker, EventArgs e)
+        protected virtual void RaiseLoadAnnotationsAsked(EventArgs e)
         {
-            if(invoker != null)
-                invoker(this, e);
+            LoadAnnotationsAsked?.Invoke(this, e);
         }
 
-        private void RaiseEvent<T>(EventHandler<T> invoker, T e) where T : EventArgs
+        protected virtual void RaiseDualCommandReceived(EventArgs<HotkeyCommand> e)
         {
-            if (invoker != null)
-                invoker(this, e);
+            DualCommandReceived?.Invoke(this, e);
+        }
+        protected virtual void RaiseCloseAsked(EventArgs e)
+        {
+            CloseAsked?.Invoke(this, e);
         }
         #endregion
 
@@ -189,7 +183,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Trigger the save or save as dialog for the screen's metadata.
         /// </summary>
-        public void SaveKVA()
+        public void SaveAnnotations()
         {
             if (this.Metadata == null)
             {
@@ -204,7 +198,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Trigger the save as dialog for the screen's metadata.
         /// </summary>
-        public void SaveKVAAs()
+        public void SaveAnnotationsAs()
         {
             if (this.Metadata == null)
             {
@@ -216,6 +210,10 @@ namespace Kinovea.ScreenManager
             serializer.UserSaveAs(this.Metadata, this.FilePath);
         }
 
+        /// <summary>
+        /// Reset the modifiable data but not the data related to the video or camera.
+        /// This is used when unloading the metadata to start afresh, in the same video/camera.
+        /// </summary>
         public void UnloadAnnotations()
         {
             if (this.Metadata == null)

@@ -844,6 +844,24 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Event handlers for screens
+        private void Screen_Activated(object sender, EventArgs e)
+        {
+            AbstractScreen screen = sender as AbstractScreen;
+            SetActiveScreen(screen);
+        }
+        private void Screen_LoadAnnotationsAsked(object sender, EventArgs e)
+        {
+            int index = sender == screenList[0] ? 0 : 1;
+            LoadAnnotations(index);
+        }
+        private void Screen_DualCommandReceived(object sender, EventArgs<HotkeyCommand> e)
+        {
+            // A screen has received a hotkey that must be handled at manager level.
+            if (dualPlayer.Active)
+                dualPlayer.ExecuteDualCommand(e.Value);
+            else if (dualCapture.Active)
+                dualCapture.ExecuteDualCommand(e.Value);
+        }
         private void Screen_CloseAsked(object sender, EventArgs e)
         {
             AbstractScreen screen = sender as AbstractScreen;
@@ -859,20 +877,6 @@ namespace Kinovea.ScreenManager
 
             AfterSharedBufferChange();
         }
-        private void Screen_Activated(object sender, EventArgs e)
-        {
-            AbstractScreen screen = sender as AbstractScreen;
-            SetActiveScreen(screen);
-        }
-        private void Screen_DualCommandReceived(object sender, EventArgs<HotkeyCommand> e)
-        {
-            // A screen has received a hotkey that must be handled at manager level.
-            if (dualPlayer.Active)
-                dualPlayer.ExecuteDualCommand(e.Value);
-            else if (dualCapture.Active)
-                dualCapture.ExecuteDualCommand(e.Value);
-        }
-
         private void Player_OpenVideoAsked(object sender, EventArgs e)
         {
             string title = ScreenManagerLang.mnuOpenVideo;
@@ -899,11 +903,6 @@ namespace Kinovea.ScreenManager
             screenDescription.Stretch = true;
             screenDescription.SpeedPercentage = PreferencesManager.PlayerPreferences.DefaultReplaySpeed;
             LoaderVideo.LoadVideoInScreen(this, path, index, screenDescription);
-        }
-        private void Player_OpenAnnotationsAsked(object sender, EventArgs e)
-        {
-            int index = sender == screenList[0] ? 0 : 1;
-            LoadAnnotations(index);
         }
         private void Player_Loaded(object sender, EventArgs e)
         {
@@ -1973,7 +1972,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             DoStopPlaying();
-            activeScreen.SaveKVA();
+            activeScreen.SaveAnnotations();
         }
 
         private void mnuSaveAsOnClick(object sender, EventArgs e)
@@ -1982,7 +1981,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             DoStopPlaying();
-            activeScreen.SaveKVAAs();
+            activeScreen.SaveAnnotationsAs();
         }
 
         // TODO: save as default.
@@ -3151,7 +3150,7 @@ namespace Kinovea.ScreenManager
             {
                 // Yes: save first, then we can carry on.
                 DoStopPlaying();
-                screen.SaveKVA();
+                screen.SaveAnnotations();
                 return true;
             }
         }
@@ -3173,9 +3172,10 @@ namespace Kinovea.ScreenManager
         }
         private void AddScreenEventHandlers(AbstractScreen screen)
         {
-            screen.CloseAsked += Screen_CloseAsked;
             screen.Activated += Screen_Activated;
+            screen.LoadAnnotationsAsked += Screen_LoadAnnotationsAsked;
             screen.DualCommandReceived += Screen_DualCommandReceived;
+            screen.CloseAsked += Screen_CloseAsked;
 
             if (screen is PlayerScreen)
                 AddPlayerScreenEventHandlers(screen as PlayerScreen);
@@ -3186,7 +3186,6 @@ namespace Kinovea.ScreenManager
         {
             screen.OpenVideoAsked += Player_OpenVideoAsked;
             screen.OpenReplayWatcherAsked += Player_OpenReplayWatcherAsked;
-            screen.OpenAnnotationsAsked += Player_OpenAnnotationsAsked;
             screen.Loaded += Player_Loaded;
             screen.SelectionChanged += Player_SelectionChanged;
             screen.KVAImported += Player_KVAImported;
@@ -3199,9 +3198,10 @@ namespace Kinovea.ScreenManager
         }
         private void RemoveScreenEventHandlers(AbstractScreen screen)
         {
-            screen.CloseAsked -= Screen_CloseAsked;
             screen.Activated -= Screen_Activated;
+            screen.LoadAnnotationsAsked -= Screen_LoadAnnotationsAsked;
             screen.DualCommandReceived -= Screen_DualCommandReceived;
+            screen.CloseAsked -= Screen_CloseAsked;
 
             if (screen is PlayerScreen)
                 RemovePlayerScreenEventHandlers(screen as PlayerScreen);
@@ -3213,7 +3213,6 @@ namespace Kinovea.ScreenManager
         {
             screen.OpenVideoAsked -= Player_OpenVideoAsked;
             screen.OpenReplayWatcherAsked -= Player_OpenReplayWatcherAsked;
-            screen.OpenAnnotationsAsked -= Player_OpenAnnotationsAsked;
             screen.SelectionChanged -= Player_SelectionChanged;
             screen.KVAImported -= Player_KVAImported;
             screen.FilterExited -= Player_FilterExited;

@@ -201,25 +201,6 @@ namespace Kinovea.ScreenManager
             screenToolManager.AfterToolUse();
         }
 
-        /// <summary>
-        /// Check if the passed point is on any drawing.
-        /// The hit drawing, if any, will be placed in metadata.hitDrawing.
-        /// The passed point is in screen space coordinates (transformed).
-        /// </summary>
-        public void HitTest(Point p, Point imageLocation, float imageZoom)
-        {
-            if(metadata == null)
-                return;
-
-            IImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
-            PointF imagePoint = transformer.Untransform(p);
-
-            int keyframeIndex = 0;
-            metadata.DeselectAll();
-            metadata.IsOnDrawing(keyframeIndex, imagePoint, fixedTimestamp);
-            metadata.IsOnDetachedDrawing(imagePoint, fixedTimestamp);
-        }
-
         public Cursor GetCursor(float scale)
         {
             return screenToolManager.GetCursor(scale);
@@ -228,52 +209,6 @@ namespace Kinovea.ScreenManager
         public void InvalidateCursor()
         {
             screenToolManager.InvalidateCursor();
-        }
-
-        public void DeleteHitDrawing()
-        {
-            Keyframe keyframe = metadata.HitKeyframe;
-            AbstractDrawing drawing = metadata.HitDrawing;
-
-            if (keyframe == null || drawing == null)
-                return;
-
-            HistoryMemento memento = new HistoryMementoDeleteDrawing(metadata, keyframe.Id, drawing.Id, drawing.Name);
-            metadata.DeleteDrawing(keyframe.Id, drawing.Id);
-            metadata.HistoryStack.PushNewCommand(memento);
-        }
-
-        public void ConfigureDrawing(AbstractDrawing drawing, Action refresh)
-        {
-            IDecorable decorable = drawing as IDecorable;
-            if (drawing == null || decorable == null)
-                return;
-
-            AbstractDrawingManager owner = metadata.HitDrawingOwner;
-            HistoryMementoModifyDrawing memento = null;
-            if (owner != null)
-                memento = new HistoryMementoModifyDrawing(metadata, owner.Id, drawing.Id, drawing.Name, SerializationFilter.Style);
-
-            FormConfigureDrawing2 fcd = new FormConfigureDrawing2(decorable, refresh);
-            FormsHelper.Locate(fcd);
-            fcd.ShowDialog();
-
-            if (fcd.DialogResult == DialogResult.OK)
-            {
-                if (memento != null)
-                {
-                    memento.UpdateCommandName(drawing.Name);
-                    metadata.HistoryStack.PushNewCommand(memento);
-                }
-
-                // Update the style preset for the parent tool of this drawing
-                // so the next time we use this tool it will have the style we just set.
-                ToolManager.SetToolStyleFromDrawing(metadata.HitDrawing, decorable.StyleElements);
-                ToolManager.SavePresets();
-                InvalidateCursor();
-            }
-
-            fcd.Dispose();
         }
 
         public void DeselectTool()

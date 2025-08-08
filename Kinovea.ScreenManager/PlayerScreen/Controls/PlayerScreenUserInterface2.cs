@@ -57,7 +57,10 @@ namespace Kinovea.ScreenManager
         #region Events
         public event EventHandler OpenVideoAsked;
         public event EventHandler OpenReplayWatcherAsked;
-        public event EventHandler OpenAnnotationsAsked;
+        public event EventHandler LoadAnnotationsAsked;
+        public event EventHandler SaveAnnotationsAsked;
+        public event EventHandler SaveAnnotationsAsAsked;
+        public event EventHandler UnloadAnnotationsAsked;
         public event EventHandler CloseAsked;
         public event EventHandler StopWatcherAsked;
         public event EventHandler StartWatcherAsked;
@@ -350,9 +353,10 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuPasteDrawing = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOpenVideo = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOpenReplayWatcher = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuOpenAnnotations = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuLoadAnnotations = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSaveAnnotations = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSaveAnnotationsAs = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuUnloadAnnotations = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportVideo = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportImage = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCloseScreen = new ToolStripMenuItem();
@@ -1190,46 +1194,47 @@ namespace Kinovea.ScreenManager
             // Depending on the context, more menus are added and configured on the fly in SurfaceScreen_RightDown.
 
             // Background context menu.
-            mnuTimeOrigin.Click += mnuTimeOrigin_Click;
             mnuTimeOrigin.Image = Properties.Resources.marker;
-            mnuDirectTrack.Click += mnuDirectTrack_Click;
             mnuDirectTrack.Image = Properties.Resources.point3_16;
-            mnuBackground.Click += mnuBackground_Click;
             mnuBackground.Image = Properties.Resources.shading;
-            mnuCopyPic.Click += (s, e) => { CopyImageToClipboard(); };
             mnuCopyPic.Image = Properties.Resources.clipboard_block;
-            mnuPastePic.Click += mnuPastePic_Click;
             mnuPastePic.Image = Properties.Drawings.paste;
-            mnuPasteDrawing.Click += mnuPasteDrawing_Click;
             mnuPasteDrawing.Image = Properties.Drawings.paste;
-
-            mnuOpenVideo.Click += (s, e) => OpenVideoAsked?.Invoke(this, EventArgs.Empty);
             mnuOpenVideo.Image = Properties.Resources.folder;
-            mnuOpenReplayWatcher.Click += (s, e) => OpenReplayWatcherAsked?.Invoke(this, EventArgs.Empty);
             mnuOpenReplayWatcher.Image = Properties.Resources.replaywatcher;
-            mnuOpenAnnotations.Click += (s, e) => OpenAnnotationsAsked?.Invoke(this, EventArgs.Empty);
-            mnuOpenAnnotations.Image = Properties.Resources.file_kva2;
-
-            mnuSaveAnnotations.Click += btnSaveAnnotations_Click;
+            mnuLoadAnnotations.Image = Properties.Resources.notes2_16;
             mnuSaveAnnotations.Image = Properties.Resources.filesave;
-            mnuSaveAnnotationsAs.Click += btnSaveAnnotationsAs_Click;
             mnuSaveAnnotationsAs.Image = Properties.Resources.filesave;
-            mnuExportVideo.Click += (s, e) => ExportVideoAsked?.Invoke(s, e);
+            mnuUnloadAnnotations.Image = Properties.Resources.delete_notes;
             mnuExportVideo.Image = Properties.Resources.film_save;
-            mnuExportImage.Click += (s, e) => ExportImageAsked?.Invoke(s, e);
             mnuExportImage.Image = Properties.Resources.picture_save;
-            mnuCloseScreen.Click += btnClose_Click;
             mnuCloseScreen.Image = Properties.Resources.closeplayer;
-            mnuExitFilter.Click += MnuExitFilter_Click;
             mnuExitFilter.Image = Properties.Resources.exit_filter;
-            popMenu.Items.AddRange(new ToolStripItem[]
-            {
-                mnuTimeOrigin, mnuDirectTrack, mnuBackground, new ToolStripSeparator(),
-                mnuCopyPic, mnuPastePic, mnuPasteDrawing, new ToolStripSeparator(),
-                mnuOpenVideo, mnuOpenReplayWatcher, mnuOpenAnnotations, new ToolStripSeparator(),
-                mnuSaveAnnotations, mnuSaveAnnotationsAs, mnuExportVideo, mnuExportImage, new ToolStripSeparator(),
-                mnuCloseScreen
-            });
+
+            mnuTimeOrigin.Click += mnuTimeOrigin_Click;
+            mnuDirectTrack.Click += mnuDirectTrack_Click;
+            mnuBackground.Click += mnuBackground_Click;
+            mnuCopyPic.Click += (s, e) => { CopyImageToClipboard(); };
+            mnuPastePic.Click += mnuPastePic_Click;
+            mnuPasteDrawing.Click += mnuPasteDrawing_Click;
+            mnuOpenVideo.Click += (s, e) => OpenVideoAsked?.Invoke(this, EventArgs.Empty);
+            mnuOpenReplayWatcher.Click += (s, e) => OpenReplayWatcherAsked?.Invoke(this, EventArgs.Empty);
+            mnuLoadAnnotations.Click += (s, e) => LoadAnnotationsAsked?.Invoke(this, EventArgs.Empty);
+            mnuSaveAnnotations.Click += mnuSaveAnnotations_Click;
+            mnuSaveAnnotationsAs.Click += mnuSaveAnnotationsAs_Click;
+            mnuUnloadAnnotations.Click += mnuUnloadAnnotations_Click;
+            mnuExportVideo.Click += (s, e) => ExportVideoAsked?.Invoke(s, e);
+            mnuExportImage.Click += (s, e) => ExportImageAsked?.Invoke(s, e);
+            mnuCloseScreen.Click += btnClose_Click;
+            mnuExitFilter.Click += MnuExitFilter_Click;
+            //popMenu.Items.AddRange(new ToolStripItem[]
+            //{
+            //    mnuTimeOrigin, mnuDirectTrack, mnuBackground, new ToolStripSeparator(),
+            //    mnuCopyPic, mnuPastePic, mnuPasteDrawing, new ToolStripSeparator(),
+            //    mnuOpenVideo, mnuOpenReplayWatcher, mnuLoadAnnotations, new ToolStripSeparator(),
+            //    mnuSaveAnnotations, mnuSaveAnnotationsAs, mnuExportVideo, mnuExportImage, new ToolStripSeparator(),
+            //    mnuCloseScreen
+            //});
 
             // Drawings context menu (Configure, Delete, Tracking)
             mnuConfigureDrawing.Click += new EventHandler(mnuConfigureDrawing_Click);
@@ -1291,10 +1296,10 @@ namespace Kinovea.ScreenManager
             mnuMagnifierQuit.Click += mnuMagnifierQuit_Click;
             mnuMagnifierQuit.Image = Properties.Resources.hide;
 
-            // The right context menu and its content will be choosen upon MouseDown.
+            // The right context menu and its content will be choosen on MouseDown.
             panelCenter.ContextMenuStrip = popMenu;
 
-            // Load texts
+            // Load the menu labels.
             ReloadMenusCulture();
         }
 
@@ -2891,9 +2896,10 @@ namespace Kinovea.ScreenManager
             mnuPasteDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.PasteDrawing);
             mnuOpenVideo.Text = ScreenManagerLang.mnuOpenVideo;
             mnuOpenReplayWatcher.Text = ScreenManagerLang.mnuOpenReplayWatcher;
-            mnuOpenAnnotations.Text = ScreenManagerLang.mnuLoadAnalysis;
+            mnuLoadAnnotations.Text = ScreenManagerLang.mnuLoadAnalysis;
             mnuSaveAnnotations.Text = ScreenManagerLang.Generic_SaveKVA;
             mnuSaveAnnotationsAs.Text = ScreenManagerLang.Generic_SaveKVAAs;
+            mnuUnloadAnnotations.Text = "Unload annotations";
             mnuExportVideo.Text = ScreenManagerLang.Generic_ExportVideo;
             mnuExportImage.Text = ScreenManagerLang.Generic_SaveImage;
             mnuCopyPic.Text = ScreenManagerLang.mnuCopyImageToClipboard;
@@ -3370,7 +3376,7 @@ namespace Kinovea.ScreenManager
                     mnuDirectTrack.Visible = true;
                     mnuDirectTrack.Enabled = true;
                     mnuBackground.Visible = true;
-                    mnuBackground.Visible = true;
+                    mnuBackground.Enabled = true;
                     mnuPasteDrawing.Visible = true;
                     mnuPasteDrawing.Enabled = DrawingClipboard.HasContent;
                     mnuPastePic.Visible = true;
@@ -3385,31 +3391,31 @@ namespace Kinovea.ScreenManager
             popMenu.Items.Clear();
             popMenu.Items.AddRange(new ToolStripItem[]
             {
-                        mnuTimeOrigin,
-                        mnuDirectTrack,
-                        mnuBackground,
-                        new ToolStripSeparator(),
-                        mnuCopyPic,
-                        mnuPastePic,
-                        mnuPasteDrawing,
-                        new ToolStripSeparator(),
-                        mnuOpenVideo,
-                        mnuOpenReplayWatcher,
-                        mnuOpenAnnotations,
-                        new ToolStripSeparator(),
-                        mnuSaveAnnotations,
-                        mnuSaveAnnotationsAs,
-                        mnuExportVideo,
-                        mnuExportImage,
-                        new ToolStripSeparator(),
-                        mnuCloseScreen
+                mnuTimeOrigin,
+                mnuDirectTrack,
+                mnuBackground,
+                new ToolStripSeparator(),
+                mnuCopyPic,
+                mnuPastePic,
+                mnuPasteDrawing,
+                new ToolStripSeparator(),
+                mnuOpenVideo,
+                mnuOpenReplayWatcher,
+                new ToolStripSeparator(),
+                mnuLoadAnnotations,
+                mnuSaveAnnotations,
+                mnuSaveAnnotationsAs,
+                mnuUnloadAnnotations,
+                new ToolStripSeparator(),
+                mnuExportVideo,
+                mnuExportImage,
+                new ToolStripSeparator(),
+                mnuCloseScreen
             });
         }
         private void PrepareDrawingContextMenu(AbstractDrawing drawing, ContextMenuStrip popMenu)
         {
             popMenu.Items.Clear();
-
-
 
             // Generic menus based on the drawing capabilities: configuration (style), visibility, tracking.
             if (!m_FrameServer.Metadata.DrawingInitializing)
@@ -5487,7 +5493,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Saving annotations
-        private void btnSaveAnnotations_Click(object sender, EventArgs e)
+        private void mnuSaveAnnotations_Click(object sender, EventArgs e)
         {
             if (!m_FrameServer.Loaded)
                 return;
@@ -5495,14 +5501,14 @@ namespace Kinovea.ScreenManager
             StopPlaying();
             OnPauseAsked();
 
-            SaveAnnotations();
+            SaveAnnotationsAsked?.Invoke(this, EventArgs.Empty);
 
             m_iFramesToDecode = 1;
             ShowNextFrame(m_iSelStart, true);
             ActivateKeyframe(m_iCurrentPosition, true);
         }
 
-        private void btnSaveAnnotationsAs_Click(object sender, EventArgs e)
+        private void mnuSaveAnnotationsAs_Click(object sender, EventArgs e)
         {
             if (!m_FrameServer.Loaded)
                 return;
@@ -5510,30 +5516,51 @@ namespace Kinovea.ScreenManager
             StopPlaying();
             OnPauseAsked();
 
-            SaveAnnotationsAs();
+            SaveAnnotationsAsAsked?.Invoke(this, EventArgs.Empty);
 
             m_iFramesToDecode = 1;
             ShowNextFrame(m_iSelStart, true);
             ActivateKeyframe(m_iCurrentPosition, true);
         }
+
+        private void mnuUnloadAnnotations_Click(object sender, EventArgs e)
+        {
+            if (!m_FrameServer.Loaded)
+                return;
+
+            StopPlaying();
+            OnPauseAsked();
+
+            UnloadAnnotationsAsked?.Invoke(this, EventArgs.Empty);
+
+            m_iFramesToDecode = 1;
+            ShowNextFrame(m_iSelStart, true);
+            ActivateKeyframe(m_iCurrentPosition, true);
+        }
+
 
         /// <summary>
         /// Save to the current KVA if it exists, ask for a filename if not.
         /// </summary>
-        private void SaveAnnotations()
-        {
-            MetadataSerializer serializer = new MetadataSerializer();
-            serializer.UserSave(m_FrameServer.Metadata, m_FrameServer.VideoReader.FilePath);
-        }
+        //private void SaveAnnotations()
+        //{
+        //    MetadataSerializer serializer = new MetadataSerializer();
+        //    serializer.UserSave(m_FrameServer.Metadata, m_FrameServer.VideoReader.FilePath);
+        //}
 
         /// <summary>
         /// Save a KVA to a new file.
         /// </summary>
-        private void SaveAnnotationsAs()
-        {
-            MetadataSerializer serializer = new MetadataSerializer();
-            serializer.UserSaveAs(m_FrameServer.Metadata, m_FrameServer.VideoReader.FilePath);
-        }
+        //private void SaveAnnotationsAs()
+        //{
+        //    MetadataSerializer serializer = new MetadataSerializer();
+        //    serializer.UserSaveAs(m_FrameServer.Metadata, m_FrameServer.VideoReader.FilePath);
+        //}
+
+        //private void UnloadAnnotations()
+        //{
+        //    m_FrameServer.Metadata.Unload();
+        //}
 
         #endregion
 

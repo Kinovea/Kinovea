@@ -163,6 +163,9 @@ namespace Kinovea.ScreenManager
         #region Screen management
         private void PrepareLeftScreen(UserControl screenUI)
         {
+            if (screenUI == null)
+                return;
+
             splitScreens.Panel1Collapsed = false;
             splitScreens.Panel1.AllowDrop = true;
             splitScreens.Panel1.Controls.Add(screenUI);
@@ -170,6 +173,9 @@ namespace Kinovea.ScreenManager
         }
         private void PrepareRightScreen(UserControl screenUI)
         {
+            if (screenUI == null)
+                return;
+
             splitScreens.Panel2Collapsed = false;
             splitScreens.Panel2.AllowDrop = true;
             splitScreens.Panel2.Controls.Add(screenUI);

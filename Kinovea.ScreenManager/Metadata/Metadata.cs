@@ -1746,10 +1746,10 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Hit test the passed point with regards to attached drawings.
+        /// Returns true if the mouse is on a drawing attached to a key image.
         /// </summary>
         public bool IsOnDrawing(int _iActiveKeyframeIndex, PointF point, long _iTimestamp)
         {
-            // Returns whether the mouse is on a drawing attached to a key image.
             bool hit = false;
 
             if (PreferencesManager.PlayerPreferences.DefaultFading.Enabled && keyframes.Count > 0)
