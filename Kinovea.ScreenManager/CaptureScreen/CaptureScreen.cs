@@ -267,10 +267,14 @@ namespace Kinovea.ScreenManager
             // Implemented at AbstractScreen level.
             viewportController.SaveAnnotationsAsked += (s, e) => SaveAnnotations();
             viewportController.SaveAnnotationsAsAsked += (s, e) => SaveAnnotationsAs();
+            viewportController.SaveDefaultPlayerAnnotationsAsked += (s, e) => SaveDefaultAnnotations(true);
+            viewportController.SaveDefaultCaptureAnnotationsAsked += (s, e) => SaveDefaultAnnotations(false);
             viewportController.UnloadAnnotationsAsked += (s, e) => UnloadAnnotations();
+            viewportController.ReloadDefaultCaptureAnnotationsAsked += (s, e) => ReloadDefaultAnnotations(false);
 
             // Implemented locally.
             viewportController.DisplayRectangleUpdated += ViewportController_DisplayRectangleUpdated;
+            viewportController.ReloadLinkedAnnotationsAsked += (s, e) => ReloadLinkedAnnotations();
         }
 
         private void SystemEvents_PowerModeChanged(object sender, PowerModeChangedEventArgs e)
@@ -465,7 +469,7 @@ namespace Kinovea.ScreenManager
         {
             // This runs in the watcher thread.
             if (dummy.InvokeRequired)
-                dummy.BeginInvoke((Action)delegate { ReloadKVA(); });
+                dummy.BeginInvoke((Action)delegate { ReloadLinkedAnnotations(); });
         }
 
         /// <summary>
@@ -475,21 +479,18 @@ namespace Kinovea.ScreenManager
         /// set up from the player screen.
         /// This is not a merge but a full replacement.
         /// </summary>
-        private void ReloadKVA()
+        private void ReloadLinkedAnnotations()
         {
             if (!File.Exists(lastExportedMetadata))
                 return;
-            
-            metadata.Unload();
+
+            UnloadAnnotations();
             LoadKVA(lastExportedMetadata);
 
-            // Reset the metadata kva path to empty to force "save as".
+            // Reset the metadata kva path to force "save as".
             // We don't want changes in the capture to overwrite those of the player side.
             // Once the kva is loaded in capture it should live its own life.
             metadata.LastKVAPath = string.Empty;
-
-            // TODO: verify we have done a reference content hash here.
-            // Closing the screen after reload from player should trigger save as.
         }
 
         private void Metadata_KVAImported()
@@ -1352,16 +1353,19 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void LoadCompanionKVA()
         {
-            // Note: anything after the first keyframe will be ignored.
-            string startupFile = PreferencesManager.CapturePreferences.CaptureKVA;
-            if (!string.IsNullOrEmpty(startupFile))
-            {
-                if (Path.IsPathRooted(startupFile))
-                    LoadKVA(startupFile);
-                else
-                    LoadKVA(Path.Combine(Software.SettingsDirectory, startupFile));
-            }
+            string path = PreferencesManager.CapturePreferences.CaptureKVA;
+            if (!Path.IsPathRooted(path))
+                path = Path.Combine(Software.SettingsDirectory, path);
+
+            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+                return;
+
+            LoadKVA(path);
+
+            // Never let the default file become the working file.
+            metadata.ResetKVAPath();
         }
+
         private void InitializeTools()
         {
             drawingToolbarPresenter.AddToolButton(screenToolManager.HandTool, DrawingTool_Click);
@@ -1888,6 +1892,12 @@ namespace Kinovea.ScreenManager
 
                 lastExportedMetadata = kvaFilename;
             }
+            else
+            {
+                lastExportedMetadata = "";
+            }
+            
+            viewportController.LastExportedKVA = lastExportedMetadata;
         }
 
         /// <summary>

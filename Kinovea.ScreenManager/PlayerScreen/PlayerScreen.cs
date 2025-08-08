@@ -407,7 +407,10 @@ namespace Kinovea.ScreenManager
             // Implemented at AbstractScreen level.
             view.SaveAnnotationsAsked += (s, e) => SaveAnnotations();
             view.SaveAnnotationsAsAsked += (s, e) => SaveAnnotationsAs();
+            view.SaveDefaultPlayerAnnotationsAsked += (s, e) => SaveDefaultAnnotations(true);
+            view.SaveDefaultCaptureAnnotationsAsked += (s, e) => SaveDefaultAnnotations(false);
             view.UnloadAnnotationsAsked += (s, e) => UnloadAnnotations();
+            view.ReloadDefaultPlayerAnnotationsAsked += (s, e) => ReloadDefaultAnnotations(true);
 
             // Implemented locally.
             view.StopWatcherAsked += View_StopWatcherAsked;

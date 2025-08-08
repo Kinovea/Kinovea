@@ -60,7 +60,10 @@ namespace Kinovea.ScreenManager
         public event EventHandler LoadAnnotationsAsked;
         public event EventHandler SaveAnnotationsAsked;
         public event EventHandler SaveAnnotationsAsAsked;
+        public event EventHandler SaveDefaultPlayerAnnotationsAsked;
+        public event EventHandler SaveDefaultCaptureAnnotationsAsked;
         public event EventHandler UnloadAnnotationsAsked;
+        public event EventHandler ReloadDefaultPlayerAnnotationsAsked;
         public event EventHandler CloseAsked;
         public event EventHandler StopWatcherAsked;
         public event EventHandler StartWatcherAsked;
@@ -356,7 +359,10 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuLoadAnnotations = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSaveAnnotations = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSaveAnnotationsAs = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSaveDefaultPlayerAnnotations = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSaveDefaultCaptureAnnotations = new ToolStripMenuItem();
         private ToolStripMenuItem mnuUnloadAnnotations = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuReloadDefaultPlayerAnnotations = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportVideo = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportImage = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCloseScreen = new ToolStripMenuItem();
@@ -625,11 +631,20 @@ namespace Kinovea.ScreenManager
 
             if (!recoveredMetadata)
             {
+
+                // Note: the order of load between the sidecar kva and the default player kva is important.
+                // For keyframes and detached drawings it doesn't matter, but for global configuration
+                // like mirror, calibration, etc. the last file wins.
+
+                Metadata metadata = m_FrameServer.Metadata;
+                string lastKVAPath = "";
+
                 // Side-car KVA.
                 foreach (string extension in MetadataSerializer.SupportedFileFormats())
                 {
                     string candidate = Path.Combine(Path.GetDirectoryName(m_FrameServer.VideoReader.FilePath), Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath) + extension);
-                    LookForLinkedAnalysis(candidate);
+                    LoadKVA(candidate);
+                    lastKVAPath = metadata.LastKVAPath;
                 }
 
                 // Startup KVA.
@@ -637,10 +652,13 @@ namespace Kinovea.ScreenManager
                 if (!string.IsNullOrEmpty(startupFile))
                 {
                     if (Path.IsPathRooted(startupFile))
-                        LookForLinkedAnalysis(startupFile);
+                        LoadKVA(startupFile);
                     else
-                        LookForLinkedAnalysis(Path.Combine(Software.SettingsDirectory, startupFile));
+                        LoadKVA(Path.Combine(Software.SettingsDirectory, startupFile));
                 }
+
+                // Never let the default KVA become the working file.
+                metadata.LastKVAPath = lastKVAPath;
             }
 
             if (m_LaunchDescription != null)
@@ -1160,14 +1178,16 @@ namespace Kinovea.ScreenManager
         {
             OnPoke();
         }
-        private void LookForLinkedAnalysis(string file)
+        
+        private void LoadKVA(string path)
         {
-            if (File.Exists(file))
-            {
-                MetadataSerializer s = new MetadataSerializer();
-                s.Load(m_FrameServer.Metadata, file, true);
-            }
+            if (!File.Exists(path))
+                return;
+
+            MetadataSerializer s = new MetadataSerializer();
+            s.Load(m_FrameServer.Metadata, path, true);
         }
+
         private void UpdateInfobar()
         {
             if (!m_FrameServer.Loaded)
@@ -1205,7 +1225,10 @@ namespace Kinovea.ScreenManager
             mnuLoadAnnotations.Image = Properties.Resources.notes2_16;
             mnuSaveAnnotations.Image = Properties.Resources.filesave;
             mnuSaveAnnotationsAs.Image = Properties.Resources.filesave;
+            mnuSaveDefaultPlayerAnnotations.Image = Properties.Resources.filesave;
+            mnuSaveDefaultCaptureAnnotations.Image = Properties.Resources.filesave;
             mnuUnloadAnnotations.Image = Properties.Resources.delete_notes;
+            mnuReloadDefaultPlayerAnnotations.Image = Properties.Resources.notes2_16;
             mnuExportVideo.Image = Properties.Resources.film_save;
             mnuExportImage.Image = Properties.Resources.picture_save;
             mnuCloseScreen.Image = Properties.Resources.closeplayer;
@@ -1222,19 +1245,14 @@ namespace Kinovea.ScreenManager
             mnuLoadAnnotations.Click += (s, e) => LoadAnnotationsAsked?.Invoke(this, EventArgs.Empty);
             mnuSaveAnnotations.Click += mnuSaveAnnotations_Click;
             mnuSaveAnnotationsAs.Click += mnuSaveAnnotationsAs_Click;
+            mnuSaveDefaultPlayerAnnotations.Click += mnuSaveDefaultPlayerAnnotations_Click;
+            mnuSaveDefaultCaptureAnnotations.Click += mnuSaveDefaultCaptureAnnotations_Click;
             mnuUnloadAnnotations.Click += mnuUnloadAnnotations_Click;
+            mnuReloadDefaultPlayerAnnotations.Click += mnuReloadDefaultPlayerAnnotations_Click;
             mnuExportVideo.Click += (s, e) => ExportVideoAsked?.Invoke(s, e);
             mnuExportImage.Click += (s, e) => ExportImageAsked?.Invoke(s, e);
             mnuCloseScreen.Click += btnClose_Click;
             mnuExitFilter.Click += MnuExitFilter_Click;
-            //popMenu.Items.AddRange(new ToolStripItem[]
-            //{
-            //    mnuTimeOrigin, mnuDirectTrack, mnuBackground, new ToolStripSeparator(),
-            //    mnuCopyPic, mnuPastePic, mnuPasteDrawing, new ToolStripSeparator(),
-            //    mnuOpenVideo, mnuOpenReplayWatcher, mnuLoadAnnotations, new ToolStripSeparator(),
-            //    mnuSaveAnnotations, mnuSaveAnnotationsAs, mnuExportVideo, mnuExportImage, new ToolStripSeparator(),
-            //    mnuCloseScreen
-            //});
 
             // Drawings context menu (Configure, Delete, Tracking)
             mnuConfigureDrawing.Click += new EventHandler(mnuConfigureDrawing_Click);
@@ -2899,7 +2917,10 @@ namespace Kinovea.ScreenManager
             mnuLoadAnnotations.Text = ScreenManagerLang.mnuLoadAnalysis;
             mnuSaveAnnotations.Text = ScreenManagerLang.Generic_SaveKVA;
             mnuSaveAnnotationsAs.Text = ScreenManagerLang.Generic_SaveKVAAs;
+            mnuSaveDefaultPlayerAnnotations.Text = "Save as default player annotations";
+            mnuSaveDefaultCaptureAnnotations.Text = "Save as default capture annotations";
             mnuUnloadAnnotations.Text = "Unload annotations";
+            mnuReloadDefaultPlayerAnnotations.Text = "Reload default player annotations";
             mnuExportVideo.Text = ScreenManagerLang.Generic_ExportVideo;
             mnuExportImage.Text = ScreenManagerLang.Generic_SaveImage;
             mnuCopyPic.Text = ScreenManagerLang.mnuCopyImageToClipboard;
@@ -3388,6 +3409,18 @@ namespace Kinovea.ScreenManager
         }
         private void PrepareBackgroundContextMenu(ContextMenuStrip popMenu)
         {
+            // Inject the target file name to avoid surprises.
+            if (!string.IsNullOrEmpty(m_FrameServer.Metadata.LastKVAPath))
+            {
+                string filename = Path.GetFileName(m_FrameServer.Metadata.LastKVAPath);
+                mnuSaveAnnotations.Text = string.Format("{0} ({1})",
+                    ScreenManagerLang.Generic_SaveKVA, filename);
+            }
+            else
+            {
+                mnuSaveAnnotations.Text = ScreenManagerLang.Generic_SaveKVA;
+            }
+
             popMenu.Items.Clear();
             popMenu.Items.AddRange(new ToolStripItem[]
             {
@@ -3405,7 +3438,10 @@ namespace Kinovea.ScreenManager
                 mnuLoadAnnotations,
                 mnuSaveAnnotations,
                 mnuSaveAnnotationsAs,
+                mnuSaveDefaultPlayerAnnotations,
+                mnuSaveDefaultCaptureAnnotations,
                 mnuUnloadAnnotations,
+                mnuReloadDefaultPlayerAnnotations,
                 new ToolStripSeparator(),
                 mnuExportVideo,
                 mnuExportImage,
@@ -5498,14 +5534,9 @@ namespace Kinovea.ScreenManager
             if (!m_FrameServer.Loaded)
                 return;
 
-            StopPlaying();
-            OnPauseAsked();
-
+            BeforeAnnotationsFileOp();
             SaveAnnotationsAsked?.Invoke(this, EventArgs.Empty);
-
-            m_iFramesToDecode = 1;
-            ShowNextFrame(m_iSelStart, true);
-            ActivateKeyframe(m_iCurrentPosition, true);
+            AfterAnnotationsFileOp();
         }
 
         private void mnuSaveAnnotationsAs_Click(object sender, EventArgs e)
@@ -5513,14 +5544,29 @@ namespace Kinovea.ScreenManager
             if (!m_FrameServer.Loaded)
                 return;
 
-            StopPlaying();
-            OnPauseAsked();
-
+            BeforeAnnotationsFileOp();
             SaveAnnotationsAsAsked?.Invoke(this, EventArgs.Empty);
+            AfterAnnotationsFileOp();
+        }
 
-            m_iFramesToDecode = 1;
-            ShowNextFrame(m_iSelStart, true);
-            ActivateKeyframe(m_iCurrentPosition, true);
+        private void mnuSaveDefaultPlayerAnnotations_Click(object sender, EventArgs e)
+        {
+            if (!m_FrameServer.Loaded)
+                return;
+
+            BeforeAnnotationsFileOp();
+            SaveDefaultPlayerAnnotationsAsked?.Invoke(this, EventArgs.Empty);
+            AfterAnnotationsFileOp();
+        }
+
+        private void mnuSaveDefaultCaptureAnnotations_Click(object sender, EventArgs e)
+        {
+            if (!m_FrameServer.Loaded)
+                return;
+
+            BeforeAnnotationsFileOp();
+            SaveDefaultCaptureAnnotationsAsked?.Invoke(this, EventArgs.Empty);
+            AfterAnnotationsFileOp();
         }
 
         private void mnuUnloadAnnotations_Click(object sender, EventArgs e)
@@ -5528,40 +5574,33 @@ namespace Kinovea.ScreenManager
             if (!m_FrameServer.Loaded)
                 return;
 
+            BeforeAnnotationsFileOp();
+            UnloadAnnotationsAsked?.Invoke(this, EventArgs.Empty);
+            AfterAnnotationsFileOp();
+        }
+
+        private void mnuReloadDefaultPlayerAnnotations_Click(object sender, EventArgs e)
+        {
+            if (!m_FrameServer.Loaded)
+                return;
+
+            BeforeAnnotationsFileOp();
+            ReloadDefaultPlayerAnnotationsAsked?.Invoke(this, EventArgs.Empty);
+            AfterAnnotationsFileOp();
+        }
+
+        private void BeforeAnnotationsFileOp()
+        {
             StopPlaying();
             OnPauseAsked();
+        }
 
-            UnloadAnnotationsAsked?.Invoke(this, EventArgs.Empty);
-
+        private void AfterAnnotationsFileOp()
+        {
             m_iFramesToDecode = 1;
             ShowNextFrame(m_iSelStart, true);
             ActivateKeyframe(m_iCurrentPosition, true);
         }
-
-
-        /// <summary>
-        /// Save to the current KVA if it exists, ask for a filename if not.
-        /// </summary>
-        //private void SaveAnnotations()
-        //{
-        //    MetadataSerializer serializer = new MetadataSerializer();
-        //    serializer.UserSave(m_FrameServer.Metadata, m_FrameServer.VideoReader.FilePath);
-        //}
-
-        /// <summary>
-        /// Save a KVA to a new file.
-        /// </summary>
-        //private void SaveAnnotationsAs()
-        //{
-        //    MetadataSerializer serializer = new MetadataSerializer();
-        //    serializer.UserSaveAs(m_FrameServer.Metadata, m_FrameServer.VideoReader.FilePath);
-        //}
-
-        //private void UnloadAnnotations()
-        //{
-        //    m_FrameServer.Metadata.Unload();
-        //}
-
         #endregion
 
         #region Export

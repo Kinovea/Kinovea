@@ -20,7 +20,9 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -183,16 +185,15 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Trigger the save or save as dialog for the screen's metadata.
         /// </summary>
-        public void SaveAnnotations()
+        public bool SaveAnnotations()
         {
             if (this.Metadata == null)
-            {
-                log.Error("Screen with no metadata.");
-                return;
-            }
+                return false;
 
             MetadataSerializer serializer = new MetadataSerializer();
-            serializer.UserSave(this.Metadata, this.FilePath);
+            string forcedPath = "";
+            string defaultPath = this.FilePath;
+            return serializer.UserSave(this.Metadata, forcedPath, defaultPath);
         }
 
         /// <summary>
@@ -201,13 +202,41 @@ namespace Kinovea.ScreenManager
         public void SaveAnnotationsAs()
         {
             if (this.Metadata == null)
-            {
-                log.Error("Screen with no metadata.");
                 return;
-            }
 
             MetadataSerializer serializer = new MetadataSerializer();
             serializer.UserSaveAs(this.Metadata, this.FilePath);
+        }
+
+        /// <summary>
+        /// Save the current annotations to either player.kva or capture.kva, in the settings directory.
+        /// And set the corresponding preference.
+        /// </summary>
+        public void SaveDefaultAnnotations(bool forPlayer)
+        {
+            if (this.Metadata == null)
+                return;
+
+            // Note: these menus save to the standard location but the user
+            // can always use a custom location by going to the preferences.
+            string filename = forPlayer ? "player.kva" : "capture.kva";
+            string forcedPath = Path.Combine(Software.SettingsDirectory, filename);
+
+            MetadataSerializer serializer = new MetadataSerializer();
+            serializer.UserSave(this.Metadata, forcedPath);
+
+            // Don't let the default file become the working file.
+            // aka: disable "save", the user needs to either save to default again or save elsewhere.
+            // This is to avoid mistakenly overwriting the default file.
+            this.Metadata.ResetKVAPath();
+
+            // Set preferences.
+            // We only store the filename for cleanliness.
+            // Loaders know that if the path is not rooted they should look in the settings folder.
+            if (forPlayer)
+                PreferencesManager.PlayerPreferences.PlaybackKVA = filename;
+            else
+                PreferencesManager.CapturePreferences.CaptureKVA = filename;
         }
 
         /// <summary>
@@ -217,13 +246,84 @@ namespace Kinovea.ScreenManager
         public void UnloadAnnotations()
         {
             if (this.Metadata == null)
-            {
-                log.Error("Screen with no metadata.");
                 return;
-            }
+
+            // Since there is no undo of this, ask for confirmation.
+            // Even if the user is unloading it's possible they want to keep the data for later.
+            // Also a safety against misclicking the unload menu.
+            bool confirmed = BeforeUnloadingAnnotations();
+            if (!confirmed)
+                return;
 
             this.Metadata.Unload();
         }
 
+        public void ReloadDefaultAnnotations(bool forPlayer)
+        {
+            if (this.Metadata == null)
+                return;
+
+            string path = "";
+            if (forPlayer)
+                path = PreferencesManager.PlayerPreferences.PlaybackKVA;
+            else 
+                path = PreferencesManager.CapturePreferences.CaptureKVA;
+
+            if (!Path.IsPathRooted(path))
+                path = Path.Combine(Software.SettingsDirectory, path);
+
+            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+                return;
+
+            bool confirmed = BeforeUnloadingAnnotations();
+            if (!confirmed)
+                return;
+
+            this.Metadata.Unload();
+            LoadKVA(path);
+
+            // Never let the default file become the working file.
+            this.Metadata.ResetKVAPath();
+        }
+
+        /// <summary>
+        /// Check if we can unload the metadata, ask the user to save it if they want.
+        /// This happens when replacing or closing a screen, or for unloading annotations.
+        /// </summary>
+        /// <returns>true if the operation can carry on, false if the operation is cancelled</returns>
+        public bool BeforeUnloadingAnnotations()
+        {
+            if (Metadata == null || !Metadata.IsDirty)
+            {
+                // No metadata or metadata already saved, we can safely carry on.
+                return true;
+            }
+
+            DialogResult save = ShowConfirmDirtyDialog();
+            if (save == DialogResult.No)
+            {
+                // No: no need to save, can carry on.
+                return true;
+            }
+            else if (save == DialogResult.Cancel)
+            {
+                // Cancel: do not save, do not carry on.
+                return false;
+            }
+            else
+            {
+                // Yes: save first, then we can carry on.
+                // The save function may trigger the save as dialog,
+                // and that in turn might be cancelled by the user.
+                // In that case we cancel everything.
+                return SaveAnnotations();
+            }
+        }
+        private DialogResult ShowConfirmDirtyDialog()
+        {
+            string caption = ScreenManagerLang.InfoBox_MetadataIsDirty_Title;
+            string text = ScreenManagerLang.InfoBox_MetadataIsDirty_Text.Replace("\\n", "\n");
+            return MessageBox.Show(text, caption, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+        }
     }   
 }

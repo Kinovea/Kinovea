@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
@@ -40,7 +41,11 @@ namespace Kinovea.ScreenManager
         public event EventHandler LoadAnnotationsAsked;
         public event EventHandler SaveAnnotationsAsked;
         public event EventHandler SaveAnnotationsAsAsked;
+        public event EventHandler SaveDefaultPlayerAnnotationsAsked;
+        public event EventHandler SaveDefaultCaptureAnnotationsAsked;
         public event EventHandler UnloadAnnotationsAsked;
+        public event EventHandler ReloadDefaultCaptureAnnotationsAsked;
+        public event EventHandler ReloadLinkedAnnotationsAsked;
         public event EventHandler CloseAsked;
         //public event EventHandler KVAImported;
         //public event EventHandler ExportImageAsked;
@@ -99,6 +104,12 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        public string LastExportedKVA
+        {
+            get { return lastExportedKVA; }
+            set { lastExportedKVA = value; }
+        }
+
         public bool IsUsingHandTool
         {
             get { return metadataManipulator == null ? true : metadataManipulator.IsUsingHandTool; }
@@ -114,6 +125,7 @@ namespace Kinovea.ScreenManager
         private MetadataRenderer metadataRenderer;
         private MetadataManipulator metadataManipulator;
         private bool allowContextMenu = true;
+        private string lastExportedKVA;
 
         #region Context menu
         private ContextMenuStrip popMenu = new ContextMenuStrip();
@@ -124,7 +136,11 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuLoadAnnotations = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSaveAnnotations = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSaveAnnotationsAs = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSaveDefaultPlayerAnnotations = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSaveDefaultCaptureAnnotations = new ToolStripMenuItem();
         private ToolStripMenuItem mnuUnloadAnnotations = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuReloadDefaultCaptureAnnotations = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuReloadLinkedAnnotations = new ToolStripMenuItem();
         //private ToolStripMenuItem mnuExportVideo = new ToolStripMenuItem();
         //private ToolStripMenuItem mnuExportImage = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCloseScreen = new ToolStripMenuItem();
@@ -388,14 +404,22 @@ namespace Kinovea.ScreenManager
             mnuLoadAnnotations.Image = Properties.Resources.notes2_16;
             mnuSaveAnnotations.Image = Properties.Resources.filesave;
             mnuSaveAnnotationsAs.Image = Properties.Resources.filesave;
+            mnuSaveDefaultPlayerAnnotations.Image = Properties.Resources.filesave;
+            mnuSaveDefaultCaptureAnnotations.Image = Properties.Resources.filesave;
             mnuUnloadAnnotations.Image = Properties.Resources.delete_notes;
+            mnuReloadDefaultCaptureAnnotations.Image = Properties.Resources.notes2_16;
+            mnuReloadLinkedAnnotations.Image = Properties.Resources.notes2_16;
             mnuCloseScreen.Image = Properties.Resources.closeplayer;
             
-            mnuLoadAnnotations.Click += (s, e) => LoadAnnotationsAsked?.Invoke(this, EventArgs.Empty);
-            mnuSaveAnnotations.Click += (s, e) => SaveAnnotationsAsked?.Invoke(this, EventArgs.Empty);
-            mnuSaveAnnotationsAs.Click += (s, e) => SaveAnnotationsAsAsked?.Invoke(this, EventArgs.Empty);
-            mnuUnloadAnnotations.Click += (s, e) => UnloadAnnotationsAsked?.Invoke(this, EventArgs.Empty);
-            mnuCloseScreen.Click += (s, e) => CloseAsked?.Invoke(this, EventArgs.Empty);
+            mnuLoadAnnotations.Click += (s, e) => LoadAnnotationsAsked?.Invoke(this, e);
+            mnuSaveAnnotations.Click += (s, e) => SaveAnnotationsAsked?.Invoke(this, e);
+            mnuSaveAnnotationsAs.Click += (s, e) => SaveAnnotationsAsAsked?.Invoke(this, e);
+            mnuSaveDefaultPlayerAnnotations.Click += (s, e) => SaveDefaultPlayerAnnotationsAsked?.Invoke(this, e);
+            mnuSaveDefaultCaptureAnnotations.Click += (s, e) => SaveDefaultCaptureAnnotationsAsked?.Invoke(this, e);
+            mnuUnloadAnnotations.Click += (s, e) => UnloadAnnotationsAsked?.Invoke(this, e);
+            mnuReloadDefaultCaptureAnnotations.Click += (s, e) => ReloadDefaultCaptureAnnotationsAsked?.Invoke(this, e);
+            mnuReloadLinkedAnnotations.Click += (s, e) => ReloadLinkedAnnotationsAsked?.Invoke(this, e);
+            mnuCloseScreen.Click += (s, e) => CloseAsked?.Invoke(this, e);
             
             // Drawings context menu.
             mnuConfigureDrawing.Click += mnuConfigureDrawing_Click;
@@ -421,7 +445,11 @@ namespace Kinovea.ScreenManager
             mnuLoadAnnotations.Text = ScreenManagerLang.mnuLoadAnalysis;
             mnuSaveAnnotations.Text = ScreenManagerLang.Generic_SaveKVA;
             mnuSaveAnnotationsAs.Text = ScreenManagerLang.Generic_SaveKVAAs;
+            mnuSaveDefaultPlayerAnnotations.Text = "Save as default player annotations";
+            mnuSaveDefaultCaptureAnnotations.Text = "Save as default capture annotations";
             mnuUnloadAnnotations.Text = "Unload annotations";
+            mnuReloadDefaultCaptureAnnotations.Text = "Reload default capture annotations";
+            mnuReloadLinkedAnnotations.Text = "Reload linked annotations";
             //mnuExportVideo.Text = ScreenManagerLang.Generic_ExportVideo;
             //mnuExportImage.Text = ScreenManagerLang.Generic_SaveImage;
             //mnuCopyPic.Text = ScreenManagerLang.mnuCopyImageToClipboard;
@@ -444,6 +472,29 @@ namespace Kinovea.ScreenManager
         
         private void PrepareBackgroundContextMenu(ContextMenuStrip popMenu)
         {
+            // Inject the target file name to avoid surprises.
+            if (!string.IsNullOrEmpty(metadata.LastKVAPath))
+            {
+                string filename = Path.GetFileName(metadata.LastKVAPath);
+                mnuSaveAnnotations.Text = string.Format("{0} ({1})", 
+                    ScreenManagerLang.Generic_SaveKVA, filename);
+            }
+            else
+            {
+                mnuSaveAnnotations.Text = ScreenManagerLang.Generic_SaveKVA;
+            }
+
+            if (!string.IsNullOrEmpty(lastExportedKVA))
+            {
+                string filename = Path.GetFileName(lastExportedKVA);
+                mnuReloadLinkedAnnotations.Text = string.Format("{0} ({1})",
+                    "Reload linked annotations", filename);
+            }
+            else
+            {
+                mnuReloadLinkedAnnotations.Text = "Reload linked annotations";
+            }
+
             popMenu.Items.Clear();
             popMenu.Items.AddRange(new ToolStripItem[]
             {
@@ -457,7 +508,11 @@ namespace Kinovea.ScreenManager
                 mnuLoadAnnotations,
                 mnuSaveAnnotations,
                 mnuSaveAnnotationsAs,
+                mnuSaveDefaultPlayerAnnotations,
+                mnuSaveDefaultCaptureAnnotations,
                 mnuUnloadAnnotations,
+                mnuReloadDefaultCaptureAnnotations,
+                mnuReloadLinkedAnnotations,
                 new ToolStripSeparator(),
                 //mnuExportVideo,
                 //mnuExportImage,

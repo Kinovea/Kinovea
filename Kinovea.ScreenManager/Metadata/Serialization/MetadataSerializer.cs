@@ -91,28 +91,37 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Save to the last known storage location of this KVA if any, 
-        /// otherwise ask for a target filename.
-        /// Default path can be left empty for capture screens.
+        /// Save to a specfic path or to the last known storage location if any.
+        /// Otherwise ask for a target.
+        /// Default path can be empty for capture screens.
+        /// Returns true if the file was saved, false if the operation was cancelled.
         /// </summary>
-        public void UserSave(Metadata metadata, string defaultFilePath)
+        public bool UserSave(Metadata metadata, string forcedPath = "", string defaultFilePath = "")
         {
-            if (!string.IsNullOrEmpty(metadata.LastKVAPath))
+            if (!string.IsNullOrEmpty(forcedPath))
+            {
+                SaveToFile(metadata, forcedPath);
+                metadata.AfterManualExport();
+                return true;
+            }
+            else if (!string.IsNullOrEmpty(metadata.LastKVAPath))
             {
                 SaveToFile(metadata, metadata.LastKVAPath);
                 metadata.AfterManualExport();
+                return true;
             }
             else
             {
-                UserSaveAs(metadata, defaultFilePath);
+                return UserSaveAs(metadata, defaultFilePath);
             }
         }
 
         /// <summary>
-        /// Ask for a file path and save the metadata to this file.
+        /// Ask for a path to save the metadata.
         /// Default path can be left empty for capture screens.
+        /// Returns true if the file was saved, false if the operation was cancelled.
         /// </summary>
-        public void UserSaveAs(Metadata metadata, string defaultFilePath)
+        public bool UserSaveAs(Metadata metadata, string defaultFilePath)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = ScreenManagerLang.dlgSaveAnalysisTitle;
@@ -128,7 +137,7 @@ namespace Kinovea.ScreenManager
             saveFileDialog.FilterIndex = 1;
 
             if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))
-                return;
+                return false;
 
             string filename = saveFileDialog.FileName;
             if (!filename.ToLower().EndsWith(".kva") && !filename.ToLower().EndsWith(".xml"))
@@ -137,6 +146,7 @@ namespace Kinovea.ScreenManager
             SaveToFile(metadata, filename);
             metadata.LastKVAPath = filename;
             metadata.AfterManualExport();
+            return true;
         }
 
         /// <summary>

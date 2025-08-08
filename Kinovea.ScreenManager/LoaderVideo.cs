@@ -82,7 +82,7 @@ namespace Kinovea.ScreenManager
                     return;
                 }
 
-                bool confirmed = manager.BeforeUnloadingAnnotations(screen);
+                bool confirmed = screen.BeforeUnloadingAnnotations();
                 if (!confirmed)
                     return;
 

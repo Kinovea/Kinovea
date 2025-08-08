@@ -22,7 +22,7 @@ namespace Kinovea.ScreenManager
             }
 
             AbstractScreen screenToRemove = manager.GetScreenAt(targetScreen);
-            bool confirmed = manager.BeforeUnloadingAnnotations(screenToRemove);
+            bool confirmed = screenToRemove.BeforeUnloadingAnnotations();
             if (!confirmed)
                 return false;
 

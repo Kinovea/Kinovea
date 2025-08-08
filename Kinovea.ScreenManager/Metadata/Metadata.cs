@@ -108,7 +108,8 @@ namespace Kinovea.ScreenManager
                 if (string.IsNullOrEmpty(lastKVAPath) ||
                     lastKVAPath == PreferencesManager.PlayerPreferences.PlaybackKVA ||
                     lastKVAPath == PreferencesManager.CapturePreferences.CaptureKVA ||
-                    lastKVAPath.StartsWith(Software.TempDirectory))
+                    lastKVAPath.StartsWith(Software.TempDirectory) ||
+                    lastKVAPath.StartsWith(Software.SettingsDirectory))
                 {
                     return "";
                 }
@@ -2163,7 +2164,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Forget the KVA path (force "save as").
         /// </summary>
-        private void ResetKVAPath()
+        public void ResetKVAPath()
         {
             lastKVAPath = string.Empty;
         }
