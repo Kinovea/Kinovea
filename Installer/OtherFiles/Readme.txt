@@ -47,13 +47,13 @@ Changelog:
     Added - Command to start all trackers at once.
     Added - Support importing .trc files from Sports2D.
     Added - Capture trigger via UDP.
-    Added - Menu to unload annotations from the active video or camera screen.
     Improved - Export: restored the export of trajectories to text in GnuPlot format.
     Improved - Export: allow saving of annotations from the capture screen.
     Improved - Player: continue playback after a jump if we were playing.
     Improved - Tracking: improved performances with parallel tracking.
     Improved - Tracking: fixed sub pixel precision in template matching algorithm.
     Improved - Tracking: use parabolic fit for refinement in template matching algorithm.
+    Improved - Annotations: new menus to manage annotations (unload, save as default, reload).
     Improved - Annotations: changing the style of a drawing now automatically changes the style preset for the tool.
     Improved - Annotations: angle tool now has an option to show the full circle.
     Improved - Annotations: angle tool now has an arrow showing the direction in which the angle is measured.
@@ -66,6 +66,9 @@ Changelog:
     Improved - Annotations: label tool supports changing the line size independently of the font size.
     Improved - Camera motion: automatically create masks from rectangle objects.
     Improved - Capture: camera discovery now uses a dynamic interval.
+    Improved - Capture: option to exclude drawings and calibration from the exported kva.
+    Improved - Capture automation: added %kva pattern for post-recording command.
+    Improved - Capture automation: added option to set the default trigger arming state.
     Fixed - Loading annotations in the capture screen wasn't working correctly.
     Fixed - Resucitated drawings after undo of delete of a keyframe were not properly registered for tracking.
     Fixed - Grabbing of lines perfectly vertical or horizontal wasn't working.
@@ -76,6 +79,7 @@ Changelog:
     Fixed - Capture folders selectors were not working.
     Fixed - Keyboard shortcuts weren't working for dual screen commands when the focus is on an individual screen.
     Fixed - Exception when using the portable version from within a synchronized OneDrive directory.
+    Fixed - The time origin was wrong when importing a KVA from capture recording.
 
 
 2024.1 - August 2024

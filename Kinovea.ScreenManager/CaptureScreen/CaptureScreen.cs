@@ -1354,10 +1354,13 @@ namespace Kinovea.ScreenManager
         private void LoadCompanionKVA()
         {
             string path = PreferencesManager.CapturePreferences.CaptureKVA;
+            if (string.IsNullOrEmpty(path))
+                return;
+
             if (!Path.IsPathRooted(path))
                 path = Path.Combine(Software.SettingsDirectory, path);
 
-            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+            if (!File.Exists(path))
                 return;
 
             LoadKVA(path);
