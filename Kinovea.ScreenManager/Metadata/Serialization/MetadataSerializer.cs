@@ -25,6 +25,7 @@ namespace Kinovea.ScreenManager
     {
         private Metadata metadata;
         private string inputFileName;
+        private bool inputIsCaptureRecording;
         private Size inputImageSize;
         private long inputAverageTimeStampsPerFrame;
         private long inputFirstTimeStamp;
@@ -231,6 +232,11 @@ namespace Kinovea.ScreenManager
             // all coordinates and times found in the file to the existing video.
             log.Debug("Importing Metadata from KVA file.");
 
+            // We distinguish 3 cases.
+            // - importing from a file that was created in the same video.
+            // - importing from a file that was created in a different video.
+            // - importing from a file created by capture recording.
+
             r.MoveToContent();
 
             if (!(r.Name == "KinoveaVideoAnalysis"))
@@ -256,6 +262,9 @@ namespace Kinovea.ScreenManager
                         string fullPath = r.ReadElementContentAsString();
                         if (string.IsNullOrEmpty(metadata.VideoPath))
                             metadata.VideoPath = fullPath;
+                        break;
+                    case "CaptureRecording":
+                        inputIsCaptureRecording = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
                         break;
                     case "GlobalTitle":
                         metadata.GlobalTitle = r.ReadElementContentAsString();
@@ -300,12 +309,16 @@ namespace Kinovea.ScreenManager
                     case "SelectionStart":
                         long selStart = r.ReadElementContentAsLong();
                         if (IsSameContext())
+                        {
                             metadata.SelectionStart = selStart;
+                        }
                         break;
                     case "SelectionEnd":
                         long selEnd = r.ReadElementContentAsLong();
                         if (IsSameContext())
+                        {
                             metadata.SelectionEnd = selEnd;
+                        }
                         break;
                     case "TimeOrigin":
                         inputTimeOrigin = r.ReadElementContentAsLong();
@@ -352,8 +365,24 @@ namespace Kinovea.ScreenManager
                 }
             }
 
+            // Handle time origin.
             if (IsSameContext())
+            {
+                // If we are in the same context we have not remapped times at all,
+                // they are still relative to the input time origin.
+                // We can safely change the time origin to match that of the input.
                 metadata.TimeOrigin = inputTimeOrigin;
+            }
+            else if (inputIsCaptureRecording)
+            {
+                // If we are importing from a capture recording, we want to remap the incoming time origin (trigger time).
+                metadata.TimeOrigin = RemapTimestamp(inputTimeOrigin, inputFirstTimeStamp, metadata.FirstTimeStamp);
+            }
+            else
+            {
+                // If we are in different video contexts we have already remapped all time information relatively
+                // to the recipient time origin. We should not change the time origin at this point.
+            }
 
             // Assign the stabilization track at the end once the tracks have been read.
             metadata.StabilizationTrack = stabilizationTrack;
@@ -428,6 +457,10 @@ namespace Kinovea.ScreenManager
 
             return scaling;
         }
+        
+        /// <summary>
+        /// Remap a timestamp according to the source and target contexts.
+        /// </summary>
         private long RemapTimestamp(long inputTimestamp)
         {
             // The Input position was stored as an absolute timestamp in the context of the original video.
@@ -436,26 +469,54 @@ namespace Kinovea.ScreenManager
             if (inputAverageTimeStampsPerFrame == 0)
                 return inputTimestamp;
 
+            // Bail out if we don't need to remap.
             if (IsSameContext())
                 return inputTimestamp;
 
-            // Different contexts or different files.
-            // Compute the number of frames relatively to the time origin and convert back to timestamps.
-            double frame = (double)(inputTimestamp - inputTimeOrigin) / inputAverageTimeStampsPerFrame;
-            double outputAverageTimestampsPerFrame = metadata.AverageTimeStampsPerSecond / (1000.0 / metadata.BaselineFrameInterval);
-            long outputTimestamp = (long)Math.Round(frame * outputAverageTimestampsPerFrame) + metadata.TimeOrigin;
+            long outputTimestamp;
+            if (inputIsCaptureRecording)
+            {
+                // Importing capture recording kva into a video.
+                // For KVA files coming from capture we typically don't have any timing information.
+                // The only one should be the single keyframe which is fixed at time 0.
+                // The important time information is the time origin (trigger time) and we will handle it at the end.
+                // Align all times relatively to the first timestamp.
+                // Other keyframes and times are possible if the file was created from a video, we still want to
+                // keep them aligned with the first timestamp and not the recipient time origin.
+                outputTimestamp = RemapTimestamp(inputTimestamp, inputFirstTimeStamp, metadata.FirstTimeStamp);
+            }
+            else
+            {
+                // Importing from a different video context.
+                // Align times relatively to the time origins.
+                outputTimestamp = RemapTimestamp(inputTimestamp, inputTimeOrigin, metadata.TimeOrigin);
+            }
             
             return outputTimestamp;
         }
 
         /// <summary>
-        /// Returns true if we are in the exact same context and file.
+        /// Remap the input timestamp relatively to a reference.
+        /// </summary>
+        private long RemapTimestamp(long inputTimestamp, long inputReferenceTimestamp, long outputReferenceTimestamp)
+        {
+            // Compute the frame relatively to the reference and convert it back to timestamps.
+            double frame = (double)(inputTimestamp - inputReferenceTimestamp) / inputAverageTimeStampsPerFrame;
+            double outputAverageTimestampsPerFrame = metadata.AverageTimeStampsPerSecond / (1000.0 / metadata.BaselineFrameInterval);
+            long outputTimestamp = (long)Math.Round(frame * outputAverageTimestampsPerFrame) + outputReferenceTimestamp;
+            return outputTimestamp;
+        }
+
+        /// <summary>
+        /// Returns true if we are in the same video context.
         /// </summary>
         private bool IsSameContext()
         {
-            return ((inputFirstTimeStamp == metadata.FirstTimeStamp) &&
-                    (inputAverageTimeStampsPerFrame == metadata.AverageTimeStampsPerFrame) &&
-                    (inputFileName == Path.GetFileNameWithoutExtension(metadata.VideoPath)));
+            // Note: we are only testing the filename, not the full path but this is a good enough heuristic.
+            // We still want to allow importing from a different path if the file is the same.
+            return (inputFirstTimeStamp == metadata.FirstTimeStamp) &&
+                   (inputAverageTimeStampsPerFrame == metadata.AverageTimeStampsPerFrame) &&
+                   (inputFileName == Path.GetFileNameWithoutExtension(metadata.VideoPath)); 
         }
         #endregion
 
@@ -519,6 +580,10 @@ namespace Kinovea.ScreenManager
             {
                 w.WriteElementString("OriginalFilename", Path.GetFileNameWithoutExtension(metadata.VideoPath));
                 w.WriteElementString("FullPath", metadata.VideoPath);
+            }
+            else
+            {
+                w.WriteElementString("CaptureRecording", XmlHelper.WriteBoolean(true));
             }
 
             if (!string.IsNullOrEmpty(metadata.GlobalTitle))
