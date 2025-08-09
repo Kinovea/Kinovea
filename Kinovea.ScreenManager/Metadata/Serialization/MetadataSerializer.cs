@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using Kinovea.Services;
 using System.Globalization;
 using System.Xml.Xsl;
 using System.Windows.Forms;
@@ -12,6 +11,7 @@ using System.Drawing;
 using System.Reflection;
 using System.Xml.Serialization;
 using Kinovea.ScreenManager.Languages;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -62,34 +62,7 @@ namespace Kinovea.ScreenManager
 
             metadata.AfterKVAImport();
         }
-        public string SaveToString(Metadata metadata)
-        {
-            if (metadata == null)
-                throw new ArgumentNullException("metadata");
-
-            this.metadata = metadata;
-
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.Indent = false;
-            settings.CloseOutput = true;
-
-            StringBuilder builder = new StringBuilder();
-            using (XmlWriter w = XmlWriter.Create(builder, settings))
-            {
-                try
-                {
-                    WriteXml(w);
-                }
-                catch (Exception e)
-                {
-                    log.Error("An error happened during the writing of the kva string");
-                    log.Error(e);
-                }
-            }
-
-            return builder.ToString();
-        }
-
+        
         /// <summary>
         /// Save to a specfic path or to the last known storage location if any.
         /// Otherwise ask for a target.
@@ -152,7 +125,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Save the metadata to the passed file.
         /// </summary>
-        public void SaveToFile(Metadata metadata, string file)
+        public void SaveToFile(Metadata metadata, string file, bool isCaptureRecording = false, KVAExportFlags flags = KVAExportFlags.Full)
         {
             if (metadata == null)
                 throw new ArgumentNullException("metadata");
@@ -173,7 +146,7 @@ namespace Kinovea.ScreenManager
             {
                 try
                 {
-                    WriteXml(w);
+                    WriteXml(w, isCaptureRecording, flags);
                 }
                 catch (Exception e)
                 {
@@ -487,48 +460,75 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Save
-        private void WriteXml(XmlWriter w)
+        private void WriteXml(XmlWriter w, bool isCaptureRecording, KVAExportFlags flags)
         {
             // Convert the metadata to KVA XML.
             w.WriteStartElement("KinoveaVideoAnalysis");
-            WriteGeneralInformation(w);
+            WriteGeneralInformation(w, isCaptureRecording);
 
             // Calibration (including lens parameters if available).
-            WriteCalibration(w);
+            if ((flags & KVAExportFlags.Calibration) != 0)
+            {
+                WriteCalibration(w);
+            }
 
             // Keyframes and attached drawings.
-            WriteKeyframes(w, SerializationFilter.KVA);
+            if ((flags & KVAExportFlags.Drawings) != 0)
+            {
+                WriteKeyframes(w, SerializationFilter.KVA);
+            }
             
-            // Detached drawings.
-            WriteChronos(w, SerializationFilter.KVA);
-            WriteTracks(w, SerializationFilter.KVA);
+            if ((flags & KVAExportFlags.VideoSpecific) != 0)
+            {
+                // Detached drawings.
+                WriteChronos(w, SerializationFilter.KVA);
+                WriteTracks(w, SerializationFilter.KVA);
 
-            // Singleton drawings.
-            WriteSpotlights(w);
-            WriteNumberSequence(w);
-            WriteCoordinateSystem(w);
-            WriteTestGrid(w);
+                // Singleton drawings.
+                WriteSpotlights(w);
+                WriteNumberSequence(w);
+            }
 
-            WriteTrackablePoints(w);
-            WriteVideoFilters(w);
-            WriteCameraMotion(w);
+            // Other singleton drawings driven by different flags.
+            if ((flags & KVAExportFlags.Calibration) != 0)
+            {
+                WriteCoordinateSystem(w);
+            }
+
+            if ((flags & KVAExportFlags.Drawings) != 0)
+            {
+                WriteTestGrid(w);
+            }
+
+            if ((flags & KVAExportFlags.VideoSpecific) != 0)
+            {
+                WriteTrackablePoints(w);
+                WriteVideoFilters(w);
+                WriteCameraMotion(w);
+            }
 
             w.WriteEndElement();
         }
 
-        private void WriteGeneralInformation(XmlWriter w)
+        private void WriteGeneralInformation(XmlWriter w, bool isCaptureRecording)
         {
             w.WriteElementString("FormatVersion", "2.0");
             w.WriteElementString("Producer", Software.ApplicationName + "." + Software.Version);
-            w.WriteElementString("OriginalFilename", Path.GetFileNameWithoutExtension(metadata.VideoPath));
-            w.WriteElementString("FullPath", metadata.VideoPath);
+
+            if (!isCaptureRecording)
+            {
+                w.WriteElementString("OriginalFilename", Path.GetFileNameWithoutExtension(metadata.VideoPath));
+                w.WriteElementString("FullPath", metadata.VideoPath);
+            }
 
             if (!string.IsNullOrEmpty(metadata.GlobalTitle))
+            {
                 w.WriteElementString("GlobalTitle", metadata.GlobalTitle);
+            }
 
             w.WriteElementString("ImageSize", metadata.ImageSize.Width + ";" + metadata.ImageSize.Height);
             
-            // Image aspect
+            // Image adjustments
             w.WriteElementString("Aspect", metadata.ImageAspect.ToString());
             w.WriteElementString("Rotation", metadata.ImageRotation.ToString());
             w.WriteElementString("Mirror", metadata.Mirrored.ToString().ToLower());
@@ -541,9 +541,14 @@ namespace Kinovea.ScreenManager
             w.WriteElementString("AverageTimeStampsPerFrame", metadata.AverageTimeStampsPerFrame.ToString());
             w.WriteElementString("CaptureFramerate", string.Format(CultureInfo.InvariantCulture, "{0}", metadata.CalibrationHelper.CaptureFramesPerSecond));
             w.WriteElementString("UserFramerate", string.Format(CultureInfo.InvariantCulture, "{0}", 1000 / metadata.BaselineFrameInterval));
-            w.WriteElementString("FirstTimeStamp", metadata.FirstTimeStamp.ToString());
-            w.WriteElementString("SelectionStart", metadata.SelectionStart.ToString());
-            w.WriteElementString("SelectionEnd", metadata.SelectionEnd.ToString());
+            
+            if (!isCaptureRecording)
+            {
+                w.WriteElementString("FirstTimeStamp", metadata.FirstTimeStamp.ToString());
+                w.WriteElementString("SelectionStart", metadata.SelectionStart.ToString());
+                w.WriteElementString("SelectionEnd", metadata.SelectionEnd.ToString());
+            }
+            
             w.WriteElementString("TimeOrigin", metadata.TimeOrigin.ToString());
         }
 

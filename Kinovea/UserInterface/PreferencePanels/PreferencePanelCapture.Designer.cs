@@ -66,6 +66,9 @@ namespace Kinovea.Root
       this.lblMemoryBuffer = new System.Windows.Forms.Label();
       this.trkMemoryBuffer = new System.Windows.Forms.TrackBar();
       this.tabRecording = new System.Windows.Forms.TabPage();
+      this.grpAnnotations = new System.Windows.Forms.GroupBox();
+      this.chkExportCalibration = new System.Windows.Forms.CheckBox();
+      this.chkExportDrawings = new System.Windows.Forms.CheckBox();
       this.gbHighspeedCameras = new System.Windows.Forms.GroupBox();
       this.nudReplacementFramerate = new System.Windows.Forms.NumericUpDown();
       this.lblReplacementFramerate = new System.Windows.Forms.Label();
@@ -89,7 +92,6 @@ namespace Kinovea.Root
       this.chkEnableAudioTrigger = new System.Windows.Forms.CheckBox();
       this.lblAudioTriggerThreshold = new System.Windows.Forms.Label();
       this.lblInputDevice = new System.Windows.Forms.Label();
-      this.vumeter = new Kinovea.Services.VolumeMeterThreshold();
       this.cmbInputDevice = new System.Windows.Forms.ComboBox();
       this.lblAudioTriggerHits = new System.Windows.Forms.Label();
       this.lblTriggerAction = new System.Windows.Forms.Label();
@@ -145,11 +147,13 @@ namespace Kinovea.Root
       this.lblPostRecordCommand = new System.Windows.Forms.Label();
       this.tbPostRecordCommand = new System.Windows.Forms.TextBox();
       this.lblRecordingTime = new System.Windows.Forms.Label();
+      this.vumeter = new Kinovea.Services.VolumeMeterThreshold();
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
       this.tabMemory.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.trkMemoryBuffer)).BeginInit();
       this.tabRecording.SuspendLayout();
+      this.grpAnnotations.SuspendLayout();
       this.gbHighspeedCameras.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudReplacementFramerate)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudReplacementThreshold)).BeginInit();
@@ -365,6 +369,7 @@ namespace Kinovea.Root
       // 
       // tabRecording
       // 
+      this.tabRecording.Controls.Add(this.grpAnnotations);
       this.tabRecording.Controls.Add(this.gbHighspeedCameras);
       this.tabRecording.Controls.Add(this.grpRecordingMode);
       this.tabRecording.Location = new System.Drawing.Point(4, 22);
@@ -375,6 +380,39 @@ namespace Kinovea.Root
       this.tabRecording.Text = "Recording";
       this.tabRecording.UseVisualStyleBackColor = true;
       // 
+      // grpAnnotations
+      // 
+      this.grpAnnotations.Controls.Add(this.chkExportCalibration);
+      this.grpAnnotations.Controls.Add(this.chkExportDrawings);
+      this.grpAnnotations.Location = new System.Drawing.Point(6, 200);
+      this.grpAnnotations.Name = "grpAnnotations";
+      this.grpAnnotations.Size = new System.Drawing.Size(470, 81);
+      this.grpAnnotations.TabIndex = 57;
+      this.grpAnnotations.TabStop = false;
+      this.grpAnnotations.Text = "Exported annotations";
+      // 
+      // chkExportCalibration
+      // 
+      this.chkExportCalibration.AutoSize = true;
+      this.chkExportCalibration.Location = new System.Drawing.Point(20, 51);
+      this.chkExportCalibration.Name = "chkExportCalibration";
+      this.chkExportCalibration.Size = new System.Drawing.Size(107, 17);
+      this.chkExportCalibration.TabIndex = 58;
+      this.chkExportCalibration.Text = "Export calibration";
+      this.chkExportCalibration.UseVisualStyleBackColor = true;
+      this.chkExportCalibration.CheckedChanged += new System.EventHandler(this.chkExcludeCalibration_CheckedChanged);
+      // 
+      // chkExportDrawings
+      // 
+      this.chkExportDrawings.AutoSize = true;
+      this.chkExportDrawings.Location = new System.Drawing.Point(20, 26);
+      this.chkExportDrawings.Name = "chkExportDrawings";
+      this.chkExportDrawings.Size = new System.Drawing.Size(101, 17);
+      this.chkExportDrawings.TabIndex = 57;
+      this.chkExportDrawings.Text = "Export drawings";
+      this.chkExportDrawings.UseVisualStyleBackColor = true;
+      this.chkExportDrawings.CheckedChanged += new System.EventHandler(this.chkExcludeDrawings_CheckedChanged);
+      // 
       // gbHighspeedCameras
       // 
       this.gbHighspeedCameras.Controls.Add(this.nudReplacementFramerate);
@@ -383,14 +421,14 @@ namespace Kinovea.Root
       this.gbHighspeedCameras.Controls.Add(this.lblReplacementThreshold);
       this.gbHighspeedCameras.Location = new System.Drawing.Point(6, 113);
       this.gbHighspeedCameras.Name = "gbHighspeedCameras";
-      this.gbHighspeedCameras.Size = new System.Drawing.Size(470, 94);
+      this.gbHighspeedCameras.Size = new System.Drawing.Size(470, 81);
       this.gbHighspeedCameras.TabIndex = 41;
       this.gbHighspeedCameras.TabStop = false;
       this.gbHighspeedCameras.Text = "High speed cameras";
       // 
       // nudReplacementFramerate
       // 
-      this.nudReplacementFramerate.Location = new System.Drawing.Point(281, 57);
+      this.nudReplacementFramerate.Location = new System.Drawing.Point(281, 48);
       this.nudReplacementFramerate.Minimum = new decimal(new int[] {
             1,
             0,
@@ -409,7 +447,7 @@ namespace Kinovea.Root
       // lblReplacementFramerate
       // 
       this.lblReplacementFramerate.AutoSize = true;
-      this.lblReplacementFramerate.Location = new System.Drawing.Point(17, 59);
+      this.lblReplacementFramerate.Location = new System.Drawing.Point(17, 50);
       this.lblReplacementFramerate.Name = "lblReplacementFramerate";
       this.lblReplacementFramerate.Size = new System.Drawing.Size(120, 13);
       this.lblReplacementFramerate.TabIndex = 55;
@@ -417,7 +455,7 @@ namespace Kinovea.Root
       // 
       // nudReplacementThreshold
       // 
-      this.nudReplacementThreshold.Location = new System.Drawing.Point(281, 31);
+      this.nudReplacementThreshold.Location = new System.Drawing.Point(281, 22);
       this.nudReplacementThreshold.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -441,7 +479,7 @@ namespace Kinovea.Root
       // lblReplacementThreshold
       // 
       this.lblReplacementThreshold.AutoSize = true;
-      this.lblReplacementThreshold.Location = new System.Drawing.Point(17, 33);
+      this.lblReplacementThreshold.Location = new System.Drawing.Point(17, 24);
       this.lblReplacementThreshold.Name = "lblReplacementThreshold";
       this.lblReplacementThreshold.Size = new System.Drawing.Size(164, 13);
       this.lblReplacementThreshold.TabIndex = 53;
@@ -669,20 +707,6 @@ namespace Kinovea.Root
       this.lblInputDevice.Size = new System.Drawing.Size(114, 13);
       this.lblInputDevice.TabIndex = 47;
       this.lblInputDevice.Text = "Preferred input device:";
-      // 
-      // vumeter
-      // 
-      this.vumeter.Amplitude = 0F;
-      this.vumeter.BackColor = System.Drawing.Color.White;
-      this.vumeter.DecibelRange = 60F;
-      this.vumeter.Location = new System.Drawing.Point(249, 70);
-      this.vumeter.Name = "vumeter";
-      this.vumeter.Size = new System.Drawing.Size(175, 21);
-      this.vumeter.TabIndex = 51;
-      this.vumeter.Text = "volumeMeterThreshold1";
-      this.vumeter.Threshold = 0.001F;
-      this.vumeter.ThresholdLinear = 0F;
-      this.vumeter.ThresholdChanged += new System.EventHandler(this.Vumeter_ThresholdChanged);
       // 
       // cmbInputDevice
       // 
@@ -1358,6 +1382,20 @@ namespace Kinovea.Root
       this.lblRecordingTime.TabIndex = 43;
       this.lblRecordingTime.Text = "Recording time (s) :";
       // 
+      // vumeter
+      // 
+      this.vumeter.Amplitude = 0F;
+      this.vumeter.BackColor = System.Drawing.Color.White;
+      this.vumeter.DecibelRange = 60F;
+      this.vumeter.Location = new System.Drawing.Point(249, 70);
+      this.vumeter.Name = "vumeter";
+      this.vumeter.Size = new System.Drawing.Size(175, 21);
+      this.vumeter.TabIndex = 51;
+      this.vumeter.Text = "volumeMeterThreshold1";
+      this.vumeter.Threshold = 0.001F;
+      this.vumeter.ThresholdLinear = 0F;
+      this.vumeter.ThresholdChanged += new System.EventHandler(this.Vumeter_ThresholdChanged);
+      // 
       // PreferencePanelCapture
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1372,6 +1410,8 @@ namespace Kinovea.Root
       this.tabMemory.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.trkMemoryBuffer)).EndInit();
       this.tabRecording.ResumeLayout(false);
+      this.grpAnnotations.ResumeLayout(false);
+      this.grpAnnotations.PerformLayout();
       this.gbHighspeedCameras.ResumeLayout(false);
       this.gbHighspeedCameras.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudReplacementFramerate)).EndInit();
@@ -1500,5 +1540,8 @@ namespace Kinovea.Root
         private System.Windows.Forms.NumericUpDown nudQuietPeriod;
         private System.Windows.Forms.ComboBox cmbDefaultTriggerState;
         private System.Windows.Forms.Label lblDefaultTriggerState;
+        private System.Windows.Forms.GroupBox grpAnnotations;
+        private System.Windows.Forms.CheckBox chkExportCalibration;
+        private System.Windows.Forms.CheckBox chkExportDrawings;
     }
 }

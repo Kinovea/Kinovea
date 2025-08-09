@@ -76,6 +76,7 @@ namespace Kinovea.Root
         private CaptureRecordingMode recordingMode;
         private float replacementFramerateThreshold;
         private float replacementFramerate;
+        private KVAExportFlags exportFlags = KVAExportFlags.DefaultCaptureRecording;
 
         // Trigger
         private bool enableAudioTrigger;
@@ -161,6 +162,7 @@ namespace Kinovea.Root
             recordingMode = PreferencesManager.CapturePreferences.RecordingMode;
             replacementFramerateThreshold = PreferencesManager.CapturePreferences.HighspeedRecordingFramerateThreshold;
             replacementFramerate = PreferencesManager.CapturePreferences.HighspeedRecordingFramerateOutput;
+            exportFlags = PreferencesManager.CapturePreferences.ExportFlags;
 
             // Trigger
             enableAudioTrigger = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger;
@@ -254,7 +256,7 @@ namespace Kinovea.Root
             grpRecordingMode.Text = RootLang.dlgPreferences_Capture_RecordingMode;
             rbRecordingCamera.Text = RootLang.dlgPreferences_Capture_RecordingMode_Camera;
             rbRecordingDelayed.Text = RootLang.dlgPreferences_Capture_RecordingMode_Display;
-            rbRecordingScheduled.Text = RootLang.dlgPreferences_Capture_RecordingMode_Scheduled; 
+            rbRecordingScheduled.Text = RootLang.dlgPreferences_Capture_RecordingMode_Scheduled;
             chkUncompressedVideo.Text = RootLang.dlgPreferences_Capture_chkUncompressedVideo;
 
             rbRecordingCamera.Checked = recordingMode == CaptureRecordingMode.Camera;
@@ -273,7 +275,10 @@ namespace Kinovea.Root
             NudHelper.FixNudScroll(nudReplacementThreshold);
             NudHelper.FixNudScroll(nudReplacementFramerate);
             // Tooltip: Starting at this capture framerate, videos will be created with the replacement framerate in their metadata.
-        }
+
+            chkExportCalibration.Checked = (exportFlags & KVAExportFlags.Calibration) != 0;
+            chkExportDrawings.Checked = (exportFlags & KVAExportFlags.Drawings) != 0;
+        }    
 
         private void InitTabTrigger()
         {
@@ -600,6 +605,16 @@ namespace Kinovea.Root
         {
             replacementFramerate = (float)nudReplacementFramerate.Value;
         }
+        private void chkExcludeDrawings_CheckedChanged(object sender, EventArgs e)
+        {
+            bool exportDrawings = chkExportDrawings.Checked;
+            exportFlags = exportDrawings ? exportFlags | KVAExportFlags.Drawings : exportFlags & ~KVAExportFlags.Drawings;
+        }
+        private void chkExcludeCalibration_CheckedChanged(object sender, EventArgs e)
+        {
+            bool exportCalibration = chkExportCalibration.Checked;
+            exportFlags = exportCalibration ? exportFlags | KVAExportFlags.Calibration : exportFlags & ~KVAExportFlags.Calibration;
+        }
         #endregion
 
         #region Tab Trigger
@@ -782,6 +797,7 @@ namespace Kinovea.Root
             PreferencesManager.CapturePreferences.RecordingMode = recordingMode;
             PreferencesManager.CapturePreferences.HighspeedRecordingFramerateThreshold = replacementFramerateThreshold;
             PreferencesManager.CapturePreferences.HighspeedRecordingFramerateOutput = replacementFramerate;
+            PreferencesManager.CapturePreferences.ExportFlags = exportFlags;
 
             // Trigger
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger = enableAudioTrigger;

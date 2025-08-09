@@ -1888,7 +1888,9 @@ namespace Kinovea.ScreenManager
             {
                 MetadataSerializer serializer = new MetadataSerializer();
                 string kvaFilename = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path)) + ".kva";
-                serializer.SaveToFile(metadata, kvaFilename);
+
+                KVAExportFlags flags = PreferencesManager.CapturePreferences.ExportFlags;
+                serializer.SaveToFile(metadata, kvaFilename, true, flags);
 
                 lastExportedMetadata = kvaFilename;
             }

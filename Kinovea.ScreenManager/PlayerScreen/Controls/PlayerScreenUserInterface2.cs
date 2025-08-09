@@ -631,34 +631,37 @@ namespace Kinovea.ScreenManager
 
             if (!recoveredMetadata)
             {
-
                 // Note: the order of load between the sidecar kva and the default player kva is important.
-                // For keyframes and detached drawings it doesn't matter, but for global configuration
-                // like mirror, calibration, etc. the last file wins.
+                // Generally we want to load the more general file first (default kva) and the more specific one later, 
+                // as the last to load overwrites the values.
+                // This is not relevant for drawings because keyframes and detached drawings are merged, not replaced.
+                // It is important for the top level data like time origin, working zone, calibration, etc. as well 
+                // as the singleton drawings like the coordinate system.
+                // If the overwrite is undesirable the file should not contain the info in the first place.
+                // See for example the case of capture recording, things like working zone bounds are not 
+                // included, and attached drawings and calibration are optionally included according to preferences.
 
                 Metadata metadata = m_FrameServer.Metadata;
-                string lastKVAPath = "";
 
-                // Side-car KVA.
+                // 1. Load the default player KVA.
+                string defaultKVAPath = PreferencesManager.PlayerPreferences.PlaybackKVA;
+                if (!string.IsNullOrEmpty(defaultKVAPath))
+                {
+                    if (Path.IsPathRooted(defaultKVAPath))
+                        LoadKVA(defaultKVAPath);
+                    else
+                        LoadKVA(Path.Combine(Software.SettingsDirectory, defaultKVAPath));
+
+                    // Never let the default KVA become the working file.
+                    metadata.ResetKVAPath();
+                }
+
+                // 2. Load the sidecar KVA if it exists.
                 foreach (string extension in MetadataSerializer.SupportedFileFormats())
                 {
                     string candidate = Path.Combine(Path.GetDirectoryName(m_FrameServer.VideoReader.FilePath), Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath) + extension);
                     LoadKVA(candidate);
-                    lastKVAPath = metadata.LastKVAPath;
                 }
-
-                // Startup KVA.
-                string startupFile = PreferencesManager.PlayerPreferences.PlaybackKVA;
-                if (!string.IsNullOrEmpty(startupFile))
-                {
-                    if (Path.IsPathRooted(startupFile))
-                        LoadKVA(startupFile);
-                    else
-                        LoadKVA(Path.Combine(Software.SettingsDirectory, startupFile));
-                }
-
-                // Never let the default KVA become the working file.
-                metadata.LastKVAPath = lastKVAPath;
             }
 
             if (m_LaunchDescription != null)

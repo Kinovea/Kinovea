@@ -107,6 +107,11 @@ namespace Kinovea.Services
             get { return slowspeedRecordingFramerateOutput; }
             set { slowspeedRecordingFramerateOutput = value; }
         }
+        public KVAExportFlags ExportFlags
+        {
+            get { return exportFlags; }
+            set { exportFlags = value; }
+        }
         public string PostRecordCommand
         {
             get { return postRecordCommand; }
@@ -134,6 +139,7 @@ namespace Kinovea.Services
         private float highspeedRecordingFramerateOutput = 30;
         private float slowspeedRecordingFramerateThreshold = 1;
         private float slowspeedRecordingFramerateOutput = 30;
+        private KVAExportFlags exportFlags = KVAExportFlags.DefaultCaptureRecording;
         private string postRecordCommand;
         private string captureKVA;
         #endregion
@@ -201,6 +207,7 @@ namespace Kinovea.Services
             string srfo = slowspeedRecordingFramerateOutput.ToString("0.000", CultureInfo.InvariantCulture);
             writer.WriteElementString("SlowspeedRecordingFramerateThreshold", srft);
             writer.WriteElementString("SlowspeedRecordingFramerateOutput", srfo);
+            writer.WriteElementString("ExportFlags", exportFlags.ToString());
 
             writer.WriteElementString("PostRecordCommand", postRecordCommand);
             writer.WriteElementString("CaptureKVA", captureKVA);
@@ -222,7 +229,8 @@ namespace Kinovea.Services
                         displaySynchronizationFramerate = double.Parse(str, CultureInfo.InvariantCulture);
                         break;
                     case "CaptureRecordingMode":
-                        recordingMode = (CaptureRecordingMode)Enum.Parse(typeof(CaptureRecordingMode), reader.ReadElementContentAsString());
+                        string recordingModeString = reader.ReadElementContentAsString();
+                        recordingMode = (CaptureRecordingMode)Enum.Parse(typeof(CaptureRecordingMode), recordingModeString);
                         break;
                     case "SaveUncompressedVideo":
                         saveUncompressedVideo = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
@@ -260,6 +268,10 @@ namespace Kinovea.Services
                     case "SlowspeedRecordingFramerateOutput":
                         string srfo = reader.ReadElementContentAsString();
                         slowspeedRecordingFramerateOutput = float.Parse(srfo, CultureInfo.InvariantCulture);
+                        break;
+                    case "ExportFlags":
+                        string exportFlagsString = reader.ReadElementContentAsString();
+                        exportFlags = (KVAExportFlags)Enum.Parse(typeof(KVAExportFlags), exportFlagsString);
                         break;
                     case "PostRecordCommand":
                         postRecordCommand = reader.ReadElementContentAsString();
