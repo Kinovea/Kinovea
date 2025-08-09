@@ -193,7 +193,11 @@ namespace Kinovea.ScreenManager
             MetadataSerializer serializer = new MetadataSerializer();
             string forcedPath = "";
             string defaultPath = this.FilePath;
-            return serializer.UserSave(this.Metadata, forcedPath, defaultPath);
+            bool saved = serializer.UserSave(this.Metadata, forcedPath, defaultPath);
+            if (saved)
+                AfterLastKVAPathChanged();
+            
+            return saved;
         }
 
         /// <summary>
@@ -206,6 +210,8 @@ namespace Kinovea.ScreenManager
 
             MetadataSerializer serializer = new MetadataSerializer();
             serializer.UserSaveAs(this.Metadata, this.FilePath);
+
+            AfterLastKVAPathChanged();
         }
 
         /// <summary>
@@ -237,6 +243,8 @@ namespace Kinovea.ScreenManager
                 PreferencesManager.PlayerPreferences.PlaybackKVA = filename;
             else
                 PreferencesManager.CapturePreferences.CaptureKVA = filename;
+
+            AfterLastKVAPathChanged();
         }
 
         /// <summary>
@@ -256,6 +264,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             this.Metadata.Unload();
+            AfterLastKVAPathChanged();
         }
 
         public void ReloadDefaultAnnotations(bool forPlayer)
@@ -284,6 +293,7 @@ namespace Kinovea.ScreenManager
 
             // Never let the default file become the working file.
             this.Metadata.ResetKVAPath();
+            AfterLastKVAPathChanged();
         }
 
         /// <summary>
@@ -325,5 +335,12 @@ namespace Kinovea.ScreenManager
             string text = ScreenManagerLang.InfoBox_MetadataIsDirty_Text.Replace("\\n", "\n");
             return MessageBox.Show(text, caption, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
         }
+
+        private void AfterLastKVAPathChanged()
+        {
+            // Make sure the main File menu is up to date.
+            RaiseActivated(EventArgs.Empty);
+        }
+
     }   
 }

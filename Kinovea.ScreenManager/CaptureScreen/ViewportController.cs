@@ -409,7 +409,7 @@ namespace Kinovea.ScreenManager
             mnuUnloadAnnotations.Image = Properties.Resources.delete_notes;
             mnuReloadDefaultCaptureAnnotations.Image = Properties.Resources.notes2_16;
             mnuReloadLinkedAnnotations.Image = Properties.Resources.notes2_16;
-            mnuCloseScreen.Image = Properties.Resources.closeplayer;
+            mnuCloseScreen.Image = Properties.Capture.camera_close;
             
             mnuLoadAnnotations.Click += (s, e) => LoadAnnotationsAsked?.Invoke(this, e);
             mnuSaveAnnotations.Click += (s, e) => SaveAnnotationsAsked?.Invoke(this, e);
@@ -540,7 +540,8 @@ namespace Kinovea.ScreenManager
             if (drawing is DrawingCoordinateSystem || drawing is DrawingTestGrid)
                 return;
 
-            popMenu.Items.Add(mnuSepDrawing2);
+            if (hasExtraMenus)
+                popMenu.Items.Add(mnuSepDrawing2);
 
             if (drawing.IsCopyPasteable)
             {

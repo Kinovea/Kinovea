@@ -1191,6 +1191,8 @@ namespace Kinovea.ScreenManager
                     mnuExportSpreadsheet.Enabled = player.FrameServer.Metadata.HasVisibleData;
                     mnuExportDocument.Enabled = true;
 
+                    ConfigureSaveMenu(activeScreen);
+                        
                     // Edit
                     HistoryMenuManager.SwitchContext(activeScreen.HistoryStack);
                     ConfigureClipboardMenus(player);
@@ -1249,7 +1251,9 @@ namespace Kinovea.ScreenManager
                     mnuSave.Enabled = true;
                     mnuSaveAs.Enabled = true;
                     mnuUnloadAnnotations.Enabled = true;
-                    
+
+                    ConfigureSaveMenu(activeScreen);
+
                     mnuExportVideo.Enabled = false;
                     mnuExportImage.Enabled = false;
                     mnuExportSpreadsheet.Enabled = false;
@@ -1317,6 +1321,8 @@ namespace Kinovea.ScreenManager
                 mnuExportDocument.Enabled = false;
                 toolSave.Enabled = false;
 
+                ConfigureSaveMenu(activeScreen);
+
                 // Edit
                 HistoryMenuManager.SwitchContext(null);
                 ConfigureClipboardMenus(null);
@@ -1383,7 +1389,7 @@ namespace Kinovea.ScreenManager
                     else if(screenList[0] is PlayerScreen)
                     {
                         // The only screen is a loaded PlayerScreen.
-                        mnuCloseFile.Text = strClosingText + " - " + ((PlayerScreen)screenList[0]).FileName;
+                        mnuCloseFile.Text = string.Format("{0} ({1})", strClosingText, ((PlayerScreen)screenList[0]).FileName);
                         mnuCloseFile.Enabled = true;
                         mnuCloseFile.Visible = true;
 
@@ -1407,7 +1413,7 @@ namespace Kinovea.ScreenManager
                         {
                             hasNothingToClose = false;
 
-                            mnuCloseFile.Text = strClosingText + " - " + ((PlayerScreen)screenList[0]).FileName;
+                            mnuCloseFile.Text = string.Format("{0} ({1})", strClosingText, ((PlayerScreen)screenList[0]).FileName);
                             mnuCloseFile.Enabled = true;
                             mnuCloseFile.Visible = true;
                         }
@@ -1432,8 +1438,8 @@ namespace Kinovea.ScreenManager
                         if (screenList[1].Full)
                         {
                             hasNothingToClose = false;
-
-                            mnuCloseFile2.Text = strClosingText + " - " + ((PlayerScreen)screenList[1]).FileName;
+                            
+                            mnuCloseFile2.Text = string.Format("{0} ({1})", strClosingText, ((PlayerScreen)screenList[1]).FileName);
                             mnuCloseFile2.Enabled = true;
                             mnuCloseFile2.Visible = true;
                         }
@@ -1475,6 +1481,23 @@ namespace Kinovea.ScreenManager
 
             #endregion
         }
+
+        /// <summary>
+        /// Inject the name of the working KVA file in the Save menu.
+        /// </summary>
+        private void ConfigureSaveMenu(AbstractScreen screen)
+        {
+            if (screen == null || screen.Metadata == null || string.IsNullOrEmpty(screen.Metadata.LastKVAPath))
+            {
+                mnuSave.Text = ScreenManagerLang.Generic_SaveKVA;
+                return;
+            }
+
+            mnuSave.Text = string.Format("{0} ({1})", 
+                ScreenManagerLang.Generic_SaveKVA, 
+                Path.GetFileName(screen.Metadata.LastKVAPath));
+        }
+
         private void ConfigureVideoFilterMenus(PlayerScreen player)
         {
             bool hasVideo = player != null && player.Full;

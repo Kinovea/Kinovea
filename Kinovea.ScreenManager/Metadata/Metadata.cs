@@ -2018,7 +2018,11 @@ namespace Kinovea.ScreenManager
                 AfterDrawingCreation(drawingCoordinateSystem, 0);
             }
 
-            ResetContentHash();
+            // We are just merging don't reset the content hash,
+            // there might be drawings from before that we haven't saved yet.
+            if (init)
+                ResetContentHash();
+
             initialized = true;
         }
 
