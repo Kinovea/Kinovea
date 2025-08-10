@@ -386,8 +386,9 @@ namespace Kinovea.Root
             mnuOptions.DropDownItems.AddRange(new ToolStripItem[] { 
                 mnuLanguages, 
                 mnuTimecode, 
-                mnuWorkspace,
                 mnuPointer,
+                new ToolStripSeparator(),
+                mnuWorkspace,
                 new ToolStripSeparator(), 
                 mnuPreferences});
 

@@ -205,9 +205,9 @@ namespace Kinovea.Root
       // cmbImageFormats
       // 
       this.cmbImageFormats.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbImageFormats.Location = new System.Drawing.Point(302, 158);
+      this.cmbImageFormats.Location = new System.Drawing.Point(263, 158);
       this.cmbImageFormats.Name = "cmbImageFormats";
-      this.cmbImageFormats.Size = new System.Drawing.Size(154, 21);
+      this.cmbImageFormats.Size = new System.Drawing.Size(201, 21);
       this.cmbImageFormats.TabIndex = 29;
       this.cmbImageFormats.SelectedIndexChanged += new System.EventHandler(this.cmbImageAspectRatio_SelectedIndexChanged);
       // 
