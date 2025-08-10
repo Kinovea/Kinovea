@@ -484,15 +484,20 @@ namespace Kinovea.ScreenManager
                 mnuSaveAnnotations.Text = ScreenManagerLang.Generic_SaveKVA;
             }
 
+            bool hasDefaultCaptureKVA = !string.IsNullOrEmpty(PreferencesManager.CapturePreferences.CaptureKVA);
+            mnuReloadDefaultCaptureAnnotations.Enabled = hasDefaultCaptureKVA;
+
             if (!string.IsNullOrEmpty(lastExportedKVA))
             {
                 string filename = Path.GetFileName(lastExportedKVA);
                 mnuReloadLinkedAnnotations.Text = string.Format("{0} ({1})",
                     "Reload linked annotations", filename);
+                mnuReloadLinkedAnnotations.Enabled = true;
             }
             else
             {
                 mnuReloadLinkedAnnotations.Text = "Reload linked annotations";
+                mnuReloadLinkedAnnotations.Enabled = false;
             }
 
             popMenu.Items.Clear();
@@ -506,13 +511,15 @@ namespace Kinovea.ScreenManager
                 //new ToolStripSeparator(),
                 //new ToolStripSeparator(),
                 mnuLoadAnnotations,
+                mnuReloadDefaultCaptureAnnotations,
+                mnuReloadLinkedAnnotations,
+                new ToolStripSeparator(),
                 mnuSaveAnnotations,
                 mnuSaveAnnotationsAs,
                 mnuSaveDefaultPlayerAnnotations,
                 mnuSaveDefaultCaptureAnnotations,
+                new ToolStripSeparator(),
                 mnuUnloadAnnotations,
-                mnuReloadDefaultCaptureAnnotations,
-                mnuReloadLinkedAnnotations,
                 new ToolStripSeparator(),
                 //mnuExportVideo,
                 //mnuExportImage,

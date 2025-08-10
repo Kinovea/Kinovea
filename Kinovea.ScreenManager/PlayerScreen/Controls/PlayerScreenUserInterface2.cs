@@ -3424,6 +3424,9 @@ namespace Kinovea.ScreenManager
                 mnuSaveAnnotations.Text = ScreenManagerLang.Generic_SaveKVA;
             }
 
+            bool hasDefaultPlayerKVA = !string.IsNullOrEmpty(PreferencesManager.PlayerPreferences.PlaybackKVA);
+            mnuReloadDefaultPlayerAnnotations.Enabled = hasDefaultPlayerKVA;
+
             popMenu.Items.Clear();
             popMenu.Items.AddRange(new ToolStripItem[]
             {
@@ -3438,16 +3441,18 @@ namespace Kinovea.ScreenManager
                 mnuOpenVideo,
                 mnuOpenReplayWatcher,
                 new ToolStripSeparator(),
+                mnuExportVideo,
+                mnuExportImage,
+                new ToolStripSeparator(),
                 mnuLoadAnnotations,
+                mnuReloadDefaultPlayerAnnotations,
+                new ToolStripSeparator(),
                 mnuSaveAnnotations,
                 mnuSaveAnnotationsAs,
                 mnuSaveDefaultPlayerAnnotations,
                 mnuSaveDefaultCaptureAnnotations,
-                mnuUnloadAnnotations,
-                mnuReloadDefaultPlayerAnnotations,
                 new ToolStripSeparator(),
-                mnuExportVideo,
-                mnuExportImage,
+                mnuUnloadAnnotations,
                 new ToolStripSeparator(),
                 mnuCloseScreen
             });
