@@ -132,7 +132,9 @@ namespace Kinovea.Services
             CustomToolsDirectory    = Path.Combine(applicationDirectory, "DrawingTools", "Custom");
             StandardToolsDirectory  = Path.Combine(applicationDirectory, "DrawingTools", "Standard");
 
-            RemoteHelpIndex = Experimental ? "http://www.kinovea.org/setup/updatebeta.xml" : "http://www.kinovea.org/setup/update.xml";
+            RemoteHelpIndex = Experimental ? 
+                "https://www.kinovea.org/setup/updatebeta.xml" : 
+                "https://www.kinovea.org/setup/update.xml";
         }
 
         /// <summary>
