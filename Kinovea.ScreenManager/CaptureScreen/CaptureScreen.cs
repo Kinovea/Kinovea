@@ -189,7 +189,6 @@ namespace Kinovea.ScreenManager
         private ViewportController viewportController;
         private CapturedFiles capturedFiles = new CapturedFiles();
         private string lastExportedMetadata;
-        private MetadataWatcher metadataWatcher = new MetadataWatcher();
 
         private bool shared;
         private bool synched;
@@ -248,7 +247,6 @@ namespace Kinovea.ScreenManager
             nonGrabbingInteractionTimer.Tick += NonGrabbingInteractionTimer_Tick;
             displayTimer.Tick += displayTimer_Tick;
             pipelineManager.FrameSignaled += pipelineManager_FrameSignaled;
-            metadataWatcher.Changed += MetadataWatcher_Changed;
             SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
 
             shortId = this.id.ToString().Substring(0, 4);
@@ -463,13 +461,6 @@ namespace Kinovea.ScreenManager
             
             MetadataSerializer s = new MetadataSerializer();
             s.Load(metadata, path, true);
-        }
-
-        private void MetadataWatcher_Changed(object sender, FileSystemEventArgs e)
-        {
-            // This runs in the watcher thread.
-            if (dummy.InvokeRequired)
-                dummy.BeginInvoke((Action)delegate { ReloadLinkedAnnotations(); });
         }
 
         /// <summary>
@@ -1719,7 +1710,6 @@ namespace Kinovea.ScreenManager
 
             // We must save the KVA before the end of the recording for it to get picked up by replay observers.
             // Let's save it right now, before we start collecting frames, to avoid any further pressure on the machine during recording.
-            metadataWatcher.Close();
             SaveKva(path);
 
             if (cameraConnected)

@@ -578,7 +578,6 @@
     <Compile Include="Importers\SRT\MetadataImporterSRT.cs" />
     <Compile Include="Metadata\Interfaces\ITimeable.cs" />
     <Compile Include="Metadata\Serialization\MeasuredData.cs" />
-    <Compile Include="Metadata\MetadataWatcher.cs" />
     <Compile Include="Metadata\Serialization\MeasuredDataAngle.cs" />
     <Compile Include="Metadata\Serialization\MeasuredDataDistance.cs" />
     <Compile Include="Metadata\Serialization\MeasuredDataKeyframe.cs" />
