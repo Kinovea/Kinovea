@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CsvHelper;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -29,7 +30,26 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Key of the currently selected profile.
         /// </summary>
-        public string CurrentKey { get; set; } = string.Empty;
+        public string CurrentKey 
+        {
+            get
+            {
+                return currentKey;
+            }
+            set
+            {
+                if (!Keys.Contains(value))
+                {
+                    log.ErrorFormat("Key '{0}' is not in the list of keys.", value);
+                }
+                else
+                {
+                    currentKey = value;
+                    PreferencesManager.GeneralPreferences.LastProfileKey = currentKey;
+                    PreferencesManager.Save();
+                }
+            }
+        }
 
         /// <summary>
         /// List of defined variables (column headers).
@@ -38,7 +58,8 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        public Dictionary<string, List<string>> profiles = new Dictionary<string, List<string>>();
+        private string currentKey = string.Empty;
+        private Dictionary<string, List<string>> profiles = new Dictionary<string, List<string>>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -50,48 +71,65 @@ namespace Kinovea.ScreenManager
         {
             ClearProfiles();
 
-
-            using (var reader = new StreamReader(csvFile))
-            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+            try
             {
-                csv.Read();
-                csv.ReadHeader();
-                List<List<string>> records = new List<List<string>>();
-
-                // Column headers are the variable names.
-                Variables = csv.HeaderRecord.ToList();
-
-                while (csv.Read())
+                if (!File.Exists(csvFile))
                 {
-                    // Each row is one profile.
-                    List<string> record = new List<string>();
-                    for (int i = 0; i < Variables.Count; i++)
-                    {
-                        string value = csv.GetField<string>(i);
-                        record.Add(value);
-                    }
+                    log.Error("Profile not found.");
+                    return;
+                }
 
-                    if (Keys.Contains(record[0]))
+                using (var reader = new StreamReader(csvFile))
+                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                {
+                    csv.Read();
+                    csv.ReadHeader();
+                    List<List<string>> records = new List<List<string>>();
+
+                    // Column headers are the variable names.
+                    Variables = csv.HeaderRecord.ToList();
+
+                    while (csv.Read())
                     {
-                        // Error, duplicate profile.
-                        log.ErrorFormat("Error: found duplicate profile \"{0}\"", record[0]);
-                    }
-                    else
-                    {
-                        Keys.Add(record[0]);
-                        profiles.Add(record[0], record);
+                        // Each row is one profile.
+                        List<string> record = new List<string>();
+                        for (int i = 0; i < Variables.Count; i++)
+                        {
+                            string value = csv.GetField<string>(i);
+                            record.Add(value);
+                        }
+
+                        if (Keys.Contains(record[0]))
+                        {
+                            // Error, duplicate profile.
+                            log.ErrorFormat("Error: found duplicate profile \"{0}\"", record[0]);
+                        }
+                        else
+                        {
+                            Keys.Add(record[0]);
+                            profiles.Add(record[0], record);
+                        }
                     }
                 }
-            }
 
-            if (Keys.Count == 0)
+                if (Keys.Count == 0)
+                {
+                    log.Error("No profiles were loaded from the CSV file.");
+                    return;
+                }
+
+                // Set the first key as the current key.
+                currentKey = Keys[0];
+
+                // Commit last used profile.
+                PreferencesManager.GeneralPreferences.LastProfile = csvFile;
+                PreferencesManager.Save();
+            }
+            catch (Exception ex)
             {
-                log.Error("No profiles were loaded from the CSV file.");
+                log.Error("Error importing profiles from CSV file.", ex);
                 return;
             }
-
-            // Set the first key as the current key.
-            CurrentKey = Keys[0]; 
         }
 
         /// <summary>
@@ -99,7 +137,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public string GetValue(string variableName)
         {
-            if (string.IsNullOrEmpty(CurrentKey) || !profiles.ContainsKey(CurrentKey))
+            if (string.IsNullOrEmpty(currentKey) || !profiles.ContainsKey(currentKey))
             {
                 log.Error("Current key is not set or does not exist in profiles.");
                 return string.Empty;
@@ -112,7 +150,7 @@ namespace Kinovea.ScreenManager
             }
 
             int index = Variables.IndexOf(variableName);
-            return profiles[CurrentKey][index];
+            return profiles[currentKey][index];
         }
 
         /// <summary>
@@ -122,7 +160,7 @@ namespace Kinovea.ScreenManager
         {
             Variables.Clear();
             Keys.Clear();
-            CurrentKey = string.Empty;
+            currentKey = string.Empty;
             profiles.Clear();
         }
     }

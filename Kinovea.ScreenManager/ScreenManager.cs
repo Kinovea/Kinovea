@@ -218,6 +218,22 @@ namespace Kinovea.ScreenManager
 
             InitializeVideoFilters();
 
+            if (!string.IsNullOrEmpty(PreferencesManager.GeneralPreferences.LastProfile))
+            {
+                // The profile should be loaded before the screens are initialized as part of the workspace, 
+                // since the profile may contain variables used in the default kva paths to load with the screens.
+                // However the command line may specify a different profile to load.
+                profile.Import(PreferencesManager.GeneralPreferences.LastProfile);
+                BuildProfileMenus();
+
+                // Load the key.
+                if (!string.IsNullOrEmpty(PreferencesManager.GeneralPreferences.LastProfileKey))
+                {
+                    profile.CurrentKey = PreferencesManager.GeneralPreferences.LastProfileKey;
+                    CheckCurrentProfileKey();
+                }
+            }
+
             NotificationCenter.StopPlayback += (s, e) => DoStopPlaying();
             NotificationCenter.PreferencesOpened += NotificationCenter_PreferencesOpened;
             NotificationCenter.ExternalCommand += NotificationCenter_ExternalCommand;
@@ -722,16 +738,17 @@ namespace Kinovea.ScreenManager
             mnuProfile.Image = Properties.Resources.group_16;
             mnuProfile.MergeIndex = 5;
             mnuProfile.MergeAction = MergeAction.Insert;
-
-            // TODO: sub menus of profile.
-
             mnuProfileImport.Image = Properties.Resources.folder;
             mnuProfileImport.Click += mnuProfileImport_OnClick;
-            
-            mnuProfile.DropDownItems.Add(mnuProfileImport);
 
-            // If we have a profile with multiple keys they will be added here after a separator.
-            
+            // It's possible that by this point the menu was already built,
+            // if we imported a profile from the command line or preferences.
+            // In that case the import menu is already there, if not we must add it.
+            if (mnuProfile.DropDownItems.Count == 0)
+            {
+                mnuProfile.DropDownItems.Add(mnuProfileImport);
+            }
+
             ToolStripItem[] subOptions = new ToolStripItem[] {
                 mnuProfile,
             };
@@ -1832,6 +1849,9 @@ namespace Kinovea.ScreenManager
             return loaded;
         }
 
+        /// <summary>
+        /// Rebuild the profile menu after a new profile file is imported.
+        /// </summary>
         private void BuildProfileMenus()
         {
             mnuProfile.DropDownItems.Clear();
@@ -1895,11 +1915,6 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-
-        private void ImportProfile(string csvFile)
-        {
-        }
-
 
         #endregion
 
