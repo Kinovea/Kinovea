@@ -111,10 +111,10 @@
     <value>Dodaj sktót</value>
   </data>
   <data name="lblCameras" xml:space="preserve">
-    <value>Kamera</value>
+    <value>Kamery</value>
   </data>
   <data name="lblCaptureHistory" xml:space="preserve">
-    <value>Przechwycona historia</value>
+    <value>Historia przechwytywania</value>
   </data>
   <data name="Generic_Open" xml:space="preserve">
     <value>Otwórz</value>
