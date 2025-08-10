@@ -36,7 +36,7 @@ using Kinovea.Camera;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 using Kinovea.Video;
-using Kinovea.Video.FFMpeg;
+using Kinovea.ScreenManager;
 
 namespace Kinovea.ScreenManager
 {
@@ -72,6 +72,7 @@ namespace Kinovea.ScreenManager
         private bool canShowCommonControls;
         private int pendingPlayerLoads;
         private bool launchLoadingInProgress;
+        private Profile profile = new Profile();
         private List<string> camerasToDiscover = new List<string>();
         private AudioInputLevelMonitor audioInputLevelMonitor = new AudioInputLevelMonitor();
         private UDPMonitor udpMonitor = new UDPMonitor();
@@ -170,6 +171,10 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuScatterDiagram = new ToolStripMenuItem();
         private ToolStripMenuItem mnuAngularAnalysis = new ToolStripMenuItem();
         private ToolStripMenuItem mnuAngleAngleAnalysis = new ToolStripMenuItem();
+
+        // Options
+        private ToolStripMenuItem mnuProfile = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuProfileImport = new ToolStripMenuItem();
 
         #endregion
 
@@ -700,8 +705,44 @@ namespace Kinovea.ScreenManager
 
             #endregion
 
+            #region Options
+            ToolStripMenuItem mnuCatchOptions = new ToolStripMenuItem();
+            mnuCatchOptions.MergeIndex = 6;
+            mnuCatchOptions.MergeAction = MergeAction.MatchOnly;
+
+            // Language     = 0
+            // Time         = 1
+            // Pointer      = 2
+            // ----         = 3
+            // Workspace    = 4
+            // Profile      = 5
+            // ----         = 6
+            // Preferences  = 7
+
+            mnuProfile.Image = Properties.Resources.group_16;
+            mnuProfile.MergeIndex = 5;
+            mnuProfile.MergeAction = MergeAction.Insert;
+
+            // TODO: sub menus of profile.
+
+            mnuProfileImport.Image = Properties.Resources.folder;
+            mnuProfileImport.Click += mnuProfileImport_OnClick;
+            
+            mnuProfile.DropDownItems.Add(mnuProfileImport);
+
+            // If we have a profile with multiple keys they will be added here after a separator.
+            
+            ToolStripItem[] subOptions = new ToolStripItem[] {
+                mnuProfile,
+            };
+            
+            mnuCatchOptions.DropDownItems.AddRange(subOptions);
+
+            #endregion
+
             MenuStrip ThisMenu = new MenuStrip();
-            ThisMenu.Items.AddRange(new ToolStripItem[] { mnuCatchFile, mnuCatchEdit, mnuCatchScreens, mnuCatchImage, mnuCatchVideo, mnuCatchTools });
+            ThisMenu.Items.AddRange(new ToolStripItem[] { 
+                mnuCatchFile, mnuCatchEdit, mnuCatchScreens, mnuCatchImage, mnuCatchVideo, mnuCatchTools, mnuCatchOptions });
             ThisMenu.AllowMerge = true;
 
             ToolStripManager.Merge(ThisMenu, menu);
@@ -1509,6 +1550,7 @@ namespace Kinovea.ScreenManager
                 menu.Checked = hasVideo && player.ActiveVideoFilterType == filterType;
             }
         }
+        
         private void ConfigureImageFormatMenus(AbstractScreen screen)
         {
             // Set the enable and check prop of the image formats menu according of current screen state.
@@ -1525,6 +1567,7 @@ namespace Kinovea.ScreenManager
             mnuAspectRatioForce43.Checked = screen.AspectRatio == ImageAspectRatio.Force43;
             mnuAspectRatioForce169.Checked = screen.AspectRatio == ImageAspectRatio.Force169;
         }
+        
         private void ConfigureImageDemosaicingMenus(AbstractScreen screen)
         {
             bool canChangeDemosaicing = screen != null && screen.Full && screen is PlayerScreen && ((PlayerScreen)screen).FrameServer.VideoReader.CanChangeDemosaicing;
@@ -1544,6 +1587,7 @@ namespace Kinovea.ScreenManager
             mnuDemosaicGRBG.Checked = screen.Demosaicing == Demosaicing.GRBG;
             mnuDemosaicGBRG.Checked = screen.Demosaicing == Demosaicing.GBRG;
         }
+        
         private void ConfigureImageRotationMenus(AbstractScreen screen)
         {
             bool screenIsFull = screen != null && screen.Full;
@@ -1563,8 +1607,7 @@ namespace Kinovea.ScreenManager
             mnuRotation180.Checked = screen.ImageRotation == ImageRotation.Rotate180;
             mnuRotation270.Checked = screen.ImageRotation == ImageRotation.Rotate270;
         }
-
-
+        
         private void ConfigureImageStabilizationMenus(AbstractScreen screen)
         {
 
@@ -1788,6 +1831,76 @@ namespace Kinovea.ScreenManager
             ConfigureLensCalibrationMenus(player);
             return loaded;
         }
+
+        private void BuildProfileMenus()
+        {
+            mnuProfile.DropDownItems.Clear();
+            mnuProfile.DropDownItems.Add(mnuProfileImport);
+
+            // Bail out if the profile is empty.
+            if (profile.Keys == null || profile.Keys.Count == 0)
+            {
+                return;
+            }
+
+            // Otherwise add the profile entries.
+            mnuProfile.DropDownItems.Add(new ToolStripSeparator());
+
+            foreach (var key in profile.Keys)
+            {
+                ToolStripMenuItem item = new ToolStripMenuItem();
+                item.Text = key;
+                item.Tag = key;
+                item.Click += mnuProfile_OnClick;
+                item.MergeAction = MergeAction.Append;
+                item.Checked = (key == profile.CurrentKey);
+                
+                mnuProfile.DropDownItems.Add(item);
+            }
+
+        }
+
+        /// <summary>
+        /// One profile key menu has been clicked.
+        /// Select the corresponding key and check the correct entry.
+        /// </summary>
+        private void mnuProfile_OnClick(object sender, EventArgs e)
+        {
+            ToolStripMenuItem item = sender as ToolStripMenuItem;
+            if (item == null)
+                return;
+            
+            string key = item.Tag as string;
+            if (key == null)
+                return;
+
+            profile.CurrentKey = key;
+
+            CheckCurrentProfileKey();
+        }
+
+        /// <summary>
+        /// Check the profile key menu corresponding to the current key.
+        /// </summary>
+        private void CheckCurrentProfileKey()
+        {
+            // Note: the menu contains entries that are not profile entries
+            // like the menu for import,  profile manager, or separators.
+            foreach (object m in mnuProfile.DropDownItems)
+            {
+                ToolStripMenuItem item = m as ToolStripMenuItem;
+                if (item != null)
+                {
+                    item.Checked = (item.Tag is string && (string)item.Tag == profile.CurrentKey);
+                }
+            }
+        }
+
+        private void ImportProfile(string csvFile)
+        {
+        }
+
+
         #endregion
 
         #region Culture
@@ -1899,6 +2012,10 @@ namespace Kinovea.ScreenManager
             mnuTrajectoryAnalysis.Text = ScreenManagerLang.DataAnalysis_LinearKinematics + "…";
             mnuAngularAnalysis.Text = ScreenManagerLang.DataAnalysis_AngularKinematics + "…";
             mnuAngleAngleAnalysis.Text = ScreenManagerLang.DataAnalysis_AngleAngleDiagrams + "…";
+
+            // Options
+            mnuProfile.Text = "Profile";
+            mnuProfileImport.Text = "Import…";
         }
 
         private void RefreshCultureMenuFilters()
@@ -2876,6 +2993,24 @@ namespace Kinovea.ScreenManager
             ConfigureLensCalibrationMenus(player);
         }
         #endregion
+
+        #region Options
+        private void mnuProfileImport_OnClick(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "Import profile file";
+            openFileDialog.Filter = FilesystemHelper.OpenCSVFilter();
+            openFileDialog.FilterIndex = 1;
+            openFileDialog.InitialDirectory = Software.ProfilesDirectory;
+
+            if (openFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(openFileDialog.FileName))
+                return;
+
+            profile.Import(openFileDialog.FileName);
+            BuildProfileMenus();
+            OrganizeMenus();
+        }
+        #endregion
         #endregion
 
         #region Services
@@ -3132,6 +3267,7 @@ namespace Kinovea.ScreenManager
             foreach (CaptureScreen captureScreen in captureScreens)
                 captureScreen.SetShared(true);
 
+            screen.Profile = profile;
             AddScreenEventHandlers(screen);
             screenList.Add(screen);
         }

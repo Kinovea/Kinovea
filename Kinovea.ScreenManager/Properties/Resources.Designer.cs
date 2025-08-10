@@ -1103,6 +1103,16 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap group_16 {
+            get {
+                object obj = ResourceManager.GetObject("group_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap gutter_center {
             get {
                 object obj = ResourceManager.GetObject("gutter_center", resourceCulture);

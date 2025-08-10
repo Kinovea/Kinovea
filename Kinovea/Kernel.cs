@@ -57,21 +57,33 @@ namespace Kinovea.Root
         private Stopwatch stopwatch = new Stopwatch();
         
         #region Menus
+
+        // File
         private ToolStripMenuItem mnuFile = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOpenFile = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOpenReplayWatcher = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHistory = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHistoryReset = new ToolStripMenuItem();
         private ToolStripMenuItem mnuQuit = new ToolStripMenuItem();
+
+        // Edit
         private ToolStripMenuItem mnuEdit = new ToolStripMenuItem();
         private ToolStripMenuItem mnuUndo = new ToolStripMenuItem();
         private ToolStripMenuItem mnuRedo = new ToolStripMenuItem();
         private ToolStripMenuItem mnuView = new ToolStripMenuItem();
         public ToolStripMenuItem mnuToggleFileExplorer = new ToolStripMenuItem();
         public ToolStripMenuItem mnuFullScreen = new ToolStripMenuItem();
+
+        // Image
         private ToolStripMenuItem mnuImage = new ToolStripMenuItem();
+
+        // Video
         private ToolStripMenuItem mnuVideo = new ToolStripMenuItem();
+
+        // Tools
         private ToolStripMenuItem mnuTools = new ToolStripMenuItem();
+
+        // Options
         private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuLanguages = new ToolStripMenuItem();
         private Dictionary<string, ToolStripMenuItem> languageMenus = new Dictionary<string, ToolStripMenuItem>();
@@ -85,10 +97,12 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuTimecodeMicroseconds = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeTimeAndFrames = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeNormalized = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuPointer = new ToolStripMenuItem();
         private ToolStripMenuItem mnuWorkspace = new ToolStripMenuItem();
         private ToolStripMenuItem mnuWorkspaceSaveAsDefault = new ToolStripMenuItem();
         private ToolStripMenuItem mnuWorkspaceExport = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuPointer = new ToolStripMenuItem();
+
+        // Help
         private ToolStripMenuItem mnuHelp = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHelpContents = new ToolStripMenuItem();
         private ToolStripMenuItem mnuApplicationFolder = new ToolStripMenuItem();
@@ -837,57 +851,6 @@ namespace Kinovea.Root
                 }
             }
         }
-        private string GetLocalizedHelpResource(bool manual)
-        {
-            // Find the local file path of a help resource (manual or help video) according to what is saved in the help index.
-            
-            string resourceUri = "";
-            
-            // Load the help file system.
-            HelpIndex hiLocal = new HelpIndex(Software.LocalHelpIndex);
-
-            if(!hiLocal.LoadSuccess)
-            {
-                log.Error("Cannot find the xml help index.");
-                return "";
-            }
-                
-            // Loop into the file to find the required resource in the matching locale, or fallback to english.
-            string englishUri = "";
-            bool localeFound = false;
-            bool englishFound = false;
-            int i = 0;
-
-            string cultureName = LanguageManager.GetCurrentCultureName();
-                            
-            // Look for a matching locale, or English.
-            int totalResource = manual ? hiLocal.UserGuides.Count : hiLocal.HelpVideos.Count;
-            while (!localeFound && i < totalResource)
-            {
-                HelpItem hi = manual ? hiLocal.UserGuides[i] : hiLocal.HelpVideos[i];
-
-                if (hi.Language == cultureName)
-                {
-                    localeFound = true;
-                    resourceUri = hi.FileLocation;
-                    break;
-                }
-
-                if (hi.Language == "en")
-                {
-                    englishFound = true;
-                    englishUri = hi.FileLocation;
-                }
-
-                i++;
-            }
-
-            if (!localeFound && englishFound)
-                resourceUri = englishUri;
-            
-            return resourceUri;
-        }
-
         private void ToggleFullScreen()
         {
             mainWindow.ToggleFullScreen();

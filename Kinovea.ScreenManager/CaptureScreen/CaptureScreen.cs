@@ -1479,10 +1479,11 @@ namespace Kinovea.ScreenManager
 
             string filenameWithoutExtension = view.CurrentImageFilename;
             string extension = Filenamer.GetImageFileExtension();
-            
-            Dictionary<PatternContext, string> context = BuildCaptureContext();
 
-            string path = Filenamer.GetFilePath(root, subdir, filenameWithoutExtension, extension, context);
+            // Interpolate the filename variables with the current context.
+            Dictionary<PatternContext, string> context = BuildCaptureContext();
+            
+            string path = Filenamer.GetFilePath(root, subdir, filenameWithoutExtension, extension, context, Profile);
             
             if (!DirectoryExistsCheck(path) || !FilePathSanityCheck(path) || !OverwriteCheck(path))
             {
@@ -1660,9 +1661,9 @@ namespace Kinovea.ScreenManager
             bool uncompressed = PreferencesManager.CapturePreferences.SaveUncompressedVideo && imageDescriptor.Format != Kinovea.Services.ImageFormat.JPEG;
             string extension = Filenamer.GetVideoFileExtension(uncompressed);
 
+            // Interpolate the filename variables with the current context.
             Dictionary<PatternContext, string> context = BuildCaptureContext();
-
-            string path = Filenamer.GetFilePath(root, subdir, filenameWithoutExtension, extension, context);
+            string path = Filenamer.GetFilePath(root, subdir, filenameWithoutExtension, extension, context, Profile);
 
             if (!DirectoryExistsCheck(path))
                 return;
@@ -2035,7 +2036,7 @@ namespace Kinovea.ScreenManager
             context.Add(PatternContext.CaptureFilename, Path.GetFileName(path));
             context.Add(PatternContext.CaptureKVA, Path.GetFileNameWithoutExtension(path) + ".kva");
 
-            string fullCommand = Filenamer.GetCommandLine(command, context);
+            string fullCommand = Filenamer.GetCommandLine(command, context, Profile);
 
             Process process = new Process();
             try

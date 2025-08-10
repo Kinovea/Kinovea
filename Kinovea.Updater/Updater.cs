@@ -40,7 +40,6 @@ namespace Kinovea.Updater
             log.Debug("Module Construction: Updater.");
         }
 
-
         #region IKernel Implementation
         public void BuildSubTree()
         {

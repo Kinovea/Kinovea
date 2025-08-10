@@ -439,6 +439,11 @@ namespace Kinovea.Services
             return "INI|*.ini";
         }
 
+        public static string OpenCSVFilter()
+        {
+            return "CSV|*.csv";
+        }
+
         /// <summary>
         /// Show the folder selection dialog and return the selected path.
         /// </summary>

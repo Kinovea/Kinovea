@@ -10,6 +10,10 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public static class PatternSymbolsFile
     {
+        /// <summary>
+        /// A map of context variables to their corresponding pattern symbols.
+        /// ex: PatternContext.Year -> "%year".
+        /// </summary>
         public static Dictionary<PatternContext, string> Symbols;
 
         static PatternSymbolsFile()

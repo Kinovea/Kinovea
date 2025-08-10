@@ -36,12 +36,41 @@ namespace Kinovea.Services
 
         public static string CameraPluginAPIVersion { get; private set; }
         public static bool Is32bit { get; private set; }
+
+        /// <summary>
+        /// Top level settings directory. All other directories are subdirectories of this one.
+        /// </summary>
         public static string SettingsDirectory { get; private set; }
+        
+        /// <summary>
+        /// Default values for tools.
+        /// </summary>
         public static string ColorProfileDirectory { get; private set; }
+        
+        /// <summary>
+        /// Lens calibration files.
+        /// </summary>
         public static string CameraCalibrationDirectory { get; private set; }
+        
+        /// <summary>
+        /// Camera plugins binaries.
+        /// </summary>
         public static string CameraPluginsDirectory { get; private set; }
 
+        /// <summary>
+        /// Images used for custom pointers.
+        /// </summary>
         public static string PointersDirectory { get; private set; }
+
+        /// <summary>
+        /// Application level profiles are csv files with custom variables that can be used in paths.
+        /// </summary>
+        public static string ProfilesDirectory { get; private set; }
+        
+        /// <summary>
+        /// The main preferences file.
+        /// Possibly instance-specific.
+        /// </summary>
         public static string PreferencesFile
         {
             get
@@ -52,11 +81,17 @@ namespace Kinovea.Services
                     return SettingsDirectory + string.Format("Preferences.{0}.xml", InstanceName);
             }
         }
+
+        /// <summary>
+        /// Directory where auto-save files are stored.
+        /// </summary>
         public static string TempDirectory { get; private set; }
+        
+        /// <summary>
+        /// Collection of settings for cameras.
+        /// </summary>
         public static string CameraProfilesDirectory { get; private set; }
-        public static string HelpVideosDirectory { get; private set; }
-        public static string ManualsDirectory { get; private set; }
-        public static string LocalHelpIndex { get; private set; }
+        
         public static string RemoteHelpIndex { get; private set; }
         public static string XSLTDirectory { get; private set; }
         public static string ToolbarsDirectory { get; private set; }
@@ -89,12 +124,10 @@ namespace Kinovea.Services
             ColorProfileDirectory       = Path.Combine(SettingsDirectory, "ColorProfiles");
             CameraPluginsDirectory      = Path.Combine(SettingsDirectory, "Plugins", "Camera");
             PointersDirectory           = Path.Combine(SettingsDirectory, "Pointers");
+            ProfilesDirectory           = Path.Combine(SettingsDirectory, "Profiles");
             TempDirectory               = Path.Combine(SettingsDirectory, "Temp");
 
-            HelpVideosDirectory     = Path.Combine(applicationDirectory, "HelpVideos");
-            ManualsDirectory        = Path.Combine(applicationDirectory, "Manuals");
             XSLTDirectory           = Path.Combine(applicationDirectory, "xslt");
-            LocalHelpIndex          = Path.Combine(applicationDirectory, "HelpIndex.xml");
             ToolbarsDirectory       = Path.Combine(applicationDirectory, "DrawingTools", "Toolbars");
             CustomToolsDirectory    = Path.Combine(applicationDirectory, "DrawingTools", "Custom");
             StandardToolsDirectory  = Path.Combine(applicationDirectory, "DrawingTools", "Standard");
@@ -129,6 +162,7 @@ namespace Kinovea.Services
             CreateDirectory(SettingsDirectory);
             CreateDirectory(CameraCalibrationDirectory);
             CreateDirectory(CameraProfilesDirectory);
+            CreateDirectory(ProfilesDirectory);
             CreateDirectory(ColorProfileDirectory);
             CreateDirectory(CameraPluginsDirectory);
             CreateDirectory(PointersDirectory);

@@ -10,14 +10,17 @@ namespace Kinovea.ScreenManager
 {
     public static class Filenamer
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+
         /// <summary>
         /// Gets the full path, including root directory, filename and extension.
         /// </summary>
-        public static string GetFilePath(string root, string subdir, string filename, string extension, Dictionary<PatternContext, string> context)
+        public static string GetFilePath(string root, string subdir, string filename, string extension, Dictionary<PatternContext, string> context, Profile profile)
         {
-            root = ReplacePatterns(root, PatternSymbolsFile.Symbols, context);
-            subdir = ReplacePatterns(subdir, PatternSymbolsFile.Symbols, context);
-            filename = ReplacePatterns(filename, PatternSymbolsFile.Symbols, context);
+            root = ReplacePatterns(root, PatternSymbolsFile.Symbols, context, profile);
+            subdir = ReplacePatterns(subdir, PatternSymbolsFile.Symbols, context, profile);
+            filename = ReplacePatterns(filename, PatternSymbolsFile.Symbols, context, profile);
 
             return Path.Combine(root, Path.Combine(subdir, filename + extension));
         }
@@ -25,9 +28,9 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Gets the full command line.
         /// </summary>
-        public static string GetCommandLine(string command, Dictionary<PatternContext, string> context)
+        public static string GetCommandLine(string command, Dictionary<PatternContext, string> context, Profile profile)
         {
-            return ReplacePatterns(command, PatternSymbolsCommand.Symbols, context);
+            return ReplacePatterns(command, PatternSymbolsCommand.Symbols, context, profile);
         }
 
 
@@ -118,13 +121,26 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Replaces all the variables found by their current values.
         /// </summary>
-        private static string ReplacePatterns(string text, Dictionary<PatternContext, string> symbols, Dictionary<PatternContext, string> context)
+        private static string ReplacePatterns(string text, Dictionary<PatternContext, string> symbols, Dictionary<PatternContext, string> context, Profile profile)
         {
             string result = text;
 
+            log.DebugFormat("Replace pattern. Input: {0}", text);
+
+            // Check for the custom variables of the profile first,
+            // this way they can override the default variables.
+            foreach (var variable in profile.Variables)
+            {
+                // We keep them verbatim so this is case sensitive.
+                string symbol = "%" + variable;
+
+                result = result.Replace(symbol, profile.GetValue(variable));
+            }
+
+            log.DebugFormat("Replace pattern. After profile: {0}", result);
+
             // Sort symbols in descending length so we test for %datetime before testing for %date or %time.
             var sortedSymbols = symbols.OrderBy(pair => -pair.Value.Length);
-
             foreach (var symbol in sortedSymbols)
             {
                 if (!context.ContainsKey(symbol.Key))
@@ -132,6 +148,8 @@ namespace Kinovea.ScreenManager
 
                 result = result.Replace(symbols[symbol.Key], context[symbol.Key]);
             }
+
+            log.DebugFormat("Replace pattern. After context: {0}", result);
 
             return result;
         }

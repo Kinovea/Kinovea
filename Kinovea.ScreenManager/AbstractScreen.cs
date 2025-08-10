@@ -55,7 +55,7 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region Properties
+        #region Abstract properties
 
         /// <summary>
         /// Screen ID.
@@ -181,6 +181,19 @@ namespace Kinovea.ScreenManager
         #endregion
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        #region Concrete properties
+
+        /// <summary>
+        /// Profile containing custom variables and their values.
+        /// Set by the screen manager when the screen is created.
+        /// </summary>
+        public Profile Profile
+        {
+            get; set;
+        }
+        #endregion
+
 
         /// <summary>
         /// Trigger the save or save as dialog for the screen's metadata.
