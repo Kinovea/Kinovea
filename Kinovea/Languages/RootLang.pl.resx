@@ -506,7 +506,7 @@
     <value>Tryb eksportu:</value>
   </data>
   <data name="dlgPreferences_Drawings_CSVPoint" xml:space="preserve">
-    <value>Kropka</value>
+    <value>Punkt</value>
   </data>
   <data name="dlgWorkspace_ConfirmationMessage" xml:space="preserve">
     <value>Domyślny obszar roboczy został zapisany.</value>
