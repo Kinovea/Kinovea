@@ -139,20 +139,26 @@
   <data name="bullet_go" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\bullet_go.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="closegrey" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\closegrey.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="camera_simple_30" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\camera-simple-30.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="circled_play_button_30" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\circled-play-button-30.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="close2d_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\close2d-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="close2_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\close2-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="common_controls" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\common_controls.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="drawings" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\drawings.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ctrl_30" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ctrl-30.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="explorer" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\explorer.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="filesave" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\disk.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="file_txt" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\file_txt.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -187,14 +193,14 @@
   <data name="international" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\international.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="keyboard" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\keyboard.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="microseconds" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\microseconds.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="milliseconds" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\milliseconds.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="notes_30" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\notes-30.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="percent" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\percent.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -205,17 +211,11 @@
   <data name="pointer_pointing_hand" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pointer-pointing-hand.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="pref_capture" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\pref_capture.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="save_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\save-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="pref_general" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\pref_general.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="quit2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\quit2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="style" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\style.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="save_as_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\save-as-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="time" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\time.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -226,14 +226,14 @@
   <data name="time_edit" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\time_edit.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="tools_30" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\tools-30.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="translators" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\translators.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
   <data name="user_detective" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\user-detective.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="video" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\video.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="website" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\website.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

@@ -56,12 +56,12 @@ namespace Kinovea.Root
       // 
       this.buttonCloseExplo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.buttonCloseExplo.BackColor = System.Drawing.Color.Transparent;
-      this.buttonCloseExplo.Cursor = System.Windows.Forms.Cursors.Default;
+      this.buttonCloseExplo.Cursor = System.Windows.Forms.Cursors.Hand;
       this.buttonCloseExplo.FlatAppearance.BorderSize = 0;
       this.buttonCloseExplo.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
       this.buttonCloseExplo.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
       this.buttonCloseExplo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.buttonCloseExplo.Image = global::Kinovea.Root.Properties.Resources.closegrey;
+      this.buttonCloseExplo.Image = global::Kinovea.Root.Properties.Resources.close2d_16;
       this.buttonCloseExplo.Location = new System.Drawing.Point(175, 1);
       this.buttonCloseExplo.Name = "buttonCloseExplo";
       this.buttonCloseExplo.Size = new System.Drawing.Size(20, 18);

@@ -952,23 +952,6 @@
         8FVvJbmEAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="filesave" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29m
-        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAKWSURBVDhPjZJbTxNBGIb7l4AunhJ/hdeGU4FSMICI
-        nDSaeKFGkGg0QhG0ECggimIBu4AGRShULBhMORTaIpQCPUN32bb7+s1UuSKEiyeTbud9vnd3RpNtGKsg
-        mgk7ESSUbIOoEsguSXOhdAyXro3jYpmI8wYxdLlcnBP0w1cAaJjAuOCOY8EtQU6okIj4UQrhwyR2wwoC
-        0QT/LSkp7EUS2PDL6rhjP3H1gW1f0FvymcC5sBHHnT4/4gqFaWPBoxkEYwnsUiAaT3JxhFbv/hFWfTKs
-        jiBIAmoiM0HYQYLb5h2+icEE/oiC4EGCT2YNdqiNa0fG6raEuk4Pvi6FIOhHVCZQ7K5DEvj4JkZhow1+
-        WmNyCjK1Ch0kqTqbLmF5S0KNyY3eSR+E4mGQQFRtawe41eODhyoyNgNHND3Jp8ekFLYCynHYuRXHzVfr
-        6Jr4A23RRy7A9DIJurd5dR1NL2qyofTJHMoIffMsdPSc/fefqrYVdFg90BYOkYCOacoZRX3XJr0bQWt9
-        lxf1nQwPak0emriB6o51VLW7UNm2iqqXa2i1uKDVvU8LJpei6TCRDhIkYeGa125e+UY7CSh43bhCLOPZ
-        4AqyCt6lBROLYQp7/+E5ns7DNLm6w8XDlRSsaHGivOU3mvqXkJU/wARWiI4Q6kxeft5noez5LzzsWURm
-        Xj80dDUxOh/idSU6svtf8k6F3YmSpz9xr3Membl9JCgVMWwPUoO0YHLt86kwQXHzD9xtt5PADM05g1Ud
-        mg2QwH3mBrrGWTQYbcjI6VE1Qol1feD7Hgamdk9835NoaJ1B7YtpJgiwj/hY0H+yCPrRoFA8QtfTwm+Y
-        tvADsnSDdFRvkZn/hj5YH1XupZCZT87I6Y5k5Jq//QWbzBTt9kMQwwAAAABJRU5ErkJggg==
-</value>
-  </data>
   <data name="ExportDock5" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAKUAAAAyCAIAAACyKox2AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
@@ -1949,5 +1932,20 @@
   </data>
   <data name="notes2_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\notes2-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="save_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\save-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="save_as_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\save-as-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="save_capture_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\save-capture-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="save_player_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\save-player-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="close2d_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\close2d-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

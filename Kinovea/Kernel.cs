@@ -282,7 +282,7 @@ namespace Kinovea.Root
             mnuHistoryReset.Image = Properties.Resources.bin_empty;
             mnuHistoryReset.Click += mnuHistoryResetOnClick;
             
-            mnuQuit.Image = Properties.Resources.quit2;
+            mnuQuit.Image = Properties.Resources.close2_16;
             mnuQuit.Click += new EventHandler(menuQuitOnClick);
 
             // The indices are used by the other modules to insert their menus.
@@ -497,7 +497,7 @@ namespace Kinovea.Root
             mnuWorkspace.Text = RootLang.mnuWorkspace;
             mnuWorkspace.Image = Properties.Resources.common_controls;
             mnuWorkspaceSaveAsDefault.Text = RootLang.mnuWorkspaceSaveAsDefault;
-            mnuWorkspaceSaveAsDefault.Image = Properties.Resources.filesave;
+            mnuWorkspaceSaveAsDefault.Image = Properties.Resources.save_16;
             mnuWorkspaceExport.Text = RootLang.mnuWorkspaceExport;
             mnuWorkspaceExport.Image = Properties.Resources.file_txt;
 

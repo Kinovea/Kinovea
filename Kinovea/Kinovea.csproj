@@ -522,6 +522,21 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="kinovea-256x256.ico" />
+    <None Include="Resources\close2d-16.png" />
+    <None Include="Resources\close2c-16.png" />
+    <None Include="Resources\close2b-16.png" />
+    <None Include="Resources\closegrey.png" />
+    <None Include="Resources\notes-30.png" />
+    <None Include="Resources\ctrl-30.png" />
+    <None Include="Resources\circled-play-button-30.png" />
+    <None Include="Resources\camera-simple-30.png" />
+    <None Include="Resources\tools-30.png" />
+    <None Include="Resources\pref_capture2.png" />
+    <None Include="Resources\pref_capture.png" />
+    <None Include="Resources\close2-16.png" />
+    <None Include="Resources\replay-16.png" />
+    <None Include="Resources\save-as-16.png" />
+    <None Include="Resources\save-16.png" />
     <None Include="Resources\image.png" />
     <None Include="Resources\pointer-pointing-hand.png" />
     <None Include="Resources\pointer-arrow.png" />
@@ -553,7 +568,6 @@
     <None Include="Resources\style.png" />
     <None Include="Resources\quit.png" />
     <None Include="Resources\pref_general.png" />
-    <None Include="Resources\pref_capture.png" />
     <None Include="Resources\keyboard.png" />
     <None Include="Resources\international.png" />
     <None Include="Resources\information.png" />
@@ -564,7 +578,6 @@
     <None Include="Resources\explorer.png" />
     <None Include="Resources\drawings.png" />
     <None Include="Resources\configure.png" />
-    <None Include="Resources\closegrey.png" />
     <None Include="Resources\capture.png" />
     <None Include="Resources\bullet_go.png" />
     <None Include="Resources\bug.png" />

@@ -93,7 +93,7 @@ namespace Kinovea.Root
             this.BackColor = Color.White;
             
             description = RootLang.dlgPreferences_tabDrawings;
-            icon = Resources.drawings;
+            icon = Resources.notes_30;
             
             ImportPreferences();
             InitPage();

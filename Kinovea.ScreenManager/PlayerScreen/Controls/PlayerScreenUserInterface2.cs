@@ -1226,10 +1226,10 @@ namespace Kinovea.ScreenManager
             mnuOpenVideo.Image = Properties.Resources.folder;
             mnuOpenReplayWatcher.Image = Properties.Resources.replaywatcher;
             mnuLoadAnnotations.Image = Properties.Resources.notes2_16;
-            mnuSaveAnnotations.Image = Properties.Resources.filesave;
-            mnuSaveAnnotationsAs.Image = Properties.Resources.filesave;
-            mnuSaveDefaultPlayerAnnotations.Image = Properties.Resources.filesave;
-            mnuSaveDefaultCaptureAnnotations.Image = Properties.Resources.filesave;
+            mnuSaveAnnotations.Image = Properties.Resources.save_16;
+            mnuSaveAnnotationsAs.Image = Properties.Resources.save_as_16;
+            mnuSaveDefaultPlayerAnnotations.Image = Properties.Resources.save_player_16;
+            mnuSaveDefaultCaptureAnnotations.Image = Properties.Resources.save_capture_16;
             mnuUnloadAnnotations.Image = Properties.Resources.delete_notes;
             mnuReloadDefaultPlayerAnnotations.Image = Properties.Resources.notes2_16;
             mnuExportVideo.Image = Properties.Resources.film_save;

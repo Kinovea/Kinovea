@@ -66,7 +66,7 @@ namespace Kinovea.Root
             if(preferencePanel.Icon != null)
             {
                 Point iconStart = new Point((this.Width - preferencePanel.Icon.Width) / 2, 10);
-                e.Graphics.DrawImage(preferencePanel.Icon, iconStart);
+                e.Graphics.DrawImageUnscaled(preferencePanel.Icon, iconStart);
             }
             
             SizeF textSize = e.Graphics.MeasureString(preferencePanel.Description, fontLabel);

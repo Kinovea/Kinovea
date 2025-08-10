@@ -44,7 +44,7 @@ namespace Kinovea.Root
             this.BackColor = Color.White;
 
             description = RootLang.dlgPreferences_tabKeyboard;
-            icon = Resources.keyboard;
+            icon = Resources.ctrl_30;
 
             ImportPreferences();
             InitPage();

@@ -373,6 +373,16 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap close2d_16 {
+            get {
+                object obj = ResourceManager.GetObject("close2d_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap closegrey {
             get {
                 object obj = ResourceManager.GetObject("closegrey", resourceCulture);
@@ -826,16 +836,6 @@ namespace Kinovea.ScreenManager.Properties {
         public static System.Drawing.Bitmap file_xls {
             get {
                 object obj = ResourceManager.GetObject("file_xls", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap filesave {
-            get {
-                object obj = ResourceManager.GetObject("filesave", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1863,9 +1863,49 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap save_16 {
+            get {
+                object obj = ResourceManager.GetObject("save_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap save_as_16 {
+            get {
+                object obj = ResourceManager.GetObject("save_as_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap save_calibration {
             get {
                 object obj = ResourceManager.GetObject("save_calibration", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap save_capture_16 {
+            get {
+                object obj = ResourceManager.GetObject("save_capture_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap save_player_16 {
+            get {
+                object obj = ResourceManager.GetObject("save_player_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

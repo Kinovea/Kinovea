@@ -321,14 +321,14 @@ namespace Kinovea.ScreenManager
             mnuLoadAnnotations.MergeAction = MergeAction.Insert;
 
             index++;
-            mnuSave.Image = Properties.Resources.filesave;
+            mnuSave.Image = Properties.Resources.save_16;
             mnuSave.Click += mnuSaveOnClick;
             mnuSave.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S;
             mnuSave.MergeIndex = index;
             mnuSave.MergeAction = MergeAction.Insert;
 
             index++;
-            mnuSaveAs.Image = Properties.Resources.filesave;
+            mnuSaveAs.Image = Properties.Resources.save_as_16;
             mnuSaveAs.Click += mnuSaveAsOnClick;
             mnuSaveAs.MergeIndex = index;
             mnuSaveAs.MergeAction = MergeAction.Insert;
@@ -713,7 +713,7 @@ namespace Kinovea.ScreenManager
         {
             // Save
             toolSave.DisplayStyle = ToolStripItemDisplayStyle.Image;
-            toolSave.Image = Properties.Resources.filesave;
+            toolSave.Image = Properties.Resources.save_16;
             toolSave.Click += new EventHandler(mnuSaveOnClick);
 
             // Workspace presets.

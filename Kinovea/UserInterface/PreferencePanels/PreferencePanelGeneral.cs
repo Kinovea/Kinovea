@@ -67,7 +67,7 @@ namespace Kinovea.Root
             this.BackColor = Color.White;
             
             description = RootLang.dlgPreferences_tabGeneral;
-            icon = Resources.pref_general;
+            icon = Resources.tools_30;
             
             ImportPreferences();
             InitPage();

@@ -117,7 +117,7 @@ namespace Kinovea.ScreenManager
       this.btnSidePanel.BackColor = System.Drawing.Color.Transparent;
       this.btnSidePanel.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.sidepanel;
       this.btnSidePanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-      this.btnSidePanel.Cursor = System.Windows.Forms.Cursors.Default;
+      this.btnSidePanel.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnSidePanel.FlatAppearance.BorderSize = 0;
       this.btnSidePanel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
       this.btnSidePanel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
@@ -135,7 +135,7 @@ namespace Kinovea.ScreenManager
       this.btnExitFilter.BackColor = System.Drawing.Color.Transparent;
       this.btnExitFilter.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.exit_filter;
       this.btnExitFilter.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-      this.btnExitFilter.Cursor = System.Windows.Forms.Cursors.Default;
+      this.btnExitFilter.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnExitFilter.FlatAppearance.BorderSize = 0;
       this.btnExitFilter.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
       this.btnExitFilter.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
@@ -152,9 +152,9 @@ namespace Kinovea.ScreenManager
       // 
       this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.btnClose.BackColor = System.Drawing.Color.Transparent;
-      this.btnClose.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.closegrey;
+      this.btnClose.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.close2d_16;
       this.btnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-      this.btnClose.Cursor = System.Windows.Forms.Cursors.Default;
+      this.btnClose.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnClose.FlatAppearance.BorderSize = 0;
       this.btnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
       this.btnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
@@ -997,7 +997,7 @@ namespace Kinovea.ScreenManager
       this.pnlThumbnails.Controls.Add(this.pictureBox1);
       this.pnlThumbnails.Location = new System.Drawing.Point(0, 27);
       this.pnlThumbnails.Name = "pnlThumbnails";
-      this.pnlThumbnails.Size = new System.Drawing.Size(600, 180);
+      this.pnlThumbnails.Size = new System.Drawing.Size(600, 182);
       this.pnlThumbnails.TabIndex = 3;
       this.pnlThumbnails.DoubleClick += new System.EventHandler(this.pnlThumbnails_DoubleClick);
       this.pnlThumbnails.MouseEnter += new System.EventHandler(this.pnlThumbnails_MouseEnter);

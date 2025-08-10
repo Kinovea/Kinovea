@@ -87,7 +87,7 @@ namespace Kinovea.ScreenManager
             this.btnSaveProfile.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
             this.btnSaveProfile.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
             this.btnSaveProfile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSaveProfile.Image = global::Kinovea.ScreenManager.Properties.Resources.filesave;
+            this.btnSaveProfile.Image = global::Kinovea.ScreenManager.Properties.Resources.save_16;
             this.btnSaveProfile.Location = new System.Drawing.Point(45, 12);
             this.btnSaveProfile.Name = "btnSaveProfile";
             this.btnSaveProfile.Size = new System.Drawing.Size(25, 25);

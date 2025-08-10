@@ -402,10 +402,10 @@ namespace Kinovea.ScreenManager
 
             // Background context menu.
             mnuLoadAnnotations.Image = Properties.Resources.notes2_16;
-            mnuSaveAnnotations.Image = Properties.Resources.filesave;
-            mnuSaveAnnotationsAs.Image = Properties.Resources.filesave;
-            mnuSaveDefaultPlayerAnnotations.Image = Properties.Resources.filesave;
-            mnuSaveDefaultCaptureAnnotations.Image = Properties.Resources.filesave;
+            mnuSaveAnnotations.Image = Properties.Resources.save_16;
+            mnuSaveAnnotationsAs.Image = Properties.Resources.save_as_16;
+            mnuSaveDefaultPlayerAnnotations.Image = Properties.Resources.save_player_16;
+            mnuSaveDefaultCaptureAnnotations.Image = Properties.Resources.save_capture_16;
             mnuUnloadAnnotations.Image = Properties.Resources.delete_notes;
             mnuReloadDefaultCaptureAnnotations.Image = Properties.Resources.notes2_16;
             mnuReloadLinkedAnnotations.Image = Properties.Resources.notes2_16;

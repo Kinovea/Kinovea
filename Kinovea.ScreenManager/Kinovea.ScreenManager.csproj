@@ -2402,6 +2402,27 @@
   <ItemGroup>
     <None Include="Resources\notes2-16.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\close-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\save-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\save-as-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\save-capture-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\save-player-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\close2c-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\close2d-16.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">
     <Message Text="Adjusting SDK tools directory to use x64 version of AL.EXE" />

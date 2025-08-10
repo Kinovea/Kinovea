@@ -275,7 +275,7 @@ namespace Kinovea.ScreenManager
       // 
       this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.btnClose.BackColor = System.Drawing.Color.Transparent;
-      this.btnClose.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.closegrey;
+      this.btnClose.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.close2d_16;
       this.btnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
       this.btnClose.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnClose.FlatAppearance.BorderSize = 0;

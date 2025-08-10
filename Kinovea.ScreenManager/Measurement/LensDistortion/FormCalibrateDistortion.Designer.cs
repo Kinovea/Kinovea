@@ -466,7 +466,7 @@
       // mnuSave
       // 
       this.mnuSave.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.mnuSave.Image = global::Kinovea.ScreenManager.Properties.Resources.filesave;
+      this.mnuSave.Image = global::Kinovea.ScreenManager.Properties.Resources.save_16;
       this.mnuSave.Name = "mnuSave";
       this.mnuSave.Size = new System.Drawing.Size(153, 22);
       this.mnuSave.Text = "Save";

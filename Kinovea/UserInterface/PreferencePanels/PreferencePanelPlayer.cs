@@ -80,7 +80,7 @@ namespace Kinovea.Root
             this.BackColor = Color.White;
             
             description = RootLang.dlgPreferences_tabPlayback;
-            icon = Resources.video;
+            icon = Resources.circled_play_button_30;
             
             ImportPreferences();
             InitPage();

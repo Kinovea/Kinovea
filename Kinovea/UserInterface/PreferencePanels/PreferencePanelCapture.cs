@@ -117,7 +117,7 @@ namespace Kinovea.Root
             this.BackColor = Color.White;
             
             description = RootLang.dlgPreferences_tabCapture;
-            icon = Resources.pref_capture;
+            icon = Resources.camera_simple_30;
 
             // The audio amplitude is coming as [0..1] and is remapped to a logarithmic vumeter.
             // The value we show to the user has an arbitrary unit.
