@@ -127,4 +127,13 @@
   <data name="mnuSortBy_Date" xml:space="preserve">
     <value>วันที่</value>
   </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>เพิ่มขึ้น</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>เรียงลำดับตาม</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>ลดลง</value>
+  </data>
 </root>
