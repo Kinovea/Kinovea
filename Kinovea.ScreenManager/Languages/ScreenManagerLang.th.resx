@@ -490,4 +490,16 @@
   <data name="Error_Capture_InvalidFile_Title" xml:space="preserve">
     <value>ชื่อไฟล์ไม่ถูกต้อง</value>
   </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>เพิ่มขึ้น</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>เรียงลำดับตาม</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>ลดลง</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
+    <value>แสดงวงกลมที่เหมาะสมที่สุด</value>
+  </data>
 </root>
