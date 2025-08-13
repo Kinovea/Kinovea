@@ -27,8 +27,8 @@ namespace Kinovea.Root
 
         private void InitList(Dictionary<PatternContext, string> symbols)
         {
-            colContext.Text = RootLang.dlgPreferences_Capture_Context;
-            colPattern.Text = RootLang.dlgPreferences_Capture_Macro;
+            colPattern.Text = "Variable";
+            colContext.Text = "Value";
 
             foreach (KeyValuePair<PatternContext, string> pair in symbols)
             {

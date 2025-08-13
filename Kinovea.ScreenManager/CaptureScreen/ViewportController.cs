@@ -340,11 +340,6 @@ namespace Kinovea.ScreenManager
             }
         }
 
-
-
-
-
-
         public Cursor GetCursor(float imageZoom)
         {
             if (metadataManipulator == null)
@@ -396,10 +391,12 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Private methods
+
+        /// <summary>
+        /// Set up images and event handlers for all context menus.
+        /// </summary>
         private void BuildContextMenus()
         {
-            // Attach the event handlers and build the menus.
-
             // Background context menu.
             mnuLoadAnnotations.Image = Properties.Resources.notes2_16;
             mnuSaveAnnotations.Image = Properties.Resources.save_16;
@@ -436,6 +433,9 @@ namespace Kinovea.ScreenManager
             ReloadMenusCulture();
         }
 
+        /// <summary>
+        /// Set up the text for all context menus.
+        /// </summary>
         private void ReloadMenusCulture()
         {
             // Background context menu
@@ -464,12 +464,20 @@ namespace Kinovea.ScreenManager
             mnuDeleteDrawing.Text = ScreenManagerLang.mnuDeleteDrawing;
         }
 
+        /// <summary>
+        /// Signal to the screen manager that this is the active screen.
+        /// This is to update the top level menus that depends on which screen is active.
+        /// It should be called when we mous down inside the viewport.
+        /// </summary>
         private void Poke()
         {
             if (Activated != null)
                 Activated(this, EventArgs.Empty);
         }
         
+        /// <summary>
+        /// Set up the correct list of menus to show and customize the text.
+        /// </summary>
         private void PrepareBackgroundContextMenu(ContextMenuStrip popMenu)
         {
             // Inject the target file name to avoid surprises.
@@ -528,6 +536,9 @@ namespace Kinovea.ScreenManager
             });
         }
 
+        /// <summary>
+        /// Set up the correct list of menus to show and customize the text.
+        /// </summary>
         private void PrepareDrawingContextMenu(AbstractDrawing drawing, ContextMenuStrip popMenu)
         {
             popMenu.Items.Clear();

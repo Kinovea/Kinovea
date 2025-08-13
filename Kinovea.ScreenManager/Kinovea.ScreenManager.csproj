@@ -384,7 +384,8 @@
     <Compile Include="FilePatterns\Filenamer.cs" />
     <Compile Include="FilePatterns\PatternContext.cs" />
     <Compile Include="FilePatterns\PatternSymbolsFile.cs" />
-    <Compile Include="FilePatterns\Profile.cs" />
+    <Compile Include="FilePatterns\ProfileManager.cs" />
+    <Compile Include="FilePatterns\VariableTable.cs" />
     <Compile Include="Importers\TRC\MetadataImporterSports2D.cs" />
     <Compile Include="Measurement\Calibration\CalibrationAxis.cs" />
     <Compile Include="Measurement\Calibration\CameraPoser.cs" />
@@ -2435,6 +2436,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\group-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\arrow-down2-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\arrow-up2-16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">

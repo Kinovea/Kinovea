@@ -100,16 +100,6 @@ namespace Kinovea.Services
             get { return pointerKey; }
             set { pointerKey = value; }
         }
-        public string LastProfile
-        {
-            get { return lastProfile; }
-            set { lastProfile = value; }
-        }
-        public string LastProfileKey
-        {
-            get { return lastProfileKey; }
-            set { lastProfileKey = value; }
-        }
         #endregion
 
         #region Members
@@ -125,8 +115,6 @@ namespace Kinovea.Services
         private bool instancesOwnPreferences = true;
         private int preferencePage;
         private string pointerKey = "::default";
-        private string lastProfile = "";
-        private string lastProfileKey = "";
         #endregion
 
         public GeneralPreferences()
@@ -174,16 +162,6 @@ namespace Kinovea.Services
             writer.WriteElementString("InstancesOwnPreferences", instancesOwnPreferences ? "true" : "false");
             writer.WriteElementString("PreferencesPage", preferencePage.ToString());
             writer.WriteElementString("Pointer", pointerKey);
-
-            if (!string.IsNullOrEmpty(lastProfile))
-            {
-                writer.WriteElementString("LastProfile", lastProfile);
-                if (!string.IsNullOrEmpty(lastProfileKey))
-                {
-                    writer.WriteElementString("LastProfileKey", lastProfileKey);
-                }
-            }
-
         }
 
         public void ReadXML(XmlReader reader)
@@ -229,12 +207,6 @@ namespace Kinovea.Services
                         break;
                     case "Pointer":
                         pointerKey = reader.ReadElementContentAsString();
-                        break;
-                    case "LastProfile":
-                        lastProfile = reader.ReadElementContentAsString();
-                        break;
-                    case "LastProfileKey":
-                        lastProfileKey = reader.ReadElementContentAsString();
                         break;
                     default:
                         reader.ReadOuterXml();

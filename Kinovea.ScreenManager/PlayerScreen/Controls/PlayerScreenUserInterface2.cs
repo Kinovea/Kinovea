@@ -276,6 +276,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private FrameServerPlayer m_FrameServer;
+        private ProfileManager profileManager;
 
         // Playback current state
         private bool m_bIsCurrentlyPlaying;
@@ -416,11 +417,12 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public PlayerScreenUserInterface(FrameServerPlayer _FrameServer, DrawingToolbarPresenter drawingToolbarPresenter)
+        public PlayerScreenUserInterface(FrameServerPlayer frameServer, DrawingToolbarPresenter drawingToolbarPresenter, ProfileManager profileManager)
         {
             log.Debug("Constructing the PlayerScreen user interface.");
 
-            m_FrameServer = _FrameServer;
+            m_FrameServer = frameServer;
+            this.profileManager = profileManager;
 
             m_FrameServer.Metadata = new Metadata(m_FrameServer.HistoryStack, m_FrameServer.TimeStampsToTimecode);
             m_FrameServer.Metadata.KVAImported += (s, e) => AfterKVAImported();
@@ -644,23 +646,17 @@ namespace Kinovea.ScreenManager
                 Metadata metadata = m_FrameServer.Metadata;
 
                 // 1. Load the default player KVA.
-                string defaultKVAPath = PreferencesManager.PlayerPreferences.PlaybackKVA;
-                if (!string.IsNullOrEmpty(defaultKVAPath))
-                {
-                    if (Path.IsPathRooted(defaultKVAPath))
-                        LoadKVA(defaultKVAPath);
-                    else
-                        LoadKVA(Path.Combine(Software.SettingsDirectory, defaultKVAPath));
-
-                    // Never let the default KVA become the working file.
-                    metadata.ResetKVAPath();
-                }
+                LoadDefaultKVA();
 
                 // 2. Load the sidecar KVA if it exists.
+                // Note: we don't stop at the first one found, load all of them.
                 foreach (string extension in MetadataSerializer.SupportedFileFormats())
                 {
-                    string candidate = Path.Combine(Path.GetDirectoryName(m_FrameServer.VideoReader.FilePath), Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath) + extension);
-                    LoadKVA(candidate);
+                    string pathSidecar = Path.Combine(
+                        Path.GetDirectoryName(m_FrameServer.VideoReader.FilePath), 
+                        Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath) + extension);
+
+                    LoadKVA(pathSidecar);
                 }
             }
 
@@ -688,6 +684,25 @@ namespace Kinovea.ScreenManager
 
             return 0;
         }
+
+        /// <summary>
+        /// Load the default KVA if any.
+        /// </summary>
+        private void LoadDefaultKVA()
+        {
+            string path = "";
+            bool forPlayer = true;
+            bool found = Filenamer.GetDefaultKVAPath(ref path, profileManager, forPlayer);
+
+            if (!found)
+                return;
+
+            LoadKVA(path);
+
+            // Never let the default file become the working file.
+            m_FrameServer.Metadata.ResetKVAPath();
+        }
+
         private void AfterKVAImported()
         {
             InitializeKeyframes();

@@ -47,6 +47,7 @@ Changelog:
     Added - Command to start all trackers at once.
     Added - Support importing .trc files from Sports2D.
     Added - Capture trigger via UDP.
+    Added - Profile system to define custom variables and their values.
     Improved - Export: restored the export of trajectories to text in GnuPlot format.
     Improved - Export: allow saving of annotations from the capture screen.
     Improved - Player: continue playback after a jump if we were playing.
@@ -54,6 +55,7 @@ Changelog:
     Improved - Tracking: fixed sub pixel precision in template matching algorithm.
     Improved - Tracking: use parabolic fit for refinement in template matching algorithm.
     Improved - Annotations: new menus to manage annotations (unload, save as default, reload).
+    Improved - Annotations: default KVA paths can use custom variables based on the active profile.
     Improved - Annotations: changing the style of a drawing now automatically changes the style preset for the tool.
     Improved - Annotations: angle tool now has an option to show the full circle.
     Improved - Annotations: angle tool now has an arrow showing the direction in which the angle is measured.
@@ -69,6 +71,7 @@ Changelog:
     Improved - Capture: option to exclude drawings and calibration from the exported kva.
     Improved - Capture automation: added %kva pattern for post-recording command.
     Improved - Capture automation: added option to set the default trigger arming state.
+    Improved - Capture: output paths and post-recording command can use custom variables based on the active profile.
     Fixed - Loading annotations in the capture screen wasn't working correctly.
     Fixed - Resucitated drawings after undo of delete of a keyframe were not properly registered for tracking.
     Fixed - Grabbing of lines perfectly vertical or horizontal wasn't working.

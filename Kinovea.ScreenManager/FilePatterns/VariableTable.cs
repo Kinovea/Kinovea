@@ -11,19 +11,21 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    ///  A profile is a set of custom variables and the corresponding values for each configuration.
+    ///  A variable table (or "profile file") is a set of custom variables and the corresponding values for each configuration.
     ///  These variables can be used in paths used by the preferences.
     ///
-    ///  Profiles are stored as CSV files.
+    ///  Tables are stored as CSV files.
     ///  - Each column header is a variable name.
-    ///  - The first column contains the keys that identify the profile.
+    ///  - The first column contains the keys that identify the profile in the menus.
     ///  - Each row contains the values for each variable for a specific profile.
+    ///  - The file might contain a single column.
     /// </summary>
-    public class Profile
+    public class VariableTable
     {
         #region Properties
         /// <summary>
-        /// Values of the first column. This is used to identify the profile.
+        /// Values of the first column. 
+        /// This is used to identify and select the profile.
         /// </summary>
         public List<string> Keys { get; private set; } = new List<string>();
 
@@ -45,8 +47,6 @@ namespace Kinovea.ScreenManager
                 else
                 {
                     currentKey = value;
-                    PreferencesManager.GeneralPreferences.LastProfileKey = currentKey;
-                    PreferencesManager.Save();
                 }
             }
         }
@@ -65,9 +65,9 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Import a CSV file containing profiles.
-        /// Always unload the current set of profiles.
+        /// Always unload the current set of profiles loaded into this object.
         /// </summary>
-        public void Import(string csvFile)
+        public bool Import(string csvFile)
         {
             ClearProfiles();
 
@@ -76,7 +76,7 @@ namespace Kinovea.ScreenManager
                 if (!File.Exists(csvFile))
                 {
                     log.Error("Profile not found.");
-                    return;
+                    return false;
                 }
 
                 using (var reader = new StreamReader(csvFile))
@@ -115,21 +115,19 @@ namespace Kinovea.ScreenManager
                 if (Keys.Count == 0)
                 {
                     log.Error("No profiles were loaded from the CSV file.");
-                    return;
+                    return false;
                 }
 
                 // Set the first key as the current key.
                 currentKey = Keys[0];
-
-                // Commit last used profile.
-                PreferencesManager.GeneralPreferences.LastProfile = csvFile;
-                PreferencesManager.Save();
             }
             catch (Exception ex)
             {
                 log.Error("Error importing profiles from CSV file.", ex);
-                return;
+                return false;
             }
+
+            return true;
         }
 
         /// <summary>
@@ -145,7 +143,7 @@ namespace Kinovea.ScreenManager
 
             if (!Variables.Contains(variableName))
             {
-                log.ErrorFormat("Variable '{0}' does not exist in the profile.", variableName);
+                log.ErrorFormat("Variable \"{0}\" does not exist in the profile.", variableName);
                 return string.Empty;
             }
 

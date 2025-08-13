@@ -211,7 +211,8 @@ namespace Kinovea.ScreenManager
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        public CaptureScreen()
+        public CaptureScreen(ProfileManager profileManager)
+            : base(profileManager)
         {
             // There are several nested lifetimes with symetric setup/teardown methods:
             // Screen -> ctor / BeforeClose.
@@ -1321,7 +1322,7 @@ namespace Kinovea.ScreenManager
             metadata.AverageTimeStampsPerSecond = 1000000;
             metadata.AverageTimeStampsPerFrame = (long)(metadata.AverageTimeStampsPerSecond / 25.0);
 
-            LoadCompanionKVA();
+            LoadDefaultKVA();
             
             metadataRenderer = new MetadataRenderer(metadata, false);
             metadataManipulator = new MetadataManipulator(metadata, screenToolManager);
@@ -1342,16 +1343,13 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Load the default capture KVA if any.
         /// </summary>
-        private void LoadCompanionKVA()
+        private void LoadDefaultKVA()
         {
-            string path = PreferencesManager.CapturePreferences.CaptureKVA;
-            if (string.IsNullOrEmpty(path))
-                return;
+            string path = "";
+            bool forPlayer = false;
+            bool found = Filenamer.GetDefaultKVAPath(ref path, ProfileManager, forPlayer);
 
-            if (!Path.IsPathRooted(path))
-                path = Path.Combine(Software.SettingsDirectory, path);
-
-            if (!File.Exists(path))
+            if (!found)
                 return;
 
             LoadKVA(path);
@@ -1481,9 +1479,8 @@ namespace Kinovea.ScreenManager
             string extension = Filenamer.GetImageFileExtension();
 
             // Interpolate the filename variables with the current context.
-            Dictionary<PatternContext, string> context = BuildCaptureContext();
-            
-            string path = Filenamer.GetFilePath(root, subdir, filenameWithoutExtension, extension, context, Profile);
+            Dictionary<string, string> context = BuildCaptureContext();
+            string path = Filenamer.ResolveOutputFilePath(root, subdir, filenameWithoutExtension, extension, ProfileManager, context);
             
             if (!DirectoryExistsCheck(path) || !FilePathSanityCheck(path) || !OverwriteCheck(path))
             {
@@ -1510,36 +1507,6 @@ namespace Kinovea.ScreenManager
             view.UpdateNextImageFilename(next);
 
             bitmap.Dispose();
-        }
-        
-        private Dictionary<PatternContext, string> BuildCaptureContext()
-        {
-            // TODO: 
-            // We need to know if we are left or right screen to grab the correct top level variables from prefs.
-
-            Dictionary<PatternContext, string> context = new Dictionary<PatternContext, string>();
-
-            DateTime now = DateTime.Now;
-
-            context[PatternContext.Year] = string.Format("{0:yyyy}", now);
-            context[PatternContext.Month] = string.Format("{0:MM}", now);
-            context[PatternContext.Day] = string.Format("{0:dd}", now);
-            context[PatternContext.Hour] = string.Format("{0:HH}", now);
-            context[PatternContext.Minute] = string.Format("{0:mm}", now);
-            context[PatternContext.Second] = string.Format("{0:ss}", now);
-            context[PatternContext.Millisecond] = string.Format("{0:fff}", now);
-
-            context[PatternContext.Date] = string.Format("{0:yyyyMMdd}", now);
-            context[PatternContext.Time] = string.Format("{0:HHmmss}", now);
-            context[PatternContext.DateTime] = string.Format("{0:yyyyMMdd-HHmmss}", now);
-
-            context[PatternContext.CameraAlias] = cameraSummary.Alias;
-            context[PatternContext.ConfiguredFramerate] = string.Format("{0:0.00}", cameraGrabber.Framerate); 
-            context[PatternContext.ReceivedFramerate] = string.Format("{0:0.00}", pipelineManager.Frequency);
-
-            context[PatternContext.Escape] = "";
-
-            return context;
         }
 
         private bool DirectoryExistsCheck(string path)
@@ -1662,8 +1629,8 @@ namespace Kinovea.ScreenManager
             string extension = Filenamer.GetVideoFileExtension(uncompressed);
 
             // Interpolate the filename variables with the current context.
-            Dictionary<PatternContext, string> context = BuildCaptureContext();
-            string path = Filenamer.GetFilePath(root, subdir, filenameWithoutExtension, extension, context, Profile);
+            Dictionary<string, string> context = BuildCaptureContext();
+            string path = Filenamer.ResolveOutputFilePath(root, subdir, filenameWithoutExtension, extension, ProfileManager, context);
 
             if (!DirectoryExistsCheck(path))
                 return;
@@ -2030,26 +1997,23 @@ namespace Kinovea.ScreenManager
         }
         private void ExecutePostCaptureCommand(string command, string path)
         {
-            // Build replacement context.
-            Dictionary<PatternContext, string> context = new Dictionary<PatternContext, string>();
-            context.Add(PatternContext.CaptureDirectory, Path.GetDirectoryName(path));
-            context.Add(PatternContext.CaptureFilename, Path.GetFileName(path));
-            context.Add(PatternContext.CaptureKVA, Path.GetFileNameWithoutExtension(path) + ".kva");
+            // Interpolate variables.
+            var context = BuildPostCaptureCommandContext(path);
+            command = Filenamer.ResolveCommandLine(command, ProfileManager, context);
 
-            string fullCommand = Filenamer.GetCommandLine(command, context, Profile);
-
+            // Call the command.
             Process process = new Process();
             try
             {
                 process.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
                 process.StartInfo.FileName = "cmd.exe";
-                process.StartInfo.Arguments = "/C " + fullCommand;
+                process.StartInfo.Arguments = "/C " + command;
                 process.StartInfo.CreateNoWindow = true;
                 process.StartInfo.UseShellExecute = false;
                 //process.WorkingDirectory = ""; // app data CaptureCommands.
 
                 log.DebugFormat("Running post capture command:");
-                log.DebugFormat(">cmd.exe /C {0}", fullCommand);
+                log.DebugFormat(">cmd.exe /C {0}", command);
 
                 process.Start();
             }
@@ -2202,6 +2166,64 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
+        #endregion
+
+        #region Context variables
+
+        /// <summary>
+        /// Fill values of built-in variables for the capture context.
+        /// </summary>
+        private Dictionary<string, string> BuildCaptureContext()
+        {
+            // TODO: 
+            // We need to know if we are left or right screen to grab the correct top level variables from prefs.
+
+            Dictionary<string, string> context = new Dictionary<string, string>();
+
+            DateTime now = DateTime.Now;
+
+            context["year"]         = string.Format("{0:yyyy}", now);
+            context["month"]        = string.Format("{0:MM}", now);
+            context["day"]          = string.Format("{0:dd}", now);
+            context["hour"]         = string.Format("{0:HH}", now);
+            context["minute"]       = string.Format("{0:mm}", now);
+            context["second"]       = string.Format("{0:ss}", now);
+            context["millisecond"]  = string.Format("{0:fff}", now);
+
+            context["date"]         = string.Format("{0:yyyyMMdd}", now);
+            context["time"]         = string.Format("{0:HHmmss}", now);
+            context["datetime"]     = string.Format("{0:yyyyMMdd-HHmmss}", now);
+
+            context["camalias"]     = cameraSummary.Alias;
+            context["camfps"]       = string.Format("{0:0.00}", cameraGrabber.Framerate);
+            context["recvfps"]      = string.Format("{0:0.00}", pipelineManager.Frequency);
+
+            context["%"]            = "";
+
+            return context;
+        }
+
+        /// <summary>
+        /// Fill values of built-in variables for the post-capture command.
+        /// </summary>
+        private Dictionary<string, string> BuildPostCaptureCommandContext(string path)
+        {
+            Dictionary<string, string> context = new Dictionary<string, string>();
+            context["directory"]    = Path.GetDirectoryName(path);
+            context["filename"]     = Path.GetFileName(path);
+            context["kva"]          = Path.GetFileNameWithoutExtension(path) + ".kva";
+            return context;
+        }
+
+        /// <summary>
+        /// Fill values of built-in variables for the default capture kva path.
+        /// </summary>
+        private Dictionary<string, string> BuildDefaultKVAContext(string path)
+        {
+            // Currently there are no variables.
+            Dictionary<string, string> context = new Dictionary<string, string>();
+            return context;
+        }
         #endregion
     }
 }

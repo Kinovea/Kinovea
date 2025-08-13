@@ -439,9 +439,13 @@ namespace Kinovea.Services
             return "INI|*.ini";
         }
 
-        public static string OpenCSVFilter()
+        public static string OpenVariableTableFilter(string labelAllSupported)
         {
-            return "CSV|*.csv";
+            string all = labelAllSupported + "|*.csv;*.txt";
+            string csv = "CSV|*.csv";
+            string txt = "Text|*.txt";
+            string totalFilter = string.Join("|", new string[] { all, csv, txt });
+            return totalFilter;
         }
 
         /// <summary>

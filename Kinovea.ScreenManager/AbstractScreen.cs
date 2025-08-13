@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -188,12 +189,16 @@ namespace Kinovea.ScreenManager
         /// Profile containing custom variables and their values.
         /// Set by the screen manager when the screen is created.
         /// </summary>
-        public Profile Profile
+        public ProfileManager ProfileManager
         {
-            get; set;
+            get;
         }
         #endregion
 
+        public AbstractScreen(ProfileManager profileManager)
+        {
+            this.ProfileManager = profileManager;
+        }
 
         /// <summary>
         /// Trigger the save or save as dialog for the screen's metadata.
@@ -228,34 +233,83 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Save the current annotations to either player.kva or capture.kva, in the settings directory.
-        /// And set the corresponding preference.
+        /// Save the current annotations to the path specified in the preferences or to the standard path.
         /// </summary>
         public void SaveDefaultAnnotations(bool forPlayer)
         {
             if (this.Metadata == null)
                 return;
 
-            // Note: these menus save to the standard location but the user
-            // can always use a custom location by going to the preferences.
+            // If there is no default yet, save to the standard location.
+            // If there is a default, interpolate the path variables and save to that target.
+            // This way the user can save to a custom location corresponding to the active profile.
+            // That path is where the default is going to be read from by the screens.
+            
             string filename = forPlayer ? "player.kva" : "capture.kva";
-            string forcedPath = Path.Combine(Software.SettingsDirectory, filename);
+            string standardPath = Path.Combine(Software.SettingsDirectory, filename);
+            string currentPath = forPlayer ? PreferencesManager.PlayerPreferences.PlaybackKVA : PreferencesManager.CapturePreferences.CaptureKVA;
+            
+            string targetPath;
+            if (string.IsNullOrEmpty(currentPath))
+            {
+                // The file doesn't exist yet. Save to standard path.
+                targetPath = standardPath;
+                
+                // In that case this becomes the new default path.
+                // But we only save the unrooted filename for cleanliness.
+                // All loaders must test if the path is rooted.
+                if (forPlayer)
+                    PreferencesManager.PlayerPreferences.PlaybackKVA = filename;
+                else
+                    PreferencesManager.CapturePreferences.CaptureKVA = filename;
 
+            }
+            else if (currentPath == filename)
+            {
+                // The path already exists but it's just the standard path in the settings.
+                targetPath = standardPath;
+            }
+            else
+            {
+                targetPath = Filenamer.ResolveDefaultKVAPath(currentPath, ProfileManager);
+
+                // If the resulting path is not rooted it is a mistake or a variable issue.
+                // This might happen if the user puts a random filename in there instead of a full path.
+                if (!Path.IsPathRooted(targetPath))
+                {
+                    log.ErrorFormat("Unrecognized path to default annotations. The path must resolve to an existing directory and start at the root of a drive. {0}", targetPath);
+                    return;
+                }
+
+                // TODO: if the full path including the file already exists, ask the user for confirmation?
+                // Bail out if cancelled.
+                
+                
+                // If path is correctly rooted but parts of it don't exist create them.
+                // The file itself doesn't have to exist yet but the directory must exist.
+                var directory = Path.GetDirectoryName(targetPath);
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+                // Bail out on failure.
+                if (!Directory.Exists(directory))
+                {
+                    log.ErrorFormat("Could not create directory for default annotations. {0}", directory);
+                    return;
+                }
+            }
+
+            // At this point we always have a target path to save to.
             MetadataSerializer serializer = new MetadataSerializer();
-            serializer.UserSave(this.Metadata, forcedPath);
+            serializer.UserSave(this.Metadata, targetPath);
+            log.DebugFormat("Saved default KVA: {0}", targetPath);
 
-            // Don't let the default file become the working file.
-            // aka: disable "save", the user needs to either save to default again or save elsewhere.
+            // Don't let the default kva become the working kva. aka: disable "save".
+            // The user needs to either save to default again or save elsewhere.
             // This is to avoid mistakenly overwriting the default file.
             this.Metadata.ResetKVAPath();
-
-            // Set preferences.
-            // We only store the filename for cleanliness.
-            // Loaders know that if the path is not rooted they should look in the settings folder.
-            if (forPlayer)
-                PreferencesManager.PlayerPreferences.PlaybackKVA = filename;
-            else
-                PreferencesManager.CapturePreferences.CaptureKVA = filename;
 
             AfterLastKVAPathChanged();
         }
@@ -286,15 +340,9 @@ namespace Kinovea.ScreenManager
                 return;
 
             string path = "";
-            if (forPlayer)
-                path = PreferencesManager.PlayerPreferences.PlaybackKVA;
-            else 
-                path = PreferencesManager.CapturePreferences.CaptureKVA;
+            bool found = Filenamer.GetDefaultKVAPath(ref path, ProfileManager, forPlayer);
 
-            if (!Path.IsPathRooted(path))
-                path = Path.Combine(Software.SettingsDirectory, path);
-
-            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+            if (!found)
                 return;
 
             bool confirmed = BeforeUnloadingAnnotations();

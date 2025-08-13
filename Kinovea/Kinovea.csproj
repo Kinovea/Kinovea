@@ -266,8 +266,12 @@
     <Compile Include="Kernel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Languages\RootLang.ar.resx" />
-    <EmbeddedResource Include="Languages\RootLang.bg.resx" />
+    <EmbeddedResource Include="Languages\RootLang.ar.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\RootLang.bg.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Languages\RootLang.ca.resx" />
     <EmbeddedResource Include="Languages\RootLang.cs.resx" />
     <EmbeddedResource Include="Languages\RootLang.da.resx" />

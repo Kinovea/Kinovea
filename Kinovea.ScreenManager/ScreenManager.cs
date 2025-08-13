@@ -72,7 +72,7 @@ namespace Kinovea.ScreenManager
         private bool canShowCommonControls;
         private int pendingPlayerLoads;
         private bool launchLoadingInProgress;
-        private Profile profile = new Profile();
+        private ProfileManager profileManager = new ProfileManager();
         private List<string> camerasToDiscover = new List<string>();
         private AudioInputLevelMonitor audioInputLevelMonitor = new AudioInputLevelMonitor();
         private UDPMonitor udpMonitor = new UDPMonitor();
@@ -173,8 +173,8 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuAngleAngleAnalysis = new ToolStripMenuItem();
 
         // Options
-        private ToolStripMenuItem mnuProfile = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuProfileImport = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuVariables = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuImportVariables = new ToolStripMenuItem();
 
         #endregion
 
@@ -218,21 +218,10 @@ namespace Kinovea.ScreenManager
 
             InitializeVideoFilters();
 
-            if (!string.IsNullOrEmpty(PreferencesManager.GeneralPreferences.LastProfile))
-            {
-                // The profile should be loaded before the screens are initialized as part of the workspace, 
-                // since the profile may contain variables used in the default kva paths to load with the screens.
-                // However the command line may specify a different profile to load.
-                profile.Import(PreferencesManager.GeneralPreferences.LastProfile);
-                BuildProfileMenus();
-
-                // Load the key.
-                if (!string.IsNullOrEmpty(PreferencesManager.GeneralPreferences.LastProfileKey))
-                {
-                    profile.CurrentKey = PreferencesManager.GeneralPreferences.LastProfileKey;
-                    CheckCurrentProfileKey();
-                }
-            }
+            // The variable tables should be loaded before the screens are initialized as part of the workspace, 
+            // since they may contain variables used in the default kva paths to load with the screens.
+            profileManager.Initialize();
+            BuildVariablesMenu();
 
             NotificationCenter.StopPlayback += (s, e) => DoStopPlaying();
             NotificationCenter.PreferencesOpened += NotificationCenter_PreferencesOpened;
@@ -731,26 +720,26 @@ namespace Kinovea.ScreenManager
             // Pointer      = 2
             // ----         = 3
             // Workspace    = 4
-            // Profile      = 5
+            // Variables    = 5
             // ----         = 6
             // Preferences  = 7
 
-            mnuProfile.Image = Properties.Resources.group_16;
-            mnuProfile.MergeIndex = 5;
-            mnuProfile.MergeAction = MergeAction.Insert;
-            mnuProfileImport.Image = Properties.Resources.folder;
-            mnuProfileImport.Click += mnuProfileImport_OnClick;
+            mnuVariables.Image = Properties.Resources.group_16;
+            mnuVariables.MergeIndex = 5;
+            mnuVariables.MergeAction = MergeAction.Insert;
+            mnuImportVariables.Image = Properties.Resources.folder;
+            mnuImportVariables.Click += mnuImportVariables_OnClick;
 
             // It's possible that by this point the menu was already built,
             // if we imported a profile from the command line or preferences.
             // In that case the import menu is already there, if not we must add it.
-            if (mnuProfile.DropDownItems.Count == 0)
+            if (mnuVariables.DropDownItems.Count == 0)
             {
-                mnuProfile.DropDownItems.Add(mnuProfileImport);
+                mnuVariables.DropDownItems.Add(mnuImportVariables);
             }
 
             ToolStripItem[] subOptions = new ToolStripItem[] {
-                mnuProfile,
+                mnuVariables,
             };
             
             mnuCatchOptions.DropDownItems.AddRange(subOptions);
@@ -1850,68 +1839,130 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Rebuild the profile menu after a new profile file is imported.
+        /// Rebuild the whole variables menu. 
+        /// This should be done after files are added or changed externally.
+        /// Does not reset the current active profile.
         /// </summary>
-        private void BuildProfileMenus()
+        private void BuildVariablesMenu()
         {
-            mnuProfile.DropDownItems.Clear();
-            mnuProfile.DropDownItems.Add(mnuProfileImport);
+            mnuVariables.DropDownItems.Clear();
+            mnuVariables.DropDownItems.Add(mnuImportVariables);
 
-            // Bail out if the profile is empty.
-            if (profile.Keys == null || profile.Keys.Count == 0)
+            // Bail out if there are no variables.
+            if (profileManager.VariableTables.Count == 0)
             {
                 return;
             }
 
-            // Otherwise add the profile entries.
-            mnuProfile.DropDownItems.Add(new ToolStripSeparator());
+            mnuVariables.DropDownItems.Add(new ToolStripSeparator());
 
-            foreach (var key in profile.Keys)
+            foreach (var pair in profileManager.VariableTables)
             {
-                ToolStripMenuItem item = new ToolStripMenuItem();
-                item.Text = key;
-                item.Tag = key;
-                item.Click += mnuProfile_OnClick;
-                item.MergeAction = MergeAction.Append;
-                item.Checked = (key == profile.CurrentKey);
-                
-                mnuProfile.DropDownItems.Add(item);
-            }
+                // Add a menu for the table.
+                var mnuTable = new ToolStripMenuItem();
+                mnuTable.Text = pair.Key;
+                mnuTable.Tag = pair.Value;
 
+                mnuVariables.DropDownItems.Add(mnuTable);
+                VariableTable table = pair.Value;
+
+                // TODO: it's not clear if the next/previous menus are useful or risky.
+                // It's probably always better to let the user explicitly select the profile they want,
+                // rather than rely on prev/next.
+                //AddNextPrevMenus(mnuTable);
+
+                // Add menus for profiles.
+                foreach (var key in table.Keys)
+                {
+                    ToolStripMenuItem mnuProfile = new ToolStripMenuItem();
+                    mnuProfile.Text = key;
+                    mnuProfile.Tag = key;
+                    mnuProfile.Checked = (key == table.CurrentKey);
+                    mnuProfile.Click += (s, e) => {
+                        table.CurrentKey = key;
+                        CheckCurrentProfileKey(mnuTable);
+                    };
+
+                    mnuTable.DropDownItems.Add(mnuProfile);
+                }
+            }
         }
 
-        /// <summary>
-        /// One profile key menu has been clicked.
-        /// Select the corresponding key and check the correct entry.
-        /// </summary>
-        private void mnuProfile_OnClick(object sender, EventArgs e)
+        private void AddNextPrevMenus(ToolStripMenuItem mnuTable)
         {
-            ToolStripMenuItem item = sender as ToolStripMenuItem;
-            if (item == null)
-                return;
-            
-            string key = item.Tag as string;
-            if (key == null)
+            // Menus to move to next/previous profile.
+            ToolStripMenuItem mnuNext = new ToolStripMenuItem();
+            mnuNext.Text = "Next";
+            mnuNext.Image = Properties.Resources.arrow_down2_16;
+            mnuNext.Click += (s, e) => {
+                MoveToNextProfile(mnuTable, true);
+            };
+
+            ToolStripMenuItem mnuPrev = new ToolStripMenuItem();
+            mnuPrev.Text = "Previous";
+            mnuPrev.Image = Properties.Resources.arrow_up2_16;
+            mnuPrev.Click += (s, e) => {
+                MoveToNextProfile(mnuTable, false);
+            };
+
+            mnuTable.DropDownItems.Add(mnuPrev);
+            mnuTable.DropDownItems.Add(mnuNext);
+            mnuTable.DropDownItems.Add(new ToolStripSeparator());
+        }
+
+        private void MoveToNextProfile(ToolStripMenuItem mnuTable, bool down)
+        {
+            VariableTable table = mnuTable.Tag as VariableTable;
+            if (table == null)
                 return;
 
-            profile.CurrentKey = key;
+            // This is implemented at the menu level because the 
+            // table uses a dictionary and isn't particularly sorted.
+            for (int i = 0; i < mnuTable.DropDownItems.Count; i++)
+            {
+                ToolStripMenuItem item = mnuTable.DropDownItems[i] as ToolStripMenuItem;
+                if (item == null || !(item.Tag is string) || (string)item.Tag != table.CurrentKey)
+                    continue;
+                
+                // Found the current key, move to the next one.
+                // First 3 entries are Next, Previous and separator.
+                ToolStripMenuItem nextItem = null;
+                if (down && ((i + 1) < mnuTable.DropDownItems.Count))
+                {
+                    nextItem = mnuTable.DropDownItems[i + 1] as ToolStripMenuItem;
+                }
+                else if (!down && ((i - 1) > 2))
+                {
+                    nextItem = mnuTable.DropDownItems[i - 1] as ToolStripMenuItem;
+                }
 
-            CheckCurrentProfileKey();
+                if (nextItem == null || !(nextItem.Tag is string))
+                    return;
+
+                table.CurrentKey = (string)nextItem.Tag;
+                item.Checked = false;
+                nextItem.Checked = true;
+                break;
+            }
         }
 
         /// <summary>
         /// Check the profile key menu corresponding to the current key.
         /// </summary>
-        private void CheckCurrentProfileKey()
+        private void CheckCurrentProfileKey(ToolStripMenuItem mnuTable)
         {
+            VariableTable table = mnuTable.Tag as VariableTable;
+            if (table == null)
+                return;
+
             // Note: the menu contains entries that are not profile entries
-            // like the menu for import,  profile manager, or separators.
-            foreach (object m in mnuProfile.DropDownItems)
+            // like the menu for Next, Previous, separators, etc.
+            foreach (object m in mnuTable.DropDownItems)
             {
                 ToolStripMenuItem item = m as ToolStripMenuItem;
                 if (item != null)
                 {
-                    item.Checked = (item.Tag is string && (string)item.Tag == profile.CurrentKey);
+                    item.Checked = (item.Tag is string && (string)item.Tag == table.CurrentKey);
                 }
             }
         }
@@ -2029,8 +2080,8 @@ namespace Kinovea.ScreenManager
             mnuAngleAngleAnalysis.Text = ScreenManagerLang.DataAnalysis_AngleAngleDiagrams + "…";
 
             // Options
-            mnuProfile.Text = "Profile";
-            mnuProfileImport.Text = "Import…";
+            mnuVariables.Text = "Variables";
+            mnuImportVariables.Text = "Import…";
         }
 
         private void RefreshCultureMenuFilters()
@@ -3010,19 +3061,28 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Options
-        private void mnuProfileImport_OnClick(object sender, EventArgs e)
+        private void mnuImportVariables_OnClick(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Title = "Import profile file";
-            openFileDialog.Filter = FilesystemHelper.OpenCSVFilter();
+            openFileDialog.Title = "Import variables";
+            openFileDialog.Filter = FilesystemHelper.OpenVariableTableFilter(ScreenManagerLang.FileFilter_AllSupported);
             openFileDialog.FilterIndex = 1;
-            openFileDialog.InitialDirectory = Software.ProfilesDirectory;
+            openFileDialog.InitialDirectory = Software.VariablesDirectory;
 
             if (openFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(openFileDialog.FileName))
                 return;
 
-            profile.Import(openFileDialog.FileName);
-            BuildProfileMenus();
+            // "Importing" a variable table means we copy the file to the variables directory and reload.
+            // Copy the file to the variables directory.
+            string target = Path.Combine(Software.VariablesDirectory, Path.GetFileName(openFileDialog.FileName));
+            if (!File.Exists(target))
+            {
+                File.Copy(openFileDialog.FileName, target);
+            }
+
+            // Load the profile.
+            profileManager.LoadFile(target);
+            BuildVariablesMenu();
             OrganizeMenus();
         }
         #endregion
@@ -3236,14 +3296,14 @@ namespace Kinovea.ScreenManager
         }
         public void AddPlayerScreen()
         {
-            PlayerScreen screen = new PlayerScreen();
+            PlayerScreen screen = new PlayerScreen(profileManager);
             screen.RefreshUICulture();
             AddScreen(screen);
         }
         public void AddCaptureScreen()
         {
 
-            CaptureScreen screen = new CaptureScreen();
+            CaptureScreen screen = new CaptureScreen(profileManager);
             if (screenList.Count > 0)
                 screen.SetShared(true);
 
@@ -3282,7 +3342,6 @@ namespace Kinovea.ScreenManager
             foreach (CaptureScreen captureScreen in captureScreens)
                 captureScreen.SetShared(true);
 
-            screen.Profile = profile;
             AddScreenEventHandlers(screen);
             screenList.Add(screen);
         }

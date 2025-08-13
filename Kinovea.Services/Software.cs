@@ -63,9 +63,10 @@ namespace Kinovea.Services
         public static string PointersDirectory { get; private set; }
 
         /// <summary>
-        /// Application level profiles are csv files with custom variables that can be used in paths.
+        /// Variables and profiles. 
+        /// CSV files with custom variables that can be used in paths.
         /// </summary>
-        public static string ProfilesDirectory { get; private set; }
+        public static string VariablesDirectory { get; private set; }
         
         /// <summary>
         /// The main preferences file.
@@ -124,7 +125,7 @@ namespace Kinovea.Services
             ColorProfileDirectory       = Path.Combine(SettingsDirectory, "ColorProfiles");
             CameraPluginsDirectory      = Path.Combine(SettingsDirectory, "Plugins", "Camera");
             PointersDirectory           = Path.Combine(SettingsDirectory, "Pointers");
-            ProfilesDirectory           = Path.Combine(SettingsDirectory, "Profiles");
+            VariablesDirectory          = Path.Combine(SettingsDirectory, "Variables");
             TempDirectory               = Path.Combine(SettingsDirectory, "Temp");
 
             XSLTDirectory           = Path.Combine(applicationDirectory, "xslt");
@@ -164,7 +165,7 @@ namespace Kinovea.Services
             CreateDirectory(SettingsDirectory);
             CreateDirectory(CameraCalibrationDirectory);
             CreateDirectory(CameraProfilesDirectory);
-            CreateDirectory(ProfilesDirectory);
+            CreateDirectory(VariablesDirectory);
             CreateDirectory(ColorProfileDirectory);
             CreateDirectory(CameraPluginsDirectory);
             CreateDirectory(PointersDirectory);

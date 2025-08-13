@@ -5,6 +5,8 @@ using System.Text;
 using System.IO;
 using System.Text.RegularExpressions;
 using Kinovea.Services;
+using System.Web.Profile;
+using DocumentFormat.OpenXml.Drawing.Charts;
 
 namespace Kinovea.ScreenManager
 {
@@ -14,23 +16,75 @@ namespace Kinovea.ScreenManager
 
 
         /// <summary>
-        /// Gets the full path, including root directory, filename and extension.
+        /// Gets the full path to save recorded images or videos.
+        /// This includes the root directory, filename and extension.
+        /// The root, subdir and filename may contain variables to be interpolated.
         /// </summary>
-        public static string GetFilePath(string root, string subdir, string filename, string extension, Dictionary<PatternContext, string> context, Profile profile)
+        public static string ResolveOutputFilePath(string root, string subdir, string filename, string extension, ProfileManager profileManager, Dictionary<string, string> context)
         {
-            root = ReplacePatterns(root, PatternSymbolsFile.Symbols, context, profile);
-            subdir = ReplacePatterns(subdir, PatternSymbolsFile.Symbols, context, profile);
-            filename = ReplacePatterns(filename, PatternSymbolsFile.Symbols, context, profile);
+            root = ReplacePatterns(root, profileManager, context);
+            subdir = ReplacePatterns(subdir, profileManager, context);
+            filename = ReplacePatterns(filename, profileManager, context);
 
             return Path.Combine(root, Path.Combine(subdir, filename + extension));
         }
 
         /// <summary>
-        /// Gets the full command line.
+        /// Gets the command line for post-recording command.
+        /// The command may contain variables to be interpolated.
         /// </summary>
-        public static string GetCommandLine(string command, Dictionary<PatternContext, string> context, Profile profile)
+        public static string ResolveCommandLine(string command, ProfileManager profileManager, Dictionary<string, string> context)
         {
-            return ReplacePatterns(command, PatternSymbolsCommand.Symbols, context, profile);
+            return ReplacePatterns(command, profileManager, context);
+        }
+
+        /// <summary>
+        /// Get the default KVA path of either player or capture, based on the current profile context.
+        /// If found returns true and put the path in `path`, otherwise returns false.
+        /// This is for loading, not for saving.
+        /// For saving use AbstractScreen.SaveDefaultAnnotations().
+        /// </summary>
+        public static bool GetDefaultKVAPath(ref string path, ProfileManager profileManager, bool forPlayer)
+        {
+            path = forPlayer ? PreferencesManager.PlayerPreferences.PlaybackKVA : PreferencesManager.CapturePreferences.CaptureKVA;
+            if (string.IsNullOrEmpty(path))
+                return false;
+
+            string filename = forPlayer ? "player.kva" : "capture.kva";
+            string standardPath = Path.Combine(Software.SettingsDirectory, filename);
+
+            if (path == filename)
+            {
+                // Standard location.
+                path = standardPath;
+                return true;
+            }
+            else
+            {
+                path = ResolveDefaultKVAPath(path, profileManager);
+
+                if (!Path.IsPathRooted(path))
+                {
+                    log.ErrorFormat("The default path must resolve to a full directory and file. {0}", path);
+                    return false;
+                }
+
+                if (!File.Exists(path))
+                {
+                    log.ErrorFormat("Default annotations file not found: {0}", path);
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Resolve variables for a default KVA path.
+        /// </summary>
+        public static string ResolveDefaultKVAPath(string path, ProfileManager profileManager)
+        {
+            return ReplacePatterns(path, profileManager, null);
         }
 
 
@@ -119,39 +173,61 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Replaces all the variables found by their current values.
+        /// Replaces all the variables found by their current value.
         /// </summary>
-        private static string ReplacePatterns(string text, Dictionary<PatternContext, string> symbols, Dictionary<PatternContext, string> context, Profile profile)
+        private static string ReplacePatterns(string text, ProfileManager profileManager, Dictionary<string, string> context)
         {
             string result = text;
 
-            log.DebugFormat("Replace pattern. Input: {0}", text);
+            log.DebugFormat("Replace pattern input: {0}", text);
 
-            // Check for the custom variables of the profile first,
-            // this way they can override the default variables.
-            foreach (var variable in profile.Variables)
+            // Replace custom variables first, this way they can override the built-in variables.
+            result = ReplaceCustomVariables(result, profileManager);
+
+            if (context == null || context.Count == 0)
+                return result;
+
+            log.DebugFormat("Replace pattern after profile: {0}", result);
+
+            // Sort variables in descending length order so we test for %datetime before
+            // testing for %date or %time.
+            // A better way might be to support %{date} and %{time} flavor.
+            var sortedContext = context.OrderBy(pair => -pair.Value.Length);
+            foreach (var pair in sortedContext)
             {
-                // We keep them verbatim so this is case sensitive.
-                string symbol = "%" + variable;
-
-                result = result.Replace(symbol, profile.GetValue(variable));
+                string symbol = "%" + pair.Key;
+                result = result.Replace(symbol, pair.Value);
             }
 
-            log.DebugFormat("Replace pattern. After profile: {0}", result);
-
-            // Sort symbols in descending length so we test for %datetime before testing for %date or %time.
-            var sortedSymbols = symbols.OrderBy(pair => -pair.Value.Length);
-            foreach (var symbol in sortedSymbols)
-            {
-                if (!context.ContainsKey(symbol.Key))
-                    continue;
-
-                result = result.Replace(symbols[symbol.Key], context[symbol.Key]);
-            }
-
-            log.DebugFormat("Replace pattern. After context: {0}", result);
+            log.DebugFormat("Replace pattern after context: {0}", result);
 
             return result;
+        }
+
+        /// <summary>
+        /// Replace the custom variables in the passed string using the active profile.
+        /// </summary>
+        private static string ReplaceCustomVariables(string text, ProfileManager profileManager)
+        {
+            // Note that we don't check if two tables have the same variable name.
+            // The first one loaded will take precedence.
+            foreach (var pair in profileManager.VariableTables)
+            {
+                VariableTable variableTable = pair.Value;
+
+                if (string.IsNullOrEmpty(variableTable.CurrentKey))
+                    continue;
+
+                // Replace all variables using the active profile.
+                foreach (var variable in variableTable.Variables)
+                {
+                    // We keep them verbatim so this is case sensitive.
+                    string symbol = "%" + variable;
+                    text = text.Replace(symbol, variableTable.GetValue(variable));
+                }
+            }
+
+            return text;
         }
     }
 }

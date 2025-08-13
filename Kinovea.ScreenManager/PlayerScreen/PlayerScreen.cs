@@ -371,13 +371,14 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public PlayerScreen()
+        public PlayerScreen(ProfileManager profileManager)
+            : base(profileManager)
         {
             log.Debug("Constructing a PlayerScreen.");
             historyStack = new HistoryStack();
             frameServer = new FrameServerPlayer(historyStack);
             replayWatcher = new ReplayWatcher(this);
-            view = new PlayerScreenUserInterface(frameServer, drawingToolbarPresenter);
+            view = new PlayerScreenUserInterface(frameServer, drawingToolbarPresenter, profileManager);
 
             BindCommands();
         }

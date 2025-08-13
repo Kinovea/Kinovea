@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
       this.lvSymbols = new System.Windows.Forms.ListView();
-      this.colContext = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.colPattern = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.colContext = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.SuspendLayout();
       // 
       // lvSymbols
@@ -49,15 +49,15 @@
       this.lvSymbols.UseCompatibleStateImageBehavior = false;
       this.lvSymbols.View = System.Windows.Forms.View.Details;
       // 
-      // colContext
-      // 
-      this.colContext.Text = "Context";
-      this.colContext.Width = 264;
-      // 
       // colPattern
       // 
-      this.colPattern.Text = "Macro";
+      this.colPattern.Text = "Variable";
       this.colPattern.Width = 128;
+      // 
+      // colContext
+      // 
+      this.colContext.Text = "Value";
+      this.colContext.Width = 264;
       // 
       // FormPatterns
       // 
