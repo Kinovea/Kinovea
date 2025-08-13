@@ -1957,4 +1957,16 @@
   <data name="arrow_up2_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\arrow-up2-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="block_microphone_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\block-microphone-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="deaf_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\deaf-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ear_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ear-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="microphone_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\microphone-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

@@ -37,7 +37,7 @@ namespace Kinovea.Services
             TriggerAction = CaptureTriggerAction.RecordVideo;
             RecordingSeconds = 0;
             IgnoreOverwrite = false;
-            DefaultTriggerArmed = false;
+            DefaultTriggerArmed = true;
         }
 
         static CaptureAutomationConfiguration()

@@ -169,12 +169,12 @@ namespace Kinovea.ScreenManager
 
             if (armed)
             {
-                btnArm.Image = Properties.Capture.speaker;
+                btnArm.Image = Properties.Resources.microphone_16;
                 toolTips.SetToolTip(btnArm, ScreenManagerLang.ToolTip_DisarmTrigger);
             }
             else
             {
-                btnArm.Image = Properties.Capture.speaker_mute;
+                btnArm.Image = Properties.Resources.block_microphone_16;
                 toolTips.SetToolTip(btnArm, ScreenManagerLang.ToolTip_ArmTrigger);
             }
         }
