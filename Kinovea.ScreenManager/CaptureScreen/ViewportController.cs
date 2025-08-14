@@ -36,6 +36,7 @@ namespace Kinovea.ScreenManager
     public class ViewportController : IDisposable, IDrawingHostView
     {
         #region Events
+        public event EventHandler ConfigureAsked;
         public event EventHandler DisplayRectangleUpdated;
         public event EventHandler Activated;
         public event EventHandler LoadAnnotationsAsked;
@@ -129,6 +130,7 @@ namespace Kinovea.ScreenManager
 
         #region Context menu
         private ContextMenuStrip popMenu = new ContextMenuStrip();
+        private ToolStripMenuItem mnuConfigure = new ToolStripMenuItem();
         //private ToolStripMenuItem mnuBackground = new ToolStripMenuItem();
         //private ToolStripMenuItem mnuCopyPic = new ToolStripMenuItem();
         //private ToolStripMenuItem mnuPastePic = new ToolStripMenuItem();
@@ -398,6 +400,7 @@ namespace Kinovea.ScreenManager
         private void BuildContextMenus()
         {
             // Background context menu.
+            mnuConfigure.Image = Properties.Capture.settings;
             mnuLoadAnnotations.Image = Properties.Resources.notes2_16;
             mnuSaveAnnotations.Image = Properties.Resources.save_16;
             mnuSaveAnnotationsAs.Image = Properties.Resources.save_as_16;
@@ -407,7 +410,8 @@ namespace Kinovea.ScreenManager
             mnuReloadDefaultCaptureAnnotations.Image = Properties.Resources.notes2_16;
             mnuReloadLinkedAnnotations.Image = Properties.Resources.notes2_16;
             mnuCloseScreen.Image = Properties.Capture.camera_close;
-            
+
+            mnuConfigure.Click += (s, e) => ConfigureAsked?.Invoke(this, e);
             mnuLoadAnnotations.Click += (s, e) => LoadAnnotationsAsked?.Invoke(this, e);
             mnuSaveAnnotations.Click += (s, e) => SaveAnnotationsAsked?.Invoke(this, e);
             mnuSaveAnnotationsAs.Click += (s, e) => SaveAnnotationsAsAsked?.Invoke(this, e);
@@ -439,6 +443,7 @@ namespace Kinovea.ScreenManager
         private void ReloadMenusCulture()
         {
             // Background context menu
+            mnuConfigure.Text = ScreenManagerLang.ToolTip_ConfigureCamera;
             //mnuBackground.Text = ScreenManagerLang.PlayerScreenUserInterface_Background;
             //mnuPasteDrawing.Text = ScreenManagerLang.mnuPasteDrawing;
             //mnuPasteDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.PasteDrawing);
@@ -511,8 +516,9 @@ namespace Kinovea.ScreenManager
             popMenu.Items.Clear();
             popMenu.Items.AddRange(new ToolStripItem[]
             {
+                mnuConfigure,
                 //mnuBackground,
-                //new ToolStripSeparator(),
+                new ToolStripSeparator(),
                 //mnuCopyPic,
                 //mnuPastePic,
                 //mnuPasteDrawing,

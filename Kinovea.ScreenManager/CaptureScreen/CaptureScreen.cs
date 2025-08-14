@@ -272,6 +272,7 @@ namespace Kinovea.ScreenManager
             viewportController.ReloadDefaultCaptureAnnotationsAsked += (s, e) => ReloadDefaultAnnotations(false);
 
             // Implemented locally.
+            viewportController.ConfigureAsked += (s, e) => ConfigureCamera();
             viewportController.DisplayRectangleUpdated += ViewportController_DisplayRectangleUpdated;
             viewportController.ReloadLinkedAnnotationsAsked += (s, e) => ReloadLinkedAnnotations();
         }
