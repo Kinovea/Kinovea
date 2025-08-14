@@ -677,7 +677,9 @@ namespace Kinovea.ScreenManager
                 sd.Autoplay = false;
             }
             
-            sd.SpeedPercentage = RealtimePercentage;
+            // The speed percentage we save is the *playback* speed ratio.
+            // Not the "real time" ratio related to the capture frame rate.
+            sd.SpeedPercentage = view.SpeedPercentage;
             sd.Stretch = view.ImageFill;
             return sd;
         }
