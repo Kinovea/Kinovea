@@ -235,6 +235,7 @@ namespace Kinovea.ScreenManager
 
             recordingMode = PreferencesManager.CapturePreferences.RecordingMode;
             triggerArmed = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.DefaultTriggerArmed;
+            manualArmed = triggerArmed;
 
             view.UpdateArmedStatus(triggerArmed);
             UpdateRecordingIndicator();
