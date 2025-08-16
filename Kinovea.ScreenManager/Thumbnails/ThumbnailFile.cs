@@ -290,7 +290,6 @@ namespace Kinovea.ScreenManager
 
                 // Keep track of the last write time to detect if a reload is really needed.
                 lastWriteUTC = File.Exists(summary.Filename) ? File.GetLastWriteTimeUtc(summary.Filename) : DateTime.MinValue;
-                log.DebugFormat("Populated {0}", summary.Filename);
             }
         }
         

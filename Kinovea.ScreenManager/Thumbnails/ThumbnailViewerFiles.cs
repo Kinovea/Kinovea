@@ -25,6 +25,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Linq;
 using System.Threading;
+using System.IO;
 
 using Kinovea.Services;
 using Kinovea.ScreenManager.Languages;
@@ -58,7 +59,8 @@ namespace Kinovea.ScreenManager
         private string lastSelectedFile;
         private bool sortOperationInProgress;
         private bool forcedRefreshInProgress;
-        private Dictionary<string, ThumbnailFile> mapThumbnails = new Dictionary<string, ThumbnailFile>();
+        private Dictionary<string, ThumbnailFile> mapPathToThumbnail = new Dictionary<string, ThumbnailFile>();
+        private Dictionary<string, int> mapPathToIndex = new Dictionary<string, int>();
         private Stopwatch stopwatch = new Stopwatch();
 
         #region Menus
@@ -143,7 +145,7 @@ namespace Kinovea.ScreenManager
             selectedThumbnail = null;
             NotificationCenter.RaiseFileSelected(this, null);
             
-            mapThumbnails.Clear();
+            mapPathToThumbnail.Clear();
 
             for (int i = thumbnails.Count - 1; i >= 0; i--)
             {
@@ -263,7 +265,32 @@ namespace Kinovea.ScreenManager
             Size maxImageSize = DoLayout(changedSize);
             log.DebugFormat("After thumbnail layout: {0} in {1} ms.", files.Count, stopwatch.ElapsedMilliseconds);
 
-            SummaryLoader sl = new SummaryLoader(files, maxImageSize);
+            // Filter out files that are already loaded.
+            List<string> filesToLoad = new List<string>();
+            for (int i = 0; i < files.Count; i++)
+            {
+                string file = files[i];
+                if (!mapPathToIndex.ContainsKey(file))
+                {
+                    // This should never happen.
+                    continue;
+                }
+
+                // Check last write time.
+                // If the control is being recycled from a different file it will have reset this.
+                bool updated = thumbnails[mapPathToIndex[file]].LastWriteUTC != File.GetLastWriteTimeUtc(file);
+                if (updated || changedSize || forcedRefreshInProgress)
+                {
+                    filesToLoad.Add(file);
+                }
+            }
+
+            log.DebugFormat("Summaries to load: {0}/{1}", filesToLoad.Count, files.Count);
+
+            if (filesToLoad.Count == 0)
+                return;
+
+            SummaryLoader sl = new SummaryLoader(filesToLoad, maxImageSize);
             sl.SummaryLoaded += SummaryLoader_SummaryLoaded;
             loaders.Add(sl);
 
@@ -282,41 +309,124 @@ namespace Kinovea.ScreenManager
         private void UpdateThumbnailList(List<String> files)
         {
             this.SuspendLayout();
-            int index = 0;
 
-            mapThumbnails.Clear();
+            // If we come here after a sort, add or delete, we already have most of the thumbnails already.
+            // We try to swap the existing ones around.
+            // We don't verify if the file has been modified in place just yet, we'll do that later.
+            // - The list `files` is the target list of files to display, in the correct order.
+            // - thumbnails is our internal list of thumbnail controls, in the current order.
+            // - this.Controls is the same list as thumbnails.
 
-            foreach (string file in files)
+            // Algo
+            // - First we figure which files we already have and which ones are new.
+            // - Then we update the map of target paths to thumbnails.
+            // - During this loop we may recycle existing thumbnail controls or create new ones.
+            // - Next we rearrange the thumbnails list to match the target file list.
+            // - Finally we hide the extra thumbnails we won't need.
+
+            List<bool> inUse = new List<bool>();
+            foreach (ThumbnailFile tlvi in thumbnails)
             {
-                ThumbnailFile tlvi;
-                if (index < thumbnails.Count)
+                // We start with all thumbnails flagged as unused.
+                inUse.Add(false);
+            }
+
+            // Maps target indices in the goal list to source indices in the current list.
+            Dictionary<int, int> mapIndices = new Dictionary<int, int>();
+            for (int i = 0; i < files.Count; i++)
+            {
+                if (mapPathToIndex.ContainsKey(files[i]))
                 {
-                    // Recycle an existing thumbnail control.
-                    tlvi = thumbnails[index];
-                    tlvi.FilePath = file;
-                    tlvi.Visible = true;
-                    //log.DebugFormat("Updated thumbnail: {0}: {1} ms.", index, stopwatch.ElapsedMilliseconds);
+                    // We already have this file.
+                    int knownIndex = mapPathToIndex[files[i]];
+                    mapIndices.Add(i, knownIndex);
+                    inUse[knownIndex] = true;
                 }
                 else
                 {
-                    // Create a new thumbnail control.
-                    tlvi = new ThumbnailFile(file);
-                    tlvi.LaunchVideo += ThumbListViewItem_LaunchVideo;
-                    tlvi.VideoSelected += ThumbListViewItem_VideoSelected;
-                    tlvi.FileNameEditing += ThumbListViewItem_FileNameEditing;
-                    tlvi.Tag = index;
-                    thumbnails.Add(tlvi);
-                    this.Controls.Add(tlvi);
-                    //log.DebugFormat("Created thumbnail: {0}: {1} ms.", index, stopwatch.ElapsedMilliseconds);
+                    mapIndices.Add(i, -1);
                 }
-
-                mapThumbnails.Add(file, tlvi);
-
-                index++;
             }
 
-            // Hide unused thumbnail controls.
-            for (int i = index; i < thumbnails.Count; i++)
+            // The goal of this step is to update the mapPathToIndex list,
+            // recycle existing thumbnail controls if possible, create new ones if necessary.
+            mapPathToIndex.Clear();
+            for (int i = 0; i < files.Count; i++)
+            {
+                if (mapIndices[i] != -1)
+                {
+                    // We already know this file, point to it.
+                    mapPathToIndex.Add(files[i], mapIndices[i]);
+                }
+                else
+                {
+                    // We don't know this file, find the first thumbnail control
+                    // that won't be used and recycle it, or create a new one.
+                    // Note: we don't really need to update mapIndices at this point, useful for debugging.
+                    int foundUnused = -1;
+                    for (int j = 0; j < thumbnails.Count; j++)
+                    {
+                        if (!inUse[j])
+                        {
+                            foundUnused = j;
+                            break;
+                        }
+                    }
+
+                    if (foundUnused != -1)
+                    {
+                        // We found a thumbnail control that we won't be using, reassign it.
+                        thumbnails[foundUnused].FilePath = files[i];
+                        mapIndices[i] = foundUnused;
+                        inUse[foundUnused] = true;
+
+                        mapPathToIndex.Add(files[i], foundUnused);
+                    }
+                    else
+                    {
+                        // We couldn't find any thumbnail control to use, create a new one.
+                        ThumbnailFile tlvi = new ThumbnailFile(files[i]);
+                        tlvi.LaunchVideo += ThumbListViewItem_LaunchVideo;
+                        tlvi.VideoSelected += ThumbListViewItem_VideoSelected;
+                        tlvi.FileNameEditing += ThumbListViewItem_FileNameEditing;
+                        thumbnails.Add(tlvi);
+                        tlvi.Tag = thumbnails.Count - 1;
+                        this.Controls.Add(tlvi);
+                        mapIndices[i] = thumbnails.Count - 1;
+                        inUse.Add(true);
+
+                        mapPathToIndex.Add(files[i], thumbnails.Count - 1);
+                    }
+                }
+            }
+
+            // At this point we are sure to have controls for all the required files.
+            // And we may even have extra controls that we won't be using.
+            // Arrange the thumbnails list so that it matches the order of the target files.
+            mapPathToThumbnail.Clear();
+            for (int i = 0; i < files.Count; i++)
+            {
+                string path = files[i];
+                if (mapPathToIndex[path] != i)
+                {
+                    // Swap.
+                    var temp = thumbnails[i];
+                    int oldIndex = mapPathToIndex[path];
+                    thumbnails[i] = thumbnails[oldIndex];
+                    thumbnails[i].Tag = i;
+                    thumbnails[oldIndex] = temp;
+                    thumbnails[oldIndex].Tag = oldIndex;
+
+                    mapPathToIndex[path] = i;
+                    mapPathToIndex[thumbnails[oldIndex].FilePath] = oldIndex;
+                }
+
+                mapPathToThumbnail.Add(path, thumbnails[i]);
+                thumbnails[i].Visible = true;
+            }
+
+            // Hide the extra unused controls.
+            for (int i = files.Count; i < thumbnails.Count; i++)
             {
                 thumbnails[i].Visible = false;
             }
@@ -349,13 +459,18 @@ namespace Kinovea.ScreenManager
             {
                 // Unexpected error.
             }
-            else if (!mapThumbnails.ContainsKey(e.Summary.Filename))
+            else if (!mapPathToThumbnail.ContainsKey(e.Summary.Filename))
             {
                 log.ErrorFormat("Thumbnail control not found for file: {0}", e.Summary.Filename);
             }
+            else if (mapPathToThumbnail[e.Summary.Filename].FilePath != e.Summary.Filename)
+            {
+                log.ErrorFormat("Thumbnail control found but assigned the wrong file: {0}, expected:{1}.",
+                    Path.GetFileName(mapPathToThumbnail[e.Summary.Filename].FilePath), Path.GetFileName(e.Summary.Filename));
+            }
             else
             {
-                ThumbnailFile thumbnail = mapThumbnails[e.Summary.Filename];
+                ThumbnailFile thumbnail = mapPathToThumbnail[e.Summary.Filename];
                 thumbnail.Populate(e.Summary);
                 thumbnail.Invalidate();
                 if (thumbnail.FilePath == lastSelectedFile)
@@ -364,7 +479,7 @@ namespace Kinovea.ScreenManager
 
             // Update the progress bar.
             int done = e.Progress+1;
-            int percentage = (int)(((float)done / thumbnails.Count) * 100);
+            int percentage = (int)(((float)done / files.Count) * 100);
             
             if(ProgressChanged != null)
                 ProgressChanged(this, new ProgressChangedEventArgs(percentage, null));
