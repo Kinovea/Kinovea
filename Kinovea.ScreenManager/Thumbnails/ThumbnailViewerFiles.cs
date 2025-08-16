@@ -399,7 +399,7 @@ namespace Kinovea.ScreenManager
 
             int current = 0;
             this.SuspendLayout();
-            foreach(ThumbnailFile tlvi in SortedAndFilteredThumbs())
+            foreach(ThumbnailFile tlvi in thumbnails)
             {
                 // Size update is relatively costly so only do it if strictly necessary.
                 // If we are reloading the list of files it will be done later anyway.
@@ -418,13 +418,6 @@ namespace Kinovea.ScreenManager
             this.ResumeLayout();
 
             return maxImageSize;
-        }
-        
-        
-        private IEnumerable<ThumbnailFile> SortedAndFilteredThumbs()
-        {
-            foreach(ThumbnailFile tlvi in thumbnails)
-                yield return tlvi;
         }
 
         /// <summary>
