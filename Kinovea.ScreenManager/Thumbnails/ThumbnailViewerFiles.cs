@@ -280,7 +280,9 @@ namespace Kinovea.ScreenManager
         {
             this.SuspendLayout();
             int index = 0;
+
             mapThumbnails.Clear();
+
             foreach (string file in files)
             {
                 ThumbnailFile tlvi;
@@ -288,7 +290,7 @@ namespace Kinovea.ScreenManager
                 {
                     // Recycle an existing thumbnail control.
                     tlvi = thumbnails[index];
-                    tlvi.FileName = file;
+                    tlvi.FilePath = file;
                     tlvi.Visible = true;
                     //log.DebugFormat("Updated thumbnail: {0}: {1} ms.", index, stopwatch.ElapsedMilliseconds);
                 }
@@ -353,7 +355,7 @@ namespace Kinovea.ScreenManager
                 ThumbnailFile thumbnail = mapThumbnails[e.Summary.Filename];
                 thumbnail.Populate(e.Summary);
                 thumbnail.Invalidate();
-                if (thumbnail.FileName == lastSelectedFile)
+                if (thumbnail.FilePath == lastSelectedFile)
                     thumbnail.SetSelected();
             }
 
@@ -449,7 +451,7 @@ namespace Kinovea.ScreenManager
 
             foreach (ThumbnailFile tlvi in thumbnails)
             {
-                if (tlvi.FileName == e.File)
+                if (tlvi.FilePath == e.File)
                 {
                     externalSelection = true;
                     tlvi.SetSelected();
@@ -465,7 +467,7 @@ namespace Kinovea.ScreenManager
             ThumbnailFile tlvi = sender as ThumbnailFile;
             
             if (tlvi != null && !tlvi.IsError && FileLoadAsked != null)
-                FileLoadAsked(this, new FileLoadAskedEventArgs(tlvi.FileName, -1));
+                FileLoadAsked(this, new FileLoadAskedEventArgs(tlvi.FilePath, -1));
         }
         private void ThumbListViewItem_VideoSelected(object sender, EventArgs e)
         {
@@ -477,14 +479,14 @@ namespace Kinovea.ScreenManager
 
             Deselect(false);
             selectedThumbnail = tlvi;
-            lastSelectedFile = tlvi.FileName;
+            lastSelectedFile = tlvi.FilePath;
             if (!externalSelection)
             {
                 // Force focus so the hotkeys can be received.
                 // Select the control so the whole page doesn't jump up to the top when we set focus.
                 tlvi.Select();
                 this.Focus();
-                NotificationCenter.RaiseFileSelected(this, tlvi.FileName);
+                NotificationCenter.RaiseFileSelected(this, tlvi.FilePath);
             }
             else
             {
@@ -706,7 +708,7 @@ namespace Kinovea.ScreenManager
         private void CommandLaunch()
         {
             if (selectedThumbnail != null && !selectedThumbnail.IsError && FileLoadAsked != null)
-                FileLoadAsked(this, new FileLoadAskedEventArgs(selectedThumbnail.FileName, -1));
+                FileLoadAsked(this, new FileLoadAskedEventArgs(selectedThumbnail.FilePath, -1));
         }
         
         private void CommandDelete()

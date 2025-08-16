@@ -50,40 +50,52 @@ namespace Kinovea.ScreenManager
         
         #region Properties
         
-        public string FileName 
+        public string FilePath 
         {
             get 
             { 
-                return m_FileName; 
+                return path; 
             }
             set 
             { 
-                m_FileName = value;
+                // If the filename changes this invalidates the thumbnail.
+                if (path != value)
+                {
+                    path = value;
+                    lastWriteUTC = DateTime.MinValue;
+                }
             }
         }
 
         public bool IsError 
         {
-            get { return m_IsError;}
+            get { return isError;}
+        }
+
+        public DateTime LastWriteUTC
+        {
+            get { return lastWriteUTC; }
+            set { lastWriteUTC = value; }
         }
         #endregion
-        
+
         #region Members
-        private string m_FileName;
-        private bool m_Loaded;
+        private string path;
+        private bool loaded;
         private int paddingHorizontal = 6;
         private int paddingVertical = 21;
         private int minWidthForDetails = 150;
 
-        private bool m_bIsSelected = false;
-        private bool m_IsError;
-        private List<Bitmap> m_Bitmaps;
+        private bool selected = false;
+        private bool isError;
+        private List<Bitmap> bitmaps;
         private Bitmap currentThumbnail;
         private FileDetails details = new FileDetails();
-        private bool m_bIsImage;
+        private bool isImage;
         private int currentThumbnailIndex;
-        private bool m_Hovering;
+        private bool hoverInProgress;
         private Bitmap bmpKvaAnalysis = Resources.bullet_white;
+        private DateTime lastWriteUTC = DateTime.MinValue;
         private System.Windows.Forms.Timer tmrThumbs = new System.Windows.Forms.Timer();
         
         #region Context menu
@@ -94,26 +106,26 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuOpenInExplorer = new ToolStripMenuItem();
         #endregion
         
-        private bool m_bEditMode;
+        private bool editModeInProgress;
         
-        private static readonly int m_iTimerInterval = 700;
-        private static readonly Pen m_PenSelected = new Pen(Color.DodgerBlue, 2);
-        private static readonly Pen m_PenUnselected = new Pen(Color.Silver, 2);
-        private static readonly Pen m_PenShadow = new Pen(Color.Lavender, 2);
+        private static readonly int timerInterval = 700;
+        private static readonly Pen penSelected = new Pen(Color.DodgerBlue, 2);
+        private static readonly Pen penUnselected = new Pen(Color.Silver, 2);
+        private static readonly Pen penShadow = new Pen(Color.Lavender, 2);
         private static readonly Font fontFileDetails = new Font("Arial", 8, FontStyle.Regular);
-        private static readonly SolidBrush m_BrushQuickPreviewActive = new SolidBrush(Color.FromArgb(128, Color.SteelBlue));
-        private static readonly SolidBrush m_BrushQuickPreviewInactive = new SolidBrush(Color.FromArgb(128, Color.LightSteelBlue));
-        private static readonly SolidBrush m_BrushDuration = new SolidBrush(Color.FromArgb(150, Color.Black));
-        private Pen penFileDetails = new Pen(m_BrushDuration);
+        private static readonly SolidBrush brushQuickPreviewActive = new SolidBrush(Color.FromArgb(128, Color.SteelBlue));
+        private static readonly SolidBrush brushQuickPreviewInactive = new SolidBrush(Color.FromArgb(128, Color.LightSteelBlue));
+        private static readonly SolidBrush brushDuration = new SolidBrush(Color.FromArgb(150, Color.Black));
+        private Pen penFileDetails = new Pen(brushDuration);
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
         #region Construction & initialization
-        public ThumbnailFile(string _fileName)
+        public ThumbnailFile(string path)
         {
             InitializeComponent();
             
-            m_FileName = _fileName;
+            this.path = path;
             penFileDetails.StartCap = LineCap.Round;
             penFileDetails.Width = 14;
             
@@ -124,7 +136,7 @@ namespace Kinovea.ScreenManager
         }
         private void SetupTimer()
         {
-            tmrThumbs.Interval = m_iTimerInterval;
+            tmrThumbs.Interval = timerInterval;
             tmrThumbs.Tick += tmrThumbs_Tick;
             currentThumbnailIndex = 0;
         }
@@ -207,24 +219,42 @@ namespace Kinovea.ScreenManager
         #region Public interface
         public void Populate(VideoSummary summary)
         {
-            m_Loaded = true;
-            
-            if (summary == null || summary.Thumbs == null || summary.Thumbs.Count < 1)
+            loaded = true;
+
+            if (path != summary.Filename)
             {
+                // This should never happen.
+                log.ErrorFormat("Summary received for the wrong thumbnail control.");
                 DisplayAsError();
+                lastWriteUTC = DateTime.MinValue;
+            }
+            else if (summary == null || summary.Thumbs == null || summary.Thumbs.Count < 1)
+            {
+                log.ErrorFormat("No images extracted for {0}.", path);
+
+                // This can happen when a file is copy/pasted externally.
+                // We receive an event as soon as the file is created but we can't extract a summary yet.
+
+                // Trigger the file name update anyway. Now that we recycle controls we need
+                // to not show the wrong name. We don't do this on file name update for perf reasons.
+                // Keep whatever size it currently has.
+                TruncateFilename();
+
+                DisplayAsError();
+                lastWriteUTC = DateTime.MinValue;
             }
             else
             {
-                m_Bitmaps = summary.Thumbs;
-                if(m_Bitmaps != null && m_Bitmaps.Count > 0)
+                bitmaps = summary.Thumbs;
+                if (bitmaps != null && bitmaps.Count > 0)
                 {
                     currentThumbnailIndex = 0;
-                    currentThumbnail = m_Bitmaps[currentThumbnailIndex];
+                    currentThumbnail = bitmaps[currentThumbnailIndex];
                 }
-                
-                if(summary.IsImage)
+
+                if (summary.IsImage)
                 {
-                    m_bIsImage = true;
+                    isImage = true;
                     details.Details[FileProperty.Duration] = "0";
                 }
                 else
@@ -252,7 +282,15 @@ namespace Kinovea.ScreenManager
 
                 details.Details[FileProperty.CreationTime] = string.Format("{0:g}", creation);
 
+                // This will resize the client area of the control and update the file name label.
                 SetSize(this.Width, this.Height);
+
+                isError = false;
+                mnuLaunch.Visible = true;
+
+                // Keep track of the last write time to detect if a reload is really needed.
+                lastWriteUTC = File.Exists(summary.Filename) ? File.GetLastWriteTimeUtc(summary.Filename) : DateTime.MinValue;
+                log.DebugFormat("Populated {0}", summary.Filename);
             }
         }
         
@@ -307,21 +345,21 @@ namespace Kinovea.ScreenManager
 
         public void DisplayAsError()
         {
-            m_IsError = true;
+            isError = true;
             mnuLaunch.Visible = false;
         }
         public void SetUnselected()
         {
             // This method does NOT trigger an event to notify the container.
-            m_bIsSelected = false;
+            selected = false;
             picBox.Invalidate();
         }
         public void SetSelected()
         {
             // This method triggers an event to notify the container.
-            if (!m_bIsSelected)
+            if (!selected)
             {
-                m_bIsSelected = true;
+                selected = true;
                 picBox.Invalidate();
                 
                 // Report change in selection
@@ -335,15 +373,15 @@ namespace Kinovea.ScreenManager
         {
             // Called from the container when we click nowhere.
             // Do not call QuitEditMode here, as we may be entering as a result of that.
-            if(m_bEditMode)
+            if(editModeInProgress)
             {
-                m_bEditMode = false;
+                editModeInProgress = false;
                 ToggleEditMode();	
             }
         }
         public void RefreshUICulture()
         {
-            lblFileName.Text = Path.GetFileNameWithoutExtension(m_FileName);
+            lblFileName.Text = Path.GetFileNameWithoutExtension(path);
             TruncateFilename();
 
             mnuLaunch.Text = ScreenManagerLang.Generic_Open;
@@ -355,17 +393,17 @@ namespace Kinovea.ScreenManager
         }
         public void DisposeImages()
         {
-            if(m_IsError || m_Bitmaps == null)
+            if(isError || bitmaps == null)
                 return;
             
-            foreach(Bitmap bmp in m_Bitmaps)
+            foreach(Bitmap bmp in bitmaps)
                 bmp.Dispose();
             
-            m_Bitmaps.Clear();
+            bitmaps.Clear();
         }
-        public void Animate(bool _animate)
+        public void Animate(bool animate)
         {
-            if(_animate)
+            if(animate)
                 tmrThumbs.Start();
             else
                 tmrThumbs.Stop();
@@ -384,14 +422,14 @@ namespace Kinovea.ScreenManager
         }
         private void AllControls_Click(object sender, EventArgs e)
         {
-            if(!m_IsError)
+            if(!isError)
                 SetSelected();
         }
         private void LblFileNameClick(object sender, EventArgs e)
         {
-            if(!m_IsError)
+            if(!isError)
             {
-                if(!m_bIsSelected)
+                if(!selected)
                     SetSelected();
                 else
                     StartRenaming();
@@ -406,9 +444,9 @@ namespace Kinovea.ScreenManager
             e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
             e.Graphics.SmoothingMode = SmoothingMode.HighSpeed;
             
-            if(m_Loaded)
+            if(loaded)
             {
-                if(m_IsError)
+                if(isError)
                 {
                    DrawPlaceHolder(e.Graphics);
                    DrawError(e.Graphics);			       
@@ -428,31 +466,31 @@ namespace Kinovea.ScreenManager
                 DrawPlaceHolder(e.Graphics);
             }
         }
-        private void DrawImage(Graphics _canvas)
+        private void DrawImage(Graphics canvas)
         {
             // We always draw to the whole container,
             // it is the picBox that is ratio stretched, see SetSize().
             if(currentThumbnail != null)
-                _canvas.DrawImage(currentThumbnail, 0, 0, picBox.Width, picBox.Height);
+                canvas.DrawImage(currentThumbnail, 0, 0, picBox.Width, picBox.Height);
         }
-        private void DrawBorder(Graphics _canvas)
+        private void DrawBorder(Graphics canvas)
         {
-            Pen p = m_bIsSelected ? m_PenSelected : m_PenUnselected;
-            _canvas.DrawRectangle(p, 1, 1, picBox.Width-2, picBox.Height-2);
-            _canvas.DrawRectangle(Pens.White, 2, 2, picBox.Width-5, picBox.Height-5);
+            Pen p = selected ? penSelected : penUnselected;
+            canvas.DrawRectangle(p, 1, 1, picBox.Width-2, picBox.Height-2);
+            canvas.DrawRectangle(Pens.White, 2, 2, picBox.Width-5, picBox.Height-5);
         }
-        private void DrawPreviewRectangles(Graphics _canvas)
+        private void DrawPreviewRectangles(Graphics canvas)
         {
             // Draw quick preview rectangles.
-            if(!m_Hovering || m_Bitmaps == null || m_Bitmaps.Count < 2)
+            if(!hoverInProgress || bitmaps == null || bitmaps.Count < 2)
                 return;
 
-            int rectWidth = picBox.Width / m_Bitmaps.Count;
+            int rectWidth = picBox.Width / bitmaps.Count;
             int rectHeight = 20;
-            for(int i=0;i<m_Bitmaps.Count;i++)
+            for(int i=0;i<bitmaps.Count;i++)
             {
-                SolidBrush b = i == currentThumbnailIndex ? m_BrushQuickPreviewActive : m_BrushQuickPreviewInactive;
-                _canvas.FillRectangle(b, rectWidth * i, picBox.Height - rectHeight, rectWidth, rectHeight);	
+                SolidBrush b = i == currentThumbnailIndex ? brushQuickPreviewActive : brushQuickPreviewInactive;
+                canvas.FillRectangle(b, rectWidth * i, picBox.Height - rectHeight, rectWidth, rectHeight);	
             }
         }
 
@@ -480,7 +518,7 @@ namespace Kinovea.ScreenManager
 
             if (ShouldShowProperty(FileProperty.Duration))
             {
-                string duration = m_bIsImage ? ScreenManagerLang.Generic_Image + " " : details.Details[FileProperty.Duration];
+                string duration = isImage ? ScreenManagerLang.Generic_Image + " " : details.Details[FileProperty.Duration];
                 DrawPropertyString(canvas, duration, top);
                 top += verticalMargin;
             }
@@ -519,30 +557,30 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        private void DrawPlaceHolder(Graphics _canvas)
+        private void DrawPlaceHolder(Graphics canvas)
         {
-            _canvas.DrawRectangle(Pens.Gainsboro, 0, 0, picBox.Width-1, picBox.Height-1);
+            canvas.DrawRectangle(Pens.Gainsboro, 0, 0, picBox.Width-1, picBox.Height-1);
         }
 
-        private void DrawError(Graphics _canvas)
+        private void DrawError(Graphics canvas)
         {
             Bitmap bmp = Properties.Resources.film_error2;
             int left = (picBox.Width - bmp.Width) / 2;
             int top = (picBox.Height - bmp.Height) / 2;
-            _canvas.DrawImage(bmp, left, top);
+            canvas.DrawImage(bmp, left, top);
         }
 
         private void PicBoxMouseMove(object sender, MouseEventArgs e)
         {
-            if(m_IsError || m_Bitmaps == null || m_Bitmaps.Count < 1)
+            if(isError || bitmaps == null || bitmaps.Count < 1)
                 return;
             
             if(e.Y > picBox.Height - 20)
             {
                 tmrThumbs.Stop();
-                int index = e.X / (picBox.Width / m_Bitmaps.Count);
-                currentThumbnailIndex = Math.Max(Math.Min(index, m_Bitmaps.Count - 1), 0);
-                currentThumbnail = m_Bitmaps[currentThumbnailIndex];
+                int index = e.X / (picBox.Width / bitmaps.Count);
+                currentThumbnailIndex = Math.Max(Math.Min(index, bitmaps.Count - 1), 0);
+                currentThumbnail = bitmaps[currentThumbnailIndex];
                 picBox.Invalidate();
             }
             else
@@ -554,37 +592,37 @@ namespace Kinovea.ScreenManager
         private void ThumbListViewItemPaint(object sender, PaintEventArgs e)
         {
             // Draw the shadow
-            if(m_Loaded && !m_IsError)
+            if(loaded && !isError)
             {
-                e.Graphics.DrawLine(m_PenShadow, picBox.Left + picBox.Width + 1, picBox.Top + m_PenShadow.Width, picBox.Left + picBox.Width + 1, picBox.Top + picBox.Height + m_PenShadow.Width);
-                e.Graphics.DrawLine(m_PenShadow, picBox.Left + m_PenShadow.Width, picBox.Top + picBox.Height + 1, picBox.Left + m_PenShadow.Width + picBox.Width, picBox.Top + picBox.Height + 1);
+                e.Graphics.DrawLine(penShadow, picBox.Left + picBox.Width + 1, picBox.Top + penShadow.Width, picBox.Left + picBox.Width + 1, picBox.Top + picBox.Height + penShadow.Width);
+                e.Graphics.DrawLine(penShadow, picBox.Left + penShadow.Width, picBox.Top + picBox.Height + 1, picBox.Left + penShadow.Width + picBox.Width, picBox.Top + picBox.Height + 1);
             }
         }
 
         private void tmrThumbs_Tick(object sender, EventArgs e) 
         {
             // This event occur when the user has been staying for a while on the same thumbnail. Loop between all stored images.
-            if(m_IsError || m_Bitmaps == null || m_Bitmaps.Count < 2)
+            if(isError || bitmaps == null || bitmaps.Count < 2)
                 return;
             
             currentThumbnailIndex++;
-            if(currentThumbnailIndex >= m_Bitmaps.Count)
+            if(currentThumbnailIndex >= bitmaps.Count)
                 currentThumbnailIndex = 0;
             
-            currentThumbnail = m_Bitmaps[currentThumbnailIndex];
+            currentThumbnail = bitmaps[currentThumbnailIndex];
             picBox.Invalidate();
         }
 
         private void PicBoxMouseEnter(object sender, EventArgs e)
         {
-            m_Hovering = true;
+            hoverInProgress = true;
         
-            if(m_IsError || m_Bitmaps == null || m_Bitmaps.Count < 2)
+            if(isError || bitmaps == null || bitmaps.Count < 2)
                 return;
             
             // Instantly change image
             currentThumbnailIndex = 1;
-            currentThumbnail = m_Bitmaps[currentThumbnailIndex];
+            currentThumbnail = bitmaps[currentThumbnailIndex];
             picBox.Invalidate();
 
             // Then start timer to slideshow.
@@ -593,15 +631,15 @@ namespace Kinovea.ScreenManager
 
         private void PicBoxMouseLeave(object sender, EventArgs e)
         {
-            m_Hovering = false;
+            hoverInProgress = false;
             
-            if(!m_IsError && m_Bitmaps != null)
+            if(!isError && bitmaps != null)
             {
                 tmrThumbs.Stop();
-                if(m_Bitmaps.Count > 0)
+                if(bitmaps.Count > 0)
                 {
                     currentThumbnailIndex = 0;
-                    currentThumbnail = m_Bitmaps[currentThumbnailIndex];
+                    currentThumbnail = bitmaps[currentThumbnailIndex];
                     picBox.Invalidate();	
                 }
             }
@@ -620,17 +658,17 @@ namespace Kinovea.ScreenManager
                 return;
             
             
-            string newFileName = Path.GetDirectoryName(m_FileName) + "\\" + tbFileName.Text;				
-            if(File.Exists(m_FileName) && !File.Exists(newFileName) && newFileName.Length > 5)
+            string newFileName = System.IO.Path.GetDirectoryName(path) + "\\" + tbFileName.Text;				
+            if(File.Exists(path) && !File.Exists(newFileName) && newFileName.Length > 5)
             {
                 try
                 {
-                    File.Move(m_FileName, newFileName);
+                    File.Move(path, newFileName);
                     
-                    if(!File.Exists(m_FileName))
+                    if(!File.Exists(path))
                     {
-                        m_FileName = newFileName;
-                        lblFileName.Text = Path.GetFileNameWithoutExtension(m_FileName);
+                        path = newFileName;
+                        lblFileName.Text = System.IO.Path.GetFileNameWithoutExtension(path);
                         TruncateFilename();
                     }
 
@@ -678,7 +716,7 @@ namespace Kinovea.ScreenManager
         }
         private void mnuOpenInExplorer_Click(object sender, EventArgs e)
         {
-            FilesystemHelper.LocateFile(m_FileName);
+            FilesystemHelper.LocateFile(path);
         }
         #endregion
         
@@ -689,7 +727,7 @@ namespace Kinovea.ScreenManager
             if (FileNameEditing != null)
             {
                 FileNameEditing(this, new EditingEventArgs(true));
-                m_bEditMode = true;
+                editModeInProgress = true;
                 ToggleEditMode();
             }
         }
@@ -699,17 +737,17 @@ namespace Kinovea.ScreenManager
             if (FileNameEditing != null)
                 FileNameEditing(this, new EditingEventArgs(false));
             
-            m_bEditMode = false;
+            editModeInProgress = false;
             ToggleEditMode();
         }
         private void ToggleEditMode()
         {
             // the global variable m_bEditMode should already have been set
             // Now let's configure the display depending on its value.
-            if(m_bEditMode)
+            if(editModeInProgress)
             {
                 // The layout is configured at construction time.
-                tbFileName.Text = Path.GetFileName(m_FileName);
+                tbFileName.Text = System.IO.Path.GetFileName(path);
                 tbFileName.SelectAll();	// Only works for tab ?
                 tbFileName.Visible = true;
                 tbFileName.Focus();
@@ -725,7 +763,7 @@ namespace Kinovea.ScreenManager
         {
             try
             {
-                string text = Path.GetFileNameWithoutExtension(m_FileName);
+                string text = System.IO.Path.GetFileNameWithoutExtension(path);
                 
                 bool fits = true;
                 float maxWidth = this.Width - paddingHorizontal;
@@ -750,8 +788,8 @@ namespace Kinovea.ScreenManager
 
         public void Delete()
         {
-            FilesystemHelper.DeleteFile(m_FileName);
-            if (!File.Exists(m_FileName))
+            FilesystemHelper.DeleteFile(path);
+            if (!File.Exists(path))
                 NotificationCenter.RaiseRefreshFileExplorer(this, true);
         }
 
