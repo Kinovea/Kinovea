@@ -25,6 +25,10 @@ using System.Windows.Forms;
 using System.Reflection;
 using Kinovea.Services;
 using System.Diagnostics;
+using log4net;
+using log4net.Core;
+using log4net.Repository.Hierarchy;
+using log4net.Appender;
 
 namespace Kinovea.Root
 {
@@ -41,7 +45,7 @@ namespace Kinovea.Root
         }
         private static Mutex mutex;
         private static string appGuid = "b049b83e-90f3-4e84-9289-52ee6ea2a9ea";
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog log = LogManager.GetLogger(typeof(Program));
 
 
         [STAThread]
@@ -53,22 +57,33 @@ namespace Kinovea.Root
             
             Assembly assembly = Assembly.GetExecutingAssembly();
             Software.Initialize(assembly.GetName().Version);
-            Software.LogInfo();
 
+            Software.LogInfo();
             Software.SanityCheckDirectories();
             PreferencesManager.Initialize();
+
+            // Bail out if the application is already running and multiple instances are not allowed.
             bool firstInstance = Program.FirstInstance;
             if (!firstInstance && !PreferencesManager.GeneralPreferences.AllowMultipleInstances)
                 return;
 
+            // Get launch settings from thecommand line.
+            // This will update the static LanchSettingsManager with the data.
             var args = Environment.GetCommandLineArgs();
             if (args.Length > 1)
                 CommandLineArgumentManager.Instance.ParseArguments(args);
 
+            // Configure the instance name.
+            // TODO: figure out the workspace file and load or create it.
             Software.ConfigureInstance();
-            if (!string.IsNullOrEmpty(Software.InstanceName) && PreferencesManager.GeneralPreferences.InstancesOwnPreferences)
+
+            Software.ConfigureLogging();
+
+            // TODO: remove the scheme where instances have their own preferences.
+            if (PreferencesManager.GeneralPreferences.InstancesOwnPreferences && !string.IsNullOrEmpty(Software.InstanceName))
                 PreferencesManager.Initialize();
 
+            // General application startup workflow.
             log.Debug("Application level initialisations.");
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

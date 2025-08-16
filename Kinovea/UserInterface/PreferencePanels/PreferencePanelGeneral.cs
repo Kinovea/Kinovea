@@ -27,6 +27,10 @@ using System.IO;
 using Kinovea.Root.Languages;
 using Kinovea.Root.Properties;
 using Kinovea.Services;
+using log4net.Appender;
+using log4net.Core;
+using log4net.Repository.Hierarchy;
+using log4net;
 
 namespace Kinovea.Root
 {
@@ -56,8 +60,10 @@ namespace Kinovea.Root
         private List<PreferenceTab> tabs = new List<PreferenceTab> { PreferenceTab.General_General };
         private string uiCultureName;
         private int maxRecentFiles;
+        private bool enableDebugLogs;
         private bool allowMultipleInstances;
         private bool instancesOwnPreferences;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Construction & Initialization
@@ -85,6 +91,7 @@ namespace Kinovea.Root
         {
             uiCultureName = LanguageManager.GetCurrentCultureName();
             maxRecentFiles = PreferencesManager.FileExplorerPreferences.MaxRecentFiles;
+            enableDebugLogs = PreferencesManager.GeneralPreferences.EnableDebugLog;
             allowMultipleInstances = PreferencesManager.GeneralPreferences.AllowMultipleInstances;
             instancesOwnPreferences = PreferencesManager.GeneralPreferences.InstancesOwnPreferences;
         }
@@ -104,6 +111,8 @@ namespace Kinovea.Root
             SelectCurrentLanguage();
             cmbHistoryCount.SelectedIndex = maxRecentFiles;
 
+            cbEnableDebugLogs.Text = "Enable debug logs";
+            cbEnableDebugLogs.Checked = enableDebugLogs;
             chkAllowMultipleInstances.Text = RootLang.dlgPreferences_General_chkAllowMultipleInstances;
             chkAllowMultipleInstances.Checked = allowMultipleInstances;
             chkInstancesPreferences.Text = RootLang.dlgPreferences_General_InstancesHaveOwnPreferences;
@@ -149,6 +158,13 @@ namespace Kinovea.Root
         {
             maxRecentFiles = cmbHistoryCount.SelectedIndex;
         }
+        private void ChkEnableDebugLog_CheckedChanged(object sender, EventArgs e)
+        {
+            enableDebugLogs = cbEnableDebugLogs.Checked;
+
+            // Immediately change the log level.
+            Software.UpdateLogLevel(enableDebugLogs);
+        }
         private void chkAllowMultipleInstances_CheckedChanged(object sender, EventArgs e)
         {
             allowMultipleInstances = chkAllowMultipleInstances.Checked;
@@ -164,6 +180,7 @@ namespace Kinovea.Root
         {
             PreferencesManager.GeneralPreferences.SetCulture(uiCultureName);
             PreferencesManager.FileExplorerPreferences.MaxRecentFiles = maxRecentFiles;
+            PreferencesManager.GeneralPreferences.EnableDebugLog = enableDebugLogs;
             PreferencesManager.GeneralPreferences.AllowMultipleInstances = allowMultipleInstances;
             PreferencesManager.GeneralPreferences.InstancesOwnPreferences = instancesOwnPreferences;
         }

@@ -18,6 +18,10 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
+using log4net.Appender;
+using log4net.Core;
+using log4net.Repository.Hierarchy;
+using log4net;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -41,7 +45,10 @@ namespace Kinovea.Services
         /// Top level settings directory. All other directories are subdirectories of this one.
         /// </summary>
         public static string SettingsDirectory { get; private set; }
-        
+
+        public static string LogsDirectory { get; private set; }
+
+
         /// <summary>
         /// Default values for tools.
         /// </summary>
@@ -70,7 +77,6 @@ namespace Kinovea.Services
         
         /// <summary>
         /// The main preferences file.
-        /// Possibly instance-specific.
         /// </summary>
         public static string PreferencesFile
         {
@@ -102,6 +108,9 @@ namespace Kinovea.Services
         private static bool instanceConfigured;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
+        /// <summary>
+        /// Initializes core properties and create the default directories.
+        /// </summary>
         public static void Initialize(Version version)
         {
             Version = version.Build == 0 ? 
@@ -121,9 +130,10 @@ namespace Kinovea.Services
                 SettingsDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ApplicationName) + "\\";
             
             CameraCalibrationDirectory  = Path.Combine(SettingsDirectory, "CameraCalibration");
+            CameraPluginsDirectory      = Path.Combine(SettingsDirectory, "Plugins", "Camera");
             CameraProfilesDirectory     = Path.Combine(SettingsDirectory, "CameraProfiles");
             ColorProfileDirectory       = Path.Combine(SettingsDirectory, "ColorProfiles");
-            CameraPluginsDirectory      = Path.Combine(SettingsDirectory, "Plugins", "Camera");
+            LogsDirectory               = Path.Combine(SettingsDirectory, "Logs");
             PointersDirectory           = Path.Combine(SettingsDirectory, "Pointers");
             VariablesDirectory          = Path.Combine(SettingsDirectory, "Variables");
             TempDirectory               = Path.Combine(SettingsDirectory, "Temp");
@@ -139,10 +149,13 @@ namespace Kinovea.Services
         }
 
         /// <summary>
-        /// Setup the name of the instance. Used for the window title and to select a preferences profile.
+        /// Setup the name of the instance.
         /// </summary>
         public static void ConfigureInstance()
         {
+            // An instance can be started with an explicit name or not.
+            // The first instance may have no name.
+            // Further instances with no name will be numbered.
             if (!string.IsNullOrEmpty(LaunchSettingsManager.Name))
             {
                 InstanceName = LaunchSettingsManager.Name;
@@ -160,16 +173,20 @@ namespace Kinovea.Services
             instanceConfigured = true;
         }
         
+        /// <summary>
+        /// Create application data directories if needed.
+        /// </summary>
         public static void SanityCheckDirectories()
         {
-            CreateDirectory(SettingsDirectory);
             CreateDirectory(CameraCalibrationDirectory);
-            CreateDirectory(CameraProfilesDirectory);
-            CreateDirectory(VariablesDirectory);
-            CreateDirectory(ColorProfileDirectory);
             CreateDirectory(CameraPluginsDirectory);
+            CreateDirectory(CameraProfilesDirectory);
+            CreateDirectory(ColorProfileDirectory);
+            CreateDirectory(LogsDirectory);
             CreateDirectory(PointersDirectory);
+            CreateDirectory(SettingsDirectory);
             CreateDirectory(TempDirectory);
+            CreateDirectory(VariablesDirectory);
         }
 
         private static void CreateDirectory(string dir)
@@ -178,6 +195,9 @@ namespace Kinovea.Services
                 Directory.CreateDirectory(dir);
         }
         
+        /// <summary>
+        /// Log basic info.
+        /// </summary>
         public static void LogInfo()
         {
             log.Info("--------------------------------------------------");
@@ -186,6 +206,43 @@ namespace Kinovea.Services
             log.InfoFormat("{0}", Environment.OSVersion.ToString());
             log.InfoFormat(".NET Framework {0}", Environment.Version.ToString());
             log.Info("--------------------------------------------------");
+        }
+
+
+        /// <summary>
+        /// Initialize the logging on the right file and level.
+        /// </summary>
+        public static void ConfigureLogging()
+        {
+            // Logging starts with whatever is in LogConf.xml.
+            // We update based on preferences and instance name.
+            Hierarchy logRepository = (Hierarchy)LogManager.GetRepository();
+            Logger rootLogger = logRepository.Root;
+            RollingFileAppender appender = (RollingFileAppender)rootLogger.GetAppender("RollingFileAppender");
+            Level logLevel = PreferencesManager.GeneralPreferences.EnableDebugLog ? Level.Debug : Level.Warn;
+            appender.Threshold = logLevel;
+
+            // Each instance gets its own log files.
+            string logFile = string.IsNullOrEmpty(InstanceName) ? "log.txt" : string.Format("log.{0}.txt", InstanceName);
+            appender.File = Path.Combine(Path.GetDirectoryName(appender.File), logFile);
+
+            appender.ActivateOptions();
+            logRepository.Configured = true;
+        }
+
+        /// <summary>
+        /// Change the logging level.
+        /// </summary>
+        public static void UpdateLogLevel(bool enableDebug)
+        {
+            // Change the log level at the appender so all loggers are impacted.
+            Hierarchy logRepository = (Hierarchy)LogManager.GetRepository();
+            Logger rootLogger = logRepository.Root;
+            RollingFileAppender appender = (RollingFileAppender)rootLogger.GetAppender("RollingFileAppender");
+            Level logLevel = enableDebug ? Level.Debug : Level.Warn;
+            appender.Threshold = logLevel;
+            appender.ActivateOptions();
+            logRepository.Configured = true;
         }
     }
 }

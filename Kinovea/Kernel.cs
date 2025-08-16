@@ -106,6 +106,7 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuHelp = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHelpContents = new ToolStripMenuItem();
         private ToolStripMenuItem mnuApplicationFolder = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuEnableDebugLogs = new ToolStripMenuItem();
         private ToolStripMenuItem mnuWebsite = new ToolStripMenuItem();
         private ToolStripMenuItem mnuAbout = new ToolStripMenuItem();
         #endregion
@@ -415,7 +416,8 @@ namespace Kinovea.Root
             mnuHelpContents.Image = Properties.Resources.book_open;
             mnuHelpContents.ShortcutKeys = Keys.F1;
             mnuTranslate2.Image = Properties.Resources.international;
-            mnuApplicationFolder.Image = Properties.Resources.bug;
+            mnuApplicationFolder.Image = Properties.Resources.folder;
+            mnuEnableDebugLogs.Image = Properties.Resources.bug_16;
             mnuWebsite.Image = Properties.Resources.website;
             mnuAbout.Image = Properties.Resources.information;
 
@@ -423,8 +425,9 @@ namespace Kinovea.Root
             mnuTranslate2.Click += (s, e) => Process.Start("https://hosted.weblate.org/engage/kinovea/");
             mnuApplicationFolder.Click += (s, e) =>
             {
-                FilesystemHelper.LocateFile(Path.Combine(Software.SettingsDirectory, "log.txt"));
+                FilesystemHelper.LocateDirectory(Software.SettingsDirectory);
             };
+            mnuEnableDebugLogs.Click += (s, e) => ToggleDebugLogs();
             mnuWebsite.Click += (s,e) => Process.Start("https://www.kinovea.org");
             mnuAbout.Click += new EventHandler(mnuAbout_OnClick);
 
@@ -433,6 +436,7 @@ namespace Kinovea.Root
                 mnuTranslate2,
                 new ToolStripSeparator(), 
                 mnuApplicationFolder, 
+                mnuEnableDebugLogs,
                 new ToolStripSeparator(),
                 mnuWebsite,
                 mnuAbout });
@@ -522,7 +526,8 @@ namespace Kinovea.Root
 
             mnuHelp.Text = RootLang.mnuHelp;
             mnuHelpContents.Text = RootLang.mnuHelpContents;
-            mnuApplicationFolder.Text = RootLang.mnuApplicationFolder;
+            mnuApplicationFolder.Text = "Open application data folder…";
+            mnuEnableDebugLogs.Text = PreferencesManager.GeneralPreferences.EnableDebugLog ? "Disable debug logs" : "Enable debug logs";
             mnuWebsite.Text = "www.kinovea.org";
             mnuAbout.Text = RootLang.mnuAbout;
             mnuHelp.Text = RootLang.mnuHelp;
@@ -735,6 +740,19 @@ namespace Kinovea.Root
             // Currently only English is supported.
             Process.Start("https://www.kinovea.org/help/en/");
         }
+
+        private void ToggleDebugLogs()
+        {
+            bool enabled = !PreferencesManager.GeneralPreferences.EnableDebugLog;
+            Software.UpdateLogLevel(enabled);
+            PreferencesManager.GeneralPreferences.EnableDebugLog = enabled;
+            mnuEnableDebugLogs.Text = enabled ? "Disable debug logs" : "Enable debug logs";
+            if (enabled)
+            {
+                log.Debug("Debug logs enabled.");
+            }
+        }
+
         private void mnuAbout_OnClick(object sender, EventArgs e)
         {
             FormAbout fa = new FormAbout();

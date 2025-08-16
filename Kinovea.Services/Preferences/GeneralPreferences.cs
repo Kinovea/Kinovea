@@ -77,6 +77,12 @@ namespace Kinovea.Services
             set { workspace = value; }
         }
 
+        public bool EnableDebugLog
+        {
+            get { return enableDebugLog; }
+            set { enableDebugLog = value; }
+        }
+
         public bool AllowMultipleInstances
         {
             get { return allowMultipleInstances; }
@@ -104,6 +110,14 @@ namespace Kinovea.Services
 
         #region Members
         private string uiCultureName;
+        private bool enableDebugLog = false;
+        private bool allowMultipleInstances = true;
+        private bool instancesOwnPreferences = true;
+        private int preferencePage;
+        private string pointerKey = "::default";
+
+        // The following should be moved to the workspace as they are instance specific.
+        #region Workspace
         private bool explorerVisible = true;
         private float explorerSplitterRatio = 0.2f;
         private float sidePanelSplitterRatio = 0.8f;
@@ -111,10 +125,7 @@ namespace Kinovea.Services
         private FormWindowState windowState = FormWindowState.Maximized;
         private Rectangle windowRectangle;
         private Workspace workspace = new Workspace();
-        private bool allowMultipleInstances = true;
-        private bool instancesOwnPreferences = true;
-        private int preferencePage;
-        private string pointerKey = "::default";
+        #endregion
         #endregion
 
         public GeneralPreferences()
@@ -144,12 +155,12 @@ namespace Kinovea.Services
         public void WriteXML(XmlWriter writer)
         {
             writer.WriteElementString("Culture", uiCultureName);
-            writer.WriteElementString("ExplorerVisible", XmlHelper.WriteBoolean(explorerVisible));
-            writer.WriteElementString("ExplorerSplitterRatio", XmlHelper.WriteFloat(explorerSplitterRatio));
-            writer.WriteElementString("SidePanelSplitterRatio", XmlHelper.WriteFloat(sidePanelSplitterRatio));
-            writer.WriteElementString("SidePanelVisible", XmlHelper.WriteBoolean(sidePanelVisible));
-            writer.WriteElementString("WindowState", windowState.ToString());
-            writer.WriteElementString("WindowRectangle", XmlHelper.WriteRectangleF(windowRectangle));
+            writer.WriteElementString("EnableDebugLog", XmlHelper.WriteBoolean(enableDebugLog));
+            writer.WriteElementString("AllowMultipleInstances", XmlHelper.WriteBoolean(allowMultipleInstances));
+            writer.WriteElementString("InstancesOwnPreferences", XmlHelper.WriteBoolean(instancesOwnPreferences));
+            writer.WriteElementString("PreferencesPage", preferencePage.ToString());
+            writer.WriteElementString("Pointer", pointerKey);
+            
 
             if (workspace != null && workspace.Screens != null && workspace.Screens.Count > 0)
             {
@@ -158,10 +169,13 @@ namespace Kinovea.Services
                 writer.WriteEndElement();
             }
 
-            writer.WriteElementString("AllowMultipleInstances", allowMultipleInstances ? "true" : "false");
-            writer.WriteElementString("InstancesOwnPreferences", instancesOwnPreferences ? "true" : "false");
-            writer.WriteElementString("PreferencesPage", preferencePage.ToString());
-            writer.WriteElementString("Pointer", pointerKey);
+            // TODO: the following should be moved to the workspace.
+            writer.WriteElementString("ExplorerVisible", XmlHelper.WriteBoolean(explorerVisible));
+            writer.WriteElementString("ExplorerSplitterRatio", XmlHelper.WriteFloat(explorerSplitterRatio));
+            writer.WriteElementString("SidePanelSplitterRatio", XmlHelper.WriteFloat(sidePanelSplitterRatio));
+            writer.WriteElementString("SidePanelVisible", XmlHelper.WriteBoolean(sidePanelVisible));
+            writer.WriteElementString("WindowState", windowState.ToString());
+            writer.WriteElementString("WindowRectangle", XmlHelper.WriteRectangleF(windowRectangle));
         }
 
         public void ReadXML(XmlReader reader)
@@ -174,6 +188,24 @@ namespace Kinovea.Services
                 {
                     case "Culture":
                         uiCultureName = reader.ReadElementContentAsString();
+                        break;
+                    case "EnableDebugLog":
+                        enableDebugLog = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
+                    case "AllowMultipleInstances":
+                        allowMultipleInstances = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
+                    case "InstancesOwnPreferences":
+                        instancesOwnPreferences = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
+                    case "PreferencesPage":
+                        preferencePage = reader.ReadElementContentAsInt();
+                        break;
+                    case "Pointer":
+                        pointerKey = reader.ReadElementContentAsString();
+                        break;
+                    case "Workspace":
+                        workspace.ReadXML(reader);
                         break;
                     case "ExplorerVisible":
                         explorerVisible = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
@@ -192,21 +224,6 @@ namespace Kinovea.Services
                         break;
                     case "WindowRectangle":
                         windowRectangle = XmlHelper.ParseRectangle(reader.ReadElementContentAsString());
-                        break;
-                    case "Workspace":
-                        workspace.ReadXML(reader);
-                        break;
-                    case "AllowMultipleInstances":
-                        allowMultipleInstances = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
-                        break;
-                    case "InstancesOwnPreferences":
-                        instancesOwnPreferences = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
-                        break;
-                    case "PreferencesPage":
-                        preferencePage = reader.ReadElementContentAsInt();
-                        break;
-                    case "Pointer":
-                        pointerKey = reader.ReadElementContentAsString();
                         break;
                     default:
                         reader.ReadOuterXml();

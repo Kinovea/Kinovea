@@ -2,7 +2,7 @@
 <!-- log4net configuration settings -->
 <log4net>
   <appender name="RollingFileAppender" type="log4net.Appender.RollingFileAppender">
-    <file value="${APPDATA}\Kinovea\log.txt" />
+    <file value="${APPDATA}\Kinovea\Logs\log.txt" />
     <appendToFile value="true" />
     <rollingStyle value="Size" />
     <maxSizeRollBackups value="1" />
