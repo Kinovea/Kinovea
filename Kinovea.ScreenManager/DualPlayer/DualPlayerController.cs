@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
+using System.IO;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -52,6 +53,11 @@ namespace Kinovea.ScreenManager
         private int resyncOperations = 0;
         private int maxResyncOperations = 1;
         private HotkeyCommand[] hotkeys;
+
+        // If two videos have creation dates within this many seconds we consider them part 
+        // of the same dual recording and start them together in the replay watcher context.
+        private const int spanDualRecording = 5;
+                                                 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -142,6 +148,28 @@ namespace Kinovea.ScreenManager
             players[1].Synched = true;
 
             InitializeSync();
+
+            // Handle dual replay.
+            // The screens know they are in the context of a dual replay and have ignored the auto-replay flag,
+            // to avoid one video starting before the other. They wait to be started by the dual playback.
+            if (!players[0].IsReplayWatcher || !players[1].IsReplayWatcher || !File.Exists(players[0].FilePath) || !File.Exists(players[1].FilePath))
+                return;
+
+            // Check that the creation dates are close enough to be considered part of the same recording.
+            DateTime creation1 = File.GetCreationTime(players[0].FilePath);
+            DateTime creation2 = File.GetCreationTime(players[1].FilePath);
+            double span = Math.Abs((creation1 - creation2).TotalSeconds);
+            if (span < spanDualRecording)
+            {
+                resyncOperations = 0;
+                view.Play();
+                dynamicSynching = true;
+                EnsureBothPlaying();
+            }
+            else
+            {
+                log.DebugFormat("Dual replay detected but the videos are not considered part of the same recording. {0}s offset", span);
+            }
         }
         #endregion
 

@@ -108,6 +108,15 @@ namespace Kinovea.Services
                 }
             }
 
+            // Extra flag for dual replay.
+            if (Screens.Count == 2 &&
+                Screens[0] is ScreenDescriptionPlayback && ((ScreenDescriptionPlayback)Screens[0]).IsReplayWatcher &&
+                Screens[1] is ScreenDescriptionPlayback && ((ScreenDescriptionPlayback)Screens[1]).IsReplayWatcher)
+            {
+                ((ScreenDescriptionPlayback)Screens[0]).IsDualReplay = true;
+                ((ScreenDescriptionPlayback)Screens[1]).IsDualReplay = true;
+            }
+
             reader.ReadEndElement();
         }
 

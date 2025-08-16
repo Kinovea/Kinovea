@@ -61,6 +61,11 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
+
+        /// <summary>
+        /// Start watching the directory in the passed screen descriptor.
+        /// currentFile may be null if we are starting a watcher on an empty directory.
+        /// </summary>
         public void Start(ScreenDescriptionPlayback sdp, string currentFile)
         {
             log.DebugFormat("Starting replay watcher");
@@ -105,6 +110,9 @@ namespace Kinovea.ScreenManager
             log.DebugFormat("Started replay watcher on \"{0}\".", Path.GetFileName(targetDir));
         }
 
+        /// <summary>
+        /// Stop watching the directory.
+        /// </summary>
         public void Stop()
         {
             if (watcher == null)

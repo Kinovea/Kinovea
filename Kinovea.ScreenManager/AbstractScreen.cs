@@ -104,6 +104,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Returns the full path to the video file for loaded players
         /// or an empty string for capture screens and empty players.
+        /// For replay watchers, returns the current file, not the directory.
         /// </summary>
         public abstract string FilePath
         {
@@ -178,6 +179,11 @@ namespace Kinovea.ScreenManager
         public abstract void Identify(int index);
         public abstract void ExecuteScreenCommand(int cmd);
         public abstract void LoadKVA(string path);
+
+
+        /// <summary>
+        /// Return a screen descriptor to be used in a workspace.
+        /// </summary>
         public abstract IScreenDescription GetScreenDescription();
         #endregion
 

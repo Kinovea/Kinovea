@@ -145,9 +145,9 @@ namespace Kinovea.ScreenManager
             if (screenDescription != null && screenDescription.Id != Guid.Empty)
                 player.Id = screenDescription.Id;
 
-            // This can happen when we load an empty screen from launch settings / workspace.
             if (string.IsNullOrEmpty(path))
             {
+                // This can happen when we load an empty screen from launch settings / workspace.
                 player.view.EnableDisableActions(false);
                 return;
             }

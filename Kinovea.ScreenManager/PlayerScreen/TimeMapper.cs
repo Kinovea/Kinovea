@@ -7,6 +7,10 @@ namespace Kinovea.ScreenManager
 {
     // TODO: implement logarithmic mapping.
 
+
+    /// <summary>
+    /// The time mapper links the speed slider, the playback frame rate and the capture frame rate.
+    /// </summary>
     public class TimeMapper
     {
         #region Properties

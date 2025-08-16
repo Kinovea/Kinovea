@@ -196,6 +196,14 @@ namespace Kinovea.ScreenManager
                     if (m_SyncMergeImage != null)
                         m_SyncMergeImage.Dispose();
                 }
+
+                // If we are a replay watcher then consider we are in dual replay context.
+                // This is used to ignore the auto-play and wait until the dual player triggers it.
+                // If we are no longer synched, disable this to start honoring the auto-play flag again.
+                if (m_LaunchDescription != null && m_LaunchDescription.IsReplayWatcher)
+                {
+                    m_LaunchDescription.IsDualReplay = m_bSynched;
+                }
             }
         }
 
@@ -288,6 +296,14 @@ namespace Kinovea.ScreenManager
         private object m_TimingSync = new object();
 
         // Timing
+        // Time mapper links the speed slider, the playback frame rate and the capture frame rate.
+        // slowMotion is the ratio to the nominal playback speed of the video.
+        // ex: 0.5 plays the video at half speed, irrespectively of whether the video itself is in slow motion.
+        // The capture frame rate is encoded itself as a ratio in in m_FrameServer.Metadata.HighSpeedFactor.
+        // ex: 0.5 means one second of video covers 0.5 seconds of real time action.
+        // When the user manipulates the speed slider we change the internal playback speed.
+        // The value we show on the speed slider is the final ratio to real time.
+        // So if the user set the slider to 0.5 on a video with a high speed factor of 0.5, it will display 0.25.
         private TimeMapper timeMapper = new TimeMapper();
         private double slowMotion = 1;  // Current scaling relatively to the nominal speed of the video.
         private float timeGrabSpeed = 25.0f / 500.0f; // Speed of time grab in frames per pixel.
@@ -1372,17 +1388,38 @@ namespace Kinovea.ScreenManager
 
             // Signal post-load idle event to listeners.
             // This is used to setup synchronization in case of launching a workspace with two videos.
+            // This is what might trigger the dual player to finally start playback, if we are in 
+            // a dual replay context.
             Loaded?.Invoke(this, EventArgs.Empty);
 
             UpdateFramesMarkers();
             ShowHideRenderingSurface(true);
             ResizeUpdate(true);
 
+            // Handle auto-playback for replay watchers.
             if (m_LaunchDescription != null && m_LaunchDescription.Autoplay)
             {
-                buttonPlay.Image = Resources.flatpause3b;
-                StartMultimediaTimer(GetPlaybackFrameInterval());
-                PlayStarted?.Invoke(this, EventArgs.Empty);
+                // Ignore autoplay for dual replay watchers.
+                //
+                // We can't know if we are the first video of a dual recording or just a singular event.
+                // And even if we are the first video we don't want to start immediately it will desynchronize everything.
+                // So it becomes the responsibility of the dual player to start playing when it's sure
+                // that it's a dual recording event and both screens are ready.
+                //
+                // We generally use the "synched" flag for this, assuming that if one is a replay, both are.
+                // The case of a normal video and a replay is not handled and will also ignores auto-play.
+                // 
+                // A further complication, during the very first load of the first screen, the value of "synched"
+                // is not yet true, but we still don't want to start that video as it will start way before the other. 
+                // For this case we use the flag in the descriptor.
+                bool dualReplay = m_bSynched || m_LaunchDescription.IsDualReplay;
+                if (!dualReplay)
+                {
+                    // A new video just loaded in a single replay watcher, start it.
+                    buttonPlay.Image = Resources.flatpause3b;
+                    StartMultimediaTimer(GetPlaybackFrameInterval());
+                    PlayStarted?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
         #endregion

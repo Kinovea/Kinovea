@@ -61,7 +61,13 @@ namespace Kinovea.Services
         /// <summary>
         /// Whether this screen is monitoring new files and loading them automatically.
         /// </summary>
-        public bool IsReplayWatcher { get; set; } 
+        public bool IsReplayWatcher { get; set; }
+
+        /// <summary>
+        /// This screen is part of a dual replay workspace.
+        /// This flag is not saved to the screen descriptor XML.
+        /// </summary>
+        public bool IsDualReplay { get; set; }
 
         
         public DateTime RecoveryLastSave { get; set; }
@@ -75,6 +81,7 @@ namespace Kinovea.Services
             Stretch = false;
             IsReplayWatcher = false;
             RecoveryLastSave = DateTime.MinValue;
+            IsDualReplay = false;
         }
 
         public void ReadXml(XmlReader reader)

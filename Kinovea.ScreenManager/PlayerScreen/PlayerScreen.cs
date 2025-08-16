@@ -211,7 +211,6 @@ namespace Kinovea.ScreenManager
             get { return historyStack; }
         }
 
-
         public FrameServerPlayer FrameServer
         {
             get { return frameServer; }
@@ -249,6 +248,17 @@ namespace Kinovea.ScreenManager
                     return false;
                 else
                     return frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching;
+            }
+        }
+
+        public bool IsReplayWatcher
+        {
+            get 
+            {
+                if (!frameServer.Loaded)
+                    return false;
+                else
+                    return replayWatcher.IsEnabled;
             }
         }
 
@@ -323,6 +333,10 @@ namespace Kinovea.ScreenManager
             get { return view.RealtimePercentage; }
             set { view.RealtimePercentage = value;}
         }
+
+        /// <summary>
+        /// Synched is true as soon as we have two player screens with videos in them.
+        /// </summary>
         public bool Synched
         {
             get { return synched; }
@@ -660,6 +674,10 @@ namespace Kinovea.ScreenManager
             view.ExecuteScreenCommand(cmd);
         }
 
+
+        /// <summary>
+        /// Return a screen descriptor to be used in a workspace.
+        /// </summary>
         public override IScreenDescription GetScreenDescription()
         {
             ScreenDescriptionPlayback sd = new ScreenDescriptionPlayback();
