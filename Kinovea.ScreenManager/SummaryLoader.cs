@@ -16,6 +16,11 @@ using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
 {
+
+    /// <summary>
+    /// A summary loader processes a list of files in a background thread to get their summaries.
+    /// Raises individual SummaryLoaded events as the summaries are extracted.
+    /// </summary>
     public class SummaryLoader
     {
         public bool IsAlive 
@@ -30,6 +35,7 @@ namespace Kinovea.ScreenManager
         private List<String> filenames;
         private Size maxImageSize;
         private BackgroundWorker bgWorker = new BackgroundWorker();
+        private Stopwatch stopwatch = new Stopwatch();
         private const int thumbnailsToExtract = 5;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
@@ -38,6 +44,10 @@ namespace Kinovea.ScreenManager
             this.filenames = filenames;
             this.maxImageSize = maxImageSize;
         }
+
+        /// <summary>
+        /// Start the background thread to extract summaries.
+        /// </summary>
         public void Run()
         {
             if(filenames.Count < 1)
@@ -51,13 +61,21 @@ namespace Kinovea.ScreenManager
             bgWorker.WorkerReportsProgress = true;
             bgWorker.RunWorkerAsync(filenames);
         }
+
+        /// <summary>
+        /// Cancel the background thread.
+        /// </summary>
         public void Cancel()
         {
             cancellationPending = true;
             bgWorker.CancelAsync();
         }
+
+
         private void bgWorker_DoWork(object sender, DoWorkEventArgs e)
         {
+            stopwatch.Restart();
+
             // Note: having one background worker per file and running them all in parallel was tested
             // but it does more harm than good.
             BackgroundWorker bgWorker = sender as BackgroundWorker;
@@ -99,7 +117,10 @@ namespace Kinovea.ScreenManager
                 
     			bgWorker.ReportProgress(i, summary);
             }
+
+            log.DebugFormat("{0} video summaries loaded in {1} ms", filenames.Count, stopwatch.ElapsedMilliseconds);
         }
+
         private void bgWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             if(cancellationPending || SummaryLoaded == null)
@@ -107,6 +128,7 @@ namespace Kinovea.ScreenManager
             
             SummaryLoaded(this, new SummaryLoadedEventArgs(e.UserState as VideoSummary, e.ProgressPercentage));
         }
+
         private void bgWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             isAlive = false;

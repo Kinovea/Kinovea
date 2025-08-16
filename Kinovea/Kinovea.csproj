@@ -527,7 +527,6 @@
   <ItemGroup>
     <Content Include="kinovea-256x256.ico" />
     <None Include="Resources\bug-16.png" />
-    <None Include="Resources\icons8-bug-16.png" />
     <None Include="Resources\close2d-16.png" />
     <None Include="Resources\close2c-16.png" />
     <None Include="Resources\close2b-16.png" />

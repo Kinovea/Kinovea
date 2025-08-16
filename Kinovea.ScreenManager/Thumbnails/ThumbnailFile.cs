@@ -50,16 +50,26 @@ namespace Kinovea.ScreenManager
         
         #region Properties
         
-        public string FileName {
-            get { return m_FileName; }
+        public string FileName 
+        {
+            get 
+            { 
+                return m_FileName; 
+            }
+            set 
+            { 
+                m_FileName = value;
+            }
         }
-        public bool IsError {
+
+        public bool IsError 
+        {
             get { return m_IsError;}
         }
         #endregion
         
         #region Members
-        private String m_FileName;
+        private string m_FileName;
         private bool m_Loaded;
         private int paddingHorizontal = 6;
         private int paddingVertical = 21;
@@ -246,6 +256,10 @@ namespace Kinovea.ScreenManager
             }
         }
         
+        /// <summary>
+        /// Reset the size of the thumbnail control and recompute the image size and the
+        /// filename truncation.
+        /// </summary>
         public void SetSize(int width, int height)
         {
             // Called at init step and on resize.
