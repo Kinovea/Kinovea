@@ -57,6 +57,7 @@ namespace Kinovea.ScreenManager
         private bool externalSelection;
         private string lastSelectedFile;
         private bool sortOperationInProgress;
+        private bool forcedRefreshInProgress;
         private Dictionary<string, ThumbnailFile> mapThumbnails = new Dictionary<string, ThumbnailFile>();
         private Stopwatch stopwatch = new Stopwatch();
 
@@ -108,7 +109,8 @@ namespace Kinovea.ScreenManager
             
             if (path == this.path && 
                 files.Count == this.files.Count && 
-                !sortOperationInProgress)
+                !sortOperationInProgress &&
+                !forcedRefreshInProgress)
             {
                 log.DebugFormat("Reloading current directory in place.");
                 return;
@@ -117,6 +119,7 @@ namespace Kinovea.ScreenManager
             this.path = path;
             this.files = files;
             this.sortOperationInProgress = false;
+            this.forcedRefreshInProgress = false;
             PopulateViewer(false);
         }
 
@@ -690,6 +693,7 @@ namespace Kinovea.ScreenManager
                     CommandDelete();
                     break;
                 case ThumbnailViewerFilesCommands.Refresh:
+                    forcedRefreshInProgress = true;
                     NotificationCenter.RaiseRefreshFileExplorer(this, true);
                     break;
                 default:
