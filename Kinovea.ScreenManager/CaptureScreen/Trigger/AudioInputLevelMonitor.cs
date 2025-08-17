@@ -264,7 +264,7 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            log.DebugFormat("Audio input level above threshold: {0:0.000}.", max);
+            log.DebugFormat("Audio input level {0:0.00} above threshold of {1:0.00} at time:{2:o}.", max, Threshold, DateTime.Now);
 
             if (Triggered != null)
             {

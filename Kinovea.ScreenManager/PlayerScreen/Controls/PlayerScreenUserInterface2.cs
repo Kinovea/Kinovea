@@ -500,8 +500,11 @@ namespace Kinovea.ScreenManager
         {
             // Called when we load a new video over an already loaded screen.
             // also recalled if the video loaded but the first frame cannot be displayed.
-            // This should reset everything except the playback speed.
             log.Debug("Reset screen to empty state.");
+
+            // For replay observers we can still keep some state we would like to maintain between loads.
+            // The mechanism for this is to backup the data in the screen descriptor before unloading.
+            // It will be restored in PostLoadProcess.
 
             // 1. Reset all data.
             m_FrameServer.Unload();
@@ -632,6 +635,7 @@ namespace Kinovea.ScreenManager
             SetUpForNewMovie();
 
             // Check for launch description and startup kva.
+            // This is also how we can backup and restore stuff between loads in the same screen.
             bool recoveredMetadata = false;
             if (m_LaunchDescription != null)
             {

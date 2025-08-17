@@ -44,16 +44,17 @@ Changelog:
     Added - Styling side panel.
     Added - Tracking side panel.
     Added - Circle tracking algorithm.
-    Added - Command to start all trackers at once.
     Added - Support importing .trc files from Sports2D.
     Added - Capture trigger via UDP.
-    Added - Profile system to define custom variables and their values.
+    Added - Custom variables system to use in paths.
+    Improved - Explorer: improved performances of thumbnails view.
     Improved - Export: restored the export of trajectories to text in GnuPlot format.
     Improved - Export: allow saving of annotations from the capture screen.
     Improved - Player: continue playback after a jump if we were playing.
-    Improved - Tracking: improved performances with parallel tracking.
+    Improved - Tracking: improved performances using parallel tracking.
     Improved - Tracking: fixed sub pixel precision in template matching algorithm.
     Improved - Tracking: use parabolic fit for refinement in template matching algorithm.
+    Improved - Tracking: new command to start all trackers at once.
     Improved - Annotations: new menus to manage annotations (unload, save as default, reload).
     Improved - Annotations: default KVA paths can use custom variables based on the active profile.
     Improved - Annotations: changing the style of a drawing now automatically changes the style preset for the tool.
@@ -67,22 +68,24 @@ Changelog:
     Improved - Annotations: label tool option to show a circle instead of an arrow.
     Improved - Annotations: label tool supports changing the line size independently of the font size.
     Improved - Camera motion: automatically create masks from rectangle objects.
-    Improved - Capture: camera discovery now uses a dynamic interval.
+    Improved - Capture: improved stability of camera discovery.
     Improved - Capture: option to exclude drawings and calibration from the exported kva.
-    Improved - Capture automation: added %kva pattern for post-recording command.
-    Improved - Capture automation: added option to set the default trigger arming state.
+    Improved - Capture: added %kva pattern for post-recording command.
+    Improved - Capture: added option to set the default trigger arming state.
     Improved - Capture: output paths and post-recording command can use custom variables based on the active profile.
-    Fixed - Loading annotations in the capture screen wasn't working correctly.
-    Fixed - Resucitated drawings after undo of delete of a keyframe were not properly registered for tracking.
-    Fixed - Grabbing of lines perfectly vertical or horizontal wasn't working.
-    Fixed - Positions of drawings during rendering wasn't accurate inside the pixel.
-    Fixed - Reset of camera motion data wasn't working.
-    Fixed - Copy image to clipboard wasn't working correctly.
-    Fixed - Timeline position wasn't restored correctly after an export operation.
-    Fixed - Capture folders selectors were not working.
-    Fixed - Keyboard shortcuts weren't working for dual screen commands when the focus is on an individual screen.
-    Fixed - Exception when using the portable version from within a synchronized OneDrive directory.
-    Fixed - The time origin was wrong when importing a KVA from capture recording.
+    Fixed - General: in preferences, capture folders selectors were not working.
+    Fixed - General: using the portable version from within a synchronized OneDrive directory could cause a crash.
+    Fixed - General: saving a workspace with high speed camera configuration wasn't working properly.
+    Fixed - Export: copy image to clipboard wasn't working correctly.
+    Fixed - Player: dual replay was not synchronized correctly.
+    Fixed - Player: timeline position wasn't restored correctly after an export operation.
+    Fixed - Player: keyboard shortcuts weren't working for dual screen commands when the focus is on an individual screen.
+    Fixed - Annotations: loading annotations in the capture screen wasn't working correctly.
+    Fixed - Annotations: resucitated drawings after undo of delete of a keyframe were not properly registered for tracking.
+    Fixed - Annotations: grabbing of lines perfectly vertical or horizontal wasn't working.
+    Fixed - Annotations: positions of drawings during rendering were not accurate inside the pixel.
+    Fixed - Camera motion: reset of camera motion data wasn't working.
+    Fixed - Annotations: the time origin was wrong when importing a KVA from capture recording.
 
 
 2024.1 - August 2024

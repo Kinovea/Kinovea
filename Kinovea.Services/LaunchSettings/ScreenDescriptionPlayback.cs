@@ -50,6 +50,7 @@ namespace Kinovea.Services
 
         /// <summary>
         /// Speed at which to set the speed slider, whether the video is auto-play or not.
+        /// This is relative to the nominal playback speed, not real time.
         /// </summary>
         public double SpeedPercentage { get; set; }
 

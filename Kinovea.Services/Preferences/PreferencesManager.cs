@@ -143,7 +143,7 @@ namespace Kinovea.Services
             if(!File.Exists(Software.PreferencesFile))
                 return;
 
-            log.DebugFormat("Importing {0}", Path.GetFileName(Software.PreferencesFile));
+            log.InfoFormat("Importing {0}", Path.GetFileNameWithoutExtension(Software.PreferencesFile));
 
             string preferencesFile = ConvertIfNeeded(Software.PreferencesFile);
 

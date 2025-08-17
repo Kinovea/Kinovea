@@ -321,6 +321,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void TriggerCapture()
         {
+            log.DebugFormat("Trigger received in capture screen at {0:o}.", DateTime.Now);
             if (!cameraConnected || !triggerArmed || recording)
                 return;
             
@@ -1636,14 +1637,25 @@ namespace Kinovea.ScreenManager
             Dictionary<string, string> context = BuildCaptureContext();
             string path = Filenamer.ResolveOutputFilePath(root, subdir, filenameWithoutExtension, extension, ProfileManager, context);
 
+            log.DebugFormat("Recording target file: {0}", path);
+
             if (!DirectoryExistsCheck(path))
+            {
+                log.ErrorFormat("Cannot start recording. Directory does not exist: {0}", path);
                 return;
+            }
             
             if (!FilePathSanityCheck(path))
+            {
+                log.ErrorFormat("Cannot start recording. Invalid file name: {0}", path);
                 return;
+            }
 
             if (!OverwriteCheck(path))
+            {
+                log.ErrorFormat("Cannot start recording. File already exists: {0}", path);
                 return;
+            }
 
             // Stop any current recording.
             switch (recordingMode)
@@ -1666,7 +1678,8 @@ namespace Kinovea.ScreenManager
             }
 
             log.DebugFormat("--------------------------------------------------");
-            log.DebugFormat("Starting recording. Recording mode: {0}, Compression: {1}. Image size: {2}x{3} px. Rotation: {4}",
+            log.DebugFormat("Ready to start recording at {0:o}.", DateTime.Now);
+            log.DebugFormat("Recording mode: {0}, Compression: {1}. Image size: {2}x{3} px. Rotation: {4}",
                 recordingMode, !PreferencesManager.CapturePreferences.SaveUncompressedVideo, imageDescriptor.Width, imageDescriptor.Height, ImageRotation);
             log.DebugFormat("Nominal framerate: {0:0.###} fps, Received framerate: {1:0.###} fps, Display framerate: {2:0.###} fps.", 
                 cameraGrabber.Framerate, pipelineManager.Frequency, 1000.0f / displayTimer.Interval);
@@ -1703,6 +1716,7 @@ namespace Kinovea.ScreenManager
                 if(recording)
                 {
                     recordingStart = DateTime.Now;
+                    log.DebugFormat("Recording started at time {0:o}.", recordingStart);
                     stopwatchRecording.Restart();
                 
                     view.UpdateRecordingStatus(recording);
@@ -1728,7 +1742,7 @@ namespace Kinovea.ScreenManager
             if (!cameraLoaded || !recording)
                 return;
 
-            log.DebugFormat("Stopping recording.");
+            log.DebugFormat("Stopping recording. Time:{0:o}.", DateTime.Now);
 
             StartQuietPeriod();
 
@@ -1856,6 +1870,7 @@ namespace Kinovea.ScreenManager
 
                 KVAExportFlags flags = PreferencesManager.CapturePreferences.ExportFlags;
                 serializer.SaveToFile(metadata, kvaFilename, true, flags);
+                log.DebugFormat("Saved capture companion KVA");
 
                 lastExportedMetadata = kvaFilename;
             }

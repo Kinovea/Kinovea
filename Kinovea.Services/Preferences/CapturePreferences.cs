@@ -127,7 +127,7 @@ namespace Kinovea.Services
         #region Members
         private CapturePathConfiguration capturePathConfiguration = new CapturePathConfiguration();
         private double displaySynchronizationFramerate = 25.0;
-        private CaptureRecordingMode recordingMode = CaptureRecordingMode.Camera;
+        private CaptureRecordingMode recordingMode = CaptureRecordingMode.Delay;
         private bool saveUncompressedVideo;
         private bool verboseStats = false;
         private int memoryBuffer = 768;
