@@ -41,6 +41,7 @@ namespace Kinovea.ScreenManager
       this.fnbVideo = new Kinovea.ScreenManager.FilenameBox();
       this.fnbImage = new Kinovea.ScreenManager.FilenameBox();
       this.pnlCaptureDock = new System.Windows.Forms.Panel();
+      this.btnDelayedDisplay = new System.Windows.Forms.Button();
       this.btnArm = new System.Windows.Forms.Button();
       this.btnGrab = new System.Windows.Forms.Button();
       this.btnSettings = new System.Windows.Forms.Button();
@@ -135,6 +136,7 @@ namespace Kinovea.ScreenManager
       // 
       this.pnlCaptureDock.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.capturedock5;
       this.pnlCaptureDock.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+      this.pnlCaptureDock.Controls.Add(this.btnDelayedDisplay);
       this.pnlCaptureDock.Controls.Add(this.btnArm);
       this.pnlCaptureDock.Controls.Add(this.btnGrab);
       this.pnlCaptureDock.Controls.Add(this.btnSettings);
@@ -144,6 +146,24 @@ namespace Kinovea.ScreenManager
       this.pnlCaptureDock.Name = "pnlCaptureDock";
       this.pnlCaptureDock.Size = new System.Drawing.Size(209, 42);
       this.pnlCaptureDock.TabIndex = 40;
+      // 
+      // btnDelayedDisplay
+      // 
+      this.btnDelayedDisplay.BackColor = System.Drawing.Color.Transparent;
+      this.btnDelayedDisplay.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+      this.btnDelayedDisplay.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnDelayedDisplay.FlatAppearance.BorderSize = 0;
+      this.btnDelayedDisplay.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+      this.btnDelayedDisplay.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+      this.btnDelayedDisplay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnDelayedDisplay.Image = global::Kinovea.ScreenManager.Properties.Capture.grab_pause;
+      this.btnDelayedDisplay.Location = new System.Drawing.Point(67, 7);
+      this.btnDelayedDisplay.MinimumSize = new System.Drawing.Size(25, 25);
+      this.btnDelayedDisplay.Name = "btnDelayedDisplay";
+      this.btnDelayedDisplay.Size = new System.Drawing.Size(25, 25);
+      this.btnDelayedDisplay.TabIndex = 41;
+      this.btnDelayedDisplay.UseVisualStyleBackColor = false;
+      this.btnDelayedDisplay.Click += new System.EventHandler(this.btnDelayedDisplay_Click);
       // 
       // btnArm
       // 
@@ -155,10 +175,10 @@ namespace Kinovea.ScreenManager
       this.btnArm.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
       this.btnArm.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnArm.Image = global::Kinovea.ScreenManager.Properties.Capture.speaker;
-      this.btnArm.Location = new System.Drawing.Point(69, 6);
-      this.btnArm.MinimumSize = new System.Drawing.Size(30, 25);
+      this.btnArm.Location = new System.Drawing.Point(98, 7);
+      this.btnArm.MinimumSize = new System.Drawing.Size(25, 25);
       this.btnArm.Name = "btnArm";
-      this.btnArm.Size = new System.Drawing.Size(30, 25);
+      this.btnArm.Size = new System.Drawing.Size(25, 25);
       this.btnArm.TabIndex = 40;
       this.btnArm.UseVisualStyleBackColor = false;
       this.btnArm.Click += new System.EventHandler(this.btnArm_Click);
@@ -173,10 +193,10 @@ namespace Kinovea.ScreenManager
       this.btnGrab.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
       this.btnGrab.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnGrab.Image = global::Kinovea.ScreenManager.Properties.Capture.grab_pause;
-      this.btnGrab.Location = new System.Drawing.Point(33, 6);
-      this.btnGrab.MinimumSize = new System.Drawing.Size(30, 25);
+      this.btnGrab.Location = new System.Drawing.Point(36, 7);
+      this.btnGrab.MinimumSize = new System.Drawing.Size(25, 25);
       this.btnGrab.Name = "btnGrab";
-      this.btnGrab.Size = new System.Drawing.Size(30, 25);
+      this.btnGrab.Size = new System.Drawing.Size(25, 25);
       this.btnGrab.TabIndex = 0;
       this.btnGrab.UseVisualStyleBackColor = false;
       this.btnGrab.Click += new System.EventHandler(this.BtnGrabClick);
@@ -192,9 +212,9 @@ namespace Kinovea.ScreenManager
       this.btnSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnSettings.Image = global::Kinovea.ScreenManager.Properties.Capture.settings;
       this.btnSettings.Location = new System.Drawing.Point(5, 6);
-      this.btnSettings.MinimumSize = new System.Drawing.Size(30, 25);
+      this.btnSettings.MinimumSize = new System.Drawing.Size(25, 25);
       this.btnSettings.Name = "btnSettings";
-      this.btnSettings.Size = new System.Drawing.Size(30, 25);
+      this.btnSettings.Size = new System.Drawing.Size(25, 25);
       this.btnSettings.TabIndex = 39;
       this.btnSettings.UseVisualStyleBackColor = false;
       this.btnSettings.Click += new System.EventHandler(this.BtnSettingsClick);
@@ -209,10 +229,10 @@ namespace Kinovea.ScreenManager
       this.btnRecord.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
       this.btnRecord.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnRecord.Image = global::Kinovea.ScreenManager.Properties.Capture.record_start;
-      this.btnRecord.Location = new System.Drawing.Point(155, 6);
-      this.btnRecord.MinimumSize = new System.Drawing.Size(20, 25);
+      this.btnRecord.Location = new System.Drawing.Point(160, 6);
+      this.btnRecord.MinimumSize = new System.Drawing.Size(25, 25);
       this.btnRecord.Name = "btnRecord";
-      this.btnRecord.Size = new System.Drawing.Size(30, 25);
+      this.btnRecord.Size = new System.Drawing.Size(25, 25);
       this.btnRecord.TabIndex = 24;
       this.btnRecord.UseVisualStyleBackColor = false;
       this.btnRecord.Click += new System.EventHandler(this.BtnRecordClick);
@@ -227,10 +247,10 @@ namespace Kinovea.ScreenManager
       this.btnSnapshot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
       this.btnSnapshot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnSnapshot.Image = global::Kinovea.ScreenManager.Properties.Resources.camerasingle;
-      this.btnSnapshot.Location = new System.Drawing.Point(125, 6);
+      this.btnSnapshot.Location = new System.Drawing.Point(129, 6);
       this.btnSnapshot.MinimumSize = new System.Drawing.Size(25, 25);
       this.btnSnapshot.Name = "btnSnapshot";
-      this.btnSnapshot.Size = new System.Drawing.Size(30, 25);
+      this.btnSnapshot.Size = new System.Drawing.Size(25, 25);
       this.btnSnapshot.TabIndex = 30;
       this.btnSnapshot.Tag = "";
       this.btnSnapshot.UseVisualStyleBackColor = false;
@@ -415,5 +435,6 @@ namespace Kinovea.ScreenManager
         private InfobarCapture infobarCapture;
         private System.Windows.Forms.NumericUpDown nudDelay;
         private System.Windows.Forms.Button btnArm;
+        private System.Windows.Forms.Button btnDelayedDisplay;
     }
 }

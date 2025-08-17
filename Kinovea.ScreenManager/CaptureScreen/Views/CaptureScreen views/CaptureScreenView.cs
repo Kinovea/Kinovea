@@ -57,6 +57,7 @@ namespace Kinovea.ScreenManager
         private bool recording;
         private bool grabbing;
         private bool armed = true;
+        private bool delayedDisplay = true;
         private DelayCompositeType delayCompositeType = DelayCompositeType.Basic;
         private bool delayUpdating;
         #endregion
@@ -155,11 +156,31 @@ namespace Kinovea.ScreenManager
             {
                 btnGrab.Image = Properties.Capture.grab_pause;
                 toolTips.SetToolTip(btnGrab, ScreenManagerLang.ToolTip_PauseCamera);
+                btnDelayedDisplay.Enabled = true;
             }
             else
             {
                 btnGrab.Image = Properties.Capture.grab_start;
                 toolTips.SetToolTip(btnGrab, ScreenManagerLang.ToolTip_StartCamera);
+                btnDelayedDisplay.Enabled = false;
+            }
+        }
+
+        public void UpdateDelayedDisplay(bool delayedDisplay)
+        {
+            this.delayedDisplay = delayedDisplay;
+
+            // Only show as "delayed" if there is actual delay set.
+            bool hasDelay = (sldrDelay.Value > sldrDelay.Minimum);
+            if (this.delayedDisplay && hasDelay)
+            {
+                btnDelayedDisplay.Image = Properties.Capture.live_photos_16;
+                toolTips.SetToolTip(btnDelayedDisplay, "Delayed view");
+            }
+            else
+            {
+                btnDelayedDisplay.Image = Properties.Capture.live_orange;
+                toolTips.SetToolTip(btnDelayedDisplay, "Live view");
             }
         }
 
@@ -217,12 +238,14 @@ namespace Kinovea.ScreenManager
             // Force back the current user value.
             // This ensures the coherence of the delay in seconds and in frames after a change in camera framerate.
             NudDelay_ValueChanged(nudDelay, EventArgs.Empty);
+            UpdateDelayedDisplay(delayedDisplay);
         }
 
         public void ForceDelaySeconds(float delaySeconds)
         {
             delaySeconds = Math.Min(Math.Max(delaySeconds, (float)nudDelay.Minimum), (float)nudDelay.Maximum);
             nudDelay.Value = (decimal)delaySeconds;
+            UpdateDelayedDisplay(delayedDisplay);
         }
 
         public void UpdateNextImageFilename(string filename)
@@ -302,6 +325,7 @@ namespace Kinovea.ScreenManager
             }
 
             presenter.View_DelayChanged(sldrDelay.Value);
+            UpdateDelayedDisplay(delayedDisplay);
         }
         private void NudDelay_ValueChanged(object sender, EventArgs e)
         {
@@ -313,6 +337,7 @@ namespace Kinovea.ScreenManager
             delayUpdating = true;
             sldrDelay.Force(frames);
             delayUpdating = false;
+            UpdateDelayedDisplay(delayedDisplay);
         }
         private void BtnSettingsClick(object sender, EventArgs e)
         {
@@ -321,6 +346,10 @@ namespace Kinovea.ScreenManager
         private void BtnGrabClick(object sender, EventArgs e)
         {
             presenter.View_ToggleGrabbing();
+        }
+        private void btnDelayedDisplay_Click(object sender, EventArgs e)
+        {
+            presenter.View_ToggleDelayedDisplay();
         }
         private void LblCameraInfoClick(object sender, EventArgs e)
         {
@@ -396,6 +425,11 @@ namespace Kinovea.ScreenManager
                 toolTips.SetToolTip(btnArm, ScreenManagerLang.ToolTip_DisarmTrigger);
             else
                 toolTips.SetToolTip(btnArm, ScreenManagerLang.ToolTip_ArmTrigger);
+
+            if (delayedDisplay)
+                toolTips.SetToolTip(btnDelayedDisplay, "Delayed view");
+            else
+                toolTips.SetToolTip(btnDelayedDisplay, "Live view");
         }
         #endregion
 
@@ -538,5 +572,6 @@ namespace Kinovea.ScreenManager
             return true;
         }
         #endregion
+
     }
 }

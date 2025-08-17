@@ -238,6 +238,7 @@ namespace Kinovea.ScreenManager
             manualArmed = triggerArmed;
 
             view.UpdateArmedStatus(triggerArmed);
+            view.UpdateDelayedDisplay(true);
             UpdateRecordingIndicator();
             UpdateArmableTrigger();
 
@@ -526,6 +527,7 @@ namespace Kinovea.ScreenManager
         public void View_ToggleDelayedDisplay()
         {
             delayedDisplay = !delayedDisplay;
+            view.UpdateDelayedDisplay(delayedDisplay);
         }
 
         public void View_ValidateFilename(string filename)
