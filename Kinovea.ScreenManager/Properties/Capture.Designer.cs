@@ -93,6 +93,36 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap circle_16 {
+            get {
+                object obj = ResourceManager.GetObject("circle_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap circled_play_16 {
+            get {
+                object obj = ResourceManager.GetObject("circled_play_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap clock_backward_16 {
+            get {
+                object obj = ResourceManager.GetObject("clock_backward_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap controlsDock {
             get {
                 object obj = ResourceManager.GetObject("controlsDock", resourceCulture);
@@ -123,9 +153,9 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap display_mode {
+        internal static System.Drawing.Bitmap explorer_video {
             get {
-                object obj = ResourceManager.GetObject("display_mode", resourceCulture);
+                object obj = ResourceManager.GetObject("explorer_video", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -153,26 +183,6 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap grab_pause {
-            get {
-                object obj = ResourceManager.GetObject("grab_pause", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap grab_start {
-            get {
-                object obj = ResourceManager.GetObject("grab_start", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap live_orange {
             get {
                 object obj = ResourceManager.GetObject("live_orange", resourceCulture);
@@ -193,9 +203,29 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap record_start {
+        internal static System.Drawing.Bitmap pause_16 {
             get {
-                object obj = ResourceManager.GetObject("record_start", resourceCulture);
+                object obj = ResourceManager.GetObject("pause_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap quick_mode_off_16 {
+            get {
+                object obj = ResourceManager.GetObject("quick_mode_off_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap quick_mode_on_green_16 {
+            get {
+                object obj = ResourceManager.GetObject("quick_mode_on_green_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -233,6 +263,16 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap screenshot_16 {
+            get {
+                object obj = ResourceManager.GetObject("screenshot_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap section_fold {
             get {
                 object obj = ResourceManager.GetObject("section_fold", resourceCulture);
@@ -263,29 +303,9 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap slomo_sync {
+        internal static System.Drawing.Bitmap stop2_16 {
             get {
-                object obj = ResourceManager.GetObject("slomo_sync", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap speaker {
-            get {
-                object obj = ResourceManager.GetObject("speaker", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap speaker_mute {
-            get {
-                object obj = ResourceManager.GetObject("speaker_mute", resourceCulture);
+                object obj = ResourceManager.GetObject("stop2_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

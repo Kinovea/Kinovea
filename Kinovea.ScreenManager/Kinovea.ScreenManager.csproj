@@ -1095,7 +1095,9 @@
     <EmbeddedResource Include="Exporters\Images\FormConfigureExportImageSequence.resx">
       <DependentUpon>FormConfigureExportImageSequence.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Languages\ScreenManagerLang.ar.resx" />
+    <EmbeddedResource Include="Languages\ScreenManagerLang.ar.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Languages\ScreenManagerLang.bg.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.ca.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.cs.resx" />
@@ -2363,9 +2365,6 @@
     <None Include="Resources\leg-right-16.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\stop2-16.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\next-16.png" />
   </ItemGroup>
   <ItemGroup>
@@ -2460,6 +2459,48 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\live_orange.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\quick-mode-off-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\quick-mode-on-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\notification-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\notifications-off-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\screenshot-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\explorer_video.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\pause-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\circled-play-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\circle-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\quick-mode-on-green-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\time-machine-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\width-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\stop2-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\clock-backward-16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">

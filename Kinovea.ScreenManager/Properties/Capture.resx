@@ -164,49 +164,6 @@
         3m9Oq3sEbwou4AAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="grab_pause" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29m
-        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJxSURBVDhPlZNNbxJRFIb5Af4CfgcsXbphZ3XTnfHb
-        sDFx0dSVpJq4aIyQmUIU06a1gUqCJq22qZG20hHENBY6UKaAgAWEwjAOA8NnOd5zYZCqGyd5k5k7533O
-        e+6d0QHAGV2wg57ISGQimhwK73FN/2f9uPEckeH+a9ns/XTMBvcT3EH0UIzwMXF3L8692kmzU56qGWuw
-        9gxgaD7v9hcskcOUUKzIoKgd6J72qWqNNuRLVQjs8cL8ZsqCtRpEAxjQzMe/Kc1WlywBqO0eVJUOiET1
-        Vo+uKWobdkNhxbl+hBADWdLRmTE2dtbMZbkNpZ9tKEoDFaQW5Kst+g4hm1sB4e5yEcfRI8Do5b6zGBsv
-        NF9+5Ic7jtjIPDGzAzftUZoGr3j6BzCeIIteBJgCX484nBmjounSQwREadec2CSAbQqo1DogN7pwIqmw
-        sLLGoRcBk+GDqIibhQUIwI63COC40qSasGzDjTmepsPndvcUll0rInopYD/CUwAWYFctMhZny024+MAH
-        19kBAJ/lRgcWFl+OAKaPX2KcpLSgpnYHHWlkHjInKqRLKgF8oADcWDyZRE4CxukajWB0+ZJsNl+Bfh9o
-        B4yLShVVKjRfZXg6XqfXh63PMbA43o02UX/PXTb7/CFBlJt0lzGqpkShQY2aOUm6254tCdccicExknqE
-        GJg3Ecvqe79SrNZpEqnepWlwDDw+NCdyVbA63co0s/77QxoC6Kc86wpZljyrQjCchGxRpnuCM8cyImz4
-        IzDLzAtTtrd/f8pjEMPtFxnzzPMN9ol9kWPmHOJTGys+tjq5aauXvcLG//0zjYu8/I/fGXS/ABk/DHOW
-        nzo2AAAAAElFTkSuQmCC
-</value>
-  </data>
-  <data name="grab_start" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29m
-        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJrSURBVDhPlZNNbxJhEMf5AH4CPgccPXrhVk0PvZl4
-        MeFi4qGpp5Ka6qExhbCWKKZNawOViDVV29RIrXQLxTSWl1KWFwELdCnsrrCwsCxl3HlgEdSLm/yTzTzz
-        +8/M86IDgDHdWAK9KqMqk6qpgfAfY/o/80fBa6oMD97UzN7Dcyp4kqKjp2dcJBbnDo4T9Kv9LDXt4c2Y
-        g7ljBgP4uttfskTOMgxbrYEodUC56hHVmzIUyzwEjmPM8m7GgrmaiWZgQDiW+C622ooaApDkLvBiBzhV
-        jXaXxERJhoNQWHRuJ9HEoIZ0ZGZsGytrcKUmQ/mnDG9DZWAFGUpCG4p8m6yhye5egLm3zuI4ejQweukf
-        FLaNnwYjeOuhHzaPygQ+r7aI8EtkL8DuCVLIooEp8C1J48zYKoJa1Ztz+0SvgyyB85UW1JoKXAoSrGy8
-        o5FFg6lw9JTDzarWOwTGigWupcKfiSYfBcEX5SBbloiRrFzBumuDQ5YYnERixADb12BMJPD8IUzM+sha
-        hpUGXXRgZfXl0MD05WucFsQ21CVlOCsmTs7TY3D6oklOJlUQwO50DUcwunxpKl+sQq8HBMxdSqTdidlP
-        BEYwVWpCstiETrcHe0dxsDg+DDdRf99dMfv8IYar9XcZq6EQ1sBEsUEKpNXqtmdrzB1Hqn+Maj6aGOyb
-        EcvWR7/I8v1EoaEMu8HLhJVTBR6sTrc4Y9/+fZEGBuQqL7hCljXPFhMMpyHP1sie4MzxHAc7/ggs2JeZ
-        adv7v6/yiInh7oucee75DvVkaZW2P3VwizaKe2x10jNWL3WbSvz7MY1KXfyP5wy6Xx14FVeYyRtqAAAA
-        AElFTkSuQmCC
-</value>
-  </data>
-  <data name="record_start" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
-        JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAh0lEQVQ4T62T0Q2AIAwFGcoJWMY1GMwP
-        lnAMP5yg9ogxjalNtH6cMfZxQMEiIinGY6nVMilN6cp2wjvfqF1ZTzArqyIPUCPjCijsijfQQmZIrICl
-        RTPfITtZAfvzghHNCmiSF4roVkCnvVDE9qsgvYV0E9PHCKmLZCXRSqiNweAJ4P3P9B0pB5ntQJ+xJk42
-        AAAAAElFTkSuQmCC
-</value>
-  </data>
   <data name="record_stop" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
@@ -397,22 +354,37 @@
 </value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="display_mode" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\display_mode4.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="slomo_sync" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\slomo_sync.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="speaker" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\speaker.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="speaker_mute" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\speakermute.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="live_photos_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\live-photos-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="live_orange" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\live_orange.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="circled_play_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\circled-play-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="circle_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\circle-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="explorer_video" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\explorer_video.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="pause_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pause-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="quick_mode_off_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\quick-mode-off-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="quick_mode_on_green_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\quick-mode-on-green-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="screenshot_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\screenshot-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="clock_backward_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\clock-backward-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="stop2_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\stop2-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

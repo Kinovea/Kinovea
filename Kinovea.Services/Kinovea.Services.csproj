@@ -286,8 +286,6 @@
     <Compile Include="Types\CaptureAutomationConfiguration.cs" />
     <Compile Include="Types\CapturePathConfiguration.cs" />
     <Compile Include="Types\CaptureRecordingMode.cs" />
-    <Compile Include="Types\DelayCompositeConfiguration.cs" />
-    <Compile Include="Types\DelayCompositeType.cs" />
     <Compile Include="Types\FileProperty.cs" />
     <Compile Include="Types\FilePropertyVisibility.cs" />
     <Compile Include="Types\KinoveaUncompressedVideoFormat.cs" />

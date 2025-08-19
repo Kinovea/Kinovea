@@ -103,7 +103,6 @@ namespace Kinovea.Root
         private bool formPatternsVisible;
 
         // Automation
-        private float recordingSeconds;
         private bool ignoreOverwriteWarning;
         private string postRecordCommand;
 
@@ -178,7 +177,6 @@ namespace Kinovea.Root
             capturePathConfiguration = PreferencesManager.CapturePreferences.CapturePathConfiguration.Clone();
             
             // Automation
-            recordingSeconds = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.RecordingSeconds;
             postRecordCommand = PreferencesManager.CapturePreferences.PostRecordCommand;
             ignoreOverwriteWarning = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.IgnoreOverwrite;
         }
@@ -393,10 +391,6 @@ namespace Kinovea.Root
         {
             tabAutomation.Text = RootLang.dlgPreferences_Capture_tabAutomation; 
             
-            lblRecordingTime.Text = RootLang.dlgPreferences_Capture_lblStopRecordingByDuration;
-            nudRecordingTime.Value = (decimal)recordingSeconds;
-            NudHelper.FixNudScroll(nudRecordingTime);
-
             lblPostRecordCommand.Text = RootLang.dlgPreferences_Capture_lblPostRecordingCommand; 
             tbPostRecordCommand.Text = postRecordCommand;
         }
@@ -693,11 +687,7 @@ namespace Kinovea.Root
         #endregion
 
         #region Tab Automation
-        private void NudRecordingTime_ValueChanged(object sender, EventArgs e)
-        {
-            recordingSeconds = (float)nudRecordingTime.Value;
-        }
-
+        
         private void tbPostRecordCommand_TextChanged(object sender, EventArgs e)
         {
             Control tb = sender as Control;
@@ -813,7 +803,6 @@ namespace Kinovea.Root
             PreferencesManager.CapturePreferences.CapturePathConfiguration = capturePathConfiguration;
 
             // Automation
-            PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.RecordingSeconds = recordingSeconds;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.IgnoreOverwrite = ignoreOverwriteWarning;
             PreferencesManager.CapturePreferences.PostRecordCommand = postRecordCommand;
         }

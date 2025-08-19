@@ -47,8 +47,6 @@ namespace Kinovea.ScreenManager
         void SetCapturedFilesView(CapturedFilesView capturedFilesView);
         void SetToolbarView(Control toolbarView);
         void ShowThumbnails();
-        void ConfigureDisplayControl(DelayCompositeType type);
-
         void UpdateTitle(string title, Bitmap icon);
         void UpdateInfo(string signal, string bandwidth, string load, string drops);
         void UpdateLoadStatus(float load);

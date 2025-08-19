@@ -158,13 +158,13 @@ namespace Kinovea.ScreenManager
         #region Lower level helpers
         private void RefreshGrabbingButton()
         {
-            btnGrab.Image = grabbing ? Properties.Capture.grab_pause : Properties.Capture.grab_start;
+            btnGrab.Image = grabbing ? Properties.Capture.pause_16 : Properties.Capture.circled_play_16;
             btnRecord.Enabled = grabbing;
         }
 
         private void RefreshRecordingButton()
         {
-            btnRecord.Image = recording ? Properties.Capture.record_stop : Properties.Capture.record_start;
+            btnRecord.Image = recording ? Properties.Capture.record_stop : Properties.Capture.circle_16;
         }
         #endregion
     }

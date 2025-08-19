@@ -58,7 +58,6 @@ namespace Kinovea.ScreenManager
         private bool grabbing;
         private bool armed = true;
         private bool delayedDisplay = true;
-        private DelayCompositeType delayCompositeType = DelayCompositeType.Basic;
         private bool delayUpdating;
         #endregion
 
@@ -74,7 +73,9 @@ namespace Kinovea.ScreenManager
             nudDelay.Maximum = 100;
             NudHelper.FixNudScroll(nudDelay);
 
-            ConfigureDisplayControl(delayCompositeType);
+            nudDuration.Minimum = 0;
+            nudDuration.Maximum = 300;
+            NudHelper.FixNudScroll(nudDuration);
 
             this.Hotkeys = HotkeySettingsManager.LoadHotkeys("CaptureScreen");
         }
@@ -93,7 +94,6 @@ namespace Kinovea.ScreenManager
         public void RefreshUICulture()
         {
             capturedFilesView.RefreshUICulture();
-            lblDelay.Text = ScreenManagerLang.lblDelay_Text;
             ReloadTooltipsCulture();
         }
         
@@ -154,13 +154,13 @@ namespace Kinovea.ScreenManager
 
             if (grabbing)
             {
-                btnGrab.Image = Properties.Capture.grab_pause;
+                btnGrab.Image = Properties.Capture.pause_16;
                 toolTips.SetToolTip(btnGrab, ScreenManagerLang.ToolTip_PauseCamera);
                 btnDelayedDisplay.Enabled = true;
             }
             else
             {
-                btnGrab.Image = Properties.Capture.grab_start;
+                btnGrab.Image = Properties.Capture.circled_play_16;
                 toolTips.SetToolTip(btnGrab, ScreenManagerLang.ToolTip_StartCamera);
                 btnDelayedDisplay.Enabled = false;
             }
@@ -175,12 +175,12 @@ namespace Kinovea.ScreenManager
             if (this.delayedDisplay && hasDelay)
             {
                 btnDelayedDisplay.Image = Properties.Capture.live_photos_16;
-                toolTips.SetToolTip(btnDelayedDisplay, "Delayed view");
+                toolTips.SetToolTip(btnDelayedDisplay, "The view is delayed");
             }
             else
             {
                 btnDelayedDisplay.Image = Properties.Capture.live_orange;
-                toolTips.SetToolTip(btnDelayedDisplay, "Live view");
+                toolTips.SetToolTip(btnDelayedDisplay, "The view is live");
             }
         }
 
@@ -190,13 +190,13 @@ namespace Kinovea.ScreenManager
 
             if (armed)
             {
-                btnArm.Image = Properties.Resources.microphone_16;
-                toolTips.SetToolTip(btnArm, ScreenManagerLang.ToolTip_DisarmTrigger);
+                btnArm.Image = Properties.Capture.quick_mode_on_green_16;
+                toolTips.SetToolTip(btnArm, "The capture trigger is armed");
             }
             else
             {
-                btnArm.Image = Properties.Resources.block_microphone_16;
-                toolTips.SetToolTip(btnArm, ScreenManagerLang.ToolTip_ArmTrigger);
+                btnArm.Image = Properties.Capture.quick_mode_off_16;
+                toolTips.SetToolTip(btnArm, "The capture trigger is disarmed");
             }
         }
 
@@ -211,7 +211,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                btnRecord.Image = Properties.Capture.record_start;
+                btnRecord.Image = Properties.Capture.circle_16;
                 toolTips.SetToolTip(btnRecord, ScreenManagerLang.ToolTip_StartRecording);
             }
             
@@ -263,27 +263,6 @@ namespace Kinovea.ScreenManager
         {
             if(!pnlCapturedVideos.Visible)
                 ToggleCapturedVideosPanel();
-        }
-
-        /// <summary>
-        /// Show the correct control based on display type.
-        /// </summary>
-        public void ConfigureDisplayControl(DelayCompositeType type)
-        {
-            delayCompositeType = type;
-
-            sldrDelay.Visible = false;
-            lblDelay.Visible = false;
-            
-            switch (type)
-            {
-                case DelayCompositeType.Basic:
-                    sldrDelay.Visible = true;
-                    lblDelay.Visible = true;
-                    break;
-                default:
-                    break;
-            }
         }
         
         /// <summary>
@@ -338,6 +317,10 @@ namespace Kinovea.ScreenManager
             sldrDelay.Force(frames);
             delayUpdating = false;
             UpdateDelayedDisplay(delayedDisplay);
+        }
+        private void nudDuration_ValueChanged(object sender, EventArgs e)
+        {
+            presenter.View_DurationChanged((float)nudDuration.Value);
         }
         private void BtnSettingsClick(object sender, EventArgs e)
         {
@@ -411,6 +394,9 @@ namespace Kinovea.ScreenManager
             toolTips.SetToolTip(btnSettings, ScreenManagerLang.ToolTip_ConfigureCamera);
             toolTips.SetToolTip(btnSnapshot, ScreenManagerLang.Generic_SaveImage);
 
+            toolTips.SetToolTip(btnDelay, "Delay in seconds");
+            toolTips.SetToolTip(btnDuration, "Stop recording after… in seconds");
+
             if (recording)
                 toolTips.SetToolTip(btnRecord, ScreenManagerLang.ToolTip_StopRecording);
             else
@@ -422,14 +408,14 @@ namespace Kinovea.ScreenManager
                 toolTips.SetToolTip(btnGrab, ScreenManagerLang.ToolTip_StartCamera);
 
             if (armed)
-                toolTips.SetToolTip(btnArm, ScreenManagerLang.ToolTip_DisarmTrigger);
+                toolTips.SetToolTip(btnArm, "The capture trigger is armed");
             else
-                toolTips.SetToolTip(btnArm, ScreenManagerLang.ToolTip_ArmTrigger);
+                toolTips.SetToolTip(btnArm, "The capture trigger is disarmed");
 
             if (delayedDisplay)
-                toolTips.SetToolTip(btnDelayedDisplay, "Delayed view");
+                toolTips.SetToolTip(btnDelayedDisplay, "The view is delayed");
             else
-                toolTips.SetToolTip(btnDelayedDisplay, "Live view");
+                toolTips.SetToolTip(btnDelayedDisplay, "The view is live");
         }
         #endregion
 

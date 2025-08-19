@@ -62,11 +62,6 @@ namespace Kinovea.Services
         {
             get { return cameraBlurbs.Values.Cast<CameraBlurb>(); }
         }
-        public DelayCompositeConfiguration DelayCompositeConfiguration
-        {
-            get { return delayCompositeConfiguration; }
-            set { delayCompositeConfiguration = value; }
-        }
         public PhotofinishConfiguration PhotofinishConfiguration
         {
             get { return photofinishConfiguration; }
@@ -132,7 +127,6 @@ namespace Kinovea.Services
         private bool verboseStats = false;
         private int memoryBuffer = 768;
         private Dictionary<string, CameraBlurb> cameraBlurbs = new Dictionary<string, CameraBlurb>();
-        private DelayCompositeConfiguration delayCompositeConfiguration = new DelayCompositeConfiguration();
         private PhotofinishConfiguration photofinishConfiguration = new PhotofinishConfiguration();
         private CaptureAutomationConfiguration captureAutomationConfiguration = new CaptureAutomationConfiguration();
         private float highspeedRecordingFramerateThreshold = 150;
@@ -187,10 +181,6 @@ namespace Kinovea.Services
                 writer.WriteEndElement();
             }
 
-            writer.WriteStartElement("DelayCompositeConfiguration");
-            delayCompositeConfiguration.WriteXml(writer);
-            writer.WriteEndElement();
-
             writer.WriteStartElement("PhotofinishConfiguration");
             photofinishConfiguration.WriteXml(writer);
             writer.WriteEndElement();
@@ -243,9 +233,6 @@ namespace Kinovea.Services
                         break;
                     case "Cameras":
                         ParseCameras(reader);
-                        break;
-                    case "DelayCompositeConfiguration":
-                        delayCompositeConfiguration.ReadXml(reader);
                         break;
                     case "PhotofinishConfiguration":
                         photofinishConfiguration.ReadXml(reader);

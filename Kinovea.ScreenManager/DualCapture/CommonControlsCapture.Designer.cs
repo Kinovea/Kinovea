@@ -56,7 +56,7 @@ namespace Kinovea.ScreenManager
             this.btnGrab.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.btnGrab.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btnGrab.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnGrab.Image = global::Kinovea.ScreenManager.Properties.Capture.grab_pause;
+            this.btnGrab.Image = global::Kinovea.ScreenManager.Properties.Capture.circled_play_16;
             this.btnGrab.Location = new System.Drawing.Point(103, 8);
             this.btnGrab.MinimumSize = new System.Drawing.Size(30, 25);
             this.btnGrab.Name = "btnGrab";
@@ -74,7 +74,7 @@ namespace Kinovea.ScreenManager
             this.btnRecord.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.btnRecord.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btnRecord.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnRecord.Image = global::Kinovea.ScreenManager.Properties.Capture.record_start;
+            this.btnRecord.Image = global::Kinovea.ScreenManager.Properties.Capture.circle_16;
             this.btnRecord.Location = new System.Drawing.Point(170, 8);
             this.btnRecord.MinimumSize = new System.Drawing.Size(20, 25);
             this.btnRecord.Name = "btnRecord";
@@ -92,7 +92,7 @@ namespace Kinovea.ScreenManager
             this.btnSnapshot.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.btnSnapshot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btnSnapshot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSnapshot.Image = global::Kinovea.ScreenManager.Properties.Resources.camerasingle;
+            this.btnSnapshot.Image = global::Kinovea.ScreenManager.Properties.Capture.screenshot_16;
             this.btnSnapshot.Location = new System.Drawing.Point(139, 8);
             this.btnSnapshot.MinimumSize = new System.Drawing.Size(25, 25);
             this.btnSnapshot.Name = "btnSnapshot";

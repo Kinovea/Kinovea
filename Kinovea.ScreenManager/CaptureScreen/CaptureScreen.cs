@@ -185,6 +185,7 @@ namespace Kinovea.ScreenManager
         private Delayer delayer = new Delayer();
         private int delay; // The current image age in number of frames.
         private bool delayedDisplay = true;
+        private float maxRecordingSeconds = 0;
 
         private ViewportController viewportController;
         private CapturedFiles capturedFiles = new CapturedFiles();
@@ -516,6 +517,12 @@ namespace Kinovea.ScreenManager
         {
             DelayChanged(delayFrames);
         }
+
+        public void View_DurationChanged(float maxRecordingSeconds)
+        {
+            this.maxRecordingSeconds = maxRecordingSeconds;
+        }
+
         public void View_SnapshotAsked()
         {
             MakeSnapshot();
@@ -846,7 +853,7 @@ namespace Kinovea.ScreenManager
             log.DebugFormat("Image: {0}, {1}x{2}px, top-down: {3}.", imageDescriptor.Format, imageDescriptor.Width, imageDescriptor.Height, imageDescriptor.TopDown);
             log.DebugFormat("Nominal camera framerate: {0:0.###} fps, Monitor framerate: {1:0.###} fps, Custom display framerate: {2:0.###} fps, Final display framerate: {3:0.###} fps.",
                 cameraGrabber.Framerate, monitorFramerate, displayFramerate, slowFramerate);
-            log.DebugFormat("Recording mode: {0}, Compositor mode: {1}.", recordingMode, PreferencesManager.CapturePreferences.DelayCompositeConfiguration.CompositeType);
+            log.DebugFormat("Recording mode: {0}.", recordingMode);
             log.DebugFormat("--------------------------------------------------");
         }
         
@@ -1253,7 +1260,6 @@ namespace Kinovea.ScreenManager
             if (recording && recordingThumbnail == null && displayFrame != null)
                 recordingThumbnail = BitmapHelper.Copy(displayFrame);
 
-            float maxRecordingSeconds = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.RecordingSeconds;
             if (recording && maxRecordingSeconds > 0)
             {
                 // Test if recording duration threshold is passed.
