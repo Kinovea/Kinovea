@@ -23,13 +23,13 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class SummaryLoader
     {
+        public event EventHandler<SummaryLoadedEventArgs> SummaryLoaded;
+
         public bool IsAlive 
         {
             get { return isAlive; }
         }
 
-        public event EventHandler<SummaryLoadedEventArgs> SummaryLoaded;
-        
         private bool isAlive;
         private bool cancellationPending;
         private List<String> filenames;
@@ -90,7 +90,10 @@ namespace Kinovea.ScreenManager
             for (int i = 0; i<filenames.Count; i++)
             {
                 if(bgWorker.CancellationPending)
+                {
+                    log.DebugFormat("Cancelled summary loader.");
                     break;
+                }
                 
                 string filename = filenames[i];
                 VideoSummary summary = null;
@@ -111,8 +114,8 @@ namespace Kinovea.ScreenManager
                     log.ErrorFormat("Error while extracting video summary for {0}.", filename);
                     log.Error(exp);
                 }
-                
-                if(summary == null)
+
+                if (summary == null)
                     summary = new VideoSummary(filename);
                 
     			bgWorker.ReportProgress(i, summary);

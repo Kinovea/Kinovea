@@ -938,7 +938,8 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ _filePath, bool _forSummary)
         if (firstTimestamp < 0)
         {
             m_timestampOffset = firstTimestamp - 1;
-            log->WarnFormat("Negative start time. Applying timestamp offset of {0}.", m_timestampOffset);
+            if (!_forSummary)
+                log->WarnFormat("Negative start time. Applying timestamp offset of {0}.", m_timestampOffset);
         }
         
         if (pFormatCtx->duration > 0)

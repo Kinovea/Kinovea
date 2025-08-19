@@ -47,6 +47,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
+        private string identifier;
         private int columns = (int)ExplorerThumbSize.Large;
         private object locker = new object();
         private List<SummaryLoader> loaders = new List<SummaryLoader>();
@@ -78,10 +79,11 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Construction/Destruction
-        public ThumbnailViewerFiles()
+        public ThumbnailViewerFiles(string identifier)
         {
             log.Debug("Constructing ThumbnailViewerFiles");
             
+            this.identifier = identifier;
             InitializeComponent();
             RefreshUICulture();
             this.Dock = DockStyle.Fill;
@@ -102,15 +104,24 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void CurrentDirectoryChanged(string path, List<string> files)
         {
-            // This may be the same folder and list of files if we are just sorting.
-            // Storting may be initiated here but still goes through the explorer panel and 
-            // comes back here.
+            log.DebugFormat("Thumbnail viewer directory change:{0}. Size:{1}. ---------------------------", 
+                path, this.Size);
 
-            // If the list of files is in the same order we don't need to do anything though.
-            // This happens when we come back here after a screen is closed.
-            
+            if (this.Width < 200 || this.Height < 200)
+            {
+                // This happens when we switch for the very first time to this panel.
+                // It's not fully initialized yet. We'll come back later.
+                return;
+            }
+
+            int visibleThumbnails = thumbnails.Count(th => th.Visible);
+
+            // Bail out if we consider that we don't have to do anything.
+            // Same directory, same number of files, not a sort, not a forced refresh.
+            // This happens when we come back here after a screen is closed for example.
             if (path == this.path && 
-                files.Count == this.files.Count && 
+                files.Count == this.files.Count &&
+                visibleThumbnails >= files.Count &&
                 !sortOperationInProgress &&
                 !forcedRefreshInProgress)
             {
@@ -136,15 +147,19 @@ namespace Kinovea.ScreenManager
             CleanupLoaders();
         }
         
-        
         /// <summary>
         /// Clear all thumbnails memory and remove all controls from the panel.
         /// </summary>
         public void Clear()
         {
+            // It is not clear that this is needed.
+            // Currently we only come here when changing tabs.
+
+            log.DebugFormat("Clearing thumbnails from {0}", identifier);
             selectedThumbnail = null;
             NotificationCenter.RaiseFileSelected(this, null);
-            
+
+            mapPathToIndex.Clear();
             mapPathToThumbnail.Clear();
 
             for (int i = thumbnails.Count - 1; i >= 0; i--)
@@ -157,7 +172,7 @@ namespace Kinovea.ScreenManager
 
                 thumbnails.Remove(thumbnail);
                 this.Controls.Remove(thumbnail);
-                
+
                 thumbnail.DisposeImages();
                 thumbnail.Dispose();
             }
@@ -262,8 +277,9 @@ namespace Kinovea.ScreenManager
             if (files.Count == 0)
                 return;
 
-            Size maxImageSize = DoLayout(changedSize);
-            log.DebugFormat("After thumbnail layout: {0} in {1} ms.", files.Count, stopwatch.ElapsedMilliseconds);
+            Size maxImageSize = DoLayout(changedSize || forcedRefreshInProgress);
+            log.DebugFormat("After thumbnail layout: {0} in {1} ms. Max img size:{2}.", 
+                files.Count, stopwatch.ElapsedMilliseconds, maxImageSize);
 
             // Filter out files that are already loaded.
             List<string> filesToLoad = new List<string>();
@@ -285,7 +301,8 @@ namespace Kinovea.ScreenManager
                 }
             }
 
-            log.DebugFormat("Summaries to load: {0}/{1}", filesToLoad.Count, files.Count);
+            log.DebugFormat("Summaries to load: {0}/{1}. Active loaders:{2}.", 
+                filesToLoad.Count, files.Count, loaders.Count);
 
             if (filesToLoad.Count == 0)
                 return;
@@ -302,11 +319,12 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Make sure we have enough thumbnail controls to display all the files,
-        /// and hide/show them as necessary.
+        /// Reorganize the list of thumbnails to match the requested list of files.
+        /// Makes sure we have enough thumbnail controls and hide/show them as necessary.
         /// Set the correct filename on each control.
+        /// Rearrange the controls holding returning thumbnails to match the requested order.
         /// </summary>
-        private void UpdateThumbnailList(List<String> files)
+        private void UpdateThumbnailList(List<string> files)
         {
             this.SuspendLayout();
 
@@ -323,6 +341,13 @@ namespace Kinovea.ScreenManager
             // - During this loop we may recycle existing thumbnail controls or create new ones.
             // - Next we rearrange the thumbnails list to match the target file list.
             // - Finally we hide the extra thumbnails we won't need.
+
+            if (thumbnails.Count != mapPathToIndex.Count)
+            {
+                // invalid program.
+                mapPathToThumbnail.Clear();
+                mapPathToIndex.Clear();
+            }
 
             List<bool> inUse = new List<bool>();
             foreach (ThumbnailFile tlvi in thumbnails)

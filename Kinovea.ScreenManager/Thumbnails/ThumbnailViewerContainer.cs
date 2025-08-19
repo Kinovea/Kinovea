@@ -42,8 +42,8 @@ namespace Kinovea.ScreenManager
         private ThumbnailViewerType currentViewerType = ThumbnailViewerType.Files;
         private string path;
         private List<string> files;
-        private ThumbnailViewerFiles viewerFiles = new ThumbnailViewerFiles();
-        private ThumbnailViewerFiles viewerShortcuts = new ThumbnailViewerFiles();
+        private ThumbnailViewerFiles viewerFiles = new ThumbnailViewerFiles("[files]");
+        private ThumbnailViewerFiles viewerShortcuts = new ThumbnailViewerFiles("[shortcuts]");
         private ThumbnailViewerCameras viewerCameras = new ThumbnailViewerCameras();
         private UserControl viewer;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
