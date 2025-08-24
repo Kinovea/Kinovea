@@ -64,6 +64,7 @@ namespace Kinovea.ScreenManager
         private Dictionary<string, int> mapPathToIndex = new Dictionary<string, int>();
         private Stopwatch stopwatch = new Stopwatch();
 
+
         #region Menus
         private ContextMenuStrip popMenu = new ContextMenuStrip();
         private ToolStripMenuItem mnuSortBy = new ToolStripMenuItem();
@@ -232,10 +233,12 @@ namespace Kinovea.ScreenManager
                 FileProperty closureProp = prop;
                 mnu.Click += (s, e) =>
                 {
-                    bool v = PreferencesManager.FileExplorerPreferences.FilePropertyVisibility.Visible[closureProp];
-                    PreferencesManager.FileExplorerPreferences.FilePropertyVisibility.Visible[closureProp] = !v;
+                    var visibilityOptions = PreferencesManager.FileExplorerPreferences.FilePropertyVisibility.Visible;
+
+                    bool v = visibilityOptions[closureProp];
+                    visibilityOptions[closureProp] = !v;
                     mnu.Checked = !v;
-                    InvalidateThumbnails();
+                    InvalidateThumbnails(visibilityOptions);
                 };
 
                 mnuProperties.DropDownItems.Add(mnu);
@@ -564,10 +567,13 @@ namespace Kinovea.ScreenManager
         /// When the thumbnails must be redrawn but the path and files haven't changed.
         /// This happens when we change the visible properties.
         /// </summary>
-        private void InvalidateThumbnails()
+        private void InvalidateThumbnails(Dictionary<FileProperty, bool> visibilityOptions)
         {
             foreach (ThumbnailFile tf in thumbnails)
+            {
+                tf.RefreshUICulture(visibilityOptions);
                 tf.Invalidate();
+            }
         }
         #endregion
 
@@ -642,8 +648,11 @@ namespace Kinovea.ScreenManager
 
         public void RefreshUICulture()
         {
-            foreach (ThumbnailFile tlvi in thumbnails)
-                tlvi.RefreshUICulture();
+            var visibilityOptions = PreferencesManager.FileExplorerPreferences.FilePropertyVisibility.Visible;
+            foreach (ThumbnailFile tf in thumbnails)
+            {
+                tf.RefreshUICulture(visibilityOptions);
+            }
 
             mnuSortBy.Text = ScreenManagerLang.mnuSortBy;
             mnuSortByName.Text = ScreenManagerLang.mnuSortBy_Name;

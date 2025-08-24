@@ -592,6 +592,9 @@ namespace Kinovea.Root
         {
             try
             {
+                // Make sure we have the latest core prefs before saving this.
+                PreferencesManager.BeforeRead();
+
                 CultureInfo oldCulture = Thread.CurrentThread.CurrentUICulture;
                 CultureInfo newCulture = new CultureInfo(name);
 
@@ -696,6 +699,9 @@ namespace Kinovea.Root
         }
         private void SwitchTimecode(TimecodeFormat _timecode)
         {
+            // Make sure we have the latest core prefs before saving this.
+            PreferencesManager.BeforeRead();
+
             PreferencesManager.PlayerPreferences.TimecodeFormat = _timecode;
             RefreshUICulture();
         }
@@ -739,6 +745,9 @@ namespace Kinovea.Root
 
         private void ToggleDebugLogs()
         {
+            // Make sure we have the latest core prefs before saving this.
+            PreferencesManager.BeforeRead();
+
             bool enabled = !PreferencesManager.GeneralPreferences.EnableDebugLog;
             Software.UpdateLogLevel(enabled);
             PreferencesManager.GeneralPreferences.EnableDebugLog = enabled;
@@ -945,6 +954,9 @@ namespace Kinovea.Root
             string tag = menu.Tag as string;
             if (string.IsNullOrEmpty(tag))
                 return;
+
+            // Make sure we have the latest core prefs before saving this.
+            PreferencesManager.BeforeRead();
 
             PointerManager.SetCursor(tag);
         }

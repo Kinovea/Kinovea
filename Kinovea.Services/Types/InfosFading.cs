@@ -128,30 +128,22 @@ namespace Kinovea.Services
         #endregion
 
         #region Members
-        private bool enabled;
-        private bool useDefault;
-        private bool alwaysVisible;
-        private int fadingFrames;
+        private bool enabled = true;
+        private bool useDefault = true;
+        private bool alwaysVisible = false;
+        private int fadingFrames = 20;
         private int opaqueFrames = 1;
-        private long referenceTimestamp;
-        private long averageTimeStampsPerFrame;
+        private long referenceTimestamp = 0;
+        private long averageTimeStampsPerFrame = 0;
         private float masterFactor = 1.0f;
+        private InfosFading defaultFading = null;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Construction
         public InfosFading()
         {
-            // this constructor is directly used only by the Preference manager 
-            // to create the default fading values.
-            enabled = true;
-            useDefault = true;
-            alwaysVisible = false;
-            fadingFrames = 20;
-            opaqueFrames = 1;
-            referenceTimestamp = 0;
-            averageTimeStampsPerFrame = 0;
-            masterFactor = 1.0f;
+            // This constructor is used only by the Preference manager to create the default fading values.
         }
 
         public InfosFading(long referenceTimestamp, long averageTimeStampsPerFrame)
@@ -246,14 +238,24 @@ namespace Kinovea.Services
         }
 
         /// <summary>
+        /// Default fading options were updated from the core preferences.
+        /// </summary>
+        public void UpdateDefaultFading()
+        {
+            defaultFading = PreferencesManager.PlayerPreferences.DefaultFading;
+        }
+
+        /// <summary>
         /// Returns the opacity based on the fading configuration and the drawing insertion time.
         /// </summary>
         public double GetOpacityFactor(long timestamp)
         {
             if (useDefault)
             {
-                InfosFading info = PreferencesManager.PlayerPreferences.DefaultFading;
-                return ComputeOpacityFactor(referenceTimestamp, timestamp, info.alwaysVisible, info.opaqueFrames, info.fadingFrames, info.MasterFactor);
+                if (defaultFading == null)
+                    defaultFading = PreferencesManager.PlayerPreferences.DefaultFading;
+
+                return ComputeOpacityFactor(referenceTimestamp, timestamp, defaultFading.alwaysVisible, defaultFading.opaqueFrames, defaultFading.fadingFrames, defaultFading.MasterFactor);
             }
             else
             {

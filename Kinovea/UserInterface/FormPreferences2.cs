@@ -49,6 +49,9 @@ namespace Kinovea.Root
         /// </summary>
         public FormPreferences2()
         {
+            // Always make sure we have the latest core preferences before showing this dialog.
+            PreferencesManager.BeforeRead();
+
             NotificationCenter.RaisePreferencesOpened(this);
             Init();
             DisplayPage(PreferencesManager.GeneralPreferences.PreferencePage);
@@ -59,6 +62,9 @@ namespace Kinovea.Root
         /// </summary>
         public FormPreferences2(PreferenceTab tab)
         {
+            // Always make sure we have the latest core preferences before showing this dialog.
+            PreferencesManager.BeforeRead();
+
             NotificationCenter.RaisePreferencesOpened(this);
             Init();
             DisplayTab(tab);

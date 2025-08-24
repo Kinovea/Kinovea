@@ -87,7 +87,7 @@ namespace Kinovea.ScreenManager
         #region Abstract properties
         /// <summary>
         /// Gets or set the fading object for this drawing. 
-        /// This is used in opacity calculation for Persistence.
+        /// This is used in opacity calculation.
         /// </summary>
         public abstract InfosFading InfosFading
         {
@@ -278,6 +278,17 @@ namespace Kinovea.ScreenManager
                 return;
 
             infoFading.ReferenceTimestamp = timestamp;
+        }
+
+        /// <summary>
+        /// Force the drawing to update its default fading values from the core preferences.
+        /// </summary>
+        public void UpdateDefaultFading()
+        {
+            if (this.InfosFading == null)
+                return;
+
+            this.InfosFading.UpdateDefaultFading();
         }
         #endregion
     }

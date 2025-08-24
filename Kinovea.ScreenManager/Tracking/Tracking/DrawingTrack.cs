@@ -226,6 +226,7 @@ namespace Kinovea.ScreenManager
         private bool invalid;                                 // Used for XML import.
         private bool scalingDone;
         private bool isVisible = true;
+        private bool enableFiltering = true;
 
         // Tracker tool.
         private AbstractTracker tracker;
@@ -711,7 +712,7 @@ namespace Kinovea.ScreenManager
 
                 using (GraphicsPath path = new GraphicsPath())
                 {
-                    float tension = PreferencesManager.PlayerPreferences.EnableFiltering ? 0.5f : 0.0f;
+                    float tension = enableFiltering ? 0.5f : 0.0f;
                     path.AddCurve(points, tension);
                     RectangleF bounds = path.GetBounds();
                     if (!bounds.IsEmpty)
@@ -758,7 +759,7 @@ namespace Kinovea.ScreenManager
             using (Pen trackPen = styleData.GetPen(opacity, 1.0))
             {
                 // Tension of 0.5f creates a smooth curve.
-                float tension = PreferencesManager.PlayerPreferences.EnableFiltering ? 0.5f : 0.0f;
+                float tension = enableFiltering ? 0.5f : 0.0f;
 
                 trackPen.StartCap = LineCap.Round;
                 trackPen.EndCap = LineCap.Round;
@@ -1811,13 +1812,29 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Miscellaneous public methods
+        
+        /// <summary>
+        /// Force the track to update any data relying on calibration.
+        /// </summary>
         public void CalibrationChanged()
         {
-            if (!isVisible)
-                return;
-
             UpdateKinematics();
+        }
+
+        /// <summary>
+        /// Force the track to update any data relying on keyframes state.
+        /// </summary>
+        public void KeyframesChanged()
+        {
             UpdateKeyframeLabels();
+        }
+
+        /// <summary>
+        /// Force the track to update its cached preferences.
+        /// </summary>
+        public void PreferencesChanged()
+        {
+            enableFiltering = PreferencesManager.PlayerPreferences.EnableFiltering;
         }
 
         /// <summary>

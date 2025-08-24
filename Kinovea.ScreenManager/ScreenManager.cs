@@ -1003,21 +1003,27 @@ namespace Kinovea.ScreenManager
         #region Public Methods
         public void SetActiveScreen(AbstractScreen screen)
         {
-            if(screen == null)
+            if(screen == null )
                 return;
 
-            if (screenList.Count == 1 || screen == activeScreen)
+            if (screen == activeScreen)
+                return;
+
+            if (screenList.Count == 1)
             {
                 activeScreen = screen;
                 OrganizeMenus();
-                return;
+            }
+            else
+            {
+                activeScreen = screen;
+
+                foreach (AbstractScreen s in screenList)
+                    s.DisplayAsActiveScreen(s == screen);
+                
+                OrganizeMenus();
             }
 
-            foreach (AbstractScreen s in screenList)
-                s.DisplayAsActiveScreen(s == screen);
-
-            activeScreen = screen;
-            OrganizeMenus();
         }
         public void SetAllToInactive()
         {

@@ -1483,16 +1483,22 @@ namespace Kinovea.ScreenManager
             drawingCoordinateSystem.Visible = true;
         }
 
+        public void UpdateDefaultFading()
+        {
+            // Ask all drawings to update the default fading from core preferences.
+            foreach (var d in AttachedDrawings())
+                d.UpdateDefaultFading();
+
+            // Ask tracks to update themselves.
+            foreach (DrawingTrack t in Tracks())
+                t.PreferencesChanged();
+        }
+
         #region Tracking and trajectories
         public void UpdateTrajectoriesForKeyframes()
         {
             foreach (DrawingTrack t in Tracks())
-                t.CalibrationChanged();
-        }
-        public void UpdateTrajectoriesKeyframeLabels()
-        {
-            foreach (DrawingTrack t in Tracks())
-                t.UpdateKeyframeLabels();
+                t.KeyframesChanged();
         }
         public void FixRelativeTrajectories()
         {

@@ -294,6 +294,8 @@ namespace Kinovea.ScreenManager
         private bool m_bIsBusyRendering;
         private int m_RenderingDrops;
         private object m_TimingSync = new object();
+        private bool interactiveFrameTracker = true;
+        private bool showCacheInTimeline = false;
 
         // Timing
         // Time mapper links the speed slider, the playback frame rate and the capture frame rate.
@@ -307,6 +309,7 @@ namespace Kinovea.ScreenManager
         private TimeMapper timeMapper = new TimeMapper();
         private double slowMotion = 1;  // Current scaling relatively to the nominal speed of the video.
         private float timeGrabSpeed = 25.0f / 500.0f; // Speed of time grab in frames per pixel.
+        private TimecodeFormat timecodeFormat = TimecodeFormat.ClassicTime;
 
         // Synchronisation
         private bool m_bSynched;
@@ -349,6 +352,8 @@ namespace Kinovea.ScreenManager
         private bool m_bTextEdit;
         private PointF m_DescaledMouse;    // The current mouse point expressed in the original image size coordinates.
         private bool showDrawings = true;
+        private bool drawOnPlay = true;
+        private bool defaultFadingEnabled = true;
 
         // Others
         private NativeMethods.TimerCallback m_TimerCallback;
@@ -953,6 +958,17 @@ namespace Kinovea.ScreenManager
         }
         public void RefreshUICulture()
         {
+            // Update from core preferences.
+            interactiveFrameTracker = PreferencesManager.PlayerPreferences.InteractiveFrameTracker;
+            drawOnPlay = PreferencesManager.PlayerPreferences.DrawOnPlay;
+            timecodeFormat = PreferencesManager.PlayerPreferences.TimecodeFormat;
+            showCacheInTimeline = PreferencesManager.PlayerPreferences.ShowCacheInTimeline;
+            trkFrame.ShowCacheInTimeline = showCacheInTimeline;
+            defaultFadingEnabled = PreferencesManager.PlayerPreferences.DefaultFading.Enabled;
+
+            // Update default fading for all drawings.
+            
+
             // Labels
             lblSelStartSelection.AutoSize = true;
             lblSelDuration.AutoSize = true;
@@ -960,16 +976,11 @@ namespace Kinovea.ScreenManager
             UpdateTimeLabels();
             sidePanelKeyframes.UpdateTimecodes();
             
-            trkFrame.ShowCacheInTimeline = PreferencesManager.PlayerPreferences.ShowCacheInTimeline;
-
             ReloadTooltipsCulture();
             ReloadToolsCulture();
             ReloadMenusCulture();
             for (int i = 0; i < keyframeBoxes.Count; i++)
                 keyframeBoxes[i].RefreshUICulture();
-
-            // Because this method is called when we change the general preferences,
-            // we can use it to update data too.
 
             // Keyframes positions.
             if (m_FrameServer.Metadata.Count > 0)
@@ -979,6 +990,7 @@ namespace Kinovea.ScreenManager
 
             m_FrameServer.Metadata.CalibrationHelper.RefreshUnits();
             m_FrameServer.Metadata.UpdateTrajectoriesForKeyframes();
+            m_FrameServer.Metadata.UpdateDefaultFading();
 
             // Refresh image to update timecode in chronos, grids colors, default fading, etc.
             DoInvalidate();
@@ -2248,11 +2260,11 @@ namespace Kinovea.ScreenManager
                 duration = m_iSelDuration;
             }
 
-            string startTimecode = m_FrameServer.TimeStampsToTimecode(start, TimeType.Absolute, PreferencesManager.PlayerPreferences.TimecodeFormat, true);
+            string startTimecode = m_FrameServer.TimeStampsToTimecode(start, TimeType.Absolute, timecodeFormat, true);
             lblSelStartSelection.Text = "◢ " + startTimecode;
 
             duration -= m_FrameServer.Metadata.AverageTimeStampsPerFrame;
-            string durationTimecode = m_FrameServer.TimeStampsToTimecode(duration, TimeType.Duration, PreferencesManager.PlayerPreferences.TimecodeFormat, true);
+            string durationTimecode = m_FrameServer.TimeStampsToTimecode(duration, TimeType.Duration, timecodeFormat, true);
             int right = lblSelDuration.Right;
             lblSelDuration.Text = "[" + durationTimecode + "]";
             lblSelDuration.Left = right - lblSelDuration.Width;
@@ -2294,7 +2306,7 @@ namespace Kinovea.ScreenManager
         #region Frame Tracker
         private void trkFrame_PositionChanging(object sender, TimeEventArgs e)
         {
-            if (!PreferencesManager.PlayerPreferences.InteractiveFrameTracker)
+            if (!interactiveFrameTracker)
                 return;
 
             if (m_FrameServer.Loaded)
@@ -2359,7 +2371,7 @@ namespace Kinovea.ScreenManager
         private void UpdateCurrentPositionLabel()
         {
             // Note: among other places, this is run inside the playloop.
-            string timecode = m_FrameServer.TimeStampsToTimecode(m_iCurrentPosition, TimeType.UserOrigin, PreferencesManager.PlayerPreferences.TimecodeFormat, true);
+            string timecode = m_FrameServer.TimeStampsToTimecode(m_iCurrentPosition, TimeType.UserOrigin, timecodeFormat, true);
             lblTimeCode.Text = "▼ " + timecode;
             lblTimeTip.Text = timecode;
             lblTimeTip.Left = trkFrame.PixelPosition;
@@ -2367,7 +2379,7 @@ namespace Kinovea.ScreenManager
         private void UpdatePositionUI()
         {
             // Update markers and label for position.
-            if (PreferencesManager.PlayerPreferences.ShowCacheInTimeline)
+            if (showCacheInTimeline)
             {
                 VideoSection section;
                 if (m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
@@ -3179,7 +3191,7 @@ namespace Kinovea.ScreenManager
         {
             IImageToViewportTransformer transformer = m_FrameServer.Metadata.ImageTransform;
 
-            m_PointerTool.OnMouseDown(m_FrameServer.Metadata, transformer, m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition, PreferencesManager.PlayerPreferences.DefaultFading.Enabled);
+            m_PointerTool.OnMouseDown(m_FrameServer.Metadata, transformer, m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition, defaultFadingEnabled);
 
             if (m_FrameServer.Metadata.HitDrawing != null)
             {
@@ -3527,7 +3539,7 @@ namespace Kinovea.ScreenManager
             // "Goto parent keyframe" menu.
             if (!m_FrameServer.Metadata.DrawingInitializing && drawing.InfosFading != null && m_FrameServer.Metadata.IsAttachedDrawing(drawing))
             {
-                bool gotoVisible = PreferencesManager.PlayerPreferences.DefaultFading.Enabled && (drawing.InfosFading.ReferenceTimestamp != m_iCurrentPosition);
+                bool gotoVisible = defaultFadingEnabled && (drawing.InfosFading.ReferenceTimestamp != m_iCurrentPosition);
                 if (gotoVisible)
                 {
                     popMenu.Items.Add(mnuGotoKeyframe);
@@ -3560,7 +3572,7 @@ namespace Kinovea.ScreenManager
                 popMenu.Items.Add(mnuSepDrawing);
             }
 
-            if (PreferencesManager.PlayerPreferences.DefaultFading.Enabled && ((drawing.Caps & DrawingCapabilities.Fading) == DrawingCapabilities.Fading))
+            if (defaultFadingEnabled && ((drawing.Caps & DrawingCapabilities.Fading) == DrawingCapabilities.Fading))
             {
                 mnuVisibilityDefault.Checked = drawing.InfosFading.UseDefault;
                 mnuVisibilityAlways.Checked = !drawing.InfosFading.UseDefault && drawing.InfosFading.AlwaysVisible;
@@ -4083,7 +4095,7 @@ namespace Kinovea.ScreenManager
             }
 
             if (
-                (showDrawings && m_bIsCurrentlyPlaying && PreferencesManager.PlayerPreferences.DrawOnPlay) ||
+                (showDrawings && m_bIsCurrentlyPlaying && drawOnPlay) ||
                 (showDrawings && !m_bIsCurrentlyPlaying))
             {
                 // First draw the magnifier, this includes drawing the objects that are under
@@ -4133,7 +4145,7 @@ namespace Kinovea.ScreenManager
 
             if (drawAttached)
             {
-                if (PreferencesManager.PlayerPreferences.DefaultFading.Enabled)
+                if (defaultFadingEnabled)
                 {
                     // If fading is on, we ask all drawings to draw themselves with their respective
                     // fading factor for this position.
@@ -4708,7 +4720,7 @@ namespace Kinovea.ScreenManager
         {
             UpdateKeyframeBox(e.Value);
             UpdateFramesMarkers();
-            m_FrameServer.Metadata.UpdateTrajectoriesKeyframeLabels();
+            m_FrameServer.Metadata.UpdateTrajectoriesForKeyframes();
 
             Invalidate();
         }

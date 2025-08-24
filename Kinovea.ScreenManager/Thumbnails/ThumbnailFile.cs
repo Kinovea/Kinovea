@@ -97,7 +97,8 @@ namespace Kinovea.ScreenManager
         private Bitmap bmpKvaAnalysis = Resources.bullet_white;
         private DateTime lastWriteUTC = DateTime.MinValue;
         private System.Windows.Forms.Timer tmrThumbs = new System.Windows.Forms.Timer();
-        
+        private Dictionary<FileProperty, bool> visibilityOptions = new Dictionary<FileProperty, bool>();
+
         #region Context menu
         private ContextMenuStrip  popMenu = new ContextMenuStrip();
         private ToolStripMenuItem mnuLaunch = new ToolStripMenuItem();
@@ -132,7 +133,9 @@ namespace Kinovea.ScreenManager
             SetupTimer();
             SetupTextbox();
             BuildContextMenus();
-            RefreshUICulture();
+
+            visibilityOptions = PreferencesManager.FileExplorerPreferences.FilePropertyVisibility.Visible;
+            RefreshUICulture(visibilityOptions);
         }
         private void SetupTimer()
         {
@@ -378,7 +381,7 @@ namespace Kinovea.ScreenManager
                 ToggleEditMode();	
             }
         }
-        public void RefreshUICulture()
+        public void RefreshUICulture(Dictionary<FileProperty, bool> visibilityOptions)
         {
             lblFileName.Text = Path.GetFileNameWithoutExtension(path);
             TruncateFilename();
@@ -387,7 +390,9 @@ namespace Kinovea.ScreenManager
             mnuRename.Text = ScreenManagerLang.mnuThumbnailRename;
             mnuDelete.Text = ScreenManagerLang.mnuThumbnailDelete;
             mnuOpenInExplorer.Text = ScreenManagerLang.mnuThumbnailLocate;
-            
+
+            this.visibilityOptions = visibilityOptions;
+
             picBox.Invalidate();
         }
         public void DisposeImages()
@@ -496,8 +501,6 @@ namespace Kinovea.ScreenManager
         #region Draw file details
         private void DrawFileProperties(Graphics canvas)
         {
-            Dictionary<FileProperty, bool> visibility = PreferencesManager.FileExplorerPreferences.FilePropertyVisibility.Visible;
-
             int top = 12;
             int verticalMargin = (int)penFileDetails.Width + 3;
 
@@ -538,9 +541,7 @@ namespace Kinovea.ScreenManager
 
         private bool ShouldShowProperty(FileProperty prop)
         {
-            return details.Details.ContainsKey(prop) &&
-                   PreferencesManager.FileExplorerPreferences.FilePropertyVisibility.Visible.ContainsKey(prop) &&
-                   PreferencesManager.FileExplorerPreferences.FilePropertyVisibility.Visible[prop];
+            return details.Details.ContainsKey(prop) && visibilityOptions.ContainsKey(prop) && visibilityOptions[prop];
         }
 
         private void DrawPropertyString(Graphics canvas, string text, int top)
