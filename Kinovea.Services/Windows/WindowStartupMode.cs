@@ -20,7 +20,7 @@ namespace Kinovea.Services
         /// This is equivalent to starting a browser on a blank page.
         /// We do not save any screen list in the descriptor.
         /// </summary>
-        FileExplorer,
+        Explorer,
 
         /// <summary>
         /// The window should start with whatever screen list it had 

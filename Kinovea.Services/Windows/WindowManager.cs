@@ -345,11 +345,11 @@ namespace Kinovea.Services
             else
             {
                 // Debugging : always used the id name.
-                TitleName = GetIdName(ActiveWindow);
+                //TitleName = GetIdName(ActiveWindow);
 
                 // Production:
-                //Process[] instances = Process.GetProcessesByName("Kinovea");
-                //TitleName = instances.Length == 1 ? "" : GetIdName(ActiveWindow);
+                Process[] instances = Process.GetProcessesByName("Kinovea");
+                TitleName = instances.Length == 1 ? "" : GetIdName(ActiveWindow);
             }
         }
 

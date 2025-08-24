@@ -71,7 +71,7 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuUndo = new ToolStripMenuItem();
         private ToolStripMenuItem mnuRedo = new ToolStripMenuItem();
         private ToolStripMenuItem mnuView = new ToolStripMenuItem();
-        public ToolStripMenuItem mnuToggleFileExplorer = new ToolStripMenuItem();
+        public ToolStripMenuItem mnuToggleNavigationPanel = new ToolStripMenuItem();
         public ToolStripMenuItem mnuFullScreen = new ToolStripMenuItem();
 
         // Image
@@ -347,16 +347,16 @@ namespace Kinovea.Root
             #endregion
 
             #region View
-            mnuToggleFileExplorer.Image = Properties.Resources.explorer;
-            mnuToggleFileExplorer.Checked = true;
-            mnuToggleFileExplorer.CheckState = System.Windows.Forms.CheckState.Checked;
-            mnuToggleFileExplorer.ShortcutKeys = Keys.F4;
-            mnuToggleFileExplorer.Click += mnuToggleFileExplorer_Click;
+            mnuToggleNavigationPanel.Image = Properties.Resources.explorer;
+            mnuToggleNavigationPanel.Checked = true;
+            mnuToggleNavigationPanel.CheckState = System.Windows.Forms.CheckState.Checked;
+            mnuToggleNavigationPanel.ShortcutKeys = Keys.F4;
+            mnuToggleNavigationPanel.Click += mnuToggleNavigationPanel_Click;
             mnuFullScreen.Image = Properties.Resources.fullscreen;
             mnuFullScreen.ShortcutKeys = Keys.F11;
             mnuFullScreen.Click += new EventHandler(mnuFullScreenOnClick);
             
-            mnuView.DropDownItems.AddRange(new ToolStripItem[] { mnuToggleFileExplorer, mnuFullScreen, new ToolStripSeparator() });
+            mnuView.DropDownItems.AddRange(new ToolStripItem[] { mnuToggleNavigationPanel, mnuFullScreen, new ToolStripSeparator() });
             #endregion
 
 
@@ -503,7 +503,7 @@ namespace Kinovea.Root
             mnuRedo.Text = RootLang.mnuRedo;
             
             mnuView.Text = RootLang.mnuScreens;
-            mnuToggleFileExplorer.Text = ScreenManagerLang.mnuHome;
+            mnuToggleNavigationPanel.Text = "Navigation panel";
             mnuFullScreen.Text = RootLang.mnuFullScreen;
             
             mnuImage.Text = RootLang.mnuImage;
@@ -584,11 +584,11 @@ namespace Kinovea.Root
         #endregion
 
         #region View
-        private void mnuToggleFileExplorer_Click(object sender, EventArgs e)
+        private void mnuToggleNavigationPanel_Click(object sender, EventArgs e)
         {
-            bool show = !mnuToggleFileExplorer.Checked;
-            mainWindow.SupervisorControl.ShowHideExplorerPanel(show, true);
-            mnuToggleFileExplorer.Checked = show;
+            bool show = !mnuToggleNavigationPanel.Checked;
+            mainWindow.SupervisorControl.ToggleNavigationPanel(show, true);
+            mnuToggleNavigationPanel.Checked = show;
         }
         private void mnuFullScreenOnClick(object sender, EventArgs e)
         {
@@ -992,13 +992,13 @@ namespace Kinovea.Root
             if (mainWindow.FullScreen)
             {
                 // Entering full screen, force hide explorer, don't save prefs.
-                mainWindow.SupervisorControl.ShowHideExplorerPanel(false, false);
+                mainWindow.SupervisorControl.ToggleNavigationPanel(false, false);
             }
             else
             {
                 // Exiting full screen, restore from preferences.
                 bool show = WindowManager.ActiveWindow.ExplorerVisible;
-                mainWindow.SupervisorControl.ShowHideExplorerPanel(show, false);
+                mainWindow.SupervisorControl.ToggleNavigationPanel(show, false);
             }
             
             // Propagates the call to screens.

@@ -178,8 +178,8 @@ namespace Kinovea.ScreenManager
 
         #region Toolbar
         private ToolStripButton toolSave = new ToolStripButton();
-        private ToolStripButton toolToggleExplorerPanel = new ToolStripButton();
-        private ToolStripButton toolThumbnails = new ToolStripButton();
+        private ToolStripButton toolToggleNavigationPanel = new ToolStripButton();
+        private ToolStripButton toolExplorer = new ToolStripButton();
         private ToolStripButton toolOnePlayer = new ToolStripButton();
         private ToolStripButton toolTwoPlayers = new ToolStripButton();
         private ToolStripButton toolOneCapture = new ToolStripButton();
@@ -749,14 +749,13 @@ namespace Kinovea.ScreenManager
             toolSave.Image = Properties.Resources.save_16;
             toolSave.Click += new EventHandler(mnuSaveOnClick);
 
-            // Workspace presets.
-            toolToggleExplorerPanel.DisplayStyle = ToolStripItemDisplayStyle.Image;
-            toolToggleExplorerPanel.Image = Properties.Resources.explorer;
-            toolToggleExplorerPanel.Click += toolToggleExplorerPanel_Click;
+            toolToggleNavigationPanel.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolToggleNavigationPanel.Image = Properties.Resources.explorer;
+            toolToggleNavigationPanel.Click += toolToggleNavigationPanel_Click;
 
-            toolThumbnails.DisplayStyle = ToolStripItemDisplayStyle.Image;
-            toolThumbnails.Image = Properties.Resources.home3;
-            toolThumbnails.Click += new EventHandler(mnuHome_OnClick);
+            toolExplorer.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolExplorer.Image = Properties.Resources.home3;
+            toolExplorer.Click += new EventHandler(mnuExplorer_OnClick);
 
             toolOnePlayer.DisplayStyle = ToolStripItemDisplayStyle.Image;
             toolOnePlayer.Image = Properties.Resources.television;
@@ -781,8 +780,8 @@ namespace Kinovea.ScreenManager
             ToolStrip ts = new ToolStrip(new ToolStripItem[] {
                                             toolSave,
                                             new ToolStripSeparator(),
-                                            toolToggleExplorerPanel,
-                                            toolThumbnails,
+                                            toolToggleNavigationPanel,
+                                            toolExplorer,
                                             new ToolStripSeparator(),
                                             toolOnePlayer,
                                             toolTwoPlayers,
@@ -1971,8 +1970,8 @@ namespace Kinovea.ScreenManager
         private void RefreshCultureToolbar()
         {
             toolSave.ToolTipText = ScreenManagerLang.Generic_SaveKVA;
-            toolToggleExplorerPanel.ToolTipText = ScreenManagerLang.mnuHome;
-            toolThumbnails.ToolTipText = ScreenManagerLang.mnuThumbnails;
+            toolToggleNavigationPanel.ToolTipText = "Navigation panel";
+            toolExplorer.ToolTipText = "Explorer";
             toolOnePlayer.ToolTipText = ScreenManagerLang.mnuOnePlayer;
             toolTwoPlayers.ToolTipText = ScreenManagerLang.mnuTwoPlayers;
             toolOneCapture.ToolTipText = ScreenManagerLang.mnuOneCapture;
@@ -2288,12 +2287,12 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region View
-        private void toolToggleExplorerPanel_Click(object sender, EventArgs e)
+        private void toolToggleNavigationPanel_Click(object sender, EventArgs e)
         {
-            NotificationCenter.RaiseToggleShowExplorerPanel(this);
+            NotificationCenter.RaiseToggleNavigationPanel(this);
         }
 
-        private void mnuHome_OnClick(object sender, EventArgs e)
+        private void mnuExplorer_OnClick(object sender, EventArgs e)
         {
             // Remove all screens.
             if (screenList.Count <= 0)

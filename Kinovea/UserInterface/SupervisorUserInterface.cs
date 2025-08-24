@@ -46,7 +46,7 @@ namespace Kinovea.Root
             splitWorkSpace.SplitterMoved += SplitWorkSpace_SplitterMoved;
 
             NotificationCenter.LaunchOpenDialog += NotificationCenter_LaunchOpenDialog;
-            NotificationCenter.ToggleShowExplorerPanel += NotificationCenter_ToggleShowExplorerPanel;
+            NotificationCenter.ToggleNavigationPanel += NotificationCenter_ToggleNavigationPanel;
         }
         #endregion
 
@@ -70,11 +70,11 @@ namespace Kinovea.Root
         }
 
         /// <summary>
-        /// Force collapse or uncollapse the explorer panel.
+        /// Force collapse or uncollapse the navigation panel.
         /// This is used during initialization, when the user is manually toggling or when going into/out of full screen mode.
         /// savePreferences should only be true if this action is originating from the user.
         /// </summary>
-        public void ShowHideExplorerPanel(bool show, bool savePreferences)
+        public void ToggleNavigationPanel(bool show, bool savePreferences)
         {
             splitWorkSpace.Panel1Collapsed = !show;
 
@@ -88,7 +88,7 @@ namespace Kinovea.Root
         private void SupervisorUserInterface_Load(object sender, EventArgs e)
         {
             bool show = LaunchSettingsManager.ExplorerVisible && WindowManager.ActiveWindow.ExplorerVisible;
-            ShowHideExplorerPanel(show, false);
+            ToggleNavigationPanel(show, false);
         }
 
         private void NotificationCenter_LaunchOpenDialog(object sender, EventArgs e)
@@ -107,15 +107,15 @@ namespace Kinovea.Root
             isOpening = false;
         }
 
-        private void NotificationCenter_ToggleShowExplorerPanel(object sender, EventArgs e)
+        private void NotificationCenter_ToggleNavigationPanel(object sender, EventArgs e)
         {
             bool show = splitWorkSpace.Panel1Collapsed;
-            ShowHideExplorerPanel(show, true);
+            ToggleNavigationPanel(show, true);
         }
 
         private void buttonCloseExplo_Click(object sender, EventArgs e)
         {
-            ShowHideExplorerPanel(false, true);
+            ToggleNavigationPanel(false, true);
         }
 
         private void SplitWorkSpace_SplitterMoved(object sender, SplitterEventArgs e)

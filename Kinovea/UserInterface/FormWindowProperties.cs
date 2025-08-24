@@ -47,7 +47,7 @@ namespace Kinovea.Root
             manualUpdate = true;
 
             tbName.Text = name;
-            rbOpenExplorer.Checked = (startupMode == WindowStartupMode.FileExplorer);
+            rbOpenExplorer.Checked = (startupMode == WindowStartupMode.Explorer);
             rbContinue.Checked = (startupMode == WindowStartupMode.Continue);
             rbScreenList.Checked = (startupMode == WindowStartupMode.ScreenList);
 
@@ -122,7 +122,7 @@ namespace Kinovea.Root
                 return;
 
             if (rbOpenExplorer.Checked)
-                startupMode = WindowStartupMode.FileExplorer;
+                startupMode = WindowStartupMode.Explorer;
             else if (rbScreenList.Checked)
                 startupMode = WindowStartupMode.ScreenList;
             else
