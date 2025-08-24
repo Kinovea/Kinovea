@@ -126,10 +126,12 @@ namespace Kinovea.ScreenManager
         {
             InitializeComponent();
             
+            lblFileName.BackColor = Color.Transparent;
+
             this.path = path;
             penFileDetails.StartCap = LineCap.Round;
             penFileDetails.Width = 14;
-            
+
             SetupTimer();
             SetupTextbox();
             BuildContextMenus();
@@ -648,7 +650,7 @@ namespace Kinovea.ScreenManager
         
             if(isError || bitmaps == null || bitmaps.Count < 2)
                 return;
-            
+
             // Instantly change image
             currentThumbnailIndex = 1;
             currentThumbnail = bitmaps[currentThumbnailIndex];
@@ -661,16 +663,16 @@ namespace Kinovea.ScreenManager
         private void PicBox_MouseLeave(object sender, EventArgs e)
         {
             hoverInProgress = false;
-            
-            if(!isError && bitmaps != null)
+
+            if (isError || bitmaps == null)
+                return;
+
+            tmrThumbs.Stop();
+            if(bitmaps.Count > 0)
             {
-                tmrThumbs.Stop();
-                if(bitmaps.Count > 0)
-                {
-                    currentThumbnailIndex = 0;
-                    currentThumbnail = bitmaps[currentThumbnailIndex];
-                    picBox.Invalidate();	
-                }
+                currentThumbnailIndex = 0;
+                currentThumbnail = bitmaps[currentThumbnailIndex];
+                picBox.Invalidate();	
             }
         }
 

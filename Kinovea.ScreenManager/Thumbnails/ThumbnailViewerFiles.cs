@@ -88,12 +88,14 @@ namespace Kinovea.ScreenManager
             InitializeComponent();
             RefreshUICulture();
             this.Dock = DockStyle.Fill;
+            this.BackColor = Color.FromArgb(250, 250, 250);
+            this.pnlThumbs.BackColor = Color.FromArgb(250, 250, 250);
 
             NotificationCenter.FileSelected += NotificationCenter_FileSelected;
 
             this.Hotkeys = HotkeySettingsManager.LoadHotkeys("ThumbnailViewerFiles");
 
-            this.ContextMenuStrip = popMenu;
+            this.pnlThumbs.ContextMenuStrip = popMenu;
             BuildContextMenus();
         }
         #endregion
@@ -173,7 +175,7 @@ namespace Kinovea.ScreenManager
                 thumbnail.FileNameEditing -= ThumbListViewItem_FileNameEditing;
 
                 thumbnails.Remove(thumbnail);
-                this.Controls.Remove(thumbnail);
+                this.pnlThumbs.Controls.Remove(thumbnail);
 
                 thumbnail.DisposeImages();
                 thumbnail.Dispose();
@@ -190,11 +192,15 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region Private methods
 
+        #region Context menus
+
+        /// <summary>
+        /// Initialize the context menus.
+        /// Only called once at startup.
+        /// </summary>
         private void BuildContextMenus()
         {
-
             // Sort by options.
             mnuSortBy.Image = Properties.Resources.sort;
             mnuSortByName.Click += (s, e) => UpdateSortAxis(FileSortAxis.Name);
@@ -245,11 +251,46 @@ namespace Kinovea.ScreenManager
                 mnuProperties.DropDownItems.Add(mnu);
             }
 
-
             popMenu.Items.Add(mnuSortBy);
             popMenu.Items.Add(mnuProperties);
         }
 
+        /// <summary>
+        /// Common handler for the sort menu items.
+        /// </summary>
+        private void UpdateSortAxis(FileSortAxis axis)
+        {
+            PreferencesManager.FileExplorerPreferences.FileSortAxis = axis;
+            sortOperationInProgress = true;
+            NotificationCenter.RaiseRefreshFileExplorer(this, true);
+        }
+
+        /// <summary>
+        /// Common handler for the sort direction menu items.
+        /// </summary>
+        private void UpdateSortAscending(bool ascending)
+        {
+            PreferencesManager.FileExplorerPreferences.FileSortAscending = ascending;
+            sortOperationInProgress = true;
+            NotificationCenter.RaiseRefreshFileExplorer(this, true);
+        }
+
+        /// <summary>
+        /// The thumbnails must be redrawn but the content hasn't changed.
+        /// This happens when we change the visible properties.
+        /// </summary>
+        private void InvalidateThumbnails(Dictionary<FileProperty, bool> visibilityOptions)
+        {
+            foreach (ThumbnailFile tf in thumbnails)
+            {
+                tf.RefreshUICulture(visibilityOptions);
+                tf.Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// Update the state of the checks in the sort menus before showing it.
+        /// </summary>
         private void PrepareSortMenus()
         {
             FileSortAxis axis = PreferencesManager.FileExplorerPreferences.FileSortAxis;
@@ -261,10 +302,9 @@ namespace Kinovea.ScreenManager
             mnuSortAscending.Checked = ascending;
             mnuSortDescending.Checked = !ascending;
         }
+        #endregion
 
-        #region Organize and Display
-        
-        
+        #region Layout
         /// <summary>
         /// Populate the panel with the thumbnail controls and start loading the summaries.
         /// </summary>
@@ -282,9 +322,10 @@ namespace Kinovea.ScreenManager
             if (files.Count == 0)
                 return;
 
-            Size maxImageSize = DoLayout(changedSize || forcedRefreshInProgress);
-            log.DebugFormat("After thumbnail layout: {0} in {1} ms. Max img size:{2}.", 
-                files.Count, stopwatch.ElapsedMilliseconds, maxImageSize);
+            DoLayout();
+            log.DebugFormat("After thumbnail layout: {0} in {1} ms.", 
+                files.Count, stopwatch.ElapsedMilliseconds);
+
 
             // Filter out files that are already loaded.
             List<string> filesToLoad = new List<string>();
@@ -312,6 +353,7 @@ namespace Kinovea.ScreenManager
             if (filesToLoad.Count == 0)
                 return;
 
+            Size maxImageSize = new Size(240, 195);
             SummaryLoader sl = new SummaryLoader(filesToLoad, maxImageSize);
             sl.SummaryLoaded += SummaryLoader_SummaryLoaded;
             loaders.Add(sl);
@@ -327,18 +369,15 @@ namespace Kinovea.ScreenManager
         /// Reorganize the list of thumbnails to match the requested list of files.
         /// Makes sure we have enough thumbnail controls and hide/show them as necessary.
         /// Set the correct filename on each control.
-        /// Rearrange the controls holding returning thumbnails to match the requested order.
+        /// Rearrange the thumbnail controls list to match the requested order.
         /// </summary>
         private void UpdateThumbnailList(List<string> files)
         {
-            this.SuspendLayout();
-
             // If we come here after a sort, add or delete, we already have most of the thumbnails already.
             // We try to swap the existing ones around.
             // We don't verify if the file has been modified in place just yet, we'll do that later.
             // - The list `files` is the target list of files to display, in the correct order.
             // - thumbnails is our internal list of thumbnail controls, in the current order.
-            // - this.Controls is the same list as thumbnails.
 
             // Algo
             // - First we figure which files we already have and which ones are new.
@@ -421,7 +460,8 @@ namespace Kinovea.ScreenManager
                         tlvi.FileNameEditing += ThumbListViewItem_FileNameEditing;
                         thumbnails.Add(tlvi);
                         tlvi.Tag = thumbnails.Count - 1;
-                        this.Controls.Add(tlvi);
+                        this.pnlThumbs.Controls.Add(tlvi);
+
                         mapIndices[i] = thumbnails.Count - 1;
                         inUse.Add(true);
 
@@ -463,10 +503,22 @@ namespace Kinovea.ScreenManager
                 thumbnails[i].Visible = false;
             }
 
-            this.ResumeLayout();
+
         }
 
+        /// <summary>
+        /// Update the flow layout panel with the thumbnails in the correct order.
+        /// </summary>
+        private void DoLayout()
+        {
+            this.pnlThumbs.SuspendLayout();
+            this.pnlThumbs.Controls.Clear();
+            this.pnlThumbs.Controls.AddRange(thumbnails.ToArray());
+            this.pnlThumbs.ResumeLayout();
+        }
+        #endregion
 
+        #region Loading summaries into thumbnail controls
         private void CleanupLoaders()
         {
             for(int i=loaders.Count-1;i>=0;i--)
@@ -479,7 +531,6 @@ namespace Kinovea.ScreenManager
                     loaders.RemoveAt(i);
             }
         }
-
 
         /// <summary>
         /// One of the summaries was extracted, push it into its thumbnail.
@@ -525,64 +576,11 @@ namespace Kinovea.ScreenManager
                 AfterLoad(this, EventArgs.Empty);
             }
         }
-        
-
-        /// <summary>
-        /// Layout the list of individual thumbnail controls on the panel.
-        /// </summary>
-        /// <returns></returns>
-        private Size DoLayout(bool changedSize)
-        {
-            int leftMargin = 30;
-            int rightMargin = 20;
-            int topMargin = 5;
-            
-            int colWidth = (this.Width - leftMargin - rightMargin) / columns;
-            int spacing = colWidth / 20;
-
-            int thumbWidth = colWidth - spacing;
-            int thumbHeight = (thumbWidth * 3 / 4) + 15;
-            Size maxImageSize = new Size(thumbWidth, thumbHeight);
-
-            int current = 0;
-            this.SuspendLayout();
-            foreach(ThumbnailFile tlvi in thumbnails)
-            {
-                // Size update is relatively costly so only do it if strictly necessary.
-                // If we are reloading the list of files it will be done later anyway.
-                if (changedSize)
-                    tlvi.SetSize(thumbWidth, thumbHeight);
-
-                maxImageSize = tlvi.MaxImageSize(tlvi.Size);
-
-                int row = current / columns;
-                int col = current - (row * columns);
-                int left = col * colWidth + leftMargin;
-                int top = topMargin + (row * (thumbHeight + spacing));
-                tlvi.Location = new Point(left, top);
-                current++;
-            }
-            this.ResumeLayout();
-
-            return maxImageSize;
-        }
-
-        /// <summary>
-        /// When the thumbnails must be redrawn but the path and files haven't changed.
-        /// This happens when we change the visible properties.
-        /// </summary>
-        private void InvalidateThumbnails(Dictionary<FileProperty, bool> visibilityOptions)
-        {
-            foreach (ThumbnailFile tf in thumbnails)
-            {
-                tf.RefreshUICulture(visibilityOptions);
-                tf.Invalidate();
-            }
-        }
         #endregion
 
         /// <summary>
-        /// A file was selected from the explorer, alert the corresponding thumbnail.
+        /// A file was selected from the navigation panel. 
+        /// Forward to the corresponding thumbnail.
         /// </summary>
         private void NotificationCenter_FileSelected(object sender, FileActionEventArgs e)
         {
@@ -636,7 +634,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                this.ScrollControlIntoView(tlvi);
+                this.pnlThumbs.ScrollControlIntoView(tlvi);
             }
 
             externalSelection = false;
@@ -678,7 +676,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Clicked in the background of the panel.
         /// </summary>
-        private void Panel2MouseDown(object sender, MouseEventArgs e)
+        private void pnlThumbnails_MouseDown(object sender, MouseEventArgs e)
         {
             Deselect(true);
             CancelEditMode();
@@ -704,25 +702,11 @@ namespace Kinovea.ScreenManager
         {
             editing = false;
             
-            // Browse all thumbs and make sure they are all in normal mode.
-            for (int i = 0; i < this.Controls.Count; i++)
-            {
-                ThumbnailFile tlvi = this.Controls[i] as ThumbnailFile;
-                if(tlvi != null)
-                    tlvi.CancelEditMode();
-            }	
-        }
-        #endregion
-        
-        /// <summary>
-        /// The whole control was resized, we just need to redo layout.
-        /// </summary>
-        private void ThumbnailViewerFiles_Resize(object sender, EventArgs e)
-        {
-            if(this.Visible)
-                DoLayout(false);
+            foreach (ThumbnailFile tlvi in thumbnails)
+                tlvi.CancelEditMode();
         }
 
+        #region Commands
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (editing)
@@ -754,31 +738,32 @@ namespace Kinovea.ScreenManager
             {
                 case Keys.Left:
                     {
-                        if (col > 0)
-                            thumbnails[index - 1].SetSelected();
+                        //if (col > 0)
+                        //    thumbnails[index - 1].SetSelected();
                         handled = true;
                         break;
                     }
                 case Keys.Right:
                     {
-                        if (col < columns - 1 && index + 1 < thumbnails.Count)
-                            thumbnails[index + 1].SetSelected();
+                        //if (col < columns - 1 && index + 1 < thumbnails.Count)
+                        //    thumbnails[index + 1].SetSelected();
                         handled = true;
                         break;
                     }
                 case Keys.Up:
                     {
-                        if (row > 0)
-                            thumbnails[index - columns].SetSelected();
-                        this.ScrollControlIntoView(selectedThumbnail);
+                        //if (row > 0)
+                        //    thumbnails[index - columns].SetSelected();
+                        //this.ScrollControlIntoView(selectedThumbnail);
+                        //this.pnlThumbs.ScrollControlIntoView(selectedThumbnail);
                         handled = true;
                         break;
                     }
                 case Keys.Down:
                     {
-                        if (index + columns < thumbnails.Count)
-                            thumbnails[index + columns].SetSelected();
-                        this.ScrollControlIntoView(selectedThumbnail);
+                        //if (index + columns < thumbnails.Count)
+                        //    thumbnails[index + columns].SetSelected();
+                        //this.ScrollControlIntoView(selectedThumbnail);
                         handled = true;
                         break;
                     }
@@ -799,21 +784,6 @@ namespace Kinovea.ScreenManager
             return handled || base.ProcessCmdKey(ref msg, keyData);
         }
 
-        private void UpdateSortAxis(FileSortAxis axis)
-        {
-            PreferencesManager.FileExplorerPreferences.FileSortAxis = axis;
-            sortOperationInProgress = true;
-            NotificationCenter.RaiseRefreshFileExplorer(this, true);
-        }
-
-        private void UpdateSortAscending(bool ascending)
-        {
-            PreferencesManager.FileExplorerPreferences.FileSortAscending = ascending;
-            sortOperationInProgress = true;
-            NotificationCenter.RaiseRefreshFileExplorer(this, true);
-        }
-
-        #region Commands
         protected override bool ExecuteCommand(int cmd)
         {
             ThumbnailViewerFilesCommands command = (ThumbnailViewerFilesCommands)cmd;

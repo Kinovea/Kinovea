@@ -178,6 +178,7 @@ namespace Kinovea.ScreenManager
       this.progressBar.Size = new System.Drawing.Size(154, 15);
       this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
       this.progressBar.TabIndex = 24;
+      this.progressBar.Visible = false;
       // 
       // ThumbnailViewerContainer
       // 

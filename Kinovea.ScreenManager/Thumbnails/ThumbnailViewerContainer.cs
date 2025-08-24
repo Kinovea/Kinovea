@@ -198,18 +198,18 @@ namespace Kinovea.ScreenManager
         }
         private void Viewer_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            int progress = Math.Min(e.ProgressPercentage, progressBar.Maximum);
-            progressBar.Value = progress;
+            //int progress = Math.Min(e.ProgressPercentage, progressBar.Maximum);
+            //progressBar.Value = progress;
         }
         private void Viewer_BeforeLoad(object sender, EventArgs e)
         {
-            progressBar.Value = 0;
-            progressBar.Visible = true;
+            //progressBar.Value = 0;
+            //progressBar.Visible = true;
         }
         private void Viewer_AfterLoad(object sender, EventArgs e)
         {
-            progressBar.Value = 100;
-            progressBar.Visible = false;
+            //progressBar.Value = 100;
+            //progressBar.Visible = false;
         }
         private void SwitchContent(ThumbnailViewerType viewerType)
         {

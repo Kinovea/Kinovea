@@ -48,18 +48,38 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void InitializeComponent()
         {
-            this.SuspendLayout();
-            // 
-            // ThumbnailViewerFiles
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoScroll = true;
-            this.Name = "ThumbnailViewerFiles";
-            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Panel2MouseDown);
-            this.Resize += new System.EventHandler(this.ThumbnailViewerFiles_Resize);
-            this.ResumeLayout(false);
+      this.pnlThumbs = new System.Windows.Forms.FlowLayoutPanel();
+      this.SuspendLayout();
+      // 
+      // pnlThumbs
+      // 
+      this.pnlThumbs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.pnlThumbs.AutoScroll = true;
+      this.pnlThumbs.BackColor = System.Drawing.Color.White;
+      this.pnlThumbs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.pnlThumbs.ForeColor = System.Drawing.Color.RosyBrown;
+      this.pnlThumbs.Location = new System.Drawing.Point(10, 10);
+      this.pnlThumbs.Name = "pnlThumbs";
+      this.pnlThumbs.Padding = new System.Windows.Forms.Padding(15, 0, 30, 0);
+      this.pnlThumbs.Size = new System.Drawing.Size(580, 432);
+      this.pnlThumbs.TabIndex = 0;
+      this.pnlThumbs.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pnlThumbnails_MouseDown);
+      // 
+      // ThumbnailViewerFiles
+      // 
+      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScroll = true;
+      this.BackColor = System.Drawing.Color.Gainsboro;
+      this.Controls.Add(this.pnlThumbs);
+      this.Name = "ThumbnailViewerFiles";
+      this.Size = new System.Drawing.Size(600, 450);
+      this.ResumeLayout(false);
 
         }
+
+        private System.Windows.Forms.FlowLayoutPanel pnlThumbs;
     }
 }
