@@ -36,7 +36,7 @@ namespace Kinovea.ScreenManager
         private Size maxImageSize;
         private BackgroundWorker bgWorker = new BackgroundWorker();
         private Stopwatch stopwatch = new Stopwatch();
-        private const int thumbnailsToExtract = 5;
+        private const int thumbnailsToExtract = 4;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         public SummaryLoader(List<String> filenames, Size maxImageSize)

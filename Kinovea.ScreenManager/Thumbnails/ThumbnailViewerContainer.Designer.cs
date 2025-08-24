@@ -55,7 +55,6 @@ namespace Kinovea.ScreenManager
       this.lblAddress = new System.Windows.Forms.Label();
       this.viewerSelector = new Kinovea.ScreenManager.ViewerSelector();
       this.btnCloseFullscreen = new System.Windows.Forms.Button();
-      this.progressBar = new System.Windows.Forms.ProgressBar();
       ((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
       this.splitMain.Panel1.SuspendLayout();
       this.splitMain.SuspendLayout();
@@ -80,9 +79,9 @@ namespace Kinovea.ScreenManager
       this.splitMain.Panel1.Controls.Add(this.lblAddress);
       this.splitMain.Panel1.Controls.Add(this.viewerSelector);
       this.splitMain.Panel1.Controls.Add(this.btnCloseFullscreen);
-      this.splitMain.Panel1.Controls.Add(this.progressBar);
+      this.splitMain.Panel1MinSize = 45;
       this.splitMain.Size = new System.Drawing.Size(553, 387);
-      this.splitMain.SplitterDistance = 30;
+      this.splitMain.SplitterDistance = 45;
       this.splitMain.TabIndex = 0;
       // 
       // btnForward
@@ -94,7 +93,7 @@ namespace Kinovea.ScreenManager
       this.btnForward.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnForward.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnForward.Image = global::Kinovea.ScreenManager.Properties.Resources.navforward;
-      this.btnForward.Location = new System.Drawing.Point(34, 2);
+      this.btnForward.Location = new System.Drawing.Point(34, 9);
       this.btnForward.Name = "btnForward";
       this.btnForward.Size = new System.Drawing.Size(25, 25);
       this.btnForward.TabIndex = 30;
@@ -110,7 +109,7 @@ namespace Kinovea.ScreenManager
       this.btnBack.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnBack.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnBack.Image = global::Kinovea.ScreenManager.Properties.Resources.navback;
-      this.btnBack.Location = new System.Drawing.Point(3, 2);
+      this.btnBack.Location = new System.Drawing.Point(3, 9);
       this.btnBack.Name = "btnBack";
       this.btnBack.Size = new System.Drawing.Size(25, 25);
       this.btnBack.TabIndex = 29;
@@ -126,7 +125,7 @@ namespace Kinovea.ScreenManager
       this.btnUp.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnUp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnUp.Image = global::Kinovea.ScreenManager.Properties.Resources.navup;
-      this.btnUp.Location = new System.Drawing.Point(65, 2);
+      this.btnUp.Location = new System.Drawing.Point(65, 9);
       this.btnUp.Name = "btnUp";
       this.btnUp.Size = new System.Drawing.Size(25, 25);
       this.btnUp.TabIndex = 28;
@@ -137,16 +136,16 @@ namespace Kinovea.ScreenManager
       // 
       this.lblAddress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.lblAddress.Location = new System.Drawing.Point(96, 9);
+      this.lblAddress.Location = new System.Drawing.Point(96, 15);
       this.lblAddress.Name = "lblAddress";
-      this.lblAddress.Size = new System.Drawing.Size(171, 18);
+      this.lblAddress.Size = new System.Drawing.Size(27, 18);
       this.lblAddress.TabIndex = 27;
       // 
       // viewerSelector
       // 
       this.viewerSelector.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.viewerSelector.BackColor = System.Drawing.Color.WhiteSmoke;
-      this.viewerSelector.Location = new System.Drawing.Point(433, 6);
+      this.viewerSelector.Location = new System.Drawing.Point(434, 15);
       this.viewerSelector.Name = "viewerSelector";
       this.viewerSelector.Size = new System.Drawing.Size(84, 18);
       this.viewerSelector.TabIndex = 26;
@@ -162,23 +161,12 @@ namespace Kinovea.ScreenManager
       this.btnCloseFullscreen.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnCloseFullscreen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnCloseFullscreen.Image = global::Kinovea.ScreenManager.Properties.Resources.arrow_inout;
-      this.btnCloseFullscreen.Location = new System.Drawing.Point(524, 2);
+      this.btnCloseFullscreen.Location = new System.Drawing.Point(519, 12);
       this.btnCloseFullscreen.Name = "btnCloseFullscreen";
       this.btnCloseFullscreen.Size = new System.Drawing.Size(25, 25);
       this.btnCloseFullscreen.TabIndex = 25;
       this.btnCloseFullscreen.UseVisualStyleBackColor = false;
       this.btnCloseFullscreen.Click += new System.EventHandler(this.btnCloseFullscreen_Click);
-      // 
-      // progressBar
-      // 
-      this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.progressBar.ForeColor = System.Drawing.Color.LightSteelBlue;
-      this.progressBar.Location = new System.Drawing.Point(273, 9);
-      this.progressBar.Name = "progressBar";
-      this.progressBar.Size = new System.Drawing.Size(154, 15);
-      this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-      this.progressBar.TabIndex = 24;
-      this.progressBar.Visible = false;
       // 
       // ThumbnailViewerContainer
       // 
@@ -194,7 +182,6 @@ namespace Kinovea.ScreenManager
       this.ResumeLayout(false);
 
         }
-        private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.SplitContainer splitMain;
         private System.Windows.Forms.Button btnCloseFullscreen;
         private ViewerSelector viewerSelector;

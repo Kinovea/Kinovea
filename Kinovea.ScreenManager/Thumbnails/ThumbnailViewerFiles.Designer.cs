@@ -58,8 +58,7 @@ namespace Kinovea.ScreenManager
             | System.Windows.Forms.AnchorStyles.Right)));
       this.pnlThumbs.AutoScroll = true;
       this.pnlThumbs.BackColor = System.Drawing.Color.White;
-      this.pnlThumbs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-      this.pnlThumbs.ForeColor = System.Drawing.Color.RosyBrown;
+      this.pnlThumbs.ForeColor = System.Drawing.Color.Black;
       this.pnlThumbs.Location = new System.Drawing.Point(10, 10);
       this.pnlThumbs.Name = "pnlThumbs";
       this.pnlThumbs.Padding = new System.Windows.Forms.Padding(15, 0, 30, 0);

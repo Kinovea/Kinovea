@@ -24,15 +24,13 @@ namespace Kinovea.Services
 {
     /// <summary>
     /// Size of the thumbnails in the explorer.
-    /// Sizes are expressed in number of thumbnails that should fit in the width of the explorer.
-    /// the actual size of any given thumbnail will change depending on the available space.
     /// </summary>
     public enum ExplorerThumbSize
     {
-        ExtraLarge = 4,
-        Large = 5,
-        Medium = 7,
-        Small = 10,
-        ExtraSmall = 14
+        ExtraLarge,
+        Large,
+        Medium,
+        Small,
+        ExtraSmall
     }
 }

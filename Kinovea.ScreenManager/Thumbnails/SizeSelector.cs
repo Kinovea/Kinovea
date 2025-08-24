@@ -41,7 +41,7 @@ namespace Kinovea.ScreenManager
         {
             InitializeComponent();
             InitButtons();
-            SelectedSize = ExplorerThumbSize.Large;
+            SelectedSize = ExplorerThumbSize.Medium;
         }
         
         public void ForceSelect(ExplorerThumbSize newSize)

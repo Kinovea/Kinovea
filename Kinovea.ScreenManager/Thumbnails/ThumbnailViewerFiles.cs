@@ -48,8 +48,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private string identifier;
-        private int columns = (int)ExplorerThumbSize.Large;
-        private object locker = new object();
+        private ExplorerThumbSize thumbSize = ExplorerThumbSize.Medium;
         private List<SummaryLoader> loaders = new List<SummaryLoader>();
         private List<ThumbnailFile> thumbnails = new List<ThumbnailFile>();
         private string path;
@@ -63,7 +62,6 @@ namespace Kinovea.ScreenManager
         private Dictionary<string, ThumbnailFile> mapPathToThumbnail = new Dictionary<string, ThumbnailFile>();
         private Dictionary<string, int> mapPathToIndex = new Dictionary<string, int>();
         private Stopwatch stopwatch = new Stopwatch();
-
 
         #region Menus
         private ContextMenuStrip popMenu = new ContextMenuStrip();
@@ -94,7 +92,7 @@ namespace Kinovea.ScreenManager
             NotificationCenter.FileSelected += NotificationCenter_FileSelected;
 
             this.Hotkeys = HotkeySettingsManager.LoadHotkeys("ThumbnailViewerFiles");
-
+            thumbSize = PreferencesManager.FileExplorerPreferences.ExplorerThumbsSize;
             this.pnlThumbs.ContextMenuStrip = popMenu;
             BuildContextMenus();
         }
@@ -182,13 +180,17 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        public void UpdateThumbnailsSize(ExplorerThumbSize newSize)
+        public void UpdateThumbnailsSize(ExplorerThumbSize thumbSize)
         {
-            this.columns = (int)newSize;
-            if (thumbnails.Count == 0)
-                return;
+            this.thumbSize = thumbSize;
+            Size size = ThumbnailHelper.GetThumbnailControlSize(thumbSize);
 
-            PopulateViewer(true);
+            this.pnlThumbs.SuspendLayout();
+            
+            foreach (var thumbnail in thumbnails)
+                thumbnail.SetSize(size.Width, size.Height);
+            
+            this.pnlThumbs.ResumeLayout();
         }
         #endregion
 
@@ -310,6 +312,9 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void PopulateViewer(bool changedSize)
         {
+            if (files == null)
+                return;
+
             stopwatch.Restart();
             CleanupLoaders();
             log.DebugFormat("After loaders cleaned up: {0} ms.", stopwatch.ElapsedMilliseconds);
@@ -353,8 +358,8 @@ namespace Kinovea.ScreenManager
             if (filesToLoad.Count == 0)
                 return;
 
-            Size maxImageSize = new Size(240, 195);
-            SummaryLoader sl = new SummaryLoader(filesToLoad, maxImageSize);
+            Size maxSize = new Size(432, 360);
+            SummaryLoader sl = new SummaryLoader(filesToLoad, maxSize);
             sl.SummaryLoaded += SummaryLoader_SummaryLoaded;
             loaders.Add(sl);
 
@@ -389,6 +394,7 @@ namespace Kinovea.ScreenManager
             if (thumbnails.Count != mapPathToIndex.Count)
             {
                 // invalid program.
+                log.ErrorFormat("More thumbnails than in the map from paths to indices.");
                 mapPathToThumbnail.Clear();
                 mapPathToIndex.Clear();
             }
@@ -458,6 +464,8 @@ namespace Kinovea.ScreenManager
                         tlvi.LaunchVideo += ThumbListViewItem_LaunchVideo;
                         tlvi.VideoSelected += ThumbListViewItem_VideoSelected;
                         tlvi.FileNameEditing += ThumbListViewItem_FileNameEditing;
+                        Size size = ThumbnailHelper.GetThumbnailControlSize(thumbSize);
+                        tlvi.SetSize(size.Width, size.Height);
                         thumbnails.Add(tlvi);
                         tlvi.Tag = thumbnails.Count - 1;
                         this.pnlThumbs.Controls.Add(tlvi);
@@ -558,6 +566,9 @@ namespace Kinovea.ScreenManager
                 thumbnail.Invalidate();
                 if (thumbnail.FilePath == lastSelectedFile)
                     thumbnail.SetSelected();
+
+                Size size = ThumbnailHelper.GetThumbnailControlSize(thumbSize);
+                thumbnail.SetSize(size.Width, size.Height);
             }
 
             // Update the progress bar.
@@ -730,8 +741,8 @@ namespace Kinovea.ScreenManager
 
             // Keyboard navigation (bypass the hotkey system).
             int index = (int)selectedThumbnail.Tag;
-            int row = index / columns;
-            int col = index - (row * columns);
+            //int row = index / columns;
+            //int col = index - (row * columns);
             bool handled = false;
 
             switch (keyData)

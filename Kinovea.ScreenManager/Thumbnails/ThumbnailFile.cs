@@ -317,9 +317,6 @@ namespace Kinovea.ScreenManager
 
                 details.Details[FileProperty.CreationTime] = string.Format("{0:g}", creation);
 
-                // This will resize the client area of the control and update the file name label.
-                SetSize(this.Width, this.Height);
-
                 isError = false;
                 mnuLaunch.Visible = true;
 
@@ -332,7 +329,7 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Reset the size of the thumbnail control and recompute the image size and the
-        /// filename truncation.
+        /// filename truncation/visibility.
         /// </summary>
         public void SetSize(int width, int height)
         {
@@ -785,11 +782,20 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
+        /// <summary>
+        /// Truncate or hide the filename under the thumbnail based on width.
+        /// </summary>
         private void TruncateFilename()
         {
+            lblFileName.Text = "";
+            lblFileName.Visible = false;
+            
+            if (this.Width < 200)
+                return;
+
             try
             {
-                string text = System.IO.Path.GetFileNameWithoutExtension(path);
+                string text = Path.GetFileNameWithoutExtension(path);
                 
                 bool fits = true;
                 float maxWidth = this.Width - paddingHorizontal;
@@ -804,6 +810,7 @@ namespace Kinovea.ScreenManager
                 }
 
                 lblFileName.Text = fits ? text : text + "…";
+                lblFileName.Visible = true;
             }
             catch
             {

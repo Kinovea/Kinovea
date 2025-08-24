@@ -639,6 +639,7 @@
     <Compile Include="Measurement\Kinematics\FilteringResult.cs" />
     <Compile Include="Measurement\Kinematics\LinearKinematics.cs" />
     <Compile Include="Measurement\Kinematics\StatsHelper.cs" />
+    <Compile Include="Thumbnails\ThumbnailHelper.cs" />
     <Compile Include="Tracking\Tracking\Circle\TrackerCircle.cs" />
     <Compile Include="Tracking\Tracking\TrackStatus.cs" />
     <Compile Include="Measurement\LensDistortion\FormCalibrateDistortion.cs">

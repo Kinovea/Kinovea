@@ -30,6 +30,9 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
+    /// <summary>
+    /// A thumbnail viewer for cameras.
+    /// </summary>
     public partial class ThumbnailViewerCameras : KinoveaControl
     {
         #region Events
@@ -37,16 +40,17 @@ namespace Kinovea.ScreenManager
         public event EventHandler BeforeLoad;
         public event EventHandler AfterLoad;
         #endregion
-        
+
         #region Members
-        private ThumbnailCamera selectedThumbnail;
-        private int columns = (int)ExplorerThumbSize.Large;
-        private List<ThumbnailCamera> thumbnailControls = new List<ThumbnailCamera>();
+        private ExplorerThumbSize thumbSize = ExplorerThumbSize.Medium;
+        private List<ThumbnailCamera> thumbnails = new List<ThumbnailCamera>();
         private HashSet<ThumbnailCamera> imageReceived = new HashSet<ThumbnailCamera>();
+        private ThumbnailCamera selectedThumbnail;
         private bool refreshImages;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
-        
+
+        #region Construction/Destruction
         public ThumbnailViewerCameras()
         {
             log.Debug("Constructing ThumbnailViewerCameras");
@@ -54,23 +58,40 @@ namespace Kinovea.ScreenManager
             InitializeComponent();
             //RefreshUICulture();
             this.Dock = DockStyle.Fill;
-            refreshImages = true;
+            this.BackColor = Color.FromArgb(250, 250, 250);
+            this.pnlThumbs.BackColor = Color.FromArgb(250, 250, 250);
+
             this.Hotkeys = HotkeySettingsManager.LoadHotkeys("ThumbnailViewerCamera");
+            thumbSize = PreferencesManager.FileExplorerPreferences.ExplorerThumbsSize;
+            refreshImages = true;
         }
+        #endregion
         
         #region Public methods
+
+        /// <summary>
+        /// We just got unhidden, restart discovering cameras.
+        /// </summary>
         public void Unhide()
         {
             refreshImages = true;
             CameraTypeManager.StartDiscoveringCameras();
             this.Focus();
         }
+
+        /// <summary>
+        /// Camera discovery step.
+        /// </summary>
         public void CamerasDiscovered(List<CameraSummary> summaries)
         {
             bool updated = UpdateThumbnailList(summaries);
             if(updated)
                 DoLayout();
         }
+
+        /// <summary>
+        /// One thumbnail control is receiving its image.
+        /// </summary>
         public void CameraImageReceived(CameraSummary summary, Bitmap image)
         {
             if(this.InvokeRequired)
@@ -78,13 +99,17 @@ namespace Kinovea.ScreenManager
             else
                 UpdateThumbnailImage(summary, image);
         }
+
+        /// <summary>
+        /// The summary got updated.
+        /// </summary>
         public void CameraSummaryUpdated(CameraSummary summary)
         {
             int index = IndexOf(summary.Identifier);
             if(index < 0)
             return;
                 
-            thumbnailControls[index].UpdateSummary(summary);
+            thumbnails[index].UpdateSummary(summary);
         }
 
         public void CameraForgotten(CameraSummary summary)
@@ -93,7 +118,7 @@ namespace Kinovea.ScreenManager
             if (index < 0)
                 return;
 
-            RemoveThumbnail(thumbnailControls[index]);
+            RemoveThumbnail(thumbnails[index]);
             Refresh();
         }
 
@@ -103,11 +128,17 @@ namespace Kinovea.ScreenManager
             refreshImages = true;
         }
         
-        public void UpdateThumbnailsSize(ExplorerThumbSize newSize)
+        public void UpdateThumbnailsSize(ExplorerThumbSize thumbSize)
         {
-            this.columns = (int)newSize;
-            if(thumbnailControls.Count > 0)
-                DoLayout();
+            this.thumbSize = thumbSize;
+            Size size = ThumbnailHelper.GetThumbnailControlSize(thumbSize);
+
+            this.pnlThumbs.SuspendLayout();
+
+            foreach (var thumbnail in thumbnails)
+                thumbnail.SetSize(size.Width, size.Height);
+
+            this.pnlThumbs.ResumeLayout();
         }
 
         public void RefreshUICulture()
@@ -115,7 +146,11 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region Private methods
+        #region Layout
+
+        /// <summary>
+        /// Reorganize the list of thumbnails to match the summaries.
+        /// </summary>
         private bool UpdateThumbnailList(List<CameraSummary> summaries)
         {
             bool updated = false;
@@ -153,7 +188,7 @@ namespace Kinovea.ScreenManager
             
             // Remove cameras that were disconnected.
             List<ThumbnailCamera> lost = new List<ThumbnailCamera>();
-            foreach(ThumbnailCamera thumbnail in thumbnailControls)
+            foreach(ThumbnailCamera thumbnail in thumbnails)
             {
                 if(!found.Contains(thumbnail.Summary.Identifier))
                     lost.Add(thumbnail);
@@ -171,16 +206,19 @@ namespace Kinovea.ScreenManager
                     AfterLoad(this, EventArgs.Empty);
             }
 
-            if (selectedThumbnail == null && thumbnailControls.Count > 0)
-                thumbnailControls[0].SetSelected();
+            if (selectedThumbnail == null && thumbnails.Count > 0)
+                thumbnails[0].SetSelected();
             
             return updated;
         }
         
+        /// <summary>
+        /// Find the index of a thumbnail control by the camera identifier.
+        /// </summary>
         private int IndexOf(string identifier)
         {
-            for(int i = 0; i<thumbnailControls.Count; i++)
-                if(thumbnailControls[i].Summary.Identifier == identifier)
+            for(int i = 0; i<thumbnails.Count; i++)
+                if(thumbnails[i].Summary.Identifier == identifier)
                     return i;
             
             return -1;
@@ -188,32 +226,10 @@ namespace Kinovea.ScreenManager
         
         private void DoLayout()
         {
-            int leftMargin = 30;
-            int rightMargin = 20;
-            int topMargin = 5;
-            
-            int colWidth = (this.Width - leftMargin - rightMargin) / columns;
-            int spacing = colWidth / 20;
-            
-            int thumbWidth = colWidth - spacing;
-            int thumbHeight = (thumbWidth * 3 / 4) + 15;
-            
-            int current = 0;
-            
-            this.SuspendLayout();
-            foreach(ThumbnailCamera thumbnail in thumbnailControls)
-            {
-                thumbnail.SetSize(thumbWidth, thumbHeight);
-
-                int row = current / columns;
-                int col = current - (row * columns);
-                int left = col * colWidth + leftMargin;
-                int top = topMargin + (row * (thumbHeight + spacing));
-                thumbnail.Location = new Point(left, top);
-                current++;
-            }
-            
-            this.ResumeLayout();
+            this.pnlThumbs.SuspendLayout();
+            this.pnlThumbs.Controls.Clear();
+            this.pnlThumbs.Controls.AddRange(thumbnails.ToArray());
+            this.pnlThumbs.ResumeLayout();
         }
 
         private void AddThumbnail(ThumbnailCamera thumbnail)
@@ -223,8 +239,8 @@ namespace Kinovea.ScreenManager
             thumbnail.SummaryUpdated += Thumbnail_SummaryUpdated;
             thumbnail.DeleteCamera += Thumbnail_DeleteCamera;
 
-            thumbnailControls.Add(thumbnail);
-            this.Controls.Add(thumbnail);
+            thumbnails.Add(thumbnail);
+            this.pnlThumbs.Controls.Add(thumbnail);
         }
 
         private void RemoveThumbnail(ThumbnailCamera thumbnail)
@@ -237,14 +253,16 @@ namespace Kinovea.ScreenManager
             thumbnail.SummaryUpdated -= Thumbnail_SummaryUpdated;
             thumbnail.DeleteCamera -= Thumbnail_DeleteCamera;
 
-            this.Controls.Remove(thumbnail);
-            thumbnailControls.Remove(thumbnail);
+            this.pnlThumbs.Controls.Remove(thumbnail);
+            thumbnails.Remove(thumbnail);
             if (selectedThumbnail == thumbnail)
                 selectedThumbnail = null;
 
             thumbnail.Dispose();
         }
-        
+        #endregion
+
+
         private void UpdateThumbnailImage(CameraSummary summary, Bitmap image)
         {
             if(summary == null)
@@ -255,27 +273,23 @@ namespace Kinovea.ScreenManager
             if(index < 0)
                 return;
                 
-            bool hasImage = thumbnailControls[index].Image != null;
-            thumbnailControls[index].UpdateImage(image);
+            bool hasImage = thumbnails[index].Image != null;
+            thumbnails[index].UpdateImage(image);
             
             if(hasImage)
                 return;
 
-            imageReceived.Add(thumbnailControls[index]);
-            int percentage = (int)(((float)imageReceived.Count / thumbnailControls.Count) * 100);
+            imageReceived.Add(thumbnails[index]);
+            int percentage = (int)(((float)imageReceived.Count / thumbnails.Count) * 100);
             
             if(ProgressChanged != null)
                 ProgressChanged(this, new ProgressChangedEventArgs(percentage, null));
             
-            if(imageReceived.Count >= thumbnailControls.Count && AfterLoad != null)
+            if(imageReceived.Count >= thumbnails.Count && AfterLoad != null)
                 AfterLoad(this, EventArgs.Empty);
         }
-        
-        private void ThumbnailViewerCameras_Resize(object sender, EventArgs e)
-        {
-            DoLayout();
-        }
-        
+
+        #region Thumbnail control event handlers
         private void Thumbnail_LaunchCamera(object sender, EventArgs e)
         {
             ThumbnailCamera thumbnail = sender as ThumbnailCamera;
@@ -299,10 +313,10 @@ namespace Kinovea.ScreenManager
         {
             ThumbnailCamera thumbnail = sender as ThumbnailCamera;
         
-            if(thumbnail == null)
+            if(thumbnail == null || selectedThumbnail == thumbnail)
                 return;
                 
-            if (selectedThumbnail != null && selectedThumbnail != thumbnail )
+            if (selectedThumbnail != null)
                 selectedThumbnail.SetUnselected();
         
             selectedThumbnail = thumbnail;
@@ -315,17 +329,18 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
+        #region Commands
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
 
-            if (thumbnailControls.Count == 0)
+            if (thumbnails.Count == 0)
                 return base.ProcessCmdKey(ref msg, keyData);
 
             if (selectedThumbnail == null)
             {
-                if (thumbnailControls.Count > 0 && (keyData == Keys.Left || keyData == Keys.Right || keyData == Keys.Up || keyData == Keys.Down))
+                if (thumbnails.Count > 0 && (keyData == Keys.Left || keyData == Keys.Right || keyData == Keys.Up || keyData == Keys.Down))
                 {
-                    thumbnailControls[0].SetSelected();
+                    thumbnails[0].SetSelected();
                     return true;
                 }
                 else
@@ -335,53 +350,53 @@ namespace Kinovea.ScreenManager
             }
 
             // Keyboard navigation (bypass the hotkey system).
-            int index = IndexOf(selectedThumbnail.Summary.Identifier);
-            int row = index / columns;
-            int col = index - (row * columns);
+            //int index = IndexOf(selectedThumbnail.Summary.Identifier);
+            //int row = index / columns;
+            //int col = index - (row * columns);
             bool handled = false;
 
             switch (keyData)
             {
-                case Keys.Left:
-                    {
-                        if (col > 0)
-                            thumbnailControls[index - 1].SetSelected();
-                        handled = true;
-                        break;
-                    }
-                case Keys.Right:
-                    {
-                        if (col < columns - 1 && index + 1 < thumbnailControls.Count)
-                            thumbnailControls[index + 1].SetSelected();
-                        handled = true;
-                        break;
-                    }
-                case Keys.Up:
-                    {
-                        if (row > 0)
-                            thumbnailControls[index - columns].SetSelected();
-                        this.ScrollControlIntoView(selectedThumbnail);
-                        handled = true;
-                        break;
-                    }
-                case Keys.Down:
-                    {
-                        if (index + columns < thumbnailControls.Count)
-                            thumbnailControls[index + columns].SetSelected();
-                        this.ScrollControlIntoView(selectedThumbnail);
-                        handled = true;
-                        break;
-                    }
-                case Keys.Home:
-                    {
-                        thumbnailControls[0].SetSelected();
-                        break;
-                    }
-                case Keys.End:
-                    {
-                        thumbnailControls[thumbnailControls.Count - 1].SetSelected();
-                        break;
-                    }
+                //case Keys.Left:
+                //    {
+                //        if (col > 0)
+                //            thumbnails[index - 1].SetSelected();
+                //        handled = true;
+                //        break;
+                //    }
+                //case Keys.Right:
+                //    {
+                //        if (col < columns - 1 && index + 1 < thumbnails.Count)
+                //            thumbnails[index + 1].SetSelected();
+                //        handled = true;
+                //        break;
+                //    }
+                //case Keys.Up:
+                //    {
+                //        if (row > 0)
+                //            thumbnails[index - columns].SetSelected();
+                //        this.ScrollControlIntoView(selectedThumbnail);
+                //        handled = true;
+                //        break;
+                //    }
+                //case Keys.Down:
+                //    {
+                //        if (index + columns < thumbnails.Count)
+                //            thumbnails[index + columns].SetSelected();
+                //        this.ScrollControlIntoView(selectedThumbnail);
+                //        handled = true;
+                //        break;
+                //    }
+                //case Keys.Home:
+                //    {
+                //        thumbnails[0].SetSelected();
+                //        break;
+                //    }
+                //case Keys.End:
+                //    {
+                //        thumbnails[thumbnails.Count - 1].SetSelected();
+                //        break;
+                //    }
                 default:
                     break;
             }
@@ -389,7 +404,6 @@ namespace Kinovea.ScreenManager
             return handled || base.ProcessCmdKey(ref msg, keyData);
         }
 
-        #region Commands
         protected override bool ExecuteCommand(int cmd)
         {
             ThumbnailViewerCameraCommands command = (ThumbnailViewerCameraCommands)cmd;
