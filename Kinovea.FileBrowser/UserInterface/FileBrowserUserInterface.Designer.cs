@@ -107,6 +107,7 @@ namespace Kinovea.FileBrowser
       // 
       // splitExplorerFiles.Panel2
       // 
+      this.splitExplorerFiles.Panel2.BackColor = System.Drawing.Color.White;
       this.splitExplorerFiles.Panel2.Controls.Add(this.lvExplorer);
       this.splitExplorerFiles.Panel2.Controls.Add(this.lblVideoFiles);
       this.splitExplorerFiles.Size = new System.Drawing.Size(305, 527);
@@ -134,15 +135,17 @@ namespace Kinovea.FileBrowser
       // 
       this.lblFolders.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.lblFolders.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(237)))), ((int)(((byte)(244)))));
+      this.lblFolders.BackColor = System.Drawing.Color.White;
       this.lblFolders.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblFolders.ForeColor = System.Drawing.Color.SteelBlue;
+      this.lblFolders.ForeColor = System.Drawing.Color.Gray;
       this.lblFolders.Location = new System.Drawing.Point(0, 8);
+      this.lblFolders.Margin = new System.Windows.Forms.Padding(10, 0, 3, 0);
       this.lblFolders.Name = "lblFolders";
+      this.lblFolders.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
       this.lblFolders.Size = new System.Drawing.Size(305, 20);
       this.lblFolders.TabIndex = 2;
-      this.lblFolders.Text = "Folders :   ";
-      this.lblFolders.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      this.lblFolders.Text = "Folders";
+      this.lblFolders.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // lvExplorer
       // 
@@ -157,11 +160,11 @@ namespace Kinovea.FileBrowser
       this.lvExplorer.GridLines = true;
       this.lvExplorer.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
       this.lvExplorer.HideSelection = false;
-      this.lvExplorer.Location = new System.Drawing.Point(0, 23);
+      this.lvExplorer.Location = new System.Drawing.Point(0, 43);
       this.lvExplorer.MultiSelect = false;
       this.lvExplorer.Name = "lvExplorer";
       this.lvExplorer.ShowGroups = false;
-      this.lvExplorer.Size = new System.Drawing.Size(305, 199);
+      this.lvExplorer.Size = new System.Drawing.Size(305, 179);
       this.lvExplorer.SmallImageList = this.imgListFiles;
       this.lvExplorer.TabIndex = 0;
       this.lvExplorer.UseCompatibleStateImageBehavior = false;
@@ -179,16 +182,16 @@ namespace Kinovea.FileBrowser
       // 
       // lblVideoFiles
       // 
-      this.lblVideoFiles.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(237)))), ((int)(((byte)(244)))));
-      this.lblVideoFiles.Dock = System.Windows.Forms.DockStyle.Top;
+      this.lblVideoFiles.BackColor = System.Drawing.Color.White;
       this.lblVideoFiles.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblVideoFiles.ForeColor = System.Drawing.Color.SteelBlue;
-      this.lblVideoFiles.Location = new System.Drawing.Point(0, 0);
+      this.lblVideoFiles.ForeColor = System.Drawing.Color.Gray;
+      this.lblVideoFiles.Location = new System.Drawing.Point(-3, 20);
       this.lblVideoFiles.Name = "lblVideoFiles";
+      this.lblVideoFiles.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
       this.lblVideoFiles.Size = new System.Drawing.Size(305, 20);
       this.lblVideoFiles.TabIndex = 1;
-      this.lblVideoFiles.Text = "Video files :   ";
-      this.lblVideoFiles.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      this.lblVideoFiles.Text = "Video files   ";
+      this.lblVideoFiles.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // tabPageShortcuts
       // 
@@ -252,7 +255,7 @@ namespace Kinovea.FileBrowser
       this.btnDeleteShortcut.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
       this.btnDeleteShortcut.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
       this.btnDeleteShortcut.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnDeleteShortcut.Location = new System.Drawing.Point(282, 0);
+      this.btnDeleteShortcut.Location = new System.Drawing.Point(276, 8);
       this.btnDeleteShortcut.Name = "btnDeleteShortcut";
       this.btnDeleteShortcut.Size = new System.Drawing.Size(20, 20);
       this.btnDeleteShortcut.TabIndex = 9;
@@ -270,7 +273,7 @@ namespace Kinovea.FileBrowser
       this.btnAddShortcut.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
       this.btnAddShortcut.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
       this.btnAddShortcut.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnAddShortcut.Location = new System.Drawing.Point(256, 0);
+      this.btnAddShortcut.Location = new System.Drawing.Point(250, 8);
       this.btnAddShortcut.Name = "btnAddShortcut";
       this.btnAddShortcut.Size = new System.Drawing.Size(20, 20);
       this.btnAddShortcut.TabIndex = 8;
@@ -281,28 +284,29 @@ namespace Kinovea.FileBrowser
       // 
       this.lblFavFolders.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.lblFavFolders.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(237)))), ((int)(((byte)(244)))));
+      this.lblFavFolders.BackColor = System.Drawing.Color.White;
       this.lblFavFolders.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblFavFolders.ForeColor = System.Drawing.Color.SteelBlue;
+      this.lblFavFolders.ForeColor = System.Drawing.Color.Gray;
       this.lblFavFolders.Location = new System.Drawing.Point(0, 8);
       this.lblFavFolders.Name = "lblFavFolders";
-      this.lblFavFolders.Size = new System.Drawing.Size(305, 20);
+      this.lblFavFolders.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+      this.lblFavFolders.Size = new System.Drawing.Size(244, 20);
       this.lblFavFolders.TabIndex = 6;
-      this.lblFavFolders.Text = "Dossiers :   ";
-      this.lblFavFolders.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      this.lblFavFolders.Text = "Folders";
+      this.lblFavFolders.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // lblFavFiles
       // 
-      this.lblFavFiles.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(237)))), ((int)(((byte)(244)))));
-      this.lblFavFiles.Dock = System.Windows.Forms.DockStyle.Top;
+      this.lblFavFiles.BackColor = System.Drawing.Color.White;
       this.lblFavFiles.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblFavFiles.ForeColor = System.Drawing.Color.SteelBlue;
-      this.lblFavFiles.Location = new System.Drawing.Point(0, 0);
+      this.lblFavFiles.ForeColor = System.Drawing.Color.Gray;
+      this.lblFavFiles.Location = new System.Drawing.Point(-3, 16);
       this.lblFavFiles.Name = "lblFavFiles";
+      this.lblFavFiles.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
       this.lblFavFiles.Size = new System.Drawing.Size(305, 20);
       this.lblFavFiles.TabIndex = 3;
-      this.lblFavFiles.Text = "Video files :   ";
-      this.lblFavFiles.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      this.lblFavFiles.Text = "Video files  ";
+      this.lblFavFiles.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // lvShortcuts
       // 
@@ -315,9 +319,9 @@ namespace Kinovea.FileBrowser
       this.lvShortcuts.GridLines = true;
       this.lvShortcuts.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
       this.lvShortcuts.HideSelection = false;
-      this.lvShortcuts.Location = new System.Drawing.Point(0, 23);
+      this.lvShortcuts.Location = new System.Drawing.Point(0, 39);
       this.lvShortcuts.Name = "lvShortcuts";
-      this.lvShortcuts.Size = new System.Drawing.Size(302, 190);
+      this.lvShortcuts.Size = new System.Drawing.Size(302, 174);
       this.lvShortcuts.SmallImageList = this.imgListFiles;
       this.lvShortcuts.TabIndex = 2;
       this.lvShortcuts.UseCompatibleStateImageBehavior = false;
@@ -373,19 +377,20 @@ namespace Kinovea.FileBrowser
       // 
       this.lblCaptureHistory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.lblCaptureHistory.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(237)))), ((int)(((byte)(244)))));
+      this.lblCaptureHistory.BackColor = System.Drawing.Color.White;
       this.lblCaptureHistory.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblCaptureHistory.ForeColor = System.Drawing.Color.SteelBlue;
+      this.lblCaptureHistory.ForeColor = System.Drawing.Color.Gray;
       this.lblCaptureHistory.Location = new System.Drawing.Point(3, 284);
       this.lblCaptureHistory.Name = "lblCaptureHistory";
+      this.lblCaptureHistory.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
       this.lblCaptureHistory.Size = new System.Drawing.Size(305, 20);
       this.lblCaptureHistory.TabIndex = 6;
-      this.lblCaptureHistory.Text = "Capture History :   ";
-      this.lblCaptureHistory.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      this.lblCaptureHistory.Text = "Capture history  ";
+      this.lblCaptureHistory.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // btnManual
       // 
-      this.btnManual.Location = new System.Drawing.Point(6, 235);
+      this.btnManual.Location = new System.Drawing.Point(1, 235);
       this.btnManual.Name = "btnManual";
       this.btnManual.Size = new System.Drawing.Size(132, 23);
       this.btnManual.TabIndex = 4;
@@ -397,15 +402,16 @@ namespace Kinovea.FileBrowser
       // 
       this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.label1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(237)))), ((int)(((byte)(244)))));
+      this.label1.BackColor = System.Drawing.Color.White;
       this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.label1.ForeColor = System.Drawing.Color.SteelBlue;
+      this.label1.ForeColor = System.Drawing.Color.Gray;
       this.label1.Location = new System.Drawing.Point(0, 8);
       this.label1.Name = "label1";
+      this.label1.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
       this.label1.Size = new System.Drawing.Size(305, 20);
       this.label1.TabIndex = 3;
-      this.label1.Text = "Cameras :   ";
-      this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      this.label1.Text = "Cameras";
+      this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // lvCameras
       // 

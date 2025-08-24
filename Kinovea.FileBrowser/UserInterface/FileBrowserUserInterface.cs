@@ -105,9 +105,6 @@ namespace Kinovea.FileBrowser
             cameraIcons.Images.Add("historyEntryMonth", Properties.Resources.calendar_view_month);
             cameraIcons.Images.Add("unknownCamera", Properties.Resources.film_small);
 
-            btnAddShortcut.Parent = lblFavFolders;
-            btnDeleteShortcut.Parent = lblFavFolders;
-            
             // Drag Drop handling.
             lvExplorer.ItemDrag += listView_ItemDrag;
             lvShortcuts.ItemDrag += listView_ItemDrag;
