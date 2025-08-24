@@ -55,10 +55,19 @@ namespace Kinovea.Root
             this.rootKernel = rootKernel;
 
             InitializeComponent();
-            this.Text = "Manage windows";
+            RefreshCulture();
             PrepareListView();
-
             Populate();
+        }
+
+        private void RefreshCulture()
+        {
+            this.Text = "Manage windows";
+            btnClose.Text = "Close";
+
+            toolTip1.SetToolTip(btnStartStop, "Stop process");
+            toolTip1.SetToolTip(btnDelete, "Delete window");
+            toolTip1.SetToolTip(btnRefresh, "Refresh window list");
         }
 
         /// <summary>
@@ -297,11 +306,13 @@ namespace Kinovea.Root
             else if (lvwd.InstanceStatus == InstanceStatus.Running)
             {
                 btnStartStop.Image = Properties.Resources.stop2_16;
+                toolTip1.SetToolTip(btnStartStop, "Stop process");
                 btnDelete.Enabled = false;
             }
             else
             {
-                btnStartStop.Image = Properties.Resources.circled_play_green_16;
+                btnStartStop.Image = Properties.Resources.circled_play_green2_16;
+                toolTip1.SetToolTip(btnStartStop, "Start process");
                 btnDelete.Enabled = true;
             }
         }

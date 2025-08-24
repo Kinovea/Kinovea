@@ -35,7 +35,7 @@
       this.imgListStatus = new System.Windows.Forms.ImageList(this.components);
       this.btnDelete = new System.Windows.Forms.Button();
       this.btnStartStop = new System.Windows.Forms.Button();
-      this.btnOK = new System.Windows.Forms.Button();
+      this.btnClose = new System.Windows.Forms.Button();
       this.grpScreenList = new System.Windows.Forms.GroupBox();
       this.pnlScreenList = new System.Windows.Forms.Panel();
       this.lblScreen2 = new System.Windows.Forms.Label();
@@ -44,6 +44,7 @@
       this.btnScreen1 = new System.Windows.Forms.Button();
       this.imgListScreens = new System.Windows.Forms.ImageList(this.components);
       this.btnRefresh = new System.Windows.Forms.Button();
+      this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
       this.grpIdentifier.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.olvWindows)).BeginInit();
       this.grpScreenList.SuspendLayout();
@@ -130,16 +131,16 @@
       this.btnStartStop.UseVisualStyleBackColor = true;
       this.btnStartStop.Click += new System.EventHandler(this.btnStartStop_Click);
       // 
-      // btnOK
+      // btnClose
       // 
-      this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.btnOK.Location = new System.Drawing.Point(292, 382);
-      this.btnOK.Name = "btnOK";
-      this.btnOK.Size = new System.Drawing.Size(99, 24);
-      this.btnOK.TabIndex = 64;
-      this.btnOK.Text = "Close";
-      this.btnOK.UseVisualStyleBackColor = true;
+      this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnClose.DialogResult = System.Windows.Forms.DialogResult.OK;
+      this.btnClose.Location = new System.Drawing.Point(292, 382);
+      this.btnClose.Name = "btnClose";
+      this.btnClose.Size = new System.Drawing.Size(99, 24);
+      this.btnClose.TabIndex = 64;
+      this.btnClose.Text = "Close";
+      this.btnClose.UseVisualStyleBackColor = true;
       // 
       // grpScreenList
       // 
@@ -243,7 +244,7 @@
       this.BackColor = System.Drawing.Color.White;
       this.ClientSize = new System.Drawing.Size(403, 418);
       this.Controls.Add(this.grpScreenList);
-      this.Controls.Add(this.btnOK);
+      this.Controls.Add(this.btnClose);
       this.Controls.Add(this.grpIdentifier);
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
       this.MaximizeBox = false;
@@ -265,7 +266,7 @@
         #endregion
 
         private System.Windows.Forms.GroupBox grpIdentifier;
-        private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.GroupBox grpScreenList;
         private System.Windows.Forms.Panel pnlScreenList;
         private System.Windows.Forms.Label lblScreen2;
@@ -278,5 +279,6 @@
         private BrightIdeasSoftware.ObjectListView olvWindows;
         private System.Windows.Forms.ImageList imgListScreens;
         private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

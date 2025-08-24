@@ -243,6 +243,16 @@ namespace Kinovea.Root.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap circled_play_green2_16 {
+            get {
+                object obj = ResourceManager.GetObject("circled_play_green2_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap close2_16 {
             get {
                 object obj = ResourceManager.GetObject("close2_16", resourceCulture);

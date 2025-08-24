@@ -302,11 +302,19 @@ namespace Kinovea.Services
             if (d == null)
                 return;
 
-            string filename = d.Id.ToString() + ".xml";
-            string path = Path.Combine(Software.WindowsDirectory, filename);
-
             try
             {
+                string filename = d.Id.ToString() + ".xml";
+                string path = Path.Combine(Software.WindowsDirectory, filename);
+                
+                // Instead of downright deleting the file we just move it to a trash folder.
+                // In case of misclick the user may restore it manually.
+                string trashDir= Path.Combine(Software.WindowsDirectory, "trash");
+                if (!Directory.Exists(trashDir))
+                    Directory.CreateDirectory(trashDir);
+
+                string trashPath = Path.Combine(trashDir, filename);
+                File.Copy(path, trashPath, true);
                 File.Delete(path);
             }
             catch (Exception e)
