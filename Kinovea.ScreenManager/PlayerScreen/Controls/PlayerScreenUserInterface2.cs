@@ -1079,9 +1079,9 @@ namespace Kinovea.ScreenManager
         private void InitializePropertiesPanel()
         {
             // Restore splitter distance and hook preferences save.
-            splitViewport_Properties.SplitterDistance = (int)(splitViewport_Properties.Width * PreferencesManager.GeneralPreferences.SidePanelSplitterRatio);
+            splitViewport_Properties.SplitterDistance = (int)(splitViewport_Properties.Width * WindowManager.ActiveWindow.SidePanelSplitterRatio);
             splitViewport_Properties.SplitterMoved += (s, e) => {
-                PreferencesManager.GeneralPreferences.SidePanelSplitterRatio = (float)e.SplitX / splitViewport_Properties.Width;
+                WindowManager.ActiveWindow.SidePanelSplitterRatio = (float)e.SplitX / splitViewport_Properties.Width;
             };
 
             // Create and add all the side panels.
@@ -1107,7 +1107,7 @@ namespace Kinovea.ScreenManager
             sidePanelTracking.Dock = DockStyle.Fill;
             sidePanelTracking.DrawingModified += DrawingControl_DrawingUpdated;
 
-            isSidePanelVisible = PreferencesManager.GeneralPreferences.SidePanelVisible;
+            isSidePanelVisible = WindowManager.ActiveWindow.SidePanelVisible;
             splitViewport_Properties.Panel2Collapsed = !isSidePanelVisible;
         }
 
@@ -4930,7 +4930,7 @@ namespace Kinovea.ScreenManager
 
             isSidePanelVisible = !isSidePanelVisible;
             splitViewport_Properties.Panel2Collapsed = !isSidePanelVisible;
-            PreferencesManager.GeneralPreferences.SidePanelVisible = isSidePanelVisible;
+            WindowManager.ActiveWindow.SidePanelVisible = isSidePanelVisible;
         }
         /// <summary>
         /// Force show the side panel at the drawing properties tab.

@@ -42,7 +42,7 @@ namespace Kinovea.Root
             rootKernel = _RootKernel;
             InitializeComponent();
             
-            splitWorkSpace.SplitterDistance = (int)(splitWorkSpace.Width * PreferencesManager.GeneralPreferences.ExplorerSplitterRatio);
+            splitWorkSpace.SplitterDistance = (int)(splitWorkSpace.Width * WindowManager.ActiveWindow.ExplorerSplitterRatio);
             splitWorkSpace.SplitterMoved += SplitWorkSpace_SplitterMoved;
 
             NotificationCenter.LaunchOpenDialog += NotificationCenter_LaunchOpenDialog;
@@ -80,14 +80,14 @@ namespace Kinovea.Root
 
             if (savePreferences)
             {
-                PreferencesManager.GeneralPreferences.ExplorerVisible = show;
+                WindowManager.ActiveWindow.ExplorerVisible = show;
             }
         }
         #endregion
 
         private void SupervisorUserInterface_Load(object sender, EventArgs e)
         {
-            bool show = LaunchSettingsManager.ShowExplorer && PreferencesManager.GeneralPreferences.ExplorerVisible;
+            bool show = LaunchSettingsManager.ShowExplorer && WindowManager.ActiveWindow.ExplorerVisible;
             ShowHideExplorerPanel(show, false);
         }
 
@@ -123,7 +123,7 @@ namespace Kinovea.Root
             if (initializing)
                 return;
             
-            PreferencesManager.GeneralPreferences.ExplorerSplitterRatio = (float)splitWorkSpace.SplitterDistance / splitWorkSpace.Width;
+            WindowManager.ActiveWindow.ExplorerSplitterRatio = (float)splitWorkSpace.SplitterDistance / splitWorkSpace.Width;
         }
     }
 }

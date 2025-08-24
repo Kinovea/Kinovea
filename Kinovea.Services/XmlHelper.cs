@@ -18,6 +18,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
+using log4net.Core;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -283,6 +284,28 @@ namespace Kinovea.Services
             TEnum result;
             bool parsed = Enum.TryParse<TEnum>(str, out result);
             return parsed ? result: defaultValue; 
+        }
+
+        public static Guid ParseGuid(string str)
+        {
+            bool read = Guid.TryParse(str, out Guid x);
+            if (read)
+                return x;
+            else
+                log.Error(String.Format("An error happened while parsing Guid value. ({0}).", str));
+
+            return Guid.Empty;
+        }
+
+        public static DateTime ParseDateTime(string str)
+        {
+            bool read = DateTime.TryParse(str, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateTime);
+            if (read)
+                return dateTime;
+            else
+                log.Error(String.Format("An error happened while parsing DateTime value. ({0}).", str));
+
+            return DateTime.MinValue;
         }
 
         public static string WriteFloat(float value)

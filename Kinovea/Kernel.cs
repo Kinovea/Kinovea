@@ -102,6 +102,13 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuWorkspaceSaveAsDefault = new ToolStripMenuItem();
         private ToolStripMenuItem mnuWorkspaceExport = new ToolStripMenuItem();
 
+        // Window
+        private ToolStripMenuItem mnuWindow = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuWindowProperties = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuStartNewWindow = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuReopenWindow = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuManageWindows = new ToolStripMenuItem();
+
         // Help
         private ToolStripMenuItem mnuHelp = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHelpContents = new ToolStripMenuItem();
@@ -406,11 +413,29 @@ namespace Kinovea.Root
                 mnuWorkspace,
                 new ToolStripSeparator(), 
                 mnuPreferences});
+            #endregion
+
+            #region Window
 
 
+            mnuWindowProperties.Image = Properties.Resources.application_form;
+            mnuStartNewWindow.Image = Properties.Resources.application_add;
+            mnuReopenWindow.Image = Properties.Resources.application_cascade;
+            mnuManageWindows.Image = Properties.Resources.application_edit;
 
+            mnuWindow.DropDownItems.AddRange(new ToolStripItem[] {
+                mnuWindowProperties,
+                new ToolStripSeparator(),
+                mnuStartNewWindow,
+                mnuReopenWindow,
+                new ToolStripSeparator(),
+                mnuManageWindows});
 
             #endregion
+
+
+
+
 
             #region Help
             mnuHelpContents.Image = Properties.Resources.book_open;
@@ -444,7 +469,7 @@ namespace Kinovea.Root
 
             // Top level merge.
             MenuStrip thisMenuStrip = new MenuStrip();
-            thisMenuStrip.Items.AddRange(new ToolStripItem[] { mnuFile, mnuEdit, mnuView, mnuImage, mnuVideo, mnuTools, mnuOptions, mnuHelp });
+            thisMenuStrip.Items.AddRange(new ToolStripItem[] { mnuFile, mnuEdit, mnuView, mnuImage, mnuVideo, mnuTools, mnuOptions, mnuWindow, mnuHelp });
             thisMenuStrip.AllowMerge = true;
 
             ToolStripManager.Merge(thisMenuStrip, menu);
@@ -523,6 +548,12 @@ namespace Kinovea.Root
             mnuPointer.Text = RootLang.mnuPointer;
             // Rebuild the whole pointer menu to get the correct text.
             BuildPointerMenus();
+
+            mnuWindow.Text = "Window";
+            mnuWindowProperties.Text = "Window properties…";
+            mnuStartNewWindow.Text = "Start new window";
+            mnuReopenWindow.Text = "Reopen window";
+            mnuManageWindows.Text = "Manage windows…";
 
             mnuHelp.Text = RootLang.mnuHelp;
             mnuHelpContents.Text = RootLang.mnuHelpContents;
@@ -889,7 +920,7 @@ namespace Kinovea.Root
             else
             {
                 // Exiting full screen, restore from preferences.
-                bool show = PreferencesManager.GeneralPreferences.ExplorerVisible;
+                bool show = WindowManager.ActiveWindow.ExplorerVisible;
                 mainWindow.SupervisorControl.ShowHideExplorerPanel(show, false);
             }
             

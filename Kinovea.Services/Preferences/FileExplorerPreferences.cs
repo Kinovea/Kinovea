@@ -79,32 +79,6 @@ namespace Kinovea.Services
             get { BeforeRead(); return recentCapturedFiles; }
         }
 
-        #region Instance properties
-        /// <summary>
-        /// Horizontal splitter between folders and files in the file explorer tab.
-        /// </summary>
-        public float ExplorerFilesSplitterRatio
-        {
-            get { BeforeRead(); return explorerFilesSplitterRatio; }
-            set { explorerFilesSplitterRatio = value; Save(); }
-        }
-
-        /// <summary>
-        /// Horizontal splitter between folders and files in the shortcuts explorer tab.
-        /// </summary>
-        public float ShortcutsFilesSplitterRatio
-        {
-            get { BeforeRead(); return shortcutsFilesSplitterRatio; }
-            set { shortcutsFilesSplitterRatio = value; Save(); }
-        }
-
-        public ActiveFileBrowserTab ActiveTab
-        {
-            get { BeforeRead(); return activeTab; }
-            set { activeTab = value; Save(); }
-        }
-        #endregion
-
         /// <summary>
         /// Size of thumbnails.
         /// </summary>
@@ -162,11 +136,6 @@ namespace Kinovea.Services
         private string lastReplayFolder;
         private FileSortAxis fileSortAxis = FileSortAxis.Name;
         private bool fileSortAscending = true;
-
-        // Instance prefs
-        private float shortcutsFilesSplitterRatio = 0.25f;
-        private float explorerFilesSplitterRatio = 0.25f;
-        private ActiveFileBrowserTab activeTab = ActiveFileBrowserTab.Explorer;
         #endregion
 
         private void Save()
@@ -277,11 +246,7 @@ namespace Kinovea.Services
             }
 
             writer.WriteElementString("ThumbnailSize", explorerThumbsSize.ToString());
-
-            writer.WriteElementString("ExplorerFilesSplitterRatio", XmlHelper.WriteFloat(explorerFilesSplitterRatio));
-            writer.WriteElementString("ShortcutsFilesSplitterRatio", XmlHelper.WriteFloat(shortcutsFilesSplitterRatio));
-            writer.WriteElementString("ActiveTab", activeTab.ToString());
-
+            
             writer.WriteStartElement("FilePropertyVisibility");
             filePropertyVisibility.WriteXML(writer);
             writer.WriteEndElement();
@@ -340,19 +305,6 @@ namespace Kinovea.Services
                         break;
                     case "ThumbnailSize":
                         explorerThumbsSize = (ExplorerThumbSize) Enum.Parse(typeof(ExplorerThumbSize), reader.ReadElementContentAsString());
-                        break;
-                    case "ExplorerFilesSplitterRatio":
-                        explorerFilesSplitterRatio = XmlHelper.ParseFloat(reader.ReadElementContentAsString());
-                        if (explorerFilesSplitterRatio <= 0)
-                            explorerFilesSplitterRatio = 0.25f;
-                        break;
-                    case "ShortcutsFilesSplitterRatio":
-                        shortcutsFilesSplitterRatio = XmlHelper.ParseFloat(reader.ReadElementContentAsString());
-                        if (explorerFilesSplitterRatio <= 0)
-                            explorerFilesSplitterRatio = 0.25f;
-                        break;                        
-                    case "ActiveTab":
-                        activeTab = (ActiveFileBrowserTab) Enum.Parse(typeof(ActiveFileBrowserTab), reader.ReadElementContentAsString());
                         break;
                     case "FilePropertyVisibility":
                         filePropertyVisibility = FilePropertyVisibility.FromXML(reader);

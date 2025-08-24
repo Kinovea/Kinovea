@@ -74,7 +74,13 @@ namespace Kinovea.Services
         /// CSV files with custom variables that can be used in paths.
         /// </summary>
         public static string VariablesDirectory { get; private set; }
-        
+
+        /// <summary>
+        /// Windows (instances).
+        /// Instance-specific preferences and state.
+        /// </summary>
+        public static string WindowsDirectory { get; private set; }
+
         /// <summary>
         /// The main preferences file.
         /// </summary>
@@ -96,7 +102,6 @@ namespace Kinovea.Services
         public static string CustomToolsDirectory { get; private set; }
         public static string StandardToolsDirectory { get; private set; }
 
-        private static bool instanceConfigured;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         /// <summary>
@@ -121,6 +126,7 @@ namespace Kinovea.Services
                 SettingsDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ApplicationName) + "\\";
 
             PreferencesFile             = Path.Combine(SettingsDirectory, "Preferences.xml");
+
             CameraCalibrationDirectory  = Path.Combine(SettingsDirectory, "CameraCalibration");
             CameraPluginsDirectory      = Path.Combine(SettingsDirectory, "Plugins", "Camera");
             CameraProfilesDirectory     = Path.Combine(SettingsDirectory, "CameraProfiles");
@@ -128,6 +134,7 @@ namespace Kinovea.Services
             LogsDirectory               = Path.Combine(SettingsDirectory, "Logs");
             PointersDirectory           = Path.Combine(SettingsDirectory, "Pointers");
             VariablesDirectory          = Path.Combine(SettingsDirectory, "Variables");
+            WindowsDirectory            = Path.Combine(SettingsDirectory, "Windows");
             TempDirectory               = Path.Combine(SettingsDirectory, "Temp");
 
             XSLTDirectory           = Path.Combine(applicationDirectory, "xslt");
@@ -161,8 +168,6 @@ namespace Kinovea.Services
                 else
                     InstanceName = instanceNumber.ToString();
             }
-
-            instanceConfigured = true;
         }
         
         /// <summary>
@@ -179,6 +184,7 @@ namespace Kinovea.Services
             CreateDirectory(SettingsDirectory);
             CreateDirectory(TempDirectory);
             CreateDirectory(VariablesDirectory);
+            CreateDirectory(WindowsDirectory);
         }
 
         private static void CreateDirectory(string dir)

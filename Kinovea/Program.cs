@@ -77,6 +77,7 @@ namespace Kinovea.Root
             // Configure the instance.
             // TODO: load the list of saved instances and determine which one to launch or if we
             // should start a new one.
+            WindowManager.Startup(isFirstInstance);
             Software.ConfigureInstance();
 
             // Make sure each instance logs to its own log file.

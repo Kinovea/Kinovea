@@ -94,8 +94,9 @@ namespace Kinovea.FileBrowser
             InitializeComponent();
 
             // Splitters
-            splitExplorerFiles.SplitterDistance = (int)(splitExplorerFiles.Height * PreferencesManager.FileExplorerPreferences.ExplorerFilesSplitterRatio);
-            splitShortcutsFiles.SplitterDistance = (int)(splitShortcutsFiles.Height * PreferencesManager.FileExplorerPreferences.ShortcutsFilesSplitterRatio);
+            
+            splitExplorerFiles.SplitterDistance = (int)(splitExplorerFiles.Height * WindowManager.ActiveWindow.ExplorerFilesSplitterRatio);
+            splitShortcutsFiles.SplitterDistance = (int)(splitShortcutsFiles.Height * WindowManager.ActiveWindow.ShortcutsFilesSplitterRatio);
             splitExplorerFiles.SplitterMoved += Splitters_SplitterMoved;
             splitShortcutsFiles.SplitterMoved += Splitters_SplitterMoved;
 
@@ -132,8 +133,8 @@ namespace Kinovea.FileBrowser
             
             // Reload last tab from prefs.
             // We don't reload the splitters here, because we are not at full size yet and they are anchored.
-            tabControl.SelectedIndex = (int)PreferencesManager.FileExplorerPreferences.ActiveTab;
-            activeTab = PreferencesManager.FileExplorerPreferences.ActiveTab;
+            tabControl.SelectedIndex = (int)WindowManager.ActiveWindow.ActiveTab;
+            activeTab = WindowManager.ActiveWindow.ActiveTab;
             
             Application.Idle += new EventHandler(this.IdleDetector);
             this.Hotkeys = HotkeySettingsManager.LoadHotkeys("FileExplorer");
@@ -551,10 +552,9 @@ namespace Kinovea.FileBrowser
             if (initializing)
                 return;
 
-            PreferencesManager.SuspendSave();
-            PreferencesManager.FileExplorerPreferences.ExplorerFilesSplitterRatio = (float)splitExplorerFiles.SplitterDistance / splitExplorerFiles.Height;
-            PreferencesManager.FileExplorerPreferences.ShortcutsFilesSplitterRatio = (float)splitShortcutsFiles.SplitterDistance / splitShortcutsFiles.Height;
-            PreferencesManager.ResumeSave();
+            WindowManager.ActiveWindow.ExplorerFilesSplitterRatio = (float)splitExplorerFiles.SplitterDistance / splitExplorerFiles.Height;
+            WindowManager.ActiveWindow.ShortcutsFilesSplitterRatio = (float)splitShortcutsFiles.SplitterDistance / splitShortcutsFiles.Height;
+            WindowManager.SaveActiveWindow();
         }
         #endregion
 
@@ -829,9 +829,10 @@ namespace Kinovea.FileBrowser
             // Active tab changed.
             // We don't save to file now as this is not a critical data to loose.
             activeTab = (ActiveFileBrowserTab)tabControl.SelectedIndex;
-            PreferencesManager.FileExplorerPreferences.ActiveTab = activeTab;
-            
-            if(programmaticTabChange)
+            WindowManager.ActiveWindow.ActiveTab = activeTab;
+            WindowManager.SaveActiveWindow();
+
+            if (programmaticTabChange)
                 programmaticTabChange = false;
             else
                 NotificationCenter.RaiseExplorerTabChanged(this, activeTab);

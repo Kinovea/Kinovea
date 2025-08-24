@@ -304,6 +304,9 @@
     <Compile Include="Preferences\IPreferenceSerializer.cs" />
     <Compile Include="Preferences\KeyboardPreferences.cs" />
     <Compile Include="Commands\Commands.cs" />
+    <Compile Include="Windows\WindowDescriptor.cs" />
+    <Compile Include="Windows\WindowManager.cs" />
+    <Compile Include="Windows\WindowStartupMode.cs" />
     <Compile Include="WinForms\FormsHelper.cs" />
     <Compile Include="Commands\HotkeyCommand.cs" />
     <Compile Include="Commands\HotkeySettings.cs" />

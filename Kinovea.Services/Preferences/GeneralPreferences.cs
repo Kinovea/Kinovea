@@ -36,57 +36,6 @@ namespace Kinovea.Services
         }
 
         #region Instance prefs
-        public bool ExplorerVisible
-        {
-            get { BeforeRead(); return explorerVisible; }
-            set { explorerVisible = value; Save(); }
-        }
-
-        /// <summary>
-        /// Vertical splitter between the explorer and the screen manager.
-        /// </summary>
-        public float ExplorerSplitterRatio
-        {
-            get { BeforeRead(); return explorerSplitterRatio; }
-            set { explorerSplitterRatio = value; Save(); }
-        }
-
-        /// <summary>
-        /// Vertical splitter inside the player screen between the viewport and the side panel.
-        /// </summary>
-        public float SidePanelSplitterRatio
-        {
-            get { BeforeRead(); return sidePanelSplitterRatio; }
-            set { sidePanelSplitterRatio = value; Save(); }
-        }
-
-        /// <summary>
-        /// Whether the side panel is visible.
-        /// </summary>
-        public bool SidePanelVisible
-        {
-            get { BeforeRead(); return sidePanelVisible; }
-            set { sidePanelVisible = value; Save(); }
-        }
-
-        /// <summary>
-        /// State of the main window.
-        /// </summary>
-        public FormWindowState WindowState
-        {
-            get { BeforeRead(); return windowState; }
-            set { windowState = value; Save(); }
-        }
-        
-        /// <summary>
-        /// Position and size of the main window.
-        /// </summary>
-        public Rectangle WindowRectangle 
-        {
-            get { BeforeRead(); return windowRectangle; }
-            set { windowRectangle = value; Save(); }
-        }
-
         /// <summary>
         /// Arrangement of screens in the instance.
         /// </summary>
@@ -131,12 +80,6 @@ namespace Kinovea.Services
 
         // The following should be moved to the instance specific prefs.
         #region Workspace
-        private bool explorerVisible = true;
-        private float explorerSplitterRatio = 0.2f;
-        private float sidePanelSplitterRatio = 0.8f;
-        private bool sidePanelVisible = false;
-        private FormWindowState windowState = FormWindowState.Maximized;
-        private Rectangle windowRectangle;
         private Workspace workspace = new Workspace();
         #endregion
         #endregion
@@ -192,14 +135,6 @@ namespace Kinovea.Services
                 workspace.WriteXML(writer);
                 writer.WriteEndElement();
             }
-
-            // TODO: the following should be moved to the workspace.
-            writer.WriteElementString("ExplorerVisible", XmlHelper.WriteBoolean(explorerVisible));
-            writer.WriteElementString("ExplorerSplitterRatio", XmlHelper.WriteFloat(explorerSplitterRatio));
-            writer.WriteElementString("SidePanelSplitterRatio", XmlHelper.WriteFloat(sidePanelSplitterRatio));
-            writer.WriteElementString("SidePanelVisible", XmlHelper.WriteBoolean(sidePanelVisible));
-            writer.WriteElementString("WindowState", windowState.ToString());
-            writer.WriteElementString("WindowRectangle", XmlHelper.WriteRectangleF(windowRectangle));
         }
 
         public void ReadXML(XmlReader reader)
@@ -224,24 +159,6 @@ namespace Kinovea.Services
                         break;
                     case "Workspace":
                         workspace.ReadXML(reader);
-                        break;
-                    case "ExplorerVisible":
-                        explorerVisible = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
-                        break;
-                    case "ExplorerSplitterRatio":
-                        explorerSplitterRatio = XmlHelper.ParseFloat(reader.ReadElementContentAsString());
-                        break;
-                    case "SidePanelSplitterRatio":
-                        sidePanelSplitterRatio = XmlHelper.ParseFloat(reader.ReadElementContentAsString());
-                        break;
-                    case "SidePanelVisible":
-                        sidePanelVisible = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
-                        break;
-                    case "WindowState":
-                        windowState = (FormWindowState)Enum.Parse(typeof(FormWindowState), reader.ReadElementContentAsString());
-                        break;
-                    case "WindowRectangle":
-                        windowRectangle = XmlHelper.ParseRectangle(reader.ReadElementContentAsString());
                         break;
                     default:
                         reader.ReadOuterXml();

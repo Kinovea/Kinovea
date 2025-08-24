@@ -64,7 +64,7 @@ namespace Kinovea.ScreenManager
 
             // Switch immediately to the right tab, don't wait for the file explorer to load.
             // In particular if the active tab is the cameras we want to get the thumbnails as soon as possible, even if not displaying yet.
-            SwitchContent(Convert(PreferencesManager.FileExplorerPreferences.ActiveTab));
+            SwitchContent(Convert(WindowManager.ActiveWindow.ActiveTab));
                     
             this.Hotkeys = HotkeySettingsManager.LoadHotkeys("ThumbnailViewerContainer");
         }

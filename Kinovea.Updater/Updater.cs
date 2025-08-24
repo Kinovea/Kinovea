@@ -47,10 +47,11 @@ namespace Kinovea.Updater
         }
         public void ExtendMenu(ToolStrip menu)
         {
-            //Catch the Help menu.  
-            ToolStripMenuItem mnuCatchParent = new ToolStripMenuItem();            
-            mnuCatchParent.MergeIndex = 7;
-            mnuCatchParent.MergeAction = MergeAction.MatchOnly;
+            //Catch the Help menu.
+            // file, edit, view, image, video, tools, options, window, help.
+            ToolStripMenuItem mnuCatchHelp = new ToolStripMenuItem();            
+            mnuCatchHelp.MergeIndex = 8;
+            mnuCatchHelp.MergeAction = MergeAction.MatchOnly;
 
             mnuCheckForUpdates.Image = Properties.Resources.software_update;
             mnuCheckForUpdates.Click += new EventHandler(mnuCheckForUpdatesOnClick);
@@ -58,10 +59,10 @@ namespace Kinovea.Updater
             mnuCheckForUpdates.MergeIndex = 1;
             mnuCheckForUpdates.MergeAction = MergeAction.Insert;
 
-            mnuCatchParent.DropDownItems.AddRange(new ToolStripItem[] { mnuCheckForUpdates });
+            mnuCatchHelp.DropDownItems.AddRange(new ToolStripItem[] { mnuCheckForUpdates });
 
             MenuStrip ThisMenu = new MenuStrip();
-            ThisMenu.Items.AddRange(new ToolStripItem[] { mnuCatchParent });
+            ThisMenu.Items.AddRange(new ToolStripItem[] { mnuCatchHelp });
             ThisMenu.AllowMerge = true;
 
             ToolStripManager.Merge(ThisMenu, menu);

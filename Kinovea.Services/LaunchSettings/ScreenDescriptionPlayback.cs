@@ -34,7 +34,7 @@ namespace Kinovea.Services
         
         /// <summary>
         /// Guid of the player screen into which this description should be reloaded.
-        /// This is used to re-identify the autosave.kva after video load and restore metadata.
+        /// This is used to re-associate the autosave.kva after video load and restore metadata.
         /// </summary>
         public Guid Id { get; set; }
 
