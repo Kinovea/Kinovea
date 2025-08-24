@@ -162,6 +162,9 @@
     <Reference Include="NAudio.WinMM, Version=2.2.1.0, Culture=neutral, PublicKeyToken=e279aa5131008a41, processorArchitecture=MSIL">
       <HintPath>..\packages\NAudio.WinMM.2.2.1\lib\netstandard2.0\NAudio.WinMM.dll</HintPath>
     </Reference>
+    <Reference Include="ObjectListView, Version=2.9.1.1072, Culture=neutral, PublicKeyToken=b1c5bf581481bcd4, processorArchitecture=MSIL">
+      <HintPath>..\packages\ObjectListView.Official.2.9.1\lib\net20\ObjectListView.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
@@ -544,6 +547,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="kinovea-256x256.ico" />
+    <None Include="Resources\start3-16.png" />
+    <None Include="Resources\circled-play-green-16.png" />
+    <None Include="Resources\circled-play-16.png" />
+    <None Include="Resources\window_delete.png" />
+    <None Include="Resources\sun-16.png" />
+    <None Include="Resources\stop2-16.png" />
+    <None Include="Resources\sleep-16.png" />
+    <None Include="Resources\thick-arrow-pointing-up-16.png" />
+    <None Include="Resources\thick-arrow-pointing-down-16.png" />
     <None Include="Resources\arrow_refresh.png" />
     <None Include="Resources\arrow-circle-double-135.png" />
     <None Include="Resources\dualplayback.png" />

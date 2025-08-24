@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Kinovea.ScreenManager;
 using Kinovea.Root.Languages;
 using Kinovea.Services;
+using BrightIdeasSoftware;
 
 namespace Kinovea.Root
 {
@@ -17,27 +18,31 @@ namespace Kinovea.Root
     /// </summary>
     public partial class FormWindowManager : Form
     {
+        private enum InstanceStatus
+        {
+            Myself,
+            Running,
+            Sleeping,
+        }
 
-        private string name;
+        private class ListViewWindowDescriptor
+        {
+            public InstanceStatus InstanceStatus { get; set; }
+            public string Name { get; set; }
+        }
+
         private bool manualUpdate;
-        private WindowStartupMode startupMode;
-        private List<IScreenDescriptor> screenList;
         private RootKernel rootKernel;
 
         public FormWindowManager(RootKernel rootKernel)
         {
             this.rootKernel = rootKernel;
 
-            // Make a local copy of the descriptor.
-            WindowDescriptor descriptor = WindowManager.ActiveWindow;
-            name = descriptor.Name;
-            startupMode = descriptor.StartupMode;
-            screenList = new List<IScreenDescriptor>();
-            foreach (var screen in descriptor.ScreenList)
-                screenList.Add(screen.Clone());
+            // Always get the up to date descriptors upon entering this window.
+
 
             InitializeComponent();
-            this.Text = "Active window properties";
+            this.Text = "Manage windows";
 
             Populate();
         }
@@ -46,115 +51,167 @@ namespace Kinovea.Root
         {
             manualUpdate = true;
 
-            tbName.Text = name;
-            rbOpenExplorer.Checked = (startupMode == WindowStartupMode.FileExplorer);
-            rbContinue.Checked = (startupMode == WindowStartupMode.Continue);
-            rbScreenList.Checked = (startupMode == WindowStartupMode.ScreenList);
+            // Populate the list view.
+            List<WindowDescriptor> descriptors = WindowManager.WindowDescriptors;
 
-            grpScreenList.Enabled = rbScreenList.Checked;
+            // ObjectListView
+            // https://objectlistview.sourceforge.net/cs/index.html
+            // 23. How do I make a column that shows just an image?
 
-            manualUpdate = false;
+            // Configure columns
+            var colStatus = new OLVColumn();
+            colStatus.AspectName = "IsRunning";
+            colStatus.Groupable = false;
+            colStatus.Sortable = false;
+            colStatus.IsEditable = false;
+            colStatus.MinimumWidth = 25;
+            colStatus.MaximumWidth = 25;
+            colStatus.TextAlign = HorizontalAlignment.Center;
+            colStatus.AspectGetter = delegate (object rowObject)
+            {
+                return ((ListViewWindowDescriptor)rowObject).InstanceStatus;
+            };
 
-            PopulateScreenList();
+            colStatus.AspectToStringConverter = delegate (object rowObject)
+            {
+                return string.Empty;
+            };
+
+            colStatus.ImageGetter = delegate (object rowObject)
+            {
+                ListViewWindowDescriptor lvwd = (ListViewWindowDescriptor)rowObject;
+                switch (lvwd.InstanceStatus)
+                {
+                    case InstanceStatus.Myself:
+                        return "myself";
+                    case InstanceStatus.Running:
+                        return "running";
+                    case InstanceStatus.Sleeping:
+                    default:
+                        return "sleeping";
+                }
+            };
+
+            var colName = new OLVColumn();
+            colName.AspectName = "Name";
+            colName.Groupable = false;
+            colName.Sortable = false;
+            colName.IsEditable = false;
+            colName.MinimumWidth = 100;
+            colName.FillsFreeSpace = true;
+            colName.FreeSpaceProportion = 2;
+
+            colName.TextAlign = HorizontalAlignment.Left;
+
+            olvWindows.AllColumns.AddRange(new OLVColumn[] {
+                colStatus,
+                colName,
+                });
+
+            olvWindows.Columns.AddRange(new ColumnHeader[] {
+                colStatus,
+                colName,
+                });
+
+            olvWindows.HeaderStyle = ColumnHeaderStyle.None;
+            olvWindows.RowHeight = 22;
+            olvWindows.FullRowSelect = true;
+            
+            List<ListViewWindowDescriptor> rows = new List<ListViewWindowDescriptor>();
+            foreach (var descriptor in descriptors)
+            {
+                string name = descriptor.Name;
+                if (string.IsNullOrEmpty(name))
+                    name = WindowManager.GetIdName(descriptor);
+
+                ListViewWindowDescriptor lvwd = new ListViewWindowDescriptor();
+                lvwd.Name = name;
+
+                if (descriptor.Id == WindowManager.ActiveWindow.Id)
+                {
+                    lvwd.InstanceStatus = InstanceStatus.Myself;
+                }
+                else
+                {
+                    bool isRunning = IsRunning(descriptor);
+                    lvwd.InstanceStatus = isRunning ?  InstanceStatus.Running : InstanceStatus.Sleeping;
+                }
+
+                rows.Add(lvwd);
+            }
+
+            olvWindows.SetObjects(rows);
+        }
+
+        private bool IsRunning(WindowDescriptor d)
+        {
+            string titleName = string.IsNullOrEmpty(d.Name) ? WindowManager.GetIdName(d) : d.Name;
+            string title = string.Format("Kinovea [{0}]", titleName);
+            IntPtr handle = NativeMethods.FindWindow(null, title);
+            return handle != IntPtr.Zero;
         }
 
         private void PopulateScreenList()
         {
-            if (screenList.Count == 0)
-            {
-                // Single line for the explorer.
-                btnScreen2.Visible = false;
-                lblScreen2.Visible = false;
-                PopulateScreen(null, btnScreen1, lblScreen1);
-            }
-            else if (screenList.Count == 1)
-            {
-                btnScreen2.Visible = false;
-                lblScreen2.Visible = false;
-                PopulateScreen(screenList[0], btnScreen1, lblScreen1);
-            }
-            else
-            {
-                // Dual screen.
-                btnScreen2.Visible = true;
-                lblScreen2.Visible = true;
-                PopulateScreen(screenList[0], btnScreen1, lblScreen1);
-                PopulateScreen(screenList[1], btnScreen2, lblScreen2);
-            }
+            //if (screenList.Count == 0)
+            //{
+            //    // Single line for the explorer.
+            //    btnScreen2.Visible = false;
+            //    lblScreen2.Visible = false;
+            //    PopulateScreen(null, btnScreen1, lblScreen1);
+            //}
+            //else if (screenList.Count == 1)
+            //{
+            //    btnScreen2.Visible = false;
+            //    lblScreen2.Visible = false;
+            //    PopulateScreen(screenList[0], btnScreen1, lblScreen1);
+            //}
+            //else
+            //{
+            //    // Dual screen.
+            //    btnScreen2.Visible = true;
+            //    lblScreen2.Visible = true;
+            //    PopulateScreen(screenList[0], btnScreen1, lblScreen1);
+            //    PopulateScreen(screenList[1], btnScreen2, lblScreen2);
+            //}
         }
 
         private void PopulateScreen(IScreenDescriptor screen, Button btn, Label lbl)
         {
-            if (screen == null)
-            {
-                btn.Image = Properties.Resources.home3;
-                lbl.Text = "Explorer";
-            }
-            else if (screen.ScreenType == ScreenType.Playback)
-            {
-                if (((ScreenDescriptionPlayback)screen).IsReplayWatcher)
-                {
-                    btn.Image = Properties.Resources.user_detective;
-                    lbl.Text = string.Format("Replay: {0}", screen.FriendlyName);
-                }
-                else
-                {
-                    btn.Image = Properties.Resources.television;
-                    lbl.Text = string.Format("Playback: {0}", screen.FriendlyName);
-                }
-            }
-            else if (screen.ScreenType == ScreenType.Capture)
-            {
-                btn.Image = Properties.Resources.camera_video;
-                lbl.Text = string.Format("Capture: {0}", screen.FriendlyName);
-            }
+            //if (screen == null)
+            //{
+            //    btn.Image = Properties.Resources.home3;
+            //    lbl.Text = "Explorer";
+            //}
+            //else if (screen.ScreenType == ScreenType.Playback)
+            //{
+            //    if (((ScreenDescriptionPlayback)screen).IsReplayWatcher)
+            //    {
+            //        btn.Image = Properties.Resources.user_detective;
+            //        lbl.Text = string.Format("Replay: {0}", screen.FriendlyName);
+            //    }
+            //    else
+            //    {
+            //        btn.Image = Properties.Resources.television;
+            //        lbl.Text = string.Format("Playback: {0}", screen.FriendlyName);
+            //    }
+            //}
+            //else if (screen.ScreenType == ScreenType.Capture)
+            //{
+            //    btn.Image = Properties.Resources.camera_video;
+            //    lbl.Text = string.Format("Capture: {0}", screen.FriendlyName);
+            //}
         }
 
         #region Event handlers
-        private void tbName_TextChanged(object sender, EventArgs e)
-        {
-            name = tbName.Text.Trim();
-        }
+        
 
-        private void rbStartupMode_CheckedChanged(object sender, EventArgs e)
-        {
-            if (manualUpdate)
-                return;
-
-            if (rbOpenExplorer.Checked)
-                startupMode = WindowStartupMode.FileExplorer;
-            else if (rbScreenList.Checked)
-                startupMode = WindowStartupMode.ScreenList;
-            else
-                startupMode = WindowStartupMode.Continue;
-
-            grpScreenList.Enabled = rbScreenList.Checked;
-        }
-        private void btnUseCurrent_Click(object sender, EventArgs e)
-        {
-            // Import the active screen list.
-            List<IScreenDescriptor> descriptors = rootKernel.ScreenManager.GetScreenDescriptors();
-            screenList.Clear();
-            foreach (var screen in descriptors)
-                screenList.Add(screen.Clone());
-
-            PopulateScreenList();
-        }
+        
+        
         #endregion
 
         #region OK/Cancel/Close
-        private void btnOK_Click(object sender, EventArgs e)
-        {
-            // Commit the local copy to the active window descriptor.
-            WindowDescriptor descriptor = WindowManager.ActiveWindow;
-            descriptor.Name = name;
-            descriptor.StartupMode = startupMode;
-            descriptor.ScreenList.Clear();
-            foreach (var screen in screenList)
-                descriptor.ScreenList.Add(screen.Clone());
-
-            WindowManager.SetTitleName();
-        }
+        
         #endregion
     }
 }
