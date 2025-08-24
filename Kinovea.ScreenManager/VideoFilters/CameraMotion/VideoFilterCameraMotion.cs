@@ -1107,7 +1107,6 @@ namespace Kinovea.ScreenManager
         private void SaveAsDefaultParameters()
         {
             PreferencesManager.PlayerPreferences.CameraMotionParameters = parameters.Clone();
-            PreferencesManager.Save();
         }
 
         /// <summary>

@@ -71,7 +71,6 @@ namespace Kinovea.ScreenManager
                     ImageHelper.Save(dlgSave.FileName, bmp);
             
                     PreferencesManager.PlayerPreferences.ImageFormat = FilesystemHelper.GetImageFormat(dlgSave.FileName);
-                    PreferencesManager.Save();
                 }
             }
             catch (Exception exp)

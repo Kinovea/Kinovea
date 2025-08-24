@@ -95,6 +95,7 @@ namespace Kinovea.Services
 
         private static PreferencesManager instance = null;
         private static object locker = new object();
+        private static bool multisave = false;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public static void Initialize()
@@ -104,11 +105,25 @@ namespace Kinovea.Services
 
         public static void Save()
         {
-            if(instance == null)
+            if(instance == null || multisave)
                 return;
 
             lock(locker)
                 instance.Export();
+        }
+
+        public static void StartMultiSave()
+        {
+            // We are about to update multiple preferences at once and we don't want
+            // each one to trigger a save.
+            multisave = true;
+        }
+
+        public static void EndMultiSave()
+        {
+            // We are done updating multiple preferences at once, save them all at once.
+            multisave = false;
+            Save();
         }
 
         private PreferencesManager()
@@ -128,7 +143,7 @@ namespace Kinovea.Services
 
                 using(XmlWriter w = XmlWriter.Create(Software.PreferencesFile, settings))
                 {
-                        WriteXML(w);
+                    WriteXML(w);
                 }
             }
             catch(Exception e)

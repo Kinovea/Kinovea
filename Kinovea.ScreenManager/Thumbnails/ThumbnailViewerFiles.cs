@@ -663,12 +663,6 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        private void SavePrefs()
-        {
-            PreferencesManager.FileExplorerPreferences.ExplorerThumbsSize = (ExplorerThumbSize)columns;
-            PreferencesManager.Save();
-        }
-        
         /// <summary>
         /// Clicked in the background of the panel.
         /// </summary>
@@ -796,7 +790,6 @@ namespace Kinovea.ScreenManager
         private void UpdateSortAxis(FileSortAxis axis)
         {
             PreferencesManager.FileExplorerPreferences.FileSortAxis = axis;
-            PreferencesManager.Save();
             sortOperationInProgress = true;
             NotificationCenter.RaiseRefreshFileExplorer(this, true);
         }
@@ -804,7 +797,6 @@ namespace Kinovea.ScreenManager
         private void UpdateSortAscending(bool ascending)
         {
             PreferencesManager.FileExplorerPreferences.FileSortAscending = ascending;
-            PreferencesManager.Save();
             sortOperationInProgress = true;
             NotificationCenter.RaiseRefreshFileExplorer(this, true);
         }

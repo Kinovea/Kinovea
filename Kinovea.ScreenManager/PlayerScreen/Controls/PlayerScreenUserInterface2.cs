@@ -1070,7 +1070,6 @@ namespace Kinovea.ScreenManager
             splitViewport_Properties.SplitterDistance = (int)(splitViewport_Properties.Width * PreferencesManager.GeneralPreferences.SidePanelSplitterRatio);
             splitViewport_Properties.SplitterMoved += (s, e) => {
                 PreferencesManager.GeneralPreferences.SidePanelSplitterRatio = (float)e.SplitX / splitViewport_Properties.Width;
-                PreferencesManager.Save();
             };
 
             // Create and add all the side panels.
@@ -4771,7 +4770,6 @@ namespace Kinovea.ScreenManager
                         if (PreferencesManager.PlayerPreferences.TrackingParameters.ContentHash != track.TrackingParameters.ContentHash)
                         {
                             PreferencesManager.PlayerPreferences.TrackingParameters = track.TrackingParameters.Clone();
-                            PreferencesManager.Save();
                         }
                     }
                 }
@@ -4921,7 +4919,6 @@ namespace Kinovea.ScreenManager
             isSidePanelVisible = !isSidePanelVisible;
             splitViewport_Properties.Panel2Collapsed = !isSidePanelVisible;
             PreferencesManager.GeneralPreferences.SidePanelVisible = isSidePanelVisible;
-            PreferencesManager.Save();
         }
         /// <summary>
         /// Force show the side panel at the drawing properties tab.

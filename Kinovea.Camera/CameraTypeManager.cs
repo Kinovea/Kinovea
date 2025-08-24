@@ -227,7 +227,6 @@ namespace Kinovea.Camera
             summary.Manager.ForgetCamera(summary);
 
             PreferencesManager.CapturePreferences.RemoveCamera(summary.Identifier);
-            PreferencesManager.Save();
 
             if (CameraForgotten != null)
                 CameraForgotten(null, new EventArgs<CameraSummary>(summary));

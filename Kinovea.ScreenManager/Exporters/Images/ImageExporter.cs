@@ -49,7 +49,6 @@ namespace Kinovea.ScreenManager
 
             // Save the new preferred image format.
             PreferencesManager.PlayerPreferences.ImageFormat = FilesystemHelper.GetImageFormat(sfd.FileName);
-            PreferencesManager.Save();
             
             SavingSettings s = new SavingSettings();
 
@@ -79,7 +78,6 @@ namespace Kinovea.ScreenManager
 
                         // Save this as the new preferred layout.
                         PreferencesManager.PlayerPreferences.SideBySideHorizontal = horizontal;
-                        PreferencesManager.Save();
 
                         // Export
                         ExporterImageSideBySide exporterSidebySide = new ExporterImageSideBySide();

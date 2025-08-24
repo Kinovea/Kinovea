@@ -561,7 +561,6 @@ namespace Kinovea.Root
         private void mnuHistoryResetOnClick(object sender, EventArgs e)
         {
             PreferencesManager.FileExplorerPreferences.ResetRecentFiles();
-            PreferencesManager.Save();
         }
         private void menuQuitOnClick(object sender, EventArgs e)
         {
@@ -600,7 +599,6 @@ namespace Kinovea.Root
 
                 PreferencesManager.GeneralPreferences.SetCulture(newCulture.Name);
                 Thread.CurrentThread.CurrentUICulture = PreferencesManager.GeneralPreferences.GetSupportedCulture();
-                PreferencesManager.Save();
 
                 RefreshUICulture();
             }
@@ -700,7 +698,6 @@ namespace Kinovea.Root
         {
             PreferencesManager.PlayerPreferences.TimecodeFormat = _timecode;
             RefreshUICulture();
-            PreferencesManager.Save();
         }
 
         private void MnuWorkspaceSaveAsDefault_Click(object sender, EventArgs e)
@@ -708,7 +705,6 @@ namespace Kinovea.Root
             // Extract the current workspace and save it in the preferences.
             Workspace workspace = screenManager.ExtractWorkspace();
             PreferencesManager.GeneralPreferences.Workspace = workspace;
-            PreferencesManager.Save();
 
             MessageBox.Show(
                 RootLang.dlgWorkspace_ConfirmationMessage, 

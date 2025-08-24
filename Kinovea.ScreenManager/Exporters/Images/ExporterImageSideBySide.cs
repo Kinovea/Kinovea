@@ -40,7 +40,6 @@ namespace Kinovea.ScreenManager
             ImageHelper.Save(filePath, bmpComposite);
 
             PreferencesManager.PlayerPreferences.ImageFormat = FilesystemHelper.GetImageFormat(filePath);
-            PreferencesManager.Save();
 
             bmpLeft.Dispose();
             bmpRight.Dispose();

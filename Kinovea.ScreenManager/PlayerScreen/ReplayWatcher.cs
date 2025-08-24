@@ -198,7 +198,6 @@ namespace Kinovea.ScreenManager
             {
                 NotificationCenter.RaiseFileOpened(null, path);
                 PreferencesManager.FileExplorerPreferences.AddRecentFile(path);
-                PreferencesManager.Save();
             }
         }
     }

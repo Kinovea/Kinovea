@@ -64,7 +64,6 @@ namespace Kinovea.ScreenManager
 
             // Save the new preferred image format.
             PreferencesManager.PlayerPreferences.VideoFormat = FilesystemHelper.GetVideoFormat(sfd.FileName);
-            PreferencesManager.Save();
 
             SavingSettings s = new SavingSettings();
             Metadata metadata = player1.FrameServer.Metadata;
@@ -183,7 +182,6 @@ namespace Kinovea.ScreenManager
 
                             // Save this as the new preferred layout.
                             PreferencesManager.PlayerPreferences.SideBySideHorizontal = horizontal;
-                            PreferencesManager.Save();
 
                             // Export the video.
                             ExporterVideoSideBySide exporterVideoDual = new ExporterVideoSideBySide();

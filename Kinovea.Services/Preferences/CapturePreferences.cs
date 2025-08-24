@@ -38,25 +38,25 @@ namespace Kinovea.Services
         public CapturePathConfiguration CapturePathConfiguration
         {
             get { return capturePathConfiguration; }
-            set { capturePathConfiguration = value; }
+            set { capturePathConfiguration = value; Save(); }
         }
 
         public double DisplaySynchronizationFramerate
         {
             get { return displaySynchronizationFramerate; }
-            set { displaySynchronizationFramerate = value; }
+            set { displaySynchronizationFramerate = value; Save(); }
         }
 
         public CaptureRecordingMode RecordingMode
         {
             get { return recordingMode; }
-            set { recordingMode = value; }
+            set { recordingMode = value; Save(); }
         }
 
         public int CaptureMemoryBuffer
         {
             get { return memoryBuffer; }
-            set { memoryBuffer = value; }
+            set { memoryBuffer = value; Save(); }
         }
         public IEnumerable<CameraBlurb> CameraBlurbs
         {
@@ -65,57 +65,57 @@ namespace Kinovea.Services
         public PhotofinishConfiguration PhotofinishConfiguration
         {
             get { return photofinishConfiguration; }
-            set { photofinishConfiguration = value; }
+            set { photofinishConfiguration = value; Save(); }
         }
         public bool VerboseStats
         {
             get { return verboseStats; }
-            set { verboseStats = value; }
+            set { verboseStats = value; Save(); }
         }
         public bool SaveUncompressedVideo
         {
             get { return saveUncompressedVideo; }
-            set { saveUncompressedVideo = value; }
+            set { saveUncompressedVideo = value; Save(); }
         }
         public CaptureAutomationConfiguration CaptureAutomationConfiguration
         {
             get { return captureAutomationConfiguration; }
-            set { captureAutomationConfiguration = value; }
+            set { captureAutomationConfiguration = value; Save(); }
         }
         public float HighspeedRecordingFramerateThreshold
         {
             get { return highspeedRecordingFramerateThreshold; }
-            set { highspeedRecordingFramerateThreshold = value; }
+            set { highspeedRecordingFramerateThreshold = value; Save(); }
         }
         public float HighspeedRecordingFramerateOutput
         {
             get { return highspeedRecordingFramerateOutput; }
-            set { highspeedRecordingFramerateOutput = value; }
+            set { highspeedRecordingFramerateOutput = value; Save(); }
         }
         public float SlowspeedRecordingFramerateThreshold
         {
             get { return slowspeedRecordingFramerateThreshold; }
-            set { slowspeedRecordingFramerateThreshold = value; }
+            set { slowspeedRecordingFramerateThreshold = value; Save(); }
         }
         public float SlowspeedRecordingFramerateOutput
         {
             get { return slowspeedRecordingFramerateOutput; }
-            set { slowspeedRecordingFramerateOutput = value; }
+            set { slowspeedRecordingFramerateOutput = value; Save(); }
         }
         public KVAExportFlags ExportFlags
         {
             get { return exportFlags; }
-            set { exportFlags = value; }
+            set { exportFlags = value; Save(); }
         }
         public string PostRecordCommand
         {
             get { return postRecordCommand; }
-            set { postRecordCommand = value; }
+            set { postRecordCommand = value; Save(); }
         }
         public string CaptureKVA
         {
             get { return captureKVA; }
-            set { captureKVA = value; }
+            set { captureKVA = value; Save(); }
         }
         #endregion
 
@@ -138,6 +138,11 @@ namespace Kinovea.Services
         private string captureKVA;
         #endregion
 
+        private void Save()
+        {
+            PreferencesManager.Save();
+        }
+
         public void AddCamera(CameraBlurb blurb)
         {
             // Note: there should be a way to remove old entries.
@@ -145,14 +150,18 @@ namespace Kinovea.Services
                 cameraBlurbs.Remove(blurb.Identifier);
                 
             cameraBlurbs.Add(blurb.Identifier, blurb);
+            Save();
         }
         
         public void RemoveCamera(string identifier)
         {
             if(cameraBlurbs.ContainsKey(identifier))
                cameraBlurbs.Remove(identifier);
+            
+            Save();
         }
-        
+
+        #region Serialization
         public void WriteXML(XmlWriter writer)
         {
             writer.WriteStartElement("CapturePathConfiguration");
@@ -301,5 +310,6 @@ namespace Kinovea.Services
 
             reader.ReadEndElement();
         }
+        #endregion
     }
 }

@@ -39,115 +39,115 @@ namespace Kinovea.Services
         public int DecimalPlaces
         {
             get { return decimalPlaces; }
-            set { decimalPlaces = value; }
+            set { decimalPlaces = value; Save(); }
         }
         public TimecodeFormat TimecodeFormat
         {
             get { return timecodeFormat; }
-            set { timecodeFormat = value; }
+            set { timecodeFormat = value; Save(); }
         }
         public SpeedUnit SpeedUnit
         {
             get { return speedUnit; }
-            set { speedUnit = value; }
+            set { speedUnit = value; Save(); }
         }
         public AccelerationUnit AccelerationUnit
         {
             get { return accelerationUnit; }
-            set { accelerationUnit = value; }
+            set { accelerationUnit = value; Save(); }
         }
         public AngleUnit AngleUnit
         {
             get { return angleUnit; }
-            set { angleUnit = value; }
+            set { angleUnit = value; Save(); }
         }
         public AngularVelocityUnit AngularVelocityUnit
         {
             get { return angularVelocityUnit; }
-            set { angularVelocityUnit = value; }
+            set { angularVelocityUnit = value; Save(); }
         }
         public AngularAccelerationUnit AngularAccelerationUnit
         {
             get { return angularAccelerationUnit; }
-            set { angularAccelerationUnit = value; }
+            set { angularAccelerationUnit = value; Save(); }
         }
         public string CustomLengthUnit
         {
             get { return customLengthUnit; }
-            set { customLengthUnit = value; }
+            set { customLengthUnit = value; Save(); }
         }
         public string CustomLengthAbbreviation
         {
             get { return customLengthAbbreviation; }
-            set { customLengthAbbreviation = value; }
+            set { customLengthAbbreviation = value; Save(); }
         }
 
         public CadenceUnit CadenceUnit
         {
             get { return cadenceUnit; }
-            set { cadenceUnit = value; }
+            set { cadenceUnit = value; Save(); }
         }
         public ImageAspectRatio AspectRatio
         {
             get { return aspectRatio; }
-            set { aspectRatio = value; }
+            set { aspectRatio = value; Save(); }
         }
         public CSVDecimalSeparator CSVDecimalSeparator
         {
             get { return csvDecimalSeparator; }
-            set { csvDecimalSeparator = value; }
+            set { csvDecimalSeparator = value; Save(); }
         }
         public ExportSpace ExportSpace
         {
             get { return exportSpace; }
-            set { exportSpace = value; }
+            set { exportSpace = value; Save(); }
         }
         public bool ExportImagesInDocuments
         {
             get { return exportImagesInDocuments; }
-            set { exportImagesInDocuments = value; }
+            set { exportImagesInDocuments = value; Save(); }
         }
         public bool DeinterlaceByDefault
         {
             get { return deinterlaceByDefault; }
-            set { deinterlaceByDefault = value; }
+            set { deinterlaceByDefault = value; Save(); }
         }
         public bool InteractiveFrameTracker
         {
             get { return interactiveFrameTracker; }
-            set { interactiveFrameTracker = value; }
+            set { interactiveFrameTracker = value; Save(); }
         }
         public int WorkingZoneMemory
         {
             get { return workingZoneMemory; }
-            set { workingZoneMemory = value; }
+            set { workingZoneMemory = value; Save(); }
         }
         public bool ShowCacheInTimeline
         {
             get { return showCacheInTimeline; }
-            set { showCacheInTimeline = value; }
+            set { showCacheInTimeline = value; Save(); }
         }
         public bool SyncLockSpeed
         {
             get { return syncLockSpeed;}
-            set { syncLockSpeed = value;}
+            set { syncLockSpeed = value; Save(); }
         }
 
         public bool SyncByMotion
         {
             get { return syncByMotion; }
-            set { syncByMotion = value; }
+            set { syncByMotion = value; Save(); }
         }
         
         public InfosFading DefaultFading
         {
             get { return defaultFading; }
-            set { defaultFading = value; }
+            set { defaultFading = value; Save(); }
         }
         public bool DrawOnPlay
         {
             get { return drawOnPlay; }
-            set { drawOnPlay = value; }
+            set { drawOnPlay = value; Save(); }
         }
         public List<Color> RecentColors
         {
@@ -156,90 +156,91 @@ namespace Kinovea.Services
         public KinoveaImageFormat ImageFormat
         {
             get { return imageFormat; }
-            set { imageFormat = value; }
+            set { imageFormat = value; Save(); }
         }
         public KinoveaVideoFormat VideoFormat
         {
             get { return videoFormat; }
-            set { videoFormat = value; }
+            set { videoFormat = value; Save(); }
         }
         public TrackingParameters TrackingParameters
         {
             get { return trackingParameters; }
-            set { trackingParameters = value; }
+            set { trackingParameters = value; Save(); }
         }
         public bool EnableFiltering
         {
             get { return enableFiltering; }
-            set { enableFiltering = value; }
+            set { enableFiltering = value; Save(); }
         }
         public bool EnableHighSpeedDerivativesSmoothing
         {
             get { return enableHighSpeedDerivativesSmoothing; }
-            set { enableHighSpeedDerivativesSmoothing = value; }
+            set { enableHighSpeedDerivativesSmoothing = value; Save(); }
         }
         public bool EnableCustomToolsDebugMode
         {
             get { return enableCustomToolsDebugMode; }
-            set { enableCustomToolsDebugMode = value; }
+            set { enableCustomToolsDebugMode = value; Save(); }
         }
         public float DefaultReplaySpeed
         {
             get { return defaultReplaySpeed; }
-            set { defaultReplaySpeed = value; }
+            set { defaultReplaySpeed = value; Save(); }
         }
         public bool DetectImageSequences
         {
             get { return detectImageSequences; }
-            set { detectImageSequences = value; }
+            set { detectImageSequences = value; Save(); }
         }
         public int PreloadKeyframes
         {
             get { return preloadKeyframes; }
-            set { preloadKeyframes = value; }
+            set { preloadKeyframes = value; Save(); }
         }
         public string PlaybackKVA
         {
             get { return playbackKVA; }
-            set { playbackKVA = value; }
+            set { playbackKVA = value; Save(); }
         }
         public KinogramParameters Kinogram
         {
             get { return kinogramParameters.Clone(); }
-            set { kinogramParameters = value; }
+            set { kinogramParameters = value; Save(); }
         }
 
         public LensCalibrationParameters LensCalibration
         {
             get { return lensCalibrationParameters.Clone(); }
-            set { lensCalibrationParameters = value; }
+            set { lensCalibrationParameters = value; Save(); }
         }
 
         public CameraMotionParameters CameraMotionParameters
         {
             get { return cameraMotionParameters.Clone(); }
-            set { cameraMotionParameters = value; }
+            set { cameraMotionParameters = value; Save(); }
         }
 
         public KeyframePresetsParameters KeyframePresets
         {
             get { return keyframePresetsParameters.Clone(); }
-            set { keyframePresetsParameters = value; }
+            set { keyframePresetsParameters = value; Save(); }
         }
         public string PandocPath
         {
             get { return pandocPath; }
-            set { pandocPath = value; }
+            set { pandocPath = value; Save(); }
         }
 
         public bool SideBySideHorizontal
         {
             get { return sideBySideHorizontal; }
-            set { sideBySideHorizontal = value; }
+            set { sideBySideHorizontal = value; Save(); }
         }
 
         #endregion
 
+        #region Members
         private int decimalPlaces = 2;
         private TimecodeFormat timecodeFormat = TimecodeFormat.ClassicTime;
         private SpeedUnit speedUnit = SpeedUnit.MetersPerSecond;
@@ -280,10 +281,17 @@ namespace Kinovea.Services
         private KeyframePresetsParameters keyframePresetsParameters = new KeyframePresetsParameters();
         private bool showCacheInTimeline = false;
         private bool sideBySideHorizontal = true;
+        #endregion
+
+        private void Save()
+        {
+            PreferencesManager.Save();
+        }
 
         public void AddRecentColor(Color _color)
         {
             PreferencesManager.UpdateRecents(_color, recentColors, maxRecentColors);
+            Save();
         }
         
         public void WriteXML(XmlWriter writer)
@@ -488,7 +496,7 @@ namespace Kinovea.Services
                         pandocPath = reader.ReadElementContentAsString();
                         break;
                     case "SideBySideHorizontal":
-                        SideBySideHorizontal = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        sideBySideHorizontal = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     default:
                         reader.ReadOuterXml();

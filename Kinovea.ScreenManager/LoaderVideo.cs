@@ -88,12 +88,12 @@ namespace Kinovea.ScreenManager
 
                 LoadVideo(playerScreen, path, screenDescription);
 
-                bool prefsNeedSaving = false;
                 if (screenDescription != null && screenDescription.IsReplayWatcher)
                 {
+                    PreferencesManager.StartMultiSave();
                     PreferencesManager.FileExplorerPreferences.AddRecentWatcher(path);
                     PreferencesManager.FileExplorerPreferences.LastReplayFolder = path;
-                    prefsNeedSaving = true;
+                    PreferencesManager.EndMultiSave();
                 }
 
                 if (playerScreen.FrameServer.Loaded)
@@ -111,12 +111,7 @@ namespace Kinovea.ScreenManager
                     {
                         PreferencesManager.FileExplorerPreferences.AddRecentFile(path);
                     }
-
-                    prefsNeedSaving = true;
                 }
-
-                if (prefsNeedSaving)
-                    PreferencesManager.Save();
 
                 manager.OrganizeScreens();
                 manager.OrganizeCommonControls();
@@ -213,7 +208,6 @@ namespace Kinovea.ScreenManager
                 player.view.EnableDisableActions(false);
                 player.StartReplayWatcher(player.view.LaunchDescription, null);
                 PreferencesManager.FileExplorerPreferences.LastReplayFolder = path;
-                PreferencesManager.Save();
             }
         }
 

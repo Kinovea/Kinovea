@@ -38,73 +38,73 @@ namespace Kinovea.Services
         public bool ExplorerVisible
         {
             get { return explorerVisible; }
-            set { explorerVisible = value; }
+            set { explorerVisible = value; Save(); }
         }
 
         public float ExplorerSplitterRatio
         {
             get { return explorerSplitterRatio; }
-            set { explorerSplitterRatio = value; }
+            set { explorerSplitterRatio = value; Save(); }
         }
 
         public float SidePanelSplitterRatio
         {
             get { return sidePanelSplitterRatio; }
-            set { sidePanelSplitterRatio = value; }
+            set { sidePanelSplitterRatio = value; Save(); }
         }
 
         public bool SidePanelVisible
         {
             get { return sidePanelVisible; }
-            set { sidePanelVisible = value; }
+            set { sidePanelVisible = value; Save(); }
         }
 
         public FormWindowState WindowState
         {
             get { return windowState; }
-            set { windowState = value; }
+            set { windowState = value; Save(); }
         }
         
         public Rectangle WindowRectangle 
         {
             get { return windowRectangle; }
-            set { windowRectangle = value; }
+            set { windowRectangle = value; Save(); }
         }
 
         public Workspace Workspace
         {
             get { return workspace; }
-            set { workspace = value; }
+            set { workspace = value; Save(); }
         }
 
         public bool EnableDebugLog
         {
             get { return enableDebugLog; }
-            set { enableDebugLog = value; }
+            set { enableDebugLog = value; Save(); }
         }
 
         public bool AllowMultipleInstances
         {
             get { return allowMultipleInstances; }
-            set { allowMultipleInstances = value; }
+            set { allowMultipleInstances = value; Save(); }
         }
 
         public bool InstancesOwnPreferences
         {
             get { return instancesOwnPreferences; }
-            set { instancesOwnPreferences = value; }
+            set { instancesOwnPreferences = value; Save(); }
         }
 
         public int PreferencePage
         {
             get { return preferencePage; }
-            set { preferencePage = value; }
+            set { preferencePage = value; Save(); }
         }
 
         public string PointerKey
         {
             get { return pointerKey; }
-            set { pointerKey = value; }
+            set { pointerKey = value; Save(); }
         }
         #endregion
 
@@ -128,14 +128,21 @@ namespace Kinovea.Services
         #endregion
         #endregion
 
+
         public GeneralPreferences()
         {
             uiCultureName = Thread.CurrentThread.CurrentUICulture.Name;
         }
 
+        private void Save()
+        {
+            PreferencesManager.Save();
+        }
+
         public void SetCulture(string cultureName)
         {
             uiCultureName = cultureName;
+            Save();
         }
 
         /// <summary>

@@ -1145,7 +1145,6 @@ namespace Kinovea.ScreenManager
         private void SaveAsDefaultParameters()
         {
             PreferencesManager.PlayerPreferences.Kinogram = parameters.Clone();
-            PreferencesManager.Save();
         }
 
         /// <summary>

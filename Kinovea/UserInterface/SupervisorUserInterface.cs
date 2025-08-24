@@ -33,6 +33,7 @@ namespace Kinovea.Root
         #region Members
         private RootKernel rootKernel;
         private bool isOpening;
+        private bool initializing = true;
         #endregion
 
         #region Construction Destruction
@@ -65,6 +66,7 @@ namespace Kinovea.Root
             fileExplorer.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
 
             ResumeLayout();
+            initializing = false;
         }
 
         /// <summary>
@@ -79,7 +81,6 @@ namespace Kinovea.Root
             if (savePreferences)
             {
                 PreferencesManager.GeneralPreferences.ExplorerVisible = show;
-                PreferencesManager.Save();
             }
         }
         #endregion
@@ -119,8 +120,10 @@ namespace Kinovea.Root
 
         private void SplitWorkSpace_SplitterMoved(object sender, SplitterEventArgs e)
         {
+            if (initializing)
+                return;
+            
             PreferencesManager.GeneralPreferences.ExplorerSplitterRatio = (float)splitWorkSpace.SplitterDistance / splitWorkSpace.Width;
-            PreferencesManager.Save();
         }
     }
 }

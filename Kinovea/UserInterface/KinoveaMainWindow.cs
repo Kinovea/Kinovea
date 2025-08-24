@@ -90,9 +90,10 @@ namespace Kinovea.Root
 
         private void KinoveaMainWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
+            PreferencesManager.StartMultiSave();
             PreferencesManager.GeneralPreferences.WindowState = this.WindowState;
             PreferencesManager.GeneralPreferences.WindowRectangle = this.DesktopBounds;
-            PreferencesManager.Save();
+            PreferencesManager.EndMultiSave();
         }
         #endregion
 

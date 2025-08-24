@@ -29,6 +29,7 @@ namespace Kinovea.Services
 {
     public class FileExplorerPreferences : IPreferenceSerializer
     {
+        #region Properties
         public string Name
         {
             get { return "FileExplorer"; }
@@ -46,6 +47,7 @@ namespace Kinovea.Services
                 }
                 
                 maxRecentFiles = value;
+                Save();
             }
         }
 
@@ -58,6 +60,7 @@ namespace Kinovea.Services
                     recentCapturedFiles.RemoveRange(value, recentCapturedFiles.Count - value);
 
                 maxRecentCapturedFiles = value;
+                Save();
             }
         }
 
@@ -82,7 +85,7 @@ namespace Kinovea.Services
         public float ExplorerFilesSplitterRatio
         {
             get { return explorerFilesSplitterRatio; }
-            set { explorerFilesSplitterRatio = value; }
+            set { explorerFilesSplitterRatio = value; Save(); }
         }
 
         /// <summary>
@@ -91,13 +94,13 @@ namespace Kinovea.Services
         public float ShortcutsFilesSplitterRatio
         {
             get { return shortcutsFilesSplitterRatio; }
-            set { shortcutsFilesSplitterRatio = value; }
+            set { shortcutsFilesSplitterRatio = value; Save(); }
         }
         public ExplorerThumbSize ExplorerThumbsSize
         {
             // Size category of the thumbnails.
             get { return explorerThumbsSize; }
-            set { explorerThumbsSize = value; }				
+            set { explorerThumbsSize = value; Save(); }
         }
         public List<ShortcutFolder> ShortcutFolders
         {
@@ -106,12 +109,12 @@ namespace Kinovea.Services
         public ActiveFileBrowserTab ActiveTab 
         {
             get { return activeTab; }
-            set { activeTab = value; }
+            set { activeTab = value; Save(); }
         }
         public string LastBrowsedDirectory 
         {
             get { return lastBrowsedDirectory; }
-            set { lastBrowsedDirectory = value;}
+            set { lastBrowsedDirectory = value; Save(); }
         }
         public FilePropertyVisibility FilePropertyVisibility
         {
@@ -120,21 +123,23 @@ namespace Kinovea.Services
         public string LastReplayFolder
         {
             get { return lastReplayFolder; }
-            set { lastReplayFolder = value; }
+            set { lastReplayFolder = value; Save(); }
         }
 
         public FileSortAxis FileSortAxis
         {
             get { return fileSortAxis; }
-            set { fileSortAxis = value; }
+            set { fileSortAxis = value; Save(); }
         }
 
         public bool FileSortAscending
         {
             get { return fileSortAscending; }
-            set { fileSortAscending = value; }
+            set { fileSortAscending = value; Save(); }
         }
+        #endregion
 
+        #region Members
         private int maxRecentFiles = 10;
         private int maxRecentCapturedFiles = 10;
         private List<string> recentFiles = new List<string>();
@@ -150,17 +155,25 @@ namespace Kinovea.Services
         private string lastReplayFolder;
         private FileSortAxis fileSortAxis = FileSortAxis.Name;
         private bool fileSortAscending = true;
-        
+        #endregion
+
+        private void Save()
+        {
+            PreferencesManager.Save();
+        }
+
         public void AddRecentFile(string file)
         {
             PreferencesManager.UpdateRecents(file, recentFiles, maxRecentFiles);
             NotificationCenter.RaiseRecentFilesChanged(this);
+            Save();
         }
 
         public void AddRecentWatcher(string file)
         {
             PreferencesManager.UpdateRecents(file, recentWatchers, maxRecentFiles);
             NotificationCenter.RaiseRecentFilesChanged(this);
+            Save();
         }
 
         public void ResetRecentFiles()
@@ -168,6 +181,7 @@ namespace Kinovea.Services
             recentFiles.Clear();
             recentWatchers.Clear();
             NotificationCenter.RaiseRecentFilesChanged(this);
+            Save();
         }
 
         public void AddRecentCapturedFile(string file)
@@ -185,6 +199,7 @@ namespace Kinovea.Services
         /// </summary>
         private void ConsolidateRecentFiles(List<string> recentFiles)
         {
+            int oldCount = recentFiles.Count;
             for (int i = recentFiles.Count - 1; i >= 0; i--)
             {
                 if (Path.GetFileName(recentFiles[i]).Contains("*"))
@@ -197,16 +212,21 @@ namespace Kinovea.Services
                     recentFiles.RemoveAt(i);
                 }
             }
+
+            if (recentFiles.Count < oldCount)
+                Save();
         }
         
         public void ResetRecentCapturedFiles()
         {
             recentCapturedFiles.Clear();
+            Save();
         }
 
         public void RemoveShortcut(ShortcutFolder shortcut)
         {
             shortcutFolders.RemoveAll(s => s.Location == shortcut.Location);
+            Save();
         }
         
         public void AddShortcut(ShortcutFolder shortcut)
@@ -218,6 +238,8 @@ namespace Kinovea.Services
                 shortcutFolders.Add(shortcut);
                 shortcutFolders.Sort();
             }
+
+            Save();
         }
         
         public bool IsShortcutKnown(string path)
@@ -228,8 +250,10 @@ namespace Kinovea.Services
         public void SetFilePropertyVisible(FileProperty prop, bool state)
         {
             filePropertyVisibility.Visible[prop] = state;
+            Save();
         }
-        
+
+        #region Serialization
         public void WriteXML(XmlWriter writer)
         {
             writer.WriteElementString("MaxRecentFiles", maxRecentFiles.ToString());
@@ -402,5 +426,6 @@ namespace Kinovea.Services
             shortcutFolders.Sort();
             
         }
+        #endregion
     }
 }

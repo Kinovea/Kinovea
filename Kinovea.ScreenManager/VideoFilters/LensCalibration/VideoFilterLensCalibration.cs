@@ -774,7 +774,6 @@ namespace Kinovea.ScreenManager
         private void SaveAsDefaultParameters()
         {
             PreferencesManager.PlayerPreferences.LensCalibration = parameters.Clone();
-            PreferencesManager.Save();
         }
     }
 }

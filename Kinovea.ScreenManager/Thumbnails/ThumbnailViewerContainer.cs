@@ -151,7 +151,6 @@ namespace Kinovea.ScreenManager
                 viewerCameras.UpdateThumbnailsSize(sizeSelector.SelectedSize);
                 
             PreferencesManager.FileExplorerPreferences.ExplorerThumbsSize = sizeSelector.SelectedSize;
-            PreferencesManager.Save();
         }
         
         private void Selector_SelectionChanged(object sender, EventArgs e)

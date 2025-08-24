@@ -45,10 +45,10 @@ namespace Kinovea.ScreenManager
             }
 
             string pointerKey = PreferencesManager.GeneralPreferences.PointerKey;
-            SetCursor(pointerKey);
+            SetCursor(pointerKey, true);
         }
         
-        public static void SetCursor(string key)
+        public static void SetCursor(string key, bool init = false)
         {
             IntPtr previousIconHandle = iconHandle;
             var bitmap = pointers.ContainsKey(key) ? pointers[key] : pointers["::default"];
@@ -59,7 +59,8 @@ namespace Kinovea.ScreenManager
             if (previousIconHandle != IntPtr.Zero)
                 NativeMethods.DestroyIcon(previousIconHandle);
 
-            PreferencesManager.GeneralPreferences.PointerKey = key;
+            if (!init)
+                PreferencesManager.GeneralPreferences.PointerKey = key;
         }
     }
 }

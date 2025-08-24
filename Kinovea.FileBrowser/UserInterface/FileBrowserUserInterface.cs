@@ -544,15 +544,17 @@ namespace Kinovea.FileBrowser
         {
             if(currentExptreeItem != null)
                 PreferencesManager.FileExplorerPreferences.LastBrowsedDirectory = currentExptreeItem.Path;
-
-            PreferencesManager.Save();
         }
 
         private void Splitters_SplitterMoved(object sender, SplitterEventArgs e)
         {
+            if (initializing)
+                return;
+
+            PreferencesManager.StartMultiSave();
             PreferencesManager.FileExplorerPreferences.ExplorerFilesSplitterRatio = (float)splitExplorerFiles.SplitterDistance / splitExplorerFiles.Height;
             PreferencesManager.FileExplorerPreferences.ShortcutsFilesSplitterRatio = (float)splitShortcutsFiles.SplitterDistance / splitShortcutsFiles.Height;
-            PreferencesManager.Save();
+            PreferencesManager.EndMultiSave();
         }
         #endregion
 
@@ -615,7 +617,6 @@ namespace Kinovea.FileBrowser
             {
                 ShortcutFolder sf = new ShortcutFolder(Path.GetFileName(selectedPath), selectedPath);
                 PreferencesManager.FileExplorerPreferences.AddShortcut(sf);
-                PreferencesManager.Save();
                 ReloadShortcuts();
             }
         }
@@ -630,7 +631,6 @@ namespace Kinovea.FileBrowser
                     continue;
 
                 PreferencesManager.FileExplorerPreferences.RemoveShortcut(sf);
-                PreferencesManager.Save();
                 ReloadShortcuts();
                 break;
             }
@@ -1043,7 +1043,6 @@ namespace Kinovea.FileBrowser
             
             ShortcutFolder sf = new ShortcutFolder(Path.GetFileName(itemToAdd.Path), itemToAdd.Path);
             PreferencesManager.FileExplorerPreferences.AddShortcut(sf);
-            PreferencesManager.Save();
             ReloadShortcuts();
         }
         private void mnuOpenAsReplayWatcher_Click(object sender, EventArgs e)
@@ -1071,14 +1070,12 @@ namespace Kinovea.FileBrowser
         private void UpdateSortAxis(FileSortAxis axis)
         {
             PreferencesManager.FileExplorerPreferences.FileSortAxis = axis;
-            PreferencesManager.Save();
             DoRefreshFileList(true);
         }
 
         private void UpdateSortAscending(bool ascending)
         {
             PreferencesManager.FileExplorerPreferences.FileSortAscending = ascending;
-            PreferencesManager.Save();
             DoRefreshFileList(true);
         }
         #endregion

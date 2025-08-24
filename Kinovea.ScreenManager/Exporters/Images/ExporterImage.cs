@@ -30,7 +30,6 @@ namespace Kinovea.ScreenManager
             bmp.Dispose();
 
             PreferencesManager.PlayerPreferences.ImageFormat = FilesystemHelper.GetImageFormat(file);
-            PreferencesManager.Save();
 
             player.view.AfterExportVideo();
 

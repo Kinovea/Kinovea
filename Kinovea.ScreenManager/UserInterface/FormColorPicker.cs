@@ -74,7 +74,6 @@ namespace Kinovea.ScreenManager
         {
             pickedColor = colorPicker.PickedColor;
             PreferencesManager.PlayerPreferences.AddRecentColor(colorPicker.PickedColor);
-            PreferencesManager.Save();
             DialogResult = DialogResult.OK;
             Close();
         }

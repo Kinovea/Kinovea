@@ -159,7 +159,6 @@ namespace Kinovea.Camera
         public void UpdatedCameraSummary(CameraSummary summary)
         {
             PreferencesManager.CapturePreferences.AddCamera(BlurbFromSummary(summary));
-            PreferencesManager.Save();
         }
 
     }
