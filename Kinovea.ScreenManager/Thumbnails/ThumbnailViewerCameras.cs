@@ -239,6 +239,8 @@ namespace Kinovea.ScreenManager
             thumbnail.SummaryUpdated += Thumbnail_SummaryUpdated;
             thumbnail.DeleteCamera += Thumbnail_DeleteCamera;
 
+            Size size = ThumbnailHelper.GetThumbnailControlSize(thumbSize);
+            thumbnail.SetSize(size.Width, size.Height);
             thumbnails.Add(thumbnail);
             this.pnlThumbs.Controls.Add(thumbnail);
         }
