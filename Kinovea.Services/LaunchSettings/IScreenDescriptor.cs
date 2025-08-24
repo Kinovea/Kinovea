@@ -32,6 +32,14 @@ namespace Kinovea.Services
         ScreenType ScreenType { get; }
 
         /// <summary>
+        /// A string suitable for display in the UI.
+        /// For playback the name of the video.
+        /// For replay the name of the folder.
+        /// For capture the alias of the camera.
+        /// </summary>
+        string FriendlyName { get; }
+
+        /// <summary>
         /// Returns a deep copy of the descriptor.
         /// </summary>
         IScreenDescriptor Clone();

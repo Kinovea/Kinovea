@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Globalization;
+using System.IO;
 using System.Xml;
 
 namespace Kinovea.Services
@@ -31,7 +32,29 @@ namespace Kinovea.Services
         {
             get { return ScreenType.Playback; }
         }
-        
+
+        public string FriendlyName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(FullPath))
+                {
+                    return "Empty";
+                }
+                else if (IsReplayWatcher)
+                {
+                    // TODO: if the screen is using one of the named path
+                    // return its name instead.
+                    string directoryName = Path.GetDirectoryName(FullPath);
+                    return Path.GetFileName(directoryName);
+                }
+                else
+                {
+                    return Path.GetFileNameWithoutExtension(FullPath);
+                }
+            }
+        }
+
         /// <summary>
         /// Guid of the player screen into which this description should be reloaded.
         /// This is used to re-associate the autosave.kva after video load and restore metadata.

@@ -32,6 +32,17 @@ namespace Kinovea.Services
             get { return ScreenType.Capture; }
         }
 
+        public string FriendlyName
+        {
+            get 
+            {
+                if (string.IsNullOrEmpty(CameraName))
+                    return "Empty";
+                else
+                    return CameraName; 
+            }
+        }
+
         /// <summary>
         /// The name of the camera to load.
         /// The first camera with this alias will be picked.

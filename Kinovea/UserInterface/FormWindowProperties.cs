@@ -19,11 +19,15 @@ namespace Kinovea.Root
     {
 
         private string name;
+        private bool manualUpdate;
         private WindowStartupMode startupMode;
         private List<IScreenDescriptor> screenList;
+        private RootKernel rootKernel;
 
-        public FormWindowProperties()
+        public FormWindowProperties(RootKernel rootKernel)
         {
+            this.rootKernel = rootKernel;
+
             // Make a local copy of the descriptor.
             WindowDescriptor descriptor = WindowManager.ActiveWindow;
             name = descriptor.Name;
@@ -40,12 +44,70 @@ namespace Kinovea.Root
 
         private void Populate()
         {
-            this.tbName.Text = name;
-            this.rbOpenExplorer.Checked = (startupMode == WindowStartupMode.FileExplorer);
-            this.rbContinue.Checked = (startupMode == WindowStartupMode.Continue);
-            this.rbScreenList.Checked = (startupMode == WindowStartupMode.ScreenList);
+            manualUpdate = true;
 
-            // TODO: populate screen list.
+            tbName.Text = name;
+            rbOpenExplorer.Checked = (startupMode == WindowStartupMode.FileExplorer);
+            rbContinue.Checked = (startupMode == WindowStartupMode.Continue);
+            rbScreenList.Checked = (startupMode == WindowStartupMode.ScreenList);
+
+            grpScreenList.Enabled = rbScreenList.Checked;
+
+            manualUpdate = false;
+
+            PopulateScreenList();
+        }
+
+        private void PopulateScreenList()
+        {
+            if (screenList.Count == 0)
+            {
+                // Single line for the explorer.
+                btnScreen2.Visible = false;
+                lblScreen2.Visible = false;
+                PopulateScreen(null, btnScreen1, lblScreen1);
+            }
+            else if (screenList.Count == 1)
+            {
+                btnScreen2.Visible = false;
+                lblScreen2.Visible = false;
+                PopulateScreen(screenList[0], btnScreen1, lblScreen1);
+            }
+            else
+            {
+                // Dual screen.
+                btnScreen2.Visible = true;
+                lblScreen2.Visible = true;
+                PopulateScreen(screenList[0], btnScreen1, lblScreen1);
+                PopulateScreen(screenList[1], btnScreen2, lblScreen2);
+            }
+        }
+
+        private void PopulateScreen(IScreenDescriptor screen, Button btn, Label lbl)
+        {
+            if (screen == null)
+            {
+                btn.Image = Properties.Resources.home3;
+                lbl.Text = "Explorer";
+            }
+            else if (screen.ScreenType == ScreenType.Playback)
+            {
+                if (((ScreenDescriptionPlayback)screen).IsReplayWatcher)
+                {
+                    btn.Image = Properties.Resources.user_detective;
+                    lbl.Text = string.Format("Replay: {0}", screen.FriendlyName);
+                }
+                else
+                {
+                    btn.Image = Properties.Resources.television;
+                    lbl.Text = string.Format("Playback: {0}", screen.FriendlyName);
+                }
+            }
+            else if (screen.ScreenType == ScreenType.Capture)
+            {
+                btn.Image = Properties.Resources.camera_video;
+                lbl.Text = string.Format("Capture: {0}", screen.FriendlyName);
+            }
         }
 
         #region Event handlers
@@ -54,14 +116,29 @@ namespace Kinovea.Root
             name = tbName.Text.Trim();
         }
 
-        private void rbOpenExplorer_CheckedChanged(object sender, EventArgs e)
+        private void rbStartupMode_CheckedChanged(object sender, EventArgs e)
         {
+            if (manualUpdate)
+                return;
+
             if (rbOpenExplorer.Checked)
                 startupMode = WindowStartupMode.FileExplorer;
             else if (rbScreenList.Checked)
                 startupMode = WindowStartupMode.ScreenList;
             else
                 startupMode = WindowStartupMode.Continue;
+
+            grpScreenList.Enabled = rbScreenList.Checked;
+        }
+        private void btnUseCurrent_Click(object sender, EventArgs e)
+        {
+            // Import the active screen list.
+            List<IScreenDescriptor> descriptors = rootKernel.ScreenManager.GetScreenDescriptors();
+            screenList.Clear();
+            foreach (var screen in descriptors)
+                screenList.Add(screen.Clone());
+
+            PopulateScreenList();
         }
         #endregion
 
@@ -79,6 +156,5 @@ namespace Kinovea.Root
             WindowManager.SetTitleName();
         }
         #endregion
-
     }
 }

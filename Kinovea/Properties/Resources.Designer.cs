@@ -203,6 +203,16 @@ namespace Kinovea.Root.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap camera_video {
+            get {
+                object obj = ResourceManager.GetObject("camera_video", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap circled_play_button_30 {
             get {
                 object obj = ResourceManager.GetObject("circled_play_button_30", resourceCulture);
@@ -343,6 +353,16 @@ namespace Kinovea.Root.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap home3 {
+            get {
+                object obj = ResourceManager.GetObject("home3", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap image {
             get {
                 object obj = ResourceManager.GetObject("image", resourceCulture);
@@ -446,6 +466,16 @@ namespace Kinovea.Root.Properties {
         internal static System.Drawing.Bitmap save_as_16 {
             get {
                 object obj = ResourceManager.GetObject("save_as_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap television {
+            get {
+                object obj = ResourceManager.GetObject("television", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

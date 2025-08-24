@@ -535,6 +535,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="kinovea-256x256.ico" />
+    <None Include="Resources\home3.png" />
+    <None Include="Resources\camera_video.png" />
+    <None Include="Resources\television.png" />
     <None Include="Resources\application.png" />
     <None Include="Resources\application_form.png" />
     <None Include="Resources\application_edit.png" />

@@ -728,7 +728,7 @@ namespace Kinovea.Root
         {
             string memoName = WindowManager.TitleName;
 
-            FormWindowProperties fwp = new FormWindowProperties();
+            FormWindowProperties fwp = new FormWindowProperties(this);
             fwp.StartPosition = FormStartPosition.CenterScreen;
             fwp.ShowDialog();
             fwp.Dispose();
