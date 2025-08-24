@@ -195,6 +195,12 @@
       <DependentUpon>RootLang.resx</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="UserInterface\FormWindowManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserInterface\FormWindowManager.Designer.cs">
+      <DependentUpon>FormWindowManager.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserInterface\FormWindowProperties.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -317,6 +323,9 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\FormWindowManager.resx">
+      <DependentUpon>FormWindowManager.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\FormWindowProperties.resx">
       <DependentUpon>FormWindowProperties.cs</DependentUpon>
@@ -535,6 +544,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="kinovea-256x256.ico" />
+    <None Include="Resources\dualplayback.png" />
+    <None Include="Resources\dualmixed3.png" />
+    <None Include="Resources\dualcapture2.png" />
     <None Include="Resources\home3.png" />
     <None Include="Resources\camera_video.png" />
     <None Include="Resources\television.png" />

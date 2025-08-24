@@ -415,6 +415,7 @@ namespace Kinovea.Root
 
             mnuWindowProperties.Click += mnuWindowProperties_Click;
             mnuOpenNewWindow.Click += mnuOpenNewWindow_Click;
+            mnuManageWindows.Click += mnuManageWindows_Click;
 
             mnuWindow.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuOpenNewWindow,
@@ -723,6 +724,10 @@ namespace Kinovea.Root
         #endregion
 
         #region Window
+        private void mnuOpenNewWindow_Click(object sender, EventArgs e)
+        {
+            WindowManager.OpenNewWindow();
+        }
 
         private void mnuWindowProperties_Click(object sender, EventArgs e)
         {
@@ -735,7 +740,6 @@ namespace Kinovea.Root
 
             if (fwp.DialogResult == DialogResult.OK)
             {
-                
                 WindowManager.SaveActiveWindow();
 
                 if (memoName != WindowManager.TitleName)
@@ -745,9 +749,76 @@ namespace Kinovea.Root
             }
         }
 
-        private void mnuOpenNewWindow_Click(object sender, EventArgs e)
+        private void BuildWindowsMenus()
         {
-            WindowManager.OpenNewWindow();
+            mnuReopenWindow.DropDownItems.Clear();
+
+            foreach (WindowDescriptor d in WindowManager.WindowDescriptors)
+            {
+                // Filter out our own instance.
+                if (d.Id == WindowManager.ActiveWindow.Id)
+                    continue;
+
+                ToolStripMenuItem mnuWindowDescriptor = new ToolStripMenuItem();
+                string name = d.Name;
+                if (string.IsNullOrEmpty(name))
+                {
+                    // Unnamed window.
+                    name = string.Format("[{0}]", d.Id.ToString().Substring(0, 8));
+                }
+
+                mnuWindowDescriptor.Text = name;
+
+                // Use a custom icon based on the last known screen list.
+                if (d.ScreenList.Count == 0)
+                {
+                    mnuWindowDescriptor.Image = Properties.Resources.home3;
+                }
+                else if (d.ScreenList.Count == 1)
+                {
+                    if (d.ScreenList[0].ScreenType ==  ScreenType.Playback)
+                    {
+                        mnuWindowDescriptor.Image = Properties.Resources.television;
+                    }
+                    else
+                    {
+                        mnuWindowDescriptor.Image = Properties.Resources.camera_video;
+                    }
+                }
+                else if (d.ScreenList.Count == 2)
+                {
+                    if (d.ScreenList[0].ScreenType == ScreenType.Playback && d.ScreenList[1].ScreenType == ScreenType.Playback)
+                    {
+                        mnuWindowDescriptor.Image = Properties.Resources.dualplayback;
+                    }
+                    else if (d.ScreenList[0].ScreenType == ScreenType.Capture && d.ScreenList[1].ScreenType == ScreenType.Capture)
+                    {
+                        mnuWindowDescriptor.Image = Properties.Resources.dualcapture2;
+                    }
+                    else
+                    {
+                        // Mixed.
+                        mnuWindowDescriptor.Image = Properties.Resources.dualmixed3;
+                    }
+                }
+
+                WindowDescriptor desc = d;
+                mnuWindowDescriptor.Click += (s, e) =>
+                {
+                    if (desc != null)
+                        WindowManager.ReopenWindow(d);
+                };
+
+                mnuReopenWindow.DropDownItems.Add(mnuWindowDescriptor);
+            }
+        }
+
+        private void mnuManageWindows_Click(object sender, EventArgs e)
+        {
+            FormWindowManager fwm = new FormWindowManager(this);
+            fwm.StartPosition = FormStartPosition.CenterScreen;
+            fwm.ShowDialog();
+            fwm.Dispose();
         }
 
         #endregion
@@ -982,38 +1053,6 @@ namespace Kinovea.Root
             PointerManager.SetCursor(tag);
         }
         
-        private void BuildWindowsMenus()
-        {
-            mnuReopenWindow.DropDownItems.Clear();
-
-            foreach (WindowDescriptor d in WindowManager.WindowDescriptors)
-            {
-                // Filter out our own instance.
-                if (d.Id == WindowManager.ActiveWindow.Id)
-                    continue;
-
-                ToolStripMenuItem mnuWindowDescriptor = new ToolStripMenuItem();
-                string name = d.Name;
-                if (string.IsNullOrEmpty(name))
-                {
-                    // Unnamed window.
-                    // TODO: parse the screen list instead and give a summary.
-                    name = string.Format("[{0}]", d.Id.ToString().Substring(0, 8));
-                }
-
-                mnuWindowDescriptor.Text = name;
-                //mnuWindowDescriptor.Tag = d;
-                mnuWindowDescriptor.Image = Properties.Resources.application;
-                WindowDescriptor desc = d;
-                mnuWindowDescriptor.Click += (s, e) =>
-                {
-                    if (desc != null)
-                        WindowManager.ReopenWindow(d);
-                };
-
-                mnuReopenWindow.DropDownItems.Add(mnuWindowDescriptor);
-            }
-        }
         #endregion
     }
 }
