@@ -631,11 +631,14 @@ namespace Kinovea.Root
             FormPreferences2 fp = new FormPreferences2();
             fp.ShowDialog();
             fp.Dispose();
-            
-            // Refresh Preferences
-            log.Debug("Setting current ui culture.");
-            Thread.CurrentThread.CurrentUICulture = PreferencesManager.GeneralPreferences.GetSupportedCulture();
-            PreferencesUpdated();
+
+            if (fp.DialogResult == DialogResult.OK)
+            {
+                // Refresh the UI.
+                log.Debug("Setting current UI culture.");
+                Thread.CurrentThread.CurrentUICulture = PreferencesManager.GeneralPreferences.GetSupportedCulture();
+                PreferencesUpdated();
+            }
         }
 
         private void CheckTimecodeMenu()

@@ -49,6 +49,8 @@ namespace Kinovea.Root
         /// </summary>
         public FormPreferences2()
         {
+            this.DialogResult = DialogResult.Cancel;
+
             // Always make sure we have the latest core preferences before showing this dialog.
             PreferencesManager.BeforeRead();
 
@@ -142,6 +144,7 @@ namespace Kinovea.Root
 
             PreferencesManager.ResumeSave();
 
+            this.DialogResult = DialogResult.OK;
             Close();
         }
         private void btnCancel_Click(object sender, EventArgs e)

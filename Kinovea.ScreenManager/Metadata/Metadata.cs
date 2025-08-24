@@ -2313,11 +2313,6 @@ namespace Kinovea.ScreenManager
             // Video filters
             hash ^= GetVideoFiltersContentHash();
 
-            if (hash != referenceHash)
-            {
-                log.Debug(string.Format("Metadata content hash DIRTY:{0} (was:{1}).", hash, referenceHash));
-            }
-
             return hash;
         }
 

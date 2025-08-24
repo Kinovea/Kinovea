@@ -191,8 +191,6 @@ namespace Kinovea.Services
             if (saveSuspended)
                 return;
 
-            log.DebugFormat("After save pref prop");
-
             lock (locker)
             {
                 instance.Export();
