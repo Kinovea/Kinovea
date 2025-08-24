@@ -551,10 +551,10 @@ namespace Kinovea.FileBrowser
             if (initializing)
                 return;
 
-            PreferencesManager.StartMultiSave();
+            PreferencesManager.SuspendSave();
             PreferencesManager.FileExplorerPreferences.ExplorerFilesSplitterRatio = (float)splitExplorerFiles.SplitterDistance / splitExplorerFiles.Height;
             PreferencesManager.FileExplorerPreferences.ShortcutsFilesSplitterRatio = (float)splitShortcutsFiles.SplitterDistance / splitShortcutsFiles.Height;
-            PreferencesManager.EndMultiSave();
+            PreferencesManager.ResumeSave();
         }
         #endregion
 

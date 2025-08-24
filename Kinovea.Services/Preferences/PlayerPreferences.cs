@@ -38,203 +38,203 @@ namespace Kinovea.Services
         }
         public int DecimalPlaces
         {
-            get { return decimalPlaces; }
+            get { BeforeRead(); return decimalPlaces; }
             set { decimalPlaces = value; Save(); }
         }
         public TimecodeFormat TimecodeFormat
         {
-            get { return timecodeFormat; }
+            get { BeforeRead(); return timecodeFormat; }
             set { timecodeFormat = value; Save(); }
         }
         public SpeedUnit SpeedUnit
         {
-            get { return speedUnit; }
+            get { BeforeRead(); return speedUnit; }
             set { speedUnit = value; Save(); }
         }
         public AccelerationUnit AccelerationUnit
         {
-            get { return accelerationUnit; }
+            get { BeforeRead(); return accelerationUnit; }
             set { accelerationUnit = value; Save(); }
         }
         public AngleUnit AngleUnit
         {
-            get { return angleUnit; }
+            get { BeforeRead(); return angleUnit; }
             set { angleUnit = value; Save(); }
         }
         public AngularVelocityUnit AngularVelocityUnit
         {
-            get { return angularVelocityUnit; }
+            get { BeforeRead(); return angularVelocityUnit; }
             set { angularVelocityUnit = value; Save(); }
         }
         public AngularAccelerationUnit AngularAccelerationUnit
         {
-            get { return angularAccelerationUnit; }
+            get { BeforeRead(); return angularAccelerationUnit; }
             set { angularAccelerationUnit = value; Save(); }
         }
         public string CustomLengthUnit
         {
-            get { return customLengthUnit; }
+            get { BeforeRead(); return customLengthUnit; }
             set { customLengthUnit = value; Save(); }
         }
         public string CustomLengthAbbreviation
         {
-            get { return customLengthAbbreviation; }
+            get { BeforeRead(); return customLengthAbbreviation; }
             set { customLengthAbbreviation = value; Save(); }
         }
 
         public CadenceUnit CadenceUnit
         {
-            get { return cadenceUnit; }
+            get { BeforeRead(); return cadenceUnit; }
             set { cadenceUnit = value; Save(); }
         }
         public ImageAspectRatio AspectRatio
         {
-            get { return aspectRatio; }
+            get { BeforeRead(); return aspectRatio; }
             set { aspectRatio = value; Save(); }
         }
         public CSVDecimalSeparator CSVDecimalSeparator
         {
-            get { return csvDecimalSeparator; }
+            get { BeforeRead(); return csvDecimalSeparator; }
             set { csvDecimalSeparator = value; Save(); }
         }
         public ExportSpace ExportSpace
         {
-            get { return exportSpace; }
+            get { BeforeRead(); return exportSpace; }
             set { exportSpace = value; Save(); }
         }
         public bool ExportImagesInDocuments
         {
-            get { return exportImagesInDocuments; }
+            get { BeforeRead(); return exportImagesInDocuments; }
             set { exportImagesInDocuments = value; Save(); }
         }
         public bool DeinterlaceByDefault
         {
-            get { return deinterlaceByDefault; }
+            get { BeforeRead(); return deinterlaceByDefault; }
             set { deinterlaceByDefault = value; Save(); }
         }
         public bool InteractiveFrameTracker
         {
-            get { return interactiveFrameTracker; }
+            get { BeforeRead(); return interactiveFrameTracker; }
             set { interactiveFrameTracker = value; Save(); }
         }
         public int WorkingZoneMemory
         {
-            get { return workingZoneMemory; }
+            get { BeforeRead(); return workingZoneMemory; }
             set { workingZoneMemory = value; Save(); }
         }
         public bool ShowCacheInTimeline
         {
-            get { return showCacheInTimeline; }
+            get { BeforeRead(); return showCacheInTimeline; }
             set { showCacheInTimeline = value; Save(); }
         }
         public bool SyncLockSpeed
         {
-            get { return syncLockSpeed;}
+            get { BeforeRead(); return syncLockSpeed;}
             set { syncLockSpeed = value; Save(); }
         }
 
         public bool SyncByMotion
         {
-            get { return syncByMotion; }
+            get { BeforeRead(); return syncByMotion; }
             set { syncByMotion = value; Save(); }
         }
         
         public InfosFading DefaultFading
         {
-            get { return defaultFading; }
+            get { BeforeRead(); return defaultFading; }
             set { defaultFading = value; Save(); }
         }
         public bool DrawOnPlay
         {
-            get { return drawOnPlay; }
+            get { BeforeRead(); return drawOnPlay; }
             set { drawOnPlay = value; Save(); }
         }
         public List<Color> RecentColors
         {
-            get { return recentColors; }
+            get { BeforeRead(); return recentColors; }
         }
         public KinoveaImageFormat ImageFormat
         {
-            get { return imageFormat; }
+            get { BeforeRead(); return imageFormat; }
             set { imageFormat = value; Save(); }
         }
         public KinoveaVideoFormat VideoFormat
         {
-            get { return videoFormat; }
+            get { BeforeRead(); return videoFormat; }
             set { videoFormat = value; Save(); }
         }
         public TrackingParameters TrackingParameters
         {
-            get { return trackingParameters; }
+            get { BeforeRead(); return trackingParameters; }
             set { trackingParameters = value; Save(); }
         }
         public bool EnableFiltering
         {
-            get { return enableFiltering; }
+            get { BeforeRead(); return enableFiltering; }
             set { enableFiltering = value; Save(); }
         }
         public bool EnableHighSpeedDerivativesSmoothing
         {
-            get { return enableHighSpeedDerivativesSmoothing; }
+            get { BeforeRead(); return enableHighSpeedDerivativesSmoothing; }
             set { enableHighSpeedDerivativesSmoothing = value; Save(); }
         }
         public bool EnableCustomToolsDebugMode
         {
-            get { return enableCustomToolsDebugMode; }
+            get { BeforeRead(); return enableCustomToolsDebugMode; }
             set { enableCustomToolsDebugMode = value; Save(); }
         }
         public float DefaultReplaySpeed
         {
-            get { return defaultReplaySpeed; }
+            get { BeforeRead(); return defaultReplaySpeed; }
             set { defaultReplaySpeed = value; Save(); }
         }
         public bool DetectImageSequences
         {
-            get { return detectImageSequences; }
+            get { BeforeRead(); return detectImageSequences; }
             set { detectImageSequences = value; Save(); }
         }
         public int PreloadKeyframes
         {
-            get { return preloadKeyframes; }
+            get { BeforeRead(); return preloadKeyframes; }
             set { preloadKeyframes = value; Save(); }
         }
         public string PlaybackKVA
         {
-            get { return playbackKVA; }
+            get { BeforeRead(); return playbackKVA; }
             set { playbackKVA = value; Save(); }
         }
         public KinogramParameters Kinogram
         {
-            get { return kinogramParameters.Clone(); }
+            get { BeforeRead(); return kinogramParameters.Clone(); }
             set { kinogramParameters = value; Save(); }
         }
 
         public LensCalibrationParameters LensCalibration
         {
-            get { return lensCalibrationParameters.Clone(); }
+            get { BeforeRead(); return lensCalibrationParameters.Clone(); }
             set { lensCalibrationParameters = value; Save(); }
         }
 
         public CameraMotionParameters CameraMotionParameters
         {
-            get { return cameraMotionParameters.Clone(); }
+            get { BeforeRead(); return cameraMotionParameters.Clone(); }
             set { cameraMotionParameters = value; Save(); }
         }
 
         public KeyframePresetsParameters KeyframePresets
         {
-            get { return keyframePresetsParameters.Clone(); }
+            get { BeforeRead(); return keyframePresetsParameters.Clone(); }
             set { keyframePresetsParameters = value; Save(); }
         }
         public string PandocPath
         {
-            get { return pandocPath; }
+            get { BeforeRead(); return pandocPath; }
             set { pandocPath = value; Save(); }
         }
 
         public bool SideBySideHorizontal
         {
-            get { return sideBySideHorizontal; }
+            get { BeforeRead(); return sideBySideHorizontal; }
             set { sideBySideHorizontal = value; Save(); }
         }
 
@@ -288,12 +288,20 @@ namespace Kinovea.Services
             PreferencesManager.Save();
         }
 
+        private void BeforeRead()
+        {
+            PreferencesManager.BeforeRead();
+        }
+
+
         public void AddRecentColor(Color _color)
         {
-            PreferencesManager.UpdateRecents(_color, recentColors, maxRecentColors);
+            PreferencesHelper.UpdateRecents(_color, recentColors, maxRecentColors);
             Save();
         }
-        
+
+        #region Serialization
+
         public void WriteXML(XmlWriter writer)
         {
             writer.WriteElementString("DecimalPlaces", decimalPlaces.ToString());
@@ -369,7 +377,7 @@ namespace Kinovea.Services
             writer.WriteEndElement();
 
             writer.WriteElementString("PandocPath", pandocPath);
-            writer.WriteElementString("SideBySideHorizontal", XmlHelper.WriteBoolean(SideBySideHorizontal));
+            writer.WriteElementString("SideBySideHorizontal", XmlHelper.WriteBoolean(sideBySideHorizontal));
         }
         
         public void ReadXML(XmlReader reader)
@@ -527,5 +535,6 @@ namespace Kinovea.Services
             
             reader.ReadEndElement();
         }
+        #endregion
     }
 }

@@ -35,75 +35,90 @@ namespace Kinovea.Services
             get { return "General"; }
         }
 
+        #region Instance prefs
         public bool ExplorerVisible
         {
-            get { return explorerVisible; }
+            get { BeforeRead(); return explorerVisible; }
             set { explorerVisible = value; Save(); }
         }
 
+        /// <summary>
+        /// Vertical splitter between the explorer and the screen manager.
+        /// </summary>
         public float ExplorerSplitterRatio
         {
-            get { return explorerSplitterRatio; }
+            get { BeforeRead(); return explorerSplitterRatio; }
             set { explorerSplitterRatio = value; Save(); }
         }
 
+        /// <summary>
+        /// Vertical splitter inside the player screen between the viewport and the side panel.
+        /// </summary>
         public float SidePanelSplitterRatio
         {
-            get { return sidePanelSplitterRatio; }
+            get { BeforeRead(); return sidePanelSplitterRatio; }
             set { sidePanelSplitterRatio = value; Save(); }
         }
 
+        /// <summary>
+        /// Whether the side panel is visible.
+        /// </summary>
         public bool SidePanelVisible
         {
-            get { return sidePanelVisible; }
+            get { BeforeRead(); return sidePanelVisible; }
             set { sidePanelVisible = value; Save(); }
         }
 
+        /// <summary>
+        /// State of the main window.
+        /// </summary>
         public FormWindowState WindowState
         {
-            get { return windowState; }
+            get { BeforeRead(); return windowState; }
             set { windowState = value; Save(); }
         }
         
+        /// <summary>
+        /// Position and size of the main window.
+        /// </summary>
         public Rectangle WindowRectangle 
         {
-            get { return windowRectangle; }
+            get { BeforeRead(); return windowRectangle; }
             set { windowRectangle = value; Save(); }
         }
 
+        /// <summary>
+        /// Arrangement of screens in the instance.
+        /// </summary>
         public Workspace Workspace
         {
-            get { return workspace; }
+            get { BeforeRead(); return workspace; }
             set { workspace = value; Save(); }
         }
+        #endregion
+
 
         public bool EnableDebugLog
         {
-            get { return enableDebugLog; }
+            get { BeforeRead(); return enableDebugLog; }
             set { enableDebugLog = value; Save(); }
         }
 
-        public bool AllowMultipleInstances
-        {
-            get { return allowMultipleInstances; }
-            set { allowMultipleInstances = value; Save(); }
-        }
-
-        public bool InstancesOwnPreferences
-        {
-            get { return instancesOwnPreferences; }
-            set { instancesOwnPreferences = value; Save(); }
-        }
-
+        /// <summary>
+        /// Last preference page visited.
+        /// </summary>
         public int PreferencePage
         {
-            get { return preferencePage; }
+            get { BeforeRead(); return preferencePage; }
             set { preferencePage = value; Save(); }
         }
 
+        /// <summary>
+        /// Last mouse pointer used.
+        /// </summary>
         public string PointerKey
         {
-            get { return pointerKey; }
+            get { BeforeRead(); return pointerKey; }
             set { pointerKey = value; Save(); }
         }
         #endregion
@@ -111,12 +126,10 @@ namespace Kinovea.Services
         #region Members
         private string uiCultureName;
         private bool enableDebugLog = false;
-        private bool allowMultipleInstances = true;
-        private bool instancesOwnPreferences = true;
         private int preferencePage;
         private string pointerKey = "::default";
 
-        // The following should be moved to the workspace as they are instance specific.
+        // The following should be moved to the instance specific prefs.
         #region Workspace
         private bool explorerVisible = true;
         private float explorerSplitterRatio = 0.2f;
@@ -139,6 +152,11 @@ namespace Kinovea.Services
             PreferencesManager.Save();
         }
 
+        private void BeforeRead()
+        {
+            PreferencesManager.BeforeRead();
+        }
+
         public void SetCulture(string cultureName)
         {
             uiCultureName = cultureName;
@@ -159,16 +177,15 @@ namespace Kinovea.Services
                 return new CultureInfo("en");
         }
 
+        #region Serialization
+
         public void WriteXML(XmlWriter writer)
         {
             writer.WriteElementString("Culture", uiCultureName);
             writer.WriteElementString("EnableDebugLog", XmlHelper.WriteBoolean(enableDebugLog));
-            writer.WriteElementString("AllowMultipleInstances", XmlHelper.WriteBoolean(allowMultipleInstances));
-            writer.WriteElementString("InstancesOwnPreferences", XmlHelper.WriteBoolean(instancesOwnPreferences));
             writer.WriteElementString("PreferencesPage", preferencePage.ToString());
             writer.WriteElementString("Pointer", pointerKey);
             
-
             if (workspace != null && workspace.Screens != null && workspace.Screens.Count > 0)
             {
                 writer.WriteStartElement("Workspace");
@@ -198,12 +215,6 @@ namespace Kinovea.Services
                         break;
                     case "EnableDebugLog":
                         enableDebugLog = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
-                        break;
-                    case "AllowMultipleInstances":
-                        allowMultipleInstances = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
-                        break;
-                    case "InstancesOwnPreferences":
-                        instancesOwnPreferences = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     case "PreferencesPage":
                         preferencePage = reader.ReadElementContentAsInt();
@@ -240,5 +251,6 @@ namespace Kinovea.Services
 
             reader.ReadEndElement();
         }
+        #endregion
     }
 }

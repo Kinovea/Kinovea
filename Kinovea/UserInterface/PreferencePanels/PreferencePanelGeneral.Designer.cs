@@ -52,8 +52,6 @@ namespace Kinovea.Root
       this.lblLanguage = new System.Windows.Forms.Label();
       this.lblHistoryCount = new System.Windows.Forms.Label();
       this.cmbLanguage = new System.Windows.Forms.ComboBox();
-      this.chkAllowMultipleInstances = new System.Windows.Forms.CheckBox();
-      this.chkInstancesPreferences = new System.Windows.Forms.CheckBox();
       this.cbEnableDebugLogs = new System.Windows.Forms.CheckBox();
       this.SuspendLayout();
       // 
@@ -110,28 +108,6 @@ namespace Kinovea.Root
       this.cmbLanguage.TabIndex = 11;
       this.cmbLanguage.SelectedIndexChanged += new System.EventHandler(this.cmbLanguage_SelectedIndexChanged);
       // 
-      // chkAllowMultipleInstances
-      // 
-      this.chkAllowMultipleInstances.AutoSize = true;
-      this.chkAllowMultipleInstances.Location = new System.Drawing.Point(32, 163);
-      this.chkAllowMultipleInstances.Name = "chkAllowMultipleInstances";
-      this.chkAllowMultipleInstances.Size = new System.Drawing.Size(191, 17);
-      this.chkAllowMultipleInstances.TabIndex = 53;
-      this.chkAllowMultipleInstances.Text = "Allow multiple instances of Kinovea";
-      this.chkAllowMultipleInstances.UseVisualStyleBackColor = true;
-      this.chkAllowMultipleInstances.CheckedChanged += new System.EventHandler(this.chkAllowMultipleInstances_CheckedChanged);
-      // 
-      // chkInstancesPreferences
-      // 
-      this.chkInstancesPreferences.AutoSize = true;
-      this.chkInstancesPreferences.Location = new System.Drawing.Point(32, 196);
-      this.chkInstancesPreferences.Name = "chkInstancesPreferences";
-      this.chkInstancesPreferences.Size = new System.Drawing.Size(204, 17);
-      this.chkInstancesPreferences.TabIndex = 54;
-      this.chkInstancesPreferences.Text = "Instances have their own preferences";
-      this.chkInstancesPreferences.UseVisualStyleBackColor = true;
-      this.chkInstancesPreferences.CheckedChanged += new System.EventHandler(this.ChkInstancesPreferences_CheckedChanged);
-      // 
       // cbEnableDebugLogs
       // 
       this.cbEnableDebugLogs.AutoSize = true;
@@ -149,8 +125,6 @@ namespace Kinovea.Root
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.Color.Gainsboro;
       this.Controls.Add(this.cbEnableDebugLogs);
-      this.Controls.Add(this.chkInstancesPreferences);
-      this.Controls.Add(this.chkAllowMultipleInstances);
       this.Controls.Add(this.cmbHistoryCount);
       this.Controls.Add(this.lblLanguage);
       this.Controls.Add(this.lblHistoryCount);
@@ -165,8 +139,6 @@ namespace Kinovea.Root
 		private System.Windows.Forms.Label lblHistoryCount;
 		private System.Windows.Forms.Label lblLanguage;
 		private System.Windows.Forms.ComboBox cmbHistoryCount;
-        private System.Windows.Forms.CheckBox chkAllowMultipleInstances;
-        private System.Windows.Forms.CheckBox chkInstancesPreferences;
         private System.Windows.Forms.CheckBox cbEnableDebugLogs;
     }
 }

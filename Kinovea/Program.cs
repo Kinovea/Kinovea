@@ -34,7 +34,7 @@ namespace Kinovea.Root
 {
     internal static class Program
     {
-        private static bool FirstInstance
+        private static bool IsFirstInstance
         {
             get
             {
@@ -61,27 +61,28 @@ namespace Kinovea.Root
             Software.LogInfo();
             Software.SanityCheckDirectories();
             PreferencesManager.Initialize();
+            PreferencesManager.Refresh();
 
-            // Bail out if the application is already running and multiple instances are not allowed.
-            bool firstInstance = Program.FirstInstance;
-            if (!firstInstance && !PreferencesManager.GeneralPreferences.AllowMultipleInstances)
-                return;
-
-            // Get launch settings from thecommand line.
+            // Check if this is the first instance of the application.
+            // If we are not started on a specific name this will be used to
+            // restore the last closed window if we are first or start a new one otherwise.
+            bool isFirstInstance = IsFirstInstance;
+            
+            // Get launch settings from thecommand line, including instance name.
             // This will update the static LanchSettingsManager with the data.
             var args = Environment.GetCommandLineArgs();
             if (args.Length > 1)
                 CommandLineArgumentManager.Instance.ParseArguments(args);
 
-            // Configure the instance name.
-            // TODO: figure out the workspace file and load or create it.
+            // Configure the instance.
+            // TODO: load the list of saved instances and determine which one to launch or if we
+            // should start a new one.
             Software.ConfigureInstance();
 
+            // Make sure each instance logs to its own log file.
             Software.ConfigureLogging();
 
-            // TODO: remove the scheme where instances have their own preferences.
-            if (PreferencesManager.GeneralPreferences.InstancesOwnPreferences && !string.IsNullOrEmpty(Software.InstanceName))
-                PreferencesManager.Initialize();
+            //----------------------------------------------------------------
 
             // General application startup workflow.
             log.Debug("Application level initialisations.");
@@ -102,7 +103,11 @@ namespace Kinovea.Root
             log.Debug("Launching.");
             kernel.Launch();
         }
-        
+
+        /// <summary>
+        /// Top level catch-all for unhandled exceptions.
+        /// Dump the data to a separate file if possible.
+        /// </summary>
         private static void AppDomain_UnhandledException(object sender, UnhandledExceptionEventArgs args)
         {
             Exception ex = (Exception)args.ExceptionObject;

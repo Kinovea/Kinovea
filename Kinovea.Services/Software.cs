@@ -78,17 +78,8 @@ namespace Kinovea.Services
         /// <summary>
         /// The main preferences file.
         /// </summary>
-        public static string PreferencesFile
-        {
-            get
-            {
-                if (!instanceConfigured || string.IsNullOrEmpty(InstanceName) || !PreferencesManager.GeneralPreferences.InstancesOwnPreferences)
-                    return SettingsDirectory + "Preferences.xml";
-                else
-                    return SettingsDirectory + string.Format("Preferences.{0}.xml", InstanceName);
-            }
-        }
-
+        public static string PreferencesFile { get; private set; }
+        
         /// <summary>
         /// Directory where auto-save files are stored.
         /// </summary>
@@ -128,7 +119,8 @@ namespace Kinovea.Services
                 SettingsDirectory = portableSettings + "\\";
             else
                 SettingsDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ApplicationName) + "\\";
-            
+
+            PreferencesFile             = Path.Combine(SettingsDirectory, "Preferences.xml");
             CameraCalibrationDirectory  = Path.Combine(SettingsDirectory, "CameraCalibration");
             CameraPluginsDirectory      = Path.Combine(SettingsDirectory, "Plugins", "Camera");
             CameraProfilesDirectory     = Path.Combine(SettingsDirectory, "CameraProfiles");

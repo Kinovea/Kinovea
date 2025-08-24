@@ -225,6 +225,7 @@
     <Compile Include="Filesystem\FolderNavigationType.cs" />
     <Compile Include="Filesystem\FileSortAxis.cs" />
     <Compile Include="Infrastructure\BitmapHelper.cs" />
+    <Compile Include="Preferences\PreferencesHelper.cs" />
     <Compile Include="Types\CalibrationValidationMode.cs" />
     <Compile Include="Types\CameraMotionFeatureType.cs" />
     <Compile Include="Types\CameraMotionParameters.cs" />

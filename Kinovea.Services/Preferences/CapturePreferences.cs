@@ -37,84 +37,79 @@ namespace Kinovea.Services
 
         public CapturePathConfiguration CapturePathConfiguration
         {
-            get { return capturePathConfiguration; }
+            get { BeforeRead(); return capturePathConfiguration; }
             set { capturePathConfiguration = value; Save(); }
         }
 
         public double DisplaySynchronizationFramerate
         {
-            get { return displaySynchronizationFramerate; }
+            get { BeforeRead(); return displaySynchronizationFramerate; }
             set { displaySynchronizationFramerate = value; Save(); }
         }
 
         public CaptureRecordingMode RecordingMode
         {
-            get { return recordingMode; }
+            get { BeforeRead(); return recordingMode; }
             set { recordingMode = value; Save(); }
         }
 
         public int CaptureMemoryBuffer
         {
-            get { return memoryBuffer; }
+            get { BeforeRead(); return memoryBuffer; }
             set { memoryBuffer = value; Save(); }
         }
         public IEnumerable<CameraBlurb> CameraBlurbs
         {
-            get { return cameraBlurbs.Values.Cast<CameraBlurb>(); }
+            get { BeforeRead(); return cameraBlurbs.Values.Cast<CameraBlurb>(); }
         }
         public PhotofinishConfiguration PhotofinishConfiguration
         {
-            get { return photofinishConfiguration; }
+            get { BeforeRead(); return photofinishConfiguration; }
             set { photofinishConfiguration = value; Save(); }
-        }
-        public bool VerboseStats
-        {
-            get { return verboseStats; }
-            set { verboseStats = value; Save(); }
         }
         public bool SaveUncompressedVideo
         {
-            get { return saveUncompressedVideo; }
+            get { BeforeRead(); return saveUncompressedVideo; }
             set { saveUncompressedVideo = value; Save(); }
         }
         public CaptureAutomationConfiguration CaptureAutomationConfiguration
         {
-            get { return captureAutomationConfiguration; }
+            get { BeforeRead(); return captureAutomationConfiguration; }
             set { captureAutomationConfiguration = value; Save(); }
         }
         public float HighspeedRecordingFramerateThreshold
         {
-            get { return highspeedRecordingFramerateThreshold; }
+            get { BeforeRead(); return highspeedRecordingFramerateThreshold; }
             set { highspeedRecordingFramerateThreshold = value; Save(); }
         }
         public float HighspeedRecordingFramerateOutput
         {
-            get { return highspeedRecordingFramerateOutput; }
+            get { BeforeRead(); return highspeedRecordingFramerateOutput; }
             set { highspeedRecordingFramerateOutput = value; Save(); }
         }
         public float SlowspeedRecordingFramerateThreshold
         {
-            get { return slowspeedRecordingFramerateThreshold; }
+            get { BeforeRead(); return slowspeedRecordingFramerateThreshold; }
             set { slowspeedRecordingFramerateThreshold = value; Save(); }
         }
         public float SlowspeedRecordingFramerateOutput
         {
-            get { return slowspeedRecordingFramerateOutput; }
+            get { BeforeRead(); return slowspeedRecordingFramerateOutput; }
             set { slowspeedRecordingFramerateOutput = value; Save(); }
         }
         public KVAExportFlags ExportFlags
         {
-            get { return exportFlags; }
+            get { BeforeRead(); return exportFlags; }
             set { exportFlags = value; Save(); }
         }
         public string PostRecordCommand
         {
-            get { return postRecordCommand; }
+            get { BeforeRead(); return postRecordCommand; }
             set { postRecordCommand = value; Save(); }
         }
         public string CaptureKVA
         {
-            get { return captureKVA; }
+            get { BeforeRead(); return captureKVA; }
             set { captureKVA = value; Save(); }
         }
         #endregion
@@ -141,6 +136,11 @@ namespace Kinovea.Services
         private void Save()
         {
             PreferencesManager.Save();
+        }
+
+        private void BeforeRead()
+        {
+            PreferencesManager.BeforeRead();
         }
 
         public void AddCamera(CameraBlurb blurb)

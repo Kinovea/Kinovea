@@ -90,10 +90,10 @@ namespace Kinovea.ScreenManager
 
                 if (screenDescription != null && screenDescription.IsReplayWatcher)
                 {
-                    PreferencesManager.StartMultiSave();
+                    PreferencesManager.SuspendSave();
                     PreferencesManager.FileExplorerPreferences.AddRecentWatcher(path);
                     PreferencesManager.FileExplorerPreferences.LastReplayFolder = path;
-                    PreferencesManager.EndMultiSave();
+                    PreferencesManager.ResumeSave();
                 }
 
                 if (playerScreen.FrameServer.Loaded)

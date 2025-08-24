@@ -37,7 +37,7 @@ namespace Kinovea.Services
 
         public int MaxRecentFiles
         {
-            get { return maxRecentFiles; }
+            get { BeforeRead(); return maxRecentFiles; }
             set 
             { 
                 if(recentFiles.Count > value)
@@ -53,7 +53,7 @@ namespace Kinovea.Services
 
         public int MaxRecentCapturedFiles
         {
-            get { return maxRecentCapturedFiles; }
+            get { BeforeRead(); return maxRecentCapturedFiles; }
             set
             {
                 if (recentCapturedFiles.Count > value)
@@ -66,60 +66,70 @@ namespace Kinovea.Services
 
         public List<string> RecentFiles
         {
-            get { return recentFiles;}
+            get { BeforeRead(); return recentFiles;}
         }
 
         public List<string> RecentWatchers
         {
-            get { return recentWatchers; }
+            get { BeforeRead(); return recentWatchers; }
         }
 
         public List<string> RecentCapturedFiles
         {
-            get { return recentCapturedFiles; }
+            get { BeforeRead(); return recentCapturedFiles; }
         }
 
+        #region Instance properties
         /// <summary>
-        /// Splitter between folders and files.
+        /// Horizontal splitter between folders and files in the file explorer tab.
         /// </summary>
         public float ExplorerFilesSplitterRatio
         {
-            get { return explorerFilesSplitterRatio; }
+            get { BeforeRead(); return explorerFilesSplitterRatio; }
             set { explorerFilesSplitterRatio = value; Save(); }
         }
 
         /// <summary>
-        /// Splitter between folders and files on Shortcuts tab
+        /// Horizontal splitter between folders and files in the shortcuts explorer tab.
         /// </summary>
         public float ShortcutsFilesSplitterRatio
         {
-            get { return shortcutsFilesSplitterRatio; }
+            get { BeforeRead(); return shortcutsFilesSplitterRatio; }
             set { shortcutsFilesSplitterRatio = value; Save(); }
         }
-        public ExplorerThumbSize ExplorerThumbsSize
+
+        public ActiveFileBrowserTab ActiveTab
         {
-            // Size category of the thumbnails.
-            get { return explorerThumbsSize; }
-            set { explorerThumbsSize = value; Save(); }
-        }
-        public List<ShortcutFolder> ShortcutFolders
-        {
-            get{ return shortcutFolders;}
-        }
-        public ActiveFileBrowserTab ActiveTab 
-        {
-            get { return activeTab; }
+            get { BeforeRead(); return activeTab; }
             set { activeTab = value; Save(); }
         }
+        #endregion
+
+        /// <summary>
+        /// Size of thumbnails.
+        /// </summary>
+        public ExplorerThumbSize ExplorerThumbsSize
+        {
+            get { BeforeRead(); return explorerThumbsSize; }
+            set { explorerThumbsSize = value; Save(); }
+        }
+
+        public List<ShortcutFolder> ShortcutFolders
+        {
+            get { BeforeRead(); return shortcutFolders;}
+        }
+        
         public string LastBrowsedDirectory 
         {
-            get { return lastBrowsedDirectory; }
+            get { BeforeRead(); return lastBrowsedDirectory; }
             set { lastBrowsedDirectory = value; Save(); }
         }
+
         public FilePropertyVisibility FilePropertyVisibility
         {
-            get { return filePropertyVisibility; }
+            get { BeforeRead(); return filePropertyVisibility; }
         }
+        
         public string LastReplayFolder
         {
             get { return lastReplayFolder; }
@@ -145,16 +155,18 @@ namespace Kinovea.Services
         private List<string> recentFiles = new List<string>();
         private List<string> recentWatchers = new List<string>();
         private List<string> recentCapturedFiles = new List<string>();
-        private float shortcutsFilesSplitterRatio = 0.25f;
-        private float explorerFilesSplitterRatio = 0.25f;
-        private ExplorerThumbSize explorerThumbsSize = ExplorerThumbSize.Medium; 
         private List<ShortcutFolder> shortcutFolders = new List<ShortcutFolder>();
-        private ActiveFileBrowserTab activeTab = ActiveFileBrowserTab.Explorer;
+        private ExplorerThumbSize explorerThumbsSize = ExplorerThumbSize.Medium; 
         private string lastBrowsedDirectory;
         private FilePropertyVisibility filePropertyVisibility = new FilePropertyVisibility();
         private string lastReplayFolder;
         private FileSortAxis fileSortAxis = FileSortAxis.Name;
         private bool fileSortAscending = true;
+
+        // Instance prefs
+        private float shortcutsFilesSplitterRatio = 0.25f;
+        private float explorerFilesSplitterRatio = 0.25f;
+        private ActiveFileBrowserTab activeTab = ActiveFileBrowserTab.Explorer;
         #endregion
 
         private void Save()
@@ -162,16 +174,21 @@ namespace Kinovea.Services
             PreferencesManager.Save();
         }
 
+        private void BeforeRead()
+        {
+            PreferencesManager.BeforeRead();
+        }
+
         public void AddRecentFile(string file)
         {
-            PreferencesManager.UpdateRecents(file, recentFiles, maxRecentFiles);
+            PreferencesHelper.UpdateRecents(file, recentFiles, maxRecentFiles);
             NotificationCenter.RaiseRecentFilesChanged(this);
             Save();
         }
 
         public void AddRecentWatcher(string file)
         {
-            PreferencesManager.UpdateRecents(file, recentWatchers, maxRecentFiles);
+            PreferencesHelper.UpdateRecents(file, recentWatchers, maxRecentFiles);
             NotificationCenter.RaiseRecentFilesChanged(this);
             Save();
         }
@@ -186,35 +203,17 @@ namespace Kinovea.Services
 
         public void AddRecentCapturedFile(string file)
         {
-            PreferencesManager.UpdateRecents(file, recentCapturedFiles, maxRecentCapturedFiles);
+            PreferencesHelper.UpdateRecents(file, recentCapturedFiles, maxRecentCapturedFiles);
+            Save();
         }
 
         public void ConsolidateRecentCapturedFiles()
         {
-            ConsolidateRecentFiles(recentCapturedFiles);
-        }
-
-        /// <summary>
-        /// Remove missing entries from recent list.
-        /// </summary>
-        private void ConsolidateRecentFiles(List<string> recentFiles)
-        {
-            int oldCount = recentFiles.Count;
-            for (int i = recentFiles.Count - 1; i >= 0; i--)
+            bool updated = PreferencesHelper.ConsolidateRecentFiles(recentCapturedFiles);
+            if (updated)
             {
-                if (Path.GetFileName(recentFiles[i]).Contains("*"))
-                {
-                    if (!Directory.Exists(Path.GetDirectoryName(recentFiles[i])))
-                        recentFiles.RemoveAt(i);
-                }
-                else if (!File.Exists(recentFiles[i]))
-                {
-                    recentFiles.RemoveAt(i);
-                }
-            }
-
-            if (recentFiles.Count < oldCount)
                 Save();
+            }
         }
         
         public void ResetRecentCapturedFiles()

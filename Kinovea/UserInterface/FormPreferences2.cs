@@ -125,7 +125,7 @@ namespace Kinovea.Root
         #region Save & Cancel Handlers
         private void btnSave_Click(object sender, EventArgs e)
         {
-            PreferencesManager.StartMultiSave();
+            PreferencesManager.SuspendSave();
 
             // Ask each page to commit its changes to the PreferencesManager.
             foreach(IPreferencePanel page in pages)
@@ -134,7 +134,7 @@ namespace Kinovea.Root
                 page.Close();
             }
 
-            PreferencesManager.EndMultiSave();
+            PreferencesManager.ResumeSave();
 
             Close();
         }

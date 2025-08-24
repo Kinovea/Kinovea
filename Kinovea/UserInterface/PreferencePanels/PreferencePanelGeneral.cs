@@ -61,8 +61,6 @@ namespace Kinovea.Root
         private string uiCultureName;
         private int maxRecentFiles;
         private bool enableDebugLogs;
-        private bool allowMultipleInstances;
-        private bool instancesOwnPreferences;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -92,8 +90,6 @@ namespace Kinovea.Root
             uiCultureName = LanguageManager.GetCurrentCultureName();
             maxRecentFiles = PreferencesManager.FileExplorerPreferences.MaxRecentFiles;
             enableDebugLogs = PreferencesManager.GeneralPreferences.EnableDebugLog;
-            allowMultipleInstances = PreferencesManager.GeneralPreferences.AllowMultipleInstances;
-            instancesOwnPreferences = PreferencesManager.GeneralPreferences.InstancesOwnPreferences;
         }
         private void InitPage()
         {
@@ -113,21 +109,6 @@ namespace Kinovea.Root
 
             cbEnableDebugLogs.Text = "Enable debug logs";
             cbEnableDebugLogs.Checked = enableDebugLogs;
-            chkAllowMultipleInstances.Text = RootLang.dlgPreferences_General_chkAllowMultipleInstances;
-            chkAllowMultipleInstances.Checked = allowMultipleInstances;
-            chkInstancesPreferences.Text = RootLang.dlgPreferences_General_InstancesHaveOwnPreferences;
-            chkInstancesPreferences.Checked = instancesOwnPreferences;
-            chkInstancesPreferences.Enabled = allowMultipleInstances;
-
-            if (!string.IsNullOrEmpty(Software.InstanceName) && PreferencesManager.GeneralPreferences.InstancesOwnPreferences)
-            {
-                // These options are only read from the master prefs, 
-                // so there is no point allowing the user to change them here.
-                // The only way for InstancesOwnPreferences to be false is if it was false in the master, 
-                // meaning we are still using the master, in which case we do allow changes.
-                chkAllowMultipleInstances.Enabled = false;
-                chkInstancesPreferences.Enabled = false;
-            }
         }
         private void SelectCurrentLanguage()
         {
@@ -165,15 +146,6 @@ namespace Kinovea.Root
             // Immediately change the log level.
             Software.UpdateLogLevel(enableDebugLogs);
         }
-        private void chkAllowMultipleInstances_CheckedChanged(object sender, EventArgs e)
-        {
-            allowMultipleInstances = chkAllowMultipleInstances.Checked;
-            chkInstancesPreferences.Enabled = allowMultipleInstances;
-        }
-        private void ChkInstancesPreferences_CheckedChanged(object sender, EventArgs e)
-        {
-            instancesOwnPreferences = chkInstancesPreferences.Checked;
-        } 
         #endregion
 
         public void CommitChanges()
@@ -181,8 +153,6 @@ namespace Kinovea.Root
             PreferencesManager.GeneralPreferences.SetCulture(uiCultureName);
             PreferencesManager.FileExplorerPreferences.MaxRecentFiles = maxRecentFiles;
             PreferencesManager.GeneralPreferences.EnableDebugLog = enableDebugLogs;
-            PreferencesManager.GeneralPreferences.AllowMultipleInstances = allowMultipleInstances;
-            PreferencesManager.GeneralPreferences.InstancesOwnPreferences = instancesOwnPreferences;
         }
     }
 }
