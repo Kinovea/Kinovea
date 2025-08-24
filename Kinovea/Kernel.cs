@@ -102,7 +102,7 @@ namespace Kinovea.Root
         // Window
         private ToolStripMenuItem mnuWindow = new ToolStripMenuItem();
         private ToolStripMenuItem mnuWindowProperties = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuStartNewWindow = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuOpenNewWindow = new ToolStripMenuItem();
         private ToolStripMenuItem mnuReopenWindow = new ToolStripMenuItem();
         private ToolStripMenuItem mnuManageWindows = new ToolStripMenuItem();
 
@@ -409,14 +409,17 @@ namespace Kinovea.Root
 
 
             mnuWindowProperties.Image = Properties.Resources.application_form;
-            mnuStartNewWindow.Image = Properties.Resources.application_add;
+            mnuOpenNewWindow.Image = Properties.Resources.application_add;
             mnuReopenWindow.Image = Properties.Resources.application_cascade;
             mnuManageWindows.Image = Properties.Resources.application_edit;
+
+            mnuWindowProperties.Click += mnuWindowProperties_Click;
+            mnuOpenNewWindow.Click += mnuOpenNewWindow_Click;
 
             mnuWindow.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuWindowProperties,
                 new ToolStripSeparator(),
-                mnuStartNewWindow,
+                mnuOpenNewWindow,
                 mnuReopenWindow,
                 new ToolStripSeparator(),
                 mnuManageWindows});
@@ -534,7 +537,7 @@ namespace Kinovea.Root
 
             mnuWindow.Text = "Window";
             mnuWindowProperties.Text = "Window properties…";
-            mnuStartNewWindow.Text = "Start new window";
+            mnuOpenNewWindow.Text = "Open new window";
             mnuReopenWindow.Text = "Reopen window";
             mnuManageWindows.Text = "Manage windows…";
 
@@ -723,6 +726,21 @@ namespace Kinovea.Root
             RefreshUICulture();
         }
         #endregion
+
+        #region Window
+
+        private void mnuWindowProperties_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void mnuOpenNewWindow_Click(object sender, EventArgs e)
+        {
+            WindowManager.OpenNewWindow();
+        }
+
+        #endregion
+
 
         #region Help
         private void mnuHelpContents_OnClick(object sender, EventArgs e)

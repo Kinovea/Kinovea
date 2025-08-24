@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -43,6 +44,10 @@ namespace Kinovea.Services
             xmlReaderSettings.CloseInput = true;
         }
 
+        /// <summary>
+        /// Startup setup, called only once at application startup.
+        /// Determines which window to load or create a new one if needed.
+        /// </summary>
         public static void Startup(bool isFirstInstance)
         {
             log.Debug("Collecting saved windows.");
@@ -115,6 +120,23 @@ namespace Kinovea.Services
             }
         }
 
+        /// <summary>
+        /// Reload all descriptors.
+        /// This is done on application startup and after the list may have changed 
+        /// (add/delete from a window management dialog in any instance).
+        /// Used to find which window to launch on startup and update the list of saved windows.
+        /// </summary>
+        public static void ReadAllDescriptors()
+        {
+            lastClosedWindow = null;
+            bestSaveTime = DateTime.MinValue;
+            windowDescriptors.Clear();
+            foreach (var file in Directory.GetFiles(Software.WindowsDirectory, "*.xml"))
+            {
+                ReadDescriptor(file);
+            }
+        }
+
         public static void SaveActiveWindow()
         {
             // Save the state and prefs of this instance.
@@ -138,8 +160,23 @@ namespace Kinovea.Services
             }
         }
 
+        /// <summary>
+        /// Open a new unnamed window.
+        /// </summary>
+        public static void OpenNewWindow()
+        {
+            // Just launch the program again.
+            // The window manager of the new instance will take care of creating the new window descriptor.
+            string path = Path.Combine(AppContext.BaseDirectory, "Kinovea.exe");
+            var p = new Process();
+            p.StartInfo.FileName = path;
+            p.Start();
+        }
 
-
+        /// <summary>
+        /// Create a new unnamed window descriptor, set it as the active window
+        /// and save it to the Windows directory.
+        /// </summary>
         private static void LoadNewWindow()
         {
             WindowDescriptor descriptor = new WindowDescriptor();
@@ -147,6 +184,10 @@ namespace Kinovea.Services
             SaveActiveWindow();
         }
 
+
+        /// <summary>
+        /// Set the active window to the last closed window.
+        /// </summary>
         private static void LoadLastClosedWindow()
         {
             if (lastClosedWindow == null)
@@ -158,30 +199,15 @@ namespace Kinovea.Services
             ActiveWindow = lastClosedWindow;
         }
 
+        /// <summary>
+        /// Set the active window to the one with the given name.
+        /// </summary>
         private static void LoadNamedWindow(string name)
         {
             throw new NotImplementedException("Loading a named window is not implemented yet.");
 
             // Only if it's not already active.
             // If it's already active switch to it and close ?
-        }
-
-
-        /// <summary>
-        /// Reload all descriptors.
-        /// This is done on application startup and after the list may have changed 
-        /// (add/delete from a window management dialog in any instance).
-        /// Used to find which window to launch on startup and update the list of saved windows.
-        /// </summary>
-        public static void ReadAllDescriptors()
-        {
-            lastClosedWindow = null;
-            bestSaveTime = DateTime.MinValue;
-            windowDescriptors.Clear();
-            foreach (var file in Directory.GetFiles(Software.WindowsDirectory, "*.xml"))
-            {
-                ReadDescriptor(file);
-            }
         }
 
 
