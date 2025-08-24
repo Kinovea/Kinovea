@@ -74,11 +74,10 @@ namespace Kinovea.Root
             if (args.Length > 1)
                 CommandLineArgumentManager.Instance.ParseArguments(args);
 
-            // Configure the instance.
-            // TODO: load the list of saved instances and determine which one to launch or if we
-            // should start a new one.
+            // Read the list of saved instances and determine which one to load in this window.
+            // This may exit the application if we figure out the user just wanted 
+            // to open a named instance that is already active elsewhere.
             WindowManager.Startup(isFirstInstance);
-            Software.ConfigureInstance();
 
             // Make sure each instance logs to its own log file.
             Software.ConfigureLogging();

@@ -58,8 +58,8 @@ namespace Kinovea.Services
         /// List of screens in the window and their content.
         /// </summary>
         public List<IScreenDescription> ScreenList 
-        { 
-            get; 
+        {
+            get { return screenList; }
         }
 
         /// <summary>

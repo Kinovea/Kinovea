@@ -61,9 +61,10 @@ namespace Kinovea.Services
         {
             Dictionary<string, string> options = new Dictionary<string, string>();
             options.Add("-name", "");
+            options.Add("-id", "");
             options.Add("-workspace", "");
             options.Add("-video", "");
-            options.Add("-speed", "100");
+            options.Add("-speed", "");
             CommandLineArgumentParser.DefineOptionalParameter(options);
 
             // Note: it doesn't make sense to define flags that default to true.
@@ -127,39 +128,40 @@ namespace Kinovea.Services
                 }
                 else
                 {
+                    // There are two modes of operation.
+                    // 1. we reload a specific window with all its settings.
+                    // 2. we load a video in a new window.
+                    //
+                    // The goal is that by the time Program.cs > Main() starts initializing the 
+                    // application, we have built a screen list. 
+                    // In the case of loading a single video we construct a screen list
+                    // manually here. Otherwise the screen list is coming from the saved window.
+
                     CommandLineArgumentParser.ParseArguments(arguments);
 
-                    string name = CommandLineArgumentParser.GetParamValue("-name");
+                    // One of the following 3 is required.
+                    string name =   CommandLineArgumentParser.GetParamValue("-name");
+                    string id =     CommandLineArgumentParser.GetParamValue("-id");
+                    string video =  CommandLineArgumentParser.GetParamValue("-video");
+                    
+                    // These are only used with -video.
+                    string speed =      CommandLineArgumentParser.GetParamValue("-speed");
+                    bool stretch =      CommandLineArgumentParser.IsSwitchOn("-stretch");
                     bool hideExplorer = CommandLineArgumentParser.IsSwitchOn("-hideExplorer");
-                    string workspace = CommandLineArgumentParser.GetParamValue("-workspace");
-                    string video = CommandLineArgumentParser.GetParamValue("-video");
-                    string speed = CommandLineArgumentParser.GetParamValue("-speed");
-                    bool stretch = CommandLineArgumentParser.IsSwitchOn("-stretch");
 
-                    // General program state.
                     if (!string.IsNullOrEmpty(name))
-                        LaunchSettingsManager.Name = name;
-
-                    LaunchSettingsManager.ShowExplorer = !hideExplorer;
-
-                    // Workspace.
-                    if (!string.IsNullOrEmpty(workspace))
                     {
-                        Workspace w = new Workspace();
-                        bool loaded = w.Load(workspace);
-                        if (loaded)
-                        {
-                            foreach (IScreenDescription screen in w.Screens)
-                                LaunchSettingsManager.AddScreenDescription(screen);
-                        }
-                        else
-                        {
-                            log.ErrorFormat("Workspace from command line argument not loaded.");
-                        }
+                        LaunchSettingsManager.RequestedWindowName = name;
+                        return;
+                    }
+                    else if (!string.IsNullOrEmpty(id))
+                    {
+                        LaunchSettingsManager.RequestedWindowId = id;
+                        return;
                     }
                     else if (!string.IsNullOrEmpty(video))
                     {
-                        // Manual description.
+                        // Build screen descriptor manually.
                         ScreenDescriptionPlayback sdp = new ScreenDescriptionPlayback();
                         sdp.FullPath = video;
 
@@ -174,9 +176,13 @@ namespace Kinovea.Services
                         sdp.Stretch = stretch;
 
                         LaunchSettingsManager.AddScreenDescription(sdp);
+                        LaunchSettingsManager.ExplorerVisible = !hideExplorer;
+
+                        return;
                     }
                     else
                     {
+                        // If we have neither a video nor a window, we shouldn't have any other arguments.
                         if (stretch)
                         {
                             string error = "Ignored command line parameter: -stretch. No video provided.";
@@ -207,20 +213,20 @@ namespace Kinovea.Services
             Console.WriteLine();
             Console.WriteLine("USAGE:");
             Console.WriteLine("kinovea.exe");
-            Console.WriteLine("    [-name <string>] [-hideExplorer] [-workspace <path>] [-video <path>] [-speed <0-200>] [-stretch]");
+            Console.WriteLine("    [-name <string>] [-id <string>] [-video <path>] [-speed <0-200>] [-stretch] [-hideExplorer]");
             Console.WriteLine();
             Console.WriteLine("OPTIONS:");
-            Console.WriteLine("  -name: name of this instance of Kinovea. Used in the window title and to select a preference file.");
-            Console.WriteLine("  -hideExplorer: The explorer panel will not be visible. Default: false.");
-            Console.WriteLine("  -workspace: path to a Kinovea workspace XML file. This overrides other video options.");
-            Console.WriteLine("  -video: path to a video to load.");
-            Console.WriteLine("  -speed: playback speed to play the video at, as a percentage of its original framerate. Default: 100.");
+            Console.WriteLine("  -name: name of the Kinovea window to reload.");
+            Console.WriteLine("  -id: id of the Kinovea window to reload.");
+            Console.WriteLine("  -video: path to a video to play.");
+            Console.WriteLine("  -speed: playback speed to play the video at, as a percentage of its original frame rate.");
             Console.WriteLine("  -stretch: the video will be expanded to fit the screen size. Default: false.");
+            Console.WriteLine("  -hideExplorer: The explorer panel will not be visible. Default: false.");
             Console.WriteLine();
             Console.WriteLine("EXAMPLES:");
-            Console.WriteLine("1. > kinovea.exe -name Replay -workspace myReplayWorkspace.xml");
-            Console.WriteLine("2. > kinovea.exe -video test.mkv -stretch");
-            Console.WriteLine("3. > kinovea.exe -video test.mkv -speed 50");
+            Console.WriteLine("1. > kinovea.exe -name \"Dual replay\"");
+            Console.WriteLine("2. > kinovea.exe -video \"test.mkv\"");
+            Console.WriteLine("3. > kinovea.exe -video \"test.mkv\" -speed 50");
         }
     }
 }

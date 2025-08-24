@@ -60,11 +60,7 @@ namespace Kinovea.Root
             this.rootKernel = rootKernel;
             InitializeComponent();
 
-            string title = "Kinovea";
-            if (!string.IsNullOrEmpty(Software.InstanceName))
-                title += string.Format(" [{0}]", Software.InstanceName);
-
-            this.Text = title;
+            UpdateTitle();
             
             this.FormClosing += KinoveaMainWindow_FormClosing;
             supervisorView = new SupervisorUserInterface(rootKernel);
@@ -86,6 +82,18 @@ namespace Kinovea.Root
             }
                 
             EnableCopyData();
+        }
+
+        /// <summary>
+        /// Update the title after the window name has changed.
+        /// </summary>
+        public void UpdateTitle()
+        {
+            string title = "Kinovea";
+            if (!string.IsNullOrEmpty(WindowManager.TitleName))
+                title += string.Format(" [{0}]", WindowManager.TitleName);
+
+            this.Text = title;
         }
 
         private void KinoveaMainWindow_FormClosing(object sender, FormClosingEventArgs e)

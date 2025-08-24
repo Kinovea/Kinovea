@@ -87,7 +87,7 @@ namespace Kinovea.Root
 
         private void SupervisorUserInterface_Load(object sender, EventArgs e)
         {
-            bool show = LaunchSettingsManager.ShowExplorer && WindowManager.ActiveWindow.ExplorerVisible;
+            bool show = LaunchSettingsManager.ExplorerVisible && WindowManager.ActiveWindow.ExplorerVisible;
             ShowHideExplorerPanel(show, false);
         }
 

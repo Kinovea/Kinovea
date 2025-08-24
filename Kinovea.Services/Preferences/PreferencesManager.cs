@@ -203,7 +203,7 @@ namespace Kinovea.Services
         /// </summary>
         public static void BeforeRead()
         {
-            log.DebugFormat("Before read pref prop");
+            //log.DebugFormat("Before read pref prop");
             if (instance == null)
                 return;
 

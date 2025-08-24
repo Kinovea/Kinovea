@@ -32,13 +32,13 @@ namespace Kinovea.Services
     public class Software
     {
         public static string ApplicationName { get { return "Kinovea";}}
+
         public static bool Experimental { get { return false;}}
         
-        public static string InstanceName { get; private set; }
-
         public static string Version { get; private set; }
 
         public static string CameraPluginAPIVersion { get; private set; }
+
         public static bool Is32bit { get; private set; }
 
         /// <summary>
@@ -48,9 +48,9 @@ namespace Kinovea.Services
 
         public static string LogsDirectory { get; private set; }
 
-
         /// <summary>
-        /// Default values for tools.
+        /// Default parameters for tools.
+        /// FIXME: this should be merged into the core preferences.
         /// </summary>
         public static string ColorProfileDirectory { get; private set; }
         
@@ -60,7 +60,7 @@ namespace Kinovea.Services
         public static string CameraCalibrationDirectory { get; private set; }
         
         /// <summary>
-        /// Camera plugins binaries.
+        /// Camera plugins manifests and binaries.
         /// </summary>
         public static string CameraPluginsDirectory { get; private set; }
 
@@ -76,18 +76,18 @@ namespace Kinovea.Services
         public static string VariablesDirectory { get; private set; }
 
         /// <summary>
-        /// Windows (instances).
+        /// Window descriptors (instances).
         /// Instance-specific preferences and state.
         /// </summary>
         public static string WindowsDirectory { get; private set; }
 
         /// <summary>
-        /// The main preferences file.
+        /// The core preferences file.
         /// </summary>
         public static string PreferencesFile { get; private set; }
         
         /// <summary>
-        /// Directory where auto-save files are stored.
+        /// Directory where auto-save KVA files are stored.
         /// </summary>
         public static string TempDirectory { get; private set; }
         
@@ -146,30 +146,7 @@ namespace Kinovea.Services
                 "https://www.kinovea.org/setup/updatebeta.xml" : 
                 "https://www.kinovea.org/setup/update.xml";
         }
-
-        /// <summary>
-        /// Setup the name of the instance.
-        /// </summary>
-        public static void ConfigureInstance()
-        {
-            // An instance can be started with an explicit name or not.
-            // The first instance may have no name.
-            // Further instances with no name will be numbered.
-            if (!string.IsNullOrEmpty(LaunchSettingsManager.Name))
-            {
-                InstanceName = LaunchSettingsManager.Name;
-            }
-            else
-            {
-                Process[] instances = Process.GetProcessesByName("Kinovea");
-                int instanceNumber = instances.Length;
-                if (instanceNumber == 1)
-                    InstanceName = null;
-                else
-                    InstanceName = instanceNumber.ToString();
-            }
-        }
-        
+ 
         /// <summary>
         /// Create application data directories if needed.
         /// </summary>
@@ -221,7 +198,8 @@ namespace Kinovea.Services
             appender.Threshold = logLevel;
 
             // Each instance gets its own log files.
-            string logFile = string.IsNullOrEmpty(InstanceName) ? "log.txt" : string.Format("log.{0}.txt", InstanceName);
+            string titleName = WindowManager.TitleName;
+            string logFile = string.IsNullOrEmpty(titleName) ? "log.txt" : string.Format("log.{0}.txt", titleName);
             appender.File = Path.Combine(Path.GetDirectoryName(appender.File), logFile);
 
             appender.ActivateOptions();

@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Xml;
 
 namespace Kinovea.Services
@@ -16,9 +12,23 @@ namespace Kinovea.Services
     public static class WindowManager
     {
         #region Properties
+
+        /// <summary>
+        /// The name to use in the title bar for the active window. 
+        /// </summary>
+        public static string TitleName
+        {
+            get; private set;
+        }
+
         public static WindowDescriptor ActiveWindow
         {
             get; private set;
+        }
+
+        public static List<WindowDescriptor> WindowDescriptors
+        {
+            get { return windowDescriptors; }
         }
         #endregion
 
@@ -50,44 +60,27 @@ namespace Kinovea.Services
         /// </summary>
         public static void Startup(bool isFirstInstance)
         {
-            log.Debug("Collecting saved windows.");
+            log.Info("Window startup.");
 
             ReadAllDescriptors();
 
             // Check we were started as a named instance from the command line.
-            string name = LaunchSettingsManager.Name;
+            // At the end of this we should have updated LaunchSettingsManager.Name
+            // with the final name based on the window we are loading, if any.
+            string requestedName = LaunchSettingsManager.RequestedWindowName;
+            Guid requestedId = Guid.Empty;
+            bool parsed = Guid.TryParse(LaunchSettingsManager.RequestedWindowId, out requestedId);
 
-            if (string.IsNullOrEmpty(name))
+            if (!string.IsNullOrEmpty(requestedName))
             {
-                if (isFirstInstance)
-                {
-                    // No name and first instance -> load the last closed window.
-                    if (windowDescriptors.Count > 0 && lastClosedWindow != null)
-                    {
-                        log.Debug("No name provided, loading last closed window.");
-                        LoadLastClosedWindow();
-                    }
-                    else
-                    {
-                        log.Debug("No name provided and no saved window, creating a new window.");
-                        LoadNewWindow();
-                    }
-                }
-                else
-                {
-                    log.Debug("No name provided and not the first instance, creating a new window.");
-                    LoadNewWindow();
-                }
-            }
-            else
-            {
-                // Find the window.
+                // Requesting a specific named window.
                 bool found = false;
                 foreach (var descriptor in windowDescriptors)
                 {
-                    if (descriptor.Name == name)
+                    if (descriptor.Name == requestedName)
                     {
-                        LoadNamedWindow(name);
+                        log.InfoFormat("Loading window by name: \"{0}\"", requestedName);
+                        LoadSpecificWindow(descriptor);
                         found = true;
                         break;
                     }
@@ -103,20 +96,72 @@ namespace Kinovea.Services
                     // Do not load the last closed window either, the user would still think they are loading
                     // a specific window and could start updating things.
                     // Let's create a new window with no name and report the error.
-                    log.ErrorFormat("The named window '{0}' could not be found. Creating a new window.", name);
+                    log.ErrorFormat("Named window \"{0}\" not found. Creating a new window.", requestedName);
+                    LoadNewWindow();
+                }
+            }
+            else if (requestedId != Guid.Empty)
+            {
+                // Requesting a specific window by id.
+                // This typically only happens via the "Reopen window" menu when clicking 
+                // on an anonymous window.
+                bool found = false;
+                foreach (var descriptor in windowDescriptors)
+                {
+                    if (descriptor.Id == requestedId)
+                    {
+                        log.InfoFormat("Loading window by id: \"{0}\"", requestedId);
+                        LoadSpecificWindow(descriptor);
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found)
+                {
+                    log.ErrorFormat("Window with Id \"{0}\" not found. Creating a new window.", requestedId);
+                    LoadNewWindow();
+                }
+            }
+            else
+            {
+                // Starting without a name or id.
+                // This happens when clicking the executable or from the menu Open new window.
+                if (isFirstInstance)
+                {
+                    // No name and first instance -> load the last closed window.
+                    if (windowDescriptors.Count > 0 && lastClosedWindow != null)
+                    {
+                        log.Info("No name provided, loading last closed window.");
+                        LoadLastClosedWindow();
+                    }
+                    else
+                    {
+                        log.Info("No name provided and no saved window, creating a new window.");
+                        LoadNewWindow();
+                    }
+                }
+                else
+                {
+                    
+                    log.Info("No name provided and not the first instance, creating a new window.");
                     LoadNewWindow();
                 }
             }
 
-            // At this point we have an active window.
             if (ActiveWindow == null)
             {
-                log.Error("No active window was set after startup.");
-                throw new InvalidProgramException();
+                // This is when we have found that the user just wanted to re-open an already opened window.
+                // In that case we have brought it to front and we can just close.
+                log.WarnFormat("Requested window is already active. Closing.");
             }
             else
             {
-                log.DebugFormat("Active window is '{0}' with ID {1}.", ActiveWindow.Name, ActiveWindow.Id);
+                // We have loaded a valid window descriptor in the ActiveWindow.
+                // Update the launch settings and title so the whole program configures itself.
+                UpdateLaunchSettings();
+                SetTitleName();
+                log.DebugFormat("Loaded active window: \"{0}\", Id:{1}.", ActiveWindow.Name, ActiveWindow.Id);
             }
         }
 
@@ -173,6 +218,67 @@ namespace Kinovea.Services
             p.Start();
         }
 
+
+        public static void ReopenWindow(WindowDescriptor d)
+        {
+            // TODO: Check if the window is already active by name or id.
+            // If so, bring it to front and return.
+            //
+            // Corner case: it is possible that the user is asking for the window
+            // that was started first and that has erased its name from the title.
+            // Restarting an active window is considered user error and we just try to 
+            // protect against it on a best-effort basis.
+            // A solution for this case would be for each window to grab a global mutex 
+            // corresponding to their id and check if it's available.
+            // We would still not be able to bring it to front but at least we wouldn't start it a second time.
+
+            string args = "";
+            if (!string.IsNullOrEmpty(d.Name))
+            {
+                args = string.Format("-name \"{0}\"", d.Name);
+                log.DebugFormat("Reopening named window: {0}.", d.Name);
+            }
+            else
+            {
+                args = string.Format("-id \"{0}\"", d.Id);
+                log.DebugFormat("Reopening unnamed window: {0}.", d.Id);
+            }
+
+            // Launch the program again with the name argument.
+            // The window manager of the new instance will take care of loading the named window descriptor.
+            string path = Path.Combine(AppContext.BaseDirectory, "Kinovea.exe");
+            var p = new Process();
+            p.StartInfo.FileName = path;
+            p.StartInfo.Arguments = args;
+            p.Start();
+        }
+
+        /// <summary>
+        /// Set the name to use in the title bar.
+        /// This should be called every time we change the active window name.
+        /// And then the main window title bar should be updated.
+        /// </summary>
+        public static void SetTitleName()
+        {
+            // Heuristic:
+            // - if the window has a name, use it.
+            // - if the window has no name but is the only instance in town, keep it empty.
+            // - otherwise use the fake name based on the id.
+            if (!string.IsNullOrEmpty(ActiveWindow.Name))
+            {
+                TitleName = ActiveWindow.Name;
+            }
+            else
+            {
+                // Debugging : always used the id name.
+                TitleName = GetIdName(ActiveWindow);
+
+                // Production:
+                //Process[] instances = Process.GetProcessesByName("Kinovea");
+                //TitleName = instances.Length == 1 ? "" : GetIdName(ActiveWindow);
+            }
+        }
+
         /// <summary>
         /// Create a new unnamed window descriptor, set it as the active window
         /// and save it to the Windows directory.
@@ -202,12 +308,14 @@ namespace Kinovea.Services
         /// <summary>
         /// Set the active window to the one with the given name.
         /// </summary>
-        private static void LoadNamedWindow(string name)
+        private static void LoadSpecificWindow(WindowDescriptor descriptor)
         {
-            throw new NotImplementedException("Loading a named window is not implemented yet.");
-
             // Only if it's not already active.
             // If it's already active switch to it and close ?
+            // FIXME: How to we find if the window is active when all we have is an id?
+
+
+            ActiveWindow = descriptor;
         }
 
 
@@ -244,6 +352,31 @@ namespace Kinovea.Services
                 log.ErrorFormat("An error happened during the reading of the window file {0}.", file);
                 log.Error(e);
             }
+        }
+
+        /// <summary>
+        /// Update the launch settings based on the active window.
+        /// </summary>
+        public static void UpdateLaunchSettings()
+        {
+            // Here we set the name to whatever is in the active window descriptor.
+            // This is not what should be used for the main window title bar.
+            // That one also depends on whether we are the only instance or not.
+            // The LaunchSettings name shouldn't really be read by anything after this point, 
+            // it is only used to request a particular instance on the command line.
+            LaunchSettingsManager.RequestedWindowName = ActiveWindow.Name;
+
+            // Set up the screen list. This will be used to restore the screens
+            LaunchSettingsManager.ClearScreenDescriptions();
+            foreach (var screen in ActiveWindow.ScreenList)
+            {
+                LaunchSettingsManager.AddScreenDescription(screen.Clone());
+            }
+        }
+
+        private static string GetIdName(WindowDescriptor d)
+        {
+            return d.Id.ToString().Substring(0, 8);
         }
     }
 }

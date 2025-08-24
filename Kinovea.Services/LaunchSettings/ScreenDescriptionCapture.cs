@@ -61,6 +61,16 @@ namespace Kinovea.Services
             DelayedDisplay = true;
         }
 
+        public IScreenDescription Clone()
+        {
+            ScreenDescriptionCapture sdc = new ScreenDescriptionCapture();
+            sdc.CameraName = this.CameraName;
+            sdc.Autostream = this.Autostream;
+            sdc.Delay = this.Delay;
+            sdc.DelayedDisplay = this.DelayedDisplay;
+            return sdc;
+        }
+
         public void Readxml(XmlReader reader)
         {
             reader.ReadStartElement();

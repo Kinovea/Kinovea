@@ -412,23 +412,19 @@ namespace Kinovea.Root
             mnuOpenNewWindow.Image = Properties.Resources.application_add;
             mnuReopenWindow.Image = Properties.Resources.application_cascade;
             mnuManageWindows.Image = Properties.Resources.application_edit;
+            BuildWindowsMenus();
 
             mnuWindowProperties.Click += mnuWindowProperties_Click;
             mnuOpenNewWindow.Click += mnuOpenNewWindow_Click;
 
             mnuWindow.DropDownItems.AddRange(new ToolStripItem[] {
-                mnuWindowProperties,
-                new ToolStripSeparator(),
                 mnuOpenNewWindow,
                 mnuReopenWindow,
                 new ToolStripSeparator(),
+                mnuWindowProperties,
                 mnuManageWindows});
 
             #endregion
-
-
-
-
 
             #region Help
             mnuHelpContents.Image = Properties.Resources.book_open;
@@ -731,7 +727,23 @@ namespace Kinovea.Root
 
         private void mnuWindowProperties_Click(object sender, EventArgs e)
         {
+            string memoName = WindowManager.TitleName;
 
+            FormWindowProperties fwp = new FormWindowProperties();
+            fwp.StartPosition = FormStartPosition.CenterScreen;
+            fwp.ShowDialog();
+            fwp.Dispose();
+
+            if (fwp.DialogResult == DialogResult.OK)
+            {
+                
+                WindowManager.SaveActiveWindow();
+
+                if (memoName != WindowManager.TitleName)
+                {
+                    mainWindow.UpdateTitle();
+                }
+            }
         }
 
         private void mnuOpenNewWindow_Click(object sender, EventArgs e)
@@ -846,9 +858,12 @@ namespace Kinovea.Root
             FormPreferences2 fp = new FormPreferences2(e.Tab);
             fp.ShowDialog();
             fp.Dispose();
-
-            Thread.CurrentThread.CurrentUICulture = PreferencesManager.GeneralPreferences.GetSupportedCulture();
-            PreferencesUpdated();
+            
+            if (fp.DialogResult == DialogResult.OK)
+            {
+                Thread.CurrentThread.CurrentUICulture = PreferencesManager.GeneralPreferences.GetSupportedCulture();
+                PreferencesUpdated();
+            }
         }
        
         #region Lower Level Methods
@@ -966,6 +981,39 @@ namespace Kinovea.Root
             PreferencesManager.BeforeRead();
 
             PointerManager.SetCursor(tag);
+        }
+        
+        private void BuildWindowsMenus()
+        {
+            mnuReopenWindow.DropDownItems.Clear();
+
+            foreach (WindowDescriptor d in WindowManager.WindowDescriptors)
+            {
+                // Filter out our own instance.
+                if (d.Id == WindowManager.ActiveWindow.Id)
+                    continue;
+
+                ToolStripMenuItem mnuWindowDescriptor = new ToolStripMenuItem();
+                string name = d.Name;
+                if (string.IsNullOrEmpty(name))
+                {
+                    // Unnamed window.
+                    // TODO: parse the screen list instead and give a summary.
+                    name = string.Format("[{0}]", d.Id.ToString().Substring(0, 8));
+                }
+
+                mnuWindowDescriptor.Text = name;
+                //mnuWindowDescriptor.Tag = d;
+                mnuWindowDescriptor.Image = Properties.Resources.application;
+                WindowDescriptor desc = d;
+                mnuWindowDescriptor.Click += (s, e) =>
+                {
+                    if (desc != null)
+                        WindowManager.ReopenWindow(d);
+                };
+
+                mnuReopenWindow.DropDownItems.Add(mnuWindowDescriptor);
+            }
         }
         #endregion
     }

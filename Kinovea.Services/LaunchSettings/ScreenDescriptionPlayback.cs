@@ -85,6 +85,20 @@ namespace Kinovea.Services
             IsDualReplay = false;
         }
 
+        public IScreenDescription Clone()
+        {
+            ScreenDescriptionPlayback sdp = new ScreenDescriptionPlayback();
+            sdp.Id = this.Id;
+            sdp.FullPath = this.FullPath;
+            sdp.Autoplay = this.Autoplay;
+            sdp.SpeedPercentage = this.SpeedPercentage;
+            sdp.Stretch = this.Stretch;
+            sdp.IsReplayWatcher = this.IsReplayWatcher;
+            sdp.RecoveryLastSave = this.RecoveryLastSave;
+            sdp.IsDualReplay = this.IsDualReplay;
+            return sdp;
+        }
+
         public void ReadXml(XmlReader reader)
         {
             reader.ReadStartElement();

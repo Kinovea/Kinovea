@@ -28,6 +28,11 @@ namespace Kinovea.Services
     {
         ScreenType ScreenType { get; }
 
+        /// <summary>
+        /// Returns a deep copy of the screen description.
+        /// </summary>
+        IScreenDescription Clone();
+
         void WriteXml(XmlWriter w);
     }
 }
