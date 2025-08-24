@@ -411,7 +411,7 @@ namespace Kinovea.Root
             mnuOpenNewWindow.Image = Properties.Resources.application_add;
             mnuReopenWindow.Image = Properties.Resources.application_cascade;
             mnuManageWindows.Image = Properties.Resources.application_edit;
-            BuildWindowsMenus();
+            BuildReopenWindowsMenus();
 
             mnuWindowProperties.Click += mnuWindowProperties_Click;
             mnuOpenNewWindow.Click += mnuOpenNewWindow_Click;
@@ -536,6 +536,8 @@ namespace Kinovea.Root
             mnuOpenNewWindow.Text = "Open new window";
             mnuReopenWindow.Text = "Reopen window";
             mnuManageWindows.Text = "Manage windows…";
+            // Rebuild the reopen window menu to get the correct list.
+            BuildReopenWindowsMenus();
 
             mnuHelp.Text = RootLang.mnuHelp;
             mnuHelpContents.Text = RootLang.mnuHelpContents;
@@ -727,6 +729,9 @@ namespace Kinovea.Root
         private void mnuOpenNewWindow_Click(object sender, EventArgs e)
         {
             WindowManager.OpenNewWindow();
+
+            // Note: we can't really trigger a refresh of the "Reopen" menu here.
+            // The new window hasn't had time to create the descriptor file yet.
         }
 
         private void mnuWindowProperties_Click(object sender, EventArgs e)
@@ -741,17 +746,32 @@ namespace Kinovea.Root
             if (fwp.DialogResult == DialogResult.OK)
             {
                 WindowManager.SaveActiveWindow();
-
                 if (memoName != WindowManager.TitleName)
-                {
                     mainWindow.UpdateTitle();
-                }
+
+                // The only thing we may have changed here is our own instance
+                // so we don't need to refresh the "Reopen" menu.
             }
         }
 
-        private void BuildWindowsMenus()
+        private void BuildReopenWindowsMenus()
         {
             mnuReopenWindow.DropDownItems.Clear();
+
+            ToolStripMenuItem mnuRefresh = new ToolStripMenuItem();
+            mnuRefresh.Text = "Refresh";
+            mnuRefresh.Image = Properties.Resources.arrow_refresh;
+            mnuRefresh.Click += (s, e) =>
+            {
+                WindowManager.ReadAllDescriptors();
+
+                // Trigger a rebuild of this whole drop down.
+                // In theory when we exit this closure the original mnuRefresh can be garbage collected.
+                BuildReopenWindowsMenus();
+            };
+
+            mnuReopenWindow.DropDownItems.Add(mnuRefresh);
+            mnuReopenWindow.DropDownItems.Add(new ToolStripSeparator());
 
             foreach (WindowDescriptor d in WindowManager.WindowDescriptors)
             {
@@ -762,10 +782,7 @@ namespace Kinovea.Root
                 ToolStripMenuItem mnuWindowDescriptor = new ToolStripMenuItem();
                 string name = d.Name;
                 if (string.IsNullOrEmpty(name))
-                {
-                    // Unnamed window.
-                    name = string.Format("[{0}]", d.Id.ToString().Substring(0, 8));
-                }
+                    name = string.Format("[{0}]", WindowManager.GetIdName(d));
 
                 mnuWindowDescriptor.Text = name;
 

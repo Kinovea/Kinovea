@@ -1067,6 +1067,9 @@ namespace Kinovea.ScreenManager
             screenList[1] = temp;
         }
 
+        /// <summary>
+        /// This is called after the screen list changed.
+        /// </summary>
         public void OrganizeScreens()
         {
             view.OrganizeScreens(screenList);
@@ -1101,6 +1104,23 @@ namespace Kinovea.ScreenManager
                 {
                     udpMonitor.Stop();
                 }
+            }
+
+            // If we are in "Continue where I left off" mode, save immediately.
+            // This is not strictly necessary as we will save on close but it helps 
+            // the other windows get a more up to date state of this window.
+            // We must only do this if we are not in the process of closing though
+            // otherwise we always save an empty state as this runs *after* the screens are closed.
+            if (!view.Closing && WindowManager.ActiveWindow.StartupMode == WindowStartupMode.Continue)
+            {
+                var descriptors = GetScreenDescriptors();
+                WindowManager.ActiveWindow.ScreenList.Clear();
+                foreach (var desc in descriptors)
+                {
+                    WindowManager.ActiveWindow.ScreenList.Add(desc);
+                }
+
+                WindowManager.SaveActiveWindow();
             }
         }
 

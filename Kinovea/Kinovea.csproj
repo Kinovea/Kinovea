@@ -544,6 +544,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="kinovea-256x256.ico" />
+    <None Include="Resources\arrow_refresh.png" />
+    <None Include="Resources\arrow-circle-double-135.png" />
     <None Include="Resources\dualplayback.png" />
     <None Include="Resources\dualmixed3.png" />
     <None Include="Resources\dualcapture2.png" />
