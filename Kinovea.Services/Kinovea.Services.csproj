@@ -263,7 +263,7 @@
     <Compile Include="Events\CurrentDirectoryChangedEventArgs.cs" />
     <Compile Include="Events\ExplorerTabEventArgs.cs" />
     <Compile Include="Events\StatusUpdatedEventArgs.cs" />
-    <Compile Include="LaunchSettings\IScreenDescription.cs" />
+    <Compile Include="LaunchSettings\IScreenDescriptor.cs" />
     <Compile Include="LaunchSettings\LaunchSettingsManager.cs" />
     <Compile Include="LaunchSettings\ScreenDescriptionCapture.cs" />
     <Compile Include="LaunchSettings\ScreenDescriptionPlayback.cs" />

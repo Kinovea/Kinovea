@@ -85,9 +85,15 @@ namespace Kinovea.Root
             }
 
             // Make sure each instance logs to its own log file.
+            // Up to this line the logging went to the default "log.txt" file.
+            // After this line it goes to log.<idName>.txt.
             Software.ConfigureLogging();
 
             //----------------------------------------------------------------
+
+            log.InfoFormat("-----------------------------------------------------------");
+            log.InfoFormat("Window:{0} ({1}). {2:yyyy-MM-dd HH:mm:ss}", 
+                WindowManager.ActiveWindow.Id, WindowManager.ActiveWindow.Name, DateTime.Now);
 
             // General application startup workflow.
             log.Debug("Application level initialisations.");

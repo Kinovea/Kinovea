@@ -98,9 +98,7 @@ namespace Kinovea.Root
 
         private void KinoveaMainWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
-            WindowManager.ActiveWindow.WindowState = this.WindowState;
-            WindowManager.ActiveWindow.WindowRectangle = this.DesktopBounds;
-            WindowManager.SaveActiveWindow();
+            
         }
         #endregion
 
@@ -148,6 +146,24 @@ namespace Kinovea.Root
         #region Event Handlers
         private void UserInterface_FormClosing(object sender, FormClosingEventArgs e)
         {
+            // Save the screen list if needed.
+            // We must do this here and not in KinoveaMainWindow_FormClosing as it will be too late.
+            WindowManager.ActiveWindow.WindowState = this.WindowState;
+            WindowManager.ActiveWindow.WindowRectangle = this.DesktopBounds;
+
+            if (WindowManager.ActiveWindow.StartupMode == WindowStartupMode.Continue)
+            {
+                var descriptors = rootKernel.ScreenManager.GetScreenDescriptors();
+                WindowManager.ActiveWindow.ScreenList.Clear();
+                foreach (var desc in descriptors)
+                {
+                    WindowManager.ActiveWindow.ScreenList.Add(desc);
+                }
+            }
+
+            WindowManager.SaveActiveWindow();
+
+            // Start the close process. It may be cancelled if the user had unsaved changes.
             e.Cancel = rootKernel.CloseSubModules();
         }
 

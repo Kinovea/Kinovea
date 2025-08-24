@@ -268,13 +268,14 @@ namespace Kinovea.ScreenManager
         public void RecoverCrash()
         {
             // Import recovered screens into launch settings.
+            log.DebugFormat("Running crash recovery.");
             try
             {
                 List<ScreenDescriptionPlayback> recoverables = RecoveryManager.GetRecoverables();
                 if (recoverables != null && recoverables.Count > 0)
                 {
                     FormCrashRecovery fcr = new FormCrashRecovery(recoverables);
-                    FormsHelper.Locate(fcr);
+                    fcr.StartPosition = FormStartPosition.CenterScreen;
                     if (fcr.ShowDialog() != DialogResult.OK)
                     {
                         log.DebugFormat("Recovery procedure cancelled. Deleting files.");
@@ -289,18 +290,6 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        public void LoadDefaultWorkspace()
-        {
-            if (LaunchSettingsManager.ScreenDescriptions.Count > 0)
-                return;
-
-            Workspace workspace = PreferencesManager.GeneralPreferences.Workspace;
-            if (workspace.Screens == null || workspace.Screens.Count == 0)
-                return;
-
-            foreach (var sd in workspace.Screens)
-                LaunchSettingsManager.AddScreenDescription(sd);
-        }
         #endregion
 
         #region IKernel Implementation
@@ -1183,13 +1172,13 @@ namespace Kinovea.ScreenManager
             MessageBox.Show(msgText, msgTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
 
-        public Workspace ExtractWorkspace()
+        public List<IScreenDescriptor> GetScreenDescriptors()
         {
-            Workspace workspace = new Workspace();
+            List<IScreenDescriptor> screenDescriptors = new List<IScreenDescriptor>();
             foreach (var screen in screenList)
-                workspace.Screens.Add(screen.GetScreenDescription());
+                screenDescriptors.Add(screen.GetScreenDescriptor());
 
-            return workspace;
+            return screenDescriptors;
         }
         #endregion
 
@@ -3155,7 +3144,7 @@ namespace Kinovea.ScreenManager
             // Start by collecting the list of cameras to be found.
             // We will keep the camera discovery system active until we have found all of them or time out.
             camerasToDiscover.Clear();
-            foreach (IScreenDescription screenDescription in LaunchSettingsManager.ScreenDescriptions)
+            foreach (IScreenDescriptor screenDescription in LaunchSettingsManager.ScreenDescriptions)
             {
                 if (screenDescription is ScreenDescriptionCapture)
                     camerasToDiscover.Add(((ScreenDescriptionCapture)screenDescription).CameraName);
@@ -3165,7 +3154,7 @@ namespace Kinovea.ScreenManager
                 CameraTypeManager.StopDiscoveringCameras();
 
             int added = 0;
-            foreach (IScreenDescription screenDescription in LaunchSettingsManager.ScreenDescriptions)
+            foreach (IScreenDescriptor screenDescription in LaunchSettingsManager.ScreenDescriptions)
             {
                 if (screenDescription is ScreenDescriptionCapture)
                 {

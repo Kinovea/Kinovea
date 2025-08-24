@@ -11,7 +11,7 @@ namespace Kinovea.Services
 
     public class Workspace
     {
-        public List<IScreenDescription> Screens { get; private set; } = new List<IScreenDescription>();
+        public List<IScreenDescriptor> Screens { get; private set; } = new List<IScreenDescriptor>();
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 

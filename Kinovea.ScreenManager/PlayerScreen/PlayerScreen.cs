@@ -678,7 +678,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Return a screen descriptor to be used in a workspace.
         /// </summary>
-        public override IScreenDescription GetScreenDescription()
+        public override IScreenDescriptor GetScreenDescriptor()
         {
             ScreenDescriptionPlayback sd = new ScreenDescriptionPlayback();
             sd.Id = Id;

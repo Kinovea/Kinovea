@@ -208,7 +208,7 @@ namespace Kinovea.Services
         }
 
         /// <summary>
-        /// Open a new unnamed window.
+        /// Start a new unnamed window.
         /// </summary>
         public static void OpenNewWindow()
         {
@@ -220,7 +220,10 @@ namespace Kinovea.Services
             p.Start();
         }
 
-
+        /// <summary>
+        /// Reopen a known window by name or id.
+        /// If the window is already active, bring it to front and return.
+        /// </summary>
         public static void ReopenWindow(WindowDescriptor d)
         {
             //------------------------------------------------------
@@ -300,6 +303,14 @@ namespace Kinovea.Services
                 //Process[] instances = Process.GetProcessesByName("Kinovea");
                 //TitleName = instances.Length == 1 ? "" : GetIdName(ActiveWindow);
             }
+        }
+
+        /// <summary>
+        /// Returns a name derived from the id.
+        /// </summary>
+        public static string GetIdName(WindowDescriptor d)
+        {
+            return d.Id.ToString().Substring(0, 8);
         }
 
         /// <summary>
@@ -414,24 +425,16 @@ namespace Kinovea.Services
         /// </summary>
         public static void UpdateLaunchSettings()
         {
-            // Here we set the name to whatever is in the active window descriptor.
-            // This is not what should be used for the main window title bar.
-            // That one also depends on whether we are the only instance or not.
-            // The LaunchSettings name shouldn't really be read by anything after this point, 
-            // it is only used to request a particular instance on the command line.
-            LaunchSettingsManager.RequestedWindowName = ActiveWindow.Name;
-
+            // Note: the launch settings "requested window name" is only used 
+            // by the command line to determine which window to load.
+            // It shouldn't be used afterwards.
+            
             // Set up the screen list. This will be used to restore the screens
             LaunchSettingsManager.ClearScreenDescriptions();
             foreach (var screen in ActiveWindow.ScreenList)
             {
                 LaunchSettingsManager.AddScreenDescription(screen.Clone());
             }
-        }
-
-        private static string GetIdName(WindowDescriptor d)
-        {
-            return d.Id.ToString().Substring(0, 8);
         }
     }
 }

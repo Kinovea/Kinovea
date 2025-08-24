@@ -102,7 +102,7 @@ namespace Kinovea.Services
                             bool loaded = workspace.Load(arguments[0]);
                             if (loaded)
                             {
-                                foreach (IScreenDescription screen in workspace.Screens)
+                                foreach (IScreenDescriptor screen in workspace.Screens)
                                     LaunchSettingsManager.AddScreenDescription(screen);
                             }
                             else

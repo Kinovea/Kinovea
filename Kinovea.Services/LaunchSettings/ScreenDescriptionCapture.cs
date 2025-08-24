@@ -25,7 +25,7 @@ using System.Xml;
 
 namespace Kinovea.Services
 {
-    public class ScreenDescriptionCapture : IScreenDescription
+    public class ScreenDescriptionCapture : IScreenDescriptor
     {
         public ScreenType ScreenType 
         {
@@ -61,7 +61,7 @@ namespace Kinovea.Services
             DelayedDisplay = true;
         }
 
-        public IScreenDescription Clone()
+        public IScreenDescriptor Clone()
         {
             ScreenDescriptionCapture sdc = new ScreenDescriptionCapture();
             sdc.CameraName = this.CameraName;

@@ -195,8 +195,7 @@ namespace Kinovea.Root
         public void Launch()
         {
             screenManager.RecoverCrash();
-            screenManager.LoadDefaultWorkspace();
-
+            
             log.Debug("Calling Application.Run() to boot up the UI.");
             Application.Run(mainWindow);
         }

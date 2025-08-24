@@ -20,7 +20,7 @@ namespace Kinovea.Root
 
         private string name;
         private WindowStartupMode startupMode;
-        private List<IScreenDescription> screenList;
+        private List<IScreenDescriptor> screenList;
 
         public FormWindowProperties()
         {
@@ -28,7 +28,7 @@ namespace Kinovea.Root
             WindowDescriptor descriptor = WindowManager.ActiveWindow;
             name = descriptor.Name;
             startupMode = descriptor.StartupMode;
-            screenList = new List<IScreenDescription>();
+            screenList = new List<IScreenDescriptor>();
             foreach (var screen in descriptor.ScreenList)
                 screenList.Add(screen.Clone());
 

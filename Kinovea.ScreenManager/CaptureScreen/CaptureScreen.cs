@@ -450,7 +450,7 @@ namespace Kinovea.ScreenManager
             view.ExecuteScreenCommand(cmd);
         }
 
-        public override IScreenDescription GetScreenDescription()
+        public override IScreenDescriptor GetScreenDescriptor()
         {
             ScreenDescriptionCapture sd = new ScreenDescriptionCapture();
             sd.Autostream = true;

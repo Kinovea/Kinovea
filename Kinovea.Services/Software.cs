@@ -198,8 +198,10 @@ namespace Kinovea.Services
             appender.Threshold = logLevel;
 
             // Each instance gets its own log files.
-            string titleName = WindowManager.TitleName;
-            string logFile = string.IsNullOrEmpty(titleName) ? "log.txt" : string.Format("log.{0}.txt", titleName);
+            // The title name may use illegal characters and the window name may be empty.
+            // Use the id-derived name.
+            string idName = WindowManager.GetIdName(WindowManager.ActiveWindow);
+            string logFile = string.IsNullOrEmpty(idName) ? "log.txt" : string.Format("log.{0}.txt", idName);
             appender.File = Path.Combine(Path.GetDirectoryName(appender.File), logFile);
 
             appender.ActivateOptions();

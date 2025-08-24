@@ -25,7 +25,7 @@ using System.Xml;
 
 namespace Kinovea.Services
 {
-    public class ScreenDescriptionPlayback : IScreenDescription
+    public class ScreenDescriptionPlayback : IScreenDescriptor
     {
         public ScreenType ScreenType 
         {
@@ -85,7 +85,7 @@ namespace Kinovea.Services
             IsDualReplay = false;
         }
 
-        public IScreenDescription Clone()
+        public IScreenDescriptor Clone()
         {
             ScreenDescriptionPlayback sdp = new ScreenDescriptionPlayback();
             sdp.Id = this.Id;

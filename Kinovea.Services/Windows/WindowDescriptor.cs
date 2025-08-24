@@ -57,7 +57,7 @@ namespace Kinovea.Services
         /// <summary>
         /// List of screens in the window and their content.
         /// </summary>
-        public List<IScreenDescription> ScreenList 
+        public List<IScreenDescriptor> ScreenList 
         {
             get { return screenList; }
         }
@@ -150,7 +150,7 @@ namespace Kinovea.Services
         // Preferences
         private string name;
         private WindowStartupMode startupMode = WindowStartupMode.Continue;
-        private List<IScreenDescription> screenList = new List<IScreenDescription>();
+        private List<IScreenDescriptor> screenList = new List<IScreenDescriptor>();
 
         // State
         private bool explorerVisible = true;

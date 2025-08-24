@@ -182,9 +182,9 @@ namespace Kinovea.ScreenManager
 
 
         /// <summary>
-        /// Return a screen descriptor to be used in a workspace.
+        /// Return a screen descriptor to be used for startup mechanics.
         /// </summary>
-        public abstract IScreenDescription GetScreenDescription();
+        public abstract IScreenDescriptor GetScreenDescriptor();
         #endregion
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
