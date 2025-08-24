@@ -48,28 +48,24 @@ namespace Kinovea.Root
 
         private bool manualUpdate;
         private RootKernel rootKernel;
-        private WindowDescriptor selected;
+        private ListViewWindowDescriptor selected;
 
         public FormWindowManager(RootKernel rootKernel)
         {
             this.rootKernel = rootKernel;
 
-            // Always get the up to date descriptors upon entering this window.
-
-
             InitializeComponent();
             this.Text = "Manage windows";
+            PrepareListView();
 
             Populate();
         }
 
-        private void Populate()
+        /// <summary>
+        /// Prepare the object list view control columns.
+        /// </summary>
+        private void PrepareListView()
         {
-            manualUpdate = true;
-
-            // Populate the list view.
-            List<WindowDescriptor> descriptors = WindowManager.WindowDescriptors;
-
             // ObjectListView
             // https://objectlistview.sourceforge.net/cs/index.html
             // 23. How do I make a column that shows just an image?
@@ -173,7 +169,24 @@ namespace Kinovea.Root
             olvWindows.HeaderStyle = ColumnHeaderStyle.None;
             olvWindows.RowHeight = 22;
             olvWindows.FullRowSelect = true;
-            
+        }
+
+        /// <summary>
+        /// Populate the entire window list from scratch.
+        /// This function starts by re-reading the descriptors from the file system.
+        /// </summary>
+        private void Populate()
+        {
+            // This function is called not only on initialization but also 
+            // after changes to the list so it should always restart from scratch.
+            olvWindows.Items.Clear();
+            selected = null;
+
+            // Always get the up to date descriptors upon entering this window.
+            WindowManager.ReadAllDescriptors();
+            List<WindowDescriptor> descriptors = WindowManager.WindowDescriptors;
+
+            // Populate the list view.
             List<ListViewWindowDescriptor> rows = new List<ListViewWindowDescriptor>();
             foreach (var descriptor in descriptors)
             {
@@ -188,13 +201,16 @@ namespace Kinovea.Root
             olvWindows.SetObjects(rows);
 
             // Start with nothing selected.
-            PopulateScreenList();
+            PopulateScreenList(null);
+            UpdateButtons(null);
         }
 
-        private void PopulateScreenList()
+        /// <summary>
+        /// Populate the screen list area for the selected instance.
+        /// </summary>
+        /// <param name="d"></param>
+        private void PopulateScreenList(WindowDescriptor d)
         {
-            WindowDescriptor d = selected;
-
             bool hasData = d != null;
             grpScreenList.Text = hasData ? string.Format("[{0}]", GetName(d)) : "";
             btnScreen1.Visible = hasData;
@@ -203,7 +219,7 @@ namespace Kinovea.Root
             lblScreen2.Visible = hasData;
             grpScreenList.Enabled = hasData;
             
-            if (d == null)
+            if (!hasData)
                 return;
             
             // Note: this is the exact same logic as in FormWindowProperties,
@@ -232,6 +248,9 @@ namespace Kinovea.Root
             }
         }
 
+        /// <summary>
+        /// Populate one screen line inside the screen list area.
+        /// </summary>
         private void PopulateScreen(IScreenDescriptor screen, Button btn, Label lbl)
         {
             if (screen == null)
@@ -256,6 +275,34 @@ namespace Kinovea.Root
             {
                 btn.Image = Properties.Resources.camera_video;
                 lbl.Text = string.Format("Capture: {0}", screen.FriendlyName);
+            }
+        }
+
+        /// <summary>
+        /// Update the side buttons based on the selected instance.
+        /// </summary>
+        private void UpdateButtons(ListViewWindowDescriptor lvwd)
+        {
+            bool hasData = lvwd != null;
+            btnStartStop.Enabled = hasData;
+            btnDelete.Enabled = hasData;
+            if (!hasData)
+                return;
+
+            if (lvwd.InstanceStatus == InstanceStatus.Myself)
+            {
+                btnStartStop.Enabled = false;
+                btnDelete.Enabled = false;
+            }
+            else if (lvwd.InstanceStatus == InstanceStatus.Running)
+            {
+                btnStartStop.Image = Properties.Resources.stop2_16;
+                btnDelete.Enabled = false;
+            }
+            else
+            {
+                btnStartStop.Image = Properties.Resources.circled_play_green_16;
+                btnDelete.Enabled = true;
             }
         }
 
@@ -341,9 +388,44 @@ namespace Kinovea.Root
             if (lvwd == null)
                 return;
 
-            selected = lvwd.Tag;
+            selected = lvwd;
 
-            PopulateScreenList();
+            PopulateScreenList(lvwd.Tag);
+            UpdateButtons(lvwd);
+        }
+
+        private void btnStartStop_Click(object sender, EventArgs e)
+        {
+            if (selected == null || selected.InstanceStatus == InstanceStatus.Myself)
+                return;
+
+            if (selected.InstanceStatus == InstanceStatus.Running)
+            {
+                // Stop running instance.
+                WindowManager.StopInstance(selected.Tag);
+                
+                Populate();
+            }
+            else 
+            {
+                // Start sleeping instace.
+                WindowManager.ReopenWindow(selected.Tag);
+
+                // Wait a bit for the instance to start ?
+                Populate();
+            }
+
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            Populate();
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            WindowManager.Delete(selected.Tag);
+            Populate();
         }
     }
 }

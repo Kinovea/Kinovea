@@ -25,5 +25,8 @@ namespace Kinovea.Services
         [DllImport("USER32.dll")]
         public static extern bool IsIconic(IntPtr handle);
 
+        [DllImport("USER32.dll", SetLastError = true)]
+        public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
+
     }
 }

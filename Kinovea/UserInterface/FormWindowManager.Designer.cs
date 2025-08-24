@@ -35,8 +35,6 @@
       this.imgListStatus = new System.Windows.Forms.ImageList(this.components);
       this.btnDelete = new System.Windows.Forms.Button();
       this.btnStartStop = new System.Windows.Forms.Button();
-      this.btnDown = new System.Windows.Forms.Button();
-      this.btnUp = new System.Windows.Forms.Button();
       this.btnOK = new System.Windows.Forms.Button();
       this.grpScreenList = new System.Windows.Forms.GroupBox();
       this.pnlScreenList = new System.Windows.Forms.Panel();
@@ -45,6 +43,7 @@
       this.lblScreen1 = new System.Windows.Forms.Label();
       this.btnScreen1 = new System.Windows.Forms.Button();
       this.imgListScreens = new System.Windows.Forms.ImageList(this.components);
+      this.btnRefresh = new System.Windows.Forms.Button();
       this.grpIdentifier.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.olvWindows)).BeginInit();
       this.grpScreenList.SuspendLayout();
@@ -55,11 +54,10 @@
       // 
       this.grpIdentifier.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.grpIdentifier.Controls.Add(this.btnRefresh);
       this.grpIdentifier.Controls.Add(this.olvWindows);
       this.grpIdentifier.Controls.Add(this.btnDelete);
       this.grpIdentifier.Controls.Add(this.btnStartStop);
-      this.grpIdentifier.Controls.Add(this.btnDown);
-      this.grpIdentifier.Controls.Add(this.btnUp);
       this.grpIdentifier.Location = new System.Drawing.Point(12, 12);
       this.grpIdentifier.Name = "grpIdentifier";
       this.grpIdentifier.Padding = new System.Windows.Forms.Padding(3, 3, 20, 3);
@@ -107,50 +105,30 @@
       // btnDelete
       // 
       this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnDelete.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnDelete.FlatAppearance.BorderSize = 0;
       this.btnDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnDelete.Image = global::Kinovea.Root.Properties.Resources.bin_empty;
-      this.btnDelete.Location = new System.Drawing.Point(338, 112);
+      this.btnDelete.Location = new System.Drawing.Point(338, 50);
       this.btnDelete.Name = "btnDelete";
       this.btnDelete.Size = new System.Drawing.Size(25, 25);
       this.btnDelete.TabIndex = 74;
       this.btnDelete.UseVisualStyleBackColor = true;
+      this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
       // 
       // btnStartStop
       // 
       this.btnStartStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnStartStop.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnStartStop.FlatAppearance.BorderSize = 0;
       this.btnStartStop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnStartStop.Image = global::Kinovea.Root.Properties.Resources.stop2_16;
-      this.btnStartStop.Location = new System.Drawing.Point(338, 81);
+      this.btnStartStop.Location = new System.Drawing.Point(338, 19);
       this.btnStartStop.Name = "btnStartStop";
       this.btnStartStop.Size = new System.Drawing.Size(25, 25);
       this.btnStartStop.TabIndex = 73;
       this.btnStartStop.UseVisualStyleBackColor = true;
-      // 
-      // btnDown
-      // 
-      this.btnDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnDown.FlatAppearance.BorderSize = 0;
-      this.btnDown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnDown.Image = global::Kinovea.Root.Properties.Resources.thick_arrow_pointing_down_16;
-      this.btnDown.Location = new System.Drawing.Point(338, 50);
-      this.btnDown.Name = "btnDown";
-      this.btnDown.Size = new System.Drawing.Size(25, 25);
-      this.btnDown.TabIndex = 72;
-      this.btnDown.UseVisualStyleBackColor = true;
-      // 
-      // btnUp
-      // 
-      this.btnUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnUp.FlatAppearance.BorderSize = 0;
-      this.btnUp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnUp.Image = global::Kinovea.Root.Properties.Resources.thick_arrow_pointing_up_16;
-      this.btnUp.Location = new System.Drawing.Point(338, 19);
-      this.btnUp.Name = "btnUp";
-      this.btnUp.Size = new System.Drawing.Size(25, 25);
-      this.btnUp.TabIndex = 71;
-      this.btnUp.UseVisualStyleBackColor = true;
+      this.btnStartStop.Click += new System.EventHandler(this.btnStartStop_Click);
       // 
       // btnOK
       // 
@@ -244,6 +222,20 @@
       this.imgListScreens.Images.SetKeyName(4, "explorer");
       this.imgListScreens.Images.SetKeyName(5, "playback");
       // 
+      // btnRefresh
+      // 
+      this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnRefresh.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnRefresh.FlatAppearance.BorderSize = 0;
+      this.btnRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnRefresh.Image = global::Kinovea.Root.Properties.Resources.arrow_refresh;
+      this.btnRefresh.Location = new System.Drawing.Point(338, 202);
+      this.btnRefresh.Name = "btnRefresh";
+      this.btnRefresh.Size = new System.Drawing.Size(25, 25);
+      this.btnRefresh.TabIndex = 76;
+      this.btnRefresh.UseVisualStyleBackColor = true;
+      this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+      // 
       // FormWindowManager
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -280,12 +272,11 @@
         private System.Windows.Forms.Button btnScreen2;
         private System.Windows.Forms.Label lblScreen1;
         private System.Windows.Forms.Button btnScreen1;
-        private System.Windows.Forms.Button btnUp;
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.Button btnStartStop;
-        private System.Windows.Forms.Button btnDown;
         private System.Windows.Forms.ImageList imgListStatus;
         private BrightIdeasSoftware.ObjectListView olvWindows;
         private System.Windows.Forms.ImageList imgListScreens;
+        private System.Windows.Forms.Button btnRefresh;
     }
 }

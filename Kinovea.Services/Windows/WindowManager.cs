@@ -202,7 +202,7 @@ namespace Kinovea.Services
             }
             catch (Exception e)
             {
-                log.Error("An error happened during the writing of the window file");
+                log.Error("An error happened while writing of the window file.");
                 log.Error(e);
             }
         }
@@ -277,6 +277,46 @@ namespace Kinovea.Services
             p.StartInfo.FileName = path;
             p.StartInfo.Arguments = args;
             p.Start();
+        }
+
+        public static void StopInstance(WindowDescriptor d)
+        {
+            // Find the process.
+            string titleName = string.IsNullOrEmpty(d.Name) ? GetIdName(d) : d.Name;
+            string title = string.Format("Kinovea [{0}]", titleName);
+            IntPtr handle = NativeMethods.FindWindow(null, title);
+            if (handle != IntPtr.Zero)
+            {
+                uint pid = 0;
+                NativeMethods.GetWindowThreadProcessId(handle, out pid);
+                var process = Process.GetProcessById((int)pid);
+                process.Kill();
+            }
+        }
+
+        /// <summary>
+        /// Delete another window.
+        /// </summary>
+        public static void Delete(WindowDescriptor d)
+        {
+            if (d == null)
+                return;
+
+            string filename = d.Id.ToString() + ".xml";
+            string path = Path.Combine(Software.WindowsDirectory, filename);
+
+            try
+            {
+                File.Delete(path);
+            }
+            catch (Exception e)
+            {
+                log.Error("An error happened while deleting the window file.");
+                log.Error(e);
+            }
+
+            // Remove the entry from our list without reloading everything.
+            windowDescriptors.Remove(d);
         }
 
         /// <summary>

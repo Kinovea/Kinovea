@@ -836,6 +836,8 @@ namespace Kinovea.Root
             fwm.StartPosition = FormStartPosition.CenterScreen;
             fwm.ShowDialog();
             fwm.Dispose();
+
+            RefreshCultureMenu();
         }
 
         #endregion
