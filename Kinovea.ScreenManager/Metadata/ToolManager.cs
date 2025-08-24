@@ -76,7 +76,7 @@ namespace Kinovea.ScreenManager
         
         public static void SavePresets()
         {
-            SavePresets(Software.ColorProfileDirectory + "current.xml");
+            SavePresets(Path.Combine(Software.ColorProfileDirectory, "current.xml"));
         }
         public static void SavePresets(string file)
         {
@@ -105,7 +105,7 @@ namespace Kinovea.ScreenManager
         }
         public static void LoadPresets()
         {
-            LoadPresets(Software.ColorProfileDirectory + "current.xml");
+            LoadPresets(Path.Combine(Software.ColorProfileDirectory, "current.xml"));
         }
 
         /// <summary>
