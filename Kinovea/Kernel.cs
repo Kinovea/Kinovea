@@ -98,9 +98,6 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuTimecodeTimeAndFrames = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeNormalized = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPointer = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuWorkspace = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuWorkspaceSaveAsDefault = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuWorkspaceExport = new ToolStripMenuItem();
 
         // Window
         private ToolStripMenuItem mnuWindow = new ToolStripMenuItem();
@@ -396,12 +393,6 @@ namespace Kinovea.Root
                 mnuTimecodeMicroseconds, 
                 mnuTimecodeTimeAndFrames});
 
-            mnuWorkspaceSaveAsDefault.Click += MnuWorkspaceSaveAsDefault_Click;
-            mnuWorkspaceExport.Click += MnuWorkspaceExport_Click;
-            mnuWorkspace.DropDownItems.AddRange(new ToolStripItem[] { 
-                mnuWorkspaceSaveAsDefault, 
-                mnuWorkspaceExport});
-
             mnuPointer.Image = Properties.Resources.handopen24c;
             BuildPointerMenus();
             
@@ -410,7 +401,6 @@ namespace Kinovea.Root
                 mnuTimecode, 
                 mnuPointer,
                 new ToolStripSeparator(),
-                mnuWorkspace,
                 new ToolStripSeparator(), 
                 mnuPreferences});
             #endregion
@@ -537,13 +527,6 @@ namespace Kinovea.Root
             mnuTimecodeMicroseconds.Text = RootLang.TimeCodeFormat_Microseconds;
             mnuTimecodeMicroseconds.Image = Properties.Resources.microseconds;
             mnuTimecodeTimeAndFrames.Text = mnuTimecodeClassic.Text + " + " + RootLang.TimeCodeFormat_Frames;
-
-            mnuWorkspace.Text = RootLang.mnuWorkspace;
-            mnuWorkspace.Image = Properties.Resources.common_controls;
-            mnuWorkspaceSaveAsDefault.Text = RootLang.mnuWorkspaceSaveAsDefault;
-            mnuWorkspaceSaveAsDefault.Image = Properties.Resources.save_16;
-            mnuWorkspaceExport.Text = RootLang.mnuWorkspaceExport;
-            mnuWorkspaceExport.Image = Properties.Resources.file_txt;
 
             mnuPointer.Text = RootLang.mnuPointer;
             // Rebuild the whole pointer menu to get the correct text.
@@ -738,34 +721,6 @@ namespace Kinovea.Root
 
             PreferencesManager.PlayerPreferences.TimecodeFormat = _timecode;
             RefreshUICulture();
-        }
-
-        private void MnuWorkspaceSaveAsDefault_Click(object sender, EventArgs e)
-        {
-            // Extract the current workspace and save it in the preferences.
-            Workspace workspace = screenManager.ExtractWorkspace();
-            PreferencesManager.GeneralPreferences.Workspace = workspace;
-
-            MessageBox.Show(
-                RootLang.dlgWorkspace_ConfirmationMessage, 
-                RootLang.dlgWorkspace_Title, 
-                MessageBoxButtons.OK, 
-                MessageBoxIcon.Information);
-        }
-
-        private void MnuWorkspaceExport_Click(object sender, EventArgs e)
-        {
-            // Extract the current workspace and save it in a separate file.
-            Workspace workspace = screenManager.ExtractWorkspace();
-
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.RestoreDirectory = true;
-            saveFileDialog.Filter = FilesystemHelper.SaveWorkspaceFilter();
-            saveFileDialog.FilterIndex = 1;
-            if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))
-                return;
-
-            workspace.Write(saveFileDialog.FileName);
         }
         #endregion
 

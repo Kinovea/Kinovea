@@ -717,13 +717,12 @@ namespace Kinovea.ScreenManager
             // Time         = 1
             // Pointer      = 2
             // ----         = 3
-            // Workspace    = 4
-            // Variables    = 5
-            // ----         = 6
-            // Preferences  = 7
+            // Variables    = 4
+            // ----         = 5
+            // Preferences  = 6
 
             mnuVariables.Image = Properties.Resources.group_16;
-            mnuVariables.MergeIndex = 5;
+            mnuVariables.MergeIndex = 4;
             mnuVariables.MergeAction = MergeAction.Insert;
             mnuImportVariables.Image = Properties.Resources.folder;
             mnuImportVariables.Click += mnuImportVariables_OnClick;
