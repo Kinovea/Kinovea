@@ -138,9 +138,9 @@ namespace Kinovea.Root
             
             this.ResumeLayout();
         }
-        public void PlugUI(UserControl fileExplorer, UserControl screenManager)
+        public void PlugUI(UserControl navigationPanel, UserControl screenManager)
         {
-            supervisorView.PlugUI(fileExplorer, screenManager);
+            supervisorView.PlugUI(navigationPanel, screenManager);
         }
 
         #region Event Handlers

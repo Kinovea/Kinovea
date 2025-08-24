@@ -51,7 +51,7 @@ namespace Kinovea.Root
         
         #region Members
         private KinoveaMainWindow mainWindow;
-        private FileBrowserKernel fileBrowser;
+        private FileBrowserKernel navigationPanel;
         private UpdaterKernel updater;
         private ScreenManagerKernel screenManager;
         private Stopwatch stopwatch = new Stopwatch();
@@ -206,7 +206,7 @@ namespace Kinovea.Root
         {   
             stopwatch.Restart();
             log.Debug("Building the modules tree.");
-            fileBrowser = new FileBrowserKernel();
+            navigationPanel = new FileBrowserKernel();
             updater = new UpdaterKernel();
             screenManager = new ScreenManagerKernel();
             log.DebugFormat("Modules tree built in {0} ms.", stopwatch.ElapsedMilliseconds);
@@ -236,11 +236,11 @@ namespace Kinovea.Root
         }
         public void ExtendUI()
         {
-            fileBrowser.ExtendUI();
+            navigationPanel.ExtendUI();
             updater.ExtendUI();
             screenManager.ExtendUI();
 
-            mainWindow.PlugUI(fileBrowser.UI, screenManager.UI);
+            mainWindow.PlugUI(navigationPanel.UI, screenManager.UI);
             mainWindow.SupervisorControl.buttonCloseExplo.BringToFront();
         }
         public void RefreshUICulture()
@@ -252,7 +252,7 @@ namespace Kinovea.Root
             
             toolOpenFile.ToolTipText = ScreenManagerLang.mnuOpenVideo;
             
-            fileBrowser.RefreshUICulture();
+            navigationPanel.RefreshUICulture();
             updater.RefreshUICulture();
             screenManager.RefreshUICulture();
             
@@ -262,7 +262,7 @@ namespace Kinovea.Root
         {
             RefreshUICulture();
             
-            fileBrowser.PreferencesUpdated();
+            navigationPanel.PreferencesUpdated();
             updater.PreferencesUpdated();
             screenManager.PreferencesUpdated();
         }
@@ -272,7 +272,7 @@ namespace Kinovea.Root
             bool cancel = screenManager.CloseSubModules();
             if(!cancel)
             {
-                fileBrowser.CloseSubModules();
+                navigationPanel.CloseSubModules();
                 updater.CloseSubModules();
             }
 
@@ -469,7 +469,7 @@ namespace Kinovea.Root
 
         private void GetSubModulesMenus(ToolStrip menu)
         {
-            fileBrowser.ExtendMenu(menu);
+            navigationPanel.ExtendMenu(menu);
             updater.ExtendMenu(menu);
             screenManager.ExtendMenu(menu);
         }
@@ -485,7 +485,7 @@ namespace Kinovea.Root
         }
         private void GetSubModulesToolBars(ToolStrip toolbar)
         {
-            fileBrowser.ExtendToolBar(toolbar);
+            navigationPanel.ExtendToolBar(toolbar);
             updater.ExtendToolBar(toolbar);
             screenManager.ExtendToolBar(toolbar);
         }

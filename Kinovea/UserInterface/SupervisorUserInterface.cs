@@ -51,19 +51,19 @@ namespace Kinovea.Root
         #endregion
 
         #region Public methods
-        public void PlugUI(UserControl fileExplorer, UserControl screenManager)
+        public void PlugUI(UserControl navigationPanel, UserControl screenManager)
         {
             SuspendLayout();
 
-            splitWorkSpace.Panel1.Controls.Add(fileExplorer);
+            splitWorkSpace.Panel1.Controls.Add(navigationPanel);
             splitWorkSpace.Panel2.Controls.Add(screenManager);
             
             int topMargin = 2;
-            fileExplorer.Top = topMargin;
-            fileExplorer.Left = 0;
-            fileExplorer.Width = splitWorkSpace.Panel1.Width;
-            fileExplorer.Height = splitWorkSpace.Panel1.Height - topMargin;
-            fileExplorer.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
+            navigationPanel.Top = topMargin;
+            navigationPanel.Left = 0;
+            navigationPanel.Width = splitWorkSpace.Panel1.Width;
+            navigationPanel.Height = splitWorkSpace.Panel1.Height - topMargin;
+            navigationPanel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
 
             ResumeLayout();
             initializing = false;
