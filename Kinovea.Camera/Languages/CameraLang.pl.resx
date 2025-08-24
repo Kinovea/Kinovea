@@ -158,4 +158,13 @@
   <data name="FormConfiguration_EnableHardwareCompression" xml:space="preserve">
     <value>Włącz sprzętową kompresję</value>
   </data>
+  <data name="FormConfiguration_EnableSoftwareDemosaicing" xml:space="preserve">
+    <value>Włącz program demozaikowania</value>
+  </data>
+  <data name="FormConfiguration_ResultingFramerate" xml:space="preserve">
+    <value>Liczba klatek na sekundę:</value>
+  </data>
+  <data name="FormConfiguration_ExportDeviceGenICamXMLFile" xml:space="preserve">
+    <value>Eksportuj plik XML GenICam</value>
+  </data>
 </root>
