@@ -75,9 +75,14 @@ namespace Kinovea.Root
                 CommandLineArgumentManager.Instance.ParseArguments(args);
 
             // Read the list of saved instances and determine which one to load in this window.
-            // This may exit the application if we figure out the user just wanted 
-            // to open a named instance that is already active elsewhere.
             WindowManager.Startup(isFirstInstance);
+
+            if (WindowManager.ActiveWindow == null)
+            {
+                // We found out that the window is already active and brought it to front.
+                // Nothing more to do here.
+                return;
+            }
 
             // Make sure each instance logs to its own log file.
             Software.ConfigureLogging();
