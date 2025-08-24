@@ -31,6 +31,8 @@
       this.components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormWindowManager));
       this.grpIdentifier = new System.Windows.Forms.GroupBox();
+      this.olvWindows = new BrightIdeasSoftware.ObjectListView();
+      this.imgListStatus = new System.Windows.Forms.ImageList(this.components);
       this.btnDelete = new System.Windows.Forms.Button();
       this.btnStartStop = new System.Windows.Forms.Button();
       this.btnDown = new System.Windows.Forms.Button();
@@ -42,12 +44,11 @@
       this.btnScreen2 = new System.Windows.Forms.Button();
       this.lblScreen1 = new System.Windows.Forms.Label();
       this.btnScreen1 = new System.Windows.Forms.Button();
-      this.imgList = new System.Windows.Forms.ImageList(this.components);
-      this.olvWindows = new BrightIdeasSoftware.ObjectListView();
+      this.imgListScreens = new System.Windows.Forms.ImageList(this.components);
       this.grpIdentifier.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.olvWindows)).BeginInit();
       this.grpScreenList.SuspendLayout();
       this.pnlScreenList.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.olvWindows)).BeginInit();
       this.SuspendLayout();
       // 
       // grpIdentifier
@@ -66,6 +67,42 @@
       this.grpIdentifier.TabIndex = 62;
       this.grpIdentifier.TabStop = false;
       this.grpIdentifier.Text = "Saved windows";
+      // 
+      // olvWindows
+      // 
+      this.olvWindows.AlternateRowBackColor = System.Drawing.Color.Gainsboro;
+      this.olvWindows.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.olvWindows.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClickAlways;
+      this.olvWindows.CellEditUseWholeCell = false;
+      this.olvWindows.Cursor = System.Windows.Forms.Cursors.Default;
+      this.olvWindows.FullRowSelect = true;
+      this.olvWindows.GridLines = true;
+      this.olvWindows.HeaderFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.olvWindows.HideSelection = false;
+      this.olvWindows.Location = new System.Drawing.Point(13, 19);
+      this.olvWindows.Name = "olvWindows";
+      this.olvWindows.Size = new System.Drawing.Size(319, 208);
+      this.olvWindows.SmallImageList = this.imgListStatus;
+      this.olvWindows.TabIndex = 75;
+      this.olvWindows.UseCompatibleStateImageBehavior = false;
+      this.olvWindows.View = System.Windows.Forms.View.Details;
+      this.olvWindows.SelectedIndexChanged += new System.EventHandler(this.olvWindows_SelectedIndexChanged);
+      // 
+      // imgListStatus
+      // 
+      this.imgListStatus.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgListStatus.ImageStream")));
+      this.imgListStatus.TransparentColor = System.Drawing.Color.Transparent;
+      this.imgListStatus.Images.SetKeyName(0, "running");
+      this.imgListStatus.Images.SetKeyName(1, "sleeping");
+      this.imgListStatus.Images.SetKeyName(2, "myself");
+      this.imgListStatus.Images.SetKeyName(3, "capture");
+      this.imgListStatus.Images.SetKeyName(4, "dualcapture");
+      this.imgListStatus.Images.SetKeyName(5, "dualmixed");
+      this.imgListStatus.Images.SetKeyName(6, "dualplayback");
+      this.imgListStatus.Images.SetKeyName(7, "explorer");
+      this.imgListStatus.Images.SetKeyName(8, "playback");
       // 
       // btnDelete
       // 
@@ -196,35 +233,16 @@
       this.btnScreen1.TabIndex = 67;
       this.btnScreen1.UseVisualStyleBackColor = true;
       // 
-      // imgList
+      // imgListScreens
       // 
-      this.imgList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgList.ImageStream")));
-      this.imgList.TransparentColor = System.Drawing.Color.Transparent;
-      this.imgList.Images.SetKeyName(0, "running");
-      this.imgList.Images.SetKeyName(1, "sleeping");
-      this.imgList.Images.SetKeyName(2, "myself");
-      this.imgList.Images.SetKeyName(3, "running2");
-      // 
-      // olvWindows
-      // 
-      this.olvWindows.AlternateRowBackColor = System.Drawing.Color.Gainsboro;
-      this.olvWindows.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.olvWindows.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClickAlways;
-      this.olvWindows.CellEditUseWholeCell = false;
-      this.olvWindows.Cursor = System.Windows.Forms.Cursors.Default;
-      this.olvWindows.FullRowSelect = true;
-      this.olvWindows.GridLines = true;
-      this.olvWindows.HeaderFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.olvWindows.HideSelection = false;
-      this.olvWindows.Location = new System.Drawing.Point(13, 19);
-      this.olvWindows.Name = "olvWindows";
-      this.olvWindows.Size = new System.Drawing.Size(319, 208);
-      this.olvWindows.SmallImageList = this.imgList;
-      this.olvWindows.TabIndex = 75;
-      this.olvWindows.UseCompatibleStateImageBehavior = false;
-      this.olvWindows.View = System.Windows.Forms.View.Details;
+      this.imgListScreens.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgListScreens.ImageStream")));
+      this.imgListScreens.TransparentColor = System.Drawing.Color.Transparent;
+      this.imgListScreens.Images.SetKeyName(0, "capture");
+      this.imgListScreens.Images.SetKeyName(1, "dualcapture");
+      this.imgListScreens.Images.SetKeyName(2, "dualmixed");
+      this.imgListScreens.Images.SetKeyName(3, "dualplayback");
+      this.imgListScreens.Images.SetKeyName(4, "explorer");
+      this.imgListScreens.Images.SetKeyName(5, "playback");
       // 
       // FormWindowManager
       // 
@@ -244,10 +262,10 @@
       this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
       this.Text = "Manage windows";
       this.grpIdentifier.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.olvWindows)).EndInit();
       this.grpScreenList.ResumeLayout(false);
       this.pnlScreenList.ResumeLayout(false);
       this.pnlScreenList.PerformLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.olvWindows)).EndInit();
       this.ResumeLayout(false);
 
         }
@@ -266,7 +284,8 @@
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.Button btnStartStop;
         private System.Windows.Forms.Button btnDown;
-        private System.Windows.Forms.ImageList imgList;
+        private System.Windows.Forms.ImageList imgListStatus;
         private BrightIdeasSoftware.ObjectListView olvWindows;
+        private System.Windows.Forms.ImageList imgListScreens;
     }
 }
