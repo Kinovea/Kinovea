@@ -45,33 +45,33 @@ namespace Kinovea.ScreenManager
         #region Events
         public event EventHandler LaunchVideo;
         public event EventHandler VideoSelected;
-        public event EventHandler<EditingEventArgs> FileNameEditing;
+        public event EventHandler<EventArgs<bool>> FileNameEditing;
         #endregion
-        
+
         #region Properties
-        
+
+        /// <summary>
+        /// Full path to the target file.
+        /// </summary>
         public string FilePath 
         {
             get 
             { 
                 return path; 
             }
-            set 
-            { 
-                // If the filename changes this invalidates the thumbnail.
-                if (path != value)
-                {
-                    path = value;
-                    lastWriteUTC = DateTime.MinValue;
-                }
-            }
         }
 
+        /// <summary>
+        /// True if the file couldn't be loaded.
+        /// </summary>
         public bool IsError 
         {
             get { return isError;}
         }
 
+        /// <summary>
+        /// Last known write time of the target file.
+        /// </summary>
         public DateTime LastWriteUTC
         {
             get { return lastWriteUTC; }
@@ -207,7 +207,7 @@ namespace Kinovea.ScreenManager
                 tmrThumbs.Tick -= tmrThumbs_Tick;
                 tmrThumbs.Dispose();
 
-                tbFileName.KeyPress -= TbFileNameKeyPress;
+                tbFileName.KeyPress -= TbFileName_KeyPress;
                 tbFileName.Dispose();
 
                 LaunchVideo = null;
@@ -220,9 +220,39 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Public interface
-        public void Populate(VideoSummary summary)
+
+        public void SetTargetFile(string path)
         {
-            loaded = true;
+            if (string.IsNullOrEmpty(path))
+            {
+                // We won't be using this thumbnail this time around.
+                this.path = string.Empty;
+                this.lastWriteUTC = DateTime.MinValue;
+                loaded = false;
+                return;
+            }
+
+            if (this.path == path)
+                return;
+
+            this.path = path;
+
+            // Invalidate the data.
+            // It will be filled back later in LoadSummary().
+            lastWriteUTC = DateTime.MinValue;
+            loaded = false;
+
+            // Force invalidate to make sure we are not showing an old thumbnail.
+            // We don't dispose the old bitmap until the last moment.
+            this.Invalidate();
+        }
+
+        /// <summary>
+        /// Fill the thumbnail control with the video summary.
+        /// </summary>
+        public void LoadSummary(VideoSummary summary)
+        {
+            DisposeImages();
 
             if (path != summary.Filename)
             {
@@ -294,8 +324,10 @@ namespace Kinovea.ScreenManager
                 // Keep track of the last write time to detect if a reload is really needed.
                 lastWriteUTC = File.Exists(summary.Filename) ? File.GetLastWriteTimeUtc(summary.Filename) : DateTime.MinValue;
             }
+
+            loaded = true;
         }
-        
+
         /// <summary>
         /// Reset the size of the thumbnail control and recompute the image size and the
         /// filename truncation.
@@ -395,22 +427,16 @@ namespace Kinovea.ScreenManager
 
             picBox.Invalidate();
         }
+
         public void DisposeImages()
         {
-            if(isError || bitmaps == null)
+            if(bitmaps == null)
                 return;
             
             foreach(Bitmap bmp in bitmaps)
                 bmp.Dispose();
             
             bitmaps.Clear();
-        }
-        public void Animate(bool animate)
-        {
-            if(animate)
-                tmrThumbs.Start();
-            else
-                tmrThumbs.Stop();
         }
         #endregion
         
@@ -440,6 +466,8 @@ namespace Kinovea.ScreenManager
             }
         }
 
+
+        #region Painting
         private void PicBoxPaint(object sender, PaintEventArgs e)
         {
             // Configure for speed. These are thumbnails anyway.
@@ -569,6 +597,7 @@ namespace Kinovea.ScreenManager
             int top = (picBox.Height - bmp.Height) / 2;
             canvas.DrawImage(bmp, left, top);
         }
+        #endregion
 
         private void PicBoxMouseMove(object sender, MouseEventArgs e)
         {
@@ -589,7 +618,7 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        private void ThumbListViewItemPaint(object sender, PaintEventArgs e)
+        private void ThumbnailFile_Paint(object sender, PaintEventArgs e)
         {
             // Draw the shadow
             if(loaded && !isError)
@@ -613,7 +642,7 @@ namespace Kinovea.ScreenManager
             picBox.Invalidate();
         }
 
-        private void PicBoxMouseEnter(object sender, EventArgs e)
+        private void PicBox_MouseEnter(object sender, EventArgs e)
         {
             hoverInProgress = true;
         
@@ -629,7 +658,7 @@ namespace Kinovea.ScreenManager
             tmrThumbs.Start();
         }
 
-        private void PicBoxMouseLeave(object sender, EventArgs e)
+        private void PicBox_MouseLeave(object sender, EventArgs e)
         {
             hoverInProgress = false;
             
@@ -645,7 +674,7 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        private void TbFileNameKeyPress(object sender, KeyPressEventArgs e)
+        private void TbFileName_KeyPress(object sender, KeyPressEventArgs e)
         {
             // Editing a file name.
             if(e.KeyChar == 27)
@@ -724,19 +753,14 @@ namespace Kinovea.ScreenManager
         public void StartRenaming()
         {
             // Switch to edit mode.
-            if (FileNameEditing != null)
-            {
-                FileNameEditing(this, new EditingEventArgs(true));
-                editModeInProgress = true;
-                ToggleEditMode();
-            }
+            FileNameEditing?.Invoke(this, new EventArgs<bool>(true));
+            editModeInProgress = true;
+            ToggleEditMode();
         }
         private void QuitEditMode()
         {
             // Quit edit mode.
-            if (FileNameEditing != null)
-                FileNameEditing(this, new EditingEventArgs(false));
-            
+            FileNameEditing?.Invoke(this, new EventArgs<bool>(false));
             editModeInProgress = false;
             ToggleEditMode();
         }
@@ -783,7 +807,6 @@ namespace Kinovea.ScreenManager
             {
                 // An exception is thrown here during closing of the application.
             }
-            
         }
 
         public void Delete()
@@ -794,19 +817,4 @@ namespace Kinovea.ScreenManager
         }
 
     }
-    
-    #region EventArgs classe used here
-    /// <summary>
-    /// A (very) simple event args class to encapsulate the state of the editing.
-    /// </summary>
-    public class EditingEventArgs : EventArgs
-    {
-        public readonly bool Editing;
-
-        public EditingEventArgs( bool _bEditing )
-        {
-            Editing = _bEditing;
-        }
-    }
-    #endregion
 }

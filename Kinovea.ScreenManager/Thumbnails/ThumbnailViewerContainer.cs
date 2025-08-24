@@ -62,7 +62,7 @@ namespace Kinovea.ScreenManager
             CameraTypeManager.CameraForgotten += CameraTypeManager_CameraForgotten; 
             CameraTypeManager.CameraThumbnailProduced += CameraTypeManager_CameraThumbnailProduced;
 
-            // Switch immediately to the right tab, don't wait for the file explorer to load.
+            // Switch immediately to the correct tab, don't wait for the file explorer to load.
             // In particular if the active tab is the cameras we want to get the thumbnails as soon as possible, even if not displaying yet.
             SwitchContent(Convert(WindowManager.ActiveWindow.ActiveTab));
                     
@@ -189,9 +189,6 @@ namespace Kinovea.ScreenManager
             sizeSelector.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             sizeSelector.SelectionChanged += SizeSelector_SelectionChanged;
             splitMain.Panel1.Controls.Add(sizeSelector);
-
-            progressBar.Left = sizeSelector.Left - progressBar.Width - 10;
-            progressBar.Visible = false;
         }
         
         private void Viewer_FileLoadAsked(object sender, FileLoadAskedEventArgs e)

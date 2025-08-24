@@ -105,7 +105,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void CurrentDirectoryChanged(string path, List<string> files)
         {
-            log.DebugFormat("Thumbnail viewer directory change:{0}. Size:{1}. ---------------------------", 
+            log.DebugFormat("Thumbnail viewer directory change:{0}. Size:{1}.", 
                 path, this.Size);
 
             if (this.Width < 200 || this.Height < 200)
@@ -132,9 +132,10 @@ namespace Kinovea.ScreenManager
 
             this.path = path;
             this.files = files;
+            PopulateViewer(false);
+
             this.sortOperationInProgress = false;
             this.forcedRefreshInProgress = false;
-            PopulateViewer(false);
         }
 
         /// <summary>
@@ -276,6 +277,7 @@ namespace Kinovea.ScreenManager
             selectedThumbnail = null;
             UpdateThumbnailList(files);
             log.DebugFormat("After thumbnail list updated: {0} in {1} ms.", files.Count, stopwatch.ElapsedMilliseconds);
+            log.DebugFormat("Thumbnail controls: {0}", thumbnails.Count);
 
             if (files.Count == 0)
                 return;
@@ -404,7 +406,7 @@ namespace Kinovea.ScreenManager
                     if (foundUnused != -1)
                     {
                         // We found a thumbnail control that we won't be using, reassign it.
-                        thumbnails[foundUnused].FilePath = files[i];
+                        thumbnails[foundUnused].SetTargetFile(files[i]);
                         mapIndices[i] = foundUnused;
                         inUse[foundUnused] = true;
 
@@ -453,9 +455,11 @@ namespace Kinovea.ScreenManager
                 thumbnails[i].Visible = true;
             }
 
-            // Hide the extra unused controls.
+            // Hide and empty the extra unused controls.
             for (int i = files.Count; i < thumbnails.Count; i++)
             {
+                thumbnails[i].SetTargetFile(null);
+                thumbnails[i].Tag = -1;
                 thumbnails[i].Visible = false;
             }
 
@@ -499,7 +503,7 @@ namespace Kinovea.ScreenManager
             else
             {
                 ThumbnailFile thumbnail = mapPathToThumbnail[e.Summary.Filename];
-                thumbnail.Populate(e.Summary);
+                thumbnail.LoadSummary(e.Summary);
                 thumbnail.Invalidate();
                 if (thumbnail.FilePath == lastSelectedFile)
                     thumbnail.SetSelected();
@@ -637,12 +641,11 @@ namespace Kinovea.ScreenManager
 
             externalSelection = false;
         }
-        private void ThumbListViewItem_FileNameEditing(object sender, EditingEventArgs e)
+        private void ThumbListViewItem_FileNameEditing(object sender, EventArgs<bool> e)
         {
-            // Make sure the keyboard handling doesn't interfere 
-            // if one thumbnail is in edit mode.
+            // Make sure the keyboard handling doesn't interfere if a thumbnail is in edit mode.
             // There should only be one thumbnail in edit mode at a time.
-            editing = e.Editing;
+            editing = e.Value;
         }
         #endregion
 

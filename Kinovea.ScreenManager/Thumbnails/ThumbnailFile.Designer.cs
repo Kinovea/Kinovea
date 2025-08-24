@@ -53,8 +53,8 @@
             this.picBox.Click += new System.EventHandler(this.AllControls_Click);
             this.picBox.Paint += new System.Windows.Forms.PaintEventHandler(this.PicBoxPaint);
             this.picBox.DoubleClick += new System.EventHandler(this.AllControls_DoubleClick);
-            this.picBox.MouseEnter += new System.EventHandler(this.PicBoxMouseEnter);
-            this.picBox.MouseLeave += new System.EventHandler(this.PicBoxMouseLeave);
+            this.picBox.MouseEnter += new System.EventHandler(this.PicBox_MouseEnter);
+            this.picBox.MouseLeave += new System.EventHandler(this.PicBox_MouseLeave);
             this.picBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PicBoxMouseMove);
             // 
             // tbFileName
@@ -69,7 +69,7 @@
             this.tbFileName.TabIndex = 3;
             this.tbFileName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tbFileName.Visible = false;
-            this.tbFileName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TbFileNameKeyPress);
+            this.tbFileName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TbFileName_KeyPress);
             // 
             // ThumbnailFile
             // 
@@ -82,7 +82,7 @@
             this.Name = "ThumbnailFile";
             this.Size = new System.Drawing.Size(240, 195);
             this.Click += new System.EventHandler(this.AllControls_Click);
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.ThumbListViewItemPaint);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.ThumbnailFile_Paint);
             this.DoubleClick += new System.EventHandler(this.AllControls_DoubleClick);
             ((System.ComponentModel.ISupportInitialize)(this.picBox)).EndInit();
             this.ResumeLayout(false);
