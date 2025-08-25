@@ -62,6 +62,8 @@ namespace Kinovea.ScreenManager
         private Dictionary<string, ThumbnailFile> mapPathToThumbnail = new Dictionary<string, ThumbnailFile>();
         private Dictionary<string, int> mapPathToIndex = new Dictionary<string, int>();
         private Stopwatch stopwatch = new Stopwatch();
+        private FileSortAxis sortAxis;
+        private bool sortAscending;
 
         #region Menus
         private ContextMenuStrip popMenu = new ContextMenuStrip();
@@ -95,6 +97,10 @@ namespace Kinovea.ScreenManager
             thumbSize = PreferencesManager.FileExplorerPreferences.ExplorerThumbsSize;
             this.pnlThumbs.ContextMenuStrip = popMenu;
             BuildContextMenus();
+
+            // Remember the current sort axis and direction.
+            sortAxis = PreferencesManager.FileExplorerPreferences.FileSortAxis;
+            sortAscending = PreferencesManager.FileExplorerPreferences.FileSortAscending;
         }
         #endregion
 
@@ -116,6 +122,16 @@ namespace Kinovea.ScreenManager
             }
 
             int visibleThumbnails = thumbnails.Count(th => th.Visible);
+
+            // Detect sort operation coming from the navigation pane.
+            FileSortAxis newSortAxis = PreferencesManager.FileExplorerPreferences.FileSortAxis;
+            bool newSortAscending = PreferencesManager.FileExplorerPreferences.FileSortAscending;
+            if (newSortAxis != sortAxis || newSortAscending != sortAscending)
+            {
+                sortOperationInProgress = true;
+                this.sortAxis = newSortAxis;
+                this.sortAscending = newSortAscending;
+            }
 
             // Bail out if we consider that we don't have to do anything.
             // Same directory, same number of files, not a sort, not a forced refresh.
