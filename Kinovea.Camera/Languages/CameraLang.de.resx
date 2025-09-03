@@ -155,4 +155,7 @@
   <data name="FormHandshakeResult_Title" xml:space="preserve">
     <value>Verbindungstest</value>
   </data>
+  <data name="FormConfiguration_EnableHardwareCompression" xml:space="preserve">
+    <value>Hardwarekomprimierung aktivieren</value>
+  </data>
 </root>
