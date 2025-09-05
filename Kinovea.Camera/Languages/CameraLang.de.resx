@@ -158,4 +158,10 @@
   <data name="FormConfiguration_EnableHardwareCompression" xml:space="preserve">
     <value>Hardwarekomprimierung aktivieren</value>
   </data>
+  <data name="FormConfiguration_ResultingFramerate" xml:space="preserve">
+    <value>Resultierende Bildwiederholrate:</value>
+  </data>
+  <data name="FormConfiguration_ExportDeviceGenICamXMLFile" xml:space="preserve">
+    <value>GenICam XML Datei des Geräts exportieren</value>
+  </data>
 </root>
