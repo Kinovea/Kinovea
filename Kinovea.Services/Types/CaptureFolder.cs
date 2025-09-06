@@ -31,7 +31,7 @@ namespace Kinovea.Services
         public string ShortName { get; set; }
         
         /// <summary>
-        /// Full path to the folder, may contain context variables.
+        /// Full path to the folder. This may contain variables and should never be used as-is.
         /// </summary>
         public string Path { get; set; }
 

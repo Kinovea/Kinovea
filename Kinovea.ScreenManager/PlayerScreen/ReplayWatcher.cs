@@ -38,6 +38,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private PlayerScreen player;
+        private VariablesRepository variablesRepository;
         private ScreenDescriptorPlayback screenDescriptor;
         private string currentFile;
         private string filter;
@@ -48,9 +49,10 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Construction/Destruction
-        public ReplayWatcher(PlayerScreen player)
+        public ReplayWatcher(PlayerScreen player, VariablesRepository variablesRepository)
         {
             this.player = player;
+            this.variablesRepository = variablesRepository;
             IntPtr forceHandleCreation = dummy.Handle; // Needed to show that the main thread "owns" this Control.
         }
         public void Dispose()
@@ -93,35 +95,52 @@ namespace Kinovea.ScreenManager
 
             this.screenDescriptor = sdp;
             this.currentFile = currentFile;
-            this.filter = "";
-            string targetDir = "";
+            this.filter = "*";
+            string targetFolder = "";
 
+            // A replay watcher can be started on a known capture folder or on a 
+            // regular file system folder.
             CaptureFolder cf = FilesystemHelper.GetCaptureFolder(sdp.FullPath);
             if (cf != null)
             {
-                // TODO: resolve variables.
-                this.filter = "*";
-                targetDir = cf.Path;
+                var context = DynamicPathResolver.BuildDateContext();
+                string folder = DynamicPathResolver.Resolve(cf.Path, variablesRepository, context);
+
+                if (!FilesystemHelper.IsValidPath(folder))
+                {
+                    log.ErrorFormat("Replay watcher set to an invalid path. \"{0}\"", folder);
+                    Stop();
+                    return;
+                }
+
+                // Handle the case where we visit this capture folder for the first time,
+                // this happens with dynamic folders when changing date or context.
+                if (!Directory.Exists(folder))
+                    Directory.CreateDirectory(folder);
+
+                targetFolder = folder;
             }
             else
             {
-                this.filter = Path.GetFileName(sdp.FullPath);
-                targetDir = Path.GetDirectoryName(sdp.FullPath);
+                // These are picked from the folder picker so should not have variables.
+                targetFolder = Path.GetDirectoryName(sdp.FullPath);
             }
 
+            // At this point the target folder has been resolved to a file system folder
+            // and the * wildcard stripped out.
             if (watcher != null)
             {
-                // Bail out if the watcher is already running on the right directory.
-                if (watcher.Path == targetDir)
+                // Bail out if the watcher is already watching the right directory.
+                if (watcher.Path == targetFolder)
                     return;
 
                 Stop();
             }
 
-            if (!Directory.Exists(targetDir))
+            if (!Directory.Exists(targetFolder))
                 return;
 
-            watcher = new FileSystemWatcher(targetDir);
+            watcher = new FileSystemWatcher(targetFolder);
 
             overwriteEventCount = 0;
             watcher.NotifyFilter = NotifyFilters.LastWrite;
@@ -132,7 +151,7 @@ namespace Kinovea.ScreenManager
             watcher.EnableRaisingEvents = true;
 
             IsEnabled = true;
-            log.DebugFormat("Started replay watcher on \"{0}\".", Path.GetFileName(targetDir));
+            log.DebugFormat("Started replay watcher on \"{0}\".", Path.GetFileName(targetFolder));
         }
 
         /// <summary>

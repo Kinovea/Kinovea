@@ -397,8 +397,8 @@ namespace Kinovea.ScreenManager
         {
             log.Debug("Constructing a PlayerScreen.");
             historyStack = new HistoryStack();
-            frameServer = new FrameServerPlayer(historyStack);
-            replayWatcher = new ReplayWatcher(this);
+            frameServer = new FrameServerPlayer(historyStack, variablesRepository);
+            replayWatcher = new ReplayWatcher(this, variablesRepository);
             view = new PlayerScreenUserInterface(frameServer, drawingToolbarPresenter, variablesRepository);
 
             BindCommands();
@@ -493,9 +493,13 @@ namespace Kinovea.ScreenManager
 
         private void View_StartWatcherAsked(object sender, EventArgs<CaptureFolder> e)
         {
-            // Start watching a capture folder or the parent folder of the current video.
-            // This is normally coming from the infobar icon.
+            // Start watching a capture folder or the parent folder of the current video,
+            // or a known capture folder.
+            // This is coming from the infobar icon.
             // We do NOT switch to the latest video immediately.
+
+            // FIXME: deduplicate this with Player_OpenReplayWatcherAsked.
+            // That other one should only be for opening with the folder picker.
 
             if (!frameServer.Loaded)
                 return;
@@ -661,13 +665,23 @@ namespace Kinovea.ScreenManager
                 CaptureFolder cf = FilesystemHelper.GetCaptureFolder(view.ScreenDescriptor.FullPath);
                 if (cf != null)
                 {
-                    // FIXME: resolve path variables.
-                    string targetDir = cf.Path;
-                    if (replayWatcher.WatchedFolder != targetDir)
+                    var dateContext = DynamicPathResolver.BuildDateContext();
+                    string targetFolder = DynamicPathResolver.Resolve(cf.Path, VariablesRepository, dateContext);
+                    if (replayWatcher.WatchedFolder != targetFolder)
                     {
-                        log.DebugFormat("Mismatch detected between the replay watcher and the screen descriptor.");
-                        log.DebugFormat("Switch watcher from watching \"{0}\" to watching \"{1}\".", Path.GetFileName(replayWatcher.WatchedFolder), Path.GetFileName(targetDir));
-                        StartReplayWatcher(null);
+                        if (!FilesystemHelper.IsValidPath(targetFolder))
+                        {
+                            log.ErrorFormat("Replay watcher path is invalid \"{0}\"", targetFolder);       
+                        }
+                        else
+                        {
+                            if (!Directory.Exists(targetFolder))
+                                Directory.CreateDirectory(targetFolder);
+
+                            log.DebugFormat("Replay watcher target path changed from preferences.");
+                            log.DebugFormat("Switching watcher from watching \"{0}\" to watching \"{1}\".", Path.GetFileName(replayWatcher.WatchedFolder), Path.GetFileName(targetFolder));
+                            StartReplayWatcher(null);
+                        }
                     }
                 }
             }
@@ -946,30 +960,41 @@ namespace Kinovea.ScreenManager
                     // or loading a video from the same or a different folder.
                     // The screen descriptor has already been updated.
 
-                    string targetDir = "";
+                    string targetFolder = "";
                     CaptureFolder cf = FilesystemHelper.GetCaptureFolder(view.ScreenDescriptor.FullPath);
                     if (cf != null)
                     {
-                        // FIXME: resolve the capture folder variables.
-                        targetDir = cf.Path;
+                        var context = DynamicPathResolver.BuildDateContext();
+                        targetFolder = DynamicPathResolver.Resolve(cf.Path, VariablesRepository, context);
                     }
                     else
                     {
-                        targetDir = Path.GetDirectoryName(view.ScreenDescriptor.FullPath);
+                        targetFolder = Path.GetDirectoryName(view.ScreenDescriptor.FullPath);
                     }
                     
-                    if (replayWatcher.WatchedFolder != targetDir)
+                    if (!FilesystemHelper.IsValidPath(targetFolder))
+                    {
+                        log.ErrorFormat("Replay watcher set to invalid folder \"{0}\"", targetFolder);
+                        StopReplayWatcher();
+                        return;
+                    }
+
+                    if (replayWatcher.WatchedFolder != targetFolder)
                     {
                         // This happens when we are opening a watcher in an existing watcher.
                         // The screen descriptor has been updated to the new folder already.
-                        log.DebugFormat("Switch watcher from watching \"{0}\" to watching \"{1}\".", Path.GetFileName(replayWatcher.WatchedFolder), Path.GetFileName(targetDir));
+                        log.DebugFormat("Switch watcher from watching \"{0}\" to watching \"{1}\".", Path.GetFileName(replayWatcher.WatchedFolder), Path.GetFileName(targetFolder));
+                        
+                        if (!Directory.Exists(targetFolder))
+                            Directory.CreateDirectory(targetFolder);
+
                         StartReplayWatcher(FilePath);
                     }
                     else
                     {
                         // Opened a watcher on the same folder, or a loading a video coming from the same folder.
                         // Keep watching the original folder and the descriptor is still pointing to it.
-                        log.DebugFormat("Continue watching directory: \"{0}\"", Path.GetFileName(targetDir));
+                        log.DebugFormat("Continue watching directory: \"{0}\"", Path.GetFileName(targetFolder));
                     }
                 }
                 else
@@ -983,8 +1008,15 @@ namespace Kinovea.ScreenManager
             else if (view.ScreenDescriptor != null && view.ScreenDescriptor.IsReplayWatcher)
             {
                 // First time we come here, start watching.
-                string targetDir = Path.GetDirectoryName(view.ScreenDescriptor.FullPath);
-                log.DebugFormat("Start replay watcher for the first time. Directory: \"{0}\"", Path.GetFileName(targetDir));
+                string targetFolder = Path.GetDirectoryName(view.ScreenDescriptor.FullPath);
+
+                if (!FilesystemHelper.IsValidPath(targetFolder))
+                {
+                    log.ErrorFormat("Replay watcher set to invalid folder \"{0}\"", targetFolder);
+                    return;
+                }
+
+                log.DebugFormat("Starting replay watcher on: \"{0}\"", Path.GetFileName(targetFolder));
                 StartReplayWatcher(FilePath);
             }
             else

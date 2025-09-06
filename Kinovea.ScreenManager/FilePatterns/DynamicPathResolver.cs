@@ -18,40 +18,10 @@ namespace Kinovea.ScreenManager
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
-        /// Gets the full path to a capture folder.
-        /// </summary>
-        public static string ResolveCaptureFolder(string folder, VariablesRepository variablesRepository, Dictionary<string, string> context)
-        {
-            return ReplacePatterns(folder, variablesRepository, context);
-        }
-
-        /// <summary>
-        /// Gets the full path to save recorded images or videos.
-        /// This includes the directory, filename and extension.
-        /// The directory and filename may contain variables to be interpolated.
-        /// </summary>
-        public static string ResolveOutputFilePath(string folder, string filename, string extension, VariablesRepository variablesRepository, Dictionary<string, string> context)
-        {
-            folder = ReplacePatterns(folder, variablesRepository, context);
-            filename = ReplacePatterns(filename, variablesRepository, context);
-
-            return Path.Combine(folder, filename + extension);
-        }
-
-        /// <summary>
-        /// Gets the command line for post-recording command.
-        /// The command may contain variables to be interpolated.
-        /// </summary>
-        public static string ResolveCommandLine(string command, VariablesRepository variablesRepository, Dictionary<string, string> context)
-        {
-            return ReplacePatterns(command, variablesRepository, context);
-        }
-
-        /// <summary>
         /// Get the default KVA path of either player or capture, based on the current profile context.
         /// These don't support built-in variables. The path to a default shouldn't move with the date.
         /// If found returns true and put the path in `path`, otherwise returns false.
-        /// This is for loading, not for saving.
+        /// This is for reading, not for saving.
         /// For saving use AbstractScreen.SaveDefaultAnnotations().
         /// </summary>
         public static bool GetDefaultKVAPath(ref string path, VariablesRepository variablesRepository, bool forPlayer)
@@ -71,17 +41,23 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                path = ResolveDefaultKVAPath(path, variablesRepository);
+                path = Resolve(path, variablesRepository, null);
+
+                if (!FilesystemHelper.IsValidPath(path))
+                {
+                    log.ErrorFormat("The default KVA path is invalid. \"{0}\"", path);
+                    return false;
+                }
 
                 if (!Path.IsPathRooted(path))
                 {
-                    log.ErrorFormat("The default path must resolve to a full directory and file. {0}", path);
+                    log.ErrorFormat("The default KVA path must be rooted. \"{0}\"", path);
                     return false;
                 }
 
                 if (!File.Exists(path))
                 {
-                    log.ErrorFormat("Default annotations file not found: {0}", path);
+                    log.ErrorFormat("Default KVA path not found: \"{0}\"", path);
                     return false;
                 }
 
@@ -90,28 +66,40 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Resolve variables for a default KVA path.
+        /// Build the basic context for the current date.
+        /// Suitable for folders and files.
         /// </summary>
-        public static string ResolveDefaultKVAPath(string path, VariablesRepository variablesRepository)
+        public static Dictionary<string, string> BuildDateContext()
         {
-            return ReplacePatterns(path, variablesRepository, null);
+            Dictionary<string, string> context = new Dictionary<string, string>();
+            DateTime now = DateTime.Now;
+            context["date"] = string.Format("{0:yyyy-MM-dd}", now);
+            context["dateb"] = string.Format("{0:yyyyMMdd}", now);
+            context["year"] = string.Format("{0:yyyy}", now);
+            context["month"] = string.Format("{0:MM}", now);
+            context["day"] = string.Format("{0:dd}", now);
+            return context;
         }
 
         /// <summary>
-        /// Gets the next filename to allow continued recording without requiring the user to update the filename manually.
-        /// If the filename contains a pattern we assume the pattern will contain the time and do nothing.
-        /// If not, we try to find a number and increment that number.
-        /// If no number is found in the filename, we add one.
+        /// Gets the next filename with auto-numbering.
+        /// This is for people that don't care about auto-naming with date/time variables, 
+        /// so that it still "just works" without having to manually change the file name.
+        /// Heuristic:
+        /// - If the filename contains a variable marker we do nothing.
+        /// - If not try to find a number and increment that number.
+        /// - If no number is found add one at the end.
         /// </summary>
         public static string ComputeNextFilename(string previousWithoutExtension)
         {
             if (string.IsNullOrEmpty(previousWithoutExtension))
                 return "";
 
-            // Bail out if we are using a dynamic path.
+            // Bail out if we are using a variable-based dynamic file name.
             if (previousWithoutExtension.Contains("%"))
                 return previousWithoutExtension;
 
+            // The user may set the file name to include a sub-folder of the capture folder.
             bool hasEmbeddedDirectory = false;
             string embeddedDirectory = Path.GetDirectoryName(previousWithoutExtension);
             if (!string.IsNullOrEmpty(embeddedDirectory))
@@ -149,47 +137,20 @@ namespace Kinovea.ScreenManager
             return next;
         }
 
-        public static string GetImageFileExtension()
-        {
-            switch (PreferencesManager.CapturePreferences.CapturePathConfiguration.ImageFormat)
-            {
-                case KinoveaImageFormat.PNG: return ".png";
-                case KinoveaImageFormat.BMP: return ".bmp";
-                default: return ".jpg";
-            }
-        }
-
-        public static string GetVideoFileExtension(bool uncompressed)
-        {
-            if (uncompressed)
-            {
-                switch (PreferencesManager.CapturePreferences.CapturePathConfiguration.UncompressedVideoFormat)
-                {
-                    case KinoveaUncompressedVideoFormat.AVI: return ".avi";
-                    case KinoveaUncompressedVideoFormat.MKV: 
-                    default: return ".mkv";
-                }
-            }
-            else
-            {
-                switch (PreferencesManager.CapturePreferences.CapturePathConfiguration.VideoFormat)
-                {
-                    case KinoveaVideoFormat.MKV: return ".mkv";
-                    case KinoveaVideoFormat.AVI: return ".avi";
-                    case KinoveaVideoFormat.MP4:
-                    default: return ".mp4";
-                }
-            }
-        }
-
         /// <summary>
         /// Replaces all the variables found by their current value.
+        /// It's possible for the result to still not be a valid path.
+        /// The input doesn't have to be a path (eg: post-recording command line).
+        ///
+        /// This is used by several features:
+        /// - target path of capture (via a known capture folder)
+        /// - target path of replay watcher (via a known capture folder)
+        /// - post-recording command line.
+        /// - default KVA (loading and saving).
         /// </summary>
-        private static string ReplacePatterns(string text, VariablesRepository variablesRepository, Dictionary<string, string> builtinVariables)
+        public static string Resolve(string text, VariablesRepository variablesRepository, Dictionary<string, string> builtinVariables)
         {
             string result = text;
-
-            log.DebugFormat("Replace pattern input: {0}", text);
 
             // Replace custom variables first, this way they can override the built-in variables.
             result = ReplaceCustomVariables(result, variablesRepository);
@@ -197,19 +158,13 @@ namespace Kinovea.ScreenManager
             if (builtinVariables == null || builtinVariables.Count == 0)
                 return result;
 
-            log.DebugFormat("Replace pattern after profile: {0}", result);
-
-            // Sort variables in descending length order so we test for %datetime before
-            // testing for %date or %time.
-            // A better way might be to support %{date} and %{time} flavor.
-            var sortedContext = builtinVariables.OrderBy(pair => -pair.Value.Length);
-            foreach (var pair in sortedContext)
+            foreach (var pair in builtinVariables)
             {
                 string symbol = string.Format("%{0}%", pair.Key);
                 result = result.Replace(symbol, pair.Value);
             }
 
-            log.DebugFormat("Replace pattern after context: {0}", result);
+            log.DebugFormat("Dynamic path interpolation: {0} -> {1}", text, result);
 
             return result;
         }

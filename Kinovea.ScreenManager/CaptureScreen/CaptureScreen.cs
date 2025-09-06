@@ -540,12 +540,6 @@ namespace Kinovea.ScreenManager
             view.UpdateDelayedDisplay(delayedDisplay);
         }
 
-        public void View_ValidateFilename(string filename)
-        {
-            bool allowEmpty = true;
-            if (!FilesystemHelper.IsFilenameValid(filename, allowEmpty))
-                ScreenManagerKernel.AlertInvalidFileName();
-        }
         public void View_OpenPreferences(PreferenceTab tab)
         {
             NotificationCenter.RaisePreferenceTabAsked(this, tab);
@@ -1494,11 +1488,16 @@ namespace Kinovea.ScreenManager
             CaptureFolder cf = view.CaptureFolder;
             if (cf == null)
                 return;
+
             string filenameWithoutExtension = view.CurrentFilename;
-            string extension = DynamicPathResolver.GetImageFileExtension();
+            string extension = FilesystemHelper.GetCaptureImageExtension();
             Dictionary<string, string> context = BuildCaptureContext();
-            string path = DynamicPathResolver.ResolveOutputFilePath(cf.Path, filenameWithoutExtension, extension, VariablesRepository, context);
-            
+            string folder = DynamicPathResolver.Resolve(cf.Path, VariablesRepository, context);
+            string filename = DynamicPathResolver.Resolve(filenameWithoutExtension, VariablesRepository, context);
+            string path = Path.Combine(folder, filename + extension);
+
+            log.DebugFormat("Recording target image: {0}", path);
+
             if (!DirectoryExistsCheck(path) || !FilePathSanityCheck(path) || !OverwriteCheck(path))
             {
                 bitmap.Dispose();
@@ -1538,12 +1537,12 @@ namespace Kinovea.ScreenManager
             if(cameraGrabber == null)
                 return false;
 
-            if (!FilesystemHelper.IsFilenameValid(path, false))
+            if (!FilesystemHelper.IsValidPath(path))
             {
                 ScreenManagerKernel.AlertInvalidFileName();
                 return false;
             }
-            
+
             return true;
         }
 
@@ -1627,29 +1626,32 @@ namespace Kinovea.ScreenManager
                 log.ErrorFormat("Cannot start recording. No capture folder defined.");
                 return;
             }
+
             string filenameWithoutExtension = view.CurrentFilename;
             bool uncompressed = PreferencesManager.CapturePreferences.SaveUncompressedVideo && imageDescriptor.Format != Kinovea.Services.ImageFormat.JPEG;
-            string extension = DynamicPathResolver.GetVideoFileExtension(uncompressed);
+            string extension = FilesystemHelper.GetCaptureVideoExtension(uncompressed);
             Dictionary<string, string> context = BuildCaptureContext();
-            string path = DynamicPathResolver.ResolveOutputFilePath(cf.Path, filenameWithoutExtension, extension, VariablesRepository, context);
-
-            log.DebugFormat("Recording target file: {0}", path);
+            string folder = DynamicPathResolver.Resolve(cf.Path, VariablesRepository, context);
+            string filename = DynamicPathResolver.Resolve(filenameWithoutExtension, VariablesRepository, context);
+            string path = Path.Combine(folder, filename + extension);
+            
+            log.DebugFormat("Recording target: \"{0}\"", path);
 
             if (!DirectoryExistsCheck(path))
             {
-                log.ErrorFormat("Cannot start recording. Directory does not exist: {0}", path);
+                log.ErrorFormat("Cannot start recording. Folder not found: \"{0}\"", path);
                 return;
             }
             
             if (!FilePathSanityCheck(path))
             {
-                log.ErrorFormat("Cannot start recording. Invalid file name: {0}", path);
+                log.ErrorFormat("Cannot start recording. Invalid path: \"{0}\"", path);
                 return;
             }
 
             if (!OverwriteCheck(path))
             {
-                log.ErrorFormat("Cannot start recording. File already exists: {0}", path);
+                log.ErrorFormat("Cannot start recording. File already exists: \"{0}\"", path);
                 return;
             }
 
@@ -1995,7 +1997,7 @@ namespace Kinovea.ScreenManager
         {
             // Interpolate variables.
             var context = BuildPostCaptureCommandContext(path);
-            command = DynamicPathResolver.ResolveCommandLine(command, VariablesRepository, context);
+            command = DynamicPathResolver.Resolve(command, VariablesRepository, context);
 
             // Call the command.
             Process process = new Process();
@@ -2167,34 +2169,34 @@ namespace Kinovea.ScreenManager
         #region Context variables
 
         /// <summary>
-        /// Fill values of built-in variables for the capture context.
+        /// Generate a map of builtin variables and their current value.
         /// </summary>
         private Dictionary<string, string> BuildCaptureContext()
         {
-            // TODO: 
-            // We need to know if we are left or right screen to grab the correct top level variables from prefs.
-
             Dictionary<string, string> context = new Dictionary<string, string>();
 
             DateTime now = DateTime.Now;
 
+            // Date. Suitable for folders and files.
+            context["date"]         = string.Format("{0:yyyy-MM-dd}", now);
+            context["dateb"]         = string.Format("{0:yyyyMMdd}", now);
             context["year"]         = string.Format("{0:yyyy}", now);
             context["month"]        = string.Format("{0:MM}", now);
             context["day"]          = string.Format("{0:dd}", now);
+
+            // Time. Suitable for files.
+            context["time"]         = string.Format("{0:HHmmss}", now);
             context["hour"]         = string.Format("{0:HH}", now);
             context["minute"]       = string.Format("{0:mm}", now);
             context["second"]       = string.Format("{0:ss}", now);
             context["millisecond"]  = string.Format("{0:fff}", now);
 
-            context["date"]         = string.Format("{0:yyyyMMdd}", now);
-            context["time"]         = string.Format("{0:HHmmss}", now);
-            context["datetime"]     = string.Format("{0:yyyyMMdd-HHmmss}", now);
-
+            // Camera info. Suitable for files.
             context["camalias"]     = cameraSummary.Alias;
             context["camfps"]       = string.Format("{0:0.00}", cameraGrabber.Framerate);
             context["recvfps"]      = string.Format("{0:0.00}", pipelineManager.Frequency);
 
-            context["%"]            = "";
+            context[""]            = "";
 
             return context;
         }
@@ -2208,16 +2210,6 @@ namespace Kinovea.ScreenManager
             context["directory"]    = Path.GetDirectoryName(path);
             context["filename"]     = Path.GetFileName(path);
             context["kva"]          = Path.GetFileNameWithoutExtension(path) + ".kva";
-            return context;
-        }
-
-        /// <summary>
-        /// Fill values of built-in variables for the default capture kva path.
-        /// </summary>
-        private Dictionary<string, string> BuildDefaultKVAContext(string path)
-        {
-            // Currently there are no variables.
-            Dictionary<string, string> context = new Dictionary<string, string>();
             return context;
         }
         #endregion

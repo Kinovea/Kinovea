@@ -142,8 +142,8 @@ namespace Kinovea.ScreenManager
             // This is not the main screen descriptor that we save to the screen list
             // and reload in the context of "continue where you left off" or "load specfiic screens", 
             // these are considered "preferences" not "state".
-            // We need to save the "state" of the screen so that if the user closes 
-            // and reopens the screen during the same session we restore the state.
+            // We need to save the current "state" of the screen so that if the user closes 
+            // and reopens the screen during the same session we restore that state.
             // Or, in "continue where you left off" mode, if they close the screen, close the window,
             // and later reopen the window, and reopen a screen, present them with values they were using last time.
             WindowDescriptor d = WindowManager.ActiveWindow;

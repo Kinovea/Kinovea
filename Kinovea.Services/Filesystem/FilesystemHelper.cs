@@ -361,6 +361,10 @@ namespace Kinovea.Services
             return patternFilename + extension;
         }
 
+        /// <summary>
+        /// Find if the passed GUID string matches a capture folder and return it.
+        /// Returns null if not found.
+        /// </summary>
         public static CaptureFolder GetCaptureFolder(string path)
         {
             var ccff = PreferencesManager.CapturePreferences.CapturePathConfiguration.CaptureFolders;
@@ -490,28 +494,35 @@ namespace Kinovea.Services
             return selectedPath;
         }
 
-        public static bool IsFilenameValid(string path, bool allowEmpty)
+        /// <summary>
+        /// Checks that a path contains valid characters.
+        /// This doesn't test if the path exists, just that it's valid.
+        /// May be used for folders or files.
+        /// </summary>
+        public static bool IsValidPath(string path, bool allowPercent = false)
         {
-            bool bIsValid = false;
+            if (path.Length == 0)
+                return false;
 
-            if (path.Length == 0 && allowEmpty)
-                return true;
+            if (!allowPercent && path.Contains("%"))
+                return false;
 
+            bool valid = false;
             try
             {
                 new FileInfo(path);
-                bIsValid = true;
+                valid = true;
             }
             catch (ArgumentException)
             {
-                log.ErrorFormat("Capture path has invalid characters. Requested path: {0}", path);
+                log.ErrorFormat("Path has invalid characters. Requested path: {0}", path);
             }
             catch (NotSupportedException)
             {
-                log.ErrorFormat("Capture path has a colon. Requested path: {0}", path);
+                log.ErrorFormat("Path has a colon. Requested path: {0}", path);
             }
 
-            return bIsValid;
+            return valid;
         }
 
         /// <summary>
@@ -552,6 +563,39 @@ namespace Kinovea.Services
                     case KinoveaVideoFormat.MP4:
                     default: return "mp4";
                 }
+            }
+        }
+
+        public static string GetCaptureVideoExtension(bool uncompressed)
+        {
+            if (uncompressed)
+            {
+                switch (PreferencesManager.CapturePreferences.CapturePathConfiguration.UncompressedVideoFormat)
+                {
+                    case KinoveaUncompressedVideoFormat.AVI: return ".avi";
+                    case KinoveaUncompressedVideoFormat.MKV:
+                    default: return ".mkv";
+                }
+            }
+            else
+            {
+                switch (PreferencesManager.CapturePreferences.CapturePathConfiguration.VideoFormat)
+                {
+                    case KinoveaVideoFormat.MKV: return ".mkv";
+                    case KinoveaVideoFormat.AVI: return ".avi";
+                    case KinoveaVideoFormat.MP4:
+                    default: return ".mp4";
+                }
+            }
+        }
+
+        public static string GetCaptureImageExtension()
+        {
+            switch (PreferencesManager.CapturePreferences.CapturePathConfiguration.ImageFormat)
+            {
+                case KinoveaImageFormat.PNG: return ".png";
+                case KinoveaImageFormat.BMP: return ".bmp";
+                default: return ".jpg";
             }
         }
 

@@ -914,22 +914,53 @@ namespace Kinovea.ScreenManager
         }
         private void Player_OpenReplayWatcherAsked(object sender, EventArgs<CaptureFolder> e)
         {
+            // Replay watcher asked from the context menu in the player screen.
+            ScreenDescriptorPlayback sdp = new ScreenDescriptorPlayback();
             string path = "";
             if (e.Value == null)
             {
                 path = FilePicker.OpenReplayWatcher();
                 if (string.IsNullOrEmpty(path))
                     return;
+
+                sdp.FullPath = path;
             }
             else
             {
-                path = e.Value.Id.ToString();
+                // Capture folder.
+                string id = e.Value.Id.ToString();
+                CaptureFolder cf = FilesystemHelper.GetCaptureFolder(id);
+                if (cf == null)
+                {
+                    log.ErrorFormat("Capture folder not found: \"{0}\"", id);
+                    return;
+                }
+
+                sdp.FullPath = id;
+                var context = DynamicPathResolver.BuildDateContext();
+                path = DynamicPathResolver.Resolve(cf.Path, variablesRepository, context);
+
+                if (!FilesystemHelper.IsValidPath(path))
+                {
+                    log.ErrorFormat("Invalid capture folder path: \"{0}\"", path);
+                    return;
+                }
+
+                // If the watched folder doesn't exist we create it.
+                // This may happen when we have a path with a date and it's the first session of the day.
+                // The capture screen would only create the folder on the first recording, it would be too late.
+                // The watcher needs an actual folder to watch before the capture puts the recording in it.
+                if (!Directory.Exists(path))
+                {
+                    log.DebugFormat("Replay watcher opened on non-existent capture folder. Creating the folder.");
+                    Directory.CreateDirectory(path);
+                }
+
+                path = Path.Combine(path, "*");
             }
                 
             int index = sender == screenList[0] ? 0 : 1;
 
-            ScreenDescriptorPlayback sdp = new ScreenDescriptorPlayback();
-            sdp.FullPath = path;
             sdp.IsReplayWatcher = true;
             sdp.Autoplay = true;
             sdp.Stretch = true;
@@ -1189,6 +1220,9 @@ namespace Kinovea.ScreenManager
         {
             string msgTitle = ScreenManagerLang.Error_Capture_InvalidFile_Title;
             string msgText = ScreenManagerLang.Error_Capture_InvalidFile_Text.Replace("\\n", "\n");
+
+            msgText += "\n";
+            msgText += "\\ / : * ? ' < > %";
 
             MessageBox.Show(msgText, msgTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }

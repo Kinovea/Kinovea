@@ -253,12 +253,12 @@ namespace Kinovea.ScreenManager
             
             string filename = forPlayer ? "player.kva" : "capture.kva";
             string standardPath = Path.Combine(Software.SettingsDirectory, filename);
-            string currentPath = forPlayer ? PreferencesManager.PlayerPreferences.PlaybackKVA : PreferencesManager.CapturePreferences.CaptureKVA;
+            string currentPreferencesPath = forPlayer ? PreferencesManager.PlayerPreferences.PlaybackKVA : PreferencesManager.CapturePreferences.CaptureKVA;
             
             string targetPath;
-            if (string.IsNullOrEmpty(currentPath))
+            if (string.IsNullOrEmpty(currentPreferencesPath))
             {
-                // The file doesn't exist yet. Save to standard path.
+                // The preference itself doesn't exist yet. Save to standard path.
                 targetPath = standardPath;
                 
                 // In that case this becomes the new default path.
@@ -270,16 +270,23 @@ namespace Kinovea.ScreenManager
                     PreferencesManager.CapturePreferences.CaptureKVA = filename;
 
             }
-            else if (currentPath == filename)
+            else if (currentPreferencesPath == filename)
             {
                 // The path already exists but it's just the standard path in the settings.
                 targetPath = standardPath;
             }
             else
             {
-                targetPath = DynamicPathResolver.ResolveDefaultKVAPath(currentPath, VariablesRepository);
+                targetPath = DynamicPathResolver.Resolve(currentPreferencesPath, VariablesRepository, null);
 
-                // If the resulting path is not rooted it is a mistake or a variable issue.
+                // Check for unresolved variables.
+                if (!FilesystemHelper.IsValidPath(targetPath))
+                {
+                    log.ErrorFormat("Path to default annotations did not resolve correctly. {0}", targetPath);
+                    return;
+                }
+
+                // Verify the path is fully rooted to a drive.
                 // This might happen if the user puts a random filename in there instead of a full path.
                 if (!Path.IsPathRooted(targetPath))
                 {
