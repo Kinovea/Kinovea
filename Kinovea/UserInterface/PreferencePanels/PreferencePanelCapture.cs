@@ -96,7 +96,6 @@ namespace Kinovea.Root
         private bool defaultTriggerArmed = false;
 
         // Naming and formats
-        private FilenameHelper filenameHelper = new FilenameHelper();
         private CapturePathConfiguration capturePathConfiguration = new CapturePathConfiguration();
         private CaptureFolder selectedCaptureFolder;
         private bool captureFolderPreviewMode = false;

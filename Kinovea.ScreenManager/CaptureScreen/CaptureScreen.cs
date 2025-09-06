@@ -212,8 +212,8 @@ namespace Kinovea.ScreenManager
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        public CaptureScreen(VariablesRepository profileManager)
-            : base(profileManager)
+        public CaptureScreen(VariablesRepository variablesRepository)
+            : base(variablesRepository)
         {
             // There are several nested lifetimes with symetric setup/teardown methods:
             // Screen -> ctor / BeforeClose.
@@ -543,7 +543,7 @@ namespace Kinovea.ScreenManager
         public void View_ValidateFilename(string filename)
         {
             bool allowEmpty = true;
-            if (!FilenameHelper.IsFilenameValid(filename, allowEmpty))
+            if (!FilesystemHelper.IsFilenameValid(filename, allowEmpty))
                 ScreenManagerKernel.AlertInvalidFileName();
         }
         public void View_OpenPreferences(PreferenceTab tab)
@@ -1391,7 +1391,7 @@ namespace Kinovea.ScreenManager
         {
             string path = "";
             bool forPlayer = false;
-            bool found = Filenamer.GetDefaultKVAPath(ref path, ProfileManager, forPlayer);
+            bool found = DynamicPathResolver.GetDefaultKVAPath(ref path, VariablesRepository, forPlayer);
 
             if (!found)
                 return;
@@ -1477,7 +1477,7 @@ namespace Kinovea.ScreenManager
             // FIXME: get the file name from the saved state of the window.
             // If no state (first time launch) then from preferences.
             string defaultFileName = "%date%-%time%";
-            string nextVideo = Filenamer.ComputeNextFilename(defaultFileName);
+            string nextVideo = DynamicPathResolver.ComputeNextFilename(defaultFileName);
             view.UpdateNextVideoFilename(nextVideo);
         }
         
@@ -1495,9 +1495,9 @@ namespace Kinovea.ScreenManager
             if (cf == null)
                 return;
             string filenameWithoutExtension = view.CurrentFilename;
-            string extension = Filenamer.GetImageFileExtension();
+            string extension = DynamicPathResolver.GetImageFileExtension();
             Dictionary<string, string> context = BuildCaptureContext();
-            string path = Filenamer.ResolveOutputFilePath(cf.Path, filenameWithoutExtension, extension, ProfileManager, context);
+            string path = DynamicPathResolver.ResolveOutputFilePath(cf.Path, filenameWithoutExtension, extension, VariablesRepository, context);
             
             if (!DirectoryExistsCheck(path) || !FilePathSanityCheck(path) || !OverwriteCheck(path))
             {
@@ -1513,7 +1513,7 @@ namespace Kinovea.ScreenManager
             NotificationCenter.RaiseRefreshFileExplorer(this, false);
 
             // Compute next name for user feedback in case it contains an auto counter.
-            string next = Filenamer.ComputeNextFilename(filenameWithoutExtension);
+            string next = DynamicPathResolver.ComputeNextFilename(filenameWithoutExtension);
             view.UpdateNextVideoFilename(next);
 
             bitmap.Dispose();
@@ -1538,7 +1538,7 @@ namespace Kinovea.ScreenManager
             if(cameraGrabber == null)
                 return false;
 
-            if (!FilenameHelper.IsFilenameValid(path, false))
+            if (!FilesystemHelper.IsFilenameValid(path, false))
             {
                 ScreenManagerKernel.AlertInvalidFileName();
                 return false;
@@ -1629,9 +1629,9 @@ namespace Kinovea.ScreenManager
             }
             string filenameWithoutExtension = view.CurrentFilename;
             bool uncompressed = PreferencesManager.CapturePreferences.SaveUncompressedVideo && imageDescriptor.Format != Kinovea.Services.ImageFormat.JPEG;
-            string extension = Filenamer.GetVideoFileExtension(uncompressed);
+            string extension = DynamicPathResolver.GetVideoFileExtension(uncompressed);
             Dictionary<string, string> context = BuildCaptureContext();
-            string path = Filenamer.ResolveOutputFilePath(cf.Path, filenameWithoutExtension, extension, ProfileManager, context);
+            string path = DynamicPathResolver.ResolveOutputFilePath(cf.Path, filenameWithoutExtension, extension, VariablesRepository, context);
 
             log.DebugFormat("Recording target file: {0}", path);
 
@@ -1807,7 +1807,7 @@ namespace Kinovea.ScreenManager
             
             // We need to use the original filename with patterns still in it.
             string filenamePattern = view.CurrentFilename;
-            string next = Filenamer.ComputeNextFilename(filenamePattern);
+            string next = DynamicPathResolver.ComputeNextFilename(filenamePattern);
             view.UpdateNextVideoFilename(next);
 
             view.UpdateRecordingStatus(recording);
@@ -1887,7 +1887,7 @@ namespace Kinovea.ScreenManager
                 framerate = 25;
 
             double interval = 1000.0 / framerate;
-            string formatString = FilenameHelper.GetFormatStringCapture(uncompressed);
+            string formatString = FilesystemHelper.GetFormatStringCapture(uncompressed);
             double fileInterval = CalibrationHelper.ComputeFileFrameInterval(interval);
             SaveResult openResult = writer.OpenSavingContext(path, info, formatString, imageDescriptor.Format, uncompressed, interval, fileInterval, ImageRotation);
 
@@ -1995,7 +1995,7 @@ namespace Kinovea.ScreenManager
         {
             // Interpolate variables.
             var context = BuildPostCaptureCommandContext(path);
-            command = Filenamer.ResolveCommandLine(command, ProfileManager, context);
+            command = DynamicPathResolver.ResolveCommandLine(command, VariablesRepository, context);
 
             // Call the command.
             Process process = new Process();

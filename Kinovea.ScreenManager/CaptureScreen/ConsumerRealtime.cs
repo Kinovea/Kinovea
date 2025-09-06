@@ -64,7 +64,7 @@ namespace Kinovea.ScreenManager
             info.OriginalSize = new Size(imageDescriptor.Width, imageDescriptor.Height);
 
             bool uncompressed = PreferencesManager.CapturePreferences.SaveUncompressedVideo && imageDescriptor.Format != ImageFormat.JPEG;
-            string formatString = FilenameHelper.GetFormatStringCapture(uncompressed);
+            string formatString = FilesystemHelper.GetFormatStringCapture(uncompressed);
             double fileInterval = CalibrationHelper.ComputeFileFrameInterval(interval);
 
             log.DebugFormat("Frame budget for writer [{0}]: {1:0.000} ms.", shortId, interval);

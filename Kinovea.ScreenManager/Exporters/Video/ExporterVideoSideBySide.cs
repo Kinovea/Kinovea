@@ -115,7 +115,7 @@ namespace Kinovea.ScreenManager
                 ReferenceSize = bmpComposite.Size
             };
 
-            string formatString = FilenameHelper.GetFormatString(filePath);
+            string formatString = FilesystemHelper.GetFormatStringPlayback(filePath);
 
             SaveResult result = videoFileWriter.OpenSavingContext(filePath, info, formatString, fileFrameInterval);
 

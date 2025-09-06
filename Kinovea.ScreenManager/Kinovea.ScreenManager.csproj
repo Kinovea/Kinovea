@@ -380,10 +380,7 @@
     <Compile Include="Exporters\Images\ImageExportFormat.cs" />
     <Compile Include="Exporters\Video\VideoExporter.cs" />
     <Compile Include="Exporters\Video\VideoExportFormat.cs" />
-    <Compile Include="FilePatterns\PatternSymbolsCommand.cs" />
-    <Compile Include="FilePatterns\Filenamer.cs" />
-    <Compile Include="FilePatterns\PatternContext.cs" />
-    <Compile Include="FilePatterns\PatternSymbolsFile.cs" />
+    <Compile Include="FilePatterns\DynamicPathResolver.cs" />
     <Compile Include="FilePatterns\VariablesRepository.cs" />
     <Compile Include="FilePatterns\VariableTable.cs" />
     <Compile Include="Importers\TRC\MetadataImporterSports2D.cs" />
@@ -516,7 +513,6 @@
     <Compile Include="CaptureScreen\CapturedFile.cs" />
     <Compile Include="CaptureScreen\CapturedFiles.cs" />
     <Compile Include="CaptureScreen\CaptureScreen.cs" />
-    <Compile Include="FilePatterns\FilenameHelper.cs" />
     <Compile Include="CaptureScreen\ImageManipulator.cs" />
     <Compile Include="CaptureScreen\MetadataManipulator.cs" />
     <Compile Include="CaptureScreen\MetadataRenderer.cs" />

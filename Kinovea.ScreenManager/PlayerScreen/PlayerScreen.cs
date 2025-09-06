@@ -392,14 +392,14 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public PlayerScreen(VariablesRepository profileManager)
-            : base(profileManager)
+        public PlayerScreen(VariablesRepository variablesRepository)
+            : base(variablesRepository)
         {
             log.Debug("Constructing a PlayerScreen.");
             historyStack = new HistoryStack();
             frameServer = new FrameServerPlayer(historyStack);
             replayWatcher = new ReplayWatcher(this);
-            view = new PlayerScreenUserInterface(frameServer, drawingToolbarPresenter, profileManager);
+            view = new PlayerScreenUserInterface(frameServer, drawingToolbarPresenter, variablesRepository);
 
             BindCommands();
         }

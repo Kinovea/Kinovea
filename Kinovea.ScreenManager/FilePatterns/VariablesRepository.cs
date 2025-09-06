@@ -16,9 +16,9 @@ namespace Kinovea.ScreenManager
     /// The first column always contains the key and is used in the UI for the user
     /// to select the active context from the menus or drop downs.
     /// 
-    /// What we call "the context" is the set of selected rows in all the available tables.
+    /// What we call "the context" is the union of the selected row of each table.
     /// 
-    /// A variable table / csv file may contain a single column but the header row must always be present.
+    /// A variable table (csv file) may contain a single column but the header row must always be present.
     /// 
     /// This is effectively a database of custom variables but we keep them as CSV files for ease 
     /// of modification and inspection by external tools.

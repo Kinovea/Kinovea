@@ -489,5 +489,71 @@ namespace Kinovea.Services
 
             return selectedPath;
         }
+
+        public static bool IsFilenameValid(string path, bool allowEmpty)
+        {
+            bool bIsValid = false;
+
+            if (path.Length == 0 && allowEmpty)
+                return true;
+
+            try
+            {
+                new FileInfo(path);
+                bIsValid = true;
+            }
+            catch (ArgumentException)
+            {
+                log.ErrorFormat("Capture path has invalid characters. Requested path: {0}", path);
+            }
+            catch (NotSupportedException)
+            {
+                log.ErrorFormat("Capture path has a colon. Requested path: {0}", path);
+            }
+
+            return bIsValid;
+        }
+
+        /// <summary>
+        /// Retrieves a string suitable for FFMpeg av_guess_format function in the context of playback.
+        /// </summary>
+        public static string GetFormatStringPlayback(string filename)
+        {
+            string ext = Path.GetExtension(filename).ToLower().Substring(1);
+
+            switch (ext)
+            {
+                case "mkv": return "matroska";
+                case "avi": return "avi";
+                default: return "mp4";
+            }
+        }
+
+        /// <summary>
+        /// Retrieves a string suitable for FFMpeg av_guess_format function in the context of capture.
+        /// </summary>
+        public static string GetFormatStringCapture(bool uncompressed)
+        {
+            if (uncompressed)
+            {
+                switch (PreferencesManager.CapturePreferences.CapturePathConfiguration.UncompressedVideoFormat)
+                {
+                    case KinoveaUncompressedVideoFormat.AVI: return "avi";
+                    case KinoveaUncompressedVideoFormat.MKV:
+                    default: return "matroska";
+                }
+            }
+            else
+            {
+                switch (PreferencesManager.CapturePreferences.CapturePathConfiguration.VideoFormat)
+                {
+                    case KinoveaVideoFormat.MKV: return "matroska";
+                    case KinoveaVideoFormat.AVI: return "avi";
+                    case KinoveaVideoFormat.MP4:
+                    default: return "mp4";
+                }
+            }
+        }
+
     }
 }

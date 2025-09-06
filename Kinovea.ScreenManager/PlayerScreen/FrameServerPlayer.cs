@@ -505,7 +505,7 @@ namespace Kinovea.ScreenManager
                 IEnumerable<Bitmap> images = EnumerateImages(settings);
 
                 VideoFileWriter w = new VideoFileWriter();
-                string formatString = FilenameHelper.GetFormatString(settings.File);
+                string formatString = FilesystemHelper.GetFormatStringPlayback(settings.File);
                 saveResult = w.Save(settings, videoReader.Info, formatString, images, bgWorker);
                 videoReader.AfterFrameEnumeration();
             }

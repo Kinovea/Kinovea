@@ -195,15 +195,15 @@ namespace Kinovea.ScreenManager
         /// Profile containing custom variables and their values.
         /// Set by the screen manager when the screen is created.
         /// </summary>
-        public VariablesRepository ProfileManager
+        public VariablesRepository VariablesRepository
         {
             get;
         }
         #endregion
 
-        public AbstractScreen(VariablesRepository profileManager)
+        public AbstractScreen(VariablesRepository variablesRepository)
         {
-            this.ProfileManager = profileManager;
+            this.VariablesRepository = variablesRepository;
         }
 
         /// <summary>
@@ -277,7 +277,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                targetPath = Filenamer.ResolveDefaultKVAPath(currentPath, ProfileManager);
+                targetPath = DynamicPathResolver.ResolveDefaultKVAPath(currentPath, VariablesRepository);
 
                 // If the resulting path is not rooted it is a mistake or a variable issue.
                 // This might happen if the user puts a random filename in there instead of a full path.
@@ -346,7 +346,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             string path = "";
-            bool found = Filenamer.GetDefaultKVAPath(ref path, ProfileManager, forPlayer);
+            bool found = DynamicPathResolver.GetDefaultKVAPath(ref path, VariablesRepository, forPlayer);
 
             if (!found)
                 return;

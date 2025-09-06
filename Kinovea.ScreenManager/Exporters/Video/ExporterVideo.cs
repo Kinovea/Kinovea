@@ -67,7 +67,7 @@ namespace Kinovea.ScreenManager
 
             // Export loop.
             VideoFileWriter w = new VideoFileWriter();
-            string formatString = FilenameHelper.GetFormatString(s.File);
+            string formatString = FilesystemHelper.GetFormatStringPlayback(s.File);
             saveResult = w.Save(s, player.FrameServer.VideoReader.Info, formatString, images, worker);
         }
 

@@ -288,7 +288,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private FrameServerPlayer m_FrameServer;
-        private VariablesRepository profileManager;
+        private VariablesRepository variablesRepository;
 
         // Playback current state
         private bool m_bIsCurrentlyPlaying;
@@ -443,12 +443,12 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public PlayerScreenUserInterface(FrameServerPlayer frameServer, DrawingToolbarPresenter drawingToolbarPresenter, VariablesRepository profileManager)
+        public PlayerScreenUserInterface(FrameServerPlayer frameServer, DrawingToolbarPresenter drawingToolbarPresenter, VariablesRepository variablesRepository)
         {
             log.Debug("Constructing the PlayerScreen user interface.");
 
             m_FrameServer = frameServer;
-            this.profileManager = profileManager;
+            this.variablesRepository = variablesRepository;
 
             m_FrameServer.Metadata = new Metadata(m_FrameServer.HistoryStack, m_FrameServer.TimeStampsToTimecode);
             m_FrameServer.Metadata.KVAImported += (s, e) => AfterKVAImported();
@@ -723,7 +723,7 @@ namespace Kinovea.ScreenManager
         {
             string path = "";
             bool forPlayer = true;
-            bool found = Filenamer.GetDefaultKVAPath(ref path, profileManager, forPlayer);
+            bool found = DynamicPathResolver.GetDefaultKVAPath(ref path, variablesRepository, forPlayer);
 
             if (!found)
                 return;
