@@ -27,7 +27,6 @@ using System.Windows.Forms;
 
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
-//using Microsoft.VisualBasic.FileIO;
 
 namespace Kinovea.ScreenManager
 {

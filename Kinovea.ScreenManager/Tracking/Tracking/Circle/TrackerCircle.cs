@@ -28,7 +28,6 @@ using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using Kinovea.Services;
 using System.Drawing.Drawing2D;
-using MathNet.Numerics;
 using System.Linq;
 
 
