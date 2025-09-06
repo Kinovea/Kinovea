@@ -95,6 +95,10 @@ namespace Kinovea.ScreenManager
                 
             this.Cursor = Cursors.Default;
         }
+        public void SetFullScreen(bool fullScreen)
+        {
+            btnCloseFullscreen.Image = fullScreen ? Properties.Resources.collapse_16 : Properties.Resources.expand_16;
+        }
         #endregion
         
         #region Private methods

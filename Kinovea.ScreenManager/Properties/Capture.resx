@@ -146,24 +146,6 @@
         TkSuQmCC
 </value>
   </data>
-  <data name="camera_close" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
-        JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAACrUlEQVQ4T42T30uTURjHR130F+ymu5z0
-        SzEJFIvphZE6zSSCXApdGKLhu7maIvkjs9qUfugGgyYTdS6ROcEpbLi5MFgjBq4lxaZbMzGF2ZzzIo1s
-        89t7zou/SqIDX85zOOf7Oc9z3ufl/e9gGOZYrUy6VMPcwX7RTTZo+3PjX1Iqn2BwcJDGxAy3241EIrEd
-        iUQQDocRi8VA4mg0irW1Nar19XU6BwIBamxoqN8DxONxaLVa8Pl8qrGxMczNzSEUCv2l2dlZukd8uwC/
-        30+NVqsVYrGYxl6vFyp1Fxqb7qO5pZFTcyOamrm1RFpDAG0HAGq1Gna7ncbT09NofdiCzc1NBIPBQ0Ug
-        u4D9JZA6TSYTHj1ug8fjQT6jZzWAfMkACiQGiKSGgwDjsJHW5vP5sLCwAJfLhfaOdtTKJJga6kfXFRE+
-        SG8gpGAwU38LquJCuMdH9gBkkJuIkcwOhwOyu1JY9Tq8LRMiPNyNjeAn/FgMYiPwERHrEGYqctFwu5wD
-        kM9FyigqKkRmZgbMZjOktQxM1aX43FqJrViENYewqHmAmMuG7fgvzLPZdJZkc4DOrue07rq6OsjlchiN
-        Rpqe5XoW/EwJlvtfcJCv8/j5bRlfnt6DozAFfXlpHMBisdBmcjqdmJychMFgYLtNgZGCNDiLUzFVlEJv
-        JuO77z3Ml0/DmHsSr/JSOYBer6evbrPZaBPpdDqoVCroROcxyh5e6lbQDFYnhrG1GsbKaB8s+WfQezWL
-        AxAplcoNjUaTIGbSDwTwslJMD5JHW+rpwDgLI+lHX5tpVtpsgYKXnp6eVFZ+81lVdeXKDmxHsqoKaIov
-        4g172HvtHGZKM+hM1uoLJ97phILj9G88ZBxhdbQ/J5nXky3g9+Yky9lSJuyisx7TpVMTrFHeLUzi64QC
-        3m9Oq3sEbwou4AAAAABJRU5ErkJggg==
-</value>
-  </data>
   <data name="record_stop" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
@@ -389,5 +371,8 @@
   </data>
   <data name="command_line_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\command-line-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="close_capture" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\close-capture.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

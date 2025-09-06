@@ -2501,6 +2501,45 @@
   <ItemGroup>
     <None Include="Resources\command-line-16.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\disk.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\save-annotations.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file-browser.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\navigation-pane.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\save-capture-annotations.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\save-player-annotations2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\close-capture.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\close-player.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\webcam2b-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\star.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\size-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\collapse-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\expand_16.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">
     <Message Text="Adjusting SDK tools directory to use x64 version of AL.EXE" />

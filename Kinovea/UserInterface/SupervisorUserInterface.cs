@@ -70,7 +70,7 @@ namespace Kinovea.Root
         }
 
         /// <summary>
-        /// Force collapse or uncollapse the navigation panel.
+        /// Force collapse or uncollapse the navigation pane.
         /// This is used during initialization, when the user is manually toggling or when going into/out of full screen mode.
         /// savePreferences should only be true if this action is originating from the user.
         /// </summary>

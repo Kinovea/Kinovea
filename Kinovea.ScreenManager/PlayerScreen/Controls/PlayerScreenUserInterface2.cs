@@ -1285,15 +1285,15 @@ namespace Kinovea.ScreenManager
             mnuOpenReplayWatcher.Image = Properties.Resources.replaywatcher;
             mnuOpenReplayWatcherFolder.Image = Properties.Resources.folder;
             mnuLoadAnnotations.Image = Properties.Resources.notes2_16;
-            mnuSaveAnnotations.Image = Properties.Resources.save_16;
-            mnuSaveAnnotationsAs.Image = Properties.Resources.save_as_16;
-            mnuSaveDefaultPlayerAnnotations.Image = Properties.Resources.save_player_16;
-            mnuSaveDefaultCaptureAnnotations.Image = Properties.Resources.save_capture_16;
+            mnuSaveAnnotations.Image = Properties.Resources.save_annotations;
+            mnuSaveAnnotationsAs.Image = Properties.Resources.save_annotations;
+            mnuSaveDefaultPlayerAnnotations.Image = Properties.Resources.save_player_annotations2;
+            mnuSaveDefaultCaptureAnnotations.Image = Properties.Resources.save_capture_annotations;
             mnuUnloadAnnotations.Image = Properties.Resources.delete_notes;
             mnuReloadDefaultPlayerAnnotations.Image = Properties.Resources.notes2_16;
             mnuExportVideo.Image = Properties.Resources.film_save;
             mnuExportImage.Image = Properties.Resources.picture_save;
-            mnuCloseScreen.Image = Properties.Resources.closeplayer;
+            mnuCloseScreen.Image = Properties.Resources.close_player;
             mnuExitFilter.Image = Properties.Resources.exit_filter;
 
             mnuTimeOrigin.Click += mnuTimeOrigin_Click;
@@ -1372,7 +1372,7 @@ namespace Kinovea.ScreenManager
             mnuMagnifierTrack.Click += mnuMagnifierTrack_Click;
             mnuMagnifierTrack.Image = Properties.Resources.point3_16;
             mnuMagnifierDirect.Click += mnuMagnifierDirect_Click;
-            mnuMagnifierDirect.Image = Properties.Resources.arrow_out;
+            mnuMagnifierDirect.Image = Properties.Resources.expand_16;
             mnuMagnifierQuit.Click += mnuMagnifierQuit_Click;
             mnuMagnifierQuit.Image = Properties.Resources.hide;
 

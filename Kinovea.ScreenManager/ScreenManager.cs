@@ -178,7 +178,7 @@ namespace Kinovea.ScreenManager
 
         #region Toolbar
         private ToolStripButton toolSave = new ToolStripButton();
-        private ToolStripButton toolToggleNavigationPanel = new ToolStripButton();
+        private ToolStripButton toolToggleNavigationPane = new ToolStripButton();
         private ToolStripButton toolExplorer = new ToolStripButton();
         private ToolStripButton toolOnePlayer = new ToolStripButton();
         private ToolStripButton toolTwoPlayers = new ToolStripButton();
@@ -318,14 +318,14 @@ namespace Kinovea.ScreenManager
             mnuLoadAnnotations.MergeAction = MergeAction.Insert;
 
             index++;
-            mnuSave.Image = Properties.Resources.save_16;
+            mnuSave.Image = Properties.Resources.save_annotations;
             mnuSave.Click += mnuSaveOnClick;
             mnuSave.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S;
             mnuSave.MergeIndex = index;
             mnuSave.MergeAction = MergeAction.Insert;
 
             index++;
-            mnuSaveAs.Image = Properties.Resources.save_as_16;
+            mnuSaveAs.Image = Properties.Resources.save_annotations;
             mnuSaveAs.Click += mnuSaveAsOnClick;
             mnuSaveAs.MergeIndex = index;
             mnuSaveAs.MergeAction = MergeAction.Insert;
@@ -424,14 +424,14 @@ namespace Kinovea.ScreenManager
             index++; // Separator
 
             index++;
-            mnuCloseFile.Image = Properties.Resources.closeplayer;
+            mnuCloseFile.Image = Properties.Resources.close_player;
             mnuCloseFile.Enabled = false;
             mnuCloseFile.Click += new EventHandler(mnuCloseFileOnClick);
             mnuCloseFile.MergeIndex = index;
             mnuCloseFile.MergeAction = MergeAction.Insert;
 
             index++;
-            mnuCloseFile2.Image = Properties.Resources.closeplayer;
+            mnuCloseFile2.Image = Properties.Resources.close_player;
             mnuCloseFile2.Enabled = false;
             mnuCloseFile2.Visible = false;
             mnuCloseFile2.Click += new EventHandler(mnuCloseFile2OnClick);
@@ -746,15 +746,15 @@ namespace Kinovea.ScreenManager
         {
             // Save
             toolSave.DisplayStyle = ToolStripItemDisplayStyle.Image;
-            toolSave.Image = Properties.Resources.save_16;
+            toolSave.Image = Properties.Resources.save_annotations;
             toolSave.Click += new EventHandler(mnuSaveOnClick);
 
-            toolToggleNavigationPanel.DisplayStyle = ToolStripItemDisplayStyle.Image;
-            toolToggleNavigationPanel.Image = Properties.Resources.explorer;
-            toolToggleNavigationPanel.Click += toolToggleNavigationPanel_Click;
+            toolToggleNavigationPane.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolToggleNavigationPane.Image = Properties.Resources.navigation_pane;
+            toolToggleNavigationPane.Click += toolToggleNavigationPanel_Click;
 
             toolExplorer.DisplayStyle = ToolStripItemDisplayStyle.Image;
-            toolExplorer.Image = Properties.Resources.home3;
+            toolExplorer.Image = Properties.Resources.file_browser;
             toolExplorer.Click += new EventHandler(mnuExplorer_OnClick);
 
             toolOnePlayer.DisplayStyle = ToolStripItemDisplayStyle.Image;
@@ -780,15 +780,13 @@ namespace Kinovea.ScreenManager
             ToolStrip ts = new ToolStrip(new ToolStripItem[] {
                                             toolSave,
                                             new ToolStripSeparator(),
-                                            toolToggleNavigationPanel,
-                                            toolExplorer,
+                                            toolToggleNavigationPane,
                                             new ToolStripSeparator(),
+                                            toolExplorer,
                                             toolOnePlayer,
                                             toolTwoPlayers,
-                                            new ToolStripSeparator(),
                                             toolOneCapture,
                                             toolTwoCaptures,
-                                            new ToolStripSeparator(),
                                             toolTwoMixed });
 
             ToolStripManager.Merge(ts, toolbar);
@@ -1219,6 +1217,8 @@ namespace Kinovea.ScreenManager
         }
         public void FullScreen(bool fullScreen)
         {
+            view.SetFullScreen(fullScreen);
+
             foreach (AbstractScreen screen in screenList)
                 screen.FullScreen(fullScreen);
         }
@@ -2025,8 +2025,8 @@ namespace Kinovea.ScreenManager
         private void RefreshCultureToolbar()
         {
             toolSave.ToolTipText = ScreenManagerLang.Generic_SaveKVA;
-            toolToggleNavigationPanel.ToolTipText = "Navigation panel";
-            toolExplorer.ToolTipText = "Explorer";
+            toolToggleNavigationPane.ToolTipText = "Navigation pane";
+            toolExplorer.ToolTipText = "File browser";
             toolOnePlayer.ToolTipText = ScreenManagerLang.mnuOnePlayer;
             toolTwoPlayers.ToolTipText = ScreenManagerLang.mnuTwoPlayers;
             toolOneCapture.ToolTipText = ScreenManagerLang.mnuOneCapture;

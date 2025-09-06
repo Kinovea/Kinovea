@@ -73,7 +73,7 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuUndo = new ToolStripMenuItem();
         private ToolStripMenuItem mnuRedo = new ToolStripMenuItem();
         private ToolStripMenuItem mnuView = new ToolStripMenuItem();
-        public ToolStripMenuItem mnuToggleNavigationPanel = new ToolStripMenuItem();
+        public ToolStripMenuItem mnuToggleNavigationPane = new ToolStripMenuItem();
         public ToolStripMenuItem mnuFullScreen = new ToolStripMenuItem();
 
         // Image
@@ -151,7 +151,7 @@ namespace Kinovea.Root
                 CameraTypeManager.LoadCameraManager(typeof(Camera.FrameGenerator.CameraManagerFrameGenerator));
 
                 log.Debug("Loading camera managers plugins.");
-                CameraTypeManager.LoadCameraManagersPlugins();
+                //CameraTypeManager.LoadCameraManagersPlugins();
             }
 
             if (enableTools)
@@ -355,12 +355,12 @@ namespace Kinovea.Root
             mnuEdit.MergeAction = MergeAction.Append;
             
             mnuUndo.Tag = RootLang.ResourceManager;
-            mnuUndo.Image = Properties.Resources.arrow_undo;
+            mnuUndo.Image = Properties.Resources.undo_16;
             mnuUndo.ShortcutKeys = Keys.Control | Keys.Z;
             mnuUndo.Enabled = false;
 
             mnuRedo.Tag = RootLang.ResourceManager;
-            mnuRedo.Image = Properties.Resources.arrow_redo;
+            mnuRedo.Image = Properties.Resources.redo_16;
             mnuRedo.ShortcutKeys = Keys.Control | Keys.Y;
             mnuRedo.Enabled = false;
 
@@ -370,16 +370,16 @@ namespace Kinovea.Root
             #endregion
 
             #region View
-            mnuToggleNavigationPanel.Image = Properties.Resources.explorer;
-            mnuToggleNavigationPanel.Checked = true;
-            mnuToggleNavigationPanel.CheckState = System.Windows.Forms.CheckState.Checked;
-            mnuToggleNavigationPanel.ShortcutKeys = Keys.F4;
-            mnuToggleNavigationPanel.Click += mnuToggleNavigationPanel_Click;
-            mnuFullScreen.Image = Properties.Resources.fullscreen;
+            mnuToggleNavigationPane.Image = Properties.Resources.navigation_pane;
+            mnuToggleNavigationPane.Checked = true;
+            mnuToggleNavigationPane.CheckState = System.Windows.Forms.CheckState.Checked;
+            mnuToggleNavigationPane.ShortcutKeys = Keys.F4;
+            mnuToggleNavigationPane.Click += mnuToggleNavigationPanel_Click;
+            mnuFullScreen.Image = Properties.Resources.expand_16;
             mnuFullScreen.ShortcutKeys = Keys.F11;
             mnuFullScreen.Click += new EventHandler(mnuFullScreenOnClick);
             
-            mnuView.DropDownItems.AddRange(new ToolStripItem[] { mnuToggleNavigationPanel, mnuFullScreen, new ToolStripSeparator() });
+            mnuView.DropDownItems.AddRange(new ToolStripItem[] { mnuToggleNavigationPane, mnuFullScreen, new ToolStripSeparator() });
             #endregion
 
             #region Window
@@ -526,7 +526,7 @@ namespace Kinovea.Root
             mnuRedo.Text = RootLang.mnuRedo;
             
             mnuView.Text = RootLang.mnuScreens;
-            mnuToggleNavigationPanel.Text = "Navigation panel";
+            mnuToggleNavigationPane.Text = "Navigation pane";
             mnuFullScreen.Text = RootLang.mnuFullScreen;
             
             mnuImage.Text = RootLang.mnuImage;
@@ -613,9 +613,9 @@ namespace Kinovea.Root
         #region View
         private void mnuToggleNavigationPanel_Click(object sender, EventArgs e)
         {
-            bool show = !mnuToggleNavigationPanel.Checked;
+            bool show = !mnuToggleNavigationPane.Checked;
             mainWindow.SupervisorControl.ToggleNavigationPanel(show, true);
-            mnuToggleNavigationPanel.Checked = show;
+            mnuToggleNavigationPane.Checked = show;
         }
         private void mnuFullScreenOnClick(object sender, EventArgs e)
         {
@@ -690,7 +690,7 @@ namespace Kinovea.Root
                 // Use a custom icon based on the last known screen list.
                 if (d.ScreenList.Count == 0)
                 {
-                    mnuWindowDescriptor.Image = Properties.Resources.home3;
+                    mnuWindowDescriptor.Image = Properties.Resources.file_browser;
                 }
                 else if (d.ScreenList.Count == 1)
                 {

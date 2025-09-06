@@ -132,6 +132,10 @@ namespace Kinovea.ScreenManager
                     ClearRightScreen();
             }
         }
+        public void SetFullScreen(bool isFullScreen)
+        {
+            thumbnailViewerContainer.SetFullScreen(isFullScreen);
+        }
         #endregion
 
         private void InitializeThumbnailsContainer()

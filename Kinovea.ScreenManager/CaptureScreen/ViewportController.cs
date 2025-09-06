@@ -402,14 +402,14 @@ namespace Kinovea.ScreenManager
             // Background context menu.
             mnuConfigure.Image = Properties.Capture.settings;
             mnuLoadAnnotations.Image = Properties.Resources.notes2_16;
-            mnuSaveAnnotations.Image = Properties.Resources.save_16;
-            mnuSaveAnnotationsAs.Image = Properties.Resources.save_as_16;
-            mnuSaveDefaultPlayerAnnotations.Image = Properties.Resources.save_player_16;
-            mnuSaveDefaultCaptureAnnotations.Image = Properties.Resources.save_capture_16;
+            mnuSaveAnnotations.Image = Properties.Resources.save_annotations;
+            mnuSaveAnnotationsAs.Image = Properties.Resources.save_annotations;
+            mnuSaveDefaultPlayerAnnotations.Image = Properties.Resources.save_player_annotations2;
+            mnuSaveDefaultCaptureAnnotations.Image = Properties.Resources.save_capture_annotations;
             mnuUnloadAnnotations.Image = Properties.Resources.delete_notes;
             mnuReloadDefaultCaptureAnnotations.Image = Properties.Resources.notes2_16;
             mnuReloadLinkedAnnotations.Image = Properties.Resources.notes2_16;
-            mnuCloseScreen.Image = Properties.Capture.camera_close;
+            mnuCloseScreen.Image = Properties.Capture.close_capture;
 
             mnuConfigure.Click += (s, e) => ConfigureAsked?.Invoke(this, e);
             mnuLoadAnnotations.Click += (s, e) => LoadAnnotationsAsked?.Invoke(this, e);

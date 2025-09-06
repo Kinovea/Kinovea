@@ -140,7 +140,7 @@ namespace Kinovea.FileBrowser
         private void BuildContextMenu()
         {
             // Add an item to shortcuts
-            mnuAddToShortcuts.Image = Properties.Resources.folder_add;
+            mnuAddToShortcuts.Image = Properties.Resources.star;
             mnuAddToShortcuts.Click += new EventHandler(mnuAddToShortcuts_Click);
             mnuAddToShortcuts.Visible = false;
 
@@ -479,7 +479,10 @@ namespace Kinovea.FileBrowser
             mnuCameraForget.Text = FileBrowserLang.ForgetCustomSettings;
 
             // ToolTips
-            ttTabs.SetToolTip(tabPageClassic, FileBrowserLang.tabExplorer);
+            //ttTabs.SetToolTip(tabPageClassic, FileBrowserLang.tabExplorer);
+            ttTabs.SetToolTip(tabPageClassic, "File system");
+            ttTabs.SetToolTip(tabPageShortcuts, "Shortcuts");
+            ttTabs.SetToolTip(tabPageCameras, "Cameras");
             ttTabs.SetToolTip(btnAddShortcut, FileBrowserLang.mnuAddShortcut);
             ttTabs.SetToolTip(btnDeleteShortcut, FileBrowserLang.mnuDeleteShortcut);
         }

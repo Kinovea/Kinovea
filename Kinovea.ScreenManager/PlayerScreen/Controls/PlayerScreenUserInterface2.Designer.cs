@@ -918,7 +918,7 @@ namespace Kinovea.ScreenManager
       // 
       // tabPage1
       // 
-      this.tabPage1.ImageKey = "comments2.png";
+      this.tabPage1.ImageKey = "comments";
       this.tabPage1.Location = new System.Drawing.Point(4, 28);
       this.tabPage1.Name = "tabPage1";
       this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
@@ -950,7 +950,7 @@ namespace Kinovea.ScreenManager
       // 
       this.imgListPropertyTabs.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgListPropertyTabs.ImageStream")));
       this.imgListPropertyTabs.TransparentColor = System.Drawing.Color.Transparent;
-      this.imgListPropertyTabs.Images.SetKeyName(0, "comments2.png");
+      this.imgListPropertyTabs.Images.SetKeyName(0, "comments");
       this.imgListPropertyTabs.Images.SetKeyName(1, "colorswatch2.png");
       this.imgListPropertyTabs.Images.SetKeyName(2, "tracking.png");
       this.imgListPropertyTabs.Images.SetKeyName(3, "point3-16.png");
@@ -997,7 +997,7 @@ namespace Kinovea.ScreenManager
       this.pnlThumbnails.Controls.Add(this.pictureBox1);
       this.pnlThumbnails.Location = new System.Drawing.Point(0, 27);
       this.pnlThumbnails.Name = "pnlThumbnails";
-      this.pnlThumbnails.Size = new System.Drawing.Size(600, 182);
+      this.pnlThumbnails.Size = new System.Drawing.Size(600, 184);
       this.pnlThumbnails.TabIndex = 3;
       this.pnlThumbnails.DoubleClick += new System.EventHandler(this.pnlThumbnails_DoubleClick);
       this.pnlThumbnails.MouseEnter += new System.EventHandler(this.pnlThumbnails_MouseEnter);

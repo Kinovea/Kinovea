@@ -197,7 +197,7 @@ namespace Kinovea.FileBrowser
       // 
       this.tabPageShortcuts.BackColor = System.Drawing.Color.White;
       this.tabPageShortcuts.Controls.Add(this.splitShortcutsFiles);
-      this.tabPageShortcuts.ImageKey = "tab_shortcuts.png";
+      this.tabPageShortcuts.ImageKey = "shortcuts";
       this.tabPageShortcuts.Location = new System.Drawing.Point(4, 23);
       this.tabPageShortcuts.Name = "tabPageShortcuts";
       this.tabPageShortcuts.Padding = new System.Windows.Forms.Padding(3);
@@ -338,7 +338,7 @@ namespace Kinovea.FileBrowser
       this.tabPageCameras.Controls.Add(this.btnManual);
       this.tabPageCameras.Controls.Add(this.label1);
       this.tabPageCameras.Controls.Add(this.lvCameras);
-      this.tabPageCameras.ImageKey = "tab_camera.png";
+      this.tabPageCameras.ImageKey = "camera";
       this.tabPageCameras.Location = new System.Drawing.Point(4, 23);
       this.tabPageCameras.Name = "tabPageCameras";
       this.tabPageCameras.Padding = new System.Windows.Forms.Padding(3);
@@ -438,8 +438,9 @@ namespace Kinovea.FileBrowser
       this.imgListTabs.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgListTabs.ImageStream")));
       this.imgListTabs.TransparentColor = System.Drawing.Color.Transparent;
       this.imgListTabs.Images.SetKeyName(0, "tree.png");
-      this.imgListTabs.Images.SetKeyName(1, "tab_shortcuts.png");
+      this.imgListTabs.Images.SetKeyName(1, "shortcuts");
       this.imgListTabs.Images.SetKeyName(2, "tab_camera.png");
+      this.imgListTabs.Images.SetKeyName(3, "camera");
       // 
       // FileBrowserUserInterface
       // 

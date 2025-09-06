@@ -160,7 +160,7 @@ namespace Kinovea.ScreenManager
       this.btnCloseFullscreen.FlatAppearance.MouseDownBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnCloseFullscreen.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnCloseFullscreen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnCloseFullscreen.Image = global::Kinovea.ScreenManager.Properties.Resources.arrow_inout;
+      this.btnCloseFullscreen.Image = global::Kinovea.ScreenManager.Properties.Resources.expand_16;
       this.btnCloseFullscreen.Location = new System.Drawing.Point(519, 12);
       this.btnCloseFullscreen.Name = "btnCloseFullscreen";
       this.btnCloseFullscreen.Size = new System.Drawing.Size(25, 25);

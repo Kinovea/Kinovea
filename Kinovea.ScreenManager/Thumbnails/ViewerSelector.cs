@@ -42,8 +42,8 @@ namespace Kinovea.ScreenManager
         public ViewerSelector()
         {
             ViewerSelectorOption optionFiles = new ViewerSelectorOption(ScreenManager.Properties.Resources.explorer_video, "", ThumbnailViewerType.Files);
-            ViewerSelectorOption optionShortcuts = new ViewerSelectorOption(ScreenManager.Properties.Resources.explorer_shortcut, "", ThumbnailViewerType.Shortcuts);
-            ViewerSelectorOption optionCameras = new ViewerSelectorOption(ScreenManager.Properties.Resources.explorer_camera, "", ThumbnailViewerType.Cameras);
+            ViewerSelectorOption optionShortcuts = new ViewerSelectorOption(ScreenManager.Properties.Resources.star, "", ThumbnailViewerType.Shortcuts);
+            ViewerSelectorOption optionCameras = new ViewerSelectorOption(ScreenManager.Properties.Resources.webcam2b_16, "", ThumbnailViewerType.Cameras);
 
             List<ViewerSelectorOption> options = new List<ViewerSelectorOption>();
             options.Add(optionFiles);

@@ -31,6 +31,7 @@
       this.components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormWindowManager));
       this.grpIdentifier = new System.Windows.Forms.GroupBox();
+      this.btnRefresh = new System.Windows.Forms.Button();
       this.olvWindows = new BrightIdeasSoftware.ObjectListView();
       this.imgListStatus = new System.Windows.Forms.ImageList(this.components);
       this.btnDelete = new System.Windows.Forms.Button();
@@ -42,8 +43,6 @@
       this.btnScreen2 = new System.Windows.Forms.Button();
       this.lblScreen1 = new System.Windows.Forms.Label();
       this.btnScreen1 = new System.Windows.Forms.Button();
-      this.imgListScreens = new System.Windows.Forms.ImageList(this.components);
-      this.btnRefresh = new System.Windows.Forms.Button();
       this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
       this.grpIdentifier.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.olvWindows)).BeginInit();
@@ -66,6 +65,20 @@
       this.grpIdentifier.TabIndex = 62;
       this.grpIdentifier.TabStop = false;
       this.grpIdentifier.Text = "Saved windows";
+      // 
+      // btnRefresh
+      // 
+      this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnRefresh.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnRefresh.FlatAppearance.BorderSize = 0;
+      this.btnRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnRefresh.Image = global::Kinovea.Root.Properties.Resources.arrow_refresh;
+      this.btnRefresh.Location = new System.Drawing.Point(338, 202);
+      this.btnRefresh.Name = "btnRefresh";
+      this.btnRefresh.Size = new System.Drawing.Size(25, 25);
+      this.btnRefresh.TabIndex = 76;
+      this.btnRefresh.UseVisualStyleBackColor = true;
+      this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
       // 
       // olvWindows
       // 
@@ -212,31 +225,6 @@
       this.btnScreen1.TabIndex = 67;
       this.btnScreen1.UseVisualStyleBackColor = true;
       // 
-      // imgListScreens
-      // 
-      this.imgListScreens.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgListScreens.ImageStream")));
-      this.imgListScreens.TransparentColor = System.Drawing.Color.Transparent;
-      this.imgListScreens.Images.SetKeyName(0, "capture");
-      this.imgListScreens.Images.SetKeyName(1, "dualcapture");
-      this.imgListScreens.Images.SetKeyName(2, "dualmixed");
-      this.imgListScreens.Images.SetKeyName(3, "dualplayback");
-      this.imgListScreens.Images.SetKeyName(4, "explorer");
-      this.imgListScreens.Images.SetKeyName(5, "playback");
-      // 
-      // btnRefresh
-      // 
-      this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnRefresh.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnRefresh.FlatAppearance.BorderSize = 0;
-      this.btnRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnRefresh.Image = global::Kinovea.Root.Properties.Resources.arrow_refresh;
-      this.btnRefresh.Location = new System.Drawing.Point(338, 202);
-      this.btnRefresh.Name = "btnRefresh";
-      this.btnRefresh.Size = new System.Drawing.Size(25, 25);
-      this.btnRefresh.TabIndex = 76;
-      this.btnRefresh.UseVisualStyleBackColor = true;
-      this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
-      // 
       // FormWindowManager
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -277,7 +265,6 @@
         private System.Windows.Forms.Button btnStartStop;
         private System.Windows.Forms.ImageList imgListStatus;
         private BrightIdeasSoftware.ObjectListView olvWindows;
-        private System.Windows.Forms.ImageList imgListScreens;
         private System.Windows.Forms.Button btnRefresh;
         private System.Windows.Forms.ToolTip toolTip1;
     }

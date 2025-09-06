@@ -110,7 +110,7 @@ namespace Kinovea.ScreenManager
       // btnIcon
       // 
       this.btnIcon.BackColor = System.Drawing.Color.Transparent;
-      this.btnIcon.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.explorer_camera;
+      this.btnIcon.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.webcam2b_16;
       this.btnIcon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
       this.btnIcon.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnIcon.FlatAppearance.BorderSize = 0;

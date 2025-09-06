@@ -608,7 +608,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         /// <summary>
-        /// A file was selected from the navigation panel. 
+        /// A file was selected from the navigation pane. 
         /// Forward to the corresponding thumbnail.
         /// </summary>
         private void NotificationCenter_FileSelected(object sender, FileActionEventArgs e)

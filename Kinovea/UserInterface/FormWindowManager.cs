@@ -286,8 +286,8 @@ namespace Kinovea.Root
         {
             if (screen == null)
             {
-                btn.Image = Properties.Resources.home3;
-                lbl.Text = "Explorer";
+                btn.Image = Properties.Resources.file_browser;
+                lbl.Text = "File browser";
             }
             else if (screen.ScreenType == ScreenType.Playback)
             {

@@ -83,16 +83,6 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap camera_close {
-            get {
-                object obj = ResourceManager.GetObject("camera_close", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap circle_16 {
             get {
                 object obj = ResourceManager.GetObject("circle_16", resourceCulture);
@@ -116,6 +106,16 @@ namespace Kinovea.ScreenManager.Properties {
         internal static System.Drawing.Bitmap clock_backward_16 {
             get {
                 object obj = ResourceManager.GetObject("clock_backward_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap close_capture {
+            get {
+                object obj = ResourceManager.GetObject("close_capture", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
