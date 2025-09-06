@@ -53,6 +53,28 @@ namespace Kinovea.ScreenManager
             if (screen is CaptureScreen)
             {
                 CaptureScreen captureScreen = screen as CaptureScreen;
+
+                if (captureScreen.Full)
+                {
+                    // This is the case when we load a camera on top of another.
+                    // The incoming screen descriptor is blank (just camera name) while the one in the screen contains 
+                    // configuration, including post-recording command, that may not exist anywhere else.
+                    // Swap the screen descriptor for the one in the target screen.
+                    var cameraName = screenDescriptor.CameraName;
+                    screenDescriptor = (ScreenDescriptorCapture)captureScreen.GetScreenDescriptor();
+                    screenDescriptor.CameraName = cameraName;
+                }
+                else
+                {
+                    // This is the case when we load a camera on an empty screen, 
+                    // either for auto-launch or manually.
+                    // If we are auto-launching we keep the incoming descriptor created from the window.
+                    // If we are loading on empty in the middle of the session, the descriptor should
+                    // have been set up with the backup descriptor from the window, or as a last resort,
+                    // the default descriptor. So we also keep the incoming one.
+                    // See ScreenManager.DoLoadCameraInScreen().
+                }
+
                 captureScreen.ConfigureScreen(screenDescriptor);
                 captureScreen.LoadCamera(summary);
 

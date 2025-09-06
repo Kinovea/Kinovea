@@ -3221,11 +3221,21 @@ namespace Kinovea.ScreenManager
                 return;
 
             // Manually load a camera in a screen.
-            // Restart from defaults for now.
-            // We could try to use the screen descriptor of the existing screen if specified, 
-            // the one from the other capture screen if it exists, or one backed up in the window.
-            ScreenDescriptorCapture sdc = new ScreenDescriptorCapture();
-            sdc.FileName = PreferencesManager.CapturePreferences.CapturePathConfiguration.DefaultFileName;
+            ScreenDescriptorCapture sdc;
+            
+            // Initialize with the backup configuration if possible.
+            // If we are loading on top of a full screen we will swap for that later.
+            var wd = WindowManager.ActiveWindow;
+            if (wd.ScreenDescriptorCaptureBackup != null)
+            {
+                sdc = (ScreenDescriptorCapture)wd.ScreenDescriptorCaptureBackup.Clone();
+            }
+            else
+            {
+                // Very first load of a camera in this screen.
+                sdc = new ScreenDescriptorCapture();
+                sdc.FileName = PreferencesManager.CapturePreferences.CapturePathConfiguration.DefaultFileName;
+            }
 
             LoaderCamera.LoadCameraInScreen(this, summary, targetScreen, sdc);
         }

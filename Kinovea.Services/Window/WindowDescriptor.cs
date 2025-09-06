@@ -143,53 +143,16 @@ namespace Kinovea.Services
         }
 
         /// <summary>
-        /// Capture delay used the last time we closed a capture screen in this window.
-        /// Used to provide good defaults if we ever reopen a capture screen in this window.
+        /// This is a backup of a screen descriptor living in the window
+        /// even when the window doesn't have a capture screen.
+        /// This is used to backup and restore defaults values.
+        /// Otherwise when we close the screen the info would be lost
+        /// which can be problematic for things like intricate post-recording commands.
         /// </summary>
-        public float LastCaptureDelay
+        public ScreenDescriptorCapture ScreenDescriptorCaptureBackup
         {
-            get { return lastCaptureDelay; }
-            set { lastCaptureDelay = value; }
+            get { return screenDescriptorCaptureBackup; }
         }
-
-        /// <summary>
-        /// Capture max duration used the last time we closed a capture screen in this window.
-        /// </summary>
-        public float LastCaptureMaxDuration
-        {
-            get { return lastCaptureMaxDuration; }
-            set { lastCaptureMaxDuration = value; }
-        }
-
-        /// <summary>
-        /// State of delayed display the last time we closed a capture screen in this window.
-        /// </summary>
-        public bool LastCaptureDelayedDisplay
-        {
-            get { return lastCaptureDelayedDisplay; }
-            set { lastCaptureDelayedDisplay = value; }
-        }
-
-        /// <summary>
-        /// Capture folder used the last time we closed a capture screen in this window.
-        /// </summary>
-        public Guid LastCaptureFolder
-        {
-            get { return lastCaptureFolder; }
-            set { lastCaptureFolder = value; }
-        }
-
-        public string LastCaptureFileName
-        {
-            get { return lastCaptureFileName; }
-            set { lastCaptureFileName = value; }
-        }
-
-        //public UserCommand UserCommandBackup
-        //{
-        //    get { return userCommandBackup; }
-        //    set { userCommandBackup = value; }
-        //}
         #endregion
 
         #region Members
@@ -212,14 +175,8 @@ namespace Kinovea.Services
         private float shortcutsFilesSplitterRatio = 0.25f;
         private ActiveFileBrowserTab activeTab = ActiveFileBrowserTab.Explorer;
 
-        // Capture screen state.
-        // TODO: move this to a "closed screen" variable with the full screen state.
-        private float lastCaptureDelay = 0f;
-        private float lastCaptureMaxDuration = 0f;
-        private bool lastCaptureDelayedDisplay = true;
-        private Guid lastCaptureFolder = Guid.Empty;
-        private string lastCaptureFileName = string.Empty;
-        //private UserCommand userCommandBackup = null;
+        // Backup screen state.
+        private ScreenDescriptorCapture screenDescriptorCaptureBackup;
         #endregion
 
         /// <summary>
@@ -232,6 +189,11 @@ namespace Kinovea.Services
             {
                 screenList.Add(d.Clone());
             }
+        }
+
+        public void BackupScreenDescriptorCapture(ScreenDescriptorCapture sdc)
+        {
+            screenDescriptorCaptureBackup = (ScreenDescriptorCapture)sdc.Clone();
         }
 
         #region Serialization
@@ -270,14 +232,13 @@ namespace Kinovea.Services
             writer.WriteElementString("ExplorerFilesSplitterRatio", XmlHelper.WriteFloat(explorerFilesSplitterRatio));
             writer.WriteElementString("ShortcutsFilesSplitterRatio", XmlHelper.WriteFloat(shortcutsFilesSplitterRatio));
             writer.WriteElementString("ActiveTab", activeTab.ToString());
-            writer.WriteElementString("LastCaptureDelay", XmlHelper.WriteFloat(lastCaptureDelay));
-            writer.WriteElementString("LastCaptureMaxDuration", XmlHelper.WriteFloat(lastCaptureMaxDuration));
-            writer.WriteElementString("LastCaptureDelayedDisplay", XmlHelper.WriteBoolean(lastCaptureDelayedDisplay));
-            writer.WriteElementString("LastCaptureFolder", lastCaptureFolder.ToString());
-            writer.WriteElementString("LastCaptureFileName", lastCaptureFileName.ToString());
 
-            //if (userCommandBackup != null)
-            //    userCommandBackup.WriteXML(writer);
+            if (screenDescriptorCaptureBackup != null)
+            {
+                writer.WriteStartElement("ScreenDescriptorCaptureBackup");
+                screenDescriptorCaptureBackup.WriteXml(writer);
+                writer.WriteEndElement();
+            }
         }
 
         public void ReadXML(XmlReader reader)
@@ -334,24 +295,10 @@ namespace Kinovea.Services
                     case "ActiveTab":
                         activeTab = XmlHelper.ParseEnum<ActiveFileBrowserTab>(reader.ReadElementContentAsString(), ActiveFileBrowserTab.Explorer);
                         break;
-                    case "LastCaptureDelay":
-                        lastCaptureDelay = XmlHelper.ParseFloat(reader.ReadElementContentAsString());
+                    case "ScreenDescriptorCaptureBackup":
+                        screenDescriptorCaptureBackup = new ScreenDescriptorCapture();
+                        screenDescriptorCaptureBackup.Readxml(reader);
                         break;
-                    case "LastCaptureMaxDuration":
-                        lastCaptureMaxDuration = XmlHelper.ParseFloat(reader.ReadElementContentAsString());
-                        break;
-                    case "LastCaptureDelayedDisplay":
-                        lastCaptureDelayedDisplay = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
-                        break;
-                    case "LastCaptureFolder":
-                        lastCaptureFolder = XmlHelper.ParseGuid(reader.ReadElementContentAsString());
-                        break;
-                    case "LastCaptureFileName":
-                        lastCaptureFileName = reader.ReadElementContentAsString();
-                        break;
-                    //case "UserCommandBackup":
-                    //    userCommandBackup = new UserCommand(reader);
-                    //    break;
                     default:
                         reader.ReadOuterXml();
                         break;
