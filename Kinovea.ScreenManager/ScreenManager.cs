@@ -1105,7 +1105,7 @@ namespace Kinovea.ScreenManager
                 }
             }
 
-            // If we are in "Continue where I left off" mode, save immediately.
+            // If we are in "Continue where you left off" mode, save immediately.
             // This is not strictly necessary as we will save on close but it helps 
             // the other windows get a more up to date state of this window.
             // We must only do this if we are not in the process of closing though

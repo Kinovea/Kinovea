@@ -582,6 +582,12 @@ namespace Kinovea.ScreenManager
                 cameraManager = cameraSummary.Manager;
                 cameraGrabber = cameraManager.CreateCaptureSource(cameraSummary);
                 AssociateCamera(true);
+
+                if (cameraLoaded && cameraConnected)
+                {
+                    AfterConnected(sd);
+                }
+
                 return;
             }
             
@@ -613,11 +619,9 @@ namespace Kinovea.ScreenManager
                 bool connect = sd != null ? sd.Autostream : true;
                 AssociateCamera(connect);
 
-                if (sd!= null && cameraLoaded && cameraConnected)
+                if (cameraLoaded && cameraConnected)
                 {
-                    view.ForcePopulate(sd.Delay, sd.MaxDuration, sd.CaptureFolder);
-                    delayedDisplay = sd.DelayedDisplay;
-                    maxRecordingSeconds = sd.MaxDuration;
+                    AfterConnected(sd);
                 }
             }
             else
@@ -642,6 +646,34 @@ namespace Kinovea.ScreenManager
 
             if (connect)
                 Connect();
+        }
+
+        /// <summary>
+        /// Reload the saved state after the camera has been connected.
+        /// </summary>
+        private void AfterConnected(ScreenDescriptionCapture sd)
+        {
+            if (sd != null)
+            {
+                // Initial setup and started with a specific screen descriptor so load that.
+                // This can be either from "continue where you left off" mode or 
+                // from "specific screens" mode.
+                view.ForcePopulate(sd.Delay, sd.MaxDuration, sd.CaptureFolder);
+                delayedDisplay = sd.DelayedDisplay;
+                maxRecordingSeconds = sd.MaxDuration;
+            }
+            else
+            {
+                // We don't have a specific screen descriptor, use defaults.
+                // These are saved if we ever loaded a capture screen in 
+                // this window and later closed it.
+                // We come here when we close and reopen during the same session or
+                // or when reopening on the explorer.
+                WindowDescriptor d = WindowManager.ActiveWindow;
+                view.ForcePopulate(d.LastCaptureDelay, d.LastCaptureMaxDuration, d.LastCaptureFolder);
+                delayedDisplay = d.LastCaptureDelayedDisplay;
+                maxRecordingSeconds = d.LastCaptureMaxDuration;
+            }
         }
 
         private void CameraTypeManager_CamerasDiscovered(object sender, CamerasDiscoveredEventArgs e)
@@ -674,11 +706,9 @@ namespace Kinovea.ScreenManager
                 bool connect = screenDescription != null ? screenDescription.Autostream : true;
                 AssociateCamera(connect);
 
-                if (screenDescription != null && cameraLoaded && cameraConnected)
+                if (cameraLoaded && cameraConnected)
                 {
-                    view.ForcePopulate(screenDescription.Delay, screenDescription.MaxDuration, screenDescription.CaptureFolder);
-                    delayedDisplay = screenDescription.DelayedDisplay;
-                    maxRecordingSeconds = screenDescription.MaxDuration;
+                    AfterConnected(screenDescription);
                 }
                 
                 break;

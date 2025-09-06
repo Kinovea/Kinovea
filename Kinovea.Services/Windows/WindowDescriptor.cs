@@ -141,6 +141,43 @@ namespace Kinovea.Services
             get { return activeTab; }
             set { activeTab = value; }
         }
+
+        /// <summary>
+        /// Capture delay used the last time we closed a capture screen in this window.
+        /// Used to provide good defaults if we ever reopen a capture screen in this window.
+        /// </summary>
+        public float LastCaptureDelay
+        {
+            get { return lastCaptureDelay; }
+            set { lastCaptureDelay = value; }
+        }
+
+        /// <summary>
+        /// Capture max duration used the last time we closed a capture screen in this window.
+        /// </summary>
+        public float LastCaptureMaxDuration
+        {
+            get { return lastCaptureMaxDuration; }
+            set { lastCaptureMaxDuration = value; }
+        }
+
+        /// <summary>
+        /// State of delayed display the last time we closed a capture screen in this window.
+        /// </summary>
+        public bool LastCaptureDelayedDisplay
+        {
+            get { return lastCaptureDelayedDisplay; }
+            set { lastCaptureDelayedDisplay = value; }
+        }
+
+        /// <summary>
+        /// Capture folder used the last time we closed a capture screen in this window.
+        /// </summary>
+        public Guid LastCaptureFolder
+        {
+            get { return lastCaptureFolder; }
+            set { lastCaptureFolder = value; }
+        }
         #endregion
 
         #region Members
@@ -162,6 +199,12 @@ namespace Kinovea.Services
         private float explorerFilesSplitterRatio = 0.25f;
         private float shortcutsFilesSplitterRatio = 0.25f;
         private ActiveFileBrowserTab activeTab = ActiveFileBrowserTab.Explorer;
+
+        // Capture screen state.
+        private float lastCaptureDelay = 0f;
+        private float lastCaptureMaxDuration = 0f;
+        private bool lastCaptureDelayedDisplay = true;
+        private Guid lastCaptureFolder = Guid.Empty;
 
         #endregion
 
@@ -201,6 +244,10 @@ namespace Kinovea.Services
             writer.WriteElementString("ExplorerFilesSplitterRatio", XmlHelper.WriteFloat(explorerFilesSplitterRatio));
             writer.WriteElementString("ShortcutsFilesSplitterRatio", XmlHelper.WriteFloat(shortcutsFilesSplitterRatio));
             writer.WriteElementString("ActiveTab", activeTab.ToString());
+            writer.WriteElementString("LastCaptureDelay", XmlHelper.WriteFloat(lastCaptureDelay));
+            writer.WriteElementString("LastCaptureMaxDuration", XmlHelper.WriteFloat(lastCaptureMaxDuration));
+            writer.WriteElementString("LastCaptureDelayedDisplay", XmlHelper.WriteBoolean(lastCaptureDelayedDisplay));
+            writer.WriteElementString("LastCaptureFolder", lastCaptureFolder.ToString());
         }
 
         public void ReadXML(XmlReader reader)
@@ -256,6 +303,18 @@ namespace Kinovea.Services
                         break;
                     case "ActiveTab":
                         activeTab = XmlHelper.ParseEnum<ActiveFileBrowserTab>(reader.ReadElementContentAsString(), ActiveFileBrowserTab.Explorer);
+                        break;
+                    case "LastCaptureDelay":
+                        lastCaptureDelay = XmlHelper.ParseFloat(reader.ReadElementContentAsString());
+                        break;
+                    case "LastCaptureMaxDuration":
+                        lastCaptureMaxDuration = XmlHelper.ParseFloat(reader.ReadElementContentAsString());
+                        break;
+                    case "LastCaptureDelayedDisplay":
+                        lastCaptureDelayedDisplay = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
+                    case "LastCaptureFolder":
+                        lastCaptureFolder = XmlHelper.ParseGuid(reader.ReadElementContentAsString());
                         break;
                     default:
                         reader.ReadOuterXml();

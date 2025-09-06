@@ -81,7 +81,7 @@ namespace Kinovea.Camera.FrameGenerator
         public void Stop()
         {
             stopwatch.Stop();
-            cancellationEvent.Set();
+            cancellationEvent?.Set();
 
             if (grabThread != null && grabThread.IsAlive)
             {

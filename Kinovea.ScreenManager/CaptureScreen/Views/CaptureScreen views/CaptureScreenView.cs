@@ -138,8 +138,27 @@ namespace Kinovea.ScreenManager
         
         public void BeforeClose()
         {
+            // Save the state of the screen to the window descriptor.
+            // This is not the main screen descriptor that we save to the screen list
+            // and reload in the context of "continue where you left off" or "load specfiic screens", 
+            // these are considered "preferences" not "state".
+            // We need to save the "state" of the screen so that if the user closes 
+            // and reopens the screen during the same session we restore the state.
+            // Or, in "continue where you left off" mode, if they close the screen, close the window,
+            // and later reopen the window, and reopen a screen, present them with values they were using last time.
+            WindowDescriptor d = WindowManager.ActiveWindow;
+            d.LastCaptureDelay = (float)nudDelay.Value;
+            d.LastCaptureDelayedDisplay = this.delayedDisplay;
+            d.LastCaptureMaxDuration = (float)nudDuration.Value;
+            if (this.CaptureFolder != null)
+                d.LastCaptureFolder = this.CaptureFolder.Id;
+
+            WindowManager.SaveActiveWindow();
+
+            // For "continue where you left off", the new screen list after this close will be saved
+            // will be saved in the window descriptor during ScreenManager.OrganizeScreens().
         }
-        
+
         public void SetViewport(Viewport viewport)
         {
             pnlViewport.Controls.Add(viewport);
