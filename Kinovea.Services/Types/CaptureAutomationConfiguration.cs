@@ -19,7 +19,6 @@ namespace Kinovea.Services
         public int UDPPort { get; set; }
         public float TriggerQuietPeriod { get; set; }
         public CaptureTriggerAction TriggerAction { get; set; }
-        public float RecordingSeconds { get; set; }
         public bool IgnoreOverwrite { get; set; }
         public bool DefaultTriggerArmed { get; set; }
 
@@ -35,7 +34,6 @@ namespace Kinovea.Services
             UDPPort = 8875;
             TriggerQuietPeriod = 0.0f;
             TriggerAction = CaptureTriggerAction.RecordVideo;
-            RecordingSeconds = 0;
             IgnoreOverwrite = false;
             DefaultTriggerArmed = true;
         }
@@ -81,10 +79,6 @@ namespace Kinovea.Services
                     case "TriggerAction":
                         TriggerAction = (CaptureTriggerAction)Enum.Parse(typeof(CaptureTriggerAction), r.ReadElementContentAsString());
                         break;
-                    case "RecordingSeconds":
-                        string strRecordingSeconds = r.ReadElementContentAsString();
-                        RecordingSeconds = float.Parse(strRecordingSeconds, CultureInfo.InvariantCulture);
-                        break;
                     case "IgnoreOverwriteWarning":
                         IgnoreOverwrite = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
                         break;
@@ -110,7 +104,6 @@ namespace Kinovea.Services
             w.WriteElementString("UDPPort", UDPPort.ToString());
             w.WriteElementString("AudioQuietPeriod", TriggerQuietPeriod.ToString("0.000", CultureInfo.InvariantCulture));
             w.WriteElementString("TriggerAction", TriggerAction.ToString());
-            w.WriteElementString("RecordingSeconds", RecordingSeconds.ToString("0.000", CultureInfo.InvariantCulture));
             w.WriteElementString("IgnoreOverwriteWarning", XmlHelper.WriteBoolean(IgnoreOverwrite));
             w.WriteElementString("DefaultTriggerArmed", XmlHelper.WriteBoolean(DefaultTriggerArmed));
         }

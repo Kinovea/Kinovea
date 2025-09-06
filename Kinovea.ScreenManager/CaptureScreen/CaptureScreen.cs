@@ -1897,17 +1897,16 @@ namespace Kinovea.ScreenManager
             // Loop through the delay buffer and save the frames to storage.
             int minAge = 0;
             int maxAge = delayer.SafeCapacity - 1;
-            float maxSeconds = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.RecordingSeconds;
-
+            
             log.DebugFormat("Recording delay buffer. Delay:{0:0.000}s, Recording seconds:{1:0.000}s, Max duration allowed:{2:0.000}s, Buffer capacity:{3} frames.",
-                    AgeToSeconds(delay), recordingSeconds, maxSeconds, delayer.SafeCapacity - 1);
+                    AgeToSeconds(delay), recordingSeconds, maxRecordingSeconds, delayer.SafeCapacity - 1);
 
             // Figure the section of the buffer to save.
             if (forcedStop || recordingSeconds > 0)
             {
                 // Scheduled mode.
                 
-                if (forcedStop && maxSeconds > 0)
+                if (forcedStop && maxRecordingSeconds > 0)
                 {
                     //----------------------------------------------------------------------------------------------
                     // We have force stopped recording because the max duration set in preferences is already available as frames in the buffer,
@@ -1928,7 +1927,7 @@ namespace Kinovea.ScreenManager
                     maxAge = delay + recordingFrames;
                  
                     // This case always implies the entire "max configured duration" is available.
-                    minAge = maxAge - SecondsToAge(maxSeconds);
+                    minAge = maxAge - SecondsToAge(maxRecordingSeconds);
                 }
                 else
                 {
@@ -1965,8 +1964,8 @@ namespace Kinovea.ScreenManager
                 // Pause-and-browse recording.
                 // Delay is not considered.
                 // Always take the section between the most recent frame until max allowed recording duration.
-                if (maxSeconds > 0)
-                    maxAge = Math.Min(maxAge, SecondsToAge(maxSeconds) - 1);
+                if (maxRecordingSeconds > 0)
+                    maxAge = Math.Min(maxAge, SecondsToAge(maxRecordingSeconds) - 1);
 
                 log.DebugFormat("Recording delay buffer while the camera is paused. Min age:{0}, Max age:{1}.", minAge, maxAge);
             }
