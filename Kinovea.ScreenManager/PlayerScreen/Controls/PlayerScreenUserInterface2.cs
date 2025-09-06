@@ -746,7 +746,9 @@ namespace Kinovea.ScreenManager
             m_iSelStart = m_FrameServer.Metadata.SelectionStart;
             m_iSelEnd = m_FrameServer.Metadata.SelectionEnd;
             m_iSelDuration = m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
-            UpdateWorkingZone(true);
+
+            bool invalidateCache = !screenDescriptor.IsReplayWatcher;
+            UpdateWorkingZone(invalidateCache);
 
             // Remember that we already loaded the working zone, to avoid an unnecessary caching operation during the
             // initialization of the screen. This is only for the first load into this screen.
@@ -845,9 +847,8 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Try to load the working zone into the cache if possible
         /// and consolidate the boundary values afterwards.
-        /// If _bForceReload is true, invalidates the existing cache.
         /// </summary>
-        public void UpdateWorkingZone(bool _bForceReload)
+        public void UpdateWorkingZone(bool invalidateCache)
         {
             if (!m_FrameServer.Loaded)
                 return;
@@ -857,7 +858,7 @@ namespace Kinovea.ScreenManager
                 StopPlaying();
                 OnPauseAsked();
                 VideoSection newZone = new VideoSection(m_iSelStart, m_iSelEnd);
-                m_FrameServer.VideoReader.UpdateWorkingZone(newZone, _bForceReload, PreferencesManager.PlayerPreferences.WorkingZoneMemory, ProgressWorker);
+                m_FrameServer.VideoReader.UpdateWorkingZone(newZone, invalidateCache, PreferencesManager.PlayerPreferences.WorkingZoneMemory, ProgressWorker);
                 ResizeUpdate(true);
             }
 
@@ -1409,10 +1410,10 @@ namespace Kinovea.ScreenManager
 
             if (!workingZoneLoaded)
             {
-                if (screenDescriptor != null && screenDescriptor.IsReplayWatcher)
-                    UpdateWorkingZone(false);
-                else
-                    UpdateWorkingZone(true);
+                // In replay mode we focus on simple playback and synchronization,
+                // and we want the video to load as fast as possible. So no caching.
+                bool isReplayWatcher = screenDescriptor != null && screenDescriptor.IsReplayWatcher;
+                UpdateWorkingZone(!isReplayWatcher);
             }
 
             // Signal post-load idle event to listeners.
