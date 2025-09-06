@@ -435,8 +435,15 @@ namespace Kinovea.Root
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
+            int memoSelectedIndex = olvWindows.SelectedIndex;
+            
             WindowManager.Delete(selected.Tag);
             Populate();
+
+            if (memoSelectedIndex < olvWindows.Items.Count)
+                olvWindows.SelectedIndex = memoSelectedIndex;
+            else if (olvWindows.Items.Count > 0)
+                olvWindows.SelectedIndex = olvWindows.Items.Count - 1;
         }
     }
 }
