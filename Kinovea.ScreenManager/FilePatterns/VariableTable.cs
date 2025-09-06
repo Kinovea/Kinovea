@@ -11,7 +11,8 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    ///  A variable "table" (one csv file) contains a set of custom variables and the corresponding values for each configuration.
+    ///  A variable "table" (one csv file) contains a set of custom variables (columns) and 
+    ///  the corresponding values for each configuration (rows).
     ///  These variables can be used in various places like capture folder paths.
     ///
     ///  Tables are stored as CSV files.
@@ -25,12 +26,12 @@ namespace Kinovea.ScreenManager
         #region Properties
         /// <summary>
         /// Values of the first column. 
-        /// This is used to identify and select the profile.
+        /// This is used to identify and select the "context".
         /// </summary>
         public List<string> Keys { get; private set; } = new List<string>();
 
         /// <summary>
-        /// Key of the currently selected profile.
+        /// Key of the currently selected "context".
         /// </summary>
         public string CurrentKey 
         {
@@ -54,12 +55,12 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// List of defined variables (column headers).
         /// </summary>
-        public List<string> Variables { get; private set; } = new List<string>();
+        public List<string> VariableNames { get; private set; } = new List<string>();
         #endregion
 
         #region Members
         private string currentKey = string.Empty;
-        private Dictionary<string, List<string>> profiles = new Dictionary<string, List<string>>();
+        private Dictionary<string, List<string>> rowsDict = new Dictionary<string, List<string>>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -69,7 +70,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public bool Import(string csvFile)
         {
-            ClearProfiles();
+            Clear();
 
             try
             {
@@ -87,13 +88,13 @@ namespace Kinovea.ScreenManager
                     List<List<string>> records = new List<List<string>>();
 
                     // Column headers are the variable names.
-                    Variables = csv.HeaderRecord.ToList();
+                    VariableNames = csv.HeaderRecord.ToList();
 
                     while (csv.Read())
                     {
                         // Each row is one profile.
                         List<string> record = new List<string>();
-                        for (int i = 0; i < Variables.Count; i++)
+                        for (int i = 0; i < VariableNames.Count; i++)
                         {
                             string value = csv.GetField<string>(i);
                             record.Add(value);
@@ -107,7 +108,7 @@ namespace Kinovea.ScreenManager
                         else
                         {
                             Keys.Add(record[0]);
-                            profiles.Add(record[0], record);
+                            rowsDict.Add(record[0], record);
                         }
                     }
                 }
@@ -135,31 +136,31 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public string GetValue(string variableName)
         {
-            if (string.IsNullOrEmpty(currentKey) || !profiles.ContainsKey(currentKey))
+            if (string.IsNullOrEmpty(currentKey) || !rowsDict.ContainsKey(currentKey))
             {
                 log.Error("Current key is not set or does not exist in profiles.");
                 return string.Empty;
             }
 
-            if (!Variables.Contains(variableName))
+            if (!VariableNames.Contains(variableName))
             {
                 log.ErrorFormat("Variable \"{0}\" does not exist in the profile.", variableName);
                 return string.Empty;
             }
 
-            int index = Variables.IndexOf(variableName);
-            return profiles[currentKey][index];
+            int index = VariableNames.IndexOf(variableName);
+            return rowsDict[currentKey][index];
         }
 
         /// <summary>
         /// Clear all profile data.
         /// </summary>
-        private void ClearProfiles()
+        private void Clear()
         {
-            Variables.Clear();
+            VariableNames.Clear();
             Keys.Clear();
             currentKey = string.Empty;
-            profiles.Clear();
+            rowsDict.Clear();
         }
     }
 }

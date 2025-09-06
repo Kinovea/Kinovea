@@ -384,7 +384,7 @@
     <Compile Include="FilePatterns\Filenamer.cs" />
     <Compile Include="FilePatterns\PatternContext.cs" />
     <Compile Include="FilePatterns\PatternSymbolsFile.cs" />
-    <Compile Include="FilePatterns\ProfileManager.cs" />
+    <Compile Include="FilePatterns\VariablesRepository.cs" />
     <Compile Include="FilePatterns\VariableTable.cs" />
     <Compile Include="Importers\TRC\MetadataImporterSports2D.cs" />
     <Compile Include="Measurement\Calibration\CalibrationAxis.cs" />

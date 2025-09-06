@@ -288,7 +288,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private FrameServerPlayer m_FrameServer;
-        private ProfileManager profileManager;
+        private VariablesRepository profileManager;
 
         // Playback current state
         private bool m_bIsCurrentlyPlaying;
@@ -443,7 +443,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public PlayerScreenUserInterface(FrameServerPlayer frameServer, DrawingToolbarPresenter drawingToolbarPresenter, ProfileManager profileManager)
+        public PlayerScreenUserInterface(FrameServerPlayer frameServer, DrawingToolbarPresenter drawingToolbarPresenter, VariablesRepository profileManager)
         {
             log.Debug("Constructing the PlayerScreen user interface.");
 

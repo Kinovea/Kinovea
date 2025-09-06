@@ -212,7 +212,7 @@ namespace Kinovea.ScreenManager
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        public CaptureScreen(ProfileManager profileManager)
+        public CaptureScreen(VariablesRepository profileManager)
             : base(profileManager)
         {
             // There are several nested lifetimes with symetric setup/teardown methods:

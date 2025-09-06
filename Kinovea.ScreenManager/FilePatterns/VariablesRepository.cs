@@ -9,21 +9,29 @@ using System.IO;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// The profile manager handles the collection of custom variable tables.
-    /// Each variable table contains one or more variables and their values for different profiles.
+    /// The variables repository a collection of tables with custom variables.
+    /// Each table contains one or more variables (columns) and their values (rows).
     /// 
     /// For example we can have a table "athletes" with variables "bib" and "name".
-    /// The first column contains the key and is used to select the active context from the menus or drop downs.
-    /// A variable table / csv file might contain a single column but the header row must always be present.
+    /// The first column always contains the key and is used in the UI for the user
+    /// to select the active context from the menus or drop downs.
+    /// 
+    /// What we call "the context" is the set of selected rows in all the available tables.
+    /// 
+    /// A variable table / csv file may contain a single column but the header row must always be present.
     /// 
     /// This is effectively a database of custom variables but we keep them as CSV files for ease 
     /// of modification and inspection by external tools.
     /// 
     /// Each variable table object maintains its currently active record.
     /// </summary>
-    public class ProfileManager
+    public class VariablesRepository
     {
         #region Properties
+
+        /// <summary>
+        /// List of variable tables indexed by the csv file name.
+        /// </summary>
         public Dictionary<string, VariableTable> VariableTables { get; private set; } = new Dictionary<string, VariableTable>();
         #endregion
 
@@ -33,10 +41,11 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Load the tables.
         /// This re-imports from CSV and will reset the current selected profile.
-        /// For adding tables on the fly use AddTable.
         /// </summary>
         public void Initialize()
         {
+            VariableTables.Clear();
+
             // Load all variable tables from the CSV files.
             string path = Software.VariablesDirectory;
 
@@ -54,6 +63,9 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        /// <summary>
+        /// Load one variable table into the repository.
+        /// </summary>
         public void LoadFile(string file)
         {
             string tableName = Path.GetFileNameWithoutExtension(file);

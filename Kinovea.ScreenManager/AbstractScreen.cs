@@ -195,13 +195,13 @@ namespace Kinovea.ScreenManager
         /// Profile containing custom variables and their values.
         /// Set by the screen manager when the screen is created.
         /// </summary>
-        public ProfileManager ProfileManager
+        public VariablesRepository ProfileManager
         {
             get;
         }
         #endregion
 
-        public AbstractScreen(ProfileManager profileManager)
+        public AbstractScreen(VariablesRepository profileManager)
         {
             this.ProfileManager = profileManager;
         }

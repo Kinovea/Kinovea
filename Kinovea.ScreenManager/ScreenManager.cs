@@ -70,7 +70,7 @@ namespace Kinovea.ScreenManager
         private IEnumerable<CaptureScreen> captureScreens;
         private AbstractScreen activeScreen = null;
         private bool canShowCommonControls;
-        private ProfileManager profileManager = new ProfileManager();
+        private VariablesRepository variablesRepository = new VariablesRepository();
         private List<string> camerasToDiscover = new List<string>();
         private AudioInputLevelMonitor audioInputLevelMonitor = new AudioInputLevelMonitor();
         private UDPMonitor udpMonitor = new UDPMonitor();
@@ -218,7 +218,7 @@ namespace Kinovea.ScreenManager
 
             // The variable tables should be loaded before the screens are initialized as part of the workspace, 
             // since they may contain variables used in the default kva paths to load with the screens.
-            profileManager.Initialize();
+            variablesRepository.Initialize();
             BuildVariablesMenu();
 
             NotificationCenter.StopPlayback += (s, e) => DoStopPlaying();
@@ -1855,14 +1855,14 @@ namespace Kinovea.ScreenManager
             mnuVariables.DropDownItems.Add(mnuImportVariables);
 
             // Bail out if there are no variables.
-            if (profileManager.VariableTables.Count == 0)
+            if (variablesRepository.VariableTables.Count == 0)
             {
                 return;
             }
 
             mnuVariables.DropDownItems.Add(new ToolStripSeparator());
 
-            foreach (var pair in profileManager.VariableTables)
+            foreach (var pair in variablesRepository.VariableTables)
             {
                 // Add a menu for the table.
                 var mnuTable = new ToolStripMenuItem();
@@ -3090,7 +3090,7 @@ namespace Kinovea.ScreenManager
             }
 
             // Load the profile.
-            profileManager.LoadFile(target);
+            variablesRepository.LoadFile(target);
             BuildVariablesMenu();
             OrganizeMenus();
 
@@ -3338,14 +3338,14 @@ namespace Kinovea.ScreenManager
         }
         public void AddPlayerScreen()
         {
-            PlayerScreen screen = new PlayerScreen(profileManager);
+            PlayerScreen screen = new PlayerScreen(variablesRepository);
             screen.RefreshUICulture();
             AddScreen(screen);
         }
         public void AddCaptureScreen()
         {
 
-            CaptureScreen screen = new CaptureScreen(profileManager);
+            CaptureScreen screen = new CaptureScreen(variablesRepository);
             if (screenList.Count > 0)
                 screen.SetShared(true);
 

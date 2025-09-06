@@ -392,7 +392,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public PlayerScreen(ProfileManager profileManager)
+        public PlayerScreen(VariablesRepository profileManager)
             : base(profileManager)
         {
             log.Debug("Constructing a PlayerScreen.");

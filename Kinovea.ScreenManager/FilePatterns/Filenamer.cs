@@ -17,7 +17,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Gets the full path to a capture folder.
         /// </summary>
-        public static string ResolveCaptureFolder(string folder, ProfileManager profileManager, Dictionary<string, string> context)
+        public static string ResolveCaptureFolder(string folder, VariablesRepository profileManager, Dictionary<string, string> context)
         {
             return ReplacePatterns(folder, profileManager, context);
         }
@@ -27,7 +27,7 @@ namespace Kinovea.ScreenManager
         /// This includes the directory, filename and extension.
         /// The directory and filename may contain variables to be interpolated.
         /// </summary>
-        public static string ResolveOutputFilePath(string folder, string filename, string extension, ProfileManager profileManager, Dictionary<string, string> context)
+        public static string ResolveOutputFilePath(string folder, string filename, string extension, VariablesRepository profileManager, Dictionary<string, string> context)
         {
             folder = ReplacePatterns(folder, profileManager, context);
             filename = ReplacePatterns(filename, profileManager, context);
@@ -39,7 +39,7 @@ namespace Kinovea.ScreenManager
         /// Gets the command line for post-recording command.
         /// The command may contain variables to be interpolated.
         /// </summary>
-        public static string ResolveCommandLine(string command, ProfileManager profileManager, Dictionary<string, string> context)
+        public static string ResolveCommandLine(string command, VariablesRepository profileManager, Dictionary<string, string> context)
         {
             return ReplacePatterns(command, profileManager, context);
         }
@@ -50,7 +50,7 @@ namespace Kinovea.ScreenManager
         /// This is for loading, not for saving.
         /// For saving use AbstractScreen.SaveDefaultAnnotations().
         /// </summary>
-        public static bool GetDefaultKVAPath(ref string path, ProfileManager profileManager, bool forPlayer)
+        public static bool GetDefaultKVAPath(ref string path, VariablesRepository profileManager, bool forPlayer)
         {
             path = forPlayer ? PreferencesManager.PlayerPreferences.PlaybackKVA : PreferencesManager.CapturePreferences.CaptureKVA;
             if (string.IsNullOrEmpty(path))
@@ -88,7 +88,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Resolve variables for a default KVA path.
         /// </summary>
-        public static string ResolveDefaultKVAPath(string path, ProfileManager profileManager)
+        public static string ResolveDefaultKVAPath(string path, VariablesRepository profileManager)
         {
             return ReplacePatterns(path, profileManager, null);
         }
@@ -180,7 +180,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Replaces all the variables found by their current value.
         /// </summary>
-        private static string ReplacePatterns(string text, ProfileManager profileManager, Dictionary<string, string> context)
+        private static string ReplacePatterns(string text, VariablesRepository profileManager, Dictionary<string, string> context)
         {
             string result = text;
 
@@ -212,7 +212,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Replace the custom variables in the passed string using the active profile.
         /// </summary>
-        private static string ReplaceCustomVariables(string text, ProfileManager profileManager)
+        private static string ReplaceCustomVariables(string text, VariablesRepository profileManager)
         {
             // Note that we don't check if two tables have the same variable name.
             // The first one loaded will take precedence.
@@ -224,7 +224,7 @@ namespace Kinovea.ScreenManager
                     continue;
 
                 // Replace all variables using the active profile.
-                foreach (var variable in variableTable.Variables)
+                foreach (var variable in variableTable.VariableNames)
                 {
                     // We keep them verbatim so this is case sensitive.
                     string symbol = string.Format("%{0}%", variable);
