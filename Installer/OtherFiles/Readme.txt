@@ -52,7 +52,7 @@ Changelog:
     Added - Capture: multi-instruction post-recording commands.
     Improved - General: core preferences are now shared and synchronized between windows.
     Improved - General: window name can be set directly from the user interface.
-    Improved - General: window startup options: file browser, continue where you left off or start on a specific set of screens.
+    Improved - General: per-window startup options: "file browser", "continue where you left off" or "open specific content".
     Improved - General: ability to quickly restart closed windows.
     Improved - General: ability to start, stop and delete older windows.
     Improved - General: changed variables syntax to %variable%.
@@ -63,7 +63,7 @@ Changelog:
     Improved - Player: improved mechanics of switching between single-video player and replay watcher.
     Improved - Player: menus to open replay folder observers on configured capture folders.
     Improved - Player: replay folders support target folders with variables.
-    Improved - Player: when picking a folder to observe it is automatically added as a capture folder.
+    Improved - Player: when picking a folder for replay observer, it is automatically added as a capture folder.
     Improved - Player: continue playback after a jump if we were playing.
     Improved - Annotations: new menus to manage annotations (unload, save as default, reload).
     Improved - Annotations: default KVA paths can use custom variables.
@@ -85,10 +85,11 @@ Changelog:
     Improved - Export: restored the export of trajectories to text in GnuPlot format.
     Improved - Export: allow saving of annotations from the capture screen.
     Improved - Capture: improved stability of camera discovery.
+    Improved - Capture: Context toolbar with drop downs of custom variables, to select the context of the recording.
     Improved - Capture: capture folders and post-recording command can use custom variables.
     Improved - Capture: toolbox to insert variables and common characters in folder paths, with just-in-time examples.
     Improved - Capture: option to disable the auto-numbering of file names when not using dynamic file names.
-    Improved - Capture: post-recording now starts in a background thread.
+    Improved - Capture: post-recording command now starts in a background thread.
     Improved - Capture: post-recording command supports multiple calls to external programs per command.
     Improved - Capture: post-recording command can be disabled without deleting the command.
     Improved - Capture: post-recording command now uses a text editor with line numbers and wrapping, and custom syntax highlighting.
