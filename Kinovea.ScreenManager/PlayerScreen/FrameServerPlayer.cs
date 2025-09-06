@@ -84,7 +84,6 @@ namespace Kinovea.ScreenManager
         #region Members
         private VideoReader videoReader;
         private HistoryStack historyStack;
-        private VariablesRepository variablesRepository;
         private Metadata metadata;
         private FormProgressBar formProgressBar;
         private BackgroundWorker bgWorkerSave = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
@@ -94,10 +93,9 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public FrameServerPlayer(HistoryStack historyStack, VariablesRepository variablesRepository)
+        public FrameServerPlayer(HistoryStack historyStack)
         {
             this.historyStack = historyStack;
-            this.variablesRepository = variablesRepository;
             bgWorkerSave.ProgressChanged += bgWorkerSave_ProgressChanged;
             bgWorkerSave.RunWorkerCompleted += bgWorkerSave_RunWorkerCompleted;
             bgWorkerSave.DoWork += bgWorkerSave_DoWork;
@@ -130,7 +128,7 @@ namespace Kinovea.ScreenManager
                 {
                     // We are loading a replay watcher on a known capture folder.
                     var context = DynamicPathResolver.BuildDateContext();
-                    string folderPath = DynamicPathResolver.Resolve(cf.Path, variablesRepository, context);
+                    string folderPath = DynamicPathResolver.Resolve(cf.Path, context);
 
                     if (!FilesystemHelper.IsValidPath(folderPath))
                     {

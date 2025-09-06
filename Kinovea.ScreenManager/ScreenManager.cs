@@ -70,7 +70,6 @@ namespace Kinovea.ScreenManager
         private IEnumerable<CaptureScreen> captureScreens;
         private AbstractScreen activeScreen = null;
         private bool canShowCommonControls;
-        private VariablesRepository variablesRepository = new VariablesRepository();
         private List<string> camerasToDiscover = new List<string>();
         private AudioInputLevelMonitor audioInputLevelMonitor = new AudioInputLevelMonitor();
         private UDPMonitor udpMonitor = new UDPMonitor();
@@ -218,7 +217,7 @@ namespace Kinovea.ScreenManager
 
             // The variable tables should be loaded before the screens are initialized as part of the workspace, 
             // since they may contain variables used in the default kva paths to load with the screens.
-            variablesRepository.Initialize();
+            VariablesRepository.Initialize();
             BuildVariablesMenu();
 
             NotificationCenter.StopPlayback += (s, e) => DoStopPlaying();
@@ -947,7 +946,7 @@ namespace Kinovea.ScreenManager
 
                 sdp.FullPath = id;
                 var context = DynamicPathResolver.BuildDateContext();
-                path = DynamicPathResolver.Resolve(cf.Path, variablesRepository, context);
+                path = DynamicPathResolver.Resolve(cf.Path, context);
 
                 if (!FilesystemHelper.IsValidPath(path))
                 {
@@ -1898,14 +1897,14 @@ namespace Kinovea.ScreenManager
             mnuVariables.DropDownItems.Add(mnuImportVariables);
 
             // Bail out if there are no variables.
-            if (variablesRepository.VariableTables.Count == 0)
+            if (VariablesRepository.VariableTables.Count == 0)
             {
                 return;
             }
 
             mnuVariables.DropDownItems.Add(new ToolStripSeparator());
 
-            foreach (var pair in variablesRepository.VariableTables)
+            foreach (var pair in VariablesRepository.VariableTables)
             {
                 // Add a menu for the table.
                 var mnuTable = new ToolStripMenuItem();
@@ -3132,8 +3131,8 @@ namespace Kinovea.ScreenManager
                 File.Copy(openFileDialog.FileName, target);
             }
 
-            // Load the profile.
-            variablesRepository.LoadFile(target);
+            // Load the variable table.
+            VariablesRepository.LoadFile(target);
             BuildVariablesMenu();
             OrganizeMenus();
 
@@ -3381,14 +3380,14 @@ namespace Kinovea.ScreenManager
         }
         public void AddPlayerScreen()
         {
-            PlayerScreen screen = new PlayerScreen(variablesRepository);
+            PlayerScreen screen = new PlayerScreen();
             screen.RefreshUICulture();
             AddScreen(screen);
         }
         public void AddCaptureScreen()
         {
 
-            CaptureScreen screen = new CaptureScreen(variablesRepository);
+            CaptureScreen screen = new CaptureScreen();
             if (screenList.Count > 0)
                 screen.SetShared(true);
 

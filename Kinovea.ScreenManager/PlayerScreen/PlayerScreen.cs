@@ -392,14 +392,13 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public PlayerScreen(VariablesRepository variablesRepository)
-            : base(variablesRepository)
+        public PlayerScreen()
         {
             log.Debug("Constructing a PlayerScreen.");
             historyStack = new HistoryStack();
-            frameServer = new FrameServerPlayer(historyStack, variablesRepository);
-            replayWatcher = new ReplayWatcher(this, variablesRepository);
-            view = new PlayerScreenUserInterface(frameServer, drawingToolbarPresenter, variablesRepository);
+            frameServer = new FrameServerPlayer(historyStack);
+            replayWatcher = new ReplayWatcher(this);
+            view = new PlayerScreenUserInterface(frameServer, drawingToolbarPresenter);
 
             BindCommands();
         }
@@ -670,7 +669,7 @@ namespace Kinovea.ScreenManager
                 if (cf != null)
                 {
                     var dateContext = DynamicPathResolver.BuildDateContext();
-                    string targetFolder = DynamicPathResolver.Resolve(cf.Path, VariablesRepository, dateContext);
+                    string targetFolder = DynamicPathResolver.Resolve(cf.Path, dateContext);
                     if (replayWatcher.WatchedFolder != targetFolder)
                     {
                         if (!FilesystemHelper.IsValidPath(targetFolder))
@@ -969,7 +968,7 @@ namespace Kinovea.ScreenManager
                     if (cf != null)
                     {
                         var context = DynamicPathResolver.BuildDateContext();
-                        targetFolder = DynamicPathResolver.Resolve(cf.Path, VariablesRepository, context);
+                        targetFolder = DynamicPathResolver.Resolve(cf.Path, context);
                     }
                     else
                     {
@@ -1017,7 +1016,7 @@ namespace Kinovea.ScreenManager
                 if (cf != null)
                 {
                     var context = DynamicPathResolver.BuildDateContext();
-                    targetFolder = DynamicPathResolver.Resolve(cf.Path, VariablesRepository, context);
+                    targetFolder = DynamicPathResolver.Resolve(cf.Path, context);
                 }
                 else
                 {

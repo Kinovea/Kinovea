@@ -38,7 +38,6 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private PlayerScreen player;
-        private VariablesRepository variablesRepository;
         private ScreenDescriptorPlayback screenDescriptor;
         private string currentFile;
         private string filter;
@@ -49,10 +48,9 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Construction/Destruction
-        public ReplayWatcher(PlayerScreen player, VariablesRepository variablesRepository)
+        public ReplayWatcher(PlayerScreen player)
         {
             this.player = player;
-            this.variablesRepository = variablesRepository;
             IntPtr forceHandleCreation = dummy.Handle; // Needed to show that the main thread "owns" this Control.
         }
         public void Dispose()
@@ -104,7 +102,7 @@ namespace Kinovea.ScreenManager
             if (cf != null)
             {
                 var context = DynamicPathResolver.BuildDateContext();
-                string folder = DynamicPathResolver.Resolve(cf.Path, variablesRepository, context);
+                string folder = DynamicPathResolver.Resolve(cf.Path, context);
 
                 if (!FilesystemHelper.IsValidPath(folder))
                 {

@@ -46,15 +46,23 @@ namespace Kinovea.Root
             AddItem("Month",            string.Format("{0:MM}", now),           "month");
             AddItem("Day",              string.Format("{0:dd}", now),           "day");
 
-            // TODO: Add custom variables.
-
+            // Add custom variables.
+            foreach (var vt in VariablesRepository.VariableTables)
+            {
+                foreach (var vn in vt.Value.VariableNames)
+                {
+                    string example = vt.Value.GetValue(vn);
+                    AddItem(vn, example, vn);
+                }
+            }
             
             lvSymbols.Items[0].Selected = true;
         }
 
         private void AddItem(string desc, string example, string var)
         {
-            ListViewItem item = new ListViewItem(new string[] { desc, example, var });
+            string quotedEx = string.Format("\"{0}\"", example);
+            ListViewItem item = new ListViewItem(new string[] { desc, quotedEx, var });
             item.Tag = var;
             lvSymbols.Items.Add(item);
         }

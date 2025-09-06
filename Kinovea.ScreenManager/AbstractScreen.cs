@@ -189,21 +189,8 @@ namespace Kinovea.ScreenManager
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        #region Concrete properties
-
-        /// <summary>
-        /// Profile containing custom variables and their values.
-        /// Set by the screen manager when the screen is created.
-        /// </summary>
-        public VariablesRepository VariablesRepository
+        public AbstractScreen()
         {
-            get;
-        }
-        #endregion
-
-        public AbstractScreen(VariablesRepository variablesRepository)
-        {
-            this.VariablesRepository = variablesRepository;
         }
 
         /// <summary>
@@ -277,7 +264,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                targetPath = DynamicPathResolver.Resolve(currentPreferencesPath, VariablesRepository, null);
+                targetPath = DynamicPathResolver.Resolve(currentPreferencesPath, null);
 
                 // Check for unresolved variables.
                 if (!FilesystemHelper.IsValidPath(targetPath))
@@ -353,7 +340,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             string path = "";
-            bool found = DynamicPathResolver.GetDefaultKVAPath(ref path, VariablesRepository, forPlayer);
+            bool found = DynamicPathResolver.GetDefaultKVAPath(ref path, forPlayer);
 
             if (!found)
                 return;

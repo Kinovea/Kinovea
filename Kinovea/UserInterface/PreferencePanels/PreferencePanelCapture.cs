@@ -350,7 +350,7 @@ namespace Kinovea.Root
             toolTip1.SetToolTip(btnCaptureFolderInsertBackslash, "Insert a backslash");
             toolTip1.SetToolTip(btnCaptureFolderInsertDash, "Insert a hyphen");
             toolTip1.SetToolTip(btnCaptureFolderInsertUnderscore, "Insert an underscore");
-            toolTip1.SetToolTip(btnCaptureFolderInterpolate, "Show final path");
+            toolTip1.SetToolTip(btnCaptureFolderInterpolate, "Preview dynamic path");
             toolTip1.SetToolTip(btnCaptureFolderBrowse, "Browse for folder");
             toolTip1.SetToolTip(btnDeleteCaptureFolder, "Remove the capture folder from the list");
             toolTip1.SetToolTip(btnAddCaptureFolder, "Add a new capture folder");
@@ -587,15 +587,17 @@ namespace Kinovea.Root
 
         private void btnCaptureFolderInterpolate_MouseDown(object sender, MouseEventArgs e)
         {
-            // Enter preview mode while the button is pressed.
             if (selectedCaptureFolder == null)
                 return;
 
-            // TODO: this is not implemented yet. The variable manager is not cleanly accessible from here.
+            // Enter preview mode while the button is pressed.
             captureFolderPreviewMode = true;
-            string preview = selectedCaptureFolder.Path;
 
+            string text = selectedCaptureFolder.Path;
+            var context = DynamicPathResolver.BuildDateContext();
+            string preview = DynamicPathResolver.Resolve(text, context);
             tbCaptureFolderPath.ReadOnly = true;
+            tbCaptureFolderPath.BackColor = Color.LightYellow;
             tbCaptureFolderPath.Text = preview;
         }
 
@@ -605,6 +607,7 @@ namespace Kinovea.Root
                 return;
 
             // Exit preview mode.
+            tbCaptureFolderPath.BackColor = Color.White;
             tbCaptureFolderPath.ReadOnly = false;
             captureFolderPreviewMode = false;
             PopulateCaptureFolderDetails(selectedCaptureFolder);

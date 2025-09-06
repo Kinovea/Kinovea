@@ -648,6 +648,7 @@ namespace Kinovea.Root
       // 
       this.tbCaptureFolderPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.tbCaptureFolderPath.BackColor = System.Drawing.Color.White;
       this.tbCaptureFolderPath.Location = new System.Drawing.Point(145, 56);
       this.tbCaptureFolderPath.Name = "tbCaptureFolderPath";
       this.tbCaptureFolderPath.Size = new System.Drawing.Size(289, 20);

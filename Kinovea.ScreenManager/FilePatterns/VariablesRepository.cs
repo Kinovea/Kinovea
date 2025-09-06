@@ -25,14 +25,14 @@ namespace Kinovea.ScreenManager
     /// 
     /// Each variable table object maintains its currently active record.
     /// </summary>
-    public class VariablesRepository
+    public static class VariablesRepository
     {
         #region Properties
 
         /// <summary>
         /// List of variable tables indexed by the csv file name.
         /// </summary>
-        public Dictionary<string, VariableTable> VariableTables { get; private set; } = new Dictionary<string, VariableTable>();
+        public static Dictionary<string, VariableTable> VariableTables { get; private set; } = new Dictionary<string, VariableTable>();
         #endregion
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -42,7 +42,7 @@ namespace Kinovea.ScreenManager
         /// Load the tables.
         /// This re-imports from CSV and will reset the current selected profile.
         /// </summary>
-        public void Initialize()
+        public static void Initialize()
         {
             VariableTables.Clear();
 
@@ -66,7 +66,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Load one variable table into the repository.
         /// </summary>
-        public void LoadFile(string file)
+        public static void LoadFile(string file)
         {
             string tableName = Path.GetFileNameWithoutExtension(file);
             if (VariableTables.ContainsKey(tableName))

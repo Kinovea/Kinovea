@@ -212,8 +212,7 @@ namespace Kinovea.ScreenManager
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        public CaptureScreen(VariablesRepository variablesRepository)
-            : base(variablesRepository)
+        public CaptureScreen()
         {
             // There are several nested lifetimes with symetric setup/teardown methods:
             // Screen -> ctor / BeforeClose.
@@ -1385,7 +1384,7 @@ namespace Kinovea.ScreenManager
         {
             string path = "";
             bool forPlayer = false;
-            bool found = DynamicPathResolver.GetDefaultKVAPath(ref path, VariablesRepository, forPlayer);
+            bool found = DynamicPathResolver.GetDefaultKVAPath(ref path, forPlayer);
 
             if (!found)
                 return;
@@ -1492,8 +1491,8 @@ namespace Kinovea.ScreenManager
             string filenameWithoutExtension = view.CurrentFilename;
             string extension = FilesystemHelper.GetCaptureImageExtension();
             Dictionary<string, string> context = BuildCaptureContext();
-            string folder = DynamicPathResolver.Resolve(cf.Path, VariablesRepository, context);
-            string filename = DynamicPathResolver.Resolve(filenameWithoutExtension, VariablesRepository, context);
+            string folder = DynamicPathResolver.Resolve(cf.Path, context);
+            string filename = DynamicPathResolver.Resolve(filenameWithoutExtension, context);
             string path = Path.Combine(folder, filename + extension);
 
             log.DebugFormat("Recording target image: {0}", path);
@@ -1631,8 +1630,8 @@ namespace Kinovea.ScreenManager
             bool uncompressed = PreferencesManager.CapturePreferences.SaveUncompressedVideo && imageDescriptor.Format != Kinovea.Services.ImageFormat.JPEG;
             string extension = FilesystemHelper.GetCaptureVideoExtension(uncompressed);
             Dictionary<string, string> context = BuildCaptureContext();
-            string folder = DynamicPathResolver.Resolve(cf.Path, VariablesRepository, context);
-            string filename = DynamicPathResolver.Resolve(filenameWithoutExtension, VariablesRepository, context);
+            string folder = DynamicPathResolver.Resolve(cf.Path, context);
+            string filename = DynamicPathResolver.Resolve(filenameWithoutExtension, context);
             string path = Path.Combine(folder, filename + extension);
             
             log.DebugFormat("Recording target: \"{0}\"", path);
@@ -1997,7 +1996,7 @@ namespace Kinovea.ScreenManager
         {
             // Interpolate variables.
             var context = BuildPostCaptureCommandContext(path);
-            command = DynamicPathResolver.Resolve(command, VariablesRepository, context);
+            command = DynamicPathResolver.Resolve(command, context);
 
             // Call the command.
             Process process = new Process();

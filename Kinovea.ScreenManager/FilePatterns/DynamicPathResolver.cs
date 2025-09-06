@@ -22,7 +22,7 @@ namespace Kinovea.ScreenManager
         /// This is for reading, not for saving.
         /// For saving use AbstractScreen.SaveDefaultAnnotations().
         /// </summary>
-        public static bool GetDefaultKVAPath(ref string path, VariablesRepository variablesRepository, bool forPlayer)
+        public static bool GetDefaultKVAPath(ref string path, bool forPlayer)
         {
             path = forPlayer ? PreferencesManager.PlayerPreferences.PlaybackKVA : PreferencesManager.CapturePreferences.CaptureKVA;
             if (string.IsNullOrEmpty(path))
@@ -39,7 +39,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                path = Resolve(path, variablesRepository, null);
+                path = Resolve(path, null);
 
                 if (!FilesystemHelper.IsValidPath(path))
                 {
@@ -146,12 +146,12 @@ namespace Kinovea.ScreenManager
         /// - post-recording command line.
         /// - default KVA (loading and saving).
         /// </summary>
-        public static string Resolve(string text, VariablesRepository variablesRepository, Dictionary<string, string> builtinVariables)
+        public static string Resolve(string text, Dictionary<string, string> builtinVariables)
         {
             string result = text;
 
             // Replace custom variables first, this way they can override the built-in variables.
-            result = ReplaceCustomVariables(result, variablesRepository);
+            result = ReplaceCustomVariables(result);
 
             if (builtinVariables == null || builtinVariables.Count == 0)
                 return result;
@@ -170,11 +170,11 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Replace the custom variables in the passed string using the active context.
         /// </summary>
-        private static string ReplaceCustomVariables(string text, VariablesRepository variablesRepository)
+        private static string ReplaceCustomVariables(string text)
         {
             // Note that we don't check if two tables have the same variable name.
             // The first one loaded will take precedence.
-            foreach (var pair in variablesRepository.VariableTables)
+            foreach (var pair in VariablesRepository.VariableTables)
             {
                 VariableTable variableTable = pair.Value;
 
