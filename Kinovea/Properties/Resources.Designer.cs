@@ -343,6 +343,16 @@ namespace Kinovea.Root.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap eye_16 {
+            get {
+                object obj = ResourceManager.GetObject("eye_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap file_txt {
             get {
                 object obj = ResourceManager.GetObject("file_txt", resourceCulture);
@@ -694,6 +704,16 @@ namespace Kinovea.Root.Properties {
         internal static System.Drawing.Bitmap user_detective {
             get {
                 object obj = ResourceManager.GetObject("user_detective", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap variable_16 {
+            get {
+                object obj = ResourceManager.GetObject("variable_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -100,8 +100,7 @@ namespace Kinovea.Root
         private FilenameHelper filenameHelper = new FilenameHelper();
         private CapturePathConfiguration capturePathConfiguration = new CapturePathConfiguration();
         private CaptureFolder selectedCaptureFolder;
-        //private FormPatterns formPatterns;
-        //private bool formPatternsVisible;
+        private bool captureFolderPreviewMode = false;
 
         // Automation
         private bool ignoreOverwriteWarning;
@@ -502,6 +501,9 @@ namespace Kinovea.Root
             if (selectedCaptureFolder == null)
                 return;
 
+            if (captureFolderPreviewMode)
+                return;
+
             // Should we do some validation here?
             // The path will be created if it does not exist when we start a recording.
             // But it should be a valid filename, unless we have variables.
@@ -509,6 +511,72 @@ namespace Kinovea.Root
             selectedCaptureFolder.Path = path;
 
             olvCaptureFolders.RefreshObject(selectedCaptureFolder);
+        }
+
+        private void btnCaptureFolderInsertVariable_Click(object sender, EventArgs e)
+        {
+            FormInsertVariable fiv = new FormInsertVariable();
+            fiv.StartPosition = FormStartPosition.CenterScreen;
+            if (fiv.ShowDialog() != DialogResult.OK)
+                return;
+            
+            string keyword = fiv.SelectedVariable;
+            if (selectedCaptureFolder != null && !string.IsNullOrEmpty(keyword))
+            {
+                string var = "%" + keyword + "%";
+                CaptureFolderInsert(var);
+            }
+        }
+
+        private void btnCaptureFolderInsertBackslash_Click(object sender, EventArgs e)
+        {
+            CaptureFolderInsert("\\");
+        }
+
+        private void btnCaptureFolderInsertDash_Click(object sender, EventArgs e)
+        {
+            CaptureFolderInsert("-");
+        }
+
+        private void btnCaptureFolderInsertUnderscore_Click(object sender, EventArgs e)
+        {
+            CaptureFolderInsert("_");
+        }
+
+        private void CaptureFolderInsert(string value)
+        {
+            if (selectedCaptureFolder == null)
+                return;
+
+            int selectionStart = tbCaptureFolderPath.SelectionStart;
+            tbCaptureFolderPath.Text = tbCaptureFolderPath.Text.Insert(selectionStart, value);
+            tbCaptureFolderPath.SelectionStart = selectionStart + value.Length;
+            tbCaptureFolderPath.Focus();
+        }
+
+        private void btnCaptureFolderInterpolate_MouseDown(object sender, MouseEventArgs e)
+        {
+            // Enter preview mode while the button is pressed.
+            if (selectedCaptureFolder == null)
+                return;
+
+            // TODO: this is not implemented yet. The variable manager is not cleanly accessible from here.
+            captureFolderPreviewMode = true;
+            string preview = selectedCaptureFolder.Path;
+
+            tbCaptureFolderPath.ReadOnly = true;
+            tbCaptureFolderPath.Text = preview;
+        }
+
+        private void btnCaptureFolderInterpolate_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (!captureFolderPreviewMode)
+                return;
+
+            // Exit preview mode.
+            tbCaptureFolderPath.ReadOnly = false;
+            captureFolderPreviewMode = false;
+            PopulateCaptureFolderDetails(selectedCaptureFolder);
         }
 
         #endregion
@@ -779,6 +847,7 @@ namespace Kinovea.Root
             grpCaptureFolderDetails.Enabled = true;
             tbCaptureFolderShortName.Text = cf.ShortName;
             tbCaptureFolderPath.Text = cf.Path;
+            tbCaptureFolderPath.SelectionStart = tbCaptureFolderPath.Text.Length;
         }
         #endregion
 
@@ -816,10 +885,5 @@ namespace Kinovea.Root
             PreferencesManager.CapturePreferences.PostRecordCommand = postRecordCommand;
         }
 
-        private void formPatterns_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            //formPatterns.FormClosed -= formPatterns_FormClosed;
-            //formPatternsVisible = false;
-        }
     }
 }

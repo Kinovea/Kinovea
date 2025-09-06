@@ -11,8 +11,8 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    ///  A variable table (or "profile file") is a set of custom variables and the corresponding values for each configuration.
-    ///  These variables can be used in paths used by the preferences.
+    ///  A variable "table" (one csv file) contains a set of custom variables and the corresponding values for each configuration.
+    ///  These variables can be used in various places like capture folder paths.
     ///
     ///  Tables are stored as CSV files.
     ///  - Each column header is a variable name.

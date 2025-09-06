@@ -93,6 +93,7 @@ namespace Kinovea.Root
       this.chkEnableAudioTrigger = new System.Windows.Forms.CheckBox();
       this.lblAudioTriggerThreshold = new System.Windows.Forms.Label();
       this.lblInputDevice = new System.Windows.Forms.Label();
+      this.vumeter = new Kinovea.Services.VolumeMeterThreshold();
       this.cmbInputDevice = new System.Windows.Forms.ComboBox();
       this.lblAudioTriggerHits = new System.Windows.Forms.Label();
       this.lblTriggerAction = new System.Windows.Forms.Label();
@@ -100,8 +101,9 @@ namespace Kinovea.Root
       this.nudQuietPeriod = new System.Windows.Forms.NumericUpDown();
       this.tabPaths = new System.Windows.Forms.TabPage();
       this.grpCaptureFolderDetails = new System.Windows.Forms.GroupBox();
-      this.button5 = new System.Windows.Forms.Button();
-      this.button3 = new System.Windows.Forms.Button();
+      this.btnCaptureFolderInterpolate = new System.Windows.Forms.Button();
+      this.btnCaptureFolderInsertUnderscore = new System.Windows.Forms.Button();
+      this.btnCaptureFolderInsertDash = new System.Windows.Forms.Button();
       this.btnCaptureFolderInsertBackslash = new System.Windows.Forms.Button();
       this.btnCaptureFolderInsertVariable = new System.Windows.Forms.Button();
       this.btnRightImageRoot = new System.Windows.Forms.Button();
@@ -121,7 +123,6 @@ namespace Kinovea.Root
       this.btnPostRecordCommand = new System.Windows.Forms.Button();
       this.lblPostRecordCommand = new System.Windows.Forms.Label();
       this.tbPostRecordCommand = new System.Windows.Forms.TextBox();
-      this.vumeter = new Kinovea.Services.VolumeMeterThreshold();
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
       this.grpFormats.SuspendLayout();
@@ -689,6 +690,20 @@ namespace Kinovea.Root
       this.lblInputDevice.TabIndex = 47;
       this.lblInputDevice.Text = "Preferred input device:";
       // 
+      // vumeter
+      // 
+      this.vumeter.Amplitude = 0F;
+      this.vumeter.BackColor = System.Drawing.Color.White;
+      this.vumeter.DecibelRange = 60F;
+      this.vumeter.Location = new System.Drawing.Point(249, 70);
+      this.vumeter.Name = "vumeter";
+      this.vumeter.Size = new System.Drawing.Size(175, 21);
+      this.vumeter.TabIndex = 51;
+      this.vumeter.Text = "volumeMeterThreshold1";
+      this.vumeter.Threshold = 0.001F;
+      this.vumeter.ThresholdLinear = 0F;
+      this.vumeter.ThresholdChanged += new System.EventHandler(this.Vumeter_ThresholdChanged);
+      // 
       // cmbInputDevice
       // 
       this.cmbInputDevice.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -755,8 +770,9 @@ namespace Kinovea.Root
       // 
       // grpCaptureFolderDetails
       // 
-      this.grpCaptureFolderDetails.Controls.Add(this.button5);
-      this.grpCaptureFolderDetails.Controls.Add(this.button3);
+      this.grpCaptureFolderDetails.Controls.Add(this.btnCaptureFolderInterpolate);
+      this.grpCaptureFolderDetails.Controls.Add(this.btnCaptureFolderInsertUnderscore);
+      this.grpCaptureFolderDetails.Controls.Add(this.btnCaptureFolderInsertDash);
       this.grpCaptureFolderDetails.Controls.Add(this.btnCaptureFolderInsertBackslash);
       this.grpCaptureFolderDetails.Controls.Add(this.btnCaptureFolderInsertVariable);
       this.grpCaptureFolderDetails.Controls.Add(this.btnRightImageRoot);
@@ -771,41 +787,74 @@ namespace Kinovea.Root
       this.grpCaptureFolderDetails.TabStop = false;
       this.grpCaptureFolderDetails.Text = "Folder detail";
       // 
-      // button5
+      // btnCaptureFolderInterpolate
       // 
-      this.button5.Location = new System.Drawing.Point(346, 87);
-      this.button5.Name = "button5";
-      this.button5.Size = new System.Drawing.Size(26, 23);
-      this.button5.TabIndex = 54;
-      this.button5.Text = "_";
-      this.button5.UseVisualStyleBackColor = true;
+      this.btnCaptureFolderInterpolate.BackColor = System.Drawing.Color.Transparent;
+      this.btnCaptureFolderInterpolate.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnCaptureFolderInterpolate.FlatAppearance.BorderSize = 0;
+      this.btnCaptureFolderInterpolate.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+      this.btnCaptureFolderInterpolate.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+      this.btnCaptureFolderInterpolate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnCaptureFolderInterpolate.Image = global::Kinovea.Root.Properties.Resources.variable_16;
+      this.btnCaptureFolderInterpolate.Location = new System.Drawing.Point(408, 87);
+      this.btnCaptureFolderInterpolate.Name = "btnCaptureFolderInterpolate";
+      this.btnCaptureFolderInterpolate.Size = new System.Drawing.Size(26, 23);
+      this.btnCaptureFolderInterpolate.TabIndex = 55;
+      this.btnCaptureFolderInterpolate.UseVisualStyleBackColor = false;
+      this.btnCaptureFolderInterpolate.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btnCaptureFolderInterpolate_MouseDown);
+      this.btnCaptureFolderInterpolate.MouseUp += new System.Windows.Forms.MouseEventHandler(this.btnCaptureFolderInterpolate_MouseUp);
       // 
-      // button3
+      // btnCaptureFolderInsertUnderscore
       // 
-      this.button3.Location = new System.Drawing.Point(314, 87);
-      this.button3.Name = "button3";
-      this.button3.Size = new System.Drawing.Size(26, 23);
-      this.button3.TabIndex = 53;
-      this.button3.Text = "-";
-      this.button3.UseVisualStyleBackColor = true;
+      this.btnCaptureFolderInsertUnderscore.BackColor = System.Drawing.Color.WhiteSmoke;
+      this.btnCaptureFolderInsertUnderscore.FlatAppearance.BorderSize = 0;
+      this.btnCaptureFolderInsertUnderscore.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnCaptureFolderInsertUnderscore.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.btnCaptureFolderInsertUnderscore.Location = new System.Drawing.Point(346, 87);
+      this.btnCaptureFolderInsertUnderscore.Name = "btnCaptureFolderInsertUnderscore";
+      this.btnCaptureFolderInsertUnderscore.Size = new System.Drawing.Size(26, 23);
+      this.btnCaptureFolderInsertUnderscore.TabIndex = 54;
+      this.btnCaptureFolderInsertUnderscore.Text = "_";
+      this.btnCaptureFolderInsertUnderscore.UseVisualStyleBackColor = false;
+      this.btnCaptureFolderInsertUnderscore.Click += new System.EventHandler(this.btnCaptureFolderInsertUnderscore_Click);
+      // 
+      // btnCaptureFolderInsertDash
+      // 
+      this.btnCaptureFolderInsertDash.BackColor = System.Drawing.Color.WhiteSmoke;
+      this.btnCaptureFolderInsertDash.FlatAppearance.BorderSize = 0;
+      this.btnCaptureFolderInsertDash.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnCaptureFolderInsertDash.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.btnCaptureFolderInsertDash.Location = new System.Drawing.Point(314, 87);
+      this.btnCaptureFolderInsertDash.Name = "btnCaptureFolderInsertDash";
+      this.btnCaptureFolderInsertDash.Size = new System.Drawing.Size(26, 23);
+      this.btnCaptureFolderInsertDash.TabIndex = 53;
+      this.btnCaptureFolderInsertDash.Text = "-";
+      this.btnCaptureFolderInsertDash.UseVisualStyleBackColor = false;
+      this.btnCaptureFolderInsertDash.Click += new System.EventHandler(this.btnCaptureFolderInsertDash_Click);
       // 
       // btnCaptureFolderInsertBackslash
       // 
+      this.btnCaptureFolderInsertBackslash.BackColor = System.Drawing.Color.WhiteSmoke;
+      this.btnCaptureFolderInsertBackslash.FlatAppearance.BorderSize = 0;
+      this.btnCaptureFolderInsertBackslash.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnCaptureFolderInsertBackslash.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.btnCaptureFolderInsertBackslash.Location = new System.Drawing.Point(282, 87);
       this.btnCaptureFolderInsertBackslash.Name = "btnCaptureFolderInsertBackslash";
       this.btnCaptureFolderInsertBackslash.Size = new System.Drawing.Size(26, 23);
       this.btnCaptureFolderInsertBackslash.TabIndex = 52;
       this.btnCaptureFolderInsertBackslash.Text = "\\";
-      this.btnCaptureFolderInsertBackslash.UseVisualStyleBackColor = true;
+      this.btnCaptureFolderInsertBackslash.UseVisualStyleBackColor = false;
+      this.btnCaptureFolderInsertBackslash.Click += new System.EventHandler(this.btnCaptureFolderInsertBackslash_Click);
       // 
       // btnCaptureFolderInsertVariable
       // 
-      this.btnCaptureFolderInsertVariable.Location = new System.Drawing.Point(145, 87);
+      this.btnCaptureFolderInsertVariable.Location = new System.Drawing.Point(144, 87);
       this.btnCaptureFolderInsertVariable.Name = "btnCaptureFolderInsertVariable";
       this.btnCaptureFolderInsertVariable.Size = new System.Drawing.Size(131, 23);
       this.btnCaptureFolderInsertVariable.TabIndex = 51;
       this.btnCaptureFolderInsertVariable.Text = "Insert variable…";
       this.btnCaptureFolderInsertVariable.UseVisualStyleBackColor = true;
+      this.btnCaptureFolderInsertVariable.Click += new System.EventHandler(this.btnCaptureFolderInsertVariable_Click);
       // 
       // btnRightImageRoot
       // 
@@ -816,7 +865,7 @@ namespace Kinovea.Root
       this.btnRightImageRoot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnRightImageRoot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnRightImageRoot.Image = global::Kinovea.Root.Properties.Resources.folder;
-      this.btnRightImageRoot.Location = new System.Drawing.Point(440, 60);
+      this.btnRightImageRoot.Location = new System.Drawing.Point(440, 55);
       this.btnRightImageRoot.MinimumSize = new System.Drawing.Size(20, 20);
       this.btnRightImageRoot.Name = "btnRightImageRoot";
       this.btnRightImageRoot.Size = new System.Drawing.Size(20, 20);
@@ -828,7 +877,7 @@ namespace Kinovea.Root
       // lblCaptureFolderPath
       // 
       this.lblCaptureFolderPath.AutoSize = true;
-      this.lblCaptureFolderPath.Location = new System.Drawing.Point(20, 63);
+      this.lblCaptureFolderPath.Location = new System.Drawing.Point(20, 59);
       this.lblCaptureFolderPath.Name = "lblCaptureFolderPath";
       this.lblCaptureFolderPath.Size = new System.Drawing.Size(32, 13);
       this.lblCaptureFolderPath.TabIndex = 43;
@@ -838,7 +887,7 @@ namespace Kinovea.Root
       // 
       this.tbCaptureFolderPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.tbCaptureFolderPath.Location = new System.Drawing.Point(145, 60);
+      this.tbCaptureFolderPath.Location = new System.Drawing.Point(145, 56);
       this.tbCaptureFolderPath.Name = "tbCaptureFolderPath";
       this.tbCaptureFolderPath.Size = new System.Drawing.Size(289, 20);
       this.tbCaptureFolderPath.TabIndex = 44;
@@ -859,7 +908,7 @@ namespace Kinovea.Root
             | System.Windows.Forms.AnchorStyles.Right)));
       this.tbCaptureFolderShortName.Location = new System.Drawing.Point(145, 23);
       this.tbCaptureFolderShortName.Name = "tbCaptureFolderShortName";
-      this.tbCaptureFolderShortName.Size = new System.Drawing.Size(289, 20);
+      this.tbCaptureFolderShortName.Size = new System.Drawing.Size(163, 20);
       this.tbCaptureFolderShortName.TabIndex = 40;
       this.tbCaptureFolderShortName.TextChanged += new System.EventHandler(this.tbCaptureFolderShortName_TextChanged);
       // 
@@ -1030,20 +1079,6 @@ namespace Kinovea.Root
       this.tbPostRecordCommand.TabIndex = 53;
       this.tbPostRecordCommand.TextChanged += new System.EventHandler(this.tbPostRecordCommand_TextChanged);
       // 
-      // vumeter
-      // 
-      this.vumeter.Amplitude = 0F;
-      this.vumeter.BackColor = System.Drawing.Color.White;
-      this.vumeter.DecibelRange = 60F;
-      this.vumeter.Location = new System.Drawing.Point(249, 70);
-      this.vumeter.Name = "vumeter";
-      this.vumeter.Size = new System.Drawing.Size(175, 21);
-      this.vumeter.TabIndex = 51;
-      this.vumeter.Text = "volumeMeterThreshold1";
-      this.vumeter.Threshold = 0.001F;
-      this.vumeter.ThresholdLinear = 0F;
-      this.vumeter.ThresholdChanged += new System.EventHandler(this.Vumeter_ThresholdChanged);
-      // 
       // PreferencePanelCapture
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1153,13 +1188,14 @@ namespace Kinovea.Root
         private System.Windows.Forms.TextBox tbCaptureFolderPath;
         private System.Windows.Forms.Label lblCaptureFolderShortName;
         private System.Windows.Forms.TextBox tbCaptureFolderShortName;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button btnCaptureFolderInsertDash;
         private System.Windows.Forms.Button btnCaptureFolderInsertBackslash;
         private System.Windows.Forms.Button btnCaptureFolderInsertVariable;
         private BrightIdeasSoftware.ObjectListView olvCaptureFolders;
         private System.Windows.Forms.Button btnSortFolderDown;
         private System.Windows.Forms.Button btnDeleteCaptureFolder;
         private System.Windows.Forms.Button btnAddCaptureFolder;
-        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button btnCaptureFolderInsertUnderscore;
+        private System.Windows.Forms.Button btnCaptureFolderInterpolate;
     }
 }

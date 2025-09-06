@@ -9,11 +9,11 @@ using System.IO;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// The profile manager is the collection of variable tables.
+    /// The profile manager handles the collection of custom variable tables.
     /// Each variable table contains one or more variables and their values for different profiles.
     /// 
     /// For example we can have a table "athletes" with variables "bib" and "name".
-    /// The first column contains the key and is used to identify the profile in the menus.
+    /// The first column contains the key and is used to select the active context from the menus or drop downs.
     /// A variable table / csv file might contain a single column but the header row must always be present.
     /// 
     /// This is effectively a database of custom variables but we keep them as CSV files for ease 
