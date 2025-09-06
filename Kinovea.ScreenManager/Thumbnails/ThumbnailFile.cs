@@ -28,7 +28,6 @@ using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
-
 using Kinovea.ScreenManager.Languages;
 using Kinovea.ScreenManager.Properties;
 using Kinovea.Services;
@@ -75,7 +74,6 @@ namespace Kinovea.ScreenManager
         public DateTime LastWriteUTC
         {
             get { return lastWriteUTC; }
-            set { lastWriteUTC = value; }
         }
         #endregion
 
@@ -228,9 +226,7 @@ namespace Kinovea.ScreenManager
             if (string.IsNullOrEmpty(path))
             {
                 // We won't be using this thumbnail this time around.
-                this.path = string.Empty;
-                this.lastWriteUTC = DateTime.MinValue;
-                loaded = false;
+                Reset();
                 return;
             }
 
@@ -255,6 +251,7 @@ namespace Kinovea.ScreenManager
         public void LoadSummary(VideoSummary summary)
         {
             DisposeImages();
+            details.Details.Clear();
 
             if (path != summary.Filename)
             {
@@ -287,9 +284,9 @@ namespace Kinovea.ScreenManager
                     currentThumbnail = bitmaps[currentThumbnailIndex];
                 }
 
-                if (summary.IsImage)
+                isImage = summary.IsImage;
+                if (isImage)
                 {
-                    isImage = true;
                     details.Details[FileProperty.Duration] = "0";
                 }
                 else
@@ -818,11 +815,25 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        /// <summary>
+        /// Delete the actual file on the file system.
+        /// </summary>
         public void Delete()
         {
             FilesystemHelper.DeleteFile(path);
             if (!File.Exists(path))
                 NotificationCenter.RaiseRefreshFileExplorer(this, true);
+        }
+
+        /// <summary>
+        /// Reset the information.
+        /// </summary>
+        private void Reset()
+        {
+            path = string.Empty;
+            lastWriteUTC = DateTime.MinValue;
+            isImage = false;
+            loaded = false;
         }
 
     }

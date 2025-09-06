@@ -279,6 +279,7 @@ namespace Kinovea.ScreenManager
         private void UpdateSortAxis(FileSortAxis axis)
         {
             PreferencesManager.FileExplorerPreferences.FileSortAxis = axis;
+            sortAxis = axis;
             sortOperationInProgress = true;
             NotificationCenter.RaiseRefreshFileExplorer(this, true);
         }
@@ -289,6 +290,7 @@ namespace Kinovea.ScreenManager
         private void UpdateSortAscending(bool ascending)
         {
             PreferencesManager.FileExplorerPreferences.FileSortAscending = ascending;
+            sortAscending = ascending;
             sortOperationInProgress = true;
             NotificationCenter.RaiseRefreshFileExplorer(this, true);
         }
