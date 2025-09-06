@@ -1999,13 +1999,17 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            // Interpolate variables.
+            // Remove blank lines and comments and interpolate variables.
             var context = BuildPostRecordingCommandContext(path);
             List<string> instructions = new List<string>();
             foreach (var instruction in screenDescriptor.UserCommand.Instructions)
             {
-                var i = DynamicPathResolver.Resolve(instruction, context);
-                instructions.Add(i);
+                var line = instruction.Trim();
+                if (string.IsNullOrEmpty(line) || line.StartsWith("//"))
+                    continue;
+
+                line = DynamicPathResolver.Resolve(line, context);
+                instructions.Add(line);
             }
 
             // Run the collection of instructions in the background.
