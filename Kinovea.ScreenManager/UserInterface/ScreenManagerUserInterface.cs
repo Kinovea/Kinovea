@@ -105,6 +105,7 @@ namespace Kinovea.ScreenManager
             if(screenList.Count == 0)
             {
                 pnlScreens.Visible = false;
+                thumbnailViewerContainer.Visible = true;
                 this.AllowDrop = true;
                 ClearLeftScreen();
                 ClearRightScreen();
@@ -115,6 +116,7 @@ namespace Kinovea.ScreenManager
             else
             {
                 pnlScreens.Visible = true;
+                thumbnailViewerContainer.Visible = false;
                 this.AllowDrop = false;
                 
                 thumbnailViewerContainer.HideContent();

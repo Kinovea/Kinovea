@@ -76,13 +76,9 @@ namespace Kinovea.ScreenManager
         public void HideContent()
         {
             this.Visible = false;
-            
-            if (currentViewerType == ThumbnailViewerType.Files)
-                viewerFiles.CancelLoading();
-            else if (currentViewerType == ThumbnailViewerType.Shortcuts)
-                viewerShortcuts.CancelLoading();
-            //else
-                //viewerCameras.CancelLoading();
+            viewerFiles.CancelLoading();
+            viewerShortcuts.CancelLoading();
+            viewerCameras.SetHidden();
         }
         public void Unhide()
         {
@@ -272,7 +268,8 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                 CameraTypeManager.StopDiscoveringCameras();
+                CameraTypeManager.StopDiscoveringCameras();
+                viewerCameras.SetHidden();
             }
 
         }

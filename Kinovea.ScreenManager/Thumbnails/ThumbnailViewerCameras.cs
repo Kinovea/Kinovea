@@ -46,7 +46,8 @@ namespace Kinovea.ScreenManager
         private List<ThumbnailCamera> thumbnails = new List<ThumbnailCamera>();
         private HashSet<ThumbnailCamera> imageReceived = new HashSet<ThumbnailCamera>();
         private ThumbnailCamera selectedThumbnail;
-        private bool refreshImages;
+        private bool refreshThumbnailsOfKnownCameras;
+        private bool hidden = true;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -63,7 +64,7 @@ namespace Kinovea.ScreenManager
 
             this.Hotkeys = HotkeySettingsManager.LoadHotkeys("ThumbnailViewerCamera");
             thumbSize = PreferencesManager.FileExplorerPreferences.ExplorerThumbsSize;
-            refreshImages = true;
+            refreshThumbnailsOfKnownCameras = true;
         }
         #endregion
         
@@ -74,9 +75,21 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void Unhide()
         {
-            refreshImages = true;
+            hidden = false;
+            refreshThumbnailsOfKnownCameras = true;
             CameraTypeManager.StartDiscoveringCameras();
             this.Focus();
+        }
+
+        /// <summary>
+        /// Indicate that the camera browser will not be visible until further notice.
+        /// This makes sure we don't ask the cameras to produce thumbnails, even if 
+        /// we are still receiving the discovery events.
+        /// </summary>
+        public void SetHidden()
+        {
+            refreshThumbnailsOfKnownCameras = false;
+            hidden = true;
         }
 
         /// <summary>
@@ -122,9 +135,13 @@ namespace Kinovea.ScreenManager
             Refresh();
         }
 
+        /// <summary>
+        /// Called right before we are switching to this browser type.
+        /// </summary>
         public void BeforeSwitch()
         {
-            refreshImages = true;
+            refreshThumbnailsOfKnownCameras = true;
+            hidden = false;
         }
         
         public void UpdateThumbnailsSize(ExplorerThumbSize thumbSize)
@@ -171,19 +188,26 @@ namespace Kinovea.ScreenManager
                 int index = IndexOf(summary.Identifier);
                 if(index >= 0)
                 {
-                    if (refreshImages)
+                    // We already have a thumbnail control for this camera.
+                    if (!hidden && refreshThumbnailsOfKnownCameras)
+                    {
                         summary.Manager.StartThumbnail(summary);
+                    }
 
                     continue;
                 }
                 
                 // New camera, add it to the list and start async thumbnail retrieval.
                 updated = true;
-                summary.Manager.StartThumbnail(summary);
                 AddThumbnail(new ThumbnailCamera(summary));
+
+                if (!hidden)
+                {
+                    summary.Manager.StartThumbnail(summary);
+                }
             }
             
-            refreshImages = false;
+            refreshThumbnailsOfKnownCameras = false;
             
             // Remove cameras that were disconnected.
             List<ThumbnailCamera> lost = new List<ThumbnailCamera>();
@@ -306,7 +330,7 @@ namespace Kinovea.ScreenManager
             ThumbnailCamera thumbnail = sender as ThumbnailCamera;
             CameraTypeManager.ForgetCamera(thumbnail.Summary);
 
-            refreshImages = true;
+            refreshThumbnailsOfKnownCameras = true;
 
             // Call one discovery step on that specific manager.
             var blurbs = PreferencesManager.CapturePreferences.CameraBlurbs;
@@ -422,7 +446,7 @@ namespace Kinovea.ScreenManager
                     CameraTypeManager.LoadCamera(selectedThumbnail.Summary, -1);
                     break;
                 case ThumbnailViewerCameraCommands.Refresh:
-                    refreshImages = true;
+                    refreshThumbnailsOfKnownCameras = true;
                     CameraTypeManager.DiscoveryStep();
                     this.Focus();
                     break;
