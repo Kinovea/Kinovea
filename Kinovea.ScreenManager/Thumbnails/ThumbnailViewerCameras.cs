@@ -124,7 +124,6 @@ namespace Kinovea.ScreenManager
 
         public void BeforeSwitch()
         {
-            CameraTypeManager.StartDiscoveringCameras();
             refreshImages = true;
         }
         
@@ -303,12 +302,15 @@ namespace Kinovea.ScreenManager
         private void Thumbnail_DeleteCamera(object sender, EventArgs e)
         {
             // Delete camera in prefs (blurbs).
-            // Should be enough to remove the thumbnail at next discovery heart beat.
+            // Should be enough to remove the thumbnail at next discovery step.
             ThumbnailCamera thumbnail = sender as ThumbnailCamera;
             CameraTypeManager.ForgetCamera(thumbnail.Summary);
 
             refreshImages = true;
-            CameraTypeManager.StartDiscoveringCameras();
+
+            // Call one discovery step on that specific manager.
+            var blurbs = PreferencesManager.CapturePreferences.CameraBlurbs;
+            thumbnail.Summary.Manager.DiscoverCameras(blurbs);
         }
         
         private void Thumbnail_CameraSelected(object sender, EventArgs e)
@@ -421,7 +423,7 @@ namespace Kinovea.ScreenManager
                     break;
                 case ThumbnailViewerCameraCommands.Refresh:
                     refreshImages = true;
-                    CameraTypeManager.StartDiscoveringCameras();
+                    CameraTypeManager.DiscoveryStep();
                     this.Focus();
                     break;
                 default:

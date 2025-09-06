@@ -240,7 +240,19 @@ namespace Kinovea.FileBrowser
             // Prune any captured file removed since last run.
             PreferencesManager.FileExplorerPreferences.ConsolidateRecentCapturedFiles();
 
-            NotificationCenter.RaiseExplorerTabChanged(this, (ActiveFileBrowserTab)tabControl.SelectedIndex);
+            if (this.Visible)
+            {
+                // Visible and on camera tab, ask for one step of discovery to fill the list view.
+                // TODO: make asynchronous in a background thread.
+                var tab = (ActiveFileBrowserTab)tabControl.SelectedIndex;
+                if (tab == ActiveFileBrowserTab.Cameras)
+                {
+                    CameraTypeManager.DiscoveryStep();
+                }
+
+                // Show the right browser panel.
+                NotificationCenter.RaiseExplorerTabChanged(this, tab);
+            }
                 
             DoRefreshFileList(true);
         }
@@ -824,15 +836,24 @@ namespace Kinovea.FileBrowser
         private void TabControlSelected_IndexChanged(object sender, EventArgs e)
         {
             // Active tab changed.
-            // We don't save to file now as this is not a critical data to loose.
             activeTab = (ActiveFileBrowserTab)tabControl.SelectedIndex;
             WindowManager.ActiveWindow.ActiveTab = activeTab;
             WindowManager.SaveActiveWindow();
 
             if (programmaticTabChange)
+            {
                 programmaticTabChange = false;
-            else
+            }
+            else if (this.Visible)
+            {
+                if (activeTab == ActiveFileBrowserTab.Cameras)
+                {
+                    CameraTypeManager.DiscoveryStep();
+                }
+                
+                // Show the right browser panel.
                 NotificationCenter.RaiseExplorerTabChanged(this, activeTab);
+            }
             
             DoRefreshFileList(true);
         }

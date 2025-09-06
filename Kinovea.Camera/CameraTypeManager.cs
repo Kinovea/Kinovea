@@ -56,12 +56,12 @@ namespace Kinovea.Camera
 
         #region Members
         private static List<CameraManager> cameraManagers = new List<CameraManager>();
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static Timer timerDiscovery = new Timer();
         private static int defaultDiscoveryInterval = 1000;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        #region Public methods
+        #region Camera managers management
         /// <summary>
         /// Find and instanciate types implementing the CameraManager base class.
         /// </summary>
@@ -154,87 +154,13 @@ namespace Kinovea.Camera
         }
 
         /// <summary>
-        /// Start the camera discovery timer.
+        /// Get the manager object from the camera type string.
         /// </summary>
-        public static void StartDiscoveringCameras()
+        public static CameraManager GetManager(string cameraType)
         {
-            log.DebugFormat("Start discovering cameras");
-            
-            if(timerDiscovery.Enabled)
-                timerDiscovery.Enabled = false;
-
-            // Discovery interval will be adjusted based on the actual time taken.
-            timerDiscovery.Interval = defaultDiscoveryInterval;
-            timerDiscovery.Tick += timerDiscovery_Tick;
-            timerDiscovery.Enabled = true;
-            CheckCameras();
-        }
-        
-        /// <summary>
-        /// Stop the camera discovery timer and cancel any thumbnail in progress.
-        /// </summary>
-        public static void StopDiscoveringCameras()
-        {
-            log.DebugFormat("Stop discovering cameras");
-            timerDiscovery.Enabled = false;
-            timerDiscovery.Tick -= timerDiscovery_Tick;
-
-            CancelThumbnails();
+            return cameraManagers.FirstOrDefault(m => m.CameraType == cameraType);
         }
 
-        /// <summary>
-        /// Stop any camera thumbnail going on.
-        /// </summary>
-        public static void CancelThumbnails()
-        {
-            log.DebugFormat("Cancelling all thumbnails.");
-            foreach (CameraManager manager in cameraManagers)
-              manager.StopAllThumbnails();
-        }
-
-        /// <summary>
-        /// Find the manager that host this camera.
-        /// This is used to match launch settings with already discovered cameras.
-        /// </summary>
-        public static CameraSummary GetCameraSummary(string alias)
-        {
-            foreach (CameraManager manager in cameraManagers)
-            {
-                CameraSummary summary = manager.GetCameraSummary(alias);
-                if (summary != null)
-                    return summary;
-            }
-
-            return null;
-        }
-
-        public static void UpdatedCameraSummary(CameraSummary summary)
-        {
-            summary.Manager.UpdatedCameraSummary(summary);
-            
-            if(CameraSummaryUpdated != null)
-                CameraSummaryUpdated(null, new CameraSummaryUpdatedEventArgs(summary));
-        }
-        
-        public static void LoadCamera(CameraSummary summary, int target)
-        {
-            if (CameraLoadAsked != null)
-                CameraLoadAsked(null, new CameraLoadAskedEventArgs(summary, target));
-        }
-        
-        public static void ForgetCamera(CameraSummary summary)
-        {
-            summary.Manager.ForgetCamera(summary);
-
-            PreferencesManager.CapturePreferences.RemoveCamera(summary.Identifier);
-
-            if (CameraForgotten != null)
-                CameraForgotten(null, new EventArgs<CameraSummary>(summary));
-        }
-
-        #endregion
-
-        #region Private methods
         /// <summary>
         /// Returns true if the type is a camera manager.
         /// </summary>
@@ -244,7 +170,7 @@ namespace Kinovea.Camera
         }
 
         /// <summary>
-        /// Try to add an instantiated camera manager object to our rooster.
+        /// Try to add an instantiated camera manager object to our list.
         /// </summary>
         private static void AddCameraManager(CameraManager manager)
         {
@@ -276,13 +202,75 @@ namespace Kinovea.Camera
                 log.InfoFormat("Error while initializing {0}. {1}", manager.CameraTypeFriendlyName, e.Message);
             }
         }
-        
+        #endregion
+
+        #region Camera level operations
+        public static void LoadCamera(CameraSummary summary, int target)
+        {
+            CameraLoadAsked?.Invoke(null, new CameraLoadAskedEventArgs(summary, target));
+        }
+
+        /// <summary>
+        /// The custom properties of the camera have been modified by the user
+        /// in the UI. Update the summary in the manager.
+        /// </summary>
+        public static void UpdatedCameraSummary(CameraSummary summary)
+        {
+            summary.Manager.UpdatedCameraSummary(summary);
+            CameraSummaryUpdated?.Invoke(null, new CameraSummaryUpdatedEventArgs(summary));
+        }
+
+        /// <summary>
+        /// Remove the camera from the camera history and remove it from its
+        /// manager's cache. 
+        /// It will be re-discovered in the next discovery step.
+        /// </summary>
+        public static void ForgetCamera(CameraSummary summary)
+        {
+            summary.Manager.ForgetCamera(summary);
+
+            PreferencesManager.CapturePreferences.RemoveCamera(summary.Identifier);
+            CameraForgotten?.Invoke(null, new EventArgs<CameraSummary>(summary));
+        }
+        #endregion
+
+        #region Camera discovery loop
+        /// <summary>
+        /// Start the camera discovery timer.
+        /// This should only be active in two cases:
+        /// - the camera browser is visible.
+        /// - a capture screen is started on a camera from the descriptor but the camera is not connected yet.
+        /// </summary>
+        public static void StartDiscoveringCameras()
+        {
+            log.DebugFormat("Start discovering cameras");
+
+            if (timerDiscovery.Enabled)
+                timerDiscovery.Enabled = false;
+
+            // Discovery interval will be adjusted based on the actual time taken.
+            timerDiscovery.Interval = defaultDiscoveryInterval;
+            timerDiscovery.Tick += timerDiscovery_Tick;
+            timerDiscovery.Enabled = true;
+        }
+        /// <summary>
+        /// Stop the camera discovery timer and cancel any thumbnail in progress.
+        /// </summary>
+        public static void StopDiscoveringCameras()
+        {
+            log.DebugFormat("Stop discovering cameras");
+            timerDiscovery.Enabled = false;
+            timerDiscovery.Tick -= timerDiscovery_Tick;
+
+            CancelThumbnails();
+        }
         private static void timerDiscovery_Tick(object sender, EventArgs e)
         {
-            // Prevent overload in case the process is slow.
-            // CheckCameras will adjust the time interval.
             timerDiscovery.Enabled = false;
-            CheckCameras();
+
+            long stepTime = DiscoveryStep();
+
+            timerDiscovery.Interval = Math.Max(defaultDiscoveryInterval, (int)(2 * stepTime));
             timerDiscovery.Enabled = true;
         }
 
@@ -291,22 +279,23 @@ namespace Kinovea.Camera
         /// This can be dynamic or based on previously saved data.
         /// Camera managers should also try to connect to the cameras and raise the CameraThumbnailProduced event.
         /// </summary>
-        private static void CheckCameras()
+        public static long DiscoveryStep()
         {
+            log.Debug("Camera discovery step.");
             Stopwatch stopwatch = new Stopwatch();
             IEnumerable<CameraBlurb> cameraBlurbs = PreferencesManager.CapturePreferences.CameraBlurbs;
-            
+
             List<CameraSummary> summaries = new List<CameraSummary>();
             List<string> stats = new List<string>();
             long totalTime = 0;
-            foreach(CameraManager manager in cameraManagers)
+            foreach (CameraManager manager in cameraManagers)
             {
                 stopwatch.Restart();
                 var s = manager.DiscoverCameras(cameraBlurbs);
                 summaries.AddRange(s);
                 long ellapsed = stopwatch.ElapsedMilliseconds;
                 totalTime += ellapsed;
-                stats.Add(string.Format("{0}: {1} ({2} ms)", 
+                stats.Add(string.Format("{0}: {1} ({2} ms)",
                     manager.CameraTypeFriendlyName, s.Count, ellapsed));
             }
 
@@ -315,14 +304,26 @@ namespace Kinovea.Camera
             log.DebugFormat("Discovered {0} cameras in {1} ms. ({2}).",
                     summaries.Count, totalTime, camStats);
 
-            if (CamerasDiscovered != null)
-                CamerasDiscovered(null, new CamerasDiscoveredEventArgs(summaries));
+            CamerasDiscovered?.Invoke(null, new CamerasDiscoveredEventArgs(summaries));
 
-            timerDiscovery.Interval = Math.Max(defaultDiscoveryInterval, (int)(2 * totalTime));
+            return totalTime;
+        }
+        #endregion
+
+        #region Thumbnails
+        /// <summary>
+        /// Stop all thumbnail threads.
+        /// </summary>
+        public static void CancelThumbnails()
+        {
+            log.DebugFormat("Cancelling all thumbnails threads.");
+            foreach (CameraManager manager in cameraManagers)
+                manager.StopAllThumbnails();
         }
 
         /// <summary>
-        /// Receive a new thumbnail from a camera and raise CameraThumbnailProduced in turn.
+        /// Received a new thumbnail from a camera. 
+        /// Raise CameraThumbnailProduced in turn.
         /// The camera manager should make sure this runs in the UI thread.
         /// This event should always be raised, even if the thumbnail could not be retrieved.
         /// </summary>

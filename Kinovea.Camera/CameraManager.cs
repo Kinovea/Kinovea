@@ -67,8 +67,15 @@ namespace Kinovea.Camera
 
         public abstract bool Enabled { get; }
 
+        /// <summary>
+        /// Unique identifier of the camera manager as a string.
+        /// Should be a GUID.
+        /// </summary>
         public abstract string CameraType { get; }
         
+        /// <summary>
+        /// Name of the camera type used in logs and user-facing UI.
+        /// </summary>
         public abstract string CameraTypeFriendlyName { get; }
         
         /// <summary>
@@ -83,8 +90,9 @@ namespace Kinovea.Camera
         public abstract bool SanityCheck();
         
         /// <summary>
-        /// Get the list of reachable cameras, try to connect to each of them to get a snapshot, and return a small summary of the device.
-        /// Knowing about the camera is enough, the camera managers should cache the snapshots to avoid connecting to the camera each time.
+        /// Find the list of connected cameras and build summaries for each of them.
+        /// The passed blurbs (camera history) can be used to re-inject customization in the summaries.
+        /// This should not trigger a thumbnail thread by itself.
         /// </summary>
         public abstract List<CameraSummary> DiscoverCameras(IEnumerable<CameraBlurb> blurbs);
 
@@ -95,7 +103,7 @@ namespace Kinovea.Camera
         public abstract void ForgetCamera(CameraSummary summary);
 
         /// <summary>
-        /// Check if this manager knows this camera.
+        /// Check if this manager knows this camera and it is actively connected.
         /// Returns the CameraSummary from discovery or null.
         /// </summary>
         public abstract CameraSummary GetCameraSummary(string alias);
@@ -113,7 +121,9 @@ namespace Kinovea.Camera
         public abstract void StopAllThumbnails();
 
         /// <summary>
-        /// Extract a camera blurb (used for KVA persistence) from a camera summary.
+        /// Make a camera blurb from a camera summary.
+        /// The blurb is serialized as XML in camera history in the preferences.
+        /// The summary is the camera state data structure.
         /// </summary>
         public abstract CameraBlurb BlurbFromSummary(CameraSummary summary);
         

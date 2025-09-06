@@ -55,17 +55,13 @@ namespace Kinovea.ScreenManager
             InitializeControlBar();
             
             NotificationCenter.CurrentDirectoryChanged += NotificationCenter_CurrentDirectoryChanged;
-            NotificationCenter.ExplorerTabChanged += (s, e) => SwitchContent(Convert(e.Tab));
+            NotificationCenter.ExplorerTabChanged += NotificationCenter_ExplorerTabChanged;
             
             CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
             CameraTypeManager.CameraSummaryUpdated += CameraTypeManager_CameraSummaryUpdated;
             CameraTypeManager.CameraForgotten += CameraTypeManager_CameraForgotten; 
             CameraTypeManager.CameraThumbnailProduced += CameraTypeManager_CameraThumbnailProduced;
-
-            // Switch immediately to the correct tab, don't wait for the file explorer to load.
-            // In particular if the active tab is the cameras we want to get the thumbnails as soon as possible, even if not displaying yet.
-            SwitchContent(Convert(WindowManager.ActiveWindow.ActiveTab));
-                    
+        
             this.Hotkeys = HotkeySettingsManager.LoadHotkeys("ThumbnailViewerContainer");
         }
 
@@ -106,12 +102,16 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Private methods
+        private void NotificationCenter_ExplorerTabChanged(object sender, ExplorerTabEventArgs e)
+        {
+            SwitchContent(Convert(e.Tab));
+        }
+
         private void NotificationCenter_CurrentDirectoryChanged(object sender, CurrentDirectoryChangedEventArgs e)
         {
             this.path = e.Path;
             this.files = e.Files;
             
-
             if (!e.DoRefresh || !this.Visible)
                 return;
 
@@ -245,6 +245,11 @@ namespace Kinovea.ScreenManager
                         viewerCameras.BeforeSwitch();
                         viewerCameras.UpdateThumbnailsSize(sizeSelector.SelectedSize);
                         viewer = viewerCameras;
+
+                        if (this.Visible)
+                        {
+                            CameraTypeManager.StartDiscoveringCameras();
+                        }
                         break;
                     }
             }
