@@ -108,19 +108,24 @@ namespace Kinovea.ScreenManager
             ReloadTooltipsCulture();
 
             // Reload the capture folder selector.
+            CaptureFolder memoCf = this.CaptureFolder;
 
+            // The selected capture folder may be null if it's the first time loading.
+            // In this case we'll set it to the first value but we'll get the true value
+            // from the window descriptor later in ForcePopulate().
             cbCaptureFolder.Items.Clear();
             List<CaptureFolder> ccff = PreferencesManager.CapturePreferences.CapturePathConfiguration.CaptureFolders;
             foreach (var cf in ccff)
             {
                 cbCaptureFolder.Items.Add(cf);
+                if (memoCf != null && cf.Id == memoCf.Id)
+                    cbCaptureFolder.SelectedItem = cf;
             }
 
-            if (cbCaptureFolder.Items.Count > 0)
+            if (cbCaptureFolder.SelectedIndex < 0 && cbCaptureFolder.Items.Count > 0)
             {
                 cbCaptureFolder.SelectedIndex = 0;
             }
-
         }
         
         public void AddImageDrawing(string filename, bool svg)
@@ -269,11 +274,27 @@ namespace Kinovea.ScreenManager
             UpdateDelayedDisplay(delayedDisplay);
         }
 
-        public void ForceDelaySeconds(float delaySeconds)
+        public void ForcePopulate(float delaySeconds, float maxDuration, Guid captureFolderId)
         {
+            // Delay
             delaySeconds = Math.Min(Math.Max(delaySeconds, (float)nudDelay.Minimum), (float)nudDelay.Maximum);
             nudDelay.Value = (decimal)delaySeconds;
             UpdateDelayedDisplay(delayedDisplay);
+
+            // Max recording duration.
+            maxDuration = Math.Min(Math.Max(maxDuration, (float)nudDuration.Minimum), (float)nudDuration.Maximum);
+            nudDuration.Value = (decimal)maxDuration;
+
+            // Capture folder
+            foreach (var item in cbCaptureFolder.Items)
+            {
+                CaptureFolder cf = (CaptureFolder)item;
+                if (cf.Id == captureFolderId)
+                {
+                    cbCaptureFolder.SelectedItem = item;
+                    return;
+                }
+            }
         }
 
         public void UpdateNextVideoFilename(string filename)
@@ -415,7 +436,7 @@ namespace Kinovea.ScreenManager
             toolTips.SetToolTip(btnSnapshot, ScreenManagerLang.Generic_SaveImage);
 
             toolTips.SetToolTip(btnDelay, "Delay in seconds");
-            toolTips.SetToolTip(btnDuration, "Stop recording after… in seconds");
+            toolTips.SetToolTip(btnDuration, "Total length of the recording in seconds");
 
             if (recording)
                 toolTips.SetToolTip(btnRecord, ScreenManagerLang.ToolTip_StopRecording);
@@ -578,5 +599,7 @@ namespace Kinovea.ScreenManager
             return true;
         }
         #endregion
+
+        
     }
 }

@@ -64,22 +64,37 @@ namespace Kinovea.Services
         /// </summary>
         public bool DelayedDisplay { get; set; }
 
+        /// <summary>
+        /// Maximum duration of the recording in seconds. 
+        /// (approximate but should never be less than that).
+        /// </summary>
+        public float MaxDuration { get; set; }
+
+        /// <summary>
+        /// Id of the capture folder to use when recording.
+        /// </summary>
+        public Guid CaptureFolder { get; set; }
+
         public ScreenDescriptionCapture()
         {
             CameraName = "";
             Autostream = true;
             Delay = 0;
             DelayedDisplay = true;
+            MaxDuration = 0;
+            CaptureFolder = Guid.Empty;
         }
 
         public IScreenDescriptor Clone()
         {
-            ScreenDescriptionCapture sdc = new ScreenDescriptionCapture();
-            sdc.CameraName = this.CameraName;
-            sdc.Autostream = this.Autostream;
-            sdc.Delay = this.Delay;
-            sdc.DelayedDisplay = this.DelayedDisplay;
-            return sdc;
+            ScreenDescriptionCapture clone = new ScreenDescriptionCapture();
+            clone.CameraName = this.CameraName;
+            clone.Autostream = this.Autostream;
+            clone.Delay = this.Delay;
+            clone.DelayedDisplay = this.DelayedDisplay;
+            clone.MaxDuration = this.MaxDuration;
+            clone.CaptureFolder = this.CaptureFolder;
+            return clone;
         }
 
         public void Readxml(XmlReader reader)
@@ -105,6 +120,15 @@ namespace Kinovea.Services
                     case "DelayedDisplay":
                         DelayedDisplay = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
+                    case "MaxDuration":
+                        float maxDuration;
+                        read = float.TryParse(reader.ReadElementContentAsString(), NumberStyles.Any, CultureInfo.InvariantCulture, out maxDuration);
+                        if (read)
+                            this.MaxDuration = maxDuration;
+                        break;
+                    case "CaptureFolder":
+                        CaptureFolder = XmlHelper.ParseGuid(reader.ReadElementContentAsString());
+                        break;
                     default:
                         reader.ReadOuterXml();
                         break;
@@ -120,6 +144,8 @@ namespace Kinovea.Services
             w.WriteElementString("Autostream", XmlHelper.WriteBoolean(Autostream));
             w.WriteElementString("Delay", XmlHelper.WriteFloat(Delay));
             w.WriteElementString("DelayedDisplay", XmlHelper.WriteBoolean(DelayedDisplay));
+            w.WriteElementString("MaxDuration", XmlHelper.WriteFloat(MaxDuration));
+            w.WriteElementString("CaptureFolder", CaptureFolder.ToString());
         }
     }
 }

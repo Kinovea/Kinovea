@@ -456,7 +456,9 @@ namespace Kinovea.ScreenManager
             sd.Autostream = true;
             sd.CameraName = cameraSummary == null ? "" : cameraSummary.Alias;
             sd.Delay = (float)AgeToSeconds(delay);
+            sd.MaxDuration = maxRecordingSeconds;
             sd.DelayedDisplay = delayedDisplay;
+            sd.CaptureFolder = view.CaptureFolder.Id;
             return sd;
         }
 
@@ -568,7 +570,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Associate this screen with a camera.
         /// </summary>
-        public void LoadCamera(CameraSummary _cameraSummary, ScreenDescriptionCapture screenDescription)
+        public void LoadCamera(CameraSummary _cameraSummary, ScreenDescriptionCapture sd)
         {
             if (cameraLoaded)
                 UnloadCamera();
@@ -608,19 +610,20 @@ namespace Kinovea.ScreenManager
                 cameraManager = cameraSummary.Manager;
                 cameraGrabber = cameraManager.CreateCaptureSource(cameraSummary);
 
-                bool connect = screenDescription != null ? screenDescription.Autostream : true;
+                bool connect = sd != null ? sd.Autostream : true;
                 AssociateCamera(connect);
 
-                if (screenDescription != null && cameraLoaded && cameraConnected)
+                if (sd!= null && cameraLoaded && cameraConnected)
                 {
-                    view.ForceDelaySeconds(screenDescription.Delay);
-                    delayedDisplay = screenDescription.DelayedDisplay;
+                    view.ForcePopulate(sd.Delay, sd.MaxDuration, sd.CaptureFolder);
+                    delayedDisplay = sd.DelayedDisplay;
+                    maxRecordingSeconds = sd.MaxDuration;
                 }
             }
             else
             {
                 // We don't know about this camera yet. Go through normal discovery.
-                this.screenDescription = screenDescription;
+                this.screenDescription = sd;
                 stopwatchDiscovery.Start();
                 CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
                 CameraTypeManager.StartDiscoveringCameras();
@@ -673,8 +676,9 @@ namespace Kinovea.ScreenManager
 
                 if (screenDescription != null && cameraLoaded && cameraConnected)
                 {
-                    view.ForceDelaySeconds(screenDescription.Delay);
+                    view.ForcePopulate(screenDescription.Delay, screenDescription.MaxDuration, screenDescription.CaptureFolder);
                     delayedDisplay = screenDescription.DelayedDisplay;
+                    maxRecordingSeconds = screenDescription.MaxDuration;
                 }
                 
                 break;

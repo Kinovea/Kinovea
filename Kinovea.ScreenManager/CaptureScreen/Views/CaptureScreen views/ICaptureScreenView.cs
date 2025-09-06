@@ -57,6 +57,6 @@ namespace Kinovea.ScreenManager
         void UpdateDelayMax(double delaySeconds, int delayFrames);
         void UpdateNextVideoFilename(string filename);
 
-        void ForceDelaySeconds(float delaySeconds);
+        void ForcePopulate(float delaySeconds, float maxDuration, Guid captureFolder);
     }
 }
