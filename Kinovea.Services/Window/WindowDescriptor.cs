@@ -185,11 +185,11 @@ namespace Kinovea.Services
             set { lastCaptureFileName = value; }
         }
 
-        public UserCommand UserCommandBackup
-        {
-            get { return UserCommandBackup; }
-            set { UserCommandBackup = value; }
-        }
+        //public UserCommand UserCommandBackup
+        //{
+        //    get { return userCommandBackup; }
+        //    set { userCommandBackup = value; }
+        //}
         #endregion
 
         #region Members
@@ -219,9 +219,12 @@ namespace Kinovea.Services
         private bool lastCaptureDelayedDisplay = true;
         private Guid lastCaptureFolder = Guid.Empty;
         private string lastCaptureFileName = string.Empty;
-        private UserCommand userCommandBackup = null;
+        //private UserCommand userCommandBackup = null;
         #endregion
 
+        /// <summary>
+        /// Replace the screen list in the window with copies of the passed descriptors.
+        /// </summary>
         public void ReplaceScreens(List<IScreenDescriptor> descriptors)
         {
             screenList.Clear();
@@ -273,8 +276,8 @@ namespace Kinovea.Services
             writer.WriteElementString("LastCaptureFolder", lastCaptureFolder.ToString());
             writer.WriteElementString("LastCaptureFileName", lastCaptureFileName.ToString());
 
-            if (userCommandBackup != null)
-                userCommandBackup.WriteXML(writer);
+            //if (userCommandBackup != null)
+            //    userCommandBackup.WriteXML(writer);
         }
 
         public void ReadXML(XmlReader reader)
@@ -346,10 +349,9 @@ namespace Kinovea.Services
                     case "LastCaptureFileName":
                         lastCaptureFileName = reader.ReadElementContentAsString();
                         break;
-                    case "UserCommandBackup":
-                        userCommandBackup = new UserCommand();
-                        userCommandBackup.ReadXML(reader);
-                        break;
+                    //case "UserCommandBackup":
+                    //    userCommandBackup = new UserCommand(reader);
+                    //    break;
                     default:
                         reader.ReadOuterXml();
                         break;

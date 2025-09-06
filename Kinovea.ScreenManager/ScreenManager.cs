@@ -3275,10 +3275,17 @@ namespace Kinovea.ScreenManager
             autoLaunchInProgress = true;
             foreach (IScreenDescriptor sd in screenDescriptors)
             {
+
+                // Note: the screens should work with copies of the screen descriptors, 
+                // to avoid saving the screen descriptor when they shouldn't. 
+                // If the window is in "specific screens" startup mode we should not 
+                // save descriptors except from within the Window properties dialog.
+                // Plus an exception for the post-recording command.
+                
                 if (sd is ScreenDescriptorCapture)
                 {
                     AddCaptureScreen();
-                    ScreenDescriptorCapture sdc = sd as ScreenDescriptorCapture;
+                    ScreenDescriptorCapture sdc = sd.Clone() as ScreenDescriptorCapture;
                     CameraSummary summary = new CameraSummary(sdc.CameraName);
 
                     int targetScreen = added == 0 ? 0 : 1;
@@ -3288,11 +3295,12 @@ namespace Kinovea.ScreenManager
                 else if (sd is ScreenDescriptorPlayback)
                 {
                     AddPlayerScreen();
-                    ScreenDescriptorPlayback sdp = sd as ScreenDescriptorPlayback;
+                    ScreenDescriptorPlayback sdp = sd.Clone() as ScreenDescriptorPlayback;
                     LoaderVideo.LoadVideoInScreen(this, sdp.FullPath, sdp);
                     added++;
                 }
             }
+
             autoLaunchInProgress = false;
 
             if (added > 0)
@@ -3301,6 +3309,7 @@ namespace Kinovea.ScreenManager
                 OrganizeCommonControls();
                 OrganizeMenus();
             }
+
         }
 
         private void TriggerCapture()

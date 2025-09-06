@@ -32,6 +32,11 @@ namespace Kinovea.Services
         ScreenType ScreenType { get; }
 
         /// <summary>
+        /// Unique identifier of the screen descriptor.
+        /// </summary>
+        Guid Id { get; }
+
+        /// <summary>
         /// A string suitable for display in the UI.
         /// For playback the name of the video.
         /// For replay the name of the folder.

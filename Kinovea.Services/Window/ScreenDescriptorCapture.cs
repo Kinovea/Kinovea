@@ -32,6 +32,12 @@ namespace Kinovea.Services
             get { return ScreenType.Capture; }
         }
 
+
+        /// <summary>
+        /// Guid of the screen descriptor.
+        /// </summary>
+        public Guid Id { get; set; }
+
         public string FriendlyName
         {
             get 
@@ -81,8 +87,19 @@ namespace Kinovea.Services
         /// </summary>
         public string FileName { get; set; }
 
+        /// <summary>
+        /// Whether the post-recording command is enabled.
+        /// </summary>
+        public bool EnableCommand { get; set; }
+
+        /// <summary>
+        /// Post-recording command data structure.
+        /// </summary>
+        public UserCommand UserCommand { get; set; }
+
         public ScreenDescriptorCapture()
         {
+            Id = Guid.NewGuid();
             CameraName = "";
             Autostream = true;
             Delay = 0;
@@ -90,11 +107,14 @@ namespace Kinovea.Services
             MaxDuration = 0;
             CaptureFolder = Guid.Empty;
             FileName = "";
+            EnableCommand = false;
+            UserCommand = new UserCommand();
         }
 
         public IScreenDescriptor Clone()
         {
             ScreenDescriptorCapture clone = new ScreenDescriptorCapture();
+            clone.Id = Id;
             clone.CameraName = this.CameraName;
             clone.Autostream = this.Autostream;
             clone.Delay = this.Delay;
@@ -102,6 +122,8 @@ namespace Kinovea.Services
             clone.MaxDuration = this.MaxDuration;
             clone.CaptureFolder = this.CaptureFolder;
             clone.FileName = this.FileName;
+            clone.EnableCommand = this.EnableCommand;
+            clone.UserCommand = this.UserCommand.Clone();
             return clone;
         }
 
@@ -113,6 +135,9 @@ namespace Kinovea.Services
             {
                 switch (reader.Name)
                 {
+                    case "Id":
+                        Id = XmlHelper.ParseGuid(reader.ReadElementContentAsString());
+                        break;
                     case "CameraName":
                         CameraName = reader.ReadElementContentAsString();
                         break;
@@ -140,6 +165,12 @@ namespace Kinovea.Services
                     case "FileName":
                         FileName = reader.ReadElementContentAsString();
                         break;
+                    case "EnableCommand":
+                        EnableCommand = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
+                    case "UserCommand":
+                        UserCommand = new UserCommand(reader);
+                        break;
                     default:
                         reader.ReadOuterXml();
                         break;
@@ -151,6 +182,7 @@ namespace Kinovea.Services
 
         public void WriteXml(XmlWriter w)
         {
+            w.WriteElementString("Id", Id.ToString());
             w.WriteElementString("CameraName", CameraName);
             w.WriteElementString("Autostream", XmlHelper.WriteBoolean(Autostream));
             w.WriteElementString("Delay", XmlHelper.WriteFloat(Delay));
@@ -158,6 +190,14 @@ namespace Kinovea.Services
             w.WriteElementString("MaxDuration", XmlHelper.WriteFloat(MaxDuration));
             w.WriteElementString("CaptureFolder", CaptureFolder.ToString());
             w.WriteElementString("FileName", FileName);
+            w.WriteElementString("EnableCommand", XmlHelper.WriteBoolean(EnableCommand));
+            
+            if (UserCommand.Instructions.Count > 0)
+            {
+                w.WriteStartElement("UserCommand");
+                UserCommand.WriteXML(w);
+                w.WriteEndElement();
+            }
         }
     }
 }

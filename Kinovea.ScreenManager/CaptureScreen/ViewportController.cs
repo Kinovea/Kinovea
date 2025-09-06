@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
@@ -119,6 +120,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private Viewport view;
+        private ScreenDescriptorCapture sdc;
         private Bitmap bitmap;
         private long timestamp;
         private Rectangle displayRectangle;
@@ -197,6 +199,11 @@ namespace Kinovea.ScreenManager
         public void Refresh()
         {
             view.Invalidate();
+        }
+
+        public void ConfigureScreen(ScreenDescriptorCapture sdc)
+        {
+            this.sdc = sdc;
         }
 
         /// <summary>
@@ -446,8 +453,8 @@ namespace Kinovea.ScreenManager
         private void ReloadMenusCulture()
         {
             // Background context menu
-            mnuConfigure.Text = ScreenManagerLang.ToolTip_ConfigureCamera;
-            mnuCommand.Text = "Configure post-recording command";
+            mnuConfigure.Text = "Configure camera…";
+            mnuCommand.Text = "Post-recording command…";
             //mnuBackground.Text = ScreenManagerLang.PlayerScreenUserInterface_Background;
             //mnuPasteDrawing.Text = ScreenManagerLang.mnuPasteDrawing;
             //mnuPasteDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.PasteDrawing);
@@ -683,15 +690,14 @@ namespace Kinovea.ScreenManager
 
         private void mnuCommand_Click(object sender, EventArgs e)
         {
-            FormPostRecordingCommand fprc = new FormPostRecordingCommand();
+            if (sdc == null)
+                return;
+
+            // The form is responsible for saving the command to the tepmorary screen descriptor
+            // and to the actual one in the window descriptor.
+            FormPostRecordingCommand fprc = new FormPostRecordingCommand(sdc);
             fprc.StartPosition = FormStartPosition.CenterScreen;
             fprc.ShowDialog();
-
-            if (fprc.DialogResult == DialogResult.OK)
-            {
-                
-            }
-
             fprc.Dispose();
         }
 

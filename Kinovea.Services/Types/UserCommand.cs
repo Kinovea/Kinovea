@@ -40,6 +40,18 @@ namespace Kinovea.Services
         private List<string> instructions = new List<string>();
         #endregion
 
+        public UserCommand()
+        {
+        }
+
+        public UserCommand Clone()
+        {
+            UserCommand clone = new UserCommand();
+            clone.Id = Id;
+            clone.Instructions = Instructions.ToList();
+            return clone;
+        }
+
         #region Serialization
         public void WriteXML(XmlWriter writer)
         {
@@ -56,7 +68,7 @@ namespace Kinovea.Services
             }
         }
 
-        public void ReadXML(XmlReader reader)
+        public UserCommand(XmlReader reader)
         {
             reader.ReadStartElement();
 
@@ -75,6 +87,8 @@ namespace Kinovea.Services
                         break;
                 }
             }
+
+            reader.ReadEndElement();
         }
 
         private void ParseInstructions(XmlReader reader)

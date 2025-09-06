@@ -352,12 +352,14 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void ConfigureScreen(ScreenDescriptorCapture sdc)
         {
-            this.screenDescriptor = (ScreenDescriptorCapture)sdc.Clone();
+            // The passed screen descriptor is already a clone.
+            this.screenDescriptor = sdc;
 
-            view.ConfigureScreen(sdc);
-            delayedDisplay = sdc.DelayedDisplay;
+            view.ConfigureScreen(screenDescriptor);
+            viewportController.ConfigureScreen(screenDescriptor);
+            delayedDisplay = screenDescriptor.DelayedDisplay;
             view.UpdateDelayedDisplay(delayedDisplay);
-            maxRecordingSeconds = sdc.MaxDuration;
+            maxRecordingSeconds = screenDescriptor.MaxDuration;
         }
 
         #region AbstractScreen Implementation
@@ -469,6 +471,8 @@ namespace Kinovea.ScreenManager
         public override IScreenDescriptor GetScreenDescriptor()
         {
             ScreenDescriptorCapture sd = new ScreenDescriptorCapture();
+            
+            // Just in time rebuild. Most UI places don't bother about the screen descriptor.
             sd.CameraName = cameraSummary == null ? "" : cameraSummary.Alias;
             sd.Autostream = true;
             sd.Delay = (float)AgeToSeconds(delay);
@@ -476,6 +480,11 @@ namespace Kinovea.ScreenManager
             sd.DelayedDisplay = delayedDisplay;
             sd.CaptureFolder = view.CaptureFolder.Id;
             sd.FileName = view.CurrentFilename;
+
+            // Some info is already up to date.
+            sd.Id = screenDescriptor.Id;
+            sd.EnableCommand = screenDescriptor.EnableCommand;
+            sd.UserCommand = screenDescriptor.UserCommand.Clone();
             return sd;
         }
 
@@ -1979,18 +1988,21 @@ namespace Kinovea.ScreenManager
         }
         private async void RunPostRecordingCommand(string path)
         {
-            string command = PreferencesManager.CapturePreferences.PostRecordCommand;
-            if (string.IsNullOrEmpty(command))
+            if (screenDescriptor.UserCommand == null || screenDescriptor.UserCommand.Instructions.Count == 0)
+            {
                 return;
-            
-            // WIP: this will later come from the screen descriptor.
-            UserCommand c = new UserCommand();
-            c.Instructions.Add(command);
-            
+            }
+
+            if (!screenDescriptor.EnableCommand)
+            {
+                log.Debug("Post-recording command is disabled.");
+                return;
+            }
+
             // Interpolate variables.
             var context = BuildPostRecordingCommandContext(path);
             List<string> instructions = new List<string>();
-            foreach (var instruction in c.Instructions)
+            foreach (var instruction in screenDescriptor.UserCommand.Instructions)
             {
                 var i = DynamicPathResolver.Resolve(instruction, context);
                 instructions.Add(i);

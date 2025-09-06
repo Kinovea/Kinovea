@@ -33,6 +33,12 @@ namespace Kinovea.Services
             get { return ScreenType.Playback; }
         }
 
+        /// <summary>
+        /// Guid of the player screen into which this description should be reloaded.
+        /// This is used to re-associate the autosave.kva after video load and restore metadata.
+        /// </summary>
+        public Guid Id { get; set; }
+
         public string FriendlyName
         {
             get
@@ -54,12 +60,6 @@ namespace Kinovea.Services
                 }
             }
         }
-
-        /// <summary>
-        /// Guid of the player screen into which this description should be reloaded.
-        /// This is used to re-associate the autosave.kva after video load and restore metadata.
-        /// </summary>
-        public Guid Id { get; set; }
 
         /// <summary>
         /// Path to the video file to load.
