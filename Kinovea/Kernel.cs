@@ -585,11 +585,8 @@ namespace Kinovea.Root
             if (path == null || !Directory.Exists(path))
                 return;
 
-            path = Path.Combine(path, "*");
-
-            // TODO: add to capture folders and open that.
-
-            OpenFromPath(path);
+            var cf = PreferencesManager.CapturePreferences.AddCaptureFolder(path);
+            OpenFromPath(cf.Id.ToString());
         }
 
         private void mnuHistoryResetOnClick(object sender, EventArgs e)
@@ -908,30 +905,24 @@ namespace Kinovea.Root
 
             int maxRecentFiles = PreferencesManager.FileExplorerPreferences.MaxRecentFiles;
             List<string> recentFiles = PreferencesManager.FileExplorerPreferences.RecentFiles;
-            List<string> recentWatchers = PreferencesManager.FileExplorerPreferences.RecentWatchers;
-            if ((recentFiles == null || recentFiles.Count == 0) && 
-                (recentWatchers == null || recentFiles.Count == 0))
+            if (recentFiles == null || recentFiles.Count == 0)
             {
                 mnuHistory.Enabled = false;
                 return;
             }
 
-            int addedFiles = FillHistoryDropDown(maxRecentFiles, recentFiles, true);
+            int addedFiles = AddRecentFilesHistoryMenus(maxRecentFiles, recentFiles);
             if (addedFiles > 0)
                 mnuHistory.DropDownItems.Add(new ToolStripSeparator());
 
-            int addedWatchers = FillHistoryDropDown(maxRecentFiles, recentWatchers, false);
-            if (addedWatchers > 0)
-                mnuHistory.DropDownItems.Add(new ToolStripSeparator());
-
-            bool added = addedFiles + addedWatchers > 0;
+            bool added = addedFiles > 0;
             if (added)
                 mnuHistory.DropDownItems.Add(mnuHistoryReset);
 
             mnuHistory.Enabled = added;
         }
 
-        private int FillHistoryDropDown(int maxRecentFiles, List<string> recentFiles, bool isFile)
+        private int AddRecentFilesHistoryMenus(int maxRecentFiles, List<string> recentFiles)
         {
             if (maxRecentFiles == 0 || recentFiles == null || recentFiles.Count == 0)
                 return 0;
@@ -945,14 +936,11 @@ namespace Kinovea.Root
                 if (string.IsNullOrEmpty(file))
                     continue;
 
-                if ((isFile && !File.Exists(file)) ||
-                    (!isFile && !Directory.Exists(Path.GetDirectoryName(file))))
-                {
-                        continue;
-                }
+                if (!File.Exists(file))
+                    continue;
 
                 ToolStripMenuItem menu = new ToolStripMenuItem();
-                menu.Image = isFile ? Properties.Resources.film_small : Properties.Resources.user_detective;
+                menu.Image = Properties.Resources.film_small;
                 menu.Text = file;
                 menu.Click += (s, evt) => OpenFromPath(file);
 
@@ -1048,9 +1036,26 @@ namespace Kinovea.Root
         }
         private void OpenFromPath(string path)
         {
-            if (Path.GetFileName(path).Contains("*"))
+            // Note: this ultimately ends in FrameServerPlayer.Load(path) which will
+            // handle the various cases of capture folder id, video, image sequence.
+            var cf = FilesystemHelper.GetCaptureFolder(path);
+            if (cf != null)
             {
-                // Replay watcher.
+                // Known capture folder.
+                ScreenDescriptorPlayback sdp = new ScreenDescriptorPlayback();
+                sdp.FullPath = path;
+                sdp.IsReplayWatcher = true;
+                sdp.Stretch = true;
+                sdp.Autoplay = true;
+                sdp.SpeedPercentage = PreferencesManager.PlayerPreferences.DefaultReplaySpeed;
+                LoaderVideo.LoadVideoInScreen(screenManager, path, sdp);
+
+                screenManager.OrganizeScreens();
+            }
+            else if (Path.GetFileName(path).Contains("*"))
+            {
+                // Replay watcher on a random file system folder.
+                // This shouldn't happen anymore.
                 ScreenDescriptorPlayback sdp = new ScreenDescriptorPlayback();
                 sdp.FullPath = path;
                 sdp.IsReplayWatcher = true;
@@ -1063,7 +1068,7 @@ namespace Kinovea.Root
             }
             else
             {
-                // Normal file.
+                // Normal video/image file or image part of an image sequence.
                 if (File.Exists(path))
                 {
                     ScreenDescriptorPlayback sdp = new ScreenDescriptorPlayback();

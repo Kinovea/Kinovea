@@ -64,8 +64,8 @@ namespace Kinovea.Services
         /// <summary>
         /// Path to the video file to load.
         /// - For a single video this is the full path to the file.
-        /// - For a raw replay watcher this is the folder to monitor with a wildcard "*" as file name.
         /// - For a replay watcher on a capture folder it is the GUID.
+        /// - For a raw replay watcher this is the folder to monitor with a wildcard "*" as file name.
         /// </summary>
         public string FullPath { get; set; }
 

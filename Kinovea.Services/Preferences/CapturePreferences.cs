@@ -163,8 +163,10 @@ namespace Kinovea.Services
 
         /// <summary>
         /// Add a capture folder if it doesn't exist yet.
-        /// This does not resolve variables, use on pure file system folders.
+        /// The path should be a file system path without the wildcard file name.
+        /// This does not resolve variables for the matching against the existing ones.
         /// Returns the found capture folder or the newly inserted one.
+        /// If two capture folders point to the same folder the first one is returned.
         /// </summary>
         public CaptureFolder AddCaptureFolder(string path)
         {

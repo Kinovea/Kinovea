@@ -103,8 +103,17 @@ namespace Kinovea.ScreenManager
             bgWorkerSave.DoWork += bgWorkerSave_DoWork;
         }
         #endregion
-        
+
         #region Public
+
+        /// <summary>
+        /// Load a video or replay watcher by path.
+        /// `filePath` may be:
+        /// - the id of a capture folder.
+        /// - a wildcard path like "G:\video\*".
+        /// - a file path of a single video or image.
+        /// - a file path of an image that is part of a sequence.
+        /// </summary>
         public OpenVideoResult Load(string filePath)
         {
             // Instanciate appropriate video reader class.
@@ -116,10 +125,6 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                // filePath may be:
-                // - the id of a capture folder.
-                // - a wildcard path like "G:\video\*".
-                // - a file path.
                 CaptureFolder cf = FilesystemHelper.GetCaptureFolder(filePath);
                 if (cf != null)
                 {
@@ -146,6 +151,7 @@ namespace Kinovea.ScreenManager
                 {
                     // We are loading a replay watcher on a file system folder.
                     // These should not contain variables.
+                    // We shouldn't come here anymore.
                     filePath = VideoTypeManager.GetMostRecentSupportedVideo(filePath);
                     if (string.IsNullOrEmpty(filePath))
                     {

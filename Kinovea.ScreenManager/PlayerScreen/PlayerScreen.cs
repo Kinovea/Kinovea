@@ -480,8 +480,8 @@ namespace Kinovea.ScreenManager
             // Stop watching the folder but stay on the same file.
             // Switch the screen descriptor from a replay watcher to the current file.
             ScreenDescriptorPlayback sdp = new ScreenDescriptorPlayback();
-            sdp.FullPath = frameServer.VideoReader.FilePath;
             sdp.IsReplayWatcher = false;
+            sdp.FullPath = frameServer.VideoReader.FilePath;
             sdp.Autoplay = false;
             sdp.Stretch = false;
             sdp.SpeedPercentage = view.SpeedPercentage;
@@ -521,7 +521,9 @@ namespace Kinovea.ScreenManager
                 if (string.IsNullOrEmpty(currentFile))
                     return;
 
-                sdp.FullPath = Path.Combine(Path.GetDirectoryName(currentFile), "*");
+                // Add the parent folder to the list of capture folders and make the screen descriptor point to it.
+                var cf = PreferencesManager.CapturePreferences.AddCaptureFolder(Path.GetDirectoryName(currentFile));
+                sdp.FullPath = cf.Id.ToString();
             }
             else
             {
@@ -983,7 +985,7 @@ namespace Kinovea.ScreenManager
                     {
                         // This happens when we are opening a watcher in an existing watcher.
                         // The screen descriptor has been updated to the new folder already.
-                        log.DebugFormat("Switch watcher from watching \"{0}\" to watching \"{1}\".", Path.GetFileName(replayWatcher.WatchedFolder), Path.GetFileName(targetFolder));
+                        log.DebugFormat("Switch watcher from watching \"{0}\" to watching \"{1}\".", replayWatcher.WatchedFolder, targetFolder);
                         
                         if (!Directory.Exists(targetFolder))
                             Directory.CreateDirectory(targetFolder);
@@ -994,7 +996,7 @@ namespace Kinovea.ScreenManager
                     {
                         // Opened a watcher on the same folder, or a loading a video coming from the same folder.
                         // Keep watching the original folder and the descriptor is still pointing to it.
-                        log.DebugFormat("Continue watching directory: \"{0}\"", Path.GetFileName(targetFolder));
+                        log.DebugFormat("Continue watching folder: \"{0}\"", targetFolder);
                     }
                 }
                 else
@@ -1002,13 +1004,23 @@ namespace Kinovea.ScreenManager
                     // We should never come here anymore.
                     // If the screen descriptor has been switched back to a file the watcher should have been stopped already.
                     // This happens in View_StopWatcherAsked.
-                    log.DebugFormat("Continue watching folder: \"{0}\"", Path.GetFileName(replayWatcher.WatchedFolder));
+                    log.DebugFormat("Continue watching folder: \"{0}\"", replayWatcher.WatchedFolder);
                 }
             }
             else if (view.ScreenDescriptor != null && view.ScreenDescriptor.IsReplayWatcher)
             {
                 // First time we come here, start watching.
-                string targetFolder = Path.GetDirectoryName(view.ScreenDescriptor.FullPath);
+                string targetFolder = "";
+                var cf = FilesystemHelper.GetCaptureFolder(view.ScreenDescriptor.FullPath);
+                if (cf != null)
+                {
+                    var context = DynamicPathResolver.BuildDateContext();
+                    targetFolder = DynamicPathResolver.Resolve(cf.Path, VariablesRepository, context);
+                }
+                else
+                {
+                    targetFolder = Path.GetDirectoryName(view.ScreenDescriptor.FullPath);
+                }
 
                 if (!FilesystemHelper.IsValidPath(targetFolder))
                 {
@@ -1016,7 +1028,7 @@ namespace Kinovea.ScreenManager
                     return;
                 }
 
-                log.DebugFormat("Starting replay watcher on: \"{0}\"", Path.GetFileName(targetFolder));
+                log.DebugFormat("Starting replay watcher on: \"{0}\"", targetFolder);
                 StartReplayWatcher(FilePath);
             }
             else

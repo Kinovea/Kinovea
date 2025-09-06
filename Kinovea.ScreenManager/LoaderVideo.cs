@@ -90,10 +90,7 @@ namespace Kinovea.ScreenManager
 
                 if (screenDescriptor != null && screenDescriptor.IsReplayWatcher)
                 {
-                    PreferencesManager.SuspendSave();
-                    PreferencesManager.FileExplorerPreferences.AddRecentWatcher(path);
                     PreferencesManager.FileExplorerPreferences.LastReplayFolder = path;
-                    PreferencesManager.ResumeSave();
                 }
 
                 if (playerScreen.FrameServer.Loaded)
@@ -200,7 +197,6 @@ namespace Kinovea.ScreenManager
                 // Even if we can't load the latest video, or there's no video at all, we should still start watching this folder.
                 player.view.EnableDisableActions(false);
                 player.StartReplayWatcher(null);
-                PreferencesManager.FileExplorerPreferences.LastReplayFolder = path;
             }
         }
 

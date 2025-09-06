@@ -30,9 +30,20 @@ namespace Kinovea.Services
             string lastReplayFolder = PreferencesManager.FileExplorerPreferences.LastReplayFolder;
             if (!string.IsNullOrEmpty(lastReplayFolder))
             {
-                lastReplayFolder = Path.GetDirectoryName(lastReplayFolder);
-                if (Directory.Exists(lastReplayFolder))
-                    initialDirectory = lastReplayFolder;
+                string targetFolder = "";
+                var cf = FilesystemHelper.GetCaptureFolder(lastReplayFolder);
+                if (cf != null)
+                {
+                    // Should this also resolve dynamic paths here?
+                    targetFolder = cf.Path;
+                }
+                else
+                {
+                    targetFolder = Path.GetDirectoryName(lastReplayFolder);
+                }
+
+                if (Directory.Exists(targetFolder))
+                    initialDirectory = targetFolder;
             }
             else
             {

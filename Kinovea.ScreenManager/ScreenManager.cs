@@ -915,6 +915,8 @@ namespace Kinovea.ScreenManager
         private void Player_OpenReplayWatcherAsked(object sender, EventArgs<CaptureFolder> e)
         {
             // Replay watcher asked from the context menu in the player screen.
+            // This ends up in FrameServerPlayer.Load(path) which can handle
+            // capture folder id or normal paths.
 
             ScreenDescriptorPlayback sdp = new ScreenDescriptorPlayback();
             string path = "";
@@ -928,7 +930,7 @@ namespace Kinovea.ScreenManager
                 // Add it to capture folders.
                 CaptureFolder cf = PreferencesManager.CapturePreferences.AddCaptureFolder(path);
                 sdp.FullPath = cf.Id.ToString();
-                path = Path.Combine(path, "*");
+                path = sdp.FullPath;
             }
             else
             {
@@ -957,11 +959,11 @@ namespace Kinovea.ScreenManager
                 // The watcher needs an actual folder to watch before the capture puts the recording in it.
                 if (!Directory.Exists(path))
                 {
-                    log.DebugFormat("Replay watcher opened on non-existent capture folder. Creating the folder.");
+                    log.DebugFormat("Replay watcher asked for a non-existent capture folder. Creating the folder on the file system.");
                     Directory.CreateDirectory(path);
                 }
 
-                path = Path.Combine(path, "*");
+                path = sdp.FullPath;
             }
                 
             int index = sender == screenList[0] ? 0 : 1;

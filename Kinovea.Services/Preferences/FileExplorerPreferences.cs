@@ -104,21 +104,25 @@ namespace Kinovea.Services
             get { BeforeRead(); return filePropertyVisibility; }
         }
         
+        /// <summary>
+        /// Last folder picked as a replay watcher.
+        /// This is only used to provide the initial folder for the folder picker.
+        /// </summary>
         public string LastReplayFolder
         {
-            get { return lastReplayFolder; }
+            get { BeforeRead(); return lastReplayFolder; }
             set { lastReplayFolder = value; Save(); }
         }
 
         public FileSortAxis FileSortAxis
         {
-            get { return fileSortAxis; }
+            get { BeforeRead(); return fileSortAxis; }
             set { fileSortAxis = value; Save(); }
         }
 
         public bool FileSortAscending
         {
-            get { return fileSortAscending; }
+            get { BeforeRead(); return fileSortAscending; }
             set { fileSortAscending = value; Save(); }
         }
         #endregion
