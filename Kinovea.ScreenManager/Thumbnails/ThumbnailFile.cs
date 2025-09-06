@@ -239,10 +239,6 @@ namespace Kinovea.ScreenManager
             // It will be filled back later in LoadSummary().
             lastWriteUTC = DateTime.MinValue;
             loaded = false;
-
-            // Force invalidate to make sure we are not showing an old thumbnail.
-            // We don't dispose the old bitmap until the last moment.
-            this.Invalidate();
         }
 
         /// <summary>

@@ -337,18 +337,23 @@ namespace Kinovea.ScreenManager
             CleanupLoaders();
             log.DebugFormat("After loaders cleaned up: {0} ms.", stopwatch.ElapsedMilliseconds);
 
+            pnlThumbs.SuspendLayout();
             selectedThumbnail = null;
             UpdateThumbnailList(files);
             log.DebugFormat("After thumbnail list updated: {0} in {1} ms.", files.Count, stopwatch.ElapsedMilliseconds);
             log.DebugFormat("Thumbnail controls: {0}", thumbnails.Count);
 
             if (files.Count == 0)
+            {
+                pnlThumbs.ResumeLayout();
                 return;
+            }
 
             DoLayout();
             log.DebugFormat("After thumbnail layout: {0} in {1} ms.", 
                 files.Count, stopwatch.ElapsedMilliseconds);
 
+            pnlThumbs.ResumeLayout();
 
             // Filter out files that are already loaded.
             List<string> filesToLoad = new List<string>();
@@ -408,14 +413,6 @@ namespace Kinovea.ScreenManager
             // - During this loop we may recycle existing thumbnail controls or create new ones.
             // - Next we rearrange the thumbnails list to match the target file list.
             // - Finally we hide the extra thumbnails we won't need.
-
-            if (thumbnails.Count != mapPathToIndex.Count)
-            {
-                // invalid program.
-                log.ErrorFormat("More thumbnails than in the map from paths to indices.");
-                mapPathToThumbnail.Clear();
-                mapPathToIndex.Clear();
-            }
 
             List<bool> inUse = new List<bool>();
             foreach (ThumbnailFile tlvi in thumbnails)
@@ -528,8 +525,6 @@ namespace Kinovea.ScreenManager
                 thumbnails[i].Tag = -1;
                 thumbnails[i].Visible = false;
             }
-
-
         }
 
         /// <summary>
@@ -537,10 +532,8 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void DoLayout()
         {
-            this.pnlThumbs.SuspendLayout();
             this.pnlThumbs.Controls.Clear();
             this.pnlThumbs.Controls.AddRange(thumbnails.ToArray());
-            this.pnlThumbs.ResumeLayout();
         }
         #endregion
 
