@@ -167,7 +167,7 @@ namespace Kinovea.ScreenManager
         private ICaptureSource cameraGrabber;
         private Stopwatch stopwatchDiscovery = new Stopwatch();
         private const long discoveryTimeout = 5000;
-        private ScreenDescriptionCapture screenDescription;
+        private ScreenDescriptorCapture screenDescriptor;
         private PipelineManager pipelineManager = new PipelineManager();
         private ConsumerDisplay consumerDisplay = new ConsumerDisplay();
         private ConsumerRealtime consumerRealtime;
@@ -452,7 +452,7 @@ namespace Kinovea.ScreenManager
 
         public override IScreenDescriptor GetScreenDescriptor()
         {
-            ScreenDescriptionCapture sd = new ScreenDescriptionCapture();
+            ScreenDescriptorCapture sd = new ScreenDescriptorCapture();
             sd.Autostream = true;
             sd.CameraName = cameraSummary == null ? "" : cameraSummary.Alias;
             sd.Delay = (float)AgeToSeconds(delay);
@@ -570,7 +570,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Associate this screen with a camera.
         /// </summary>
-        public void LoadCamera(CameraSummary _cameraSummary, ScreenDescriptionCapture sd)
+        public void LoadCamera(CameraSummary _cameraSummary, ScreenDescriptorCapture sd)
         {
             if (cameraLoaded)
                 UnloadCamera();
@@ -627,7 +627,7 @@ namespace Kinovea.ScreenManager
             else
             {
                 // We don't know about this camera yet. Go through normal discovery.
-                this.screenDescription = sd;
+                this.screenDescriptor = sd;
                 stopwatchDiscovery.Start();
                 CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
                 CameraTypeManager.StartDiscoveringCameras();
@@ -651,7 +651,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Reload the saved state after the camera has been connected.
         /// </summary>
-        private void AfterConnected(ScreenDescriptionCapture sd)
+        private void AfterConnected(ScreenDescriptorCapture sd)
         {
             if (sd != null)
             {
@@ -705,12 +705,12 @@ namespace Kinovea.ScreenManager
                 cameraManager = cameraSummary.Manager;
                 cameraGrabber = cameraManager.CreateCaptureSource(cameraSummary);
 
-                bool connect = screenDescription != null ? screenDescription.Autostream : true;
+                bool connect = screenDescriptor != null ? screenDescriptor.Autostream : true;
                 AssociateCamera(connect);
 
                 if (cameraLoaded && cameraConnected)
                 {
-                    AfterConnected(screenDescription);
+                    AfterConnected(screenDescriptor);
                 }
                 
                 break;
@@ -739,7 +739,7 @@ namespace Kinovea.ScreenManager
             if (cameraConnected)
                 Disconnect();
 
-            screenDescription = null;
+            screenDescriptor = null;
             cameraGrabber = null;
 
             delayer.FreeAll();

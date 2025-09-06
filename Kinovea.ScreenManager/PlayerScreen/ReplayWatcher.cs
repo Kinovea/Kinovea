@@ -38,7 +38,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private PlayerScreen player;
-        private ScreenDescriptionPlayback screenDescriptor;
+        private ScreenDescriptorPlayback screenDescriptor;
         private string currentFile;
         private string filter;
         private FileSystemWatcher watcher;
@@ -77,7 +77,7 @@ namespace Kinovea.ScreenManager
         /// Start watching the directory in the passed screen descriptor.
         /// currentFile may be null if we are starting a watcher on an empty directory.
         /// </summary>
-        public void Start(ScreenDescriptionPlayback sdp, string currentFile)
+        public void Start(ScreenDescriptorPlayback sdp, string currentFile)
         {
             log.DebugFormat("Starting replay watcher");
 

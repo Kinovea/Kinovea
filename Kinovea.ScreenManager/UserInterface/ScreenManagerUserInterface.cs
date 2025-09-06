@@ -146,7 +146,7 @@ namespace Kinovea.ScreenManager
         protected override void OnLoad(EventArgs e)
         {
             log.DebugFormat("In ScreenManager OnLoad");
-            if (LaunchSettingsManager.ScreenDescriptions.Count > 0 && AutoLaunchAsked != null)
+            if (LaunchSettingsManager.ScreenDescriptors.Count > 0 && AutoLaunchAsked != null)
                 AutoLaunchAsked(this, EventArgs.Empty);
 
         }

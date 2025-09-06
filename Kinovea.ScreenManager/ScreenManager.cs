@@ -271,7 +271,7 @@ namespace Kinovea.ScreenManager
             log.DebugFormat("Running crash recovery.");
             try
             {
-                List<ScreenDescriptionPlayback> recoverables = RecoveryManager.GetRecoverables();
+                List<ScreenDescriptorPlayback> recoverables = RecoveryManager.GetRecoverables();
                 if (recoverables != null && recoverables.Count > 0)
                 {
                     FormCrashRecovery fcr = new FormCrashRecovery(recoverables);
@@ -928,13 +928,13 @@ namespace Kinovea.ScreenManager
                 
             int index = sender == screenList[0] ? 0 : 1;
 
-            ScreenDescriptionPlayback screenDescription = new ScreenDescriptionPlayback();
-            screenDescription.FullPath = path;
-            screenDescription.IsReplayWatcher = true;
-            screenDescription.Autoplay = true;
-            screenDescription.Stretch = true;
-            screenDescription.SpeedPercentage = PreferencesManager.PlayerPreferences.DefaultReplaySpeed;
-            LoaderVideo.LoadVideoInScreen(this, path, index, screenDescription);
+            ScreenDescriptorPlayback sdp = new ScreenDescriptorPlayback();
+            sdp.FullPath = path;
+            sdp.IsReplayWatcher = true;
+            sdp.Autoplay = true;
+            sdp.Stretch = true;
+            sdp.SpeedPercentage = PreferencesManager.PlayerPreferences.DefaultReplaySpeed;
+            LoaderVideo.LoadVideoInScreen(this, path, index, sdp);
         }
         private void Player_Loaded(object sender, EventArgs e)
         {
@@ -3096,20 +3096,20 @@ namespace Kinovea.ScreenManager
         #region Services
         private void VideoTypeManager_VideoLoadAsked(object sender, VideoLoadAskedEventArgs e)
         {
-            DoLoadMovieInScreen(e.Path, e.Target);
+            DoLoadVideoInScreen(e.Path, e.Target);
         }
 
-        private void DoLoadMovieInScreen(string path, int targetScreen)
+        private void DoLoadVideoInScreen(string path, int targetScreen)
         {
             if (FilesystemHelper.IsReplayWatcher(path))
             {
-                ScreenDescriptionPlayback screenDescription = new ScreenDescriptionPlayback();
-                screenDescription.FullPath = path;
-                screenDescription.IsReplayWatcher = true;
-                screenDescription.Autoplay = true;
-                screenDescription.Stretch = true;
-                screenDescription.SpeedPercentage = PreferencesManager.PlayerPreferences.DefaultReplaySpeed;
-                LoaderVideo.LoadVideoInScreen(this, path, screenDescription);
+                ScreenDescriptorPlayback sdp = new ScreenDescriptorPlayback();
+                sdp.FullPath = path;
+                sdp.IsReplayWatcher = true;
+                sdp.Autoplay = true;
+                sdp.Stretch = true;
+                sdp.SpeedPercentage = PreferencesManager.PlayerPreferences.DefaultReplaySpeed;
+                LoaderVideo.LoadVideoInScreen(this, path, sdp);
             }
             else
             {
@@ -3128,7 +3128,42 @@ namespace Kinovea.ScreenManager
                 }
                 else
                 {
-                    LoaderVideo.LoadVideoInScreen(this, path, targetScreen);
+                    log.DebugFormat("Loading a new video in an existing screen.");
+
+                    // Assume empty screen for starters.
+                    ScreenDescriptorPlayback sdp = new ScreenDescriptorPlayback();
+                    sdp.FullPath = path;
+                    sdp.IsReplayWatcher = false;
+                    sdp.Autoplay = false;
+                    sdp.Stretch = false;
+                    sdp.SpeedPercentage = PreferencesManager.PlayerPreferences.DefaultReplaySpeed;
+
+                    // Here we detect the case where we load a video in an existing player screen.
+                    // We keep the existing screen descriptor as much as possible.
+                    // This includes keeping a watcher watching the original folder, even if we just 
+                    // loaded a video from a completely different place. 
+                    // This is to make it possible to quickly review older videos without stopping the watcher.
+                    // This should also generally handle the case of carrying over the screen state into the 
+                    // next video, like the speed slider.
+                    AbstractScreen screen = GetScreenAt(targetScreen);
+                    if (screen != null && screen is PlayerScreen && screen.Full)
+                    {
+                        var view = ((PlayerScreen)screen).view;
+                        if (view.ScreenDescriptor != null)
+                        {
+                            sdp = view.ScreenDescriptor;
+                        
+                            // If we are NOT a watcher though, we must update to reflect the actual file.
+                            if (!sdp.IsReplayWatcher)
+                                sdp.FullPath = path;
+
+                            // Update to latest state.
+                            sdp.Stretch = view.ImageFill;
+                            sdp.SpeedPercentage = view.SpeedPercentage;
+                        }
+                    }
+
+                    LoaderVideo.LoadVideoInScreen(this, path, targetScreen, sdp);
                 }
             }
         }
@@ -3151,7 +3186,7 @@ namespace Kinovea.ScreenManager
 
         private void View_FileLoadAsked(object source, FileLoadAskedEventArgs e)
         {
-            DoLoadMovieInScreen(e.Source, e.Target);
+            DoLoadVideoInScreen(e.Source, e.Target);
         }
 
         private void CameraTypeManager_CameraLoadAsked(object source, CameraLoadAskedEventArgs e)
@@ -3161,42 +3196,42 @@ namespace Kinovea.ScreenManager
 
         private void View_AutoLaunchAsked(object source, EventArgs e)
         {
-            int count = LaunchSettingsManager.ScreenDescriptions.Count;
+            int count = LaunchSettingsManager.ScreenDescriptors.Count;
             if (count > 2)
             {
-                LaunchSettingsManager.ScreenDescriptions.RemoveRange(2, count - 2);
+                LaunchSettingsManager.ScreenDescriptors.RemoveRange(2, count - 2);
                 count = 2;
             }
 
             // Start by collecting the list of cameras to be found.
             // We will keep the camera discovery system active until we have found all of them or time out.
             camerasToDiscover.Clear();
-            foreach (IScreenDescriptor screenDescription in LaunchSettingsManager.ScreenDescriptions)
+            foreach (IScreenDescriptor sd in LaunchSettingsManager.ScreenDescriptors)
             {
-                if (screenDescription is ScreenDescriptionCapture)
-                    camerasToDiscover.Add(((ScreenDescriptionCapture)screenDescription).CameraName);
+                if (sd is ScreenDescriptorCapture)
+                    camerasToDiscover.Add(((ScreenDescriptorCapture)sd).CameraName);
             }
 
             if (camerasToDiscover.Count == 0)
                 CameraTypeManager.StopDiscoveringCameras();
 
             int added = 0;
-            foreach (IScreenDescriptor screenDescription in LaunchSettingsManager.ScreenDescriptions)
+            foreach (IScreenDescriptor sd in LaunchSettingsManager.ScreenDescriptors)
             {
-                if (screenDescription is ScreenDescriptionCapture)
+                if (sd is ScreenDescriptorCapture)
                 {
                     AddCaptureScreen();
-                    ScreenDescriptionCapture sdc = screenDescription as ScreenDescriptionCapture;
+                    ScreenDescriptorCapture sdc = sd as ScreenDescriptorCapture;
                     CameraSummary summary = new CameraSummary(sdc.CameraName);
 
                     int targetScreen = added == 0 ? 0 : 1;
                     LoaderCamera.LoadCameraInScreen(this, summary, targetScreen, sdc);
                     added++;
                 }
-                else if (screenDescription is ScreenDescriptionPlayback)
+                else if (sd is ScreenDescriptorPlayback)
                 {
                     AddPlayerScreen();
-                    ScreenDescriptionPlayback sdp = screenDescription as ScreenDescriptionPlayback;
+                    ScreenDescriptorPlayback sdp = sd as ScreenDescriptorPlayback;
                     LoaderVideo.LoadVideoInScreen(this, sdp.FullPath, sdp);
                     added++;
                 }

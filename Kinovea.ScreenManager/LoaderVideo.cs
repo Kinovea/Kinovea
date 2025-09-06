@@ -18,45 +18,45 @@ namespace Kinovea.ScreenManager
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static void LoadVideoInScreen(ScreenManagerKernel manager, string path, int targetScreen, ScreenDescriptionPlayback screenDescription = null)
+        public static void LoadVideoInScreen(ScreenManagerKernel manager, string path, int targetScreen, ScreenDescriptorPlayback screenDescriptor)
         {
             CameraTypeManager.CancelThumbnails();
             CameraTypeManager.StopDiscoveringCameras();
 
             if (targetScreen < 0)
-                LoadUnspecified(manager, path, screenDescription);
+                LoadUnspecified(manager, path, screenDescriptor);
             else
-                LoadInSpecificTarget(manager, targetScreen, path, screenDescription);
+                LoadInSpecificTarget(manager, targetScreen, path, screenDescriptor);
         }
 
-        public static void LoadVideoInScreen(ScreenManagerKernel manager, string path, ScreenDescriptionPlayback screenDescription)
+        public static void LoadVideoInScreen(ScreenManagerKernel manager, string path, ScreenDescriptorPlayback screenDescriptor)
         {
             CameraTypeManager.CancelThumbnails();
             CameraTypeManager.StopDiscoveringCameras();
 
-            LoadUnspecified(manager, path, screenDescription);
+            LoadUnspecified(manager, path, screenDescriptor);
         }
 
-        private static void LoadUnspecified(ScreenManagerKernel manager, string path, ScreenDescriptionPlayback screenDescription)
+        private static void LoadUnspecified(ScreenManagerKernel manager, string path, ScreenDescriptorPlayback screenDescriptor)
         {
             if (manager.ScreenCount == 0)
             {
                 manager.AddPlayerScreen();
-                LoadInSpecificTarget(manager, 0, path, screenDescription);
+                LoadInSpecificTarget(manager, 0, path, screenDescriptor);
             }
             else if (manager.ScreenCount == 1)
             {
-                LoadInSpecificTarget(manager, 0, path, screenDescription);
+                LoadInSpecificTarget(manager, 0, path, screenDescriptor);
             }
             else if (manager.ScreenCount == 2)
             {
                 int target = manager.FindTargetScreen(typeof(PlayerScreen));
                 if (target != -1)
-                    LoadInSpecificTarget(manager, target, path, screenDescription);
+                    LoadInSpecificTarget(manager, target, path, screenDescriptor);
             }
         }
 
-        private static void LoadInSpecificTarget(ScreenManagerKernel manager, int targetScreen, string path, ScreenDescriptionPlayback screenDescription)
+        private static void LoadInSpecificTarget(ScreenManagerKernel manager, int targetScreen, string path, ScreenDescriptorPlayback screenDescriptor)
         {
             AbstractScreen screen = manager.GetScreenAt(targetScreen);
 
@@ -67,7 +67,7 @@ namespace Kinovea.ScreenManager
                 if (manager.ScreenCount == 1)
                 {
                     manager.AddPlayerScreen();
-                    LoadInSpecificTarget(manager, 1, path, screenDescription);
+                    LoadInSpecificTarget(manager, 1, path, screenDescriptor);
                 }
             }
             else if (screen is PlayerScreen)
@@ -86,9 +86,9 @@ namespace Kinovea.ScreenManager
                 if (!confirmed)
                     return;
 
-                LoadVideo(playerScreen, path, screenDescription);
+                LoadVideo(playerScreen, path, screenDescriptor);
 
-                if (screenDescription != null && screenDescription.IsReplayWatcher)
+                if (screenDescriptor != null && screenDescriptor.IsReplayWatcher)
                 {
                     PreferencesManager.SuspendSave();
                     PreferencesManager.FileExplorerPreferences.AddRecentWatcher(path);
@@ -114,10 +114,13 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Actually loads the video into the chosen screen.
         /// </summary>
-        public static void LoadVideo(PlayerScreen player, string path, ScreenDescriptionPlayback screenDescription)
+        public static void LoadVideo(PlayerScreen player, string path, ScreenDescriptorPlayback screenDescriptor)
         {
             log.DebugFormat("Loading video {0}.", Path.GetFileName(path));
-            
+
+            if (screenDescriptor == null)
+                return;
+
             NotificationCenter.RaiseStopPlayback(null);
 
             if (player.FrameServer.Loaded)
@@ -126,11 +129,10 @@ namespace Kinovea.ScreenManager
                 player.view.ResetToEmptyState();
             }
 
-            player.view.LaunchDescription = screenDescription;
-            player.Id = Guid.NewGuid();
-            if (screenDescription != null && screenDescription.Id != Guid.Empty)
-                player.Id = screenDescription.Id;
-
+            
+            player.view.ScreenDescriptor = screenDescriptor;
+            player.Id = screenDescriptor.Id;
+            
             if (string.IsNullOrEmpty(path))
             {
                 // This can happen when we load an empty screen from launch settings / workspace.
@@ -193,11 +195,11 @@ namespace Kinovea.ScreenManager
                     }
             }
 
-            if (res != OpenVideoResult.Success && player.view.LaunchDescription != null && player.view.LaunchDescription.IsReplayWatcher)
+            if (res != OpenVideoResult.Success && player.view.ScreenDescriptor != null && player.view.ScreenDescriptor.IsReplayWatcher)
             {
                 // Even if we can't load the latest video, or there's no video at all, we should still start watching this folder.
                 player.view.EnableDisableActions(false);
-                player.StartReplayWatcher(player.view.LaunchDescription, null);
+                player.StartReplayWatcher(null);
                 PreferencesManager.FileExplorerPreferences.LastReplayFolder = path;
             }
         }

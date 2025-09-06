@@ -11,17 +11,17 @@ namespace Kinovea.ScreenManager
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static List<ScreenDescriptionPlayback> GetRecoverables()
+        public static List<ScreenDescriptorPlayback> GetRecoverables()
         {
             if (!Directory.Exists(Software.TempDirectory))
                 return null;
 
-            List<ScreenDescriptionPlayback> recoverables = new List<ScreenDescriptionPlayback>();
+            List<ScreenDescriptorPlayback> recoverables = new List<ScreenDescriptorPlayback>();
             try
             {
                 foreach (string dir in Directory.GetDirectories(Software.TempDirectory))
                 {
-                    ScreenDescriptionPlayback sdp = GetRecoverable(dir);
+                    ScreenDescriptorPlayback sdp = GetRecoverable(dir);
                     if (sdp != null)
                     {
                         recoverables.Add(sdp);
@@ -41,12 +41,12 @@ namespace Kinovea.ScreenManager
             return recoverables;
         }
 
-        private static ScreenDescriptionPlayback GetRecoverable(string dir)
+        private static ScreenDescriptorPlayback GetRecoverable(string dir)
         {
             if (!Directory.Exists(dir))
                 return null;
 
-            ScreenDescriptionPlayback sdp = null;
+            ScreenDescriptorPlayback sdp = null;
 
             try
             {
@@ -67,7 +67,7 @@ namespace Kinovea.ScreenManager
 
                 if (!string.IsNullOrEmpty(filename) && File.Exists(filename))
                 {
-                    sdp = new ScreenDescriptionPlayback();
+                    sdp = new ScreenDescriptorPlayback();
                     sdp.Id = id;
                     sdp.FullPath = filename;
                     sdp.RecoveryLastSave = lastSave;

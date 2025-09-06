@@ -12,44 +12,44 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public static class LoaderCamera
     {
-        public static void LoadCameraInScreen(ScreenManagerKernel manager, CameraSummary summary, int targetScreen, ScreenDescriptionCapture screenDescription = null)
+        public static void LoadCameraInScreen(ScreenManagerKernel manager, CameraSummary summary, int targetScreen, ScreenDescriptorCapture screenDescriptor = null)
         {
             CameraTypeManager.CancelThumbnails();
             CameraTypeManager.StopDiscoveringCameras();
 
             if (targetScreen < 0)
-                LoadUnspecified(manager, summary, screenDescription);
+                LoadUnspecified(manager, summary, screenDescriptor);
             else
-                LoadInSpecificTarget(manager, targetScreen, summary, screenDescription);
+                LoadInSpecificTarget(manager, targetScreen, summary, screenDescriptor);
         }
 
-        private static void LoadUnspecified(ScreenManagerKernel manager, CameraSummary summary, ScreenDescriptionCapture screenDescription)
+        private static void LoadUnspecified(ScreenManagerKernel manager, CameraSummary summary, ScreenDescriptorCapture screenDescriptor)
         {
             if (manager.ScreenCount == 0)
             {
                 manager.AddCaptureScreen();
-                LoadInSpecificTarget(manager, 0, summary, screenDescription);
+                LoadInSpecificTarget(manager, 0, summary, screenDescriptor);
             }
             else if (manager.ScreenCount == 1)
             {
-                LoadInSpecificTarget(manager, 0, summary, screenDescription);
+                LoadInSpecificTarget(manager, 0, summary, screenDescriptor);
             }
             else if (manager.ScreenCount == 2)
             {
                 int target = manager.FindTargetScreen(typeof(CaptureScreen));
                 if (target != -1)
-                    LoadInSpecificTarget(manager, target, summary, screenDescription);
+                    LoadInSpecificTarget(manager, target, summary, screenDescriptor);
             }
         }
 
-        private static void LoadInSpecificTarget(ScreenManagerKernel manager, int targetScreen, CameraSummary summary, ScreenDescriptionCapture screenDescription)
+        private static void LoadInSpecificTarget(ScreenManagerKernel manager, int targetScreen, CameraSummary summary, ScreenDescriptorCapture screenDescriptor)
         {
             AbstractScreen screen = manager.GetScreenAt(targetScreen);
 
             if (screen is CaptureScreen)
             {
                 CaptureScreen captureScreen = screen as CaptureScreen;
-                captureScreen.LoadCamera(summary, screenDescription);
+                captureScreen.LoadCamera(summary, screenDescriptor);
 
                 manager.OrganizeScreens();
                 manager.OrganizeCommonControls();
@@ -62,7 +62,7 @@ namespace Kinovea.ScreenManager
                 if (manager.ScreenCount == 1)
                 {
                     manager.AddCaptureScreen();
-                    LoadInSpecificTarget(manager, 1, summary, screenDescription);
+                    LoadInSpecificTarget(manager, 1, summary, screenDescriptor);
                 }
             }
         }

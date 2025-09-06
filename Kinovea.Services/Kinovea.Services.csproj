@@ -266,10 +266,9 @@
     <Compile Include="Events\StatusUpdatedEventArgs.cs" />
     <Compile Include="LaunchSettings\IScreenDescriptor.cs" />
     <Compile Include="LaunchSettings\LaunchSettingsManager.cs" />
-    <Compile Include="LaunchSettings\ScreenDescriptionCapture.cs" />
-    <Compile Include="LaunchSettings\ScreenDescriptionPlayback.cs" />
+    <Compile Include="LaunchSettings\ScreenDescriptorCapture.cs" />
+    <Compile Include="LaunchSettings\ScreenDescriptorPlayback.cs" />
     <Compile Include="LaunchSettings\ScreenType.cs" />
-    <Compile Include="LaunchSettings\Workspace.cs" />
     <Compile Include="Types\ImageFormat.cs" />
     <Compile Include="Types\ImageFormatHelper.cs" />
     <Compile Include="Types\ImageRotation.cs" />

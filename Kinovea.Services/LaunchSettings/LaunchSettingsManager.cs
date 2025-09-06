@@ -52,7 +52,7 @@ namespace Kinovea.Services
         /// It is also used as temporary storage to stash the part of the state of a screen we don't want 
         /// to lose after loading different content. (ex: speed slider in playback screen).
         /// </summary>
-        public static List<IScreenDescriptor> ScreenDescriptions { get; } = new List<IScreenDescriptor>();
+        public static List<IScreenDescriptor> ScreenDescriptors { get; } = new List<IScreenDescriptor>();
 
         /// <summary>
         /// When starting on a single video with -video option, this describes the state of the explorer.
@@ -63,13 +63,13 @@ namespace Kinovea.Services
         public static bool ExplorerVisible { get; set; } = true;
 
 
-        public static void ClearScreenDescriptions()
+        public static void ClearScreenDescriptors()
         {
-            ScreenDescriptions.Clear();
+            ScreenDescriptors.Clear();
         }
-        public static void AddScreenDescription(IScreenDescriptor screenDescription)
+        public static void AddScreenDescriptor(IScreenDescriptor screenDescriptor)
         {
-            ScreenDescriptions.Add(screenDescription);
+            ScreenDescriptors.Add(screenDescriptor);
         }
     }
 }

@@ -163,10 +163,14 @@ namespace Kinovea.ScreenManager
             get { return slowMotion * 100; }
         }
 
-        public ScreenDescriptionPlayback LaunchDescription
+        public ScreenDescriptorPlayback ScreenDescriptor
         {
-            get { return m_LaunchDescription; }
-            set { m_LaunchDescription = value; }
+            get { return screenDescriptor; }
+            set 
+            {
+                screenDescriptor = value; 
+                infobar.ScreenDescriptor = value;
+            }
         }
 
         public long CurrentTimestamp
@@ -200,9 +204,9 @@ namespace Kinovea.ScreenManager
                 // If we are a replay watcher then consider we are in dual replay context.
                 // This is used to ignore the auto-play and wait until the dual player triggers it.
                 // If we are no longer synched, disable this to start honoring the auto-play flag again.
-                if (m_LaunchDescription != null && m_LaunchDescription.IsReplayWatcher)
+                if (screenDescriptor != null && screenDescriptor.IsReplayWatcher)
                 {
-                    m_LaunchDescription.IsDualReplay = m_bSynched;
+                    screenDescriptor.IsDualReplay = m_bSynched;
                 }
             }
         }
@@ -357,7 +361,7 @@ namespace Kinovea.ScreenManager
 
         // Others
         private NativeMethods.TimerCallback m_TimerCallback;
-        private ScreenDescriptionPlayback m_LaunchDescription;
+        private ScreenDescriptorPlayback screenDescriptor;
         private bool videoFilterIsActive;
         private ZoomHelper zoomHelper = new ZoomHelper();
         private const int m_MaxRenderingDrops = 6;
@@ -532,7 +536,8 @@ namespace Kinovea.ScreenManager
             EnableDisableExportButtons(true);
             buttonPlay.Image = Resources.flatplay;
             sldrSpeed.Enabled = false;
-            m_LaunchDescription = null;
+            screenDescriptor = null;
+            infobar.ScreenDescriptor = null;
             infobar.Visible = false;
 
             if (ResetAsked != null)
@@ -643,14 +648,14 @@ namespace Kinovea.ScreenManager
             // Check for launch description and startup kva.
             // This is also how we can backup and restore stuff between loads in the same screen.
             bool recoveredMetadata = false;
-            if (m_LaunchDescription != null)
+            if (screenDescriptor != null)
             {
                 // Starting the filesystem watcher for .IsReplayWatcher is done in PlayerScreen.
                 // Starting the video for .Play is done later at first Idle.
-                if (m_LaunchDescription.Id != Guid.Empty)
-                    recoveredMetadata = m_FrameServer.Metadata.Recover(m_LaunchDescription.Id);
+                if (screenDescriptor.Id != Guid.Empty)
+                    recoveredMetadata = m_FrameServer.Metadata.Recover(screenDescriptor.Id);
 
-                if (m_LaunchDescription.Stretch)
+                if (screenDescriptor.Stretch)
                 {
                     m_fill = true;
                     ResizeUpdate(true);
@@ -686,11 +691,11 @@ namespace Kinovea.ScreenManager
                 }
             }
 
-            if (m_LaunchDescription != null)
+            if (screenDescriptor != null)
             {
                 // We assume this is a speed percentage of video framerate, not real time.
                 // We must do this after KVA loading because it may reset the slowmotion.
-                slowMotion = m_LaunchDescription.SpeedPercentage / 100.0;
+                slowMotion = screenDescriptor.SpeedPercentage / 100.0;
             }
 
             UpdateTimebase();
@@ -817,9 +822,15 @@ namespace Kinovea.ScreenManager
             UpdateInfobar();
         }
 
-        public void UpdateReplayWatcher(bool replayWatcher, string path)
+        /// <summary>
+        /// Update the infobar after switching the screen from replay to normal or vice versa.
+        /// watchedFolderPath should be the real folder being watched on the file system, or null.
+        /// </summary>
+        public void UpdateReplayWatcher(string watchedFolderPath)
         {
-            infobar.UpdateReplayWatcher(replayWatcher, path);
+            infobar.ScreenDescriptor = screenDescriptor;
+            infobar.UpdateReplayWatcher(watchedFolderPath);
+            UpdateInfobar();
         }
 
         /// <summary>
@@ -1397,7 +1408,7 @@ namespace Kinovea.ScreenManager
 
             if (!workingZoneLoaded)
             {
-                if (m_LaunchDescription != null && m_LaunchDescription.IsReplayWatcher)
+                if (screenDescriptor != null && screenDescriptor.IsReplayWatcher)
                     UpdateWorkingZone(false);
                 else
                     UpdateWorkingZone(true);
@@ -1414,7 +1425,7 @@ namespace Kinovea.ScreenManager
             ResizeUpdate(true);
 
             // Handle auto-playback for replay watchers.
-            if (m_LaunchDescription != null && m_LaunchDescription.Autoplay)
+            if (screenDescriptor != null && screenDescriptor.Autoplay)
             {
                 // Ignore autoplay for dual replay watchers.
                 //
@@ -1429,7 +1440,7 @@ namespace Kinovea.ScreenManager
                 // A further complication, during the very first load of the first screen, the value of "synched"
                 // is not yet true, but we still don't want to start that video as it will start way before the other. 
                 // For this case we use the flag in the descriptor.
-                bool dualReplay = m_bSynched || m_LaunchDescription.IsDualReplay;
+                bool dualReplay = m_bSynched || screenDescriptor.IsDualReplay;
                 if (!dualReplay)
                 {
                     // A new video just loaded in a single replay watcher, start it.
@@ -3516,7 +3527,19 @@ namespace Kinovea.ScreenManager
                 ToolStripMenuItem mnuCaptureFolder = new ToolStripMenuItem();
                 mnuCaptureFolder.Image = Properties.Resources.camera_video;
                 mnuCaptureFolder.Text = captureFolder.FriendlyName;
-                mnuCaptureFolder.Click += (s, e) => OpenReplayWatcherAsked?.Invoke(this, new EventArgs<CaptureFolder>(captureFolder));
+                
+                // Note: instead of hiding the corresponding menu we just check it.
+                // This provides feedback of which capture folder is being watched.
+                if (screenDescriptor != null && screenDescriptor.IsReplayWatcher && screenDescriptor.FullPath == captureFolder.Id.ToString())
+                {
+                    mnuCaptureFolder.Checked = true;
+                }
+                else
+                {
+                    mnuCaptureFolder.Click += (s, e) => OpenReplayWatcherAsked?.Invoke(this, new EventArgs<CaptureFolder>(captureFolder));
+                    //mnuCaptureFolder.Click += (s, e) => StartWatcherAsked?.Invoke(s, new EventArgs<CaptureFolder>(captureFolder));
+                }
+
                 mnuOpenReplayWatcher.DropDown.Items.Add(mnuCaptureFolder);
             }
         }

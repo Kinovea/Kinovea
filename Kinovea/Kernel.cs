@@ -956,13 +956,13 @@ namespace Kinovea.Root
             if (Path.GetFileName(path).Contains("*"))
             {
                 // Replay watcher.
-                ScreenDescriptionPlayback screenDescription = new ScreenDescriptionPlayback();
-                screenDescription.FullPath = path;
-                screenDescription.IsReplayWatcher = true;
-                screenDescription.Stretch = true;
-                screenDescription.Autoplay = true;
-                screenDescription.SpeedPercentage = PreferencesManager.PlayerPreferences.DefaultReplaySpeed;
-                LoaderVideo.LoadVideoInScreen(screenManager, path, screenDescription);
+                ScreenDescriptorPlayback sdp = new ScreenDescriptorPlayback();
+                sdp.FullPath = path;
+                sdp.IsReplayWatcher = true;
+                sdp.Stretch = true;
+                sdp.Autoplay = true;
+                sdp.SpeedPercentage = PreferencesManager.PlayerPreferences.DefaultReplaySpeed;
+                LoaderVideo.LoadVideoInScreen(screenManager, path, sdp);
 
                 screenManager.OrganizeScreens();
             }
@@ -971,7 +971,14 @@ namespace Kinovea.Root
                 // Normal file.
                 if (File.Exists(path))
                 {
-                    LoaderVideo.LoadVideoInScreen(screenManager, path, -1);
+                    ScreenDescriptorPlayback sdp = new ScreenDescriptorPlayback();
+                    sdp.FullPath = path;
+                    sdp.IsReplayWatcher = false;
+                    sdp.Stretch = false;
+                    sdp.Autoplay = false;
+                    sdp.SpeedPercentage = PreferencesManager.PlayerPreferences.DefaultReplaySpeed;
+
+                    LoaderVideo.LoadVideoInScreen(screenManager, path, -1, sdp);
                     screenManager.OrganizeScreens();
                 }
                 else

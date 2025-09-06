@@ -276,7 +276,7 @@ namespace Kinovea.Root
             }
             else if (screen.ScreenType == ScreenType.Playback)
             {
-                if (((ScreenDescriptionPlayback)screen).IsReplayWatcher)
+                if (((ScreenDescriptorPlayback)screen).IsReplayWatcher)
                 {
                     btn.Image = Properties.Resources.user_detective;
                     lbl.Text = string.Format("Replay: {0}", screen.FriendlyName);

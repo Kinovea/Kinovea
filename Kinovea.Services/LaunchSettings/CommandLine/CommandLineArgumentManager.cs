@@ -97,11 +97,11 @@ namespace Kinovea.Services
                     {
                         // Special case for dragging a file on top of the program icon.
                         // Assume video and try to load it in a single screen.
-                        ScreenDescriptionPlayback sdp = new ScreenDescriptionPlayback();
+                        ScreenDescriptorPlayback sdp = new ScreenDescriptorPlayback();
                         sdp.FullPath = arguments[0];
                         sdp.Autoplay = true;
                         sdp.Stretch = true;
-                        LaunchSettingsManager.AddScreenDescription(sdp);
+                        LaunchSettingsManager.AddScreenDescriptor(sdp);
                     }
                     else
                     {
@@ -145,7 +145,7 @@ namespace Kinovea.Services
                     else if (!string.IsNullOrEmpty(video))
                     {
                         // Build screen descriptor manually.
-                        ScreenDescriptionPlayback sdp = new ScreenDescriptionPlayback();
+                        ScreenDescriptorPlayback sdp = new ScreenDescriptorPlayback();
                         sdp.FullPath = video;
 
                         double speedValue;
@@ -158,7 +158,7 @@ namespace Kinovea.Services
                         sdp.SpeedPercentage = speedValue;
                         sdp.Stretch = stretch;
 
-                        LaunchSettingsManager.AddScreenDescription(sdp);
+                        LaunchSettingsManager.AddScreenDescriptor(sdp);
                         LaunchSettingsManager.ExplorerVisible = !hideExplorer;
 
                         return;

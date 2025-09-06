@@ -18,12 +18,22 @@ namespace Kinovea.ScreenManager
         public event EventHandler StopWatcherAsked;
         public event EventHandler<EventArgs<CaptureFolder>> StartWatcherAsked;
 
+        public ScreenDescriptorPlayback ScreenDescriptor
+        {
+            get { return screenDescriptor; }
+            set 
+            { 
+                screenDescriptor = value; 
+            }
+        }
+
         private ContextMenuStrip popMenu = new ContextMenuStrip();
         private ToolStripMenuItem mnuStopWatcher = new ToolStripMenuItem();
         private ToolStripMenuItem mnuStartWatcher = new ToolStripMenuItem();
-        private bool replayWatcher;
+        private bool isReplayWatcher;
         private string watchedFolder;
         private string parentFolder;
+        private ScreenDescriptorPlayback screenDescriptor = null;
 
         public InfobarPlayer()
         {
@@ -31,8 +41,15 @@ namespace Kinovea.ScreenManager
             BuildContextMenus();
         }
 
+        /// <summary>
+        /// Update the infobar with info about the actual video being played.
+        /// For replay watcher this is more specific than what's in the screen descriptor.
+        /// </summary>
         public void UpdateValues(string path, string size, string fps, IVideoFilter videoFilter)
         {
+            if (screenDescriptor == null)
+                return;
+            
             lblFilename.Text = Path.GetFileNameWithoutExtension(path);
             lblSize.Text = size;
             lblFps.Text = fps;
@@ -46,15 +63,14 @@ namespace Kinovea.ScreenManager
             else
                 parentFolder = null;
 
+            isReplayWatcher = screenDescriptor.IsReplayWatcher;
+
             SetContextMenu();
         }
 
-        public void UpdateReplayWatcher(bool replayWatcher, string path)
+        public void UpdateReplayWatcher(string watchedFolderPath)
         {
-            this.replayWatcher = replayWatcher;
-            this.watchedFolder = path;
-            btnVideoType.BackgroundImage = replayWatcher ? Properties.Resources.replaywatcher : Properties.Resources.film_small;
-            
+            this.watchedFolder = watchedFolderPath;
             SetContextMenu();
         }
 
@@ -62,7 +78,12 @@ namespace Kinovea.ScreenManager
         { 
             // We come here whenever the current file changes or a switch between replay watcher or normal video.
             popMenu.Items.Clear();
-            if (replayWatcher)
+
+            isReplayWatcher = screenDescriptor.IsReplayWatcher;
+            
+            btnVideoType.BackgroundImage = isReplayWatcher ? Properties.Resources.replaywatcher : Properties.Resources.film_small;
+
+            if (isReplayWatcher)
             {
                 string toolTipText = string.Format(ScreenManagerLang.Infobar_Player_Observing, watchedFolder);
                 toolTips.SetToolTip(btnVideoType, toolTipText);
@@ -100,9 +121,21 @@ namespace Kinovea.ScreenManager
             {
                 CaptureFolder captureFolder = cf;
                 ToolStripMenuItem mnuCaptureFolder = new ToolStripMenuItem();
-                mnuCaptureFolder.Text = string.Format(ScreenManagerLang.Infobar_Player_StartWatcher, captureFolder.FriendlyName); 
                 mnuCaptureFolder.Image = Properties.Resources.camera_video;
-                mnuCaptureFolder.Click += (s, e) => StartWatcherAsked?.Invoke(s, new EventArgs<CaptureFolder>(captureFolder));
+                
+                // Note: instead of hiding the corresponding menu we just check it.
+                // This provides feedback of which capture folder is being watched.
+                if (screenDescriptor != null && screenDescriptor.IsReplayWatcher && screenDescriptor.FullPath == captureFolder.Id.ToString())
+                {
+                    mnuCaptureFolder.Text = string.Format("Observing folder: {0}", captureFolder.FriendlyName);
+                    mnuCaptureFolder.Checked = true;
+                }
+                else
+                {
+                    mnuCaptureFolder.Text = string.Format(ScreenManagerLang.Infobar_Player_StartWatcher, captureFolder.FriendlyName);
+                    mnuCaptureFolder.Click += (s, e) => StartWatcherAsked?.Invoke(s, new EventArgs<CaptureFolder>(captureFolder));
+                }
+
                 popMenu.Items.Add(mnuCaptureFolder);
             }
         }

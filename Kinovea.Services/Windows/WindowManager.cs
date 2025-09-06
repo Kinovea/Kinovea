@@ -478,10 +478,10 @@ namespace Kinovea.Services
             // It shouldn't be used afterwards.
             
             // Set up the screen list. This will be used to restore the screens
-            LaunchSettingsManager.ClearScreenDescriptions();
+            LaunchSettingsManager.ClearScreenDescriptors();
             foreach (var screen in ActiveWindow.ScreenList)
             {
-                LaunchSettingsManager.AddScreenDescription(screen.Clone());
+                LaunchSettingsManager.AddScreenDescriptor(screen.Clone());
             }
         }
     }

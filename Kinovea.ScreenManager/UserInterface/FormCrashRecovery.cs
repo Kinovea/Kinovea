@@ -37,15 +37,15 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public partial class FormCrashRecovery : Form
     {
-        private List<ScreenDescriptionPlayback> recoverables = new List<ScreenDescriptionPlayback>();
+        private List<ScreenDescriptorPlayback> recoverables = new List<ScreenDescriptorPlayback>();
         
-        public FormCrashRecovery(List<ScreenDescriptionPlayback> recoverables)
+        public FormCrashRecovery(List<ScreenDescriptorPlayback> recoverables)
         {
             InitializeComponent();
             InitializeUI();
 
             this.recoverables = recoverables;
-            foreach(ScreenDescriptionPlayback recoverable in recoverables)
+            foreach(ScreenDescriptorPlayback recoverable in recoverables)
             {
                 ListViewItem item = lvRecoverables.Items.Add(Path.GetFileName(recoverable.FullPath));
                 item.SubItems.Add(String.Format("{0:G}", recoverable.RecoveryLastSave));
@@ -64,9 +64,9 @@ namespace Kinovea.ScreenManager
         private void BtnOKClick(object sender, EventArgs e)
         {
             // Store recover info in the launch manager, they will be picked up when the screen manager actually starts.
-            LaunchSettingsManager.ClearScreenDescriptions();
-            foreach(ScreenDescriptionPlayback sdp in recoverables)
-                LaunchSettingsManager.AddScreenDescription(sdp);
+            LaunchSettingsManager.ClearScreenDescriptors();
+            foreach(ScreenDescriptorPlayback sdp in recoverables)
+                LaunchSettingsManager.AddScreenDescriptor(sdp);
             
             DialogResult = DialogResult.OK;
             this.Close();

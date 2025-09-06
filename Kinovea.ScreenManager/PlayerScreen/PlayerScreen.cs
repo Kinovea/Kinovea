@@ -256,9 +256,18 @@ namespace Kinovea.ScreenManager
             get 
             {
                 if (!frameServer.Loaded)
+                {
                     return false;
+                }
                 else
+                {
+                    if (replayWatcher.IsEnabled && !view.ScreenDescriptor.IsReplayWatcher)
+                    {
+                        log.ErrorFormat("Replay watcher is active in non-watcher screen descriptor.");
+                    }
+
                     return replayWatcher.IsEnabled;
+                }
             }
         }
 
@@ -467,9 +476,20 @@ namespace Kinovea.ScreenManager
         #region General events handlers
         private void View_StopWatcherAsked(object sender, EventArgs e)
         {
-            if (!replayWatcher.IsEnabled)
+            if (!replayWatcher.IsEnabled || !frameServer.Loaded)
                 return;
 
+            // Stop watching the folder but stay on the same file.
+            // Switch the screen descriptor from a replay watcher to the current file.
+            ScreenDescriptorPlayback sdp = new ScreenDescriptorPlayback();
+            sdp.FullPath = frameServer.VideoReader.FilePath;
+            sdp.IsReplayWatcher = false;
+            sdp.Autoplay = false;
+            sdp.Stretch = false;
+            sdp.SpeedPercentage = view.SpeedPercentage;
+            string currentFile = frameServer.VideoReader.FilePath;
+
+            view.ScreenDescriptor = sdp;
             StopReplayWatcher();
         }
 
@@ -483,7 +503,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             // Prepare the screen descriptor. All replay watchers must have a valid screen descriptor.
-            ScreenDescriptionPlayback sdp = new ScreenDescriptionPlayback();
+            ScreenDescriptorPlayback sdp = new ScreenDescriptorPlayback();
             sdp.IsReplayWatcher = true;
             sdp.Autoplay = true;
             sdp.Stretch = false;
@@ -492,7 +512,9 @@ namespace Kinovea.ScreenManager
 
             if (e.Value == null)
             {
-                // Start watching the parent folder of the current file.
+                log.DebugFormat("Start watching the parent folder of the current file.");
+
+                // Stay on the current file. We'll only switch when the next video arrives.
                 currentFile = frameServer.VideoReader.FilePath;
                 if (string.IsNullOrEmpty(currentFile))
                     return;
@@ -501,11 +523,12 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                // Start watching a capture folder.
+                log.DebugFormat("Start watching capture folder {0}.", e.Value.FriendlyName);
                 sdp.FullPath = e.Value.Id.ToString();
             }
 
-            StartReplayWatcher(sdp, currentFile);
+            view.ScreenDescriptor = sdp;
+            StartReplayWatcher(currentFile);
         }
         
         public void View_SpeedChanged(object sender, EventArgs e)
@@ -686,30 +709,29 @@ namespace Kinovea.ScreenManager
 
 
         /// <summary>
-        /// Return a screen descriptor to be used in a workspace.
+        /// Return a screen descriptor to be used in a window.
         /// </summary>
         public override IScreenDescriptor GetScreenDescriptor()
         {
-            ScreenDescriptionPlayback sd = new ScreenDescriptionPlayback();
-            sd.Id = Id;
-            if (Full && replayWatcher != null)
+            if (!frameServer.Loaded || view.ScreenDescriptor == null)
             {
-                sd.FullPath = replayWatcher.IsEnabled ? replayWatcher.FullPath : FilePath;
-                sd.IsReplayWatcher = replayWatcher.IsEnabled;
-                sd.Autoplay = replayWatcher.IsEnabled;
+                return new ScreenDescriptorPlayback(); 
             }
             else
             {
-                sd.FullPath = "";
-                sd.IsReplayWatcher = false;
-                sd.Autoplay = false;
+                // Just-in-time update the screen descriptor with latest state and return it.
+                // Note: the speed percentage we save is the *playback* speed ratio.
+                // Not the "real time" ratio related to the capture frame rate.
+                ScreenDescriptorPlayback sdp = view.ScreenDescriptor;
+                sdp.Stretch = view.ImageFill;
+                sdp.SpeedPercentage = view.SpeedPercentage;
+                if (!sdp.IsReplayWatcher)
+                {
+                    sdp.FullPath = frameServer.VideoReader.FilePath;
+                }
+
+                return sdp;
             }
-            
-            // The speed percentage we save is the *playback* speed ratio.
-            // Not the "real time" ratio related to the capture frame rate.
-            sd.SpeedPercentage = view.SpeedPercentage;
-            sd.Stretch = view.ImageFill;
-            return sd;
         }
 
 
@@ -891,53 +913,58 @@ namespace Kinovea.ScreenManager
         {
             RaiseActivated(EventArgs.Empty);
 
-            // Note: player.StartReplayWatcher will update the launch descriptor with the current value of the speed slider.
-            // This is to support carrying over user defined speed when swapping with the latest video.
-            // In the case of the initial load, we need to wait until here to call this function so the view has had time
-            // to update the slider with the value set in the descriptor (when using a special default replay speed).
-            // Otherwise we would always pick the default value from the view.
-
-            //-----------------------------------------------------
-            // Replay watchers will always start with a launch description, whether they are opened from workspace/command line or manually from a menu.
-            // The launch descriptor still exists as long as the new video is auto-loaded from the watcher,
-            // but when opening a new video manually, the launch descriptor is reset.
-            //-----------------------------------------------------
-
+            // Make sure the watcher is watching the right folder.
             if (replayWatcher.IsEnabled)
             {
                 // Not the first time we come here.
-                if (view.LaunchDescription != null && view.LaunchDescription.IsReplayWatcher)
+                if (view.ScreenDescriptor != null && view.ScreenDescriptor.IsReplayWatcher)
                 {
                     // We come here when we open a new watcher into an existing one,
-                    // or when a new video is created in the watched folder.
-                    string targetDir = Path.GetDirectoryName(view.LaunchDescription.FullPath);
-                    if (replayWatcher.WatchedFolder != targetDir)
+                    // or when a new video is created in the watched folder,
+                    // or loading a video from the same or a different folder.
+                    // The screen descriptor has already been updated.
+
+                    string targetDir = "";
+                    CaptureFolder cf = FilesystemHelper.GetCaptureFolder(view.ScreenDescriptor.FullPath);
+                    if (cf != null)
                     {
-                        // This happens when we are opening a watcher in an existing watcher.
-                        // Since we open a watcher the launch descriptor has been updated to the new folder.
-                        log.DebugFormat("Switch watcher from watching \"{0}\" to watching \"{1}\".", Path.GetFileName(replayWatcher.WatchedFolder), Path.GetFileName(targetDir));
-                        StartReplayWatcher(view.LaunchDescription, FilePath);
+                        // FIXME: resolve the capture folder variables.
+                        targetDir = cf.Path;
                     }
                     else
                     {
-                        // Opened a watcher on the same directory, or new video in the watched folder.
-                        // In this case the launch settings are still full.
+                        targetDir = Path.GetDirectoryName(view.ScreenDescriptor.FullPath);
+                    }
+                    
+                    if (replayWatcher.WatchedFolder != targetDir)
+                    {
+                        // This happens when we are opening a watcher in an existing watcher.
+                        // The screen descriptor has been updated to the new folder already.
+                        // This happens in 
+                        log.DebugFormat("Switch watcher from watching \"{0}\" to watching \"{1}\".", Path.GetFileName(replayWatcher.WatchedFolder), Path.GetFileName(targetDir));
+                        StartReplayWatcher(FilePath);
+                    }
+                    else
+                    {
+                        // Opened a watcher on the same folder, or a loading a video coming from the same folder.
+                        // Keep watching the original folder and the descriptor is still pointing to it.
                         log.DebugFormat("Continue watching directory: \"{0}\"", Path.GetFileName(targetDir));
                     }
                 }
                 else
                 {
-                    // This is when we manually open a new video in an existing watcher.
-                    // Whether it's in the same directory or not we continue watching the original folder.
-                    log.DebugFormat("Continue watching directory: \"{0}\"", Path.GetFileName(replayWatcher.WatchedFolder));
+                    // We should never come here anymore.
+                    // If the screen descriptor has been switched back to a file the watcher should have been stopped already.
+                    // This happens in View_StopWatcherAsked.
+                    log.DebugFormat("Continue watching folder: \"{0}\"", Path.GetFileName(replayWatcher.WatchedFolder));
                 }
             }
-            else if (view.LaunchDescription != null && view.LaunchDescription.IsReplayWatcher)
+            else if (view.ScreenDescriptor != null && view.ScreenDescriptor.IsReplayWatcher)
             {
                 // First time we come here, start watching.
-                string targetDir = Path.GetDirectoryName(view.LaunchDescription.FullPath);
+                string targetDir = Path.GetDirectoryName(view.ScreenDescriptor.FullPath);
                 log.DebugFormat("Start replay watcher for the first time. Directory: \"{0}\"", Path.GetFileName(targetDir));
-                StartReplayWatcher(view.LaunchDescription, FilePath);
+                StartReplayWatcher(FilePath);
             }
             else
             {
@@ -947,18 +974,18 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Start a replay watcher on the path specified in the screen descriptor.
-        /// path is the target video file path to load, it may be null.
+        /// filePath is the target video file path to load, it may be null.
         /// </summary>
-        public void StartReplayWatcher(ScreenDescriptionPlayback sdp, string path)
+        public void StartReplayWatcher(string filePath)
         {
-            replayWatcher.Start(sdp, path);
-            view.UpdateReplayWatcher(replayWatcher.IsEnabled, replayWatcher.WatchedFolder);
+            replayWatcher.Start(view.ScreenDescriptor, filePath);
+            view.UpdateReplayWatcher(replayWatcher.WatchedFolder);
         }
 
         public void StopReplayWatcher()
         {
             replayWatcher.Stop();
-            view.UpdateReplayWatcher(replayWatcher.IsEnabled, replayWatcher.WatchedFolder);
+            view.UpdateReplayWatcher(null);
         }
 
         /// <summary>

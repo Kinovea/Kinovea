@@ -225,9 +225,9 @@ namespace Kinovea.Services
                 foreach (var screen in screenList)
                 {
                     if (screen.ScreenType == ScreenType.Playback)
-                        writer.WriteStartElement("ScreenDescriptionPlayback");
+                        writer.WriteStartElement("ScreenDescriptorPlayback");
                     else
-                        writer.WriteStartElement("ScreenDescriptionCapture");
+                        writer.WriteStartElement("ScreenDescriptorCapture");
 
                     screen.WriteXml(writer);
                     writer.WriteEndElement();
@@ -343,13 +343,13 @@ namespace Kinovea.Services
             {
                 switch (reader.Name)
                 {
-                    case "ScreenDescriptionPlayback":
-                        ScreenDescriptionPlayback sdp = new ScreenDescriptionPlayback();
+                    case "ScreenDescriptorPlayback":
+                        ScreenDescriptorPlayback sdp = new ScreenDescriptorPlayback();
                         sdp.ReadXml(reader);
                         screenList.Add(sdp);
                         break;
-                    case "ScreenDescriptionCapture":
-                        ScreenDescriptionCapture sdc = new ScreenDescriptionCapture();
+                    case "ScreenDescriptorCapture":
+                        ScreenDescriptorCapture sdc = new ScreenDescriptorCapture();
                         sdc.Readxml(reader);
                         screenList.Add(sdc);
                         break;
@@ -361,11 +361,11 @@ namespace Kinovea.Services
 
             // Extra flag for dual replay.
             if (screenList.Count == 2 &&
-                screenList[0] is ScreenDescriptionPlayback && ((ScreenDescriptionPlayback)screenList[0]).IsReplayWatcher &&
-                screenList[1] is ScreenDescriptionPlayback && ((ScreenDescriptionPlayback)screenList[1]).IsReplayWatcher)
+                screenList[0] is ScreenDescriptorPlayback && ((ScreenDescriptorPlayback)screenList[0]).IsReplayWatcher &&
+                screenList[1] is ScreenDescriptorPlayback && ((ScreenDescriptorPlayback)screenList[1]).IsReplayWatcher)
             {
-                ((ScreenDescriptionPlayback)screenList[0]).IsDualReplay = true;
-                ((ScreenDescriptionPlayback)screenList[1]).IsDualReplay = true;
+                ((ScreenDescriptorPlayback)screenList[0]).IsDualReplay = true;
+                ((ScreenDescriptorPlayback)screenList[1]).IsDualReplay = true;
             }
 
             reader.ReadEndElement();
