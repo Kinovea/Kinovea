@@ -333,14 +333,21 @@ namespace Kinovea.ScreenManager
             this.Width = width;
             this.Height = height;
             
-            // picBox is ratio stretched.
-            if(currentThumbnail != null)
+            try
             {
-                picBox.Size = ComputeImageSize(currentThumbnail.Size, this.Size);
-                picBox.Left = (paddingHorizontal / 2) + (this.Width - paddingHorizontal - picBox.Width) / 2;
-                picBox.Top = (paddingHorizontal / 2) + (this.Height - picBox.Height - paddingVertical);
+                // picBox is ratio stretched.
+                if(currentThumbnail != null)
+                {
+                    picBox.Size = ComputeImageSize(currentThumbnail.Size, this.Size);
+                    picBox.Left = (paddingHorizontal / 2) + (this.Width - paddingHorizontal - picBox.Width) / 2;
+                    picBox.Top = (paddingHorizontal / 2) + (this.Height - picBox.Height - paddingVertical);
+                }
+                else
+                {
+                    picBox.Height = (int)(picBox.Width * 0.75f);
+                }
             }
-            else
+            catch
             {
                 picBox.Height = (int)(picBox.Width * 0.75f);
             }
