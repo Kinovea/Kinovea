@@ -41,7 +41,7 @@ using Kinovea.Video;
 namespace Kinovea.FileBrowser
 {
     /// <summary>
-    /// The user interface for all explorer like stuff.
+    /// The user interface for the navigation pane.
     /// We maintain the synchronization between the shortcut and exptree tab
     /// when we move between shortcuts. We don't maintain it the other way around.
     /// </summary>

@@ -134,6 +134,7 @@
       this.btnInsertVariable.TabIndex = 56;
       this.btnInsertVariable.Text = "Insert a variable…";
       this.btnInsertVariable.UseVisualStyleBackColor = true;
+      this.btnInsertVariable.Click += new System.EventHandler(this.btnInsertVariable_Click);
       // 
       // btnSaveAndContinue
       // 

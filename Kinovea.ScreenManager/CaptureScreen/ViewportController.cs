@@ -129,6 +129,7 @@ namespace Kinovea.ScreenManager
         private MetadataManipulator metadataManipulator;
         private bool allowContextMenu = true;
         private string lastExportedKVA;
+        private Func<bool, string> buildRecordingPath;
 
         #region Context menu
         private ContextMenuStrip popMenu = new ContextMenuStrip();
@@ -190,6 +191,11 @@ namespace Kinovea.ScreenManager
             }
         }
         #endregion
+
+        public void SetBuildRecordingPathDelegate(Func<bool, string> buildRecordingPath)
+        {
+            this.buildRecordingPath = buildRecordingPath;
+        }
 
         public void ReloadUICulture()
         {
@@ -695,7 +701,7 @@ namespace Kinovea.ScreenManager
 
             // The form is responsible for saving the command to the tepmorary screen descriptor
             // and to the actual one in the window descriptor.
-            FormPostRecordingCommand fprc = new FormPostRecordingCommand(sdc);
+            FormPostRecordingCommand fprc = new FormPostRecordingCommand(sdc, buildRecordingPath);
             fprc.StartPosition = FormStartPosition.CenterScreen;
             fprc.ShowDialog();
             fprc.Dispose();

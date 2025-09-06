@@ -224,6 +224,7 @@ namespace Kinovea.ScreenManager
             log.Debug("Constructing a CaptureScreen.");
             view = new CaptureScreenView(this);
             viewportController = new ViewportController();
+            viewportController.SetBuildRecordingPathDelegate(BuildRecordingPath);
 
             BindCommands();
 
@@ -1469,6 +1470,42 @@ namespace Kinovea.ScreenManager
         }
 
         #region Recording/Snapshoting
+
+        /// <summary>
+        /// Interpolate the capture folder and file name with the current context.
+        /// </summary>
+        /// <returns></returns>
+        private string BuildRecordingPath(bool video)
+        {
+            CaptureFolder cf = view.CaptureFolder;
+            if (cf == null)
+            {
+                log.ErrorFormat("Cannot start recording. No capture folder defined.");
+                return null;
+            }
+
+            string filenameWithoutExtension = view.CurrentFilename;
+
+            string extension = "";
+            if (video)
+            {
+                bool uncompressed = PreferencesManager.CapturePreferences.SaveUncompressedVideo && imageDescriptor.Format != Kinovea.Services.ImageFormat.JPEG;
+                extension = FilesystemHelper.GetCaptureVideoExtension(uncompressed);
+            }
+            else
+            {
+                extension = FilesystemHelper.GetCaptureImageExtension();
+            }
+        
+            Dictionary<string, string> context = BuildCaptureContext();
+            string folder = DynamicPathResolver.Resolve(cf.Path, context);
+            string filename = DynamicPathResolver.Resolve(filenameWithoutExtension, context);
+            string path = Path.Combine(folder, filename + extension);
+
+            return path;
+        }
+
+
         private void MakeSnapshot()
         {
             if (!cameraLoaded)
@@ -1479,16 +1516,10 @@ namespace Kinovea.ScreenManager
                 return;
 
             // Interpolate the filename variables with the current context.
-            CaptureFolder cf = view.CaptureFolder;
-            if (cf == null)
-                return;
-
             string filenameWithoutExtension = view.CurrentFilename;
-            string extension = FilesystemHelper.GetCaptureImageExtension();
-            Dictionary<string, string> context = BuildCaptureContext();
-            string folder = DynamicPathResolver.Resolve(cf.Path, context);
-            string filename = DynamicPathResolver.Resolve(filenameWithoutExtension, context);
-            string path = Path.Combine(folder, filename + extension);
+            string path = BuildRecordingPath(false);
+            if (string.IsNullOrEmpty(path))
+                return;
 
             log.DebugFormat("Recording target image: {0}", path);
 
@@ -1616,21 +1647,12 @@ namespace Kinovea.ScreenManager
                 return;
 
             // Interpolate the filename variables with the current context.
-            CaptureFolder cf = view.CaptureFolder;
-            if (cf == null)
-            {
-                log.ErrorFormat("Cannot start recording. No capture folder defined.");
-                return;
-            }
-
             string filenameWithoutExtension = view.CurrentFilename;
             bool uncompressed = PreferencesManager.CapturePreferences.SaveUncompressedVideo && imageDescriptor.Format != Kinovea.Services.ImageFormat.JPEG;
-            string extension = FilesystemHelper.GetCaptureVideoExtension(uncompressed);
-            Dictionary<string, string> context = BuildCaptureContext();
-            string folder = DynamicPathResolver.Resolve(cf.Path, context);
-            string filename = DynamicPathResolver.Resolve(filenameWithoutExtension, context);
-            string path = Path.Combine(folder, filename + extension);
-            
+            string path = BuildRecordingPath(true);
+            if (string.IsNullOrEmpty(path))
+                return;
+
             log.DebugFormat("Recording target: \"{0}\"", path);
 
             if (!DirectoryExistsCheck(path))
@@ -2224,7 +2246,6 @@ namespace Kinovea.ScreenManager
             context["filepath"]     = path;
             context["folderpath"]   = Path.GetDirectoryName(path);
             context["filename"]     = Path.GetFileName(path);
-            context["foldername"]   = Path.GetFileName(Path.GetDirectoryName(path));
             context["kva"]          = Path.GetFileNameWithoutExtension(path) + ".kva";
             return context;
         }

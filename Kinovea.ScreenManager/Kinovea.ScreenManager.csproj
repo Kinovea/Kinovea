@@ -389,9 +389,10 @@
     <Compile Include="Exporters\Images\ImageExportFormat.cs" />
     <Compile Include="Exporters\Video\VideoExporter.cs" />
     <Compile Include="Exporters\Video\VideoExportFormat.cs" />
-    <Compile Include="FilePatterns\DynamicPathResolver.cs" />
-    <Compile Include="FilePatterns\VariablesRepository.cs" />
-    <Compile Include="FilePatterns\VariableTable.cs" />
+    <Compile Include="Variables\DynamicPathResolver.cs" />
+    <Compile Include="Variables\ContextVariableCategory.cs" />
+    <Compile Include="Variables\VariablesRepository.cs" />
+    <Compile Include="Variables\VariableTable.cs" />
     <Compile Include="Importers\TRC\MetadataImporterSports2D.cs" />
     <Compile Include="Measurement\Calibration\CalibrationAxis.cs" />
     <Compile Include="Measurement\Calibration\CameraPoser.cs" />
@@ -719,6 +720,12 @@
     </Compile>
     <Compile Include="UserInterface\FormBackground.Designer.cs">
       <DependentUpon>FormBackground.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Variables\FormInsertVariable.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Variables\FormInsertVariable.Designer.cs">
+      <DependentUpon>FormInsertVariable.cs</DependentUpon>
     </Compile>
     <Compile Include="UserInterface\FormStickerPicker.cs">
       <SubType>Form</SubType>
@@ -1190,6 +1197,9 @@
     <EmbeddedResource Include="PlayerScreen\Controls\FrameTracker.resx">
       <DependentUpon>FrameTracker.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Variables\FormInsertVariable.resx">
+      <DependentUpon>FormInsertVariable.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\FormStickerPicker.resx">
       <DependentUpon>FormStickerPicker.cs</DependentUpon>

@@ -16,7 +16,7 @@ namespace Kinovea.ScreenManager
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
-        /// Get the default KVA path of either player or capture, based on the current profile context.
+        /// Get the default KVA path of either player or capture, with interpolation of context variables.
         /// These don't support built-in variables. The path to a default shouldn't move with the date.
         /// If found returns true and put the path in `path`, otherwise returns false.
         /// This is for reading, not for saving.

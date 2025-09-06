@@ -86,7 +86,7 @@ Changelog:
     Improved - Export: allow saving of annotations from the capture screen.
     Improved - Capture: improved stability of camera discovery.
     Improved - Capture: capture folders and post-recording command can use custom variables.
-    Improved - Capture: toolbox to insert variables and common characters in folder paths.
+    Improved - Capture: toolbox to insert variables and common characters in folder paths, with just-in-time examples.
     Improved - Capture: option to disable the auto-numbering of file names when not using dynamic file names.
     Improved - Capture: post-recording now starts in a background thread.
     Improved - Capture: post-recording command supports multiple calls to external programs per command.

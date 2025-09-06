@@ -577,7 +577,8 @@ namespace Kinovea.Root
 
         private void btnCaptureFolderInsertVariable_Click(object sender, EventArgs e)
         {
-            FormInsertVariable fiv = new FormInsertVariable();
+            ContextVariableCategory categories = ContextVariableCategory.Custom | ContextVariableCategory.Date;
+            FormInsertVariable fiv = new FormInsertVariable(categories);
             fiv.StartPosition = FormStartPosition.CenterScreen;
             if (fiv.ShowDialog() != DialogResult.OK)
                 return;
@@ -712,7 +713,13 @@ namespace Kinovea.Root
         }
         private void btnFilesInsertVariable_Click(object sender, EventArgs e)
         {
-            FormInsertVariable fiv = new FormInsertVariable(true);
+            ContextVariableCategory categories = 
+                ContextVariableCategory.Custom | 
+                ContextVariableCategory.Date |
+                ContextVariableCategory.Time |
+                ContextVariableCategory.Camera;
+
+            FormInsertVariable fiv = new FormInsertVariable(categories);
             fiv.StartPosition = FormStartPosition.CenterScreen;
             if (fiv.ShowDialog() != DialogResult.OK)
                 return;

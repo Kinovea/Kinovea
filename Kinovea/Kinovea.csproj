@@ -198,12 +198,6 @@
       <DependentUpon>RootLang.resx</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="UserInterface\FormInsertVariable.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UserInterface\FormInsertVariable.Designer.cs">
-      <DependentUpon>FormInsertVariable.cs</DependentUpon>
-    </Compile>
     <Compile Include="UserInterface\FormWindowManager.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -325,9 +319,6 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UserInterface\FormInsertVariable.resx">
-      <DependentUpon>FormInsertVariable.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\FormWindowManager.resx">
       <DependentUpon>FormWindowManager.cs</DependentUpon>
