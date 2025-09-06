@@ -368,7 +368,7 @@ namespace Kinovea.ScreenManager
         /// <returns>true if the operation can carry on, false if the operation is cancelled</returns>
         public bool BeforeUnloadingAnnotations()
         {
-            if (Metadata == null || !Metadata.IsDirty)
+            if (!this.Full || Metadata == null || !Metadata.IsDirty)
             {
                 // No metadata or metadata already saved, we can safely carry on.
                 return true;

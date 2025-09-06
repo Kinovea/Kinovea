@@ -529,8 +529,12 @@ namespace Kinovea.ScreenManager
         #region Methods called from the view. These could also be events or commands.
         public void View_Close()
         {
-            ScreenDescriptorCapture sdc = (ScreenDescriptorCapture)GetScreenDescriptor();
-            WindowManager.ActiveWindow.BackupScreenDescriptorCapture(sdc);
+            if (this.Full)
+            {
+                ScreenDescriptorCapture sdc = (ScreenDescriptorCapture)GetScreenDescriptor();
+                WindowManager.ActiveWindow.BackupScreenDescriptorCapture(sdc);
+            }
+
             RaiseCloseAsked(EventArgs.Empty); 
         }
         public void View_Configure()
