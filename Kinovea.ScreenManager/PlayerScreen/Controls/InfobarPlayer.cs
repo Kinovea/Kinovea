@@ -31,7 +31,6 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuStopWatcher = new ToolStripMenuItem();
         private ToolStripMenuItem mnuStartWatcher = new ToolStripMenuItem();
         private bool isReplayWatcher;
-        private string watchedFolder;
         private string parentFolder;
         private ScreenDescriptorPlayback screenDescriptor = null;
 
@@ -65,16 +64,19 @@ namespace Kinovea.ScreenManager
 
             isReplayWatcher = screenDescriptor.IsReplayWatcher;
 
-            SetContextMenu();
+            SetContextMenu(path);
         }
 
         public void UpdateReplayWatcher(string watchedFolderPath)
         {
-            this.watchedFolder = watchedFolderPath;
-            SetContextMenu();
+            SetContextMenu(watchedFolderPath);
         }
 
-        private void SetContextMenu()
+        /// <summary>
+        /// Update the tooltip and the context menu.
+        /// `path` is the real file system path of the file or watched folder.
+        /// </summary>
+        private void SetContextMenu(string path)
         { 
             // We come here whenever the current file changes or a switch between replay watcher or normal video.
             popMenu.Items.Clear();
@@ -90,10 +92,10 @@ namespace Kinovea.ScreenManager
                 if (cf != null)
                     shortName = cf.ShortName;
 
-                string infoName = watchedFolder;
+                string infoName = path;
                 if (!string.IsNullOrEmpty(shortName))
                 {
-                    infoName = string.Format("{0} ({1})", shortName, watchedFolder);
+                    infoName = string.Format("{0} ({1})", shortName, path);
                 }
 
                 string toolTipText = string.Format(ScreenManagerLang.Infobar_Player_Observing, infoName);
@@ -116,8 +118,8 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                toolTips.SetToolTip(btnVideoType, null);
-                toolTips.SetToolTip(lblFilename, null);
+                toolTips.SetToolTip(btnVideoType, path);
+                toolTips.SetToolTip(lblFilename, path);
 
                 // Note: we no longer allow starting a watcher on the current folder from here.
                 // See note above.
