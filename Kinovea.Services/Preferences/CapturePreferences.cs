@@ -102,11 +102,6 @@ namespace Kinovea.Services
             get { BeforeRead(); return exportFlags; }
             set { exportFlags = value; Save(); }
         }
-        public string PostRecordCommand
-        {
-            get { BeforeRead(); return postRecordCommand; }
-            set { postRecordCommand = value; Save(); }
-        }
         public string CaptureKVA
         {
             get { BeforeRead(); return captureKVA; }
@@ -139,7 +134,6 @@ namespace Kinovea.Services
         private float slowspeedRecordingFramerateThreshold = 1;
         private float slowspeedRecordingFramerateOutput = 30;
         private KVAExportFlags exportFlags = KVAExportFlags.DefaultCaptureRecording;
-        private string postRecordCommand;
         private string captureKVA;
         private bool contextEnabled = true;
         private string contextString;
@@ -247,7 +241,6 @@ namespace Kinovea.Services
             writer.WriteElementString("SlowspeedRecordingFramerateOutput", srfo);
             writer.WriteElementString("ExportFlags", exportFlags.ToString());
 
-            writer.WriteElementString("PostRecordCommand", postRecordCommand);
             writer.WriteElementString("CaptureKVA", captureKVA);
             writer.WriteElementString("ContextEnabled", XmlHelper.WriteBoolean(contextEnabled));
             writer.WriteElementString("ContextString", contextString);
@@ -309,9 +302,6 @@ namespace Kinovea.Services
                     case "ExportFlags":
                         string exportFlagsString = reader.ReadElementContentAsString();
                         exportFlags = (KVAExportFlags)Enum.Parse(typeof(KVAExportFlags), exportFlagsString);
-                        break;
-                    case "PostRecordCommand":
-                        postRecordCommand = reader.ReadElementContentAsString();
                         break;
                     case "CaptureKVA":
                         captureKVA = reader.ReadElementContentAsString();

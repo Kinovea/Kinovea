@@ -40,7 +40,7 @@ namespace Kinovea.ScreenManager
         {
             InitializeComponent();
             this.Text = "Insert context variable";
-            btnOk.Text = ScreenManagerLang.Generic_Apply;
+            btnOk.Text = "Insert";
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
             PrepareListView();
             InitList(categories, path);

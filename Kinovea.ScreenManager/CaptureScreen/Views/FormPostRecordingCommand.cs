@@ -63,7 +63,7 @@ namespace Kinovea.ScreenManager
         private void LocalizeForm()
         {
             this.Text = "Post-recording command";
-            cbEnable.Text = "Disable post-recording command";
+            cbEnable.Text = "Enable post-recording command";
             btnInsertVariable.Text = "Insert a variable…";
             btnSaveAndContinue.Text = "Save and continue";
             btnOK.Text = ScreenManagerLang.Generic_Save;
@@ -72,7 +72,7 @@ namespace Kinovea.ScreenManager
 
         private void Populate()
         {
-            cbEnable.Checked = !this.enablePRC;
+            cbEnable.Checked = this.enablePRC;
 
             bool singleEmptyLine = userCommand.Instructions.Count == 1 && string.IsNullOrEmpty(userCommand.Instructions[0].Trim());
 
@@ -92,13 +92,14 @@ namespace Kinovea.ScreenManager
 
             fastColoredTextBox1.WordWrap = true;
             fastColoredTextBox1.BackColor = backgroundColor;
+            fastColoredTextBox1.Enabled = this.enablePRC;
         }
         #endregion
 
         #region UI events
         private void cbEnable_CheckedChanged(object sender, EventArgs e)
         {
-            enablePRC = !cbEnable.Checked;
+            enablePRC = cbEnable.Checked;
             fastColoredTextBox1.Enabled = enablePRC;
             btnInsertVariable.Enabled = enablePRC;
         }

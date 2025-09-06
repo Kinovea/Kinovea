@@ -129,10 +129,7 @@ namespace Kinovea.Root
       this.lblQuietPeriod = new System.Windows.Forms.Label();
       this.nudQuietPeriod = new System.Windows.Forms.NumericUpDown();
       this.tabAutomation = new System.Windows.Forms.TabPage();
-      this.label1 = new System.Windows.Forms.Label();
-      this.btnPostRecordCommand = new System.Windows.Forms.Button();
-      this.lblPostRecordCommand = new System.Windows.Forms.Label();
-      this.tbPostRecordCommand = new System.Windows.Forms.TextBox();
+      this.rtbAutomation = new System.Windows.Forms.RichTextBox();
       this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
@@ -1157,10 +1154,7 @@ namespace Kinovea.Root
       // 
       // tabAutomation
       // 
-      this.tabAutomation.Controls.Add(this.label1);
-      this.tabAutomation.Controls.Add(this.btnPostRecordCommand);
-      this.tabAutomation.Controls.Add(this.lblPostRecordCommand);
-      this.tabAutomation.Controls.Add(this.tbPostRecordCommand);
+      this.tabAutomation.Controls.Add(this.rtbAutomation);
       this.tabAutomation.Location = new System.Drawing.Point(4, 22);
       this.tabAutomation.Name = "tabAutomation";
       this.tabAutomation.Size = new System.Drawing.Size(482, 296);
@@ -1168,49 +1162,16 @@ namespace Kinovea.Root
       this.tabAutomation.Text = "Automation";
       this.tabAutomation.UseVisualStyleBackColor = true;
       // 
-      // label1
+      // rtbAutomation
       // 
-      this.label1.AutoSize = true;
-      this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.label1.ForeColor = System.Drawing.Color.Gray;
-      this.label1.Location = new System.Drawing.Point(206, 43);
-      this.label1.Name = "label1";
-      this.label1.Size = new System.Drawing.Size(219, 12);
-      this.label1.TabIndex = 57;
-      this.label1.Text = "(Ex: robocopy \"%directory\" \"D:\\backup\" \"%filename\")";
-      // 
-      // btnPostRecordCommand
-      // 
-      this.btnPostRecordCommand.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnPostRecordCommand.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnPostRecordCommand.FlatAppearance.BorderSize = 0;
-      this.btnPostRecordCommand.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-      this.btnPostRecordCommand.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnPostRecordCommand.Image = global::Kinovea.Root.Properties.Resources.percent;
-      this.btnPostRecordCommand.Location = new System.Drawing.Point(441, 16);
-      this.btnPostRecordCommand.MinimumSize = new System.Drawing.Size(20, 20);
-      this.btnPostRecordCommand.Name = "btnPostRecordCommand";
-      this.btnPostRecordCommand.Size = new System.Drawing.Size(20, 20);
-      this.btnPostRecordCommand.TabIndex = 54;
-      this.btnPostRecordCommand.Tag = "";
-      this.btnPostRecordCommand.UseVisualStyleBackColor = true;
-      this.btnPostRecordCommand.Click += new System.EventHandler(this.btnPostRecordCommand_Click);
-      // 
-      // lblPostRecordCommand
-      // 
-      this.lblPostRecordCommand.Location = new System.Drawing.Point(16, 20);
-      this.lblPostRecordCommand.Name = "lblPostRecordCommand";
-      this.lblPostRecordCommand.Size = new System.Drawing.Size(186, 42);
-      this.lblPostRecordCommand.TabIndex = 52;
-      this.lblPostRecordCommand.Text = "Post recording command:";
-      // 
-      // tbPostRecordCommand
-      // 
-      this.tbPostRecordCommand.Location = new System.Drawing.Point(208, 17);
-      this.tbPostRecordCommand.Name = "tbPostRecordCommand";
-      this.tbPostRecordCommand.Size = new System.Drawing.Size(227, 20);
-      this.tbPostRecordCommand.TabIndex = 53;
-      this.tbPostRecordCommand.TextChanged += new System.EventHandler(this.tbPostRecordCommand_TextChanged);
+      this.rtbAutomation.BackColor = System.Drawing.Color.White;
+      this.rtbAutomation.BorderStyle = System.Windows.Forms.BorderStyle.None;
+      this.rtbAutomation.Location = new System.Drawing.Point(18, 18);
+      this.rtbAutomation.Name = "rtbAutomation";
+      this.rtbAutomation.ReadOnly = true;
+      this.rtbAutomation.Size = new System.Drawing.Size(447, 96);
+      this.rtbAutomation.TabIndex = 53;
+      this.rtbAutomation.Text = "Post-recording command info.";
       // 
       // PreferencePanelCapture
       // 
@@ -1253,7 +1214,6 @@ namespace Kinovea.Root
       ((System.ComponentModel.ISupportInitialize)(this.nudAudioTriggerThreshold)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudQuietPeriod)).EndInit();
       this.tabAutomation.ResumeLayout(false);
-      this.tabAutomation.PerformLayout();
       this.ResumeLayout(false);
 
 		}
@@ -1278,9 +1238,6 @@ namespace Kinovea.Root
         private System.Windows.Forms.ComboBox cmbUncompressedVideoFormat;
         private System.Windows.Forms.Label lblUncompressedVideoFormat;
         private System.Windows.Forms.TabPage tabAutomation;
-        private System.Windows.Forms.Button btnPostRecordCommand;
-        private System.Windows.Forms.Label lblPostRecordCommand;
-        private System.Windows.Forms.TextBox tbPostRecordCommand;
         private System.Windows.Forms.RadioButton rbRecordingScheduled;
         private System.Windows.Forms.CheckBox chkUncompressedVideo;
         private System.Windows.Forms.GroupBox gbHighspeedCameras;
@@ -1288,7 +1245,6 @@ namespace Kinovea.Root
         private System.Windows.Forms.Label lblReplacementFramerate;
         private System.Windows.Forms.NumericUpDown nudReplacementThreshold;
         private System.Windows.Forms.Label lblReplacementThreshold;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label lblCaptureKVA;
         private System.Windows.Forms.TextBox tbCaptureKVA;
         private System.Windows.Forms.Button btnCaptureKVA;
@@ -1342,5 +1298,6 @@ namespace Kinovea.Root
         private System.Windows.Forms.Button btnFilesInsertVariable;
         private System.Windows.Forms.Label lblDefaultFileName;
         private System.Windows.Forms.TextBox tbDefaultFileName;
+        private System.Windows.Forms.RichTextBox rtbAutomation;
     }
 }

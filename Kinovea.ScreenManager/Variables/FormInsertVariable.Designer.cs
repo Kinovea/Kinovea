@@ -93,7 +93,7 @@
       this.Name = "FormInsertVariable";
       this.ShowIcon = false;
       this.ShowInTaskbar = false;
-      this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+      this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
       this.Text = "Insert variable";
       ((System.ComponentModel.ISupportInitialize)(this.olvVariables)).EndInit();
       this.ResumeLayout(false);

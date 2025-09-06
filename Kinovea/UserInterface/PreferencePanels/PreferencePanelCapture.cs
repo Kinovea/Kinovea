@@ -107,9 +107,6 @@ namespace Kinovea.Root
         private CaptureTriggerAction triggerAction = CaptureTriggerAction.RecordVideo;
         private bool defaultTriggerArmed = false;
 
-        // Automation
-        private string postRecordCommand;
-
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -183,10 +180,6 @@ namespace Kinovea.Root
             triggerQuietPeriod = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.TriggerQuietPeriod;
             triggerAction = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.TriggerAction;
             defaultTriggerArmed = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.DefaultTriggerArmed;
-
-            // Automation
-            postRecordCommand = PreferencesManager.CapturePreferences.PostRecordCommand;
-            
         }
         private void InitTriggerMonitors()
         {
@@ -398,8 +391,8 @@ namespace Kinovea.Root
         {
             tabAutomation.Text = RootLang.dlgPreferences_Capture_tabAutomation; 
             
-            lblPostRecordCommand.Text = RootLang.dlgPreferences_Capture_lblPostRecordingCommand; 
-            tbPostRecordCommand.Text = postRecordCommand;
+            rtbAutomation.Text = "To run external programs after a recording, use the post-recording command dialog in the corresponding capture screen.\n\n" +
+                "Right click the viewport background and select \"Post-recording command…\".";
         }
         #endregion
         
@@ -860,29 +853,6 @@ namespace Kinovea.Root
         }
         #endregion
 
-        #region Tab Automation
-        
-        private void tbPostRecordCommand_TextChanged(object sender, EventArgs e)
-        {
-            Control tb = sender as Control;
-            if (tb == null)
-                return;
-
-            // No validation whatsoever. The user is responsible for not messing this up.
-            postRecordCommand = tb.Text;
-        }
-
-        private void btnPostRecordCommand_Click(object sender, EventArgs e)
-        {
-            //if (formPatternsVisible)
-            //    return;
-
-            //formPatterns = new FormPatterns(PatternSymbolsCommand.Symbols);
-            //formPatterns.FormClosed += formPatterns_FormClosed;
-            //formPatternsVisible = true;
-            //formPatterns.Show(this);
-        }
-        #endregion
         #endregion
 
         #region Trigger monitors
@@ -1024,9 +994,6 @@ namespace Kinovea.Root
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.TriggerQuietPeriod = triggerQuietPeriod;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.TriggerAction = triggerAction;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.DefaultTriggerArmed = defaultTriggerArmed;
-
-            // Automation
-            PreferencesManager.CapturePreferences.PostRecordCommand = postRecordCommand;
         }
     }
 }
