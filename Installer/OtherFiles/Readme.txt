@@ -39,24 +39,29 @@ Changelog:
 ----------
 
 2025.1 - TBD
-    Added - Image stabilization from a track.
-    Added - Sticker tool.
-    Added - Styling panel.
-    Added - Tracking panel.
-    Added - Circle tracking algorithm.
-    Added - Support importing .trc files from Sports2D.
-    Added - Capture trigger via UDP.
-    Added - Custom variables to describe the context of a recording.
-    Improved - Explorer: improved performances of thumbnails view.
-    Improved - Export: restored the export of trajectories to text in GnuPlot format.
-    Improved - Export: allow saving of annotations from the capture screen.
+    Added - General: full multi-window support.
+    Added - Player: image stabilization from a track.
+    Added - Player: styling panel.
+    Added - Player: tracking panel.
+    Added - Annotations: sticker tool.
+    Added - Annotations: support for importing .trc files from Sports2D.
+    Added - Tracking: circle tracking algorithm.
+    Added - Capture: custom variables system describing the context of recordings.
+    Added - Capture: capture folders management.
+    Added - Capture: capture trigger via UDP.
+    Improved - General: core preferences are now shared and synchronized between windows.
+    Improved - General: window name can be set directly from the user interface.
+    Improved - General: window startup options: continue where you left off or start on a specific set of screens.
+    Improved - General: ability to quickly restart closed windows.
+    Improved - General: ability to start, stop and delete older windows.
+    Improved - General: changed variables syntax to %variable%.
+    Improved - File browser: improved performances of thumbnails view.
+    Improved - File browser: improved thumbnails layout.
+    Improved - Player: replay windows automatically wake up and bring themselves to front.
+    Improved - Player: improved mechanics of switching between single-video player and replay watcher.
     Improved - Player: continue playback after a jump if we were playing.
-    Improved - Tracking: improved performances using parallel tracking.
-    Improved - Tracking: fixed sub pixel precision in template matching algorithm.
-    Improved - Tracking: use parabolic fit for refinement in template matching algorithm.
-    Improved - Tracking: new command to start all trackers at once.
     Improved - Annotations: new menus to manage annotations (unload, save as default, reload).
-    Improved - Annotations: default KVA paths can use custom variables based on the active profile.
+    Improved - Annotations: default KVA paths can use custom variables.
     Improved - Annotations: changing the style of a drawing now automatically changes the style preset for the tool.
     Improved - Annotations: angle tool now supports a custom number of decimal places.
     Improved - Annotations: angle tool now has an arrow showing the direction in which the angle is measured.
@@ -65,19 +70,28 @@ Changelog:
     Improved - Annotations: better track style options.
     Improved - Annotations: better user interface for the key frame cards in the side panel.
     Improved - Annotations: button to toggle the side panel visibility.
-    Improved - Annotations: label tool option to show a circle instead of an arrow.
+    Improved - Annotations: label tool can now show a circle instead of an arrow.
     Improved - Annotations: label tool supports changing the line size independently of the font size.
+    Improved - Tracking: improved performances using parallel tracking.
+    Improved - Tracking: fixed sub pixel precision in template matching algorithm.
+    Improved - Tracking: use parabolic fit for refinement in template matching algorithm.
+    Improved - Tracking: new command to start all trackers at once.
     Improved - Camera motion: automatically create masks from rectangle objects.
+    Improved - Export: restored the export of trajectories to text in GnuPlot format.
+    Improved - Export: allow saving of annotations from the capture screen.
     Improved - Capture: improved stability of camera discovery.
-    Improved - Capture: option to exclude drawings and calibration from the exported kva.
-    Improved - Capture: added %kva pattern for post-recording command.
+    Improved - Capture: capture folders and post-recording command can use custom variables.
+    Improved - Capture: toolbox to insert variables and common characters in folder paths.
+    Improved - Capture: button to switch between live view and delayed view.
+    Improved - Capture: max duration of recording is now directly accessible on the user interface.
+    Improved - Capture: combined image and video capture folder selector.
+    Improved - Capture: added option to exclude drawings and calibration from the exported kva.
     Improved - Capture: added option to set the default trigger arming state.
-    Improved - Capture: output paths and post-recording command can use custom variables based on the active profile.
+    Improved - Capture: added `kva` built-in variable to post-recording command.
     Fixed - General: in preferences, capture folders selectors were not working.
     Fixed - General: using the portable version from within a synchronized OneDrive directory could cause a crash.
     Fixed - General: saving a workspace with high speed camera configuration wasn't working properly.
-    Fixed - Export: copy image to clipboard wasn't working correctly.
-    Fixed - Player: dual replay was not synchronized correctly.
+    Fixed - Player: dual replay was not synchronizing correctly.
     Fixed - Player: timeline position wasn't restored correctly after an export operation.
     Fixed - Player: keyboard shortcuts weren't working for dual screen commands when the focus is on an individual screen.
     Fixed - Annotations: loading annotations in the capture screen wasn't working correctly.
@@ -86,17 +100,18 @@ Changelog:
     Fixed - Annotations: grabbing of lines perfectly vertical or horizontal wasn't working.
     Fixed - Annotations: positions of drawings during rendering were not accurate inside the pixel.
     Fixed - Camera motion: reset of camera motion data wasn't working.
+    Fixed - Export: copy image to clipboard wasn't working correctly.
 
 
 2024.1 - August 2024
     Added - Camera motion estimation video mode.
     Added - Lens calibration video mode.
     Added - Calibration validation window, with 3D camera position and control points.
-    Added - Support for an extra offset applied to coordinates.
-	Added - Counter tool.
-    Added - Background layer with color and opacity, between video and drawings.
-    Added - Alternate pointers.
-	Added - New locales: Croatian, Traditional Chinese, Ukrainian.
+    Added - Player: Alternate pointers.
+	Added - Annotations: Counter tool.
+    Added - Annotations: Background layer with color and opacity, between video and drawings.
+    Added - Measurement: Support for an extra offset applied to coordinates.
+	Added - General: New locales: Croatian, Traditional Chinese, Ukrainian.
     Improved - Player: better feedback regarding the active video mode.
     Improved - Annotations: Added "filled" option to rectangle and circle.
     Improved - Annotations: Support changing font size for mini labels.
@@ -116,47 +131,47 @@ Changelog:
     Improved - Measurement: In the plane/grid tool, support setting the number of rows and columns separately.
     Improved - Kinogram: Support moving tiles in time.
     Improved - Kinogram: Support changing label color and font size.
-    Improved - Export: Export comments in JSON export.
-    Fixed - Copy-pasting a drawing to a different time was not working.
-    Fixed - End caps on trajectory drawings.
-    Fixed - Problem when reading tool preset coming from a different version.
-    Fixed - Slowness of side-by-side export.
-    Fixed - Synchronization between shortcuts and explorer when opening a file.
-    Fixed - Update of mini labels of trajectories after a change in the side panel.
-    Fixed - Markdown export was broken for files with keyframes out of the selection.
-    Fixed - Marker objects were drawn aliased to the image pixel grid.
-    Fixed - Pencil drawing with a single point was invisible or could not be deleted.
-    Removed - Distance grid tool.
+    Improved - Data export: Export comments in JSON export.
+    Fixed - General: reading tool preset coming from a different version was broken.
+    Fixed - File browser: when opening a file the file explorer and shortcuts tab weren't synchronized correctly.
+    Fixed - Annotations: Copy-pasting a drawing to a different time was not working.
+    Fixed - Annotations: End caps on trajectory drawings were wrong.
+    Fixed - Video export: side-by-side export was very slow.
+    Fixed - Annotations: mini labels of trajectories weren't updated correctly after a change in the side panel.
+    Fixed - Data export: Markdown export was broken for files with keyframes out of the selection.
+    Fixed - Annotations: Marker objects were drawn aliased to the image pixel grid.
+    Fixed - Annotations: Pencil drawing with a single point was invisible or could not be deleted.
+    Removed - Measurement: Distance grid tool (functionality integrated into the grid tool).
 
 
 2023.1 - August 2023.
-    Added - Kinogram mode to replace the Overview mode.
-    Added - Side panel with key image comments.
-    Added - Multi-time stopwatch tool.
-    Added - Time segment tool.
-    Added - Distance grid tool.
-    Added - Magnifier "Freeze" mode.
-    Added - Keyframe colors.
-    Added - Keyframe presets.
-    Added - Time grab interaction.
-    Added - Recording status bar.
-    Added - Support for saving single snapshots from audio trigger.
-    Added - Support for saving side-by-side image in a vertical layout.
-    Added - Spreadsheet exporter to JSON.
-    Added - Spreadsheet exporter to CSV.
-    Added - Document exporter to Markdown.
-    Added - Document exporter to ODT and DOCX via Pandoc.
-    Improved - General: Save and restore the working zone bounds as part of the KVA file.
-    Improved - General: Save and restore all video import options (aspect, rotation, demosaicing, deinterlacing).
-    Improved - General: Save keyframes even if they are outside the working zone.
-    Improved - General: Save video filters status and configuration.
-    Improved - General: When importing a KVA file into a different video the times are now aligned by the time origins.
-    Improved - General: Support sorting files by name, date or size in the explorer.
-    Improved - General: Support navigating back, forth and up in the explorer.
-    Improved - General: Support toggling drawings visibility via a command.
-    Improved - Playback: Using a video filter no longer prevents the usage of the playback controls and drawings tools.
-    Improved - Playback: Video filters are no longer deactivated when changing the working zone.
-    Improved - Playback: Support rotation on single image files.
+    Added - Player: Kinogram mode to replace the Overview mode.
+    Added - Player: Side panel with key image comments.
+    Added - Player: Time grab interaction.
+    Added - Player: Magnifier "Freeze" mode.
+    Added - Annotations: Multi-time stopwatch tool.
+    Added - Annotations: Keyframe colors.
+    Added - Annotations: Keyframe presets.
+    Added - Measurement: Time segment tool.
+    Added - Measurement: Distance grid tool.
+    Added - Capture: Recording status bar.
+    Added - Capture: Support for saving single snapshots from audio trigger.
+    Added - Video export: Support for saving side-by-side image in a vertical layout.
+    Added - Data export: Spreadsheet exporter to JSON.
+    Added - Data export: Spreadsheet exporter to CSV.
+    Added - Data export: Document exporter to Markdown.
+    Added - Data export: Document exporter to ODT and DOCX via Pandoc.
+    Improved - File browser: Support sorting files by name, date or size in the explorer.
+    Improved - File browser: Support navigating back, forth and up in the explorer.
+    Improved - Player: Support toggling drawings visibility via a command.
+    Improved - Player: Using a video filter no longer prevents the usage of the playback controls and drawings tools.
+    Improved - Player: Video filters are no longer deactivated when changing the working zone.
+    Improved - Player: Support rotation on single image files.
+    Improved - Annotations: Save and restore the working zone bounds as part of the KVA file.
+    Improved - Annotations: Save and restore all video import options (aspect, rotation, demosaicing, deinterlacing).
+    Improved - Annotations: Save keyframes even if they are outside the working zone.
+    Improved - Annotations: Save video filters status and configuration.
+    Improved - Annotations: When importing a KVA file into a different video the times are now aligned by the time origins.
     Improved - Annotations: Support drag and drop between the keyframe list and the timeline to change keyframe time.
     Improved - Annotations: Support transferring a keyframe to the current time.
     Improved - Annotations: Use color coding of keyframes in the timeline.
@@ -179,26 +194,26 @@ Changelog:
     Improved - Data export: Support exporting start and stop times for Chronometers.
     Improved - Data export: Support exporting time series from trajectories and tracked objects.
     Improved - Data export: Support exporting the unit used for distances and times.
-    Fixed - When loading the same data file twice the keyframes and drawings could be duplicated.
-    Fixed - Data angles on key images that hadn't been visited were not exported correctly.
-    Fixed - Angles in radians were not exported correctly.
-    Fixed - The time in kinematics dialogs could be incorrect if the time origin and selection start didn't match.
-    Fixed - The top-down flag on mono and raw streams was not honored.
-    Fixed - Dual export with superposition could result in broken files.
-    Fixed - Zooming in the player was not centered on the mouse cursor.
-    Fixed - The picture-in-picture area of the magnifier was hiding drawings.
-    Fixed - Lines with arrows did not take the arrow length into account for measurement.
-    Fixed - Undo/redo was broken in various places.
-    Fixed - Saving the scene with the comment dialog open could miss saving the latest changes to the comments.
-    Fixed - The position of the main splitters of the user interface were not saved and restored correctly.
-    Fixed - Key images timecode displayed on the thumbnail could be incorrect.
-    Fixed - The folder browser dialog was causing UI issues when using high DPI scaling.
-    Fixed - Recording of webcams could result in files with the wrong framerate.
-    Removed - Video reverse mode.
-    Removed - Exporting data to XHTML.
-    Removed - Exporting data to Gnuplot script.
-    Removed - Built-in SVG files "Observational references".
-    Removed - Popup dialog with comments, replaced by side panel.
+    Fixed - General: The folder browser dialog was causing UI issues when using high DPI scaling.
+    Fixed - General: The position of the main splitters of the user interface were not saved and restored correctly.
+    Fixed - Annotations: When loading the same data file twice the keyframes and drawings could be duplicated.
+    Fixed - Player: Zooming in the player was not centered on the mouse cursor.
+    Fixed - Player: The picture-in-picture area of the magnifier was hiding drawings.
+    Fixed - Player: Undo/redo was broken in various places.
+    Fixed - Annotations: Saving the scene with the comment dialog open could miss saving the latest changes to the comments.
+    Fixed - Annotations: Key images timecode displayed on the thumbnail could be incorrect.
+    Fixed - Measurement: Lines with arrows did not take the arrow length into account for measurement.
+    Fixed - Measurement: The time in kinematics dialogs could be incorrect if the time origin and selection start didn't match.
+    Fixed - Capture: The top-down flag on mono and raw streams was not honored.
+    Fixed - Capture: Recording of webcams could result in files with the wrong framerate.
+    Fixed - Video export: Dual export with superposition could result in broken files.
+    Fixed - Data export: Data angles on key images that hadn't been visited were not exported correctly.
+    Fixed - Data export: Angles in radians were not exported correctly.
+    Removed - Player: Video reverse mode.
+    Removed - Annotations: Built-in SVG files "Observational references".
+    Removed - Annotations: Popup dialog with comments, replaced by side panel.
+    Removed - Data export: Exporting data to XHTML.
+    Removed - Data export: Exporting data to Gnuplot script.
 
 
 0.9.5 - October 2021.
