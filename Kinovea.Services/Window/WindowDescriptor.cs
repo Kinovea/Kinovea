@@ -184,6 +184,12 @@ namespace Kinovea.Services
             get { return lastCaptureFileName; }
             set { lastCaptureFileName = value; }
         }
+
+        public UserCommand UserCommandBackup
+        {
+            get { return UserCommandBackup; }
+            set { UserCommandBackup = value; }
+        }
         #endregion
 
         #region Members
@@ -213,14 +219,15 @@ namespace Kinovea.Services
         private bool lastCaptureDelayedDisplay = true;
         private Guid lastCaptureFolder = Guid.Empty;
         private string lastCaptureFileName = string.Empty;
+        private UserCommand userCommandBackup = null;
         #endregion
 
         public void ReplaceScreens(List<IScreenDescriptor> descriptors)
         {
-            ScreenList.Clear();
+            screenList.Clear();
             foreach (var d in descriptors)
             {
-                ScreenList.Add(d.Clone());
+                screenList.Add(d.Clone());
             }
         }
 
@@ -265,6 +272,9 @@ namespace Kinovea.Services
             writer.WriteElementString("LastCaptureDelayedDisplay", XmlHelper.WriteBoolean(lastCaptureDelayedDisplay));
             writer.WriteElementString("LastCaptureFolder", lastCaptureFolder.ToString());
             writer.WriteElementString("LastCaptureFileName", lastCaptureFileName.ToString());
+
+            if (userCommandBackup != null)
+                userCommandBackup.WriteXML(writer);
         }
 
         public void ReadXML(XmlReader reader)
@@ -336,6 +346,10 @@ namespace Kinovea.Services
                     case "LastCaptureFileName":
                         lastCaptureFileName = reader.ReadElementContentAsString();
                         break;
+                    case "UserCommandBackup":
+                        userCommandBackup = new UserCommand();
+                        userCommandBackup.ReadXML(reader);
+                        break;
                     default:
                         reader.ReadOuterXml();
                         break;
@@ -345,20 +359,14 @@ namespace Kinovea.Services
 
         private void ParseScreenList(XmlReader reader)
         {
-            reader.MoveToContent();
-            bool isEmpty = reader.IsEmptyElement;
-
-            if (reader.Name != "ScreenList" && reader.Name != "ScreenList" || isEmpty)
-            {
-                reader.ReadOuterXml();
-                return;
-            }
+            screenList.Clear();
+            bool empty = reader.IsEmptyElement;
 
             reader.ReadStartElement();
-            //reader.ReadElementContentAsString("FormatVersion", "");
 
-            screenList.Clear();
-
+            if (empty)
+                return;
+            
             while (reader.NodeType == XmlNodeType.Element)
             {
                 switch (reader.Name)

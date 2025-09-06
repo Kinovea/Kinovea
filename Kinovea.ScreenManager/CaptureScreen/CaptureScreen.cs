@@ -38,6 +38,7 @@ using Kinovea.Video;
 using Kinovea.Pipeline;
 using Kinovea.Video.FFMpeg;
 using Kinovea.Services;
+using System.Threading.Tasks;
 
 namespace Kinovea.ScreenManager
 {
@@ -1788,10 +1789,8 @@ namespace Kinovea.ScreenManager
             NotificationCenter.RaiseRefreshFileExplorer(this, false);
 
             // Execute post-recording command.
-            string command = PreferencesManager.CapturePreferences.PostRecordCommand;
-            if (!string.IsNullOrEmpty(command))
-                ExecutePostCaptureCommand(command, finalFilename);
-            
+            RunPostRecordingCommand(finalFilename);
+
             // We need to use the original filename with patterns still in it.
             string filenamePattern = view.CurrentFilename;
             string next = DynamicPathResolver.ComputeNextFilename(filenamePattern);
@@ -1978,31 +1977,58 @@ namespace Kinovea.ScreenManager
 
             AfterStopRecording(path);
         }
-        private void ExecutePostCaptureCommand(string command, string path)
+        private async void RunPostRecordingCommand(string path)
         {
+            string command = PreferencesManager.CapturePreferences.PostRecordCommand;
+            if (string.IsNullOrEmpty(command))
+                return;
+            
+            // WIP: this will later come from the screen descriptor.
+            UserCommand c = new UserCommand();
+            c.Instructions.Add(command);
+            
             // Interpolate variables.
-            var context = BuildPostCaptureCommandContext(path);
-            command = DynamicPathResolver.Resolve(command, context);
-
-            // Call the command.
-            Process process = new Process();
-            try
+            var context = BuildPostRecordingCommandContext(path);
+            List<string> instructions = new List<string>();
+            foreach (var instruction in c.Instructions)
             {
-                process.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
-                process.StartInfo.FileName = "cmd.exe";
-                process.StartInfo.Arguments = "/C " + command;
-                process.StartInfo.CreateNoWindow = true;
-                process.StartInfo.UseShellExecute = false;
-                //process.WorkingDirectory = ""; // app data CaptureCommands.
-
-                log.DebugFormat("Running post capture command:");
-                log.DebugFormat(">cmd.exe /C {0}", command);
-
-                process.Start();
+                var i = DynamicPathResolver.Resolve(instruction, context);
+                instructions.Add(i);
             }
-            catch (Exception e)
+
+            // Run the collection of instructions in the background.
+            await RunPostRecordingInstructionsSequentialAsync(instructions);
+        }
+
+        private async Task RunPostRecordingInstructionsSequentialAsync(List<string> instructions)
+        {
+            await Task.Run(() => RunPostRecordingInstructionsSequential(instructions));
+        }
+
+        private void RunPostRecordingInstructionsSequential(List<string> instructions)
+        {
+            // Call the instructions sequentially.
+            foreach (var instruction in instructions)
             {
-                log.ErrorFormat("Could not execute post capture command. {0}", e.Message);
+                Process process = new Process();
+                try
+                {
+                    process.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
+                    process.StartInfo.FileName = "cmd.exe";
+                    process.StartInfo.Arguments = "/C " + instruction;
+                    process.StartInfo.CreateNoWindow = true;
+                    process.StartInfo.UseShellExecute = false;
+
+                    log.DebugFormat("Running post capture command instruction:");
+                    log.DebugFormat(">cmd.exe /C {0}", instruction);
+
+                    process.Start();
+                    process.WaitForExit();
+                }
+                catch (Exception e)
+                {
+                    log.ErrorFormat("Could not execute post capture command. {0}", e.Message);
+                }
             }
         }
 
@@ -2189,7 +2215,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Fill values of built-in variables for the post-capture command.
         /// </summary>
-        private Dictionary<string, string> BuildPostCaptureCommandContext(string path)
+        private Dictionary<string, string> BuildPostRecordingCommandContext(string path)
         {
             Dictionary<string, string> context = new Dictionary<string, string>();
             context["directory"]    = Path.GetDirectoryName(path);

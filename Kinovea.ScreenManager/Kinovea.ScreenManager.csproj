@@ -340,6 +340,12 @@
     <Compile Include="CaptureScreen\RecordingStatus.cs" />
     <Compile Include="CaptureScreen\Trigger\QuietPeriodHelper.cs" />
     <Compile Include="CaptureScreen\Trigger\UDPMonitor.cs" />
+    <Compile Include="CaptureScreen\Views\FormPostRecordingCommand.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CaptureScreen\Views\FormPostRecordingCommand.Designer.cs">
+      <DependentUpon>FormPostRecordingCommand.cs</DependentUpon>
+    </Compile>
     <Compile Include="CaptureScreen\Views\InfobarCapture.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1075,6 +1081,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CaptureScreen\Views\FilenameBox.resx">
       <DependentUpon>FilenameBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CaptureScreen\Views\FormPostRecordingCommand.resx">
+      <DependentUpon>FormPostRecordingCommand.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CaptureScreen\Views\InfobarCapture.resx">
       <DependentUpon>InfobarCapture.cs</DependentUpon>

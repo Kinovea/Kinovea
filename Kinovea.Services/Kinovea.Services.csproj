@@ -225,6 +225,7 @@
     <Compile Include="Filesystem\FolderNavigationType.cs" />
     <Compile Include="Filesystem\FileSortAxis.cs" />
     <Compile Include="Infrastructure\BitmapHelper.cs" />
+    <Compile Include="Types\UserCommand.cs" />
     <Compile Include="Preferences\PreferencesHelper.cs" />
     <Compile Include="Types\CalibrationValidationMode.cs" />
     <Compile Include="Types\CameraMotionFeatureType.cs" />
@@ -264,11 +265,11 @@
     <Compile Include="Events\CurrentDirectoryChangedEventArgs.cs" />
     <Compile Include="Events\ExplorerTabEventArgs.cs" />
     <Compile Include="Events\StatusUpdatedEventArgs.cs" />
-    <Compile Include="LaunchSettings\IScreenDescriptor.cs" />
+    <Compile Include="Window\IScreenDescriptor.cs" />
     <Compile Include="LaunchSettings\LaunchSettingsManager.cs" />
-    <Compile Include="LaunchSettings\ScreenDescriptorCapture.cs" />
-    <Compile Include="LaunchSettings\ScreenDescriptorPlayback.cs" />
-    <Compile Include="LaunchSettings\ScreenType.cs" />
+    <Compile Include="Window\ScreenDescriptorCapture.cs" />
+    <Compile Include="Window\ScreenDescriptorPlayback.cs" />
+    <Compile Include="Window\ScreenType.cs" />
     <Compile Include="Types\ImageFormat.cs" />
     <Compile Include="Types\ImageFormatHelper.cs" />
     <Compile Include="Types\ImageRotation.cs" />
@@ -304,9 +305,9 @@
     <Compile Include="Preferences\IPreferenceSerializer.cs" />
     <Compile Include="Preferences\KeyboardPreferences.cs" />
     <Compile Include="Commands\Commands.cs" />
-    <Compile Include="Windows\WindowDescriptor.cs" />
-    <Compile Include="Windows\WindowManager.cs" />
-    <Compile Include="Windows\WindowStartupMode.cs" />
+    <Compile Include="Window\WindowDescriptor.cs" />
+    <Compile Include="Window\WindowManager.cs" />
+    <Compile Include="Window\WindowStartupMode.cs" />
     <Compile Include="WinForms\FormsHelper.cs" />
     <Compile Include="Commands\HotkeyCommand.cs" />
     <Compile Include="Commands\HotkeySettings.cs" />

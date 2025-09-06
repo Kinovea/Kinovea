@@ -639,7 +639,6 @@ namespace Kinovea.Root
             FormWindowProperties fwp = new FormWindowProperties(this);
             fwp.StartPosition = FormStartPosition.CenterScreen;
             fwp.ShowDialog();
-            fwp.Dispose();
 
             if (fwp.DialogResult == DialogResult.OK)
             {
@@ -650,6 +649,8 @@ namespace Kinovea.Root
                 // The only thing we may have changed here is our own instance
                 // so we don't need to refresh the "Reopen" menu.
             }
+
+            fwp.Dispose();
         }
 
         private void BuildReopenWindowsMenus()
