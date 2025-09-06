@@ -1,7 +1,6 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   
   <ItemGroup>
-    <SVGObsRefsFiles Include="..\Tools\svg\*.svg" />
     <XSLTFiles Include="..\Tools\XML\Kva to Kva\*.xsl" />
     <XSLTFiles Include="..\Tools\XML\Preferences\*.xsl" />
     <DrawingToolsFiles Include="..\Tools\DrawingTools\**\*.xml" />
@@ -11,8 +10,6 @@
     <BuildDependsOn>
       $(BuildDependsOn);
       CopyNativeDependencies;
-      CopySVGObsRefs;
-      CopyHelp;
       CopyXSLT;
       CopyDrawingTools;
     </BuildDependsOn>
@@ -45,18 +42,6 @@
 
     <Copy SourceFiles="..\packages\OpenCvSharp4.runtime.win.4.10.0.20240616\runtimes\win-x64\native\OpenCvSharpExtern.dll" DestinationFolder="$(TargetDir)"/>
 
-  </Target>
-
-  <Target Name="CopySVGObsRefs">
-    <Message Text="Copying SVG observation references."/>
-    <RemoveDir Directories="$(TargetDir)guides" />
-    <MakeDir Directories="$(TargetDir)guides" Condition="!Exists('$(TargetDir)guides')" />
-    <Copy SourceFiles="@(SVGObsRefsFiles)" DestinationFolder="$(TargetDir)guides"/>
-  </Target>
-    
-  <Target Name="CopyHelp">
-    <Message Text="Copying Help index."/>
-    <Copy SourceFiles="..\Installer\OtherFiles\HelpIndex.xml" DestinationFolder="$(TargetDir)"/>
   </Target>
   
   <Target Name="CopyXSLT">

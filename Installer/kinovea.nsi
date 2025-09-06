@@ -210,7 +210,6 @@ Section ""
     File "${BUILDDIR}\Kinovea.exe.config"
     File "${BUILDDIR}\*.dll"
     File "${BUILDDIR}\*.manifest"
-    File "${EXTRADIR}\HelpIndex.xml"
     File "${EXTRADIR}\GPLv2.txt"
     File "${EXTRADIR}\License.txt"
     File "${EXTRADIR}\Readme.txt"
@@ -256,7 +255,6 @@ Section ""
     !insertmacro CopyDirectoryContent "${BUILDDIR}" "$INSTDIR" "zh-CHS" "dll"
     !insertmacro CopyDirectoryContent "${BUILDDIR}" "$INSTDIR" "zh-Hant" "dll"
     !insertmacro CopyDirectoryContent "${BUILDDIR}" "$INSTDIR" "xslt" "xsl"
-    !insertmacro CopyDirectoryContent "${BUILDDIR}" "$INSTDIR" "guides" "svg"
     !insertmacro CopyDirectoryContent "${BUILDDIR}" "$INSTDIR" "DrawingTools" "xml"
 
     !ifdef PORTABLE
@@ -316,7 +314,7 @@ FunctionEnd
 
         Delete "$INSTDIR\*.*"
         !insertmacro RemoveDirectory "$INSTDIR\xslt"
-        !insertmacro RemoveDirectory "$INSTDIR\guides"
+        !insertmacro RemoveDirectory "$INSTDIR\guides"              ; prior to 2025.1
         !insertmacro RemoveDirectory "$INSTDIR\DrawingTools\Custom"
         !insertmacro RemoveDirectory "$INSTDIR\DrawingTools\Standard"
         !insertmacro RemoveDirectory "$INSTDIR\DrawingTools\Toolbars"
