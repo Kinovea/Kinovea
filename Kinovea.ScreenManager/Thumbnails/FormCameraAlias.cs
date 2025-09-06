@@ -78,5 +78,14 @@ namespace Kinovea.ScreenManager
             
             fip.Dispose();
         }
+
+        private void tbAlias_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                this.DialogResult = DialogResult.OK;
+                Close();
+            }
+        }
     }
 }

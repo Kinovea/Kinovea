@@ -120,7 +120,7 @@ namespace Kinovea.ScreenManager
         public void StartRenaming()
         {
             FormCameraAlias fca = new FormCameraAlias(Summary);
-            FormsHelper.Locate(fca);
+            fca.StartPosition = FormStartPosition.CenterScreen;
             if (fca.ShowDialog() == DialogResult.OK)
             {
                 Summary.UpdateAlias(fca.Alias, fca.PickedIcon);
