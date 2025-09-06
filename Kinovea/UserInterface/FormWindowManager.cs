@@ -209,9 +209,16 @@ namespace Kinovea.Root
 
             olvWindows.SetObjects(rows);
 
-            // Start with nothing selected.
-            PopulateScreenList(null);
-            UpdateButtons(null);
+            // Select the first row if any.
+            if (olvWindows.Items.Count > 0)
+            {
+                olvWindows.SelectedIndex = 0;
+            }
+            else
+            {
+                PopulateScreenList(null);
+                UpdateButtons(null);
+            }
         }
 
         /// <summary>
