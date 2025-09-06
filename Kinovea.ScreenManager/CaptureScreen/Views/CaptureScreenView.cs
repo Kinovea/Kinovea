@@ -70,14 +70,20 @@ namespace Kinovea.ScreenManager
         private bool armed = true;
         private bool delayedDisplay = true;
         private bool delayUpdating;
+        private bool contextEnabled = true;
         #endregion
 
         public CaptureScreenView(CaptureScreen presenter)
         {
             InitializeComponent();
 
+            pnlContext.Left = 0;
+            pnlContext.Width = pnlTitle.Width;
+            pnlContext.Height = pnlTitle.Bottom - pnlContext.Top;
+            pnlContext.Padding = new Padding(2, 2, 2, 2);
 
-
+            UpdateContextBar();
+            
 
             lblCameraTitle.Text = "";
             this.presenter = presenter;
@@ -98,8 +104,6 @@ namespace Kinovea.ScreenManager
         }
 
         #region Public methods
-        
-        #region ICaptureScreenView
         public void DisplayAsActiveScreen(bool active)
         {
         }
@@ -173,6 +177,66 @@ namespace Kinovea.ScreenManager
         {
             infobarCapture.Visible = true;
             infobarCapture.UpdateValues(signal, bandwidth, load, drops);
+        }
+
+        /// <summary>
+        /// Initialize or re-initialize the context bar.
+        /// </summary>
+        public void UpdateContextBar()
+        {
+            pnlContext.Controls.Clear();
+            pnlContext.Controls.Add(btnContextInfo);
+            toolTips.SetToolTip(btnContextToggle, contextEnabled ? "Disable capture context" : "Enable capture context");
+
+            if (contextEnabled && VariablesRepository.HasVariables)
+            {
+                pnlTitle.Height = 57;
+
+                for (int i = 0; i < VariablesRepository.VariableTables.Count; i++)
+                {
+                    var tablePair = VariablesRepository.VariableTables.ElementAt(i);
+
+                    var cb = new ComboBox();
+                    cb.DropDownStyle = ComboBoxStyle.DropDownList;
+                    cb.FormattingEnabled = true;
+                    cb.Size = new Size(146, 21);
+                    cb.TabIndex = 0;
+                    cb.Items.Clear();
+                    cb.Margin = new Padding(10, 2, 0, 2);
+                    cb.SelectedIndexChanged += (s, e) =>
+                    {
+                        if (cb.SelectedItem != null)
+                        {
+                            //string variable = cb.SelectedItem.ToString();
+                            //presenter.View_ContextVariableChanged(tablePair.Key, variable);
+
+                            tablePair.Value.CurrentKey = cb.SelectedItem.ToString();
+
+                        }
+                    };
+
+                    // A table may have multiple variables (columns) but only the 
+                    // first one is used for context selection.
+                    // The header row becomes the tooltip.
+                    foreach (var variable in tablePair.Value.Keys)
+                    {
+                        cb.Items.Add(variable);
+                    }
+
+                    // FIXME: select the correct entry.
+                    cb.SelectedIndex = 0;
+
+                    toolTips.SetToolTip(cb, tablePair.Key.ToString());
+
+                    pnlContext.Controls.Add(cb);
+                }
+            }
+            else
+            {
+                pnlTitle.Height = 24;
+            }
+
+            FitViewport();
         }
 
         public void UpdateLoadStatus(float load)
@@ -338,10 +402,16 @@ namespace Kinovea.ScreenManager
             base.Dispose(disposing);
         }
         #endregion
-        
-        #endregion
-        
+
         #region Event handlers
+        private void btnContextToggle_Click(object sender, EventArgs e)
+        {
+            contextEnabled = !contextEnabled;
+            // TODO: Save to preferences.
+            // Signal globally to this window for menus and other screens.
+            // Signal to other instances.
+            UpdateContextBar();
+        }
         private void BtnCapturedVideosFold_Click(object sender, EventArgs e)
         {
             ToggleCapturedVideosPanel();
@@ -440,11 +510,21 @@ namespace Kinovea.ScreenManager
                 btnFoldCapturedVideosPanel.BackgroundImage = Properties.Capture.section_unfold;
                 pnlDrawingToolsBar.Top = pnlControls.Top - pnlDrawingToolsBar.Height;
             }
-            
+
+            FitViewport();
+        }
+
+        private void FitViewport()
+        {
+            pnlViewport.Top = pnlTitle.Bottom;
             pnlViewport.Height = pnlDrawingToolsBar.Top - pnlViewport.Top;
         }
         private void ReloadTooltipsCulture()
         {
+            toolTips.SetToolTip(btnContextInfo, "Capture context");
+
+            toolTips.SetToolTip(btnContextToggle, contextEnabled ? "Disable capture context" : "Enable capture context");
+            
             toolTips.SetToolTip(btnSettings, ScreenManagerLang.ToolTip_ConfigureCamera);
             toolTips.SetToolTip(btnSnapshot, ScreenManagerLang.Generic_SaveImage);
 
@@ -613,8 +693,7 @@ namespace Kinovea.ScreenManager
 
             return true;
         }
-        #endregion
 
-        
+        #endregion
     }
 }

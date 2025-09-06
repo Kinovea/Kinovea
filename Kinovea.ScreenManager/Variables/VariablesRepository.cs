@@ -9,7 +9,7 @@ using System.IO;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// The variables repository a collection of tables with custom variables.
+    /// The variables repository is a collection of tables with custom variables.
     /// Each table contains one or more variables (columns) and their values (rows).
     /// 
     /// For example we can have a table "athletes" with variables "bib" and "name".
@@ -28,6 +28,11 @@ namespace Kinovea.ScreenManager
     public static class VariablesRepository
     {
         #region Properties
+
+        public static bool HasVariables
+        {
+            get { return VariableTables.Count > 0; }
+        }
 
         /// <summary>
         /// List of variable tables indexed by the csv file name.

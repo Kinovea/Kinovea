@@ -26,12 +26,12 @@ namespace Kinovea.ScreenManager
         #region Properties
         /// <summary>
         /// Values of the first column. 
-        /// This is used to identify and select the "context".
+        /// This is used to identify and select the context on this table.
         /// </summary>
         public List<string> Keys { get; private set; } = new List<string>();
 
         /// <summary>
-        /// Key of the currently selected "context".
+        /// Gets or sets the key of the currently selected context on this table.
         /// </summary>
         public string CurrentKey 
         {

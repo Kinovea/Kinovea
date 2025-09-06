@@ -43,7 +43,6 @@ namespace Kinovea.ScreenManager
       this.nudDuration = new System.Windows.Forms.NumericUpDown();
       this.btnDelay = new System.Windows.Forms.Button();
       this.nudDelay = new System.Windows.Forms.NumericUpDown();
-      this.sldrDelay = new Kinovea.ScreenManager.SliderLinear();
       this.pnlCaptureDock = new System.Windows.Forms.Panel();
       this.btnDelayedDisplay = new System.Windows.Forms.Button();
       this.btnArm = new System.Windows.Forms.Button();
@@ -53,19 +52,24 @@ namespace Kinovea.ScreenManager
       this.btnSnapshot = new System.Windows.Forms.Button();
       this.pnlCapturedVideos = new System.Windows.Forms.Panel();
       this.pnlTitle = new System.Windows.Forms.Panel();
+      this.pnlContext = new System.Windows.Forms.FlowLayoutPanel();
+      this.btnContextInfo = new System.Windows.Forms.Button();
       this.btnClose = new System.Windows.Forms.Button();
-      this.infobarCapture = new Kinovea.ScreenManager.InfobarCapture();
       this.btnIcon = new System.Windows.Forms.Button();
       this.lblCameraTitle = new System.Windows.Forms.Label();
       this.pnlViewport = new System.Windows.Forms.Panel();
       this.pnlDrawingToolsBar = new System.Windows.Forms.Panel();
       this.btnFoldCapturedVideosPanel = new System.Windows.Forms.Button();
       this.toolTips = new System.Windows.Forms.ToolTip(this.components);
+      this.btnContextToggle = new System.Windows.Forms.Button();
+      this.infobarCapture = new Kinovea.ScreenManager.InfobarCapture();
+      this.sldrDelay = new Kinovea.ScreenManager.SliderLinear();
       this.pnlControls.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudDuration)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudDelay)).BeginInit();
       this.pnlCaptureDock.SuspendLayout();
       this.pnlTitle.SuspendLayout();
+      this.pnlContext.SuspendLayout();
       this.pnlDrawingToolsBar.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -181,20 +185,6 @@ namespace Kinovea.ScreenManager
       this.nudDelay.Size = new System.Drawing.Size(52, 20);
       this.nudDelay.TabIndex = 48;
       this.nudDelay.ValueChanged += new System.EventHandler(this.NudDelay_ValueChanged);
-      // 
-      // sldrDelay
-      // 
-      this.sldrDelay.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.sldrDelay.Location = new System.Drawing.Point(322, 18);
-      this.sldrDelay.Maximum = 100D;
-      this.sldrDelay.Minimum = 0D;
-      this.sldrDelay.Name = "sldrDelay";
-      this.sldrDelay.Size = new System.Drawing.Size(153, 23);
-      this.sldrDelay.Sticky = false;
-      this.sldrDelay.StickyValue = 0D;
-      this.sldrDelay.TabIndex = 43;
-      this.sldrDelay.Text = "sliderLinear1";
-      this.sldrDelay.Value = 0D;
       // 
       // pnlCaptureDock
       // 
@@ -334,6 +324,8 @@ namespace Kinovea.ScreenManager
       // pnlTitle
       // 
       this.pnlTitle.BackColor = System.Drawing.Color.White;
+      this.pnlTitle.Controls.Add(this.btnContextToggle);
+      this.pnlTitle.Controls.Add(this.pnlContext);
       this.pnlTitle.Controls.Add(this.btnClose);
       this.pnlTitle.Controls.Add(this.infobarCapture);
       this.pnlTitle.Controls.Add(this.btnIcon);
@@ -341,8 +333,39 @@ namespace Kinovea.ScreenManager
       this.pnlTitle.Dock = System.Windows.Forms.DockStyle.Top;
       this.pnlTitle.Location = new System.Drawing.Point(0, 0);
       this.pnlTitle.Name = "pnlTitle";
-      this.pnlTitle.Size = new System.Drawing.Size(865, 24);
+      this.pnlTitle.Size = new System.Drawing.Size(865, 60);
       this.pnlTitle.TabIndex = 5;
+      // 
+      // pnlContext
+      // 
+      this.pnlContext.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.pnlContext.BackColor = System.Drawing.Color.WhiteSmoke;
+      this.pnlContext.Controls.Add(this.btnContextInfo);
+      this.pnlContext.Location = new System.Drawing.Point(3, 28);
+      this.pnlContext.Name = "pnlContext";
+      this.pnlContext.Padding = new System.Windows.Forms.Padding(5, 2, 5, 2);
+      this.pnlContext.Size = new System.Drawing.Size(859, 31);
+      this.pnlContext.TabIndex = 7;
+      // 
+      // btnContextInfo
+      // 
+      this.btnContextInfo.BackColor = System.Drawing.Color.Transparent;
+      this.btnContextInfo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+      this.btnContextInfo.Cursor = System.Windows.Forms.Cursors.Arrow;
+      this.btnContextInfo.FlatAppearance.BorderSize = 0;
+      this.btnContextInfo.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+      this.btnContextInfo.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+      this.btnContextInfo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnContextInfo.Image = global::Kinovea.ScreenManager.Properties.Capture.contact2_16;
+      this.btnContextInfo.Location = new System.Drawing.Point(7, 4);
+      this.btnContextInfo.Margin = new System.Windows.Forms.Padding(2, 2, 0, 0);
+      this.btnContextInfo.MinimumSize = new System.Drawing.Size(16, 16);
+      this.btnContextInfo.Name = "btnContextInfo";
+      this.btnContextInfo.Size = new System.Drawing.Size(20, 20);
+      this.btnContextInfo.TabIndex = 54;
+      this.btnContextInfo.UseVisualStyleBackColor = false;
       // 
       // btnClose
       // 
@@ -361,16 +384,6 @@ namespace Kinovea.ScreenManager
       this.btnClose.TabIndex = 2;
       this.btnClose.UseVisualStyleBackColor = false;
       this.btnClose.Click += new System.EventHandler(this.BtnClose_Click);
-      // 
-      // infobarCapture
-      // 
-      this.infobarCapture.AutoSize = true;
-      this.infobarCapture.BackColor = System.Drawing.Color.Transparent;
-      this.infobarCapture.Location = new System.Drawing.Point(125, 2);
-      this.infobarCapture.Name = "infobarCapture";
-      this.infobarCapture.Size = new System.Drawing.Size(579, 22);
-      this.infobarCapture.TabIndex = 0;
-      this.infobarCapture.Visible = false;
       // 
       // btnIcon
       // 
@@ -406,10 +419,10 @@ namespace Kinovea.ScreenManager
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.pnlViewport.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(44)))), ((int)(((byte)(44)))));
-      this.pnlViewport.Location = new System.Drawing.Point(0, 25);
+      this.pnlViewport.Location = new System.Drawing.Point(0, 60);
       this.pnlViewport.MinimumSize = new System.Drawing.Size(345, 25);
       this.pnlViewport.Name = "pnlViewport";
-      this.pnlViewport.Size = new System.Drawing.Size(865, 292);
+      this.pnlViewport.Size = new System.Drawing.Size(865, 253);
       this.pnlViewport.TabIndex = 6;
       // 
       // pnlDrawingToolsBar
@@ -443,6 +456,50 @@ namespace Kinovea.ScreenManager
       this.btnFoldCapturedVideosPanel.UseVisualStyleBackColor = false;
       this.btnFoldCapturedVideosPanel.Click += new System.EventHandler(this.BtnCapturedVideosFold_Click);
       // 
+      // btnContextToggle
+      // 
+      this.btnContextToggle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnContextToggle.BackColor = System.Drawing.Color.Transparent;
+      this.btnContextToggle.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+      this.btnContextToggle.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnContextToggle.FlatAppearance.BorderSize = 0;
+      this.btnContextToggle.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+      this.btnContextToggle.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+      this.btnContextToggle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnContextToggle.Image = global::Kinovea.ScreenManager.Properties.Capture.contact2_16;
+      this.btnContextToggle.Location = new System.Drawing.Point(820, 2);
+      this.btnContextToggle.Margin = new System.Windows.Forms.Padding(2, 2, 0, 0);
+      this.btnContextToggle.MinimumSize = new System.Drawing.Size(16, 16);
+      this.btnContextToggle.Name = "btnContextToggle";
+      this.btnContextToggle.Size = new System.Drawing.Size(20, 20);
+      this.btnContextToggle.TabIndex = 55;
+      this.btnContextToggle.UseVisualStyleBackColor = false;
+      this.btnContextToggle.Click += new System.EventHandler(this.btnContextToggle_Click);
+      // 
+      // infobarCapture
+      // 
+      this.infobarCapture.AutoSize = true;
+      this.infobarCapture.BackColor = System.Drawing.Color.Transparent;
+      this.infobarCapture.Location = new System.Drawing.Point(125, 2);
+      this.infobarCapture.Name = "infobarCapture";
+      this.infobarCapture.Size = new System.Drawing.Size(579, 22);
+      this.infobarCapture.TabIndex = 0;
+      this.infobarCapture.Visible = false;
+      // 
+      // sldrDelay
+      // 
+      this.sldrDelay.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.sldrDelay.Location = new System.Drawing.Point(322, 18);
+      this.sldrDelay.Maximum = 100D;
+      this.sldrDelay.Minimum = 0D;
+      this.sldrDelay.Name = "sldrDelay";
+      this.sldrDelay.Size = new System.Drawing.Size(153, 23);
+      this.sldrDelay.Sticky = false;
+      this.sldrDelay.StickyValue = 0D;
+      this.sldrDelay.TabIndex = 43;
+      this.sldrDelay.Text = "sliderLinear1";
+      this.sldrDelay.Value = 0D;
+      // 
       // CaptureScreenView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -462,6 +519,7 @@ namespace Kinovea.ScreenManager
       this.pnlCaptureDock.ResumeLayout(false);
       this.pnlTitle.ResumeLayout(false);
       this.pnlTitle.PerformLayout();
+      this.pnlContext.ResumeLayout(false);
       this.pnlDrawingToolsBar.ResumeLayout(false);
       this.ResumeLayout(false);
 
@@ -493,5 +551,8 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Button btnCaptureFolders;
         private System.Windows.Forms.ComboBox cbCaptureFolder;
         private System.Windows.Forms.TextBox tbFilename;
+        private System.Windows.Forms.FlowLayoutPanel pnlContext;
+        private System.Windows.Forms.Button btnContextInfo;
+        private System.Windows.Forms.Button btnContextToggle;
     }
 }
