@@ -67,7 +67,7 @@ namespace Kinovea.ScreenManager
         /// Build the basic context for the current date.
         /// Suitable for folders and files.
         /// </summary>
-        public static Dictionary<string, string> BuildDateContext()
+        public static Dictionary<string, string> BuildDateContext(bool includeTime = false)
         {
             Dictionary<string, string> context = new Dictionary<string, string>();
             DateTime now = DateTime.Now;
@@ -76,6 +76,16 @@ namespace Kinovea.ScreenManager
             context["year"] = string.Format("{0:yyyy}", now);
             context["month"] = string.Format("{0:MM}", now);
             context["day"] = string.Format("{0:dd}", now);
+
+            if (includeTime)
+            {
+                context["time"] = string.Format("{0:HHmmss}", now);
+                context["hour"] = string.Format("{0:HH}", now);
+                context["minute"] = string.Format("{0:mm}", now);
+                context["second"] = string.Format("{0:ss}", now);
+                context["millisecond"] = string.Format("{0:fff}", now);
+            }
+
             return context;
         }
 

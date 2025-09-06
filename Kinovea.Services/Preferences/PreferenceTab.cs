@@ -26,6 +26,7 @@ namespace Kinovea.Services
         Capture_Memory,
         Capture_Recording,
         Capture_Paths,
+        Capture_Files,
         Capture_Trigger,
         Capture_Automation,
 

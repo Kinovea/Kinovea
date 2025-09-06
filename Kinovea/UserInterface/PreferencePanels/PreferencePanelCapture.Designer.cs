@@ -98,6 +98,16 @@ namespace Kinovea.Root
       this.btnSortFolderDown = new System.Windows.Forms.Button();
       this.olvCaptureFolders = new BrightIdeasSoftware.ObjectListView();
       this.btnSortFolderUp = new System.Windows.Forms.Button();
+      this.tabFiles = new System.Windows.Forms.TabPage();
+      this.chkAutoNumbering = new System.Windows.Forms.CheckBox();
+      this.btnFilesInterpolate = new System.Windows.Forms.Button();
+      this.btnFilesInsertUnderscore = new System.Windows.Forms.Button();
+      this.btnFilesInsertDash = new System.Windows.Forms.Button();
+      this.btnFilesInsertBackslash = new System.Windows.Forms.Button();
+      this.btnFilesInsertVariable = new System.Windows.Forms.Button();
+      this.lblDefaultFileName = new System.Windows.Forms.Label();
+      this.tbDefaultFileName = new System.Windows.Forms.TextBox();
+      this.chkIgnoreOverwriteWarning = new System.Windows.Forms.CheckBox();
       this.tabTrigger = new System.Windows.Forms.TabPage();
       this.cmbDefaultTriggerState = new System.Windows.Forms.ComboBox();
       this.lblDefaultTriggerState = new System.Windows.Forms.Label();
@@ -120,7 +130,6 @@ namespace Kinovea.Root
       this.nudQuietPeriod = new System.Windows.Forms.NumericUpDown();
       this.tabAutomation = new System.Windows.Forms.TabPage();
       this.label1 = new System.Windows.Forms.Label();
-      this.chkIgnoreOverwriteWarning = new System.Windows.Forms.CheckBox();
       this.btnPostRecordCommand = new System.Windows.Forms.Button();
       this.lblPostRecordCommand = new System.Windows.Forms.Label();
       this.tbPostRecordCommand = new System.Windows.Forms.TextBox();
@@ -140,6 +149,7 @@ namespace Kinovea.Root
       this.grpCaptureFolderDetails.SuspendLayout();
       this.grpCaptureFolders.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.olvCaptureFolders)).BeginInit();
+      this.tabFiles.SuspendLayout();
       this.tabTrigger.SuspendLayout();
       this.groupBox1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudUDPPort)).BeginInit();
@@ -155,6 +165,7 @@ namespace Kinovea.Root
       this.tabSubPages.Controls.Add(this.tabMemory);
       this.tabSubPages.Controls.Add(this.tabRecording);
       this.tabSubPages.Controls.Add(this.tabPaths);
+      this.tabSubPages.Controls.Add(this.tabFiles);
       this.tabSubPages.Controls.Add(this.tabTrigger);
       this.tabSubPages.Controls.Add(this.tabAutomation);
       this.tabSubPages.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -772,6 +783,137 @@ namespace Kinovea.Root
       this.btnSortFolderUp.UseVisualStyleBackColor = true;
       this.btnSortFolderUp.Click += new System.EventHandler(this.btnSortFolderUp_Click);
       // 
+      // tabFiles
+      // 
+      this.tabFiles.Controls.Add(this.chkAutoNumbering);
+      this.tabFiles.Controls.Add(this.btnFilesInterpolate);
+      this.tabFiles.Controls.Add(this.btnFilesInsertUnderscore);
+      this.tabFiles.Controls.Add(this.btnFilesInsertDash);
+      this.tabFiles.Controls.Add(this.btnFilesInsertBackslash);
+      this.tabFiles.Controls.Add(this.btnFilesInsertVariable);
+      this.tabFiles.Controls.Add(this.lblDefaultFileName);
+      this.tabFiles.Controls.Add(this.tbDefaultFileName);
+      this.tabFiles.Controls.Add(this.chkIgnoreOverwriteWarning);
+      this.tabFiles.Location = new System.Drawing.Point(4, 22);
+      this.tabFiles.Name = "tabFiles";
+      this.tabFiles.Size = new System.Drawing.Size(482, 296);
+      this.tabFiles.TabIndex = 7;
+      this.tabFiles.Text = "Files";
+      this.tabFiles.UseVisualStyleBackColor = true;
+      // 
+      // chkAutoNumbering
+      // 
+      this.chkAutoNumbering.AutoSize = true;
+      this.chkAutoNumbering.Checked = true;
+      this.chkAutoNumbering.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.chkAutoNumbering.Location = new System.Drawing.Point(27, 117);
+      this.chkAutoNumbering.Name = "chkAutoNumbering";
+      this.chkAutoNumbering.Size = new System.Drawing.Size(135, 17);
+      this.chkAutoNumbering.TabIndex = 65;
+      this.chkAutoNumbering.Text = "Enable auto-numbering";
+      this.chkAutoNumbering.UseVisualStyleBackColor = true;
+      this.chkAutoNumbering.CheckedChanged += new System.EventHandler(this.chkAutoNumbering_CheckedChanged);
+      // 
+      // btnFilesInterpolate
+      // 
+      this.btnFilesInterpolate.BackColor = System.Drawing.Color.Transparent;
+      this.btnFilesInterpolate.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnFilesInterpolate.FlatAppearance.BorderSize = 0;
+      this.btnFilesInterpolate.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+      this.btnFilesInterpolate.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+      this.btnFilesInterpolate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnFilesInterpolate.Image = global::Kinovea.Root.Properties.Resources.variable_16;
+      this.btnFilesInterpolate.Location = new System.Drawing.Point(442, 58);
+      this.btnFilesInterpolate.Name = "btnFilesInterpolate";
+      this.btnFilesInterpolate.Size = new System.Drawing.Size(26, 23);
+      this.btnFilesInterpolate.TabIndex = 64;
+      this.btnFilesInterpolate.UseVisualStyleBackColor = false;
+      this.btnFilesInterpolate.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btnFileInterpolate_MouseDown);
+      this.btnFilesInterpolate.MouseUp += new System.Windows.Forms.MouseEventHandler(this.btnFileInterpolate_MouseUp);
+      // 
+      // btnFilesInsertUnderscore
+      // 
+      this.btnFilesInsertUnderscore.BackColor = System.Drawing.Color.WhiteSmoke;
+      this.btnFilesInsertUnderscore.FlatAppearance.BorderSize = 0;
+      this.btnFilesInsertUnderscore.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnFilesInsertUnderscore.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.btnFilesInsertUnderscore.Location = new System.Drawing.Point(412, 58);
+      this.btnFilesInsertUnderscore.Name = "btnFilesInsertUnderscore";
+      this.btnFilesInsertUnderscore.Size = new System.Drawing.Size(26, 23);
+      this.btnFilesInsertUnderscore.TabIndex = 63;
+      this.btnFilesInsertUnderscore.Text = "_";
+      this.btnFilesInsertUnderscore.UseVisualStyleBackColor = false;
+      this.btnFilesInsertUnderscore.Click += new System.EventHandler(this.btnFileInsertUnderscore_Click);
+      // 
+      // btnFilesInsertDash
+      // 
+      this.btnFilesInsertDash.BackColor = System.Drawing.Color.WhiteSmoke;
+      this.btnFilesInsertDash.FlatAppearance.BorderSize = 0;
+      this.btnFilesInsertDash.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnFilesInsertDash.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.btnFilesInsertDash.Location = new System.Drawing.Point(380, 58);
+      this.btnFilesInsertDash.Name = "btnFilesInsertDash";
+      this.btnFilesInsertDash.Size = new System.Drawing.Size(26, 23);
+      this.btnFilesInsertDash.TabIndex = 62;
+      this.btnFilesInsertDash.Text = "-";
+      this.btnFilesInsertDash.UseVisualStyleBackColor = false;
+      this.btnFilesInsertDash.Click += new System.EventHandler(this.btnFileInsertDash_Click);
+      // 
+      // btnFilesInsertBackslash
+      // 
+      this.btnFilesInsertBackslash.BackColor = System.Drawing.Color.WhiteSmoke;
+      this.btnFilesInsertBackslash.FlatAppearance.BorderSize = 0;
+      this.btnFilesInsertBackslash.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnFilesInsertBackslash.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.btnFilesInsertBackslash.Location = new System.Drawing.Point(348, 58);
+      this.btnFilesInsertBackslash.Name = "btnFilesInsertBackslash";
+      this.btnFilesInsertBackslash.Size = new System.Drawing.Size(26, 23);
+      this.btnFilesInsertBackslash.TabIndex = 61;
+      this.btnFilesInsertBackslash.Text = "\\";
+      this.btnFilesInsertBackslash.UseVisualStyleBackColor = false;
+      this.btnFilesInsertBackslash.Click += new System.EventHandler(this.btnFileInsertBackslash_Click);
+      // 
+      // btnFilesInsertVariable
+      // 
+      this.btnFilesInsertVariable.Location = new System.Drawing.Point(210, 58);
+      this.btnFilesInsertVariable.Name = "btnFilesInsertVariable";
+      this.btnFilesInsertVariable.Size = new System.Drawing.Size(131, 23);
+      this.btnFilesInsertVariable.TabIndex = 60;
+      this.btnFilesInsertVariable.Text = "Insert a variable…";
+      this.btnFilesInsertVariable.UseVisualStyleBackColor = true;
+      this.btnFilesInsertVariable.Click += new System.EventHandler(this.btnFilesInsertVariable_Click);
+      // 
+      // lblDefaultFileName
+      // 
+      this.lblDefaultFileName.AutoSize = true;
+      this.lblDefaultFileName.Location = new System.Drawing.Point(24, 36);
+      this.lblDefaultFileName.Name = "lblDefaultFileName";
+      this.lblDefaultFileName.Size = new System.Drawing.Size(89, 13);
+      this.lblDefaultFileName.TabIndex = 58;
+      this.lblDefaultFileName.Text = "Default file name:";
+      // 
+      // tbDefaultFileName
+      // 
+      this.tbDefaultFileName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.tbDefaultFileName.BackColor = System.Drawing.Color.White;
+      this.tbDefaultFileName.Location = new System.Drawing.Point(186, 33);
+      this.tbDefaultFileName.Name = "tbDefaultFileName";
+      this.tbDefaultFileName.Size = new System.Drawing.Size(282, 20);
+      this.tbDefaultFileName.TabIndex = 59;
+      this.tbDefaultFileName.TextChanged += new System.EventHandler(this.tbDefaultFileName_TextChanged);
+      // 
+      // chkIgnoreOverwriteWarning
+      // 
+      this.chkIgnoreOverwriteWarning.AutoSize = true;
+      this.chkIgnoreOverwriteWarning.Location = new System.Drawing.Point(27, 150);
+      this.chkIgnoreOverwriteWarning.Name = "chkIgnoreOverwriteWarning";
+      this.chkIgnoreOverwriteWarning.Size = new System.Drawing.Size(142, 17);
+      this.chkIgnoreOverwriteWarning.TabIndex = 57;
+      this.chkIgnoreOverwriteWarning.Text = "Ignore overwrite warning";
+      this.chkIgnoreOverwriteWarning.UseVisualStyleBackColor = true;
+      this.chkIgnoreOverwriteWarning.CheckedChanged += new System.EventHandler(this.chkIgnoreOverwriteWarning_CheckedChanged);
+      // 
       // tabTrigger
       // 
       this.tabTrigger.Controls.Add(this.cmbDefaultTriggerState);
@@ -1016,7 +1158,6 @@ namespace Kinovea.Root
       // tabAutomation
       // 
       this.tabAutomation.Controls.Add(this.label1);
-      this.tabAutomation.Controls.Add(this.chkIgnoreOverwriteWarning);
       this.tabAutomation.Controls.Add(this.btnPostRecordCommand);
       this.tabAutomation.Controls.Add(this.lblPostRecordCommand);
       this.tabAutomation.Controls.Add(this.tbPostRecordCommand);
@@ -1037,17 +1178,6 @@ namespace Kinovea.Root
       this.label1.Size = new System.Drawing.Size(219, 12);
       this.label1.TabIndex = 57;
       this.label1.Text = "(Ex: robocopy \"%directory\" \"D:\\backup\" \"%filename\")";
-      // 
-      // chkIgnoreOverwriteWarning
-      // 
-      this.chkIgnoreOverwriteWarning.AutoSize = true;
-      this.chkIgnoreOverwriteWarning.Location = new System.Drawing.Point(19, 66);
-      this.chkIgnoreOverwriteWarning.Name = "chkIgnoreOverwriteWarning";
-      this.chkIgnoreOverwriteWarning.Size = new System.Drawing.Size(142, 17);
-      this.chkIgnoreOverwriteWarning.TabIndex = 56;
-      this.chkIgnoreOverwriteWarning.Text = "Ignore overwrite warning";
-      this.chkIgnoreOverwriteWarning.UseVisualStyleBackColor = true;
-      this.chkIgnoreOverwriteWarning.CheckedChanged += new System.EventHandler(this.chkIgnoreOverwriteWarning_CheckedChanged);
       // 
       // btnPostRecordCommand
       // 
@@ -1111,6 +1241,8 @@ namespace Kinovea.Root
       this.grpCaptureFolderDetails.PerformLayout();
       this.grpCaptureFolders.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.olvCaptureFolders)).EndInit();
+      this.tabFiles.ResumeLayout(false);
+      this.tabFiles.PerformLayout();
       this.tabTrigger.ResumeLayout(false);
       this.tabTrigger.PerformLayout();
       this.groupBox1.ResumeLayout(false);
@@ -1151,7 +1283,6 @@ namespace Kinovea.Root
         private System.Windows.Forms.TextBox tbPostRecordCommand;
         private System.Windows.Forms.RadioButton rbRecordingScheduled;
         private System.Windows.Forms.CheckBox chkUncompressedVideo;
-        private System.Windows.Forms.CheckBox chkIgnoreOverwriteWarning;
         private System.Windows.Forms.GroupBox gbHighspeedCameras;
         private System.Windows.Forms.NumericUpDown nudReplacementFramerate;
         private System.Windows.Forms.Label lblReplacementFramerate;
@@ -1201,5 +1332,15 @@ namespace Kinovea.Root
         private System.Windows.Forms.Button btnCaptureFolderInsertUnderscore;
         private System.Windows.Forms.Button btnCaptureFolderInterpolate;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.TabPage tabFiles;
+        private System.Windows.Forms.CheckBox chkIgnoreOverwriteWarning;
+        private System.Windows.Forms.CheckBox chkAutoNumbering;
+        private System.Windows.Forms.Button btnFilesInterpolate;
+        private System.Windows.Forms.Button btnFilesInsertUnderscore;
+        private System.Windows.Forms.Button btnFilesInsertDash;
+        private System.Windows.Forms.Button btnFilesInsertBackslash;
+        private System.Windows.Forms.Button btnFilesInsertVariable;
+        private System.Windows.Forms.Label lblDefaultFileName;
+        private System.Windows.Forms.TextBox tbDefaultFileName;
     }
 }

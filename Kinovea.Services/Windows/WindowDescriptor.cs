@@ -178,6 +178,12 @@ namespace Kinovea.Services
             get { return lastCaptureFolder; }
             set { lastCaptureFolder = value; }
         }
+
+        public string LastCaptureFileName
+        {
+            get { return lastCaptureFileName; }
+            set { lastCaptureFileName = value; }
+        }
         #endregion
 
         #region Members
@@ -201,11 +207,12 @@ namespace Kinovea.Services
         private ActiveFileBrowserTab activeTab = ActiveFileBrowserTab.Explorer;
 
         // Capture screen state.
+        // TODO: move this to a "closed screen" variable with the full screen state.
         private float lastCaptureDelay = 0f;
         private float lastCaptureMaxDuration = 0f;
         private bool lastCaptureDelayedDisplay = true;
         private Guid lastCaptureFolder = Guid.Empty;
-
+        private string lastCaptureFileName = string.Empty;
         #endregion
 
         #region Serialization
@@ -248,6 +255,7 @@ namespace Kinovea.Services
             writer.WriteElementString("LastCaptureMaxDuration", XmlHelper.WriteFloat(lastCaptureMaxDuration));
             writer.WriteElementString("LastCaptureDelayedDisplay", XmlHelper.WriteBoolean(lastCaptureDelayedDisplay));
             writer.WriteElementString("LastCaptureFolder", lastCaptureFolder.ToString());
+            writer.WriteElementString("LastCaptureFileName", lastCaptureFileName.ToString());
         }
 
         public void ReadXML(XmlReader reader)
@@ -315,6 +323,9 @@ namespace Kinovea.Services
                         break;
                     case "LastCaptureFolder":
                         lastCaptureFolder = XmlHelper.ParseGuid(reader.ReadElementContentAsString());
+                        break;
+                    case "LastCaptureFileName":
+                        lastCaptureFileName = reader.ReadElementContentAsString();
                         break;
                     default:
                         reader.ReadOuterXml();

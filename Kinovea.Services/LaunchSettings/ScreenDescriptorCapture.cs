@@ -75,6 +75,12 @@ namespace Kinovea.Services
         /// </summary>
         public Guid CaptureFolder { get; set; }
 
+        /// <summary>
+        /// File name to record to.
+        /// May contain variables.
+        /// </summary>
+        public string FileName { get; set; }
+
         public ScreenDescriptorCapture()
         {
             CameraName = "";
@@ -83,6 +89,7 @@ namespace Kinovea.Services
             DelayedDisplay = true;
             MaxDuration = 0;
             CaptureFolder = Guid.Empty;
+            FileName = "";
         }
 
         public IScreenDescriptor Clone()
@@ -94,6 +101,7 @@ namespace Kinovea.Services
             clone.DelayedDisplay = this.DelayedDisplay;
             clone.MaxDuration = this.MaxDuration;
             clone.CaptureFolder = this.CaptureFolder;
+            clone.FileName = this.FileName;
             return clone;
         }
 
@@ -129,6 +137,9 @@ namespace Kinovea.Services
                     case "CaptureFolder":
                         CaptureFolder = XmlHelper.ParseGuid(reader.ReadElementContentAsString());
                         break;
+                    case "FileName":
+                        FileName = reader.ReadElementContentAsString();
+                        break;
                     default:
                         reader.ReadOuterXml();
                         break;
@@ -146,6 +157,7 @@ namespace Kinovea.Services
             w.WriteElementString("DelayedDisplay", XmlHelper.WriteBoolean(DelayedDisplay));
             w.WriteElementString("MaxDuration", XmlHelper.WriteFloat(MaxDuration));
             w.WriteElementString("CaptureFolder", CaptureFolder.ToString());
+            w.WriteElementString("FileName", FileName);
         }
     }
 }

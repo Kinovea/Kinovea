@@ -651,7 +651,7 @@ namespace Kinovea.ScreenManager
                 // Initial setup and started with a specific screen descriptor so load that.
                 // This can be either from "continue where you left off" mode or 
                 // from "specific screens" mode.
-                view.ForcePopulate(sd.Delay, sd.MaxDuration, sd.CaptureFolder);
+                view.ForcePopulate(sd.Delay, sd.MaxDuration, sd.CaptureFolder, sd.FileName);
                 delayedDisplay = sd.DelayedDisplay;
                 view.UpdateDelayedDisplay(delayedDisplay);
                 maxRecordingSeconds = sd.MaxDuration;
@@ -664,7 +664,7 @@ namespace Kinovea.ScreenManager
                 // We come here when we close and reopen during the same session or
                 // or when reopening on the explorer.
                 WindowDescriptor d = WindowManager.ActiveWindow;
-                view.ForcePopulate(d.LastCaptureDelay, d.LastCaptureMaxDuration, d.LastCaptureFolder);
+                view.ForcePopulate(d.LastCaptureDelay, d.LastCaptureMaxDuration, d.LastCaptureFolder, d.LastCaptureFileName);
                 delayedDisplay = d.LastCaptureDelayedDisplay;
                 view.UpdateDelayedDisplay(delayedDisplay);
                 maxRecordingSeconds = d.LastCaptureMaxDuration;

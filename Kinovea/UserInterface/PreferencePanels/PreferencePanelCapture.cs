@@ -59,7 +59,8 @@ namespace Kinovea.Root
             PreferenceTab.Capture_General, 
             PreferenceTab.Capture_Memory, 
             PreferenceTab.Capture_Recording,
-            PreferenceTab.Capture_Paths, 
+            PreferenceTab.Capture_Paths,
+            PreferenceTab.Capture_Files,
             PreferenceTab.Capture_Trigger,
             PreferenceTab.Capture_Automation
         };
@@ -78,6 +79,17 @@ namespace Kinovea.Root
         private float replacementFramerate;
         private KVAExportFlags exportFlags = KVAExportFlags.DefaultCaptureRecording;
 
+        // Folders
+        private CapturePathConfiguration capturePathConfiguration = new CapturePathConfiguration();
+        private CaptureFolder selectedCaptureFolder;
+        private bool captureFolderPreviewMode;
+
+        // Files
+        private bool enableAutoNumbering;
+        private bool ignoreOverwriteWarning;
+        private bool defaultFileNamePreviewMode;
+        private string memoDefaultFileName;
+
         // Trigger
         private bool enableAudioTrigger;
         private float audioTriggerThreshold;
@@ -95,13 +107,7 @@ namespace Kinovea.Root
         private CaptureTriggerAction triggerAction = CaptureTriggerAction.RecordVideo;
         private bool defaultTriggerArmed = false;
 
-        // Naming and formats
-        private CapturePathConfiguration capturePathConfiguration = new CapturePathConfiguration();
-        private CaptureFolder selectedCaptureFolder;
-        private bool captureFolderPreviewMode = false;
-
         // Automation
-        private bool ignoreOverwriteWarning;
         private string postRecordCommand;
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -161,6 +167,13 @@ namespace Kinovea.Root
             replacementFramerate = PreferencesManager.CapturePreferences.HighspeedRecordingFramerateOutput;
             exportFlags = PreferencesManager.CapturePreferences.ExportFlags;
 
+            // Folders
+            capturePathConfiguration = PreferencesManager.CapturePreferences.CapturePathConfiguration.Clone();
+
+            // Files
+            enableAutoNumbering = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAutoNumbering;
+            ignoreOverwriteWarning = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.IgnoreOverwrite;
+
             // Trigger
             enableAudioTrigger = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger;
             audioInputDevice = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioInputDevice;
@@ -171,12 +184,9 @@ namespace Kinovea.Root
             triggerAction = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.TriggerAction;
             defaultTriggerArmed = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.DefaultTriggerArmed;
 
-            // Naming and formats
-            capturePathConfiguration = PreferencesManager.CapturePreferences.CapturePathConfiguration.Clone();
-            
             // Automation
             postRecordCommand = PreferencesManager.CapturePreferences.PostRecordCommand;
-            ignoreOverwriteWarning = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.IgnoreOverwrite;
+            
         }
         private void InitTriggerMonitors()
         {
@@ -195,8 +205,9 @@ namespace Kinovea.Root
             InitTabGeneral();
             InitTabMemory();
             InitTabRecording();
+            InitTabFolders();
+            InitTabFiles();
             InitTabTrigger();
-            InitTabPaths();
             InitTabAutomation();
         }
 
@@ -257,9 +268,6 @@ namespace Kinovea.Root
             rbRecordingScheduled.Checked = recordingMode == CaptureRecordingMode.Scheduled;
             chkUncompressedVideo.Checked = saveUncompressedVideo;
 
-            chkIgnoreOverwriteWarning.Text = RootLang.dlgPreferences_Capture_chkIgnoreOverwrite;
-            chkIgnoreOverwriteWarning.Checked = ignoreOverwriteWarning;
-
             gbHighspeedCameras.Text = RootLang.dlgPreferences_Capture_gbHighspeedCameras;
             lblReplacementThreshold.Text = RootLang.dlgPreferences_Capture_lblReplacementThreshold;
             lblReplacementFramerate.Text = RootLang.dlgPreferences_Capture_lblReplacementValue;
@@ -271,7 +279,55 @@ namespace Kinovea.Root
 
             chkExportCalibration.Checked = (exportFlags & KVAExportFlags.Calibration) != 0;
             chkExportDrawings.Checked = (exportFlags & KVAExportFlags.Drawings) != 0;
-        }    
+        }
+
+        private void InitTabFolders()
+        {
+            tabPaths.Text = "Folders";
+            grpCaptureFolders.Text = "Capture folders";
+            grpCaptureFolderDetails.Text = "Capture folder details";
+            lblCaptureFolderShortName.Text = "Short name:";
+            lblCaptureFolderPath.Text = "Path:";
+            btnCaptureFolderInsertVariable.Text = "Insert a variable…";
+
+            toolTip1.SetToolTip(btnCaptureFolderInsertBackslash, "Insert a backslash");
+            toolTip1.SetToolTip(btnCaptureFolderInsertDash, "Insert a hyphen");
+            toolTip1.SetToolTip(btnCaptureFolderInsertUnderscore, "Insert an underscore");
+            toolTip1.SetToolTip(btnCaptureFolderInterpolate, "Preview dynamic path");
+            toolTip1.SetToolTip(btnCaptureFolderBrowse, "Browse for folder");
+            toolTip1.SetToolTip(btnDeleteCaptureFolder, "Remove the capture folder from the list");
+            toolTip1.SetToolTip(btnAddCaptureFolder, "Add a new capture folder");
+            toolTip1.SetToolTip(btnSortFolderUp, "Move up");
+            toolTip1.SetToolTip(btnSortFolderDown, "Move down");
+
+            PrepareCaptureFoldersList();
+            PopulateCaptureFolderList();
+            if (capturePathConfiguration.CaptureFolders.Count > 0)
+                olvCaptureFolders.SelectedIndex = 0;
+        }
+
+        private void InitTabFiles()
+        {
+            tabFiles.Text = "Files";
+            lblDefaultFileName.Text = "Default file name:";
+            
+            btnFilesInsertVariable.Text = "Insert a variable…";
+
+            toolTip1.SetToolTip(btnFilesInsertBackslash, "Insert a backslash");
+            toolTip1.SetToolTip(btnFilesInsertDash, "Insert a hyphen");
+            toolTip1.SetToolTip(btnFilesInsertUnderscore, "Insert an underscore");
+            toolTip1.SetToolTip(btnFilesInterpolate, "Preview dynamic path");
+
+            tbDefaultFileName.Text = capturePathConfiguration.DefaultFileName;
+            tbDefaultFileName.SelectionStart = tbDefaultFileName.Text.Length;
+
+            chkAutoNumbering.Text = "Enable auto-numbering";
+            chkAutoNumbering.Checked = enableAutoNumbering;
+            toolTip1.SetToolTip(chkAutoNumbering, "Automatically update the file name after each recording to include a sequential number.\nThis option is ignored if the file name uses dynamic variables.");
+            chkIgnoreOverwriteWarning.Text = RootLang.dlgPreferences_Capture_chkIgnoreOverwrite;
+            chkIgnoreOverwriteWarning.Checked = ignoreOverwriteWarning;
+            toolTip1.SetToolTip(chkIgnoreOverwriteWarning, "Do not show the confirmation dialog when the recording is about to overwrite an existing file.");
+        }
 
         private void InitTabTrigger()
         {
@@ -338,31 +394,6 @@ namespace Kinovea.Root
             cmbDefaultTriggerState.SelectedIndex = defaultTriggerArmed ? 0 : 1;
         }
 
-        private void InitTabPaths()
-        {
-            tabPaths.Text = "Folders";
-            grpCaptureFolders.Text = "Capture folders";
-            grpCaptureFolderDetails.Text = "Capture folder details";
-            lblCaptureFolderShortName.Text = "Short name:";
-            lblCaptureFolderPath.Text = "Path:";
-            btnCaptureFolderInsertVariable.Text = "Insert a variable…";
-
-            toolTip1.SetToolTip(btnCaptureFolderInsertBackslash, "Insert a backslash");
-            toolTip1.SetToolTip(btnCaptureFolderInsertDash, "Insert a hyphen");
-            toolTip1.SetToolTip(btnCaptureFolderInsertUnderscore, "Insert an underscore");
-            toolTip1.SetToolTip(btnCaptureFolderInterpolate, "Preview dynamic path");
-            toolTip1.SetToolTip(btnCaptureFolderBrowse, "Browse for folder");
-            toolTip1.SetToolTip(btnDeleteCaptureFolder, "Remove the capture folder from the list");
-            toolTip1.SetToolTip(btnAddCaptureFolder, "Add a new capture folder");
-            toolTip1.SetToolTip(btnSortFolderUp, "Move up");
-            toolTip1.SetToolTip(btnSortFolderDown, "Move down");
-
-            PrepareCaptureFoldersList();
-            PopulateCaptureFolderList();
-            if (capturePathConfiguration.CaptureFolders.Count > 0)
-                olvCaptureFolders.SelectedIndex = 0;
-        }
-
         private void InitTabAutomation()
         {
             tabAutomation.Text = RootLang.dlgPreferences_Capture_tabAutomation; 
@@ -423,7 +454,7 @@ namespace Kinovea.Root
         }
         #endregion
 
-        #region Tab Paths
+        #region Tab Folders
         private void olvCaptureFolders_SelectedIndexChanged(object sender, EventArgs e)
         {
             var item = olvCaptureFolders.GetItem(olvCaptureFolders.SelectedIndex);
@@ -666,6 +697,87 @@ namespace Kinovea.Root
         }
         #endregion
 
+        #region Tab Files
+        private void tbDefaultFileName_TextChanged(object sender, EventArgs e)
+        {
+            capturePathConfiguration.DefaultFileName = tbDefaultFileName.Text.Trim();
+        }
+        private void chkAutoNumbering_CheckedChanged(object sender, EventArgs e)
+        {
+            enableAutoNumbering = chkAutoNumbering.Checked;
+        }
+        private void chkIgnoreOverwriteWarning_CheckedChanged(object sender, EventArgs e)
+        {
+            ignoreOverwriteWarning = chkIgnoreOverwriteWarning.Checked;
+        }
+        private void btnFilesInsertVariable_Click(object sender, EventArgs e)
+        {
+            FormInsertVariable fiv = new FormInsertVariable(true);
+            fiv.StartPosition = FormStartPosition.CenterScreen;
+            if (fiv.ShowDialog() != DialogResult.OK)
+                return;
+
+            string keyword = fiv.SelectedVariable;
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                string var = "%" + keyword + "%";
+                DefaultFileNameInsert(var);
+            }
+        }
+
+        private void btnFileInsertBackslash_Click(object sender, EventArgs e)
+        {
+
+            DefaultFileNameInsert("\\");
+        }
+
+        private void btnFileInsertDash_Click(object sender, EventArgs e)
+        {
+            DefaultFileNameInsert("-");
+        }
+
+        private void btnFileInsertUnderscore_Click(object sender, EventArgs e)
+        {
+            DefaultFileNameInsert("_");
+        }
+
+        private void DefaultFileNameInsert(string value)
+        {
+            int selectionStart = tbDefaultFileName.SelectionStart;
+            tbDefaultFileName.Text = tbDefaultFileName.Text.Insert(selectionStart, value);
+            tbDefaultFileName.SelectionStart = selectionStart + value.Length;
+            tbDefaultFileName.Focus();
+        }
+
+        private void btnFileInterpolate_MouseDown(object sender, MouseEventArgs e)
+        {
+            // Enter preview mode while the button is pressed.
+            defaultFileNamePreviewMode = true;
+            memoDefaultFileName = tbDefaultFileName.Text;
+
+            string text = tbDefaultFileName.Text;
+            var context = DynamicPathResolver.BuildDateContext(true);
+            string preview = DynamicPathResolver.Resolve(text, context);
+            tbDefaultFileName.ReadOnly = true;
+            tbDefaultFileName.BackColor = Color.LightYellow;
+            tbDefaultFileName.Text = preview;
+            
+        }
+
+        private void btnFileInterpolate_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (!defaultFileNamePreviewMode)
+                return;
+
+            // Exit preview mode.
+            tbDefaultFileName.Text = memoDefaultFileName;
+            tbDefaultFileName.SelectionStart = tbDefaultFileName.Text.Length;
+            tbDefaultFileName.BackColor = Color.White;
+            tbDefaultFileName.ReadOnly = false;
+            defaultFileNamePreviewMode = false;
+        }
+        #endregion
+
         #region Tab Trigger
         private void chkEnableAudioTrigger_CheckedChanged(object sender, EventArgs e)
         {
@@ -762,11 +874,6 @@ namespace Kinovea.Root
             //formPatterns.FormClosed += formPatterns_FormClosed;
             //formPatternsVisible = true;
             //formPatterns.Show(this);
-        }
-
-        private void chkIgnoreOverwriteWarning_CheckedChanged(object sender, EventArgs e)
-        {
-            ignoreOverwriteWarning = chkIgnoreOverwriteWarning.Checked;
         }
         #endregion
         #endregion
@@ -894,6 +1001,13 @@ namespace Kinovea.Root
             PreferencesManager.CapturePreferences.HighspeedRecordingFramerateOutput = replacementFramerate;
             PreferencesManager.CapturePreferences.ExportFlags = exportFlags;
 
+            // Folders
+            PreferencesManager.CapturePreferences.CapturePathConfiguration = capturePathConfiguration;
+
+            // Files
+            PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAutoNumbering = enableAutoNumbering;
+            PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.IgnoreOverwrite = ignoreOverwriteWarning;
+
             // Trigger
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger = enableAudioTrigger;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioInputDevice = audioInputDevice;
@@ -904,11 +1018,7 @@ namespace Kinovea.Root
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.TriggerAction = triggerAction;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.DefaultTriggerArmed = defaultTriggerArmed;
 
-            // Naming and formats
-            PreferencesManager.CapturePreferences.CapturePathConfiguration = capturePathConfiguration;
-
             // Automation
-            PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.IgnoreOverwrite = ignoreOverwriteWarning;
             PreferencesManager.CapturePreferences.PostRecordCommand = postRecordCommand;
         }
     }

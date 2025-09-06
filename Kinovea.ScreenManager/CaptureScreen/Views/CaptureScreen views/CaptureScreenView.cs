@@ -107,7 +107,7 @@ namespace Kinovea.ScreenManager
             capturedFilesView.RefreshUICulture();
             ReloadTooltipsCulture();
 
-            // Reload the capture folder selector.
+            // Reload the capture folder selector after a possible change in preferences.
             CaptureFolder memoCaptureFolder = this.CaptureFolder;
 
             // The selected capture folder may be null if it's the first time loading.
@@ -152,6 +152,7 @@ namespace Kinovea.ScreenManager
             d.LastCaptureMaxDuration = (float)nudDuration.Value;
             if (this.CaptureFolder != null)
                 d.LastCaptureFolder = this.CaptureFolder.Id;
+            d.LastCaptureFileName = this.CurrentFilename;
 
             WindowManager.SaveActiveWindow();
 
@@ -293,7 +294,7 @@ namespace Kinovea.ScreenManager
             UpdateDelayedDisplay(delayedDisplay);
         }
 
-        public void ForcePopulate(float delaySeconds, float maxDuration, Guid captureFolderId)
+        public void ForcePopulate(float delaySeconds, float maxDuration, Guid captureFolderId, string filename)
         {
             // Delay
             float epsilon = 0.001f;
@@ -315,6 +316,8 @@ namespace Kinovea.ScreenManager
                     return;
                 }
             }
+
+            tbFilename.Text = filename; 
         }
 
         public void UpdateNextVideoFilename(string filename)
