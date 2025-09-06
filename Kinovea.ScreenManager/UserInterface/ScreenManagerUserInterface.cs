@@ -146,9 +146,8 @@ namespace Kinovea.ScreenManager
         protected override void OnLoad(EventArgs e)
         {
             log.DebugFormat("In ScreenManager OnLoad");
-            if (LaunchSettingsManager.ScreenDescriptors.Count > 0 && AutoLaunchAsked != null)
+            if (WindowManager.ActiveWindow.ScreenList.Count > 0)
                 AutoLaunchAsked(this, EventArgs.Empty);
-
         }
         private void pnlScreens_Resize(object sender, EventArgs e)
         {

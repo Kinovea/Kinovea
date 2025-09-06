@@ -12,7 +12,11 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public static class LoaderCamera
     {
-        public static void LoadCameraInScreen(ScreenManagerKernel manager, CameraSummary summary, int targetScreen, ScreenDescriptorCapture screenDescriptor = null)
+        /// <summary>
+        /// Load a camera in a specific or unspecified screen.
+        /// This is called during auto-load or manual load.
+        /// </summary>
+        public static void LoadCameraInScreen(ScreenManagerKernel manager, CameraSummary summary, int targetScreen, ScreenDescriptorCapture screenDescriptor)
         {
             CameraTypeManager.CancelThumbnails();
             CameraTypeManager.StopDiscoveringCameras();
@@ -49,7 +53,8 @@ namespace Kinovea.ScreenManager
             if (screen is CaptureScreen)
             {
                 CaptureScreen captureScreen = screen as CaptureScreen;
-                captureScreen.LoadCamera(summary, screenDescriptor);
+                captureScreen.ConfigureScreen(screenDescriptor);
+                captureScreen.LoadCamera(summary);
 
                 manager.OrganizeScreens();
                 manager.OrganizeCommonControls();

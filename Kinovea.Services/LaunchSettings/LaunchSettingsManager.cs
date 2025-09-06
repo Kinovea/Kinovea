@@ -38,21 +38,17 @@ namespace Kinovea.Services
 
         /// <summary>
         /// The window id to load when this instance of Kinovea starts.
-        /// This is typically only used by the "Reopen window" menu when
-        /// clicking on an anonymous window.
         /// Always passed from the command line. Should not be updated afterwards.
         /// </summary>
         public static string RequestedWindowId { get; set; }
 
         /// <summary>
-        /// The requested screen list to load in this instance.
-        /// This is either explicitly described on the command line via the -video option, 
-        /// or it is reconstructed from a saved window descriptor.
-        /// This can also be used when recovering after a crash.
-        /// It is also used as temporary storage to stash the part of the state of a screen we don't want 
-        /// to lose after loading different content. (ex: speed slider in playback screen).
+        /// Screen descriptor optionally created during the parsing of the command line. 
+        /// This is for the -video argument or drag and dropping a video file directly on the program/shortcut.
+        /// This is incompatible with starting on a specific window by name or id.
+        /// This descriptor will be placed in the window descriptors.
         /// </summary>
-        public static List<IScreenDescriptor> ScreenDescriptors { get; } = new List<IScreenDescriptor>();
+        public static ScreenDescriptorPlayback CommandLineScreenDescriptor { get; set; }
 
         /// <summary>
         /// When starting on a single video with -video option, this describes the state of the explorer.
@@ -61,15 +57,5 @@ namespace Kinovea.Services
         /// we don't care about the other window-specific properties like splitter distances.
         /// </summary>
         public static bool ExplorerVisible { get; set; } = true;
-
-
-        public static void ClearScreenDescriptors()
-        {
-            ScreenDescriptors.Clear();
-        }
-        public static void AddScreenDescriptor(IScreenDescriptor screenDescriptor)
-        {
-            ScreenDescriptors.Add(screenDescriptor);
-        }
     }
 }

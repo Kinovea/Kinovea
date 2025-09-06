@@ -125,7 +125,7 @@ namespace Kinovea.Camera.FrameGenerator
 
                 StartMultimediaTimer();
 
-                cancellationEvent.WaitOne(10000);
+                cancellationEvent.WaitOne();
 
                 StopMultimediaTimer();
             }

@@ -160,9 +160,9 @@ namespace Kinovea.Services
             }
             else
             {
-                // We have loaded a valid window descriptor in the ActiveWindow.
-                // Update the launch settings and title so the whole program configures itself.
-                UpdateLaunchSettings();
+                // We have loaded a valid window descriptor in the ActiveWindow, possibly a brand new one.
+                // Import the launch settings in case we were started with a video path on the command line.
+                ImportLaunchSettings();
                 SetTitleName();
                 log.DebugFormat("Loaded active window: \"{0}\", Id:{1}.", ActiveWindow.Name, ActiveWindow.Id);
             }
@@ -525,20 +525,39 @@ namespace Kinovea.Services
         }
 
         /// <summary>
-        /// Update the launch settings based on the active window.
+        /// Import any screen descriptor coming from the command line into the active window.
         /// </summary>
-        public static void UpdateLaunchSettings()
+        public static void ImportLaunchSettings()
         {
-            // Note: the launch settings "requested window name" is only used 
-            // by the command line to determine which window to load.
-            // It shouldn't be used afterwards.
+            // Check if the launch settings has a command line screen descriptor.
+            // This is setup when using the -video command line argument or 
+            // when drag and dropping a video file onto the program shortcut.
+            // These are incompatible with starting on a specific window so
+            // there shouldn't be any data loss here.
+            if (LaunchSettingsManager.CommandLineScreenDescriptor == null)
+                return;
             
-            // Set up the screen list. This will be used to restore the screens
-            LaunchSettingsManager.ClearScreenDescriptors();
-            foreach (var screen in ActiveWindow.ScreenList)
+            if (ActiveWindow.ScreenList.Count > 0)
             {
-                LaunchSettingsManager.AddScreenDescriptor(screen.Clone());
+                log.WarnFormat("Command line screen descriptor in non empty window");
+
+                // This is not so great because when we start the program without any window spec
+                // it will pick the last window used… If that one is in "continue where you left off" mode
+                // it's not a problem, the user is just saying this is the new state. But if it's set up to
+                // start on specific content, we would be modifying the screen list that the user set up.
+                if (ActiveWindow.StartupMode == WindowStartupMode.ScreenList)
+                {
+                    // In this case we should probably not force replace the screens.
+                    log.ErrorFormat("Command line screen descriptor in window with specific screen list. Ignoring command line.");
+                    return;
+                }
+                else
+                {
+                    ActiveWindow.ScreenList.Clear();
+                }
             }
+
+            ActiveWindow.ScreenList.Add(LaunchSettingsManager.CommandLineScreenDescriptor.Clone());
         }
     }
 }

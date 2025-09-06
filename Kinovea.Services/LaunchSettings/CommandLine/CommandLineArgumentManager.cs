@@ -101,7 +101,7 @@ namespace Kinovea.Services
                         sdp.FullPath = arguments[0];
                         sdp.Autoplay = true;
                         sdp.Stretch = true;
-                        LaunchSettingsManager.AddScreenDescriptor(sdp);
+                        LaunchSettingsManager.CommandLineScreenDescriptor = sdp;
                     }
                     else
                     {
@@ -158,7 +158,7 @@ namespace Kinovea.Services
                         sdp.SpeedPercentage = speedValue;
                         sdp.Stretch = stretch;
 
-                        LaunchSettingsManager.AddScreenDescriptor(sdp);
+                        LaunchSettingsManager.CommandLineScreenDescriptor = sdp;
                         LaunchSettingsManager.ExplorerVisible = !hideExplorer;
 
                         return;

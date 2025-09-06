@@ -27,6 +27,7 @@ using System.Windows.Forms;
 
 using Kinovea.Services;
 using Kinovea.ScreenManager.Languages;
+using System.Linq;
 
 namespace Kinovea.ScreenManager
 {
@@ -63,10 +64,9 @@ namespace Kinovea.ScreenManager
         
         private void BtnOKClick(object sender, EventArgs e)
         {
-            // Store recover info in the launch manager, they will be picked up when the screen manager actually starts.
-            LaunchSettingsManager.ClearScreenDescriptors();
-            foreach(ScreenDescriptorPlayback sdp in recoverables)
-                LaunchSettingsManager.AddScreenDescriptor(sdp);
+            // If we accept, we potentially replace the current window screens with the recovered ones.
+            // This will be picked up later by auto-launch in screen manager view OnLoad().
+            WindowManager.ActiveWindow.ReplaceScreens(recoverables.ToList<IScreenDescriptor>());
             
             DialogResult = DialogResult.OK;
             this.Close();

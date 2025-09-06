@@ -530,13 +530,12 @@
     <Compile Include="CaptureScreen\Views\CapturedFileView.Designer.cs">
       <DependentUpon>CapturedFileView.cs</DependentUpon>
     </Compile>
-    <Compile Include="CaptureScreen\Views\CaptureScreen views\CaptureScreenView.cs">
+    <Compile Include="CaptureScreen\Views\CaptureScreenView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="CaptureScreen\Views\CaptureScreen views\CaptureScreenView.Designer.cs">
+    <Compile Include="CaptureScreen\Views\CaptureScreenView.Designer.cs">
       <DependentUpon>CaptureScreenView.cs</DependentUpon>
     </Compile>
-    <Compile Include="CaptureScreen\Views\CaptureScreen views\ICaptureScreenView.cs" />
     <Compile Include="CaptureScreen\Views\ControlAnimation.cs" />
     <Compile Include="CaptureScreen\Views\ControlAnimator.cs" />
     <Compile Include="CaptureScreen\Views\EmbeddedButton.cs" />
@@ -1071,7 +1070,7 @@
     <EmbeddedResource Include="CaptureScreen\Views\CapturedFileView.resx">
       <DependentUpon>CapturedFileView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CaptureScreen\Views\CaptureScreen views\CaptureScreenView.resx">
+    <EmbeddedResource Include="CaptureScreen\Views\CaptureScreenView.resx">
       <DependentUpon>CaptureScreenView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CaptureScreen\Views\FilenameBox.resx">

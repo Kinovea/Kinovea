@@ -152,7 +152,7 @@ namespace Kinovea.ScreenManager
         
         #region Members
         private Guid id = Guid.NewGuid();
-        private ICaptureScreenView view;
+        private CaptureScreenView view;
 
         private bool cameraLoaded;
         private bool cameraConnected;
@@ -229,7 +229,6 @@ namespace Kinovea.ScreenManager
             view.SetViewport(viewportController.View);
             view.SetCapturedFilesView(capturedFiles.View);
 
-            InitializeCaptureFilenames();
             InitializeTools();
             InitializeMetadata();
 
@@ -347,6 +346,19 @@ namespace Kinovea.ScreenManager
                 viewportController.ToastMessage(ScreenManagerLang.Toast_AudioLost, 5000);
         }
 
+        /// <summary>
+        /// Configure the screen based on the passed screen descriptor.
+        /// </summary>
+        public void ConfigureScreen(ScreenDescriptorCapture sdc)
+        {
+            this.screenDescriptor = (ScreenDescriptorCapture)sdc.Clone();
+
+            view.ConfigureScreen(sdc);
+            delayedDisplay = sdc.DelayedDisplay;
+            view.UpdateDelayedDisplay(delayedDisplay);
+            maxRecordingSeconds = sdc.MaxDuration;
+        }
+
         #region AbstractScreen Implementation
         public override void DisplayAsActiveScreen(bool active)
         {
@@ -363,7 +375,8 @@ namespace Kinovea.ScreenManager
         }
         public override void PreferencesUpdated()
         {
-            InitializeCaptureFilenames();
+            // Here we could possibly try to detect if we are still using the default file name.
+            // In this case and if the default changed, update the file name.
 
             // For simplicity's sake we always reconnect the camera after the master preferences change.
             // This accounts for change in recording mode, display framerate, etc. that requires passing
@@ -441,7 +454,6 @@ namespace Kinovea.ScreenManager
         public override void Identify(int index)
         {
             this.index = index;
-            InitializeCaptureFilenames();
         }
         
         public override void ExecuteScreenCommand(int cmd)
@@ -449,15 +461,20 @@ namespace Kinovea.ScreenManager
             view.ExecuteScreenCommand(cmd);
         }
 
+        /// <summary>
+        /// Get a screen descriptor with the current state.
+        /// This supports the continue where you left off mode.
+        /// </summary>
         public override IScreenDescriptor GetScreenDescriptor()
         {
             ScreenDescriptorCapture sd = new ScreenDescriptorCapture();
-            sd.Autostream = true;
             sd.CameraName = cameraSummary == null ? "" : cameraSummary.Alias;
+            sd.Autostream = true;
             sd.Delay = (float)AgeToSeconds(delay);
             sd.MaxDuration = maxRecordingSeconds;
             sd.DelayedDisplay = delayedDisplay;
             sd.CaptureFolder = view.CaptureFolder.Id;
+            sd.FileName = view.CurrentFilename;
             return sd;
         }
 
@@ -563,7 +580,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Associate this screen with a camera.
         /// </summary>
-        public void LoadCamera(CameraSummary _cameraSummary, ScreenDescriptorCapture sd)
+        public void LoadCamera(CameraSummary _cameraSummary)
         {
             if (cameraLoaded)
                 UnloadCamera();
@@ -575,12 +592,6 @@ namespace Kinovea.ScreenManager
                 cameraManager = cameraSummary.Manager;
                 cameraGrabber = cameraManager.CreateCaptureSource(cameraSummary);
                 AssociateCamera(true);
-
-                if (cameraLoaded && cameraConnected)
-                {
-                    AfterConnected(sd);
-                }
-
                 return;
             }
             
@@ -609,18 +620,12 @@ namespace Kinovea.ScreenManager
                 cameraManager = cameraSummary.Manager;
                 cameraGrabber = cameraManager.CreateCaptureSource(cameraSummary);
 
-                bool connect = sd != null ? sd.Autostream : true;
+                bool connect = screenDescriptor != null ? screenDescriptor.Autostream : true;
                 AssociateCamera(connect);
-
-                if (cameraLoaded && cameraConnected)
-                {
-                    AfterConnected(sd);
-                }
             }
             else
             {
                 // We don't know about this camera yet. Go through normal discovery.
-                this.screenDescriptor = sd;
                 stopwatchDiscovery.Start();
                 CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
                 CameraTypeManager.StartDiscoveringCameras();
@@ -639,36 +644,6 @@ namespace Kinovea.ScreenManager
 
             if (connect)
                 Connect();
-        }
-
-        /// <summary>
-        /// Reload the saved state after the camera has been connected.
-        /// </summary>
-        private void AfterConnected(ScreenDescriptorCapture sd)
-        {
-            if (sd != null)
-            {
-                // Initial setup and started with a specific screen descriptor so load that.
-                // This can be either from "continue where you left off" mode or 
-                // from "specific screens" mode.
-                view.ForcePopulate(sd.Delay, sd.MaxDuration, sd.CaptureFolder, sd.FileName);
-                delayedDisplay = sd.DelayedDisplay;
-                view.UpdateDelayedDisplay(delayedDisplay);
-                maxRecordingSeconds = sd.MaxDuration;
-            }
-            else
-            {
-                // We don't have a specific screen descriptor, use defaults.
-                // These are saved if we ever loaded a capture screen in 
-                // this window and later closed it.
-                // We come here when we close and reopen during the same session or
-                // or when reopening on the explorer.
-                WindowDescriptor d = WindowManager.ActiveWindow;
-                view.ForcePopulate(d.LastCaptureDelay, d.LastCaptureMaxDuration, d.LastCaptureFolder, d.LastCaptureFileName);
-                delayedDisplay = d.LastCaptureDelayedDisplay;
-                view.UpdateDelayedDisplay(delayedDisplay);
-                maxRecordingSeconds = d.LastCaptureMaxDuration;
-            }
         }
 
         private void CameraTypeManager_CamerasDiscovered(object sender, CamerasDiscoveredEventArgs e)
@@ -700,12 +675,6 @@ namespace Kinovea.ScreenManager
 
                 bool connect = screenDescriptor != null ? screenDescriptor.Autostream : true;
                 AssociateCamera(connect);
-
-                if (cameraLoaded && cameraConnected)
-                {
-                    AfterConnected(screenDescriptor);
-                }
-                
                 break;
             }
 
@@ -1465,15 +1434,6 @@ namespace Kinovea.ScreenManager
         }
 
         #region Recording/Snapshoting
-        private void InitializeCaptureFilenames()
-        {
-            // FIXME: get the file name from the saved state of the window.
-            // If no state (first time launch) then from preferences.
-            string defaultFileName = "%date%-%time%";
-            string nextVideo = DynamicPathResolver.ComputeNextFilename(defaultFileName);
-            view.UpdateNextVideoFilename(nextVideo);
-        }
-        
         private void MakeSnapshot()
         {
             if (!cameraLoaded)
@@ -1510,7 +1470,9 @@ namespace Kinovea.ScreenManager
             AddCapturedFile(path, bitmap, false);
             NotificationCenter.RaiseRefreshFileExplorer(this, false);
 
-            // Compute next name for user feedback in case it contains an auto counter.
+            // Compute and update the next name in case it contains an auto counter.
+            // This may return the same name.
+            // We must call Update anyway as that enables the field for editing again.
             string next = DynamicPathResolver.ComputeNextFilename(filenameWithoutExtension);
             view.UpdateNextVideoFilename(next);
 

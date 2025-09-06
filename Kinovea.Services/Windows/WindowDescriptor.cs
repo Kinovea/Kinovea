@@ -215,6 +215,15 @@ namespace Kinovea.Services
         private string lastCaptureFileName = string.Empty;
         #endregion
 
+        public void ReplaceScreens(List<IScreenDescriptor> descriptors)
+        {
+            ScreenList.Clear();
+            foreach (var d in descriptors)
+            {
+                ScreenList.Add(d.Clone());
+            }
+        }
+
         #region Serialization
         public void WriteXML(XmlWriter writer)
         {

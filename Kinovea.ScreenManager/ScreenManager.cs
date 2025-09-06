@@ -71,6 +71,7 @@ namespace Kinovea.ScreenManager
         private AbstractScreen activeScreen = null;
         private bool canShowCommonControls;
         private List<string> camerasToDiscover = new List<string>();
+        private bool autoLaunchInProgress;
         private AudioInputLevelMonitor audioInputLevelMonitor = new AudioInputLevelMonitor();
         private UDPMonitor udpMonitor = new UDPMonitor();
 
@@ -1157,16 +1158,13 @@ namespace Kinovea.ScreenManager
             // This is not strictly necessary as we will save on close but it helps 
             // the other windows get a more up to date state of this window.
             // We must only do this if we are not in the process of closing though
-            // otherwise we always save an empty state as this runs *after* the screens are closed.
-            if (!view.Closing && WindowManager.ActiveWindow.StartupMode == WindowStartupMode.Continue)
+            // otherwise we always save an empty state as this also runs *after* the screens are closed.
+            if (WindowManager.ActiveWindow.StartupMode == WindowStartupMode.Continue &&
+                !autoLaunchInProgress && 
+                !view.Closing)
             {
                 var descriptors = GetScreenDescriptors();
-                WindowManager.ActiveWindow.ScreenList.Clear();
-                foreach (var desc in descriptors)
-                {
-                    WindowManager.ActiveWindow.ScreenList.Add(desc);
-                }
-
+                WindowManager.ActiveWindow.ReplaceScreens(descriptors);
                 WindowManager.SaveActiveWindow();
             }
         }
@@ -1242,6 +1240,9 @@ namespace Kinovea.ScreenManager
             MessageBox.Show(msgText, msgTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
 
+        /// <summary>
+        /// Ask all screens for an up to date screen descriptor.
+        /// </summary>
         public List<IScreenDescriptor> GetScreenDescriptors()
         {
             List<IScreenDescriptor> screenDescriptors = new List<IScreenDescriptor>();
@@ -3221,7 +3222,14 @@ namespace Kinovea.ScreenManager
             if(summary == null)
                 return;
 
-            LoaderCamera.LoadCameraInScreen(this, summary, targetScreen);
+            // Manually load a camera in a screen.
+            // Restart from defaults for now.
+            // We could try to use the screen descriptor of the existing screen if specified, 
+            // the one from the other capture screen if it exists, or one backed up in the window.
+            ScreenDescriptorCapture sdc = new ScreenDescriptorCapture();
+            sdc.FileName = PreferencesManager.CapturePreferences.CapturePathConfiguration.DefaultFileName;
+
+            LoaderCamera.LoadCameraInScreen(this, summary, targetScreen, sdc);
         }
 
         private void DoStopPlaying()
@@ -3244,17 +3252,19 @@ namespace Kinovea.ScreenManager
 
         private void View_AutoLaunchAsked(object source, EventArgs e)
         {
-            int count = LaunchSettingsManager.ScreenDescriptors.Count;
+            var screenDescriptors = WindowManager.ActiveWindow.ScreenList;
+            int count = screenDescriptors.Count;
             if (count > 2)
             {
-                LaunchSettingsManager.ScreenDescriptors.RemoveRange(2, count - 2);
+                log.ErrorFormat("More than two screen descriptors.");
+                screenDescriptors.RemoveRange(2, count - 2);
                 count = 2;
             }
 
             // Start by collecting the list of cameras to be found.
             // We will keep the camera discovery system active until we have found all of them or time out.
             camerasToDiscover.Clear();
-            foreach (IScreenDescriptor sd in LaunchSettingsManager.ScreenDescriptors)
+            foreach (IScreenDescriptor sd in screenDescriptors)
             {
                 if (sd is ScreenDescriptorCapture)
                     camerasToDiscover.Add(((ScreenDescriptorCapture)sd).CameraName);
@@ -3264,7 +3274,8 @@ namespace Kinovea.ScreenManager
                 CameraTypeManager.StopDiscoveringCameras();
 
             int added = 0;
-            foreach (IScreenDescriptor sd in LaunchSettingsManager.ScreenDescriptors)
+            autoLaunchInProgress = true;
+            foreach (IScreenDescriptor sd in screenDescriptors)
             {
                 if (sd is ScreenDescriptorCapture)
                 {
@@ -3284,6 +3295,7 @@ namespace Kinovea.ScreenManager
                     added++;
                 }
             }
+            autoLaunchInProgress = false;
 
             if (added > 0)
             {
@@ -3386,7 +3398,6 @@ namespace Kinovea.ScreenManager
         }
         public void AddCaptureScreen()
         {
-
             CaptureScreen screen = new CaptureScreen();
             if (screenList.Count > 0)
                 screen.SetShared(true);

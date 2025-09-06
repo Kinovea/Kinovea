@@ -198,6 +198,9 @@ namespace Kinovea.Root
         }
         public void Launch()
         {
+            // Recovery workflow shows a dialog with found recoverable screen descriptors.
+            // If the user accepts they are stored as the new screen descriptors and will
+            // get picked up later by auto-launch in screen manager view OnLoad().
             screenManager.RecoverCrash();
             
             log.Debug("Calling Application.Run() to boot up the UI.");

@@ -90,7 +90,7 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Gets the next filename with auto-numbering.
+        /// Gets the next filename with possible auto-numbering.
         /// This is for people that don't care about auto-naming with date/time variables, 
         /// so that it still "just works" without having to manually change the file name.
         /// Heuristic:
@@ -102,6 +102,10 @@ namespace Kinovea.ScreenManager
         {
             if (string.IsNullOrEmpty(previousWithoutExtension))
                 return "";
+
+            // Bail out if auto-numbering is disabled.
+            if (!PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAutoNumbering)
+                return previousWithoutExtension;
 
             // Bail out if we are using a variable-based dynamic file name.
             if (previousWithoutExtension.Contains("%"))

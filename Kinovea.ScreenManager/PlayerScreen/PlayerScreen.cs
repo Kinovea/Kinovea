@@ -740,31 +740,33 @@ namespace Kinovea.ScreenManager
             view.ExecuteScreenCommand(cmd);
         }
 
-
         /// <summary>
-        /// Return a screen descriptor to be used in a window.
+        /// Get a screen descriptor with the current state.
+        /// This supports the continue where you left off mode.
         /// </summary>
         public override IScreenDescriptor GetScreenDescriptor()
         {
             if (!frameServer.Loaded || view.ScreenDescriptor == null)
-            {
-                return new ScreenDescriptorPlayback(); 
-            }
-            else
-            {
-                // Just-in-time update the screen descriptor with latest state and return it.
-                // Note: the speed percentage we save is the *playback* speed ratio.
-                // Not the "real time" ratio related to the capture frame rate.
-                ScreenDescriptorPlayback sdp = view.ScreenDescriptor;
-                sdp.Stretch = view.ImageFill;
-                sdp.SpeedPercentage = view.SpeedPercentage;
-                if (!sdp.IsReplayWatcher)
-                {
-                    sdp.FullPath = frameServer.VideoReader.FilePath;
-                }
+                return new ScreenDescriptorPlayback();
 
-                return sdp;
+            // Just-in-time update the screen descriptor with latest state and return it.
+            // FIXME: why is the view screen descriptor not up to date at this point ?
+            var sd = view.ScreenDescriptor;
+            sd.Stretch = view.ImageFill;
+            sd.SpeedPercentage = view.SpeedPercentage;
+            if (!sd.IsReplayWatcher)
+            {
+               sd.FullPath = frameServer.VideoReader.FilePath;
             }
+
+            ScreenDescriptorPlayback sdp = new ScreenDescriptorPlayback();
+            sdp.FullPath = sd.FullPath;
+            sdp.Autoplay = sd.Autoplay;
+            sdp.SpeedPercentage = sd.SpeedPercentage;
+            sdp.Stretch = sd.Stretch;
+            sdp.IsReplayWatcher = sd.IsReplayWatcher;
+            //sdp.RecoveryLastSave = sdp.RecoveryLastSave;
+            return sdp;
         }
 
 

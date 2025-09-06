@@ -133,10 +133,10 @@ namespace Kinovea.Root
         private void btnUseCurrent_Click(object sender, EventArgs e)
         {
             // Import the active screen list.
-            List<IScreenDescriptor> descriptors = rootKernel.ScreenManager.GetScreenDescriptors();
+            var descriptors = rootKernel.ScreenManager.GetScreenDescriptors();
             screenList.Clear();
-            foreach (var screen in descriptors)
-                screenList.Add(screen.Clone());
+            foreach (var d in descriptors)
+                screenList.Add(d.Clone());
 
             PopulateScreenList();
         }

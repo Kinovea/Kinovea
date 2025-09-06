@@ -154,11 +154,7 @@ namespace Kinovea.Root
             if (WindowManager.ActiveWindow.StartupMode == WindowStartupMode.Continue)
             {
                 var descriptors = rootKernel.ScreenManager.GetScreenDescriptors();
-                WindowManager.ActiveWindow.ScreenList.Clear();
-                foreach (var desc in descriptors)
-                {
-                    WindowManager.ActiveWindow.ScreenList.Add(desc);
-                }
+                WindowManager.ActiveWindow.ReplaceScreens(descriptors);
             }
 
             WindowManager.SaveActiveWindow();
