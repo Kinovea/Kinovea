@@ -5,8 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CsvHelper;
 using Kinovea.Services;
+using CSVParser;
 
 namespace Kinovea.ScreenManager
 {
@@ -80,23 +80,31 @@ namespace Kinovea.ScreenManager
                     return false;
                 }
 
-                using (var reader = new StreamReader(csvFile))
-                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                using (var parser = new CsvTextFieldParser(csvFile))
                 {
-                    csv.Read();
-                    csv.ReadHeader();
+                    parser.TrimWhiteSpace = true;
                     List<List<string>> records = new List<List<string>>();
-
-                    // Column headers are the variable names.
-                    VariableNames = csv.HeaderRecord.ToList();
-
-                    while (csv.Read())
+                    int count = 0;
+                    while (!parser.EndOfData)
                     {
+                        string[] fields = parser.ReadFields();
+                        if (count++ == 0)
+                        {
+                            VariableNames = fields.ToList();
+                            continue;
+                        }
+
+                        if (fields.Length != VariableNames.Count)
+                        {
+                            log.ErrorFormat("Error: CSV error at line: {0}. The row does not contain the expected number of cells.", count);
+                            continue;
+                        }
+
                         // Each row is one profile.
                         List<string> record = new List<string>();
                         for (int i = 0; i < VariableNames.Count; i++)
                         {
-                            string value = csv.GetField<string>(i);
+                            string value = fields[i];
                             record.Add(value);
                         }
 
@@ -110,6 +118,7 @@ namespace Kinovea.ScreenManager
                             Keys.Add(record[0]);
                             rowsDict.Add(record[0], record);
                         }
+
                     }
                 }
 
