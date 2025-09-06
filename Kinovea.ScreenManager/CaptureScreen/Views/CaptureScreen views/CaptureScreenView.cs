@@ -296,7 +296,8 @@ namespace Kinovea.ScreenManager
         public void ForcePopulate(float delaySeconds, float maxDuration, Guid captureFolderId)
         {
             // Delay
-            delaySeconds = Math.Min(Math.Max(delaySeconds, (float)nudDelay.Minimum), (float)nudDelay.Maximum);
+            float epsilon = 0.001f;
+            delaySeconds = Math.Min(Math.Max(delaySeconds, (float)nudDelay.Minimum), (float)nudDelay.Maximum - epsilon);
             nudDelay.Value = (decimal)delaySeconds;
             UpdateDelayedDisplay(delayedDisplay);
 

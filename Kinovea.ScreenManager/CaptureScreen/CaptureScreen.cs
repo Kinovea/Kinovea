@@ -660,6 +660,7 @@ namespace Kinovea.ScreenManager
                 // from "specific screens" mode.
                 view.ForcePopulate(sd.Delay, sd.MaxDuration, sd.CaptureFolder);
                 delayedDisplay = sd.DelayedDisplay;
+                view.UpdateDelayedDisplay(delayedDisplay);
                 maxRecordingSeconds = sd.MaxDuration;
             }
             else
@@ -672,6 +673,7 @@ namespace Kinovea.ScreenManager
                 WindowDescriptor d = WindowManager.ActiveWindow;
                 view.ForcePopulate(d.LastCaptureDelay, d.LastCaptureMaxDuration, d.LastCaptureFolder);
                 delayedDisplay = d.LastCaptureDelayedDisplay;
+                view.UpdateDelayedDisplay(delayedDisplay);
                 maxRecordingSeconds = d.LastCaptureMaxDuration;
             }
         }
