@@ -106,7 +106,7 @@ namespace Kinovea.Root
       this.btnCaptureFolderInsertDash = new System.Windows.Forms.Button();
       this.btnCaptureFolderInsertBackslash = new System.Windows.Forms.Button();
       this.btnCaptureFolderInsertVariable = new System.Windows.Forms.Button();
-      this.btnRightImageRoot = new System.Windows.Forms.Button();
+      this.btnCaptureFolderBrowse = new System.Windows.Forms.Button();
       this.lblCaptureFolderPath = new System.Windows.Forms.Label();
       this.tbCaptureFolderPath = new System.Windows.Forms.TextBox();
       this.lblCaptureFolderShortName = new System.Windows.Forms.Label();
@@ -152,8 +152,8 @@ namespace Kinovea.Root
       this.tabSubPages.Controls.Add(this.tabGeneral);
       this.tabSubPages.Controls.Add(this.tabMemory);
       this.tabSubPages.Controls.Add(this.tabRecording);
-      this.tabSubPages.Controls.Add(this.tabTrigger);
       this.tabSubPages.Controls.Add(this.tabPaths);
+      this.tabSubPages.Controls.Add(this.tabTrigger);
       this.tabSubPages.Controls.Add(this.tabAutomation);
       this.tabSubPages.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tabSubPages.Location = new System.Drawing.Point(0, 0);
@@ -775,7 +775,7 @@ namespace Kinovea.Root
       this.grpCaptureFolderDetails.Controls.Add(this.btnCaptureFolderInsertDash);
       this.grpCaptureFolderDetails.Controls.Add(this.btnCaptureFolderInsertBackslash);
       this.grpCaptureFolderDetails.Controls.Add(this.btnCaptureFolderInsertVariable);
-      this.grpCaptureFolderDetails.Controls.Add(this.btnRightImageRoot);
+      this.grpCaptureFolderDetails.Controls.Add(this.btnCaptureFolderBrowse);
       this.grpCaptureFolderDetails.Controls.Add(this.lblCaptureFolderPath);
       this.grpCaptureFolderDetails.Controls.Add(this.tbCaptureFolderPath);
       this.grpCaptureFolderDetails.Controls.Add(this.lblCaptureFolderShortName);
@@ -856,23 +856,23 @@ namespace Kinovea.Root
       this.btnCaptureFolderInsertVariable.UseVisualStyleBackColor = true;
       this.btnCaptureFolderInsertVariable.Click += new System.EventHandler(this.btnCaptureFolderInsertVariable_Click);
       // 
-      // btnRightImageRoot
+      // btnCaptureFolderBrowse
       // 
-      this.btnRightImageRoot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnRightImageRoot.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnRightImageRoot.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnRightImageRoot.FlatAppearance.BorderSize = 0;
-      this.btnRightImageRoot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-      this.btnRightImageRoot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnRightImageRoot.Image = global::Kinovea.Root.Properties.Resources.folder;
-      this.btnRightImageRoot.Location = new System.Drawing.Point(440, 55);
-      this.btnRightImageRoot.MinimumSize = new System.Drawing.Size(20, 20);
-      this.btnRightImageRoot.Name = "btnRightImageRoot";
-      this.btnRightImageRoot.Size = new System.Drawing.Size(20, 20);
-      this.btnRightImageRoot.TabIndex = 49;
-      this.btnRightImageRoot.Tag = "";
-      this.btnRightImageRoot.UseVisualStyleBackColor = true;
-      this.btnRightImageRoot.Click += new System.EventHandler(this.btnSortFolderUp_Click);
+      this.btnCaptureFolderBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnCaptureFolderBrowse.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+      this.btnCaptureFolderBrowse.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnCaptureFolderBrowse.FlatAppearance.BorderSize = 0;
+      this.btnCaptureFolderBrowse.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+      this.btnCaptureFolderBrowse.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnCaptureFolderBrowse.Image = global::Kinovea.Root.Properties.Resources.folder;
+      this.btnCaptureFolderBrowse.Location = new System.Drawing.Point(440, 55);
+      this.btnCaptureFolderBrowse.MinimumSize = new System.Drawing.Size(20, 20);
+      this.btnCaptureFolderBrowse.Name = "btnCaptureFolderBrowse";
+      this.btnCaptureFolderBrowse.Size = new System.Drawing.Size(20, 20);
+      this.btnCaptureFolderBrowse.TabIndex = 49;
+      this.btnCaptureFolderBrowse.Tag = "";
+      this.btnCaptureFolderBrowse.UseVisualStyleBackColor = true;
+      this.btnCaptureFolderBrowse.Click += new System.EventHandler(this.btnCaptureFolderBrowse_Click);
       // 
       // lblCaptureFolderPath
       // 
@@ -1183,7 +1183,7 @@ namespace Kinovea.Root
         private System.Windows.Forms.CheckBox chkExportDrawings;
         private System.Windows.Forms.GroupBox grpFormats;
         private System.Windows.Forms.GroupBox grpCaptureFolderDetails;
-        private System.Windows.Forms.Button btnRightImageRoot;
+        private System.Windows.Forms.Button btnCaptureFolderBrowse;
         private System.Windows.Forms.Label lblCaptureFolderPath;
         private System.Windows.Forms.TextBox tbCaptureFolderPath;
         private System.Windows.Forms.Label lblCaptureFolderShortName;

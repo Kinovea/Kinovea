@@ -412,7 +412,7 @@ namespace Kinovea.Root
         }
         #endregion
 
-        #region Tabs naming
+        #region Tab Paths
         private void olvCaptureFolders_SelectedIndexChanged(object sender, EventArgs e)
         {
             var item = olvCaptureFolders.GetItem(olvCaptureFolders.SelectedIndex);
@@ -482,6 +482,26 @@ namespace Kinovea.Root
                 if (memoSelectedIndex >= capturePathConfiguration.CaptureFolders.Count)
                     memoSelectedIndex = capturePathConfiguration.CaptureFolders.Count - 1;
                 olvCaptureFolders.SelectedIndex = memoSelectedIndex;
+            }
+        }
+
+        private void btnCaptureFolderBrowse_Click(object sender, EventArgs e)
+        {
+            // Open folder dialog.
+            if (selectedCaptureFolder == null)
+                return;
+
+            string initialDirectory = null;
+            if (Directory.Exists(tbCaptureFolderPath.Text))
+                initialDirectory = tbCaptureFolderPath.Text;
+            else
+                initialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            string path = FilesystemHelper.OpenFolderBrowserDialog(initialDirectory);
+            if (!string.IsNullOrEmpty(path))
+            {
+                tbCaptureFolderPath.Text = path;
+                tbCaptureFolderPath.SelectionStart = tbCaptureFolderPath.Text.Length;
             }
         }
 
@@ -884,6 +904,5 @@ namespace Kinovea.Root
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.IgnoreOverwrite = ignoreOverwriteWarning;
             PreferencesManager.CapturePreferences.PostRecordCommand = postRecordCommand;
         }
-
     }
 }

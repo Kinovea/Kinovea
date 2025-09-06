@@ -465,6 +465,7 @@ namespace Kinovea.Services
             //-----------------------------------
             string selectedPath = null;
             FolderBrowserDialog fbd = new FolderBrowserDialog();
+            fbd.SelectedPath = initDirectory;
             fbd.ShowNewFolderButton = true;
             if (fbd.ShowDialog() == DialogResult.OK)
                 selectedPath = fbd.SelectedPath;
