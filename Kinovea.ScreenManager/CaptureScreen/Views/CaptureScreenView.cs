@@ -195,6 +195,7 @@ namespace Kinovea.ScreenManager
             pnlContext.Controls.Clear();
             pnlContext.Controls.Add(btnContextInfo);
             toolTips.SetToolTip(btnContextToggle, contextEnabled ? "Disable capture context" : "Enable capture context");
+            btnContextToggle.Visible = VariablesRepository.HasVariables;
 
             if (contextEnabled && VariablesRepository.HasVariables)
             {
