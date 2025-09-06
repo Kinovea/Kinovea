@@ -481,7 +481,9 @@ namespace Kinovea.Services
                 // Ignore non-target.
                 if (targetHandle != IntPtr.Zero && handle != targetHandle)
                     continue;
-                
+
+                log.DebugFormat("Sending message \"{0}\" to window \"{1}\".", msg, titleName);
+
                 NativeMethods.SendMessage(handle, NativeMethods.WM_COPYDATA, IntPtr.Zero, ref cds);
             }
 

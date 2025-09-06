@@ -798,8 +798,33 @@ namespace Kinovea.ScreenManager
         {
             // No sub modules.
         }
+
+        /// <summary>
+        /// Called after a change in preferences.
+        /// </summary>
         public void RefreshUICulture()
         {
+            // We may have changed the trigger source/parameters.
+            audioInputLevelMonitor.Enabled = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger;
+            audioInputLevelMonitor.Threshold = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioTriggerThreshold;
+            udpMonitor.Enabled = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableUDPTrigger;
+            udpMonitor.Port = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.UDPPort;
+            if (captureScreens.Count() > 0)
+            {
+                if (audioInputLevelMonitor.Enabled)
+                {
+                    string id = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioInputDevice;
+                    audioInputLevelMonitor.Start(id);
+                }
+
+                if (udpMonitor.Enabled)
+                {
+                    int port = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.UDPPort;
+                    udpMonitor.Start(port);
+                }
+            }
+
+            // Local
             RefreshCultureMenu();
             OrganizeMenus();
             RefreshCultureToolbar();
@@ -808,6 +833,7 @@ namespace Kinovea.ScreenManager
             dualCapture.RefreshUICulture();
             view.RefreshUICulture();
 
+            // Screens
             foreach (AbstractScreen screen in screenList)
                 screen.RefreshUICulture();
         }
@@ -834,30 +860,6 @@ namespace Kinovea.ScreenManager
         }
         public void PreferencesUpdated()
         {
-            foreach (AbstractScreen screen in screenList)
-                screen.PreferencesUpdated();
-
-            audioInputLevelMonitor.Enabled = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger;
-            audioInputLevelMonitor.Threshold = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioTriggerThreshold;
-            udpMonitor.Enabled = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableUDPTrigger;
-            udpMonitor.Port = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.UDPPort;
-
-            // We may have changed the preferred audio input device.
-            if (captureScreens.Count() > 0)
-            {
-                if (audioInputLevelMonitor.Enabled)
-                {
-                    string id = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioInputDevice;
-                    audioInputLevelMonitor.Start(id);
-                }
-
-                if (udpMonitor.Enabled)
-                {
-                    int port = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.UDPPort;
-                    udpMonitor.Start(port);
-                }
-            }
-
             RefreshUICulture();
         }
         #endregion
@@ -1929,7 +1931,7 @@ namespace Kinovea.ScreenManager
                     mnuProfile.Click += (s, e) => {
                         table.CurrentKey = key;
                         CheckCurrentProfileKey(mnuTable);
-                        VariablesRepository.SaveContext();
+                        VariablesRepository.SaveContext(null);
                     };
 
                     mnuTable.DropDownItems.Add(mnuProfile);

@@ -661,6 +661,10 @@ namespace Kinovea.ScreenManager
 
             drawingToolbarPresenter.Dispose();
         }
+
+        /// <summary>
+        /// Called after a change in preferences.
+        /// </summary>
         public override void RefreshUICulture()
         {
             // After preferences change, the actual folder pointed by a replay watcher may have changed.
@@ -699,9 +703,6 @@ namespace Kinovea.ScreenManager
 
             view.RefreshUICulture();
             drawingToolbarPresenter.RefreshUICulture();
-        }
-        public override void PreferencesUpdated()
-        {
         }
         public override void RefreshImage()
         {

@@ -374,38 +374,36 @@ namespace Kinovea.ScreenManager
         }
         public override void RefreshUICulture() 
         {
+            // Bail out if we are currently manually changing the context in the screen.
+            // Changing the context triggers a preferences update that can be ignored here.
+            if (view.ChangingContext)
+            {
+                return;
+            }
+
             metadata.CalibrationHelper.AngleUnit = PreferencesManager.PlayerPreferences.AngleUnit;
-            view.RefreshUICulture();
-            drawingToolbarPresenter.RefreshUICulture();
-        }
-        public override void PreferencesUpdated()
-        {
+            UpdateArmableTrigger();
+
+            // TODO:
             // Here we could possibly try to detect if we are still using the default file name.
             // In this case and if the default changed, update the file name.
 
             // For simplicity's sake we always reconnect the camera after the master preferences change.
             // This accounts for change in recording mode, display framerate, etc. that requires passing
             // through connect() for proper initialization of threads and timers.
-            if (!cameraConnected)
-                return;
+            // The other option would be for the preferences to raise more specific events or maintain 
+            // a list of changed properties.
+            if (cameraConnected)
+            {
+                log.DebugFormat("Core preferences changed, reconnecting the camera.");
+                Disconnect();
+                Connect();
+            }
 
-            // Bail out if we are currently manually changing the context in the screen.
-            // Changing the context triggers a preferences update that can be ignored here.
-            if (view.ChangingContext)
-                return;
-            
-            // If we are just changing the context from the main menu or from another instance
-            // we wouldn't technically have to disconnect but there is no easy way to know 
-            // if another preference changed that requires a reconnect.
-            log.DebugFormat("Core preferences changed, reconnecting the camera.");
-            Disconnect();
-            Connect();
-
-            UpdateArmableTrigger();
-
-            // Update the context.
             view.RefreshUICulture();
+            drawingToolbarPresenter.RefreshUICulture();
         }
+
         public override void BeforeClose()
         {
             if (stopwatchDiscovery.IsRunning)

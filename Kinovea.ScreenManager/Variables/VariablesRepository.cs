@@ -100,19 +100,31 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Save the current context to shared preferences.
         /// Raises a global event to notify other modules, and other instances.
+        /// The passed action is run after the preferences update but before the event is raised.
+        /// This is used to update the local UI asap before other instances.
         /// </summary>
-        public static void SaveContext()
+        public static void SaveContext(Action action)
         {
+            log.DebugFormat("Saving context");
             string contextString = GetContextString();
             PreferencesManager.BeforeRead();
             PreferencesManager.CapturePreferences.ContextString = contextString;
+            action?.Invoke();
             NotificationCenter.RaiseTriggerPreferencesUpdated(null, true);
         }
 
-        public static void SaveContextEnabled(bool enabled)
+        /// <summary>
+        /// Save the current state of the context enabled flag to shared preferences.
+        /// Raises a global event to notify other modules, and other instances.
+        /// The passed action is run after the preferences update but before the event is raised.
+        /// This is used to update the local UI asap before other instances.
+        /// </summary>
+        public static void SaveContextEnabled(bool enabled, Action action)
         {
+            log.DebugFormat("Saving context enabled flag (enabled:{0})", enabled);
             PreferencesManager.BeforeRead();
             PreferencesManager.CapturePreferences.ContextEnabled = enabled;
+            action?.Invoke();
             NotificationCenter.RaiseTriggerPreferencesUpdated(null, true);
         }
 
@@ -148,6 +160,9 @@ namespace Kinovea.ScreenManager
             return string.Join(",", contexts);
         }
 
+        /// <summary>
+        /// Convert the stored context string into a dictionary of table/key pairs.
+        /// </summary>
         private static Dictionary<string, string> ParseContextString(string contextString)
         {
             Dictionary<string, string> savedContext = new Dictionary<string, string>();

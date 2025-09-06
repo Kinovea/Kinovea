@@ -25,6 +25,8 @@ namespace Kinovea.Services
 {
     public static class NotificationCenter
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public static EventHandler RecentFilesChanged;
         public static void RaiseRecentFilesChanged(object sender)
         {
@@ -147,6 +149,7 @@ namespace Kinovea.Services
         public static EventHandler<EventArgs<bool>> TriggerPreferencesUpdated;
         public static void RaiseTriggerPreferencesUpdated(object sender, bool sendMessage)
         {
+            log.DebugFormat("Raising: TriggerPreferencesUpdated, sendMessage: {0}", sendMessage);
             TriggerPreferencesUpdated?.Invoke(sender, new EventArgs<bool>(sendMessage));
         }
 

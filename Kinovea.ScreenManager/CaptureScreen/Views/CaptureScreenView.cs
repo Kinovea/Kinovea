@@ -134,6 +134,7 @@ namespace Kinovea.ScreenManager
             capturedFilesView.RefreshUICulture();
             ReloadTooltipsCulture();
 
+            contextEnabled = PreferencesManager.CapturePreferences.ContextEnabled;
             UpdateContextBar();
             UpdateCaptureFolder();
         }
@@ -181,6 +182,8 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Initialize or re-initialize the context bar.
+        /// By this point the contextEnabled MUST have been set correctly, 
+        /// this will not re-read it from preferences.
         /// </summary>
         public void UpdateContextBar()
         {
@@ -230,7 +233,7 @@ namespace Kinovea.ScreenManager
                             // that we'll want to ignore in certain places.
                             changingContext = true;
                             tablePair.Value.CurrentKey = cb.SelectedItem.ToString();
-                            VariablesRepository.SaveContext();
+                            VariablesRepository.SaveContext(UpdateCaptureFolder);
                             changingContext = false;
                         }
                     };
@@ -407,14 +410,16 @@ namespace Kinovea.ScreenManager
         private void btnContextToggle_Click(object sender, EventArgs e)
         {
             contextEnabled = !contextEnabled;
-            
-            changingContext = true;
-            VariablesRepository.SaveContextEnabled(contextEnabled);
-            changingContext = false;
 
             // Update the UI. We do need to go through the whole UpdateContextBar, 
             // because if we started disabled we haven't build the combos yet.
+            // Do it immediately before sending the global message to avoid having
+            // the other instances be updated before the local one.
             UpdateContextBar();
+
+            changingContext = true;
+            VariablesRepository.SaveContextEnabled(contextEnabled, UpdateCaptureFolder);
+            changingContext = false;
         }
         private void BtnCapturedVideosFold_Click(object sender, EventArgs e)
         {
@@ -605,14 +610,19 @@ namespace Kinovea.ScreenManager
 
         private void cbCaptureFolder_SelectedIndexChanged(object sender, EventArgs e)
         {
+            UpdateCaptureFolderToolTip();
+        }
+
+        private void UpdateCaptureFolderToolTip()
+        {
             // Update the tooltip to show the resolved folder path.
-            if (cbCaptureFolder.SelectedItem != null)
+            if (cbCaptureFolder.SelectedItem == null)
+                return;
+            
+            if (buildRecordingPath != null)
             {
-                if (buildRecordingPath != null)
-                {
-                    string path = buildRecordingPath(true);
-                    toolTips.SetToolTip(cbCaptureFolder, Path.GetDirectoryName(path));
-                }
+                string path = buildRecordingPath(true);
+                toolTips.SetToolTip(cbCaptureFolder, Path.GetDirectoryName(path));
             }
         }
 

@@ -193,7 +193,7 @@ namespace Kinovea.Root
         {
             log.Debug("Setting current ui culture.");
             Thread.CurrentThread.CurrentUICulture = PreferencesManager.GeneralPreferences.GetSupportedCulture();
-            RefreshUICulture();
+            RefreshUICulture(true);
             CheckLanguageMenu();
             CheckTimecodeMenu();
         }
@@ -251,7 +251,13 @@ namespace Kinovea.Root
             mainWindow.PlugUI(navigationPanel.UI, screenManager.UI);
             mainWindow.SupervisorControl.buttonCloseExplo.BringToFront();
         }
+
         public void RefreshUICulture()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void RefreshUICulture(bool subModules)
         {
             log.Debug("RefreshUICulture - Reload localized strings for the whole tree.");
             RefreshCultureMenu();
@@ -260,9 +266,12 @@ namespace Kinovea.Root
             
             toolOpenFile.ToolTipText = ScreenManagerLang.mnuOpenVideo;
             
-            navigationPanel.RefreshUICulture();
-            updater.RefreshUICulture();
-            screenManager.RefreshUICulture();
+            if (subModules)
+            {
+                navigationPanel.RefreshUICulture();
+                updater.RefreshUICulture();
+                screenManager.RefreshUICulture();
+            }
             
             log.Debug("RefreshUICulture - Whole tree culture reloaded.");
         }
@@ -278,7 +287,10 @@ namespace Kinovea.Root
         /// </summary>
         private void PreferencesUpdated(bool sendMessage)
         {
-            RefreshUICulture();
+            log.DebugFormat("Received PreferencesUpdated in root. sendMessage:{0}", sendMessage);
+            
+            // Don't refresh the submodules, they will do it themselves in PreferencesUpdated.
+            RefreshUICulture(false);
             
             navigationPanel.PreferencesUpdated();
             updater.PreferencesUpdated();
@@ -753,6 +765,7 @@ namespace Kinovea.Root
             if(menu != null && menu.Tag is string)
                 SwitchCulture((string)menu.Tag);
         }
+
         private void SwitchCulture(string name)
         {
             try
@@ -768,7 +781,7 @@ namespace Kinovea.Root
                 PreferencesManager.GeneralPreferences.SetCulture(newCulture.Name);
                 Thread.CurrentThread.CurrentUICulture = PreferencesManager.GeneralPreferences.GetSupportedCulture();
 
-                RefreshUICulture();
+                RefreshUICulture(true);
 
                 // Make sure all the other windows are updated immediately.
                 WindowManager.SendMessage("Kinovea:Window.PreferencesUpdated");
@@ -874,7 +887,7 @@ namespace Kinovea.Root
             PreferencesManager.BeforeRead();
 
             PreferencesManager.PlayerPreferences.TimecodeFormat = _timecode;
-            RefreshUICulture();
+            RefreshUICulture(true);
 
             // Make sure all the other windows are updated immediately.
             WindowManager.SendMessage("Kinovea:Window.PreferencesUpdated");

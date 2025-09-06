@@ -168,8 +168,11 @@ namespace Kinovea.ScreenManager
 
         #region Abstract methods
         public abstract void DisplayAsActiveScreen(bool active);
+        
+        /// <summary>
+        /// Called after a change in preferences.
+        /// </summary>
         public abstract void RefreshUICulture();
-        public abstract void PreferencesUpdated();
         public abstract void BeforeClose();
         public abstract void AfterClose();
         public abstract void RefreshImage();
